@@ -2,88 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3124435A8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 07:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092F1435A8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 07:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhJUGAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 02:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S231189AbhJUGBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 02:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhJUGA2 (ORCPT
+        with ESMTP id S230000AbhJUGBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 02:00:28 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F0DC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 22:58:12 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso179489pjf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 22:58:12 -0700 (PDT)
+        Thu, 21 Oct 2021 02:01:30 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1982C06161C;
+        Wed, 20 Oct 2021 22:59:14 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id d13so2250286ljg.0;
+        Wed, 20 Oct 2021 22:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xCfmwNiGSIU1FWTiYV1xWdNfk6l/Oap6HAgg6fjLReU=;
-        b=QfX1KxO1iDmoWlrWX4kmj/ikKGs91ceVH1DNPzMwDs35Nrv4ObEjsLoiF1FocVaOiz
-         cRJnikiJTuE0K3RFq8D/NAvMy8x5vaAZOKy+0qkZ12XsRvRwmnLoX/wpKKHWEZWo/ry7
-         ZyUlwxLJU2SAZGPAn8Flu3mVIq/B74FSWofr0QzUBxDOdslCuMt/NBHl5Z65Mk9LVvIe
-         VvGjJTGawL7iDva1ii96MYLDca4A3W/lK+DL9Bwk6x2m43ztlCbLFputTSZ3IhJmXGOp
-         1EEBYCodViTpG/MznXF+icHPMRvRJBv79dW+nvbccVVFOrDJwMbU3ougmVOAiLBfy0EW
-         O/lw==
+        d=gmail.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AqP+rW3LM6sbjMut4cEUwJH0FzaeTM8RqLIE4IGSWQI=;
+        b=IMbqWkxb/oKiYZDY9WqqrsR0jFk434X+nZ3C4QtExXDGTcAY4gNyaxbXSa7d13ybFD
+         7JzTFLjhXSIFA/TKn3379dbkih84uz73Pz+80Ie/ZAWwLE2RATL/O7umFMA8SxnYuZgE
+         gw6teE+nS1K5sBFlHnxM41W4fmVrbz2KCt0DnYYDAAwloqQ3GbRryblVDL9uuCr5OIOs
+         n38yVXR7UzEy5evd4/+pNBFAiixdb6NBe1w6aIqZ1P/B1dRtpAUXtWeavcIT9xZAjeop
+         QVfh7mCZx+YLGKBjQLU9RLt2D7ql3ewafUt/rxFePWBUpusJ0sM4svHa5rpZA3QBGihy
+         JGZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xCfmwNiGSIU1FWTiYV1xWdNfk6l/Oap6HAgg6fjLReU=;
-        b=B2cUdQqBVWBoM3v2VO+tgWoAfhLeoC7lE6VSsLfKuBHpDjsOa6SgXt+167mmkUzaaO
-         OdMHkFAON0aQXSX0bCSX2/5tuCvprfHDPv9F+HcK9YGkRZ9u7L+OzHZbgXV6BCxr7yD7
-         rCG7TggVh6KsPr3K4etax++/krORx0Q5tg5/Kg9BC2TyjDwrEKkfh5ky5cKcEMhSkTlN
-         WXGsETu1Bb7m3Wcsmc3PBBalDiYYHCozpIZe7iHKSzD8aMe+aICuIff9k9AuyqA1u7KX
-         eq9AZdGw7flVPxGxKk5zpNekIWmP7//brLMy7NXzTv/UcGO7C6jNdJwwtbDcFkG3Axan
-         mlYg==
-X-Gm-Message-State: AOAM532gCj963SQ8lYt0txfJXkNNkLmRxZzRgzJj8SW1+fT3fO88gykb
-        DWmo50nxAtfNT/m+lrDVH5zW58g3xxmddg==
-X-Google-Smtp-Source: ABdhPJysGXA45YfqU6m6F7iEIFsFMRwo+XnZ6TQLPxUKfVVZ4koslmjfwgQj434dEw6k0qDclNfxRA==
-X-Received: by 2002:a17:90a:9b84:: with SMTP id g4mr4337506pjp.123.1634795892500;
-        Wed, 20 Oct 2021 22:58:12 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id b8sm4305778pfi.103.2021.10.20.22.58.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 22:58:12 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 11:28:10 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>, wsa@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 2/2] i2c: virtio: fix completion handling
-Message-ID: <20211021055810.4ivtscmg2rs5dtt4@vireshk-i7>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-3-vincent.whitchurch@axis.com>
- <a6cb9ae7-eee3-74aa-87de-a2be3fdc7a76@intel.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AqP+rW3LM6sbjMut4cEUwJH0FzaeTM8RqLIE4IGSWQI=;
+        b=SPxLBhQUOKbM7E30lK/WABXduHxZDEFEkrQCeIpM7Uq/FESzoz/ALf+jMkGoacZguj
+         fwFkiOfGdyE/c9wpH2pCwluqfGmVp5N9eTt0gsld4SZTd+dfKi52cHD5O1gQM7ujuFkO
+         jmapajnQrFL2pYIyuQxIMDnehyMnX+E+jVgr6dcBWFsNa5/2O5MFvSuSn5uiE1M6w9XO
+         ha9+NHN7ors7CwTECrSHHNZOcK+uhhgMYNDkeqth9laF9foRShjzJ32YLtg3FTHwEnY9
+         Za9mrR4SGB0aDNUyxpA7ki2cZl719lMa+Y8ztSKElpj6nMaKY6XPpLuRJ3rkBlPzppco
+         N0pw==
+X-Gm-Message-State: AOAM533v+zC+V3v9yLceh3q4o8QMyKWZ3rB0gmj8YtoM0hMm6EuwTtaL
+        pqHZHj+PQ3aR1iY/o2hSTmtdUNuMB9U=
+X-Google-Smtp-Source: ABdhPJwRcRtZErko2VhI90eXbF/PQ4bWvtdAndtaJOcrxakmp+eB8TpXUv4i2w44bb1Xtlpywp0PpA==
+X-Received: by 2002:a05:651c:544:: with SMTP id q4mr3917570ljp.53.1634795952528;
+        Wed, 20 Oct 2021 22:59:12 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.googlemail.com with ESMTPSA id j19sm366543lfb.249.2021.10.20.22.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 22:59:12 -0700 (PDT)
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211019231905.2974-1-digetx@gmail.com>
+ <YXAr4OlhucAibMlH@robh.at.kernel.org>
+ <85f84713-1eff-4ebf-df25-adb967dcb440@gmail.com>
+Message-ID: <9afaf430-6cd9-b475-cf93-2a400df6b223@gmail.com>
+Date:   Thu, 21 Oct 2021 08:59:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6cb9ae7-eee3-74aa-87de-a2be3fdc7a76@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <85f84713-1eff-4ebf-df25-adb967dcb440@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-21, 13:55, Jie Deng wrote:
-> Can the backend driver control the time point of interrupt injection ? I
-> can't think of
+20.10.2021 17:59, Dmitry Osipenko пишет:
+> 20.10.2021 17:46, Rob Herring пишет:
+>> On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
+>>> Not all OPP table names and OPP entries consist of a single word. In
+>>> particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
+>>> and OPP entry name to have multi-worded names to silence DT checker
+>>> warnings about the multi-word names separated by hyphen.
+>>>
+>>> Reviewed-by: David Heidelberg <david@ixit.cz>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>>> index ae3ae4d39843..298cf24af270 100644
+>>> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>>> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>>> @@ -22,7 +22,7 @@ select: false
+>>>  
+>>>  properties:
+>>>    $nodename:
+>>> -    pattern: '^opp-table(-[a-z0-9]+)?$'
+>>> +    pattern: '^opp-table(-[a-z0-9]+)*$'
+>>
+>> I don't see how this helps you. What I see needed upstream is a prefix:
+>>
+>> '-?opp-table(-[0-9]+)?$'
+>>
+>> Though really what I'd like to see is the OPP nodes moved into the 
+>> device nodes they belong to when appropriate (i.e. when not shared 
+>> between multiple devices).
 > 
-> why the backend has to send an early interrupt. This operation should be
-> avoided
+> I already prepared patches to rename Tegra OPP tables in accordance to
+> the new naming scheme where opp-table- is the prefix.
 > 
-> in the backend driver if possible. However, this change make sense if early
-> interrupt
-> 
-> can't be avoid.
 
-The backend driver probably won't send an event, but the notification
-event, if it comes, shouldn't have side effects like what it currently
-have (where we finish the ongoing transfer by calling complete()).
+Now I see that there are other device-trees than Tegra which use the
+"postfix" naming scheme. Hence we should need to use this variant to
+cover both cases:
 
--- 
-viresh
+  '^([a-z0-9]+-)*opp-table|opp-table(-[a-z0-9]+)*$'
+
+I'll prepare v2, thanks.
