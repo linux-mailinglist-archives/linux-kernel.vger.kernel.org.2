@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02242435B25
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43EE435B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhJUGxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 02:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
+        id S231290AbhJUGyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 02:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhJUGxl (ORCPT
+        with ESMTP id S229854AbhJUGyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 02:53:41 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA51FC06161C;
-        Wed, 20 Oct 2021 23:51:22 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id x66so1670858pfx.13;
-        Wed, 20 Oct 2021 23:51:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4IT569PC5azMfJUgBeCpQwHxR9xWFaiNqcnPd3IC73s=;
-        b=q3pSCZDRL5KRM3nvMGV2JXBH/4b6ox9NxeQKc+0sSfJ777k+A0GZnc86SKVZm8B6FP
-         KiZFZcKa2lKX0xrSbZroAher8ZC35dXlFmyWaFImSw6Bxx7FR/E1+HvowzD0zQ1GtIyM
-         SVjBPAcBWR4c60+CeEGyMTq0P6DQR55mf9MXq9XB6cAy6xTapHI1ybFdwpW58QXaWXJ+
-         8h6QidGoNMOJQspJNWmYXM5ZVodysciypEoAfx/zHNfrrvJ83QUgjT8keumD/10XFWiF
-         8hIr7rVqE30Y4ot56oqV7xAPFqqDaYw7vjWiSq/TgQqNLPSMOoLHICJj0wgsqaBTDPEk
-         JUYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4IT569PC5azMfJUgBeCpQwHxR9xWFaiNqcnPd3IC73s=;
-        b=Fhr5Qus8A6Zc3JwUjoOzn4Py7nA2aABFaGaUmBfm/2ehqP74YQCBnqSnhCMAAJwvpj
-         MUMnqgvUbWIZfir6e1yAMI35yoWkmTkrXHDvK+YUkcxcYivyXzHuGrSysj+u+jK2H9qS
-         WEU8voOnVuKPjin4aX7Kzrf8PT96DTtJxAlQqWtP02t0lHVPY/GyQmLJoQzinfhMcpre
-         +tcN/wgL9zcDylXwB/gletDwHEbjIwldf0Ja4UIHjxaXnnZ2MEucbNeCOy9PlM5iBqgX
-         jPPbUjguMwFW32OGpW1QKRiUjycGB96FyTaOSOXzlqc0u4UyDpO9iDhZWtyqqqN7yDA/
-         Q3uA==
-X-Gm-Message-State: AOAM531tO8gv87inYNqgxhGQfrTvs+KMo5x8pojVcBOaTv+m/8wF35HS
-        i5Y1JXNTKbpOI/3KCDSnJFU=
-X-Google-Smtp-Source: ABdhPJz0BJlpzbnAEevj8A4yskyuz6x05+ew4k5oZvbTEUsltQEBNmRkeig+0JTifRTceHvzgu4sig==
-X-Received: by 2002:a62:e510:0:b0:44c:e06e:80dd with SMTP id n16-20020a62e510000000b0044ce06e80ddmr3623411pff.48.1634799082315;
-        Wed, 20 Oct 2021 23:51:22 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id r14sm4063254pgn.91.2021.10.20.23.51.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 23:51:21 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     mst@redhat.com
-Cc:     jasowang@redhat.com, pbonzini@redhat.com, stefanha@redhat.com,
-        axboe@kernel.dk, virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] virtio-blk: fixup coccinelle warnings
-Date:   Thu, 21 Oct 2021 06:51:11 +0000
-Message-Id: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 21 Oct 2021 02:54:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7737CC06161C;
+        Wed, 20 Oct 2021 23:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C2GrLESxDXsBxKFZvlOYstIpoNYEUDQLI727DbPovXU=; b=TYrAkaXBTNr+gi7RBMQibqZ9UB
+        KqzD6Glbfg9BlshviXhxp3yv+0HgftkgaY9vHc/fOKwUffsfiybdj8EEO4wY7TNHWNXj/gLA0J+ia
+        NWia0Cxl+1wWi2C02fVMGWtiW4SxsKaHaWLXK2fdqVn3L2WcZjJBemlTwtiWQ//Y4bH1GI/CkadsN
+        nSHT6To9Yc6sIHZH54oBreoNiJ0ORfFObC3L11xwgMFaFOizERrE4OtmgU1PZX08DHmltNcDNiP2r
+        kgfPGiSdrY3joe2O1O4zOkpSZFdHH04TAhEyz+ABwz8ylQv6EFrMuWIESyZRlKHDSJ9AcEpU9uOd8
+        7WmNzpXQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdRvc-006aZH-7q; Thu, 21 Oct 2021 06:51:52 +0000
+Date:   Wed, 20 Oct 2021 23:51:52 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXEOCIWKEcUOvVtv@infradead.org>
+References: <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
+ <YXBRPSjPUYnoQU+M@casper.infradead.org>
+ <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+On Wed, Oct 20, 2021 at 08:04:56PM +0200, David Hildenbrand wrote:
+> real): assume we have to add a field for handling something about anon
+> THP in the struct page (let's assume in the head page for simplicity).
+> Where would we add it? To "struct folio" and expose it to all other
+> folios that don't really need it because it's so special? To "struct
+> page" where it actually doesn't belong after all the discussions? And if
+> we would have to move that field it into a tail page, it would get even
+> more "tricky".
+> 
+> Of course, we could let all special types inherit from "struct folio",
+> which inherit from "struct page" ... but I am not convinced that we
+> actually want that. After all, we're C programmers ;)
+> 
+> But enough with another side-discussion :)
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING  use scnprintf or sprintf
-
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- drivers/block/virtio_blk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 303caf2d17d0..8a71b2f9f4b7 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -624,7 +624,7 @@ cache_type_show(struct device *dev, struct device_attribute *attr, char *buf)
- 	u8 writeback = virtblk_get_cache_mode(vblk->vdev);
- 
- 	BUG_ON(writeback >= ARRAY_SIZE(virtblk_cache_types));
--	return snprintf(buf, 40, "%s\n", virtblk_cache_types[writeback]);
-+	return sysfs_emit(buf, "%s\n", virtblk_cache_types[writeback]);
- }
- 
- static DEVICE_ATTR_RW(cache_type);
--- 
-2.25.1
-
+FYI, with my block and direct I/O developer hat on I really, really
+want to have the folio for both file and anon pages.  Because to make
+the get_user_pages path a _lot_ more efficient it should store folios.
+And to make that work I need them to work for file and anon pages
+because for get_user_pages and related code they are treated exactly
+the same.
