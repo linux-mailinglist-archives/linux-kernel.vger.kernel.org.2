@@ -2,117 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B794366F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A374366F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhJUP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:59:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:44622 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231745AbhJUP73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:59:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24098D6E;
-        Thu, 21 Oct 2021 08:57:13 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC3BD3F694;
-        Thu, 21 Oct 2021 08:57:11 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 16:57:03 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc5
-Message-ID: <20211021155654.GA55459@lakrids.cambridge.arm.com>
-References: <YWCPyK+xotTgUMy/@arm.com>
- <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
- <20211011104729.GB1421@C02TD0UTHF1T.local>
- <CAHk-=wjTAJwMJZ-6PPxvdtDmkL0=pfRF77nJ5qWw2vbiTzT4nQ@mail.gmail.com>
- <87czoacrfr.ffs@tglx>
- <20211012140243.GA41546@C02TD0UTHF1T.local>
+        id S231865AbhJUQAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:00:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231842AbhJUQAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 12:00:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634831893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VfpACOZctT0RhCg7latmNH+ENpS2vqEqG/eWd+re1mY=;
+        b=QziaWjvuE+smOOKB7jXw2Uf+a03TfE9bbrBQvHkgMdh/hxM7+smCdubPJ3nufv9yitWars
+        Hgofr+lE1NpEtDm1K1oKemzYS/lAgipIQCv/xQRVZWf6dRUJOO393jdpzeQ2vfvj8QyBRX
+        RsowAugM/kcLCNgjPcw1QSy5zQ/6QFA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-UkDl71i-POiHhKE9BeleTg-1; Thu, 21 Oct 2021 11:58:12 -0400
+X-MC-Unique: UkDl71i-POiHhKE9BeleTg-1
+Received: by mail-wr1-f71.google.com with SMTP id r21-20020adfa155000000b001608162e16dso36999wrr.15
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:58:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VfpACOZctT0RhCg7latmNH+ENpS2vqEqG/eWd+re1mY=;
+        b=s5KIINAIGV972WdIL42RKg6m3a9CTvosARAV9ZzU8ddaNMjDwG07yTCzfSQgn8F/9o
+         dG+PgskaeiWimguKFPKqn3ol5R6uHSXqWVEmfo9oDLGr7Eb3kecL5ioCkC1d0Gh1atEg
+         b2f3eAazrr2tJ8KJbWBOkF6pSYRCW/qPiSvE//U5EyoyRRNEKdCHRiOHh7SQOHk4t3pF
+         hgCNCTohhgFkpSf6oaz+4Lvh4V3zEydBVmR2Bhb5e9rnngFY4fdbFVb25mVB2MLCPCww
+         /Xzc+5Q0J84fX550DiLnIg+NW+6reBB2mwUsTmUB0Kq8qH5m55berLEBpsiIfOks35Jm
+         FFwQ==
+X-Gm-Message-State: AOAM531fQaj1BozQVfg7OtyAF2UXK46urnhUD+lkVk8vSbwxMcJ5oHFV
+        64fS6RozB7QKy2j59OCgS8otSJC1Y4prwAsT2A57JJI/QU+8808jRK59p0YQHnG8zBpRCwXyQW0
+        dFouYbl1oZihRMDlwc5Y0GUUd
+X-Received: by 2002:a1c:7dcc:: with SMTP id y195mr988213wmc.18.1634831891400;
+        Thu, 21 Oct 2021 08:58:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyO7pXOflrAQi/8QFCQATA/d84nibFh3NwUmFnriNy9h3nvirMWb+xiNwlUPnLYnkiVTf4qZQ==
+X-Received: by 2002:a1c:7dcc:: with SMTP id y195mr988188wmc.18.1634831891154;
+        Thu, 21 Oct 2021 08:58:11 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id f17sm198213wmf.44.2021.10.21.08.58.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:58:10 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 17:58:09 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        mingo@redhat.com, irogers@google.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjain@linux.ibm.com, james.clark@arm.com
+Subject: Re: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
+Message-ID: <YXGOERQLp3M+pGH1@krava>
+References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
+ <1634807805-40093-3-git-send-email-john.garry@huawei.com>
+ <YXFhr2YoVp9GPsDM@krava>
+ <f4330522-f36e-21f4-5967-0ef67de7418f@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211012140243.GA41546@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+In-Reply-To: <f4330522-f36e-21f4-5967-0ef67de7418f@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 03:02:43PM +0100, Mark Rutland wrote:
-> On Tue, Oct 12, 2021 at 03:18:16PM +0200, Thomas Gleixner wrote:
-> > On Mon, Oct 11 2021 at 12:54, Linus Torvalds wrote:
-> > > On Mon, Oct 11, 2021 at 3:47 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > And so the reason I really hate that patch is that it introduces a new
-> > > "different architectures randomly and inexplicably do different
-> > > things, and the generic behavior is very different on arm64 than it is
-> > > elsewhere".
-> > >
-> > > That's just the worst kind of hack to me.
-> > >
-> > > And in this case, it's really *horribly* hard to see what the call
-> > > chain is. It all ends up being actively obfuscated and obscured
-> > > through that 'handle_arch_irq' function pointer, that is sometimes set
-> > > through set_handle_irq(), and sometimes set directly.
-> > >
-> > > I really think that if the rule is "we can't do accounting in
-> > > handle_domain_irq(), because it's too late for arm64", then the fix
-> > > really should be to just not do that.
-> > >
-> > > Move the irq_enter()/irq_exit() to the callers - quite possibly far up
-> > > the call chain to the root of it all, and just say "architecture code
-> > > needs to do this in the low-level code before calling
-> > > handle_arch_irq".
+On Thu, Oct 21, 2021 at 04:50:09PM +0100, John Garry wrote:
+> On 21/10/2021 13:48, Jiri Olsa wrote:
+> > > +HOSTCFLAGS += -Wall
+> > > +HOSTCFLAGS += -Wextra
+> > > +
+> > >   # Enforce a non-executable stack, as we may regress (again) in the future by
+> > >   # adding assembler files missing the .GNU-stack linker note.
+> > >   LDFLAGS += -Wl,-z,noexecstack
+> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > > index 7df13e74450c..118bcdc70bb4 100644
+> > > --- a/tools/perf/Makefile.perf
+> > > +++ b/tools/perf/Makefile.perf
+> > > @@ -226,7 +226,7 @@ else
+> > >   endif
+> > >   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+> > > -export HOSTCC HOSTLD HOSTAR
+> > > +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+> > >   include $(srctree)/tools/build/Makefile.include
+> > > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+> > > index a055dee6a46a..d5c287f069a2 100644
+> > > --- a/tools/perf/pmu-events/Build
+> > > +++ b/tools/perf/pmu-events/Build
+> > > @@ -1,7 +1,7 @@
+> > >   hostprogs := jevents
+> > >   jevents-y	+= json.o jsmn.o jevents.o
+> > > -HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+> > > +HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
+> > so the the host cflags are made of:
+> > 
+> > host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+> > 
+> > can't you use KBUILD_HOSTCFLAGS?
+> 
+> Maybe. However, it seems to be empty when building perf/pmu-events. Even in
+> building tools/objtool - which currently references it - it is empty AFAICS.
+> I'm not sure if it's being imported properly.
+> 
 
-I've spent the last few days attacking this, and I have a series which
-reworks things to pull irq_{enter,exit}() out of the irqchip code and
-into arch/entry code where it belongs, removig CONFIG_HANDLE_DOMAIN_IRQ
-entirely in the process. I'll post that out soon once I've cleaned up
-the commit messages and given it a decent cover letter.
+I meant change like this (on top of yours)
 
-> > > Anyway, it _looks_ to me like the pattern is very simple:
-> > >
-> > > Step 1:
-> > >  - remove irq_enter/irq_exit from handle_domain_irq(), move it to all callers.
-> > >
-> > > This clearly doesn't change anything at all, but also doesn't fix the
-> > > problem you have. But it's easy to verify that the code is the same
-> > > before-and-after.
-> > >
-> > > Step 2 is the pattern matching step:
-> > >
-> > >  - if the caller of handle_domain_irq() ends up being a function that
-> > > is registered with set_handle_irq(), then we
-> > >    (a) remove the irq_enter/irq_exit from it
-> > >    (b) add it to the architectures that use handle_arch_irq.
-> > >    (c) make sure that if there are other callers of it (not through
-> > > handle_arch_irq) we move that irq_enter/irq_exit into them too
-> > >
-> > > I _suspect_ - but didn't check - that Step 2(c) doesn't actually
+jirka
 
-I had a go with the approach suggested above, but that didn't really
-work out and I ended up splitting the problem a different way. Comments
-belwo for the sake of posterity.
 
-Attacking this as a per-caller issue is *really* chury, and
-interdependencies force you to fix all drivers and all architectures in
-one go, which makes it really hard to see the wood for the trees.
+---
+diff --git a/tools/build/Build.include b/tools/build/Build.include
+index 2cf3b1bde86e..c2a95ab47379 100644
+--- a/tools/build/Build.include
++++ b/tools/build/Build.include
+@@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
+ ###
+ ## HOSTCC C flags
+ 
+-host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
++host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+ 
+ # output directory for tests below
+ TMPOUT = .tmp_$$$$
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0ae2e3d8b832..374f65b52157 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
+ detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+ 
+ CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
++HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+ 
+ include $(srctree)/tools/scripts/Makefile.arch
+ 
+@@ -211,6 +212,7 @@ endif
+ ifneq ($(WERROR),0)
+   CORE_CFLAGS += -Werror
+   CXXFLAGS += -Werror
++  HOSTCFLAGS += -Werror
+ endif
+ 
+ ifndef DEBUG
+@@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
+ CXXFLAGS += -funwind-tables
+ CXXFLAGS += -Wno-strict-aliasing
+ 
++HOSTCFLAGS += -Wall
++HOSTCFLAGS += -Wextra
++
+ # Enforce a non-executable stack, as we may regress (again) in the future by
+ # adding assembler files missing the .GNU-stack linker note.
+ LDFLAGS += -Wl,-z,noexecstack
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 7df13e74450c..118bcdc70bb4 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -226,7 +226,7 @@ else
+ endif
+ 
+ export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+-export HOSTCC HOSTLD HOSTAR
++export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+ 
+ include $(srctree)/tools/build/Makefile.include
+ 
 
-The underlying issue was with CONFIG_HANDLE_DOMAIN_IRQ, so just looking
-as set_handle_irq (which indicates CONFIG_GENERIC_IRQ_MULTI_HANDLER)
-also wasn't sufficient, and I had to go digging through each of the
-affected architectures' entry code.
-
-Instead, I've added a temporary shim, migrated each architecture in
-turn, then removed the shim and CONFIG_HANDLE_DOMAIN_IRQ entirely, which
-also ends up simplifying the drivers a bit.
-
-Thanks,
-Mark.
