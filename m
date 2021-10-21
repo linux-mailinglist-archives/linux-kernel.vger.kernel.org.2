@@ -2,167 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652A64364D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF114364D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhJUO6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:58:54 -0400
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:43213 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231408AbhJUO6v (ORCPT
+        id S231638AbhJUO7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhJUO7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:58:51 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 856C51EE1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:56:34 +0100 (IST)
-Received: (qmail 10586 invoked from network); 21 Oct 2021 14:56:34 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPA; 21 Oct 2021 14:56:34 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 2/2] sched/fair: Increase wakeup_gran if current task has not executed the minimum granularity
-Date:   Thu, 21 Oct 2021 15:56:03 +0100
-Message-Id: <20211021145603.5313-3-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211021145603.5313-1-mgorman@techsingularity.net>
-References: <20211021145603.5313-1-mgorman@techsingularity.net>
+        Thu, 21 Oct 2021 10:59:33 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B522C0613B9;
+        Thu, 21 Oct 2021 07:57:17 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id n7so400754ljp.5;
+        Thu, 21 Oct 2021 07:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iErgHFWWUQOAckHSzae8UPIfuFCZ+UvmvzxxaxlRgls=;
+        b=G+pDRmlnykJVzB6nL+U4P6Tca0kziP1yLkLFCubWaNpQhKY1FJpX+RvGB+3zfhq/Ew
+         GQ8ijrmVtNKVZMVIDBNezu/ksNQXl16qv65nRis46lPnxCz9duesP2FpWfzv/bipgBum
+         TFBBV7CqfDF3c5KQtPmbY6gdykSnLGd/UA2ggcBWRYRR7TZTvygQhb4ipufbjXMXeV55
+         RpzOFY02g7zP4nESzlh0HUtyGGICgTgS3vbgeACwo75FYFjf0lobZCke1DqMSPw4LGsF
+         fs6NPQR80iXvoRpRyFusJE9tfsWlM7h8qalNQpGPw5UMXandnWA2VBdxr5rzNg9bHj+M
+         QD1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iErgHFWWUQOAckHSzae8UPIfuFCZ+UvmvzxxaxlRgls=;
+        b=pfdE6zbNWfPw8yBZyUwvIYI4QNaTpRG0F87XMKMK0z2Br2ojw0Na1fjCGI3s2xEjUi
+         pqHYSZ0+XiYX548Fo2AlSZFDbluLWBP8Chq1CBLhj9yjxuXokwUCwAilBnLYwlic+iAW
+         0nCp940t3KMpv5BtBv71/gR3WLfskkoLNyXdp++1K6OrdC7z17Gn8htYyzbuSwqZaOZo
+         /dEu0VDQcS/S05hclmPRYSlrtEPMiGlbzExb6BFbcOxcrY1Uw7A+7d9eN46eALVWUzU7
+         hXrxMn5zZ9rSZCi/MNC9mxIyL0jDwAiV+yO7s9q5SsXuIcdSycdsGsSGA6YwHP0KFnc9
+         6Umw==
+X-Gm-Message-State: AOAM530I3aivG9DDXHnqU7OgVjn4yh/H7koa6r3AjerK82rgTACdLDUt
+        JFMaAAY7yDneVf5md38dYh7/9RYPl68=
+X-Google-Smtp-Source: ABdhPJzlJb/0RgHtJcrzgSNYCcyj5067olyboKnot6+aBm5Ez23X456/nO32sFsrk/PJ53zgnXCTYA==
+X-Received: by 2002:a2e:bf26:: with SMTP id c38mr6390259ljr.523.1634828235594;
+        Thu, 21 Oct 2021 07:57:15 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.googlemail.com with ESMTPSA id t19sm522167lfl.30.2021.10.21.07.57.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 07:57:15 -0700 (PDT)
+Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
+ device tree
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211021115501.14932-1-digetx@gmail.com>
+ <YXFyu+Q5ifG8Au9w@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
+Date:   Thu, 21 Oct 2021 17:57:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YXFyu+Q5ifG8Au9w@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
-moved the kernel.sched_wakeup_granularity_ns sysctl under debugfs.
-One of the reasons why this sysctl may be used may be for "optimising
-for throughput", particularly when overloaded. The tool TuneD sometimes
-alters this for two profiles e.g. "mssql" and "throughput-performance". At
-least version 2.9 does but it changed in master where it also will poke
-at debugfs instead. This patch aims to reduce the motivation to tweak
-sysctl_sched_wakeup_granularity by increasing sched_wakeup_granularity
-if the running task runtime has not exceeded sysctl_sched_min_granularity.
+21.10.2021 17:01, Thierry Reding пишет:
+> On Thu, Oct 21, 2021 at 02:55:01PM +0300, Dmitry Osipenko wrote:
+>> Older device-trees don't specify padctrl interrupt and xhci-tegra driver
+>> now fails to probe with -EINVAL using those device-trees. Check interrupt
+>> presence and disallow runtime PM suspension if it's missing to fix the
+>> trouble.
+>>
+>> Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
+>> Reported-by: Nicolas Chauvet <kwizart@gmail.com>
+>> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-During task migration or wakeup, a decision is made on whether
-to preempt the current task or not. To limit over-scheduled,
-sysctl_sched_wakeup_granularity delays the preemption to allow at least 1ms
-of runtime before preempting. However, when a domain is heavily overloaded
-(e.g. hackbench), the degree of over-scheduling is still severe. This is
-problematic as time is wasted rescheduling tasks that could instead be
-used by userspace tasks.
+I now see that this was broken since 5.14 and not 5.15, so stable tag is
+needed.
 
-However, care must be taken. Even if a system is overloaded, there may
-be high priority threads that must still be able to run. Mike Galbraith
-explained the constraints as follows;
+>> ---
+>>  drivers/usb/host/xhci-tegra.c | 32 +++++++++++++++++++++-----------
+>>  1 file changed, 21 insertions(+), 11 deletions(-)
+> 
+> Thanks for typing this up. A couple of minor comments below.
+> 
+>> diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
+>> index 1bf494b649bd..47927a1df3dc 100644
+>> --- a/drivers/usb/host/xhci-tegra.c
+>> +++ b/drivers/usb/host/xhci-tegra.c
+>> @@ -1454,10 +1454,13 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+>>  		goto put_padctl;
+>>  	}
+>>  
+>> -	tegra->padctl_irq = of_irq_get(np, 0);
+>> -	if (tegra->padctl_irq <= 0) {
+>> -		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
+>> -		goto put_padctl;
+>> +	/* Older device-trees don't specify padctrl interrupt */
+>> +	if (of_property_read_bool(np, "interrupts")) {
+> 
+> Can't we just rely on the return value from of_irq_get() instead of
+> explicitly checking for the presence of the "interrupts" property? All
+> we really want is to make this interrupt optional. As far as I can tell,
+> of_irq_get() will return -EINVAL (via of_irq_parse_one() and then
+> of_property_read_u32_index()) if the property doesn't exist, so I'd
+> think it should be possible to turn this into something like this:
+> 
+> 	tegra->padctl_irq = of_irq_get(np, 0);
+> 	if (tegra->padctl_irq == -EINVAL)
+> 		tegra->padctl_irq = 0;
 
-        CFS came about because the O1 scheduler was unfair to the
-        point it had starvation problems. People pretty much across the
-        board agreed that a fair scheduler was a much way better way
-        to go, and CFS was born.  It didn't originally have the sleep
-        credit business, but had to grow it to become _short term_ fair.
-        Ingo cut the sleep credit in half because of overscheduling, and
-        that has worked out pretty well all told.. but now you're pushing
-        it more in the unfair direction, all the way to extremely unfair
-        for anything and everything very light.
+-EINVAL is a too ambiguous error code. If of_irq_get() explicitly
+returned -ENOENT, then it would be a different story. It's wrong to rely
+on -EINVAL, IMO.
 
-        Fairness isn't the holy grail mind you, and at some point, giving
-        up on short term fairness certainly isn't crazy, as proven by your
-        hackbench numbers and other numbers we've seen over the years,
-        but taking bites out of the 'CF' in the CFS that was born to be a
-        corner-case killer is.. worrisome.  The other shoe will drop.. it
-        always does :)
+>> +		tegra->padctl_irq = of_irq_get(np, 0);
+>> +		if (tegra->padctl_irq <= 0) {
+>> +			err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
+>> +			goto put_padctl;
+>> +		}
+>>  	}
+>>  
+>>  	tegra->host_clk = devm_clk_get(&pdev->dev, "xusb_host");
+>> @@ -1696,11 +1699,15 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+>>  		goto remove_usb3;
+>>  	}
+>>  
+>> -	err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, tegra_xusb_padctl_irq,
+>> -					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
+>> -	if (err < 0) {
+>> -		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
+>> -		goto remove_usb3;
+>> +	if (tegra->padctl_irq) {
+>> +		err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq,
+>> +						NULL, tegra_xusb_padctl_irq,
+>> +						IRQF_ONESHOT, dev_name(&pdev->dev),
+>> +						tegra);
+>> +		if (err < 0) {
+>> +			dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
+>> +			goto remove_usb3;
+>> +		}
+>>  	}
+>>  
+>>  	err = tegra_xusb_enable_firmware_messages(tegra);
+>> @@ -2132,7 +2139,7 @@ static __maybe_unused int tegra_xusb_suspend(struct device *dev)
+>>  		tegra->suspended = true;
+>>  		pm_runtime_disable(dev);
+>>  
+>> -		if (device_may_wakeup(dev)) {
+>> +		if (device_may_wakeup(dev) && tegra->padctl_irq) {
+> 
+> I wondered if perhaps there was a way to make device_may_wakeup() return
+> false if we don't have that IRQ. Intuitively I would've thought that the
+> calls to device_wakeup_enable() and device_init_wakeup() set this all up
+> but after looking at the code I'm not sure if omitting them would
+> actually cause device_may_wakeup() to return false. That would certainly
+> be nicer than these double checks.
 
-This patch increases the wakeup granularity if the current task has not
-reached its minimum preemption granularity. The current task may still
-be preempted but the difference in runtime must be higher.
+It might be wrong to disable device_may_wakeup() because it will change
+the system suspend-resume behaviour, i.e. you won't be able to resume by
+USB event, see [1].
 
-hackbench-process-pipes
-                          5.15.0-rc3             5.15.0-rc3
-               sched-wakeeflips-v1r1sched-scalewakegran-v3r2
-Amean     1        0.3890 (   0.00%)      0.3823 (   1.71%)
-Amean     4        0.5217 (   0.00%)      0.4867 (   6.71%)
-Amean     7        0.5387 (   0.00%)      0.5053 (   6.19%)
-Amean     12       0.5443 (   0.00%)      0.5450 (  -0.12%)
-Amean     21       0.6487 (   0.00%)      0.6807 (  -4.93%)
-Amean     30       0.8033 (   0.00%)      0.7107 *  11.54%*
-Amean     48       1.2400 (   0.00%)      1.0447 *  15.75%*
-Amean     79       1.8200 (   0.00%)      1.6033 *  11.90%*
-Amean     110      2.5820 (   0.00%)      2.0763 *  19.58%*
-Amean     141      3.2203 (   0.00%)      2.5313 *  21.40%*
-Amean     172      3.8200 (   0.00%)      3.1163 *  18.42%*
-Amean     203      4.3357 (   0.00%)      3.5560 *  17.98%*
-Amean     234      4.8047 (   0.00%)      3.8913 *  19.01%*
-Amean     265      5.1243 (   0.00%)      4.2293 *  17.47%*
-Amean     296      5.5940 (   0.00%)      4.5357 *  18.92%*
+[1]
+https://elixir.bootlin.com/linux/v5.15-rc6/source/drivers/usb/host/xhci-tegra.c#L1962
 
-                  5.15.0-rc3  5.15.0-rc3
-         sched-wakeeflips-v1r1 sched-scalewakegran-v3r2
-Duration User        2567.27     2034.17
-Duration System     21098.79    17137.08
-Duration Elapsed      136.49      120.2
+Although, I'm not sure whether this is a correct behaviour to start
+with. Previously, before the offending commit, device_wakeup was never
+enabled for tegra-xusb. Commit message doesn't explain why wakeup is now
+enabled unconditionally, wakeup checks aren't needed at all then. This
+makes no sense, please check it with JC Kuo.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c     | 17 +++++++++++++++--
- kernel/sched/features.h |  2 ++
- 2 files changed, 17 insertions(+), 2 deletions(-)
+>>  			if (enable_irq_wake(tegra->padctl_irq))
+>>  				dev_err(dev, "failed to enable padctl wakes\n");
+>>  		}
+>> @@ -2161,7 +2168,7 @@ static __maybe_unused int tegra_xusb_resume(struct device *dev)
+>>  		return err;
+>>  	}
+>>  
+>> -	if (device_may_wakeup(dev)) {
+>> +	if (device_may_wakeup(dev) && tegra->padctl_irq) {
+>>  		if (disable_irq_wake(tegra->padctl_irq))
+>>  			dev_err(dev, "failed to disable padctl wakes\n");
+>>  	}
+>> @@ -2179,6 +2186,9 @@ static __maybe_unused int tegra_xusb_runtime_suspend(struct device *dev)
+>>  	struct tegra_xusb *tegra = dev_get_drvdata(dev);
+>>  	int ret;
+>>  
+>> +	if (!tegra->padctl_irq)
+>> +		return -EOPNOTSUPP;
+>> +
+> 
+> Similarly, couldn't we enable all that runtime PM stuff conditionally so
+> that these functions would only ever get called when runtime PM is
+> actually available? That seems a bit nicer than having this return
+> -EOPNOTSUPP.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d00af3b97d8f..dee108470297 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7052,10 +7052,23 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- }
- #endif /* CONFIG_SMP */
- 
--static unsigned long wakeup_gran(struct sched_entity *se)
-+static unsigned long
-+wakeup_gran(struct sched_entity *curr, struct sched_entity *se)
- {
- 	unsigned long gran = sysctl_sched_wakeup_granularity;
- 
-+	if (sched_feat(SCALE_WAKEUP_GRAN)) {
-+		unsigned long delta_exec;
-+
-+		/*
-+		 * Increase the wakeup granularity if curr's runtime
-+		 * is less than the minimum preemption granularity.
-+		 */
-+		delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
-+		if (delta_exec < sysctl_sched_min_granularity)
-+			gran += sysctl_sched_min_granularity;
-+	}
-+
- 	/*
- 	 * Since its curr running now, convert the gran from real-time
- 	 * to virtual-time in his units.
-@@ -7094,7 +7107,7 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
- 	if (vdiff <= 0)
- 		return -1;
- 
--	gran = wakeup_gran(se);
-+	gran = wakeup_gran(curr, se);
- 	if (vdiff > gran)
- 		return 1;
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 7f8dace0964c..611591355ffd 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -95,3 +95,5 @@ SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(ALT_PERIOD, true)
- SCHED_FEAT(BASE_SLICE, true)
-+
-+SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
--- 
-2.31.1
+That should be a bigger change and we will need to re-test it all again.
+I don't have hardware for testing.
 
+I can delegate this patch to you. Otherwise I will prefer to stick with
+the current variant. Alternatively, you can make another change on top
+of this patch later on.
