@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77788436DE3
+	by mail.lfdr.de (Postfix) with ESMTP id EFAE2436DE4
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhJUXH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:07:26 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58064 "EHLO mga05.intel.com"
+        id S232426AbhJUXH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:07:28 -0400
+Received: from mga05.intel.com ([192.55.52.43]:58059 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232072AbhJUXHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:07:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="315380026"
+        id S232079AbhJUXHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:07:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="315380033"
 X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
-   d="scan'208";a="315380026"
+   d="scan'208";a="315380033"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 16:02:22 -0700
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 16:02:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
-   d="scan'208";a="445033278"
+   d="scan'208";a="445033295"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by orsmga006.jf.intel.com with ESMTP; 21 Oct 2021 16:02:22 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -26,9 +26,9 @@ To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, tglx@linutronix.de, dave.hansen@linux.intel.com,
         arjan@linux.intel.com, ravi.v.shankar@intel.com,
         chang.seok.bae@intel.com
-Subject: [PATCH 06/23] x86/arch_prctl: Add controls for dynamic XSTATE components
-Date:   Thu, 21 Oct 2021 15:55:10 -0700
-Message-Id: <20211021225527.10184-7-chang.seok.bae@intel.com>
+Subject: [PATCH 07/23] x86/fpu: Add basic helpers for dynamically enabled features
+Date:   Thu, 21 Oct 2021 15:55:11 -0700
+Message-Id: <20211021225527.10184-8-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211021225527.10184-1-chang.seok.bae@intel.com>
 References: <20211021225527.10184-1-chang.seok.bae@intel.com>
@@ -36,347 +36,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dynamically enabled XSTATE features are by default disabled for all
-processes. A process has to request permission to use such a feature.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-To support this implement a architecture specific prctl() with the options:
+To allow building up the infrastructure required to support dynamically
+enabled FPU features add:
 
-   - ARCH_GET_XCOMP_SUPP
+ - XFEATURES_MASK_DYNAMIC
 
-     Copies the supported feature bitmap into the user space provided
-     u64 storage. The pointer is handed in via arg2
+   This constant will hold xfeatures which can be dynamically enabled.
 
-   - ARCH_GET_XCOMP_PERM
+ - fpu_state_size_dynamic()
 
-     Copies the process wide permitted feature bitmap into the user space
-     provided u64 storage. The pointer is handed in via arg2
+   A static branch for 64-bit and a simple 'return false' for 32-bit.
 
-   - ARCH_REQ_XCOMP_PERM
+   This helper allows to add dynamic feature specific changes to common
+   code which is shared between 32-bit and 64-bit without #ifdeffery.
 
-     Request permission for a feature set. A feature set can be mapped to a
-     facility, e.g. AMX, and can require one or more XSTATE components to
-     be enabled.
-
-     The feature argument is the number of the highest XSTATE component
-     which is required for a facility to work.
-
-     The request argument is not a user supplied bitmap because that makes
-     filtering harder (think seccomp) and even impossible because to
-     support 32bit tasks the argument would have to be a pointer.
-
-The permission mechanism works this way:
-
-   Task asks for permission for a facility and kernel checks whether that's
-   supported. If supported it does:
-
-     1) Check whether permission has already been granted
-
-     2) Compute the size of the required kernel and user space buffer
-        (sigframe) size.
-
-     3) Validate that no task has a sigaltstack installed
-        which is smaller than the resulting sigframe size
-
-     4) Add the requested feature bit(s) to the permission bitmap of
-        current->group_leader->fpu and store the sizes in the group
-        leaders fpu struct as well.
-
-If that is successful then the feature is still not enabled for any of the
-tasks. The first usage of a related instruction will result in a #NM
-trap. The trap handler validates the permission bit of the tasks group
-leader and if permitted it installs a larger kernel buffer and transfers
-the permission and size info to the new fpstate container which makes all
-the FPU functions which require per task information aware of the extended
-feature set.
-
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-[ tglx: Adopted to new base code, added missing serialization,
-        massaged namings, comments and changelog ]
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 ---
 Changes from the tglx tree:
-* Remove the dynamic feature example in the changelog for clarity. The
-  bit-17 is not dynamic feature. (Dave Hansen)
+* Add the missing #ifdeffery. (Dave Hansen)
 ---
- arch/x86/include/asm/fpu/api.h    |   4 +
- arch/x86/include/asm/proto.h      |   2 +-
- arch/x86/include/uapi/asm/prctl.h |   4 +
- arch/x86/kernel/fpu/xstate.c      | 156 ++++++++++++++++++++++++++++++
- arch/x86/kernel/fpu/xstate.h      |   6 ++
- arch/x86/kernel/process.c         |   9 +-
- 6 files changed, 178 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/fpu/xstate.h | 14 ++++++++++++++
+ arch/x86/kernel/fpu/core.c        |  4 ++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 286a66ff0bd1..89762c28ad5a 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -151,4 +151,8 @@ static inline bool fpstate_is_confidential(struct fpu_guest *gfpu)
- 	return gfpu->fpstate->is_confidential;
- }
+diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+index 43ae89d4bcd2..023000e79348 100644
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -43,6 +43,9 @@
+ #define XFEATURE_MASK_USER_RESTORE	\
+ 	(XFEATURE_MASK_USER_SUPPORTED & ~XFEATURE_MASK_PKRU)
  
-+/* prctl */
-+struct task_struct;
-+extern long fpu_xstate_prctl(struct task_struct *tsk, int option, unsigned long arg2);
++/* Features which are dynamically enabled for a process on request */
++#define XFEATURE_MASK_USER_DYNAMIC	0ULL
 +
- #endif /* _ASM_X86_FPU_API_H */
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 8c5d1910a848..feed36d44d04 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -40,6 +40,6 @@ void x86_report_nx(void);
- extern int reboot_force;
+ /* All currently supported supervisor features */
+ #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID)
  
- long do_arch_prctl_common(struct task_struct *task, int option,
--			  unsigned long cpuid_enabled);
-+			  unsigned long arg2);
- 
- #endif /* _ASM_X86_PROTO_H */
-diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
-index 5a6aac9fa41f..754a07856817 100644
---- a/arch/x86/include/uapi/asm/prctl.h
-+++ b/arch/x86/include/uapi/asm/prctl.h
-@@ -10,6 +10,10 @@
- #define ARCH_GET_CPUID		0x1011
- #define ARCH_SET_CPUID		0x1012
- 
-+#define ARCH_GET_XCOMP_SUPP	0x1021
-+#define ARCH_GET_XCOMP_PERM	0x1022
-+#define ARCH_REQ_XCOMP_PERM	0x1023
-+
- #define ARCH_MAP_VDSO_X32	0x2001
- #define ARCH_MAP_VDSO_32	0x2002
- #define ARCH_MAP_VDSO_64	0x2003
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 310c4201e056..c79ca3d430c4 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -8,6 +8,7 @@
- #include <linux/compat.h>
- #include <linux/cpu.h>
- #include <linux/mman.h>
-+#include <linux/nospec.h>
- #include <linux/pkeys.h>
- #include <linux/seq_file.h>
- #include <linux/proc_fs.h>
-@@ -18,6 +19,8 @@
- #include <asm/fpu/xcr.h>
- 
- #include <asm/tlbflush.h>
-+#include <asm/prctl.h>
-+#include <asm/elf.h>
- 
- #include "internal.h"
- #include "legacy.h"
-@@ -1298,6 +1301,159 @@ void fpstate_clear_xstate_component(struct fpstate *fps, unsigned int xfeature)
- EXPORT_SYMBOL_GPL(fpstate_clear_xstate_component);
- #endif
+@@ -96,4 +99,15 @@ int xfeature_size(int xfeature_nr);
+ void xsaves(struct xregs_state *xsave, u64 mask);
+ void xrstors(struct xregs_state *xsave, u64 mask);
  
 +#ifdef CONFIG_X86_64
-+static int validate_sigaltstack(unsigned int usize)
++DECLARE_STATIC_KEY_FALSE(__fpu_state_size_dynamic);
++#endif
++
++static __always_inline __pure bool fpu_state_size_dynamic(void)
 +{
-+	struct task_struct *thread, *leader = current->group_leader;
-+	unsigned long framesize = get_sigframe_size();
-+
-+	lockdep_assert_held(&current->sighand->siglock);
-+
-+	/* get_sigframe_size() is based on fpu_user_cfg.max_size */
-+	framesize -= fpu_user_cfg.max_size;
-+	framesize += usize;
-+	for_each_thread(leader, thread) {
-+		if (thread->sas_ss_size && thread->sas_ss_size < framesize)
-+			return -ENOSPC;
-+	}
-+	return 0;
++	if (IS_ENABLED(CONFIG_X86_64))
++		return static_branch_unlikely(&__fpu_state_size_dynamic);
++	return false;
 +}
 +
-+static int __xstate_request_perm(u64 permitted, u64 requested)
-+{
-+	/*
-+	 * This deliberately does not exclude !XSAVES as we still might
-+	 * decide to optionally context switch XCR0 or talk the silicon
-+	 * vendors into extending XFD for the pre AMX states.
-+	 */
-+	bool compacted = cpu_feature_enabled(X86_FEATURE_XSAVES);
-+	struct fpu *fpu = &current->group_leader->thread.fpu;
-+	unsigned int ksize, usize;
-+	u64 mask;
-+	int ret;
-+
-+	/* Check whether fully enabled */
-+	if ((permitted & requested) == requested)
-+		return 0;
-+
-+	/* Calculate the resulting kernel state size */
-+	mask = permitted | requested;
-+	ksize = xstate_calculate_size(mask, compacted);
-+
-+	/* Calculate the resulting user state size */
-+	mask &= XFEATURE_MASK_USER_SUPPORTED;
-+	usize = xstate_calculate_size(mask, false);
-+
-+	ret = validate_sigaltstack(usize);
-+	if (ret)
-+		return ret;
-+
-+	/* Pairs with the READ_ONCE() in xstate_get_group_perm() */
-+	WRITE_ONCE(fpu->perm.__state_perm, requested);
-+	/* Protected by sighand lock */
-+	fpu->perm.__state_size = ksize;
-+	fpu->perm.__user_state_size = usize;
-+	return ret;
-+}
-+
-+/*
-+ * Permissions array to map facilities with more than one component
-+ */
-+static const u64 xstate_prctl_req[XFEATURE_MAX] = {
-+	/* [XFEATURE_XTILE_DATA] = XFEATURE_MASK_XTILE, */
-+};
-+
-+static int xstate_request_perm(unsigned long idx)
-+{
-+	u64 permitted, requested;
-+	int ret;
-+
-+	if (idx >= XFEATURE_MAX)
-+		return -EINVAL;
-+
-+	/*
-+	 * Look up the facility mask which can require more than
-+	 * one xstate component.
-+	 */
-+	idx = array_index_nospec(idx, ARRAY_SIZE(xstate_prctl_req));
-+	requested = xstate_prctl_req[idx];
-+	if (!requested)
-+		return -ENOTSUPP;
-+
-+	if ((fpu_user_cfg.max_features & requested) != requested)
-+		return -ENOTSUPP;
-+
-+	/* Lockless quick check */
-+	permitted = xstate_get_host_group_perm();
-+	if ((permitted & requested) == requested)
-+		return 0;
-+
-+	/* Protect against concurrent modifications */
-+	spin_lock_irq(&current->sighand->siglock);
-+	permitted = xstate_get_host_group_perm();
-+	ret = __xstate_request_perm(permitted, requested);
-+	spin_unlock_irq(&current->sighand->siglock);
-+	return ret;
-+}
-+#else /* CONFIG_X86_64 */
-+static inline int xstate_request_perm(u64 permitted, u64 requested)
-+{
-+	return -EPERM;
-+}
-+#endif  /* !CONFIG_X86_64 */
-+
-+/**
-+ * fpu_xstate_prctl - xstate permission operations
-+ * @tsk:	Redundant pointer to current
-+ * @option:	A subfunction of arch_prctl()
-+ * @arg2:	option argument
-+ * Return:	0 if successful; otherwise, an error code
-+ *
-+ * Option arguments:
-+ *
-+ * ARCH_GET_XCOMP_SUPP: Pointer to user space u64 to store the info
-+ * ARCH_GET_XCOMP_PERM: Pointer to user space u64 to store the info
-+ * ARCH_REQ_XCOMP_PERM: Facility number requested
-+ *
-+ * For facilities which require more than one XSTATE component, the request
-+ * must be the highest state component number related to that facility,
-+ * e.g. for AMX which requires XFEATURE_XTILE_CFG(17) and
-+ * XFEATURE_XTILE_DATA(18) this would be XFEATURE_XTILE_DATA(18).
-+ */
-+long fpu_xstate_prctl(struct task_struct *tsk, int option, unsigned long arg2)
-+{
-+	u64 __user *uptr = (u64 __user *)arg2;
-+	u64 permitted, supported;
-+	unsigned long idx = arg2;
-+
-+	if (tsk != current)
-+		return -EPERM;
-+
-+	switch (option) {
-+	case ARCH_GET_XCOMP_SUPP:
-+		supported = fpu_user_cfg.max_features |	fpu_user_cfg.legacy_features;
-+		return put_user(supported, uptr);
-+
-+	case ARCH_GET_XCOMP_PERM:
-+		/*
-+		 * Lockless snapshot as it can also change right after the
-+		 * dropping the lock.
-+		 */
-+		permitted = xstate_get_host_group_perm();
-+		permitted &= XFEATURE_MASK_USER_SUPPORTED;
-+		return put_user(permitted, uptr);
-+
-+	case ARCH_REQ_XCOMP_PERM:
-+		if (!IS_ENABLED(CONFIG_X86_64))
-+			return -ENOTSUPP;
-+
-+		return xstate_request_perm(idx);
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
- /*
-  * Report the amount of time elapsed in millisecond since last AVX512
-diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
-index a1aa0bad2c9c..4ce1dc030f38 100644
---- a/arch/x86/kernel/fpu/xstate.h
-+++ b/arch/x86/kernel/fpu/xstate.h
-@@ -15,6 +15,12 @@ static inline void xstate_init_xcomp_bv(struct xregs_state *xsave, u64 mask)
- 		xsave->header.xcomp_bv = mask | XCOMP_BV_COMPACTED_FORMAT;
- }
+ #endif
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index eb911c843386..ff7d239fe961 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -25,6 +25,10 @@
+ #define CREATE_TRACE_POINTS
+ #include <asm/trace/fpu.h>
  
-+static inline u64 xstate_get_host_group_perm(void)
-+{
-+	/* Pairs with WRITE_ONCE() in xstate_request_perm() */
-+	return READ_ONCE(current->group_leader->thread.fpu.perm.__state_perm);
-+}
++#ifdef CONFIG_X86_64
++DEFINE_STATIC_KEY_FALSE(__fpu_state_size_dynamic);
++#endif
 +
- enum xstate_copy_mode {
- 	XSTATE_COPY_FP,
- 	XSTATE_COPY_FX,
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index c74c7e889e9d..97fea1649a5e 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -30,6 +30,7 @@
- #include <asm/apic.h>
- #include <linux/uaccess.h>
- #include <asm/mwait.h>
-+#include <asm/fpu/api.h>
- #include <asm/fpu/sched.h>
- #include <asm/debugreg.h>
- #include <asm/nmi.h>
-@@ -1003,13 +1004,17 @@ unsigned long get_wchan(struct task_struct *p)
- }
- 
- long do_arch_prctl_common(struct task_struct *task, int option,
--			  unsigned long cpuid_enabled)
-+			  unsigned long arg2)
- {
- 	switch (option) {
- 	case ARCH_GET_CPUID:
- 		return get_cpuid_mode();
- 	case ARCH_SET_CPUID:
--		return set_cpuid_mode(task, cpuid_enabled);
-+		return set_cpuid_mode(task, arg2);
-+	case ARCH_GET_XCOMP_SUPP:
-+	case ARCH_GET_XCOMP_PERM:
-+	case ARCH_REQ_XCOMP_PERM:
-+		return fpu_xstate_prctl(task, option, arg2);
- 	}
- 
- 	return -EINVAL;
+ /* The FPU state configuration data for kernel and user space */
+ struct fpu_state_config	fpu_kernel_cfg __ro_after_init;
+ struct fpu_state_config fpu_user_cfg __ro_after_init;
 -- 
 2.17.1
 
