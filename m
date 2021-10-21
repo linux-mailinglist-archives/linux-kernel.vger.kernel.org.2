@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8ED4366A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD434366C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhJUPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:45:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231756AbhJUPpm (ORCPT
+        id S231835AbhJUPwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231687AbhJUPwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:45:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634831006;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wrRcdVxpJS7I9scrv7ojtxkuOUqX9VRgc3hJ9YIuX40=;
-        b=fvlBwZ4xNPbg/x3NgJfdRBchdNC7u0oHzVEjZM18YbTAluLQ1JP18KUTFjUAOqyYB0UcpC
-        kohDMK6yoTPABgA8tKQ8QsTPrh7oL9MG3ldRBbBoSyN4qhJS58o5cuQ8X3L5rIRyn9dr8B
-        ZwLmCi3vZFZP7oK0HFRtqrmYJb6We+w=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-4W4tVg3IOxWE0GFhSvN8Uw-1; Thu, 21 Oct 2021 11:43:25 -0400
-X-MC-Unique: 4W4tVg3IOxWE0GFhSvN8Uw-1
-Received: by mail-ed1-f71.google.com with SMTP id f4-20020a50e084000000b003db585bc274so748715edl.17
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:43:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wrRcdVxpJS7I9scrv7ojtxkuOUqX9VRgc3hJ9YIuX40=;
-        b=WEFDE4K3Y+qbAtoWAFgfSLE0frFnsrpUvywEA30kSpsgWSf8t8weqf0hSIuZNhKhz7
-         l4ybidw6gHJ2Fx2kUqxsCCn6nxwjrpBEtmpGfkfXV1UfUgNvKSBV1xJiV1Wdfdfv1LiR
-         xPo7NkVj+ZubjX3C05ax9/ZGdQWCnDYYOlzppeGoqkhxfHbgNtWffkRP2eJuiBWbizK+
-         4HSDtnGQNQib8Nub/SUEnnJ0UN1+l7DM/yW5SB2hj6YFwfNlDgVoBvkXVaxzybm6toFY
-         KWAwnEwo4POkV5lLCeJP+KQgzaJ6W6kelA1Ys8zymH2TDSiEe6wWwUuRqSH7fkz6LvLP
-         k6Aw==
-X-Gm-Message-State: AOAM531L3Qzc8GrlEV7q3YqBP5ZCAXjIARME6Hbz5Q6+n7X6pxsrI3rp
-        1UnDazsU6B/yUGGN7e0SgVyfl4oQQVCngpuOBoTla4eekWFWAPMZmuILf+2mAXYBxUqicU0tucQ
-        P1+dBaQRojxnGtNclh3WTqKuN
-X-Received: by 2002:a50:e14c:: with SMTP id i12mr8504878edl.125.1634831003864;
-        Thu, 21 Oct 2021 08:43:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDPWN/en5wVhnU7VDIOTI9urEVpR9kawe7unnx2IoWCOSX4QAfTGwzdlyzb3yZgI4S+oNiQw==
-X-Received: by 2002:a50:e14c:: with SMTP id i12mr8504826edl.125.1634831003495;
-        Thu, 21 Oct 2021 08:43:23 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id x22sm3063222edv.14.2021.10.21.08.43.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 08:43:22 -0700 (PDT)
-Message-ID: <850e87f4-ad0b-59d7-6e31-b3965b6b6492@redhat.com>
-Date:   Thu, 21 Oct 2021 17:43:06 +0200
+        Thu, 21 Oct 2021 11:52:41 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80E12C061764;
+        Thu, 21 Oct 2021 08:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=5agHmgvPXIK4c+R4qVXquLol+JiWe/ZLqv
+        XqU2yB9eo=; b=Lsg37fOWLKPo/JHHShakcO/ZbqaMWI5Km3DNLRP2r7S0AyaJJZ
+        +m9knEblBQj+KXMGem4N0UjCUsx7yqcQsPNibXFd3R2t2HaAr4TPPLp7FYhCCttJ
+        nYFLYl7QY9nDbRrjmDQvZPyuOpovdTB7NIZdzBfWtfZvsZoOnr2UHn/dE=
+Received: from xhacker (unknown [101.86.20.138])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3r4ujHFh6X1cAA--.8955S2;
+        Thu, 21 Oct 2021 23:50:07 +0800 (CST)
+Date:   Thu, 21 Oct 2021 23:43:16 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] riscv: consolidate __ex_table construction
+Message-ID: <20211021234316.75a19359@xhacker>
+In-Reply-To: <bd3419a3-b858-1a4d-a081-d09bbc56eaa7@huawei.com>
+References: <20211020220529.54ccf4e9@xhacker>
+        <20211020220610.25443e4c@xhacker>
+        <bd3419a3-b858-1a4d-a081-d09bbc56eaa7@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC 06/16] KVM: selftests: add library for creating/interacting
- with SEV guests
-Content-Language: en-US
-To:     Michael Roth <michael.roth@amd.com>, Marc Orr <marcorr@google.com>
-Cc:     linux-kselftest@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        Nathan Tempelman <natet@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-References: <20211005234459.430873-1-michael.roth@amd.com>
- <20211006203710.13326-1-michael.roth@amd.com>
- <CAA03e5EmnbpKOwfNJUV7fog-7UpJJNpu7mQYmCODpk=tYfXxig@mail.gmail.com>
- <20211012011537.q7dwebcistxddyyj@amd.com>
- <20211012125536.qpewvk6cou3mxya7@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211012125536.qpewvk6cou3mxya7@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDX3r4ujHFh6X1cAA--.8955S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1fGr48Kw1UCryDKr13XFb_yoW5GFyfpF
+        sIkwnakFZ8CryxG3ZrKFnF9F1Utw45GwnxKr95W340yr4jyF10kF1kK34kua4kJayrZFyx
+        KryF9wn8ur47ZwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkqb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8rcTPUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/21 14:55, Michael Roth wrote:
-> One more I should mention:
+On Thu, 21 Oct 2021 19:38:41 +0800
+Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+
+> On 2021/10/20 22:06, Jisheng Zhang wrote:
+> > From: Jisheng Zhang <jszhang@kernel.org>
+> > 
+> > Consolidate all the __ex_table constuction code with a _ASM_EXTABLE
+> > helper.
+> > 
+> > There should be no functional change as a result of this patch.
+> > 
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > ---
+> >   arch/riscv/include/asm/futex.h   | 12 +++-------
+> >   arch/riscv/include/asm/uaccess.h | 40 +++++++++++---------------------
+> >   2 files changed, 17 insertions(+), 35 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/futex.h b/arch/riscv/include/asm/futex.h
+> > index 1b00badb9f87..3191574e135c 100644
+> > --- a/arch/riscv/include/asm/futex.h
+> > +++ b/arch/riscv/include/asm/futex.h
+> > @@ -30,10 +30,7 @@
+> >   	"3:	li %[r],%[e]				\n"	\
+> >   	"	jump 2b,%[t]				\n"	\
+> >   	"	.previous				\n"	\
+> > -	"	.section __ex_table,\"a\"		\n"	\
+> > -	"	.balign " RISCV_SZPTR "			\n"	\
+> > -	"	" RISCV_PTR " 1b, 3b			\n"	\
+> > -	"	.previous				\n"	\
+> > +		_ASM_EXTABLE(1b, 3b)				\
+> >   	: [r] "+r" (ret), [ov] "=&r" (oldval),			\
+> >   	  [u] "+m" (*uaddr), [t] "=&r" (tmp)			\
+> >   	: [op] "Jr" (oparg), [e] "i" (-EFAULT)			\
+> > @@ -103,11 +100,8 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+> >   	"4:	li %[r],%[e]				\n"
+> >   	"	jump 3b,%[t]				\n"
+> >   	"	.previous				\n"
+> > -	"	.section __ex_table,\"a\"		\n"
+> > -	"	.balign " RISCV_SZPTR "			\n"
+> > -	"	" RISCV_PTR " 1b, 4b			\n"
+> > -	"	" RISCV_PTR " 2b, 4b			\n"
+> > -	"	.previous				\n"
+> > +		_ASM_EXTABLE(1b, 4b)			\
+> > +		_ASM_EXTABLE(2b, 4b)			\
+> >   	: [r] "+r" (ret), [v] "=&r" (val), [u] "+m" (*uaddr), [t] "=&r" (tmp)
+> >   	: [ov] "Jr" (oldval), [nv] "Jr" (newval), [e] "i" (-EFAULT)
+> >   	: "memory");
+> > diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+> > index f314ff44c48d..35802e72ace8 100644
+> > --- a/arch/riscv/include/asm/uaccess.h
+> > +++ b/arch/riscv/include/asm/uaccess.h
+> > @@ -10,6 +10,12 @@
+> >   
+> >   #include <asm/pgtable.h>		/* for TASK_SIZE */
+> >   
+> > +#define _ASM_EXTABLE(from, to)						\
+> > +	"	.pushsection	__ex_table, \"a\"\n"			\
+> > +	"	.balign "	RISCV_SZPTR "	 \n"			\
+> > +	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
+> > +	"	.popsection\n"
+> > +  
 > 
-> 4) After encryption, the page table is no longer usable for translations by
->     stuff like addr_gva2gpa(), so tests would either need to be
->     audited/updated to do these translations upfront and only rely on
->     cached/stored values thereafter, or perhaps a "shadow" copy could be
->     maintained by kvm_util so the translations will continue to work
->     after encryption.
+> The jump_label mechanism could use this macro too,
+> see arch/riscv/include/asm/jump_label.h, maybe move the above into asm.h
+> and also do some replace in next patch ?
 
-Yeah, this is a big one.  Considering that a lot of the selftests are 
-for specific bugs, the benefit in running them with SEV is relatively 
-low.  That said, there could be some simple tests where it makes sense, 
-so it'd be nice to plan a little ahead so that it isn't _too_ difficult.
+jump_label entry is a bit different with ex_table: two relative offsets and
+a key which should be "long" type.
 
-Paolo
+> 
+> Question: the jump label use relative address, but why not trigger the 
+> Section mismatch issue?
+
+FWICT, modpost doesn't check __jump_table section
+
 
