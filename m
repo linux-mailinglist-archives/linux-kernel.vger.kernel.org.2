@@ -2,126 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261FC436BA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A649436BA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhJUT7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUT7H (ORCPT
+        id S231909AbhJUT7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:59:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230020AbhJUT7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:59:07 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A207C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:56:50 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id q16so1317220ljg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XyhoHE7sxv5I2EpYeVeJH0GIKfhcQY389jVe4IVPrso=;
-        b=fajWtGHos8khUlCJgvpdSRJD5xpYLZ79Lr2JBHTNmtUKS3cX8ZlnEwgx+1S9+b91Jx
-         xIAREn1mxSFn3lWZ8eC1aaNnhKsBHvyNNoQ+ZiUYwMiFj7eI7DtbGZLrFQ02vjk/za3F
-         n5tzxDxUgWk3TS0NL82gfmIRApn3g95CzMW5kDKCbySKWOQVGOt9dhMfgoFxouk8s7BQ
-         qkozvuudgympgQiVJIv24nCREM9G4TUwGTPzhIHPk+OC0PFpvTzF1opal3pOXlKjd6dN
-         odykl9GddCEXRQKtJkeeWO6tu8RB2ORt7/STAWx3OSx7MEjRK8DsroWwXJT31GCjIQTN
-         zE5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XyhoHE7sxv5I2EpYeVeJH0GIKfhcQY389jVe4IVPrso=;
-        b=2ti+LcXSGnRTWEws7FWzDE6Y5QL9U8oF9T3gm9u404H1HE9VHppmHpHzz8muXtAo8i
-         9UUblobtHRGNN5FZRwMh6DPTij8Isfx+onWDI1s0gASoMUyZFQnNWRt69fTEW2RsMcV0
-         vZssAfODsjNW9IQy8X2wcDFilVIpND6YTIJz7yW+QZ4+rc18Qkm68GrPZ0w1NkDiCFtk
-         0omFjha5fF2Qz3rcD4swPZ9gCEnh7JCjnpsIFBFVIUrozEVgPPCki7C0g4IrXhUPsRUw
-         gCYgHUgGvKusHNnmn3cONSw916X44oS4qWhU2l8t1CmcPd87ZrQZfRV3TAYX0DhrekCK
-         2qJw==
-X-Gm-Message-State: AOAM532C/iPDpS4f4nJicRPRhZ+kub7KRy6mKJIlrSjYLdu1//jbTFTV
-        XbMeR7XCCS5XMe/oqukF+w7ZXWFawz7/FdayVgGeeQ==
-X-Google-Smtp-Source: ABdhPJzxCO5iobX3X9/3J7SUpG7HeCrofcWJedaNNyaZgtw9IetFPn5k5xibQ+0WN4id9doUujHVDLoo8VDf2eyts8Q=
-X-Received: by 2002:a2e:874d:: with SMTP id q13mr8133479ljj.16.1634846208850;
- Thu, 21 Oct 2021 12:56:48 -0700 (PDT)
+        Thu, 21 Oct 2021 15:59:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634846248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dxGaxjMR4kumyiXpYeJ2CbIw2HnzcdghR3vKPB/jYmw=;
+        b=UGZ5dr+iCMRuBPoRSGRgwWLQg6gYWblpzULe2VckMtMzXEpcItAgvrW9VToiyVAI59eXP6
+        Z7ZzIeMur8mAWSqBhblZ2dbEohBgzuFbe7Q0tLoQkV2W5nmZdOp8c9S1jyYdtiZs4/jzDB
+        4mR41F5GX0Z5WxB5sljgXJjr7SRYrHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-J5lU4CVOOA-xODeFmepg_w-1; Thu, 21 Oct 2021 15:57:23 -0400
+X-MC-Unique: J5lU4CVOOA-xODeFmepg_w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 922C31006AA2;
+        Thu, 21 Oct 2021 19:57:20 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 109615BAE3;
+        Thu, 21 Oct 2021 19:57:14 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 94BD8416C8AE; Thu, 21 Oct 2021 16:57:09 -0300 (-03)
+Date:   Thu, 21 Oct 2021 16:57:09 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync()
+ vs NOHZ_FULL
+Message-ID: <20211021195709.GA22422@fuller.cnet>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.186930629@infradead.org>
+ <20211021183935.GA9071@fuller.cnet>
+ <20211021192543.GV174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
- <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
- <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
- <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
- <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
- <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com>
- <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
- <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com> <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Oct 2021 21:56:12 +0200
-Message-ID: <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021192543.GV174703@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 21:02, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Oct 21, 2021 at 8:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > >
-> > > On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> [cut]
->
-> > > So in theory you could check the pm_runtime_put_sync_suspend() return
-> > > value and fall back to something like WFI if that's an error code.
-> >
-> > I have already tried that, but it simply got too complicated. The main
-> > issue was that runtime PM could become disabled for the device in the
-> > middle of executing the ->enter() callback.
->
-> So IIUC the problem is that you cannot resume after suspending in that case.
->
-> IOW, you need to guarantee that if the suspend is successful, the
-> resume also will take place, but if the suspend fails, you basically
-> don't care.
+On Thu, Oct 21, 2021 at 09:25:43PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 21, 2021 at 03:39:35PM -0300, Marcelo Tosatti wrote:
+> > Peter,
+> > 
+> > static __always_inline void arch_exit_to_user_mode(void)
+> > {
+> >         mds_user_clear_cpu_buffers();
+> > }
+> > 
+> > /**
+> >  * mds_user_clear_cpu_buffers - Mitigation for MDS and TAA vulnerability
+> >  *
+> >  * Clear CPU buffers if the corresponding static key is enabled
+> >  */
+> > static __always_inline void mds_user_clear_cpu_buffers(void)
+> > {
+> >         if (static_branch_likely(&mds_user_clear))
+> >                 mds_clear_cpu_buffers();
+> > }
+> > 
+> > We were discussing how to perform objtool style validation 
+> > that no code after the check for 
+> 
+> I'm not sure what the point of the above is... Were you trying to ask
+> for validation that nothing runs after the mds_user_clear_cpu_buffer()?
+> 
+> That isn't strictly true today, there's lockdep code after it. I can't
+> recall why that order is as it is though.
+> 
+> Pretty much everything in noinstr is magical, we just have to think
+> harder there (and possibly start writing more comments there).
 
-Exactly.
+mds_user_clear_cpu_buffers happens after sync_core, in your patchset, 
+if i am not mistaken.
 
->
-> > For example, if pm_runtime_get_sync() fails, I still need to make sure
-> > the reference counting in genpd becomes correct - and I can't do that
-> > using dev_pm_genpd_resume(). That's because it's not designed to be
-> > called in this "unknown" suspend phase, but should be called after the
-> > noirq phase and be properly balanced with dev_pm_genpd_suspend().
-> >
-> > In other words, the error path didn't work out for me.
->
-> It should be sufficient to call wake_up_all_idle_cpus() in the suspend
-> path before dpm_suspend_late(), because system suspend acquires a
-> PM-runtime reference on every device.  IOW, it won't let any devices
-> runtime-suspend, so if your power domain devices are resumed in that
-> path, they will never suspend again in it and the
-> pm_runtime_put_sync_suspend() in __psci_enter_domain_idle_state()
-> becomes a reference counter management call which works regardless of
-> whether or not PM runtime is disabled.
+> > > +             /* NMI happens here and must still do/finish CT_WORK_n */
+> > > +             sync_core();
+> > 
+> > But after the discussion with you, it seems doing the TLB checking 
+> > and (also sync_core) checking very late/very early on exit/entry 
+> > makes things easier to review.
+> 
+> I don't know about late, it must happen *very* early in entry. The
+> sync_core() must happen before any self-modifying code gets called
+> (static_branch, static_call, etc..) with possible exception of the
+> context_tracking static_branch.
+> 
+> The TLBi must also happen super early, possibly while still on the
+> entry stack (since the task stack is vmap'ed).
 
-That sounds like a great idea, this should work too! Then the question
-is, how to make that call to wake_up_all_idle_cpus() to become
-optional - or only invoked for the cpuidle drivers that need it.
+But will it be ever be freed/remapped from other CPUs while the task
+is running?
 
-In any case, I will try this out, thanks for the suggestion!
+> We currently don't run C
+> code on the entry stack, that needs quite a bit of careful work to make
+> happen.
 
-Kind regards
-Uffe
+Was thinking of coding in ASM after (as early as possible) the write to 
+switch to kernel CR3:
+
+ Kernel entry:
+ -------------
+
+       cpu = smp_processor_id();
+
+       if (isolation_enabled(cpu)) {
+               reqs = atomic_xchg(&percpudata->user_kernel_state, IN_KERNEL_MODE);
+               if (reqs & CPU_REQ_FLUSH_TLB)
+			flush_tlb_all();
+               if (reqs & CPU_REQ_SYNC_CORE)
+			sync_core();
+       }                           
+
+Exit to userspace (as close to write to CR3 with user pagetable
+pointer):
+ -----------------
+
+       cpu = smp_processor_id();
+
+       if (isolation_enabled(cpu)) {
+               atomic_or(IN_USER_MODE, &percpudata->user_kernel_state);
+       }
+
+You think that is a bad idea (in ASM, not C) ? 
+And request side can be in C:
+
+ Request side:
+ -------------
+
+       int targetcpu;
+
+       do {
+               struct percpudata *pcpudata = per_cpu(&percpudata, targetcpu);
+
+               old_state = pcpudata->user_kernel_state;
+
+               /* in kernel mode ? */
+               if (!(old_state & IN_USER_MODE)) {
+                       smp_call_function_single(request_fn, targetcpu, 1);
+                       break;
+               }                                                                                                                         
+               new_state = remote_state | CPU_REQ_FLUSH_TLB; // (or CPU_REQ_INV_ICACHE)
+       } while (atomic_cmpxchg(&pcpudata->user_kernel_state, old_state, new_state) != old_state);   
+
+(need logic to protect from atomic_cmpxchg always failing, but shouldnt
+be difficult).
+
+> > Can then use a single atomic variable with USER/KERNEL state and cmpxchg
+> > loops.
+> 
+> We're not going to add an atomic to context tracking. There is one, we
+> just got to extract/share it with RCU.
+
+Again, to avoid kernel TLB flushes you'd have to ensure:
+
+kernel entry:
+	instrA addr1,addr2,addr3
+	instrB addr2,addr3,addr4  <--- that no address here has TLBs
+				       modified and flushed
+	instrC addr5,addr6,addr7
+        reqs = atomic_xchg(&percpudata->user_kernel_state, IN_KERNEL_MODE);
+        if (reqs & CPU_REQ_FLUSH_TLB)
+        	flush_tlb_all();
+
+kernel exit:
+
+        atomic_or(IN_USER_MODE, &percpudata->user_kernel_state);
+	instrA addr1,addr2,addr3
+	instrB addr2,addr3,addr4  <--- that no address here has TLBs
+				       modified and flushed
+
+This could be conditional on "task isolated mode" enabled (would be 
+better if it didnt, though).
+
+			
+
