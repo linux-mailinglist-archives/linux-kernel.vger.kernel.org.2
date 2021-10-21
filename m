@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17D6436888
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6967343688C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhJURCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:02:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230453AbhJURCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:02:02 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF69C61505;
-        Thu, 21 Oct 2021 16:59:44 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 12:59:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 6/9] arm64: Recover kretprobe modified return address
- in stacktrace
-Message-ID: <20211021125943.11c10133@gandalf.local.home>
-In-Reply-To: <20211021165241.GB16889@willie-the-truck>
-References: <163477765570.264901.3851692300287671122.stgit@devnote2>
-        <163477770935.264901.1772964361191833681.stgit@devnote2>
-        <20211021101512.GA16485@willie-the-truck>
-        <20211021232630.94bea4540670cdab5a7a63c5@kernel.org>
-        <20211021104902.2600dd0a@gandalf.local.home>
-        <20211021165241.GB16889@willie-the-truck>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232025AbhJURCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231781AbhJURCw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:02:52 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716FBC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:00:36 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id g184so876543pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:00:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5RyUrXEQJgkpkS3LgGmg7QZzk/Xp6vh/AxqTCLe3xyo=;
+        b=KrRrga5C/YO2dLe0TvqzGlGSYEQLjNmER7uhbG0b9kkxrtdRmWn1Nr9EZRKoCnCX6I
+         t4NUngrX6gaK3GG/PDiRpl8xDbd2VtNkJLVHb7tdhwFJ+uypWCHF38OcH5/A2L2fMC6I
+         vu+ScOMVCSX4SUjMU26XP9cvq+DRQoarq3J98=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5RyUrXEQJgkpkS3LgGmg7QZzk/Xp6vh/AxqTCLe3xyo=;
+        b=kpVJ3s1NA5ErHlo97n3iQPIdyJVRLNIVEixO9Uwl36fIXJLdpp4HOV22A1yEQ/3Oop
+         GRXn9IPrFJ8cyA14crnAbKgZ9+BfCKlOkciQ0dFlBZ1EyBhSzhTJROLVYjtXVZcXQLdv
+         c0lgfuLO6vuGJ9WcMq2gGUnIxn/1cbzgw6QfjkaaS5qYlFm0qmmgGXdR8bTamm6aFCJm
+         Wxk31TMqSFfV27GRxKkaBqyDddjW3kH76DKwZ/Lhjs4KfsprupY7q5mDMZxY/JBn4bR/
+         KZWm0AgT+nTnezcqUDUUvvS/dvhEwv2PeDWIIA+He/8uJlPrBAwxaGJNoFBulgT9yAVw
+         24/g==
+X-Gm-Message-State: AOAM532ug1kb91z7xvSbd3R/HHdgcHcor3bG55VVtlNjOd1n0pKVASeP
+        yONW7J2OFQ2yx0RASoeywlBLpqwNJY6CNw==
+X-Google-Smtp-Source: ABdhPJyp07wPRl6ojFhBTknpEQr+udO/xRkU+FJi/ud9R/y5lOsFr0ekXZoY1cF/hAYFZ5chiWTJxg==
+X-Received: by 2002:a62:7a8b:0:b0:44d:47e2:99bf with SMTP id v133-20020a627a8b000000b0044d47e299bfmr6821186pfc.64.1634835635924;
+        Thu, 21 Oct 2021 10:00:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c12sm6843823pfc.161.2021.10.21.10.00.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 10:00:35 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 10:00:34 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][net-next] netfilter: ebtables: use array_size() helper
+ in copy_{from,to}_user()
+Message-ID: <202110210958.6626A30@keescook>
+References: <20210928200647.GA266402@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928200647.GA266402@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 17:52:42 +0100
-Will Deacon <will@kernel.org> wrote:
-
-
-> > I'm OK with merging this.  
+On Tue, Sep 28, 2021 at 03:06:47PM -0500, Gustavo A. R. Silva wrote:
+> Use array_size() helper instead of the open-coded version in
+> copy_{from,to}_user().  These sorts of multiplication factors
+> need to be wrapped in array_size().
 > 
-> Ok, cool. I've acked the arm64 bits so I'll leave it in your hands!
+> Link: https://github.com/KSPP/linux/issues/160
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Thanks! I'll pull them in.
+Thanks!
 
-> 
-> > > (Or, wait for merging the current tracing tree and merge rest of them.
-> > >  but this will take a long time.)  
-> > 
-> > And my linux-next is behind because my tests triggered a bug on one of my
-> > arcane configs, and I'm still debugging it. :-p  
-> 
-> Happy debugging :)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Found the bug. I'll restart my tests (takes around 13 hours more or less to
-complete) and when/if they succeed, I'll push it for inclusion in
-linux-next.
+I see that this is marked "Awaiting Upstream" (for an ebtables
+maintainer ack?)
+https://patchwork.kernel.org/project/netdevbpf/patch/20210928200647.GA266402@embeddedor/
 
--- Steve
-
+-- 
+Kees Cook
