@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3BE436AD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE07E436AD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhJUSrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S232203AbhJUSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhJUSrj (ORCPT
+        with ESMTP id S231216AbhJUSsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:47:39 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9580C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:45:22 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id o11so862227ljg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:45:22 -0700 (PDT)
+        Thu, 21 Oct 2021 14:48:30 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B597C061764;
+        Thu, 21 Oct 2021 11:46:14 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id s136so1128447pgs.4;
+        Thu, 21 Oct 2021 11:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=9MuLW1yfrGnnXorHHuXQXcRAluIurMXU5vrmf/nqkGE=;
-        b=FITLZmM/2oE6KZ12z4Oo85YoKei0F42uWLMnZ7ontaKS8PHbrY0Qfaugi2465wnXNJ
-         1fFUxxF/tZhW4Jpy10fPp/i8kRij5Z3QLe/WsNl6HLtGtkS1hF7li4+I6pV6tN9PY62O
-         zmWUJ18OgEvHA+oSZ3HmZPt7a8MHp05RfAqfo=
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=f+vLzPhKqYW+u2TyM1CJYz0VqLaKVG+1YIt+vOSwseY=;
+        b=kupY+tcTa5oHBGDy+CeW5aRpSIWBWUZp0w9u+DTQqpLREit91lPulHzuAtsn1Qo7Tz
+         S29w7f+Kji3yfzl9mVAbw4augIyLXjf1lZRA0VXR5BtmYHGQPJSgBOMvMl9XhwIsVsz7
+         QFUixdkJ+SnC1MqVciImr88ASZP5HCu0Cdt6LJnGhWtcuGZvKPL4Tg10q587Fe6DkGFE
+         O68VKjgs810X40U4e9ybxLW+TDc9lIFifghlreBXzFmEXMkEahyr13ueJx/eLaVnGUQ+
+         90fCIebVoFfAv+AlLx2IVU3ST/+ROra2F3ZsSMw1t7ppcmJb+0sOEPwFe1zHIGud+NPh
+         VxRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=9MuLW1yfrGnnXorHHuXQXcRAluIurMXU5vrmf/nqkGE=;
-        b=K5HnRaJ7kNsrugepCEelhTr/7NvFULQSRWBdT1TZrfZK/jsn7b7QpvpnMZv9eaxnlY
-         SdzgekJ2db4k2URTiIUT8TtzUS2nrYfoHwaiAV+GRw3Q74ZqaHNRR+902urSdR13glAV
-         topPJcJokoreBp6AZhGe+7Fz4MQKGaS6YPmUh0CjirEo5UjTxgYz0bYun78byCpc1ecK
-         DnNn323bHSyp15i38CFoLFzrF8H9V3Uffk7RvitF37zWOC3/mzREBWWsVr6npNTDlem8
-         zmzM3Rd9XiU5mIwN7RsGKlKSQE9/sJnVUBbRsRRXNz9Vl28CJhsjX+oxMa44M1BKZngQ
-         YlkQ==
-X-Gm-Message-State: AOAM533RJBam587iVc/1rNngYL0SMO7Pk63apo76e/pTBqgYV/TEXJJZ
-        yx9l9IH1uwGRiNoMmRCbCBRGEFRTB2c0naUK0aAd0g==
-X-Google-Smtp-Source: ABdhPJwpbVQtsFa1/rdGMFSiAHJ/DrNi3DxrP6HwLnRItX7TvhyyMIFGC8yEIl690fJTmadvvpEHD+Ho6z6kxVBZMW4=
-X-Received: by 2002:a05:651c:283:: with SMTP id b3mr7755337ljo.459.1634841921121;
- Thu, 21 Oct 2021 11:45:21 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 21 Oct 2021 11:45:20 -0700
-MIME-Version: 1.0
-In-Reply-To: <1634738333-3916-3-git-send-email-quic_mkrishn@quicinc.com>
-References: <1634738333-3916-1-git-send-email-quic_mkrishn@quicinc.com> <1634738333-3916-3-git-send-email-quic_mkrishn@quicinc.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 21 Oct 2021 11:45:20 -0700
-Message-ID: <CAE-0n51Q7Uir5LvmU8MJG-KmNsiYN690xr5svVv8_H=de-EkpA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] arm64: dts: qcom: sc7280: Add DSI display nodes
-To:     Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=f+vLzPhKqYW+u2TyM1CJYz0VqLaKVG+1YIt+vOSwseY=;
+        b=RICor2sfGzZfJWtNXNnTmSM4W4SzxA7Dp7wdWruRqTjbY5nTR01b3cqrVXztG+nI+u
+         1ANLMU57MZWmdUwZ2aUyrjp6WCxPBJiPhbdTxnFFaZsaenrHG8nN07IGvBWf/n0isYTs
+         rz1OtBS/evxZ83/Mcrnitfi2GJxok4tNXrSyLVaXgSSfTGQukM4IG/TEmDW6ISFZ4Vwu
+         D3huyseooFsAibopDs7nAVWNrPEKiNjxyFnQJIt49noWMY5hYrCUTW0YijjBWSfvzYhh
+         nbi+an/u4NBXMh9e4fzj0Czn1+cRR5eGWuDb4EzJocwonU4RU2H7VU78rgh8A1LzIcK0
+         cK3w==
+X-Gm-Message-State: AOAM533nqB9kzBJGAjPIL6GbvU5qZMy1scGhhjEiIFNcbt3zHJTjR4jO
+        6ClAEuEi5u47HTLi3ZDLMgM=
+X-Google-Smtp-Source: ABdhPJzqGXvLKwCGdiL7X38HU/QgJsL8HaczyXcl7J2bCjsXGgMZGnPqGy/IJcp+Mwl/AmWsFzdb0Q==
+X-Received: by 2002:a05:6a00:22c8:b0:44d:cb37:86e4 with SMTP id f8-20020a056a0022c800b0044dcb3786e4mr7240063pfj.78.1634841973905;
+        Thu, 21 Oct 2021 11:46:13 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id p31sm6829296pfw.201.2021.10.21.11.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 11:46:12 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 21 Oct 2021 08:46:10 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, kernel-team@fb.com,
         linux-kernel@vger.kernel.org
-Cc:     kalyan_t@codeaurora.org, sbillaka@codeaurora.org,
-        abhinavk@codeaurora.org, robdclark@gmail.com,
-        bjorn.andersson@linaro.org, khsieh@codeaurora.org,
-        rajeevny@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
-        Rajeev Nandan <quic_rajeevny@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] bpf: Move BPF_MAP_TYPE for INODE_STORAGE and TASK_STORAGE
+ outside of CONFIG_NET
+Message-ID: <YXG1cuuSJDqHQfRY@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Krishna Manikandan (2021-10-20 06:58:52)
-> Add DSI controller and PHY nodes for sc7280.
->
-> Signed-off-by: Rajeev Nandan <quic_rajeevny@quicinc.com>
-> Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->
-> Changes in v2:
->     - Drop flags from interrupts (Stephen Boyd)
->     - Rename dsi-opp-table (Stephen Boyd)
->     - Rename dsi phy  node (Stephen Boyd)
-> ---
+bpf_types.h has BPF_MAP_TYPE_INODE_STORAGE and BPF_MAP_TYPE_TASK_STORAGE
+declared inside #ifdef CONFIG_NET although they are built regardless of
+CONFIG_NET. So, when CONFIG_BPF_SYSCALL && !CONFIG_NET, they are built
+without the declarations leading to spurious build failures and not
+registered to bpf_map_types making them unavailable.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fix it by moving the BPF_MAP_TYPE for the two map types outside of
+CONFIG_NET.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ include/linux/bpf_types.h |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 9c81724e4b985..bbe1eefa4c8a9 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -101,14 +101,14 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK_TRACE, stack_trace_map_ops)
+ #endif
+ BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY_OF_MAPS, array_of_maps_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_HASH_OF_MAPS, htab_of_maps_map_ops)
+-#ifdef CONFIG_NET
+-BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP, dev_map_ops)
+-BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
+-BPF_MAP_TYPE(BPF_MAP_TYPE_SK_STORAGE, sk_storage_map_ops)
+ #ifdef CONFIG_BPF_LSM
+ BPF_MAP_TYPE(BPF_MAP_TYPE_INODE_STORAGE, inode_storage_map_ops)
+ #endif
+ BPF_MAP_TYPE(BPF_MAP_TYPE_TASK_STORAGE, task_storage_map_ops)
++#ifdef CONFIG_NET
++BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP, dev_map_ops)
++BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
++BPF_MAP_TYPE(BPF_MAP_TYPE_SK_STORAGE, sk_storage_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_CPUMAP, cpu_map_ops)
+ #if defined(CONFIG_XDP_SOCKETS)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_XSKMAP, xsk_map_ops)
