@@ -2,106 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4334365F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF1A4365F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhJUPZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:25:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42454 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230103AbhJUPZI (ORCPT
+        id S231909AbhJUPZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231795AbhJUPZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:25:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634829772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xi3Exzq4O8MBJAFUK0RiNBXpwkHIMrkkmR7icPEpJVg=;
-        b=hlBcIjmkEauT3bN8J+Ckx8MRlkCpRE5y8jwE8TbJryoI/ekZSCaCI1uBlYAjCPRSigjBI0
-        npFkDTb/V7F+3AthEgW53Y64yIx70/Y5KuGFV4XfQ9oyOnq76CrWerGAdERRv5vkrlF9vC
-        F6Rv56iOc67OQM3EvpWbqldYXMtnVTk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-FE1IgqsfMgCr5IkY9JrQiA-1; Thu, 21 Oct 2021 11:22:51 -0400
-X-MC-Unique: FE1IgqsfMgCr5IkY9JrQiA-1
-Received: by mail-ed1-f69.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso722935edv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:22:50 -0700 (PDT)
+        Thu, 21 Oct 2021 11:25:22 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F3DC061764;
+        Thu, 21 Oct 2021 08:23:06 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id a15-20020a17090a688f00b001a132a1679bso3423769pjd.0;
+        Thu, 21 Oct 2021 08:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u8MgP9EyHiwfzS+PfrhohOi5W9AFD7yrctxjYPpGCNs=;
+        b=WVm5YA3svbpKDgEwEWf79YIA2d+HMr3vgMUHlvL/Q51sZB1k2BjB9D7OsHHe/c6ZKR
+         3jo0jGxj8JujkkKMJhKYdcEd/cKgCG0WMlt9XvJeSW+eGf4jQaIAEAeYa55sICeLOZaV
+         htM63ArD0dzfszA64bl2Zs+CReRT/73uwp0oWQt18dn/jQqZQcB8udEnM7Cj6mWPDiuE
+         +4kAM3z3gaanSnhrYgy4hAfp6xgol2yZl7O0uBcvhdh1I+5SN3IPuyoCebu8a/jyf57v
+         prYMYOkeURk7aJQt/MlEV0Wq7OhpA/mwL0HPnkGLFh6zkUpJ9CRl1VMFMi7W9FYDW+jz
+         SLzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=xi3Exzq4O8MBJAFUK0RiNBXpwkHIMrkkmR7icPEpJVg=;
-        b=PLm8qGqIaet/tR8mtXPIuCzzRwhZBP/M6WWp8xqW/7raAYxJBMGn0AX216h/q9J1GW
-         INmHQsDQfDFMtOWRCYyzBmPNuyBYASbCE8Jnearv62KErjqQr0qQ5k2ATAg388A//mG9
-         0yl/0ESIG2JMGhkRFiaELF5Xlgmxhjkc6Ldms1Gjt39jIuIloUPKBykqgPIepO2/u6xx
-         G0MgdAz5guKjJs5GlMPgjHWW1mf5VZIqGMulf1muEiqwflLA/+rK++ILsgGyammxCyVf
-         7myroIIJduaOAG6KqTq9zTW2PiznDMoaCDe1IEmPGCz72ZVgFJd9wALXQv1idT+JRq4G
-         b92w==
-X-Gm-Message-State: AOAM530bZejFU386b4ZA2VBwgqzMqGom4WzVz4v3akp7M6OxbTBj+gtu
-        NrTmV/wkTUYxUip/ovCraCTvzQ8WvDRqjodASZMZzd1gXD3vHYDKbIYcKpAc6ZnMfHoK1rQc102
-        xJgMhAiUjZJFcd5YnSfeUn9g6
-X-Received: by 2002:a17:907:6da3:: with SMTP id sb35mr3553388ejc.41.1634829770016;
-        Thu, 21 Oct 2021 08:22:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCDcZ8imB3vqmfg8OBQVDBDiZ4wUrpL3XnmxUHQPH6cpm4itttcYgZZZK9ceORITZrp1M+hg==
-X-Received: by 2002:a17:907:6da3:: with SMTP id sb35mr3553369ejc.41.1634829769793;
-        Thu, 21 Oct 2021 08:22:49 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id mp5sm878222ejc.68.2021.10.21.08.22.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 08:22:49 -0700 (PDT)
-Message-ID: <775667ae-3e82-bba1-d1af-e11d04ddb03d@redhat.com>
-Date:   Thu, 21 Oct 2021 17:22:47 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u8MgP9EyHiwfzS+PfrhohOi5W9AFD7yrctxjYPpGCNs=;
+        b=Nni676keI8Kib+udjH0zD31AIRYHuq6+JObt/qbLAn+RCBE+s3ZsBVJMswX4hAH12S
+         4ezBYlmRucBb155CyLAmsQMzRyL3N+m68IgLqSDFBL5D9f6RhEFai+uxR0DDikdlfSRo
+         MrDMjyrSr8QqqklZsPDjzcfChPZk0foVl9huNrmAIm4EfRBBVzzEYY4PdMnjo0Mp2ffL
+         4cRq58KdNMjMVxJuCsPv+9h08dRNr5yQTzMDBzkgbTPd4uagG6FH9BFy2STYcnk16jFO
+         OQeopQsKrZPkJzJwKEkvwt/0V2HrOyO9oaFSbgHDyJTQigsW1/0eryrmqs26FLQkC6T/
+         1ceQ==
+X-Gm-Message-State: AOAM531Pp+0Hf6s3QUuORI9rz9exeMQ1+6zsuseTnM9H3XVfro++X+Kr
+        8YCUcLC9nO9Y/Zv3NgDfUxQ=
+X-Google-Smtp-Source: ABdhPJyM7v0zXEyGqjciHtSAM+WG0z/jW2TYz2BvKHQIg0x3oAjMjTZKgmIFXVMU8//fhdvqmoiD5g==
+X-Received: by 2002:a17:90a:4b47:: with SMTP id o7mr7491151pjl.198.1634829785570;
+        Thu, 21 Oct 2021 08:23:05 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:29a4:d874:a949:6890:f95f])
+        by smtp.gmail.com with ESMTPSA id f84sm6347400pfa.25.2021.10.21.08.23.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:23:05 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:52:53 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, Lukas Wunner <lukas@wunner.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v3 18/25] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to
+ check read from hardware
+Message-ID: <20211021152253.pqc6xp3vnv5fpczj@theprophet>
+References: <cover.1634825082.git.naveennaidu479@gmail.com>
+ <c21290fe02a7a342a8b93c692586b6a2b6cde9e0.1634825082.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC 02/16] KVM: selftests: add hooks for managing encrypted
- guest memory
-Content-Language: en-US
-To:     Michael Roth <michael.roth@amd.com>,
-        Mingwei Zhang <mizhang@google.com>
-Cc:     linux-kselftest@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Nathan Tempelman <natet@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-References: <20211005234459.430873-1-michael.roth@amd.com>
- <20211005234459.430873-3-michael.roth@amd.com>
- <CAL715W+-H7ZSQZeZmAbbJNGKaZCNqf4VdLismivxux=gerFuDw@mail.gmail.com>
- <20211021033723.tfnhazbnlz4z5czl@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211021033723.tfnhazbnlz4z5czl@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c21290fe02a7a342a8b93c692586b6a2b6cde9e0.1634825082.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/21 05:37, Michael Roth wrote:
->> Do we have to make a copy for the sparsebit? Why not just return the
->> pointer? By looking at your subsequent patches, I find that this data
->> structure seems to be just read-only?
-> Yes, it's only intended to be used for read access. But I'll if I can
-> enforce that without the need to use a copy.
+On 21/10, Naveen Naidu wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error.  There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
+> 
+> Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
+> data from hardware.
+> 
+> This helps unify PCI error response checking and make error checks
+> consistent and easier to find.
+> 
+> Compile tested only.
+> 
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/hotplug/pciehp_hpc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
+> index 3024d7e85e6a..f472f83f6cce 100644
+> --- a/drivers/pci/hotplug/pciehp_hpc.c
+> +++ b/drivers/pci/hotplug/pciehp_hpc.c
+> @@ -89,7 +89,7 @@ static int pcie_poll_cmd(struct controller *ctrl, int timeout)
+>  
+>  	do {
+>  		pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &slot_status);
+> -		if (slot_status == (u16) ~0) {
+> +		if (RESPONSE_IS_PCI_ERROR(slot_status)) {
+>  			ctrl_info(ctrl, "%s: no response from device\n",
+>  				  __func__);
+>  			return 0;
+> @@ -165,7 +165,7 @@ static void pcie_do_write_cmd(struct controller *ctrl, u16 cmd,
+>  	pcie_wait_cmd(ctrl);
+>  
+>  	pcie_capability_read_word(pdev, PCI_EXP_SLTCTL, &slot_ctrl);
+> -	if (slot_ctrl == (u16) ~0) {
+> +	if (RESPONSE_IS_PCI_ERROR(slot_ctrl)) {
+>  		ctrl_info(ctrl, "%s: no response from device\n", __func__);
+>  		goto out;
+>  	}
+> @@ -236,7 +236,7 @@ int pciehp_check_link_active(struct controller *ctrl)
+>  	int ret;
+>  
+>  	ret = pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &lnk_status);
+> -	if (ret == PCIBIOS_DEVICE_NOT_FOUND || lnk_status == (u16)~0)
+> +	if (ret == PCIBIOS_DEVICE_NOT_FOUND || RESPONSE_IS_PCI_ERROR(lnk_status))
+>  		return -ENODEV;
+>  
+>  	ret = !!(lnk_status & PCI_EXP_LNKSTA_DLLLA);
+> @@ -443,7 +443,7 @@ int pciehp_card_present(struct controller *ctrl)
+>  	int ret;
+>  
+>  	ret = pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &slot_status);
+> -	if (ret == PCIBIOS_DEVICE_NOT_FOUND || slot_status == (u16)~0)
+> +	if (ret == PCIBIOS_DEVICE_NOT_FOUND || RESPONSE_IS_PCI_ERROR(slot_status))
+>  		return -ENODEV;
+>  
+>  	return !!(slot_status & PCI_EXP_SLTSTA_PDS);
+> @@ -621,7 +621,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+>  
+>  read_status:
+>  	pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &status);
+> -	if (status == (u16) ~0) {
+> +	if (RESPONSE_IS_PCI_ERROR(status)) {
+>  		ctrl_info(ctrl, "%s: no response from device\n", __func__);
+>  		if (parent)
+>  			pm_runtime_put(parent);
+> -- 
+> 2.25.1
 > 
 
-Return it as a const pointer?
+Lukas, I have not added your Acked-by tag from the v1 [1] of the patch 
+series, since the RESPONSE_IS_PCI_ERROR macro definition slightly 
+changed. I hope this was the right thing to do.
 
-Paolo
+[1]: https://lore.kernel.org/linux-pci/20211011194740.GA14357@wunner.de/
+
+Also, regarding your comments from v1 patch series [1] about re-naming
+the RESPONSE_IS_PCI_ERROR to RESPONSE_IS_PCI_TIMEOUT. We could indeed 
+change the change to RESPONSE_IS_PCI_TIMEOUT for pciehp, but then 
+I'm afraid that picehp would be the odd one out. I mean, since in all 
+the other places we are using RESPONE_IS_PCI_TIMEOUT to see if any 
+error occured while reading from a device.
+
+RESPONSE_IS_PCI_ERROR stills gives an idea to the readers that some PCI
+error occured. It was my understanding that timeout is also a kind of
+PCI error (I might be horribly wrong here, given my very less experience
+with PCI subsystem) so it would be okay to use RESPONSE_IS_PCI_ERROR
+here.
+
+If that is not the case please let me know. But I am not sure what to
+do here? If RESPONSE_IS_PCI_ERROR does not fit here, should the right
+option would be to revert/remove this patch from the series?
+
+Thanks,
+Naveen
 
