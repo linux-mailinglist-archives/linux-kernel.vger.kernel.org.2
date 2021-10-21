@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF41435B6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785B1435B4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhJUHMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56218 "EHLO mail.kernel.org"
+        id S231137AbhJUHII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:08:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:34561 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhJUHMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:12:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 759C7606A5;
-        Thu, 21 Oct 2021 07:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634800185;
-        bh=jSUySDz8lzTVjjSD+1bRdCp3Zigy7nDut3K7EhQ19Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZgSZM0i0iMVGrkWnBIazW/Qx49Yz3PQWFlRDu8Vo0r8yKsOQLlI3jFLApU4vDCkr2
-         cFdABA9S5CblrjvDriVFWzwrlw+PtWeJvCND32jOWTw5fbTgAJdxIS6guoYTON2TQg
-         sfx0oAyWAkeDYgDzZddL2WjhUu35bKWBR8lETlRpXgHPZRSFM8K0LLNGlDzYXwn7Tl
-         nd/c1YUBzK1zBnvRewtf//2EOg+2oyNjU5jRlgMm1L7cCc6M5CJWovTGoYKEe70uV/
-         /qP3JBGBESFNNPGa6OtZ1uBc3Ke3Cfeo75PbvyjMAdwRLTDyCA2PxbbKenIFDqJbJJ
-         8Y5uuVzfrIltw==
-Date:   Thu, 21 Oct 2021 09:09:40 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@gmail.com>
-Cc:     luo penghao <cgel.zte@gmail.com>,
-        NetDEV list <netdev@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
-        luo penghao <luo.penghao@zte.com.cn>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [Intel-wired-lan] [PATCH linux-next] e1000: Remove redundant
- statement
-Message-ID: <20211021070937.GA9814@kernel.org>
-References: <20211018085305.853996-1-luo.penghao@zte.com.cn>
- <20211020092537.GF3935@kernel.org>
- <CAEuXFEzXSU-Ws6T_8TBVfgskh4VA14LmirFYSjdQpwtndfeeww@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEuXFEzXSU-Ws6T_8TBVfgskh4VA14LmirFYSjdQpwtndfeeww@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S229499AbhJUHIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 03:08:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="228909601"
+X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
+   d="scan'208";a="228909601"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:05:50 -0700
+X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
+   d="scan'208";a="594983769"
+Received: from chenyi-pc.sh.intel.com ([10.239.159.60])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:05:48 -0700
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: MMU: Reset mmu->pkru_mask to avoid stale data
+Date:   Thu, 21 Oct 2021 15:10:22 +0800
+Message-Id: <20211021071022.1140-1-chenyi.qiang@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:08:11AM -0700, Jesse Brandeburg wrote:
-> Apologies for the duplicates, mail from my intel account going out
-> through outlook.com is not being delivered.
-> 
-> On Wed, Oct 20, 2021 at 7:00 AM Simon Horman <horms@kernel.org> wrote:
-> 
-> > > Value stored to 'ctrl_reg' is never read.
-> >
-> > I agree this does seem to be the case.
-> >
-> > > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > > Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
-> >
-> > Reviewed-by: Simon Horman <horms@kernel.org>
-> 
-> Thanks for the review, but (davem/kuba) please do not apply.
+When updating mmu->pkru_mask, the value can only be added but it isn't
+reset in advance. This will make mmu->pkru_mask keep the stale data.
+Fix this issue.
 
-Thanks, and sorry for misunderstanding the patch.
+Fixes: commit 2d344105f57c ("KVM, pkeys: introduce pkru_mask to cache conditions")
+Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> 
-> > > @@ -1215,8 +1215,6 @@ static int e1000_integrated_phy_loopback(struct e1000_adapter *adapter)
-> > >               e1000_write_phy_reg(hw, PHY_CTRL, 0x8140);
-> > >       }
-> > >
-> > > -     ctrl_reg = er32(CTRL);
-> 
-> Thanks for your patch, but this change is not safe. you're removing a
-> read that could do two things. The first is that the read "flushes"
-> the write just above to PCI (it's a PCI barrier), and the second is
-> that the read can have some side effects.
-> 
-> If this change must be done, the code should be to remove the
-> assignment to ctrl_reg, but leave the read, so the line would just
-> look like:
->         er32(CTRL);
-> 
-> This will get rid of the warning and not change the flow from the
-> hardware perspective.
-> 
-> > > -
-> > >       /* force 1000, set loopback */
-> > >       e1000_write_phy_reg(hw, PHY_CTRL, 0x4140);
-> > >
-> 
-> Please do not apply this.
-> 
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index c6ddb042b281..fe73d7ee5492 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4556,10 +4556,10 @@ static void update_pkru_bitmask(struct kvm_mmu *mmu)
+ 	unsigned bit;
+ 	bool wp;
+ 
+-	if (!is_cr4_pke(mmu)) {
+-		mmu->pkru_mask = 0;
++	mmu->pkru_mask = 0;
++
++	if (!is_cr4_pke(mmu))
+ 		return;
+-	}
+ 
+ 	wp = is_cr0_wp(mmu);
+ 
+-- 
+2.17.1
+
