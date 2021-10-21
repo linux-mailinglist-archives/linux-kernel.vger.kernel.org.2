@@ -2,116 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8572436B7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEB0436B85
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhJUTvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUTvU (ORCPT
+        id S231873AbhJUTxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:53:12 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:35651 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhJUTxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:51:20 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B537C061348
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:49:04 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id h19so3421207uax.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=506SnosJu2/k7veB5Auol9VGHyPyzo6ab/OrxVZJdFc=;
-        b=JZeRQvhOimryHQTO0F1yK8ihzbC/IVWHgTOcrfhaJ1QgKmHtIb9FPtaoXxJXzLCepk
-         0pc0gLbmtclOHyfWODXsmlN0T/zcv+5Bid66yCjZR28gKB4+ecuHtN+zZYfLpiQuJypb
-         9snbIJAmr2/89bUHVp+jINBxclOHw0uCjGV8hXoYu/MEazJ7bOsVUAMnALH5OlFviYEx
-         EOgXtMlWXrRf4q/CdZB4mSS9IOTXNfbvKgn4RNtkCrTX8r0IIt9fPmtZ49UhMB5w6LZj
-         wo2Nh0mBp0rHAznuCL6fMlVRUFPWy3vlVYZHk5I9FPTPwZKWbwjYfB5VzZTdfTfXiEi9
-         X1bQ==
+        Thu, 21 Oct 2021 15:53:09 -0400
+Received: by mail-pg1-f177.google.com with SMTP id q187so1274761pgq.2;
+        Thu, 21 Oct 2021 12:50:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=506SnosJu2/k7veB5Auol9VGHyPyzo6ab/OrxVZJdFc=;
-        b=WqGKGTRi9xsqFg8GAdQVhQ/G31Q0kfUiyR20epZMy8NCHBlZxE/5vAw/t8SQxcimZU
-         IRoJ4kUOrIW3+Nm3P/KcdxTtKw6D3S+ht2v8YIfXKfM3S0lpEZ2W7n1CPxb54VV031ue
-         TDiZVuVf7pIcH6zsGO1+Oa1HyQaHIu8YSv+tvw9EudLWd8NKYe5wQtskAFtsllrN3o0m
-         6aMdAMpkxdRoAKnfI0xlELnKyJToFM6byJOIWyEwZn7ziYIS2xXVRxUvf41w3MB9fvdE
-         dUtw0W9hxinmEInZxAUcxFzuBmwzvgMDB/dqnFvSJNftq7LVjBdyXJ9MLxhemNpId2eK
-         7ACg==
-X-Gm-Message-State: AOAM532/CJ3JMDHXpsnNIo0HfLWBEOiA3XW/rnsAMcfx39ISmwFbjJyI
-        VVnjXuGeZ2MuYTghP6/YClo4BdR0MMCvNgfslwaDUsGjNxxOvR0r
-X-Google-Smtp-Source: ABdhPJz4I5Z/WBFSBkX6/q4/uVeYKIfIu9yEzNWeEn5ErrVs1m/Y7PwD0YcrX1Lkqqjdhm5YITQcRIqFFsa0Oxa4pTw=
-X-Received: by 2002:a67:d91b:: with SMTP id t27mr9275555vsj.55.1634845743358;
- Thu, 21 Oct 2021 12:49:03 -0700 (PDT)
+        bh=5qcBk3DeZv7+MBr+DGak5KmAIKq22H5/grJVeSCeLaw=;
+        b=ZjItPisPSDEL6cgmvUPYFaAZEy0N46bIWUjLpg8oJfA6tpA3SbC9C4EPghn/wGs4JD
+         cII7/2xC3dnbGAMmhklBB7JA4bZ2psdJXPmFoOFLR4ujbiiUb7l4VhAawaMEELxMYJ42
+         5Us60xzpB/f9V+wFNyPUoFur/ONjDcXD0xXb9wCy33GBIv3EQeTHDb4G/EYiWEK0ULtb
+         /v1yXWtKMZF8753QsYsm5LMlABi592MQcK3lgHqL6uaMPyfWy1Te4HeWGtEaylxBejpx
+         2q5fzejSLFYreio2lxOZ+shyweg+0PbM9ZWykT+W/wHWXxzCs4jKBjtNEODE+OO8J4xU
+         B9Bw==
+X-Gm-Message-State: AOAM533iLrDX8+dmEY3xez1WN3h0tALAHOWZuRq63VZ4EUPafgbABuR1
+        ODeaC6W3dj3IGudUs0K97/8sPTTHRAZ3HjwUuB4=
+X-Google-Smtp-Source: ABdhPJz2g45HVrm92zsQSGHVasZJ2oUSDzMsKNKTjLhfF9aY5UDp7p3S+/XUucIuf3UBNmD9xTaAgYYNmpQ1XqNUueI=
+X-Received: by 2002:a63:2d46:: with SMTP id t67mr5876914pgt.15.1634845853245;
+ Thu, 21 Oct 2021 12:50:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-3-semen.protsenko@linaro.org> <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
- <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com> <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
- <YW8E6oeIoRdpmPL8@piout.net> <CAPLW+4k26qZDug4JkuPaM_gZMgz8LPg7GHe-5C7zKzEGtzdp=g@mail.gmail.com>
- <effeb83b-7923-7086-5b4f-36266015e137@canonical.com>
-In-Reply-To: <effeb83b-7923-7086-5b4f-36266015e137@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 21 Oct 2021 22:48:51 +0300
-Message-ID: <CAPLW+4=RuoT016zHotKvrNNxB_bZt4VXhZRWkGuJs22XeOpcpA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-13-kernel@esmil.dk>
+ <20211021190118.GA1802180@x1>
+In-Reply-To: <20211021190118.GA1802180@x1>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Thu, 21 Oct 2021 21:50:42 +0200
+Message-ID: <CANBLGcy2WR2L_CE2FbLPBnDaHWaNgUySxyB4WyPYA1z8zsQAPQ@mail.gmail.com>
+Subject: Re: [PATCH v2 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 at 09:29, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Thu, 21 Oct 2021 at 21:01, Drew Fustini <dfustini@baylibre.com> wrote:
+> On Thu, Oct 21, 2021 at 07:42:19PM +0200, Emil Renner Berthing wrote:
+> > +/*
+> > + * Interrupt Trigger Polarity. If set to 1 the interrupt is triggered on a
+> > + * rising edge (edge-triggered) or high level (level-triggered). If set to 0 the
+> > + * interrupt is triggered on a falling edge (edge-triggered) or low level
+> > + * (level-triggered).
+> > + */
+> > +#define GPIOIEV              0x020
+> > +
+> > +/*
+> > + * Interrupt Mask. If set to 1 the interrupt is disabled (masked). If set to 0
+> > + * the interrupt is enabled (unmasked).
+> > + */
+> > +#define GPIOIE               0x028
 >
-> On 19/10/2021 21:12, Sam Protsenko wrote:
-> > Krzysztof, do you have by chance the doc for different SoCs supported
-> > by S3C RTC driver? I can implement proper values for min/max range for
-> > each SoC, as Alexandre asked, by adding those to driver data. But I
-> > need max year register value (100, 1000, etc) for each of those chips:
-> >
-> >   - "samsung,s3c2410-rtc"
-> >   - "samsung,s3c2416-rtc"
-> >   - "samsung,s3c2443-rtc"
-> >   - "samsung,s3c6410-rtc"
-> >   - "samsung,exynos3250-rtc"
-> >
-> > For example Exynos850 TRM states that BCDYEAR register has [11:0] bits
-> > for holding the year value in BCD format, so it's 10^(12/4)=1000 years
-> > max.
-> >
+> It bothered me that the datasheet used the term GPIOIE for the interrupt
+> mask register. I had used a more verbose #define name because I worried
+> someone reading GPIOIE in functions might mistake it for an interrupt
+> enable register. This happened to me when I was originally working with
+> the gpio driver.
 >
-> I think all S3C chips have only 8-bit wide year, so 2000-2099, while
-> S5Pv210 and Exynos has 12-bit (1000 years). However I doubt there is big
-> benefit of supporting more than 2100. :) If you still want, you would
-> need to create the patch carefully because not many people can test it...
+> However I suppose the best solution would have been to get the datasheet
+> updated as I can see how it is best to have #define names in the driver
+> match the datasheet.
 >
+> > +static void starfive_irq_mask(struct irq_data *d)
+> > +{
+> > +     struct starfive_pinctrl *sfp = starfive_from_irq_data(d);
+> > +     irq_hw_number_t gpio = irqd_to_hwirq(d);
+> > +     void __iomem *ie = sfp->base + GPIOIE + 4 * (gpio / 32);
+> > +     u32 mask = BIT(gpio % 32);
+> > +     unsigned long flags;
+> > +     u32 value;
+> > +
+> > +     raw_spin_lock_irqsave(&sfp->lock, flags);
+> > +     value = readl_relaxed(ie) & ~mask;
+> > +     writel_relaxed(value, ie);
+> > +     raw_spin_unlock_irqrestore(&sfp->lock, flags);
+> > +}
+> > +
+> > +static void starfive_irq_mask_ack(struct irq_data *d)
+> > +{
+> > +     struct starfive_pinctrl *sfp = starfive_from_irq_data(d);
+> > +     irq_hw_number_t gpio = irqd_to_hwirq(d);
+> > +     void __iomem *ie = sfp->base + GPIOIE + 4 * (gpio / 32);
+> > +     void __iomem *ic = sfp->base + GPIOIC + 4 * (gpio / 32);
+> > +     u32 mask = BIT(gpio % 32);
+> > +     unsigned long flags;
+> > +     u32 value;
+> > +
+> > +     raw_spin_lock_irqsave(&sfp->lock, flags);
+> > +     value = readl_relaxed(ie) & ~mask;
+> > +     writel_relaxed(value, ie);
+> > +     writel_relaxed(mask, ic);
+> > +     raw_spin_unlock_irqrestore(&sfp->lock, flags);
+> > +}
+> > +
+> > +static void starfive_irq_unmask(struct irq_data *d)
+> > +{
+> > +     struct starfive_pinctrl *sfp = starfive_from_irq_data(d);
+> > +     irq_hw_number_t gpio = irqd_to_hwirq(d);
+> > +     void __iomem *ie = sfp->base + GPIOIE + 4 * (gpio / 32);
+> > +     u32 mask = BIT(gpio % 32);
+> > +     unsigned long flags;
+> > +     u32 value;
+> > +
+> > +     raw_spin_lock_irqsave(&sfp->lock, flags);
+> > +     value = readl_relaxed(ie) | mask;
+> > +     writel_relaxed(value, ie);
+> > +     raw_spin_unlock_irqrestore(&sfp->lock, flags);
+> > +}
+> > +
 
-Guys,
+...
 
-After testing thoroughly, I can confirm that Alexandre is right about
-leap years (Exynos850 RTC treats both 2000 and 2100 as leap years).
-And it also overflows internally on 2159 year, limiting the actual
-time range at 160 years. So I'll keep that range at 100 years for all
-RTCs. As Krzysztof said, there is no practical reasons in trying to
-increase it anyway. Will send v2 soon.
-
-What I'm curious about is RTC testing. I've found this test suite:
-
-    tools/testing/selftests/rtc/rtctest.c
-
-But it doesn't seem to cover corner cases (like checking leap years,
-which was discussed here). Just a thought: maybe it should be added
-there, so everyone can benefit from that? For example, I know that in
-Linaro we are running LKFT tests for different boards, so that might
-theoretically reveal some bugs. Though I understand possible
-implications: we probably don't know which ranges are supported in
-driver that's being tested. Anyway, just saying.
-
+> > +static int starfive_gpio_init_hw(struct gpio_chip *gc)
+> > +{
+> > +     struct starfive_pinctrl *sfp = starfive_from_gc(gc);
+> > +
+> > +     /* mask all GPIO interrupts */
+> > +     writel(0, sfp->base + GPIOIE + 0);
+> > +     writel(0, sfp->base + GPIOIE + 4);
 >
-> Best regards,
-> Krzysztof
+> Woudln't 0 in GPIOIE mean mask is disabled for all interrupts?
+>
+> In other words, wouldn't this enable all the interrupts?
+
+Heh, you're right. The code does the exact opposite of what the
+documentation says it should be doing. However I just tried and with
+the code as it is now GPIO interrupts work fine, but with the logic
+flipped the kernel fails to boot. I'm guessing because an interrupt
+storm. So it seems to me the documentation might be wrong and GPIOIE
+is actually a good name.
+
+Michael Zhu: Can you confirm if a 1 or 0 enables the interrupt in the
+GPIOIE registers?
+
+/Emil
