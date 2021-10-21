@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4562943683D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34CF436847
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhJUQrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhJUQrC (ORCPT
+        id S231822AbhJUQtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:49:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55740 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231520AbhJUQts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:47:02 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FCFC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:44:46 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x192so1505599lff.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rSAcocb1DpnBRWVfk8RW3057aiiYng+OMM3MbVC7Tos=;
-        b=kS5wsvBUxmJmOtn1/RXJwN3TZzeP3kBEraI2Yit+v+QTjMaxkrnthAm0qhawJY03Lb
-         4x86yMCxq3DEQBcQF0sIhsa/2niqUCWDRmRL5osvkWllWWuXwTD+3/q1S5Y/RGwja1Jm
-         DNkpT90I+HzdkMcRA1uV0Ar4d77vXPRignToKaNB6tvCgaxYGWagqvQ0ecdbhBtzs7X/
-         zF7RQ2XxYIMy4WCSto4wNexakV+/z7KjYgQ8BPjKjBq9hUuK3Vin1hVTtLz0EabDbx2f
-         Yfvqih+WQRVcB1sEau3rkLxnSI7WPGVicVDOOYT3pO5pzIyHtqnv0EReNYb4XGwotTkK
-         1Xiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rSAcocb1DpnBRWVfk8RW3057aiiYng+OMM3MbVC7Tos=;
-        b=vB4vPDkXE4aOjElnCgy3qDezJjq2MIGKo1Vp1g2l1dG9pQq0Be4uYyLskVTBJW/uq1
-         nChUE/u7ehB26DaiTlBlgodlJXQvnuYaihwO6hXG0EtwUNx152UdsBWpL0itCZb5mEGd
-         czWgnUe1HprbfGX2CpE8pUX47p17v4QzJzRO+ieENi6kETQed87JPVhTtoRsLDpDMxcv
-         kjlrhHgTiG6pU6x+Ov66uzXtnapnMLN2yFLzRzynWGPBt90kPSOACUC11VzzIwjH/U/+
-         r2WGuzBE22WGxcm7hhACu7AFHM4A0aINZrrPNOfGLNEMbR/7xHGN3ZAv0Sgu0C5FSm/v
-         wkEA==
-X-Gm-Message-State: AOAM531DLioBQjtpnmpoECNMemfVjv91vXhlT8nKndE6GtDm4knuo16s
-        Jx6yUWRYoaPYN6wKuO46/WBfuSzo2rTF59fKY5yo/91M36Q=
-X-Google-Smtp-Source: ABdhPJyRNBXjn9wxdZ7MbFFAfuc7SgOiEXEZ1NEqOg8ud6/szO1n+6DKtP3IvN6ZfsIux+0s0nXk159Jadl1pvhoQhY=
-X-Received: by 2002:a19:6742:: with SMTP id e2mr6220633lfj.568.1634834684740;
- Thu, 21 Oct 2021 09:44:44 -0700 (PDT)
+        Thu, 21 Oct 2021 12:49:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E86202199D;
+        Thu, 21 Oct 2021 16:47:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634834851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=++iA8+uhip7K2PBGESkJUKSkd2b03fx9ioYV7M+4ADc=;
+        b=hW3ymvnHy/zIjqEGz83CLNjmBv0TkMYAecEBj9ZicauP81r1HFWZ1zXmQBDdateXmP6kUp
+        mtbGbyRFsaIHg764GPo8VMrUN+e05/45ZU7+3dDBD60xJXN36r8xEaTA6nM84CnyhJB6Tt
+        gEEGzt8067R6EwrCFARVP0xMDJPvyPQ=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1AF66A3B84;
+        Thu, 21 Oct 2021 16:47:31 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 18:47:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
+Message-ID: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
+ <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
+ <d3b32c72-6375-f755-7599-ab804719e1f6@virtuozzo.com>
+ <YXFPSvGFV539OcEk@dhcp22.suse.cz>
+ <b618ac5c-e982-c4af-ecf3-564b8de52c8c@virtuozzo.com>
 MIME-Version: 1.0
-References: <20211014190503.717830-1-daeho43@gmail.com> <e8b106fb-2878-2fa9-788f-965eef179a85@kernel.org>
-In-Reply-To: <e8b106fb-2878-2fa9-788f-965eef179a85@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Thu, 21 Oct 2021 09:44:33 -0700
-Message-ID: <CACOAw_yupuz+Xx-z9V0UaExuARHd8H9rruWCa2yj5-mgkeuUtQ@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: remove circular locking between
- sb_internal and fs_reclaim
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b618ac5c-e982-c4af-ecf3-564b8de52c8c@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a deadlock between sb_internal lock (sb_start_intwrite()) and
-dquot related lock.
-It's because we call f2fs_truncate(), which eventually calls
-dquot_initialize(), while holding sb_internal lock.
-So, I called dquot_initialize() in advance to make the 2nd calling of
-it in f2fs_truncate() ineffective.
-This is similar with the thing in f2fs_evict_inode() in inode.c
+On Thu 21-10-21 18:05:28, Vasily Averin wrote:
+> On 21.10.2021 14:49, Michal Hocko wrote:
+> > I do understand that handling a very specific case sounds easier but it
+> > would be better to have a robust fix even if that requires some more
+> > head scratching. So far we have collected several reasons why the it is
+> > bad to trigger oom killer from the #PF path. There is no single argument
+> > to keep it so it sounds like a viable path to pursue. Maybe there are
+> > some very well hidden reasons but those should be documented and this is
+> > a great opportunity to do either of the step.
+> > 
+> > Moreover if it turns out that there is a regression then this can be
+> > easily reverted and a different, maybe memcg specific, solution can be
+> > implemented.
+> 
+> Now I'm agree,
+> however I still have a few open questions.
+> 
+> 1) VM_FAULT_OOM may be triggered w/o execution of out_of_memory()
+> for exampel it can be caused by incorrect vm fault operations, 
+> (a) which can return this error without calling allocator at all.
 
-Thanks,
+I would argue this to be a bug. How can that particular code tell
+whether the system is OOM and the oom killer is the a reasonable measure
+to take?
 
-On Thu, Oct 21, 2021 at 5:11 AM Chao Yu <chao@kernel.org> wrote:
->
-> On 2021/10/15 3:05, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > We detected the below circular locking dependency between sb_internal
-> > and fs_reclaim. So, removed it by calling dquot_initialize() before
-> > sb_start_intwrite().
-> >
-> >   ======================================================
-> >   WARNING: possible circular locking dependency detected
-> >   ------------------------------------------------------
-> >   kswapd0/133 is trying to acquire lock:
-> > ffffff80d5fb9680 (sb_internal#2){.+.+}-{0:0}, at: evict+0xd4/0x2f8
-> >
-> > but task is already holding lock:
-> > ffffffda597c93a8 (fs_reclaim){+.+.}-{0:0}, at:
-> > __fs_reclaim_acquire+0x4/0x50
-> >
-> > which lock already depends on the new lock.
-> > ...
-> > other info that might help us debug this:
-> >
-> >   Chain exists of:
-> >
-> > sb_internal#2 --> &s->s_dquot.dqio_sem --> fs_reclaim
-> >
-> >    Possible unsafe locking scenario:
-> >
-> >          CPU0                    CPU1
-> >          ----                    ----
-> >     lock(fs_reclaim);
-> >                                  lock(&s->s_dquot.dqio_sem);
-> >                                  lock(fs_reclaim);
-> >     lock(sb_internal#2);
->
-> Sorry, I still didn't get the root cause of this deadlock issue, could
-> you please explain more about this?
->
-> And why calling dquot_initialize() in drop_inode() could break the
-> circular locking dependency?
->
-> Thanks,
->
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> >   fs/f2fs/super.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > index 86eeb019cc52..a133932333c5 100644
-> > --- a/fs/f2fs/super.c
-> > +++ b/fs/f2fs/super.c
-> > @@ -1370,6 +1370,8 @@ static int f2fs_drop_inode(struct inode *inode)
-> >                       /* should remain fi->extent_tree for writepage */
-> >                       f2fs_destroy_extent_node(inode);
-> >
-> > +                     dquot_initialize(inode);
-> > +
-> >                       sb_start_intwrite(inode->i_sb);
-> >                       f2fs_i_size_write(inode, 0);
-> >
-> >
+> (b) or which can provide incorrect gfp flags and allocator can fail without execution of out_of_memory.
+
+I am not sure I can see any sensible scenario where pagefault oom killer
+would be an appropriate fix for that.
+
+> (c) This may happen on stable/LTS kernels when successful allocation was failed by hit into limit of legacy memcg-kmem contoller.
+> We'll drop it in upstream kernels, however how to handle it in old kenrels?
+
+Triggering the global oom killer for legacy kmem charge failure is
+clearly wrong. Removing oom killer from #PF would fix that problem.
+
+> We can make sure that out_of_memory or alocator was called by set of some per-task flags.
+
+I am not sure I see how that would be useful other than reporting a
+dubious VM_FAULT_OOM usage. I am also not sure how that would be
+implemented as allocator can be called several times not to mention that
+the allocation itself could have been done from a different context -
+e.g. WQ.
+
+> Can pagefault_out_of_memory() send itself a SIGKILL in all these cases?
+
+In principle it can as sending signal is not prohibited. I would argue
+it should not though because it is just wrong thing to do in all those
+cases.
+
+> If not -- task will be looped. 
+
+Yes, but it will be killable from userspace. So this is not an
+unrecoverable situation.
+> It is much better than execution of global OOM, however it would be even better to avoid it somehow.
+
+How?
+
+> You said: "We cannot really kill the task if we could we would have done it by the oom killer already".
+> However what to do if we even not tried to use oom-killer? (see (b) and (c)) 
+> or if we did not used the allocator at all (see (a))
+
+See above
+
+> 2) in your patch we just exit from pagefault_out_of_memory(). and restart new #PF.
+> We can call schedule_timeout() and wait some time before a new #PF restart.
+> Additionally we can increase this delay in each new cycle. 
+> It helps to save CPU time for other tasks.
+> What do you think about?
+
+I do not have a strong opinion on this. A short sleep makes sense. I am
+not sure a more complex implementation is really needed.
+-- 
+Michal Hocko
+SUSE Labs
