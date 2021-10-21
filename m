@@ -2,86 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75774436DC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 00:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196B2436DDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhJUWxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 18:53:44 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:56520 "EHLO rere.qmqm.pl"
+        id S232070AbhJUXHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:07:14 -0400
+Received: from mga05.intel.com ([192.55.52.43]:58059 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229935AbhJUWxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 18:53:42 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Hb2lc2JCTz6R;
-        Fri, 22 Oct 2021 00:51:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1634856684; bh=ZwoePfzEfsoQ8Zx+vw7u0tVHnJGAJrlBMlcivXSgOgA=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=ayTpHcro7nKHbKWJIgWmfnXcSv3s0VwFAF5kxAaIK6X2ZsDRkHMDQNM1G89k74UDn
-         hU9QvKZrKV+F1hfoeYFbXyVGGbfWzIQ925Q+6D9dSj4sqjrkRVqA12SnGiiMUM/6B2
-         ayvj4eHkN3njrYneicJUXRiKsOjE+swpDNBJ3x4uzZ2ENk2Prk6wLuAnUEee1sBEaE
-         bsp4v8nQrbXXynshNwXaLIKzxpXm9pr6yOry3nvZa/NwrlexTTLBGqIl+jheqqiOBU
-         ZhLcTg6D2wJxLK0Y7J6lANZEyvsI41x7nHVnusJGYabTsVwF5qe+s+Zp3ytcqRT8fP
-         HLM6yp6xZKiVQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Fri, 22 Oct 2021 00:51:24 +0200
-Message-Id: <b84381943483d1e0b44ca28b4e549f2f912349bf.1634856658.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <8a6b11c6ada5d55bdb2b1f8319e47bbf5192654b.1634856658.git.mirq-linux@rere.qmqm.pl>
-References: <8a6b11c6ada5d55bdb2b1f8319e47bbf5192654b.1634856658.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 2/2] block: allow empty cmdline partition set
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
+        id S229935AbhJUXHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:07:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="315379993"
+X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
+   d="scan'208";a="315379993"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 16:02:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
+   d="scan'208";a="445033210"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by orsmga006.jf.intel.com with ESMTP; 21 Oct 2021 16:02:19 -0700
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, tglx@linutronix.de, dave.hansen@linux.intel.com,
+        arjan@linux.intel.com, ravi.v.shankar@intel.com,
+        chang.seok.bae@intel.com
+Subject: [PATCH 00/23] x86: Support Intel Advanced Matrix Extensions (part 4)
+Date:   Thu, 21 Oct 2021 15:55:04 -0700
+Message-Id: <20211021225527.10184-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make no-partitions setting valid. This makes it possible to prevent
-kernel from trying to read a partition table from a device.
+This is the last part of the effort to support AMX. This series follows the
+KVM part:
+    https://lore.kernel.org/lkml/20211017151447.829495362@linutronix.de/
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- Documentation/block/cmdline-partition.rst | 2 +-
- block/partitions/cmdline.c                | 8 +++-----
- 2 files changed, 4 insertions(+), 6 deletions(-)
+With AMX the FPU register state buffer which is part of
+task_struct::thread::fpu is not going to be extended unconditionally for
+all tasks on an AMX enabled system as that would waste minimum 8K per task.
 
-diff --git a/Documentation/block/cmdline-partition.rst b/Documentation/block/cmdline-partition.rst
-index 530bedff548a..a5ccacee982f 100644
---- a/Documentation/block/cmdline-partition.rst
-+++ b/Documentation/block/cmdline-partition.rst
-@@ -13,7 +13,7 @@ Users can easily change the partition.
- The format for the command line is just like mtdparts:
- 
- blkdevparts=<blkdev-def>[;<blkdev-def>]
--  <blkdev-def> := <blkdev-id>:<partdef>[,<partdef>]
-+  <blkdev-def> := <blkdev-id>:[<partdef>[,<partdef>]]
-     <partdef> := <size>[@<offset>](part-name)
- 
- <blkdev-id>
-diff --git a/block/partitions/cmdline.c b/block/partitions/cmdline.c
-index 1af610f0ba8c..3655e8c8e949 100644
---- a/block/partitions/cmdline.c
-+++ b/block/partitions/cmdline.c
-@@ -164,11 +164,9 @@ static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
- 		next_subpart = &(*next_subpart)->next_subpart;
- 	}
- 
--	if (!newparts->subpart) {
--		pr_warn("cmdline partition has no valid partition.");
--		ret = -EINVAL;
--		goto fail;
--	}
-+	if (!newparts->subpart)
-+		pr_warn("%s: cmdline partition has no valid partitions.",
-+			newparts->name);
- 
- 	*parts = newparts;
- 
--- 
-2.30.2
+AMX provides a mechanism to trap on first use. That trap will be utilized
+to allocate a larger register state buffer when the task (process) has
+permissions to use it. The default buffer task_struct will only carry
+states up to AVX512.
+
+The cost of XFD switching only matters for an AMX-enabled system. With the
+cleanup of the KVM FPU handling, host-side XFD/AMX is completely
+independent of guest-side XFD/AMX.
+
+The per-task feature and size information helps to support dynamic features
+organically compared to the old versions.
+
+Each task has a unique sigframe length with dynamic features. sigaltstack()
+has a new size checker to support a per-task sigframe size.
+
+This version also fixes the syscall implementation and the XFD state
+switching on hot paths.
+
+Here is a summary of patches:
+
+  - At first, add arch-specific sigaltstack size check
+
+  - Establish a set of new syscalls to control dynamic XSTATE components
+
+  - Update infrastructure to prepare dynamic features
+
+  - Support XFD state and switching, and add buffer reallocation helpers
+
+  - Finally, enable AMX with XFD #NM handling
+
+This series is based on:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu-3-kvm
+
+and a revision of the version in the tglx tree -- some bug fixes, polish,
+and addressing Dave Hansen's feedback (noted on each patch):
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+
+This comes with a large selftest suite which is going to be posted
+separately. A preview along with the full series is available here:
+
+    git://github.com/intel/amx-linux.git amx
+
+Thanks,
+Chang
+
+Chang S. Bae (15):
+  x86/fpu/xstate: Provide xstate_calculate_size()
+  x86/arch_prctl: Add controls for dynamic XSTATE components
+  x86/fpu/signal: Prepare for variable sigframe length
+  x86/fpu: Reset permission and fpstate on exec()
+  x86/cpufeatures: Add eXtended Feature Disabling (XFD) feature bit
+  x86/msr-index: Add MSRs for XFD
+  x86/fpu: Add XFD state to fpstate
+  x86/fpu: Update XFD state where required
+  x86/fpu/xstate: Add XFD #NM handler
+  x86/fpu/xstate: Add fpstate_realloc()/free()
+  x86/fpu/xstate: Prepare XSAVE feature table for gaps in state
+    component numbers
+  x86/fpu/amx: Define AMX state components and have it used for
+    boot-time checks
+  x86/fpu: Calculate the default sizes independently
+  x86/fpu: Add XFD handling for dynamic states
+  x86/fpu/amx: Enable the AMX feature in 64-bit mode
+
+Thomas Gleixner (8):
+  signal: Add an optional check for altstack size
+  x86/signal: Implement sigaltstack size validation
+  x86/fpu: Add members to struct fpu to cache permission information
+  x86/fpu: Add fpu_state_config::legacy_features
+  x86/fpu: Add basic helpers for dynamically enabled features
+  x86/signal: Use fpu::__state_user_size for sigalt stack validation
+  x86/fpu: Prepare fpu_clone() for dynamically enabled features
+  x86/fpu: Add sanity checks for XFD
+
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ arch/Kconfig                                  |   3 +
+ arch/x86/Kconfig                              |  17 +
+ arch/x86/include/asm/cpufeatures.h            |   2 +
+ arch/x86/include/asm/fpu/api.h                |  11 +
+ arch/x86/include/asm/fpu/sched.h              |   2 +-
+ arch/x86/include/asm/fpu/types.h              |  88 +++
+ arch/x86/include/asm/fpu/xstate.h             |  21 +-
+ arch/x86/include/asm/msr-index.h              |   2 +
+ arch/x86/include/asm/proto.h                  |   2 +-
+ arch/x86/include/uapi/asm/prctl.h             |   4 +
+ arch/x86/kernel/cpu/cpuid-deps.c              |   2 +
+ arch/x86/kernel/fpu/context.h                 |   2 +
+ arch/x86/kernel/fpu/core.c                    |  93 ++-
+ arch/x86/kernel/fpu/init.c                    |   9 +-
+ arch/x86/kernel/fpu/internal.h                |   3 -
+ arch/x86/kernel/fpu/signal.c                  |  70 +--
+ arch/x86/kernel/fpu/xstate.c                  | 566 ++++++++++++++++--
+ arch/x86/kernel/fpu/xstate.h                  |  61 +-
+ arch/x86/kernel/process.c                     |  21 +-
+ arch/x86/kernel/signal.c                      |  64 +-
+ arch/x86/kernel/traps.c                       |  38 ++
+ include/linux/signal.h                        |   6 +
+ kernel/signal.c                               |  35 +-
+ 24 files changed, 1008 insertions(+), 123 deletions(-)
+
+
+base-commit: 672f086122b67b299aa89c6b5f647c20ef84157f
+--
+2.17.1
 
