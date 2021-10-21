@@ -2,81 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2859B436A40
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5C4436A47
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbhJUSOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229914AbhJUSOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:14:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 384C061B02;
-        Thu, 21 Oct 2021 18:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634839907;
-        bh=psJZ49rG48h3c6QTK1w3TtTm4kFWl0poF+dfxOe50cE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ferkLuH49uqEMwhLAJ+/DXSseXl8DJpim0d/mwNnAVxAk4sBgNqI+S9b7Y+LxoeTw
-         Yu3v6JSGC/QsiOEvSvpH+riPpL9cfuueFQZxfk2aRN3YGJ2afQ28wurIeaZAWLJJdT
-         v404Gjggnp26Sv/AAmsDo1xeSNLpJf4rEtVDK31vCv0QA6RsWruo479d0TOmGuX+YE
-         0OAbZr++Zrh4A26DjyWzEfjoTS+jt+VCo9WxXHI7+DAmHdBsuw5ISERN8VI4feZu0h
-         mkS2ubIY3gb5oSJbFieJtjLPXrxKW3FLLRPK50aIEESkxf145izTK4gE/Ffvm6GkGH
-         67b//q8p0RqtA==
-Date:   Thu, 21 Oct 2021 13:11:45 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
- controller driver
-Message-ID: <20211021181145.GA2708516@bhelgaas>
+        id S232294AbhJUSOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhJUSOu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 14:14:50 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBDAC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:12:33 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id bq11so970919lfb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oN/Uf7uD0kL4zJiPTmnms646OPjKKyTZQN5Y3qRKbp8=;
+        b=WG3tf2Wl0FmD0p0MGvijfVd6sk2zuOw6qF/alXzGPLB72Tt502Iro25HNSyyqawmSP
+         nZjlpMQ+RFhBR2JTJImFmXnSwnztPF++UhjS2+FUq8bVenZfRIa/vwgmT290rHBhAJlZ
+         FSLIxzD8XiRGQklJldzl4MiEivw5mBdjSvASbrrbB8/3h2KI30PSenEprdILUSej0pbv
+         PGGJHU07lEW0FNy3QCgReS5x/EMJVJlRb5P2Xh0QqgNhsRV556WkjlHwGxaCAtM7XdY/
+         TeVbDMQlZ9WzbRZGWqWK7DME1uNHaY9GlnGs1UVCr65ZnV81RKBOAsgNSyhghsknIXGn
+         kX2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oN/Uf7uD0kL4zJiPTmnms646OPjKKyTZQN5Y3qRKbp8=;
+        b=IYMS5OJfTY84P9KDHLvroOdGYv1BuA7RkJCs/x1XDsK3z/vOzBnZUNVslzNzv4G73o
+         6XPVB6ThQfIenydgmGRog/d4Ft2TyS5AHWSaEHscbgMqHCaDDyjPvyMtY5TQKEsm8aYy
+         Qc4bodynS6x8SATpXTwc6aJ9HPL09D0uH1zQD5LT7O98c9wrY6NHglgcA0ZFdDIvNj3f
+         r8uanhKK1njc3HVMQBE27+nJSxaF5c+2r84HXjWzloKTQ+yWCG3iFyCoZYvJma1SS42i
+         gHvNru2/3v0Z4IaKnrcQEKgtBU9JGQGrkOMrTzlZWpZkBFAsq/Zm2Y/ObVDNZgN2oF+/
+         rBBg==
+X-Gm-Message-State: AOAM530UzTDGtCVvorHxA9rrMnofbIn/CU7qc+hEq4XDDRkVQyoYUmgl
+        1WB0nP7wO2yJOn4kvAAdUuAsfNz6DMY+RnjSI+qA+g==
+X-Google-Smtp-Source: ABdhPJzKM+U8aaYoKFiAvIwSn3e5PWHOJu5uFa26D46sgxQzACq1oDSC1a7OjdrweDWBn3MAOzMcY0b2kDijo36kdEM=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr6903554lfb.71.1634839951614;
+ Thu, 21 Oct 2021 11:12:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com>
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
+ <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+ <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+ <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com> <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Oct 2021 20:11:55 +0200
+Message-ID: <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:27:21PM +0200, Sergio Paracuellos wrote:
-> On Thu, Oct 21, 2021 at 5:52 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > Since this is a PCIe (not conventional PCI) controller, I vote for
-> > renaming these from:
+On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 > >
-> >   PCI_MT7621
-> >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-> >   drivers/pci/controller/pci-mt7621.c
+> > On Thu, 21 Oct 2021 at 17:09, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > >
+> > > On Thu, Oct 21, 2021 at 4:05 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > >
+> > > > On Thu, 21 Oct 2021 at 15:45, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, Oct 21, 2021 at 1:49 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > > >
+> > > > > > On Wed, 20 Oct 2021 at 20:18, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Wed, Sep 29, 2021 at 4:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > > > > >
+> > > > > > > > In the cpuidle-psci case, runtime PM in combination with the generic PM
+> > > > > > > > domain (genpd), may be used when entering/exiting an idlestate. More
+> > > > > > > > precisely, genpd relies on runtime PM to be enabled for the attached device
+> > > > > > > > (in this case it belongs to a CPU), to properly manage the reference
+> > > > > > > > counting of its PM domain.
+> > > > > > > >
+> > > > > > > > This works fine most of the time, but during system suspend in the
+> > > > > > > > dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
+> > > > > > > > Beyond this point and until runtime PM becomes re-enabled in the
+> > > > > > > > dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
+> > > > > > > >
+> > > > > > > > To make sure the reference counting in genpd becomes correct, we need to
+> > > > > > > > prevent cpuidle-psci from using runtime PM when it has been disabled for
+> > > > > > > > the device. Therefore, let's move the call to cpuidle_pause() from
+> > > > > > > > dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
+> > > > > > > > dpm_resume_noirq() into dpm_resume_early().
+> > > > > > > >
+> > > > > > > > Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
+> > > > > > > > Suggested-by: Maulik Shah <mkshah@codeaurora.org>
+> > > > > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > > > > > ---
+> > > > > > > >  drivers/base/power/main.c | 6 ++----
+> > > > > > > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> > > > > > > > index cbea78e79f3d..1c753b651272 100644
+> > > > > > > > --- a/drivers/base/power/main.c
+> > > > > > > > +++ b/drivers/base/power/main.c
+> > > > > > > > @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
+> > > > > > > >
+> > > > > > > >         resume_device_irqs();
+> > > > > > > >         device_wakeup_disarm_wake_irqs();
+> > > > > > > > -
+> > > > > > > > -       cpuidle_resume();
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > >  /**
+> > > > > > > > @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
+> > > > > > > >         }
+> > > > > > > >         mutex_unlock(&dpm_list_mtx);
+> > > > > > > >         async_synchronize_full();
+> > > > > > > > +       cpuidle_resume();
+> > > > > > > >         dpm_show_time(starttime, state, 0, "early");
+> > > > > > > >         trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
+> > > > > > > >  }
+> > > > > > > > @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
+> > > > > > > >  {
+> > > > > > > >         int ret;
+> > > > > > > >
+> > > > > > > > -       cpuidle_pause();
+> > > > > > > > -
+> > > > > > > >         device_wakeup_arm_wake_irqs();
+> > > > > > > >         suspend_device_irqs();
+> > > > > > > >
+> > > > > > > > @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
+> > > > > > > >         int error = 0;
+> > > > > > > >
+> > > > > > > >         trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
+> > > > > > > > +       cpuidle_pause();
+> > > > > > > >         mutex_lock(&dpm_list_mtx);
+> > > > > > > >         pm_transition = state;
+> > > > > > > >         async_error = 0;
+> > > > > > > > --
+> > > > > > >
+> > > > > > > Well, this is somewhat heavy-handed and it affects even the systems
+> > > > > > > that don't really need to pause cpuidle at all in the suspend path.
+> > > > > >
+> > > > > > Yes, I agree.
+> > > > > >
+> > > > > > Although, I am not really changing the behaviour in regards to this.
+> > > > > > cpuidle_pause() is already being called in dpm_suspend_noirq(), for
+> > > > > > everybody today.
+> > > > >
+> > > > > Yes, it is, but pausing it earlier will cause more energy to be spent,
+> > > > > potentially.
+> > > > >
+> > > > > That said, there are not too many users of suspend_late callbacks in
+> > > > > the tree, so it may not matter too much.
+> > > > >
+> > > > > > >
+> > > > > > > Also, IIUC you don't need to pause cpuidle completely, but make it
+> > > > > > > temporarily avoid idle states potentially affected by this issue.  An
+> > > > > > > additional CPUIDLE_STATE_DISABLED_ flag could be used for that I
+> > > > > > > suppose and it could be set via cpuidle_suspend() called from the core
+> > > > > > > next to cpufreq_suspend().
+> > > > > >
+> > > > > > cpuidle_suspend() would then need to go and fetch the cpuidle driver
+> > > > > > instance, which in some cases is one driver per CPU. Doesn't that get
+> > > > > > rather messy?
+> > > > >
+> > > > > Per-CPU variables are used for that, so it is quite straightforward.
+> > > > >
+> > > > > > Additionally, since find_deepest_state() is being called for
+> > > > > > cpuidle_enter_s2idle() too, we would need to treat the new
+> > > > > > CPUIDLE_STATE_DISABLED_ flag in a special way, right?
+> > > > >
+> > > > > No, it already checks "disabled".
+> > > >
+> > > > Yes, but that would be wrong.
+> > >
+> > > Hmmm.
+> > >
+> > > > The use case I want to support, for cpuidle-psci, is to allow all idle
+> > > > states in suspend-to-idle,
+> > >
+> > > So does PM-runtime work in suspend-to-idle?  How?
 > >
-> > to:
+> > No it doesn't. See below.
 > >
-> >   PCIE_MT7621
-> >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-> >   drivers/pci/controller/pcie-mt7621.c
+> > >
+> > > > but prevent those that rely on runtime PM
+> > > > (after it has been disabled) for the regular idle path.
+> > >
+> > > Do you have a special suspend-to-idle handling of those states that
+> > > doesn't require PM-runtime?
 > >
-> > We have a mix of these, with many of the early PCIe drivers being
-> > named "pci", but I think that was my mistake and there's no reason to
-> > continue it.
-> 
-> I see.
-> 
-> >
-> > I can do this locally unless somebody objects.
-> 
-> I have no problem at all. Only one question. Do you mean to change
-> compatible string also, or only the name of the file? Let me know if I
-> have to do anything.
+> > Yes. Feel free to have a look in __psci_enter_domain_idle_state().
+>
+> So in theory you could check the pm_runtime_put_sync_suspend() return
+> value and fall back to something like WFI if that's an error code.
 
-I didn't change the compatible string, to avoid a DT incompatibility.
-But I *did* change the Kconfig symbol to PCIE_MT7621, which could
-require changes to out-of-tree .configs.  I'm open to suggestions
-either way for both things.
+I have already tried that, but it simply got too complicated. The main
+issue was that runtime PM could become disabled for the device in the
+middle of executing the ->enter() callback.
+
+For example, if pm_runtime_get_sync() fails, I still need to make sure
+the reference counting in genpd becomes correct - and I can't do that
+using dev_pm_genpd_resume(). That's because it's not designed to be
+called in this "unknown" suspend phase, but should be called after the
+noirq phase and be properly balanced with dev_pm_genpd_suspend().
+
+In other words, the error path didn't work out for me.
+
+[...]
+
+Kind regards
+Uffe
