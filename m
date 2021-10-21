@@ -2,110 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9934368EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2914368F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhJURVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
+        id S232046AbhJURXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhJURVR (ORCPT
+        with ESMTP id S229567AbhJURXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:21:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0977C061764;
-        Thu, 21 Oct 2021 10:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AD7baqDv7qcOXIpKfV7ERWwjC0Jt5iI28VcJ9GrCqks=; b=rZTla/b7wEl07NyABgcNxY4UWI
-        6JYo0XaNvaYZ3UxR5KpgG/qNARinza7TjgaNGaBeO6CX8cPtGObHKiCHqQzQRzg3r0K5hun+hUiQB
-        JBYk+83/2/jiTN5s0tLuOeMdhxRuCu/eFq5Uh74WlzeOFtcncBfRQlntYmi6Hjge9bFsOrBo5NfSo
-        XWcjBM8locwogPOgmFNCI/tOpS93yC7LWUUkPEccW+0rf2d92TnZ83zCop52oeZpWZYchrbZY+1ue
-        pIG/OXVZDujhVNGknKs5lBF2owxKIDNKvMZQ57PWscfx06l4OwXv8Hu0JGDOEJzOZsyB2ktlNSET7
-        oVfNOJ5g==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdbiJ-008UQT-NH; Thu, 21 Oct 2021 17:18:47 +0000
-Date:   Thu, 21 Oct 2021 10:18:47 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YXGg95OcaR+5ktAZ@bombadil.infradead.org>
-References: <YWm68xUnAofop3PZ@bombadil.infradead.org>
- <YWq3Z++uoJ/kcp+3@T590>
- <YW3LuzaPhW96jSBK@bombadil.infradead.org>
- <YW4uwep3BCe9Vxq8@T590>
- <YW7kFXlzRrvwzARP@bombadil.infradead.org>
- <YW7ygbLAwm2/LZFl@T590>
- <YW8eSq2B+5FtOLZb@bombadil.infradead.org>
- <YW9tqPunx5bssxIz@T590>
- <YXA6NMhwoiIMeHji@bombadil.infradead.org>
- <YXC2qcx/RlLwjrKx@T590>
+        Thu, 21 Oct 2021 13:23:15 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2794FC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:20:59 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mdbkJ-0004MS-WF; Thu, 21 Oct 2021 19:20:52 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mdbkG-0003Xy-Ud; Thu, 21 Oct 2021 19:20:48 +0200
+Date:   Thu, 21 Oct 2021 19:20:48 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Petr Benes <petrben@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>,
+        linux-pm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
+Message-ID: <20211021172048.GE2298@pengutronix.de>
+References: <20211019130809.21281-1-o.rempel@pengutronix.de>
+ <20211020050459.GE16320@pengutronix.de>
+ <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YXC2qcx/RlLwjrKx@T590>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 19:12:24 up 245 days, 20:36, 111 users,  load average: 0.18, 0.25,
+ 0.25
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 08:39:05AM +0800, Ming Lei wrote:
-> On Wed, Oct 20, 2021 at 08:48:04AM -0700, Luis Chamberlain wrote:
-> > A second series of tests is hitting CTRL-C on either randonly and
-> > restarting testing once again randomly.
-> 
-> ltp/zram02.sh has cleanup handler via trap to clean everything(swapoff/umount/reset/
-> rmmod), ctrl-c will terminate current forground task and cause shell to run the
-> cleanup handler first, but further 'ctrl-c' will terminate the cleanup handler,
-> then the cleanup won't be done completely, such as zram disk is left as swap
-> device and zram can't be unloaded. The idea can be observed via the following
-> script:
-> 
-> 	#!/bin/bash
-> 	trap 'echo "enter trap"; sleep 20; echo "exit trap";' INT
-> 	sleep 30
-> 
-> After the above script is run foreground, when 1st ctrl-c is pressed, 'sleep 30'
-> is terminated, then the trap command is run, so you can see "enter trap"
-> dumped. Then if you pressed 2nd ctrl-c, 'sleep 20' is terminated immediately.
-> So 'swapoff' from zram02.sh's trap function can be terminated in this way.
-> 
-> zram disk being left as swap disk can be observed with your patch too
-> after terminating via multiple ctrl-c which has to be done this way because
-> the test is dead loop.
-> 
-> So it is hard to cleanup everything completely after multiple 'CTRL-C' is
-> involved, and it should be impossible. It needs violent multiple ctrl-c to
-> terminate the dealoop test.
-> 
-> So it isn't reasonable to expect that zram can be always unloaded successfully
-> after the test script is terminated via multiple ctrl-c.
+Hi Petr,
 
-For the life of me, I do not run into these issue with my patch. But
-with yours I had.
+On Wed, Oct 20, 2021 at 05:53:03PM +0200, Petr Benes wrote:
+> On Wed, 20 Oct 2021 at 07:05, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> >
+> > Hi Petr and Michal,
+> >
+> > I forgot to add you for v2 in CC. Please test/review this version.
+> 
+> Hi Oleksij,
+> 
+> It works good. with PM as well as without PM. The only minor issue I found is,
+> that the first temperature reading (when the driver probes) fails. That is
+> (val & soc_data->temp_valid_mask) == 0) holds true. How does
+> pm_runtime_resume_and_get() behave in imx_thermal_probe()?
+> Does it go through imx_thermal_runtime_resume() with usleep_range()?
 
-To be clear, I run zram02.sh on two terminals. Then to interrupt I just leave
-CTRL-C pressed to issue multiple terminations until the script is done
-on each terminal at a time, until I see both have completed.
+How exactly did you reproduce it? Even more or less understanding how
+this can potentially happen, i never had this issue on my HW. Is it something
+HW specific?
 
-I repeat the same test, noting always that when I start one one terminal
-the test is succeeding. And also when I cancel completely one script the
-test continue fine without issue.
+Even after executing this command:
+echo disabled > /sys/class/thermal/thermal_zone0/mode
+cat /sys/class/thermal/thermal_zone0/temp
 
-> But zram can be unloaded after running swapoff manually, from driver
-> viewpoint, nothing is wrong.
+In this case, IRQ is disabled and on each manual temp read, driver starts
+actively using runtime PM. I still never get (val & soc_data->temp_valid_mask)
+== 0)..
 
-I had not run into that issue with my patch FWIW.
+> >
+> > On Tue, Oct 19, 2021 at 03:08:09PM +0200, Oleksij Rempel wrote:
+> > > Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
+> > > data to decide whether to run a measurement") this driver stared using
+> > > irq_enabled flag to make decision to power on/off the thermal core. This
+> > > triggered a regression, where after reaching critical temperature, alarm
+> > > IRQ handler set irq_enabled to false,  disabled thermal core and was not
+> > > able read temperature and disable cooling sequence.
+> > >
+> > > In case the cooling device is "CPU/GPU freq", the system will run with
+> > > reduce performance until next reboot.
+> > >
+> > > To solve this issue, we need to move all parts implementing hand made
+> > > runtime power management and let it handle actual runtime PM framework.
+> > >
+> > > Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
+> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > > ---
+> > >  drivers/thermal/imx_thermal.c | 143 +++++++++++++++++++++-------------
+> > >  1 file changed, 89 insertions(+), 54 deletions(-)
+> > >
+> > > diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+> > > index 2c7473d86a59..cb5a4354fc75 100644
+> > > --- a/drivers/thermal/imx_thermal.c
+> > > +++ b/drivers/thermal/imx_thermal.c
+> > > @@ -15,6 +15,7 @@
+> > >  #include <linux/regmap.h>
+> > >  #include <linux/thermal.h>
+> > >  #include <linux/nvmem-consumer.h>
+> > > +#include <linux/pm_runtime.h>
+> > >
+> > >  #define REG_SET              0x4
+> > >  #define REG_CLR              0x8
+> > > @@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
+> > >  };
+> > >
+> > >  struct imx_thermal_data {
+> > > +     struct device *dev;
+> > >       struct cpufreq_policy *policy;
+> > >       struct thermal_zone_device *tz;
+> > >       struct thermal_cooling_device *cdev;
+> > > @@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+> > >       const struct thermal_soc_data *soc_data = data->socdata;
+> > >       struct regmap *map = data->tempmon;
+> > >       unsigned int n_meas;
+> > > -     bool wait, run_measurement;
+> > >       u32 val;
+> > > +     int ret;
+> > >
+> > > -     run_measurement = !data->irq_enabled;
+> > > -     if (!run_measurement) {
+> > > -             /* Check if a measurement is currently in progress */
+> > > -             regmap_read(map, soc_data->temp_data, &val);
+> > > -             wait = !(val & soc_data->temp_valid_mask);
+> > > -     } else {
+> > > -             /*
+> > > -              * Every time we measure the temperature, we will power on the
+> > > -              * temperature sensor, enable measurements, take a reading,
+> > > -              * disable measurements, power off the temperature sensor.
+> > > -              */
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > > -                         soc_data->power_down_mask);
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > > -                         soc_data->measure_temp_mask);
+> > > -
+> > > -             wait = true;
+> > > -     }
+> > > -
+> > > -     /*
+> > > -      * According to the temp sensor designers, it may require up to ~17us
+> > > -      * to complete a measurement.
+> > > -      */
+> > > -     if (wait)
+> > > -             usleep_range(20, 50);
+> > > +     ret = pm_runtime_resume_and_get(data->dev);
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > >
+> > >       regmap_read(map, soc_data->temp_data, &val);
+> > >
+> > > -     if (run_measurement) {
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > > -                          soc_data->measure_temp_mask);
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > > -                          soc_data->power_down_mask);
+> > > -     }
+> > > -
+> > >       if ((val & soc_data->temp_valid_mask) == 0) {
+> > >               dev_dbg(&tz->device, "temp measurement never finished\n");
+> > >               return -EAGAIN;
+> > > @@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+> > >               enable_irq(data->irq);
+> > >       }
+> > >
+> > > +     pm_runtime_put(data->dev);
+> > > +
+> > >       return 0;
+> > >  }
+> > >
+> > > @@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
+> > >                          enum thermal_device_mode mode)
+> > >  {
+> > >       struct imx_thermal_data *data = tz->devdata;
+> > > -     struct regmap *map = data->tempmon;
+> > > -     const struct thermal_soc_data *soc_data = data->socdata;
+> > >
+> > >       if (mode == THERMAL_DEVICE_ENABLED) {
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > > -                          soc_data->power_down_mask);
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > > -                          soc_data->measure_temp_mask);
+> > > +             pm_runtime_get(data->dev);
+> > >
+> > >               if (!data->irq_enabled) {
+> > >                       data->irq_enabled = true;
+> > >                       enable_irq(data->irq);
+> > >               }
+> > >       } else {
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > > -                          soc_data->measure_temp_mask);
+> > > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > > -                          soc_data->power_down_mask);
+> > > +             pm_runtime_put(data->dev);
+> > >
+> > >               if (data->irq_enabled) {
+> > >                       disable_irq(data->irq);
+> > > @@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+> > >                            int temp)
+> > >  {
+> > >       struct imx_thermal_data *data = tz->devdata;
+> > > +     int ret;
+> > > +
+> > > +     ret = pm_runtime_resume_and_get(data->dev);
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > >
+> > >       /* do not allow changing critical threshold */
+> > >       if (trip == IMX_TRIP_CRITICAL)
+> > > @@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+> > >
+> > >       imx_set_alarm_temp(data, temp);
+> > >
+> > > +     pm_runtime_put(data->dev);
+> > > +
+> > >       return 0;
+> > >  }
+> > >
+> > > @@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> > >       if (!data)
+> > >               return -ENOMEM;
+> > >
+> > > +     data->dev = &pdev->dev;
+> > > +
+> > >       map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
+> > >       if (IS_ERR(map)) {
+> > >               ret = PTR_ERR(map);
+> > > @@ -801,6 +777,14 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> > >       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+> > >                    data->socdata->measure_temp_mask);
+> > >
+> > > +     /* the core was configured and enabled just before */
+> > > +     pm_runtime_set_active(&pdev->dev);
+> > > +     pm_runtime_enable(data->dev);
+> > > +
+> > > +     ret = pm_runtime_resume_and_get(data->dev);
+> > > +     if (ret < 0)
+> > > +             goto disable_runtime_pm;
+> > > +
+> > >       data->irq_enabled = true;
+> > >       ret = thermal_zone_device_enable(data->tz);
+> > >       if (ret)
+> > > @@ -814,10 +798,15 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> > >               goto thermal_zone_unregister;
+> > >       }
+> > >
+> > > +     pm_runtime_put(data->dev);
+> > > +
+> > >       return 0;
+> > >
+> > >  thermal_zone_unregister:
+> > >       thermal_zone_device_unregister(data->tz);
+> > > +disable_runtime_pm:
+> > > +     pm_runtime_put_noidle(data->dev);
+> > > +     pm_runtime_disable(data->dev);
+> > >  clk_disable:
+> > >       clk_disable_unprepare(data->thermal_clk);
+> > >  legacy_cleanup:
+> > > @@ -829,13 +818,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> > >  static int imx_thermal_remove(struct platform_device *pdev)
+> > >  {
+> > >       struct imx_thermal_data *data = platform_get_drvdata(pdev);
+> > > -     struct regmap *map = data->tempmon;
+> > >
+> > > -     /* Disable measurements */
+> > > -     regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+> > > -                  data->socdata->power_down_mask);
+> > > -     if (!IS_ERR(data->thermal_clk))
+> > > -             clk_disable_unprepare(data->thermal_clk);
+> > > +     pm_runtime_put_noidle(data->dev);
+> > > +     pm_runtime_disable(data->dev);
+> > >
+> > >       thermal_zone_device_unregister(data->tz);
+> > >       imx_thermal_unregister_legacy_cooling(data);
+> > > @@ -858,29 +843,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
+> > >       ret = thermal_zone_device_disable(data->tz);
+> > >       if (ret)
+> > >               return ret;
+> > > +
+> > > +     return pm_runtime_force_suspend(data->dev);
+> > > +}
+> > > +
+> > > +static int __maybe_unused imx_thermal_resume(struct device *dev)
+> > > +{
+> > > +     struct imx_thermal_data *data = dev_get_drvdata(dev);
+> > > +     int ret;
+> > > +
+> > > +     ret = pm_runtime_force_resume(data->dev);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +     /* Enabled thermal sensor after resume */
+> > > +     return thermal_zone_device_enable(data->tz);
+> > > +}
+> > > +
+> > > +static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
+> > > +{
+> > > +     struct imx_thermal_data *data = dev_get_drvdata(dev);
+> > > +     const struct thermal_soc_data *socdata = data->socdata;
+> > > +     struct regmap *map = data->tempmon;
+> > > +     int ret;
+> > > +
+> > > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
+> > > +                        socdata->measure_temp_mask);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
+> > > +                        socdata->power_down_mask);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > >       clk_disable_unprepare(data->thermal_clk);
+> > >
+> > >       return 0;
+> > >  }
+> > >
+> > > -static int __maybe_unused imx_thermal_resume(struct device *dev)
+> > > +static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
+> > >  {
+> > >       struct imx_thermal_data *data = dev_get_drvdata(dev);
+> > > +     const struct thermal_soc_data *socdata = data->socdata;
+> > > +     struct regmap *map = data->tempmon;
+> > >       int ret;
+> > >
+> > >       ret = clk_prepare_enable(data->thermal_clk);
+> > >       if (ret)
+> > >               return ret;
+> > > -     /* Enabled thermal sensor after resume */
+> > > -     ret = thermal_zone_device_enable(data->tz);
+> > > +
+> > > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
+> > > +                        socdata->power_down_mask);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
+> > > +                        socdata->measure_temp_mask);
+> > >       if (ret)
+> > >               return ret;
+> > >
+> > > +     /*
+> > > +      * According to the temp sensor designers, it may require up to ~17us
+> > > +      * to complete a measurement.
+> > > +      */
+> > > +     usleep_range(20, 50);
+> > > +
+> > >       return 0;
+> > >  }
+> > >
+> > > -static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
+> > > -                      imx_thermal_suspend, imx_thermal_resume);
+> > > +static const struct dev_pm_ops imx_thermal_pm_ops = {
+> > > +     SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
+> > > +     SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
+> > > +                        imx_thermal_runtime_resume, NULL)
+> > > +};
+> > >
+> > >  static struct platform_driver imx_thermal = {
+> > >       .driver = {
+> > > --
+> > > 2.30.2
+> > >
+> > >
+> >
+> > --
+> > Pengutronix e.K.                           |                             |
+> > Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
+> 
 
-  Luis
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
