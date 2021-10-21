@@ -2,220 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B922E436764
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73E4436766
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhJUQRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
+        id S231890AbhJUQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbhJUQRK (ORCPT
+        with ESMTP id S231758AbhJUQRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:17:10 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E8BC061764;
-        Thu, 21 Oct 2021 09:14:53 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id n15-20020a4ad12f000000b002b6e3e5fd5dso291649oor.1;
-        Thu, 21 Oct 2021 09:14:53 -0700 (PDT)
+        Thu, 21 Oct 2021 12:17:24 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A43C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:15:08 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id y4so801610plb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:15:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DIh//B5cX1tKK5aGoOXZngVHy7BzhIgL1SIq8cnhHfY=;
-        b=o37UJBQDncXEBd5vrXBj0UWO6ciPDAi55NQalChRiuYPhsjZCn3mXvT1/OX1CFhQv2
-         msXajTRYAB/qK8JjzNopTH6rTCi+lWRpe+KJaw0+6+CDpJepZhV/klp8lcS4YOQLIsf3
-         SoMm4jmhQYEcc2ZShrtC6uETjWaBIVybWiqiYzSuw/VTIoEmRc1i4wDqkU9+40tz+F0V
-         vRlGHBe6sLOp04+xLUJ1cZacNkLcXG2wIzShJYoyUua23SZtN9qDuJzS5UetqGdeVwUL
-         VMX8OsLrFlRZwFL8cZOLiLIT+fmKe9sI3vpHNAAvnUvL4LiWGsBsxOKGJ/4rYxqJoKFc
-         GR4w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BnP3QIjaR7JnabL4Ln7V26GIHfumLzivJQweHaSc0TY=;
+        b=UBKO7odzSPY8clMHdQmGPBJ+ZxoNV2g6Yb6uDXVIZfwmaI1U55bkabRNRsh+BmuTzy
+         Q/cP/XunCz/WKkEz6QDvY1kE8YqvVgF0YBumI3W/ovL+ELAwUf5lida08f566HsMG4GF
+         Ftg7LzdrVIvFSmkqKjhWVGXItAnkAA07iJIbc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=DIh//B5cX1tKK5aGoOXZngVHy7BzhIgL1SIq8cnhHfY=;
-        b=GNiRmpN3jtmq7X70VDUWcgk8yaGUqrkONGw3rhIjxOQMGms1IJEQboUKZu+8nv2oBy
-         y5ZLe2KdUnXGBbV5RrZAVh1sy0DLqOSPqMkSWsNDczCj4qLCSCTDdVAb1kU9hkhUSZjX
-         d1a282FT30J/HK9iaqAM2iFnBjLsIYS5x07PgIYx2cSfMoeOtDsB5HsqSsSxra6tqcth
-         6e9Ilp/x/AmcoHmd/IGDjFLbj0Q5HofrC6eoBfvlWfhB4M0KLN4N3UhbN5T4+TXfmIg+
-         7a5KRsqoYAj0GcS7vipNgW8ahax8k9c6ocZblpU0Ssi++RTPY+v6Rz6F93yi/yLnk2V7
-         hmfQ==
-X-Gm-Message-State: AOAM533MpzZCBdoTzJ/6pFa1Ss2Yiq9oy3OMKcuz34syWiWMzN9O5mhB
-        4iwtGCSqvt4wkKFqicV8DkcRqS03K1I=
-X-Google-Smtp-Source: ABdhPJwiJfToecHrUR/4VzYhdwb2JS4vKPmBtooc9KwB892AJwrl16almOzMukN+moe4HLFv5vO/Tw==
-X-Received: by 2002:a4a:de10:: with SMTP id y16mr5184275oot.4.1634832892837;
-        Thu, 21 Oct 2021 09:14:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x28sm1217625ote.24.2021.10.21.09.14.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BnP3QIjaR7JnabL4Ln7V26GIHfumLzivJQweHaSc0TY=;
+        b=fQ1r3a7dQC5YEI/Mu98/EVXSxEqOE8ox/mbAc2tBvmHnjCDvWH9WAD7UFLHyW+my4P
+         je8VTuF9VUxrjB9SV+Hi62DJ1HsYgKlS+yDmuHya3gnro8XBCZyPxog4i9Yp3jxnmU+b
+         8/EgHmCfmtoS6NsCbFb4xvCNR0Ff+wx0V3jMZNS+Yv+Zw+/47SrjIx6scVclTtmhZnpJ
+         zyHFSj+Z8oJQ/MwCvkcVzZ2TOz48r7CSThGZDGvMRR2cmCEelq/WTHRmUpldF6EAIPRE
+         aUmt4eap5Qhu4gl+c7nYoCQ6+Hu9KHNqkzCKGzcyFQJ46smbKIzZFBULFzQRA5YUvTq8
+         3Ghw==
+X-Gm-Message-State: AOAM533wOmSlX7dAgHOCeIojettau/UvONEZXEaydFshVrHavVpuDLCk
+        jkYvEAlZy509UilYOL+lGhGMMu9F7t01yg==
+X-Google-Smtp-Source: ABdhPJykgSiYSFIaI8VWViajINK0UvEIyr8C/qc98WFBSnIZbY7yo5tECp223FmUgtnvEXPDO6U6rg==
+X-Received: by 2002:a17:902:8a97:b0:13e:6e77:af59 with SMTP id p23-20020a1709028a9700b0013e6e77af59mr6092858plo.4.1634832907872;
+        Thu, 21 Oct 2021 09:15:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u24sm5865109pgo.73.2021.10.21.09.15.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:14:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jean Delvare <jdelvare@suse.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        "David T . Wilson" <david.wilson@nasa.gov>
-Subject: [PATCH v2 3/3] hwmon: (tmp401) Drop support for TMP461
-Date:   Thu, 21 Oct 2021 09:14:44 -0700
-Message-Id: <20211021161444.3145112-3-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211021161444.3145112-1-linux@roeck-us.net>
-References: <20211021161444.3145112-1-linux@roeck-us.net>
+        Thu, 21 Oct 2021 09:15:07 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 09:15:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, H Peter Anvin <hpa@zytor.com>
+Subject: Re: [PATCH 09/20] signal/vm86_32: Replace open coded BUG_ON with an
+ actual BUG_ON
+Message-ID: <202110210914.59245E29CF@keescook>
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-9-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020174406.17889-9-ebiederm@xmission.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TMP461 is almost identical to TMP451, which is already supported by the
-lm90 driver. At the same time, unlike other sensors from the TMP401
-compatible series, it only supports 8-bit temperature read operations,
-it supports negative temperatures when configured for its default
-temperature range, and it supports a temperature offset register.
-Supporting this chip in the tmp401 driver adds unnecessary complexity.
-Remove its support from this driver and support the chip with the lm90
-driver instead.
+On Wed, Oct 20, 2021 at 12:43:55PM -0500, Eric W. Biederman wrote:
+> The function save_v86_state is only called when userspace was
+> operating in vm86 mode before entering the kernel.  Not having vm86
+> state in the task_struct should never happen.  So transform the hand
+> rolled BUG_ON into an actual BUG_ON to make it clear what is
+> happening.
 
-Fixes: 24333ac26d01 ("hwmon: (tmp401) use smb word operations instead of 2 smb byte operations")
-Reported-by: David T. Wilson <david.wilson@nasa.gov>
-Cc: David T. Wilson <david.wilson@nasa.gov>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Explain additional limitations of tmp401 driver which are affecting
-    TMP461
+If this is actually not a state userspace can put itself into:
 
- Documentation/hwmon/tmp401.rst | 15 +--------------
- drivers/hwmon/Kconfig          |  2 +-
- drivers/hwmon/tmp401.c         | 25 ++-----------------------
- 3 files changed, 4 insertions(+), 38 deletions(-)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/Documentation/hwmon/tmp401.rst b/Documentation/hwmon/tmp401.rst
-index 14bf1fbf4493..3aacf3d3bdf3 100644
---- a/Documentation/hwmon/tmp401.rst
-+++ b/Documentation/hwmon/tmp401.rst
-@@ -43,12 +43,6 @@ Supported chips:
- 
-     Datasheet: http://focus.ti.com/docs/prod/folders/print/tmp435.html
- 
--  * Texas Instruments TMP461
--
--    Prefix: 'tmp461'
--
--    Datasheet: https://www.ti.com/product/tmp461
--
- 
- 
- Authors:
-@@ -60,7 +54,7 @@ Description
- -----------
- 
- This driver implements support for Texas Instruments TMP401, TMP411,
--TMP431, TMP432, TMP435, and TMP461 chips. These chips implement one or two
-+TMP431, TMP432, and TMP435 chips. These chips implement one or two
- remote and one local temperature sensors. Temperature is measured in degrees
- Celsius. Resolution of the remote sensor is 0.0625 degree. Local
- sensor resolution can be set to 0.5, 0.25, 0.125 or 0.0625 degree (not
-@@ -84,10 +78,3 @@ some additional features.
- 
- TMP432 is compatible with TMP401 and TMP431. It supports two external
- temperature sensors.
--
--TMP461 is compatible with TMP401. It supports offset correction
--that is applied to the remote sensor.
--
--* Sensor offset values are temperature values
--
--  Exported via sysfs attribute tempX_offset
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index ccdaeafed0bb..feff41444f05 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1930,7 +1930,7 @@ config SENSORS_TMP401
- 	depends on I2C
- 	help
- 	  If you say yes here you get support for Texas Instruments TMP401,
--	  TMP411, TMP431, TMP432, TMP435, and TMP461 temperature sensor chips.
-+	  TMP411, TMP431, TMP432, and TMP435 temperature sensor chips.
- 
- 	  This driver can also be built as a module. If so, the module
- 	  will be called tmp401.
-diff --git a/drivers/hwmon/tmp401.c b/drivers/hwmon/tmp401.c
-index 9dc210b55e69..cd72755ec8f7 100644
---- a/drivers/hwmon/tmp401.c
-+++ b/drivers/hwmon/tmp401.c
-@@ -34,7 +34,7 @@
- static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4c, 0x4d,
- 	0x4e, 0x4f, I2C_CLIENT_END };
- 
--enum chips { tmp401, tmp411, tmp431, tmp432, tmp435, tmp461 };
-+enum chips { tmp401, tmp411, tmp431, tmp432, tmp435 };
- 
- /*
-  * The TMP401 registers, note some registers have different addresses for
-@@ -56,7 +56,6 @@ static const u8 TMP401_TEMP_MSB_READ[7][2] = {
- 	{ 0x20, 0x19 },	/* therm (crit) limit */
- 	{ 0x30, 0x34 },	/* lowest */
- 	{ 0x32, 0x36 },	/* highest */
--	{ 0, 0x11 },	/* offset */
- };
- 
- static const u8 TMP401_TEMP_MSB_WRITE[7][2] = {
-@@ -66,7 +65,6 @@ static const u8 TMP401_TEMP_MSB_WRITE[7][2] = {
- 	{ 0x20, 0x19 },	/* therm (crit) limit */
- 	{ 0x30, 0x34 },	/* lowest */
- 	{ 0x32, 0x36 },	/* highest */
--	{ 0, 0x11 },	/* offset */
- };
- 
- static const u8 TMP432_TEMP_MSB_READ[4][3] = {
-@@ -123,7 +121,6 @@ static const struct i2c_device_id tmp401_id[] = {
- 	{ "tmp431", tmp431 },
- 	{ "tmp432", tmp432 },
- 	{ "tmp435", tmp435 },
--	{ "tmp461", tmp461 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, tmp401_id);
-@@ -570,21 +567,6 @@ static const struct attribute_group tmp432_group = {
- 	.attrs = tmp432_attributes,
- };
- 
--/*
-- * Additional features of the TMP461 chip.
-- * The TMP461 temperature offset for the remote channel.
-- */
--static SENSOR_DEVICE_ATTR_2_RW(temp2_offset, temp, 6, 1);
--
--static struct attribute *tmp461_attributes[] = {
--	&sensor_dev_attr_temp2_offset.dev_attr.attr,
--	NULL
--};
--
--static const struct attribute_group tmp461_group = {
--	.attrs = tmp461_attributes,
--};
--
- /*
-  * Begin non sysfs callback code (aka Real code)
-  */
-@@ -686,7 +668,7 @@ static int tmp401_detect(struct i2c_client *client,
- static int tmp401_probe(struct i2c_client *client)
- {
- 	static const char * const names[] = {
--		"TMP401", "TMP411", "TMP431", "TMP432", "TMP435", "TMP461"
-+		"TMP401", "TMP411", "TMP431", "TMP432", "TMP435"
- 	};
- 	struct device *dev = &client->dev;
- 	struct device *hwmon_dev;
-@@ -717,9 +699,6 @@ static int tmp401_probe(struct i2c_client *client)
- 	if (data->kind == tmp432)
- 		data->groups[groups++] = &tmp432_group;
- 
--	if (data->kind == tmp461)
--		data->groups[groups++] = &tmp461_group;
--
- 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
- 							   data, data->groups);
- 	if (IS_ERR(hwmon_dev))
+Otherwise, this should be a WARN+kill.
+
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: H Peter Anvin <hpa@zytor.com>
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  arch/x86/kernel/vm86_32.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
+> index e5a7a10a0164..63486da77272 100644
+> --- a/arch/x86/kernel/vm86_32.c
+> +++ b/arch/x86/kernel/vm86_32.c
+> @@ -106,10 +106,8 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+>  	 */
+>  	local_irq_enable();
+>  
+> -	if (!vm86 || !vm86->user_vm86) {
+> -		pr_alert("no user_vm86: BAD\n");
+> -		do_exit(SIGSEGV);
+> -	}
+> +	BUG_ON(!vm86 || !vm86->user_vm86);
+> +
+>  	set_flags(regs->pt.flags, VEFLAGS, X86_EFLAGS_VIF | vm86->veflags_mask);
+>  	user = vm86->user_vm86;
+>  
+> -- 
+> 2.20.1
+> 
+
 -- 
-2.33.0
-
+Kees Cook
