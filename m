@@ -2,84 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309604365D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75E74365D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhJUPUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:20:53 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:41673 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUPUv (ORCPT
+        id S231396AbhJUPVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230072AbhJUPVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:20:51 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MTzjI-1mDpl53KLK-00R0pi; Thu, 21 Oct 2021 17:18:33 +0200
-Received: by mail-wr1-f54.google.com with SMTP id m22so160814wrb.0;
-        Thu, 21 Oct 2021 08:18:33 -0700 (PDT)
-X-Gm-Message-State: AOAM533Ol4Rd6uSfF7F9fwTBmQ6amkvo/Ty7Cr1RfJDYi9kodtnx7GVu
-        i+rah/1nhstCPxm39Pw1vyHuyCnyr6V3KYmW090=
-X-Google-Smtp-Source: ABdhPJzubqshEiLe+W75XqiMDuKS74vXTaVdmhaIE7BX2wz7LJCvkZXMHN8SDJ7n99D+gIARU+bX3b9fQpoTH7B8Bao=
-X-Received: by 2002:adf:e292:: with SMTP id v18mr7748646wri.369.1634829513272;
- Thu, 21 Oct 2021 08:18:33 -0700 (PDT)
+        Thu, 21 Oct 2021 11:21:42 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE09EC061764;
+        Thu, 21 Oct 2021 08:19:26 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id w17so632607plg.9;
+        Thu, 21 Oct 2021 08:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qqnDqCjJmkwkqd0tn31z39TZlTbK4LZW1iNa62QCR2Q=;
+        b=M/8LCnv10ewNtUivz51HXcBWK6M0VB9kFf5a+WtqK7XOSKxrr1pryerPOEyB413IAZ
+         ExogKFflc0njjFMjEJusTcTGvZg44eISwwxw/J8CSPjR8pI7EOUnPsFNyh6ldXKoVu16
+         XH5N6LecXdiYNcMXCTsBc0jHEX8c/O1TvDdthlJhPM5HQk0Xad6fjCrINfY4Ilfy4HgB
+         2zeFrHw2ZE+m/QeyDjGF6lW8jx50xlYyyvY1zzjJ1T01JmbUgskTJa8o+OZZvcWQsuZF
+         MCvNps4TW4ejZHSBpqsWl2YJvLCpZAjh4lrZVclpLCkCYM+8rHXDL3YshzYFw4wg+hVM
+         /9xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qqnDqCjJmkwkqd0tn31z39TZlTbK4LZW1iNa62QCR2Q=;
+        b=4I/vGw1M624G8uo+DKO2R8Xv7McE795ZKcNB6byzNGO6ZkFB0Xl7/VeM3Lw+A3DJJt
+         eKIh8JkXFn0K7ifU/AlzLzARourB5cORfW/nL4tu5heN2HqNoKT2/+Uqf4A7m09GQ18+
+         c7ai8D38dCKb7c3pLbN1W8V1xW2e/gSDFfxLfOjFKa797Ikd0ZNXTDV36U+XMlzQJrPd
+         S95FD0RL2cEfUbo6yV9PDlRaxHXyLePuNZ6nOCCl3wOj7inlWarJ+1g9S7CANvZGQvY7
+         adRvSGzwgUCYZ8B9iB5x6ecjZhFPqV/5vJvp8c+5TDcp1WN9lRhj8ebeD8SoUk+XNRjq
+         MZPA==
+X-Gm-Message-State: AOAM531Icx738DpiMHs6GS/R25NzBSvH7J9aWBEyUlg3K+7Dol1f6MDq
+        aO8XWF7weqAEZKf6GP5FxK0=
+X-Google-Smtp-Source: ABdhPJxWG4HWHVbrBkYtNB1WueaH3dHRXvd0ib8tuJTqdS2XP+ju8Dy0G8bIm+dXVb370gRSNoJnnA==
+X-Received: by 2002:a17:90a:2acf:: with SMTP id i15mr3194179pjg.91.1634829566382;
+        Thu, 21 Oct 2021 08:19:26 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:29a4:d874:a949:6890:f95f])
+        by smtp.gmail.com with ESMTPSA id a27sm6466171pfl.20.2021.10.21.08.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:19:25 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:49:13 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH v3 17/25] PCI: vmd: Use RESPONSE_IS_PCI_ERROR() to check
+ read from hardware
+Message-ID: <20211021151913.nmnvfhqnyepnfok2@theprophet>
+References: <cover.1634825082.git.naveennaidu479@gmail.com>
+ <5be1fdfdcf4b4a453117ef4dea0f71c9555fac24.1634825082.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-References: <4a27b400-4fb1-bb7a-335a-ae1d084cdf73@canonical.com> <mhng-743556e6-a149-4301-8c4b-c14b3bf4d3d8@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-743556e6-a149-4301-8c4b-c14b3bf4d3d8@palmerdabbelt-glaptop>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 21 Oct 2021 17:18:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0dnRE4Sr-En-hPYbRAWAYgYZ7FBtC2h39RXggy=tA_HQ@mail.gmail.com>
-Message-ID: <CAK8P3a0dnRE4Sr-En-hPYbRAWAYgYZ7FBtC2h39RXggy=tA_HQ@mail.gmail.com>
-Subject: Re: [GIT PULL] riscv: dts: few cleanups for v5.16
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Conor.Dooley@microchip.com, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:UFAvS9CFkNwX4C04eNqJM0tbV5THijnsdNYt6Vsfjvf6biU02w4
- iGZnO4gMRz8G8JPB1S69IJZZhmfrASArN4VYUH0KzYm/HxcGQ7M4PkPALV6L+ZgzD0WZSEk
- Xn1F5tPf8bkn9frLKfqStG+rpl3sAPgF64FMUra7YUcpX99dMv5gjnYTBlJsE2OQp2nO7Nw
- pHfR68DwkEOv/usrOwx1A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bpCer9h28mM=:ILudqA/Sg0IJPSOcm44a1t
- YOba41b6ObCPMUP16QRo8JfXQjJj0dNyS0+HEbZ0XBiO3UQe8pqrXFzeLyXnh0zAgtV8mVd9n
- PFwcSsMtdFdSe2QQ9/psu9qQGk+JVWJRuDSEi27lPRXFuztvAtwN9Pa3uI/MS/cQ/Bkp6XFM9
- o21dv9aB6k31MMBiTG1R7Xs9SuIg+gOiRt5hOGII4VpqFQzwpDFNLfSwGowVwA1K2DNMs3X+X
- jZ+W9p3p0oYrL1yJ+2UI+pn4WU2V9QO6SoAV9B99gsGyjoAROE9MNBDDxR2M/sfuJME67Bvc8
- OJhd8ckBGsu/ApGYpgd6tAHkAtPa4vYoJtvHM2tpivqVu384JPuKI/DUGBnO1KbmS2TgTYpXU
- iLp5Zj9ZEhicPTNAhj2gk4z60hmWPo9Qrkz5f2oKdQBE8cxtwOwfffB4iUThtN7zrAXG+lGcH
- lt34WRUpgeEY1/kBxhpXQ4XoijYKW5KM/6t868vtTQofik/FJmcITnzYSid9F6kRz5PEXngzy
- UD1gMk+bKknRfKggzAoqngSLmuTg5S1uVJTlGDin3BKrZuoqTNH3frmQ1DKhPek/7bKpIF1kK
- lX7DkF3u677dmR0C8JfnTLvoMUvpEFF9lyK/Ymtf2TPN79YehNpwpaOdL6jyd2E7XWhukN5Ar
- KpXRU7qFrPSLO3a/WCDSFzOyS+Rs9QOONq1VjWdw13zMH6ao/nn9/Ldbi3bjrbE34FNgEVMXS
- IFO7rNzgRl649HiycOB0fsOjNIcfcGsHfGOPQqMAUqJ5agXYoycpgwQVVQmxKPmgwOt8v2vLP
- Vk1PjAQngIkFtYCRGOGZXwPE51j7Yu3Av5XjZ1wA4y3102JHVY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5be1fdfdcf4b4a453117ef4dea0f71c9555fac24.1634825082.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 5:06 PM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
-> On Thu, 21 Oct 2021 06:09:50 PDT (-0700), krzysztof.kozlowski@canonical.com wrote:
-> >
-> > There is only one Microchip patch here (plic/clint). Others are for
-> > SiFive. All the patches are described in the pull reqeust:
-> > https://lore.kernel.org/lkml/20211021090955.115005-1-krzysztof.kozlowski@canonical.com/
-> >
-> > I had also second set of RISC-V patches for Microchip. These were picked
-> > up by Palmer:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/log/?h=for-next
->
-> Sorry I missed this.  If you guys took this through the SOC tree that's
-> fine, otherwise LMK and I'll put it in the RISC-V tree.
+On 21/10, Naveen Naidu wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error.  There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
+> 
+> Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
+> data from hardware.
+> 
+> This helps unify PCI error response checking and make error checks
+> consistent and easier to find.
+> 
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/controller/vmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index a5987e52700e..bfe6b002ffec 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -538,7 +538,7 @@ static int vmd_get_phys_offsets(struct vmd_dev *vmd, bool native_hint,
+>  		int ret;
+>  
+>  		ret = pci_read_config_dword(dev, PCI_REG_VMLOCK, &vmlock);
+> -		if (ret || vmlock == ~0)
+> +		if (ret || RESPONSE_IS_PCI_ERROR(vmlock))
+>  			return -ENODEV;
+>  
+>  		if (MB2_SHADOW_EN(vmlock)) {
+> -- 
+> 2.25.1
+> 
 
-I haven't merged it yet, please add it to your tree then.
+Jonathan, I haven't added your Reviewed-by tag to this patch which you
+gave in v1 of the series [1] , because the macro definition of the
+RESPONSE_IS_PCI_ERROR changed slightly, and I was not sure if you would
+be okay with it. I hope it was right thing to do, if not I apologize for
+that.
 
-        Arnd
+[1]:
+https://lore.kernel.org/linux-pci/f3aca934-7dee-b294-ad3c-264e773eddda@linux.dev/T/#u
+
+Thanks,
+Naveen
