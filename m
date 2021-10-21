@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A728F4369F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714204369F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbhJUSFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:05:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:45914 "EHLO foss.arm.com"
+        id S231723AbhJUSFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:05:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:45950 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232420AbhJUSFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:05:16 -0400
+        id S232481AbhJUSFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 14:05:20 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 719691477;
-        Thu, 21 Oct 2021 11:03:00 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11C74147A;
+        Thu, 21 Oct 2021 11:03:04 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 918193F70D;
-        Thu, 21 Oct 2021 11:02:57 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 34BDF3F70D;
+        Thu, 21 Oct 2021 11:03:01 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     aou@eecs.berkeley.edu, catalin.marinas@arm.com,
@@ -29,9 +29,9 @@ Cc:     aou@eecs.berkeley.edu, catalin.marinas@arm.com,
         stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
         torvalds@linux-foundation.org, tsbogend@alpha.franken.de,
         vgupta@kernel.org, will@kernel.org
-Subject: [PATCH 04/15] irq: simplify handle_domain_{irq,nmi}()
-Date:   Thu, 21 Oct 2021 19:02:25 +0100
-Message-Id: <20211021180236.37428-5-mark.rutland@arm.com>
+Subject: [PATCH 05/15] irq: add generic_handle_arch_irq()
+Date:   Thu, 21 Oct 2021 19:02:26 +0100
+Message-Id: <20211021180236.37428-6-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211021180236.37428-1-mark.rutland@arm.com>
 References: <20211021180236.37428-1-mark.rutland@arm.com>
@@ -39,74 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need for handle_domain_{irq,nmi}() to open-code the NULL
-check performed by handle_irq_desc(), nor the resolution of the desc
-performed by generic_handle_domain_irq().
+Several architectures select GENERIC_IRQ_MULTI_HANDLER and branch to
+handle_arch_irq() without performing any entry accounting.
 
-Use generic_handle_domain_irq() directly, as this is functioanlly
-equivalent and clearer. At the same time, delete the stale comments,
-which are no longer helpful.
+Add a generic wrapper to handle the commoon irqentry work when invoking
+handle_arch_irq(). Where an architecture needs to perform some entry
+accounting itself, it will need to invoke handle_arch_irq() itself.
 
-There should be no functional change as a result of this patch.
+In subsequent patches it will become the responsibilty of the entry code
+to set the irq regs when entering an IRQ (rather than deferring this to
+an irqchip handler), so generic_handle_arch_irq() is made to set the irq
+regs now. This can be redundant in some cases, but is never harmful as
+saving/restoring the old regs nests safely.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/irq/irqdesc.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+ kernel/irq/handle.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 4e3c29bb603c..b07d0e1552bc 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -690,17 +690,11 @@ int handle_domain_irq(struct irq_domain *domain,
- 		      unsigned int hwirq, struct pt_regs *regs)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
--	struct irq_desc *desc;
--	int ret = 0;
-+	int ret;
+diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
+index 221d80c31e94..27182003b879 100644
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -14,6 +14,8 @@
+ #include <linux/interrupt.h>
+ #include <linux/kernel_stat.h>
  
- 	irq_enter();
++#include <asm/irq_regs.h>
++
+ #include <trace/events/irq.h>
  
--	/* The irqdomain code provides boundary checks */
--	desc = irq_resolve_mapping(domain, hwirq);
--	if (likely(desc))
--		handle_irq_desc(desc);
--	else
--		ret = -EINVAL;
-+	ret = generic_handle_domain_irq(domain, hwirq);
- 
- 	irq_exit();
- 	set_irq_regs(old_regs);
-@@ -721,24 +715,14 @@ int handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq,
- 		      struct pt_regs *regs)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
--	struct irq_desc *desc;
--	int ret = 0;
-+	int ret;
- 
- 	/*
- 	 * NMI context needs to be setup earlier in order to deal with tracing.
- 	 */
- 	WARN_ON(!in_nmi());
- 
--	desc = irq_resolve_mapping(domain, hwirq);
--
--	/*
--	 * ack_bad_irq is not NMI-safe, just report
--	 * an invalid interrupt.
--	 */
--	if (likely(desc))
--		handle_irq_desc(desc);
--	else
--		ret = -EINVAL;
-+	ret = generic_handle_domain_irq(domain, hwirq);
- 
- 	set_irq_regs(old_regs);
- 	return ret;
+ #include "internals.h"
+@@ -226,4 +228,20 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
+ 	handle_arch_irq = handle_irq;
+ 	return 0;
+ }
++
++/**
++ * generic_handle_arch_irq - root irq handler for architectures which do no
++ *                           entry accounting themselves
++ * @regs:	Register file coming from the low-level handling code
++ */
++asmlinkage void noinstr generic_handle_arch_irq(struct pt_regs *regs)
++{
++	struct pt_regs *old_regs;
++
++	irq_enter();
++	old_regs = set_irq_regs(regs);
++	handle_arch_irq(regs);
++	set_irq_regs(old_regs);
++	irq_exit();
++}
+ #endif
 -- 
 2.11.0
 
