@@ -2,108 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD74F436B56
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B09436B58
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhJUTag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        id S231666AbhJUTb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhJUTaf (ORCPT
+        with ESMTP id S230020AbhJUTbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:30:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E547C061764;
-        Thu, 21 Oct 2021 12:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ah6tJ/K8JoWRacdQOxgJTH6v5sbKB3uRhwOaTR5QYnk=; b=TO+qex53zPoyAR+dMR11e+TjFj
-        o4lCRfpIQYOyED3lI6hhQl10wl/nygsONIRve2T5WHWCEqR/qEjyE5FsQeUKDmWenDTrZElks2S+m
-        0aiwwonrE+9nhU44MH6i9mhGx5iaQaTwgjekceN6lc7yKlwe8rtGgVfO8CVZQaluahUDcTxfxpWn7
-        BJF4X5pjBuZBeDo2V/7AqzcL47m95OfitnfwmqL5f80BJZwmZiNrjzfYBPrgKvyt4AfsEuCp03tLr
-        jeg4kBZtc8GZ1Rz5uXSVezdnFFUmV0K2ewnVM7xOi3o/veaN7RcByi6zcYQK6zDmfnQLGo2N/yl6A
-        QlHe5vfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mddhA-00DUhc-EN; Thu, 21 Oct 2021 19:26:01 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A0593986DD9; Thu, 21 Oct 2021 21:25:43 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 21:25:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync()
- vs NOHZ_FULL
-Message-ID: <20211021192543.GV174703@worktop.programming.kicks-ass.net>
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.186930629@infradead.org>
- <20211021183935.GA9071@fuller.cnet>
+        Thu, 21 Oct 2021 15:31:55 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73276C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:29:39 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id y4so1159441plb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1z4QCaWFWItz0HiCrhn3NpL1JJJMSCL5Ll9W/I5o9uE=;
+        b=OdaRbDaPo2OhWmCdY0A/P9sinBvj2bsSAL7UY+BVnSUoGocUmEBff//TPbeYAkAEb+
+         GwghVoBbJKHWdbX3NsUMOLJGLdeT+C88zXZspyr2tMo835mpbef5zPorPPxY+gzqPo8G
+         5Hlv3fXGTFcDQYzHSwaYr9tIYblJeypINwS7A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1z4QCaWFWItz0HiCrhn3NpL1JJJMSCL5Ll9W/I5o9uE=;
+        b=EnspcouSfhcAX9wEias5fptzwv6tbezFnGHMkSEwx0mUouDtQZU7tfkL/7rzMQFNDV
+         qAyGlJT5u8COleLDbi0XX0OQrAPt3LsKUTdG0oQV8gH8K65hHXDTCGdPg03hppAKyGYO
+         nFuWCRBQs6DVoBONXsC33bGl4QBJ2fvoCrGxCVCSeMAeraboNMAaz2xkI3wQaueA+c+o
+         ziXDprF4VZYOSCxGkYMBKa3M9O35AwHD5Sy3AsHWYfp79hcZ+LlnNqC9c/IaUfiyXsbd
+         jOB1uaXn4k25YMEb/01lVTclFDGCxW/pCKB1zNJc5iXzf4O/LNhdtczwj4jxu2HUHpKI
+         dBLQ==
+X-Gm-Message-State: AOAM530HhcQ/5a0tDAbL5R+F2DZ9DXAtDJiXwh4tDMIrUiTcvIGvdXjW
+        Fs04J2NZfASwjIv/wQA+B2pVrZvuP4vcL+JF
+X-Google-Smtp-Source: ABdhPJwDoNqmp5gT8TRJ2e7JRk/XxBBxpllfrKRbJFaXD/NHrV0+FyPsZgQqPbvypdsJf7WopUFmEg==
+X-Received: by 2002:a17:90b:3ecb:: with SMTP id rm11mr9186152pjb.110.1634844579045;
+        Thu, 21 Oct 2021 12:29:39 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:aeff:f3cb:fda2:dd71])
+        by smtp.gmail.com with ESMTPSA id a28sm6916262pfg.33.2021.10.21.12.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 12:29:38 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Philip Chen <philipchen@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/bridge: Fix the bridge chain order for pre_enable / post_disable
+Date:   Thu, 21 Oct 2021 12:29:01 -0700
+Message-Id: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021183935.GA9071@fuller.cnet>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 03:39:35PM -0300, Marcelo Tosatti wrote:
-> Peter,
-> 
-> static __always_inline void arch_exit_to_user_mode(void)
-> {
->         mds_user_clear_cpu_buffers();
-> }
-> 
-> /**
->  * mds_user_clear_cpu_buffers - Mitigation for MDS and TAA vulnerability
->  *
->  * Clear CPU buffers if the corresponding static key is enabled
->  */
-> static __always_inline void mds_user_clear_cpu_buffers(void)
-> {
->         if (static_branch_likely(&mds_user_clear))
->                 mds_clear_cpu_buffers();
-> }
-> 
-> We were discussing how to perform objtool style validation 
-> that no code after the check for 
+Right now, the chaining order of
+pre_enable/enable/disable/post_disable looks like this:
 
-I'm not sure what the point of the above is... Were you trying to ask
-for validation that nothing runs after the mds_user_clear_cpu_buffer()?
+pre_enable:   start from connector and move to encoder
+enable:       start from encoder and move to connector
+disable:      start from connector and move to encoder
+post_disable: start from encoder and move to connector
 
-That isn't strictly true today, there's lockdep code after it. I can't
-recall why that order is as it is though.
+In the above, it can be seen that at least pre_enable() and
+post_disable() are opposites of each other and enable() and disable()
+are opposites. However, it seems broken that pre_enable() and enable()
+would not move in the same direction. In other parts of Linux you can
+see that various stages move in the same order. For instance, during
+system suspend the "early" calls run in the same order as the normal
+calls run in the same order as the "late" calls run in the same order
+as the "noirq" calls.
 
-Pretty much everything in noinstr is magical, we just have to think
-harder there (and possibly start writing more comments there).
+Let fix the above so that it makes more sense. Now we'll have:
 
-> > +             /* NMI happens here and must still do/finish CT_WORK_n */
-> > +             sync_core();
-> 
-> But after the discussion with you, it seems doing the TLB checking 
-> and (also sync_core) checking very late/very early on exit/entry 
-> makes things easier to review.
+pre_enable:   start from encoder and move to connector
+enable:       start from encoder and move to connector
+disable:      start from connector and move to encoder
+post_disable: start from connector and move to encoder
 
-I don't know about late, it must happen *very* early in entry. The
-sync_core() must happen before any self-modifying code gets called
-(static_branch, static_call, etc..) with possible exception of the
-context_tracking static_branch.
+This order is chosen because if there are parent-child relationships
+anywhere I would expect that the encoder would be a parent and the
+connector a child--not the other way around.
 
-The TLBi must also happen super early, possibly while still on the
-entry stack (since the task stack is vmap'ed). We currently don't run C
-code on the entry stack, that needs quite a bit of careful work to make
-happen.
+This can be important when using the DP AUX bus to instantiate a
+panel. The DP AUX bus is likely part of a bridge driver and is a
+parent of the panel. We'd like the bridge to be pre_enabled before the
+panel and the panel to be post_disabled before the
+bridge. Specifically, this allows pm_runtime_put_sync_suspend() in a
+bridge driver's post_suspend to work properly even a panel is under
+it.
 
-> Can then use a single atomic variable with USER/KERNEL state and cmpxchg
-> loops.
+NOTE: it's entirely possible that this change could break someone who
+was relying on the old order. Hopefully this isn't the case, but if
+this does break someone it seems like it's better to do it sonner
+rather than later so we can fix everyone to handle the order that
+makes the most sense.
 
-We're not going to add an atomic to context tracking. There is one, we
-just got to extract/share it with RCU.
+A FURTHER NOTE: Looking closer at commit 4e5763f03e10 ("drm/bridge:
+ti-sn65dsi86: Wrap panel with panel-bridge") you can see that patch
+inadvertently changed the order of things. The order used to be
+correct (panel prepare was at the tail of the bridge enable) but it
+became backwards. We'll restore the original order with this patch.
+
+Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
+Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/gpu/drm/drm_bridge.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+index c96847fc0ebc..98808af59afd 100644
+--- a/drivers/gpu/drm/drm_bridge.c
++++ b/drivers/gpu/drm/drm_bridge.c
+@@ -583,18 +583,14 @@ EXPORT_SYMBOL(drm_bridge_chain_mode_set);
+ void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
+ {
+ 	struct drm_encoder *encoder;
+-	struct drm_bridge *iter;
+ 
+ 	if (!bridge)
+ 		return;
+ 
+ 	encoder = bridge->encoder;
+-	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+-		if (iter->funcs->pre_enable)
+-			iter->funcs->pre_enable(iter);
+-
+-		if (iter == bridge)
+-			break;
++	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
++		if (bridge->funcs->pre_enable)
++			bridge->funcs->pre_enable(bridge);
+ 	}
+ }
+ EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
+@@ -684,26 +680,30 @@ void drm_atomic_bridge_chain_post_disable(struct drm_bridge *bridge,
+ 					  struct drm_atomic_state *old_state)
+ {
+ 	struct drm_encoder *encoder;
++	struct drm_bridge *iter;
+ 
+ 	if (!bridge)
+ 		return;
+ 
+ 	encoder = bridge->encoder;
+-	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
+-		if (bridge->funcs->atomic_post_disable) {
++	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
++		if (iter->funcs->atomic_post_disable) {
+ 			struct drm_bridge_state *old_bridge_state;
+ 
+ 			old_bridge_state =
+ 				drm_atomic_get_old_bridge_state(old_state,
+-								bridge);
++								iter);
+ 			if (WARN_ON(!old_bridge_state))
+ 				return;
+ 
+-			bridge->funcs->atomic_post_disable(bridge,
+-							   old_bridge_state);
+-		} else if (bridge->funcs->post_disable) {
+-			bridge->funcs->post_disable(bridge);
++			iter->funcs->atomic_post_disable(iter,
++							 old_bridge_state);
++		} else if (iter->funcs->post_disable) {
++			iter->funcs->post_disable(iter);
+ 		}
++
++		if (iter == bridge)
++			break;
+ 	}
+ }
+ EXPORT_SYMBOL(drm_atomic_bridge_chain_post_disable);
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
