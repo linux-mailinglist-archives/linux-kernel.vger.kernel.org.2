@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4AA435DD8
+	by mail.lfdr.de (Postfix) with ESMTP id C4AE6435DDB
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhJUJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:27:01 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:40951 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhJUJ1A (ORCPT
+        id S231503AbhJUJ1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231488AbhJUJ1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:27:00 -0400
-Received: by mail-ua1-f42.google.com with SMTP id e2so11895908uax.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:24:44 -0700 (PDT)
+        Thu, 21 Oct 2021 05:27:01 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC659C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:24:45 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id u13so72774edy.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V5V3mrMbGu1ppi6ARFhGUSANkmRh+1a3b9M8ZtI/3z4=;
+        b=ddBd6V4x0LmBfVs0vWUySyZVPTrIMF1gV+CCLfHKHDKc3ECi5Fmd/GaH8SzbNtk/8A
+         EoM0ln1xJOL7zBl2ZRajrUOHvohw8Swt4OA8rIc81MlinO1h5+ySqYC+40rQ+NxBJfsh
+         0W40qXW4TCeVGiqmw6FLXQb2xzRF1kCnx91dmbldr1K5iDIOQbiXILBBSJU5buxK2Cwh
+         VWqaUnwpsfR00unKVDXvsRI02792Ajy/YXTWrpOAm53ZkbAG59myMlmtriBJvvSlUxNN
+         9eDOkMTVaO29cfs+bdSZS97QtQnH5ut5qvCIgjRS1bZE3Yqdq/vwThRvauytwAAi9T50
+         a0Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vLs87pkhruiT0vLI68Fa9pl7Yrw7UkOzl0BLz4DGuRk=;
-        b=pOy0mc7PKe6PANO4BcCZJ4cyYh5x3F6Vi3B9K5ID2ItA8P+Cksyt87fKJN3v7DaNo5
-         DATrgIpb7EFzbX7cIZcq0pBoKqb7DtV/ZcwSf0r2GqwvjAtdp8ynCKbVtADgpNIevrwJ
-         cQth7kr/ThPlTofjbgAKUMy4k/9KqSYXr2xbpSg1q+UUoe4Tk8iDUaHG6qnXBjCxI78y
-         LYjtAukAV5ik4jxdUI9knPJlF+UQcQMQ+TNsxN9HiV1oPZzdqCHsyc/VJIYswbTHkXTv
-         4mmG+mmsZFhi/ufwG831SA8UGOIligBlC6h2/pj9k1/CH5hln53+08P3JAuEZpj5x5yx
-         favw==
-X-Gm-Message-State: AOAM533ktvAfTdaScpIuxTCaP82Rk1ojNCxeH6lUMKSdYSYVcS8ykOno
-        Z+E11Jm9uJa4EUrSk+OtvIZ41dMMzTtMmg==
-X-Google-Smtp-Source: ABdhPJxI6whIcjj8d9gp83/NYRg7kgR6nG2KO6tMiqDkLDEbKZ9KiHN0xUpO7gxPYLfegeD5LYKgMA==
-X-Received: by 2002:ab0:5a8f:: with SMTP id w15mr4776686uae.10.1634808284263;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V5V3mrMbGu1ppi6ARFhGUSANkmRh+1a3b9M8ZtI/3z4=;
+        b=EFakkHak118S6RPvnTkD6Ure3Xb4mTJtMW/Vro9B78c8szHyKL/Dhqfcmmfh9jf01f
+         F/hvKqTK/q/K93+JAr+mnKxvbQL7077wO2aAfgUcZAdCrLDJq0AR8G9EYm+0NLvR6mNr
+         hJAe+FxoMl9tLBEEagZIswvs+NN0XeaxWFobSM78Z42c1z4J/mmMpOHnhuRE6r2+5uyt
+         PvEm8OYohCVGYXPZykWMnnEScrrBGWg0OZQexGdD55vuGhKKQllvtz9Jlm/Kxk5YALh3
+         XLNGj/WyKPIS92pW7u5aTdu1nhLQx5F/0meKqFKJpXokqPZQOu1a+AoArUSxWfUMw2ve
+         FK8Q==
+X-Gm-Message-State: AOAM532dgK2o2k1MTOQKGeFgVy8ZeZesG3Ozji/eXMEGyJ47LCsUTZxi
+        U4FdpddU2CiGaRUZirWY5MiX2Q==
+X-Google-Smtp-Source: ABdhPJy8oS0zIhlGWv0DvQGXh9QF2VSWhQLKdi+HZnhxRaaHACjc9YqWyLKfLgZGT7KGPkEhCd2ssw==
+X-Received: by 2002:a17:906:8893:: with SMTP id ak19mr6013410ejc.124.1634808284520;
         Thu, 21 Oct 2021 02:24:44 -0700 (PDT)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id b3sm2843125vko.20.2021.10.21.02.24.43
-        for <linux-kernel@vger.kernel.org>
+Received: from [192.168.1.15] (hst-221-64.medicom.bg. [84.238.221.64])
+        by smtp.googlemail.com with ESMTPSA id t6sm2558168edj.27.2021.10.21.02.24.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 02:24:43 -0700 (PDT)
-Received: by mail-ua1-f45.google.com with SMTP id r22so11834998uat.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:24:43 -0700 (PDT)
-X-Received: by 2002:a05:6102:290c:: with SMTP id cz12mr4189190vsb.35.1634808283362;
- Thu, 21 Oct 2021 02:24:43 -0700 (PDT)
+        Thu, 21 Oct 2021 02:24:44 -0700 (PDT)
+Subject: Re: [PATCH 1/3] dt-bindings: media: venus: Add sdm660 dt schema
+To:     Rob Herring <robh@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     mchehab@kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, martin.botka@somainline.org,
+        robh+dt@kernel.org, phone-devel@vger.kernel.org,
+        linux-media@vger.kernel.org, agross@kernel.org,
+        stanimir.varbanov@linaro.org, bjorn.andersson@linaro.org
+References: <20211008102119.268869-1-angelogioacchino.delregno@collabora.com>
+ <YW824G+mII83pjU5@robh.at.kernel.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <99a0bb09-6892-f103-6eb7-b6333b56090a@linaro.org>
+Date:   Thu, 21 Oct 2021 12:24:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20160828165815.25647-1-nicolas.iooss_linux@m4x.org>
-In-Reply-To: <20160828165815.25647-1-nicolas.iooss_linux@m4x.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Oct 2021 11:24:32 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVRY2Ge87wS5rZenrLozVruKHv9ft1NsjeVYu=yU-EOaw@mail.gmail.com>
-Message-ID: <CAMuHMdVRY2Ge87wS5rZenrLozVruKHv9ft1NsjeVYu=yU-EOaw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ARM: add printf format attribute to early_print()
-To:     Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YW824G+mII83pjU5@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 28, 2016 at 6:59 PM Nicolas Iooss
-<nicolas.iooss_linux@m4x.org> wrote:
-> Adding such an attribute is helpful to detect errors related to printf
-> formats at compile-time.
->
-> Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Thanks Rob, I will push this through media tree.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-and submitted to rmk's patch tracker.
-https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9147/1
+On 10/20/21 12:21 AM, Rob Herring wrote:
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+regards,
+Stan
