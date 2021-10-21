@@ -2,117 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73505435C94
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500C1435C9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhJUIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhJUIG3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:06:29 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68875C061749
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:04:13 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x27so832906lfu.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WVuVc/pTL60G1S+pyJWiP1YTmMHNb2+xE6ALYVAi/xw=;
-        b=IEEro4gNH3DIejCXpe0LTEo03FXaRhBYkaROjLXCHDflecMHf3lv+ZnmPuKnlnT5Fy
-         je52KNQ/4D9i2+nXYvvuP+an1Pnlw7PxN4XUfbxmSd1diABe1aysqs6pFnLw0TQalFe6
-         Vb0q1sKA7Q/KMsvD+g9kIlKuxrBAdqSDmOUHhclAI52k5RjWxo1RpFfwMIVTAUG5Tqpv
-         lmd65eKglHQZDWRKqtpnDYnUPHiF9jt7Oq67BAwl1HYkwfS4SSPZ0vYVIhqMHhCaMpm+
-         eoPoiDcs2osNu6vsHNgwY4FzxNKjBkhWPi/d8z/Q37rh46hLiVx/SqVJlpmWiMrVxDsb
-         0gyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WVuVc/pTL60G1S+pyJWiP1YTmMHNb2+xE6ALYVAi/xw=;
-        b=qzihnj8qs4f7OI44/dQpFbn+gIuPvm0YT4ETNDrdnBQwHyIMiZQC3HNLKMKRMYSrmn
-         acd7Nc7rEZXOKaZk783mk6TZHGeg/LG8FEMDudZYowQCa/foCmqykfngLFwCfLLmAtxK
-         00LZaXvU79t37Y03PCxYAvchcgwATDSi6nh/OBXLa+xLmpquEmy91C0+k55Fp0yiX9Ve
-         1qHtU6o5mypu0XmXIruCmx6y1Cjmq6lsUnLKZN7olF6Jk2r6n49wkuew4tVeS3iSY1OK
-         voBvbvyRIIgyluz3Wb1Yj2pHaaVqJXrPOijuHzcX/3DLMKHpvwSOwCQ87LYr/IbDrZFW
-         gjPw==
-X-Gm-Message-State: AOAM530mBb8GBe3npuxUoJt6K0S6zfNUAAsVs0fIHiuI/hBipCIeLWre
-        5W7g/QUIqjYYLI9ZPdtduIhDyOFUAbE48g==
-X-Google-Smtp-Source: ABdhPJwH6CfInm0R8kLy2CulWi4rcXhCTIo2C2PA9o2nT1Cjc31WnBrrJLTnA3vNKuAFp0LelU1v2w==
-X-Received: by 2002:a05:6512:3055:: with SMTP id b21mr4173674lfb.316.1634803451737;
-        Thu, 21 Oct 2021 01:04:11 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id u25sm391601lfr.279.2021.10.21.01.04.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 01:04:11 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] memblock: exclude MEMBLOCK_NOMAP regions from
- kmemleak
-To:     Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        linux-kernel@vger.kernel.org
-References: <20211021070929.23272-1-rppt@kernel.org>
- <20211021070929.23272-3-rppt@kernel.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <5fb2f209-e048-f6f9-4ad3-96645d23fce8@linaro.org>
-Date:   Thu, 21 Oct 2021 11:03:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231434AbhJUIJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:09:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:9432 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230385AbhJUIJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:09:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="227743208"
+X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
+   d="scan'208";a="227743208"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 01:07:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
+   d="scan'208";a="445244022"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 21 Oct 2021 01:07:18 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mdT6c-000E9d-3l; Thu, 21 Oct 2021 08:07:18 +0000
+Date:   Thu, 21 Oct 2021 16:06:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/fpu] BUILD SUCCESS
+ 079ec41b22b952cdf3126527d735e373c9125f6d
+Message-ID: <61711f7f.A9gNy0DuVUE0Gqh+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20211021070929.23272-3-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fpu
+branch HEAD: 079ec41b22b952cdf3126527d735e373c9125f6d  x86/fpu: Provide a proper function for ex_handler_fprestore()
 
-On 10/21/21 10:09 AM, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Vladimir Zapolskiy reports:
-> 
-> commit a7259df76702 ("memblock: make memblock_find_in_range method private")
-> invokes a kernel panic while running kmemleak on OF platforms with nomaped
-> regions:
-> 
->    Unable to handle kernel paging request at virtual address fff000021e00000
->    [...]
->      scan_block+0x64/0x170
->      scan_gray_list+0xe8/0x17c
->      kmemleak_scan+0x270/0x514
->      kmemleak_write+0x34c/0x4ac
-> 
-> The memory allocated from memblock is registered with kmemleak, but if it
-> is marked MEMBLOCK_NOMAP it won't have linear map entries so an attempt to
-> scan such areas will fault.
-> 
-> Ideally, memblock_mark_nomap() would inform kmemleak to ignore
-> MEMBLOCK_NOMAP memory, but it can be called before kmemleak interfaces
-> operating on physical addresses can use __va() conversion.
-> 
-> Make sure that functions that mark allocated memory as MEMBLOCK_NOMAP take
-> care of informing kmemleak to ignore such memory.
-> 
-> Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
-> Link: https://lore.kernel.org/all/c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com
-> Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
-> Reported-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+elapsed time: 1027m
 
-this change variant also solves the reported problem, thank you.
+configs tested: 111
+configs skipped: 73
 
-Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---
-Best wishes,
-Vladimir
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+i386                 randconfig-c001-20211019
+i386                 randconfig-c001-20211021
+powerpc                   currituck_defconfig
+arm                          exynos_defconfig
+sh                          lboxre2_defconfig
+arm                          gemini_defconfig
+arm                        spear6xx_defconfig
+powerpc                      ppc6xx_defconfig
+arm                        trizeps4_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                            lart_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                       eiger_defconfig
+mips                           gcw0_defconfig
+sh                          kfr2r09_defconfig
+mips                       rbtx49xx_defconfig
+mips                          ath25_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                  randconfig-c002-20211019
+x86_64               randconfig-c001-20211019
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a004-20211020
+i386                 randconfig-a003-20211020
+i386                 randconfig-a002-20211020
+i386                 randconfig-a005-20211020
+i386                 randconfig-a006-20211020
+i386                 randconfig-a001-20211020
+x86_64               randconfig-a015-20211019
+x86_64               randconfig-a012-20211019
+x86_64               randconfig-a016-20211019
+x86_64               randconfig-a014-20211019
+x86_64               randconfig-a013-20211019
+x86_64               randconfig-a011-20211019
+x86_64               randconfig-a013-20211021
+x86_64               randconfig-a015-20211021
+x86_64               randconfig-a011-20211021
+x86_64               randconfig-a014-20211021
+x86_64               randconfig-a016-20211021
+x86_64               randconfig-a012-20211021
+i386                 randconfig-a012-20211021
+i386                 randconfig-a013-20211021
+i386                 randconfig-a011-20211021
+i386                 randconfig-a016-20211021
+i386                 randconfig-a015-20211021
+i386                 randconfig-a014-20211021
+i386                 randconfig-a014-20211019
+i386                 randconfig-a016-20211019
+i386                 randconfig-a011-20211019
+i386                 randconfig-a015-20211019
+i386                 randconfig-a012-20211019
+i386                 randconfig-a013-20211019
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64               randconfig-a004-20211019
+x86_64               randconfig-a006-20211019
+x86_64               randconfig-a005-20211019
+x86_64               randconfig-a001-20211019
+x86_64               randconfig-a002-20211019
+x86_64               randconfig-a003-20211019
+i386                 randconfig-a001-20211019
+i386                 randconfig-a003-20211019
+i386                 randconfig-a004-20211019
+i386                 randconfig-a005-20211019
+i386                 randconfig-a002-20211019
+i386                 randconfig-a006-20211019
+x86_64               randconfig-a002-20211021
+x86_64               randconfig-a004-20211021
+x86_64               randconfig-a005-20211021
+x86_64               randconfig-a001-20211021
+x86_64               randconfig-a006-20211021
+x86_64               randconfig-a003-20211021
+hexagon              randconfig-r041-20211019
+hexagon              randconfig-r045-20211019
+riscv                randconfig-r042-20211020
+s390                 randconfig-r044-20211020
+hexagon              randconfig-r045-20211020
+hexagon              randconfig-r041-20211020
+hexagon              randconfig-r045-20211021
+hexagon              randconfig-r041-20211021
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
