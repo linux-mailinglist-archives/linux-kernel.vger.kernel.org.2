@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7571C436B0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53BE436B16
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhJUTEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:04:54 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:35509 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhJUTEw (ORCPT
+        id S231933AbhJUTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhJUTKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:04:52 -0400
-Received: by mail-oi1-f182.google.com with SMTP id r6so2108084oiw.2;
-        Thu, 21 Oct 2021 12:02:36 -0700 (PDT)
+        Thu, 21 Oct 2021 15:10:18 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8B8C061764;
+        Thu, 21 Oct 2021 12:08:01 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id d125so2349663iof.5;
+        Thu, 21 Oct 2021 12:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=TUzZuhjYpMvPdoQNG0gP2zaSWPan1XbqRxzouVeRBQs=;
+        b=CRxhGy9zIQTyEjv/h2kwwy2/d6dI8JnCayWD18ZJhi56uZknOszIjlyTftpwy1bT8g
+         GFKqb87VHBkuj6vg30awR0o+75jyr9VOyiPvwkO0yEvwXq6wMZyQwz8Yhe/M7ROroZ2g
+         d5McfohoczzZaMjV3ea3jzyGZLoCYfKqFrOchZKoU3rkKR6JZkLJq3gMqWEndEnCZ8oA
+         mjvvhFvVNQ/kxdS2zOSh9Az/Ui16CsfBeIaersg8CZTYB09RJYc+sk2csoRf5hq+5psA
+         KxUdkoic666O+Hi+pZwj7rsvFJX+KAnqYdN6iqnCZvHOGi2kfm9Y6Nbp9qoXwkzL69N3
+         nooA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W7TkRZBg0XypFSbXfRFIpqf6ScvCTqPGc+rgARxQ4LA=;
-        b=7shygzSLatyQFc44/gtRSOGVC8NPc412I8P4OTBPmXvMiAzwgH9N7jPHqfl5cEOJRf
-         zm/A8cUqFpOkrvc2tqoQO38F8Lpwe/B7UMt4V7x1P3oFpC5Lzth3p9zSuHKEQBmOcivP
-         74c4ZkZnP9NjWPf7gMOh/gPSNA8b+wIdXLHerpN74PeQ+ocdbTHKVuaMtL+ylWUHZMQc
-         WPkn1UcJionNMX/WBXcBvXN/olcvOI47PjPTCfIUIPD5bIVNIwdfr134JrLFkiULE3/j
-         Cf/bpTHWVTo3CPMsT9EYi3RMKEXql48VsFBsUpJ3BD+ay1mB7xo0HhhSGv6cxwZYGYGR
-         +ciw==
-X-Gm-Message-State: AOAM530Emf5rLwe7fNO9E2KQuXCaXZlhfVqdvOh1JMeYsx5jSucdZHs6
-        YJQq0IJVaWSeR7pg8qJvLaNCXQgih98zHd5AkSE=
-X-Google-Smtp-Source: ABdhPJzf2WcHwGOnLbgy1YaTHUIzSnbvS5pD5Zraj6p32xvOZ2slzltcvMkcEUasinTitUk1PoMt+RZrjw3bUKsPfow=
-X-Received: by 2002:a05:6808:e87:: with SMTP id k7mr2165504oil.166.1634842956087;
- Thu, 21 Oct 2021 12:02:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
- <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
- <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
- <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
- <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
- <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com>
- <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com> <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com>
-In-Reply-To: <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 21 Oct 2021 21:02:24 +0200
-Message-ID: <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=TUzZuhjYpMvPdoQNG0gP2zaSWPan1XbqRxzouVeRBQs=;
+        b=77ghA1ylG95Kn7aEu60L/Gs8rcCGcLVyc9K9LA11BDwkDPkX7AdURO/mRx16IDx3u8
+         HBYo3GPrrjocVMjDlCI+pabauyBg2ufBaLwqoLjx489Ssucl5F2j1pyOTuufAhFAIGAZ
+         +eNk0uT1y0dq193Khm3Ir74fGcpxRN5m7sXba/c6Z2tWV/cUz7/flwsW+Sm20O9yVSh1
+         u5Rvv4YRm7WELbzQS75X9l7vqYhDdzl/uFoA0REwXodXryavTFNml50bw2JPtylspQb0
+         Qn9IuVjWsJ0ViRAmllfBBSasvNv/TRpML8rotGM/c/OSF2iIIXNehWukVK4QuPeEPE6E
+         au5A==
+X-Gm-Message-State: AOAM531PRJcRcXOQCd6pWNzTqIHvR263a7tEnp9b4O4i00kScy2R7189
+        lgGwv/2R/E0eNhu8+tCYA20=
+X-Google-Smtp-Source: ABdhPJxooI5BtboklkIU0xvW9IdPIgKu/Mwx61YiPmfODaCsNIALEDdL51MtaTeCDq8UVegOmOXWBA==
+X-Received: by 2002:a05:6602:123c:: with SMTP id z28mr2708378iot.113.1634843281374;
+        Thu, 21 Oct 2021 12:08:01 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id l4sm2891535ilg.44.2021.10.21.12.07.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 12:08:00 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 12:07:52 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Mark Pashmfouroush <markpash@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Joe Stringer <joe@cilium.io>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Message-ID: <6171ba88e5825_663a720836@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAADnVQ+_MysCNnaPZd550wQaohtWTikmgnsysoZhnNpwPgv23A@mail.gmail.com>
+References: <20211015112336.1973229-1-markpash@cloudflare.com>
+ <20211015112336.1973229-2-markpash@cloudflare.com>
+ <CAADnVQ+_MysCNnaPZd550wQaohtWTikmgnsysoZhnNpwPgv23A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add ifindex to bpf_sk_lookup
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 8:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+Alexei Starovoitov wrote:
+> On Fri, Oct 15, 2021 at 4:24 AM Mark Pashmfouroush
+> <markpash@cloudflare.com> wrote:
 > >
-> > On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 6fc59d61937a..9bd3e8b8a659 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -6262,6 +6262,7 @@ struct bpf_sk_lookup {
+> >         __u32 local_ip4;        /* Network byte order */
+> >         __u32 local_ip6[4];     /* Network byte order */
+> >         __u32 local_port;       /* Host byte order */
+> > +       __u32 ifindex;          /* Maps to skb->dev->ifindex */
+> 
+> Is the comment accurate?
+> The bpf_sk_lookup_kern ifindex is populated with inet_iif(skb).
+> Which is skb->skb_iif at this point (I think).
+> skb->dev->ifindex would typically mean destination or egress ifindex.
+> In __sk_buff we have 'ifindex' and 'ingress_ifindex' to differentiate them.
+> If it's really dev->ifindex than keeping 'ifindex' name here would be correct,
+> but looking at how it's populated in inet/udp_lookup makes me wonder
+> whether it should be named 'ingress_ifindex' instead and comment clarified.
+> 
+> If/when you resubmit please trim cc list to a minimum.
 
-[cut]
+At least in the tcp cases its coming from inet_iif which is either
+the rtable or skb->skb_iif. Agree would be nice to fixup the comment.
 
-> > So in theory you could check the pm_runtime_put_sync_suspend() return
-> > value and fall back to something like WFI if that's an error code.
->
-> I have already tried that, but it simply got too complicated. The main
-> issue was that runtime PM could become disabled for the device in the
-> middle of executing the ->enter() callback.
-
-So IIUC the problem is that you cannot resume after suspending in that case.
-
-IOW, you need to guarantee that if the suspend is successful, the
-resume also will take place, but if the suspend fails, you basically
-don't care.
-
-> For example, if pm_runtime_get_sync() fails, I still need to make sure
-> the reference counting in genpd becomes correct - and I can't do that
-> using dev_pm_genpd_resume(). That's because it's not designed to be
-> called in this "unknown" suspend phase, but should be called after the
-> noirq phase and be properly balanced with dev_pm_genpd_suspend().
->
-> In other words, the error path didn't work out for me.
-
-It should be sufficient to call wake_up_all_idle_cpus() in the suspend
-path before dpm_suspend_late(), because system suspend acquires a
-PM-runtime reference on every device.  IOW, it won't let any devices
-runtime-suspend, so if your power domain devices are resumed in that
-path, they will never suspend again in it and the
-pm_runtime_put_sync_suspend() in __psci_enter_domain_idle_state()
-becomes a reference counter management call which works regardless of
-whether or not PM runtime is disabled.
+Thanks.
