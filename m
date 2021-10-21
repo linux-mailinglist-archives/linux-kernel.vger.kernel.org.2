@@ -2,439 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1623E436916
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14A7436919
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhJUReL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:34:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28308 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231777AbhJUReJ (ORCPT
+        id S231980AbhJURfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhJURfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:34:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634837512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FttkWqye/woUbVrNK1gNL8Qh2ZShvlyYafkWzXQo3/U=;
-        b=SnU0/XAVmTnNY/1um4S8GFJk5/Q1GxV3XHyh3egaNNCufF6aaPoPdfRSwt9V2ijZavsVbB
-        a5IrIP+cYA3ghfFyK0K61WRIqHzJcE+2zdpvZb8/OWrhbXAQUDmEcJ+u38q+IxgQWgLAzk
-        hAfI2/LxG0sxNZOnL1hHhv9hqZWs8jE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-YHP27vbFNDaYMM9zrtyOWQ-1; Thu, 21 Oct 2021 13:31:51 -0400
-X-MC-Unique: YHP27vbFNDaYMM9zrtyOWQ-1
-Received: by mail-ed1-f69.google.com with SMTP id v11-20020a056402348b00b003dcf725d986so1129410edc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:31:51 -0700 (PDT)
+        Thu, 21 Oct 2021 13:35:18 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADA3C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:33:02 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id y15-20020a9d460f000000b0055337e17a55so1274818ote.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7kvYcqlsDZVFRQNQI1c9X3eJYnsZcG9jtWbow6imt78=;
+        b=dw55ti12SIJyKmryST8ORpjtgrtUtfPsVXQw/pMBi9Fm8DUq9ffCXFX186IGeoWlh6
+         7XicZh+gfmBz22PNDamnVz1EssLHFmyFO767MD39932nJ2km/fRO0qBK/mpjXNW06A7R
+         /+4E7qQh4THnfGTGhtY7fxfEul4KSsfROoBUR4rNFN2J3beelDCl+jJuMyU/5n1oqh7z
+         NP2+dLVZQSyLH/eazkKuDpNUGQQxYDUq67OxoVcIOa3kTK51mupjQ1V+vrknN1jqcPUG
+         oqy8oPWbNKjAo2NcEt2ajXvzu5DuQwG0zgeVB/fWT2fg2bDFfA8PBfYQK1fDGrLLjN0m
+         y/MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=FttkWqye/woUbVrNK1gNL8Qh2ZShvlyYafkWzXQo3/U=;
-        b=Jgv//eovFNpY8ED4EFm7jgH/p7NTuxq/2BMr5zgZql6GFACJ4xdjFjzNH1q0UC++tZ
-         BFlYx5xqmS2V5uFdI4sGrjNtRBlQzzH5hhVqfEZlDboLyYnhGDj54+a5FMTVMze1TgBW
-         IoE2gtUuxB6YbFwNtmAJeEzsfHrmaXJOKQBy4tgvIKRVVEAV3hraLdpfGW1QJF8mytwa
-         k4KzrXVFRa97isbCDTZc4Vbf2OTmzyQ18FlqU/gyiB+Mr8+4XsJwC1K/AF85Favs6xAf
-         8WQ5hCMYyRhiYDodLeHTGrkerv3as0Z6p8FjEk4VgdeIV06/IVGLWVg6MsR3FrpFu6sz
-         gjUg==
-X-Gm-Message-State: AOAM53298m97uWU5vt4gCu+Y9MN7uy9qIK8bkZT+WlxvZg+89jd8Ti/M
-        C46qbGP7od8Gfx7/XbckVeyabWzou27TVaJmxOZWuIIkiTCliXONwlJbbWrQPlr67pwW5Ld57Nt
-        Pa4U6DNGlUTbaMPJcGlD8omM2
-X-Received: by 2002:a05:6402:2682:: with SMTP id w2mr9441532edd.185.1634837509941;
-        Thu, 21 Oct 2021 10:31:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw40qts/AHKJnlgI9kc6XOVWl1IM7KUVJnVdm0nO18gQKI+uMolfMwNHlKBNH8kJjWRyFtUaA==
-X-Received: by 2002:a05:6402:2682:: with SMTP id w2mr9441489edd.185.1634837509694;
-        Thu, 21 Oct 2021 10:31:49 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e22sm3418183edu.35.2021.10.21.10.31.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 10:31:36 -0700 (PDT)
-Message-ID: <4e5884d5-bcde-dac9-34fb-e29ed32f73c9@redhat.com>
-Date:   Thu, 21 Oct 2021 19:31:24 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7kvYcqlsDZVFRQNQI1c9X3eJYnsZcG9jtWbow6imt78=;
+        b=WOJ7YoqR3v8VX6BbJEWbGhqmFxEO4yuTH/U2vH8Y4dcF+DaeMLjCFms7acJwrMtreY
+         fsEmI2IF8jM1RJUWVjNvnhjYo2X/Teajmk08c1tK6qv1blPXlwslpXxk69IbYJyQnBNw
+         c9z1VcA62DvgSXNQ4EGQy7A/OItBZYd/4G3dIPmb3ZqrwNB3V/m6PJlYbshzHtyFi1Oc
+         w8Y3CTTcjy6MnKc6wUI+K3nZ5ftHcxDoOLzxXPqFrJcmb70zo/VAERQy0ww0w6B0igsX
+         7P9nkJ6ZbE7OvzEUaKvPwOpF9xdsGkEjakj4pjH5Nlj3cxx7KveRxSZfXqXi2nci5ndA
+         dSog==
+X-Gm-Message-State: AOAM533NLHDy07Y12wUP7WPjfh0uVO9kDFqSnXqdBEd8ZN91FSb6h/fA
+        MtpA22jWnK+gE50D6pajb7KulsFwOUVxBe+4O1qGaQ==
+X-Google-Smtp-Source: ABdhPJzZHKI75ndHkrEXROc31KdhFm/vBoEKnBqtqCRjj3lsn9ni2oAVIhgf5P4CJhxK1AwQgLJwO5nNejwA4egzLNk=
+X-Received: by 2002:a9d:458a:: with SMTP id x10mr5997128ote.267.1634837581215;
+ Thu, 21 Oct 2021 10:33:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 05/11] clk: Introduce clk-tps68470 driver
-Content-Language: en-US
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J.Wysocki" <rjw@rjwysocki.net>,
-        Wolfram Sang <wsa@the-dreams.de>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211010185707.195883-1-hdegoede@redhat.com>
- <20211010185707.195883-6-hdegoede@redhat.com>
- <163415237957.936110.1269283416777498553@swboyd.mtv.corp.google.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <163415237957.936110.1269283416777498553@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211019110154.4091-1-jiangshanlai@gmail.com> <20211019110154.4091-2-jiangshanlai@gmail.com>
+ <YW7jfIMduQti8Zqk@google.com> <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
+ <YXBfaqenOhf+M3eA@google.com> <55abc519-b528-ddaa-120d-8d157b520623@linux.alibaba.com>
+ <YXF+pG0yGA0TQZww@google.com> <945500f6-27e1-ed81-2b7d-c709cb1d4b33@redhat.com>
+In-Reply-To: <945500f6-27e1-ed81-2b7d-c709cb1d4b33@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 21 Oct 2021 10:32:49 -0700
+Message-ID: <CALMp9eSAYYL2T_H5b3Kv+OE2KgDz_iC32yQfpiqhwspRUezQ2w@mail.gmail.com>
+Subject: Re: [PATCH 1/4] KVM: X86: Fix tlb flush for tdp in kvm_invalidate_pcid()
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Thu, Oct 21, 2021 at 10:13 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 21/10/21 16:52, Sean Christopherson wrote:
+> >> I think the EPT violation happens*after*  the cr3 write.  So the instruction to be
+> >> emulated is not "cr3 write".  The emulation will queue fault into guest though,
+> >> recursive EPT violation happens since the cr3 exceeds maxphyaddr limit.
+> > Doh, you're correct.  I think my mind wandered into thinking about what would
+> > happen with PDPTRs and forgot to get back to normal MOV CR3.
+> >
+> > So yeah, the only way to correctly handle this would be to intercept CR3 loads.
+> > I'm guessing that would have a noticeable impact on guest performance.
+>
+> Ouch... yeah, allow_smaller_maxphyaddr already has bad performance, but
+> intercepting CR3 loads would be another kind of slow.
 
-Thank you for the review.
-
-On 10/13/21 21:12, Stephen Boyd wrote:
-> Quoting Hans de Goede (2021-10-10 11:57:01)
->> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
->> index c5b3dc97396a..7dffecac83d1 100644
->> --- a/drivers/clk/Kconfig
->> +++ b/drivers/clk/Kconfig
->> @@ -169,6 +169,12 @@ config COMMON_CLK_CDCE706
->>         help
->>           This driver supports TI CDCE706 programmable 3-PLL clock synthesizer.
->>  
->> +config COMMON_CLK_TPS68470
->> +       tristate "Clock Driver for TI TPS68470 PMIC"
->> +       depends on I2C && REGMAP_I2C && INTEL_SKL_INT3472
-> 
-> Pretty sure REGMAP_I2C should be selected, not depended on.
-> 
-> Can it
-> 
-> 	depends on INTEL_SKL_INT3472 || COMPILE_TEST
-> 
-> so that we don't have to enable the intel specific config to compile
-> test this driver?
-
-Ack, all fixed for v4.
-
->> +       help
->> +        This driver supports the clocks provided by TPS68470
->> +
->>  config COMMON_CLK_CDCE925
->>         tristate "Clock driver for TI CDCE913/925/937/949 devices"
->>         depends on I2C
->> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
->> index e42312121e51..6b6a88ae1425 100644
->> --- a/drivers/clk/Makefile
->> +++ b/drivers/clk/Makefile
->> @@ -63,6 +63,7 @@ obj-$(CONFIG_COMMON_CLK_SI570)                += clk-si570.o
->>  obj-$(CONFIG_COMMON_CLK_STM32F)                += clk-stm32f4.o
->>  obj-$(CONFIG_COMMON_CLK_STM32H7)       += clk-stm32h7.o
->>  obj-$(CONFIG_COMMON_CLK_STM32MP157)    += clk-stm32mp1.o
->> +obj-$(CONFIG_COMMON_CLK_TPS68470)      += clk-tps68470.o
->>  obj-$(CONFIG_CLK_TWL6040)              += clk-twl6040.o
->>  obj-$(CONFIG_ARCH_VT8500)              += clk-vt8500.o
->>  obj-$(CONFIG_COMMON_CLK_VC5)           += clk-versaclock5.o
->> diff --git a/drivers/clk/clk-tps68470.c b/drivers/clk/clk-tps68470.c
->> new file mode 100644
->> index 000000000000..27e8cbd0f60e
->> --- /dev/null
->> +++ b/drivers/clk/clk-tps68470.c
->> @@ -0,0 +1,256 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Clock driver for TPS68470 PMIC
->> + *
->> + * Copyright (C) 2018 Intel Corporation
->> + *
->> + * Authors:
->> + *     Zaikuo Wang <zaikuo.wang@intel.com>
->> + *     Tianshu Qiu <tian.shu.qiu@intel.com>
->> + *     Jian Xu Zheng <jian.xu.zheng@intel.com>
->> + *     Yuning Pu <yuning.pu@intel.com>
->> + *     Antti Laakso <antti.laakso@intel.com>
->> + */
->> +
->> +#include <linux/clk-provider.h>
->> +#include <linux/clkdev.h>
->> +#include <linux/kernel.h>
->> +#include <linux/mfd/tps68470.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/platform_data/tps68470.h>
->> +#include <linux/regmap.h>
->> +
->> +#define TPS68470_CLK_NAME "tps68470-clk"
->> +
->> +#define to_tps68470_clkdata(clkd) \
->> +       container_of(clkd, struct tps68470_clkdata, clkout_hw)
->> +
->> +struct tps68470_clkout_freqs {
->> +       unsigned long freq;
->> +       unsigned int xtaldiv;
->> +       unsigned int plldiv;
->> +       unsigned int postdiv;
->> +       unsigned int buckdiv;
->> +       unsigned int boostdiv;
->> +} clk_freqs[] = {
->> +/*
->> + *  The PLL is used to multiply the crystal oscillator
->> + *  frequency range of 3 MHz to 27 MHz by a programmable
->> + *  factor of F = (M/N)*(1/P) such that the output
->> + *  available at the HCLK_A or HCLK_B pins are in the range
->> + *  of 4 MHz to 64 MHz in increments of 0.1 MHz
->> + *
->> + * hclk_# = osc_in * (((plldiv*2)+320) / (xtaldiv+30)) * (1 / 2^postdiv)
->> + *
->> + * PLL_REF_CLK should be as close as possible to 100kHz
->> + * PLL_REF_CLK = input clk / XTALDIV[7:0] + 30)
->> + *
->> + * PLL_VCO_CLK = (PLL_REF_CLK * (plldiv*2 + 320))
->> + *
->> + * BOOST should be as close as possible to 2Mhz
->> + * BOOST = PLL_VCO_CLK / (BOOSTDIV[4:0] + 16) *
->> + *
->> + * BUCK should be as close as possible to 5.2Mhz
->> + * BUCK = PLL_VCO_CLK / (BUCKDIV[3:0] + 5)
->> + *
->> + * osc_in   xtaldiv  plldiv   postdiv   hclk_#
->> + * 20Mhz    170      32       1         19.2Mhz
->> + * 20Mhz    170      40       1         20Mhz
->> + * 20Mhz    170      80       1         24Mhz
->> + *
->> + */
->> +       { 19200000, 170, 32, 1, 2, 3 },
->> +       { 20000000, 170, 40, 1, 3, 4 },
->> +       { 24000000, 170, 80, 1, 4, 8 },
->> +};
->> +
->> +struct tps68470_clkdata {
->> +       struct clk_hw clkout_hw;
->> +       struct regmap *regmap;
->> +       struct clk *clk;
->> +       int clk_cfg_idx;
->> +};
->> +
->> +static int tps68470_clk_is_prepared(struct clk_hw *hw)
->> +{
->> +       struct tps68470_clkdata *clkdata = to_tps68470_clkdata(hw);
->> +       int val;
->> +
->> +       if (regmap_read(clkdata->regmap, TPS68470_REG_PLLCTL, &val))
->> +               return 0;
->> +
->> +       return val & TPS68470_PLL_EN_MASK;
->> +}
->> +
->> +static int tps68470_clk_prepare(struct clk_hw *hw)
->> +{
->> +       struct tps68470_clkdata *clkdata = to_tps68470_clkdata(hw);
->> +       int idx = clkdata->clk_cfg_idx;
->> +
->> +       regmap_write(clkdata->regmap, TPS68470_REG_BOOSTDIV, clk_freqs[idx].boostdiv);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_BUCKDIV, clk_freqs[idx].buckdiv);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_PLLSWR, TPS68470_PLLSWR_DEFAULT);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_XTALDIV, clk_freqs[idx].xtaldiv);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_PLLDIV, clk_freqs[idx].plldiv);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_POSTDIV, clk_freqs[idx].postdiv);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_POSTDIV2, clk_freqs[idx].postdiv);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_CLKCFG2, TPS68470_CLKCFG2_DRV_STR_2MA);
->> +
->> +       regmap_write(clkdata->regmap, TPS68470_REG_PLLCTL,
->> +                    TPS68470_OSC_EXT_CAP_DEFAULT << TPS68470_OSC_EXT_CAP_SHIFT |
->> +                    TPS68470_CLK_SRC_XTAL << TPS68470_CLK_SRC_SHIFT);
->> +
->> +       regmap_write(clkdata->regmap, TPS68470_REG_CLKCFG1,
->> +                          (TPS68470_PLL_OUTPUT_ENABLE <<
->> +                          TPS68470_OUTPUT_A_SHIFT) |
->> +                          (TPS68470_PLL_OUTPUT_ENABLE <<
->> +                          TPS68470_OUTPUT_B_SHIFT));
->> +
->> +       regmap_update_bits(clkdata->regmap, TPS68470_REG_PLLCTL,
->> +                          TPS68470_PLL_EN_MASK, TPS68470_PLL_EN_MASK);
->> +
->> +       return 0;
->> +}
->> +
->> +static void tps68470_clk_unprepare(struct clk_hw *hw)
->> +{
->> +       struct tps68470_clkdata *clkdata = to_tps68470_clkdata(hw);
->> +
->> +       /* disable clock first*/
->> +       regmap_update_bits(clkdata->regmap, TPS68470_REG_PLLCTL, TPS68470_PLL_EN_MASK, 0);
->> +
->> +       /* write hw defaults */
-> 
-> Is it necessary to reset the registers to 0? Can the comment indicate
-> why it is necessary instead of stating what the code is doing?
-
-As mentioned in the commit msg this driver started out of tree, this part
-comes unmodified from the out of tree driver.
-
-After inspecting the datasheet you are right and most of these register
-clears are not necessary to disable the clock.
-
-Only the clearing of TPS68470_REG_CLKCFG1 is necesary to tristate the
-clk output pin. I will remove the rest and add a comment about the
-clearing of TPS68470_REG_CLKCFG1.
-
-> 
->> +       regmap_write(clkdata->regmap, TPS68470_REG_BOOSTDIV, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_BUCKDIV, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_PLLSWR, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_XTALDIV, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_PLLDIV, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_POSTDIV, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_CLKCFG2, 0);
->> +       regmap_write(clkdata->regmap, TPS68470_REG_CLKCFG1, 0);
->> +}
->> +
->> +static unsigned long tps68470_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
->> +{
->> +       struct tps68470_clkdata *clkdata = to_tps68470_clkdata(hw);
->> +
->> +       return clk_freqs[clkdata->clk_cfg_idx].freq;
->> +}
->> +
->> +static int tps68470_clk_cfg_lookup(unsigned long rate)
-> 
-> unsigned? Doesn't seem to return negative numbers.
-
-Will fix for v4.
-> 
->> +{
->> +       long diff, best_diff = LONG_MAX;
->> +       int i, best_idx = 0;
->> +
->> +       for (i = 0; i < ARRAY_SIZE(clk_freqs); i++) {
->> +               diff = clk_freqs[i].freq - rate;
->> +               if (diff == 0)
->> +                       return i;
->> +
->> +               diff = abs(diff);
->> +               if (diff < best_diff) {
->> +                       best_diff = diff;
->> +                       best_idx = i;
->> +               }
->> +       }
->> +
->> +       return best_idx;
->> +}
->> +
->> +static long tps68470_clk_round_rate(struct clk_hw *hw, unsigned long rate,
->> +                                   unsigned long *parent_rate)
->> +{
->> +       int idx = tps68470_clk_cfg_lookup(rate);
-> 
-> unsigned?
-
-Will fix for v4.
-
-
-> 
->> +
->> +       return clk_freqs[idx].freq;
->> +}
->> +
->> +static int tps68470_clk_set_rate(struct clk_hw *hw, unsigned long rate,
->> +                                unsigned long parent_rate)
->> +{
->> +       struct tps68470_clkdata *clkdata = to_tps68470_clkdata(hw);
->> +       int idx = tps68470_clk_cfg_lookup(rate);
->> +
->> +       if (rate != clk_freqs[idx].freq)
->> +               return -EINVAL;
->> +
->> +       clkdata->clk_cfg_idx = idx;
-> 
-> Newline here please.
-
-Done.
-
-> Also, why isn't this function actually writing
-> hardware?
-
-set_rate can only be called when the clock is disabled, all the
-necessary values are programmed based on the clk_cfg_idx in
-tps68470_clk_prepare().
-
-Note there is no enable() since enable() may not sleep and
-this device is interfaced over I2C, so the clock is already
-enabled from the prepare() op.
-
-> 
->> +       return 0;
->> +}
->> +
->> +static const struct clk_ops tps68470_clk_ops = {
->> +       .is_prepared = tps68470_clk_is_prepared,
->> +       .prepare = tps68470_clk_prepare,
->> +       .unprepare = tps68470_clk_unprepare,
->> +       .recalc_rate = tps68470_clk_recalc_rate,
->> +       .round_rate = tps68470_clk_round_rate,
->> +       .set_rate = tps68470_clk_set_rate,
->> +};
->> +
->> +static struct clk_init_data tps68470_clk_initdata = {
-> 
-> const?
-
-Ack.
-
-> 
->> +       .name = TPS68470_CLK_NAME,
->> +       .ops = &tps68470_clk_ops,
->> +};
->> +
->> +static int tps68470_clk_probe(struct platform_device *pdev)
->> +{
->> +       struct tps68470_clk_platform_data *pdata = pdev->dev.platform_data;
->> +       struct tps68470_clkdata *tps68470_clkdata;
->> +       int ret;
->> +
->> +       tps68470_clkdata = devm_kzalloc(&pdev->dev, sizeof(*tps68470_clkdata),
->> +                                       GFP_KERNEL);
->> +       if (!tps68470_clkdata)
->> +               return -ENOMEM;
->> +
->> +       tps68470_clkdata->regmap = dev_get_drvdata(pdev->dev.parent);
->> +       tps68470_clkdata->clkout_hw.init = &tps68470_clk_initdata;
->> +       tps68470_clkdata->clk = devm_clk_register(&pdev->dev, &tps68470_clkdata->clkout_hw);
-> 
-> Please use devm_clk_hw_register()
-
-Good idea, done for v4.
-
-> 
->> +       if (IS_ERR(tps68470_clkdata->clk))
->> +               return PTR_ERR(tps68470_clkdata->clk);
->> +
->> +       ret = devm_clk_hw_register_clkdev(&pdev->dev, &tps68470_clkdata->clkout_hw,
->> +                                         TPS68470_CLK_NAME, NULL);
->> +       if (ret)
->> +               return ret;
->> +
->> +       if (pdata) {
->> +               ret = devm_clk_hw_register_clkdev(&pdev->dev,
->> +                                                 &tps68470_clkdata->clkout_hw,
->> +                                                 pdata->consumer_con_id,
->> +                                                 pdata->consumer_dev_name);
->> +               if (ret)
->> +                       return ret;
-> 
-> Drop these two lines?
-> 
->> +       }
->> +
->> +       return 0;
-> 
-> And then
-> 
-> return ret;
-
-Done for v4.
-
-Regards,
-
-Hans
-
+Can we kill it? It's only half-baked as it is. Or are we committed to it now?
