@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A24543618B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E59643618A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhJUMZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:25:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61386 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231452AbhJUMZY (ORCPT
+        id S231425AbhJUMZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:25:21 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:3531 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhJUMZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:25:24 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LBfAQj009745;
-        Thu, 21 Oct 2021 08:22:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=3h0s/Q4jO7CyjJ9vQgvE5C6x7tYfUNUnkTzGLorSCd8=;
- b=AzlvgaLe7tHFHsRy5fiLm60ZOwmqPc9Pe1tBUbbmo+JwYxV5stmE4j7al/qv5qBlgoh1
- JVm8OM+OTu2qFjgUERk2F+GGlyCoqgTgWj1FKnwHuCnYNDUMUt8DTGdLbMoqE3X/mGJJ
- kI58s9Pp53DuleSjlHDUBMXOR7c3BdtqLCeaQS4fscIPWytWsjy7H79kkAr5Ds79yIgQ
- sTTlhDnVZRDC7XXF8V6lnT6BL5SGUWH3Ct1xrq2UDG1Ti2ZhixkmZaPKm4stXceMZZKz
- 5O4VD7CkSYqabk35SWrs1eojs36DFk61YrEXavYq8WNjJy5Cljre8kh5jhqIU/pCzD6b bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bty9ekjk4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 08:22:58 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19LAURXh016288;
-        Thu, 21 Oct 2021 08:22:58 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bty9ekjjd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 08:22:58 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19LCDfLs026944;
-        Thu, 21 Oct 2021 12:22:55 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3bqpcc3qa7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 12:22:55 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19LCGxaL53346744
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Oct 2021 12:16:59 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB366A4066;
-        Thu, 21 Oct 2021 12:22:52 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F37AA4065;
-        Thu, 21 Oct 2021 12:22:51 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.79.186.49])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 21 Oct 2021 12:22:50 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [V2] perf/core: Avoid calling perf_mux_hrtimer_restart multiple
- times when scheduling event groups
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <YW1ViqOYaVi8NnqE@hirez.programming.kicks-ass.net>
-Date:   Thu, 21 Oct 2021 17:52:10 +0530
-Cc:     Song Liu <songliubraving@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maddy@linux.vnet.ibm.com" <maddy@linux.vnet.ibm.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "eranian@google.com" <eranian@google.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EF5305ED-4A51-48D5-AB89-7E4A32DD3E7A@linux.vnet.ibm.com>
-References: <20211015070403.4809-1-atrajeev@linux.vnet.ibm.com>
- <6E561141-B584-4DB8-A33E-BCD3FF572FA4@fb.com>
- <YW1ViqOYaVi8NnqE@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0Ngq8a3GaGe_pwSnNR8us3AHgeIu2Ih9
-X-Proofpoint-GUID: jTnuwRJajPBaIRpRSjCg_tnejEk1sbkw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-21_02,2021-10-21_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 impostorscore=0 clxscore=1015 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110210064
+        Thu, 21 Oct 2021 08:25:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634818984; x=1666354984;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YtjyPXLkroGsz9agc6VrcGiYg7a86tG8R99+t7K0eFo=;
+  b=EGqQsKl3EYcNaPsjhYHqHdrWv1FKdLGsjrBAfQeuDPcBisOydv0DbI2Y
+   u/GgBtmZ7CeO0+bEUFGlTvb8eTCk/XCiyaC408d0eIc8PwryWSCfcV7KU
+   VgcJlulxUZ3l5k9t4f1s+3G5ZEv3bjqtKPZDgObMECpL6fuPpmrgGRWDC
+   YOkPS10TXIP8D7lbbPqeQ/X5nFj9yi/jyVYKtxIrW7xrYtAfsusfkjt92
+   PZyePeNLbbtxy+beJI84cKp0MLSwGMPF/iI+TAxEoc3SOLIVo6HabbjfY
+   FUuwVLbWIJCKOb9ybkz3ztuHaZvXF7W1uPq505tPm2giSRzwSlCSA+Md2
+   Q==;
+IronPort-SDR: 5SjRX4WIFmH8a0fVc5piMgZLHkcdwsfOgArp/+Sa9QkmWSA0vb5SWWUMGKEaE23B1hB2mOyYAF
+ 39K9n43lAupipxDUUW1u2CPoXwqEgEKFHfVU7XGHm7U3qPC+QHdZT6kOuk5nmTK6jJigu54QjJ
+ WdFjSGjslmyzAChHzYkvZUp9x0R4lrR/KFLGDjSAc66KittI3jDRHEMTdvRLZ2Gazt2LDnxHcs
+ 8eCw3V8VitFTw54X8DeTxD7pD/R4ahNG3HRg8eqgx7/4SX2z4R9FfSNqEj7xKkbWJibQbXxqB1
+ J13owTIfaSHlGBVEFWcuP7Uf
+X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
+   d="scan'208";a="133907797"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Oct 2021 05:23:03 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 21 Oct 2021 05:23:03 -0700
+Received: from ness.mchp-main.com (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 21 Oct 2021 05:23:01 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-clk@vger.kernel.org>
+CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [GIT PULL] clk: at91: clk changes for 5.16
+Date:   Thu, 21 Oct 2021 14:22:48 +0200
+Message-ID: <20211021122248.33261-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Organization: microchip
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
+Stephen,
 
-> On 18-Oct-2021, at 4:37 PM, Peter Zijlstra <peterz@infradead.org> =
-wrote:
->=20
-> On Sat, Oct 16, 2021 at 01:08:04AM +0000, Song Liu wrote:
->>=20
->>=20
->>> On Oct 15, 2021, at 12:04 AM, Athira Rajeev =
-<atrajeev@linux.vnet.ibm.com> wrote:
->>>=20
->>> Perf uses multiplexing if there are more events to be scheduled than =
-the
->>> available counters. With multiplexing, event groups will be rotated =
-at
->>> specified interval of time which is set using "hrtimer". During =
-event
->>> scheduling, if any of the event group fails to schedule, =
-multiplexing
->>> gets enabled by setting "rotate_necessary" for that event context =
-and
->>> starting the hrtimer by calling "perf_mux_hrtimer_restart".
->>>=20
->>> Patch adds an optimisation to avoid calling =
-"perf_mux_hrtimer_restart"
->>> multiple times if already rotate_necessary is set for that context.
->>> Even though "perf_mux_hrtimer_restart" will just return if hrtimer =
-is
->>> already active, this could avoid the overhead of calling this =
-function
->>> multiple times if there are many event groups. Patch adds the check =
-to
->>> avoid calling perf_mux_hrtimer_restart() for each event group on
->>> every schedule.
->>>=20
->>> Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
->>=20
->> Acked-by: Song Liu <song@kernel.org>
->=20
-> Thanks!
+Here are the clk changes for 5.16. I took the initiative to create a
+Pull-Request for it as it's surely more convenient, as I proposed in my
+reply to Claudiu's cover letter.
+I created it on top of your current clk-at91 branch that contains one patch by
+Clément already.
 
-Thanks for checking the patch.
+Please pull.
 
-Hi Peterz,
-Should I resend this patch with Acked-by or can you consider pulling it, =
-if the patch looks fine to you.
+Thanks, best regards,
+  Nicolas
 
-Thanks
-Athira.=
+The following changes since commit c405f5c15e9f6094f2fa1658e73e56f3058e2122:
+
+  clk: at91: check pmc node status before registering syscore ops (2021-10-07 20:47:47 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/clk-at91-5.16
+
+for you to fetch changes up to 865aea519c06456c30846782be063dd9fcd3f99e:
+
+  clk: use clk_core_get_rate_recalc() in clk_rate_get() (2021-10-21 14:00:59 +0200)
+
+----------------------------------------------------------------
+AT91 clk driver changes for 5.16:
+
+- Clock power management for new SAMA7G5 SoC;
+- Updates to the master clock driver and sam9x60-pll to be able to use
+  cpufreq-dt driver and avoid overclocking of CPU and MCK0 domains while
+  changing the frequency via DVFS;
+- Power management refinement with the use of save_context()/restore_context()
+  on each clock driver to specify their use in case of Backup mode only.
+
+----------------------------------------------------------------
+Claudiu Beznea (15):
+      clk: at91: re-factor clocks suspend/resume
+      clk: at91: pmc: execute suspend/resume only for backup mode
+      clk: at91: sama7g5: add securam's peripheral clock
+      clk: at91: clk-master: add register definition for sama7g5's master clock
+      clk: at91: clk-master: improve readability by using local variables
+      clk: at91: pmc: add sama7g5 to the list of available pmcs
+      clk: at91: sam9x60-pll: use DIV_ROUND_CLOSEST_ULL
+      clk: at91: clk-master: check if div or pres is zero
+      clk: at91: clk-master: mask mckr against layout->mask
+      clk: at91: clk-master: fix prescaler logic
+      clk: at91: clk-sam9x60-pll: add notifier for div part of PLL
+      clk: at91: clk-master: add notifier for divider
+      clk: at91: sama7g5: remove prescaler part of master clock
+      clk: at91: sama7g5: set low limit for mck0 at 32KHz
+      clk: use clk_core_get_rate_recalc() in clk_rate_get()
+
+ drivers/clk/at91/at91rm9200.c       |   2 +-
+ drivers/clk/at91/at91sam9260.c      |   2 +-
+ drivers/clk/at91/at91sam9g45.c      |   2 +-
+ drivers/clk/at91/at91sam9n12.c      |   2 +-
+ drivers/clk/at91/at91sam9rl.c       |   2 +-
+ drivers/clk/at91/at91sam9x5.c       |   2 +-
+ drivers/clk/at91/clk-generated.c    |  46 +++-
+ drivers/clk/at91/clk-main.c         |  66 +++++
+ drivers/clk/at91/clk-master.c       | 463 ++++++++++++++++++++++++++++-------
+ drivers/clk/at91/clk-peripheral.c   |  40 ++-
+ drivers/clk/at91/clk-pll.c          |  39 +++
+ drivers/clk/at91/clk-programmable.c |  29 ++-
+ drivers/clk/at91/clk-sam9x60-pll.c  | 174 ++++++++++---
+ drivers/clk/at91/clk-system.c       |  20 ++
+ drivers/clk/at91/clk-usb.c          |  27 ++
+ drivers/clk/at91/clk-utmi.c         |  39 +++
+ drivers/clk/at91/dt-compat.c        |   2 +-
+ drivers/clk/at91/pmc.c              | 173 +++----------
+ drivers/clk/at91/pmc.h              |  29 ++-
+ drivers/clk/at91/sam9x60.c          |   6 +-
+ drivers/clk/at91/sama5d2.c          |   2 +-
+ drivers/clk/at91/sama5d3.c          |   2 +-
+ drivers/clk/at91/sama5d4.c          |   2 +-
+ drivers/clk/at91/sama7g5.c          |  29 +--
+ drivers/clk/clk.c                   |   2 +-
+ 25 files changed, 890 insertions(+), 312 deletions(-)
+
+-- 
+Nicolas Ferre
