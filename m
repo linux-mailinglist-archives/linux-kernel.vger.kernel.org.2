@@ -2,156 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8B6436389
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030CC436361
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhJUN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:57:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60404 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230361AbhJUN5M (ORCPT
+        id S230444AbhJUNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:52:26 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:45341 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhJUNwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:57:12 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LDk4hc000349;
-        Thu, 21 Oct 2021 09:54:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : message-id : content-transfer-encoding :
- content-type : mime-version : references; s=pp1;
- bh=b0GDfLCSxaRLA8++FGanCP6cC2uM4sy/dCjpZsm7Uk0=;
- b=C1+XgBnE25Jbg7nn9IlJdbYS3R6Tu3SDYWMfn8y4hSZPnnQGtY9p6DMdzci0Hszh16PE
- MmAfS3aa/ckGAl2vKkb8tpJ+ryiHRJQKPZ0L1A9YNNpLhmrMeF7fBg7op+TWKB54s7j8
- R8lJ+S7Y9v6MsJwo/rLnX5PkMtTFgZOOITJpWwOj9sPTqswWBBPXMUfizqwOYR+dy8bk
- VBjY7QZx4lzNlNeDnCJ460c99YOJfPY9QgQZrNKQLBPS5NJceraakLJMJlhYoLTb844h
- oBZ9YZ4MtF5+6mb9DAeQTOkPTmC/YEq5i/Cbai91DL0Pvh0K370Mo3uGzG0nPma6lsHg Gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bu7neb0hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 09:54:33 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19LClLEO007740;
-        Thu, 21 Oct 2021 09:54:32 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bu7neb0hf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 09:54:32 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19LDrfgx003567;
-        Thu, 21 Oct 2021 13:54:31 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma04dal.us.ibm.com with ESMTP id 3bqpcdny7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 13:54:31 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19LDsVMr17039752
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Oct 2021 13:54:31 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 04C9228059;
-        Thu, 21 Oct 2021 13:54:31 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D9AA72805C;
-        Thu, 21 Oct 2021 13:54:30 +0000 (GMT)
-Received: from mww0301.wdc07m.mail.ibm.com (unknown [9.208.64.45])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Thu, 21 Oct 2021 13:54:30 +0000 (GMT)
-In-Reply-To: <20211021120135.3003-1-caihuoqing@baidu.com>
-Subject: Re: [PATCH 0/6] kthread: Add the helper macro kthread_run_on_cpu()
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Cai Huoqing" <caihuoqing@baidu.com>
-Cc:     "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        "Lai Jiangshan" <jiangshanlai@gmail.com>,
-        "Joel Fernandes" <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Daniel Bristot de Oliveira" <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Date:   Thu, 21 Oct 2021 13:48:15 +0000
-Message-ID: <OFACD03FD5.99AACE16-ON00258775.004BD474-00258775.004BD47C@ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+        Thu, 21 Oct 2021 09:52:24 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MK3mS-1mPkh72WvG-00LZhi; Thu, 21 Oct 2021 15:50:07 +0200
+Received: by mail-wr1-f52.google.com with SMTP id r18so1226479wrg.6;
+        Thu, 21 Oct 2021 06:50:07 -0700 (PDT)
+X-Gm-Message-State: AOAM531XQ4qmZX/cdKyIo+x2yhiBXZAjDJHLwIev/Xn02DeZbZTtzNe1
+        iTlTEmqZOpad7CoNYsJJEtyxInXHMyDYZUi3bco=
+X-Google-Smtp-Source: ABdhPJzFgn79Ic6FqBqH1cvM4ZGB9Dra++hlNfhANl9ybgG+sQ8/6wYtZISF0tQPrg0FbbKYG8md6racZvoc4a5yYuU=
+X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr7104304wrq.411.1634824207284;
+ Thu, 21 Oct 2021 06:50:07 -0700 (PDT)
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20211021120135.3003-1-caihuoqing@baidu.com>
-X-Mailer: Lotus Domino Web Server Release 11.0.1FP2HF117   October 6, 2021
-X-MIMETrack: Serialize by http on MWW0301/01/M/IBM at 10/21/2021 13:48:16,Serialize
- complete at 10/21/2021 13:48:16
-X-Disclaimed: 62867
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: uXTDd9u8R3DaG1IPx2wa5gq0UTbf0HJt
-X-Proofpoint-GUID: mPWH0683gmvegmcFOIctDtY8ugTXegVg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-21_04,2021-10-21_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- clxscore=1011 priorityscore=1501 impostorscore=0 malwarescore=0
- phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110210072
+References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+In-Reply-To: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 21 Oct 2021 15:49:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com>
+Message-ID: <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com>
+Subject: Re: [PATCH] locking: Generic ticket lock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
+        Stafford Horne <shorne@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:oz2/dP5J5bv0MZ5b5PpkbfR/AHPVkMMXoayFbA+g+9/TZYgDQim
+ 599eBtzjZbI1PpL5vv/5JIMFEoDtxbIoRe5XU8Lt5U3hlp6hyeKhcLh86Ed07egMp66Gqs4
+ 2zaLVEF8lr2Gk3I/7Bh+JroOclDoMQ3V6do9+wmUf3SxvgMQXVAcosHoCCJOdD0yk8bmVgj
+ +M0300hmfe6u0Qfq93NMA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8pKS50lWB3A=:AbKj+0rqm3eAX3LNHG38Hf
+ PCiLyg8EA1uUI1n3wl5KfDu+b+ZdKxNM8v2ryQDCiitBWePuuG9ZOFIUrxC5CGn0PasAP+DGV
+ mC0WkkBkMT4kC4XHlsBk/W1136WsQEnk6SMBtBQ2tNQG5oS2x3ymiEx6nhgZm7f3kpKz3v+gh
+ uJXXou2bQzT3N0Kxr7uVcGktsw7k2IBB4HDltFLYG6pB8cQQZVO7YQxSR6PeBVF02chznZysj
+ WheCPJbGX2pY+Rpp33iQJdQXwFadgvlObpC6054a9RltHw/t9Kl9HOILeZ9+dJCwbZ4xlWlAT
+ LE+/D/5nKON5/qlUvtiGq/N3ZG7V9erIyuILvnNncoKvQ6tYSuJQSDJ8wFuw1sgOHMoNUf25H
+ qIop0lKmZol1M6drDEsGzqhGDCYPMSAC29VyNf8yYf/2JVURNajOvIV1ukMC2A+9IEHli+2Ef
+ /g2XE/XI4q7Ldo5M6FHkvNATxK7LrVMwNqCtC9eYulM7BLn+F3lXiBxUtJZ9FN/irVkHGosfD
+ qvFfiD8uU0u3tXEJf6N8a2L3LjSloiBvTXGZ1QbIFupRHsNBVwZi4uy7jxxMCllwoi1FZ1U69
+ 7jWtgQQ2nKsL6udnAg0Di0jlLq3IlrGz3UGOkz9zUvPQnH9KucX/62nN5/sNZAQBToHYHgQa+
+ +RGZak2WPRWmU/gXnXWgsj3rt6X8fAe/NjQK5XphEFxyaw7++bKsmT5JpUu2KPl44Yho=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------"Cai Huoqing" <caihuoqing@baidu.com> wrote: -----
+On Thu, Oct 21, 2021 at 3:05 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Therefore provide ticket locks, which depend on a single atomic
+> operation (fetch_add) while still providing fairness.
 
->To: <caihuoqing@baidu.com>
->From: "Cai Huoqing" <caihuoqing@baidu.com>
->Date: 10/21/2021 02:02PM
->Cc: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
-><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Davidlohr
->Bueso" <dave@stgolabs.net>, "Paul E. McKenney" <paulmck@kernel.org>,
->"Josh Triplett" <josh@joshtriplett.org>, "Steven Rostedt"
-><rostedt@goodmis.org>, "Mathieu Desnoyers"
-><mathieu.desnoyers@efficios.com>, "Lai Jiangshan"
-><jiangshanlai@gmail.com>, "Joel Fernandes" <joel@joelfernandes.org>,
->"Ingo Molnar" <mingo@redhat.com>, "Daniel Bristot de Oliveira"
-><bristot@kernel.org>, <linux-rdma@vger.kernel.org>,
-><linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
->Subject: [EXTERNAL] [PATCH 0/6] kthread: Add the helper macro
->kthread=5Frun=5Fon=5Fcpu()
->
->the helper macro kthread=5Frun=5Fon=5Fcpu() inculdes
->kthread=5Fcreate=5Fon=5Fcpu/wake=5Fup=5Fprocess().
->In some cases, use kthread=5Frun=5Fon=5Fcpu() directly instead of
->kthread=5Fcreate=5Fon=5Fnode/kthread=5Fbind/wake=5Fup=5Fprocess() or
->kthread=5Fcreate=5Fon=5Fcpu/wake=5Fup=5Fprocess() or
->kthreadd=5Fcreate/kthread=5Fbind/wake=5Fup=5Fprocess() to simplify the cod=
-e.
+Nice!
 
-I do not see kthread=5Fbind() being covered by the helper,
-as claimed? rcutorture, ring-buffer, siw are using it in
-the code potentially being replaced by the helper.
-kthread=5Fbind() is best to be called before thread starts
-running, so should be part of it.
+Aside from the qspinlock vs ticket-lock question, can you describe the
+tradeoffs between this generic ticket lock and a custom implementation
+in architecture code? Should we convert most architectures over
+to the generic code in the long run, or is there something they
+can usually do better with an inline asm based ticket lock or
+a trivial test-and-set?
 
-Thanks,
-Bernard.
->
->Cai Huoqing (6):
->  kthread: Add the helper macro kthread=5Frun=5Fon=5Fcpu()
->  RDMA/siw: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->  ring-buffer: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->  rcutorture: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->  trace/osnoise: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->  trace/hwlat: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->
-> drivers/infiniband/sw/siw/siw=5Fmain.c |  7 +++----
-> include/linux/kthread.h              | 22 ++++++++++++++++++++++
-> kernel/rcu/rcutorture.c              |  7 ++-----
-> kernel/trace/ring=5Fbuffer.c           |  7 ++-----
-> kernel/trace/trace=5Fhwlat.c           |  6 +-----
-> kernel/trace/trace=5Fosnoise.c         |  3 +--
-> 6 files changed, 31 insertions(+), 21 deletions(-)
->
->--=20
->2.25.1
->
->
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  include/asm-generic/qspinlock.h         |   30 +++++++++
+>  include/asm-generic/ticket_lock_types.h |   11 +++
+>  include/asm-generic/ticket_lock.h       |   97 ++++++++++++++++++++++++++++++++
+>  3 files changed, 138 insertions(+)
+
+If anyone wants to use this for their architecture, feel free to add
+
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+to merge it through the respective architecture git tree. If there is more
+than one architecture that wants it right now, I could also take them
+all through
+the asm-generic tree.
+
+          Arnd
