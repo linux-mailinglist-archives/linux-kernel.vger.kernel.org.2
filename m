@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3499B435DB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465B6435D87
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhJUJP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:15:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231336AbhJUJP6 (ORCPT
+        id S231321AbhJUJIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:08:09 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14837 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhJUJII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:15:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634807622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JSYinOFtwRsFgOxSRSzI9vTSR20INlFSfCZfRqi4WrE=;
-        b=Xr4GGTK4sEZ1IrKycuNgeAVBDB1CUZcIXDcGEeK/p/SVmDleZCOuTlhXs85wPHXa950pSU
-        ND8/RvPEcxfVhOnZOBTEPXYuOYmlyc8l8AeSqF2zOZ6LlZ5fZXuPrILxFkRLr/TuyNX9m2
-        eO19T+3GtXheubxBurquAngeMdFe0Yk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-peoWRb9sPDexm_gPO3L0lA-1; Thu, 21 Oct 2021 05:13:38 -0400
-X-MC-Unique: peoWRb9sPDexm_gPO3L0lA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 880A2806688;
-        Thu, 21 Oct 2021 09:13:37 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE1815F4F5;
-        Thu, 21 Oct 2021 09:13:32 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 10:13:31 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     cgel.zte@gmail.com
-Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
-        axboe@kernel.dk, virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] virtio-blk: fixup coccinelle warnings
-Message-ID: <YXEvO+agUSTYD9CG@stefanha-x1.localdomain>
-References: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
+        Thu, 21 Oct 2021 05:08:08 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HZhKK4DF9z90Ns;
+        Thu, 21 Oct 2021 17:00:53 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 17:05:50 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 21 Oct
+ 2021 17:05:50 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <richardcochran@gmail.com>, <kuba@kernel.org>
+Subject: [PATCH -net] ptp: free 'vclock_index' in ptp_clock_release()
+Date:   Thu, 21 Oct 2021 17:13:53 +0800
+Message-ID: <20211021091353.457508-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4i3IirvxfSp8CV/X"
-Content-Disposition: inline
-In-Reply-To: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+'vclock_index' is accessed from sysfs, it shouled be freed
+in release function, so move it from ptp_clock_unregister()
+to ptp_clock_release().
 
---4i3IirvxfSp8CV/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/ptp/ptp_clock.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-On Thu, Oct 21, 2021 at 06:51:11AM +0000, cgel.zte@gmail.com wrote:
-> From: Ye Guojin <ye.guojin@zte.com.cn>
->=20
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING  use scnprintf or sprintf
->=20
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
->=20
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
-> ---
->  drivers/block/virtio_blk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-
---4i3IirvxfSp8CV/X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmFxLzsACgkQnKSrs4Gr
-c8jSigf+P1fE6QfnIfouWFqWo7v5avT6uxaqhbKNTpHIP4m+rAQpOBz8VmkV4Qgn
-tMGnD/dTY1U5meS5Tto0tn4UeKJJYwjF+BZPonvr4b8A2S5uYINslRmfdkdNQyvs
-mGs02Ed+v4LoKq/17B17H8LLRCGqHIDD9R+s2l8Ouu4iGxdU3uqRBeoYeXVCL6fg
-ywsBov6xUGipCSK8JCXAfqrtBnmTAuCPwkM2e0fUpXbmKFDRJyNaX+glhEnC92i4
-dXgjYVk0AjAEAZL9AfdoVpoB96YUVFcCxQcGmIgnw2ujdhrY3RRzzC/deuqvhD5E
-vYXwL/thuQXjca4Vl/T0JOr8rZef8A==
-=D4TM
------END PGP SIGNATURE-----
-
---4i3IirvxfSp8CV/X--
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 7fd02aabd79a..f9b2d66b0443 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -170,6 +170,7 @@ static void ptp_clock_release(struct device *dev)
+ 	struct ptp_clock *ptp = container_of(dev, struct ptp_clock, dev);
+ 
+ 	ptp_cleanup_pin_groups(ptp);
++	kfree(ptp->vclock_index);
+ 	mutex_destroy(&ptp->tsevq_mux);
+ 	mutex_destroy(&ptp->pincfg_mux);
+ 	mutex_destroy(&ptp->n_vclocks_mux);
+@@ -286,8 +287,6 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	        if (ptp->pps_source)
+ 	                pps_unregister_source(ptp->pps_source);
+ 
+-		kfree(ptp->vclock_index);
+-
+ 		if (ptp->kworker)
+ 	                kthread_destroy_worker(ptp->kworker);
+ 
+@@ -328,8 +327,6 @@ int ptp_clock_unregister(struct ptp_clock *ptp)
+ 	ptp->defunct = 1;
+ 	wake_up_interruptible(&ptp->tsev_wq);
+ 
+-	kfree(ptp->vclock_index);
+-
+ 	if (ptp->kworker) {
+ 		kthread_cancel_delayed_work_sync(&ptp->aux_work);
+ 		kthread_destroy_worker(ptp->kworker);
+-- 
+2.25.1
 
