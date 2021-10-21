@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9A34357B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22B64357CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhJUA2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:28:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232608AbhJUA0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:26:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07044613A1;
-        Thu, 21 Oct 2021 00:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634775866;
-        bh=IC7UlV2w1e4Ip96/SdkIQOlu48Mr5j18fgcS+51QB6I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IMB7RYOMiaNaE2k42a5lR+zA6OuL4FkwiWud4oSt5QrQ0oo6CosxqGUwm2SI1Ma8+
-         ARXSkCbuhF72/tVMwo1RLiX+iPfSGi7N4s7967hsNpRquNb9W1EExj5nWGCY/atyKF
-         mcS8eWAxEfcDcemqeachJxMuzKXclsBEDYSpdRk4cJQCEZ247IM1U7BwgbKVE0FBQH
-         mkY5ArfFwtjwhjr7orFm5Q4I97ITIJ6UlTF4psMeKqIp+4/nfMj6REcAkHivD/xyEA
-         Vtdqv7xkrdGL64+i/o14vK4XvsL+softhpKMJWVlWZqWuNMqNyo3uIBcxdpiw5s3ov
-         U86ua03MlnFVQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Cullen <michael@michaelcullen.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, mattreynolds@chromium.org,
-        lzye@google.com, hcutts@chromium.org, lee.jones@linaro.org,
-        olivier.crete@ocrete.ca, sanjay.govind9@gmail.com,
-        benpicco@googlemail.com, andrzej.p@collabora.com,
-        linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 7/7] Input: xpad - add support for another USB ID of Nacon GC-100
-Date:   Wed, 20 Oct 2021 20:24:03 -0400
-Message-Id: <20211021002404.1129946-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211021002404.1129946-1-sashal@kernel.org>
-References: <20211021002404.1129946-1-sashal@kernel.org>
+        id S230338AbhJUAbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231761AbhJUAa6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:30:58 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1543FC0612EB;
+        Wed, 20 Oct 2021 17:24:23 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id g8so767012edb.12;
+        Wed, 20 Oct 2021 17:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5eloQCKXWTUiSmbR1X0jGe1q/eCl2wqdQA20kDdwT2s=;
+        b=HriyKME2zazNoiZB+Rtlfps5OGDS+h+N7t3UADf3lQxb8AUY8f3zKkI8hr8iOHIA7q
+         3gCYNUKF8GYy9qYUjhvtgwkiYJ95UIJk2knGl+yYRnu+C6BAGWV7sizMOfbbCP75Mtcu
+         6ehgGtADVpi0zAE47LBah0SnJqlttdyF9UzNuVKVG+KPv1qJk1uaLe5YOEOI9RV+WIhX
+         uhz4YudgvdCLfEVT8CAtP0J1brGnKC4nFvbpx4h6DXuHoNkJHFMo71PA/wU0z/pExdSR
+         W8m8ltWRUW3Rb7sUxyPeBH8Ucf4WCBsAR9Zx3dI9PVdq/bWoR2Bni5zKJP5xpbqphCuj
+         2lbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5eloQCKXWTUiSmbR1X0jGe1q/eCl2wqdQA20kDdwT2s=;
+        b=McUIgGHDRRY+LNBJH6JudGGgWI3UPFOehENqaWftU6q+w8/51mYd0GjX75UqTeRBYL
+         BhPXysDkgxZaWk98wByAuyf578um/zeXkQpHcwW3NEVhBMaNWLD+aK5AuDOsBKnC0sp1
+         /CFWoKqgBiHCaGw0hSQKADIEPhDhGKgMfOqsFJSbb4uAfo9PaeYsfRom8veUYBJm1uSm
+         uCimYHKMVN4zKN03DzNQh+a6XE+I/zls11VJR9X9Ap8leOl+iEEYp8SIIpUYBrPXSk/z
+         u11uLM6CdLMy28rqDJ1XoaHeqeTDonOKWHFj9PuxjN2XnhFZf0JC7cGicsSH6UDd6xeb
+         PihQ==
+X-Gm-Message-State: AOAM531lAwE5dTRH/AOgpmJ36FuU0fQKg9Fo7t9jHIu2bgyblLh8tChU
+        Ied21Xud1wU41ebycY9FBpigxNKFs5G/pEr2gtc=
+X-Google-Smtp-Source: ABdhPJz4auadneCMTX46lZNSc9u6L0br4Hz0RPmrMr25TW9yJWn3zd+4jos22jkGtsn+dhh4tVpy00ywBQs5nFwbTmg=
+X-Received: by 2002:a05:6402:1e8c:: with SMTP id f12mr2919700edf.71.1634775861767;
+ Wed, 20 Oct 2021 17:24:21 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210917205731.262693-1-shy828301@gmail.com> <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
+ <YUdL3lFLFHzC80Wt@casper.infradead.org> <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
+ <YUkCI2I085Sos/64@casper.infradead.org> <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
+ <CAHbLzkrdXQfcudeeDHx8uUD55Rr=Aogi0pnQbBbP8bEZca8-7w@mail.gmail.com>
+ <CAHbLzkq2v+xpBweO-XG+uZiF3kvOFodKi4ioX=dzXpBYLtoZcw@mail.gmail.com> <YXCrHxMF3ADO0n2x@casper.infradead.org>
+In-Reply-To: <YXCrHxMF3ADO0n2x@casper.infradead.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 20 Oct 2021 17:24:09 -0700
+Message-ID: <CAHbLzkqHx=RRXAEjOunVOiJobkvQg0p005-ggSpLgcAn75QkOA@mail.gmail.com>
+Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
+ for invalidatepage
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>, Song Liu <song@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Cullen <michael@michaelcullen.name>
+On Wed, Oct 20, 2021 at 4:51 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Oct 20, 2021 at 04:38:49PM -0700, Yang Shi wrote:
+> > > However, it still doesn't make too much sense to have thp_size passed
+> > > to do_invalidatepage(), then have PAGE_SIZE hardcoded in a BUG
+> > > assertion IMHO. So it seems this patch is still useful because
+> > > block_invalidatepage() is called by a few filesystems as well, for
+> > > example, ext4. Or I'm wondering whether we should call
+> > > do_invalidatepage() for each subpage of THP in truncate_cleanup_page()
+> > > since private is for each subpage IIUC.
+> >
+> > Seems no interest?
+>
+> No.  I have changes in this area as part of the folio patchset (where
+> we end up converting this to invalidate_folio).  I'm not really
+> interested in doing anything before that, since this shouldn't be
+> reachable today.
 
-[ Upstream commit 3378a07daa6cdd11e042797454c706d1c69f9ca6 ]
+Understood. But this is definitely reachable unless Hugh's patch
+(skipping non-regular file) is applied.
 
-The Nacon GX100XF is already mapped, but it seems there is a Nacon
-GC-100 (identified as NC5136Wht PCGC-100WHITE though I believe other
-colours exist) with a different USB ID when in XInput mode.
+>
+> > Anyway the more I was staring at the code the more I thought calling
+> > do_invalidatepage() for each subpage made more sense. So, something
+> > like the below makes sense?
+>
+> Definitely not.  We want to invalidate the entire folio at once.
 
-Signed-off-by: Michael Cullen <michael@michaelcullen.name>
-Link: https://lore.kernel.org/r/20211015192051.5196-1-michael@michaelcullen.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/input/joystick/xpad.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index 4168ed0ef187..f8f6bd92e314 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -348,6 +348,7 @@ static const struct xpad_device {
- 	{ 0x24c6, 0x5b03, "Thrustmaster Ferrari 458 Racing Wheel", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0x5d04, "Razer Sabertooth", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0xfafe, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
-+	{ 0x3285, 0x0607, "Nacon GC-100", 0, XTYPE_XBOX360 },
- 	{ 0x3767, 0x0101, "Fanatec Speedster 3 Forceshock Wheel", 0, XTYPE_XBOX },
- 	{ 0xffff, 0xffff, "Chinese-made Xbox Controller", 0, XTYPE_XBOX },
- 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
-@@ -464,6 +465,7 @@ static const struct usb_device_id xpad_table[] = {
- 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA Controllers */
- 	XPAD_XBOXONE_VENDOR(0x2e24),		/* Hyperkin Duke X-Box One pad */
- 	XPAD_XBOX360_VENDOR(0x2f24),		/* GameSir Controllers */
-+	XPAD_XBOX360_VENDOR(0x3285),		/* Nacon GC-100 */
- 	{ }
- };
- 
--- 
-2.33.0
-
+I didn't look at the folio patch (on each individual patch level), but
+I'm supposed it still needs to invalidate buffer for each subpage,
+right?
