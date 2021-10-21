@@ -2,82 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B5F436402
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFFC436437
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhJUOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhJUOYQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:24:16 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F791C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:22:00 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id t4so1054685oie.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=pwU45kqabGOIjTCLFTiuvnWVscRTVq0V1Wg7F0FQWnM=;
-        b=m1DSHkBkyUSgDKySogEvw+YytcjK9ePNfALveLH480YxprvTUn561zQPcVWTdXZ43C
-         aOW9u2N6kxwvcBCSPrvEkLoCyjn0JWlSYiBXeM6ciNAgshZEvRwP2LaDQ1jCyVluvtRr
-         DDOGShBfvr1fBwNgXu3lEqi7qDOgo0izVQOiaU9XUHZRQGooSxNbMz5qdgkRfZNNwVpX
-         cWN2ikXLZp5gWvJEtfIkieFeO5YhAY9SwXOvFzxhfoBlXwUNmvZTdETRMHGPDyO06JVr
-         NvVRM7HYSip6VlXExetUcBtZcOz/ESLYA9zWPHzNmcbEC9nb1DeltJNKValWimMrK2LL
-         3STA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=pwU45kqabGOIjTCLFTiuvnWVscRTVq0V1Wg7F0FQWnM=;
-        b=FI0BzT/dh7Bzgar4+Tzkzd4hLAUNAysb9BYEhwiU7FMpE5pzK1OHHlXjgUtmggIQSm
-         BZJ5qsjj9aC6nA9kJg1nNEUrA6CazZ+1FgH7jz7JCIyuBBQQvI2fU7BuuJDTCkW8dQR1
-         WP7muIGh2gNxpXjG9Y5+QcG+It9Zgw4/EMQT9UuL+1wF/dQ5iFt9+cvwnlbngDSUMH5d
-         VBJKkOgDTkHUCzaU80u/ABB+ldALIV8gYBO0BYYI1afRy+l0XP15n+A/Zv1D+jLz9zGH
-         OXt6RG3Ddz8AVD7Uy8YGzSLrxt/yoqrHkcieCfT37vSu/T+OARDD7z3B3gmHP3mjnMJQ
-         yLhg==
-X-Gm-Message-State: AOAM5311a/xDAUZ2c+nfyGBlss82JEg7NeMKhThWHn8yTp9JE8eDb3WU
-        maUZO58u75HHVia4O3Ca38Bfvg==
-X-Google-Smtp-Source: ABdhPJxMonhDxnh1DsuGFr+RKw9Ii+GujTV3nMHKAOveBQ7hDy+tCxtaPkG2CMQ4uym5tIf1Wegscw==
-X-Received: by 2002:aca:1712:: with SMTP id j18mr4532065oii.33.1634826119457;
-        Thu, 21 Oct 2021 07:21:59 -0700 (PDT)
-Received: from [127.0.1.1] ([2600:380:783a:c43c:af64:c142:4db7:63ac])
-        by smtp.gmail.com with ESMTPSA id z8sm915785oof.47.2021.10.21.07.21.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 07:21:59 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     John Garry <john.garry@huawei.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kashyap.desai@broadcom.com, hare@suse.de, ming.lei@redhat.com
-In-Reply-To: <1634550083-202815-1-git-send-email-john.garry@huawei.com>
-References: <1634550083-202815-1-git-send-email-john.garry@huawei.com>
-Subject: Re: [PATCH v2] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-Message-Id: <163482611742.37241.15630114014516067630.b4-ty@kernel.dk>
-Date:   Thu, 21 Oct 2021 08:21:57 -0600
+        id S231666AbhJUO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:29:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231758AbhJUO2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:28:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9A56121E;
+        Thu, 21 Oct 2021 14:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634826377;
+        bh=bHMCC2Joz2S9P8XV+PtAiZf0onIoMDJNxbbKLQvU2Fg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YhQikz4rKOXD8kvnluImMak6h9iVPSTbTUp8un1AYwbhWML9H9eUGS7t6iUNWx49X
+         gfqoJnriyGlIBNnkF3JPFFXz+oUex0GEUf2/0p2jDbYDM6/6AhtH1bh6uGYRJGpaXm
+         iaodv0SZ7PfwH+Ao61UTf/oehSZ5DGxYgU5r0ju8=
+Date:   Thu, 21 Oct 2021 16:26:14 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Abhyuday Godhasara <agodhasa@xilinx.com>
+Cc:     Michal Simek <michals@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Message-ID: <YXF4hlTDNYP3GXmb@kroah.com>
+References: <YWbYKQXf8g8s55kG@kroah.com>
+ <YWbZoPHDzc4e5Nme@kroah.com>
+ <SA1PR02MB8592E68D021E12DCA45B70A2A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbo660XPKlwDZH0@kroah.com>
+ <SA1PR02MB8592EB312091543A1D564D70A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbtSiHWNOf2djee@kroah.com>
+ <f63e44a0-c187-8278-6c89-935b7006b64f@xilinx.com>
+ <SA1PR02MB85922CC2DCFCDC902BC37E68A1BF9@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YXF1W8a7NfvRWPTt@kroah.com>
+ <SA1PR02MB85924092AA6D1B87E03113A3A1BF9@SA1PR02MB8592.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SA1PR02MB85924092AA6D1B87E03113A3A1BF9@SA1PR02MB8592.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 17:41:23 +0800, John Garry wrote:
-> Since it is now possible for a tagset to share a single set of tags, the
-> iter function should not re-iter the tags for the count of #hw queues in
-> that case. Rather it should just iter once.
+On Thu, Oct 21, 2021 at 02:18:33PM +0000, Abhyuday Godhasara wrote:
+> Hi Greg,
 > 
-> 
+> > -----Original Message-----
+> > From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > Sent: Thursday, October 21, 2021 7:43 PM
+> > To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>;
+> > Manish Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > 
+> > On Thu, Oct 21, 2021 at 01:55:49PM +0000, Abhyuday Godhasara wrote:
+> > > Hi Greg,
+> > >
+> > > > -----Original Message-----
+> > > > From: Michal Simek <michal.simek@xilinx.com>
+> > > > Sent: Wednesday, October 13, 2021 9:00 PM
+> > > > To: gregkh@linuxfoundation.org; Abhyuday Godhasara
+> > > > <agodhasa@xilinx.com>
+> > > > Cc: Rajan Vaja <RAJANV@xilinx.com>; Manish Narani
+> > > > <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna Potthuri
+> > > > <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > > > linux-kernel@vger.kernel.org; linux-arm- kernel@lists.infradead.org
+> > > > Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > >
+> > > >
+> > > >
+> > > > On 10/13/21 16:29, gregkh@linuxfoundation.org wrote:
+> > > > > On Wed, Oct 13, 2021 at 02:21:01PM +0000, Abhyuday Godhasara wrote:
+> > > > >> Hi Greg,
+> > > > >>
+> > > > >>
+> > > > >> Thanks,
+> > > > >> Abhyuday
+> > > > >>
+> > > > >>> -----Original Message-----
+> > > > >>> From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > > > >>> Sent: Wednesday, October 13, 2021 7:41 PM
+> > > > >>> To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > > > >>> Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja
+> > > > >>> <RAJANV@xilinx.com>; Manish Narani <MNARANI@xilinx.com>;
+> > > > >>> zou_wei@huawei.com; Sai Krishna Potthuri <lakshmis@xilinx.com>;
+> > > > >>> Jiaying Liang <jliang@xilinx.com>; linux-
+> > > > >>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > > > >>> Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > > >>>
+> > > > >>> On Wed, Oct 13, 2021 at 01:57:59PM +0000, Abhyuday Godhasara
+> > wrote:
+> > > > >>>> Hi Greg,
+> > > > >>>>
+> > > > >>>>> -----Original Message-----
+> > > > >>>>> From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > > > >>>>> Sent: Wednesday, October 13, 2021 6:36 PM
+> > > > >>>>> To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > > > >>>>> Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja
+> > > > >>>>> <RAJANV@xilinx.com>; Manish Narani <MNARANI@xilinx.com>;
+> > > > >>>>> zou_wei@huawei.com; Sai Krishna Potthuri
+> > > > >>>>> <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > > > >>>>> linux- kernel@vger.kernel.org;
+> > > > >>>>> linux-arm-kernel@lists.infradead.org
+> > > > >>>>> Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > > >>>>>
+> > > > >>>>> On Wed, Oct 13, 2021 at 02:59:21PM +0200,
+> > > > >>>>> gregkh@linuxfoundation.org
+> > > > >>>>> wrote:
+> > > > >>>>>> On Wed, Oct 13, 2021 at 12:27:58PM +0000, Abhyuday Godhasara
+> > > > wrote:
+> > > > >>>>>>> Hi Greg,
+> > > > >>>>>>>
+> > > > >>>>>>>> -----Original Message-----
+> > > > >>>>>>>> From: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> > > > >>>>>>>> Sent: Wednesday, September 15, 2021 6:46 PM
+> > > > >>>>>>>> To: gregkh@linuxfoundation.org
+> > > > >>>>>>>> Cc: Michal Simek <michals@xilinx.com>; Abhyuday Godhasara
+> > > > >>>>>>>> <agodhasa@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>;
+> > > > >>>>>>>> Manish Narani <MNARANI@xilinx.com>; zou_wei@huawei.com;
+> > Sai
+> > > > >>>>>>>> Krishna Potthuri <lakshmis@xilinx.com>; Jiaying Liang
+> > > > >>>>>>>> <jliang@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > > > >>>>>>>> linux-kernel@vger.kernel.org;
+> > > > >>>>>>>> linux-arm- kernel@lists.infradead.org
+> > > > >>>>>>>> Subject: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > > >>>>>>>>
+> > > > >>>>>>>> This Linux driver provides support to subscribe error/event
+> > > > >>>>>>>> notification and receive notification from firmware for
+> > > > >>>>>>>> error/event and forward event notification to subscribed
+> > > > >>>>>>>> driver via
+> > > > >>>>> registered callback.
+> > > > >>>>>>>>
+> > > > >>>>>>>> All types of events like power and error will be handled
+> > > > >>>>>>>> from single place as part of event management driver.
+> > > > >>>>>>>>
+> > > > >>>>>>>> Changes in v4:
+> > > > >>>>>>>> - Rebase on latest tree
+> > > > >>>>>>>>
+> > > > >>>>>>>> Changes in v3:
+> > > > >>>>>>>> - Update the commit message.
+> > > > >>>>>>>>
+> > > > >>>>>>>> Changes in v2:
+> > > > >>>>>>>> - Removed updated copyright year from unchanged files.
+> > > > >>>>>>>> - make sgi_num as module parameter for event management
+> > driver.
+> > > > >>>>>>>> - Use same object for error detection and printing.
+> > > > >>>>>>>>
+> > > > >>>>>>>> Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > > > >>>>>>> [Abhyuday] Michal suggested to merge this via your tree.
+> > > > >>>>>>> Please have a
+> > > > >>>>> look.
+> > > > >>>>>>> Please let me know if there is anything required from my side.
+> > > > >>>>>>
+> > > > >>>>>> Ok, I'll pick it up, thanks.
+> > > > >>>>>
+> > > > >>>>> Nope, I can not as for some reason it all did not show up on
+> > > > lore.kernel.org.
+> > > > >>>>>
+> > > > >>>>> Please resend this, with Michal's ack and I will be glad to pick it up.
+> > > > >>>> [Abhyuday] Sent v5 with Michal's ack.
+> > > > >>>
+> > > > >>> Sent where?  Do you have a lore.kernel.org link?  Did you cc: me?
+> > > > >> [Abhyuday] I added linux-kernel@vger.kernel.org and linux-arm-
+> > > > kernel@lists.infradead.org in CC. also  added you in "To" for v5.
+> > > > >> Please let me know if require anything else also.
+> > > > >
+> > > > > Again, I do not see them in my inbox, nor do I see them on
+> > > > > lore.kernel.org.
+> > > > >
+> > > > > Are you _sure_ you sent them?
+> > > >
+> > > > I got it but I expect they are not sent out of xilinx.com domain and
+> > > > you are sort of blocked. You should talk to IT or just simply use
+> > > > any email out of xilinx domain to check that you got it.
+> > > > Also I am not able to see it in lore.
+> > > [Abhyuday] Now v5 are available in lore.kernel.org
+> > 
+> > Looks good, all now reviewed from my side.
+> [Abhyuday] Thanks for the review, please can you merge it from your tree as Michal suggested.
 
-Applied, thanks!
+Ah, oops, you are right, I'll go queue it up now, thanks.
 
-[1/1] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-      commit: 0994c64eb4159ba019e7fedc7ba0dd6a69235b40
-
-Best regards,
--- 
-Jens Axboe
-
-
+greg k-h
