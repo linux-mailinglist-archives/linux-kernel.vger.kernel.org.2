@@ -2,121 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C6E435982
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B6B435909
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhJUDt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 23:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhJUDtY (ORCPT
+        id S231357AbhJUDne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 23:43:34 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:26106 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231295AbhJUDn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 23:49:24 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFB9C061753;
-        Wed, 20 Oct 2021 20:46:18 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id r2so24361012pgl.10;
-        Wed, 20 Oct 2021 20:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Mg/W5W6l0pcytUDlQ1aNCJcnr1/VYvxAUJDYpkY9L/c=;
-        b=nCBNOEdF81o2V/ZOVUdV514sp3NllC5LbtK99UBMXWooz5rjDlFETHpYTA8A8T88Ip
-         tAQjqAfaNMXWgtSyT+9Lje7Sn6b/fM6dUq96+o8dZ6TEn+3fpaggTvmtiO1ptoCNfgw+
-         manf4GP+UAzTMRty33VBcUTjT6fxv2Xfusd7xEWkaShtHDiiTZ+OgCuVcCLaZDPYnhig
-         YQFosMyYmS+c3bfNM/Y/F+aoj9wESBVhLNcV4mRJ3Wv1OuxxPQJDbga588ePtif5m3KI
-         QT68h9quKWtAvhhjk2DwlXE7M3Zvj6Vxbhf4F3KyOiAEpX+Wk/Wr6LvMD2TrccAaHZjq
-         JPKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Mg/W5W6l0pcytUDlQ1aNCJcnr1/VYvxAUJDYpkY9L/c=;
-        b=m8EsTHcWtPm9nsIlZ9TaVxwdDb+x7Gm1qD3mVrugivc1OwSdwXkFfABM2n+//Hbmp9
-         kSRpWWA8bUWg+PNJs2FmZVxQNI1JF/NNFSf3DzIria6Da3WjViMRUO8OsVp9dRldjCds
-         F8Qr2+/JBXniN6q681szsKnnU/dyyp8BZAbmionzFjK0rtQU/yRfjW167FKuUtsD26z7
-         T6y7mLikcODPm7tQiO9yolECChFfngJkMY5IUVm6QYZIKWUKLwvsTdvX0CmZEY+zfuyQ
-         CDlINzjmc/vGyHYVX+xmkcT2HPfntGveYWFrJjP2EDOoYM1q4wgWjMx4M7zsIfSg82xS
-         /9Yg==
-X-Gm-Message-State: AOAM531dRpDTcoFv/BB0E3T9NAGtO7/3YLWN7sbbh6YY6vobIE6BDuad
-        P3g2qtgEmoCzZcnV+rS2uks=
-X-Google-Smtp-Source: ABdhPJw5Fj3ty7sa//4egXRyvTSsUWdMNkokVd4ZY+8Yz400yvz6Ngl1ciRpem81fOw6ilYWzxyVRQ==
-X-Received: by 2002:a05:6a00:23d6:b0:44d:8426:e2bb with SMTP id g22-20020a056a0023d600b0044d8426e2bbmr2824167pfc.30.1634787978484;
-        Wed, 20 Oct 2021 20:46:18 -0700 (PDT)
-Received: from localhost.localdomain ([140.82.17.67])
-        by smtp.gmail.com with ESMTPSA id r25sm3454254pge.61.2021.10.20.20.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 20:46:17 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     keescook@chromium.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, valentin.schneider@arm.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v5 15/15] kernel/kthread: show a warning if kthread's comm is truncated
-Date:   Thu, 21 Oct 2021 03:46:03 +0000
-Message-Id: <20211021034603.4458-6-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211021034603.4458-1-laoar.shao@gmail.com>
-References: <20211021034603.4458-1-laoar.shao@gmail.com>
+        Wed, 20 Oct 2021 23:43:28 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HZYBM4SSNz1DHlQ;
+        Thu, 21 Oct 2021 11:39:23 +0800 (CST)
+Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 11:41:10 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500015.china.huawei.com
+ (7.185.36.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 21 Oct
+ 2021 11:41:10 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <weiyongjun1@huawei.com>, <huawei.libin@huawei.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm/page_alloc: use clamp() to simplify code
+Date:   Thu, 21 Oct 2021 11:48:30 +0800
+Message-ID: <20211021034830.1049150-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500015.china.huawei.com (7.185.36.181)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Show a warning if task comm is truncated. Below is the result
-of my test case:
+This patch uses clamp() to simplify code in init_per_zone_wmark_min().
 
-truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-
-Suggested-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
 ---
- kernel/kthread.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ mm/page_alloc.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 5b37a8567168..46b924c92078 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
- 	if (!IS_ERR(task)) {
- 		static const struct sched_param param = { .sched_priority = 0 };
- 		char name[TASK_COMM_LEN];
-+		int len;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..d0449212a824 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8460,16 +8460,12 @@ int __meminit init_per_zone_wmark_min(void)
+ 	lowmem_kbytes = nr_free_buffer_pages() * (PAGE_SIZE >> 10);
+ 	new_min_free_kbytes = int_sqrt(lowmem_kbytes * 16);
  
- 		/*
- 		 * task is already visible to other tasks, so updating
- 		 * COMM must be protected.
- 		 */
--		vsnprintf(name, sizeof(name), namefmt, args);
-+		len = vsnprintf(name, sizeof(name), namefmt, args);
-+		if (len >= TASK_COMM_LEN) {
-+			pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
-+				name, task->pid, len - TASK_COMM_LEN + 1);
-+		}
- 		set_task_comm(task, name);
- 		/*
- 		 * root may have changed our (kthreadd's) priority or CPU mask.
+-	if (new_min_free_kbytes > user_min_free_kbytes) {
+-		min_free_kbytes = new_min_free_kbytes;
+-		if (min_free_kbytes < 128)
+-			min_free_kbytes = 128;
+-		if (min_free_kbytes > 262144)
+-			min_free_kbytes = 262144;
+-	} else {
++	if (new_min_free_kbytes > user_min_free_kbytes)
++		min_free_kbytes = clamp(new_min_free_kbytes, 128, 262144);
++	else
+ 		pr_warn("min_free_kbytes is not updated to %d because user defined value %d is preferred\n",
+ 				new_min_free_kbytes, user_min_free_kbytes);
+-	}
++
+ 	setup_per_zone_wmarks();
+ 	refresh_zone_stat_thresholds();
+ 	setup_per_zone_lowmem_reserve();
 -- 
-2.17.1
+2.25.1
 
