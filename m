@@ -2,148 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249414368CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A274368D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhJURO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhJURO0 (ORCPT
+        id S232165AbhJURPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:15:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229567AbhJURPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:14:26 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235B1C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:12:10 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id w14so3846485edv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qAoGLw6drI9R1j4qHjfBjMDXhe14eDMSEfxe7PtHo5M=;
-        b=AtL8W9yQZo5OypCxTMhudEFcBUxaPw8bq2jRqj3Ezq9pL9e0ZSGBRldCCUKqAG/bMB
-         M+n+DZq2sQSEb8nMWk3heLIjIZN90Xj7XmSvLV2YQLxcvu6OpZ+s/BpcbdW/0TUt9yYP
-         IXFcX7qba4PiYsy5xl5K97xqFUpuwTyi8Nv3oAqsPa7u/UlfF82MPS+6hgO4uzm84RPC
-         nrFzdJaDmqbUEo1wOF52ALIiNxr6Kd8bVcFPc8bf+Vwfauatcc1xyjDt/js6mXT7uQvP
-         uFN40x3TxUU8gBrqUxMYBDrItRMFytVO3GrsoGxYZC4UEtJLhgLZlK34N/ml3ZUSps+i
-         ekZA==
+        Thu, 21 Oct 2021 13:15:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634836379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XK8lsFGIy7ux6qnbNN7kYySECN4eAp1hXXWqZfwXvfI=;
+        b=XOZwm+cAhEm6MExP9mohWBEYmnN/6OBUcEo2xe3y3AQiHma8gxnw0taNxDZZAyI/aw61/A
+        VXaM61iTm4IuIBemzd0CxeC4KSzXmERfkbpft5dsfpewapJQP44vywuUax6BPtJn9pw6B1
+        2ud0MmiPfBS5bYfsej5n8sRJklAxJts=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-Bm41XgNVOVGh_tWEUU08mA-1; Thu, 21 Oct 2021 13:12:58 -0400
+X-MC-Unique: Bm41XgNVOVGh_tWEUU08mA-1
+Received: by mail-wr1-f72.google.com with SMTP id d13-20020adfa34d000000b00160aa1cc5f1so114330wrb.14
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:12:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qAoGLw6drI9R1j4qHjfBjMDXhe14eDMSEfxe7PtHo5M=;
-        b=GDxjGOWV3eDOZaKPe0v3p9ktC6RWi4Jnzi5gGMtg7H8A2tZt+GR+Hy/ZFEG1fdfjuK
-         ZKEywdtmqdmeDatGjp8WLvUTonwOgrESVvvY1/B5ltthgFa/0f37D4N32RGGpAUW9HgC
-         XfU7txNYATVLn8AWysphCHu0S+syq9RPXzM184Rs5IKA4OKqdSGwBbBR2sSU9unf70BP
-         tEzCz0v5nF0/llbAtf+M+N3k2sZGAvW8JcdpcBtxyYPw5rVAImku5ab9FXgLiAvmAg5A
-         MfbrmhY2bDKLRvd5djZXUTpqBIKH5vTfvK6KzA+X/79hsMMgOH3IpH/FTskeJ0YbWSLZ
-         rq6g==
-X-Gm-Message-State: AOAM532tSopZG59wjVdKzB23r7dLfpgO/ogIsp62J6FhgIWdcsnWPGin
-        mwTHEBG0R8vTY759DvWyX2D55bkLub3xYcrowEmOcQ==
-X-Google-Smtp-Source: ABdhPJw7DPBQL6nA9UjnfcudYFLvi7RhofmJBLU77VprNkV0cXNXNaSmTWIkf06wh9RK/3hHKklxv8u3+dcgpy0WFDc=
-X-Received: by 2002:a17:906:131a:: with SMTP id w26mr8286410ejb.548.1634836328610;
- Thu, 21 Oct 2021 10:12:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XK8lsFGIy7ux6qnbNN7kYySECN4eAp1hXXWqZfwXvfI=;
+        b=uwjIPiHSxz7SHBNPcYuMq37aU2tc1DyeGTiViTlPC1TGji3J1yHvyMPl/Wdawt/NuG
+         MfMlEccHYwUVEcy+EL+8NfpjKUD3TAtJYJuT3zmLEMtDUo28jKwG2FH40VsLj8wfhns1
+         XZPWECpnhLV7XGCAwPjA4OaNOHhvyPQOvB1oNJcEzwLUgs6WuVOCRGF1AQqbX/YtTcCN
+         eeH7dHImu2aW7uDiR4c38L4JWyWdb+oz11r8QnlsZhsQVxSWmntn63J5/6FbOlldPN/R
+         pc8jXK3HU0EVe/yMaRy+Uyo8uyLUUewF15MmX14vB+SkIAQsqX3jlCoFuXJagYHBOmUY
+         u4kQ==
+X-Gm-Message-State: AOAM530Dc9RqAhdL2my19zQKPQ+PqhLAuAtxCeeytQ3C2R+q0e+qhQ7i
+        APv9CZ1EmAdicJS8AaZaTPHbHT80LZcU+p+E2KWnbbEgggtD2cFPI+y/WlrbfvnaKmInsSbdtao
+        J29D7FfKAKpocp5m4ZI4NJThg
+X-Received: by 2002:adf:d84d:: with SMTP id k13mr9086391wrl.276.1634836377358;
+        Thu, 21 Oct 2021 10:12:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIz2xc4dlFybQ+Itlm8MuVX7/TKhmdXDokBG8vkqS60XCLS5Pa1uXT6kLyhVWWxhAy7jGivg==
+X-Received: by 2002:adf:d84d:: with SMTP id k13mr9086349wrl.276.1634836377142;
+        Thu, 21 Oct 2021 10:12:57 -0700 (PDT)
+Received: from work-vm (cpc109025-salf6-2-0-cust480.10-2.cable.virginm.net. [82.30.61.225])
+        by smtp.gmail.com with ESMTPSA id d1sm5657617wrr.72.2021.10.21.10.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 10:12:56 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 18:12:53 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Roth <michael.roth@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXGflXdrAXH5fE5H@work-vm>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXF9sCbPDsLwlm42@zn.tnic>
+ <YXGNmeR/C33HvaBi@work-vm>
+ <YXGbcqN2IRh9YJk9@zn.tnic>
 MIME-Version: 1.0
-References: <20211019163153.3692640-1-suzuki.poulose@arm.com>
- <20211020154207.GA3456574@p14s> <20211021085313.GA15622@willie-the-truck>
- <20211021163531.GA3561043@p14s> <20211021164730.GA16889@willie-the-truck>
-In-Reply-To: <20211021164730.GA16889@willie-the-truck>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Thu, 21 Oct 2021 11:11:56 -0600
-Message-ID: <CANLsYky7NA8km7Xwu_XXFSoqHcQGwYHKsggshcBKsL53e-jEng@mail.gmail.com>
-Subject: Re: [PATCH v6 00/15] arm64: Self-hosted trace related errata workarounds
-To:     Will Deacon <will@kernel.org>, Greg KH <gregkh@linuxfoundation.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXGbcqN2IRh9YJk9@zn.tnic>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 10:47, Will Deacon <will@kernel.org> wrote:
->
-> Hi Mathieu,
->
-> [CC Greg]
->
-> On Thu, Oct 21, 2021 at 10:35:31AM -0600, Mathieu Poirier wrote:
-> > On Thu, Oct 21, 2021 at 09:53:14AM +0100, Will Deacon wrote:
-> > > On Wed, Oct 20, 2021 at 09:42:07AM -0600, Mathieu Poirier wrote:
-> > > > On Tue, Oct 19, 2021 at 05:31:38PM +0100, Suzuki K Poulose wrote:
-> > > > > Suzuki K Poulose (15):
-> > > > >   arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
-> > > > >   arm64: errata: Add detection for TRBE overwrite in FILL mode
-> > > > >   arm64: errata: Add workaround for TSB flush failures
-> > > > >   arm64: errata: Add detection for TRBE write to out-of-range
-> > > > >   coresight: trbe: Add a helper to calculate the trace generated
-> > > > >   coresight: trbe: Add a helper to pad a given buffer area
-> > > > >   coresight: trbe: Decouple buffer base from the hardware base
-> > > > >   coresight: trbe: Allow driver to choose a different alignment
-> > > > >   coresight: trbe: Add infrastructure for Errata handling
-> > > > >   coresight: trbe: Workaround TRBE errata overwrite in FILL mode
-> > > > >   coresight: trbe: Add a helper to determine the minimum buffer size
-> > > > >   coresight: trbe: Make sure we have enough space
-> > > > >   coresight: trbe: Work around write to out of range
-> > > > >   arm64: errata: Enable workaround for TRBE overwrite in FILL mode
-> > > > >   arm64: errata: Enable TRBE workaround for write to out-of-range
-> > > > >     address
-> > > > >
-> > > > >  Documentation/arm64/silicon-errata.rst       |  12 +
-> > > > >  arch/arm64/Kconfig                           | 111 ++++++
-> > > > >  arch/arm64/include/asm/barrier.h             |  16 +-
-> > > > >  arch/arm64/include/asm/cputype.h             |   4 +
-> > > > >  arch/arm64/kernel/cpu_errata.c               |  64 +++
-> > > > >  arch/arm64/tools/cpucaps                     |   3 +
-> > > > >  drivers/hwtracing/coresight/coresight-trbe.c | 394 +++++++++++++++++--
-> > > > >  7 files changed, 567 insertions(+), 37 deletions(-)
-> > > >
-> > > > I have applied this set.
-> > >
-> > > Mathieu -- the plan here (which we have discussed on the list [1]) is
-> > > for the first four patches to be shared with arm64. Since you've gone
-> > > ahead and applied the whole series, please can you provide me a stable
-> > > branch with the first four patches only so that I can include them in
-> > > the arm64 tree?
-> > >
-> > > Failing that, I can create a branch for you to pull and apply the remaining
-> > > patches on top.
-> > >
-> > > Please let me know.
-> >
-> > Coresight patches flow through Greg's tree and as such the coresight-next tree
-> > gets rebased anyway.  I will remove the first 4 patches and push again.  By the
-> > way do you also want to pick up patches 14 and 16 since they are concerned with
-> > "arch/arm64/Kconfig" or should I keep them?
->
-> I'll take the first 4 and put them on a stable branch, which you can choose
-> to pull if you like (but please don't rebase it or we'll end up with
-> duplicate commits). The rest of the patches, including the later Kconfig
-> changes, are yours but I doubt they'll apply cleanly without the initial
-> changes.
+* Borislav Petkov (bp@alien8.de) wrote:
+> On Thu, Oct 21, 2021 at 04:56:09PM +0100, Dr. David Alan Gilbert wrote:
+> > I can imagine a malicious hypervisor trying to return different cpuid
+> > answers to different threads or even the same thread at different times.
+> 
+> Haha, I guess that will fail not because of SEV* but because of the
+> kernel not really being able to handle heterogeneous CPUIDs.
 
-Right - I just had another look at them and what I suggested above won't work.
+My worry is if it fails cleanly or fails in a way an evil hypervisor can
+exploit.
 
->
-> Are you sure Greg rebases everything? That sounds a bit weird to me, as it
-> means it's impossible to share branches with other trees. How do you usually
-> handle this situation?
+> > Well, the spec (AMD 56860 SEV spec) says:
+> > 
+> >   'If firmware encounters a CPUID function that is in the standard or extended ranges, then the
+> > firmware performs a check to ensure that the provided output would not lead to an insecure guest
+> > state'
+> > 
+> > so I take that 'firmware' to be the PSP; that wording doesn't say that
+> > it checks that the CPUID is identical, just that it 'would not lead to
+> > an insecure guest' - so a hypervisor could hide any 'no longer affected
+> > by' flag for all the CPUs in it's migration pool and the firmware
+> > shouldn't complain; so it should be OK to pessimise.
+> 
+> AFAIU this, I think this would depend on "[t]he policy used by the
+> firmware to assess CPUID function output can be found in [PPR]."
+> 
+> So if the HV sets the "no longer affected by" flag but the firmware
+> deems this set flag as insecure, I'm assuming the firmare will clear
+> it when it returns the CPUID leafs. I guess I need to go find that
+> policy...
 
-Greg applies the patches I send to him near the end of every cycle -
-see this one [1] as an example.  Unfortunately that way of working
-makes it hard to deal with patchsets such as this one.
+<digs - ppr_B1_pub_1 55898 rev 0.50 >
 
-To move forward you can either pick up this whole series (just add my
-RB to all the CS patches) or I start sending pull requests to Greg.
+OK, so that bit is 8...21 Eax ext2eax bit 6 page 1-109
 
-Greg - what's your take on this?
+then 2.1.5.3 CPUID policy enforcement shows 8...21 EAX as
+'bitmask'
+'bits set in the GuestVal must also be set in HostVal.
+This is often applied to feature fields where each bit indicates
+support for a feature'
 
-[1]. https://www.spinics.net/lists/arm-kernel/msg915961.html
->
-> Will
+So that's right isn't it?
+
+Dave
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
