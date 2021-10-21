@@ -2,154 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC0C4360DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47074360E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhJUL5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
+        id S230516AbhJUL7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbhJUL5s (ORCPT
+        with ESMTP id S230283AbhJUL7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:57:48 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4563EC06161C;
-        Thu, 21 Oct 2021 04:55:32 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g36so276740lfv.3;
-        Thu, 21 Oct 2021 04:55:32 -0700 (PDT)
+        Thu, 21 Oct 2021 07:59:48 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AA3C06161C;
+        Thu, 21 Oct 2021 04:57:32 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id h193so89919pgc.1;
+        Thu, 21 Oct 2021 04:57:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V1jEJHNy1rpIMC1prko3vAzn6yRQlR45J0vSd88M0Wc=;
-        b=XOMAHUJx0i/12kKJAXzxVziVwGKqGOSnAI1TsCe02UCieVeT5TKeDLmXlDLyDxpPdH
-         SKeavDKLW8GV/KarRKogZt01hDZtJVr+ejkVRSCu+6iaDB4g8xLkW6ZVFM/DcDwO/J88
-         WF2swpt7wLMziMbmB7NWpZvLgF3B+VDLcryOF6y5C019tMAI0P5bO7fKHwOytCZRivIy
-         KJEkIeEwEjhufc6CwZEImW8gHgCgoMJ2fFE7Dgh58Nl8A8/MxNzSW21/Taho0QyVHcJZ
-         K7zXlx5fYU9CBej/2QANlERqlDsUbcxt7bciF+I0GeV/Xt5SBWMOWvXZPnd4va5C7+/c
-         qs4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=idIj9x5Y1snEOdYM83+I6n7R4t6XnyFXPq7fZJooAt0=;
+        b=QvnqmUW3vkYQDIvz4c0DkDquBfz0UXqjZUC0PwY4U8mXRpvcJ+SrK+3ui+5qMXR5nS
+         T88lojXXUAUuEtM2XKgqmwuKaPsSjqDf/OxyM+NZgN9M2pa9d8LlQ4qe6KlA1PB2oWTU
+         gEMfvIdPYfSzcBLsrxntIAPlht7kvi1XxsXuy6ks/zvRjrdk+BHTtE9uC7zhq6PCRgia
+         Y77EkhCkAPPCN1ptuF6l+zorCgwqHKs5KV6FLRDTvufFCWTt0EaGxf21EzB+fuAB70Jx
+         t+hHzP5Qd1TjFeRtbQBEPMHBikZemHsfLoL787dBzW4sWlwEhBJowuzcLmXcPu9qeaWo
+         +uXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V1jEJHNy1rpIMC1prko3vAzn6yRQlR45J0vSd88M0Wc=;
-        b=fmODIC4sIeGgfdmfVm+ewCLa0ujeEkiA+9MSDecxVXjhJciAe5DBalqdJ1MWfsPcQA
-         Tof3xKPAVLVB/VTo9XhxeAAb1HVFjF1YaLiowTcJsC0A2iU8q9WayVg3+TBCmvbTFs0r
-         XrYoJy44lQdHEAVGJDSuad26KkR2OG0HsdPfknTRLkq9F21MsewbLLlmG7MjmIGswtYH
-         KB1mmCdH8BxSaWYrbgYQV+Ov11k2bzhqD9AgkV5jyJ/1vLGh81scBhlGbFIpw1xq3Aje
-         jlHN84QqsmUKfqCo0ztaMeMGnnv3GAZWolm/fnUVHF6d8bVdrfP2H9a3HgWQGiNuvZiH
-         H24w==
-X-Gm-Message-State: AOAM532fK6WGR0XqZrW+Dl4cA3XT2J0LvY++EzXrI8BM6u8QtEd2aPb5
-        vZN/Ej1BURcCTIWM/19Dbz5NHuKNCf0=
-X-Google-Smtp-Source: ABdhPJyt3bxMyhH+ZwiH/BUspV4Vdc1aLduwGkpeVI69xJqU2kMcBQppVdxrb4d6Cw2tkqL31P37Bg==
-X-Received: by 2002:ac2:5f06:: with SMTP id 6mr5065587lfq.516.1634817330659;
-        Thu, 21 Oct 2021 04:55:30 -0700 (PDT)
-Received: from localhost.localdomain (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
-        by smtp.gmail.com with ESMTPSA id b30sm440565lfv.288.2021.10.21.04.55.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=idIj9x5Y1snEOdYM83+I6n7R4t6XnyFXPq7fZJooAt0=;
+        b=ut/NSaQ0bhz2vzVRbhX3ZVs1C4qgX5dilPfNPmuWkrO3jpCpdOQ7CU/6tel9PzgyBj
+         Syd2Z9aBxB5hW6FNd3RI57echUHKgh1v5TULjl0PSvq9vThSKM/YV3xyIrd0P5sd3rwr
+         8eepTJVSkRpuSG6DYLQ/LDiIOR+XgH0ZZf7d5CSlEUrHybTl5UGS1+y+/Q2K7tCfpMHI
+         65+N3GcUgDHmIHYuHuvOL11L4gzHNR/BHmVIffNBxUE3MXg/vWeLodw62PuQiEnlP/JV
+         39pBisxiavaOYSvZ0iqY7RIztOl/8guwO5Y/6OpfTWtOmmy7BP+Z+TXv/70ErufjuQBm
+         MkpA==
+X-Gm-Message-State: AOAM533+wjrPb48xOB6dttp1R//0PExVFS8a8PcShYmdK5xvInSChQ5C
+        2MmyzVceNeT9YPMQL/gvoDY=
+X-Google-Smtp-Source: ABdhPJwu17uilS+pRVvSk89iNu6lAdgJwU8YwJMCdjTqkpEZIwNjHy9NHuJ4Lw3z8EjgYKkXVJnT1A==
+X-Received: by 2002:a63:7406:: with SMTP id p6mr4044865pgc.246.1634817451815;
+        Thu, 21 Oct 2021 04:57:31 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id t3sm5082314pgo.51.2021.10.21.04.57.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 04:55:30 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in device tree
-Date:   Thu, 21 Oct 2021 14:55:01 +0300
-Message-Id: <20211021115501.14932-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 21 Oct 2021 04:57:31 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     anup@brainfault.org
+Cc:     anup.patel@wdc.com, aou@eecs.berkeley.edu, atish.patra@wdc.com,
+        cgel.zte@gmail.com, kvm-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, ran.jianping@zte.com.cn,
+        zealci@zte.com.cn
+Subject: [PATCH] RISC-V:KVM: remove unneeded semicolon
+Date:   Thu, 21 Oct 2021 11:57:06 +0000
+Message-Id: <20211021115706.1060778-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAAhSdy3DWOux6HiDU6fPazZUq=FOor8_ZEoqh6FBZru07NyxLQ@mail.gmail.com>
+References: <CAAhSdy3DWOux6HiDU6fPazZUq=FOor8_ZEoqh6FBZru07NyxLQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Older device-trees don't specify padctrl interrupt and xhci-tegra driver
-now fails to probe with -EINVAL using those device-trees. Check interrupt
-presence and disallow runtime PM suspension if it's missing to fix the
-trouble.
+From: ran jianping <ran.jianping@zte.com.cn>
 
-Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
-Reported-by: Nicolas Chauvet <kwizart@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+ Elimate the following coccinelle check warning:
+ ./arch/riscv/kvm/vcpu_sbi.c:169:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu_exit.c:397:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu_exit.c:687:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu_exit.c:645:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu.c:247:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu.c:284:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu_timer.c:123:2-3: Unneeded semicolon
+ ./arch/riscv/kvm/vcpu_timer.c:170:2-3: Unneeded semicolon
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
 ---
- drivers/usb/host/xhci-tegra.c | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+ arch/riscv/kvm/vcpu.c       | 4 ++--
+ arch/riscv/kvm/vcpu_exit.c  | 6 +++---
+ arch/riscv/kvm/vcpu_sbi.c   | 2 +-
+ arch/riscv/kvm/vcpu_timer.c | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index 1bf494b649bd..47927a1df3dc 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -1454,10 +1454,13 @@ static int tegra_xusb_probe(struct platform_device *pdev)
- 		goto put_padctl;
- 	}
+diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+index c44cabce7dd8..912928586df9 100644
+--- a/arch/riscv/kvm/vcpu.c
++++ b/arch/riscv/kvm/vcpu.c
+@@ -244,7 +244,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
  
--	tegra->padctl_irq = of_irq_get(np, 0);
--	if (tegra->padctl_irq <= 0) {
--		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
--		goto put_padctl;
-+	/* Older device-trees don't specify padctrl interrupt */
-+	if (of_property_read_bool(np, "interrupts")) {
-+		tegra->padctl_irq = of_irq_get(np, 0);
-+		if (tegra->padctl_irq <= 0) {
-+			err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
-+			goto put_padctl;
-+		}
- 	}
+ 	if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
+ 		return -EFAULT;
+@@ -281,7 +281,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
  
- 	tegra->host_clk = devm_clk_get(&pdev->dev, "xusb_host");
-@@ -1696,11 +1699,15 @@ static int tegra_xusb_probe(struct platform_device *pdev)
- 		goto remove_usb3;
- 	}
+ 	return 0;
+ }
+diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
+index 13bbc3f73713..7f2d742ae4c6 100644
+--- a/arch/riscv/kvm/vcpu_exit.c
++++ b/arch/riscv/kvm/vcpu_exit.c
+@@ -394,7 +394,7 @@ static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+-	};
++	}
  
--	err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, tegra_xusb_padctl_irq,
--					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
--	if (err < 0) {
--		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
--		goto remove_usb3;
-+	if (tegra->padctl_irq) {
-+		err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq,
-+						NULL, tegra_xusb_padctl_irq,
-+						IRQF_ONESHOT, dev_name(&pdev->dev),
-+						tegra);
-+		if (err < 0) {
-+			dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
-+			goto remove_usb3;
-+		}
- 	}
+ 	/* Update MMIO details in kvm_run struct */
+ 	run->mmio.is_write = true;
+@@ -642,7 +642,7 @@ int kvm_riscv_vcpu_mmio_return(struct kvm_vcpu *vcpu, struct kvm_run *run)
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+-	};
++	}
  
- 	err = tegra_xusb_enable_firmware_messages(tegra);
-@@ -2132,7 +2139,7 @@ static __maybe_unused int tegra_xusb_suspend(struct device *dev)
- 		tegra->suspended = true;
- 		pm_runtime_disable(dev);
+ done:
+ 	/* Move to next instruction */
+@@ -684,7 +684,7 @@ int kvm_riscv_vcpu_exit(struct kvm_vcpu *vcpu, struct kvm_run *run,
+ 		break;
+ 	default:
+ 		break;
+-	};
++	}
  
--		if (device_may_wakeup(dev)) {
-+		if (device_may_wakeup(dev) && tegra->padctl_irq) {
- 			if (enable_irq_wake(tegra->padctl_irq))
- 				dev_err(dev, "failed to enable padctl wakes\n");
- 		}
-@@ -2161,7 +2168,7 @@ static __maybe_unused int tegra_xusb_resume(struct device *dev)
- 		return err;
- 	}
+ 	/* Print details in-case of error */
+ 	if (ret < 0) {
+diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
+index ebdcdbade9c6..eb3c045edf11 100644
+--- a/arch/riscv/kvm/vcpu_sbi.c
++++ b/arch/riscv/kvm/vcpu_sbi.c
+@@ -166,7 +166,7 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
+ 		/* Return error for unsupported SBI calls */
+ 		cp->a0 = SBI_ERR_NOT_SUPPORTED;
+ 		break;
+-	};
++	}
  
--	if (device_may_wakeup(dev)) {
-+	if (device_may_wakeup(dev) && tegra->padctl_irq) {
- 		if (disable_irq_wake(tegra->padctl_irq))
- 			dev_err(dev, "failed to disable padctl wakes\n");
- 	}
-@@ -2179,6 +2186,9 @@ static __maybe_unused int tegra_xusb_runtime_suspend(struct device *dev)
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int ret;
+ 	if (next_sepc)
+ 		cp->sepc += 4;
+diff --git a/arch/riscv/kvm/vcpu_timer.c b/arch/riscv/kvm/vcpu_timer.c
+index ddd0ce727b83..5c4c37ff2d48 100644
+--- a/arch/riscv/kvm/vcpu_timer.c
++++ b/arch/riscv/kvm/vcpu_timer.c
+@@ -120,7 +120,7 @@ int kvm_riscv_vcpu_get_reg_timer(struct kvm_vcpu *vcpu,
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
  
-+	if (!tegra->padctl_irq)
-+		return -EOPNOTSUPP;
-+
- 	synchronize_irq(tegra->mbox_irq);
- 	mutex_lock(&tegra->lock);
- 	ret = tegra_xusb_enter_elpg(tegra, true);
+ 	if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
+ 		return -EFAULT;
+@@ -167,7 +167,7 @@ int kvm_riscv_vcpu_set_reg_timer(struct kvm_vcpu *vcpu,
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+-	};
++	}
+ 
+ 	return ret;
+ }
 -- 
-2.32.0
+2.25.1
 
