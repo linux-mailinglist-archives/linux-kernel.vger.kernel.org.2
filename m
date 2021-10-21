@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B34943684A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A8343684D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbhJUQuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:50:02 -0400
-Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:35905 "EHLO
-        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232064AbhJUQt4 (ORCPT
+        id S231934AbhJUQuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhJUQuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:49:56 -0400
-Received: from MTA-05-3.privateemail.com (mta-05-1.privateemail.com [198.54.122.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 09E26815C3;
-        Thu, 21 Oct 2021 12:47:39 -0400 (EDT)
-Received: from mta-05.privateemail.com (localhost [127.0.0.1])
-        by mta-05.privateemail.com (Postfix) with ESMTP id 175DE180030B;
-        Thu, 21 Oct 2021 12:47:35 -0400 (EDT)
-Received: from APP-03 (unknown [10.50.14.153])
-        by mta-05.privateemail.com (Postfix) with ESMTPA id BDC4E18000BF;
-        Thu, 21 Oct 2021 12:47:34 -0400 (EDT)
-Date:   Thu, 21 Oct 2021 12:47:34 -0400 (EDT)
-From:   Jordy Zomer <jordy@pwning.systems>
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Message-ID: <813047099.1390041.1634834854748@privateemail.com>
-In-Reply-To: <20211021154046.880251-1-keescook@chromium.org>
-References: <20211021154046.880251-1-keescook@chromium.org>
-Subject: Re: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to
- zero
+        Thu, 21 Oct 2021 12:50:12 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4D7C061764;
+        Thu, 21 Oct 2021 09:47:56 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s19so45878ljj.11;
+        Thu, 21 Oct 2021 09:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=teoHzi6Hmm/OVFrA0e8JXtWu9N4wtV6Jv4Y9vx/yxR0=;
+        b=Ke7CiYkPNKFISeqO2ZhVh8+k0kvSAIk683PKPVHhtsHDtLhVwn2f+0hQSJJ7r6orGa
+         B7BfSVZoqpWcB5YqNDCuDGJER0BOzTnlUMKZa9tsTfEfZEHCcfLce7MCivrazcR5Tnd3
+         SMS4TH7DYlBA7ePK8tge9BjdQon1+5LLQHE17eN7i5JbEC9zfejp+6wbwSCyDBv2C43r
+         z7fYucPtrEa1/61dIb/hM86y0hhxKSbbpEsVuOT3+9gNpfGUIxkSyjANFOwaH2SIQwq0
+         DGdt/pm2SEMvQZJ7YthPL5Je99dXF8sOqm4+IMv+79hL6yaHt8Kmst0GGoPAlL+bA+AV
+         ouDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=teoHzi6Hmm/OVFrA0e8JXtWu9N4wtV6Jv4Y9vx/yxR0=;
+        b=Cf3QPf+H3Q36dP/MoM0PZ3ASnHNOynNKt31whHxrSYLwTOCAXKJAcgE7WDiOqDtOtw
+         YfxFiIAhRyzNvoAztF8UMEvgMzum6ZnliPZq0sKIjI/dwHbO/T1rfXP1HXMs70yymEKo
+         oIjpdzDUO3EI1D9OhWHg/sfdhtXrKJ6pEb7Mh04N2NW9uO5YbVfU8Y96Qwd8Xlihg1TJ
+         i6vCvNQNxiCxNsulNCe7EWeoHkMfCS/Gb4bu9lyNQogv7GAGh8yXVP9qUCAc49s8D4cP
+         rDnOYDGaAS2gifRD2s71re03bhbQOnEkKJgpkW+ON1ZbHR1zQ1QySRC0sthaHI55osVC
+         i+5Q==
+X-Gm-Message-State: AOAM533kNVKYaEylmDK6Y8clXO0EMZE9hvilJGmwo64bV4Sx76xz0az8
+        TV/ClX7REP096QNYnO5Gfq0fetdTEYM=
+X-Google-Smtp-Source: ABdhPJxytDT9pDTb/bTC5dE5btSmvHObDmj7vUPhohHmYJletZw2VYtYZK0DWFzBUGXcNRT8AnkTrA==
+X-Received: by 2002:a05:651c:32f:: with SMTP id b15mr6862293ljp.318.1634834874386;
+        Thu, 21 Oct 2021 09:47:54 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.181])
+        by smtp.gmail.com with ESMTPSA id o6sm507091lfr.19.2021.10.21.09.47.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 09:47:53 -0700 (PDT)
+Message-ID: <8f6f738b-2d74-1778-648a-dc62603319d0@gmail.com>
+Date:   Thu, 21 Oct 2021 19:47:51 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.5-Rev24
-X-Originating-Client: open-xchange-appsuite
-X-Virus-Scanned: ClamAV using ClamSMTP
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 0/2] nbd: fix sanity check for first_minor
+Content-Language: en-US
+To:     "yukuai (C)" <yukuai3@huawei.com>, josef@toxicpanda.com,
+        axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        luomeng12@huawei.com, Christoph Hellwig <hch@lst.de>
+References: <20211021122936.758221-1-yukuai3@huawei.com>
+ <72fb140d-609b-c035-bdd6-d2b8639c116b@gmail.com>
+ <17182476-e5bf-f493-9d9b-fedb2d9c8e1a@huawei.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <17182476-e5bf-f493-9d9b-fedb2d9c8e1a@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Jordy Zomer <jordy@pwning.systems>
+On 10/21/21 16:13, yukuai (C) wrote:
+> On 2021/10/21 20:35, Pavel Skripkin wrote:
+>> On 10/21/21 15:29, Yu Kuai wrote:
+>>> Yu Kuai (2):
+>>>    nbd: fix max value for 'first_minor'
+>>>    nbd: fix possible overflow for 'first_minor' in nbd_dev_add()
+>>>
+>>>   drivers/block/nbd.c | 6 +++---
+>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>> 
+>> Hi, Yu!
+>> 
+>> Thank you for the fix, but this wrong check should be just removed, 
+>> since root case of wrong sysfs file creation was fixed, as Christoph 
+>> said [1]
+> 
+> Hi, Pavel
+> 
+> Thanks for your response, with the root cause fixed, patch 1 is not
+> needed anymore. However, the overflow case in patch 2 is still
+> possible.
+> 
+> Does anyone plan to remove the checking?
+> 
 
-That's a nice find, Dmitry! Thanks. Also, thank you for writing a patch in such a short period of time, Kees:)
 
-Looks good to me!
+Hm, I thought it was already removed, but I was wrong, I guess. Let's 
+see what Christoph thinks about this check.
 
-> On 10/21/2021 11:40 AM Kees Cook <keescook@chromium.org> wrote:
-> 
->  
-> Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
-> After fd_install() finishes, the fd can be used by userspace and we can
-> have secret data in memory before the refcount_inc().
-> 
-> A straightforward mis-use where a user will predict the returned fd
-> in another thread before the syscall returns and will use it to store
-> secret data is somewhat dubious because such a user just shoots themself
-> in the foot.
-> 
-> But a more interesting mis-use would be to close the predicted fd and
-> decrement the refcount before the corresponding refcount_inc, this way
-> one can briefly drop the refcount to zero while there are other users
-> of secretmem."
-> 
-> Move fd_install() after refcount_inc().
-> 
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Jordy Zomer <jordy@pwning.systems>
-> Cc: linux-mm@kvack.org
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://lore.kernel.org/lkml/CACT4Y+b1sW6-Hkn8HQYw_SsT7X3tp-CJNh2ci0wG3ZnQz9jjig@mail.gmail.com
-> Fixes: 9a436f8ff631 ("PM: hibernate: disable when there are active secretmem users")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  mm/secretmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 1fea68b8d5a6..924d84ba481f 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -217,8 +217,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
->  
->  	file->f_flags |= O_LARGEFILE;
->  
-> -	fd_install(fd, file);
->  	refcount_inc(&secretmem_users);
-> +	fd_install(fd, file);
->  	return fd;
->  
->  err_put_fd:
-> -- 
-> 2.30.2
+Maybe add_disk() error handling is still not in Linus tree, I haven't 
+checked yet. Sysfs warnings _should_ be fixed by proper error handling, 
+but maybe there is another problem somewhere...
+
+
+
+
+With regards,
+Pavel Skripkin
