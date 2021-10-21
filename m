@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3674365DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E224365BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhJUPV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        id S231828AbhJUPSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhJUPVz (ORCPT
+        with ESMTP id S231624AbhJUPSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:21:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A80BC061764;
-        Thu, 21 Oct 2021 08:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NLJ71Cg5LEnHqcIFkkZXwV1AtdUcW7tx8BbmnW6dm2g=; b=LlXZjS8mpvPBPAcm9fAJMVVIEX
-        GW9IxpiIaNNbRWFpiiSrlTQAisFo2nBmhFeRJTVLmPD3snhgYjgXfnh5+Tppkpkldh2CtnayBpvZU
-        5VHsyKd64d1lhCkh2nspl7xw3HumC1xR2FmEPtMaRFc0FuBNTaijLVDqndEt1Xt7RasRb+gxhJSve
-        tOKrfkwzfTuEfudSGXk/vzEgRdjLGuVswaaowf9Dd2xcJypZr51wI2BcTsmx0BUa1WiVCmok0aP4i
-        u+v+vQl85dvR1aFijH7mbSgbGRIpGymJSZJWNLdMavXimToVlBQVcebHmtAT3g/7GQQmVBnMZ6U42
-        798BlBkg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdZmI-00DLc1-I2; Thu, 21 Oct 2021 15:15:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 30C283002BC;
-        Thu, 21 Oct 2021 17:14:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0920B2C103FF6; Thu, 21 Oct 2021 17:14:45 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 17:14:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
-        Stafford Horne <shorne@gmail.com>
-Subject: Re: [PATCH] locking: Generic ticket lock
-Message-ID: <YXGD5OFbI7TEDFTr@hirez.programming.kicks-ass.net>
-References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
- <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com>
+        Thu, 21 Oct 2021 11:18:16 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757A2C061225
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:16:00 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id v127so16212wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:16:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k+el4LssRR48MXi9zHjZky4nWABgnOCsHjGg/d8oAg4=;
+        b=FsnxtymjLqZS2VFG04DvIpLqgieKtVBHjHP93zwTtnR5kU0AQ0H7Txhivy0MI6r3F+
+         4ti4PHUooqoxlBofAnmjSThJWtmu00KP3f4qIow3SpAzH8sOiz2MUHysGzF0AqYS8isQ
+         X/khq1aIqEF1IRXsINLNgw93KFmokB2bYNY5I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k+el4LssRR48MXi9zHjZky4nWABgnOCsHjGg/d8oAg4=;
+        b=x2LChz79lF+9a+NJM/7aXOuyIiUOp4GpYz/4TdGpeOF6ZyXvLKbSZtcJiB5uYrA7Na
+         csuUVGcu+0lVtojBstkbBJulAyM0gpHF50I/zubnHTJRFwoKHLXlJGuWkqPK+Br6mzxV
+         evsRGh2fgWjNZ6Qdmc3sBKId9ykbcwZ+qUc3Bvigvm/YVcFyh8kPHbKBbsFznf5xsFSH
+         KhBG9zS22CWCIpleT6cpMqsBGaJli+g4zBJHuc9gQlG4pq17nWn6W9uQiuBJjPVs7Pio
+         WZ++COyg/79wvhH7T5KIC9bn82IZ0tR25BErLHPBUPeThO6u/X9PBqXunBRRkHKiV8u2
+         rCXw==
+X-Gm-Message-State: AOAM533Vix+VzwaCsjR+5di83vJqQsgot/IVUkm0Zcxor4ab6VGQlVYw
+        RPMOcYlE2mL6qyX1Wm0CRRaP6g==
+X-Google-Smtp-Source: ABdhPJy2h51ESbpe/ACQzNHuZP5xG4x2CZXy7D5ddfeiaaqbvULX+oBLkAEKf1/ueSmOhDE9tPdDhg==
+X-Received: by 2002:a7b:c183:: with SMTP id y3mr21815596wmi.2.1634829359046;
+        Thu, 21 Oct 2021 08:15:59 -0700 (PDT)
+Received: from altair.lan (7.2.6.0.8.8.2.4.4.c.c.f.b.1.5.4.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:451b:fcc4:4288:627])
+        by smtp.googlemail.com with ESMTPSA id z1sm5098562wrt.94.2021.10.21.08.15.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:15:58 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
+Date:   Thu, 21 Oct 2021 16:15:26 +0100
+Message-Id: <20211021151528.116818-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211021151528.116818-1-lmb@cloudflare.com>
+References: <20211021151528.116818-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 03:49:51PM +0200, Arnd Bergmann wrote:
-> On Thu, Oct 21, 2021 at 3:05 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Therefore provide ticket locks, which depend on a single atomic
-> > operation (fetch_add) while still providing fairness.
-> 
-> Nice!
-> 
-> Aside from the qspinlock vs ticket-lock question, can you describe the
-> tradeoffs between this generic ticket lock and a custom implementation
-> in architecture code? Should we convert most architectures over
-> to the generic code in the long run, or is there something they
-> can usually do better with an inline asm based ticket lock
+Allow atomic exchange via RENAME_EXCHANGE when using simple_rename.
+This affects binderfs, ramfs, hubetlbfs and bpffs. There isn't much
+to do except update the various *time fields.
 
-I think for a load-store arch this thing should generate pretty close to
-optimal code. x86 can do ticket_unlock() slightly better using a single
-INCW (or ADDW 1) on the owner subword, where this implementation will to
-separate load-add-store instructions.
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ fs/libfs.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-If that is actually measurable is something else entirely.
-
-> or a trivial test-and-set?
-
-If your SMP arch is halfway sane (no fwd progress issues etc..) then
-ticket should behave well and avoid the starvation/variablilty of TaS
-lock.
-
-The big exception there is virtualized architectures, ticket is
-absolutely horrendous for 'guests' (any fair lock is for that matter).
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 51b4de3b3447..93c03d593749 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -455,9 +455,12 @@ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 	struct inode *inode = d_inode(old_dentry);
+ 	int they_are_dirs = d_is_dir(old_dentry);
+ 
+-	if (flags & ~RENAME_NOREPLACE)
++	if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
+ 		return -EINVAL;
+ 
++	if (flags & RENAME_EXCHANGE)
++		goto done;
++
+ 	if (!simple_empty(new_dentry))
+ 		return -ENOTEMPTY;
+ 
+@@ -472,6 +475,7 @@ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 		inc_nlink(new_dir);
+ 	}
+ 
++done:
+ 	old_dir->i_ctime = old_dir->i_mtime = new_dir->i_ctime =
+ 		new_dir->i_mtime = inode->i_ctime = current_time(old_dir);
+ 
+-- 
+2.32.0
 
