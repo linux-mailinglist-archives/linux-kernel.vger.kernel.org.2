@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD41436597
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3674365DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhJUPQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:16:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232068AbhJUPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:16:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B162C60F46;
-        Thu, 21 Oct 2021 15:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634829232;
-        bh=ruagNsEyw3JIWO97eB7HyyER6TijqqZmxwT762qH5yw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KzlxnxPjYfw7b7HUIL2fVpwTigQ556Uhy4x3O5vKe3EN+oWMlCI6pPX13bbS22shB
-         u5+vZUlcMn6WpwESYxBRhfd6OhdovCJBPf9LngAQIKfeodhwnrz5DibVJEp9r1ADrT
-         8YKBVKQK51IAlLrxZu6/2v+3IMUaLaneGC3+PYqU5NDIj6AAr9qL8/fPZLGdSxVj+L
-         z+2c9P8AFdvLbgqC6X8qH5ojpuuUWAQqk7mtaGAP64FMZwg2X91TaK36UVZvH4ixQc
-         u92bZnx0G8tO+b46atopV3RYMPghlZcacRbY+1eW1mE1pxsTiguTdrkpG4920GVii+
-         DwGK/Rx/qMjSw==
-Date:   Fri, 22 Oct 2021 00:13:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Marios Pomonis <pomonis@google.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Kristen C Accardi <kristen.c.accardi@intel.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-hardening@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
-Message-Id: <20211022001347.6da975173bc8c797595630e6@kernel.org>
-In-Reply-To: <20211014191643.6c7ca819a732dd6479329a6b@kernel.org>
-References: <20210903021326.206548-1-keescook@chromium.org>
-        <202110111403.3C59BF77@keescook>
-        <20211014014101.6du6jj2o7g4ficu5@treble>
-        <202110132151.F78F49AD8@keescook>
-        <20211014191643.6c7ca819a732dd6479329a6b@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230072AbhJUPV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231239AbhJUPVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:21:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A80BC061764;
+        Thu, 21 Oct 2021 08:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NLJ71Cg5LEnHqcIFkkZXwV1AtdUcW7tx8BbmnW6dm2g=; b=LlXZjS8mpvPBPAcm9fAJMVVIEX
+        GW9IxpiIaNNbRWFpiiSrlTQAisFo2nBmhFeRJTVLmPD3snhgYjgXfnh5+Tppkpkldh2CtnayBpvZU
+        5VHsyKd64d1lhCkh2nspl7xw3HumC1xR2FmEPtMaRFc0FuBNTaijLVDqndEt1Xt7RasRb+gxhJSve
+        tOKrfkwzfTuEfudSGXk/vzEgRdjLGuVswaaowf9Dd2xcJypZr51wI2BcTsmx0BUa1WiVCmok0aP4i
+        u+v+vQl85dvR1aFijH7mbSgbGRIpGymJSZJWNLdMavXimToVlBQVcebHmtAT3g/7GQQmVBnMZ6U42
+        798BlBkg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdZmI-00DLc1-I2; Thu, 21 Oct 2021 15:15:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 30C283002BC;
+        Thu, 21 Oct 2021 17:14:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0920B2C103FF6; Thu, 21 Oct 2021 17:14:45 +0200 (CEST)
+Date:   Thu, 21 Oct 2021 17:14:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Stafford Horne <shorne@gmail.com>
+Subject: Re: [PATCH] locking: Generic ticket lock
+Message-ID: <YXGD5OFbI7TEDFTr@hirez.programming.kicks-ass.net>
+References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+ <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 19:16:43 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Wed, 13 Oct 2021 21:52:36 -0700
-> Kees Cook <keescook@chromium.org> wrote:
+On Thu, Oct 21, 2021 at 03:49:51PM +0200, Arnd Bergmann wrote:
+> On Thu, Oct 21, 2021 at 3:05 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Therefore provide ticket locks, which depend on a single atomic
+> > operation (fetch_add) while still providing fairness.
 > 
-> > On Wed, Oct 13, 2021 at 06:41:01PM -0700, Josh Poimboeuf wrote:
-> > > On Mon, Oct 11, 2021 at 02:03:26PM -0700, Kees Cook wrote:
-> > > > On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
-> > > > > From: Marios Pomonis <pomonis@google.com>
-> > > > > 
-> > > > > Fix a bug in the ORC unwinder when kretprobes has replaced a return
-> > > > > address with the address of `kretprobes_trampoline'. ORC mistakenly
-> > > > > assumes that the address in the stack is a return address and decrements
-> > > > > it by 1 in order to find the proper depth of the next frame.
+> Nice!
 > 
-> Hmm, with my fixes[1], the kretprobe_trampoline address in the stack will be
-> replaced with the correct return address. In that case, that behavior
-> sounds correct.
-> 
-> [1] https://lore.kernel.org/all/163163030719.489837.2236069935502195491.stgit@devnote2/
+> Aside from the qspinlock vs ticket-lock question, can you describe the
+> tradeoffs between this generic ticket lock and a custom implementation
+> in architecture code? Should we convert most architectures over
+> to the generic code in the long run, or is there something they
+> can usually do better with an inline asm based ticket lock
 
-Here is the code which I applied this on my series.
+I think for a load-store arch this thing should generate pretty close to
+optimal code. x86 can do ticket_unlock() slightly better using a single
+INCW (or ADDW 1) on the owner subword, where this implementation will to
+separate load-add-store instructions.
 
-        /* Find IP, SP and possibly regs: */
-        switch (orc->type) {
-        case UNWIND_HINT_TYPE_CALL:
-                ip_p = sp - sizeof(long);
+If that is actually measurable is something else entirely.
 
-                if (!deref_stack_reg(state, ip_p, &state->ip))
-                        goto err;
+> or a trivial test-and-set?
 
-                state->ip = unwind_recover_ret_addr(state, state->ip,
-                                                    (unsigned long *)ip_p);
-                state->sp = sp;
-                state->regs = NULL;
-                state->prev_regs = NULL;
-                state->signal = is_kretprobe_trampoline(state->ip);
-                break;
+If your SMP arch is halfway sane (no fwd progress issues etc..) then
+ticket should behave well and avoid the starvation/variablilty of TaS
+lock.
 
-Actually, this cause a build issue because I introduced more generic is_kretprobe_trampoline().
-Anyway, after calling unwind_recover_ret_addr(), the state->ip should be fixed.
-This means that the is_kretprobe_trampoline(state->ip) always be false, and
-that is correct because state->ip is recovered with the correct return address
-which is call instruction + 5.
+The big exception there is virtualized architectures, ticket is
+absolutely horrendous for 'guests' (any fair lock is for that matter).
 
-So this patch seems not needed, hmm...
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
