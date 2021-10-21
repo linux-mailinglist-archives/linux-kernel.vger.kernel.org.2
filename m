@@ -2,175 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D58435E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5B7435E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhJUJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:45:23 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:46605 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbhJUJpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:45:18 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4EEC820007;
-        Thu, 21 Oct 2021 09:42:59 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 11:42:59 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2 3/9] rtc: max77686: rename day-of-month defines
-Message-ID: <YXE2I39qoA1REoVj@piout.net>
-References: <20211019145919.7327-1-luca@lucaceresoli.net>
- <20211019145919.7327-4-luca@lucaceresoli.net>
+        id S231575AbhJUJpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231371AbhJUJpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 05:45:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C85D61213
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:43:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634809397;
+        bh=nGnXT9Y+tyayDOT1oZALWerJdakuCUP3NgvyY2jkCYM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RketB7iJZjFaDcoek/p83fg5zmBQ8C0I/WOdz8Cwkx79OqB/bdtku5QCkQR7RdyC0
+         61p4BAiD9Rp9spMbWeiXUSL7Fn96TjqsZu8TdXUQbWX/T5IYYgD2xGNKz+XeYnNBk+
+         KT8oJA9usxbb9n9JnJI4FRu1FY8sciy+Sfqq1o2i3j7BAWkHT1zTTFxOpE7dUPwDdp
+         VSIhMXPgLJbLKJAghVDerKUHis4OGVzHatMdWzV3aWDEbvXmd8AhIsWDlMy4BUSgdW
+         vHo+JeyxU5zw95pRY0EmMzR7cggk/Q5CBH1p1R25j4FGy8MtCRKdKjfKIuO2P3c20b
+         L2a2ZTqCgcsuw==
+Received: by mail-ua1-f51.google.com with SMTP id r22so11912747uat.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:43:17 -0700 (PDT)
+X-Gm-Message-State: AOAM5302QGxZIAYG4LcdyKcGugPTE+EO2pCpJSmeQO13XUljPrMGI2j0
+        h4t6pgv12yjQDqjfVoiokm8lyJaY/b3s/Ejqjjo=
+X-Google-Smtp-Source: ABdhPJxEaK84MgiQrY6EFgZEMZUyzwOje8910ADj5Aho0+aStfUGmGbH21vzDMQgtirhGIi60c69jylQ4ma/LXOtEQc=
+X-Received: by 2002:ab0:728e:: with SMTP id w14mr4750493uao.97.1634809396463;
+ Thu, 21 Oct 2021 02:43:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019145919.7327-4-luca@lucaceresoli.net>
+References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
+ <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
+ <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
+ <8735oxuxlq.wl-maz@kernel.org> <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+ <875ytrddma.wl-maz@kernel.org> <CAAhSdy0TwOjv_RDMRsKqcqTE8PSO_A_EttMGBiDbb-0PTRizZg@mail.gmail.com>
+ <871r4fd996.wl-maz@kernel.org> <CAJF2gTQEx9BJ6bmgrNOc9--CL3DRKBBN=1Fv_waWWmTTGj150A@mail.gmail.com>
+ <87v91qbwvr.wl-maz@kernel.org>
+In-Reply-To: <87v91qbwvr.wl-maz@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 21 Oct 2021 17:43:05 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSqhFqPf0h-Z_U6OwU8ioPD6RVSzZg9TPoo5nxqfdgK4g@mail.gmail.com>
+Message-ID: <CAJF2gTSqhFqPf0h-Z_U6OwU8ioPD6RVSzZg9TPoo5nxqfdgK4g@mail.gmail.com>
+Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 16:59:13+0200, Luca Ceresoli wrote:
-> RTC_DATE and REG_RTC_DATE are used for the registers holding the day of
-> month. Rename these constants to mean what they mean.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Thu, Oct 21, 2021 at 4:33 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Thu, 21 Oct 2021 03:00:43 +0100,
+> Guo Ren <guoren@kernel.org> wrote:
+> >
+> > On Wed, Oct 20, 2021 at 11:08 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Wed, 20 Oct 2021 15:33:49 +0100,
+> > > Anup Patel <anup@brainfault.org> wrote:
+> > > >
+> > > > On Wed, Oct 20, 2021 at 7:04 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > On Tue, 19 Oct 2021 14:27:02 +0100,
+> > > > > Guo Ren <guoren@kernel.org> wrote:
+> > > > > >
+> > > > > > On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, 19 Oct 2021 10:33:49 +0100,
+> > > > > > > Guo Ren <guoren@kernel.org> wrote:
+> > > > > > >
+> > > > > > > > > If you have an 'automask' behavior and yet the HW doesn't record this
+> > > > > > > > > in a separate bit, then you need to track this by yourself in the
+> > > > > > > > > irq_eoi() callback instead. I guess that you would skip the write to
+> > > > > > > > > the CLAIM register in this case, though I have no idea whether this
+> > > > > > > > > breaks
+> > > > > > > > > the HW interrupt state or not.
+> > > > > > > > The problem is when enable bit is 0 for that irq_number,
+> > > > > > > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
+> > > > > > > > the hw state machine. Then this irq would enter in ack state and no
+> > > > > > > > continues irqs could come in.
+> > > > > > >
+> > > > > > > Really? This means that you cannot mask an interrupt while it is being
+> > > > > > > handled? How great...
+> > > > > > If the completion ID does not match an interrupt source that is
+> > > > > > currently enabled for the target, the completion is silently ignored.
+> > > > > > So, C9xx completion depends on enable-bit.
+> > > > >
+> > > > > Is that what the PLIC spec says? Or what your implementation does? I
+> > > > > can understand that one implementation would be broken, but if the
+> > > > > PLIC architecture itself is broken, that's far more concerning.
+> > > >
+> > > > Yes, we are dealing with a broken/non-compliant PLIC
+> > > > implementation.
+> > > >
+> > > > The RISC-V PLIC spec defines a very different behaviour for the
+> > > > interrupt claim (i.e. readl(claim)) and interrupt completion (i.e.
+> > > > writel(claim)). The T-HEAD PLIC implementation does things
+> > > > different from what the RISC-V PLIC spec says because it will
+> > > > mask an interrupt upon interrupt claim whereas PLIC spec says
+> > > > it should only clear the interrupt pending bit (not mask the interrupt).
+> > > >
+> > > > Quoting interrupt claim process (chapter 9) from PLIC spec:
+> > > > "The PLIC can perform an interrupt claim by reading the claim/complete
+> > > > register, which returns the ID of the highest priority pending interrupt or
+> > > > zero if there is no pending interrupt. A successful claim will also atomically
+> > > > clear the corresponding pending bit on the interrupt source."
+> > > >
+> > > > Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc
+> > >
+> > > That's not the point I'm making. According to Guo, the PLIC (any
+> > > implementation of it) will ignore a write to claim on a masked
+> > > interrupt.
+> > >
+> > > If that's indeed correct, then a sequence such as:
+> > >
+> > > (1) irq = read(claim)
+> > > (2) mask from the interrupt handler with the right flags so that it
+> > > isn't done lazily
+> > > (3) write(irq, claim)
+> >
+> > How about letting the IRQ chip change?
+> >
+> > diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+> > index a98bcfc4be7b..ed6ace1058ac 100644
+> > --- a/kernel/irq/chip.c
+> > +++ b/kernel/irq/chip.c
+> > @@ -444,10 +444,10 @@ void unmask_threaded_irq(struct irq_desc *desc)
+> >  {
+> >         struct irq_chip *chip = desc->irq_data.chip;
+> >
+> > +       unmask_irq(desc);
+> > +
+> >         if (chip->flags & IRQCHIP_EOI_THREADED)
+> >                 chip->irq_eoi(&desc->irq_data);
+> > -
+> > -       unmask_irq(desc);
+> >  }
+> >
+> >  /*
+> > @@ -673,8 +673,8 @@ static void cond_unmask_eoi_irq(struct irq_desc
+> > *desc, struct irq_chip *chip)
+> >          */
+> >         if (!irqd_irq_disabled(&desc->irq_data) &&
+> >             irqd_irq_masked(&desc->irq_data) && !desc->threads_oneshot) {
+> > -               chip->irq_eoi(&desc->irq_data);
+> >                 unmask_irq(desc);
+> > +               chip->irq_eoi(&desc->irq_data);
+> >         } else if (!(chip->flags & IRQCHIP_EOI_THREADED)) {
+> >                 chip->irq_eoi(&desc->irq_data);
+> >         }
+>
+> No, I don't think that's acceptable, and I strongly suspect that other
+> irqchips have the opposite requirement. You'll have to keep the
+> workaround in the PLIC code and track the EOI vs unmask to do the
+> right thing in both callbacks.
+Okay...
 
-> 
-> ---
-> 
-> Changes in v2:
->  - fix drivers/mfd/max77686.c build failure due to missing rename
->    (Reported-by: kernel test robot <lkp@intel.com>)
-> ---
->  drivers/mfd/max77686.c               |  2 +-
->  drivers/rtc/rtc-max77686.c           | 16 ++++++++--------
->  include/linux/mfd/max77686-private.h |  4 ++--
->  3 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mfd/max77686.c b/drivers/mfd/max77686.c
-> index 2ad554b921d9..b1048ab25120 100644
-> --- a/drivers/mfd/max77686.c
-> +++ b/drivers/mfd/max77686.c
-> @@ -87,7 +87,7 @@ static bool max77802_rtc_is_volatile_reg(struct device *dev, unsigned int reg)
->  		reg == MAX77802_RTC_WEEKDAY ||
->  		reg == MAX77802_RTC_MONTH ||
->  		reg == MAX77802_RTC_YEAR ||
-> -		reg == MAX77802_RTC_DATE);
-> +		reg == MAX77802_RTC_MONTHDAY);
->  }
->  
->  static bool max77802_is_volatile_reg(struct device *dev, unsigned int reg)
-> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-> index bac52cdea97d..7e765207f28e 100644
-> --- a/drivers/rtc/rtc-max77686.c
-> +++ b/drivers/rtc/rtc-max77686.c
-> @@ -57,7 +57,7 @@ enum {
->  	RTC_WEEKDAY,
->  	RTC_MONTH,
->  	RTC_YEAR,
-> -	RTC_DATE,
-> +	RTC_MONTHDAY,
->  	RTC_NR_TIME
->  };
->  
-> @@ -119,7 +119,7 @@ enum max77686_rtc_reg_offset {
->  	REG_RTC_WEEKDAY,
->  	REG_RTC_MONTH,
->  	REG_RTC_YEAR,
-> -	REG_RTC_DATE,
-> +	REG_RTC_MONTHDAY,
->  	REG_ALARM1_SEC,
->  	REG_ALARM1_MIN,
->  	REG_ALARM1_HOUR,
-> @@ -150,7 +150,7 @@ static const unsigned int max77686_map[REG_RTC_END] = {
->  	[REG_RTC_WEEKDAY]    = MAX77686_RTC_WEEKDAY,
->  	[REG_RTC_MONTH]      = MAX77686_RTC_MONTH,
->  	[REG_RTC_YEAR]       = MAX77686_RTC_YEAR,
-> -	[REG_RTC_DATE]       = MAX77686_RTC_DATE,
-> +	[REG_RTC_MONTHDAY]   = MAX77686_RTC_MONTHDAY,
->  	[REG_ALARM1_SEC]     = MAX77686_ALARM1_SEC,
->  	[REG_ALARM1_MIN]     = MAX77686_ALARM1_MIN,
->  	[REG_ALARM1_HOUR]    = MAX77686_ALARM1_HOUR,
-> @@ -233,7 +233,7 @@ static const unsigned int max77802_map[REG_RTC_END] = {
->  	[REG_RTC_WEEKDAY]    = MAX77802_RTC_WEEKDAY,
->  	[REG_RTC_MONTH]      = MAX77802_RTC_MONTH,
->  	[REG_RTC_YEAR]       = MAX77802_RTC_YEAR,
-> -	[REG_RTC_DATE]       = MAX77802_RTC_DATE,
-> +	[REG_RTC_MONTHDAY]   = MAX77802_RTC_MONTHDAY,
->  	[REG_ALARM1_SEC]     = MAX77802_ALARM1_SEC,
->  	[REG_ALARM1_MIN]     = MAX77802_ALARM1_MIN,
->  	[REG_ALARM1_HOUR]    = MAX77802_ALARM1_HOUR,
-> @@ -288,7 +288,7 @@ static void max77686_rtc_data_to_tm(u8 *data, struct rtc_time *tm,
->  
->  	/* Only a single bit is set in data[], so fls() would be equivalent */
->  	tm->tm_wday = ffs(data[RTC_WEEKDAY] & mask) - 1;
-> -	tm->tm_mday = data[RTC_DATE] & 0x1f;
-> +	tm->tm_mday = data[RTC_MONTHDAY] & 0x1f;
->  	tm->tm_mon = (data[RTC_MONTH] & 0x0f) - 1;
->  	tm->tm_year = data[RTC_YEAR] & mask;
->  	tm->tm_yday = 0;
-> @@ -309,7 +309,7 @@ static int max77686_rtc_tm_to_data(struct rtc_time *tm, u8 *data,
->  	data[RTC_MIN] = tm->tm_min;
->  	data[RTC_HOUR] = tm->tm_hour;
->  	data[RTC_WEEKDAY] = 1 << tm->tm_wday;
-> -	data[RTC_DATE] = tm->tm_mday;
-> +	data[RTC_MONTHDAY] = tm->tm_mday;
->  	data[RTC_MONTH] = tm->tm_mon + 1;
->  
->  	if (info->drv_data->alarm_enable_reg) {
-> @@ -565,8 +565,8 @@ static int max77686_rtc_start_alarm(struct max77686_rtc_info *info)
->  			data[RTC_MONTH] |= (1 << ALARM_ENABLE_SHIFT);
->  		if (data[RTC_YEAR] & info->drv_data->mask)
->  			data[RTC_YEAR] |= (1 << ALARM_ENABLE_SHIFT);
-> -		if (data[RTC_DATE] & 0x1f)
-> -			data[RTC_DATE] |= (1 << ALARM_ENABLE_SHIFT);
-> +		if (data[RTC_MONTHDAY] & 0x1f)
-> +			data[RTC_MONTHDAY] |= (1 << ALARM_ENABLE_SHIFT);
->  
->  		ret = regmap_bulk_write(info->rtc_regmap, map[REG_ALARM1_SEC],
->  					data, ARRAY_SIZE(data));
-> diff --git a/include/linux/mfd/max77686-private.h b/include/linux/mfd/max77686-private.h
-> index b1482b3cf353..3acceeedbaba 100644
-> --- a/include/linux/mfd/max77686-private.h
-> +++ b/include/linux/mfd/max77686-private.h
-> @@ -152,7 +152,7 @@ enum max77686_rtc_reg {
->  	MAX77686_RTC_WEEKDAY		= 0x0A,
->  	MAX77686_RTC_MONTH		= 0x0B,
->  	MAX77686_RTC_YEAR		= 0x0C,
-> -	MAX77686_RTC_DATE		= 0x0D,
-> +	MAX77686_RTC_MONTHDAY		= 0x0D,
->  	MAX77686_ALARM1_SEC		= 0x0E,
->  	MAX77686_ALARM1_MIN		= 0x0F,
->  	MAX77686_ALARM1_HOUR		= 0x10,
-> @@ -352,7 +352,7 @@ enum max77802_rtc_reg {
->  	MAX77802_RTC_WEEKDAY		= 0xCA,
->  	MAX77802_RTC_MONTH		= 0xCB,
->  	MAX77802_RTC_YEAR		= 0xCC,
-> -	MAX77802_RTC_DATE		= 0xCD,
-> +	MAX77802_RTC_MONTHDAY		= 0xCD,
->  	MAX77802_RTC_AE1		= 0xCE,
->  	MAX77802_ALARM1_SEC		= 0xCF,
->  	MAX77802_ALARM1_MIN		= 0xD0,
-> -- 
-> 2.25.1
-> 
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
+
+
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
