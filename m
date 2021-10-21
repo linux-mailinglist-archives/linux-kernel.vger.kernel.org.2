@@ -2,65 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCCD435DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC29435DA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhJUJLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
+        id S231475AbhJUJLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbhJUJK6 (ORCPT
+        with ESMTP id S231153AbhJUJLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:10:58 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C54C06161C;
-        Thu, 21 Oct 2021 02:08:43 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id C99571F44787
-Subject: Re: [PATCH v16 7/7] soc: mediatek: SVS: add mt8192 SVS GPU driver
-To:     Roger Lu <roger.lu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Fan Chen <fan.chen@mediatek.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20210428065440.3704-1-roger.lu@mediatek.com>
- <20210428065440.3704-8-roger.lu@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <19f8fa23-bfd4-4db5-64dc-c563bf617437@collabora.com>
-Date:   Thu, 21 Oct 2021 11:08:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 21 Oct 2021 05:11:05 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D5EC06161C;
+        Thu, 21 Oct 2021 02:08:49 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2376A2BA;
+        Thu, 21 Oct 2021 11:08:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634807326;
+        bh=1R6z7yIisJy0tgOfsaD+O62w7W2Ho8F1w+hStl7uzrg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=YNAPTcfNR2J+82uNeXYvZHAGeNBD5FoZBGBv6M15A/fOyxo3LDkXjYu+PVSRgnTBk
+         vXxsqIyFCUIETwvthk5YPEPohRz+jIIXPb29K3d00N2TWb12Ikt8ajPClROhcKVBXV
+         4Iavf6AvkSWquBGCNhLVgYjOF+6ZxTEdRdB5sjQs=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210428065440.3704-8-roger.lu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMuHMdWD+FXt-rUz6oiU9MNq3EiKExgic17kCnUjynidii470w@mail.gmail.com>
+References: <20211021030938.51884-1-tangbin@cmss.chinamobile.com> <CAMuHMdWD+FXt-rUz6oiU9MNq3EiKExgic17kCnUjynidii470w@mail.gmail.com>
+Subject: Re: [PATCH] media: rcar_fdp1: Fix the correct variable assignments
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Date:   Thu, 21 Oct 2021 10:08:43 +0100
+Message-ID: <163480732348.2663858.5189176300885425535@Monstersaurus>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
-> Reviewed-by: YT Lee <yt.lee@mediatek.com>
-> ---
->   drivers/soc/mediatek/mtk-svs.c | 485 ++++++++++++++++++++++++++++++++-
->   1 file changed, 479 insertions(+), 6 deletions(-)
-> 
+Hi Tang,
 
-Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Quoting Geert Uytterhoeven (2021-10-21 08:59:18)
+> Hi Tang,
+>=20
+> Thanks for your patch!
+>=20
+> On Thu, Oct 21, 2021 at 5:10 AM Tang Bin <tangbin@cmss.chinamobile.com> w=
+rote:
+> > In the function fdp1_probe(), when get irq failed, the
+> > function platform_get_irq() log an error message, so
+> > remove redundant message here. And the variable type
+> > of "ret" is int, the "fdp1->irq" is unsigned int, when
+> > irq failed, this place maybe wrong, thus fix it.
+>=20
+> The second issue is not actually present, as the error check
+> operates on ret, not fdp1->irq?
+
+Agreed, the error print is redundant.=20
+
+In fact it would have erroneously print on ret=3D-EPROBE_DEFER cases too,
+so it's not just redundant, but inaccurate too.
+
+I don't think the assignment of fdp1->irq =3D ret at the same time is an
+issue, because if ret < 0, fdp1->irq wouldn't ever get read, as the call
+returns.
+
+But .. I have no objection to setting it after instead.
+
+> > Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>=20
+> > --- a/drivers/media/platform/rcar_fdp1.c
+> > +++ b/drivers/media/platform/rcar_fdp1.c
+> > @@ -2289,11 +2289,10 @@ static int fdp1_probe(struct platform_device *p=
+dev)
+> >                 return PTR_ERR(fdp1->regs);
+> >
+> >         /* Interrupt service routine registration */
+> > -       fdp1->irq =3D ret =3D platform_get_irq(pdev, 0);
+> > -       if (ret < 0) {
+> > -               dev_err(&pdev->dev, "cannot find IRQ\n");
+> > +       ret =3D platform_get_irq(pdev, 0);
+> > +       if (ret < 0)
+> >                 return ret;
+> > -       }
+> > +       fdp1->irq =3D ret;
+> >
+> >         ret =3D devm_request_irq(&pdev->dev, fdp1->irq, fdp1_irq_handle=
+r, 0,
+> >                                dev_name(&pdev->dev), fdp1);
+>=20
+> Anyway, the code is correct, so:
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Perhaps with the commit message updated/simplified, but either way:
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+>=20
+> Gr{oetje,eeting}s,
+>=20
+>                         Geert
+>=20
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>=20
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
