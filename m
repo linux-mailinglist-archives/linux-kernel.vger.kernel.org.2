@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1A3436104
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B528A43610B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJUMF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhJUMF5 (ORCPT
+        id S231431AbhJUMHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:07:12 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45500 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230340AbhJUMHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:05:57 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5017CC06161C;
-        Thu, 21 Oct 2021 05:03:41 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id bl14so819770qkb.4;
-        Thu, 21 Oct 2021 05:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=luh0TIccmegXn8CJKJYKcwVKTjrSX33i0YnsKW7PqRo=;
-        b=qGD4VnPE++cf1r2/FKV86F0A1UAugCAyIHl5wNZ1vD6jCIWAMUT6Rwb653yetmU3Ns
-         w0ZJCx+yf0nvzehRE0j3tWpUfb2T1Oe1dc1ZcBtlB2Xj05XeWvCCffAID3/dyEVh73m0
-         hLUWc1vUsqc5fm5fLmyIU11Ht1P/+cxVUBvrbvwSWLw3TTGjonEQNQCATPY0G5mCYsf/
-         NoSDHyefyqDLnv6PiaDrkB4tlzLueZPa9b62UECl9lavceDHw4HQFcm91z9i/wEGdJFY
-         4yyd/9f3U21RxJGO88adsptB1gHxmpPqufPNYtAQXwRAql0yw+BZ/CggLOqHZYPHErmP
-         /UPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=luh0TIccmegXn8CJKJYKcwVKTjrSX33i0YnsKW7PqRo=;
-        b=7xmZ/vbxJKhFSsvyytf0IBW6BnUulEPgQMvn3kvIoCRb8pJCHxR7UwoKCx2nmU0TTl
-         Ikvkh+2vqjnKHfto3ElMeot2Rzj/jMUGAs/PO461FLgFXPpdrA4lwMrLQkcQyAY/3n4L
-         w3tW/mmppsPIp4ytIxpeNWPWJ0YDu7NObc2YVGzRgue3hEl7EaR7g+YWvW/FcLlyQHWT
-         lqEPHBHGErWdTnklzVLKqR6i60dThNk+3FOv0iVZ4CRkTzAt664AwRppj7HX3jBnRqU2
-         4VsV7URgtUg6HdbkNqW4V2HGhrknqrz9+TnCosPrNnG/VUqc1DWXerPyN4vNCUiBwYnG
-         +kDg==
-X-Gm-Message-State: AOAM5327ZRfvdDMun60uGbumat1UnLRbW4T5MOPbtTnMVeicsFvPF9v/
-        sqEqHcO9yzQYbFrey8O7PQ==
-X-Google-Smtp-Source: ABdhPJwd1ait2YAPoGPfPub3ytuA8mdp1mQxCnWuEJN0VmzllJMSSscBuA4UgH+C3yQkZAYHcnKxAQ==
-X-Received: by 2002:a37:b307:: with SMTP id c7mr4157659qkf.134.1634817820520;
-        Thu, 21 Oct 2021 05:03:40 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id l3sm2474608qkj.110.2021.10.21.05.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 05:03:39 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 08:03:37 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YXFXGeYlGFsuHz/T@moria.home.lan>
-References: <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
- <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
- <YXBRPSjPUYnoQU+M@casper.infradead.org>
- <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
- <YXEOCIWKEcUOvVtv@infradead.org>
- <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
+        Thu, 21 Oct 2021 08:07:10 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L8h2sI007645;
+        Thu, 21 Oct 2021 14:04:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=hvddE42Q9bJ7IvzpAni+KWpr1V0kd9MuytQRIK1sshU=;
+ b=0WK/cvMW+iNDuWqG0pNhSG7kEReA9R122vl0mFaH6fKU0vMCD2rEqHgXgVENJhXEQs5p
+ Mm8EF8zrtqp9JVfkNxWgy9PEZVAgwcuz3gsZJLKXutUihuSHg5Wirx8j8rSbtdpOw7gt
+ yxlt7ertC45S1yqJm0Ra+HLmv/CM8OPJRNY83lyUcuiwozKZelgaqFTswqavZIvW0sku
+ JgsCDxF4+1+lMJmJdSoh+jOTNOVJ5i/QJBFV+RF/9qc86HorUtiLmC8uFCDeSGoBwOjB
+ HuAfS8BB0QjqlZUytxDSSk/OnCNosDpXWEZe7Ez+o/2ANbUYi71Qnds9kLlqbZqBG0Kd sQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3btywkb956-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Oct 2021 14:04:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E665210002A;
+        Thu, 21 Oct 2021 14:04:14 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DDFE821CA96;
+        Thu, 21 Oct 2021 14:04:14 +0200 (CEST)
+Received: from [10.211.1.225] (10.75.127.44) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 21 Oct
+ 2021 14:04:13 +0200
+Subject: Re: [PATCH] iio: adc: stm32-adc: Fix of_node_put() issue in stm32-adc
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Xu Wang <vulab@iscas.ac.cn>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <kael_w@yeah.net>
+References: <20211021112452.9491-1-wanjiabing@vivo.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <46423a73-5c4f-84d8-6f2c-5889bc14cd53@foss.st.com>
+Date:   Thu, 21 Oct 2021 14:04:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
+In-Reply-To: <20211021112452.9491-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-21_02,2021-10-21_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 09:21:17AM +0200, David Hildenbrand wrote:
-> On 21.10.21 08:51, Christoph Hellwig wrote:
-> > FYI, with my block and direct I/O developer hat on I really, really
-> > want to have the folio for both file and anon pages.  Because to make
-> > the get_user_pages path a _lot_ more efficient it should store folios.
-> > And to make that work I need them to work for file and anon pages
-> > because for get_user_pages and related code they are treated exactly
-> > the same.
+On 10/21/21 1:24 PM, Wan Jiabing wrote:
+> Fix following coccicheck warning:
+> ./drivers/iio/adc/stm32-adc.c:2014:1-33: WARNING: Function
+> for_each_available_child_of_node should have of_node_put() before return.
+> 
+> Early exits from for_each_available_child_of_node should decrement the
+> node reference counter. Replce return by goto here.
 
-++
+Hi Wan,
 
-> Thanks, I can understand that. And IMHO that would be even possible with
-> split types; the function prototype will simply have to look a little
-> more fancy instead of replacing "struct page" by "struct folio". :)
+typo: Replace
 
-Possible yes, but might it be a little premature to split them?
+I guess there's no need for a Fixes tag. (I'm pretty sure Jonathan will
+advise on this if needed).
+
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+
+Apart from that, you can add my:
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+
+Thanks for the fix,
+Best Regards,
+Fabrice
+
+> ---
+>  drivers/iio/adc/stm32-adc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index 6245434f8377..7f1fb36c747c 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -2024,7 +2024,8 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+>  			if (strlen(name) >= STM32_ADC_CH_SZ) {
+>  				dev_err(&indio_dev->dev, "Label %s exceeds %d characters\n",
+>  					name, STM32_ADC_CH_SZ);
+> -				return -EINVAL;
+> +				ret = -EINVAL;
+> +				goto err;
+>  			}
+>  			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+>  			ret = stm32_adc_populate_int_ch(indio_dev, name, val);
+> 
