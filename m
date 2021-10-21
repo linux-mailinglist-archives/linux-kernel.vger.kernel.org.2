@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA4E436C72
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4864F436C74
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhJUVMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 17:12:44 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48886 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUVMn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 17:12:43 -0400
-Received: by mail-io1-f69.google.com with SMTP id c10-20020a5e8f0a000000b005ddce46973cso1338711iok.15
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 14:10:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=KUZI7Tq5GdQzrJyNFkCdnybe2JowQJrzK6oXMxPrv+Y=;
-        b=u6KEQbCMFysTcyzoyA0BmD28fMCapPRJMzRgyKz6RVUJCxoCfzwW1r/N/6R6YwST2d
-         /KnT+0qh6TfhEaUEATzk7m38u3kPeawoktEO83ZZvMT9hB8/7KYpc4O9HvtBir03Jqfr
-         q8HSiBYz+Y1qkTgFAFi7NPN83U7xio84DB3iqA6RfTpL54AKzMCDgWW1pe1oIqOGzbF+
-         Cq87TONsBwtsSnYBQQdBDmIDe9ZJ+j/JMFigLxptuluvPZ+HAqN2dPqg8k9zPVYalrYB
-         YY6SfMLcBAc/H57h0NRIEnnxDoACJJUGjC35u0RmxDVQwnO7STioQRZJJbOWnlHyqA7r
-         zmKA==
-X-Gm-Message-State: AOAM5331ryZEypV9ZV0HzJQvzA7bvVtrPhk07ki+eYMoHlJpVduu/ioA
-        7tFlGGzQAp5cwnfMYgUeZSyj/zrKustI6KSGjwA/NkpLtj8B
-X-Google-Smtp-Source: ABdhPJzpf3Lzz429jL6xzKETVgRePCNbLGCml9v0KQX2eiEGirz48MJigIOQwYhOIsi2+dUXwoOA5HgI17OV4XafzoNoZgZIJhYm
+        id S232165AbhJUVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 17:12:47 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53294 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232158AbhJUVMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 17:12:46 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 9578B97D;
+        Thu, 21 Oct 2021 21:10:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9578B97D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1634850629; bh=/5PqWLE4FcBhImTJA9XMH2rm/C/TLG5+zjc1qYZQyFg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=lPVFQP7lLogTE0no1qOXHEdfSoBuq2YKavzjGD4P+t0Sp7YFZJlY4iyAIA2q+40AC
+         Lt9mih0Ta4F82gBMnS1hRNUZT/od3nkl7L92gpIuxwMSRRL/IPt+UwtV3GCSqTHGRn
+         SP9oy4QDk4LjiNPqVeNEPPZdxeMmiX6HrhFN5SOGxerGiXiQ5bBBU4DLyLK1uIDVmN
+         lGZTI2x+rfyjk5DcbM2nnOnj9urzUD8h4YFhtZ28DodZY2IODRUHgaZApI93Dh9ilC
+         vr0H/DTzzOpk+Q47k+QjzKlvevt9jH/IGLP2huS8a8F/5WZVfLMDqYgsPHsiMMk8Pq
+         hcvE0tILiobTw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Vadim Pasternak <vadimp@nvidia.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: linux-next: build warnings after merge of the drivers-x86 tree
+In-Reply-To: <20211022070452.28924855@canb.auug.org.au>
+References: <20211021184735.794b22a7@canb.auug.org.au>
+ <BN9PR12MB53814D3DCD5BD5E9441DE3F3AFBF9@BN9PR12MB5381.namprd12.prod.outlook.com>
+ <20211022070452.28924855@canb.auug.org.au>
+Date:   Thu, 21 Oct 2021 15:10:28 -0600
+Message-ID: <87lf2mjd8b.fsf@meer.lwn.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:134d:: with SMTP id i13mr5757952iov.164.1634850626714;
- Thu, 21 Oct 2021 14:10:26 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 14:10:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ddc11905cee3521c@google.com>
-Subject: [syzbot] INFO: task hung in io_wqe_worker
-From:   syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+[CC += Mauro]
 
-syzbot found the following issue on:
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-HEAD commit:    d999ade1cc86 Merge tag 'perf-tools-fixes-for-v5.15-2021-10..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=136f87d0b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bab9d35f204746a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=27d62ee6f256b186883e
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d3f7ccb00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d3600cb00000
+> On Thu, 21 Oct 2021 09:07:03 +0000 Vadim Pasternak <vadimp@nvidia.com> wrote:
+>>
+>> What is wrong with the syntax at line 230 and where blank line is expected?
+>> 
+>> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_active_image
+>> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_auth_fail
+>> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_upgrade_fail
+>> Date:		October 2021	<--- this is line 230
+>> KernelVersion:	5.16
+>
+> I am sorry, I don't know.  Added Jon to cc for advice.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com
+The problem isn't that line at all, it's the use of a bulleted list a
+few lines further down; that doesn't work in ABI files.
 
-INFO: task iou-wrk-6609:6612 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc5-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:iou-wrk-6609    state:D stack:27944 pid: 6612 ppid:  6526 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0xb44/0x5960 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
- io_worker_exit fs/io-wq.c:183 [inline]
- io_wqe_worker+0x66d/0xc40 fs/io-wq.c:597
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Mauro, this ABI stuff is fragile, and this kind of problem occurs fairly
+often.  How hard would it be to (1) make it a bit more robust, (2) make
+it issue useful warnings where it can't be robust, and (3) properly
+document the restrictions for ABI files?
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/27:
- #0: ffffffff8b981ae0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
+Meanwhile, the attached patch fixes it; feel free to use it or to just
+fold the change into your work.
 
-=============================================
+Thanks,
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.15.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xc1d/0xf50 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 1414 Comm: kworker/u4:5 Not tainted 5.15.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:85 [inline]
-RIP: 0010:memory_is_nonzero mm/kasan/generic.c:102 [inline]
-RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:128 [inline]
-RIP: 0010:memory_is_poisoned mm/kasan/generic.c:159 [inline]
-RIP: 0010:check_region_inline mm/kasan/generic.c:180 [inline]
-RIP: 0010:kasan_check_range+0xde/0x180 mm/kasan/generic.c:189
-Code: 74 f2 48 89 c2 b8 01 00 00 00 48 85 d2 75 56 5b 5d 41 5c c3 48 85 d2 74 5e 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 50 80 38 00 <74> f2 eb d4 41 bc 08 00 00 00 48 89 ea 45 29 dc 4d 8d 1c 2c eb 0c
-RSP: 0018:ffffc90005aa7988 EFLAGS: 00000046
-RAX: ffffed10021cd084 RBX: ffffed10021cd085 RCX: ffffffff81348c59
-RDX: ffffed10021cd085 RSI: 0000000000000008 RDI: ffff888010e68420
-RBP: ffffed10021cd084 R08: 0000000000000000 R09: ffff888010e68427
-R10: ffffed10021cd084 R11: 000000000000003f R12: ffffffff8baabbe0
-R13: ffff888010e68420 R14: 0000000000000000 R15: ffff88801dfeda50
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f93e8906000 CR3: 000000000b68e000 CR4: 0000000000350ee0
-Call Trace:
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic64_read include/linux/atomic/atomic-instrumented.h:605 [inline]
- switch_mm_irqs_off+0x1e9/0xa10 arch/x86/mm/tlb.c:615
- use_temporary_mm arch/x86/kernel/alternative.c:741 [inline]
- __text_poke+0x447/0x8c0 arch/x86/kernel/alternative.c:838
- text_poke_bp_batch+0x3d7/0x560 arch/x86/kernel/alternative.c:1178
- text_poke_flush arch/x86/kernel/alternative.c:1268 [inline]
- text_poke_flush arch/x86/kernel/alternative.c:1265 [inline]
- text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1275
- arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:146
- jump_label_update+0x1d5/0x430 kernel/jump_label.c:830
- static_key_enable_cpuslocked+0x1b1/0x260 kernel/jump_label.c:177
- static_key_enable+0x16/0x20 kernel/jump_label.c:190
- toggle_allocation_gate mm/kfence/core.c:626 [inline]
- toggle_allocation_gate+0x100/0x390 mm/kfence/core.c:618
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess):
-   0:	74 f2                	je     0xfffffff4
-   2:	48 89 c2             	mov    %rax,%rdx
-   5:	b8 01 00 00 00       	mov    $0x1,%eax
-   a:	48 85 d2             	test   %rdx,%rdx
-   d:	75 56                	jne    0x65
-   f:	5b                   	pop    %rbx
-  10:	5d                   	pop    %rbp
-  11:	41 5c                	pop    %r12
-  13:	c3                   	retq
-  14:	48 85 d2             	test   %rdx,%rdx
-  17:	74 5e                	je     0x77
-  19:	48 01 ea             	add    %rbp,%rdx
-  1c:	eb 09                	jmp    0x27
-  1e:	48 83 c0 01          	add    $0x1,%rax
-  22:	48 39 d0             	cmp    %rdx,%rax
-  25:	74 50                	je     0x77
-  27:	80 38 00             	cmpb   $0x0,(%rax)
-* 2a:	74 f2                	je     0x1e <-- trapping instruction
-  2c:	eb d4                	jmp    0x2
-  2e:	41 bc 08 00 00 00    	mov    $0x8,%r12d
-  34:	48 89 ea             	mov    %rbp,%rdx
-  37:	45 29 dc             	sub    %r11d,%r12d
-  3a:	4d 8d 1c 2c          	lea    (%r12,%rbp,1),%r11
-  3e:	eb 0c                	jmp    0x4c
+jon
 
+-----------------------------
+From 97371e6afda75eef71b7d5d1794645e5cfaf1811 Mon Sep 17 00:00:00 2001
+From: Jonathan Corbet <corbet@lwn.net>
+Date: Thu, 21 Oct 2021 15:02:43 -0600
+Subject: [PATCH] docs: ABI: fix documentation warning in sysfs-driver-mlxreg-io
 
+The use of a Sphinx list within this ABI file caused the following warning:
+
+  Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Unexpected indentation.
+  Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Block quote ends without a blank line; unexpected unindent.
+
+Remove the bullets to make the warning go away and get proper formatting.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../ABI/stable/sysfs-driver-mlxreg-io         | 23 +++++++++++--------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/Documentation/ABI/stable/sysfs-driver-mlxreg-io b/Documentation/ABI/stable/sysfs-driver-mlxreg-io
+index c84795ccecad..12c3f895cd2f 100644
+--- a/Documentation/ABI/stable/sysfs-driver-mlxreg-io
++++ b/Documentation/ABI/stable/sysfs-driver-mlxreg-io
+@@ -231,16 +231,19 @@ Date:		October 2021
+ KernelVersion:	5.16
+ Contact:	Vadim Pasternak <vadimp@nvidia.com>
+ Description:	The files represent BIOS statuses:
+-		- bios_active_image: location of current active BIOS image:
+-		  0: Top, 1: Bottom.
+-		  The reported value should correspond to value expected by OS
+-		  in case of BIOS safe mode is 0. This bit is related to Intel
+-		  top-swap feature of DualBios on the same flash.
+-		- bios_auth_fail: BIOS upgrade is failed because provided BIOS
+-		  image is not signed correctly.
+-		- bios_upgrade_fail: BIOS upgrade is failed by some other
+-		  reason not because authentication. For example due to
+-		  physical SPI flash problem.
++
++		bios_active_image: location of current active BIOS image:
++		0: Top, 1: Bottom.
++		The reported value should correspond to value expected by OS
++		in case of BIOS safe mode is 0. This bit is related to Intel
++		top-swap feature of DualBios on the same flash.
++
++		bios_auth_fail: BIOS upgrade is failed because provided BIOS
++		image is not signed correctly.
++
++		bios_upgrade_fail: BIOS upgrade is failed by some other
++		reason not because authentication. For example due to
++		physical SPI flash problem.
+ 
+ 		The files are read only.
+ 
+-- 
+2.31.1
+
