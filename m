@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C44436505
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB2A436508
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhJUPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231563AbhJUPHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:07:24 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907B3C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:05:08 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id y12so52425eda.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qUgdsQvKs/J/n4GClXSY/xHOp3sHP7aorbkL9o6rHvs=;
-        b=lImqozNFtHlYTR/oRgIfBiOTJ0lCA5oYHJboLhB7sS6kKvV/4ZWe5revZWtdd8guYo
-         5tUF46kjVknnqHQmtM7WkOI3ZqUCbrLg0Gu0sHMBGO67nWH8i4xRftgqPWUfXyOsjeww
-         NyyDG7xrOQ5F2CJgR6wzziDuEYq8NyleWKr6YxhVs/Qv3CxSeShYr52CfxxCZUO7/l4b
-         Kh86RP6yb1LWybPs/ERzUVyMGuJ0nozQo4XRBVONHqQwtYrbXEhAU130Jd7uk6RjLjgM
-         6suelOJv8mtJX7mnWVBOhmDSAOL3FQulIrkrpGWOHf9oQyADJw1Ws8tnukXtkzMlUooS
-         XjbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qUgdsQvKs/J/n4GClXSY/xHOp3sHP7aorbkL9o6rHvs=;
-        b=jMm5qmggnkSa2dpLv9MixKKe6UqipSmqehJIMgfWpG45rEJ08/OhmEzj4VXH/9VUit
-         Ws+bzqDwSTZQID96LSdr4LXoLj+GvOvuv0EuRoeGJ5JP1v3LCkRP5txRX7OcnfsGcqFa
-         rUfQz6yfSNdyt/lqATfBgrf4J5kESLQiuMHeEskeCpa/YUoiyJVy5sG2KPKbWfXsb+al
-         gBhZ2iNxW8fnX8YgsULUc0ffAlOExfvf7J46nLzn/YHSXf/70Dt2j6O4+juDP3jyH3Rr
-         o+c7YraIOg85AACoZ3T+hxgTXdZd00purkudQRHT/wSqCO5TVXeWrB/4AaxkM1gknWsa
-         wnoA==
-X-Gm-Message-State: AOAM531fogVKgkG6TbPxV/3+1I49d4Wvc9fy48qY4btW38s7BFcZoqtq
-        u1DsZQuZJ2G5nha+5LuW8QQYYAkvC/JLIBbDNInFcg==
-X-Google-Smtp-Source: ABdhPJxwU3X5NrZg5XDJgUXQnCleKcm1yCgswyQjrpLx62hGi4bKCMdqa2uEGum+WpUWT0czKZltvvZrt3/l9ey7kNE=
-X-Received: by 2002:aa7:c359:: with SMTP id j25mr8360708edr.348.1634828705043;
- Thu, 21 Oct 2021 08:05:05 -0700 (PDT)
+        id S231331AbhJUPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:08:13 -0400
+Received: from relay.sw.ru ([185.231.240.75]:42168 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230280AbhJUPIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:08:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=AYjhXpu3d6kOZxLRp2DlsnHvgXfNmVMqUthXj2mtzdE=; b=SW7BgefMYeIgcg9wr
+        tbO/vMTgWtXtJGnhebekO+7U9ELGuifOlYecO7GEMUO4C+EC71xqXSXzmfgl4CEXJ7bB4i9EiKsX5
+        ymCQGp9TN7AN3ra6WwRwJRkjbXQ4RQtWOgAC7WEayaqg6QpuvFQ71toI3mt2NHcnRbAjJPIHzi8Po
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdZdd-006kE4-S3; Thu, 21 Oct 2021 18:05:49 +0300
+Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
+ <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
+ <d3b32c72-6375-f755-7599-ab804719e1f6@virtuozzo.com>
+ <YXFPSvGFV539OcEk@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <b618ac5c-e982-c4af-ecf3-564b8de52c8c@virtuozzo.com>
+Date:   Thu, 21 Oct 2021 18:05:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211021063210.52503-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20211021063210.52503-1-u.kleine-koenig@pengutronix.de>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Thu, 21 Oct 2021 08:04:53 -0700
-Message-ID: <CABXOdTc_VqKtrbwWAsmkAADd2zz8N2Kqk3OcRUmGpuDvVApZ=A@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Chrome: Drop Enric Balletbo i Serra
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YXFPSvGFV539OcEk@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:32 PM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Sending a patch to the chrome people resulted in a message by
-> Collabora's mailer daemon:
->
->         550 5.1.1 <enric.balletbo@collabora.com>: Recipient address rejec=
-ted: User unknown in local recipient table (in reply to RCPT TO command)
->
-> So remove Eric from all maintainer entries.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On 21.10.2021 14:49, Michal Hocko wrote:
+> I do understand that handling a very specific case sounds easier but it
+> would be better to have a robust fix even if that requires some more
+> head scratching. So far we have collected several reasons why the it is
+> bad to trigger oom killer from the #PF path. There is no single argument
+> to keep it so it sounds like a viable path to pursue. Maybe there are
+> some very well hidden reasons but those should be documented and this is
+> a great opportunity to do either of the step.
+> 
+> Moreover if it turns out that there is a regression then this can be
+> easily reverted and a different, maybe memcg specific, solution can be
+> implemented.
 
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Now I'm agree,
+however I still have a few open questions.
 
-> ---
->  MAINTAINERS | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8d118d7957d2..b6ff67394b78 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4413,14 +4413,12 @@ F:      drivers/input/touchscreen/chipone_icn8505=
-.c
->
->  CHROME HARDWARE PLATFORM SUPPORT
->  M:     Benson Leung <bleung@chromium.org>
-> -M:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
->  S:     Maintained
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform=
-/linux.git
->  F:     drivers/platform/chrome/
->
->  CHROMEOS EC CODEC DRIVER
->  M:     Cheng-Yi Chiang <cychiang@chromium.org>
-> -R:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
->  R:     Guenter Roeck <groeck@chromium.org>
->  S:     Maintained
->  F:     Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-> @@ -4428,7 +4426,6 @@ F:        sound/soc/codecs/cros_ec_codec.*
->
->  CHROMEOS EC SUBDRIVERS
->  M:     Benson Leung <bleung@chromium.org>
-> -M:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
->  R:     Guenter Roeck <groeck@chromium.org>
->  S:     Maintained
->  F:     drivers/power/supply/cros_usbpd-charger.c
-> --
-> 2.30.2
->
+1) VM_FAULT_OOM may be triggered w/o execution of out_of_memory()
+for exampel it can be caused by incorrect vm fault operations, 
+(a) which can return this error without calling allocator at all.
+(b) or which can provide incorrect gfp flags and allocator can fail without execution of out_of_memory.
+(c) This may happen on stable/LTS kernels when successful allocation was failed by hit into limit of legacy memcg-kmem contoller.
+We'll drop it in upstream kernels, however how to handle it in old kenrels?
+
+We can make sure that out_of_memory or alocator was called by set of some per-task flags.
+
+Can pagefault_out_of_memory() send itself a SIGKILL in all these cases?
+
+If not -- task will be looped. 
+It is much better than execution of global OOM, however it would be even better to avoid it somehow.
+
+You said: "We cannot really kill the task if we could we would have done it by the oom killer already".
+However what to do if we even not tried to use oom-killer? (see (b) and (c)) 
+or if we did not used the allocator at all (see (a))
+
+2) in your patch we just exit from pagefault_out_of_memory(). and restart new #PF.
+We can call schedule_timeout() and wait some time before a new #PF restart.
+Additionally we can increase this delay in each new cycle. 
+It helps to save CPU time for other tasks.
+What do you think about?
+
+Thank you,
+	Vasily Averin
