@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D2B435E9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A36435EA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhJUKIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:08:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231334AbhJUKIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:08:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 064A8610FF;
-        Thu, 21 Oct 2021 10:05:53 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 11:05:50 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
-Message-ID: <YXE7fhDkqJbfDk6e@arm.com>
-References: <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
- <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
- <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk>
- <YS40qqmXL7CMFLGq@arm.com>
- <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk>
- <YWR2cPKeDrc0uHTK@arm.com>
- <CAHk-=wjvQWj7mvdrgTedUW50c2fkdn6Hzxtsk-=ckkMrFoTXjQ@mail.gmail.com>
- <YWSnvq58jDsDuIik@arm.com>
- <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
- <CAHc6FU7bpjAxP+4dfE-C0pzzQJN1p=C2j3vyXwUwf7fF9JF72w@mail.gmail.com>
+        id S231676AbhJUKJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231499AbhJUKJV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:09:21 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378E8C06161C;
+        Thu, 21 Oct 2021 03:07:05 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id i12so179664wrb.7;
+        Thu, 21 Oct 2021 03:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lJ5VWnCKzJUxsEb5WXqBp1tX6Jd2/Goa19ZNuDx2zbY=;
+        b=I2vBIlEDPcFsZ05k3kMzo4kRJ2geEppMpkr4CtWNblQGP1wotFk7UZ53i7zlPGyNkm
+         AHMoMtovSifZeMEDcWuEO+6KGUuco02L8Z/8eytzKuZZvj0UB6LfLMLU6solL4Rbh77V
+         iOYeuIovCNftFtjEVmqBGMU2SV0JvD53/cZuj3cQOTWJPt+DBtYAluGuEog0qkC3YCcl
+         Xr90bcxBjotlEmQ3PoGCZVFZtpn9uh13ayewG1xs/SqtkudRjAvgBq1ZMFGhYau5s/2w
+         iwnyBXoSSxRHQ/jOiDW3xyLMOfjpWxmbL+db2CssWJtQZO2z7GULYy9Hu9HKk7KF5KCh
+         9kQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=lJ5VWnCKzJUxsEb5WXqBp1tX6Jd2/Goa19ZNuDx2zbY=;
+        b=gHOxrAgW7nHMOBwDE7Z9zCsJ/3sR8qS2VDEoxfDsxRndyUDfQFkjj3vDzO85cAURK4
+         SUcmH714Aay2514e7KlN+AMSVC6MOAwGbwlYABF5qjQfq3kiOwtSHRWINfwFY98d1LvJ
+         ga4noF9N8g4W2eQhFjDq2AXBi+eVeUQcyr66h4VTMXSBHwGFGyZegqmSMCila9psBuSr
+         Ko8WKiezbqEzB3IYuSQBN5XL2R+XhfE+9zdTsT7AGjGG+9b4gAfP7yOqnVYu6HBpBICr
+         TJADGrBLEMYaAC/LH5L+qZQv+9BkCkaHfoK9t1mul4eUDyEGhq7v3T3+YWkA1bIgmAdB
+         4ASA==
+X-Gm-Message-State: AOAM533yFVH0w3Ardkbpyp+tm62RXFo43Cv9m+UqU6WvVio0uuDUfvau
+        UHAzj+RVCmB/N5xxOl8KbeE=
+X-Google-Smtp-Source: ABdhPJw0tUsP8ixLPHkHh+UEbMjxXwVBkTvlEio6NRSbwje8NNxCZob12fvKRAYETMIN1zGC9ZuEYQ==
+X-Received: by 2002:a05:6000:8a:: with SMTP id m10mr1854481wrx.115.1634810823861;
+        Thu, 21 Oct 2021 03:07:03 -0700 (PDT)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id v185sm7573709wme.35.2021.10.21.03.07.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Oct 2021 03:07:03 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 11:07:01 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Erik Ekman <erik@kryo.se>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sfc: Don't use netif_info before net_device setup
+Message-ID: <20211021100701.k2dzn7mn5exyofkm@gmail.com>
+Mail-Followup-To: Erik Ekman <erik@kryo.se>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211019224016.26530-1-erik@kryo.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHc6FU7bpjAxP+4dfE-C0pzzQJN1p=C2j3vyXwUwf7fF9JF72w@mail.gmail.com>
+In-Reply-To: <20211019224016.26530-1-erik@kryo.se>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 02:46:10AM +0200, Andreas Gruenbacher wrote:
-> On Tue, Oct 12, 2021 at 1:59 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > On Mon, Oct 11, 2021 at 2:08 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > >
-> > > +#ifdef CONFIG_ARM64_MTE
-> > > +#define FAULT_GRANULE_SIZE     (16)
-> > > +#define FAULT_GRANULE_MASK     (~(FAULT_GRANULE_SIZE-1))
-> >
-> > [...]
-> >
-> > > If this looks in the right direction, I'll do some proper patches
-> > > tomorrow.
-> >
-> > Looks fine to me. It's going to be quite expensive and bad for caches, though.
-> >
-> > That said, fault_in_writable() is _supposed_ to all be for the slow
-> > path when things go south and the normal path didn't work out, so I
-> > think it's fine.
+On Wed, Oct 20, 2021 at 12:40:16AM +0200, Erik Ekman wrote:
+> Use pci_info instead to avoid unnamed/uninitialized noise:
 > 
-> Let me get back to this; I'm actually not convinced that we need to
-> worry about sub-page-size fault granules in fault_in_pages_readable or
-> fault_in_pages_writeable.
+> [197088.688729] sfc 0000:01:00.0: Solarflare NIC detected
+> [197088.690333] sfc 0000:01:00.0: Part Number : SFN5122F
+> [197088.729061] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no SR-IOV VFs probed
+> [197088.729071] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no PTP support
 > 
-> From a filesystem point of view, we can get into trouble when a
-> user-space read or write triggers a page fault while we're holding
-> filesystem locks, and that page fault ends up calling back into the
-> filesystem. To deal with that, we're performing those user-space
-> accesses with page faults disabled.
+> Inspired by fa44821a4ddd ("sfc: don't use netif_info et al before
+> net_device is registered") from Heiner Kallweit.
+> 
+> Signed-off-by: Erik Ekman <erik@kryo.se>
 
-Yes, this makes sense.
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
 
-> When a page fault would occur, we
-> get back an error instead, and then we try to fault in the offending
-> pages. If a page is resident and we still get a fault trying to access
-> it, trying to fault in the same page again isn't going to help and we
-> have a true error.
-
-You can't be sure the second fault is a true error. The unlocked
-fault_in_*() may race with some LRU scheme making the pte not accessible
-or a write-back making it clean/read-only. copy_to_user() with
-pagefault_disabled() fails again but that's a benign fault. The
-filesystem should re-attempt the fault-in (gup would correct the pte),
-disable page faults and copy_to_user(), potentially in an infinite loop.
-If you bail out on the second/third uaccess following a fault_in_*()
-call, you may get some unexpected errors (though very rare). Maybe the
-filesystems avoid this problem somehow but I couldn't figure it out.
-
-> We're clearly looking at memory at a page
-> granularity; faults at a sub-page level don't matter at this level of
-> abstraction (but they do show similar error behavior). To avoid
-> getting stuck, when it gets a short result or -EFAULT, the filesystem
-> implements the following backoff strategy: first, it tries to fault in
-> a number of pages. When the read or write still doesn't make progress,
-> it scales back and faults in a single page. Finally, when that still
-> doesn't help, it gives up. This strategy is needed for actual page
-> faults, but it also handles sub-page faults appropriately as long as
-> the user-space access functions give sensible results.
-
-As I said above, I think with this approach there's a small chance of
-incorrectly reporting an error when the fault is recoverable. If you
-change it to an infinite loop, you'd run into the sub-page fault
-problem.
-
-There are some places with such infinite loops: futex_wake_op(),
-search_ioctl() in the btrfs code. I still have to get my head around
-generic_perform_write() but I think we get away here because it faults
-in the page with a get_user() rather than gup (and copy_from_user() is
-guaranteed to make progress if any bytes can still be accessed).
-
--- 
-Catalin
+> ---
+>  drivers/net/ethernet/sfc/ptp.c         | 4 ++--
+>  drivers/net/ethernet/sfc/siena_sriov.c | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
+> index a39c5143b386..797e51802ccb 100644
+> --- a/drivers/net/ethernet/sfc/ptp.c
+> +++ b/drivers/net/ethernet/sfc/ptp.c
+> @@ -648,7 +648,7 @@ static int efx_ptp_get_attributes(struct efx_nic *efx)
+>  	} else if (rc == -EINVAL) {
+>  		fmt = MC_CMD_PTP_OUT_GET_ATTRIBUTES_SECONDS_NANOSECONDS;
+>  	} else if (rc == -EPERM) {
+> -		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
+> +		pci_info(efx->pci_dev, "no PTP support\n");
+>  		return rc;
+>  	} else {
+>  		efx_mcdi_display_error(efx, MC_CMD_PTP, sizeof(inbuf),
+> @@ -824,7 +824,7 @@ static int efx_ptp_disable(struct efx_nic *efx)
+>  	 * should only have been called during probe.
+>  	 */
+>  	if (rc == -ENOSYS || rc == -EPERM)
+> -		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
+> +		pci_info(efx->pci_dev, "no PTP support\n");
+>  	else if (rc)
+>  		efx_mcdi_display_error(efx, MC_CMD_PTP,
+>  				       MC_CMD_PTP_IN_DISABLE_LEN,
+> diff --git a/drivers/net/ethernet/sfc/siena_sriov.c b/drivers/net/ethernet/sfc/siena_sriov.c
+> index 83dcfcae3d4b..441e7f3e5375 100644
+> --- a/drivers/net/ethernet/sfc/siena_sriov.c
+> +++ b/drivers/net/ethernet/sfc/siena_sriov.c
+> @@ -1057,7 +1057,7 @@ void efx_siena_sriov_probe(struct efx_nic *efx)
+>  		return;
+>  
+>  	if (efx_siena_sriov_cmd(efx, false, &efx->vi_scale, &count)) {
+> -		netif_info(efx, probe, efx->net_dev, "no SR-IOV VFs probed\n");
+> +		pci_info(efx->pci_dev, "no SR-IOV VFs probed\n");
+>  		return;
+>  	}
+>  	if (count > 0 && count > max_vfs)
+> -- 
+> 2.31.1
