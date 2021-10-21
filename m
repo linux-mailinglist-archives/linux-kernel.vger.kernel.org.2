@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734AE4369B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87BA4369BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhJURuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:50:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31650 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232351AbhJURuM (ORCPT
+        id S232271AbhJURuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232468AbhJURux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:50:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634838476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdVy6FwDaq466AExZNtZZOl0E2m/+xf4V5tJYwOKByc=;
-        b=eugDPjAcOFmIxVsh4ad+0OdKhkR40/LvJTeI92IFk1pXjalZ2RP0xkxKAvn397qtP222t2
-        Qz76xSDgujap/RGCf22oabsaRZ8CONB3e2Tbw77TLgTeDR1C5+PoPNp7uUsAzzeLxO3VvH
-        FmU4u0Ghc36bQRFYU4zTe7ieDmPQNI8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-SLQoaVCbNoKrTHxVrYywjg-1; Thu, 21 Oct 2021 13:47:55 -0400
-X-MC-Unique: SLQoaVCbNoKrTHxVrYywjg-1
-Received: by mail-wm1-f70.google.com with SMTP id k9-20020a7bc409000000b0030d978403e9so169047wmi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:47:54 -0700 (PDT)
+        Thu, 21 Oct 2021 13:50:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4B1C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:48:37 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so1106264pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e5DNxKa5Otm0oE4YbLlrqqZdm2VkUP8ol33qDpsismA=;
+        b=ilk5I5mVFzGYKzY8bYr74XYVdNDOQPHh7Zjt6ExEXOYNu+WYEzayAMhZpe9J6D8w3Y
+         PasRKF7Ud/M87HGuzNLDrjt3XCeT5BOyL9PZrjs1JOXOYqoLgGSLrkqC52vO09OBf5US
+         CQN2+PksRwZ+celgR6bEj7k39onjxoc7kZfmalpBncDeHw2EzOlPItDXchfVDsKKqJoy
+         ZiS0+8tPnplNoee3JNUJyNsinQTd+Vf1+2+V1J35DrxvqPXVV2gG1+8jaUa66TMkKkNW
+         v1LYi2OZyMo9uOJEcln1nxxN6vbu6AASg+HatmQOJTET9F3zeBcifoUrhlzFQmi32AWV
+         hsKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sdVy6FwDaq466AExZNtZZOl0E2m/+xf4V5tJYwOKByc=;
-        b=huQFGGl4MBdL2mAbMsevYxiUCYDB2882CD8JDC2QFMlKFxXWudyxboszNZ6FMkgdoS
-         K/CI+7zaMTrYv0K2VPSVZqcFomkOI2BlxxGyPUkuOzTIxS4ECoiiO4YqfftcRqyr6hQb
-         1QNJTrPN45cWoU8K5dSEwQujapyirnjiikRjQZW71pTvxO3uKXKFiyQROHSADwVeCI2e
-         bCfcvu0ai96C9zjgJ1aOsKuM9A2sg4nA5cJzw3G/UW3ld532vyUAA9oGwfBpntd2PYPn
-         vA/W1xUlR4/16cLoQfk42WjkRmjlWqQsg5tICV2i1ZD1GSEVB3UFc4Hken5BWWGfBIfD
-         0Nsw==
-X-Gm-Message-State: AOAM531x7zyqUBME3PZ46/qln6SbBva6I7AEAuUQ99LRVy5SSTw98nu/
-        mJBa51sBUgYIHgNZEYw+8FT+3DbemfAAVyyCtnqF6Vh3gvKW85mFwGQT8gfPsd59UztQcDEmg4a
-        xz9c9yxVswrwGVq0LdfLmeFWL
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr23050405wmi.113.1634838473755;
-        Thu, 21 Oct 2021 10:47:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrJOA3K2+jcEdUJkI5yUOvDRbh0LHvWJK/dSXnO5HgNUEG6KoK85UuOyllpMd1Zyh5XoN7lA==
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr23050368wmi.113.1634838473557;
-        Thu, 21 Oct 2021 10:47:53 -0700 (PDT)
-Received: from work-vm (cpc109025-salf6-2-0-cust480.10-2.cable.virginm.net. [82.30.61.225])
-        by smtp.gmail.com with ESMTPSA id l40sm6144308wms.31.2021.10.21.10.47.51
+         :mime-version:content-disposition:in-reply-to;
+        bh=e5DNxKa5Otm0oE4YbLlrqqZdm2VkUP8ol33qDpsismA=;
+        b=YXI6XL5LKVPJduPmLHA4cRpGYGJ8h+1oF9TzqKxpLwkTuDydiNWyYLX76UJ9FuZX1o
+         RmK6I+va3aHT7Ghw78+WsmRx3Y1kruHDdgNewB7XZE69IKhKE6H6q0+sl9YCccjkptU8
+         xmNyv9xMQ+eeLNg62vv3hNFpUYpxpJWZ+2CFL4p/Ty+H6G8GLZ++o9kpoWQujAWUWxvH
+         zTsZcugmOgIp2esfd4UKWIo7504YA+nhxE4Ee9iuuSxz28jsXu7aDYPNHlLrJXa7J9ew
+         IpRi4qVeGr7MS8gclLyFmHYXCCPfexstDKdsILsnFQ6zpCOspnh5aX5ERRsq/Y/pdreK
+         pmjQ==
+X-Gm-Message-State: AOAM5303VrBkyIiJZkgiw843KRs77qDjTu3NNv4rK2netsPWVeWjIssM
+        ng1AV6oAnml6KNyzhZj99zxa7g==
+X-Google-Smtp-Source: ABdhPJyk4diEqPRpH+H81wUYHUOclkQ23jVz7J7Wvf/0v2bllQ8+vGeXHXGmkX04ugQR2F6pUzNqvw==
+X-Received: by 2002:a17:90b:4c8d:: with SMTP id my13mr8180693pjb.101.1634838516413;
+        Thu, 21 Oct 2021 10:48:36 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d138sm6682546pfd.74.2021.10.21.10.48.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 10:47:52 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 18:47:50 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thu, 21 Oct 2021 10:48:35 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 17:48:31 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
- within #VC handler
-Message-ID: <YXGnxs0hV3IKGDwP@work-vm>
-References: <20211008180453.462291-9-brijesh.singh@amd.com>
- <YW2EsxcqBucuyoal@zn.tnic>
- <20211018184003.3ob2uxcpd2rpee3s@amd.com>
- <YW3IdfMs61191qnU@zn.tnic>
- <20211020161023.hzbj53ehmzjrt4xd@amd.com>
- <YXF9sCbPDsLwlm42@zn.tnic>
- <YXGNmeR/C33HvaBi@work-vm>
- <YXGbcqN2IRh9YJk9@zn.tnic>
- <YXGflXdrAXH5fE5H@work-vm>
- <YXGlPf5OTPzp09qr@zn.tnic>
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Maciej S . Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 1/2] KVM: x86: Add vendor name to kvm_x86_ops, use it for
+ error messages
+Message-ID: <YXGn70lhcjulaO3r@google.com>
+References: <20211018183929.897461-1-seanjc@google.com>
+ <20211018183929.897461-2-seanjc@google.com>
+ <87k0i6x0jk.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXGlPf5OTPzp09qr@zn.tnic>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+In-Reply-To: <87k0i6x0jk.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Borislav Petkov (bp@alien8.de) wrote:
-> On Thu, Oct 21, 2021 at 06:12:53PM +0100, Dr. David Alan Gilbert wrote:
-> > OK, so that bit is 8...21 Eax ext2eax bit 6 page 1-109
-> > 
-> > then 2.1.5.3 CPUID policy enforcement shows 8...21 EAX as
-> > 'bitmask'
-> > 'bits set in the GuestVal must also be set in HostVal.
-> > This is often applied to feature fields where each bit indicates
-> > support for a feature'
-> > 
-> > So that's right isn't it?
+On Thu, Oct 21, 2021, Vitaly Kuznetsov wrote:
+> >  	if (ops->disabled_by_bios()) {
+> > -		pr_err_ratelimited("kvm: disabled by bios\n");
+> > +		pr_err_ratelimited("kvm: support for '%s' disabled by bios\n",
+> > +				   ops->runtime_ops->name);
 > 
-> Yap, AFAIRC, it would fail the check if:
 > 
-> (GuestVal & HostVal) != GuestVal
+> I'd suggest we change this to 
 > 
-> and GuestVal is "the CPUID result value created by the hypervisor that
-> it wants to give to the guest". Let's say it clears bit 6 there.
-                                               ^^^^^^^
-
-> Then HostVal comes in which is "the actual CPUID result value specified
-> in this PPR" and there the guest catches the HV lying its *ss off.
+> 		pr_err_ratelimited("kvm: %s: virtualization disabled in BIOS\n",
+> 				   ops->runtime_ops->name);
 > 
-> :-)
+> or something like that as generally, it makes little sense to search for
+> 'KVM' in BIOS settings. You need too look for either 'Virtualization' or
+> VT-x/AMD-v.
 
-Hang on, I think it's perfectly fine for it to clear that bit - it just
-gets caught if it *sets* it (i.e. claims to be a chip unaffected by the
-bug).
+I'd prefer to avoid VT-x/AMD-v so as not to speculate on the module being loaded
+or the underlying hardware, e.g. I've no idea what Hygon, Zhaoxin, etc... use for
+"code" names.
 
-i.e. if guestval=0 then (GustVal & whatever) == GuestVal
-  fine
+What about
 
-?
+		pr_err_ratelimited("kvm: virtualization support for '%s' disabled by BIOS\n",
+				   ops->runtime_ops->name);
 
-Dave
-
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+to add the virtualization flavor but still make it clear that error is coming
+from the base kvm module.
