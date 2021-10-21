@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87BA4369BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EFF4369BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhJURuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbhJURux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:50:53 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4B1C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:48:37 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so1106264pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e5DNxKa5Otm0oE4YbLlrqqZdm2VkUP8ol33qDpsismA=;
-        b=ilk5I5mVFzGYKzY8bYr74XYVdNDOQPHh7Zjt6ExEXOYNu+WYEzayAMhZpe9J6D8w3Y
-         PasRKF7Ud/M87HGuzNLDrjt3XCeT5BOyL9PZrjs1JOXOYqoLgGSLrkqC52vO09OBf5US
-         CQN2+PksRwZ+celgR6bEj7k39onjxoc7kZfmalpBncDeHw2EzOlPItDXchfVDsKKqJoy
-         ZiS0+8tPnplNoee3JNUJyNsinQTd+Vf1+2+V1J35DrxvqPXVV2gG1+8jaUa66TMkKkNW
-         v1LYi2OZyMo9uOJEcln1nxxN6vbu6AASg+HatmQOJTET9F3zeBcifoUrhlzFQmi32AWV
-         hsKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e5DNxKa5Otm0oE4YbLlrqqZdm2VkUP8ol33qDpsismA=;
-        b=YXI6XL5LKVPJduPmLHA4cRpGYGJ8h+1oF9TzqKxpLwkTuDydiNWyYLX76UJ9FuZX1o
-         RmK6I+va3aHT7Ghw78+WsmRx3Y1kruHDdgNewB7XZE69IKhKE6H6q0+sl9YCccjkptU8
-         xmNyv9xMQ+eeLNg62vv3hNFpUYpxpJWZ+2CFL4p/Ty+H6G8GLZ++o9kpoWQujAWUWxvH
-         zTsZcugmOgIp2esfd4UKWIo7504YA+nhxE4Ee9iuuSxz28jsXu7aDYPNHlLrJXa7J9ew
-         IpRi4qVeGr7MS8gclLyFmHYXCCPfexstDKdsILsnFQ6zpCOspnh5aX5ERRsq/Y/pdreK
-         pmjQ==
-X-Gm-Message-State: AOAM5303VrBkyIiJZkgiw843KRs77qDjTu3NNv4rK2netsPWVeWjIssM
-        ng1AV6oAnml6KNyzhZj99zxa7g==
-X-Google-Smtp-Source: ABdhPJyk4diEqPRpH+H81wUYHUOclkQ23jVz7J7Wvf/0v2bllQ8+vGeXHXGmkX04ugQR2F6pUzNqvw==
-X-Received: by 2002:a17:90b:4c8d:: with SMTP id my13mr8180693pjb.101.1634838516413;
-        Thu, 21 Oct 2021 10:48:36 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d138sm6682546pfd.74.2021.10.21.10.48.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 10:48:35 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 17:48:31 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Maciej S . Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 1/2] KVM: x86: Add vendor name to kvm_x86_ops, use it for
- error messages
-Message-ID: <YXGn70lhcjulaO3r@google.com>
-References: <20211018183929.897461-1-seanjc@google.com>
- <20211018183929.897461-2-seanjc@google.com>
- <87k0i6x0jk.fsf@vitty.brq.redhat.com>
+        id S230434AbhJURvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhJURve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB6BA61251;
+        Thu, 21 Oct 2021 17:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634838558;
+        bh=971Dp8XXlkN81iFinRf4MvIWoZp9k1Gvl8mpn3B/FJM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B0SmXacw38IY46Rk14ueq7FjGmEv8PJXxLy0fjVD/gZqDGFeUgfgh3SKEv35gXVHq
+         P0+LGyZG7If1VcoDILrzmcZ5Y8S/945OqoMYscHeXHlav+QOVgqTm+qE0ByODvyLf7
+         wPoX91RrERqcRRelEGWzUBsHOBoPGzLnHw7509MKdTuInkYbY1YPRaiLPtSEyvaEFI
+         nUYh8Tegr5WavWY8kE2n+sbmi+21G94MxpQfqFBDlCctrY5cHHG+XDvAWua1SgJTIi
+         s9bZOk6uGMjXAAif5jbF6eqSPhjXd9kczDqgwqdFFG4/CWXvFHERPj0MSI6WX6OpVz
+         jT+4u4dsg6YYQ==
+Date:   Thu, 21 Oct 2021 23:19:14 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>, kishon@ti.com,
+        robh+dt@kernel.org, andrew@lunn.ch, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] phy: Add lan966x ethernet serdes PHY driver
+Message-ID: <YXGoGtbFeKa+TVk2@matsya>
+References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
+ <20211015123920.176782-4-horatiu.vultur@microchip.com>
+ <YW8HIHTCVgB+URJ5@matsya>
+ <20211020091733.fxph2pq3xa3byvry@soft-dev3-1.localhost>
+ <YXA3VVUGEjUR4HDC@matsya>
+ <YXA6lZBTeA6aNxVD@piout.net>
+ <YXEEcJHuEdFLPyCU@matsya>
+ <20211021091032.ffaoncg5jjdwdeyg@soft-dev3-1.localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0i6x0jk.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20211021091032.ffaoncg5jjdwdeyg@soft-dev3-1.localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021, Vitaly Kuznetsov wrote:
-> >  	if (ops->disabled_by_bios()) {
-> > -		pr_err_ratelimited("kvm: disabled by bios\n");
-> > +		pr_err_ratelimited("kvm: support for '%s' disabled by bios\n",
-> > +				   ops->runtime_ops->name);
+On 21-10-21, 11:10, Horatiu Vultur wrote:
+> The 10/21/2021 11:40, Vinod Koul wrote:
+> > 
+> > On 20-10-21, 17:49, Alexandre Belloni wrote:
+> > > On 20/10/2021 21:05:49+0530, Vinod Koul wrote:
+> > > > > > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> > > > > >
+> > > > > > Any reason why this is dual licensed, why not GPL only?
+> > > > >
+> > > > > No reason, I think I copy this from a different file.
+> > > >
+> > > > Please have a chat with your lawyers on the correct license this should
+> > > > have!
+> > > Dual GPL and MIT was Microsemi's policy, I'm not sure it carried over to
+> > > Microchip.
+> > 
+> > That is why they need to talk to someone and decide what license
+> > applies :)
 > 
-> 
-> I'd suggest we change this to 
-> 
-> 		pr_err_ratelimited("kvm: %s: virtualization disabled in BIOS\n",
-> 				   ops->runtime_ops->name);
-> 
-> or something like that as generally, it makes little sense to search for
-> 'KVM' in BIOS settings. You need too look for either 'Virtualization' or
-> VT-x/AMD-v.
+> I have changed it to be the same as the one on sparx5 because also
+> sparx5 is a Microchip product. On sparx5 we used:
+> 'SPDX-License-Identifier: GPL-2.0-or-later'
 
-I'd prefer to avoid VT-x/AMD-v so as not to speculate on the module being loaded
-or the underlying hardware, e.g. I've no idea what Hygon, Zhaoxin, etc... use for
-"code" names.
+Has the code been copied/derived from somewhere/auto generated from
+scripts/tools or entirely written by you?
 
-What about
-
-		pr_err_ratelimited("kvm: virtualization support for '%s' disabled by BIOS\n",
-				   ops->runtime_ops->name);
-
-to add the virtualization flavor but still make it clear that error is coming
-from the base kvm module.
+-- 
+~Vinod
