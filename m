@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF03435E7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C05435E7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhJUKBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
+        id S231644AbhJUKBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhJUKBg (ORCPT
+        with ESMTP id S231624AbhJUKBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:01:36 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4601AC06161C;
-        Thu, 21 Oct 2021 02:59:20 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id w14so456452edv.11;
-        Thu, 21 Oct 2021 02:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=f1lAHZpbTINEGGOzg3KvBrzQHfCd9hUnr+Z5eklsu4I=;
-        b=cFFPatN176idTJdu0RK5l+kgO+3oCC5KaWLjea3KK5xjWay26jR7SEKg+PSa/La44d
-         RHlgGG86uVG48vXTwBYdRy/JDoMbGoxGz/VcgV+6hsyKfySMymh2V96Lmcr7s5HHzqQo
-         BxKzexJQbqOgYTZrpyb6DYYHgJ+WTL4wgijIM/J3VVRqnKyvl1CevIaf6oyJ+jpvgYMz
-         kektjeiL9LDJUTuWPVhsMibZT8ZwQrliI0QwsudkrLnqw/Y15n3d+eZ4wjGFfGUVD1pk
-         ODw6DVhJuOoWFp1uKqszNKrOjO2ZraNxYJfPxY5Qu2NY2F1bMzkWVShW1RtGX+vdn851
-         AL1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f1lAHZpbTINEGGOzg3KvBrzQHfCd9hUnr+Z5eklsu4I=;
-        b=XSTzmwjJJH2HBJwWLwIcZNGgY1VSXsNFqFwm5M1q/6c6c1lLb0tW8bJML0OssZfUyw
-         SIvUXmdJBjHRPBZPb2LsCkUGAJE+5XoR8oyNAzYrCMTd7wf9VHwALQ6x1+3B24letw8X
-         GCqCSgT1fe1pFvsvl17eMAzqq3LzN6vk7Z5tLUrFwYHIblfvyPXAX6UwJIGTSynfz6wu
-         kNIE629Mk+Os7TCD+2qbrmbWuO4OgNsqRvwpHprEeitCKlr/ShcSwb0LJr2eZAqUePvN
-         8QbUFChHpTxseePmhL9qdtVTcSG5bubQNMRRb+5e9ruyQwt0+6PJPJR4as067etibpjQ
-         ZFhw==
-X-Gm-Message-State: AOAM530Mp3Q4ulHfGtdjA2N64Z4UBHUYsi+EKRnKzgGJ7xohC0Xg/8Ko
-        fP/uGNIFkQCzWCpmBNzcLZ1PXAA/Oy9a+yDBSLv6KkVg9avpiQ==
-X-Google-Smtp-Source: ABdhPJyDCgSTt3/IAgVwU9WSF3RqG/zAQBAURKsmJcGNhL738ts5nX0FRkRfgucOXR1U7//HXc+3nGoarGxBgTv5X38=
-X-Received: by 2002:aa7:c0d2:: with SMTP id j18mr6461565edp.107.1634810358797;
- Thu, 21 Oct 2021 02:59:18 -0700 (PDT)
+        Thu, 21 Oct 2021 06:01:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02023C06174E;
+        Thu, 21 Oct 2021 02:59:23 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 11:59:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634810361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OL0pK6Dja6OFwt9P0STH6Hk8jRb77fx4V/3DfAlCWo0=;
+        b=r1lvf6V5x2mK5X2V4JCDNxR5auizhnZfBhP2mBdfxThmqxVGpmWSSv4XBBcRhgcxoDmboj
+        EHhfbmzy7Z9eOLDNuFYcxqjjDt9cR/WCXhlSO+mR9bOjRKFszXUvIWNRZe4jsg4ZPPZVCv
+        N80EdD3728XW8algd6sZgRqZpeO/4Jciz0DgRXUbXMPsmGcIYC8suWTe0q5KqYv1G9EyY0
+        Q2qmC4rUZTANCwfLhuRpHYxPcFmOHo5H7Rc9jl91y3yfvQJv8eUXUKdN0gicRv7qgQZ+M6
+        koNGRsoUd8n1hMnQL9wvdmC9Hl9VS9QS/XFXVosNW1BUl6mMjQ0SXYgIjaouQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634810361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OL0pK6Dja6OFwt9P0STH6Hk8jRb77fx4V/3DfAlCWo0=;
+        b=UQB6HYxcIOKLxWaoVFz9VyzWlzlDLqFogQlynBRAxMZ7DB7jUh84ay7K3of1ZgrazTK9VH
+        dgVNE4puyyICrMDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH net-next] net: stats: Read the statistics in
+ ___gnet_stats_copy_basic() instead of adding.
+Message-ID: <20211021095919.bi3szpt3c2kcoiso@linutronix.de>
+References: <CA+G9fYu8oby3LZ732W5xR0VS0WZ8D1XFWOuP-Tu7wogULcuNCA@mail.gmail.com>
 MIME-Version: 1.0
-References: <8ca87330fd348fc5199ad08904ec90cc6a91a1bf.1634723848.git.viresh.kumar@linaro.org>
- <CAHp75Vctj-v8W+LgdVpYgRVL3fLdcFnOFRFg74LeCc=xLD+w4w@mail.gmail.com>
- <20211021043443.snhqpac5ofmxfb7k@vireshk-i7> <CAHp75VdKn7Sze9HxN0gBgbuQS2K6oB+SQsufw576Rkfg4-osOw@mail.gmail.com>
- <20211021095229.lqeb7dtxv4ix2vc5@vireshk-i7>
-In-Reply-To: <20211021095229.lqeb7dtxv4ix2vc5@vireshk-i7>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 21 Oct 2021 12:58:25 +0300
-Message-ID: <CAHp75VcBowxFoseXKwU2VjNcu75ttvHW_sno9MihHL88+oP1ew@mail.gmail.com>
-Subject: Re: [PATCH V6] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "stratos-dev@op-lists.linaro.org" <stratos-dev@op-lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYu8oby3LZ732W5xR0VS0WZ8D1XFWOuP-Tu7wogULcuNCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 12:52 PM Viresh Kumar <viresh.kumar@linaro.org> wro=
-te:
-> On 21-10-21, 12:42, Andy Shevchenko wrote:
-> > On Thu, Oct 21, 2021 at 7:34 AM Viresh Kumar <viresh.kumar@linaro.org> =
-wrote:
-> > > On 20-10-21, 18:10, Andy Shevchenko wrote:
+Since the rework, the statistics code always adds up the byte and packet
+value(s). On 32bit architectures a seqcount_t is used in
+gnet_stats_basic_sync to ensure that the 64bit values are not modified
+during the read since two 32bit loads are required. The usage of a
+seqcount_t requires a lock to ensure that only one writer is active at a
+time. This lock leads to disabled preemption during the update.
 
-...
+The lack of disabling preemption is now creating a warning as reported
+by Naresh since the query done by gnet_stats_copy_basic() is in
+preemptible context.
 
-> > > > >  struct virtio_gpio_config {
-> > > > >         __le16 ngpio;
-> > > > >         __u8 padding[2];
-> > > > > @@ -44,4 +56,17 @@ struct virtio_gpio_response_get_names {
-> > > > >         __u8 value[];
-> > > > >  };
-> > > > >
-> > > > > +/* Virtio GPIO IRQ Request / Response */
-> > > > > +struct virtio_gpio_irq_request {
-> > > > > +       __le16 gpio;
-> > > > > +};
-> > > > > +
-> > > > > +struct virtio_gpio_irq_response {
-> > > > > +       __u8 status;
-> > > > > +};
-> > > > >
-> > > > I=E2=80=99m wondering if those above should be packed.
-> > >
-> > > You are talking about the newly added ones or the ones before ?
-> > >
-> > > In any case, they are all already packed (i.e. they have explicit
-> > > padding wherever required) and properly aligned. Compiler won't add
-> > > any other padding to them.
-> >
-> > Is it only for 64-bit to 64-bit communications?
->
-> That's what I have been looking at.
->
-> > If there is a possibility to have 32-bit to 64-bit or vice versa
-> > communication you have a problem.
->
-> This should work as well.
->
-> The structure will get aligned to the size of largest element and each
-> element will be aligned to itself. I don't see how this will break
-> even in case of 32/64 bit communication.
+For ___gnet_stats_copy_basic() there is no need to disable preemption
+since the update is performed on stack and can't be modified by another
+writer. Instead of disabling preemption, to avoid the warning,
+simply create a read function to just read the values and return as u64.
 
-I admit I haven't looked into the specification, but in the past we
-had had quite an issue exactly in GPIO on kernel side because of this
-kind of design mistake. The problem here if in the future one wants to
-supply more than one item at a time, it will be not possible with this
-interface. Yes, I understand that in current design it's rather missed
-scalability, but hey, I believe in the future we may need
-performance-wise calls.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: 67c9e6270f301 ("net: sched: Protect Qdisc::bstats with u64_stats")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ net/core/gen_stats.c | 43 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 37 insertions(+), 6 deletions(-)
 
---=20
-With Best Regards,
-Andy Shevchenko
+diff --git a/net/core/gen_stats.c b/net/core/gen_stats.c
+index 15c270e22c5ef..a10335b4ba2d0 100644
+--- a/net/core/gen_stats.c
++++ b/net/core/gen_stats.c
+@@ -171,20 +171,51 @@ void gnet_stats_add_basic(struct gnet_stats_basic_sync *bstats,
+ }
+ EXPORT_SYMBOL(gnet_stats_add_basic);
+ 
++static void gnet_stats_read_basic(u64 *ret_bytes, u64 *ret_packets,
++				  struct gnet_stats_basic_sync __percpu *cpu,
++				  struct gnet_stats_basic_sync *b, bool running)
++{
++	unsigned int start;
++
++	if (cpu) {
++		u64 t_bytes = 0, t_packets = 0;
++		int i;
++
++		for_each_possible_cpu(i) {
++			struct gnet_stats_basic_sync *bcpu = per_cpu_ptr(cpu, i);
++			unsigned int start;
++			u64 bytes, packets;
++
++			do {
++				start = u64_stats_fetch_begin_irq(&bcpu->syncp);
++				bytes = u64_stats_read(&bcpu->bytes);
++				packets = u64_stats_read(&bcpu->packets);
++			} while (u64_stats_fetch_retry_irq(&bcpu->syncp, start));
++
++			t_bytes += bytes;
++			t_packets += packets;
++		}
++		*ret_bytes = t_bytes;
++		*ret_packets = t_packets;
++		return;
++	}
++	do {
++		if (running)
++			start = u64_stats_fetch_begin_irq(&b->syncp);
++		*ret_bytes = u64_stats_read(&b->bytes);
++		*ret_packets = u64_stats_read(&b->packets);
++	} while (running && u64_stats_fetch_retry_irq(&b->syncp, start));
++}
++
+ static int
+ ___gnet_stats_copy_basic(struct gnet_dump *d,
+ 			 struct gnet_stats_basic_sync __percpu *cpu,
+ 			 struct gnet_stats_basic_sync *b,
+ 			 int type, bool running)
+ {
+-	struct gnet_stats_basic_sync bstats;
+ 	u64 bstats_bytes, bstats_packets;
+ 
+-	gnet_stats_basic_sync_init(&bstats);
+-	gnet_stats_add_basic(&bstats, cpu, b, running);
+-
+-	bstats_bytes = u64_stats_read(&bstats.bytes);
+-	bstats_packets = u64_stats_read(&bstats.packets);
++	gnet_stats_read_basic(&bstats_bytes, &bstats_packets, cpu, b, running);
+ 
+ 	if (d->compat_tc_stats && type == TCA_STATS_BASIC) {
+ 		d->tc_stats.bytes = bstats_bytes;
+-- 
+2.33.0
+
