@@ -2,220 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589F2435D13
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA98435D26
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhJUImg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:42:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:48807 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231268AbhJUIma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:42:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="315184261"
-X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
-   d="scan'208";a="315184261"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 01:40:14 -0700
-X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
-   d="scan'208";a="495028875"
-Received: from ssuryana-mobl.ger.corp.intel.com (HELO localhost) ([10.249.45.34])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 01:40:07 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Marco Elver <elver@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [next] [dragonboard 410c] Unable to handle kernel paging request at virtual address 00000000007c4240
-In-Reply-To: <80ab567d-74f3-e14b-3c30-e64bbd64b354@suse.cz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <CA+G9fYv3jAjBKHM-CjrMzNgrptx-rpYVmGaD39OBiBeuz7osfg@mail.gmail.com> <80ab567d-74f3-e14b-3c30-e64bbd64b354@suse.cz>
-Date:   Thu, 21 Oct 2021 11:40:03 +0300
-Message-ID: <87fssuojoc.fsf@intel.com>
+        id S231509AbhJUIoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231534AbhJUIov (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:44:51 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBA3C06174E;
+        Thu, 21 Oct 2021 01:42:35 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id g141so226442wmg.4;
+        Thu, 21 Oct 2021 01:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=rg3MoPfc/jIT72UkjhQ3bRSBD9WVLdMFqrLxascU6vE=;
+        b=J8lx5GcNvpCfylAR36hKknuP17QJUlmSdSnGYy1KzOKQBxgLUVNRLBa4UfPVxM7hA+
+         4kcnl6AWQAjpJL61GfSNKB2ZkJMuceRr3eXvH/Qt4hQg5z/5vrMh+3fZyiB6Kix8JcuX
+         cQ4brh/u+yB2gHulg1ycGpr8ODuonI+stgtM0rhlIENaP5MwD4kPNOwYuZ1d0OWrQfLI
+         UuOSH1H/7+wxHXYvUq1Yae57dcs/P8nllXDzUCjrwIKw+4n5AfEvMp654F/qOTeZsIQC
+         cC5lpG5bR+DMsCS5sITfFqcbT8LqkNq9QWBb3KcxRf+o8s3qTPMTe3UpiNBVjAzD96sK
+         yn4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=rg3MoPfc/jIT72UkjhQ3bRSBD9WVLdMFqrLxascU6vE=;
+        b=48YeT3v2uppPk9S55PC/JPlEZQ/5mU6B7I3Ev6GviID2WbjAEqRCfb7a4D7t7xn2d2
+         k4tz0n2Otl/uoX/h7ncQrg4Ain+JGBgeCZgrvO9T9zxNXZmHtMcL026j46S87r+2ziPj
+         B4PbDp2xESR9MsLeHwuUFSP9BwQYXDUQAMYq8I81naLZV5BjgaBTOxP3J9lqJtuNnonJ
+         fLHTD1cYfibPYHzQT1I1c055mZ6Api85aNrX4UBpaGuAKQpPoZcHexl8pw7rl+0cTY6g
+         ES9Sg0+EoyUSNKAOl+hTCEeY9Ctn8S8grw6aZ9qFQ5vLNpWtwW3Ag7Vkcjls3PKZAPGN
+         Rg2w==
+X-Gm-Message-State: AOAM533x2wuyqZShbOsucBp988dRjBff2zwV6L84tKDsfECZVkeCdU+0
+        ylxN0g3BSBdZ8oTJMmrf4dOLEvi+UJ030g==
+X-Google-Smtp-Source: ABdhPJwrDBueRILuwGt/ztGEEyJ28Vx3A44WYepubYpl3y0FykK8FQCvAQjrxvBXWXQ4VJc90m0oAw==
+X-Received: by 2002:a1c:4c17:: with SMTP id z23mr20354996wmf.61.1634805754314;
+        Thu, 21 Oct 2021 01:42:34 -0700 (PDT)
+Received: from [192.168.8.198] ([185.69.145.206])
+        by smtp.gmail.com with ESMTPSA id p18sm4790076wmq.4.2021.10.21.01.42.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 01:42:34 -0700 (PDT)
+Message-ID: <e7319f50-999b-2540-62f1-201afcb29bf3@gmail.com>
+Date:   Thu, 21 Oct 2021 09:41:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] percpu_ref: percpu_ref_tryget_live() version holding
+ RCU
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christoph Lameter <cl@linux.com>,
+        Dennis Zhou <dennis@kernel.org>
+References: <cover.1634759754.git.asml.silence@gmail.com>
+ <d65d6d60faf773293e5189bd2b95c7bbc034976b.1634759754.git.asml.silence@gmail.com>
+ <YXB3n2pxiKYbd2Il@slm.duckdns.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <YXB3n2pxiKYbd2Il@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021, Vlastimil Babka <vbabka@suse.cz> wrote:
-> On 10/20/21 20:24, Naresh Kamboju wrote:
->> Following kernel crash noticed on linux next 20211020 tag.
->> while booting on arm64 architecture dragonboard 410c device.
->> 
->> I see the following config is enabled in 20211020 tag builds.
->> CONFIG_STACKDEPOT=y
->> 
->> Crash log,
->> [   18.583097] Unable to handle kernel paging request at virtual
->> address 00000000007c4240
->> [   18.583521] Mem abort info:
->> [   18.590286]   ESR = 0x96000004
->> [   18.592920]   EC = 0x25: DABT (current EL), IL = 32 bits
->> [   18.596103]   SET = 0, FnV = 0
->> [   18.601512]   EA = 0, S1PTW = 0
->> [   18.604384]   FSC = 0x04: level 0 translation fault
->> [   18.607447] Data abort info:
->> [   18.612296]   ISV = 0, ISS = 0x00000004
->> [   18.615451]   CM = 0, WnR = 0
->> [   18.618990] user pgtable: 4k pages, 48-bit VAs, pgdp=000000008b4c7000
->> [   18.622054] [00000000007c4240] pgd=0000000000000000, p4d=0000000000000000
->> [   18.628974] Internal error: Oops: 96000004 [#1] SMP
->> [   18.635073] Modules linked in: adv7511 cec snd_soc_lpass_apq8016
->> snd_soc_lpass_cpu snd_soc_lpass_platform snd_soc_msm8916_digital
->> qcom_camss qrtr snd_soc_apq8016_sbc videobuf2_dma_sg qcom_pon
->> qcom_spmi_vadc snd_soc_qcom_common qcom_q6v5_mss qcom_vadc_common
->> rtc_pm8xxx qcom_spmi_temp_alarm msm qcom_pil_info v4l2_fwnode
->> qcom_q6v5 snd_soc_msm8916_analog qcom_sysmon qcom_common v4l2_async
->> qnoc_msm8916 qcom_rng gpu_sched qcom_glink_smem venus_core
->> videobuf2_memops icc_smd_rpm qmi_helpers drm_kms_helper v4l2_mem2mem
->> mdt_loader display_connector i2c_qcom_cci videobuf2_v4l2 crct10dif_ce
->> videobuf2_common socinfo drm rmtfs_mem fuse
->> [   18.672948] CPU: 0 PID: 178 Comm: kworker/u8:3 Not tainted
->> 5.15.0-rc6-next-20211020 #1
->> [   18.695000] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
->> [   18.695012] Workqueue: events_unbound deferred_probe_work_func
->> [   18.695033] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> [   18.715282] pc : __stack_depot_save+0x13c/0x4e0
->> [   18.722130] lr : stack_depot_save+0x14/0x20
->> [   18.726641] sp : ffff800014a23500
->> [   18.730801] x29: ffff800014a23500 x28: 00000000000f8848 x27: ffff800013acdf68
->> [   18.734294] x26: 0000000000000000 x25: 00000000007c4240 x24: ffff800014a23780
->> [   18.741413] x23: 0000000000000008 x22: ffff800014a235b8 x21: 0000000000000008
->> [   18.748530] x20: 00000000c32f8848 x19: ffff00001038cc18 x18: ffffffffffffffff
->> [   18.755649] x17: ffff80002d9f8000 x16: ffff800010004000 x15: 000000000000c426
->> [   18.762767] x14: 0000000000000000 x13: ffff800014a23780 x12: 0000000000000000
->> [   18.769885] x11: ffff00001038cc80 x10: ffff8000136e9ba0 x9 : ffff800014a235f4
->> [   18.777003] x8 : 0000000000000001 x7 : 00000000b664620b x6 : 0000000011a58b4a
->> [   18.784121] x5 : 000000001aa43464 x4 : 000000009e7d8b67 x3 : 0000000000000001
->> [   18.791239] x2 : 0000000000002800 x1 : ffff800013acd000 x0 : 00000000f2d429d8
->> [   18.798358] Call trace:
->> [   18.805451]  __stack_depot_save+0x13c/0x4e0
->> [   18.807716]  stack_depot_save+0x14/0x20
->> [   18.811881]  __drm_stack_depot_save+0x44/0x70 [drm]
->> [   18.815710]  modeset_lock.part.0+0xe0/0x1a4 [drm]
->> [   18.820571]  drm_modeset_lock_all_ctx+0x2d4/0x334 [drm]
->
-> This stack_depot_save path appears to be new from Jani's commit
-> cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks
-> without backoff")
-> And there's a semantic conflict with my patch in mmotm:
-> - sha1 (valid only in next-20211020) 5e6d063de5cd ("lib/stackdepot: allow
-> optional init and stack_table allocation by kvmalloc()")
-> - lore: https://lore.kernel.org/all/20211013073005.11351-1-vbabka@suse.cz/
-> - patchwork: https://patchwork.freedesktop.org/series/95549/#rev3
->
-> With my patch, to-be callers of stack_depot_save() need to call
-> stack_depot_init() at least once, to avoid unnecessary runtime overhead
-> otherwise I have added that calls into three DRM contexts in my patch, but
-> didn't see cd06ab2fd48f yet at the time.
+On 10/20/21 21:10, Tejun Heo wrote:
+> On Wed, Oct 20, 2021 at 09:03:18PM +0100, Pavel Begunkov wrote:
+>> +/**
+>> + * percpu_ref_tryget_live_rcu - same as percpu_ref_tryget_live() but the
+>> + * caller is responsible for taking RCU.
+>> + *
+>> + * This function is safe to call as long as @ref is between init and exit.
+>> + */
+>> +static inline bool percpu_ref_tryget_live_rcu(struct percpu_ref *ref)
+>> +{
+>> +	unsigned long __percpu *percpu_count;
+>> +	bool ret = false;
+>> +
+>> +	if (likely(__ref_is_percpu(ref, &percpu_count))) {
+>> +		this_cpu_inc(*percpu_count);
+>> +		ret = true;
+>> +	} else if (!(ref->percpu_count_ptr & __PERCPU_REF_DEAD)) {
+>> +		ret = atomic_long_inc_not_zero(&ref->data->count);
+>> +	}
+>> +	return ret;
+>> +}
+> 
+> Can we please add rcu_read_lock_held() assertion? Other than that, looks
+> fine to me.
 
-Auch, I did see your changes fly by, but overlooked this type of
-conflict with my patch. Sorry for the trouble.
-
-> This one seems a bit more tricky and I could really use some advice.
-> cd06ab2fd48f adds stackdepot usage to drm_modeset_lock which itself has a
-> number of different users and requiring those to call stack_depot_init()
-> would be likely error prone. Would it be ok to add the call of
-> stack_depot_init() (guarded by #ifdef CONFIG_DRM_DEBUG_MODESET_LOCK) to
-> drm_modeset_lock_init()? It will do a mutex_lock()/unlock(), and kvmalloc()
-> on first call.
-> I don't know how much of hotpath this is, but hopefully should be acceptable
-> in debug config. Or do you have better suggestion? Thanks.
-
-I think that should be fine.
-
-Maybe add __drm_stack_depot_init() in the existing #if
-IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK), similar to the other
-__drm_stack_depot_*() functions, with an empty stub for
-CONFIG_DRM_DEBUG_MODESET_LOCK=n, and call it unconditionally in
-drm_modeset_lock_init().
-
-> Then we have to figure out how to order a fix between DRM and mmotm...
-
-That is the question! The problem exists only in the merge of the
-two. On current DRM side stack_depot_init() exists but it's __init and
-does not look safe to call multiple times. And obviously my changes
-don't exist at all in mmotm.
-
-I guess one (admittedly hackish) option is to first add a patch in
-drm-next (or drm-misc-next) that makes it safe to call
-stack_depot_init() multiple times in non-init context. It would be
-dropped in favour of your changes once the trees get merged together.
-
-Or is there some way for __drm_stack_depot_init() to detect whether it
-should call stack_depot_init() or not, i.e. whether your changes are
-there or not?
-
-
-BR,
-Jani.
-
-
->
->> [   18.825435]  drm_client_firmware_config.constprop.0.isra.0+0xc0/0x5d0 [drm]
->> [   18.830478]  drm_client_modeset_probe+0x328/0xbb0 [drm]
->> [   18.837413]  __drm_fb_helper_initial_config_and_unlock+0x54/0x5b4
->> [drm_kms_helper]
->> [   18.842633]  drm_fb_helper_initial_config+0x5c/0x70 [drm_kms_helper]
->> [   18.850266]  msm_fbdev_init+0x98/0x100 [msm]
->> [   18.856767]  msm_drm_bind+0x650/0x720 [msm]
->> [   18.861021]  try_to_bring_up_master+0x230/0x320
->> [   18.864926]  __component_add+0xc8/0x1c4
->> [   18.869435]  component_add+0x20/0x30
->> [   18.873253]  mdp5_dev_probe+0xe0/0x11c [msm]
->> [   18.877077]  platform_probe+0x74/0xf0
->> [   18.881328]  really_probe+0xc4/0x470
->> [   18.884883]  __driver_probe_device+0x11c/0x190
->> [   18.888534]  driver_probe_device+0x48/0x110
->> [   18.892786]  __device_attach_driver+0xa4/0x140
->> [   18.896869]  bus_for_each_drv+0x84/0xe0
->> [   18.901380]  __device_attach+0xe4/0x1c0
->> [   18.905112]  device_initial_probe+0x20/0x30
->> [   18.908932]  bus_probe_device+0xac/0xb4
->> [   18.913098]  deferred_probe_work_func+0xc8/0x120
->> [   18.916920]  process_one_work+0x280/0x6a0
->> [   18.921780]  worker_thread+0x80/0x454
->> [   18.925683]  kthread+0x178/0x184
->> [   18.929326]  ret_from_fork+0x10/0x20
->> [   18.932634] Code: d37d4e99 92404e9c f940077a 8b190359 (c8dfff33)
->> [   18.936203] ---[ end trace 3e289b724840642d ]---
->> 
->> Full log,
->> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20211020/testrun/6177937/suite/linux-log-parser/test/check-kernel-oops-3786583/log
->> https://lkft.validation.linaro.org/scheduler/job/3786583#L2549
->> 
->> Build config:
->> https://builds.tuxbuild.com/1zlLlQrUyHVr1MQ1gcler3dKaE6/config
->> 
->> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->> 
->> steps to reproduce:
->> 1) https://builds.tuxbuild.com/1zlLlQrUyHVr1MQ1gcler3dKaE6/tuxmake_reproducer.sh
->> 2) Boot db410c device
->> 
->> --
->> Linaro LKFT
->> https://lkft.linaro.org
->> 
->
+Will add, thanks
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Pavel Begunkov
