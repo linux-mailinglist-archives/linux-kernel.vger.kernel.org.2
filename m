@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8B3435DD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F5435DCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhJUJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:24:24 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4014 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhJUJYV (ORCPT
+        id S231394AbhJUJV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:21:57 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44254
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231320AbhJUJV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:24:21 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZhjH4bcCz67NN6;
-        Thu, 21 Oct 2021 17:18:11 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 11:22:04 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 10:22:00 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <mingo@redhat.com>
-CC:     <irogers@google.com>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kjain@linux.ibm.com>,
-        <james.clark@arm.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
-Date:   Thu, 21 Oct 2021 17:16:45 +0800
-Message-ID: <1634807805-40093-3-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
-References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
+        Thu, 21 Oct 2021 05:21:56 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CD93C3FFE2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634807979;
+        bh=/HhisqVm7ErOFfWC76qHpvI3z/SiF8V4VeJo7KglsS4=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=bhnnia1v4hyhShqI2/oEnNwGHMSZDzlGHbx0pXZTsgvvJTi+2KG3qBNarScG+jPpY
+         Md980FtoUC5nFpRwYg5fcSoP9dM4nRRv5kYMQ9ayZ2HmRskvZYDpR4b4ThEqFWSl+M
+         3r62gitibWOAYgWk+QdumqYQaNetw4rNEEusffLaDKoniNvopsEZO6YhEh6GEgEeVp
+         8Oozkbb6Kjj9NpipSt7TC/OU46XYMZakz32It1jUQjx84iVJK8w5EzjAj3eSl6CQzD
+         b0lTR8oC+05Z3P4y6hpnJKIAeHySjDzUSu6G6jwqOfYekj1H1v4vC6fCWv+JWiR8zq
+         U/aN8edEZnbCg==
+Received: by mail-lj1-f197.google.com with SMTP id 136-20020a2e098e000000b002110b902242so2559172ljj.20
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:19:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/HhisqVm7ErOFfWC76qHpvI3z/SiF8V4VeJo7KglsS4=;
+        b=db2KrMJxrksI4si1A9flZ2SHfnBAszkWUT9DCjaQIu8YBsEuZSDiG3RGdOqZ4jDBny
+         ZBewHlFXJmHRO0oPP0OA87tiNoITnjqLBdnI6vhy7fFOP0W/QY8o7GBobR/Id82tOD0P
+         wxUR8B9ixcLLH6oydJJjngf7nUPG07tssYTF4RNnd766XnZ5FivfEQ90yFHY8Zctdu0X
+         1pt67s5uAWw+Fx3mRXJtV2bAN3TC0fuVLA+IZOVo5GWYLRU9O1YJMVUZC40f7+sSddyJ
+         e5Z3drGNUUmuvXa0NSmpVzykADurcI6FI8lTCIm/uRdUbjtqcmGi2heldzTb6U2/0mB8
+         FLEw==
+X-Gm-Message-State: AOAM530NtV9zYN55QsHszRnl8uQdWsGPcgboJfNjB640gitGH66CrFqN
+        UXckxm/Kw8EkkVozDOsvLwA9JQKLIkaffOahe8uf/W1/+prahvBA0x9DFauY3p4FV8tKE+rnpEk
+        v2tfXpluPz0QvmB7Bud1v8PJ7SOdGWa4GeR9Be19kMg==
+X-Received: by 2002:a2e:b690:: with SMTP id l16mr4659204ljo.112.1634807979277;
+        Thu, 21 Oct 2021 02:19:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdzRKJjtYj2xHphNZ4bIpTswp0KtXkQNgkEirsg/0cvp1UuxKjql3APB0/TtZWJcS+F+gEnA==
+X-Received: by 2002:a2e:b690:: with SMTP id l16mr4659192ljo.112.1634807979122;
+        Thu, 21 Oct 2021 02:19:39 -0700 (PDT)
+Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id r15sm106713ljp.88.2021.10.21.02.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 02:19:38 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Nicolas Chauvet <kwizart@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] memory: tegra20-emc: Add runtime dependency on devfreq governor module
+Date:   Thu, 21 Oct 2021 11:19:36 +0200
+Message-Id: <163480797353.116816.12374753555350703241.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211019231524.888-1-digetx@gmail.com>
+References: <20211019231524.888-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently no compiler warnings at all are enabled for building jevents,
-so help catch bugs at compile time by enabling through HOSTCFLAGS.
+On Wed, 20 Oct 2021 02:15:24 +0300, Dmitry Osipenko wrote:
+> Tegra20 EMC driver uses simple devfreq governor. Add simple devfreq
+> governor to the list of the Tegra20 EMC driver module softdeps to allow
+> userspace initramfs tools like dracut to automatically pull the devfreq
+> module into ramfs image together with the EMC module.
+> 
+> 
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- tools/perf/Makefile.config  | 5 +++++
- tools/perf/Makefile.perf    | 2 +-
- tools/perf/pmu-events/Build | 2 +-
- 3 files changed, 7 insertions(+), 2 deletions(-)
+Applied, thanks!
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 0ae2e3d8b832..374f65b52157 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
- detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
- 
- CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-+HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- 
- include $(srctree)/tools/scripts/Makefile.arch
- 
-@@ -211,6 +212,7 @@ endif
- ifneq ($(WERROR),0)
-   CORE_CFLAGS += -Werror
-   CXXFLAGS += -Werror
-+  HOSTCFLAGS += -Werror
- endif
- 
- ifndef DEBUG
-@@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
- CXXFLAGS += -funwind-tables
- CXXFLAGS += -Wno-strict-aliasing
- 
-+HOSTCFLAGS += -Wall
-+HOSTCFLAGS += -Wextra
-+
- # Enforce a non-executable stack, as we may regress (again) in the future by
- # adding assembler files missing the .GNU-stack linker note.
- LDFLAGS += -Wl,-z,noexecstack
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 7df13e74450c..118bcdc70bb4 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -226,7 +226,7 @@ else
- endif
- 
- export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
--export HOSTCC HOSTLD HOSTAR
-+export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
- 
- include $(srctree)/tools/build/Makefile.include
- 
-diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
-index a055dee6a46a..d5c287f069a2 100644
---- a/tools/perf/pmu-events/Build
-+++ b/tools/perf/pmu-events/Build
-@@ -1,7 +1,7 @@
- hostprogs := jevents
- 
- jevents-y	+= json.o jsmn.o jevents.o
--HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
-+HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
- pmu-events-y	+= pmu-events.o
- JDIR		=  pmu-events/arch/$(SRCARCH)
- JSON		=  $(shell [ -d $(JDIR) ] &&				\
+[1/1] memory: tegra20-emc: Add runtime dependency on devfreq governor module
+      commit: 14b43c20c283de36131da0cb44f3170b9ffa7630
+
+Best regards,
 -- 
-2.17.1
-
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
