@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F703435F0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE98435F0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhJUKas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230077AbhJUKah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:30:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 874596120C;
-        Thu, 21 Oct 2021 10:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634812101;
-        bh=XZqwcRi8eGbcHfTa8FsBo0CyV+VMmanZEXSL34v2xNA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LSIZboXeBiM2XeY8Wt+EdS5vzOT0y1ZBbT9bRqQsj3JP7BP/yWGDJFdQJDSckB09B
-         7uqGgy/9ZJHs5HkWP1mzK+b4YDPzJqFGxOwtsNXcSuJd++RJzuPnbSBghUV5uvPrQr
-         48FXQ0hb3XPEUFdAkHZ8go/OfpfNzL7Oi+qwtMWOwsIoe54SPCBCf3WNrap+GInr0V
-         yGABj0eWy+Oy4uHPhX+84IqzwjRnnFriSooLwDn9DdP3ldmXSfRxTG8Sqpob+snAai
-         xloBuBSX8vt6kna/4iXumpsepFj39VfqjUz5ICYwwc7ll2r4XouRi6EbQQOqDpLgmh
-         FssfdAsIY4+8g==
-Received: by mail-oi1-f170.google.com with SMTP id o83so295125oif.4;
-        Thu, 21 Oct 2021 03:28:21 -0700 (PDT)
-X-Gm-Message-State: AOAM532DDyVNWD56Lze+VMe2j0wrKXyHFoz1vzJF7HGTawJ3pxUd+IoB
-        fsnsREcnrxDYexSext4MlwHcM8cep6MuXn6B43k=
-X-Google-Smtp-Source: ABdhPJwJS57ISbZcVKqBAD81WN0NdiqSiFCaDg4V8so9PFGuh1YHfNT+etwlr7CUC37Bkxt5mEwG0tXwsqwrLAT+eTk=
-X-Received: by 2002:aca:4bc4:: with SMTP id y187mr3602617oia.174.1634812100804;
- Thu, 21 Oct 2021 03:28:20 -0700 (PDT)
+        id S230375AbhJUKa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:30:56 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42768 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhJUKaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:30:55 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id D75221F44855
+Subject: Re: [PATCH v1 3/4] media: platform: mtk-mdp3: Set
+ dma_set_mask_and_coherent
+To:     "roy-cw.yeh" <roy-cw.yeh@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "river . cheng" <river.cheng@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20211021063414.23663-1-roy-cw.yeh@mediatek.com>
+ <20211021063414.23663-4-roy-cw.yeh@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <d0db66a3-04b4-1b1f-f6bb-8b45154559ff@collabora.com>
+Date:   Thu, 21 Oct 2021 12:28:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211020173554.38122-1-keescook@chromium.org>
-In-Reply-To: <20211020173554.38122-1-keescook@chromium.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 21 Oct 2021 12:28:09 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEw2P+Q2Nd-+vf6U5apx+v5Q4TTW6y0m-MFaB1O2OAehQ@mail.gmail.com>
-Message-ID: <CAMj1kXEw2P+Q2Nd-+vf6U5apx+v5Q4TTW6y0m-MFaB1O2OAehQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] gcc-plugins: Explicitly document purpose and
- deprecation schedule
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dan Li <ashimida@linux.alibaba.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211021063414.23663-4-roy-cw.yeh@mediatek.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 at 19:35, Kees Cook <keescook@chromium.org> wrote:
->
-> Hi,
->
-> GCC plugins should only exist when some compiler feature needs to be
-> proven but does not exist in either GCC nor Clang. For example, if a
-> desired feature is already in Clang, it should be added to GCC upstream.
-> Document this explicitly.
->
-> I'll put this in -next unless there are objections. :)
->
-> Thanks!
->
-> -Kees
->
->
-> Kees Cook (2):
->   gcc-plugins: Explicitly document purpose and deprecation schedule
->   gcc-plugins: Remove cyc_complexity
->
+Il 21/10/21 08:34, roy-cw.yeh ha scritto:
+> From: "Roy-CW.Yeh" <roy-cw.yeh@mediatek.com>
+> 
+> Set dma_set_mask_and_coherent
+> 
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Please explain why you're setting that and why 34 bits in the commit description.
 
->  Documentation/kbuild/gcc-plugins.rst        | 28 ++++++++-
->  scripts/Makefile.gcc-plugins                |  2 -
->  scripts/gcc-plugins/Kconfig                 | 20 +-----
->  scripts/gcc-plugins/cyc_complexity_plugin.c | 69 ---------------------
->  security/Kconfig.hardening                  |  9 ++-
->  5 files changed, 34 insertions(+), 94 deletions(-)
->  delete mode 100644 scripts/gcc-plugins/cyc_complexity_plugin.c
->
-> --
-> 2.30.2
->
+> Signed-off-by: Roy-CW.Yeh <roy-cw.yeh@mediatek.com>
+> ---
+>   drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c b/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+> index 1e61ac7ca790..875326afb686 100644
+> --- a/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+> +++ b/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+> @@ -1141,6 +1141,8 @@ static int mdp_probe(struct platform_device *pdev)
+>   	mdp->pdev = pdev;
+>   	mdp->mdp_data = of_device_get_match_data(&pdev->dev);
+>   
+> +	dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+> +
+>   	ret = of_property_read_u32(dev->of_node, "mediatek,mdp3-id", &id);
+>   	if (ret) {
+>   		dev_err(dev, "Failed to get mdp-id\n");
+> 
+
