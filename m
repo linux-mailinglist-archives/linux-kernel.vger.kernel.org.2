@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B6D436057
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16059436067
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhJULfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhJULfD (ORCPT
+        id S230260AbhJULlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:41:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13963 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhJULlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:35:03 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6964C06161C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:32:47 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZlhZ1ydbz4xbT;
-        Thu, 21 Oct 2021 22:32:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1634815966;
-        bh=TBgYNuOR6CivwRz9RieGT4fDeQjeQcdqKnl/zYLrtt4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=deHlduqHZl1OYycNUVspKOnHKFxOZwIQkbO65ZeKH3QRUrU+IICG8q34Dzb/9j4sI
-         UvGnGvHtkfdWeVJXDIrkwO5xxQB/XHS4GQ0et0fr/OGW6LiSfEhW0xxrx1PqM71+Yl
-         WQyp9j6EAcv7VcLH/ZDaOXgRVDEak+RJqR42MlwvzVskntIun8C3tzbliSBgb78mXW
-         sN3pxd5+CgVrajcsfO3qboebfh4rhuXMq+UiDaPajFrIJ560vs9KWH+HddZaCDLIw9
-         Z/SRh8IisjyGa7KxZG+Y/v3hPn1RSEKUOZuCG7OMeS7ns84naYsB1ZUgbarwJ7QtAZ
-         J7AYrZaO5fw2Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        nathanl@linux.ibm.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-5 tag
-Date:   Thu, 21 Oct 2021 22:32:45 +1100
-Message-ID: <877de6d34y.fsf@mpe.ellerman.id.au>
+        Thu, 21 Oct 2021 07:41:00 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HZlnL63ZLzZcKY;
+        Thu, 21 Oct 2021 19:36:54 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 19:38:42 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 19:38:42 +0800
+Message-ID: <bd3419a3-b858-1a4d-a081-d09bbc56eaa7@huawei.com>
+Date:   Thu, 21 Oct 2021 19:38:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/2] riscv: consolidate __ex_table construction
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kbuild@vger.kernel.org>
+References: <20211020220529.54ccf4e9@xhacker>
+ <20211020220610.25443e4c@xhacker>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20211020220610.25443e4c@xhacker>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-Hi Linus,
-
-Please pull some more powerpc fixes for 5.15:
-
-The following changes since commit cdeb5d7d890e14f3b70e8087e745c4a6a7d9f337:
-
-  KVM: PPC: Book3S HV: Make idle_kvm_start_guest() return 0 if it went to guest (2021-10-16 00:40:03 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-5
-
-for you to fetch changes up to 787252a10d9422f3058df9a4821f389e5326c440:
-
-  powerpc/smp: do not decrement idle task preempt count in CPU offline (2021-10-20 21:38:01 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.15 #5
-
-Fix a bug exposed by a previous fix, where running guests with certain SMT topologies
-could crash the host on Power8.
-
-Fix atomic sleep warnings when re-onlining CPUs, when PREEMPT is enabled.
-
-Thanks to: Nathan Lynch, Srikar Dronamraju, Valentin Schneider.
-
-- ------------------------------------------------------------------
-Michael Ellerman (1):
-      powerpc/idle: Don't corrupt back chain when going idle
-
-Nathan Lynch (1):
-      powerpc/smp: do not decrement idle task preempt count in CPU offline
 
 
- arch/powerpc/kernel/idle_book3s.S | 10 ++++++----
- arch/powerpc/kernel/smp.c         |  2 --
- 2 files changed, 6 insertions(+), 6 deletions(-)
------BEGIN PGP SIGNATURE-----
+On 2021/10/20 22:06, Jisheng Zhang wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
+> 
+> Consolidate all the __ex_table constuction code with a _ASM_EXTABLE
+> helper.
+> 
+> There should be no functional change as a result of this patch.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>   arch/riscv/include/asm/futex.h   | 12 +++-------
+>   arch/riscv/include/asm/uaccess.h | 40 +++++++++++---------------------
+>   2 files changed, 17 insertions(+), 35 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/futex.h b/arch/riscv/include/asm/futex.h
+> index 1b00badb9f87..3191574e135c 100644
+> --- a/arch/riscv/include/asm/futex.h
+> +++ b/arch/riscv/include/asm/futex.h
+> @@ -30,10 +30,7 @@
+>   	"3:	li %[r],%[e]				\n"	\
+>   	"	jump 2b,%[t]				\n"	\
+>   	"	.previous				\n"	\
+> -	"	.section __ex_table,\"a\"		\n"	\
+> -	"	.balign " RISCV_SZPTR "			\n"	\
+> -	"	" RISCV_PTR " 1b, 3b			\n"	\
+> -	"	.previous				\n"	\
+> +		_ASM_EXTABLE(1b, 3b)				\
+>   	: [r] "+r" (ret), [ov] "=&r" (oldval),			\
+>   	  [u] "+m" (*uaddr), [t] "=&r" (tmp)			\
+>   	: [op] "Jr" (oparg), [e] "i" (-EFAULT)			\
+> @@ -103,11 +100,8 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+>   	"4:	li %[r],%[e]				\n"
+>   	"	jump 3b,%[t]				\n"
+>   	"	.previous				\n"
+> -	"	.section __ex_table,\"a\"		\n"
+> -	"	.balign " RISCV_SZPTR "			\n"
+> -	"	" RISCV_PTR " 1b, 4b			\n"
+> -	"	" RISCV_PTR " 2b, 4b			\n"
+> -	"	.previous				\n"
+> +		_ASM_EXTABLE(1b, 4b)			\
+> +		_ASM_EXTABLE(2b, 4b)			\
+>   	: [r] "+r" (ret), [v] "=&r" (val), [u] "+m" (*uaddr), [t] "=&r" (tmp)
+>   	: [ov] "Jr" (oldval), [nv] "Jr" (newval), [e] "i" (-EFAULT)
+>   	: "memory");
+> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+> index f314ff44c48d..35802e72ace8 100644
+> --- a/arch/riscv/include/asm/uaccess.h
+> +++ b/arch/riscv/include/asm/uaccess.h
+> @@ -10,6 +10,12 @@
+>   
+>   #include <asm/pgtable.h>		/* for TASK_SIZE */
+>   
+> +#define _ASM_EXTABLE(from, to)						\
+> +	"	.pushsection	__ex_table, \"a\"\n"			\
+> +	"	.balign "	RISCV_SZPTR "	 \n"			\
+> +	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
+> +	"	.popsection\n"
+> +
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmFxT3IACgkQUevqPMjh
-pYD0Mg//fh9BEVcfCtGJskqpbppkLJL8Pk/npKdiXZ1//ESTnSSXp0SfjHwnKW8H
-R+FYUomAdB4pis6lfUUlVFHcADPrf1C55IF6f4pP7mLWGKuscMTjDRmgBOkgEreY
-pciP+aGkNWu6Lmzoz1ZEqYr1mZW6TX3/Os9BabFUNze4gzTT6Y4U+/QOYrt5VQZB
-SAnzyfjOq0c9HDP3OFVn9xUGkOpikRA2rT/0lKVFs5CPkqmLv82i/slz9SwE96kX
-Zfi9CCJ3ule0RgysYg33QpAzZfQiLATAJBLk+Wlyl9SAFQ8w+cOhFtJmHryGFPz5
-n5JopbE2lECJxw5fhasLwraDZzTd84xHvx1xpl2nIQEzrRlpV+Kq2c7SEbNROakL
-rp/xmnBjfo9wMVwjo7x20arqj+o5XBs7yW04gMXV5yJVMUjgn288LAZzTe9nNegk
-drzfrVHyvNKCoEWZr0egUDazSuh1kiWC9srmZ3IB2Cx2AGXYvXk+MsftoIqP8Nu6
-gs9+NRwNiroaX3aujlcZHC4J7QwGMUZo6Dvs2e0VX+kvGlvnrP8+7pQ0eSoSJlVv
-DfeTZa630yD0TdPVqWXHHeOUqbza/bpeHUxdFwSYdlr4DLrr3XkfaO/VQ6XJmTHa
-9aZq3y7ALgQGvXHUIJYH4upZYoK1BhNqCJ0A2w+8uqKlunlXx8w=
-=ES/7
------END PGP SIGNATURE-----
+The jump_label mechanism could use this macro too,
+see arch/riscv/include/asm/jump_label.h, maybe move the above into asm.h
+and also do some replace in next patch ?
+
+Question: the jump label use relative address, but why not trigger the 
+Section mismatch issue?
