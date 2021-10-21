@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFAD4357FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EE94357FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhJUA5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51544 "EHLO mail.kernel.org"
+        id S231540AbhJUA5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231444AbhJUA5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 581D46109F;
-        Thu, 21 Oct 2021 00:55:02 +0000 (UTC)
+        id S231523AbhJUA51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7680611C7;
+        Thu, 21 Oct 2021 00:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634777704;
-        bh=0rk2OE9N625FCZQR+v+3LZ8V9a5HPzPHQNru9UNWLCU=;
+        s=k20201202; t=1634777712;
+        bh=nvZy1sVKYSK6zZvA82X0Qwm/erFQUaJsuPthlqjB5TY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P91/QN5A7bqy0csO+1nkNuw+VXcDNxEz3rYnHPaxbhJQMAGRPHEAVPhZ9q+U9v/aM
-         gT+vR28bzZzU6wnBhQJkMasi3k4W8NDfwC9E4No68uK1iA6aV/ccgMsBj650Sw0zUO
-         LQJ3kUbALQqy/ZVJKauGULqJvz/eGicPEZZIj60DYbzAAyHA+D5OuX7wBxL0Ef6z6z
-         jkLsI7QZt1yRTeflWf9MW4b4Q99T3CaZfyZcWc5GqKz8WLaK9lWXIYQ1kptuFVGZ/C
-         8pYdCxx1QLT5ENo3vxf0Ano+42ZzOTEwIurspX/H6wPmGD6908XXcsQmJMU/yrD0fJ
-         7upT3TSOpYtJA==
+        b=uQTTlRIg7wvs0J2F3vfJYET6CB+rhWaAmsJkiPbCBRnVrOaK4XDeEnv/5Z0FuY+dZ
+         jWqDkyeL5FUiU+gfIxe895VEFl6yzXNzLC//tzwFW7CC7QauWEvaO9SFAYtgpfNNnm
+         3HotPrIDgeVACCBn9qww0PmXS7a8GEwyr0jnQDbbmOdZhusAL/pZRShgzZ5V9Iblkt
+         jxER6wFs2esN02Y9jp8O6TBVjPB/mrdv611l3McaLm6Wizc1gNcDvFfH/0FMPmXhMG
+         emelmNk9kvib7ugVHbfuXDysgDRUxLo6eCMZHa4JkJFUJU538w4z7pZI86pvIDfYxQ
+         Yjjg5TeosTXGA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
@@ -35,9 +35,9 @@ Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 5/9] arm64: kprobes: Make a frame pointer on __kretprobe_trampoline
-Date:   Thu, 21 Oct 2021 09:55:00 +0900
-Message-Id: <163477770064.264901.14799557129514500033.stgit@devnote2>
+Subject: [PATCH v3 6/9] arm64: Recover kretprobe modified return address in stacktrace
+Date:   Thu, 21 Oct 2021 09:55:09 +0900
+Message-Id: <163477770935.264901.1772964361191833681.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163477765570.264901.3851692300287671122.stgit@devnote2>
 References: <163477765570.264901.3851692300287671122.stgit@devnote2>
@@ -49,41 +49,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make a frame pointer (make the x29 register points the
-address of pt_regs->regs[29]) on __kretprobe_trampoline.
+Since the kretprobe replaces the function return address with
+the kretprobe_trampoline on the stack, stack unwinder shows it
+instead of the correct return address.
 
-This frame pointer will be used by the stacktracer when it is
-called from the kretprobe handlers. In this case, the stack
-tracer will unwind stack to trampoline_probe_handler() and
-find the next frame pointer in the stack frame of the
-__kretprobe_trampoline().
+This checks whether the next return address is the
+__kretprobe_trampoline(), and if so, try to find the correct
+return address from the kretprobe instance list. For this purpose
+this adds 'kr_cur' loop cursor to memorize the current kretprobe
+instance.
+
+With this fix, now arm64 can enable
+CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE, and pass the
+kprobe self tests.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
 ---
- arch/arm64/kernel/probes/kprobes_trampoline.S |    4 ++++
- 1 file changed, 4 insertions(+)
+ Changes in v2:
+  - Add comment for kr_cur.
+  - Make the kretprobe related code depends on CONFIG_KRETPROBES.
+  - Initialize "kr_cur" directly in start_backtrace() instead
+    of clearing "frame" data structure by memset().
+---
+ arch/arm64/Kconfig                  |    1 +
+ arch/arm64/include/asm/stacktrace.h |    4 ++++
+ arch/arm64/kernel/stacktrace.c      |    7 +++++++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/arch/arm64/kernel/probes/kprobes_trampoline.S b/arch/arm64/kernel/probes/kprobes_trampoline.S
-index 520ee8711db1..9a6499bed58b 100644
---- a/arch/arm64/kernel/probes/kprobes_trampoline.S
-+++ b/arch/arm64/kernel/probes/kprobes_trampoline.S
-@@ -66,6 +66,9 @@ SYM_CODE_START(__kretprobe_trampoline)
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 5c7ae4c3954b..edde5171ffb2 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -11,6 +11,7 @@ config ARM64
+ 	select ACPI_PPTT if ACPI
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_BINFMT_ELF_STATE
++	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+ 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
+ 	select ARCH_ENABLE_MEMORY_HOTPLUG
+ 	select ARCH_ENABLE_MEMORY_HOTREMOVE
+diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+index 8aebc00c1718..a4e046ef4568 100644
+--- a/arch/arm64/include/asm/stacktrace.h
++++ b/arch/arm64/include/asm/stacktrace.h
+@@ -9,6 +9,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/types.h>
++#include <linux/llist.h>
  
- 	save_all_base_regs
+ #include <asm/memory.h>
+ #include <asm/ptrace.h>
+@@ -59,6 +60,9 @@ struct stackframe {
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 	int graph;
+ #endif
++#ifdef CONFIG_KRETPROBES
++	struct llist_node *kr_cur;
++#endif
+ };
  
-+	/* Setup a frame pointer. */
-+	add x29, sp, #S_FP
-+
- 	mov x0, sp
- 	bl trampoline_probe_handler
+ extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
+diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+index 8982a2b78acf..c30624fff6ac 100644
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -41,6 +41,9 @@ void start_backtrace(struct stackframe *frame, unsigned long fp,
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 	frame->graph = 0;
+ #endif
++#ifdef CONFIG_KRETPROBES
++	frame->kr_cur = NULL;
++#endif
+ 
  	/*
-@@ -74,6 +77,7 @@ SYM_CODE_START(__kretprobe_trampoline)
- 	 */
- 	mov lr, x0
+ 	 * Prime the first unwind.
+@@ -129,6 +132,10 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+ 		frame->pc = ret_stack->ret;
+ 	}
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
++#ifdef CONFIG_KRETPROBES
++	if (is_kretprobe_trampoline(frame->pc))
++		frame->pc = kretprobe_find_ret_addr(tsk, (void *)frame->fp, &frame->kr_cur);
++#endif
  
-+	/* The frame pointer (x29) is restored with other registers. */
- 	restore_all_base_regs
+ 	frame->pc = ptrauth_strip_insn_pac(frame->pc);
  
- 	add sp, sp, #PT_REGS_SIZE
 
