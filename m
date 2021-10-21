@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A268F43624E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05870436252
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhJUNFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:05:02 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4016 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJUNFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:05:01 -0400
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZncn4yNdz67jnC;
-        Thu, 21 Oct 2021 20:59:37 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Thu, 21 Oct 2021 15:02:43 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 14:02:42 +0100
-Subject: Re: [PATCH v2 0/2] perf jevents: Enable build warnings
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <mingo@redhat.com>, <irogers@google.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kjain@linux.ibm.com>, <james.clark@arm.com>
-References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
- <YXFjSR6ZRQbMjiG3@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <9075dc5c-25a2-c977-a1c2-675e972115e7@huawei.com>
-Date:   Thu, 21 Oct 2021 14:02:41 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S230393AbhJUNFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:05:41 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:51261 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230190AbhJUNFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:05:40 -0400
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1634821397;
+        bh=4YdKHvN93yhq8+9juz+qrXE/FDAOs4WQpC3s82kIpYY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ANysfixJonxu2KHFisv92/hdJqmcHpqRwjYtE1I7s3BPC6PnveWTakAuG1qfPg6X+
+         T5rxYNJYSX99ixp8eoRnB5i59zo4W1iT1+LuZMXJSze+uB8dzLHVuJDcRR8Frm+8TR
+         3pZBn7AyWdjrgsa3c5UAJNVBnwfrPvzZDiX2KETc=
+To:     Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ipvs: autoload ipvs on genl access
+Date:   Thu, 21 Oct 2021 15:02:55 +0200
+Message-Id: <20211021130255.4177-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <YXFjSR6ZRQbMjiG3@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 13:55, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Oct 21, 2021 at 05:16:43PM +0800, John Garry escreveu:
->> Currently jevents builds without any complier warning flags enabled. So
->> use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS.
->>
->> Changes for v2:
->> - Add Werror, Wall, and Wextra (James Clark suggestion)
-> 
-> Thanks, applied.
-> 
+The kernel provides the functionality to automatically load modules
+providing genl families. Use this to remove the need for users to
+manually load the module.
 
-Hi Arnaldo,
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ net/netfilter/ipvs/ip_vs_ctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Can you please wait until I check the review response from jirka?
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 29ec3ef63edc..0ff94c66641f 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -48,6 +48,8 @@
+ 
+ #include <net/ip_vs.h>
+ 
++MODULE_ALIAS_GENL_FAMILY(IPVS_GENL_NAME);
++
+ /* semaphore for IPVS sockopts. And, [gs]etsockopt may sleep. */
+ static DEFINE_MUTEX(__ip_vs_mutex);
+ 
 
-Thanks
-
-> - Arnaldo
-> 
->   
->> Baseline is acme perf/core + mainline commit b94729919db2 ("perf jevents:
->> Free the sys_event_tables list after processing entries"):
->>
->> 680453e63302 perf jevents: Free the sys_event_tables list after processing entries
->> be8ecc57f180 (origin/perf/core) perf srcline: Use long-running addr2line per DSO
->> 2b775152bbe8 perf tests vmlinux-kallsyms: Ignore hidden symbols
->>
->> John Garry (2):
->>    perf jevents: Fix some would-be warnings
->>    perf jevents: Enable warnings through HOSTCFLAGS
->>
->>   tools/perf/Makefile.config      |  5 +++++
->>   tools/perf/Makefile.perf        |  2 +-
->>   tools/perf/pmu-events/Build     |  2 +-
->>   tools/perf/pmu-events/jevents.c | 10 ++++------
->>   4 files changed, 11 insertions(+), 8 deletions(-)
->>
->> -- 
->> 2.17.1
-> 
+base-commit: d9aaaf223297f6146d9d7f36caca927c92ab855a
+-- 
+2.33.1
 
