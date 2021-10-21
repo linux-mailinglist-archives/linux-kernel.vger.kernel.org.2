@@ -2,189 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC98B435D9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCCD435DA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhJUJJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        id S231453AbhJUJLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhJUJJZ (ORCPT
+        with ESMTP id S231133AbhJUJK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:09:25 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5269CC061753
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:07:09 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id k7so1763905wrd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=fa8qTNUMfdlm5vVlUvR29Di6jRAMYyn6oP+QaN90AGc=;
-        b=GJgVEZZOZYp+PLlgHwjiuMJ0smmcTiEeRFCpmRgAvtDPhVEyxooLd4PxqPk32F2yCn
-         HAVijInvS6hf+6qOwSa5NxtTfgxemgw3RO15ka8CSmmtCpEl5SG5dnE8aGmjdGTD/RRd
-         EAWScowWFcONLMtYxRsOmUxP0SW8eQRVea5mShWM3/1I1KUxFhA6heGkJMjxhubFbyui
-         hT57540L21MmRtgM2RfI9hhDgBWfWBDP0pjhmEcHasi5sKYuVmBwhaobY1nna1m5GX42
-         RXEePQr7gXWR0A8FDB5URysq2I2AJTVc4eRsh2wSJAfUaF5iVXUf4luG0KKw6VIs5SGK
-         bocw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=fa8qTNUMfdlm5vVlUvR29Di6jRAMYyn6oP+QaN90AGc=;
-        b=vJncvZXv8Swo7QwXL1DmvUOtghYmHwhPo4U1ddhBCVn1HOUsL7c77TIn/ZAI0hfEej
-         GE/MkVQM+Kc/8ChYRsrvPK3S5yZ4z9YxKzqKTXPZi+DWi0TCU6ZtRZfXLY9NLqoeAemU
-         pAx2wWpWbxprkBL0csrATeoe0zzJjzPHmuLvG/j54wfC7OO0S3ffx7n+71s71DPTmJTR
-         6HZp5I+QG0JRGQhGkZLAOu2p2JncXh7+N1VFIqNtBMQzR//az1KLkIPckgvHB66LDO9u
-         s7bek03Bg/cHIWVF7tdF9lX9Ku4s1pZl8iff9bI2bDsHGCzNOu2TsW9+gmb0kbqnEU5W
-         iOsg==
-X-Gm-Message-State: AOAM530DtSf6sebwZ5ntrIP5F9gjMDcmxIuxbPkH0YD4R0nyy7V30s+7
-        5R1j6neAfZrqv+zKRB38uIDK0w==
-X-Google-Smtp-Source: ABdhPJyLvrmnvqTWa0t6F6IhSJkal5/W1VnSEpvXXHa1yE5OnPVfRhps7Jd/HKqKroDO8CuXCMBanw==
-X-Received: by 2002:adf:b350:: with SMTP id k16mr5744094wrd.368.1634807227725;
-        Thu, 21 Oct 2021 02:07:07 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id d1sm4408449wrr.72.2021.10.21.02.07.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 02:07:07 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 10:07:05 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Thu, 21 Oct 2021 05:10:58 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C54C06161C;
+        Thu, 21 Oct 2021 02:08:43 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id C99571F44787
+Subject: Re: [PATCH v16 7/7] soc: mediatek: SVS: add mt8192 SVS GPU driver
+To:     Roger Lu <roger.lu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
- and S5M to dtschema
-Message-ID: <YXEtuX5j9z8es0/i@google.com>
-References: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
- <YXA+GoTf6u/Y4qLX@google.com>
- <16c79986-03b2-b74b-0de8-4118e2c4419f@canonical.com>
- <b98bd487-6c55-d058-8073-689b9396b527@canonical.com>
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210428065440.3704-1-roger.lu@mediatek.com>
+ <20210428065440.3704-8-roger.lu@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <19f8fa23-bfd4-4db5-64dc-c563bf617437@collabora.com>
+Date:   Thu, 21 Oct 2021 11:08:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b98bd487-6c55-d058-8073-689b9396b527@canonical.com>
+In-Reply-To: <20210428065440.3704-8-roger.lu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021, Krzysztof Kozlowski wrote:
-
-> On 20/10/2021 18:08, Krzysztof Kozlowski wrote:
-> > On 20/10/2021 18:04, Lee Jones wrote:
-> >> On Wed, 06 Oct 2021, Krzysztof Kozlowski wrote:
-> >>
-> >>> Hi All,
-> >>>
-> >>> Changes since v2
-> >>> ================
-> >>> 1. Add Rob's tags.
-> >>> 2. Remove "regulator-name" from properties (all regulator dtschema).
-> >>> 3. Move "unevaluatedProperties" higher to make code easier to read (all regulator dtschema).
-> >>> 4. Add ref-type to op-mode property (patch 6: s5m8767 regulators).
-> >>>
-> >>> Changes since v1
-> >>> ================
-> >>> 1. Drop DTS patches - applied.
-> >>> 2. Fully remove bindings/regulator/samsung,s5m8767.txt .
-> >>> 3. Minor subject reformatting and few typos in text.
-> >>>
-> >>>
-> >>> Intro
-> >>> =====
-> >>> This patchset converts all devicetree bindings of Samsung S2M and S5M
-> >>> PMIC devices from txt to dtschema.
-> >>>
-> >>> It includes also two fixes because later conversion depends on it
-> >>> (contextually).
-> >>>
-> >>>
-> >>> Merging/dependencies
-> >>> ====================
-> >>> 1. Regulator related binding changes depend on first two commits (the
-> >>>    fixes), because of context.
-> >>> 2. The mfd bindings depend on clock and regulator bindings.
-> >>>
-> >>> The fixes and bindings changes (patches 1-10) should go via the same
-> >>> tree.  For example regulator or mfd tree.
-> >>>
-> >>> Another alternative is that regulator patches (1-2, 4-6) go via Mark who
-> >>> later gives MFD a stable branch/tag to pull. Then the clock and MFD
-> >>> bindings would go on top via MFD tree. Or any other setup you would like
-> >>> to have. :)
-> >>>
-> >>>
-> >>> Overview of devices
-> >>> ===================
-> >>> Essentially all Samsung S2M and S5M PMICs are very similar devices. They
-> >>> provide the same functionality: regulators, RTC, 2 or 3 clocks and main
-> >>> power management (e.g. power cut to SoC).
-> >>>
-> >>> The differences are mostly in registers layout and number of regulators.
-> >>>
-> >>> The drivers are built around one common part, mfd/sec-core.c, and share
-> >>> some drivers between devices:
-> >>> 1. MFD sec-core for all devices,
-> >>> 1. one clock driver for most of devices,
-> >>> 2. one RTC driver for all devices,
-> >>> 3. three regulator drivers.
-> >>>
-> >>> The regulator drivers were implementing slightly different features,
-> >>> therefore one regulator binding for all devices does not make much
-> >>> sense.  However the clock device binding can be shared.
-> >>>
-> >>> The final dtschema bindings try to implement this - share only the clock
-> >>> bindings.
-> >>>
-> >>> Best regards,
-> >>> Krzysztof
-> >>>
-> >>> Krzysztof Kozlowski (10):
-> >>>   regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS
-> >>>     is disabled
-> >>>   regulator: dt-bindings: samsung,s5m8767: correct
-> >>>     s5m8767,pmic-buck-default-dvs-idx property
-> >>>   dt-bindings: clock: samsung,s2mps11: convert to dtschema
-> >>>   regulator: dt-bindings: samsung,s2m: convert to dtschema
-> >>>   regulator: dt-bindings: samsung,s2mpa01: convert to dtschema
-> >>>   regulator: dt-bindings: samsung,s5m8767: convert to dtschema
-> >>>   dt-bindings: mfd: samsung,s2mps11: convert to dtschema
-> >>>   dt-bindings: mfd: samsung,s2mpa01: convert to dtschema
-> >>>   dt-bindings: mfd: samsung,s5m8767: convert to dtschema
-> >>>   dt-bindings: mfd: samsung,s5m8767: document buck and LDO supplies
-> >>
-> >> Looks like these are ready to be pushed.
-> >>
-> >> However, I am not in receipt of patches 1-2.
-> >>
-> >> Am I okay to merge 3-10 right now?
-> > 
-> > No. This is v3, but we need v4. Please:
-> > 1. Merge tag from Mark:
-> > https://lore.kernel.org/lkml/YWCT+YL%2F9qHbF9f0@sirena.org.uk/
-> > 
-> > 2. Then apply patches 7-10 (MFD bindings).
+> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+> Reviewed-by: YT Lee <yt.lee@mediatek.com>
+> ---
+>   drivers/soc/mediatek/mtk-svs.c | 485 ++++++++++++++++++++++++++++++++-
+>   1 file changed, 479 insertions(+), 6 deletions(-)
 > 
-> ... patches 7-10 from that v4 of course. They start here:
-> https://lore.kernel.org/lkml/20211008113931.134847-4-krzysztof.kozlowski@canonical.com/
 
-... and these can do in on their own?  With no inter-dependencies?
-
-Or is Rob going to tell me off again?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
