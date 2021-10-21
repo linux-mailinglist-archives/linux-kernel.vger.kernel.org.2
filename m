@@ -2,109 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA8A436B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D442B436B37
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhJUTTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S231845AbhJUTUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhJUTTg (ORCPT
+        with ESMTP id S231239AbhJUTUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:19:36 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE4DC061764;
-        Thu, 21 Oct 2021 12:17:20 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id u21so1936789lff.8;
-        Thu, 21 Oct 2021 12:17:20 -0700 (PDT)
+        Thu, 21 Oct 2021 15:20:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F278AC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:18:13 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so3914784pjl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1iiJyPiELXV0qVznygVX0sLRkVQk3N2jmiVE07csCr8=;
-        b=UXAmszEACOzy6koieqeyzy+9439SCDTdqIXcljAX9wHX/qgs8O/B8bKuJKlkhVXqVy
-         oSJqmW0QmTCm5czlsq4w3VfB+XXWo12qNu7mDn8HcDPKCo5Kotlld2DXwlMIQWIDT468
-         WsLNxaZDGd4SxwJr2UnD3AeZ0wIhMvvslWfQEHRzPNZHuxPFoSeGCkOHeAFcQLWA76wA
-         oXv0+voI54vAtA2KzSrzMtZ8x/UGmNUTcWe/s76F7tPze7bmRazKSgFyWXSikKK7SAXM
-         6QMtRWWu88YPTzTJfSDHQ6b7vS2etlMXiWHV6MCmoe9FyKocb/k0Eb3HvtWGop37JlMJ
-         vz2g==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=DXGRzomXOdikTVCNnKEJJ3OJHe75w0IIOKsB6ZyMU58xBk4QJVYEruVfizK8p0Uv/d
+         X9T2YWICKu66XGkkRkBmlrJQjdIEaTrjmUE6LR5iJPjiZCyZ0aQRBwWiOCTuJcZfnN8V
+         67e2ySPf4pjufkH7U8TW+QfeZxb56DQCAyw2mNUwTNRMBFCNdncbDLMkvkCTYsY/juzk
+         q5g9noK5/P8Q1E00n1b+U9fgqQNr0p+EgULr8WHfT21PUtMy0mLeZfjvI9+Hcp1tbP4i
+         pvZAM6FSqi0/iAQNewkBELk5YBNDW300Iz+sXUzLfj/210IgSrGkPMNw8aGwepd/0J6t
+         VNnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1iiJyPiELXV0qVznygVX0sLRkVQk3N2jmiVE07csCr8=;
-        b=eYdJWAuVWWJixbzStzabuOhZEEFpxVpnxPw9VKtnaabMq3XPFnRc824wHMuTvRHOCv
-         xCt5anBWjvPtmZPgO5xlyD3JVYF77C7KknO44HWcsUGaHTBYFor8qf/BfYPRVSB8FkHa
-         wl7dB5VemgWcmob0m3g39uFAn5OKoj/PuRe2FzvS6Fk3Z2fdben3YVnSYi1uRA+cFTAv
-         qgtZkS159e2ntaDKbWnELc+ON0bwWStYlWuGv8J5PcgG7XX1isLmiTNFfVZxyTvBZioS
-         IZw3RcjkXLMCBS/+o05tmbV2Oy89YtRxRphfPKFyn5x3f5egSwopUa/OTmWggdMA4q7N
-         pEYg==
-X-Gm-Message-State: AOAM531e9bfrrz1cz+wRAlnGVKfSs5ZnTfObNO5fBYIM7mBFnARn5N2o
-        gDX/ZkYOLeLl6+E2+hrgItyaODAUxJ0=
-X-Google-Smtp-Source: ABdhPJykQs8UfbGEtsEP+2uSvMXjKKck++BTZEqdN+pufY9At398/lvbRJBTj80k6IIfCHao4G20+A==
-X-Received: by 2002:a05:6512:398f:: with SMTP id j15mr6638817lfu.523.1634843838334;
-        Thu, 21 Oct 2021 12:17:18 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-61-202.dynamic.spd-mgts.ru. [94.29.61.202])
-        by smtp.googlemail.com with ESMTPSA id m15sm636229ljp.6.2021.10.21.12.17.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 12:17:17 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
- device tree
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211021115501.14932-1-digetx@gmail.com>
- <YXFyu+Q5ifG8Au9w@orome.fritz.box>
- <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
- <32694811-8768-8e77-f188-4ed1a1fb93da@gmail.com>
- <20211021152028.GB1161262@rowland.harvard.edu>
- <82a02e70-33bc-7faf-e085-a25884e48844@gmail.com>
- <44567c4f-0f0f-6995-b48f-c427cedb6755@gmail.com>
- <20211021191452.GA1170019@rowland.harvard.edu>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <19e852e5-0952-f665-4e0c-627e070f6abf@gmail.com>
-Date:   Thu, 21 Oct 2021 22:17:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=67WM2CgFTRU/XLr32Z6tlwo/FlsbePw9LfobK4RXiJwSB0dRmpXeeHr+B+/dGMNKPt
+         Y+OBSdBqMSUVdEt/Z+3bM6IfZ7x8gucvB5/YNYXB1zH4nD7YbW+GXFGMPRc2vQBUZOOy
+         +xYMCUJ+uNVA8Jhfc+7EAdbUpvztYWsfD+Dr2F/F+5xn6ZWYpyA8ewbxNB2wh384AGz/
+         f4s2KHBRQE3TLECR7m3eN0odFFD6XaM+agSrHlBekXjuqfOgj1IZ9P2cVrPXJ6jDOPMF
+         O0xJwmcjH/B5VqwgQPpH4GVNxSrx1LNhaR8WnKmCY2JjUQ/CR4TCM3DlNWkroCLg3Fmb
+         yVyg==
+X-Gm-Message-State: AOAM530qTuU8hYFThDE1I3mA8SQZFmop9ATPoGSdGQbO4T1aKCdMbpIa
+        ++g/U/DbravIhRkQRF1ssNfaRXo0p6m3bEgMaUU=
+X-Google-Smtp-Source: ABdhPJwksKDD3bG8z8bHyX6ftUej8OrACtmn5qq2wdrb+vNcOk1QNjLM3Mc5CJu7kgUaHlyMCCoQkVrkyzuUebRXblw=
+X-Received: by 2002:a17:90b:3141:: with SMTP id ip1mr8767991pjb.41.1634843893560;
+ Thu, 21 Oct 2021 12:18:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211021191452.GA1170019@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a10:e90a:0:0:0:0 with HTTP; Thu, 21 Oct 2021 12:18:13
+ -0700 (PDT)
+Reply-To: kaylamanthey022@gmail.com
+From:   Kayla Manthey <sherrigallagher265@gmail.com>
+Date:   Thu, 21 Oct 2021 19:18:13 +0000
+Message-ID: <CAOhzDqqFq+=mzgh21BOdr4e8ktnA53wP=pxHhF94fnAXuWfn3w@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.10.2021 22:14, Alan Stern пишет:
-...
->>> Should USB keyboard be able to wake up every HC or it's a
->>> machine-specific feature?
->>
->> I mean whether key press should wake up HC if wake-up is enabled for the
->> keyboard device.
-> 
-> Yes, it should.  More specifically, if the keyboard is capable of 
-> generating wakeup requests, and wakeup is enabled for both the keyboard 
-> device and the HC, then the keyboard should be able to wake up the 
-> system from suspend.  Some HCs or systems might not support this 
-> capability, however.
-> 
->>> I'm asking because wakeup works on a typical
->>> Intel hardware, but doesn't work on older Tegra SoCs that use Chipidea
->>> controller. It's not obvious to me whether this is something that
->>> firmware handles for Intel or it's broken on Tegra. Could you please
->>> clarify? If it should work for every HC, then I may try to take a closer
->>> look.
-> 
-> If the hardware/firmware can support it then it should work.  I don't 
-> know what's going on with your older Tegra SoCs; it's possible there is 
-> a bug in the driver.
-
-I'll take a closer look then, thank you.
+Greetings, My name is Kayla Manthey, please reply me back?
