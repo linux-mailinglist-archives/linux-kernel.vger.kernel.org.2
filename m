@@ -2,188 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E786F4363E0
+	by mail.lfdr.de (Postfix) with ESMTP id DEB484363DF
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhJUOR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:17:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26190 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231206AbhJUORZ (ORCPT
+        id S231154AbhJUORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhJUORC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:17:25 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LEC0EL009673;
-        Thu, 21 Oct 2021 10:14:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : message-id : content-transfer-encoding :
- content-type : mime-version : references; s=pp1;
- bh=PBUpBgQG1ihopG41zAX4JDk/NFFh4GdrZaKJzCGzAuY=;
- b=ohxF8dKOIJs5CWEfprq7xvs/t0SqufXxQdDetKYPCJGO/+uS/WGyw+RV3WqF9CMdbY+x
- Hj7lYLeTeO+0Pkn2lO1Zx35gVs+Gf3AoZ6timPBOWGfKvPD8f+JSFCEFwi5TcHv6Zj2Z
- ySykdjxcAO7nxDK98SffUcLtAse6GDFJLOMZYxhvIsmg+unBpsvGuA+Vm66a0B6xpEJA
- 9Aa20mQlbEj0b+jSoWhvRQp4eGNNS6HQPH1YOkUKATQ2hLm71vuFy/4LINYMZURgF4Fe
- WqW5vi0IQNZNo/OSPkzv8i4EGBavS74HsrxNyCzZxhEBMMMczEBrFkOexj0cKiaE/sC8 Fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bu8h8a67v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 10:14:44 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19LECf4f013699;
-        Thu, 21 Oct 2021 10:14:43 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bu8h8a679-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 10:14:43 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19LE88qF020843;
-        Thu, 21 Oct 2021 14:14:41 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma05wdc.us.ibm.com with ESMTP id 3bqpccx3k0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 14:14:41 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19LEEfHa37355946
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Oct 2021 14:14:41 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 51552112062;
-        Thu, 21 Oct 2021 14:14:41 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3AD0B112066;
-        Thu, 21 Oct 2021 14:14:41 +0000 (GMT)
-Received: from mww0301.wdc07m.mail.ibm.com (unknown [9.208.64.45])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Thu, 21 Oct 2021 14:14:41 +0000 (GMT)
-In-Reply-To: <20211021140755.GA3448@LAPTOP-UKSR4ENP.internal.baidu.com>
-Subject: Re: Re: [PATCH 0/6] kthread: Add the helper macro kthread_run_on_cpu()
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Cai Huoqing" <caihuoqing@baidu.com>
-Cc:     "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        "Lai Jiangshan" <jiangshanlai@gmail.com>,
-        "Joel Fernandes" <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Daniel Bristot de Oliveira" <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Date:   Thu, 21 Oct 2021 14:14:39 +0000
-Message-ID: <OFA768FC6A.4B984E4E-ON00258775.004E3F00-00258775.004E3F06@ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+        Thu, 21 Oct 2021 10:17:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E86FC0613B9;
+        Thu, 21 Oct 2021 07:14:46 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 14:14:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634825685;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SFJzu+Ks/3WJM2Jez+2xcKKzEu/19R76zxM4Rp0hsfU=;
+        b=yXFduNL79cNk4vn427nOMIPvEjsXzSLLGOIAfHORlNQGOr+dMBS0o6Tm5Xg5NHcBgzLmp8
+        eHR/mKCrzX1lbRirNP1yUpT8G7zU5OVBDiiFvxR334QNspc0mH1UiWXY5rW7yzfDKgzSmn
+        D98c0j40txJg1ndPbAfN53WS7LprAi27lW+kLRmRjrZmjdoP+OKspqmTQTWIhEjOtrGQpp
+        GfamQf0W0XX17ivgufGnVeZtyQAsBWP+wgoI9iEU0jrH17QJZgX3X9hSWXyFpxZf82a05k
+        Ayz9Z/2S6rjmTCkSdEJwK4NVOstdIVKlmVjsVGQmFv5BCQT6vLuVlmGbdDmAXg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634825685;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SFJzu+Ks/3WJM2Jez+2xcKKzEu/19R76zxM4Rp0hsfU=;
+        b=Kt12gmNSE74jNb3+AXojVuBZclgIVGpobh12SxxPXpUDpKnFhjhlpK1Hmz5Nb5Np6Wlf64
+        elQeABrV4jZxG5CQ==
+From:   "tip-bot2 for Marcos Del Sol Vives" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/CPU: Add support for Vortex CPUs
+Cc:     Marcos Del Sol Vives <marcos@orca.pet>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211017094408.1512158-1-marcos@orca.pet>
+References: <20211017094408.1512158-1-marcos@orca.pet>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20211021140755.GA3448@LAPTOP-UKSR4ENP.internal.baidu.com>,<20211021120135.3003-1-caihuoqing@baidu.com>
- <OFACD03FD5.99AACE16-ON00258775.004BD474-00258775.004BD47C@ibm.com>
-X-Mailer: Lotus Domino Web Server Release 11.0.1FP2HF117   October 6, 2021
-X-MIMETrack: Serialize by http on MWW0301/01/M/IBM at 10/21/2021 14:14:39,Serialize
- complete at 10/21/2021 14:14:39
-X-Disclaimed: 43643
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rdaui_dDQj1rHp2A99r3bdTCha09_jUJ
-X-Proofpoint-ORIG-GUID: au9D6ywHx9lIErgJ2kfG4r11-dLiCFju
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-21_04,2021-10-21_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- adultscore=0 malwarescore=0 suspectscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110210076
+Message-ID: <163482568381.25758.16061887926860812766.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------"Cai Huoqing" <caihuoqing@baidu.com> wrote: -----
+The following commit has been merged into the x86/cpu branch of tip:
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Cai Huoqing" <caihuoqing@baidu.com>
->Date: 10/21/2021 04:08PM
->Cc: "Doug Ledford" <dledford@redhat.com>, "Jason Gunthorpe"
-><jgg@ziepe.ca>, "Davidlohr Bueso" <dave@stgolabs.net>, "Paul E.
->McKenney" <paulmck@kernel.org>, "Josh Triplett"
-><josh@joshtriplett.org>, "Steven Rostedt" <rostedt@goodmis.org>,
->"Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>, "Lai Jiangshan"
-><jiangshanlai@gmail.com>, "Joel Fernandes" <joel@joelfernandes.org>,
->"Ingo Molnar" <mingo@redhat.com>, "Daniel Bristot de Oliveira"
-><bristot@kernel.org>, <linux-rdma@vger.kernel.org>,
-><linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
->Subject: [EXTERNAL] Re: [PATCH 0/6] kthread: Add the helper macro
->kthread=5Frun=5Fon=5Fcpu()
->
->On 21 10=E6=9C=88 21 13:48:15, Bernard Metzler wrote:
->> -----"Cai Huoqing" <caihuoqing@baidu.com> wrote: -----
->>=20
->> >To: <caihuoqing@baidu.com>
->> >From: "Cai Huoqing" <caihuoqing@baidu.com>
->> >Date: 10/21/2021 02:02PM
->> >Cc: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
->> ><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>,
->"Davidlohr
->> >Bueso" <dave@stgolabs.net>, "Paul E. McKenney"
-><paulmck@kernel.org>,
->> >"Josh Triplett" <josh@joshtriplett.org>, "Steven Rostedt"
->> ><rostedt@goodmis.org>, "Mathieu Desnoyers"
->> ><mathieu.desnoyers@efficios.com>, "Lai Jiangshan"
->> ><jiangshanlai@gmail.com>, "Joel Fernandes"
-><joel@joelfernandes.org>,
->> >"Ingo Molnar" <mingo@redhat.com>, "Daniel Bristot de Oliveira"
->> ><bristot@kernel.org>, <linux-rdma@vger.kernel.org>,
->> ><linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
->> >Subject: [EXTERNAL] [PATCH 0/6] kthread: Add the helper macro
->> >kthread=5Frun=5Fon=5Fcpu()
->> >
->> >the helper macro kthread=5Frun=5Fon=5Fcpu() inculdes
->> >kthread=5Fcreate=5Fon=5Fcpu/wake=5Fup=5Fprocess().
->> >In some cases, use kthread=5Frun=5Fon=5Fcpu() directly instead of
->> >kthread=5Fcreate=5Fon=5Fnode/kthread=5Fbind/wake=5Fup=5Fprocess() or
->> >kthread=5Fcreate=5Fon=5Fcpu/wake=5Fup=5Fprocess() or
->> >kthreadd=5Fcreate/kthread=5Fbind/wake=5Fup=5Fprocess() to simplify the
->code.
->>=20
->> I do not see kthread=5Fbind() being covered by the helper,
->> as claimed? rcutorture, ring-buffer, siw are using it in
->> the code potentially being replaced by the helper.
->> kthread=5Fbind() is best to be called before thread starts
->> running, so should be part of it.
->Hi,
->kthread=5Fbind() is already part of kthread=5Fcreate=5Fon=5Fcpu which is
->called by kthread=5Frun=5Fon=5Fcpu() here.
->
+Commit-ID:     639475d434b88b58827e1aae601ed1853803f5be
+Gitweb:        https://git.kernel.org/tip/639475d434b88b58827e1aae601ed185380=
+3f5be
+Author:        Marcos Del Sol Vives <marcos@orca.pet>
+AuthorDate:    Sun, 17 Oct 2021 11:44:10 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 21 Oct 2021 15:49:07 +02:00
 
-Indeed! Thanks, Bernard.
+x86/CPU: Add support for Vortex CPUs
 
->Thanks,
->Cai.
->>=20
->> Thanks,
->> Bernard.
->> >
->> >Cai Huoqing (6):
->> >  kthread: Add the helper macro kthread=5Frun=5Fon=5Fcpu()
->> >  RDMA/siw: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->> >  ring-buffer: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->> >  rcutorture: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->> >  trace/osnoise: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->> >  trace/hwlat: Make use of the helper macro kthread=5Frun=5Fon=5Fcpu()
->> >
->> > drivers/infiniband/sw/siw/siw=5Fmain.c |  7 +++----
->> > include/linux/kthread.h              | 22 ++++++++++++++++++++++
->> > kernel/rcu/rcutorture.c              |  7 ++-----
->> > kernel/trace/ring=5Fbuffer.c           |  7 ++-----
->> > kernel/trace/trace=5Fhwlat.c           |  6 +-----
->> > kernel/trace/trace=5Fosnoise.c         |  3 +--
->> > 6 files changed, 31 insertions(+), 21 deletions(-)
->> >
->> >--=20
->> >2.25.1
->> >
->> >
->
+DM&P devices were not being properly identified, which resulted in
+unneeded Spectre/Meltdown mitigations being applied.
+
+The manufacturer states that these devices execute always in-order and
+don't support either speculative execution or branch prediction, so
+they are not vulnerable to this class of attack. [1]
+
+This is something I've personally tested by a simple timing analysis
+on my Vortex86MX CPU, and can confirm it is true.
+
+Add identification for some devices that lack the CPUID product name
+call, so they appear properly on /proc/cpuinfo.
+
+=C2=B9https://www.ssv-embedded.de/doks/infos/DMP_Ann_180108_Meltdown.pdf
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Marcos Del Sol Vives <marcos@orca.pet>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20211017094408.1512158-1-marcos@orca.pet
+---
+ arch/x86/Kconfig.cpu             | 13 ++++++++++-
+ arch/x86/include/asm/processor.h |  3 +-
+ arch/x86/kernel/cpu/Makefile     |  1 +-
+ arch/x86/kernel/cpu/common.c     |  2 ++-
+ arch/x86/kernel/cpu/vortex.c     | 39 +++++++++++++++++++++++++++++++-
+ 5 files changed, 57 insertions(+), 1 deletion(-)
+ create mode 100644 arch/x86/kernel/cpu/vortex.c
+
+diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
+index 814fe0d..eefc434 100644
+--- a/arch/x86/Kconfig.cpu
++++ b/arch/x86/Kconfig.cpu
+@@ -508,3 +508,16 @@ config CPU_SUP_ZHAOXIN
+ 	  CPU might render the kernel unbootable.
+=20
+ 	  If unsure, say N.
++
++config CPU_SUP_VORTEX_32
++	default y
++	bool "Support Vortex processors" if PROCESSOR_SELECT
++	depends on X86_32
++	help
++	  This enables detection, tunings and quirks for Vortex processors
++
++	  You need this enabled if you want your kernel to run on a
++	  Vortex CPU. Disabling this option on other types of CPUs
++	  makes the kernel a tiny bit smaller.
++
++	  If unsure, say N.
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processo=
+r.h
+index 9ad2aca..64e5290 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -164,7 +164,8 @@ enum cpuid_regs_idx {
+ #define X86_VENDOR_NSC		8
+ #define X86_VENDOR_HYGON	9
+ #define X86_VENDOR_ZHAOXIN	10
+-#define X86_VENDOR_NUM		11
++#define X86_VENDOR_VORTEX	11
++#define X86_VENDOR_NUM		12
+=20
+ #define X86_VENDOR_UNKNOWN	0xff
+=20
+diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
+index 637b499..9661e3e 100644
+--- a/arch/x86/kernel/cpu/Makefile
++++ b/arch/x86/kernel/cpu/Makefile
+@@ -43,6 +43,7 @@ obj-$(CONFIG_CPU_SUP_CENTAUR)		+=3D centaur.o
+ obj-$(CONFIG_CPU_SUP_TRANSMETA_32)	+=3D transmeta.o
+ obj-$(CONFIG_CPU_SUP_UMC_32)		+=3D umc.o
+ obj-$(CONFIG_CPU_SUP_ZHAOXIN)		+=3D zhaoxin.o
++obj-$(CONFIG_CPU_SUP_VORTEX_32)		+=3D vortex.o
+=20
+ obj-$(CONFIG_X86_MCE)			+=3D mce/
+ obj-$(CONFIG_MTRR)			+=3D mtrr/
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 0f88859..325d602 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1044,6 +1044,8 @@ static const __initconst struct x86_cpu_id cpu_vuln_whi=
+telist[] =3D {
+ 	VULNWL(CENTAUR,	5, X86_MODEL_ANY,	NO_SPECULATION),
+ 	VULNWL(INTEL,	5, X86_MODEL_ANY,	NO_SPECULATION),
+ 	VULNWL(NSC,	5, X86_MODEL_ANY,	NO_SPECULATION),
++	VULNWL(VORTEX,	5, X86_MODEL_ANY,	NO_SPECULATION),
++	VULNWL(VORTEX,	6, X86_MODEL_ANY,	NO_SPECULATION),
+=20
+ 	/* Intel Family 6 */
+ 	VULNWL_INTEL(ATOM_SALTWELL,		NO_SPECULATION | NO_ITLB_MULTIHIT),
+diff --git a/arch/x86/kernel/cpu/vortex.c b/arch/x86/kernel/cpu/vortex.c
+new file mode 100644
+index 0000000..e268547
+--- /dev/null
++++ b/arch/x86/kernel/cpu/vortex.c
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/kernel.h>
++#include <asm/processor.h>
++#include "cpu.h"
++
++/*
++ * No special init required for Vortex processors.
++ */
++
++static const struct cpu_dev vortex_cpu_dev =3D {
++	.c_vendor	=3D "Vortex",
++	.c_ident	=3D { "Vortex86 SoC" },
++	.legacy_models	=3D {
++		{
++			.family =3D 5,
++			.model_names =3D {
++				[2] =3D "Vortex86DX",
++				[8] =3D "Vortex86MX",
++			},
++		},
++		{
++			.family =3D 6,
++			.model_names =3D {
++				/*
++				 * Both the Vortex86EX and the Vortex86EX2
++				 * have the same family and model id.
++				 *
++				 * However, the -EX2 supports the product name
++				 * CPUID call, so this name will only be used
++				 * for the -EX, which does not.
++				 */
++				[0] =3D "Vortex86EX",
++			},
++		},
++	},
++	.c_x86_vendor	=3D X86_VENDOR_VORTEX,
++};
++
++cpu_dev_register(vortex_cpu_dev);
