@@ -2,276 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DC9435E18
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E9C435E1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhJUJoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:44:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59891 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231391AbhJUJoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:44:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634809319; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+pYyN46L6TWJRQE7FuWyZGChDc2pVtWW+at2XppweEI=; b=iNlpaP/K/cJRfiErtUaQZsgB/r1Q+RI8mTMprcIERORGEKE/6Y+8y+POQjLSArRtfzVk8El7
- WaHWzJ9XL2OWmI2Y1tkkA8GWIA8oZDuSBc5uc3fIX8hTBt8YlXAcmlqktrTBOkGFC2kt/KFU
- 3jQSkXZK5gdUgJNyBBetcRA9xlo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 617135cf3416c2cb70da10e1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Oct 2021 09:41:35
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D326C43616; Thu, 21 Oct 2021 09:41:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.43.137] (unknown [27.61.145.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0D02AC4338F;
-        Thu, 21 Oct 2021 09:41:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0D02AC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v12 2/5] soc: qcom: Add Sleep stats driver
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>
-References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
- <1634107104-22197-3-git-send-email-mkshah@codeaurora.org>
- <20211015135809.GB7231@dragon>
- <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
- <20211019094720.GD7231@dragon>
- <38c6bc38-8d5b-a65d-1a26-eb9f268c7644@codeaurora.org>
- <20211021015701.GF7231@dragon>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <66d5fc8d-15ac-290c-8bb9-67900fe125a1@codeaurora.org>
-Date:   Thu, 21 Oct 2021 15:11:26 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231503AbhJUJpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhJUJpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 05:45:16 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBC9C06161C;
+        Thu, 21 Oct 2021 02:43:01 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id y30so1107197edi.0;
+        Thu, 21 Oct 2021 02:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7d9A19lddRW8irMmh+Mt66ZHeRLI+KZdHS1ByPMNTZA=;
+        b=HeHRHIxxA8UavrLE5b8DPIXOG7Pxxaru8WIwBp2TIKbAw2VV2wvlI2Yy9XpqjeH129
+         rHtHfBemKPWFqyVaHvnGyJCNA2GIPUPHGc4YzMg31Gr3HvJ7ecHjxPqF4oTL/JgU1m/a
+         2iXbLL5grsqX+d3nM1wO+afmPTR/f0Mxy+q+JFaQWQCLbSu6JvQVsnzXiJCbI/MNNLPo
+         0gq9CR39u/GCgVgxpTP5YgQsZrLQFgrsHRw3wYwhQcIDPfFOoQjDgB6JPRANkGQsUoZ9
+         XxHti8bRkPTYkZDNHw8KtE8u2vH7FCMgoTx8Igk87tEJ+UG/C4AyHAeYDDC+jRfrXTUv
+         rkyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7d9A19lddRW8irMmh+Mt66ZHeRLI+KZdHS1ByPMNTZA=;
+        b=emzq1HLby3mRr+g38NoTWja8Y8bZr/H+1M32FHBuHMOjQDofBxZAqv1epwxtAv0JWc
+         4D8mmxeu4A1F9wLgDXnYKvdUew+zTo/GO8JCl62NzQuLDR0ZQdWIOeQukD+46t8KKh7E
+         ZNSXaDrXlLHOACT02iXGRBbP6r7jTgl6wzQJ1q7Q+tlJ50KMGXfZACHqDn6moEZ5iafm
+         +TVydyYi5gW55GjEoMDdmDPfvjadTfjculX5xQIkU4PTku5QU5yhIkzOt9QX1ZCtVFF2
+         cNbx8jFolVVqz11B0Lz+OxYAVGloKJwWNYln6AaWUGtb6ITE2rBJFXjG3D0WfvPItgIT
+         n/OA==
+X-Gm-Message-State: AOAM532HVxsB9KVORiwxnQGMfbYWDBt+f0W22cjtrP3R7ZqFE5Qr5wdw
+        PKrecQ6Pt1V+WSK7iyKtCsxq807IMDNGwTRsFqjXLBJdW7zh7w==
+X-Google-Smtp-Source: ABdhPJx00Jiy0O/uySthYcE3x9sIdkDX1n8r7Bnsji3a+Y4fd2EPOVRK3VPIF267F5EQ+BjxjNEsxoP0r30oQflszrs=
+X-Received: by 2002:a17:907:8a27:: with SMTP id sc39mr5961020ejc.567.1634809379628;
+ Thu, 21 Oct 2021 02:42:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211021015701.GF7231@dragon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <8ca87330fd348fc5199ad08904ec90cc6a91a1bf.1634723848.git.viresh.kumar@linaro.org>
+ <CAHp75Vctj-v8W+LgdVpYgRVL3fLdcFnOFRFg74LeCc=xLD+w4w@mail.gmail.com> <20211021043443.snhqpac5ofmxfb7k@vireshk-i7>
+In-Reply-To: <20211021043443.snhqpac5ofmxfb7k@vireshk-i7>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 21 Oct 2021 12:42:05 +0300
+Message-ID: <CAHp75VdKn7Sze9HxN0gBgbuQS2K6oB+SQsufw576Rkfg4-osOw@mail.gmail.com>
+Subject: Re: [PATCH V6] gpio: virtio: Add IRQ support
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "stratos-dev@op-lists.linaro.org" <stratos-dev@op-lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+On Thu, Oct 21, 2021 at 7:34 AM Viresh Kumar <viresh.kumar@linaro.org> wrot=
+e:
+> On 20-10-21, 18:10, Andy Shevchenko wrote:
+> > On Wednesday, October 20, 2021, Viresh Kumar <viresh.kumar@linaro.org>
+> > wrote:
 
-On 10/21/2021 7:27 AM, Shawn Guo wrote:
-> On Tue, Oct 19, 2021 at 06:16:57PM +0530, Maulik Shah wrote:
->> Hi Shawn,
->>
->> On 10/19/2021 3:17 PM, Shawn Guo wrote:
->>> On Mon, Oct 18, 2021 at 07:45:30PM +0530, Maulik Shah wrote:
->>>>>> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
->>>>>> +					     struct stats_data *d,
->>>>>> +					     const struct stats_config *config)
->>>>>> +{
->>>>>> +	char stat_type[sizeof(u32) + 1] = {0};
->>>>>> +	size_t stats_offset = config->stats_offset;
->>>>>> +	u32 offset = 0, type;
->>>>>> +	int i, j;
->>>>>> +
->>>>>> +	/*
->>>>>> +	 * On RPM targets, stats offset location is dynamic and changes from target
->>>>>> +	 * to target and sometimes from build to build for same target.
->>>>>> +	 *
->>>>>> +	 * In such cases the dynamic address is present at 0x14 offset from base
->>>>>> +	 * address in devicetree. The last 16bits indicates the stats_offset.
->>>>>> +	 */
->>>>>> +	if (config->dynamic_offset) {
->>>>>> +		stats_offset = readl(reg + RPM_DYNAMIC_ADDR);
->>>>>> +		stats_offset &= RPM_DYNAMIC_ADDR_MASK;
->>>>>> +	}
->>>>>> +
->>>>>> +	for (i = 0; i < config->num_records; i++) {
->>>>>> +		d[i].base = reg + offset + stats_offset;
->>>>>> +
->>>>>> +		/*
->>>>>> +		 * Read the low power mode name and create debugfs file for it.
->>>>>> +		 * The names read could be of below,
->>>>>> +		 * (may change depending on low power mode supported).
->>>>>> +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
->>>>>> +		 * For rpm-sleep-stats: "vmin" and "vlow".
->>>>>
->>>>> It reports 'vmin' and 'xosd' on MSM8939, 'vmin' and 'vlow' on SDM660.
->>>>> I know that 'vmin' is VDD Minimization mode, and 'xosd' is XO Shutdown
->>>>> mode.  But I'm not sure about 'vlow' mode.  Could you share some
->>>>> information regarding what this low power mode is, and how it differs
->>>>> from 'vmin' and 'xosd'?
->>>>
->>>> vlow and xosd are same.
->>>> vmin is xosd plus voltage minimization of chip, memory rails.
->>>
->>> Thanks much for the info, Maulik!
->>>
->>> I'm running your driver on qcm2290 and trying to reach vlow mode.
->>>
->>> # cat /sys/kernel/debug/qcom_sleep_stats/vlow
->>> Count: 0
->>> Last Entered At: 0
->>> Last Exited At: 0
->>> Accumulated Duration: 0
->>> Client Votes: 0x81
->>> # echo mem > /sys/power/state
->>> [  551.446603] PM: suspend entry (s2idle)
->>> [  551.450948] Filesystems sync: 0.000 seconds
->>> [  551.462828] Freezing user space processes ... (elapsed 0.002 seconds) done.
->>> [  551.472276] OOM killer disabled.
->>> [  551.475556] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
->>> [  551.484461] printk: Suspending console(s) (use no_console_suspend to debug)
->>> [  551.561280] OOM killer enabled.
->>> [  551.564461] Restarting tasks ... done.
->>> [  551.569652] PM: suspend exit
->>> # cat /sys/kernel/debug/qcom_sleep_stats/vlow
->>> Count: 0
->>> Last Entered At: 0
->>> Last Exited At: 0
->>> Accumulated Duration: 0
->>> Client Votes: 0x818081
->>>
->>> The count doesn't increases along with suspend/resume cycle at the
->>> moment.  But as you can see, 'Client Votes' field changes.  If possible,
->>> could you shed some light on what this means?
->>
->> The count will increase only when all the subsystems (APSS/Modem,etc) are in
->> power down mode and finally RPM decides to turn off xo clock.
->>
->>>
->>> As the comparison, I'm also running the downstream 'rpm_master_stats'
->>> driver in the same kernel, and the 'xo_count' field of APSS does
->>> increase along with suspend/resume cycle.  May I ask some advices what
->>> I'm possibly missing and thus getting different result between 'vlow'
->>> and 'rpm_master_stats' report?
->>
->> The vlow is a SoC level state whereas the rpm master stats indicate
->> individual subsystem state. Since you are running suspend-resume the APSS is
->> going to sleep so you see xo_count incremented for it but for MPSS i see it
->> does not increase (modem is not entering to low power mode). similarly for
->> ADSP/CDSP it does not increment. if all of these subsystems goes to power
->> down and then there is sufficient sleep time for the SoC then you may see
->> vlow/vmin incrementing.
->>
->> Hope this clarifies.
-> 
-> Thanks Maulik!  It's very helpful.  I have a couple of further
-> questions, if you do not mind.
-> 
-> 1. We can understand most of vlow/vmin output.  But could you help
->     decode 'Client Votes'?  It looks like the bits are shifting along
->     with suspend/resume cycle.
-> 
+...
 
-Client votes are history of client votes on xo. Each byte represents xo 
-clock votes from subsystems.
+> > > +       case IRQ_TYPE_NONE:
+> > > +               type =3D VIRTIO_GPIO_IRQ_TYPE_NONE;
+> > > +               break;
+> >
+> > IIRC you add dead code. IRQ framework never calls this if type is not s=
+et.
+>
+> Yes, but it is allowed to call
+>
+> irq_set_irq_type(irq, IRQ_TYPE_NONE);
+>
+> and the irq framework won't disallow it AFAICT.
 
+That's true, but how you may end up in this callback with a such?
+What the meaning of that call to the user?
 
-> 2. In the rpm_master_stats output below, I know masters (processors)
->     APSS, MPSS, ADSP and CDSP, but not really sure what TZ is.  If it's
->     TrustZone, shouldn't it covered by APSS?
+...
 
-Yes it indicates for Trustzone but should be covered by APSS.
+> > >  struct virtio_gpio_config {
+> > >         __le16 ngpio;
+> > >         __u8 padding[2];
+> > > @@ -44,4 +56,17 @@ struct virtio_gpio_response_get_names {
+> > >         __u8 value[];
+> > >  };
+> > >
+> > > +/* Virtio GPIO IRQ Request / Response */
+> > > +struct virtio_gpio_irq_request {
+> > > +       __le16 gpio;
+> > > +};
+> > > +
+> > > +struct virtio_gpio_irq_response {
+> > > +       __u8 status;
+> > > +};
+> > >
+> > I=E2=80=99m wondering if those above should be packed.
+>
+> You are talking about the newly added ones or the ones before ?
+>
+> In any case, they are all already packed (i.e. they have explicit
+> padding wherever required) and properly aligned. Compiler won't add
+> any other padding to them.
 
-Thanks,
-Maulik
+Is it only for 64-bit to 64-bit communications?
+If there is a possibility to have 32-bit to 64-bit or vice versa
+communication you have a problem.
 
-> 
-> Thanks for sharing your insights!
-> 
-> Shawn
-> 
->>> # cat /sys/kernel/debug/rpm_master_stats
->>> APSS
->>>           shutdown_req:0x37EA3CC74
->>>           wakeup_ind:0x0
->>>           bringup_req:0x37F041958
->>>           bringup_ack:0x37F042D54
->>>           xo_last_entered_at:0x286FF36AC
->>>           xo_last_exited_at:0x28AF94178
->>>           xo_accumulated_duration:0x3EDD55B
->>>           last_sleep_transition_duration:0x122f
->>>           last_wake_transition_duration:0x11f8
->>>           xo_count:0x1
->>>           wakeup_reason:0x0
->>>           numshutdowns:0x641
->>>           active_cores:0x1
->>>                   core0
->>> MPSS
->>>           shutdown_req:0x0
->>>           wakeup_ind:0x0
->>>           bringup_req:0x0
->>>           bringup_ack:0x0
->>>           xo_last_entered_at:0x0
->>>           xo_last_exited_at:0x0
->>>           xo_accumulated_duration:0x0
->>>           last_sleep_transition_duration:0x0
->>>           last_wake_transition_duration:0x0
->>>           xo_count:0x0
->>>           wakeup_reason:0x0
->>>           numshutdowns:0x0
->>>           active_cores:0x1
->>>                   core0
->>> ADSP
->>>           shutdown_req:0x0
->>>           wakeup_ind:0x0
->>>           bringup_req:0x0
->>>           bringup_ack:0x0
->>>           xo_last_entered_at:0x0
->>>           xo_last_exited_at:0x0
->>>           xo_accumulated_duration:0x0
->>>           last_sleep_transition_duration:0x0
->>>           last_wake_transition_duration:0x0
->>>           xo_count:0x0
->>>           wakeup_reason:0x0
->>>           numshutdowns:0x0
->>>           active_cores:0x1
->>>                   core0
->>> CDSP
->>>           shutdown_req:0x0
->>>           wakeup_ind:0x0
->>>           bringup_req:0x0
->>>           bringup_ack:0x0
->>>           xo_last_entered_at:0x0
->>>           xo_last_exited_at:0x0
->>>           xo_accumulated_duration:0x0
->>>           last_sleep_transition_duration:0x0
->>>           last_wake_transition_duration:0x0
->>>           xo_count:0x0
->>>           wakeup_reason:0x0
->>>           numshutdowns:0x0
->>>           active_cores:0x0
->>> TZ
->>>           shutdown_req:0x0
->>>           wakeup_ind:0x0
->>>           bringup_req:0x0
->>>           bringup_ack:0x0
->>>           xo_last_entered_at:0x0
->>>           xo_last_exited_at:0x0
->>>           xo_accumulated_duration:0x0
->>>           last_sleep_transition_duration:0x0
->>>           last_wake_transition_duration:0x0
->>>           xo_count:0x0
->>>           wakeup_reason:0x0
->>>           numshutdowns:0x0
->>>           active_cores:0x0
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
+--=20
+With Best Regards,
+Andy Shevchenko
