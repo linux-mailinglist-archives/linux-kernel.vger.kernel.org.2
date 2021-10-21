@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73774361A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6354343612F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhJUMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:31:36 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49940 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJUMbf (ORCPT
+        id S231521AbhJUMSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:18:52 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25306 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhJUMSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:31:35 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 914CC20B7179;
-        Thu, 21 Oct 2021 05:29:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 914CC20B7179
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1634819359;
-        bh=vnC52vGFMLBLl3prkclKdto+trnf1OP2GsHX/iOjU18=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dNicFdwSp0Ixk5DbjvSpgipfh2GsYA8xPXZ8PTPF9gjJntyDoxmuNF8tqjonpFuZs
-         fQx6t9/IQrfTa6jOq7hSPTOPKLvgRZR+3fVvekqoncDvLAbwf013zC3RZvbcXaFy61
-         Y27mVzSCMAuVWUFeGGc5zByyBFB+Y8yqy8mvCMvA=
-Subject: Re: [PATCH v10 04/11] arm64: Make return_address() use
- arch_stack_walk()
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-5-madvenka@linux.microsoft.com>
- <YXAvuX7VCVa39eVm@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <eecf3545-420f-77cb-95f2-f5da90b5bd82@linux.microsoft.com>
-Date:   Thu, 21 Oct 2021 07:29:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 21 Oct 2021 08:18:50 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HZmYp60hszbdPV;
+        Thu, 21 Oct 2021 20:11:58 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 20:16:33 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Thu, 21
+ Oct 2021 20:16:32 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <paskripkin@gmail.com>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>, <luomeng12@huawei.com>
+Subject: [PATCH 0/2] nbd: fix sanity check for first_minor
+Date:   Thu, 21 Oct 2021 20:29:34 +0800
+Message-ID: <20211021122936.758221-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YXAvuX7VCVa39eVm@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks.
+Yu Kuai (2):
+  nbd: fix max value for 'first_minor'
+  nbd: fix possible overflow for 'first_minor' in nbd_dev_add()
 
-On 10/20/21 10:03 AM, Mark Brown wrote:
-> On Thu, Oct 14, 2021 at 09:58:40PM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> Currently, return_address() in ARM64 code walks the stack using
->> start_backtrace() and walk_stackframe(). Make it use arch_stack_walk()
->> instead. This makes maintenance easier.
-> 
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+ drivers/block/nbd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+-- 
+2.31.1
+
