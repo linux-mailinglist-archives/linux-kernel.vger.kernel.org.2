@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1478436377
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B34436387
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhJUNza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:55:30 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:58514 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231431AbhJUNz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:55:27 -0400
-Received: from BJHW-Mail-Ex14.internal.baidu.com (unknown [10.127.64.37])
-        by Forcepoint Email with ESMTPS id 5C8913B2146AA655D59E;
-        Thu, 21 Oct 2021 21:53:09 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex14.internal.baidu.com (10.127.64.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 21 Oct 2021 21:53:09 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 21
- Oct 2021 21:53:08 +0800
-Date:   Thu, 21 Oct 2021 21:53:12 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Subject: Re: [PATCH 1/6] kthread: Add the helper macro kthread_run_on_cpu()
-Message-ID: <20211021135312.GA3400@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20211021120135.3003-1-caihuoqing@baidu.com>
- <20211021120135.3003-2-caihuoqing@baidu.com>
- <20211021091001.26c24d5b@gandalf.local.home>
+        id S231566AbhJUN4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231656AbhJUN4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:56:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C551960E05;
+        Thu, 21 Oct 2021 13:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634824472;
+        bh=lj7Vy6G6Z80lDGCuR96G4sMzF/Y1joYmQP4M+9yhfgs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y+TZHuqIlCHt1wg04z7EpGh49E7KoKbTMN9QxrAsy8nu7hOc7eOJUYvymKZW4UrXO
+         6Ov3FfD2p06hQT2syJPZUa7acj/oKbSxjXEmX27FNWn1PJ7OnzUO8Sh2wO5XYAxR8x
+         HJusLK08MiABhyabi2X5xhoQISYQuRylQfHK728IFb/2bdSMr/HXQaM+AhUNpy/KYB
+         NjXi9Qr3QuhRv3pDHZ2PJ306oeZTJ4xzr2GmvrxW/pafwwj7xJwJafZQyaSiobr7G6
+         MEk742cJeS+IF3CPaW3DleBoyQs84otiIeOogSxdTMsBo8RONAQHp+98OfMjaefqhj
+         ZklH/0gD64xlQ==
+Date:   Thu, 21 Oct 2021 14:54:29 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v3] regmap: spi: Set regmap max raw r/w from
+ max_transfer_size
+Message-ID: <YXFxFc1C7QnCQZx9@sirena.org.uk>
+References: <20211021132721.13669-1-andrealmeid@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YGyYHpIGTSbyDXNL"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211021091001.26c24d5b@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex11.internal.baidu.com (172.31.51.51) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex14_2021-10-21 21:53:09:345
+In-Reply-To: <20211021132721.13669-1-andrealmeid@collabora.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21 10月 21 09:10:01, Steven Rostedt wrote:
-> On Thu, 21 Oct 2021 20:01:30 +0800
-> Cai Huoqing <caihuoqing@baidu.com> wrote:
-> 
-> > the helper macro kthread_run_on_cpu() inculdes
-> 
->  "includes"
-> 
-> > kthread_create_on_cpu/wake_up_process().
-> > In some cases, use kthread_run_on_cpu() directly instead of
-> > kthread_create_on_node/kthread_bind/wake_up_process() or
-> > kthread_create_on_cpu/wake_up_process() or
-> > kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> >  include/linux/kthread.h | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> > 
-> > diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> > index 346b0f269161..dfd125523aa9 100644
-> > --- a/include/linux/kthread.h
-> > +++ b/include/linux/kthread.h
-> > @@ -56,6 +56,28 @@ bool kthread_is_per_cpu(struct task_struct *k);
-> >  	__k;								   \
-> >  })
-> >  
-> > +/**
-> > + * kthread_run_on_cpu - create and wake a cpu bound thread.
-> > + * @threadfn: the function to run until signal_pending(current).
-> > + * @data: data ptr for @threadfn.
-> > + * @cpu: The cpu on which the thread should be bound,
-> > + * @namefmt: printf-style name for the thread. Format is restricted
-> > + *	     to "name.*%u". Code fills in cpu number.
-> > + *
-> > + * Description: Convenient wrapper for kthread_create_on_node()
-> > + * followed by wake_up_process().  Returns the kthread or
-> > + * ERR_PTR(-ENOMEM).
-> > + */
-> > +#define kthread_run_on_cpu(threadfn, data, cpu, namefmt)		  \
-> 
-> Why is this a macro and not a static inline function?
-> 
-> -- Steve
-Hi,Thanks for your feedback,
 
-I think using static inline function is nice, but here try to keep
-consistent with the other macros,
-sush as kthread_create/kthread_init_work...
+--YGyYHpIGTSbyDXNL
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Cai.
-> 
-> > +({									  \
-> > +	struct task_struct *__k						  \
-> > +		= kthread_create_on_cpu(threadfn, data, cpu_to_node(cpu), \
-> > +					namefmt);			  \
-> > +	if (!IS_ERR(__k))						  \
-> > +		wake_up_process(__k);					  \
-> > +	__k;								  \
-> > +})
-> > +
-> >  void free_kthread_struct(struct task_struct *k);
-> >  void kthread_bind(struct task_struct *k, unsigned int cpu);
-> >  void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
-> 
+On Thu, Oct 21, 2021 at 10:27:21AM -0300, Andr=E9 Almeida wrote:
+
+> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> [Andr=E9: fix build warning]
+> Signed-off-by: Andr=E9 Almeida <andrealmeid@collabora.com>
+
+It wasn't just a warning, as I told Lucas it was a build error given
+that allmodconfig now has -Werror.
+
+--YGyYHpIGTSbyDXNL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFxcRQACgkQJNaLcl1U
+h9BrjAf9HIvL8NiTdvdOVk1wtnPu9hsIhGzfKU+c1xNUrlUDDCOj0QRxwDgokHap
+ggABTQb+lexCJIz7BFQ6EOfQrzdx6r4INUCYpfJ0lYuFaW8mwrrEJPOogDfsSgi+
+CtzoLqgaZGQgOaK8lfXFJX0fVoVyNh4yxP/HFWjPd8ybMtjBFj5j2RBEOuXE8PE4
+8QKAe9KbcfULKBk8flUVBy2QPU/akVkTiob8T9ew/nkc9DuHGpu/BKO17lgaEPKh
+Wt8+5usYBwabswkk7qliwyhRJZ31vdPX89IP2cC/Jsh9AqYpcNxQ4XngFVbzGkAX
+Tp3EKOQyJdGn+3cxhn+RH2fUZx6uAQ==
+=YUXJ
+-----END PGP SIGNATURE-----
+
+--YGyYHpIGTSbyDXNL--
