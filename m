@@ -2,130 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3E4435C4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B29F435C52
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhJUHrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbhJUHrU (ORCPT
+        id S231330AbhJUHsV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 03:48:21 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:37425 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231406AbhJUHsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:47:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F334DC061749
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 00:45:04 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mdSl1-0002iG-3h; Thu, 21 Oct 2021 09:44:59 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mdSky-0000cq-M2; Thu, 21 Oct 2021 09:44:56 +0200
-Date:   Thu, 21 Oct 2021 09:44:56 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Petr Benes <petrben@gmail.com>,
-        Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>,
-        linux-pm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
-Message-ID: <20211021074456.GD2298@pengutronix.de>
-References: <20211019130809.21281-1-o.rempel@pengutronix.de>
- <20211020050459.GE16320@pengutronix.de>
- <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
- <20211021072000.GC2298@pengutronix.de>
- <afeea08b-6130-3c7c-be03-52691d00be57@linaro.org>
+        Thu, 21 Oct 2021 03:48:19 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9F7C020019;
+        Thu, 21 Oct 2021 07:45:56 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 09:45:55 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ryan Barnett <ryan.barnett@collins.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/48] TI AM437X ADC1
+Message-ID: <20211021094555.0557d1a4@xps13>
+In-Reply-To: <YXA8fVh5Q7aWNFE2@google.com>
+References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
+        <20211020173611.07980c1d@xps13>
+        <YXA8fVh5Q7aWNFE2@google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <afeea08b-6130-3c7c-be03-52691d00be57@linaro.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:43:36 up 245 days, 11:07, 119 users,  load average: 0.15, 0.12,
- 0.12
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 09:41:35AM +0200, Daniel Lezcano wrote:
-> On 21/10/2021 09:20, Oleksij Rempel wrote:
-> > Hi Petr,
-> > 
-> > On Wed, Oct 20, 2021 at 05:53:03PM +0200, Petr Benes wrote:
-> >> On Wed, 20 Oct 2021 at 07:05, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> >>>
-> >>> Hi Petr and Michal,
-> >>>
-> >>> I forgot to add you for v2 in CC. Please test/review this version.
-> >>
-> >> Hi Oleksij,
-> >>
-> >> It works good. with PM as well as without PM. The only minor issue I found is,
-> >> that the first temperature reading (when the driver probes) fails. That is
-> >> (val & soc_data->temp_valid_mask) == 0) holds true. How does
-> >> pm_runtime_resume_and_get() behave in imx_thermal_probe()?
-> >> Does it go through imx_thermal_runtime_resume() with usleep_range()?
-> > 
-> > On the first temperature reading, the PM and part of HW is not
-> > initialized. Current probe sequence is racy and has at least following
-> > issues:
-> > - thermal_zone_device_register is executed before HW init was completed.
-> >   It kind of worked before my patch, becaus part of reinit was done by
-> >   temperature init. It  worked, since the irq_enabled flag was not set,
-> >   but potentially would run enable_irq() two times if device is
-> >   overheated on probe.
-> > - the imx_thermal core is potentially disable after first race
-> >   condition:
-> >   CPU0					CPU1
-> >   thermal_zone_device_register()
-> > 					imx_get_temp()
-> >   					irq_enabled == false
-> > 						power_up
-> > 						read_temp
-> >   power_up
-> >   						power_down
-> >   irq_enabled = true;
-> > 
-> >   ... at this point imx_thermal is powered down for some amount of time,
-> >   over temperature IRQ will not be triggered for some amount of time.
-> > 
-> > - if some part after thermal_zone_device_register() would fail or
-> >   deferred, the worker polling temperature will run in to NULL pointer.
-> >   This issue already happened...
-> > 
-> > After migrating to runtime PM, one of issues started to be visible even
-> > on normal conditions.
-> > I'll send one more patch with reworking probe sequence.
+Hi Lee,
+
+lee.jones@linaro.org wrote on Wed, 20 Oct 2021 16:57:49 +0100:
+
+> On Wed, 20 Oct 2021, Miquel Raynal wrote:
 > 
-> Are you planning to send a v3 with this patch? Or a separate patch?
+> > Hi Lee,
+> > 
+> > miquel.raynal@bootlin.com wrote on Fri, 15 Oct 2021 10:14:18 +0200:
+> >   
+> > > /*
+> > >  * Reducing the Cc: list as this is just a rebase and all patches
+> > >  * received reviews already. Only the DT patches have received no
+> > >  * feedback, hence keeping the omap@ list in.
+> > >  */
+> > > 
+> > > Hello,
+> > > 
+> > > This is a (fairly big) series bringing support of AM437X ADC1.
+> > > On TI AM33XX SoCs family there is an ADC that can also be connected to a
+> > > touchscreen. This hardware has been extended and is present on certain
+> > > SoCs from the AM437X family. In particular, the touchscreen has been
+> > > replaced by a magnetic card reader. In both cases, the representation is
+> > > an MFD device with two children:
+> > > * on AM33XX: the touchscreen controller and the ADC
+> > > * on AM437X: the magnetic stripe reader and the ADC
+> > > 
+> > > This series really targets small and atomic changes so that the overall
+> > > review is eased, even though it leads to a lot of rather small patches.
+> > > Here are the steps:
+> > > * Supporting the missing clock
+> > > * Translating a single text file containing the description for the
+> > >   MFD, the touchscreen and the ADC into three independent yaml files.
+> > > * Cleaning/preparing the MFD driver.
+> > > * Supporting ADC1 in the MFD driver.
+> > > * Cleaning/preparing of the ADC driver.
+> > > * Supporting ADC1 in the ADC driver.
+> > > * Updating various device trees.
+> > > 
+> > > Here is the full series again, almost reviewed and acked entirely.
+> > > The clock patch has been acked, the ADC patches as well, so we expect
+> > > the series to go through the MFD tree if the maintainers agree with it.  
+> > 
+> > Sorry to ping you so early, but we already are at -rc6 and I was
+> > wondering if you could take the series as it has been on the mailing
+> > list for a while and received no real change since a couple of weeks
+> > already, possibly avoiding the need for yet another resend of 48
+> > patches :)  
+> 
+> Don't worry, it's email day tomorrow.  I have a bunch of high-priority
+> patches/sets that I aim to handle, yours included.
 
-I'm OK with both variants. What do you prefer?
+Haha, ok, thanks for the quick feedback :)
 
-I'll do i on top of PM patch to reduce refactoring overhead, if you OK
-about it.
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Cheers,
+Miquèl
