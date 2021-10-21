@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62E435F63
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98089435F66
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhJUKm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhJUKm6 (ORCPT
+        id S230381AbhJUKnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:43:39 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58573 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhJUKni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:42:58 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3E4C06161C;
-        Thu, 21 Oct 2021 03:40:42 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id l5so1084095lja.13;
-        Thu, 21 Oct 2021 03:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pOBAuVN6JNFOHIGH5sbYmAMZ0cNNUYNZfaKPm0hr+Wc=;
-        b=d0/P+9UObVdNOed4aqrRly7PMFuynMX/yDkBFl9UO778+dfFMEv0/YhoHpSEkYX4f1
-         HkZSwD77X/OLzHxqpK2eAxNf7v53XaUM6E+V5aGJsp96QIkvNUd21/yhZgtbP3AgQ4Mp
-         Yqt9TRQ2MqlTm5cvYJYCLghY/wBR/ajWSW0XDLgkYjrZCJ9h7QCQcaR/Xx32tvCjA1NR
-         mjQN6AKh/nZXNvFCgG+viQon8U0Q8+/GinC+68Tfdr1ZHEyYdHIOqBflxLN21e4QUb/c
-         kkyckhhfEpvCk4peR94ktXHNtuelWDTUZzljyt9iL4z6J7/jBbhahxj+/NMBo9v8NC03
-         3exA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pOBAuVN6JNFOHIGH5sbYmAMZ0cNNUYNZfaKPm0hr+Wc=;
-        b=jk0x9Sa+WwQJgOBBxfuA1sr/wMXLwdhQA3KPCFxSkz8Cd3iuNyEdR6jEqlPU2nMH32
-         jkL4w5OT837ioQPUi2CKmk/NtMM5aLmYb+i1Sbjsr7kYbCBl78Hk6luu5sQeKc2PlA3k
-         H1HNC5uQmg7PY2tRUkb7Asd6xISjQzvSSFzWWyOqv9hC4mmR+JcNLj6aBQfLTjTMD5Qd
-         GrlIBPOvxq2lZgFVxNB1d+QPXSOPszqOuCCexsRq9VF6aSqYDE9+5MYT0ku1Fmvv0l3W
-         feRwxmgbFi78sYZaYiRsr0ydsac0yFHQ3//jkTGgfM56sc+JxNL+Sm05B+pZUHri1NA/
-         CXeQ==
-X-Gm-Message-State: AOAM531BpaRqCrPXWjg5ivHhtN+9TfGIaWD/irzfNfpev1c8f+Ytst2l
-        dUQofHiG4KuXtC4bikNMDBCRHcw68BDm9Bo8
-X-Google-Smtp-Source: ABdhPJweUAYI/2N+dywQaYjXJ2+lEJoHS1HHsj3N2gjN6fnfyTEbDXWNIR1wpjo2PCCKpwVlKRgNnQ==
-X-Received: by 2002:a05:651c:1201:: with SMTP id i1mr5005242lja.207.1634812841011;
-        Thu, 21 Oct 2021 03:40:41 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 195sm506199ljf.13.2021.10.21.03.40.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 03:40:40 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 21 Oct 2021 12:40:38 +0200
-To:     Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>
-Cc:     NeilBrown <neilb@suse.de>, Uladzislau Rezki <urezki@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <20211021104038.GA1932@pc638.lan>
-References: <20211019194658.GA1787@pc638.lan>
- <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
- <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
- <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>
- <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
- <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
- <20211020192430.GA1861@pc638.lan>
- <163481121586.17149.4002493290882319236@noble.neil.brown.name>
- <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 21 Oct 2021 06:43:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634812882; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7su0I+Cm2UR39hj8F5yPEmprnnp43Htc3Pt6n3Bkmtc=; b=msYY/3wmsOf62cIfeU/8JwQGihbSkNC7Afn73TbPw99uzFvh1MpXv+PzuwfJ8CQeF/U4hi4U
+ CZVZPIuyIntCSEWjQs6T3gXTLKLCbPpDkzg2d2C5MfXlMt1Pfz/qlUksV0px3AqS2Go9qzGN
+ NJburLkPPhdTJ5eJEgyqvtk6bNA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 617143ca67f107c611e51f38 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Oct 2021 10:41:14
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24933C4361A; Thu, 21 Oct 2021 10:41:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A55FAC43460;
+        Thu, 21 Oct 2021 10:41:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A55FAC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Odelu Kukatla <okukatla@codeaurora.org>
+To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com
+Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, okukatla@codeaurora.org,
+        seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: [v8 0/3] Add L3 provider support for SC7280
+Date:   Thu, 21 Oct 2021 16:10:54 +0530
+Message-Id: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu 21-10-21 21:13:35, Neil Brown wrote:
-> > On Thu, 21 Oct 2021, Uladzislau Rezki wrote:
-> > > On Wed, Oct 20, 2021 at 05:00:28PM +0200, Uladzislau Rezki wrote:
-> > > > >
-> > > > > On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
-> > > > > > On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > [...]
-> > > > > > > As I've said I am OK with either of the two. Do you or anybody have any
-> > > > > > > preference? Without any explicit event to wake up for neither of the two
-> > > > > > > is more than just an optimistic retry.
-> > > > > > >
-> > > > > > From power perspective it is better to have a delay, so i tend to say
-> > > > > > that delay is better.
-> > > > >
-> > > > > I am a terrible random number generator. Can you give me a number
-> > > > > please?
-> > > > >
-> > > > Well, we can start from one jiffy so it is one timer tick: schedule_timeout(1)
-> > > > 
-> > > A small nit, it is better to replace it by the simple msleep() call: msleep(jiffies_to_msecs(1));
-> > 
-> > I disagree.  I think schedule_timeout_uninterruptible(1) is the best
-> > wait to sleep for 1 ticl
-> > 
-> > msleep() contains
-> >   timeout = msecs_to_jiffies(msecs) + 1;
-> > and both jiffies_to_msecs and msecs_to_jiffies might round up too.
-> > So you will sleep for at least twice as long as you asked for, possible
-> > more.
-> 
-> That was my thinking as well. Not to mention jiffies_to_msecs just to do
-> msecs_to_jiffies right after which seems like a pointless wasting of
-> cpu cycle. But maybe I was missing some other reasons why msleep would
-> be superior.
->
+Add Epoch Subsystem (EPSS) L3 provider support on SM7280 SoCs.
 
-To me the msleep is just more simpler from semantic point of view, i.e.
-it is as straight forward as it can be. In case of interruptable/uninteraptable
-sleep it can be more confusing for people.
+v8:
+ - Addressed Stephen's comments from v7
+ - Resolved region mapping conflict between cpufreq-hw and epss_l3 devices.
+ 
+Odelu Kukatla (3):
+  dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+  interconnect: qcom: Add EPSS L3 support on SC7280
+  arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
 
-When it comes to rounding and possibility to sleep more than 1 tick, it
-really does not matter here, we do not need to guarantee exact sleeping
-time.
+ .../bindings/interconnect/qcom,osm-l3.yaml           |  1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi                 |  8 ++++++++
+ drivers/interconnect/qcom/osm-l3.c                   | 20 +++++++++++++++++++-
+ drivers/interconnect/qcom/sc7280.h                   |  2 ++
+ 4 files changed, 30 insertions(+), 1 deletion(-)
 
-Therefore i proposed to switch to the msleep().
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
---
-Vlad Rezki
