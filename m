@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD07A436192
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9FB436195
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhJUM1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:27:50 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:38542
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230231AbhJUM1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:27:49 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0D638402CE
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634819133;
-        bh=OEvgfMSIzLFlHfTd+aj6jAI5gittIjBiCSXpIdeWxOQ=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=QdcMk4Jj1Cp/tQU67s3GhkmBC1/xhsmui+sH8BAezONB8rB2lfhIdEfqspxEQhirS
-         sqoD7o/X7WDgMamjKO9WrrBhUCwIlDPKZiSqMEyYpdpjf3RrquP+dAJzNGseSMLFC/
-         CDw13dFbHT9K/FpGrtMItVAfX6XPWwT6QQgyo5nLu/z2J/lYc2gF9cljWmPEZLzsYq
-         p1Yh/x0cUzx3w06y1hhWCjM+hA9LZ1+e1aJ2OrXO1j8eDLbmuoK/fTMwnQZKbc9TnV
-         zFFF1LoJLeBQ+QDXInXb8jhiZrQxxVZWfW1s1+dzjW9bETkih7TI0oy4FreQc5L/Ki
-         Sbkx3qvw56Y/w==
-Received: by mail-lf1-f70.google.com with SMTP id p19-20020a056512139300b003ff6dfea137so219554lfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:25:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OEvgfMSIzLFlHfTd+aj6jAI5gittIjBiCSXpIdeWxOQ=;
-        b=psBvgFsymosDOt4l0DIJPOK93Jrfrk3p4MsnFFxq6li+1TRIdbmCRfrcXUUbSkwNSr
-         JsgWqNh0rjOvPw1Fr/CsgW5LQCUONMyJmW8/sfKNaMIcnw6/wpm96MWOFUio1a9ETvNq
-         GjJWZ+Tz4QKa89l5cMEBNUsDCn/VhRwEAqnWQZlQ6sCqrNt/MgCp8xHB22Rc5XvVhHPX
-         d8uTcDO2ccNqWIDf7p4MML/8InAqyd/RS6BvhPGUh5PTDfiOZ08dpTMG1fuTd4caZ4uH
-         5A8ZwaMYmrHK1ljv7ZhdvIY0x2CpuNAKGAN4KJpmbJ7jgYsro5X3XE9M7R0ueZm9Y2Op
-         Dgqg==
-X-Gm-Message-State: AOAM531x24evAZLNcX8RdDEQJp+XvnWaI5pybxqAKvoNvLSkNJBFX/BW
-        84xWrq18o2CO8CvwzoBHjpoC+vM20RygH2tMd7RW8IWKpftsNIqygKJylm4CXFIp91B7M3uGZH4
-        TQQ+zGBP0+ojy7q6sHFlSLFPl21lthNrA4dHNhRjLdg==
-X-Received: by 2002:a05:651c:230e:: with SMTP id bi14mr5404511ljb.467.1634819132271;
-        Thu, 21 Oct 2021 05:25:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0/8NcGHTrSWS0H6+LXQbRBX3Abg2xVQ13rASma1FIwjNQK3yxWARDRCPBIvJmD3bqslQp8Q==
-X-Received: by 2002:a05:651c:230e:: with SMTP id bi14mr5404491ljb.467.1634819132086;
-        Thu, 21 Oct 2021 05:25:32 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id o15sm537797ljm.139.2021.10.21.05.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 05:25:31 -0700 (PDT)
-Subject: Re: [GIT PULL] riscv: dts: few cleanups for v5.16
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Olof Johansson <olof@lixom.net>, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <20211021090955.115005-1-krzysztof.kozlowski@canonical.com>
- <CAK8P3a08QiwA4+zPGLt3xA=01HLiBcLcC4gM1+8N6uo5KMTQLw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <4f9141f6-a35f-e412-7a9e-a00a7c8376b2@canonical.com>
-Date:   Thu, 21 Oct 2021 14:25:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231524AbhJUM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:29:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:42006 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231297AbhJUM3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:29:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B7424ED1;
+        Thu, 21 Oct 2021 05:27:32 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 663083F73D;
+        Thu, 21 Oct 2021 05:27:31 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 13:27:29 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Songxiaowei <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset to
+ finish
+Message-ID: <20211021122728.GB12568@lpieralisi>
+References: <cover.1634622716.git.mchehab+huawei@kernel.org>
+ <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a08QiwA4+zPGLt3xA=01HLiBcLcC4gM1+8N6uo5KMTQLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 14:23, Arnd Bergmann wrote:
-> On Thu, Oct 21, 2021 at 11:09 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> Hi Arnd and Olof,
->>
->> I have an old patchset for RISC-V dts cleanups which I sent to mailing lists in
->> August 2021 (v1, v2), resent in September and pinged two times.  They got some
->> review (from Alexandre Ghiti for SiFive, from Conor Dooley for Microchip) but
->> unfortunately Palmer (RISC-V maintainer) did not respond here.
->>
->> The usual RISC-V patches go via Palmer to Linus and I am not planning to change
->> that, but I want to get these fixed.
->>
->> Could you grab these to soc tree?
+On Tue, Oct 19, 2021 at 07:06:42AM +0100, Mauro Carvalho Chehab wrote:
+> Before code refactor, the PERST# signals were sent at the
+> end of the power_on logic. Then, the PCI core would probe for
+> the buses and add them.
 > 
-> Sure, I can add them to a separate branch in the soc tree, in case the
-> riscv maintainers
-> take them after all. I notice that you have only Cc'd Palmer, but not
-> the other two
-> maintainers or the RISC-V mainling list. Adding them here to maybe get their
-> attention.
+> The new logic changed it to send PERST# signals during
+> add_bus operation. That altered the timings.
+> 
+> Also, HiKey 970 require a little more waiting time for
+> the PCI bridge - which is outside the SoC - to finish
+> the PERST# reset, and then initialize the eye diagram.
+> 
 
-Yes, my bad. Thanks for cc-ing them.
+Ok, now you explained it and we should move this explanation
+in the commit log that this change is affecting (I mean we
+should squash this patch with the patch that actually requires it
+- I am not sure whether it is patch 6 or another one).
 
+I can do it for you; I thought it would be a standalone change
+but it actually isn't, because it is brought about by the
+changes you are making and therefore there it belongs.
 
-Best regards,
-Krzysztof
+Thanks for explaining it and apologies for the churn.
+
+Lorenzo
+
+> So, increase the waiting time for the PERST# signals to
+> what's required for it to also work with HiKey 970.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+> 
+> See [PATCH v14 00/11] at: https://lore.kernel.org/all/cover.1634622716.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index de375795a3b8..bc329673632a 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -113,7 +113,7 @@ struct kirin_pcie {
+>  #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
+>  
+>  /* Time for delay */
+> -#define REF_2_PERST_MIN		20000
+> +#define REF_2_PERST_MIN		21000
+>  #define REF_2_PERST_MAX		25000
+>  #define PERST_2_ACCESS_MIN	10000
+>  #define PERST_2_ACCESS_MAX	12000
+> -- 
+> 2.31.1
+> 
