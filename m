@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F99435E91
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A984435E90
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhJUKFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhJUKFh (ORCPT
+        id S231627AbhJUKFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:05:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46230 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231447AbhJUKFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:05:37 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FD8C061749
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 03:03:21 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id r7so119270wrc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 03:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Pq6ffVOHqPjfKN12beban1i7Qjv2tPHN8CWSESl3fUQ=;
-        b=f1t5T1HrVbqwRSlm2cPc1EGMx1JrONofDyFCm53gZY8MiyAbzia/BrKYdWW2YgXyKB
-         n3gPfiivXhQBAwEs9iSh7btskWaLYgdkzLqmZhqOfzrstMuCKXkuPjJaMKn8uh5AUQyZ
-         ytaVKFj/4QaoiZv9kN6ApDzmyCZ3n4+FgTw/3L+HqkYvY6khz0HGrLbZHR2HQV81pVmZ
-         sD+pmAuIsHGuCDh9enq+QhF15cQnspOfFQkh9IUHViLltK23ZXoynf4SCy8qiBkk/FtM
-         a2/RNMxdGbc6hZzuFq0eXrQ1IlZJjvsSh1o+KLurOiGiKMPuqJhTbZh86DAsGYeQVlN3
-         Rl3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Pq6ffVOHqPjfKN12beban1i7Qjv2tPHN8CWSESl3fUQ=;
-        b=SjmwlOkuYwNsXKQZUoAotMEM6NMvnqsgutUmLHvL36z9EE5ym5CjiJwxHe0gmv61Xr
-         aDpA5b3nTbkw9ARMXM8jP0Y9Th/kUx1dVpxZOC3VUW5IkUeAsjTNHcscoqTeHNPCGChv
-         qPnNfl8E15HOyAYcS+D3B4eVOCUt0JBX09D6cpNKb6eoh3S0I6vCbYioQ1vQRX6JBP+L
-         hN0vZdLLB0X5SoTsnGTJy1fJfJ18nkoSxdnQZ/OWRYpAmK47SMoQEU5fbTIUJl9BCsgI
-         pmRWG6sbE2iOKxTbbw4CFuVHoD7YfOYNbkCaodshIm95qEKV0AtLxEbMCu6TIBCly/Dn
-         r8Ow==
-X-Gm-Message-State: AOAM530968hexMprVAXZvC+DSaV/UuMuZ/yszpXqMs1AL4BXbHH5+xCJ
-        3b1CePEAkE+IAJ041BeMcTxczA==
-X-Google-Smtp-Source: ABdhPJx7WTp8oG6l5QNbcQVWisfShvLDN8DMb9PpRMsPd1LvqzjLVj02VOuCi7j7aSCfBu2SYff0Cg==
-X-Received: by 2002:a5d:47a7:: with SMTP id 7mr5958605wrb.75.1634810600022;
-        Thu, 21 Oct 2021 03:03:20 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id r17sm5012006wmq.47.2021.10.21.03.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 03:03:19 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 11:03:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] mfd/regulator: dt-bindings: max77686: convert to
- dtschema
-Message-ID: <YXE65SBhGFHP54L6@google.com>
-References: <20211008123552.191384-1-krzysztof.kozlowski@canonical.com>
+        Thu, 21 Oct 2021 06:05:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DCBDF21989;
+        Thu, 21 Oct 2021 10:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634810599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lb7XXB7wqKHGBh2gL7Zyuh+FLppJxySX9xGrB8I5wEA=;
+        b=MaSik9roDAoYdCgZi6qhyc/laF7U1vE39+hc/YlZ2kqzOLWCOp9dmjNxyq1n3YFWcr31HR
+        hfp/RkT+NiT208Nclww+4g8e32HXhCKSORvYbq/dLlJBIuj5KXhL/Vt7R6h6isHu1TOkUv
+        f6TAQnNCl2+kwVuGHquE1a7UyTfgFd0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 817F3A3B81;
+        Thu, 21 Oct 2021 10:03:19 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 12:03:18 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg 2/3] memcg: remove charge forcinig for dying tasks
+Message-ID: <YXE65h/1qeSzKA4C@dhcp22.suse.cz>
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
+ <YXAOjQO5r1g/WKmn@dhcp22.suse.cz>
+ <cbda9b6b-3ee5-06ab-9a3b-debf361b55bb@virtuozzo.com>
+ <YXAubuMMgNDeguNx@dhcp22.suse.cz>
+ <dee26724-3ead-24d4-0c1b-23905bfcdae9@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008123552.191384-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <dee26724-3ead-24d4-0c1b-23905bfcdae9@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Oct 2021, Krzysztof Kozlowski wrote:
+On Thu 21-10-21 00:20:02, Tetsuo Handa wrote:
+> On 2021/10/20 23:57, Michal Hocko wrote:
+> > One argument for removing it from here is the maintainability. Now you
+> > have a memcg specific check which is not in sync with the oom. E.g.
+> > out_of_memory does task_will_free_mem as the very first thing. You are
+> > also automatically excluding oom killer for cases where that might make
+> > a sense.
+> 
+> What makes it possible to remove this check?
+> This check was added because task_will_free_mem() in out_of_memory() does NOT work.
+> See commit 7775face207922ea ("memcg: killed threads should not invoke memcg OOM killer").
 
-> Hi,
-> 
-> Convert Maxim MAX77686 bindings to dtschema.  The MFD patch (2/2)
-> depends on regulator, so this should go via one tree, for example MFD or DT.
-> 
-> Changes since v1:
-> =================
-> See individual patches.
-> 
-> Clock bindings
-> ==============
-> Existing Documentation/devicetree/bindings/clock/maxim,max77686.txt are
-> left untouched. The file is still used/referenced by other Maxim
-> devices: MAX77620 and MAX77802.
-> 
-> Best regards,
-> Krzysztof
-> 
-> Krzysztof Kozlowski (2):
->   regulator: dt-bindings: maxim,max77686: convert to dtschema
->   dt-bindings: mfd: maxim,max77686: convert to dtschema
-> 
->  .../devicetree/bindings/mfd/max77686.txt      |  26 ----
->  .../bindings/mfd/maxim,max77686.yaml          | 132 ++++++++++++++++++
->  .../bindings/regulator/max77686.txt           |  71 ----------
->  .../bindings/regulator/maxim,max77686.yaml    |  83 +++++++++++
->  MAINTAINERS                                   |   2 +-
->  5 files changed, 216 insertions(+), 98 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/max77686.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
->  delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
-
-Does this need a PR too?
+You are right. I've forgot about this and should have checked git blame.
+Thanks for bringing this up!
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Michal Hocko
+SUSE Labs
