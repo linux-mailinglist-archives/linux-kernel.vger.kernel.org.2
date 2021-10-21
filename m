@@ -2,523 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D87436B6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D240B436B6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhJUTlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:41:50 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:46661 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhJUTls (ORCPT
+        id S231687AbhJUTnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhJUTnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:41:48 -0400
-Received: by mail-io1-f69.google.com with SMTP id z15-20020a5ec90f000000b005dcd32f83a7so1180010iol.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:39:32 -0700 (PDT)
+        Thu, 21 Oct 2021 15:43:24 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37D5C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:41:07 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id n2so1558713qta.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=edi.works; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=ya+ey+/s1GWZFIFDEVYnkh73PpmflCvvRgfCjgGVd2s=;
+        b=Xfi1Dn95lqsvmCPIc9GnNDru6HiU0weozjV/Unthgfpg2bqsLQ47oUJ/Z2lrDYgv4+
+         Q2LZe6wFOpSHL5FTPcC+NLlyyg5PaLJOn9+QILPOQ+gkP1JzYkLFjtZf1dGhpEnb/Bhm
+         XJGy8O7SW3jp1HVtKIdU/I+jKwwIRqePw4pxnwKb5zaNcFXYVu8EWC2mGJdKvpLvA5rR
+         sYzUqBIgoEDLa55RAcIa6+8cyL5lkFhwlC0viulj63CT885EzIyO32ApeqVMUGQiMDeS
+         FTqSIInkVM6/agBSGZVYHLYx4jdJcN59OqOpMPFMfkZbfG49GTX0Yy50UXMcCMGK1mFJ
+         52Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=stILLCHo2x1Ny9sM198jHpFIvv7N48qafiXn5jmb3uA=;
-        b=CkaaQnO9bdsCkASY8zD/sbHiFI+X5mM0fphmudghjQ97bZe1/WI4RPrHTb6X8Qe+rb
-         iBVmi1DlxNhUn3vVXKpw1ZBO3V1djd1AbddmlKgvEZzjxOw2DHmTDmdY6sxzT3NNmgKh
-         ivJ0C0yr+oTaHwJY0fdN3tEOOc07Im5wda35ijFG85gMPpbnBit+07aKAPzeundCil5v
-         /n5XejCvYSMNwSUaUfbrrIDYph9iopNQvOktMzbiFrwEIEKuK2ic0ndB/g/SsylQQA+r
-         yb6izWOfgjpQM8cs9j9MuHDHNzuW7OklPNBbispzwczRqq/00rR8iHhUnsgom83kN9nM
-         RpJQ==
-X-Gm-Message-State: AOAM533fLUvXYXjs8WZy7exMcrDez+pUjs9rnBFZPbMbzwdyTxFcXTlN
-        ZIyAu0WlJYIaRimy/wvH2JHgMFFoGcek1msx6B8Y+Synz16E
-X-Google-Smtp-Source: ABdhPJyjnXtRNBm5LmZF/aNPdYmF7rovk3gG+wruTt6nXMkApZpBSaJ6HU5fsZANTAyaq4y+QophbhIurNsKFxU1L0QWoZYbGnWF
-MIME-Version: 1.0
-X-Received: by 2002:a02:cf27:: with SMTP id s7mr5155877jar.71.1634845172370;
- Thu, 21 Oct 2021 12:39:32 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 12:39:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3110805cee20d4e@google.com>
-Subject: [syzbot] INFO: task hung in wg_netns_pre_exit (2)
-From:   syzbot <syzbot+fa3b49ed40f26375a8ee@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=ya+ey+/s1GWZFIFDEVYnkh73PpmflCvvRgfCjgGVd2s=;
+        b=aZ9OFvlLKwGL7t3LJ8xF47sbkoH55IEGL8fldBp5MGfVRBAe7+YCX/9hdpzKWhuQj8
+         jjxFakOyohNkNjEQoCel8Xicffodw3nJ+FhOyjcLWi/Qq34ddTTPH2grQMaEfxfeaobR
+         t/d0gIWWjApz24+ZoDjH/QIoJ96xLGBYlzFXyuMXzB/EpDBTttZN0Xd2kb0smLxnxZTT
+         c3o+IdBt6p1ugXcxsd20Yk6z0kZnRkvYLyEx5yeCgKbznBmFgFyQae+bjk+JJXKcDmfP
+         BuTweW5F9xgj7dL4Z+lGTUaVyWKXOmWV8UUZ7Px7MukwxL7/ojI4+XONouCipfL2w1WG
+         mG8g==
+X-Gm-Message-State: AOAM533be2cRCB8tP5yW/o33yfq7agRAb+rDtPEo8u7uaLyFEOuIBDcx
+        rgEko7OjJO9DgHXeFevLvKH/Ow==
+X-Google-Smtp-Source: ABdhPJyzSsn7y+qPAs8E1dehOi51zLVJJCYFsl8n/25ZtWFBz+j/k5Vz5EpwQdRSMgQb7oILZ3MQsg==
+X-Received: by 2002:a05:622a:1194:: with SMTP id m20mr8330851qtk.175.1634845266822;
+        Thu, 21 Oct 2021 12:41:06 -0700 (PDT)
+Received: from localhost.localdomain (c-67-169-44-201.hsd1.ca.comcast.net. [67.169.44.201])
+        by smtp.gmail.com with ESMTPSA id c26sm2904609qtm.21.2021.10.21.12.41.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Oct 2021 12:41:06 -0700 (PDT)
+From:   bot@edi.works
+To:     yuzhao@google.com
+Cc:     hdanton@sina.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        page-reclaim@google.com, corbet@lwn.net,
+        michael@michaellarabel.com, sofia.trinh@edi.works
+Subject: Re: [PATCH v4 00/11] Multigenerational LRU Framework
+Date:   Thu, 21 Oct 2021 12:41:03 -0700
+Message-Id: <20211021194103.65648-1-bot@edi.works>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210818063107.2696454-1-yuzhao@google.com>
+References: <20210818063107.2696454-1-yuzhao@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Kernel / Memcached benchmark with MGLRU
 
-syzbot found the following issue on:
+TLDR
+====
+With the MGLRU, Memcached achieved 95% CIs [23.54, 32.25]%, [20.76,
+41.61]%, [13.85, 15.97]%, [21.59, 30.02]% and [23.94, 29.92]% more
+operations per second (OPS), respectively, for sequential access w/
+THP=always, random access w/ THP=always, random access w/ THP=never,
+Gaussian access w/ THP=always and Gaussian access w/ THP=never. There
+were no statistically significant changes in OPS for sequential
+access w/ THP=never.
 
-HEAD commit:    02d5e016800d Merge tag 'sound-5.15-rc4' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e21b17300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c76f0f4ac6e9f8d2
-dashboard link: https://syzkaller.appspot.com/bug?extid=fa3b49ed40f26375a8ee
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Background
+==========
+Memory overcommit can increase utilization and, if carried out
+properly, can also increase throughput. The challenges are to improve
+working set estimation and to optimize page reclaim. The risks are
+performance degradations and OOM kills. Short of overcoming the
+challenges, the only way to reduce the risks is to underutilize
+memory.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Memcached is one of the most popular open-source in-memory KV stores.
+memtier_benchmark is the leading open-source KV store benchmarking
+software that supports multiple access patterns. THP can have a
+negative effect under memory pressure, due to internal and/or
+external fragmentations.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fa3b49ed40f26375a8ee@syzkaller.appspotmail.com
+Matrix
+======
+Kernels: version [+ patchset]
+* Baseline: 5.14
+* Patched: 5.14 + MGLRU
 
-INFO: task kworker/u4:3:254 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u4:3    state:D stack:24064 pid:  254 ppid:     2 flags:0x00004000
-Workqueue: netns cleanup_net
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- wg_netns_pre_exit+0x15/0x190 drivers/net/wireguard/device.c:402
- ops_pre_exit_list net/core/net_namespace.c:158 [inline]
- cleanup_net+0x451/0xb00 net/core/net_namespace.c:579
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-INFO: task syz-executor.5:13115 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:28440 pid:13115 ppid:  6871 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- smc_pnet_create_pnetids_list net/smc/smc_pnet.c:798 [inline]
- smc_pnet_net_init+0x1f9/0x410 net/smc/smc_pnet.c:867
- ops_init+0xaf/0x470 net/core/net_namespace.c:140
- setup_net+0x40f/0xa30 net/core/net_namespace.c:326
- copy_net_ns+0x319/0x760 net/core/net_namespace.c:470
- create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
- ksys_unshare+0x445/0x920 kernel/fork.c:3077
- __do_sys_unshare kernel/fork.c:3151 [inline]
- __se_sys_unshare kernel/fork.c:3149 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3149
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2348aa4709
-RSP: 002b:00007f234601b188 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
-RAX: ffffffffffffffda RBX: 00007f2348ba8f60 RCX: 00007f2348aa4709
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000048040200
-RBP: 00007f2348afecb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe1dab5b5f R14: 00007f234601b300 R15: 0000000000022000
-INFO: task syz-executor.5:13120 blocked for more than 144 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:26688 pid:13120 ppid:  6871 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2348aa4709
-RSP: 002b:00007f2345ffa188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f2348ba9020 RCX: 00007f2348aa4709
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f2348afecb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe1dab5b5f R14: 00007f2345ffa300 R15: 0000000000022000
-INFO: task syz-executor.5:13156 blocked for more than 144 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:28696 pid:13156 ppid:  6871 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- smc_pnet_create_pnetids_list net/smc/smc_pnet.c:798 [inline]
- smc_pnet_net_init+0x1f9/0x410 net/smc/smc_pnet.c:867
- ops_init+0xaf/0x470 net/core/net_namespace.c:140
- setup_net+0x40f/0xa30 net/core/net_namespace.c:326
- copy_net_ns+0x319/0x760 net/core/net_namespace.c:470
- create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
- ksys_unshare+0x445/0x920 kernel/fork.c:3077
- __do_sys_unshare kernel/fork.c:3151 [inline]
- __se_sys_unshare kernel/fork.c:3149 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3149
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2348aa4709
-RSP: 002b:00007f2345fd9188 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
-RAX: ffffffffffffffda RBX: 00007f2348ba90e0 RCX: 00007f2348aa4709
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000048040200
-RBP: 00007f2348afecb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe1dab5b5f R14: 00007f2345fd9300 R15: 0000000000022000
-INFO: task syz-executor.5:13162 blocked for more than 145 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:28024 pid:13162 ppid:  6871 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2348aa4709
-RSP: 002b:00007f2345f97188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f2348ba9260 RCX: 00007f2348aa4709
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f2348afecb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe1dab5b5f R14: 00007f2345f97300 R15: 0000000000022000
-INFO: task syz-executor.2:13147 blocked for more than 145 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:28072 pid:13147 ppid:  6566 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fccb83ee709
-RSP: 002b:00007fccb5965188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fccb84f2f60 RCX: 00007fccb83ee709
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000006
-RBP: 00007fccb8448cb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd586b757f R14: 00007fccb5965300 R15: 0000000000022000
-INFO: task syz-executor.2:13150 blocked for more than 145 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:28656 pid:13150 ppid:  6566 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fccb83ee709
-RSP: 002b:00007fccb5944188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fccb84f3020 RCX: 00007fccb83ee709
-RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000005
-RBP: 00007fccb8448cb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd586b757f R14: 00007fccb5944300 R15: 0000000000022000
-INFO: task syz-executor.2:13153 blocked for more than 146 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:28656 pid:13153 ppid:  6566 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fccb83ee709
-RSP: 002b:00007fccb5923188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fccb84f30e0 RCX: 00007fccb83ee709
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000004
-RBP: 00007fccb8448cb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd586b757f R14: 00007fccb5923300 R15: 0000000000022000
-INFO: task syz-executor.2:13167 blocked for more than 146 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:28656 pid:13167 ppid:  6566 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fccb83ee709
-RSP: 002b:00007fccb58e1188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fccb84f3260 RCX: 00007fccb83ee709
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000006
-RBP: 00007fccb8448cb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd586b757f R14: 00007fccb58e1300 R15: 0000000000022000
-INFO: task syz-executor.2:13168 blocked for more than 147 seconds.
-      Not tainted 5.15.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:28656 pid:13168 ppid:  6566 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
- __mutex_lock_common kernel/locking/mutex.c:669 [inline]
- __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fccb83ee709
-RSP: 002b:00007fccb58c0188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fccb84f3320 RCX: 00007fccb83ee709
-RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000005
-RBP: 00007fccb8448cb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd586b757f R14: 00007fccb58c0300 R15: 0000000000022000
+Memory conditions: % of memory size
+* Underutilizing: N/A
+* Overcommitting: ~10% swapped out (zram)
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/27:
- #0: ffffffff8b97d420 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-4 locks held by kworker/u4:3/254:
- #0: ffff888140275938 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888140275938 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888140275938 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888140275938 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888140275938 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888140275938 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x8a3/0x16b0 kernel/workqueue.c:2268
- #1: ffffc90002107db0 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x8d7/0x16b0 kernel/workqueue.c:2272
- #2: ffffffff8d0cef50 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xb00 net/core/net_namespace.c:553
- #3: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: wg_netns_pre_exit+0x15/0x190 drivers/net/wireguard/device.c:402
-3 locks held by kworker/1:3/2932:
- #0: ffff888027a77938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888027a77938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888027a77938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888027a77938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888027a77938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888027a77938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x8a3/0x16b0 kernel/workqueue.c:2268
- #1: ffffc9000c517db0 ((addr_chk_work).work){+.+.}-{0:0}, at: process_one_work+0x8d7/0x16b0 kernel/workqueue.c:2272
- #2: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4590
-1 lock held by in:imklog/6229:
- #0: ffff88806fed6df0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
-3 locks held by kworker/0:4/8291:
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x8a3/0x16b0 kernel/workqueue.c:2268
- #1: ffffc9001698fdb0 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x8d7/0x16b0 kernel/workqueue.c:2272
- #2: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:251
-3 locks held by kworker/0:5/8480:
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888010c67d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x8a3/0x16b0 kernel/workqueue.c:2268
- #1: ffffc900171cfdb0 (deferred_process_work){+.+.}-{0:0}, at: process_one_work+0x8d7/0x16b0 kernel/workqueue.c:2272
- #2: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: switchdev_deferred_process_work+0xa/0x20 net/switchdev/switchdev.c:74
-2 locks held by syz-executor.1/13097:
-2 locks held by syz-executor.5/13115:
- #0: ffffffff8d0cef50 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2f5/0x760 net/core/net_namespace.c:466
- #1: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:798 [inline]
- #1: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x1f9/0x410 net/smc/smc_pnet.c:867
-1 lock held by syz-executor.5/13120:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
-2 locks held by syz-executor.5/13156:
- #0: ffffffff8d0cef50 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2f5/0x760 net/core/net_namespace.c:466
- #1: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:798 [inline]
- #1: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x1f9/0x410 net/smc/smc_pnet.c:867
-1 lock held by syz-executor.5/13162:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
-1 lock held by syz-executor.2/13147:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
-1 lock held by syz-executor.2/13150:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
-1 lock held by syz-executor.2/13153:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
-1 lock held by syz-executor.2/13167:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
-1 lock held by syz-executor.2/13168:
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0e21a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
+THP (2MB Transparent Huge Pages):
+* Always
+* Never
 
-=============================================
+Read patterns (2kB objects):
+* Parallel sequential
+* Uniform random
+* Gaussian (SD = 1/6 of key range)
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.15.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xc1d/0xf50 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 154 Comm: kworker/u4:2 Not tainted 5.15.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy8 ieee80211_iface_work
-RIP: 0010:lock_acquire kernel/locking/lockdep.c:5628 [inline]
-RIP: 0010:lock_acquire+0x1d3/0x510 kernel/locking/lockdep.c:5590
-Code: ff ff 48 c7 c7 c0 e5 8b 89 48 83 c4 20 e8 45 b4 da 07 b8 ff ff ff ff 65 0f c1 05 a8 70 a7 7e 83 f8 01 0f 85 b4 02 00 00 9c 58 <f6> c4 02 0f 85 9f 02 00 00 48 83 7c 24 08 00 74 01 fb 48 b8 00 00
-RSP: 0018:ffffc900011e6e58 EFLAGS: 00000046
-RAX: 0000000000000046 RBX: 1ffff9200023cdcd RCX: ffffffff815a36bf
-RDX: 1ffff11002293d46 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff8fd00927
-R10: fffffbfff1fa0124 R11: 000000000000003f R12: 0000000000000000
-R13: 0000000000000000 R14: ffffffff90455b70 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f056bfab000 CR3: 00000000273a9000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
- __debug_check_no_obj_freed lib/debugobjects.c:980 [inline]
- debug_check_no_obj_freed+0xc7/0x420 lib/debugobjects.c:1023
- kfree+0xd1/0x2c0 mm/slab.c:3802
- ieee802_11_parse_elems_crc+0xac2/0xfe0 net/mac80211/util.c:1517
- ieee802_11_parse_elems net/mac80211/ieee80211_i.h:2207 [inline]
- ieee80211_bss_info_update+0x468/0xb60 net/mac80211/scan.c:212
- ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
- ieee80211_rx_mgmt_probe_beacon+0xcce/0x17c0 net/mac80211/ibss.c:1608
- ieee80211_ibss_rx_queued_mgmt+0xd37/0x1610 net/mac80211/ibss.c:1635
- ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
- ieee80211_iface_work+0xa65/0xd00 net/mac80211/iface.c:1493
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	ff 48 c7             	decl   -0x39(%rax)
-   3:	c7 c0 e5 8b 89 48    	mov    $0x48898be5,%eax
-   9:	83 c4 20             	add    $0x20,%esp
-   c:	e8 45 b4 da 07       	callq  0x7dab456
-  11:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
-  16:	65 0f c1 05 a8 70 a7 	xadd   %eax,%gs:0x7ea770a8(%rip)        # 0x7ea770c6
-  1d:	7e
-  1e:	83 f8 01             	cmp    $0x1,%eax
-  21:	0f 85 b4 02 00 00    	jne    0x2db
-  27:	9c                   	pushfq
-  28:	58                   	pop    %rax
-* 29:	f6 c4 02             	test   $0x2,%ah <-- trapping instruction
-  2c:	0f 85 9f 02 00 00    	jne    0x2d1
-  32:	48 83 7c 24 08 00    	cmpq   $0x0,0x8(%rsp)
-  38:	74 01                	je     0x3b
-  3a:	fb                   	sti
-  3b:	48                   	rex.W
-  3c:	b8                   	.byte 0xb8
+Total configurations: 12
+Data points per configuration: 10
+Total run duration (minutes) per data point: ~20
 
+Note that the goal of this benchmark is to compare the performance
+for the same key range, object size, and hit ratio. Since Memcached
+does not support backing storage, it requires fewer in-memory objects
+to underutilize memory, which reduces the hit ratio and therefore is
+not applicable in this case.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Procedure
+=========
+The latest MGLRU patchset for the 5.14 kernel is available at
+git fetch https://linux-mm.googlesource.com/page-reclaim \
+    refs/changes/30/1430/1
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Baseline and patched 5.14 kernel images are available at
+https://drive.google.com/drive/folders/1eMkQleAFGkP2vzM_JyRA21oKE0ESHBqp
+
+<install and configure OS>
+
+<for each kernel>
+    grub2-set-default <baseline, patched>
+    <for each THP setting>
+        echo <always, never> > \
+            /sys/kernel/mm/transparent_hugepage/enabled
+        <update /etc/sysconfig/memcached>
+        <for each access pattern>
+            <update run_memtier.sh>
+            <for each data point>
+                reboot
+                run_memtier.sh
+                <collect OPS>
+
+Hardware
+========
+Memory (GB): 64
+CPU (total #): 32
+NVMe SSD (GB): 1024
+
+OS
+==
+$ cat /etc/redhat-release
+Red Hat Enterprise Linux release 8.4 (Ootpa)
+
+$ cat /proc/swaps
+Filename          Type          Size          Used     Priority
+/dev/zram0        partition     8388604       0        -2
+
+$ cat /proc/cmdline
+<existing parameters> systemd.unified_cgroup_hierarchy=1
+
+$ cat /sys/fs/cgroup/user.slice/memory.min
+4294967296
+
+$ cat /proc/sys/vm/overcommit_memory
+1
+
+Memcached
+=========
+$ memcached -V
+memcached 1.5.22
+
+$ cat /etc/sysconfig/memcached
+USER="memcached"
+MAXCONN="10000"
+CACHESIZE="65536"
+OPTIONS="-s /tmp/memcached.sock -a 0766 -t 16 -b 10000 -B binary <-L>"
+memtier_benchmark
+$ memtier_benchmark -v
+memtier_benchmark 1.3.0
+Copyright (C) 2011-2020 Redis Labs Ltd.
+This is free software.  You may redistribute copies of it under the
+terms of
+the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
+There is NO WARRANTY, to the extent permitted by law.
+
+$ cat run_memtier.sh
+# load objects
+memtier_benchmark -S /tmp/memcached.sock -P memcache_binary -n
+allkeys -c 1 -t 16 --ratio 1:0 --pipeline 1 -d 2000 --key-minimum=1
+--key-maximum=30000000 --key-pattern=P:P
+
+# run benchmark
+memtier_benchmark -S /tmp/memcached.sock -P memcache_binary -n
+30000000 -c 1 -t 16 --ratio 0:1 --pipeline 1 --randomize
+--distinct-client-seed --key-minimum=1 --key-maximum=30000000
+--key-pattern=<P:P, R:R, G:G>
+
+Results
+=======
+Comparing the patched with the baseline kernel, Memcached achieved
+95% CIs [23.54, 32.25]%, [20.76, 41.61]%, [13.85, 15.97]%, [21.59,
+30.02]% and [23.94, 29.92]% more OPS, respectively, for sequential
+access w/ THP=always, random access w/ THP=always, random access w/
+THP=never, Gaussian access w/ THP=always and Gaussian access w/
+THP=never. There were no statistically significant changes in OPS for
+sequential access w/ THP=never.
+
++-------------------+-----------------------+------------------------+
+| Mean OPS [95% CI] | THP=always            | THP=never              |
++-------------------+-----------------------+------------------------+
+| Sequential access | 519599.7 / 664543.2   | 525394.8 / 527170.6    |
+|                   | [122297.9, 167589.0]  | [-15138.63, 18690.31]  |
++-------------------+-----------------------+------------------------+
+| Random access     | 450033.2 / 590360.7   | 509237.3 / 585142.4    |
+|                   | [93415.59, 187239.37] | [70504.51, 81305.60]   |
++-------------------+-----------------------+------------------------+
+| Gaussian access   | 481182.4 / 605358.7   | 531270.8 / 674341.4    |
+|                   | [103892.6, 144460.0]] | [127199.8, 158941.2]   |
++-------------------+-----------------------+------------------------+
+Table 1. Comparison between the baseline and patched kernels
+
+Comparing THP=never with THP=always, Memcached achieved 95% CIs
+[2.73, 23.58]% and [5.45, 15.37]% more OPS, respectively, for random
+access and Gaussian access when using the baseline kernel; 95% CIs
+[-22.65, -18.69]% and [10.67, 12.12]% more OPS, respectively, for
+sequential access and Gaussian access when using the patched kernel.
+There were no statistically significant changes in OPS under other
+conditions.
+
++-------------------+-----------------------+------------------------+
+| Mean OPS [95% CI] | Baseline kernel       |  Patched kernel        |
++-------------------+-----------------------+------------------------+
+| Sequential access | 519599.7 / 525394.8   | 664543.2 / 527170.6    |
+|                   | [-18739.71, 30329.80] | [-150551.0, -124194.1] |
++-------------------+-----------------------+------------------------+
+| Random access     | 450033.2 / 509237.3   | 590360.7 / 585142.4    |
+|                   | [12303.49, 106104.69] | [-10816.1516, 379.475] |
++-------------------+-----------------------+------------------------+
+| Gaussian access   | 481182.4 / 531270.8   | 605358.7 / 674341.4    |
+|                   | [26229.02, 73947.84]  | [64570.58, 73394.70]   |
++-------------------+-----------------------+------------------------+
+Table 2. Comparison between THP=always and THP=never
+
+Metrics collected during each run are available at
+https://github.com/ediworks/KernelPerf/tree/master/mglru/memcached/5.14
+
+References
+==========
+memtier_benchmark: A High-Throughput Benchmarking Tool for Redis &
+Memcached
+https://redis.com/blog/memtier_benchmark-a-high-throughput-benchmarking-tool-for-redis-memcached/
+
+Appendix
+========
+$ cat raw_data.r
+v <- c(
+    # baseline THP=always sequential
+    460266.29, 466497.70, 516145.38, 523474.39, 528507.72, 529481.86, 533867.92, 537028.56, 546027.45, 554699.89,
+    # baseline THP=always random
+    371470.66, 378967.63, 381137.01, 385205.60, 449100.72, 474670.76, 490470.46, 513341.53, 525159.49, 530808.55,
+    # baseline THP=always Gaussian
+    455674.14, 457089.50, 460001.46, 463269.94, 468283.00, 474169.61, 477684.67, 506331.96, 507875.30, 541444.54,
+    # baseline THP=never sequential
+    501887.04, 507303.10, 509573.54, 515222.79, 517429.04, 530805.74, 536490.44, 538088.45, 540459.92, 556687.57,
+    # baseline THP=never random
+    496489.97, 506444.42, 508002.80, 508707.39, 509746.28, 511157.58, 511897.57, 511926.06, 512652.28, 515348.95,
+    # baseline THP=never Gaussian
+    493199.15, 504207.48, 518781.40, 520536.21, 528619.45, 540677.91, 544365.57, 551698.32, 554046.80, 556576.14,
+    # patched THP=always sequential
+    660711.43, 660936.88, 661275.57, 662540.65, 663417.25, 665546.99, 665680.49, 667564.03, 668555.96, 669202.36,
+    # patched THP=always random
+    582574.69, 583714.04, 587102.54, 587375.85, 588997.85, 589052.96, 593922.17, 594722.98, 596178.28, 599965.83,
+    # patched THP=always Gaussian
+    601707.98, 602055.03, 603020.28, 603335.93, 604519.55, 605086.48, 607405.59, 607570.79, 609009.54, 609875.98,
+    # patched THP=never sequential
+    507753.56, 509462.65, 509964.30, 510369.66, 515001.36, 531685.00, 543709.22, 545142.98, 548392.56, 550224.74,
+    # patched THP=never random
+    571017.21, 579705.57, 582801.51, 584475.82, 586247.73, 587209.97, 587354.87, 588661.14, 591237.23, 592712.76,
+    # patched THP=never Gaussian
+    666403.77, 669691.68, 670248.43, 672190.97, 672466.43, 674320.42, 674897.72, 677282.76, 678886.51, 687024.85
+)
+
+a <- array(v, dim = c(10, 3, 2, 2))
+
+# baseline vs patched
+for (thp in 1:2) {
+    for (pattern in 1:3) {
+        r <- t.test(a[, pattern, thp, 1], a[, pattern, thp, 2])
+        print(r)
+
+        p <- r$conf.int * 100 / r$estimate[1]
+        if ((p[1] > 0 && p[2] < 0) || (p[1] < 0 && p[2] > 0)) {
+            s <- sprintf("thp%d pattern%d: no significance", thp, pattern)
+        } else {
+            s <- sprintf("thp%d pattern%d: [%.2f, %.2f]%%", thp, pattern, -p[2], -p[1])
+        }
+        print(s)
+    }
+}
+
+# THP=always vs THP=never
+for (kernel in 1:2) {
+    for (pattern in 1:3) {
+        r <- t.test(a[, pattern, 1, kernel], a[, pattern, 2, kernel])
+        print(r)
+
+        p <- r$conf.int * 100 / r$estimate[1]
+        if ((p[1] > 0 && p[2] < 0) || (p[1] < 0 && p[2] > 0)) {
+            s <- sprintf("kernel%d pattern%d: no significance", kernel, pattern)
+        } else {
+            s <- sprintf("kernel%d pattern%d: [%.2f, %.2f]%%", kernel, pattern, -p[2], -p[1])
+        }
+        print(s)
+    }
+}
+
+$ R -q -s -f raw_data.r
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, thp, 1] and a[, pattern, thp, 2]
+t = -14.434, df = 9.1861, p-value = 1.269e-07
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -167589.0 -122297.9
+sample estimates:
+mean of x mean of y
+ 519599.7  664543.2
+
+[1] "thp1 pattern1: [23.54, 32.25]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, thp, 1] and a[, pattern, thp, 2]
+t = -6.7518, df = 9.1333, p-value = 7.785e-05
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -187239.37  -93415.59
+sample estimates:
+mean of x mean of y
+ 450033.2  590360.7
+
+[1] "thp1 pattern2: [20.76, 41.61]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, thp, 1] and a[, pattern, thp, 2]
+t = -13.805, df = 9.1933, p-value = 1.866e-07
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -144460.0 -103892.6
+sample estimates:
+mean of x mean of y
+ 481182.4  605358.7
+
+[1] "thp1 pattern3: [21.59, 30.02]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, thp, 1] and a[, pattern, thp, 2]
+t = -0.22059, df = 17.979, p-value = 0.8279
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -18690.31  15138.63
+sample estimates:
+mean of x mean of y
+ 525394.8  527170.6
+
+[1] "thp2 pattern1: no significance"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, thp, 1] and a[, pattern, thp, 2]
+t = -29.606, df = 17.368, p-value = 2.611e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -81305.60 -70504.51
+sample estimates:
+mean of x mean of y
+ 509237.3  585142.4
+
+[1] "thp2 pattern2: [13.85, 15.97]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, thp, 1] and a[, pattern, thp, 2]
+t = -20.02, df = 10.251, p-value = 1.492e-09
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -158941.2 -127199.8
+sample estimates:
+mean of x mean of y
+ 531270.8  674341.4
+
+[1] "thp2 pattern3: [23.94, 29.92]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, 1, kernel] and a[, pattern, 2, kernel]
+t = -0.50612, df = 14.14, p-value = 0.6206
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -30329.80  18739.71
+sample estimates:
+mean of x mean of y
+ 519599.7  525394.8
+
+[1] "kernel1 pattern1: no significance"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, 1, kernel] and a[, pattern, 2, kernel]
+t = -2.8503, df = 9.1116, p-value = 0.01885
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -106104.69  -12303.49
+sample estimates:
+mean of x mean of y
+ 450033.2  509237.3
+
+[1] "kernel1 pattern2: [2.73, 23.58]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, 1, kernel] and a[, pattern, 2, kernel]
+t = -4.4308, df = 16.918, p-value = 0.0003701
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -73947.84 -26229.02
+sample estimates:
+mean of x mean of y
+ 481182.4  531270.8
+
+[1] "kernel1 pattern3: [5.45, 15.37]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, 1, kernel] and a[, pattern, 2, kernel]
+t = 23.374, df = 9.5538, p-value = 9.402e-10
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 124194.1 150551.0
+sample estimates:
+mean of x mean of y
+ 664543.2  527170.6
+
+[1] "kernel2 pattern1: [-22.65, -18.69]%"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, 1, kernel] and a[, pattern, 2, kernel]
+t = 1.96, df = 17.806, p-value = 0.06583
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+  -379.4756 10816.1516
+sample estimates:
+mean of x mean of y
+ 590360.7  585142.4
+
+[1] "kernel2 pattern2: no significance"
+
+        Welch Two Sample t-test
+
+data:  a[, pattern, 1, kernel] and a[, pattern, 2, kernel]
+t = -33.687, df = 13.354, p-value = 2.614e-14
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -73394.70 -64570.58
+sample estimates:
+mean of x mean of y
+ 605358.7  674341.4
+
+[1] "kernel2 pattern3: [10.67, 12.12]%"
