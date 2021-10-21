@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5843D43685D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5182243685E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbhJUQyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:54:21 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:58114 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUQyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:54:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634835124; x=1666371124;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=C2USpOaQOuMhe1S62pB1CHZMA8ULxI2Wj/wPcLVsRyQ=;
-  b=IYxd004DHXCnwlRIXRg6iSDT3hOkVQPAPSp06/FkELim3faYgajAOiLX
-   yEUz5LsVQ+QqsVt2izO2EMCJPEuUKHBgKzq2OoIsVuXTK21DZ04zbdyk5
-   HTLwTDjdpMdjTXDYo8bkAqo0HGYxPcFhLc8SeVsD7zOfTL1iJCssWbV18
-   U=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 21 Oct 2021 09:52:04 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 09:52:03 -0700
-Received: from [10.110.35.33] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 21 Oct 2021
- 09:52:02 -0700
-Subject: Re: [PATCH v2 0/2] memblock: exclude MEMBLOCK_NOMAP regions from
- kmemleak
-To:     Mike Rapoport <rppt@kernel.org>, <linux-mm@kvack.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
+        id S232042AbhJUQzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229702AbhJUQzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 12:55:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAB4B61205;
+        Thu, 21 Oct 2021 16:52:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634835167;
+        bh=6VzM2r6gVMujzCZ0KUTWduK45vE4GtzoGD/qhc4djN8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GwBdi98HgwsdjmNXPfxn/iJ53dQk9VQb+5PM8rpJgbHs002xu52jBjMs71mFRk2un
+         GU2oq1jLQ49iRHP3pLMVLq8SAgI4/P9hRvB1DmyIRc+J8alvTYmL9vsYhw5Ez6cDtA
+         8YZfZZuofml2cDIi58hOk7T+y3ZJkWVv1DYMobkXu9I1cxrj7fqfMKzSMkJjfLt2ij
+         kHe0uc+5WMHXyb8JKAwxedmVxrQhvVChe/MWLMGAusNoo+JCEAMXkbqgXC5zTNzrqX
+         0Qf1aElvXn7FFv3jLriD9XtQHXL7dG5fgZeud3zpEAZPQbgUtGhvxGUG3t4qR/3J9R
+         /SA17dBIUBj1Q==
+Date:   Thu, 21 Oct 2021 17:52:42 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211021070929.23272-1-rppt@kernel.org>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <0599ae1a-e00b-b69c-6ad0-b741ddc291b2@quicinc.com>
-Date:   Thu, 21 Oct 2021 12:52:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 6/9] arm64: Recover kretprobe modified return address
+ in stacktrace
+Message-ID: <20211021165241.GB16889@willie-the-truck>
+References: <163477765570.264901.3851692300287671122.stgit@devnote2>
+ <163477770935.264901.1772964361191833681.stgit@devnote2>
+ <20211021101512.GA16485@willie-the-truck>
+ <20211021232630.94bea4540670cdab5a7a63c5@kernel.org>
+ <20211021104902.2600dd0a@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20211021070929.23272-1-rppt@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021104902.2600dd0a@gandalf.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 21, 2021 at 10:49:02AM -0400, Steven Rostedt wrote:
+> On Thu, 21 Oct 2021 23:26:30 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > > 
+> > > I'm not sure how you're planning to merge this, so please let me know if
+> > > you want me to queue any of the arm64 bits.  
+> > 
+> > Ah, good question. Since this part depends on the first 3 patches and
+> > Steve's tracing tree, these should go through the tracing tree. Is that
+> > OK for you?
+> > 
+> 
+> I'm OK with merging this.
 
+Ok, cool. I've acked the arm64 bits so I'll leave it in your hands!
 
-On 10/21/21 3:09 AM, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+> > (Or, wait for merging the current tracing tree and merge rest of them.
+> >  but this will take a long time.)
 > 
-> Hi,
-> 
-> This is take 2 to fix interaction between MEMBLOCK_NOMAP and kmemleak.
-> 
-> The previous version caused boot failures Qian Cai reported here:
-> 
-> https://lore.kernel.org/all/c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com
-> 
-> The failures happened because calling kmemleak_free_part_phys() (or any
-> kmemleak phys APIs for that matter) too early means it cannot use __va() on
-> arm64.
-> 
-> This late in the cycle I can only think of reverting kmemleak wavier from
-> memblock_mark_nomap() and putting it in the only two callers that set
-> MEMBLOCK_NOMAP to an allocated chunk rather than marking NOMAP "unusable"
-> memory reported by firmware.
-> 
-> The first patch here is the revert of v1 and the second patch is actual v2
-> implementation.
-> 
-> Vladimir and Qian, I'd appreciate if you could verify that v2 works for
-> you.
+> And my linux-next is behind because my tests triggered a bug on one of my
+> arcane configs, and I'm still debugging it. :-p
 
-FYI, this passed the regression tests here.
+Happy debugging :)
 
-
-> 
-> v2:
-> * move kmemleak waiver from memblock_mark_nomap() to callers that need it
-> * use kmemleak_ignore_phys() rather than kmemleak_free_part_phys() as
->   Catalin suggested.
-> 
-> v1: https://lore.kernel.org/all/20211013054756.12177-1-rppt@kernel.org
-> 
-> Mike Rapoport (2):
->   Revert "memblock: exclude NOMAP regions from kmemleak"
->   memblock: exclude MEMBLOCK_NOMAP regions from kmemleak
-> 
->  drivers/acpi/tables.c        |  3 +++
->  drivers/of/of_reserved_mem.c |  2 ++
->  mm/memblock.c                | 10 ++++------
->  3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> 
-> base-commit: 519d81956ee277b4419c723adfb154603c2565ba
-> 
+Will
