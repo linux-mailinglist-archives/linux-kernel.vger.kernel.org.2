@@ -2,187 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976354366DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0BC4366BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhJUP5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S231574AbhJUPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhJUP5b (ORCPT
+        with ESMTP id S230187AbhJUPts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:57:31 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FE25C061764;
-        Thu, 21 Oct 2021 08:55:14 -0700 (PDT)
+        Thu, 21 Oct 2021 11:49:48 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95CBC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:47:31 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so883520pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:47:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=nuk5wXVWvlScj8F5cNPxIBfqcFgRzo61uL
-        st2AhOA9s=; b=ti8/dSwsWZPp5MGojDCDoNAbRjvSB5msWSpS7fteEpfK7agBTp
-        A9M4OwUUxT/c7093nJy6NBNn5FbvMNqjtiaWkrrxp5537xwtuRSTG9zQzZvOxwrp
-        saoqhf6HBB94kqdw/Ni9rOg3ldNOiDxt7ygvRdia08mY60RuDcJQPfMk8=
-Received: from xhacker (unknown [101.86.20.138])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3+UkijXFh+oJcAA--.16862S2;
-        Thu, 21 Oct 2021 23:54:10 +0800 (CST)
-Date:   Thu, 21 Oct 2021 23:47:24 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] riscv: switch to relative exception tables
-Message-ID: <20211021234724.5a2ccc6f@xhacker>
-In-Reply-To: <352c54e1-b164-38d9-43fb-dbc28ab38ac7@huawei.com>
-References: <20211020220529.54ccf4e9@xhacker>
-        <20211020220700.04bcdeca@xhacker>
-        <352c54e1-b164-38d9-43fb-dbc28ab38ac7@huawei.com>
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LjkqvoWTymfCy+YcaZh0ZqmF+EOwMe7EIAue/ES2zZI=;
+        b=CKOZQwON6vxm5fh94b90jypEEwVdTo/XS3/hpKg8aWp4Q3bRT2RoOivhdvZiLyvWSj
+         VwB2cy4/Zon7lOfSIpRV0SCkDz6vRE5NSNBnXBJaSvYyzQ0wRePr5maWpgkVcyz54dzs
+         yan3eA4lYTfpE1UJs594hRujOZzkgWhWDs0ng=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LjkqvoWTymfCy+YcaZh0ZqmF+EOwMe7EIAue/ES2zZI=;
+        b=lSl+37kFiMF3Kt4+STUMaHWtNOZI5/Ilks8n9YERvyYB28Bc0L9HHPRbT1uGj6C7Jt
+         PkhhRUAmBBXOwDcr04KRiNatmEkx23dnr6/AlOkp9opblhiJYwN4buKlsNgu29JxZhhd
+         C0ggcrh+R0itPuAbcc/wYJ9/+y1wJn8DiOEW+cFhO3oT8Z+H7MfIvpbII3CNsOK8OjLN
+         KhHWHG8q0Lo2V7Idhlmfyx9rgKQMZptQ2NKp2rK31qn4TcnjKZk8kMYnxZnnYEvlNyyG
+         ccvHqctGBAICL/QMF323JylOjY/cb8CrRMVVehAeN+yORzfgBu1hd+1EdQZG+2bA07Ko
+         4N/A==
+X-Gm-Message-State: AOAM530w/6K9WS94yTV0YKoE78e61F5ShIaEBCbAZHOkmt3NjqHZEDV0
+        kL8XDPV/iLEJG23vjJx1MuZ8BHf5JBU=
+X-Google-Smtp-Source: ABdhPJzWRRaUhrJPndRABVKVdgJ1OpmaLHbcaLDagTz8RC8SHv0taaYpAJEqvR/gJDrn5/MKGviahw==
+X-Received: by 2002:a17:90b:3ec6:: with SMTP id rm6mr7568949pjb.27.1634831251225;
+        Thu, 21 Oct 2021 08:47:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n22sm6640941pfo.15.2021.10.21.08.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:47:30 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 08:47:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFCv1 1/4] arm64: Use static key for tracing PID in CONTEXTIDR
+Message-ID: <202110210846.8A7B9F684@keescook>
+References: <20211021134530.206216-1-leo.yan@linaro.org>
+ <20211021134530.206216-2-leo.yan@linaro.org>
+ <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygD3+UkijXFh+oJcAA--.16862S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1xJryUtr1rtr4UJF1UWrg_yoW5Kw45pF
-        WUJayjkFWrAr1UWanFgw4DGF18tw40ka1rWryFqa1UAasxXF93Wan7trya93WkGr18A34Y
-        9rWaqryvyw4Yy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkqb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU85GYPUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 19:42:48 +0800
-Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-
-> On 2021/10/20 22:07, Jisheng Zhang wrote:
-> > From: Jisheng Zhang <jszhang@kernel.org>
-> > 
-> > Similar as other architectures such as arm64, x86 and so on, use
-> > offsets relative to the exception table entry values rather than
-> > absolute addresses for both the exception locationand the fixup.
-> > 
-> > However, RISCV label difference will actually produce two relocations,
-> > a pair of R_RISCV_ADD32 and R_RISCV_SUB32. Take below simple code for
-> > example:
-> > 
-> > $ cat test.S
-> > .section .text
-> > 1:
-> >          nop
-> > .section __ex_table,"a"
-> >          .balign 4
-> >          .long (1b - .)
-> > .previous
-> > 
-> > $ riscv64-linux-gnu-gcc -c test.S
-> > $ riscv64-linux-gnu-readelf -r test.o
-> > Relocation section '.rela__ex_table' at offset 0x100 contains 2 entries:
-> >    Offset          Info           Type           Sym. Value    Sym. Name + Addend
-> > 000000000000  000600000023 R_RISCV_ADD32     0000000000000000 .L1^B1 + 0
-> > 000000000000  000500000027 R_RISCV_SUB32     0000000000000000 .L0  + 0
-> > 
-> > The modpost will complain the R_RISCV_SUB32 relocation, so we need to
-> > patch modpost.c to skip this relocation for .rela__ex_table section.
-> > 
-> > After this patch, the __ex_table section size of defconfig vmlinux is
-> > reduced from 7072 Bytes to 3536 Bytes.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---  
+On Thu, Oct 21, 2021 at 03:33:01PM +0100, James Clark wrote:
 > 
 > 
-> 
-> ...
-> > diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> > index cb8ab7d91d30..0aa14b5bd124 100644
-> > --- a/scripts/mod/modpost.c
-> > +++ b/scripts/mod/modpost.c
-> > @@ -1830,6 +1830,27 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
-> >   	return 0;
-> >   }
-> >   
-> > +#ifndef EM_RISCV
-> > +#define EM_RISCV		243
-> > +#endif
+> On 21/10/2021 14:45, Leo Yan wrote:
+> > The kernel provides CONFIG_PID_IN_CONTEXTIDR for tracing PID into system
+> > register CONTEXTIDR; we need to statically enable this configuration
+> > when build kernel image to use this feature.
+> > 
+> > On the other hand, hardware tracing modules (e.g. Arm CoreSight, SPE,
+> > etc) rely on this feature to provide context info in their tracing data.
+> > If kernel has not enabled configuration CONFIG_PID_IN_CONTEXTIDR, then
+> > tracing modules have no chance to capture PID related info.
+> > 
+> > This patch introduces static key for tracing PID in CONTEXTIDR, it
+> > provides a possibility for device driver to dynamically enable and
+> > disable tracing PID into CONTEXTIDR as needed.
+> > 
+> > As the first step, the kernel increases the static key if
+> > CONFIG_PID_IN_CONTEXTIDR is enabled when booting kernel, in this case
+> > kernel will always trace PID into CONTEXTIDR at the runtime.  This means
+> > before and after applying this patch, the semantics for
+> > CONFIG_PID_IN_CONTEXTIDR are consistent.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  arch/arm64/include/asm/mmu_context.h |  4 +++-
+> >  arch/arm64/kernel/process.c          | 11 +++++++++++
+> >  2 files changed, 14 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+> > index f4ba93d4ffeb..e1f33616f83a 100644
+> > --- a/arch/arm64/include/asm/mmu_context.h
+> > +++ b/arch/arm64/include/asm/mmu_context.h
+> > @@ -26,9 +26,11 @@
+> >  
+> >  extern bool rodata_full;
+> >  
+> > +DECLARE_STATIC_KEY_FALSE(contextidr_in_use);
 > > +
-> > +#ifndef R_RISCV_SUB32
-> > +#define R_RISCV_SUB32		39
-> > +#endif
+> >  static inline void contextidr_thread_switch(struct task_struct *next)
+> >  {
+> > -	if (!IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
+> > +	if (!static_branch_unlikely(&contextidr_in_use))
+> >  		return;
+> >  
+> >  	write_sysreg(task_pid_nr(next), contextidr_el1);
+> > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > index 40adb8cdbf5a..d744c0c7e4c4 100644
+> > --- a/arch/arm64/kernel/process.c
+> > +++ b/arch/arm64/kernel/process.c
+> > @@ -61,6 +61,9 @@ unsigned long __stack_chk_guard __ro_after_init;
+> >  EXPORT_SYMBOL(__stack_chk_guard);
+> >  #endif
+> >  
+> > +DEFINE_STATIC_KEY_FALSE(contextidr_in_use);
+> > +EXPORT_SYMBOL_GPL(contextidr_in_use);
 > > +
-> > +static int addend_riscv_rela(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
+> >  /*
+> >   * Function pointers to optional machine specific functions
+> >   */
+> > @@ -721,3 +724,11 @@ int arch_elf_adjust_prot(int prot, const struct arch_elf_state *state,
+> >  	return prot;
+> >  }
+> >  #endif
+> > +
+> > +static int __init contextidr_init(void)
 > > +{
-> > +	unsigned int r_typ = ELF_R_TYPE(r->r_info);
-> > +	const char *fromsec;
-> > +
-> > +	fromsec = sech_name(elf, sechdr);
-> > +	fromsec += strlen(".rela");
-> > +
-> > +	if (!strcmp("__ex_table", fromsec) && r_typ == R_RISCV_SUB32)
-> > +		return 1;	/* skip this */
+> > +	if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
+> > +		static_branch_inc(&contextidr_in_use);
 > > +	return 0;
 > > +}
-> > +
-> >   static void section_rela(const char *modname, struct elf_info *elf,
-> >   			 Elf_Shdr *sechdr)
-> >   {
-> > @@ -1866,6 +1887,12 @@ static void section_rela(const char *modname, struct elf_info *elf,
-> >   		r_sym = ELF_R_SYM(r.r_info);
-> >   #endif
-> >   		r.r_addend = TO_NATIVE(rela->r_addend);
-> > +		switch (elf->hdr->e_machine) {
-> > +		case EM_RISCV:
-> > +			if (addend_riscv_rela(elf, sechdr, &r))  
-> directly use
-> if (!strcmp("__ex_table", fromsec) && ELF_R_TYPE(r.r_info) == R_RISCV_SUB32)
-
-My local initial patch is as direct as this LoC;) then later I thought we may
-need do something more in future. But now I think we can do code
-refactoring then. Will send patch v3 soon.
-
-Thanks
-
+> > +early_initcall(contextidr_init);
 > 
-> > +				continue;
-> > +			break;
-> > +		}
-> >   		sym = elf->symtab_start + r_sym;
-> >   		/* Skip special sections */
-> >   		if (is_shndx_special(sym->st_shndx))
-> > diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-> > index 6ee4fa882919..39e86e4acea3 100644
-> > --- a/scripts/sorttable.c
-> > +++ b/scripts/sorttable.c
-> > @@ -346,6 +346,7 @@ static int do_file(char const *const fname, void *addr)
-> >   	case EM_PARISC:
-> >   	case EM_PPC:
-> >   	case EM_PPC64:
-> > +	case EM_RISCV:
-> >   		custom_sort = sort_relative_table;
-> >   		break;
-> >   	case EM_ARCOMPACT:
-> > @@ -353,7 +354,6 @@ static int do_file(char const *const fname, void *addr)
-> >   	case EM_ARM:
-> >   	case EM_MICROBLAZE:
-> >   	case EM_MIPS:
-> > -	case EM_RISCV:
-> >   	case EM_XTENSA:
-> >   		break;
-> >   	default:
-> >   
+> Hi Leo,
+> 
+> Can you skip this early_initcall() part if you do something like this:
+> 
+>     DECLARE_STATIC_KEY_MAYBE(CONFIG_PID_IN_CONTEXTIDR, contextidr_in_use)
+> 
+> It seems like there is a way to conditionally initialise it to true.
 
+I was going to suggest the same thing. :) With this change, it looks
+good:
 
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
