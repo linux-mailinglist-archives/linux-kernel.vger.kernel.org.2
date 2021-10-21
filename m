@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBAC4369A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04C04369AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhJURtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232387AbhJURsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:48:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 377D96139F;
-        Thu, 21 Oct 2021 17:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634838396;
-        bh=5yxyO+SbV4ZYkqAUmZBs+5tctJ2fRPEXvFU5ANq9jZI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qzhf/5+Pld5SPs/JQcVt2xbCD+i/2WEBlxB3INFwDAqCoF42aXlcGmVOxJ7Ilim+n
-         WrO5hmFMHl8iDrJQZA7qH/KalMweTcyLh8sMvy2ixC510EvyJLfhkQYDExImFpJOv/
-         rmyCLLDGjtZ7XW5dnJ95FC19BD4lPvxQ1BA+omWqhdtR0zpKRJizCWgnmCjdz4bBFw
-         wqtWsFMRoJpShJLb03nmvU7MMMMoxYpWje4nLroDb8Iy9/ePA9EZMqcsLtdCWY2UwX
-         JZFAOjKiNq+eXwlAhnKixH1quWEBjPsz81OdAaLXUiilOvEsl9SxOT8F7Kyg2OHeza
-         41u25IM9s7G+g==
-Date:   Thu, 21 Oct 2021 23:16:31 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, quic_pkondeti@quicinc.com,
-        quic_ppratap@quicinc.com
-Subject: Re: [PATCH] phy: qcom-snps: Correct the FSEL_MASK
-Message-ID: <YXGndzeN/nVJp8A/@matsya>
-References: <1634711785-25351-1-git-send-email-quic_c_sanm@quicinc.com>
- <CAE-0n51miQBAO2QBtHG75cB4TZnm9jiXFz3APBwrNbQcfjB-Eg@mail.gmail.com>
+        id S232183AbhJURtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhJURt3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:49:29 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF08C061225;
+        Thu, 21 Oct 2021 10:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ar6Nln+iCTz4ULZ5bzZwdi/BNywgNiInR3KbeYJPJFk=; b=AEimvyF3sRUECrII1PM+N3udi6
+        28GlMX49irZ0MwupJsdmWUAxWVRy4DDOl8pwbTMvpmEi/hh/dz3dlkCTJwH8dJRvOx981O7pIREJc
+        MmWq8Hwe+cpNZg9q/zM8Y4dpt3iGgqJ5237scd62OU0D1e9NmnW9r9jp7mDh5G3Xc81+Ebsq4YkmC
+        pV5z/FAFKorXY+5BkFlRSDuvAyt/A6W8ZB2n8njjAqfeWmVur7XBaS2IfaZU2bdhr5s8wHP775wLy
+        WIJSglVVErcW/ERCpOeVEuK4VGoiTbQn/HalF0ZNtCLrFyQV/nlMbz/1L0kU3ijTCJeaungNq/72p
+        YGKa42eg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdc9S-008YZ0-Fj; Thu, 21 Oct 2021 17:46:50 +0000
+Date:   Thu, 21 Oct 2021 10:46:50 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/4] zram: fix two races and one zram leak
+Message-ID: <YXGnijd+Ca+bWJZs@bombadil.infradead.org>
+References: <20211020015548.2374568-1-ming.lei@redhat.com>
+ <YXCMtRVXrGOec6OR@google.com>
+ <YXGl4v1cMJtCLg2d@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE-0n51miQBAO2QBtHG75cB4TZnm9jiXFz3APBwrNbQcfjB-Eg@mail.gmail.com>
+In-Reply-To: <YXGl4v1cMJtCLg2d@bombadil.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-21, 10:35, Stephen Boyd wrote:
-> Quoting Sandeep Maheswaram (2021-10-19 23:36:25)
-> > The FSEL_MASK which selects the refclock is defined incorrectly.
-> > It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
-> > in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1 is reset which keeps PHY analog
-> > blocks ON during suspend.
-> > Fix this issue by correctly defining the FSEL_MASK.
-> >
-> > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+On Thu, Oct 21, 2021 at 10:39:46AM -0700, Luis Chamberlain wrote:
+> On Wed, Oct 20, 2021 at 02:40:05PM -0700, Minchan Kim wrote:
+> > On Wed, Oct 20, 2021 at 09:55:44AM +0800, Ming Lei wrote:
+> > > Hello,
+> > > 
+> > > Fixes three issues reported by Luis Chamberlain with one simpler approach:
+> > > 
+> > > - race between between zram_reset_device() and disksize_store() (1/4)
+> > > 
+> > > - zram leak during unloading module, which is one race between resetting
+> > > and removing device (2/4)
+> > > 
+> > > - race between zram_remove and disksize_store (3/4)
+> > > 
+> > > Also replace replace fsync_bdev with sync_blockdev since no one opens
+> > > it.(4/4)
+> > > 
+> > > V2:
+> > > 	- take another approach to avoid failing of zram_remove()
+> > > 	- add patch to address race between zram_reset_device() and
+> > > 	  disksize_store()
+> > > 
+> > 
+> > Thanks for breaking the problems down, Ming.
+> > 
+> > To me, the whole patchset looks good to me since each patch solves
+> > the problem step by step and finally fix.
+> > 
+> > Luis, do you have any concern of this patchset to solve the cpuhp
+> > problem? (Sorry in advance if I miss some concerns if you raised
+> > in different thread. I'm totally lost).
 > 
-> Any Fixes tag?
+> Running tests against this now. Will report back!
 
-Yes pls add
+So indeed with these patches I end up in the situation where we if
+if spawn two ltp zram02.sh runs and cancel then randomly and start
+them again:
 
-> 
-> > ---
-> >  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> > index ae4bac0..28459a1 100644
-> > --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> > +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  /*
-> >   * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> > + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-> 
-> I never thought I'd see this again! :)
+zram: Can't change algorithm for initialized device
 
-Also, is it justified adding a new copyright for single code line change..?
+And after that only if you do:
 
-> >   */
-> >
-> >  #include <linux/clk.h>
-> > @@ -33,7 +34,7 @@
-> >
-> >  #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0   (0x54)
-> >  #define RETENABLEN                             BIT(3)
-> > -#define FSEL_MASK                              GENMASK(7, 5)
-> > +#define FSEL_MASK                              GENMASK(6, 4)
-> >  #define FSEL_DEFAULT                           (0x3 << 4)
-> >
-> >  #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1   (0x58)
+swapoff /dev/zram0
 
--- 
-~Vinod
+Only then can you restart the tests again.
+
+I had note seen that with my patch fix, but But Ming noted that he
+did see that, and I trust him, although I can't reproduce that issue.
+
+And from at lest a testing perspective then:
+
+Tested-by: Luis Chamberlain <mcgrof@kernel.org>
+
+I'll go and do the line-by-line code review now.
+
+  Luis
