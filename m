@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E79435A81
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 07:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C1F435A87
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 07:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhJUF5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 01:57:50 -0400
-Received: from mga18.intel.com ([134.134.136.126]:50047 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhJUF5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 01:57:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="215871485"
-X-IronPort-AV: E=Sophos;i="5.87,168,1631602800"; 
-   d="scan'208";a="215871485"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 22:55:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,168,1631602800"; 
-   d="scan'208";a="444654055"
-Received: from unknown (HELO [10.239.154.68]) ([10.239.154.68])
-  by orsmga006.jf.intel.com with ESMTP; 20 Oct 2021 22:55:31 -0700
-Subject: Re: [PATCH 2/2] i2c: virtio: fix completion handling
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>, wsa@kernel.org,
-        viresh.kumar@linaro.org
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-3-vincent.whitchurch@axis.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <a6cb9ae7-eee3-74aa-87de-a2be3fdc7a76@intel.com>
-Date:   Thu, 21 Oct 2021 13:55:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211019074647.19061-3-vincent.whitchurch@axis.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S230385AbhJUF7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 01:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhJUF7o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 01:59:44 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4D8C06161C;
+        Wed, 20 Oct 2021 22:57:29 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id i5so11510288pla.5;
+        Wed, 20 Oct 2021 22:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=xyYwIkMCk4rkTN8oiOVXDKTzc5USFAT81u5D/5zT+No=;
+        b=KVpo3TXnbOpA6E6xP6EBAUnwirIjDDgMOD9PlvBw6coc8vgs+tZGRkbgtKi8lLWTFe
+         mjcyHec1DRhWjLZbnTyrE6rzzjLos9YC2rCmko+kLa7f6pD+EahDCp6C+O7ap4fBxeqT
+         cMJQMX6y2KX5esZZ4n4gHJaXR5hYL+lpw+LWFxRhz0YUh1Ie2rsWs98scD9mI83F2HC7
+         l+bTa70aodAViLg0uamB0VfV/zJwteaycP4yuKkeoaTQpQTJLZMqA+jYgb6QF6Q+ku6e
+         rfSKR52oHGR31P7//HyGDrXtUiJtH6FVqQNSXUmW3/w3o3Q5HhiTPXkrSIwrIRxUccYQ
+         BRqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xyYwIkMCk4rkTN8oiOVXDKTzc5USFAT81u5D/5zT+No=;
+        b=1nFHCWwKW1WlcHNmNv0F5Af8eBLT3zzzTbTU+LohPHQ6t4vrshD8MLtmCmEUC7bDIj
+         bbTcFjYwKRV0kDbtXh0VIjuvq1OtPnwfBbOKaA6aDWPNLj1Gh1K4o8t4LUOq/9RBd/6M
+         P2QhkLhCz9JcSpLJllzcr7f+qVNVqANfqhTYs3dIEaJMfURu4fiyU9+2gRV5oGd7Jwlt
+         YcVpANbOljMUh2+OmX40au321WPVndpgDY4eNGwSLTlMOC0GjGveto5RXeZWrdmr+hF+
+         zwXvF1q25160ETXAKD5G+5PEuwUYUZ+dBwjb9jUw8KFgkH1wvxrXb8WtoAX9kUp5aEeB
+         siRQ==
+X-Gm-Message-State: AOAM533B3PcMwWbVDi/qnDPbDJF0czBjZrZX5nI2FzaBcRcQkEFsp/xl
+        JSSlu3inDfbLSCBNxRE7Yg==
+X-Google-Smtp-Source: ABdhPJwa2G/X4LJn/gZeJsEtWJxkObI6c7WOZa1Qs4fabxY56XihZLszGOc+3rDboz38/QWfMqxy+A==
+X-Received: by 2002:a17:90a:ba88:: with SMTP id t8mr4291321pjr.15.1634795848845;
+        Wed, 20 Oct 2021 22:57:28 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id h14sm782467pfv.182.2021.10.20.22.57.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Oct 2021 22:57:28 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     damien.lemoal@opensource.wdc.com
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] ata: sata_mv: Fix the return value of the probe function
+Date:   Thu, 21 Oct 2021 05:57:16 +0000
+Message-Id: <1634795836-1803-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+mv_init_host() propagates the value returned by mv_chip_id() which in turn
+gets propagated by mv_pci_init_one() and hits local_pci_probe().
 
-On 2021/10/19 15:46, Vincent Whitchurch wrote:
-> The driver currently assumes that the notify callback is only received
-> when the device is done with all the queued buffers.
->
-> However, this is not true, since the notify callback could be called
-> without any of the queued buffers being completed (for example, with
-> virtio-pci and shared interrupts) or with only some of the buffers being
-> completed (since the driver makes them available to the device in
-> multiple separate virtqueue_add_sgs() calls).
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/ata/sata_mv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Can the backend driver control the time point of interrupt injection ? I 
-can't think of
+diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+index 9d86203e1e7a..7461fe078dd1 100644
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -3897,7 +3897,7 @@ static int mv_chip_id(struct ata_host *host, unsigned int board_idx)
+ 
+ 	default:
+ 		dev_err(host->dev, "BUG: invalid board index %u\n", board_idx);
+-		return 1;
++		return -ENODEV;
+ 	}
+ 
+ 	hpriv->hp_flags = hp_flags;
+-- 
+2.17.6
 
-why the backend has to send an early interrupt. This operation should be 
-avoided
-
-in the backend driver if possible. However, this change make sense if 
-early interrupt
-
-can't be avoid.
-
-
->
-> This can lead to incorrect data on the I2C bus or memory corruption in
-> the guest if the device operates on buffers which are have been freed by
-> the driver.  (The WARN_ON in the driver is also triggered.)
->
