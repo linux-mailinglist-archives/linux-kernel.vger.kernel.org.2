@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0455F436A9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92B5436A96
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhJUSgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhJUSgC (ORCPT
+        id S231905AbhJUSf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:35:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28467 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230020AbhJUSfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:36:02 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BAAC061348;
-        Thu, 21 Oct 2021 11:33:45 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id o11so808026ljg.10;
-        Thu, 21 Oct 2021 11:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KmzJ7Fldl3+PHFFkx5m6zHtzRZgb1z6Rpjy5yivMyhk=;
-        b=SsRjBzuzNgZK0pi5JPfQQS1rBrw3o5x5SSvhGTzCm5gvBiq5w7uxf6W+/jWPecNv4z
-         CiHuIPQbw3LWsqmex1c8jdEBcJbXDykbM6yhLe8PKAoMrPGLUSQuXZ0oWbb/rToDyH5l
-         1YnQeYy1muWraB4CqDPsvyQn+QypeCO4bRXhT5S6zfneEGfAEsHXbODWRYxdAy3pjxBT
-         8NzJQ54TJhlAVgWR3u+mXaj1MaejaSgct+bk0vfETHC7tV5pZURg48x43Hy9L9gi1QA8
-         4v+VZPlSPSzwgztXdsMCzFaUGy5RXQjfbJ9/NbGe12XQDTn1wMfeTNqY58vKTo6bT1Iu
-         zGTQ==
+        Thu, 21 Oct 2021 14:35:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634841211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fJv7bUttzHzeUKPod/KfL06tCpY98UdeXt9wFfAbFRI=;
+        b=gK/ETO2gn8zJxxm0zWQmTE0/rQZzo1GTnjBoZz1J71Jp6WqJtB4z5KNE5BjKSZwAEuhZuC
+        EBk/cp9vN94VcOLiFXTp9YprWNZwe29gnt31Mtoj80cPSv9b9+hzCLMUR7FbL33Idud5AG
+        AXNtzy4ojMLOcv7vN6gssrKZDBe32/Y=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-7x4Y1bVgMRORsRYT0Jrz2w-1; Thu, 21 Oct 2021 14:33:28 -0400
+X-MC-Unique: 7x4Y1bVgMRORsRYT0Jrz2w-1
+Received: by mail-ed1-f69.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso1272301edv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:33:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=KmzJ7Fldl3+PHFFkx5m6zHtzRZgb1z6Rpjy5yivMyhk=;
-        b=cYN5pmp/DACcP7oBHg4Se/WuO5aFfI9gjnU2e5G3Y9T3ochzbwG5SrDzz1eroVJGjL
-         ygpZsZcS2bTh9GMe9m9KdOw33EJf3Rwr5oSW0TJ/eR67Dng5qVGSkz2pjaKaSD+/VL9l
-         1qYZJ9HpuX49OGX4B4M9e/Co8iNpRC3d7e36moDiptJFcMQTc/XPpFEmxYQVsDbe4MO9
-         MLNQlXVYudbCBq3ecRGGnkbYxi1ACKd3spPxBGZBYg/z6qlS6Za9zEE3cc6X6t0n1HmU
-         Yqxd7dXwLrU+AgKTbCpMb9xjAacVGl7XawE6dkv1pURejyFbhbP1kHy6d6gYdnzQbKxt
-         1UUg==
-X-Gm-Message-State: AOAM533r9a2Myf8OM76IQhFhNjoVMGI3HYjPKRjap4RRX/rIo3gzBVLx
-        a6DrnFi7oCca4JS/ljBxBow=
-X-Google-Smtp-Source: ABdhPJxyjpATbRFufA6DS49KfB6fTMpZpQf4+tLYIocvMyAHTd+KAnU0/c/IwTO1HpWe/KfuInyXYw==
-X-Received: by 2002:a2e:a364:: with SMTP id i4mr7829985ljn.326.1634841224114;
-        Thu, 21 Oct 2021 11:33:44 -0700 (PDT)
-Received: from localhost.localdomain (94-29-61-202.dynamic.spd-mgts.ru. [94.29.61.202])
-        by smtp.gmail.com with ESMTPSA id e29sm520894lfc.141.2021.10.21.11.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 11:33:43 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v2] regulator: Don't error out fixed regulator in regulator_sync_voltage()
-Date:   Thu, 21 Oct 2021 21:33:08 +0300
-Message-Id: <20211021183308.27786-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        bh=fJv7bUttzHzeUKPod/KfL06tCpY98UdeXt9wFfAbFRI=;
+        b=3TW7a0Z3IQdHqSR/r08NTmGH/HGVgmkHl3HwkBChQF87SjAKXgoExZZDH5V6iLnd71
+         CSiA1qD/iP7XYx7G8YqTqpHAnEkkF6Cx0jK9X1/u2qIPNjhGuBRj+9mRwagc2X5veMBa
+         XbhMuGdDwm/Mp1AZH8Kwyhy322iVnf+PRw1bFbAGK1fyBKBgo1gh3zeDcrfk4YlvLPnQ
+         fIBfuko8o4DD2fx07Ps4JYz3ft0E1RMTDqmx505Y3+F/wqVVzoVMK3gswiq1Hpv0BEhQ
+         PfExRMzmeAWGVTWNBuxootwiQybDwByIbcJSALqN0E5QKqa20rpY7LtUATPN6PuKFFSe
+         vQyw==
+X-Gm-Message-State: AOAM530vMVztJEALl7/s1Dycxd2y9F21xRSlL2chJuRVqfupm577OdB/
+        rVOjZg8TPmpYNRTcmO4AG89v6SOPyK9+i7HcoZ0pLaBb7unlgwxJK76kUrOdkqnLetlm89R8gPM
+        S2goYwFQ2jb5wsr24l78Lz5Es
+X-Received: by 2002:a50:9b06:: with SMTP id o6mr10029319edi.284.1634841207331;
+        Thu, 21 Oct 2021 11:33:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwpP27IAl5diPSXUSRyhAfup3C5V1r5HFXZJeAuZaSNfUHqMNSsodhp5yV84qCICK121UKCwQ==
+X-Received: by 2002:a50:9b06:: with SMTP id o6mr10029296edi.284.1634841207182;
+        Thu, 21 Oct 2021 11:33:27 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id n6sm3137103eds.10.2021.10.21.11.33.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 11:33:26 -0700 (PDT)
+Message-ID: <db6b4b82-01e6-d211-e8e9-5e3db6943bd7@redhat.com>
+Date:   Thu, 21 Oct 2021 20:33:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] platform/surface: gpe: Add support for Surface Laptop
+ Studio
+Content-Language: en-US
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211021111053.564133-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211021111053.564133-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed regulator can't change voltage and regulator_sync_voltage()
-returns -EINVAL in this case. Make regulator_sync_voltage() to succeed
-for regulators that are incapable to change voltage.
+Hi,
 
-On NVIDIA Tegra power management driver needs to sync voltage and we have
-one device (Trimslice) that uses fixed regulator which is getting synced.
-The syncing error isn't treated as fatal, but produces a noisy error
-message. This patch silences that error.
+On 10/21/21 13:10, Maximilian Luz wrote:
+> The new Surface Laptop Studio uses GPEs for lid events as well. Add an
+> entry for that so that the lid can be used to wake the device.
+> 
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Changelog:
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-v2: - Check regulator's voltage-change capability instead of checking
-      whether it's a fixed regulator.
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
- drivers/regulator/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+Regards,
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 26bee444fc70..86aa4141efa9 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4249,6 +4249,9 @@ int regulator_sync_voltage(struct regulator *regulator)
- 	struct regulator_voltage *voltage = &regulator->voltage[PM_SUSPEND_ON];
- 	int ret, min_uV, max_uV;
- 
-+	if (!regulator_ops_is_valid(rdev, REGULATOR_CHANGE_VOLTAGE))
-+		return 0;
-+
- 	regulator_lock(rdev);
- 
- 	if (!rdev->desc->ops->set_voltage &&
--- 
-2.32.0
+Hans
+
+> ---
+>  drivers/platform/surface/surface_gpe.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/platform/surface/surface_gpe.c b/drivers/platform/surface/surface_gpe.c
+> index 86f6991b1215..c1775db29efb 100644
+> --- a/drivers/platform/surface/surface_gpe.c
+> +++ b/drivers/platform/surface/surface_gpe.c
+> @@ -26,6 +26,11 @@ static const struct property_entry lid_device_props_l17[] = {
+>  	{},
+>  };
+>  
+> +static const struct property_entry lid_device_props_l4B[] = {
+> +	PROPERTY_ENTRY_U32("gpe", 0x4B),
+> +	{},
+> +};
+> +
+>  static const struct property_entry lid_device_props_l4D[] = {
+>  	PROPERTY_ENTRY_U32("gpe", 0x4D),
+>  	{},
+> @@ -158,6 +163,14 @@ static const struct dmi_system_id dmi_lid_device_table[] = {
+>  		},
+>  		.driver_data = (void *)lid_device_props_l4D,
+>  	},
+> +	{
+> +		.ident = "Surface Laptop Studio",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop Studio"),
+> +		},
+> +		.driver_data = (void *)lid_device_props_l4B,
+> +	},
+>  	{ }
+>  };
+>  
+> 
 
