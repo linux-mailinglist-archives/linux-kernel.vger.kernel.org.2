@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EA4436B93
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261FC436BA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhJUT4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:56:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231960AbhJUT4t (ORCPT
+        id S231873AbhJUT7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhJUT7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:56:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634846072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XQQxB68/bqgix0H59OBXlceD3gg5Noo7Iow2EZ2n7yg=;
-        b=IPCHsUFujQzn7aTNpej8zRJrbF6mDzgwNsfjoDfb2TK+fkyyT9fGV1eleKlakTevTKD2zb
-        KI4+s6w2qQ7BG0ts9wCzy+aYyOTwOuh+15jk+mVw2G0L6jYT4/Q4dhu8I6EouOHmcUL6B6
-        +mk6avsUeX6oi2dvMWYeKfcGqYzuBaw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-oOTvx7XVMR6o06YxVYvvCg-1; Thu, 21 Oct 2021 15:54:31 -0400
-X-MC-Unique: oOTvx7XVMR6o06YxVYvvCg-1
-Received: by mail-ed1-f70.google.com with SMTP id d3-20020a056402516300b003db863a248eso1444565ede.16
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:54:31 -0700 (PDT)
+        Thu, 21 Oct 2021 15:59:07 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A207C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:56:50 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id q16so1317220ljg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XyhoHE7sxv5I2EpYeVeJH0GIKfhcQY389jVe4IVPrso=;
+        b=fajWtGHos8khUlCJgvpdSRJD5xpYLZ79Lr2JBHTNmtUKS3cX8ZlnEwgx+1S9+b91Jx
+         xIAREn1mxSFn3lWZ8eC1aaNnhKsBHvyNNoQ+ZiUYwMiFj7eI7DtbGZLrFQ02vjk/za3F
+         n5tzxDxUgWk3TS0NL82gfmIRApn3g95CzMW5kDKCbySKWOQVGOt9dhMfgoFxouk8s7BQ
+         qkozvuudgympgQiVJIv24nCREM9G4TUwGTPzhIHPk+OC0PFpvTzF1opal3pOXlKjd6dN
+         odykl9GddCEXRQKtJkeeWO6tu8RB2ORt7/STAWx3OSx7MEjRK8DsroWwXJT31GCjIQTN
+         zE5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=XQQxB68/bqgix0H59OBXlceD3gg5Noo7Iow2EZ2n7yg=;
-        b=6Qxpz4/ozvF6iVviPR+WJ9HF7jQk5hDJMN4I8ei8XGRDcANqlQ//i3iUON6iiAumhS
-         adbAULNapXBRHQrP68U0xhR++YEas1+Py+jtSpk2D/TEV5EgtwCNbqoNXnNeD8QY+Wan
-         8hRCYcY85kksYADWdkb8Lc9gOgdul2HX4VyodRjHJHQKb6Wnh4FElYQCbndmJ5T6Como
-         wjJ06dgvMqXlHuwStmAs8E6HISaTOP7b9Gt4iMmbGQruyRG1dG41+VvA58vnVArhDlcZ
-         F5HYYSG1Ud2hkrqXUL/8HAHjAcEeaXknYgpKaiPDwkS4vpxc3yUCdWc3e5CuLqktYuRF
-         /Gjw==
-X-Gm-Message-State: AOAM5327Ro/hw0Ihc5gcSaqShRDL4afu7If5mQcgB3JBMdO4sjLjvGGD
-        qttS8vudIkJTQuruiYgKjjokUWVv5unsq2P2HXnglgj+m0EUDvl8rB6ebYPTiFdsMYdXpzcbloC
-        hrpp3nQqXIdRjP0q5d810H4LU
-X-Received: by 2002:a05:6402:50c7:: with SMTP id h7mr10509069edb.191.1634846070222;
-        Thu, 21 Oct 2021 12:54:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzmJnU7g6ZVD24HMPBsZgL0Jyl+qXHtE9LJnZE9S9oVAH4QKW2i7BfFAIN7nIyagvTLyj43JA==
-X-Received: by 2002:a05:6402:50c7:: with SMTP id h7mr10509049edb.191.1634846070077;
-        Thu, 21 Oct 2021 12:54:30 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id t18sm3616082edd.18.2021.10.21.12.54.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 12:54:29 -0700 (PDT)
-Message-ID: <7edcd370-41a5-f7e8-1ea9-a6073c97638d@redhat.com>
-Date:   Thu, 21 Oct 2021 21:54:26 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XyhoHE7sxv5I2EpYeVeJH0GIKfhcQY389jVe4IVPrso=;
+        b=2ti+LcXSGnRTWEws7FWzDE6Y5QL9U8oF9T3gm9u404H1HE9VHppmHpHzz8muXtAo8i
+         9UUblobtHRGNN5FZRwMh6DPTij8Isfx+onWDI1s0gASoMUyZFQnNWRt69fTEW2RsMcV0
+         vZssAfODsjNW9IQy8X2wcDFilVIpND6YTIJz7yW+QZ4+rc18Qkm68GrPZ0w1NkDiCFtk
+         0omFjha5fF2Qz3rcD4swPZ9gCEnh7JCjnpsIFBFVIUrozEVgPPCki7C0g4IrXhUPsRUw
+         gCYgHUgGvKusHNnmn3cONSw916X44oS4qWhU2l8t1CmcPd87ZrQZfRV3TAYX0DhrekCK
+         2qJw==
+X-Gm-Message-State: AOAM532C/iPDpS4f4nJicRPRhZ+kub7KRy6mKJIlrSjYLdu1//jbTFTV
+        XbMeR7XCCS5XMe/oqukF+w7ZXWFawz7/FdayVgGeeQ==
+X-Google-Smtp-Source: ABdhPJzxCO5iobX3X9/3J7SUpG7HeCrofcWJedaNNyaZgtw9IetFPn5k5xibQ+0WN4id9doUujHVDLoo8VDf2eyts8Q=
+X-Received: by 2002:a2e:874d:: with SMTP id q13mr8133479ljj.16.1634846208850;
+ Thu, 21 Oct 2021 12:56:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2] selftests: kvm: fix mismatched fclose() after popen()
-Content-Language: en-US
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211021175603.22391-1-skhan@linuxfoundation.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211021175603.22391-1-skhan@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
+ <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+ <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+ <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com>
+ <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
+ <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com> <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Oct 2021 21:56:12 +0200
+Message-ID: <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/21 19:56, Shuah Khan wrote:
-> get_warnings_count() does fclose() using File * returned from popen().
-> Fix it to call pclose() as it should.
-> 
-> tools/testing/selftests/kvm/x86_64/mmio_warning_test
-> x86_64/mmio_warning_test.c: In function ‘get_warnings_count’:
-> x86_64/mmio_warning_test.c:87:9: warning: ‘fclose’ called on pointer returned from a mismatched allocation function [-Wmismatched-dealloc]
->     87 |         fclose(f);
->        |         ^~~~~~~~~
-> x86_64/mmio_warning_test.c:84:13: note: returned from ‘popen’
->     84 |         f = popen("dmesg | grep \"WARNING:\" | wc -l", "r");
->        |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
->   tools/testing/selftests/kvm/x86_64/mmio_warning_test.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c b/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-> index 8039e1eff938..9f55ccd169a1 100644
-> --- a/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-> @@ -84,7 +84,7 @@ int get_warnings_count(void)
->   	f = popen("dmesg | grep \"WARNING:\" | wc -l", "r");
->   	if (fscanf(f, "%d", &warnings) < 1)
->   		warnings = 0;
-> -	fclose(f);
-> +	pclose(f);
->   
->   	return warnings;
->   }
-> 
+On Thu, 21 Oct 2021 at 21:02, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Oct 21, 2021 at 8:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > >
+> > > On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> [cut]
+>
+> > > So in theory you could check the pm_runtime_put_sync_suspend() return
+> > > value and fall back to something like WFI if that's an error code.
+> >
+> > I have already tried that, but it simply got too complicated. The main
+> > issue was that runtime PM could become disabled for the device in the
+> > middle of executing the ->enter() callback.
+>
+> So IIUC the problem is that you cannot resume after suspending in that case.
+>
+> IOW, you need to guarantee that if the suspend is successful, the
+> resume also will take place, but if the suspend fails, you basically
+> don't care.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Exactly.
 
-Thanks,
+>
+> > For example, if pm_runtime_get_sync() fails, I still need to make sure
+> > the reference counting in genpd becomes correct - and I can't do that
+> > using dev_pm_genpd_resume(). That's because it's not designed to be
+> > called in this "unknown" suspend phase, but should be called after the
+> > noirq phase and be properly balanced with dev_pm_genpd_suspend().
+> >
+> > In other words, the error path didn't work out for me.
+>
+> It should be sufficient to call wake_up_all_idle_cpus() in the suspend
+> path before dpm_suspend_late(), because system suspend acquires a
+> PM-runtime reference on every device.  IOW, it won't let any devices
+> runtime-suspend, so if your power domain devices are resumed in that
+> path, they will never suspend again in it and the
+> pm_runtime_put_sync_suspend() in __psci_enter_domain_idle_state()
+> becomes a reference counter management call which works regardless of
+> whether or not PM runtime is disabled.
 
-Paolo
+That sounds like a great idea, this should work too! Then the question
+is, how to make that call to wake_up_all_idle_cpus() to become
+optional - or only invoked for the cpuidle drivers that need it.
 
+In any case, I will try this out, thanks for the suggestion!
+
+Kind regards
+Uffe
