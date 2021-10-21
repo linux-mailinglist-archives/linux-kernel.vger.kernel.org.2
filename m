@@ -2,261 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68A6435879
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AFE43587B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhJUB72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhJUB71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:59:27 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D620C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 18:57:12 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id y4so17458205plb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 18:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KSXCMZKLQewPqE2LqdEUOe2maVmThStqtFi+a82qLfk=;
-        b=B7SjQoyrw69NZKpRgWY9HKW4ZrXDFK4fGw3CnbA+1AaVIP4ZmYkNhWoypL6JtKDBtX
-         oRWY8Oht8uqoTHrZJOsT1rFSxaamOC8eyw3a4O8BtPQOv6+Re0JGKPzVE5XxPC4hK93I
-         MEdlLGTur8e/5qVXc+fvrcVQdIgOLhAr4G3Ii5JyfwOE5wqTWudwvnKI1Cvfp0Qys+U5
-         ++IvpRmFFrPrUKnvEDQIJ0xDwmbRqK4pOb0h5BBd+BeuvNoPCa/u40LxMcchFCz5+uXI
-         WmhCZarn15DT2hITY25A1qU7izdv+oYWQB/CK4Yf9akVaxkjqvZOdfJ5dzOyAb52Aqqa
-         BaXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KSXCMZKLQewPqE2LqdEUOe2maVmThStqtFi+a82qLfk=;
-        b=zV2rwVUh4M4L6++/zPY0RnF71fWdBoVsdB/5egm5Qk/48JHjetSOYsCyxsX632qP/1
-         +Q09ZtvhqMs/NwAJqnezz+EAJlUinGvsayRkWY8+8z4HV1Ch4YSDcGyH0UNDwp0r/F2U
-         31x131fB9ha9QGi4FlpqT5gK1O8t2wowE4attBukhAjgsonx0cFHkIV//AxeVSVGSkeI
-         r/77u7PLyAPs4cpXIeWgO7jCnGyXq99KHmyhEckQmqty/W55XdauP+RtTdim+vHXVwZ1
-         Ph6PputpvGzPOjAtYt9RT5qj6+GiQWm4wbpnGBl+IhpNkGn/aubnfh6NrWMESmyj4RVL
-         Wcjg==
-X-Gm-Message-State: AOAM531mlHgmBHxBsme9HwhtJCgOL4T1Bt+U2r67147n7PIopIfK3TQr
-        B00mR0MaBDAlL0k96e7DgHEKqQ==
-X-Google-Smtp-Source: ABdhPJxhV6qX3zwhzhbJhwqRe9Ul/x9aPC6AgQXIjMV/wSt1XKycgeHUovzTXe2RTVdlloiQYTorhg==
-X-Received: by 2002:a17:90a:b391:: with SMTP id e17mr3101624pjr.137.1634781431301;
-        Wed, 20 Oct 2021 18:57:11 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id z126sm3410064pgz.55.2021.10.20.18.57.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Oct 2021 18:57:11 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:57:02 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>
-Subject: Re: [PATCH v12 2/5] soc: qcom: Add Sleep stats driver
-Message-ID: <20211021015701.GF7231@dragon>
-References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
- <1634107104-22197-3-git-send-email-mkshah@codeaurora.org>
- <20211015135809.GB7231@dragon>
- <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
- <20211019094720.GD7231@dragon>
- <38c6bc38-8d5b-a65d-1a26-eb9f268c7644@codeaurora.org>
+        id S230366AbhJUCDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 22:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230192AbhJUCDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 22:03:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51170611F2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634781656;
+        bh=CaHFHM1Qm0GitdpBwfDVW+bc24uJpevrPTy9GbSYzAs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oWRYmURS3Cw/BVj63vuUOrQ+2FAt3jPF5bPLbzfrSFUEtPq6hzlCe1JLrVGmsVSA+
+         PTwUodWMmvglPiJLGZqhA/UC1w0mZ9uKzejYTfGDOOrwiHE2N3ChijXLxIFBEVmkTY
+         +SzeGHD6PpZsXS+PV3O647h8tF2FdgKfKe7N2BYumsbASDE9y8IwSTOyQn4V4XC5W/
+         F8RoWciFuPpplNvd11b81K1kZfso40ZuIJSumxU742D8NFzIyvgdYdb4XzIdyh2sqg
+         FgEpXg/ofgdNaoVwSQTPSGskCt36lUoYJENEotJM8MBWJProE1trAoyB6pb+UnmWAB
+         92stk3HbBvItA==
+Received: by mail-lf1-f44.google.com with SMTP id d42so772585lfv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 19:00:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532c5kKHkb+goa9AiGZWGCDUrgX7WDnEQ5cP7NivfzK7OlPvVn8C
+        U04isWXua5r59M8U6oXJFC8jfiiX3aRNCCc6FWQ=
+X-Google-Smtp-Source: ABdhPJz+1T8AvkCO2dMtlMoL1VDONGi4JxVBo6oPWp6Zz2Uc/xtHSams6U3dfsy/UToUy5rLXUQEHksU5OkFxOlgdFs=
+X-Received: by 2002:a19:48c9:: with SMTP id v192mr2599625lfa.269.1634781654407;
+ Wed, 20 Oct 2021 19:00:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38c6bc38-8d5b-a65d-1a26-eb9f268c7644@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
+ <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
+ <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
+ <8735oxuxlq.wl-maz@kernel.org> <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+ <875ytrddma.wl-maz@kernel.org> <CAAhSdy0TwOjv_RDMRsKqcqTE8PSO_A_EttMGBiDbb-0PTRizZg@mail.gmail.com>
+ <871r4fd996.wl-maz@kernel.org>
+In-Reply-To: <871r4fd996.wl-maz@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 21 Oct 2021 10:00:43 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQEx9BJ6bmgrNOc9--CL3DRKBBN=1Fv_waWWmTTGj150A@mail.gmail.com>
+Message-ID: <CAJF2gTQEx9BJ6bmgrNOc9--CL3DRKBBN=1Fv_waWWmTTGj150A@mail.gmail.com>
+Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:16:57PM +0530, Maulik Shah wrote:
-> Hi Shawn,
-> 
-> On 10/19/2021 3:17 PM, Shawn Guo wrote:
-> > On Mon, Oct 18, 2021 at 07:45:30PM +0530, Maulik Shah wrote:
-> > > > > +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
-> > > > > +					     struct stats_data *d,
-> > > > > +					     const struct stats_config *config)
-> > > > > +{
-> > > > > +	char stat_type[sizeof(u32) + 1] = {0};
-> > > > > +	size_t stats_offset = config->stats_offset;
-> > > > > +	u32 offset = 0, type;
-> > > > > +	int i, j;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * On RPM targets, stats offset location is dynamic and changes from target
-> > > > > +	 * to target and sometimes from build to build for same target.
-> > > > > +	 *
-> > > > > +	 * In such cases the dynamic address is present at 0x14 offset from base
-> > > > > +	 * address in devicetree. The last 16bits indicates the stats_offset.
-> > > > > +	 */
-> > > > > +	if (config->dynamic_offset) {
-> > > > > +		stats_offset = readl(reg + RPM_DYNAMIC_ADDR);
-> > > > > +		stats_offset &= RPM_DYNAMIC_ADDR_MASK;
-> > > > > +	}
-> > > > > +
-> > > > > +	for (i = 0; i < config->num_records; i++) {
-> > > > > +		d[i].base = reg + offset + stats_offset;
-> > > > > +
-> > > > > +		/*
-> > > > > +		 * Read the low power mode name and create debugfs file for it.
-> > > > > +		 * The names read could be of below,
-> > > > > +		 * (may change depending on low power mode supported).
-> > > > > +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
-> > > > > +		 * For rpm-sleep-stats: "vmin" and "vlow".
-> > > > 
-> > > > It reports 'vmin' and 'xosd' on MSM8939, 'vmin' and 'vlow' on SDM660.
-> > > > I know that 'vmin' is VDD Minimization mode, and 'xosd' is XO Shutdown
-> > > > mode.  But I'm not sure about 'vlow' mode.  Could you share some
-> > > > information regarding what this low power mode is, and how it differs
-> > > > from 'vmin' and 'xosd'?
-> > > 
-> > > vlow and xosd are same.
-> > > vmin is xosd plus voltage minimization of chip, memory rails.
-> > 
-> > Thanks much for the info, Maulik!
-> > 
-> > I'm running your driver on qcm2290 and trying to reach vlow mode.
-> > 
-> > # cat /sys/kernel/debug/qcom_sleep_stats/vlow
-> > Count: 0
-> > Last Entered At: 0
-> > Last Exited At: 0
-> > Accumulated Duration: 0
-> > Client Votes: 0x81
-> > # echo mem > /sys/power/state
-> > [  551.446603] PM: suspend entry (s2idle)
-> > [  551.450948] Filesystems sync: 0.000 seconds
-> > [  551.462828] Freezing user space processes ... (elapsed 0.002 seconds) done.
-> > [  551.472276] OOM killer disabled.
-> > [  551.475556] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> > [  551.484461] printk: Suspending console(s) (use no_console_suspend to debug)
-> > [  551.561280] OOM killer enabled.
-> > [  551.564461] Restarting tasks ... done.
-> > [  551.569652] PM: suspend exit
-> > # cat /sys/kernel/debug/qcom_sleep_stats/vlow
-> > Count: 0
-> > Last Entered At: 0
-> > Last Exited At: 0
-> > Accumulated Duration: 0
-> > Client Votes: 0x818081
-> > 
-> > The count doesn't increases along with suspend/resume cycle at the
-> > moment.  But as you can see, 'Client Votes' field changes.  If possible,
-> > could you shed some light on what this means?
-> 
-> The count will increase only when all the subsystems (APSS/Modem,etc) are in
-> power down mode and finally RPM decides to turn off xo clock.
-> 
-> > 
-> > As the comparison, I'm also running the downstream 'rpm_master_stats'
-> > driver in the same kernel, and the 'xo_count' field of APSS does
-> > increase along with suspend/resume cycle.  May I ask some advices what
-> > I'm possibly missing and thus getting different result between 'vlow'
-> > and 'rpm_master_stats' report?
-> 
-> The vlow is a SoC level state whereas the rpm master stats indicate
-> individual subsystem state. Since you are running suspend-resume the APSS is
-> going to sleep so you see xo_count incremented for it but for MPSS i see it
-> does not increase (modem is not entering to low power mode). similarly for
-> ADSP/CDSP it does not increment. if all of these subsystems goes to power
-> down and then there is sufficient sleep time for the SoC then you may see
-> vlow/vmin incrementing.
-> 
-> Hope this clarifies.
+On Wed, Oct 20, 2021 at 11:08 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Wed, 20 Oct 2021 15:33:49 +0100,
+> Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Wed, Oct 20, 2021 at 7:04 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Tue, 19 Oct 2021 14:27:02 +0100,
+> > > Guo Ren <guoren@kernel.org> wrote:
+> > > >
+> > > > On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > On Tue, 19 Oct 2021 10:33:49 +0100,
+> > > > > Guo Ren <guoren@kernel.org> wrote:
+> > > > >
+> > > > > > > If you have an 'automask' behavior and yet the HW doesn't record this
+> > > > > > > in a separate bit, then you need to track this by yourself in the
+> > > > > > > irq_eoi() callback instead. I guess that you would skip the write to
+> > > > > > > the CLAIM register in this case, though I have no idea whether this
+> > > > > > > breaks
+> > > > > > > the HW interrupt state or not.
+> > > > > > The problem is when enable bit is 0 for that irq_number,
+> > > > > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
+> > > > > > the hw state machine. Then this irq would enter in ack state and no
+> > > > > > continues irqs could come in.
+> > > > >
+> > > > > Really? This means that you cannot mask an interrupt while it is being
+> > > > > handled? How great...
+> > > > If the completion ID does not match an interrupt source that is
+> > > > currently enabled for the target, the completion is silently ignored.
+> > > > So, C9xx completion depends on enable-bit.
+> > >
+> > > Is that what the PLIC spec says? Or what your implementation does? I
+> > > can understand that one implementation would be broken, but if the
+> > > PLIC architecture itself is broken, that's far more concerning.
+> >
+> > Yes, we are dealing with a broken/non-compliant PLIC
+> > implementation.
+> >
+> > The RISC-V PLIC spec defines a very different behaviour for the
+> > interrupt claim (i.e. readl(claim)) and interrupt completion (i.e.
+> > writel(claim)). The T-HEAD PLIC implementation does things
+> > different from what the RISC-V PLIC spec says because it will
+> > mask an interrupt upon interrupt claim whereas PLIC spec says
+> > it should only clear the interrupt pending bit (not mask the interrupt).
+> >
+> > Quoting interrupt claim process (chapter 9) from PLIC spec:
+> > "The PLIC can perform an interrupt claim by reading the claim/complete
+> > register, which returns the ID of the highest priority pending interrupt or
+> > zero if there is no pending interrupt. A successful claim will also atomically
+> > clear the corresponding pending bit on the interrupt source."
+> >
+> > Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc
+>
+> That's not the point I'm making. According to Guo, the PLIC (any
+> implementation of it) will ignore a write to claim on a masked
+> interrupt.
+>
+> If that's indeed correct, then a sequence such as:
+>
+> (1) irq = read(claim)
+> (2) mask from the interrupt handler with the right flags so that it
+> isn't done lazily
+> (3) write(irq, claim)
 
-Thanks Maulik!  It's very helpful.  I have a couple of further
-questions, if you do not mind.
+How about letting the IRQ chip change?
 
-1. We can understand most of vlow/vmin output.  But could you help
-   decode 'Client Votes'?  It looks like the bits are shifting along
-   with suspend/resume cycle.
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index a98bcfc4be7b..ed6ace1058ac 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -444,10 +444,10 @@ void unmask_threaded_irq(struct irq_desc *desc)
+ {
+        struct irq_chip *chip = desc->irq_data.chip;
 
-2. In the rpm_master_stats output below, I know masters (processors)
-   APSS, MPSS, ADSP and CDSP, but not really sure what TZ is.  If it's
-   TrustZone, shouldn't it covered by APSS?
++       unmask_irq(desc);
++
+        if (chip->flags & IRQCHIP_EOI_THREADED)
+                chip->irq_eoi(&desc->irq_data);
+-
+-       unmask_irq(desc);
+ }
 
-Thanks for sharing your insights!
+ /*
+@@ -673,8 +673,8 @@ static void cond_unmask_eoi_irq(struct irq_desc
+*desc, struct irq_chip *chip)
+         */
+        if (!irqd_irq_disabled(&desc->irq_data) &&
+            irqd_irq_masked(&desc->irq_data) && !desc->threads_oneshot) {
+-               chip->irq_eoi(&desc->irq_data);
+                unmask_irq(desc);
++               chip->irq_eoi(&desc->irq_data);
+        } else if (!(chip->flags & IRQCHIP_EOI_THREADED)) {
+                chip->irq_eoi(&desc->irq_data);
+        }
 
-Shawn
+>
+> will result in an interrupt blocked in ack state (and probably no more
+> interrupt for this CPU at this priority). That would be an interesting
+> bug in the current code, but also a pretty bad architectural choice.
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
 
-> > # cat /sys/kernel/debug/rpm_master_stats
-> > APSS
-> >          shutdown_req:0x37EA3CC74
-> >          wakeup_ind:0x0
-> >          bringup_req:0x37F041958
-> >          bringup_ack:0x37F042D54
-> >          xo_last_entered_at:0x286FF36AC
-> >          xo_last_exited_at:0x28AF94178
-> >          xo_accumulated_duration:0x3EDD55B
-> >          last_sleep_transition_duration:0x122f
-> >          last_wake_transition_duration:0x11f8
-> >          xo_count:0x1
-> >          wakeup_reason:0x0
-> >          numshutdowns:0x641
-> >          active_cores:0x1
-> >                  core0
-> > MPSS
-> >          shutdown_req:0x0
-> >          wakeup_ind:0x0
-> >          bringup_req:0x0
-> >          bringup_ack:0x0
-> >          xo_last_entered_at:0x0
-> >          xo_last_exited_at:0x0
-> >          xo_accumulated_duration:0x0
-> >          last_sleep_transition_duration:0x0
-> >          last_wake_transition_duration:0x0
-> >          xo_count:0x0
-> >          wakeup_reason:0x0
-> >          numshutdowns:0x0
-> >          active_cores:0x1
-> >                  core0
-> > ADSP
-> >          shutdown_req:0x0
-> >          wakeup_ind:0x0
-> >          bringup_req:0x0
-> >          bringup_ack:0x0
-> >          xo_last_entered_at:0x0
-> >          xo_last_exited_at:0x0
-> >          xo_accumulated_duration:0x0
-> >          last_sleep_transition_duration:0x0
-> >          last_wake_transition_duration:0x0
-> >          xo_count:0x0
-> >          wakeup_reason:0x0
-> >          numshutdowns:0x0
-> >          active_cores:0x1
-> >                  core0
-> > CDSP
-> >          shutdown_req:0x0
-> >          wakeup_ind:0x0
-> >          bringup_req:0x0
-> >          bringup_ack:0x0
-> >          xo_last_entered_at:0x0
-> >          xo_last_exited_at:0x0
-> >          xo_accumulated_duration:0x0
-> >          last_sleep_transition_duration:0x0
-> >          last_wake_transition_duration:0x0
-> >          xo_count:0x0
-> >          wakeup_reason:0x0
-> >          numshutdowns:0x0
-> >          active_cores:0x0
-> > TZ
-> >          shutdown_req:0x0
-> >          wakeup_ind:0x0
-> >          bringup_req:0x0
-> >          bringup_ack:0x0
-> >          xo_last_entered_at:0x0
-> >          xo_last_exited_at:0x0
-> >          xo_accumulated_duration:0x0
-> >          last_sleep_transition_duration:0x0
-> >          last_wake_transition_duration:0x0
-> >          xo_count:0x0
-> >          wakeup_reason:0x0
-> >          numshutdowns:0x0
-> >          active_cores:0x0
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
