@@ -2,229 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE764362DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78564362E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhJUN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:27:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230483AbhJUN1g (ORCPT
+        id S231611AbhJUN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:27:53 -0400
+Received: from mail-40135.protonmail.ch ([185.70.40.135]:25437 "EHLO
+        mail-40135.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231585AbhJUN1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:27:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634822720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NkppuMobEIHKB0sez/ioBJ9Xfdh1AlpgLhgQ5nmiOuA=;
-        b=fjBWDuLWC/5WL3b0u08x/x1mkBxouYFVk4QMMu+NZEd05KE2Vth04c2lwmyQaRmo6T8t4F
-        NYfb7Z38NzY1UFptdEDvRAaFL5Qm0XXzsdGUW1amAJV3Za7IaUpJpR9TbtH7Yso4XCBbvi
-        Qs/TTmlJMZmZWatOqI4MbMpAuWKEiOA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-BxbsF3UDPEeMCM7Lmq1_mw-1; Thu, 21 Oct 2021 09:25:18 -0400
-X-MC-Unique: BxbsF3UDPEeMCM7Lmq1_mw-1
-Received: by mail-ed1-f70.google.com with SMTP id v2-20020a50f082000000b003db24e28d59so336472edl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:25:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NkppuMobEIHKB0sez/ioBJ9Xfdh1AlpgLhgQ5nmiOuA=;
-        b=RehC8cgY8aqC1AR5QjPdZsjQAlzQLikv8T2S/8t+JS7puDQxeGJ/Ha8JboeHnBZdho
-         R5WnRgcHd4/+TRYojJqBg9rSCn7ePg7ewwkTE5J4UaAbRoiMRS5uVIExQE5XRkzFCsRX
-         J2fOXVTwRyzPMg704zRdNrRebjh7ysN4ECgFtKef/FM9r5GMBI9vgX6zeBAO5VtIpZwB
-         chippblRuig2Q+jpOekqFi/kJYw4c0qsdYvBUhK1dXpiuDcw0qlWeO95giGgJvGK1bpe
-         FiBVv5ks/4clYdFn3pQ7n6KuEMEsuHZgrWOs6LTMf720bt0yJg3cY81fqS3BYWvLBBrT
-         HAEQ==
-X-Gm-Message-State: AOAM530weweiGGWKwMjwiNRQ5G030XmuQV1v3MQbPWfXYCfDxI1XZeo6
-        52VH8stHkjauBT2iF+29MSnqjcU2nJt1OJBnxzvIh8C9Rz6Iler4CFrIbZ5M8E4G0gEJlnluZKL
-        xFhvrccuriZPMMMeznNPtK7rs
-X-Received: by 2002:a50:c355:: with SMTP id q21mr2064273edb.161.1634822717619;
-        Thu, 21 Oct 2021 06:25:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyFjOV/ylQQMALuxiAyz0iJ8blr1z08y94yE9g1hAByMOvPKYeKua3Qlc6daZzoBrkgVqAk+w==
-X-Received: by 2002:a50:c355:: with SMTP id q21mr2064244edb.161.1634822717435;
-        Thu, 21 Oct 2021 06:25:17 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id y6sm2588772ejf.58.2021.10.21.06.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 06:25:17 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 15:25:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc:     acme@kernel.org, michael@ellerman.id.au, eranian@google.com,
-        mark.rutland@arm.com, namhyung@kernel.org, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] tools/perf: Add bitfield_swap to handle
- branch_stack endian issue
-Message-ID: <YXFqO+8N61a9Cqy+@krava>
-References: <20211016125059.691856-1-maddy@linux.ibm.com>
+        Thu, 21 Oct 2021 09:27:47 -0400
+Date:   Thu, 21 Oct 2021 13:25:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1634822726;
+        bh=nuOvHKjHTwxeAM9TscBnoeXxs/55JU1OgJG+jydjNjU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=NZYCHXTTgfLYN6D2i++aL5NaDf/JmvoybTWbpk2sWUCgVnPjjzj7x4ltb9EzwVi/x
+         m9tCxACJZfuo0uk3BqGj5vkGhIijOrR221Cl4P3awENRvb321VJENgI/jQQafr6HvK
+         ozA2JkVte8hygwT0I8DqFr34/CcNbWck6i/lRWbI=
+To:     Georgi Djakov <djakov@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH RESEND v5 5/5] arm64: dts: qcom: msm8996: Add interconnect support
+Message-ID: <20211021132329.234942-6-y.oudjana@protonmail.com>
+In-Reply-To: <20211021132329.234942-1-y.oudjana@protonmail.com>
+References: <20211021132329.234942-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016125059.691856-1-maddy@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 06:20:58PM +0530, Madhavan Srinivasan wrote:
-> branch_stack struct has bit field definition which
-> produces different bit ordering for big/little endian.
-> Because of this, when branch_stack sample is collected
-> in a BE system and viewed/reported in a LE system, bit
-> fields of the branch stack are not presented properly.
-> To address this issue, a evsel__bitfield_swap_branch_stack()
-> is defined and introduced in evsel__parse_sample.
-> 
-> Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-> ---
-> Changelog v1:
-> - Renamed function and macro
-> - Added comments in code
-> 
->  tools/perf/util/evsel.c | 74 +++++++++++++++++++++++++++++++++++++++--
->  tools/perf/util/evsel.h | 13 ++++++++
->  2 files changed, 85 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index dbfeceb2546c..746e642d4d32 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2221,6 +2221,51 @@ void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
->  	data->weight = *array;
->  }
->  
-> +u64 evsel__bitfield_swap_branch_flags(u64 value)
-> +{
-> +	u64 new_val = 0;
-> +
-> +	/*
-> +	 * branch_flags
-> +	 * union {
-> +	 * 	u64 values;
-> +	 * 	struct {
-> +	 * 		mispred:1	//target mispredicted
-> +	 * 		predicted:1	//target predicted
-> +	 * 		in_tx:1		//in transaction
-> +	 * 		abort:1		//transaction abort
-> +	 * 		cycles:16	//cycle count to last branch
-> +	 * 		type:4		//branch type
-> +	 * 		reserved:40
-> +	 * 	}
-> +	 * }
-> +	 *
-> +	 * Avoid bswap64() the entire branch_flag.value,
-> +	 * as it has variable bit-field sizes. Instead the
-> +	 * macro takes the bit-field position/size,
-> +	 * swaps it based on the host endianness.
-> +	 */
-> +	if (bigendian()) {
-> +		new_val = bitfield_swap(value, 0, 1);
-> +		new_val |= bitfield_swap(value, 1, 1);
-> +		new_val |= bitfield_swap(value, 2, 1);
-> +		new_val |= bitfield_swap(value, 3, 1);
-> +		new_val |= bitfield_swap(value, 4, 16);
-> +		new_val |= bitfield_swap(value, 20, 4);
-> +		new_val |= bitfield_swap(value, 24, 40);
-> +	} else {
-> +		new_val = bitfield_swap(value, 63, 1);
-> +		new_val |= bitfield_swap(value, 62, 1);
-> +		new_val |= bitfield_swap(value, 61, 1);
-> +		new_val |= bitfield_swap(value, 60, 1);
-> +		new_val |= bitfield_swap(value, 44, 16);
-> +		new_val |= bitfield_swap(value, 40, 4);
-> +		new_val |= bitfield_swap(value, 0, 40);
-> +	}
-> +
-> +	return new_val;
-> +}
-> +
->  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  			struct perf_sample *data)
->  {
-> @@ -2408,6 +2453,8 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  	if (type & PERF_SAMPLE_BRANCH_STACK) {
->  		const u64 max_branch_nr = UINT64_MAX /
->  					  sizeof(struct branch_entry);
-> +		struct branch_entry *e;
-> +		unsigned int i;
->  
->  		OVERFLOW_CHECK_u64(array);
->  		data->branch_stack = (struct branch_stack *)array++;
-> @@ -2416,10 +2463,33 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  			return -EFAULT;
->  
->  		sz = data->branch_stack->nr * sizeof(struct branch_entry);
-> -		if (evsel__has_branch_hw_idx(evsel))
-> +		if (evsel__has_branch_hw_idx(evsel)) {
->  			sz += sizeof(u64);
-> -		else
-> +			e = &data->branch_stack->entries[0];
-> +		} else {
->  			data->no_hw_idx = true;
-> +			/*
-> +			 * if the PERF_SAMPLE_BRANCH_HW_INDEX is not applied,
-> +			 * only nr and entries[] will be output by kernel.
-> +			 */
-> +			e = (struct branch_entry *)&data->branch_stack->hw_idx;
-> +		}
-> +
-> +		if (swapped) {
+Add interconnect providers for the multiple NoCs available on the platform,
+and assign interconnects used by some blocks.
 
-thanks for all the comments, make it easy to review
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+---
+Changes since v4:
+ - Add support for Aggregate 0 NoC (a0noc).
+Changes since v2:
+ - Remove interconnect paths from CPUs since cpufreq driver doesn't support=
+ icc scaling yet.
 
-> +			/*
-> +			 * struct branch_flag does not have endian
-> +			 * specific bit field definition. And bswap
-> +			 * will not resolve the issue, since these
-> +			 * are bit fields.
-> +			 *
-> +			 * evsel__bitfield_swap_branch_flags() uses a
-> +			 * bitfield_swap macro to swap the bit position
-> +			 * based on the host endians.
-> +			 */
-> +			for (i = 0; i < data->branch_stack->nr; i++, e++)
-> +				e->flags.value = evsel__bitfield_swap_branch_flags(e->flags.value);
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 93 +++++++++++++++++++++++++++
+ 1 file changed, 93 insertions(+)
 
-one last thing that confuses me.. the sample is already swapped at this
-point, right? with perf_event__all64_swap function
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
+om/msm8996.dtsi
+index 465cd19a4951..9f0cfe19163c 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -7,6 +7,7 @@
+ #include <dt-bindings/clock/qcom,mmcc-msm8996.h>
+ #include <dt-bindings/clock/qcom,rpmcc.h>
+ #include <dt-bindings/power/qcom-rpmpd.h>
++#include <dt-bindings/interconnect/qcom,msm8996.h>
+ #include <dt-bindings/soc/qcom,apr.h>
+ #include <dt-bindings/thermal/thermal.h>
+=20
+@@ -683,6 +684,15 @@ gcc: clock-controller@300000 {
+ =09=09=09clock-names =3D "cxo2";
+ =09=09};
+=20
++=09=09bimc: interconnect@408000 {
++=09=09=09compatible =3D "qcom,msm8996-bimc";
++=09=09=09reg =3D <0x00408000 0x5a000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_BIMC_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_BIMC_A_CLK>;
++=09=09};
++
+ =09=09tsens0: thermal-sensor@4a9000 {
+ =09=09=09compatible =3D "qcom,msm8996-tsens", "qcom,tsens-v2";
+ =09=09=09reg =3D <0x004a9000 0x1000>, /* TM */
+@@ -705,6 +715,74 @@ tsens1: thermal-sensor@4ad000 {
+ =09=09=09#thermal-sensor-cells =3D <1>;
+ =09=09};
+=20
++=09=09cnoc: interconnect@500000 {
++=09=09=09compatible =3D "qcom,msm8996-cnoc";
++=09=09=09reg =3D <0x00500000 0x1000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_CNOC_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_CNOC_A_CLK>;
++=09=09};
++
++=09=09snoc: interconnect@524000 {
++=09=09=09compatible =3D "qcom,msm8996-snoc";
++=09=09=09reg =3D <0x00524000 0x1c000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_SNOC_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_SNOC_A_CLK>;
++=09=09};
++
++=09=09a0noc: interconnect@543000 {
++=09=09=09compatible =3D "qcom,msm8996-a0noc";
++=09=09=09reg =3D <0x00543000 0x6000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "aggre0_snoc_axi",
++=09=09=09=09      "aggre0_cnoc_ahb",
++=09=09=09=09      "aggre0_noc_mpu_cfg";
++=09=09=09clocks =3D <&gcc GCC_AGGRE0_SNOC_AXI_CLK>,
++=09=09=09=09 <&gcc GCC_AGGRE0_CNOC_AHB_CLK>,
++=09=09=09=09 <&gcc GCC_AGGRE0_NOC_MPU_CFG_AHB_CLK>;
++=09=09=09power-domains =3D <&gcc AGGRE0_NOC_GDSC>;
++=09=09};
++
++=09=09a1noc: interconnect@562000 {
++=09=09=09compatible =3D "qcom,msm8996-a1noc";
++=09=09=09reg =3D <0x00562000 0x5000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_AGGR1_NOC_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_AGGR1_NOC_A_CLK>;
++=09=09};
++
++=09=09a2noc: interconnect@583000 {
++=09=09=09compatible =3D "qcom,msm8996-a2noc";
++=09=09=09reg =3D <0x00583000 0x7000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_AGGR2_NOC_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_AGGR2_NOC_A_CLK>;
++=09=09};
++
++=09=09mnoc: interconnect@5a4000 {
++=09=09=09compatible =3D "qcom,msm8996-mnoc";
++=09=09=09reg =3D <0x005a4000 0x1c000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a", "iface";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_MMAXI_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_MMAXI_A_CLK>,
++=09=09=09=09 <&mmcc AHB_CLK_SRC>;
++=09=09};
++
++=09=09pnoc: interconnect@5c0000 {
++=09=09=09compatible =3D "qcom,msm8996-pnoc";
++=09=09=09reg =3D <0x005c0000 0x3000>;
++=09=09=09#interconnect-cells =3D <1>;
++=09=09=09clock-names =3D "bus", "bus_a";
++=09=09=09clocks =3D <&rpmcc RPM_SMD_PCNOC_CLK>,
++=09=09=09=09 <&rpmcc RPM_SMD_PCNOC_A_CLK>;
++=09=09};
++
+ =09=09tcsr_mutex_regs: syscon@740000 {
+ =09=09=09compatible =3D "syscon";
+ =09=09=09reg =3D <0x00740000 0x40000>;
+@@ -784,6 +862,11 @@ mdp: mdp@901000 {
+ =09=09=09=09assigned-clock-rates =3D <300000000>,
+ =09=09=09=09=09 <19200000>;
+=20
++=09=09=09=09interconnects =3D <&mnoc MASTER_MDP_PORT0 &bimc SLAVE_EBI_CH0>=
+,
++=09=09=09=09=09=09<&mnoc MASTER_MDP_PORT1 &bimc SLAVE_EBI_CH0>,
++=09=09=09=09=09=09<&mnoc MASTER_ROTATOR &bimc SLAVE_EBI_CH0>;
++=09=09=09=09interconnect-names =3D "mdp0-mem", "mdp1-mem", "rotator-mem";
++
+ =09=09=09=09ports {
+ =09=09=09=09=09#address-cells =3D <1>;
+ =09=09=09=09=09#size-cells =3D <0>;
+@@ -959,6 +1042,9 @@ gpu: gpu@b00000 {
+ =09=09=09=09"mem",
+ =09=09=09=09"mem_iface";
+=20
++=09=09=09interconnects =3D <&bimc MASTER_GRAPHICS_3D &bimc SLAVE_EBI_CH0>;
++=09=09=09interconnect-names =3D "gfx-mem";
++
+ =09=09=09power-domains =3D <&mmcc GPU_GX_GDSC>;
+ =09=09=09iommus =3D <&adreno_smmu 0>;
+=20
+@@ -1986,6 +2072,9 @@ venus: video-codec@c00000 {
+ =09=09=09=09 <&mmcc VIDEO_AXI_CLK>,
+ =09=09=09=09 <&mmcc VIDEO_MAXI_CLK>;
+ =09=09=09clock-names =3D "core", "iface", "bus", "mbus";
++=09=09=09interconnects =3D <&mnoc MASTER_VIDEO_P0 &bimc SLAVE_EBI_CH0>,
++=09=09=09=09=09<&bimc MASTER_AMPSS_M0 &mnoc SLAVE_VENUS_CFG>;
++=09=09=09interconnect-names =3D "video-mem", "cpu-cfg";
+ =09=09=09iommus =3D <&venus_smmu 0x00>,
+ =09=09=09=09 <&venus_smmu 0x01>,
+ =09=09=09=09 <&venus_smmu 0x0a>,
+@@ -2602,6 +2691,10 @@ usb3: usb@6af8800 {
+ =09=09=09=09=09  <&gcc GCC_USB30_MASTER_CLK>;
+ =09=09=09assigned-clock-rates =3D <19200000>, <120000000>;
+=20
++=09=09=09interconnects =3D <&a2noc MASTER_USB3 &bimc SLAVE_EBI_CH0>,
++=09=09=09=09=09<&bimc MASTER_AMPSS_M0 &snoc SLAVE_USB3>;
++=09=09=09interconnect-names =3D "usb-ddr", "apps-usb";
++
+ =09=09=09power-domains =3D <&gcc USB30_GDSC>;
+ =09=09=09status =3D "disabled";
+=20
+--=20
+2.33.1
 
-should you swap it back first and then do the proper bitfield swap?
-like we do in PERF_SAMPLE_RAW to get proper u32 values
-
-thanks,
-jirka
-
-> +		}
-> +
->  		OVERFLOW_CHECK(array, sz, max_size);
->  		array = (void *)array + sz;
->  	}
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 1f7edfa8568a..2e82cdbe2c08 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -482,4 +482,17 @@ struct evsel *evsel__leader(struct evsel *evsel);
->  bool evsel__has_leader(struct evsel *evsel, struct evsel *leader);
->  bool evsel__is_leader(struct evsel *evsel);
->  void evsel__set_leader(struct evsel *evsel, struct evsel *leader);
-> +
-> +/*
-> + * Macro to swap the bit-field postition and size.
-> + * Used when,
-> + * - dont need to swap the entire u64 &&
-> + * - when u64 has variable bit-field sizes &&
-> + * - when presented in a host endian which is different
-> + *   than the source endian of the perf.data file
-> + */
-> +#define bitfield_swap(src, pos, size)	\
-> +	((((src) >> (pos)) & ((1ull << (size)) - 1)) << (63 - ((pos) + (size) - 1)))
-> +
-> +u64 evsel__bitfield_swap_branch_flags(u64 value);
->  #endif /* __PERF_EVSEL_H */
-> -- 
-> 2.31.1
-> 
 
