@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C11436D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE3A436D15
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbhJUVsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 17:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55736 "EHLO
+        id S231921AbhJUVxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 17:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhJUVsm (ORCPT
+        with ESMTP id S231446AbhJUVxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 17:48:42 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00906C061764;
-        Thu, 21 Oct 2021 14:46:25 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id l5so1017803lja.13;
-        Thu, 21 Oct 2021 14:46:25 -0700 (PDT)
+        Thu, 21 Oct 2021 17:53:47 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8657C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 14:51:30 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d9so1854918pfl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 14:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0xlnYhJkaNk96ITMhxfdXS3J1MPuX3UoZqSSw9IGVG0=;
-        b=OGQIwTdBSyVZSx0jNWT6RkOfe4yhLHKAIRBe9+3akekOo/cdiycS+q1v3/9zLX0+6Q
-         OxmeeN932jX02OXkVXigEr8W3RskvUkl8dg3BJxxre9SmKd4UAF7sP/NpjfuZeZ8Kz2Z
-         c/4Bv6XOz1Urvc7YkMpVW3+e/+Q5Phavk6R2oozc8rYjwRZoGelI5iBThX7DrG13WMYa
-         gMrZemgI9+p02XYA6d0kdbOFzgS8QKxHiZFOrCCtWdJHspBz8MVVbFpsyQKRFQNVCqsn
-         CsICWPvTWOwp2IBfyiDfRq6zSkVRG6HBH60336Zsnoja2FS6ql0T9Sf53vhb1ZDV8EpW
-         Tckg==
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iIjOjRuuF69t6HmfV6mNW7nAeVgMNixa2oJL1/ZOiQg=;
+        b=Z5m6QWz3AQaqJWA63h4Y1HANpmqTbvh8iX2KIJi1KsrNmJV61jA6eFzYvAa9OmdFr2
+         CSQDgS9+cij1C9LrSPJ1Zp5ahQyWdi2P05pyAajvpLDq9ZeA+v0xxlcNw8RfdFl7Y9TQ
+         kMp5brDQeT2CghqocReyzqfzk/18jbPr6ggOjPtmRjQdAicM2N4zAV2fHgFv2LcwRj9y
+         umFzGoS2bdMqdN75/arbJhubAmjDGhvnqe8SDGQrxyvAIOf1o+m83gzPe4NRjx7J4ogq
+         dSqjnnrSkoiLUDEjticgCK+46rTNdwXe+mfJ5Y7hZv4kBQg6FWWe6MCSSrOAQfbe3Ji9
+         vDGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0xlnYhJkaNk96ITMhxfdXS3J1MPuX3UoZqSSw9IGVG0=;
-        b=WwI2/wZdqJXMXaNFzlptuAkZpCejimqc74V4kTiWBJKmu7Mq1moT/UhsHmOdK00Woz
-         ufsbJe3nJKoMQ2TYdPluVhOj8l3gAyT+zoOJ+4YZukX7bnOiIMoLGMsz3SubOiCpmtXJ
-         sRylzyf0DWNnnt7hEeKrP9NZ/MSh/bD8K2dvYUK9kGQphPX/yxS2Iq11IQ8+ACA3pIWv
-         D19YjDKKc5r2ryijpJQgVLQOeloJHvBJpw97D/FZVsj90SgwEO37aG4eUk4iFHvVasNW
-         G/xqGwgqmkv7mi5C1cD4XgwMZvAOXrydvPyRb+HUIiFzsoTfbA5jqb20rCBb8xSiYnz9
-         +y+g==
-X-Gm-Message-State: AOAM533pI8gmpTL6/CqvpbTtxWU6YB3gBvhvK7WUk4/UgfAV4mxoYRku
-        ifKXdr+8C+TrMcRfXNxJhqnupAF8VfA=
-X-Google-Smtp-Source: ABdhPJz9v5HcOPJefrKvS+XLSq6llXFfDWF7caDiqhx5rsCTgUV7mgJ39z/fW28JLWBw5IjLz1weHw==
-X-Received: by 2002:a2e:7004:: with SMTP id l4mr8843888ljc.199.1634852784116;
-        Thu, 21 Oct 2021 14:46:24 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-61-202.dynamic.spd-mgts.ru. [94.29.61.202])
-        by smtp.googlemail.com with ESMTPSA id t20sm599687lft.240.2021.10.21.14.46.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 14:46:23 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
- device tree
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211021115501.14932-1-digetx@gmail.com>
- <YXHdoFAgGlxoI0Jx@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <29b38423-631e-192e-b006-aa0d258c8030@gmail.com>
-Date:   Fri, 22 Oct 2021 00:46:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YXHdoFAgGlxoI0Jx@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=iIjOjRuuF69t6HmfV6mNW7nAeVgMNixa2oJL1/ZOiQg=;
+        b=urPueZ7yRdrf5WZlSnMbzikGJtygkaTip4wJK1Wc1PA/KzfS6FUu7BRUxnESBy7BK5
+         LUXgXFrLL20Qt113bwFTKD5EODQ/ZWd/KtWQyP/RUSX9fOeTn815v6s2GVV9ThM/zaLO
+         SeFJtAdrA5zSCODtbhx0NoBEJN/KFuKJz+AhczEebZczMpuaxzWka49VYbGYbLLOoPnx
+         Sqqg2CdJL/snqen58QS5F7WTLqgIRQSsQvzhORRBs4Kq/eRW06gQTmQXQiGBPOcLfJBt
+         vP3gamwlAsT/+Aods2VIi8+jvfeHOZrG6j/2QxeQOANrGMzutkARhahjXlxOw/cbyJrT
+         2N/Q==
+X-Gm-Message-State: AOAM532ThfYMZejXu042Y8e0N1MernUOd6824zrKJ/po+EREZCmApRgZ
+        SJE4Yhw+WoNEAEq2q8gf6+ygdA==
+X-Google-Smtp-Source: ABdhPJx+KdjsmowFFTshMv4kNktiSr9Nyaw7YXblCPr5iXukUmhP3B3jLEvS4as89EdK4LJkjWJ9yg==
+X-Received: by 2002:a63:df49:: with SMTP id h9mr6314184pgj.198.1634853089868;
+        Thu, 21 Oct 2021 14:51:29 -0700 (PDT)
+Received: from localhost ([2620:0:1000:5e10:4ba5:eac8:81d9:3e28])
+        by smtp.gmail.com with ESMTPSA id i8sm6943807pfo.117.2021.10.21.14.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 14:51:29 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 14:51:29 -0700 (PDT)
+X-Google-Original-Date: Thu, 21 Oct 2021 14:42:25 PDT (-0700)
+Subject:     Re: [PATCH] serial: sifive: set pointer to NULL rather than 0.
+In-Reply-To: <20210925224726.183360-1-colin.king@canonical.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-serial@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     colin.king@canonical.com
+Message-ID: <mhng-f84d7cb5-9eb5-40e2-bdc4-9bfdbd67f6d3@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.10.2021 00:37, Michał Mirosław пишет:
-> On Thu, Oct 21, 2021 at 02:55:01PM +0300, Dmitry Osipenko wrote:
->> Older device-trees don't specify padctrl interrupt and xhci-tegra driver
->> now fails to probe with -EINVAL using those device-trees. Check interrupt
->> presence and disallow runtime PM suspension if it's missing to fix the
->> trouble.
-> [...]
->> --- a/drivers/usb/host/xhci-tegra.c
->> +++ b/drivers/usb/host/xhci-tegra.c
->> @@ -1454,10 +1454,13 @@ static int tegra_xusb_probe(struct platform_device *pdev)
->>  		goto put_padctl;
->>  	}
->>  
->> -	tegra->padctl_irq = of_irq_get(np, 0);
->> -	if (tegra->padctl_irq <= 0) {
->> -		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
->> -		goto put_padctl;
->> +	/* Older device-trees don't specify padctrl interrupt */
->> +	if (of_property_read_bool(np, "interrupts")) {
-> 
-> Does this catch "interrupts-extended"?
+On Sat, 25 Sep 2021 15:47:26 PDT (-0700), colin.king@canonical.com wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Clean up the assignment of sifive_serial_console_ports[ssp->port.line],
+> this is a pointer to a struct sifive_serial_port so the assignment
+> should be a NULL rather than a integer 0.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/tty/serial/sifive.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/sifive.c b/drivers/tty/serial/sifive.c
+> index 0ac0371f943b..b79900d0e91a 100644
+> --- a/drivers/tty/serial/sifive.c
+> +++ b/drivers/tty/serial/sifive.c
+> @@ -887,7 +887,7 @@ static void __ssp_add_console_port(struct sifive_serial_port *ssp)
+>
+>  static void __ssp_remove_console_port(struct sifive_serial_port *ssp)
+>  {
+> -	sifive_serial_console_ports[ssp->port.line] = 0;
+> +	sifive_serial_console_ports[ssp->port.line] = NULL;
+>  }
+>
+>  #define SIFIVE_SERIAL_CONSOLE	(&sifive_serial_console)
 
-No, Tegra doesn't use interrupts-extended.
+I'm assuming this was aimed at the serial tree, but LMK if someone was 
+expecting me to take it.
+
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
