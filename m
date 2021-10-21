@@ -2,152 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846D34358E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4794358E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhJUDNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 23:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhJUDM7 (ORCPT
+        id S230477AbhJUDQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 23:16:31 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:6820 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230103AbhJUDQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 23:12:59 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA78C06161C;
-        Wed, 20 Oct 2021 20:10:44 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t11so17507046plq.11;
-        Wed, 20 Oct 2021 20:10:44 -0700 (PDT)
+        Wed, 20 Oct 2021 23:16:25 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L24llH008005;
+        Thu, 21 Oct 2021 03:14:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=ft78qF5CoH8gXD8JI1WDRoM7mItz+zzYKZWiG8YfHO8=;
+ b=XCpjcnx1ZbkBEf0qIuaJQsGPAePP2HDei1d4X9T6/wFRrSoC9QIkNHfJs3uLj+MAvEhU
+ nnMB73cNfZcHd4Cq7mrxpfTYmp9AOTNEmDber+JbnzAzjDwGKYJhhTsU6E9XHv2vIAp5
+ fXckNK4mvx0Nro1XI2on8gEAnAeQGijMaIXc/urRuHI2plk/Om46KVMzJHBEY+4kDGtx
+ +tRzjCURIMKUUCgGt4ArkzKBWmBQZnrtZNcHDAVErQuWDb5D009AE/7hmCkJhPMvWQF/
+ fWQN+2a4frkjCN0cvn5aU2foP9G0fVke9cl5xDv3T07O0xPoOq3VtHtrBooMl5DG4XFj LA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btqp2jf57-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 03:14:05 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19L2pDgI060516;
+        Thu, 21 Oct 2021 03:14:04 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
+        by aserp3020.oracle.com with ESMTP id 3bqpj8263w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 03:14:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AQeo8ppmuidNbGYLd9ch68MKzPORPjTfsCYrEDzlISsYdQjhQS8oQjBYlexQohirDzh2SK8Z6go4zwtHKcVmbbQ093gXavBr6pcWUdVZaT9R5iNQyHngL/Dd9OXw+sScOi758LhWpjzmdIfGxpGUKpha2w0piItvrY3dv5JxALba6J79jgegLuyKG00CRa2efrsIGykCm7WGvkteIcioRDqkv+4HbDWG4rAbDhbFaNKIbI5vCpUm8AvqzqPTrhXrjnWie4fEQq7N40F/94i5shjTS8JpGf+0s8jWzkTT+hI7ExHyjEGZMUedv0H7//2KQPmzyGPpabepvj6aILib7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ft78qF5CoH8gXD8JI1WDRoM7mItz+zzYKZWiG8YfHO8=;
+ b=X4AMIFxV22uLQd5J7JwuU7tPm3rXefrbeDCgDP6aReEft1REAMfDys6X7oXVMDB2cKpIHZV3+PHfqyW4vPDCvDWG64NB4FhxayhQXNE924PMaNg3O414JV8C+CpLMLLsk1WiKOeh2L72d7BdaoTJA1usm7KSYfjaxzRLKcM7UCDUzyqr2g/4S09hdsiNV9MGDTZ5/orn0VDKJjOrIZQeO/NfkLahfOWfkJLYfW+gjRTaC0WWLqby5YejW5K58tgzOSi8wFM0Mhm46n8+uRaHgXsRKb8mW1wVcla7fq6NAyqrVD/Sv035f4A8wv7liZx+pksCStF3xBN2l6EgAOqHbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:to:cc:subject:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LKUtJj0x5HNA1lDir25VXzXO+gDs3DC1h02o1eB01cc=;
-        b=QzoDiFraU1a1PM00HOXBrZLVjITiJ2Jv1Q0V1vgMn5/16iiXPZuvU8IN2vbGDf0pvO
-         q0LogBW/dABYTTPI3SQ5RijZpzTbvyANGstUVipoavx4YIaxpEAvVd6x/eeY+dAcJCU1
-         Cicz90mRtrlJHGKXsYLvSqt1kOMrVEhYdTb+STBnmbX6rR4i2cHf8gGye8PwMew4hNBq
-         KX2FvSf7yC3iaWAe+8oyIOqmen7nOML78Jy6P8K/VKmSJ1JZ7PsC2wQSfK00P3oJXhaF
-         BiY4brpryRSXgIvcA6Zw+FPiwVXoRwHqjgkFngrkf2wH5jHtJjDqvJeAWWvplX15Tk0w
-         exZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LKUtJj0x5HNA1lDir25VXzXO+gDs3DC1h02o1eB01cc=;
-        b=llQHv3ilggLD5JHyCV3ODJddokBVdBU8wDvoKU57wjYC6tjSPjH9w1Mh1q01O/jIV6
-         1kVidQh98mzBxN5ge8LPkJm6L5TBlEdlIcmhqQ0WG02+W4PAk1LQwWE8/KSs5RdThIZQ
-         TU7iK8+IzKnfcWUvM8T2zY86rlXWP8J5gm/RfOtx7kRyjRA8N5DToG4aY346fSaJ4J61
-         F6V4IMxGvHnjf9KAYiztn+eIlyG1kYOXhKJSMnWkFVgkOrzl2TE0RxW14iBi66mpm9wJ
-         1nkEwyRMn/XtBG9Gtg7nnR0rFXkbGjVwUcmO0g0rvSRcyrZipBF0VQRfQNdJTEWQdmTV
-         YyYQ==
-X-Gm-Message-State: AOAM533VUFzByMP74KCmCDsbfRm8aNWKAFaLSPsLycFIARA79hOiNaaG
-        GKBcCavyvZCLw9oSoT8yMG4=
-X-Google-Smtp-Source: ABdhPJw1r4kzM4NNvycTJ1Oekjgi9rZ0ViPsPoYnmwu08hWlyWjpGE1ii0KfUWYdSGYUushxmtPBjA==
-X-Received: by 2002:a17:90b:3a88:: with SMTP id om8mr3454187pjb.71.1634785844137;
-        Wed, 20 Oct 2021 20:10:44 -0700 (PDT)
-Received: from localhost ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id i18sm3976856pfq.198.2021.10.20.20.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 20:10:43 -0700 (PDT)
-Message-ID: <6170da33.1c69fb81.4050d.c355@mx.google.com>
-X-Google-Original-Message-ID: <20211021031041.GA1041483@cgel.zte@gmail.com>
-Date:   Thu, 21 Oct 2021 03:10:41 +0000
-From:   CGEL <cgel.zte@gmail.com>
-To:     Pkshih <pkshih@realtek.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "lv.ruyi@zte.com.cn" <lv.ruyi@zte.com.cn>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] rtw89: fix error function parameter
-References: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
- <163471982441.1743.9901035714649893101.kvalo@codeaurora.org>
- <3aa076f0e39a485ca090f8c14682b694@realtek.com>
- <878ryof1xc.fsf@codeaurora.org>
- <3e121f8f6dd4411eace22a7030824ce4@realtek.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ft78qF5CoH8gXD8JI1WDRoM7mItz+zzYKZWiG8YfHO8=;
+ b=wmKbSmFRniA1QoLQZOd8WZ3L0fH7YIwuHPLfHzQMFuCjE1wT1eVwzRCsxIJGrPVrx///qPz3AC2xj6Cm5lwGdy4Nrh+0uZcEWq6uxrhgIXxdKYkgwWjVVvxAIFJwPKWaLwEf7NnGMirCTno0hsZsXuSHZaJyhT3Ew9sHqJTnqfs=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5532.namprd10.prod.outlook.com (2603:10b6:510:10f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Thu, 21 Oct
+ 2021 03:14:02 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::a457:48f2:991f:c349]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::a457:48f2:991f:c349%9]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
+ 03:14:02 +0000
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, draviv@codeaurora.org,
+        sthumma@codeaurora.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org
+Subject: Re: [PATCH] scsi: ufs: ufshcd-pltfrm: fix memory leak due to probe
+ defer
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v91r6pei.fsf@ca-mkp.ca.oracle.com>
+References: <20210914092214.6468-1-srinivas.kandagatla@linaro.org>
+        <48895dce-8c26-0763-419d-9b53d7f7281b@linaro.org>
+Date:   Wed, 20 Oct 2021 23:14:00 -0400
+In-Reply-To: <48895dce-8c26-0763-419d-9b53d7f7281b@linaro.org> (Srinivas
+        Kandagatla's message of "Wed, 20 Oct 2021 16:47:47 +0100")
+Content-Type: text/plain
+X-ClientProxiedBy: SA0PR11CA0031.namprd11.prod.outlook.com
+ (2603:10b6:806:d0::6) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e121f8f6dd4411eace22a7030824ce4@realtek.com>
+Received: from ca-mkp.ca.oracle.com (138.3.201.45) by SA0PR11CA0031.namprd11.prod.outlook.com (2603:10b6:806:d0::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 03:14:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1aed7ddc-7b80-4818-1109-08d99440d53e
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5532:
+X-Microsoft-Antispam-PRVS: <PH0PR10MB55323147271D2247948D7A908EBF9@PH0PR10MB5532.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4TDqPVxk0ySa7uDypZmGjdf2bESivyEXkPG3Sr40ZAIeGAGzoNxYaYDfTBl8Hnbxj5uIzYPj5xcZRkVQ9jl/CahVD5JJTnUv4sKXAXfoIJm33naY3TcohvDu3RSJMBeji+gPQ7ws4V4hXr5qM2vjk3lvIrBq8fnQos21OHdLSJQRTcbvhQGqoi9MJhZmCuRvbH3efHjQE04pbeXdcJTwP5T6h8njXhgFZEQ6JlXPXFxxR8H7GmOr4/qUKooZdAW9aDnT3dU/fSKN0qI9fmUtYAaSx3dyLlQBhKCRqG2kCDiCG9YeiixHkpa/08SGkyfr+ytC9iDqAlx1Ancefi74IrE8e7i7DdOww/CTQhxNhxE89vqSe2J9aFMCvgR9JyZxfEqOARDYAHiiwDmA9SAGvNYxwT1VWpfJ13ZwkyUrlxYgYnZydhLrVUCRhM7JWJfeZNddBfX0CxHGdoT1cUVkV1tgIWwg3HKHSGwUQ+pacV9mL+rynpyB/UTwi2km8oeaD3lsuakn5IpXaPPZLtCKHD9aRpn26K23NHwKqlXPmKk9HObJcWOpm+b9jjPv9r0h3kbJ7b3JLsohbRG+ebxtJLzMyVuFC09n2kZ/jEBNTRi3WuOz+UYVEMzrbJbBu1CFk+qOKEj1FM+mWQqJ/z1OkbHiPDYx8S3NV9EZC3ZMO7lt3QEBbfsScsFnQzn/DiPoo8a0dt4j6JkjwhsPLnY2iQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(36916002)(6916009)(52116002)(66556008)(4326008)(7696005)(8936002)(66946007)(86362001)(316002)(66476007)(38100700002)(38350700002)(186003)(55016002)(2906002)(8676002)(4744005)(5660300002)(26005)(508600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mo4au8mEwoZJjkNbi4t6XogA76l2bUARlTDE00ejpQnVsZoMhbcWuTT+4zKp?=
+ =?us-ascii?Q?en+ISHkG5pavYWplFUkrREit7L2r8mHOC0qW3QEH6V/jV4hsUFjka3KAXkRE?=
+ =?us-ascii?Q?Saug6lIvYuMfZXbV7Ri4YyRyT1yyqehmdjf4PTBmEbM2zr5bQedUV84lzbaU?=
+ =?us-ascii?Q?1Dk8AIFpQEKLSn9SjV8A7z8hCV6emlnI8FCQ/LtuVtsvtKZE3PYWATMMKfxF?=
+ =?us-ascii?Q?p/FpzjtePM/f4eFCDBUyX2raxbpfD1MQAL9ACwRIjVFTNMO8qgbeKxbyd+jH?=
+ =?us-ascii?Q?4sFLvJvcS4FJ+M2OJs54BRPKEETZwRhrY2wWsanPphYTOzjXIq698cE9XnTt?=
+ =?us-ascii?Q?Na7gaJlbchsmskYuHPwd+0jBk6Wi57ddbMDihnaWuaQRK7jQfyI3YOarSgNm?=
+ =?us-ascii?Q?ebfK640m587uqTZWKIT8XpyfAcr+d2rYQj4PyP4b0Eig0MQc2Vp4SiDhJJki?=
+ =?us-ascii?Q?gMrv2U+shT3UpgdyE7Vt+uASUhF5XhY28NFMrPwZX3HWobEqV8UU9X/bNmtX?=
+ =?us-ascii?Q?BDZ9oJIk317vNeWmUUlAaZqU6q8/d6b7ucfXgam2pdjdZoWeCs6hsjDCKcrC?=
+ =?us-ascii?Q?MI7pGb9VEC6PKIvkdqiNMCNROyhh3qVxgDq78AsLv3NTto9t4zo3odwrFXtU?=
+ =?us-ascii?Q?HSsVvwBPAdvzaHsYnwr47xdSXF5NeCzRhQSKQT0mg+ex2mac5h4CNOnh3OLM?=
+ =?us-ascii?Q?QWzTIDfQgB2CX/kPa+w+9eqx2w1Fc08Q9SmTNMnDh1D0peiC2bQ7jSJFs1R+?=
+ =?us-ascii?Q?8MIKrRor8ni1cSylm2h6VC5LvFc6wka62n9b5xPyHfmC8pO/ziFsMZkr7ei/?=
+ =?us-ascii?Q?NldNm1t7vUQX5TKoA0x6idm+t/JQfVeZdpRYH02bRK2EK/ig4q7sxf0cZZgV?=
+ =?us-ascii?Q?aJdsAxIrxAl/KFdSUEMmYPQlm8BX43QxhhDVfoLFpiiLviTx1e4hQXVIu37t?=
+ =?us-ascii?Q?N0y8h8yxcVZeepEAosur4n+zLx90qRmuWPHZo7lco+BjMtoA/G7SGHac5qmS?=
+ =?us-ascii?Q?sHbMNw8oUOzn1H+ie4/iYyDvqb/bTF7SBqq/nWhGlK6lzJ0oro8EVHuy/Tje?=
+ =?us-ascii?Q?U/UsVbZHvDbddSBw2uJ5q+cY81sbtxIhv63r8FLH/YMgpL5zuMQE8LwmU6aj?=
+ =?us-ascii?Q?1vF3hMbuUd76e+QXXRWDa1XTTyzhEEvCu9l4t7/0pgQLjihjDBlOv9IEiKxL?=
+ =?us-ascii?Q?t0mzducGZ5UKW7BZ6ubZphQN8LbGo6imBY/4mIjaicHVqu7VIhNLbf09L2g8?=
+ =?us-ascii?Q?/HvpO3e2fYClQjrndbo8g+WqlkBRFhbRPYGSImOZUahc2rB1W/B8T1bO6hGK?=
+ =?us-ascii?Q?glS8+5z0Rx0/mEwe0IjV03Xyls7WeUm90/qWVVaM7YLTdaP8muXDBbEAisRP?=
+ =?us-ascii?Q?8udohWMepkz2muSJUuWd22l4kw4226nteeRCAHkYg65G1QQfdpZpWCMGTZnk?=
+ =?us-ascii?Q?htUDHZA/2zGVmzwyoJyYnSEktI5CscXp?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1aed7ddc-7b80-4818-1109-08d99440d53e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 03:14:02.7362
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: martin.petersen@oracle.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5532
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10143 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 mlxlogscore=926 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110210011
+X-Proofpoint-ORIG-GUID: THQ3tpdv425b15JqXOhKWXmDlsH9Ox29
+X-Proofpoint-GUID: THQ3tpdv425b15JqXOhKWXmDlsH9Ox29
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 01:34:25AM +0000, Pkshih wrote:
-> 
-> > -----Original Message-----
-> > From: kvalo=codeaurora.org@mg.codeaurora.org <kvalo=codeaurora.org@mg.codeaurora.org> On Behalf Of Kalle
-> > Valo
-> > Sent: Wednesday, October 20, 2021 6:04 PM
-> > To: Pkshih <pkshih@realtek.com>
-> > Cc: cgel.zte@gmail.com; davem@davemloft.net; kuba@kernel.org; lv.ruyi@zte.com.cn;
-> > linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Zeal Robot
-> > <zealci@zte.com.cn>
-> > Subject: Re: [PATCH] rtw89: fix error function parameter
-> > 
-> > Pkshih <pkshih@realtek.com> writes:
-> > 
-> > >> -----Original Message-----
-> > >> From: kvalo=codeaurora.org@mg.codeaurora.org
-> > >> <kvalo=codeaurora.org@mg.codeaurora.org> On Behalf Of Kalle
-> > >> Valo
-> > >> Sent: Wednesday, October 20, 2021 4:50 PM
-> > >> To: cgel.zte@gmail.com
-> > >> Cc: davem@davemloft.net; kuba@kernel.org; Pkshih
-> > >> <pkshih@realtek.com>; lv.ruyi@zte.com.cn;
-> > >> linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
-> > >> linux-kernel@vger.kernel.org; Zeal Robot
-> > >> <zealci@zte.com.cn>
-> > >> Subject: Re: [PATCH] rtw89: fix error function parameter
-> > >>
-> > >> cgel.zte@gmail.com wrote:
-> > >>
-> > >> > From: Lv Ruyi <lv.ruyi@zte.com.cn>
-> > >> >
-> > >> > This patch fixes the following Coccinelle warning:
-> > >> > drivers/net/wireless/realtek/rtw89/rtw8852a.c:753:
-> > >> > WARNING  possible condition with no effect (if == else)
-> > >> >
-> > >> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > >> > Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
-> > >> > Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-> > >>
-> > >> Failed to apply, please rebase on top of wireless-drivers-next.
-> > >>
-> > >> error: patch failed: drivers/net/wireless/realtek/rtw89/rtw8852a.c:753
-> > >> error: drivers/net/wireless/realtek/rtw89/rtw8852a.c: patch does not apply
-> > >> error: Did you hand edit your patch?
-> > >> It does not apply to blobs recorded in its index.
-> > >> hint: Use 'git am --show-current-patch' to see the failed patch
-> > >> Applying: rtw89: fix error function parameter
-> > >> Using index info to reconstruct a base tree...
-> > >> Patch failed at 0001 rtw89: fix error function parameter
-> > >>
-> > >> Patch set to Changes Requested.
-> > >>
-> > >
-> > > I think this is because the patch is translated into spaces instead of tabs,
-> > > in this and following statements.
-> > > "                if (is_2g)"
-> > 
-> > Ah, I did wonder why it failed as I didn't see any similar patches. We
-> > have an item about this in the wiki:
-> > 
-> > https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#format_issues
-> > 
-> 
-> I don't know why neither.
-> 
-> I check the mail header of this patch, the mailer is
-> "X-Mailer: git-send-email 2.25.1". It should work properly.
-> 
-> Lv Ruyi, could you help to check what happens?
-> 
-> --
-> Ping-Ke
 
-Thanks for Ping-Ke's suggestion,you are right.The previous patch
-is translated into spaces instead of tabs,and I will submitt a
-new correct one.
+Srinivas,
+
+>> UFS drivers that probe defer will endup leaking memory allocated for
+>> clk and regulator names via kstrdup because the structure that is
+>> holding this memory is allocated via devm_* variants which will be
+>> freed during probe defer but the names are never freed.
+
+Applied to 5.16/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
