@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFC94368AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7201C4368B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhJURHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:07:35 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:59620 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhJURH0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:07:26 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:41572)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbV7-000916-Ck; Thu, 21 Oct 2021 11:05:09 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:57164 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbV6-00CqKm-6W; Thu, 21 Oct 2021 11:05:08 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-14-ebiederm@xmission.com>
-        <202110210925.9DEAF27CA@keescook> <878rymbags.fsf@disp2133>
-        <202110210940.3BBA18AA@keescook>
-Date:   Thu, 21 Oct 2021 12:05:00 -0500
-In-Reply-To: <202110210940.3BBA18AA@keescook> (Kees Cook's message of "Thu, 21
-        Oct 2021 09:40:53 -0700")
-Message-ID: <87bl3i8g1v.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232217AbhJURHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232209AbhJURHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:07:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32DF2613B3;
+        Thu, 21 Oct 2021 17:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634835909;
+        bh=Mtct3V9y7jFFGgbR+ibjjD7+N+gDCqWxEZbjvas13mE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=LGWfVvzcHqc8yQRJdodC7oDOcxJa32yTi9zRNrtDJvhOqGMa33dLI9a+bTB6H7xVF
+         3NIyDQY/V5AjyMn0KbJ6Y3vzJ4/3zT0mNXb7IUaA6ac7bA/biJYzZ8WisOIonkmIW2
+         pcIkW73ffcBFKh571ioLdytq1cKNVR50zmV2lqNVxI3bnDA57aHYZE4UxJxVHH+M0U
+         Qgrp2YS3GjymAg2qWmq0xbWuyG4XvQVqlD36Xcx/4r6WIc45uQ9u+woEonta5J+uKD
+         40EcCk+7QaQXGDAg9yysbvDvVBEavfT+E5Zd0kdII6HLOAnfv2mC0CES5d+3dL0NAl
+         X7mnuyXpi0mSw==
+Date:   Thu, 21 Oct 2021 12:05:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v4 4/8] PCI/DPC: Use pci_aer_clear_status() in
+ dpc_process_error()
+Message-ID: <20211021170507.GA2701463@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdbV6-00CqKm-6W;;;mid=<87bl3i8g1v.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/abBs/x5uzNaMDoEejuqATALte68zrFec=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 451 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 10 (2.3%), b_tie_ro: 9 (2.0%), parse: 1.48 (0.3%),
-         extract_message_metadata: 18 (4.0%), get_uri_detail_list: 1.55 (0.3%),
-         tests_pri_-1000: 23 (5.1%), tests_pri_-950: 1.92 (0.4%),
-        tests_pri_-900: 1.52 (0.3%), tests_pri_-90: 103 (22.9%), check_bayes:
-        101 (22.4%), b_tokenize: 9 (2.1%), b_tok_get_all: 7 (1.4%),
-        b_comp_prob: 2.1 (0.5%), b_tok_touch_all: 79 (17.6%), b_finish: 1.01
-        (0.2%), tests_pri_0: 276 (61.2%), check_dkim_signature: 0.73 (0.2%),
-        check_dkim_adsp: 3.3 (0.7%), poll_dns_idle: 0.81 (0.2%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 8 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 14/20] exit/syscall_user_dispatch: Send ordinary signals on failure
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021163611.rsfmberxw6dqn5gx@theprophet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Thu, Oct 21, 2021 at 10:06:11PM +0530, Naveen Naidu wrote:
+> On 20/10, Bjorn Helgaas wrote:
+> > On Tue, Oct 05, 2021 at 10:48:11PM +0530, Naveen Naidu wrote:
+> > > dpc_process_error() clears both AER fatal and non fatal status
+> > > registers. Instead of clearing each status registers via a different
+> > > function call use pci_aer_clear_status().
+> > > 
+> > > This helps clean up the code a bit.
+> > > 
+> > > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > > ---
+> > >  drivers/pci/pcie/dpc.c | 3 +--
+> > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> > > index df3f3a10f8bc..faf4a1e77fab 100644
+> > > --- a/drivers/pci/pcie/dpc.c
+> > > +++ b/drivers/pci/pcie/dpc.c
+> > > @@ -288,8 +288,7 @@ void dpc_process_error(struct pci_dev *pdev)
+> > >  		 dpc_get_aer_uncorrect_severity(pdev, &info) &&
+> > >  		 aer_get_device_error_info(pdev, &info)) {
+> > >  		aer_print_error(pdev, &info);
+> > > -		pci_aer_clear_nonfatal_status(pdev);
+> > > -		pci_aer_clear_fatal_status(pdev);
+> > > +		pci_aer_clear_status(pdev);
+> > 
+> > The commit log suggests that this is a simple cleanup that doesn't
+> > change any behavior, but that's not quite true:
+> > 
+> >   - The new code would clear PCI_ERR_ROOT_STATUS, but the old code
+> >     does not.
+> > 
+> >   - The old code masks the status bits with the severity bits before
+> >     clearing, but the new code does not.
+> > 
+> > The commit log needs to show why these changes are what we want.
+> >
+> 
+> Reading through the code again, I realize how wrong(stupid) I was when
+> making this patch. I was thinking that:
+> 
+>   pci_aer_clear_status() = pci_aer_clear_fatal_status() + pci_aer_clear_nonfatal_status()
+> 
+> Now I understand, that it is not at all the case. I apologize for the
+> mistake. I'll make sure to be meticulous while reading functions and not
+> just assume their behaviour just from their function names.
 
-> On Thu, Oct 21, 2021 at 11:37:23AM -0500, Eric W. Biederman wrote:
->> Kees Cook <keescook@chromium.org> writes:
->> 
->> > On Wed, Oct 20, 2021 at 12:44:00PM -0500, Eric W. Biederman wrote:
->> >> Use force_fatal_sig instead of calling do_exit directly.  This ensures
->> >> the ordinary signal handling path gets invoked, core dumps as
->> >> appropriate get created, and for multi-threaded processes all of the
->> >> threads are terminated not just a single thread.
->> >
->> > Yeah, looks good. Should be no visible behavior change.
->> 
->> It is observable in that an entire multi-threaded process gets
->> terminated instead of a single thread.  But since these events should
->> be handling of extra-ordinary events I don't expect there is anyone
->> who wants to have a thread of their process survive.
->
-> Right -- sorry, I should have said that more clearly: "Besides the
-> single thread death now taking the whole process, there's not behavior
-> change (i.e. the signal delivery)." Still looks good to me.
-
-Yes.  I just didn't want that single vs multi-thread case to sneak up on
-people.  Especially since that is part of the questionable behavior that
-I am sorting out.
-
-Eric
-
+No problem, one could argue that the collection of pci_aer_clear_*()
+functions that do slightly different things is itself a defect.
