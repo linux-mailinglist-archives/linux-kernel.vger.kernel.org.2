@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AE64369DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2522C4369E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhJUR6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
+        id S232279AbhJUSDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbhJUR6V (ORCPT
+        with ESMTP id S231921AbhJUSDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:58:21 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A97C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:56:05 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id h10so1611578ilq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:56:05 -0700 (PDT)
+        Thu, 21 Oct 2021 14:03:03 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB682C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:00:46 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id w14so4323315edv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NIb28jF9myhlHii521Fi0CnKe3S439N9mgqsB6OzrQ8=;
-        b=Vqv0+pNvyRpRjKj7UdIrKSR2qBY9wFtJnM6i6fUi4B7RfS3eTjyorUo2UfqVZnL2Er
-         Gwnmmd1+P/dhgpVRTerixbgXYbj1l+VRRa9TtOVGzIS3MHbHhlQj7xBTzzP4Fc6IPDIM
-         5ev/tvmqsfwz7IHLFeWUlRzDg+gKDpJ3wIMTw=
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WIYrRTmX5V84BHHeufjDiyr6+alzshVTg749wgpX3eo=;
+        b=EiFLijYDlfmhmyoo92EoztIv8sM8Jp+fKgSCojNMOoqJVkBDvO08suLxUycWhmWoPA
+         Ff94psFkpw0SYCpsXIl9mpE700PCTNxnjm/ElxTxAgbEr1uuTPPMNnE9Uxffe2BNYW5F
+         bhe0+V0PTySy3ZS4Sajp16lbnkqrYOocozpU9Xv2NQ2TxKQW07s7VapCINvNRVxzOzF3
+         I6M8F6lO5CXSf9g8l+P5bKTnNpJ9qQXaqpPd7Hq9M+mbyC4cTQ1SN6t0+UtXBxc0DKeX
+         AA4k3eFHXV3uNTD7JRvEs1i4qFS7tgTmBg5N/qpbLcOUezHFmvVK3ewKgLaLP/rgrFPI
+         NeOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NIb28jF9myhlHii521Fi0CnKe3S439N9mgqsB6OzrQ8=;
-        b=uXnFsubxIsIdzuGBGWz2MKv4+Q70bc+XkC1oyfSLeNEDe5/aHxvFKNIQ5DpaJzCNek
-         /4/Dx0YwF8Rmkh2rMbWHuQVyWUcQE9mhRtbzBLsZIqq0129V5B3l5rMrqwDtqrWYpj7D
-         C2KowhtMIJv7gDe9kyU7EwY/6x/5pCiKKGBwHgxO5a4WVxrGYaule9gWKxoFP5PO5S25
-         XtR1wPLphCx3ePWgsxCRv8QXejs3oH9ArjF74LUPJphvWNhRrzbnCYroTz/3gXthAP5x
-         3x9u46RvyYj+Df7z8Gdh543wt7u54cHeZEPgbq+6i+cfo+j6TitAGKdJf237dMBv25jQ
-         NIJw==
-X-Gm-Message-State: AOAM532t7lEZFcdKJmJJAN7PcIIFQzPbeTu7DizyDbcz1BEenMqcq9z4
-        5DECxuMa40A9X+PUYQZsqk3Bcg==
-X-Google-Smtp-Source: ABdhPJyzIUMx6SkKLw5EjpXmNVNI136gxC++lNpOVzgsGneg+Co6eDrOuIdS5bAy2jGysdSmYswXnw==
-X-Received: by 2002:a05:6e02:14d1:: with SMTP id o17mr4620494ilk.57.1634838965135;
-        Thu, 21 Oct 2021 10:56:05 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n3sm3201743ili.37.2021.10.21.10.56.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 10:56:04 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     pbonzini@redhat.com, shuah@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selftests: kvm: fix mismatched fclose() after popen()
-Date:   Thu, 21 Oct 2021 11:56:03 -0600
-Message-Id: <20211021175603.22391-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WIYrRTmX5V84BHHeufjDiyr6+alzshVTg749wgpX3eo=;
+        b=hrsCRBr5ME1GE7ttgGNZHGZCbReyts5WMGVg63qaZ5+ZlmAYlijhPgEzCevlWKb13C
+         OKrVdptRxLHA7oOxGkoK4ITGuwUMg1C0QDqdopjTgHTNh9oA+bV8JaATCsJ+9qmBaetw
+         ednhNb/iNn9GbWra3ZxzLOTwJBuSWuZngfFxLYG79xX+f52KIQocdd2B4ngZPPQRQuIo
+         m5eoCodeSyhLk6J9pet+M8MvyB4+9GRqBQr9LYo3MzO54wKPnMocznUMStGl16LXVeWO
+         Dt6KVAVbM+UPmctjuNPSOc+AxBxUcl9931nNUbvaC98S6eOmyMW+DH5Opa4mdy1B4+WQ
+         wY5w==
+X-Gm-Message-State: AOAM5303llUrVGFLZO+nUI6Akd/vR729T+pf+hpGAKdZmWzQgZg0GJBL
+        l6RbrJcQU6cVp5LFBzbNUhatllmFAG7+O3h92qFCAQ==
+X-Google-Smtp-Source: ABdhPJzlqQaS/1MlF4OEnw3mUA5NGqkHXCkQD3KUM6Cs9XIFrFlfTJy9R87RSguimFt9hUj6Qu7SWk+UXl7aifxmkpw=
+X-Received: by 2002:a17:907:2bc2:: with SMTP id gv2mr8820744ejc.433.1634839245373;
+ Thu, 21 Oct 2021 11:00:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211015164809.22009-1-asmaa@nvidia.com>
+In-Reply-To: <20211015164809.22009-1-asmaa@nvidia.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 21 Oct 2021 20:00:34 +0200
+Message-ID: <CAMRc=McSPG61nnq9sibBunwso1dsO6Juo2M8MtQuEEGZbWqDNw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] gpio: mlxbf2: Introduce proper interrupt handling
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>, davthompson@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_warnings_count() does fclose() using File * returned from popen().
-Fix it to call pclose() as it should.
+On Fri, Oct 15, 2021 at 6:48 PM Asmaa Mnebhi <asmaa@nvidia.com> wrote:
+>
+> This is a follow up on a discussion regarding
+> proper handling of GPIO interrupts within the
+> gpio-mlxbf2.c driver.
+>
+> Link to discussion:
+> https://lore.kernel.org/netdev/20210816115953.72533-7-andriy.shevchenko@linux.intel.com/T/
+>
+> Patch 1 adds support to a GPIO IRQ handler in gpio-mlxbf2.c.
+> Patch 2 is a follow up removal of custom GPIO IRQ handling
+> from the mlxbf_gige driver and replacing it with a simple
+> IRQ request. The ACPI table for the mlxbf_gige driver is
+> responsible for instantiating the PHY GPIO interrupt via
+> GpioInt.
+>
+> Andy Shevchenko, could you please review this patch series.
+> David Miller, could you please ack the changes in the
+> mlxbf_gige driver.
+>
+> v5 vs. v4 patch:
+> - Remove a fix which check if bgpio_init has failed.
+>   This fix should in a separate patch targeting the stable
+>   branch.
+>
 
-tools/testing/selftests/kvm/x86_64/mmio_warning_test
-x86_64/mmio_warning_test.c: In function ‘get_warnings_count’:
-x86_64/mmio_warning_test.c:87:9: warning: ‘fclose’ called on pointer returned from a mismatched allocation function [-Wmismatched-dealloc]
-   87 |         fclose(f);
-      |         ^~~~~~~~~
-x86_64/mmio_warning_test.c:84:13: note: returned from ‘popen’
-   84 |         f = popen("dmesg | grep \"WARNING:\" | wc -l", "r");
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hi Asmaa! Did you send this fix? I can't find it in my inbox or on patchwork.
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/testing/selftests/kvm/x86_64/mmio_warning_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c b/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-index 8039e1eff938..9f55ccd169a1 100644
---- a/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-@@ -84,7 +84,7 @@ int get_warnings_count(void)
- 	f = popen("dmesg | grep \"WARNING:\" | wc -l", "r");
- 	if (fscanf(f, "%d", &warnings) < 1)
- 		warnings = 0;
--	fclose(f);
-+	pclose(f);
- 
- 	return warnings;
- }
--- 
-2.32.0
-
+Bart
