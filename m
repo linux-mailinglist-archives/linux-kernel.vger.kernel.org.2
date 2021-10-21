@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282C84360FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4822436100
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhJUME4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:04:56 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:43276 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231530AbhJUMEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:04:48 -0400
-Received: from BC-Mail-Ex03.internal.baidu.com (unknown [172.31.51.43])
-        by Forcepoint Email with ESMTPS id 48E6EE429F9C68435249;
-        Thu, 21 Oct 2021 20:02:31 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex03.internal.baidu.com (172.31.51.43) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 21 Oct 2021 20:02:31 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 21 Oct 2021 20:02:29 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Subject: [PATCH 6/6] trace/hwlat: Make use of the helper macro kthread_run_on_cpu()
-Date:   Thu, 21 Oct 2021 20:01:35 +0800
-Message-ID: <20211021120135.3003-7-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211021120135.3003-1-caihuoqing@baidu.com>
-References: <20211021120135.3003-1-caihuoqing@baidu.com>
+        id S231549AbhJUMFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhJUMFF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:05:05 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F57DC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:02:49 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id u18so213036wrg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+66ztlp2S24vDRQ1MInENOk33hsXduQT+x2D2y0sLew=;
+        b=ecqoSHJYObNAVAuyjdiByagc4VdDj5FyN3U2UHy9QEPyn/wPQwmgpim5Ej/vyZNTt4
+         3wcrfvK+cBPaEf4DnL18712D5IUSmDi6IQEeG00/cAaZ94gFbTvvBqGF9E0HhbiMfnBe
+         UNOH6dQVZXx/jc2dd8o5t5LR2JSClpWtR/gmg+UPOULlzrFyZqHhhG1YWneIQC4I4d3T
+         NVSJyxAUh7WV9CJoniZW9YbtZebIfhlBIt93Hm74FJBfgB0/yut7BRlmtOfKBwdIogtJ
+         F6XayrXR9ht8PW83lefWHCmEdT+ux+iAgMCBl7QZgbtLibVhdyv5YcdnZZziWhl0Wz+v
+         Wi0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+66ztlp2S24vDRQ1MInENOk33hsXduQT+x2D2y0sLew=;
+        b=Y/IlQi57TsUBgXn+xdWYkOnwJMDgj9bYvPi7M65OUUWPhXx6J1YNm1+GsTYUhAx0qQ
+         uxAcAh8gTcOZtCAzIqtnNvNdb4LpGPotvmcpaNVKkm6TtQotC6zdP1C4KU5PUkmvqFy3
+         WiWBT+JkgeipNio4+oYdVV091O0q/NpkBZq8kbzIkNuziFEzAYSmg9Rn3Fg3HW8c7Lkm
+         Zv06/ZofJI8NAuXw/EQiN4buLrjzBdXaWT6RFqro+mBDt1uHRILtJUDbVkiXK/oSPhTR
+         zxX4L6592Ute6/k2BUDCNIfIPU8AWp/V920YUhf2KU93oAPqaqM58cXWVCxzxkl7VMJJ
+         Hbqg==
+X-Gm-Message-State: AOAM533JKX7gulHXFpy4sUf7LcvLrW3NggHoiDzL+8v8+fXtwXI9UPpz
+        XIzBMJ7vVMYxlOzGkGtn1dZ36g==
+X-Google-Smtp-Source: ABdhPJwFfs/5sKCa/AM6W5aPkoxzFP02nlu9qRn1TINKXqXb+lVY15e+3uRLbz462hFU6Vd2S0n4yA==
+X-Received: by 2002:adf:bbc8:: with SMTP id z8mr6690188wrg.281.1634817767865;
+        Thu, 21 Oct 2021 05:02:47 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id k40sm1209825wms.21.2021.10.21.05.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 05:02:47 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 13:02:45 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ryan Barnett <ryan.barnett@collins.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Immutable branch between MFD, IIO, Input (Touchscreen)
+ and Clk due for the v5.16 merge window
+Message-ID: <YXFW5R8zK/g9Rqei@google.com>
+References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-EX04.internal.baidu.com (172.31.51.44) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015081506.933180-1-miquel.raynal@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Repalce kthread_create/kthread_bind/wake_up_process()
-with kthread_run_on_cpu() to simplify the code.
+Enjoy!
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- kernel/trace/trace_hwlat.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 1b83d75eb103..0e555335f095 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -491,18 +491,14 @@ static void stop_per_cpu_kthreads(void)
- static int start_cpu_kthread(unsigned int cpu)
- {
- 	struct task_struct *kthread;
--	char comm[24];
- 
--	snprintf(comm, 24, "hwlatd/%d", cpu);
--
--	kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
-+	kthread = kthread_run_on_cpu(kthread_fn, NULL, cpu, "hwlatd/%u");
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
- 		return -ENOMEM;
- 	}
- 
- 	per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
--	wake_up_process(kthread);
- 
- 	return 0;
- }
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-iio-touchscreen-clk-v5.16
+
+for you to fetch changes up to e7c8a5fe82ff8ee100c65598187674eef4748bf2:
+
+  iio: adc: ti_am335x_adc: Add the am437x compatible (2021-10-21 10:02:48 +0100)
+
+----------------------------------------------------------------
+Immutable branch between MFD, IIO, Input (Touchscreen) and Clk due for the v5.16 merge window
+
+----------------------------------------------------------------
+Miquel Raynal (45):
+      clk: ti: am43xx: Add clkctrl data for am43xx ADC1
+      dt-bindings: mfd: ti,am3359-tscadc: Add a yaml description for this MFD
+      dt-bindings: touchscreen: ti,am3359-tsc: New yaml description
+      dt-bindings: iio: adc: ti,am3359-adc: New yaml description
+      dt-bindings: touchscreen: ti,am3359-tsc: Remove deprecated text file
+      dt-bindings: mfd: ti,am3359-tscadc: Describe am4372 MFD compatible
+      dt-bindings: iio: adc: ti,am3359-adc: Describe am4372 ADC compatible
+      mfd: ti_am335x_tscadc: Ensure a balanced number of node get/put
+      mfd: ti_am335x_tscadc: Replace license text with SPDX tag
+      mfd: ti_am335x_tscadc: Fix style
+      mfd: ti_am335x_tscadc: Get rid of useless gotos
+      mfd: ti_am335x_tscadc: Drop extra spacing when declaring stack variables
+      mfd: ti_am335x_tscadc: Reword the comment explaining the dividers
+      mfd: ti_am335x_tscadc: Don't search the tree for our clock
+      mfd: ti_am335x_tscadc: Simplify divisor calculation
+      mfd: ti_am335x_tscadc: Move the driver structure allocation earlier
+      mfd: ti_am335x_tscadc: Use driver data
+      mfd: ti_am335x_tscadc: Mimic the probe from resume()
+      mfd: ti_am335x_tscadc: Drop useless variables from the driver structure
+      mfd: ti_am335x_tscadc: Always provide an idle configuration
+      mfd: ti_am335x_tscadc: Reorder the initialization steps
+      mfd: ti_am335x_tscadc: Gather the ctrl register logic in one place
+      mfd: ti_am335x_tscadc: Replace the header license text with SPDX tag
+      mfd: ti_am335x_tscadc: Fix header spacing
+      mfd: ti_am335x_tscadc: Use the new HZ_PER_MHZ macro
+      mfd: ti_am335x_tscadc: Drop unused definitions from the header
+      mfd: ti_am335x_tscadc: Use BIT(), GENMASK() and FIELD_PREP() when relevant
+      mfd: ti_am335x_tscadc: Clarify the maximum values for DT entries
+      mfd: ti_am335x_tscadc: Drop useless definitions from the header
+      mfd: ti_am335x_tscadc: Rename the subsystem enable macro
+      mfd: ti_am335x_tscadc: Add TSC prefix in certain macros
+      mfd: ti_am335x_tscadc: Rename a variable
+      mfd: ti_am335x_tscadc: Fix an error message
+      mfd: ti_am335x_tscadc: Add a boolean to clarify the presence of a touchscreen
+      mfd: ti_am335x_tscadc: Introduce a helper to deal with the type of hardware
+      mfd: ti_am335x_tscadc: Add ADC1/magnetic reader support
+      mfd: ti_am335x_tscadc: Support the correctly spelled DT property
+      iio: adc: ti_am335x_adc: Wait the idle state to avoid stalls
+      iio: adc: ti_am335x_adc: Replace license text with SPDX tag
+      iio: adc: ti_am335x_adc: Fix style
+      iio: adc: ti_am335x_adc: Get rid of useless gotos
+      iio: adc: ti_am335x_adc: Gather the checks on the delays
+      iio: adc: ti_am335x_adc: Add a unit to the timeout delay
+      iio: adc: ti_am335x_adc: Add the scale information
+      iio: adc: ti_am335x_adc: Add the am437x compatible
+
+ Documentation/devicetree/bindings/iio/adc/ti,am3359-adc.yaml           |  70 ++++++++++
+ Documentation/devicetree/bindings/input/touchscreen/ti,am3359-tsc.yaml |  76 +++++++++++
+ Documentation/devicetree/bindings/input/touchscreen/ti-tsc-adc.txt     |  91 -------------
+ Documentation/devicetree/bindings/mfd/ti,am3359-tscadc.yaml            |  84 ++++++++++++
+ drivers/clk/ti/clk-43xx.c                                              |   1 +
+ drivers/iio/adc/ti_am335x_adc.c                                        | 220 ++++++++++++++++++-------------
+ drivers/mfd/ti_am335x_tscadc.c                                         | 235 +++++++++++++++++++---------------
+ include/dt-bindings/clock/am4.h                                        |   1 +
+ include/linux/mfd/ti_am335x_tscadc.h                                   | 119 +++++++++--------
+ 9 files changed, 549 insertions(+), 348 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,am3359-adc.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti,am3359-tsc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti-tsc-adc.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,am3359-tscadc.yaml
+
 -- 
-2.25.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
