@@ -2,95 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10135435FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F613435FF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhJULLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S230260AbhJULKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhJULLJ (ORCPT
+        with ESMTP id S230179AbhJULKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:11:09 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A800DC06161C;
-        Thu, 21 Oct 2021 04:08:53 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id q16so1635686ljg.3;
-        Thu, 21 Oct 2021 04:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4zZrMs3VjgSj2vo9vp8usj2G+hz7bO5ZSGJJyIM4jIE=;
-        b=EquSZeiS9fgDers3p1E8Qps0VQMIWhtw6AnoBgUlOJS7apDXHzlUkifkVKVax8lSdk
-         fFVgdoOp/nti4RDRk+xmzWPFTv6smHkh1+jSmCqIcbHZzT006P/4dbcc5zVV6zjbZd/x
-         JqlLlickznokrLZREulW/R6X3zJti3yGDApO1WUrQXUYobKUyFFs4uLuKni/Zvj1mXTs
-         ElRSZ33LOZhwDj2sDthVN5xQI1t7B025RSuAxJhWYHkxY9vBwO0yV1Dae7da8CQaJaBz
-         0p2chxgHVjcKP7TYgYg8re0XeAMMWmDfyr+HdO+3ld0gqQZNUqtQJTvmsGx59umtly1v
-         +KBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4zZrMs3VjgSj2vo9vp8usj2G+hz7bO5ZSGJJyIM4jIE=;
-        b=bFd5ZmLp/sRgoKLNoRYaNLIzuHejyt3vkv9tx56V9RMWeYTKVMnAbleO8Bn/JkjgRI
-         6amD7zCCYpTZrlwuWw+sjA/oE3mt2hxEhqCRBQqsKRZFzDiCYBZQ2ufuCcd/fCCOPeAj
-         PqrNH7jMnt2XjwpEOa4QtIlqr0MzQ/Ah03FKLoPTUJoAbeLwE86YLcpS68kQJgASjSkb
-         v/VpSyse0oU2nIH2fP5G+1tfxFgqHqapXNNUvLg+al11OsZPL/Hbrm1VzLD2Dka+BoKG
-         LR5qNChS4XjfvQ/Outoc2MKLUdi2ma5qCkNQ8dv4gOzU2aWzPdJxmfEHqbqdodlHuJXF
-         HWHg==
-X-Gm-Message-State: AOAM532r52vSM56X7gqRclfN5y9aXsQ5FLXoYnZ4NmXcJgj0IPM8UNA/
-        Wkv3iN2KOEBf1ldkqWlIQ31A3ivGVZo=
-X-Google-Smtp-Source: ABdhPJwGL+/0BDb/Ict3KMAcvs0lfmeArGSHSYe+CQcI7TFTKeD7F9BS/bo6hO5tB1scZ6dqj14BrQ==
-X-Received: by 2002:a05:651c:b22:: with SMTP id b34mr5140900ljr.62.1634814532044;
-        Thu, 21 Oct 2021 04:08:52 -0700 (PDT)
-Received: from localhost.localdomain (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
-        by smtp.gmail.com with ESMTPSA id b39sm517479ljf.82.2021.10.21.04.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 04:08:51 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v1] regulator: Don't error out fixed regulator in regulator_sync_voltage()
-Date:   Thu, 21 Oct 2021 14:07:07 +0300
-Message-Id: <20211021110707.20416-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 21 Oct 2021 07:10:47 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A962C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:08:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZl8X2Zmpz4xbT;
+        Thu, 21 Oct 2021 22:08:28 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Nathan Lynch <nathanl@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     mpe@ellerman.id.au, clg@kaod.org, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, srikar@linux.vnet.ibm.com,
+        peterz@infradead.org, mingo@kernel.org
+In-Reply-To: <20211015173902.2278118-1-nathanl@linux.ibm.com>
+References: <20211015173902.2278118-1-nathanl@linux.ibm.com>
+Subject: Re: [PATCH v2] powerpc/smp: do not decrement idle task preempt count in CPU offline
+Message-Id: <163481445875.3437586.10466955312828450807.b4-ty@ellerman.id.au>
+Date:   Thu, 21 Oct 2021 22:07:38 +1100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed regulator can't change voltage and regulator_sync_voltage() returns
--EINVAL in this case. Make regulator_sync_voltage() to succeed for a fixed
-regulator.
+On Fri, 15 Oct 2021 12:39:02 -0500, Nathan Lynch wrote:
+> With PREEMPT_COUNT=y, when a CPU is offlined and then onlined again, we
+> get:
+> 
+> BUG: scheduling while atomic: swapper/1/0/0x00000000
+> no locks held by swapper/1/0.
+> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.15.0-rc2+ #100
+> Call Trace:
+>  dump_stack_lvl+0xac/0x108
+>  __schedule_bug+0xac/0xe0
+>  __schedule+0xcf8/0x10d0
+>  schedule_idle+0x3c/0x70
+>  do_idle+0x2d8/0x4a0
+>  cpu_startup_entry+0x38/0x40
+>  start_secondary+0x2ec/0x3a0
+>  start_secondary_prolog+0x10/0x14
+> 
+> [...]
 
-On NVIDIA Tegra power management driver needs to sync voltage and we have
-one device (Trimslice) that uses fixed regulator which is getting synced.
-The syncing error isn't treated as fatal, but produces a noisy error
-message. This patch silences that error.
+Applied to powerpc/fixes.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/regulator/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+[1/1] powerpc/smp: do not decrement idle task preempt count in CPU offline
+      https://git.kernel.org/powerpc/c/787252a10d9422f3058df9a4821f389e5326c440
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 26bee444fc70..e1324edb3f8d 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4249,6 +4249,9 @@ int regulator_sync_voltage(struct regulator *regulator)
- 	struct regulator_voltage *voltage = &regulator->voltage[PM_SUSPEND_ON];
- 	int ret, min_uV, max_uV;
- 
-+	if (rdev->desc->fixed_uV && rdev->desc->n_voltages == 1)
-+		return 0;
-+
- 	regulator_lock(rdev);
- 
- 	if (!rdev->desc->ops->set_voltage &&
--- 
-2.32.0
-
+cheers
