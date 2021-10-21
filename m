@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A498436A10
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E1F436A38
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbhJUSJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:09:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhJUSJK (ORCPT
+        id S232374AbhJUSMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:12:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39193 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229968AbhJUSMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:09:10 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6FDC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:06:54 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so1420091otr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:06:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to;
-        bh=TsLxcYrVGzv2bNbIlrKzjrjVENJvOk/fhrJ4w/U92ao=;
-        b=M28mUW0hACZY0hgixz6nV5cT95gbMzVM7myHXhBJURHlMszsRVbAeXB4Mm4iqcgRKD
-         SCUzuCoOeZHK4h6EGaARJ5b7cjSbaJMFZZHnTXo70aqsHpDS+gZcxUIEwzIzyGpNlfDO
-         PNtOP+ipZYBQ+sS9tF2JVvw/BjUyJ8aOXNEPo=
+        Thu, 21 Oct 2021 14:12:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634839834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nQPA4gIncgOjokPe31P+KOdM18jrOxjAAR2NTlE893c=;
+        b=dym+yziEj76mSMXaO11+vITyaP8ARpbBOv5F/9YKCaM+IEXQXFQyy/83ibEuenKLD+eLcC
+        TOQ/cs/upVCKcwkrVTLRxEFBuT/V8nEscIt2aexrWm3ngfTJAtFYTLkXdCQbQcmsm56w8M
+        guZht9csQjoqxPFLaX41YVi0auJ+XIE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-jN8tV1adOnqQvEb9aPqoxQ-1; Thu, 21 Oct 2021 14:10:33 -0400
+X-MC-Unique: jN8tV1adOnqQvEb9aPqoxQ-1
+Received: by mail-wr1-f71.google.com with SMTP id f1-20020a5d64c1000000b001611832aefeso146692wri.17
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:10:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to;
-        bh=TsLxcYrVGzv2bNbIlrKzjrjVENJvOk/fhrJ4w/U92ao=;
-        b=a2oQ5em0rYe1jTeZUN9rXex80qBdy3u38McRTquqE98q0kaA7rG9vlB9f4is0CwxNb
-         4A1bwbptrHPh5OddeoxyrDBcrf/0yhV8XuS3xudVWgzjQkqe83vJo/LtGXgqyAMpMYbX
-         KC3tEENl/aR8yMuBSR3SqDBZgOz1MDAkXsM9z79IkjLWn4kaZEdXgJdAzUVR/MCrc8Kb
-         enMXDPyO3Kve4vx8L2ue8xm+Nrs4GgiTCvcKbB35nsPGJm0Ippb6FwY8b56V7jSwuji+
-         yjXOE/Nqw/r5bAtiMiEY/WH0ayzygspZzJkEk/7L7pBdQ3RlJpq5n46riqvwU5Ox2HNy
-         AWrA==
-X-Gm-Message-State: AOAM533V9aWvRHN0pOJep0G8fNtNc82rRuR+AIlBEn0qz51f1e9qnu5W
-        2prqjyvEG5Woi8piNOeZgsXeh9nniwI7KIcwX/gwTQ==
-X-Google-Smtp-Source: ABdhPJzylvcnEbJeIadhM/rNF9uTiWh44FT2oXv2KycTaSkPHc9aKwkpTA6Y5O975e21ioZ7dor1wkY5eUjF+aL1UUo=
-X-Received: by 2002:a9d:12f4:: with SMTP id g107mr5841884otg.77.1634839613971;
- Thu, 21 Oct 2021 11:06:53 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 21 Oct 2021 11:06:53 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nQPA4gIncgOjokPe31P+KOdM18jrOxjAAR2NTlE893c=;
+        b=hRIx9Xke53zWIxKv4LWCOFSj9vHxAWxlKooG/riCFDtI6FJInqFvx/63IUdoHOqbyH
+         zyzMHOnlctEzxWn+YA35RzrQG3wbKDzoq/skYHJG2c+kYH8GLv7uejRKoXuBBGL48Du/
+         B/xqU7TpvnAqTmg3G7gLu8entqV9vIl3uLUvYYxzIL2JD4Vhv8O/kGiomW6EAuMeLyO8
+         CoHEfLx2UIXsKAczBrprqU+NylqjA/NyQWSIr+YBSXzs9kGcxZpCmqZKeOS5tbPiaoSC
+         Jeg1e8LV5ZSSBlaXqCxqKxwFktdfL4YTtcHejYUR8tU7+eDySVGLxvSx2Jr1/Fd1Wlls
+         Ji6w==
+X-Gm-Message-State: AOAM532XkhXRYPDV13ZaBj4WQaiPJmxi7Iip70+Y84L7pzrXPKLTglWE
+        2lMJkR95l89v4qNO62eSKyPG6iHsOKd6YilRwXvFve25C24/abqi2xXbx81gxePOTrhydstknyj
+        umV+rDc+gw9DoT/nLuZSmV4sQ
+X-Received: by 2002:adf:a486:: with SMTP id g6mr9149074wrb.130.1634839832078;
+        Thu, 21 Oct 2021 11:10:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwI8H8YTO95qnmDxctwFhw/p3TDNeskxXydvxWBkVLZ4noeounK2x30fPUeRUwjbAebLUH5Qw==
+X-Received: by 2002:adf:a486:: with SMTP id g6mr9149048wrb.130.1634839831913;
+        Thu, 21 Oct 2021 11:10:31 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id j14sm5506397wrw.12.2021.10.21.11.10.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 11:10:31 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:10:30 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] tracing: Fix selftest config check for function graph
+ start up test
+Message-ID: <YXGtFpBKHhEtAFsP@krava>
+References: <20211021134357.7f48e173@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <1634234784-5359-1-git-send-email-pmaliset@codeaurora.org>
-References: <1634234784-5359-1-git-send-email-pmaliset@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 21 Oct 2021 11:06:53 -0700
-Message-ID: <CAE-0n51PGVQ6GT7RMTQajEM54NLOUZBGPkVKmVaG1JV7Fgv9Ag@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add pcie clock support
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org,
-        sanm@codeaurora.org, vbadigan@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021134357.7f48e173@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-10-14 11:06:24)
-> Add pcie clock phandle for sc7280 SoC and correct
-> The pcie_1_pipe-clk clock name as same as binding.
->
-> fix: ab7772de8 ("arm64: dts: qcom: SC7280: Add rpmhcc clock controller node")
+On Thu, Oct 21, 2021 at 01:43:57PM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> There's a new test in trace_selftest_startup_function_graph() that
+> requires the use of ftrace args being supported as well does some tricks
+> with dynamic tracing. Although this code checks HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> it fails to check DYNAMIC_FTRACE, and the kernel fails to build due to
+> that dependency.
+> 
+> Also only define the prototype of trace_direct_tramp() if it is used.
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-This is wrong. Should be
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Fixes: ab7772de8612 ("arm64: dts: qcom: SC7280: Add rpmhcc clock
-controller node")
-
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> ---
-> This change is depends on the below patch series.
-> https://lkml.org/lkml/2021/10/7/841
-
-Why doesn't that patch update this clock cell then?
+thanks,
+jirka
 
 > ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 39635da..78694c1 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -569,9 +569,10 @@
->                         reg = <0 0x00100000 0 0x1f0000>;
->                         clocks = <&rpmhcc RPMH_CXO_CLK>,
->                                  <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
-> -                                <0>, <0>, <0>, <0>, <0>, <0>;
-> +                                <0>, <&pcie1_lane 0>,
-> +                                <0>, <0>, <0>, <0>;
->                         clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
-> -                                     "pcie_0_pipe_clk", "pcie_1_pipe-clk",
-> +                                     "pcie_0_pipe_clk", "pcie_1_pipe_clk",
+> Changes since v1:
+>    https://lkml.kernel.org/r/20211021123729.23be20c4@gandalf.local.home
+>    - Hide trace_direct_tramp() when not used
+> 
+>  kernel/trace/trace_selftest.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> index 3404a245417e..afd937a46496 100644
+> --- a/kernel/trace/trace_selftest.c
+> +++ b/kernel/trace/trace_selftest.c
+> @@ -784,7 +784,11 @@ static struct fgraph_ops fgraph_ops __initdata  = {
+>  	.retfunc		= &trace_graph_return,
+>  };
+>  
+> +#if defined(CONFIG_DYNAMIC_FTRACE) && \
+> +    defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS)
+> +#define TEST_DIRECT_TRAMP
+>  noinline __noclone static void trace_direct_tramp(void) { }
+> +#endif
+>  
+>  /*
+>   * Pretty much the same than for the function tracer from which the selftest
+> @@ -845,7 +849,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
+>  		goto out;
+>  	}
+>  
+> -#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> +#ifdef TEST_DIRECT_TRAMP
+>  	tracing_reset_online_cpus(&tr->array_buffer);
+>  	set_graph_array(tr);
+>  
+> -- 
+> 2.31.1
+> 
 
-This can be split from the patch to fix just the name in one patch and
-then add the pcie1_lane phandle in the next patch. That way new features
-aren't being mixed together with the string fix.
-
->                                       "ufs_phy_rx_symbol_0_clk", "ufs_phy_rx_symbol_1_clk",
->                                       "ufs_phy_tx_symbol_0_clk",
->                                       "usb3_phy_wrapper_gcc_usb30_pipe_clk";
