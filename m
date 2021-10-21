@@ -2,264 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8294358FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662D1435966
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhJUDei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 23:34:38 -0400
-Received: from mail-db8eur05on2079.outbound.protection.outlook.com ([40.107.20.79]:54025
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        id S231368AbhJUDtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 23:49:25 -0400
+Received: from mail-bn8nam08on2062.outbound.protection.outlook.com ([40.107.100.62]:10721
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229817AbhJUDeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 23:34:36 -0400
+        id S231370AbhJUDsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 23:48:47 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nfrqXbTPc95VgSEpdHLb8ZCDhmmbINvVGodVKgTolwajAPJt8n2V+o0c44dI6MfWusQDpePjQfNxL6hOPlHoWwHOJqchg2EOfhLPtR/AMJ9QrmZs2/fZqI2ngKfotpbvfxIEtiZtbhep4flk/KIzRyKcLsdfT4+wW7Vh4r6MD32P4D+6x830+R0iEzcSkaI93Vii+6ByezH8C8RZLoXRcAsV7fUOv/XNkTDjHTfsvZqwJHgko1k6gPVv4+QxbO3/GVqoANFXEJTVJV7AgfkvTWoQvttOmSfUyJFg2CWHvpkenKfgaze3I9IoTj3lmvhKmrWHfZteqJC+62HeP/lP2Q==
+ b=gO2MYdKwSefIe3bcx2ub7Yoybyn3jDKSY0vSwZOcrwu3tU8AVqhZFQI4VVPZEwnxTXTfbDT+u6fiuRjC2QSh3Ohrds+HtQk+Q7gI6a4lfuLKbQh0R9XPj6gFNJrsWAE1nSMS5iIXN4MBMmjybkoqNiCublQ/ruZk0nsBQp8oFLPT8pZ6wlm2xoJ9O5nzesSl8HfrQ2iRO+/8UIYUvS3WkPJ7Gnzv7671SWqsZfgf8I3arIdoYIr7K5ORY4VxeLeou3y0ibF6H27UKWa6vzlCUJAzWxnFIS6baVH6yVV4wIohzuzomVUNxRdMyZlLCrJmQnxGTm+0HARchl3LW+SGaA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vgkDTEIPsL0+u4WoEyOQcYThL+HbairCdZD74W0v63o=;
- b=k9i7CRwH6Na0M8ISwQlKCDnU8QEim/cyfAXW9oN1n9j1II6xAAyQTQsogyWGYCD3yXaYXer6MoPjdTthqcme//GL+yzHzK5hrw5OMD7OrmMHEhvptXInvZQwaob3noEf8jWfmNvrmaQNSn3+qv5yMh1cHQXBU6EyEsoDI7lIswEc4zOu5wWeQMzB+3OOzKHp4659A0zsIL4FGzNS0S8NyEOpuHH3U8G/CvUoAshDtcGMtIYdRT+qlSk/t3ffRJcZKoRSMUb6HD/LPWshDgK4GxJXGkALX9A+6s74WAxi2ZJqpWssVvIpOg+gwmQmdmV0V33ECOMR/6BQe4ofmpgpaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=33QigOX7rWImKSCQQ8crC1ZK2zsO+5j1/CfGNdITQxE=;
+ b=JAarUG0DG2pA8auLrA/g+q3M3A9Np777FVqZlkGTfpEOUwwL4Gdo2yCMf/vAC2X69dEYpFZFXN4g+qC2jNyC7tqsQ8obxtCrhZ2wWDaASEBVyDqGzZYYvF/uzkHkqXzTbfOPZTSI6IhBW2NK2LBfqzhpDox7rG0b7IhCRIAa5yYlAKe/FcasFErZgFWxvH+Cno+3jC8XZlsSBA30YdCbIOWD8iLN1WguFmiSCuopWLFG3GgQm0weygsgFbvtWimJEbB9Dk66L3PujlBEoit9OksDPi/LDUCxXC6TRaEAG73RwJiWZy2AhRNyUeYwFWEIyf9VH7Zn7e9MzcwOPrDWyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=oracle.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vgkDTEIPsL0+u4WoEyOQcYThL+HbairCdZD74W0v63o=;
- b=gBWNDvZWZyD70s8WRMBRP2QVyxW8Q63JkTwBhFX3jVWSiXVSvmE+zpqTmmgddAY5bcMF6LPoyrlp5IczIpbFZGsw/vSvA9evrQFGG75jck/eGMitEpw4VqTzkbevcZDYa2cCYjhXaOUOgnqVv5JaJl2E4o9P/goI+Y3tfBoZrqs=
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
- by AS8PR04MB8627.eurprd04.prod.outlook.com (2603:10a6:20b:42a::12) with
+ bh=33QigOX7rWImKSCQQ8crC1ZK2zsO+5j1/CfGNdITQxE=;
+ b=hpzxGXvovzfa4i6ioZnRAR28wiDWsBc51jjeW4fuT3oDLRfHE4G6RNbuyubXF2bn0hb6h7QJQ2ljnEHKii2dGHt3II+JOdUoc7uDolLG74gXAp40w7FHMsmCz3hSei1jTpWQF6ilMSU1PH7bnNQeLr/jzvqB5l6AWVwd9dqBwsM=
+Received: from MW4PR04CA0129.namprd04.prod.outlook.com (2603:10b6:303:84::14)
+ by MWHPR12MB1325.namprd12.prod.outlook.com (2603:10b6:300:f::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 21 Oct
- 2021 03:32:19 +0000
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc%4]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
- 03:32:19 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     "tharvey@gateworks.com" <tharvey@gateworks.com>
-CC:     Lucas Stach <l.stach@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
- support
-Thread-Topic: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
- support
-Thread-Index: AQHXwf8T9WRZIWT4CUunBVSnJ63L4qvZhp6ggAD4IYCAAKk/cIABRTmAgABCoVA=
-Date:   Thu, 21 Oct 2021 03:32:18 +0000
-Message-ID: <AS8PR04MB867624A8A5B6AE27D6A9160F8CBF9@AS8PR04MB8676.eurprd04.prod.outlook.com>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
- <CAJ+vNU2b-=T_gTsRBvdF7SRUZopEFOU_Np8mEJn8bOpn5b5FaA@mail.gmail.com>
- <AS8PR04MB8676B2AC24E2769D47A1ED478CBD9@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU2AitmxCyam5FArmxAD41QUU=5CF_0JZhm+uzdkRbr7kw@mail.gmail.com>
- <AS8PR04MB8676840D7EDD56D10F9471288CBE9@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU2GU5=mM5+2Yg9gAuU0RSdJHWEU_+ykmz-qUWfsOnRJ8g@mail.gmail.com>
-In-Reply-To: <CAJ+vNU2GU5=mM5+2Yg9gAuU0RSdJHWEU_+ykmz-qUWfsOnRJ8g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0a7abf5c-6f83-4fb5-152f-08d9944362e5
-x-ms-traffictypediagnostic: AS8PR04MB8627:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-microsoft-antispam-prvs: <AS8PR04MB8627ADAE3636496FAA30C6038CBF9@AS8PR04MB8627.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JTl24nfmPMefDXSF/GHjiv0WrYWbsp+H2T/ymKp+ydW+HMq6YlaFDkrH0/Xms2QbOioEoe5vBS8e3Hu57ehobeIYolA9jLrYhTUKLZWKZxM9KVPEXXiAOVYpEficA3sgvUoQX9diEqBWFL8E+o6mzEjIkDr1UfNKUicLWqYmLnkdl6A6lAXTQVg1OuCzuRJ4qhVqN88+mWiroK7q+PBxqyGaGpXTg1+CpPltHU9BjI/EDAN8N3DWNIEx46sjUv6QIodVgm3lXtZuSz/atizrzdM+ItE4ibpy8Y9zZkbjNngI2gRTNOEXWvhWPHikAB+8FLsg7oNIFUZYUtZTupCWvGhG+SbGv1aYBh5shNbHCmnjfHbR2ubu1fKy0rWAXZ51BiwrCjCXDe/0Hwt3CWCbrPjM1iEdksOpCZprdTuYQ12E9ZyNA6HbxPnR9JJ0QiZ3qdC2zKOWHbCqG1biqBHVgE1ZjCyEU++zN/uGCZmTLfG6SX3MQV/dtNi2/DT8DNh8J7Y1jrBHKI2aCoDRJJTdXJIh/32wcvvhob+o0HhjyLfa3H1Oz/mT99apo1LC7pMDA0ZgfEQ1pApMyd8IP9s3WoO8RhsG725OsOmhRJffV1bAkjpgP/zUTZImXL+f0MWHHRTN7nxH4rsHQPnWrVcLYQWEynTSnHVrNsYQ/r6KxSbJjwFjwoxOk1g1kZKyVA6UGYnDjdqL048hIeVyq/E3Ix02T6nxCqOsqNfBKALTm7k=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9686003)(55016002)(6506007)(2906002)(86362001)(66556008)(66476007)(7696005)(8936002)(64756008)(71200400001)(8676002)(66446008)(38070700005)(508600001)(76116006)(52536014)(5660300002)(66946007)(26005)(6916009)(122000001)(38100700002)(4326008)(186003)(33656002)(54906003)(316002)(83380400001)(7416002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ofyhu+gWEm69fPGIwjLeW7IWwD661JgbFVZVTPTFvPeUeaeUTGt2VDb2xaCF?=
- =?us-ascii?Q?muqQO9OOg55Mjo97CP9LbI7/wrj/Ms7XGwoRMMjbSW7ANTG8DUn7j+F3P+5d?=
- =?us-ascii?Q?o3lwKfR4Q+iJ0epEk8C0VVIw3aRgLVb8xkGsbh22FLDd8kbeCItyjIHwhGgB?=
- =?us-ascii?Q?L3a2QC8QERGa/MUH4J7T3srjKnS/yUTHUHVqGy0AC+TDfkhVa1Rc8MZxDTUO?=
- =?us-ascii?Q?IRXiqD+m8uMdeLSge7zUGc/y/wpGoRtrQz8Lv4NY6IiyPmI7ozSljhGjR8nS?=
- =?us-ascii?Q?Vam3xl71QGk/oravi/yNhGg8RWQGFepNPPvV9FrKrWY3CjhEMeYOnEn1PCFa?=
- =?us-ascii?Q?DdVlGCf84CFwv6zWgpyx3E9LZ/nwtPkWPyZtjgdIGecbAwZ6V6PWFnbJiPum?=
- =?us-ascii?Q?vpHmO9kJAnOpW0XLtlQveNlUM7LYdL1ULtfF3aHHuJ/rtx4oTIrO8//mLuA4?=
- =?us-ascii?Q?8DFSt1BhFUhT4IQ6646RqHhKjFl6qG0DJ4oO+oONZF4lRJkilEb6RuY576eL?=
- =?us-ascii?Q?X/lTGMoMRXZbo3DMio9cm/EzP7uIMh7GJlg7b9IROKNyotJAg+kN9QUYHP/j?=
- =?us-ascii?Q?LffkNT3ipMcg/DIy3jF943JrDY95EIbPWj58OdpDESJPm/B+HGMpRoQDLxtQ?=
- =?us-ascii?Q?DFtDZZp6GKDFwSKZL1QRyyaYWsOJF4CfzSW4XSeYZzqj+Ye5Cx9Dfzh5HO2l?=
- =?us-ascii?Q?vESMFyuwJC+qDettjwh+tyjbv2uZtV1pXvNlhqYo3s+XawXQ215G5QhrchW5?=
- =?us-ascii?Q?1F5UK00bVaUi3TBvmb/lR4Us2QcgdYvFUZ2uvjwQjBpLgdUi1Jq0YCv0wIPY?=
- =?us-ascii?Q?3RpA0tnYrEQSGPJL43YNxzrIm7lhR1Xaqi9eCrh4gw0urfqoZswh9JI3dZaa?=
- =?us-ascii?Q?BtXlnGo8D/vIJ55xTCPzSEzS1hSgTYWdBQtszIuqsN0nX07ZNF8KlOqa4CJ/?=
- =?us-ascii?Q?h/xbU6hPbOTAwsNqE+MJhR4pSSBvOU7sDVwkonqaq9ClkzH7ZUBm0rk1SCYk?=
- =?us-ascii?Q?j/fJ980ZQvpsJrLDJTdtXxsXcy/AGJEzYEF8B1vd0ISsv2NaR22oxSxJoO+P?=
- =?us-ascii?Q?Rw07AdVRDkTQBdDs/AX4RAEWw/f3kyYEnLwpm8y/ShCZ/1KY2LUSUSlEdLa0?=
- =?us-ascii?Q?ZKFSi8IrQSRCPDETlfZ1cCSEMwDRK9b46flUirPE7g9HzsaoKSDr5rIyQ0Jl?=
- =?us-ascii?Q?XSMTVmzRLflKFpQcWiZx1zC5siyvcVgeco9Oufb9M8Xa4pkvRIgcWnCOni5F?=
- =?us-ascii?Q?rg6rUqTzCHBgkLChutwqM4c+cSW3hx/po2NNAkYkaoVLl34lv08fGIM+DFsg?=
- =?us-ascii?Q?sAXDkibzP/dZcaK7Pp5Ckf8fQfcZCm+wgbpi98IAdgcxm1CBPhWhVif59Sem?=
- =?us-ascii?Q?FCjH0UQ0JqqtY4UY6C9XspRwJ8NAO6lTjgxSlf3/U1T+kfGWNyZyZCv+EzXf?=
- =?us-ascii?Q?H1jbPe5WcuU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Thu, 21 Oct
+ 2021 03:46:28 +0000
+Received: from CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:84:cafe::b6) by MW4PR04CA0129.outlook.office365.com
+ (2603:10b6:303:84::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend
+ Transport; Thu, 21 Oct 2021 03:46:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT024.mail.protection.outlook.com (10.13.174.162) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 03:46:27 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 20 Oct
+ 2021 22:46:26 -0500
+Date:   Wed, 20 Oct 2021 22:35:26 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>
+CC:     <linux-kselftest@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Nathan Tempelman <natet@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Mingwei Zhang" <mizhang@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "David Woodhouse" <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC 07/16] KVM: selftests: add SEV boot tests
+Message-ID: <20211021033526.uyxwb6dr22gpffoh@amd.com>
+References: <20211005234459.430873-1-michael.roth@amd.com>
+ <20211006203726.13402-1-michael.roth@amd.com>
+ <4e3d8f38-f01f-c1aa-335b-2c248f512638@oracle.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a7abf5c-6f83-4fb5-152f-08d9944362e5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2021 03:32:19.1639
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4e3d8f38-f01f-c1aa-335b-2c248f512638@oracle.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e3ad12f-3986-4fb1-635c-08d994455cc6
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1325:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1325BE2DBF733679B8F4E56395BF9@MWHPR12MB1325.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gS2Jc46i7DjiHj84wu03TCZnnF858e1SUfcXrbzQ9LUn7zW0KRPTvIyy8SBgt6+8RUxNbsUJJqrUXMIi3Bp8LQM01t+AmSiS/PQG69pIqC8Moh/7dVo3xFLcx5suYyCp4plKBszSn1A4xOCeruHJB9lmCcr/MSljCyFs0lJNMwqG8UE4XD6PqRUCRyIxBmJys+WWFd5BW2rh7OY0gdf2NAn57rvXmyjfvKvQShypTOlaWHfvJNpTfXjaRWWVbrkzYbZJuKfV0xqlZpGFCKwF1BhGkmMzZSWW8hQXy9ZSwIu2hB8E9RqYUoIALynNJPt/5HeRN9mabyzpFVTwciYTGtpDNBdv+cuivYLLqx824ubbpDCFJR++CbkxurgUqhbyTYi4+kSrkL747e02Hvkx/79zf9Q4/9yHX0NgZvrif9eNgigk5mxuQCex+yLymHYhVDNX8JcI0frYl5ssongRKueFIE+TjiyOVWZOWBAYh5ykmN215yn9ZoOhI21Yvdbvr+QSI09f43cWtet7Lmj4GQCbTGbFHEJp3/dnDfYtSauCJedm6C2s299To1a3P0npVFPeLODkratLPJGsAWhFFhb9dA+K1ir9cNYUc8G4xl7qqhsLp/5ZEHYh3IIE43cKh2kJx6PTx9xOkF6Ir/DN2+x4fpbSdUrOwW/aI4/8eAdBdn70kn3BTzEyKLZSmXfecoCyWT2waZf8uFW0JkcGCicL98g9PKamCL1t/AgsJYo=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(2906002)(5660300002)(81166007)(30864003)(83380400001)(47076005)(36860700001)(70206006)(70586007)(316002)(54906003)(82310400003)(1076003)(336012)(86362001)(508600001)(4326008)(426003)(26005)(8676002)(6916009)(53546011)(8936002)(356005)(36756003)(2616005)(186003)(44832011)(16526019)(7416002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 03:46:27.8166
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hongxing.zhu@nxp.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8627
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e3ad12f-3986-4fb1-635c-08d994455cc6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1325
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<snipped...>
->=20
-> Richard,
->=20
-> What is this 'invalid resource' about? I see that with my downstream
-> IMX8MM PCIe driver as well and have been asked about it.
->=20
-[Richard Zhu] Hi Tim:
-This complain is caused by the following codes in pcie-designware.c driver.
-I'm not sure that why there is only size assignment after the res valid che=
-ck, and do nothing if the res is invalid.
-It seems that it is an expected design logic refer to the later codes.
-                if (!pci->atu_base) {
-                        struct resource *res =3D
-                                platform_get_resource_byname(pdev, IORESOUR=
-CE_MEM, "atu");
-                        if (res)
-                                pci->atu_size =3D resource_size(res);
-                        pci->atu_base =3D devm_ioremap_resource(dev, res);
-                        if (IS_ERR(pci->atu_base))
-                                pci->atu_base =3D pci->dbi_base + DEFAULT_D=
-BI_ATU_OFFSET;
-                }
+On Fri, Oct 15, 2021 at 07:55:53PM -0700, Krish Sadhukhan wrote:
+> 
+> On 10/6/21 1:37 PM, Michael Roth wrote:
+> > A common aspect of booting SEV guests is checking related CPUID/MSR
+> > bits and accessing shared/private memory. Add a basic test to cover
+> > this.
+> > 
+> > This test will be expanded to cover basic boot of SEV-ES and SEV-SNP in
+> > subsequent patches.
+> > 
+> > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > ---
+> >   tools/testing/selftests/kvm/.gitignore        |   1 +
+> >   tools/testing/selftests/kvm/Makefile          |   1 +
+> >   .../selftests/kvm/x86_64/sev_all_boot_test.c  | 252 ++++++++++++++++++
+> >   3 files changed, 254 insertions(+)
+> >   create mode 100644 tools/testing/selftests/kvm/x86_64/sev_all_boot_test.c
+> > 
+> > diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+> > index 0709af0144c8..824f100bec2a 100644
+> > --- a/tools/testing/selftests/kvm/.gitignore
+> > +++ b/tools/testing/selftests/kvm/.gitignore
+> > @@ -38,6 +38,7 @@
+> >   /x86_64/xen_vmcall_test
+> >   /x86_64/xss_msr_test
+> >   /x86_64/vmx_pmu_msrs_test
+> > +/x86_64/sev_all_boot_test
+> >   /access_tracking_perf_test
+> >   /demand_paging_test
+> >   /dirty_log_test
+> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > index c7a5e1c69e0c..aa8901bdbd22 100644
+> > --- a/tools/testing/selftests/kvm/Makefile
+> > +++ b/tools/testing/selftests/kvm/Makefile
+> > @@ -72,6 +72,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
+> >   TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+> >   TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+> >   TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+> > +TEST_GEN_PROGS_x86_64 += x86_64/sev_all_boot_test
+> >   TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+> >   TEST_GEN_PROGS_x86_64 += demand_paging_test
+> >   TEST_GEN_PROGS_x86_64 += dirty_log_test
+> > diff --git a/tools/testing/selftests/kvm/x86_64/sev_all_boot_test.c b/tools/testing/selftests/kvm/x86_64/sev_all_boot_test.c
+> > new file mode 100644
+> > index 000000000000..8df7143ac17d
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/kvm/x86_64/sev_all_boot_test.c
+> > @@ -0,0 +1,252 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Basic SEV boot tests.
+> > + *
+> > + * Copyright (C) 2021 Advanced Micro Devices
+> > + */
+> > +#define _GNU_SOURCE /* for program_invocation_short_name */
+> > +#include <fcntl.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <sys/ioctl.h>
+> > +
+> > +#include "test_util.h"
+> > +
+> > +#include "kvm_util.h"
+> > +#include "processor.h"
+> > +#include "svm_util.h"
+> > +#include "linux/psp-sev.h"
+> > +#include "sev.h"
+> > +
+> > +#define VCPU_ID			2
+> > +#define PAGE_SIZE		4096
+> > +#define PAGE_STRIDE		32
+> > +
+> > +#define SHARED_PAGES		8192
+> > +#define SHARED_VADDR_MIN	0x1000000
+> > +
+> > +#define PRIVATE_PAGES		2048
+> > +#define PRIVATE_VADDR_MIN	(SHARED_VADDR_MIN + SHARED_PAGES * PAGE_SIZE)
+> > +
+> > +#define TOTAL_PAGES		(512 + SHARED_PAGES + PRIVATE_PAGES)
+> > +
+> > +static void fill_buf(uint8_t *buf, size_t pages, size_t stride, uint8_t val)
+> > +{
+> > +	int i, j;
+> > +
+> > +	for (i = 0; i < pages; i++)
+> > +		for (j = 0; j < PAGE_SIZE; j += stride)
+> > +			buf[i * PAGE_SIZE + j] = val;
+> > +}
+> > +
+> > +static bool check_buf(uint8_t *buf, size_t pages, size_t stride, uint8_t val)
+> > +{
+> > +	int i, j;
+> > +
+> > +	for (i = 0; i < pages; i++)
+> > +		for (j = 0; j < PAGE_SIZE; j += stride)
+> > +			if (buf[i * PAGE_SIZE + j] != val)
+> > +				return false;
+> > +
+> > +	return true;
+> > +}
+> > +
+> > +static void guest_test_start(struct sev_sync_data *sync)
+> > +{
+> > +	/* Initial guest check-in. */
+> > +	sev_guest_sync(sync, 1, 0);
+> > +}
+> > +
+> > +static void check_test_start(struct kvm_vm *vm, struct sev_sync_data *sync)
+> > +{
+> > +	struct kvm_run *run;
+> > +
+> > +	run = vcpu_state(vm, VCPU_ID);
+> > +	vcpu_run(vm, VCPU_ID);
+> > +
+> > +	/* Initial guest check-in. */
+> > +	sev_check_guest_sync(run, sync, 1);
+> > +}
+> > +
+> > +static void
+> > +guest_test_common(struct sev_sync_data *sync, uint8_t *shared_buf, uint8_t *private_buf)
+> > +{
+> > +	bool success;
+> > +
+> > +	/* Initial check-in for common. */
+> > +	sev_guest_sync(sync, 100, 0);
+> > +
+> > +	/* Ensure initial shared pages are intact. */
+> > +	success = check_buf(shared_buf, SHARED_PAGES, PAGE_STRIDE, 0x41);
+> > +	SEV_GUEST_ASSERT(sync, 103, success);
+> > +
+> > +	/* Ensure initial private pages are intact/encrypted. */
+> > +	success = check_buf(private_buf, PRIVATE_PAGES, PAGE_STRIDE, 0x42);
+> > +	SEV_GUEST_ASSERT(sync, 104, success);
+> > +
+> > +	/* Ensure host userspace can't read newly-written encrypted data. */
+> > +	fill_buf(private_buf, PRIVATE_PAGES, PAGE_STRIDE, 0x43);
+> > +
+> > +	sev_guest_sync(sync, 200, 0);
+> > +
+> > +	/* Ensure guest can read newly-written shared data from host. */
+> > +	success = check_buf(shared_buf, SHARED_PAGES, PAGE_STRIDE, 0x44);
+> > +	SEV_GUEST_ASSERT(sync, 201, success);
+> > +
+> > +	/* Ensure host can read newly-written shared data from guest. */
+> > +	fill_buf(shared_buf, SHARED_PAGES, PAGE_STRIDE, 0x45);
+> > +
+> > +	sev_guest_sync(sync, 300, 0);
+> > +}
+> > +
+> > +static void
+> > +check_test_common(struct kvm_vm *vm, struct sev_sync_data *sync,
+> > +		  uint8_t *shared_buf, uint8_t *private_buf)
+> > +{
+> > +	struct kvm_run *run = vcpu_state(vm, VCPU_ID);
+> > +	bool success;
+> > +
+> > +	/* Initial guest check-in. */
+> > +	vcpu_run(vm, VCPU_ID);
+> > +	sev_check_guest_sync(run, sync, 100);
+> > +
+> > +	/* Ensure initial private pages are intact/encrypted. */
+> > +	success = check_buf(private_buf, PRIVATE_PAGES, PAGE_STRIDE, 0x42);
+> > +	TEST_ASSERT(!success, "Initial guest memory not encrypted!");
+> > +
+> > +	vcpu_run(vm, VCPU_ID);
+> > +	sev_check_guest_sync(run, sync, 200);
+> > +
+> > +	/* Ensure host userspace can't read newly-written encrypted data. */
+> > +	success = check_buf(private_buf, PRIVATE_PAGES, PAGE_STRIDE, 0x43);
+> > +	TEST_ASSERT(!success, "Modified guest memory not encrypted!");
+> > +
+> > +	/* Ensure guest can read newly-written shared data from host. */
+> > +	fill_buf(shared_buf, SHARED_PAGES, PAGE_STRIDE, 0x44);
+> > +
+> > +	vcpu_run(vm, VCPU_ID);
+> > +	sev_check_guest_sync(run, sync, 300);
+> > +
+> > +	/* Ensure host can read newly-written shared data from guest. */
+> > +	success = check_buf(shared_buf, SHARED_PAGES, PAGE_STRIDE, 0x45);
+> > +	TEST_ASSERT(success, "Host can't read shared guest memory!");
+> > +}
+> > +
+> > +static void
+> > +guest_test_done(struct sev_sync_data *sync)
+> > +{
+> > +	sev_guest_done(sync, 10000, 0);
+> > +}
+> > +
+> > +static void
+> > +check_test_done(struct kvm_vm *vm, struct sev_sync_data *sync)
+> > +{
+> > +	struct kvm_run *run = vcpu_state(vm, VCPU_ID);
+> > +
+> > +	vcpu_run(vm, VCPU_ID);
+> > +	sev_check_guest_done(run, sync, 10000);
+> > +}
+> > +
+> > +static void __attribute__((__flatten__))
+> > +guest_sev_code(struct sev_sync_data *sync, uint8_t *shared_buf, uint8_t *private_buf)
+> > +{
+> > +	uint32_t eax, ebx, ecx, edx;
+> > +	uint64_t sev_status;
+> > +
+> > +	guest_test_start(sync);
+> > +
+> > +	/* Check SEV CPUID bit. */
+> > +	eax = 0x8000001f;
+> > +	ecx = 0;
+> > +	cpuid(&eax, &ebx, &ecx, &edx);
+> > +	SEV_GUEST_ASSERT(sync, 2, eax & (1 << 1));
+> > +
+> > +	/* Check SEV MSR bit. */
+> > +	sev_status = rdmsr(MSR_AMD64_SEV);
+> > +	SEV_GUEST_ASSERT(sync, 3, (sev_status & 0x1) == 1);
+> > +
+> Is there any need to do the cpuid and MSR tests every time the guest code is
+> executed ?
 
-Since the default offset is used on i.MX8MM, the "atu" is not specified in =
-i.MX8MM PCIe DT node, so there is no real res at all.
-Then, devm_ioremap_resource() would complain the invalid resource.
+It seems like a good sanity check that KVM is setting the expected bits
+(via KVM_GET_SUPPORTED_CPUID) for SEV guests. This is also a fairly
+common example of the sort of things a guest would do during boot to
+detect/initialize SEV-related functionality.
 
-> > [    1.316305] imx6q-pcie 33800000.pcie: iATU unroll: enabled
-> > [    1.321799] imx6q-pcie 33800000.pcie: Detected iATU regions: 4
-> outbound, 4 inbound
-> > [    1.429803] imx6q-pcie 33800000.pcie: Link up
-> > [    1.534497] imx6q-pcie 33800000.pcie: Link up
-> > [    1.538870] imx6q-pcie 33800000.pcie: Link up, Gen2
-> > [    1.550364] imx6q-pcie 33800000.pcie: Link up
-> > [    1.550487] imx6q-pcie 33800000.pcie: PCI host bridge to bus 0000:00
-> > [    1.565545] pci_bus 0000:00: root bus resource [bus 00-ff]
-> > [    1.573834] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
-> > [    1.580055] pci_bus 0000:00: root bus resource [mem
-> 0x18000000-0x1fefffff]
-> > [    1.586968] pci 0000:00:00.0: [16c3:abcd] type 01 class 0x060400
-> > [    1.592997] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x000fffff]
-> > [    1.599282] pci 0000:00:00.0: reg 0x38: [mem 0x00000000-0x0000ffff
-> pref]
-> > [    1.606033] pci 0000:00:00.0: supports D1
-> > [    1.610053] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-> D3cold
-> > [    1.618206] pci 0000:01:00.0: [15b7:5002] type 00 class 0x010802
-> > [    1.624293] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff
-> 64bit]
-> > [    1.631177] pci 0000:01:00.0: reg 0x20: [mem 0x00000000-0x000000ff
-> 64bit]
-> > [    1.638409] pci 0000:01:00.0: 4.000 Gb/s available PCIe bandwidth,
-> limited by 5.0 GT/s PCIe x1 link at 0000:00:00.0 (capable of 31.504 Gb/s =
-with
-> 8.0 GT/s PCIe x4 link)
-> > [    1.664931] pci 0000:00:00.0: BAR 0: assigned [mem
-> 0x18000000-0x180fffff]
-> > [    1.671745] pci 0000:00:00.0: BAR 14: assigned [mem
-> 0x18100000-0x181fffff]
-> > [    1.678634] pci 0000:00:00.0: BAR 6: assigned [mem
-> 0x18200000-0x1820ffff pref]
-> > [    1.685873] pci 0000:01:00.0: BAR 0: assigned [mem
-> 0x18100000-0x18103fff 64bit]
-> > [    1.693222] pci 0000:01:00.0: BAR 4: assigned [mem
-> 0x18104000-0x181040ff 64bit]
-> > [    1.700577] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> > [    1.705814] pci 0000:00:00.0:   bridge window [mem
-> 0x18100000-0x181fffff]
-> > [    1.712972] pcieport 0000:00:00.0: PME: Signaling with IRQ 216
-> > "
-> > Regarding the log you pasted, it seems that the clock is not feed to PH=
-Y
-> properly.
-> >
-> > Anyway, let's waiting for the v4 series, then make a try. Thanks for yo=
-ur
-> great help to make the double tests.
-> >
->=20
-> My boards do not use CLKREQ# so I do not have that defined in pinmux and =
-I
-> found that if I add MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B PCIe
-> works on my board but this isn't a solution just a work-around (I have bo=
-ards
-> that use the only two possible pins for CLKREQ as other features).
->=20
-> Similarly you will find on the imx8mm-evk if you comment out the CLKREQ
-> (which isn't required) the imx8mmevk will end up hanging like my boards:
-[Richard Zhu] Hi Tim:
-Regarding the SPEC, the CLKREQ# is mandatory required, and should be config=
-ured as an open drain, active low signal.
-And this signal should be driven low by the PCIe M.2 device to request the =
-REF clock be available(active low).
-So, there is such kind of CLKREQ# pin definition on i.MX8MM EVK board.
+It becomes a little more useful for the SEV-ES/SEV-SNP tests, where cpuid
+instructions cause a #VC exception, which in turn leads to a VMGExit and
+exercises the host KVM's handling of host-guest communiction via GHCB
+MSR/GHCB page.
 
-Anyway, I think the external OSC circuit should be always running if there =
-is no CLKREQ# on your HW board design.
+> > +	guest_test_common(sync, shared_buf, private_buf);
+> > +
+> > +	guest_test_done(sync);
+> > +}
+> > +
+> > +static void
+> > +setup_test_common(struct sev_vm *sev, void *guest_code, vm_vaddr_t *sync_vaddr,
+> > +		  vm_vaddr_t *shared_vaddr, vm_vaddr_t *private_vaddr)
+> > +{
+> > +	struct kvm_vm *vm = sev_get_vm(sev);
+> > +	uint8_t *shared_buf, *private_buf;
+> > +
+> > +	/* Set up VCPU and initial guest kernel. */
+> > +	vm_vcpu_add_default(vm, VCPU_ID, guest_code);
+> > +	kvm_vm_elf_load(vm, program_invocation_name);
+> > +
+> > +	/* Set up shared sync buffer. */
+> > +	*sync_vaddr = vm_vaddr_alloc_shared(vm, PAGE_SIZE, 0);
+> > +
+> > +	/* Set up buffer for reserved shared memory. */
+> > +	*shared_vaddr = vm_vaddr_alloc_shared(vm, SHARED_PAGES * PAGE_SIZE,
+> > +					      SHARED_VADDR_MIN);
+> > +	shared_buf = addr_gva2hva(vm, *shared_vaddr);
+> > +	fill_buf(shared_buf, SHARED_PAGES, PAGE_STRIDE, 0x41);
+> > +
+> > +	/* Set up buffer for reserved private memory. */
+> > +	*private_vaddr = vm_vaddr_alloc(vm, PRIVATE_PAGES * PAGE_SIZE,
+> > +					PRIVATE_VADDR_MIN);
+> > +	private_buf = addr_gva2hva(vm, *private_vaddr);
+> > +	fill_buf(private_buf, PRIVATE_PAGES, PAGE_STRIDE, 0x42);
+> > +}
+> > +
+> > +static void test_sev(void *guest_code, uint64_t policy)
+> > +{
+> > +	vm_vaddr_t sync_vaddr, shared_vaddr, private_vaddr;
+> > +	uint8_t *shared_buf, *private_buf;
+> > +	struct sev_sync_data *sync;
+> > +	uint8_t measurement[512];
+> > +	struct sev_vm *sev;
+> > +	struct kvm_vm *vm;
+> > +	int i;
+> > +
+> > +	sev = sev_vm_create(policy, TOTAL_PAGES);
+> > +	if (!sev)
+> > +		return;
+> > +	vm = sev_get_vm(sev);
+> > +
+> > +	setup_test_common(sev, guest_code, &sync_vaddr, &shared_vaddr, &private_vaddr);
+> > +
+> > +	/* Set up guest params. */
+> > +	vcpu_args_set(vm, VCPU_ID, 4, sync_vaddr, shared_vaddr, private_vaddr);
+> > +
+> > +	sync = addr_gva2hva(vm, sync_vaddr);
+> > +	shared_buf = addr_gva2hva(vm, shared_vaddr);
+> > +	private_buf = addr_gva2hva(vm, private_vaddr);
+> > +
+> > +	/* Allocations/setup done. Encrypt initial guest payload. */
+> > +	sev_vm_launch(sev);
+> > +
+> > +	/* Dump the initial measurement. A test to actually verify it would be nice. */
+> > +	sev_vm_measure(sev, measurement);
+> > +	pr_info("guest measurement: ");
+> > +	for (i = 0; i < 32; ++i)
+> > +		pr_info("%02x", measurement[i]);
+> > +	pr_info("\n");
+> > +
+> > +	sev_vm_launch_finish(sev);
+> Since the above section of this function is actually setup code and is not
+> running the test yet, it is best placed in a setup function. My suggestion
+> is that you place the above section into a function called
+> setup_test_common() and within that function you further separate out the
+> SEV-related setup into a function called setup_test_sev() or something
+> similar. Then call the top-level setup function from within main().
 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-> b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-> index 5ce43daa0c8b..f0023b48f475 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-> @@ -448,7 +448,9 @@
->=20
->         pinctrl_pcie0: pcie0grp {
->                 fsl,pins =3D <
-> +/*
->=20
-> MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B    0x61
-> +*/
->                         MX8MM_IOMUXC_SAI2_RXFS_GPIO4_IO21
-> 0x41
->                 >;
->         };
->=20
-> I have PCIe working with a driver that I ported from NXP's kernel which d=
-iffers
-> from your driver in that the PCIe PHY is not abstracted to its own driver=
- so I
-> think this has something to do with the order in which the phy is reset o=
-r
-> initialized? The configuration of gpr14 bits looks correct to me.
-[Richard Zhu] The CLKREQ# PIN definition shouldn't be masked.
-In the NXP's local BSP kernel, I just force CLKREQ# low to level up the HW =
-compatibility.
-That's might the reason why the PCIe works on your HW board although the CL=
-KREQ# PIN is not defined.
-This method is a little rude and violate the SPEC, and not recommended alth=
-ough it levels up the HW compatibility.
-So I drop this method in this series.
+That makes sense. I'll try to rework this according to your suggestions.
 
-BR
-Richard
->=20
-> Best regards,
->=20
-> Tim
+> > +
+> > +	/* Guest is ready to run. Do the tests. */
+> > +	check_test_start(vm, sync);
+> > +	check_test_common(vm, sync, shared_buf, private_buf);
+> > +	check_test_done(vm, sync);
+> 
+> These function names can be better. These functions are not just checking
+> the result, they are actually running the guest code. So, may be, calling
+> them 'test_start, test_common and test_done are better. I would just
+
+Will do.
+
+> collapse them and place their code in test_sev() only if you separate the
+> out the setup code as I suggested above.
+
+Hmm, I did it that way because in the guest_{sev,sev_es,sev_snp}_code
+routines there are some type-specific checks that happen before
+guest_test_done(), so it made sense to have that in a separate routine,
+and seemed more readable to then also have check_test_done() separate to
+pair with it. But I'll see if I can rework that a bit.
+
+> 
+> > +
+> > +	sev_vm_free(sev);
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +	/* SEV tests */
+> > +	test_sev(guest_sev_code, SEV_POLICY_NO_DBG);
+> > +	test_sev(guest_sev_code, 0);
+> > +
+> > +	return 0;
+> > +}
