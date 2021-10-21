@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9494367F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004284367F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhJUQiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbhJUQiE (ORCPT
+        id S232054AbhJUQiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:38:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33000 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232021AbhJUQiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:38:04 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39AEC061764;
-        Thu, 21 Oct 2021 09:35:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8817B1F44CC0;
-        Thu, 21 Oct 2021 17:35:46 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 14/20] exit/syscall_user_dispatch: Send ordinary signals
- on failure
-Organization: Collabora
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-14-ebiederm@xmission.com>
-Date:   Thu, 21 Oct 2021 13:35:40 -0300
-In-Reply-To: <20211020174406.17889-14-ebiederm@xmission.com> (Eric
-        W. Biederman's message of "Wed, 20 Oct 2021 12:44:00 -0500")
-Message-ID: <875ytq1gkj.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 21 Oct 2021 12:38:12 -0400
+Date:   Thu, 21 Oct 2021 16:35:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634834155;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fB+Qbqc1ux+FEZZKT8jn7/n2apW+NKmnCq81wwWjrnc=;
+        b=m5yMSnBbJ/on9kmPxRjhDLCcXM2UrmivVrsA3VfB0Q8OBJgWqTfULhXT9Z47e5d4iOQe/w
+        mxWa4ckA2yXTMflMIFXyHbfkW0yTB+nA9Zf3HxvYysnw/IUuLuFBxefbvOcGGw7QU0La4S
+        ioxfT6s3jbwiKKNRDY8wCaMCBw++VM6Jsc+LanTVKLNDpWFPTXcVSXLc5MIviBuwn2VN5Y
+        UlGNeJ4s5GxGKv23La6JeijOYW0W4e2+jSE1Wgdco43WwFry/I/UN5hkCtZY1Dw526wn9C
+        kXe2sUwetpD7pP2IMRvQ4QjNlAa7EcBUH4muLr7oKt7PMEp2pbrVKIQWgpxOgg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634834155;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fB+Qbqc1ux+FEZZKT8jn7/n2apW+NKmnCq81wwWjrnc=;
+        b=ww4k491+TkG5xaC16Ao7b+VK5h9gzNVVaaZk0/0T9o5NqRucOhD5xhWdaxiPM9jnVC/VGI
+        Qo90uoBy4TiZcNDg==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip/meson-gpio: Drop build-breaking
+ COMPILE_TEST
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <bfc6fc7b-2bc3-b2b6-d65b-04805fbeb59d@infradead.org>
+References: <bfc6fc7b-2bc3-b2b6-d65b-04805fbeb59d@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <163483415388.25758.3766823698887341709.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Eric W. Biederman" <ebiederm@xmission.com> writes:
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-> Use force_fatal_sig instead of calling do_exit directly.  This ensures
-> the ordinary signal handling path gets invoked, core dumps as
-> appropriate get created, and for multi-threaded processes all of the
-> threads are terminated not just a single thread.
->
-> When asked Gabriel Krisman Bertazi <krisman@collabora.com> said [1]:
->> ebiederm@xmission.com (Eric W. Biederman) asked:
->>
->> > Why does do_syscal_user_dispatch call do_exit(SIGSEGV) and
->> > do_exit(SIGSYS) instead of force_sig(SIGSEGV) and force_sig(SIGSYS)?
->> >
->> > Looking at the code these cases are not expected to happen, so I would
->> > be surprised if userspace depends on any particular behaviour on the
->> > failure path so I think we can change this.
->>
->> Hi Eric,
->>
->> There is not really a good reason, and the use case that originated the
->> feature doesn't rely on it.
->>
->> Unless I'm missing yet another problem and others correct me, I think
->> it makes sense to change it as you described.
->>
->> > Is using do_exit in this way something you copied from seccomp?
->>
->> I'm not sure, its been a while, but I think it might be just that.  The
->> first prototype of SUD was implemented as a seccomp mode.
->
-> If at some point it becomes interesting we could relax
-> "force_fatal_sig(SIGSEGV)" to instead say
-> "force_sig_fault(SIGSEGV, SEGV_MAPERR, sd->selector)".
->
-> I avoid doing that in this patch to avoid making it possible
-> to catch currently uncatchable signals.
->
-> Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> [1] https://lkml.kernel.org/r/87mtr6gdvi.fsf@collabora.com
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  kernel/entry/syscall_user_dispatch.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
+Commit-ID:     2e0fd58181a2614e1f41e434476f3f21c39b4669
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/2e0fd58181a2614e1f41e434476f3f21c39b4669
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Thu, 21 Oct 2021 17:25:22 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 21 Oct 2021 17:28:15 +01:00
 
-Hi Eric,
+irqchip/meson-gpio: Drop build-breaking COMPILE_TEST
 
-Feel free to add:
+This driver advertises COMPILE_TEST, and yet fails to link due
+to broken dependencies.
 
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/bfc6fc7b-2bc3-b2b6-d65b-04805fbeb59d@infradead.org
+---
+ drivers/irqchip/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-
--- 
-Gabriel Krisman Bertazi
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index b2f483b..42d01bc 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -407,7 +407,7 @@ config IRQ_UNIPHIER_AIDET
+ 
+ config MESON_IRQ_GPIO
+        tristate "Meson GPIO Interrupt Multiplexer"
+-       depends on ARCH_MESON || COMPILE_TEST
++       depends on ARCH_MESON
+        default ARCH_MESON
+        select IRQ_DOMAIN_HIERARCHY
+        help
