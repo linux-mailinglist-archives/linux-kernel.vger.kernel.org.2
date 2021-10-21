@@ -2,212 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C118943605B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B6D436057
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhJULfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:35:30 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:47210 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231176AbhJULfW (ORCPT
+        id S231142AbhJULfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhJULfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:35:22 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L8gAfr028060;
-        Thu, 21 Oct 2021 07:33:06 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3btk71npvw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 07:33:06 -0400
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 19LBX4Zo043070
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Oct 2021 07:33:05 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Thu, 21 Oct 2021
- 04:33:03 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Thu, 21 Oct 2021 04:33:03 -0700
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19LBWxlY015112;
-        Thu, 21 Oct 2021 07:33:00 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>
-CC:     <antoniu.miclaus@analog.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v9 2/2] dt-bindings: iio: frequency: add adrf6780 doc
-Date:   Thu, 21 Oct 2021 14:32:44 +0300
-Message-ID: <20211021113244.56936-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211021113244.56936-1-antoniu.miclaus@analog.com>
-References: <20211021113244.56936-1-antoniu.miclaus@analog.com>
+        Thu, 21 Oct 2021 07:35:03 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6964C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:32:47 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZlhZ1ydbz4xbT;
+        Thu, 21 Oct 2021 22:32:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1634815966;
+        bh=TBgYNuOR6CivwRz9RieGT4fDeQjeQcdqKnl/zYLrtt4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=deHlduqHZl1OYycNUVspKOnHKFxOZwIQkbO65ZeKH3QRUrU+IICG8q34Dzb/9j4sI
+         UvGnGvHtkfdWeVJXDIrkwO5xxQB/XHS4GQ0et0fr/OGW6LiSfEhW0xxrx1PqM71+Yl
+         WQyp9j6EAcv7VcLH/ZDaOXgRVDEak+RJqR42MlwvzVskntIun8C3tzbliSBgb78mXW
+         sN3pxd5+CgVrajcsfO3qboebfh4rhuXMq+UiDaPajFrIJ560vs9KWH+HddZaCDLIw9
+         Z/SRh8IisjyGa7KxZG+Y/v3hPn1RSEKUOZuCG7OMeS7ns84naYsB1ZUgbarwJ7QtAZ
+         J7AYrZaO5fw2Q==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        nathanl@linux.ibm.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-5 tag
+Date:   Thu, 21 Oct 2021 22:32:45 +1100
+Message-ID: <877de6d34y.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: 9I2BorKqik7HM-6xCaYp_JGjmeAPgMvK
-X-Proofpoint-GUID: 9I2BorKqik7HM-6xCaYp_JGjmeAPgMvK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-21_02,2021-10-20_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 bulkscore=0 impostorscore=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1015 lowpriorityscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110210059
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the ADRF6780 Upconverter.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-no changes in v9
- .../bindings/iio/frequency/adi,adrf6780.yaml  | 131 ++++++++++++++++++
- 1 file changed, 131 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+Hi Linus,
 
-diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-new file mode 100644
-index 000000000000..3a8ea93f4e0c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-@@ -0,0 +1,131 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/frequency/adi,adrf6780.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ADRF6780 Microwave Upconverter
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Wideband, microwave upconverter optimized for point to point microwave
-+   radio designs operating in the 5.9 GHz to 23.6 GHz frequency range.
-+
-+   https://www.analog.com/en/products/adrf6780.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adrf6780
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+  clocks:
-+    description:
-+      Definition of the external clock.
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: lo_in
-+
-+  clock-output-names:
-+    maxItems: 1
-+
-+  adi,vga-buff-en:
-+    description:
-+      RF Variable Gain Amplifier Buffer Enable. Gain is controlled by
-+      the voltage on the VATT pin.
-+    type: boolean
-+
-+  adi,lo-buff-en:
-+    description:
-+      Local Oscillator Amplifier Enable. Disable to put the part in
-+      a power down state.
-+    type: boolean
-+
-+  adi,if-mode-en:
-+    description:
-+      Intermediate Frequency Mode Enable. Either IF Mode or I/Q Mode
-+      can be enabled at a time.
-+    type: boolean
-+
-+  adi,iq-mode-en:
-+    description:
-+      I/Q Mode Enable. Either IF Mode or I/Q Mode can be enabled at a
-+      time.
-+    type: boolean
-+
-+  adi,lo-x2-en:
-+    description:
-+      Double the Local Oscillator output frequency from the Local
-+      Oscillator Input Frequency. Either LOx1 or LOx2 can be enabled
-+      at a time.
-+    type: boolean
-+
-+  adi,lo-ppf-en:
-+    description:
-+      Local Oscillator input frequency equal to the Local Oscillator
-+      output frequency (LO x1). Either LOx1 or LOx2 can be enabled
-+      at a time.
-+    type: boolean
-+
-+  adi,lo-en:
-+    description:
-+      Enable additional cirtuitry in the LO chain. Disable to put the
-+      part in a power down state.
-+    type: boolean
-+
-+  adi,uc-bias-en:
-+    description:
-+      Enable all bias circuitry thourghout the entire part.
-+      Disable to put the part in a power down state.
-+    type: boolean
-+
-+  adi,lo-sideband:
-+    description:
-+      Switch to the Lower LO Sideband. By default the Upper LO
-+      sideband is enabled.
-+    type: boolean
-+
-+  adi,vdet-out-en:
-+    description:
-+      VDET Output Select Enable. Expose the RF detector output to the
-+      VDET external pin.
-+    type: boolean
-+
-+  '#clock-cells':
-+    const: 0
-+
-+dependencies:
-+  adi,lo-x2-en: [ "adi,lo-en" ]
-+  adi,lo-ppf-en: [ "adi,lo-en" ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      adrf6780@0 {
-+        compatible = "adi,adrf6780";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        clocks = <&adrf6780_lo>;
-+        clock-names = "lo_in";
-+      };
-+    };
-+...
--- 
-2.33.1
+Please pull some more powerpc fixes for 5.15:
 
+The following changes since commit cdeb5d7d890e14f3b70e8087e745c4a6a7d9f337:
+
+  KVM: PPC: Book3S HV: Make idle_kvm_start_guest() return 0 if it went to guest (2021-10-16 00:40:03 +1100)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-5
+
+for you to fetch changes up to 787252a10d9422f3058df9a4821f389e5326c440:
+
+  powerpc/smp: do not decrement idle task preempt count in CPU offline (2021-10-20 21:38:01 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.15 #5
+
+Fix a bug exposed by a previous fix, where running guests with certain SMT topologies
+could crash the host on Power8.
+
+Fix atomic sleep warnings when re-onlining CPUs, when PREEMPT is enabled.
+
+Thanks to: Nathan Lynch, Srikar Dronamraju, Valentin Schneider.
+
+- ------------------------------------------------------------------
+Michael Ellerman (1):
+      powerpc/idle: Don't corrupt back chain when going idle
+
+Nathan Lynch (1):
+      powerpc/smp: do not decrement idle task preempt count in CPU offline
+
+
+ arch/powerpc/kernel/idle_book3s.S | 10 ++++++----
+ arch/powerpc/kernel/smp.c         |  2 --
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmFxT3IACgkQUevqPMjh
+pYD0Mg//fh9BEVcfCtGJskqpbppkLJL8Pk/npKdiXZ1//ESTnSSXp0SfjHwnKW8H
+R+FYUomAdB4pis6lfUUlVFHcADPrf1C55IF6f4pP7mLWGKuscMTjDRmgBOkgEreY
+pciP+aGkNWu6Lmzoz1ZEqYr1mZW6TX3/Os9BabFUNze4gzTT6Y4U+/QOYrt5VQZB
+SAnzyfjOq0c9HDP3OFVn9xUGkOpikRA2rT/0lKVFs5CPkqmLv82i/slz9SwE96kX
+Zfi9CCJ3ule0RgysYg33QpAzZfQiLATAJBLk+Wlyl9SAFQ8w+cOhFtJmHryGFPz5
+n5JopbE2lECJxw5fhasLwraDZzTd84xHvx1xpl2nIQEzrRlpV+Kq2c7SEbNROakL
+rp/xmnBjfo9wMVwjo7x20arqj+o5XBs7yW04gMXV5yJVMUjgn288LAZzTe9nNegk
+drzfrVHyvNKCoEWZr0egUDazSuh1kiWC9srmZ3IB2Cx2AGXYvXk+MsftoIqP8Nu6
+gs9+NRwNiroaX3aujlcZHC4J7QwGMUZo6Dvs2e0VX+kvGlvnrP8+7pQ0eSoSJlVv
+DfeTZa630yD0TdPVqWXHHeOUqbza/bpeHUxdFwSYdlr4DLrr3XkfaO/VQ6XJmTHa
+9aZq3y7ALgQGvXHUIJYH4upZYoK1BhNqCJ0A2w+8uqKlunlXx8w=
+=ES/7
+-----END PGP SIGNATURE-----
