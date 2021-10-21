@@ -2,51 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D609E435CFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9FA435D01
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhJUIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231441AbhJUIh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:37:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D1860FC0;
-        Thu, 21 Oct 2021 08:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634805342;
-        bh=zYc8BgeDcX1s9EwG1PG1svkNJLRcwRDOiYfOT1psu/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sBm0ahUKom/4sjWMN7UsVVmSTYE5go6xo+vqXtemDB4h4gsXgmsXCYlgBWEfBOn4b
-         cEoqlrRFNrEuhVJasvYjvjr9TSEia2qhT25QGckTskYY07TePSyyP9DfRmaKkvlyJu
-         /gn7FMJwlwl+kb/Pn9IN0OkXo7rKFMU7fqImyMA4=
-Date:   Thu, 21 Oct 2021 10:35:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
-        osandov@fb.com, shile.zhang@linux.alibaba.com,
-        linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 0/3] make hvc pass dma capable memory to its backend
-Message-ID: <YXEmW071C+GlmXqw@kroah.com>
-References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+        id S231419AbhJUIjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:39:42 -0400
+Received: from mxout04.lancloud.ru ([45.84.86.114]:59130 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231153AbhJUIjj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:39:39 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 2B0FB20CB033
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Message-ID: <e1f96f77-cf44-7783-bf88-0814bbabbfbc@omp.ru>
+Date:   Thu, 21 Oct 2021 11:37:09 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] ata: sata_mv: Fix the return value of the probe function
+Content-Language: en-US
+To:     Zheyu Ma <zheyuma97@gmail.com>, <damien.lemoal@opensource.wdc.com>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1634795836-1803-1-git-send-email-zheyuma97@gmail.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+In-Reply-To: <1634795836-1803-1-git-send-email-zheyuma97@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:46:55AM +0800, Xianting Tian wrote:
-> Dear all,
+On 21.10.2021 8:57, Zheyu Ma wrote:
+
+> mv_init_host() propagates the value returned by mv_chip_id() which in turn
+> gets propagated by mv_pci_init_one() and hits local_pci_probe().
 > 
-> This patch series make hvc framework pass DMA capable memory to
-> put_chars() of hvc backend(eg, virtio-console), and revert commit
-> c4baad5029 ("virtio-console: avoid DMA from stack”)
+> During the process of driver probing, the probe function should return < 0
+> for failure, otherwise, the kernel will treat value > 0 as success.
+> 
+> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+> ---
+>   drivers/ata/sata_mv.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+> index 9d86203e1e7a..7461fe078dd1 100644
+> --- a/drivers/ata/sata_mv.c
+> +++ b/drivers/ata/sata_mv.c
+> @@ -3897,7 +3897,7 @@ static int mv_chip_id(struct ata_host *host, unsigned int board_idx)
+>   
+>   	default:
+>   		dev_err(host->dev, "BUG: invalid board index %u\n", board_idx);
+> -		return 1;
+> +		return -ENODEV;
 
-Thanks for sticking with this, looks much better now, all now queued up.
+    Doesn't -EINVAL fit better here?
 
-greg k-h
+[...]
+
+MBR, Sergey
