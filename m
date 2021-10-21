@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95967436BAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BE6436BAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhJUUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        id S232114AbhJUUBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbhJUUBU (ORCPT
+        with ESMTP id S232140AbhJUUB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:01:20 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9327FC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:59:04 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id o133so1600952pfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:59:04 -0700 (PDT)
+        Thu, 21 Oct 2021 16:01:29 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6F8C061243
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:59:12 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so3965753pji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:59:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yhB4mSvRCSPt5nKbZ7JtOxkpWZ8DUrHFAW9kstQCtDU=;
-        b=AAAQXcYS4Dwa5cXJ0AsuPY1prSnzBTUxtMO0SbpW3dQ4LLAAx84Blg1CD6W0BmrCH4
-         ZEeb6V2h4PloL5ciBnk7+A9IeCQX/NC5OYvbGcm6lT4b5rLgtb+ZmUQDKQkyGOUDmiUU
-         oj+XzGFhEETurm4YwSi6LcmQn/fcHiRgxMk/CdjaBwSGllxC95uUkvxDzQ+4FLHmWIGF
-         9M1JnzBRFj2gMk8ucjmiP7Ym7STNy/Y7IWAI6krLIcNhaa86lvcz0sSlcHP2im7FSPrs
-         PAUiJWVy/dS0WVdej/luVMXK2nYrXxQpvfp8TYNyKpPcKVLX1fIwgCY5taMxukQHiYcS
-         4sTA==
+        bh=BbvyX6jPLK5zSg2NVxfybp0y/nnILy7522O+U1Y7hXo=;
+        b=PuDZ/KAlnQ8ek2j/6dOR9sHRIIrOPuC3UXhSPavRp5Xm7jfSoPhMLeNzU5ShysHefZ
+         Vguxz2bCtQxm/JbeKX9z80UqVV463tJOmbodktoV8sDVrX6hz8BbsN0GA4Zhzdp6stZ3
+         p/uNRKKxD10DtUNu3hMc128tbP8dSU1DRKKtCcn0a7ozgEwNIOwdCJ8gBx7skR2hQYhM
+         zRDNs7CEsb9oYDtFFZhcdqTJNPrsvVU2oQHTtirderms5swugJigQMIJFqkdwxUH+hZD
+         dKNrK0+AbesMeLmngEgPBPQXESrQ7hFncycjAeiN4VPXdajfAvx2y/9jKsuM/6JgozNl
+         incg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yhB4mSvRCSPt5nKbZ7JtOxkpWZ8DUrHFAW9kstQCtDU=;
-        b=PWLhHcjV/3r+McRR8ttL4+aP/AissDBwj3ydT/kSvrUO9QA2Tvoi+AFey8fN2CbbBn
-         qez1ln8AfAIVai///czIK0q2Cv/D13TRcg0PEcUKf+/c02wFLn98kKegkTSA1ex9CpEX
-         z40ydj7kQ9/S+p7W00nB5ZcXUQTiMhdkA8qNwyZsfmoRAHz82XLPwgxvCsH2tZ1FMYbN
-         subTgfe1scjKGeN+XPja8LYoKDn47qGSMmU40aK1UcwaixZi6GLHWRdxqjOfn9jZX+5f
-         0guZqdvvFzQWhtVmX8iBV0IRI7TjHbdNbfy2JSSiil8j+uDEftbeOXHFEATpXUZ0K6ZZ
-         YvKw==
-X-Gm-Message-State: AOAM532vxbNbJLH8cD8Zv3NRhM1eNrK+opzxg6jqdnd/Hk3hUK801GFa
-        z2hoqynF0CSjvCntGSVVOC8bDODJB3b3SA==
-X-Google-Smtp-Source: ABdhPJw33+KbBlBAljAa0x1n5ovfNQXeAAeyFlPC6oEcs5wKRTgLX3/d+NprSSO4m0gspKNu8Y6Fyg==
-X-Received: by 2002:a62:6206:0:b0:44c:bc1f:aa5a with SMTP id w6-20020a626206000000b0044cbc1faa5amr7620355pfb.5.1634846344131;
-        Thu, 21 Oct 2021 12:59:04 -0700 (PDT)
+        bh=BbvyX6jPLK5zSg2NVxfybp0y/nnILy7522O+U1Y7hXo=;
+        b=przpXXC54L6dDRbvDwqHEPz7kRARlL/0jU/m/X1WvV4xAPLZjXoXvQpgYn0GUDJJIg
+         vSv0r966m2kgJBzlugYlhZfOpPqf1U+lixz2dWG8e4mvFhllI3VgDj6r25bwG3y/zcSN
+         a0hpGcbBu48QcOn5JYLyIdFJhBiOGfy5L68+gzMW+ks/Zm9OU2YKg8v1vWCe0qBiDeJx
+         fHoQVHUHWThaAL7HihNw925t7Rx8FFE8uQm3iuI5V8JMFrH0JApmRpds00s2aFjs7cqC
+         124OrjcGfy0tO187tLEJP7sqShOCgJ3jqa/oBBMdI+fwBmSv54ickFAU+H0xFOJnRt5R
+         jdKw==
+X-Gm-Message-State: AOAM531DVaGEJqeSNosU1/V6nQTA8D/ETS+n8HkaF0WM//rJw5uJjoaU
+        TGpfgHOcUZpBy7qlkfGlA2uaPjfVgBpBCA==
+X-Google-Smtp-Source: ABdhPJwIIPbNTkKHDoOLQuWXGA9lHyPcMuT+g/z8z3MFZg/tsD8OSlfh6l+vhOUqCZmvM54PhIsaWw==
+X-Received: by 2002:a17:902:758b:b0:13f:974a:959f with SMTP id j11-20020a170902758b00b0013f974a959fmr7091047pll.40.1634846352200;
+        Thu, 21 Oct 2021 12:59:12 -0700 (PDT)
 Received: from localhost.localdomain ([2401:4900:1fee:e3e7:7dfb:56c1:efef:3c0f])
-        by smtp.googlemail.com with ESMTPSA id v9sm7198898pfc.23.2021.10.21.12.58.57
+        by smtp.googlemail.com with ESMTPSA id v9sm7198898pfc.23.2021.10.21.12.59.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 12:59:03 -0700 (PDT)
+        Thu, 21 Oct 2021 12:59:11 -0700 (PDT)
 From:   Kushal Kothari <kushalkothari285@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     fabioaiuto83@gmail.com, kushalkothari285@gmail.com,
@@ -57,9 +57,9 @@ Cc:     fabioaiuto83@gmail.com, kushalkothari285@gmail.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         mike.rapoport@gmail.com, kushalkotharitest@googlegroups.com,
         outreachy-kernel@googlegroups.com
-Subject: [PATCH 3/4] staging: rtl8723bs: core: Remove unnecessary space after a cast
-Date:   Fri, 22 Oct 2021 01:27:52 +0530
-Message-Id: <f350e30b1e09332dff896b6588d962aab9800a52.1634845504.git.kushalkothari285@gmail.com>
+Subject: [PATCH 4/4] staging: rtl8723bs: core: Remove unnecessary blank lines
+Date:   Fri, 22 Oct 2021 01:27:53 +0530
+Message-Id: <f6d2ba1d544c70519bad5c04f012cba0214b379a.1634845504.git.kushalkothari285@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1634845504.git.kushalkothari285@gmail.com>
 References: <cover.1634845504.git.kushalkothari285@gmail.com>
@@ -69,63 +69,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Issue found with checkpatch.pl.
-Space after cast is not needes
+Remove useless blank lines
 
 Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_cmd.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index 88f6b7405106..fce3256cc275 100644
+index fce3256cc275..690e4627663c 100644
 --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
 +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -922,7 +922,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
- 	memcpy(psetstakey_para->addr, sta->hwaddr, ETH_ALEN);
+@@ -316,8 +316,6 @@ int rtw_cmd_filter(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
+ 	return _SUCCESS;
+ }
  
- 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
--		psetstakey_para->algorithm = (unsigned char) psecuritypriv->dot11PrivacyAlgrthm;
-+		psetstakey_para->algorithm = (unsigned char)psecuritypriv->dot11PrivacyAlgrthm;
- 	else
- 		GET_ENCRY_ALGO(psecuritypriv, sta, psetstakey_para->algorithm, false);
- 
-@@ -951,7 +951,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
- 		}
- 
- 		init_h2fwcmd_w_parm_no_rsp(ph2c, psetstakey_para, _SetStaKey_CMD_);
--		ph2c->rsp = (u8 *) psetstakey_rsp;
-+		ph2c->rsp = (u8 *)psetstakey_rsp;
- 		ph2c->rspsz = sizeof(struct set_stakey_rsp);
- 		res = rtw_enqueue_cmd(pcmdpriv, ph2c);
- 	} else {
-@@ -1002,7 +1002,7 @@ u8 rtw_clearstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 enqueu
- 		}
- 
- 		init_h2fwcmd_w_parm_no_rsp(ph2c, psetstakey_para, _SetStaKey_CMD_);
--		ph2c->rsp = (u8 *) psetstakey_rsp;
-+		ph2c->rsp = (u8 *)psetstakey_rsp;
- 		ph2c->rspsz = sizeof(struct set_stakey_rsp);
- 
- 		memcpy(psetstakey_para->addr, sta->hwaddr, ETH_ALEN);
-@@ -2027,7 +2027,7 @@ void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pc
+-
+-
+ int rtw_enqueue_cmd(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
  {
+ 	int res = _FAIL;
+@@ -367,7 +365,6 @@ void rtw_free_cmd_obj(struct cmd_obj *pcmd)
+ 	kfree(pcmd);
+ }
  
- 	struct sta_priv *pstapriv = &padapter->stapriv;
--	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *) (pcmd->rsp);
-+	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *)(pcmd->rsp);
- 	struct sta_info *psta = rtw_get_stainfo(pstapriv, psetstakey_rsp->addr);
+-
+ void rtw_stop_cmd_thread(struct adapter *adapter)
+ {
+ 	if (adapter->cmdThread &&
+@@ -735,8 +732,7 @@ u8 rtw_joinbss_cmd(struct adapter  *padapter, struct wlan_network *pnetwork)
+ 	}
+ 	/* for ies is fix buf size */
+ 	t_len = sizeof(struct wlan_bssid_ex);
+-
+-
++	
+ 	/* for hidden ap to set fw_state here */
+ 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE|WIFI_ADHOC_STATE) != true) {
+ 		switch (ndis_network_mode) {
+@@ -1080,7 +1076,6 @@ u8 rtw_reset_securitypriv_cmd(struct adapter *padapter)
  
- 	if (!psta)
-@@ -2042,7 +2042,7 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct set_assocsta_parm *passocsta_parm = (struct set_assocsta_parm *)(pcmd->parmbuf);
--	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *) (pcmd->rsp);
-+	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *)(pcmd->rsp);
- 	struct sta_info *psta = rtw_get_stainfo(pstapriv, passocsta_parm->addr);
- 
- 	if (!psta)
+ 	/* rtw_enqueue_cmd(pcmdpriv, ph2c); */
+ 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
+-
+ exit:
+ 	return res;
+ }
 -- 
 2.25.1
 
