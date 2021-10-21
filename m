@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87758436655
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B58436653
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhJUPe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:34:27 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:60975 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhJUPeZ (ORCPT
+        id S231727AbhJUPeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:34:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36064 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhJUPeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:34:25 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MrxfX-1n0JP328RR-00nubH; Thu, 21 Oct 2021 17:32:08 +0200
-Received: by mail-wr1-f48.google.com with SMTP id e12so144813wra.4;
-        Thu, 21 Oct 2021 08:32:08 -0700 (PDT)
-X-Gm-Message-State: AOAM533LIYG8AM0xz57sjpIuBabfsGSLWQICftHr+vEUd4gHuFbMlJhK
-        YukEORytZbflpm2SUvHTDymLsg+WBoXxg9fIIrE=
-X-Google-Smtp-Source: ABdhPJzHm2YM9grQWPsO7s+9VbY2hH0uDX3eyS0BLSrV4b7iJ7a+z6YKWe2zKAaCfne7uwMOoRlh9ifciSqyUeG2CkU=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr8105105wra.428.1634830328087;
- Thu, 21 Oct 2021 08:32:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
- <CAK8P3a2+=9jjyqN5dMOb4+bYJy=q5G3CxFaCW+=4xryz-S=zYA@mail.gmail.com> <YXGD5OFbI7TEDFTr@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXGD5OFbI7TEDFTr@hirez.programming.kicks-ass.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 21 Oct 2021 17:31:51 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a14NUvo40GFY5DfQcF28OO22=BiHJO1TzBTEMK0RAwtHg@mail.gmail.com>
-Message-ID: <CAK8P3a14NUvo40GFY5DfQcF28OO22=BiHJO1TzBTEMK0RAwtHg@mail.gmail.com>
-Subject: Re: [PATCH] locking: Generic ticket lock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        Thu, 21 Oct 2021 11:34:15 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EB6B31FD50;
+        Thu, 21 Oct 2021 15:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634830318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXPwudmomqzIqQrwGaXyiAXLub/qasPhIndmnj6Vycs=;
+        b=VNZ+cAUb1uxMz7nvY0ksOnREW+p6njGEeTVBlbXbCDFnkqveTJSin9Y0jtWrYLx52V8Hsd
+        k/1NG0JVRU1xEf1qr0yC9iZZ0SsJTR5JBxLZ0Plx/DUgzOHWWj34ansfUrGeJr+OTzZ3FF
+        nOpq7sl8Pgy2X6V1CznSwELhPAxN1jA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634830318;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXPwudmomqzIqQrwGaXyiAXLub/qasPhIndmnj6Vycs=;
+        b=mBodyqUoS7Pu4V3oQzCZ2VWqrdsSfmo3Yzqq5LMVVuFuTMBlnRZ7ntJOmxr0Qwx+GzniUB
+        Bu8rnHj+ti/obzCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D95AF13AE4;
+        Thu, 21 Oct 2021 15:31:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YsmCNO6HcWFWWwAAMHmgww
+        (envelope-from <bp@suse.de>); Thu, 21 Oct 2021 15:31:58 +0000
+Date:   Thu, 21 Oct 2021 17:32:01 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
-        Stafford Horne <shorne@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:HTUvtPJgueFBIE4yv8Sbj8fKTK/V4xFVbgJl3tZxuxmA+LN6Yc2
- 9uAxDNt+1NYSHfBvWjWj2PbOT83oOX+A71i7uGx5fdcRcUObbq0s1ayIOYxE4e5vxVLkpsg
- R1oshw4DQyFes8BfLaqQZy8WiMKgXouYZBNKs6VfB/0iNUFeO4XTqKqtUd1SW5+3AWRDu77
- 4WemAFfpT9wvDrAM//qMQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sSr0mwAgHN8=:X8MCSTvIdQ6XqiW2GVe43z
- FeJB6S5YKrtmL9+aYfip0eHM/o0cpQikpsS+0ZyW/+T7wNhAsSPjVCbVCXNhdP3Cq7Dszku2A
- HVRaa7YRQoP5SkuVcUmLk2ec/oGAyUpKNkC64odMb0DZT7df3/+a649hRhER4HI9BsZRopSQ5
- nFVGfVqTpKc1Y3cA58gRPNNz9DvmecwCTlgdI8FgIGR2MO+8JYCBaAw29KB+GfgaZCJPQTexc
- NqGvmXEZij4R+0J5GMOYe3up13sNx74WbmsPdyEoO+im0ThhJDFykU36ACCsOJfzQ1LjfSrWg
- DTruTuw7XXnNozaT8Lpju8dgmuYFOxa2RM8npCHGmc40y/ZKXDDu2HI6k5a3G4zJCSurIEa1Z
- hFO1dNSeDwv0QCVCULiBE/jIT+VWIP7ne+bF4wOWS7k+GwXncs1ZNGQaecGsffIr3dWe4Ks40
- HkSb4/1GYi7iujhZO+U3WeiumJuE5boJdMvJPpvgwX7+xCzr526RF4/93WklnWy6bxHMOq0cx
- z/a/AZJGSs/traq33VTOnSwPXDxwT8zajdmrwnZrBOlv74cD1W7zVUTn+6MgDlw/rwWMGXhoX
- fk7G0MWD/remVQVyIGl7EaHDWjLkt5M2Pb0ByWi78DN4MT8X9NfRv7otY/9L+GYwxUMZztGU6
- nUiLjzvj60xg6ZWfM8Zc3ta11eyKp8GmGkjt1FVShx4QKSvLS0rhHR7nJ/5Z5EuBrH8QlHvLM
- qSiFZjICDCKtI2gzwB33KLuLVtyxPKKKTyL9w0w4lV0lZe9ie7hNtBApCs3ndYZq7MjHYFNO0
- 1965OG130UcOoYd/e6BYZW3+9kKK2K5CmvreRx4LkW27i3XhyY=
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: linux-next: manual merge of the kvm tree with the tip tree
+Message-ID: <YXGH8Y/flJWCCrbt@zn.tnic>
+References: <20211021133931.1a0e096b@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211021133931.1a0e096b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 5:14 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> On Thu, Oct 21, 2021 at 03:49:51PM +0200, Arnd Bergmann wrote:
-> I think for a load-store arch this thing should generate pretty close to
-> optimal code. x86 can do ticket_unlock() slightly better using a single
-> INCW (or ADDW 1) on the owner subword, where this implementation will to
-> separate load-add-store instructions.
->
-> If that is actually measurable is something else entirely.
+On Thu, Oct 21, 2021 at 01:39:31PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the kvm tree got a conflict in:
+> 
+>   arch/x86/kvm/x86.c
+> 
+> between commit:
+> 
+>   126fe0401883 ("x86/fpu: Cleanup xstate xcomp_bv initialization")
+> 
+> from the tip tree and commits:
+> 
+>   5ebbc470d7f3 ("KVM: x86: Remove defunct setting of CR0.ET for guests during vCPU create")
+>   e8f65b9bb483 ("KVM: x86: Remove defunct setting of XCR0 for guest during vCPU create")
+>   583d369b36a9 ("KVM: x86: Fold fx_init() into kvm_arch_vcpu_create()")
+> 
+> from the kvm tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc arch/x86/kvm/x86.c
+> index 04350680b649,3ea4f6ef2474..000000000000
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@@ -10615,10 -10687,10 +10590,9 @@@ int kvm_arch_vcpu_create(struct kvm_vcp
+>   		pr_err("kvm: failed to allocate vcpu's fpu\n");
+>   		goto free_user_fpu;
+>   	}
+>  -	fpstate_init(&vcpu->arch.guest_fpu->state);
+>  -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>  -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
+>  -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+>  +
+>  +	fpu_init_fpstate_user(vcpu->arch.user_fpu);
+>  +	fpu_init_fpstate_user(vcpu->arch.guest_fpu);
+> - 	fx_init(vcpu);
+>   
+>   	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+>   	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
 
-Ok, so I guess such an architecture could take the generic implementation
-and override just arch_spin_unlock() or just arch_spin_lock(), if that
-makes a difference for them.
+LGTM too, thx Stephen!
 
-Should we perhaps turn your modified openrisc asm/spinlock.h
-and asm/spin_lock_types.h the fallback in asm-generic, and
-remove the ones for the architectures that have no overrides
-at all?
+-- 
+Regards/Gruss,
+    Boris.
 
-Or possibly a version that can do both based on
-CONFIG_ARCH_USE_QUEUED_SPINLOCKS? That would
-let us remove even more architecture specific headers, but
-it increases the risk of some architecture using qspinlock
-when they really should not.
-
-> > or a trivial test-and-set?
->
-> If your SMP arch is halfway sane (no fwd progress issues etc..) then
-> ticket should behave well and avoid the starvation/variablilty of TaS
-> lock.
-
-Ok, and I guess we still need to keep the parisc and sparc32 versions
-anyway.
-
-> The big exception there is virtualized architectures, ticket is
-> absolutely horrendous for 'guests' (any fair lock is for that matter).
-
-This might be useful information to put into the header, at least
-I had no idea about this distinction.
-
-       Arnd
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
