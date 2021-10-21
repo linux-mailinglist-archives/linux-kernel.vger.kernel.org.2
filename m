@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3EF4360AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347AB4360B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhJULsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhJULrx (ORCPT
+        id S230374AbhJULti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:49:38 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:35080 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhJULth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:47:53 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D765C061762
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:45:37 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id y16-20020a05600c17d000b0030db7a51ee2so7091029wmo.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=F+qAS+mhY6yRfCRNETby0UpQHRseEdMMofPhAfH7ev8=;
-        b=Pwk6viT49X+syXYKYWNK1KKREh4DtPRMQG9EV30yd3vyA1O15WFi1wpeTMAgll/opz
-         RksxPNrDeGpjN+Z8omHmyNG4ZJ/4x8Pf/ivMm0XE79c4wx5mrUx/eVnF6oy0qEnZlJ25
-         cracL6jn0GfyUSc+FuNl0eS10ghCBuT6SYGJOUT+htgcVoe3lxDnDP2d/Zt9lwuyUaW2
-         SyqzDus3GPjQqyBcuhXWPeTo/S27vmJ96BmDLj24OM0DEdYJX5tLR9OPDmDxgyxq7NPf
-         jhr/Nd6kA18TacC6uQ4iatMS6OmFX81aOxCB9yaRes+aqic1o3AXv8fPBk+Hqiz2qc4K
-         RAaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=F+qAS+mhY6yRfCRNETby0UpQHRseEdMMofPhAfH7ev8=;
-        b=4NxZ5CfiPr+Ygg2HlR0Plo203pdSWnMqNXXzcIU7JoqrF4IEjLek0S0jZKeA50KwYW
-         H9rj9bw7AQtkt0sInDZPmOcvpGvfSbT/+3wpDmQEWBM+lnCir7ro+5KMSjYj3HiI3AZb
-         3xE4sUHijHS2kjWaYWDYrdAu6C/8OmMqOQAbV7BrUIfbiehsMol8ihArRJlsqek6pPsn
-         +w89mKNJRsUMxRhlf11cX+ICmlJCMg9jwzBW+HfKBi/7pOCqRW9jBVjcVVs7C3mg3EAu
-         OSzbfgiuXAN2Eh2K0rOB1+ZTE7jta9lFSaIVbBDZ64IKlZXiLFSqVE7S2pBGOApuKs8G
-         R4hg==
-X-Gm-Message-State: AOAM531T/ge/c58U5YapmLHEBRn6rtGPsr/KG1qkX1gvqOmzfUBmg2mi
-        lw6C5Mq1v029oFPTUR9VZVW6+A==
-X-Google-Smtp-Source: ABdhPJz7QOQP57aRGeoLHQetlmKk3gOhEUiZirCaK9m0eg6DgYnQhpdyWktuOyZPjcs78zytWDh0Cg==
-X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr5889196wmq.54.1634816735665;
-        Thu, 21 Oct 2021 04:45:35 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id o6sm6735697wri.49.2021.10.21.04.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 04:45:35 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 12:45:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] mfd: qcom-spmi-pmic: Add missing PMICs supported
- by socinfo
-Message-ID: <YXFS3Y1Q0QtqR93b@google.com>
-References: <20211017161218.2378176-1-bjorn.andersson@linaro.org>
- <20211017161218.2378176-4-bjorn.andersson@linaro.org>
+        Thu, 21 Oct 2021 07:49:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634816841; x=1666352841;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=p+VO7ithOuP0XnGZg+W3xd0diUiv+mQ77fVNQVDV3jU=;
+  b=L9vcPFUupbWsX4J12U9EA5lbp82nbb4BeeUfQ23qQ5HEEVepSZBC33DI
+   eEsgPEJ9O+SlBTtgYNsGaSNJW93zAJIbq5iert5xRMKCce6QtajnL+RXZ
+   3i9UdjApp1bAPjWltMh5yKqQ0oR0Auuni4Rw7cRJBPvLL5rr/fHfyGHd5
+   nmx7qepf7GhdzKdSd8fB808t1ss11Sg6E+g0P8i9rbbdhiHRFS55AZLzf
+   AmXyfQKHY2xxdt/dqGiYkhj3+DiIyrablu1/WaudxOqqJLpo+qNv6KiSi
+   ckFXoPL+hPvEvMuUh/Fi7YvjOZ0UrfjJ+gX6cZtuHMlCHCgIq/QefHjgV
+   Q==;
+IronPort-SDR: RgqHskO2oQGEMsN1uyJsqOgybAkMqhCKZWAJItUnpXIiuFMVOetI/aD6rNhvP+snoPvJ/7gCTT
+ cEsbk/Na8kYgaI7YbN1tuUTkivBq5y75dClVD56x3Vi+z1D2UQyp8GOa0D+6oQ7FGAe4Bg9mnx
+ SoZ0JIxZhqUTN7TK3RrXTuR4REc/EWNhLoPHv1x0GY9qGatUpMPfEtC12/gsMDLkLtssd67l3F
+ +rTpaP0btExGsnkXPj39AUPv8h8bc5Ym+tnPYg1NCO9/Ny9/gGVwda9Hj0RlLGlj9gReQH7rtZ
+ Dcex0BENudHRXBPboLsz1feL
+X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
+   d="scan'208";a="140598015"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Oct 2021 04:47:21 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 21 Oct 2021 04:47:21 -0700
+Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 21 Oct 2021 04:47:19 -0700
+Subject: Re: [PATCH 0/3] ARM: dts: at91: enable leftover IPs
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211020094656.3343242-1-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <3e0c9bdb-f224-3c0b-cb11-c089185824d1@microchip.com>
+Date:   Thu, 21 Oct 2021 13:47:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211017161218.2378176-4-bjorn.andersson@linaro.org>
+In-Reply-To: <20211020094656.3343242-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Oct 2021, Bjorn Andersson wrote:
+On 20/10/2021 at 11:46, Claudiu Beznea wrote:
+> Hi,
+> 
+> The following series add DT nodes for TCB and RTC blocks on SAMA7G5.
+> 
+> Thank you,
+> Claudiu Beznea
 
-> The Qualcomm socinfo driver has eight more PMICs described, add these to
-> the SPMI PMIC driver as well.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v1:
-> - Rebased on top of sorting of entries
-> 
->  drivers/mfd/qcom-spmi-pmic.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+For whole series:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Queued in at91-dt for 5.16. I plan to send a PR tomorrow.
 
-Applied, thanks.
+Best regards,
+   Nicolas
+
+> Claudiu Beznea (2):
+>    ARM: dts: at91: sama7g5: add tcb nodes
+>    ARM: dts: at91: sama7g5-ek: use blocks 0 and 1 of TCB0 as cs and ce
+> 
+> Eugen Hristev (1):
+>    ARM: dts: at91: sama7g5: add rtc node
+> 
+>   arch/arm/boot/dts/at91-sama7g5ek.dts | 12 ++++++++++++
+>   arch/arm/boot/dts/sama7g5.dtsi       | 27 +++++++++++++++++++++++++++
+>   2 files changed, 39 insertions(+)
+> 
+
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Nicolas Ferre
