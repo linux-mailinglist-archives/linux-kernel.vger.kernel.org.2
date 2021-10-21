@@ -2,188 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438334358B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9F34358BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhJUCuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 22:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUCux (ORCPT
+        id S230433AbhJUDA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 23:00:59 -0400
+Received: from mx0a-00622301.pphosted.com ([205.220.163.205]:59244 "EHLO
+        mx0a-00622301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230103AbhJUDA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 22:50:53 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D2EC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 19:48:38 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id j190so17523953pgd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 19:48:38 -0700 (PDT)
+        Wed, 20 Oct 2021 23:00:58 -0400
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 Oct 2021 23:00:58 EDT
+Received: from pps.filterd (m0241924.ppops.net [127.0.0.1])
+        by mx0a-00622301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L1peBW002474;
+        Wed, 20 Oct 2021 19:50:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ambarella.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=com20210415pp;
+ bh=n/38vW33hgZ6Mn76dP60GwXHA3a3aEyHbO5WGUAmrJY=;
+ b=JfNTTx1XJ+XM1zN66OLuxz8ELIypOsYZQuS3kEQFjS1gpEgbrInAGaxRBbo1hQle+Jkj
+ wbT7HDi1L1KyLg7jsdiiyWvskUbIiv9P9pxJtJtFvOsHsUsPuMp82UY3SO4BEn/Kidi8
+ oJE+dSYL6GMsNmlmHhWTIC1maY1fVsd8BNwGt32HJdXA4U9O1rpYh5E4EXa8ivsDXh2Z
+ gQTFZpal+lpPI4IVkG1KhRgan+6Tt5l6FQucdRKiSQwm13U0sW2W+VJCFs1fTM6zReuK
+ KQIQB4f4+nMdeSyFYF7eyDz+/vyowNr1UvcMh/DPzEr72pDtTVcndap7N/YezDX8HLKG kA== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
+        by mx0a-00622301.pphosted.com with ESMTP id 3btneb88sg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 19:50:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iBmOaIah3qPWICJ7JNB3FEmHPOHv0XXX8eDPhdSI9v1/CUc9KxRGJj8fUMvBvQomHnfAERllYlcyMLrXDFegBuxxNZuCdcaZ5SOnD+H9FguUVGB0dFMGcXsH5MGO5aq66guKY7YiduCLZG1h3vEMYQpWjnkXxUdQgi4xuO1OUIz9/shH/X+qI7u/0ZzBYv96QS5gOFtzaQtx21oIdUppskBQe+H4xNh0E1UJgS0EMoYJFlZZ57qXvMNTasNehcqanii0pExweVmJYfe90NMxqwr6us/5/31/nslxt8U2vqU8jOWyMJp+xyCxNHtVPz19FGMeP7sxcLJKUsN4QOcyuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AjX/2C2E2gATfztiAKi6cjOzhWZU29a4kzacng/sjxw=;
+ b=WCEuOllhAbq02SamqiOUojN2bk+lhvCHDGsxcXb9/i2SYVZikhDQZrI1TpHzhNLF7emwOpEg4SkNS2magj1kBADYMey98CEW+nleh8MbuTj/MBJQDmgTl6cJes93wCGHDTz0YHHheVWbGSw0rgiM3FiJWzZDC700aHdP6kDdb1/PW1v3R9zREdSvpTMGE21hMz3c+dt1qsglNo+TFizXGGTELLzBo/QS3t0QtFMA9UQbT8vwJP07VJIlCbwo4RTMFdEi1nAHhx+P1vcgYU71yI0Zk9UmgxLleZq5nq9I038i1rlq4683h6cIURSp6hw/C8ek1q2mL+Z+JMfRo0mEaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ambarella.com; dmarc=pass action=none
+ header.from=ambarella.com; dkim=pass header.d=ambarella.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ujSZ0sBQWBy7DoFnbDi/cP1giiBFvyPhc9wOnIG/WgY=;
-        b=l5nYw0eb/GADT7fKkzcnPjKKB+3Qugv9ImeITw0P40SFhdILQ+PkAtU9g9zITGCmX7
-         vA5g6T1LHStfVnJcOHDk6g461NnPiCrk5Pvb3EE0tI+9VaRZ0G2YCVMZth3aJAkD1weM
-         os33Wz9kz+x9swPLOIikiqmi60nI5af5tSiCw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ujSZ0sBQWBy7DoFnbDi/cP1giiBFvyPhc9wOnIG/WgY=;
-        b=WkDSRR2qFiieq1AA2UReYr+OiWQnU1bCTvsGjdllOvswOAm4/HqIM7GFqvhjCoGtIz
-         7bVXgdak7A4jowrbUuVp1xz8vycgxpXyppf4XWFkbIJd7gasjEt2NELJ2pK2DMrpwgcz
-         QzeUEcAQif5T7GQPDaaVfNn9JuSDpTscwwQcL+tTvwtgUnfJZE9J42KlVTJl2S+39NON
-         pMMwWjWmYTpMLM0sA5iC/TebOXmHAYKk4mm52f2spuyloe2qoleGWtjgSsFdHLexcZAr
-         q2yMlAR0rwDYzE6xZGOZ0bBMLLrCvKomyEgOv/UXpxSvhQuCuLP0GVyp4CmExoCBojii
-         C/sA==
-X-Gm-Message-State: AOAM532jQXzBsRHXB1KNCTpJn2eO+vxyaW+MvVYQcQ1QkJ8zYrkfnUJ2
-        d5LvLcW2tFFW7HTWk9Xa7dMg1A==
-X-Google-Smtp-Source: ABdhPJwTCQ5wR4AuDidI/tFXGKkPoOhlTTYBmvV1OYOnbX9Vk690VCv+2xHFt7QEL5gYFHAFu0d/9g==
-X-Received: by 2002:a62:ab17:0:b0:44c:f727:98cd with SMTP id p23-20020a62ab17000000b0044cf72798cdmr2632689pff.35.1634784517488;
-        Wed, 20 Oct 2021 19:48:37 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:3bbb:903f:245c:8335])
-        by smtp.gmail.com with ESMTPSA id c11sm7131016pji.38.2021.10.20.19.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 19:48:36 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 11:48:31 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHV2 1/3] KVM: x86: introduce kvm_mmu_pte_prefetch structure
-Message-ID: <YXDU/xXkWGuDJ/id@google.com>
-References: <20211019153214.109519-1-senozhatsky@chromium.org>
- <20211019153214.109519-2-senozhatsky@chromium.org>
- <CALzav=cLXXZYBSH6iJifkqVijLAU5EvgVg2W4HKhqke2JBa+yg@mail.gmail.com>
- <YW9vqgwU+/iVooXj@google.com>
- <CALzav=c1LXXWSi-Z0_X35HCyQtv1rh0p2YmJ289J51SHy0DRxg@mail.gmail.com>
+ d=ambarella.onmicrosoft.com; s=selector1-ambarella-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AjX/2C2E2gATfztiAKi6cjOzhWZU29a4kzacng/sjxw=;
+ b=ZCmnjYg2iy5eCk46Kz4ZIXl2McL2xSjtXgNvrjIQa7U+RYSOCI2E7Aq4/qPEp/UzjBD9Jy39IlD9acoWZ5CTTpALmxGCxpviZUInqTl3nfW7birgWifHDy0bTgtGvvU02kZfJoINxkW5LD+w0RFUzJlmiAEQQd14cSXBd9MpPus=
+Received: from DM6PR19MB4027.namprd19.prod.outlook.com (2603:10b6:5:248::20)
+ by DM5PR19MB1228.namprd19.prod.outlook.com (2603:10b6:3:b1::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Thu, 21 Oct
+ 2021 02:50:20 +0000
+Received: from DM6PR19MB4027.namprd19.prod.outlook.com
+ ([fe80::29e3:491b:caaa:8cef]) by DM6PR19MB4027.namprd19.prod.outlook.com
+ ([fe80::29e3:491b:caaa:8cef%4]) with mapi id 15.20.4608.018; Thu, 21 Oct 2021
+ 02:50:19 +0000
+From:   Li Chen <lchen@ambarella.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] PCI: cadence: Add missing return in cdns_plat_pcie_probe()
+Thread-Topic: [PATCH v2] PCI: cadence: Add missing return in
+ cdns_plat_pcie_probe()
+Thread-Index: AdfGJXsneGNhzEUJSnSJFpIT3qRvIQ==
+Date:   Thu, 21 Oct 2021 02:50:19 +0000
+Message-ID: <DM6PR19MB40271B93057D949310F0B0EDA0BF9@DM6PR19MB4027.namprd19.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=ambarella.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 98f4c2f2-57be-4e8f-43e1-08d9943d8549
+x-ms-traffictypediagnostic: DM5PR19MB1228:
+x-microsoft-antispam-prvs: <DM5PR19MB12288D2E3B6D005D75EF21DFA0BF9@DM5PR19MB1228.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1148;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j6K3ESdjmACEnf0/Qeq0pMrEyYkGOy+kjSWwtsGaj3qYB8dlvVR3kT70VVxz6UG0j7XFcBcCgT+9qIbcncktCH6+7/v5QrqsEJVrjM4VKu2T0hoz6zfEVIp7Fr/GBIJ4A6rSY1zS8qIiNulpYBCxpB3/+Cnfc64dhEboDixisBe0Dz2n9Gwi5Lu6MU20at+pZjb6dqBEEyJgANDmRP1Oj3nj+m8H2pfE79KZy8A2KLz07oP7BY3BMJ6nLiHehViPTIAnTHElTzo/d4I1g3WZW1/o9Crl7SWIKQ65C46l+1tAmhYPkwCTCHbO+C925wK3rw+ZB5XJHjgCg4M0fYDjYfKlUFM1Oqp8bIaDpJUu7cWsgjgjfx4Ya/3KJq3GpzMo7as2AXKx6equzdbEJtzNurTY2330jJhCAtqHy4PUCuJi3qElyt/VE3D4CQfdyhR1PkHz9uzbuZtFmcAg7KvYd/PMkYgkBoCEgJvs/BtNULZCXsIxfV2HS6BffiPmUQ01PSVhJRBEf58+/pHa4sN1p+hBeWir+ZXNN/r6+2/9utMNbXxn2xGUxQE1JiUG9lTyCjus6QgzrzZkbpryLr/EkrgJ+74KFzyp7BfBy2v4QfBNHtpy8V4ikX6HqA0qZqgVTnSA1JQC1O969VFTIfm4oQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB4027.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(122000001)(54906003)(8936002)(4326008)(66446008)(64756008)(66556008)(66476007)(6916009)(8676002)(5660300002)(2906002)(33656002)(66946007)(71200400001)(86362001)(186003)(316002)(38100700002)(4744005)(52536014)(55016002)(9686003)(508600001)(26005)(7696005)(6506007)(88996005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?d58t3fffoAii28bbOcJHkf7kJAjnjNactOOWnMGWAt9Yn28TTlAwnU7+9Dsx?=
+ =?us-ascii?Q?eElnxUsZEp4S62ZxPaMJR2cXWXh5UnBOKQOnsiCggjKwsUQ/XWgAGOAKT9XO?=
+ =?us-ascii?Q?15zqNpRQOt7PP+I8cxpbTWdiFrnH+wbA+F4MzW5SEVbFvKp+dhdJrgnjRxwz?=
+ =?us-ascii?Q?ziBI4XGxKPezj9b9Kl6IOojXLu75tTwt/cGiRB6YJVIvZ+R//SZ5chAJ+Ot7?=
+ =?us-ascii?Q?t5zmvWLnHdB52g9EbVRq+KOhuzSCpQGNZJ3RStxcXeL4CD2BJ7MCF29oIhAZ?=
+ =?us-ascii?Q?2i1Rre0pjAbg6Q9TClWGqirNn+OJgHbOf+nm1Pphu1eB54YScuZ8qLVJMvHO?=
+ =?us-ascii?Q?mpDPwCrcbw7BnyxEHD9piyRVf1Gym4yyHfu/L5IAkoBa1pIcB5BxXfvzJI2A?=
+ =?us-ascii?Q?rZyfOFfqQFrppup2uaMMSuLIa+pkvkXCqMKOdFaH1Vn1o86lOYhZ0tgl0vbJ?=
+ =?us-ascii?Q?XA9m7DIOSpz2d4DeamH1x1fvWECCdQsWw17sDkVRMsBLaVT8iTMDETgMH47Z?=
+ =?us-ascii?Q?i91Y3TgVhezyWbKwyd0gKyaLeQsKuJJevJbzj6zYtemdG7nQboIP+frxToNZ?=
+ =?us-ascii?Q?hDBEEWH3FpzH6KfYcY9UpsPL7GJvoCGdxMI7FjPrnxicmY8jUDnOceMCGzUm?=
+ =?us-ascii?Q?/8UD8QTP1alWIR74x3sOVLJqtvih/QxFOMn0+rqjvbcnmNyXJC5Oc3k6nM9d?=
+ =?us-ascii?Q?UiUYbBhE5uCXCog+wJhDQmHkBZFj066h6awzY8WMLL93FepW5mQBX2LIlgqN?=
+ =?us-ascii?Q?OYlQMNh8zb/vhhpKD23TKR8QXNJNJu/y3Af77aFx9+s2gmBqd2EegJ56suUj?=
+ =?us-ascii?Q?aDvIasb2NR2qXW5de7VvdoktfbGSAmGRg8VYm6lAaS1qqqV/SOWfFk999vhe?=
+ =?us-ascii?Q?bs5JJle8NI0bTKBdo7KgjpTXbze2PTuO7bXa2yfjkoGPR9eDI6frk24xYG9J?=
+ =?us-ascii?Q?YozMvc1Jb/XEYHBfWT4xV2Ytu7zNU7kLpHcQuJrvlq/VNjvAeRbPa41Kgzu3?=
+ =?us-ascii?Q?xY7HT0QacBx5Jb+XLfos7dR9yeVnLxjVF1X8eFLJg/D1Im0/V1ZaNm44c4vh?=
+ =?us-ascii?Q?KnJlIODyxkiO6Y5hlnP5bp7LfkxsKDn0FYEcgUFci8Bklq+hkAtM5A/QS6qv?=
+ =?us-ascii?Q?/3oN0NHC31URmAMQVgYO/yB83eP0wQbc5qWdGb8+WEOk0IctbI2y+YuyYCyF?=
+ =?us-ascii?Q?9pIUt26tY1qIUiBJUC9fn7UK9ff0KECP1Rh4ivSvBX1LQVLHnb1ee42C5doT?=
+ =?us-ascii?Q?auN/eKvlypmasA8djXO1yIhOqNp5WBdanZgM3HaeHou2LdSx44JF4B0xj9Ay?=
+ =?us-ascii?Q?qy+oiTsf5mcZ4uEKLEwO+WXn?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALzav=c1LXXWSi-Z0_X35HCyQtv1rh0p2YmJ289J51SHy0DRxg@mail.gmail.com>
+X-OriginatorOrg: ambarella.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB4027.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98f4c2f2-57be-4e8f-43e1-08d9943d8549
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2021 02:50:19.7084
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3ccd3c8d-5f7c-4eb4-ae6f-32d8c106402c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lchen@ambarella.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR19MB1228
+X-Proofpoint-ORIG-GUID: Pk_BHD4gIWaJN-rEml9dDz17GvY0fB_F
+X-Proofpoint-GUID: Pk_BHD4gIWaJN-rEml9dDz17GvY0fB_F
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_06,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501 adultscore=0
+ bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110210011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/10/20 08:56), David Matlack wrote:
-> > > The spinlock is overkill. I'd suggest something like this:
-> > > - When VM-ioctl is invoked to update prefetch count, store it in
-> > > kvm_arch. No synchronization with vCPUs needed.
-> > > - When a vCPU takes a fault: Read the prefetch count from kvm_arch. If
-> > > different than count at last fault, re-allocate vCPU prefetch array.
-> > > (So you'll need to add prefetch array and count to kvm_vcpu_arch as
-> > > well.)
-> > >
-> > > No extra locks are needed. vCPUs that fault after the VM-ioctl will
-> > > get the new prefetch count. We don't really care if a prefetch count
-> > > update races with a vCPU fault as long as vCPUs are careful to only
-> > > read the count once (i.e. use READ_ONCE(vcpu->kvm.prefetch_count)) and
-> > > use that. Assuming prefetch count ioctls are rare, the re-allocation
-> > > on the fault path will be rare as well.
-> >
-> > So reallocation from the faul-path should happen before vCPU takes the
-> > mmu_lock?
-> 
-> Yes. Take a look at mmu_topup_memory_caches for an example of
-> allocating in the fault path prior to taking the mmu lock.
-> 
-> > And READ_ONCE(prefetch_count) should also happen before vCPU
-> > takes mmu_lock, I assume, so we need to pass it as a parameter to all
-> > the functions that will access prefetch array.
-> 
-> Store the value of READ_ONCE(prefetch_count) in struct kvm_vcpu_arch
-> because you also need to know if it changes on the next fault. Then
-> you also don't have to add a parameter to a bunch of functions in the
-> fault path.
-> 
-> >
-> > > Note: You could apply this same approach to a module param, except
-> > > vCPUs would be reading the module param rather than vcpu->kvm during
-> > > each fault.
-> > >
-> > > And the other alternative, like you suggested in the other patch, is
-> > > to use a vCPU ioctl. That would side-step the synchronization issue
-> > > because vCPU ioctls require the vCPU mutex. So the reallocation could
-> > > be done in the ioctl and not at fault time.
-> >
-> > One more idea, wonder what do you think:
-> >
-> > There is an upper limit on the number of PTEs we prefault, which is 128 as of
-> > now, but I think 64 will be good enough, or maybe even 32. So we can always
-> > allocate MAX_PTE_PREFETCH_NUM arrays in vcpu->arch and ioctl() will change
-> > ->num_ents only, which is always in (0, MAX_PTE_PREFETCH_NUM - 1] range. This
-> > way we never have to reallocate anything, we just adjust the "maximum index"
-> > value.
-> 
-> 128 * 8 would be 1KB per vCPU. That is probably reasonable, but I
-> don't think the re-allocation would be that complex.
+When cdns_plat_pcie_probe() succeeds, return success instead of
+falling into the error handling code.
 
-128 is probably too large. What I'm thinking is "32 * 8" per-VCPU.
-Then it can even be something like:
-
+Signed-off-by: Xuliang Zhang <xlzhanga@ambarella.com>
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: bd22885aa188 ("PCI: cadence: Refactor driver to use as a core librar=
+y")
+Cc: stable@vger.kernel.org
+Signed-off-by: Li Chen <lchen@ambarella.com>
 ---
+ drivers/pci/controller/cadence/pcie-cadence-plat.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 5271fce6cd65..b3a436f8fdf5 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -607,6 +607,11 @@ struct kvm_vcpu_xen {
-        u64 runstate_times[4];
- };
- 
-+struct kvm_mmu_pte_prefetch {
-+       u64 ents[32];
-+       unsigned int num_ents;  /* max prefetch value for this vCPU */
-+};
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-plat.c b/drivers/p=
+ci/controller/cadence/pcie-cadence-plat.c
+index 5fee0f89ab59..a224afadbcc0 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-plat.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-plat.c
+@@ -127,6 +127,8 @@ static int cdns_plat_pcie_probe(struct platform_device =
+*pdev)
+ 			goto err_init;
+ 	}
+=20
++	return 0;
 +
- struct kvm_vcpu_arch {
-        /*
-         * rip and regs accesses must go through
-@@ -682,6 +687,8 @@ struct kvm_vcpu_arch {
-        struct kvm_mmu_memory_cache mmu_gfn_array_cache;
-        struct kvm_mmu_memory_cache mmu_page_header_cache;
- 
-+       struct kvm_mmu_pte_prefetch mmu_pte_prefetch;
-+
-        /*
-         * QEMU userspace and the guest each have their own FPU state.
-         * In vcpu_run, we switch between the user and guest FPU contexts.
+  err_init:
+  err_get_sync:
+ 	pm_runtime_put_sync(dev);
+--=20
+2.33.0
 
----
-
-> >
-> > > Taking a step back, can you say a bit more about your usecase?
-> >
-> > We are looking at various ways of reducing the number of vm-exits. There
-> > is only one VM running on the device (a pretty low-end laptop).
-> 
-> When you say reduce the number of vm-exits, can you be more specific?
-> Are you trying to reduce the time it takes for vCPUs to fault in
-> memory during VM startup?
-
-VM Boot is the test I'm running, yes, and I see some improvements with
-pte-prefault == 16.
-
-> I just mention because there are likely other techniques you can apply
-> that would not require modifying KVM code (e.g. prefaulting the host
-> memory before running the VM, using the TDP MMU instead of the legacy
-> MMU to allow parallel faults, using hugepages to map in more memory
-> per fault, etc.)
-
-THP would be awesome. We have THP enabled on devices that have 8-plus
-gigabytes of RAM; but we don't have THP enabled on low end devices, that
-only have 4 gigabytes of RAM. On low end devices KVM with THP causes host
-memory regression, that we cannot accept, hence for 4 gig devices we try
-various "other solutions".
-
-We are using TDP. And somehow I never see (literally never) async PFs.
-It's always either hva_to_pfn_fast() or hva_to_pfn_slow() or
-__direct_map() from tdp_page_fault().
+**********************************************************************
+This email and attachments contain Ambarella Proprietary and/or Confidentia=
+l Information and is intended solely for the use of the individual(s) to wh=
+om it is addressed. Any unauthorized review, use, disclosure, distribute, c=
+opy, or print is prohibited. If you are not an intended recipient, please c=
+ontact the sender by reply email and destroy all copies of the original mes=
+sage. Thank you.
