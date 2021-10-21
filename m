@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB95436772
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336A5436778
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhJUQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUQT6 (ORCPT
+        id S231893AbhJUQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:21:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231206AbhJUQVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:19:58 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA98C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:17:42 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c29so1112539pfp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:17:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1qArqukqC04HeUCYKid9OyPBNl7BXFoMkpeHaeZAIfE=;
-        b=SHGLjN129sDYsXEBOsuAe2uP97qJsPaTNPpHcXnbmGFyxoRGDwinnb1n91ZKRtwq0T
-         /0qtzTcOqWpoPeP/6byc/5SC7lY+NYraLtivcQxalcJ2dEXztutjP3B98tUY6U3ef9sn
-         44aXRzM7rk3gagysuq2S3rcmAKD0sRkUoCjWA=
+        Thu, 21 Oct 2021 12:21:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634833136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T6yUHXDCJ1C4bwIVBI0pS677wtC3A8dJIjgudbpVBfQ=;
+        b=UjLEtjy3TB0ptcoQC8SzWxyPtWxnVenx+3mjMgl5v6FVVGeX1YksHNjGdeubfi6CroxDx0
+        Fw7nz5pEazMl+FvRx0yZH9DyeGKqLqN+sUIvVYLfayVPqGAebQkr0XKvb9q+PJwxsw5+q5
+        UzHyHWkEYf8yszwT01rurO7IJZUDCwQ=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-8nD9ofdQNEOE3TFFIDpYfg-1; Thu, 21 Oct 2021 12:18:55 -0400
+X-MC-Unique: 8nD9ofdQNEOE3TFFIDpYfg-1
+Received: by mail-io1-f69.google.com with SMTP id c10-20020a5e8f0a000000b005ddce46973cso804442iok.15
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:18:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1qArqukqC04HeUCYKid9OyPBNl7BXFoMkpeHaeZAIfE=;
-        b=zemBmM4fqvXmOmMeYSTn0ryvnqUhze2+ijo/yHI3kMleW/nalZmJU4VKimlxQIK6Kr
-         Gsqwx67VeLP8kXWYDfNOJxuQyfCRWd0IIa2qrFC5iAMWR3lTxJwYsQsIQrlOOsAd24Q7
-         h62Oji8Lt87gwgMu6kwIjFAnUo8dxwoHv8P5EIzST33/ddjLz5b3DcWs2v4usR9lrSSV
-         uFszrclJIo1S741G6jfYw4+0JzX6QxEObALX6GaZi1Pnl7JrrJZkQnn1pMxdYtEEHpyC
-         BrRGsELCfwDQONJPitPHcCbB4WG8xmOdOl2pUptT7U1pSp9oIzilZLq48NzfOYG1LOxS
-         htcg==
-X-Gm-Message-State: AOAM53276RcewN7czccIV/vEa9Pn/LTydF3iKVL/+Qn9FsXf/E2ZOpq7
-        T4VP8u295j9G1wamT9HxO/TKDbFCRtrutg==
-X-Google-Smtp-Source: ABdhPJxhDUv0mfKcvT4mC7bIBo7ygrswSSyc5PmTDnjtOjwpsfgOMJolqsotzki3s0E2t66fUJIsWQ==
-X-Received: by 2002:a63:d94b:: with SMTP id e11mr5038268pgj.295.1634833062183;
-        Thu, 21 Oct 2021 09:17:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e8sm7153670pfn.45.2021.10.21.09.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:17:41 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:17:41 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 11/20] signal/s390: Use force_sigsegv in
- default_trap_handler
-Message-ID: <202110210917.FEED0F8@keescook>
-References: <87y26nmwkb.fsf@disp2133>
- <20211020174406.17889-11-ebiederm@xmission.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=T6yUHXDCJ1C4bwIVBI0pS677wtC3A8dJIjgudbpVBfQ=;
+        b=dqXcVXaqk69p790zuKO6aLClntJcr0hF6JpTBDy2v5dOifhCubozq/eJDbIr4zdyiD
+         8N7kNR+9hWLZ+NS1tn/aq+Yrj6Jhz9/cA7PADLCY778PX4lcp965FOkd6+D6w1gLskBD
+         GJKp9/SrMxUGR70Qy3n8pS5QFI/4pC+SYbA58AhniQpNt0DVsutzP4OwVOPqm1Oo52NI
+         ohBEJqRxxDNIZHICmVYZcyXp3qXjqu7aua+4oXeRNaZio3gi53Ha4iSyvyCQs6WNnD75
+         iuNiTQsn1AK9kDotYunlkRAhjgkZDeMlUGOj/j0fCU/i8eJ9WXeo1jm26uiVTLNx/pZ7
+         bJLA==
+X-Gm-Message-State: AOAM533tqInsTpwrth03W4b0sOEfcqkY9aFquuAvUU8Hl3kcOFX6vDA4
+        IFwNZNY9ifsgwN5MMJ3sWeIgCGJ4nK5xnWoaSciYUiSeQ4+bZElxkMZ8KG96FG5oWaQ2cSl5Ycl
+        5PSvr40T0y4OmE9XyvEeg+37SyObaGSZyDcR+gPWo
+X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr4249364ili.200.1634833134396;
+        Thu, 21 Oct 2021 09:18:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5y9j7z3dJn9Glj8ooQ1Y//DehvKlW+RX8Ejsk0RiCAUP4d4N+GvEQQX2Jmru5XQiMXq9WTCoSUsp4sYgnr5I=
+X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr4249352ili.200.1634833134229;
+ Thu, 21 Oct 2021 09:18:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020174406.17889-11-ebiederm@xmission.com>
+References: <20211020143708.14728-1-lhenriques@suse.de> <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+ <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com> <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+In-Reply-To: <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+From:   Patrick Donnelly <pdonnell@redhat.com>
+Date:   Thu, 21 Oct 2021 12:18:28 -0400
+Message-ID: <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     =?UTF-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:43:57PM -0500, Eric W. Biederman wrote:
-> Reading the history it is unclear why default_trap_handler calls
-> do_exit.  It is not even menthioned in the commit where the change
-> happened.  My best guess is that because it is unknown why the
-> exception happened it was desired to guarantee the process never
-> returned to userspace.
-> 
-> Using do_exit(SIGSEGV) has the problem that it will only terminate one
-> thread of a process, leaving the process in an undefined state.
-> 
-> Use force_sigsegv(SIGSEGV) instead which effectively has the same
-> behavior except that is uses the ordinary signal mechanism and
-> terminates all threads of a process and is generally well defined.
-> 
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: linux-s390@vger.kernel.org
-> Fixes: ca2ab03237ec ("[PATCH] s390: core changes")
-> History Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+> > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote=
+:
+> > >
+> > > On Wed, 2021-10-20 at 15:37 +0100, Lu=C3=ADs Henriques wrote:
+> > > > This counter will keep track of the number of remote object copies =
+done on
+> > > > copy_file_range syscalls.  This counter will be filesystem per-clie=
+nt, and
+> > > > can be accessed from the client debugfs directory.
+> > > >
+> > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > > Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
+> > > > ---
+> > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm=
+ not
+> > > > 100% sure about the usefulness of this patch, or if this is the bes=
+t way
+> > > > to provide the functionality Patrick requested.  Anyway, this is ju=
+st to
+> > > > get some feedback, hence the RFC.
+> > > >
+> > > > Cheers,
+> > > > --
+> > > > Lu=C3=ADs
+> > > >
+> > > > [0] https://github.com/ceph/ceph/pull/42720
+> > > >
+> > >
+> > > I think this would be better integrated into the stats infrastructure=
+.
+> > >
+> > > Maybe you could add a new set of "copy" stats to struct
+> > > ceph_client_metric that tracks the total copy operations done, their
+> > > size and latency (similar to read and write ops)?
+> >
+> > I think it's a good idea to integrate this into "stats" but I think a
+> > local debugfs file for some counters is still useful. The "stats"
+> > module is immature at this time and I'd rather not build any qa tests
+> > (yet) that rely on it.
+> >
+> > Can we generalize this patch-set to a file named "op_counters" or
+> > similar and additionally add other OSD ops performed by the kclient?
+> >
+>
+>
+> Tracking this sort of thing is the main purpose of the stats code. I'm
+> really not keen on adding a whole separate set of files for reporting
+> this.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Maybe I'm confused. Is there some "file" which is already used for
+this type of debugging information? Or do you mean the code for
+sending stats to the MDS to support cephfs-top?
 
--- 
-Kees Cook
+> What's the specific problem with relying on the data in debugfs
+> "metrics" file?
+
+Maybe no problem? I wasn't aware of a "metrics" file.
+
+--=20
+Patrick Donnelly, Ph.D.
+He / Him / His
+Principal Software Engineer
+Red Hat, Inc.
+GPG: 19F28A586F808C2402351B93C3301A3E258DD79D
+
