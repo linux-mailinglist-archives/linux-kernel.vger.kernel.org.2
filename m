@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D412B436C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9C7436C05
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhJUUZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhJUUZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:25:21 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBDEC061224
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:23:03 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id w19so2032016edd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FoCS2Of8JxmjrHA0ciYvVff3O/0PQ9jcwIzAZgxkZS4=;
-        b=xZaim99sf1bhVyq0cz+y+AGLha2Rs85XXTMdgylFks8k1SKW0pM6Tf4ovbIHHTJm7a
-         f5k7Kc/crnsPDQWV92l8nrxWK26UPS0UA+rBvHaM2ffryWvXOWI8H+Vc12Tq2LKjphVs
-         wzjP56H05iTP5rL9g/zdrJ2L6raRN3zejvpMVVn9veKSfip5gnXk19/TJYGMM3Cs6Xro
-         NiV7ep6Y1Es7b4YDM39aRn7Qzq1XDw0L/B1nl0TMSmfxpJ8SPH0oTL+60Uvt5Zohr7Vz
-         5qn3lg2t4TNzdHxT2nEQBsMV5NBCg2afSX3CPIj72gsISFp6/SGISgJ86s1J9/wes7lJ
-         ge4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FoCS2Of8JxmjrHA0ciYvVff3O/0PQ9jcwIzAZgxkZS4=;
-        b=o8yHifaNSU/EUntdNjTOYmooN53/kcuZQF4A5zpJy65QTafEoiYTNB5oLney7fTffe
-         QqTdcHttIpACyv1xPOuqF3955WDY4N71Ew2heVQZRordG/64UTtjhFGGfqT1GcX55CYX
-         OtwWUQ3aMDQIl2HmFDbYYurHCtMqvLp4IFJocQareNWZtL5w//ILykAXE+YCj2L/5CCs
-         4dY3wmByGxfgAVzDSMBwBMOgY3mUAM0wLaLmFIys9gCuraabDKE87kmg+0s31MLYrPQq
-         lao2lCSQvPAvt162BlyUebhauAXF8vBcEpMFx+OzU0Jl1170n2cWqmOTxuhcIVvbWEej
-         fTPg==
-X-Gm-Message-State: AOAM531l3YCAVCznw1bOgZGq/DVm2f7isP5VP04avQy/ry4wJAgTxv0/
-        myPWLhhdMEDQ+mhNifp9pv/cYQ==
-X-Google-Smtp-Source: ABdhPJzNwPC1x2uv2WuF6tsvx9+hXHVKaMH2Rdw3WklOnENLjkro6EEJq++2tcWXb/uSqXPiBfPnBg==
-X-Received: by 2002:a17:906:181a:: with SMTP id v26mr2131988eje.478.1634847781841;
-        Thu, 21 Oct 2021 13:23:01 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id u18sm3293456eds.86.2021.10.21.13.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 13:23:01 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] rtc: s3c: Add time range
-Date:   Thu, 21 Oct 2021 23:22:56 +0300
-Message-Id: <20211021202256.28517-4-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211021202256.28517-1-semen.protsenko@linaro.org>
-References: <20211021202256.28517-1-semen.protsenko@linaro.org>
+        id S231948AbhJUU02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:26:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231887AbhJUU0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 16:26:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E774160E8B;
+        Thu, 21 Oct 2021 20:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634847844;
+        bh=jg39CC34qCaGNNBh/BEjvI4xMifdkAP0+LmruQqx7iM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rj/1E0IGzxMpU1MhVc+iZ6ua4g06JARLJjbgWZ3SBbmlzbrr5ou0xz1+RlBWk0j6h
+         uHEgFo5Hz/9cpxmbS6yiYSgOnXSDa0cyEUhSdSaI2byUuFk2y6/LItmiraYlkdzHjw
+         aFhOk2e6tgI/9WBgpR18RLoe9IHYhca8l5mu0f0m50VCBuXiOYsrSq+xHCwwk84Zyo
+         WFOhNtqoO0UwlDJ1jZYCsdXT1CrAUwnx+vRv2Vjp3U4h0lHP8x5wMVnOPc94Kf/RAO
+         FjqT7DyXy3J2iJNMRLBOhLuluPNJTgNxUc3UfgE84Y2bX19cBEHiroF4gsUGbWN2mQ
+         WqbpVFPCWazEA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] lib: zstd: Add cast to silence clang's -Wbitwise-instead-of-logical
+Date:   Thu, 21 Oct 2021 13:23:53 -0700
+Message-Id: <20211021202353.2356400-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.1.637.gf443b226ca
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This RTC driver starts counting from 2000 to avoid Y2K problem. Also it
-only supports 100 years range for all RTCs.  Provide that info to RTC
-framework. Also remove check for 100 years range in s3c_rtc_settime(),
-as RTC core won't pass any invalid values to the driver, now that
-correct range is set.
+A new warning in clang warns that there is an instance where boolean
+expressions are being used with bitwise operators instead of logical
+ones:
 
-Here is the rationale on 100 years range limitation. Info on different
-Samsung RTCs (credit goes to Krzysztof Kozlowski):
-  - All S3C chips have only 8-bit wide year register (can store 100
-    years range in BCD format)
-  - S5Pv210 and Exynos chips have 12-bit year register (can store 1000
-    years range in BCD format)
+lib/zstd/decompress/huf_decompress.c:890:25: warning: use of bitwise '&' with boolean operands [-Wbitwise-instead-of-logical]
+                        (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-But in reality we usually can't make use of those 12 bits either:
-  - RTCs might think that both 2000 and 2100 years are leap years. So
-    when the YEAR register is 0, RTC goes from 28 Feb to 29 Feb, and
-    when the YEAR register is 100, RTC also goes from 28 Feb to 29 Feb.
-    This is of course incorrect: RTC breaks leap year criteria, which
-    breaks the time contiguity, which leads to inability to use the RTC
-    after year of 2099. It was found for example on Exynos850 SoC.
-  - Despite having 12 bits for holding the year value, RTC might
-    overflow the year value internally much earlier. For example, on
-    Exynos850 the RTC overflows when YEAR=159, making the next YEAR=0.
-    This way RTC actually has range of 160 years, not 1000 as one may
-    think.
+zstd does this frequently to help with performance, as logical operators
+have branches whereas bitwise ones do not.
 
-All that said, there is no sense in trying to increase the time range
-for more than 100 years on RTCs that seem capable of that. It also
-doesn't have too much practical value -- current hardware will be
-probably obsolete by 2100.
+To fix this warning in other cases, the expressions were placed on
+separate lines with the '&=' operator; however, this particular instance
+was moved away from that so that it could be surrounded by LIKELY, which
+is a macro for __builtin_expect(), to help with a performance
+regression, according to upstream zstd pull #1973.
 
-Tested manually on Exynos850 RTC:
+Aside from switching to logical operators, which is likely undesirable
+in this instance, or disabling the warning outright, the solution is
+casting one of the expressions to an integer type to make it clear to
+clang that the author knows what they are doing. Add a cast to U32 to
+silence the warning. The first U32 cast is to silence an instance of
+-Wshorten-64-to-32 because __builtin_expect() returns long so it cannot
+be moved.
 
-    $ date -s "1999-12-31 23:59:50"
-    $ hwclock -w -f /dev/rtc0
-    $ date -s "2100-01-01 00:00:00"
-    $ hwclock -w -f /dev/rtc0
-    $ date -s "2000-01-01 00:00:00"
-    $ hwclock -w -f /dev/rtc0
-    $ hwclock -r -f /dev/rtc0
-    $ date -s "2099-12-31 23:59:50"
-    $ hwclock -w -f /dev/rtc0
-    $ hwclock -r -f /dev/rtc0
-
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1486
+Link: https://github.com/facebook/zstd/pull/1973
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
-Changes in v2:
-  - Removed check for 100 years range in s3c_rtc_settime()
-  - Improved the commit message
+ lib/zstd/decompress/huf_decompress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/rtc/rtc-s3c.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/rtc/rtc-s3c.c b/drivers/rtc/rtc-s3c.c
-index d1baf655c008..db529733c9c4 100644
---- a/drivers/rtc/rtc-s3c.c
-+++ b/drivers/rtc/rtc-s3c.c
-@@ -219,11 +219,6 @@ static int s3c_rtc_settime(struct device *dev, struct rtc_time *tm)
- 	rtc_tm.tm_year -= 100;
- 	rtc_tm.tm_mon += 1;
- 
--	if (rtc_tm.tm_year < 0 || rtc_tm.tm_year >= 100) {
--		dev_err(dev, "rtc only supports 100 years\n");
--		return -EINVAL;
--	}
--
- 	return s3c_rtc_write_time(info, &rtc_tm);
- }
- 
-@@ -478,6 +473,8 @@ static int s3c_rtc_probe(struct platform_device *pdev)
- 	}
- 
- 	info->rtc->ops = &s3c_rtcops;
-+	info->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
-+	info->rtc->range_max = RTC_TIMESTAMP_END_2099;
- 
- 	ret = devm_rtc_register_device(info->rtc);
- 	if (ret)
+diff --git a/lib/zstd/decompress/huf_decompress.c b/lib/zstd/decompress/huf_decompress.c
+index 05570ed5f8be..5105e59ac04a 100644
+--- a/lib/zstd/decompress/huf_decompress.c
++++ b/lib/zstd/decompress/huf_decompress.c
+@@ -886,7 +886,7 @@ HUF_decompress4X2_usingDTable_internal_body(
+             HUF_DECODE_SYMBOLX2_0(op2, &bitD2);
+             HUF_DECODE_SYMBOLX2_0(op3, &bitD3);
+             HUF_DECODE_SYMBOLX2_0(op4, &bitD4);
+-            endSignal = (U32)LIKELY(
++            endSignal = (U32)LIKELY((U32)
+                         (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
+                       & (BIT_reloadDStreamFast(&bitD2) == BIT_DStream_unfinished)
+                       & (BIT_reloadDStreamFast(&bitD3) == BIT_DStream_unfinished)
 -- 
-2.30.2
+2.33.1.637.gf443b226ca
 
