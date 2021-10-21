@@ -2,201 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4E0435D42
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BEB435D48
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhJUItF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:49:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51830 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhJUItD (ORCPT
+        id S231321AbhJUItl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhJUItd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:49:03 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 21 Oct 2021 04:49:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B358C06161C;
+        Thu, 21 Oct 2021 01:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/1hQGMgB+pbBjKU+GtBo7/RGdYg+za5wlQN/5rpq/IM=; b=m0CFh2xpa30BQIh8WFy2hP3iRW
+        f+llIEBdmbeYYsigAu0L2a/9h6IR5g/VqHFHJN7hgJHFP6P1bJLBoI/BLroWZ+QuIuLkqqFlUNGh6
+        RZVQZ89p8WOSakL3j6f7RN2fbD16H1aRyft9etjZUIHYgEx79yFg3JHjPii431N4qI27fegI6o9RG
+        xaNKNZr5aQZLWHQFoUZa4w3SSD5O7fEmDo/wxlafEr8mI0/iaNbdcYhMhadFPvHeFX4djrQpMri6V
+        4fhI2YtI0xit+szqZ/kBVCEada8Tq99t/d/1KPmnkD5462NlI8k/fykGUcJCRJdGnrxZp6IYODT4G
+        FQf6BKew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdTj5-00BGZ5-OE; Thu, 21 Oct 2021 08:47:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 413E61FDA8;
-        Thu, 21 Oct 2021 08:46:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634806007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qVXU5eYkR1kdveY7nv6uj6Itzvxe/ABhRxe4MKA7/sA=;
-        b=QCtVrKqh589J4ZyDsEGd/K5pcaoVXbJDzdxTAUECMLtRuOI3nwbBlT06QAyH/3Bl63Wy3w
-        ij5TRID16GrFQ6zUplPr0BgsItjz7hTPmKJxhB1Gma7GB0u80JUpMimXc5VuCz2Z2UDzdv
-        ClMZPCWabPNe0fWlyd1ytaWN6izoG+U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634806007;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qVXU5eYkR1kdveY7nv6uj6Itzvxe/ABhRxe4MKA7/sA=;
-        b=tPUcfJib4B0JokiXZPBgHJMK54+t9EoCMhPXDnk3goCZHHc4ErhkjcaVKueoG2qhKNsMGH
-        XpwnIBZxXHH7owDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1151D13BDA;
-        Thu, 21 Oct 2021 08:46:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id juQoA/cocWGdIAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 21 Oct 2021 08:46:47 +0000
-Message-ID: <cf8ef7b4-ca18-064f-9c5d-01047e40446b@suse.cz>
-Date:   Thu, 21 Oct 2021 10:46:46 +0200
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41B3F300221;
+        Thu, 21 Oct 2021 10:47:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 18CA52D4101EC; Thu, 21 Oct 2021 10:47:00 +0200 (CEST)
+Date:   Thu, 21 Oct 2021 10:47:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        daniel@iogearbox.net, bpf@vger.kernel.org, andrii@kernel.org
+Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
+Message-ID: <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105843.345016338@infradead.org>
+ <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
+ <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Taht <dave.taht@gmail.com>
-References: <20211020135535.517236-1-42.hyeyoo@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH] mm, slob: Rewrite SLOB using segregated free list
-In-Reply-To: <20211020135535.517236-1-42.hyeyoo@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 15:55, Hyeonggon Yoo wrote:
-> Hello linux-mm, I rewrote SLOB using segregated free list,
-> to understand SLOB and SLUB more. It uses more kilobytes
-> of memory (48kB on 32bit tinyconfig) and became 9~10x faster.
-> 
-> But after rewriting, I thought I need to discuss what SLOB is for.
-> According to Matthew, SLOB is for small machines whose
-> memory is 1~16 MB.
-> 
-> I wonder adding 48kB on SLOB memory for speed/lower latency
-> is worth or harmful.
-> 
-> So.. questions in my head now:
->     - Who is users of SLOB?
->     - Is it harmful to add some kilobytes of memory into SLOB?
->     - Is it really possible to run linux under 10MB of RAM?
->     	(I failed with tinyconfig.)
->     - What is the boundary to make decision between SLOB and SLUB?
-> 
-> Anyway, below is my work.
-> Any comments/opinions will be appreciated!
-> 
-> SLOB uses sequential fit method. the advantages of this method
-> is the fact that it is simple and does not have complex metadata.
-> 
-> But big downside of sequential fit method is its high latency
-> in allocation/deallocation and fast fragmentation.
-> 
-> High latency comes from iterating pages and also iterating objects
-> in the page to find suitable free object. And fragmentation easily
-> happens because objects of difference size is allocated in same page.
-> 
-> This patch tries to minimize both its latency and fragmentation by
-> re-implmenting SLOB using segregated free list method and adding
-> support for slab merging. it looks like lightweight SLUB but more
-> compact than SLUB.
+On Wed, Oct 20, 2021 at 05:05:02PM -0700, Alexei Starovoitov wrote:
+> On Wed, Oct 20, 2021 at 01:09:51PM +0200, Peter Zijlstra wrote:
 
-My immediate reaction is that we probably don't want to turn SLOB into
-lightweight SLUB. SLOB choses the tradeoff of low memory usage over speed
-and shifting it towards more speed kinda defeats this purpose. Also it's a
-major rewrite, so without a very clear motivation there will be resistance
-to that.
+> > @@ -446,25 +440,8 @@ static void emit_bpf_tail_call_indirect(
+> >  {
+> >  	int tcc_off = -4 - round_up(stack_depth, 8);
+> >  	u8 *prog = *pprog, *start = *pprog;
+> > -	int pop_bytes = 0;
+> > -	int off1 = 42;
+> > -	int off2 = 31;
+> > -	int off3 = 9;
+> > -
+> > -	/* count the additional bytes used for popping callee regs from stack
+> > -	 * that need to be taken into account for each of the offsets that
+> > -	 * are used for bailing out of the tail call
+> > -	 */
+> > -	pop_bytes = get_pop_bytes(callee_regs_used);
+> > -	off1 += pop_bytes;
+> > -	off2 += pop_bytes;
+> > -	off3 += pop_bytes;
+> > -
+> > -	if (stack_depth) {
+> > -		off1 += 7;
+> > -		off2 += 7;
+> > -		off3 += 7;
+> > -	}
+> > +	static int out_label = -1;
+> 
+> Interesting idea!
 
-SLUB itself could be probably tuned to less memory overhead if needed. Most
-of the debug options effectively disable percpu slabs, we could add a mode
-that disables them without the rest of the debugging overhead. Allocation
-order can be lowered (although some object sizes might benefit from less
-fragmentation with a higher order).
+I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
+lot more robust than the 64bit one and I couldn't figure out why the
+difference.
 
-> One notable difference is after this patch SLOB uses kmalloc_caches
-> like SL[AU]B.
-> 
-> Below is performance impacts of this patch.
-> 
-> Memory usage was measured on 32 bit + tinyconfig + slab merging.
-> 
-> Before:
->     MemTotal:          29668 kB
->     MemFree:           19364 kB
->     MemAvailable:      18396 kB
->     Slab:                668 kB
-> 
-> After:
->     MemTotal:          29668 kB
->     MemFree:           19420 kB
->     MemAvailable:      18452 kB
->     Slab:                716 kB
-> 
-> This patch adds about 48 kB after boot.
-> 
-> hackbench was measured on 64 bit typical buildroot configuration.
-> After this patch it's 9~10x faster than before.
-> 
-> Before:
->     memory usage:
->         after boot:
->             Slab:               7908 kB
->         after hackbench:
->             Slab:               8544 kB
-> 
->     Time: 189.947
->     Performance counter stats for 'hackbench -g 4 -l 10000':
->          379413.20 msec cpu-clock                 #    1.997 CPUs utilized
->            8818226      context-switches          #   23.242 K/sec
->             375186      cpu-migrations            #  988.859 /sec
->               3954      page-faults               #   10.421 /sec
->       269923095290      cycles                    #    0.711 GHz
->       212341582012      instructions              #    0.79  insn per cycle
->         2361087153      branch-misses
->        58222839688      cache-references          #  153.455 M/sec
->         6786521959      cache-misses              #   11.656 % of all cache refs
-> 
->      190.002062273 seconds time elapsed
-> 
->        3.486150000 seconds user
->      375.599495000 seconds sys
-> 
-> After:
->     memory usage:
->        after boot:
->            Slab:               7560 kB
->         after hackbench:
->            Slab:               7836 kB
+> All insn emits trying to do the right thing from the start.
+> Here the logic assumes that there will be at least two passes over image.
+> I think that is correct, but we never had such assumption.
 
-Interesting that the memory usage in this test is actually lower with your
-patch.
+That's not exactly true; I think image is NULL on every first run, so
+all insn that depend on it will be wrong to start with. Equally there's
+a number of insn that seem to depend on addrs[i], that also requires at
+least two passes.
 
-> hackbench:
->     Time: 20.780
->     Performance counter stats for 'hackbench -g 4 -l 10000':
->           41509.79 msec cpu-clock                 #    1.996 CPUs utilized
->             630032      context-switches          #   15.178 K/sec
->               8287      cpu-migrations            #  199.640 /sec
->               4036      page-faults               #   97.230 /sec
->        57477161020      cycles                    #    1.385 GHz
->        62775453932      instructions              #    1.09  insn per cycle
->          164902523      branch-misses
->        22559952993      cache-references          #  543.485 M/sec
->          832404011      cache-misses              #    3.690 % of all cache refs
-> 
->       20.791893590 seconds time elapsed
-> 
->        1.423282000 seconds user
->       40.072449000 seconds sys
+> A comment is certainly must have.
 
-That's significant, but also hackbench is kind of worst case test, so in
-practice the benefit won't be that prominent.
+I can certainly add one, although I think we'll disagree on the comment
+style :-)
 
-> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> ---
+> The race is possible too. Not sure whether READ_ONCE/WRITE_ONCE
+> are really warranted though. Might be overkill.
+
+Is there concurrency on the jit?
+
+> Once you have a git branch with all the changes I can give it a go.
+
+Ok, I'll go polish this thing and stick it in the tree mentioned in the
+cover letter.
+
+> Also you can rely on our BPF CI.
+> Just cc your patchset to bpf@vger and add [PATCH bpf-next] to a subject.
+> In patchwork there will be "bpf/vmtest-bpf-next" link that
+> builds kernel, selftests and runs everything.
+
+What's a patchwork and where do I find it?
+
+> It's pretty much the same as selftests/bpf/vmtest.sh, but with the latest
+> clang nightly and other deps like pahole.
+
+nice.
