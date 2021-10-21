@@ -2,171 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD262435B90
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB9C435B8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhJUHXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhJUHXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:23:21 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B28AC06161C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 00:21:06 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id f11so5081214pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 00:21:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HqBHLqwwr+ko0hKn1SGvuqbP8NIUIoixaku53/kbAb0=;
-        b=PUr3JwS9ESdq0+Ehhr7y26LHzIrPn3zmjF8b0PKIbMpEOpwCkWfpyvhXiR11nBWWhH
-         fBPVp/susk/5nRTNPVcvgCsYJwrkZwva7c/2Han0vjDtZC09FDgI3nGKU8V3QhLnWOsD
-         D9YazPifQlkFmVUrF1StMi+GT8J1B16KJD5wJ/dcSzfpYQtrSHfVXedlAUl3AEFpaZRr
-         E3OFuS44b61mfNDRMHPtFTiV3UjjdhWCXc1oiNEEI2UfqKc41JvZusJuXL0JplGX1hiA
-         GsZe86rlpaRFsMNq2QfubHz0Zoznf50OmGOFaP1DnQlIykxfElkIybDoAXREb9JyjlUN
-         uBVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HqBHLqwwr+ko0hKn1SGvuqbP8NIUIoixaku53/kbAb0=;
-        b=BSOrZDi8M15lrkVby1CGQrjVXoPGk7ayBNSOK5NwHVBMs2L6qyPhpHWM2xrv2WmHep
-         opz0x02jOcX4Q4wvaids61/gObBA8PmGQL3DCljwvgvHe3xutqBC6Z+m2t5fkhua+amb
-         lHa9CEyv7cm+lWMSyucObswj44TtmwqIe7pwrsGtUMo7/9VFTxZ6RgmUOHgGfrEkjcxL
-         WjK9gkZLwhX42/CHVo1eg/kaJtI2c09zO12yLdVFpVWeytQjMNI9vZSVB3XRcVE2Ua7l
-         pWnnhe/+Ng3W1tgOLuZCImOU+aiQHgQ5K4bzmFGE9gz3ph8J7iN/Cw6kblxN4HoJSutz
-         ot/A==
-X-Gm-Message-State: AOAM533VaL1IXDed2XxSyIY1kHf/OxL8DbVZGqhIGkmzl5pGLr5QErwC
-        J1cY8qbdTOkfeNL5vrOY6VeNgQ==
-X-Google-Smtp-Source: ABdhPJw6U6zsLMUsFT1dmUQxmeij3RvOikJRFdxyw7tUviPjlruquQE5fl4czgRbWBfL4c28GulOvg==
-X-Received: by 2002:a63:b246:: with SMTP id t6mr1846077pgo.378.1634800865837;
-        Thu, 21 Oct 2021 00:21:05 -0700 (PDT)
-Received: from [10.2.24.177] ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id h4sm4396719pgn.6.2021.10.21.00.21.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 00:21:05 -0700 (PDT)
-Subject: Re: Re: Re: [PATCH] x86/kvm: Introduce boot parameter no-kvm-pvipi
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
-References: <20211020120726.4022086-1-pizhenwei@bytedance.com>
- <CANRm+CxAVA-L0wjm72eohXXWvh9fS7wVFzfKHuEjrsiRFuk9fg@mail.gmail.com>
- <YXB4FHfzh99707EH@google.com>
- <08757159-1673-5c7b-3efc-e5b54e82d6c3@bytedance.com>
- <CANRm+CzcTUWYJeaj3eWKH84YZYgeMZz3kbpn13c8i97iYGGHFQ@mail.gmail.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-Message-ID: <5b718b32-cd92-920e-c474-27b9cafeec60@bytedance.com>
-Date:   Thu, 21 Oct 2021 15:17:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230308AbhJUHWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:22:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229499AbhJUHWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 03:22:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3578160F5D
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634800808;
+        bh=43pO5T59WNNBTSvDZ/15HN0qNsYc6BB2mYcutQPQZb8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qZP8Wqy8lCgm9a+nKCbcfyHPOmEg3+15OtkUCE3DxCGYuYryfaUirXhVm2V3a8hOI
+         1WS4O0ynItYO1us2GdYv0lkmFKSFZUTC0et7YKyf7wFUjfrugVBWZGbjbaqP8NGqBz
+         o82zKA8WlbVSb3tf+iIpAgeUWBZhwdUyeriOgmTfHxkgUL4t/KhjHlt5efUIhoV159
+         QWZcE1lL+RaAZKvcaWRiSvrwwEN8XaIjetyHj3u9rLqnhvYvxpGvQb5KedTCj2Vijm
+         UCyBgNsx2y9dxhBwyiNaWTrgwszFi3n0wSBYTrRk+k7AILaMNV5o0XEqZais9FWMac
+         podF1KzE4BdAA==
+Received: by mail-wm1-f52.google.com with SMTP id v127so21902944wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 00:20:08 -0700 (PDT)
+X-Gm-Message-State: AOAM533REDwHDJ801za7sfnyj9cceM5ojBi5YDbQZ8QYDXy4dhaUbLKb
+        N6aP06tIBGZCbNE2XRKFsIH3Qanv1C3pkNXlwhw=
+X-Google-Smtp-Source: ABdhPJw/z58fZLDJTbPf9HpyiDZ54iUJbEkQ5PNF/R2XdWkDlPbJwN5mSyp4ngOeqZsP6n0kxAo5a9Zj4ZQ70Y91Lvg=
+X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr19235671wmq.82.1634800806678;
+ Thu, 21 Oct 2021 00:20:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CANRm+CzcTUWYJeaj3eWKH84YZYgeMZz3kbpn13c8i97iYGGHFQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202110051030.J3Ub7djT-lkp@intel.com> <CAK8P3a3uOV=AMmOTP09rBhyq2zJutDJiof-4uQ-7MbX9xyVivg@mail.gmail.com>
+ <CAMj1kXHem8-qpNswtRcEKErncpO65JpQJQL3-8k_-qzUm4S4_Q@mail.gmail.com>
+In-Reply-To: <CAMj1kXHem8-qpNswtRcEKErncpO65JpQJQL3-8k_-qzUm4S4_Q@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 21 Oct 2021 09:19:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1yRTcRgVD_o7YCwKckePPPcy9Btneh6TC1b_ThUzkmtg@mail.gmail.com>
+Message-ID: <CAK8P3a1yRTcRgVD_o7YCwKckePPPcy9Btneh6TC1b_ThUzkmtg@mail.gmail.com>
+Subject: Re: [ardb:arm-vmap-stacks 5/20] arch/arm/mm/context.c:112:28: error:
+ no member named 'task' in 'struct thread_info'
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 1:03 PM, Wanpeng Li wrote:
-> On Thu, 21 Oct 2021 at 11:05, zhenwei pi <pizhenwei@bytedance.com> wrote:
->>
->>
->> On 10/21/21 4:12 AM, Sean Christopherson wrote:
->>> On Wed, Oct 20, 2021, Wanpeng Li wrote:
->>>> On Wed, 20 Oct 2021 at 20:08, zhenwei pi <pizhenwei@bytedance.com> wrote:
->>>>>
->>>>> Although host side exposes KVM PV SEND IPI feature to guest side,
->>>>> guest should still have a chance to disable it.
->>>>>
->>>>> A typicall case of this parameter:
->>>>> If the host AMD server enables AVIC feature, the flat mode of APIC
->>>>> get better performance in the guest.
->>>>
->>>> Hmm, I didn't find enough valuable information in your posting. We
->>>> observe AMD a lot before.
->>>> https://lore.kernel.org/all/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/T/#u
->>>
->>> I too would like to see numbers.  I suspect the answer is going to be that
->>> AVIC performs poorly in CPU overcommit scenarios because of the cost of managing
->>> the tables and handling "failed delivery" exits, but that AVIC does quite well
->>> when vCPUs are pinned 1:1 and IPIs rarely require an exit to the host.
->>>
->>
->> Test env:
->> CPU: AMD EPYC 7642 48-Core Processor
->>
->> Kmod args(enable avic and disable nested):
->> modprobe kvm-amd nested=0 avic=1 npt=1
->>
->> QEMU args(disable x2apic):
->> ... -cpu host,x2apic=off ...
->>
->> Benchmark tool:
->> https://github.com/bytedance/kvm-utils/tree/master/microbenchmark/apic-ipi
->>
->> ~# insmod apic_ipi.ko options=5 && dmesg -c
->>
->>    apic_ipi: 1 NUMA node(s)
->>    apic_ipi: apic [flat]
->>    apic_ipi: apic->send_IPI[default_send_IPI_single+0x0/0x40]
->>    apic_ipi: apic->send_IPI_mask[kvm_send_ipi_mask+0x0/0x10]
->>    apic_ipi:     IPI[kvm_send_ipi_mask] from CPU[0] to CPU[1]
->>    apic_ipi:             total cycles 375671259, avg 3756
->>    apic_ipi:     IPI[flat_send_IPI_mask] from CPU[0] to CPU[1]
->>    apic_ipi:             total cycles 221961822, avg 2219
->>
->>
->> apic->send_IPI_mask[kvm_send_ipi_mask+0x0/0x10]
->>     -> This line show current send_IPI_mask is kvm_send_ipi_mask(because
->> of PV SEND IPI FEATURE)
->>
->> apic_ipi:       IPI[kvm_send_ipi_mask] from CPU[0] to CPU[1]
->> apic_ipi:               total cycles 375671259, avg 3756
->>     -->These lines show the average cycles of each kvm_send_ipi_mask: 3756
->>
->> apic_ipi:       IPI[flat_send_IPI_mask] from CPU[0] to CPU[1]
->> apic_ipi:               total cycles 221961822, avg 2219
->>     -->These lines show the average cycles of each flat_send_IPI_mask: 2219
-> 
-> Just single target IPI is not eough.
-> 
->      Wanpeng
-> 
+On Thu, Oct 21, 2021 at 9:02 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Thu, 21 Oct 2021 at 08:55, Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > On Tue, Oct 5, 2021 at 4:03 AM kernel test robot <lkp@intel.com> wrote:
+> > >
+> >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > > >> arch/arm/mm/context.c:112:28: error: no member named 'task' in 'struct thread_info'
+> > >            pid = task_pid_nr(thread->task) << ASID_BITS;
+> > >                              ~~~~~~  ^
+> > >    1 error generated.
+> >
+> > I ran into this as well on my randconfig builds, though it happens very rarely.
+> >
+> > Apparently CONFIG_THREAD_INFO_IN_TASK is incompatible with
+> > CONFIG_PID_IN_CONTEXTIDR, but should be easy to fix by changing that
+> > one line to do the right thing.
+> >
+>
+> None of the existing configs enable that, so that is why I never saw
+> this even with all the kernelci coverage.
 
-Benchmark smp_call_function_single 
-(https://github.com/bytedance/kvm-utils/blob/master/microbenchmark/ipi-bench/ipi_bench.c):
+Right, I have no idea what makes this configuration so rare, it took me
+hundreds of randconfig builds before I first ran into it.
 
-  Test env:
-  CPU: AMD EPYC 7642 48-Core Processor
-
-  Kmod args(enable avic and disable nested):
-  modprobe kvm-amd nested=0 avic=1 npt=1
-
-  QEMU args(disable x2apic):
-  ... -cpu host,x2apic=off ...
-
-1> without no-kvm-pvipi:
-ipi_bench_single wait[1], CPU0[NODE0] -> CPU1[NODE0], loop = 100000
-      elapsed =        424945631 cycles, average =     4249 cycles
-      ipitime =        385246136 cycles, average =     3852 cycles
-ipi_bench_single wait[0], CPU0[NODE0] -> CPU1[NODE0], loop = 100000
-      elapsed =        419057953 cycles, average =     4190 cycles
-
-2> with no-kvm-pvipi:
-ipi_bench_single wait[1], CPU0[NODE0] -> CPU1[NODE0], loop = 100000
-      elapsed =        321756407 cycles, average =     3217 cycles
-      ipitime =        299433550 cycles, average =     2994 cycles
-ipi_bench_single wait[0], CPU0[NODE0] -> CPU1[NODE0], loop = 100000
-      elapsed =        295382146 cycles, average =     2953 cycles
-
-
--- 
-zhenwei pi
+          Arnd
