@@ -2,229 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D089435DF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A65F435DD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhJUJaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbhJUJaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:30:07 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1E8C06161C;
-        Thu, 21 Oct 2021 02:27:52 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id d125so28159509iof.5;
-        Thu, 21 Oct 2021 02:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6GpVmv67zcd/KI50WQ1qQJ95/dLiNlM3ZWZOII9XIa0=;
-        b=nzoZGl6siilugrLLcm8C58eOQDyw8c0m6120nRh/G27l43bL9bliTsLMCtm13nO7DN
-         F3Ul/Cno9DIBOnasbCctL9dYDwATMcF2E/+sLAhwaAtYFA9Y4q1nJIDH1xOJXP0U++22
-         5G9O4wjchS0yVEHmEOrFJ+LCy0FYJgQhzV60lRkceQN7ShEhsBN+qF32mrhrAyf171He
-         ZllUmty4ARWzLBK5Pm70BBA2k40uE1gMEizteXpp/b+l5XAhMbk1G+rfG+D+8NeI3nqz
-         dvUEmp1WAHLKDafUIBjKOl+mIyBYnoRyWVkUdcXwOhrCest3Hw4ZlmdxZgU7ZV4v/RNF
-         W9yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6GpVmv67zcd/KI50WQ1qQJ95/dLiNlM3ZWZOII9XIa0=;
-        b=a/zbTVcjkHXVYedfyGaz394uFFEpgQQtowHbNqtnY+VRhxOygeAhrqMW0NwAskGba1
-         +fua1XEBEUshtha24vtY5HjdWYClHGqo/YQ8kcUkuXfyhh56Bqsd9jnyBukaTCZfKPVM
-         xHC6HBPvigNRkbG5btM0Vf5xX7Y7BN90bz0a3htjr1lWRWwilcAv3dKIC30E9nd1ykhE
-         I49gJHEj8KbU8AOqkOCx2HW2sXDyzvS9edGtlFwigSNYM8K1t7rtfxtWOaUHNIQU38iB
-         kfxF2ieLdRqgmXxhIjXExm0+T2NW+9b8rvNSUrerr5GSIdTavHiUzCHUIGt9ZYbHuN/b
-         nnYQ==
-X-Gm-Message-State: AOAM533qh+j1sbvF6xrk9NIOYxRep2Lply0ShQTk5OmrRUjED2w1ff02
-        urSo3bkWTuJIx9MGH28+FY9/Qro2MmeXAKh8vgv5YWZ7xzLT0OIH
-X-Google-Smtp-Source: ABdhPJxN2tv7+pO/Fc3xNrPfOq8kz/NX86VjS18bPGc/nuD7U4AMmXBs3gmZ6PXuBQN2iYSd8Cx+Sf51Top+TGpApww=
-X-Received: by 2002:a05:6602:2599:: with SMTP id p25mr3215194ioo.90.1634808471435;
- Thu, 21 Oct 2021 02:27:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211009114313.17967-1-alistair@alistair23.me>
- <CAF8JNh+OUzvAHA9tBrH2d_WxWPXRgiunhGO5KV4-fqVG+tUOyQ@mail.gmail.com>
- <YW4kgnI0DQHj4sw4@google.com> <CAKmqyKMrb=Uz0+-ycj0HkAKJYdRU11Dc+24+KJw_j3MHT=2+yw@mail.gmail.com>
- <YW9rRUsxPHTjeOGT@google.com> <CAKmqyKMpMCb4gLyp94rCgVBU3eccjafD8nF7y6o+oU6D-OHvTQ@mail.gmail.com>
- <YW97lwsMrLHetJGy@google.com> <CAO-hwJKSxVFAiAriWU0No7sFxzo9XB1-T9LFeF5Zn27B8erFPA@mail.gmail.com>
- <CAKmqyKN0fhJOGZwg6LKag=8fVsANBUNg39Gfr5qdJyUJu1AVrw@mail.gmail.com> <CAO-hwJJ4kF880TVKNFy6wb5d-Q4+eCSuFfgP+=6+eTuN9eoNKA@mail.gmail.com>
-In-Reply-To: <CAO-hwJJ4kF880TVKNFy6wb5d-Q4+eCSuFfgP+=6+eTuN9eoNKA@mail.gmail.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 21 Oct 2021 19:27:25 +1000
-Message-ID: <CAKmqyKNrSyLjwM4HAtupbp=S7wnUrCM+o7DrS1p7wxkqcwKctA@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the data values
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ping Cheng <pinglinux@gmail.com>,
-        Alistair Francis <alistair@alistair23.me>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Jiri Kosina <jikos@kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
+        id S231556AbhJUJZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:25:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231308AbhJUJZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 05:25:36 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B37E560E96;
+        Thu, 21 Oct 2021 09:23:19 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 10:27:37 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2] iio: buffer: Fix memory leak in
+ iio_buffers_alloc_sysfs_and_mask()
+Message-ID: <20211021102737.5d54908a@jic23-huawei>
+In-Reply-To: <CA+U=DsorPFMpz3QS=dYrV4_UmeyeZXbS2Afpt7UHCkwo3JEABA@mail.gmail.com>
+References: <20211018063718.1971240-1-yangyingliang@huawei.com>
+        <CA+U=DsorPFMpz3QS=dYrV4_UmeyeZXbS2Afpt7UHCkwo3JEABA@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:04 PM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> On Wed, Oct 20, 2021 at 1:34 PM Alistair Francis <alistair23@gmail.com> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 5:40 PM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > On Wed, Oct 20, 2021 at 4:14 AM Dmitry Torokhov
-> > > <dmitry.torokhov@gmail.com> wrote:
-> > > >
-> > > > On Wed, Oct 20, 2021 at 11:44:50AM +1000, Alistair Francis wrote:
-> > > > > On Wed, Oct 20, 2021 at 11:05 AM Dmitry Torokhov
-> > > > > <dmitry.torokhov@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Oct 20, 2021 at 09:33:13AM +1000, Alistair Francis wrote:
-> > > > > > > On Tue, Oct 19, 2021 at 11:51 AM Dmitry Torokhov
-> > > > > > > <dmitry.torokhov@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > We already have touchscreen-inverted-x/y defined in
-> > > > > > > > Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml,
-> > > > > > > > why are they not sufficient?
-> > > > > > >
-> > > > > > > The touchscreen-* properties aren't applied to HID devices though, at
-> > > > > > > least not that I can tell.
-> > > > > >
-> > > > > > No, they are not currently, but that does not mean we need to establish
-> > > > > > a new set of properties (property names) for HID case.
-> > > > >
-> > > > > I can update the names to use the existing touchscreen ones.
-> > > > >
-> > > > > Do you have a hint of where this should be implemented though?
-> > > > >
-> > > > > Right now (without "HID: wacom: Add support for the AG14 Wacom
-> > > > > device") the wacom touchscreen is just registered as a generic HID
-> > > > > device. I don't see any good place in hid-core, hid-input or
-> > > > > hid-generic to invert the input values for this.
-> > > >
-> > > > I think the transformation should happen in
-> > > > hid-multitouch.c::mt_process_slot() using helpers from
-> > > > include/linux/input/touchscreen.h
-> > > >
-> > > > I think the more challenging question is to how pass/attach struct
-> > > > touchscreen_properties * to the hid device (i expect the properties will
-> > > > be attached to i2c-hid device, but maybe we could create a sub-node of
-> > > > it and attach properties there.
-> > > >
-> > >
-> > > Sorry but I don't like that very much. This would mean that we have an
-> > > out of band information that needs to be carried over to
-> > > HID-generic/multitouch and having tests for it is going to be harder.
-> > > I would rather have userspace deal with the rotation if we do not have
-> > > the information from the device itself.
-> >
-> > My 2c below
-> >
-> > >
-> > > Foreword: I have been given a hammer, so I see nails everywhere.
-> > >
-> > > The past 3 weeks I have been working on implementing some eBPF hooks
-> > > in the HID subsystem. This would IMO be the best solution here: a udev
-> > > hwdb rule sees that there is the not-wacom PID/VID (and maybe the
-> > > platform or parses the OF properties if they are available in the
-> >
-> > I'm not sure we have a specific VID/PID to work with here. The VID is
-> > generic AFAIK, not sure about the PID though. Maybe someone from Wacom
-> > could confirm either way.
->
-> It actually doesn't really matter. What matters is that there is a way
-> to know that this device needs to be rotated, being through DT
-> properties that would be exported through sysfs, or a hwdb entry that
-> matches on the product, the platform or something else.
->
-> >
-> > > sysfs) and adds a couple of functions in the HID stack to rotate the
-> > > screen. The advantage is that we do not need to add a new kernel API
-> >
-> > I would say that touchscreen-inverted-x/y isn't a new API, it's
-> > commonly used. To me it makes sense that it's supported for all
-> > touchscreens.
->
-> Well, it's new in the HID world, and this is opening the pandora box:
-> the patch adds only the equivalent of touchscreen-inverted-x/y, but
-> not touchscreen-swapped-x-y. So you can not actually rotate a screen
-> by 90 degrees.
->
-> Inverting a value on an axis is easy. Swapping 2 axes is way harder in
-> the HID world, because you have to interpret the report descriptor
-> differently.
->
-> Also, the patch adds 3 new properties: flip-tilt-x/y and flip-distance.
+On Mon, 18 Oct 2021 09:41:10 +0300
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-This patch does yes, but I'm happy to just drop this to the invert
-touchscreen properties.
-
-> The tilt and distance would be easy, but suddenly we need to also add
-> pressure, and all of the other HID definitions. This is going to be
-> endless. It took me a while to understand Rob's point regarding
-> generic properties, but we are exactly entering this territory: this
-> is an endless chase and will never end.
->
-> I would much rather have a device specific quirk that would be
-> triggered by the DT than adding generic properties like that.
-
-That works for me!
-
-A HID_QUIRK_XY_INVERT would work for me and seems useful for others in
-the future as well.
-
-I managed to figure out how to do this, I'll send a patch soon.
-
->
-> Also, hid-multitouch is the most tested driver through the hid-tools
-> test suite: https://gitlab.freedesktop.org/libevdev/hid-tools
-> I am not sure how I can add tests for those properties in a generic
-> way (the creation of the "virtual DT" is going to be problematic).
->
-> On the contrary, a device specific quirk can easily be tested without
-> having to mess too much with the hid subsystem.
-
-Great!
-
-Alistair
-
->
+> On Mon, Oct 18, 2021 at 9:29 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
 > >
-> > > anymore, the disadvantage is that we need userspace to "fix" the
-> > > kernel behaviour (so at boot, this might be an issue).
+> > When 'iio_dev_opaque->buffer_ioctl_handler' alloc fails in
+> > iio_buffers_alloc_sysfs_and_mask(), the 'attrs' allocated in
+> > iio_buffer_register_legacy_sysfs_groups() will be leaked:
 > >
-> > That's a pain for me. I'm still stuck with the vendors userspace as I
-> > need their propiritory eInk driver code. It also seems like a hassle
-> > for different distros to handle this (compared to just in the DT).
->
-> I understand the pain. But I am not talking about a 1 kernel cycle
-> release timeframe. More like 6-12 months to bring in all the pieces
-> together. Distributions have no issues with udev most of the time
-> (even those that stuck to the old pre-systemd fork), and it would not
-> be different than having a udev intrinsic that tags the pen with
-> ID_INPUT_TABLET so libinput and others can deal with it.
->
-> Cheers,
-> Benjamin
->
+> > unreferenced object 0xffff888108568d00 (size 128):
+> >   comm "88", pid 2014, jiffies 4294963294 (age 26.920s)
+> >   hex dump (first 32 bytes):
+> >     80 3e da 02 80 88 ff ff 00 3a da 02 80 88 ff ff  .>.......:......
+> >     00 35 da 02 80 88 ff ff 00 38 da 02 80 88 ff ff  .5.......8......
+> >   backtrace:
+> >     [<0000000095a9e51e>] __kmalloc+0x1a3/0x2f0
+> >     [<00000000faa3735e>] iio_buffers_alloc_sysfs_and_mask+0xfa3/0x1480 [industrialio]
+> >     [<00000000a46384dc>] __iio_device_register+0x52e/0x1b40 [industrialio]
+> >     [<00000000210af05e>] __devm_iio_device_register+0x22/0x80 [industrialio]
+> >     [<00000000730d7b41>] adjd_s311_probe+0x195/0x200 [adjd_s311]
+> >     [<00000000c0f70eb9>] i2c_device_probe+0xa07/0xbb0
 > >
-> > Alistair
+> > The iio_buffer_register_legacy_sysfs_groups() is
+> > called in __iio_buffer_alloc_sysfs_and_mask(),
+> > so move the iio_buffer_unregister_legacy_sysfs_groups()
+> > into __iio_buffer_free_sysfs_and_mask(), then the memory
+> > will be freed.
+> >  
+> 
+> Reviewed- by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Applied to the fixes-togreg branch of iio.git.  Given where we are in the
+cycle I'll probably shift these over to queue up for the merge window now.
+
+Marked for stable as well.
+
+Thanks,
+
+Jonathan
+
+> 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > ---
+> > v2:
+> >   move iio_buffer_unregister_legacy_sysfs_groups() into
+> >   __iio_buffer_free_sysfs_and_mask()
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
 > >
-> > >
-> > > I am not at the point where I can share the code as there is a lot of
-> > > rewriting and my last attempt is resulting in a page fault, but I'd be
-> > > happy to share it more once that hiccup is solved.
-> > >
-> > > Cheers,
-> > > Benjamin
-> > >
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index a95cc2da56be..b29d105a75fe 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1583,8 +1583,12 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >         return ret;
+> >  }
 > >
->
+> > -static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> > +static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer,
+> > +                                            struct iio_dev *indio_dev,
+> > +                                            int index)
+> >  {
+> > +       if (index == 0)
+> > +               iio_buffer_unregister_legacy_sysfs_groups(indio_dev);
+> >         bitmap_free(buffer->scan_mask);
+> >         kfree(buffer->buffer_group.name);
+> >         kfree(buffer->buffer_group.attrs);
+> > @@ -1638,7 +1642,7 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> >  error_unwind_sysfs_and_mask:
+> >         for (; unwind_idx >= 0; unwind_idx--) {
+> >                 buffer = iio_dev_opaque->attached_buffers[unwind_idx];
+> > -               __iio_buffer_free_sysfs_and_mask(buffer);
+> > +               __iio_buffer_free_sysfs_and_mask(buffer, indio_dev, unwind_idx);
+> >         }
+> >         return ret;
+> >  }
+> > @@ -1655,11 +1659,9 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> >         iio_device_ioctl_handler_unregister(iio_dev_opaque->buffer_ioctl_handler);
+> >         kfree(iio_dev_opaque->buffer_ioctl_handler);
+> >
+> > -       iio_buffer_unregister_legacy_sysfs_groups(indio_dev);
+> > -
+> >         for (i = iio_dev_opaque->attached_buffers_cnt - 1; i >= 0; i--) {
+> >                 buffer = iio_dev_opaque->attached_buffers[i];
+> > -               __iio_buffer_free_sysfs_and_mask(buffer);
+> > +               __iio_buffer_free_sysfs_and_mask(buffer, indio_dev, i);
+> >         }
+> >  }
+> >
+> > --
+> > 2.25.1
+> >  
+
