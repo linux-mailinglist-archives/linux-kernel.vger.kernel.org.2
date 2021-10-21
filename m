@@ -2,221 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB020435D7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75C1435D7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhJUJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:00:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52986 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhJUJAw (ORCPT
+        id S231321AbhJUJCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231133AbhJUJCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:00:52 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6EE3C1FD53;
-        Thu, 21 Oct 2021 08:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634806716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sbWYdz6Wz913HfScu1UZ7h+IgOLpDvOmE8sinRYcXJo=;
-        b=CGoodxDtGTt1KyamyZ+qvhwJd0OoS15pawh/sq6LgX5HsjxeAulq9b54ZapH0QM0iOwRFD
-        NlH2BmLe/kkR4oDBVgrk4vTiwk2LYmf78cFs1kZI8x149uIow+tFK0ywzFaQHSrxpv1bcD
-        CUElY4+OojusG4lImRu2BsguVy7B3aY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2ABB213BDA;
-        Thu, 21 Oct 2021 08:58:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id L98tCLwrcWGdJQAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 21 Oct 2021 08:58:36 +0000
-Subject: Re: linux-next: build warning after merge of the tip tree
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210917115859.6cfc64a5@canb.auug.org.au>
- <20210920113809.18b9b70c@canb.auug.org.au>
- <20211021140340.139eab65@canb.auug.org.au>
- <YXErbb3TGDwUJXHw@hirez.programming.kicks-ass.net>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <e33163e0-2c44-1e84-81ee-5df217ed19d9@suse.com>
-Date:   Thu, 21 Oct 2021 10:58:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 21 Oct 2021 05:02:37 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE06C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:00:21 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id t4so56581oie.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RxeQAhKq35QFKlvh0wF1hKrofkjgeU944O74OCk+Hsc=;
+        b=AIY0ZvgmHs1i2Jjewb/l7F+u1TVlacdEKavBVM+t4cp0J8AdxfOoodcM9OiO6xIxwU
+         g0wct/DAnD8STZH0RivKu5czP7QryMpzdZsdoa/hpqB08G1sVrOqNBGq+Jg1Zdwij3eO
+         h3pGGihW4Vj1g5pKuypqmC7n8MAGlnJCSMAOl+H3xp8qR5ZrY6dGWsu3/sRtUrm/PIkT
+         SnDTRETq6vw03AWK7c2uFkTAxDAnc+J4r+dvBfhBt7M9s9/+8dlFfuxS+xtguKC4Zc99
+         DCCG+6rMPLO1fIpcnnhwq68dvrCFaobDR/9weVjd5b0opaRTKjhBsR4kNJRINREATGwB
+         kWfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RxeQAhKq35QFKlvh0wF1hKrofkjgeU944O74OCk+Hsc=;
+        b=Dr+K2REnd640n6dFynvlGOU/WiEAZzm0jJzVUlXIDGYuO2Sb7lwgruYLaveOkQwmes
+         YRhVYb3zRTR8UgUdy63M+Ybnm3WWv/yCQFwUdI8smKBSu/FRb9zySLNVD0PkgDjwtpot
+         wlDuNmfuTIvRHv0EMXfgWsUOibRNlr+QqqwhXliY9m6CNNlpc1KBI1565sahEusega3p
+         E6K1m8NQEdZ/rjH/4Lc9SP6YLosu+N8SHJdqWu5BUXbkskBOpCS5ZwyiO9TVqykE+zQs
+         Rm99LKf7eH4AO8P0FJz9n1yVmM21D0Svn/wIL0AURIgRdTsYM3CaAsRsk8SB+px4vRTp
+         3H0Q==
+X-Gm-Message-State: AOAM530KGbhovcaMoVwOpwk7t0csTGPM3TnX3cgT2CXWuqG+vy8HHokl
+        fkNNhW5i/eUhuKHl1XGRG8CrtFy1rLaPZWZHkYuryA==
+X-Google-Smtp-Source: ABdhPJw0EqXC972LTR3d9LQ+cFNpenvaE/C+SPIaBoTi8mq6VP1mHeAwXqLj90EHQe+j5liHQBl16VdrBUimnz7kddE=
+X-Received: by 2002:a05:6808:ec9:: with SMTP id q9mr3594527oiv.160.1634806820945;
+ Thu, 21 Oct 2021 02:00:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YXErbb3TGDwUJXHw@hirez.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Y7BwP2tQYFXqKzkPa0u4Tubk7qU0CQ12L"
+References: <20210820043339.2151352-1-jordy@pwning.systems>
+ <202108192227.8BE02F1C@keescook> <YST8vi6J1NlCdirU@kernel.org>
+In-Reply-To: <YST8vi6J1NlCdirU@kernel.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 21 Oct 2021 11:00:09 +0200
+Message-ID: <CACT4Y+b1sW6-Hkn8HQYw_SsT7X3tp-CJNh2ci0wG3ZnQz9jjig@mail.gmail.com>
+Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        James Bottomley <jejb@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Y7BwP2tQYFXqKzkPa0u4Tubk7qU0CQ12L
-Content-Type: multipart/mixed; boundary="mRiJw3L4XPZGYibQSZmgW6XmiiJiSdIXw";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>,
- Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
- "H. Peter Anvin" <hpa@zytor.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Message-ID: <e33163e0-2c44-1e84-81ee-5df217ed19d9@suse.com>
-Subject: Re: linux-next: build warning after merge of the tip tree
-References: <20210917115859.6cfc64a5@canb.auug.org.au>
- <20210920113809.18b9b70c@canb.auug.org.au>
- <20211021140340.139eab65@canb.auug.org.au>
- <YXErbb3TGDwUJXHw@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXErbb3TGDwUJXHw@hirez.programming.kicks-ass.net>
+On Tue, 24 Aug 2021 at 16:06, Mike Rapoport <rppt@kernel.org> wrote:
+>
+> On Thu, Aug 19, 2021 at 10:33:49PM -0700, Kees Cook wrote:
+> > On Fri, Aug 20, 2021 at 06:33:38AM +0200, Jordy Zomer wrote:
+> > > When a secret memory region is active, memfd_secret disables
+> > > hibernation. One of the goals is to keep the secret data from being
+> > > written to persistent-storage.
+> > >
+> > > It accomplishes this by maintaining a reference count to
+> > > `secretmem_users`. Once this reference is held your system can not be
+> > > hibernated due to the check in `hibernation_available()`. However,
+> > > because `secretmem_users` is of type `atomic_t`, reference counter
+> > > overflows are possible.
+> >
+> > It's an unlikely condition to hit given max-open-fds, etc, but there's
+> > no reason to leave this weakness. Changing this to refcount_t is easy
+> > and better than using atomic_t.
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> >
+> > > As you can see there's an `atomic_inc` for each `memfd` that is opened
+> > > in the `memfd_secret` syscall. If a local attacker succeeds to open 2^32
+> > > memfd's, the counter will wrap around to 0. This implies that you may
+> > > hibernate again, even though there are still regions of this secret
+> > > memory, thereby bypassing the security check.
+> >
+> > IMO, this hibernation check is also buggy, since it looks to be
+> > vulnerable to ToCToU: processes aren't frozen when
+> > hibernation_available() checks secretmem_users(), so a process could add
+> > one and fill it before the process freezer stops it.
+> >
+> > And of course, there's still the ptrace hole[1], which is think is quite
+> > serious as it renders the entire defense moot.
+>
+> I thought about what can be done here and could not come up with anything
+> better that prevent PTRACE on a process with secretmem, but this seems to
+> me too much from usability vs security POV.
+>
+> Protecting against root is always hard and secretmem anyway does not
+> provide 100% guarantee by itself but rather makes an accidental data leak
+> or non-target attack much harder.
+>
+> To be effective it also presumes that other hardening features are turned
+> on by the system administrator on production systems, so it's not
+> unrealistic to rely on ptrace being disabled.
 
---mRiJw3L4XPZGYibQSZmgW6XmiiJiSdIXw
-Content-Type: multipart/mixed;
- boundary="------------00BB78E1F6D50CBA7692B7C0"
-Content-Language: en-US
+Hi,
 
-This is a multi-part message in MIME format.
---------------00BB78E1F6D50CBA7692B7C0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+The issue existed before this change, but I think refcount_inc needs
+to be done before fd_install. After fd_install finishes, the fd can be
+used by userspace and we can have secret data in memory before the
+refcount_inc.
 
-On 21.10.21 10:57, Peter Zijlstra wrote:
-> On Thu, Oct 21, 2021 at 02:03:40PM +1100, Stephen Rothwell wrote:
->> vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_co=
-unt_add() leaves .noinstr.text section
->> vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_cou=
-nt_add() leaves .noinstr.text section
->=20
-> https://lkml.kernel.org/r/20210922103102.3589-1-jgross@suse.com
->=20
-> Juergen, where are we with those patches?
->=20
+A straightforward mis-use where a user will predict the returned fd in
+another thread before the syscall returns and will use it to store
+secret data is somewhat dubious because such a user just shoots
+themself in the foot.
 
-Queued for 5.16.
-
-
-Juergen
-
---------------00BB78E1F6D50CBA7692B7C0
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------00BB78E1F6D50CBA7692B7C0--
-
---mRiJw3L4XPZGYibQSZmgW6XmiiJiSdIXw--
-
---Y7BwP2tQYFXqKzkPa0u4Tubk7qU0CQ12L
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFxK7sFAwAAAAAACgkQsN6d1ii/Ey9H
-3Qf+Os0di+N4ydcbM+DpOdFERXbZ6ZyiTEUm+KqB8GDZaulKv5BMr82RMmzGCrZXG5J2E7CnBSDs
-T0eluHjWDXxT090z2JAftvJn8HfZ6SOtfWYe51LBHhkr4uGSuBDX+m8uqXLRZllvJjcB3IXntNlb
-FBGamoI7r+iR92kwv7VzjOVgfR1wkTFfTBtxsV44WjV943aF78Z7twNHsdF/NuemS1YMVXzijw8X
-Ikf5ANRYng3TL2S/u3qcu2ruNSeaZDUgaurTBqNpN2T+mbyVgmcEBgcVNGfOnPQXR6vP7//dLSng
-XjXg7kf4JXYdidVzaeRmp4vqyzUJuImni3pDApMfjQ==
-=ePVU
------END PGP SIGNATURE-----
-
---Y7BwP2tQYFXqKzkPa0u4Tubk7qU0CQ12L--
+But a more interesting mis-used would be to close the predicted fd and
+decrement the refcount before the corresponding refcount_inc, this way
+one can briefly drop the refcount to zero while there are other users
+of secretmem.
