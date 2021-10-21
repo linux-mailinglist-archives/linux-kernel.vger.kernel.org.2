@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD4A435EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF24435EBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhJUKK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:10:29 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:43747 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhJUKK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:10:28 -0400
-Received: by mail-ua1-f53.google.com with SMTP id i22so68710ual.10;
-        Thu, 21 Oct 2021 03:08:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ADPxfUc1FVZXmyLUeY8JY2J11U9rKWLSgyyZ2T7U9lA=;
-        b=DZ6F6PVPeIvAUtbeujrAAOp1rIzB/8Y5C5eLqWdCxFZjkEbD8uQqeGk314/8l7OguK
-         MRIxf9WcBCSVjlq7xO8B8+38exD9NInWxWsfXzX5/6FDVJ/qmLJfV/7ffzMLHi+J9emp
-         3xm2WBtvyyCVTVC2/UuDanGRtQRC/tsgchzTRpH2m30v98RqocdTU2zlz+fqHlVjDKak
-         XyRbAnCvn5djnHWu6BFmhGahzxwp8ejusKPJQ9jdXJvsNnWoOnIQYloLf7O/lA+MyYUE
-         50i60Ry4kkkd3C+GeUugiZzPOUWj7hduX223xUgiijSG6UBIQftR3C1gdpM/QHuCKJJl
-         pFtA==
-X-Gm-Message-State: AOAM533XaHixOGwMfJopn1ft5rXbP2l/Kz6KZtw+3YOXMor4JuuAcgfI
-        GsIVFgtNqwnFYYxogwVFmk638fhMjwl8ag==
-X-Google-Smtp-Source: ABdhPJx/z+h65uaGA4ofme4ndzd3E4aaowqSDlZgIwI/W155d0CbLNLQ6NWJ7y5cmdhvUr08Ld4h2A==
-X-Received: by 2002:a67:e998:: with SMTP id b24mr5288014vso.58.1634810892068;
-        Thu, 21 Oct 2021 03:08:12 -0700 (PDT)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id o18sm2870582vkb.21.2021.10.21.03.08.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 03:08:10 -0700 (PDT)
-Received: by mail-ua1-f46.google.com with SMTP id f3so104378uap.6;
-        Thu, 21 Oct 2021 03:08:10 -0700 (PDT)
-X-Received: by 2002:ab0:3d9a:: with SMTP id l26mr5172072uac.114.1634810890004;
- Thu, 21 Oct 2021 03:08:10 -0700 (PDT)
+        id S230073AbhJUKMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:12:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:40852 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhJUKMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:12:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8456CED1;
+        Thu, 21 Oct 2021 03:09:51 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4A143F694;
+        Thu, 21 Oct 2021 03:09:49 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 11:09:44 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Songxiaowei <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v13 09/10] PCI: kirin: fix poweroff sequence
+Message-ID: <20211021100944.GA11904@lpieralisi>
+References: <cover.1634539769.git.mchehab+huawei@kernel.org>
+ <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
+ <20211018102127.GD17152@lpieralisi>
+ <20211018153716.0370a66c@sal.lan>
+ <20211019094048.GA24481@lpieralisi>
 MIME-Version: 1.0
-References: <8ca87330fd348fc5199ad08904ec90cc6a91a1bf.1634723848.git.viresh.kumar@linaro.org>
- <CAHp75Vctj-v8W+LgdVpYgRVL3fLdcFnOFRFg74LeCc=xLD+w4w@mail.gmail.com>
- <20211021043443.snhqpac5ofmxfb7k@vireshk-i7> <CAHp75VdKn7Sze9HxN0gBgbuQS2K6oB+SQsufw576Rkfg4-osOw@mail.gmail.com>
- <20211021095229.lqeb7dtxv4ix2vc5@vireshk-i7>
-In-Reply-To: <20211021095229.lqeb7dtxv4ix2vc5@vireshk-i7>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 21 Oct 2021 12:07:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWDRGmxt55vvRTnyu5SwXCDtkcOLmKA87cd4SSa8S+Z=Q@mail.gmail.com>
-Message-ID: <CAMuHMdWDRGmxt55vvRTnyu5SwXCDtkcOLmKA87cd4SSa8S+Z=Q@mail.gmail.com>
-Subject: Re: [PATCH V6] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "stratos-dev@op-lists.linaro.org" <stratos-dev@op-lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019094048.GA24481@lpieralisi>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On Tue, Oct 19, 2021 at 10:40:48AM +0100, Lorenzo Pieralisi wrote:
+> On Mon, Oct 18, 2021 at 03:37:16PM +0100, Mauro Carvalho Chehab wrote:
+> > Em Mon, 18 Oct 2021 11:21:27 +0100
+> > Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
+> > 
+> > > On Mon, Oct 18, 2021 at 08:07:34AM +0100, Mauro Carvalho Chehab wrote:
+> > > > This driver currently doesn't call dw_pcie_host_deinit()
+> > > > at the .remove() callback. This can cause an OOPS if the driver
+> > > > is unbound.  
+> > > 
+> > > This looks like a fix, it has to be marked as such.
+> > 
+> > Well, without patch 10/10, the .remove() ops won't be called,
+> > so, it is not really a fix, but I can surely add a c/c
+> > stable@vger.kernel.org and add a Fixes: tag here.
+> 
+> You have a point - unless we send patch 10 to stable as well I
+> would not tag it then.
+> 
+> > > > While here, add a poweroff function, in order to abstract
+> > > > between the internal and external PHY logic.
+> > > > 
+> > > > Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > ---
+> > > > 
+> > > > See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
+> > > > 
+> > > >  drivers/pci/controller/dwc/pcie-kirin.c | 30 ++++++++++++++++---------
+> > > >  1 file changed, 20 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> > > > index b17a194cf78d..ffc63d12f8ed 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> > > > @@ -680,6 +680,23 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
+> > > >  	.host_init = kirin_pcie_host_init,
+> > > >  };
+> > > >  
+> > > > +static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
+> > > > +{
+> > > > +	int i;
+> > > > +
+> > > > +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
+> > > > +		return hi3660_pcie_phy_power_off(kirin_pcie);
+> > > > +
+> > > > +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
+> > > > +		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
+> > > > +	}  
+> > > 
+> > > It looks like you are adding functionality here (ie gpio), not
+> > > just wrapping common code in a function.
+> > 
+> > It is just reverting the power on logic there.
+> 
+> What I am saying is that executing:
+> 
+> for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++)
+> 	gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
+> 
+> is an addition to what current code does AFAICS (ie you are not just
+> moving code into a function - kirin_pcie_power_off(), you are adding
+> to it), it is a logical change that belongs in a separate patch.
+> 
+> There are two logical changes:
+> 
+> - Adding dw_pcie_host_deinit()
+> - Moving PHY power off code into kirin_pcie_power_off() (and adding
+>   gpio handling in it)
+> 
+> That's what I read from the diffstat, please correct me if I am wrong.
 
-On Thu, Oct 21, 2021 at 11:52 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> The structure will get aligned to the size of largest element and each
-> element will be aligned to itself. I don't see how this will break
-> even in case of 32/64 bit communication.
+Hi Mauro,
 
-Structures are not aligned to the size of the largest element, but
-to the largest alignment needed for each member.
-This can be smaller than the size of the largest element.
-E.g. alignof(long long) might be 4, not 8.  And m68k aligns to
-two bytes at most.
+any comment on the above ? It is the last question I have before
+merging the series, please let me know.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Lorenzo
