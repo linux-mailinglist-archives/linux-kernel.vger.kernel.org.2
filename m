@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0361243665C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD644365B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhJUPgq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 11:36:46 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:42483 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhJUPgp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:36:45 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N1x2P-1moGOA0wzx-012KP9; Thu, 21 Oct 2021 17:34:27 +0200
-Received: by mail-wm1-f49.google.com with SMTP id 84-20020a1c0457000000b003232b0f78f8so173819wme.0;
-        Thu, 21 Oct 2021 08:34:27 -0700 (PDT)
-X-Gm-Message-State: AOAM530w8UKJ/B+CltoUIV2kgLA8PlsL+Bjs374a3lsqTYbUQm1jya3n
-        KrMkPxyMMckMLr3VZ0kWs45Q/+/wq0xqwBu0y3k=
-X-Google-Smtp-Source: ABdhPJxXncWjnG0sJW6NQ2Y9XBmC9AcHboOLxbofUUlK3ALWGyEu4Nd9mK94PrbsNQQGlWRLZDhWj2rD2O1jkn6ZwhY=
-X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr21988450wmq.82.1634830466894;
- Thu, 21 Oct 2021 08:34:26 -0700 (PDT)
+        id S232105AbhJUPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:17:59 -0400
+Received: from mga02.intel.com ([134.134.136.20]:40075 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232125AbhJUPRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:17:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="216224942"
+X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
+   d="scan'208";a="216224942"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 08:14:32 -0700
+X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
+   d="scan'208";a="444837642"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 08:14:29 -0700
+Date:   Thu, 21 Oct 2021 23:34:21 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, mptcp@lists.01.org
+Subject: Re: [veth]  9d3684c24a: kernel-selftests.net/mptcp.mptcp_join.sh.fail
+Message-ID: <20211021153421.GD16330@xsang-OptiPlex-9020>
+References: <20210907142758.GD17617@xsang-OptiPlex-9020>
+ <ade152d7877b21adfd3b9680d729c185ef701bb9.camel@redhat.com>
 MIME-Version: 1.0
-References: <20211021151736.2096926-1-pan@semihalf.com> <20211021151736.2096926-2-pan@semihalf.com>
-In-Reply-To: <20211021151736.2096926-2-pan@semihalf.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 21 Oct 2021 17:34:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1i_23yBht0f86GoHUeef+XXPg_ahkMy6ndARHqcrhKWA@mail.gmail.com>
-Message-ID: <CAK8P3a1i_23yBht0f86GoHUeef+XXPg_ahkMy6ndARHqcrhKWA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] dts: socfpga: Add Mercury+ AA1 devicetree
-To:     =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        upstream@semihalf.com, Marcin Wojtas <mw@semihalf.com>,
-        Konrad Adamczyk <ka@semihalf.com>,
-        Jacek Majkowski <jam@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Alexandru Stan <amstan@google.com>,
-        Joanna Brozek <jbrozek@antmicro.com>,
-        Mariusz Glebocki <mglebocki@antmicro.com>,
-        Tomasz Gorochowik <tgorochowik@antmicro.com>,
-        Maciej Mikunda <mmikunda@antmicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:cR51spLlB3Iw6O8Jegs6c+QUcGBJa0vPdLFRDNkM2/MxKghw70w
- bi0Avk+M/swyexM+K9901nInoj1wn230vn/ZTZUKjXegRfRQHYAwIJhH4qHBpkCVDULhRBS
- 4qmoKcTznJmNH1nmBGRg8RIC7ezwE8z+dxCvHLXgcx5YeHeXD7urpnqDiA3RVP8Xik85XUn
- 8L+0dMwFPD/yIEBntr5GA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wq6BAPyNOws=:YrWqV9tZHyr9SlSvSLJM2z
- Z0YWP3Zl0jNQ8yVmXTo7FUu13sjh6z8nm3gvarU6KHIPmlHC5WWJ/Ze91+jTeB3P7Qn6sdPme
- ntjAUJAdzKNM79kYdHL3XKhEpgMoE/W0E6OQy8xab/MeVpQTuAgaamtrnIETVAu2HQZbTA6Oq
- 50oVF1qXJKqm1l6gc9dSx6JrAceWTkV8dPlQ/Egx/VUBlj54GSeuDjIiRPu5Z9RGEPNde03LT
- 8JaHOBdYDuxIQObvAHFW53eQctS7G3MYJZsPKcOBd8aumQjTtsQi0RwW6n+mOzUdotVigEdb3
- jrH3QKHR2lcQaE1pXceL3LFvNMBv+N9a9u/AeFf0Ke89bf7D1W2q8hyxmBu1kmxwik3QWRk+B
- Hk86qu8f4kwXvbvoqFkizU9KTGtv1cPodwxi1ZHqmIDJ/cO7RKcqP6LwERmKeyhZuqlqbCNGN
- 9giEdi3KJjnH1Oj6hcLxw739P+mxCC68BfY3D/k+p9UD6P9eQdWSmArYrBgUM+8M1TpFsM342
- shz3PbY8scC+FlsrBSheXzGSiUakNv6TVs8TpcggJ/E5YvX4J7yuP4nzniEOlRl//A7ccCPzG
- LHEHahW9DVopqLMJU214TkF6kOLJHgAlYIiDUOS5WwAAFG7O1+ik4UNdoQrGAioSDB35LA6fZ
- 2ig+qvOe0Pljii5bKN4krZiO5cxBbVDmWFu8qLl9G3qriXjIkuHlJALWH1GyowqNnktMD3TJY
- irbgmJ0fEPbv1bbdlh1Pn5rKA4ftBvtwrvMYvavNYf2w3hH/daeN7Kwk9r8N6K9vZgl01P8kz
- KyhxUB3cvFwnBTEFJ9yLTi/P0D//9gV8h7Qr1uYRld8aPuzaoE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ade152d7877b21adfd3b9680d729c185ef701bb9.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 5:17 PM Paweł Anikiel <pan@semihalf.com> wrote:
->
-> Add support for the Mercury+ AA1 module for Arria 10 SoC FPGA.
->
-> Signed-off-by: Paweł Anikiel <pan@semihalf.com>
-> Signed-off-by: Joanna Brozek <jbrozek@antmicro.com>
-> Signed-off-by: Mariusz Glebocki <mglebocki@antmicro.com>
-> Signed-off-by: Tomasz Gorochowik <tgorochowik@antmicro.com>
-> Signed-off-by: Maciej Mikunda <mmikunda@antmicro.com>
+Hi Paolo Abeni,
 
-Thank you for the respin, looks good to me now.
+On Tue, Sep 07, 2021 at 04:35:47PM +0200, Paolo Abeni wrote:
+> Hello,
+> 
+> On Tue, 2021-09-07 at 22:27 +0800, kernel test robot wrote:
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> It's not entirelly clear to me which are the relevant "changes" ???
+> 
+> [...]
+> 
+> > # 36 add multiple addresses IPv6          syn[ ok ] - synack[ ok ] - ack[ ok ]
+> > #                                         add[ ok ] - echo  [fail] got 1 ADD_ADDR echo[s] expected 2
+> > # 
+> > # Server ns stats
+> > # MPTcpExtMPCapableSYNRX          1                  0.0
+> > # MPTcpExtMPCapableACKRX          1                  0.0
+> > # MPTcpExtMPJoinSynRx             2                  0.0
+> > # MPTcpExtMPJoinAckRx             2                  0.0
+> > # MPTcpExtEchoAdd                 1                  0.0
+> > # Client ns stats
+> > # MPTcpExtMPCapableSYNTX          1                  0.0
+> > # MPTcpExtMPCapableSYNACKRX       1                  0.0
+> > # MPTcpExtMPJoinSynAckRx          2                  0.0
+> > # MPTcpExtAddAddr                 2                  0.0
+> 
+> is the referred change is the above self-test failure?
+> 
+> I belive this is unrelated to the mentioned commit (which behave as no-
+> op in this scenario). We are working to make our self-tests as stable
+> as possible, but there are still some sporadic failures. 
+> 
+> I could not reproduce this failure locally.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+sorry for late. we tested it again, right, what we captured is just
+above failure.
+now we found by more runs, we could also reproduce on parent, though
+the rate is very low.
+at the same time, always fail on this commit.
 
-Dinh, are you planning to pick this up into your socfpga tree, or
-should I apply it directly to the soc tree this time?
+4752eeb3d891c279 9d3684c24a5232c2d7ea8f8a3e6
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+          1:8          100%           9:10    kernel-selftests.net/mptcp.mptcp_join.sh.fail
+          7:8          -88%            :10    kernel-selftests.net/mptcp.mptcp_join.sh.pass
 
-        Arnd
+
+anyway, since reproduced on parent, this seems a false positive.
+sorry for inconvenience.
+
+> 
+> Cheers,
+> 
+> Paolo
+> 
