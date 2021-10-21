@@ -2,143 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A45F436880
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A876436884
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbhJUQ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:59:26 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:57460 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbhJUQ7Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:59:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:37828)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbNL-0007uh-Jx; Thu, 21 Oct 2021 10:57:07 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:56884 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbNI-00Cp0n-Sb; Thu, 21 Oct 2021 10:57:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Miller <davem@davemloft.net>, sparclinux@vger.kernel.org
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-15-ebiederm@xmission.com>
-        <202110210927.D0B4B0342@keescook>
-Date:   Thu, 21 Oct 2021 11:56:57 -0500
-In-Reply-To: <202110210927.D0B4B0342@keescook> (Kees Cook's message of "Thu,
-        21 Oct 2021 09:34:31 -0700")
-Message-ID: <87k0i69uzq.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232033AbhJURAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:00:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231509AbhJURAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:00:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D7C61505;
+        Thu, 21 Oct 2021 16:57:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634835477;
+        bh=4zPdjIuTMalS3etmWOWAm6Y1a2zeL7J/GOFHCrstb+g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Qu/rp9FHCcPg2R1Jb5waXx7nsOgmNRPiW5ChsRQLXgPMCgYfaj1vvEPatgOnEtk5U
+         vFgvJTgmhLHM4b5e5rIfOAE7IK1BPDXNFxRQQDTHQri4BwgrCH/YgfB9HOuqDZDWBM
+         Ev7AlZGRSbjYQXkAhOWKTERbsiuDNL7pEENcuS0DlYDoz2p7rzCY2eo40WSOOCObMe
+         Q1kTsRUYujGK6JxqRBcHqWA+mhoCf4oJgmccGb/H8Q+XJZHjI85JPTkjN5Hvf7vaIH
+         u9lY6GZySz24Av/gXarFzbcEJB+G/OuIqrbClMU4nCuqWJ8wwn4AVZfdOgqhjlCgLc
+         z0q0bM/6YL5KA==
+Date:   Thu, 21 Oct 2021 11:57:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        Gong <gong.chen@linux.intel.com>
+Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
+ arch-agnostic method
+Message-ID: <20211021165755.GA2697570@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdbNI-00Cp0n-Sb;;;mid=<87k0i69uzq.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/YItO3jyT9mchv5aB02C3xGFTztmDK/Gc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMGappySubj_02,XMNoVowels,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4969]
-        *  0.7 XMSubLong Long Subject
-        *  1.0 XMGappySubj_02 Gappier still
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1549 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (0.7%), b_tie_ro: 10 (0.6%), parse: 0.93
-        (0.1%), extract_message_metadata: 17 (1.1%), get_uri_detail_list: 1.67
-        (0.1%), tests_pri_-1000: 22 (1.4%), tests_pri_-950: 2.0 (0.1%),
-        tests_pri_-900: 1.64 (0.1%), tests_pri_-90: 204 (13.2%), check_bayes:
-        200 (12.9%), b_tokenize: 11 (0.7%), b_tok_get_all: 6 (0.4%),
-        b_comp_prob: 2.3 (0.1%), b_tok_touch_all: 176 (11.4%), b_finish: 1.08
-        (0.1%), tests_pri_0: 1275 (82.3%), check_dkim_signature: 0.86 (0.1%),
-        check_dkim_adsp: 3.6 (0.2%), poll_dns_idle: 0.47 (0.0%), tests_pri_10:
-        3.1 (0.2%), tests_pri_500: 7 (0.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 15/20] signal/sparc32: Exit with a fatal signal when try_to_clear_window_buffer fails
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7716ac99-34a1-2364-03ee-6ecd92b39f5b@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Thu, Oct 21, 2021 at 11:46:40PM +0800, Xuesong Chen wrote:
+> On 21/10/2021 02:50, Bjorn Helgaas wrote:
+> > On Wed, Oct 20, 2021 at 11:16:38AM +0800, Xuesong Chen wrote:
+> >> On 20/10/2021 03:23, Bjorn Helgaas wrote:
+> >>> On Tue, Oct 19, 2021 at 12:50:33PM +0800, Xuesong Chen wrote:
 
-> On Wed, Oct 20, 2021 at 12:44:01PM -0500, Eric W. Biederman wrote:
->> The function try_to_clear_window_buffer is only called from
->> rtrap_32.c.  After it is called the signal pending state is retested,
->
-> nit: rtrap_32.S
->
->> and signals are handled if TIF_SIGPENDING is set.  This allows
->> try_to_clear_window_buffer to call force_fatal_signal and then rely on
->> the signal being delivered to kill the process, without any danger of
->> returning to userspace, or otherwise using possible corrupt state on
->> failure.
->
-> The TIF_SIGPENDING test happens in do_notify_resume(), though I see
-> other code before that:
->
-> ...
->         call    try_to_clear_window_buffer
->         add    %sp, STACKFRAME_SZ, %o0
->
->         b       signal_p
-> ...
-> signal_p:
->         andcc   %g2, _TIF_DO_NOTIFY_RESUME_MASK, %g0
->         bz,a    ret_trap_continue
->         ld     [%sp + STACKFRAME_SZ + PT_PSR], %t_psr
->
->         mov     %g2, %o2
->         mov     %l6, %o1
->         call    do_notify_resume
->
-> Will the ret_trap_continue always be skipped?
+> >>>> This patch will try to handle this case in a more common way
+> >>>> instead of the original 'arch' specific solution, which will be
+> >>>> beneficial to all the APEI-dependent platforms after that.
+> >>>
+> >>> This actually doesn't say anything about what the patch does or
+> >>> how it works.  It says "handles this case in a more common way"
+> >>> but with no details.
+> >>
+> >> Good suggestion, I'll give more details about that...
+> >>
+> >>> The EINJ table contains "injection instructions" that can read
+> >>> or write "register regions" described by generic address
+> >>> structures (see ACPI v6.3, sec 18.6.2 and 18.6.3), and
+> >>> __einj_error_trigger() requests those register regions with
+> >>> request_mem_region() or request_region() before executing the
+> >>> injections instructions.
+> >>>
+> >>> IIUC, this patch basically says "if this region is part of the
+> >>> MCFG area, we don't need to reserve it." That leads to the
+> >>> questions of why we need to reserve *any* of the areas
+> >>
+> >> AFAIK, the MCFG area is reserved since the ECAM module will
+> >> provide a generic Kernel Programming Interfaces(KPI), e.g,
+> >> pci_generic_config_read(...), so all the drivers are allowed to
+> >> access the pci config space only by those KPIs in a consistent
+> >> and safe way, direct raw access will break the rule.  Correct me
+> >> if I am missing sth.
+> >>
+> >>> and why it's safe to simply skip reserving regions that are part
+> >>> of the MCFG area.
+> >>
+> >> Actual there is a commit d91525eb8ee6("ACPI, EINJ: Enhance error
+> >> injection tolerance level") before to address this issue, the
+> >> entire commit log as below:
+> >>
+> >>     Some BIOSes utilize PCI MMCFG space read/write opertion to trigger
+> >>     specific errors. EINJ will report errors as below when hitting such
+> >>     cases:
+> >>     
+> >>     APEI: Can not request [mem 0x83f990a0-0x83f990a3] for APEI EINJ Trigger registers
+> >>     
+> >>     It is because on x86 platform ACPI based PCI MMCFG logic has
+> >>     reserved all MMCFG spaces so that EINJ can't reserve it again.
+> >>     We already trust the ACPI/APEI code when using the EINJ interface
+> >>     so it is not a big leap to also trust it to access the right
+> >>     MMCFG addresses. Skip address checking to allow the access.
+> > 
+> > I'm not really convinced by that justification because I don't
+> > think the issue here is *trust*.  If all we care about is trust,
+> > and we trust the ACPI/APEI code, why do we need to reserve
+> > anything at all when executing EINJ actions?
+> > 
+> > I think the resource reservation issue is about coordinating
+> > multiple users of the address space.  A driver reserves the MMIO
+> > address space of a device it controls so no other driver can
+> > reserve it at the same time and cause conflicts.
+> > 
+> > I'm not really convinced by this mutual exclusion argument either,
+> > because I haven't yet seen a situation where we say "EINJ needs a
+> > resource that's already in use by somebody else, so we can't use
+> > EINJ."  When conflicts arise, the response is always "we'll just
+> > stop reserving this conflicting resource but use it anyway."
+> > 
+> > I think the only real value in apei_resources_request() is a
+> > little bit of documentation in /proc/iomem.  For ERST and EINJ,
+> > even that only lasts for the tiny period when we're actually
+> > executing an action.
+> > 
+> > So convince me there's a reason why we shouldn't just remove
+> > apei_resources_request() completely :)
+> 
+> I have to confess that currently I have no strong evidence/reason to
+> convince you that it's absolute safe to remove
+> apei_resources_request(),  probably in some conditions it *does*
+> require to follow the mutual exclusion usage model.  The ECAM/MCFG
+> maybe a special case not like other normal device driver, since all
+> its MCFG space has been reserved during the initialization. Anyway,
+> it's another topic and good point well worth discussing in the
+> future.
 
-The ret_trap_continue is the break out of the loop.  So unless the code
-is not properly setting the signal to be pending the code should be good.
+This is missing the point.  It's not the MCFG reservation during
+initialization that would make this safe.  What would make it safe is
+the fact that ECAM does not require mutual exclusion.
 
-> Also I see the "tp->w_saved = 0" never happens due to the "return" in
-> try_to_clear_window_buffer. Is that okay?
+When the hardware implements ECAM correctly, PCI config accesses do
+not require locking because a config access requires a single MMIO
+load or store.
 
-It should be.  As you point out the w_saved value is only used in
-generating signal frames.  The code in get_signal should never
-return and should call do_group_exit which calls do_exit, so building
-signal frames that happens after get_signal returns should never be
-reached.
+Many non-ECAM config accessors *do* require locking because they use
+several register accesses, e.g., the 0xCF8/0xCFC address/data pairs
+used by pci_conf1_read().  If EINJ actions used these, we would have
+to enforce mutual exclusion between EINJ config accesses and those
+done by other drivers.
 
-Further this is the same way the code makes it to do_exit today.
+Some ARM64 platforms do not implement ECAM correctly, e.g.,
+tegra194_map_bus() programs an outbound ATU and xgene_pcie_map_bus()
+sets an RTDID register before the MMIO load/store.  Platforms like
+this *do* require mutual exclusion between an EINJ config access and
+other config accesses.
 
-Also looking at it I think the logic is that w_saved == 0
-says that the register windows have been saved on the user mode stack,
-and that clearly has not happened so I think it would in general
-be a bug to clear w_saved on failure.
+These platforms are supported via quirks in pci_mcfg.c, so they will
+have resources in the pci_mcfg_list, and if we just ignore all the
+MCFG resources in apei_resources_request(), there will be nothing to
+prevent ordinary driver config accesses from being corrupted by EINJ
+accesses.
 
-> Only synchronize_user_stack()
-> uses it, and that could be called in do_sigreturn(). Should the "return"
-> be removed?
+I think in general, is probably *is* safe to remove MCFG resources
+from the APEI reservations, but it would be better if we had some way
+to prevent EINJ from using MCFG on platforms like tegra194 and xgene.
 
-Of course I could be wrong, if David or someone else who knows sparc32
-better than me wants to set me straight I would really appreciate it.
+> From the patch set itself, I don't think it's a nice idea to make a
+> dramatic change regarding the apei_resources_request() part, I
+> suggest to keep the original rationale untouched and based on that
+> to fix the real issue at hand in a more generic way.
 
-Eric
+There *was* no original rationale.  The whole point of this
+conversation is to figure out what the real rationale is.
 
+> >> Except that the above explanation, IMO the EINJ is only a RAS
+> >> debug framework, in this code path, sometimes we need to acesss
+> >> the address within the MCFG space directly to trigger kind of HW
+> >> error, which behavior does not like the normal device driver's,
+> >> in this case some possible unsafe operations (bypass the ecam
+> >> ops) can be mitigated because the touched device will generate
+> >> some HW errors and the RAS handling part will preempt its
+> >> corresponding drivers to fix/log the HW error, that's my
+> >> understanding about that.
+> > 
+> >>>> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+> >>>> Reported-by: kernel test robot <lkp@intel.com>
+> >>>> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> >>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >>>> Cc: James Morse <james.morse@arm.com>
+> >>>> Cc: Will Deacon <will@kernel.org>
+> >>>> Cc: Rafael. J. Wysocki <rafael@kernel.org>
+> >>>> Cc: Tony Luck <tony.luck@intel.com>
+> >>>> Cc: Tomasz Nowicki <tn@semihalf.com>
+> >>>> ---
+> >>>>  arch/x86/pci/mmconfig-shared.c | 28 --------------------------
+> >>>>  drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
+> >>>>  2 files changed, 30 insertions(+), 43 deletions(-)
+> >>>>
+> >>>> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+> >>>> index 0b961fe6..12f7d96 100644
+> >>>> --- a/arch/x86/pci/mmconfig-shared.c
+> >>>> +++ b/arch/x86/pci/mmconfig-shared.c
+> >>>> @@ -605,32 +605,6 @@ static int __init pci_parse_mcfg(struct acpi_table_header *header)
+> >>>>  	return 0;
+> >>>>  }
+> >>>>  
+> >>>> -#ifdef CONFIG_ACPI_APEI
+> >>>> -extern int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+> >>>> -				     void *data), void *data);
+> >>>> -
+> >>>> -static int pci_mmcfg_for_each_region(int (*func)(__u64 start, __u64 size,
+> >>>> -				     void *data), void *data)
+> >>>> -{
+> >>>> -	struct pci_mmcfg_region *cfg;
+> >>>> -	int rc;
+> >>>> -
+> >>>> -	if (list_empty(&pci_mmcfg_list))
+> >>>> -		return 0;
+> >>>> -
+> >>>> -	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+> >>>> -		rc = func(cfg->res.start, resource_size(&cfg->res), data);
+> >>>> -		if (rc)
+> >>>> -			return rc;
+> >>>> -	}
+> >>>> -
+> >>>> -	return 0;
+> >>>> -}
+> >>>> -#define set_apei_filter() (arch_apei_filter_addr = pci_mmcfg_for_each_region)
+> >>>> -#else
+> >>>> -#define set_apei_filter()
+> >>>> -#endif
+> >>>> -
+> >>>>  static void __init __pci_mmcfg_init(int early)
+> >>>>  {
+> >>>>  	pci_mmcfg_reject_broken(early);
+> >>>> @@ -665,8 +639,6 @@ void __init pci_mmcfg_early_init(void)
+> >>>>  		else
+> >>>>  			acpi_table_parse(ACPI_SIG_MCFG, pci_parse_mcfg);
+> >>>>  		__pci_mmcfg_init(1);
+> >>>> -
+> >>>> -		set_apei_filter();
+> >>>>  	}
+> >>>>  }
+> >>>>  
+> >>>> diff --git a/drivers/acpi/apei/apei-base.c b/drivers/acpi/apei/apei-base.c
+> >>>> index c7fdb12..daae75a 100644
+> >>>> --- a/drivers/acpi/apei/apei-base.c
+> >>>> +++ b/drivers/acpi/apei/apei-base.c
+> >>>> @@ -21,6 +21,7 @@
+> >>>>  #include <linux/kernel.h>
+> >>>>  #include <linux/module.h>
+> >>>>  #include <linux/init.h>
+> >>>> +#include <linux/pci.h>
+> >>>>  #include <linux/acpi.h>
+> >>>>  #include <linux/slab.h>
+> >>>>  #include <linux/io.h>
+> >>>> @@ -448,13 +449,34 @@ static int apei_get_nvs_resources(struct apei_resources *resources)
+> >>>>  	return acpi_nvs_for_each_region(apei_get_res_callback, resources);
+> >>>>  }
+> >>>>  
+> >>>> -int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+> >>>> -				     void *data), void *data);
+> >>>> -static int apei_get_arch_resources(struct apei_resources *resources)
+> >>>> +#ifdef CONFIG_PCI
+> >>>> +extern struct list_head pci_mmcfg_list;
+> >>>> +static int apei_filter_mcfg_addr(struct apei_resources *res,
+> >>>> +			struct apei_resources *mcfg_res)
+> >>>> +{
+> >>>> +	int rc = 0;
+> >>>> +	struct pci_mmcfg_region *cfg;
+> >>>> +
+> >>>> +	if (list_empty(&pci_mmcfg_list))
+> >>>> +		return 0;
+> >>>> +
+> >>>> +	apei_resources_init(mcfg_res);
+> >>>> +	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+> >>>> +		rc = apei_res_add(&mcfg_res->iomem, cfg->res.start, resource_size(&cfg->res));
+> >>>> +		if (rc)
+> >>>> +			return rc;
+> >>>> +	}
+> >>>>  
+> >>>> +	/* filter the mcfg resource from current APEI's */
+> >>>> +	return apei_resources_sub(res, mcfg_res);
+> >>>> +}
+> >>>> +#else
+> >>>> +static inline int apei_filter_mcfg_addr(struct apei_resources *res,
+> >>>> +			struct apei_resources *mcfg_res)
+> >>>>  {
+> >>>> -	return arch_apei_filter_addr(apei_get_res_callback, resources);
+> >>>> +	return 0;
+> >>>>  }
+> >>>> +#endif
+> >>>>  
+> >>>>  /*
+> >>>>   * IO memory/port resource management mechanism is used to check
+> >>>> @@ -486,15 +508,9 @@ int apei_resources_request(struct apei_resources *resources,
+> >>>>  	if (rc)
+> >>>>  		goto nvs_res_fini;
+> >>>>  
+> >>>> -	if (arch_apei_filter_addr) {
+> >>>> -		apei_resources_init(&arch_res);
+> >>>> -		rc = apei_get_arch_resources(&arch_res);
+> >>>> -		if (rc)
+> >>>> -			goto arch_res_fini;
+> >>>> -		rc = apei_resources_sub(resources, &arch_res);
+> >>>> -		if (rc)
+> >>>> -			goto arch_res_fini;
+> >>>> -	}
+> >>>> +	rc = apei_filter_mcfg_addr(resources, &arch_res);
+> >>>> +	if (rc)
+> >>>> +		goto arch_res_fini;
+> >>>>  
+> >>>>  	rc = -EINVAL;
+> >>>>  	list_for_each_entry(res, &resources->iomem, list) {
+> >>>> @@ -544,8 +560,7 @@ int apei_resources_request(struct apei_resources *resources,
+> >>>>  		release_mem_region(res->start, res->end - res->start);
+> >>>>  	}
+> >>>>  arch_res_fini:
+> >>>> -	if (arch_apei_filter_addr)
+> >>>> -		apei_resources_fini(&arch_res);
+> >>>> +	apei_resources_fini(&arch_res);
+> >>>>  nvs_res_fini:
+> >>>>  	apei_resources_fini(&nvs_resources);
+> >>>>  	return rc;
+> >>>> -- 
+> >>>> 1.8.3.1
+> >>>>
