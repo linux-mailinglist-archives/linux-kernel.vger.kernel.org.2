@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B4E436349
+	by mail.lfdr.de (Postfix) with ESMTP id 6B25C43634A
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhJUNsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S231452AbhJUNsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhJUNsB (ORCPT
+        with ESMTP id S231431AbhJUNsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:48:01 -0400
+        Thu, 21 Oct 2021 09:48:04 -0400
 Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B11C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:45:45 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ls18so542123pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:45:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCC2C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:45:48 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so579928pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:45:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QDxUA5M+5Tc9pgMaEnmtMzJohvZssOB/8meny4PzmyY=;
-        b=FIUQGFZ7VcUHQw/Lbr3XDxLdHWunjI79HlNGqEknHtJaH3F/YRy6LUuGzshoBeXDYr
-         MZlbyyYmOFBMUpa6fAEa+ahnfh1ILUpy0O2mHlcbfdbBLpbQZjDU85f0ecq/OVTqNFpo
-         18auKJ2PqREqW0jRZ0e9PU0KxPS4QbGaLpDy60P5CZmPgMgI1h3zVgkzB24Yr4EXITPW
-         ngdail0s4XsavPsVm2VlUP3T2DModYPjhY7eKoXJzRQF8Owjo/EOl2dqmyLm+cDUvCwd
-         UjHACR1cuXhbezr2fIn87GzGepfNOhcb5Iw3rxpTvAJDxB65AIgLhK7HiWIFcwtslPLI
-         VuNg==
+        bh=C4YhQIiG/VVRYQyoXQKHZiWpfOu0OLjbGvCY/d59nFU=;
+        b=HlmJX7TRx4UG0ncPN6Qe3EXnk2ZF9DqLFJphH7uq5N7ZIMVDkvlFe3OwfVkzv+jOUX
+         nEDYcNKn4FiMGpSyH9MwVHOjHjmj/xJwjp42QY85oyBxzOp3Lfi+oyWc4CCwbsr/h1VR
+         ZZ5f7OSp4EysK8w2Ca20O+4hNrZOXf2w4wqak+Z1N/vLht/egXfxz5WzI9ZalH/lUvC+
+         nTVD9dOb5T+i2eO4DGb3yPVbHOT2JcUv4xEZ/LSjuG+2BUNPjSk4+GZK6l+QMLfHUw7D
+         agQLiL+7qyQzFutls43OjUocmcdw64gKS0AWCnKD47K7Pp7YDIOW73Lxd6Kl0f+KTK+C
+         UJ/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QDxUA5M+5Tc9pgMaEnmtMzJohvZssOB/8meny4PzmyY=;
-        b=ySbKFWGPkEdURAzlKX1aVbYh0RJkiR1NXUUPSR/336IGlaDLHrRis/f1GXzFsDShGv
-         xcO/7R3qNcrERYotT2ous89T1Wn89wRwOOxqBQk7JGaBjty9U6n9pIfmBnkkWxWNFChI
-         1wdJLhLAS5Y2MXbnV5944L6vOTjr6AvV4ZAWnrnBwB63g1ymMV76FO6CK+TlHkRynrul
-         DNp8yW9dSo7WTwM2hEpweD6culWoWyGZostidUlc8FjzRFDXpEVrgL5VUSaMMl3F4/wP
-         ThyU9k+13xZrwdRhusn3L5pBAh45kJjPp3OUU5BK3SW1bNg/he/9ycaIo8Aw+6l84jQP
-         IeAw==
-X-Gm-Message-State: AOAM53173RgFDehshfafydGB41JxMyJpXVjWJq1YX7bf0JkrQowhiK6C
-        2cN/DJkDRcliHbuI2FVlJFDlPw==
-X-Google-Smtp-Source: ABdhPJyRF8CtK/W4CjNGZjAYfQW6WxJaeE1/vureHfym+WBfENBF4Q2Cej51bPyc1R3TWXC/9XwKhQ==
-X-Received: by 2002:a17:902:7001:b0:13d:d5b7:d06e with SMTP id y1-20020a170902700100b0013dd5b7d06emr5272202plk.61.1634823945071;
-        Thu, 21 Oct 2021 06:45:45 -0700 (PDT)
+        bh=C4YhQIiG/VVRYQyoXQKHZiWpfOu0OLjbGvCY/d59nFU=;
+        b=qZjsqoFxIHCSiszQochZs0V4ROd1Que2FJoLXu2fc+DvDtfemoNeYiJqLMmOKTTlyU
+         eMyPiO6D12PIYNTWV5xcpsquB66KpQsoNaC8YHHC6FTEaIxJbiROrttbNfrEDgSw/x5N
+         MiI9Krv3ZDJFkzpEx3yc3Kk1Yp6oC+qipLm06LKYPhGdstlLheeLz05ZWAQZJes9cS9u
+         jY9V2rQBMELWe3+38fD+/7qnwgDQFTKDsijfc6Zho9JJqE7PCIbwKmf2frJmeCR4Pt2T
+         t3+j1Sjp5D/0ROd/F2Bkk/uJieXk3c5BX+SpwsL64d9GhNraTKeHDshUblqaT6+UQdFz
+         Dnmw==
+X-Gm-Message-State: AOAM533sQszuitaeoieEl7SvYgmYarUcemruc+H1NDVlwdkgFbTRs5Qk
+        r+RHFMazcxAUsreh69xgXxMm/Q==
+X-Google-Smtp-Source: ABdhPJwvwIGLuEN95nh+Hdt3OX1LVT7d/V/k3x5/tuTpUkDCBpOM1BJzR/hzpYqZkA7GOoyte5YkgA==
+X-Received: by 2002:a17:902:b213:b0:13e:cd44:b4b5 with SMTP id t19-20020a170902b21300b0013ecd44b4b5mr5250651plr.18.1634823948002;
+        Thu, 21 Oct 2021 06:45:48 -0700 (PDT)
 Received: from localhost ([103.127.241.129])
-        by smtp.gmail.com with ESMTPSA id b19sm5480396pgs.33.2021.10.21.06.45.44
+        by smtp.gmail.com with ESMTPSA id g16sm1370633pfv.192.2021.10.21.06.45.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 06:45:44 -0700 (PDT)
+        Thu, 21 Oct 2021 06:45:47 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -65,9 +65,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         James Clark <james.clark@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [RFCv1 1/4] arm64: Use static key for tracing PID in CONTEXTIDR
-Date:   Thu, 21 Oct 2021 21:45:27 +0800
-Message-Id: <20211021134530.206216-2-leo.yan@linaro.org>
+Subject: [RFCv1 2/4] arm64: entry: Always apply workaround for contextidr_el1
+Date:   Thu, 21 Oct 2021 21:45:28 +0800
+Message-Id: <20211021134530.206216-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211021134530.206216-1-leo.yan@linaro.org>
 References: <20211021134530.206216-1-leo.yan@linaro.org>
@@ -77,74 +77,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel provides CONFIG_PID_IN_CONTEXTIDR for tracing PID into system
-register CONTEXTIDR; we need to statically enable this configuration
-when build kernel image to use this feature.
+After introducing static key as the switch for tracing PID into
+contextidr_el1, the kernel can dynamically turn on the static key to
+use PID tracing to contextidr_el1.  This means even the config
+CONFIG_PID_IN_CONTEXTIDR is not selected, the kernel still can use
+contextidr_el1.
 
-On the other hand, hardware tracing modules (e.g. Arm CoreSight, SPE,
-etc) rely on this feature to provide context info in their tracing data.
-If kernel has not enabled configuration CONFIG_PID_IN_CONTEXTIDR, then
-tracing modules have no chance to capture PID related info.
+When erratum 84571 is detected, the workaround should be always
+applied on contextidr_el1, particularly if the static key is enabled
+dynamically.
 
-This patch introduces static key for tracing PID in CONTEXTIDR, it
-provides a possibility for device driver to dynamically enable and
-disable tracing PID into CONTEXTIDR as needed.
-
-As the first step, the kernel increases the static key if
-CONFIG_PID_IN_CONTEXTIDR is enabled when booting kernel, in this case
-kernel will always trace PID into CONTEXTIDR at the runtime.  This means
-before and after applying this patch, the semantics for
-CONFIG_PID_IN_CONTEXTIDR are consistent.
+This patch would introduce minor overload by one extra instruction for
+accessing system register contextidr_el1 and it only impacts platform
+which erratum 84571.  So it's expected to not cause any significant
+regression.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- arch/arm64/include/asm/mmu_context.h |  4 +++-
- arch/arm64/kernel/process.c          | 11 +++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/entry.S | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index f4ba93d4ffeb..e1f33616f83a 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -26,9 +26,11 @@
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index bc6d5a970a13..c41a4cfff527 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -356,12 +356,8 @@ alternative_else_nop_endif
  
- extern bool rodata_full;
- 
-+DECLARE_STATIC_KEY_FALSE(contextidr_in_use);
-+
- static inline void contextidr_thread_switch(struct task_struct *next)
- {
--	if (!IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
-+	if (!static_branch_unlikely(&contextidr_in_use))
- 		return;
- 
- 	write_sysreg(task_pid_nr(next), contextidr_el1);
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 40adb8cdbf5a..d744c0c7e4c4 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -61,6 +61,9 @@ unsigned long __stack_chk_guard __ro_after_init;
- EXPORT_SYMBOL(__stack_chk_guard);
+ #ifdef CONFIG_ARM64_ERRATUM_845719
+ alternative_if ARM64_WORKAROUND_845719
+-#ifdef CONFIG_PID_IN_CONTEXTIDR
+ 	mrs	x29, contextidr_el1
+ 	msr	contextidr_el1, x29
+-#else
+-	msr contextidr_el1, xzr
+-#endif
+ alternative_else_nop_endif
  #endif
- 
-+DEFINE_STATIC_KEY_FALSE(contextidr_in_use);
-+EXPORT_SYMBOL_GPL(contextidr_in_use);
-+
- /*
-  * Function pointers to optional machine specific functions
-  */
-@@ -721,3 +724,11 @@ int arch_elf_adjust_prot(int prot, const struct arch_elf_state *state,
- 	return prot;
- }
- #endif
-+
-+static int __init contextidr_init(void)
-+{
-+	if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
-+		static_branch_inc(&contextidr_in_use);
-+	return 0;
-+}
-+early_initcall(contextidr_init);
+ 3:
 -- 
 2.25.1
 
