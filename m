@@ -2,96 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4BB436553
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D331243655E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJUPON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:14:13 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:56470 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhJUPOL (ORCPT
+        id S231844AbhJUPOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhJUPOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:14:11 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:49138)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdZjW-00HSiJ-PB; Thu, 21 Oct 2021 09:11:54 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51076 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdZjV-00CXjS-FN; Thu, 21 Oct 2021 09:11:54 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-12-ebiederm@xmission.com>
-        <YXFLFUjGsvdK13Sa@infradead.org>
-Date:   Thu, 21 Oct 2021 10:11:46 -0500
-In-Reply-To: <YXFLFUjGsvdK13Sa@infradead.org> (Christoph Hellwig's message of
-        "Thu, 21 Oct 2021 04:12:21 -0700")
-Message-ID: <87wnm6h0p9.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 21 Oct 2021 11:14:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2B3C0613B9;
+        Thu, 21 Oct 2021 08:12:26 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 15:12:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634829144;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vVND0yEcZ71I0QbJC2oIjnPkdar6Kc4dpx/VytAAc0w=;
+        b=E633KN1GviHOB+s3th9HMGxKqWAFtIA6kE9HLnNjk/yl8px+I8tUrTEbyGc5F0AEDx4exW
+        m1g4NCyxs/REZOPfMXapVBZGY4F/kVD7gexG5DMPniNfloIFmCCMQF+nfXRmW1X0FqKUG+
+        NOcCDo/bAZdMW3BasDTnhGY/RSGaPU31K9fThQmcizwBFVtDVYqDCdQ3f6bsriuuHIJB2x
+        BauIpMvLs3uXX21Awl9YLNBEx62Z8+GlcEfHJpsIhSuZlYuHhV8Ty4vocP0SjVAZy6tPay
+        WCCdVQTrA01DYiVZyOlnvCod1wQLuOPT0Sy660V7zjD92cE5SeRYXUXam56Vsg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634829144;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vVND0yEcZ71I0QbJC2oIjnPkdar6Kc4dpx/VytAAc0w=;
+        b=mzJFtfaCWqlKYHtuYyfsT5NtP+09fR7gg4sVYFM+X8RJ0DlAC3HtSDy2JaewVvbb7TtLtg
+        rLRQ3Zm1M3Cp4mCA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fpu] x86/fpu/signal: Use fpstate for size and features
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <87ilxz5iew.ffs@tglx>
+References: <87ilxz5iew.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdZjV-00CXjS-FN;;;mid=<87wnm6h0p9.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19u0wOTfTJ+w+da1gXdYf5UxQQOSI4+4bY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSlimDrugH,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4988]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  1.0 XMSlimDrugH Weight loss drug headers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Christoph Hellwig <hch@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 483 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 9 (1.9%), b_tie_ro: 8 (1.6%), parse: 0.92 (0.2%),
-        extract_message_metadata: 14 (2.9%), get_uri_detail_list: 0.88 (0.2%),
-        tests_pri_-1000: 20 (4.0%), tests_pri_-950: 2.6 (0.5%),
-        tests_pri_-900: 1.87 (0.4%), tests_pri_-90: 242 (50.1%), check_bayes:
-        239 (49.4%), b_tokenize: 7 (1.5%), b_tok_get_all: 5 (1.1%),
-        b_comp_prob: 2.0 (0.4%), b_tok_touch_all: 220 (45.6%), b_finish: 0.96
-        (0.2%), tests_pri_0: 180 (37.3%), check_dkim_signature: 1.02 (0.2%),
-        check_dkim_adsp: 3.1 (0.7%), poll_dns_idle: 0.52 (0.1%), tests_pri_10:
-        2.1 (0.4%), tests_pri_500: 7 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 12/20] exit/kthread: Have kernel threads return instead of calling do_exit
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Message-ID: <163482914339.25758.17230652529422547201.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> writes:
+The following commit has been merged into the x86/fpu branch of tip:
 
-> On Wed, Oct 20, 2021 at 12:43:58PM -0500, Eric W. Biederman wrote:
->> In 2009 Oleg reworked[1] the kernel threads so that it is not
->> necessary to call do_exit if you are not using kthread_stop().  Remove
->> the explicit calls of do_exit and complete_and_exit (with a NULL
->> completion) that were previously necessary.
->
-> With this we should also be able to drop the export for do_exit.
+Commit-ID:     5509cc78080d29b23706dbf076d51691b69f3c79
+Gitweb:        https://git.kernel.org/tip/5509cc78080d29b23706dbf076d51691b69f3c79
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 15 Oct 2021 00:51:51 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 21 Oct 2021 14:24:47 +02:00
 
-Good point.
+x86/fpu/signal: Use fpstate for size and features
 
-After this set of changes I don't see any calls of do_exit in drivers
-or other awkward places so that would make a good addition.
+For dynamically enabled features it's required to get the features which
+are enabled for that context when restoring from sigframe.
 
-Eric
+The same applies for all signal frame size calculations.
 
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/87ilxz5iew.ffs@tglx
+---
+ arch/x86/kernel/fpu/signal.c | 44 +++++++++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
+
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 935818b..f9af174 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -41,7 +41,7 @@ static inline bool check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
+ 	/* Check for the first magic field and other error scenarios. */
+ 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
+ 	    fx_sw->xstate_size < min_xstate_size ||
+-	    fx_sw->xstate_size > fpu_user_xstate_size ||
++	    fx_sw->xstate_size > current->thread.fpu.fpstate->user_size ||
+ 	    fx_sw->xstate_size > fx_sw->extended_size)
+ 		goto setfx;
+ 
+@@ -98,7 +98,8 @@ static inline bool save_fsave_header(struct task_struct *tsk, void __user *buf)
+ 	return true;
+ }
+ 
+-static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
++static inline bool save_xstate_epilog(void __user *buf, int ia32_frame,
++				      unsigned int usize)
+ {
+ 	struct xregs_state __user *x = buf;
+ 	struct _fpx_sw_bytes *sw_bytes;
+@@ -113,7 +114,7 @@ static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
+ 		return !err;
+ 
+ 	err |= __put_user(FP_XSTATE_MAGIC2,
+-			  (__u32 __user *)(buf + fpu_user_xstate_size));
++			  (__u32 __user *)(buf + usize));
+ 
+ 	/*
+ 	 * Read the xfeatures which we copied (directly from the cpu or
+@@ -171,6 +172,7 @@ static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
+ bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+ {
+ 	struct task_struct *tsk = current;
++	struct fpstate *fpstate = tsk->thread.fpu.fpstate;
+ 	int ia32_fxstate = (buf != buf_fx);
+ 	int ret;
+ 
+@@ -215,7 +217,7 @@ retry:
+ 	fpregs_unlock();
+ 
+ 	if (ret) {
+-		if (!__clear_user(buf_fx, fpu_user_xstate_size))
++		if (!__clear_user(buf_fx, fpstate->user_size))
+ 			goto retry;
+ 		return false;
+ 	}
+@@ -224,17 +226,18 @@ retry:
+ 	if ((ia32_fxstate || !use_fxsr()) && !save_fsave_header(tsk, buf))
+ 		return false;
+ 
+-	if (use_fxsr() && !save_xstate_epilog(buf_fx, ia32_fxstate))
++	if (use_fxsr() &&
++	    !save_xstate_epilog(buf_fx, ia32_fxstate, fpstate->user_size))
+ 		return false;
+ 
+ 	return true;
+ }
+ 
+-static int __restore_fpregs_from_user(void __user *buf, u64 xrestore,
+-				      bool fx_only)
++static int __restore_fpregs_from_user(void __user *buf, u64 ufeatures,
++				      u64 xrestore, bool fx_only)
+ {
+ 	if (use_xsave()) {
+-		u64 init_bv = xfeatures_mask_uabi() & ~xrestore;
++		u64 init_bv = ufeatures & ~xrestore;
+ 		int ret;
+ 
+ 		if (likely(!fx_only))
+@@ -265,7 +268,8 @@ static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
+ retry:
+ 	fpregs_lock();
+ 	pagefault_disable();
+-	ret = __restore_fpregs_from_user(buf, xrestore, fx_only);
++	ret = __restore_fpregs_from_user(buf, fpu->fpstate->user_xfeatures,
++					 xrestore, fx_only);
+ 	pagefault_enable();
+ 
+ 	if (unlikely(ret)) {
+@@ -332,7 +336,7 @@ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 		user_xfeatures = fx_sw_user.xfeatures;
+ 	} else {
+ 		user_xfeatures = XFEATURE_MASK_FPSSE;
+-		state_size = fpu->fpstate->size;
++		state_size = fpu->fpstate->user_size;
+ 	}
+ 
+ 	if (likely(!ia32_fxstate)) {
+@@ -425,10 +429,11 @@ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 	return success;
+ }
+ 
+-static inline int xstate_sigframe_size(void)
++static inline unsigned int xstate_sigframe_size(struct fpstate *fpstate)
+ {
+-	return use_xsave() ? fpu_user_xstate_size + FP_XSTATE_MAGIC2_SIZE :
+-			fpu_user_xstate_size;
++	unsigned int size = fpstate->user_size;
++
++	return use_xsave() ? size + FP_XSTATE_MAGIC2_SIZE : size;
+ }
+ 
+ /*
+@@ -436,17 +441,19 @@ static inline int xstate_sigframe_size(void)
+  */
+ bool fpu__restore_sig(void __user *buf, int ia32_frame)
+ {
+-	unsigned int size = xstate_sigframe_size();
+ 	struct fpu *fpu = &current->thread.fpu;
+ 	void __user *buf_fx = buf;
+ 	bool ia32_fxstate = false;
+ 	bool success = false;
++	unsigned int size;
+ 
+ 	if (unlikely(!buf)) {
+ 		fpu__clear_user_states(fpu);
+ 		return true;
+ 	}
+ 
++	size = xstate_sigframe_size(fpu->fpstate);
++
+ 	ia32_frame &= (IS_ENABLED(CONFIG_X86_32) ||
+ 		       IS_ENABLED(CONFIG_IA32_EMULATION));
+ 
+@@ -481,7 +488,7 @@ unsigned long
+ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
+ 		     unsigned long *buf_fx, unsigned long *size)
+ {
+-	unsigned long frame_size = xstate_sigframe_size();
++	unsigned long frame_size = xstate_sigframe_size(current->thread.fpu.fpstate);
+ 
+ 	*buf_fx = sp = round_down(sp - frame_size, 64);
+ 	if (ia32_frame && use_fxsr()) {
+@@ -494,9 +501,12 @@ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
+ 	return sp;
+ }
+ 
+-unsigned long fpu__get_fpstate_size(void)
++unsigned long __init fpu__get_fpstate_size(void)
+ {
+-	unsigned long ret = xstate_sigframe_size();
++	unsigned long ret = fpu_user_xstate_size;
++
++	if (use_xsave())
++		ret += FP_XSTATE_MAGIC2_SIZE;
+ 
+ 	/*
+ 	 * This space is needed on (most) 32-bit kernels, or when a 32-bit
