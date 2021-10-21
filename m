@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77C0436E4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D68D436E4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhJUX1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
+        id S232229AbhJUX2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJUX1B (ORCPT
+        with ESMTP id S229512AbhJUX16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:27:01 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9F0C061764;
-        Thu, 21 Oct 2021 16:24:44 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso1714641pjw.2;
-        Thu, 21 Oct 2021 16:24:44 -0700 (PDT)
+        Thu, 21 Oct 2021 19:27:58 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB31C061764;
+        Thu, 21 Oct 2021 16:25:41 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id y11so2021460qtn.13;
+        Thu, 21 Oct 2021 16:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9fY2hV8XRVOO2z6eSx2Sa3uH+I+pPPBEbHLcYZ/x3/M=;
-        b=KC+C/tSlTIUK8G8bDPyCVtQPfsEG2oni8sQ+e9CPl8yiAk1NQd/dtP8yibo2BygPd9
-         4WbDgVPBIaG5s9KSFacVVxTLUb31PHRGSde1XHUyr0EFvMpcEKXiN8daXLOGXO0qm6Se
-         A09LELqTjoKB2JsQnY/tjIJlsLItY75/jmLU73JCZy+a5E8aiLLoXeB8737xT8riyOhu
-         ga5STNGShJZpHZ0IsBVhUwJ1PzgupV9ZWtZLXqL8vMX0Nk8k7zJPIVPL23GM2tAp2S3Q
-         DAvwooFkWhE+czkzwKAxur3Vu5EaX6dDLVptTdkl0HrbUXxaMK5HD1bmcETTyvRfRRS/
-         5teg==
+        bh=/15db6Apbth6KWgHu9T+Z7/sxzP+v8xElG8h3sD5lB0=;
+        b=B0ugykVGeVHNbbq6udchd8maFVM3S/YKsUeCtXOcEPcEBjmDMjCzT+r3RprM9t49Vx
+         Huv8OzXgfBcXwHRGDyQ3m91qIX0OQUOaYoxPGANuLLG3PUJn3UmEK4dwt2ipLaWoXYNK
+         CX3RKjR2d9XJH39AgdMQitL8pLWQi7qeNcNHI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9fY2hV8XRVOO2z6eSx2Sa3uH+I+pPPBEbHLcYZ/x3/M=;
-        b=iIKoa4O4snGw/dfLFDiyFmuD24J2PbWDsCIHSJSLnZ89wQLM2OLXtrsvq84nPIZnj9
-         EM7xlQh0oLlNjtUbvoIZ6n4cHbcX6CQ9jImK20yKb3AfXP0yy6gp2FsSir/aV96zfEgt
-         hm7d+EBpzNihFPnXKFhi9Nf05PnbW9qKtqoNq98aqRcf5lQlGurgPryRGhQFbwT7y4ES
-         HKRnXMofpohDe6KG262gVJXiVeiZTkfVwYCFSekuKY+9top/Fln/v/s0eJKih5agVDEJ
-         +36SRRLA+DyAjCa/kq2zubQ15y/LcpVuuef/2ax9V+TrKTlhHIP5msh3DhIgEagw7SEw
-         gBdw==
-X-Gm-Message-State: AOAM533SmDfqasYrX12nbYBZ06gMnBaddjC/tuA3THdon3laSsbtZU4e
-        9AyQzbyShDJBXfNQ2FF2XznPlyCiVKDzRRpKSy4=
-X-Google-Smtp-Source: ABdhPJzUOIu/reLJA0RsJ0HzkMLCAnvLuGWpjuidUuwEwHgFcQ9+E5YtyRmfG1HULCXpw+DmppaLUTVeLfe50KNFevg=
-X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr10054997pjj.138.1634858684224;
- Thu, 21 Oct 2021 16:24:44 -0700 (PDT)
+        bh=/15db6Apbth6KWgHu9T+Z7/sxzP+v8xElG8h3sD5lB0=;
+        b=UVwnPrianvYKSFRGpjVJUn74b4lSU7gI9l35K2zg+tf0gU/RA1w5kn9j1aCFEGsJJL
+         pZa2O/6i2gjhwovQaZZVcI5odeYRqK+I/5qFVC1LbF0+78HsVap3aYgXLkfnJF3fdJkc
+         j77tvfyCCg1vf2bo1SlZ2gUz2ZjWSZympUsK+C/ExojzNvjeKeWhDTfHo3BwTLE5YSyD
+         d8lasktpneQy3SErA0Au2zNlUyD3qmd8IaIPPnMr61gjjVtwea90qTnLm+4M6T7WCu+m
+         eXxGw6tlqQom201S7rcKEr8L54BneYcB4RZWujYYlN/jYmz++YXZUjarLOu83uRF1bhK
+         rXpg==
+X-Gm-Message-State: AOAM533vLdYvzdDhx0qHamvmLZ08bMsSnM3OYrI5idBWWnTJPmbp1gmJ
+        Xn6wLr4YjOg9cJNPOGXHMC9Xkb9EtOEroYu2BBM=
+X-Google-Smtp-Source: ABdhPJzjwuh9jnD5tusFhcXxstWRpLFH7+vaBwsmdcwqUHV7+REwAoSLrqCb8T2W2yfOBKpGEmJJTZfem/iuv3whScQ=
+X-Received: by 2002:ac8:5f06:: with SMTP id x6mr9535444qta.295.1634858740877;
+ Thu, 21 Oct 2021 16:25:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020104442.021802560@infradead.org> <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net> <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net> <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211021223719.GY174703@worktop.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 16:24:33 -0700
-Message-ID: <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <20211019205307.36946-1-eajames@linux.ibm.com>
+In-Reply-To: <20211019205307.36946-1-eajames@linux.ibm.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 21 Oct 2021 23:25:29 +0000
+Message-ID: <CACPK8Xcg2Kwh+LTS=E3r5ZgSWD8eyntWp77KabNjt0vFMUTyAg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] occ: fsi and hwmon: Extract and provide the
+ SBEFIFO FFDC
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-fsi@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 3:40 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, 19 Oct 2021 at 20:53, Eddie James <eajames@linux.ibm.com> wrote:
 >
-> On Thu, Oct 21, 2021 at 11:03:33AM -0700, Alexei Starovoitov wrote:
->
-> > > I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
-> > > lot more robust than the 64bit one and I couldn't figure out why the
-> > > difference.
-> >
-> > Interesting. Daniel will recognize that trick then :)
->
-> > > Is there concurrency on the jit?
-> >
-> > The JIT of different progs can happen in parallel.
->
-> In that case I don't think the patch is safe. I'll see if I can find a
-> variant that doesn't use static storage.
+> Currently, users have no way to obtain the FFDC (First Failure Data
+> Capture) provided by the SBEFIFO when an operation fails. To remedy this,
+> add code in the FSI OCC driver to store this FFDC in the user's response
+> buffer and set the response length accordingly.
+> On the hwmon side, there is a need at the application level to perform
+> side-band operations in response to SBE errors. Therefore, add a new
+> binary sysfs file that provides the FFDC (or lack thereof) when there is
+> an SBEFIFO error. Now applications can take action when an SBE error is
+> detected.
 
-The variable can only change from one fixed value to another fixed value.
-Different threads will compute the same value. So I think it's safe
-as-is. READ_ONCE/WRITE_ONCE won't hurt though.
+Thanks, I've merged these. I took the chance to add some of your
+responses to the commit messages as they were useful.
+
+>
+> Changes since v3:
+>  - Rebase
+>  - Add a check for valid FFDC length
+>  - Add comments about SBE words being four bytes
+>
+> Changes since v2:
+>  - Add documentation
+>
+> Changes since v1:
+>  - Remove the magic value that indicated an SBE/SBEFIFO error with no
+>    FFDC.
+>  - Remove binary sysfs state management and intead just clear the error
+>    flag when the whole FFDC has been read.
+>
+> Eddie James (4):
+>   fsi: occ: Use a large buffer for responses
+>   fsi: occ: Store the SBEFIFO FFDC in the user response buffer
+>   docs: ABI: testing: Document the OCC hwmon FFDC binary interface
+>   hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs
+>
+>  .../sysfs-bus-platform-devices-occ-hwmon      |  13 ++
+>  drivers/fsi/fsi-occ.c                         | 164 +++++++++---------
+>  drivers/hwmon/occ/p9_sbe.c                    |  86 ++++++++-
+>  include/linux/fsi-occ.h                       |   2 +
+>  4 files changed, 186 insertions(+), 79 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-devices-occ-hwmon
+>
+> --
+> 2.27.0
+>
