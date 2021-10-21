@@ -2,150 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E176E435CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C6435CDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhJUI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:29:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50380 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhJUI3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:29:19 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 896451FDAF;
-        Thu, 21 Oct 2021 08:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634804822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kPlvFBknNx5Rvt2Xom4sEyQcQrKjPFKmTkUyWHqk6xs=;
-        b=KE8DuvBMWupszs4XD7dZgx/6DgybMF7vT1ncYk+1VxUd+vpZdA8rakzIVPBZQ3voE9eoit
-        kht8USBQbDCBTK5O5BQWl49IgRMLxpDvaCEcHLxJtFjepm+Q7ByMmVGer/sf50KfBf/SbU
-        uTteXN4ko4Wi15EPLyxxarCMz2Z0WWw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634804822;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kPlvFBknNx5Rvt2Xom4sEyQcQrKjPFKmTkUyWHqk6xs=;
-        b=YNu3+u1JJKpWrmCb605Frq2tQXFIgtwiuWpR91B95MQhsIHSaQKUWODJbs1bLdq+ADZau2
-        I1y+k0O/FZNIeHBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4E10A13BDA;
-        Thu, 21 Oct 2021 08:27:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mPJFElYkcWEpGAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 21 Oct 2021 08:27:02 +0000
-Message-ID: <9c6c0840-a37d-c6fb-78a8-f2c49df2380c@suse.cz>
-Date:   Thu, 21 Oct 2021 10:27:01 +0200
+        id S231371AbhJUIay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:30:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231153AbhJUIax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:30:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D3C961056;
+        Thu, 21 Oct 2021 08:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634804918;
+        bh=qjew/QfPbYGCt0Lvs5YNdF5HsyJTr8BpEPVo9iVlsiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n8CMxxM+z2Mrc7OS5nclcrmdVvyTyvZ/dZJcsoz6Iz5KWflLoK7Jm/B6nPNQrfC3J
+         1UGrpVXMhMJQWfsk9uGvqUQMts5bYHkqwGN2jyAIftJYnktIS1G55+H/SkQ8VG8OII
+         IE33n8vVrViKz/VD8jLPKwjw8ARJLrItk6AVypuE=
+Date:   Thu, 21 Oct 2021 10:28:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stefan Agner <stefan@agner.ch>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] serial: imx: fix detach/attach of serial console
+Message-ID: <YXEks5JJ8Eg9wZob@kroah.com>
+References: <20211020192643.476895-1-francesco.dolcini@toradex.com>
+ <20211020192643.476895-2-francesco.dolcini@toradex.com>
+ <CAHp75VdieUOthjX9N89W-boPNk7PrQuTuxM_xmqpo2yv07oZZA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC 0/3] mm/page_alloc: Remote per-cpu lists drain support
-Content-Language: en-US
-To:     nsaenzju@redhat.com, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        frederic@kernel.org, tglx@linutronix.de, peterz@infradead.org,
-        mtosatti@redhat.com, nilal@redhat.com, mgorman@suse.de,
-        linux-rt-users@vger.kernel.org, cl@linux.com, paulmck@kernel.org,
-        ppandit@redhat.com
-References: <20211008161922.942459-1-nsaenzju@redhat.com>
- <38d28332-6b15-b353-5bcb-f691455c6495@suse.cz>
- <06e96819a964ca4b4ba504d0da71e81d79f3a87b.camel@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <06e96819a964ca4b4ba504d0da71e81d79f3a87b.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdieUOthjX9N89W-boPNk7PrQuTuxM_xmqpo2yv07oZZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 14:50, nsaenzju@redhat.com wrote:
-> Hi Vlastimil, thanks for spending time on this.
-> Also, excuse me if I over explain things.
+On Wed, Oct 20, 2021 at 10:54:26PM +0300, Andy Shevchenko wrote:
+> On Wed, Oct 20, 2021 at 10:27 PM Francesco Dolcini
+> <francesco.dolcini@toradex.com> wrote:
+> >
+> > From: Stefan Agner <stefan@agner.ch>
+> >
+> > If the device used as a serial console gets detached/attached at runtime,
+> > register_console() will try to call imx_uart_setup_console(), but this
+> > is not possible since it is marked as __init.
+> 
+> Thank you for fixing this!
+> 
+> > For instance
+> >
+> >   # cat /sys/devices/virtual/tty/console/active
+> >   tty1 ttymxc0
+> >   # echo -n N > /sys/devices/virtual/tty/console/subsystem/ttymxc0/console
+> >   # echo -n Y > /sys/devices/virtual/tty/console/subsystem/ttymxc0/console
+> 
+> Can we leave only something like below in the commit message?
+> 
+> > [   73.167005] Unable to handle kernel paging request at virtual address c154d928
+> > [   73.168304] Internal error: Oops: 8000000d [#1] SMP ARM
+> > [   73.168522] CPU: 0 PID: 536 Comm: sh Not tainted 5.15.0-rc6-00056-g3968ddcf05fb #3
+>   ...
+> > [   73.168791] PC is at imx_uart_console_setup+0x0/0x238
+> > [   73.168927] LR is at try_enable_new_console+0x98/0x124
+>   ...
+> > [   73.173826] [<c0196f44>] (try_enable_new_console) from [<c01984a8>] (register_console+0x10c/0x2ec)
+> > [   73.174053] [<c01984a8>] (register_console) from [<c06e2c90>] (console_store+0x14c/0x168)
+> > [   73.174262] [<c06e2c90>] (console_store) from [<c0383718>] (kernfs_fop_write_iter+0x110/0x1cc)
+> 
+> > A similar issue could be triggered unbinding/binding the serial console
+> 
+> on unbinding/binding
+> 
+> > device [*].
+> >
+> > Drop __init so that imx_uart_setup_console() can be safely called at
+> > runtime.
+> >
+> > [*] https://lore.kernel.org/all/20181114174940.7865-3-stefan@agner.ch/
+> 
+> Make it Link: tag?
+> 
+> > Fixes: a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
+> > Signed-off-by: Stefan Agner <stefan@agner.ch>
+> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> 
+> With above nit-picks addressed, FWIW,
 
-Hi, thanks for spending time on the explanation :) It was very useful.
+Those are not a big deal, I'll edit the changelog text...
 
-...
+thanks,
 
-> 
->> and the "write side" (remote draining) actually doesn't take pagesets.lock,
->> so it's not true that the "lock required to replace ... is held"? The write
->> side uses rcu_replace_pointer(..., mutex_is_locked(&pcpu_drain_mutex))
->> which is a different lock.
-> 
-> The thing 'pagesets.lock' protects against is concurrent access to pcp->lp's
-> content, as opposed to its address. pcp->lp is dereferenced atomically, so no
-> need for locking on that operation.
-> 
-> The drain side never accesses pcp->lp's contents concurrently, it changes
-> pcp->lp's address and makes sure all CPUs are in sync with the new address
-> before clearing the stale data.
-> 
-> Just for the record, I think a better representation of what 'check' in
-> rcu_dereference means is:
-> 
->  * Do an rcu_dereference(), but check that the conditions under which the
->  * dereference will take place are correct.  Typically the conditions
->  * indicate the various locking conditions that should be held at that
->  * point. The check should return true if the conditions are satisfied.
->  * An implicit check for being in an RCU read-side critical section
->  * (rcu_read_lock()) is included.
-> 
-> So for the read side, that is, code reading pcp->lp's address and its contents,
-> the conditions to be met are: being in a RCU critical section, to make sure RCU
-> is keeping track of it, and holding 'pagesets.lock', to avoid concurrently
-> accessing pcp->lp's contents. The later is achieved either by disabling local
-> irqs or disabling migration and getting a per-cpu rt_spinlock. Conveniently
-> these are actions that implicitly delimit an RCU critical section (see [1] and
-> [2]). So the 'pagesets.lock' check fully covers the read side locking/RCU
-> concerns.
-
-Yeah, I wasn't aware of [2] especially. It makes sense that RT locks provide
-the same guarantees for RCU as non-RT.
-
-> On the write side, the drain has to make sure pcp->lp address change is atomic
-> (this is achieved through rcu_replace_pointer()) and that lp->drain is emptied
-> before a happens. So checking for pcpu_drain_mutex being held is good enough.
-> 
->> IOW, synchronize_rcu_expedited() AFAICS has nothing (no rcu_read_lock() to
->> synchronize against? Might accidentally work on !RT thanks to disabled irqs,
->> but not sure about with RT lock semantics of the local_lock...
->>
->> So back to overhead, if I'm correct above we can assume that there would be
->> also rcu_read_lock() in the fast paths.
-> 
-> As I explained above, no need.
-> 
->> The alternative proposed by tglx was IIRC that there would be a spinlock on
->> each cpu, which would be mostly uncontended except when draining. Maybe an
->> uncontended spin lock/unlock would have lower overhead than all of the
->> above? It would be certainly simpler, so I would probably try that first and
->> see if it's acceptable?
-> 
-> You have a point here. I'll provide a performance rundown of both solutions.
-> This one is a bit more complex that's for sure.
-
-Great, thanks!
-
-> Thanks!
-> 
-> [1] See rcu_read_lock()'s description: "synchronize_rcu() wait for regions of
->     code with preemption disabled, including regions of code with interrupts or
->     softirqs disabled."
-> 
-> [2] See kernel/locking/spinlock_rt.c: "The RT [spinlock] substitutions
->     explicitly disable migration and take rcu_read_lock() across the lock held
->     section."
-> 
-
+greg k-h
