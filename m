@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9943436237
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3264B43624B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhJUNBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:01:18 -0400
-Received: from muru.com ([72.249.23.125]:47024 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230463AbhJUNBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:01:14 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 5524380EB;
-        Thu, 21 Oct 2021 12:59:31 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 15:58:56 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-omap@vger.kernel.org
-Subject: Re: Non-existing config symbols DEBUG_OMAP{3,4,5}UART{1,2}
-Message-ID: <YXFkEEwfeF8+osSr@atomide.com>
-References: <CAKXUXMy0FUv25cUGDnhnv=3pTd7NGjepbHao7QoQw8h0hh3CRw@mail.gmail.com>
+        id S231586AbhJUNDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:03:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhJUNC3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:02:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634821213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FfLpJ3QKCtDn5mfQ0p/F6XAIE90YCmZunG7Z1kcvIk4=;
+        b=Qbyzui3WjDKdWFvsIKdTPkPi3VC24q9EDlYsSe83ymJ66xr8rFS6cQGdML0zlCA1ab620R
+        kA1zbAKjXg2hZpA1ASQdcsKnu1hX8uEfLFI/1H9Mqj+Z0DvxAI6BGGi2Am0hUUtaa2R0s+
+        Wcr7/fdXAbiNEnUm6DxNvEp+sTbH+P8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-236-EYk_PLMHMXiatruUkQog1Q-1; Thu, 21 Oct 2021 09:00:12 -0400
+X-MC-Unique: EYk_PLMHMXiatruUkQog1Q-1
+Received: by mail-wm1-f70.google.com with SMTP id l39-20020a05600c1d2700b0030dba1dc6eeso288531wms.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:00:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=FfLpJ3QKCtDn5mfQ0p/F6XAIE90YCmZunG7Z1kcvIk4=;
+        b=PEbJzCsZWzSECSknmGZtBMi8emChMkQR192QqCNAvW0k7mR9YYjsvrEV6+9Z5ANEPV
+         NFGM4jMu7nIIYOrTHD1ImT+jX1tBvlweeBhgHWvhzkFkGvj2hiltToycCtR3UTOOOew0
+         cr4vxlOAwN0JWRNWGf0x95eBq+1WaUYC8Jh9mGH8tTVwgjqSIKMUwt34NSofZPrq+9l7
+         HFeGZJ5/P6c1nQl65cAH1l+5+ZiaK0rgiad4xKh27BTKgH9ZPaAU1Tg46X75VKpWApxM
+         axXSYjrUXKXVRR5gzLOsZmuvnpGkbrgjjTt2jBdVtm8tnQnIFdaAgaU2iL7J3V3hdUId
+         xA3w==
+X-Gm-Message-State: AOAM5309SuJDfSrqsiaw6leC4yYnSQxSZ4SwGPArtPu4E3qxF/q2AT9a
+        4pUwhiyoIGFkD+3k5JTZMDJCSx8LWwu13Z1wTbd8Pc3lL58YFwLgDC4He90sbUtPv5dyWuVnKm3
+        knHZ4i0iFHZNiqDzj/OfiS46H
+X-Received: by 2002:a7b:c31a:: with SMTP id k26mr5899047wmj.187.1634821211040;
+        Thu, 21 Oct 2021 06:00:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyg5aN7cYuw3+jxkmmX4w+oTRT02XFiIXsD9OlC+wd2uOLfvbi5+VSLG7UhWvkO/zaT9gJXkA==
+X-Received: by 2002:a7b:c31a:: with SMTP id k26mr5898985wmj.187.1634821210632;
+        Thu, 21 Oct 2021 06:00:10 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23aba.dip0.t-ipconnect.de. [79.242.58.186])
+        by smtp.gmail.com with ESMTPSA id w2sm4851031wrt.31.2021.10.21.06.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 06:00:10 -0700 (PDT)
+Message-ID: <90909355-43cd-e680-bb73-777d485ee532@redhat.com>
+Date:   Thu, 21 Oct 2021 15:00:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKXUXMy0FUv25cUGDnhnv=3pTd7NGjepbHao7QoQw8h0hh3CRw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+References: <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
+ <YXBRPSjPUYnoQU+M@casper.infradead.org>
+ <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
+ <YXEOCIWKEcUOvVtv@infradead.org>
+ <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
+ <YXFXGeYlGFsuHz/T@moria.home.lan>
+ <2fc2c5da-c0e9-b954-ba48-e258b88e3271@redhat.com>
+ <YXFfRbPUpWUACVm3@infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+In-Reply-To: <YXFfRbPUpWUACVm3@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 21.10.21 14:38, Christoph Hellwig wrote:
+> On Thu, Oct 21, 2021 at 02:35:32PM +0200, David Hildenbrand wrote:
+>> My opinion after all the discussions: use a dedicate type with a clear
+>> name to solve the immediate filemap API issue. Leave the remainder alone
+>> for now. Less code to touch, less subsystems to involve (well, still a
+>> lot), less people to upset, less discussions to have, faster review,
+>> faster upstream, faster progress. A small but reasonable step.
+> 
+> I don't get it.  I mean I'm not the MM expert, I've only been touching
+> most areas of it occasionally for the last 20 years, but anon and file
+> pages have way more in common both in terms of use cases and
 
-* Lukas Bulwahn <lukas.bulwahn@gmail.com> [211011 05:39]:
-> Dear Tony,
-> 
-> With commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for
-> omap2 and omap3/4/5 common uarts"), you added address definitions of
-> DEBUG_UART_PHYS for OMAP2, OMAP3, OMAP4 and OMAP5 in
-> ./arch/arm/Kconfig.debug.
-> 
-> These definitions depend on:
->   - DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || DEBUG_OMAP4UART1 ||
-> DEBUG_OMAP5UART1, and
->   - DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || DEBUG_OMAP4UART2 ||
-> DEBUG_OMAP5UART2.
-> 
-> As of now, only DEBUG_OMAP2UART{1,2} are defined in
-> ./arch/arm/Kconfig.debug, but DEBUG_OMAP{3,4,5}UART{1,2} are not
-> defined. Hence, ./scripts/checkkconfigsymbols.py warns here on
-> non-existing symbols.
-> 
-> I am unsure about the best way to resolve this issue.
-> 
-> - Would you like to simply reuse the config DEBUG_OMAP2UART{1,2} also
-> for OMAP3, OMAP4 and OMAP5? Then, we probably just need to delete the
-> dead references
-> to DEBUG_OMAP{3,4,5}UART{1,2}. If you consider this further change
-> helpful, we could even rename the configs to DEBUG_OMAP2PLUSUART{1,2}
-> to make the architecture more specific.
-> 
-> - Do you see the need for separate config definitions for UART{1,2} on
-> OMAP3, OMAP4 and OMAP5? Then, we would need to add further definitions
-> DEBUG_OMAP{3,4,5}UART{1,2}
-> in this file and link those to the specific architecture.
-> 
-> Once the direction is clear, I am happy to provide a patch to address
-> this issue or you can quickly take care of this yourself.
+You most certainly have way more MM expertise than me ;) I'm just a
+random MM developer, so everybody can feel free to just ignore what I'm
+saying here. I didn't NACK anything, I just consider a lot of things
+that Johannes raised reasonable.
 
-The missing ones should be the same as the DEBUG_OMAP2 I think. We still
-have these defined in arch/arm/mach-omap2/include/mach/serial.h, so that
-can be used to confirm it.
+> implementation than what is different (unlike some of the other (ab)uses
+> of struct page).  What is the point of splitting it now when there are
+> tons of use cases where they are used absolutely interchangable both
+> in consumers of the API and the implementation?
+I guess in an ideal world, we'd have multiple abstractions. We could
+clearly express for a function what type it expects. We'd have a type
+for something passed on the filemap API. We'd have a type for anon THP
+(or even just an anon page). We'd have a type that abstracts both.
 
-Seems like we can just reuse the DEBUG_OMAP2UART variants, not sure if
-we need to rename these to DEBUG_OMAP2PLUSUART variants.
+With that in mind, and not planning with what we'll actually end up
+with, to me it makes perfect sense to teach the filemap API to consume
+the expected type first. And I am not convinced that the folio as is
+("not a tail page") is the right abstraction we actually want to pass
+around in places where we expect either anon or file pages -- or only
+anon pages or only file pages.
 
-Regards,
+Again, my 2 cents.
 
-Tony
+-- 
+Thanks,
+
+David / dhildenb
 
