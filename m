@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7096A436455
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C86C436456
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhJUOfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:35:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:43422 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhJUOfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:35:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90B06D6E;
-        Thu, 21 Oct 2021 07:33:06 -0700 (PDT)
-Received: from [10.57.22.27] (unknown [10.57.22.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 524323F73D;
-        Thu, 21 Oct 2021 07:33:04 -0700 (PDT)
-Subject: Re: [RFCv1 1/4] arm64: Use static key for tracing PID in CONTEXTIDR
-To:     Leo Yan <leo.yan@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211021134530.206216-1-leo.yan@linaro.org>
- <20211021134530.206216-2-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
-Date:   Thu, 21 Oct 2021 15:33:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231520AbhJUOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231404AbhJUOff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:35:35 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9C2C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:33:19 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso635591ota.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4HGMYEBVt5lztNuzur8LH0H/Wgn1pjymQTOhN0cejJ4=;
+        b=HzokV+VMGqZXSf0caNnHUCBfMbUHKlUw4SKRQLtH8yfzQ+0Dl/mZSFcYVSS/Vj7324
+         OUDEFsarByBZ7I44Fiy530ycgW0PXOMc/stTwovZZeGeyYYbmKOSSgPl5tQO2PQL+c5p
+         GpZZ9wt60Bs8aUtF08GVUU0Fi/4H0tl5fA5UG07OpgT9IuuqqUuXET1eSEoOhnASqbpa
+         ywzgPxC9vvm+2O1FM5eonGI9R9kgvEgjQr4bU5jNu3CdpsYHdKHI0B+QEt+7ohpR3Mrb
+         jjSrXVVLXaJZfvg2yJzYglhZZ0iLdvC/YA6SBH2/JRRM0FuSCWtPbzMAYcNmVFiKgokn
+         Si+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=4HGMYEBVt5lztNuzur8LH0H/Wgn1pjymQTOhN0cejJ4=;
+        b=vzFf8k01jO8OZsSlO38T1Pz1Wq3b0oaJspJbPacZUsHCiQ8gO+mJZ2deoy2pYtDb0i
+         0RgAS1Wp2q4olWcE6K/6EX9OnJyPvFLqjyEOEhTUiOmRjbTEDlC62FtDpiXVGHt1uNDc
+         RQmDGNs9ckIapjVnDcrGPpTdRlwTrOhyhPaKI3JxcmWslDQQjt+9PwMMAyn5niYJNavt
+         /bJChz8rdafZhXBMwIJ4C1g1GZzoPi6teZS7PHFNVIuLhvJ77YxwIr7tdVY2u36bBh89
+         /37OjKCa6AzZpfQXRNeH0rT1y6MKQF/uwmesOAt3THFUBV2t2JjasqS3X8klbelq4Qkg
+         ECtA==
+X-Gm-Message-State: AOAM532d6yTda9eCJo0y1P2Nl7uGw3fugJTM2M3d33I6kUqhKnQbDwT6
+        Sj46Jy9t1VdGS7bQLRjSe1I=
+X-Google-Smtp-Source: ABdhPJx1Gj4SPgCyl8/lpZgE22ZS6ii5No+YEsb3xZmA1BhJztM4vnQHOq0hl98ABBaUWvJAdwBUfw==
+X-Received: by 2002:a05:6830:410e:: with SMTP id w14mr5172367ott.256.1634826799011;
+        Thu, 21 Oct 2021 07:33:19 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e22sm1102595otp.0.2021.10.21.07.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 07:33:18 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v3] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+Date:   Thu, 21 Oct 2021 07:33:15 -0700
+Message-Id: <20211021143315.3139952-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211021134530.206216-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+nios2:allmodconfig builds fail with
 
+make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
+	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
+make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
 
-On 21/10/2021 14:45, Leo Yan wrote:
-> The kernel provides CONFIG_PID_IN_CONTEXTIDR for tracing PID into system
-> register CONTEXTIDR; we need to statically enable this configuration
-> when build kernel image to use this feature.
-> 
-> On the other hand, hardware tracing modules (e.g. Arm CoreSight, SPE,
-> etc) rely on this feature to provide context info in their tracing data.
-> If kernel has not enabled configuration CONFIG_PID_IN_CONTEXTIDR, then
-> tracing modules have no chance to capture PID related info.
-> 
-> This patch introduces static key for tracing PID in CONTEXTIDR, it
-> provides a possibility for device driver to dynamically enable and
-> disable tracing PID into CONTEXTIDR as needed.
-> 
-> As the first step, the kernel increases the static key if
-> CONFIG_PID_IN_CONTEXTIDR is enabled when booting kernel, in this case
-> kernel will always trace PID into CONTEXTIDR at the runtime.  This means
-> before and after applying this patch, the semantics for
-> CONFIG_PID_IN_CONTEXTIDR are consistent.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  arch/arm64/include/asm/mmu_context.h |  4 +++-
->  arch/arm64/kernel/process.c          | 11 +++++++++++
->  2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-> index f4ba93d4ffeb..e1f33616f83a 100644
-> --- a/arch/arm64/include/asm/mmu_context.h
-> +++ b/arch/arm64/include/asm/mmu_context.h
-> @@ -26,9 +26,11 @@
->  
->  extern bool rodata_full;
->  
-> +DECLARE_STATIC_KEY_FALSE(contextidr_in_use);
-> +
->  static inline void contextidr_thread_switch(struct task_struct *next)
->  {
-> -	if (!IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
-> +	if (!static_branch_unlikely(&contextidr_in_use))
->  		return;
->  
->  	write_sysreg(task_pid_nr(next), contextidr_el1);
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 40adb8cdbf5a..d744c0c7e4c4 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -61,6 +61,9 @@ unsigned long __stack_chk_guard __ro_after_init;
->  EXPORT_SYMBOL(__stack_chk_guard);
->  #endif
->  
-> +DEFINE_STATIC_KEY_FALSE(contextidr_in_use);
-> +EXPORT_SYMBOL_GPL(contextidr_in_use);
-> +
->  /*
->   * Function pointers to optional machine specific functions
->   */
-> @@ -721,3 +724,11 @@ int arch_elf_adjust_prot(int prot, const struct arch_elf_state *state,
->  	return prot;
->  }
->  #endif
-> +
-> +static int __init contextidr_init(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
-> +		static_branch_inc(&contextidr_in_use);
-> +	return 0;
-> +}
-> +early_initcall(contextidr_init);
+This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
+which in turn enables NIOS2_DTB_SOURCE. This causes the build error
+because the default value for NIOS2_DTB_SOURCE is an empty string.
+Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
 
-Hi Leo,
+Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v3: Added Fixes: and Reviewed-by: tags
+v2: Add build error message to commit description
 
-Can you skip this early_initcall() part if you do something like this:
+ arch/nios2/platform/Kconfig.platform | 1 +
+ 1 file changed, 1 insertion(+)
 
-    DECLARE_STATIC_KEY_MAYBE(CONFIG_PID_IN_CONTEXTIDR, contextidr_in_use)
-
-It seems like there is a way to conditionally initialise it to true.
-
-James
+diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
+index 9e32fb7f3d4c..e849daff6fd1 100644
+--- a/arch/nios2/platform/Kconfig.platform
++++ b/arch/nios2/platform/Kconfig.platform
+@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
+ 
+ config NIOS2_DTB_SOURCE_BOOL
+ 	bool "Compile and link device tree into kernel image"
++	depends on !COMPILE_TEST
+ 	help
+ 	  This allows you to specify a dts (device tree source) file
+ 	  which will be compiled and linked into the kernel image.
+-- 
+2.33.0
 
