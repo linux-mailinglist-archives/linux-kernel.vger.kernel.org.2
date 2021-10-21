@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962494363C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A724363CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhJUOKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:10:12 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:41234 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229878AbhJUOKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:10:10 -0400
-Received: from BC-Mail-Ex31.internal.baidu.com (unknown [172.31.51.25])
-        by Forcepoint Email with ESMTPS id 5EC8FA995A63A3F0F11B;
-        Thu, 21 Oct 2021 22:07:52 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex31.internal.baidu.com (172.31.51.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 21 Oct 2021 22:07:52 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 21
- Oct 2021 22:07:51 +0800
-Date:   Thu, 21 Oct 2021 22:07:55 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/6] kthread: Add the helper macro kthread_run_on_cpu()
-Message-ID: <20211021140755.GA3448@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20211021120135.3003-1-caihuoqing@baidu.com>
- <OFACD03FD5.99AACE16-ON00258775.004BD474-00258775.004BD47C@ibm.com>
+        id S231216AbhJUOLy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 10:11:54 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56153 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230283AbhJUOLw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:11:52 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id E960C1C0012;
+        Thu, 21 Oct 2021 14:09:32 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 16:09:32 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>,
+        linux-spi@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
+ description file to yaml
+Message-ID: <20211021160932.4169f66f@xps13>
+In-Reply-To: <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+        <20211020142809.349347-5-miquel.raynal@bootlin.com>
+        <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <OFACD03FD5.99AACE16-ON00258775.004BD474-00258775.004BD47C@ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21 10月 21 13:48:15, Bernard Metzler wrote:
-> -----"Cai Huoqing" <caihuoqing@baidu.com> wrote: -----
+Hi Rob,
+
+robh@kernel.org wrote on Wed, 20 Oct 2021 16:14:47 -0500:
+
+> On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
+> > Let's get rid of spi-nand.txt by converting it to yaml schema. While at
+> > converting this file, let's actually pull all the generic properties
+> > from nand-chip.yaml which might apply to a SPI-NAND chip.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
+> >  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
+> >  2 files changed, 27 insertions(+), 5 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> >   
 > 
-> >To: <caihuoqing@baidu.com>
-> >From: "Cai Huoqing" <caihuoqing@baidu.com>
-> >Date: 10/21/2021 02:02PM
-> >Cc: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
-> ><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Davidlohr
-> >Bueso" <dave@stgolabs.net>, "Paul E. McKenney" <paulmck@kernel.org>,
-> >"Josh Triplett" <josh@joshtriplett.org>, "Steven Rostedt"
-> ><rostedt@goodmis.org>, "Mathieu Desnoyers"
-> ><mathieu.desnoyers@efficios.com>, "Lai Jiangshan"
-> ><jiangshanlai@gmail.com>, "Joel Fernandes" <joel@joelfernandes.org>,
-> >"Ingo Molnar" <mingo@redhat.com>, "Daniel Bristot de Oliveira"
-> ><bristot@kernel.org>, <linux-rdma@vger.kernel.org>,
-> ><linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
-> >Subject: [EXTERNAL] [PATCH 0/6] kthread: Add the helper macro
-> >kthread_run_on_cpu()
-> >
-> >the helper macro kthread_run_on_cpu() inculdes
-> >kthread_create_on_cpu/wake_up_process().
-> >In some cases, use kthread_run_on_cpu() directly instead of
-> >kthread_create_on_node/kthread_bind/wake_up_process() or
-> >kthread_create_on_cpu/wake_up_process() or
-> >kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> I do not see kthread_bind() being covered by the helper,
-> as claimed? rcutorture, ring-buffer, siw are using it in
-> the code potentially being replaced by the helper.
-> kthread_bind() is best to be called before thread starts
-> running, so should be part of it.
-Hi,
-kthread_bind() is already part of kthread_create_on_cpu which is
-called by kthread_run_on_cpu() here.
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> xargs: dt-doc-validate: exited with status 255; aborting
+> make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
+> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1441: dt_binding_check] Error 2
+
+I am not able to reproduce this error and in general I don't understand
+it. There is no relationship between this change and
+snps,dw-apb-ssi.yaml. Also the fact that nand-chip-yaml do not exist,
+it was just created in the patch before so I wonder how much I should
+trust this error.
+
+Also, maybe I am not using the tools properly, but it is very hard to
+send correct bindings at the first try. Running make dt_binding_check
+takes ages, any change in one yaml file will recheck the entire data
+base and filtering out on a single yaml file is generally too
+restrictive and still prints unrelated errors of syntax on other files.
+I don't know how much of this is actually expected and/or if someone is
+working on it.
 
 Thanks,
-Cai.
-> 
-> Thanks,
-> Bernard.
-> >
-> >Cai Huoqing (6):
-> >  kthread: Add the helper macro kthread_run_on_cpu()
-> >  RDMA/siw: Make use of the helper macro kthread_run_on_cpu()
-> >  ring-buffer: Make use of the helper macro kthread_run_on_cpu()
-> >  rcutorture: Make use of the helper macro kthread_run_on_cpu()
-> >  trace/osnoise: Make use of the helper macro kthread_run_on_cpu()
-> >  trace/hwlat: Make use of the helper macro kthread_run_on_cpu()
-> >
-> > drivers/infiniband/sw/siw/siw_main.c |  7 +++----
-> > include/linux/kthread.h              | 22 ++++++++++++++++++++++
-> > kernel/rcu/rcutorture.c              |  7 ++-----
-> > kernel/trace/ring_buffer.c           |  7 ++-----
-> > kernel/trace/trace_hwlat.c           |  6 +-----
-> > kernel/trace/trace_osnoise.c         |  3 +--
-> > 6 files changed, 31 insertions(+), 21 deletions(-)
-> >
-> >-- 
-> >2.25.1
-> >
-> >
+Miquèl
