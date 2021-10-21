@@ -2,135 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5426B435D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B65435D60
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhJUIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:54:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52466 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhJUIyG (ORCPT
+        id S231421AbhJUIzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhJUIyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:54:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634806311; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TsTUaUN6UAZjto/Yd/hWLc73ukdwtGkHFVUFsfzhjq4=;
- b=G3oBkKyzKz9Q3AYU09qhW3P/aAxd+EJZLWqwV3PBgWZpAS3a7urKJ18P2i0YhoNSoqBee8bh
- AEKQTEtdnFQreXXTUP1SIG/vJdLJYCIqmWofQrMW9y4CKeaOHzWbau61kWgwTE+ZbBCRYEG+
- W1+5IoZvlEJt3DuY9Q0nTTkNHNE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 61712a0e308e0dd330b1e035 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Oct 2021 08:51:26
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E37D9C43617; Thu, 21 Oct 2021 08:51:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A2CAC4338F;
-        Thu, 21 Oct 2021 08:51:25 +0000 (UTC)
+        Thu, 21 Oct 2021 04:54:44 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA91C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:52:28 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id r10so844352wra.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGw01pNXJUufCrr4acIUk3r0qyL+eWaqqb1eza62Y9o=;
+        b=nyNMrCzRilIzJNfoYZK1SkOHJcOoZzmVG37b5O1KzvTx0SYRYGXPWnje00xg2XFOOy
+         o3hEXMvRkIr8gaRI2O+VpECQ2q6zMzK46HaXNfUtrdCNFH3NJ6prA5M//JPHgGXUbG8i
+         2CbnORwx0W4IZamOhgZGIQjJNoIUEXCrTJj/mCzsVBZvm3zUs2UF9q4SYMNeE4K8POXn
+         1Q47Kc/IC1fMZo6JKhn2o6S10tXcTqzFaLJXIEI1RzriLtZ7nccDyJRegU4cFlox8fx8
+         h5jlmIRVOvGsGX50MXxmeUieAGcQDLgamtf4XkBV0L48j1+cTPpztv3b7MUvaD0B0va9
+         t/fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGw01pNXJUufCrr4acIUk3r0qyL+eWaqqb1eza62Y9o=;
+        b=hRbx1y71hzzj6B6LjnzDe9TJnKw1o/ruoaJMODwpA8+QYdb2j/xazPztwECyfeOEpD
+         kO6OPpZb2zeqji8jSoAE25IIiPiNZ2EhlXMRGprbnShFTLTnvgbkeR6d1ViORvCJSgi+
+         hW969c5rSQSUOfKzLCapSzUeXTEFuSnVGLOTI9/XpZS8s4dpnBmsvjk5ckRLqChAN7eR
+         MX4aTn1HrhtlGNLkKCbXmUULzelLA3mw0D3byPW9EEitpNdqFBH0emN59wVxUhTVPbWJ
+         Hmp22nLbF8crshKbQL36mg+RhIECKmucCyUsmS1Kks0+gl/XPG8bXzsZlJdnaV/Fg8at
+         kVew==
+X-Gm-Message-State: AOAM5306mrDuvHEn5dsYMqQk0ltWzy7wKvFbuSHQ78FikOXLfh4kV57o
+        vuJAF+cl7VADeCPzrsNEIpQaCJlFQwrABh0vSTz3SA==
+X-Google-Smtp-Source: ABdhPJwpHWErY0eQEnH6ZuouwpmVOfnOjcVouLNulVw8WpTX3zuT69whzzfFKK6ZadSmfg8ntMJKCVjHKxQUf1hczys=
+X-Received: by 2002:a5d:614d:: with SMTP id y13mr1672261wrt.199.1634806346598;
+ Thu, 21 Oct 2021 01:52:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 21 Oct 2021 14:21:25 +0530
-From:   skakit@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        collinsd@codeurora.org, subbaram@codeaurora.org,
-        kgunda@codeaurora.org
-Subject: Re: [PATCH V2 2/4] dt-bindings: mfd: pm8008: Add pm8008 regulator
- node
-In-Reply-To: <CAE-0n51pCkrdOSJFf3V4HGB5PcUcRa2y6zRQbQ30i-hQVhjC=Q@mail.gmail.com>
-References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
- <1633060859-22969-3-git-send-email-skakit@codeaurora.org>
- <CAE-0n51pCkrdOSJFf3V4HGB5PcUcRa2y6zRQbQ30i-hQVhjC=Q@mail.gmail.com>
-Message-ID: <23abf3d093df63b1025e466f45ff16c6@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
+ <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
+ <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
+ <8735oxuxlq.wl-maz@kernel.org> <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+ <875ytrddma.wl-maz@kernel.org> <CAAhSdy0TwOjv_RDMRsKqcqTE8PSO_A_EttMGBiDbb-0PTRizZg@mail.gmail.com>
+ <871r4fd996.wl-maz@kernel.org> <CAAhSdy24WRZP70C0HUA1y0nVf0yWdj4SYY8HhGSfxQzDdafYnQ@mail.gmail.com>
+ <87y26nbq1l.wl-maz@kernel.org>
+In-Reply-To: <87y26nbq1l.wl-maz@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 21 Oct 2021 14:22:15 +0530
+Message-ID: <CAAhSdy2Xr-JAsxc-dHooPC3EZwgst54QeweCwTNciEXexaYK5A@mail.gmail.com>
+Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Guo Ren <guoren@kernel.org>, Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-05 23:40, Stephen Boyd wrote:
-> Quoting Satya Priya (2021-09-30 21:00:57)
->> Add pm8008-regulator node and example.
->> 
->> Signed-off-by: Satya Priya <skakit@codeaurora.org>
->> ---
->> Changes in V2:
->>  - As per Rob's comments changed "pm8008[a-z]?-regulator" to
->>    "^pm8008[a-z]?-regulators".
->> 
->>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 
->> ++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->> 
->> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml 
->> b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
->> index ec3138c..0c9665e 100644
->> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
->> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
->> @@ -45,6 +45,10 @@ properties:
->>      const: 0
->> 
->>  patternProperties:
->> +  "^pm8008[a-z]?-regulators$":
-> 
-> Please just call it 'regulators'
-> 
->> +    type: object
->> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
->> +
->>    "^gpio@[0-9a-f]+$":
->>      type: object
->> 
->> @@ -122,6 +126,26 @@ examples:
->>            interrupt-controller;
->>            #interrupt-cells = <2>;
->>          };
->> +
->> +        pm8008-regulators {
-> 
-> Please just call it 'regulators'
-> 
+On Wed, Oct 20, 2021 at 10:18 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Wed, 20 Oct 2021 17:08:36 +0100,
+> Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Wed, Oct 20, 2021 at 8:38 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Wed, 20 Oct 2021 15:33:49 +0100,
+> > > Anup Patel <anup@brainfault.org> wrote:
+> > > >
+> > > > On Wed, Oct 20, 2021 at 7:04 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > On Tue, 19 Oct 2021 14:27:02 +0100,
+> > > > > Guo Ren <guoren@kernel.org> wrote:
+> > > > > >
+> > > > > > On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, 19 Oct 2021 10:33:49 +0100,
+> > > > > > > Guo Ren <guoren@kernel.org> wrote:
+> > > > > > >
+> > > > > > > > > If you have an 'automask' behavior and yet the HW doesn't record this
+> > > > > > > > > in a separate bit, then you need to track this by yourself in the
+> > > > > > > > > irq_eoi() callback instead. I guess that you would skip the write to
+> > > > > > > > > the CLAIM register in this case, though I have no idea whether this
+> > > > > > > > > breaks
+> > > > > > > > > the HW interrupt state or not.
+> > > > > > > > The problem is when enable bit is 0 for that irq_number,
+> > > > > > > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
+> > > > > > > > the hw state machine. Then this irq would enter in ack state and no
+> > > > > > > > continues irqs could come in.
+> > > > > > >
+> > > > > > > Really? This means that you cannot mask an interrupt while it is being
+> > > > > > > handled? How great...
+> > > > > > If the completion ID does not match an interrupt source that is
+> > > > > > currently enabled for the target, the completion is silently ignored.
+> > > > > > So, C9xx completion depends on enable-bit.
+> > > > >
+> > > > > Is that what the PLIC spec says? Or what your implementation does? I
+> > > > > can understand that one implementation would be broken, but if the
+> > > > > PLIC architecture itself is broken, that's far more concerning.
+> > > >
+> > > > Yes, we are dealing with a broken/non-compliant PLIC
+> > > > implementation.
+> > > >
+> > > > The RISC-V PLIC spec defines a very different behaviour for the
+> > > > interrupt claim (i.e. readl(claim)) and interrupt completion (i.e.
+> > > > writel(claim)). The T-HEAD PLIC implementation does things
+> > > > different from what the RISC-V PLIC spec says because it will
+> > > > mask an interrupt upon interrupt claim whereas PLIC spec says
+> > > > it should only clear the interrupt pending bit (not mask the interrupt).
+> > > >
+> > > > Quoting interrupt claim process (chapter 9) from PLIC spec:
+> > > > "The PLIC can perform an interrupt claim by reading the claim/complete
+> > > > register, which returns the ID of the highest priority pending interrupt or
+> > > > zero if there is no pending interrupt. A successful claim will also atomically
+> > > > clear the corresponding pending bit on the interrupt source."
+> > > >
+> > > > Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc
+> > >
+> > > That's not the point I'm making. According to Guo, the PLIC (any
+> > > implementation of it) will ignore a write to claim on a masked
+> > > interrupt.
+> >
+> > Yes, write to claim on a masked interrupt is certainly ignored but
+> > read to claim does not automatically mask the interrupt.
+> >
+> > >
+> > > If that's indeed correct, then a sequence such as:
+> > >
+> > > (1) irq = read(claim)
+> >
+> > This will return highest priority pending interrupt and clear the
+> > pending bit as-per RISC-V PLIC spec.
+> >
+> > > (2) mask from the interrupt handler with the right flags so that it
+> > > isn't done lazily
+> > > (3) write(irq, claim)
+> > >
+> > > will result in an interrupt blocked in ack state (and probably no more
+> > > interrupt for this CPU at this priority). That would be an interesting
+> > > bug in the current code, but also a pretty bad architectural choice.
+> >
+> > The interrupt claim/completion is for each interrupt and not at CPU
+> > level so if an interrupt is masked then only that interrupt is blocked
+> > for all CPUs but other interrupts can still be raised.
+>
+> Do you mean that another interrupt of the same priority will be able
+> to be taken on *this* CPU, despite the completion being silently
+> ignored?
 
-Okay
+This part is not clear in the RISC-V PLIC spec so I will request for
+adding clarification.
 
->> +          compatible = "qcom,pm8008-regulator";
->> +          #address-cells = <1>;
->> +          #size-cells = <0>;
->> +
->> +          vdd_l1_l2-supply = <&vreg_s8b_1p2>;
->> +          vdd_l3_l4-supply = <&vreg_s1b_1p8>;
->> +          vdd_l5-supply = <&vreg_bob>;
->> +          vdd_l6-supply = <&vreg_bob>;
->> +          vdd_l7-supply = <&vreg_bob>;
->> +
->> +          pm8008_l1: regulator@4000 {
->> +            reg = <0x4000>;
->> +            regulator-name = "pm8008_l1";
->> +            regulator-min-microvolt = <950000>;
->> +            regulator-max-microvolt = <1300000>;
->> +            qcom,min-dropout-voltage = <96000>;
->> +          };
->> +        };
+Regards,
+Anup
+
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
