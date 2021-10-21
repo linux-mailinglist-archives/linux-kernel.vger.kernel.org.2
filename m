@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9075B435838
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA8843583A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhJUBa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:30:29 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54625 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbhJUBa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:30:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZVH02P4nz4xbT;
-        Thu, 21 Oct 2021 12:28:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634779692;
-        bh=vDWuEnZ5RpZM5FmpEAHbWhY2teRuUOgp7f/FO0fESKU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P2p/Q7i/GeP8r7PnkI8xJOyNUDudRxPsaHhEszzMKZ9VZsGcodcTUtk5vGADIFiZt
-         eFWCbPk23tNoPygGBY5KQpt9uSa78jCr4epCJ+Bs8O9vIgEvbeTWoYbNY1gUCx5OTg
-         UBTQIFzGDiZ7VRXtxvLpGDcRV92HDwcMcMh5owq27Zz4vOG0TjBqV6wkdLKNQX1pnc
-         X275FKMxbUycpyirxSj+vPG6BcD3KT/ugMzE/vduKSuEkCalm2CbGcPewTORmw68eG
-         bmfim1eYFanKr/M6cx6C27gAYSxx0r5HVyh3LZ6T6W5YGrudFf091Miw8HnAJKBcLx
-         lMMCFqmAu50DQ==
-Date:   Thu, 21 Oct 2021 12:28:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Fengnan Chang <changfengnan@vivo.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning in Linus' tree
-Message-ID: <20211021122811.1e7d96f4@canb.auug.org.au>
-In-Reply-To: <20211005202900.29285789@canb.auug.org.au>
-References: <20211005202900.29285789@canb.auug.org.au>
+        id S231582AbhJUBap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231558AbhJUBam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 21:30:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DB096113D;
+        Thu, 21 Oct 2021 01:28:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634779707;
+        bh=zXzVqviu456oLsjo8YgHnuRG56yXJnGa0hkVNOri25c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=rpeBmLsZBoUvQBodjY8byNtkpiGhQgb70QT2QZlPyznPRYSO8nIWLqfGpRXWEUfX8
+         H5tTPW6iKEaatxMBLoFfk5AviyEy83dm7feYrN3UbqQOKHflEYUiW5T56RsApYhUrZ
+         VVsxxI72/M9sWX9D1CbQtWoNh2OjEYY9g9xC3dj/4NPMnb9oFLyQVyveJG1D+9BKVQ
+         ITj/buz4k470ST+0bGqaDGnwvyufHyCy5dAGeRI3j4jHB2OKldS2TkCJtemfBwo1JD
+         8mjCCe7a6AeJyO7GNGFLpOwxFLsC3WtwZ8Vta0Sw1uhTSBA5PDKdj2eFr0aNkZaiql
+         X2D2rPtakt6gQ==
+Date:   Wed, 20 Oct 2021 20:28:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v4 1/8] PCI/AER: Remove ID from aer_agent_string[]
+Message-ID: <20211021012826.GA2655655@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=Cr5nnekvT=WQ44hVISRhKM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22b2dae2a6ac340d9d45c28481d746ec1064cd6c.1633453452.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=Cr5nnekvT=WQ44hVISRhKM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 05, 2021 at 10:48:08PM +0530, Naveen Naidu wrote:
+> Currently, we do not print the "id" field in the AER error logs. Yet the
+> aer_agent_string[] has the word "id" in it. The AER error log looks
+> like:
+> 
+>   pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver ID)
+> 
+> Without the "id" field in the error log, The aer_agent_string[]
+> (eg: "Receiver ID") does not make sense. A user reading the
+> aer_agent_string[] in the log, might inadvertently look for an "id"
+> field and not finding it might lead to confusion.
+> 
+> Remove the "ID" from the aer_agent_string[].
+> 
+> The following are sample dummy errors inject via aer-inject.
 
-Hi all,
+I like this, and the problem it fixes was my fault because
+these "ID" strings should have been removed by 010caed4ccb6.
 
-On Tue, 5 Oct 2021 20:29:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> In Linus' tree, today's linux-next build (htmldocs) produced this warning:
->=20
-> Documentation/filesystems/f2fs.rst:288: WARNING: Block quote ends without=
- a blank line; unexpected unindent.
->=20
-> Introduced by commit
->=20
->   151b1982be5d ("f2fs: compress: add nocompress extensions support")
+If it's straightforward enough, it would be nice to have the
+aer-inject command line here in the commit log to make it easier
+for people to play with this.
 
-I ma still seeing this warning.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=Cr5nnekvT=WQ44hVISRhKM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFwwisACgkQAVBC80lX
-0GxuoQf+Lf90QkZGE8k3tuoFSg4U6fzibeRS8VvrkUIkxvZV6rgLYT4Xy2NjwzsE
-axx8hIr3Rk7bCh/Z7p7w9r8BaUMxoclGtkt4hDfjUBPDLQwp56vIq/Qe1lxmseND
-gewXme+1HTWlfLVa3I585ptuA7EmYivgdH76+ER0/M0czJ65EFpEnOf2eUo0PXAZ
-Wiw1lfapbbVlcsJw+cdHhLonBupcHSYkTmu85HiX4TD1z8rahpxqvIW/cR9sxP/5
-GbSNuxnptmQ5Mf3rmr4kLppICg5paI6S/lKp0npa93w5dNzFjalWDtNIuU/TUh2J
-14xpyRaxcRlGUmqHvOQGWkGitY4zIA==
-=aHB3
------END PGP SIGNATURE-----
-
---Sig_/=Cr5nnekvT=WQ44hVISRhKM--
+> Before
+> =======
+> 
+> In 010caed4ccb6 ("PCI/AER: Decode Error Source Requester ID"),
+> the "id" field was removed from the AER error logs, so currently AER
+> logs look like:
+> 
+>   pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03:0
+>   pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver ID) <--- no id field
+>   pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
+>   pcieport 0000:00:03.0:    [ 6] BadTLP
+> 
+> After
+> ======
+> 
+>   pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03.0
+>   pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver)
+>   pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
+>   pcieport 0000:00:03.0:    [ 6] BadTLP
+> 
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/pcie/aer.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 9784fdcf3006..241ff361b43c 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -516,10 +516,10 @@ static const char *aer_uncorrectable_error_string[] = {
+>  };
+>  
+>  static const char *aer_agent_string[] = {
+> -	"Receiver ID",
+> -	"Requester ID",
+> -	"Completer ID",
+> -	"Transmitter ID"
+> +	"Receiver",
+> +	"Requester",
+> +	"Completer",
+> +	"Transmitter"
+>  };
+>  
+>  #define aer_stats_dev_attr(name, stats_array, strings_array,		\
+> @@ -703,7 +703,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
+>  	const char *level;
+>  
+>  	if (!info->status) {
+> -		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent ID)\n",
+> +		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent)\n",
+>  			aer_error_severity_string[info->severity]);
+>  		goto out;
+>  	}
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> Linux-kernel-mentees mailing list
+> Linux-kernel-mentees@lists.linuxfoundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
