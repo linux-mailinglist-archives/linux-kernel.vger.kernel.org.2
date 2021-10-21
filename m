@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57202435DC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AF2435DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhJUJSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:18:11 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53134 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhJUJSK (ORCPT
+        id S231518AbhJUJYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:24:16 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4012 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhJUJYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:18:10 -0400
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7ADAF2BA;
-        Thu, 21 Oct 2021 11:15:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634807753;
-        bh=T/6+QgMuTTHfslB/SXTR1IyVTkqXdr+Skb2LtMWzDTI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=P6XdrXyUKzvqFCUwcM8LXHPj2X6/TuHR8ytYg9gTdM6SsHaJXFV8+gdEe5J8J+Dks
-         gsSPOyTMUnvqVAtQB40nfG8S2zU/cXVUOh1Bz6wwNbYNq6j2eaqiK+kAdc6wd3bpfO
-         qdKWuTzYEA4mOJt0OUiRQaPA8V/HcoaBR5NnZwIQ=
-Content-Type: text/plain; charset="utf-8"
+        Thu, 21 Oct 2021 05:24:15 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZhj929fsz67gkm;
+        Thu, 21 Oct 2021 17:18:05 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 11:21:57 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 10:21:54 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <mingo@redhat.com>
+CC:     <irogers@google.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kjain@linux.ibm.com>,
+        <james.clark@arm.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v2 0/2] perf jevents: Enable build warnings
+Date:   Thu, 21 Oct 2021 17:16:43 +0800
+Message-ID: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211021084143.2077-1-caihuoqing@baidu.com>
-References: <20211021084143.2077-1-caihuoqing@baidu.com>
-Subject: Re: [PATCH] media: gspca: Make use of the helper macro kthread_run()
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Erik Andren <erik.andren@gmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     caihuoqing@baidu.com
-Date:   Thu, 21 Oct 2021 10:15:50 +0100
-Message-ID: <163480775070.2663858.11003042338981812432@Monstersaurus>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai,
+Currently jevents builds without any complier warning flags enabled. So
+use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS.
 
-Quoting Cai Huoqing (2021-10-21 09:41:42)
-> Repalce kthread_create/wake_up_process() with kthread_run()
-> to simplify the code.
->=20
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Changes for v2:
+- Add Werror, Wall, and Wextra (James Clark suggestion)
 
-kthread_run does look appropriate here, and is simpler.
+Baseline is acme perf/core + mainline commit b94729919db2 ("perf jevents:
+Free the sys_event_tables list after processing entries"):
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+680453e63302 perf jevents: Free the sys_event_tables list after processing entries
+be8ecc57f180 (origin/perf/core) perf srcline: Use long-running addr2line per DSO
+2b775152bbe8 perf tests vmlinux-kallsyms: Ignore hidden symbols
 
-> ---
->  drivers/media/usb/gspca/m5602/m5602_s5k83a.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/media/usb/gspca/m5602/m5602_s5k83a.c b/drivers/media=
-/usb/gspca/m5602/m5602_s5k83a.c
-> index bc4008d5d116..4504d615b1e4 100644
-> --- a/drivers/media/usb/gspca/m5602/m5602_s5k83a.c
-> +++ b/drivers/media/usb/gspca/m5602/m5602_s5k83a.c
-> @@ -339,14 +339,13 @@ int s5k83a_start(struct sd *sd)
->         /* Create another thread, polling the GPIO ports of the camera to=
- check
->            if it got rotated. This is how the windows driver does it so w=
-e have
->            to assume that there is no better way of accomplishing this */
-> -       sd->rotation_thread =3D kthread_create(rotation_thread_function,
-> -                                            sd, "rotation thread");
-> +       sd->rotation_thread =3D kthread_run(rotation_thread_function,
-> +                                         sd, "rotation thread");
->         if (IS_ERR(sd->rotation_thread)) {
->                 err =3D PTR_ERR(sd->rotation_thread);
->                 sd->rotation_thread =3D NULL;
->                 return err;
->         }
-> -       wake_up_process(sd->rotation_thread);
-> =20
->         /* Preinit the sensor */
->         for (i =3D 0; i < ARRAY_SIZE(start_s5k83a) && !err; i++) {
-> --=20
-> 2.25.1
->
+John Garry (2):
+  perf jevents: Fix some would-be warnings
+  perf jevents: Enable warnings through HOSTCFLAGS
+
+ tools/perf/Makefile.config      |  5 +++++
+ tools/perf/Makefile.perf        |  2 +-
+ tools/perf/pmu-events/Build     |  2 +-
+ tools/perf/pmu-events/jevents.c | 10 ++++------
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+-- 
+2.17.1
+
