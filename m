@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D9243583E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B881D435841
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhJUBb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhJUBb1 (ORCPT
+        id S231332AbhJUBbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:31:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57350 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231542AbhJUBbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:31:27 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CB7C06161C;
-        Wed, 20 Oct 2021 18:29:12 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZVJ61kzWz4xbL;
-        Thu, 21 Oct 2021 12:29:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634779750;
-        bh=6kdKUtppb6ffxiViUEsS1ZchJpylMBfk+uPH/K941Wk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ka7WIFL5KqsYQCCIqr0aYRT2FlQ3PlaYKNRx3pWa2S55ZdL/b+JG6rGxwvrcuRu9Y
-         IEJUV/JznHu3nDgW4FKbQf4fGWw2PLNueZK35/qRQ5BRvU07nb5/sYCzI2RnEFv09e
-         W9Sy0/peVp8CYoNVMNvt5H6Gmapgyt606KescZgPjX830pOzKSIvfXbkjA2VrDM2th
-         PXgUX7dBExjZ+b2n/yMRH/KfukO89cCo7uT+KRIeeovmRmx0swa4CeQq+IHE7h3pAQ
-         G2XLxMHKclUiNgTzW4UfbsfhxVM8dPea+DtWB2X73AHr7Ltq/OXThQFjSSXkmFSTiH
-         L1UZTwR3U3img==
-Date:   Thu, 21 Oct 2021 12:29:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the fscache tree
-Message-ID: <20211021122909.0346c093@canb.auug.org.au>
-In-Reply-To: <20211005204613.53cbdfb9@canb.auug.org.au>
-References: <20211005204613.53cbdfb9@canb.auug.org.au>
+        Wed, 20 Oct 2021 21:31:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634779762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BlV+ARiKa3/8/9BVagtX9yLh+qMMBcZxVM11x/BzOdk=;
+        b=Mx2hFJQaPu/B4NjScnTXPdUamued2IYbdZZ6ucIB7w2bZf40uOlpWp2lyTT0UEPZVjzz/s
+        BX8wtEJPbFTjOzc1VsxLCnwB2VGW3xIY0wqWAf2KUMTbWp80x/ejnVrwlMlKXNzNo4qtDI
+        vEN+zvwimjIQAtYnOZiyG3vNeA/ERO0=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-CcEo6O4sNHetyDvl-azNCw-1; Wed, 20 Oct 2021 21:29:21 -0400
+X-MC-Unique: CcEo6O4sNHetyDvl-azNCw-1
+Received: by mail-pj1-f69.google.com with SMTP id gv21-20020a17090b11d500b0019f789f61bdso1370493pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 18:29:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BlV+ARiKa3/8/9BVagtX9yLh+qMMBcZxVM11x/BzOdk=;
+        b=xFuK31NxPX2QCw5pJdZgOFnAZ7hcH6hHBszH5qIowDS1aL0LJkmN4vx+DSgAHYa6LI
+         Lz5qpkM+9yzOEsnWZa7He83oM58nfRnoaaIIFW5JF9dO8rEXepigE0j6H181dCTRFNT0
+         e2e2hwNrTF4T2r0JFZ7TOnnH1erkfaZyD5SkfbJn4VxOjtdoA+xeM1BRzOVLD66aQ5DV
+         c96u9Ql0knCwJn5Zh3W/EqCi/AMuDyosBXZCtucu879viv9wPlxSmemPrxze+z3eIbGL
+         nWd5fRIRD/bdjBjyeZ6zuEAFfVG0Q0+u96FB8f/ecUZ4qLxZ7oiE/g4yW96nPilFooea
+         kewg==
+X-Gm-Message-State: AOAM532PUcD9H+6rWHufZOoopujGMSe3+SjnixvFPvPL1QqcVgX0lHo9
+        x3i/0ppow8CgpIM3FO5gi3ugXN+ATG1K1MAMtraC43kihEXg98IqDhcC9QI9s160DExtKoY6MhE
+        kbEQN0yOtAnCn6zDE5CFjWq3C
+X-Received: by 2002:a63:ed4a:: with SMTP id m10mr2119200pgk.448.1634779759750;
+        Wed, 20 Oct 2021 18:29:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLT8cImRwZSUB9vci3AK/6sF9OSUh11r0p4OY2pwmW2mqhL9PPlJb2PmNU10BztrNI3j1fjA==
+X-Received: by 2002:a63:ed4a:: with SMTP id m10mr2119185pgk.448.1634779759505;
+        Wed, 20 Oct 2021 18:29:19 -0700 (PDT)
+Received: from xz-m1.local ([84.17.34.135])
+        by smtp.gmail.com with ESMTPSA id p4sm3192782pgc.15.2021.10.20.18.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 18:29:18 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 09:29:14 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] userfaultfd/selftests: fix feature support
+ detection
+Message-ID: <YXDCagVgh2O2YdIW@xz-m1.local>
+References: <20210930212309.4001967-1-axelrasmussen@google.com>
+ <20210930212309.4001967-3-axelrasmussen@google.com>
+ <CAJHvVcj9FpJgC5EsB1_6yfgDA8p5-=Oakccg+TUrGUWZB5nHzA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2FEpR+.SrjCb+FxpUQ0aD1i";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJHvVcj9FpJgC5EsB1_6yfgDA8p5-=Oakccg+TUrGUWZB5nHzA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2FEpR+.SrjCb+FxpUQ0aD1i
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 20, 2021 at 11:28:49AM -0700, Axel Rasmussen wrote:
+> Just a friendly bump for review. :) Peter, any objections to this
+> version? I think it fairly closely matches your suggestions from v1.
 
-Hi all,
+Isn't the whole patchset already queued by Andrew? :)
 
-On Tue, 5 Oct 2021 20:46:13 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> After merging the fscache tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> Documentation/filesystems/caching/backend-api.rst:402: WARNING: Inline em=
-phasis start-string without end-string.
->=20
-> Introduced by commit
->=20
->   9c74b32d892e ("fscache: Update the documentation to reflect I/O API cha=
-nges")
+Anyway,
 
-I am still seeing this warning.
---=20
-Cheers,
-Stephen Rothwell
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
---Sig_/2FEpR+.SrjCb+FxpUQ0aD1i
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks for the change!
 
------BEGIN PGP SIGNATURE-----
+-- 
+Peter Xu
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFwwmUACgkQAVBC80lX
-0Gyk3wgAhJ/0wMVJGxLH6qZQDYLQ9fmuySPIhpxQJj7IK8FYTvmra/2B7hsGp0gE
-IY3Ww1Xd/4lJ+yiphydAHTdgC3gTqpS3M4GHWgsFOKJbsntN6yQrGfm8/JZTZ1x+
-Om9UV5ACrWyN9c721EFA5BIViHOfUUrXJ+Zr2s1Vch6r8/BMgqQvM0tTRQxhr1Co
-loRfVW3jZAeo7f9ZZApEXAXN7f+9NhWs7bNidaSmjQDRlCF8XhTpkyE25XfPp0i/
-7yCA4JKOrffQw4r0VRBzcTmexDcaOpzpdRJNYuFzi4cq2/Ru5B3eFT24lSf6aLmt
-yeH2MWMrUZKeM3C6tmZtiBHBt3pluQ==
-=ylo1
------END PGP SIGNATURE-----
-
---Sig_/2FEpR+.SrjCb+FxpUQ0aD1i--
