@@ -2,84 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281D143662F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BBE436638
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhJUP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231937AbhJUP0g (ORCPT
+        id S231871AbhJUP31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:29:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52591 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231880AbhJUP3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:26:36 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351CCC061224
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:24:15 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so56529wmz.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MuiEh406RA8ewbm/LRDAUTpTOz70UdaUTgVXuBltMqg=;
-        b=tWzGEWNI5NsxKaFrEr3ZK3k1mIV1OKw0Jv/ZPSRn8Fx2ccegYfBUCegDkkYkT7/+gl
-         amnYqDqRIP/Rw1CMRi/WxES4h3fzOTgzVI5IIGTaBjje/wYvDgRTXByRjx/jIgiUaPyi
-         GejMwPA+QK0zdPrz2aOTDGeVxDQEGWOuTPQPvXdb8ucrqGphN0Q6stAsQcLItzTdPq2A
-         JX75Kxwdvlu1yCDpOQyXZ1qTVVjdTHVYuQJ3+PGuhqKZt62Ke9Ghe2YujTyoZOtl3RuX
-         BSAUDa0R+hmYfE52WvvEPZAc1k/19p/JcwHOskr7s2FlxdO8fgkNv2b6qrOW+GJRZIFf
-         emNg==
+        Thu, 21 Oct 2021 11:29:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634830027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v6MrzrO7xesFuLzBcBSeQQGfqugRLLAD0yJI9mSpS6E=;
+        b=ir6wvnX99ZtXjqIg4nol7R4+RPf0al6SNNMSmG+YYIT7qpPwvCbV3KN137qPM+GLwhs8Ae
+        S86vB4qN8fD5EEo/eJ+AQDulU1fMQ7UvOlVXSgWIUQ5FYHNiYDyqfCvsZFMHLKQy0G1ebK
+        G/sakayu4B4X2iMWxi7Ij2ZY9dPGN1s=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-IKIjoSekNpCzdzwS9AT8Ug-1; Thu, 21 Oct 2021 11:27:05 -0400
+X-MC-Unique: IKIjoSekNpCzdzwS9AT8Ug-1
+Received: by mail-ed1-f70.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso719186edj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:27:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=MuiEh406RA8ewbm/LRDAUTpTOz70UdaUTgVXuBltMqg=;
-        b=lIot7FonCz6hG51ybdzsnLVW2c3DQPrxKInXU22PO4sR+3bEZqbqu1Tq0sg8vBn5ff
-         O3NENdky41k5tE1ZCV8pIWcOGeEseXqViIqLrmrzNkB3RQ2ZELvy/aTaI0OfNyCuZO5e
-         0UhnZZB/TgpYwpCnc64H+sxbImzjMQG5bgUdhgfUu8RxIL7Z7rY3qsO2/fJdsyJQ+BRu
-         4h6sZvE5LdD2lexNwjQA7xJJwAarEAOF88kLQWea3jXolKxq5jFhrzLVlHBFjch9eGDd
-         kbTCWLw2mLPaJ+crc6iOubvOeIZy8IXMbO5IY0urV1miwJzpEdberWUFobSZtVMi1QlS
-         9oXg==
-X-Gm-Message-State: AOAM531aJDTvlGvYlaB8Zld//K8JX0cBqf300Ypr+U8YgdI7GSji4KFf
-        Onh6Sia22JSLqMrllx4egZbwbtKvfgAn9g==
-X-Google-Smtp-Source: ABdhPJxD1QL+iKWvkaXIhdIfmpHtBhSvVF5k70Ewb/GVQ+neD2JFHPyDgML6Z613LMMmaocc+4kPyw==
-X-Received: by 2002:a05:600c:ac2:: with SMTP id c2mr21411612wmr.118.1634829854377;
-        Thu, 21 Oct 2021 08:24:14 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id p25sm8124320wma.2.2021.10.21.08.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:24:13 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 16:24:12 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-Cc:     linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org
-Subject: Re: [PATCH] mfd: wcd934x: Replace legacy gpio interface for gpiod
-Message-ID: <YXGGHL92hNs3dmNO@google.com>
-References: <YXDEBCiSnXYRQPXt@fedora>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=v6MrzrO7xesFuLzBcBSeQQGfqugRLLAD0yJI9mSpS6E=;
+        b=7t6Fhy5Citewv0Mo2MPm3PmrCBmkEUUk4GAd49nE4hEXmJuaHEoqfo5F61JR7rGdQr
+         OClabnOXGHRwub9C20Q457rU3XOwU61fGKfjeCq8Th+4BgUT4LIJuhF33sYy8rn2I4V/
+         lbMlB6Qn+Uo1fK2DdhRwfFMFCFKFnQQZ7Rsl+LFvewNix08Ek98Abw3qAXGAOnc0jkoe
+         +UNAKT+t7XsCi1bPuALToA4FvjZeub7SwqamqcZM5lDMUBfs87fZ0qIpdYQFzZfWSbqX
+         8nLEjNkefz+9AAOhfbWkMDy+weRa1f96glTB/1WIl3R/4mRbAY/BlWIjd9JqgreBMC6n
+         hkSw==
+X-Gm-Message-State: AOAM530p9d8egvBFSwIi1zlPrzblLwK594WeL/M2si6fTbGEvY7WtNPI
+        5yTDVGbprm+Yvwz+0svYqr9IxvQHpOZS+a9H/b2/viv9V1/9Az10Ee6iAIbMgMeDoNb3Cku9Ard
+        wXN20O0VBW+1o3a8ziix6Rwg7
+X-Received: by 2002:a17:906:4fc8:: with SMTP id i8mr7830762ejw.342.1634830024439;
+        Thu, 21 Oct 2021 08:27:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxDOrjICVVqTJ9+CDDGwf+1wA1UgMTXWu66IzWHwvhm5fM8zXDYn4XggFMnO9UcpVEQ2Hw1A==
+X-Received: by 2002:a17:906:4fc8:: with SMTP id i8mr7830743ejw.342.1634830024244;
+        Thu, 21 Oct 2021 08:27:04 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id o21sm3003991edc.60.2021.10.21.08.26.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 08:27:03 -0700 (PDT)
+Message-ID: <31db4c63-218a-5b26-f6ed-d30113f95e29@redhat.com>
+Date:   Thu, 21 Oct 2021 17:26:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YXDEBCiSnXYRQPXt@fedora>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC 03/16] KVM: selftests: handle encryption bits in page tables
+Content-Language: en-US
+To:     Michael Roth <michael.roth@amd.com>,
+        linux-kselftest@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Nathan Tempelman <natet@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+References: <20211005234459.430873-1-michael.roth@amd.com>
+ <20211005234459.430873-4-michael.roth@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211005234459.430873-4-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021, Maíra Canal wrote:
+On 06/10/21 01:44, Michael Roth wrote:
+> SEV guests rely on an encyption bit which resides within the range that
+> current code treats as address bits. Guest code will expect these bits
+> to be set appropriately in their page tables, whereas helpers like
+> addr_gpa2hva() will expect these bits to be masked away prior to
+> translation. Add proper handling for these cases.
 
-> Considering the current transition of the GPIO subsystem, remove all
-> dependencies of the legacy GPIO interface (linux/gpio.h and linux
-> /of_gpio.h) and replace it with the descriptor-based GPIO approach.
-> 
-> Signed-off-by: Maíra Canal <maira.canal@usp.br>
-> ---
->  drivers/mfd/wcd934x.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
+This is not what you're doing below in addr_gpa2hva, though---or did I 
+misunderstand?
 
-Applied, thanks.
+I may be wrong due to not actually having written the code, but I'd 
+prefer if most of these APIs worked only if the C bit has already been 
+stripped.  In general it's quite unlikely for host code to deal with C=1 
+pages, so it's worth pointing out explicitly the cases where it does.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Paolo
+
+> @@ -1460,9 +1480,10 @@ void virt_map(struct kvm_vm *vm, uint64_t vaddr, uint64_t paddr,
+>    * address providing the memory to the vm physical address is returned.
+>    * A TEST_ASSERT failure occurs if no region containing gpa exists.
+>    */
+> -void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa)
+> +void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa_raw)
+>   {
+>   	struct userspace_mem_region *region;
+
