@@ -2,103 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25694435B06
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA803435B0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhJUGmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 02:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhJUGmr (ORCPT
+        id S231238AbhJUGpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 02:45:25 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:37477 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhJUGpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 02:42:47 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8421DC06161C;
-        Wed, 20 Oct 2021 23:40:31 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id g184so24677087pgc.6;
-        Wed, 20 Oct 2021 23:40:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P/sIz/qZqIMO/S2er8IR+h8S/x+xx/aGZWMasE4tA+c=;
-        b=JcFylAM8P1zQ07C3deiI9z9ksJtGm33KFY3qB6L17ycNc17WoWYmuCDbOiaeO+ExVy
-         k1OGxPKIwJOgnDFOcJUFrPWvv9VeQUGvsEfSESF3d8BNCLoA5Dcwqy0sblKrfPnZYdeM
-         1c97Dy1RZ/d0RdHu8ioL7oKH7WYb0rXmPylLgxPcAFnb61tTcxnqN9G8Wavord2cjhdv
-         iyN095By5Owa7wnzUiMF0t7KyXbZyB6ozrb0VLWjQleQlU43a2had0StJonOhTQEYu61
-         XMms5o+HvFcTqjXc3E7sXhr3d10sZkcbvACNIcy4onrnN+ldG6TGX4T96IdHEqc4rLtM
-         DiBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P/sIz/qZqIMO/S2er8IR+h8S/x+xx/aGZWMasE4tA+c=;
-        b=eGLQuDPDWPkC6NDW4ncrwjBvlOHWVsJV3fwDnrwCYVrYyxlqjvhze17DJhNFfHfuye
-         O3cw6ImJ99MwH9twcS5ge59ndGL18eUFYGsPyEGUCmtmG2RjtGsm02z3ZPUnZMtGXfSY
-         V9RRnI3r1nzxEXRI1kRuWB43XrDxrTOWTmQRyKB63RbwHdOmT4uG64zfu8Vzx8AnfhGb
-         GzohyRvwmuJBCfcXVgg3fOIXM6B8CTaQD2iIyx3CXaUtcoV6f8mv7p+Sd0QJnicU+ujf
-         wiyiBG/WAuRmFnerfR2XaydJu2i6XuNdl6WdrwTCwfNoOUvT0bYYeJxqoo5Ddy3FU0m3
-         sFsA==
-X-Gm-Message-State: AOAM530INnTDfwlgGyXa++rD/KWXs9BbLguWmqNOG33AngjhEATLkV0k
-        uZfJ/6wosAZsFHAGKfSfCO8=
-X-Google-Smtp-Source: ABdhPJyUIHhXk2TBODI4l+G8EpfZgo3uaS6HDXMeQUwt9oLpDD5H2gyrSqviubUHtHzFVbZvSbs7Gg==
-X-Received: by 2002:a05:6a00:1147:b029:3e0:8c37:938e with SMTP id b7-20020a056a001147b02903e08c37938emr3680802pfm.65.1634798431011;
-        Wed, 20 Oct 2021 23:40:31 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d14sm4952292pfu.124.2021.10.20.23.40.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 23:40:30 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     SimonHorman <horms@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] net/core: Remove unused assignment operations and variable
-Date:   Thu, 21 Oct 2021 06:40:20 +0000
-Message-Id: <20211021064020.1047324-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 21 Oct 2021 02:45:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZdGL3HSyz4xbR;
+        Thu, 21 Oct 2021 17:43:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634798587;
+        bh=fm0/Kxjueywg97WXfL9/dcBLGen7PY0bTxyHWCouSVQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kgufdbDqEdtk6F8cy2fl5PBfdeLCs5GlvKgLnLw9samUDZOfxyM7qNABNwVMjzA7D
+         1fIoJQIW+3AUgKR3yzLC0x/U6d0SPG1nKwuOqqMPPDDfr6hnA8U2niJMZvHOpc1CKj
+         ozAouzpNv4oWxYVN5t84UW2Z9oLQ1dVKvatg5esrzPG/7Ia6Y85Vp2nfOdGMRiFCEw
+         HvRtFG0ND4Ex23BU9ZrbXp/EcE2UEBaIVtIE4kk/l32kmgb12gpbUHXOXbualXKD9p
+         IF95YIZoG/zOKoDfWJRpRorlhN8SF77lGQk1tbqvlJ2AIgQAr+pqbLSraLwtTDduta
+         J5rGfItLQY2yQ==
+Date:   Thu, 21 Oct 2021 17:43:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Yang Shi <shy828301@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20211021174303.3710b295@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/014xPl8+nhQ0rh0Ip13xsNa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although if_info_size is assigned, it has not been used. And the variable
-should also be deleted.
+--Sig_/014xPl8+nhQ0rh0Ip13xsNa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The clang_analyzer complains as follows:
+Hi all,
 
-net/core/rtnetlink.c:3806: warning:
+After merging the akpm-current tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Although the value stored to 'if_info_size' is used in the enclosing
-expression, the value is never actually read from 'if_info_size'.
+In file included from include/linux/mmzone.h:22,
+                 from include/linux/gfp.h:6,
+                 from include/linux/xarray.h:14,
+                 from include/linux/radix-tree.h:19,
+                 from include/linux/fs.h:15,
+                 from include/linux/compat.h:17,
+                 from arch/powerpc/kernel/asm-offsets.c:12:
+include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE" requires 2=
+ arguments, but only 1 given
+  806 | PAGEFLAG_FALSE(HasHWPoisoned)
+      |                             ^
+include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
+  411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname, lnam=
+e) \
+      |=20
+include/linux/page-flags.h:807:32: error: macro "TESTSCFLAG_FALSE" requires=
+ 2 arguments, but only 1 given
+  807 |  TESTSCFLAG_FALSE(HasHWPoisoned)
+      |                                ^
+include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined here
+  414 | #define TESTSCFLAG_FALSE(uname, lname)     \
+      |=20
+include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALSE'
+  806 | PAGEFLAG_FALSE(HasHWPoisoned)
+      | ^~~~~~~~~~~~~~
+include/linux/page-flags.h:807:18: error: expected ';' before 'static'
+  807 |  TESTSCFLAG_FALSE(HasHWPoisoned)
+      |                  ^
+      |                  ;
+......
+  815 | static inline bool is_page_hwpoison(struct page *page)
+      | ~~~~~~           =20
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+Caused by commit
+
+  e95de3e8d811 ("mm: filemap: check if THP has hwpoisoned subpage for PMD p=
+age fault")
+
+interacting with commit
+
+  d389a4a81155 ("mm: Add folio flag manipulation functions")
+
+from the folio tree.
+
+I have applied the following merge fix patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 21 Oct 2021 17:32:36 +1100
+Subject: [PATCH] fix up for "mm: Add folio flag manipulation functions"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- net/core/rtnetlink.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/page-flags.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 10e2a0e..c218ad0 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -3807,9 +3807,8 @@ struct sk_buff *rtmsg_ifinfo_build_skb(int type, struct net_device *dev,
- 	struct net *net = dev_net(dev);
- 	struct sk_buff *skb;
- 	int err = -ENOBUFS;
--	size_t if_info_size;
- 
--	skb = nlmsg_new((if_info_size = if_nlmsg_size(dev, 0)), flags);
-+	skb = nlmsg_new(if_nlmsg_size(dev, 0), flags);
- 	if (skb == NULL)
- 		goto errout;
- 
--- 
-2.15.2
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 867b4bb3c336..80b33404ad1f 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -803,8 +803,8 @@ PAGEFLAG_FALSE(DoubleMap, double_map)
+ PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
+ 	TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
+ #else
+-PAGEFLAG_FALSE(HasHWPoisoned)
+-	TESTSCFLAG_FALSE(HasHWPoisoned)
++PAGEFLAG_FALSE(HasHWPoisoned, hashwpoisoned)
++	TESTSCFLAG_FALSE(HasHWPoisoned, hashwpoisoned)
+ #endif
+=20
+ /*
+--=20
+2.33.0
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/014xPl8+nhQ0rh0Ip13xsNa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFxC/cACgkQAVBC80lX
+0Gzktgf/UDVCxqq9+opxyJwEAWq5NXTyRUBlwsDwcJ/vnPSAYnPpQl6kEHtIN11L
+8SA+5NUsq0LQT3PlZk8DRCtw2Z4SAPt/77V7aZV3/krzmw5yKcJQsrZAVkwTg+Kb
+I0cVH+6iVPigLHgVuBLA654Llc5VrMplHrjkdCWaAe8tR+kW6biXkc6ldmGp65TA
+8OH1zXFjobVvXA334SE2FDWq17PAVLrkAUe8tzTe2Kc4xVvmpTRl/UXLPRH9gRS0
+OhAVjVLr3pwv1XG5flUpGTqcLxLqs8jYn42WBk4LzI+yCgUUdkGVtvPjRwNc0xRZ
+o2NqatPprqbju4pfHWV5WhnUNm+Cjg==
+=WkJv
+-----END PGP SIGNATURE-----
+
+--Sig_/014xPl8+nhQ0rh0Ip13xsNa--
