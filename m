@@ -2,152 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF00436E89
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB13E436E93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhJUXxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhJUXxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:53:38 -0400
-Received: from mail-pj1-x1062.google.com (mail-pj1-x1062.google.com [IPv6:2607:f8b0:4864:20::1062])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A208C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:51:22 -0700 (PDT)
-Received: by mail-pj1-x1062.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso1756960pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:51:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:dkim-signature:mime-version:references
-         :in-reply-to:from:date:message-id:subject:to:cc;
-        bh=e+PTcSOFwWEcq9oTy0sMRAqods1g3LEj7JCe2Z0YjmU=;
-        b=fD20K/bzrSOrlgwg2/WZa+Cv5Xi0ixxyRpZlwjLmHPaIDphjsp5fdsPWA9xqKMprqx
-         SnrfYCkUQV0TgDq5GTjGoHcrkLyLeQIg9XwcxEZPAD+pr6qIjOyKiduROFv8jgpoReMt
-         vA0diYhgnTV5bKVYcQ3BN2zxETtRolMVAfJ/W8PfjeeotS4xYpn+UvsxO2FC/CzGsXSG
-         nIgtaTQ3plRv4LvzmBVMQf/WQS7yAzpH+k0pcn3ZM9EOjedHtZX5cH5asaPSyXRQqpGE
-         edVL3sx8ypOH3/rjAgmhVv7VzMPeYNJYuNoLGMhw5cRtZFnwGp1I7GWULu19Q9Cz8Bjf
-         1wDg==
-X-Gm-Message-State: AOAM533kmXik8FPpMpDH8xbUpRk1pdzjdmbBiEL2IN5Y/9oUL9fvkdRc
-        ImsJ5XL32ew/d+pClfCo/OCdpNGBOZC0pF07xtXai1EGzo0PGw==
-X-Google-Smtp-Source: ABdhPJyWM5Qt3VWCHhC1sRS0+ZRBdCUO33D/8UHYsGIiq7h6xdI9vZHBMm2cxa0pI2D9DtMiqQGhOca/3OiK
-X-Received: by 2002:a17:90b:3ec3:: with SMTP id rm3mr10243454pjb.186.1634860281760;
-        Thu, 21 Oct 2021 16:51:21 -0700 (PDT)
-Received: from netskope.com ([163.116.131.172])
-        by smtp-relay.gmail.com with ESMTPS id pi11sm3033451pjb.14.2021.10.21.16.51.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 16:51:21 -0700 (PDT)
-X-Relaying-Domain: riotgames.com
-Received: by mail-ed1-f72.google.com with SMTP id u23-20020a50a417000000b003db23c7e5e2so1978909edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e+PTcSOFwWEcq9oTy0sMRAqods1g3LEj7JCe2Z0YjmU=;
-        b=ojaLK0HvIJ82oNRz7+C2hMZO0pIoLO/gi4pSqB+nhc58D65M7ZN18Z3a8/xxcGFvnx
-         dc8mkwwbqjMMaYpWTXy4IMyziYwQsUvHXK4EjwfL01I9r21m/lzt9e9bSBETBglXfjh5
-         vnYiDGUSabTlMOP8PNRKnNYSk5Gdx/JdgB9Ls=
-X-Received: by 2002:a17:906:9a07:: with SMTP id ai7mr11435105ejc.55.1634860279639;
-        Thu, 21 Oct 2021 16:51:19 -0700 (PDT)
-X-Received: by 2002:a17:906:9a07:: with SMTP id ai7mr11435067ejc.55.1634860279333;
- Thu, 21 Oct 2021 16:51:19 -0700 (PDT)
+        id S231777AbhJUX5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:57:45 -0400
+Received: from mga01.intel.com ([192.55.52.88]:7635 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhJUX5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:57:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="252686400"
+X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
+   d="scan'208";a="252686400"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 16:55:27 -0700
+X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
+   d="scan'208";a="445050920"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 16:55:27 -0700
+Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 665A56362;
+        Thu, 21 Oct 2021 16:55:26 -0700 (PDT)
+Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
+        id CEA7A361DAB; Thu, 21 Oct 2021 16:57:53 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 16:57:53 -0700
+From:   mark gross <mgross@linux.intel.com>
+To:     Sanket Goswami <Sanket.Goswami@amd.com>
+Cc:     Shyam-sundar.S-k@amd.com, hdegoede@redhat.com,
+        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] platform/x86: amd-pmc: Add support for AMD Smart
+ Trace Buffer
+Message-ID: <20211021235753.GF63795@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20211021093106.196989-1-Sanket.Goswami@amd.com>
 MIME-Version: 1.0
-References: <20211020104442.021802560@infradead.org> <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net> <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
-From:   Zvi Effron <zeffron@riotgames.com>
-Date:   Thu, 21 Oct 2021 16:51:08 -0700
-Message-ID: <CAC1LvL33KYZUJTr1HZZM_owhH=Mvwo9gBEEmFgdpZFEwkUiVKw@mail.gmail.com>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>, x86@kernel.org,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-x-netskope-inspected: true
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021093106.196989-1-Sanket.Goswami@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 1:47 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Oct 20, 2021 at 05:05:02PM -0700, Alexei Starovoitov wrote:
-> > On Wed, Oct 20, 2021 at 01:09:51PM +0200, Peter Zijlstra wrote:
->
-> > > @@ -446,25 +440,8 @@ static void emit_bpf_tail_call_indirect(
-> > >  {
-> > >     int tcc_off = -4 - round_up(stack_depth, 8);
-> > >     u8 *prog = *pprog, *start = *pprog;
-> > > -   int pop_bytes = 0;
-> > > -   int off1 = 42;
-> > > -   int off2 = 31;
-> > > -   int off3 = 9;
-> > > -
-> > > -   /* count the additional bytes used for popping callee regs from stack
-> > > -    * that need to be taken into account for each of the offsets that
-> > > -    * are used for bailing out of the tail call
-> > > -    */
-> > > -   pop_bytes = get_pop_bytes(callee_regs_used);
-> > > -   off1 += pop_bytes;
-> > > -   off2 += pop_bytes;
-> > > -   off3 += pop_bytes;
-> > > -
-> > > -   if (stack_depth) {
-> > > -           off1 += 7;
-> > > -           off2 += 7;
-> > > -           off3 += 7;
-> > > -   }
-> > > +   static int out_label = -1;
-> >
-> > Interesting idea!
->
-> I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
-> lot more robust than the 64bit one and I couldn't figure out why the
-> difference.
->
-> > All insn emits trying to do the right thing from the start.
-> > Here the logic assumes that there will be at least two passes over image.
-> > I think that is correct, but we never had such assumption.
->
-> That's not exactly true; I think image is NULL on every first run, so
-> all insn that depend on it will be wrong to start with. Equally there's
-> a number of insn that seem to depend on addrs[i], that also requires at
-> least two passes.
->
-> > A comment is certainly must have.
->
-> I can certainly add one, although I think we'll disagree on the comment
-> style :-)
->
-> > The race is possible too. Not sure whether READ_ONCE/WRITE_ONCE
-> > are really warranted though. Might be overkill.
->
-> Is there concurrency on the jit?
->
-> > Once you have a git branch with all the changes I can give it a go.
->
-> Ok, I'll go polish this thing and stick it in the tree mentioned in the
-> cover letter.
->
-> > Also you can rely on our BPF CI.
-> > Just cc your patchset to bpf@vger and add [PATCH bpf-next] to a subject.
-> > In patchwork there will be "bpf/vmtest-bpf-next" link that
-> > builds kernel, selftests and runs everything.
->
-> What's a patchwork and where do I find it?
->
+On Thu, Oct 21, 2021 at 03:01:06PM +0530, Sanket Goswami wrote:
+> STB (Smart Trace Buffer), is a debug trace buffer which is used to help
+> isolate failures by analyzing the last feature that a system was running
+> before hitting a failure. This nonintrusive way is always running in the
+> background and trace is stored into the SoC.
+> 
+> This patch provides mechanism to access the STB buffer using the read
+> and write routines.
+I don't see the write routine exported.
 
-Patchwork[0] tracks the status of patches from submission through to merge (and
-beyond?).
+> 
+> Co-developed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
+> ---
+> Changes in v2:
+> - Create amd_pmc_stb_debugfs_fops structure to get STB data.
+> - Address review comments from Hans.
+> 
+>  drivers/platform/x86/amd-pmc.c | 120 +++++++++++++++++++++++++++++++++
+>  1 file changed, 120 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
+> index 502f37eaba1f..df53c5996e2c 100644
+> --- a/drivers/platform/x86/amd-pmc.c
+> +++ b/drivers/platform/x86/amd-pmc.c
+> @@ -33,6 +33,12 @@
+>  #define AMD_PMC_SCRATCH_REG_CZN		0x94
+>  #define AMD_PMC_SCRATCH_REG_YC		0xD14
+>  
+> +/* STB Registers */
+> +#define AMD_PMC_STB_INDEX_ADDRESS	0xF8
+> +#define AMD_PMC_STB_INDEX_DATA		0xFC
+> +#define AMD_PMC_STB_PMI_0		0x03E30600
+> +#define AMD_PMC_STB_PREDEF		0xC6000001
+> +
+>  /* Base address of SMU for mapping physical address to virtual address */
+>  #define AMD_PMC_SMU_INDEX_ADDRESS	0xB8
+>  #define AMD_PMC_SMU_INDEX_DATA		0xBC
+> @@ -80,6 +86,7 @@
+>  #define SOC_SUBSYSTEM_IP_MAX	12
+>  #define DELAY_MIN_US		2000
+>  #define DELAY_MAX_US		3000
+> +#define FIFO_SIZE		4096
+>  enum amd_pmc_def {
+>  	MSG_TEST = 0x01,
+>  	MSG_OS_HINT_PCO,
+> @@ -126,8 +133,14 @@ struct amd_pmc_dev {
+>  #endif /* CONFIG_DEBUG_FS */
+>  };
+>  
+> +static bool enable_stb;
+> +module_param(enable_stb, bool, 0644);
+> +MODULE_PARM_DESC(enable_stb, "Enable the STB debug mechanism");
+> +
+>  static struct amd_pmc_dev pmc;
+>  static int amd_pmc_send_cmd(struct amd_pmc_dev *dev, bool set, u32 *data, u8 msg, bool ret);
+> +static int amd_pmc_write_stb(struct amd_pmc_dev *dev, u32 data);
+shouldn't this be exported as a kernel API to log stuff?  seems like a waist to
+only log the pmc suspend resume status.
 
-[0]: https://patchwork.kernel.org/
+> +static int amd_pmc_read_stb(struct amd_pmc_dev *dev, u32 *buf);
+>  
+>  static inline u32 amd_pmc_reg_read(struct amd_pmc_dev *dev, int reg_offset)
+>  {
+> @@ -156,6 +169,51 @@ struct smu_metrics {
+>  	u64 timecondition_notmet_totaltime[SOC_SUBSYSTEM_IP_MAX];
+>  } __packed;
+>  
+> +static int amd_pmc_stb_debugfs_open(struct inode *inode, struct file *filp)
+> +{
+> +	struct amd_pmc_dev *dev = filp->f_inode->i_private;
+> +	u32 *buf;
+> +	int rc;
+> +
+> +	buf = devm_kmalloc(dev->dev, FIFO_SIZE * 4, GFP_KERNEL);
+would it be more readable to use sizeof(u32)?
 
-> > It's pretty much the same as selftests/bpf/vmtest.sh, but with the latest
-> > clang nightly and other deps like pahole.
->
-> nice.
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	rc = amd_pmc_read_stb(dev, buf);
+> +	if (rc)
+> +		goto out;
+> +
+> +	filp->private_data = buf;
+> +
+> +out:
+> +	return rc;
+> +}
+> +
+> +static ssize_t amd_pmc_stb_debugfs_read(struct file *filp, char __user *buf, size_t size,
+> +					loff_t *pos)
+> +{
+> +	if (!filp->private_data)
+> +		return -EINVAL;
+> +
+> +	return simple_read_from_buffer(buf, size, pos, filp->private_data,
+> +				       FIFO_SIZE * 4);
+would it be more readable to use sizeof(u32)?
+> +}
+> +
+> +static int amd_pmc_stb_debugfs_release(struct inode *inode, struct file *filp)
+> +{
+> +	kfree(filp->private_data);
+> +	filp->private_data = NULL;
+> +
+> +	return 0;
+> +}
+> +
+> +const struct file_operations amd_pmc_stb_debugfs_fops = {
+> +	.owner = THIS_MODULE,
+> +	.open = amd_pmc_stb_debugfs_open,
+> +	.read = amd_pmc_stb_debugfs_read,
+> +	.release = amd_pmc_stb_debugfs_release,
+are you missing a write fop?  you commit comment talked about a write routine.
+
+
+> +};
+> +
+>  static int amd_pmc_idlemask_read(struct amd_pmc_dev *pdev, struct device *dev,
+>  				 struct seq_file *s)
+>  {
+> @@ -269,6 +327,10 @@ static void amd_pmc_dbgfs_register(struct amd_pmc_dev *dev)
+>  			    &s0ix_stats_fops);
+>  	debugfs_create_file("amd_pmc_idlemask", 0644, dev->dbgfs_dir, dev,
+>  			    &amd_pmc_idlemask_fops);
+> +	/* Enable STB only when the module_param is set */
+> +	if (enable_stb)
+> +		debugfs_create_file("stb_read", 0644, dev->dbgfs_dir, dev,
+> +				    &amd_pmc_stb_debugfs_fops);
+>  }
+>  #else
+>  static inline void amd_pmc_dbgfs_register(struct amd_pmc_dev *dev)
+> @@ -430,6 +492,9 @@ static int __maybe_unused amd_pmc_suspend(struct device *dev)
+>  	if (rc)
+>  		dev_err(pdev->dev, "suspend failed\n");
+>  
+> +	if (enable_stb)
+> +		amd_pmc_write_stb(pdev, AMD_PMC_STB_PREDEF);
+> +
+>  	return rc;
+>  }
+>  
+> @@ -450,6 +515,10 @@ static int __maybe_unused amd_pmc_resume(struct device *dev)
+>  	/* Dump the IdleMask to see the blockers */
+>  	amd_pmc_idlemask_read(pdev, dev, NULL);
+>  
+> +	/* Write data incremented by 1 to distinguish in stb_read */
+> +	if (enable_stb)
+> +		amd_pmc_write_stb(pdev, AMD_PMC_STB_PREDEF + 1);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -466,6 +535,57 @@ static const struct pci_device_id pmc_pci_ids[] = {
+>  	{ }
+>  };
+>  
+> +static int amd_pmc_write_stb(struct amd_pmc_dev *dev, u32 data)
+> +{
+> +	int rc;
+> +
+> +	rc = pci_write_config_dword(dev->rdev, AMD_PMC_STB_INDEX_ADDRESS, AMD_PMC_STB_PMI_0);
+> +	if (rc) {
+> +		dev_err(dev->dev, "failed to write addr in stb: 0x%X\n",
+> +			AMD_PMC_STB_INDEX_ADDRESS);
+> +		pci_dev_put(dev->rdev);
+> +		return pcibios_err_to_errno(rc);
+> +	}
+> +
+> +	rc = pci_write_config_dword(dev->rdev, AMD_PMC_STB_INDEX_DATA, data);
+> +	if (rc) {
+> +		dev_err(dev->dev, "failed to write data in stb: 0x%X\n",
+> +			AMD_PMC_STB_INDEX_DATA);
+> +		pci_dev_put(dev->rdev);
+> +		return pcibios_err_to_errno(rc);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int amd_pmc_read_stb(struct amd_pmc_dev *dev, u32 *buf)
+> +{
+> +	int i, err;
+> +	u32 value;
+> +
+> +	err = pci_write_config_dword(dev->rdev, AMD_PMC_STB_INDEX_ADDRESS, AMD_PMC_STB_PMI_0);
+> +	if (err) {
+> +		dev_err(dev->dev, "error writing addr to stb: 0x%X\n",
+> +			AMD_PMC_STB_INDEX_ADDRESS);
+> +		pci_dev_put(dev->rdev);
+> +		return pcibios_err_to_errno(err);
+> +	}
+> +
+> +	for (i = 0; i < FIFO_SIZE; i++) {
+> +		err = pci_read_config_dword(dev->rdev, AMD_PMC_STB_INDEX_DATA, &value);
+> +		if (err) {
+> +			dev_err(dev->dev, "error reading data from stb: 0x%X\n",
+> +				AMD_PMC_STB_INDEX_DATA);
+> +			pci_dev_put(dev->rdev);
+> +			return pcibios_err_to_errno(err);
+> +		}
+> +
+> +		*buf++ = value;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int amd_pmc_probe(struct platform_device *pdev)
+>  {
+>  	struct amd_pmc_dev *dev = &pmc;
+> -- 
+> 2.25.1
+> 
