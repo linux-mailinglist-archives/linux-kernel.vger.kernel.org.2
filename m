@@ -2,305 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2BD436776
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0589743677A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhJUQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:20:51 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:49979 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbhJUQUt (ORCPT
+        id S231869AbhJUQV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:21:29 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:13210 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231933AbhJUQVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:20:49 -0400
-Received: by mail-io1-f71.google.com with SMTP id l17-20020a05660227d100b005d6609eb90eso796384ios.16
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:18:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8fxKRX1/Ot1SJYCAdTP2vq9TuZkX9W23D3UD+NW2AIc=;
-        b=LMBGnV4clfEb7VoniXrZEKwLTtF8zI5fwkRUrrjaTINh0YwpEiYRMmilArN7JQLKmM
-         2n39qtiYraXy8VLI6LKddrOoOYGB6iu1n0GHRS3rWkdO2DjvxrpkZVjfBYbPwlRYXYDb
-         VN/xKHhD/NMDUWnLpZ76sKRcL/HA5y9eprw+jlZAnttXrMJwGVZ1W95BBULEopB/tIML
-         Kwzc2BxWXZZweGNv/RCcOMir8M5TaFQo4ylp/WCoIhzZpq+Tk8x0gSEaerJeildp4LH+
-         cqq8kYbjwXtMu/2pfb14hs/AOVVr5xYXqRF0saCztnJfib+VS22ZdQR8yBRqVSzZBMga
-         oAQA==
-X-Gm-Message-State: AOAM533N9kOjSIN6C7qcrOl/rgOeFyV4hgBwKMi7LLRb5ekVVAh21oqI
-        S76DQY0S19MznHaAkHlff0A5t4UpTnChNZna2FpopJRu59kt
-X-Google-Smtp-Source: ABdhPJwwUeMbDb3A1+A+GOtAARX13DZt8qTL/N/M/KVcZl0hiJAoDl/lEIPxTmSqqs7Z1WKnnvvBS4EFP5KyMXsbPV5SWRawZTPq
+        Thu, 21 Oct 2021 12:21:20 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LFIPmh017614;
+        Thu, 21 Oct 2021 16:18:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=kLDKsYuFvsRQlU97e5axnhpZAAN8n20Dp6z7qF7aD7g=;
+ b=e74a2+y4hSn/lvR41iDoNPFR5ZfZ07zF/CRd+pIdnH251TWAbzq2964sHudetaNTXDbd
+ j6QwhNsXFFLVN76RY/WGHCYoFF8xfO7pIKrurbi5zkXfHduGdx1WqObqVnuEK6cuGc7/
+ q8LnC6yh0uZtkFquOc2d2JK0YxTebuzxR5i7pQ7Ds5hcw2yE+h4GOz9iR6WFmRnQbAxY
+ WnroszHN35qOfLp3XmsLbpbdpCmgrBX/UU6oz05YUBW+GHQ/wudKoegEKF3q9K2/HGWX
+ MVZcrBHh06iJkiBLOV7NPUj+a6+Yxc44vOzA+yIqHkD5eovjTEVMMMGTuWiLfAlcCF8L Fg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btkwj76tm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 16:18:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19LG0v1u119983;
+        Thu, 21 Oct 2021 16:18:46 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2044.outbound.protection.outlook.com [104.47.51.44])
+        by aserp3030.oracle.com with ESMTP id 3bqmsjeffn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 16:18:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhDyx/CWeQ6zAx9OS56OFfOsP0V8RurrsVTuFUOUmGRO3E8MYv25w3CIwRloZonGMowRa3mPEScFfoa4z32KDUYTQirvQqFKJJ8exmPKDiznIq+Z1pWl/cdkjV7FitLjJ5mibisrjpkJiVDWJE5NaWa+rm2IRA3CbhxIS2G9huZGC0rL8GS+9B3BCJ54t1Xm3/YJuTbG5SE3m2Q/z6hyJmvd0OqF+rTpqfXvpdDl76CAzRqol7zVwJhM+/lvFDBWzE9PX9V/+gNDT45mqxr15yDzoHKRXJI72rUesH5qdzRf6pL8aIAEagSiCFNb+Dj9InjfoglLVBYysalzLUco/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kLDKsYuFvsRQlU97e5axnhpZAAN8n20Dp6z7qF7aD7g=;
+ b=IMwouWKWwaXPOWNapgMCLu9oC5RpyF6a5D96AvFQirECnvA0nwikVDfgXeobzT02i3QtXQF9p1HfQov/2P0IkFrGWa9kFc8bFywV8b+hUED5wfHH07Ftqrys+KMJUKiMIa/WPc8b2rNmyusBPJir/uQr2okdyHWwPV2wtikWYcEkDQD2bM8zZnHrCnZAL3Jk6rcDOMmCijBv7FNreAi6F4xXA6KiAUFNsHsLrEVvQbqb3us0GapxEhBcT7eXt0dv8tbuFdfk7RJMsu/XHrOW1UBkhaf5XRdsCKmu57p7jEomAMSUUDvNVMzURAat5MzIECpW7PNiI5NbrqHGRQQFMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kLDKsYuFvsRQlU97e5axnhpZAAN8n20Dp6z7qF7aD7g=;
+ b=IuB11CRxkds8y1BBbP9IWtGt19luK8Acs7FYeSfe7rTXpEXpBw+Dev3u5wW/Dg+3fewlsjwRTV5fFVIyeLXcZpFENpCc1tu+m7K1xZVV8IvfaVYPz+rmvtcN3PdHwbPXiV/Bp03v9AFmEpf+HiPYG9gg6nAe9pw0RbLPzrA9W0k=
+Authentication-Results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4045.namprd10.prod.outlook.com (2603:10b6:208:1b7::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Thu, 21 Oct
+ 2021 16:18:44 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
+ 16:18:44 +0000
+Message-ID: <d436f663-2b9b-1625-3de6-1b29130de8bd@oracle.com>
+Date:   Fri, 22 Oct 2021 00:18:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [btrfs] 0f80799866: WARNING:at_fs/sysfs/file.c:#sysfs_emit
+Content-Language: en-US
+To:     dsterba@suse.cz, kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com
+References: <f748bd08259e2b770a5d9f2355c58c33d8566d16.1634598572.git.anand.jain@oracle.com>
+ <20211021133538.GA16330@xsang-OptiPlex-9020>
+ <20211021160648.GD20319@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20211021160648.GD20319@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG3P274CA0015.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::27)
+ To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a67:: with SMTP id w7mr4194606ilv.203.1634833113223;
- Thu, 21 Oct 2021 09:18:33 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:18:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb187b05cedf3ec0@google.com>
-Subject: [syzbot] INFO: task can't die in ext4_stop_mmpd
-From:   syzbot <syzbot+305a8d683b017bc30c3d@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Received: from [192.168.10.100] (39.109.140.76) by SG3P274CA0015.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Thu, 21 Oct 2021 16:18:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7bcb32ab-0e88-4626-990e-08d994ae7436
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4045:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4045298432F642576444C1BFE5BF9@MN2PR10MB4045.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RBMpppS9hJlyj544tfAxa+I0V734oI6GxKXlmVmFOK7bZOlMGp3c7ktW/dtISgXcx5eECvb3MjWrqqQ6rgXoxpcBt4ox0ZZ0RNGk3oeHo7GBNPnEWSX77ngsN06H6/ekxOXeTQFOkOclOB4DoO+PEBn17NQ+EWRCVQrOG2TQBrTej1MnX3OrxiuKInMnyuJP4u0fV/A9I+2dMzRZ0AhXnVkiieYh2z2iiRwuxhzHxLeYT6P+RcA0L/YLk1qeZWr/R+b87Xn02zlnviAdSqJhOFcGxZenEiIaP8j94D5MYm9ZZ5WNZwVXg9QNQr5N4+YGDyE1H9BSLs1o5hrb4Ka8J5C1t2GiJbDHtzTCbfgnKDfKkGBYb+tP4MrdeljIELg/5HD+wT96Q9b2Kco7R9Wdc68T4zHZEUXAEuoULFhEqRvGHmqzP6Xc8wiczLWk/h16IcbTwsY+pEW4rmmXqlBNS+9PGwbdNealb91KW74cXXiIXU3ihw4AcxddB7YxevmEb4kbEHWjbyjdMqJSj8uajo4NPjHlC3YJb+GDd2UJTsOZ5Z86VpVKEyObrHA9rQc34kPXTZLrVPEyvYRdr2+L7aWttvN8OGXx6Mnc+kFpxUikkBelGOb81hDOO9eUrpZgKefAkU5xoidbjPwM0UdTBEQeL4I/6Kn+n9cCt8u9f1rPN/xj6S4KS3R2d5F/hqqaMY693iNYnYDX3XjAaMoX3j5qILER4/eNsTkqutS/fzs6ur3JGIXY9viEa+h/ntXgIpVskhS+Ec6pRDVwyRkdj6IzXUeyKrMIN8PPTo8g7jUTTd02i9WSEXFZffTkg3AvkjcV3n4W/mPnAtyAkMcgVAHPJHSDIbQy9bLYQDPvYtODm9l2dgPAifjc0VH5+c4q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31686004)(8676002)(6666004)(956004)(2616005)(2906002)(316002)(66476007)(66946007)(16576012)(26005)(508600001)(5660300002)(8936002)(4744005)(38100700002)(36756003)(31696002)(83380400001)(44832011)(6486002)(966005)(66556008)(186003)(53546011)(110136005)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VUR0UWRJQUJWcm9nTzgxaGFZRWtXOUpmY2tmeGZsOFlYYkIxcVB0dnBGTG9j?=
+ =?utf-8?B?MGVGSzVLcHBHM2pNOXgzaThwUWVGUndzejU3V3JXSUJBMjkvK3RZY1hzWjZ1?=
+ =?utf-8?B?dm9EbGZ6cXJER3Z4cUNzc3VzSTZmaXJjWDVJSDVQY3Y3M0NFdVFVMUVGUmRJ?=
+ =?utf-8?B?eU51c29STTVqRWN2TGlQdzRsL2JHdUg0QzZxd1Nzbm1ha1pLNWh5QnlxampQ?=
+ =?utf-8?B?dUNISm9laGgwT3Y3anBGaGQrek5hOWQvbmhNWDRnKzQwNVB1ZldIem1CWENx?=
+ =?utf-8?B?VlJIaEVJVms1ajRjTVdwRDVIeWFSODREbjFtQ3ZEZUFTTVBWMXF6dWNvWjNW?=
+ =?utf-8?B?cDBScnlCVVB3eXlUSlQ1WGtTL2twVThra3NmQTdYaUplRlNYSzRIdTk2eE15?=
+ =?utf-8?B?dXJ6dGtVa0ZRSVgrUDUvb2g0U0VFZ0kweDVHYmFQR2w1RzYvNnBQRGpPLzdM?=
+ =?utf-8?B?K2kzNXpDUjM3OVdEaFoyYlU5eEhwdVNyWnhaY1VDOGw4ZXdFV3BhUVEzQXFl?=
+ =?utf-8?B?czAzZkVud3ZCVGpHdDQ5Y2hLU2RwOURRUGdtNFNQTGFXZ1ZjQTdZdnNlNGdV?=
+ =?utf-8?B?bUtrYU5nc3J3dm5vZXE0end3WklIekFkeVR2cmxWck9SWm9pakwyM2h3Q0tG?=
+ =?utf-8?B?c1FmZXN1amQ2Y1I3Ym1nRUtsZis3RTdYLzVOTm1yaDI3TkVSci9zelM2WGhT?=
+ =?utf-8?B?bEZqWTh3M25MUUNNeDVnUkdkQWZwelR3Q3dPckZ5UDJ5alY3WndVdmV0Ulpr?=
+ =?utf-8?B?dy9lRGJQdjNLVVZHSjM0ckowZ1FaSzE5am50UzREYVVTT2p5OW5mUUVwb2RQ?=
+ =?utf-8?B?VnpyQW92aEdNTklTU0lRSzFraVQzdjVFTXJmemU3UHZwak5rN0VqZkpJQ0dH?=
+ =?utf-8?B?YmxWVDExSWYwaXMrc28zMW55SkNNYlV5Wmxad1hMU2F5VERnV3gzZWV4MmJD?=
+ =?utf-8?B?RUdzOXhZenQyL0pDWFlsN2ZQWG15L25tZExlOTBCQWJ0d2Nyc1NWeVhDblN0?=
+ =?utf-8?B?YVNwZXkyV2dBc0crSnZrV3h6SW9QSnhLdmVuZWtGc091U0RJV0h0V2o4Vzh2?=
+ =?utf-8?B?cjVZbkV4YlpvYndSTHJodlBTY3ptNG85bEdBT1U4L2hyWGJ1V2d1VlYzVGNR?=
+ =?utf-8?B?dnVFTjAxT01HbXRFYmVyNmNXT3EwTXRzcmFNV0Z4cnA2R1BYTytIQmd6aWk2?=
+ =?utf-8?B?eFRsZDNMakloZm5yS3FsMnVhZEx4TmNCK3QrYXh2dThIYWlCcGhiTkc5cm1R?=
+ =?utf-8?B?eGl0eUR3akdmYUdmQU9XWmRKSW5QTEdmVTZQRUsvNGZ3Tjl2L0t5Wmh6M3Nv?=
+ =?utf-8?B?QVNPbWN3K3VTY3h1S2k4RUsyY0NBd0JqWWxBTStQa0dhT2F5SC9EZkNvWkNr?=
+ =?utf-8?B?eEZsdnplUUhLc2Nud0dsTE1Ic09jcXFLcmx6dlFUcVJ1Qlp1aDF3M05hMVRq?=
+ =?utf-8?B?NnFxTHJPNjdiVWI1RURSU3pSQUdTRTM4WUloZXFVZU05TW1TdGcvSTZxRjAw?=
+ =?utf-8?B?WHdVZ1NCZGpZV0szckwrNktqaytmYXF4eDFzUnJKbFhHcUhXQXd3amM4SDFs?=
+ =?utf-8?B?a0tyUVhINHBtQzlSczdidUY4MCtRZGw1T3NkdmhSTVhsV2VVRzhIVEJlbk5a?=
+ =?utf-8?B?cnhHSGdNYTJUNWpoSDcvVTl3MGkrcDlKVWtRVmdHUXhOQUZoeC9yMlUreEpC?=
+ =?utf-8?B?THo2TlhpL3Z3RHorTVRmOEgxd2lHTUQvZ0dBbFRUeEFYL2w2eGNzYnJBaTFW?=
+ =?utf-8?Q?bCSFybE30F5x+D+2B6AACqaZfQDycuCglU6fJZZ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bcb32ab-0e88-4626-990e-08d994ae7436
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 16:18:44.8852
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: anand.jain@oracle.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4045
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10144 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110210082
+X-Proofpoint-ORIG-GUID: neY5RAX1B-hKWc6BBEAP6DyklEVXN06u
+X-Proofpoint-GUID: neY5RAX1B-hKWc6BBEAP6DyklEVXN06u
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    7c832d2f9b95 Add linux-next specific files for 20211015
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=122ad4c8b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f6ac42766a768877
-dashboard link: https://syzkaller.appspot.com/bug?extid=305a8d683b017bc30c3d
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=123dd8dcb00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e0c9ccb00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13cd6f68b00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=102d6f68b00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17cd6f68b00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+305a8d683b017bc30c3d@syzkaller.appspotmail.com
-
-INFO: task syz-executor128:9281 can't die for more than 143 seconds.
-task:syz-executor128 state:D stack:27824 pid: 9281 ppid:  6538 flags:0x00004004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:4965 [inline]
- __schedule+0xa9a/0x4940 kernel/sched/core.c:6246
- schedule+0xd2/0x260 kernel/sched/core.c:6319
- schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x174/0x270 kernel/sched/completion.c:138
- kthread_stop+0x17a/0x710 kernel/kthread.c:648
- ext4_stop_mmpd+0x47/0xd0 fs/ext4/mmp.c:255
- ext4_fill_super+0x892d/0xd750 fs/ext4/super.c:5060
- mount_bdev+0x34d/0x410 fs/super.c:1368
- legacy_get_tree+0x105/0x220 fs/fs_context.c:610
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7ffb61e58d3a
-RSP: 002b:00007ffb61e03078 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffb61e030d0 RCX: 00007ffb61e58d3a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffb61e03090
-RBP: 000000000000000b R08: 00007ffb61e030d0 R09: 00007ffb61e036bc
-R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffb61e03090
-R13: 0000000020000308 R14: 0000000000000004 R15: 0000000000000005
- </TASK>
-INFO: task syz-executor128:9281 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor128 state:D stack:27824 pid: 9281 ppid:  6538 flags:0x00004004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:4965 [inline]
- __schedule+0xa9a/0x4940 kernel/sched/core.c:6246
- schedule+0xd2/0x260 kernel/sched/core.c:6319
- schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x174/0x270 kernel/sched/completion.c:138
- kthread_stop+0x17a/0x710 kernel/kthread.c:648
- ext4_stop_mmpd+0x47/0xd0 fs/ext4/mmp.c:255
- ext4_fill_super+0x892d/0xd750 fs/ext4/super.c:5060
- mount_bdev+0x34d/0x410 fs/super.c:1368
- legacy_get_tree+0x105/0x220 fs/fs_context.c:610
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7ffb61e58d3a
-RSP: 002b:00007ffb61e03078 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffb61e030d0 RCX: 00007ffb61e58d3a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffb61e03090
-RBP: 000000000000000b R08: 00007ffb61e030d0 R09: 00007ffb61e036bc
-R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffb61e03090
-R13: 0000000020000308 R14: 0000000000000004 R15: 0000000000000005
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/27:
- #0: ffffffff8bb82ea0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6458
-1 lock held by systemd-udevd/2978:
-1 lock held by in:imklog/6232:
-3 locks held by kworker/1:0/6527:
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
- #1: ffffc90001a8fdb0 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
- #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
- #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4fa/0x620 kernel/rcu/tree_exp.h:839
-2 locks held by systemd-udevd/6575:
- #0: ffff88801ac02918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 block/bdev.c:817
- #1: ffff888146e0a3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: lo_open+0x75/0x120 drivers/block/loop.c:2040
-2 locks held by kworker/1:3/6581:
- #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888010c66538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
- #1: ffffc900028ffdb0 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
-2 locks held by systemd-udevd/6728:
- #0: ffff88801ab30918 (&disk->open_mutex
-){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 block/bdev.c:817
- #1: ffff88801ab1e3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: lo_open+0x75/0x120 drivers/block/loop.c:2040
-1 lock held by syz-executor128/9281:
- #0: ffff88801e23e0e0 (&type->s_umount_key#27/1){+.+.}-{3:3}, at: alloc_super+0x1dd/0xac0 fs/super.c:229
-3 locks held by kworker/1:6/16911:
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888010c64d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
- #1: ffffc9000a257db0 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
- #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:322 [inline]
- #2: ffffffff8bb8c228 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x2d5/0x620 kernel/rcu/tree_exp.h:839
-1 lock held by syz-executor128/25260:
- #0: ffff8880770940e0 (&type->s_umount_key#27/1){+.+.}-{3:3}, at: alloc_super+0x1dd/0xac0 fs/super.c:229
-1 lock held by syz-executor128/1607:
- #0: ffff888146e0a3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
-1 lock held by syz-executor128/1608:
- #0: ffff88801ab1e3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
-1 lock held by syz-executor128/1621:
- #0: ffff88801ab1b3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
-1 lock held by syz-executor128/1630:
- #0: ffff88801ab3c3f8 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0xaf/0x15e0 drivers/block/loop.c:1350
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:254 [inline]
- watchdog+0xcb7/0xed0 kernel/hung_task.c:339
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 2968 Comm: systemd-journal Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
-RIP: 0010:check_kcov_mode kernel/kcov.c:166 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:200
-Code: 48 89 ef 5d e9 41 f4 45 00 5d be 03 00 00 00 e9 f6 80 60 02 66 0f 1f 44 00 00 48 8b be b0 01 00 00 e8 b4 ff ff ff 31 c0 c3 90 <65> 8b 05 69 0b 8b 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
-RSP: 0018:ffffc90000dc0c38 EFLAGS: 00000006
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000003
-RDX: 0000000000000000 RSI: ffff88807ad0ba00 RDI: 0000000000000003
-RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff84087dd5 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffed10173a4f0d R14: 0000000000000002 R15: 0000000000000001
-FS:  00007f37549478c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3752224648 CR3: 000000002248c000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- __ffs arch/x86/include/asm/bitops.h:235 [inline]
- find_next_bit include/linux/find.h:41 [inline]
- cpumask_next lib/cpumask.c:22 [inline]
- cpumask_next_wrap+0x6c/0x1b0 lib/cpumask.c:82
- select_idle_cpu kernel/sched/fair.c:6281 [inline]
- select_idle_sibling kernel/sched/fair.c:6452 [inline]
- select_task_rq_fair+0xccf/0x3b50 kernel/sched/fair.c:6929
- select_task_rq kernel/sched/core.c:3400 [inline]
- try_to_wake_up+0x38b/0x15a0 kernel/sched/core.c:4082
- hrtimer_wakeup+0x43/0x60 kernel/time/hrtimer.c:1939
- __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
- __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
- hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
- __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
- sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:access_override_creds fs/open.c:358 [inline]
-RIP: 0010:do_faccessat+0x4e2/0x850 fs/open.c:415
-Code: 25 40 70 02 00 49 8d be 20 08 00 00 48 89 fa 89 45 30 48 c1 ea 03 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 fd 02 00 00 <4d> 8b b6 20 08 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7e 34 48
-RSP: 0018:ffffc90001b0fe88 EFLAGS: 00000246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 1ffff1100f5a1844 RSI: ffffffff81c7a325 RDI: ffff88807ad0c220
-RBP: ffff88801a435500 R08: 0000000043736564 R09: ffff888010db4ab3
-R10: ffffffff814e5de9 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff88801a435514 R14: ffff88807ad0ba00 R15: 0000000000000000
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f3753c029c7
-Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007fff031591e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-RAX: ffffffffffffffda RBX: 00007fff0315c100 RCX: 00007f3753c029c7
-RDX: 00007f3754673a00 RSI: 0000000000000000 RDI: 000056048df759a3
-RBP: 00007fff03159220 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007fff0315c100 R15: 00007fff03159710
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.212 msecs
-----------------
-Code disassembly (best guess):
-   0:	48 89 ef             	mov    %rbp,%rdi
-   3:	5d                   	pop    %rbp
-   4:	e9 41 f4 45 00       	jmpq   0x45f44a
-   9:	5d                   	pop    %rbp
-   a:	be 03 00 00 00       	mov    $0x3,%esi
-   f:	e9 f6 80 60 02       	jmpq   0x260810a
-  14:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
-  1a:	48 8b be b0 01 00 00 	mov    0x1b0(%rsi),%rdi
-  21:	e8 b4 ff ff ff       	callq  0xffffffda
-  26:	31 c0                	xor    %eax,%eax
-  28:	c3                   	retq
-  29:	90                   	nop
-* 2a:	65 8b 05 69 0b 8b 7e 	mov    %gs:0x7e8b0b69(%rip),%eax        # 0x7e8b0b9a <-- trapping instruction
-  31:	89 c1                	mov    %eax,%ecx
-  33:	48 8b 34 24          	mov    (%rsp),%rsi
-  37:	81 e1 00 01 00 00    	and    $0x100,%ecx
-  3d:	65                   	gs
-  3e:	48                   	rex.W
-  3f:	8b                   	.byte 0x8b
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 22/10/2021 00:06, David Sterba wrote:
+> On Thu, Oct 21, 2021 at 09:35:38PM +0800, kernel test robot wrote:
+>>
+>>
+>> Greeting,
+>>
+>> FYI, we noticed the following commit (built with gcc-9):
+>>
+>> commit: 0f807998661ecadb74638c18cbaff8785bb46f8d ("[PATCH 1/2] btrfs: sysfs convert scnprintf and snprintf to use sysfs_emit")
+>> url: https://github.com/0day-ci/linux/commits/Anand-Jain/provide-fsid-in-sysfs-devinfo/20211019-082356
+>> base: https://git.kernel.org/cgit/linux/kernel/git/kdave/linux.git for-next
+>>
+>> in testcase: boot
+>>
+>> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> 
+> I wonder if it's related to the 32bit host, I don't see any crash.
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+We are hitting this warning:
+
+int sysfs_emit(char *buf, const char *fmt, ...)
+{
+         va_list args;
+         int len;
+
+         if (WARN(!buf || offset_in_page(buf),   <====
+                  "invalid sysfs_emit: buf:%p\n", buf))
+                 return 0;
+<snip>
+
+
+The input buf wasn't page-aligned because it wasn't part of the show().
