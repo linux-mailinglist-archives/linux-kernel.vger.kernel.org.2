@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC00437039
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C4943703C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhJVC6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:58:55 -0400
-Received: from ssh248.corpemail.net ([210.51.61.248]:9354 "EHLO
-        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbhJVC6w (ORCPT
+        id S232635AbhJVC7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232626AbhJVC7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:58:52 -0400
-Received: from ([60.208.111.195])
-        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id PCA00130;
-        Fri, 22 Oct 2021 10:56:30 +0800
-Received: from localhost.localdomain (10.200.104.119) by
- jtjnmail201604.home.langchao.com (10.100.2.4) with Microsoft SMTP Server id
- 15.1.2308.14; Fri, 22 Oct 2021 10:55:57 +0800
-From:   Kai Song <songkai01@inspur.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <Larry.Finger@lwfinger.net>, <phil@philpotter.co.uk>,
-        <straube.linux@gmail.com>, <linux-staging@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, Kai Song <songkai01@inspur.com>
-Subject: [PATCH] staging: r8188eu: Use memdup_user instead of kmalloc/copy_from_user
-Date:   Fri, 22 Oct 2021 10:55:55 +0800
-Message-ID: <20211022025555.6612-1-songkai01@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 21 Oct 2021 22:59:23 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCC6C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:57:06 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id br29so2200120lfb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rQ7tR0Yp6rf1GJIW4s5NegDfNukJ5qAaGOcznVi/4fI=;
+        b=h+Hl0emiqAK+B5ocs80eCdhcXRzi5YMDF968lXPzFxnEUEjZNCV6OZuT38DosVDCnX
+         2kd2/6AfNusMc5xZkJ8N/9HOLbumhVHkRiVl+pTu0p8c76KiiCFvZP6csq8e5XzeKi6s
+         NKzG9bxPFLEFUUM8MXoHHRBH58n0tfALyHZLNCEXPuZAdHp3IgWsrEtLaIcl/FQ/twrr
+         hIQ2l5UiMMeYimNmh9FL25L+JI1EsizIDwRoXofARqjCqxBLfJa5U+iVP1afhGBSql/i
+         LQLgTmVowuxTC7rnceq7K+q0QmfkhwHTbf/RdNNeDinD5gd8YVstgSuB3dBRn2olMQi3
+         IFxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rQ7tR0Yp6rf1GJIW4s5NegDfNukJ5qAaGOcznVi/4fI=;
+        b=c1R1AS//1UwvvSi6KAp82Qq8azLLD0p/GYz5QOftn3H3qaZdVpdA758SzqRub8hSta
+         MvkacxyfzllB+F5eRzoDs4ODY4z944p7AT5RJCt8wjdaallg2xDI0lH6WhhOcic0pjYv
+         LzyiFSRfztgeOslwsHUpw/rsxt4TI5OQKlyw2JcyvCyArw63b6wYs9RQNbozlwgmzes8
+         0grZiUtkOuV2RHW6nGkAVb0WoJOxVqlRJNMApvY8bROH8+rCHdsW/cQ5fCT8R4PWDRXm
+         NDOSXRllur4HQBmycUgwzBAIyLSYdg/vlZDeZG6ULb1Om1FDXW8cxMzcrbGLSMxwVQZs
+         W1MQ==
+X-Gm-Message-State: AOAM530TmHDzt9H6afp0CA6DppcI+Wv+DWPVCIR5VOGmnb1AmFacor29
+        R4RzMk0yK/z6GJiRxmTsqwL8hEndfHUlz2VS/K8cmg==
+X-Google-Smtp-Source: ABdhPJxJzM5FMhJLy7C24Ma1EhlhY+qm5a7Z6vGXJYXVhmcGsZqzKAOfVcJhFW3p0QRzG2qT+ZeBiOVY+pqKt+wQAQQ=
+X-Received: by 2002:a05:6512:3191:: with SMTP id i17mr8670014lfe.485.1634871425112;
+ Thu, 21 Oct 2021 19:57:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.119]
-tUid:   20211022105630129e2bae6274888de4809c42d710a487
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+References: <20211022014850.22933-1-huangshuosheng@allwinnertech.com>
+In-Reply-To: <20211022014850.22933-1-huangshuosheng@allwinnertech.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 21 Oct 2021 19:56:54 -0700
+Message-ID: <CALAqxLXNMvaT3OU3Y-aYkH+KJA_g1QSOZNJHqvzt21WPy=6UJw@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-buf: heaps: init heaps in subsys_initcall
+To:     Shuosheng Huang <huangshuosheng@allwinnertech.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use memdup_user helper instead of open-coding to simplify
-the code.
+On Thu, Oct 21, 2021 at 6:49 PM Shuosheng Huang
+<huangshuosheng@allwinnertech.com> wrote:
+>
+> Some built-in modules will failed to use dma-buf heap to allocate
+> memory if the heap drivers are too late to be initialized.
+> To fix this issue, move initialization of dma-buf heap drivers in
+> subsys_initcall() which is more earlier to be called.
 
-Signed-off-by: Kai Song <songkai01@inspur.com>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Hey! Thanks so much for sending this out! I appreciate it!
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 0201f6fbeb25..96a08cc5a1ed 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -1984,14 +1984,10 @@ static int rtw_wx_read32(struct net_device *dev,
- 	padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	p = &wrqu->data;
- 	len = p->length;
--	ptmp = kmalloc(len, GFP_KERNEL);
--	if (!ptmp)
--		return -ENOMEM;
- 
--	if (copy_from_user(ptmp, p->pointer, len)) {
--		kfree(ptmp);
--		return -EFAULT;
--	}
-+	ptmp = memdup_user(p->pointer, len);
-+	if (IS_ERR(ptmp))
-+		return PTR_ERR(ptmp);
- 
- 	bytes = 0;
- 	addr = 0;
--- 
-2.27.0
+So the change looks pretty straightforward to me, however, the
+rationale for it is where we hit problems.
 
+With the upstream kernel, there are not yet any modules that directly
+allocate from dmabuf heaps. So in the context of the upstream kernel,
+the reasoning doesn't make much sense.
+
+Now, I know folks have their own drivers that want to allocate from
+dmabuf heaps, but those haven't been submitted upstream yet.
+So maybe can you submit those patches that need this along with this
+change so it would make sense as part of a patch series? It would be
+trivial to justify including this patch then.
+
+thanks
+-john
