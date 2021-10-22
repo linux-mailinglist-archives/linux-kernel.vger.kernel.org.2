@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEB0437888
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21914437879
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhJVOAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbhJVN7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:59:38 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDFDC061224;
-        Fri, 22 Oct 2021 06:57:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y12so1476121eda.4;
-        Fri, 22 Oct 2021 06:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N2LgKJHjAxWATzIP8s9Chgsauqr0Jq39ANiFQNTNdvA=;
-        b=atHm7dWYDFc+xMMI0nEXnjBKGmTe3Mhj3j44gptKPmL3yZSmcfPhGBE64YsimpDkRj
-         3JNapsquzvEaRN4rlLZm/e3gAK6PuH4inkVvuQzMmWJD4Fw6FTtWQPCXkgqDCuh7EULb
-         yNTTsoQRo9uDej/o2MZxfOP65jPJvwE94CFsaqfNuZNaXjAjM/EmrMyiG4Xju744vWFB
-         MF6JOygy44c4b8O8vYFaLC36mbgBaHx84E22kFUgJLaYtkfz/IR1K5WkWIspkHAhxZrf
-         ER3rtRGr7XHV0NpNgjyePT0QzWIZ2EsAHQ7higGfSHKW8azFx28d7dx9gfAmHjBCNF4f
-         aSGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N2LgKJHjAxWATzIP8s9Chgsauqr0Jq39ANiFQNTNdvA=;
-        b=ZMzIZWuHq8dylZDyJQL0nkdIu3LzEe9anQzZDUefznPDs6C2WvVkHUP4nUAy6gPVr9
-         bd/FUyxPhKdOsyRFlAJRCesh5tHbYHIQY4MbHyr3uKhMUqnnDch5lqSdtbMsPnOlKwUN
-         N9D2jxQReN/p+84V9cGDG4Zu/99SF/lzqEfDADXPsu8nL5kOcJl5V7AaMMgwfMEG7u6t
-         rRhoU8XxpbfAjcYbIC5A5PhTlqODCsYCawshXeanh2MMLcl0JXhFkFuKkcvx6jy/J8Kj
-         2yWy3Xo0qgZinWemmU1QuPhwQ6gYyjb4F0VzVliyGltML2hV69QxU105aMxGRpbqc6jR
-         x2mg==
-X-Gm-Message-State: AOAM530mKf3C1OszVnLru0OzkCgv8pmJytzeOoVXspmmCk3VjNJDW/ln
-        t4VPhm0RNaqmWC4DscYWzBQe52tnvfsMBV7hJG0=
-X-Google-Smtp-Source: ABdhPJxJM2m9jS5DjeNSJjBC4XIn4RTOgPs/zblzns86IWUdsSxE0UfgtL48RUJSZS0ETv3HMiVmN+oWWEz4xXDFYeE=
-X-Received: by 2002:a17:906:2887:: with SMTP id o7mr15492300ejd.425.1634911039873;
- Fri, 22 Oct 2021 06:57:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
- <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
- <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com>
- <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com> <CANBLGcxDUNib4C0mrP1bYnJSLyZn7rmV1wwJyj5tK4-nbMnu9g@mail.gmail.com>
-In-Reply-To: <CANBLGcxDUNib4C0mrP1bYnJSLyZn7rmV1wwJyj5tK4-nbMnu9g@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 22 Oct 2021 16:56:24 +0300
-Message-ID: <CAHp75VfcTkpq17fzVmzdZVC=xCBFEajxmG2C79TkD1S5+9BNqg@mail.gmail.com>
-Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232260AbhJVN7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:59:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:54264 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230355AbhJVN7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 09:59:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC2951FB;
+        Fri, 22 Oct 2021 06:56:53 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B86B93F694;
+        Fri, 22 Oct 2021 06:56:50 -0700 (PDT)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        peterz@infradead.org
+Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
+        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
+        ink@jurassic.park.msu.ru, jonas@southpole.se,
+        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
+        mark.rutland@arm.com, mattst88@gmail.com, michal.simek@xilinx.com,
+        mpe@ellerman.id.au, paulmck@kernel.org, paulus@samba.org,
+        rth@twiddle.net, shorne@gmail.com,
+        stefan.kristiansson@saunalahti.fi, vincent.guittot@linaro.org,
+        will@kernel.org
+Subject: [PATCH v6 00/10] thread_info: use helpers to snapshot thread flags
+Date:   Fri, 22 Oct 2021 14:56:33 +0100
+Message-Id: <20211022135643.7442-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 4:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> On Fri, 22 Oct 2021 at 15:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Fri, Oct 22, 2021 at 4:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > > On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+TIP folk, I've been assuming this would go via the TIP tree. Are you happy to
+pick this up nowish, or as a fixup after the next -rc1? There have been no
+significant changes since v3, and the series applies cleanly from v5.15-rc1 all
+the way to next-20211022, so I'm not expecting any conflict.
 
-...
+Usual blurb below...
 
-> > > > Can you convert this to simple
-> > > >
-> > > >   if (assert)
-> > > >     ret = readl_...
-> > > >   else
-> > > >     ret = readl_...
-> > > >
-> > > > below?
-> > >
-> > > I don't see how that would work. We're using the done value in in the
-> > > readl_poll_timeout. Maybe you can be a bit more explicit.
-> >
-> > Supply done either == mask or == ^mask. Try it.
->
-> So you want this?
-> if (assert)
->   ret = readl_poll_timeout_atomic(reg_status, value, (value & mask) ==
-> done, 0, 1000);
-> else
->   ret = readl_poll_timeout_atomic(reg_status, value, (value & mask) ==
-> ^done, 0, 1000);
->
-> The compiler might be clever enough, but I'd worry the long body of
-> the readl_poll_timeout_atomic macro is inline twice. Rather than just
-> flipping the bit in `done`.
+As thread_info::flags scan be manipulated by remote threads, it is
+necessary to use atomics or READ_ONCE() to ensure that code manipulates
+a consistent snapshot, but we open-code plain accesses to
+thread_info::flags across the kernel tree.
 
-You have a point, although it would be nice to have confirmation of either.
+Generally we get away with this, but tools like KCSAN legitimately warn
+that there is a data-race, and this is potentially fragile with compiler
+optimizations, LTO, etc.
+
+These patches introduce new helpers to snahpshot the thread flags, with
+the intent being that these should replace all plain accesses.
+
+Since v1 [1]:
+* Drop RFC
+* Make read_ti_thread_flags() __always_inline
+* Clarify commit messages
+* Fix typo in arm64 patch
+* Accumulate Reviewed-by / Acked-by tags
+* Drop powerpc patch to avoid potential conflicts (per [2])
+
+Since v2 [3]:
+* Rebase to v5.14-rc1
+* Reinstate powerpc patch
+
+Since v3 [4]:
+* Rebase to v5.14-rc4
+
+Since v4 [5]:
+* Rebase to v5.15-rc1
+* Apply Acked-by / Tested-by tags
+
+Since v5 [6]:
+* Fix trivial whitespace bug in x86 patch
+
+[1] https://lore.kernel.org/r/20210609122001.18277-1-mark.rutland@arm.com
+[2] https://lore.kernel.org/r/87k0mvtgeb.fsf@mpe.ellerman.id.au
+[3] https://lore.kernel.org/r/20210621090602.16883-1-mark.rutland@arm.com
+[4] https://lore.kernel.org/r/20210713113842.2106-1-mark.rutland@arm.com
+[5] https://lore.kernel.org/r/20210803095428.17009-1-mark.rutland@arm.com
+[6] https://lore.kernel.org/r/20210914103027.53565-1-mark.rutland@arm.com
+
+Thanks,
+Mark.
+
+Mark Rutland (10):
+  thread_info: add helpers to snapshot thread flags
+  entry: snapshot thread flags
+  sched: snapshot thread flags
+  alpha: snapshot thread flags
+  arm: snapshot thread flags
+  arm64: snapshot thread flags
+  microblaze: snapshot thread flags
+  openrisc: snapshot thread flags
+  powerpc: snapshot thread flags
+  x86: snapshot thread flags
+
+ arch/alpha/kernel/signal.c          |  2 +-
+ arch/arm/kernel/signal.c            |  2 +-
+ arch/arm/mm/alignment.c             |  2 +-
+ arch/arm64/kernel/entry-common.c    |  2 +-
+ arch/arm64/kernel/ptrace.c          |  4 ++--
+ arch/arm64/kernel/signal.c          |  2 +-
+ arch/arm64/kernel/syscall.c         |  4 ++--
+ arch/microblaze/kernel/signal.c     |  2 +-
+ arch/openrisc/kernel/signal.c       |  2 +-
+ arch/powerpc/kernel/interrupt.c     | 13 ++++++-------
+ arch/powerpc/kernel/ptrace/ptrace.c |  3 +--
+ arch/x86/kernel/process.c           |  8 ++++----
+ arch/x86/kernel/process.h           |  4 ++--
+ arch/x86/mm/tlb.c                   |  2 +-
+ include/linux/entry-kvm.h           |  2 +-
+ include/linux/thread_info.h         | 14 ++++++++++++++
+ kernel/entry/common.c               |  4 ++--
+ kernel/entry/kvm.c                  |  4 ++--
+ kernel/sched/core.c                 |  2 +-
+ 19 files changed, 45 insertions(+), 33 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.11.0
+
