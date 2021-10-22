@@ -2,55 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65F343772E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4463437730
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJVMiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232138AbhJVMi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:38:59 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:45579 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhJVMiz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 08:38:55 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56242 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhJVMix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:38:53 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mdtmj-00031C-Dl; Fri, 22 Oct 2021 20:36:33 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mdtmX-0001oa-5L; Fri, 22 Oct 2021 20:36:21 +0800
-Date:   Fri, 22 Oct 2021 20:36:21 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Qing Wang <wangqing@vivo.com>
-Cc:     Matt Mackall <mpm@selenic.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hw_random: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <20211022123621.GB6920@gondor.apana.org.au>
-References: <1634095561-4030-1-git-send-email-wangqing@vivo.com>
+Received: by mail-oi1-f174.google.com with SMTP id z126so4782341oiz.12;
+        Fri, 22 Oct 2021 05:36:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wq+ijz7hkrgAvLrrYeAZpXxYO+s2Ax5t9fMYOLTN/Nw=;
+        b=kpn5dG8oOfStWUuVEzJmrxruVxqmXzkMKkZpEAohhAWTQKjp/j8Dw8kV8+UTxZ7pKW
+         63djW3SLdu1fCDg/EVFxtK7O9uMMdGTyuWtaK5y1adIVd74slmmezo20RT1bj8t5hOmM
+         3SQcnZcpzjDZs4j6y4zPC4o0Hd1YtX2nRQlDztQE2cngBk15xfVK4yMfWbbv9jpeewpW
+         I3XBWW/7pZmCKSYDYIrH1OatVueYv4AxjRFxaexqLg9ACmPAJnnbHgH+Ec3LyE1U2xW+
+         H92U5GNJmBV1JL12AOsa1GXJvMsAN9wO+EP3uU2H7bc1pEq+n1JncLEnmCyfkjjlYnYd
+         8rzg==
+X-Gm-Message-State: AOAM532Rw5hghmTpzJwstqOBc32huHfCNDkHx2NmUIz/0AlEy3nwmWqI
+        QHXdpmQ+M2mNOVAVI1RlS4XmmsvbtKOjhAQc1B5Be2zh
+X-Google-Smtp-Source: ABdhPJzM+YiKjpNohzo9egAZ1k5JoidFckV6+T/fZjiDsXCm0z0lzC35OwgLubhOaffF9Qg0l/Wy1p4MLcDFyU8c9jI=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr9339669oif.154.1634906197810;
+ Fri, 22 Oct 2021 05:36:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634095561-4030-1-git-send-email-wangqing@vivo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211022073910.14398-1-songkai01@inspur.com>
+In-Reply-To: <20211022073910.14398-1-songkai01@inspur.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 22 Oct 2021 14:36:26 +0200
+Message-ID: <CAJZ5v0ixPr8WN9hdTtqj1S4XakhH9hJSWJSf9EthdyMEScaOhQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: CPPC: fix return value in register_pcc_channel()
+To:     Kai Song <songkai01@inspur.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:26:01PM -0700, Qing Wang wrote:
-> coccicheck complains about the use of snprintf() in sysfs show functions.
-> 
-> Fix the following coccicheck warning:
-> drivers/char/hw_random/s390-trng.c:114:8-16: WARNING: use scnprintf or sprintf.
-> drivers/char/hw_random/s390-trng.c:122:8-16: WARNING: use scnprintf or sprintf.
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-> 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
-> ---
->  drivers/char/hw_random/s390-trng.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Oct 22, 2021 at 9:39 AM Kai Song <songkai01@inspur.com> wrote:
+>
+> It uses IS_ERR to judge the return value of
+> pcc_mbox_request_channel().If it is invalid, maybe we should
+> use PTR_ERR to get the correct return value.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Either there is a reason to make this change or there isn't.
+
+If there is a reason, then what is it?
+
+> Signed-off-by: Kai Song <songkai01@inspur.com>
+> ---
+>  drivers/acpi/cppc_acpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index bd482108310c..0bbb5fa27ce7 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -503,7 +503,7 @@ static int register_pcc_channel(int pcc_ss_idx)
+>                 if (IS_ERR(pcc_data[pcc_ss_idx]->pcc_channel)) {
+>                         pr_err("Failed to find PCC channel for subspace %d\n",
+>                                pcc_ss_idx);
+> -                       return -ENODEV;
+> +                       return PTR_ERR(pcc_data[pcc_ss_idx]->pcc_channel);
+>                 }
+>
+>                 /*
+> --
+> 2.27.0
+>
