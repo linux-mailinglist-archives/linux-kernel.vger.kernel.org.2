@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895F34378F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE919437904
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhJVOW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbhJVOWz (ORCPT
+        id S233010AbhJVO1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:27:42 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:46723 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232276AbhJVO1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:22:55 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAA1C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:20:37 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id l201so7284758ybl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XEbKiekzN6WdrwcxP5TOSGyV67sRkHldHzX091SMD8k=;
-        b=bs8iMZ4EieJpPoe6ihJ1gcFIDyEH4rqXrlvrUpbKjjgKUCXO8Qq+dnefW2tmN/1ZkT
-         12RkhKFMAL2VLZzAu8xeHXDztEdWcozEhElRQBi2N6bbsGwVsvhh3Zn1jRPtb3T6NlF2
-         m7VB3tdm/uo04wgRCRpTMaK6Xea+A3+CF/TyFRp58gviAQvgwTf5XACSyDiCPqQhNWBl
-         vbNktpUDPD1YpmnKuQwlD2pFI7PNVVaP9RKtBHJa1EqygB1mTiwLlS4nVQQCb5mH2Tzt
-         4gTmiXyA8Phhqldk4Od+7NImps3THK6ekTyLb6T2JuHcXDK69H5LUY4sGgHj/P0/9FWg
-         1J3g==
+        Fri, 22 Oct 2021 10:27:41 -0400
+Received: by mail-pf1-f175.google.com with SMTP id x66so3742087pfx.13;
+        Fri, 22 Oct 2021 07:25:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XEbKiekzN6WdrwcxP5TOSGyV67sRkHldHzX091SMD8k=;
-        b=Vjl4HFjAMLxsnh88XrHPOrTxodimm/Yj+4bsTEBXStogwXmsNFV4SjGKDuOmFhwmBd
-         RVbp2R8653RMxRju8dW/Ssbv4viT1MIRI225GQlSyTt6630Mbq33wtD1MJDaA9brhVKS
-         N6zF/snghn06qbIDn7WcqmitZzFo7g3UCa089QVZ/qPK7c2gvzi9Fu/y6eO7ejx81E0b
-         K6DroXA5JwJ75VFpyWs1zE2KownBHQv/Q6mKFr4LI/T4MVQg3rFtDDF8oeuA94aOj4Sf
-         AApCgtnHHlrPXQcupbZmHMQYybqWQXNe2reOi2CfunLgbrjMIBGcLT2AehBpxi2DF927
-         qgJQ==
-X-Gm-Message-State: AOAM531eM2RAzkbl5vAKbkNE+nc+4jN/i8IDW5weEZ/ev/Bc6Qo5qZOo
-        WKwTfZfydk4WZlOpwRUz6BnakvS3SMBNE2rqvQU=
-X-Google-Smtp-Source: ABdhPJwKvy/N1+j2NjPDgAeeeNV9pwp3TpEFyWc51lsHjVQmUlpHeKxgVBWQEvvDk23NLFq9RzJuSESCmv3GzoPZybs=
-X-Received: by 2002:a25:26d3:: with SMTP id m202mr12770940ybm.343.1634912436962;
- Fri, 22 Oct 2021 07:20:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jorqKoNvCog+RdJEWLLzk4/vugG3Lx6Xwa7r7jPCqTI=;
+        b=FCdcn7vVuIjicwvIn3P4ZQHYD/4ly7txPGIskT4FNCudWWHaUJsbAzrx7pfW6LL83A
+         TAhpi3CIUjv5qXNP9a8WpS1/8ylJur1VPW2sRE/aufw+28LLfAWw4OyczRadPZVQ+mbR
+         N3cNbhPQ0/vudTJKhugvCJgY7JYdB7ZfyeS+ADjoMd1PVZ/leJ3De19ewjZXwUGFtxTV
+         U6ETQuoioD0LK7Ba2iQ5KlwtkkYFnzn0mAF03QL66xz/jRs+yvxgiNvrmO1rjAXypm/6
+         Gzrh6cBcD/uD9cgnInElbp1uR/RO2uGJHQvs/AbMQdUkjGK0+E2svQXb6RAhvwFaUtud
+         yYsQ==
+X-Gm-Message-State: AOAM530C1wF5Y63M0BPsndjMMIeeyk2N+P3SV6WXE8ySGa9sDQ3js9CC
+        QXhHofQz+fu2jjHpBRx8Zl+8UjQzBZZi0I0sMJfVnYyjZZVsIA==
+X-Google-Smtp-Source: ABdhPJwwiGgg/wAhh2MuTJi/0OlJOC3w8grm3LkhekM9ZxjuDcMopYi54hXrYFPVSp69WJyB7UqQZkgeS1a1t8VrapI=
+X-Received: by 2002:a62:5257:0:b0:44c:ed84:350a with SMTP id
+ g84-20020a625257000000b0044ced84350amr12576754pfb.79.1634912723745; Fri, 22
+ Oct 2021 07:25:23 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7000:278b:0:0:0:0 with HTTP; Fri, 22 Oct 2021 07:20:36
- -0700 (PDT)
-Reply-To: davwilliams1006@gmail.com
-From:   "Mr.David Williams" <dw830197@gmail.com>
-Date:   Fri, 22 Oct 2021 07:20:36 -0700
-Message-ID: <CACquxaPQ+E0W2F6nTRm8NG__V9bKVFL-AsRk_Z9HaswJdonzUg@mail.gmail.com>
-Subject: Get back to me for clarifications
-To:     undisclosed-recipients:;
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+ <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+ <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com> <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
+In-Reply-To: <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 22 Oct 2021 16:25:12 +0200
+Message-ID: <CANBLGcyaSgbOgA4u_QivUQicyZ0MuUmrSsPq56OAANsav8R=VQ@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend,
+On Fri, 22 Oct 2021 at 15:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Fri, Oct 22, 2021 at 4:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> ...
+>
+> > > Why all these ugly % 32 against constants?
+> >
+> > Because the JH7100_RST_ values goes higher than 31. There is a
+> > BIT_MASK macro, but that does % BITS_PER_LONG and this is a 64bit
+> > machine.
+>
+> And? It's exactly what you have to use!
 
-This is to inform you that your pending wire transfer payment of Four
-million two hundred thousand US dollars, is now ready to be paid to
-you via ATM Master Card which you can be able to make withdraw from
-any ATM Machine of your choice in any part of the world. Indicate your
-interest to enable us to process your ATM CARD send to you.
+So you want me to use an unsigned long array or DECLARE_BITMAP and
+juggle two different index and bit offsets?
+Also is there a macro for handling that we'd then need 4 commas on
+32bit COMPILE_TEST and 2 commas on 64bit?
+If you have some other way in mind you'll have to be a lot more explicit again.
 
-Get back to me with your details.
+The point of the jh7100_reset_asserted array is that it exactly
+mirrors the values of the status registers when the lines are
+asserted. Maybe writing it like this would be more explicit:
 
-Regards
-Mr. David Williams
-E-Mail: ( williamsmrdavid60@gmail.com )
+static const u32 jh7100_reset_asserted[4] = {
+        /* STATUS0 register */
+        BIT(JH7100_RST_U74 % 32) |
+        BIT(JH7100_RST_VP6_DRESET % 32) |
+        BIT(JH7100_RST_VP6_BRESET % 32),
+        /* STATUS1 register */
+        BIT(JH7100_RST_HIFI4_DRESET % 32) |
+        BIT(JH7100_RST_HIFI4_BRESET % 32),
+        /* STATUS2 register */
+        BIT(JH7100_RST_E24 % 32),
+        /* STATUS3 register */
+        0,
+};
