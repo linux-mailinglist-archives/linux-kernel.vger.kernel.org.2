@@ -2,144 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D314371B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9E64371B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhJVG0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
+        id S231897AbhJVG0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhJVG0U (ORCPT
+        with ESMTP id S229545AbhJVG0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:26:20 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FDBC061764;
-        Thu, 21 Oct 2021 23:24:04 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id y67so3953364iof.10;
-        Thu, 21 Oct 2021 23:24:04 -0700 (PDT)
+        Fri, 22 Oct 2021 02:26:09 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BB2C061764;
+        Thu, 21 Oct 2021 23:23:52 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d13so3026656wrf.11;
+        Thu, 21 Oct 2021 23:23:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ctmgqf8uxyooX2WRkX0mknbdlJbxHMg1YGMmHUwmvMo=;
-        b=XyZMPi56Rw07CUfQKmDI18LFyvuL2nRgfmj+7iHgcHle79EuBTDTtaH0Mj7Br3D9GX
-         nLQhFIjno3jaMUF2jdbaYrZXedALQlCijEaOrit8/ewXjSzMITu0NjtvDR3wHc5xakIK
-         AE4JBy6BpGRZuJTPoWG4QGvbhuCkPvFQkbOrjsW8Hd9W1EhNrge4A2XFwCJY8T9TrvR2
-         iIXWtOl9DQY0GOfCu+gbmpCQFaRXM1PbOMLIP3O6pm5BRDaV0RndO5O+/xUHY+qEcTNR
-         MdGZsEBRJU92Yb5iRW+HoZTZihEsF8Pg88qYoCq5k6peuh+lTPQXCvrZpNI9Rm9offnx
-         +pnQ==
+        h=subject:to:references:from:cc:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Aaw8YgvRiaafTD5648Ti2Vgf91t9kC5WLzXGLiyz7vc=;
+        b=SvWEwo5EWVAEYqZSB6ZZlNPLbdjIMtfHxce/fMdBZVxTqRcr4z4yPmdpBhQAbktoBV
+         BmWMaGdoTFmwaLxW6LbE9ac0Ain+M/Kvk4xCS+ZFRSImz2Gr7YwPoc1nh1Z49b6P/l5j
+         6byArAY5Ow3PxV1TM9cEyicQFHd39xiT2IyeMyVo+gCI0DZ3xv5Dl/hrpuaOYcSvqXcZ
+         lWJonE/jUapIuyhXo0hoBCtDaGAlmuiDwxZargI2uzlXZwbiGJswCwJWpUoJucSSvt0S
+         VcmAFKkmWTKwCEKMqBBCHdLgvFdetrru1iFAngxVMELclJ04uvzCUpb70es1+LzoOuHZ
+         aEag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ctmgqf8uxyooX2WRkX0mknbdlJbxHMg1YGMmHUwmvMo=;
-        b=bxM8YJ/GUobiMI3JqYH3nIF/cxFAGp3nUFTmVlwMVBydALPaW35wiLwUjO6aOrNcdM
-         kOfCmsP3RhBwNJiAsmnVZOZEphLtVGYHg5LIy2NdahPMpyuioFtE2NNA9r+F345lm/09
-         moQDsAwQIJ4n8Ysrj9kpAYy6pSF0yR5YYugkBk7p5sRTr5lKC0wOgkNdIi9z6kvqzIBK
-         KGhPKX9kLDsYOoUBZv/m6+Y+o71fvW1DKWQ4uk7rZWrZXnPYP05QsjhsMNKCD6kZCSg5
-         bdUO5tZUGmhqEneVr9NIsJTYc5Y/8ttfulRdcPTJG4oIs5MkVCB8g5jlG1wYfNBQ/9yy
-         Zw5Q==
-X-Gm-Message-State: AOAM533HIict3ryK3a9cpu96ngcA4y43+9PZDAPczd43FgvMfN3H2Ry1
-        KQwWNOJyYcNmNCAUfouDd3W/Kozws8FrFKeWQhI=
-X-Google-Smtp-Source: ABdhPJwLZt7DEWJC59Q0R4KyCJo2IgKLomhbRWM91KQdg87yLztshdMdW65VPa3XJ6qnAbAG+eJ9OnGWBYcCvmnjD6Q=
-X-Received: by 2002:a05:6638:1607:: with SMTP id x7mr6954700jas.128.1634883843551;
- Thu, 21 Oct 2021 23:24:03 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Aaw8YgvRiaafTD5648Ti2Vgf91t9kC5WLzXGLiyz7vc=;
+        b=He89XDmTfWW0poSMeDSx3WBSc+ebyG1Zz1Yn8dBX9QyMe1b7BE1OjKVTm4T4NuOwdh
+         k7EtnueCh91NUki4wi+SzVsw0GkItvIjrgwiX1yuM5I7vF0tgw/9SiUu+7va3R11F9E3
+         sW8WWGfJbyJKy01y5vZgg6QavHhrt72r+Z+YlLxBDKfB45kLuTJdmXENGEjdGyI5ZUj8
+         PZ7Dnq3p4EJLsy49I6OvrFtnOhwamNLjgKN8V8c4FOKVrZdwG0RZZQICAEsFIkHmlrpp
+         /E0Gu7UnLaZ4s5bdtXN9JY1lDHl/+sEhynvTAhkgOdePLcJl50KkjBWDqWfMyYyFhAYe
+         38CA==
+X-Gm-Message-State: AOAM533RbkYDN8zC7fwZbOIGA0tJpL/Kxw92hkqx/VGWN/503q8FYj4+
+        M144Kbct0ndlqqYDjvow5VrwdsKlnS8=
+X-Google-Smtp-Source: ABdhPJyCktv989C4tDF9GGF3YgYc2NeThoneQAihwX2wDoFKXL8ADDC1uyA4kjaooIL91lLtrNfmVA==
+X-Received: by 2002:a5d:638c:: with SMTP id p12mr3028021wru.187.1634883831134;
+        Thu, 21 Oct 2021 23:23:51 -0700 (PDT)
+Received: from ?IPv6:2003:c7:8f4e:657:6495:ba38:e227:1149? (p200300c78f4e06576495ba38e2271149.dip0.t-ipconnect.de. [2003:c7:8f4e:657:6495:ba38:e227:1149])
+        by smtp.gmail.com with ESMTPSA id f17sm1755095wmf.44.2021.10.21.23.23.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 23:23:50 -0700 (PDT)
+Subject: Re: [PATCH v2] Docs: usb: update struct usb_driver, __init and __exit
+To:     Greg KH <gregkh@linuxfoundation.org>
+References: <20211020201446.GA8482@matrix-ESPRIMO-P710>
+ <YXEeHCySQF+jbVty@kroah.com>
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Message-ID: <9e203187-0b9c-fe5b-e30f-40c2f73352c8@gmail.com>
+Date:   Fri, 22 Oct 2021 08:23:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211021034516.4400-1-laoar.shao@gmail.com> <20211021034516.4400-4-laoar.shao@gmail.com>
- <CAEf4Bzb0YSwqoKn2N4gPJS40atWBRHLkK9fBy=wghkXUC5Sqmw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb0YSwqoKn2N4gPJS40atWBRHLkK9fBy=wghkXUC5Sqmw@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 22 Oct 2021 14:23:27 +0800
-Message-ID: <CALOAHbCu5vXT1DB+d-sv6r2ncBohnqry2uK9R4rYSvbHoVPLOg@mail.gmail.com>
-Subject: Re: [PATCH v5 03/15] sched.h: introduce TASK_COMM_LEN_16
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YXEeHCySQF+jbVty@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 5:55 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Oct 20, 2021 at 8:45 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > There're many hard-coded 16 used to store task comm in the kernel, that
-> > makes it error prone if we want to change the value of TASK_COMM_LEN. A
-> > new marco TASK_COMM_LEN_16 is introduced to replace these old ones, then
-> > we can easily grep them.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  include/linux/sched.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index c1a927ddec64..62d5b30d310c 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -274,6 +274,8 @@ struct task_group;
-> >
-> >  #define get_current_state()    READ_ONCE(current->__state)
-> >
-> > +/* To replace the old hard-coded 16 */
-> > +#define TASK_COMM_LEN_16               16
-> >  /* Task command name length: */
-> >  #define TASK_COMM_LEN                  16
->
-> Can we please convert these two constants into enum? That will allow
-> BPF applications to deal with such kernel change more easily because
-> these constants will now be available as part of kernel BTF.
->
-> Something like this should be completely equivalent for all the kernel uses:
->
-> enum {
->     TASK_COMM_LEN = 16,
->     TASK_COMM_LEN_16 = 16,
-> };
->
-> When later TASK_COMM_LEN is defined as = 24, BPF applications will be
-> able to deal with that by querying BTF through BPF CO-RE.
->
+On 10/21/21 10:00 AM, Greg KH wrote:
+> On Wed, Oct 20, 2021 at 10:14:46PM +0200, Philipp Hortmann wrote:
+>> update struct usb_driver from usb-skeleton.c.
+>> update __init and __exit functions that are moved from
+>> usb-skeleton.c to common used multi-stage macros.
+>>
+>> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+>> ---
+>> V1 -> V2: changed :c:func:`usb_register` to usb_register()
+>>            changed the :c:func:`usb_deregister` to usb_deregister()
+>>            used literal blocks for makro module_usb_driver and added one more
+>>            stage of multi-stage macros.
+>>
+>>   .../driver-api/usb/writing_usb_driver.rst     | 70 ++++++++++---------
+>>   1 file changed, 36 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
+>> index 2176297e5765..12e0481cceae 100644
+>> --- a/Documentation/driver-api/usb/writing_usb_driver.rst
+>> +++ b/Documentation/driver-api/usb/writing_usb_driver.rst
+>> @@ -54,12 +54,15 @@ information is passed to the USB subsystem in the :c:type:`usb_driver`
+>>   structure. The skeleton driver declares a :c:type:`usb_driver` as::
+>>   
+>>       static struct usb_driver skel_driver = {
+>> -	    .name        = "skeleton",
+>> -	    .probe       = skel_probe,
+>> -	    .disconnect  = skel_disconnect,
+>> -	    .fops        = &skel_fops,
+>> -	    .minor       = USB_SKEL_MINOR_BASE,
+>> -	    .id_table    = skel_table,
+>> +           .name        = "skeleton",
+>> +           .probe       = skel_probe,
+>> +           .disconnect  = skel_disconnect,
+>> +           .suspend     = skel_suspend,
+>> +           .resume      = skel_resume,
+>> +           .pre_reset   = skel_pre_reset,
+>> +           .post_reset  = skel_post_reset,
+>> +           .id_table    = skel_table,
+>> +           .supports_autosuspend = 1,
+> 
+> Why remove the tabs?  Is that needed here?
+You are right will be changed.
+> 
+>>       };
+>>   
+>>   
+>> @@ -81,36 +84,35 @@ this user-space interaction. The skeleton driver needs this kind of
+>>   interface, so it provides a minor starting number and a pointer to its
+>>   :c:type:`file_operations` functions.
+>>   
+>> -The USB driver is then registered with a call to :c:func:`usb_register`,
+>> -usually in the driver's init function, as shown here::
+>> -
+>> -    static int __init usb_skel_init(void)
+>> -    {
+>> -	    int result;
+>> -
+>> -	    /* register this driver with the USB subsystem */
+>> -	    result = usb_register(&skel_driver);
+>> -	    if (result < 0) {
+>> -		    err("usb_register failed for the "__FILE__ "driver."
+>> -			"Error number %d", result);
+>> -		    return -1;
+>> -	    }
+>> -
+>> -	    return 0;
+>> -    }
+>> -    module_init(usb_skel_init);
+>> -
+>> +The USB driver is then registered with a call to usb_register()
+>> +which is usually in the driver's init function. Since this functionality
+>> +is usable with many USB drivers, it is hidden behind multi-stage macros.
+> 
+> I don't understand the need for the "multi-stage macros" term here.
+I am not a native English speaker so "multi-stage macros" is just not a 
+fitting wording. May be “staged macros” is better or something else…
+> 
+> And what functionality is referred to here by "this"?
+The “this” is replacing the “init function” but when this is unclear I 
+will change in a later proposal…
+> 
+> 
+>> +While the first macros are USB specific the later macros are used in different
+>> +subsystems. This removes a lot of boilerplate code.
+> 
+> What later macros?  Is that really needed to describe here?
+I will improve wording...
 
-Sure. I will convert it to enum.
+> I think the above code example should remain, as it is good for learning
+> and understanding, and maybe just add something that says "Or you can
+> use the following macro to replace all of the above common code."
+I understand the need for keeping the code examples. But I would like to 
+inform the reader about the macros first.
+> 
+> 
+>>   
+>>   When the driver is unloaded from the system, it needs to deregister
+>> -itself with the USB subsystem. This is done with the :c:func:`usb_deregister`
+>> -function::
+>> -
+>> -    static void __exit usb_skel_exit(void)
+>> -    {
+>> -	    /* deregister this driver with the USB subsystem */
+>> -	    usb_deregister(&skel_driver);
+>> -    }
+>> -    module_exit(usb_skel_exit);
+>> +itself with the USB subsystem. This is done with usb_deregister()
+>> +which is also hidden behind multi-stage macros.
+>> +
+>> +The init and exit functions are included in the macro module_usb_driver.
+>> +Find the first three stages of macros below::
+>> +
+>> +    module_usb_driver(skel_driver);
+>> +                         |
+>> +                         V
+>> +    module_driver(__usb_driver, usb_register, usb_deregister)
+>> +                         |               \               \
+>> +                         V                ----------      ----------
+>> +    static int __init __driver##_init(void) \      |               |
+>> +    { \                 v---------------------------               |
+>> +            return __register(&(__driver) , ##__VA_ARGS__); \      |
+>> +    } \                                                            |
+>> +    module_init(__driver##_init); \                                |
+>> +    static void __exit __driver##_exit(void) \                     |
+>> +    { \            v------------------------------------------------
+>> +            __unregister(&(__driver) , ##__VA_ARGS__); \
+>> +    } \
+>> +    module_exit(__driver##_exit);
+> 
+> As the one who wrote these macros, I can't really understand the
+> ascii-art here, so I worry about anyone else :)
+Code is just better readable, even when code uses more lines. Will be 
+changed in next proposal.
+> 
+> Again, do not think trying to show an implementation detail like this is
+> needed.
+The big question for me is for whom is this document written? For the 
+USB subsystem maintainer that has even written the code by himself? I 
+guess not, but may be I am wrong. Or for the kernel newbies like me? 
+Please consider that the changed lines are may be not so much of use for 
+me anymore as I am in the details.
+
+When I saw the __init and __exit code example first, I was very happy to 
+see it and then I was searching in the code for it. I did not find 
+“init” and “exit” and was very frustrated. I want to help others to get 
+into this example more smoothly.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+Thanks that you replied at all.
+Thanks for your very fast reply.
+
+Kernelnewbie Philipp G. Hortmann
 
 
--- 
-Thanks
-Yafang
