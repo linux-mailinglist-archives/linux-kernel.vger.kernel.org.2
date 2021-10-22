@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09713436F77
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC0D436F91
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhJVBhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 21:37:48 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26110 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhJVBhr (ORCPT
+        id S231667AbhJVBtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 21:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhJVBtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 21:37:47 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Hb6Ls0YyJz1DHpf;
-        Fri, 22 Oct 2021 09:33:41 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 09:35:25 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 22 Oct
- 2021 09:35:25 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>
-CC:     <linus.walleij@linaro.org>
-Subject: [PATCH] pinctrl: core: fix possible memory leak in pinctrl_enable()
-Date:   Fri, 22 Oct 2021 09:43:23 +0800
-Message-ID: <20211022014323.1156924-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        Thu, 21 Oct 2021 21:49:20 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AD3C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:47:03 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p8-20020a056902114800b005bad2571fbeso2327698ybu.23
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OSz5Xs/L17ZVVFibJw8deZ4Hpezvx7aG8ZEAixdJaAQ=;
+        b=HtioIS3XvjJWvKb20k1mf4Zj5siAmZj1FBi/lBdkkAdxYzwIqeBQm0wDo8mScUhPtz
+         /6aeFgG9jBeyNeSwA8rRbd4Ty7xf7sy2LA0VfTezC85UujHZQoMDuWgFEM7A7XmrTZZ6
+         yPwkg+vN9HhSJtHfOUM+HTAwKuarMvUC7lEqnpOaDt9Ns1ohpR3Xfzt6l+lbF5XJX2ri
+         OZn2jlAFqSDDV3FRJ8rs254BxBIblUb1PBSVgVg55cy4GHBlBlFZmXDR29h7JnoOubg/
+         Y8i9IMtLYPS7ZGxNEgDMj+ldVTgdVmWTMN/AJEKsJtmDbQTAjFFgPyUDN3a9u/gJKTM/
+         jxNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OSz5Xs/L17ZVVFibJw8deZ4Hpezvx7aG8ZEAixdJaAQ=;
+        b=NVn0h4r2ANyS2mfT2w0yZf3K5gflhg4c0N2S+9NW2fpoxhH7N6/KMQRvOA0FU/YGl7
+         tINXlgqXJl/q12NV1S7ZmOP2BanMG7hpZSNbgyDQKnV9Kif5lOIV5qDF+pMwdh5raYN2
+         yF21k0U9eJWVY+X2WSTmA2I8Fg2bW57gki/qAbSlufrITPS+qeCUVepTonDs90f1l6Vv
+         A/bYgZsXRZt159Dwcj7BDCTCbAXLvkjVhwF9BSHOovxLsBrlNSYtMWOsBd+jwUGb0+XM
+         kLdE+fg3/FPJCqDqIFLWAj8D9eJWuU/w50IDKr4guvu23ZFdxXYdmmKXrqLTspjlk5yi
+         hhaQ==
+X-Gm-Message-State: AOAM530TUcEmNb+zjmV4gBsWD0+iyQCTXEzCI9X2o7xrpvBrKR6Fz05h
+        4KAE4FIBgVQaBhyRkUB1gJvn/LJuEWY=
+X-Google-Smtp-Source: ABdhPJyPE9Pi2rOd+GtIRKy74MwB8b6FJ6jUd7F71YgVyepNEY0BZggKczOYEcmw6bLz121N12RDlg9MYXA=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:c063:38ee:4ca3:d373])
+ (user=surenb job=sendgmr) by 2002:a25:c344:: with SMTP id t65mr10532797ybf.409.1634867222322;
+ Thu, 21 Oct 2021 18:47:02 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 18:46:58 -0700
+Message-Id: <20211022014658.263508-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, luto@kernel.org,
+        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
+        linux-api@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got memory leak as follows when doing fault injection test:
+Race between process_mrelease and exit_mmap, where free_pgtables is
+called while __oom_reap_task_mm is in progress, leads to kernel crash
+during pte_offset_map_lock call. oom-reaper avoids this race by setting
+MMF_OOM_VICTIM flag and causing exit_mmap to take and release
+mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
+Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
+fix this race, however that would be considered a hack. Fix this race
+by elevating mm->mm_users and preventing exit_mmap from executing until
+process_mrelease is finished. Patch slightly refactors the code to adapt
+for a possible mmget_not_zero failure.
+This fix has considerable negative impact on process_mrelease performance
+and will likely need later optimization.
 
-unreferenced object 0xffff888020a7a680 (size 64):
-  comm "i2c-mcp23018-41", pid 23090, jiffies 4295160544 (age 8.680s)
-  hex dump (first 32 bytes):
-    00 48 d3 1e 80 88 ff ff 00 1a 56 c1 ff ff ff ff  .H........V.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000083c79b35>] kmem_cache_alloc_trace+0x16d/0x360
-    [<0000000051803c95>] pinctrl_init_controller+0x6ed/0xb70
-    [<0000000064346707>] pinctrl_register+0x27/0x80
-    [<0000000029b0e186>] devm_pinctrl_register+0x5b/0xe0
-    [<00000000391f5a3e>] mcp23s08_probe_one+0x968/0x118a [pinctrl_mcp23s08]
-    [<000000006112c039>] mcp230xx_probe+0x266/0x560 [pinctrl_mcp23s08_i2c]
-
-If pinctrl_claim_hogs() fails, the 'pindesc' allocated in pinctrl_register_one_pin()
-need be freed.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 950b0d91dc10 ("pinctrl: core: Fix regression caused by delayed work for hogs")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Fixes: 884a7e5964e0 ("mm: introduce process_mrelease system call")
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- drivers/pinctrl/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/oom_kill.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 5082102d7d0d..ffe39336fcac 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -2100,6 +2100,8 @@ int pinctrl_enable(struct pinctrl_dev *pctldev)
- 	if (error) {
- 		dev_err(pctldev->dev, "could not claim hogs: %i\n",
- 			error);
-+		pinctrl_free_pindescs(pctldev, pctldev->desc->pins,
-+				      pctldev->desc->npins);
- 		mutex_destroy(&pctldev->mutex);
- 		kfree(pctldev);
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 831340e7ad8b..989f35a2bbb1 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1150,7 +1150,7 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+ 	struct task_struct *task;
+ 	struct task_struct *p;
+ 	unsigned int f_flags;
+-	bool reap = true;
++	bool reap = false;
+ 	struct pid *pid;
+ 	long ret = 0;
  
+@@ -1177,15 +1177,15 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+ 		goto put_task;
+ 	}
+ 
+-	mm = p->mm;
+-	mmgrab(mm);
+-
+-	/* If the work has been done already, just exit with success */
+-	if (test_bit(MMF_OOM_SKIP, &mm->flags))
+-		reap = false;
+-	else if (!task_will_free_mem(p)) {
+-		reap = false;
+-		ret = -EINVAL;
++	if (mmget_not_zero(p->mm)) {
++		mm = p->mm;
++		if (task_will_free_mem(p))
++			reap = true;
++		else {
++			/* Error only if the work has not been done already */
++			if (!test_bit(MMF_OOM_SKIP, &mm->flags))
++				ret = -EINVAL;
++		}
+ 	}
+ 	task_unlock(p);
+ 
+@@ -1201,7 +1201,8 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+ 	mmap_read_unlock(mm);
+ 
+ drop_mm:
+-	mmdrop(mm);
++	if (mm)
++		mmput(mm);
+ put_task:
+ 	put_task_struct(task);
+ put_pid:
 -- 
-2.25.1
+2.33.0.1079.g6e70778dc9-goog
 
