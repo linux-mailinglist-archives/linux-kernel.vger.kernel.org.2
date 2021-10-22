@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37894380AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7204380B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbhJVXjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 19:39:31 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:40702 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJVXja (ORCPT
+        id S232377AbhJVXkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 19:40:00 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:41700 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhJVXj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:39:30 -0400
-Received: by mail-ot1-f50.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so6259904otr.7;
-        Fri, 22 Oct 2021 16:37:12 -0700 (PDT)
+        Fri, 22 Oct 2021 19:39:58 -0400
+Received: by mail-oi1-f181.google.com with SMTP id bk18so6949016oib.8;
+        Fri, 22 Oct 2021 16:37:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aHPsIxbcapvVWGDgzw9OJ7HXmoNqDvSGbV9691jEUzA=;
-        b=fPyXpoN86Y8ncKdUpJSBf6Zbf1QHDGnnfhRhz82c/bTUTZ3YE2bM7b33SQwpsxGJCZ
-         507nv6NiGCmELnNcFPx6D8NwTeBg4TKbubW4A+tycno5ukeYYgp0c9ijoscjPcy46obP
-         qfPSXX9sVSWgncHEf0xcj2o3CEcd+EyR7AjHRpbgVf0AwSDahSubUIKkaUueGltYDa2m
-         IdPwr2UiXT13XwsiU4VSSPJREhwMUrhLokyiNRd5FZU+v0uv2ozMBHr/widgjxwRe0+l
-         g01mNW3+wxlEW2KPh0Limgc4xJPVU2TOODCmCyo57mYZVBAz7GSCLnUddiItK96HT9UG
-         rvnw==
-X-Gm-Message-State: AOAM533rBnWY5L94j86v2Uw9Ve8rwXu9idoeUiARHNkseOvELuGNDkVg
-        UekH2vvrOr2xFC2jmqQMvA==
-X-Google-Smtp-Source: ABdhPJyGusuG3Xe+ltcV2VNUzn3Q3aEqUebx3PD43lBIOljUnppVJu/jWBiZYCDU0fTKidHQi4V0IQ==
-X-Received: by 2002:a9d:53c4:: with SMTP id i4mr2153509oth.176.1634945832350;
-        Fri, 22 Oct 2021 16:37:12 -0700 (PDT)
+        bh=zSuAE3RSJ43llp8C+stYHPq0rTTeRWYXzdSTZgPFCs4=;
+        b=aFvJ8JMlp5j90QHvB9uqaldZ/NgYFaC7uwjbznIwCj0/+YXuqDWI7IfBnLVluFS6uQ
+         JlG1GCe4svCdulycyqqE6+oBjEpI45ZEr7uV5OdhXPvsdlX0RPgLzj//mlOafj56XhjJ
+         LD5TaP8ArAP1l+0HL9+vixPM2D6nh01/8SwQS4kNE1nXE88lkTANleKFKYRnycDy8RZl
+         L2xOiRHb+mt2Motbh50IWT7bsaNb3+w/d8IgAlw1kCcTI3KGaOvqlyiGFRfx84Aplr2u
+         5I9J2jmG9zexE+96prkkFl5LsX3CwObVK41fw814jx4o2Jge2L0XTZ21VljwDL64LpJl
+         DrmA==
+X-Gm-Message-State: AOAM533tkMsdx6GABtR+GkcB8EIobVLc63ztNbCLp/hFD2ssNcQ1avo3
+        RshEvA8kc6ufjAiLEaQtdQ==
+X-Google-Smtp-Source: ABdhPJygMuUHKwqjAYXnJQ+sF4UCg9hIvLQi6e+ekBq4QT4WLoGAHQT+sUEZ856SUYdCTJjATVBiLQ==
+X-Received: by 2002:a05:6808:a1d:: with SMTP id n29mr3711706oij.164.1634945860291;
+        Fri, 22 Oct 2021 16:37:40 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bj14sm2376387oib.3.2021.10.22.16.37.11
+        by smtp.gmail.com with ESMTPSA id m7sm2271061oiw.49.2021.10.22.16.37.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 16:37:11 -0700 (PDT)
-Received: (nullmailer pid 3385679 invoked by uid 1000);
-        Fri, 22 Oct 2021 23:37:10 -0000
-Date:   Fri, 22 Oct 2021 18:37:10 -0500
+        Fri, 22 Oct 2021 16:37:39 -0700 (PDT)
+Received: (nullmailer pid 3386546 invoked by uid 1000);
+        Fri, 22 Oct 2021 23:37:38 -0000
+Date:   Fri, 22 Oct 2021 18:37:38 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     George Song <george.song@maximintegrated.com>
-Cc:     broonie@kernel.org, robh+dt@kernel.org, george.song@analog.com,
-        steves.lee@maximintegrated.com, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ryans.lee@maximintegrated.com
-Subject: Re: [v5 1/2] ASoC: dt-bindings: max98520: add initial bindings
-Message-ID: <YXNLJkzWTBoqVa1n@robh.at.kernel.org>
-References: <20211020083055.23625-1-george.song@maximintegrated.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
+        codrin.ciubotariu@microchip.com, ludovic.desroches@microchip.com,
+        linux-i2c@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, nicolas.ferre@microchip.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: i2c: at91: Extend compatible list for
+ lan966x
+Message-ID: <YXNLQlUKgloigEd8@robh.at.kernel.org>
+References: <20211012140718.2138278-1-horatiu.vultur@microchip.com>
+ <20211012140718.2138278-2-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020083055.23625-1-george.song@maximintegrated.com>
+In-Reply-To: <20211012140718.2138278-2-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 17:30:54 +0900, George Song wrote:
-> add initial bindings for max98520 audio amplifier
+On Tue, 12 Oct 2021 16:07:17 +0200, Horatiu Vultur wrote:
+> Extend compatible list and the i2c-sda-hold-time-ns property
+> with 'microchip,lan966x-i2c'
 > 
-> Signed-off-by: George Song <george.song@maximintegrated.com>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > ---
->  .../bindings/sound/maxim,max98520.yaml        | 36 +++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+>  Documentation/devicetree/bindings/i2c/i2c-at91.txt | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
 
-
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
+Acked-by: Rob Herring <robh@kernel.org>
