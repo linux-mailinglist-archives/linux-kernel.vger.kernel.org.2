@@ -2,233 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D40437925
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE99B437927
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbhJVOmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:42:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37637 "EHLO
+        id S233169AbhJVOnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:43:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46372 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233013AbhJVOmr (ORCPT
+        by vger.kernel.org with ESMTP id S233167AbhJVOnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:42:47 -0400
+        Fri, 22 Oct 2021 10:43:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634913629;
+        s=mimecast20190719; t=1634913655;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S5VYijYo0LM0UNwR49AOTflq9JooV8n64R7vGAicLbM=;
-        b=CWNCwUmpUo/G0C57s8fRFxLGzxgyEV0+W9/SrsdayyEqxcT5d5GgJjP55Rr1EjmPAQA6Ya
-        s2GRS6Ec7VY3OPzP/NHx4Bx+0cQPM4OH9FWD/jtje4KCQkt9M7z67hcvYig2TI7SDOH0gF
-        i/iTgg/kkgw6HeSad7/eBbGsAtBaxEc=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307--SPXjBkYNzi-razGzc9B3w-1; Fri, 22 Oct 2021 10:40:28 -0400
-X-MC-Unique: -SPXjBkYNzi-razGzc9B3w-1
-Received: by mail-wm1-f70.google.com with SMTP id s25-20020a7bc399000000b0030da0f36afeso1126501wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:40:27 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+Y7NfcTUc72UdelkpBwzcJihYziKx3J+s0xf/LWrgkY=;
+        b=Rdr2lXn06lHitfsnm+78clXiF9OwFUZcoqvr4bA09u1zUqs4DtzG9yLJ6BWe/v1yh7iYN/
+        WnH2N6zq5D2WfjNo0LZ6YBVVPBR2sR6m9wGW2j4hDFHoRYORym8cBJCti8oyNS9diq60MK
+        Dr0uXY6B3mJIQAF+ub9S6EewFVTUuUo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-gvKF18UQN8God2XVuS4Vnw-1; Fri, 22 Oct 2021 10:40:53 -0400
+X-MC-Unique: gvKF18UQN8God2XVuS4Vnw-1
+Received: by mail-wr1-f70.google.com with SMTP id x1-20020adfffc1000000b001679fc9c018so1005875wrs.18
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:40:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=S5VYijYo0LM0UNwR49AOTflq9JooV8n64R7vGAicLbM=;
-        b=OkNMiAsTcjNX9nTHf84g4E673cEVfKAhmbRmZWIH0LRwvtT5s++7Pcllc+oe99H1iC
-         jEc876P+IBiOQ/QQxNiK0K/wgb7BOgTp37tqpdFI6gX6d4G+rsyBQyJB1yPotqjOwtqs
-         je+BQ9rtDUnN6BB3oQLrE4PZv5lzbzRJDR6I0Wh7JLgn/+hYoGh3GTPn3bjWh25c83z/
-         dtV8Vd4xnh3EmSTXdyc3nN9LsMUfDb0HiLG5GXBIwI4gIjpeGZyDen7ZFx548AhWqJ8l
-         GVXtx/6z3Wm5cI1Zd0DUaSJK944BMQo6lgqhhqJMBgX0vaPXAi/ozHOu6KY5yw5sy+jK
-         EE9A==
-X-Gm-Message-State: AOAM531bEjczzNSw3rI6toBZ8p6JxMr/B5fkjYgtInJYmZURprT69Aa4
-        tlpbVAxTM8Tl/3ti1gQ3npxjtsIn4CoDddK32NoGh6NPhijEBT/z3JRbPQJG9d5YJwE6N5hmZyQ
-        5DCosBoG0ykhkJzYCoIm5+098
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr180595wmb.78.1634913626857;
-        Fri, 22 Oct 2021 07:40:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrc/dZo+MdLVpt8cNByGTw3yh/5+A6Y3Y+vnyc+pC35BkkzHjuZ6ObalnuXaN7d0yTLAbOig==
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr180556wmb.78.1634913626541;
-        Fri, 22 Oct 2021 07:40:26 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6324.dip0.t-ipconnect.de. [91.12.99.36])
-        by smtp.gmail.com with ESMTPSA id b207sm200396wmd.3.2021.10.22.07.40.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 07:40:25 -0700 (PDT)
-Message-ID: <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
-Date:   Fri, 22 Oct 2021 16:40:24 +0200
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+Y7NfcTUc72UdelkpBwzcJihYziKx3J+s0xf/LWrgkY=;
+        b=Kq6//pl+qXvEb6dVCr6PSc9bkXcD0sxX6pLd5tk2UMmHpyjc2kaHkmfDewd3ER8WQs
+         dR2cdig3g9aDPtAoA4oNsfdkBXzXVK8f4sY3DRjFtolL8efFc71r86IhVpyK0B9ncbOf
+         l3gh5SDdFsoXKapAwEGzRdLYhKTr+9+oOEAT3zIXbhSI8A1ub1opUTY2doJRfmT8+D9/
+         jr3keMrdMfi+z7mx5SbKrdizC0waC5BzImt2TVZDrvo8yemiyusTNzpMnSbmu1DDiNm0
+         9ndx11jDI3ctOg6XFiXa7Nf0kPU276QtkLorJJl62IhigGYtQk+sxKsXDIdtsVzz1tGw
+         YkSg==
+X-Gm-Message-State: AOAM530pUIvYhdcSc0c9IDDBQOH9cpJICNx1afC604GbKTIsGZW9iqym
+        Yp/Bmb2FLHutHl4ekC0J/I+pgN7TJroew2ZWnH/xZ0DJJ3MRTOD0ljdFzPPmIBvOFDO+ks0oS6b
+        pTjrbxFIgQnHY3zCbRxWPXNgF49vyqwLGg9opevvsWLwhgeBlosoY0GMhHH633a50JWduF9QWRT
+        I=
+X-Received: by 2002:adf:a556:: with SMTP id j22mr256031wrb.431.1634913649913;
+        Fri, 22 Oct 2021 07:40:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrA+8XKgUdKV8FF09Xl8lAf5kXXVCvm7L8ndkX22MUwJziJuYxZIq41IahfWM7uQNg5ZEQQQ==
+X-Received: by 2002:adf:a556:: with SMTP id j22mr255978wrb.431.1634913649537;
+        Fri, 22 Oct 2021 07:40:49 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id r205sm8579459wma.3.2021.10.22.07.40.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 07:40:48 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [RFC PATCH] drm/aperture: Add param to disable conflicting framebuffers removal
+Date:   Fri, 22 Oct 2021 16:40:40 +0200
+Message-Id: <20211022144040.3418284-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-References: <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org> <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org> <YXBUPguecSeSO6UD@moria.home.lan>
- <YXHdpQTL1Udz48fc@cmpxchg.org> <YXIZX0truEBv2YSz@casper.infradead.org>
- <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
- <YXK2ICKi6fjNfr4X@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-In-Reply-To: <YXK2ICKi6fjNfr4X@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.21 15:01, Matthew Wilcox wrote:
-> On Fri, Oct 22, 2021 at 09:59:05AM +0200, David Hildenbrand wrote:
->> something like this would roughly express what I've been mumbling about:
->>
->> anon_mem    file_mem
->>    |            |
->>    ------|------
->>       lru_mem       slab
->>          |           |
->>          -------------
->>                |
->> 	      page
->>
->> I wouldn't include folios in this picture, because IMHO folios as of now
->> are actually what we want to be "lru_mem", just which a much clearer
->> name+description (again, IMHO).
-> 
-> I think folios are a superset of lru_mem.  To enhance your drawing:
-> 
+The simpledrm driver allows to use the frame buffer that was set-up by the
+firmware. This gives early video output before the platform DRM driver is
+probed and takes over.
 
-In the picture below we want "folio" to be the abstraction of "mappable
-into user space", after reading your link below and reading your graph,
-correct? Like calling it "user_mem" instead.
+But it would be useful to have a way to disable this take over by the real
+DRM drivers. For example, there may be bugs in the DRM drivers that could
+cause the display output to not work correctly.
 
-Because any of these types would imply that we're looking at the head
-page (if it's a compound page). And we could (or even already have?)
-have other types that cannot be mapped to user space that are actually a
-compound page.
+For those cases, it would be good to keep the simpledrm driver instead and
+at least get a working display as set-up by the firmware.
 
-> page
->    folio
->       lru_mem
->          anon_mem
-> 	 ksm
->          file_mem
->       netpool
->       devmem
->       zonedev
->    slab
->    pgtable
->    buddy
->    zsmalloc
->    vmalloc
-> 
-> I have a little list of memory types here:
-> https://kernelnewbies.org/MemoryTypes
-> 
-> Let me know if anything is missing.
+Let's add a drm.remove_fb boolean kernel command line parameter, that when
+set to false will prevent the conflicting framebuffers to being removed.
 
-hugetlbfs pages might deserve a dedicated type, right?
+Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
+early in their probe callback, this will cause the drivers' probe to fail.
 
+Thanks to Neal Gompa for the suggestion and Thomas Zimmermann for the idea
+on how this could be implemented.
 
-> 
->> Going from file_mem -> page is easy, just casting pointers.
->> Going from page -> file_mem requires going to the head page if it's a
->> compound page.
->>
->> But we expect most interfaces to pass around a proper type (e.g.,
->> lru_mem) instead of a page, which avoids having to lookup the compund
->> head page. And each function can express which type it actually wants to
->> consume. The filmap API wants to consume file_mem, so it should use that.
->>
->> And IMHO, with something above in mind and not having a clue which
->> additional layers we'll really need, or which additional leaves we want
->> to have, we would start with the leaves (e.g., file_mem, anon_mem, slab)
->> and work our way towards the root. Just like we already started with slab.
-> 
-> That assumes that the "root" layers already handle compound pages
-> properly.  For example, nothing in mm/page-writeback.c does; it assumes
-> everything is an order-0 page.  So working in the opposite direction
-> makes sense because it tells us what has already been converted and is
-> thus safe to call.
+Suggested-by: Neal Gompa <ngompa13@gmail.com>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
+Hello,
 
-Right, as long as the lower layers receive a "struct page", they have to
-assume it's "anything" -- IOW a random base page.
+I'm sending this as an RFC because I wasn't sure about the correct name for
+this module parameter, and also if 'remove_fb=0' is intitutive or instead a
+parameter that's enabled is preferred (i.e: 'disable_fb_removal=1').
 
-We need some temporary logic when transitioning from "typed" code into
-"struct page" code that doesn't talk compound pages yet, I agree. And I
-think the different types used actually would tell us what has been
-converted and what not. Whenever you have to go from type -> "struct
-page" we have to be very careful.
+Best regards,
+Javier
 
-> 
-> And starting with file_mem makes the supposition that it's worth splitting
-> file_mem from anon_mem.  I believe that's one or two steps further than
-> it's worth, but I can be convinced otherwise.  For example, do we have
-> examples of file pages being passed to routines that expect anon pages?
+ drivers/gpu/drm/drm_aperture.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-That would be a BUG, so I hope we don't have it ;)
-
-> Most routines that I've looked at expect to see both file & anon pages,
-
-Right, many of them do. Which tells me that they share a common type in
-many places.
-
-Let's consider LRU code
-
-static inline int folio_is_file_lru(struct folio *folio)
-{
-	return !folio_swapbacked(folio);
-}
-
-I would say we don't really want to pass folios here. We actually want
-to pass something reasonable, like "lru_mem". But yes, it's just doing
-what "struct page" used to do via page_is_file_lru().
-
-
-Let's consider folio_wait_writeback(struct folio *folio)
-
-Do we actually want to pass in a folio here? Would we actually want to
-pass in lru_mem here or even something else?
-
-> and treat them either identically or do slightly different things.
-> But those are just the functions I've looked at; your experience may be
-> quite different.
-
-I assume when it comes to LRU, writeback, ... the behavior is very
-similar or at least the current functions just decide internally what to
-do based on e.g., ..._is_file_lru().
-
-I don't know if it's best to keep hiding that functionality within an
-abstracted type or just provide two separate functions for anon and
-file. folios mostly mimic what the old struct page used to do,
-introducing similar functions. Maybe the reason we branch off within
-these functions is because it just made sense when passing around
-"struct page" and not having something clearer at hand that let the
-caller do the branch. For the cases of LRU I looked at it somewhat makes
-sense to just do it internally.
-
-Looking at some core MM code, like mm/huge_memory.c, and seeing all the
-PageAnon() specializations, having a dedicated anon_mem type might be
-valuable. But at this point it's hard to tell if splitting up these
-functions would actually be desirable.
-
-We're knee-deep in the type discussion now and I appreciate it. I can
-understand that folio are currently really just a "not a tail page"
-concept and mimic a lot of what we already inherited from the old
-"struct page" world.
-
+diff --git a/drivers/gpu/drm/drm_aperture.c b/drivers/gpu/drm/drm_aperture.c
+index 74bd4a76b253..0b454c8f7465 100644
+--- a/drivers/gpu/drm/drm_aperture.c
++++ b/drivers/gpu/drm/drm_aperture.c
+@@ -14,6 +14,11 @@
+ #include <drm/drm_drv.h>
+ #include <drm/drm_print.h>
+ 
++static bool drm_aperture_remove_fb = true;
++module_param_named(remove_fb, drm_aperture_remove_fb, bool, 0600);
++MODULE_PARM_DESC(remove_fb,
++		 "Allow conflicting framebuffers removal [default=true]");
++
+ /**
+  * DOC: overview
+  *
+@@ -283,6 +288,9 @@ static void drm_aperture_detach_drivers(resource_size_t base, resource_size_t si
+  * This function removes graphics device drivers which use memory range described by
+  * @base and @size.
+  *
++ * The conflicting framebuffers removal can be disabled by setting the drm.remove_fb=0 kernel
++ * command line option. When this is disabled, the function will return an -EINVAL errno code.
++ *
+  * Returns:
+  * 0 on success, or a negative errno code otherwise
+  */
+@@ -292,7 +300,12 @@ int drm_aperture_remove_conflicting_framebuffers(resource_size_t base, resource_
+ #if IS_REACHABLE(CONFIG_FB)
+ 	struct apertures_struct *a;
+ 	int ret;
++#endif
++
++	if (!drm_aperture_remove_fb)
++		return -EINVAL;
+ 
++#if IS_REACHABLE(CONFIG_FB)
+ 	a = alloc_apertures(1);
+ 	if (!a)
+ 		return -ENOMEM;
+@@ -322,6 +335,9 @@ EXPORT_SYMBOL(drm_aperture_remove_conflicting_framebuffers);
+  * for any of @pdev's memory bars. The function assumes that PCI device with
+  * shadowed ROM drives a primary display and so kicks out vga16fb.
+  *
++ * The conflicting framebuffers removal can be disabled by setting the drm.remove_fb=0 kernel
++ * command line option. When this is disabled, the function will return an -EINVAL errno code.
++ *
+  * Returns:
+  * 0 on success, or a negative errno code otherwise
+  */
+@@ -331,6 +347,9 @@ int drm_aperture_remove_conflicting_pci_framebuffers(struct pci_dev *pdev,
+ 	resource_size_t base, size;
+ 	int bar, ret = 0;
+ 
++	if (!drm_aperture_remove_fb)
++		return -EINVAL;
++
+ 	for (bar = 0; bar < PCI_STD_NUM_BARS; ++bar) {
+ 		if (!(pci_resource_flags(pdev, bar) & IORESOURCE_MEM))
+ 			continue;
 -- 
-Thanks,
-
-David / dhildenb
+2.31.1
 
