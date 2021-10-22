@@ -2,164 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13174371F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738064371F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhJVGlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:41:51 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:58771 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhJVGlu (ORCPT
+        id S231758AbhJVGmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:42:02 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:33111 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhJVGmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:41:50 -0400
+        Fri, 22 Oct 2021 02:42:00 -0400
 Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20211022063931epoutp014e25cecc195ff791d9024d48aad79db7~wRwm9jp1j0394403944epoutp01_
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:39:31 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20211022063931epoutp014e25cecc195ff791d9024d48aad79db7~wRwm9jp1j0394403944epoutp01_
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211022063941epoutp02a9456ee7301c1a73cb30011282378d6d~wRwv0Kjtd0915009150epoutp02D
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:39:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211022063941epoutp02a9456ee7301c1a73cb30011282378d6d~wRwv0Kjtd0915009150epoutp02D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1634884771;
-        bh=LkFPqrQa+YT41CfhU97akjcr79eXsXgMnGQruTJ1HIs=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=CB3V3qnc5NioVLVYYi2ZKzPxjKVpFsy9MRN30XqkUYk/9U9CNN6W4JLImlV3LiRC7
-         ItyZrEc7ojS+UHi6H83RXtxU2Lc8NGIEDD/rTfB6TTAHVpoKvES7TDThkJ1g+YP3tl
-         hT0TJcHGJZtaA94yW5eBmRf4ebw9Z7wVvct9hsvg=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20211022063931epcas1p39555326907bf3396430fb4754b45ce14~wRwmsYjYo2325323253epcas1p3D;
-        Fri, 22 Oct 2021 06:39:31 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.38.243]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4HbF7j47c1z4x9Q0; Fri, 22 Oct
-        2021 06:39:29 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E3.BD.09592.1AC52716; Fri, 22 Oct 2021 15:39:29 +0900 (KST)
+        s=mail20170921; t=1634884781;
+        bh=GgRKhJImcsOAtS3q4YtTz2oA+8fQnxgrL56dGAuTdp4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HqAwT1jFEFSkYauVnTbGfMPk+PhO2E4xMk13JkjqGHD3jMTUcSsWvhtdZXCMHeNoG
+         ATHd948rbx7LJR7SPeeKxho6qak160fNpUA8OghFLAAYscf7X36Uhrb0nYAE3Cr0WO
+         uP0anKwgKPiA7O4LmvM+5CnQjjfyb37ht61/SEpU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20211022063941epcas1p2ef8e3070840abaaae103bcbfb6216ade~wRwvkM6-81437314373epcas1p22;
+        Fri, 22 Oct 2021 06:39:41 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.38.242]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HbF7v1c5rz4x9QP; Fri, 22 Oct
+        2021 06:39:39 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B7.33.09574.5AC52716; Fri, 22 Oct 2021 15:39:33 +0900 (KST)
 Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
         epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211022063928epcas1p28a32be208929f9905c80e655736b7a7d~wRwkNB9-K1434414344epcas1p28;
-        Fri, 22 Oct 2021 06:39:28 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        20211022063932epcas1p2016e6cff9b171f9a6fedfb1e48ee8695~wRwn21_tN1434414344epcas1p2G;
+        Fri, 22 Oct 2021 06:39:32 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
         epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211022063928epsmtrp1dd8ba207920fe9104e9c65fe3eaef5a2~wRwkIM-Az0281702817epsmtrp1c;
-        Fri, 22 Oct 2021 06:39:28 +0000 (GMT)
-X-AuditID: b6c32a37-28fff70000002578-47-61725ca173af
+        20211022063932epsmtrp11cb2646f33facc3be831e2e78d2f544c~wRwn2HtMz0354103541epsmtrp1C;
+        Fri, 22 Oct 2021 06:39:32 +0000 (GMT)
+X-AuditID: b6c32a35-1abff70000002566-9a-61725ca54767
 Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6E.10.08902.0AC52716; Fri, 22 Oct 2021 15:39:28 +0900 (KST)
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        47.9D.08738.4AC52716; Fri, 22 Oct 2021 15:39:32 +0900 (KST)
 Received: from localhost.localdomain (unknown [10.88.98.193]) by
         epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211022063928epsmtip10c52a65d505e3f4807a537c3bf7d97fb~wRwj6Q9Mp1451514515epsmtip1T;
-        Fri, 22 Oct 2021 06:39:28 +0000 (GMT)
+        20211022063932epsmtip1be7b3cd49607ff5ca6982b6772659c6d~wRwnsTJi51607316073epsmtip1h;
+        Fri, 22 Oct 2021 06:39:32 +0000 (GMT)
 From:   Huijin Park <huijin.park@samsung.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>
 Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Huijin Park <bbanghj.park@gmail.com>,
         Huijin Park <huijin.park@samsung.com>
-Subject: [PATCH 1/2] mmc: core: adjust polling interval for CMD1
-Date:   Fri, 22 Oct 2021 15:39:19 +0900
-Message-Id: <20211022063920.2145-1-huijin.park@samsung.com>
+Subject: [PATCH 2/2] mmc: core: use jiffies to checking timeout for CMD1
+Date:   Fri, 22 Oct 2021 15:39:20 +0900
+Message-Id: <20211022063920.2145-2-huijin.park@samsung.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211022063920.2145-1-huijin.park@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDKsWRmVeSWpSXmKPExsWy7bCmvu7CmKJEg39tQhYv9x5itui46GJx
-        edccNosj//sZLY6vDXdg9dg56y67x51re9g8+rasYvT4vEkugCUq2yYjNTEltUghNS85PyUz
-        L91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKuSQlliTilQKCCxuFhJ386mKL+0
-        JFUhI7+4xFYptSAlp8CsQK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj8XfNguuCFYfPvmZqYDzI
-        18XIySEhYCLxd8UC1i5GLg4hgR2MEqcX3GAHSQgJfGKUuHJRGCLxjVHi+KEdLDAds298hira
-        yygxvU8dogio4eaGZYwgCTYBbYnra7eC2SICGhJ7Hp5nBbGZBbqAim45gNjCAg4Sd07+ZQKx
-        WQRUJe427QWq4eDgFbCWOPIpAWKXvMTMS9/BdvEKCEqcnPmEBWKMvETz1tnMIHslBHaxSyx+
-        280O0eAi0fjgFSuELSzx6vgWqLiUxMv+Nii7XGLXhKtQzQ2MEn1rv0M1GEu8e7uWGeQIZgFN
-        ifW79CHCihI7f89lhFjMJ/Huaw/YnRICvBIdbUIQJaoSi69+hJoiLXHowV1GCNtD4n7DWjZI
-        WMVKTFmxiG0Co/wsJO/MQvLOLITFCxiZVzGKpRYU56anFhsWGMOjNDk/dxMjONlpme9gnPb2
-        g94hRiYOxkOMEhzMSiK8uyvyE4V4UxIrq1KL8uOLSnNSiw8xmgLDdyKzlGhyPjDd5pXEG5pY
-        GpiYGZlYGFsamymJ836WK0wUEkhPLEnNTk0tSC2C6WPi4JRqYEru1bT4MunWkhM5Ln2iqw4o
-        h9w5sor7ijr/Q4u/Rsazz3xJ1Hb9N8Myd6t3aBeHwrt3qn8a4y6odORP1ZvtXbHT6a2HQpCB
-        rJqTdbBF2Wcb/Xw/AQun91rfdq91+RdU8CzCpj/s+B7zG0xHN7+62JOjWasYpxD4iE1m2Rcl
-        V5Um05gMNx6xaXOjr7RFh8TdE+H7/7Fb/0F1gMzjs0rX/+WavTA4dlnM/kDfhmUGh3IaV2t+
-        Za13nefJzXZiS30Gh+CJC8bfHsy88DZnusURLtfEG18jr+4Jyf9utfrColfNp3iLKz5t943/
-        nLrK+prkB00N97sLIwN/XUrOOBXgF7Uob3/rfh2JfLPXJgqFSizFGYmGWsxFxYkAOB2xDP8D
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsWy7bCSnO6CmKJEg4+t2hYv9x5itui46GJx
-        edccNosj//sZLY6vDXdg9dg56y67x51re9g8+rasYvT4vEkugCWKyyYlNSezLLVI3y6BK+Px
-        d82C64IVh8++ZmpgPMjXxcjJISFgIjH7xmd2EFtIYDejxLazhhBxaYl3O6+zdjFyANnCEocP
-        F3cxcgGVfGCUuL1xChNIDZuAtsT1tVsZQWwRAQ2JPQ/Ps4LYzAJ9jBKdv7JAbGEBB4k7J/+C
-        1bMIqErcbdoLNpNXwFriyKcEiFXyEjMvfQc7gVdAUOLkzCcsEGPkJZq3zmaewMg3C0lqFpLU
-        AkamVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwcGnpbmDcfuqD3qHGJk4GA8xSnAw
-        K4nw7q7ITxTiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qB
-        adKbA75Vz/7sZOVgDv16P1CbmdFOv792zXn1+dbSvV9ClnVfN528XSpQ/IxmbUbp80/aW6s9
-        OpzZTZXm2VtUsB3zfdW7VUbu4PXylRatzVZztW7lfbhdvfTTzAVnuhfffTC3UzXwbp3+JafL
-        sxLM9FK+vpTbeYz1+HXdVJtXM90kfpjvzvg3OVbv1Ps5ZapeIYHqs0++eLFRQ9OdN371lk1r
-        pCZVMf5revTq7Kp7Qn4xu/RmHhfZ4M/6qkVy++kotdAl6XPr/q5ZOmkng7PchJyPDqtLJtf9
-        mZK3rFdsfc5EpUdM7+si8zdP//xs/aI1ujfN/D5NU3/KwbrM4LzKOmHZJ6Ezxa//a9qgzvj+
-        Xb0SS3FGoqEWc1FxIgCHJkzOrQIAAA==
-X-CMS-MailID: 20211022063928epcas1p28a32be208929f9905c80e655736b7a7d
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOKsWRmVeSWpSXmKPExsWy7bCmru7SmKJEg41rxSxe7j3EbNFx0cXi
+        8q45bBZH/vczWhxfG+7A6rFz1l12jzvX9rB59G1ZxejxeZNcAEtUtk1GamJKapFCal5yfkpm
+        XrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0FYlhbLEnFKgUEBicbGSvp1NUX5p
+        SapCRn5xia1SakFKToFZgV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGwU8/mAsmc1e87dVtYHzO
+        0cXIySEhYCKx7HgvaxcjF4eQwA5GiYtzJrBDOJ8YJf5cnA2V+cwocbjvBFCGA6xlV58CRHwX
+        o8ScGZvY4Dr+z9rMDDKXTUBb4vrarYwgtoiAhsSeh+dZQWxmgS5GiZu3HEAGCQt4SKye5A9i
+        sgioSlz6awxSwStgLXHw2EUmiOvkJWZe+s4OYnMK2EhsfvaODaJGUOLkzCcsEBPlJZq3zmaG
+        qD/HLrHhqjeE7SLxr38SG4QtLPHq+BZ2CFtK4mV/G5RdLrFrwlVmkPMlBBoYJfrWfmeFSBhL
+        vHu7lhnkNmYBTYn1u/QhwooSO3/PZYTYyyfx7msPKyRIeCU62oQgSlQlFl/9CDVFWuLQg7uM
+        ECUeEtvfVUECqp9R4uzHbrYJjAqzkHwzC8k3sxAWL2BkXsUollpQnJueWmxYYAiP3eT83E2M
+        4BSoZbqDceLbD3qHGJk4GA8xSnAwK4nw7q7ITxTiTUmsrEotyo8vKs1JLT7EaAoM6onMUqLJ
+        +cAknFcSb2hiaWBiZmRiYWxpbKYkzvtZrjBRSCA9sSQ1OzW1ILUIpo+Jg1Oqgenhwx2h0Qxb
+        o+8/+tqkle565fQ2obDeJSpTJa/nO+yMMWO5++3MOf65d+8WzNXaus1rUsCDGaLv1d5++Dc7
+        Yh5rMb/7zam8NaYfHQL5uPLNl6UI7JHNsudhEboTm6P6b9OhgkSV7Pb9b6Kv88puE6rKEhG1
+        8xP+vHuF+cRFe3+KB858N6urZc7ft2uVg3/uPbyfMWDf9WRLFy+vNofzs2y0H8T1KEYcjiic
+        +F03MfJ0U9UemUKmTOEWZiFzgfylsmtbl13kvsS0RcOk6Vfd36+Xppy5t+xCtP6ZZk7h0Jn9
+        Ni/CGKdwnWIS7HadfDk25vX2yRxdzoXlQZ5Lg5e9m3kk5HrUjdyoyQcvNDy79UCJpTgj0VCL
+        uag4EQC2Mf73CgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSnO6SmKJEgws79Sxe7j3EbNFx0cXi
+        8q45bBZH/vczWhxfG+7A6rFz1l12jzvX9rB59G1ZxejxeZNcAEsUl01Kak5mWWqRvl0CV8bB
+        Tz+YCyZzV7zt1W1gfM7RxcjBISFgIrGrT6GLkYtDSGAHo8SqXwvZuhg5geLSEu92XmeFqBGW
+        OHy4GKLmA6PEg/UvwGrYBLQlrq/dyghiiwhoSOx5eJ4VxGYW6GOU6PyVBdIrLOAhsXqSP4jJ
+        IqAqcemvMUgFr4C1xMFjF5kgNslLzLz0nR3E5hSwkdj87B3YdCGgmjmHT7BD1AtKnJz5hAVi
+        urxE89bZzBMYBWYhSc1CklrAyLSKUTK1oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4VLW0
+        djDuWfVB7xAjEwfjIUYJDmYlEd7dFfmJQrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJI
+        TyxJzU5NLUgtgskycXBKNTDJNfnM9yg9Opu/SmQmS22hvcaOZd9arBf7x0Yvq1HRVG5SOvru
+        E0MO47ulS46/qDmyiMNe3NEy5Vu64I3DqsELHno7Nm2+71wYyrCH+T7P/ZAirps8y1Me7Xsl
+        lWOS/2U6h7WszNTuxwbetikZG+xaMjnE+D+fe/Nw+0fpWfVvvj2qCpez5xVzk995e7uGdlMR
+        /8fZv3kU5F4eOuXYIRmUv3DbocnN9dpz86erby64UWJ0f48G58eVa7pt/MKDPh72779uUFXm
+        a/r4eGpS1pXLThb3F3EcPJVUfm3PCevnUpcX589b+F7Y/XbruZPMlee/flY5MCsg6cIV0Vml
+        6tKOho4Btd8tXvUtE71w85cSS3FGoqEWc1FxIgDQ2e69xAIAAA==
+X-CMS-MailID: 20211022063932epcas1p2016e6cff9b171f9a6fedfb1e48ee8695
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211022063928epcas1p28a32be208929f9905c80e655736b7a7d
-References: <CGME20211022063928epcas1p28a32be208929f9905c80e655736b7a7d@epcas1p2.samsung.com>
+X-CMS-RootMailID: 20211022063932epcas1p2016e6cff9b171f9a6fedfb1e48ee8695
+References: <20211022063920.2145-1-huijin.park@samsung.com>
+        <CGME20211022063932epcas1p2016e6cff9b171f9a6fedfb1e48ee8695@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mmc_send_op_cond(), loops are continuously performed at the same
-interval of 10 ms.  However the behaviour is not good for some eMMC
-which can be out from a busy state earlier than 10 ms if normal.
-
-Therefore, this patch adjusts the waiting interval time. The interval
-time starts at 1 ms, but doubles until the range reaches 10 ms for
-each loop.
-
-The reason for adjusting the interval time is that it is important
-to reduce the eMMC initialization time, especially in devices that
-use eMMC as rootfs.
-
-Test log(eMMC:KLM8G1GETF-B041):
-
-before: 12 ms (0.439407 - 0.427186)
-[0.419407] mmc0: starting CMD0 arg 00000000 flags 000000c0
-[0.422652] mmc0: starting CMD1 arg 00000000 flags 000000e1
-[0.424270] mmc0: starting CMD0 arg 00000000 flags 000000c0
-[0.427186] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
-[0.439407] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
-[0.439721] mmc0: starting CMD2 arg 00000000 flags 00000007
-
-after: 4 ms (0.431725 - 0.427352)
-[0.419575] mmc0: starting CMD0 arg 00000000 flags 000000c0
-[0.422819] mmc0: starting CMD1 arg 00000000 flags 000000e1
-[0.424435] mmc0: starting CMD0 arg 00000000 flags 000000c0
-[0.427352] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
-[0.428913] mmc0: starting CMD1 arg 40000080 flags 000000e1
-[0.431725] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
-[0.432038] mmc0: starting CMD2 arg 00000000 flags 00000007
+This patch uses jiffies for checking timeout instead of loop count.
+Because the previous patch which is adjusting interval time changes
+the timeout value. Besides using jiffies is more clearly for checking
+timeout instead of counting loop.
 
 Signed-off-by: Huijin Park <huijin.park@samsung.com>
 
 diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index 0c54858e89c0..61b4ffdc89ce 100644
+index 61b4ffdc89ce..f48216d65d2c 100644
 --- a/drivers/mmc/core/mmc_ops.c
 +++ b/drivers/mmc/core/mmc_ops.c
-@@ -177,6 +177,7 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+@@ -176,14 +176,16 @@ int mmc_go_idle(struct mmc_host *host)
+ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
  {
  	struct mmc_command cmd = {};
- 	int i, err = 0;
-+	int interval = 1, interval_max = 10;
+-	int i, err = 0;
++	int err = 0;
+ 	int interval = 1, interval_max = 10;
++	unsigned long timeout;
  
  	cmd.opcode = MMC_SEND_OP_COND;
  	cmd.arg = mmc_host_is_spi(host) ? 0 : ocr;
-@@ -198,7 +199,9 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+ 	cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R3 | MMC_CMD_BCR;
  
- 		err = -ETIMEDOUT;
+-	for (i = 100; i; i--) {
++	timeout = jiffies + msecs_to_jiffies(1000);
++	while (true) {
+ 		err = mmc_wait_for_cmd(host, &cmd, 0);
+ 		if (err)
+ 			break;
+@@ -197,7 +199,12 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+ 				break;
+ 		}
  
--		mmc_delay(10);
-+		mmc_delay(interval);
-+		if (interval < interval_max)
-+			interval = min(interval * 2, interval_max);
+-		err = -ETIMEDOUT;
++		if (time_after(jiffies, timeout)) {
++			pr_err("%s: Card stuck being busy! %s\n",
++			       mmc_hostname(host), __func__);
++			err = -ETIMEDOUT;
++			break;
++		}
  
- 		/*
- 		 * According to eMMC specification v5.1 section 6.4.3, we
+ 		mmc_delay(interval);
+ 		if (interval < interval_max)
 -- 
 2.17.1
 
