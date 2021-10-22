@@ -2,112 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C823F437630
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396AD437633
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhJVLx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 07:53:27 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52331 "EHLO mga17.intel.com"
+        id S232778AbhJVLyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 07:54:19 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56236 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232670AbhJVLxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 07:53:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="210078066"
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="210078066"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 04:50:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="663160687"
-Received: from mylly.fi.intel.com (HELO [10.237.72.159]) ([10.237.72.159])
-  by orsmga005.jf.intel.com with ESMTP; 22 Oct 2021 04:50:55 -0700
-Subject: Re: [PATCH 0/3] i2c: Enable async resume for i2c devices
-To:     Rajat Jain <rajatja@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dtor@google.com
-Cc:     rajatxjain@gmail.com, dbasehore@chromium.org
-References: <20211022022859.1888836-1-rajatja@google.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <f3bdb094-cd7d-dc44-e5f2-808395c42932@linux.intel.com>
-Date:   Fri, 22 Oct 2021 14:50:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S232670AbhJVLyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 07:54:16 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mdt5Z-0001Wj-Nx; Fri, 22 Oct 2021 19:51:57 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mdt5O-0007JW-RH; Fri, 22 Oct 2021 19:51:46 +0800
+Date:   Fri, 22 Oct 2021 19:51:46 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Nicolai Stange <nstange@suse.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Torsten Duwe <duwe@suse.de>
+Subject: Re: [PATCH 8/8] crypto: api - make the algorithm lookup priorize
+ non-larvals
+Message-ID: <20211022115146.GA27997@gondor.apana.org.au>
+References: <20211003181413.12465-1-nstange@suse.de>
+ <20211003181413.12465-9-nstange@suse.de>
+ <20211008115432.GC26495@gondor.apana.org.au>
+ <87lf30rmd8.fsf@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20211022022859.1888836-1-rajatja@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lf30rmd8.fsf@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 5:28 AM, Rajat Jain wrote:
-> PM Core allows buses and drivers to specify if they'd like their devices
-> to suspend/resume synchronously or asynchronously. When resuming:
-> 
-> 1) SYNCHRONOUS DEVICES:
->   - All synchronous devices (system wide!) are resumed in a single thread,
->     serially i.e. one after the other. So their resume latencies add up,
->     and also, this results in unnecessary and unnatural waiting order.
-> 
->     In my current system (total resume time ~895ms) and this is the trend
->     on almost all chromebooks in the past 3-4 years (we carry patch3 in
->     our tree already, without which it would be even more worse):
->     https://rajatxjain.github.io/public_shared/resume_before_patches.html
->     As you can see I2C devices do not even begin to resume until 450ms,
->     waiting unnaturally for another device i915 to finish resuming:
-> 
->     I2C touchscreen device (resume latency = 374 ms) - asynchronous
->     -> (waiting on) I2C adapter resume (synchronous)
->       -> (waiting on) Designware resume (synchronous)
->         -> (waiting on) intel_backlight resume (synchronous)
->           -> (waiting on) its PARENT i915 resume (asynchronous resume
->                                                         time = 376ms)
->     As you can see the two biggest resume routines are both run serially
->     after one another (even though they don't have any real dependency)
->     thus increasing the system critical resume path. If we can run them
->     concurrently, we can cut down the system resume time considerably.
->   
-> 2) ASYNCHRONOUS DEVICES:
-> - On the other hand, all asynchronous devices's resume routines are
->    scheduled so they can run in parallel with other asynchronous
->    routines. PM core still ensures for both async/sync devices that:
->     - All parent child relations are honored.
->     - Any device dependencies are honored. Device dependencies between
->       any 2 unrelated devices can be specified using device_link_add().
->     - Async resume devices are sychnronized at the end of each
->       suspend/resume phase, before moving onto next.
-> 
->     With these patches in place, the I2C devices can resume in parallel
->     with i915:
->     https://rajatxjain.github.io/public_shared/resume_after_patch.html
-> 
-> As far as I understand, the only reason we might not want a device to be
-> marked for asynchronous resume is if we suspect it cannot handle
-> concurrent resume with other devices, which does not look to be the
-> case.
->      
-> This patchset marks the designware, the I2c adapters, and the i2c
-> clients for asynchronous suspend/resume. In case it helps to gain any
-> confidence, the patch 3 (for i2c clients) has been included and shipping
-> on all our chromebooks for the past 3+ years, and has not shown any
-> issues. The designware and i2c adapters should be easier.
-> 
-> Derek Basehore (1):
->    i2c: enable async suspend/resume on i2c client devices
-> 
-> Rajat Jain (2):
->    i2c: designware: Enable async suspend / resume of designware devices
->    i2c: enable async suspend/resume for i2c adapters
-> 
-I did a quick test to these three patches on one system. It has i2c-hid 
-compatible touchpanel and touchpad on separate I2C buses. Nothing 
-exploded but I don't know does it qualify as comprehensive test for 
-Tested-by. Perhaps it's good idea to try do changes here expose any 
-regressions on some use cases and systems? At least it brings good 
-improvements to resume time according to your measurements.
+On Mon, Oct 11, 2021 at 10:34:11AM +0200, Nicolai Stange wrote:
+>
+> In order to keep a FIPS certification manageable in terms of scope,
+> we're looking for a way to disable everything under drivers/crypto iff
+> fips_enabled == 1. The most convenient way to achieve this downstream
+> would be to add dummy entries to testmgr.c like so:
 
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+How about testing based on the flag CRYPTO_ALG_KERN_DRIVER_ONLY?
+That flag is meant to correspond to pretty much exactly drivers/crypto.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
