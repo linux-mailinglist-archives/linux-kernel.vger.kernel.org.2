@@ -2,183 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA412436FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015CC436FC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhJVCHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:07:02 -0400
-Received: from mail-eopbgr70078.outbound.protection.outlook.com ([40.107.7.78]:19365
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230190AbhJVCHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:07:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GCDDkq+zdxjTQqnf69GZzZ/4Jd6/ozxh6Ea7yHD0w9zADnkywz0yQhvoScGVmgbG64aaF/aVlWGJfoBiT/ODoOTofMuwfs00SvtPW5MxkG7igtrWu4rlfvfVyu+WSViaERhm6wT3BTQQ4wTywZWFAFPZnc4tNjiFdOGkShfI81Mqzq4Vy+61OVPi2fWb4aNQRCNoFYZEayAIVmDW+lWsdjrf/HXZKUj4mmCSH5lhof9Rxog564OPzZ8WEichZIDqvCcqCkCTiMwGmwlD18UT+qI/npPhfjSnQ/NA6J4NczfeFZLdjN+9kT50TVIkr+qKNyVuw7TM9lYiJ52sb5j0vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Zcr7RGY1TiVgE3uY8s6UAm/m5UYH98NbHqDXHa0WhMc=;
- b=iMiBoYmwxD0Sm2qCGmUJs/iY79zBhKLzNzNv/LNgqWT6XCF/Bb0xhKkoolSOgJeHf5OvQaa23vULX6ayneTZecDnM49ryKKLWV0a6wls1yIdRKAFb1grgeHP55mmfiZGO8VI0jgPNZB8zMub4j11IkQO1wF3gUsjRBipeSZ8jMGMcSmufPQhL72UFrOW5/gqJFaHBZ6Uzx7bNUAQEdS8OZyU9c4D2Zy2OTgkIByh5tjVeXcJ+Hui+UX0GwyjyhPp0ZiT6WGzMLJPbv1yXjusPlR2RM00Rg9hzIqZ10CxfB20qaWXTeF3d0zPHJIkxgB1+X11Lz9HZf/Qks8pUpm1gw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zcr7RGY1TiVgE3uY8s6UAm/m5UYH98NbHqDXHa0WhMc=;
- b=Vao3Zjdx3/FajK1HT9z7UFZvn4D97X3vMIcUUeb2tGOIf0htZoXnzL044N0OqJG9vzED3GbOldsyqaSx7g+9ltRZfmE9XGz2dKe1rsz1uMA9pXsPJKD/hAyqNsyq3ghJv510/vrOb/hfQJaoa0Cda+Z9VmS0P/JYxeT/+ZMtmcA=
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
- by AS8PR04MB8772.eurprd04.prod.outlook.com (2603:10a6:20b:42f::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Fri, 22 Oct
- 2021 02:04:41 +0000
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc%4]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
- 02:04:41 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "tharvey@gateworks.com" <tharvey@gateworks.com>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and name
- properties
-Thread-Topic: [PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and
- name properties
-Thread-Index: AQHXv0hoWJtA986VIUqwmsPQQoGZiavZKzoAgAUnENA=
-Date:   Fri, 22 Oct 2021 02:04:41 +0000
-Message-ID: <AS8PR04MB8676F8987117D03875869B868C809@AS8PR04MB8676.eurprd04.prod.outlook.com>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
- <1634028078-2387-7-git-send-email-hongxing.zhu@nxp.com>
- <YW3IdoS+zHa4x70Z@robh.at.kernel.org>
-In-Reply-To: <YW3IdoS+zHa4x70Z@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a61d1355-28d6-4dc2-3fb4-08d995004fa2
-x-ms-traffictypediagnostic: AS8PR04MB8772:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-microsoft-antispam-prvs: <AS8PR04MB8772E8D1F5B9C0BC278481A78C809@AS8PR04MB8772.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /3khISUDhMPbqdmWY87tTLt1/NExYxzP441mfGCnzdM9pSOsaMOh0gLXrlN3NjMFCfh1T9Q1EsCMbmR4ppq/5k6Hr0aeJtdoifih90E/txh0VNIX1e1SOVgRkUQumtHO653xolfV4REyShBGiDHDNvJqwsnw6ijUa95C8qPCSkwnGTHe0MM/OF7m19JynjN77pBVq8c0rwZqYDvXUUluhtgLmyFerWC4sWriL57kTy/Kqfvfa5+E78FPbx32VM7P77/iEbquTlZfLjkr/sM81tjuuXU4d2/11EES/v+Oc7E25f9OfShZO3npvXx0hqR7G7GnnBbos2JlxK/YNkZb4YIs5dLk/flnGucnb/zIh/Pyyz9oUIRW1hea0FhNzevGtR5Dt/b2ddts2qJExGzn9t/75Ot7BtFO+C34hMSHxqWh1hztg7c8sEsJ5lV/PUZD5IkoQ/HNe1JZYX8OOwBDyGWgiu11z2m836dDjt4CCCsbCrZiMiAi/4U/xSR2ugd7lmwuWQn0eh3zgUhggEthAbBsJwq4tAZLgHwPYakiff3aXs8o7LgwgzH3K0W3nvRStUa2UoCzsHEwNazYxu8OueCpgjvTW/WLvjP9mzDZnnhuGl1yFWfP7+Pv/NJpp8GSwakWCFiY7v+uvlQ9DvwGlY4aDJcbrW+8rJDB4D2vl//k737AmXlPv+a4ey+Hx+SrtIRaTueXwTrDyPC+9JLB67mjoGJk7eoydWr3mgrEAtM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(55016002)(38070700005)(9686003)(186003)(54906003)(26005)(7696005)(508600001)(5660300002)(8676002)(53546011)(33656002)(2906002)(6506007)(122000001)(6916009)(52536014)(8936002)(86362001)(64756008)(66476007)(66946007)(38100700002)(66556008)(83380400001)(7416002)(4326008)(76116006)(66446008)(316002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GUKDjCqdhcMXuLzmH/JnqYg6pS3mSqMZVe5b8VyVAkf+5JNGXlFX8IyAxEPN?=
- =?us-ascii?Q?mEP068D78VmI4757J1WGOtRVSSiUMc5bHUQhG7zbjOBF4Ck61Vf4+zveWxyq?=
- =?us-ascii?Q?/6/HP0F0o+thQ6TXIam7UH2BrKATHALIZYuq5D4AoS5ydUUrPa2RFE7wyOtV?=
- =?us-ascii?Q?g0/YCocpPCoziMKNs0fgzbRbaTxpe69KvCsSojmeAczsGxP/6r0F1wNYYlz6?=
- =?us-ascii?Q?TP1ywy+jbHtHhK9qIm4IptgQ+NYpHEXP9QN+bQh4m7yXR/nLo95zo801Ydvn?=
- =?us-ascii?Q?1/sGAYQWT9LqyllmXIoiLA0JuuOHKjYomjfGZ3+MBvqoUahSS62NsgZwxrvV?=
- =?us-ascii?Q?leZl/lNG1WZ+fw8zk3Qz2kQdzxQ472VD7WoJxPvBknIKLHP4yxY0PnnmmFl4?=
- =?us-ascii?Q?Ud/20W/+kAwWOGXCeKfay76RxPnEKf38l8Pdc8JuQjMIFCp59sc11sUbWCk7?=
- =?us-ascii?Q?HOeYDXl9N5cR+cb57S5AM04/Tn2z607Cr055Uvgz/663zyNhGML81wvxEH9Q?=
- =?us-ascii?Q?NX7V7K6OWylrChs3TCEo2XCQBNLkOobxwvfhyOnx5jzAf2WEoeq97D68Kh5m?=
- =?us-ascii?Q?lHms2QuOrjw+7ia4gb2bh5SWQhhKXX/26kMP5cpBBGU3WX+yGpdtTqEBWRyW?=
- =?us-ascii?Q?BgNurIZV2UmZ9pzCgok3mbjNUB50aaaBjdC+FRN/DZiSQJ5NJiM+7szoaeVl?=
- =?us-ascii?Q?XKvfq42s+Y5t//KIqYQuDDw4k3l0NnWvm4avTPnHZI58FET5wsjLvdRwYZ2M?=
- =?us-ascii?Q?bDVtxko7TpUtOBHvOm9sbiRU+ihReCLrQGh+MJAPYtaJXNIc44+YrDYRgU67?=
- =?us-ascii?Q?HAZHt8yRzzPvhnlDdEQ4bYbq9Cteh2Xu94KOxniuxQjkBfIMAYaMbXW5Pdnw?=
- =?us-ascii?Q?Y7ZsfmuU3uaGnRdNL4AkBskoBTMP1E/DpCbTHcsX+ThG8xxNh9Pkk/vUDZqy?=
- =?us-ascii?Q?HPfDqrYbq+KeQsxHVGe123gW4H37BHqlHG6xwji5v2MdNsAA8YazIK034hV4?=
- =?us-ascii?Q?BLFIx7Ui6uD4TRwtIG82/KF9aSPr8Jn+mdrLyxRrPvSuP500rpdgWm8rwE4M?=
- =?us-ascii?Q?FyrTE0e5DTDlVIeb7uNe5eNTbCkxALqf0ZfKPSKBpGzdX5Xg2Hbt0xhAr7ro?=
- =?us-ascii?Q?l9zoZvEgFikUMV9Iuhq50Q6eyhEzcW0Cq6/j5U4gSwjEiW9Hj7pqWocktWdj?=
- =?us-ascii?Q?HQFshH4lP+aUHNcLsBrArV9UA5JLw/aWIxy4Bgry7u4JNEwZi/qCZv50CbQN?=
- =?us-ascii?Q?lOfPSW6UMan+PtwO8dE0aQuMF1DwhnwRYTv6blGtQnKrGIp8Rm+XlkT8Vtbt?=
- =?us-ascii?Q?u+gbk3BSzO8VBWR9s2tnzrvXrX7d2Xy4cSBkZ/eBNhcviXC156VqtaRDttIB?=
- =?us-ascii?Q?fsHh+iWxoGDRRSKiZ1A4tWsvp464/msB5If8Gi9kE2JDR8JcorLC5s/TvK5n?=
- =?us-ascii?Q?lMNt/WLcasw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232045AbhJVCHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:07:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231996AbhJVCHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 22:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF12611C3;
+        Fri, 22 Oct 2021 02:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634868301;
+        bh=y3WecNbFeV0ytwz02XEpT0LlCwC4tZAbDX5MoNIUjAE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tKk6EDCa+P8WJL6nY8DF4NgZIIZ2BFOuwxuUWYQHJS/cKwHlpSIRzcVkga5VNCEQr
+         Yloczu74TOFdoo5eh8MAaDTAMP2UbnOVXoPewaKltEjpd4St33Oee4aT4NuPGJThSM
+         P9EHFHgXVmandXjpzFZwBG+zFnz3VvpWblTiXUXdgRMsAlPp/emYSL8Pcwa5i48DO7
+         HAtVmSslLxVVQ7ra8pC7YbhlBCv89bRue5QzzYcyACAXX8GJGFHqhxwyu/sNpVO0/q
+         uhXP0qed2ZvqBDSJoPGSFeyzOYg28dR7+HLWNIHEkem6RB13xgsjto24ZPlotbkPiv
+         40iGoFnHz2S0g==
+Received: by mail-ua1-f48.google.com with SMTP id e2so4890217uax.7;
+        Thu, 21 Oct 2021 19:05:01 -0700 (PDT)
+X-Gm-Message-State: AOAM532woC95nDEPg1spo9+ZuX4PDZdcc9OLTBG7PmLNW25Evsqu45Ne
+        jvbnf04FFb0IINdEJW+HNLjvSQ71/SRuLtFXtxE=
+X-Google-Smtp-Source: ABdhPJw6tqt7XtPD1oQtadfQ/HJNK5k8ey+Bn1x034g6Dm99vv/qEKLKo29ld1xI9ZJxtc/hBMZcVuA2aFPSmtM6MZg=
+X-Received: by 2002:ab0:5a93:: with SMTP id w19mr11133228uae.58.1634868300474;
+ Thu, 21 Oct 2021 19:05:00 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a61d1355-28d6-4dc2-3fb4-08d995004fa2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2021 02:04:41.7411
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hongxing.zhu@nxp.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8772
+References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+In-Reply-To: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 22 Oct 2021 10:04:49 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTt85x66y+abT=czvqSNtbxKYneiO_ABffUg_AwOcon=Q@mail.gmail.com>
+Message-ID: <CAJF2gTTt85x66y+abT=czvqSNtbxKYneiO_ABffUg_AwOcon=Q@mail.gmail.com>
+Subject: Re: [PATCH] locking: Generic ticket lock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
+        Stafford Horne <shorne@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Tuesday, October 19, 2021 3:18 AM
-> To: Richard Zhu <hongxing.zhu@nxp.com>
-> Cc: l.stach@pengutronix.de; tharvey@gateworks.com; kishon@ti.com;
-> vkoul@kernel.org; galak@kernel.crashing.org; shawnguo@kernel.org;
-> linux-phy@lists.infradead.org; devicetree@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> kernel@pengutronix.de; dl-linux-imx <linux-imx@nxp.com>
-> Subject: Re: [PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and
-> name properties
->=20
-> On Tue, Oct 12, 2021 at 04:41:15PM +0800, Richard Zhu wrote:
-> > i.MX8MM PCIe has the PHY. Add a PHY phandle and name properties in the
-> > binding document.
-> >
-> > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> > ---
-> >  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> > b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> > index 2911e565b260..99d9863a69cd 100644
-> > --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> > +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> > @@ -128,6 +128,12 @@ properties:
-> >      enum: [1, 2, 3, 4]
-> >      default: 1
-> >
-> > +  phys:
-> > +    description: Phandle of the Generic PHY to the PCIe PHY.
->=20
-> maxItems: 1
->=20
-> And drop 'description'
-[Richard Zhu] Hi Rob:=20
-Do you mean to remove all the description, and just like this?
-  phys:
-    maxItems: 1
-Ok, got that, would be changed as this one in v4 series later.
-Thanks.
+C-SKY would follow this, thx.
 
+Reviewed-by: Guo Ren <guoren@kernel.org>
+
+On Thu, Oct 21, 2021 at 9:05 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>
+> There's currently a number of architectures that want/have graduated
+> from test-and-set locks and are looking at qspinlock.
+>
+> *HOWEVER* qspinlock is very complicated and requires a lot of an
+> architecture to actually work correctly. Specifically it requires
+> forward progress between a fair number of atomic primitives, including
+> an xchg16 operation, which I've seen a fair number of fundamentally
+> broken implementations of in the tree (specifically for qspinlock no
+> less).
+>
+> The benefit of qspinlock over ticket lock is also non-obvious, esp.
+> at low contention (the vast majority of cases in the kernel), and it
+> takes a fairly large number of CPUs (typically also NUMA) to make
+> qspinlock beat ticket locks.
+>
+> Esp. things like ARM64's WFE can move the balance a lot in favour of
+> simpler locks by reducing the cacheline pressure due to waiters (see
+> their smp_cond_load_acquire() implementation for details).
+>
+> Unless you've audited qspinlock for your architecture and found it
+> sound *and* can show actual benefit, simpler is better.
+>
+> Therefore provide ticket locks, which depend on a single atomic
+> operation (fetch_add) while still providing fairness.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  include/asm-generic/qspinlock.h         |   30 +++++++++
+>  include/asm-generic/ticket_lock_types.h |   11 +++
+>  include/asm-generic/ticket_lock.h       |   97 ++++++++++++++++++++++++++++++++
+>  3 files changed, 138 insertions(+)
+>
+> --- a/include/asm-generic/qspinlock.h
+> +++ b/include/asm-generic/qspinlock.h
+> @@ -2,6 +2,36 @@
+>  /*
+>   * Queued spinlock
+>   *
+> + * A 'generic' spinlock implementation that is based on MCS locks. An
+> + * architecture that's looking for a 'generic' spinlock, please first consider
+> + * ticket_lock.h and only come looking here when you've considered all the
+> + * constraints below and can show your hardware does actually perform better
+> + * with qspinlock.
+> + *
+> + *
+> + * It relies on smp_store_release() + atomic_*_acquire() to be RCsc (or no
+> + * weaker than RCtso if you're Power, also see smp_mb__after_unlock_lock()),
+> + *
+> + * It relies on a far greater (compared to ticket_lock.h) set of atomic
+> + * operations to behave well together, please audit them carefully to ensure
+> + * they all have forward progress. Many atomic operations may default to
+> + * cmpxchg() loops which will not have good forward progress properties on
+> + * LL/SC architectures.
+> + *
+> + * One notable example is atomic_fetch_or_acquire(), which x86 cannot (cheaply)
+> + * do. Carefully read the patches that introduced
+> + * queued_fetch_set_pending_acquire().
+> + *
+> + * It also heavily relies on mixed size atomic operations, in specific it
+> + * requires architectures to have xchg16; something which many LL/SC
+> + * architectures need to implement as a 32bit and+or in order to satisfy the
+> + * forward progress guarantees mentioned above.
+> + *
+> + * Further reading on mixed size atomics that might be relevant:
+> + *
+> + *   http://www.cl.cam.ac.uk/~pes20/popl17/mixed-size.pdf
+> + *
+> + *
+>   * (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
+>   * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
+>   *
+> --- /dev/null
+> +++ b/include/asm-generic/ticket_lock_types.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __ASM_GENERIC_TICKET_LOCK_TYPES_H
+> +#define __ASM_GENERIC_TICKET_LOCK_TYPES_H
+> +
+> +#include <linux/types.h>
+> +typedef atomic_t arch_spinlock_t;
+> +
+> +#define __ARCH_SPIN_LOCK_UNLOCKED      ATOMIC_INIT(0)
+> +
+> +#endif /* __ASM_GENERIC_TICKET_LOCK_TYPES_H */
+> --- /dev/null
+> +++ b/include/asm-generic/ticket_lock.h
+> @@ -0,0 +1,97 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +/*
+> + * 'Generic' ticket lock implementation.
+> + *
+> + * It relies on atomic_fetch_add() having well defined forward progress
+> + * guarantees under contention. If your architecture cannot provide this, stick
+> + * to a test-and-set lock.
+> + *
+> + * It also relies on atomic_fetch_add() being safe vs smp_store_release() on a
+> + * sub-word of the value. This is generally true for anything LL/SC although
+> + * you'd be hard pressed to find anything useful in architecture specifications
+> + * about this. If your architecture cannot do this you might be better off with
+> + * a test-and-set.
+> + *
+> + * It relies on smp_store_release() + atomic_*_acquire() to be RCsc (or no
+> + * weaker than RCtso if you're Power, also see smp_mb__after_unlock_lock()),
+> + *
+> + * The implementation uses smp_cond_load_acquire() to spin, so if the
+> + * architecture has WFE like instructions to sleep instead of poll for word
+> + * modifications be sure to implement that (see ARM64 for example).
+> + *
+> + */
+> +
+> +#ifndef __ASM_GENERIC_TICKET_LOCK_H
+> +#define __ASM_GENERIC_TICKET_LOCK_H
+> +
+> +#include <linux/atomic.h>
+> +#include <asm/ticket_lock_types.h>
+> +
+> +#define ONE_TICKET     (1 << 16)
+> +#define __ticket(val)  (u16)((val) >> 16)
+> +#define __owner(val)   (u16)((val) & 0xffff)
+> +
+> +static __always_inline bool __ticket_is_locked(u32 val)
+> +{
+> +       return __ticket(val) != __owner(val);
+> +}
+> +
+> +static __always_inline void ticket_lock(arch_spinlock_t *lock)
+> +{
+> +       u32 val = atomic_fetch_add_acquire(ONE_TICKET, lock);
+> +       u16 ticket = __ticket(val);
+> +
+> +       if (ticket == __owner(val))
+> +               return;
+> +
+> +       atomic_cond_read_acquire(lock, ticket == __owner(VAL));
+> +}
+> +
+> +static __always_inline bool ticket_trylock(arch_spinlock_t *lock)
+> +{
+> +       u32 old = atomic_read(lock);
+> +
+> +       if (__ticket_is_locked(old))
+> +               return false;
+> +
+> +       return atomic_try_cmpxchg_acquire(lock, &old, old + ONE_TICKET);
+> +}
+> +
+> +static __always_inline void ticket_unlock(arch_spinlock_t *lock)
+> +{
+> +       u16 *ptr = (u16 *)lock + __is_defined(__BIG_ENDIAN);
+> +       u32 val = atomic_read(lock);
+> +
+> +       smp_store_release(ptr, __owner(val) + 1);
+> +}
+> +
+> +static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
+> +{
+> +       u32 val = atomic_read(lock);
+> +
+> +       return (__ticket(val) - __owner(val)) > 1;
+> +}
+> +
+> +static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
+> +{
+> +       return __ticket_is_locked(atomic_read(lock));
+> +}
+> +
+> +static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
+> +{
+> +       return !__ticket_is_locked(lock.counter);
+> +}
+> +
+> +#undef __owner
+> +#undef __ticket
+> +#undef ONE_TICKET
+> +
+> +#define arch_spin_lock(l)              ticket_lock(l)
+> +#define arch_spin_trylock(l)           ticket_trylock(l)
+> +#define arch_spin_unlock(l)            ticket_unlock(l)
+> +#define arch_spin_is_locked(l)         ticket_is_locked(l)
+> +#define arch_spin_is_contended(l)      ticket_is_contended(l)
+> +#define arch_spin_value_unlocked(l)    ticket_value_unlocked(l)
+> +
+> +#endif /* __ASM_GENERIC_TICKET_LOCK_H */
+
+
+
+-- 
 Best Regards
-Richard Zhu
+ Guo Ren
 
->=20
-> > +
-> > +  phy-names:
-> > +    const: pcie-phy
-> > +
-> >    reset-gpio:
-> >      description: Should specify the GPIO for controlling the PCI bus
-> device
-> >        reset signal. It's not polarity aware and defaults to
-> > active-low reset
-> > --
-> > 2.25.1
-> >
-> >
+ML: https://lore.kernel.org/linux-csky/
