@@ -2,170 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05F2437246
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9D0437279
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhJVGyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231778AbhJVGyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:54:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 812DC60FC4;
-        Fri, 22 Oct 2021 06:51:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634885505;
-        bh=ctbWjbnAqf9RYjRQz0w4rC0AWhi9RSDgNjyWV+eiuT0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=FLMuUgpIPs8cz/xILbwBCbONgbrROSVDIpqnF1aPiu3Bn4EH1uy6Q/mbMd2Owl81B
-         0R/I1UfOJMI5rnkALSrj75YkuK7cCMpEB6KefkImqqL0bUTttPib8zqxjJX8aSufvy
-         /L9Ve0n2Ex/yeQY8k+tlCr5QdVJsMD1+YpoFAh0pqgFRKYnCxwt5AIpmldMmTxpuek
-         VafrSxO1v3NAWAD64roR9gRnj10C8m8KkQMfNC7Qj/FCV9BR0oOL+auoJ3ebTpqeko
-         8P50O8IHjpv54N1cvO0f8H8sxTG16J/nKRBfQ9VP2XS74YzX7nrZxXffU73XKYuN8+
-         rJ45ZYTPCKHgQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     SeongJae Park <sj38.park@gmail.com>, shuah@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH v2] selftests/kselftest/runner/run_one(): Allow running non-executable files
-Date:   Fri, 22 Oct 2021 06:51:42 +0000
-Message-Id: <20211022065142.36118-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211015085241.16262-1-sj@kernel.org>
+        id S232134AbhJVHDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhJVHDF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:03:05 -0400
+X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Oct 2021 00:00:48 PDT
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F973C061764;
+        Fri, 22 Oct 2021 00:00:48 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 9F2392800C91C;
+        Fri, 22 Oct 2021 08:53:01 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 925C3189034; Fri, 22 Oct 2021 08:53:01 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 08:53:01 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v2] PCI: Check PCIe upstream port for PME support
+Message-ID: <20211022065301.GA17656@wunner.de>
+References: <20210812153944.813949-1-kai.heng.feng@canonical.com>
+ <CAAd53p7sPoH-MD9VMh1u+mf_E7Mc2xVfkHbhN4PCdxQM+v274g@mail.gmail.com>
+ <6289c754-3580-4102-8ff2-666c3cad8da2@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6289c754-3580-4102-8ff2-666c3cad8da2@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping again, as more than two months have passed since the posting of this
-patch, but got no response yet.
-
-
-Thanks,
-SJ
-
-On Fri, 15 Oct 2021 08:52:41 +0000 SeongJae Park <sj@kernel.org> wrote:
-
-> Gentle ping.
+On Thu, Oct 21, 2021 at 09:13:29PM +0200, Rafael J. Wysocki wrote:
+> On 10/21/2021 8:56 AM, Kai-Heng Feng wrote:
+> > On Thu, Aug 12, 2021 at 11:39 PM Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+> > > Some platforms cannot detect ethernet hotplug once its upstream port is
+> > > runtime suspended because PME isn't granted by BIOS _OSC. The issue can
+> > > be workarounded by "pcie_ports=native".
+> > > 
+> > > The vendor confirmed that the PME in _OSC is disabled intentionally for
+> > > system stability issues on the other OS, so we should also honor the PME
+> > > setting here.
+> > > 
+> > > So before marking PME support status for the device, check
+> > > PCI_EXP_RTCTL_PMEIE bit to ensure PME interrupt is either enabled by
+> > > firmware or OS.
 > 
-> On Fri, 8 Oct 2021 09:58:28 +0000 SeongJae Park <sj@kernel.org> wrote:
-> 
-> > Hello Shuah,
-> > 
-> > 
-> > I was wondering if you had a chance to read this patch.
-> > 
-> > Without this patch, DAMON selftest fails as below:
-> > 
-> >     $ make -C tools/testing/selftests/damon/ run_tests
-> >     make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
-> >     TAP version 13
-> >     1..1
-> >     # selftests: damon: debugfs_attrs.sh
-> >     # Warning: file debugfs_attrs.sh is not executable, correct this.
-> >     not ok 1 selftests: damon: debugfs_attrs.sh
-> >     make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
-> > 
-> > If you disagree in the approach, please also take a look in this one:
-> > https://lore.kernel.org/linux-kselftest/20210810112050.22225-1-sj38.park@gmail.com/
-> > 
-> > 
-> > Thanks,
-> > SJ
-> > 
-> > 
-> > On Mon, 13 Sep 2021 11:24:42 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> > 
-> > > From: SeongJae Park <sjpark@amazon.de>
+> So you basically want to check whether or not the PME interrupts are
+> configured on the port?
+
+This platform doesn't grant PME handling to OSPM, but the platform
+doesn't handle PME itself either (recognizable by the fact that it
+didn't set the PME Interrupt Enable bit in the Root Control Register).
+
+The rationale of the patch is to recognize this situation and rely
+on PME polling instead.
+
+That is achieved by assuming no PME support for the device, despite
+the device claiming that PME is supported.
+
+(This information should probably be included in the commit message.)
+
+
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index aacf575c15cf..4344dc302edd 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -2294,6 +2294,32 @@ void pci_pme_wakeup_bus(struct pci_bus *bus)
+> > >                  pci_walk_bus(bus, pci_pme_wakeup, (void *)true);
+> > >   }
 > > > 
-> > > Hello Shuah,
+> > > +#ifdef CONFIG_PCIE_PME
+> > > +static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
+> > > +{
+> > > +       struct pci_dev *bridge = pci_upstream_bridge(dev);
+> > > +       u16 val;
+> > > +       int ret;
+> > > +
+> > > +       if (!bridge)
+> > > +               return true;
+> > > +
+> > > +       if (pci_pcie_type(bridge) != PCI_EXP_TYPE_ROOT_PORT &&
+> > > +           pci_pcie_type(bridge) != PCI_EXP_TYPE_RC_EC)
+> > > +               return true;
+> > > +
+> > > +       ret = pcie_capability_read_word(bridge, PCI_EXP_RTCTL, &val);
+> > > +       if (ret)
+> > > +               return false;
+> > > +
+> > > +       return val & PCI_EXP_RTCTL_PMEIE;
+> > > +}
+> > > +#else
+> > > +static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
+> > > +{
+> > > +       return true;
+> > > +}
+> > > +#endif
 > > > 
+> > >   /**
+> > >    * pci_pme_capable - check the capability of PCI device to generate PME#
+> > > @@ -3095,7 +3121,7 @@ void pci_pm_init(struct pci_dev *dev)
+> > >          }
 > > > 
-> > > Could you I ask your comment for this patch?
-> > > 
-> > > 
-> > > Thanks,
-> > > SJ
-> > > 
-> > > On Tue, 10 Aug 2021 16:45:34 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> > > 
-> > > > From: SeongJae Park <sjpark@amazon.de>
-> > > > 
-> > > > When running a test program, 'run_one()' checks if the program has the
-> > > > execution permission and fails if it doesn't.  However, it's easy to
-> > > > mistakenly missing the permission, as some common tools like 'diff'
-> > > > don't support the permission change well[1].  Compared to that, making
-> > > > mistakes in the test program's path would only rare, as those are
-> > > > explicitly listed in 'TEST_PROGS'.  Therefore, it might make more sense
-> > > > to resolve the situation on our own and run the program.
-> > > > 
-> > > > For the reason, this commit makes the test program runner function to
-> > > > still print the warning message but try parsing the interpreter of the
-> > > > program and explicitly run it with the interpreter, in the case.
-> > > > 
-> > > > [1] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
-> > > > 
-> > > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > > > ---
-> > > > Changes from v1
-> > > > (https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/)
-> > > > - Parse and use the interpreter instead of changing the file
-> > > > 
-> > > >  tools/testing/selftests/kselftest/runner.sh | 28 +++++++++++++--------
-> > > >  1 file changed, 18 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-> > > > index cc9c846585f0..a9ba782d8ca0 100644
-> > > > --- a/tools/testing/selftests/kselftest/runner.sh
-> > > > +++ b/tools/testing/selftests/kselftest/runner.sh
-> > > > @@ -33,9 +33,9 @@ tap_timeout()
-> > > >  {
-> > > >  	# Make sure tests will time out if utility is available.
-> > > >  	if [ -x /usr/bin/timeout ] ; then
-> > > > -		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
-> > > > +		/usr/bin/timeout --foreground "$kselftest_timeout" $1
-> > > >  	else
-> > > > -		"$1"
-> > > > +		$1
-> > > >  	fi
-> > > >  }
-> > > >  
-> > > > @@ -65,17 +65,25 @@ run_one()
-> > > >  
-> > > >  	TEST_HDR_MSG="selftests: $DIR: $BASENAME_TEST"
-> > > >  	echo "# $TEST_HDR_MSG"
-> > > > -	if [ ! -x "$TEST" ]; then
-> > > > -		echo -n "# Warning: file $TEST is "
-> > > > -		if [ ! -e "$TEST" ]; then
-> > > > -			echo "missing!"
-> > > > -		else
-> > > > -			echo "not executable, correct this."
-> > > > -		fi
-> > > > +	if [ ! -e "$TEST" ]; then
-> > > > +		echo "# Warning: file $TEST is missing!"
-> > > >  		echo "not ok $test_num $TEST_HDR_MSG"
-> > > >  	else
-> > > > +		cmd="./$BASENAME_TEST"
-> > > > +		if [ ! -x "$TEST" ]; then
-> > > > +			echo "# Warning: file $TEST is not executable"
-> > > > +
-> > > > +			if [ $(head -n 1 "$TEST" | cut -c -2) = "#!" ]
-> > > > +			then
-> > > > +				interpreter=$(head -n 1 "$TEST" | cut -c 3-)
-> > > > +				cmd="$interpreter ./$BASENAME_TEST"
-> > > > +			else
-> > > > +				echo "not ok $test_num $TEST_HDR_MSG"
-> > > > +				return
-> > > > +			fi
-> > > > +		fi
-> > > >  		cd `dirname $TEST` > /dev/null
-> > > > -		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
-> > > > +		((((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
-> > > >  			tap_prefix >&4) 3>&1) |
-> > > >  			(read xs; exit $xs)) 4>>"$logfile" &&
-> > > >  		echo "ok $test_num $TEST_HDR_MSG") ||
-> > > > -- 
-> > > > 2.17.1
-> > > > 
+> > >          pmc &= PCI_PM_CAP_PME_MASK;
+> > > -       if (pmc) {
+> > > +       if (pmc && pci_pcie_port_pme_enabled(dev)) {
+> > >                  pci_info(dev, "PME# supported from%s%s%s%s%s\n",
+> > >                           (pmc & PCI_PM_CAP_PME_D0) ? " D0" : "",
+> > >                           (pmc & PCI_PM_CAP_PME_D1) ? " D1" : "",
+> > > --
+> > > 2.32.0
