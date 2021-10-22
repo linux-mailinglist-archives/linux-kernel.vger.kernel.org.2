@@ -2,239 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6463F43786C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BEF437872
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhJVNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:54:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44322 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232990AbhJVNyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:54:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="209407076"
-X-IronPort-AV: E=Sophos;i="5.87,173,1631602800"; 
-   d="scan'208";a="209407076"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 06:51:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,173,1631602800"; 
-   d="scan'208";a="495685246"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 22 Oct 2021 06:51:50 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1296E785; Fri, 22 Oct 2021 16:51:50 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 3/3] serial: 8250_pci: Replace dev_*() by pci_*() macros
-Date:   Fri, 22 Oct 2021 16:51:47 +0300
-Message-Id: <20211022135147.70965-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211022135147.70965-1-andriy.shevchenko@linux.intel.com>
-References: <20211022135147.70965-1-andriy.shevchenko@linux.intel.com>
+        id S232990AbhJVN4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232113AbhJVN4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 09:56:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843D8C061764;
+        Fri, 22 Oct 2021 06:53:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so3792729lfu.5;
+        Fri, 22 Oct 2021 06:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JDGZ2oZ787PFJ80Bsn+Uu3NsiipCswVB48H6PNEzt3k=;
+        b=je+/Dl0CPED9Z4wP2VpCLh5+VjlqOPnLaNGQKxUr2NAi1x2JSBAK7p+VWAL1WMZi07
+         diBnx+iy0S16qRPIhyAZT/m3Jc2V9Dn5Gkzvnw74K+Uhy5aXKnlZjOxS19aO52+ttBEb
+         SA95UvYNGfm5SUj2WrxnHJ1W00Ti6stbNOq25Wp6EuNGxM64l4ObNkTJjcENFT516+Q9
+         PHAAZXSlc03ykwPsGo2uCDabpRc92GuLme0q2MPwFhpO+abOKTYu7+dIX+vT4XByOCU5
+         IkeOP3SRGgNnhh2NoXeb8bOgv4fNxn6HliOpFwE7oI6v8cf3qSyB/3irO5uwJ7fdfKFf
+         u7dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JDGZ2oZ787PFJ80Bsn+Uu3NsiipCswVB48H6PNEzt3k=;
+        b=e3MURTfrv/dmb3jRIklnHWiRL1mCjZOKSJQQ2TYM4N8oBa02zUJpg/hHS82Zw5McYe
+         AfS9v+L4jlTiA/n4nGSq8TtSPjLUAcBn26Nj+ziavIcpArzmCLUE211YENRO132DoGnG
+         Ykg8fN+oZSyd22PQNBWwm7n7qZbeT75VaDd3QsBBhVRgvRN7OnUfIiOjrgqyPan2UjQ6
+         J9G36tyP3zhKhKN89952oJnhwXcJ9K70BQTs9ff4OXw8NzUqHpJDq5FvQ+JDa5C5W2dk
+         IpPUCWcmhjhPtJJo+RHlOfu6QOJ8aaXRaauk1s2SBf9YBDOYaTrNlZrNkfOgpNXNARkb
+         t8NQ==
+X-Gm-Message-State: AOAM530idcipQGbMfiDHSaciYyFXLVsG0oTC0UXcFsn9hHQmy7ukPzlz
+        fUdsLqf1hPtV9jKyZjuenmo=
+X-Google-Smtp-Source: ABdhPJxZl/vLrfIjXHs837W6IU49nrh6C2H1pINONpc8dRCaydwMmj0VulGb9m4uLKw4eO7K5hdRqA==
+X-Received: by 2002:a05:6512:220d:: with SMTP id h13mr11225362lfu.623.1634910835891;
+        Fri, 22 Oct 2021 06:53:55 -0700 (PDT)
+Received: from mobilestation ([95.79.132.211])
+        by smtp.gmail.com with ESMTPSA id t20sm905465lji.44.2021.10.22.06.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 06:53:55 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:53:53 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, f.fainelli@gmail.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 0/3] genirq: Make irq_cpu_{on,off}line() an Octeon-special
+Message-ID: <20211022135353.ibze6z67xokbwkts@mobilestation>
+References: <20211021170414.3341522-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021170414.3341522-1-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCI subsystem provides convenient shortcut macros for message printing.
-Use those macros instead of dev_*().
+Hello Marc
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: dropped unrelated change (Joe)
- drivers/tty/serial/8250/8250_pci.c | 52 +++++++++++++-----------------
- 1 file changed, 22 insertions(+), 30 deletions(-)
+On Thu, Oct 21, 2021 at 06:04:11PM +0100, Marc Zyngier wrote:
+> Now that Florian has updated BMIPS to not rely on irq_cpu_offline [1],
+> it is pretty tempting to totally get of this misfeature. We can't
+> really do that because Octeon uses it like crazy, but the couple of
+> other users are easy to convert.
+> 
+> Once this is done, these helpers are hidden behind a config symbol
+> that depends on the Octeon platform being selected. When Octeon is
+> finally removed from the tree, we'll be able to drop this as well.
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 463b2c71da6f..aea12263a1ff 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -75,13 +75,12 @@ static int pci_default_setup(struct serial_private*,
- 
- static void moan_device(const char *str, struct pci_dev *dev)
- {
--	dev_err(&dev->dev,
--	       "%s: %s\n"
-+	pci_err(dev, "%s\n"
- 	       "Please send the output of lspci -vv, this\n"
- 	       "message (0x%04x,0x%04x,0x%04x,0x%04x), the\n"
- 	       "manufacturer and name of serial board or\n"
- 	       "modem board to <linux-serial@vger.kernel.org>.\n",
--	       pci_name(dev), str, dev->vendor, dev->device,
-+	       str, dev->vendor, dev->device,
- 	       dev->subsystem_vendor, dev->subsystem_device);
- }
- 
-@@ -238,7 +237,7 @@ static int pci_inteli960ni_init(struct pci_dev *dev)
- 	/* is firmware started? */
- 	pci_read_config_dword(dev, 0x44, &oldval);
- 	if (oldval == 0x00001000L) { /* RESET value */
--		dev_dbg(&dev->dev, "Local i960 firmware missing\n");
-+		pci_dbg(dev, "Local i960 firmware missing\n");
- 		return -ENODEV;
- 	}
- 	return 0;
-@@ -588,9 +587,8 @@ static int pci_timedia_probe(struct pci_dev *dev)
- 	 * (0,2,3,5,6: serial only -- 7,8,9: serial + parallel)
- 	 */
- 	if ((dev->subsystem_device & 0x00f0) >= 0x70) {
--		dev_info(&dev->dev,
--			"ignoring Timedia subdevice %04x for parport_serial\n",
--			dev->subsystem_device);
-+		pci_info(dev, "ignoring Timedia subdevice %04x for parport_serial\n",
-+			 dev->subsystem_device);
- 		return -ENODEV;
- 	}
- 
-@@ -827,8 +825,7 @@ static int pci_netmos_9900_numports(struct pci_dev *dev)
- 		if (sub_serports > 0)
- 			return sub_serports;
- 
--		dev_err(&dev->dev,
--			"NetMos/Mostech serial driver ignoring port on ambiguous config.\n");
-+		pci_err(dev, "NetMos/Mostech serial driver ignoring port on ambiguous config.\n");
- 		return 0;
- 	}
- 
-@@ -927,7 +924,7 @@ static int pci_ite887x_init(struct pci_dev *dev)
- 	}
- 
- 	if (i == ARRAY_SIZE(inta_addr)) {
--		dev_err(&dev->dev, "ite887x: could not find iobase\n");
-+		pci_err(dev, "could not find iobase\n");
- 		return -ENODEV;
- 	}
- 
-@@ -1022,9 +1019,7 @@ static int pci_endrun_init(struct pci_dev *dev)
- 	/* EndRun device */
- 	if (deviceID == 0x07000200) {
- 		number_uarts = ioread8(p + 4);
--		dev_dbg(&dev->dev,
--			"%d ports detected on EndRun PCI Express device\n",
--			number_uarts);
-+		pci_dbg(dev, "%d ports detected on EndRun PCI Express device\n", number_uarts);
- 	}
- 	pci_iounmap(dev, p);
- 	return number_uarts;
-@@ -1054,9 +1049,7 @@ static int pci_oxsemi_tornado_init(struct pci_dev *dev)
- 	/* Tornado device */
- 	if (deviceID == 0x07000200) {
- 		number_uarts = ioread8(p + 4);
--		dev_dbg(&dev->dev,
--			"%d ports detected on Oxford PCI Express device\n",
--			number_uarts);
-+		pci_dbg(dev, "%d ports detected on Oxford PCI Express device\n", number_uarts);
- 	}
- 	pci_iounmap(dev, p);
- 	return number_uarts;
-@@ -1116,15 +1109,15 @@ static struct quatech_feature quatech_cards[] = {
- 	{ 0, }
- };
- 
--static int pci_quatech_amcc(u16 devid)
-+static int pci_quatech_amcc(struct pci_dev *dev)
- {
- 	struct quatech_feature *qf = &quatech_cards[0];
- 	while (qf->devid) {
--		if (qf->devid == devid)
-+		if (qf->devid == dev->device)
- 			return qf->amcc;
- 		qf++;
- 	}
--	pr_err("quatech: unknown port type '0x%04X'.\n", devid);
-+	pci_err(dev, "unknown port type '0x%04X'.\n", dev->device);
- 	return 0;
- };
- 
-@@ -1287,7 +1280,7 @@ static int pci_quatech_rs422(struct uart_8250_port *port)
- 
- static int pci_quatech_init(struct pci_dev *dev)
- {
--	if (pci_quatech_amcc(dev->device)) {
-+	if (pci_quatech_amcc(dev)) {
- 		unsigned long base = pci_resource_start(dev, 0);
- 		if (base) {
- 			u32 tmp;
-@@ -1311,7 +1304,7 @@ static int pci_quatech_setup(struct serial_private *priv,
- 	port->port.uartclk = pci_quatech_clock(port);
- 	/* For now just warn about RS422 */
- 	if (pci_quatech_rs422(port))
--		pr_warn("quatech: software control of RS422 features not currently supported.\n");
-+		pci_warn(priv->dev, "software control of RS422 features not currently supported.\n");
- 	return pci_default_setup(priv, board, port, idx);
- }
- 
-@@ -1521,7 +1514,7 @@ static int pci_fintek_setup(struct serial_private *priv,
- 	/* Get the io address from configuration space */
- 	pci_read_config_word(pdev, config_base + 4, &iobase);
- 
--	dev_dbg(&pdev->dev, "%s: idx=%d iobase=0x%x", __func__, idx, iobase);
-+	pci_dbg(pdev, "idx=%d iobase=0x%x", idx, iobase);
- 
- 	port->port.iotype = UPIO_PORT;
- 	port->port.iobase = iobase;
-@@ -1685,7 +1678,7 @@ static int skip_tx_en_setup(struct serial_private *priv,
- 			struct uart_8250_port *port, int idx)
- {
- 	port->port.quirks |= UPQ_NO_TXEN_TEST;
--	dev_dbg(&priv->dev->dev,
-+	pci_dbg(priv->dev,
- 		"serial8250: skipping TxEn test for device [%04x:%04x] subsystem [%04x:%04x]\n",
- 		priv->dev->vendor, priv->dev->device,
- 		priv->dev->subsystem_vendor, priv->dev->subsystem_device);
-@@ -3994,12 +3987,12 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
- 		uart.port.irq = 0;
- 	} else {
- 		if (pci_match_id(pci_use_msi, dev)) {
--			dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
-+			pci_dbg(dev, "Using MSI(-X) interrupts\n");
- 			pci_set_master(dev);
- 			uart.port.flags &= ~UPF_SHARE_IRQ;
- 			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
- 		} else {
--			dev_dbg(&dev->dev, "Using legacy interrupts\n");
-+			pci_dbg(dev, "Using legacy interrupts\n");
- 			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
- 		}
- 		if (rc < 0) {
-@@ -4017,12 +4010,12 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
- 		if (quirk->setup(priv, board, &uart, i))
- 			break;
- 
--		dev_dbg(&dev->dev, "Setup PCI port: port %lx, irq %d, type %d\n",
-+		pci_dbg(dev, "Setup PCI port: port %lx, irq %d, type %d\n",
- 			uart.port.iobase, uart.port.irq, uart.port.iotype);
- 
- 		priv->line[i] = serial8250_register_8250_port(&uart);
- 		if (priv->line[i] < 0) {
--			dev_err(&dev->dev,
-+			pci_err(dev,
- 				"Couldn't register serial port %lx, irq %d, type %d, error %d\n",
- 				uart.port.iobase, uart.port.irq,
- 				uart.port.iotype, priv->line[i]);
-@@ -4118,8 +4111,7 @@ pciserial_init_one(struct pci_dev *dev, const struct pci_device_id *ent)
- 	}
- 
- 	if (ent->driver_data >= ARRAY_SIZE(pci_boards)) {
--		dev_err(&dev->dev, "invalid driver_data: %ld\n",
--			ent->driver_data);
-+		pci_err(dev, "invalid driver_data: %ld\n", ent->driver_data);
- 		return -EINVAL;
- 	}
- 
-@@ -4202,7 +4194,7 @@ static int pciserial_resume_one(struct device *dev)
- 		err = pci_enable_device(pdev);
- 		/* FIXME: We cannot simply error out here */
- 		if (err)
--			dev_err(dev, "Unable to re-enable ports, trying to continue.\n");
-+			pci_err(pdev, "Unable to re-enable ports, trying to continue.\n");
- 		pciserial_resume_ports(priv);
- 	}
- 	return 0;
--- 
-2.33.0
+The whole series has been tested in kernel 5.13 running on
+Baikal-T1 SoC (2x P5600 cores) with MIPS GIC used as the clock source
+and clock event device.
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
+-Sergey
+
+> 
+> 
+> Marc Zyngier (3):
+>   MIPS: loongson64: Drop call to irq_cpu_offline()
+>   irqchip/mips-gic: Get rid of the reliance on irq_cpu_online()
+>   genirq: Hide irq_cpu_{on,off}line() behind a deprecated option
+> 
+>  arch/mips/loongson64/smp.c     |  1 -
+>  drivers/irqchip/irq-mips-gic.c | 37 ++++++++++++++++++++++++----------
+>  include/linux/irq.h            |  5 ++++-
+>  kernel/irq/Kconfig             |  7 +++++++
+>  kernel/irq/chip.c              |  2 ++
+>  5 files changed, 39 insertions(+), 13 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
