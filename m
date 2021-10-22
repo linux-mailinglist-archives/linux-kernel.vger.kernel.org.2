@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F71437ACE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C449437AD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhJVQVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        id S233477AbhJVQVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233202AbhJVQVF (ORCPT
+        with ESMTP id S233186AbhJVQVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:21:05 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F0CC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:18:47 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id kk10so3338000pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5lhA+ZEQSNRiZSSK2ZDYsgihSLI5adnMAniviex3FN0=;
-        b=c4edO6NNLXV4ZKNcSOemrzitem7XRU72wAQJXGm3y3+yU9Or9+QRQeagZcJNjUSIS2
-         NcogirJT/gnW79ZCA+3FELTDBkCjlJN+5hsS8vQFRiZpipqB4jh6aYKuUirHgMhro0+a
-         dRW2WV+P7KbVrU5HoZbIlahTsuzCMphzwez9w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5lhA+ZEQSNRiZSSK2ZDYsgihSLI5adnMAniviex3FN0=;
-        b=B5h5b+UzD3BDrjCcdTdymDoPiZ53h8xhyiICpmiuzQ2tksGBMGTji+L2HOfoGheSBm
-         FmqCpB1cesfmwnevrQieol3km+ISFobiN36iD0H05gXVEU8b9kTzeodP96natjntKCo+
-         g5x1vS0gpCnr5fozvNKFypyfPPwI6KBR1Q2kstbsvwLzsZWfOjLP69KhIRbwBZTzYTKk
-         JTiEtFtOOobDTX7PQA/pP8NACFXU9UiHNtPYbRj+6sWwi2JxWhxoEZn+Ju7GhGUl5YS9
-         +vrxGM4t8YFYkpEUcHUv5arMXH+nLNk5duY7zllevPR6fuUlFBhzF8vNQD+3I/InMhYI
-         uWSA==
-X-Gm-Message-State: AOAM532rb7X5hyVnGLQd38qekbSCFU0VZ4wfjQywdC8CJH2a7iGMeh5Y
-        SWeIhl0qQg+8vxCl5tkJVGgeGg==
-X-Google-Smtp-Source: ABdhPJxXplxOVuLKy/nyMQfNB4RZ7adSCFGRQiz84fSzDlynTPzbyEUFIj20Xe1JMUfdk0THzlR6vg==
-X-Received: by 2002:a17:902:e544:b0:13e:e863:6cd2 with SMTP id n4-20020a170902e54400b0013ee8636cd2mr685420plf.41.1634919527588;
-        Fri, 22 Oct 2021 09:18:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v12sm10184384pjs.0.2021.10.22.09.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 09:18:47 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 09:18:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, akpm@linux-foundation.org,
-        mark.rutland@arm.com, zhengqi.arch@bytedance.com,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-arch@vger.kernel.org, ardb@kernel.org
-Subject: Re: [PATCH 3/7] ARM: implement ARCH_STACKWALK
-Message-ID: <202110220918.B6056D68C@keescook>
-References: <20211022150933.883959987@infradead.org>
- <20211022152104.285488044@infradead.org>
+        Fri, 22 Oct 2021 12:21:34 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C677C061766;
+        Fri, 22 Oct 2021 09:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=p70ruyvhHRYAaHqChjEXVRdKnpHTu1S59qwnsWDPDYk=; b=JrgeCX3TqVZF6XykSLym2IQiJd
+        C/rdEveKTW+1qKmBz2N0acE5hlijigcE+Wz1Z1rCmup4cKXde9qIY+/XKkkNGqJIC7/SEZdI17Mtv
+        7yNRJkQ3Wtxt78l20h0McH5tq+FvozIr0vaQ7hlJuHx3hoVLGe2mSfsUU2dpSb4CCMaTt4mqbAgNQ
+        MNPiYmAZrolbST4LElmbyKhq3uI9PjQM6tNh+1Dvm4BFyF3uDI4MuhuktZJyOcPJQ8nwnUBuvF7LG
+        NdFcY+LLHJcuT0PgoknJ28VVKSxYNmJErkZurbJVvQ0/mLTTPfBDwfNRWnheFgMDF382dU3HGUdiP
+        86S9oFIQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55242)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mdxGF-0001w8-45; Fri, 22 Oct 2021 17:19:15 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mdxGE-0001J7-D5; Fri, 22 Oct 2021 17:19:14 +0100
+Date:   Fri, 22 Oct 2021 17:19:14 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        linux-kernel@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [net-next PATCH v2] net: phylink: Add helpers for c22 registers
+ without MDIO
+Message-ID: <YXLkgr9wd3nkno9K@shell.armlinux.org.uk>
+References: <20211022160959.3350916-1-sean.anderson@seco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022152104.285488044@infradead.org>
+In-Reply-To: <20211022160959.3350916-1-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:09:36PM +0200, Peter Zijlstra wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
+On Fri, Oct 22, 2021 at 12:09:59PM -0400, Sean Anderson wrote:
+> Some devices expose memory-mapped c22-compliant PHYs. Because these
+> devices do not have an MDIO bus, we cannot use the existing helpers.
+> Refactor the existing helpers to allow supplying the values for c22
+> registers directly, instead of using MDIO to access them. Only get_state
+> and set_advertisement are converted, since they contain the most complex
+> logic. Because set_advertisement is never actually used outside
+> phylink_mii_c22_pcs_config, move the MDIO-writing part into that
+> function. Because some modes do not need the advertisement register set
+> at all, we use -EINVAL for this purpose.
 > 
-> Implement the flavor of CONFIG_STACKTRACE that relies mostly on generic
-> code, and only need a small arch_stack_walk() helper that performs the
-> actual frame unwinding.
+> Additionally, a new function phylink_pcs_enable_an is provided to
+> determine whether to enable autonegotiation.
 > 
-> Note that this removes the SMP check that used to live in
-> __save_stack_trace(), but this is no longer needed now that the generic
-> version of save_stack_trace_tsk() takes care not to walk the call stack
-> of tasks that are live on other CPUs.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Thanks!
+
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+> ---
+> This series was originally submitted as [1]. Although does not include
+> its intended user (macb), I have submitted it separately at the behest
+> of Russel. This series depends on [2].
+
+It has uses for the Marvell DSA code, specifically 88E6352 where the
+"serdes" PCS needs to be accessed using the PHY's fiber page, and
+thus needs to use unlocked accesses to the BMCR/BMSR/LPA registers.
 
 -- 
-Kees Cook
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
