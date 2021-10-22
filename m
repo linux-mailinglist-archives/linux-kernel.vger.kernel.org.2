@@ -2,61 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4153A437C8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7DC437C93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhJVSZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:25:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52470 "EHLO mail.kernel.org"
+        id S233670AbhJVScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:32:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:57552 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233615AbhJVSZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:25:30 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B765561163;
-        Fri, 22 Oct 2021 18:23:11 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 14:23:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/9] kprobes: Add a test case for stacktrace from
- kretprobe handler
-Message-ID: <20211022142310.62c3baa7@gandalf.local.home>
-In-Reply-To: <20211022121537.32821979@gandalf.local.home>
-References: <163477765570.264901.3851692300287671122.stgit@devnote2>
-        <163477767243.264901.10894979830215919916.stgit@devnote2>
-        <20211022121537.32821979@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231472AbhJVScb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 14:32:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5874E1063;
+        Fri, 22 Oct 2021 11:30:13 -0700 (PDT)
+Received: from [10.1.196.28] (eglon.cambridge.arm.com [10.1.196.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54EE53F73D;
+        Fri, 22 Oct 2021 11:30:11 -0700 (PDT)
+Subject: Re: [PATCH v2 05/23] x86/resctrl: Add domain online callback for
+ resctrl work
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com,
+        tan.shaopeng@fujitsu.com
+References: <20211001160302.31189-1-james.morse@arm.com>
+ <20211001160302.31189-6-james.morse@arm.com>
+ <8b414a4d-899b-b784-5b0a-21f1b41349eb@intel.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <4d4f5830-dcf9-1904-9cc2-4e50860ff571@arm.com>
+Date:   Fri, 22 Oct 2021 19:30:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8b414a4d-899b-b784-5b0a-21f1b41349eb@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 12:15:37 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Reinette,
 
-> I'm going to continue testing my code, as I have over 40 patches that need
-> to go into next. I'll just rebase removing this commit only (hopefully
-> nothing else breaks), and if everything then passes, I'll push to next.
+On 15/10/2021 23:19, Reinette Chatre wrote:
+> On 10/1/2021 9:02 AM, James Morse wrote:
+> 
+>> @@ -527,21 +492,15 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+>>           return;
+>>       }
+>>   -    if (r->mon_capable && domain_setup_mon_state(r, d)) {
+>> -        kfree(hw_dom->ctrl_val);
+>> -        kfree(hw_dom->mbps_val);
+>> -        kfree(hw_dom);
+>> -        return;
+>> -    }
+>> -
+>>       list_add_tail(&d->list, add_pos);
+>>   -    /*
+>> -     * If resctrl is mounted, add
+>> -     * per domain monitor data directories.
+>> -     */
+>> -    if (static_branch_unlikely(&rdt_mon_enable_key))
+>> -        mkdir_mondata_subdir_allrdtgrp(r, d);
+>> +    err = resctrl_online_domain(r, d);
+>> +    if (err) {
+>> +        list_del(&d->list);
+>> +        kfree(hw_dom->ctrl_val);
+>> +        kfree(hw_dom->mbps_val);
+>> +        kfree(d);
+> 
+> Even though this goes away in next patch I think this should rather be kfree(hw_dom).
 
-My tests are now back at the allmodconfig (did most the tests, but not all,
-to save time), hopefully it will pass this time ;-)
 
-What I plan on posting soon is located here (if you want to see them).
+Whoops, that's a rebase artefact from patch 2. Fixed.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-  branch: ftrace/core
 
--- Steve
+Thanks!
+
+James
