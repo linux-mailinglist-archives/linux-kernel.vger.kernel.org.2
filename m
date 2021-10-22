@@ -2,185 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2604F437AC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE45C437ACC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233601AbhJVQUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        id S233469AbhJVQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbhJVQUG (ORCPT
+        with ESMTP id S230340AbhJVQUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:20:06 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB40C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:17:48 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id t4so5654987oie.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:17:48 -0700 (PDT)
+        Fri, 22 Oct 2021 12:20:24 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69F6C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:18:06 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 75so3770415pga.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=forshee.me; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qEG5uMlDEShJNnOz6XnTDSYbhgHxWBxfy3mReuFm6cQ=;
-        b=mXPIXez/Gt5I16UP8ypVFahbxUTpy2dhUrkBfAMhRIvIqRDRFqoOuIlv6n3qlHqGVU
-         0jTzMUBcgoLG1xhF/dC/HXkzW5iJux0c9zWSKtKZxtAoCw8jdxr/cyzShYW5MTcjelFX
-         BAciEDlglgW5id63BU2Oak+Acj7MI8isU0QGx+SZN3deHn0bjdhGuafa2oWMV1smpONl
-         4aL8rmN7iNqcpdFo/J2DIzQnYIVcvTrSgTnJip9qwi7ISMdObCzjZ+zpFLZkI9RkX0V7
-         hfpKwRS5Kts/1Cde50S68s8Ejy6A+1/2Q4yRXgCmXT3IdhahZwr4/1Arv4113cql6i0O
-         Zdfw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fbx5wBk0ywdJgKMfRyu0AvGdUuwzChVvTVOiPVCzFpE=;
+        b=SFqDR1IxRpbMWyJCF0gBDfnvgPkF9PkV/diIN36EzDN+xGKcZYvy5Mcri8gtFny6Kg
+         UdAnQkgpDkJQB79jK9qNfSjqIacF6DlRbFvA597UlcGzpn9ui0yJGCQi8AjX//ozHEk8
+         G+Tye35UG9RH025Ii8mD/9/Q1OTP9XsT5Wszk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qEG5uMlDEShJNnOz6XnTDSYbhgHxWBxfy3mReuFm6cQ=;
-        b=TqGgvA2UVs0im0ZZLyIl6nE/+9Z+y5WBx0+qGAr6+Hrfu8bQX8qqsJh08pTjCoF+mI
-         iMfZbkddTXDcNkiCE76xr6G8br+OwaLi9tVI0FDE+E4psQh3VBoeLpyRRylT+AtdCzKK
-         +VkGmjtchTqUVaMmYdRFbHFl/0vmIrMMr3t9N7GQNJTsNCVZcWWyD58GpRjv4sRKS5CY
-         9aTZZRAcG+Pj1ESLieVtog+WXOrDp5jvD2t6HYhQoF/ce5gA+SanSXCif/5QnPDkYq9d
-         A22LREwCYsvuo/LR+bspmCoafMxPH76JyLTvBe//XB3kQrl2nVHnyTjSrPWZxTcjJpQu
-         UDAA==
-X-Gm-Message-State: AOAM5328cNDaZKtsF6/7qkAi3jHy1RIAo+Y5HijPuo2V675M6WfaMZVh
-        MPgajsIOMgDTKHFaUm7TYUiCQQ==
-X-Google-Smtp-Source: ABdhPJzNXWFBSCHxbdsHSZ4ijP9y2TtQiwlL4DJ/yhHj2fQflSHhrfPdmVGUEz8jUoJvfa40o4DneA==
-X-Received: by 2002:a05:6808:1246:: with SMTP id o6mr481376oiv.136.1634919468070;
-        Fri, 22 Oct 2021 09:17:48 -0700 (PDT)
-Received: from localhost ([2605:a601:ac0f:820:12a9:d5f6:9bd1:6937])
-        by smtp.gmail.com with ESMTPSA id f10sm1712446otl.57.2021.10.22.09.17.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fbx5wBk0ywdJgKMfRyu0AvGdUuwzChVvTVOiPVCzFpE=;
+        b=WBf99cR3FjwfQ7C3M5aGrDwa4qx8trPIIgDpmqx/bf/u1DMITH+7iRPHgLG1OkuUNT
+         2TNJE4s2hrzVmdVAXry/1uxfZATWqAGApaMqBgepZwljeQ6bKVZYY6YezR8ylIVv/Nmk
+         7DxzRHaoVeyuQYS244d9tpMbnnM4yLBFdgI9q/FWSf40qvM3Z7LnYZ0oxcoTrsCxlfnW
+         CqMIZMVnOp7GUf237VBZf6P14/b77vLi6vgS+xj5bxSsD1BhRmTAkwLGykbJiKS8Hsz1
+         PqFdTF/8iH+HumYkWGE6AAToiqZsRZESIeS1KFLwcF5q98yDYUm0zefXSnv+/ag8ZBRR
+         F9cQ==
+X-Gm-Message-State: AOAM532PfGhXxVQXwZoOKlLXs5wcfhScq4LnVPpoE7Z+kvteQBQosszg
+        7Wk1boafedsaj0+UKaKQQTLFnA==
+X-Google-Smtp-Source: ABdhPJza352nfmOUCElBpZmTynhIQ3OxvK5BXCjzYxUSdwJYLiDfQVgqqp70h63zMjHxrE+NqTJTIA==
+X-Received: by 2002:a63:b909:: with SMTP id z9mr536393pge.140.1634919486387;
+        Fri, 22 Oct 2021 09:18:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id mq3sm12364212pjb.33.2021.10.22.09.18.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 09:17:47 -0700 (PDT)
-From:   Seth Forshee <seth@forshee.me>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: sch: eliminate unnecessary RCU waits in mini_qdisc_pair_swap()
-Date:   Fri, 22 Oct 2021 11:17:46 -0500
-Message-Id: <20211022161747.81609-1-seth@forshee.me>
-X-Mailer: git-send-email 2.32.0
+        Fri, 22 Oct 2021 09:18:06 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 09:18:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, akpm@linux-foundation.org,
+        mark.rutland@arm.com, zhengqi.arch@bytedance.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-arch@vger.kernel.org, ardb@kernel.org
+Subject: Re: [PATCH 4/7] arch: Make ARCH_STACKWALK independent of STACKTRACE
+Message-ID: <202110220917.AACE11A@keescook>
+References: <20211022150933.883959987@infradead.org>
+ <20211022152104.356586621@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022152104.356586621@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seth Forshee <sforshee@digitalocean.com>
+On Fri, Oct 22, 2021 at 05:09:37PM +0200, Peter Zijlstra wrote:
+> Make arch_stack_walk() available for ARCH_STACKWALK architectures
+> without it being entangled in STACKTRACE.
 
-Currently rcu_barrier() is used to ensure that no readers of the
-inactive mini_Qdisc buffer remain before it is reused. This waits for
-any pending RCU callbacks to complete, when all that is actually
-required is to wait for one RCU grace period to elapse after the buffer
-was made inactive. This means that using rcu_barrier() may result in
-unnecessary waits.
+Which CONFIG/arch combos did you build test with this? It looks good,
+but I always expect things like this to end up landing in corner cases.
+:)
 
-To improve this, store the current RCU state when a buffer is made
-inactive and use poll_state_synchronize_rcu() to check whether a full
-grace period has elapsed before reusing it. If a full grace period has
-not elapsed, wait for a grace period to elapse, and in the non-RT case
-use synchronize_rcu_expedited() to hasten it.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Since this approach eliminates the RCU callback it is no longer
-necessary to synchronize_rcu() in the tp_head==NULL case. However, the
-RCU state should still be saved for the previously active buffer.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/arm/kernel/stacktrace.c   |    2 --
+>  arch/arm64/kernel/stacktrace.c |    4 ----
+>  arch/powerpc/kernel/Makefile   |    3 +--
+>  arch/riscv/kernel/stacktrace.c |    4 ----
+>  arch/s390/kernel/Makefile      |    3 +--
+>  arch/x86/kernel/Makefile       |    2 +-
+>  include/linux/stacktrace.h     |   33 +++++++++++++++++----------------
+>  7 files changed, 20 insertions(+), 31 deletions(-)
+> 
+> --- a/arch/arm/kernel/stacktrace.c
+> +++ b/arch/arm/kernel/stacktrace.c
+> @@ -87,7 +87,6 @@ void notrace walk_stackframe(struct stac
+>  }
+>  EXPORT_SYMBOL(walk_stackframe);
+>  
+> -#ifdef CONFIG_STACKTRACE
+>  noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>  				      void *cookie, struct task_struct *task,
+>  				      struct pt_regs *regs)
+> @@ -113,4 +112,3 @@ noinline notrace void arch_stack_walk(st
+>  			break;
+>  	}
+>  }
+> -#endif
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -216,8 +216,6 @@ void show_stack(struct task_struct *tsk,
+>  	barrier();
+>  }
+>  
+> -#ifdef CONFIG_STACKTRACE
+> -
+>  noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>  			      void *cookie, struct task_struct *task,
+>  			      struct pt_regs *regs)
+> @@ -236,5 +234,3 @@ noinline notrace void arch_stack_walk(st
+>  
+>  	walk_stackframe(task, &frame, consume_entry, cookie);
+>  }
+> -
+> -#endif
+> --- a/arch/powerpc/kernel/Makefile
+> +++ b/arch/powerpc/kernel/Makefile
+> @@ -47,7 +47,7 @@ obj-y				:= cputable.o syscalls.o \
+>  				   udbg.o misc.o io.o misc_$(BITS).o \
+>  				   of_platform.o prom_parse.o firmware.o \
+>  				   hw_breakpoint_constraints.o interrupt.o \
+> -				   kdebugfs.o
+> +				   kdebugfs.o stacktrace.o
+>  obj-y				+= ptrace/
+>  obj-$(CONFIG_PPC64)		+= setup_64.o \
+>  				   paca.o nvram_64.o note.o
+> @@ -116,7 +116,6 @@ obj-$(CONFIG_OPTPROBES)		+= optprobes.o
+>  obj-$(CONFIG_KPROBES_ON_FTRACE)	+= kprobes-ftrace.o
+>  obj-$(CONFIG_UPROBES)		+= uprobes.o
+>  obj-$(CONFIG_PPC_UDBG_16550)	+= legacy_serial.o udbg_16550.o
+> -obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+>  obj-$(CONFIG_SWIOTLB)		+= dma-swiotlb.o
+>  obj-$(CONFIG_ARCH_HAS_DMA_SET_MASK) += dma-mask.o
+>  
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -139,12 +139,8 @@ unsigned long __get_wchan(struct task_st
+>  	return pc;
+>  }
+>  
+> -#ifdef CONFIG_STACKTRACE
+> -
+>  noinline void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  		     struct task_struct *task, struct pt_regs *regs)
+>  {
+>  	walk_stackframe(task, regs, consume_entry, cookie);
+>  }
+> -
+> -#endif /* CONFIG_STACKTRACE */
+> --- a/arch/s390/kernel/Makefile
+> +++ b/arch/s390/kernel/Makefile
+> @@ -40,7 +40,7 @@ obj-y	+= sysinfo.o lgr.o os_info.o machi
+>  obj-y	+= runtime_instr.o cache.o fpu.o dumpstack.o guarded_storage.o sthyi.o
+>  obj-y	+= entry.o reipl.o relocate_kernel.o kdebugfs.o alternative.o
+>  obj-y	+= nospec-branch.o ipl_vmparm.o machine_kexec_reloc.o unwind_bc.o
+> -obj-y	+= smp.o text_amode31.o
+> +obj-y	+= smp.o text_amode31.o stacktrace.o
+>  
+>  extra-y				+= head64.o vmlinux.lds
+>  
+> @@ -55,7 +55,6 @@ compat-obj-$(CONFIG_AUDIT)	+= compat_aud
+>  obj-$(CONFIG_COMPAT)		+= compat_linux.o compat_signal.o
+>  obj-$(CONFIG_COMPAT)		+= $(compat-obj-y)
+>  obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> -obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+>  obj-$(CONFIG_KPROBES)		+= kprobes.o
+>  obj-$(CONFIG_KPROBES)		+= kprobes_insn_page.o
+>  obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -84,7 +84,7 @@ obj-$(CONFIG_IA32_EMULATION)	+= tls.o
+>  obj-y				+= step.o
+>  obj-$(CONFIG_INTEL_TXT)		+= tboot.o
+>  obj-$(CONFIG_ISA_DMA_API)	+= i8237.o
+> -obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+> +obj-y				+= stacktrace.o
+>  obj-y				+= cpu/
+>  obj-y				+= acpi/
+>  obj-y				+= reboot.o
+> --- a/include/linux/stacktrace.h
+> +++ b/include/linux/stacktrace.h
+> @@ -8,21 +8,6 @@
+>  struct task_struct;
+>  struct pt_regs;
+>  
+> -#ifdef CONFIG_STACKTRACE
+> -void stack_trace_print(const unsigned long *trace, unsigned int nr_entries,
+> -		       int spaces);
+> -int stack_trace_snprint(char *buf, size_t size, const unsigned long *entries,
+> -			unsigned int nr_entries, int spaces);
+> -unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+> -			      unsigned int skipnr);
+> -unsigned int stack_trace_save_tsk(struct task_struct *task,
+> -				  unsigned long *store, unsigned int size,
+> -				  unsigned int skipnr);
+> -unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+> -				   unsigned int size, unsigned int skipnr);
+> -unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
+> -
+> -/* Internal interfaces. Do not use in generic code */
+>  #ifdef CONFIG_ARCH_STACKWALK
+>  
+>  /**
+> @@ -75,8 +60,24 @@ int arch_stack_walk_reliable(stack_trace
+>  
+>  void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
+>  			  const struct pt_regs *regs);
+> +#endif /* CONFIG_ARCH_STACKWALK */
+>  
+> -#else /* CONFIG_ARCH_STACKWALK */
+> +#ifdef CONFIG_STACKTRACE
+> +void stack_trace_print(const unsigned long *trace, unsigned int nr_entries,
+> +		       int spaces);
+> +int stack_trace_snprint(char *buf, size_t size, const unsigned long *entries,
+> +			unsigned int nr_entries, int spaces);
+> +unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+> +			      unsigned int skipnr);
+> +unsigned int stack_trace_save_tsk(struct task_struct *task,
+> +				  unsigned long *store, unsigned int size,
+> +				  unsigned int skipnr);
+> +unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+> +				   unsigned int size, unsigned int skipnr);
+> +unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
+> +
+> +#ifndef CONFIG_ARCH_STACKWALK
+> +/* Internal interfaces. Do not use in generic code */
+>  struct stack_trace {
+>  	unsigned int nr_entries, max_entries;
+>  	unsigned long *entries;
+> 
+> 
 
-Before this change I would typically see mini_qdisc_pair_swap() take
-tens of milliseconds to complete. After this change it typcially
-finishes in less than 1 ms, and often it takes just a few microseconds.
-
-Thanks to Paul for walking me through the options for improving this.
-
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Seth Forshee <sforshee@digitalocean.com>
----
- include/net/sch_generic.h |  2 +-
- net/sched/sch_generic.c   | 38 +++++++++++++++++++-------------------
- 2 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index f8631ad3c868..c725464be814 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -1299,7 +1299,7 @@ struct mini_Qdisc {
- 	struct tcf_block *block;
- 	struct gnet_stats_basic_cpu __percpu *cpu_bstats;
- 	struct gnet_stats_queue	__percpu *cpu_qstats;
--	struct rcu_head rcu;
-+	unsigned long rcu_state;
- };
- 
- static inline void mini_qdisc_bstats_cpu_update(struct mini_Qdisc *miniq,
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 854d2b38db85..8540c12c9a62 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1407,10 +1407,6 @@ void psched_ratecfg_precompute(struct psched_ratecfg *r,
- }
- EXPORT_SYMBOL(psched_ratecfg_precompute);
- 
--static void mini_qdisc_rcu_func(struct rcu_head *head)
--{
--}
--
- void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
- 			  struct tcf_proto *tp_head)
- {
-@@ -1423,28 +1419,30 @@ void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
- 
- 	if (!tp_head) {
- 		RCU_INIT_POINTER(*miniqp->p_miniq, NULL);
--		/* Wait for flying RCU callback before it is freed. */
--		rcu_barrier();
--		return;
--	}
-+	} else {
-+		miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
-+			&miniqp->miniq1 : &miniqp->miniq2;
- 
--	miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
--		&miniqp->miniq1 : &miniqp->miniq2;
-+		/* We need to make sure that readers won't see the miniq
-+		 * we are about to modify. So ensure that at least one RCU
-+		 * grace period has elapsed since the miniq was made
-+		 * inactive.
-+		 */
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+			cond_synchronize_rcu(miniq->rcu_state);
-+		else if (!poll_state_synchronize_rcu(miniq->rcu_state))
-+			synchronize_rcu_expedited();
- 
--	/* We need to make sure that readers won't see the miniq
--	 * we are about to modify. So wait until previous call_rcu callback
--	 * is done.
--	 */
--	rcu_barrier();
--	miniq->filter_list = tp_head;
--	rcu_assign_pointer(*miniqp->p_miniq, miniq);
-+		miniq->filter_list = tp_head;
-+		rcu_assign_pointer(*miniqp->p_miniq, miniq);
-+	}
- 
- 	if (miniq_old)
--		/* This is counterpart of the rcu barriers above. We need to
-+		/* This is counterpart of the rcu sync above. We need to
- 		 * block potential new user of miniq_old until all readers
- 		 * are not seeing it.
- 		 */
--		call_rcu(&miniq_old->rcu, mini_qdisc_rcu_func);
-+		miniq_old->rcu_state = start_poll_synchronize_rcu();
- }
- EXPORT_SYMBOL(mini_qdisc_pair_swap);
- 
-@@ -1463,6 +1461,8 @@ void mini_qdisc_pair_init(struct mini_Qdisc_pair *miniqp, struct Qdisc *qdisc,
- 	miniqp->miniq1.cpu_qstats = qdisc->cpu_qstats;
- 	miniqp->miniq2.cpu_bstats = qdisc->cpu_bstats;
- 	miniqp->miniq2.cpu_qstats = qdisc->cpu_qstats;
-+	miniqp->miniq1.rcu_state = get_state_synchronize_rcu();
-+	miniqp->miniq2.rcu_state = miniqp->miniq1.rcu_state;
- 	miniqp->p_miniq = p_miniq;
- }
- EXPORT_SYMBOL(mini_qdisc_pair_init);
 -- 
-2.30.2
-
+Kees Cook
