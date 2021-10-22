@@ -2,42 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F1F436F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EFA436F1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhJVAzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:55:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40870 "EHLO mail.kernel.org"
+        id S232331AbhJVAzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:55:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhJVAzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:55:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05DFC6135F;
-        Fri, 22 Oct 2021 00:52:49 +0000 (UTC)
+        id S229512AbhJVAzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 20:55:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A694761371;
+        Fri, 22 Oct 2021 00:52:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634863970;
-        bh=3gGl+p/p7nrAAcGQCrBlZ0+ewM4YLxTwf4TWidy+7po=;
+        s=k20201202; t=1634863973;
+        bh=/ar7Vm5chhxFFJNLsH1Cx7MqXOvv+yBrbQnZyJ7ext0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BovWNkfe3c08rlup31Cfgo839P5smFnYqAl19DbqRa7QJrqenf5HrSUb7igGdLEvu
-         6JmqIUTp48zkUi8ETtaxGb6rR+30U0bBKQlKdNAZ6hyJpG5BtBnzoLmIUdUyQBNinr
-         al6E1G0wUl7SM3m5+rewC/eDk4fCD1RX7BdJ+wNXiuSmUKlUa6cLL3GhWd3zNDlEU7
-         4wjMZwguMzRyL8GSwXQOZ5ZoRHPBlBhe4PygNbtnKzWMy0fFlwhpnsqsZV6U/WoEZB
-         hpvyAWxLlGjBvZtntNVmaC1PWlUwq6KyU3sS0vaz0zDay/J0JGhSNP1qz1hvkZCDvs
-         QSQn3uq62hbQw==
+        b=ugDqVE5LEFVT7/8vRX1SWqwaJ3I5ScNrEq2t0RusE9J4xkcI7xqNz/rGm+OGE2ePP
+         BMnWjwEuVU4FEa0SG+NUNzWfQDzTmJqHjz/8YAsI7FqN/SosBxBTjrADbYZynbiFDV
+         3qzPSII+4Tsym20VDjCTxdRgpAQLLFWSrK4esjxbSBQb9Nkuk2Uxv9VEnZhM7AYR3L
+         293LQ6kJc7HQFNFMJiGUxryVARloozj1p+HHPn67DnNFu3iJMGX3sYMsbCCXpP9Mrc
+         XOYIZ8CdU1kydl6iEJVkbSgk/zUzQyWwMZOYRZQS7U58HsbSCGJuUtOmQzPZmf5yiL
+         RhIKq8Di4+ggg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>, robh+dt@kernel.org,
-        lgirdwood@gmail.com, kernel@pengutronix.de, lee.jones@linaro.org
-Cc:     Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
-        alistair23@gmail.com, linux-imx@nxp.com,
-        linux-hwmon@vger.kernel.org, rui.zhang@intel.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        s.hauer@pengutronix.de, amitk@kernel.org,
-        linux-kernel@vger.kernel.org, shawnguo@kernel.org
-Subject: Re: (subset) [PATCH v13 0/9] Add support for the silergy,sy7636a
-Date:   Fri, 22 Oct 2021 01:52:44 +0100
-Message-Id: <163486395940.2610269.12381320818786809684.b4-ty@kernel.org>
+To:     linux-arm-msm@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
+Cc:     Mark Brown <broonie@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>, linux-clk@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        konrad.dybcio@somainline.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: (subset) [PATCH v2 00/11] Initial Fairphone 4 support
+Date:   Fri, 22 Oct 2021 01:52:45 +0100
+Message-Id: <163486395942.2610269.17464570982100143546.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211015122551.38951-1-alistair@alistair23.me>
-References: <20211015122551.38951-1-alistair@alistair23.me>
+In-Reply-To: <20211007212444.328034-1-luca@z3ntu.xyz>
+References: <20211007212444.328034-1-luca@z3ntu.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,19 +55,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 22:25:42 +1000, Alistair Francis wrote:
-> v13:
->  - Address comments on thermal driver
->  - Rebase on master (without other patches)
-> v12:
->  - Rebase
-> v11:
->  - Address comments on hwmon
->  - Improve "mfd: simple-mfd-i2c: Add a Kconfig name" commit message
-> v10:
->  - Use dev_get_regmap() instead of dev_get_drvdata()
-> v9:
->  - Convert to use the simple-mfd-i2c instead
+On Thu, 7 Oct 2021 23:24:27 +0200, Luca Weiss wrote:
+> This series adds basic support for the recently announced Fairphone 4
+> smartphone, based on the Snapdragon 750G (sm7225).
+> 
+> This adds support for UART, power & volume buttons, screen based on
+> simple-framebuffer, regulators and USB.
+> 
+> v2 fixes some stylistic problems in dts and corrects the situation with
+> pm6350 regulator supplies.
 > 
 > [...]
 
@@ -67,8 +73,10 @@ Applied to
 
 Thanks!
 
-[4/9] regulator: sy7636a: Remove requirement on sy7636a mfd
-      commit: cb17820ef71ed70f70ee1eed2b378664746b6fde
+[02/11] dt-bindings: regulator: qcom,rpmh: Add compatible for PM6350
+        commit: 12271ba94530e7476eff09e98a7de10c31f5d474
+[03/11] regulator: qcom-rpmh: Add PM6350 regulators
+        commit: 0adafd62505ccb4787d4918fd0b4ca126b754453
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
