@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B186437082
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06D3437088
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhJVDjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232538AbhJVDjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:39:04 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21461C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:36:48 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id t184so2109529pgd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yAz64XIhlQBZNBnGUwXLP3Q0o9guBMfXqZK7N1tafFQ=;
-        b=MdcbHbmYFrZwidG4ivVcTal/AQkZHXTHmq39wjDnqhOXA9a4irdjRi+0YKTGjAzqRQ
-         u88ajkl4rXfp16U+pZmvH58tI+gHU2ufrB1hMcGCs4RRLOLyU3Pc7QQ+drpxlTGk5vht
-         Cyw/+2WAz05d/Pp6hyRdO9yL+7doqlPu3obwM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yAz64XIhlQBZNBnGUwXLP3Q0o9guBMfXqZK7N1tafFQ=;
-        b=494Ci3oVaNrDY9hlbQFVx6Y6Xw4sWcPJpzWBbq1iNrHaO3mZUMLR8e72RC69BP0DWv
-         NVT22WO2rEvM2P3JvcHZElYACkrxoBFszx5ipAInMOZRVF3gmeWYLaLqBMLIH8zEvLrk
-         okURgnvmGYwoGiNyEoAv7YPHQJ+dxp9GfuMKL1VjKylQdQ+4goyulAsajnAGUpmUNYSS
-         lFbIHMZlCh22XnUvfY9RPRZ9z4+EOEbx6ITBSEMDcfKEBxrZ5MnbcCB5T357NCC3tD9F
-         /2GyaPVuXoNzNhcDYySxC5ziUMyaLQK8KLEE0C7BYZn/UnRUY3o3X6/0SKqWs4LPSR+K
-         CoNw==
-X-Gm-Message-State: AOAM532vlEqmt4G9an+7IoVSCIxxC6lez7YlICgx/os3wqH/f6Z9A9Eg
-        BCGN6pUFKKu1Pz+SloJahx4CqUZl3j0X4g==
-X-Google-Smtp-Source: ABdhPJzvAhuE3DUhREpm/Zrpa8iVn6im6hk5pYhPMaTiWlKwZplgxU7VUGTCldspVS8nhSS8uV06aw==
-X-Received: by 2002:a05:6a00:1592:b0:44d:25e9:759e with SMTP id u18-20020a056a00159200b0044d25e9759emr9727922pfk.19.1634873807658;
-        Thu, 21 Oct 2021 20:36:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i13sm6681083pgf.77.2021.10.21.20.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 20:36:47 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 20:36:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Yang <davidcomponentone@gmail.com>
-Cc:     Yang Guang <yang.guang5@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>, arnd@arndb.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH lkdtm] lkdtm: Fix reference preceded by free
-Message-ID: <202110212035.1680E1E@keescook>
-References: <20211022012832.10644-1-yang.guang5@zte.com.cn>
- <CA+E=9osPJSZDqHkd0j-JwL7Tufs3vG3tRtG94+Rsdo4kVgBjAg@mail.gmail.com>
+        id S232856AbhJVDlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:41:10 -0400
+Received: from mga04.intel.com ([192.55.52.120]:62358 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232769AbhJVDlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 23:41:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="227982458"
+X-IronPort-AV: E=Sophos;i="5.87,171,1631602800"; 
+   d="scan'208";a="227982458"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 20:38:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,171,1631602800"; 
+   d="scan'208";a="495488579"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 21 Oct 2021 20:38:47 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mdlOI-000F3P-IH; Fri, 22 Oct 2021 03:38:46 +0000
+Date:   Fri, 22 Oct 2021 11:38:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/fpu] BUILD SUCCESS
+ 5509cc78080d29b23706dbf076d51691b69f3c79
+Message-ID: <61723223.F+PJwsKukUPihTP8%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+E=9osPJSZDqHkd0j-JwL7Tufs3vG3tRtG94+Rsdo4kVgBjAg@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 09:38:59AM +0800, David Yang wrote:
-> From: Yang Guang <yang.guang5@zte.com.cn>
-> >
-> > The coccinelle check report:
-> > ./drivers/misc/lkdtm/heap.c:115:7-11:
-> > ERROR: reference preceded by free on line 112
-> > Moving the "kfree(base)" after using place to fix it.
-> >
-> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
->
-> Please ignore this patch. Thanks.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fpu
+branch HEAD: 5509cc78080d29b23706dbf076d51691b69f3c79  x86/fpu/signal: Use fpstate for size and features
 
-Heh, no worries. It's nice to know that the Coccinelle checks are
-finding broken things, though! :) (It's just that LKDTM is intentionally
-broken.) ;)
+elapsed time: 722m
 
--- 
-Kees Cook
+configs tested: 49
+configs skipped: 68
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+i386                 randconfig-c001-20211021
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+nios2                               defconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+nds32                             allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+x86_64               randconfig-a013-20211021
+x86_64               randconfig-a015-20211021
+x86_64               randconfig-a011-20211021
+x86_64               randconfig-a014-20211021
+x86_64               randconfig-a016-20211021
+x86_64               randconfig-a012-20211021
+i386                 randconfig-a012-20211021
+i386                 randconfig-a013-20211021
+i386                 randconfig-a011-20211021
+i386                 randconfig-a016-20211021
+i386                 randconfig-a015-20211021
+i386                 randconfig-a014-20211021
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-a004-20211021
+i386                 randconfig-a003-20211021
+i386                 randconfig-a002-20211021
+i386                 randconfig-a005-20211021
+i386                 randconfig-a001-20211021
+i386                 randconfig-a006-20211021
+x86_64               randconfig-a002-20211021
+x86_64               randconfig-a004-20211021
+x86_64               randconfig-a005-20211021
+x86_64               randconfig-a001-20211021
+x86_64               randconfig-a006-20211021
+x86_64               randconfig-a003-20211021
+hexagon              randconfig-r045-20211021
+hexagon              randconfig-r041-20211021
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
