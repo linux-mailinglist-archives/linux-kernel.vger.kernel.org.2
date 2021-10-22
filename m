@@ -2,166 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5B2436EF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55C4436EF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhJVApA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
+        id S232261AbhJVAp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbhJVAo5 (ORCPT
+        with ESMTP id S231518AbhJVApV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:44:57 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED6EC061764;
-        Thu, 21 Oct 2021 17:42:40 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id s3so2636905ild.0;
-        Thu, 21 Oct 2021 17:42:40 -0700 (PDT)
+        Thu, 21 Oct 2021 20:45:21 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B4BC061764;
+        Thu, 21 Oct 2021 17:43:04 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so1818165pjb.3;
+        Thu, 21 Oct 2021 17:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fGQU2RHkVxGOExQu2OUZpB0obfWrd6o1lB0pM6j+C8w=;
-        b=jQUPWRD0bTWD6LHJZFV95EshZcCSrBjWuLFBs0ZdH9BRn6D2fMHXdmHHG+u044ISvs
-         bxcHB7VlcduRlttnzOm87YaaT3TQKAa+ahXhZU3Uyffv7SRX9pIw7xgDD2BcmlvqA4nx
-         4YKxUnrJ0hjgHL6732sLvroNhR6rPoIctAFFmUELExZ2S5ZrBuq6wp262dPXG29qxNH5
-         LODYIHwBSGv4XqiQpVZ7iD6YZRp8mQF7dbMpWHW8fKKAryyBrkMXuqqqVQibrjCseTZo
-         HwGzHw0qnitY8ORdNiTLIlovgZML1ObQLaguR5tbahVcPDautsGuYbKxJ33cSTQmH3I7
-         Dtfg==
+        bh=VNOVxOw71ipLbpQarDFMri/rDm9N6i/dmhNtzdX06Dw=;
+        b=F+1mUxMmQHDDbRn4KS1V2l7xUPUrSVtSwT71KCZ/tqGx2zuahKGekU1zLUsj4819H2
+         4ltmEvv1GI4krzoEvrxhGKbAaBbIkvZyKZYDbMtA5xiuQ0bT177yNLdO+hOsVs2X76Q9
+         Z5Wxj9Lim4MvNjp9135Ud6qPpqT3b6kpTh412v0/7Bybj9n1bQYfrazZ00No0s///jLe
+         ldS/E7e6by8AXiyU2xYVRUJKelkB08VhEtTV/yz5Zylwko5bwxkN0OGqdTZNk+M8qs1d
+         jzf7lL0LFhWwMCQHnAC2cHe5g3qkeGb5e+o7+G1yIsCW4lE5AP3R4WSyWH43c97Ju5N7
+         va1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fGQU2RHkVxGOExQu2OUZpB0obfWrd6o1lB0pM6j+C8w=;
-        b=0TR7PN9CG6vlJFSfxTgGIJ46SQStARD4rS/6bV2GkuDuSoP3fPMT0JPbG9/jNi3Vpz
-         GivBs7efyNYm/i/kN465AY9ZZttrthyk0EsNxci2Y9Vym62FytMiJufolVZyZYd63ueT
-         8fiMTvePT9Lk1aEN01LDsNCkfmfjEAAw+CaUPE2YXWTcB0l/jtKVnwcdl9FfQfJQQeR6
-         w8ZkX4hv4Yew0dRtiGiikz2ILV5wdH4ENKVGIjjNooR3KWTX4ADsgBROSc6UDhOFhtM1
-         WzToPEFXjKO3TXNIVv5KWxoZXoSVj+7U3ZR/8fvdihyDkulaZDrH8UwjEM5lWvTZoxbA
-         PQxw==
-X-Gm-Message-State: AOAM532NvRN4Zhb7yN8t+Z2RL3JlE78Pg/sCmGajTkFscqFrjsaS7id6
-        n3wGGoQVvp0gf5qoK6jF4AU=
-X-Google-Smtp-Source: ABdhPJzX1RUaSmHriEj5dNW0g88CUW3B5ivdmHZx1Z9XqGib/lVFxaKS2hwA/uyuKhaLoxOQBb+hRA==
-X-Received: by 2002:a92:cd82:: with SMTP id r2mr6097525ilb.198.1634863360003;
-        Thu, 21 Oct 2021 17:42:40 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id l10sm3282867ioq.8.2021.10.21.17.42.38
+        bh=VNOVxOw71ipLbpQarDFMri/rDm9N6i/dmhNtzdX06Dw=;
+        b=mJO+Sc3LofN2wbAym6mXp9KpgVduAehoQsPaTlxCMFm0O+BQZzjz+LBzoHFybRpN93
+         +b1k5hk1rVKZIuu22GsY3kLIWTHSUV57tHO7WgY2QS4nzf/gjdRLaezasLYYRXBN4sW0
+         asVsy7EUMhm6oDw5lUM+lJurWfB++7fSoffggdyZZAp3ZGnZlPCjqDvYwustYCgdszyz
+         7tdv8GICQ3+Ainz/dSoksBc4h0DWUqA2mTXOZJ10ovfD0zNVwFhS6tTqchmJ3BKYoGOU
+         h0k+ZD1SombVdUIHN0NprS7zhfatJWe3Obkw14vLpHoj805xQ5i4I3GNMDOdBR2YGyTt
+         PT6A==
+X-Gm-Message-State: AOAM531rO1OhmYUJDoV7IdkC6nBvQOmruCxhnpjxisSMwNsinwOpOmbF
+        vzgQZhfewBds5gdHN2PekAhs8bmQ6Ow=
+X-Google-Smtp-Source: ABdhPJzUtcFDw7YZrz7mJNpg1hCLCG+fkCMkbpDGV+aTWttOMbTPCPn+wNNrsP62y8Zpn/Grtfn0Rw==
+X-Received: by 2002:a17:90a:5b0c:: with SMTP id o12mr10568417pji.11.1634863384224;
+        Thu, 21 Oct 2021 17:43:04 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p13sm10488692pjb.44.2021.10.21.17.43.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 17:42:39 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 4CBD827C0054;
-        Thu, 21 Oct 2021 20:42:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 21 Oct 2021 20:42:38 -0400
-X-ME-Sender: <xms:_QhyYVoSHpKUg7aKaCauZufLn1HLmtUoR1B9C2zuu1jcPYWP7Y6c6w>
-    <xme:_QhyYXrIOHqGdNVKCBp0_z__eGBTpriaD1Tcp8bbS_PhPwNij9ooJCPpqP_vY36Fz
-    BeO4vFk8UBSjHl8hA>
-X-ME-Received: <xmr:_QhyYSNQI6LZ6z2Dw1FrXVuACTKUNLvRMzS5FMYbBKO--oCCKfYUjRHM5gE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvjedgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
-    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
-    hrnhepieeuveejleehudetfeevfeelgfejteefhedvkedukefggedugefhudfhteevjedu
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
-    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:_QhyYQ79L0LS4oCB8ziZ1YXohLTQSkNE4JbJUCBlZYZmS9gQkHjNTw>
-    <xmx:_QhyYU4X9fSZIp5JB080fSdDWYq8w-G4zJZycqe4kve4O0gLWyKwNg>
-    <xmx:_QhyYYicGSDm2SO4992RHpfo32qdISCKIXeqSHH2s4wi-2lAQJc-qA>
-    <xmx:_QhyYVF9ljWZhkkIqLq0zpPIBN4CTv8Kiab7zOHY9QSQBYbd-VYCOs00lj4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 Oct 2021 20:42:36 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v2] workqueue: doc: Call out the non-reentrance conditions
-Date:   Fri, 22 Oct 2021 08:42:08 +0800
-Message-Id: <20211022004208.350992-1-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 21 Oct 2021 17:43:03 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi:aha1542: remove unneeded semicolon
+Date:   Fri, 22 Oct 2021 00:42:45 +0000
+Message-Id: <20211022004245.1061879-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current doc of workqueue API suggests that work items are
-non-reentrant: any work item is guaranteed to be executed by at most one
-worker system-wide at any given time. However this is not true, the
-following case can cause a work item W executed by two workers at
-the same time:
+From: ran jianping <ran.jianping@zte.com.cn>
 
-        queue_work_on(0, WQ1, W);
-        // after a worker picks up W and clear the pending bit
-        queue_work_on(1, WQ2, W);
-        // workers on CPU0 and CPU1 will execute W in the same time.
+ Eliminate the following coccinelle check warning:
+ drivers/scsi/aha1542.c:553:2-3
+ drivers/scsi/aha1542.c:582:2-3
+ drivers/scsi/aha1542.c:605:2-3
+ drivers/scsi/aha1542.c:306:2-3
+ drivers/scsi/aha1542.c:348:3-4
+ drivers/scsi/aha1542.c:412:2-3
+ drivers/scsi/aha1542.c:640:2-3
+ drivers/scsi/aha1542.c:658:2-3
+ drivers/scsi/aha1542.c:677:2-3
+ drivers/scsi/aha1542.c:538:2-3
 
-, which means the non-reentrance of a work item is conditional, and
-Lai Jiangshan provided a nice summary[1] of the conditions, therefore
-use it to describe a work item instance and improve the doc.
-
-[1]: https://lore.kernel.org/lkml/CAJhGHyDudet_xyNk=8xnuO2==o-u06s0E0GZVP4Q67nmQ84Ceg@mail.gmail.com/
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
 ---
-v1 -> v2:
+ drivers/scsi/aha1542.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-*	Apply the suggestion from Matthew and Tejun
-
-[v1]: https://lore.kernel.org/lkml/20211018013117.256284-1-boqun.feng@gmail.com/
-
- Documentation/core-api/workqueue.rst | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
-index 541d31de8926..3b22ed137662 100644
---- a/Documentation/core-api/workqueue.rst
-+++ b/Documentation/core-api/workqueue.rst
-@@ -216,10 +216,6 @@ resources, scheduled and executed.
+diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
+index f0e8ae9f5e40..a5a0a3e5c6ea 100644
+--- a/drivers/scsi/aha1542.c
++++ b/drivers/scsi/aha1542.c
+@@ -303,7 +303,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
+ 		if (flag & SCRD)
+ 			printk("SCRD ");
+ 		printk("status %02x\n", inb(STATUS(sh->io_port)));
+-	};
++	}
+ #endif
+ 	number_serviced = 0;
  
-   This flag is meaningless for unbound wq.
+@@ -345,7 +345,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
+ 			if (!number_serviced)
+ 				shost_printk(KERN_WARNING, sh, "interrupt received, but no mail.\n");
+ 			return IRQ_HANDLED;
+-		};
++		}
  
--Note that the flag ``WQ_NON_REENTRANT`` no longer exists as all
--workqueues are now non-reentrant - any work item is guaranteed to be
--executed by at most one worker system-wide at any given time.
--
+ 		mbo = (scsi2int(mb[mbi].ccbptr) - (unsigned long)aha1542->ccb_handle) / sizeof(struct ccb);
+ 		mbistatus = mb[mbi].status;
+@@ -409,7 +409,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
+ 						 */
+ 		scsi_done(tmp_cmd);
+ 		number_serviced++;
+-	};
++	}
+ }
  
- ``max_active``
- --------------
-@@ -391,6 +387,23 @@ the stack trace of the offending worker thread. ::
- The work item's function should be trivially visible in the stack
- trace.
+ static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
+@@ -535,7 +535,7 @@ static void setup_mailboxes(struct Scsi_Host *sh)
+ 		any2scsi(aha1542->mb[i].ccbptr,
+ 			 aha1542->ccb_handle + i * sizeof(struct ccb));
+ 		aha1542->mb[AHA1542_MAILBOXES + i].status = 0;
+-	};
++	}
+ 	aha1542_intr_reset(sh->io_port);	/* reset interrupts, so they don't block */
+ 	any2scsi(mb_cmd + 2, aha1542->mb_handle);
+ 	if (aha1542_out(sh->io_port, mb_cmd, 5))
+@@ -550,7 +550,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
+ 	i = inb(STATUS(sh->io_port));
+ 	if (i & DF) {
+ 		i = inb(DATA(sh->io_port));
+-	};
++	}
+ 	aha1542_outb(sh->io_port, CMD_RETCONF);
+ 	aha1542_in(sh->io_port, inquiry_result, 3, 0);
+ 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
+@@ -579,7 +579,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
+ 	default:
+ 		shost_printk(KERN_ERR, sh, "Unable to determine DMA channel.\n");
+ 		return -1;
+-	};
++	}
+ 	switch (inquiry_result[1]) {
+ 	case 0x40:
+ 		sh->irq = 15;
+@@ -602,7 +602,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
+ 	default:
+ 		shost_printk(KERN_ERR, sh, "Unable to determine IRQ level.\n");
+ 		return -1;
+-	};
++	}
+ 	sh->this_id = inquiry_result[2] & 7;
+ 	return 0;
+ }
+@@ -637,7 +637,7 @@ static int aha1542_mbenable(struct Scsi_Host *sh)
  
-+Non-reentrance Conditions
-+=========================
-+
-+Workqueue guarantees that a work item cannot be re-entrant if the following
-+conditions hold after a work item gets queued:
-+
-+        1. The work function hasn't been changed.
-+        2. No one queues the work item to another workqueue.
-+        3. The work item hasn't been reinitiated.
-+
-+In other words, if the above conditions hold, the work item is guaranteed to be
-+executed by at most one worker system-wide at any given time.
-+
-+Note that requeuing the work item (to the same queue) in the self function
-+doesn't break these conditions, so it's safe to do. Otherwise, caution is
-+required when breaking the conditions inside a work function.
-+
+ 		if (aha1542_out(sh->io_port, mbenable_cmd, 3))
+ 			goto fail;
+-	};
++	}
+ 	while (0) {
+ fail:
+ 		shost_printk(KERN_ERR, sh, "Mailbox init failed\n");
+@@ -655,7 +655,7 @@ static int aha1542_query(struct Scsi_Host *sh)
+ 	i = inb(STATUS(sh->io_port));
+ 	if (i & DF) {
+ 		i = inb(DATA(sh->io_port));
+-	};
++	}
+ 	aha1542_outb(sh->io_port, CMD_INQUIRY);
+ 	aha1542_in(sh->io_port, inquiry_result, 4, 0);
+ 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
+@@ -674,7 +674,7 @@ static int aha1542_query(struct Scsi_Host *sh)
+ 	if (inquiry_result[0] == 0x43) {
+ 		shost_printk(KERN_INFO, sh, "Emulation mode not supported for AHA-1740 hardware, use aha1740 driver instead.\n");
+ 		return 1;
+-	};
++	}
  
- Kernel Inline Documentations Reference
- ======================================
+ 	/*
+ 	 * Always call this - boards that do not support extended bios translation
 -- 
-2.33.0
+2.25.1
 
