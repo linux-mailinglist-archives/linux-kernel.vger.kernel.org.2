@@ -2,154 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5503D437486
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E23437495
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhJVJQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhJVJQJ (ORCPT
+        id S232587AbhJVJSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:18:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47792 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232580AbhJVJSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:16:09 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069C7C061766;
-        Fri, 22 Oct 2021 02:13:52 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id l39so1147147vkd.7;
-        Fri, 22 Oct 2021 02:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HKZNZt/ePpP4JI+7GOVcUMH5xA+e+M0dG/pe/CUJvS4=;
-        b=KC3eACJBtWgooU/lqi35STBN9j3/Mpq1z/NQeztv8hKgcweb5PPttx//R0/mjb/yTU
-         0AXBD4mY/oCkSZx8kwihHJw2R/iSEOkxeK5et0KoiGS6Ukq9T3kcJ8zSNxh96uVKUqXZ
-         2BhFy9fF1CdZAHQST9k09CZj4ypZBBpRKHRTb+5T+M2+6OZI6OuBjAEnwTB7uGBAGQSg
-         rLHgqryWCQ3MZ8U4ltUIvvk2LGbEAFwW5N6t2YvcNaqqs22o2/zZ4Gqfpmcq7ye9Qqd3
-         +299AkQkuufSOhN01Bn8ux9UVw0iVwtrqTXI0wgDSGnue7ocXXS498OdouczIQcwG9fq
-         fEpQ==
+        Fri, 22 Oct 2021 05:18:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634894158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UQGDJah/KreCof6wR/rgfBuc6vkWJYHgPEBv9eX/JPc=;
+        b=d1kwAftVlLQUzoNasjzT4JCiDV7LTR2SpM2RPIxBpSu+jMXYEjVUR6n1kkRwL3qiDOYFMW
+        RC0iRW5vyfDYcjlIkr0y3lfwF242ulfpo5ASvqDatwhOIyFtFUO41loeAVTooYAU/InMNW
+        bGi47YA8iS+i27R3UhJAYwzS/CANcwo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-gyuGcRQpMJigV3jEsxBj2g-1; Fri, 22 Oct 2021 05:15:56 -0400
+X-MC-Unique: gyuGcRQpMJigV3jEsxBj2g-1
+Received: by mail-ed1-f71.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso3088054edj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:15:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HKZNZt/ePpP4JI+7GOVcUMH5xA+e+M0dG/pe/CUJvS4=;
-        b=8ENnwgdSzZPD8sZJPh0nT4MmgbiossFsfpQUiM2rRKqeQM2LhgUc8JrByRHcYg+kwS
-         L2MS2NgR5qwe1uCd/5YZve/M3HFISv9OB1v+t5Dde5am0olAx1UH2L1g1oKSf4vUAWoM
-         2BrfDbZD8KIfJmqXoKqzghkPvAqnhVIG/HarIXJcOr4rkqMR1d16VY3sTR511int0jNk
-         N5xE5FSZR3sU9BM7B+f76cTOm714EjOkd/1Zw6RSAAfAsTLqIPgDrNtm10fx9zZOueUR
-         lqGDfX+Ol4Qjse1+aCVkoY/I6hBgT1h/82wT+K2DcY2Jg3uHjiYbTmD1/9D0QqF5eisx
-         GnhQ==
-X-Gm-Message-State: AOAM531yiBODm7TRhmodKftMBNby4CcmttVo4fMuc7tVr/vHI7cL5YTz
-        javLow758+dhtQmN5sly+4eihY9ue/9yRokPZYg=
-X-Google-Smtp-Source: ABdhPJxIhtm4+luijSs2jaQ3y1B264lhviqg5RM6b964abV81JCkFejGfDh6lQH8xnRLntO8lcae1XLqV4UPtcsExYs=
-X-Received: by 2002:a05:6122:d06:: with SMTP id az6mr12200459vkb.17.1634894030971;
- Fri, 22 Oct 2021 02:13:50 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=UQGDJah/KreCof6wR/rgfBuc6vkWJYHgPEBv9eX/JPc=;
+        b=Dc/v3FFUumgp3de6imB8qW46H2hR1Eb1Q3TACk1KzH0a9qpfyzKR6qkSZ2ImJ6tlMq
+         vPprUxCmIZD7/ETrtPeRAEkrjcJZeKFu3hroY1kgFHtBS3Ob80Z6uj1SDmwDiLMhzW2c
+         79+1V897BZg3znHUiwuyZ/zIwahMvCzynQrmdOkyBUAdIlNr0KYj1m8DTUaV1YemX1Jm
+         YBPQo0uAUn+wYXgMgbnDGiueQwnhYNooEcKxjyp+ijty2Wm5ijEaMsU92vrOKeOGLKSq
+         nI4viciwEZRBXXiDfgjevjjIr7hvhlZSx6ISlk44CR6bJoEmC3Ybcacwy6ONXbNmNlwi
+         jJiQ==
+X-Gm-Message-State: AOAM533GR0L45j8Ty4vogLVG6sRl1kAkxO7+KQrqul64n+xSKhqtJWdr
+        AHKMR/5JZL41sID+VxXU1kbuOBYXKR22crQhiy9w068nn9N41neGZmN/0/gG5L1eoAAA1sy9MFf
+        wXkaC744Jjj96D2aSedFOks9l
+X-Received: by 2002:a17:906:3842:: with SMTP id w2mr14414241ejc.28.1634894154922;
+        Fri, 22 Oct 2021 02:15:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfQltY1u0ItXDgZL8i6ARy0Vt6IVTLGAMHyDBta8ooLrUu+EKZ/xwgXevj9QBKoe2HYJE57A==
+X-Received: by 2002:a17:906:3842:: with SMTP id w2mr14414225ejc.28.1634894154746;
+        Fri, 22 Oct 2021 02:15:54 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id mp5sm1775558ejc.68.2021.10.22.02.14.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 02:14:57 -0700 (PDT)
+Message-ID: <39927c6d-8c55-5667-4aa0-31d746df90cc@redhat.com>
+Date:   Fri, 22 Oct 2021 11:14:20 +0200
 MIME-Version: 1.0
-References: <CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com>
- <20211021181145.GA2708516@bhelgaas> <CAMhs-H8pTmbG0idbPWjnW4faFj0F4TKwSSK6wzwepbqWSEtx4w@mail.gmail.com>
- <20211022083455.GA20345@lpieralisi>
-In-Reply-To: <20211022083455.GA20345@lpieralisi>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Fri, 22 Oct 2021 11:13:39 +0200
-Message-ID: <CAMhs-H90rD8aHJ+txDzFZ62Ej9_TY=BZMT+1058d=Pm_LfYwPA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
- controller driver
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] platform/x86: lg-laptop: replace snprintf in show
+ functions with sysfs_emit
+Content-Language: en-US
+To:     cgel.zte@gmail.com, matan@svgalib.org
+Cc:     markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20211022090722.1065457-1-ye.guojin@zte.com.cn>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211022090722.1065457-1-ye.guojin@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:35 AM Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> wrote:
->
-> On Thu, Oct 21, 2021 at 09:23:35PM +0200, Sergio Paracuellos wrote:
-> > On Thu, Oct 21, 2021 at 8:11 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >
-> > > On Thu, Oct 21, 2021 at 07:27:21PM +0200, Sergio Paracuellos wrote:
-> > > > On Thu, Oct 21, 2021 at 5:52 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > > Since this is a PCIe (not conventional PCI) controller, I vote for
-> > > > > renaming these from:
-> > > > >
-> > > > >   PCI_MT7621
-> > > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-> > > > >   drivers/pci/controller/pci-mt7621.c
-> > > > >
-> > > > > to:
-> > > > >
-> > > > >   PCIE_MT7621
-> > > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-> > > > >   drivers/pci/controller/pcie-mt7621.c
-> > > > >
-> > > > > We have a mix of these, with many of the early PCIe drivers being
-> > > > > named "pci", but I think that was my mistake and there's no reason to
-> > > > > continue it.
-> > > >
-> > > > I see.
-> > > >
-> > > > >
-> > > > > I can do this locally unless somebody objects.
-> > > >
-> > > > I have no problem at all. Only one question. Do you mean to change
-> > > > compatible string also, or only the name of the file? Let me know if I
-> > > > have to do anything.
-> > >
-> > > I didn't change the compatible string, to avoid a DT incompatibility.
-> > > But I *did* change the Kconfig symbol to PCIE_MT7621, which could
-> > > require changes to out-of-tree .configs.  I'm open to suggestions
-> > > either way for both things.
-> >
-> > IMHO, I do think we should not worry about out-of-tree stuff at all.
->
-> For Kconfig I tend to agree. For DT I see some "bindings" in the staging
-> tree are being deleted and published as official DT bindings with this
-> patchset but I believe we still have to keep the compatible string
-> backward compatibility regardless because there may be firmware out
-> there using it.
+Hi,
 
-The bindings txt file removed in staging with this patchset was also
-added by me three years ago[0], and has been changing until the YAML
-bindings are reviewed by Rob and driver updated accordly in this
-patchset.
-OpenWRT maintains its own file[1] which I don't know is updated or not
-according to the one in staging which I am pretending to properly
-mainline for 5.17. But yes, I agree there might be firmware out there
-using current compatible string.
+On 10/22/21 11:07, cgel.zte@gmail.com wrote:
+> From: Ye Guojin <ye.guojin@zte.com.cn>
+> 
+> coccicheck complains about the use of snprintf() in sysfs show
+> functions:
+> WARNING  use scnprintf or sprintf
+> 
+> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
 
-[0]: Commit 5451e22618b8 ("staging: mt7621-pci: dt-bindings: add dt
-bindings for mt7621 pcie controller")
-[1]: https://github.com/openwrt/openwrt/blob/master/target/linux/ramips/dts/mt7621.dtsi
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Best regards,
-    Sergio Paracuellos
->
-> Rob, what's the standard policy that should be used in this case ?
->
-> Thanks,
-> Lorenzo
->
-> > If the correct way to define the Kconfig symbol or the compatible
-> > string is to change them, just do that. MT7621 SoC is extensively used
-> > by openWRT community. As far as I have seen until now, the way of
-> > doing things there is to take the latest long term kernel (now they
-> > are using 5.4 as stable and 5.10 as testing kernel), apply a bunch of
-> > patches they have and do a complete build of both kernel, device tree
-> > and rootfs. So I guess it is not a big problem if we also change
-> > compatible string since when an update is performed for a device all
-> > of the stuff is just replaced. Maybe I am wrong and John has a
-> > different opinion... John, any comments on this?
-> >
-> > Best regards,
-> >     Sergio Paracuellos
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+> ---
+>  drivers/platform/x86/lg-laptop.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/lg-laptop.c b/drivers/platform/x86/lg-laptop.c
+> index 7e9351c36389..ae9293024c77 100644
+> --- a/drivers/platform/x86/lg-laptop.c
+> +++ b/drivers/platform/x86/lg-laptop.c
+> @@ -330,7 +330,7 @@ static ssize_t fan_mode_show(struct device *dev,
+>  	status = r->integer.value & 0x01;
+>  	kfree(r);
+>  
+> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
+> +	return sysfs_emit(buffer, "%d\n", status);
+>  }
+>  
+>  static ssize_t usb_charge_store(struct device *dev,
+> @@ -372,7 +372,7 @@ static ssize_t usb_charge_show(struct device *dev,
+>  
+>  	kfree(r);
+>  
+> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
+> +	return sysfs_emit(buffer, "%d\n", status);
+>  }
+>  
+>  static ssize_t reader_mode_store(struct device *dev,
+> @@ -414,7 +414,7 @@ static ssize_t reader_mode_show(struct device *dev,
+>  
+>  	kfree(r);
+>  
+> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
+> +	return sysfs_emit(buffer, "%d\n", status);
+>  }
+>  
+>  static ssize_t fn_lock_store(struct device *dev,
+> @@ -455,7 +455,7 @@ static ssize_t fn_lock_show(struct device *dev,
+>  	status = !!r->buffer.pointer[0];
+>  	kfree(r);
+>  
+> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
+> +	return sysfs_emit(buffer, "%d\n", status);
+>  }
+>  
+>  static ssize_t battery_care_limit_store(struct device *dev,
+> @@ -520,7 +520,7 @@ static ssize_t battery_care_limit_show(struct device *dev,
+>  	if (status != 80 && status != 100)
+>  		status = 0;
+>  
+> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
+> +	return sysfs_emit(buffer, "%d\n", status);
+>  }
+>  
+>  static DEVICE_ATTR_RW(fan_mode);
+> 
+
