@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981324377A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5665C4377A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhJVNAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:00:45 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:41596 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbhJVNAn (ORCPT
+        id S232473AbhJVNHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhJVNHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:00:43 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 0a6d88729bbdbd76; Fri, 22 Oct 2021 14:58:25 +0200
-Received: from kreacher.localnet (unknown [213.134.175.233])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 8D19966A92E;
-        Fri, 22 Oct 2021 14:58:24 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH] PM: sleep: Do not let "syscore" devices runtime-suspend during system transitions
-Date:   Fri, 22 Oct 2021 14:58:23 +0200
-Message-ID: <5773062.lOV4Wx5bFT@kreacher>
+        Fri, 22 Oct 2021 09:07:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F98EC061764;
+        Fri, 22 Oct 2021 06:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ceLFPSG9PwcNCS8a9ytFESTTipwib/6u0uhFzDsr/gQ=; b=hgK8dCxE5kiokMvHI8BrX1mKtt
+        uSTgVRfw2SS+zqxcRwMvTW7KsBE/5jLZEwn7AeRau+yKPd1kXQhEaiCKERpKcUoIf65Hgw2fKllDe
+        X05UHY/6IxtRHvBUa6xESlRKmUvsDTvbpwqKsu2TTiJrpx/TWKgfjhNL/i1V8yORkgaF+1HUu9Eyy
+        kaJ9MLr18hdFV8TQYMgTUAj6vDgEJq993PdZtFSnDG4u88Zz1tykYo1vObr+OkkgLMJOIqRk++3Qt
+        YVEoSTdIIbxsgYnMb1pxKO6NR9yz0ZoQsngHLniDwUpyBKIbGuggTXS41E9+zyymcnk8AlPvFWs6q
+        j2CF7SGQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mduAi-00Dud6-RP; Fri, 22 Oct 2021 13:01:52 +0000
+Date:   Fri, 22 Oct 2021 14:01:20 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXK2ICKi6fjNfr4X@casper.infradead.org>
+References: <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <YXBUPguecSeSO6UD@moria.home.lan>
+ <YXHdpQTL1Udz48fc@cmpxchg.org>
+ <YXIZX0truEBv2YSz@casper.infradead.org>
+ <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.233
-X-CLIENT-HOSTNAME: 213.134.175.233
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvkedgheejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepvddufedrudefgedrudejhedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddvfeefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuhhlfhdrhhgrnhhsshhonheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhtvghrnhesrhhofihlrghnugdrhhgrrhhvrghrugdrvgguuhdprhgtphhtthhopehmkhhshhgrhhestghouggv
- rghurhhorhgrrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Oct 22, 2021 at 09:59:05AM +0200, David Hildenbrand wrote:
+> something like this would roughly express what I've been mumbling about:
+> 
+> anon_mem    file_mem
+>    |            |
+>    ------|------
+>       lru_mem       slab
+>          |           |
+>          -------------
+>                |
+> 	      page
+> 
+> I wouldn't include folios in this picture, because IMHO folios as of now
+> are actually what we want to be "lru_mem", just which a much clearer
+> name+description (again, IMHO).
 
-There is no reason to allow "syscore" devices to runtime-suspend
-during system-wide PM transitions, because they are subject to the
-same possible failure modes as any other devices in that respect.
+I think folios are a superset of lru_mem.  To enhance your drawing:
 
-Accordingly, change device_prepare() and device_complete() to call
-pm_runtime_get_noresume() and pm_runtime_put(), respectively, for
-"syscore" devices too.
+page
+   folio
+      lru_mem
+         anon_mem
+	 ksm
+         file_mem
+      netpool
+      devmem
+      zonedev
+   slab
+   pgtable
+   buddy
+   zsmalloc
+   vmalloc
 
-Fixes: 057d51a1268f ("Merge branch 'pm-sleep'")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
----
- drivers/base/power/main.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+I have a little list of memory types here:
+https://kernelnewbies.org/MemoryTypes
 
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -1048,7 +1048,7 @@ static void device_complete(struct devic
- 	const char *info = NULL;
- 
- 	if (dev->power.syscore)
--		return;
-+		goto out;
- 
- 	device_lock(dev);
- 
-@@ -1078,6 +1078,7 @@ static void device_complete(struct devic
- 
- 	device_unlock(dev);
- 
-+out:
- 	pm_runtime_put(dev);
- }
- 
-@@ -1789,9 +1790,6 @@ static int device_prepare(struct device
- 	int (*callback)(struct device *) = NULL;
- 	int ret = 0;
- 
--	if (dev->power.syscore)
--		return 0;
--
- 	/*
- 	 * If a device's parent goes into runtime suspend at the wrong time,
- 	 * it won't be possible to resume the device.  To prevent this we
-@@ -1800,6 +1798,9 @@ static int device_prepare(struct device
- 	 */
- 	pm_runtime_get_noresume(dev);
- 
-+	if (dev->power.syscore)
-+		return 0;
-+
- 	device_lock(dev);
- 
- 	dev->power.wakeup_path = false;
+Let me know if anything is missing.
 
+> Going from file_mem -> page is easy, just casting pointers.
+> Going from page -> file_mem requires going to the head page if it's a
+> compound page.
+> 
+> But we expect most interfaces to pass around a proper type (e.g.,
+> lru_mem) instead of a page, which avoids having to lookup the compund
+> head page. And each function can express which type it actually wants to
+> consume. The filmap API wants to consume file_mem, so it should use that.
+> 
+> And IMHO, with something above in mind and not having a clue which
+> additional layers we'll really need, or which additional leaves we want
+> to have, we would start with the leaves (e.g., file_mem, anon_mem, slab)
+> and work our way towards the root. Just like we already started with slab.
 
+That assumes that the "root" layers already handle compound pages
+properly.  For example, nothing in mm/page-writeback.c does; it assumes
+everything is an order-0 page.  So working in the opposite direction
+makes sense because it tells us what has already been converted and is
+thus safe to call.
 
+And starting with file_mem makes the supposition that it's worth splitting
+file_mem from anon_mem.  I believe that's one or two steps further than
+it's worth, but I can be convinced otherwise.  For example, do we have
+examples of file pages being passed to routines that expect anon pages?
+Most routines that I've looked at expect to see both file & anon pages,
+and treat them either identically or do slightly different things.
+But those are just the functions I've looked at; your experience may be
+quite different.
