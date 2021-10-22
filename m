@@ -2,118 +2,402 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AF143742E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637D9437430
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhJVJDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:03:20 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:59335 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhJVJDT (ORCPT
+        id S232382AbhJVJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:03:58 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:39412 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232060AbhJVJD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:03:19 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id CE5873F5;
-        Fri, 22 Oct 2021 02:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1634893262;
-        bh=62xU6A5a1vC0BYtn1PBjgiBPmvcI1s9MDBG0hfgZCHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b1BPRMTItp4tsRe46NuFm5eStvDBte8uFyJHx1UH+qEkNwBbsujhWbNIi3Bi1RWqg
-         HGFqBlHlAG4HVrUDOsFarXuo0nSz4sfqcrysR/G51A8BaRUT8toqIEbDqUFRB6mRvk
-         SNGJFtO5SsEbzNA0MNH/DudirogvafmkmVegjADI=
-Date:   Fri, 22 Oct 2021 02:00:57 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Oliver O'Halloran <oohall@gmail.com>
-Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
-Message-ID: <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <YXJfHwzIdksUKPIe@kroah.com>
+        Fri, 22 Oct 2021 05:03:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UtEhF74_1634893282;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UtEhF74_1634893282)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 22 Oct 2021 17:01:38 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: [PATCH] erofs: get rid of ->lru usage
+Date:   Fri, 22 Oct 2021 17:01:20 +0800
+Message-Id: <20211022090120.14675-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YXJfHwzIdksUKPIe@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:50:07PM PDT, Greg Kroah-Hartman wrote:
->On Thu, Oct 21, 2021 at 07:00:27PM -0700, Zev Weiss wrote:
->> Hello all,
->>
->> This series is another incarnation of a couple other patchsets I've
->> posted recently [0, 1], but again different enough in overall
->> structure that I'm not sure it's exactly a v2 (or v3).
->>
->> As compared to [1], it abandons the writable binary sysfs files and at
->> Frank's suggestion returns to an approach more akin to [0], though
->> without any driver-specific (aspeed-smc) changes, which I figure might
->> as well be done later in a separate series once appropriate
->> infrastructure is in place.
->>
->> The basic idea is to implement support for a status property value
->> that's documented in the DT spec [2], but thus far not used at all in
->> the kernel (or anywhere else I'm aware of): "reserved".  According to
->> the spec (section 2.3.4, Table 2.4), this status:
->>
->>   Indicates that the device is operational, but should not be used.
->>   Typically this is used for devices that are controlled by another
->>   software component, such as platform firmware.
->>
->> With these changes, devices marked as reserved are (at least in some
->> cases, more on this later) instantiated, but will not have drivers
->> bound to them unless and until userspace explicitly requests it by
->> writing the device's name to the driver's sysfs 'bind' file.  This
->> enables appropriate handling of hardware arrangements that can arise
->> in contexts like OpenBMC, where a device may be shared with another
->> external controller not under the kernel's control (for example, the
->> flash chip storing the host CPU's firmware, shared by the BMC and the
->> host CPU and exclusively under the control of the latter by default).
->> Such a device can be marked as reserved so that the kernel refrains
->> from touching it until appropriate preparatory steps have been taken
->> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
->> processor has control of the firmware flash).
->>
->> Patches 1-3 provide some basic plumbing for checking the "reserved"
->> status of a device, patch 4 is the main driver-core change, and patch
->> 5 tweaks the OF platform code to not skip reserved devices so that
->> they can actually be instantiated.
->
->Again, the driver core should not care about this, that is up to the bus
->that wants to read these "reserved" values and do something with them or
->not (remember the bus is the thing that does the binding, not the driver
->core).
->
->But are you sure you are using the "reserved" field properly?
+Currently, ->lru is a way to arrange non-LRU pages and has some
+in-kernel users. In order to minimize noticable issues of page
+reclaim and cache thrashing under high memory presure, limited
+temporary pages were all chained with ->lru and can be reused
+during the request. However, it seems that ->lru could be removed
+when folio is landing.
 
-Well, thus far both Rob Herring and Oliver O'Halloran (originator of the 
-"reserved" status in the DT spec, whom I probably should have CCed 
-earlier, sorry) have seemed receptive to this interpretation of it, 
-which I'd hope would lend it some credence.
+Let's use page->private to chain temporary pages for now instead
+and transform EROFS formally after the topic of the folio / file
+page design is finalized.
 
->You are
->wanting to do "something" to the device to later on be able to then have
->the kernel touch the device, while it seems that the reason for this
->field is for the kernel to NEVER touch the device at all.  What will
->break if you change this logic?
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@gmail.com>
+Cc: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+ fs/erofs/compress.h          | 11 +++++-----
+ fs/erofs/decompressor.c      |  8 +++----
+ fs/erofs/decompressor_lzma.c |  2 +-
+ fs/erofs/internal.h          |  9 +++++++-
+ fs/erofs/pcpubuf.c           |  6 +++---
+ fs/erofs/utils.c             | 19 +++++++++++-----
+ fs/erofs/zdata.c             | 42 ++++++++++++++++--------------------
+ 7 files changed, 53 insertions(+), 44 deletions(-)
 
-Given that there's no existing usage of or support for this status value 
-anywhere I can see in the kernel, and that Oliver has indicated that it 
-should be compatible with usage in OpenPower platform firmware, my 
-expectation would certainly be that nothing would break, but if there 
-are examples of things that could I'd be interested to see them.
-
-
-Thanks,
-Zev
+diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+index 8ea6a9b14962..579406504919 100644
+--- a/fs/erofs/compress.h
++++ b/fs/erofs/compress.h
+@@ -22,7 +22,7 @@ struct z_erofs_decompress_req {
+ 
+ struct z_erofs_decompressor {
+ 	int (*decompress)(struct z_erofs_decompress_req *rq,
+-			  struct list_head *pagepool);
++			  struct page **pagepool);
+ 	char *name;
+ };
+ 
+@@ -64,7 +64,7 @@ static inline bool z_erofs_is_shortlived_page(struct page *page)
+ 	return true;
+ }
+ 
+-static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
++static inline bool z_erofs_put_shortlivedpage(struct page **pagepool,
+ 					      struct page *page)
+ {
+ 	if (!z_erofs_is_shortlived_page(page))
+@@ -75,8 +75,7 @@ static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
+ 		put_page(page);
+ 	} else {
+ 		/* follow the pcluster rule above. */
+-		set_page_private(page, 0);
+-		list_add(&page->lru, pagepool);
++		erofs_pagepool_add(pagepool, page);
+ 	}
+ 	return true;
+ }
+@@ -89,9 +88,9 @@ static inline bool erofs_page_is_managed(const struct erofs_sb_info *sbi,
+ }
+ 
+ int z_erofs_decompress(struct z_erofs_decompress_req *rq,
+-		       struct list_head *pagepool);
++		       struct page **pagepool);
+ 
+ /* prototypes for specific algorithms */
+ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+-			    struct list_head *pagepool);
++			    struct page **pagepool);
+ #endif
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 8a624d73c185..a0786b95cdf9 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -57,7 +57,7 @@ int z_erofs_load_lz4_config(struct super_block *sb,
+  * all physical pages are consecutive, which can be seen for moderate CR.
+  */
+ static int z_erofs_lz4_prepare_dstpages(struct z_erofs_decompress_req *rq,
+-					struct list_head *pagepool)
++					struct page **pagepool)
+ {
+ 	const unsigned int nr =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -254,7 +254,7 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_decompress_req *rq,
+ }
+ 
+ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq,
+-				  struct list_head *pagepool)
++				  struct page **pagepool)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -296,7 +296,7 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq,
+ }
+ 
+ static int z_erofs_shifted_transform(struct z_erofs_decompress_req *rq,
+-				     struct list_head *pagepool)
++				     struct page **pagepool)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+@@ -352,7 +352,7 @@ static struct z_erofs_decompressor decompressors[] = {
+ };
+ 
+ int z_erofs_decompress(struct z_erofs_decompress_req *rq,
+-		       struct list_head *pagepool)
++		       struct page **pagepool)
+ {
+ 	return decompressors[rq->alg].decompress(rq, pagepool);
+ }
+diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
+index bd7d9809ecf7..50045510a1f4 100644
+--- a/fs/erofs/decompressor_lzma.c
++++ b/fs/erofs/decompressor_lzma.c
+@@ -150,7 +150,7 @@ int z_erofs_load_lzma_config(struct super_block *sb,
+ }
+ 
+ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+-			    struct list_head *pagepool)
++			    struct page **pagepool)
+ {
+ 	const unsigned int nrpages_out =
+ 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index a6a53d22dfd6..3265688af7f9 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -499,7 +499,14 @@ void erofs_pcpubuf_init(void);
+ void erofs_pcpubuf_exit(void);
+ 
+ /* utils.c / zdata.c */
+-struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp);
++struct page *erofs_allocpage(struct page **pagepool, gfp_t gfp);
++static inline void erofs_pagepool_add(struct page **pagepool,
++		struct page *page)
++{
++	set_page_private(page, (unsigned long)*pagepool);
++	*pagepool = page;
++}
++void erofs_release_pages(struct page **pagepool);
+ 
+ #ifdef CONFIG_EROFS_FS_ZIP
+ int erofs_workgroup_put(struct erofs_workgroup *grp);
+diff --git a/fs/erofs/pcpubuf.c b/fs/erofs/pcpubuf.c
+index 6c885575128a..a2efd833d1b6 100644
+--- a/fs/erofs/pcpubuf.c
++++ b/fs/erofs/pcpubuf.c
+@@ -49,7 +49,7 @@ int erofs_pcpubuf_growsize(unsigned int nrpages)
+ {
+ 	static DEFINE_MUTEX(pcb_resize_mutex);
+ 	static unsigned int pcb_nrpages;
+-	LIST_HEAD(pagepool);
++	struct page *pagepool = NULL;
+ 	int delta, cpu, ret, i;
+ 
+ 	mutex_lock(&pcb_resize_mutex);
+@@ -102,13 +102,13 @@ int erofs_pcpubuf_growsize(unsigned int nrpages)
+ 			vunmap(old_ptr);
+ free_pagearray:
+ 		while (i)
+-			list_add(&oldpages[--i]->lru, &pagepool);
++			erofs_pagepool_add(&pagepool, oldpages[--i]);
+ 		kfree(oldpages);
+ 		if (ret)
+ 			break;
+ 	}
+ 	pcb_nrpages = nrpages;
+-	put_pages_list(&pagepool);
++	erofs_release_pages(&pagepool);
+ out:
+ 	mutex_unlock(&pcb_resize_mutex);
+ 	return ret;
+diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
+index bd86067a63f7..84da2c280012 100644
+--- a/fs/erofs/utils.c
++++ b/fs/erofs/utils.c
+@@ -6,20 +6,29 @@
+ #include "internal.h"
+ #include <linux/pagevec.h>
+ 
+-struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp)
++struct page *erofs_allocpage(struct page **pagepool, gfp_t gfp)
+ {
+-	struct page *page;
++	struct page *page = *pagepool;
+ 
+-	if (!list_empty(pool)) {
+-		page = lru_to_page(pool);
++	if (page) {
+ 		DBG_BUGON(page_ref_count(page) != 1);
+-		list_del(&page->lru);
++		*pagepool = (struct page *)page_private(page);
+ 	} else {
+ 		page = alloc_page(gfp);
+ 	}
+ 	return page;
+ }
+ 
++void erofs_release_pages(struct page **pagepool)
++{
++	while (*pagepool) {
++		struct page *page = *pagepool;
++
++		*pagepool = (struct page *)page_private(page);
++		put_page(page);
++	}
++}
++
+ #ifdef CONFIG_EROFS_FS_ZIP
+ /* global shrink count (for all mounted EROFS instances) */
+ static atomic_long_t erofs_global_shrink_cnt;
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index d55e6215cd44..bcb1b91b234f 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -236,7 +236,7 @@ static DEFINE_MUTEX(z_pagemap_global_lock);
+ static void preload_compressed_pages(struct z_erofs_collector *clt,
+ 				     struct address_space *mc,
+ 				     enum z_erofs_cache_alloctype type,
+-				     struct list_head *pagepool)
++				     struct page **pagepool)
+ {
+ 	struct z_erofs_pcluster *pcl = clt->pcl;
+ 	bool standalone = true;
+@@ -287,12 +287,10 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
+ 		if (!cmpxchg_relaxed(pages, NULL, tagptr_cast_ptr(t)))
+ 			continue;
+ 
+-		if (page) {
++		if (page)
+ 			put_page(page);
+-		} else if (newpage) {
+-			set_page_private(newpage, 0);
+-			list_add(&newpage->lru, pagepool);
+-		}
++		else if (newpage)
++			erofs_pagepool_add(pagepool, newpage);
+ 	}
+ 
+ 	/*
+@@ -643,7 +641,7 @@ static bool should_alloc_managed_pages(struct z_erofs_decompress_frontend *fe,
+ }
+ 
+ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+-				struct page *page, struct list_head *pagepool)
++				struct page *page, struct page **pagepool)
+ {
+ 	struct inode *const inode = fe->inode;
+ 	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+@@ -836,7 +834,7 @@ static void z_erofs_decompressqueue_endio(struct bio *bio)
+ 
+ static int z_erofs_decompress_pcluster(struct super_block *sb,
+ 				       struct z_erofs_pcluster *pcl,
+-				       struct list_head *pagepool)
++				       struct page **pagepool)
+ {
+ 	struct erofs_sb_info *const sbi = EROFS_SB(sb);
+ 	struct z_erofs_pagevec_ctor ctor;
+@@ -1036,7 +1034,7 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
+ }
+ 
+ static void z_erofs_decompress_queue(const struct z_erofs_decompressqueue *io,
+-				     struct list_head *pagepool)
++				     struct page **pagepool)
+ {
+ 	z_erofs_next_pcluster_t owned = io->head;
+ 
+@@ -1060,18 +1058,18 @@ static void z_erofs_decompressqueue_work(struct work_struct *work)
+ {
+ 	struct z_erofs_decompressqueue *bgq =
+ 		container_of(work, struct z_erofs_decompressqueue, u.work);
+-	LIST_HEAD(pagepool);
++	struct page *pagepool = NULL;
+ 
+ 	DBG_BUGON(bgq->head == Z_EROFS_PCLUSTER_TAIL_CLOSED);
+ 	z_erofs_decompress_queue(bgq, &pagepool);
+ 
+-	put_pages_list(&pagepool);
++	erofs_release_pages(&pagepool);
+ 	kvfree(bgq);
+ }
+ 
+ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+ 					       unsigned int nr,
+-					       struct list_head *pagepool,
++					       struct page **pagepool,
+ 					       struct address_space *mc,
+ 					       gfp_t gfp)
+ {
+@@ -1173,7 +1171,7 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+ out_allocpage:
+ 	page = erofs_allocpage(pagepool, gfp | __GFP_NOFAIL);
+ 	if (oldpage != cmpxchg(&pcl->compressed_pages[nr], oldpage, page)) {
+-		list_add(&page->lru, pagepool);
++		erofs_pagepool_add(pagepool, page);
+ 		cond_resched();
+ 		goto repeat;
+ 	}
+@@ -1257,7 +1255,7 @@ static void move_to_bypass_jobqueue(struct z_erofs_pcluster *pcl,
+ 
+ static void z_erofs_submit_queue(struct super_block *sb,
+ 				 struct z_erofs_decompress_frontend *f,
+-				 struct list_head *pagepool,
++				 struct page **pagepool,
+ 				 struct z_erofs_decompressqueue *fgq,
+ 				 bool *force_fg)
+ {
+@@ -1365,7 +1363,7 @@ static void z_erofs_submit_queue(struct super_block *sb,
+ 
+ static void z_erofs_runqueue(struct super_block *sb,
+ 			     struct z_erofs_decompress_frontend *f,
+-			     struct list_head *pagepool, bool force_fg)
++			     struct page **pagepool, bool force_fg)
+ {
+ 	struct z_erofs_decompressqueue io[NR_JOBQUEUES];
+ 
+@@ -1394,7 +1392,7 @@ static void z_erofs_runqueue(struct super_block *sb,
+ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
+ 				      struct readahead_control *rac,
+ 				      erofs_off_t end,
+-				      struct list_head *pagepool,
++				      struct page **pagepool,
+ 				      bool backmost)
+ {
+ 	struct inode *inode = f->inode;
+@@ -1457,8 +1455,8 @@ static int z_erofs_readpage(struct file *file, struct page *page)
+ {
+ 	struct inode *const inode = page->mapping->host;
+ 	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
++	struct page *pagepool = NULL;
+ 	int err;
+-	LIST_HEAD(pagepool);
+ 
+ 	trace_erofs_readpage(page, false);
+ 	f.headoffset = (erofs_off_t)page->index << PAGE_SHIFT;
+@@ -1479,8 +1477,7 @@ static int z_erofs_readpage(struct file *file, struct page *page)
+ 	if (f.map.mpage)
+ 		put_page(f.map.mpage);
+ 
+-	/* clean up the remaining free pages */
+-	put_pages_list(&pagepool);
++	erofs_release_pages(&pagepool);
+ 	return err;
+ }
+ 
+@@ -1489,9 +1486,8 @@ static void z_erofs_readahead(struct readahead_control *rac)
+ 	struct inode *const inode = rac->mapping->host;
+ 	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+ 	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
+-	struct page *page, *head = NULL;
++	struct page *pagepool = NULL, *head = NULL, *page;
+ 	unsigned int nr_pages;
+-	LIST_HEAD(pagepool);
+ 
+ 	f.readahead = true;
+ 	f.headoffset = readahead_pos(rac);
+@@ -1528,9 +1524,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
+ 			 nr_pages <= sbi->opt.max_sync_decompress_pages);
+ 	if (f.map.mpage)
+ 		put_page(f.map.mpage);
+-
+-	/* clean up the remaining free pages */
+-	put_pages_list(&pagepool);
++	erofs_release_pages(&pagepool);
+ }
+ 
+ const struct address_space_operations z_erofs_aops = {
+-- 
+2.24.4
 
