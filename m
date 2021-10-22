@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127D443720E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753B3437215
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhJVGtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:49:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57752 "EHLO mail.kernel.org"
+        id S231997AbhJVGth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:49:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhJVGtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:49:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 488E560F50;
-        Fri, 22 Oct 2021 06:47:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634885221;
-        bh=+Fkp4XMTW4DD+TiuV8fRU7EzH5a/UJyx5ELdTnoO+vk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jq3iY2JKlAX0xOntAT8OGpltqeTISuwgz9HM/ViUZxGGBAkGBpWCFtN5QwmUL3Klh
-         pfe6nt3IzzL8gQpJixVJyghPQe8Xb47mIFZpYdwC2qrrFLVuf669y7dnCCFN8AgvoV
-         4nSyjbrHqJTYIHyauyIpVbelASHdZvypS4/QAP5A=
-Date:   Fri, 22 Oct 2021 08:46:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Jianxiong Gao <jxgao@google.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rajat Jain <rajatja@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dmaengine@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
- reserved devices
-Message-ID: <YXJeYCFJ5DnBB63R@kroah.com>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <20211022020032.26980-5-zev@bewilderbeest.net>
+        id S231991AbhJVGtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 02:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E0160FE7;
+        Fri, 22 Oct 2021 06:47:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634885236;
+        bh=dZfeTaEbXXLP/qmwnJNpC77V3RzRnTM4fFBelnrubhA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cYaquShgz7lL/mis13ATVxEMijlZLt0EVc9QeVdt8mmTyrIgx542AldvpfVypusI6
+         u5za2WY0uV3NtuRYZiuZMU2HOBlM3KH7tvmmZqOFp7jFQFFnUWB+6qeZpII31N5GKd
+         Vbrz1aQ2hoccw08icgRI2DoHfor4uJfBENKsNwVk5iJQRB5fr2uD00QLD6m9ugREoO
+         uts6u3un/gcfyDjQz2pm1nOjgeLT1AaB5VI8UoTLYQ4ffyFd1qpy3VLEYV+MPLVzqs
+         BXhIndch1n8X2lizXIZuCj/FxmbZZ742XYNr9LAvWL5oMrjGDYTTrYXqSku98KUpg7
+         HpculnfupWmpg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Moosa Baransi <moosab@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Meir Lichtinger <meirl@nvidia.com>,
+        Yufeng Mo <moyufeng@huawei.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net/mlx5i: avoid unused function warning for mlx5i_flow_type_mask
+Date:   Fri, 22 Oct 2021 08:47:03 +0200
+Message-Id: <20211022064710.4158669-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022020032.26980-5-zev@bewilderbeest.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:00:31PM -0700, Zev Weiss wrote:
-> Devices whose fwnodes are marked as reserved are instantiated, but
-> will not have a driver bound to them unless userspace explicitly
-> requests it by writing to a 'bind' sysfs file.  This is to enable
-> devices that may require special (userspace-mediated) preparation
-> before a driver can safely probe them.
-> 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  drivers/base/bus.c            |  2 +-
->  drivers/base/dd.c             | 13 ++++++++-----
->  drivers/dma/idxd/compat.c     |  3 +--
->  drivers/vfio/mdev/mdev_core.c |  2 +-
->  include/linux/device.h        | 14 +++++++++++++-
->  5 files changed, 24 insertions(+), 10 deletions(-)
+From: Arnd Bergmann <arnd@arndb.de>
 
-Ugh, no, I don't really want to add yet-another-state to the driver core
-like this.  Why are these devices even in the kernel with a driver that
-wants to bind to them registered if the driver somehow should NOT be
-bound to it?  Shouldn't all of that logic be in the crazy driver itself
-as that is a very rare and odd thing to do that the driver core should
-not care about at all.
+Without CONFIG_MLX5_EN_RXNFC, the function is unused, breaking the
+build with CONFIG_WERROR:
 
-And why does a device need userspace interaction at all?  Again, why
-would the driver not know about this and handle it all directly?
+mlx5/core/ipoib/ethtool.c:36:12: error: unused function 'mlx5i_flow_type_mask' [-Werror,-Wunused-function]
+static u32 mlx5i_flow_type_mask(u32 flow_type)
 
-thanks,
+We could add another #ifdef or mark this function inline, but
+replacing the existing #ifdef with a __maybe_unused seems best
+because that improves build coverage and avoids introducing
+similar problems the next time this code changes.
 
-greg k-h
+Fixes: 9fbe1c25ecca ("net/mlx5i: Enable Rx steering for IPoIB via ethtool")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c    | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
+index ee0eb4a4b819..ae95677a01f0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
+@@ -222,8 +222,8 @@ static int mlx5i_get_link_ksettings(struct net_device *netdev,
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_MLX5_EN_RXNFC
+-static int mlx5i_set_rxnfc(struct net_device *dev, struct ethtool_rxnfc *cmd)
++static __maybe_unused int mlx5i_set_rxnfc(struct net_device *dev,
++					  struct ethtool_rxnfc *cmd)
+ {
+ 	struct mlx5e_priv *priv = mlx5i_epriv(dev);
+ 	struct ethtool_rx_flow_spec *fs = &cmd->fs;
+@@ -234,14 +234,14 @@ static int mlx5i_set_rxnfc(struct net_device *dev, struct ethtool_rxnfc *cmd)
+ 	return mlx5e_ethtool_set_rxnfc(priv, cmd);
+ }
+ 
+-static int mlx5i_get_rxnfc(struct net_device *dev, struct ethtool_rxnfc *info,
+-			   u32 *rule_locs)
++static __maybe_unused int mlx5i_get_rxnfc(struct net_device *dev,
++					  struct ethtool_rxnfc *info,
++					  u32 *rule_locs)
+ {
+ 	struct mlx5e_priv *priv = mlx5i_epriv(dev);
+ 
+ 	return mlx5e_ethtool_get_rxnfc(priv, info, rule_locs);
+ }
+-#endif
+ 
+ const struct ethtool_ops mlx5i_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+-- 
+2.29.2
+
