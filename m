@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED1A437033
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139C3437034
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhJVCvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
+        id S232572AbhJVCxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbhJVCvI (ORCPT
+        with ESMTP id S232557AbhJVCxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:51:08 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F117C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:48:52 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id c29so2385548pfp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:48:52 -0700 (PDT)
+        Thu, 21 Oct 2021 22:53:17 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA708C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:51:00 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id gn3so1934512pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:51:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=oh7BegofVIUn5uB2hKbuYfRyYWicxbDsuoabRMJIstA=;
-        b=CL+cAVkpVDXC2pkIpAb7W6WCAzaAtqc02ZKsFFqoAHVj/pBU7pzaKPFo+NgW9zO/78
-         QKWfTl4n+wt1VZDBwgvO70q5PwZyGagAjnS/JhGg6BH/tVIgTiNoYfVMGBvXYzKBs6y7
-         AC5rjRlJjuzjM6deHBARUs5yMaM6gEXmyEpXHlDXnoidg+hlN1HQV7DdofBzlzr1oJwQ
-         l+TiYBYNJF7kg2D4WPv7v0gr0vvWNTFRtKWGMs2ViKutkMcw9acg7Z1VPcQM3kpz70q3
-         5AVNxd88srfNwINJe4JgZHMrgxz3vG7N0WsiWwE9HDGWVxEUkrgJjk7p0NnZUKNs8XDB
-         rKXQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ITT8WFbH6v/m4W4m1F5isVWCJcMpG8vLUaedk3t279E=;
+        b=Re+5vIOuhdqcWgD+3/wdcNJkyaWZ69J2ILnTCXWiwT4BoOez2wt7v2Tfic0k3KbY+F
+         BN3o/3BALTwOGLcT8lCOYP1rUQW53T7XnEG+EnSCxb+LD7smlE5xdP8hJakiLI/VNjpO
+         /aS/3c5/FdrBfVdTBD/M/Cb02TFIK4T3zsBY2rTPR8CyH9VinIpyEm5FHi3jvTw8UvLU
+         uaQ90uytLM68Z2+q9MYA1ZwviSyiTg2jfmWF0CSlowplp1+qp8ehgbjJZ/446hN1oCY9
+         +sAPuhmo9Tv5/zob1k16v+XHS/WQNAdh2DEwWWqTMmLQsMUxjxJTe1dKB7tMD2VOfXz5
+         /fXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=oh7BegofVIUn5uB2hKbuYfRyYWicxbDsuoabRMJIstA=;
-        b=wiKzOGM+ozg5HhP16eH/U4ZpaRYGDtTNd4GRY7yphXkIczU+7YjYsGHJRQiMxhFqfM
-         NUw1G/9gyLhS58CWNDki93jhQdRoQQSzf3PMBbmwJnyz53Syh7PMvptFFJ1i3mcvRITA
-         ZnxSPdspJ26zoVhWejCVaD92SLRCt6kYDZQpJDBz2UgphXAeriA3rKiNELJRIhZQWHed
-         iCquzvDcZfpvZZ0sPv7nm+nJFG9LHUk+nm7ZjNrwZyqvprHERpIUqtBqiVQ+yD4gfxQw
-         nW4Qv0hCh+O4akX9d3DXxhtI88ItCpKSjktcu/TI8n7MqEwSY8g9sPiW2TTv9+FIesZw
-         9bLw==
-X-Gm-Message-State: AOAM530h9wbqqxavEg57hCOtztq+9phkVhDNb1N6aTikzfnAtku2FIhk
-        N5QgrnV6MgDezUcfMTcIdiA=
-X-Google-Smtp-Source: ABdhPJzAGcu0FU7tOKWY7i/7VAwzZhhpWSqUYsNKG9qb3qnudsixR/km8pwdnzRGYAYqqHt0g1xP9A==
-X-Received: by 2002:aa7:9212:0:b0:47b:aefd:2cc4 with SMTP id 18-20020aa79212000000b0047baefd2cc4mr41640pfo.47.1634870931730;
-        Thu, 21 Oct 2021 19:48:51 -0700 (PDT)
-Received: from ?IPV6:2405:201:d007:e827:d9ab:a6dc:54b8:e75d? ([2405:201:d007:e827:d9ab:a6dc:54b8:e75d])
-        by smtp.gmail.com with ESMTPSA id t3sm6494286pgo.51.2021.10.21.19.48.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 19:48:51 -0700 (PDT)
-Message-ID: <4cfb2624-4e64-2d7f-a1e7-5032a3078ec9@gmail.com>
-Date:   Fri, 22 Oct 2021 08:18:43 +0530
+        bh=ITT8WFbH6v/m4W4m1F5isVWCJcMpG8vLUaedk3t279E=;
+        b=mSjQdVkCC4yKdd/6hO7LI5c8ACp2kdl72Xt+b7/djhkXFKggwXqopWo65aOVKL2Cu6
+         7vI0KC2fWawluTMpVFM/a4wkF0Xk0Lmo3Fvm56km0KQiCBL28AXXFkZzECV/Nv9Iv81N
+         uQvTRnpoUwPPH4I1G1yzYHDuP2HnQ0xmWCzVnCAetrZoIhEwQPJ2dKGmddsOTmRwdq3v
+         dXBWREx46R7ofIzIkovv/OjPtqmQKRKg8/yjNLDjDyN79xoAEqARMm/BJ4TbddkL0IxL
+         9x5yjJaWcbJcWmnpni7i6Duo3Um/U06UfrssliCtdJEUZnAKbxSgyouLX4TT05sO+09v
+         s6Vw==
+X-Gm-Message-State: AOAM533wQFL3WnPciwRfxAlUiAY9QeafhNUd4lGmOMo+7B5cHNTfajVD
+        kGu+JInSQJ1tCGgZ5+0/PX3b9wqCrXg=
+X-Google-Smtp-Source: ABdhPJxNvTaC6qILH2cCRf6i1cALOiHbtEPaweQu+wCi7WyE86XMIMSyEjbfuvJyIIuWAlDipIlNEQ==
+X-Received: by 2002:a17:90b:3809:: with SMTP id mq9mr11264359pjb.7.1634871059929;
+        Thu, 21 Oct 2021 19:50:59 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id bp19sm6997961pjb.46.2021.10.21.19.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 19:50:59 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     jk@ozlabs.org
+Cc:     joel@jms.id.au, alistair@popple.id.au, eajames@linux.ibm.com,
+        linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] fsi: master: replace snprintf in show functions with sysfs_emit
+Date:   Fri, 22 Oct 2021 02:50:52 +0000
+Message-Id: <20211022025052.1063370-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [Outreachy kernel] [PATCH 3/4] staging: rtl8723bs: core: Remove
- unnecessary space after a cast
-Content-Language: en-US
-To:     Kushal Kothari <kushalkothari285@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        fmdefrancesco@gmail.com, marcocesati@gmail.com,
-        straube.linux@gmail.com, philippesdixon@gmail.com,
-        manuelpalenzuelamerino@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mike.rapoport@gmail.com,
-        kushalkotharitest@googlegroups.com,
-        outreachy-kernel@googlegroups.com
-References: <cover.1634845504.git.kushalkothari285@gmail.com>
- <f350e30b1e09332dff896b6588d962aab9800a52.1634845504.git.kushalkothari285@gmail.com>
-From:   Praveen Kumar <kpraveen.lkml@gmail.com>
-In-Reply-To: <f350e30b1e09332dff896b6588d962aab9800a52.1634845504.git.kushalkothari285@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-10-2021 01:27, Kushal Kothari wrote:
-> Issue found with checkpatch.pl.
-> Space after cast is not needes
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-*needed
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING  use scnprintf or sprintf
 
-> 
-> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_cmd.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> index 88f6b7405106..fce3256cc275 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> @@ -922,7 +922,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
->  	memcpy(psetstakey_para->addr, sta->hwaddr, ETH_ALEN);
->  
->  	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
-> -		psetstakey_para->algorithm = (unsigned char) psecuritypriv->dot11PrivacyAlgrthm;
-> +		psetstakey_para->algorithm = (unsigned char)psecuritypriv->dot11PrivacyAlgrthm;
->  	else
->  		GET_ENCRY_ALGO(psecuritypriv, sta, psetstakey_para->algorithm, false);
->  
-> @@ -951,7 +951,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
->  		}
->  
->  		init_h2fwcmd_w_parm_no_rsp(ph2c, psetstakey_para, _SetStaKey_CMD_);
-> -		ph2c->rsp = (u8 *) psetstakey_rsp;
-> +		ph2c->rsp = (u8 *)psetstakey_rsp;
->  		ph2c->rspsz = sizeof(struct set_stakey_rsp);
->  		res = rtw_enqueue_cmd(pcmdpriv, ph2c);
->  	} else {
-> @@ -1002,7 +1002,7 @@ u8 rtw_clearstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 enqueu
->  		}
->  
->  		init_h2fwcmd_w_parm_no_rsp(ph2c, psetstakey_para, _SetStaKey_CMD_);
-> -		ph2c->rsp = (u8 *) psetstakey_rsp;
-> +		ph2c->rsp = (u8 *)psetstakey_rsp;
->  		ph2c->rspsz = sizeof(struct set_stakey_rsp);
->  
->  		memcpy(psetstakey_para->addr, sta->hwaddr, ETH_ALEN);
-> @@ -2027,7 +2027,7 @@ void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pc
->  {
->  
->  	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *) (pcmd->rsp);
-> +	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *)(pcmd->rsp);
->  	struct sta_info *psta = rtw_get_stainfo(pstapriv, psetstakey_rsp->addr);
->  
->  	if (!psta)
-> @@ -2042,7 +2042,7 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
->  	struct sta_priv *pstapriv = &padapter->stapriv;
->  	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
->  	struct set_assocsta_parm *passocsta_parm = (struct set_assocsta_parm *)(pcmd->parmbuf);
-> -	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *) (pcmd->rsp);
-> +	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *)(pcmd->rsp);
->  	struct sta_info *psta = rtw_get_stainfo(pstapriv, passocsta_parm->addr);
->  
->  	if (!psta)
-> 
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Regards,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+---
+ drivers/fsi/fsi-master-ast-cf.c | 3 +--
+ drivers/fsi/fsi-master-gpio.c   | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-~Praveen.
+diff --git a/drivers/fsi/fsi-master-ast-cf.c b/drivers/fsi/fsi-master-ast-cf.c
+index 24292acdbaf8..1725785128f9 100644
+--- a/drivers/fsi/fsi-master-ast-cf.c
++++ b/drivers/fsi/fsi-master-ast-cf.c
+@@ -1083,8 +1083,7 @@ static ssize_t external_mode_show(struct device *dev,
+ {
+ 	struct fsi_master_acf *master = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
+-			master->external_mode ? 1 : 0);
++	return sysfs_emit(buf, "%u\n", master->external_mode ? 1 : 0);
+ }
+ 
+ static ssize_t external_mode_store(struct device *dev,
+diff --git a/drivers/fsi/fsi-master-gpio.c b/drivers/fsi/fsi-master-gpio.c
+index 7d5f29b4b595..865acb37e0ee 100644
+--- a/drivers/fsi/fsi-master-gpio.c
++++ b/drivers/fsi/fsi-master-gpio.c
+@@ -718,8 +718,7 @@ static ssize_t external_mode_show(struct device *dev,
+ {
+ 	struct fsi_master_gpio *master = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
+-			master->external_mode ? 1 : 0);
++	return sysfs_emit(buf, "%u\n", master->external_mode ? 1 : 0);
+ }
+ 
+ static ssize_t external_mode_store(struct device *dev,
+-- 
+2.25.1
+
