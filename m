@@ -2,142 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1E74373A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C83E4373AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhJVI35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:29:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47011 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232142AbhJVI34 (ORCPT
+        id S232151AbhJVIdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhJVIdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:29:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634891259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v3oZmb5X5Wiq6TAUc+R676kz52C0MZzlKXhj1RnIhDQ=;
-        b=BQOMWmjdwyeBf5iBflFBrpqycP/zYk68t3p0gvVxN7IO+ZBtJUNnAx7CpKScld5SLpldte
-        bX03mXe0/1f9YBwD3Jmp8pY1we7EAZLmXhOwjiKa9bfk4JW7mv/DRf7HdHMG/6ibmhfgAl
-        /YTUfgbMkwSA3XEj6rXsQRn1jvKItNM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-k8HQGI-MPsa2-EOltfGovw-1; Fri, 22 Oct 2021 04:27:37 -0400
-X-MC-Unique: k8HQGI-MPsa2-EOltfGovw-1
-Received: by mail-ed1-f69.google.com with SMTP id l10-20020a056402230a00b003db6977b694so2922645eda.23
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:27:37 -0700 (PDT)
+        Fri, 22 Oct 2021 04:33:23 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C8DC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:31:05 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 5so927724edw.7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+s3RKjcGG+MOOi5e3FStCyMo3mus4CdAelMYmF9XjNI=;
+        b=XA6b/fmmHaNPaJQ3RWZTTghGLmKtShh6KbyR2G7KJhw/Dx2kZN+ehZcl1lgX9u/iPM
+         3jf1s1h/0pRoiNYq7JNYf4RHU4Ew5+3dKl+rddx82JmMj887Yd0Qvhejhf/JTty8tIEV
+         655GZsYB1eyWoOPS9rEr7vTrFCdt6myHuW+zwyt2bYlIWSErX2wEDuiFkSxDNemfy5/p
+         7XwCzABaOuK0O1+c6vsIHnaH0YBrwdo7CukTK9IvEquCe3tVlpqi2NisDNYrOzddI71c
+         F9Y/Dj0y1vw4P1gOLHkcY1+VFIFk2Rt5OSt0fZBlUmPagryhXyWfxo01DiTtVzXL9hR/
+         2EEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=v3oZmb5X5Wiq6TAUc+R676kz52C0MZzlKXhj1RnIhDQ=;
-        b=S6izyOcKdvh+aOCvSlq3jVw7eVHsmI/NsIdSRwZz6SbqCLvY8G8z+dwMjX4Mj3Yeqa
-         6P7Uv8BnuT7Pl2mtIAp/+a2qruENKtS3DzLAapKZDMiQPDNEAXc22iA/cv+g9D+ip7JO
-         uVjWHfZs7dPr4E6aJ5h6y2eV+OlrRWX2504CfiJTORelI1hB+3KjPuPxZ5VbEb4kLLBm
-         4EyByXEmU32ELgPxp9MLmQ7INFwD9FtmEEO8jvMBCno7YEPZOi/zEuRiGcqWG2m3bBTX
-         2WMt50u/DtMhYMB06GQkc1rYNG1H8+0Z9J20Y7HGiOP1+hWZgcbVsBLOk0O8fvaqx7Gz
-         eCjA==
-X-Gm-Message-State: AOAM530LkPzN4/j+fhRnfMpAJVM6UUUfMLBraA/u94e7TPfKwibNNP4x
-        L+qvcEOGWbj7I0ONuS4JBSAFnJYDRgpG64cHsY2AomMTZxxSb2iAFCI0C2s8BoH+N0fSEV269H6
-        GohGl4L7j5s5M9414O2HFJE40
-X-Received: by 2002:a17:907:868c:: with SMTP id qa12mr13578205ejc.346.1634891256595;
-        Fri, 22 Oct 2021 01:27:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPwRDKvf75gYruYmYeFWBYl4p46bdPXTTIyIva9IFWQeizVMcT9wTYm0zHNbHaMEGqt6llzg==
-X-Received: by 2002:a17:907:868c:: with SMTP id qa12mr13578194ejc.346.1634891256399;
-        Fri, 22 Oct 2021 01:27:36 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id d22sm3536082ejj.47.2021.10.22.01.27.35
+        bh=+s3RKjcGG+MOOi5e3FStCyMo3mus4CdAelMYmF9XjNI=;
+        b=oP8VEa4dRExDgEJH5s2Y6XMKDdvSE7m0wcurJfiSr9gRS3lvoqv6Q5+1LAXoTxTitF
+         nM0s7aumcsi9p6EalDTlwEurLjBDk99MoRCGNznhyvhIgfRy1A0og0uW2FVV+5RnwpM/
+         TaQtvrjEVJFo0B1cHmXxOF5OhmfXyNezkPfZ0SgJsI79dldJPGnrNQ38CpiTurbiXPyR
+         dLU6qEqihMVIwXz1kMMvFE6Rr22O1nWS/FBCV/4JctRCJ4W4fU7f7PdaoxU2LUiHTj9U
+         hTFMvDs45J12+274wfNqgD9GSEZPY8nI3BddxRyAT3nA9xOVvIWTpF1iCIB9xdv7+gwc
+         9/jA==
+X-Gm-Message-State: AOAM531YfTcDrt8WQ+LoEJf0vo6ch2Q60+E4lS4LdJbuS4EypM7Ddj7Y
+        43Q81LPBfRPjhYejY6bJH1ZvHlrsQaE1GQ==
+X-Google-Smtp-Source: ABdhPJyjALlIYBx258q1rME3+PI/RUJSvPoCUA5pHFn2TnQwq1Dol04vdP1h5OJqKSklFppy+EzwbQ==
+X-Received: by 2002:a17:906:5805:: with SMTP id m5mr13683921ejq.221.1634891464458;
+        Fri, 22 Oct 2021 01:31:04 -0700 (PDT)
+Received: from [192.168.1.15] (hst-221-79.medicom.bg. [84.238.221.79])
+        by smtp.googlemail.com with ESMTPSA id e7sm4448621edk.3.2021.10.22.01.31.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 01:27:35 -0700 (PDT)
-Message-ID: <de8dbc64-ae2d-aa9f-a973-171feb5874d6@redhat.com>
-Date:   Fri, 22 Oct 2021 10:27:34 +0200
+        Fri, 22 Oct 2021 01:31:03 -0700 (PDT)
+Subject: Re: [RESEND PATCH v6] arm64: dts: qcom: sc7280: Add venus DT node
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Cc:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+References: <1632199829-25686-1-git-send-email-dikshita@codeaurora.org>
+ <YUpZaQ42ldzEKtV/@builder.lan>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <68a9da44-b568-85e9-6ec4-28fc8d95633f@linaro.org>
+Date:   Fri, 22 Oct 2021 11:31:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] KVM: x86: advertise absence of X86_BUG_NULL_SEG via CPUID
+In-Reply-To: <YUpZaQ42ldzEKtV/@builder.lan>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        thomas.lendacky@amd.com, dgilbert@redhat.com
-References: <20211021211958.1531754-1-pbonzini@redhat.com>
- <CALMp9eR3bt5P_+ZTJqcckL1pbZCyS6dCNK8o2OQR-atU_A_jtQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <CALMp9eR3bt5P_+ZTJqcckL1pbZCyS6dCNK8o2OQR-atU_A_jtQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/21 23:36, Jim Mattson wrote:
-> On Thu, Oct 21, 2021 at 2:20 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+Hi Dikshita,
+
+On 9/22/21 1:15 AM, Bjorn Andersson wrote:
+> On Mon 20 Sep 23:50 CDT 2021, Dikshita Agarwal wrote:
+> 
+>> Add DT entries for the sc7280 venus encoder/decoder.
 >>
->> Guests have X86_BUG_NULL_SEG if and only if the host have it.  Use
->> the info from static_cpu_has_bug to form the 0x80000021 CPUID leaf that
->> was defined for Zen3.  Userspace can then set the bit even on older
->> CPUs that do not have the bug, such as Zen2.
+>> this patch depends on [1].
 >>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>> [1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=529463
+
+Please drop those two lines above.
+
+> 
+> The stuff you write here will be forever imprinted in the git history
+> and it's already unnecessary, given that the patch you reference here is
+> available in linux-next.
+> 
+> Things you want to mention, but shouldn't go into the git history, put
+> those below the '---' line.
+> 
+>>
+>> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+>> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+
+I guess this should be :
+
+Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+
+but checkpatch --strict should complain about this, no?
+
 >> ---
->>   arch/x86/kvm/cpuid.c | 17 ++++++++++++++++-
->>   1 file changed, 16 insertions(+), 1 deletion(-)
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 75 insertions(+)
 >>
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 2d70edb0f323..b51398e1727b 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -902,7 +902,13 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->>                  entry->edx = 0;
->>                  break;
->>          case 0x80000000:
->> -               entry->eax = min(entry->eax, 0x8000001f);
->> +               entry->eax = min(entry->eax, 0x80000021);
->> +               /*
->> +                * X86_BUG_NULL_SEG is not reported in CPUID on Zen2; in
->> +                * that case, provide the CPUID leaf ourselves.
->> +                */
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index a8c274a..f171ababc 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -63,6 +63,11 @@
+>>  			no-map;
+>>  			reg = <0x0 0x80b00000 0x0 0x100000>;
+>>  		};
+>> +
+>> +		video_mem: memory@8b200000 {
+>> +			reg = <0x0 0x8b200000 0x0 0x500000>;
+>> +			no-map;
+>> +		};
+>>  	};
+>>  
+>>  	cpus {
+>> @@ -1063,6 +1068,76 @@
+>>  			qcom,bcm-voters = <&apps_bcm_voter>;
+>>  		};
+>>  
+>> +		venus: video-codec@aa00000 {
+>> +			compatible = "qcom,sc7280-venus";
 > 
-> I think this is backwards. !X86_BUG_NULL_SEG isn't reported in CPUID on Zen2.
-
-Right I should use the name of the bit instead.
-
->> +               if (!static_cpu_has_bug(X86_BUG_NULL_SEG))
->> +                       entry->eax = max(entry->eax, 0x80000021);
->>                  break;
->>          case 0x80000001:
->>                  cpuid_entry_override(entry, CPUID_8000_0001_EDX);
->> @@ -973,6 +979,15 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->>                          entry->ebx &= ~GENMASK(11, 6);
->>                  }
->>                  break;
->> +       case 0x80000020:
->> +               entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
->> +               break;
->> +       case 0x80000021:
->> +               entry->ebx = entry->ecx = entry->edx = 0;
->> +               entry->eax &= BIT(6);
+> I do however now see this compatible defined in a binding in linux-next,
+> so you definitely should have listed that patch as a dependency - and
+> preferably held off sending me 6 versions (plus resend) of a patch that
+> I can't merge.
 > 
-> While we're here, shouldn't bit 0 (Processor ignores nested data
-> breakpoints) and bit 2 (LFENCE is always dispatch serializing) also
-> match the hardware?
+> Please ping me once the binding is merged, so that I know when I can
+> merge this patch.
+Bjorn, the binding is in linux-next now.
 
-Yes, that makes sense.  Just wanted to gauge whether anybody thought it 
-a really bad idea.
-
-Paolo
-
-> 
->> +               if (!static_cpu_has_bug(X86_BUG_NULL_SEG))
->> +                       entry->eax |= BIT(6);
->> +               break;
->>          /*Add support for Centaur's CPUID instruction*/
->>          case 0xC0000000:
->>                  /*Just support up to 0xC0000004 now*/
->> --
->> 2.27.0
->>
-> 
-
+-- 
+-- 
+regards,
+Stan
