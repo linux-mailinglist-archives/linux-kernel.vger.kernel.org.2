@@ -2,75 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AF1437619
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870FB43761E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhJVLj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 07:39:59 -0400
-Received: from mga11.intel.com ([192.55.52.93]:41676 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232539AbhJVLj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 07:39:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="226741401"
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="226741401"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 04:37:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="663153590"
-Received: from mylly.fi.intel.com (HELO [10.237.72.159]) ([10.237.72.159])
-  by orsmga005.jf.intel.com with ESMTP; 22 Oct 2021 04:37:37 -0700
-Subject: Re: [PATCH 1/3] i2c: designware: Enable async suspend / resume of
- designware devices
-To:     Rajat Jain <rajatja@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dtor@google.com
-Cc:     rajatxjain@gmail.com, dbasehore@chromium.org
-References: <20211022022859.1888836-1-rajatja@google.com>
- <20211022022859.1888836-2-rajatja@google.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <7d94d015-ebff-ee46-3726-9091fe3cdff4@linux.intel.com>
-Date:   Fri, 22 Oct 2021 14:37:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S232810AbhJVLkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 07:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232803AbhJVLku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 07:40:50 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E9DC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 04:38:33 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d5so3398975pfu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 04:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Rccfm12KpSvWMnfVMFO4QKNXNCfzMa0oV3Fo5GIqPt0=;
+        b=iqI03UhX5hT7fF3H0iiH3I5GYZpNeA+i0X7rTuDM7HLJQ/3FM4vfNLuXwVTTHgk9EJ
+         uppdEkgMh16sH68w72mUsFc0Udv/wqv9y4l1JYmN4newEPyG2E+vIwSIMno04hWxw0H0
+         Ya64lNEsF+FgE201TgwiY3vrWjZllECqimTXhoE90M3740d3xYcmAP9zmvcp0QAytvC0
+         I3cEILn+eW8hMMYOErjQon6ktP9bT5tUFq/0fD2dISqNFNgMUCcffrr2giMyNEU19L25
+         ETceSUS0n9AvVHLbEVeiPoK0eng7d7y0dWX8skISjThvQVjZqtZf5TvmJjtb9hajINH5
+         BPhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Rccfm12KpSvWMnfVMFO4QKNXNCfzMa0oV3Fo5GIqPt0=;
+        b=FGxelwLoTWQkmYCodZI+XG110VUIDOhZbq+hllfVWcogXIl5s3+PvtK73eSLNxVlcj
+         E3bxZsGE/7XyXOVTvn45rzxR7YXRXjow1K1oaZF74mjzG4E3q78I8ve8Rr+UVu+HXKXj
+         Gdpso9cn/eVKMcWyMQSzuVuWw3WBygFw8gtUOOHElePPS99mkQO8U44+mNBk0MjciTl6
+         uealtgZAHLOuKKPKmCEizz1lcvPL4jbBYM4oOo1iQKnJDwWKnaY0hZcfIsYb2jkacbmW
+         jRpVLbiqjVh5Zf8DhHbANOejIVdOP81TnsRz6w7Uo+l7mw13TqLr4pGNnRyjieefqMpX
+         nlMg==
+X-Gm-Message-State: AOAM532dM2qgjVaMruwKjytcENIZhklFGkoEebRogpE5uhBnwFBzYtBd
+        kXsvHF4pOp2nl8NbjJTbymc=
+X-Google-Smtp-Source: ABdhPJz+gSN9a9JxjraI8gn6J8uJMUJKpQG4Kw79ZWkTve2qhiLVoDJTeZXpnlt5ASD893PbIfUsxw==
+X-Received: by 2002:a62:7904:0:b0:44c:ca08:1956 with SMTP id u4-20020a627904000000b0044cca081956mr12118844pfc.47.1634902713133;
+        Fri, 22 Oct 2021 04:38:33 -0700 (PDT)
+Received: from localhost.localdomain ([115.96.219.100])
+        by smtp.googlemail.com with ESMTPSA id t22sm10946224pfg.148.2021.10.22.04.38.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 04:38:32 -0700 (PDT)
+From:   Kushal Kothari <kushalkothari285@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     kushalkothari285@gmail.com, kush19992810@gmail.com,
+        outreachy-kernel@googlegroups.com, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, fmdefrancesco@gmail.com,
+        marcocesati@gmail.com, straube.linux@gmail.com,
+        philippesdixon@gmail.com, manuelpalenzuelamerino@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        mike.rapoport@gmail.com, kushalkotharitest@googlegroups.com
+Subject: [PATCH 3/4] v2 staging: rtl8723bs: core: Remove unnecessary space after a cast
+Date:   Fri, 22 Oct 2021 17:07:37 +0530
+Message-Id: <859fedf8146c92b17295a40044007de9dc479525.1634899405.git.kushalkothari285@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1634899405.git.kushalkothari285@gmail.com>
+References: <cover.1634899405.git.kushalkothari285@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211022022859.1888836-2-rajatja@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 5:28 AM, Rajat Jain wrote:
-> Mark the designware devices for asynchronous suspend. With this, the
-> resume for designware devices does not get stuck behind other unrelated
-> devices (e.g. intel_backlight that takes hundreds of ms to resume,
-> waiting for its parent devices).
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
->   drivers/i2c/busses/i2c-designware-platdrv.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-> index 21113665ddea..2bd81abc86f6 100644
-> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-> @@ -293,6 +293,8 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
->   					DPM_FLAG_MAY_SKIP_RESUME);
->   	}
->   
-> +	device_enable_async_suspend(&pdev->dev);
-> +
->   	/* The code below assumes runtime PM to be disabled. */
->   	WARN_ON(pm_runtime_enabled(&pdev->dev));
->   
-I guess same can be done to i2c_dw_pci_probe() too. I don't have any 
-strong opinion should it be done in this patch or somewhere in the future.
+Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Changes in v2: No changes
+---
+ drivers/staging/rtl8723bs/core/rtw_cmd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+index 88f6b7405106..fce3256cc275 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
++++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+@@ -922,7 +922,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
+ 	memcpy(psetstakey_para->addr, sta->hwaddr, ETH_ALEN);
+ 
+ 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
+-		psetstakey_para->algorithm = (unsigned char) psecuritypriv->dot11PrivacyAlgrthm;
++		psetstakey_para->algorithm = (unsigned char)psecuritypriv->dot11PrivacyAlgrthm;
+ 	else
+ 		GET_ENCRY_ALGO(psecuritypriv, sta, psetstakey_para->algorithm, false);
+ 
+@@ -951,7 +951,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
+ 		}
+ 
+ 		init_h2fwcmd_w_parm_no_rsp(ph2c, psetstakey_para, _SetStaKey_CMD_);
+-		ph2c->rsp = (u8 *) psetstakey_rsp;
++		ph2c->rsp = (u8 *)psetstakey_rsp;
+ 		ph2c->rspsz = sizeof(struct set_stakey_rsp);
+ 		res = rtw_enqueue_cmd(pcmdpriv, ph2c);
+ 	} else {
+@@ -1002,7 +1002,7 @@ u8 rtw_clearstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 enqueu
+ 		}
+ 
+ 		init_h2fwcmd_w_parm_no_rsp(ph2c, psetstakey_para, _SetStaKey_CMD_);
+-		ph2c->rsp = (u8 *) psetstakey_rsp;
++		ph2c->rsp = (u8 *)psetstakey_rsp;
+ 		ph2c->rspsz = sizeof(struct set_stakey_rsp);
+ 
+ 		memcpy(psetstakey_para->addr, sta->hwaddr, ETH_ALEN);
+@@ -2027,7 +2027,7 @@ void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pc
+ {
+ 
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+-	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *) (pcmd->rsp);
++	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *)(pcmd->rsp);
+ 	struct sta_info *psta = rtw_get_stainfo(pstapriv, psetstakey_rsp->addr);
+ 
+ 	if (!psta)
+@@ -2042,7 +2042,7 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct set_assocsta_parm *passocsta_parm = (struct set_assocsta_parm *)(pcmd->parmbuf);
+-	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *) (pcmd->rsp);
++	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *)(pcmd->rsp);
+ 	struct sta_info *psta = rtw_get_stainfo(pstapriv, passocsta_parm->addr);
+ 
+ 	if (!psta)
+-- 
+2.25.1
+
