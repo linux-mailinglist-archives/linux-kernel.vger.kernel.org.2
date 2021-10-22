@@ -2,132 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A97543700C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9ABF437011
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhJVCgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:36:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231518AbhJVCgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:36:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71A0161409
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:34:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634870045;
-        bh=S30f/+4VZLDl1PWHOF5O1gKoF4vRAQfxCHgNTi38Jjc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TcBj99OyD6zWF3UwXNFRErx0LcXWJ57hWLCAODhAwPN6kY0KPhyGt21FAMPg1GZl3
-         pzj8LGVJ1PNHo5dBfsUhGMqkl+YPLS8DPL5+cCJaaJilShS3WuLiANd0JHZOdlZdtO
-         f8N/IQVGM5SZ6+h8P+UHxSvVyLWG5yWeSWMF+ypSav4rLK5oCWl6LtTMMUSki0fBxy
-         lOq9fUns4i7EN9kbED2E/rNXGQx+mew4oOVbyx2Z9/Nno5cj94g3uqYvBbaEBRgiV3
-         Q9QwLKPoPZjsKPJtf14vst6AfEmWH88h58srGo1tE9yLgOTea6tAwJWjcVto6rOGBJ
-         4ZwU1WzPgCITA==
-Received: by mail-ua1-f53.google.com with SMTP id u5so4912860uao.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:34:05 -0700 (PDT)
-X-Gm-Message-State: AOAM530QblCTitzkz7gpBmajVpRvfDGMVfxAXlTBnVkgffBaOfvWXJ5q
-        2sPm85hb3AKVuoKHe5evaFtNE/gHO9EKA+czAG8=
-X-Google-Smtp-Source: ABdhPJy/gyI83O9ILS2ZQF4EyRY5my4JsnhH7AcK0SI5BOBkb/f1C1jqqt5MBh/7WO98B6H39eooKYLw5GLQaGG8CAc=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr11938388vsk.11.1634870044525;
- Thu, 21 Oct 2021 19:34:04 -0700 (PDT)
+        id S232361AbhJVCge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbhJVCgd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 22:36:33 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61072C061764;
+        Thu, 21 Oct 2021 19:34:16 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id i1so1687320plr.13;
+        Thu, 21 Oct 2021 19:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=HN3pVMGgALmpCfE1VthCVX7JXGwd42Z3MC17JzM4VqA=;
+        b=AGblZ/FhMkeaQBtpk8KICsPbU/ny05lrplSOvtB8neudkLygO2Njh4s4Ro8uoAIVpi
+         2p7kjGdiSBfZOFzKlFCtttn3EL7XbgE6TZtDBvA2xxeMkg7ZBPhkPnlc0dvd3BCIBlW0
+         /IaB7muzsLEzNoDeJ/BhXQq6BqRXWyOY6hAGV04a1q8CrrweWmPUyYySD4bEpGm/NhpJ
+         2w1mrHSRZRi7HH35UfQ7vdXA36APTM3MTFcD/CPms2VHrZXdusUK5UcqnqZ1AOaRin2w
+         6Ubp/sxpulY1e8aWZGETwc+4nQ0tDa31L0SwUOe4JKoGOy05XtVWbT/+4priJXK8jdsA
+         6YTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=HN3pVMGgALmpCfE1VthCVX7JXGwd42Z3MC17JzM4VqA=;
+        b=fSXbPCLt0NHa1gCocIdLawLR3a6Z8ERygD4djD0wNMrC/u9k9S+8tuv3NZ5Pa6w6b4
+         x8CnDZTYwmBfdASO+78ZCiqNMWWkQ0Nyylpf0ite8rG5HJRhVUadfPwirMnxVawDTqHK
+         3Bg7IbR/uc788OCxqcyIDuhzggvaHVcIKyFJHCIwf7RTyeuyhfitJ+jRgu7lewk3RUR1
+         4nT2huQQi9c5P8fV5PTTL2uR7JBNRW3Ebh2TdArq9mXPvh/OSGKUAy/18yYOWSxlroWR
+         anff2EQyxlYfzPiU8Fp7y9IR2Fva5erI/1Snlh/mLNApG5yULQIjKB5W7/gvoUHSiBgr
+         /bmg==
+X-Gm-Message-State: AOAM530qglKzFveRv/2Xnai+mgYdjs8mPMdFGNy6sV9OkKmepatLKea0
+        fgD8EHLBfYsceNSWgDwbdsc=
+X-Google-Smtp-Source: ABdhPJwRO7vlfbv9Z/FIQWuzaY+LSj8xFBKrPHRV5Qg4Q7GDRack/DgUwzhgdHI9r7PPgYcKoBHcFw==
+X-Received: by 2002:a17:902:6b0c:b0:13f:aaf4:3df3 with SMTP id o12-20020a1709026b0c00b0013faaf43df3mr8927566plk.75.1634870055793;
+        Thu, 21 Oct 2021 19:34:15 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id rj2sm8223974pjb.32.2021.10.21.19.34.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Oct 2021 19:34:15 -0700 (PDT)
+Subject: Re: [PATCH v3 0/3] last batch of add_disk() error handling
+ conversions
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Luis Chamberlain <mcgrof@kernel.org>
+References: <20211021163856.2000993-1-mcgrof@kernel.org>
+ <66655777-6f9b-adbc-03ff-125aecd3f509@i-love.sakura.ne.jp>
+Cc:     linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, hch@lst.de,
+        efremov@linux.com, song@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, hare@suse.de,
+        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <83138a06-11cd-d0eb-7f15-9b01fe47de26@gmail.com>
+Date:   Fri, 22 Oct 2021 15:33:58 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-References: <20211021180236.37428-1-mark.rutland@arm.com> <20211021180236.37428-6-mark.rutland@arm.com>
-In-Reply-To: <20211021180236.37428-6-mark.rutland@arm.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 22 Oct 2021 10:33:53 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTShTh5be3SxaVwAzbXTb=LZi-qfweXBvyLeg9TyKgfLNg@mail.gmail.com>
-Message-ID: <CAJF2gTShTh5be3SxaVwAzbXTb=LZi-qfweXBvyLeg9TyKgfLNg@mail.gmail.com>
-Subject: Re: [PATCH 05/15] irq: add generic_handle_arch_irq()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>, kernelfans@gmail.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        vgupta@kernel.org, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <66655777-6f9b-adbc-03ff-125aecd3f509@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 2:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Several architectures select GENERIC_IRQ_MULTI_HANDLER and branch to
-> handle_arch_irq() without performing any entry accounting.
->
-> Add a generic wrapper to handle the commoon irqentry work when invoking
-> handle_arch_irq(). Where an architecture needs to perform some entry
-> accounting itself, it will need to invoke handle_arch_irq() itself.
->
-> In subsequent patches it will become the responsibilty of the entry code
-> to set the irq regs when entering an IRQ (rather than deferring this to
-> an irqchip handler), so generic_handle_arch_irq() is made to set the irq
-> regs now. This can be redundant in some cases, but is never harmful as
-> saving/restoring the old regs nests safely.
-Shall we remove old_regs save/restore in handle_domain_irq? It's duplicated.
+Luis, Tetsuo,
 
+I'll try to test this - still running 5.13 (need the old IDE driver for 
+now), so not sure this will all apply cleanly.
+
+Cheers,
+
+	Michael
+
+
+On 22/10/21 14:06, Tetsuo Handa wrote:
+> On 2021/10/22 1:38, Luis Chamberlain wrote:
+>> I rebased Tetsuo Handa's patch onto the latest linux-next as this
+>> series depends on it, and so I am sending it part of this series as
+>> without it, this won't apply. Tetsuo, does the rebase of your patch
+>> look OK?
 >
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  kernel/irq/handle.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> OK, though I wanted my fix to be sent to upstream and stable before this series.
 >
-> diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
-> index 221d80c31e94..27182003b879 100644
-> --- a/kernel/irq/handle.c
-> +++ b/kernel/irq/handle.c
-> @@ -14,6 +14,8 @@
->  #include <linux/interrupt.h>
->  #include <linux/kernel_stat.h>
+>>
+>> If it is not too much trouble, I'd like to ask for testing for the
+>> ataflop changes from Michael Schmitz, if possible, that is he'd just
+>> have to merge Tetsuo's rebased patch and the 2nd patch in this series.
+>> This is all rebased on linux-next tag 20211020.
 >
-> +#include <asm/irq_regs.h>
-> +
->  #include <trace/events/irq.h>
+> Yes, please.
 >
->  #include "internals.h"
-> @@ -226,4 +228,20 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
->         handle_arch_irq = handle_irq;
->         return 0;
+> After this series, I guess we can remove "bool registered[NUM_DISK_MINORS];" like below
+> due to (unit[drive].disk[type] != NULL) == (unit[drive].registered[type] == true).
+> Regarding this series, setting unit[drive].registered[type] = true in ataflop_probe() is
+> pointless because atari_floppy_cleanup() checks unit[i].disk[type] != NULL for calling
+> del_gendisk(). And we need to fix __register_blkdev() in driver/block/floppy.c because
+> floppy_probe_lock is pointless.
+>
+>  drivers/block/ataflop.c | 75 +++++++++++++++--------------------------
+>  1 file changed, 28 insertions(+), 47 deletions(-)
+>
+> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+> index c58750dcc685..7fedf8506335 100644
+> --- a/drivers/block/ataflop.c
+> +++ b/drivers/block/ataflop.c
+> @@ -299,7 +299,6 @@ static struct atari_floppy_struct {
+>  				   disk change detection) */
+>  	int flags;		/* flags */
+>  	struct gendisk *disk[NUM_DISK_MINORS];
+> -	bool registered[NUM_DISK_MINORS];
+>  	int ref;
+>  	int type;
+>  	struct blk_mq_tag_set tag_set;
+> @@ -1988,41 +1987,20 @@ static int ataflop_probe(dev_t dev)
+>  	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
+>  		return -EINVAL;
+>
+> -	if (!unit[drive].disk[type]) {
+> -		err = ataflop_alloc_disk(drive, type);
+> -		if (err == 0) {
+> -			err = add_disk(unit[drive].disk[type]);
+> -			if (err) {
+> -				blk_cleanup_disk(unit[drive].disk[type]);
+> -				unit[drive].disk[type] = NULL;
+> -			} else
+> -				unit[drive].registered[type] = true;
+> +	if (unit[drive].disk[type])
+> +		return 0;
+> +	err = ataflop_alloc_disk(drive, type);
+> +	if (err == 0) {
+> +		err = add_disk(unit[drive].disk[type]);
+> +		if (err) {
+> +			blk_cleanup_disk(unit[drive].disk[type]);
+> +			unit[drive].disk[type] = NULL;
+>  		}
+>  	}
+>
+>  	return err;
 >  }
-> +
-> +/**
-> + * generic_handle_arch_irq - root irq handler for architectures which do no
-> + *                           entry accounting themselves
-> + * @regs:      Register file coming from the low-level handling code
-> + */
-> +asmlinkage void noinstr generic_handle_arch_irq(struct pt_regs *regs)
-> +{
-> +       struct pt_regs *old_regs;
-> +
-> +       irq_enter();
-> +       old_regs = set_irq_regs(regs);
-> +       handle_arch_irq(regs);
-> +       set_irq_regs(old_regs);
-> +       irq_exit();
-> +}
->  #endif
-> --
-> 2.11.0
 >
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+> -static void atari_floppy_cleanup(void)
+> -{
+> -	int i;
+> -	int type;
+> -
+> -	for (i = 0; i < FD_MAX_UNITS; i++) {
+> -		for (type = 0; type < NUM_DISK_MINORS; type++) {
+> -			if (!unit[i].disk[type])
+> -				continue;
+> -			del_gendisk(unit[i].disk[type]);
+> -			blk_cleanup_queue(unit[i].disk[type]->queue);
+> -			put_disk(unit[i].disk[type]);
+> -		}
+> -		blk_mq_free_tag_set(&unit[i].tag_set);
+> -	}
+> -
+> -	del_timer_sync(&fd_timer);
+> -	atari_stram_free(DMABuffer);
+> -}
+> -
+>  static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
+>  {
+>  	int type;
+> @@ -2030,13 +2008,24 @@ static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
+>  	for (type = 0; type < NUM_DISK_MINORS; type++) {
+>  		if (!fs->disk[type])
+>  			continue;
+> -		if (fs->registered[type])
+> -			del_gendisk(fs->disk[type]);
+> +		del_gendisk(fs->disk[type]);
+>  		blk_cleanup_disk(fs->disk[type]);
+>  	}
+>  	blk_mq_free_tag_set(&fs->tag_set);
+>  }
+>
+> +static void atari_floppy_cleanup(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < FD_MAX_UNITS; i++)
+> +		atari_cleanup_floppy_disk(&unit[i]);
+> +
+> +	del_timer_sync(&fd_timer);
+> +	if (DMABuffer)
+> +		atari_stram_free(DMABuffer);
+> +}
+> +
+>  static int __init atari_floppy_init (void)
+>  {
+>  	int i;
+> @@ -2055,13 +2044,10 @@ static int __init atari_floppy_init (void)
+>  		unit[i].tag_set.numa_node = NUMA_NO_NODE;
+>  		unit[i].tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+>  		ret = blk_mq_alloc_tag_set(&unit[i].tag_set);
+> -		if (ret)
+> -			goto err;
+> -
+> -		ret = ataflop_alloc_disk(i, 0);
+>  		if (ret) {
+> -			blk_mq_free_tag_set(&unit[i].tag_set);
+> -			goto err;
+> +			while (--i >= 0)
+> +				blk_mq_free_tag_set(&unit[i].tag_set);
+> +			return ret;
+>  		}
+>  	}
+>
+> @@ -2090,10 +2076,9 @@ static int __init atari_floppy_init (void)
+>  	for (i = 0; i < FD_MAX_UNITS; i++) {
+>  		unit[i].track = -1;
+>  		unit[i].flags = 0;
+> -		ret = add_disk(unit[i].disk[0]);
+> -		if (ret)
+> -			goto err_out_dma;
+> -		unit[i].registered[0] = true;
+> +		ret = ataflop_probe(MKDEV(0, 1 << 2));
+> +		if (err)
+> +			goto err;
+>  	}
+>
+>  	printk(KERN_INFO "Atari floppy driver: max. %cD, %strack buffering\n",
+> @@ -2108,12 +2093,8 @@ static int __init atari_floppy_init (void)
+>  	}
+>  	return ret;
+>
+> -err_out_dma:
+> -	atari_stram_free(DMABuffer);
+>  err:
+> -	while (--i >= 0)
+> -		atari_cleanup_floppy_disk(&unit[i]);
+> -
+> +	atari_floppy_cleanup();
+>  	return ret;
+>  }
+>
+>
