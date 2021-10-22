@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAD64373BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23374373C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhJVIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:41:16 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:46137 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhJVIlP (ORCPT
+        id S232268AbhJVIlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:41:52 -0400
+Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:60359 "EHLO
+        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232192AbhJVIlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:41:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HbHnX3ztxz4xbL;
-        Fri, 22 Oct 2021 19:38:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634891936;
-        bh=GOHObiDHhe78sE38ldx9xwYsCTtEFidQY80/+uxn7TE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=b0DB4U1f2pxkG70U8CPjlqib8Xl5JAN7aQHihdGtPTTRpksbOmek5SArRdZBIcXvT
-         mqnGvfLWN89C6jCfosmkbdC2r9eUjB+lhB3nZEp5Y/0hY/Pwlajvb/bURGSkr23RE3
-         RCcuMe480y5bP1GElemPabniv2NM8c3yB1APheipapeBsxIqVICYYFc1T25a96ddVP
-         R6IcS08KVJGGMHq579DBRkPyjC4Z2pCvuyIny3FVQmo+ztmN2Q+BbtYHnXoQfJS676
-         HrmPuJCdlHjMvHbAUdVucKclc7hsBdP5nIL2VZpx854gNYcQObOkpEc5NT4szRzxvj
-         kODzyNUf9Gw3w==
-Date:   Fri, 22 Oct 2021 19:38:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Eddie James <eajames@linux.ibm.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20211022193853.296c4ee9@canb.auug.org.au>
+        Fri, 22 Oct 2021 04:41:47 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 5E6371C47B2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:39:29 +0100 (IST)
+Received: (qmail 28203 invoked from network); 22 Oct 2021 08:39:29 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Oct 2021 08:39:29 -0000
+Date:   Fri, 22 Oct 2021 09:39:27 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/8] Remove dependency on congestion_wait in mm/
+Message-ID: <20211022083927.GI3959@techsingularity.net>
+References: <20211019090108.25501-1-mgorman@techsingularity.net>
+ <163486531001.17149.13533181049212473096@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/F/B6g4d=El/ZxXi0eDmuvKT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <163486531001.17149.13533181049212473096@noble.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/F/B6g4d=El/ZxXi0eDmuvKT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 22, 2021 at 12:15:10PM +1100, NeilBrown wrote:
+> On Tue, 19 Oct 2021, Mel Gorman wrote:
+> > Changelog since v3
+> > o Count writeback completions for NR_THROTTLED_WRITTEN only
+> > o Use IRQ-safe inc_node_page_state
+> > o Remove redundant throttling
+> > 
+> > This series is also available at
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-reclaimcongest-v4r2
+> > 
+> > This series that removes all calls to congestion_wait
+> > in mm/ and deletes wait_iff_congested. 
+> 
+> Thanks for this.
+> I don't have sufficient expertise for a positive review, but it seems to
+> make sense with one exception which I have commented on separately.
+> 
 
-Hi all,
+A test battering NFS would still be nice!
 
-After merging the akpm-current tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> In general, I still don't like the use of wake_up_all(), though it won't
+> cause incorrect behaviour.
+> 
 
-drivers/hwmon/occ/p9_sbe.c: In function 'p9_sbe_occ_save_ffdc':
-drivers/hwmon/occ/p9_sbe.c:58:5: error: implicit declaration of function 'k=
-vfree' [-Werror=3Dimplicit-function-declaration]
-   58 |     kvfree(ctx->ffdc);
-      |     ^~~~~~
-drivers/hwmon/occ/p9_sbe.c:59:16: error: implicit declaration of function '=
-kvmalloc'; did you mean 'key_alloc'? [-Werror=3Dimplicit-function-declarati=
-on]
-   59 |    ctx->ffdc =3D kvmalloc(resp_len, GFP_KERNEL);
-      |                ^~~~~~~~
-      |                key_alloc
-drivers/hwmon/occ/p9_sbe.c:59:14: error: assignment to 'void *' from 'int' =
-makes pointer from integer without a cast [-Werror=3Dint-conversion]
-   59 |    ctx->ffdc =3D kvmalloc(resp_len, GFP_KERNEL);
-      |              ^
-cc1: all warnings being treated as errors
+Removing wake_up_all would be tricky. Ideally it would be prioritised but
+more importantly, some sort of guarantee should exist that enough wakeup
+events trigger to wake tasks before the timeout. That would need careful
+thinking about each reclaim reason. For example, if N tasks throttle on
+NOPROGRESS, there is no guarantee that N tasks are currently in reclaim
+that would wake each sleeping task as progress is made. It's similar
+for writeback, are enough pages under writeback to trigger each wakeup?
+A more subtle issue is if each reason should be strict if waking tasks one
+at a time. For example, a task sleeping on writeback might make progress
+for other reasons such as the working set changing during reclaim or a
+large task exiting. Of course the same concerns exist for the series as
+it stands but the worst case scenarios are mitigated by wake_up_all.
 
-Caused by commit
+> I would prefer the first patch would:
+>  - define NR_VMSCAN_THROTTLE
+>  - make reclaim_wait an array
+>  - spelled nr_reclaim_throttled as nr_writeback_throttled
+> 
+> rather than leaving those changes for the second patch.  I think that
+> would make review easier.
+> 
 
-  5027a34a575e ("hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs")
+I can do this. Normally I try structure series from least-to-most
+controversial so that it can be cut at any point and still make sense
+so the array was defined in the second patch because that's when it is
+required. However, I already had defined the enum in patch 1 for the
+tracepoint so I might as well make it an array too.
 
-from the fsi tree interacting with commit
-
-  9192e3be4cc2 ("mm: move kvmalloc-related functions to slab.h")
-
-from the akpm-current tree.
-
-I have applied the following merge fix patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 22 Oct 2021 19:32:54 +1100
-Subject: [PATCH] kvmalloc etc moved to slab.h
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/hwmon/occ/p9_sbe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hwmon/occ/p9_sbe.c b/drivers/hwmon/occ/p9_sbe.c
-index e50243580269..bb082eb52243 100644
---- a/drivers/hwmon/occ/p9_sbe.c
-+++ b/drivers/hwmon/occ/p9_sbe.c
-@@ -4,10 +4,10 @@
- #include <linux/device.h>
- #include <linux/errno.h>
- #include <linux/fsi-occ.h>
--#include <linux/mm.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/platform_device.h>
-+#include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/sysfs.h>
-=20
---=20
-2.33.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/F/B6g4d=El/ZxXi0eDmuvKT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFyeJ4ACgkQAVBC80lX
-0Gx0Dwf9GQctF20LqnqcyM3laN1I9WXYiO393aTgWRQ0dIxmAeHwAlUmSni97FmR
-wh7l4+OrslcrJNK3xtCNTsvT4pW8rQWdDGySZB4/I9KWP0SSYmZVCw7hkmBi6fwg
-asbB3pbRSem7tmfqa/vlEiHfDCPPZ1qzluy5wu2YdqYQn9R+ALONjVV76JEpQ0nr
-wGdB7RN1u9U2iJCJ/4JiDaJwhxf6OUfyIEz7HpBgjwCUfMs91xLXeMP289I6Nfpx
-6amcsZ/IIfRuCIHGs8mOwenD70RtR9if/uX8HPwbLm9EpVl968sdRkq948DOdYk0
-d1L8U7Bk+il15sCo8gEPDiCBdZaQTA==
-=4ser
------END PGP SIGNATURE-----
-
---Sig_/F/B6g4d=El/ZxXi0eDmuvKT--
+-- 
+Mel Gorman
+SUSE Labs
