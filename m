@@ -2,123 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C70437A23
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B95A437A28
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhJVPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:39:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22808 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233505AbhJVPit (ORCPT
+        id S233758AbhJVPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:39:20 -0400
+Received: from mail-pl1-f170.google.com ([209.85.214.170]:38638 "EHLO
+        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233354AbhJVPiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:38:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634916991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6pDVBK3tKFOCe3j1KA9rtn173ZoAK7okWWJpm9DtEwc=;
-        b=M+62KqccBW7+IRmCcVgt6DvqwQMF1+R0MklM73KXx2AKI/r+yRrndmtFCXmDoq0gbZzvAz
-        m5V5VTqgRiwnAtN/GK0rn7pdbtjrVEj9LW8V1R3wfeN1L4Efj2v6//vlEjdvMRW1wGQXll
-        FUCfvMf2H7RWk0Kt4yBfNrOimU8HjLg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-Wrpd-dynMyOp-DGRnaR5BA-1; Fri, 22 Oct 2021 11:36:30 -0400
-X-MC-Unique: Wrpd-dynMyOp-DGRnaR5BA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7419A19253C0;
-        Fri, 22 Oct 2021 15:36:29 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E4BC95D9DE;
-        Fri, 22 Oct 2021 15:36:28 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     mlevitsk@redhat.com, seanjc@google.com
-Subject: [PATCH 13/13] KVM: SEV-ES: reuse advance_sev_es_emulated_ins for OUT too
-Date:   Fri, 22 Oct 2021 11:36:16 -0400
-Message-Id: <20211022153616.1722429-14-pbonzini@redhat.com>
-In-Reply-To: <20211022153616.1722429-1-pbonzini@redhat.com>
-References: <20211022153616.1722429-1-pbonzini@redhat.com>
+        Fri, 22 Oct 2021 11:38:51 -0400
+Received: by mail-pl1-f170.google.com with SMTP id i5so2951767pla.5;
+        Fri, 22 Oct 2021 08:36:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uc+CptoK4CgF4ldWzulgeZP99XuQqA9dacbA2WJ+66A=;
+        b=kpO8SLR2FFeulrrm3oR7iGjZmB/8/VvE1SgNtwJmYqna5pU8+CWv84W5T9soT7NClO
+         ZZAaLoByALm+owp9SQsk0Hi1qOJgDUpw8nVaDhJ69imyrUK1IVBMnp+doc2rvW8BDp4H
+         ipjaLNy/N+zNnzpvVWpMGhc4bYdp94tQdfrAhglTBsFpTWTCT53HCLKRL8hYVHQjy7Jz
+         iAMcdgrPRQuELyew8YdpYe6c9z8VFGUVz+llLOmU6wyhDgb6QLUkoh2u0yVFHe5fQmyx
+         xW/qvSEg1rIuJ6qURD5YAdr/azuMtBZyXdH7qB6X+oqgWVECfr2MkPgtBALP8pZEoQ3G
+         4BVA==
+X-Gm-Message-State: AOAM533eN4sisD98ugLXN7ulwaESboddTaxZFtStJiZEVHWChlZCU/LV
+        2MnhgD++JDQSZDCe4FNNXTRIdaLDvtq66X1lqXU=
+X-Google-Smtp-Source: ABdhPJwHDTxa4dCWQm1cgcpbHpLrGKYplB+GwvTwZZOODB2ZaW4AXitDmRyAhOnm9r5bKQ+Czw+ekExtq8CteP1Wahw=
+X-Received: by 2002:a17:902:b102:b0:134:a329:c2f8 with SMTP id
+ q2-20020a170902b10200b00134a329c2f8mr505153plr.71.1634916992946; Fri, 22 Oct
+ 2021 08:36:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+ <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+ <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com>
+ <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
+ <CANBLGcyaSgbOgA4u_QivUQicyZ0MuUmrSsPq56OAANsav8R=VQ@mail.gmail.com>
+ <CAHp75Vf=fGn33JFa-8UwCzv7A6AgHdnvfoabKnCcuKZxOyWX2Q@mail.gmail.com>
+ <CANBLGcwZG-HpMuyw0LTGY2fwOJTgcMW7V_6kb=CFhX-Y5RjQSA@mail.gmail.com> <CAHp75VfwmSfeUPvUXT3TTf0ZYGMfBZ0qaPoB0_SCzyR=Fb_Emw@mail.gmail.com>
+In-Reply-To: <CAHp75VfwmSfeUPvUXT3TTf0ZYGMfBZ0qaPoB0_SCzyR=Fb_Emw@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 22 Oct 2021 17:36:21 +0200
+Message-ID: <CANBLGcwz7s5OJer-37mQC2r_H0trec04S69ovYdU2_LbiVrtYw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-complete_emulator_pio_in only has to be called by
-complete_sev_es_emulated_ins now; therefore, all that the function does
-now is adjust sev_pio_count and sev_pio_data.  Which is the same for
-both IN and OUT.
+On Fri, 22 Oct 2021 at 17:25, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Fri, Oct 22, 2021 at 5:56 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Fri, 22 Oct 2021 at 16:50, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Fri, Oct 22, 2021 at 5:25 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > > On Fri, 22 Oct 2021 at 15:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > On Fri, Oct 22, 2021 at 4:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > > > > On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > > On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> ...
+>
+> > > > > > > Why all these ugly % 32 against constants?
+> > > > > >
+> > > > > > Because the JH7100_RST_ values goes higher than 31. There is a
+> > > > > > BIT_MASK macro, but that does % BITS_PER_LONG and this is a 64bit
+> > > > > > machine.
+> > > > >
+> > > > > And? It's exactly what you have to use!
+> > > >
+> > > > So you want me to use an unsigned long array or DECLARE_BITMAP and
+> > > > juggle two different index and bit offsets?
+> > >
+> > > What are the offsets of those status registers?
+> > > AFAICS they are sequential 4 32-bit registers.
+> >
+> > That's right, but we're on a 64bit machine, so DECLARE_BITMAP will
+> > give us an unsigned long array that doesn't match that.
+>
+> I didn't get it, sorry.
+> You will have a bitmap array which you will split to 32-bit values.
+> What you will probably need is to move  xgpio_get_value32() and void
+> xgpio_set_value32() to the one of bitmap related headers (look for
+> bitmap_get_value8() and friends).
+>
+> > > So bitmap is exactly what is suitable here, you are right!
+> > > See gpio-xilinx and gpio-pca953x on how to use bitmaps in the GPIO drivers.
+> >
+> > None of them has a pre-initialized const DECLARE_BITMAP, so they don't
+> > have to deal with the 4 vs. 2 commas problem.
+>
+> I believe it's well possible to refactor this to look much better with
+> bitmaps (as it represents the hardware very well).
 
-No functional change intended.
+Right, but how exactly? This works on on 64bit, but not with 32bit COMPILE_TEST:
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+static const DECLARE_BITMAP(jh7100_reset_asserted, JH7100_RSTN_END) = {
+        /* STATUS0 register */
+        BIT_MASK(JH7100_RST_U74) |
+        BIT_MASK(JH7100_RST_VP6_DRESET) |
+        BIT_MASK(JH7100_RST_VP6_BRESET) |
+        /* STATUS1 register */
+        BIT_MASK(JH7100_RST_HIFI4_DRESET) |
+        BIT_MASK(JH7100_RST_HIFI4_BRESET),
+        /* STATUS2 register */
+        BIT_MASK(JH7100_RST_E24) |
+        /* STATUS3 register */
+        0,
+};
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c3a2f479604d..b9ce4cfec121 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12365,6 +12365,12 @@ int kvm_sev_es_mmio_read(struct kvm_vcpu *vcpu, gpa_t gpa, unsigned int bytes,
- }
- EXPORT_SYMBOL_GPL(kvm_sev_es_mmio_read);
- 
-+static void advance_sev_es_emulated_pio(struct kvm_vcpu *vcpu, unsigned count, int size)
-+{
-+	vcpu->arch.sev_pio_count -= count;
-+	vcpu->arch.sev_pio_data += count * size;
-+}
-+
- static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
- 			   unsigned int port);
- 
-@@ -12388,8 +12394,7 @@ static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
- 		int ret = emulator_pio_out(vcpu, size, port, vcpu->arch.sev_pio_data, count);
- 
- 		/* memcpy done already by emulator_pio_out.  */
--		vcpu->arch.sev_pio_count -= count;
--		vcpu->arch.sev_pio_data += count * vcpu->arch.pio.size;
-+		advance_sev_es_emulated_pio(vcpu, count, size);
- 		if (!ret)
- 			break;
- 
-@@ -12405,12 +12410,6 @@ static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
- static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
- 			  unsigned int port);
- 
--static void advance_sev_es_emulated_ins(struct kvm_vcpu *vcpu, unsigned count, int size)
--{
--	vcpu->arch.sev_pio_count -= count;
--	vcpu->arch.sev_pio_data += count * size;
--}
--
- static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
- {
- 	unsigned count = vcpu->arch.pio.count;
-@@ -12418,7 +12417,7 @@ static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
- 	int port = vcpu->arch.pio.port;
- 
- 	complete_emulator_pio_in(vcpu, vcpu->arch.sev_pio_data);
--	advance_sev_es_emulated_ins(vcpu, count, size);
-+	advance_sev_es_emulated_pio(vcpu, count, size);
- 	if (vcpu->arch.sev_pio_count)
- 		return kvm_sev_es_ins(vcpu, size, port);
- 	return 1;
-@@ -12434,7 +12433,7 @@ static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
- 			break;
- 
- 		/* Emulation done by the kernel.  */
--		advance_sev_es_emulated_ins(vcpu, count, size);
-+		advance_sev_es_emulated_pio(vcpu, count, size);
- 		if (!vcpu->arch.sev_pio_count)
- 			return 1;
- 	}
--- 
-2.27.0
 
+> > > > Also is there a macro for handling that we'd then need 4 commas on
+> > > > 32bit COMPILE_TEST and 2 commas on 64bit?
+> > > > If you have some other way in mind you'll have to be a lot more explicit again.
+> > > >
+> > > > The point of the jh7100_reset_asserted array is that it exactly
+> > > > mirrors the values of the status registers when the lines are
+> > > > asserted. Maybe writing it like this would be more explicit:
+> > > >
+> > > > static const u32 jh7100_reset_asserted[4] = {
+> > > >         /* STATUS0 register */
+> > > >         BIT(JH7100_RST_U74 % 32) |
+> > > >         BIT(JH7100_RST_VP6_DRESET % 32) |
+> > > >         BIT(JH7100_RST_VP6_BRESET % 32),
+> > > >         /* STATUS1 register */
+> > > >         BIT(JH7100_RST_HIFI4_DRESET % 32) |
+> > > >         BIT(JH7100_RST_HIFI4_BRESET % 32),
+> > > >         /* STATUS2 register */
+> > > >         BIT(JH7100_RST_E24 % 32),
+> > > >         /* STATUS3 register */
+> > > >         0,
+> > > > };
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
