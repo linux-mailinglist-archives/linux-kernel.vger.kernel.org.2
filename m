@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBCD437A01
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1031F437A0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhJVPi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:38:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:55954 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233233AbhJVPi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:38:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42DB91FB;
-        Fri, 22 Oct 2021 08:36:09 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F8973F694;
-        Fri, 22 Oct 2021 08:36:05 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 16:36:02 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vladimir Murzin <vladimir.murzin@arm.com>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        maz@kernel.org, nickhu@andestech.com, palmer@dabbelt.com,
-        paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, torvalds@linux-foundation.org,
-        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
-Subject: Re: [PATCH 09/15] irq: arm: perform irqentry in entry code
-Message-ID: <20211022153602.GE86184@C02TD0UTHF1T.local>
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-10-mark.rutland@arm.com>
- <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
+        id S233239AbhJVPit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:38:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27302 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233354AbhJVPip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:38:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634916987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N4QDGFQMHWohd/KdxIYekf+yDmyllljs4b87acPJcHQ=;
+        b=cy1RJGotRkVPwa5EYG/5Gpnl/M9uy0cRRzQGjM9z0Nqee6w/uBKeTOT9coMFi2Qcglk8SS
+        4u9VrEDMiFUT8w+DcIupIbppIWBT0N55rzDdfEhaKVEU0979ByDC6BwhX40ylmM9f3OtNn
+        Aawn1jz2QsKoXPuP1dAFkfDmgm0htIc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-Z776zpvDO8OXDzNri2iRsg-1; Fri, 22 Oct 2021 11:36:23 -0400
+X-MC-Unique: Z776zpvDO8OXDzNri2iRsg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 083908042E1;
+        Fri, 22 Oct 2021 15:36:22 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8928E60C04;
+        Fri, 22 Oct 2021 15:36:21 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     mlevitsk@redhat.com, seanjc@google.com
+Subject: [PATCH v2 00/13] fixes and cleanups for string I/O emulation
+Date:   Fri, 22 Oct 2021 11:36:03 -0400
+Message-Id: <20211022153616.1722429-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 04:18:18PM +0100, Vladimir Murzin wrote:
-> Hi Mark,
-> 
-> On 10/21/21 7:02 PM, Mark Rutland wrote:
-> > +/*
-> > + * TODO: restructure the ARMv7M entry logic so that this entry logic can live
-> > + * in arch code.
-> > + */
-> > +asmlinkage void __exception_irq_entry
-> > +static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
-> 
-> I'm seeing build time failure...
-> 
-> drivers/irqchip/irq-nvic.c:50:8: error: two or more data types in declaration specifiers
->  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->         ^~~~
-> drivers/irqchip/irq-nvic.c:50:13: warning: 'nvic_handle_irq' defined but not used [-Wunused-function]
->  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
-> 
-> I've fixed that locally and planing to give it a go...
+This series is split in two parts:
 
-Ah, whoops. I've removed the extraneous `static void` from
-nvic_handle_irq() and build tested that as part of stm32_defconfig.
+- patch 7 fixes a bug in string I/O emulation for SEV-ES, where
+  the size of the GHCB buffer can exceed the size of vcpu->arch.pio_data.
+  If that happens, we need to go over the GHCB buffer in multiple passes.
+  There are some preliminary cleanups in patches 1/3/6 too.
 
-The updated version is in my irq/handle-domain-irq branch at:
+- the other patches clean emulator_pio_in and emulator_pio_in_out.  The
+  first changes (patches 2/3/5) are more localized; they make the final
+  SEV code a little easier to follow, and they remove unnecessary
+  function arguments so that it is clearer which functions consume
+  vcpu->arch.pio and which don't.  Patches starting from 8 on, instead,
+  remove all usage of vcpu->arch.pio unless a userspace KVM_EXIT_IO is
+  required.  In the end, IN is split clearly into a function that
+  (if needed) fills in vcpu->arch.pio, and one that is intended for
+  completion callbacks and consumes it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
+Tested by booting a SEV-ES guest and with "regular" kvm-unit-tests.
 
-Thanks,
-Mark.
+Paolo
+
+Paolo Bonzini (13):
+  KVM: SEV-ES: rename guest_ins_data to sev_pio_data
+  KVM: x86: leave vcpu->arch.pio.count alone in emulator_pio_in_out
+  KVM: SEV-ES: clean up kvm_sev_es_ins/outs
+  KVM: x86: split the two parts of emulator_pio_in
+  KVM: x86: remove unnecessary arguments from complete_emulator_pio_in
+  KVM: SEV-ES: keep INS functions together
+  KVM: SEV-ES: go over the sev_pio_data buffer in multiple passes if
+    needed
+  KVM: x86: inline kernel_pio into its sole caller
+  KVM: x86: move all vcpu->arch.pio* setup in emulator_pio_in_out
+  KVM: x86: wean in-kernel PIO from vcpu->arch.pio*
+  KVM: x86: wean fast IN from emulator_pio_in
+  KVM: x86: de-underscorify __emulator_pio_in
+  KVM: SEV-ES: reuse advance_sev_es_emulated_ins for OUT too
+
+ arch/x86/include/asm/kvm_host.h |   3 +-
+ arch/x86/kvm/trace.h            |   2 +-
+ arch/x86/kvm/x86.c              | 193 +++++++++++++++++++-------------
+ 3 files changed, 117 insertions(+), 81 deletions(-)
+
+-- 
+2.27.0
+
