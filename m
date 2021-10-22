@@ -2,130 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A4043706C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E211C437079
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhJVDPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:15:44 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:32805 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbhJVDPm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:15:42 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 949F582;
-        Thu, 21 Oct 2021 20:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1634872404;
-        bh=LLNRJiKGUMP7EoEUR5wD7aBtbHYbva/6dCa1Qn54veA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IKgkUD9bQNVd0XbhImJSr8B9499DdErazMVErWDoirEAEC+tFs0P/BCzyQWEi625B
-         CLioUn/XybYiEDiTPUzYo2PGkG5J08gr84dqq6JWu+2nTxAfL0l15t8F1DEgteW6Mi
-         hdfS4zkF/77d6chq5yp1zOLPgb6rIMlbASLrxKio=
-Date:   Thu, 21 Oct 2021 20:13:19 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
-Message-ID: <YXIsTxprltXzBv+6@hatter.bewilderbeest.net>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <CAL_JsqLmonXoV2qJ4zY1wfDTRuQAYQuymXEB2kTpUmkKWwPGjg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLmonXoV2qJ4zY1wfDTRuQAYQuymXEB2kTpUmkKWwPGjg@mail.gmail.com>
+        id S232632AbhJVD3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:29:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232606AbhJVD3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 23:29:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D38619BB;
+        Fri, 22 Oct 2021 03:26:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634873214;
+        bh=dzVTEjYRvmGezdHFFYtBNFqE16zf9YNbNz8le8VBIjQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qdc4pnTlrUjTjgzU9JkiOX5K4g7nVlz54G5x2dfMNCsUi4hCl90buh+usFnbV1R2F
+         CrfX+ZulE3uxYnvhDwezjEltulhqzRqs2LAI7LRWlnrfMObRLBTbMeQy3n8U+oVTIR
+         gAErfhkmBP0FJcCoSvVeWEhOksaf2C+dFRRxpfGY=
+Date:   Thu, 21 Oct 2021 20:26:52 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Chen Wandun <chenwandun@huawei.com>
+Cc:     <npiggin@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <edumazet@google.com>,
+        <wangkefeng.wang@huawei.com>, <guohanjun@huawei.com>,
+        <shakeelb@google.com>, <urezki@gmail.com>
+Subject: Re: [PATCH v3 2/2] mm/vmalloc: introduce
+ alloc_pages_bulk_array_mempolicy to accelerate memory allocation
+Message-Id: <20211021202652.ff8568bd5d58fbcf32946f83@linux-foundation.org>
+In-Reply-To: <20211021080744.874701-3-chenwandun@huawei.com>
+References: <20211021080744.874701-1-chenwandun@huawei.com>
+        <20211021080744.874701-3-chenwandun@huawei.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:58:46PM PDT, Rob Herring wrote:
->On Thu, Oct 21, 2021 at 9:00 PM Zev Weiss <zev@bewilderbeest.net> wrote:
->>
->> Hello all,
->>
->> This series is another incarnation of a couple other patchsets I've
->> posted recently [0, 1], but again different enough in overall
->> structure that I'm not sure it's exactly a v2 (or v3).
->>
->> As compared to [1], it abandons the writable binary sysfs files and at
->> Frank's suggestion returns to an approach more akin to [0], though
->> without any driver-specific (aspeed-smc) changes, which I figure might
->> as well be done later in a separate series once appropriate
->> infrastructure is in place.
->
->I skimmed this, and overall I like the approach.
->
->> The basic idea is to implement support for a status property value
->> that's documented in the DT spec [2], but thus far not used at all in
->> the kernel (or anywhere else I'm aware of): "reserved".  According to
->> the spec (section 2.3.4, Table 2.4), this status:
->>
->>   Indicates that the device is operational, but should not be used.
->>   Typically this is used for devices that are controlled by another
->>   software component, such as platform firmware.
->>
->> With these changes, devices marked as reserved are (at least in some
->> cases, more on this later) instantiated, but will not have drivers
->> bound to them unless and until userspace explicitly requests it by
->> writing the device's name to the driver's sysfs 'bind' file.  This
->> enables appropriate handling of hardware arrangements that can arise
->> in contexts like OpenBMC, where a device may be shared with another
->> external controller not under the kernel's control (for example, the
->> flash chip storing the host CPU's firmware, shared by the BMC and the
->> host CPU and exclusively under the control of the latter by default).
->> Such a device can be marked as reserved so that the kernel refrains
->> from touching it until appropriate preparatory steps have been taken
->> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
->> processor has control of the firmware flash).
->>
->> Patches 1-3 provide some basic plumbing for checking the "reserved"
->> status of a device, patch 4 is the main driver-core change, and patch
->> 5 tweaks the OF platform code to not skip reserved devices so that
->> they can actually be instantiated.
->>
->> One shortcoming of this series is that it doesn't automatically apply
->> universally across all busses and drivers -- patch 5 enables support
->> for platform devices, but similar changes would be required for
->> support in other busses (e.g. in of_register_spi_devices(),
->> of_i2c_register_devices(), etc.) and drivers that instantiate DT
->> devices.  Since at present a "reserved" status is treated as
->> equivalent to "disabled" and this series preserves that status quo in
->> those cases I'd hope this wouldn't be considered a deal-breaker, but
->> a thing to be aware of at least.
->>
->> Greg: I know on [1] you had commented nack-ing the addition of boolean
->> function parameters; patch 4 adds a flags mask instead in an analogous
->> situation.  I'm not certain how much of an improvement you'd consider
->> that (hopefully at least slightly better, in that the arguments passed
->> at the call site are more self-explanatory); if that's still
->> unsatisfactory I'd welcome any suggested alternatives.
->
->Can't we add a flag bit in struct device to reflect manual binding?
->bind will set it and unbind clears it.
->
+On Thu, 21 Oct 2021 16:07:44 +0800 Chen Wandun <chenwandun@huawei.com> wrote:
 
-I considered this (and actually drafted up a version that did exactly 
-that), but it seemed like turning a parameter-passing problem into a 
-state-maintenance problem (finding all the places that flag would need 
-to be cleared and ensuring newly-added ones don't get missed, which 
-unlike a function parameter the compiler can't really check for us).  
-Given that the live range (definition to use) of that value is entirely 
-within the codepath of a single call-chain (bind_store() -> 
-device_driver_attach() -> __driver_probe_device()), continuing to 
-maintain that state beyond that call chain seemed like unnecessary 
-complexity to me, but if there's a consensus that that would actually be 
-preferable I can certainly do it that way instead.
+> It
+
+What is "it"?
+
+> will cause significant performance regressions in some situations
+> as Andrew mentioned in [1]. The main situation is vmalloc, vmalloc
+> will allocate pages with NUMA_NO_NODE by default, that will result
+> in alloc page one by one;
+> 
+> In order to solve this, __alloc_pages_bulk and mempolicy should be
+> considered at the same time.
+> 
+> 1) If node is specified in memory allocation request, it will alloc
+> all pages by __alloc_pages_bulk.
+> 
+> 2) If interleaving allocate memory, it will cauculate how many pages
+> should be allocated in each node, and use __alloc_pages_bulk to alloc
+> pages in each node.
+
+This v3 patch didn't incorporate my two fixes, below.  It is usual to
+incorporate such fixes prior to resending.  I have retained those two
+fixes, now against v3.
 
 
-Zev
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix
+
+make two functions static
+
+Cc: Chen Wandun <chenwandun@huawei.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Hanjun Guo <guohanjun@huawei.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mempolicy.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/mempolicy.c~mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix
++++ a/mm/mempolicy.c
+@@ -2196,7 +2196,7 @@ struct page *alloc_pages(gfp_t gfp, unsi
+ }
+ EXPORT_SYMBOL(alloc_pages);
+ 
+-unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
++static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
+ 		struct mempolicy *pol, unsigned long nr_pages,
+ 		struct page **page_array)
+ {
+@@ -2231,7 +2231,7 @@ unsigned long alloc_pages_bulk_array_int
+ 	return total_allocated;
+ }
+ 
+-unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
++static unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
+ 		struct mempolicy *pol, unsigned long nr_pages,
+ 		struct page **page_array)
+ {
+_
+
+
+
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix-2
+
+fix CONFIG_NUMA=n build.  alloc_pages_bulk_array_mempolicy() was undefined
+
+Cc: Chen Wandun <chenwandun@huawei.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Hanjun Guo <guohanjun@huawei.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmalloc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/vmalloc.c~mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix-2
++++ a/mm/vmalloc.c
+@@ -2860,7 +2860,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 			 * otherwise memory may be allocated in only one node,
+ 			 * but mempolcy want to alloc memory by interleaving.
+ 			 */
+-			if (nid == NUMA_NO_NODE)
++			if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
+ 				nr = alloc_pages_bulk_array_mempolicy(gfp,
+ 							nr_pages_request,
+ 							pages + nr_allocated);
+_
 
