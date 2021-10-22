@@ -2,88 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1695A437407
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0427F43740A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhJVI4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232154AbhJVI4r (ORCPT
+        id S232387AbhJVI5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:57:02 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44336
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232180AbhJVI5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:56:47 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B82C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:54:29 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 5so1147865edw.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=HrFPSVbaJCP8/VAvKJYHEZxALPWGOLisv+WT9WnEMzs=;
-        b=CdOJsrCpWxgBJFhnkbEKydkOdlcMVmMZR2hgstaEGtJmlBe46Ty8tVVy0E8CqrdrCK
-         JlgvD2RR93zRhol+NsTkOpdpX8CXDva+9RjV6C8CcBcok27KnLziOCISDzfjgJouyThw
-         VGip+UFiHDGEBEB7SiJqfPm7A96YR9GFFSn2fhUqUcG0Oc0YHIZa12ClSpqLXAcxUjIW
-         sml7wJfZXefx1aldFSbpFoJ9YeOx6ip6dIvWv9M2c9YZ8vQn21PehPiihhwYC+aOERcT
-         1D2wrSjABkmIJznlfFErKXQ4qUrWbbR8qT0PvyCfeWlUmxFfgN6k4OiJnETUfp0ID1WY
-         dLGA==
+        Fri, 22 Oct 2021 04:57:01 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5593B40019
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634892883;
+        bh=Carl7Pe6UmGLChoOIKcp8s0kxXVp6AfE+vBYtcnHbFY=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=JufsuybBEhwKQE9NftAXZCx9A9/4YjcT4fEtR4uneBC9aOWvBLD4TGJZSlSvL16I3
+         p7V5SYXm0zqOuMDM8S46qnVP5XHFY/MrCcqTftSvfwzGqitLQ0oXIKyoxjCviJwm1m
+         rDoYfhbdjuMuoklh1vpM/ii3uB/nC3JCgV4f090BvIfVPyQdWlcbXK1UXMEg5uP8jm
+         yWl0/Ai5TiHHHlWXWygo/SXjDP4wZQenzc0AuuM8OUu6ZWtCCqCv5Z4Q8c2eUw8/m3
+         nB9pyfid9X6+qOe2vufyDtt/cHq0U9lDMOCN/z0/qNaztaCIIFSrhc2rAaoVJ2JNfo
+         L1Bnz3q/QaA2w==
+Received: by mail-lf1-f71.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso1435696lfg.16
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:54:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HrFPSVbaJCP8/VAvKJYHEZxALPWGOLisv+WT9WnEMzs=;
-        b=22nkvaNvIxSM0WveUXiT4e4sxf76ou8UpapvmViGylfpdCqri0v67waLxfA1XQkmgw
-         jD99s9Bd2lq/9zo00W5G/fPwc3gHvUPPyo7tMUjArUM0LCDamucUwVIaeL3Med63nI4r
-         pMiCWEpLg/LR8/wX786DfZf8VH0idgyDWPOER/C8XNjQe4EkLMoZHjL3L9pN1zSrUnhH
-         uIMo2dhd6c4E6xxPDiHmdz7ZHStPQJx79KEyZa6gGzTCvO8qbXpFmFSTsP9eTKjDd5+I
-         Okb3XX98d/hDk8gyGkTF94fyjwbOaMHjVUy5087sdH6ze98XIukh1Ac+hWrg/tAN7O/F
-         WNCA==
-X-Gm-Message-State: AOAM533pmpswlWVZXTCn4qTFSNZ0zQO5zOEuoUqPuzSYQC6578y3NwbJ
-        vpJDyfP8fxzi5KmDmxWboVY=
-X-Google-Smtp-Source: ABdhPJwd3EAEeZYXCwIDn2/7h23nVuBVLhj8dulP37GOTibbGwUFEwDZusTLqbwrT6H/3/TwibRd9g==
-X-Received: by 2002:a17:906:5a63:: with SMTP id my35mr2002043ejc.104.1634892868583;
-        Fri, 22 Oct 2021 01:54:28 -0700 (PDT)
-Received: from localhost.localdomain (host-80-181-148-119.retail.telecomitalia.it. [80.181.148.119])
-        by smtp.gmail.com with ESMTPSA id c19sm4466759ede.16.2021.10.22.01.54.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 01:54:28 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Remove unused semaphores
-Date:   Fri, 22 Oct 2021 10:54:26 +0200
-Message-ID: <1905861.9EeI4ENUQp@localhost.localdomain>
-In-Reply-To: <20211022084727.28035-1-fmdefrancesco@gmail.com>
-References: <20211022084727.28035-1-fmdefrancesco@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Carl7Pe6UmGLChoOIKcp8s0kxXVp6AfE+vBYtcnHbFY=;
+        b=4SiNiKIlFVoG0YQPME6ueAyRJNVUql2C5x34sT+9gwxmA6SmH2QA0P4BwziALjV0HU
+         Y6KFNonleDRX4hL4vz0ImKLTQv/NVolbImU+3NpKKDuWVqITfGE7Pa0KYWKacF7qge+M
+         OCsQcpdCwpapVCMMGK47KvGAiB6GZfCwCIFTvJoDsLn+78vIivji13jqnOHOH/P9e6hM
+         an7D7lCT8u3wG67n2hyQqeaJ66CYy05bHrDKrwz9gD5jmQUtRzqF/Pa6iiMcfHQMs0LZ
+         6o4jV1wl2Qm0VSocaO2oR1ppvY8foQ83xWPo1I55Q8mXCXHog9zjvXlQKYmPrEtWwOEm
+         Ntuw==
+X-Gm-Message-State: AOAM533mZArFTC8TeuCdUcwviK/FuNcwsJRZt4CAuwuvjEsFJ8K/pIt3
+        tP4htscQcmoNgavFMxXqNM4xRo7ymPF/llf/rHyctP+pq/1jDnXCruh8rbNSNejj11VfWlGCMAW
+        U/MHmCYSvAh+Q4PC12SwjfpdN1bVQaXhAWXkUalwNgw==
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr10077221lfu.637.1634892882585;
+        Fri, 22 Oct 2021 01:54:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5wXH8lLMcrlGOHByO1io8mqLUATcdtW9OlmDbgC+tn9pMODi48vzpNaBtkjOvs2FFTEUCjQ==
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr10077200lfu.637.1634892882331;
+        Fri, 22 Oct 2021 01:54:42 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id v5sm676876lfo.49.2021.10.22.01.54.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 01:54:41 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] rtc: s3c: Add time range
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211021202256.28517-1-semen.protsenko@linaro.org>
+ <20211021202256.28517-4-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <f3c2d2cd-1099-5997-3516-e48f43e3cf94@canonical.com>
+Date:   Fri, 22 Oct 2021 10:54:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20211021202256.28517-4-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, October 22, 2021 10:47:25 AM CEST Fabio M. De Francesco wrote:
-> Remove two unused semaphores.
+On 21/10/2021 22:22, Sam Protsenko wrote:
+> This RTC driver starts counting from 2000 to avoid Y2K problem. Also it
+> only supports 100 years range for all RTCs.  Provide that info to RTC
+> framework. Also remove check for 100 years range in s3c_rtc_settime(),
+> as RTC core won't pass any invalid values to the driver, now that
+> correct range is set.
 > 
-> Fabio M. De Francesco (2):
->   staging: r8188eu: Remove initialized but unused semaphore
->   staging: r8188eu: Remove unused semaphore "io_retevt"
+> Here is the rationale on 100 years range limitation. Info on different
+> Samsung RTCs (credit goes to Krzysztof Kozlowski):
+>   - All S3C chips have only 8-bit wide year register (can store 100
+>     years range in BCD format)
+>   - S5Pv210 and Exynos chips have 12-bit year register (can store 1000
+>     years range in BCD format)
 > 
->  drivers/staging/r8188eu/core/rtw_xmit.c      | 1 -
->  drivers/staging/r8188eu/include/osdep_intf.h | 1 -
->  drivers/staging/r8188eu/include/rtw_xmit.h   | 1 -
->  3 files changed, 3 deletions(-)
+> But in reality we usually can't make use of those 12 bits either:
+>   - RTCs might think that both 2000 and 2100 years are leap years. So
+>     when the YEAR register is 0, RTC goes from 28 Feb to 29 Feb, and
+>     when the YEAR register is 100, RTC also goes from 28 Feb to 29 Feb.
+>     This is of course incorrect: RTC breaks leap year criteria, which
+>     breaks the time contiguity, which leads to inability to use the RTC
+>     after year of 2099. It was found for example on Exynos850 SoC.
+>   - Despite having 12 bits for holding the year value, RTC might
+>     overflow the year value internally much earlier. For example, on
+>     Exynos850 the RTC overflows when YEAR=159, making the next YEAR=0.
+>     This way RTC actually has range of 160 years, not 1000 as one may
+>     think.
 > 
-> -- 
-> 2.33.1
+> All that said, there is no sense in trying to increase the time range
+> for more than 100 years on RTCs that seem capable of that. It also
+> doesn't have too much practical value -- current hardware will be
+> probably obsolete by 2100.
+> 
+> Tested manually on Exynos850 RTC:
+> 
+>     $ date -s "1999-12-31 23:59:50"
+>     $ hwclock -w -f /dev/rtc0
+>     $ date -s "2100-01-01 00:00:00"
+>     $ hwclock -w -f /dev/rtc0
+>     $ date -s "2000-01-01 00:00:00"
+>     $ hwclock -w -f /dev/rtc0
+>     $ hwclock -r -f /dev/rtc0
+>     $ date -s "2099-12-31 23:59:50"
+>     $ hwclock -w -f /dev/rtc0
+>     $ hwclock -r -f /dev/rtc0
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v2:
+>   - Removed check for 100 years range in s3c_rtc_settime()
+>   - Improved the commit message
+> 
 
-I'm sorry but I overlooked the name of the driver in this cover letter :(
-Am I required to send a v2?
 
-Fabio
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 
-
+Best regards,
+Krzysztof
