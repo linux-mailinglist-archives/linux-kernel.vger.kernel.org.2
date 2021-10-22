@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D779243793E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A69437940
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233219AbhJVOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:50:07 -0400
-Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:40008 "EHLO
-        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233232AbhJVOuC (ORCPT
+        id S233223AbhJVOuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:50:20 -0400
+Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:42837 "EHLO
+        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233222AbhJVOuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:50:02 -0400
+        Fri, 22 Oct 2021 10:50:14 -0400
 Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id E38BF500D3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:47:42 +0100 (IST)
-Received: (qmail 30633 invoked from network); 22 Oct 2021 14:47:42 -0000
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 2521518E0D9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:47:53 +0100 (IST)
+Received: (qmail 31092 invoked from network); 22 Oct 2021 14:47:52 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPA; 22 Oct 2021 14:47:42 -0000
+  by 81.17.254.9 with ESMTPA; 22 Oct 2021 14:47:52 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
@@ -34,9 +34,9 @@ Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
         Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 4/8] mm/writeback: Throttle based on page writeback instead of congestion
-Date:   Fri, 22 Oct 2021 15:46:47 +0100
-Message-Id: <20211022144651.19914-5-mgorman@techsingularity.net>
+Subject: [PATCH 5/8] mm/page_alloc: Remove the throttling logic from the page allocator
+Date:   Fri, 22 Oct 2021 15:46:48 +0100
+Message-Id: <20211022144651.19914-6-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211022144651.19914-1-mgorman@techsingularity.net>
 References: <20211022144651.19914-1-mgorman@techsingularity.net>
@@ -46,43 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_writepages throttles on congestion if the writepages() fails due to a
-lack of memory but congestion_wait() is partially broken as the congestion
-state is not updated for all BDIs.
-
-This patch stalls waiting for a number of pages to complete writeback
-that located on the local node. The main weakness is that there is no
-correlation between the location of the inode's pages and locality but
-that is still better than congestion_wait.
+The page allocator stalls based on the number of pages that are
+waiting for writeback to start but this should now be redundant.
+shrink_inactive_list() will wake flusher threads if the LRU tail are
+unqueued dirty pages so the flusher should be active. If it fails to make
+progress due to pages under writeback not being completed quickly then
+it should stall on VMSCAN_THROTTLE_WRITEBACK.
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/page-writeback.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ mm/page_alloc.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 4812a17b288c..f34f54fcd5b4 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2366,8 +2366,15 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
- 			ret = generic_writepages(mapping, wbc);
- 		if ((ret != -ENOMEM) || (wbc->sync_mode != WB_SYNC_ALL))
- 			break;
--		cond_resched();
--		congestion_wait(BLK_RW_ASYNC, HZ/50);
-+
-+		/*
-+		 * Lacking an allocation context or the locality or writeback
-+		 * state of any of the inode's pages, throttle based on
-+		 * writeback activity on the local node. It's as good a
-+		 * guess as any.
-+		 */
-+		reclaim_throttle(NODE_DATA(numa_node_id()),
-+			VMSCAN_THROTTLE_WRITEBACK, HZ/50);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 78e538067651..8fa0109ff417 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4795,30 +4795,11 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
+ 		trace_reclaim_retry_zone(z, order, reclaimable,
+ 				available, min_wmark, *no_progress_loops, wmark);
+ 		if (wmark) {
+-			/*
+-			 * If we didn't make any progress and have a lot of
+-			 * dirty + writeback pages then we should wait for
+-			 * an IO to complete to slow down the reclaim and
+-			 * prevent from pre mature OOM
+-			 */
+-			if (!did_some_progress) {
+-				unsigned long write_pending;
+-
+-				write_pending = zone_page_state_snapshot(zone,
+-							NR_ZONE_WRITE_PENDING);
+-
+-				if (2 * write_pending > reclaimable) {
+-					congestion_wait(BLK_RW_ASYNC, HZ/10);
+-					return true;
+-				}
+-			}
+-
+ 			ret = true;
+-			goto out;
++			break;
+ 		}
  	}
+ 
+-out:
  	/*
- 	 * Usually few pages are written by now from those we've just submitted
+ 	 * Memory allocation/reclaim might be called from a WQ context and the
+ 	 * current implementation of the WQ concurrency control doesn't
 -- 
 2.31.1
 
