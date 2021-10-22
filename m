@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFC1436F93
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE5F436F94
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhJVBwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 21:52:01 -0400
-Received: from out28-148.mail.aliyun.com ([115.124.28.148]:50247 "EHLO
-        out28-148.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJVBwA (ORCPT
+        id S231644AbhJVByA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 21:54:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14840 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhJVBx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 21:52:00 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1947132|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00895314-0.00138788-0.989659;FP=13645255560291118206|1|1|8|0|-1|-1|-1;HT=ay29a033018047211;MF=huangshuosheng@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.LflF5bR_1634867362;
-Received: from allwinnertech.com(mailfrom:huangshuosheng@allwinnertech.com fp:SMTPD_---.LflF5bR_1634867362)
-          by smtp.aliyun-inc.com(10.147.40.44);
-          Fri, 22 Oct 2021 09:49:41 +0800
-From:   Shuosheng Huang <huangshuosheng@allwinnertech.com>
-To:     sumit.semwal@linaro.org, lmark@codeaurora.org, labbott@redhat.com,
-        Brian.Starkey@arm.com, john.stultz@linaro.org,
-        christian.koenig@amd.com
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Subject: [PATCH v2] dma-buf: heaps: init heaps in subsys_initcall
-Date:   Fri, 22 Oct 2021 09:48:50 +0800
-Message-Id: <20211022014850.22933-1-huangshuosheng@allwinnertech.com>
-X-Mailer: git-send-email 2.29.0
+        Thu, 21 Oct 2021 21:53:59 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hb6dv5MBvz90MK;
+        Fri, 22 Oct 2021 09:46:43 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 09:51:41 +0800
+Received: from [10.174.179.5] (10.174.179.5) by dggpemm500002.china.huawei.com
+ (7.185.36.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 22 Oct
+ 2021 09:51:40 +0800
+Subject: Re: [RFC PATCH v2] arm64: barrier: add macro dgh() to control memory
+ accesses merging
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     <mark.rutland@arm.com>, <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <moyufeng@huawei.com>
+References: <20211015090511.92421-1-wangxiongfeng2@huawei.com>
+ <YWnBngJeIvV2S5IB@arm.com>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <3303413f-a8de-bd41-4095-80ffa98cf75b@huawei.com>
+Date:   Fri, 22 Oct 2021 09:51:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWnBngJeIvV2S5IB@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.5]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some built-in modules will failed to use dma-buf heap to allocate
-memory if the heap drivers are too late to be initialized.
-To fix this issue, move initialization of dma-buf heap drivers in
-subsys_initcall() which is more earlier to be called.
+Hi Catalin,
 
-Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
----
- drivers/dma-buf/heaps/cma_heap.c    | 2 +-
- drivers/dma-buf/heaps/system_heap.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 2021/10/16 1:59, Catalin Marinas wrote:
+> On Fri, Oct 15, 2021 at 05:05:11PM +0800, Xiongfeng Wang wrote:
+>> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+>> index 451e11e5fd23..d71a7457d619 100644
+>> --- a/arch/arm64/include/asm/barrier.h
+>> +++ b/arch/arm64/include/asm/barrier.h
+>> @@ -18,6 +18,14 @@
+>>  #define wfe()		asm volatile("wfe" : : : "memory")
+>>  #define wfi()		asm volatile("wfi" : : : "memory")
+>>  
+>> +/*
+>> + * Data Gathering Hint:
+>> + * This instruction prohibits merging memory accesses with Normal-NC or
+>> + * Device-GRE attributes before the hint instruction with any memory accesses
+>> + * appearing after the hint instruction.
+>> + */
+>> +#define dgh()		asm volatile("hint #6" : : : "memory")
+> 
+> On its own, this patch doesn't do anything. It's more interesting to see
+> how it will be used and maybe come up with a common name that other
+> architectures would share (or just implement as no-opp). I'm not sure
+> there was any conclusion last time we discussed this.
 
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 0c05b79870f9..e051403a346d 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -400,6 +400,6 @@ static int add_default_cma_heap(void)
- 
- 	return ret;
- }
--module_init(add_default_cma_heap);
-+subsys_initcall(add_default_cma_heap);
- MODULE_DESCRIPTION("DMA-BUF CMA Heap");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 23a7e74ef966..3d6927657ec9 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -435,5 +435,5 @@ static int system_heap_create(void)
- 
- 	return 0;
- }
--module_init(system_heap_create);
-+subsys_initcall(system_heap_create);
- MODULE_LICENSE("GPL v2");
--- 
-2.29.0
+In the last mail, I was suggested to investigate the code in other architecture
+to find if there exists similar interface. I searched 'merg' in the code and
+didn't find similar interface.
 
+The only thing similar I found is in Intel Software Developer's Manual. It says
+"Write Combining (WC) ... Writes may be delayed and combined in the write
+combining buffer (WC buffer) to reduce memory accesses. If the WC buffer is
+partially filled, the writes may be delayed until the next occurrence of a
+serializing event; such as an SFENCE or MFENCE instruction, CPUID or other
+serializing instruction, a read or write to uncached memory, an interrupt
+occurrence, or an execution of a LOCK instruction (including one with an
+XACQUIRE or XRELEASE prefix)."
+Maybe this is more like the write combine buffer flushing, not prevent merging.
+Sorry I still didn't understand the difference clearly.
+
+How about a common name called 'merge_prohibit_hint()'? Could you give me some
+suggestions ?
+
+Thanks,
+Xiongfeng
+
+> 
