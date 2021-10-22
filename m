@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9894372FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BE84372FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhJVHoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:44:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231773AbhJVHoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:44:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 048CB610E7;
-        Fri, 22 Oct 2021 07:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634888508;
-        bh=xZki9UTOrtpOoi97HAFGs9WTimn3Llshzh1KbxLxX3A=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=FzZaTT28sXoL8kh9czTKEqZYtae0owocwfkwvUhsTyg222ZZwbrccUXdAcJ/TEzoK
-         fTY7PeWCdgtGqfrP3r8YqWfh9bgWIhHViqFBIOgLSVKPcj/9zWbnTVqOwgxPPDvrGJ
-         ErQ4p4IrsIksSIQJPZbESoDeE4+sQKXYFQsONJgo=
-Date:   Fri, 22 Oct 2021 09:41:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     kernel test robot <lkp@intel.com>,
-        Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Tejas Patel <tejas.patel@xilinx.com>
-Subject: Re: [char-misc:char-misc-testing 49/54]
- include/linux/firmware/xlnx-zynqmp.h:634:71: error: expected ';' after top
- level declarator
-Message-ID: <YXJrOiVJmsn5hkGg@kroah.com>
-References: <202110220531.JFx7N8X4-lkp@intel.com>
+        id S232125AbhJVHpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:45:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33846 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhJVHpm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:45:42 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DBD3E2197F;
+        Fri, 22 Oct 2021 07:43:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634888602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fYXqzL/6HhifHEzyeb6y/B1mDBHnANb3wM0JqTVeJN4=;
+        b=E1TDhKkVmIVQtRKSIats7Bjc0Q75KzXyErPC+SvzP4SkOnDmhpYEnEJIUXMR+uR3pd+KTL
+        7N/6y5Ncfn6BH5ECDsGkc/TxCCW1kfcNlP1/TLynAjdEh1drXdjyQR1fswi2xbkIqPiNqT
+        sjGwJjJnnMhvLUeugmD+z6LZo8Rs/cI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634888602;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fYXqzL/6HhifHEzyeb6y/B1mDBHnANb3wM0JqTVeJN4=;
+        b=1/OkM3q/XS7FD68wNB6gOmxpXW/2Rn4Xxr3uAgYhCm8tzgQFYSnECUrYNRRnL/FQmzBeHU
+        uwgbaQtnwZgkjBAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82E3713C7A;
+        Fri, 22 Oct 2021 07:43:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +PE1H5prcmF7LgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 22 Oct 2021 07:43:22 +0000
+Message-ID: <1810283b-164a-800b-63ab-c3fab303a84a@suse.cz>
+Date:   Fri, 22 Oct 2021 09:43:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110220531.JFx7N8X4-lkp@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [next] [dragonboard 410c] Unable to handle kernel paging request
+ at virtual address 00000000007c4240
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org,
+        Marco Elver <elver@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>,
+        lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <CA+G9fYv3jAjBKHM-CjrMzNgrptx-rpYVmGaD39OBiBeuz7osfg@mail.gmail.com>
+ <80ab567d-74f3-e14b-3c30-e64bbd64b354@suse.cz> <87fssuojoc.fsf@intel.com>
+ <2a692365-cfa1-64f2-34e0-8aa5674dce5e@suse.cz>
+ <20211021203856.1151daebedef7b180fdfec22@linux-foundation.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211021203856.1151daebedef7b180fdfec22@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:42:37AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git char-misc-testing
-> head:   0a6af10747d4dc25e9c85c7daf156459f28e0e55
-> commit: 1a8eae64b30f126c0786f3807982d49ca3be8f7c [49/54] firmware: xilinx: add register notifier in zynqmp firmware
-> config: hexagon-randconfig-r045-20211021 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 3cea2505fd8d99a9ba0cb625aecfe28a47c4e3f8)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?id=1a8eae64b30f126c0786f3807982d49ca3be8f7c
->         git remote add char-misc https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
->         git fetch --no-tags char-misc char-misc-testing
->         git checkout 1a8eae64b30f126c0786f3807982d49ca3be8f7c
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/
+On 10/22/21 05:38, Andrew Morton wrote:
+> On Thu, 21 Oct 2021 19:51:20 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+>> >> Then we have to figure out how to order a fix between DRM and mmotm...
+>> > 
+>> > That is the question! The problem exists only in the merge of the
+>> > two. On current DRM side stack_depot_init() exists but it's __init and
+>> > does not look safe to call multiple times. And obviously my changes
+>> > don't exist at all in mmotm.
+>> > 
+>> > I guess one (admittedly hackish) option is to first add a patch in
+>> > drm-next (or drm-misc-next) that makes it safe to call
+>> > stack_depot_init() multiple times in non-init context. It would be
+>> > dropped in favour of your changes once the trees get merged together.
+>> > 
+>> > Or is there some way for __drm_stack_depot_init() to detect whether it
+>> > should call stack_depot_init() or not, i.e. whether your changes are
+>> > there or not?
+>> 
+>> Let's try the easiest approach first. AFAIK mmotm series is now split to
+>> pre-next and post-next part
 > 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from drivers/spi/spi-zynqmp-gqspi.c:13:
-> >> include/linux/firmware/xlnx-zynqmp.h:634:71: error: expected ';' after top level declarator
->    static inline int zynqmp_pm_load_pdi(const u32 src, const u64 address)
->                                                                          ^
->                                                                          ;
->    1 error generated.
-> 
-> 
-> vim +634 include/linux/firmware/xlnx-zynqmp.h
-> 
-> 2b9fc773c31bb7 Nava kishore Manne 2021-06-26  633  
-> 2b9fc773c31bb7 Nava kishore Manne 2021-06-26 @634  static inline int zynqmp_pm_load_pdi(const u32 src, const u64 address)
-> 1a8eae64b30f12 Abhyuday Godhasara 2021-10-21  635  static inline int zynqmp_pm_register_notifier(const u32 node, const u32 event,
-> 1a8eae64b30f12 Abhyuday Godhasara 2021-10-21  636  					      const u32 wake, const u32 enable)
-> 2b9fc773c31bb7 Nava kishore Manne 2021-06-26  637  {
-> 2b9fc773c31bb7 Nava kishore Manne 2021-06-26  638  	return -ENODEV;
-> 2b9fc773c31bb7 Nava kishore Manne 2021-06-26  639  }
-> 76582671eb5d00 Rajan Vaja         2018-09-12  640  #endif
-> 76582671eb5d00 Rajan Vaja         2018-09-12  641  
-> 
-> :::::: The code at line 634 was first introduced by commit
-> :::::: 2b9fc773c31bb7cb7529757382013a8158bf7e9c drivers: firmware: Add PDI load API support
-> 
-> :::::: TO: Nava kishore Manne <nava.manne@xilinx.com>
-> :::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> It has been this way for many years!
 
+Aha, great. Looks like I misinterpreted few months ago the thread about
+adding folio tree to next.
 
-I will go drop all of these patches from my tree now.  Please fix up and
-resend the whole series.
+>> and moving my patch
+>> lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc.patch
+>> with the following fixup to the post-next part should solve this. Would that
+>> work, Andrew? Thanks.
+> 
+> For this reason.  No probs, thanks.
 
-thanks,
+Thanks!
 
-greg k-h
+> I merge up the post-linux-next parts late in the merge window.  I do
+> need to manually check that the prerequisites are in mainline, because
+> sometimes the patches apply OK but don't make sense.
+> 
+
