@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE919437904
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F4F437906
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhJVO1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:27:42 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:46723 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbhJVO1l (ORCPT
+        id S233067AbhJVO2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232842AbhJVO2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:27:41 -0400
-Received: by mail-pf1-f175.google.com with SMTP id x66so3742087pfx.13;
-        Fri, 22 Oct 2021 07:25:24 -0700 (PDT)
+        Fri, 22 Oct 2021 10:28:53 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E95C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:26:36 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c29so3794608pfp.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:26:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=JhwFuccVZQeiwvNuHNQ1RS7yIFWPLwTUxexiIKglluM=;
+        b=Z4u24KMLF/8Ym9rkji3BWniCuaq4Qc7CR11xwyizB+rQcVNYj05t0WbBDBmi0wZkB/
+         M2FzT5a0jpdsgEIW+TwVATCsXGR8mzfRywoqD0fF02bgM+DAgOTjhdObYu6ujxfBk/yN
+         7W4sj6mS59Ilm1u+Jm/+0vyNko45GJoV0NiwBxZm3BcZZSbHMKwDFMgO+i9XcHeuDSmh
+         gyTsiIql7khMX8Cq/kc6i3Lh/TDPdSOzKsqfcu3JvsnM4coJvp22QNdmkdscpWuRrqQd
+         HKbrphcur2Qum/YZRI5yFrztx40OrO+Ngq+xUtIvYJrttdnBisWd7StdVNFJuOBk+68b
+         s1dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jorqKoNvCog+RdJEWLLzk4/vugG3Lx6Xwa7r7jPCqTI=;
-        b=FCdcn7vVuIjicwvIn3P4ZQHYD/4ly7txPGIskT4FNCudWWHaUJsbAzrx7pfW6LL83A
-         TAhpi3CIUjv5qXNP9a8WpS1/8ylJur1VPW2sRE/aufw+28LLfAWw4OyczRadPZVQ+mbR
-         N3cNbhPQ0/vudTJKhugvCJgY7JYdB7ZfyeS+ADjoMd1PVZ/leJ3De19ewjZXwUGFtxTV
-         U6ETQuoioD0LK7Ba2iQ5KlwtkkYFnzn0mAF03QL66xz/jRs+yvxgiNvrmO1rjAXypm/6
-         Gzrh6cBcD/uD9cgnInElbp1uR/RO2uGJHQvs/AbMQdUkjGK0+E2svQXb6RAhvwFaUtud
-         yYsQ==
-X-Gm-Message-State: AOAM530C1wF5Y63M0BPsndjMMIeeyk2N+P3SV6WXE8ySGa9sDQ3js9CC
-        QXhHofQz+fu2jjHpBRx8Zl+8UjQzBZZi0I0sMJfVnYyjZZVsIA==
-X-Google-Smtp-Source: ABdhPJwwiGgg/wAhh2MuTJi/0OlJOC3w8grm3LkhekM9ZxjuDcMopYi54hXrYFPVSp69WJyB7UqQZkgeS1a1t8VrapI=
-X-Received: by 2002:a62:5257:0:b0:44c:ed84:350a with SMTP id
- g84-20020a625257000000b0044ced84350amr12576754pfb.79.1634912723745; Fri, 22
- Oct 2021 07:25:23 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=JhwFuccVZQeiwvNuHNQ1RS7yIFWPLwTUxexiIKglluM=;
+        b=jN7cI++6PnmzdSTVLieULl61Mo1zWxV28hqTaOo0/zDeNQFKRps56YdHV2XgvRZ8tz
+         1R5eIVoC6cwsHkv5U3nAZ44XgS8z32iZXFmsWxooULPLtHZVaa51tiPZnruhHsbP9xe9
+         GCto7brmMzw2ayPyo/aViogRRBlVtAfO40E6gjO6phfGGq7DJczc16g/mJtRpUjW/eb5
+         Uejs07Qdc89x+hiELUzCjLq2YOg2pNhpwRcrPhefVc1inTdL1PVvYcNPFII3374G3O4L
+         LRTqJhf4O1dJlCo585iAGFzX4mvYNGtPAc5fkazUtOq8j3VJMF/q6SrPl3QJW8YUevim
+         e3Kw==
+X-Gm-Message-State: AOAM531cMXX1/W4AO6uYFHTf36N7he9IH4xwwVIq/I/hcyUarXBqLPRC
+        8FRCVuLe9ZSA9Is/HrbCUAM=
+X-Google-Smtp-Source: ABdhPJyVzouQUApdOVABmW7iJ2tSCJcNx2TQaGYfivjl8SeHFtmuXCqilAWvZnpPOds1wNpJzGvYqQ==
+X-Received: by 2002:a63:8f4a:: with SMTP id r10mr22860pgn.337.1634912795519;
+        Fri, 22 Oct 2021 07:26:35 -0700 (PDT)
+Received: from [192.168.1.122] ([122.181.48.19])
+        by smtp.gmail.com with ESMTPSA id g5sm1238858pfc.65.2021.10.22.07.26.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 07:26:35 -0700 (PDT)
+Message-ID: <049d4b3e-ed32-9b48-0c2e-19f9af95ca37@gmail.com>
+Date:   Fri, 22 Oct 2021 19:56:30 +0530
 MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
- <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
- <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com> <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
-In-Reply-To: <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Fri, 22 Oct 2021 16:25:12 +0200
-Message-ID: <CANBLGcyaSgbOgA4u_QivUQicyZ0MuUmrSsPq56OAANsav8R=VQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [Outreachy kernel] [PATCH 5/5] staging: vt6655: Rename `byRFType`
+ variable
+Content-Language: en-US
+To:     Karolina Drobnik <karolinadrobnik@gmail.com>,
+        outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1634826774.git.karolinadrobnik@gmail.com>
+ <f0b6818d2b15982081bebaf14f830f4646f61fe2.1634826774.git.karolinadrobnik@gmail.com>
+From:   Praveen Kumar <kpraveen.lkml@gmail.com>
+In-Reply-To: <f0b6818d2b15982081bebaf14f830f4646f61fe2.1634826774.git.karolinadrobnik@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 15:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> On Fri, Oct 22, 2021 at 4:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> ...
->
-> > > Why all these ugly % 32 against constants?
-> >
-> > Because the JH7100_RST_ values goes higher than 31. There is a
-> > BIT_MASK macro, but that does % BITS_PER_LONG and this is a 64bit
-> > machine.
->
-> And? It's exactly what you have to use!
+On 22-10-2021 15:07, Karolina Drobnik wrote:
+> Drop Hungarian notation in `byRFType` variable in
+> `RFvWriteWakeProgSyn` function. Change it to use snake case.
+> 
+> Fix issue detected by checkpatch.pl:
+>   CHECK: Avoid CamelCase: <byRFType>
+> 
+> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
+> ---
+>  drivers/staging/vt6655/rf.c | 4 ++--
+>  drivers/staging/vt6655/rf.h | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> index 0dd91b0433f6..3f57834901a6 100644
+> --- a/drivers/staging/vt6655/rf.c
+> +++ b/drivers/staging/vt6655/rf.c
+> @@ -676,7 +676,7 @@ bool RFbSelectChannel(struct vnt_private *priv, unsigned char byRFType,
+>   * Return Value: None.
+>   *
+>   */
+> -bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
+> +bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type,
+>  			 u16 channel)
+>  {
+>  	void __iomem *iobase = priv->port_offset;
+> @@ -685,7 +685,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
+>  	unsigned char sleep_count = 0;
+>  
+>  	VNSvOutPortW(iobase + MAC_REG_MISCFFNDEX, 0);
+> -	switch (byRFType) {
+> +	switch (rf_type) {
+>  	case RF_AIROHA:
+>  	case RF_AL2230S:
+>  
+> diff --git a/drivers/staging/vt6655/rf.h b/drivers/staging/vt6655/rf.h
+> index d3f2b8dd6afc..0939937d47a8 100644
+> --- a/drivers/staging/vt6655/rf.h
+> +++ b/drivers/staging/vt6655/rf.h
+> @@ -60,7 +60,7 @@
+>  bool IFRFbWriteEmbedded(struct vnt_private *priv, unsigned long dwData);
+>  bool RFbSelectChannel(struct vnt_private *priv, unsigned char byRFType, u16 byChannel);
 
-So you want me to use an unsigned long array or DECLARE_BITMAP and
-juggle two different index and bit offsets?
-Also is there a macro for handling that we'd then need 4 commas on
-32bit COMPILE_TEST and 2 commas on 64bit?
-If you have some other way in mind you'll have to be a lot more explicit again.
+IMO, probably we can sync RFbSelectChannel as well with similar notation in another patch.
 
-The point of the jh7100_reset_asserted array is that it exactly
-mirrors the values of the status registers when the lines are
-asserted. Maybe writing it like this would be more explicit:
+>  bool RFbInit(struct vnt_private *priv);
+> -bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType, u16 channel);
+> +bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char rf_type, u16 channel);
+>  bool RFbSetPower(struct vnt_private *priv, unsigned int rate, u16 uCH);
+>  bool RFbRawSetPower(struct vnt_private *priv, unsigned char byPwr,
+>  		    unsigned int rate);
+> 
 
-static const u32 jh7100_reset_asserted[4] = {
-        /* STATUS0 register */
-        BIT(JH7100_RST_U74 % 32) |
-        BIT(JH7100_RST_VP6_DRESET % 32) |
-        BIT(JH7100_RST_VP6_BRESET % 32),
-        /* STATUS1 register */
-        BIT(JH7100_RST_HIFI4_DRESET % 32) |
-        BIT(JH7100_RST_HIFI4_BRESET % 32),
-        /* STATUS2 register */
-        BIT(JH7100_RST_E24 % 32),
-        /* STATUS3 register */
-        0,
-};
+Regards,
+
+~Praveen.
