@@ -2,110 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507F94373BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAD64373BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhJVIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:37:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:51392 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231984AbhJVIhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:37:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75708ED1;
-        Fri, 22 Oct 2021 01:35:02 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB6EB3F70D;
-        Fri, 22 Oct 2021 01:35:00 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 09:34:55 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        robh+dt@kernel.org
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
- controller driver
-Message-ID: <20211022083455.GA20345@lpieralisi>
-References: <CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com>
- <20211021181145.GA2708516@bhelgaas>
- <CAMhs-H8pTmbG0idbPWjnW4faFj0F4TKwSSK6wzwepbqWSEtx4w@mail.gmail.com>
+        id S232161AbhJVIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:41:16 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:46137 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231984AbhJVIlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:41:15 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HbHnX3ztxz4xbL;
+        Fri, 22 Oct 2021 19:38:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634891936;
+        bh=GOHObiDHhe78sE38ldx9xwYsCTtEFidQY80/+uxn7TE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=b0DB4U1f2pxkG70U8CPjlqib8Xl5JAN7aQHihdGtPTTRpksbOmek5SArRdZBIcXvT
+         mqnGvfLWN89C6jCfosmkbdC2r9eUjB+lhB3nZEp5Y/0hY/Pwlajvb/bURGSkr23RE3
+         RCcuMe480y5bP1GElemPabniv2NM8c3yB1APheipapeBsxIqVICYYFc1T25a96ddVP
+         R6IcS08KVJGGMHq579DBRkPyjC4Z2pCvuyIny3FVQmo+ztmN2Q+BbtYHnXoQfJS676
+         HrmPuJCdlHjMvHbAUdVucKclc7hsBdP5nIL2VZpx854gNYcQObOkpEc5NT4szRzxvj
+         kODzyNUf9Gw3w==
+Date:   Fri, 22 Oct 2021 19:38:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Eddie James <eajames@linux.ibm.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20211022193853.296c4ee9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMhs-H8pTmbG0idbPWjnW4faFj0F4TKwSSK6wzwepbqWSEtx4w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/F/B6g4d=El/ZxXi0eDmuvKT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 09:23:35PM +0200, Sergio Paracuellos wrote:
-> On Thu, Oct 21, 2021 at 8:11 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > On Thu, Oct 21, 2021 at 07:27:21PM +0200, Sergio Paracuellos wrote:
-> > > On Thu, Oct 21, 2021 at 5:52 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > Since this is a PCIe (not conventional PCI) controller, I vote for
-> > > > renaming these from:
-> > > >
-> > > >   PCI_MT7621
-> > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-> > > >   drivers/pci/controller/pci-mt7621.c
-> > > >
-> > > > to:
-> > > >
-> > > >   PCIE_MT7621
-> > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-> > > >   drivers/pci/controller/pcie-mt7621.c
-> > > >
-> > > > We have a mix of these, with many of the early PCIe drivers being
-> > > > named "pci", but I think that was my mistake and there's no reason to
-> > > > continue it.
-> > >
-> > > I see.
-> > >
-> > > >
-> > > > I can do this locally unless somebody objects.
-> > >
-> > > I have no problem at all. Only one question. Do you mean to change
-> > > compatible string also, or only the name of the file? Let me know if I
-> > > have to do anything.
-> >
-> > I didn't change the compatible string, to avoid a DT incompatibility.
-> > But I *did* change the Kconfig symbol to PCIE_MT7621, which could
-> > require changes to out-of-tree .configs.  I'm open to suggestions
-> > either way for both things.
-> 
-> IMHO, I do think we should not worry about out-of-tree stuff at all.
+--Sig_/F/B6g4d=El/ZxXi0eDmuvKT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-For Kconfig I tend to agree. For DT I see some "bindings" in the staging
-tree are being deleted and published as official DT bindings with this
-patchset but I believe we still have to keep the compatible string
-backward compatibility regardless because there may be firmware out
-there using it.
+Hi all,
 
-Rob, what's the standard policy that should be used in this case ?
+After merging the akpm-current tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Thanks,
-Lorenzo
+drivers/hwmon/occ/p9_sbe.c: In function 'p9_sbe_occ_save_ffdc':
+drivers/hwmon/occ/p9_sbe.c:58:5: error: implicit declaration of function 'k=
+vfree' [-Werror=3Dimplicit-function-declaration]
+   58 |     kvfree(ctx->ffdc);
+      |     ^~~~~~
+drivers/hwmon/occ/p9_sbe.c:59:16: error: implicit declaration of function '=
+kvmalloc'; did you mean 'key_alloc'? [-Werror=3Dimplicit-function-declarati=
+on]
+   59 |    ctx->ffdc =3D kvmalloc(resp_len, GFP_KERNEL);
+      |                ^~~~~~~~
+      |                key_alloc
+drivers/hwmon/occ/p9_sbe.c:59:14: error: assignment to 'void *' from 'int' =
+makes pointer from integer without a cast [-Werror=3Dint-conversion]
+   59 |    ctx->ffdc =3D kvmalloc(resp_len, GFP_KERNEL);
+      |              ^
+cc1: all warnings being treated as errors
 
-> If the correct way to define the Kconfig symbol or the compatible
-> string is to change them, just do that. MT7621 SoC is extensively used
-> by openWRT community. As far as I have seen until now, the way of
-> doing things there is to take the latest long term kernel (now they
-> are using 5.4 as stable and 5.10 as testing kernel), apply a bunch of
-> patches they have and do a complete build of both kernel, device tree
-> and rootfs. So I guess it is not a big problem if we also change
-> compatible string since when an update is performed for a device all
-> of the stuff is just replaced. Maybe I am wrong and John has a
-> different opinion... John, any comments on this?
-> 
-> Best regards,
->     Sergio Paracuellos
+Caused by commit
+
+  5027a34a575e ("hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs")
+
+from the fsi tree interacting with commit
+
+  9192e3be4cc2 ("mm: move kvmalloc-related functions to slab.h")
+
+from the akpm-current tree.
+
+I have applied the following merge fix patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 22 Oct 2021 19:32:54 +1100
+Subject: [PATCH] kvmalloc etc moved to slab.h
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/hwmon/occ/p9_sbe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hwmon/occ/p9_sbe.c b/drivers/hwmon/occ/p9_sbe.c
+index e50243580269..bb082eb52243 100644
+--- a/drivers/hwmon/occ/p9_sbe.c
++++ b/drivers/hwmon/occ/p9_sbe.c
+@@ -4,10 +4,10 @@
+ #include <linux/device.h>
+ #include <linux/errno.h>
+ #include <linux/fsi-occ.h>
+-#include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
++#include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/sysfs.h>
+=20
+--=20
+2.33.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/F/B6g4d=El/ZxXi0eDmuvKT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFyeJ4ACgkQAVBC80lX
+0Gx0Dwf9GQctF20LqnqcyM3laN1I9WXYiO393aTgWRQ0dIxmAeHwAlUmSni97FmR
+wh7l4+OrslcrJNK3xtCNTsvT4pW8rQWdDGySZB4/I9KWP0SSYmZVCw7hkmBi6fwg
+asbB3pbRSem7tmfqa/vlEiHfDCPPZ1qzluy5wu2YdqYQn9R+ALONjVV76JEpQ0nr
+wGdB7RN1u9U2iJCJ/4JiDaJwhxf6OUfyIEz7HpBgjwCUfMs91xLXeMP289I6Nfpx
+6amcsZ/IIfRuCIHGs8mOwenD70RtR9if/uX8HPwbLm9EpVl968sdRkq948DOdYk0
+d1L8U7Bk+il15sCo8gEPDiCBdZaQTA==
+=4ser
+-----END PGP SIGNATURE-----
+
+--Sig_/F/B6g4d=El/ZxXi0eDmuvKT--
