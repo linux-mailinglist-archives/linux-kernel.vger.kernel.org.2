@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CC3437022
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51732437024
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhJVCpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:45:54 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:50869 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232351AbhJVCpx (ORCPT
+        id S232458AbhJVCq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:46:59 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:51749 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231518AbhJVCq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:45:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UtCtr96_1634870602;
-Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UtCtr96_1634870602)
+        Thu, 21 Oct 2021 22:46:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UtCtrLa_1634870672;
+Received: from localhost.localdomain(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UtCtrLa_1634870672)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 22 Oct 2021 10:43:23 +0800
-From:   Xin Hao <xhao@linux.alibaba.com>
-Reply-To: xhao@linux.alibaba.com
-Subject: Re: [PATCH V2] mm/damon/dbgfs: Optimize target_ids interface write
- operation
-To:     SeongJae Park <sj@kernel.org>
-Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20211021173018.15994-1-sj@kernel.org>
-Message-ID: <a23c6f23-cf6b-1833-5603-363c45df933f@linux.alibaba.com>
-Date:   Fri, 22 Oct 2021 10:43:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+          Fri, 22 Oct 2021 10:44:40 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     wuzongyong@linux.alibaba.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com
+Cc:     wei.yang1@linux.alibaba.com
+Subject: [PATCH v6 0/8] vDPA driver for Alibaba ENI
+Date:   Fri, 22 Oct 2021 10:44:15 +0800
+Message-Id: <cover.1634870456.git.wuzongyong@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20211021173018.15994-1-sj@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series implements the vDPA driver for Alibaba ENI(Elastic Network
+Interface) which is build based on virtio-pci 0.9.5 specification.
 
-On 2021/10/22 上午1:30, SeongJae Park wrote:
-> Hello Xin,
->
-> On Fri, 22 Oct 2021 00:44:16 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
->
->> When we want to clear previously set target ids,
->> For example, it works as below now:
->>      # echo 42 > target_ids
->>      # cat target_ids
->>      42
->>      # echo > target_ids
->>      # cat target_ids
->>
->> But in 'dbgfs_target_ids_write', there is no need to
->> execute other codes, except call 'damon_set_targets'
->> to clear previously set target ids. So there adds
->> the 'nr_targets' judgment, if the value is 0, just
->> call 'damon_set_targets', and then return.
-> It's true that it executes some unnecessary code.  However, I unsure if that is
-> a problem, as the code that will be additionally executed in this case are
-> quite simple ones, and therefore not supposed to incur viewable overhead.
-> After all, this is not a performance critical path.
+Changes since V5:
+- remove unused codes
 
-Thank you for your detailed explanation. I may not describe it clearly, 
-making you think that i am making this
+Changes since V4:
+- check return values of get_vq_num_{max,min} when probing devices
+- disable the driver on BE host via Kconfig
+- add missing commit message
 
-modification to improve performance，I just want to avoid irrelevant code 
-execution, thank you so much.
+Changes since V3:
+- validate VIRTIO_NET_F_MRG_RXBUF when negotiate features
+- present F_ORDER_PLATFORM in get_features
+- remove endian check since ENI always use litter endian
 
->
-> Thanks,
-> SJ
->
->> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
->> ---
->>   mm/damon/dbgfs.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
->> index a02cf6bee8e8..1d83f4138fad 100644
->> --- a/mm/damon/dbgfs.c
->> +++ b/mm/damon/dbgfs.c
->> @@ -362,6 +362,12 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
->>   		goto out;
->>   	}
->>
->> +	if (!nr_targets) {
->> +		/* remove targets with previously-set primitive */
->> +		damon_set_targets(ctx, NULL, 0);
->> +		goto free_targets_out;
->> +	}
->> +
->>   	if (id_is_pid) {
->>   		for (i = 0; i < nr_targets; i++) {
->>   			targets[i] = (unsigned long)find_get_pid(
->> --
->> 2.31.0
+Changes since V2:
+- add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE instead
+  VDPA_ATTR_DEV_F_VERSION_1 to guide users to choose correct virtqueue
+  size as suggested by Jason Wang
+- present ACCESS_PLATFORM in get_features callback as suggested by Jason
+  Wang
+- disable this driver on Big Endian host as suggested by Jason Wang
+- fix a typo
+
+Changes since V1:
+- add new vdpa attribute VDPA_ATTR_DEV_F_VERSION_1 to indicate whether
+  the vdpa device is legacy
+- implement dedicated driver for Alibaba ENI instead a legacy virtio-pci
+  driver as suggested by Jason Wang
+- some bugs fixed
+
+Wu Zongyong (8):
+  virtio-pci: introduce legacy device module
+  vdpa: fix typo
+  vp_vdpa: add vq irq offloading support
+  vdpa: add new callback get_vq_num_min in vdpa_config_ops
+  vdpa: min vq num of vdpa device cannot be greater than max vq num
+  virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
+  vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
+  eni_vdpa: add vDPA driver for Alibaba ENI
+
+ drivers/vdpa/Kconfig                   |   8 +
+ drivers/vdpa/Makefile                  |   1 +
+ drivers/vdpa/alibaba/Makefile          |   3 +
+ drivers/vdpa/alibaba/eni_vdpa.c        | 553 +++++++++++++++++++++++++
+ drivers/vdpa/vdpa.c                    |  13 +
+ drivers/vdpa/virtio_pci/vp_vdpa.c      |  12 +
+ drivers/virtio/Kconfig                 |  10 +
+ drivers/virtio/Makefile                |   1 +
+ drivers/virtio/virtio_pci_common.c     |  10 +-
+ drivers/virtio/virtio_pci_common.h     |   9 +-
+ drivers/virtio/virtio_pci_legacy.c     | 101 ++---
+ drivers/virtio/virtio_pci_legacy_dev.c | 220 ++++++++++
+ drivers/virtio/virtio_vdpa.c           |  21 +-
+ include/linux/vdpa.h                   |   6 +-
+ include/linux/virtio_pci_legacy.h      |  42 ++
+ include/uapi/linux/vdpa.h              |   1 +
+ 16 files changed, 922 insertions(+), 89 deletions(-)
+ create mode 100644 drivers/vdpa/alibaba/Makefile
+ create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
+ create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
+ create mode 100644 include/linux/virtio_pci_legacy.h
 
 -- 
-Best Regards!
-Xin Hao
+2.31.1
 
