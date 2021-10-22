@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFF1437281
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86974437285
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhJVHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42542 "EHLO mail.kernel.org"
+        id S231920AbhJVHLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:11:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhJVHIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:08:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A09D560ED3;
-        Fri, 22 Oct 2021 07:05:45 +0000 (UTC)
+        id S230332AbhJVHL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:11:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33ABA610D2;
+        Fri, 22 Oct 2021 07:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634886348;
-        bh=iLRhWGhOtATtNXfjLsY/C/FzcVIkkj6omLPayvSrHVc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WvBpQzKjqVFToSn3i2NADviklR3XuCrbfuC3GBfqsU7+otQA2XAlMiiV1wNk7LED6
-         T0Vu2AL+7me+PouplKBEcm7CD5tf8wQJ91BYw5i+tcyIBxIRl9I5A8bCQAaM8/ukdf
-         4hOSK/JiM35OiNJP6W9PhHmDIRrotBP57yFezB7OjY3U+DWO7nKc7Xcqz9Vm/ELfDR
-         BRfJczzddWZwsF620p9imsVc5UiigA2Rxk4jplLQL11LFAdYJ962ELZRsVcVMgEoLX
-         Y+9K0EkVREF4npPNMmr3rcKTSeiwG/XEXNxmlxkFz2ILlfy336WBO7XpAU8+6EUP5w
-         NB8i6vWNlwLZA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Shakeel Butt <shakeelb@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] memcg, kmem: mark cancel_charge() inline
-Date:   Fri, 22 Oct 2021 09:05:35 +0200
-Message-Id: <20211022070542.679839-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1634886552;
+        bh=aMe1vDCT3CDtWlXkvqsaubG8OPmwUEDHwrKNgQHwV/8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mT82WQfzmwdv2zluT4Magkikw+AEmy8rXLwRvFsMu+PQ8NRFZ/uyW1qADWaL9hW27
+         4MkIVtKGDaGFvESWRz04ZZ9+c/zLLKjrST+6Kynmf+EDGHRTxogEcbhAvTQ2PhQrZI
+         XVPMxRBOVZPHBKetH+yqMDUkJFwQVcd2gEbCIghcK0/h3wx5mHhM7Z0FqEPZnga6tx
+         L7THUm+ZWAeBYzHffEIClptzHe86EOc/Z5cZ0mJZhBpmO4Yv1GZnSKHjE8ftE16aAR
+         TbSwg9iWqoeNxJeXrYgkhtr5TGIoCYQXHul9DtAVjJleO7nRgCj5OZx3Pn3Eg28z7w
+         6ur0uS3PavC1g==
+Received: by mail-wr1-f49.google.com with SMTP id e12so2420213wra.4;
+        Fri, 22 Oct 2021 00:09:12 -0700 (PDT)
+X-Gm-Message-State: AOAM5315wvCMF1fHwnVvuK9UJZ44H5k+onWv3HkD77YKtAFPPX8wTPhq
+        54cyYDGLOd6MTRgnplaorXidom4FOyiTA/KVqrk=
+X-Google-Smtp-Source: ABdhPJxvADH+w34D6rnd8a3QkGypVDg/M1da7J3dzGFcxTFYqHN3pF/BO+EW9BJ6qYjfpdrLlhLMHdWzCFYGPa1YQOQ=
+X-Received: by 2002:adf:d0c6:: with SMTP id z6mr11834861wrh.336.1634886550652;
+ Fri, 22 Oct 2021 00:09:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <7c58868cd26d2fc4bd82d0d8b0dfb55636380110.1634808714.git.viresh.kumar@linaro.org>
+ <0adf1c36-a00b-f16f-e631-439148c4f956@intel.com> <20211022065808.2rvbr6nvollz5mz6@vireshk-i7>
+In-Reply-To: <20211022065808.2rvbr6nvollz5mz6@vireshk-i7>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 22 Oct 2021 09:08:54 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Zt-4goCHWEWcEqwDVwHYp_T=w3rX5pf81Jz_818=Nkw@mail.gmail.com>
+Message-ID: <CAK8P3a1Zt-4goCHWEWcEqwDVwHYp_T=w3rX5pf81Jz_818=Nkw@mail.gmail.com>
+Subject: Re: [PATCH] i2c: virtio: Add support for zero-length requests
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jie Deng <jie.deng@intel.com>, Wolfram Sang <wsa@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        conghui.chen@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Oct 22, 2021 at 8:58 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> On 22-10-21, 14:51, Jie Deng wrote:
+> > > +   if (!virtio_has_feature(vdev, VIRTIO_I2C_F_ZERO_LENGTH_REQUEST)) {
+> > > +           dev_err(&vdev->dev, "Zero-length request feature is mandatory\n");
+> > > +           return -EINVAL;
+> >
+> >
+> > It might be better to return -EOPNOTSUPP ?
+>
+> Maybe that or one of these:
+>
+> #define EBADE           52      /* Invalid exchange */
+> #define EPROTO          71      /* Protocol error */
+> #define EPFNOSUPPORT    96      /* Protocol family not supported */
+> #define ECONNREFUSED    111     /* Connection refused */
+>
+> Arnd, any suggestions ? This is about the mandatory feature not being offered by
+> the device.
 
-cancel_charge() is no longer called for CONFIG_MEMCG_KMEM on NOMMU
-targets, which causes a compiletime warning:
+These are mostly used for network operations, I'd stick with either EINVAL
+or ENXIO in this case.
 
-mm/memcontrol.c:2774:13: error: unused function 'cancel_charge' [-Werror,-Wunused-function]
-
-Remove the now-incorrect #ifdef and just mark the function
-'inline' like the other related helpers. This is simpler
-and means we no longer have to match the #ifdef with the
-caller.
-
-Fixes: 5f3345c17079 ("memcg, kmem: further deprecate kmem.limit_in_bytes")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-The 5f3345c17079 commit is in -mm, so the commit ID is not
-stable. Feel free to just fold this into the other patch, or
-take out that reference
----
- mm/memcontrol.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6538595994d2..9edccfeac804 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2770,8 +2770,7 @@ static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	return try_charge_memcg(memcg, gfp_mask, nr_pages);
- }
- 
--#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
--static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
-+static inline void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
- {
- 	if (mem_cgroup_is_root(memcg))
- 		return;
-@@ -2780,7 +2779,6 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
- 	if (do_memsw_account())
- 		page_counter_uncharge(&memcg->memsw, nr_pages);
- }
--#endif
- 
- static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
- {
--- 
-2.29.2
-
+        Arnd
