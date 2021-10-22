@@ -2,89 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF26437D10
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0291C437D17
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbhJVTDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:03:40 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:33523 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233568AbhJVTDd (ORCPT
+        id S233901AbhJVTD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:03:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57938 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233841AbhJVTDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:03:33 -0400
-Received: by mail-oi1-f172.google.com with SMTP id q129so6283587oib.0;
-        Fri, 22 Oct 2021 12:01:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=sVPsYavfjqxFWrItFViHXcG8XKwEKF8PjeSz3vyL0+o=;
-        b=Z+HVPS3Ed/3hkqIlogw66ybqYc797coIGXi5FhBpX2uwZysuLafjKzZHxHnXSbPWEu
-         D6yo8Mz/YNhAZCWU0n/ZKyznq/n/QXEUnjqTp3Gz1FjU/n/Sf+H7/ztcIvvMahFxMJk4
-         VSd2Rw+TXnMx9a3qu4q1fOyCSVlRhGLSN1OKu8luC54skuNdez/MK4o7yqP5jfcrhc3K
-         LWovbry9Klqtd3YxheGbBNYEERFmqgK770uNAGqq133kYI8h/3oed2dF3sgAmT9MWKhQ
-         JgKP3degT+RBVSDGPUKYDZ3AbYdm1Vu48Pc5ER/+9Gwld+3gDzyYZPcySZ0/VNKcdaGg
-         wC4Q==
-X-Gm-Message-State: AOAM533iAAPFNAvdN42v4+/H4klsT3hW6oLnteL1udl8H2tseY2/a49W
-        aM7sj3YJCp9d7oDCmfCL4pwuLP+vxDvoIPfUL65LeGuA8B0=
-X-Google-Smtp-Source: ABdhPJza4UDhYY1YwYmHq8EtydwJDr1+Sbi/5eSgIKWebxzWVrw4NOs2yyvhyLLfZeDBJeZEuaSTn1GONNhoLsRwbGI=
-X-Received: by 2002:a05:6808:e87:: with SMTP id k7mr1117483oil.166.1634929274954;
- Fri, 22 Oct 2021 12:01:14 -0700 (PDT)
+        Fri, 22 Oct 2021 15:03:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634929293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gJ/Q0dr/dawpC6VKuxv9ooYacTtMlazx4TKzgADSLis=;
+        b=Efg5wJpOt+MWolXDsIoLiN5GwqoaFSCMesuXJCKaPpvuxeXB3rorVQMx/SVlxKpNPq1nHD
+        DlGYKtblsLFEvfnF2sADqLm6I3Vf7WNt/M2fYgEBQJF+gEQAlF19TIbp47GrYoFOTtE1vV
+        8ggHhkSMnymX2YnxlqIH95Y+2gYYiFs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-zAcCTzFoPKKcQX-CUWMV_A-1; Fri, 22 Oct 2021 15:01:24 -0400
+X-MC-Unique: zAcCTzFoPKKcQX-CUWMV_A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46CC810A8E01;
+        Fri, 22 Oct 2021 19:01:19 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A5FA25DEFA;
+        Fri, 22 Oct 2021 19:01:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v2 08/53] fscache: Implement a hash function
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Omar Sandoval <osandov@osandov.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 22 Oct 2021 20:01:11 +0100
+Message-ID: <163492927180.1038219.17879276524647590800.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+References: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 22 Oct 2021 21:01:04 +0200
-Message-ID: <CAJZ5v0hTtyu981j91vxH_u3bvHWWBho4YSAhd+os9Zn=sbwe2Q@mail.gmail.com>
-Subject: [GIT PULL] ACPI fixes for v5.15-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Implement a function to generate hashes.  It needs to be stable over time
+and endianness-independent as the hashes will appear on disk in future
+patches.  It can assume that its input is a multiple of four bytes in size
+and alignment.
 
-Please pull from the tag
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-cachefs@redhat.com
+---
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.15-rc7
+ fs/fscache/internal.h |    2 ++
+ fs/fscache/main.c     |   39 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-with top-most commit 7a7489005a80af97ba289dc0579fccd50af4fe8d
+diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
+index ea52f8594a77..64767992bd15 100644
+--- a/fs/fscache/internal.h
++++ b/fs/fscache/internal.h
+@@ -22,6 +22,8 @@
+  */
+ extern unsigned fscache_debug;
+ 
++extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n);
++
+ /*
+  * proc.c
+  */
+diff --git a/fs/fscache/main.c b/fs/fscache/main.c
+index 819de2ee1276..a4afba1b9d3b 100644
+--- a/fs/fscache/main.c
++++ b/fs/fscache/main.c
+@@ -24,6 +24,45 @@ MODULE_PARM_DESC(fscache_debug,
+ struct workqueue_struct *fscache_wq;
+ EXPORT_SYMBOL(fscache_wq);
+ 
++/*
++ * Mixing scores (in bits) for (7,20):
++ * Input delta: 1-bit      2-bit
++ * 1 round:     330.3     9201.6
++ * 2 rounds:   1246.4    25475.4
++ * 3 rounds:   1907.1    31295.1
++ * 4 rounds:   2042.3    31718.6
++ * Perfect:    2048      31744
++ *            (32*64)   (32*31/2 * 64)
++ */
++#define HASH_MIX(x, y, a)	\
++	(	x ^= (a),	\
++	y ^= x,	x = rol32(x, 7),\
++	x += y,	y = rol32(y,20),\
++	y *= 9			)
++
++static inline unsigned int fold_hash(unsigned long x, unsigned long y)
++{
++	/* Use arch-optimized multiply if one exists */
++	return __hash_32(y ^ __hash_32(x));
++}
++
++/*
++ * Generate a hash.  This is derived from full_name_hash(), but we want to be
++ * sure it is arch independent and that it doesn't change as bits of the
++ * computed hash value might appear on disk.  The caller also guarantees that
++ * the hashed data will be a series of aligned 32-bit words.
++ */
++unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n)
++{
++	unsigned int a, x = 0, y = salt;
++
++	for (; n; n--) {
++		a = *data++;
++		HASH_MIX(x, y, a);
++	}
++	return fold_hash(x, y);
++}
++
+ /*
+  * initialise the fs caching module
+  */
 
- Merge branch 'acpi-tools'
 
-on top of commit 519d81956ee277b4419c723adfb154603c2565ba
-
- Linux 5.15-rc6
-
-to receive ACPI fixes for 5.15-rc7.
-
-These fix two regressions, one related to ACPI power resources
-management and one that broke ACPI tools compilation.
-
-Specifics:
-
- - Stop turning off unused ACPI power resources in an unknown state
-   to address a regression introduced during the 5.14 cycle (Rafael
-   Wysocki).
-
- - Fix an ACPI tools build issue introduced recently when the minimal
-   stdarg.h was added (Miguel Bernal Marin).
-
-Thanks!
-
-
----------------
-
-Miguel Bernal Marin (1):
-      ACPI: tools: fix compilation error
-
-Rafael J. Wysocki (1):
-      ACPI: PM: Do not turn off power resources in unknown state
-
----------------
-
- drivers/acpi/power.c          | 7 +------
- include/acpi/platform/acgcc.h | 9 +++++++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
