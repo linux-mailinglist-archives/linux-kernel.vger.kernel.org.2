@@ -2,267 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD94D43745B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D229043745F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhJVJLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhJVJLQ (ORCPT
+        id S232415AbhJVJM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:12:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40208 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232060AbhJVJMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:11:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527DFC061764;
-        Fri, 22 Oct 2021 02:08:59 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2558183pjb.3;
-        Fri, 22 Oct 2021 02:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NfNErqYk5Tlt9nDoU4zg/bY/gOqGiwBkJPFWm5wyGxA=;
-        b=exJ3C4Fu7j9J8NmI1vswjdeEpA0cue3SF4LlVF/lY4q/fnAYUasCicaBgmhTkzTsP8
-         rceKW7ssIA55raGj3bCQrzGO+tJfJB4fRSrLKiczPqy0VNATWGa1t61nvdcBMxqBQNWt
-         Mu6mdV6GizpOQDroQ2rM3mRH+d1NQXPHUmXrMsky48a3bbLPqT2ComXFFG8cdemueOZ5
-         EsIAJvlJrBQOPyFYKOc/uwo2/UYvKo+Qovq9typg+N9hzI0lTjRo4jJ/NLWiQJdkpA3W
-         534gNGjTIMT8gky9FfzjiLsZHpmALEhG9XleDzjCSQtktdzehT8l/2qX07o0CJhgVjYu
-         KmsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NfNErqYk5Tlt9nDoU4zg/bY/gOqGiwBkJPFWm5wyGxA=;
-        b=zvGcj+PYWJ/CGGZ7EfSeJ6XLQCPQ8VYIsfIC4O6z1eocX7PYdtaDw92YHN6acmV7VJ
-         kGw0r4TMMnESmTpOvDJ/DEiRKfMY69OTCtbxOtQTd/H0MPqpf13FbdHqWMgJV4LwGhDL
-         wz9qhHJHkL5vt3dJaVRbwib0lqMSGGwqg4azr4gXNzAox9BGnaLuX+Jqyn9CVJxCpAGF
-         TiozwtebJLLbnyB5WVY2mwkmyVto8EGf3e02jjbXzPjs3Ub5G/Y9Qi703o0fVndn4u3p
-         eObbnBYwHTAsv4JhzTvOA9Y7NpHTLvu57Mch6YdaIi2Wmr5v/Ex3k/UyzYE8olSdwbIs
-         Y+Yg==
-X-Gm-Message-State: AOAM530/0sa36a3qwrIkR0BCHGsJm2zNXbwyINucX7qi1qXmFGYD3sU5
-        3mgO+Me25nJT0/94fDocZQs=
-X-Google-Smtp-Source: ABdhPJw+zBXcwALtbFHNs+b3t98WUIEKjD4OCP6etY6UtCtQZ/bQCFBwT1EfHcynkwm5TV9rMiqqWQ==
-X-Received: by 2002:a17:90b:3b50:: with SMTP id ot16mr13382138pjb.150.1634893738797;
-        Fri, 22 Oct 2021 02:08:58 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id x129sm9073756pfc.140.2021.10.22.02.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 02:08:58 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     malattia@linux.it
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] platform/x86: sony-laptop: replace snprintf in show functions with sysfs_emit
-Date:   Fri, 22 Oct 2021 09:08:51 +0000
-Message-Id: <20211022090851.1065538-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 22 Oct 2021 05:12:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E278E212C8;
+        Fri, 22 Oct 2021 09:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634893803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vr4YC4Ootp7YmZVbnn2IeZzn/hRDb/zTjl1sQmsj3Y4=;
+        b=R9XstMmNBuTc8yClgMbVxDC5C6GgjMu70ghewFBYZCpoiP06QqDFRqWH3wnrvhv/IQmgaP
+        QS2K0ayylJY9+kzYN4p8QdPHBeCm1vg7vQognKVqlhHNuUEVuZ4huerfiP8txsHMEmJmv4
+        59ZPx7m1v06coMsJDaEm6dUfI9Dilp0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B35CDA3B81;
+        Fri, 22 Oct 2021 09:10:03 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 11:10:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg v2 2/2] memcg: prohibit unconditional exceeding the
+ limit of dying tasks
+Message-ID: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+References: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
+ <cover.1634889066.git.vvs@virtuozzo.com>
+ <4b315938-5600-b7f5-bde9-82f638a2e595@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b315938-5600-b7f5-bde9-82f638a2e595@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+On Fri 22-10-21 11:11:29, Vasily Averin wrote:
+> Memory cgroup charging allows killed or exiting tasks to exceed the hard
+> limit. It is assumed that the amount of the memory charged by those
+> tasks is bound and most of the memory will get released while the task
+> is exiting. This is resembling a heuristic for the global OOM situation
+> when tasks get access to memory reserves. There is no global memory
+> shortage at the memcg level so the memcg heuristic is more relieved.
+> 
+> The above assumption is overly optimistic though. E.g. vmalloc can scale
+> to really large requests and the heuristic would allow that. We used to
+> have an early break in the vmalloc allocator for killed tasks but this
+> has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+> the current task is killed""). There are likely other similar code paths
+> which do not check for fatal signals in an allocation&charge loop.
+> Also there are some kernel objects charged to a memcg which are not
+> bound to a process life time.
+> 
+> It has been observed that it is not really hard to trigger these
+> bypasses and cause global OOM situation.
+> 
+> One potential way to address these runaways would be to limit the amount
+> of excess (similar to the global OOM with limited oom reserves). This is
+> certainly possible but it is not really clear how much of an excess is
+> desirable and still protects from global OOMs as that would have to
+> consider the overall memcg configuration.
+> 
+> This patch is addressing the problem by removing the heuristic
+> altogether. Bypass is only allowed for requests which either cannot fail
+> or where the failure is not desirable while excess should be still
+> limited (e.g. atomic requests). Implementation wise a killed or dying
+> task fails to charge if it has passed the OOM killer stage. That should
+> give all forms of reclaim chance to restore the limit before the
+> failure (ENOMEM) and tell the caller to back off.
+> 
+> In addition, this patch renames should_force_charge() helper
+> to task_is_dying() because now its use is not associated witch forced
+> charging.
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING  use scnprintf or sprintf
+I would explicitly mention that this depends on pagefault_out_of_memory
+to not trigger out_of_memory because then a memcg failure can unwind to
+VM_FAULT_OOM and cause a global OOM killer.
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+Maybe it would be even better to fold the removal to this patch so the
+dependency is more obvious. I will live that to you.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- drivers/platform/x86/sony-laptop.c | 46 ++++++++++++------------------
- 1 file changed, 18 insertions(+), 28 deletions(-)
+> Fixes: a636b327f731 ("memcg: avoid unnecessary system-wide-oom-killer")
 
-diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
-index 704813374922..d8d0c0bed5e9 100644
---- a/drivers/platform/x86/sony-laptop.c
-+++ b/drivers/platform/x86/sony-laptop.c
-@@ -964,7 +964,7 @@ static ssize_t sony_nc_sysfs_show(struct device *dev, struct device_attribute *a
- 	if (item->validate)
- 		value = item->validate(SNC_VALIDATE_OUT, value);
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", value);
-+	return sysfs_emit(buffer, "%d\n", value);
- }
- 
- static ssize_t sony_nc_sysfs_store(struct device *dev,
-@@ -1811,9 +1811,7 @@ static ssize_t sony_nc_kbd_backlight_mode_store(struct device *dev,
- static ssize_t sony_nc_kbd_backlight_mode_show(struct device *dev,
- 		struct device_attribute *attr, char *buffer)
- {
--	ssize_t count = 0;
--	count = snprintf(buffer, PAGE_SIZE, "%d\n", kbdbl_ctl->mode);
--	return count;
-+	return sysfs_emit(buffer, "%d\n", kbdbl_ctl->mode);
- }
- 
- static int __sony_nc_kbd_backlight_timeout_set(u8 value)
-@@ -1855,9 +1853,7 @@ static ssize_t sony_nc_kbd_backlight_timeout_store(struct device *dev,
- static ssize_t sony_nc_kbd_backlight_timeout_show(struct device *dev,
- 		struct device_attribute *attr, char *buffer)
- {
--	ssize_t count = 0;
--	count = snprintf(buffer, PAGE_SIZE, "%d\n", kbdbl_ctl->timeout);
--	return count;
-+	return sysfs_emit(buffer, "%d\n", kbdbl_ctl->timeout);
- }
- 
- static int sony_nc_kbd_backlight_setup(struct platform_device *pd,
-@@ -2051,21 +2047,18 @@ static ssize_t sony_nc_battery_care_limit_show(struct device *dev,
- 		break;
- 	}
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
-+	return sysfs_emit(buffer, "%d\n", status);
- }
- 
- static ssize_t sony_nc_battery_care_health_show(struct device *dev,
- 		struct device_attribute *attr, char *buffer)
- {
--	ssize_t count = 0;
- 	unsigned int health;
- 
- 	if (sony_call_snc_handle(bcare_ctl->handle, 0x0200, &health))
- 		return -EIO;
- 
--	count = snprintf(buffer, PAGE_SIZE, "%d\n", health & 0xff);
--
--	return count;
-+	return sysfs_emit(buffer, "%d\n", health & 0xff);
- }
- 
- static int sony_nc_battery_care_setup(struct platform_device *pd,
-@@ -2215,15 +2208,12 @@ static ssize_t sony_nc_thermal_mode_store(struct device *dev,
- static ssize_t sony_nc_thermal_mode_show(struct device *dev,
- 		struct device_attribute *attr, char *buffer)
- {
--	ssize_t count = 0;
- 	int mode = sony_nc_thermal_mode_get();
- 
- 	if (mode < 0)
- 		return mode;
- 
--	count = snprintf(buffer, PAGE_SIZE, "%s\n", snc_thermal_profiles[mode]);
--
--	return count;
-+	return sysfs_emit(buffer, "%s\n", snc_thermal_profiles[mode]);
- }
- 
- static int sony_nc_thermal_setup(struct platform_device *pd)
-@@ -2361,7 +2351,7 @@ static ssize_t sony_nc_lid_resume_show(struct device *dev,
- 
- 	while (pos < LID_RESUME_MAX) {
- 		if (&lid_ctl->attrs[pos].attr == &attr->attr)
--			return snprintf(buffer, PAGE_SIZE, "%d\n",
-+			return sysfs_emit(buffer, "%d\n",
- 					(lid_ctl->status >> pos) & 0x01);
- 		pos++;
- 	}
-@@ -2493,7 +2483,7 @@ static ssize_t sony_nc_gfx_switch_status_show(struct device *dev,
- 	if (pos < 0)
- 		return pos;
- 
--	return snprintf(buffer, PAGE_SIZE, "%s\n",
-+	return sysfs_emit(buffer, "%s\n",
- 					pos == SPEED ? "speed" :
- 					pos == STAMINA ? "stamina" :
- 					pos == AUTO ? "auto" : "unknown");
-@@ -2568,7 +2558,7 @@ static ssize_t sony_nc_highspeed_charging_show(struct device *dev,
- 	if (sony_call_snc_handle(0x0131, 0x0100, &result))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", result & 0x01);
-+	return sysfs_emit(buffer, "%d\n", result & 0x01);
- }
- 
- static int sony_nc_highspeed_charging_setup(struct platform_device *pd)
-@@ -2642,7 +2632,7 @@ static ssize_t sony_nc_lowbatt_show(struct device *dev,
- 	if (sony_call_snc_handle(0x0121, 0x0200, &result))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", result & 1);
-+	return sysfs_emit(buffer, "%d\n", result & 1);
- }
- 
- static int sony_nc_lowbatt_setup(struct platform_device *pd)
-@@ -2708,7 +2698,7 @@ static ssize_t sony_nc_hsfan_show(struct device *dev,
- 	if (sony_call_snc_handle(0x0149, 0x0100, &result))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", result & 0x01);
-+	return sysfs_emit(buffer, "%d\n", result & 0x01);
- }
- 
- static ssize_t sony_nc_fanspeed_show(struct device *dev,
-@@ -2719,7 +2709,7 @@ static ssize_t sony_nc_fanspeed_show(struct device *dev,
- 	if (sony_call_snc_handle(0x0149, 0x0300, &result))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", result & 0xff);
-+	return sysfs_emit(buffer, "%d\n", result & 0xff);
- }
- 
- static int sony_nc_fanspeed_setup(struct platform_device *pd)
-@@ -2815,7 +2805,7 @@ static ssize_t sony_nc_usb_charge_show(struct device *dev,
- 	if (sony_call_snc_handle(0x0155, 0x0000, &result))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", result & 0x01);
-+	return sysfs_emit(buffer, "%d\n", result & 0x01);
- }
- 
- static int sony_nc_usb_charge_setup(struct platform_device *pd)
-@@ -2870,7 +2860,7 @@ static ssize_t sony_nc_panelid_show(struct device *dev,
- 	if (sony_call_snc_handle(0x011D, 0x0000, &result))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", result);
-+	return sysfs_emit(buffer, "%d\n", result);
- }
- 
- static int sony_nc_panelid_setup(struct platform_device *pd)
-@@ -2998,7 +2988,7 @@ static ssize_t sony_nc_touchpad_show(struct device *dev,
- 	if (sony_call_snc_handle(tp_ctl->handle, 0x000, &result))
- 		return -EINVAL;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", !(result & 0x01));
-+	return sysfs_emit(buffer, "%d\n", !(result & 0x01));
- }
- 
- static int sony_nc_touchpad_setup(struct platform_device *pd,
-@@ -3915,7 +3905,7 @@ static ssize_t sony_pic_wwanpower_show(struct device *dev,
- {
- 	ssize_t count;
- 	mutex_lock(&spic_dev.lock);
--	count = snprintf(buffer, PAGE_SIZE, "%d\n", spic_dev.wwan_power);
-+	count = sysfs_emit(buffer, "%d\n", spic_dev.wwan_power);
- 	mutex_unlock(&spic_dev.lock);
- 	return count;
- }
-@@ -3954,7 +3944,7 @@ static ssize_t sony_pic_bluetoothpower_show(struct device *dev,
- {
- 	ssize_t count = 0;
- 	mutex_lock(&spic_dev.lock);
--	count = snprintf(buffer, PAGE_SIZE, "%d\n", spic_dev.bluetooth_power);
-+	count = sysfs_emit(buffer, "%d\n", spic_dev.bluetooth_power);
- 	mutex_unlock(&spic_dev.lock);
- 	return count;
- }
-@@ -3996,7 +3986,7 @@ static ssize_t sony_pic_fanspeed_show(struct device *dev,
- 	if (sony_pic_get_fanspeed(&value))
- 		return -EIO;
- 
--	return snprintf(buffer, PAGE_SIZE, "%d\n", value);
-+	return sysfs_emit(buffer, "%d\n", value);
- }
- 
- #define SPIC_ATTR(_name, _mode)					\
+Fixes tag would be quite hard here. For example you certainly didn't
+have a practically unbound vector to go over the hard limit - like
+vmalloc. At least not after __GFP_ACCOUNT has been introduced. So I
+would just not bother with a Fixes tag at all rather than cause it more
+questions than answers.
+
+> Cc: stable@vger.kernel.org
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+
+Other than that looks good to me.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+> ---
+>  mm/memcontrol.c | 27 ++++++++-------------------
+>  1 file changed, 8 insertions(+), 19 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6da5020a8656..87e41c3cac10 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -239,7 +239,7 @@ enum res_type {
+>  	     iter != NULL;				\
+>  	     iter = mem_cgroup_iter(NULL, iter, NULL))
+>  
+> -static inline bool should_force_charge(void)
+> +static inline bool task_is_dying(void)
+>  {
+>  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+>  		(current->flags & PF_EXITING);
+> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 * A few threads which were not waiting at mutex_lock_killable() can
+>  	 * fail to bail out. Therefore, check again after holding oom_lock.
+>  	 */
+> -	ret = should_force_charge() || out_of_memory(&oc);
+> +	ret = task_is_dying() || out_of_memory(&oc);
+>  
+>  unlock:
+>  	mutex_unlock(&oom_lock);
+> @@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	struct page_counter *counter;
+>  	enum oom_status oom_status;
+>  	unsigned long nr_reclaimed;
+> +	bool passed_oom = false;
+>  	bool may_swap = true;
+>  	bool drained = false;
+>  	unsigned long pflags;
+> @@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (gfp_mask & __GFP_ATOMIC)
+>  		goto force;
+>  
+> -	/*
+> -	 * Unlike in global OOM situations, memcg is not in a physical
+> -	 * memory shortage.  Allow dying and OOM-killed tasks to
+> -	 * bypass the last charges so that they can exit quickly and
+> -	 * free their memory.
+> -	 */
+> -	if (unlikely(should_force_charge()))
+> -		goto force;
+> -
+>  	/*
+>  	 * Prevent unbounded recursion when reclaim operations need to
+>  	 * allocate memory. This might exceed the limits temporarily,
+> @@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+>  		goto nomem;
+>  
+> -	if (fatal_signal_pending(current))
+> -		goto force;
+> +	/* Avoid endless loop for tasks bypassed by the oom killer */
+> +	if (passed_oom && task_is_dying())
+> +		goto nomem;
+>  
+>  	/*
+>  	 * keep retrying as long as the memcg oom killer is able to make
+> @@ -2640,14 +2633,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 */
+>  	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+>  		       get_order(nr_pages * PAGE_SIZE));
+> -	switch (oom_status) {
+> -	case OOM_SUCCESS:
+> +	if (oom_status == OOM_SUCCESS) {
+> +		passed_oom = true;
+>  		nr_retries = MAX_RECLAIM_RETRIES;
+>  		goto retry;
+> -	case OOM_FAILED:
+> -		goto force;
+> -	default:
+> -		goto nomem;
+>  	}
+>  nomem:
+>  	if (!(gfp_mask & __GFP_NOFAIL))
+> -- 
+> 2.32.0
+
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
