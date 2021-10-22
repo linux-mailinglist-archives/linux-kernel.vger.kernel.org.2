@@ -2,159 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09E2437973
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF53437979
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhJVO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:59:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20210 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233253AbhJVO7Y (ORCPT
+        id S233194AbhJVPDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:03:41 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:40412 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233143AbhJVPDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:59:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634914626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/oKOiyyh2KJKHi/RebS+NG4NxiirIVYl7E9Ckncjl9I=;
-        b=ZZpCqrpRxl2LfZPH0EV8Krq9Ax0lwd5vHNNtKaAhd5jQ4GZ75ORa0vCdY+zStgZ3D2ZPFI
-        8RQfVpOOQ7yzrYxTcAtzNug/JnNciDZF8W77V7R2DpJ/yUeMn+nUSEVHvYqZTvM2sxntGU
-        MFuWDrgVsT+qAzmZqBsB+0Hy0rXb4Ak=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-OKRr6lvPPyCvbLStjdC_XA-1; Fri, 22 Oct 2021 10:57:02 -0400
-X-MC-Unique: OKRr6lvPPyCvbLStjdC_XA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A82B806689;
-        Fri, 22 Oct 2021 14:57:00 +0000 (UTC)
-Received: from starship (unknown [10.40.192.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2ED291346F;
-        Fri, 22 Oct 2021 14:56:54 +0000 (UTC)
-Message-ID: <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
-Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 22 Oct 2021 17:56:54 +0300
-In-Reply-To: <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
-References: <20211022004927.1448382-1-seanjc@google.com>
-         <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Fri, 22 Oct 2021 11:03:39 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:46816)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdw2r-003aFJ-0J; Fri, 22 Oct 2021 09:01:21 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34440 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdw2p-00Ev8j-A8; Fri, 22 Oct 2021 09:01:20 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Rune Kleveland <rune.kleveland@infomedia.dk>,
+        Yu Zhao <yuzhao@google.com>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Antoine Martin <antoine@nagafix.co.uk>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+References: <877de6e589.fsf@disp2133>
+        <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
+Date:   Fri, 22 Oct 2021 09:59:57 -0500
+In-Reply-To: <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 21 Oct 2021 17:35:08 -1000")
+Message-ID: <87fsst6r6a.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-XM-SPF: eid=1mdw2p-00Ev8j-A8;;;mid=<87fsst6r6a.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+trmELuUB54LDvZVfvhFlo7HQc4mnbrD4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4950]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1056 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 17 (1.7%), b_tie_ro: 16 (1.5%), parse: 0.82
+        (0.1%), extract_message_metadata: 22 (2.1%), get_uri_detail_list: 0.94
+        (0.1%), tests_pri_-1000: 33 (3.1%), tests_pri_-950: 1.52 (0.1%),
+        tests_pri_-900: 1.24 (0.1%), tests_pri_-90: 330 (31.2%), check_bayes:
+        311 (29.4%), b_tokenize: 6 (0.5%), b_tok_get_all: 104 (9.9%),
+        b_comp_prob: 2.3 (0.2%), b_tok_touch_all: 193 (18.3%), b_finish: 1.20
+        (0.1%), tests_pri_0: 636 (60.2%), check_dkim_signature: 0.66 (0.1%),
+        check_dkim_adsp: 3.2 (0.3%), poll_dns_idle: 1.16 (0.1%), tests_pri_10:
+        2.3 (0.2%), tests_pri_500: 9 (0.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] ucount fixes for v5.15
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-22 at 12:12 +0200, Paolo Bonzini wrote:
-> On 22/10/21 02:49, Sean Christopherson wrote:
-> > APICv cleanups and a dissertation on handling concurrent APIC access page
-> > faults and APICv inhibit updates.
-> > 
-> > I've tested this but haven't hammered the AVIC stuff, I'd appreciate it if
-> > someone with the Hyper-V setup can beat on the AVIC toggling.
-> > 
-> > Sean Christopherson (4):
-> >    KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
-> >      memslot
-> >    KVM: x86: Move SVM's APICv sanity check to common x86
-> >    KVM: x86: Move apicv_active flag from vCPU to in-kernel local APIC
-> >    KVM: x86: Use rw_semaphore for APICv lock to allow vCPU parallelism
-> > 
-> >   arch/x86/include/asm/kvm_host.h |  3 +-
-> >   arch/x86/kvm/hyperv.c           |  4 +--
-> >   arch/x86/kvm/lapic.c            | 46 ++++++++++---------------
-> >   arch/x86/kvm/lapic.h            |  5 +--
-> >   arch/x86/kvm/mmu/mmu.c          | 29 ++++++++++++++--
-> >   arch/x86/kvm/svm/avic.c         |  2 +-
-> >   arch/x86/kvm/svm/svm.c          |  2 --
-> >   arch/x86/kvm/vmx/vmx.c          |  4 +--
-> >   arch/x86/kvm/x86.c              | 59 ++++++++++++++++++++++-----------
-> >   9 files changed, 93 insertions(+), 61 deletions(-)
-> > 
-> 
-> Queued, thanks.  I only made small edits to the comment in patch
-> 1, to make it very slightly shorter.
-> 
-> 	 * 2a. APICv is globally disabled but locally enabled, and this
-> 	 *     vCPU acquires mmu_lock before __kvm_request_apicv_update
-> 	 *     calls kvm_zap_gfn_range().  This vCPU will install a stale
-> 	 *     SPTE, but no one will consume it as (a) no vCPUs can be
-> 	 *     running due to the kick from KVM_REQ_APICV_UPDATE, and
-> 	 *     (b) because KVM_REQ_APICV_UPDATE is raised before the VM
-> 	 *     state is update, vCPUs attempting to service the request
-> 	 *     will block on apicv_update_lock.  The update flow will
-> 	 *     then zap the SPTE and release the lock.
-> 
-> Paolo
-> 
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Hi Paolo and Sean!
+> On Thu, Oct 21, 2021 at 6:04 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>>  kernel/cred.c                | 9 ++++-----
+>>  security/keys/process_keys.c | 8 ++++++++
+>>  2 files changed, 12 insertions(+), 5 deletions(-)
+>
+> That's not remotely the right diffstat.
+>
+> What's going on?
 
-Could you expalain to me why the scenario when  I expalined about in my reply previous version of patch 1
-is not correct?
+Sigh.  I sent the diffstat from when I sent the additional patches
+out for review instead of the diffstat for the entire branch I was
+asking you to pull.
 
-This is the scenario I was worried about:
+I really should have named things differently on my end when I sent
+the additional changes out for review.
+
+The correct diffstat should have been.
+
+ include/linux/user_namespace.h |  2 ++
+ kernel/cred.c                  |  9 ++++----
+ kernel/signal.c                | 25 ++++++---------------
+ kernel/ucount.c                | 49 ++++++++++++++++++++++++++++++++++++++++++
+ security/keys/process_keys.c   |  8 +++++++
+ 5 files changed, 69 insertions(+), 24 deletions(-)
 
 
+> The shortlog was correct, and I pulled the branch, because everything
+> else looked ok, but that diffstat in the pull request was some
+> complete fantasy.
+>
+> If I were to guess, I think the diffstat may be everything _but_ that
+> first ("ucounts: Fix signal ucount refcounting") fix. I just don't see
+> how/why you'd get that as part of the pull request.
 
-    vCPU0                                   vCPU1
-    =====                                   =====
+You are exactly right.
 
-- disable AVIC
-- VMRUN
-                                        - #NPT on AVIC MMIO access
-                                        - *stuck on something prior to the page fault code*
-- enable AVIC
-- VMRUN
-                                        - *still stuck on something prior to the page fault code*
-
-- disable AVIC:
-
-  - raise KVM_REQ_APICV_UPDATE request
-                                        
-  - set global avic state to disable
-
-  - zap the SPTE (does nothing, doesn't race
-        with anything either)
-
-  - handle KVM_REQ_APICV_UPDATE -
-    - disable vCPU0 AVIC
-
-- VMRUN
-                                        - *still stuck on something prior to the page fault code*
-
-                                                            ...
-                                                            ...
-                                                            ...
-
-                                        - now vCPU1 finally starts running the page fault code.
-
-                                        - vCPU1 AVIC is still enabled 
-                                          (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
-                                          so the page fault code will populate the SPTE.
-                                          
-
-                                        - handle KVM_REQ_APICV_UPDATE
-                                           - finally disable vCPU1 AVIC
-
-                                        - VMRUN (vCPU1 AVIC disabled, SPTE populated)
-
-                                                         ***boom***
-
-
-
-Best regards,
-	Maxim Levitsky
-
+My apologies for the confusion.
+Eric
