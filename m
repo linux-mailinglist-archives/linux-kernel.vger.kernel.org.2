@@ -2,167 +2,779 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08099438022
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C8D43801D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhJVWQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:16:06 -0400
-Received: from relay.yourmailgateway.de ([188.68.61.106]:56685 "EHLO
-        relay.yourmailgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhJVWQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:16:05 -0400
-X-Greylist: delayed 607 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 18:16:04 EDT
-Received: from mors-relay-8405.netcup.net (localhost [127.0.0.1])
-        by mors-relay-8405.netcup.net (Postfix) with ESMTPS id 4Hbddv2B5yz6w03;
-        Sat, 23 Oct 2021 00:03:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=alexander-lochmann.de; s=key2; t=1634940211;
-        bh=jtUzDXvaR8hHXjywNo+4aj/Qd4yRV+sSG1NHKsnVZuM=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=aqtQLCPAmhRVc1Ual9aluO8IxBavtf44InjrqyKS429p5R68ZiXOUrmrRhJhKfVrj
-         aXsPR7blZ7RUAS9UqJqzO7V2J5qm7q2geeHsSjfxLAKG1M/84hpilVAwlBSNeFPIG/
-         KTLIlCKSyh/J7Fv85/gobsINjlc+E7rYvuIsVZqaqFJceRerrk94UqLTQQHL8HGd/6
-         daX1GhgziWdYYP/KIOEiWMcQ3fJ7MuUjm0dNOkP/quGBsn+9hP5qDlDEecj8QbFZbj
-         WSuu2mGc/P9iQFVFJMVSy78aOCYQiBdfSwTzggji51L0+A3wTRrm5/HwAzZpObZysM
-         j7kcDjJZStEAQ==
-Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
-        by mors-relay-8405.netcup.net (Postfix) with ESMTPS id 4Hbddv1pmhz6w01;
-        Sat, 23 Oct 2021 00:03:31 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at policy02-mors.netcup.net
-X-Spam-Flag: NO
-X-Spam-Score: -2.901
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.901 required=6.31 tests=[ALL_TRUSTED=-1,
-        BAYES_00=-1.9, SPF_PASS=-0.001] autolearn=ham autolearn_force=no
-Received: from mx2e12.netcup.net (unknown [10.243.12.53])
+        id S233615AbhJVWKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:10:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229804AbhJVWKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 18:10:12 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by policy02-mors.netcup.net (Postfix) with ESMTPS id 4Hbddr3XTvz8svs;
-        Sat, 23 Oct 2021 00:03:28 +0200 (CEST)
-Received: from [10.128.131.224] (unknown [37.120.132.67])
-        by mx2e12.netcup.net (Postfix) with ESMTPSA id 5B203A04FB;
-        Sat, 23 Oct 2021 00:03:20 +0200 (CEST)
-Authentication-Results: mx2e12;
-        spf=pass (sender IP is 37.120.132.67) smtp.mailfrom=info@alexander-lochmann.de smtp.helo=[10.128.131.224]
-Received-SPF: pass (mx2e12: connection is authenticated)
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        kasan-dev@googlegroups.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210927173348.265501-1-info@alexander-lochmann.de>
- <YVQkzCryS9dkvRGB@hirez.programming.kicks-ass.net>
-From:   Alexander Lochmann <info@alexander-lochmann.de>
-Subject: Re: [PATCHv2] Introduced new tracing mode KCOV_MODE_UNIQUE.
-Message-ID: <927385c7-0155-22b0-c2f3-7776b6fe374c@alexander-lochmann.de>
-Date:   Sat, 23 Oct 2021 00:03:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by mail.kernel.org (Postfix) with ESMTPSA id EE61160F6F;
+        Fri, 22 Oct 2021 22:07:53 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 18:07:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jeff Xie <xiehuan09@gmail.com>
+Cc:     mhiramat@kernel.org, mingo@redhat.com, chenhuacai@kernel.org,
+        linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [RFC PATCH v2] trace: Add trace any kernel object
+Message-ID: <20211022180752.0ed07b35@gandalf.local.home>
+In-Reply-To: <20211021185335.380810-1-xiehuan09@gmail.com>
+References: <20211021185335.380810-1-xiehuan09@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YVQkzCryS9dkvRGB@hirez.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="CDzUVjhiPtClmKUvK9yUQsAHucLgloZvz"
-X-PPP-Message-ID: <163494020654.20467.833133958238456166@mx2e12.netcup.net>
-X-PPP-Vhost: alexander-lochmann.de
-X-NC-CID: yTucXSprgOVIdQ7m3pFnHtEZSL80pRmPiiPjZRCUXJtPlaTCDtHB87NH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CDzUVjhiPtClmKUvK9yUQsAHucLgloZvz
-Content-Type: multipart/mixed; boundary="UBwMM8vn54PR4LUbz1olAyRhXFoyVHnMk";
- protected-headers="v1"
-From: Alexander Lochmann <info@alexander-lochmann.de>
-To: Peter Zijlstra <peterz@infradead.org>, Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Andrew Klychkov <andrew.a.klychkov@gmail.com>,
- Miguel Ojeda <ojeda@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Jakub Kicinski <kuba@kernel.org>, Aleksandr Nogikh <nogikh@google.com>,
- kasan-dev@googlegroups.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <927385c7-0155-22b0-c2f3-7776b6fe374c@alexander-lochmann.de>
-Subject: Re: [PATCHv2] Introduced new tracing mode KCOV_MODE_UNIQUE.
-References: <20210927173348.265501-1-info@alexander-lochmann.de>
- <YVQkzCryS9dkvRGB@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVQkzCryS9dkvRGB@hirez.programming.kicks-ass.net>
+On Fri, 22 Oct 2021 02:53:35 +0800
+Jeff Xie <xiehuan09@gmail.com> wrote:
 
---UBwMM8vn54PR4LUbz1olAyRhXFoyVHnMk
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE-1901
-Content-Transfer-Encoding: quoted-printable
-
-Maybe Dmitry can shed some light on this. He actually suggested that=20
-optimization.
-
-- Alex
-
-On 29.09.21 10:33, Peter Zijlstra wrote:
-> On Mon, Sep 27, 2021 at 07:33:40PM +0200, Alexander Lochmann wrote:
->> The existing trace mode stores PCs in execution order. This could lead=
-
->> to a buffer overflow if sufficient amonut of kernel code is executed.
->> Thus, a user might not see all executed PCs. KCOV_MODE_UNIQUE favors
->> completeness over execution order. While ignoring the execution order,=
-
->> it marks a PC as exectued by setting a bit representing that PC. Each
->> bit in the shared buffer represents every fourth byte of the text
->> segment.  Since a call instruction on every supported architecture is
->> at least four bytes, it is safe to just store every fourth byte of the=
-
->> text segment.
->=20
-> I'm still trying to wake up, but why are call instruction more importan=
-t
-> than other instructions? Specifically, I'd think any branch instruction=
-
-> matters for coverage.
->=20
-> More specifically, x86 can do a tail call with just 2 bytes.
->=20
-
---=20
-Alexander Lochmann                PGP key: 0xBC3EF6FD
-Heiliger Weg 72                   phone:  +49.231.28053964
-D-44141 Dortmund                  mobile: +49.151.15738323
+Hi Jeff!
 
 
---UBwMM8vn54PR4LUbz1olAyRhXFoyVHnMk--
+> Introduce a method based on function tracer and kprobe/uprobe/trace_event/
+> to trace any object in the linux kernel.
+> 
+> Usage:
+> When using kprobe/uprobe/trace_event/ we can use a new trigger(objfilter) 
+> to set object and tigger object trace.
+> 
+> For example:
+> 
+> For the function bio_add_page, we can trace the first argument:
+> 
+> int bio_add_page(struct bio *bio, struct page *page,
+> 				unsigned int len, unsigned int offset)
+> 				
+> [root@JeffXie ]# cd /sys/kernel/debug/tracing/
+> [root@JeffXie tracing]# echo 'p bio_add_page arg1=$arg1' > kprobe_events
+> [root@JeffXie tracing]# cd events/kprobes/p_bio_add_page_0/
+> [root@JeffXie p_bio_add_page_0]# echo 'objfilter:arg1 if comm == "cat"' > ./trigger
+> [root@JeffXie p_bio_add_page_0]# cat /test.txt
+> [root@JeffXie p_bio_add_page_0]# cd /sys/kernel/debug/tracing/
+> [root@JeffXie tracing]# cat ./trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 81/81   #P:4
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| / _-=> migrate-disable
+> #                              |||| /     delay
+> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> #              | |         |   |||||     |         |
+>              cat-122     [001] .....   111.193997: bio_add_page <-ext4_mpage_readpages object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193998: __bio_try_merge_page <-bio_add_page object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193998: __bio_add_page <-bio_add_page object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193998: submit_bio <-ext4_mpage_readpages object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193998: submit_bio_noacct <-ext4_mpage_readpages object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193999: __submit_bio <-submit_bio_noacct object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193999: submit_bio_checks <-__submit_bio object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193999: __cond_resched <-submit_bio_checks object:0xffff888102a4b900
+>              cat-122     [001] .....   111.193999: rcu_all_qs <-__cond_resched object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194000: should_fail_bio <-submit_bio_checks object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194001: blk_mq_submit_bio <-__submit_bio object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194001: blk_attempt_plug_merge <-blk_mq_submit_bio object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194001: __blk_mq_sched_bio_merge <-blk_mq_submit_bio object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194002: __blk_mq_alloc_request <-blk_mq_submit_bio object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194002: blk_mq_get_tag <-__blk_mq_alloc_request object:0xffff888102a4b900
+>              cat-122     [001] .....   111.194003: blk_account_io_start <-blk_mq_submit_bio object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194212: bio_advance <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194213: bio_endio <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194213: mpage_end_io <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194213: __read_end_io <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194218: bio_put <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194218: bio_free <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194218: bio_free <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194218: bvec_free <-bio_free object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194219: mempool_free <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194219: mempool_free <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194219: mempool_free_slab <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194219: mempool_free_slab <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194219: kmem_cache_free <-blk_update_request object:0xffff888102a4b900
+>           <idle>-0       [001] d....   111.194219: kmem_cache_free <-blk_update_request object:0xffff888102a4b900
+> 
+> Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
+> ---
+> So far, it can trace the object from kprobe/uprobe/syscall tracepoint
+> and now it doesn't yet support the count for objfilter.
+> 
+>  include/linux/ftrace.h              |  16 +++
+>  include/linux/trace_events.h        |   1 +
+>  kernel/trace/Kconfig                |   7 +
+>  kernel/trace/Makefile               |   1 +
+>  kernel/trace/trace.h                |   7 +
+>  kernel/trace/trace_entries.h        |  17 +++
+>  kernel/trace/trace_events_trigger.c | 122 ++++++++++++++++++
+>  kernel/trace/trace_kprobe.c         |   1 +
+>  kernel/trace/trace_object.c         | 191 ++++++++++++++++++++++++++++
+>  kernel/trace/trace_output.c         |  40 ++++++
+>  kernel/trace/trace_syscalls.c       |   1 +
+>  kernel/trace/trace_uprobe.c         |   1 +
+>  12 files changed, 405 insertions(+)
+>  create mode 100644 kernel/trace/trace_object.c
+> 
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 832e65f06754..2d7e62bff6c5 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -1078,4 +1078,20 @@ unsigned long arch_syscall_addr(int nr);
+>  
+>  #endif /* CONFIG_FTRACE_SYSCALLS */
+>  
+> +struct trace_event_file;
+> +
+> +#ifdef CONFIG_TRACE_OBJECT
+> +int init_trace_object(void);
+> +int exit_trace_object(void);
+> +void set_trace_object(void *obj);
+> +void record_trace_object(struct trace_event_file *trace_file,
+> +		struct pt_regs *regs);
+> +#else
+> +static inline int init_trace_object(void) { return 0; }
+> +static inline int exit_trace_object(void) { return 0; }
+> +static inline void set_trace_object(void *obj) { }
+> +static inline void record_trace_object(struct trace_event_file *trace_file,
+> +		struct pt_regs *regs) { }
+> +#endif /* CONFIG_TRACE_OBJECT */
+> +
+>  #endif /* _LINUX_FTRACE_H */
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 3e475eeb5a99..f6dcaca9c3fe 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -684,6 +684,7 @@ enum event_trigger_type {
+>  	ETT_EVENT_HIST		= (1 << 4),
+>  	ETT_HIST_ENABLE		= (1 << 5),
+>  	ETT_EVENT_EPROBE	= (1 << 6),
+> +	ETT_TRACE_OBJECT	= (1 << 7),
+>  };
+>  
+>  extern int filter_match_preds(struct event_filter *filter, void *rec);
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index 420ff4bc67fd..d302a0f085f9 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -237,6 +237,13 @@ config FUNCTION_PROFILER
+>  
+>  	  If in doubt, say N.
+>  
+> +config TRACE_OBJECT
+> +	bool "Trace kernel object"
+> +	depends on FUNCTION_TRACER
+> +	default y
+> +	help
+> +	 This help kernel developer to trace any kernel object.
+> +
+>  config STACK_TRACER
+>  	bool "Trace max stack"
+>  	depends on HAVE_FUNCTION_TRACER
+> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> index 6de5d4d63165..6d9e78a488aa 100644
+> --- a/kernel/trace/Makefile
+> +++ b/kernel/trace/Makefile
+> @@ -66,6 +66,7 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += trace_functions_graph.o
+>  obj-$(CONFIG_TRACE_BRANCH_PROFILING) += trace_branch.o
+>  obj-$(CONFIG_BLK_DEV_IO_TRACE) += blktrace.o
+>  obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += fgraph.o
+> +obj-$(CONFIG_TRACE_OBJECT) += trace_object.o
+>  ifeq ($(CONFIG_BLOCK),y)
+>  obj-$(CONFIG_EVENT_TRACING) += blktrace.o
+>  endif
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index b7c0f8e160fb..6ac8f5aca070 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -49,6 +49,7 @@ enum trace_type {
+>  	TRACE_TIMERLAT,
+>  	TRACE_RAW_DATA,
+>  	TRACE_FUNC_REPEATS,
+> +	TRACE_OBJECT,
+>  
+>  	__TRACE_LAST_TYPE,
+>  };
+> @@ -460,6 +461,7 @@ extern void __ftrace_bad_type(void);
+>  			  TRACE_GRAPH_RET);		\
+>  		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
+>  			  TRACE_FUNC_REPEATS);				\
+> +		IF_ASSIGN(var, ent, struct trace_object_entry, TRACE_OBJECT);\
+>  		__ftrace_bad_type();					\
+>  	} while (0)
+>  
+> @@ -1950,6 +1952,11 @@ struct trace_min_max_param {
+>  	u64		*max;
+>  };
+>  
+> +struct object_trigger_param {
+> +	struct pt_regs *regs;
+> +	int param;
+> +};
+> +
+>  #define U64_STR_SIZE		24	/* 20 digits max */
+>  
+>  extern const struct file_operations trace_min_max_fops;
+> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+> index cd41e863b51c..bb120d9498a9 100644
+> --- a/kernel/trace/trace_entries.h
+> +++ b/kernel/trace/trace_entries.h
+> @@ -401,3 +401,20 @@ FTRACE_ENTRY(timerlat, timerlat_entry,
+>  		 __entry->context,
+>  		 __entry->timer_latency)
+>  );
+> +
+> +/*
+> + * trace object entry:
+> + */
+> +FTRACE_ENTRY(object, trace_object_entry,
+> +
+> +	TRACE_OBJECT,
+> +
+> +	F_STRUCT(
+> +		__field(	unsigned long,		ip		)
+> +		__field(	unsigned long,		parent_ip	)
+> +		__field(	unsigned long,		object		)
+> +	),
+> +
+> +	F_printk(" %ps <-- %ps object:%lx\n",
+> +		 (void *)__entry->ip, (void *)__entry->parent_ip, __entry->object)
+> +);
+> diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
+> index 3d5c07239a2a..d823854445e6 100644
+> --- a/kernel/trace/trace_events_trigger.c
+> +++ b/kernel/trace/trace_events_trigger.c
 
---CDzUVjhiPtClmKUvK9yUQsAHucLgloZvz
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+OK, so you shouldn't be modifying this file.
 
------BEGIN PGP SIGNATURE-----
+Look at how the histograms are done:
 
-wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmFzNSQFAwAAAAAACgkQWT7tBbw+9v3r
-3w/7Bv8kyg3mPcCinEzZ9AnnM/yQ20THcNhazgLOZNfSMOqGKhyu2lCwY8A8TakScZAd+si/iU/v
-d6n14El+O4hTXzqjq42Kyukl9F56f45qPd8CXciiSnkCcH2LO7t0MEck6KobaGDe1km0QBoXc/kN
-hhyG5Yp5qduw34Ltj8kaylCUzSOqYiRFmZ2Ws7aA5HkGTA8zgoRm4BZj/YEqpUsoFeGsUglvMtlt
-vPyG479llRhv3DVE3Kal7pxGTSVccFg4uCMsBGFzl5nwLhrkC9P3c2gzkbzcQ6rUTTCnBEZAnU6o
-6G4lZER0xOW41J8ZxdCfk3JadcKM/w245pu6SBDHKNE+oLm//+BCbhAReB/74WqPI4XvkQP623Gk
-x6mFm6EeXA72C/bWQg+V0VrFdbnkBACI88QMcEyzDHTddNno3/jkFx3rOQx7ZbVjY98Xw0p6Nf/P
-YjPM3qj1LEg7wKV12oQEBIHGo6oLUC4f2NUpl4DtYKCpBjBF4iMqCbkTmTtGi7GCyzFfiUDscafB
-3Y9BzfzJKM5zlgsd9n29jAWzUCFhAByzJsFUY78c5JjVylnUugdLuBoichLvh1r4Hg67AX1TB84N
-cvS0Y+c/jgXEV4/EeqnfaBW9Uk8yhdGLytC6UpAhGNNkK3r5bhU1WY6PiCGGR5XbFIkbw9+i6L5Q
-ST8=
-=9qA3
------END PGP SIGNATURE-----
+ kernel/trace/trace_events_hist.c
 
---CDzUVjhiPtClmKUvK9yUQsAHucLgloZvz--
+All your code should be in your trace_object.c file.
+
+Although, looking at the trace_events_hist.c file myself, I see a lot of
+duplicate code in event_hist_trigger_func() where we can add helper
+functions to handle that.
+
+But for now, just duplicate the code ;-)
+
+I added Tom to the Cc, so that he knows where he needs to clean up his code!
+
+
+> @@ -756,12 +756,36 @@ int set_trigger_filter(char *filter_str,
+>  	struct event_filter *filter = NULL, *tmp;
+>  	int ret = -EINVAL;
+>  	char *s;
+> +	unsigned long param;
+> +	struct object_trigger_param *obj_param;
+> +	int len;
+>  
+>  	if (!filter_str) /* clear the current filter */
+>  		goto assign;
+>  
+>  	s = strsep(&filter_str, " \t");
+>  
+> +	if (data->cmd_ops->trigger_type == ETT_TRACE_OBJECT) {
+> +		obj_param = data->private_data;
+> +		len = str_has_prefix(s, "arg");
+> +		if (!len)
+> +			goto out;
+> +		ret = kstrtoul(s + len, 10, &param);
+> +		if (ret || param == 0)
+> +			goto out;
+> +		obj_param = kmalloc(sizeof(*obj_param), GFP_KERNEL);
+> +		if (!obj_param) {
+> +			ret = -ENOMEM;
+> +			goto out;
+> +		}
+> +		data->private_data = obj_param;
+> +		obj_param->param = param;
+> +		init_trace_object();
+> +	}
+> +	if (!strlen(s) || !filter_str)
+> +		goto out;
+> +
+> +	s = strsep(&filter_str, " \t");
+>  	if (!strlen(s) || strcmp(s, "if") != 0)
+>  		goto out;
+>  
+> @@ -1679,6 +1703,103 @@ static __init int register_trigger_traceon_traceoff_cmds(void)
+>  	return ret;
+>  }
+>  
+> +#ifdef CONFIG_TRACE_OBJECT
+> +
+> +static void
+> +trace_object_trigger(struct event_trigger_data *data,
+> +		   struct trace_buffer *buffer,  void *rec,
+> +		   struct ring_buffer_event *event)
+> +{
+> +
+> +	struct object_trigger_param *obj_param = data->private_data;
+> +	unsigned long param;
+> +
+> +	param = regs_get_kernel_argument(obj_param->regs, obj_param->param - 1);
+> +	set_trace_object((void *)param);
+> +}
+> +
+> +static void
+> +trace_object_trigger_free(struct event_trigger_ops *ops,
+> +		   struct event_trigger_data *data)
+> +{
+> +	if (WARN_ON_ONCE(data->ref <= 0))
+> +		return;
+> +
+> +	data->ref--;
+> +	if (!data->ref) {
+> +		exit_trace_object();
+> +		trigger_data_free(data);
+> +		kfree(data->private_data);
+> +	}
+> +}
+> +
+> +static void
+> +trace_object_count_trigger(struct event_trigger_data *data,
+> +			 struct trace_buffer *buffer, void *rec,
+> +			 struct ring_buffer_event *event)
+> +{
+> +	if (!data->count)
+> +		return;
+> +
+> +	if (data->count != -1)
+> +		(data->count)--;
+> +
+> +	trace_object_trigger(data, buffer, rec, event);
+> +}
+> +
+> +static int
+> +trace_object_trigger_print(struct seq_file *m, struct event_trigger_ops *ops,
+> +			 struct event_trigger_data *data)
+> +{
+> +	return event_trigger_print("objfilter", m, (void *)data->count,
+> +				   data->filter_str);
+> +}
+> +
+> +static struct event_trigger_ops objecttrace_trigger_ops = {
+> +	.func			= trace_object_trigger,
+> +	.print			= trace_object_trigger_print,
+> +	.init			= event_trigger_init,
+> +	.free			= trace_object_trigger_free,
+> +};
+> +
+> +static struct event_trigger_ops objecttrace_count_trigger_ops = {
+> +	.func			= trace_object_count_trigger,
+> +	.print			= trace_object_trigger_print,
+> +	.init			= event_trigger_init,
+> +	.free			= trace_object_trigger_free,
+> +};
+> +
+> +static struct event_trigger_ops *
+> +objecttrace_get_trigger_ops(char *cmd, char *param)
+> +{
+> +	return param ? &objecttrace_count_trigger_ops : &objecttrace_trigger_ops;
+> +}
+> +
+> +static struct event_command trigger_object_cmd = {
+> +	.name			= "objfilter",
+> +	.trigger_type		= ETT_TRACE_OBJECT,
+> +	.flags			= EVENT_CMD_FL_NEEDS_REC,
+> +	.func			= event_trigger_callback,
+> +	.reg			= register_trigger,
+> +	.unreg			= unregister_trigger,
+> +	.get_trigger_ops	= objecttrace_get_trigger_ops,
+> +	.set_filter		= set_trigger_filter,
+> +};
+> +
+> +static __init int register_trigger_object_cmd(void)
+> +{
+> +	int ret;
+> +
+> +	ret = register_event_command(&trigger_object_cmd);
+> +	WARN_ON(ret < 0);
+> +
+> +	return ret;
+> +}
+> +
+> +#else
+> +static __init int register_trigger_object_cmd(void) { return 0; }
+> +#endif
+
+All the above should be in the trace_object.c file.
+
+In kernel/trace/trace.h you can add:
+
+#ifdef CONFIG_TRACE_OBJECT
+extern int register_trigger_object_cmd(void);
+#else
+static inline int register_trigger_object_cmd(void) { return 0; }
+#endif
+
+Just below where the CONFIG_HIST_TRIGGERS is.
+
+And make the above "register_trace_object_cmd()" not static.
+
+
+> +
+>  __init int register_trigger_cmds(void)
+>  {
+>  	register_trigger_traceon_traceoff_cmds();
+> @@ -1687,6 +1808,7 @@ __init int register_trigger_cmds(void)
+>  	register_trigger_enable_disable_cmds();
+>  	register_trigger_hist_enable_disable_cmds();
+>  	register_trigger_hist_cmd();
+> +	register_trigger_object_cmd();
+>  
+>  	return 0;
+>  }
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 3a64ba4bbad6..f80e86ff3d26 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -1380,6 +1380,7 @@ __kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs,
+>  
+>  	WARN_ON(call != trace_file->event_call);
+>  
+> +	record_trace_object(trace_file, regs);
+>  	if (trace_trigger_soft_disabled(trace_file))
+>  		return;
+>  
+> diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
+> new file mode 100644
+> index 000000000000..33eef0a10809
+> --- /dev/null
+> +++ b/kernel/trace/trace_object.c
+> @@ -0,0 +1,191 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * trace any object
+> + * Copyright (C) 2021 Jeff Xie <xiehuan09@gmail.com>
+> + */
+> +
+> +#define pr_fmt(fmt) "trace_object: " fmt
+> +
+> +#include "trace_output.h"
+> +
+> +static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
+> +static DEFINE_RAW_SPINLOCK(object_spin_lock);
+> +static struct trace_event_file event_trace_file;
+> +static LIST_HEAD(obj_head);
+> +static const int max_args_num = 6;
+> +static unsigned long trace_object_ref;
+> +
+> +struct trace_obj {
+> +	struct list_head head;
+> +	unsigned long obj;
+> +};
+> +
+> +void set_trace_object(void *obj)
+> +{
+> +	struct trace_obj *trace_obj;
+> +	struct trace_obj *new_obj;
+> +	unsigned long flags;
+> +
+> +	if (!obj)
+> +		goto out;
+> +
+> +	list_for_each_entry_rcu(trace_obj, &obj_head, head) {
+> +		if (trace_obj->obj == (unsigned long)obj)
+> +			goto out;
+> +	}
+> +
+> +	new_obj = kmalloc(sizeof(*new_obj), GFP_KERNEL);
+> +	if (!new_obj) {
+> +		pr_warn("allocate trace object fail\n");
+
+You shouldn't print because of allocation failure.
+
+But that doesn't matter, because you can't allocate here anyway. This is
+called from where the trace happens, and the kprobe could be inside the
+memory allocator, and if it is, you just deadlocked the machine.
+
+What you will need to do in this situation, is when the trigger is created,
+you need to allocate a pool of objects that you can get to. If that pool
+starts to fill up to some point, you will need to execute a work queue of
+some kind to add more objects to the pool.
+
+If you run out of objects before the pool can be refilled, then we can add
+a message to the ring buffer saying that happened.
+
+> +		goto out;
+> +	}
+> +
+
+The beginning of the function will have to have some kind of:
+
+	if (in_nmi())
+		return;
+
+Because we can't grab locks in nmi, and I believe a kprobe can be attached
+to one.
+
+> +	raw_spin_lock_irqsave(&object_spin_lock, flags);
+> +
+> +	new_obj->obj = (unsigned long)obj;
+> +
+> +	list_add_rcu(&new_obj->head, &obj_head);
+> +
+> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> +out:
+> +	return;
+> +}
+> +
+> +void record_trace_object(struct trace_event_file *trace_file,
+> +		struct pt_regs *regs)
+> +{
+> +
+> +	struct object_trigger_param *obj_param;
+> +	struct event_trigger_data *data;
+> +
+> +	list_for_each_entry_rcu(data, &trace_file->triggers, list) {
+> +		if (data->cmd_ops->trigger_type == ETT_TRACE_OBJECT) {
+> +			obj_param = data->private_data;
+> +			obj_param->regs = regs;
+> +		}
+> +	}
+> +
+> +}
+> +
+> +static inline void free_trace_object(void)
+> +{
+> +	struct trace_obj *trace_obj;
+> +
+> +	list_for_each_entry_rcu(trace_obj, &obj_head, head)
+> +		kfree(trace_obj);
+> +}
+> +
+> +static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> +				 unsigned long object)
+> +{
+> +
+> +	struct trace_buffer *buffer;
+> +	struct ring_buffer_event *event;
+> +	struct trace_object_entry *entry;
+> +	int pc;
+> +
+> +	pc = preempt_count();
+> +	event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
+> +			TRACE_OBJECT, sizeof(*entry), pc);
+> +	if (!event)
+> +		return;
+> +	entry   = ring_buffer_event_data(event);
+> +	entry->ip                       = ip;
+> +	entry->parent_ip                = parent_ip;
+> +	entry->object			= object;
+
+So here we are just recording the value we saw at the kprobe (not very
+interesting).
+
+I think we want the content of the object:
+
+	long val;
+
+	ret = copy_from_kernel_nofault(&val, object, sizeof(val));
+	if (ret)
+		val = 0;
+
+Then we can see what changed during this time.
+
+I think there's really a lot of potential here. Don't get discouraged,
+because kernel programming is not easy, and there's a lot you need to
+understand that is required knowledge in the kernel, but not a problem in
+user space.
+
+I'm happy to work with you to help you navigate through these waters. If
+you want to learn more about kernel programming, this is the perfect
+project to do so. I'll just let you know the pitfalls you make, so you
+learn from them and can correct them.
+
+Looking forward for updates from you ;-)
+
+-- Steve
+
+> +
+> +	event_trigger_unlock_commit(&event_trace_file, buffer, event,
+> +		entry, pc);
+> +}
+> +
+> +static void
+> +trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> +		struct ftrace_ops *op, struct ftrace_regs *fregs)
+> +{
+> +	struct pt_regs *pt_regs = ftrace_get_regs(fregs);
+> +	unsigned long obj;
+> +	struct trace_obj *trace_obj;
+> +	long disabled;
+> +	int cpu, n;
+> +
+> +	preempt_disable_notrace();
+> +
+> +	cpu = raw_smp_processor_id();
+> +	disabled = atomic_inc_return(&per_cpu(trace_object_event_disable, cpu));
+> +
+> +	if (disabled != 1)
+> +		goto out;
+> +
+> +	if (list_empty(&obj_head))
+> +		goto out;
+> +
+> +	for (n = 0; n < max_args_num; n++) {
+> +		obj = regs_get_kernel_argument(pt_regs, n);
+> +		list_for_each_entry_rcu(trace_obj, &obj_head, head) {
+> +			if (trace_obj->obj == (unsigned long)obj)
+> +				submit_trace_object(ip, parent_ip, obj);
+> +		}
+> +	}
+> +
+> +out:
+> +	atomic_dec(&per_cpu(trace_object_event_disable, cpu));
+> +	preempt_enable_notrace();
+> +}
+> +
+> +static struct ftrace_ops trace_ops = {
+> +	.func  = trace_object_events_call,
+> +	.flags = FTRACE_OPS_FL_SAVE_REGS,
+> +};
+> +
+> +int init_trace_object(void)
+> +{
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	raw_spin_lock_irqsave(&object_spin_lock, flags);
+> +
+> +	if (++trace_object_ref != 1) {
+> +		ret = 0;
+> +		goto out_lock;
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> +
+> +	event_trace_file.tr = top_trace_array();
+> +	if (WARN_ON(!event_trace_file.tr)) {
+> +		ret = -1;
+> +		goto out;
+> +	}
+> +	ret = register_ftrace_function(&trace_ops);
+> +
+> +	return ret;
+> +
+> +out_lock:
+> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> +out:
+> +	return ret;
+> +}
+> +
+> +int exit_trace_object(void)
+> +{
+> +	int ret;
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&object_spin_lock, flags);
+> +
+> +	if (--trace_object_ref > 0) {
+> +		ret = 0;
+> +		goto out_lock;
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> +
+> +	free_trace_object();
+> +	ret = unregister_ftrace_function(&trace_ops);
+> +
+> +	return ret;
+> +
+> +out_lock:
+> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> +	return ret;
+> +}
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index c2ca40e8595b..76ca560af693 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -1552,6 +1552,45 @@ static struct trace_event trace_func_repeats_event = {
+>  	.funcs		= &trace_func_repeats_funcs,
+>  };
+>  
+> +/* TRACE_OBJECT */
+> +static enum print_line_t trace_object_print(struct trace_iterator *iter, int flags,
+> +					struct trace_event *event)
+> +{
+> +	struct trace_object_entry *field;
+> +	struct trace_seq *s = &iter->seq;
+> +
+> +	trace_assign_type(field, iter->ent);
+> +	print_fn_trace(s, field->ip, field->parent_ip, flags);
+> +	trace_seq_printf(s, " object:0x%lx", field->object);
+> +	trace_seq_putc(s, '\n');
+> +
+> +	return trace_handle_return(s);
+> +}
+> +
+> +static enum print_line_t trace_object_raw(struct trace_iterator *iter, int flags,
+> +				      struct trace_event *event)
+> +{
+> +	struct trace_object_entry *field;
+> +
+> +	trace_assign_type(field, iter->ent);
+> +
+> +	trace_seq_printf(&iter->seq, "%lx %lx\n",
+> +			 field->ip,
+> +			 field->parent_ip);
+> +
+> +	return trace_handle_return(&iter->seq);
+> +}
+> +
+> +static struct trace_event_functions trace_object_funcs = {
+> +	.trace		= trace_object_print,
+> +	.raw		= trace_object_raw,
+> +};
+> +
+> +static struct trace_event trace_object_event = {
+> +	.type		= TRACE_OBJECT,
+> +	.funcs		= &trace_object_funcs,
+> +};
+> +
+>  static struct trace_event *events[] __initdata = {
+>  	&trace_fn_event,
+>  	&trace_ctx_event,
+> @@ -1566,6 +1605,7 @@ static struct trace_event *events[] __initdata = {
+>  	&trace_timerlat_event,
+>  	&trace_raw_data_event,
+>  	&trace_func_repeats_event,
+> +	&trace_object_event,
+>  	NULL
+>  };
+>  
+> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+> index 8bfcd3b09422..5d4b09996414 100644
+> --- a/kernel/trace/trace_syscalls.c
+> +++ b/kernel/trace/trace_syscalls.c
+> @@ -312,6 +312,7 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+>  	if (!trace_file)
+>  		return;
+>  
+> +	record_trace_object(trace_file, regs);
+>  	if (trace_trigger_soft_disabled(trace_file))
+>  		return;
+>  
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 225ce569bf8f..3811c07b9fa3 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -960,6 +960,7 @@ static void __uprobe_trace_func(struct trace_uprobe *tu,
+>  	if (WARN_ON_ONCE(tu->tp.size + dsize > PAGE_SIZE))
+>  		return;
+>  
+> +	record_trace_object(trace_file, regs);
+>  	if (trace_trigger_soft_disabled(trace_file))
+>  		return;
+>  
+
