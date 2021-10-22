@@ -2,170 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE99B437927
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0663443792D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhJVOnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:43:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46372 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233167AbhJVOnM (ORCPT
+        id S232974AbhJVOr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:47:28 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42889 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232825AbhJVOrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:43:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634913655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+Y7NfcTUc72UdelkpBwzcJihYziKx3J+s0xf/LWrgkY=;
-        b=Rdr2lXn06lHitfsnm+78clXiF9OwFUZcoqvr4bA09u1zUqs4DtzG9yLJ6BWe/v1yh7iYN/
-        WnH2N6zq5D2WfjNo0LZ6YBVVPBR2sR6m9wGW2j4hDFHoRYORym8cBJCti8oyNS9diq60MK
-        Dr0uXY6B3mJIQAF+ub9S6EewFVTUuUo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-gvKF18UQN8God2XVuS4Vnw-1; Fri, 22 Oct 2021 10:40:53 -0400
-X-MC-Unique: gvKF18UQN8God2XVuS4Vnw-1
-Received: by mail-wr1-f70.google.com with SMTP id x1-20020adfffc1000000b001679fc9c018so1005875wrs.18
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:40:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+Y7NfcTUc72UdelkpBwzcJihYziKx3J+s0xf/LWrgkY=;
-        b=Kq6//pl+qXvEb6dVCr6PSc9bkXcD0sxX6pLd5tk2UMmHpyjc2kaHkmfDewd3ER8WQs
-         dR2cdig3g9aDPtAoA4oNsfdkBXzXVK8f4sY3DRjFtolL8efFc71r86IhVpyK0B9ncbOf
-         l3gh5SDdFsoXKapAwEGzRdLYhKTr+9+oOEAT3zIXbhSI8A1ub1opUTY2doJRfmT8+D9/
-         jr3keMrdMfi+z7mx5SbKrdizC0waC5BzImt2TVZDrvo8yemiyusTNzpMnSbmu1DDiNm0
-         9ndx11jDI3ctOg6XFiXa7Nf0kPU276QtkLorJJl62IhigGYtQk+sxKsXDIdtsVzz1tGw
-         YkSg==
-X-Gm-Message-State: AOAM530pUIvYhdcSc0c9IDDBQOH9cpJICNx1afC604GbKTIsGZW9iqym
-        Yp/Bmb2FLHutHl4ekC0J/I+pgN7TJroew2ZWnH/xZ0DJJ3MRTOD0ljdFzPPmIBvOFDO+ks0oS6b
-        pTjrbxFIgQnHY3zCbRxWPXNgF49vyqwLGg9opevvsWLwhgeBlosoY0GMhHH633a50JWduF9QWRT
-        I=
-X-Received: by 2002:adf:a556:: with SMTP id j22mr256031wrb.431.1634913649913;
-        Fri, 22 Oct 2021 07:40:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrA+8XKgUdKV8FF09Xl8lAf5kXXVCvm7L8ndkX22MUwJziJuYxZIq41IahfWM7uQNg5ZEQQQ==
-X-Received: by 2002:adf:a556:: with SMTP id j22mr255978wrb.431.1634913649537;
-        Fri, 22 Oct 2021 07:40:49 -0700 (PDT)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id r205sm8579459wma.3.2021.10.22.07.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 07:40:48 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [RFC PATCH] drm/aperture: Add param to disable conflicting framebuffers removal
-Date:   Fri, 22 Oct 2021 16:40:40 +0200
-Message-Id: <20211022144040.3418284-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 22 Oct 2021 10:47:23 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 513645C0131;
+        Fri, 22 Oct 2021 10:45:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 22 Oct 2021 10:45:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:mime-version:content-type; s=
+        fm2; bh=Et6KZrcdZK6bzUf+xuIArNSukxz0R3kbny373GbNlNg=; b=JEPRB9mT
+        n2jxyb4o8h14YZe96Pc7sG05S6rQCjcXXlDyJjlDwUAwEY9sepj4baQxEuekafkp
+        Phss/z4QADcy5HzS2i17j1BI+BDHtQZxkFeCmOoPaG8lCWC7qWICdXlZmJtlgsZE
+        qwsEhjch6mX4yqrBkydAA3ZKZcJttD9Il+vXPyQ4ADaORfPH0/kzoSevRjGKnb8g
+        O19+UgXvfeOuxvDyp7cu2Gq1cT4NXObdN8KsTvZPaqyCgvcnjCZBW0k3zX91RwIf
+        YzX6D+TsyJJOl07AAI5WRYDzkryloFkuSr/Mg3GuVFHS4KYEtytgFjOqSPqGjpKL
+        +SKFSZoaaUT3lQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=Et6KZrcdZK6bzUf+xuIArNSukxz0R
+        3kbny373GbNlNg=; b=eD7CcMuklBlx+0I6iKhsogonHNAOCe7uBXkGPS50OTThe
+        +qcXSVNsYRL+EZybQG8P1iNZEXtVUpdVIhA587rm5O5i1XIuin25JJLI+D36IHgM
+        0mQCeaFo8qAdYjkD5zk6KQYZJ7cHPsiPt3sq23SBfGq9jM10OxEqgRtQbmLrIakP
+        BoADzpvrPe//Llt054HJPIY6gbKuBV5EneFn53TLVMfPzdeFAWDvVDG+MrH9mWEM
+        0zzEbnfEuAs1vUj2V9gA58oN3tkCd7HtqvvdZWBtF2vUnQfd10AQjHBSuS3r04Ay
+        3LoWlsqMssnAIQFEPbHPjE+fjuA4+KvMDghaxjqmg==
+X-ME-Sender: <xms:cc5yYRU5E7jt86x2Im1xX3ISDGjVfyynSVPoXSYHqqKPdyV9EqThTA>
+    <xme:cc5yYRlIysKdxpC3yUsvsN8W7CJxqpqqquMnDAjvzKmnQy0FAUymDuHWV2DctBTuQ
+    lYnjnQOrr4idA>
+X-ME-Received: <xmr:cc5yYdaAU8l-AMXyIhMYJnCmxma7S4jV0H04zNrH05znKLWLEEp3bw1024Sd5pMWraN5E2pDfSqZc2aqNiIsQZ6hfxqBotiu>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvkedgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkgggtugesthdtredttd
+    dtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecu
+    ggftrfgrthhtvghrnhepvedugeeuffelgeekhfehtdefhfekffdtgedvteeitddvieduhf
+    ekheekueehleelnecuffhomhgrihhnpehkrhhorghhrdgtohhmpdhgihhthhhusgdrtgho
+    mhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:cc5yYUWLeVyJWtPet9rsuFU7jgi7Q_13pPBakQ61vftDnT3FBVgGWw>
+    <xmx:cc5yYbkOwAie3fm2ARr7gEcF1thxq6ZZyP-2kzops0NkwCKagq1K5g>
+    <xmx:cc5yYRcXc8jObN4DvafxtLX3f7NLzA_yAuVd4lor2d0gI8DJLf2qSw>
+    <xmx:cc5yYQzabi7DGdVgFy_a758VsDTlyFSXFvsLMf_9LaPMmS7TrDGfGA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Oct 2021 10:45:04 -0400 (EDT)
+Date:   Fri, 22 Oct 2021 16:44:53 +0200
+From:   Greg KH <greg@kroah.com>
+To:     linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: usbview 2.1 release
+Message-ID: <YXLOZSarSq5zPiUT@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The simpledrm driver allows to use the frame buffer that was set-up by the
-firmware. This gives early video output before the platform DRM driver is
-probed and takes over.
+After 9 years, I figure it's about time for a new release of usbview, as
+some people still use it, and there's been some grumbling about a
+release by the distro packages that have to deal with it.
 
-But it would be useful to have a way to disable this take over by the real
-DRM drivers. For example, there may be bugs in the DRM drivers that could
-cause the display output to not work correctly.
+Nothing big in here, just loads of build configuration changes in order
+to keep the thing building properly within most modern Linux systems,
+and a few other small changes.  Full changelog is at the bottom of this
+email.
 
-For those cases, it would be good to keep the simpledrm driver instead and
-at least get a working display as set-up by the firmware.
+Ideally in the future, this will move into the usbutils package, when I
+get some free time, and remove it from the need to access the debugfs
+file and take advantage of the extended device structure parsing that
+'lsusb' provides.
 
-Let's add a drm.remove_fb boolean kernel command line parameter, that when
-set to false will prevent the conflicting framebuffers to being removed.
+The package can be downladed at:
+	http://www.kroah.com/linux/usb/usbview-2.1.tar.gz
+and the git tree can be found at:
+	http://github.com/gregkh/usbview
 
-Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
-early in their probe callback, this will cause the drivers' probe to fail.
+thanks,
 
-Thanks to Neal Gompa for the suggestion and Thomas Zimmermann for the idea
-on how this could be implemented.
+greg k-h
 
-Suggested-by: Neal Gompa <ngompa13@gmail.com>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-Hello,
-
-I'm sending this as an RFC because I wasn't sure about the correct name for
-this module parameter, and also if 'remove_fb=0' is intitutive or instead a
-parameter that's enabled is preferred (i.e: 'disable_fb_removal=1').
-
-Best regards,
-Javier
-
- drivers/gpu/drm/drm_aperture.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_aperture.c b/drivers/gpu/drm/drm_aperture.c
-index 74bd4a76b253..0b454c8f7465 100644
---- a/drivers/gpu/drm/drm_aperture.c
-+++ b/drivers/gpu/drm/drm_aperture.c
-@@ -14,6 +14,11 @@
- #include <drm/drm_drv.h>
- #include <drm/drm_print.h>
- 
-+static bool drm_aperture_remove_fb = true;
-+module_param_named(remove_fb, drm_aperture_remove_fb, bool, 0600);
-+MODULE_PARM_DESC(remove_fb,
-+		 "Allow conflicting framebuffers removal [default=true]");
-+
- /**
-  * DOC: overview
-  *
-@@ -283,6 +288,9 @@ static void drm_aperture_detach_drivers(resource_size_t base, resource_size_t si
-  * This function removes graphics device drivers which use memory range described by
-  * @base and @size.
-  *
-+ * The conflicting framebuffers removal can be disabled by setting the drm.remove_fb=0 kernel
-+ * command line option. When this is disabled, the function will return an -EINVAL errno code.
-+ *
-  * Returns:
-  * 0 on success, or a negative errno code otherwise
-  */
-@@ -292,7 +300,12 @@ int drm_aperture_remove_conflicting_framebuffers(resource_size_t base, resource_
- #if IS_REACHABLE(CONFIG_FB)
- 	struct apertures_struct *a;
- 	int ret;
-+#endif
-+
-+	if (!drm_aperture_remove_fb)
-+		return -EINVAL;
- 
-+#if IS_REACHABLE(CONFIG_FB)
- 	a = alloc_apertures(1);
- 	if (!a)
- 		return -ENOMEM;
-@@ -322,6 +335,9 @@ EXPORT_SYMBOL(drm_aperture_remove_conflicting_framebuffers);
-  * for any of @pdev's memory bars. The function assumes that PCI device with
-  * shadowed ROM drives a primary display and so kicks out vga16fb.
-  *
-+ * The conflicting framebuffers removal can be disabled by setting the drm.remove_fb=0 kernel
-+ * command line option. When this is disabled, the function will return an -EINVAL errno code.
-+ *
-  * Returns:
-  * 0 on success, or a negative errno code otherwise
-  */
-@@ -331,6 +347,9 @@ int drm_aperture_remove_conflicting_pci_framebuffers(struct pci_dev *pdev,
- 	resource_size_t base, size;
- 	int bar, ret = 0;
- 
-+	if (!drm_aperture_remove_fb)
-+		return -EINVAL;
-+
- 	for (bar = 0; bar < PCI_STD_NUM_BARS; ++bar) {
- 		if (!(pci_resource_flags(pdev, bar) & IORESOURCE_MEM))
- 			continue;
--- 
-2.31.1
+-------
+version 2.1
+        - build warnings fixed
+        - increased max number of interfaces allowed, fixing problem with some
+          USB sound devices.
+        - autogen.sh added
+        - LICENSES directory added and license moved to it
+        - SPDX license headers added
+        - policykit support added
+        - usbview.desktop: Add desktop file.
+        - usbview_icon.svg: Convert xpm bitmap icon into a scalable svg icon.
+        - configure.in configure.ac: Rename former to latter.
+        - autgen.sh, config.h.in: Remove in favour of "autoreconf --install".
+        - configure.ac, Makefile.am:
+          - Autotools tweaks and normalization.
+          - Don't include CPPFLAGS in AM_CPPFLAGS.
+          - Remove references to unset GLIB_CFLAGS and GLIB_LIBS in Makefile.am
+          - Reorder clauses to usual order.
+          - Remove obsolete comments.
+          - Add m4 quoting to configure.ac per autoconf documentation.
+          - VERSION belongs in config.h from configure.ac, not Makefile.am.
+          - Use AX_CFLAGS_WARN_ALL instead of custom code.
+          - Address "autoupdate" and "autoreconf --warn=all" output.
+          - Support (conditional) installation of icons, including bitmap
+            icons at various resolutions, and desktop file.
+          - remove NEWS, now unnecessary due to automake foreign option.
+        - Makefile.am, interface.c: Generate icon compiled into executable from scalable icon.
+        - .gitignore: Updates.
+        - ChangeLog: trim whitespace
+        - squelch compiler warning: examine fgets return value
 
