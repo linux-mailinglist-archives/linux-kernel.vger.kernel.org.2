@@ -2,163 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50014379EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901C54379A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhJVPbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbhJVPbD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:31:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46353C061764;
-        Fri, 22 Oct 2021 08:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=NG3632i+4v3MDTRJw3HCsO0U7kLnqAJBZ49cEMZvijs=; b=PFKSGYIijyAVIlHtcYr/NeGAES
-        eRm9M9jAOqCtZo1aJQ0b5X3dW0N963Ee7GMw8HlkYcd/ILutVlagUEHlYnm8kNvkUXuP748P2tNB7
-        ZCQ3JYIyIgcAaqbnxKOWyVm8qoZoGum6NRc+y75pvSoUEsfX8+cb4jEHFfjh+eb59BvdKiwgjxOdw
-        va5VV/Q9BOfyODRHXibbnr53rSzDwINtMJBPU+11GFw4zmmwEDWkM0xsDoJMjKTjvw1WHoU8azR0y
-        T5ujCVssWBJE+DkQ/NV+SUa5xg/AedZ911VDBNNzZyId8ZUpb3kny/ocBXYbNxoo3mwvD/CvoDOur
-        1O1vNOiQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdwOE-00DyY9-U7; Fri, 22 Oct 2021 15:23:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7763E300288;
-        Fri, 22 Oct 2021 17:23:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7D7992C0CA182; Fri, 22 Oct 2021 17:23:23 +0200 (CEST)
-Message-ID: <20211022152104.555771734@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 17:09:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     keescook@chromium.org, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, akpm@linux-foundation.org,
-        mark.rutland@arm.com, zhengqi.arch@bytedance.com,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-arch@vger.kernel.org, ardb@kernel.org
-Subject: [PATCH 7/7] selftests: proc: Make sure wchan works when it exists
-References: <20211022150933.883959987@infradead.org>
+        id S233385AbhJVPMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:12:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:55580 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233350AbhJVPMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:12:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02FE21FB;
+        Fri, 22 Oct 2021 08:10:15 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E5C83F694;
+        Fri, 22 Oct 2021 08:10:10 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:10:07 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
+        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
+        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
+        stefan.kristiansson@saunalahti.fi, torvalds@linux-foundation.org,
+        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
+Subject: Re: [PATCH 00/15] irq: remove handle_domain_{irq,nmi}()
+Message-ID: <20211022151007.GD86184@C02TD0UTHF1T.local>
+References: <20211021180236.37428-1-mark.rutland@arm.com>
+ <87k0i5b91c.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0i5b91c.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+On Fri, Oct 22, 2021 at 12:20:31PM +0100, Marc Zyngier wrote:
+> Hi Mark,
+> 
+> On Thu, 21 Oct 2021 19:02:21 +0100,
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> > 
+> > The handle_domain_{irq,nmi}() functions were oringally intended as a
+> > convenience, but recent rework to entry code across the kernel tree has
+> > demonstrated that they cause more pain than they're worth and prevent
+> > architectures from being able to write robust entry code.
+> > 
+> > This series reworks the irq code to remove them, handling the necessary
+> > entry work consistently in entry code (be it architectural or generic).
+> 
+> [...]
+> 
+> Thanks for going through the pain of putting this together. The
+> couple of nits I mentioned notwithstanding:
+> 
+> Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-This makes sure that wchan contains a sensible symbol when a process is
-blocked. Specifically this calls the sleep() syscall, and expects the
-architecture to have called schedule() from a function that has "sleep"
-somewhere in its name. For example, on the architectures I tested
-(x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
+Thanks!
 
-$ tools/testing/selftests/proc/proc-pid-wchan
-ok: found 'sleep' in wchan 'hrtimer_nanosleep'
+I've pushed out an updated version to my irq/handle-domain-irq branch
+on kernel.org:
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211008235504.2957528-1-keescook@chromium.org
----
- tools/testing/selftests/proc/Makefile         |    1 
- tools/testing/selftests/proc/proc-pid-wchan.c |   69 ++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+)
- create mode 100644 tools/testing/selftests/proc/proc-pid-wchan.c
+  git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
+  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
 
---- a/tools/testing/selftests/proc/Makefile
-+++ b/tools/testing/selftests/proc/Makefile
-@@ -8,6 +8,7 @@ TEST_GEN_PROGS += fd-002-posix-eq
- TEST_GEN_PROGS += fd-003-kthread
- TEST_GEN_PROGS += proc-loadavg-001
- TEST_GEN_PROGS += proc-pid-vm
-+TEST_GEN_PROGS += proc-pid-wchan
- TEST_GEN_PROGS += proc-self-map-files-001
- TEST_GEN_PROGS += proc-self-map-files-002
- TEST_GEN_PROGS += proc-self-syscall
---- /dev/null
-+++ b/tools/testing/selftests/proc/proc-pid-wchan.c
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Make sure that wchan returns a reasonable symbol when blocked.
-+ */
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+
-+#define perror_exit(str) do { perror(str); _exit(1); } while (0)
-+
-+int main(void)
-+{
-+	char buf[64];
-+	pid_t child;
-+	int sync[2], fd;
-+
-+	if (pipe(sync) < 0)
-+		perror_exit("pipe");
-+
-+	child = fork();
-+	if (child < 0)
-+		perror_exit("fork");
-+	if (child == 0) {
-+		/* Child */
-+		if (close(sync[0]) < 0)
-+			perror_exit("child close sync[0]");
-+		if (close(sync[1]) < 0)
-+			perror_exit("child close sync[1]");
-+		sleep(10);
-+		_exit(0);
-+	}
-+	/* Parent */
-+	if (close(sync[1]) < 0)
-+		perror_exit("parent close sync[1]");
-+	if (read(sync[0], buf, 1) != 0)
-+		perror_exit("parent read sync[0]");
-+
-+	snprintf(buf, sizeof(buf), "/proc/%d/wchan", child);
-+	fd = open(buf, O_RDONLY);
-+	if (fd < 0) {
-+		if (errno == ENOENT)
-+			return 4;
-+		perror_exit(buf);
-+	}
-+
-+	memset(buf, 0, sizeof(buf));
-+	if (read(fd, buf, sizeof(buf) - 1) < 1)
-+		perror_exit(buf);
-+	if (strstr(buf, "sleep") == NULL) {
-+		fprintf(stderr, "FAIL: did not find 'sleep' in wchan '%s'\n", buf);
-+		return 1;
-+	}
-+	printf("ok: found 'sleep' in wchan '%s'\n", buf);
-+
-+	if (kill(child, SIGKILL) < 0)
-+		perror_exit("kill");
-+	if (waitpid(child, NULL, 0) != child) {
-+		fprintf(stderr, "waitpid: got the wrong child!?\n");
-+		return 1;
-+	}
-+
-+	return 0;
-+}
+That has two new patches you suggested:
 
+* irq: mips: simplify bcm6345_l1_irq_handle()
+* irq: unexport handle_irq_desc()
 
+... which I did not add your Reviewed-by to in case the commit messages
+are garbage or something like that.
+
+> It'd be good to work out a merging strategy once this has seen a bit
+> of testing.
+
+Conflict-wise, this merges near perfectly against next-20212022 aside
+from a trivial conflict against arch/riscv/Kconfig:
+
+| [mark@lakrids:~/src/linux]% git merge irq/handle-domain-irq
+| Auto-merging arch/riscv/kernel/entry.S
+| Auto-merging arch/riscv/Kconfig
+| CONFLICT (content): Merge conflict in arch/riscv/Kconfig
+| Auto-merging arch/nds32/Kconfig
+| Auto-merging arch/mips/Kconfig
+| Auto-merging arch/csky/Kconfig
+| Auto-merging arch/arm64/Kconfig
+| Auto-merging arch/arm/mach-s3c/irq-s3c24xx.c
+| Auto-merging arch/arm/kernel/entry-armv.S
+| Auto-merging arch/arm/Kconfig
+| Auto-merging arch/arc/Kconfig
+| Automatic merge failed; fix conflicts and then commit the result.
+| [mark@lakrids:~/src/linux]% git diff
+| diff --cc arch/riscv/Kconfig
+| index 77a088d0a7e9,353e28f5f849..000000000000
+| --- a/arch/riscv/Kconfig
+| +++ b/arch/riscv/Kconfig
+| @@@ -62,8 -62,6 +62,11 @@@ config RISC
+|         select GENERIC_SCHED_CLOCK
+|         select GENERIC_SMP_IDLE_THREAD
+|         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+| ++<<<<<<< HEAD
+|  +      select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
+|  +      select HANDLE_DOMAIN_IRQ
+| ++=======
+| ++>>>>>>> irq/handle-domain-irq
+|         select HAVE_ARCH_AUDITSYSCALL
+|         select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+|         select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+
+... where the resolution is:
+
+| diff --cc arch/riscv/Kconfig
+| index 77a088d0a7e9,353e28f5f849..000000000000
+| --- a/arch/riscv/Kconfig
+| +++ b/arch/riscv/Kconfig
+| @@@ -62,8 -62,6 +62,7 @@@ config RISC
+|         select GENERIC_SCHED_CLOCK
+|         select GENERIC_SMP_IDLE_THREAD
+|         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+|  +      select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
+| -       select HANDLE_DOMAIN_IRQ
+|         select HAVE_ARCH_AUDITSYSCALL
+|         select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+|         select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+
+... so I reckon we're not set for major pain there unless something new
+appears in arch code in the next few days.
+
+If we can get this onto a branch for linux-next ASAP, and if Linus is
+happy with this having come together a little late, maybe we could queue
+this in tip for v5.16, perhaps after -rc1 to let this soak, or waiting
+to apply the final patch to make it easier to revert the arch changes if
+needed?
+
+I'd like to avoid sitting on this for an entire cycle if possible.
+
+Thanks,
+Mark.
