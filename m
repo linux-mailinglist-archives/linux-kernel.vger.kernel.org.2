@@ -2,93 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D99F43715A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A7143715E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhJVFg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 01:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhJVFgZ (ORCPT
+        id S230428AbhJVFiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 01:38:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40172 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhJVFh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 01:36:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DA1C061764;
-        Thu, 21 Oct 2021 22:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xcBYXoniZzY7ZLTTZ2jfTzgN29460ApB4jiwLahdOXs=; b=wi8pPE/qofJdTPE+Mth0DB7fNI
-        rLPT6fRiQAjOngtkmahECmF4xzDu8RZ+I/Bq734xorg82BkoG4CBsYixbbryGpWiTbMGMW53DukOP
-        YTn3+gU8/n5KPFtd5gq+hgqf8YPpCjFqy6j+Flp4pEEuq2my4/sz0/BIdeXcDe+Z7fioDGk77K1si
-        QlkDEAuPF2HNERwYHk7orbA89KtEJOGSzrBOzpoZh72/Pb863SQdM1QLRqbOnjHw00yWQLJywtl+N
-        V+3W/8U+69VhnkaEcfn7BnEWN0S9AvZaE3zTOp7odX3xsFVaAhE5U0RUMtrOqpTqi2gqYoORmRq1g
-        /XqKfgQg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdnBN-009lTo-6z; Fri, 22 Oct 2021 05:33:33 +0000
-Date:   Thu, 21 Oct 2021 22:33:33 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH 4/6] dm,dax,pmem: prepare dax_copy_to/from_iter() APIs
- with DAXDEV_F_RECOVERY
-Message-ID: <YXJNLTmcPaShrLoT@infradead.org>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <20211021001059.438843-5-jane.chu@oracle.com>
- <YXFOlKWUuwFUJxUZ@infradead.org>
- <325baeaf-54f6-dea0-ed2b-6be5a2ec47db@oracle.com>
+        Fri, 22 Oct 2021 01:37:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634880941; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=89F8xJvCrlSlLbEL6WG25xOvvgYOnHNdU38GRSzzzYA=; b=djd1h7RYYp65DkadR+F+QZ8ibrdrzzfvq9R1kq0He3Ysy+gUgL8es6ZVzOR4NNOYsMvy6kEi
+ tDdYB5XaozD5gFRHaVi80T1rqgd2Qn/nXZv7edImJUsjGZsPLEX+jNeN59VqB/ESsy7qqfoQ
+ 04UmF7/QNvs/80ZEgqB6cIWyIEE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 61724dab321f2400519cc5c3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Oct 2021 05:35:39
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B90DC4360D; Fri, 22 Oct 2021 05:35:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9672C4338F;
+        Fri, 22 Oct 2021 05:35:38 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <325baeaf-54f6-dea0-ed2b-6be5a2ec47db@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 22 Oct 2021 13:35:38 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by using
+  different nvm
+Message-ID: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 12:49:15AM +0000, Jane Chu wrote:
-> I've looked through your "futher decouple DAX from block devices" series 
-> and likes the use of xarray in place of the host hash list.
-> Which upstream version is the series based upon?
-> If it's based on your development repo, I'd be happy to take a clone
-> and rebase my patches on yours if you provide a link. Please let me
-> know the best way to cooperate.
+the RF performance of wcn6855 soc chip from different foundries will be
+difference, so we should use different nvm to configure them.
 
-It is based on linux-next from when it was posted.  A git tree is here:
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+---
+  drivers/bluetooth/btusb.c | 55 
++++++++++++++++++++++++++++++++++++------------
+  1 file changed, 41 insertions(+), 14 deletions(-)
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-block-cleanup
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 87b71740fad8..a5fe57e7cd7e 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev 
+*hdev,
+  #define QCA_DFU_TIMEOUT		3000
+  #define QCA_FLAG_MULTI_NVM      0x80
 
-> That said, I'm unclear at what you're trying to suggest with respect
-> to the 'DAXDEV_F_RECOVERY' flag.  The flag came from upper dax-fs
-> call stack to the dm target layer, and the dm targets are equipped
-> with handling pmem driver specific task, so it appears that the flag 
-> would need to be passed down to the native pmem layer, right?
-> Am I totally missing your point?
++#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
++#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
++
+  struct qca_version {
+  	__le32	rom_version;
+  	__le32	patch_version;
+@@ -3226,6 +3229,7 @@ static const struct qca_device_info 
+qca_devices_table[] = {
+  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
++	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+  };
 
-We'll need to pass it through (assuming we want to keep supporting
-dm, see the recent discussion with Dan).
+  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
+request,
+@@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct 
+hci_dev *hdev,
+  	return err;
+  }
 
-FYI, here is a sketch where I'd like to move to, but this isn't properly
-tested yet:
++static void btusb_generate_qca_nvm_name(char *fwname,
++					size_t max_size,
++					const struct qca_version *ver)
++{
++	u32 rom_version = le32_to_cpu(ver->rom_version);
++	u16 flag = le16_to_cpu(ver->flag);
++
++	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
++		u16 board_id = le16_to_cpu(ver->board_id);
++		u32 ram_version = le32_to_cpu(ver->ram_version);
++		const char *variant = NULL;
++
++		switch (ram_version) {
++		case WCN6855_2_0_RAM_VERSION_GF:
++		case WCN6855_2_1_RAM_VERSION_GF:
++			variant = "_gf";
++			break;
++		default:
++			variant = "";
++			break;
++		}
++
++		if (board_id == 0) {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
++				rom_version, variant);
++		} else {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
++				rom_version, variant, board_id);
++		}
++	} else {
++		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
++			rom_version);
++	}
++
++}
++
+  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+  				    struct qca_version *ver,
+  				    const struct qca_device_info *info)
+@@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct 
+hci_dev *hdev,
+  	char fwname[64];
+  	int err;
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
+-	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		/* if boardid equal 0, use default nvm without surfix */
+-		if (le16_to_cpu(ver->board_id) == 0x0) {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-				 le32_to_cpu(ver->rom_version));
+-		} else {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-				le32_to_cpu(ver->rom_version),
+-				le16_to_cpu(ver->board_id));
+-		}
+-	} else {
+-		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-			 le32_to_cpu(ver->rom_version));
+-	}
++	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
 
-To support something like DAXDEV_F_RECOVERYwe'd need a separate
-dax_operations methods.  Which to me suggest it probably should be
-a different operation (fallocate / ioctl / etc) as Darrick did earlier.
+  	err = request_firmware(&fw, fwname, &hdev->dev);
+  	if (err) {
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
