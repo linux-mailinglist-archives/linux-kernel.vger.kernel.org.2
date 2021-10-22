@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D34437F83
+	by mail.lfdr.de (Postfix) with ESMTP id 4F605437F84
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbhJVUvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40620 "EHLO mail.kernel.org"
+        id S234553AbhJVUvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234367AbhJVUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234370AbhJVUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:50:58 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9F916112F;
-        Fri, 22 Oct 2021 20:48:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AAE761246;
+        Fri, 22 Oct 2021 20:48:41 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1Sy-000QH2-1e;
+        id 1me1Sy-000QHa-7j;
         Fri, 22 Oct 2021 16:48:40 -0400
-Message-ID: <20211022204839.888916364@goodmis.org>
+Message-ID: <20211022204840.071507869@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:48:06 -0400
+Date:   Fri, 22 Oct 2021 16:48:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 10/40] bootconfig: Remove unused debug function
+Subject: [for-next][PATCH 11/40] tools/bootconfig: Print all error message in stderr
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,71 +38,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Remove unused xbc_debug_dump() from bootconfig for clean up
-the code.
+Print all error message in stderr. This also removes
+unneeded tools/bootconfig/include/linux/printk.h.
 
-Link: https://lkml.kernel.org/r/163187297371.2366983.12943349701785875450.stgit@devnote2
+Link: https://lkml.kernel.org/r/163187298106.2366983.15210300267326257397.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/linux/bootconfig.h |  3 ---
- lib/bootconfig.c           | 21 ---------------------
- 2 files changed, 24 deletions(-)
+ tools/bootconfig/include/linux/kernel.h |  2 --
+ tools/bootconfig/include/linux/printk.h | 14 --------------
+ tools/bootconfig/main.c                 |  2 ++
+ 3 files changed, 2 insertions(+), 16 deletions(-)
+ delete mode 100644 tools/bootconfig/include/linux/printk.h
 
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index 7eb7a7f8ade7..85cdfd381877 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -279,7 +279,4 @@ int __init xbc_get_info(int *node_size, size_t *data_size);
- /* XBC cleanup data structures */
- void __init xbc_exit(void);
+diff --git a/tools/bootconfig/include/linux/kernel.h b/tools/bootconfig/include/linux/kernel.h
+index 2d93320aa374..c4854b8e7023 100644
+--- a/tools/bootconfig/include/linux/kernel.h
++++ b/tools/bootconfig/include/linux/kernel.h
+@@ -5,8 +5,6 @@
+ #include <stdlib.h>
+ #include <stdbool.h>
  
--/* Debug dump functions */
--void __init xbc_debug_dump(void);
--
- #endif
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index b7e5a32b30d3..953789171858 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -4,15 +4,12 @@
-  * Masami Hiramatsu <mhiramat@kernel.org>
-  */
- 
--#define pr_fmt(fmt)    "bootconfig: " fmt
--
- #include <linux/bootconfig.h>
- #include <linux/bug.h>
- #include <linux/ctype.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
- #include <linux/memblock.h>
 -#include <linux/printk.h>
- #include <linux/string.h>
- 
- /*
-@@ -940,21 +937,3 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
- 
- 	return ret;
- }
 -
--/**
-- * xbc_debug_dump() - Dump current XBC node list
-- *
-- * Dump the current XBC node list on printk buffer for debug.
-- */
--void __init xbc_debug_dump(void)
--{
--	int i;
+ typedef unsigned short u16;
+ typedef unsigned int   u32;
+ 
+diff --git a/tools/bootconfig/include/linux/printk.h b/tools/bootconfig/include/linux/printk.h
+deleted file mode 100644
+index 036e667596eb..000000000000
+--- a/tools/bootconfig/include/linux/printk.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _SKC_LINUX_PRINTK_H
+-#define _SKC_LINUX_PRINTK_H
 -
--	for (i = 0; i < xbc_node_num; i++) {
--		pr_debug("[%d] %s (%s) .next=%d, .child=%d .parent=%d\n", i,
--			xbc_node_get_data(xbc_nodes + i),
--			xbc_node_is_value(xbc_nodes + i) ? "value" : "key",
--			xbc_nodes[i].next, xbc_nodes[i].child,
--			xbc_nodes[i].parent);
--	}
--}
+-#include <stdio.h>
+-
+-#define printk(fmt, ...) printf(fmt, ##__VA_ARGS__)
+-
+-#define pr_err printk
+-#define pr_warn	printk
+-#define pr_info	printk
+-#define pr_debug printk
+-
+-#endif
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index 4252c23bd35d..adc6c6e73fa9 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -15,6 +15,8 @@
+ #include <linux/kernel.h>
+ #include <linux/bootconfig.h>
+ 
++#define pr_err(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
++
+ static int xbc_show_value(struct xbc_node *node, bool semicolon)
+ {
+ 	const char *val, *eol;
 -- 
 2.33.0
