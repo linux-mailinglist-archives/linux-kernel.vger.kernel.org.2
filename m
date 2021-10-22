@@ -2,125 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D6E437387
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A8143738F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbhJVIOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:14:25 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:32904 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232331AbhJVIOW (ORCPT
+        id S232174AbhJVITr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:19:47 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4019 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhJVITo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:14:22 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 77077136035
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:12:04 +0100 (IST)
-Received: (qmail 16221 invoked from network); 22 Oct 2021 08:12:04 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Oct 2021 08:12:04 -0000
-Date:   Fri, 22 Oct 2021 09:12:02 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/8] mm/vmscan: Centralise timeout values for
- reclaim_throttle
-Message-ID: <20211022081202.GG3959@techsingularity.net>
-References: <20211019090108.25501-1-mgorman@techsingularity.net>
- <20211019090108.25501-7-mgorman@techsingularity.net>
- <163486477387.17149.7808824931340167601@noble.neil.brown.name>
+        Fri, 22 Oct 2021 04:19:44 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HbHDB1BSMz67Cp1;
+        Fri, 22 Oct 2021 16:13:30 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 10:17:25 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 09:17:22 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <naresh.kamboju@linaro.org>,
+        <anders.roxell@linaro.org>, <arnd@arndb.de>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] blk-mq-sched: Don't reference queue tagset in blk_mq_sched_tags_teardown()
+Date:   Fri, 22 Oct 2021 16:12:20 +0800
+Message-ID: <1634890340-15432-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <163486477387.17149.7808824931340167601@noble.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 12:06:13PM +1100, NeilBrown wrote:
-> On Tue, 19 Oct 2021, Mel Gorman wrote:
-> ...
-> > +	switch(reason) {
-> > +	case VMSCAN_THROTTLE_NOPROGRESS:
-> > +	case VMSCAN_THROTTLE_WRITEBACK:
-> > +		timeout = HZ/10;
-> > +
-> > +		if (atomic_inc_return(&pgdat->nr_writeback_throttled) == 1) {
-> > +			WRITE_ONCE(pgdat->nr_reclaim_start,
-> > +				node_page_state(pgdat, NR_THROTTLED_WRITTEN));
-> 
-> You have introduced a behaviour change that wasn't flagged in the commit
-> message.
-> Previously nr_writeback_throttled was only incremented for
-> VMSCAN_THROTTLE_WRITEBACK, now it is incremented for
-> VMSCAN_THROTTLE_NOPROGRESS as well.  
-> 
-> Some justification would be good.
-> 
+We should not reference the queue tagset in blk_mq_sched_tags_teardown()
+(see function comment) for the blk-mq flags, so use the passed flags
+instead.
 
-This is the result of rebase near the end of a day going sideways. There
-is no justification, it's just wrong.
+This solves a use-after-free, similarly fixed earlier (and since broken
+again) in commit f0c1c4d2864e ("blk-mq: fix use-after-free in
+blk_mq_exit_sched").
 
-I'm rerunning the entire series, will update the leader and resend the
-series.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Tested-by: Anders Roxell <anders.roxell@linaro.org>
+Fixes: e155b0c238b2 ("blk-mq: Use shared tags for shared sbitmap support")
+Signed-off-by: John Garry <john.garry@huawei.com>
 
---8<--
-mm/vmscan: Centralise timeout values for reclaim_throttle -fix
-
-Neil Brown spotted the fallthrough-logic for reclaim_throttle was wrong --
-only VMSCAN_THROTTLE_WRITEBACK affects pgdat->nr_writeback_throttled. This
-was the result of a rebase going sideways and only happens to sometimes
-work by co-incidence.
-
-This is a fix to the mmotm patch
-mm-vmscan-centralise-timeout-values-for-reclaim_throttle.patch
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- mm/vmscan.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1f5c467dc83c..64c38979b7df 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1032,7 +1032,6 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
- 	 * of the inactive LRU.
- 	 */
- 	switch(reason) {
--	case VMSCAN_THROTTLE_NOPROGRESS:
- 	case VMSCAN_THROTTLE_WRITEBACK:
- 		timeout = HZ/10;
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index e85b7556b096..6a9444848e3a 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -541,7 +541,7 @@ static void blk_mq_sched_tags_teardown(struct request_queue *q, unsigned int fla
  
-@@ -1041,6 +1040,9 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
- 				node_page_state(pgdat, NR_THROTTLED_WRITTEN));
+ 	queue_for_each_hw_ctx(q, hctx, i) {
+ 		if (hctx->sched_tags) {
+-			if (!blk_mq_is_shared_tags(q->tag_set->flags))
++			if (!blk_mq_is_shared_tags(flags))
+ 				blk_mq_free_rq_map(hctx->sched_tags);
+ 			hctx->sched_tags = NULL;
  		}
- 
-+		break;
-+	case VMSCAN_THROTTLE_NOPROGRESS:
-+		timeout = HZ/10;
- 		break;
- 	case VMSCAN_THROTTLE_ISOLATED:
- 		timeout = HZ/50;
-@@ -1055,7 +1057,7 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
- 	ret = schedule_timeout(timeout);
- 	finish_wait(wqh, &wait);
- 
--	if (reason == VMSCAN_THROTTLE_ISOLATED)
-+	if (reason == VMSCAN_THROTTLE_WRITEBACK)
- 		atomic_dec(&pgdat->nr_writeback_throttled);
- 
- 	trace_mm_vmscan_throttled(pgdat->node_id, jiffies_to_usecs(timeout),
+-- 
+2.17.1
+
