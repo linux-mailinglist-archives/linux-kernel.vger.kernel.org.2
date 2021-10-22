@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58339437AAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C4E437AAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhJVQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
+        id S233465AbhJVQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhJVQPn (ORCPT
+        with ESMTP id S232176AbhJVQQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:15:43 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C067BC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:13:25 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id kk10so3327213pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tHwsQIjdQw6vQG2oDI90G+6hdIow4dPq3mfJw3rvPJk=;
-        b=VaVSPX7aUyvodJLlwuBHjqJE5C5b+WuijCyhAvPOCwqRv8Oxk1/vO/LCLVV5ztodgs
-         Bs1hoL4ZrVlBJYIYitDMx63nbzlwJPsL42q7FpJYvHJyg6ygVHW6qzRau0ONBX/bwak9
-         RnfqJvfdEJRDDWnfROyNZcrjXzd3qRce2nSFg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tHwsQIjdQw6vQG2oDI90G+6hdIow4dPq3mfJw3rvPJk=;
-        b=3NZ3S7RbOAxrRCx1RW7osM+d0wwT6Usz/q6lMMHPnolr96PJxpZg85YVbNMSqXT5ID
-         lVtXh+nJHYCfhsExINMwVaD4c9LLYlYFSFPlR5+BCq3yhqR/mD7IU8LPNHn8oVYzCm9g
-         BZ7MuYop7r4KBjNHihTJry26HsQrztoVttIV7+AE6wiLLhWzxbKNKesSBeNol8NScHKV
-         ElyLLfw+7CgbAFcdXB7KPXoOP9asSN039YlI6OJZZDRFeE1ZctfopUy4fGWYR98qPJMx
-         6EIekQ1U7wuEeTBmLL5qDT4aGZw2cKouQNk1bwu1R4vQUpEe5XXMXc4MuA0bGXrxy9zH
-         ADoQ==
-X-Gm-Message-State: AOAM530MyOdnZPJm7lDrNmDF7PmCkL2HCgmj710s+O9S3r5LWBwlmxPB
-        PPu/h1rVD2Cz1kzJNcbPfXT75Q==
-X-Google-Smtp-Source: ABdhPJx8blIG/g6yOrMQ+jbPzh/VGgug9ASZQQQwGQyUB12nBxA4FGCf7ZVO/ro9KcMcSlmLbWeKpw==
-X-Received: by 2002:a17:902:aa02:b0:13a:6c8f:407f with SMTP id be2-20020a170902aa0200b0013a6c8f407fmr326684plb.59.1634919204159;
-        Fri, 22 Oct 2021 09:13:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q8sm11189832pfu.167.2021.10.22.09.13.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 09:13:23 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 09:13:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, akpm@linux-foundation.org,
-        mark.rutland@arm.com, zhengqi.arch@bytedance.com,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-arch@vger.kernel.org, ardb@kernel.org
-Subject: Re: [PATCH 6/7] arch: __get_wchan() || ARCH_STACKWALK
-Message-ID: <202110220910.0D3C298F73@keescook>
-References: <20211022150933.883959987@infradead.org>
- <20211022152104.487919043@infradead.org>
+        Fri, 22 Oct 2021 12:16:32 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C01BC061764;
+        Fri, 22 Oct 2021 09:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3jfvma+SoFb/JGqbF3ogD4CFnp4C2wV64tpDuV2Jgnk=; b=JIe7azIZ5FUVA0hUKdYGDGzi0f
+        S3tbfFyGh2bzM4xiFTMn4H0VH3lqlv4XA+cXECFG+rqNcnsmhanxswg/30BSFP3yNvXRMZho2CDtY
+        CFGik5rxjFHgX4wc/u8Xs1HoS73+5VxgyT0fkQeOarPJ6LC9NLkk2Fvdt/42pfAlOJJxEKxBEVJ+B
+        wa9xS+cbXp12XrGUH+2GOU6yyp9ITPlnpD+WzfBMaNfbEAtYi1MCEBt92nUoNxLY4VsScldsla+MZ
+        eFlDh8VzcoIWoCZl/TDCyCm9LpIwbbzu9fzgzEdzDJbh7fQRHFUxVrPpnUsmItS9g1NpmGZl8571D
+        vQI06hxA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55238)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mdxBL-0001vC-Bk; Fri, 22 Oct 2021 17:14:11 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mdxBJ-0001Ip-IQ; Fri, 22 Oct 2021 17:14:09 +0100
+Date:   Fri, 22 Oct 2021 17:14:09 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [net-next PATCH v2 1/3] net: mdio: Add helper functions for
+ accessing MDIO devices
+Message-ID: <YXLjUZBs5VgYSiIn@shell.armlinux.org.uk>
+References: <20211022155914.3347672-1-sean.anderson@seco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022152104.487919043@infradead.org>
+In-Reply-To: <20211022155914.3347672-1-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:09:39PM +0200, Peter Zijlstra wrote:
-> Use ARCH_STACKWALK to implement a generic __get_wchan().
+On Fri, Oct 22, 2021 at 11:59:12AM -0400, Sean Anderson wrote:
+> This adds some helpers for accessing non-phy MDIO devices. They are
+> analogous to phy_(read|write|modify), except that they take an mdio_device
+> and not a phy_device.
 > 
-> STACKTRACE should be possible, but the various implementations of
-> stack_trace_save_tsk() are not consistent enough for this to work.
-> ARCH_STACKWALK is a smaller set of architectures with a better defined
-> interface.
-> 
-> Since get_wchan() pins the task in a blocked state, it is not
-> necessary to take a reference on the task stack, the task isn't going
-> anywhere.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 
-Nice, this looks good.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Thanks.
 
 -- 
-Kees Cook
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
