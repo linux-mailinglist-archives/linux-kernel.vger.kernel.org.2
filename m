@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C39B4374F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F55143750F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhJVJqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:46:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
+        id S232480AbhJVJwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232038AbhJVJqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A737B610EA;
-        Fri, 22 Oct 2021 09:43:45 +0000 (UTC)
+        id S231992AbhJVJww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 05:52:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0C87A611CB;
+        Fri, 22 Oct 2021 09:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634895826;
-        bh=dReKDaKJwqW3Io2bve4J9VXECU2Jr66ov+QZ5vpHXXE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=TAzoAt/+5wohwJmdHC32vbbltcslPkFnm0pw8jVFs8mGVLs0IRWuz5/AZMR+PAJlm
-         r+WgFzNJ1bvzBWZw3i0xydoJrXpqN0F8Md7NqXQHiyyztIqEHw7I+0MgjbAdyhuZEA
-         58uzEIFDBVZ2MaxhK79HgArwGhRkZ793G/Ll5NqsW+lZD0DdiAWaAgI7nXvGoynXW6
-         GPADNCSOcAd2rnfcPZ2jWSjEocw3dnzbfgzaL86f7Efty6m5fx4807i586B8n7KHrA
-         +3o0KT1CN9li14SArDyMGMRqkKlAv/o+jCjxmmHthKPVVdRq+z0e2T36IuVWkHMjo0
-         Se1J5PFvctiEg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Xin Hao <xhao@linux.alibaba.com>
-Cc:     SeongJae Park <sj@kernel.org>, sjpark@amazon.de,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] mm/damon/dbgfs: Optimize target_ids interface write operation
-Date:   Fri, 22 Oct 2021 09:43:41 +0000
-Message-Id: <20211022094341.3966-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=k20201202; t=1634896235;
+        bh=aCRXavwbJdSY/K+s4FvrFyrCNo4Wxkh04CP/XaQOMc8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tZcb4Z9mZmnjxXHiP3rpnpgR8pvv8ELAxLnHg5qupT/GGi5W13GIAMEQR2MDerdcL
+         1K06LF+nD4prq1IIUxO7qLKCn7TSmH8tPrhtVHKPvTT6xuJEiFYfOPN3UtL5b5PFRC
+         kJ3jl/8/E2KyRwo62DZcpNWPdX9QXgvDqJRirLp3YxCysd2/ygxCvEI4YqchpSnPOv
+         sF/LzCdPwB7u4CU3mCVGMcMkwaND2nrqP3Hi0VXaAOmdSg0Bc57nPF62G7WVWTp2/R
+         Ewsmxzey+lPwRT29R7anY33B2FkSuwEYsdVm4X6p7DBXRL+NVXYkVG635BKz8s7zzJ
+         SWr0glNUtHA3w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F3ED2609E7;
+        Fri, 22 Oct 2021 09:50:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <a23c6f23-cf6b-1833-5603-363c45df933f@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL] Networking for 5.15-rc7
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163489623499.18872.8059195415527012685.git-patchwork-notify@kernel.org>
+Date:   Fri, 22 Oct 2021 09:50:34 +0000
+References: <20211021153226.788611-1-kuba@kernel.org>
+In-Reply-To: <20211021153226.788611-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 10:43:22 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+Hello:
 
+This pull request was applied to netdev/net.git (master)
+by Linus Torvalds <torvalds@linux-foundation.org>:
+
+On Thu, 21 Oct 2021 08:32:26 -0700 you wrote:
+> Hi Linus!
 > 
-> On 2021/10/22 上午1:30, SeongJae Park wrote:
-> > Hello Xin,
-> >
-> > On Fri, 22 Oct 2021 00:44:16 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
-> >
-> >> When we want to clear previously set target ids,
-> >> For example, it works as below now:
-> >>      # echo 42 > target_ids
-> >>      # cat target_ids
-> >>      42
-> >>      # echo > target_ids
-> >>      # cat target_ids
-> >>
-> >> But in 'dbgfs_target_ids_write', there is no need to
-> >> execute other codes, except call 'damon_set_targets'
-> >> to clear previously set target ids. So there adds
-> >> the 'nr_targets' judgment, if the value is 0, just
-> >> call 'damon_set_targets', and then return.
-> > It's true that it executes some unnecessary code.  However, I unsure if that is
-> > a problem, as the code that will be additionally executed in this case are
-> > quite simple ones, and therefore not supposed to incur viewable overhead.
-> > After all, this is not a performance critical path.
+> We'll have one more fix for a socket accounting regression,
+> it's still getting polished. Otherwise things look fine.
 > 
-> Thank you for your detailed explanation. I may not describe it clearly, 
-> making you think that i am making this
+> The following changes since commit ec681c53f8d2d0ee362ff67f5b98dd8263c15002:
 > 
-> modification to improve performance，I just want to avoid irrelevant code 
-> execution, thank you so much.
+> [...]
 
-I guess I didn't make my point clear enough, sorry.  My concern in this patch
-is the fact that it is adding more code.  IMHO, as the code is already working
-correctly and benefit of this change is quite subtle as you also agreed, adding
-the code here doesn't seem worthy but only making it harder to maintain, to me.
+Here is the summary with links:
+  - [GIT,PULL] Networking for 5.15-rc7
+    https://git.kernel.org/netdev/net/c/6c2c712767ee
 
-If I'm missing something, please let me know.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Thanks,
-SJ
-
-[...]
