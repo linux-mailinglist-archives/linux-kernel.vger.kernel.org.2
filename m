@@ -2,123 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434BB43768D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B74D437693
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhJVMOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:14:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14526 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230230AbhJVMOH (ORCPT
+        id S231452AbhJVMP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhJVMP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:14:07 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M9I7w3002492;
-        Fri, 22 Oct 2021 08:11:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=/l1fyHkMy1Qb5+XWNoEXx/Ur+bpaKZI2ollk5ADkAWY=;
- b=mV9uHxgV18YPcmfRbNZJDYJ/7BzcypHWxQ5mL2phXVVifkGLS1Du6CzzNg3p3YamLPRT
- qw0Ngsyj0jPiD8uk74DHvzbkDs1WZWgin3rFEX9aKLT02W2qyrcBWGUvI/4YIuwaZhdm
- VNzXzFFWN+i/BB/5SZTgV3osbs/cziAd0yILVkcxBYzrm7tVIf2rj1nB9ulrPfby/ax1
- W6C5LvWN1JtjJS4G5eQJ9Kn7m6xnfScMTl8Yy3ZbfsZuK81qB0YPixSueb1unkVIBaIg
- ubcU4LcfYceU9rstq8/noG+i1gEca3PnNMZe7lfC1rZIOh5bDwE1eiDTuMMrSMv2NbIM aQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3butj3b54a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 08:11:49 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19MBjL0s006621;
-        Fri, 22 Oct 2021 08:11:49 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3butj3b53k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 08:11:49 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19MC28gs018699;
-        Fri, 22 Oct 2021 12:11:47 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bqpcar7bq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 12:11:46 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19MCBhrb4588078
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Oct 2021 12:11:43 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6930DAE057;
-        Fri, 22 Oct 2021 12:11:43 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0B6EAE064;
-        Fri, 22 Oct 2021 12:11:42 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.10.134])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 22 Oct 2021 12:11:42 +0000 (GMT)
-Date:   Fri, 22 Oct 2021 14:11:40 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: s390: Fix handle_sske page fault handling
-Message-ID: <20211022141140.02da5325@p-imbrenda>
-In-Reply-To: <20211022112913.211986-1-scgl@linux.ibm.com>
-References: <20211022112913.211986-1-scgl@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Fri, 22 Oct 2021 08:15:57 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FA0C061764;
+        Fri, 22 Oct 2021 05:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3wIAhdbhEaLw/yRwzmamNQcdld+HiTYFy2ksoftYD9w=; b=SVu7st9wzFxaS9T7pl1sZoT4c6
+        vOkd0l7xskv7YHCReQwSnv3wi/2oLmNVvNvS0e3lusLRUnlH48vvCvd+wAsHqOYVCSkfbm5QXwBWy
+        BACVkGkQlB0hU9sg10AfEQzmfjtMwR1zL9Kppdt58Fjy4UokJDXc+Z+dwmpbNi1d5TvS5uH2JYXCQ
+        eyXf9EeX9UtoI3SnwuLvc1DKz0psHp5v07mG8Ah7Wd+j5mKpDMSmlin4UkKauc0ynils+HmFi8yXb
+        xYIPA/WmSVznVwpFfiYUFfANYVlXbDPRmUufMxL4FlPZdxIntPpwqCX8hy+RL4Pppo4tLaoWAQOBd
+        ZFt0rOxA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55232)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mdtQS-0001fz-At; Fri, 22 Oct 2021 13:13:32 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mdtQQ-0001Al-PH; Fri, 22 Oct 2021 13:13:30 +0100
+Date:   Fri, 22 Oct 2021 13:13:30 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v4 01/14] net: phy: at803x: replace AT803X_DEVICE_ADDR
+ with MDIO_MMD_PCS
+Message-ID: <YXKq6j/CnQ/i34ZB@shell.armlinux.org.uk>
+References: <20211022120624.18069-1-luoj@codeaurora.org>
+ <20211022120624.18069-2-luoj@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1mRHsr0H9bkcdCehY4RvNLo-5ECsuA3v
-X-Proofpoint-ORIG-GUID: nXqEN9du1qGzPAgEP4qgFHrEFZLHmmU6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_03,2021-10-21_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 phishscore=0
- clxscore=1015 adultscore=0 suspectscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110220068
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022120624.18069-2-luoj@codeaurora.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 13:29:13 +0200
-Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
-
-> Retry if fixup_user_fault succeeds.
-> The same issue in handle_pfmf was fixed by
-> a11bdb1a6b78 (KVM: s390: Fix pfmf and conditional skey emulation).
+On Fri, Oct 22, 2021 at 08:06:11PM +0800, Luo Jie wrote:
+> Replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS defined in mdio.h.
 > 
-> Fixes: bd096f644319 ("KVM: s390: Add skey emulation fault handling")
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
 
-with the description fixed as indicated by Christian:
+On v3, Andrew gave you a reviewed-by. You need to carry those forward
+especially if the patches have not changed.
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-> ---
->  arch/s390/kvm/priv.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-> index 53da4ceb16a3..417154b314a6 100644
-> --- a/arch/s390/kvm/priv.c
-> +++ b/arch/s390/kvm/priv.c
-> @@ -397,6 +397,8 @@ static int handle_sske(struct kvm_vcpu *vcpu)
->  		mmap_read_unlock(current->mm);
->  		if (rc == -EFAULT)
->  			return kvm_s390_inject_program_int(vcpu, PGM_ADDRESSING);
-> +		if (rc == -EAGAIN)
-> +			continue;
->  		if (rc < 0)
->  			return rc;
->  		start += PAGE_SIZE;
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
