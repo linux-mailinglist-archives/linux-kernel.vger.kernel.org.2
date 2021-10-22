@@ -2,136 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7F0437BF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8D3437C04
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhJVReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
+        id S233735AbhJVRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbhJVReG (ORCPT
+        with ESMTP id S231893AbhJVRho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:34:06 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946A7C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:31:48 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so5302687ott.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:31:48 -0700 (PDT)
+        Fri, 22 Oct 2021 13:37:44 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB72C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:35:25 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id t16so8026660eds.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NdCcEj3PQ1bSpldMjLwEN3JoStNQD+ubKy36Yp9mF0M=;
-        b=q0LQrc/wGBXmiKj/RyHesnEzYh8mTjgiOvYHpCpRd2RT4zjdU+KBicZlik3m88fT+g
-         tDAamMRVWB6jedcWTZqwxsxaz/bYrkO24u7s2BEslArhCjdsoW8dIb9UTHsJiaMw6PJ7
-         Ao5asku6lZxVZNSsIbBM+pVVFra4C/+/mwguONcV8fF7BiZsRReLjbSN2K5aA41vhyuc
-         6um0mtTqjkYsPP9h3UfRavzth5DSnWcJ9z9uxDZlJrePphgdK1286AO/Tox+GRvJcZ8j
-         4uXqvHZ870D27w1iigPbPghKCh8AIPWXxdkq8gngDCXTEXMqz5yQip+kE65bGDqyHgVq
-         fh+A==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0LsY62/6ngRxgBm83XOe/sLH1xiASl+MCqBfNsQpWM4=;
+        b=OrVfoA3XmZ4DoVxt5np5xkuJvsdRgNM+UFT10jbqCO3nX6qm4x6HQEA90/sCdygDpT
+         x9L4JL2uMUZ18jS201ebx2cgl272C+5+vU+Blj+bNf79jatrZLRlDsJuS7vNohx0qIGF
+         ro6/INmr/McVV3fEDqZ1PIQsvaGRv8KHvuJBqDuPqWw8W65RoBw+9wAxgKCv0GrLEsck
+         jQf21P4eOSh90YUHDt7aDPjg/5R+cvkH16L4iyVxw7xAPMhl7Tkt9Yh6RhtlL1Nkv9XC
+         gmC/BpTTcEvbRjfacy910dNPGtq6M0jDgg88m9UMpMTy8DzXhFljy3oOUO2wnip82QEH
+         9TMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NdCcEj3PQ1bSpldMjLwEN3JoStNQD+ubKy36Yp9mF0M=;
-        b=QdHyy0tTLzJuw+LK/c10H+v83y7kCT4GL8dL4toTV/q9dFcLUnbuGNaMmS/LSC6T/g
-         EyjaeqsedZPdtS6m+jmcbqFzRBMYubkGwtMVZ3rTNIiRWiJPhNiNHY4HdorDvzQeKsHp
-         uCilq2AnY2FpxVPO9yZ79uxxeDkNAd8C09CLvoEUZTMEKNGwjv6KuCMsz8WAPx3c4CFO
-         jbRtbCeZVm4ATg1Qxe1uSmFifTvgQZ8SbjrtrhAOJq7+CKP7wmjn4NKOvpq+G7eyRpay
-         WrnegpdJymuQU8INe9MwyRgFlyDjMf7wThhRkFE8B+Tr7ztTI2pMwPrHDCIe+WViqmOf
-         mUrQ==
-X-Gm-Message-State: AOAM530bKqgCTy2PGbVBYw3gQq9clsRlp0Wvo8FUSDbIK9DBLaYnZTWP
-        HcJ259KmHP3g22428f/dzWOvFA==
-X-Google-Smtp-Source: ABdhPJzqDb4w+uJkD0GXRjIt+ZwbZP7VGzGbNvmmxXex3ghcbB07uJWFLlHB8h7If8Bvg2c5Ao6JWg==
-X-Received: by 2002:a05:6830:2466:: with SMTP id x38mr949048otr.339.1634923907844;
-        Fri, 22 Oct 2021 10:31:47 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id q15sm1733708otk.81.2021.10.22.10.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 10:31:47 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 10:33:29 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vladimir Lypak <vladimir.lypak@gmail.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/a5xx: Add support for Adreno 506 GPU
-Message-ID: <YXL16V17upehvUwt@ripper>
-References: <20211022114349.102552-1-vladimir.lypak@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0LsY62/6ngRxgBm83XOe/sLH1xiASl+MCqBfNsQpWM4=;
+        b=xAUy5csXpJVEw6XtpgysEtkoXa6mKpAiXaXgbRtDVOHRVlqZGzXFms5NC2Ep5+XfXh
+         L0FWQ6lkhxccKpjckivQeIm5emYJv5tUJ31d8yJya0xGk1OmnZET45ZaKgfwjsf6NItv
+         /Dp5+0xpwVqYn/X7HKwI69cU0l6j7n7QjGuLZsByyoMen/o9+0wrpyAuYlwNRBCxqyYj
+         cJBvxt3tgj/AWTiEDRA6eeiBDI1YFp/Y2/LLYjxUnutfK0MEkxaES+1e8VwYriOiJ4Jk
+         Z7afLihaYjJ4E23OvfggD2ys1cthxEXZpnPL9jc6VlKJS/Dk+oHM4rgXc7xCWopHgGpw
+         Fixg==
+X-Gm-Message-State: AOAM530qG0L2hJBdMUOzQIKEZbxauYrw/xgjKZYT00ewpjSN8hTqSOKJ
+        nrYsrTetXqPUrKT5+E9weqZldg5x2a0jP/b7I1Q=
+X-Google-Smtp-Source: ABdhPJxxf08bQnWK9iyBxH6jyfKFHYh+LVlZXczmhWgCNu3dgWfTfUnavjgLaGgEBdD9QI3Y2JliEFvL7gZNv9sWBe0=
+X-Received: by 2002:aa7:de83:: with SMTP id j3mr1809459edv.312.1634924124380;
+ Fri, 22 Oct 2021 10:35:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022114349.102552-1-vladimir.lypak@gmail.com>
+References: <20211022064748.4173718-1-arnd@kernel.org>
+In-Reply-To: <20211022064748.4173718-1-arnd@kernel.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 22 Oct 2021 10:35:12 -0700
+Message-ID: <CAHbLzkrQVcVL6UtDf6cwvTshFT25uGZVn_DKL_=RCU7KR=wV3w@mail.gmail.com>
+Subject: Re: [PATCH] mm: shmem: fix uninitialized variable use in me_pagecache_clean()
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 22 Oct 04:43 PDT 2021, Vladimir Lypak wrote:
+On Thu, Oct 21, 2021 at 11:47 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> It appears that the has_extra_refcount() is now in the wrong place:
+>
+> mm/memory-failure.c:892:6: error: variable 'extra_pins' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+>         if (!mapping) {
+>             ^~~~~~~~
+> mm/memory-failure.c:915:32: note: uninitialized use occurs here
+>         if (has_extra_refcount(ps, p, extra_pins))
+>                                       ^~~~~~~~~~
+> mm/memory-failure.c:892:2: note: remove the 'if' if its condition is always false
+>         if (!mapping) {
+>         ^~~~~~~~~~~~~~~
+> mm/memory-failure.c:879:6: error: variable 'extra_pins' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+>         if (PageAnon(p)) {
+>             ^~~~~~~~~~~
+> mm/memory-failure.c:915:32: note: uninitialized use occurs here
+>         if (has_extra_refcount(ps, p, extra_pins))
+>                                       ^~~~~~~~~~
+> mm/memory-failure.c:879:2: note: remove the 'if' if its condition is always false
+>         if (PageAnon(p)) {
+>         ^~~~~~~~~~~~~~~~~~
+> mm/memory-failure.c:871:17: note: initialize the variable 'extra_pins' to silence this warning
+>         bool extra_pins;
+>                        ^
+>                         = 0
+>
+> In both of those cases, we already set an error code and don't
+> need to override that one.
 
-> This GPU is found on SoCs such as MSM8953(650MHz), SDM450(600MHz),
-> SDM632(725MHz).
-> 
-> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+Hi Arnd,
+
+Thanks for catching this. There has been a fix
+(https://lore.kernel.org/linux-mm/20211021180336.2328086-1-nathan@kernel.org/).
+But I think yours makes more sense. It seems better to have the "out:"
+label after has_extra_refcount().
+
+Andrew,
+
+Could you please take this patch? And either keeping or dropping
+Nathan's patch is fine to me. Thanks.
+
+>
+> Fixes: d882a43a0011 ("mm: shmem: don't truncate page if memory failure happens")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 ++++++++++++++--------
->  drivers/gpu/drm/msm/adreno/adreno_device.c | 18 ++++++++++++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 ++++
->  3 files changed, 45 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 5e2750eb3810..249a0d8bc673 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -441,7 +441,7 @@ void a5xx_set_hwcg(struct msm_gpu *gpu, bool state)
->  	const struct adreno_five_hwcg_regs *regs;
->  	unsigned int i, sz;
->  
-> -	if (adreno_is_a508(adreno_gpu)) {
-> +	if (adreno_is_a506(adreno_gpu) || adreno_is_a508(adreno_gpu)) {
->  		regs = a50x_hwcg;
->  		sz = ARRAY_SIZE(a50x_hwcg);
->  	} else if (adreno_is_a509(adreno_gpu) || adreno_is_a512(adreno_gpu)) {
-> @@ -485,7 +485,7 @@ static int a5xx_me_init(struct msm_gpu *gpu)
->  	OUT_RING(ring, 0x00000000);
->  
->  	/* Specify workarounds for various microcode issues */
-> -	if (adreno_is_a530(adreno_gpu)) {
-> +	if (adreno_is_a506(adreno_gpu) || adreno_is_a530(adreno_gpu)) {
->  		/* Workaround for token end syncs
->  		 * Force a WFI after every direct-render 3D mode draw and every
->  		 * 2D mode 3 draw
-> @@ -620,8 +620,17 @@ static int a5xx_ucode_init(struct msm_gpu *gpu)
->  
->  static int a5xx_zap_shader_resume(struct msm_gpu *gpu)
->  {
-> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->  	int ret;
->  
-> +	/*
-> +	 * Adreno 506,508,512 have CPZ Retention feature and
-> +	 * don't need to resume zap shader
-> +	 */
-> +	if (adreno_is_a506(adreno_gpu) || adreno_is_a508(adreno_gpu) ||
-> +	    adreno_is_a512(adreno_gpu))
-> +		return 0;
-
-Afaict all other changes in the patch adds a506 support, but this hunk
-changes a508 and a512 behavior.
-
-I'm not saying that the change is wrong, but this hunk deserves to be in
-it's own patch - so that if there's any impact on those other versions
-it can be tracked down to that specific patch.
-
-Thanks,
-Bjorn
+> This is caused by a commit im -mm, so the commit ID is not stable.
+> If the fix is correct, I'd suggest folding it into the original
+> change
+> ---
+>  mm/memory-failure.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 3b04f0361a58..e8c38e27b753 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -909,12 +909,12 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
+>          * Open: to take i_rwsem or not for this? Right now we don't.
+>          */
+>         ret = truncate_error_page(p, page_to_pfn(p), mapping);
+> -out:
+> -       unlock_page(p);
+> -
+>         if (has_extra_refcount(ps, p, extra_pins))
+>                 ret = MF_FAILED;
+>
+> +out:
+> +       unlock_page(p);
+> +
+>         return ret;
+>  }
+>
+> --
+> 2.29.2
+>
