@@ -2,115 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9754378D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F3D4378D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbhJVOOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:14:18 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:43953 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232244AbhJVOOP (ORCPT
+        id S233099AbhJVOP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232244AbhJVOPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:14:15 -0400
-Received: by mail-oi1-f176.google.com with SMTP id o4so5140882oia.10;
-        Fri, 22 Oct 2021 07:11:58 -0700 (PDT)
+        Fri, 22 Oct 2021 10:15:24 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF65C061764;
+        Fri, 22 Oct 2021 07:13:07 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id e19so3657275edy.0;
+        Fri, 22 Oct 2021 07:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Idky6EnOMcqMfak2UWptIWA1BDb5D9P9K0GrvJjzY0M=;
+        b=m7+n0n1SZvQBOOPDhDuoqgS8Ab1Uqx7QzeLrMmoBUH9YSB1Y5rgdZIo36aAuCVLtXd
+         2Fys3y7n8b5s9V9FrJjKb81nz8VQvOYsnOlHtXh35XxPQ+ry0XwnqWJMn0Y3xu9QLXPW
+         VUhcVBsHLPm7GaQUPsEG10n+phNeA2zZtKFrgVkpBMYNqzngQTNz8173x6CxAhGLJ+Nx
+         UbCohJ+GwEstdJJPVnKIWPT9ipsKJwxPmQ7E2rYzsRmiZHCdYiwWncUqXGdo/xDcJNTc
+         Db7lbG1+p2A+htbpM9U1Z9wvRAaAlsxeIF8m0H+3bWdec027nMhcVi3a8Bh37nQMp6Hw
+         RHFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=fntq8tUMlB+L0yN28C+/8oiQ/tqnhvbVaVy+XCHM97M=;
-        b=VwQQJkjyzJxf2ac2q1SbmbQ9GS6gkSIFP+OU/E8Q615+2ksSYUj1RLg13b0YEWgCkL
-         ADJNi7HB52iKbsRUGUxgqLQe63+SDIKJbfGB15k+Xv8pMM2mGDyRK1gN4PA6ZT14o0+P
-         icsP19ho1jNd8i+Ac6m8/XYJwXueCfGX5rzlWUWOm35d/qnyUgEaajxRbhQ7nu5qVa/p
-         p4Sb5uXZRztpNVTJk2q5XYAcNUsc3/yZjtTsksiayjifIzN0C+gHBMLS9W8PLvWk3eur
-         nOEH+Vf9mK5k7IdBDYkkvtJcJpKudDFGdQBxnMplFpk3A9VIuRC+vVDTIV+/BTZ/7nBq
-         9Xlg==
-X-Gm-Message-State: AOAM530NW74CQi0sphcaVnEAkaDHNe2aRa1GUV73MnJfXxTk65LPT76p
-        jo4bfc4mB0B9ulXQ6HmMfA==
-X-Google-Smtp-Source: ABdhPJwQ2dCgcSgOjl+llkhisJut4OFc60/Z9ZVdZK9ftiZjWbJd0kP0dC9thm618B3k/7CcA122Eg==
-X-Received: by 2002:a05:6808:1287:: with SMTP id a7mr10108534oiw.45.1634911917877;
-        Fri, 22 Oct 2021 07:11:57 -0700 (PDT)
-Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id a15sm2037958oiw.53.2021.10.22.07.11.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 07:11:57 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     soc@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH v2] ARM: dts: spear13xx: Drop malformed 'interrupt-map' on PCI nodes
-Date:   Fri, 22 Oct 2021 09:11:56 -0500
-Message-Id: <20211022141156.2592221-1-robh@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        bh=Idky6EnOMcqMfak2UWptIWA1BDb5D9P9K0GrvJjzY0M=;
+        b=OORrEo2+spEEhM81J6O1tRiY8rZq1/WppVp0Tze9JiqI7Jo7yh/gxK3rnlbI7wx6nX
+         yqhlHC3dZ0b51vno3UvY1EDv0UKpRzXm51pmPzUqNbO5EDIsw5orbj2C7Ul6/Fburgrt
+         Hj+P1X4lId7RYVPJBZWMmmEYTavAJPn6X+bHqV57GIxR5R+mTmJ1/j5JVKTYoZlhZGz2
+         DhX3fUW2xcUQmYa6d5VYgLx6P4iXEDCOjHKuELVl3bzHrKvzi9J2+AzxRZHi1/aS+2H9
+         clN2EUSN8M9Wdsa7UhTfhAcHvq4gncFUepe8UqU48968zcTQ9v9yh0vAZn6Zg5lDEsIo
+         A1Ig==
+X-Gm-Message-State: AOAM531pUen+P5x5ocOwzmZrBcvYPqModU9CL7sA+bD23rto6FiN/mnZ
+        tO/xu9nuqiz5p0a8jLkzXvs=
+X-Google-Smtp-Source: ABdhPJyATZVZpxG7/5RzJfCnsjsSeZVVQc4TmViDOjfzplXWryBmyJRw5uCifSdMB2o3ubMGA8EwhQ==
+X-Received: by 2002:aa7:c78f:: with SMTP id n15mr309219eds.338.1634911985650;
+        Fri, 22 Oct 2021 07:13:05 -0700 (PDT)
+Received: from [192.168.8.198] ([148.252.133.195])
+        by smtp.gmail.com with ESMTPSA id c21sm4603739edx.1.2021.10.22.07.13.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 07:13:05 -0700 (PDT)
+Message-ID: <1b519092-2ebf-3800-306d-c354c24a9ad1@gmail.com>
+Date:   Fri, 22 Oct 2021 15:13:08 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
+Content-Language: en-US
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
+ <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
+ <87h7i694ij.fsf_-_@disp2133>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <87h7i694ij.fsf_-_@disp2133>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spear13xx PCI 'interrupt-map' property is not parse-able.
-'#interrupt-cells' is missing and there are 3 #address-cells. Based on the
-driver, the only supported interrupt is for MSI. Therefore, 'interrupt-map'
-is not needed.
+On 6/9/21 21:17, Eric W. Biederman wrote:
+> 
+> Folks,
+> 
+> Olivier Langlois has been struggling with coredumps getting truncated in
+> tasks using io_uring.  He has also apparently been struggling with
+> the some of his email messages not making it to the lists.
 
-Cc: Shiraz Hashim <shiraz.linux.kernel@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
+Looks syzbot hit something relevant, see
+https://lore.kernel.org/io-uring/0000000000000012fb05cee99477@google.com/
 
-Arnd, Olof, Please apply.
+In short, a task creates an io_uring worker thread, then the worker
+submits a task_work item to the creator task and won't die until
+the item is executed/cancelled. And I found that the creator task is
+sleeping in do_coredump() -> wait_for_completion()
 
- arch/arm/boot/dts/spear1310.dtsi | 6 ------
- arch/arm/boot/dts/spear1340.dtsi | 2 --
- 2 files changed, 8 deletions(-)
+0xffffffff81343ccb is in do_coredump (fs/coredump.c:469).
+464
+465             if (core_waiters > 0) {
+466                     struct core_thread *ptr;
+467
+468                     freezer_do_not_count();
+469                     wait_for_completion(&core_state->startup);
+470                     freezer_count();
 
-diff --git a/arch/arm/boot/dts/spear1310.dtsi b/arch/arm/boot/dts/spear1310.dtsi
-index c4b49baf9804..2f746a9428a7 100644
---- a/arch/arm/boot/dts/spear1310.dtsi
-+++ b/arch/arm/boot/dts/spear1310.dtsi
-@@ -82,8 +82,6 @@ pcie0: pcie@b1000000 {
- 			reg = <0xb1000000 0x4000>, <0x80000000 0x20000>;
- 			reg-names = "dbi", "config";
- 			interrupts = <0 68 0x4>;
--			interrupt-map-mask = <0 0 0 0>;
--			interrupt-map = <0x0 0 &gic 0 68 0x4>;
- 			num-lanes = <1>;
- 			phys = <&miphy0 1>;
- 			phy-names = "pcie-phy";
-@@ -101,8 +99,6 @@ pcie1: pcie@b1800000 {
- 			reg = <0xb1800000 0x4000>, <0x90000000 0x20000>;
- 			reg-names = "dbi", "config";
- 			interrupts = <0 69 0x4>;
--			interrupt-map-mask = <0 0 0 0>;
--			interrupt-map = <0x0 0 &gic 0 69 0x4>;
- 			num-lanes = <1>;
- 			phys = <&miphy1 1>;
- 			phy-names = "pcie-phy";
-@@ -120,8 +116,6 @@ pcie2: pcie@b4000000 {
- 			reg = <0xb4000000 0x4000>, <0xc0000000 0x20000>;
- 			reg-names = "dbi", "config";
- 			interrupts = <0 70 0x4>;
--			interrupt-map-mask = <0 0 0 0>;
--			interrupt-map = <0x0 0 &gic 0 70 0x4>;
- 			num-lanes = <1>;
- 			phys = <&miphy2 1>;
- 			phy-names = "pcie-phy";
-diff --git a/arch/arm/boot/dts/spear1340.dtsi b/arch/arm/boot/dts/spear1340.dtsi
-index 1a8f5e8b10e3..827e887afbda 100644
---- a/arch/arm/boot/dts/spear1340.dtsi
-+++ b/arch/arm/boot/dts/spear1340.dtsi
-@@ -47,8 +47,6 @@ pcie0: pcie@b1000000 {
- 			reg = <0xb1000000 0x4000>, <0x80000000 0x20000>;
- 			reg-names = "dbi", "config";
- 			interrupts = <0 68 0x4>;
--			interrupt-map-mask = <0 0 0 0>;
--			interrupt-map = <0x0 0 &gic 0 68 0x4>;
- 			num-lanes = <1>;
- 			phys = <&miphy0 1>;
- 			phy-names = "pcie-phy";
+
+A hack executing tws there helps (see diff below).
+Any chance anyone knows what this is and how to fix it?
+
+
+diff --git a/fs/coredump.c b/fs/coredump.c
+index 3224dee44d30..f6f9dfb02296 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -466,7 +466,8 @@ static int coredump_wait(int exit_code, struct core_state *core_state)
+          struct core_thread *ptr;
+  
+          freezer_do_not_count();
+-        wait_for_completion(&core_state->startup);
++        while (wait_for_completion_interruptible(&core_state->startup))
++            tracehook_notify_signal();
+          freezer_count();
+          /*
+           * Wait for all the threads to become inactive, so that
+
+
+
+> 
+> We were talking about some of his struggles and questions in this area
+> and he pointed me to this patch he thought he had posted but I could not
+> find in the list archives.
+> 
+> In short the coredump code deliberately supports being interrupted by
+> SIGKILL, and depends upon prepare_signal to filter out all other
+> signals.  With the io_uring code comes an extra test in signal_pending
+> for TIF_NOTIFY_SIGNAL (which is something about asking a task to run
+> task_work_run).
+> 
+> I am baffled why the dumper thread would be getting interrupted by
+> TIF_NOTIFY_SIGNAL but apparently it is.  Perhaps it is an io_uring
+> thread that is causing the dump.
+> 
+> Now that we know the problem the question becomes how to fix this issue.
+> 
+> Is there any chance all of this TWA_SIGNAL logic could simply be removed
+> now that io_uring threads are normal process threads?
+> 
+> There are only the two call sites so I perhaps the could test
+> signal->flags & SIGNAL_FLAG_COREDUMP before scheduling a work on
+> a process that is dumping core?
+> 
+> Perhaps the coredump code needs to call task_work_run before it does
+> anything?
+> 
+> -----
+> 
+> From: Olivier Langlois <olivier@trillion01.com>
+> Subject: [PATCH] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
+> Date: Mon, 07 Jun 2021 16:25:06 -0400
+> 
+> io_uring is a big user of task_work and any event that io_uring made a
+> task waiting for that occurs during the core dump generation will
+> generate a TIF_NOTIFY_SIGNAL.
+> 
+> Here are the detailed steps of the problem:
+> 1. io_uring calls vfs_poll() to install a task to a file wait queue
+>     with io_async_wake() as the wakeup function cb from io_arm_poll_handler()
+> 2. wakeup function ends up calling task_work_add() with TWA_SIGNAL
+> 3. task_work_add() sets the TIF_NOTIFY_SIGNAL bit by calling
+>     set_notify_signal()
+> 
+> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+> ---
+>   fs/coredump.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index 2868e3e171ae..79c6e3f114db 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -519,7 +519,7 @@ static bool dump_interrupted(void)
+>   	 * but then we need to teach dump_write() to restart and clear
+>   	 * TIF_SIGPENDING.
+>   	 */
+> -	return signal_pending(current);
+> +	return task_sigpending(current);
+>   }
+>   
+>   static void wait_for_dump_helpers(struct file *file)
+> 
+
 -- 
-2.32.0
-
+Pavel Begunkov
