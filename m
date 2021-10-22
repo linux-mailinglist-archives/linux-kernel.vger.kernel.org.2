@@ -2,416 +2,491 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAFC437CDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796A7437CDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhJVTBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:01:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47846 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232358AbhJVTBN (ORCPT
+        id S233733AbhJVTB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:01:27 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:50938 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232747AbhJVTBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:01:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634929135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZMGLfGhTZyg2hCXUGNR5TokdI2tToWsrzMC3UDrJ/Vk=;
-        b=Y9jFbRr7o4mfY/sdFWqo91CZsrwWgNJ2lH0KDyzPZ3XP5IkxO4MVdtxVqbfvxQxtxGyZc8
-        N7933HEBlhNyosF3ANkYM4Q4GKMYMZqBt0hbKhUJ2S8Ux+CO/fN0IaYNM/SAO85pwkNBBd
-        vG0x2FDMAcUNYSBf/UD1cU1TOsypZqA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-t5eBudGvNt6zcINrTtdsVw-1; Fri, 22 Oct 2021 14:58:51 -0400
-X-MC-Unique: t5eBudGvNt6zcINrTtdsVw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBBDE1005E4D;
-        Fri, 22 Oct 2021 18:58:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 73C871346F;
-        Fri, 22 Oct 2021 18:58:40 +0000 (UTC)
-Subject: [PATCH v2 00/53] fscache: Rewrite index API and management system
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com
-Cc:     linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        linux-cifs@vger.kernel.org,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Steve French <sfrench@samba.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@kernel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 22 Oct 2021 19:58:39 +0100
-Message-ID: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Fri, 22 Oct 2021 15:01:25 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MI2mj1029481;
+        Fri, 22 Oct 2021 18:58:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=BnkY2v0gkJxVzSk9bN/yZTL0m3+zEfzi13qlYV7WM8Q=;
+ b=dmDhoqlL7UZhbCaLHdOvi9TkX59/oedSmaGGinr71kuEMDXziy4ecg5GTQjVOmO5YVvL
+ byB7T9KtT3vkr2kgSxHrc4JWYL9ZjyTyVVjkEXOv0YmR4oYmK8uBVmvCfsPfKcckalZt
+ SfarbqsN1IxjWUPt4Plb324UiU2lmvC+Rfv3B1TLbXxFTS6YsqiEFQrd/suKAC9epykA
+ nfAn4Kq4Y2oKnvqMYFGVs0DKhZ03Gosjjctfr9WCuXxUbt/Su544J6Lw1U4d71+wBaHf
+ Y8IOCk9E8J9umPQ6nh91dF5vCeMgr8yzSdA8Bw9Lx8YUC+sWk5zYufkNypdv174cb3+v bg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bunvd3qrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Oct 2021 18:58:49 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19MIplaD141403;
+        Fri, 22 Oct 2021 18:58:47 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2177.outbound.protection.outlook.com [104.47.73.177])
+        by userp3030.oracle.com with ESMTP id 3bqkv47e8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Oct 2021 18:58:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jqM1OuZ0fIKFq1cm0LHkWJj+lo5zz0UhBfB6iUvQfl0gZh7PougmksanzQVu2FILrKxptLtDGiCEs2PplxUYcdANkBFw5HIoAmJyTelLn1IjVfmcNZvpYwjyj+qcpG2hajKWHnH40h95l5jd6aiiWGYFzKYrHho83bzKvYqYch21v7+vV1TXue0160lOajYx2SfbbLq3TSrzOVQWecrBwwqkAyMentxi7HIx5Ayjh5zv8s9ThEplmosMowL+yWLAYXcZ6GugMEWmGkLUxCHz2DnPu5me3mEmCNAuf5XcMRsmB33dVlOVImp18+kp1bl0GSvVU1r7Kfg/iEkw8fxoaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BnkY2v0gkJxVzSk9bN/yZTL0m3+zEfzi13qlYV7WM8Q=;
+ b=ScH579XGLbHTuISkkujjfc6FiaPXktFhVnJzgQFOzzFCTzykpIcuyxd/U+7SIE47Vc73L0Q+sXTyOtwLkbq9qb7qcsXC7jQDM2Z3fVq8zDAOv2dTrRVgf14VA3yklyyBqfZbpy62GdTcNzRI0DybbSbdW5FMrfOZS+dDB0tMcXZvfA6t50Db8bBAf6eicE6DBVIJtyDNYpzYFT6TWVf+UdpvHHUqq+Y9rKu/25MYhobSGfBMKwN3g4Y7trG/1WrlQEddaQot4FPg71yerE2cVqBmLUrQvjf9GYVVipYwslCcCaAujsWccuCjtwu/fAG23rV4CQ48MgTNP42v4ThshA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BnkY2v0gkJxVzSk9bN/yZTL0m3+zEfzi13qlYV7WM8Q=;
+ b=MQ7op5DztwICQznOuNFX3nG/1Xit6byjzwf0LDbsJBsZUxpy6MB6enUveDCV4i1wvvSfema6r3xA0Wv9CRP7i9CwC5s01PIKQOnmmpbFboyJKqLLGgHJUiurNgJBQLwC05V3YLsnBRC5e10Uxetu+Lxy4XfbRd13oXx/1l7tKYU=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by SJ0PR10MB5629.namprd10.prod.outlook.com (2603:10b6:a03:3e2::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
+ 2021 18:58:45 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5%6]) with mapi id 15.20.4608.018; Fri, 22 Oct 2021
+ 18:58:45 +0000
+Subject: Re: [PATCH v4 1/5] hugetlb: add demote hugetlb page sysfs interfaces
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Nghia Le <nghialm78@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20211007181918.136982-1-mike.kravetz@oracle.com>
+ <20211007181918.136982-2-mike.kravetz@oracle.com>
+ <YV/4ZFCvoGRn2rtr@localhost.localdomain>
+ <47e53389-638a-1af1-e94f-b3c7e5e7459e@oracle.com>
+ <20211018073552.GA11960@linux>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <0530e4ef-2492-5186-f919-5db68edea654@oracle.com>
+Date:   Fri, 22 Oct 2021 11:58:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20211018073552.GA11960@linux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-ClientProxiedBy: MW4PR03CA0113.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::28) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
+MIME-Version: 1.0
+Received: from [192.168.2.123] (50.38.35.18) by MW4PR03CA0113.namprd03.prod.outlook.com (2603:10b6:303:b7::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Fri, 22 Oct 2021 18:58:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 72e93020-da40-48dc-50db-08d9958df902
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5629:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB5629590A44831E495ECCD390E2809@SJ0PR10MB5629.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DFL6YEwcTBvRDUYK/bwOgS5P+ydfzCdOzjNsMqt6FZncoq87mIR5f8/50GLf6QJt5ku+KOJDHpma27JdlVpn+ms3YXuWIrQ3+hyirzme9W4UR6wzON7tDeDnzfq7C5+VKL3og4/C3Gx0jG3fZtytgLaA66s3JDlA6azSy4JUaH9Q045Hx75zVN4CB0cwZQ8VIxVKQev6KTuoZzxFvnlvKs1IjSX+aIKe1P2lHqlAxZwd6DQy03pWKVZVVucNJvn1nR/uomZvUYpFNvVsdVFbX/yNYx1IlfMtJbBTCc3V7Zp5jMls0IGOknfKFpbyamf63PljfnQ8bR5Sjb+6uu8tW5dufoZt5WgEmUY2SVcAxje4Y4Pj/wTNuF2UPynd/ZQ2AwXL3s9QcKGmqr3fjQc0y/A+XMQRPcOMkj9pE/lwVHFgI9BD7ttQ4odgi79bXKMqBEWENg+g1lPVm7xgr3BvWpLWfRASyGzqOgAlMEAhEKtYVN44F9wfc2daRU6CqwmIY3QqF5LtShHOcVhAF1WNgYXHc2p5FAr3UsZ8b1sMtGknTG6SrKC2LkDpRy2BekzfYlHckLSUoNSCMP355ZPeGWGhZKCIsaX4CbteWLcZqveSMilDxQ5x3cbu8UjoJMoYTOliP/FpMZvHmVhWsuIHu25EnAy/Ho8nLEIa1+QDVEDTcCD+zd13fsXS1PWqEU6OAflWs9BRe/fnBfgLuLG2WZ8rm0MloyZkmIL7YKq9SNmy9s/i033+hpqWwSvRa2pYqVyvCj2MaA2v4w1NFKPmJw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(31696002)(2616005)(956004)(44832011)(6486002)(38100700002)(38350700002)(83380400001)(4326008)(66556008)(6916009)(52116002)(54906003)(66476007)(30864003)(8676002)(8936002)(16576012)(5660300002)(86362001)(53546011)(508600001)(7416002)(2906002)(36756003)(31686004)(26005)(316002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ak5kL1l4ZExhWjE3dVJTTVRmQnQwN2Q5VTM0T3dMbXUwUzRUUVJuTVhKL0NY?=
+ =?utf-8?B?ZnR6cW9wdDVFcUhDNzlweGhvMUF4WXpoeURBaXNEeitnYVYwajMzTXFvaDdG?=
+ =?utf-8?B?ZjJyMVBiZDBIR05nR0VxRG9wSnNzZit4dUwrZzdqMVpZMGY5S1h5V1M2QXM4?=
+ =?utf-8?B?c2VqWFBvSFAwSENUSHBIQ3BZZ1drV1NiUVR4MmpQMndvZzljaGxIZjhFK2Vs?=
+ =?utf-8?B?d2RoTmh2M1NJb0dIRXRvYzlTR1REZjduOVcrVENsNWFLZ2psUTdwb0hOcFc1?=
+ =?utf-8?B?NDJ0SnBabHdZVTVuMGRPVU5UL1JZbFhjY1k0aVY2NWxiWDBteVRaMjFoZk5K?=
+ =?utf-8?B?UFcxWUx2R3h4U0VMVldlQ2lKenpMY0ZTNEhKb3owdVY1cDJhNCt5Y1lsTGxx?=
+ =?utf-8?B?blc3QjJOWVhoc0UrOVExYnl1eURsSVN5NTNjTVYySXhaYjdacm5KZzZ2OGdB?=
+ =?utf-8?B?cjNoc1ROc3hXbW1pK2ZEME4xN2ZwL0VRYTZiOU5yRzg2ZXVudGNlVEdJMXl1?=
+ =?utf-8?B?NnROdENmUUxoV0dYaWtWTnNOVGlaWTJlVHFBZ2g2TDJnVVR5dVpmRVJaVy9j?=
+ =?utf-8?B?VWNyYnNaU0w1WnlYNllOdzNJUDVIWDdtQURTbzJzVFpxMFB6VDhaWVRvRDE4?=
+ =?utf-8?B?VzhYWC9KaTM1TmNBQk0rdUJENkppN3JRY3ZZdGNRWThoUmR2ZDlvQ292U21n?=
+ =?utf-8?B?a2pOVlA1emJsVi9TY0QxZlB4L3VQN1A3ZWFQdWZRSkJCcGwwUlBna04vUi9a?=
+ =?utf-8?B?SW1Jc1NTeFQzMHVSUVd3VDg2M3FXU0h1Mzd3bUpkb3BwM0thMWY2bEkxT2JM?=
+ =?utf-8?B?dEp0b0FnSVdOaTd4N2VHYzJDS2t1aFNRK0o0V2ZyT3F0V3E5NWp6SkNsejJY?=
+ =?utf-8?B?cGJJeXJqU1J6dklDbGJIY1N4cUJBODZqTFdKaVpGRTNFOTZWdzdFQVVTVDMy?=
+ =?utf-8?B?c3doV3ordWxtYUdwR0hMQjVxOW9PSmMvdzJNaXVuWFFZR05PQTVmelZVVC8x?=
+ =?utf-8?B?SXdKOE9TUFo2YkhrRmNSTi83U0pNS1VyUUpFQ1R4Z3R4VjdZa3FuK3VYbmp5?=
+ =?utf-8?B?ZmZtSW82L2RZNEJxbWhTeGRJYnNEeCtvaHVEOHRMNVVzQzlxYUY1WHErMUNm?=
+ =?utf-8?B?VTdkZUFHRnNhMVhiY05tRk02S3crbWZFRElXSW9KYVV5dlFYWXZFcjRxWXFq?=
+ =?utf-8?B?TTlvZW9zK0owK0NwM3M3LzdnTGtvaGtZVU5TUy9XM1FXL1YrNzhKaFlwdURq?=
+ =?utf-8?B?NHZ5MkhPaVZLUHdCeWJMbkQ0a0hWTGI1cFA3NjJvWisydG9UVWtVRzNSTmZO?=
+ =?utf-8?B?Zzh3NVVUOXpNejlSZHIzOUN2M0ticWFXQjN3Q29QL0xrZGtCSEtaLzVHS1Bo?=
+ =?utf-8?B?bmF4SWxmVDR5a3J4NzFCcDJocEJuY2pvRmN3YW5SNmlER0xaWkErNi9zL2JH?=
+ =?utf-8?B?ZXFnRnJXOXFRVUhYS1RoN0NVOGNzMFdEVTZ1eVM1dkFEeXRrRGZEdHVqd24r?=
+ =?utf-8?B?cStuTjQrbDJza0xtRU1xTCtoaXR3bkg3cFdkSnNDUnJsbUtrY0NxWGlwUEFy?=
+ =?utf-8?B?STZPU3p0K29ZSTcyaGF6K0VkejEvbFkrejNhMkJ5a2UraUF6eVJLVk80MVl2?=
+ =?utf-8?B?ayt6Uk4wTzJYVTNWUUdqYTV1OStnYU1ldzlFa1VWcEsrTjl1L00xckpnYmpO?=
+ =?utf-8?B?d3I0NXdtallrVmVjZk90cnp4L01idGYwektOV3VIc0FNZ1VkWWZLSGttNnV0?=
+ =?utf-8?B?aHRkSFlXQ3RDMlg5bjduQUtEWDJGbGdVYWZQazl0emRPMllpQi8xNHlScGh4?=
+ =?utf-8?B?SWowZkxoK3p6TmcvdXlya1VTakFkS2Rac2dxQmVKMFc4WnZMK2Z5N2xNaTRi?=
+ =?utf-8?B?SnZOY3AxT3BCQitLVmlUTWhRclB3a0loVGtNQWtLS1pFTElORklNdXF0YWRC?=
+ =?utf-8?Q?H5OAUe4l7Ms=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72e93020-da40-48dc-50db-08d9958df902
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 18:58:45.2073
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mike.kravetz@oracle.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5629
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10145 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110220107
+X-Proofpoint-ORIG-GUID: gVEmsFlJWbwq73fq_XG4fG-EpyTR9q5X
+X-Proofpoint-GUID: gVEmsFlJWbwq73fq_XG4fG-EpyTR9q5X
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/18/21 12:35 AM, Oscar Salvador wrote:
+> On Fri, Oct 08, 2021 at 01:24:28PM -0700, Mike Kravetz wrote:
+>> In general, the resize_lock prevents unexpected consequences when
+>> multiple users are modifying the number of pages in a pool concurrently
+>> from the proc/sysfs interfaces.  The mutex is acquired here because we
+>> are modifying (decreasing) the pool size.
+> 
+> Yes, I got that. My question was wrt. n_mask initialization:
+> 
+>  +	if (nid != NUMA_NO_NODE) {
+>  +		init_nodemask_of_node(&nodes_allowed, nid);
+>  +		n_mask = &nodes_allowed;
+>  +	} else {
+>  +		n_mask = &node_states[N_MEMORY];
+>  +	}
+> 
+> AFAICS, this does not need to be protected.
+> 
 
-Here's a set of patches implements a rewrite of the fscache driver,
-significantly simplifying the code compared to what's upstream, removing
-the complex operation scheduling and object state machine in favour of
-something much smaller and simpler.  It is built on top of the set of
-patches that removes the old API[1].
+Sorry that I misunderstood your quesion!
 
-[!] Note: I've reworked the patches at Jeff Layton's request so that the
-    old fscache and cachefiles drivers are moved aside, but retained, and
-    the new drivers are built up from empty directories.  I've made it so
-    that the end result is practically the same and can be directly diff'd
-    against the first version.
+You are correct, the n_mask initialization does not need to be protected
+by the mutex.  Thanks for pointing that out.
 
-    This allows the filesystems to retain access to the old drivers for the
-    moment, though you have to decide at configuration time whether you
-    want the old drivers or the new.
+The updated patch below simply moves taking the mutex after this
+initialization code.
 
-    The git branch mentioned below also contains a patch to remove the old
-    drivers (and disable ceph as that's the only one I don't have patches
-    for the conversion of - Jeff is working on that).
+Andrew, please let me know if you want something else to make this
+update simpler for you.
 
+From f9c401323fee234667787a118c74d93aa185fcf6 Mon Sep 17 00:00:00 2001
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Fri, 22 Oct 2021 11:40:57 -0700
+Subject: [PATCH v4 1/5] hugetlb: add demote hugetlb page sysfs interfaces
 
-The operation scheduling API was intended to handle sequencing of cache
-operations, which were all required (where possible) to run asynchronously
-in parallel with the operations being done by the network filesystem, while
-allowing the cache to be brought online and offline and interrupt service
-with invalidation.
+Two new sysfs files are added to demote hugtlb pages.  These files are
+both per-hugetlb page size and per node.  Files are:
+  demote_size - The size in Kb that pages are demoted to. (read-write)
+  demote - The number of huge pages to demote. (write-only)
 
-However, with the advent of the tmpfile capacity in the VFS, an opportunity
-arises to do invalidation much more easily, without having to wait for I/O
-that's actually in progress: Cachefiles can simply cut over its file
-pointer for the backing object attached to a cookie and abandon the
-in-progress I/O, dismissing it upon completion.
+By default, demote_size is the next smallest huge page size.  Valid huge
+page sizes less than huge page size may be written to this file.  When
+huge pages are demoted, they are demoted to this size.
 
-Future work there would involve using Omar Sandoval's vfs_link() with
-AT_LINK_REPLACE[2] to allow an extant file to be displaced by a new hard
-link from a tmpfile as currently I have to unlink the old file first.
+Writing a value to demote will result in an attempt to demote that
+number of hugetlb pages to an appropriate number of demote_size pages.
 
-These patches can also simplify the object state handling as I/O operations
-to the cache don't all have to be brought to a stop in order to invalidate
-a file.  To that end, and with an eye on to writing a new backing cache
-model in the future, I've taken the opportunity to simplify the indexing
-structure.
+NOTE: Demote interfaces are only provided for huge page sizes if there
+is a smaller target demote huge page size.  For example, on x86 1GB huge
+pages will have demote interfaces.  2MB huge pages will not have demote
+interfaces.
 
-I've separated the index cookie concept from the file cookie concept by
-type now.  The former is now called a "volume cookie" (struct
-fscache_volume) and there is a container of file cookies.  There are then
-just the two levels.  All the index cookieage is collapsed into a single
-volume cookie, and this has a single printable string as a key.  For
-instance, an AFS volume would have a key of something like
-"afs,example.com,1000555", combining the filesystem name, cell name and
-volume ID.  This is freeform, but must not have '/' chars in it.
+This patch does not provide full demote functionality.  It only provides
+the sysfs interfaces.
 
-I've also eliminated all pointers back from fscache into the network
-filesystem.  This required the duplication of a little bit of data in the
-cookie (cookie key, coherency data and file size), but it's not actually
-that much.  This gets rid of problems with making sure we keep netfs data
-structures around so that the cache can access them.
+It also provides documentation for the new interfaces.
 
-I have changed afs throughout the patch series, but I also have patches for
-9p, nfs and cifs.  Jeff Layton is handling ceph support.
-
-
-BITS THAT MAY BE CONTROVERSIAL
-==============================
-
-There are some bits I've added that may be controversial:
-
- (1) I've provided a flag, S_KERNEL_FILE, that cachefiles uses to check if
-     a files is already being used by some other kernel service (e.g. a
-     duplicate cachefiles cache in the same directory) and reject it if it
-     is.  This isn't entirely necessary, but it helps prevent accidental
-     data corruption.
-
-     I don't want to use S_SWAPFILE as that has other effects, but quite
-     possibly swapon() should set S_KERNEL_FILE too.
-
-     Note that it doesn't prevent userspace from interfering, though
-     perhaps it should.
-
- (2) Cachefiles wants to keep the backing file for a cookie open whilst we
-     might need to write to it from network filesystem writeback.  The
-     problem is that the network filesystem unuses its cookie when its file
-     is closed, and so we have nothing pinning the cachefiles file open and
-     it will get closed automatically after a short time to avoid
-     EMFILE/ENFILE problems.
-
-     Reopening the cache file, however, is a problem if this is being done
-     due to writeback triggered by exit().  Some filesystems will oops if
-     we try to open a file in that context because they want to access
-     current->fs or suchlike.
-
-     To get around this, I added the following:
-
-     (A) An inode flag, I_PINNING_FSCACHE_WB, to be set on a network
-     	 filesystem inode to indicate that we have a usage count on the
-     	 cookie caching that inode.
-
-     (B) A flag in struct writeback_control, unpinned_fscache_wb, that is
-     	 set when __writeback_single_inode() clears the last dirty page
-     	 from i_pages - at which point it clears I_PINNING_FSCACHE_WB and
-     	 sets this flag.
-
-	 This has to be done here so that clearing I_PINNING_FSCACHE_WB can
-	 be done atomically with the check of PAGECACHE_TAG_DIRTY that
-	 clears I_DIRTY_PAGES.
-
-     (C) A function, fscache_set_page_dirty(), which if it is not set, sets
-     	 I_PINNING_FSCACHE_WB and calls fscache_use_cookie() to pin the
-     	 cache resources.
-
-     (D) A function, fscache_unpin_writeback(), to be called by
-     	 ->write_inode() to unuse the cookie.
-
-     (E) A function, fscache_clear_inode_writeback(), to be called when the
-     	 inode is evicted, before clear_inode() is called.  This cleans up
-     	 any lingering I_PINNING_FSCACHE_WB.
-
-     The network filesystem can then use these tools to make sure that
-     fscache_write_to_cache() can write locally modified data to the cache
-     as well as to the server.
-
-     For the future, I'm working on write helpers for netfs lib that should
-     allow this facility to be removed by keeping track of the dirty
-     regions separately - but that's incomplete at the moment and is also
-     going to be affected by folios, one way or another, since it deals
-     with pages.
-
-
-Changes
-=======
-ver #2)
-  - Fix fscache_unuse_cookie() to use atomic_dec_and_lock() to avoid a
-    potential race.
-  - Fix a number of oopses due to the cache not withdrawing the object by
-    the correct procedure upon lookup failure.
-  - Disable a debugging statement.
-
-
-These patches can be found also on:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-rewrite-indexing-2
-
-David
-
-Link: https://lore.kernel.org/r/163363935000.1980952.15279841414072653108.stgit@warthog.procyon.org.uk/ [1]
-Link: https://lore.kernel.org/r/cover.1580251857.git.osandov@fb.com/ [2]
-Link: https://lore.kernel.org/r/163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk/ # v1
-
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
-Dave Wysochanski (1):
-      nfs: Convert to new fscache volume/cookie API
+ Documentation/admin-guide/mm/hugetlbpage.rst |  30 +++-
+ include/linux/hugetlb.h                      |   1 +
+ mm/hugetlb.c                                 | 155 ++++++++++++++++++-
+ 3 files changed, 183 insertions(+), 3 deletions(-)
 
-David Howells (52):
-      fscache_old: Move the old fscache driver to one side
-      fscache_old: Rename CONFIG_FSCACHE* to CONFIG_FSCACHE_OLD*
-      cachefiles_old:  Move the old cachefiles driver to one side
-      cachefiles_old: Rename CONFIG_CACHEFILES* to CONFIG_CACHEFILES_OLD*
-      netfs: Display the netfs inode number in the netfs_read tracepoint
-      netfs: Pass a flag to ->prepare_write() to say if there's no alloc'd space
-      fscache: Introduce new driver
-      fscache: Implement a hash function
-      fscache: Implement cache registration
-      fscache: Implement volume registration
-      fscache: Implement cookie registration
-      fscache: Implement cache-level access helpers
-      fscache: Implement volume-level access helpers
-      fscache: Implement cookie-level access helpers
-      fscache: Implement functions add/remove a cache
-      fscache: Provide and use cache methods to lookup/create/free a volume
-      fscache: Add a function for a cache backend to note an I/O error
-      fscache: Implement simple cookie state machine
-      fscache: Implement cookie user counting and resource pinning
-      fscache: Implement cookie invalidation
-      fscache: Provide a means to begin an operation
-      fscache: Provide read/write stat counters for the cache
-      fscache: Provide a function to let the netfs update its coherency data
-      fscache: Implement I/O interface
-      fscache: Provide fallback I/O functions
-      vfs, fscache: Implement pinning of cache usage for writeback
-      fscache: Provide a function to note the release of a page
-      fscache: Provide a function to resize a cookie
-      cachefiles: Introduce new driver
-      cachefiles: Add some error injection support
-      cachefiles: Define structs
-      cachefiles: Add a couple of tracepoints for logging errors
-      cachefiles: Add I/O error reporting macros
-      cachefiles: Provide a function to check how much space there is
-      cachefiles: Implement a function to get/create a directory in the cache
-      cachefiles: Implement daemon UAPI and cache registration
-      cachefiles: Implement volume support
-      cachefiles: Implement data storage object handling
-      cachefiles: Implement begin and end I/O
-      cachefiles: Implement the I/O routines
-      afs: Handle len being extending over page end in write_begin/write_end
-      afs: Fix afs_write_end() to handle len > page size
-      afs: Make afs_write_begin() return the THP subpage
-      afs: Convert afs to use the new fscache API
-      afs: Copy local writes to the cache when writing to the server
-      afs: Skip truncation on the server of data we haven't written yet
-      afs: Add synchronous O_DIRECT support
-      9p: Use fscache indexing rewrite and reenable caching
-      9p: Copy local writes to the cache when writing to the server
-      cifs: Support fscache indexing rewrite (untested)
-      fscache, cachefiles: Display stats of no-space events
-      fscache, cachefiles: Display stat of culling events
-
-
- fs/9p/cache.c                         |  184 +----
- fs/9p/cache.h                         |   25 +-
- fs/9p/v9fs.c                          |   14 +-
- fs/9p/v9fs.h                          |   13 +-
- fs/9p/vfs_addr.c                      |   55 +-
- fs/9p/vfs_dir.c                       |   11 +
- fs/9p/vfs_file.c                      |    7 +-
- fs/9p/vfs_inode.c                     |   24 +-
- fs/9p/vfs_inode_dotl.c                |    3 +-
- fs/9p/vfs_super.c                     |    3 +
- fs/Kconfig                            |    4 +-
- fs/Makefile                           |    4 +-
- fs/afs/Makefile                       |    3 -
- fs/afs/cache.c                        |   68 --
- fs/afs/cell.c                         |   12 -
- fs/afs/file.c                         |   83 +-
- fs/afs/fsclient.c                     |    2 +-
- fs/afs/inode.c                        |  101 ++-
- fs/afs/internal.h                     |   37 +-
- fs/afs/main.c                         |   14 -
- fs/afs/super.c                        |    1 +
- fs/afs/volume.c                       |   15 +-
- fs/afs/write.c                        |  170 ++++-
- fs/cachefiles/Kconfig                 |    7 +
- fs/cachefiles/Makefile                |    3 +
- fs/cachefiles/bind.c                  |  190 +++--
- fs/cachefiles/daemon.c                |   40 +-
- fs/cachefiles/error_inject.c          |   46 ++
- fs/cachefiles/interface.c             |  662 +++++++---------
- fs/cachefiles/internal.h              |  203 +++--
- fs/cachefiles/io.c                    |  315 +++++---
- fs/cachefiles/key.c                   |  205 +++--
- fs/cachefiles/main.c                  |   22 +-
- fs/cachefiles/namei.c                 |  983 ++++++++++--------------
- fs/cachefiles/security.c              |    2 +-
- fs/cachefiles/volume.c                |  128 ++++
- fs/cachefiles/xattr.c                 |  369 +++------
- fs/cachefiles_old/Kconfig             |   25 +
- fs/cachefiles_old/Makefile            |   17 +
- fs/cachefiles_old/bind.c              |  278 +++++++
- fs/cachefiles_old/daemon.c            |  748 ++++++++++++++++++
- fs/cachefiles_old/interface.c         |  557 ++++++++++++++
- fs/cachefiles_old/internal.h          |  312 ++++++++
- fs/cachefiles_old/io.c                |  446 +++++++++++
- fs/cachefiles_old/key.c               |  155 ++++
- fs/cachefiles_old/main.c              |   94 +++
- fs/cachefiles_old/namei.c             | 1018 +++++++++++++++++++++++++
- fs/cachefiles_old/security.c          |  112 +++
- fs/cachefiles_old/xattr.c             |  324 ++++++++
- fs/ceph/Kconfig                       |    2 +-
- fs/cifs/Makefile                      |    2 +-
- fs/cifs/cache.c                       |  105 ---
- fs/cifs/cifsfs.c                      |   11 +-
- fs/cifs/cifsglob.h                    |    5 +-
- fs/cifs/connect.c                     |    3 -
- fs/cifs/file.c                        |   37 +-
- fs/cifs/fscache.c                     |  201 ++---
- fs/cifs/fscache.h                     |   53 +-
- fs/cifs/inode.c                       |   18 +-
- fs/fs-writeback.c                     |    8 +
- fs/fscache/Kconfig                    |   40 +
- fs/fscache/Makefile                   |   16 +
- fs/fscache/cache.c                    |  353 +++++++++
- fs/fscache/cookie.c                   |  990 ++++++++++++++++++++++++
- fs/fscache/internal.h                 |  249 ++++++
- fs/fscache/io.c                       |  381 +++++++++
- fs/fscache/main.c                     |  120 +++
- fs/fscache/proc.c                     |   54 ++
- fs/fscache/stats.c                    |  106 +++
- fs/fscache/volume.c                   |  449 +++++++++++
- fs/fscache_old/Kconfig                |   16 +-
- fs/fscache_old/Makefile               |    4 +-
- fs/fscache_old/internal.h             |    4 +-
- fs/fscache_old/object.c               |    2 +-
- fs/fscache_old/proc.c                 |   12 +-
- fs/netfs/read_helper.c                |    2 +-
- fs/nfs/Makefile                       |    2 +-
- fs/nfs/client.c                       |    4 -
- fs/nfs/direct.c                       |    2 +
- fs/nfs/file.c                         |    7 +-
- fs/nfs/fscache-index.c                |  114 ---
- fs/nfs/fscache.c                      |  264 +++----
- fs/nfs/fscache.h                      |   91 +--
- fs/nfs/inode.c                        |   11 +-
- fs/nfs/super.c                        |    7 +-
- fs/nfs/write.c                        |    1 +
- include/linux/fs.h                    |    4 +
- include/linux/fscache-cache.h         |  199 +++++
- include/linux/fscache.h               |  680 +++++++++++++++++
- include/linux/fscache_old.h           |    1 +
- include/linux/netfs.h                 |    4 +-
- include/linux/nfs_fs_sb.h             |    9 +-
- include/linux/writeback.h             |    1 +
- include/trace/events/cachefiles.h     |  485 +++++++++---
- include/trace/events/cachefiles_old.h |  321 ++++++++
- include/trace/events/fscache.h        |  448 +++++++++++
- include/trace/events/netfs.h          |    5 +-
- 97 files changed, 11269 insertions(+), 2748 deletions(-)
- delete mode 100644 fs/afs/cache.c
- create mode 100644 fs/cachefiles/error_inject.c
- create mode 100644 fs/cachefiles/volume.c
- create mode 100644 fs/cachefiles_old/Kconfig
- create mode 100644 fs/cachefiles_old/Makefile
- create mode 100644 fs/cachefiles_old/bind.c
- create mode 100644 fs/cachefiles_old/daemon.c
- create mode 100644 fs/cachefiles_old/interface.c
- create mode 100644 fs/cachefiles_old/internal.h
- create mode 100644 fs/cachefiles_old/io.c
- create mode 100644 fs/cachefiles_old/key.c
- create mode 100644 fs/cachefiles_old/main.c
- create mode 100644 fs/cachefiles_old/namei.c
- create mode 100644 fs/cachefiles_old/security.c
- create mode 100644 fs/cachefiles_old/xattr.c
- delete mode 100644 fs/cifs/cache.c
- create mode 100644 fs/fscache/Kconfig
- create mode 100644 fs/fscache/Makefile
- create mode 100644 fs/fscache/cache.c
- create mode 100644 fs/fscache/cookie.c
- create mode 100644 fs/fscache/internal.h
- create mode 100644 fs/fscache/io.c
- create mode 100644 fs/fscache/main.c
- create mode 100644 fs/fscache/proc.c
- create mode 100644 fs/fscache/stats.c
- create mode 100644 fs/fscache/volume.c
- delete mode 100644 fs/nfs/fscache-index.c
- create mode 100644 include/linux/fscache-cache.h
- create mode 100644 include/linux/fscache.h
- create mode 100644 include/trace/events/cachefiles_old.h
- create mode 100644 include/trace/events/fscache.h
-
+diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+index 8abaeb144e44..bb90de3885d1 100644
+--- a/Documentation/admin-guide/mm/hugetlbpage.rst
++++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+@@ -234,8 +234,12 @@ will exist, of the form::
+ 
+ 	hugepages-${size}kB
+ 
+-Inside each of these directories, the same set of files will exist::
++Inside each of these directories, the set of files contained in ``/proc``
++will exist.  In addition, two additional interfaces for demoting huge
++pages may exist::
+ 
++        demote
++        demote_size
+ 	nr_hugepages
+ 	nr_hugepages_mempolicy
+ 	nr_overcommit_hugepages
+@@ -243,7 +247,29 @@ Inside each of these directories, the same set of files will exist::
+ 	resv_hugepages
+ 	surplus_hugepages
+ 
+-which function as described above for the default huge page-sized case.
++The demote interfaces provide the ability to split a huge page into
++smaller huge pages.  For example, the x86 architecture supports both
++1GB and 2MB huge pages sizes.  A 1GB huge page can be split into 512
++2MB huge pages.  Demote interfaces are not available for the smallest
++huge page size.  The demote interfaces are:
++
++demote_size
++        is the size of demoted pages.  When a page is demoted a corresponding
++        number of huge pages of demote_size will be created.  By default,
++        demote_size is set to the next smaller huge page size.  If there are
++        multiple smaller huge page sizes, demote_size can be set to any of
++        these smaller sizes.  Only huge page sizes less than the current huge
++        pages size are allowed.
++
++demote
++        is used to demote a number of huge pages.  A user with root privileges
++        can write to this file.  It may not be possible to demote the
++        requested number of huge pages.  To determine how many pages were
++        actually demoted, compare the value of nr_hugepages before and after
++        writing to the demote interface.  demote is a write only interface.
++
++The interfaces which are the same as in ``/proc`` (all except demote and
++demote_size) function as described above for the default huge page-sized case.
+ 
+ .. _mem_policy_and_hp_alloc:
+ 
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 1faebe1cd0ed..f2c3979efd69 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -596,6 +596,7 @@ struct hstate {
+ 	int next_nid_to_alloc;
+ 	int next_nid_to_free;
+ 	unsigned int order;
++	unsigned int demote_order;
+ 	unsigned long mask;
+ 	unsigned long max_huge_pages;
+ 	unsigned long nr_huge_pages;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 95dc7b83381f..d2262ad4b3ed 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2986,7 +2986,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 
+ static void __init hugetlb_init_hstates(void)
+ {
+-	struct hstate *h;
++	struct hstate *h, *h2;
+ 
+ 	for_each_hstate(h) {
+ 		if (minimum_order > huge_page_order(h))
+@@ -2995,6 +2995,22 @@ static void __init hugetlb_init_hstates(void)
+ 		/* oversize hugepages were init'ed in early boot */
+ 		if (!hstate_is_gigantic(h))
+ 			hugetlb_hstate_alloc_pages(h);
++
++		/*
++		 * Set demote order for each hstate.  Note that
++		 * h->demote_order is initially 0.
++		 * - We can not demote gigantic pages if runtime freeing
++		 *   is not supported, so skip this.
++		 */
++		if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
++			continue;
++		for_each_hstate(h2) {
++			if (h2 == h)
++				continue;
++			if (h2->order < h->order &&
++			    h2->order > h->demote_order)
++				h->demote_order = h2->order;
++		}
+ 	}
+ 	VM_BUG_ON(minimum_order == UINT_MAX);
+ }
+@@ -3235,9 +3251,31 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 	return 0;
+ }
+ 
++static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
++	__must_hold(&hugetlb_lock)
++{
++	int rc = 0;
++
++	lockdep_assert_held(&hugetlb_lock);
++
++	/* We should never get here if no demote order */
++	if (!h->demote_order) {
++		pr_warn("HugeTLB: NULL demote order passed to demote_pool_huge_page.\n");
++		return -EINVAL;		/* internal error */
++	}
++
++	/*
++	 * TODO - demote fucntionality will be added in subsequent patch
++	 */
++	return rc;
++}
++
+ #define HSTATE_ATTR_RO(_name) \
+ 	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+ 
++#define HSTATE_ATTR_WO(_name) \
++	static struct kobj_attribute _name##_attr = __ATTR_WO(_name)
++
+ #define HSTATE_ATTR(_name) \
+ 	static struct kobj_attribute _name##_attr = \
+ 		__ATTR(_name, 0644, _name##_show, _name##_store)
+@@ -3433,6 +3471,105 @@ static ssize_t surplus_hugepages_show(struct kobject *kobj,
+ }
+ HSTATE_ATTR_RO(surplus_hugepages);
+ 
++static ssize_t demote_store(struct kobject *kobj,
++	       struct kobj_attribute *attr, const char *buf, size_t len)
++{
++	unsigned long nr_demote;
++	unsigned long nr_available;
++	nodemask_t nodes_allowed, *n_mask;
++	struct hstate *h;
++	int err = 0;
++	int nid;
++
++	err = kstrtoul(buf, 10, &nr_demote);
++	if (err)
++		return err;
++	h = kobj_to_hstate(kobj, &nid);
++
++	if (nid != NUMA_NO_NODE) {
++		init_nodemask_of_node(&nodes_allowed, nid);
++		n_mask = &nodes_allowed;
++	} else {
++		n_mask = &node_states[N_MEMORY];
++	}
++
++	/* Synchronize with other sysfs operations modifying huge pages */
++	mutex_lock(&h->resize_lock);
++	spin_lock_irq(&hugetlb_lock);
++
++	while (nr_demote) {
++		/*
++		 * Check for available pages to demote each time thorough the
++		 * loop as demote_pool_huge_page will drop hugetlb_lock.
++		 *
++		 * NOTE: demote_pool_huge_page does not yet drop hugetlb_lock
++		 * but will when full demote functionality is added in a later
++		 * patch.
++		 */
++		if (nid != NUMA_NO_NODE)
++			nr_available = h->free_huge_pages_node[nid];
++		else
++			nr_available = h->free_huge_pages;
++		nr_available -= h->resv_huge_pages;
++		if (!nr_available)
++			break;
++
++		err = demote_pool_huge_page(h, n_mask);
++		if (err)
++			break;
++
++		nr_demote--;
++	}
++
++	spin_unlock_irq(&hugetlb_lock);
++	mutex_unlock(&h->resize_lock);
++
++	if (err)
++		return err;
++	return len;
++}
++HSTATE_ATTR_WO(demote);
++
++static ssize_t demote_size_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *buf)
++{
++	int nid;
++	struct hstate *h = kobj_to_hstate(kobj, &nid);
++	unsigned long demote_size = (PAGE_SIZE << h->demote_order) / SZ_1K;
++
++	return sysfs_emit(buf, "%lukB\n", demote_size);
++}
++
++static ssize_t demote_size_store(struct kobject *kobj,
++					struct kobj_attribute *attr,
++					const char *buf, size_t count)
++{
++	struct hstate *h, *demote_hstate;
++	unsigned long demote_size;
++	unsigned int demote_order;
++	int nid;
++
++	demote_size = (unsigned long)memparse(buf, NULL);
++
++	demote_hstate = size_to_hstate(demote_size);
++	if (!demote_hstate)
++		return -EINVAL;
++	demote_order = demote_hstate->order;
++
++	/* demote order must be smaller than hstate order */
++	h = kobj_to_hstate(kobj, &nid);
++	if (demote_order >= h->order)
++		return -EINVAL;
++
++	/* resize_lock synchronizes access to demote size and writes */
++	mutex_lock(&h->resize_lock);
++	h->demote_order = demote_order;
++	mutex_unlock(&h->resize_lock);
++
++	return count;
++}
++HSTATE_ATTR(demote_size);
++
+ static struct attribute *hstate_attrs[] = {
+ 	&nr_hugepages_attr.attr,
+ 	&nr_overcommit_hugepages_attr.attr,
+@@ -3449,6 +3586,16 @@ static const struct attribute_group hstate_attr_group = {
+ 	.attrs = hstate_attrs,
+ };
+ 
++static struct attribute *hstate_demote_attrs[] = {
++	&demote_size_attr.attr,
++	&demote_attr.attr,
++	NULL,
++};
++
++static const struct attribute_group hstate_demote_attr_group = {
++	.attrs = hstate_demote_attrs,
++};
++
+ static int hugetlb_sysfs_add_hstate(struct hstate *h, struct kobject *parent,
+ 				    struct kobject **hstate_kobjs,
+ 				    const struct attribute_group *hstate_attr_group)
+@@ -3466,6 +3613,12 @@ static int hugetlb_sysfs_add_hstate(struct hstate *h, struct kobject *parent,
+ 		hstate_kobjs[hi] = NULL;
+ 	}
+ 
++	if (h->demote_order) {
++		if (sysfs_create_group(hstate_kobjs[hi],
++					&hstate_demote_attr_group))
++			pr_warn("HugeTLB unable to create demote interfaces for %s\n", h->name);
++	}
++
+ 	return retval;
+ }
+ 
+-- 
+2.31.1
 
