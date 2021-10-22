@@ -2,102 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A56B437AF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0005D437AFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhJVQeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:34:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40350 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhJVQeE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:34:04 -0400
-Date:   Fri, 22 Oct 2021 16:31:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634920306;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=6v61k7tjwWa46bRa3CV/1r1ipNhwUkoBuRqYqZtjPuY=;
-        b=uf+ZQutT3JhhK8o4bWl+k5Q4YIMMLjGtIglyrdyH/ZBGRKY19LFPWKD+/Ym91jfYc97wb9
-        FmWDn3VdXG2OcFukdn1fes8/co4tEmw5RLKrJdMsiBzR91Nu0lw9eQ0nYmY9mbHzFaTRKK
-        o9OiXcvRwBkIdW7UZR+NumEPOP/+mAdl1znkTngCfMPW9E/5Qjr3ccREwuq+oYpnledM7j
-        JUhrC3E1P86uLWoL2ykwBg+RBSmjUCIh1OTRqEgetRAU5r+RwHZcjajWlenuE0/zG4DFGL
-        Y9n7tnw11rE4lrNLZEfsNYRtkzGUZzzAU3cr+zso/eyx/jYzmwl68QbQAOKD2g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634920306;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=6v61k7tjwWa46bRa3CV/1r1ipNhwUkoBuRqYqZtjPuY=;
-        b=ZIl8eHIRh/TUQC41Cz6eecqh+TFssRDcACWjE3ITNN+3I//MaeE7AvmFKm8YvMoT79qx+D
-        4VkZwJixe+uWGsDw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched,x86: Fix L2 cache mask
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S233507AbhJVQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:36:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:56508 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhJVQgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:36:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EE7B1FB;
+        Fri, 22 Oct 2021 09:34:27 -0700 (PDT)
+Received: from [10.57.20.104] (unknown [10.57.20.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C82013F73D;
+        Fri, 22 Oct 2021 09:34:22 -0700 (PDT)
+Subject: Re: [PATCH 09/15] irq: arm: perform irqentry in entry code
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
+        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        maz@kernel.org, nickhu@andestech.com, palmer@dabbelt.com,
+        paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tglx@linutronix.de, torvalds@linux-foundation.org,
+        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
+References: <20211021180236.37428-1-mark.rutland@arm.com>
+ <20211021180236.37428-10-mark.rutland@arm.com>
+ <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
+ <20211022153602.GE86184@C02TD0UTHF1T.local>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <1dc39ac9-1a05-cf8d-2aef-633903a6338d@arm.com>
+Date:   Fri, 22 Oct 2021 17:34:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Message-ID: <163492030498.626.18148681011754446836.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20211022153602.GE86184@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On 10/22/21 4:36 PM, Mark Rutland wrote:
+> On Fri, Oct 22, 2021 at 04:18:18PM +0100, Vladimir Murzin wrote:
+>> Hi Mark,
+>>
+>> On 10/21/21 7:02 PM, Mark Rutland wrote:
+>>> +/*
+>>> + * TODO: restructure the ARMv7M entry logic so that this entry logic can live
+>>> + * in arch code.
+>>> + */
+>>> +asmlinkage void __exception_irq_entry
+>>> +static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+>>
+>> I'm seeing build time failure...
+>>
+>> drivers/irqchip/irq-nvic.c:50:8: error: two or more data types in declaration specifiers
+>>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+>>         ^~~~
+>> drivers/irqchip/irq-nvic.c:50:13: warning: 'nvic_handle_irq' defined but not used [-Wunused-function]
+>>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+>>
+>> I've fixed that locally and planing to give it a go...
+> 
+> Ah, whoops. I've removed the extraneous `static void` from
+> nvic_handle_irq() and build tested that as part of stm32_defconfig.
+> 
+> The updated version is in my irq/handle-domain-irq branch at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
+> 
 
-Commit-ID:     55409ac5c371c6403012d5f4df5e7c6cf0e7dce6
-Gitweb:        https://git.kernel.org/tip/55409ac5c371c6403012d5f4df5e7c6cf0e7dce6
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 22 Oct 2021 17:49:53 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 22 Oct 2021 18:21:28 +02:00
+$ cat /proc/interrupts
+           CPU0       
+ 16:         24  nvic_irq   4 Edge      mps2-clkevt
+ 17:          0  nvic_irq  32 Edge      mps2-uart-rx
+ 18:          6  nvic_irq  33 Edge      mps2-uart-tx
+ 19:          0  nvic_irq  47 Edge      mps2-uart-overrun
+Err:          0
 
-sched,x86: Fix L2 cache mask
+So if it helps feel free to add my 
 
-Currently AMD/Hygon do not populate l2c_id, this means that for SMT
-enabled systems they report an L2 per thread. This is ofcourse not
-true but was harmless so far.
+Tested-by: Vladimir Murzin <vladimir.murzin@arm.com> # ARMv7M
 
-However, since commit: 66558b730f25 ("sched: Add cluster scheduler
-level for x86") the scheduler topology setup requires:
+As for TODO, is [1] look something you have been thinking of? IIUC,
+the show stopper is that hwirq is being passed from exception entry
+which retrieved via xPSR (IPSR to be precise). OTOH hwirq also available
+via Interrupt Controller Status Register (ICSR) thus can be used in
+driver itself... I gave [1] a go and it runs fine, yet I admit I might
+be missing something...
 
-  SMT <= L2 <= LLC
+[1] 
 
-Which leads to noisy warnings and possibly weird behaviour on affected
-chips.
-
-Therefore change the topology generation such that if l2c_id is not
-populated it follows the SMT topology, thereby satisfying the
-constraint.
-
-Fixes: 66558b730f25 ("sched: Add cluster scheduler level for x86")
-Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- arch/x86/kernel/smpboot.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/v7m.h  |  3 ++-
+ arch/arm/kernel/entry-v7m.S | 10 +++-------
+ drivers/irqchip/Kconfig     |  1 +
+ drivers/irqchip/irq-nvic.c  | 21 +++++----------------
+ 4 files changed, 11 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 5094ab0..f80f459 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -470,9 +470,9 @@ static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+diff --git a/arch/arm/include/asm/v7m.h b/arch/arm/include/asm/v7m.h
+index b1bad30b15d2..f047629887e7 100644
+--- a/arch/arm/include/asm/v7m.h
++++ b/arch/arm/include/asm/v7m.h
+@@ -13,6 +13,7 @@
+ #define V7M_SCB_ICSR_PENDSVSET			(1 << 28)
+ #define V7M_SCB_ICSR_PENDSVCLR			(1 << 27)
+ #define V7M_SCB_ICSR_RETTOBASE			(1 << 11)
++#define V7M_SCB_ICSR_VECTACTIVE			0x000001ff
+ 
+ #define V7M_SCB_VTOR			0x08
+ 
+@@ -38,7 +39,7 @@
+ #define V7M_SCB_SHCSR_MEMFAULTENA		(1 << 16)
+ 
+ #define V7M_xPSR_FRAMEPTRALIGN			0x00000200
+-#define V7M_xPSR_EXCEPTIONNO			0x000001ff
++#define V7M_xPSR_EXCEPTIONNO			V7M_SCB_ICSR_VECTACTIVE
+ 
+ /*
+  * When branching to an address that has bits [31:28] == 0xf an exception return
+diff --git a/arch/arm/kernel/entry-v7m.S b/arch/arm/kernel/entry-v7m.S
+index 2e872a248e31..901c7cd1b1ce 100644
+--- a/arch/arm/kernel/entry-v7m.S
++++ b/arch/arm/kernel/entry-v7m.S
+@@ -72,14 +72,10 @@ __irq_entry:
+ 	@
+ 	@ Invoke the IRQ handler
+ 	@
+-	mrs	r0, ipsr
+-	ldr	r1, =V7M_xPSR_EXCEPTIONNO
+-	and	r0, r1
+-	sub	r0, #16
+-	mov	r1, sp
++	mov	r0, sp
+ 	stmdb	sp!, {lr}
+-	@ routine called with r0 = irq number, r1 = struct pt_regs *
+-	bl	nvic_handle_irq
++	@ routine called with r0 = struct pt_regs *
++	bl	generic_handle_arch_irq
+ 
+ 	pop	{lr}
+ 	@
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index aca7b595c4c7..b59a0bc0cd80 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -58,6 +58,7 @@ config ARM_NVIC
+ 	bool
+ 	select IRQ_DOMAIN_HIERARCHY
+ 	select GENERIC_IRQ_CHIP
++	select GENERIC_IRQ_MULTI_HANDLER
+ 
+ config ARM_VIC
+ 	bool
+diff --git a/drivers/irqchip/irq-nvic.c b/drivers/irqchip/irq-nvic.c
+index 63bac3f78863..52ff0ed19f2f 100644
+--- a/drivers/irqchip/irq-nvic.c
++++ b/drivers/irqchip/irq-nvic.c
+@@ -37,25 +37,13 @@
+ 
+ static struct irq_domain *nvic_irq_domain;
+ 
+-static void __nvic_handle_irq(irq_hw_number_t hwirq)
++static void __irq_entry nvic_handle_irq(struct pt_regs *regs)
  {
- 	int cpu1 = c->cpu_index, cpu2 = o->cpu_index;
+-	generic_handle_domain_irq(nvic_irq_domain, hwirq);
+-}
++	unsigned long icsr = readl_relaxed(BASEADDR_V7M_SCB + V7M_SCB_ICSR);
++	irq_hw_number_t hwirq =  (icsr & V7M_SCB_ICSR_VECTACTIVE) - 16;
  
--	/* Do not match if we do not have a valid APICID for cpu: */
-+	/* If the arch didn't set up l2c_id, fall back to SMT */
- 	if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
--		return false;
-+		return match_smt(c, o);
+-/*
+- * TODO: restructure the ARMv7M entry logic so that this entry logic can live
+- * in arch code.
+- */
+-asmlinkage void __exception_irq_entry
+-nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+-{
+-	struct pt_regs *old_regs;
  
- 	/* Do not match if L2 cache id does not match: */
- 	if (per_cpu(cpu_l2c_id, cpu1) != per_cpu(cpu_l2c_id, cpu2))
+-	irq_enter();
+-	old_regs = set_irq_regs(regs);
+-	__nvic_handle_irq(hwirq);
+-	set_irq_regs(old_regs);
+-	irq_exit();
++	generic_handle_domain_irq(nvic_irq_domain, hwirq);
+ }
+ 
+ static int nvic_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
+@@ -141,6 +129,7 @@ static int __init nvic_of_init(struct device_node *node,
+ 	for (i = 0; i < irqs; i += 4)
+ 		writel_relaxed(0, nvic_base + NVIC_IPR + i);
+ 
++	set_handle_irq(nvic_handle_irq);
+ 	return 0;
+ }
+ IRQCHIP_DECLARE(armv7m_nvic, "arm,armv7m-nvic", nvic_of_init);
+
+> Thanks,
+> Mark.
+> 
+
