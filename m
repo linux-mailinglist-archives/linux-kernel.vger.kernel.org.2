@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C4D437A32
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A29437A39
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhJVPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:42:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:56094 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233222AbhJVPms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:42:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2616D1FB;
-        Fri, 22 Oct 2021 08:40:30 -0700 (PDT)
-Received: from [10.57.27.181] (unknown [10.57.27.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E04DE3F694;
-        Fri, 22 Oct 2021 08:40:27 -0700 (PDT)
-Subject: Re: [RFCv1 4/4] perf: arm_spe: Dynamically switch PID tracing to
- contextidr
-From:   James Clark <james.clark@arm.com>
-To:     Leo Yan <leo.yan@linaro.org>
-References: <20211021134530.206216-1-leo.yan@linaro.org>
- <20211021134530.206216-5-leo.yan@linaro.org>
- <854fb1a2-e5f1-f237-685f-8ddb0557c98b@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-ID: <cb62ba81-0e86-c4d8-a5bb-65382db40ada@arm.com>
-Date:   Fri, 22 Oct 2021 16:40:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233488AbhJVPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhJVPoV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:44:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B17C061764;
+        Fri, 22 Oct 2021 08:42:03 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 15:41:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634917320;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z6v+eI27ai0ENftfCr+6DCRj3eKVY4o8rF9LTxcX3Rw=;
+        b=uvtlwUFqPLcOac+IxCTG/Gjj6SMl1ijoSHHKx+6uCl8zjSt5wW5okH5HVVEkPCuXr/VGBW
+        JTuEMV3P8ibX1FlSIRA1wX/fwaWfb/etlVGIqQL4c6N4LZSYG/tnJhYHECrOrspfIac47u
+        ljXteyx8zY9Duez8vc2xxTQvVE5C86xbUJFLRkZfEA6xzc4mV0kdctsUCY0TX/iKNVdd6N
+        lHucBUmw6h0YrZGV61C62kUdTEcfc09m/7/bejfH/aADKonRNqAwJrtttQYgZorKjoyX2i
+        w9s1gb581eRTM0L7+qyUc2yiPJIgwSbOaN1FLdi38tOHJWQmQqfWsgQOheqjEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634917321;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z6v+eI27ai0ENftfCr+6DCRj3eKVY4o8rF9LTxcX3Rw=;
+        b=2pF1iCXI8JsNYTC5mrIq7mxIsiz6Lbp7Twc5uMt+TKxxa2nC6wtRa6+LrytvtRrUFfzp6F
+        /aNhPMma197Fb1Aw==
+From:   "tip-bot2 for Peng Wang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/core: Remove rq_relock()
+Cc:     Peng Wang <rocking@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C449948fdf9be4764b3929c52572917dd25eef758=2E16346?=
+ =?utf-8?q?11953=2Egit=2Erocking=40linux=2Ealibaba=2Ecom=3E?=
+References: =?utf-8?q?=3C449948fdf9be4764b3929c52572917dd25eef758=2E163461?=
+ =?utf-8?q?1953=2Egit=2Erocking=40linux=2Ealibaba=2Ecom=3E?=
 MIME-Version: 1.0
-In-Reply-To: <854fb1a2-e5f1-f237-685f-8ddb0557c98b@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <163491731964.626.5567261652275466917.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the sched/core branch of tip:
 
+Commit-ID:     eaed27d0d01a89a510736d87f10cea02042b4756
+Gitweb:        https://git.kernel.org/tip/eaed27d0d01a89a510736d87f10cea02042b4756
+Author:        Peng Wang <rocking@linux.alibaba.com>
+AuthorDate:    Tue, 19 Oct 2021 10:58:39 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 22 Oct 2021 15:32:46 +02:00
 
-On 22/10/2021 16:36, James Clark wrote:
-> 
-> 
-> On 21/10/2021 14:45, Leo Yan wrote:
->> Now Arm64 provides API for enabling and disable PID tracing, Arm SPE
->> driver invokes these functions to dynamically enable it during
->> profiling when the program runs in root PID name space, and disable PID
->> tracing when the perf event is stopped.
->>
->> Device drivers should not depend on CONFIG_PID_IN_CONTEXTIDR for PID
->> tracing, so this patch uses the consistent condition for setting bit
->> EL1_CX for PMSCR.
-> 
-> Hi Leo,
-> 
-> I've been testing this change, but I'm seeing something strange. Not sure
-> if it's a problem on my side or not yet. With this command:
-> 
->  sudo ./perf record -vvv -e arm_spe//u -- taskset --cpu-list 1 bash -c ls
-> 
-> I'm only seeing 0 values for context:
-> 
->  sudo ./perf report -D | grep CONTEXT
-> 
-> .  00038dce:  65 00 00 00 00                                  CONTEXT 0x0 el2
-> .  00038e0e:  65 00 00 00 00                                  CONTEXT 0x0 el2
-> 
-> I added a printk to the function, and I see it print non zero values, although
-> there are some zero ones mixed in there too:
-> 
->  diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-> index 0c1669db19a1..8f0fb43a5fac 100644
-> --- a/arch/arm64/include/asm/mmu_context.h
-> +++ b/arch/arm64/include/asm/mmu_context.h
-> @@ -33,7 +33,8 @@ static inline void contextidr_thread_switch(struct task_struct *next)
->         if (!static_branch_unlikely(&contextidr_in_use))
->                 return;
->  
-> -       write_sysreg(task_pid_nr(next), contextidr_el1);
-> +       printk("Set %d\n", task_pid_nr(next));
-> +       write_sysreg(task_pid_nr(next), contextidr_el2);
+sched/core: Remove rq_relock()
 
-Ignore this second line change, that doesn't even compile. It's just the printk that I added.
+After the removal of migrate_tasks(), there is no user of
+rq_relock() left, so remove it.
 
+Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/449948fdf9be4764b3929c52572917dd25eef758.1634611953.git.rocking@linux.alibaba.com
+---
+ kernel/sched/sched.h | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index a00fc70..f0b249e 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1616,14 +1616,6 @@ rq_lock(struct rq *rq, struct rq_flags *rf)
+ }
+ 
+ static inline void
+-rq_relock(struct rq *rq, struct rq_flags *rf)
+-	__acquires(rq->lock)
+-{
+-	raw_spin_rq_lock(rq);
+-	rq_repin_lock(rq, rf);
+-}
+-
+-static inline void
+ rq_unlock_irqrestore(struct rq *rq, struct rq_flags *rf)
+ 	__releases(rq->lock)
+ {
