@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BE2437381
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14066437383
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhJVIN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhJVIN0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:13:26 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5D1C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:11:09 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id 3so885448ilq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=0zxPduS5IUlaKoDmCEn68k89T9YkKaQNgugxVbUHaKI=;
-        b=GGdgBOQtvNvxfsJh2TsW96uYKpw91htgcxE1tOSHEiKcuh6lEmmem5bEzIi4Ioqv2S
-         72hifp317DNQ3SK0eBOBVQjomWSsaeM5pTyirw/1QI2nAxk9CR6jEk4iEuymPCsYHFol
-         2MFcOQdQOjAyKG2JR/XZVjc6+gn9G6yoDKsOiujSPdFlaTyJIQTEDi4OxJI9eunfW85a
-         fLkXMPlftEZ1k+cho2AthupoYymWN5Abl/nqmdsuDzvwVJNeVqTJ3xnwpYZMfhwy/gfZ
-         edDE0Sih7+SBye8Avr61HRzyqdfkNMRWLBN92ruenu8P8hZlnxV8Q3sEAu0Obk25D16p
-         cJFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=0zxPduS5IUlaKoDmCEn68k89T9YkKaQNgugxVbUHaKI=;
-        b=5Bq6nhfXDl8nc44SI7cIY56Jh1WxYdY4s34AM0O7GZUjmj6Cu/+GjrKCUh/HLBpyIB
-         r070t5uggI6KDDplCgRo3p1vYRZOBUpyBmZKQUzOzB+ECcIdCSRfFHeWZj2w1kp2ZkQd
-         WGLYfj7VIDjcu1fD/l+zmcbg5LxEH3LjQz/ZGWO7W6gz7YOzXSyZN0+BpFQ9s+Kyph56
-         BbYLc/F2Kx1tgvBJ+7wvB3b8olOeweghaPGM87/GNpHemG/0G3ov5wVM99CjkbzBb2un
-         lMQqZBd8DxxSf6l1dt4I3VO1c/Nz6ywAwjaaDIS+lkWtqxGLQa4zSXE9+DqCcVCsYwNy
-         qf2Q==
-X-Gm-Message-State: AOAM531PsOZoKcKTIiZrv8yc8S5qeYIkVZ80YMIPbRP0XqmcmyZqGL5/
-        u1CEpeRYP5L8H7tolAwnCvrkesDeResBDwsg0w==
-X-Google-Smtp-Source: ABdhPJzHAid+YRlajAH8OpGNI6pQzds69vWWSCm/ryE+j/y0OPwgRowTrYPt+3aMaEgG6P93cVzRQstitQ45FRIR5kg=
-X-Received: by 2002:a05:6e02:eb3:: with SMTP id u19mr5610147ilj.44.1634890269226;
- Fri, 22 Oct 2021 01:11:09 -0700 (PDT)
+        id S232404AbhJVINl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:13:41 -0400
+Received: from relay.sw.ru ([185.231.240.75]:40394 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232380AbhJVINj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=eJF2bPLrfoGml4ORgOmoEHee/5o6h/70a4+fd/beNO0=; b=GJaMAcBDG07/QtFE6wl
+        YEZpKgkBqBSPGv34ZLajUt1kV7fCReA6AvcZ5N7R9P6/0/iLZTyJzFXjjDFwCeFY1HL0f1xK5O9ST
+        K6l8RBQzOdZpOZBPBqxkIP1Z3EC/kM3m2/rn+jY53Z7KY0/a91rdGQZKO3HP3dmnrqD7JoYsZmg=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdpe5-006oNB-E3; Fri, 22 Oct 2021 11:11:21 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH memcg v2 1/2] mm, oom: do not trigger out_of_memory from the
+ #PF
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
+ <cover.1634889066.git.vvs@virtuozzo.com>
+Message-ID: <91d9196e-842a-757f-a3f2-caeb4a89a0d8@virtuozzo.com>
+Date:   Fri, 22 Oct 2021 11:11:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Reply-To: tofilbamar@gmail.com
-Sender: shippinglinecompany46@gmail.com
-Received: by 2002:a02:b089:0:0:0:0:0 with HTTP; Fri, 22 Oct 2021 01:11:08
- -0700 (PDT)
-From:   Tofil Bama <tofilbamarn@gmail.com>
-Date:   Fri, 22 Oct 2021 01:11:08 -0700
-X-Google-Sender-Auth: KppAh1QUGORtsRTpyjLMNNA7Cy0
-Message-ID: <CAO8gpBku-NC-HHHUe4R2kApYbPdkt2RSD0-cbLCyPMtd9n58VQ@mail.gmail.com>
-Subject: GOOD NEWS.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1634889066.git.vvs@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+From: Michal Hocko <mhocko@suse.com>
 
-My name is Mr Tofil Bama, I am the Bill and Exchange assistant
-Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
-I discovered an abandoned sum of eighteen million three hundred
-thousand United State of American dollars (18.3MILLION USA DOLLARS)
-in an account that belongs to one of our foreign customer
-(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
-crashed into the Mediterranean Sea on 25th January 2010.
+Any allocation failure during the #PF path will return with VM_FAULT_OOM
+which in turn results in pagefault_out_of_memory. This can happen for
+2 different reasons. a) Memcg is out of memory and we rely on
+mem_cgroup_oom_synchronize to perform the memcg OOM handling or b)
+normal allocation fails.
 
-Since I got information about his death I have been expecting
-his next of kin to come over and claim his money because we
-cannot release it unless somebody applies for it as the next
-of kin or relation to the deceased as indicated in our banking
-guidelines, unfortunately we learnt that all his supposed next of
-kin or relation died alongside with him in the plane crash leaving
-nobody behind for the claim.
+The later is quite problematic because allocation paths already trigger
+out_of_memory and the page allocator tries really hard to not fail
+allocations. Anyway, if the OOM killer has been already invoked there
+is no reason to invoke it again from the #PF path. Especially when the
+OOM condition might be gone by that time and we have no way to find out
+other than allocate.
 
-It is therefore upon this discovery that I decided to make this
-business proposal to you and release the money to you as next of kin
-to the deceased for safety and subsequent disbursement since nobody
-is coming for the fund, it is 11 years now the money is lying pending
-in the account of our deceased and I don't want the money to go into
-the bank treasury as unclaimed bill.
+Moreover if the allocation failed and the OOM killer hasn't been
+invoked then we are unlikely to do the right thing from the #PF context
+because we have already lost the allocation context and restictions and
+therefore might oom kill a task from a different NUMA domain.
 
-You will be entitled with 40% of the total sum while 60% will be for
-me after which I will visit your Country to invest my own share when
-the fund is successfully transferred into your account, Please I would
-like you to keep this transaction confidential and as a top secret
-between me and you until we successfully achieve this golden
-opportunity.
+An allocation might fail also when the current task is the oom victim
+and there are no memory reserves left and we should simply bail out
+from the #PF rather than invoking out_of_memory.
 
-Yours sincerely,
-Mr Tofil Bama.
+This all suggests that there is no legitimate reason to trigger
+out_of_memory from pagefault_out_of_memory so drop it. Just to be sure
+that no #PF path returns with VM_FAULT_OOM without allocation print a
+warning that this is happening before we restart the #PF.
+
+[VvS: #PF allocation can hit into limit of cgroup v1 kmem controlle.
+This is a local problem related to memcg, however, it causes unnecessary
+global OOM kills that are repeated over and over again and escalate into
+a real disaster.  It was broken long time ago, most likely since
+6a1a0d3b625a ("mm: allocate kernel pages to the right memcg").
+In upstream the problem will be fixed by removing the outdated kmem limit,
+however stable and LTS kernels cannot do it and are still affected.
+This patch fixes the problem and should be backported into stable.]
+
+Fixes: 6a1a0d3b625a ("mm: allocate kernel pages to the right memcg")
+Cc: stable@vger.kernel.org
+
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ mm/oom_kill.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 831340e7ad8b..f98954befafb 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1120,27 +1120,24 @@ bool out_of_memory(struct oom_control *oc)
+ }
+ 
+ /*
+- * The pagefault handler calls here because it is out of memory, so kill a
+- * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
+- * killing is already in progress so do nothing.
++ * The pagefault handler calls here because some allocation has failed. We have
++ * to take care of the memcg OOM here because this is the only safe context without
++ * any locks held but let the oom killer triggered from the allocation context care
++ * about the global OOM.
+  */
+ void pagefault_out_of_memory(void)
+ {
+-	struct oom_control oc = {
+-		.zonelist = NULL,
+-		.nodemask = NULL,
+-		.memcg = NULL,
+-		.gfp_mask = 0,
+-		.order = 0,
+-	};
++	static DEFINE_RATELIMIT_STATE(pfoom_rs, DEFAULT_RATELIMIT_INTERVAL,
++				      DEFAULT_RATELIMIT_BURST);
+ 
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
+ 
+-	if (!mutex_trylock(&oom_lock))
++	if (fatal_signal_pending(current))
+ 		return;
+-	out_of_memory(&oc);
+-	mutex_unlock(&oom_lock);
++
++	if (__ratelimit(&pfoom_rs))
++		pr_warn("Huh VM_FAULT_OOM leaked out to the #PF handler. Retrying PF\n");
+ }
+ 
+ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+-- 
+2.32.0
+
