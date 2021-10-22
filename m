@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62CE437E89
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FDE437E8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbhJVTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233748AbhJVTYB (ORCPT
+        id S234033AbhJVTZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:25:10 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]:40583 "EHLO
+        mail-qk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233969AbhJVTZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:24:01 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD027C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:21:43 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id d3so5296794edp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6MIYbiqTAgOZcVD7o78/iMiC5v0PdYgNzQoieL1dnhA=;
-        b=NpDhMd+K20exoXtDQK8VxJJZx2jeiKfduhNixPkqDW3AhUt9xwYIfDXlKXTXwxZNO2
-         rNDgVo6Zt+p6dmQo5I+h/tgPznlF+wHZKxE1z8e+Cg4jyabcAJUUy8ldhvdjRTw7E0CK
-         ZCzjOxlNRUs2SJlFmk4Z3ttWsxuy0Et3Uj530=
+        Fri, 22 Oct 2021 15:25:08 -0400
+Received: by mail-qk1-f179.google.com with SMTP id x123so5613495qke.7;
+        Fri, 22 Oct 2021 12:22:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6MIYbiqTAgOZcVD7o78/iMiC5v0PdYgNzQoieL1dnhA=;
-        b=R0BSE22EsF1yEhF9/Wu0IAQ6AUsltxzS75Tfx7sSDTFMDbsT4M3I6w3RDBDUUbY+qS
-         Drdp+tojawsxcPpRXzyANJQ6F8/fkQBQ4UcKV4DtJkZIyhz45R2Iy6QL5UWKhIsm4ERC
-         D/20b+qG5ld4094w4Nl4UrXeF4P3HUemtIl0sPf0eG/DvIndcmYC8Yh9LB4k5+F8MDQ1
-         3X34NLBe4HxZME0p9QwHF7KFLJttNNMOus86NFFcKF5veVIoSFNYgMUqoI9WyUIphoo1
-         hPO/wyrq1Twcbxn74dMguDP+4CVo7T13ztIapfb/PATb+d0GurvG7SlDFCIAbXROspyq
-         ZvxQ==
-X-Gm-Message-State: AOAM531px6AtK+430tZ4O0LYG7+3CQ0zq7u5iSZ01ZuHChtyJzXYeUXV
-        PFOvkNwfTBZxm5V4iiM9wUbqUtEEegU7jCS29wg=
-X-Google-Smtp-Source: ABdhPJwOLz5hNo5wR5S3xPAAoNXyUkRj0HmSCIGokFF1mYNisiXCV1zsG/xoBsu9kOQL3HFKSyHztg==
-X-Received: by 2002:a17:906:5a47:: with SMTP id my7mr1731624ejc.128.1634930502014;
-        Fri, 22 Oct 2021 12:21:42 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id u4sm4067605ejc.19.2021.10.22.12.21.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 12:21:41 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id d3so5296611edp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:21:41 -0700 (PDT)
-X-Received: by 2002:a19:ad0c:: with SMTP id t12mr1362164lfc.173.1634930491229;
- Fri, 22 Oct 2021 12:21:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JcURMBS9Y8PdDJIxlTdxpTDoglZA5EDZMktU0Iw1H1o=;
+        b=mj4whCqmXBsHARp17EBvftyVmVUakeBGJM3Zc/3H+F39FZqfWUpDBwIQjabJSyZO2b
+         cCwA98Npsy2AKhU/rZXKuHj6Et4l2X4Kzm++4E2+6Ci5AV8r0sIFvniQudrhkCe0UuKh
+         P7seWQBnAgm+DG2ByPvmZ1FeDkfgXcz3nNb72P3FwRq/BXyk3Skm95Bnt7vZIbZVF3Ix
+         ZaTuQ5oF3pcr0L+S4u5Nh/KzvL8tLCli9FfX7JsEjKnGvkdnlj49SIVEcNwppuN7XTx2
+         8kekRCokeyMSzqbTK3LgOe8fD4Igf7dHQBZdfUFxVw+cOxkvB1adUHuorkxJR0l3dgUG
+         wmYQ==
+X-Gm-Message-State: AOAM531Hzeiqvv3Ni7qHEgUItpa9cwNE+3VLhXpaaUM5NAiSH2+UXBGi
+        emCpXYBeXfYSvWd+kWHQPYg=
+X-Google-Smtp-Source: ABdhPJwkV0a9KDG599gq/X+geXmTHTk4qkO+qX3DwxEkccPEdGPJJzljJVCeZhNMx2WeC35A2dVILA==
+X-Received: by 2002:a37:a809:: with SMTP id r9mr1692706qke.50.1634930570074;
+        Fri, 22 Oct 2021 12:22:50 -0700 (PDT)
+Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
+        by smtp.gmail.com with ESMTPSA id m6sm4557267qti.38.2021.10.22.12.22.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 12:22:49 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 15:22:47 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Dennis Zhou <dennis@kernel.org>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 1/2] percpu_ref: percpu_ref_tryget_live() version
+ holding RCU
+Message-ID: <YXMPh4jZ0dr6EFqX@fedora>
+References: <cover.1634822969.git.asml.silence@gmail.com>
+ <3066500d7a6eb3e03f10adf98b87fdb3b1c49db8.1634822969.git.asml.silence@gmail.com>
+ <YXFytAdeF5RPRERf@fedora>
+ <cdf7c768-47ad-78c4-a22a-f0f1a435b6f6@gmail.com>
 MIME-Version: 1.0
-References: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 22 Oct 2021 09:21:15 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjmx7+PD0hzWj5Bg2b807xYD2KCZApTvFje=ufo+MxBMQ@mail.gmail.com>
-Message-ID: <CAHk-=wjmx7+PD0hzWj5Bg2b807xYD2KCZApTvFje=ufo+MxBMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/53] fscache: Rewrite index API and management system
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Steve French <sfrench@samba.org>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Jeff Layton <jlayton@kernel.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        ceph-devel@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cdf7c768-47ad-78c4-a22a-f0f1a435b6f6@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 8:58 AM David Howells <dhowells@redhat.com> wrote:
->
-> David Howells (52):
->       fscache_old: Move the old fscache driver to one side
->       fscache_old: Rename CONFIG_FSCACHE* to CONFIG_FSCACHE_OLD*
->       cachefiles_old:  Move the old cachefiles driver to one side
+On Fri, Oct 22, 2021 at 10:22:30AM +0100, Pavel Begunkov wrote:
+> On 10/21/21 15:01, Dennis Zhou wrote:
+> > Hello,
+> > 
+> > On Thu, Oct 21, 2021 at 02:30:51PM +0100, Pavel Begunkov wrote:
+> > > Add percpu_ref_tryget_live_rcu(), which is a version of
+> > > percpu_ref_tryget_live() but the user is responsible for enclosing it in
+> > > a RCU read lock section.
+> > > 
+> > > Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> > > ---
+> > >   include/linux/percpu-refcount.h | 33 +++++++++++++++++++++++----------
+> > >   1 file changed, 23 insertions(+), 10 deletions(-)
+> > > 
+> [...]
+> > > +
+> > >   /**
+> > >    * percpu_ref_tryget_live - try to increment a live percpu refcount
+> > >    * @ref: percpu_ref to try-get
+> > 
+> > Nit: it's dumb convention at this point, but do you mind copying this
+> > guy up. I like consistency.
+> 
+> Looks Jens already took it. If you still want it moved, do you mind
+> it in a separate patch?
+> 
+> And I'm not sure I follow where you want it to be, currently it's
+> right before percpu_ref_tryget_live, which uses it.
 
-Honestly, I don't see the point of this when it ends up just being
-dead code basically immediately.
+Don't worry about it. I meant the @ref comment line. Honestly it's not
+really useful, it's just every other header block has that convention
+among most of percpu related files.
 
-You don't actually support picking one or the other at build time,
-just a hard switch-over.
+If I have to make any changes in the future, I'll clean it up then.
 
-That makes the old fscache driver useless. You can't say "use the old
-one because I don't trust the new". You just have a legacy
-implementation with no users.
+Thanks,
+Dennis
 
-              Linus
+> 
+> -- 
+> Pavel Begunkov
