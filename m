@@ -2,122 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0663443792D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8007B43792F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhJVOr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:47:28 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42889 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232825AbhJVOrX (ORCPT
+        id S233043AbhJVOss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:48:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232994AbhJVOsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:47:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 513645C0131;
-        Fri, 22 Oct 2021 10:45:05 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 22 Oct 2021 10:45:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:mime-version:content-type; s=
-        fm2; bh=Et6KZrcdZK6bzUf+xuIArNSukxz0R3kbny373GbNlNg=; b=JEPRB9mT
-        n2jxyb4o8h14YZe96Pc7sG05S6rQCjcXXlDyJjlDwUAwEY9sepj4baQxEuekafkp
-        Phss/z4QADcy5HzS2i17j1BI+BDHtQZxkFeCmOoPaG8lCWC7qWICdXlZmJtlgsZE
-        qwsEhjch6mX4yqrBkydAA3ZKZcJttD9Il+vXPyQ4ADaORfPH0/kzoSevRjGKnb8g
-        O19+UgXvfeOuxvDyp7cu2Gq1cT4NXObdN8KsTvZPaqyCgvcnjCZBW0k3zX91RwIf
-        YzX6D+TsyJJOl07AAI5WRYDzkryloFkuSr/Mg3GuVFHS4KYEtytgFjOqSPqGjpKL
-        +SKFSZoaaUT3lQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=Et6KZrcdZK6bzUf+xuIArNSukxz0R
-        3kbny373GbNlNg=; b=eD7CcMuklBlx+0I6iKhsogonHNAOCe7uBXkGPS50OTThe
-        +qcXSVNsYRL+EZybQG8P1iNZEXtVUpdVIhA587rm5O5i1XIuin25JJLI+D36IHgM
-        0mQCeaFo8qAdYjkD5zk6KQYZJ7cHPsiPt3sq23SBfGq9jM10OxEqgRtQbmLrIakP
-        BoADzpvrPe//Llt054HJPIY6gbKuBV5EneFn53TLVMfPzdeFAWDvVDG+MrH9mWEM
-        0zzEbnfEuAs1vUj2V9gA58oN3tkCd7HtqvvdZWBtF2vUnQfd10AQjHBSuS3r04Ay
-        3LoWlsqMssnAIQFEPbHPjE+fjuA4+KvMDghaxjqmg==
-X-ME-Sender: <xms:cc5yYRU5E7jt86x2Im1xX3ISDGjVfyynSVPoXSYHqqKPdyV9EqThTA>
-    <xme:cc5yYRlIysKdxpC3yUsvsN8W7CJxqpqqquMnDAjvzKmnQy0FAUymDuHWV2DctBTuQ
-    lYnjnQOrr4idA>
-X-ME-Received: <xmr:cc5yYdaAU8l-AMXyIhMYJnCmxma7S4jV0H04zNrH05znKLWLEEp3bw1024Sd5pMWraN5E2pDfSqZc2aqNiIsQZ6hfxqBotiu>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvkedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkgggtugesthdtredttd
-    dtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecu
-    ggftrfgrthhtvghrnhepvedugeeuffelgeekhfehtdefhfekffdtgedvteeitddvieduhf
-    ekheekueehleelnecuffhomhgrihhnpehkrhhorghhrdgtohhmpdhgihhthhhusgdrtgho
-    mhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
-    gvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:cc5yYUWLeVyJWtPet9rsuFU7jgi7Q_13pPBakQ61vftDnT3FBVgGWw>
-    <xmx:cc5yYbkOwAie3fm2ARr7gEcF1thxq6ZZyP-2kzops0NkwCKagq1K5g>
-    <xmx:cc5yYRcXc8jObN4DvafxtLX3f7NLzA_yAuVd4lor2d0gI8DJLf2qSw>
-    <xmx:cc5yYQzabi7DGdVgFy_a758VsDTlyFSXFvsLMf_9LaPMmS7TrDGfGA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Oct 2021 10:45:04 -0400 (EDT)
-Date:   Fri, 22 Oct 2021 16:44:53 +0200
-From:   Greg KH <greg@kroah.com>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: usbview 2.1 release
-Message-ID: <YXLOZSarSq5zPiUT@kroah.com>
+        Fri, 22 Oct 2021 10:48:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634913989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ztPsqRcoIIa+CSgH5e9hCCBkHfLlFSvImxfgvOSy78Y=;
+        b=Wb7EAV54f0rKn12pwCSB/F32AzRogbJrPF9sxgs2bFv5DBW2iZRvBXQDuq0L11Poy1Uz4G
+        4uq2NzLRj1Ng2+l6dhcMMbc2jJJ42lZkZyS4/pEgFXSobn3sddU0CR1t01H5SvBA8UeKm0
+        /jdKQ6Op3bfUeC1+R1x6EfGkrO6xiio=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-SHObPM6rPgaJCYZBDK8ZCA-1; Fri, 22 Oct 2021 10:46:26 -0400
+X-MC-Unique: SHObPM6rPgaJCYZBDK8ZCA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EC0581C464;
+        Fri, 22 Oct 2021 14:46:24 +0000 (UTC)
+Received: from starship (unknown [10.40.192.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 58D621017E28;
+        Fri, 22 Oct 2021 14:46:15 +0000 (UTC)
+Message-ID: <4a92e23fcdf9959d6f9bf2c8b6ef69a0c8662ee1.camel@redhat.com>
+Subject: Re: [PATCH v3 2/8] nSVM: introduce smv->nested.save to cache save
+ area fields
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 22 Oct 2021 17:46:14 +0300
+In-Reply-To: <20211011143702.1786568-3-eesposit@redhat.com>
+References: <20211011143702.1786568-1-eesposit@redhat.com>
+         <20211011143702.1786568-3-eesposit@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After 9 years, I figure it's about time for a new release of usbview, as
-some people still use it, and there's been some grumbling about a
-release by the distro packages that have to deal with it.
+On Mon, 2021-10-11 at 10:36 -0400, Emanuele Giuseppe Esposito wrote:
+> This is useful in next patch, to avoid having temporary
+> copies of vmcb12 registers and passing them manually.
+> 
+> Right now, instead of blindly copying everything,
+> we just copy EFER, CR0, CR3, CR4, DR6 and DR7. If more fields
+> will need to be added, it will be more obvious to see
+> that they must be added in struct vmcb_save_area_cached and
+> in nested_copy_vmcb_save_to_cache().
+> 
+> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 18 ++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c    |  1 +
+>  arch/x86/kvm/svm/svm.h    | 16 ++++++++++++++++
+>  3 files changed, 35 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index d2fe65e2a7a4..c4959da8aec0 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -313,6 +313,22 @@ void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
+>  	svm->nested.ctl.iopm_base_pa  &= ~0x0fffULL;
+>  }
+>  
+> +void nested_copy_vmcb_save_to_cache(struct vcpu_svm *svm,
+> +				    struct vmcb_save_area *save)
+> +{
+> +	/*
+> +	 * Copy only fields that are validated, as we need them
+> +	 * to avoid TOC/TOU races.
+> +	 */
+> +	svm->nested.save.efer = save->efer;
+> +	svm->nested.save.cr0 = save->cr0;
+> +	svm->nested.save.cr3 = save->cr3;
+> +	svm->nested.save.cr4 = save->cr4;
+> +
+> +	svm->nested.save.dr6 = save->dr6;
+> +	svm->nested.save.dr7 = save->dr7;
+> +}
+> +
+>  /*
+>   * Synchronize fields that are written by the processor, so that
+>   * they can be copied back into the vmcb12.
+> @@ -647,6 +663,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
+>  		return -EINVAL;
+>  
+>  	nested_load_control_from_vmcb12(svm, &vmcb12->control);
+> +	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
+>  
+>  	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
+>  	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
+> @@ -1385,6 +1402,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  
+>  	svm_copy_vmrun_state(&svm->vmcb01.ptr->save, save);
+>  	nested_load_control_from_vmcb12(svm, ctl);
+> +	nested_copy_vmcb_save_to_cache(svm, save);
 
-Nothing big in here, just loads of build configuration changes in order
-to keep the thing building properly within most modern Linux systems,
-and a few other small changes.  Full changelog is at the bottom of this
-email.
+This is wrong (and this is due to a very non obivous way SVM restores
+the nested state which I would like to rewrite.)
 
-Ideally in the future, this will move into the usbutils package, when I
-get some free time, and remove it from the need to access the debugfs
-file and take advantage of the extended device structure parsing that
-'lsusb' provides.
+On SVM we migrate L2's control area, and *L1's save* area inside a single vmcb
+while L2's save area is supposed to be migrated with regular KVM_SET_{S}REGS ioctls.
 
-The package can be downladed at:
-	http://www.kroah.com/linux/usb/usbview-2.1.tar.gz
-and the git tree can be found at:
-	http://github.com/gregkh/usbview
 
-thanks,
+So I think you want something like this instead:
 
-greg k-h
 
--------
-version 2.1
-        - build warnings fixed
-        - increased max number of interfaces allowed, fixing problem with some
-          USB sound devices.
-        - autogen.sh added
-        - LICENSES directory added and license moved to it
-        - SPDX license headers added
-        - policykit support added
-        - usbview.desktop: Add desktop file.
-        - usbview_icon.svg: Convert xpm bitmap icon into a scalable svg icon.
-        - configure.in configure.ac: Rename former to latter.
-        - autgen.sh, config.h.in: Remove in favour of "autoreconf --install".
-        - configure.ac, Makefile.am:
-          - Autotools tweaks and normalization.
-          - Don't include CPPFLAGS in AM_CPPFLAGS.
-          - Remove references to unset GLIB_CFLAGS and GLIB_LIBS in Makefile.am
-          - Reorder clauses to usual order.
-          - Remove obsolete comments.
-          - Add m4 quoting to configure.ac per autoconf documentation.
-          - VERSION belongs in config.h from configure.ac, not Makefile.am.
-          - Use AX_CFLAGS_WARN_ALL instead of custom code.
-          - Address "autoupdate" and "autoreconf --warn=all" output.
-          - Support (conditional) installation of icons, including bitmap
-            icons at various resolutions, and desktop file.
-          - remove NEWS, now unnecessary due to automake foreign option.
-        - Makefile.am, interface.c: Generate icon compiled into executable from scalable icon.
-        - .gitignore: Updates.
-        - ChangeLog: trim whitespace
-        - squelch compiler warning: examine fgets return value
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 4cd53a56f3ebc..fcb38b220e706 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1409,8 +1409,10 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 
+ 	if (is_guest_mode(vcpu))
+ 		svm_leave_nested(svm);
+-	else
++	else {
+ 		svm->nested.vmcb02.ptr->save = svm->vmcb01.ptr->save;
++		nested_copy_vmcb_save_to_cache(svm, svm->nested.vmcb02.ptr->save);
++	}
+ 
+ 	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
+
+
+Note two branches here. If we are already in guest mode (qemu currently doesn't set
+nested state while already in guest mode, but I added this to make this code
+more robust, then we leave it for a while, to make the following code assume correctly
+that we are not in guest mode, then it returns us back to the guest mode and never
+touches the save area of L2, thus its cache shouldn't update either.
+
+If we are in normal non guest mode, then as you see we just copy the whole L1
+save area to L2, because the assumption is that at least some L2 state is there,
+restored earlier (currently the result of KVM_SET_REGS), and after nested state
+is set, qemu then restores the regular L2 registers with KVM_SET_REGS,
+and other stuff like msrs.
+
+So at the point of this copying, we need to update the cache.
+
+
+
+
+>  
+>  	svm_switch_vmcb(svm, &svm->nested.vmcb02);
+>  	nested_vmcb02_prepare_control(svm);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 69639f9624f5..bf171f5f6158 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4386,6 +4386,7 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+>  			vmcb12 = map.hva;
+>  
+>  			nested_load_control_from_vmcb12(svm, &vmcb12->control);
+> +			nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
+
+This looks correct.
+
+>  
+>  			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12);
+>  			kvm_vcpu_unmap(vcpu, &map, true);
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index bd0fe94c2920..f0195bc263e9 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -103,6 +103,19 @@ struct kvm_vmcb_info {
+>  	uint64_t asid_generation;
+>  };
+>  
+> +/*
+> + * This struct is not kept up-to-date, and it is only valid within
+> + * svm_set_nested_state and nested_svm_vmrun.
+> + */
+> +struct vmcb_save_area_cached {
+> +	u64 efer;
+> +	u64 cr4;
+> +	u64 cr3;
+> +	u64 cr0;
+> +	u64 dr7;
+> +	u64 dr6;
+> +};
+> +
+>  struct svm_nested_state {
+>  	struct kvm_vmcb_info vmcb02;
+>  	u64 hsave_msr;
+> @@ -119,6 +132,7 @@ struct svm_nested_state {
+>  
+>  	/* cache for control fields of the guest */
+>  	struct vmcb_control_area ctl;
+> +	struct vmcb_save_area_cached save;
+>  
+>  	bool initialized;
+>  };
+> @@ -484,6 +498,8 @@ int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
+>  int nested_svm_exit_special(struct vcpu_svm *svm);
+>  void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
+>  				     struct vmcb_control_area *control);
+> +void nested_copy_vmcb_save_to_cache(struct vcpu_svm *svm,
+> +				  struct vmcb_save_area *save);
+>  void nested_sync_control_from_vmcb02(struct vcpu_svm *svm);
+>  void nested_vmcb02_compute_g_pat(struct vcpu_svm *svm);
+>  void svm_switch_vmcb(struct vcpu_svm *svm, struct kvm_vmcb_info *target_vmcb);
+
+Note that you need to rebase this and most other patches, due to changes (mostly mine, sorry)
+in the kvm/queue. Conflicts are mostly trivial though.
+
+
+Best regards,
+	Maxim Levitsky
+
 
