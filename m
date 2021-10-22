@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54A6436F20
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D550436F22
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbhJVAzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:55:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41052 "EHLO mail.kernel.org"
+        id S232338AbhJVAzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231518AbhJVAzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:55:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E5F06135E;
-        Fri, 22 Oct 2021 00:52:55 +0000 (UTC)
+        id S232392AbhJVAzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 20:55:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B166135E;
+        Fri, 22 Oct 2021 00:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634863975;
-        bh=G2mkaObv/DDOLgcvOrnbpu6yRRC9/tQfjayDG4k4r6s=;
+        s=k20201202; t=1634863978;
+        bh=mH7GdbWGt4HKolhZrvahIHWGiMTWStm6bmleErRylaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bp+KhjgaJAEpaWGljxELn9EblB0uUvmoIPPOznLYzU6X/rX8Va4xWIZ/GB8mjZ1Fn
-         mnj9Hycla1B8/FUUSpHNvK9rrDTvhdQS4btQH+4aiJO6HqpU9Ru79Z8KgRcRO3uWa7
-         0BkY8mLadXLo8bcDR6sVOsBgsmWrZdH6NiqqPDMSEpeMg8olZYVyf6r9ANW8+r/Ut7
-         Nidj341dEFIh3IVFYhFFz+fGwhnvUvMurUfzrxEGrReUceuCKhwru3cQnoKRAgXYMR
-         eCx+wkUTZgeB85XrGph6ixIkgE5pCdoVZVFPRUYy4oiOXRdX0zcOXprKcuhgkpjael
-         TDyXKGTsBgeEw==
+        b=PI307ggATI6Lj3AJra27XvUoy0evLCnu9VFMnrrvZ/N0TcDzGov5xbxIWA8ZUyZ5G
+         SMyRiBm+fD758cSxCHoWNM1tESAShCWYEd34eDbLSThU8luIZJpgDeDKCDiauH/Tpf
+         5AaiTVZSgeNAwcrnQ1PDiZ4tJ/HguyDcb2YFZjkkQb1M44MevtzRKs0VM/6mvFE9mi
+         tXfpFAUeKJYNHeZ/fBh56JCuyDGNjB7Bc9JTiQkh6mt8j3mn5w3GFNhAauWBDUKnBe
+         5GIvdGOY6qVfmtD4NyeOLByrczShpuodyG0gQPNP5IzKXEkmVLU0eRqZuPvlwJ8/5B
+         JUtGQdDrnszng==
 From:   Mark Brown <broonie@kernel.org>
-To:     =?UTF-8?q?Ma=C3=ADra=20Canal?= <maira.canal@usp.br>,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
-Subject: Re: [PATCH] regulator/tps62360: replacing legacy gpio interface for gpiod
-Date:   Fri, 22 Oct 2021 01:52:46 +0100
-Message-Id: <163486395941.2610269.6097860651019271717.b4-ty@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] regulator: Introduce UniPhier NX1 SoC support
+Date:   Fri, 22 Oct 2021 01:52:47 +0100
+Message-Id: <163486395941.2610269.5320640167922930528.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <YWxmL2baF5AdzyHv@fedora>
-References: <YWxmL2baF5AdzyHv@fedora>
+In-Reply-To: <1634520605-16583-1-git-send-email-hayashi.kunihiko@socionext.com>
+References: <1634520605-16583-1-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,11 +43,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Oct 2021 15:06:39 -0300, Maíra Canal wrote:
-> Removing all linux/gpio.h and linux/of_gpio.h dependencies and replacing
-> them with the gpiod interface.
+On Mon, 18 Oct 2021 10:30:03 +0900, Kunihiko Hayashi wrote:
+> This series includes the patches to add basic support for new UniPhier NX1
+> SoC. NX1 SoC also has the same kinds of controls as the other UniPhier
+> SoCs.
 > 
+> Kunihiko Hayashi (2):
+>   dt-bindings: regulator: uniphier: Add binding for NX1 SoC
+>   regulator: uniphier: Add USB-VBUS compatible string for NX1 SoC
 > 
+> [...]
 
 Applied to
 
@@ -52,8 +60,10 @@ Applied to
 
 Thanks!
 
-[1/1] regulator/tps62360: replacing legacy gpio interface for gpiod
-      commit: 6a8b5bb0f1350fc4cf398435a1119db12b0bd50e
+[1/2] dt-bindings: regulator: uniphier: Add binding for NX1 SoC
+      commit: 4c1ef56bd9c7a60efdeac9f1478b5467fb47c093
+[2/2] regulator: uniphier: Add USB-VBUS compatible string for NX1 SoC
+      commit: 32e84faa825e8bc6431186a41b68e0fcff857b72
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
