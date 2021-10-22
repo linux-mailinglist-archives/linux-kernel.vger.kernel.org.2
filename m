@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F97437376
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB981437377
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhJVIII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbhJVIIG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:08:06 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658AEC061348
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:05:49 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r10so194087wra.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LwLOjATYr16Reu88cmUIiFsuPl67ksCMcRHqfpd8xTg=;
-        b=byB4vm/duyudlBLRci0SgANJ0Wauf4h1mxCu9AeH943eO2VqyYEln2BOc8qI8NrEES
-         eXv2Fs8+MIZ41siPMuzbBtpWnKbFQGDSZfqgd5WK49TzTJiqeIq++RoGSBWyKeo374ac
-         t2xFjdSUvjpx97E5IxA/CjSjk+Q7f4SYZhSYYeZy5Jvtld6mHQsTliODHQE+y7ZiW9TX
-         wPcshckxpjxYl9cvaKGzMUrmUQPUWE/nDcKjvD6uSXKIXoyI/9bMxwwrr988txUvhXS3
-         GXA8O/RDETEG8HdL16v1hlsFTJ6xL5z/Kp9r9K/DFkJyUm6rAI9N6ZUs9bDijENN2vZA
-         7JQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LwLOjATYr16Reu88cmUIiFsuPl67ksCMcRHqfpd8xTg=;
-        b=H5uOS5EgTGtK3/U4gpuTHfvmtOonLHZpEzz8tBqAgvZLrtP2cUCgUZnOw5xXJAxxBl
-         Dl/qnEfJRqw7L8nltp1AwRf7XRplj1ETu1CFDPDybKSzjDlIyYiKtOgLWB5wAT1WQQVf
-         4RE0g+YgCy6P//vnn+7wqNBeprifbgNzsMsfdZ/msHG+3IWeCmYk5PIMrYWlGD7i6JYx
-         NTFXaIBqNU4qVDTLUdduMaTU14bJYYYDDw8p05OYxfvultF+Fq8k1JsDFvI1n7CARJfu
-         0v0qhaShyefANcK8gGVZpXRSduHsGfn2cp9sxIIz9XqKP2K6VBQtFrpgSw/SukPgteLO
-         UGsQ==
-X-Gm-Message-State: AOAM5327ufbjJzpdAhk3gmUsK3bXyHi03s2wGVaYC186JrzDKRBCsbzD
-        YiOnPV5WhvmnYswb5TLRxHmodQ==
-X-Google-Smtp-Source: ABdhPJy1gKz+t3xHUGfmL2xIDoRAS+7r13b/9+FPupmzbGivyUoJ3E//1yaY1pzMin2NHQFEyLUtSQ==
-X-Received: by 2002:a05:6000:156e:: with SMTP id 14mr9707827wrz.358.1634889947953;
-        Fri, 22 Oct 2021 01:05:47 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id l6sm7283123wmg.10.2021.10.22.01.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 01:05:47 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 09:05:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>, Wolfram Sang <wsa@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] mfd: tps80031: Remove driver
-Message-ID: <YXJw2fX42REHylOy@google.com>
-References: <20211021192258.21968-1-digetx@gmail.com>
- <20211021192258.21968-4-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211021192258.21968-4-digetx@gmail.com>
+        id S232343AbhJVIIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231923AbhJVIIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:08:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0DA9610C8;
+        Fri, 22 Oct 2021 08:06:28 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mdpZJ-000sJI-9D; Fri, 22 Oct 2021 09:06:25 +0100
+Date:   Fri, 22 Oct 2021 09:06:24 +0100
+Message-ID: <87pmrxbi0v.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Sven Peter <sven@svenpeter.dev>, iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Alexander Graf <graf@amazon.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Will Deacon <will@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: Re: [PATCH v3 4/6] iommu: Move IOMMU pagesize check to attach_device
+In-Reply-To: <106088e3-2928-dace-e1b6-e1e74ffec366@linux.intel.com>
+References: <20211019163737.46269-1-sven@svenpeter.dev>
+        <20211019163737.46269-5-sven@svenpeter.dev>
+        <9e25f2c0-d9d3-475d-e973-63be1891f9a5@linux.intel.com>
+        <8735ovdbcv.wl-maz@kernel.org>
+        <6a886030-cbc6-9e92-bf79-77b659da2915@linux.intel.com>
+        <87wnm6bxx2.wl-maz@kernel.org>
+        <106088e3-2928-dace-e1b6-e1e74ffec366@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: baolu.lu@linux.intel.com, sven@svenpeter.dev, iommu@lists.linux-foundation.org, robin.murphy@arm.com, arnd@kernel.org, marcan@marcan.st, linux-kernel@vger.kernel.org, graf@amazon.com, mohamed.mediouni@caramail.com, will@kernel.org, alyssa@rosenzweig.io
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021, Dmitry Osipenko wrote:
-
-> Driver was upstreamed in 2013 and never got a user, remove it.
+On Fri, 22 Oct 2021 03:52:38 +0100,
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/mfd/Kconfig          |  14 -
->  drivers/mfd/Makefile         |   1 -
->  drivers/mfd/tps80031.c       | 526 -----------------------------
->  include/linux/mfd/tps80031.h | 637 -----------------------------------
->  4 files changed, 1178 deletions(-)
->  delete mode 100644 drivers/mfd/tps80031.c
->  delete mode 100644 include/linux/mfd/tps80031.h
+> On 10/21/21 4:10 PM, Marc Zyngier wrote:
+> > On Thu, 21 Oct 2021 03:22:30 +0100,
+> > Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> >> 
+> >> On 10/20/21 10:22 PM, Marc Zyngier wrote:
+> >>> On Wed, 20 Oct 2021 06:21:44 +0100,
+> >>> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> >>>> 
+> >>>> On 2021/10/20 0:37, Sven Peter via iommu wrote:
+> >>>>> +	/*
+> >>>>> +	 * Check that CPU pages can be represented by the IOVA granularity.
+> >>>>> +	 * This has to be done after ops->attach_dev since many IOMMU drivers
+> >>>>> +	 * only limit domain->pgsize_bitmap after having attached the first
+> >>>>> +	 * device.
+> >>>>> +	 */
+> >>>>> +	ret = iommu_check_page_size(domain);
+> >>>>> +	if (ret) {
+> >>>>> +		__iommu_detach_device(domain, dev);
+> >>>>> +		return ret;
+> >>>>> +	}
+> >>>> 
+> >>>> It looks odd. __iommu_attach_device() attaches an I/O page table for a
+> >>>> device. How does it relate to CPU pages? Why is it a failure case if CPU
+> >>>> page size is not covered?
+> >>> 
+> >>> If you allocate a CPU PAGE_SIZE'd region, and point it at a device
+> >>> that now can DMA to more than what you have allocated because the
+> >>> IOMMU's own page size is larger, the device has now access to data it
+> >>> shouldn't see. In my book, that's a pretty bad thing.
+> >> 
+> >> But even you enforce the CPU page size check here, this problem still
+> >> exists unless all DMA buffers are PAGE_SIZE aligned and sized, right?
+> > 
+> > Let me take a CPU analogy: you have a page that contains some user
+> > data *and* a kernel secret. How do you map this page into userspace
+> > without leaking the kernel secret?
+> > 
+> > PAGE_SIZE allocations are the unit of isolation, and this applies to
+> > both CPU and IOMMU. If you have allocated a DMA buffer that is less
+> > than a page, you then have to resort to bounce buffering, or accept
+> > that your data isn't safe.
+> 
+> I can understand the problems when IOMMU page sizes is larger than CPU
+> page size. But the code itself is not clean. The vendor iommu drivers
+> know more hardware details than the iommu core. It looks odd that the
+> vendor iommu says "okay, I can attach this I/O page table to the
+> device", but the iommu core says "no, you can't" and rolls everything
+> back.
 
-> -static const struct i2c_device_id tps80031_id_table[] = {
-> -	{ "tps80031", TPS80031 },
-> -	{ "tps80032", TPS80032 },
-> -	{ }
-> -};
+If your IOMMU driver can do things behind the core's back and
+contradict the view that the core has, then it is probably time to fix
+your IOMMU driver and make the core aware of what is going on.
+Supported page sizes is one of these things.
 
-This is an I2C driver, right?
+In general, keeping the IOMMU driver as dumb as possible is a worthy
+design goal, and this is why we have these abstractions.
 
-I was under the impression that Linux could do auto-probing on I2C
-devices?  Such that they do not require platform code or DT in order
-to bind?
+	M.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Without deviation from the norm, progress is not possible.
