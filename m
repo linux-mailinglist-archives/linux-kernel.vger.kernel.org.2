@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28371437ED8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6B9437EDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhJVTwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232380AbhJVTwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:52:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59486610FF;
-        Fri, 22 Oct 2021 19:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634932201;
-        bh=jwMPmB0H7xo3mn8douB10ZBq+16xN4lZpM6uy8QxG9A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ISgo/73wtU88GuydGF1LrZFMivJ0v9w7eDKsbF13R6rIuFKACOZniNOzVV4X4B5oz
-         bhu4kLVHqflWTAxamJDBthxP69vENoXLgzwBVVenwlY5VB2KiGUc4LSaLTRBM0qnS+
-         oLtgVs7jFh4gQThFUztvQKXgthAEDH9CFs0mFtyl0NuKnwfgFdi3zHNepgEFkNmfDc
-         /v12+Y1rN2M6wM/L8I8tMIU8U+nTbGA5n9ZoVrAP6yI7hYKco1rgy0Mpe12wK7+P4q
-         HeqEFJh6HOakH/IfNmSKPwgZ+QV4qeHYZa1PY0aSHuVfPOGGBPi4ZDmwEhZ/UTTwXE
-         UsSPRZ3PRYXdg==
-Date:   Fri, 22 Oct 2021 20:49:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-Message-ID: <YXMV5Uhe4s2mMWZn@sirena.org.uk>
-References: <20211022140714.28767-1-jim2101024@gmail.com>
- <20211022140714.28767-2-jim2101024@gmail.com>
- <YXLPZ4CsQMjHPpJS@sirena.org.uk>
- <CA+-6iNz3PMsYDds_uoh_xNoPop-tLn1O9U9wnTmTx+pZyN5ZFA@mail.gmail.com>
+        id S233969AbhJVT52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:57:28 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:51065 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232291AbhJVT51 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 15:57:27 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MHXSD-1mQYEb2aZt-00DWRX for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021
+ 21:54:56 +0200
+Received: by mail-wr1-f45.google.com with SMTP id e12so87135wra.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:54:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532RgcPfsd3E10wah+hRNxHP8t1bxk3CMWN2U/7EOv2K5rt0TW8p
+        cj80uGqikkBIq7e+eSnPvcnubtFJPCnPbx/XCcs=
+X-Google-Smtp-Source: ABdhPJxaBoY+j7evAJR9nKHPeSqSpIWsO9lvFcI+piIA0yZoVJhYPemgz55zc/SnlURZX+C7pDp9Gk55MCbMvJ8lpW0=
+X-Received: by 2002:adf:e292:: with SMTP id v18mr2180860wri.369.1634932496330;
+ Fri, 22 Oct 2021 12:54:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/Bye8kAx8ud+gq9M"
-Content-Disposition: inline
-In-Reply-To: <CA+-6iNz3PMsYDds_uoh_xNoPop-tLn1O9U9wnTmTx+pZyN5ZFA@mail.gmail.com>
-X-Cookie: I program, therefore I am.
+References: <20211022010027.11866-1-leoyang.li@nxp.com>
+In-Reply-To: <20211022010027.11866-1-leoyang.li@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 22 Oct 2021 21:54:40 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a35adaG9OzWWFSvjJcQo+hEnEJuLCL-8je-m+78JfjWxQ@mail.gmail.com>
+Message-ID: <CAK8P3a35adaG9OzWWFSvjJcQo+hEnEJuLCL-8je-m+78JfjWxQ@mail.gmail.com>
+Subject: Re: [GIT PULL] soc/fsl drivers changes for fix(v5.15)
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Diana Craciun <diana.craciun@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:niigE9SUguy9iIEO+QBnEtiZsR3EvE1qxGPJk0C0G7bRSIGxYOj
+ PUu5kszQ1ozzgcemRqokmIBA9fL19nW/W7eUA/LJzhCz3Kjy9XpJ8KPNmkdEIvVmeHTQkxP
+ YwbEl7/RE/IHBYxctopNs80Vbrgcf9sYasYVwJriASJTfk9PI8flapsYiAtzn1c3OR9kRUf
+ fsKx5MlQtMWtWTiiVOt8A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+wFLdvmtpSU=:QDGytyCGudjfsTCnl21RBd
+ zk3IGoK8gfJ+n3MwteVQy1Cz13I/rMDQ0GfgZXuN+9nVsL54r55xQaezsa2BUW4HkMDgZ5uUC
+ f0dZc8Vhpf+AxVgKh3JvlNMJAViWq+AqYh1mSWbSduZXQzq+qLQL3mwKI0nb7kbxWAsIiM2wJ
+ +Mz8wDAJqPOrroMWb9ZdujkIUtWA6sIeTOiGt7M0VWhjS4b8/E496r9nYiJdU0yKdndtAe2Hr
+ KJoxYhpda2YrxXltNg8oZdNiARfPxwnSmF9cM4lED+DSxnZS8FdwiBoWy18dNQgBvUxUtKlxV
+ y44IErIS4t/If1ANFDlayommJC31dlaFq1ea+L4oGUTU6Y2BAlt3vkBC5T8FfadMNNTCTYdxS
+ /oalWipx/M9O/xYkurTlb4P7BCXHkeZ3WG2w7dQhSbMfxJUqWBEz8oG4+4Gma7V3HJeJEgYrB
+ iD9WfgHK+pfiVE+ZQ/Vxjif3zGgBTQOePCFAKjMPs60ebzqqlHhghtSxn9m6x/t7e8fEEFoF5
+ JLfZUZkZ4XfFux20Qyhz5dyOLJK3i7OsL97mmComwTSJOGQkRr6vT5Fcp18VVx8JnCS9b4gr3
+ d7Mxka3KRTns6CeCV9Y0MfGRI60QQ34tdz8aaTtLx/XaDE0mW2OU2XZn804GuGp9ZPgIboepg
+ Y+p/dMV6b24OXdzuVaiUtL7YI56eYxHrxZonP7Z9hKEreYVGtga/7l+Xwo35vWC7gyUg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 22, 2021 at 3:00 AM Li Yang <leoyang.li@nxp.com> wrote:
+> ----------------------------------------------------------------
+> NXP/FSL SoC driver fixes for v5.15
 
---/Bye8kAx8ud+gq9M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> - fix qbman alignment error in the virtualization context
 
-On Fri, Oct 22, 2021 at 03:24:50PM -0400, Jim Quinlan wrote:
+This patch looks very suspicious to me, I don't think it's generally safe to
+use memcpy_toio() on a normal pointer, as the __iomem tokens may
+be in a separate address range, even though this currently works
+on arm64. Adding the  (__iomem void *) cast without a comment that
+explains why it's added seems similarly wrong, and finally the
+changeset text does not seem to match what the code does:
 
-> Just to be clear, and assuming that the brcm-ep-[ab] supply names are
-> green-lighted by you and Rob, are you saying
-> I have to update the github site or our YAML file?  If the latter, it
-> seems odd to be describing
-> an EP-device property in the YAML for an RC driver since the github
-> site already describes the EP-device.
+According to the text, the pointer is to a virtual address mapped as
+"device memory" (i.e. PROT_DEVICE_nGnRE or PROT_DEVICE_nGnRnE),
+but the code suggests it's actually write-combining normal
+(PROT_NORMAL_NC).
 
-If you're extending the binding to have additional features beyond what
-the generic binding has then I'd expect something in the device specific
-binding.  This doesn't seem different to how controllers and devices for
-other buses frequently add properties on top of the generic properties
-for the bus.
+I don't see any discussion of this patch on the mailing list either, so
+please resend the pull request without this patch, while we try to figure
+out what the driver should actually be doing here.
 
---/Bye8kAx8ud+gq9M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFzFeUACgkQJNaLcl1U
-h9Dydgf9GDlnjcoBJeK+uP0hv76ds3RnTnpYLu/UsmaibCKXoH14KBs4M4BCKT1D
-yXcBk0yCXaFCFAGYfU2l1LT4V01/dFLs1SgEORIUyVYM/djKHIaSfCe2dIr+tzKH
-tAYZS2wZOLKUS/2TrAk14kUO7kYbz0CsoJzbpyALO7jpVbuBY1tvJAlsTlzgNiVo
-iLIb02PxJZdNC+8tD2eXLmWkEbABT5Slb3Y4U6lw61FWcpSaCreaVK04pBT6HyfK
-qHgOoWG0ERaagiiEdt1i/i5/AxUKVMShDxb/SqqAZIx5HFWhMtuqza4z1sLAx6Bv
-Svjh9CjaxOW9QnB+le6hZNEBIrp0IQ==
-=mHsy
------END PGP SIGNATURE-----
-
---/Bye8kAx8ud+gq9M--
+       Arnd
