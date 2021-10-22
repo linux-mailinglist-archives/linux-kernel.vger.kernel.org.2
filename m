@@ -2,146 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0723643736E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256EB437373
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhJVIFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:05:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34640 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhJVIFs (ORCPT
+        id S232336AbhJVIHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:07:44 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:41093 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhJVIHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:05:48 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 37FE92197F;
-        Fri, 22 Oct 2021 08:03:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634889810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HvhUhgJHwAx55o4YokA22XdtEWzDOauJw0wkGsftkJE=;
-        b=Ci7jMbyro7pQNwCkLt8dItkEIHsVqVyHs4jNAWucpPnB3LJ58r81yzRR7DWgn/zlVOC4th
-        lDfyRSuTDVMiwda1ZAD2UfB+0cbM9uVlafVhIiS9fyXrogMf4tGdQqLERlYFSXliPOhe5f
-        xC3Yg1khDW6b0OvksM2FGzhz0Nap7IE=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 22 Oct 2021 04:07:43 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 845CCA3B83;
-        Fri, 22 Oct 2021 08:03:29 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 10:03:29 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, david@redhat.com,
-        jannh@google.com, shakeelb@google.com, luto@kernel.org,
-        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
-References: <20211022014658.263508-1-surenb@google.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HbH2n6Vksz4xbL;
+        Fri, 22 Oct 2021 19:05:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634889924;
+        bh=y7UzlJGSOz7NbfAOaTJWKfNCqFzC+UB+thH/t9IZhp0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EJ3FGQiNmWQwIJJQuaiElVy/7wW40LC8x2h33RIiejYtx9wQ0MWk25x0dT7NyGLxi
+         kYt369kU9g0qpObuuixSZqKwGeGfEwKUFzWj3ZyBRrCIqJ9bYmH1+anysDFKAKsjAQ
+         vgCrA8CfD8zoiyjEsyEuQJoa7P1dUlEhCuROGa+bjHwFHFIcH5yv4olQ0FGXkrxOzU
+         cTNCXW0dCaqRJwOB7iJTwejwB9xgi0EqGXi1zvf0O6EZKrsxxDbZZEkbiK2weWtIyV
+         UQHLMmX01jbDb5lWxMZqGMTZvxglQ3wfGVSGhYIazVsuwvJ7Sjg/dckpSzhhmhffUm
+         WLq9v4G+gTLgw==
+Date:   Fri, 22 Oct 2021 19:05:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>, Arnd Bergmann <arnd@arndb.de>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memcg, kmem: mark cancel_charge() inline
+Message-ID: <20211022190521.4bb1ed8f@canb.auug.org.au>
+In-Reply-To: <20211022070542.679839-1-arnd@kernel.org>
+References: <20211022070542.679839-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022014658.263508-1-surenb@google.com>
+Content-Type: multipart/signed; boundary="Sig_/saRK=0Kvrkqc=N/ijlFU0At";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
-> Race between process_mrelease and exit_mmap, where free_pgtables is
-> called while __oom_reap_task_mm is in progress, leads to kernel crash
-> during pte_offset_map_lock call. oom-reaper avoids this race by setting
-> MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-> mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-> Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-> fix this race, however that would be considered a hack. Fix this race
-> by elevating mm->mm_users and preventing exit_mmap from executing until
-> process_mrelease is finished. Patch slightly refactors the code to adapt
-> for a possible mmget_not_zero failure.
-> This fix has considerable negative impact on process_mrelease performance
-> and will likely need later optimization.
+--Sig_/saRK=0Kvrkqc=N/ijlFU0At
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I am not sure there is any promise that process_mrelease will run in
-parallel with the exiting process. In fact the primary purpose of this
-syscall is to provide a reliable way to oom kill from user space. If you
-want to optimize process exit resp. its exit_mmap part then you should
-be using other means. So I would be careful calling this a regression.
+Hi all,
 
-I do agree that taking the reference count is the right approach here. I
-was wrong previously [1] when saying that pinning the mm struct is
-sufficient. I have completely forgot about the subtle sync in exit_mmap.
-One way we can approach that would be to take exclusive mmap_sem
-throughout the exit_mmap unconditionally. There was a push back against
-that though so arguments would have to be re-evaluated.
-
-[1] http://lkml.kernel.org/r/YQzZqFwDP7eUxwcn@dhcp22.suse.cz
-
-That being said
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
-> Fixes: 884a7e5964e0 ("mm: introduce process_mrelease system call")
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+On Fri, 22 Oct 2021 09:05:35 +0200 Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> cancel_charge() is no longer called for CONFIG_MEMCG_KMEM on NOMMU
+> targets, which causes a compiletime warning:
+>=20
+> mm/memcontrol.c:2774:13: error: unused function 'cancel_charge' [-Werror,=
+-Wunused-function]
+>=20
+> Remove the now-incorrect #ifdef and just mark the function
+> 'inline' like the other related helpers. This is simpler
+> and means we no longer have to match the #ifdef with the
+> caller.
+>=20
+> Fixes: 5f3345c17079 ("memcg, kmem: further deprecate kmem.limit_in_bytes")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  mm/oom_kill.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 831340e7ad8b..989f35a2bbb1 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -1150,7 +1150,7 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
->  	struct task_struct *task;
->  	struct task_struct *p;
->  	unsigned int f_flags;
-> -	bool reap = true;
-> +	bool reap = false;
->  	struct pid *pid;
->  	long ret = 0;
->  
-> @@ -1177,15 +1177,15 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
->  		goto put_task;
->  	}
->  
-> -	mm = p->mm;
-> -	mmgrab(mm);
-> -
-> -	/* If the work has been done already, just exit with success */
-> -	if (test_bit(MMF_OOM_SKIP, &mm->flags))
-> -		reap = false;
-> -	else if (!task_will_free_mem(p)) {
-> -		reap = false;
-> -		ret = -EINVAL;
-> +	if (mmget_not_zero(p->mm)) {
-> +		mm = p->mm;
-> +		if (task_will_free_mem(p))
-> +			reap = true;
-> +		else {
-> +			/* Error only if the work has not been done already */
-> +			if (!test_bit(MMF_OOM_SKIP, &mm->flags))
-> +				ret = -EINVAL;
-> +		}
->  	}
->  	task_unlock(p);
->  
-> @@ -1201,7 +1201,8 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
->  	mmap_read_unlock(mm);
->  
->  drop_mm:
-> -	mmdrop(mm);
-> +	if (mm)
-> +		mmput(mm);
->  put_task:
->  	put_task_struct(task);
->  put_pid:
-> -- 
-> 2.33.0.1079.g6e70778dc9-goog
+> The 5f3345c17079 commit is in -mm, so the commit ID is not
+> stable. Feel free to just fold this into the other patch, or
+> take out that reference
+> ---
+>  mm/memcontrol.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>=20
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6538595994d2..9edccfeac804 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2770,8 +2770,7 @@ static inline int try_charge(struct mem_cgroup *mem=
+cg, gfp_t gfp_mask,
+>  	return try_charge_memcg(memcg, gfp_mask, nr_pages);
+>  }
+> =20
+> -#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
+> -static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_page=
+s)
+> +static inline void cancel_charge(struct mem_cgroup *memcg, unsigned int =
+nr_pages)
+>  {
+>  	if (mem_cgroup_is_root(memcg))
+>  		return;
+> @@ -2780,7 +2779,6 @@ static void cancel_charge(struct mem_cgroup *memcg,=
+ unsigned int nr_pages)
+>  	if (do_memsw_account())
+>  		page_counter_uncharge(&memcg->memsw, nr_pages);
+>  }
+> -#endif
+> =20
+>  static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+>  {
+> --=20
+> 2.29.2
+>=20
 
--- 
-Michal Hocko
-SUSE Labs
+Added to linux-next today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/saRK=0Kvrkqc=N/ijlFU0At
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFycMEACgkQAVBC80lX
+0Gzniwf/fRSX+NHa237AJ7OKPkwZsfL3jn/JWcd7YuAmUyyr4bzm/lsfrLozQ8yh
+LTRdTkHPmBxKit3L+/nqFV6ugq3IjKirjQIU5fkrufA/yGzp9jS1m0MMep3T6Fuo
+FEVd8nFPDvgECH8/4dZ4YOi56u3y5c/gJnAsrLmAbtQ9Ywy2mFyRYhd/C1bB6OCF
+Gkg9/s9nIx3w5MkI/xAoY9ZT1U/i4RLdXZWEx+13qO11KjNm0ytJP+Sj/lMQVmiy
+zKpDl6LXARESzTvypv+NZ+KAHylKgk0MlpqV5Ysn9tDj1RkKex1Xysbdk0TahfHw
+1qptAdfizwEJce5gGxHyMvsv+ljl+g==
+=8ouZ
+-----END PGP SIGNATURE-----
+
+--Sig_/saRK=0Kvrkqc=N/ijlFU0At--
