@@ -2,58 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0C443779A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904E843779E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhJVM7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:59:15 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52396 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231356AbhJVM7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:59:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ngvl55BVglJNfhG958B3E7zNuug8mH7+G2ICcfvX7Gw=; b=m8n+Xy/27I0SjdMX3bXR9Mq27V
-        S83w6VQc3m/3YsSeDBP6IT0kuKQbasOGmV6C1tEtbYc9EbIM1v6SHeh1BjBbtUhaUhE/61zs00sSL
-        UbZD0sz5aj1MXSGCNK8N61fSkHDjkmvo6XZPRdKXHZA69FFcrZczl9du8F2FBSI59otc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mdu6N-00BNvh-55; Fri, 22 Oct 2021 14:56:51 +0200
-Date:   Fri, 22 Oct 2021 14:56:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: fec: defer probe if PHY on external MDIO bus is not
- available
-Message-ID: <YXK1E9LLDCfajzmR@lunn.ch>
-References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
- <YW7SWKiUy8LfvSkl@lunn.ch>
- <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
- <YXBk8gwuCqrxDbVY@lunn.ch>
- <c286107376a99ca2201db058e1973e2b2264e9fb.camel@ew.tq-group.com>
- <YXFh/nLTqvCsLAXj@lunn.ch>
- <7a478c1f25d2ea96ff09cee77d648e9c63b97dcf.camel@ew.tq-group.com>
+        id S232300AbhJVNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhJVNAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 09:00:39 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB18C061764;
+        Fri, 22 Oct 2021 05:58:21 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id ec8so1411791edb.6;
+        Fri, 22 Oct 2021 05:58:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sdVW3UDZwK61lxuEJ1bpro4jif3jQr2QR2HEc/tjWM8=;
+        b=EZ1t7Sxrf/AR2RQHe2Io3nofGIoyEMedxRDuXeZW3sRr0uYWY5LV8l75w5jLWDeeKI
+         6cUd6LvLAlhmgM6SdSDEu+jnanWNTQ1UKnOA7Z7OBVoa7OrePjcAZ+ZIm4hxzruOvBMe
+         Bgipn3FntDMtxHTqyfnE/3t2hoUimKKlB+6H3j5lzwTzgdrLDxMUhugew1Cls+CVSHrW
+         xd4RzkeB7gxreJVvZ/HFxgntg9KTtbiWQCe9zSKPFpTdVANPWLtXqHEF+24sU+sKad7m
+         JID86uGa09Ja5zlrFg4HV4wpUTxzUyqDxaGiV6VS8Ffl1G9RpXD6aWm9rTTztVTsHuTF
+         hAVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sdVW3UDZwK61lxuEJ1bpro4jif3jQr2QR2HEc/tjWM8=;
+        b=AI0umt+GwqeecYT0Ykq6yEuRytl/odbH691eb8nVdCqWdBQqm8uOK9dmCet5EFZN+D
+         UaH0zCF1FK8RrcEgiULZOeKY7bU6lheGbh89S3ScsSBCMjVFs3G8Tiu8jP0Ur9NnYA9f
+         fe7czaqeXEyPqAQRm1g1ae2RW03xdtOX77vJQQNIWNMRHXkHxqx6YSuedREjWPKx2JwC
+         StMh3dQxfWa4QV3uU1uX+BszbdFw2VxmDFYu5jVj83B2uboLP+8JaS7rEbxFBejRbGdD
+         ZvXZxOnyLO/xLblhVwQx+vreAb3BbR+FUJQiiUkonxtqwPcFPEEaESzGe3y86F/MrgBv
+         RBjA==
+X-Gm-Message-State: AOAM531ZtcZdcP/f2wJhOtVIvXkQeaGYY7pMXtRX20JYHbLK1lB1FnCU
+        Pll2KJboVF2VAq3BDQz3BTmKkTg2cgkHk/0clO4=
+X-Google-Smtp-Source: ABdhPJzI6SPafEiE4F549hcNejQttJOvb88iWUSJhYHI9dOlN/rKwPp3nG//aadx/SQnubpgY46qi3WPu+hgYtvYUpk=
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr14112090ejb.356.1634907500360;
+ Fri, 22 Oct 2021 05:58:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a478c1f25d2ea96ff09cee77d648e9c63b97dcf.camel@ew.tq-group.com>
+References: <20211019160401.8296-1-mario.limonciello@amd.com>
+In-Reply-To: <20211019160401.8296-1-mario.limonciello@amd.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Oct 2021 15:57:24 +0300
+Message-ID: <CAHp75VcoKYvbMpAmyDjkBtt1bL96RwSD0DYcb96hRO6n3aXe9A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ACPI: Add stubs for wakeup handler functions
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hmm, lots of network drivers? I tried to find an example, but all
-> drivers that generate -EPROBE_DEFER for missing PHYs at all don't have
-> an internal MDIO bus and thus avoid the circular dependency.
+On Tue, Oct 19, 2021 at 7:05 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
 
-Try drivers/net/dsa.
+Thanks! My comments below.
 
-These often have mdio busses which get registered and then
-unregistered. There are also IRQ drivers which do the same.
+> commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
 
-	Andrew
+The commit
+
+> added new functions for drivers to use during the s2idle wakeup path, but
+> didn't add stubs for when CONFIG_ACPI wasn't set.
+>
+> Add those stubs in for other drivers to be able to use.
+
+...
+
+> +static inline int acpi_register_wakeup_handler(
+> +       int wake_irq, bool (*wakeup)(void *context), void *context)
+
+A bit of a strange indentation. Can wake_irq be on the previous line?
+
+-- 
+With Best Regards,
+Andy Shevchenko
