@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AB2437317
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0252043731B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhJVHxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:53:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:50924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231773AbhJVHxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:53:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 651C21FB;
-        Fri, 22 Oct 2021 00:51:18 -0700 (PDT)
-Received: from e120189.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 554903F70D;
-        Fri, 22 Oct 2021 00:51:15 -0700 (PDT)
-From:   Pierre Gondois <Pierre.Gondois@arm.com>
-To:     Ionela.Voinescu@arm.com, Lukasz.Luba@arm.com,
-        Morten.Rasmussen@arm.com, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Dietmar.Eggemann@arm.com
-Subject: [PATCH v1] cpufreq: CPPC: Fix performance/frequency conversion
-Date:   Fri, 22 Oct 2021 08:50:57 +0100
-Message-Id: <20211022075057.10759-1-Pierre.Gondois@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S232154AbhJVH4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:56:01 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:55648 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhJVH4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:56:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634889223; x=1666425223;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=y+D2FT5j/LnL8Qi8aQ+TfjOl9CoE/Lrl6PtCtaRjKGg=;
+  b=H4QgZT9xpVpyP0p8zEZg6uuqCmCyyFmMC7tP3lWrIobmsYUDvpBLC90p
+   oX/eeW5NuZYXcIxDajOtkqhlan6nztEY1MMReDzrQoAOqKEQla1EyJRTs
+   idyV/DC/JuGhLw3Foz6nGIjpFZ20sz+ch1YtOLykYWROpmkBdm50QD8Ax
+   Gk8WjGf50Uk4nOZm/vCfGU3YrLnqwfvJQexDOQiGeAdr8AcITYQgqKjXn
+   OotNukvllbFitK0NPAZ34b9vsykZLrrNf+zr6uyWx2oP9VNBiLOvF7D3f
+   vq4ykCS7+DF2KkQnLNPKLHatreIIegq5xyNxqXRT5gk0bvgUUPo+82zGa
+   A==;
+IronPort-SDR: 9OpEuHiaqkKxHlZNKOn0MdTfU1kpWH1SRmNmjyHpOOr6EKaHUwnMz0Y83XpVwU5RzRzIYUx1Q6
+ WK+CXusf3hib6LAJ5wB5FpVkZGoigRwbnNlMyIG2nIeTAJdEOI/vw/jqvi/uwPe7YVnXuzR/iF
+ 9TtivW6wG1Q8WSNyYgpC20+19eXUKJJZZ4ukqWa3b53WYuEgogrRwc8KgkrwwGbWNLotS45uBe
+ +rQgBeRW8Ws3kLiQL/Y+L9CmVGUm8Ev2tA4hU4C4oF75BYYDNG+Cw406Nk6oNs5TTZPtk/Ma5B
+ tlaGHQ76YvJUlXdTvwZ6evcB
+X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
+   d="scan'208";a="149141099"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Oct 2021 00:53:42 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 22 Oct 2021 00:53:41 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 22 Oct 2021 00:53:38 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <jacopo@jmondi.org>, <laurent.pinchart@ideasonboard.com>,
+        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH 00/21] media: atmel: atmel-isc: implement media controller
+Date:   Fri, 22 Oct 2021 10:52:26 +0300
+Message-ID: <20211022075247.518880-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CPUfreq governors request CPU frequencies using information
-on current CPU usage. The CPPC driver converts them to
-performance requests. Frequency targets are computed as:
-  target_freq = (util / cpu_capacity) * max_freq
-target_freq is then clamped between [policy->min, policy->max].
+This series is a first attempt to support media controller in the atmel
+ISC and XISC drivers.
+This series also includes the csi2dc driver which was previously sent in a
+separate series:
+https://www.spinics.net/lists/linux-media/msg181042.html
+https://www.spinics.net/lists/linux-media/msg181044.html
+The driver now addresses comments received in latest v5 series from last year.
 
-The CPPC driver converts performance values to frequencies
-(and vice-versa) using cppc_cpufreq_perf_to_khz() and
-cppc_cpufreq_khz_to_perf(). These functions both use two different
-factors depending on the range of the input value. For
-cppc_cpufreq_khz_to_perf():
-- (NOMINAL_PERF / NOMINAL_FREQ) or
-- (LOWEST_PERF / LOWEST_FREQ)
-and for cppc_cpufreq_perf_to_khz():
-- (NOMINAL_FREQ / NOMINAL_PERF) or
-- ((NOMINAL_PERF - LOWEST_FREQ) / (NOMINAL_PERF - LOWEST_PERF))
+The series includes some minor changes and fixes that improve the isc common
+code base, like removing the enum frameintervals VIDIOC, fixing bytesperline
+for planar formats, etc.
 
-This means the functions are not inverse for some values:
-(perf_to_khz(khz_to_perf(x)) != x)
+Many thanks to folks from libcamera who helped a lot with understanding
+how a media controller driver should behave.
 
-This patch makes use of one single conversion factor, being
-(MAX_PERF / MAX_FREQ).
+Feedback is welcome !
 
-As LOWEST_FREQ is not used during conversion, the LOWEST_FREQ
-advertised through policy->cpuinfo.min_freq might be different
-from the LOWEST_FREQ value available in the CPPC object,
-but the conversion will be correct.
 
-Suggested-by: Lukasz Luba <lukasz.luba@arm.com>
-Suggested-by: Morten Rasmussen <morten.rasmussen@arm.com>
-Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
----
- drivers/cpufreq/cppc_cpufreq.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+Eugen Hristev (21):
+  MAINTAINERS: add microchip csi2dc
+  dt-bindings: media: atmel: csi2dc: add bindings for microchip csi2dc
+  media: atmel: introduce microchip csi2dc driver
+  MAINTAINERS: atmel-isc: add new file atmel-isc-clk.c
+  media: atmel: atmel-isc: split the clock code into separate source
+    file
+  media: atmel: atmel-isc: replace video device name with module name
+  media: atmel: atmel-sama7g5-isc: fix ispck leftover
+  media: atmel: atmel-isc-base: use streaming status when queueing
+    buffers
+  media: atmel: atmel-isc-base: remove frameintervals VIDIOC
+  media: atmel: atmel-isc-base: report frame sizes as full supported
+    range
+  media: atmel: atmel-isc-base: implement mbus_code support in enumfmt
+  media: atmel: atmel-isc-base: fix bytesperline value for planar
+    formats
+  MAINTAINERS: atmel-isc: add new file atmel-isc-mc.c
+  media: atmel: atmel-isc: implement media controller
+  ARM: dts: at91: sama7g5: add nodes for video capture
+  ARM: configs: at91: sama7: add xisc and csi2dc
+  ARM: multi_v7_defconfig: add atmel video pipeline modules
+  media: atmel: atmel-sama5d2-isc: fix wrong mask in YUYV format check
+  media: atmel: atmel-isc-base: use mutex to lock awb workqueue from
+    streaming
+  media: atmel: atmel-isc-base: add wb debug messages
+  media: atmel: atmel-isc-base: clamp wb gain coefficients
 
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index d4c27022b9c9..d2ac74e7701e 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -302,13 +302,10 @@ static u64 cppc_get_dmi_max_khz(void)
- }
- 
- /*
-- * If CPPC lowest_freq and nominal_freq registers are exposed then we can
-- * use them to convert perf to freq and vice versa
-- *
-- * If the perf/freq point lies between Nominal and Lowest, we can treat
-- * (Low perf, Low freq) and (Nom Perf, Nom freq) as 2D co-ordinates of a line
-- * and extrapolate the rest
-- * For perf/freq > Nominal, we use the ratio perf:freq at Nominal for conversion
-+ * The CPPC driver receives frequency requests and translates them to performance
-+ * requests. Thus, frequency values are actually performance values on a frequency
-+ * scale. The conversion is done as:
-+ * target_freq = target_perf * (nominal_freq / nominal_perf)
-  */
- static unsigned int cppc_cpufreq_perf_to_khz(struct cppc_cpudata *cpu_data,
- 					     unsigned int perf)
-@@ -317,14 +314,9 @@ static unsigned int cppc_cpufreq_perf_to_khz(struct cppc_cpudata *cpu_data,
- 	static u64 max_khz;
- 	u64 mul, div;
- 
--	if (caps->lowest_freq && caps->nominal_freq) {
--		if (perf >= caps->nominal_perf) {
--			mul = caps->nominal_freq;
--			div = caps->nominal_perf;
--		} else {
--			mul = caps->nominal_freq - caps->lowest_freq;
--			div = caps->nominal_perf - caps->lowest_perf;
--		}
-+	if (caps->nominal_freq) {
-+		mul = caps->nominal_freq;
-+		div = caps->nominal_perf;
- 	} else {
- 		if (!max_khz)
- 			max_khz = cppc_get_dmi_max_khz();
-@@ -341,14 +333,9 @@ static unsigned int cppc_cpufreq_khz_to_perf(struct cppc_cpudata *cpu_data,
- 	static u64 max_khz;
- 	u64  mul, div;
- 
--	if (caps->lowest_freq && caps->nominal_freq) {
--		if (freq >= caps->nominal_freq) {
--			mul = caps->nominal_perf;
--			div = caps->nominal_freq;
--		} else {
--			mul = caps->lowest_perf;
--			div = caps->lowest_freq;
--		}
-+	if (caps->nominal_freq) {
-+		mul = caps->nominal_perf;
-+		div = caps->nominal_freq;
- 	} else {
- 		if (!max_khz)
- 			max_khz = cppc_get_dmi_max_khz();
+ .../bindings/media/microchip,csi2dc.yaml      | 149 ++++
+ MAINTAINERS                                   |   9 +
+ arch/arm/boot/dts/sama7g5.dtsi                |  49 ++
+ arch/arm/configs/multi_v7_defconfig           |   3 +
+ arch/arm/configs/sama7_defconfig              |   2 +
+ drivers/media/platform/atmel/Kconfig          |  15 +
+ drivers/media/platform/atmel/Makefile         |   3 +-
+ drivers/media/platform/atmel/atmel-isc-base.c | 515 ++++---------
+ drivers/media/platform/atmel/atmel-isc-clk.c  | 316 ++++++++
+ drivers/media/platform/atmel/atmel-isc-mc.c   | 235 ++++++
+ drivers/media/platform/atmel/atmel-isc.h      |  33 +
+ .../media/platform/atmel/atmel-sama5d2-isc.c  |  16 +-
+ .../media/platform/atmel/atmel-sama7g5-isc.c  |  18 +-
+ .../media/platform/atmel/microchip-csi2dc.c   | 700 ++++++++++++++++++
+ 14 files changed, 1686 insertions(+), 377 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+ create mode 100644 drivers/media/platform/atmel/atmel-isc-clk.c
+ create mode 100644 drivers/media/platform/atmel/atmel-isc-mc.c
+ create mode 100644 drivers/media/platform/atmel/microchip-csi2dc.c
+
 -- 
-2.17.1
+2.25.1
 
