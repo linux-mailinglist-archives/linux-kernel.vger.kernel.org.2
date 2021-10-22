@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999F0437080
+	by mail.lfdr.de (Postfix) with ESMTP id E27AD437081
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhJVDha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S232740AbhJVDhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbhJVDh0 (ORCPT
+        with ESMTP id S232733AbhJVDho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:37:26 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C98DC061348
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:09 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id m21so2086359pgu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:09 -0700 (PDT)
+        Thu, 21 Oct 2021 23:37:44 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E899CC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:27 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u5so65587ljo.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tq9TCe4y+2LqaSR/LbffoUfOqYJ6qwVCCAjmIO9uNDk=;
-        b=itmmIgzvxM8wXh+qClv/FuIhUtp1Nm1143qNgs888P9h+1O1yy/7m6jy7pS2ZdYm7E
-         RXz0Gt2o+piigjSht0ERLCqpV9wq4YY0eMFNgb4xVtenegaLjeipk6T+G4EsH1e2qD1x
-         EYQwlw9vrtWJ/doggqlzwhSU0agNIWQCOM9B0=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BqT2MNgCMvC56gM6epqF9SynfFWqpGi6ijMkvCKV6ok=;
+        b=g723SQX6OS2aWzvqRjNGS8WOBk/fIGq4kYG2gc5mdB+aBXLC2sSPkNxwRTN0hLZwl+
+         ABpshxvj8GOZE3IRklzpBL+yToj0FOLQTTw2GCaMsdDL+PilAW87F4LgGipPQRS8RvdS
+         Fi6ljfqBb3Qwomd3jixWG5AnCmHnDXWdUJuJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tq9TCe4y+2LqaSR/LbffoUfOqYJ6qwVCCAjmIO9uNDk=;
-        b=z3FT3N2M4lOcOPY6Be9iKcVQ2WjJzxUo5/E1WihpLAOnubnWIHMOdnCMxwk5FzmIBx
-         kipKo8Fdfofm+eZiz3+6cnBSNKeenmCMDWMH49hVKtfVBN0MuSidvfz8W4GCOpIvI4vm
-         WWXdiShD7CtyB9T3OP1l1Q/SlCC34fXUIuOAckVq73MF0e7zx00L54Z1fT+O9/8EkcYo
-         1YYiEEkmnN9k1mH5MA4NPt77WW50YM84BHvC6ivjv3JDVw3YkBXXiNoSrARp8T+Dpjpx
-         pzgje8vI+ck57mLGLZ5VFnspH5Jv0cSAB9h76Y9Lbgu8PmjPJz5fiTZDABKUD21TlWXl
-         hzEA==
-X-Gm-Message-State: AOAM53008KqtKIhhTTOetdMsMnesFFhRO+zCseWR+K8yKjWlYOOmwyrT
-        n/5QURLJ2HETPZZyRtmzjLkDZTvibahuLg==
-X-Google-Smtp-Source: ABdhPJyxeuRxg63B7FyG23NoOKG14eUyr0a2vpGwzlC5uabse4lMnbVid3Jwws+S/HwS9oP844u1HA==
-X-Received: by 2002:a62:7850:0:b0:44c:5b71:2506 with SMTP id t77-20020a627850000000b0044c5b712506mr9697381pfc.37.1634873709085;
-        Thu, 21 Oct 2021 20:35:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m4sm26011pjl.11.2021.10.21.20.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 20:35:08 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 20:35:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Ingo Molnar <mingo@redhat.com>, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, mgorman@suse.de,
-        bristot@redhat.com,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, Michal Hocko <mhocko@suse.com>,
-        deller@gmx.de, Qi Zheng <zhengqi.arch@bytedance.com>, me@tobin.cc,
-        tycho@tycho.pizza, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        metze@samba.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>, guoren@kernel.org,
-        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, jonas@southpole.se,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>, hca@linux.ibm.com,
-        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
-Message-ID: <202110212033.D533BAF@keescook>
-References: <20211008235504.2957528-1-keescook@chromium.org>
- <f4b83c21-4e73-45b6-ae3a-17659be512c0@www.fastmail.com>
- <202110211310.634B74A@keescook>
- <08669c29-a19e-44a8-a53e-acfa773d4680@www.fastmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BqT2MNgCMvC56gM6epqF9SynfFWqpGi6ijMkvCKV6ok=;
+        b=msS+M3ypKTiTJHQb5gDzlomMhBAXbvUYz4Z0vRuKkhwbVG1IEQfDhOmxowP9eawwJc
+         eWZv+K5ut7vekqg4kXMCzvakwroyWGyJaU18c5mD1zVEBw9yu0sNF1V18VbSFfb4f0si
+         SPoQdJi4QCxYj0177R6haUsl7cqlQOpUFbGD1MiXavQHF2lXMcRq5sJSlbfcn/laaKyS
+         IROpo/FAm0mepBP3jQh6T7y3VLLmf5X9elUJAUYVpnSx03aXBq9bwzXGvakO+fEPV+to
+         Av43Z53AeWtqaE2ZMDGISrs++JLUUiJbrneezyJytswirywpqVSGq0WfUyN71Kq787Zc
+         qjww==
+X-Gm-Message-State: AOAM532BQBV2dpAkH/P4f1ROGf+9MX9cWbyMActWRlvlHoUlVeEg7EvM
+        c3FAuNvT6oNV9MCcMeniocOg32we38SJhu4H
+X-Google-Smtp-Source: ABdhPJwSDF6bNLWh+opqvOSKxCv2czCFjUgRWA3nA8MoAp5G7BqgPMnUvjk9Z5U3/sW4AhssaFSKYQ==
+X-Received: by 2002:a2e:870b:: with SMTP id m11mr10338946lji.92.1634873726019;
+        Thu, 21 Oct 2021 20:35:26 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id i1sm606977lfr.287.2021.10.21.20.35.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 20:35:24 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id r6so1870385ljg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:24 -0700 (PDT)
+X-Received: by 2002:a2e:a4b6:: with SMTP id g22mr3044840ljm.191.1634873724423;
+ Thu, 21 Oct 2021 20:35:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08669c29-a19e-44a8-a53e-acfa773d4680@www.fastmail.com>
+References: <877de6e589.fsf@disp2133>
+In-Reply-To: <877de6e589.fsf@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Oct 2021 17:35:08 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
+Message-ID: <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
+Subject: Re: [GIT PULL] ucount fixes for v5.15
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Rune Kleveland <rune.kleveland@infomedia.dk>,
+        Yu Zhao <yuzhao@google.com>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Antoine Martin <antoine@nagafix.co.uk>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 05:39:38PM -0700, Andy Lutomirski wrote:
-> 
-> 
-> On Thu, Oct 21, 2021, at 1:12 PM, Kees Cook wrote:
-> > On Thu, Oct 21, 2021 at 01:03:33PM -0700, Andy Lutomirski wrote:
-> >> 
-> >> 
-> >> On Fri, Oct 8, 2021, at 4:55 PM, Kees Cook wrote:
-> >> > This makes sure that wchan contains a sensible symbol when a process is
-> >> > blocked. Specifically this calls the sleep() syscall, and expects the
-> >> > architecture to have called schedule() from a function that has "sleep"
-> >> > somewhere in its name. For example, on the architectures I tested
-> >> > (x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
-> >> 
-> >> Is this really better than admitting that the whole mechanism is nonsense and disabling it?
-> >> 
-> >> We could have a fixed string for each task state and call it a day.
-> >
-> > I consider this to be "future work". In earlier discussions it came up,
-> > but there wasn't an obvious clean cost-free way to do this, so instead
-> > we're just fixing the broken corner and keeping the mostly working rest
-> > of it while cleaning up the weird edges. :)
-> 
-> True, but we have the caveat that wchan is currently broken, so in some sense we have an easier time killing it now as compared to later.  But if we don't have a fully-fleshed-out idea for how to kill it, then I'm fine with waiting.
+On Thu, Oct 21, 2021 at 6:04 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+>  kernel/cred.c                | 9 ++++-----
+>  security/keys/process_keys.c | 8 ++++++++
+>  2 files changed, 12 insertions(+), 5 deletions(-)
 
-It's not actually that broken. Only ORC was fully broken, so all the
-other architectures (and non-ORC x86) have been fine. But given the
-method of fixing ORC vs wchan, it turns out we could further clean up
-the other architectures. But yes, no real plan to remove it, but the
-current series fixes things pretty well. :)
+That's not remotely the right diffstat.
 
--Kees
+What's going on?
 
-> 
-> >
-> > -- 
-> > Kees Cook
+The shortlog was correct, and I pulled the branch, because everything
+else looked ok, but that diffstat in the pull request was some
+complete fantasy.
 
--- 
-Kees Cook
+If I were to guess, I think the diffstat may be everything _but_ that
+first ("ucounts: Fix signal ucount refcounting") fix. I just don't see
+how/why you'd get that as part of the pull request.
+
+                  Linus
+
+                     Linus
