@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25569437CC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A1A437CCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhJVSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:54:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41085 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231978AbhJVSyy (ORCPT
+        id S232514AbhJVS6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:58:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41070 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231978AbhJVS6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:54:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634928756;
+        Fri, 22 Oct 2021 14:58:07 -0400
+Message-ID: <20211022184540.581350173@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634928949;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tW1THt74zlEe0JuUHAuc3WzNTwwNynQeKBO1wEGMPGk=;
-        b=dQk+JBqP/CI2oRGIKyMOwoWWK+URmJ2cIxoELexdxuLa1iFv3A73M3zPNbbb9eiPfOmJfW
-        pZJ61HMEPlVJXbqnfKFGZt/DIAFLBUycggTZsgoccs+RKO9v6Eth9t93Lp0+P1NGAqap88
-        rHRQHY7qNWoP7unMtyGAfTuq7M6pVwA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-LwTXxwRMMRqR8zd0PjpeHQ-1; Fri, 22 Oct 2021 14:52:31 -0400
-X-MC-Unique: LwTXxwRMMRqR8zd0PjpeHQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DAC8802B4F;
-        Fri, 22 Oct 2021 18:52:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA62C60C04;
-        Fri, 22 Oct 2021 18:52:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
-References: <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com> <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk> <YXHntB2O0ACr0pbz@relinquished.localdomain>
-To:     Steve French <smfrench@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Omar Sandoval <osandov@osandov.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+gsBHgsTWzb3JlnUd8sVROYI0KvekQ22YBoQ0OW+bVQ=;
+        b=EcHlTptJK1R7Y6WaAxM4lYpY/K5vnaH3Hnio7mvjEJR4/QYRNcHKjiVWM12YlIk0OA3kOu
+        rhAV9eOIQSsa6o2KwU0QeLbKHW0IoGr1PCc8zSFxID/Jn1YQitOaBVUmTC2BzP7w8OZa8C
+        aek04wnXEWqHg1H0oew3l6SkT4BezHNn79UO03qr8pyOO1zm6yC7UhXNnxvIz7BJ5DdL8z
+        fdX1z0vKKjroPqfji1eVe6+mCtpTwApEoj0oPimLI6xCnInjW6IXy7UwFstDFy6TtNscNd
+        Boa9wpLQ947fDtGFH9VlVqGXSyBokJHkIZolq+Utb7y1p1A/Zp3kPfKLJlHKng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634928949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+gsBHgsTWzb3JlnUd8sVROYI0KvekQ22YBoQ0OW+bVQ=;
+        b=MUXjwNlSkahG6QtWZiNrMsZjNS6H9oRRPZ2bg2GF8gKCF28lkG/c1LBV7cN5OwiINtdn/3
+        /cmZFLdxUH7N3VAQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Liu, Jing2" <jing2.liu@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [patch V2 0/4] x86/fpu/kvm: Sanitize the FPU guest/user handling
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1037423.1634928738.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 22 Oct 2021 19:52:18 +0100
-Message-ID: <1037424.1634928738@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Fri, 22 Oct 2021 20:55:48 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steve French <smfrench@gmail.com> wrote:
-
-> On Thu, Oct 21, 2021 at 5:21 PM Omar Sandoval <osandov@osandov.com> wrot=
-e:
-> >
-> > On Mon, Oct 18, 2021 at 03:50:15PM +0100, David Howells wrote:
-> > However, with the advent of the tmpfile capacity in the VFS, an opport=
-unity
-> > arises to do invalidation much more easily, without having to wait for=
- I/O
-> > that's actually in progress: Cachefiles can simply cut over its file
-> > pointer for the backing object attached to a cookie and abandon the
-> > in-progress I/O, dismissing it upon completion.
-> =
-
-> Have changes been made to O_TMPFILE?  It is problematic for network
-> filesystems because it is not an atomic operation, and would be great if=
- it
-> were possible to create a tmpfile and open it atomically (at the file sy=
-stem
-> level).
-
-In this case, it's nothing to do with the network filesystem that's using =
-the
-cache per se.  Cachefiles is using tmpfiles on the backing filesystem, so =
-as
-long as that's, say, ext4, xfs or btrfs, it should work fine.  The backing
-filesystem also needs to support SEEK_HOLE and SEEK_DATA.
-
-I'm not sure I'd recommend putting your cache on a network filesystem.
-
-David
-
+Q3VycmVudGx5IEtWTSBhbGxvY2F0ZXMgdHdvIEZQVSBzdHJ1Y3RzIHdoaWNoIGFyZSB1c2VkIGZv
+ciBzYXZpbmcgdGhlIHVzZXIKc3RhdGUgb2YgdGhlIHZDUFUgdGhyZWFkIGFuZCByZXN0b3Jpbmcg
+dGhlIGd1ZXN0IHN0YXRlIHdoZW4gZW50ZXJpbmcKdmNwdV9ydW4oKSBhbmQgZG9pbmcgdGhlIHJl
+dmVyc2Ugb3BlcmF0aW9uIGJlZm9yZSBsZWF2aW5nIHZjcHVfcnVuKCkuCgpXaXRoIHRoZSBuZXcg
+ZnBzdGF0ZSBtZWNoYW5pc20gdGhpcyBjYW4gYmUgcmVkdWNlZCB0byBvbmUgZXh0cmEgYnVmZmVy
+IGJ5CnN3YXBwaW5nIHRoZSBmcHN0YXRlIHBvaW50ZXIgaW4gY3VycmVudDo6dGhyZWFkOjpmcHUu
+IFRoaXMgbWFrZXMgYWxzbyB0aGUKdXBjb21pbmcgc3VwcG9ydCBmb3IgQU1YIGFuZCBYRkQgc2lt
+cGxlciBiZWNhdXNlIHRoZW4gZnBzdGF0ZSBpbmZvcm1hdGlvbgooZmVhdHVyZXMsIHNpemVzLCB4
+ZmQpIGFyZSBhbHdheXMgY29uc2lzdGVudCBhbmQgaXQgZG9lcyBub3QgcmVxdWlyZSBhbnkKbmFz
+dHkgd29ya2Fyb3VuZHMuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBjbGVhbnMgdGhhdCB1cCBhbmQg
+cmVwbGFjZXMgdGhlIGN1cnJlbnQgc2NoZW1lIHdpdGggYQpzaW5nbGUgZ3Vlc3Qgc3RhdGUgd2hp
+Y2ggaXMgc3dpdGNoZWQgaW4gd2hlbiBlbnRlcmluZyB2Y3B1X3J1bigpIGFuZApzd2l0Y2hlZCBv
+dXQgYmVmb3JlIGxlYXZpbmcgaXQuCgpUaGUgcmV3b3JrIGlzIHZhbHVhYmxlIGV2ZW4gd2l0aG91
+dCBBTVgvWEZEIGJlY2F1c2UgaXQgY29uc3VtZXMgbGVzcyBtZW1vcnkKYW5kIHdoZW4gc3dhcHBp
+bmcgdGhlIGZwc3RhdGVzIHRoZXJlIGlzIG5vIG1lbW9yeSBjb3B5IHJlcXVpcmVkIHdoZW4KVElG
+X05FRURfTE9BRF9GUFUgaXMgc2V0IG9uIHRoZSBnb2luZyBvdXQgZnBzdGF0ZS4KClRoZSBzZXJp
+ZXMgaXMgYmFzZWQgb246CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2Vy
+bmVsL2dpdC90Z2x4L2RldmVsLmdpdCB4ODYvZnB1LTMKCmFuZCBhdmFpbGFibGUgZnJvbSBnaXQ6
+CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2Rl
+dmVsLmdpdCB4ODYvZnB1LTMta3ZtCgpWMSBjYW4gYmUgZm91bmQgaGVyZToKCiAgaHR0cHM6Ly9s
+b3JlLmtlcm5lbC5vcmcvci8yMDIxMTAxNzE1MTQ0Ny44Mjk0OTUzNjJAbGludXRyb25peC5kZQoK
+Q2hhbmdlcyB2cy4gVjE6CgogIERyb3AgdGhlIHJlc3RvcmVfbWFzayBhcmd1bWVudCBhcyB0aGUg
+cmVzdWx0IGlzIGNvbnN0YW50IGFueXdheSAtIFBhb2xvCgpUaGFua3MsCgoJdGdseAotLS0KIGlu
+Y2x1ZGUvYXNtL2ZwdS9hcGkuaCAgIHwgICAxOSArKysrKystLQogaW5jbHVkZS9hc20vZnB1L3R5
+cGVzLmggfCAgIDQ0ICsrKysrKysrKysrKysrKysrKy0KIGluY2x1ZGUvYXNtL2t2bV9ob3N0Lmgg
+IHwgICAgNyAtLS0KIGtlcm5lbC9mcHUvY29yZS5jICAgICAgIHwgIDExMSArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0KIGt2bS9zdm0vc3ZtLmMgICAgICAg
+ICAgIHwgICAgNyArLS0KIGt2bS94ODYuYyAgICAgICAgICAgICAgIHwgICA4OCArKysrKysrKysr
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogNiBmaWxlcyBjaGFuZ2VkLCAxNjQgaW5zZXJ0
+aW9ucygrKSwgMTEyIGRlbGV0aW9ucygtKQo=
