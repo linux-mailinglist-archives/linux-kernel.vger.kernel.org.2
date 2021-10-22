@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B40443776F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B02437793
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhJVM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:56:49 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:54480 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhJVM4q (ORCPT
+        id S233035AbhJVM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:58:14 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55842 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232862AbhJVM6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:56:46 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 5dd49476cd0eb2b1; Fri, 22 Oct 2021 14:54:27 +0200
-Received: from kreacher.localnet (unknown [213.134.175.233])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id D821B66A92E;
-        Fri, 22 Oct 2021 14:54:26 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] ACPI: Add stubs for wakeup handler functions
+        Fri, 22 Oct 2021 08:58:07 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M8o9P3015561;
+        Fri, 22 Oct 2021 14:55:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=2Cklww60Q60zoiXLscctpP7BlF1nmV/g12ZYeNXatR0=;
+ b=ef6vT5eNRYg7aQtwFGMMNdEnNjFeRaspUwMerN0nhs1o3w8iN0LClVkyIDJkkSNz84X5
+ OrZ7p/7S/EOxJmf9kigYd4Ulp2y4hJvKlAGyXX9Gip2U8pBWQXrtGICg05JHmilW/X7l
+ IaT1EgzMojE0WjQbF30vtAE9YwuaU9Qw2r6JfIDWIdUuK9m5bOw40JRZffeRKTHuEdZn
+ DWsmcU9hAntz8lW0/D3ExpqsWN0fw2u0VliESui6RCXznWvRPkfr3vdCyLTLbq2yvyAj
+ mKHv4nEQdPP4gEi1XCR9FLvRVip0WaC/+0Czskz1E2ckeic/6+WZ4mQntMWsv3xzwKvo jQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3but4y1f1a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 14:55:47 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 58C0D10002A;
+        Fri, 22 Oct 2021 14:55:47 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5145421FEAD;
+        Fri, 22 Oct 2021 14:55:47 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct 2021 14:55:46
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v6 10/10] rpmsg: core: send a ns announcement when a default endpoint is created
 Date:   Fri, 22 Oct 2021 14:54:26 +0200
-Message-ID: <2615562.mvXUDI8C0e@kreacher>
-In-Reply-To: <20211019160401.8296-1-mario.limonciello@amd.com>
-References: <20211019160401.8296-1-mario.limonciello@amd.com>
+Message-ID: <20211022125426.2579-11-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.233
-X-CLIENT-HOSTNAME: 213.134.175.233
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepvddufedrudefgedrudejhedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddvfeefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepmhgrrhhiohdrlhhimhhonhgtihgvlhhlohesrghmugdrtghomhdprhgtphhtthhopehlihhnuhhsrdifrghllhgvihhjsehlihhnrghrohdrohhrghdprhgtphhtthhopeeurghsrghvrghrrghjrdfprghtihhkrghrsegrmhgurdgtohhmpdhrtghpthhtohepufhhhigrmhdqshhunhgurghrrdfuqdhksegrmhgurdgtohhmpdhrtghpthhtoheplhhinhhugidqghhpihho
- sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheppfgvhhgrlhdqsggrkhhulhgthhgrnhgurhgrrdfuhhgrhhesrghmugdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_03,2021-10-22_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC: linux-acpi
+When a channel is created by user space application with the
+RPMSG_CREATE_DEV_IOCTL controls, a ns announcement has to be sent
+(depending on backend) to inform the remote side that a new service
+is available.
 
-On Tuesday, October 19, 2021 6:04:00 PM CEST Mario Limonciello wrote:
-> commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
-> added new functions for drivers to use during the s2idle wakeup path, but
-> didn't add stubs for when CONFIG_ACPI wasn't set.
-> 
-> Add those stubs in for other drivers to be able to use.
-> 
-> Fixes: ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  include/linux/acpi.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 72e4f7fd268c..b31bcc0f4c89 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -976,6 +976,14 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
->  	return -ENODEV;
->  }
->  
-> +static inline int acpi_register_wakeup_handler(
-> +	int wake_irq, bool (*wakeup)(void *context), void *context)
-> +{
-> +	return -EINVAL;
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ drivers/rpmsg/rpmsg_core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
--ENOTSUPP ?
-
-> +}
-> +static inline void acpi_unregister_wakeup_handler(
-> +	bool (*wakeup)(void *context), void *context) { }
-> +
->  #endif	/* !CONFIG_ACPI */
->  
->  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
-> 
-
-
-
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index 92557c49d460..4c0c605473c7 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -160,6 +160,7 @@ struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
+ 						struct rpmsg_channel_info chinfo)
+ {
+ 	struct rpmsg_endpoint *ept;
++	int err = 0;
+ 
+ 	if (WARN_ON(!rpdev))
+ 		return NULL;
+@@ -179,6 +180,16 @@ struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
+ 	rpdev->ept = ept;
+ 	rpdev->src = ept->addr;
+ 
++	if (rpdev->ops->announce_create)
++		err = rpdev->ops->announce_create(rpdev);
++	if (err) {
++		rpmsg_destroy_ept(ept);
++		rpdev->ept = NULL;
++		rpdev->src = RPMSG_ADDR_ANY;
++
++		return NULL;
++	}
++
+ 	return ept;
+ }
+ EXPORT_SYMBOL(rpmsg_create_default_ept);
+-- 
+2.17.1
 
