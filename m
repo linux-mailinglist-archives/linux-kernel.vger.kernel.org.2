@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF60437EE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78819437EE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhJVT6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbhJVT6t (ORCPT
+        id S234208AbhJVT6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:58:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41416 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234137AbhJVT6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:58:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC144C061764;
-        Fri, 22 Oct 2021 12:56:30 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 19:56:27 -0000
+        Fri, 22 Oct 2021 15:58:48 -0400
+Date:   Fri, 22 Oct 2021 19:56:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634932588;
+        s=2020; t=1634932589;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ymRUo9N14ExxaBx3oMZ+6FjY+N0b4MfbD5pygJwVS8g=;
-        b=Njes2g4sKdpjESEA4OSXZy1Wa37XsAV8/UOkyfpXijDt5HgmpV08K5t+KZaUBD20poDlRu
-        q8RYtL5PYO6bXJXadp0zOXfhF64DE7/qnoE54wqkl5ys+EWU6Q50gJhjE5kZbZDK27+4m4
-        VkEBXC5foSXYGOBbSETPxyKpxeDMQxi7OQLqz+Rr52JIuhOsYJiiNsjMzKFjrIvDXp5sB+
-        T16gcqWJzDnTimBFQR06baZNmJG9Z38gDxTVFa/MT10YRd5n3n2J0Qln/XVCGezEgCcm84
-        0I5oBrhtvyt1neS9/NnYfE2384XVAVwwZgOjCYllDoCVaYxMai0bDSLjVoy4TA==
+        bh=VwVjqz1FZ7wd4rZz16Q6a3ynBMR1rPYcB1WypxinLrE=;
+        b=OyZBTe7o3vbo9WABII3DKQpoiicu7O+93uGpk6MuyzBnAaB687HmsDk1fEshqGTB3wkobd
+        dAQ2LKoeHQ7ObKGcGB+Dz8Z+mW3cCP6irV74oprrrdiYdnOcqQjE6d4ll+oyuqJzyh51zc
+        HS0ssfkrOobwYBkhYLXhcGlAmyXNfCrqdovNBfNq3utRnfYhzQZWck18G63DsZr94wLkC3
+        YlEJc9tz4SVQjVCjURe2j+OEOwrR+R99n5gnv8QIQUOM4XAvSnRf4SZ9hM/9MqxeqiWCpG
+        t8fWsMKNkq9f+nptv9U7Z0ieXP50gxGdUlCxi93DJ/GxdMrbBVEQzPt8nKtNgA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634932588;
+        s=2020e; t=1634932589;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ymRUo9N14ExxaBx3oMZ+6FjY+N0b4MfbD5pygJwVS8g=;
-        b=I1BEosT1Itb73Ztqfrez5JKFG7qFxA/z1Aiq9rPg8eXi9SbzcT0upEJhDgbf03xxhw6iM5
-        +8ucrgFdeW55PLBg==
+        bh=VwVjqz1FZ7wd4rZz16Q6a3ynBMR1rPYcB1WypxinLrE=;
+        b=3otMOIygIaWuBfVHk3NKQkaE9fCstqOp3IByo//kpUSEUQmdpaC0D/pHzOm4T9GLz4fHas
+        ToJfEQWsMA5an6AQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Rework restore_regs_from_fpstate()
+Subject: [tip: x86/fpu] x86/fpu: Move xstate feature masks to fpu_*_cfg
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211014230739.461348278@linutronix.de>
-References: <20211014230739.461348278@linutronix.de>
+In-Reply-To: <20211014230739.352041752@linutronix.de>
+References: <20211014230739.352041752@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163493258725.626.17966444711717045433.tip-bot2@tip-bot2>
+Message-ID: <163493258889.626.1055664731706024145.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,163 +57,314 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     eda32f4f93b452c5fe3c352523e7f7cc085c8205
-Gitweb:        https://git.kernel.org/tip/eda32f4f93b452c5fe3c352523e7f7cc085c8205
+Commit-ID:     1c253ff2287fe31307a67938c4487936db967ff5
+Gitweb:        https://git.kernel.org/tip/1c253ff2287fe31307a67938c4487936db967ff5
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 15 Oct 2021 01:09:38 +02:00
+AuthorDate:    Fri, 15 Oct 2021 01:09:35 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 22 Oct 2021 11:09:15 +02:00
+CommitterDate: Thu, 21 Oct 2021 20:36:58 +02:00
 
-x86/fpu: Rework restore_regs_from_fpstate()
+x86/fpu: Move xstate feature masks to fpu_*_cfg
 
-xfeatures_mask_fpstate() is no longer valid when dynamically enabled
-features come into play.
-
-Rework restore_regs_from_fpstate() so it takes a constant mask which will
-then be applied against the maximum feature set so that the restore
-operation brings all features which are not in the xsave buffer xfeature
-bitmap into init state.
-
-This ensures that if the previous task used a dynamically enabled feature
-that the task which restores has all unused components properly initialized.
-
-Cleanup the last user of xfeatures_mask_fpstate() as well and remove it.
+Move the feature mask storage to the kernel and user config
+structs. Default and maximum feature set are the same for now.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211014230739.461348278@linutronix.de
+Link: https://lkml.kernel.org/r/20211014230739.352041752@linutronix.de
 ---
- arch/x86/include/asm/fpu/xstate.h | 27 +++++++--------------------
- arch/x86/kernel/fpu/context.h     |  6 +-----
- arch/x86/kernel/fpu/core.c        | 17 ++++++++++++++---
- arch/x86/kernel/fpu/xstate.c      |  2 +-
- 4 files changed, 23 insertions(+), 29 deletions(-)
+ arch/x86/include/asm/fpu/xstate.h | 10 ++---
+ arch/x86/kernel/fpu/core.c        |  4 +-
+ arch/x86/kernel/fpu/init.c        |  2 +-
+ arch/x86/kernel/fpu/signal.c      |  3 +-
+ arch/x86/kernel/fpu/xstate.c      | 57 +++++++++++++++---------------
+ 5 files changed, 38 insertions(+), 38 deletions(-)
 
 diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 3c890b9..61ae396 100644
+index 61fcb15..fe7c9af 100644
 --- a/arch/x86/include/asm/fpu/xstate.h
 +++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -78,30 +78,17 @@
+@@ -78,11 +78,9 @@
  				      XFEATURE_MASK_INDEPENDENT | \
  				      XFEATURE_MASK_SUPERVISOR_UNSUPPORTED)
  
--static inline u64 xfeatures_mask_supervisor(void)
--{
--	return fpu_kernel_cfg.max_features & XFEATURE_MASK_SUPERVISOR_SUPPORTED;
--}
+-extern u64 xfeatures_mask_all;
 -
- /*
-- * The xfeatures which are restored by the kernel when returning to user
-- * mode. This is not necessarily the same as xfeatures_mask_uabi() as the
-- * kernel does not manage all XCR0 enabled features via xsave/xrstor as
-- * some of them have to be switched eagerly on context switch and exec().
-+ * The feature mask required to restore FPU state:
-+ * - All user states which are not eagerly switched in switch_to()/exec()
-+ * - The suporvisor states
-  */
--static inline u64 xfeatures_mask_restore_user(void)
--{
--	return fpu_kernel_cfg.max_features & XFEATURE_MASK_USER_RESTORE;
--}
-+#define XFEATURE_MASK_FPSTATE	(XFEATURE_MASK_USER_RESTORE | \
-+				 XFEATURE_MASK_SUPERVISOR_SUPPORTED)
- 
--/*
-- * Like xfeatures_mask_restore_user() but additionally restors the
-- * supported supervisor states.
-- */
--static inline u64 xfeatures_mask_fpstate(void)
-+static inline u64 xfeatures_mask_supervisor(void)
+ static inline u64 xfeatures_mask_supervisor(void)
  {
--	return fpu_kernel_cfg.max_features & \
--		(XFEATURE_MASK_USER_RESTORE | XFEATURE_MASK_SUPERVISOR_SUPPORTED);
+-	return xfeatures_mask_all & XFEATURE_MASK_SUPERVISOR_SUPPORTED;
 +	return fpu_kernel_cfg.max_features & XFEATURE_MASK_SUPERVISOR_SUPPORTED;
  }
  
- static inline u64 xfeatures_mask_independent(void)
-diff --git a/arch/x86/kernel/fpu/context.h b/arch/x86/kernel/fpu/context.h
-index f8f5105..a06ebf3 100644
---- a/arch/x86/kernel/fpu/context.h
-+++ b/arch/x86/kernel/fpu/context.h
-@@ -61,8 +61,6 @@ static inline void fpregs_restore_userregs(void)
- 		return;
+ /*
+@@ -91,7 +89,7 @@ static inline u64 xfeatures_mask_supervisor(void)
+  */
+ static inline u64 xfeatures_mask_uabi(void)
+ {
+-	return xfeatures_mask_all & XFEATURE_MASK_USER_SUPPORTED;
++	return fpu_kernel_cfg.max_features & XFEATURE_MASK_USER_SUPPORTED;
+ }
  
- 	if (!fpregs_state_valid(fpu, cpu)) {
--		u64 mask;
--
- 		/*
- 		 * This restores _all_ xstate which has not been
- 		 * established yet.
-@@ -72,9 +70,7 @@ static inline void fpregs_restore_userregs(void)
- 		 * flush_thread(). So it is excluded because it might be
- 		 * not up to date in current->thread.fpu.xsave state.
- 		 */
--		mask = xfeatures_mask_restore_user() |
--			xfeatures_mask_supervisor();
--		restore_fpregs_from_fpstate(fpu->fpstate, mask);
-+		restore_fpregs_from_fpstate(fpu->fpstate, XFEATURE_MASK_FPSTATE);
+ /*
+@@ -102,7 +100,7 @@ static inline u64 xfeatures_mask_uabi(void)
+  */
+ static inline u64 xfeatures_mask_restore_user(void)
+ {
+-	return xfeatures_mask_all & XFEATURE_MASK_USER_RESTORE;
++	return fpu_kernel_cfg.max_features & XFEATURE_MASK_USER_RESTORE;
+ }
  
- 		fpregs_activate(fpu);
- 		fpu->last_cpu = cpu;
+ /*
+@@ -111,7 +109,7 @@ static inline u64 xfeatures_mask_restore_user(void)
+  */
+ static inline u64 xfeatures_mask_fpstate(void)
+ {
+-	return xfeatures_mask_all & \
++	return fpu_kernel_cfg.max_features & \
+ 		(XFEATURE_MASK_USER_RESTORE | XFEATURE_MASK_SUPERVISOR_SUPPORTED);
+ }
+ 
 diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 5acc077..0fb9def 100644
+index 69abf3a..501e21c 100644
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -150,6 +150,17 @@ void restore_fpregs_from_fpstate(struct fpstate *fpstate, u64 mask)
- 	}
- 
- 	if (use_xsave()) {
-+		/*
-+		 * Restoring state always needs to modify all features
-+		 * which are in @mask even if the current task cannot use
-+		 * extended features.
-+		 *
-+		 * So fpstate->xfeatures cannot be used here, because then
-+		 * a feature for which the task has no permission but was
-+		 * used by the previous task would not go into init state.
-+		 */
-+		mask = fpu_kernel_cfg.max_features & mask;
-+
- 		os_xrstor(&fpstate->regs.xsave, mask);
- 	} else {
- 		if (use_fxsr())
-@@ -161,7 +172,7 @@ void restore_fpregs_from_fpstate(struct fpstate *fpstate, u64 mask)
- 
- void fpu_reset_from_exception_fixup(void)
- {
--	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
-+	restore_fpregs_from_fpstate(&init_fpstate, XFEATURE_MASK_FPSTATE);
+@@ -349,8 +349,8 @@ void fpstate_reset(struct fpu *fpu)
+ 	/* Initialize sizes and feature masks */
+ 	fpu->fpstate->size		= fpu_kernel_cfg.default_size;
+ 	fpu->fpstate->user_size		= fpu_user_cfg.default_size;
+-	fpu->fpstate->xfeatures		= xfeatures_mask_all;
+-	fpu->fpstate->user_xfeatures	= xfeatures_mask_uabi();
++	fpu->fpstate->xfeatures		= fpu_kernel_cfg.default_features;
++	fpu->fpstate->user_xfeatures	= fpu_user_cfg.default_features;
  }
  
  #if IS_ENABLED(CONFIG_KVM)
-@@ -179,7 +190,7 @@ void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 58043ed..7074154 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -211,7 +211,7 @@ static void __init fpu__init_init_fpstate(void)
+ {
+ 	/* Bring init_fpstate size and features up to date */
+ 	init_fpstate.size		= fpu_kernel_cfg.max_size;
+-	init_fpstate.xfeatures		= xfeatures_mask_all;
++	init_fpstate.xfeatures		= fpu_kernel_cfg.max_features;
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index fab4403..c14f477 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -417,7 +417,8 @@ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 		u64 mask = user_xfeatures | xfeatures_mask_supervisor();
+ 
+ 		fpregs->xsave.header.xfeatures &= mask;
+-		success = !os_xrstor_safe(&fpregs->xsave, xfeatures_mask_all);
++		success = !os_xrstor_safe(&fpregs->xsave,
++					  fpu_kernel_cfg.max_features);
+ 	} else {
+ 		success = !fxrstor_safe(&fpregs->fxsave);
  	}
- 
- 	if (rstor) {
--		restore_mask &= xfeatures_mask_fpstate();
-+		restore_mask &= XFEATURE_MASK_FPSTATE;
- 		restore_fpregs_from_fpstate(rstor->fpstate, restore_mask);
- 	}
- 
-@@ -518,7 +529,7 @@ void fpu__clear_user_states(struct fpu *fpu)
- 	}
- 
- 	/* Reset user states in registers. */
--	restore_fpregs_from_init_fpstate(xfeatures_mask_restore_user());
-+	restore_fpregs_from_init_fpstate(XFEATURE_MASK_USER_RESTORE);
- 
- 	/*
- 	 * Now all FPU registers have their desired values.  Inform the FPU
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 9f92abd..cbba381 100644
+index 94f5e37..8b496c0 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -344,7 +344,7 @@ static void __init print_xstate_offset_size(void)
+@@ -62,12 +62,6 @@ static short xsave_cpuid_features[] __initdata = {
+ 	X86_FEATURE_ENQCMD,
+ };
+ 
+-/*
+- * This represents the full set of bits that should ever be set in a kernel
+- * XSAVE buffer, both supervisor and user xstates.
+- */
+-u64 xfeatures_mask_all __ro_after_init;
+-
+ static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
+ 	{ [ 0 ... XFEATURE_MAX - 1] = -1};
+ static unsigned int xstate_sizes[XFEATURE_MAX] __ro_after_init =
+@@ -84,7 +78,7 @@ static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] __ro_after_init
   */
- static __init void os_xrstor_booting(struct xregs_state *xstate)
+ int cpu_has_xfeatures(u64 xfeatures_needed, const char **feature_name)
  {
--	u64 mask = xfeatures_mask_fpstate();
-+	u64 mask = fpu_kernel_cfg.max_features & XFEATURE_MASK_FPSTATE;
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
- 	int err;
+-	u64 xfeatures_missing = xfeatures_needed & ~xfeatures_mask_all;
++	u64 xfeatures_missing = xfeatures_needed & ~fpu_kernel_cfg.max_features;
+ 
+ 	if (unlikely(feature_name)) {
+ 		long xfeature_idx, max_idx;
+@@ -134,7 +128,7 @@ static bool xfeature_is_supervisor(int xfeature_nr)
+  */
+ void fpu__init_cpu_xstate(void)
+ {
+-	if (!boot_cpu_has(X86_FEATURE_XSAVE) || !xfeatures_mask_all)
++	if (!boot_cpu_has(X86_FEATURE_XSAVE) || !fpu_kernel_cfg.max_features)
+ 		return;
+ 
+ 	cr4_set_bits(X86_CR4_OSXSAVE);
+@@ -144,7 +138,7 @@ void fpu__init_cpu_xstate(void)
+ 	 * managed by XSAVE{C, OPT, S} and XRSTOR{S}.  Only XSAVE user
+ 	 * states can be set here.
+ 	 */
+-	xsetbv(XCR_XFEATURE_ENABLED_MASK, xfeatures_mask_uabi());
++	xsetbv(XCR_XFEATURE_ENABLED_MASK, fpu_user_cfg.max_features);
+ 
+ 	/*
+ 	 * MSR_IA32_XSS sets supervisor states managed by XSAVES.
+@@ -157,7 +151,7 @@ void fpu__init_cpu_xstate(void)
+ 
+ static bool xfeature_enabled(enum xfeature xfeature)
+ {
+-	return xfeatures_mask_all & BIT_ULL(xfeature);
++	return fpu_kernel_cfg.max_features & BIT_ULL(xfeature);
+ }
+ 
+ /*
+@@ -183,7 +177,7 @@ static void __init setup_xstate_features(void)
+ 	xstate_sizes[XFEATURE_SSE]	= sizeof_field(struct fxregs_state,
+ 						       xmm_space);
+ 
+-	for_each_extended_xfeature(i, xfeatures_mask_all) {
++	for_each_extended_xfeature(i, fpu_kernel_cfg.max_features) {
+ 		cpuid_count(XSTATE_CPUID, i, &eax, &ebx, &ecx, &edx);
+ 
+ 		xstate_sizes[i] = eax;
+@@ -288,14 +282,14 @@ static void __init setup_xstate_comp_offsets(void)
+ 						     xmm_space);
+ 
+ 	if (!cpu_feature_enabled(X86_FEATURE_XSAVES)) {
+-		for_each_extended_xfeature(i, xfeatures_mask_all)
++		for_each_extended_xfeature(i, fpu_kernel_cfg.max_features)
+ 			xstate_comp_offsets[i] = xstate_offsets[i];
+ 		return;
+ 	}
+ 
+ 	next_offset = FXSAVE_SIZE + XSAVE_HDR_SIZE;
+ 
+-	for_each_extended_xfeature(i, xfeatures_mask_all) {
++	for_each_extended_xfeature(i, fpu_kernel_cfg.max_features) {
+ 		if (xfeature_is_aligned(i))
+ 			next_offset = ALIGN(next_offset, 64);
+ 
+@@ -319,7 +313,7 @@ static void __init setup_supervisor_only_offsets(void)
+ 
+ 	next_offset = FXSAVE_SIZE + XSAVE_HDR_SIZE;
+ 
+-	for_each_extended_xfeature(i, xfeatures_mask_all) {
++	for_each_extended_xfeature(i, fpu_kernel_cfg.max_features) {
+ 		if (!xfeature_is_supervisor(i))
+ 			continue;
+ 
+@@ -338,7 +332,7 @@ static void __init print_xstate_offset_size(void)
+ {
+ 	int i;
+ 
+-	for_each_extended_xfeature(i, xfeatures_mask_all) {
++	for_each_extended_xfeature(i, fpu_kernel_cfg.max_features) {
+ 		pr_info("x86/fpu: xstate_offset[%d]: %4d, xstate_sizes[%d]: %4d\n",
+ 			 i, xstate_comp_offsets[i], i, xstate_sizes[i]);
+ 	}
+@@ -401,7 +395,7 @@ static void __init setup_init_fpu_buf(void)
+ 	setup_xstate_features();
+ 	print_xstate_features();
+ 
+-	xstate_init_xcomp_bv(&init_fpstate.regs.xsave, xfeatures_mask_all);
++	xstate_init_xcomp_bv(&init_fpstate.regs.xsave, fpu_kernel_cfg.max_features);
+ 
+ 	/*
+ 	 * Init all the features state with header.xfeatures being 0x0
+@@ -570,7 +564,7 @@ static bool __init paranoid_xstate_size_valid(unsigned int kernel_size)
+ 	unsigned int size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
+ 	int i;
+ 
+-	for_each_extended_xfeature(i, xfeatures_mask_all) {
++	for_each_extended_xfeature(i, fpu_kernel_cfg.max_features) {
+ 		if (!check_xstate_against_struct(i))
+ 			return false;
+ 		/*
+@@ -724,7 +718,7 @@ static int __init init_xstate_size(void)
+  */
+ static void __init fpu__init_disable_system_xstate(unsigned int legacy_size)
+ {
+-	xfeatures_mask_all = 0;
++	fpu_kernel_cfg.max_features = 0;
+ 	cr4_clear_bits(X86_CR4_OSXSAVE);
+ 	setup_clear_cpu_cap(X86_FEATURE_XSAVE);
+ 
+@@ -768,13 +762,13 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+ 	 * Find user xstates supported by the processor.
+ 	 */
+ 	cpuid_count(XSTATE_CPUID, 0, &eax, &ebx, &ecx, &edx);
+-	xfeatures_mask_all = eax + ((u64)edx << 32);
++	fpu_kernel_cfg.max_features = eax + ((u64)edx << 32);
+ 
+ 	/*
+ 	 * Find supervisor xstates supported by the processor.
+ 	 */
+ 	cpuid_count(XSTATE_CPUID, 1, &eax, &ebx, &ecx, &edx);
+-	xfeatures_mask_all |= ecx + ((u64)edx << 32);
++	fpu_kernel_cfg.max_features |= ecx + ((u64)edx << 32);
+ 
+ 	if ((xfeatures_mask_uabi() & XFEATURE_MASK_FPSSE) != XFEATURE_MASK_FPSSE) {
+ 		/*
+@@ -783,7 +777,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+ 		 * booting without it.  This is too early to BUG().
+ 		 */
+ 		pr_err("x86/fpu: FP/SSE not present amongst the CPU's xstate features: 0x%llx.\n",
+-		       xfeatures_mask_all);
++		       fpu_kernel_cfg.max_features);
+ 		goto out_disable;
+ 	}
+ 
+@@ -792,14 +786,21 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+ 	 */
+ 	for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
+ 		if (!boot_cpu_has(xsave_cpuid_features[i]))
+-			xfeatures_mask_all &= ~BIT_ULL(i);
++			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+ 	}
+ 
+-	xfeatures_mask_all &= XFEATURE_MASK_USER_SUPPORTED |
++	fpu_kernel_cfg.max_features &= XFEATURE_MASK_USER_SUPPORTED |
+ 			      XFEATURE_MASK_SUPERVISOR_SUPPORTED;
+ 
++	fpu_user_cfg.max_features = fpu_kernel_cfg.max_features;
++	fpu_user_cfg.max_features &= XFEATURE_MASK_USER_SUPPORTED;
++
++	/* Identical for now */
++	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
++	fpu_user_cfg.default_features = fpu_user_cfg.max_features;
++
+ 	/* Store it for paranoia check at the end */
+-	xfeatures = xfeatures_mask_all;
++	xfeatures = fpu_kernel_cfg.max_features;
+ 
+ 	/* Enable xstate instructions to be able to continue with initialization: */
+ 	fpu__init_cpu_xstate();
+@@ -825,15 +826,15 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+ 	 * Paranoia check whether something in the setup modified the
+ 	 * xfeatures mask.
+ 	 */
+-	if (xfeatures != xfeatures_mask_all) {
++	if (xfeatures != fpu_kernel_cfg.max_features) {
+ 		pr_err("x86/fpu: xfeatures modified from 0x%016llx to 0x%016llx during init, disabling XSAVE\n",
+-		       xfeatures, xfeatures_mask_all);
++		       xfeatures, fpu_kernel_cfg.max_features);
+ 		goto out_disable;
+ 	}
+ 
+ 	print_xstate_offset_size();
+ 	pr_info("x86/fpu: Enabled xstate features 0x%llx, context size is %d bytes, using '%s' format.\n",
+-		xfeatures_mask_all,
++		fpu_kernel_cfg.max_features,
+ 		fpu_kernel_cfg.max_size,
+ 		boot_cpu_has(X86_FEATURE_XSAVES) ? "compacted" : "standard");
+ 	return;
+@@ -908,7 +909,7 @@ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
+ 	 * We should not ever be requesting features that we
+ 	 * have not enabled.
+ 	 */
+-	WARN_ONCE(!(xfeatures_mask_all & BIT_ULL(xfeature_nr)),
++	WARN_ONCE(!(fpu_kernel_cfg.max_features & BIT_ULL(xfeature_nr)),
+ 		  "get of unsupported state");
+ 	/*
+ 	 * This assumes the last 'xsave*' instruction to
