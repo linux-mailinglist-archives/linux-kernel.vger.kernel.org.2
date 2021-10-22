@@ -2,146 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168AF436ECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F64436ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhJVA1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbhJVA06 (ORCPT
+        id S232140AbhJVA3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:29:13 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]:43588 "EHLO
+        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbhJVA3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:26:58 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B427C061764;
-        Thu, 21 Oct 2021 17:24:41 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hb4qB2FYNz4xbP;
-        Fri, 22 Oct 2021 11:24:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634862278;
-        bh=4NUhw2kA9TTVCk0/qiwWdQNyoUtSrc/+RLv8jEzz2VA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Dqdsl5o79mLBy80YXoxWx7RgAMFwUUFQquou7LD/D6mJDfFV5Hcafw3t7gLZR7cTL
-         NC5WVv91dpIud2HNLLP6QTQny0+4bUhXFW/W0Zl7921sBAz7lcDQNG5PMDyYpje2Lq
-         3OVFZ3z6fDLM97IDy0egBklApbicKM9IM1c6GOYku01kBbD0J0l75r1bB75UM7FwF/
-         qdiWUuGM7EcK/POvodQO1bUSDs8v/zQ7lCUF95ghtbaOzopT86G/PTSqU4WAlAGgC1
-         xugJDpajw86dEHvlupBTMt6W1aSsJvHUF6xVgaxiQJienEb90fdV0gEcw1H70oZ3fa
-         FgyzgxxqD6LgA==
-Date:   Fri, 22 Oct 2021 11:24:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Maor Dickman <maord@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20211022112436.4c46b5a4@canb.auug.org.au>
+        Thu, 21 Oct 2021 20:29:12 -0400
+Received: by mail-qt1-f179.google.com with SMTP id r17so2129478qtx.10;
+        Thu, 21 Oct 2021 17:26:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HnL8LEaWnSsWA9HfguV8dZWptDtYCS/c4aEJvvgRowc=;
+        b=xvZ1aKPlRC2VhsexDgLd6S7Izt5/TLSMUzlNoEYlw1cSf6iq/EVyCQCxiw6OpYpPPU
+         n8Bz9bhmpSLJB0ot10WlWnymUAj/LxHzcVwZExDY7s6fPsVXdOsHbpVf/OidSvv5Hosd
+         oQfimZPjQuaDW8Tdlk8xaxsgx0cE+6vysG6CqynWJgw9yQCfo7AHJt6chnSuol0xBihZ
+         jYYHjpJ5+a3PO5kt3bPacjLV5W1ug67Kgxlp7AeHSCG1YWtNfIfrhQ3ZTO3bkUJt9Ig6
+         uw7Bfg/IG1TqKB+qUuxSOtJWjnxKTaKwaj5VyIb39KHLdR+ko5NQHT+4OsxKbwR3jqDq
+         uoBw==
+X-Gm-Message-State: AOAM5334pP8n6haho/+Nb5Xr0Er1BkGhWfdgKe3A9HGUDBSdfcIlVVv7
+        de2huhOtYL26DRXF6ZNvv16+mUV4oME=
+X-Google-Smtp-Source: ABdhPJwTkwVfVTOjzil2JYfRrKD8dEvrimjDlw75MEcwTbEa/T9j1YBmZMJ9RPtIvoP2yfXDPhWn9w==
+X-Received: by 2002:ac8:7d87:: with SMTP id c7mr672070qtd.413.1634862415456;
+        Thu, 21 Oct 2021 17:26:55 -0700 (PDT)
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com. [209.85.222.178])
+        by smtp.gmail.com with ESMTPSA id b127sm3312121qkg.42.2021.10.21.17.26.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 17:26:55 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id bp7so3035451qkb.12;
+        Thu, 21 Oct 2021 17:26:54 -0700 (PDT)
+X-Received: by 2002:a37:bd7:: with SMTP id 206mr7129325qkl.297.1634862414371;
+ Thu, 21 Oct 2021 17:26:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xZbKQyhHJP0aVX9i5lOgcaX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <b12e8c5c5d6ab3061d9504de8fbaefcad6bbc385.1629321668.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <b12e8c5c5d6ab3061d9504de8fbaefcad6bbc385.1629321668.git.christophe.jaillet@wanadoo.fr>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Thu, 21 Oct 2021 19:26:42 -0500
+X-Gmail-Original-Message-ID: <CADRPPNTHKuV9eernJS6ZV_+i-xtPXHQnS64GSx=ubwWE+nbLYw@mail.gmail.com>
+Message-ID: <CADRPPNTHKuV9eernJS6ZV_+i-xtPXHQnS64GSx=ubwWE+nbLYw@mail.gmail.com>
+Subject: Re: [PATCH] soc: fsl: guts: Fix a resource leak in the error handling
+ path of 'fsl_guts_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xZbKQyhHJP0aVX9i5lOgcaX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 18, 2021 at 4:23 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> If an error occurs after 'of_find_node_by_path()', the reference taken for
+> 'root' will never be released and some memory will leak.
 
-Hi all,
+Thanks for finding this.  This truly is a problem.
 
-After merging the net-next tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+>
+> Instead of adding an error handling path and modifying all the
+> 'return -SOMETHING' into 'goto errorpath', use 'devm_add_action_or_reset()'
+> to release the reference when needed.
+>
+> Simplify the remove function accordingly.
+>
+> As an extra benefit, the 'root' global variable can now be removed as well.
+>
+> Fixes: 3c0d64e867ed ("soc: fsl: guts: reuse machine name from device tree")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Compile tested only
+> ---
+>  drivers/soc/fsl/guts.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/soc/fsl/guts.c b/drivers/soc/fsl/guts.c
+> index d5e9a5f2c087..4d9476c7b87c 100644
+> --- a/drivers/soc/fsl/guts.c
+> +++ b/drivers/soc/fsl/guts.c
+> @@ -28,7 +28,6 @@ struct fsl_soc_die_attr {
+>  static struct guts *guts;
+>  static struct soc_device_attribute soc_dev_attr;
+>  static struct soc_device *soc_dev;
+> -static struct device_node *root;
+>
+>
+>  /* SoC die attribute definition for QorIQ platform */
+> @@ -136,14 +135,23 @@ static u32 fsl_guts_get_svr(void)
+>         return svr;
+>  }
+>
+> +static void fsl_guts_put_root(void *data)
+> +{
+> +       struct device_node *root = data;
+> +
+> +       of_node_put(root);
+> +}
+> +
+>  static int fsl_guts_probe(struct platform_device *pdev)
+>  {
+>         struct device_node *np = pdev->dev.of_node;
+>         struct device *dev = &pdev->dev;
+> +       struct device_node *root;
+>         struct resource *res;
+>         const struct fsl_soc_die_attr *soc_die;
+>         const char *machine;
+>         u32 svr;
+> +       int ret;
+>
+>         /* Initialize guts */
+>         guts = devm_kzalloc(dev, sizeof(*guts), GFP_KERNEL);
+> @@ -159,6 +167,10 @@ static int fsl_guts_probe(struct platform_device *pdev)
+>
+>         /* Register soc device */
+>         root = of_find_node_by_path("/");
+> +       ret = devm_add_action_or_reset(dev, fsl_guts_put_root, root);
+> +       if (ret)
+> +               return ret;
 
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:71:10: fatal error: lag.h: =
-No such file or directory
-   71 | #include "lag.h"
-      |          ^~~~~~~
-drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c:13:10: fatal error: lag=
-.h: No such file or directory
-   13 | #include "lag.h"
-      |          ^~~~~~~
+We probably only need to hold the reference when we do get "machine"
+from the device tree, otherwise we can put it directly.
 
-Caused by commit
+Or maybe we just maintain a local copy of string machine which means
+we can release the reference right away?
 
-  3d677735d3b7 ("net/mlx5: Lag, move lag files into directory")
-
-interacting with commit
-
-  14fe2471c628 ("net/mlx5: Lag, change multipath and bonding to be mutually=
- exclusive")
-
-from the net tree.
-
-I have applied the following merge fix patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 22 Oct 2021 11:10:06 +1100
-Subject: [PATCH] fixup for "net/mlx5: Lag, move lag files into directory"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c     | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-index b7461c17d601..d7e613d0139a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-@@ -10,8 +10,8 @@
- #include "en_tc.h"
- #include "rep/tc.h"
- #include "rep/neigh.h"
--#include "lag.h"
--#include "lag_mp.h"
-+#include "lag/lag.h"
-+#include "lag/mp.h"
-=20
- struct mlx5e_tc_tun_route_attr {
- 	struct net_device *out_dev;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/=
-ethernet/mellanox/mlx5/core/en_tc.c
-index 57369925a788..3af3da214a5b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -68,8 +68,8 @@
- #include "lib/fs_chains.h"
- #include "diag/en_tc_tracepoint.h"
- #include <asm/div64.h>
--#include "lag.h"
--#include "lag_mp.h"
-+#include "lag/lag.h"
-+#include "lag/mp.h"
-=20
- #define nic_chains(priv) ((priv)->fs.tc.chains)
- #define MLX5_MH_ACT_SZ MLX5_UN_SZ_BYTES(set_add_copy_action_in_auto)
---=20
-2.33.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xZbKQyhHJP0aVX9i5lOgcaX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFyBMQACgkQAVBC80lX
-0Gx6wAgAll/yy8LLkLU4O5II6DTo+w2fXiSiV2IQICe4Q5067JiX8MtHcbcJPsU2
-sIDB5qnH0pcw8/uL/TrVyF8cthtBPRCXRfIzjgOWxN5/aTp35NAuM6LCQopzbuFu
-8CXCqYEQoCqaKpa3BkWnyGW1ZRSxxHJVr4r1wC9PdmC4yaurpogz2MHwDIHoFufw
-XbN7k+m43PFOiwnGFwlqgsal4eC++BvEN1c2dSBjBSswS6dXJbJdhAT6LaEUh4Xk
-Y4SSFMv6cYLCgp7s2cn1cOR7ZhelveuujFSUJl9o9/QnB6fji/WLfUeCjAVTIvyN
-oWAquJRJGlubM2ezgv5IBx8xvhCFzQ==
-=BJR/
------END PGP SIGNATURE-----
-
---Sig_/xZbKQyhHJP0aVX9i5lOgcaX--
+> +
+>         if (of_property_read_string(root, "model", &machine))
+>                 of_property_read_string_index(root, "compatible", 0, &machine);
+>         if (machine)
+> @@ -197,7 +209,7 @@ static int fsl_guts_probe(struct platform_device *pdev)
+>  static int fsl_guts_remove(struct platform_device *dev)
+>  {
+>         soc_device_unregister(soc_dev);
+> -       of_node_put(root);
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.30.2
+>
