@@ -2,77 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C755437743
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55C6437757
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhJVMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:42:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231406AbhJVMmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8FC06109E;
-        Fri, 22 Oct 2021 12:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634906414;
-        bh=2Z+o2+30mNg914LIaZtsCZnmUOKwHnVi9WzJ8Xa43Qs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WesYg691D+Y6BorwKUaX8QUZqofulZNzQw4S5xUS/KLKYC6rhVMmPw+l57nMBOvW9
-         1ZVVOklCdsJiuiXBPHO8R9YyS8NHbjfpRKKzxW/wKe6NoDthhQaQFdNFG4pgkgNxYD
-         PMR5dQbBiVD1fITCwvWRBlkf9eYFcqg7vcZzTY0dnMvoL4zrRILjf/JmfngAZkvbLU
-         jDiTe/ilpCl+asp7gpiJ70FFq7RGPEN1bq3ONrmZ8CaK4ObsM4yUgNTVn3IX5aQhxN
-         0LvqXvcsrG+PIiKbwatpkdSptELJrLbXP0R5xEM8p6mGWLmvd9h8h3K8uovhdrRurd
-         iiRIYJyyFYxpw==
-Date:   Fri, 22 Oct 2021 13:40:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alistair <alistair@alistair23.me>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the regulator tree
-Message-ID: <YXKxKwje0evUT0hT@sirena.org.uk>
-References: <20211022125323.132b950d@canb.auug.org.au>
- <bd49c44d-372e-453a-ac8e-04252b2eaba8@www.fastmail.com>
+        id S232405AbhJVMnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhJVMnj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:43:39 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E7CC061220;
+        Fri, 22 Oct 2021 05:41:22 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g10so1076064edj.1;
+        Fri, 22 Oct 2021 05:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tHQR2Z1qPtXtLpD0ldcO3jwebCIJGWS4TZ77ng4RLWk=;
+        b=REF5yOX879PB3VexQN+8YNPVZ8RLatORYZww04QHrDlIRQM7I4x6kER2e5a6EhqPX5
+         xkmWjyoVWZn+LPnptkCjqJ1fgLohJn3/jJ2tu+oTZKvBHoECP1XK1g30HssJ2oewzFRK
+         r2ffSYJBdijXbAOvef5h34X0+ZvvlEihjm2tBaehkcOlOVpyM7cWJ4Ly4z3m2naCmpHY
+         xjULUeXBNPPdi8pPRJqk/Cws5on4ye04LWF5yxlWBbxQgS7oaINKqymuwYmr2QSuuv1O
+         cDPAf+BPabV0KHeH5oXH6alCa+AIiTFU28gVJNnuAV/Z9fqyzYvKZfIsEBmGONkYzdVQ
+         7Q1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tHQR2Z1qPtXtLpD0ldcO3jwebCIJGWS4TZ77ng4RLWk=;
+        b=laVRjrCTLcFKGPTa0iPmsBpYOFQFwIJXFiN+MOxLSuYhy9Z3yDuHrvf2RriwzQEqLe
+         sbH8Xyx+R1ToLLW4qJZC2IUrojh5EkATfEC/x6bf6wVKGLkbm23TiPWSCbABvLqNZt4m
+         Wu+UyJtuYr9Lo3CFV8DKEHRL9icj8iGP9aqQmgP4qVTc0bfsbj+grpQzoBF4xePDjhuG
+         8CKqhtIr1c1AfWCL9Z30mCymQcUVSVcdIA5BFzp6VgoaDjDAE/quDc5ESGtgMGVjF8j7
+         KaOKLXTBg4i1rSP+e1sYmrdj6lmGB0gDQcqro2JmHjDuQXctSnIjGEXfOrPVnrqY28zv
+         Cifw==
+X-Gm-Message-State: AOAM533IGgRt0uX2wbYkyeH1OamP+HICyD/9IF3Fd6fwIhDaumqg1okq
+        /5jc4yHwgN18WyTYAYl2Gd0OFcaOl6jngOJGAxg=
+X-Google-Smtp-Source: ABdhPJwiFLRfZxQa56LwZ/jlFLeGcQX5OKJGaYAlbeJ1xllTBp0a3m0uOfcMCb4u/khczTjeZS6N2tacQalYzsvXwkU=
+X-Received: by 2002:aa7:c0d2:: with SMTP id j18mr17090901edp.107.1634906480674;
+ Fri, 22 Oct 2021 05:41:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="evsjRRr4aa0EOz7i"
-Content-Disposition: inline
-In-Reply-To: <bd49c44d-372e-453a-ac8e-04252b2eaba8@www.fastmail.com>
-X-Cookie: I program, therefore I am.
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-2-kernel@esmil.dk>
+ <CAHp75VfD73Nsrp-3hMzFtuEAfka+rRc=2m0ZZYddhWBAzg=QAw@mail.gmail.com> <CANBLGcxJGgi9nuT6LpjGgPj1bg0aW-ELRCAO0Csv3xi82gTCnQ@mail.gmail.com>
+In-Reply-To: <CANBLGcxJGgi9nuT6LpjGgPj1bg0aW-ELRCAO0Csv3xi82gTCnQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Oct 2021 15:40:24 +0300
+Message-ID: <CAHp75Ve400r6GCeROhX3XF7KSjA=HKpDoR9ip+efYtPS9FRahg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/16] RISC-V: Add StarFive SoC Kconfig option
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 22, 2021 at 12:40 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> On Fri, 22 Oct 2021 at 10:51, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Oct 21, 2021 at 8:42 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
---evsjRRr4aa0EOz7i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Fri, Oct 22, 2021 at 08:31:08PM +1000, Alistair wrote:
+> > > +config SOC_STARFIVE
+> > > +       bool "StarFive SoCs"
+> > > +       select PINCTRL
+> > > +       select RESET_CONTROLLER
+> >
+> > > +       select SIFIVE_PLIC
+> >
+> > If this is well understood and platform related the above two are too
+> > generic. Why have you selected them?
+>
+> From your last comments the criterion seemed to be to only add it here
+> if it would otherwise fail to boot. Well it does fail to boot without
+> the reset and pinctrl drivers. The clock driver too, but RISCV already
+> selects COMMON_CLK. Once PINCTRL and RESET_CONTROLLER is selected the
+> specific drivers defaults to SOC_STARFIVE.
+>
+> Alternatively we'd select the drivers too, but I can't promise that
+> future StarFive chips will need the same JH7100 clock and reset
+> drivers. Doing it this way means that selecting SOC_STARFIVE by
+> default gives you a kernel that will boot on all StarFive SoCs, but
+> you can still customise it further to your particular chip. It seems
+> like SOC_SIFIVE is doing the same.
 
-> This patch should probably not be applied until after:
+Okay, please add this justification to the commit message in the next version.
 
-> mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+...
 
-> Or if preferred I can split adding the header file into it's own patch that can be
-> applied.
+> > > +       help
+> > > +         This enables support for StarFive SoC platform hardware.
+> >
+> > Not too much to read here. What is the point of this help?
+> > I would elaborate what kind of platform it may support, what kind of
+> > drivers it selects due to necessity of the accomplishing the boot
+> > process, etc.
+>
+> This is exactly as the other descriptions in this file. I don't know
+> why SOC_STARFIVE should be special.
 
-Let's just add the dependency back until the MFD gets sorted out :/
+OK.
 
---evsjRRr4aa0EOz7i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFysSoACgkQJNaLcl1U
-h9BIyAf5AeI7eKpfm5YR6DUHxK5x/vTOrdsDeathntLOJ4qdFQ4l7bAXi5aoAGvO
-0mvmHdnokL64E37uYYG9NhDiMlDPCzgukEP2O4XCsNm9O69B3/5gNIuxP7O+GFPp
-qvcw/kIehzWC7q44DPPHtGewDQUACEqMFBgF6CukJ6QhdNLfg2EswNkVRSWp3o03
-bB8Twh4FE4k2R4Zoes9bmA2PSwPNSjD63GHBhNaXZshnK9P2gQFEm5OYZ2JQJ5Gs
-9g+4jI1uLoKKPcm2zl06D6MlUEXGjqJ2GQg/M0Nh3dwlJRjLqQbZucelv2nlIqNK
-yrGVcEGI+SJu0SeNhBg9pAFniUcjGA==
-=TxHw
------END PGP SIGNATURE-----
-
---evsjRRr4aa0EOz7i--
+-- 
+With Best Regards,
+Andy Shevchenko
