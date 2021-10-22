@@ -2,191 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC49437104
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00FA43710C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhJVEq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 00:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhJVEqZ (ORCPT
+        id S231912AbhJVEvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 00:51:12 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:50886 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhJVEvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 00:46:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46527C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:44:07 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 286C151D;
-        Fri, 22 Oct 2021 06:44:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634877844;
-        bh=eSwlb6YuqsR3uV5jKVNohlQDel9PmJlvK6dwAOAjDsE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KCypfD8VKzEQ/+Vk1MA66r5q6tixJm3CmYwu9qPcUX/i+r81BRaHbjC5WCmEwHKYh
-         0nNPUAPt+OC7sJMfebGkRQsQ3oyGBOCNI0ssp5ZPgq0PiFU6q0UjJFaPHCs9TwiB+3
-         VeGUGrrvKImkXOt9fiYUXcPWV6SAXB/c9X38IN/s=
-Date:   Fri, 22 Oct 2021 07:43:44 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Philip Chen <philipchen@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/bridge: Fix the bridge chain order for pre_enable /
- post_disable
-Message-ID: <YXJBgNvkZb14AJDQ@pendragon.ideasonboard.com>
-References: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
+        Fri, 22 Oct 2021 00:51:06 -0400
+Received: from smtpclient.apple (p54899aa7.dip0.t-ipconnect.de [84.137.154.167])
+        by mail.holtmann.org (Postfix) with ESMTPSA id B8669CED3E;
+        Fri, 22 Oct 2021 06:48:47 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] Bluetooth: cmtp: fix possible panic when
+ cmtp_init_sockets() fails
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211022034417.766659-1-wanghai38@huawei.com>
+Date:   Fri, 22 Oct 2021 06:48:47 +0200
+Cc:     Karsten Keil <isdn@linux-pingi.de>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <9D8B1F5B-8EFE-40CB-BC85-F6EC3483CC61@holtmann.org>
+References: <20211022034417.766659-1-wanghai38@huawei.com>
+To:     Wang Hai <wanghai38@huawei.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+Hi Wang,
 
-Thank you for the patch.
-
-On Thu, Oct 21, 2021 at 12:29:01PM -0700, Douglas Anderson wrote:
-> Right now, the chaining order of
-> pre_enable/enable/disable/post_disable looks like this:
+> I got a kernel BUG report when doing fault injection test:
 > 
-> pre_enable:   start from connector and move to encoder
-> enable:       start from encoder and move to connector
-> disable:      start from connector and move to encoder
-> post_disable: start from encoder and move to connector
+> ------------[ cut here ]------------
+> kernel BUG at lib/list_debug.c:45!
+> ...
+> RIP: 0010:__list_del_entry_valid.cold+0x12/0x4d
+> ...
+> Call Trace:
+> proto_unregister+0x83/0x220
+> cmtp_cleanup_sockets+0x37/0x40 [cmtp]
+> cmtp_exit+0xe/0x1f [cmtp]
+> do_syscall_64+0x35/0xb0
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> In the above, it can be seen that at least pre_enable() and
-> post_disable() are opposites of each other and enable() and disable()
-> are opposites. However, it seems broken that pre_enable() and enable()
-> would not move in the same direction. In other parts of Linux you can
-> see that various stages move in the same order. For instance, during
-> system suspend the "early" calls run in the same order as the normal
-> calls run in the same order as the "late" calls run in the same order
-> as the "noirq" calls.
+> If cmtp_init_sockets() in cmtp_init() fails, cmtp_init() still returns
+> success. This will cause a kernel bug when accessing uncreated ctmp
+> related data when the module exits.
 > 
-> Let fix the above so that it makes more sense. Now we'll have:
-> 
-> pre_enable:   start from encoder and move to connector
-> enable:       start from encoder and move to connector
-> disable:      start from connector and move to encoder
-> post_disable: start from connector and move to encoder
-> 
-> This order is chosen because if there are parent-child relationships
-> anywhere I would expect that the encoder would be a parent and the
-> connector a child--not the other way around.
-> 
-> This can be important when using the DP AUX bus to instantiate a
-> panel. The DP AUX bus is likely part of a bridge driver and is a
-> parent of the panel. We'd like the bridge to be pre_enabled before the
-> panel and the panel to be post_disabled before the
-> bridge. Specifically, this allows pm_runtime_put_sync_suspend() in a
-> bridge driver's post_suspend to work properly even a panel is under
-> it.
-> 
-> NOTE: it's entirely possible that this change could break someone who
-> was relying on the old order. Hopefully this isn't the case, but if
-> this does break someone it seems like it's better to do it sonner
-> rather than later so we can fix everyone to handle the order that
-> makes the most sense.
-
-I'm less hopeful than you are on this, changing the order of operations
-is very risky. I'm also concerned about hardware damage, the pre-enable
-operation is often used to power up devices, and powering up a source
-before a sink is dangerous as many devices don't like having I/O voltage
-applied to their pins before they get powered up. If you really want to
-land this, the patch needs very very broad testing, as well as a plan to
-address the power up issue.
-
-> A FURTHER NOTE: Looking closer at commit 4e5763f03e10 ("drm/bridge:
-> ti-sn65dsi86: Wrap panel with panel-bridge") you can see that patch
-> inadvertently changed the order of things. The order used to be
-> correct (panel prepare was at the tail of the bridge enable) but it
-> became backwards. We'll restore the original order with this patch.
-> 
-> Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
-> Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
+> net/bluetooth/cmtp/core.c | 6 ++++--
+> 1 file changed, 4 insertions(+), 2 deletions(-)
 > 
->  drivers/gpu/drm/drm_bridge.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
+> diff --git a/net/bluetooth/cmtp/core.c b/net/bluetooth/cmtp/core.c
+> index 0a2d78e811cf..ccf48f50afdf 100644
+> --- a/net/bluetooth/cmtp/core.c
+> +++ b/net/bluetooth/cmtp/core.c
+> @@ -499,11 +499,13 @@ int cmtp_get_conninfo(struct cmtp_conninfo *ci)
 > 
-> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> index c96847fc0ebc..98808af59afd 100644
-> --- a/drivers/gpu/drm/drm_bridge.c
-> +++ b/drivers/gpu/drm/drm_bridge.c
-> @@ -583,18 +583,14 @@ EXPORT_SYMBOL(drm_bridge_chain_mode_set);
->  void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
->  {
->  	struct drm_encoder *encoder;
-> -	struct drm_bridge *iter;
->  
->  	if (!bridge)
->  		return;
->  
->  	encoder = bridge->encoder;
-> -	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
-> -		if (iter->funcs->pre_enable)
-> -			iter->funcs->pre_enable(iter);
-> -
-> -		if (iter == bridge)
-> -			break;
-> +	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
-> +		if (bridge->funcs->pre_enable)
-> +			bridge->funcs->pre_enable(bridge);
->  	}
->  }
->  EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
-> @@ -684,26 +680,30 @@ void drm_atomic_bridge_chain_post_disable(struct drm_bridge *bridge,
->  					  struct drm_atomic_state *old_state)
->  {
->  	struct drm_encoder *encoder;
-> +	struct drm_bridge *iter;
->  
->  	if (!bridge)
->  		return;
->  
->  	encoder = bridge->encoder;
-> -	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
-> -		if (bridge->funcs->atomic_post_disable) {
-> +	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
-> +		if (iter->funcs->atomic_post_disable) {
->  			struct drm_bridge_state *old_bridge_state;
->  
->  			old_bridge_state =
->  				drm_atomic_get_old_bridge_state(old_state,
-> -								bridge);
-> +								iter);
->  			if (WARN_ON(!old_bridge_state))
->  				return;
->  
-> -			bridge->funcs->atomic_post_disable(bridge,
-> -							   old_bridge_state);
-> -		} else if (bridge->funcs->post_disable) {
-> -			bridge->funcs->post_disable(bridge);
-> +			iter->funcs->atomic_post_disable(iter,
-> +							 old_bridge_state);
-> +		} else if (iter->funcs->post_disable) {
-> +			iter->funcs->post_disable(iter);
->  		}
+> static int __init cmtp_init(void)
+> {
+> +	int err;
 > +
-> +		if (iter == bridge)
-> +			break;
->  	}
->  }
->  EXPORT_SYMBOL(drm_atomic_bridge_chain_post_disable);
+> 	BT_INFO("CMTP (CAPI Emulation) ver %s", VERSION);
+> 
+> -	cmtp_init_sockets();
+> +	err = cmtp_init_sockets();
+> 
+> -	return 0;
+> +	return err;
+> }
 
--- 
-Regards,
+just do return cmtp_init_sockets();
 
-Laurent Pinchart
+Regards
+
+Marcel
+
