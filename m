@@ -2,203 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D229043745F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D522437464
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhJVJM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:12:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40208 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhJVJMW (ORCPT
+        id S232445AbhJVJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:12:59 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45894 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232060AbhJVJMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:12:22 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E278E212C8;
-        Fri, 22 Oct 2021 09:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634893803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vr4YC4Ootp7YmZVbnn2IeZzn/hRDb/zTjl1sQmsj3Y4=;
-        b=R9XstMmNBuTc8yClgMbVxDC5C6GgjMu70ghewFBYZCpoiP06QqDFRqWH3wnrvhv/IQmgaP
-        QS2K0ayylJY9+kzYN4p8QdPHBeCm1vg7vQognKVqlhHNuUEVuZ4huerfiP8txsHMEmJmv4
-        59ZPx7m1v06coMsJDaEm6dUfI9Dilp0=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B35CDA3B81;
-        Fri, 22 Oct 2021 09:10:03 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 11:10:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg v2 2/2] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-Message-ID: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
-References: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
- <cover.1634889066.git.vvs@virtuozzo.com>
- <4b315938-5600-b7f5-bde9-82f638a2e595@virtuozzo.com>
+        Fri, 22 Oct 2021 05:12:54 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M8DNR0028197;
+        Fri, 22 Oct 2021 11:10:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=WLxFl8E+ifmKfctJH7ZiFoNgZodLlqE6Mj4z0a45bFc=;
+ b=YOWtH8OcXMUk7bwAwi97wsotwqnZMHd5RPkulxPM/hSkIcqHitf8Kbh2TdPlGIvnLLAD
+ Y48IzSHhzyfDOWbQtnaAxuTh4042eic2xI0k38pwtMMST+oit/mDpCBG4mnic0geRf8P
+ zSm8OS5P7RjN/qST9AoCRbABdvUKwSw5EgIUpaf6yjubL8NjVkm+GIiDWLqr2ybo6tUF
+ kEgTignIGIrJ0D+7KpFuwfIY9cEqSQRmRXbB2VhyRONZ55FMXdna8U+OLA6ZNzWySy/Q
+ 0O3ZJ1ztGz9Hms7OnexVnCNur4ZFKTJqPgJol16Gfo0ahNYYJFcjVxrlYaJSP6MsOp0z +Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bujdt2s8e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 11:10:19 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB62110002A;
+        Fri, 22 Oct 2021 11:10:17 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D1DE7216EDA;
+        Fri, 22 Oct 2021 11:10:17 +0200 (CEST)
+Received: from lmecxl0572.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct
+ 2021 11:10:14 +0200
+Subject: Re: [PATCH v6 09/10] clk: stm32: Fix ltdc's clock turn off by
+ clk_disable_unused() after system enter shell
+To:     Dillon Min <dillon.minfei@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <mchehab+huawei@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        <ezequiel@collabora.com>, <gnurou@gmail.com>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <gabriel.fernandez@st.com>
+CC:     Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        <hugues.fruchet@foss.st.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <1634633003-18132-1-git-send-email-dillon.minfei@gmail.com>
+ <1634633003-18132-10-git-send-email-dillon.minfei@gmail.com>
+ <CAL9mu0Jw99aeSmwy7gnY3XQK3V1V-C1-R8ET5jvSMz7niH=g4g@mail.gmail.com>
+From:   "gabriel.fernandez@foss.st.com" <gabriel.fernandez@foss.st.com>
+Message-ID: <b43699a6-dc53-3fcd-6cc9-6b05025cad96@foss.st.com>
+Date:   Fri, 22 Oct 2021 11:10:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b315938-5600-b7f5-bde9-82f638a2e595@virtuozzo.com>
+In-Reply-To: <CAL9mu0Jw99aeSmwy7gnY3XQK3V1V-C1-R8ET5jvSMz7niH=g4g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_02,2021-10-21_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 22-10-21 11:11:29, Vasily Averin wrote:
-> Memory cgroup charging allows killed or exiting tasks to exceed the hard
-> limit. It is assumed that the amount of the memory charged by those
-> tasks is bound and most of the memory will get released while the task
-> is exiting. This is resembling a heuristic for the global OOM situation
-> when tasks get access to memory reserves. There is no global memory
-> shortage at the memcg level so the memcg heuristic is more relieved.
+Hi Dillon,
+
+You can add my Acked-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+
+Best Regards
+Gabriel
+
+On 10/22/21 9:25 AM, Dillon Min wrote:
+> Hi Gabriel
 > 
-> The above assumption is overly optimistic though. E.g. vmalloc can scale
-> to really large requests and the heuristic would allow that. We used to
-> have an early break in the vmalloc allocator for killed tasks but this
-> has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
-> the current task is killed""). There are likely other similar code paths
-> which do not check for fatal signals in an allocation&charge loop.
-> Also there are some kernel objects charged to a memcg which are not
-> bound to a process life time.
+> I guess you are the maintainer of stm32 clk subsystem from [1], Could
+> you help to review this patch, just give a brief of the history:
 > 
-> It has been observed that it is not really hard to trigger these
-> bypasses and cause global OOM situation.
+> - this patch was acked by Stephen Boyd at [2].
+> - reviewed by Patrice Chotard at [3].
 > 
-> One potential way to address these runaways would be to limit the amount
-> of excess (similar to the global OOM with limited oom reserves). This is
-> certainly possible but it is not really clear how much of an excess is
-> desirable and still protects from global OOMs as that would have to
-> consider the overall memcg configuration.
+> Without this patch , the kernel will turn off ltdc's clk after the
+> system reach shell.
 > 
-> This patch is addressing the problem by removing the heuristic
-> altogether. Bypass is only allowed for requests which either cannot fail
-> or where the failure is not desirable while excess should be still
-> limited (e.g. atomic requests). Implementation wise a killed or dying
-> task fails to charge if it has passed the OOM killer stage. That should
-> give all forms of reclaim chance to restore the limit before the
-> failure (ENOMEM) and tell the caller to back off.
+> [1] https://lore.kernel.org/lkml/AM8PR10MB4785545DC980090C1E7D66B281009@AM8PR10MB4785.EURPRD10.PROD.OUTLOOK.COM/
 > 
-> In addition, this patch renames should_force_charge() helper
-> to task_is_dying() because now its use is not associated witch forced
-> charging.
-
-I would explicitly mention that this depends on pagefault_out_of_memory
-to not trigger out_of_memory because then a memcg failure can unwind to
-VM_FAULT_OOM and cause a global OOM killer.
-
-Maybe it would be even better to fold the removal to this patch so the
-dependency is more obvious. I will live that to you.
-
-> Fixes: a636b327f731 ("memcg: avoid unnecessary system-wide-oom-killer")
-
-Fixes tag would be quite hard here. For example you certainly didn't
-have a practically unbound vector to go over the hard limit - like
-vmalloc. At least not after __GFP_ACCOUNT has been introduced. So I
-would just not bother with a Fixes tag at all rather than cause it more
-questions than answers.
-
-> Cc: stable@vger.kernel.org
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-
-Other than that looks good to me.
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-> ---
->  mm/memcontrol.c | 27 ++++++++-------------------
->  1 file changed, 8 insertions(+), 19 deletions(-)
+> [2] https://lore.kernel.org/linux-arm-kernel/159056850835.88029.9264848839121822798@swboyd.mtv.corp.google.com/
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6da5020a8656..87e41c3cac10 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -239,7 +239,7 @@ enum res_type {
->  	     iter != NULL;				\
->  	     iter = mem_cgroup_iter(NULL, iter, NULL))
->  
-> -static inline bool should_force_charge(void)
-> +static inline bool task_is_dying(void)
->  {
->  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
->  		(current->flags & PF_EXITING);
-> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	 * A few threads which were not waiting at mutex_lock_killable() can
->  	 * fail to bail out. Therefore, check again after holding oom_lock.
->  	 */
-> -	ret = should_force_charge() || out_of_memory(&oc);
-> +	ret = task_is_dying() || out_of_memory(&oc);
->  
->  unlock:
->  	mutex_unlock(&oom_lock);
-> @@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	struct page_counter *counter;
->  	enum oom_status oom_status;
->  	unsigned long nr_reclaimed;
-> +	bool passed_oom = false;
->  	bool may_swap = true;
->  	bool drained = false;
->  	unsigned long pflags;
-> @@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	if (gfp_mask & __GFP_ATOMIC)
->  		goto force;
->  
-> -	/*
-> -	 * Unlike in global OOM situations, memcg is not in a physical
-> -	 * memory shortage.  Allow dying and OOM-killed tasks to
-> -	 * bypass the last charges so that they can exit quickly and
-> -	 * free their memory.
-> -	 */
-> -	if (unlikely(should_force_charge()))
-> -		goto force;
-> -
->  	/*
->  	 * Prevent unbounded recursion when reclaim operations need to
->  	 * allocate memory. This might exceed the limits temporarily,
-> @@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	if (gfp_mask & __GFP_RETRY_MAYFAIL)
->  		goto nomem;
->  
-> -	if (fatal_signal_pending(current))
-> -		goto force;
-> +	/* Avoid endless loop for tasks bypassed by the oom killer */
-> +	if (passed_oom && task_is_dying())
-> +		goto nomem;
->  
->  	/*
->  	 * keep retrying as long as the memcg oom killer is able to make
-> @@ -2640,14 +2633,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	 */
->  	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
->  		       get_order(nr_pages * PAGE_SIZE));
-> -	switch (oom_status) {
-> -	case OOM_SUCCESS:
-> +	if (oom_status == OOM_SUCCESS) {
-> +		passed_oom = true;
->  		nr_retries = MAX_RECLAIM_RETRIES;
->  		goto retry;
-> -	case OOM_FAILED:
-> -		goto force;
-> -	default:
-> -		goto nomem;
->  	}
->  nomem:
->  	if (!(gfp_mask & __GFP_NOFAIL))
-> -- 
-> 2.32.0
-
--- 
-Michal Hocko
-SUSE Labs
+> [3] https://lore.kernel.org/lkml/6915fa2a-e211-476f-8317-6825e280c322@foss.st.com/#t
+> 
+> Best Regards
+> Dillon
+> 
+> On Tue, 19 Oct 2021 at 16:44, Dillon Min <dillon.minfei@gmail.com> wrote:
+>>
+>> stm32's clk driver register two ltdc gate clk to clk core by
+>> clk_hw_register_gate() and clk_hw_register_composite()
+>>
+>> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
+>> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
+>>
+>> both of them point to the same offset of stm32's RCC register. after
+>> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
+>> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
+>>
+>> stm32f469/746/769 have the same issue, fix it.
+>>
+>> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
+>> Acked-by: Stephen Boyd <sboyd@kernel.org>
+>> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
+>> Link: https://lore.kernel.org/lkml/CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com/
+>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+>> ---
+>> v6: no change.
+>>
+>>   drivers/clk/clk-stm32f4.c | 4 ----
+>>   1 file changed, 4 deletions(-)
+>>
+>> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+>> index af46176ad053..473dfe632cc5 100644
+>> --- a/drivers/clk/clk-stm32f4.c
+>> +++ b/drivers/clk/clk-stm32f4.c
+>> @@ -129,7 +129,6 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
+>>          { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+>> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>>   };
+>>
+>>   static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+>> @@ -211,7 +210,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+>>          { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+>> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>>   };
+>>
+>>   static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
+>> @@ -286,7 +284,6 @@ static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
+>>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
+>> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>>   };
+>>
+>>   static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
+>> @@ -364,7 +361,6 @@ static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
+>>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
+>> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>>          { STM32F4_RCC_APB2ENR, 30,      "mdio",         "apb2_div" },
+>>   };
+>>
+>> --
+>> 2.7.4
+>>
