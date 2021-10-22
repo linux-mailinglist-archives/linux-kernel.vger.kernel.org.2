@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D4D437537
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F4543753B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbhJVKFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 06:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbhJVKFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 06:05:05 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54522C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:02:48 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r7so1356712wrc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nGjT1AOVEd9u+o/+gwUtiVquACHYTgqPaEm19BZqzks=;
-        b=nuygEqAjt4hZHvYg383a/4J/0cZ4ltTZw7vuniBg8ryX9BvfLDJfRQ2gdm54CpS/fp
-         WI0IWxc5HsFcXCwYOEs3PfD6OlU8t5/90igIK13eQb8xxdKh9ba272h/XHLEunW2QqON
-         8k5FG+stAoVMaAVF1zkci0xyA/kS6fH46OlTIUfW3ZgQfrivX6Z5J7Vm+i0LJmdhWQxp
-         Z6SJgrsy/4JChXJvK1zLu+rhZ2+VztL/i030CAm9pb0AsG6Dak/22PxRWqSnu+qBAhjV
-         dbhY20a8lITwVb6pxD9Vz1QDMLG6YBOJGC/+ljTFH2e1OnZKzr5kq968FqHSPzp4e6J5
-         T8jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nGjT1AOVEd9u+o/+gwUtiVquACHYTgqPaEm19BZqzks=;
-        b=PfHFyW+1Hajd2FX7PVJqnaap5OlZgtO6WNnT/drl4iYsaB2o/Q2F9EhaR7PTJ48gU5
-         0M4F09TR/cqNGlxUpxbsD67qwQJnXX/v/JQXCuYlzhJx7Skix7v5GyYR2w2RIWl7p9ff
-         NJ2ELDBT/D1PAieufcAyw4yY04M429mYfqGpWq0fuLtu5g8w4OWc63mXexECdJ7kt5sG
-         8Ucc6qlGAhQIdGHa+nipHTIZoELhbi+++PyUwy/dl0mZjz5JGy8k4mIWFVeehUZeDytf
-         BsdAi9myWHwpnUYQDdvV0jxzdx93m/t6k2GyslanD7oXEZ+hwpv4ikzB1C1ynZwVJYTZ
-         hgxQ==
-X-Gm-Message-State: AOAM533kUX324/bKvOs+96Js1/WJ3g+qbI3DoUBoReUPHM7xIuACgCrG
-        7BDqA2bHGPgRgedqpGqYjkiG9w==
-X-Google-Smtp-Source: ABdhPJyU8SPbKWh/ZJVVNpIOCfeScFOeqeql/+ttz0VcR88SMJHnMe2kapfTFYdC+twQcMhJ5DSrVQ==
-X-Received: by 2002:a05:6000:1689:: with SMTP id y9mr14340579wrd.52.1634896966959;
-        Fri, 22 Oct 2021 03:02:46 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id u1sm782155wrt.97.2021.10.22.03.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 03:02:46 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 11:02:44 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] mfd: tps80031: Remove driver
-Message-ID: <YXKMRFLW/jYbhOiO@google.com>
-References: <20211021192258.21968-1-digetx@gmail.com>
- <20211021192258.21968-4-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211021192258.21968-4-digetx@gmail.com>
+        id S232523AbhJVKHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 06:07:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231944AbhJVKHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 06:07:49 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24E4C611F2;
+        Fri, 22 Oct 2021 10:05:32 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mdrQX-000tgG-V8; Fri, 22 Oct 2021 11:05:30 +0100
+Date:   Fri, 22 Oct 2021 11:05:29 +0100
+Message-ID: <87o87hbcie.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
+        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
+        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
+        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
+        torvalds@linux-foundation.org, tsbogend@alpha.franken.de,
+        vgupta@kernel.org, will@kernel.org
+Subject: Re: [PATCH 15/15] irq: remove handle_domain_{irq,nmi}()
+In-Reply-To: <20211021180236.37428-16-mark.rutland@arm.com>
+References: <20211021180236.37428-1-mark.rutland@arm.com>
+        <20211021180236.37428-16-mark.rutland@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu, catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com, guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com, linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk, nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com, stefan.kristiansson@saunalahti.fi, tglx@linutronix.de, torvalds@linux-foundation.org, tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021, Dmitry Osipenko wrote:
-
-> Driver was upstreamed in 2013 and never got a user, remove it.
+On Thu, 21 Oct 2021 19:02:36 +0100,
+Mark Rutland <mark.rutland@arm.com> wrote:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/mfd/Kconfig          |  14 -
->  drivers/mfd/Makefile         |   1 -
->  drivers/mfd/tps80031.c       | 526 -----------------------------
->  include/linux/mfd/tps80031.h | 637 -----------------------------------
->  4 files changed, 1178 deletions(-)
->  delete mode 100644 drivers/mfd/tps80031.c
->  delete mode 100644 include/linux/mfd/tps80031.h
+> Now that entry code handles IRQ entry (including setting the IRQ regs)
+> before calling irqchip code, irqchip code can safely call
+> generic_handle_domain_irq(), and there's no functional reason for it to
+> call handle_domain_irq().
+> 
+> Let's cement this split of responsibility and remove handle_domain_irq()
+> entirely, updating irqchip drivers to call generic_handle_domain_irq().
+> 
+> For consistency, handle_domain_nmi() is similarly removed and replaced
+> with a generic_handle_domain_nmi() function which also does not perform
+> any entry logic.
+> 
+> Previously handle_domain_{irq,nmi}() had a WARN_ON() which would fire
+> when they were called in an inappropriate context. So that we can
+> identify similar issues going forward, similar WARN_ON_ONCE() logic is
+> added to the generic_handle_*() functions, and comments are updated for
+> clarity and consistency.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
 
-Applied, thanks.
+[...]
+
+> -/**
+> - * handle_domain_nmi - Invoke the handler for a HW irq belonging to a domain
+> - * @domain:	The domain where to perform the lookup
+> - * @hwirq:	The HW irq number to convert to a logical one
+> - * @regs:	Register file coming from the low-level handling code
+> - *
+> - *		This function must be called from an NMI context.
+>   *
+> - * Returns:	0 on success, or -EINVAL if conversion has failed
+> - */
+> -int handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq,
+> -		      struct pt_regs *regs)
+> + * 		This function must be called from an NMI context with irq regs
+> + * 		initialized.
+> + **/
+> +int generic_handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq)
+>  {
+> -	struct pt_regs *old_regs = set_irq_regs(regs);
+> -	int ret;
+> -
+> -	/*
+> -	 * NMI context needs to be setup earlier in order to deal with tracing.
+> -	 */
+> -	WARN_ON(!in_nmi());
+> -
+> -	ret = generic_handle_domain_irq(domain, hwirq);
+> -
+> -	set_irq_regs(old_regs);
+> -	return ret;
+> +	WARN_ON_ONCE(!in_nmi());
+> +	return handle_irq_desc(irq_resolve_mapping(domain, hwirq));
+>  }
+> -#endif
+> +EXPORT_SYMBOL_GPL(generic_handle_domain_nmi);
+
+nit: we don't need this export (only a root controller can handle
+NMIs), and that's the sort of thing I would really want to avoid
+exposing to modules.
+
+	M.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Without deviation from the norm, progress is not possible.
