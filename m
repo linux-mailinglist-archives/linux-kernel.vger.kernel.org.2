@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76D6437727
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8270F437758
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhJVMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhJVMf4 (ORCPT
+        id S232870AbhJVMoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:44:01 -0400
+Received: from sv3058.xserver.jp ([202.254.234.59]:57732 "EHLO
+        sv3058.xserver.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhJVMny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:35:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1177C061764;
-        Fri, 22 Oct 2021 05:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+iqfxl1bOnUqQBYQwxlUeaPnvsk9jRCJKtP69+WVQmw=; b=FaAS0eZKYrwXkNRSph0rdnR8sp
-        bVG0WLZEfA0LSIUeBcySJUff3gzVVTTxhIfH2fLLEKTjaH0Q9hm+Dh4mRpVo4RMPDXJp+IGH4JOEg
-        o41/AyGAW7u/Kn89THveZCo9FyHs5RCpX++HIy19BqU9vbWfoYtqFJ6ufYKSthFABy33u9FB1cuUp
-        GCks1N2qn2OS+OiEApHJNXU76IFnjAl+7WDW8lTSDaQ/NynIG0Sgf7Fs/ZDWWXR9u84N+23ztmbp2
-        ezhMOMzh7vjymWyloyJkmFgUCYk1q4G3jNkY+RkK7NIyz6bd88mBBU8ctCchAlvGBcV6VO+I2HQTp
-        B/8/oDIA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdthN-00Dtq7-V5; Fri, 22 Oct 2021 12:31:16 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D67509812EB; Fri, 22 Oct 2021 14:31:00 +0200 (CEST)
-Date:   Fri, 22 Oct 2021 14:31:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
-        Stafford Horne <shorne@gmail.com>
-Subject: Re: [PATCH] locking: Generic ticket lock
-Message-ID: <20211022123100.GZ174703@worktop.programming.kicks-ass.net>
-References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
- <YXKC9qh+evVmUuLI@FVFF77S0Q05N>
+        Fri, 22 Oct 2021 08:43:54 -0400
+X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 08:43:54 EDT
+Received: from virusgw2401.xserver.jp (virusgw2401.xserver.jp [202.254.232.243])
+        by sv3058.xserver.jp (Postfix) with ESMTP id A9B8F180689CA3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 21:32:06 +0900 (JST)
+Received: from sv3058.xserver.jp (202.254.234.59)
+ by virusgw2401.xserver.jp (F-Secure/fsigk_smtp/521/virusgw2401.xserver.jp);
+ Fri, 22 Oct 2021 21:32:05 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw2401.xserver.jp)
+Received: by sv3058.xserver.jp (Postfix, from userid 20051)
+        id A534C1805DB419; Fri, 22 Oct 2021 21:32:06 +0900 (JST)
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?44GK5ZWP5ZCI44Gb44GC44KK44GM44Go44GG44GU44GW44GE44G+44GX44Gf?=  =?UTF-8?B?44CM44OX44Oq44Oz44OI5Z+65p2/44GvTlRXIEluYy4g44CN?=
+Date:   Fri, 22 Oct 2021 12:32:06 +0000
+From:   =?UTF-8?B?44OX44Oq44Oz44OI5Z+65p2/44GvTlRXIEluYy4=?= 
+        <info@ntw-web.com>
+Reply-To: info@ntw-web.com
+Message-ID: <HLBnSw7jDlHvQRtnkXb3BLrKxvy8VhvGJ2bj1OHHXs@www.ntw-web.com>
+X-Mailer: PHPMailer 6.5.0 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXKC9qh+evVmUuLI@FVFF77S0Q05N>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:23:02AM +0100, Mark Rutland wrote:
-> Hi Peter,
-> 
-> On Thu, Oct 21, 2021 at 03:05:15PM +0200, Peter Zijlstra wrote:
-> > +static __always_inline void ticket_lock(arch_spinlock_t *lock)
-> > +{
-> > +	u32 val = atomic_fetch_add_acquire(ONE_TICKET, lock);
-> 
-> I wonder, should these atomics be arch_atomic_*(), in case an arch_ or raw_
-> lock is used in noinstr code? The plain atomic_*() forms can have explicit
-> inline instrumentation.
-> 
-> I haven't seen any issues with qspinlock so far, and that also uses the
-> (instrumented) atomics, so maybe that's not actually a problem, but I'm not
-> sure what we intend here w.r.t.  instrumentability.
+NTW Inc.までお問合せ頂きましてありがとうございました。
 
-So far it's not been a problem, and as you say, if we want to change
-this, we need a larger audit/cleanup.
+以下の内容でお問合せを承りました。
 
-IIRC there's a potential problem in the arm idle code (noinstr'ing the
-idle code is still on the TODO list somewhre, hampered by the need to
-create more tooling).
+会社名：
+❤️ There are candid videos for you! Click here: http://bit.do/hotvideo2?n3z ❤️
+
+部署名：
+mrkdcby
+
+役所名：
+buh37s
+
+氏名：
+8o8nvpq uq5v6h
+
+ふりがな：
+132zy2 9sqe0ey
+
+電話番号：
+647808176086
+
+住所：
+〒 22296
+vkq4j1f 
+sh9gffl3
+sh8zxl
+
+メッセージ本文:
+2r63qr7
+
+後ほど弊社担当よりご連絡を差し上げます。宜しくお願い申し上げます。
+
+NTW Inc.
+
+-- 
+このメールは プリント基板はNTW Inc. (http://www.ntw-web.com) のお問い合わせフォームから送信されました
+
