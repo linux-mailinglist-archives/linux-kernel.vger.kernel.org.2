@@ -2,92 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB134379CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9554379E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233281AbhJVPZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
+        id S233441AbhJVP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233173AbhJVPZF (ORCPT
+        with ESMTP id S233492AbhJVP1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:25:05 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4665C061764;
-        Fri, 22 Oct 2021 08:22:47 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 187so3906904pfc.10;
-        Fri, 22 Oct 2021 08:22:47 -0700 (PDT)
+        Fri, 22 Oct 2021 11:27:37 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9B5C061766;
+        Fri, 22 Oct 2021 08:25:18 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id w14so4312145edv.11;
+        Fri, 22 Oct 2021 08:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xPV0SOtCu/yXKv9zO0cN5aVANicEEw9KJSfvSTImqto=;
-        b=odNLzMLxZ9cAj4JdTtszB5nuwSJQknxM58RXmUAmEbRnKRq5XeMMiGZfSL30dtee5t
-         7erSp1G5t14ZGy2ezAOXvelO8ml166elpjbizNaaZmlymRP6seFlkhne8hp0UnE3yX1Q
-         V5ILKSLMERmRJSgp76ROGkgOL2N5HyWkIJgNuEdltV9iRRfc58AnXmK4KeXiUHv0zV1C
-         KAkfPpT13X/+/qjMIlkgQvVFr41QuKZsbMpaLNbzlHjo2mpvgTJFBu3vQ3Ij+LP83e3G
-         IRrD1YwkgW5vT0T3eXb14Ph5UuSB6OmfrfcjVSJzuvndd2LVvl/tqiQk2iCGHLTULl5v
-         KfSg==
+        bh=kgqxWvGntkbiXk1ztGJLZLwojodbAYgPdM6m7PSmewA=;
+        b=WdVC29wguinmC3yuoVUr5ML6+H+CS6ZdeRR/YJeyz0O/ZQo45d8T9XdWhomfnjSVHd
+         g3CJy6Nb9uiF/XGvjiN66mba5qCdBkqEstdLIlA5mrZYtzHVIJLvKck4OTuIxKhv+hy/
+         dblks/vOB4eLhuwBr6oI5p/CXr+xSl6OSzKu3H43964vdf8hW3biLDa/NgCJHzsrjfGp
+         6KAEky8qLzFsCHVc3KJTae2k/jIPB1myunH0C7WztFrMIMLZizaa7vIkPCMOoxpTma5Q
+         pSB8OvYKauGBYkVQlMHML+/V0vENhcFHQ1rZeUbDd70KSH0cQMuoQIojhTt9Zl5QRC5l
+         Td+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xPV0SOtCu/yXKv9zO0cN5aVANicEEw9KJSfvSTImqto=;
-        b=UjByS1gE8NhNaBR8CayYLf9rcI7Hu85sBI55dkvMN/+lWUqN5ylnXKoQhNmYHdHPAn
-         ooeeRWD+6KlGodUhRPDjXQXbqlZOVRfEKr/eQR46eEyrewlBRsyysUHfbQeB+Apnz53D
-         EzvHJ9+3y+Y5noVCek+m9a/arG/60y81y7vM6rR5Vqw3DBPnpCmT9vxbLnmyzK8KbEtE
-         KQzgS+miI20FSGUEsjkPaGiuGnl9Rrsjd3V7COyGbd3KbrDqbiTSRP6U0BVGniX4lsgn
-         NIaLxJbEivnGkTWONxLHPZVZMZvVF4vWyIbC8Gccz15MrfY7/CMry+Qd+zzAWPuL2z5I
-         f8lg==
-X-Gm-Message-State: AOAM532ISJva6u7vNYiFO+LcVqiUq490JFCsO9XvMZv2wGNhqfx3OIav
-        tSYdUA/ISgCaonWj6BxWBpOxTkOrX8MoHcr3CjM=
-X-Google-Smtp-Source: ABdhPJwwkR18dVyVmL97wgHjLqmJwwBDyXLz847Lh8zP1zfVQu6ODHj755rQnl4IUNEh6i3+RXeV/c2JHQ11YrNsCVc=
-X-Received: by 2002:a63:374c:: with SMTP id g12mr275892pgn.35.1634916167065;
- Fri, 22 Oct 2021 08:22:47 -0700 (PDT)
+        bh=kgqxWvGntkbiXk1ztGJLZLwojodbAYgPdM6m7PSmewA=;
+        b=ifoxJ4Tv7J5keVz4E3asRpV8ERcBbjjqSsBFedbMcs/tVOQFecXOxeZO33Y/J5DrwK
+         EsfGVVE8uOpZlBwUFeGeV96eOhK4GcYibdi6p9TxBdvK2gP4d7i08/uAxUPqaR+2qDlh
+         RkfNHynTQtUhqPX99eh4Msc57tVcjJSYIXWWQoNIX7Pm9DhV184uk3U6CKpmP7JBVDP/
+         ZPqfCMX2dIAYK4EStkjNVZZH/pPhuW98dwWysi40itM/7WTu02qiXyxdD6OullnIk9OV
+         +RatRlk/e4qzrVdcXaeTKGnndzVoyIgQpz4LRN1qbtRu9Fgsx7n3ENfdfkI7W18gmpYS
+         FSew==
+X-Gm-Message-State: AOAM532dZwIUHdGGH0WWIOK/2Vg28jNrhVqv6YlUAZsnERtwBO9iq5eW
+        0OQQE5/k5qwru1Zfz2abPPJRF0Y4Quwt+PhePbg=
+X-Google-Smtp-Source: ABdhPJwutL0TpkILUaJQpT9WTYSqqjzAMw3LFuNwxPeej7qk+YCVJ8tGy2Wz/Dne2ys3IkY8MRAys3VYHZ2n+YrKIm4=
+X-Received: by 2002:a17:906:eb86:: with SMTP id mh6mr254287ejb.141.1634916316641;
+ Fri, 22 Oct 2021 08:25:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020104442.021802560@infradead.org> <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net> <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net> <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com>
- <20211021233852.gbkyl7wpunyyq4y5@treble> <CAADnVQ+iMysKSKBGzx7Wa+ygpr9nTJbRo4eGYADLFDE4PmtjOQ@mail.gmail.com>
- <YXKhLzd/DtkjURpc@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXKhLzd/DtkjURpc@hirez.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 22 Oct 2021 08:22:35 -0700
-Message-ID: <CAADnVQKJojWGaTCpUhkmU+vUxXORPacX_ByjyHWY0V03hGH7KA@mail.gmail.com>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+ <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+ <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com>
+ <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
+ <CANBLGcyaSgbOgA4u_QivUQicyZ0MuUmrSsPq56OAANsav8R=VQ@mail.gmail.com>
+ <CAHp75Vf=fGn33JFa-8UwCzv7A6AgHdnvfoabKnCcuKZxOyWX2Q@mail.gmail.com> <CANBLGcwZG-HpMuyw0LTGY2fwOJTgcMW7V_6kb=CFhX-Y5RjQSA@mail.gmail.com>
+In-Reply-To: <CANBLGcwZG-HpMuyw0LTGY2fwOJTgcMW7V_6kb=CFhX-Y5RjQSA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Oct 2021 18:24:20 +0300
+Message-ID: <CAHp75VfwmSfeUPvUXT3TTf0ZYGMfBZ0qaPoB0_SCzyR=Fb_Emw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 4:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Oct 21, 2021 at 04:42:12PM -0700, Alexei Starovoitov wrote:
->
-> > Ahh. Right. It's potentially a different offset for every prog.
-> > Let's put it into struct jit_context then.
->
-> Something like this...
+On Fri, Oct 22, 2021 at 5:56 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> On Fri, 22 Oct 2021 at 16:50, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Fri, Oct 22, 2021 at 5:25 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > On Fri, 22 Oct 2021 at 15:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > On Fri, Oct 22, 2021 at 4:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > > > On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-Yep. Looks nice and clean to me.
+...
 
-> -       poke->tailcall_bypass = image + (addr - poke_off - X86_PATCH_SIZE);
-> +       poke->tailcall_bypass = ip + (prog - start);
->         poke->adj_off = X86_TAIL_CALL_OFFSET;
-> -       poke->tailcall_target = image + (addr - X86_PATCH_SIZE);
-> +       poke->tailcall_target = ip + ctx->tail_call_direct_label - X86_PATCH_SIZE;
+> > > > > > Why all these ugly % 32 against constants?
+> > > > >
+> > > > > Because the JH7100_RST_ values goes higher than 31. There is a
+> > > > > BIT_MASK macro, but that does % BITS_PER_LONG and this is a 64bit
+> > > > > machine.
+> > > >
+> > > > And? It's exactly what you have to use!
+> > >
+> > > So you want me to use an unsigned long array or DECLARE_BITMAP and
+> > > juggle two different index and bit offsets?
+> >
+> > What are the offsets of those status registers?
+> > AFAICS they are sequential 4 32-bit registers.
+>
+> That's right, but we're on a 64bit machine, so DECLARE_BITMAP will
+> give us an unsigned long array that doesn't match that.
 
-This part looks correct too, but this is Daniel's magic.
-He'll probably take a look next week when he comes back from PTO.
-I don't recall which test exercises this tailcall poking logic.
-It's only used with dynamic updates to prog_array.
-insmod test_bpf.ko and test_verifier won't go down this path.
+I didn't get it, sorry.
+You will have a bitmap array which you will split to 32-bit values.
+What you will probably need is to move  xgpio_get_value32() and void
+xgpio_set_value32() to the one of bitmap related headers (look for
+bitmap_get_value8() and friends).
+
+> > So bitmap is exactly what is suitable here, you are right!
+> > See gpio-xilinx and gpio-pca953x on how to use bitmaps in the GPIO drivers.
+>
+> None of them has a pre-initialized const DECLARE_BITMAP, so they don't
+> have to deal with the 4 vs. 2 commas problem.
+
+I believe it's well possible to refactor this to look much better with
+bitmaps (as it represents the hardware very well).
+
+> > > Also is there a macro for handling that we'd then need 4 commas on
+> > > 32bit COMPILE_TEST and 2 commas on 64bit?
+> > > If you have some other way in mind you'll have to be a lot more explicit again.
+> > >
+> > > The point of the jh7100_reset_asserted array is that it exactly
+> > > mirrors the values of the status registers when the lines are
+> > > asserted. Maybe writing it like this would be more explicit:
+> > >
+> > > static const u32 jh7100_reset_asserted[4] = {
+> > >         /* STATUS0 register */
+> > >         BIT(JH7100_RST_U74 % 32) |
+> > >         BIT(JH7100_RST_VP6_DRESET % 32) |
+> > >         BIT(JH7100_RST_VP6_BRESET % 32),
+> > >         /* STATUS1 register */
+> > >         BIT(JH7100_RST_HIFI4_DRESET % 32) |
+> > >         BIT(JH7100_RST_HIFI4_BRESET % 32),
+> > >         /* STATUS2 register */
+> > >         BIT(JH7100_RST_E24 % 32),
+> > >         /* STATUS3 register */
+> > >         0,
+> > > };
+
+-- 
+With Best Regards,
+Andy Shevchenko
