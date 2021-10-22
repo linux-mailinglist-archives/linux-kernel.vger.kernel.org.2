@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E230F437AB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F025A437AB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhJVQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50288 "EHLO
+        id S233554AbhJVQRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhJVQQs (ORCPT
+        with ESMTP id S232176AbhJVQRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:16:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45999C061764;
-        Fri, 22 Oct 2021 09:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=la8pcbXsYCC46ghLgdCYYSCWnzPw+Po8qi4p7EHqCpk=; b=W5aUB+7WgFjgcGqnn/SNtl/vzb
-        lTiANEZEIUW5itjcnyer2tOVBrJxIkNJgjNwYaRE+JUlSK4FjvNIF+1GMYYO1WMon1iBSaZNf9+HU
-        KUq11N+Dnbx+OGWyOftFwzMnem9ZYYefwfzJCXKTLR37o1SfTO2iMEQMmjQLFzzkT3teqL7v7osYt
-        p5H4AVyKNevMcsRZ/I8IgJdOibhSYSQlNyNKIanU6zJZXjSJZgMF6wdHUavCNg3cLvnYLMgLV3CoN
-        sooGgueY9zXyOT23nV2xvpYjsv5C1GVQdf2WnHsBxbQC/NvHQ7bjbV0DlqSwEb2LNf9Vgf6zA4ZFe
-        p6NnIoLQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55240)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mdxBd-0001vW-KU; Fri, 22 Oct 2021 17:14:29 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mdxBd-0001Iw-5V; Fri, 22 Oct 2021 17:14:29 +0100
-Date:   Fri, 22 Oct 2021 17:14:29 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [net-next PATCH v2 2/3] net: phylink: Convert some users of
- mdiobus_* to mdiodev_*
-Message-ID: <YXLjZc/KJt7l3/FN@shell.armlinux.org.uk>
-References: <20211022155914.3347672-1-sean.anderson@seco.com>
- <20211022155914.3347672-2-sean.anderson@seco.com>
+        Fri, 22 Oct 2021 12:17:50 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68345C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:15:32 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id t184so3746552pgd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dZGwKlOKsd7h3Lv9CW9qHzX8xPDEzb5LWAr34NR3RiU=;
+        b=Hjwap19eGAGh2JgtlUFiZQcStZrIqT8hHm4703u6DieLgy2ApUKs4s3rhZciall20L
+         O7R9j3ifekFQxFSPGWM3mZgbvQ2QpfxuWOnSSlFMhI63rEqOTOQ/W/yzYNgVM1Of6Aag
+         UWVTUu4zm4UXfxfD9n439U7moRc3BtyyHT568=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dZGwKlOKsd7h3Lv9CW9qHzX8xPDEzb5LWAr34NR3RiU=;
+        b=PwXBatFLuiSoVoynjvLU5nBIlVTzgSsuJVjxHdp12JN8d1uz+3o2lZUA+nBYLcgeMw
+         LZOp+p70Y0W19ycQao66G8EXBNIVZoBIbX5QDC1nwCMAV3SqVD5wGFRGO4rBMB1e1jx5
+         DxZfyBvgWQBKREMFO8vyvtVRb2Nbxv+AGnG9cLoWs/0SzU30/PAhbtqIsii3LImElFmJ
+         wJtIMe5u4n+5yLBlDU1Vc1OEY3+DU8YuHs53zZv+pAnQnKJmR1COfnozGpvTOHC+mm17
+         A5HaouLnK81iit/xtd/lb4Va8wSRg+RB8/kBwPv9MEsrFe/MyghtDpzTLv8752rik8/k
+         xJYw==
+X-Gm-Message-State: AOAM532oY+o+0rHO0eyHkoBlUQxSWY0DZodR0v0xJYvZ5SlyiVhGEp37
+        ezFvJuqPgUVyMMrfZLbS+k3Y8A==
+X-Google-Smtp-Source: ABdhPJwLgq3PV6MYMW7iluDna7GiiOH95uaBslbXxkUy+Sp0uJJQEYBMWRJCCpsjoLuwOS2zFUkuQg==
+X-Received: by 2002:a05:6a00:8d0:b0:44c:26e6:1c13 with SMTP id s16-20020a056a0008d000b0044c26e61c13mr554029pfu.28.1634919331974;
+        Fri, 22 Oct 2021 09:15:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t28sm10179371pfq.158.2021.10.22.09.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 09:15:31 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 09:15:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, akpm@linux-foundation.org,
+        mark.rutland@arm.com, zhengqi.arch@bytedance.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-arch@vger.kernel.org, ardb@kernel.org
+Subject: Re: [PATCH 5/7] powerpc, arm64: Mark __switch_to() as __sched
+Message-ID: <202110220914.11A7C074AF@keescook>
+References: <20211022150933.883959987@infradead.org>
+ <20211022152104.419533274@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022155914.3347672-2-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20211022152104.419533274@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 11:59:13AM -0400, Sean Anderson wrote:
-> This refactors the phylink pcs helper functions to use mdiobus_* instead
-> of mdiodev_*.
+On Fri, Oct 22, 2021 at 05:09:38PM +0200, Peter Zijlstra wrote:
+> Unlike most of the other architectures, PowerPC and ARM64 have
+> __switch_to() as a C function which remains on the stack. Their
+> respective __get_wchan() skips one stack frame unconditionally,
+> without testing is_sched_functions().
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Mark them __sched such that we can forgo that special case.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+I wonder if this change will improve any benchmarks? (i.e. this will
+move __switch_to into the scheduler section, maybe improving icache?)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/arm64/kernel/process.c   |    4 ++--
+>  arch/powerpc/kernel/process.c |    4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -490,8 +490,8 @@ void update_sctlr_el1(u64 sctlr)
+>  /*
+>   * Thread switching.
+>   */
+> -__notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
+> -				struct task_struct *next)
+> +__notrace_funcgraph __sched
+> +struct task_struct *__switch_to(struct task_struct *prev, struct task_struct *next)
+>  {
+>  	struct task_struct *last;
+>  
+> --- a/arch/powerpc/kernel/process.c
+> +++ b/arch/powerpc/kernel/process.c
+> @@ -1201,8 +1201,8 @@ static inline void restore_sprs(struct t
+>  
+>  }
+>  
+> -struct task_struct *__switch_to(struct task_struct *prev,
+> -	struct task_struct *new)
+> +__sched struct task_struct *__switch_to(struct task_struct *prev,
+> +					struct task_struct *new)
+>  {
+>  	struct thread_struct *new_thread, *old_thread;
+>  	struct task_struct *last;
+> 
+> 
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Kees Cook
