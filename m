@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEEE437BA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B99437BBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhJVRRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233552AbhJVRRF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:17:05 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB8BC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:14:47 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so5154006otl.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=khihIRBEDwfkgoT9XzW4kObgxI4RYFVX0d5V9aipBkI=;
-        b=JDzt2sgU2asdNcC2nctv1gQBaMXlCEYffS5ssU/Bhl7jtz1udhOlWYAbaY9MgQPnmC
-         9WPcfPdlElKtgv/Ds+SNc1X3RLhGQxd1X9uHVsrAePxPYezIJntxfN3D7kzuR/oTH6gy
-         hLwjKqsFCm6KKCjFhh16ZrDXiCzMgCoQosMHBukz5O4Xm3faQpoA3PsgIi0CpA3Vr+Ow
-         aF+lgfRPShuK2+mE4DZTRnud06RvFCZHTW1tzxq25MO2a3RH7vFnQmj/YhlpTQMjddbQ
-         3GE6JpDn1YfmndPhoglUiXkoFx57eGjkL9RfUl8Jw6tuh/CUCGiOahFYvpMrJ6tQUZ45
-         qcVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=khihIRBEDwfkgoT9XzW4kObgxI4RYFVX0d5V9aipBkI=;
-        b=vC1esgGsoXio0lxW6Eb9Jj3zQcwe51XoxJlRdVoLQw3msYQ+HB7zJIuKvQJLTsKwns
-         lFnWWSLVDISoCKhtTpn11kBiZIYfHXZ5ezFiKip95kdDcQiY2tRlpk6f3JIDKNWId8iz
-         4yCfYlumwP+40KLHF4thEkTNr/X8tuN/SFyb+WBBzq8ILcIFObtSao00pjiCewPPACp4
-         ortvx9adF7udn+Q/PqZrRaUd+9zA2TCfbt8eNyPeowKR2VL+S4+juy5YYEhZEYdZp+VE
-         VltF8Tln832MWII5xzIHGHVYrD/v8H+J1YRbrLHsG/4pasYnMhPCGfvi738zlDjL2jUt
-         LTGQ==
-X-Gm-Message-State: AOAM532QfWxgzrfdqHOS98CMi1IUKeXBMR0waDCBcVwCQLsb2LiZfGfZ
-        c8vQbo/MkpR0tZuxXC1tKXBs7w==
-X-Google-Smtp-Source: ABdhPJyUurLqXmz/k4ajla41wyPVwPizzTYqnndr7ozwJjgTBnhA4qlZm4eBgUKwrA4WcgYLFUDcdQ==
-X-Received: by 2002:a05:6830:2b11:: with SMTP id l17mr946819otv.298.1634922887137;
-        Fri, 22 Oct 2021 10:14:47 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id p14sm1522495oov.0.2021.10.22.10.14.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 10:14:46 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 10:16:28 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abhinavk@codeaurora.org, Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v3 2/2] phy: qcom: Introduce new eDP PHY driver
-Message-ID: <YXLx7EV7ZiMIxauO@ripper>
-References: <20211016232128.2341395-1-bjorn.andersson@linaro.org>
- <20211016232128.2341395-2-bjorn.andersson@linaro.org>
- <YXGmJFoeXwtTvl7p@matsya>
+        id S233772AbhJVRTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233665AbhJVRTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 13:19:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B090A60F50;
+        Fri, 22 Oct 2021 17:17:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634923051;
+        bh=RpFlMfOJp/0Mp6DhHY6au1mFbQ65CRVgtR4u4j+Vg5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jQ72y0i+3ERGzBHoOgMjnMxHufbMt7V9Xkz+wyYL6ghV6EDdTxG6x/RB0ZVR4nAC1
+         +W5D8m+CzrQAw95QCYKm5oJ0Z6mNUtSo9Y4g9CuhESZq7/f7Yf8m6DBkHz3nZIHgJL
+         Hz6WgARl+JRDxKmAo9akXZqoC/JD80/icyXfhyqzmlZS71MIl61Uk8A6lKdS2ioYlz
+         E1uXO/pUNCs4QELv6O1Jf8No9bxI/1XvzK5k0fpniTloeH9kxrCEoB95NfZrwbe+DH
+         DIo9uiYekssmwMiVnfkoW6pYtkXEC2g6ShK6oP6kne76JS+4jikyZRsE3LaJlbnK3v
+         S9gT89Ba8KQLQ==
+Received: by pali.im (Postfix)
+        id 5B33F7F6; Fri, 22 Oct 2021 19:17:28 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 19:17:28 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+Message-ID: <20211022171728.vlxb3sfebfpgijmp@pali>
+References: <20211005153209.GA1083986@bhelgaas>
+ <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
+ <20211005194301.enb5jddzdgczcolx@pali>
+ <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
+ <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
+ <f648bc89-f08b-e806-45f9-5a1b61686e19@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YXGmJFoeXwtTvl7p@matsya>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f648bc89-f08b-e806-45f9-5a1b61686e19@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21 Oct 10:40 PDT 2021, Vinod Koul wrote:
-
-> On 16-10-21, 16:21, Bjorn Andersson wrote:
-> > Many recent Qualcomm platforms comes with native DP and eDP support.
-> > This consists of a controller in the MDSS and a QMP-like PHY.
+On Friday 22 October 2021 10:04:36 Florian Fainelli wrote:
+> On 10/5/21 7:07 PM, Florian Fainelli wrote:
 > > 
-> > While similar to the well known QMP block, the eDP PHY only has TX lanes
-> > and the programming sequences are slightly different. Rather than
-> > continuing the trend of parameterize the QMP driver to pieces, this
-> > introduces the support as a new driver.
 > > 
-> > The registration of link and pixel clocks are borrowed from the QMP
-> > driver. The non-DP link frequencies are omitted for now.
+> > On 10/5/2021 3:25 PM, Jeremy Linton wrote:
+> >> Hi,
+> >>
+> >> On 10/5/21 2:43 PM, Pali Rohár wrote:
+> >>> Hello!
+> >>>
+> >>> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
+> >>>>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+> >>>>>> Additionally, some basic bus/device filtering exist to avoid sending
+> >>>>>> config transactions to invalid devices on the RP's primary or
+> >>>>>> secondary bus. A basic link check is also made to assure that
+> >>>>>> something is operational on the secondary side before probing the
+> >>>>>> remainder of the config space. If either of these constraints are
+> >>>>>> violated and a config operation is lost in the ether because an EP
+> >>>>>> doesn't respond an unrecoverable SERROR is raised.
+> >>>>>
+> >>>>> It's not "lost"; I assume the root port raises an error because it
+> >>>>> can't send a transaction over a link that is down.
+> >>>>
+> >>>> The problem is AFAIK because the root port doesn't do that.
+> >>>
+> >>> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
+> >>> guess contains also logic for Root Port) does not signal transaction
+> >>> failure for config requests? Or it is just your opinion? Because I'm
+> >>> dealing with similar issues and I'm trying to find a way how to detect
+> >>> if some PCIe IP signal transaction error via AXI SLVERR response OR it
+> >>> just does not send any response back. So if you know some way how to
+> >>> check which one it is, I would like to know it too.
+> >>
+> >> This is my _opinion_ based on what I've heard of some other IP
+> >> integration issues, and what i've seen poking at this one from the
+> >> perspective of a SW guy rather than a HW guy. So, basically worthless.
+> >> But, you should consider that most of these cores/interconnects aren't
+> >> aware of PCIe completion semantics so its the root ports
+> >> responsibility to say, gracefully translate a non-posted write that
+> >> doesn't have a completion for the interconnects its attached to,
+> >> rather than tripping something generic like a SLVERR.
+> >>
+> >> Anyway, for this I would poke around the pile of exception registers,
+> >> with your specific processors manual handy because a lot of them are
+> >> implementation defined.
 > > 
-> > The eDP PHY is very similar to the dedicated (non-USB) DP PHY, but only
-> > the prior is supported for now.
+> > I should be able to get you an answer in the new few days whether
+> > configuration space requests also generate an error towards the ARM CPU,
+> > since memory space requests most definitively do.
 > 
-> since this is QMP phy, pls add an explanation why common QMP driver
-> is not used here?
+> Did not get an answer from the design team, but going through our bug
+> tracker, there were evidences of configuration space accesses also
+> generating external aborts:
 > 
+> [    8.988237] Unhandled fault: synchronous external abort (0x96000210) at 0xffffff8009539004
+> [    9.026698] PC is at pci_generic_config_read32+0x30/0xb0
 
-Looked at this again, doesn't the second paragraph answer that?
+So this is error caused by reading from config space.
 
-> > +static int qcom_edp_phy_init(struct phy *phy)
-> > +{
-[..]
-> > +	writel(0x00, edp->edp + DP_PHY_AUX_CFG0);
-> > +	writel(0x13, edp->edp + DP_PHY_AUX_CFG1);
-> > +	writel(0x24, edp->edp + DP_PHY_AUX_CFG2);
-> > +	writel(0x00, edp->edp + DP_PHY_AUX_CFG3);
-> > +	writel(0x0a, edp->edp + DP_PHY_AUX_CFG4);
-> > +	writel(0x26, edp->edp + DP_PHY_AUX_CFG5);
-> > +	writel(0x0a, edp->edp + DP_PHY_AUX_CFG6);
-> > +	writel(0x03, edp->edp + DP_PHY_AUX_CFG7);
-> > +	writel(0x37, edp->edp + DP_PHY_AUX_CFG8);
-> > +	writel(0x03, edp->edp + DP_PHY_AUX_CFG9);
-> 
-> In qmp phy we use a table for this, that looks very elegant and I am
-> sure next rev will have different magic numbers, so should we go the
-> table approach here on as well..?
-> 
-
-Comparing the v3 and v4 USB/DP combo phy and this, the only number that
-differs is CFG_AUX2 and CFG_AUX8.
-
-CFG_AUX8 is 0x37 for eDP and 0xb7 for DP and AUX_CFG2 seems better to
-mask together, but I don't fully understand the content yet.
-
-I did check two other platforms and they have the same sequence, except
-one additional bit in AUX_CFG2. There also seem to be a few additional
-permutations of this value, so I don't think tables are the solution.
-
-
-So I think it's better if we leave this as proposed and then
-parameterize the two individual entries as needed when we go forward -
-or determine that I missed something.
-
-Regards,
-Bjorn
+Can you check if also writing to config space can trigger some crash? If
+yes, I would like to know if write would be also synchronous or rather
+asynchronous abort.
