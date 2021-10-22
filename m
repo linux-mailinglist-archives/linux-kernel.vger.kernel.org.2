@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E433437809
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1453B43780F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhJVNgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:36:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231961AbhJVNgM (ORCPT
+        id S232884AbhJVNh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:37:29 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:36441 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhJVNh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:36:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634909634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Vg6punm34oYk+y9zl1LSGNiEzLmAAfArkoDnEvG2GI=;
-        b=ax6nwbayyx7EwrV1nebh3uJfQYGV85CuFa9tc4GHyU8tajl38de7LbZhmdOR0pOlkivS/R
-        LygjXl3eyGIBUSTlpwtwenD7/3AZjANi8miltLdF+RePGwgTTSUDec/BfbElm2/ZXzxoaM
-        sylZWbrdhJFQzCdHdh8Smp9NfOQiaHo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-Zt2AKPtFOjaa2dH_qnp8_Q-1; Fri, 22 Oct 2021 09:33:52 -0400
-X-MC-Unique: Zt2AKPtFOjaa2dH_qnp8_Q-1
-Received: by mail-ed1-f71.google.com with SMTP id d3-20020a056402516300b003db863a248eso3677212ede.16
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:33:52 -0700 (PDT)
+        Fri, 22 Oct 2021 09:37:27 -0400
+Received: by mail-pj1-f54.google.com with SMTP id s61-20020a17090a69c300b0019f663cfcd1so5761986pjj.1;
+        Fri, 22 Oct 2021 06:35:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=3Vg6punm34oYk+y9zl1LSGNiEzLmAAfArkoDnEvG2GI=;
-        b=W7Js6bkbvAFDSDtLAonjKmiQBAuDiueWTcEUlRHq5meeo8clQPElPv9m2Ytqhf4N31
-         4NzhiVn7AfNKAS+LKf47jWsG963VpWSobmFUGHOSD1CBIfDOKqLuCu4k64WeeGLxPq7q
-         SecQvP+doEvPTXcQR3imEUP/B+mbqT/FYhS3EqIHRnp1Ab2F4FrcNAXB2cB4btZFfGLg
-         HaeBoOHAU//6oMHLw+ytZDEuJtTSbl/XHVGaF2z36plz9MKJdD0O3ufU9fIlOHFB5D72
-         c5LmR4RBr3xJX/gd4hGR+3oalx8u4u9XAFCUMY0lHa/bqoyOOzzNa0bZrAGPx+AmvJl2
-         McjQ==
-X-Gm-Message-State: AOAM530wxy8wky3bQWtnCluzQaXUeqGV323UWzlxHJ7AKM9F4VufV+ec
-        M/0hASm0wPu5ZhzKzPk+RNXlrg6qzw+tU/gZM+Fz8TCIfXGOZsIUbcFqpOl6iLZEQNRI2eJEB0/
-        1b8T+w6wpO9wBM5Wq8hSAe7TQ
-X-Received: by 2002:a05:6402:1d49:: with SMTP id dz9mr25561edb.17.1634909631634;
-        Fri, 22 Oct 2021 06:33:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyYx1KIeAxL0rRpHT3vlVyvYf2GIBD9/4Aw8TmBkbWuyBpBvoIXF2O0dh8keeQzPCvsdCjZWw==
-X-Received: by 2002:a05:6402:1d49:: with SMTP id dz9mr25536edb.17.1634909631427;
-        Fri, 22 Oct 2021 06:33:51 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ku14sm490022ejc.30.2021.10.22.06.33.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 06:33:50 -0700 (PDT)
-Message-ID: <43fd49ff-d54d-558f-f5c8-6dcc5dc726b2@redhat.com>
-Date:   Fri, 22 Oct 2021 15:33:49 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gB9nPqjC9kxzaGyB2tMhiS6mHnq6MtGEClgbmCe1njU=;
+        b=oKz5XugOcFNwrwnTaCY/SSpL7pnROnKkrienvzj5uVBK0QBc1mJr/o5RqGfeRX23z7
+         7Exq6062+04598c1mBbQlOz/HtDxkoVO0Ik5R3i4A0rvl0EYDNjdV3YBd3UdRXyCr58K
+         0lHAgP0GY7HJG/6lvnrV/yeWg45+7KZ3mNMXyk46gysLDISFGEb33iInu5Wp7HNx+OZU
+         rW/3w+GLfgz0z9oi7AMDhac1LZ3Lr5PV0TYw/VxjS9FsTSP5zVUOKy1DX4nqrl0cuXKI
+         JPO6BNZbzUf99uSsbdSfXebVYRCJfjxp/+BdsKxy4f8GY0tXrOQJQQYYrdC89hKvosrD
+         JUbA==
+X-Gm-Message-State: AOAM530liQ+0FFyaHU7QLNSpfe/j4WG2aXlL5u+Gt3ECLD6Rf1KMZoib
+        gJ8nNZqmtfuD7JaNfuEJzyBa9Qwn7yD5+rtRVXo=
+X-Google-Smtp-Source: ABdhPJzqcT67gDitD+qJ4y7d2w+3rgIO7RJA2uS12QTmtGTpMOXJEAZLRBCBCYbMxbHPzzavLq8IpRdVwEBpC6v5jgY=
+X-Received: by 2002:a17:90b:390f:: with SMTP id ob15mr13460474pjb.185.1634909710011;
+ Fri, 22 Oct 2021 06:35:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 0/8] KVM: SEV-ES: fixes for string I/O emulation
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        fwilhelm@google.com, oupton@google.com
-References: <20211013165616.19846-1-pbonzini@redhat.com>
- <YXH8hmB64gnwxIx6@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YXH8hmB64gnwxIx6@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+ <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 22 Oct 2021 15:34:58 +0200
+Message-ID: <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/21 01:49, Sean Christopherson wrote:
-> On Wed, Oct 13, 2021, Paolo Bonzini wrote:
->> Patches 2 to 7 are a bunch of cleanups to emulator_pio_in and
->> emulator_pio_in_out, so that the final SEV code is a little easier
->> to reason on.  Just a little, no big promises.
-> IMO, this series goes in the wrong direction and doesn't make the mess any better,
-> just different.
-> 
-> The underlying issue is that kernel_pio() does the completely horrendous thing
-> of consuming vcpu->arch.pio.  That leads to the juggling that this series tries
-> to clean up, but it's essentially an impossible problem to solve because the
-> approach itself is broken.
+On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > +static const u32 jh7100_reset_asserted[4] = {
+>
+> > +       BIT(JH7100_RST_U74 % 32) |
+> > +       BIT(JH7100_RST_VP6_DRESET % 32) |
+> > +       BIT(JH7100_RST_VP6_BRESET % 32),
+>
+> It's hard to notice that this is only one entry. See also below.
 
-I agree on this, but I disagree that the series does not make the mess 
-any better.  At the very least, the new signatures for 
-__emulator_pio_in, complete_emulator_pio_in and emulator_pio_in_out are 
-improvements regarding the _role_ of vcpu->arch.pio*:
+Yeah, so what would be a better way to style it?
 
-- complete_emulator_pio_in clearly takes the values from vcpu->arch.pio, 
-which _is_ the right thing to do for a complete_userspace_io function. 
-This is not clear of emulator_pio_in before the patch
+> > +       BIT(JH7100_RST_HIFI4_DRESET % 32) |
+> > +       BIT(JH7100_RST_HIFI4_BRESET % 32),
+> > +
+> > +       BIT(JH7100_RST_E24 % 32)
+>
+> + Comma.
+>
+> > +};
+>
+> Why all these ugly % 32 against constants?
 
-- __emulator_pio_in and emulator_pio_in_out do not take anymore the 
-buffer argument, making it clear that they operate on the internal 
-pio_data buffer and only complete_emulator_pio_in copies out of it. 
-Which yes is horrible, but at least it is clearly visible in the code now.
+Because the JH7100_RST_ values goes higher than 31. There is a
+BIT_MASK macro, but that does % BITS_PER_LONG and this is a 64bit
+machine.
 
-I managed to clean things up quite satisfactorily with just 6 patches on 
-top of these eight, so I'll post the full series as soon as I finish 
-testing them.  5.15 can then include these to fix the bug at hand.
+> ...
+>
+> > +       if (!assert)
+> > +               done ^= mask;
+>
+> Can you convert this to simple
+>
+>   if (assert)
+>     ret = readl_...
+>   else
+>     ret = readl_...
+>
+> below?
 
-Paolo
+I don't see how that would work. We're using the done value in in the
+readl_poll_timeout. Maybe you can be a bit more explicit.
 
+The reason is that for most reset lines a 0 in the status register
+means it's asserted and a 1 means it's deasserted. For the few reset
+lines above this is reversed though.
+
+/Emil
