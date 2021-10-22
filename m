@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE35B437F9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51B0437F9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbhJVUwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:52:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
+        id S234799AbhJVUwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:52:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234439AbhJVUvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234441AbhJVUvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:51:04 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7640761401;
+        by mail.kernel.org (Postfix) with ESMTPSA id A09B761425;
         Fri, 22 Oct 2021 20:48:45 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1T2-000QUh-Js;
+        id 1me1T2-000QVG-Pv;
         Fri, 22 Oct 2021 16:48:44 -0400
-Message-ID: <20211022204844.458068984@goodmis.org>
+Message-ID: <20211022204844.638189907@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:48:30 -0400
+Date:   Fri, 22 Oct 2021 16:48:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 34/40] x86/unwind: Compile kretprobe fixup code only if CONFIG_KRETPROBES=y
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [for-next][PATCH 35/40] arm64: kprobes: Record frame pointer with kretprobe instance
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,42 +40,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Compile kretprobe related stacktrace entry recovery code and
-unwind_state::kr_cur field only when CONFIG_KRETPROBES=y.
+Record the frame pointer instead of stack address with kretprobe
+instance as the identifier on the instance list.
+Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
+actual frame pointer (x29).
+
+This will allow the stacktrace code to find the original return
+address from the FP alone.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/x86/include/asm/unwind.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/kernel/probes/kprobes.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
-index fca2e783e3ce..2a1f8734416d 100644
---- a/arch/x86/include/asm/unwind.h
-+++ b/arch/x86/include/asm/unwind.h
-@@ -16,7 +16,9 @@ struct unwind_state {
- 	unsigned long stack_mask;
- 	struct task_struct *task;
- 	int graph_idx;
-+#ifdef CONFIG_KRETPROBES
- 	struct llist_node *kr_cur;
-+#endif
- 	bool error;
- #if defined(CONFIG_UNWINDER_ORC)
- 	bool signal, full_regs;
-@@ -105,9 +107,13 @@ static inline
- unsigned long unwind_recover_kretprobe(struct unwind_state *state,
- 				       unsigned long addr, unsigned long *addr_p)
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index e7ad6da980e8..d9dfa82c1f18 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
  {
-+#ifdef CONFIG_KRETPROBES
- 	return is_kretprobe_trampoline(addr) ?
- 		kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
- 		addr;
-+#else
-+	return addr;
-+#endif
+-	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
++	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
  }
  
- /* Recover the return address modified by kretprobe and ftrace_graph. */
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				      struct pt_regs *regs)
+ {
+ 	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+-	ri->fp = (void *)kernel_stack_pointer(regs);
++	ri->fp = (void *)regs->regs[29];
+ 
+ 	/* replace return addr (x30) with trampoline */
+ 	regs->regs[30] = (long)&__kretprobe_trampoline;
 -- 
 2.33.0
