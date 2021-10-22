@@ -2,148 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0582437C47
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6E3437C59
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbhJVRzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:55:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:57268 "EHLO foss.arm.com"
+        id S233961AbhJVR7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231472AbhJVRzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:55:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 844181063;
-        Fri, 22 Oct 2021 10:52:45 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 164F03F73D;
-        Fri, 22 Oct 2021 10:52:39 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 18:52:36 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     keescook@chromium.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        zhengqi.arch@bytedance.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-arch@vger.kernel.org, ardb@kernel.org,
-        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        broonie@kernel.org
-Subject: Re: [PATCH 6/7] arch: __get_wchan() || ARCH_STACKWALK
-Message-ID: <20211022175236.GJ86184@C02TD0UTHF1T.local>
-References: <20211022150933.883959987@infradead.org>
- <20211022152104.487919043@infradead.org>
+        id S233819AbhJVR70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 13:59:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9C06101C;
+        Fri, 22 Oct 2021 17:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634925428;
+        bh=mjxGUB1lWFasyPHvOk10jf2o29FoUADtMwLA4yTPl+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mERG243251H/cSXkfHQxreKEx6kldD18D7JGgdZyArmX6plJfdDX5DXc3J27jt5KQ
+         RkRKil6Xf031C8QewpRj8hmOyfghWYfxsLhiTTW8Ugw1Pj1kJNzyg+AL5YMt6OoZrJ
+         qrNTnCW7oTGOFdlGdVH/cAKwraZNloGEWIOzF7bc7Ao0p06lDMom/2GRCtupApNrz5
+         xH3eXxooVGkt/dygnXQ1GmN04cASWnk7XzRcC1P+E4FCkepYvuTFWo5qnqXV2yBsXg
+         xtKol1R81BW62VZ3US8cY8Ep+dugJiQyW9JHCMvD15EkLjw3NzgGniLcVQdYAdSdlW
+         glf7ZO/eHz+mQ==
+Received: by pali.im (Postfix)
+        id 368187F6; Fri, 22 Oct 2021 19:57:06 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 19:57:06 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+Message-ID: <20211022175706.gzu5jz23vjkcnkqk@pali>
+References: <20211005153209.GA1083986@bhelgaas>
+ <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
+ <20211005194301.enb5jddzdgczcolx@pali>
+ <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
+ <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
+ <f648bc89-f08b-e806-45f9-5a1b61686e19@gmail.com>
+ <20211022171728.vlxb3sfebfpgijmp@pali>
+ <3a956549-3304-5a4c-3058-eccfac44d31b@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211022152104.487919043@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3a956549-3304-5a4c-3058-eccfac44d31b@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:09:39PM +0200, Peter Zijlstra wrote:
-> Use ARCH_STACKWALK to implement a generic __get_wchan().
+On Friday 22 October 2021 10:29:48 Florian Fainelli wrote:
+> On 10/22/21 10:17 AM, Pali Rohár wrote:
+> > On Friday 22 October 2021 10:04:36 Florian Fainelli wrote:
+> >> On 10/5/21 7:07 PM, Florian Fainelli wrote:
+> >>>
+> >>>
+> >>> On 10/5/2021 3:25 PM, Jeremy Linton wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On 10/5/21 2:43 PM, Pali Rohár wrote:
+> >>>>> Hello!
+> >>>>>
+> >>>>> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
+> >>>>>> Hi,
+> >>>>>>
+> >>>>>> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
+> >>>>>>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+> >>>>>>>> Additionally, some basic bus/device filtering exist to avoid sending
+> >>>>>>>> config transactions to invalid devices on the RP's primary or
+> >>>>>>>> secondary bus. A basic link check is also made to assure that
+> >>>>>>>> something is operational on the secondary side before probing the
+> >>>>>>>> remainder of the config space. If either of these constraints are
+> >>>>>>>> violated and a config operation is lost in the ether because an EP
+> >>>>>>>> doesn't respond an unrecoverable SERROR is raised.
+> >>>>>>>
+> >>>>>>> It's not "lost"; I assume the root port raises an error because it
+> >>>>>>> can't send a transaction over a link that is down.
+> >>>>>>
+> >>>>>> The problem is AFAIK because the root port doesn't do that.
+> >>>>>
+> >>>>> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
+> >>>>> guess contains also logic for Root Port) does not signal transaction
+> >>>>> failure for config requests? Or it is just your opinion? Because I'm
+> >>>>> dealing with similar issues and I'm trying to find a way how to detect
+> >>>>> if some PCIe IP signal transaction error via AXI SLVERR response OR it
+> >>>>> just does not send any response back. So if you know some way how to
+> >>>>> check which one it is, I would like to know it too.
+> >>>>
+> >>>> This is my _opinion_ based on what I've heard of some other IP
+> >>>> integration issues, and what i've seen poking at this one from the
+> >>>> perspective of a SW guy rather than a HW guy. So, basically worthless.
+> >>>> But, you should consider that most of these cores/interconnects aren't
+> >>>> aware of PCIe completion semantics so its the root ports
+> >>>> responsibility to say, gracefully translate a non-posted write that
+> >>>> doesn't have a completion for the interconnects its attached to,
+> >>>> rather than tripping something generic like a SLVERR.
+> >>>>
+> >>>> Anyway, for this I would poke around the pile of exception registers,
+> >>>> with your specific processors manual handy because a lot of them are
+> >>>> implementation defined.
+> >>>
+> >>> I should be able to get you an answer in the new few days whether
+> >>> configuration space requests also generate an error towards the ARM CPU,
+> >>> since memory space requests most definitively do.
+> >>
+> >> Did not get an answer from the design team, but going through our bug
+> >> tracker, there were evidences of configuration space accesses also
+> >> generating external aborts:
+> >>
+> >> [    8.988237] Unhandled fault: synchronous external abort (0x96000210) at 0xffffff8009539004
+> >> [    9.026698] PC is at pci_generic_config_read32+0x30/0xb0
+> > 
+> > So this is error caused by reading from config space.
+> > 
+> > Can you check if also writing to config space can trigger some crash? If
+> > yes, I would like to know if write would be also synchronous or rather
+> > asynchronous abort.
 > 
-> STACKTRACE should be possible, but the various implementations of
-> stack_trace_save_tsk() are not consistent enough for this to work.
-> ARCH_STACKWALK is a smaller set of architectures with a better defined
-> interface.
+> Yes it does and AFAICT it always shows up as a system error interrupt,
+> here is an example:
 > 
-> Since get_wchan() pins the task in a blocked state, it is not
-> necessary to take a reference on the task stack, the task isn't going
-> anywhere.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/arm/include/asm/processor.h     |    2 -
->  arch/arm/kernel/process.c            |   22 --------------------
->  arch/arm64/include/asm/processor.h   |    2 -
->  arch/arm64/kernel/process.c          |   26 ------------------------
->  arch/powerpc/include/asm/processor.h |    2 -
->  arch/powerpc/kernel/process.c        |   37 -----------------------------------
->  arch/riscv/include/asm/processor.h   |    3 --
->  arch/riscv/kernel/stacktrace.c       |   21 -------------------
->  arch/s390/include/asm/processor.h    |    1 
->  arch/s390/kernel/process.c           |   29 ---------------------------
->  arch/x86/include/asm/processor.h     |    2 -
->  arch/x86/kernel/process.c            |   25 -----------------------
->  kernel/sched/core.c                  |   24 ++++++++++++++++++++++
->  13 files changed, 24 insertions(+), 172 deletions(-)
+> # setpci -d *:* latency_timer=40
+> [   25.909644] SError Interrupt on CPU2, code 0xbf000002 -- SError
+> [   25.909652] pc : pci_user_write_config_byte+0x6c/0x78
+> [   25.909706] Kernel panic - not syncing: Asynchronous SError Interrupt
 
-Nice!
+Ok! So writing to config space cause asynchronous abort.
 
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -528,32 +528,6 @@ struct task_struct *__switch_to(struct t
->  	return last;
->  }
->  
-> -unsigned long __get_wchan(struct task_struct *p)
-> -{
-> -	struct stackframe frame;
-> -	unsigned long stack_page, ret = 0;
-> -	int count = 0;
-> -
-> -	stack_page = (unsigned long)try_get_task_stack(p);
-> -	if (!stack_page)
-> -		return 0;
-> -
-> -	start_backtrace(&frame, thread_saved_fp(p), thread_saved_pc(p));
-> -
-> -	do {
-> -		if (unwind_frame(p, &frame))
-> -			goto out;
-> -		if (!in_sched_functions(frame.pc)) {
-> -			ret = frame.pc;
-> -			goto out;
-> -		}
-> -	} while (count++ < 16);
-> -
-> -out:
-> -	put_task_stack(p);
-> -	return ret;
-> -}
+Looking at the codes and 0x96000210 on all ARMv8 should be Data Abort.
+0xbf...... on ARMv8 is SError interrupt and other bits are CPU core
+specific. What CPU core do you have on this machine? I have just decoder
+for A53 core and on this core value 0xbf000002 means "SLVERR on external
+access". But I guess that it would mean also SLVERR for your CPU core.
 
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1966,6 +1966,30 @@ bool sched_task_on_rq(struct task_struct
->  	return task_on_rq_queued(p);
->  }
->  
-> +#ifdef CONFIG_ARCH_STACKWALK
-> +
-> +static bool consume_wchan(void *cookie, unsigned long addr)
-> +{
-> +	unsigned long *wchan = cookie;
-> +
-> +	if (in_sched_functions(addr))
-> +		return true;
-> +
-> +	*wchan = addr;
-> +	return false;
-> +}
-> +
-> +static unsigned long __get_wchan(struct task_struct *p)
-> +{
-> +	unsigned long wchan = 0;
-> +
-> +	arch_stack_walk(consume_wchan, &wchan, p, NULL);
-> +
-> +	return wchan;
-> +}
+Because Exactly same behavior I'm seeing with PCIe controller on A3720
+SoC which has A53 core. It looks like that PCIe controller translates
+PCIe CA and UR responses to AXI SLVERR responses which are delivered to
+CPU and kernel just see these fatal error interrupts. And same issue is
+not only for config requests but also for memory read / write commands.
 
-It's amazing how much simpler things become with the right
-infrastructure!
+In my case PCIe controller really receives response (timeout does not
+occur) from PCIe core (which probably timeouts as it cannot send message
+when link is down) but instead of translating them to SLVOK with
+fabricated 0xffffffff response it sends to CPU that fatal SLVERR.
 
-I gave this a spin on arm64, and /proc/*/wchan looks as expected. The
-code looks "obviously correct" to me given the changes in prior patches,
-so FWIW:
+I was told that the fix for this kind of issue is to "reconfigure" PCIe
+controller to never send SLVERR to CPU. And instead fabricate 0xffffffff
+SLVOK response. It should be configurable in PCIe wrapper or PCIe glue
+IP which do connection between CPU / AXI and PCIe core.
 
-Reviewed-by: Mark Rutland <mark.rutland@arm.com> [arm64]
-Tested-by: Mark Rutland <mark.rutland@arm.com> [arm64]
-
-Thanks,
-Mark.
+I do not know if there is any way how to "ignores" these SLVERR
+responses from PCIe controller sent to CPU.
