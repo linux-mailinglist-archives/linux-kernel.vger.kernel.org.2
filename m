@@ -2,181 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F483437B29
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFF8437B2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhJVQ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbhJVQ4j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:56:39 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4D7C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:54:21 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id o13so2803482qvm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b2w3PlPqpKQiMzqSOq5AVpJBVHNhIVKPGfoHVzEVCds=;
-        b=LMCZZ0U72keGDqd5g6LTFWWQiy/YVwZc2dAtLXVKcrdmCzA12oJxAZH5SvZ3f1H8bL
-         tu1tWEQevUx5Pw2nn+MvTcDRic/fdC2Ek13oTIxJ8sObiivCqSYWNecE0DEsV7rDem22
-         njqjHUvJLa4TbcemjASBSKJhnCYr9lJKJywmM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b2w3PlPqpKQiMzqSOq5AVpJBVHNhIVKPGfoHVzEVCds=;
-        b=wOnMikXKJ37ku8O2iziGKYDstCpjciyxgkyTD2FqFJPPmxNDjZfoz5nivaDEGMDNWB
-         N4qgwAm3VcbEqEF9UooTPbQ73x5a2lIP0iRdZkG3Q/e5aR0fJgtnEJ8QQmjrnMe14SP+
-         RHEfxl0LvJKEk18wgl/dZUaxTdRunaufugKC+/J5GUucNSbPLmmeMCf0Z/6zgEa8ZA5/
-         0bDVoF29ZaFfWYF885PElyetkmQoV5q3e7UGu1n2dq+ipO+j7zfPwF0tc1qtSSO036qs
-         TTGWILZ/fJwv6PsIRAmdXgC4EWVoZr+3FCvqHtUtQU1DFQwJCwPQLnH/iduZvscc6812
-         lZRA==
-X-Gm-Message-State: AOAM530fPdJ9ShZvxwyF4JgoRE3YOC/V80uOja5kwtNpEYO+a0lII2v1
-        p/2qJac3RhF50mZSyc5Uxy8nuA==
-X-Google-Smtp-Source: ABdhPJxDLKxCGk4B/SAq3N2iCVgytTX5QVoCrgIAKMUMHGtLMrozyd23amkOxXpGmY0w2Lb7ge9JfA==
-X-Received: by 2002:a0c:aac2:: with SMTP id g2mr696582qvb.41.1634921659807;
-        Fri, 22 Oct 2021 09:54:19 -0700 (PDT)
-Received: from markyacoub.nyc.corp.google.com ([2620:0:1003:314:6c36:8d9f:c50a:b0f0])
-        by smtp.gmail.com with ESMTPSA id p19sm4432133qtk.20.2021.10.22.09.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 09:54:19 -0700 (PDT)
-From:   Mark Yacoub <markyacoub@chromium.org>
-To:     linux-mediatek@lists.infradead.org
-Cc:     seanpaul@chromium.org, Mark Yacoub <markyacoub@google.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/mediatek: Set Rotation default value to 1.
-Date:   Fri, 22 Oct 2021 12:54:02 -0400
-Message-Id: <20211022165409.178281-1-markyacoub@chromium.org>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+        id S233578AbhJVQ44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:56:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:56656 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233413AbhJVQ4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:56:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD0E31063;
+        Fri, 22 Oct 2021 09:54:37 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40C843F73D;
+        Fri, 22 Oct 2021 09:54:34 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 17:54:31 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        zhengqi.arch@bytedance.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-arch@vger.kernel.org, ardb@kernel.org
+Subject: Re: [PATCH 2/7] stacktrace,sched: Make stack_trace_save_tsk() more
+ robust
+Message-ID: <20211022165431.GF86184@C02TD0UTHF1T.local>
+References: <20211022150933.883959987@infradead.org>
+ <20211022152104.215612498@infradead.org>
+ <202110220919.46F58199D@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202110220919.46F58199D@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@google.com>
+On Fri, Oct 22, 2021 at 09:25:02AM -0700, Kees Cook wrote:
+> On Fri, Oct 22, 2021 at 05:09:35PM +0200, Peter Zijlstra wrote:
+> > Recent patches to get_wchan() made it more robust by only doing the
+> > unwind when the task was blocked and serialized against wakeups.
+> > 
+> > Extract this functionality as a simpler companion to task_call_func()
+> > named task_try_func() that really only cares about blocked tasks. Then
+> > employ this new function to implement the same robustness for
+> > ARCH_STACKWALK based stack_trace_save_tsk().
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  include/linux/wait.h |    1 
+> >  kernel/sched/core.c  |   62 ++++++++++++++++++++++++++++++++++++++++++++-------
+> >  kernel/stacktrace.c  |   13 ++++++----
+> >  3 files changed, 63 insertions(+), 13 deletions(-)
+> > 
+> > --- a/include/linux/wait.h
+> > +++ b/include/linux/wait.h
+> > @@ -1162,5 +1162,6 @@ int autoremove_wake_function(struct wait
+> >  
+> >  typedef int (*task_call_f)(struct task_struct *p, void *arg);
+> >  extern int task_call_func(struct task_struct *p, task_call_f func, void *arg);
+> > +extern int task_try_func(struct task_struct *p, task_call_f func, void *arg);
+> >  
+> >  #endif /* _LINUX_WAIT_H */
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -1966,21 +1966,21 @@ bool sched_task_on_rq(struct task_struct
+> >  	return task_on_rq_queued(p);
+> >  }
+> >  
+> > +static int try_get_wchan(struct task_struct *p, void *arg)
+> > +{
+> > +	unsigned long *wchan = arg;
+ke> > +	*wchan = __get_wchan(p);
+> > +	return 0;
+> > +}
+> > +
+> >  unsigned long get_wchan(struct task_struct *p)
+> >  {
+> >  	unsigned long ip = 0;
+> > -	unsigned int state;
+> >  
+> >  	if (!p || p == current)
+> >  		return 0;
+> >  
+> > -	/* Only get wchan if task is blocked and we can keep it that way. */
+> > -	raw_spin_lock_irq(&p->pi_lock);
+> > -	state = READ_ONCE(p->__state);
+> > -	smp_rmb(); /* see try_to_wake_up() */
+> > -	if (state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq)
+> > -		ip = __get_wchan(p);
+> > -	raw_spin_unlock_irq(&p->pi_lock);
+> > +	task_try_func(p, try_get_wchan, &ip);
+> >  
+> >  	return ip;
+> >  }
+> > @@ -4184,6 +4184,52 @@ int task_call_func(struct task_struct *p
+> >  	return ret;
+> >  }
+> >  
+> > +/*
+> > + * task_try_func - Invoke a function on task in blocked state
+> > + * @p: Process for which the function is to be invoked
+> > + * @func: Function to invoke
+> > + * @arg: Argument to function
+> > + *
+> > + * Fix the task in a blocked state, when possible. And if so, invoke @func on it.
+> > + *
+> > + * Returns:
+> > + *  -EBUSY or whatever @func returns
+> > + */
+> > +int task_try_func(struct task_struct *p, task_call_f func, void *arg)
+> > +{
+> > +	unsigned long flags;
+> > +	unsigned int state;
+> > +	int ret = -EBUSY;
+> > +
+> > +	raw_spin_lock_irqsave(&p->pi_lock, flags);
+> > +
+> > +	state = READ_ONCE(p->__state);
+> > +
+> > +	/*
+> > +	 * Ensure we load p->on_rq after p->__state, otherwise it would be
+> > +	 * possible to, falsely, observe p->on_rq == 0.
+> > +	 *
+> > +	 * See try_to_wake_up() for a longer comment.
+> > +	 */
+> > +	smp_rmb();
+> > +
+> > +	/*
+> > +	 * Since pi->lock blocks try_to_wake_up(), we don't need rq->lock when
+> > +	 * the task is blocked. Make sure to check @state since ttwu() can drop
+> > +	 * locks at the end, see ttwu_queue_wakelist().
+> > +	 */
+> > +	if (state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq) {
+> > +		/*
+> > +		 * The task is blocked and we're holding off wakeupsr. For any
+> > +		 * of the other task states, see task_call_func().
+> > +		 */
+> > +		ret = func(p, arg);
+> > +	}
+> > +
+> > +	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+> > +	return ret;
+> > +}
+> > +
+> >  /**
+> >   * wake_up_process - Wake up a specific process
+> >   * @p: The process to be woken up.
+> > --- a/kernel/stacktrace.c
+> > +++ b/kernel/stacktrace.c
+> > @@ -123,6 +123,13 @@ unsigned int stack_trace_save(unsigned l
+> >  }
+> >  EXPORT_SYMBOL_GPL(stack_trace_save);
+> >  
+> > +static int try_arch_stack_walk_tsk(struct task_struct *tsk, void *arg)
+> > +{
+> > +	stack_trace_consume_fn consume_entry = stack_trace_consume_entry_nosched;
+> > +	arch_stack_walk(consume_entry, arg, tsk, NULL);
+> > +	return 0;
+> > +}
+> > +
+> >  /**
+> >   * stack_trace_save_tsk - Save a task stack trace into a storage array
+> >   * @task:	The task to examine
+> > @@ -135,7 +142,6 @@ EXPORT_SYMBOL_GPL(stack_trace_save);
+> >  unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
+> >  				  unsigned int size, unsigned int skipnr)
+> >  {
+> > -	stack_trace_consume_fn consume_entry = stack_trace_consume_entry_nosched;
+> >  	struct stacktrace_cookie c = {
+> >  		.store	= store,
+> >  		.size	= size,
+> > @@ -143,11 +149,8 @@ unsigned int stack_trace_save_tsk(struct
+> >  		.skip	= skipnr + (current == tsk),
+> >  	};
+> >  
+> > -	if (!try_get_task_stack(tsk))
+> > -		return 0;
+> > +	task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+> 
+> Pardon my thin understanding of the scheduler, but I assume this change
+> doesn't mean stack_trace_save_tsk() stops working for "current", right?
+> In trying to answer this for myself, I couldn't convince myself what value
+> current->__state have here. Is it one of TASK_(UN)INTERRUPTIBLE ?
 
-[Why]
-The Rotation prob is a bitmask value. It must always have a valid value.
-A default NO rotation is equal to 1 not 0.
+Regardless of that, current->on_rq will be non-zero, so you're right that this
+causes stack_trace_save_tsk() to not work for current, e.g.
 
-[How]
-1. At the reset hook, call __drm_atomic_helper_plane_reset which is
-called at the initialization of the plane and sets the default value of
-all planes to DRM_MODE_ROTATE_0 which is equal to 1.
-2. At the ovl layer check, do no overwrite the state->rotation value 0
-if DRM_MODE_ROTATE_0 is set. We should not change the value that the
-userspace has set, especially if it's an unsupported value.
+| # cat /proc/self/stack 
+| # wc  /proc/self/stack 
+|         0         0         0 /proc/self/stack
 
-Tested on Jacuzzi(MTK).
-Fixes IGT@kms_properties@plane-properties-{legacy,atomic} and
-IGT@kms_properties@get_properties-sanity-{atomic,non-atomic}
+TBH, I think that (taking a step back from this issue in particular)
+stack_trace_save_tsk() *shouldn't* work for current, and callers *should* be
+forced to explicitly handle current separately from blocked tasks.
 
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
----
- drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  2 +-
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c     | 20 +++++++-------------
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  5 ++---
- drivers/gpu/drm/mediatek/mtk_drm_plane.c    |  3 ++-
- 4 files changed, 12 insertions(+), 18 deletions(-)
+So we could fix this in the stacktrace code with:
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-index 86c3068894b11..2fc566964f68e 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-@@ -64,7 +64,7 @@ void mtk_ovl_config(struct device *dev, unsigned int w,
- 		    unsigned int h, unsigned int vrefresh,
- 		    unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
- int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
--			struct mtk_plane_state *mtk_state);
-+			const struct mtk_plane_state *mtk_state);
- void mtk_ovl_layer_config(struct device *dev, unsigned int idx,
- 			  struct mtk_plane_state *state,
- 			  struct cmdq_pkt *cmdq_pkt);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index ea5760f856ec6..13999564304bc 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -190,19 +190,15 @@ unsigned int mtk_ovl_supported_rotations(struct device *dev)
- }
- 
- int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
--			struct mtk_plane_state *mtk_state)
-+			const struct mtk_plane_state *mtk_state)
- {
--	struct drm_plane_state *state = &mtk_state->base;
--	unsigned int rotation = 0;
-+	const struct drm_plane_state *state = &mtk_state->base;
-+	unsigned int rotation = drm_rotation_simplify(
-+		state->rotation,
-+		DRM_MODE_ROTATE_0 | DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y);
- 
--	rotation = drm_rotation_simplify(state->rotation,
--					 DRM_MODE_ROTATE_0 |
--					 DRM_MODE_REFLECT_X |
--					 DRM_MODE_REFLECT_Y);
--	rotation &= ~DRM_MODE_ROTATE_0;
--
--	/* We can only do reflection, not rotation */
--	if ((rotation & DRM_MODE_ROTATE_MASK) != 0)
-+	/* We can only do reflection, not non-zero rotation */
-+	if (((rotation & ~DRM_MODE_ROTATE_0) & DRM_MODE_ROTATE_MASK) != 0)
- 		return -EINVAL;
- 
- 	/*
-@@ -212,8 +208,6 @@ int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
- 	if (state->fb->format->is_yuv && rotation != 0)
- 		return -EINVAL;
- 
--	state->rotation = rotation;
--
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-index 1b582262b682b..530bdd031933f 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-@@ -53,9 +53,8 @@ struct mtk_ddp_comp_funcs {
- 	void (*disable_vblank)(struct device *dev);
- 	unsigned int (*supported_rotations)(struct device *dev);
- 	unsigned int (*layer_nr)(struct device *dev);
--	int (*layer_check)(struct device *dev,
--			   unsigned int idx,
--			   struct mtk_plane_state *state);
-+	int (*layer_check)(struct device *dev, unsigned int idx,
-+			   const struct mtk_plane_state *state);
- 	void (*layer_config)(struct device *dev, unsigned int idx,
- 			     struct mtk_plane_state *state,
- 			     struct cmdq_pkt *cmdq_pkt);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index e6dcb34d30522..accd26481b9fb 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -44,9 +44,10 @@ static void mtk_plane_reset(struct drm_plane *plane)
- 		state = kzalloc(sizeof(*state), GFP_KERNEL);
- 		if (!state)
- 			return;
--		plane->state = &state->base;
- 	}
- 
-+	__drm_atomic_helper_plane_reset(plane, &state->base);
-+
- 	state->base.plane = plane;
- 	state->pending.format = DRM_FORMAT_RGB565;
- }
--- 
-2.33.0.1079.g6e70778dc9-goog
+| diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
+| index a1cdbf8c3ef8..327af9ff2c55 100644
+| --- a/kernel/stacktrace.c
+| +++ b/kernel/stacktrace.c
+| @@ -149,7 +149,10 @@ unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
+|                 .skip   = skipnr + (current == tsk),
+|         };
+|  
+| -       task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+| +       if (tsk == current)
+| +               try_arch_stack_walk_tsk(tsk, &c);
+| +       else
+| +               task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+|  
+|         return c.len;
+|  }
 
+... and we could rename task_try_func() to blocked_task_try_func(), and
+later push the distinction into higher-level callers.
+
+Alternatively, we could do:
+
+| diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+| index a8be6e135c57..cef9e35ecf2f 100644
+| --- a/kernel/sched/core.c
+| +++ b/kernel/sched/core.c
+| @@ -4203,6 +4203,11 @@ int task_try_func(struct task_struct *p, task_call_f func, void *arg)
+|  
+|         raw_spin_lock_irqsave(&p->pi_lock, flags);
+|  
+| +       if (p == current) {
+| +               ret = func(p, arg);
+| +               goto out;
+| +       }
+| +
+|         state = READ_ONCE(p->__state);
+|  
+|         /*
+| @@ -4226,6 +4231,7 @@ int task_try_func(struct task_struct *p, task_call_f func, void *arg)
+|                 ret = func(p, arg);
+|         }
+|  
+| +out:
+|         raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+|         return ret;
+|  }
+
+... which perhaps is aligned with smp_call_function_single() and
+generic_exec_single().
+
+Thanks,
+Mark.
