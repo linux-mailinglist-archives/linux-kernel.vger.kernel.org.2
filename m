@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F025A437AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8ED437ABA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhJVQRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhJVQRu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:17:50 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68345C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:15:32 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id t184so3746552pgd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dZGwKlOKsd7h3Lv9CW9qHzX8xPDEzb5LWAr34NR3RiU=;
-        b=Hjwap19eGAGh2JgtlUFiZQcStZrIqT8hHm4703u6DieLgy2ApUKs4s3rhZciall20L
-         O7R9j3ifekFQxFSPGWM3mZgbvQ2QpfxuWOnSSlFMhI63rEqOTOQ/W/yzYNgVM1Of6Aag
-         UWVTUu4zm4UXfxfD9n439U7moRc3BtyyHT568=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dZGwKlOKsd7h3Lv9CW9qHzX8xPDEzb5LWAr34NR3RiU=;
-        b=PwXBatFLuiSoVoynjvLU5nBIlVTzgSsuJVjxHdp12JN8d1uz+3o2lZUA+nBYLcgeMw
-         LZOp+p70Y0W19ycQao66G8EXBNIVZoBIbX5QDC1nwCMAV3SqVD5wGFRGO4rBMB1e1jx5
-         DxZfyBvgWQBKREMFO8vyvtVRb2Nbxv+AGnG9cLoWs/0SzU30/PAhbtqIsii3LImElFmJ
-         wJtIMe5u4n+5yLBlDU1Vc1OEY3+DU8YuHs53zZv+pAnQnKJmR1COfnozGpvTOHC+mm17
-         A5HaouLnK81iit/xtd/lb4Va8wSRg+RB8/kBwPv9MEsrFe/MyghtDpzTLv8752rik8/k
-         xJYw==
-X-Gm-Message-State: AOAM532oY+o+0rHO0eyHkoBlUQxSWY0DZodR0v0xJYvZ5SlyiVhGEp37
-        ezFvJuqPgUVyMMrfZLbS+k3Y8A==
-X-Google-Smtp-Source: ABdhPJwLgq3PV6MYMW7iluDna7GiiOH95uaBslbXxkUy+Sp0uJJQEYBMWRJCCpsjoLuwOS2zFUkuQg==
-X-Received: by 2002:a05:6a00:8d0:b0:44c:26e6:1c13 with SMTP id s16-20020a056a0008d000b0044c26e61c13mr554029pfu.28.1634919331974;
-        Fri, 22 Oct 2021 09:15:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t28sm10179371pfq.158.2021.10.22.09.15.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 09:15:31 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 09:15:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, akpm@linux-foundation.org,
-        mark.rutland@arm.com, zhengqi.arch@bytedance.com,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-arch@vger.kernel.org, ardb@kernel.org
-Subject: Re: [PATCH 5/7] powerpc, arm64: Mark __switch_to() as __sched
-Message-ID: <202110220914.11A7C074AF@keescook>
-References: <20211022150933.883959987@infradead.org>
- <20211022152104.419533274@infradead.org>
+        id S233569AbhJVQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233562AbhJVQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:17:57 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6F406112F;
+        Fri, 22 Oct 2021 16:15:38 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 12:15:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/9] kprobes: Add a test case for stacktrace from
+ kretprobe handler
+Message-ID: <20211022121537.32821979@gandalf.local.home>
+In-Reply-To: <163477767243.264901.10894979830215919916.stgit@devnote2>
+References: <163477765570.264901.3851692300287671122.stgit@devnote2>
+        <163477767243.264901.10894979830215919916.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022152104.419533274@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:09:38PM +0200, Peter Zijlstra wrote:
-> Unlike most of the other architectures, PowerPC and ARM64 have
-> __switch_to() as a C function which remains on the stack. Their
-> respective __get_wchan() skips one stack frame unconditionally,
-> without testing is_sched_functions().
-> 
-> Mark them __sched such that we can forgo that special case.
+On Thu, 21 Oct 2021 09:54:32 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-I wonder if this change will improve any benchmarks? (i.e. this will
-move __switch_to into the scheduler section, maybe improving icache?)
+> Add a test case for stacktrace from kretprobe handler and
+> nested kretprobe handlers.
+> 
+> This test checks both of stack trace inside kretprobe handler
+> and stack trace from pt_regs. Those stack trace must include
+> actual function return address instead of kretprobe trampoline.
+> The nested kretprobe stacktrace test checks whether the unwinder
+> can correctly unwind the call frame on the stack which has been
+> modified by the kretprobe.
+> 
+> Since the stacktrace on kretprobe is correctly fixed only on x86,
+> this introduces a meta kconfig ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> which tells user that the stacktrace on kretprobe is correct or not.
+> 
+> The test results will be shown like below;
+> 
+>  TAP version 14
+>  1..1
+>      # Subtest: kprobes_test
+>      1..6
+>      ok 1 - test_kprobe
+>      ok 2 - test_kprobes
+>      ok 3 - test_kretprobe
+>      ok 4 - test_kretprobes
+>      ok 5 - test_stacktrace_on_kretprobe
+>      ok 6 - test_stacktrace_on_nested_kretprobe
+>  # kprobes_test: pass:6 fail:0 skip:0 total:6
+>  # Totals: pass:6 fail:0 skip:0 total:6
+>  ok 1 - kprobes_test
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+So my allmodconfig test failed on this:
 
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/arm64/kernel/process.c   |    4 ++--
->  arch/powerpc/kernel/process.c |    4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -490,8 +490,8 @@ void update_sctlr_el1(u64 sctlr)
->  /*
->   * Thread switching.
->   */
-> -__notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
-> -				struct task_struct *next)
-> +__notrace_funcgraph __sched
-> +struct task_struct *__switch_to(struct task_struct *prev, struct task_struct *next)
->  {
->  	struct task_struct *last;
->  
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -1201,8 +1201,8 @@ static inline void restore_sprs(struct t
->  
->  }
->  
-> -struct task_struct *__switch_to(struct task_struct *prev,
-> -	struct task_struct *new)
-> +__sched struct task_struct *__switch_to(struct task_struct *prev,
-> +					struct task_struct *new)
->  {
->  	struct thread_struct *new_thread, *old_thread;
->  	struct task_struct *last;
-> 
-> 
+ERROR: modpost: "stack_trace_save_regs" [kernel/test_kprobes.ko] undefined!
 
--- 
-Kees Cook
+
+> +	/*
+> +	 * Test stacktrace from pt_regs at the return address. Thus the stack
+> +	 * trace must start from the target return address.
+> +	 */
+> +	ret = stack_trace_save_regs(regs, stack_buf, STACK_BUF_SIZE, 0);
+> +	KUNIT_EXPECT_NE(current_test, ret, 0);
+> +	KUNIT_EXPECT_EQ(current_test, stack_buf[0], target_return_address[1]);
+> +
+> +	return 0;
+> +}
+
+It appears that that "stack_trace_save_regs" is not exported. And this code
+can be compiled as a module.
+
+I'm going to continue testing my code, as I have over 40 patches that need
+to go into next. I'll just rebase removing this commit only (hopefully
+nothing else breaks), and if everything then passes, I'll push to next.
+
+-- Steve
