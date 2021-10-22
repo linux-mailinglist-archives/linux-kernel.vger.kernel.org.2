@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D184378E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895F34378F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhJVOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232985AbhJVOS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:18:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB3161373;
-        Fri, 22 Oct 2021 14:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634912201;
-        bh=I+VXfPjoibNjIgn+qnRCFrsghnS2om1ehTAMQ/z8VZ4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AKXxsoiDFiAPsC8TKx8rmbdjFViHoVHUiMXptW6F8/PcfomMTRqqBk7WlmD4H7aV7
-         lCUchvHlXBMJ3p55TysGCSIi7R+UfAPq/GEu8GLPJGDwOGDrMX5s1yJ0M+sDEIWehn
-         jFORLuKq/z3co/j5mfsfMmMYzYxUleel8CLBGuipxKpiGiO80l9t7NEx0/GeCSQCyd
-         gID3Oy3/QTAqdFpzppwPTgOd7Wzg3dRQD+QByDvZ5UuiHX1hFepO+pcc4/dYjP/F0x
-         QPt1ckj9nm0rW+Bu9qWLoDEIag6dn5Oa6xoF7XvuAexQp1nRZKO0vbZYiTCqduLky6
-         SAFhe4B+iwepA==
-Received: by mail-ed1-f41.google.com with SMTP id g10so2192443edj.1;
-        Fri, 22 Oct 2021 07:16:41 -0700 (PDT)
-X-Gm-Message-State: AOAM5305Zpe61gV+NRLkykY/QXDHrx2no8wiHBkOcyF56BSauNvUh/76
-        tHQDOrYN24Dj5iR8LtQAnu5JnPvFIDRNYkZQiA==
-X-Google-Smtp-Source: ABdhPJxEy9Te8GeD+1Msa4yBTOezWnyqGiwHRtT5L7oFuNgjRAvA05EQWETuGADJ5MorxmiVbdE734tH9dP2RFnYhIo=
-X-Received: by 2002:a17:906:9399:: with SMTP id l25mr15150817ejx.363.1634912197965;
- Fri, 22 Oct 2021 07:16:37 -0700 (PDT)
+        id S232939AbhJVOW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232276AbhJVOWz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 10:22:55 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAA1C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:20:37 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id l201so7284758ybl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XEbKiekzN6WdrwcxP5TOSGyV67sRkHldHzX091SMD8k=;
+        b=bs8iMZ4EieJpPoe6ihJ1gcFIDyEH4rqXrlvrUpbKjjgKUCXO8Qq+dnefW2tmN/1ZkT
+         12RkhKFMAL2VLZzAu8xeHXDztEdWcozEhElRQBi2N6bbsGwVsvhh3Zn1jRPtb3T6NlF2
+         m7VB3tdm/uo04wgRCRpTMaK6Xea+A3+CF/TyFRp58gviAQvgwTf5XACSyDiCPqQhNWBl
+         vbNktpUDPD1YpmnKuQwlD2pFI7PNVVaP9RKtBHJa1EqygB1mTiwLlS4nVQQCb5mH2Tzt
+         4gTmiXyA8Phhqldk4Od+7NImps3THK6ekTyLb6T2JuHcXDK69H5LUY4sGgHj/P0/9FWg
+         1J3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XEbKiekzN6WdrwcxP5TOSGyV67sRkHldHzX091SMD8k=;
+        b=Vjl4HFjAMLxsnh88XrHPOrTxodimm/Yj+4bsTEBXStogwXmsNFV4SjGKDuOmFhwmBd
+         RVbp2R8653RMxRju8dW/Ssbv4viT1MIRI225GQlSyTt6630Mbq33wtD1MJDaA9brhVKS
+         N6zF/snghn06qbIDn7WcqmitZzFo7g3UCa089QVZ/qPK7c2gvzi9Fu/y6eO7ejx81E0b
+         K6DroXA5JwJ75VFpyWs1zE2KownBHQv/Q6mKFr4LI/T4MVQg3rFtDDF8oeuA94aOj4Sf
+         AApCgtnHHlrPXQcupbZmHMQYybqWQXNe2reOi2CfunLgbrjMIBGcLT2AehBpxi2DF927
+         qgJQ==
+X-Gm-Message-State: AOAM531eM2RAzkbl5vAKbkNE+nc+4jN/i8IDW5weEZ/ev/Bc6Qo5qZOo
+        WKwTfZfydk4WZlOpwRUz6BnakvS3SMBNE2rqvQU=
+X-Google-Smtp-Source: ABdhPJwKvy/N1+j2NjPDgAeeeNV9pwp3TpEFyWc51lsHjVQmUlpHeKxgVBWQEvvDk23NLFq9RzJuSESCmv3GzoPZybs=
+X-Received: by 2002:a25:26d3:: with SMTP id m202mr12770940ybm.343.1634912436962;
+ Fri, 22 Oct 2021 07:20:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211009104518.45596-1-david@ixit.cz> <YW86yrhJBTunU121@robh.at.kernel.org>
- <GXW81R.AUXV3AJ9VUDL@ixit.cz>
-In-Reply-To: <GXW81R.AUXV3AJ9VUDL@ixit.cz>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 22 Oct 2021 09:16:26 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKD-3-VkFT5fAKrD0jFWWmBFTQHWQKSv4JrfZ515GVP_Q@mail.gmail.com>
-Message-ID: <CAL_JsqKD-3-VkFT5fAKrD0jFWWmBFTQHWQKSv4JrfZ515GVP_Q@mail.gmail.com>
-Subject: Re: [PATCH] WIP: dt-bindings: arm: firmware: tlm,trusted-foundations:
- Convert txt bindings to yaml
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Stephen Warren <swarren@nvidia.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ~okias/devicetree@lists.sr.ht
+Received: by 2002:a05:7000:278b:0:0:0:0 with HTTP; Fri, 22 Oct 2021 07:20:36
+ -0700 (PDT)
+Reply-To: davwilliams1006@gmail.com
+From:   "Mr.David Williams" <dw830197@gmail.com>
+Date:   Fri, 22 Oct 2021 07:20:36 -0700
+Message-ID: <CACquxaPQ+E0W2F6nTRm8NG__V9bKVFL-AsRk_Z9HaswJdonzUg@mail.gmail.com>
+Subject: Get back to me for clarifications
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 5:26 PM David Heidelberg <david@ixit.cz> wrote:
->
->
->
->
-> On Tue, Oct 19 2021 at 16:38:18 -0500, Rob Herring <robh@kernel.org>
-> wrote:
-> > On Sat, Oct 09, 2021 at 12:45:18PM +0200, David Heidelberg wrote:
-> >>  Convert Trusted Foundation binding to the YAML syntax.
-> >
-> > Looks fine. Why WIP?
-> >
->
-> Can you drop the WIP prefix I forgot or should I resend?
+Hello Friend,
 
-Please resend.
+This is to inform you that your pending wire transfer payment of Four
+million two hundred thousand US dollars, is now ready to be paid to
+you via ATM Master Card which you can be able to make withdraw from
+any ATM Machine of your choice in any part of the world. Indicate your
+interest to enable us to process your ATM CARD send to you.
 
-Rob
+Get back to me with your details.
+
+Regards
+Mr. David Williams
+E-Mail: ( williamsmrdavid60@gmail.com )
