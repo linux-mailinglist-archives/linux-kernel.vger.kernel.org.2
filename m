@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1844373B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507F94373BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhJVIgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhJVIgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:36:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A17AC061764;
-        Fri, 22 Oct 2021 01:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BKRfgbYmOOsvcoj4JpPtR+W/t5uf0jYICwx+zjBD2hE=; b=DU/nbmq7hazCDHsgFDmXyJN5vh
-        f0q9gcfoxsf+74dSRH/Ur/1n0ZhjWIwdrkdDKsDblEvlRMdhhOLoP2P0/El+YBCCUFgxAJDUe+Y9k
-        YN5/0qXEBgZovDnjRoaI4eTMKL8RtdLvQxQW7sERw/9UgRjkcDIsaHNaW9TqwRpecVrCvOnBQayYL
-        ZBMsgXfbmnhqky9GnESCz6UbhePos0uMFKib8DEUhY8AJgv2e/d3D+xY3JVwe3JG5e92sfXrKPsLb
-        PNoy2My0cRp9QBUYLPTDVeomw2Xo5Bq2CvY6j3fXUhtS9ThsYaGDJ2+yTfv+PfbsqhDVnk/EIXUyT
-        xlL3jGyQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdpzW-00BXp0-JD; Fri, 22 Oct 2021 08:33:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B02433002BC;
-        Fri, 22 Oct 2021 10:33:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 967D42CCDF6C8; Fri, 22 Oct 2021 10:33:28 +0200 (CEST)
-Date:   Fri, 22 Oct 2021 10:33:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zvi Effron <zeffron@riotgames.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>, x86@kernel.org,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <YXJ3WPu1AxHd1cLq@hirez.programming.kicks-ass.net>
-References: <20211020104442.021802560@infradead.org>
- <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
- <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
- <CAC1LvL33KYZUJTr1HZZM_owhH=Mvwo9gBEEmFgdpZFEwkUiVKw@mail.gmail.com>
+        id S232358AbhJVIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:37:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:51392 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231984AbhJVIhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:37:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75708ED1;
+        Fri, 22 Oct 2021 01:35:02 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB6EB3F70D;
+        Fri, 22 Oct 2021 01:35:00 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 09:34:55 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        robh+dt@kernel.org
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
+ controller driver
+Message-ID: <20211022083455.GA20345@lpieralisi>
+References: <CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com>
+ <20211021181145.GA2708516@bhelgaas>
+ <CAMhs-H8pTmbG0idbPWjnW4faFj0F4TKwSSK6wzwepbqWSEtx4w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAC1LvL33KYZUJTr1HZZM_owhH=Mvwo9gBEEmFgdpZFEwkUiVKw@mail.gmail.com>
+In-Reply-To: <CAMhs-H8pTmbG0idbPWjnW4faFj0F4TKwSSK6wzwepbqWSEtx4w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 04:51:08PM -0700, Zvi Effron wrote:
-
-> > What's a patchwork and where do I find it?
+On Thu, Oct 21, 2021 at 09:23:35PM +0200, Sergio Paracuellos wrote:
+> On Thu, Oct 21, 2021 at 8:11 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 > >
+> > On Thu, Oct 21, 2021 at 07:27:21PM +0200, Sergio Paracuellos wrote:
+> > > On Thu, Oct 21, 2021 at 5:52 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > Since this is a PCIe (not conventional PCI) controller, I vote for
+> > > > renaming these from:
+> > > >
+> > > >   PCI_MT7621
+> > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > >   drivers/pci/controller/pci-mt7621.c
+> > > >
+> > > > to:
+> > > >
+> > > >   PCIE_MT7621
+> > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+> > > >   drivers/pci/controller/pcie-mt7621.c
+> > > >
+> > > > We have a mix of these, with many of the early PCIe drivers being
+> > > > named "pci", but I think that was my mistake and there's no reason to
+> > > > continue it.
+> > >
+> > > I see.
+> > >
+> > > >
+> > > > I can do this locally unless somebody objects.
+> > >
+> > > I have no problem at all. Only one question. Do you mean to change
+> > > compatible string also, or only the name of the file? Let me know if I
+> > > have to do anything.
+> >
+> > I didn't change the compatible string, to avoid a DT incompatibility.
+> > But I *did* change the Kconfig symbol to PCIE_MT7621, which could
+> > require changes to out-of-tree .configs.  I'm open to suggestions
+> > either way for both things.
 > 
-> Patchwork[0] tracks the status of patches from submission through to merge (and
-> beyond?).
+> IMHO, I do think we should not worry about out-of-tree stuff at all.
 
-Yeah, I sorta know that :-) Even though I loathe the things because
-web-browser, but the second part of the question was genuine, there's a
-*lot* of patchwork instances around, not everyone uses the new k.org
-based one.
+For Kconfig I tend to agree. For DT I see some "bindings" in the staging
+tree are being deleted and published as official DT bindings with this
+patchset but I believe we still have to keep the compatible string
+backward compatibility regardless because there may be firmware out
+there using it.
 
+Rob, what's the standard policy that should be used in this case ?
+
+Thanks,
+Lorenzo
+
+> If the correct way to define the Kconfig symbol or the compatible
+> string is to change them, just do that. MT7621 SoC is extensively used
+> by openWRT community. As far as I have seen until now, the way of
+> doing things there is to take the latest long term kernel (now they
+> are using 5.4 as stable and 5.10 as testing kernel), apply a bunch of
+> patches they have and do a complete build of both kernel, device tree
+> and rootfs. So I guess it is not a big problem if we also change
+> compatible string since when an update is performed for a device all
+> of the stuff is just replaced. Maybe I am wrong and John has a
+> different opinion... John, any comments on this?
+> 
+> Best regards,
+>     Sergio Paracuellos
