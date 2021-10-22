@@ -2,173 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA3E437385
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D6E437387
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhJVIOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:14:11 -0400
-Received: from relay.sw.ru ([185.231.240.75]:40472 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232021AbhJVIOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:14:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=Z5qJC2PMSc7dBPFzy7GUbPnzdUrepr/bhnEyppDvcMM=; b=Mmkju3VsxYztt/ednVO
-        ezhdPmoJb+bKP6OO0zWJaGiKZ4LzOLJN6/ETQ4iP9fyFIdll/Tj6SlV7li0AQDCK1cOqKhqVcAVXT
-        kbFSbXJj0kcbU/cLT9fPyIgvDD+w2bUxBV3/YDB+IxDgVjyFN/WnjbQes9gFBEIGP/OZd095JgU=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdpeZ-006oNy-43; Fri, 22 Oct 2021 11:11:51 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg v2 2/2] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        id S232428AbhJVIOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:14:25 -0400
+Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:32904 "EHLO
+        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232331AbhJVIOW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:14:22 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 77077136035
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:12:04 +0100 (IST)
+Received: (qmail 16221 invoked from network); 22 Oct 2021 08:12:04 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Oct 2021 08:12:04 -0000
+Date:   Fri, 22 Oct 2021 09:12:02 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
- <cover.1634889066.git.vvs@virtuozzo.com>
-Message-ID: <4b315938-5600-b7f5-bde9-82f638a2e595@virtuozzo.com>
-Date:   Fri, 22 Oct 2021 11:11:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 6/8] mm/vmscan: Centralise timeout values for
+ reclaim_throttle
+Message-ID: <20211022081202.GG3959@techsingularity.net>
+References: <20211019090108.25501-1-mgorman@techsingularity.net>
+ <20211019090108.25501-7-mgorman@techsingularity.net>
+ <163486477387.17149.7808824931340167601@noble.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <cover.1634889066.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <163486477387.17149.7808824931340167601@noble.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory cgroup charging allows killed or exiting tasks to exceed the hard
-limit. It is assumed that the amount of the memory charged by those
-tasks is bound and most of the memory will get released while the task
-is exiting. This is resembling a heuristic for the global OOM situation
-when tasks get access to memory reserves. There is no global memory
-shortage at the memcg level so the memcg heuristic is more relieved.
+On Fri, Oct 22, 2021 at 12:06:13PM +1100, NeilBrown wrote:
+> On Tue, 19 Oct 2021, Mel Gorman wrote:
+> ...
+> > +	switch(reason) {
+> > +	case VMSCAN_THROTTLE_NOPROGRESS:
+> > +	case VMSCAN_THROTTLE_WRITEBACK:
+> > +		timeout = HZ/10;
+> > +
+> > +		if (atomic_inc_return(&pgdat->nr_writeback_throttled) == 1) {
+> > +			WRITE_ONCE(pgdat->nr_reclaim_start,
+> > +				node_page_state(pgdat, NR_THROTTLED_WRITTEN));
+> 
+> You have introduced a behaviour change that wasn't flagged in the commit
+> message.
+> Previously nr_writeback_throttled was only incremented for
+> VMSCAN_THROTTLE_WRITEBACK, now it is incremented for
+> VMSCAN_THROTTLE_NOPROGRESS as well.  
+> 
+> Some justification would be good.
+> 
 
-The above assumption is overly optimistic though. E.g. vmalloc can scale
-to really large requests and the heuristic would allow that. We used to
-have an early break in the vmalloc allocator for killed tasks but this
-has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
-the current task is killed""). There are likely other similar code paths
-which do not check for fatal signals in an allocation&charge loop.
-Also there are some kernel objects charged to a memcg which are not
-bound to a process life time.
+This is the result of rebase near the end of a day going sideways. There
+is no justification, it's just wrong.
 
-It has been observed that it is not really hard to trigger these
-bypasses and cause global OOM situation.
+I'm rerunning the entire series, will update the leader and resend the
+series.
 
-One potential way to address these runaways would be to limit the amount
-of excess (similar to the global OOM with limited oom reserves). This is
-certainly possible but it is not really clear how much of an excess is
-desirable and still protects from global OOMs as that would have to
-consider the overall memcg configuration.
+--8<--
+mm/vmscan: Centralise timeout values for reclaim_throttle -fix
 
-This patch is addressing the problem by removing the heuristic
-altogether. Bypass is only allowed for requests which either cannot fail
-or where the failure is not desirable while excess should be still
-limited (e.g. atomic requests). Implementation wise a killed or dying
-task fails to charge if it has passed the OOM killer stage. That should
-give all forms of reclaim chance to restore the limit before the
-failure (ENOMEM) and tell the caller to back off.
+Neil Brown spotted the fallthrough-logic for reclaim_throttle was wrong --
+only VMSCAN_THROTTLE_WRITEBACK affects pgdat->nr_writeback_throttled. This
+was the result of a rebase going sideways and only happens to sometimes
+work by co-incidence.
 
-In addition, this patch renames should_force_charge() helper
-to task_is_dying() because now its use is not associated witch forced
-charging.
+This is a fix to the mmotm patch
+mm-vmscan-centralise-timeout-values-for-reclaim_throttle.patch
 
-Fixes: a636b327f731 ("memcg: avoid unnecessary system-wide-oom-killer")
-Cc: stable@vger.kernel.org
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- mm/memcontrol.c | 27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+ mm/vmscan.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6da5020a8656..87e41c3cac10 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -239,7 +239,7 @@ enum res_type {
- 	     iter != NULL;				\
- 	     iter = mem_cgroup_iter(NULL, iter, NULL))
- 
--static inline bool should_force_charge(void)
-+static inline bool task_is_dying(void)
- {
- 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
- 		(current->flags & PF_EXITING);
-@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 * A few threads which were not waiting at mutex_lock_killable() can
- 	 * fail to bail out. Therefore, check again after holding oom_lock.
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 1f5c467dc83c..64c38979b7df 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1032,7 +1032,6 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+ 	 * of the inactive LRU.
  	 */
--	ret = should_force_charge() || out_of_memory(&oc);
-+	ret = task_is_dying() || out_of_memory(&oc);
+ 	switch(reason) {
+-	case VMSCAN_THROTTLE_NOPROGRESS:
+ 	case VMSCAN_THROTTLE_WRITEBACK:
+ 		timeout = HZ/10;
  
- unlock:
- 	mutex_unlock(&oom_lock);
-@@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	struct page_counter *counter;
- 	enum oom_status oom_status;
- 	unsigned long nr_reclaimed;
-+	bool passed_oom = false;
- 	bool may_swap = true;
- 	bool drained = false;
- 	unsigned long pflags;
-@@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_ATOMIC)
- 		goto force;
+@@ -1041,6 +1040,9 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+ 				node_page_state(pgdat, NR_THROTTLED_WRITTEN));
+ 		}
  
--	/*
--	 * Unlike in global OOM situations, memcg is not in a physical
--	 * memory shortage.  Allow dying and OOM-killed tasks to
--	 * bypass the last charges so that they can exit quickly and
--	 * free their memory.
--	 */
--	if (unlikely(should_force_charge()))
--		goto force;
--
- 	/*
- 	 * Prevent unbounded recursion when reclaim operations need to
- 	 * allocate memory. This might exceed the limits temporarily,
-@@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
- 		goto nomem;
++		break;
++	case VMSCAN_THROTTLE_NOPROGRESS:
++		timeout = HZ/10;
+ 		break;
+ 	case VMSCAN_THROTTLE_ISOLATED:
+ 		timeout = HZ/50;
+@@ -1055,7 +1057,7 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+ 	ret = schedule_timeout(timeout);
+ 	finish_wait(wqh, &wait);
  
--	if (fatal_signal_pending(current))
--		goto force;
-+	/* Avoid endless loop for tasks bypassed by the oom killer */
-+	if (passed_oom && task_is_dying())
-+		goto nomem;
+-	if (reason == VMSCAN_THROTTLE_ISOLATED)
++	if (reason == VMSCAN_THROTTLE_WRITEBACK)
+ 		atomic_dec(&pgdat->nr_writeback_throttled);
  
- 	/*
- 	 * keep retrying as long as the memcg oom killer is able to make
-@@ -2640,14 +2633,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 */
- 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
- 		       get_order(nr_pages * PAGE_SIZE));
--	switch (oom_status) {
--	case OOM_SUCCESS:
-+	if (oom_status == OOM_SUCCESS) {
-+		passed_oom = true;
- 		nr_retries = MAX_RECLAIM_RETRIES;
- 		goto retry;
--	case OOM_FAILED:
--		goto force;
--	default:
--		goto nomem;
- 	}
- nomem:
- 	if (!(gfp_mask & __GFP_NOFAIL))
--- 
-2.32.0
-
+ 	trace_mm_vmscan_throttled(pgdat->node_id, jiffies_to_usecs(timeout),
