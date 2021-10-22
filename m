@@ -2,183 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55C4436EF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2DC436EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhJVAp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbhJVApV (ORCPT
+        id S232296AbhJVAqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:46:06 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14839 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbhJVAqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:45:21 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B4BC061764;
-        Thu, 21 Oct 2021 17:43:04 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so1818165pjb.3;
-        Thu, 21 Oct 2021 17:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VNOVxOw71ipLbpQarDFMri/rDm9N6i/dmhNtzdX06Dw=;
-        b=F+1mUxMmQHDDbRn4KS1V2l7xUPUrSVtSwT71KCZ/tqGx2zuahKGekU1zLUsj4819H2
-         4ltmEvv1GI4krzoEvrxhGKbAaBbIkvZyKZYDbMtA5xiuQ0bT177yNLdO+hOsVs2X76Q9
-         Z5Wxj9Lim4MvNjp9135Ud6qPpqT3b6kpTh412v0/7Bybj9n1bQYfrazZ00No0s///jLe
-         ldS/E7e6by8AXiyU2xYVRUJKelkB08VhEtTV/yz5Zylwko5bwxkN0OGqdTZNk+M8qs1d
-         jzf7lL0LFhWwMCQHnAC2cHe5g3qkeGb5e+o7+G1yIsCW4lE5AP3R4WSyWH43c97Ju5N7
-         va1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VNOVxOw71ipLbpQarDFMri/rDm9N6i/dmhNtzdX06Dw=;
-        b=mJO+Sc3LofN2wbAym6mXp9KpgVduAehoQsPaTlxCMFm0O+BQZzjz+LBzoHFybRpN93
-         +b1k5hk1rVKZIuu22GsY3kLIWTHSUV57tHO7WgY2QS4nzf/gjdRLaezasLYYRXBN4sW0
-         asVsy7EUMhm6oDw5lUM+lJurWfB++7fSoffggdyZZAp3ZGnZlPCjqDvYwustYCgdszyz
-         7tdv8GICQ3+Ainz/dSoksBc4h0DWUqA2mTXOZJ10ovfD0zNVwFhS6tTqchmJ3BKYoGOU
-         h0k+ZD1SombVdUIHN0NprS7zhfatJWe3Obkw14vLpHoj805xQ5i4I3GNMDOdBR2YGyTt
-         PT6A==
-X-Gm-Message-State: AOAM531rO1OhmYUJDoV7IdkC6nBvQOmruCxhnpjxisSMwNsinwOpOmbF
-        vzgQZhfewBds5gdHN2PekAhs8bmQ6Ow=
-X-Google-Smtp-Source: ABdhPJzUtcFDw7YZrz7mJNpg1hCLCG+fkCMkbpDGV+aTWttOMbTPCPn+wNNrsP62y8Zpn/Grtfn0Rw==
-X-Received: by 2002:a17:90a:5b0c:: with SMTP id o12mr10568417pji.11.1634863384224;
-        Thu, 21 Oct 2021 17:43:04 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id p13sm10488692pjb.44.2021.10.21.17.43.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 17:43:03 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ran jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi:aha1542: remove unneeded semicolon
-Date:   Fri, 22 Oct 2021 00:42:45 +0000
-Message-Id: <20211022004245.1061879-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 21 Oct 2021 20:46:05 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hb57Y1s98z90MM;
+        Fri, 22 Oct 2021 08:38:49 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 08:43:46 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 08:43:46 +0800
+Message-ID: <fac75ae1-185d-073a-8990-1dccd1c64518@huawei.com>
+Date:   Fri, 22 Oct 2021 08:43:45 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/2] riscv: consolidate __ex_table construction
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kbuild@vger.kernel.org>
+References: <20211020220529.54ccf4e9@xhacker>
+ <20211020220610.25443e4c@xhacker>
+ <bd3419a3-b858-1a4d-a081-d09bbc56eaa7@huawei.com>
+ <20211021234316.75a19359@xhacker>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20211021234316.75a19359@xhacker>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ran jianping <ran.jianping@zte.com.cn>
 
- Eliminate the following coccinelle check warning:
- drivers/scsi/aha1542.c:553:2-3
- drivers/scsi/aha1542.c:582:2-3
- drivers/scsi/aha1542.c:605:2-3
- drivers/scsi/aha1542.c:306:2-3
- drivers/scsi/aha1542.c:348:3-4
- drivers/scsi/aha1542.c:412:2-3
- drivers/scsi/aha1542.c:640:2-3
- drivers/scsi/aha1542.c:658:2-3
- drivers/scsi/aha1542.c:677:2-3
- drivers/scsi/aha1542.c:538:2-3
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
----
- drivers/scsi/aha1542.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+On 2021/10/21 23:43, Jisheng Zhang wrote:
+> On Thu, 21 Oct 2021 19:38:41 +0800
+> Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+> 
+>> On 2021/10/20 22:06, Jisheng Zhang wrote:
+>>> From: Jisheng Zhang <jszhang@kernel.org>
+>>>
+>>> Consolidate all the __ex_table constuction code with a _ASM_EXTABLE
+>>> helper.
+>>>
+>>> There should be no functional change as a result of this patch.
+>>>
+>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>>> ---
+>>>    arch/riscv/include/asm/futex.h   | 12 +++-------
+>>>    arch/riscv/include/asm/uaccess.h | 40 +++++++++++---------------------
+>>>    2 files changed, 17 insertions(+), 35 deletions(-)
+>>>
+>>> diff --git a/arch/riscv/include/asm/futex.h b/arch/riscv/include/asm/futex.h
+>>> index 1b00badb9f87..3191574e135c 100644
+>>> --- a/arch/riscv/include/asm/futex.h
+>>> +++ b/arch/riscv/include/asm/futex.h
+>>> @@ -30,10 +30,7 @@
+>>>    	"3:	li %[r],%[e]				\n"	\
+>>>    	"	jump 2b,%[t]				\n"	\
+>>>    	"	.previous				\n"	\
+>>> -	"	.section __ex_table,\"a\"		\n"	\
+>>> -	"	.balign " RISCV_SZPTR "			\n"	\
+>>> -	"	" RISCV_PTR " 1b, 3b			\n"	\
+>>> -	"	.previous				\n"	\
+>>> +		_ASM_EXTABLE(1b, 3b)				\
+>>>    	: [r] "+r" (ret), [ov] "=&r" (oldval),			\
+>>>    	  [u] "+m" (*uaddr), [t] "=&r" (tmp)			\
+>>>    	: [op] "Jr" (oparg), [e] "i" (-EFAULT)			\
+>>> @@ -103,11 +100,8 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+>>>    	"4:	li %[r],%[e]				\n"
+>>>    	"	jump 3b,%[t]				\n"
+>>>    	"	.previous				\n"
+>>> -	"	.section __ex_table,\"a\"		\n"
+>>> -	"	.balign " RISCV_SZPTR "			\n"
+>>> -	"	" RISCV_PTR " 1b, 4b			\n"
+>>> -	"	" RISCV_PTR " 2b, 4b			\n"
+>>> -	"	.previous				\n"
+>>> +		_ASM_EXTABLE(1b, 4b)			\
+>>> +		_ASM_EXTABLE(2b, 4b)			\
+>>>    	: [r] "+r" (ret), [v] "=&r" (val), [u] "+m" (*uaddr), [t] "=&r" (tmp)
+>>>    	: [ov] "Jr" (oldval), [nv] "Jr" (newval), [e] "i" (-EFAULT)
+>>>    	: "memory");
+>>> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+>>> index f314ff44c48d..35802e72ace8 100644
+>>> --- a/arch/riscv/include/asm/uaccess.h
+>>> +++ b/arch/riscv/include/asm/uaccess.h
+>>> @@ -10,6 +10,12 @@
+>>>    
+>>>    #include <asm/pgtable.h>		/* for TASK_SIZE */
+>>>    
+>>> +#define _ASM_EXTABLE(from, to)						\
+>>> +	"	.pushsection	__ex_table, \"a\"\n"			\
+>>> +	"	.balign "	RISCV_SZPTR "	 \n"			\
+>>> +	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
+>>> +	"	.popsection\n"
+>>> +
+>>
+>> The jump_label mechanism could use this macro too,
+>> see arch/riscv/include/asm/jump_label.h, maybe move the above into asm.h
+>> and also do some replace in next patch ?
+> 
+> jump_label entry is a bit different with ex_table: two relative offsets and
+> a key which should be "long" type.
+> 
+>>
+>> Question: the jump label use relative address, but why not trigger the
+>> Section mismatch issue?
+> 
+> FWICT, modpost doesn't check __jump_table section
 
-diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
-index f0e8ae9f5e40..a5a0a3e5c6ea 100644
---- a/drivers/scsi/aha1542.c
-+++ b/drivers/scsi/aha1542.c
-@@ -303,7 +303,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 		if (flag & SCRD)
- 			printk("SCRD ");
- 		printk("status %02x\n", inb(STATUS(sh->io_port)));
--	};
-+	}
- #endif
- 	number_serviced = 0;
- 
-@@ -345,7 +345,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 			if (!number_serviced)
- 				shost_printk(KERN_WARNING, sh, "interrupt received, but no mail.\n");
- 			return IRQ_HANDLED;
--		};
-+		}
- 
- 		mbo = (scsi2int(mb[mbi].ccbptr) - (unsigned long)aha1542->ccb_handle) / sizeof(struct ccb);
- 		mbistatus = mb[mbi].status;
-@@ -409,7 +409,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 						 */
- 		scsi_done(tmp_cmd);
- 		number_serviced++;
--	};
-+	}
- }
- 
- static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
-@@ -535,7 +535,7 @@ static void setup_mailboxes(struct Scsi_Host *sh)
- 		any2scsi(aha1542->mb[i].ccbptr,
- 			 aha1542->ccb_handle + i * sizeof(struct ccb));
- 		aha1542->mb[AHA1542_MAILBOXES + i].status = 0;
--	};
-+	}
- 	aha1542_intr_reset(sh->io_port);	/* reset interrupts, so they don't block */
- 	any2scsi(mb_cmd + 2, aha1542->mb_handle);
- 	if (aha1542_out(sh->io_port, mb_cmd, 5))
-@@ -550,7 +550,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	i = inb(STATUS(sh->io_port));
- 	if (i & DF) {
- 		i = inb(DATA(sh->io_port));
--	};
-+	}
- 	aha1542_outb(sh->io_port, CMD_RETCONF);
- 	aha1542_in(sh->io_port, inquiry_result, 3, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
-@@ -579,7 +579,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	default:
- 		shost_printk(KERN_ERR, sh, "Unable to determine DMA channel.\n");
- 		return -1;
--	};
-+	}
- 	switch (inquiry_result[1]) {
- 	case 0x40:
- 		sh->irq = 15;
-@@ -602,7 +602,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	default:
- 		shost_printk(KERN_ERR, sh, "Unable to determine IRQ level.\n");
- 		return -1;
--	};
-+	}
- 	sh->this_id = inquiry_result[2] & 7;
- 	return 0;
- }
-@@ -637,7 +637,7 @@ static int aha1542_mbenable(struct Scsi_Host *sh)
- 
- 		if (aha1542_out(sh->io_port, mbenable_cmd, 3))
- 			goto fail;
--	};
-+	}
- 	while (0) {
- fail:
- 		shost_printk(KERN_ERR, sh, "Mailbox init failed\n");
-@@ -655,7 +655,7 @@ static int aha1542_query(struct Scsi_Host *sh)
- 	i = inb(STATUS(sh->io_port));
- 	if (i & DF) {
- 		i = inb(DATA(sh->io_port));
--	};
-+	}
- 	aha1542_outb(sh->io_port, CMD_INQUIRY);
- 	aha1542_in(sh->io_port, inquiry_result, 4, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
-@@ -674,7 +674,7 @@ static int aha1542_query(struct Scsi_Host *sh)
- 	if (inquiry_result[0] == 0x43) {
- 		shost_printk(KERN_INFO, sh, "Emulation mode not supported for AHA-1740 hardware, use aha1740 driver instead.\n");
- 		return 1;
--	};
-+	}
- 
- 	/*
- 	 * Always call this - boards that do not support extended bios translation
--- 
-2.25.1
-
+OK, missing that.
+> 
+> 
+> .
+> 
