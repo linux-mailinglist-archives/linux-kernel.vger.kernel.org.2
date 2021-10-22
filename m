@@ -2,290 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E87437636
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72262437639
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhJVLyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 07:54:44 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:39609 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbhJVLyk (ORCPT
+        id S231485AbhJVL6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 07:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhJVL6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 07:54:40 -0400
-Received: by mail-io1-f72.google.com with SMTP id r15-20020a6b600f000000b005dde03edc0cso2954630iog.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 04:52:23 -0700 (PDT)
+        Fri, 22 Oct 2021 07:58:19 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FA9C061348
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 04:56:01 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id j205so1947493wmj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 04:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GfBU0GpSmy79GbH1anUO6sQjWFqwumWH7YxWakuinzc=;
+        b=tWFAlFo6sqxss1FMA0XqNpWM7eRhtkHwtdMZr7zjgIb9Kk1jFDMx8krC6Pb6mRQJaB
+         YVlYtaP1wZZWcAIaqOa3C8Og9j133Gm0PjCPtNTZycCwAwGHM4UIaSAzKegCraumHUGv
+         dpUQ8+yZex7bLvyKOSSG/AZ2J1OernkkHlGRiAcIkbd11zkrEMqmmdJ7L0aBsbQGht97
+         73yRbPa0l6tjQwWs5yRdKAsPp3i3/kVscHlz7wmqgWkqPNxcWSm1jbdCXHbO+CqRJEdB
+         u1ODdswp9XwhcF2Gg8cDf+JBaZJZXIMThDP9nPL1xI6qdhI5XPKP/sQuCqOZf39UcAKY
+         KHuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TpOrTQ0YqVBm4j2wWjK2yEf2nDCJV6B1tvSZTnvwQgE=;
-        b=OkxWIajdoAqtHYTOSe59RXZnS3hgQWDWP+kdrY8Loa+ikXu5B9IW0CVwcC3eNHnezE
-         dy4xP8yjEdCKWNYp1ySTahlJuh+mzKoHpymz5jzfZ8G/dBYadB1eKG8Vqm+oEAndxbn2
-         UwxW/kZWxB3Oz6FmRt2dkf9KBQu6j8jDxeScuqwJGvVxn7hv+4w+roTfwlJk6uv9Rr3I
-         mAs+k1kAp8WDdghuHG6ACb8af8VLjY8/VoIBa+lSIO7YsWgOWj3VRgJCiMnoNp540dI7
-         AP2u2+dgw9WHJcthUcqdoMgw/IIHjv3/iXm9jQTcCfdX8Bx6yCMZqJEXjywSRpPA22WM
-         195g==
-X-Gm-Message-State: AOAM532HsW35Ll70vrTG5JWoCHUcYswoCctiRdzUgF12lAwi4SmkD5JH
-        kujHJuXprkYPLDAAJo4RLSDXpk+gJquL5AVum85LSeyjgtSB
-X-Google-Smtp-Source: ABdhPJynERh2zBclqhc4kwJuTvnOqdkDJmF/CHWtV8sW4HxaePX00bne/qKj9ixjk9SE6M1QTujZkecq1EC+Q01HUm70Up4bS1m9
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GfBU0GpSmy79GbH1anUO6sQjWFqwumWH7YxWakuinzc=;
+        b=U7eGljDljwnOPsFmAkBW1epvAGGGnc8OaMd4QtSizCf0PHPsoCagbhNPRtu4TPG9R/
+         eKFF4oZuXcNZ/yl63I1fZor+y3LliG4DwINncF8EBJRaVheFpTC+K3uMfMeb1VDdt4pK
+         GFvAzlwLsfOQWQP/739Ofb585WCEnB5H+2JRICqGfxdAg6Ux79KwNfif2/c3CG97uVSM
+         dCdiLJX1JutkcDr26bJgbGz1TJa2UyJbodYMaXfq1iYmQO5Khs/64VZsCMEX4FOoYEx1
+         uPKir/lRl++4hXWG4xJK4GNk+4WnrWXgwfJJOiih2Vwiv+nboi7/D8cvHmNc3UDaktdk
+         NO3Q==
+X-Gm-Message-State: AOAM531pZPpnpJLVYkWhmNGDME2HB3zDQYzd9j8E3VWop6C1+/qYAS1d
+        wPSiQtaR1bp27ZfUFKhjLPdq0FLaEDQdv9EN42geTg==
+X-Google-Smtp-Source: ABdhPJyje0rIg0VhIHC70ks2ose2WVfVFBCEjQcBhQxEnJNRdtAXMllSDvh8stJgNdMbceG5aDtLDTWNxC9gMg0twV0=
+X-Received: by 2002:a1c:7918:: with SMTP id l24mr13289169wme.137.1634903759923;
+ Fri, 22 Oct 2021 04:55:59 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:6c0c:: with SMTP id h12mr7391337ilc.32.1634903542738;
- Fri, 22 Oct 2021 04:52:22 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 04:52:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e8364c05ceefa4cf@google.com>
-Subject: [syzbot] possible deadlock in j1939_session_activate
-From:   syzbot <syzbot+f32cbede7fd867ce0d56@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
+References: <20211022061514.25946-1-lukas.bulwahn@gmail.com> <5c27a2ff-b7a2-99d8-bdc4-7f2b20092500@redhat.com>
+In-Reply-To: <5c27a2ff-b7a2-99d8-bdc4-7f2b20092500@redhat.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 22 Oct 2021 17:25:48 +0530
+Message-ID: <CAAhSdy0h38gOZ-7WKDN=SLBhC0pbRjXS19XyU9eu-PzUi3Xv7A@mail.gmail.com>
+Subject: Re: [PATCH] riscv: do not select non-existing config ANON_INODES
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 22, 2021 at 3:24 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 22/10/21 08:15, Lukas Bulwahn wrote:
+> > Commit 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support") selects
+> > the config ANON_INODES in config KVM, but the config ANON_INODES is removed
+> > since commit 5dd50aaeb185 ("Make anon_inodes unconditional") in 2018.
+> >
+> > Hence, ./scripts/checkkconfigsymbols.py warns on non-existing symbols:
+> >
+> >    ANON_INODES
+> >    Referencing files: arch/riscv/kvm/Kconfig
+> >
+> > Remove selecting the non-existing config ANON_INODES.
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> >   arch/riscv/kvm/Kconfig | 1 -
+> >   1 file changed, 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
+> > index a712bb910cda..f5a342fa1b1d 100644
+> > --- a/arch/riscv/kvm/Kconfig
+> > +++ b/arch/riscv/kvm/Kconfig
+> > @@ -22,7 +22,6 @@ config KVM
+> >       depends on RISCV_SBI && MMU
+> >       select MMU_NOTIFIER
+> >       select PREEMPT_NOTIFIERS
+> > -     select ANON_INODES
+> >       select KVM_MMIO
+> >       select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+> >       select HAVE_KVM_VCPU_ASYNC_IOCTL
+> >
+>
+> Queued, thanks.
 
-syzbot found the following issue on:
+Thanks Paolo for applying this directly.
 
-HEAD commit:    fac3cb82a54a net: bridge: mcast: use multicast_membership_..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=11554c0cb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bab9d35f204746a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=f32cbede7fd867ce0d56
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Regards,
+Anup
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f32cbede7fd867ce0d56@syzkaller.appspotmail.com
-
-vxcan0: j1939_tp_rxtimer: 0xffff888075703400: abort rx timeout. Force session deactivation
-======================================================
-WARNING: possible circular locking dependency detected
-5.15.0-rc5-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.1/10231 is trying to acquire lock:
-ffff888035e15088 (&priv->active_session_list_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:368 [inline]
-ffff888035e15088 (&priv->active_session_list_lock){+.-.}-{2:2}, at: j1939_session_list_lock net/can/j1939/transport.c:238 [inline]
-ffff888035e15088 (&priv->active_session_list_lock){+.-.}-{2:2}, at: j1939_session_activate+0x43/0x4b0 net/can/j1939/transport.c:1554
-
-but task is already holding lock:
-ffff88808959e5c0 (&jsk->sk_session_queue_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:368 [inline]
-ffff88808959e5c0 (&jsk->sk_session_queue_lock){+.-.}-{2:2}, at: j1939_sk_queue_activate_next+0x56/0x460 net/can/j1939/socket.c:204
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (&jsk->sk_session_queue_lock){+.-.}-{2:2}:
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:178
-       spin_lock_bh include/linux/spinlock.h:368 [inline]
-       j1939_sk_queue_drop_all+0x40/0x2f0 net/can/j1939/socket.c:139
-       j1939_sk_netdev_event_netdown+0x7b/0x160 net/can/j1939/socket.c:1272
-       j1939_netdev_notify+0x199/0x1d0 net/can/j1939/main.c:362
-       notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
-       call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
-       call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
-       call_netdevice_notifiers net/core/dev.c:2022 [inline]
-       dev_close_many+0x2ff/0x620 net/core/dev.c:1597
-       unregister_netdevice_many+0x3ff/0x1790 net/core/dev.c:11020
-       rtnl_delete_link net/core/rtnetlink.c:3063 [inline]
-       rtnl_dellink+0x354/0xa80 net/core/rtnetlink.c:3115
-       rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2510
-       netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
-       netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1935
-       sock_sendmsg_nosec net/socket.c:704 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:724
-       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
-       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #1 (&priv->j1939_socks_lock){+.-.}-{2:2}:
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:178
-       spin_lock_bh include/linux/spinlock.h:368 [inline]
-       j1939_sk_errqueue+0x9f/0x1a0 net/can/j1939/socket.c:1078
-       __j1939_session_cancel+0x3b9/0x460 net/can/j1939/transport.c:1124
-       j1939_session_cancel net/can/j1939/transport.c:1135 [inline]
-       j1939_xtp_rx_dat_one+0xbc2/0xed0 net/can/j1939/transport.c:1907
-       j1939_xtp_rx_dat net/can/j1939/transport.c:1935 [inline]
-       j1939_tp_recv+0x4ec/0xb40 net/can/j1939/transport.c:2108
-       j1939_can_recv+0x6d7/0x930 net/can/j1939/main.c:101
-       deliver net/can/af_can.c:574 [inline]
-       can_rcv_filter+0x5d4/0x8d0 net/can/af_can.c:608
-       can_receive+0x31d/0x580 net/can/af_can.c:665
-       can_rcv+0x120/0x1c0 net/can/af_can.c:696
-       __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5436
-       __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5550
-       process_backlog+0x2a5/0x6c0 net/core/dev.c:6427
-       __napi_poll+0xaf/0x440 net/core/dev.c:6986
-       napi_poll net/core/dev.c:7053 [inline]
-       net_rx_action+0x801/0xb40 net/core/dev.c:7140
-       __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-       run_ksoftirqd kernel/softirq.c:920 [inline]
-       run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
-       smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
-       kthread+0x3e5/0x4d0 kernel/kthread.c:319
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
--> #0 (&priv->active_session_list_lock){+.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-       _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:178
-       spin_lock_bh include/linux/spinlock.h:368 [inline]
-       j1939_session_list_lock net/can/j1939/transport.c:238 [inline]
-       j1939_session_activate+0x43/0x4b0 net/can/j1939/transport.c:1554
-       j1939_sk_queue_activate_next_locked net/can/j1939/socket.c:181 [inline]
-       j1939_sk_queue_activate_next+0x29b/0x460 net/can/j1939/socket.c:205
-       j1939_session_deactivate_activate_next+0x2e/0x35 net/can/j1939/transport.c:1101
-       j1939_tp_rxtimer+0xcc/0x36b net/can/j1939/transport.c:1228
-       __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
-       __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
-       hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1766
-       __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-       invoke_softirq kernel/softirq.c:432 [inline]
-       __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
-       irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
-       sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
-       asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-       mm_update_next_owner+0x341/0x7a0 kernel/exit.c:379
-       exit_mm kernel/exit.c:500 [inline]
-       do_exit+0xab4/0x2a30 kernel/exit.c:812
-       do_group_exit+0x125/0x310 kernel/exit.c:922
-       get_signal+0x47f/0x2160 kernel/signal.c:2868
-       arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
-       handle_signal_work kernel/entry/common.c:148 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
-       exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
-       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
-       do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  &priv->active_session_list_lock --> &priv->j1939_socks_lock --> &jsk->sk_session_queue_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&jsk->sk_session_queue_lock);
-                               lock(&priv->j1939_socks_lock);
-                               lock(&jsk->sk_session_queue_lock);
-  lock(&priv->active_session_list_lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.1/10231:
- #0: ffffffff8b60a098 (tasklist_lock){.+.+}-{2:2}, at: mm_update_next_owner+0x100/0x7a0 kernel/exit.c:367
- #1: ffff88808959e5c0 (&jsk->sk_session_queue_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:368 [inline]
- #1: ffff88808959e5c0 (&jsk->sk_session_queue_lock){+.-.}-{2:2}, at: j1939_sk_queue_activate_next+0x56/0x460 net/can/j1939/socket.c:204
-
-stack backtrace:
-CPU: 1 PID: 10231 Comm: syz-executor.1 Not tainted 5.15.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:368 [inline]
- j1939_session_list_lock net/can/j1939/transport.c:238 [inline]
- j1939_session_activate+0x43/0x4b0 net/can/j1939/transport.c:1554
- j1939_sk_queue_activate_next_locked net/can/j1939/socket.c:181 [inline]
- j1939_sk_queue_activate_next+0x29b/0x460 net/can/j1939/socket.c:205
- j1939_session_deactivate_activate_next+0x2e/0x35 net/can/j1939/transport.c:1101
- j1939_tp_rxtimer+0xcc/0x36b net/can/j1939/transport.c:1228
- __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
- __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1766
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:mm_update_next_owner+0x341/0x7a0 kernel/exit.c:379
-Code: a8 05 00 00 4c 89 f0 48 c1 e8 03 80 3c 18 00 0f 85 5a 04 00 00 48 8b 85 a8 05 00 00 48 8d a8 48 fa ff ff 49 39 c6 75 32 eb 6c <e8> ba ee 30 00 48 8d bd b8 05 00 00 48 89 f8 48 c1 e8 03 80 3c 18
-RSP: 0018:ffffc900041c7b40 EFLAGS: 00000207
-RAX: 1ffff11005a9742a RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: ffff88801c113900 RSI: ffffffff8145e986 RDI: ffff88801c113e98
-RBP: ffff88802d4b9c80 R08: 0000000000000001 R09: ffffffff8b60a083
-R10: fffffbfff16c1410 R11: 0000000000000000 R12: ffff888090651500
-R13: ffff88802d4ba150 R14: ffff888021c0a228 R15: ffff88801c113900
- exit_mm kernel/exit.c:500 [inline]
- do_exit+0xab4/0x2a30 kernel/exit.c:812
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2868
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f4b967e3a39
-Code: Unable to access opcode bytes at RIP 0x7f4b967e3a0f.
-RSP: 002b:00007f4b93d38188 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: 0000000000000002 RBX: 00007f4b968e7020 RCX: 00007f4b967e3a39
-RDX: 0492492492492627 RSI: 00000000200000c0 RDI: 0000000000000006
-RBP: 00007f4b9683dc5f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fff9fcb162f R14: 00007f4b93d38300 R15: 0000000000022000
-vxcan0: j1939_tp_rxtimer: 0xffff888078ce8000: rx timeout, send abort
-vxcan0: j1939_tp_rxtimer: 0xffff888078ce8000: abort rx timeout. Force session deactivation
-----------------
-Code disassembly (best guess):
-   0:	a8 05                	test   $0x5,%al
-   2:	00 00                	add    %al,(%rax)
-   4:	4c 89 f0             	mov    %r14,%rax
-   7:	48 c1 e8 03          	shr    $0x3,%rax
-   b:	80 3c 18 00          	cmpb   $0x0,(%rax,%rbx,1)
-   f:	0f 85 5a 04 00 00    	jne    0x46f
-  15:	48 8b 85 a8 05 00 00 	mov    0x5a8(%rbp),%rax
-  1c:	48 8d a8 48 fa ff ff 	lea    -0x5b8(%rax),%rbp
-  23:	49 39 c6             	cmp    %rax,%r14
-  26:	75 32                	jne    0x5a
-  28:	eb 6c                	jmp    0x96
-* 2a:	e8 ba ee 30 00       	callq  0x30eee9 <-- trapping instruction
-  2f:	48 8d bd b8 05 00 00 	lea    0x5b8(%rbp),%rdi
-  36:	48 89 f8             	mov    %rdi,%rax
-  39:	48 c1 e8 03          	shr    $0x3,%rax
-  3d:	80                   	.byte 0x80
-  3e:	3c 18                	cmp    $0x18,%al
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> Paolo
+>
