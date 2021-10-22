@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00FA43710C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09E643710E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhJVEvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 00:51:12 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:50886 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhJVEvG (ORCPT
+        id S231935AbhJVEvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 00:51:55 -0400
+Received: from smtprelay0033.hostedemail.com ([216.40.44.33]:33918 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229573AbhJVEvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 00:51:06 -0400
-Received: from smtpclient.apple (p54899aa7.dip0.t-ipconnect.de [84.137.154.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id B8669CED3E;
-        Fri, 22 Oct 2021 06:48:47 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: cmtp: fix possible panic when
- cmtp_init_sockets() fails
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20211022034417.766659-1-wanghai38@huawei.com>
-Date:   Fri, 22 Oct 2021 06:48:47 +0200
-Cc:     Karsten Keil <isdn@linux-pingi.de>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+        Fri, 22 Oct 2021 00:51:54 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id E7B03348D0;
+        Fri, 22 Oct 2021 04:49:36 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 5D98213DA5;
+        Fri, 22 Oct 2021 04:49:35 +0000 (UTC)
+Message-ID: <ccb3ab4d533de55260b98c7168bfa4460c5f3fcc.camel@perches.com>
+Subject: Re: [PATCH] fsi: master: replace snprintf in show functions with
+ sysfs_emit
+From:   Joe Perches <joe@perches.com>
+To:     cgel.zte@gmail.com, jk@ozlabs.org
+Cc:     joel@jms.id.au, alistair@popple.id.au, eajames@linux.ibm.com,
+        linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Date:   Thu, 21 Oct 2021 21:49:34 -0700
+In-Reply-To: <20211022025052.1063370-1-ye.guojin@zte.com.cn>
+References: <20211022025052.1063370-1-ye.guojin@zte.com.cn>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <9D8B1F5B-8EFE-40CB-BC85-F6EC3483CC61@holtmann.org>
-References: <20211022034417.766659-1-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+X-Rspamd-Queue-Id: 5D98213DA5
+X-Spam-Status: No, score=0.82
+X-Stat-Signature: ymjw5ge6ktceiujnhptfd1wabueiigp6
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/Tcwve9/9BDkDcczrk+P14/BX6aHFStB0=
+X-HE-Tag: 1634878175-286183
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wang,
+On Fri, 2021-10-22 at 02:50 +0000, cgel.zte@gmail.com wrote:
+> From: Ye Guojin <ye.guojin@zte.com.cn>
+> 
+> coccicheck complains about the use of snprintf() in sysfs show
+> functions:
+> WARNING  use scnprintf or sprintf
+[]
+> diff --git a/drivers/fsi/fsi-master-ast-cf.c b/drivers/fsi/fsi-master-ast-cf.c
+[]
+> @@ -1083,8 +1083,7 @@ static ssize_t external_mode_show(struct device *dev,
+>  {
+>  	struct fsi_master_acf *master = dev_get_drvdata(dev);
+>  
+> -	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
+> -			master->external_mode ? 1 : 0);
+> +	return sysfs_emit(buf, "%u\n", master->external_mode ? 1 : 0);
 
-> I got a kernel BUG report when doing fault injection test:
-> 
-> ------------[ cut here ]------------
-> kernel BUG at lib/list_debug.c:45!
-> ...
-> RIP: 0010:__list_del_entry_valid.cold+0x12/0x4d
-> ...
-> Call Trace:
-> proto_unregister+0x83/0x220
-> cmtp_cleanup_sockets+0x37/0x40 [cmtp]
-> cmtp_exit+0xe/0x1f [cmtp]
-> do_syscall_64+0x35/0xb0
-> entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> If cmtp_init_sockets() in cmtp_init() fails, cmtp_init() still returns
-> success. This will cause a kernel bug when accessing uncreated ctmp
-> related data when the module exits.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
-> net/bluetooth/cmtp/core.c | 6 ++++--
-> 1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/bluetooth/cmtp/core.c b/net/bluetooth/cmtp/core.c
-> index 0a2d78e811cf..ccf48f50afdf 100644
-> --- a/net/bluetooth/cmtp/core.c
-> +++ b/net/bluetooth/cmtp/core.c
-> @@ -499,11 +499,13 @@ int cmtp_get_conninfo(struct cmtp_conninfo *ci)
-> 
-> static int __init cmtp_init(void)
-> {
-> +	int err;
-> +
-> 	BT_INFO("CMTP (CAPI Emulation) ver %s", VERSION);
-> 
-> -	cmtp_init_sockets();
-> +	err = cmtp_init_sockets();
-> 
-> -	return 0;
-> +	return err;
-> }
+external_mode is already bool so this ?: isn't necessary.
 
-just do return cmtp_init_sockets();
+> diff --git a/drivers/fsi/fsi-master-gpio.c b/drivers/fsi/fsi-master-gpio.c
+[]
+> @@ -718,8 +718,7 @@ static ssize_t external_mode_show(struct device *dev,
+>  {
+>  	struct fsi_master_gpio *master = dev_get_drvdata(dev);
+>  
+> -	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
+> -			master->external_mode ? 1 : 0);
+> +	return sysfs_emit(buf, "%u\n", master->external_mode ? 1 : 0);
 
-Regards
-
-Marcel
+here too
 
