@@ -2,95 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEFB437C0C
+	by mail.lfdr.de (Postfix) with ESMTP id CFC5F437C0E
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbhJVRlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
+        id S233846AbhJVRlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhJVRlM (ORCPT
+        with ESMTP id S233803AbhJVRlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:41:12 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87CEC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:38:54 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g10so4347534edj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:38:54 -0700 (PDT)
+        Fri, 22 Oct 2021 13:41:15 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076F0C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:38:58 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id r184so8618656ybc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fPYoNgwJMJvckGbmwxEVj2HyEBD3w36KB+IYdEkY6MA=;
-        b=mE2xVjVmqMBiKP6FhQOYRc8CsekC8hhuCCX2rrVntAwz6qOcMTy7O26tWxYizEvw4R
-         KjHQZ+jUq+Miy9RpBhX/pWtQjr9OW8QFoS/ZWiTmkp+i/WQDqciTtSNMoYGl88/MmNB4
-         /0H6RALFCt11WN+BdTb3m+vVXVE3Qkp0O2jTYCVgibwY5wSWi9HsuMJ0IHijC+6hhjex
-         O6MZ15HgDh6EKX/W3oxvbnXjxPVo4b9TqdaH+ZXFnKjb2ngIdY0aP2f0UvXJMEsQctCg
-         CEsF92Jo/WT4GIAnD9qS+6bJ5N9zteQlBEafCNyaeh7pZ0AGQrYkp6RF0GJkElwZmH9g
-         HpzA==
+        bh=r/8J8TR4uHJ1X4W6TznT1rAj7h/OTN7aNlkEVgGiT3k=;
+        b=LP7en/nydEvtAFRctjt7frpaybeS3xAVyS4NXj3p3ir55MZBGyzoBHMEyWvi+VW6PT
+         BwXDhkwDH07ax89kj2XT2dNMx4ckyVZan4DxLHH2lIjIHbWMqvq/EbTqniXG7EwtSvS4
+         +CfXvJsgsY20ATw2fvtp/OyXy4SPk0ONvFKzV5hf2GBwbGKks6vtz1+DTPq9IzbICuYI
+         kqS/klK5DiAvNo6refJCuZJZ9kMLNEf2EmQnAMmyrHFplSCk/4Q1IdGi7GrKSN/kyvPW
+         rR3yW1l0MXUB3MAV4mE8gq4QHsCO+8bqIAkwVWFRD5Jgpo4wmosHJ7JGffPBxY3ScHba
+         nlPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fPYoNgwJMJvckGbmwxEVj2HyEBD3w36KB+IYdEkY6MA=;
-        b=v+zop6SCSY+A9ieBZLrDtCfmdrJ6f16F1LWUPpH/2nZqWZjguE7ZsedBVy8JRbCsvX
-         Wtl9OZyxoAA/hH3FNhlsqDxNraIeCHRDB8r6oUMjlGv+6cwa//BVdg3qwYvC+4LInUHH
-         AWlNde7gUwCJmeQkk5zYkddS/2ba16Zu2xtyVCC9npBvqiSnYvtZ8clzpsbnBxKMFGrI
-         xIpY0T8nxoEYKDTdievOGK3jbX2Io18ssCNq/dqu4HpN/yUXlcjofPy1LjBZyWR9/Sp4
-         ZptF8ZsGTmRJwOf8VNvKppG8ZbnkFikg4X/h5rwtV27kaNvjKt9rZl7qYClJGKaut6N8
-         wFhw==
-X-Gm-Message-State: AOAM532XJkieB4/6tZQmixbLyCFtJvSrCZOvnXGOAgztMJ8L1YlCmLZh
-        kJzZow5mI254r7GGRJUo/vNd4zU6CCIU+fnyy0lMFwnHQxA=
-X-Google-Smtp-Source: ABdhPJwBJTsdQIOewen+qXgbUpm91ooQGoBqoe1jLp1ZXH6lFLQH6dEa3Dthq8fs5Sy6h3IvJfJc0pvFMPWx6shcIo0=
-X-Received: by 2002:a17:906:470f:: with SMTP id y15mr1048897ejq.521.1634924333542;
- Fri, 22 Oct 2021 10:38:53 -0700 (PDT)
+        bh=r/8J8TR4uHJ1X4W6TznT1rAj7h/OTN7aNlkEVgGiT3k=;
+        b=YX8jCFF/Om/5X7Xe3yOnQZsOTmzLZFWJghefZtSB8CwKbGwX6zP2nEobTV2toboCyF
+         MEENXMFTl9OemdqY43lwAKKdTvttFIfkJVY5rgkQsVmA61iEsEDkQJlJ/9J1sETlWWMJ
+         G0XUpjMM84MmkCkeALYfasvc6nzdKTov2kRQ9twYthCwjYKu8s4gEBFsFOEsrsq4t9LR
+         3/GZEyDQv54zSiB25rj3Zq8WaklinpHbYpHvdzrd22BFdFhN+W/Yz0R9Qg0xNwxSywQ5
+         9toNXUoVMRS7+cs78BdcNHpXtImZ696MS88GEH307xinJS/z6FfX8oxRvRxq8I2wMHF5
+         Dukw==
+X-Gm-Message-State: AOAM532AtLo5DBmGdVUJssRmVaHoEYNh9kDL2tk3eMEoOZuAPN7lUNIF
+        kxtOtPxq1rwCyoTcIYx0xurNxE9X+gDxJfH1cksodw==
+X-Google-Smtp-Source: ABdhPJzqy77u6YQ7w9HgETig0ZT17flo890EWUfxm8QGQC6SHPCyKeC6hHbuYdXWUpWZZMOnfP5nxkD02ITzgvHJkBo=
+X-Received: by 2002:a25:81c6:: with SMTP id n6mr1180149ybm.412.1634924336836;
+ Fri, 22 Oct 2021 10:38:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022074619.57355-1-andrea.righi@canonical.com> <YXKdRDKp+l6lis/R@casper.infradead.org>
-In-Reply-To: <YXKdRDKp+l6lis/R@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 22 Oct 2021 10:38:41 -0700
-Message-ID: <CAHbLzkqFpADQmrPq572M-y53ChJzFJ+uDOHUzzeRFUTv0acq9A@mail.gmail.com>
-Subject: Re: [PATCH] mm: fix sleeping copy_huge_page called from atomic context
-To:     Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
+References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+In-Reply-To: <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 22 Oct 2021 10:38:45 -0700
+Message-ID: <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
         Minchan Kim <minchan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 4:16 AM Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Oct 22, 2021 at 1:03 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Fri, Oct 22, 2021 at 09:46:19AM +0200, Andrea Righi wrote:
-> > copy_huge_page() can be called with mapping->private_lock held from
-> > __buffer_migrate_page() -> migrate_page_copy(), so it is not safe to
-> > do a cond_resched() in this context.
+> On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
+> > Race between process_mrelease and exit_mmap, where free_pgtables is
+> > called while __oom_reap_task_mm is in progress, leads to kernel crash
+> > during pte_offset_map_lock call. oom-reaper avoids this race by setting
+> > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
+> > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
+> > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
+> > fix this race, however that would be considered a hack. Fix this race
+> > by elevating mm->mm_users and preventing exit_mmap from executing until
+> > process_mrelease is finished. Patch slightly refactors the code to adapt
+> > for a possible mmget_not_zero failure.
+> > This fix has considerable negative impact on process_mrelease performance
+> > and will likely need later optimization.
+>
+> I am not sure there is any promise that process_mrelease will run in
+> parallel with the exiting process. In fact the primary purpose of this
+> syscall is to provide a reliable way to oom kill from user space. If you
+> want to optimize process exit resp. its exit_mmap part then you should
+> be using other means. So I would be careful calling this a regression.
+>
+> I do agree that taking the reference count is the right approach here. I
+> was wrong previously [1] when saying that pinning the mm struct is
+> sufficient. I have completely forgot about the subtle sync in exit_mmap.
+> One way we can approach that would be to take exclusive mmap_sem
+> throughout the exit_mmap unconditionally.
+
+I agree, that would probably be the cleanest way.
+
+> There was a push back against
+> that though so arguments would have to be re-evaluated.
+
+I'll review that discussion to better understand the reasons for the
+push back. Thanks for the link.
+
+>
+> [1] http://lkml.kernel.org/r/YQzZqFwDP7eUxwcn@dhcp22.suse.cz
+>
+> That being said
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
+>
+> Thanks!
+>
+> > Fixes: 884a7e5964e0 ("mm: introduce process_mrelease system call")
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  mm/oom_kill.c | 23 ++++++++++++-----------
+> >  1 file changed, 12 insertions(+), 11 deletions(-)
 > >
-> > Introduce migrate_page_copy_nowait() and copy_huge_page_nowait()
-> > variants that can be used from an atomic context.
+> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > index 831340e7ad8b..989f35a2bbb1 100644
+> > --- a/mm/oom_kill.c
+> > +++ b/mm/oom_kill.c
+> > @@ -1150,7 +1150,7 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> >       struct task_struct *task;
+> >       struct task_struct *p;
+> >       unsigned int f_flags;
+> > -     bool reap = true;
+> > +     bool reap = false;
+> >       struct pid *pid;
+> >       long ret = 0;
+> >
+> > @@ -1177,15 +1177,15 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> >               goto put_task;
+> >       }
+> >
+> > -     mm = p->mm;
+> > -     mmgrab(mm);
+> > -
+> > -     /* If the work has been done already, just exit with success */
+> > -     if (test_bit(MMF_OOM_SKIP, &mm->flags))
+> > -             reap = false;
+> > -     else if (!task_will_free_mem(p)) {
+> > -             reap = false;
+> > -             ret = -EINVAL;
+> > +     if (mmget_not_zero(p->mm)) {
+> > +             mm = p->mm;
+> > +             if (task_will_free_mem(p))
+> > +                     reap = true;
+> > +             else {
+> > +                     /* Error only if the work has not been done already */
+> > +                     if (!test_bit(MMF_OOM_SKIP, &mm->flags))
+> > +                             ret = -EINVAL;
+> > +             }
+> >       }
+> >       task_unlock(p);
+> >
+> > @@ -1201,7 +1201,8 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> >       mmap_read_unlock(mm);
+> >
+> >  drop_mm:
+> > -     mmdrop(mm);
+> > +     if (mm)
+> > +             mmput(mm);
+> >  put_task:
+> >       put_task_struct(task);
+> >  put_pid:
+> > --
+> > 2.33.0.1079.g6e70778dc9-goog
 >
-> I think this is a consequence of THPs being created when they should not
-> be.  This is the wrong way to fix this problem; and I suspect it may
-> already be fixed at least in -mm.  We should have taken this path:
->
->         if (!page_has_buffers(page))
->                 return migrate_page(mapping, newpage, page, mode);
->
-> but since we didn't, we can infer that there's a THP which has buffers
-> (this should never occur).  It's the same root cause as the invalidatepage
-> problem, just with a very different signature.
-
-Yeah, exactly. And I replied to that syzbot report a few days ago
-(https://lore.kernel.org/linux-mm/CAHbLzkoFaowaG8AU6tg_WMPdjcAdyE+Wafs7TJz1Z23TRg_d8A@mail.gmail.com/)
-with the same conclusion.
-
-I'm not sure why Hugh didn't submit his patch, maybe he was waiting
-for the test result from the bug reporter of that invalidatepage
-issue? It should be fine, the fix is quite straightforward IMHO.
-
->
+> --
+> Michal Hocko
+> SUSE Labs
