@@ -2,373 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65DC438061
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B7A438064
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhJVWsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhJVWsT (ORCPT
+        id S231477AbhJVWt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:49:59 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:43797 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhJVWtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:48:19 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206ADC061243
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:46:01 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id br29so2502894lfb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1vhKO+y6B4MzKrTqLXu7Ad6BaJxOZR8CVxD8VQ/9yAQ=;
-        b=yHJMG5nFQY3RKTdePuv/v9kSjjsHcACKqVwAj308L4LCxdJhr6212X8Bo9rSW94wbG
-         WwFpZgWDcH9gRDjfIqEyedwPsFwT9OB1IUDKQYPh9cg2NBZTWfKTNyGM/5wxJ9gaKMiO
-         m4JgUISmX9ynB+MjZE/xTCNL10dmWGDXsV/idy/eO9jMsrLKI8yH47Z90LV6OWYhO16a
-         eu4fRekmmNMBiNJ9kFwA4t+jXWzcKZu8qvKLwMjOcWALuZv8tEV8lHOi6bZdgnHM0ZHe
-         D10T3lk2Hvxh6oPrKkf3C/wNyZvWmilP10olWG4gRVEnNjRQ2EX7CaBOeX7nxl0aCXsp
-         k5aA==
+        Fri, 22 Oct 2021 18:49:51 -0400
+Received: by mail-oi1-f181.google.com with SMTP id o4so6841017oia.10;
+        Fri, 22 Oct 2021 15:47:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1vhKO+y6B4MzKrTqLXu7Ad6BaJxOZR8CVxD8VQ/9yAQ=;
-        b=Dw07BhKBhWr54hDqBHIvJ7VxiMrbZFOKOrYBtGTvzpiojIwcik6i1qaysVl6DBlgy6
-         aBWckNy62OtBrkTY+n2u7SWalQaSNlnlU28e4kfEql4J2jJwjGKQTjj2dY3PhSvTStHj
-         WCqf5ob9Nq1gmDvEyCiLNRcvQg0zcnqGvAo9cj2JUW1Aqs4p5Co4U7JxynIArlb6xtbU
-         d71MfExGEOboZteeDJm6hir7iDumzTO9wHCneBAKsmWjeQeb8PjLd2Aa45JKZ2+ifQru
-         vxmhVc0vKn4auks0d6Q2i5oXFO4SZiUCbEvHeEa3/NMCrpSJq4lM4w/gto8tg5kRFXrz
-         o0jA==
-X-Gm-Message-State: AOAM532bW1a+GFYFxxpm94mwR4rrBZrdOQ5mZ7MTRhZOMrDAG2PKrfnC
-        Uv7ldfkixJessxt+qD90RFDCAg==
-X-Google-Smtp-Source: ABdhPJxlPS/NUCZ1Wd8jM9a2iHrgEno5xucR2L32VJXPnwHzC6vUGWokzLqdEhzXEqrbQKaqi8HHZg==
-X-Received: by 2002:a05:6512:3f86:: with SMTP id x6mr2334031lfa.389.1634942759335;
-        Fri, 22 Oct 2021 15:45:59 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id c15sm850057lft.244.2021.10.22.15.45.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NuD6bogNZk9RrvAuHPuJ1Tao9hcVN0ozF9HHBb/7+oc=;
+        b=OQP3aPe9/WShtRfENUZxUyGTr873wWIu2sFspSPBoEVQy3uRf0lTBVEf7bfqEmMgk4
+         gISm3uOMaU8fKg+EQxxYrmKmFnmWAWgDw83y1GLQ1y0zI8zpRc2gjDJ0JergImbMRvdZ
+         OnSq3zwzBRDsXXxsjom93fixvY1W2KGHSYubwCOn49rpL4rKpD8FGkMI+e4Jzrkrlj4z
+         EHbaP5g5V3/yk3KFcX0GJHn2C57O5tCjslWK5s1oBJbc0w2iMcSyHhCE6p0S+pT5aF3j
+         xxQZtvoZvkXJBEl6Eiou1lLPb5bDD21EtzwOYz7YVcCEevO4DdyTTxbFhggTnxrAXPFy
+         34MA==
+X-Gm-Message-State: AOAM532D6GHPJ1GSD4HArNvgvZY83NCl7h3w4gF0bMoCBe7I8WcAhXxr
+        2BkHZ7TudmLEbVqvpIee+Q==
+X-Google-Smtp-Source: ABdhPJxlp2fL4Skst4jfVYsFRVcGyOBV+4iSlYe8p+vWxwSKWx6gTbwQwo/LS4qXMBg51++bzqqYQQ==
+X-Received: by 2002:a05:6808:ec3:: with SMTP id q3mr1836622oiv.57.1634942852960;
+        Fri, 22 Oct 2021 15:47:32 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id f13sm1953909oto.53.2021.10.22.15.47.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 15:45:58 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v2 2/2] clk: samsung: exynos850: Implement CMU_APM domain
-Date:   Sat, 23 Oct 2021 01:45:56 +0300
-Message-Id: <20211022224556.18742-2-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211022224556.18742-1-semen.protsenko@linaro.org>
-References: <20211022224556.18742-1-semen.protsenko@linaro.org>
+        Fri, 22 Oct 2021 15:47:32 -0700 (PDT)
+Received: (nullmailer pid 3310215 invoked by uid 1000);
+        Fri, 22 Oct 2021 22:47:30 -0000
+Date:   Fri, 22 Oct 2021 17:47:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Julien Su <juliensu@mxic.com.tw>,
+        Jaime Liao <jaimeliao@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>
+Subject: Re: [PATCH 03/18] dt-bindings: mtd: nand-chip: Create a NAND chip
+ description
+Message-ID: <YXM/giZYKFc0BJHe@robh.at.kernel.org>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+ <20211020142809.349347-4-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020142809.349347-4-miquel.raynal@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CMU_APM clock domain provides clocks for APM IP-core (Active Power
-Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailbox,
-Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
+On Wed, Oct 20, 2021 at 04:27:54PM +0200, Miquel Raynal wrote:
+> Move the NAND chip description out of the NAND controller file. Indeed,
+> a subsequent part of the properties supported by a raw NAND chip are
+> also supported by SPI-NAND chips. So let's create a generic NAND chip
+> description which will be pulled by nand-controller.yaml and later by
+> spi-nand.yaml as well.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  .../devicetree/bindings/mtd/nand-chip.yaml    | 71 +++++++++++++++++++
+>  .../bindings/mtd/nand-controller.yaml         | 53 ++------------
+>  2 files changed, 75 insertions(+), 49 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> new file mode 100644
+> index 000000000000..1f230a3ee27d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/nand-chip.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NAND Chip and NAND Controller Generic Binding
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +
+> +description: |
+> +  This file covers the generic description of a NAND chip. It implies that the
+> +  bus interface should not be taken into account: both raw NAND devices and
+> +  SPI-NAND devices are concerned by this description.
+> +
+> +properties:
+> +  reg:
+> +    description:
+> +      Contains the chip-select IDs.
+> +
+> +  nand-ecc-engine:
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: |
+> +      A phandle on the hardware ECC engine if any. There are
+> +      basically three possibilities:
+> +      1/ The ECC engine is part of the NAND controller, in this
+> +      case the phandle should reference the parent node.
+> +      2/ The ECC engine is part of the NAND part (on-die), in this
+> +      case the phandle should reference the node itself.
+> +      3/ The ECC engine is external, in this case the phandle should
+> +      reference the specific ECC engine node.
+> +
+> +  nand-use-soft-ecc-engine:
+> +    type: boolean
+> +    description: Use a software ECC engine.
+> +
+> +  nand-no-ecc-engine:
+> +    type: boolean
+> +    description: Do not use any ECC correction.
+> +
+> +  nand-ecc-algo:
+> +    description:
+> +      Desired ECC algorithm.
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [hamming, bch, rs]
+> +
+> +  nand-ecc-strength:
+> +    description:
+> +      Maximum number of bits that can be corrected per ECC step.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 1
+> +
+> +  nand-ecc-step-size:
+> +    description:
+> +      Number of data bytes covered by a single ECC step.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 1
+> +
+> +  secure-regions:
+> +    $ref: /schemas/types.yaml#/definitions/uint64-matrix
+> +    description:
+> +      Regions in the NAND chip which are protected using a secure element
+> +      like Trustzone. This property contains the start address and size of
+> +      the secure regions present.
+> +
+> +required:
+> +  - reg
+> +
+> +additionalProperties: false
 
-This patch adds next clocks:
-  - bus clocks in CMU_TOP needed for CMU_APM
-  - all internal CMU_APM clocks
-  - leaf clocks for I3C, Speedy and RTC IP-cores
-  - bus clocks for CMU_CMGP and CMU_CHUB
+This is the source of the errors reported as this wasn't set before. If 
+we're allowing custom properties (not defined here) within nand chip 
+nodes, then each schema with custom properties has to reference 
+nand-chip.yaml, set 'unevaluatedProperties: false', and then define 
+their custom properties. And then this needs to be true. 
 
-CMU_APM doesn't belong to Power Domains, but platform driver is used for
-its registration to keep its bus clock always running. Otherwise rtc-s3c
-driver disables that clock and system freezes.
-
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
-Changes in v2:
-  - Reworked clock IDs to be contiguous (don't break ABI)
-  - Added R-b tag by Krzysztof Kozlowski
-
- drivers/clk/samsung/clk-exynos850.c   | 142 +++++++++++++++++++++++++-
- include/dt-bindings/clock/exynos850.h |  29 +++++-
- 2 files changed, 169 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-index 2294989e244c..95e373d17b42 100644
---- a/drivers/clk/samsung/clk-exynos850.c
-+++ b/drivers/clk/samsung/clk-exynos850.c
-@@ -72,6 +72,7 @@ static void __init exynos850_init_clocks(struct device_node *np,
- #define PLL_CON3_PLL_SHARED0			0x014c
- #define PLL_CON0_PLL_SHARED1			0x0180
- #define PLL_CON3_PLL_SHARED1			0x018c
-+#define CLK_CON_MUX_MUX_CLKCMU_APM_BUS		0x1000
- #define CLK_CON_MUX_MUX_CLKCMU_CORE_BUS		0x1014
- #define CLK_CON_MUX_MUX_CLKCMU_CORE_CCI		0x1018
- #define CLK_CON_MUX_MUX_CLKCMU_CORE_MMC_EMBD	0x101c
-@@ -83,6 +84,7 @@ static void __init exynos850_init_clocks(struct device_node *np,
- #define CLK_CON_MUX_MUX_CLKCMU_PERI_BUS		0x1070
- #define CLK_CON_MUX_MUX_CLKCMU_PERI_IP		0x1074
- #define CLK_CON_MUX_MUX_CLKCMU_PERI_UART	0x1078
-+#define CLK_CON_DIV_CLKCMU_APM_BUS		0x180c
- #define CLK_CON_DIV_CLKCMU_CORE_BUS		0x1820
- #define CLK_CON_DIV_CLKCMU_CORE_CCI		0x1824
- #define CLK_CON_DIV_CLKCMU_CORE_MMC_EMBD	0x1828
-@@ -100,6 +102,7 @@ static void __init exynos850_init_clocks(struct device_node *np,
- #define CLK_CON_DIV_PLL_SHARED1_DIV2		0x1898
- #define CLK_CON_DIV_PLL_SHARED1_DIV3		0x189c
- #define CLK_CON_DIV_PLL_SHARED1_DIV4		0x18a0
-+#define CLK_CON_GAT_GATE_CLKCMU_APM_BUS		0x2008
- #define CLK_CON_GAT_GATE_CLKCMU_CORE_BUS	0x201c
- #define CLK_CON_GAT_GATE_CLKCMU_CORE_CCI	0x2020
- #define CLK_CON_GAT_GATE_CLKCMU_CORE_MMC_EMBD	0x2024
-@@ -122,6 +125,7 @@ static const unsigned long top_clk_regs[] __initconst = {
- 	PLL_CON3_PLL_SHARED0,
- 	PLL_CON0_PLL_SHARED1,
- 	PLL_CON3_PLL_SHARED1,
-+	CLK_CON_MUX_MUX_CLKCMU_APM_BUS,
- 	CLK_CON_MUX_MUX_CLKCMU_CORE_BUS,
- 	CLK_CON_MUX_MUX_CLKCMU_CORE_CCI,
- 	CLK_CON_MUX_MUX_CLKCMU_CORE_MMC_EMBD,
-@@ -133,6 +137,7 @@ static const unsigned long top_clk_regs[] __initconst = {
- 	CLK_CON_MUX_MUX_CLKCMU_PERI_BUS,
- 	CLK_CON_MUX_MUX_CLKCMU_PERI_IP,
- 	CLK_CON_MUX_MUX_CLKCMU_PERI_UART,
-+	CLK_CON_DIV_CLKCMU_APM_BUS,
- 	CLK_CON_DIV_CLKCMU_CORE_BUS,
- 	CLK_CON_DIV_CLKCMU_CORE_CCI,
- 	CLK_CON_DIV_CLKCMU_CORE_MMC_EMBD,
-@@ -150,6 +155,7 @@ static const unsigned long top_clk_regs[] __initconst = {
- 	CLK_CON_DIV_PLL_SHARED1_DIV2,
- 	CLK_CON_DIV_PLL_SHARED1_DIV3,
- 	CLK_CON_DIV_PLL_SHARED1_DIV4,
-+	CLK_CON_GAT_GATE_CLKCMU_APM_BUS,
- 	CLK_CON_GAT_GATE_CLKCMU_CORE_BUS,
- 	CLK_CON_GAT_GATE_CLKCMU_CORE_CCI,
- 	CLK_CON_GAT_GATE_CLKCMU_CORE_MMC_EMBD,
-@@ -183,6 +189,8 @@ static const struct samsung_pll_clock top_pll_clks[] __initconst = {
- PNAME(mout_shared0_pll_p)	= { "oscclk", "fout_shared0_pll" };
- PNAME(mout_shared1_pll_p)	= { "oscclk", "fout_shared1_pll" };
- PNAME(mout_mmc_pll_p)		= { "oscclk", "fout_mmc_pll" };
-+/* List of parent clocks for Muxes in CMU_TOP: for CMU_APM */
-+PNAME(mout_clkcmu_apm_bus_p)	= { "dout_shared0_div4", "pll_shared1_div4" };
- /* List of parent clocks for Muxes in CMU_TOP: for CMU_CORE */
- PNAME(mout_core_bus_p)		= { "dout_shared1_div2", "dout_shared0_div3",
- 				    "dout_shared1_div3", "dout_shared0_div4" };
-@@ -222,6 +230,10 @@ static const struct samsung_mux_clock top_mux_clks[] __initconst = {
- 	MUX(CLK_MOUT_MMC_PLL, "mout_mmc_pll", mout_mmc_pll_p,
- 	    PLL_CON0_PLL_MMC, 4, 1),
- 
-+	/* APM */
-+	MUX(CLK_MOUT_CLKCMU_APM_BUS, "mout_clkcmu_apm_bus",
-+	    mout_clkcmu_apm_bus_p, CLK_CON_MUX_MUX_CLKCMU_APM_BUS, 0, 1),
-+
- 	/* CORE */
- 	MUX(CLK_MOUT_CORE_BUS, "mout_core_bus", mout_core_bus_p,
- 	    CLK_CON_MUX_MUX_CLKCMU_CORE_BUS, 0, 2),
-@@ -268,6 +280,10 @@ static const struct samsung_div_clock top_div_clks[] __initconst = {
- 	DIV(CLK_DOUT_SHARED1_DIV4, "dout_shared1_div4", "dout_shared1_div2",
- 	    CLK_CON_DIV_PLL_SHARED1_DIV4, 0, 1),
- 
-+	/* APM */
-+	DIV(CLK_DOUT_CLKCMU_APM_BUS, "dout_clkcmu_apm_bus",
-+	    "gout_clkcmu_apm_bus", CLK_CON_DIV_CLKCMU_APM_BUS, 0, 3),
-+
- 	/* CORE */
- 	DIV(CLK_DOUT_CORE_BUS, "dout_core_bus", "gout_core_bus",
- 	    CLK_CON_DIV_CLKCMU_CORE_BUS, 0, 4),
-@@ -310,6 +326,10 @@ static const struct samsung_gate_clock top_gate_clks[] __initconst = {
- 	GATE(CLK_GOUT_CORE_SSS, "gout_core_sss", "mout_core_sss",
- 	     CLK_CON_GAT_GATE_CLKCMU_CORE_SSS, 21, 0, 0),
- 
-+	/* APM */
-+	GATE(CLK_GOUT_CLKCMU_APM_BUS, "gout_clkcmu_apm_bus",
-+	     "mout_clkcmu_apm_bus", CLK_CON_GAT_GATE_CLKCMU_APM_BUS, 21, 0, 0),
-+
- 	/* DPU */
- 	GATE(CLK_GOUT_DPU, "gout_dpu", "mout_dpu",
- 	     CLK_CON_GAT_GATE_CLKCMU_DPU, 21, 0, 0),
-@@ -354,6 +374,124 @@ static void __init exynos850_cmu_top_init(struct device_node *np)
- CLK_OF_DECLARE(exynos850_cmu_top, "samsung,exynos850-cmu-top",
- 	       exynos850_cmu_top_init);
- 
-+/* ---- CMU_APM ------------------------------------------------------------- */
-+
-+/* Register Offset definitions for CMU_APM (0x11800000) */
-+#define PLL_CON0_MUX_CLKCMU_APM_BUS_USER		0x0600
-+#define PLL_CON0_MUX_CLK_RCO_APM_I3C_USER		0x0610
-+#define PLL_CON0_MUX_CLK_RCO_APM_USER			0x0620
-+#define PLL_CON0_MUX_DLL_USER				0x0630
-+#define CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS			0x1000
-+#define CLK_CON_MUX_MUX_CLK_APM_BUS			0x1004
-+#define CLK_CON_MUX_MUX_CLK_APM_I3C			0x1008
-+#define CLK_CON_DIV_CLKCMU_CHUB_BUS			0x1800
-+#define CLK_CON_DIV_DIV_CLK_APM_BUS			0x1804
-+#define CLK_CON_DIV_DIV_CLK_APM_I3C			0x1808
-+#define CLK_CON_GAT_CLKCMU_CMGP_BUS			0x2000
-+#define CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS		0x2014
-+#define CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK		0x2024
-+#define CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK		0x2028
-+#define CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK	0x2034
-+#define CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK	0x2038
-+#define CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK		0x20bc
-+
-+static const unsigned long apm_clk_regs[] __initconst = {
-+	PLL_CON0_MUX_CLKCMU_APM_BUS_USER,
-+	PLL_CON0_MUX_CLK_RCO_APM_I3C_USER,
-+	PLL_CON0_MUX_CLK_RCO_APM_USER,
-+	PLL_CON0_MUX_DLL_USER,
-+	CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS,
-+	CLK_CON_MUX_MUX_CLK_APM_BUS,
-+	CLK_CON_MUX_MUX_CLK_APM_I3C,
-+	CLK_CON_DIV_CLKCMU_CHUB_BUS,
-+	CLK_CON_DIV_DIV_CLK_APM_BUS,
-+	CLK_CON_DIV_DIV_CLK_APM_I3C,
-+	CLK_CON_GAT_CLKCMU_CMGP_BUS,
-+	CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS,
-+	CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK,
-+	CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK,
-+	CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK,
-+	CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK,
-+	CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK,
-+};
-+
-+/* List of parent clocks for Muxes in CMU_APM */
-+PNAME(mout_apm_bus_user_p)	= { "oscclk_rco_apm", "dout_clkcmu_apm_bus" };
-+PNAME(mout_rco_apm_i3c_user_p)	= { "oscclk_rco_apm", "clk_rco_i3c_pmic" };
-+PNAME(mout_rco_apm_user_p)	= { "oscclk_rco_apm", "clk_rco_apm__alv" };
-+PNAME(mout_dll_user_p)		= { "oscclk_rco_apm", "clk_dll_dco" };
-+PNAME(mout_clkcmu_chub_bus_p)	= { "mout_apm_bus_user", "mout_dll_user" };
-+PNAME(mout_apm_bus_p)		= { "mout_rco_apm_user", "mout_apm_bus_user",
-+				    "mout_dll_user", "oscclk_rco_apm" };
-+PNAME(mout_apm_i3c_p)		= { "dout_apm_i3c", "mout_rco_apm_i3c_user" };
-+
-+static const struct samsung_fixed_rate_clock apm_fixed_clks[] __initconst = {
-+	FRATE(CLK_RCO_I3C_PMIC, "clk_rco_i3c_pmic", NULL, 0, 491520000),
-+	FRATE(OSCCLK_RCO_APM, "oscclk_rco_apm", NULL, 0, 24576000),
-+	FRATE(CLK_RCO_APM__ALV, "clk_rco_apm__alv", NULL, 0, 49152000),
-+	FRATE(CLK_DLL_DCO, "clk_dll_dco", NULL, 0, 360000000),
-+};
-+
-+static const struct samsung_mux_clock apm_mux_clks[] __initconst = {
-+	MUX(CLK_MOUT_APM_BUS_USER, "mout_apm_bus_user", mout_apm_bus_user_p,
-+	    PLL_CON0_MUX_CLKCMU_APM_BUS_USER, 4, 1),
-+	MUX(CLK_MOUT_RCO_APM_I3C_USER, "mout_rco_apm_i3c_user",
-+	    mout_rco_apm_i3c_user_p, PLL_CON0_MUX_CLK_RCO_APM_I3C_USER, 4, 1),
-+	MUX(CLK_MOUT_RCO_APM_USER, "mout_rco_apm_user", mout_rco_apm_user_p,
-+	    PLL_CON0_MUX_CLK_RCO_APM_USER, 4, 1),
-+	MUX(CLK_MOUT_DLL_USER, "mout_dll_user", mout_dll_user_p,
-+	    PLL_CON0_MUX_DLL_USER, 4, 1),
-+	MUX(CLK_MOUT_CLKCMU_CHUB_BUS, "mout_clkcmu_chub_bus",
-+	    mout_clkcmu_chub_bus_p, CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS, 0, 1),
-+	MUX(CLK_MOUT_APM_BUS, "mout_apm_bus", mout_apm_bus_p,
-+	    CLK_CON_MUX_MUX_CLK_APM_BUS, 0, 2),
-+	MUX(CLK_MOUT_APM_I3C, "mout_apm_i3c", mout_apm_i3c_p,
-+	    CLK_CON_MUX_MUX_CLK_APM_I3C, 0, 1),
-+};
-+
-+static const struct samsung_div_clock apm_div_clks[] __initconst = {
-+	DIV(CLK_DOUT_CLKCMU_CHUB_BUS, "dout_clkcmu_chub_bus",
-+	    "gout_clkcmu_chub_bus",
-+	    CLK_CON_DIV_CLKCMU_CHUB_BUS, 0, 3),
-+	DIV(CLK_DOUT_APM_BUS, "dout_apm_bus", "mout_apm_bus",
-+	    CLK_CON_DIV_DIV_CLK_APM_BUS, 0, 3),
-+	DIV(CLK_DOUT_APM_I3C, "dout_apm_i3c", "mout_apm_bus",
-+	    CLK_CON_DIV_DIV_CLK_APM_I3C, 0, 3),
-+};
-+
-+static const struct samsung_gate_clock apm_gate_clks[] __initconst = {
-+	GATE(CLK_GOUT_CLKCMU_CMGP_BUS, "gout_clkcmu_cmgp_bus", "dout_apm_bus",
-+	     CLK_CON_GAT_CLKCMU_CMGP_BUS, 21, 0, 0),
-+	GATE(CLK_GOUT_CLKCMU_CHUB_BUS, "gout_clkcmu_chub_bus",
-+	     "mout_clkcmu_chub_bus",
-+	     CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS, 21, 0, 0),
-+	GATE(CLK_GOUT_RTC_PCLK, "gout_rtc_pclk", "dout_apm_bus",
-+	     CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_TOP_RTC_PCLK, "gout_top_rtc_pclk", "dout_apm_bus",
-+	     CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_I3C_PCLK, "gout_i3c_pclk", "dout_apm_bus",
-+	     CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_I3C_SCLK, "gout_i3c_sclk", "mout_apm_i3c",
-+	     CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK, 21, 0, 0),
-+	GATE(CLK_GOUT_SPEEDY_PCLK, "gout_speedy_pclk", "dout_apm_bus",
-+	     CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK, 21, 0, 0),
-+};
-+
-+static const struct samsung_cmu_info apm_cmu_info __initconst = {
-+	.mux_clks		= apm_mux_clks,
-+	.nr_mux_clks		= ARRAY_SIZE(apm_mux_clks),
-+	.div_clks		= apm_div_clks,
-+	.nr_div_clks		= ARRAY_SIZE(apm_div_clks),
-+	.gate_clks		= apm_gate_clks,
-+	.nr_gate_clks		= ARRAY_SIZE(apm_gate_clks),
-+	.fixed_clks		= apm_fixed_clks,
-+	.nr_fixed_clks		= ARRAY_SIZE(apm_fixed_clks),
-+	.nr_clk_ids		= APM_NR_CLK,
-+	.clk_regs		= apm_clk_regs,
-+	.nr_clk_regs		= ARRAY_SIZE(apm_clk_regs),
-+	.clk_name		= "dout_clkcmu_apm_bus",
-+};
-+
- /* ---- CMU_HSI ------------------------------------------------------------- */
- 
- /* Register Offset definitions for CMU_HSI (0x13400000) */
-@@ -801,9 +939,11 @@ static int __init exynos850_cmu_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--/* CMUs which belong to Power Domains and need runtime PM to be implemented */
- static const struct of_device_id exynos850_cmu_of_match[] = {
- 	{
-+		.compatible = "samsung,exynos850-cmu-apm",
-+		.data = &apm_cmu_info,
-+	}, {
- 		.compatible = "samsung,exynos850-cmu-hsi",
- 		.data = &hsi_cmu_info,
- 	}, {
-diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
-index 8999184f94a2..df3978b58304 100644
---- a/include/dt-bindings/clock/exynos850.h
-+++ b/include/dt-bindings/clock/exynos850.h
-@@ -55,7 +55,34 @@
- #define CLK_GOUT_PERI_BUS		43
- #define CLK_GOUT_PERI_UART		44
- #define CLK_GOUT_PERI_IP		45
--#define TOP_NR_CLK			46
-+#define CLK_MOUT_CLKCMU_APM_BUS		46
-+#define CLK_DOUT_CLKCMU_APM_BUS		47
-+#define CLK_GOUT_CLKCMU_APM_BUS		48
-+#define TOP_NR_CLK			49
-+
-+/* CMU_APM */
-+#define CLK_RCO_I3C_PMIC		1
-+#define OSCCLK_RCO_APM			2
-+#define CLK_RCO_APM__ALV		3
-+#define CLK_DLL_DCO			4
-+#define CLK_MOUT_APM_BUS_USER		5
-+#define CLK_MOUT_RCO_APM_I3C_USER	6
-+#define CLK_MOUT_RCO_APM_USER		7
-+#define CLK_MOUT_DLL_USER		8
-+#define CLK_MOUT_CLKCMU_CHUB_BUS	9
-+#define CLK_MOUT_APM_BUS		10
-+#define CLK_MOUT_APM_I3C		11
-+#define CLK_DOUT_CLKCMU_CHUB_BUS	12
-+#define CLK_DOUT_APM_BUS		13
-+#define CLK_DOUT_APM_I3C		14
-+#define CLK_GOUT_CLKCMU_CMGP_BUS	15
-+#define CLK_GOUT_CLKCMU_CHUB_BUS	16
-+#define CLK_GOUT_RTC_PCLK		17
-+#define CLK_GOUT_TOP_RTC_PCLK		18
-+#define CLK_GOUT_I3C_PCLK		19
-+#define CLK_GOUT_I3C_SCLK		20
-+#define CLK_GOUT_SPEEDY_PCLK		21
-+#define APM_NR_CLK			22
- 
- /* CMU_HSI */
- #define CLK_MOUT_HSI_BUS_USER		1
--- 
-2.30.2
-
+Rob
