@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE5F437EAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E19437EB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhJVTdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:33:37 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:36474 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbhJVTdg (ORCPT
+        id S234017AbhJVTe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhJVTez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:33:36 -0400
-Received: by mail-wr1-f47.google.com with SMTP id o20so935387wro.3;
-        Fri, 22 Oct 2021 12:31:17 -0700 (PDT)
+        Fri, 22 Oct 2021 15:34:55 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35176C061764;
+        Fri, 22 Oct 2021 12:32:38 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id x1-20020a17090a530100b001a1efa4ebe6so1545519pjh.0;
+        Fri, 22 Oct 2021 12:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KGuhaaAGa7HJ+q6TZKoJHHAr1+bKfVkj8J7RR7y3VKk=;
+        b=BJcJcsV+qyHQLSr36qxzk/eSZGcmfCMiSPjiHVz6HZXD8+N3JkwksLfFvpp6zUIM/f
+         yI6XKZsejKSqFH9UkVbCZdEkpL9G3MY8wkAXT1DFtbagRW5kBgLOBnx/UERtl/1nTUT7
+         YoQLFImQ9RH4+ZwxmsKMHcoFDiLbL6pWG+S8+VNq+4FghsVpSjpGMkd6OKxg3cO14RPm
+         6NkCWcSHWeFGogh9lzskX8krcdyBN1JMQg3SZ35I3xu8EbE5EfDWFOV5eBMbMlwzmspu
+         HDG8ls803XIdvrmpJIFQ3QKg/sGeVF1Wu4QFnY8tdh+tmF0P9RNCKf0Mc4uGnAZHojqa
+         NpCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=jbuKIQSCwzkXZ8PiOn6lg1oGS0F/5XrQqKN1fJRk0eE=;
-        b=sNQ2qDLFfK13TPWNAI/lrbzwQnw4vakgRbMWsuQQdeuDhinVuB952D8B7qqm056pWX
-         LFsN5fWBn68ifFh3mRvd8TF4jmZ5tsxxtzw1mBxRWLxDXGNaSrSV7cFA0hAV0I9k7v57
-         Q1o9tziwv/8owwE6JBvOLMi73VXEATI5dGQqoiTXbvyCxFXXwqc4+BUfSSFa4ONd6BHJ
-         VdCifXAydt4xHisozBCSZ7mArCG0jieonl5jGc7igVutkmMvD6diWqqi5dtgMcpVH9fC
-         1JwB2TYcNZbgm/53Nc71JnUS/TqqPiu8uv/vZkMlHqaX5oVGV5Y5B+cVIANQ/EdDnfRl
-         U2Cw==
-X-Gm-Message-State: AOAM532mWWZfowkadgEaH/xj/XWq9JOjaa7GYrgx7ilRomv5iWaCZ6MX
-        E+g1CJkPRRlpbowSAMDEHuo=
-X-Google-Smtp-Source: ABdhPJzsrThF/p3joVoauzAo4KxaJrPZ0oPLCaOVWy8Uvhg+geEcbaEuv0TfRHw7brlW/XpwIoYonA==
-X-Received: by 2002:adf:a4c5:: with SMTP id h5mr2202732wrb.38.1634931077289;
-        Fri, 22 Oct 2021 12:31:17 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a16sm8645811wrs.30.2021.10.22.12.31.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 12:31:16 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 19:31:15 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        sthemmin@microsoft.com, Michael Kelley <mikelley@microsoft.com>
-Subject: [GIT PULL] Hyper-V fixes for 5.15
-Message-ID: <20211022193115.l5doheww7ljub6dj@liuwe-devbox-debian-v2>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KGuhaaAGa7HJ+q6TZKoJHHAr1+bKfVkj8J7RR7y3VKk=;
+        b=2e49355ZqvMEquDuuUYoGkoi9bMIx+CjiJ7PTya22H30y/U7DYUzXRP9xVeOxHUAKR
+         G8UCZAdYaE6SDJc+4vplGWbrq1YTCiUvvo6kkVpdqMGma+eICWb4urgfv7NT0J3nSAEC
+         V6Ft8GBVjrBCoGauzKu85WNhdZxRBWd/mR8raVF8r3638ovA9TB4lx++oulw2C0aAfXh
+         RgYIoCGpMa//eumsZozakFwraBru3m6fYtAOqL1Jx4gTOq8QxfsNz4Ags5MaEI7+JL7a
+         16OsMnAzaMjJb4ep9aip4l3qH+Cc5lqFWFR7PhX/ywBgSGdzvPBklJLKiLosvq4nsPlv
+         0vsQ==
+X-Gm-Message-State: AOAM533dRJexWaCtj7qB8FHR3Xd8EoMi6dnM9l1HL9k+pxrFAVaZQepB
+        K0KuDulpSEmRF7Vv4sqlgHY=
+X-Google-Smtp-Source: ABdhPJwLgbkdtzb65l5w4UCp/RN4ia/VWySOZizprrGJxw11yK8FG5osK6NVFxsjHTQRMHno1bR4dA==
+X-Received: by 2002:a17:90b:185:: with SMTP id t5mr2143936pjs.54.1634931157771;
+        Fri, 22 Oct 2021 12:32:37 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id c12sm10560459pfc.161.2021.10.22.12.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 12:32:37 -0700 (PDT)
+Subject: Re: [PATCH net v10] skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Vasily Averin <vvs@virtuozzo.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Christoph Paasch <christoph.paasch@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <2721362c-462b-878f-9e09-9f6c4353c73d@gmail.com>
+ <644330dd-477e-0462-83bf-9f514c41edd1@virtuozzo.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <a55b298d-703f-d204-d425-a1d0704b2bb8@gmail.com>
+Date:   Fri, 22 Oct 2021 12:32:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <644330dd-477e-0462-83bf-9f514c41edd1@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-The following changes since commit f5c20e4a5f18677e22d8dd2846066251b006a62d:
 
-  x86/hyperv: Avoid erroneously sending IPI to 'self' (2021-10-06 15:56:45 +0000)
+On 10/22/21 3:28 AM, Vasily Averin wrote:
+> Christoph Paasch reports [1] about incorrect skb->truesize
+> after skb_expand_head() call in ip6_xmit.
+> This may happen because of two reasons:
+> - skb_set_owner_w() for newly cloned skb is called too early,
+> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
+> In this case sk->sk_wmem_alloc should be adjusted too.
+> 
+> [1] https://lkml.org/lkml/2021/8/20/1082
+> 
+> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+> Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
+> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+> v10: is_skb_wmem() was moved into separate header (it depends on net/tcp.h)
+>      use it after pskb_expand_head() insted of strange sock_edemux check
 
-are available in the Git repository at:
+SGTM, thanks !
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211022
-
-for you to fetch changes up to 8017c99680fa65e1e8d999df1583de476a187830:
-
-  hyperv/vmbus: include linux/bitops.h (2021-10-22 19:16:08 +0000)
-
-This patch has in fact stayed in linux-next for two days. I just
-realized before sending the pull-request that it had a typo in its
-subject line, so I fixed it. That's why you may not find this version in
-linux-next yet.
-
-Wei.
-
-----------------------------------------------------------------
-hyperv-fixes for 5.15
-  - Fix vmbus ARM64 build (Arnd Bergmann)
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      hyperv/vmbus: include linux/bitops.h
-
- drivers/hv/hyperv_vmbus.h | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Eric Dumazet <edumazet@google.com>
