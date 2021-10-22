@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2190143769F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7BB4376A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhJVMVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:21:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22331 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229842AbhJVMU7 (ORCPT
+        id S231294AbhJVMVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:21:10 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:29859
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229842AbhJVMVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:20:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634905121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eHiQsSRspKzkgF3ZMnWRJhAGzqwtYB2rLteRYpthZYA=;
-        b=gmu+xACYrKUBzyqgOLd8PoBrCCRdH0tqWz3oS3QOhVms40IFtYHQYXiBGW6boca41PAIR2
-        Klcmxb8XBJPzMSlLsDhnvRxMp1fAi3N4y4+xrCCoQAW3VNMLWae44WtmyNcRxPRfJtEva7
-        1tSPBZa8qPFBr4CmdWFLWZUz53dpKKA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-WU8VfC0hMnKrc1zqMNDZwg-1; Fri, 22 Oct 2021 08:18:40 -0400
-X-MC-Unique: WU8VfC0hMnKrc1zqMNDZwg-1
-Received: by mail-wm1-f71.google.com with SMTP id m1-20020a1ca301000000b003231d5b3c4cso1077740wme.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:18:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=eHiQsSRspKzkgF3ZMnWRJhAGzqwtYB2rLteRYpthZYA=;
-        b=CZ4AAHqkHRczbC3FHOSwcCkAXSFskUM19c1ftwRw5p5Q9Ld+lzdRBHINe4rIqDtLvS
-         TSv8fVRTc+Hd8+0Mx/zNyRF4QNEfGBy1OvHtuCHwiH46t6Ps/8w7W1+wvaQeJhETuA2T
-         3oeIHTId4/YCwj+7OIW6x4XaztjIpUgIgYepLQmIwHhHaXvp6OF0TLbbP1SkTX2a3SfG
-         8t4pwWf6qaBAp/uTHijBnYf9spGpY5C5/COAXxURoojqIHQqUtbsXYkVJ8m9C9B+q3Pc
-         D63UOmOlTsoNSSuWVN0uE9HyQ6NXNusvz2rgYzDxelsdMbUxTYHCsF7/iEM+oJU3ZfNV
-         52Pg==
-X-Gm-Message-State: AOAM5314oMDU0bW+prvmoGyKZxMJgpkGqUsSluXO4aeyC6Px1mtVPpcw
-        WOcq33TAePHbR9n/ejQS4NvHp3yNrIE+Se5VjsoP4yMPvlwfIPblAEs3lfEL4TUGIFeqK/F+k/c
-        S1OZFqfK80rutuGsu0SiRWHlo
-X-Received: by 2002:a05:600c:1994:: with SMTP id t20mr28951357wmq.94.1634905119034;
-        Fri, 22 Oct 2021 05:18:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy1ggdZm2CvOd30M4C23buFZImaoTh0+w0fNQ3aG+feIxYnB1S99uNwhCvG27zeEg+egOy1ZQ==
-X-Received: by 2002:a05:600c:1994:: with SMTP id t20mr28951326wmq.94.1634905118770;
-        Fri, 22 Oct 2021 05:18:38 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6324.dip0.t-ipconnect.de. [91.12.99.36])
-        by smtp.gmail.com with ESMTPSA id w26sm7847817wmk.34.2021.10.22.05.18.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 05:18:38 -0700 (PDT)
-Message-ID: <f6e7ae53-abd3-a286-bcd6-1d3a2d846620@redhat.com>
-Date:   Fri, 22 Oct 2021 14:18:36 +0200
+        Fri, 22 Oct 2021 08:21:06 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A0TmYvKprIPZbn3W674J/tD8aV5tWL9V00zEX?=
+ =?us-ascii?q?/kB9WHVpm5qj5r+TdZMgpHrJYVcqKRMdcL+7U5VoLUm3yXcx2+cs1J2ZLXDbUR?=
+ =?us-ascii?q?KTXflfBOnZrAEIaheOldK1vJ0IG5SWSueQMbEdt6vHCWKDc+rIruPqzEmAv5ah?=
+ =?us-ascii?q?815dCS9rdoRp5ENcBh2UHnZ7XBVLH4d8NLf03Ls9mxOQPVoWc+GyDT0gU/PMq+?=
+ =?us-ascii?q?bGjI7rewNDJz4LgTP+9w+A2frVEwW81hxbdDVTwbgj+2DZkwr/3amqqfe9oyWs?=
+ =?us-ascii?q?qlP73tB5mMbFwtAGPdeLicQeN1zX+2KVTbUkdb2emTg/5Ni17lUnmsSJgxpIBb?=
+ =?us-ascii?q?UV11rhOk+0vD7k0E3YyzAs53X+jWaRnHqLm72eeBsKT+RAmKdQeV/j51MkrJVf?=
+ =?us-ascii?q?3LIj5RPki6Zq?=
+X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
+   d="scan'208";a="397071971"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 14:18:46 +0200
+Date:   Fri, 22 Oct 2021 14:18:46 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     kushal kothari <kushalkothari285@gmail.com>
+cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kush19992810@gmail.com, outreachy-kernel@googlegroups.com,
+        fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
+        marcocesati@gmail.com, straube.linux@gmail.com,
+        philippesdixon@gmail.com, manuelpalenzuelamerino@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mike Rapoport <mike.rapoport@gmail.com>,
+        kushalkotharitest@googlegroups.com
+Subject: Re: [Outreachy kernel] Re: [PATCH 0/4] v2 staging: rtl8723bs: core:
+ Cleanup patchset for style issues in rtw_cmd.c
+In-Reply-To: <CALtHPQt5jzcn4Obw8UCmz2XZK0FFZbEt6ebXEaTa5rwbAyHVOQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2110221418400.7321@hadrien>
+References: <cover.1634899405.git.kushalkothari285@gmail.com> <7977747.61zFHCMloo@localhost.localdomain> <CALtHPQt5jzcn4Obw8UCmz2XZK0FFZbEt6ebXEaTa5rwbAyHVOQ@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] selftests: vm: Remove duplicated include in
- hugepage-mremap
-Content-Language: en-US
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20211021122944.8857-1-wanjiabing@vivo.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211021122944.8857-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="8323329-1273979325-1634905126=:7321"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.21 14:29, Wan Jiabing wrote:
-> Fix following checkinclude.pl warning:
-> ./tools/testing/selftests/vm/hugepage-mremap.c: fcntl.h is included
-> more than once.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  tools/testing/selftests/vm/hugepage-mremap.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/vm/hugepage-mremap.c b/tools/testing/selftests/vm/hugepage-mremap.c
-> index 8bc117b12f78..257df94697a5 100644
-> --- a/tools/testing/selftests/vm/hugepage-mremap.c
-> +++ b/tools/testing/selftests/vm/hugepage-mremap.c
-> @@ -12,7 +12,6 @@
->  #include <stdio.h>
->  #include <unistd.h>
->  #include <sys/mman.h>
-> -#include <fcntl.h>
->  #include <errno.h>
->  #include <fcntl.h> /* Definition of O_* constants */
->  #include <sys/syscall.h> /* Definition of SYS_* constants */
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+--8323329-1273979325-1634905126=:7321
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
--- 
-Thanks,
 
-David / dhildenb
 
+On Fri, 22 Oct 2021, kushal kothari wrote:
+
+> >Hi Kushal,
+>
+> >Version numbers ("v2" in this case) must be enclosed in square brackets,
+> >between "PATCH" and "n/N".
+>
+> >Thanks,
+>
+> >Fabio
+>
+> Hi Fabio,
+> Err, I made a mistake. :(
+> So should I correct it now as v3?
+
+Yes.
+
+>
+> On Fri, Oct 22, 2021 at 5:17 PM Fabio M. De Francesco <fmdefrancesco@gmail.com> wrote:
+>       On Friday, October 22, 2021 1:37:34 PM CEST Kushal Kothari wrote:
+>       > Kushal Kothari (4):
+>       >   v2 staging: rtl8723bs: core: Remove true and false comparison
+>       >   v2 staging: rtl8723bs: core: Remove unnecessary parentheses
+>       >   v2 staging: rtl8723bs: core: Remove unnecessary space after a cast
+>       >   v2 staging: rtl8723bs: core: Remove unnecessary blank lines
+>       >
+>       > Changes from v1:
+>       >   [PATCH 1/4]: Moved unnecessary parentheses change in PATCH 2/4
+>       >   [PATCH 2/4]: Added the extra parentheses change from PATCH 1/4 here.
+>       >   [PATCH 3/4]: No Changes
+>       >   [PATCH 4/4]: Fix whitespace error.
+>       >
+>       >
+>       >
+>       >  drivers/staging/rtl8723bs/core/rtw_cmd.c | 94 +++++++++---------------
+>       >  1 file changed, 34 insertions(+), 60 deletions(-)
+>       >
+>       > --
+>       > 2.25.1
+>       >
+>       Hi Kushal,
+>
+>       Version numbers ("v2" in this case) must be enclosed in square brackets,
+>       between "PATCH" and "n/N".
+>
+>       Thanks,
+>
+>       Fabio
+>
+>
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/CALtHPQt5jzcn4Obw8UCmz2XZK0FFZbEt6ebXEaTa5rwbAyHVOQ%40mail.gmail.com.
+>
+>
+--8323329-1273979325-1634905126=:7321--
