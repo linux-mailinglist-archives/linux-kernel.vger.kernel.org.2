@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940E04374A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4614D4374A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhJVJYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231563AbhJVJYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:24:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3EB960FDA;
-        Fri, 22 Oct 2021 09:22:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634894533;
-        bh=9aGfIgQGiaQYTNOWKV+Zae5m5NPz4PloE1ueYrvbcko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dx999myzKkPyX9nYyLuy1encmZJQVXGy3WDSNJ/frpiPbZz7w7nT7oZeMBYVcq1HD
-         H9J7uUVZvBE2VUBYeqo7SgMfO0dhlHx+XteJd1sus5uLNuifjcVTTel9JnoVwKRiTx
-         KM8Fsm14tGJj1itWm/e+sZl24EkuvlfrB5zGLBb8=
-Date:   Fri, 22 Oct 2021 11:22:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Oliver O'Halloran <oohall@gmail.com>
-Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
-Message-ID: <YXKCw/eEB8n2qtVx@kroah.com>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <YXJfHwzIdksUKPIe@kroah.com>
- <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
+        id S232460AbhJVJYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232307AbhJVJYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 05:24:46 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97B2C061764;
+        Fri, 22 Oct 2021 02:22:29 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id t16so2898619eds.9;
+        Fri, 22 Oct 2021 02:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=8wRakYYkxElrlaPhMN+8m3gMM0Ofd4s2CuL6BRUXvDg=;
+        b=Ek+biRSv3O/qpa+FWdKUcAZraqR5s1HBhR6mdRXfJ4HHquUO2xiApOLTlxDeBaU9kM
+         /g9txSdLG9fjqogY8NOlllRSg9ZrQNyozBBobR5yTzqIwHRQkLV/IfiH+Iyh5I72MOkL
+         z96dGco0XKWw3z0hWxi8QOoqqK6aAPN5kUeFJMxIyEUNE0doDhRC4B1EaI4/9jWBRftY
+         YZExPyG9ySS+dNW3GlCs2LFFvIVsebA0ippVa0xlWC9ZZ6AXYyF6wBYVebVHrlpH5jay
+         WV8D9vAgy0zXGMApypzfHvVfwmwGdr7zakcQVH7feMW5A491MCxfN5UGyTeQL4bn819m
+         mxlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=8wRakYYkxElrlaPhMN+8m3gMM0Ofd4s2CuL6BRUXvDg=;
+        b=uNrwoEVjWxr9re2tvoXey+qZpAusvqMB7t6bQVQF4DCdSxO7ZbmV2pg76t8T/vMqYA
+         ROVibpDXnYb8j+7VbC7M94QrB4/ORB56pvZABzcXvpuAf7SSglPZJ6ikaOGL1Bi0I5R2
+         qGfBv/tDj9hT2kT7ew+BPNTCNTO3vCrffoMCZuIQejdDE5YsYuhoe3l81I2eGVwOwwf5
+         AUlbDzizYh/R+gWDy5w+Gw6hw/RVoGL3nL6e3szD17k04fSl7DHIhknmLoAit/dvSRo5
+         rtsnERUN5A5PISt/a2Hs63GGh1nm1y0KWJlXkb4WQflJQaGS5IDN1FFTKs+apIGgE9z8
+         xnIQ==
+X-Gm-Message-State: AOAM530K3dkJ7NNDP0tWIfO/h9XzODI3yNzAXr6H/7Kc4s3uKSZIgOfW
+        TY4MPR0UNwipQyz0LSzrgKhiw1ePbsE=
+X-Google-Smtp-Source: ABdhPJxqBmr5FAEZ2PoX3cXSIj5DNGJdKaGG2ygmftNBfkNh29V9Xqkw0DSi8xp96ScR62uKQQNJ2g==
+X-Received: by 2002:a17:906:912:: with SMTP id i18mr13903323ejd.131.1634894548338;
+        Fri, 22 Oct 2021 02:22:28 -0700 (PDT)
+Received: from [192.168.8.198] ([148.252.133.195])
+        by smtp.gmail.com with ESMTPSA id o25sm691981ejc.22.2021.10.22.02.22.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 02:22:28 -0700 (PDT)
+Message-ID: <cdf7c768-47ad-78c4-a22a-f0f1a435b6f6@gmail.com>
+Date:   Fri, 22 Oct 2021 10:22:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/2] percpu_ref: percpu_ref_tryget_live() version
+ holding RCU
+Content-Language: en-US
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>
+References: <cover.1634822969.git.asml.silence@gmail.com>
+ <3066500d7a6eb3e03f10adf98b87fdb3b1c49db8.1634822969.git.asml.silence@gmail.com>
+ <YXFytAdeF5RPRERf@fedora>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <YXFytAdeF5RPRERf@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 02:00:57AM -0700, Zev Weiss wrote:
-> On Thu, Oct 21, 2021 at 11:50:07PM PDT, Greg Kroah-Hartman wrote:
-> > On Thu, Oct 21, 2021 at 07:00:27PM -0700, Zev Weiss wrote:
-> > > Hello all,
-> > > 
-> > > This series is another incarnation of a couple other patchsets I've
-> > > posted recently [0, 1], but again different enough in overall
-> > > structure that I'm not sure it's exactly a v2 (or v3).
-> > > 
-> > > As compared to [1], it abandons the writable binary sysfs files and at
-> > > Frank's suggestion returns to an approach more akin to [0], though
-> > > without any driver-specific (aspeed-smc) changes, which I figure might
-> > > as well be done later in a separate series once appropriate
-> > > infrastructure is in place.
-> > > 
-> > > The basic idea is to implement support for a status property value
-> > > that's documented in the DT spec [2], but thus far not used at all in
-> > > the kernel (or anywhere else I'm aware of): "reserved".  According to
-> > > the spec (section 2.3.4, Table 2.4), this status:
-> > > 
-> > >   Indicates that the device is operational, but should not be used.
-> > >   Typically this is used for devices that are controlled by another
-> > >   software component, such as platform firmware.
-> > > 
-> > > With these changes, devices marked as reserved are (at least in some
-> > > cases, more on this later) instantiated, but will not have drivers
-> > > bound to them unless and until userspace explicitly requests it by
-> > > writing the device's name to the driver's sysfs 'bind' file.  This
-> > > enables appropriate handling of hardware arrangements that can arise
-> > > in contexts like OpenBMC, where a device may be shared with another
-> > > external controller not under the kernel's control (for example, the
-> > > flash chip storing the host CPU's firmware, shared by the BMC and the
-> > > host CPU and exclusively under the control of the latter by default).
-> > > Such a device can be marked as reserved so that the kernel refrains
-> > > from touching it until appropriate preparatory steps have been taken
-> > > (e.g. BMC userspace coordinating with the host CPU to arbitrate which
-> > > processor has control of the firmware flash).
-> > > 
-> > > Patches 1-3 provide some basic plumbing for checking the "reserved"
-> > > status of a device, patch 4 is the main driver-core change, and patch
-> > > 5 tweaks the OF platform code to not skip reserved devices so that
-> > > they can actually be instantiated.
-> > 
-> > Again, the driver core should not care about this, that is up to the bus
-> > that wants to read these "reserved" values and do something with them or
-> > not (remember the bus is the thing that does the binding, not the driver
-> > core).
-> > 
-> > But are you sure you are using the "reserved" field properly?
+On 10/21/21 15:01, Dennis Zhou wrote:
+> Hello,
 > 
-> Well, thus far both Rob Herring and Oliver O'Halloran (originator of the
-> "reserved" status in the DT spec, whom I probably should have CCed earlier,
-> sorry) have seemed receptive to this interpretation of it, which I'd hope
-> would lend it some credence.
+> On Thu, Oct 21, 2021 at 02:30:51PM +0100, Pavel Begunkov wrote:
+>> Add percpu_ref_tryget_live_rcu(), which is a version of
+>> percpu_ref_tryget_live() but the user is responsible for enclosing it in
+>> a RCU read lock section.
+>>
+>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+>> ---
+>>   include/linux/percpu-refcount.h | 33 +++++++++++++++++++++++----------
+>>   1 file changed, 23 insertions(+), 10 deletions(-)
+>>
+[...]
+>> +
+>>   /**
+>>    * percpu_ref_tryget_live - try to increment a live percpu refcount
+>>    * @ref: percpu_ref to try-get
+> 
+> Nit: it's dumb convention at this point, but do you mind copying this
+> guy up. I like consistency.
 
-Ok, that's up to the DT people, I'll let you all fight it out with the
-platform creators :)
+Looks Jens already took it. If you still want it moved, do you mind
+it in a separate patch?
 
-Good luck!
+And I'm not sure I follow where you want it to be, currently it's
+right before percpu_ref_tryget_live, which uses it.
 
-greg k-h
+-- 
+Pavel Begunkov
