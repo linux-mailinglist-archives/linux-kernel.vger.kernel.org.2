@@ -2,237 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F564438038
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F32F43803C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhJVWbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        id S234407AbhJVWeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234301AbhJVWbv (ORCPT
+        with ESMTP id S234303AbhJVWeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:31:51 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84202C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:29:33 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id r134so7216130iod.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:29:33 -0700 (PDT)
+        Fri, 22 Oct 2021 18:34:08 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97681C061348
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:31:50 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id j8so10432824uak.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0I6ArbAhhNdNEp+I53V5vpvPkH843VTEFXnr/8X5aoQ=;
-        b=c2sp6XsWq+jrahPURRuQiXwepzbeuixSwZTY2yMfKUEF//XBYB41meRu9gowwn403a
-         lunZkE/7lgpIeSNIYxWI4+f8ZY4p1sDWTzxrIXi0RF86arSn7b9Y2vh1WbS2fkaf6mbJ
-         VZrpPsG+p0TsLCgIZE3JIbxYsiwysqiyDJZlrGZ5tZ46iqoR/eqipTJC3tX1Z+Lwob57
-         6hdeYv1IBfVfwbGkvTFU/0E/ge3mtNuIcig92ye2qcufkzLu5HZJvFhvZETbgiZXBhKD
-         hqTfHt6pmto8n8/QnqKLhq1eRA7lOLFWic8kcAo+UuR7lj969eu81TngnCeKNMsd5HHH
-         ymFA==
+         :cc:content-transfer-encoding;
+        bh=QLRoAaM9Isx2SYKNZgDhEi8NKtlHeAAiw6Jpcyu0C08=;
+        b=wM+wdMFPI30xl5+kiTT1+ZZ5ugZcjAXQoxfAO8Ss8G193/Mvfmmd9KrXbKO1573HGX
+         okhtvKolp7RtdPGuwm6a09Kg3w3S51+YZo8Y7YZYUpU1KrXL+e2E/MdIWqpcO2vBTAWs
+         qBv9aazLIWKR+wOi71bzN7SNqcQlpiwJd7wqoh8gPBhM1oFKCz2wE12XWC1SxgtpcUYP
+         GrCsDvFpRVRO4GEiGq9WtBRyAqKrhU4meWuL7ZIVg0ks2IodwXWGkBXvB6cFz3TnYYFx
+         1Al/Ntsx88T3NZ0cqahOPKMliHEKdcfY1W4WI9KeWpjFzCJPWNCuA5GEkFcFOnY3LvSW
+         HJhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0I6ArbAhhNdNEp+I53V5vpvPkH843VTEFXnr/8X5aoQ=;
-        b=iCR8ll0ajWbHqKoqPFlyTLzyQDj3jBh5wFTwptZhpfEY0c+lLcuvNrcAMviKvGsUpY
-         eCYH/37nO0aa8828kpwBJtgzqzur4GUsnEuTp6m9VmvfyJvd7TKbuhLWYR85w0iTpWoM
-         21wlFXMDF1C6jGQyzNhiTPiixWwc7qE0cWk3pCz2xef1dJi2PO8FdeAudNPKD/Ulbsk5
-         nXGjg0zpg5bh2LEQT+UhYnHfiQJ5MhmrFknHv/7+49ChDTuoW41Br/3rWIRr7N/hISWt
-         oZPSvFgddTDKF2RmuMthhklu+JOslTgFrxG+qvXQijrMt+yQTGvsJehs0QWTHv68eF0b
-         KNAA==
-X-Gm-Message-State: AOAM530kSN+lEfCKozI/kmxxZfyaZlNN0LHKk8v6FaZ4/Rd/A8gdH4i5
-        I2/OjyU/etS9CTKynM4uDI/U73sEJtnHL/RwnUjvGA==
-X-Google-Smtp-Source: ABdhPJy34YDrRm7d+wrZ2LrT8TYQVvhsPEgYjgee4qWc35C67rd76drncCN/OQLiECa6uTKu32wufDGYPhiY8nLB1rc=
-X-Received: by 2002:a5d:8792:: with SMTP id f18mr1496853ion.52.1634941772719;
- Fri, 22 Oct 2021 15:29:32 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QLRoAaM9Isx2SYKNZgDhEi8NKtlHeAAiw6Jpcyu0C08=;
+        b=M4UimTJNu2fX/2nb9RxzlDWb6kCruyR2m94gejHb4bQeZCWZX827Cy1ZOghQGrCECi
+         rbSHryUOFTGcva2QRS7cksZJlq+my12qW2+Hb1YU1anzSNBCZU0H+uwOxmINtNWUiUHn
+         rXwyR9Ropi+can4GLErcb5EBkqBsAEmZi+Bc0nFwXUkU6unObYBS3/lRKwHIB5L2znBk
+         zsWqBxv/wPBQdIlsubTCb//bSOUMRxpROVy1AxV7CbrZhlngMDozBRBkBeOLJa9P8ogw
+         4yoSOriMPkUVxU0k/36KsfElbYeFpN5mCFzkOMoaUWzmOUMj62xCkphlt1Ky/A6qCIM2
+         gRQA==
+X-Gm-Message-State: AOAM530cQLDy4vJqAToVD0ayLcibenoQ0JjxPhuYToCUWWDx8+WUIxEL
+        uEaAglmRzQd5kQwIesKCgP4PAHB1HVJ0Bep+HBGYug==
+X-Google-Smtp-Source: ABdhPJzKLiNWVJSNzHAVe+uiS1jdtEVGUMYWrOZB/jm0v0Qbk+rhViEBBsEP6XEXq21q78Pl7gi2NkXHPU4M0C39BaM=
+X-Received: by 2002:a9f:21b7:: with SMTP id 52mr3227824uac.9.1634941909421;
+ Fri, 22 Oct 2021 15:31:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021062819.1313964-1-davidgow@google.com> <20211021062819.1313964-2-davidgow@google.com>
- <CAGS_qxpPVEcVOBJ_rbFCswq_2iFHTD5o1endx904wFmU1Vjerg@mail.gmail.com> <CABVgOSkgvgD4QC4dYknEdTgr2GdeoTEkZJT+k8cqOr8B4txsGg@mail.gmail.com>
-In-Reply-To: <CABVgOSkgvgD4QC4dYknEdTgr2GdeoTEkZJT+k8cqOr8B4txsGg@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 22 Oct 2021 15:29:17 -0700
-Message-ID: <CAGS_qxp-bvWHZo7CqkBzZR4Bz85itQKXgiyEBb9RjHWOspEpTQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kunit: Report test parameter results as (K)TAP subtests
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211021203152.29312-1-semen.protsenko@linaro.org>
+ <20211021203152.29312-2-semen.protsenko@linaro.org> <864f52d2-1336-eaca-1647-99a0f55da6f9@gmail.com>
+ <CAPLW+4kgAKut9fPJzZapBvVpprno++O3g3CFOE-Pj=0Oxb9McQ@mail.gmail.com> <CAGTfZH153PS40GcOB08HXzXPAr4NY-BWjbieQE8ExS+TqV-DYw@mail.gmail.com>
+In-Reply-To: <CAGTfZH153PS40GcOB08HXzXPAr4NY-BWjbieQE8ExS+TqV-DYw@mail.gmail.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sat, 23 Oct 2021 01:31:37 +0300
+Message-ID: <CAPLW+4mx67JcSk21ntac=WGM27GA0wMFU-r6zAHi+5i6UKMNrw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clk: samsung: exynos850: Implement CMU_APM domain
+To:     Chanwoo Choi <cwchoi00@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:16 PM David Gow <davidgow@google.com> wrote:
+On Sat, 23 Oct 2021 at 01:18, Chanwoo Choi <cwchoi00@gmail.com> wrote:
 >
-> On Fri, Oct 22, 2021 at 9:15 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 11:28 PM David Gow <davidgow@google.com> wrote:
-> > >
-> > > Currently, the results for individial parameters in a parameterised test
-> > > are simply output as (K)TAP diagnostic lines. However, the plan was
-> > > always[1] to make these (K)TAP subtests when kunit_tool supported them.
-> > >
-> > > With [2], these are now supported. (v5 will print out an error about the
-> > > missing plan line, but this can safely be ignored, and will hopefully be
-> >
-> > Should this commit description be updated?
-> >
->
-> Whoops, yup. I didn't want to change anything without making this a
-> v2, but I'll definitely update it now.
->
-> > > changed). As a result, individual test parameter results are parsed,
-> > > displayed in the formatted results, and counted for test statistics.
-> >
-> > This works for me.
-> >
-> > One concern I have for the future is if showing all the parameters by
-> > default might become too verbose?
-> > Should there eventually be a verbosity/test-level flag that controls
-> > how deep we go?
-> > We could elect to only print FAILED subtests after we hit the depth limit.
->
-> Totally agree with this. A --depth option is definitely going to
-> become necessary here, and I think that printing FAILED subtests after
-> that limit is sensible default behaviour for it.
->
-> >
-> > Testing this out with:
-> > $ ./tools/testing/kunit/kunit.py --kunitconfig=fs/fat
-> >
-> > Before:
-> > [17:55:48] Starting KUnit Kernel (1/1)...
-> > [17:55:48] ============================================================
-> > [17:55:51] ================== fat_test (3 subtests) ===================
-> > [17:55:51] [PASSED] fat_checksum_test
-> > [17:55:51] [PASSED] fat_time_fat2unix_test
-> > [17:55:51] [PASSED] fat_time_unix2fat_test
-> > [17:55:51] ==================== [PASSED] fat_test =====================
-> > [17:55:51] ============================================================
-> > [17:55:51] Testing complete. Passed: 3, Failed: 0, Crashed: 0,
-> > Skipped: 0, Errors: 0
-> > [17:55:51] Elapsed time: 7.784s total, 0.001s configuring, 4.790s
-> > building, 2.877s running
-> >
-> > [17:56:22] Starting KUnit Kernel (1/1)...
-> > [17:56:22] ============================================================
-> > [17:56:25] ================== fat_test (3 subtests) ===================
-> > [17:56:25] [PASSED] fat_checksum_test
-> > [17:56:25] ================== fat_time_fat2unix_test ==================
-> > [17:56:25] [PASSED] Earliest possible UTC (1980-01-01 00:00:00)
-> > [17:56:25] [PASSED] Latest possible UTC (2107-12-31 23:59:58)
-> > [17:56:25] [PASSED] Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)
-> > [17:56:25] [PASSED] Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)
-> > [17:56:25] [PASSED] Leap Day / Year (1996-02-29 00:00:00)
-> > [17:56:25] [PASSED] Year 2000 is leap year (2000-02-29 00:00:00)
-> > [17:56:25] [PASSED] Year 2100 not leap year (2100-03-01 00:00:00)
-> > [17:56:25] [PASSED] Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)
-> > [17:56:25] [PASSED] Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)
-> > [17:56:25] [PASSED] VFAT odd-second resolution (1999-12-31 23:59:59)
-> > [17:56:25] [PASSED] VFAT 10ms resolution (1980-01-01 00:00:00:0010)
-> > [17:56:25] ============= [PASSED] fat_time_fat2unix_test ==============
-> > [17:56:25] ================== fat_time_unix2fat_test ==================
-> > [17:56:25] [PASSED] Earliest possible UTC (1980-01-01 00:00:00)
-> > [17:56:25] [PASSED] Latest possible UTC (2107-12-31 23:59:58)
-> > [17:56:25] [PASSED] Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)
-> > [17:56:25] [PASSED] Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)
-> > [17:56:25] [PASSED] Leap Day / Year (1996-02-29 00:00:00)
-> > [17:56:25] [PASSED] Year 2000 is leap year (2000-02-29 00:00:00)
-> > [17:56:25] [PASSED] Year 2100 not leap year (2100-03-01 00:00:00)
-> > [17:56:25] [PASSED] Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)
-> > [17:56:25] [PASSED] Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)
-> > [17:56:25] [PASSED] VFAT odd-second resolution (1999-12-31 23:59:59)
-> > [17:56:25] [PASSED] VFAT 10ms resolution (1980-01-01 00:00:00:0010)
-> > [17:56:25] ============= [PASSED] fat_time_unix2fat_test ==============
-> > [17:56:25] ==================== [PASSED] fat_test =====================
-> > [17:56:25] ============================================================
-> > [17:56:25] Testing complete. Passed: 23, Failed: 0, Crashed: 0,
-> > Skipped: 0, Errors: 0
-> > [17:56:25] Elapsed time: 7.733s total, 0.001s configuring, 4.740s
-> > building, 2.915s running
-> >
-> > Looks similar when run with --kunitconfig=fs/ext4.
-> >
-> > This "inverted" nesting of PASSED looks a bit "wrong" at first.
-> >
-> > [17:56:25] [PASSED] VFAT 10ms resolution (1980-01-01 00:00:00:0010)
-> > [17:56:25] ============= [PASSED] fat_time_unix2fat_test ==============
-> > [17:56:25] ==================== [PASSED] fat_test =====================
-> >
-> > But I know it's so that we can show results as incrementally as
-> > possible, so I'm fine with it.
-> > (I imagine our users won't necessarily make that connection, however.)
-> >
->
-> Yeah, this is definitely something for which there's no "perfect" way
-> of handling it. The fact that the number of '=' signs is based on the
-> length of the name means that even that might not look consistent.
-> I'm sure there are things we could experiment with to make this
-> clearer, e.g. indenting or swapping out the '=' for '-' on subtests
-> (though there's definitely a limit to how deep we could go with
-> something like that).
+> On 21. 10. 22. =EC=98=A4=ED=9B=84 10:39, Sam Protsenko wrote:
+> > On Fri, 22 Oct 2021 at 11:58, Chanwoo Choi <cwchoi00@gmail.com> wrote:
+> >>
+> >> On 21. 10. 22. =EC=98=A4=EC=A0=84 5:31, Sam Protsenko wrote:
+> >>> CMU_APM clock domain provides clocks for APM IP-core (Active Power
+> >>> Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailb=
+ox,
+> >>> Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
+> >>>
+> >>> This patch adds next clocks:
+> >>>     - bus clocks in CMU_TOP needed for CMU_APM
+> >>>     - all internal CMU_APM clocks
+> >>>     - leaf clocks for I3C, Speedy and RTC IP-cores
+> >>>     - bus clocks for CMU_CMGP and CMU_CHUB
+> >>>
+> >>> CMU_APM doesn't belong to Power Domains, but platform driver is used =
+for
+> >>> its registration to keep its bus clock always running. Otherwise rtc-=
+s3c
+> >>> driver disables that clock and system freezes.
+> >>>
+> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>> ---
 
-To be clear, I don't think we need to do anything about it at this moment.
-Just noting that it might cause confusion (and if it causes enough
-later on, then maybe we should revisit it).
+...snip...
 
->
-> > >
-> > > [1]: https://lore.kernel.org/linux-kselftest/CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com/
-> > > [2]: https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
-> > >
-> > > Signed-off-by: David Gow <davidgow@google.com>
+> >> Basically, you can never change the already defined clock id
+> >> in nclude/dt-bindings/clock/*.h because of supporting
+> >> the compatibility of dtb files which were using the
+> >> already defined clock id instead of changed clock id
+> >>
+> >> If you want to add new clock with new clock id,
+> >> you have to define the new clock id at the end of defined clock
+> >> like the next of CLK_GOUT_PERI_IP for TOP domain case.
+> >>
 > >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> >
+> > Thanks for explaining that in details, Chanwoo. As Krzysztof pointed
+> > out, right now there are no dts users of this clock driver in upstream
+> > kernel (I didn't submit it yet), so it'd nice if this one can be taken
+> > as is. In future I'll increment the last clock ID. Guess it was my OCD
+> > talking, trying to keep all clock IDs grouped by clock type :)
 >
-> (Was this supposed to be a Tested-by or Reviewed-by or something?)
-
-Oops, muscle memory kicked in since I had just typed a Signed-off-by
-recently....
-
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
+> I know that there are no user for this clock. So that it doesn't make
+> the real break for compatibility. But, when some kernel developers might
+> check the kernel history by git command, they never know the history
+> only we know. If there are any critical reason, I don't prefer to break
+> the rule of clock id defintion for patch history.
 >
-> > > ---
-> > >
-> > > Note that this was previously posted as:
-> > > https://lore.kernel.org/all/20211006071112.2206942-1-davidgow@google.com/
-> > >
-> > > No changes have been made, save for a trivial rebase on the current
-> > > kselftest/kunit branch.
-> > >
-> > >  lib/kunit/test.c | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > > index 3bd741e50a2d..85265f9a66a1 100644
-> > > --- a/lib/kunit/test.c
-> > > +++ b/lib/kunit/test.c
-> > > @@ -508,6 +508,8 @@ int kunit_run_tests(struct kunit_suite *suite)
-> > >                         /* Get initial param. */
-> > >                         param_desc[0] = '\0';
-> > >                         test.param_value = test_case->generate_params(NULL, param_desc);
-> > > +                       kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-> > > +                                 "# Subtest: %s", test_case->name);
-> > >                 }
-> > >
-> > >                 do {
-> > > @@ -520,9 +522,8 @@ int kunit_run_tests(struct kunit_suite *suite)
-> > >                                 }
-> > >
-> > >                                 kunit_log(KERN_INFO, &test,
-> > > -                                         KUNIT_SUBTEST_INDENT
-> > > -                                         "# %s: %s %d - %s",
-> > > -                                         test_case->name,
-> > > +                                         KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-> > > +                                         "%s %d - %s",
-> > >                                           kunit_status_to_ok_not_ok(test.status),
-> > >                                           test.param_index + 1, param_desc);
-> > >
-> > > --
-> > > 2.33.0.1079.g6e70778dc9-goog
-> > >
+> Just I want to keep the original rule of clock id patch in order to remov=
+e
+> the potential confusion. It is not a strong objection. But In my case,
+> I cannot reply the ack. Thanks for your work.
+>
+
+Actually I was thinking about the same -- setting a bad example and
+stuff. It's not a big deal, I'll send v2 soon :)
+
+> --
+> Best Regards,
+> Samsung Electronics
+> Chanwoo Choi
