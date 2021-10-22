@@ -2,185 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2847043718E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F77643719A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhJVGMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhJVGMw (ORCPT
+        id S231758AbhJVGQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:16:58 -0400
+Received: from [113.204.237.245] ([113.204.237.245]:45566 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231616AbhJVGQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:12:52 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0906C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 23:10:34 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id z14so2059343wrg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 23:10:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ri37NUrCIz+RJ7u4QEcy6nQ+rRdgNnFnx1wBKzaAWuA=;
-        b=bFqJmuq0jQzmYQ7F6KHJD/td/GbSkeTqYnfmqlUzMMBZLE6Ybhx0EHdanecOqJUyNz
-         evGZdKg8hKjc3k2JAzENDx8cVTLI834bc39bNVP+aQPWv7pdV19smsK16axTKD6CARqV
-         yGH29I3m+Ys4MbTt6rTU+NfGQBGBURzJoILck/dr1Anauk5qv0H7pLNFI/5pzoH12eH8
-         8Z5ce+M9u2o42YUwQCI+QVuAdXjPBrPPKbaJXZcVITu1DkSAAh2dOv8MOyBDQfx+/7/i
-         UkiNkmDgi5p2R4LJxSVmKOVXz01B9MPqqCLP87NeMGHmyrif5vNVGM++o6cQ7yX/dIE4
-         g7LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ri37NUrCIz+RJ7u4QEcy6nQ+rRdgNnFnx1wBKzaAWuA=;
-        b=1kKEVhxCb+aqDJJ4tfbuixWFvkSyXoGwbOWGy89RW3KhGlRPuOhFH/rpLIU2+48Md3
-         EJ9qLxp4+2EOB+aVelb2dedUrQmn7v1a2ht0NTRfHOdOAmzvBCieyNFUTd/a13fCOQYc
-         Sl7YkDFN+GmKBo9MQqFLL7ba3XME/K010ugLgGc2TPPi+XAzeNOQ9QB537jX7eUl5kfz
-         N9qz7cx3RA+dYUSQahJUr9u3t1dNZ863e+ROclvREuxapoVnRwBk8WVxeAG+FKduRGG6
-         NazLet6rEa3HcsI/TcMBxnxiVppMsYrnG1NlPpXdNoQUdQEyJUBg0lR18pvz5nEHAth4
-         wAYQ==
-X-Gm-Message-State: AOAM531iy9QVH1/uEcjTnr82SnM+dsXIVDqqk3sTl7iovw7xOPmgP8DH
-        ceGeyEyAHa0NBPKVE7gvW+nvlB7/qHPuvKTsoghp5A==
-X-Google-Smtp-Source: ABdhPJxvrczJ9+DQW8gBEzNqRUvxfcxtz52+XgprBBJrXGoTJnrdJVFvTgEgcl8VPgfr+Z+AjJ1I7R1I6ysaE+uafn8=
-X-Received: by 2002:a5d:4882:: with SMTP id g2mr12929352wrq.399.1634883033051;
- Thu, 21 Oct 2021 23:10:33 -0700 (PDT)
+        Fri, 22 Oct 2021 02:16:56 -0400
+X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
+        LIVER,40,3)
+Received: from 172.28.114.216
+        by cqmailgates with MailGates ESMTP Server V5.0(10964:0:AUTH_RELAY)
+        (envelope-from <qinjian@cqplus1.com>); Fri, 22 Oct 2021 14:11:33 +0800 (CST)
+From:   qinjian <qinjian@cqplus1.com>
+To:     mturquette@baylibre.com
+Cc:     sboyd@kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qinjian <qinjian@cqplus1.com>
+Subject: [PATCH 3/4] dt-bindings: clock: Add bindings for SP7021 clock driver
+Date:   Fri, 22 Oct 2021 14:11:05 +0800
+Message-Id: <20211022061105.281807-1-qinjian@cqplus1.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211021062819.1313964-1-davidgow@google.com> <CAGS_qxoBhfaE7NLzKWrsxwwz9BFeLRzb9Ycc-6U29pmtceqCTQ@mail.gmail.com>
-In-Reply-To: <CAGS_qxoBhfaE7NLzKWrsxwwz9BFeLRzb9Ycc-6U29pmtceqCTQ@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 22 Oct 2021 14:10:21 +0800
-Message-ID: <CABVgOS=vbqNnc_uW9czL6+vD55+XVa0X+=VPH+Tz0nGg0EF2gA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: tool: Do not error on tests without test plans
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 9:29 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Wed, Oct 20, 2021 at 11:28 PM David Gow <davidgow@google.com> wrote:
-> >
-> > The (K)TAP spec encourages test output to begin with a 'test plan': a
-> > count of the number of tests being run of the form:
-> > 1..n
-> >
-> > However, some test suites might not know the number of subtests in
-> > advance (for example, KUnit's parameterised tests use a generator
-> > function). In this case, it's not possible to print the test plan in
-> > advance.
-> >
-> > kunit_tool already parses test output which doesn't contain a plan, but
-> > reports an error. Since we want to use nested subtests with KUnit
-> > paramterised tests, remove this error.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >  tools/testing/kunit/kunit_parser.py    | 5 ++---
-> >  tools/testing/kunit/kunit_tool_test.py | 5 ++++-
-> >  2 files changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> > index 3355196d0515..50ded55c168c 100644
-> > --- a/tools/testing/kunit/kunit_parser.py
-> > +++ b/tools/testing/kunit/kunit_parser.py
-> > @@ -340,8 +340,8 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
-> >         """
-> >         Parses test plan line and stores the expected number of subtests in
-> >         test object. Reports an error if expected count is 0.
-> > -       Returns False and reports missing test plan error if fails to parse
-> > -       test plan.
-> > +       Returns False and sets expected_count to None if there is no valid test
-> > +       plan.
-> >
-> >         Accepted format:
-> >         - '1..[number of subtests]'
-> > @@ -356,7 +356,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
-> >         match = TEST_PLAN.match(lines.peek())
-> >         if not match:
-> >                 test.expected_count = None
-> > -               test.add_error('missing plan line!')
->
-> This works well, but there's an edge case.
->
-> This patch means we no longer print an error when there are no test
-> cases in a subtest.
-> We relied on a check just a bit lower in this function.
->
-> Consider
->
-> $ ./tools/testing/kunit/kunit.py parse <<EOF
-> TAP version 14
-> 1..1
->   # Subtest: suite
->   1..1
->     # Subtest: case
->   ok 1 - case
-> ok 1 - suite
-> EOF
->
-> This produces the following output (timestamps removed)
->
-> ============================================================
-> ==================== suite (1 subtest) =====================
-> =========================== case ===========================
-> ====================== [PASSED] case =======================
-> ====================== [PASSED] suite ======================
-> ============================================================
->
-> Should we surface some sort of error here?
+Add documentation to describe Sunplus SP7021 clock driver bindings.
 
-I thought about this a bit (and started prototyping it), and think the
-answer is probably "no" (or, perhaps, "optionally"). Largely because I
-think it'd be technically valid to have, e.g., a parameterised test
-whose generator function can legitimately provide zero subtests. And
-while that's probably worth warning about if it's the only test
-running, if you're trying to run all tests, and one random subtest of
-a test of a suite has no subtests, that seems like it'd be more
-annoying to error on than anything else.
+Signed-off-by: qinjian <qinjian@cqplus1.com>
+---
+ .../bindings/clock/sunplus,sp7021-clkc.yaml   |  38 ++++++
+ MAINTAINERS                                   |   2 +
+ include/dt-bindings/clock/sp-sp7021.h         | 112 ++++++++++++++++++
+ 3 files changed, 152 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+ create mode 100644 include/dt-bindings/clock/sp-sp7021.h
 
-That being said, I'm not opposed to implementing it as an option, or
-at least having the test status set to NO_ERROR. The implementation
-I've experimented with basically moves the check to "parse_test", and
-errors if the number of subtests is 0 after parsing, if parent_test is
-true (or main, but my rough plan was to make main imply parent_test,
-and adjust the various conditions to match). I haven't looked into
-exactly how this is bubbled up yet, but I'd be okay with having an
-error if there are no tests run at all.
+diff --git a/Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml b/Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+new file mode 100644
+index 000000000..5b3c0881b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+@@ -0,0 +1,38 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) Sunplus Co., Ltd. 2021
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/sunplus,sp7021-clkc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Sunplus SP7021 SoC Clock Controller Binding
++
++maintainers:
++  - Qin Jian <qinjian@cqplus1.com>
++
++properties:
++  compatible:
++    const: sunplus,sp7021-clkc
++
++  "#clock-cells":
++    const: 1
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - "#clock-cells"
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    clkc: clkc@9c000000 {
++      compatible = "sunplus,sp7021-clkc";
++      #clock-cells = <1>;
++      reg = <0x9c000000 0x80>;
++    };
++
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 065da0846..474544db2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2660,7 +2660,9 @@ M:	Qin Jian <qinjian@cqplus1.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for mon-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/arm/sunplus,sp7021.yaml
++F:	Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+ F:	Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
++F:	include/dt-bindings/clock/sp-sp7021.h
+ F:	include/dt-bindings/interrupt-controller/sp7021-intc.h
+ 
+ ARM/Synaptics SoC support
+diff --git a/include/dt-bindings/clock/sp-sp7021.h b/include/dt-bindings/clock/sp-sp7021.h
+new file mode 100644
+index 000000000..98c3feba1
+--- /dev/null
++++ b/include/dt-bindings/clock/sp-sp7021.h
+@@ -0,0 +1,112 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) Sunplus Technology Co., Ltd.
++ *       All rights reserved.
++ */
++#ifndef _DT_BINDINGS_CLOCK_SUNPLUS_SP7021_H
++#define _DT_BINDINGS_CLOCK_SUNPLUS_SP7021_H
++
++#define XTAL        27000000
++
++/* plls */
++#define PLL_A		0
++#define PLL_E		1
++#define PLL_E_2P5	2
++#define PLL_E_25	3
++#define PLL_E_112P5	4
++#define PLL_F		5
++#define PLL_TV		6
++#define PLL_TV_A	7
++#define PLL_SYS		8
++
++/* gates: mo_clken0 ~ mo_clken9 */
++#define SYSTEM		0x10
++#define RTC			0x12
++#define IOCTL		0x13
++#define IOP			0x14
++#define OTPRX		0x15
++#define NOC			0x16
++#define BR			0x17
++#define RBUS_L00	0x18
++#define SPIFL		0x19
++#define SDCTRL0		0x1a
++#define PERI0		0x1b
++#define A926		0x1d
++#define UMCTL2		0x1e
++#define PERI1		0x1f
++
++#define DDR_PHY0	0x20
++#define ACHIP		0x22
++#define STC0		0x24
++#define STC_AV0		0x25
++#define STC_AV1		0x26
++#define STC_AV2		0x27
++#define UA0			0x28
++#define UA1			0x29
++#define UA2			0x2a
++#define UA3			0x2b
++#define UA4			0x2c
++#define HWUA		0x2d
++#define DDC0		0x2e
++#define UADMA		0x2f
++
++#define CBDMA0		0x30
++#define CBDMA1		0x31
++#define SPI_COMBO_0	0x32
++#define SPI_COMBO_1	0x33
++#define SPI_COMBO_2	0x34
++#define SPI_COMBO_3	0x35
++#define AUD			0x36
++#define USBC0		0x3a
++#define USBC1		0x3b
++#define UPHY0		0x3d
++#define UPHY1		0x3e
++
++#define I2CM0		0x40
++#define I2CM1		0x41
++#define I2CM2		0x42
++#define I2CM3		0x43
++#define PMC			0x4d
++#define CARD_CTL0	0x4e
++#define CARD_CTL1	0x4f
++
++#define CARD_CTL4	0x52
++#define BCH			0x54
++#define DDFCH		0x5b
++#define CSIIW0		0x5c
++#define CSIIW1		0x5d
++#define MIPICSI0	0x5e
++#define MIPICSI1	0x5f
++
++#define HDMI_TX		0x60
++#define VPOST		0x65
++
++#define TGEN		0x70
++#define DMIX		0x71
++#define TCON		0x7a
++#define INTERRUPT	0x7f
++
++#define RGST		0x80
++#define GPIO		0x83
++#define RBUS_TOP	0x84
++
++#define MAILBOX		0x96
++#define SPIND		0x9a
++#define I2C2CBUS	0x9b
++#define SEC			0x9d
++#define DVE			0x9e
++#define GPOST0		0x9f
++
++#define OSD0		0xa0
++#define DISP_PWM	0xa2
++#define UADBG		0xa3
++#define DUMMY_MASTER	0xa4
++#define FIO_CTL		0xa5
++#define FPGA		0xa6
++#define L2SW		0xa7
++#define ICM			0xa8
++#define AXI_GLOBAL	0xa9
++
++#define CLK_MAX		0xb0
++
++#endif
+-- 
+2.33.1
 
-I'll keep playing with this anyway: it's definitely a bit more of a
-minefield than I'd originally thought. :-)
-
--- David
-
->
->
-> >                 return False
-> >         test.log.append(lines.pop())
-> >         expected_count = int(match.group(1))
-> > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > index 9c4126731457..bc8793145713 100755
-> > --- a/tools/testing/kunit/kunit_tool_test.py
-> > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > @@ -191,7 +191,10 @@ class KUnitParserTest(unittest.TestCase):
-> >                         result = kunit_parser.parse_run_tests(
-> >                                 kunit_parser.extract_tap_lines(
-> >                                 file.readlines()))
-> > -               self.assertEqual(2, result.test.counts.errors)
-> > +               # A missing test plan is not an error.
-> > +               self.assertEqual(0, result.test.counts.errors)
-> > +               # All tests should be accounted for.
-> > +               self.assertEqual(10, result.test.counts.total())
-> >                 self.assertEqual(
-> >                         kunit_parser.TestStatus.SUCCESS,
-> >                         result.status)
-> > --
-> > 2.33.0.1079.g6e70778dc9-goog
-> >
