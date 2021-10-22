@@ -2,223 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57234371EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13174371F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhJVGi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhJVGix (ORCPT
+        id S231269AbhJVGlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:41:51 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:58771 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhJVGlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:38:53 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C743C061766;
-        Thu, 21 Oct 2021 23:36:36 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id o184so4018496iof.6;
-        Thu, 21 Oct 2021 23:36:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c/GFWfrfQCEwAUkTRHGoboE0d5lC1Uh+koDzmicEca0=;
-        b=WMbENLpzZjcQwzZGiPW9Rhj/vFgwtV2c/zTneotJXvWjk7VUNpF5RqaRXkH7XVbb1v
-         m/Bt+TPNkNMeG6CjLyjFtqDGplI7JGUtLGfH1tHhdqQauWPvrpXwMZhv+FT8usoTTzA4
-         7yQ8eYL40BoICYMya8ERyMssfiR9dSuRYuHP44OoJ3KGgq8N/cMF43J7WJZvQvaBLEYC
-         WC5lVPCnSPrD4rMtJ2E2YXIQRuoiX/lZtPhoz6BwAWzPDoJe962/hNugrkTW1efe9lYR
-         rEfL1Ylxd1IQCgi6FL1FOj/9mOj5+dxGwhbrXYgVM8dJfJnARoVGkPhGsTWCUTR+WZph
-         orSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c/GFWfrfQCEwAUkTRHGoboE0d5lC1Uh+koDzmicEca0=;
-        b=H0aW4brsariRoaYr2AmT/m5WuvpddmvwHJn1ZEPAsIBrwTk/d6LYk6iExoAz3A4/n4
-         vgNEU2nnpubUahd65a9GCJX9GG8Do8l8Tbu34OKu/QsyKEkjMU96p4TZc7d9iKz86Wrv
-         fh2N8INqJWNavwjKviqo8/FcFyVbApRWu1x1nz2Ww5eeeseE+pxFldsTonOVjumIWEBS
-         uquOpZpRXYUClwftPSPK0WUidfogZnQ9d1z8N3IuJv1R1tbW9E+TbBjEC1IZB0EdUANA
-         rsMhHJToz5l7tsmSu85RmTXPXDQp+RFz4ywv+zGAOFycm7YbuEweaKpw3RCF80iX4b80
-         qZvQ==
-X-Gm-Message-State: AOAM532BXbEh6dujVoZvsV/H1qV8eVew2Y8p1v3NpiUfIioZRqw5ku8N
-        VeN5hweICZoNZqZPIrioYWB/DPD3GzxLBYI5qCA=
-X-Google-Smtp-Source: ABdhPJzW3+HUT/rPVCwHnSiPO4ICRmyWKrku4AlXcSF+9AY0i+8EGnflNLTeS7Y89nZNFwPHrpQ1nFFJVIRURXVCvJQ=
-X-Received: by 2002:a05:6638:1607:: with SMTP id x7mr6984970jas.128.1634884595972;
- Thu, 21 Oct 2021 23:36:35 -0700 (PDT)
+        Fri, 22 Oct 2021 02:41:50 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20211022063931epoutp014e25cecc195ff791d9024d48aad79db7~wRwm9jp1j0394403944epoutp01_
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:39:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20211022063931epoutp014e25cecc195ff791d9024d48aad79db7~wRwm9jp1j0394403944epoutp01_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634884771;
+        bh=LkFPqrQa+YT41CfhU97akjcr79eXsXgMnGQruTJ1HIs=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=CB3V3qnc5NioVLVYYi2ZKzPxjKVpFsy9MRN30XqkUYk/9U9CNN6W4JLImlV3LiRC7
+         ItyZrEc7ojS+UHi6H83RXtxU2Lc8NGIEDD/rTfB6TTAHVpoKvES7TDThkJ1g+YP3tl
+         hT0TJcHGJZtaA94yW5eBmRf4ebw9Z7wVvct9hsvg=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20211022063931epcas1p39555326907bf3396430fb4754b45ce14~wRwmsYjYo2325323253epcas1p3D;
+        Fri, 22 Oct 2021 06:39:31 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.38.243]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4HbF7j47c1z4x9Q0; Fri, 22 Oct
+        2021 06:39:29 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E3.BD.09592.1AC52716; Fri, 22 Oct 2021 15:39:29 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211022063928epcas1p28a32be208929f9905c80e655736b7a7d~wRwkNB9-K1434414344epcas1p28;
+        Fri, 22 Oct 2021 06:39:28 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211022063928epsmtrp1dd8ba207920fe9104e9c65fe3eaef5a2~wRwkIM-Az0281702817epsmtrp1c;
+        Fri, 22 Oct 2021 06:39:28 +0000 (GMT)
+X-AuditID: b6c32a37-28fff70000002578-47-61725ca173af
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6E.10.08902.0AC52716; Fri, 22 Oct 2021 15:39:28 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.88.98.193]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211022063928epsmtip10c52a65d505e3f4807a537c3bf7d97fb~wRwj6Q9Mp1451514515epsmtip1T;
+        Fri, 22 Oct 2021 06:39:28 +0000 (GMT)
+From:   Huijin Park <huijin.park@samsung.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huijin Park <bbanghj.park@gmail.com>,
+        Huijin Park <huijin.park@samsung.com>
+Subject: [PATCH 1/2] mmc: core: adjust polling interval for CMD1
+Date:   Fri, 22 Oct 2021 15:39:19 +0900
+Message-Id: <20211022063920.2145-1-huijin.park@samsung.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211021034603.4458-1-laoar.shao@gmail.com> <20211021034603.4458-4-laoar.shao@gmail.com>
- <CAEf4BzYTEoDwWzXd91MeMH5Qr9L853Ff3Qq8_wnwfJ8GK0oLnw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYTEoDwWzXd91MeMH5Qr9L853Ff3Qq8_wnwfJ8GK0oLnw@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 22 Oct 2021 14:36:00 +0800
-Message-ID: <CALOAHbB6KS8iscsz6y7zd=aGfKfo4jPbyMBKXL4ORY8taZRa8A@mail.gmail.com>
-Subject: Re: [PATCH v5 13/15] tools/testing/selftests/bpf: use
- TASK_COMM_LEN_16 instead of hard-coded 16
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDKsWRmVeSWpSXmKPExsWy7bCmvu7CmKJEg39tQhYv9x5itui46GJx
+        edccNosj//sZLY6vDXdg9dg56y67x51re9g8+rasYvT4vEkugCUq2yYjNTEltUghNS85PyUz
+        L91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKuSQlliTilQKCCxuFhJ386mKL+0
+        JFUhI7+4xFYptSAlp8CsQK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj8XfNguuCFYfPvmZqYDzI
+        18XIySEhYCLxd8UC1i5GLg4hgR2MEqcX3GAHSQgJfGKUuHJRGCLxjVHi+KEdLDAds298hira
+        yygxvU8dogio4eaGZYwgCTYBbYnra7eC2SICGhJ7Hp5nBbGZBbqAim45gNjCAg4Sd07+ZQKx
+        WQRUJe427QWq4eDgFbCWOPIpAWKXvMTMS9/BdvEKCEqcnPmEBWKMvETz1tnMIHslBHaxSyx+
+        280O0eAi0fjgFSuELSzx6vgWqLiUxMv+Nii7XGLXhKtQzQ2MEn1rv0M1GEu8e7uWGeQIZgFN
+        ifW79CHCihI7f89lhFjMJ/Huaw/YnRICvBIdbUIQJaoSi69+hJoiLXHowV1GCNtD4n7DWjZI
+        WMVKTFmxiG0Co/wsJO/MQvLOLITFCxiZVzGKpRYU56anFhsWGMOjNDk/dxMjONlpme9gnPb2
+        g94hRiYOxkOMEhzMSiK8uyvyE4V4UxIrq1KL8uOLSnNSiw8xmgLDdyKzlGhyPjDd5pXEG5pY
+        GpiYGZlYGFsamymJ836WK0wUEkhPLEnNTk0tSC2C6WPi4JRqYEru1bT4MunWkhM5Ln2iqw4o
+        h9w5sor7ijr/Q4u/Rsazz3xJ1Hb9N8Myd6t3aBeHwrt3qn8a4y6odORP1ZvtXbHT6a2HQpCB
+        rJqTdbBF2Wcb/Xw/AQun91rfdq91+RdU8CzCpj/s+B7zG0xHN7+62JOjWasYpxD4iE1m2Rcl
+        V5Um05gMNx6xaXOjr7RFh8TdE+H7/7Fb/0F1gMzjs0rX/+WavTA4dlnM/kDfhmUGh3IaV2t+
+        Za13nefJzXZiS30Gh+CJC8bfHsy88DZnusURLtfEG18jr+4Jyf9utfrColfNp3iLKz5t943/
+        nLrK+prkB00N97sLIwN/XUrOOBXgF7Uob3/rfh2JfLPXJgqFSizFGYmGWsxFxYkAOB2xDP8D
+        AAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsWy7bCSnO6CmKJEg4+t2hYv9x5itui46GJx
+        edccNosj//sZLY6vDXdg9dg56y67x51re9g8+rasYvT4vEkugCWKyyYlNSezLLVI3y6BK+Px
+        d82C64IVh8++ZmpgPMjXxcjJISFgIjH7xmd2EFtIYDejxLazhhBxaYl3O6+zdjFyANnCEocP
+        F3cxcgGVfGCUuL1xChNIDZuAtsT1tVsZQWwRAQ2JPQ/Ps4LYzAJ9jBKdv7JAbGEBB4k7J/+C
+        1bMIqErcbdoLNpNXwFriyKcEiFXyEjMvfQc7gVdAUOLkzCcsEGPkJZq3zmaewMg3C0lqFpLU
+        AkamVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwcGnpbmDcfuqD3qHGJk4GA8xSnAw
+        K4nw7q7ITxTiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qB
+        adKbA75Vz/7sZOVgDv16P1CbmdFOv792zXn1+dbSvV9ClnVfN528XSpQ/IxmbUbp80/aW6s9
+        OpzZTZXm2VtUsB3zfdW7VUbu4PXylRatzVZztW7lfbhdvfTTzAVnuhfffTC3UzXwbp3+JafL
+        sxLM9FK+vpTbeYz1+HXdVJtXM90kfpjvzvg3OVbv1Ps5ZapeIYHqs0++eLFRQ9OdN371lk1r
+        pCZVMf5revTq7Kp7Qn4xu/RmHhfZ4M/6qkVy++kotdAl6XPr/q5ZOmkng7PchJyPDqtLJtf9
+        mZK3rFdsfc5EpUdM7+si8zdP//xs/aI1ujfN/D5NU3/KwbrM4LzKOmHZJ6Ezxa//a9qgzvj+
+        Xb0SS3FGoqEWc1FxIgCHJkzOrQIAAA==
+X-CMS-MailID: 20211022063928epcas1p28a32be208929f9905c80e655736b7a7d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211022063928epcas1p28a32be208929f9905c80e655736b7a7d
+References: <CGME20211022063928epcas1p28a32be208929f9905c80e655736b7a7d@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 6:44 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Oct 20, 2021 at 8:46 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > The hard-coded 16 is used in various bpf progs. These progs get task
-> > comm either via bpf_get_current_comm() or prctl() or
-> > bpf_core_read_str(), all of which can work well even if the task comm size
-> > is changed.
-> > Below is the detailed information,
-> >
-> > bpf_get_current_comm:
-> >     progs/test_ringbuf.c
-> >     progs/test_ringbuf_multi.c
-> >
-> > prctl:
-> >     prog_tests/test_overhead.c
-> >     prog_tests/trampoline_count.c
-> >
-> > bpf_core_read_str:
-> >     progs/test_core_reloc_kernel.c
-> >     progs/test_sk_storage_tracing.c
-> >
-> > We'd better replace the hard-coded 16 with TASK_COMM_LEN_16 to make it
-> > more grepable.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  tools/testing/selftests/bpf/Makefile                      | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/ringbuf.c          | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c    | 3 ++-
-> >  .../testing/selftests/bpf/prog_tests/sk_storage_tracing.c | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/test_overhead.c    | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/trampoline_count.c | 3 ++-
-> >  tools/testing/selftests/bpf/progs/profiler.h              | 7 ++++---
-> >  tools/testing/selftests/bpf/progs/profiler.inc.h          | 8 ++++----
-> >  tools/testing/selftests/bpf/progs/pyperf.h                | 4 ++--
-> >  tools/testing/selftests/bpf/progs/strobemeta.h            | 6 +++---
-> >  .../testing/selftests/bpf/progs/test_core_reloc_kernel.c  | 3 ++-
-> >  tools/testing/selftests/bpf/progs/test_ringbuf.c          | 3 ++-
-> >  tools/testing/selftests/bpf/progs/test_ringbuf_multi.c    | 3 ++-
-> >  .../testing/selftests/bpf/progs/test_sk_storage_tracing.c | 5 +++--
-> >  tools/testing/selftests/bpf/progs/test_skb_helpers.c      | 5 ++---
-> >  tools/testing/selftests/bpf/progs/test_stacktrace_map.c   | 5 +++--
-> >  tools/testing/selftests/bpf/progs/test_tracepoint.c       | 5 +++--
-> >  17 files changed, 41 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 799b88152e9e..5e72d783d3fe 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -279,7 +279,7 @@ MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-> >
-> >  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
-> >  BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
-> > -            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
-> > +            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) -I${TOOLSINCDIR}  \
->
-> please don't add new include paths unnecessarily. See my comment on
-> another patch, if you add those new constants as enums, they will be
-> automatically available in vmlinux BTF and thus in auto-generated
-> vmlinux.h header (for those programs using it).
+In mmc_send_op_cond(), loops are continuously performed at the same
+interval of 10 ms.  However the behaviour is not good for some eMMC
+which can be out from a busy state earlier than 10 ms if normal.
 
-Yes, after converting it to enum, the BPF programs can get it from the
-generated vmlinux.h.
+Therefore, this patch adjusts the waiting interval time. The interval
+time starts at 1 ms, but doubles until the range reaches 10 ms for
+each loop.
 
-> For others, I'd just
-> leave hard-coded 16 or re-defined TASK_COMM_LEN_16 where appropriate.
->
+The reason for adjusting the interval time is that it is important
+to reduce the eMMC initialization time, especially in devices that
+use eMMC as rootfs.
 
-It seems not all the BPF programs can include the vmlinux.h.
-What we really care about here is the copy of task comm should be with
-a nul terminator, if we can assure it, then the size used by the BPF
-is not important.
-I have checked the copy of task comm in all these BPF programs one by
-one, and replaced the unsafe bpf_probe_read_kernel() with
-bpf_probe_read_kernel_str(), after that change, I think we can leave
-hard-coded 16 for the progs which can't include vmlinux.h.
+Test log(eMMC:KLM8G1GETF-B041):
 
-> >              -I$(abspath $(OUTPUT)/../usr/include)
-> >
-> >  CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > index 4706cee84360..ac82d57c09dc 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > @@ -12,6 +12,7 @@
-> >  #include <sys/sysinfo.h>
-> >  #include <linux/perf_event.h>
-> >  #include <linux/ring_buffer.h>
-> > +#include <linux/sched/task.h>
-> >  #include "test_ringbuf.lskel.h"
-> >
-> >  #define EDONE 7777
-> > @@ -22,7 +23,7 @@ struct sample {
-> >         int pid;
-> >         int seq;
-> >         long value;
-> > -       char comm[16];
-> > +       char comm[TASK_COMM_LEN_16];
->
-> how much value is in this "grep-ability", really? I'm not convinced
-> all this code churn is justified.
->
-> >  };
-> >
-> >  static int sample_cnt;
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> > index 167cd8a2edfd..f0748305ffd6 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> > @@ -2,6 +2,7 @@
-> >  #define _GNU_SOURCE
-> >  #include <test_progs.h>
-> >  #include <sys/epoll.h>
-> > +#include <linux/sched/task.h>
-> >  #include "test_ringbuf_multi.skel.h"
-> >
-> >  static int duration = 0;
->
-> [...]
+before: 12 ms (0.439407 - 0.427186)
+[0.419407] mmc0: starting CMD0 arg 00000000 flags 000000c0
+[0.422652] mmc0: starting CMD1 arg 00000000 flags 000000e1
+[0.424270] mmc0: starting CMD0 arg 00000000 flags 000000c0
+[0.427186] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
+[0.439407] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
+[0.439721] mmc0: starting CMD2 arg 00000000 flags 00000007
 
+after: 4 ms (0.431725 - 0.427352)
+[0.419575] mmc0: starting CMD0 arg 00000000 flags 000000c0
+[0.422819] mmc0: starting CMD1 arg 00000000 flags 000000e1
+[0.424435] mmc0: starting CMD0 arg 00000000 flags 000000c0
+[0.427352] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
+[0.428913] mmc0: starting CMD1 arg 40000080 flags 000000e1
+[0.431725] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
+[0.432038] mmc0: starting CMD2 arg 00000000 flags 00000007
 
+Signed-off-by: Huijin Park <huijin.park@samsung.com>
+
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index 0c54858e89c0..61b4ffdc89ce 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -177,6 +177,7 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+ {
+ 	struct mmc_command cmd = {};
+ 	int i, err = 0;
++	int interval = 1, interval_max = 10;
+ 
+ 	cmd.opcode = MMC_SEND_OP_COND;
+ 	cmd.arg = mmc_host_is_spi(host) ? 0 : ocr;
+@@ -198,7 +199,9 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+ 
+ 		err = -ETIMEDOUT;
+ 
+-		mmc_delay(10);
++		mmc_delay(interval);
++		if (interval < interval_max)
++			interval = min(interval * 2, interval_max);
+ 
+ 		/*
+ 		 * According to eMMC specification v5.1 section 6.4.3, we
 -- 
-Thanks
-Yafang
+2.17.1
+
