@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F08D43765C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31F5437661
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhJVMGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:06:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50248 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhJVMGr (ORCPT
+        id S231477AbhJVMHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:07:42 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60572 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230366AbhJVMHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:06:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D8F9C21983;
-        Fri, 22 Oct 2021 12:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634904268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h9x+TRkgC4tzH4TgjCK7sVhgC5F3Aew81sGEOoXA6tA=;
-        b=eZzyWW/49xz88I+SIQPEwgELpiQoeI9/I+zOzwBJVBEH/J14rcGLCeXWMYvCMY8J/TqlWX
-        h5ip56Oqg9Y/ke4gBsG6qvzh4Ip9YH5+aFC0Ga0PC9rAK5PEIa6bVV9Cgmtk0PwFd1nB10
-        Cxh/zeJeWu4BYF6jGD9MnYbgCMMwGRc=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 769ACA3B81;
-        Fri, 22 Oct 2021 12:04:27 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 14:04:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        rientjes@google.com, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, david@redhat.com,
-        jannh@google.com, shakeelb@google.com, luto@kernel.org,
-        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YXKoyAKe7xCqk7gW@dhcp22.suse.cz>
-References: <20211022014658.263508-1-surenb@google.com>
- <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <YXKhOKIIngIuJaYi@casper.infradead.org>
+        Fri, 22 Oct 2021 08:07:34 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M5oUx8013923;
+        Fri, 22 Oct 2021 08:05:06 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3bucbnmn3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 08:05:05 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 19MC4srD008431
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 22 Oct 2021 08:04:54 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Fri, 22 Oct 2021
+ 08:04:53 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Fri, 22 Oct 2021 08:04:53 -0400
+Received: from ubuntuservermchindri.ad.analog.com ([10.32.225.18])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19MC4nKo018003;
+        Fri, 22 Oct 2021 08:04:50 -0400
+From:   Mihail Chindris <mihail.chindris@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <alexandru.ardelean@analog.com>,
+        Mihail Chindris <mihail.chindris@analog.com>
+Subject: [PATCH v4 0/2] drivers:iio:dac: Add AD3552R driver support
+Date:   Fri, 22 Oct 2021 12:04:25 +0000
+Message-ID: <20211022120427.99516-1-mihail.chindris@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXKhOKIIngIuJaYi@casper.infradead.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: oslOB9TL1MARhW_z-Tg37Ut-Gz8gXiXz
+X-Proofpoint-ORIG-GUID: oslOB9TL1MARhW_z-Tg37Ut-Gz8gXiXz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_03,2021-10-21_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=898
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110220068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 22-10-21 12:32:08, Matthew Wilcox wrote:
-> On Fri, Oct 22, 2021 at 10:03:29AM +0200, Michal Hocko wrote:
-> > On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
-> > > Race between process_mrelease and exit_mmap, where free_pgtables is
-> > > called while __oom_reap_task_mm is in progress, leads to kernel crash
-> > > during pte_offset_map_lock call. oom-reaper avoids this race by setting
-> > > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-> > > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-> > > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-> > > fix this race, however that would be considered a hack. Fix this race
-> > > by elevating mm->mm_users and preventing exit_mmap from executing until
-> > > process_mrelease is finished. Patch slightly refactors the code to adapt
-> > > for a possible mmget_not_zero failure.
-> > > This fix has considerable negative impact on process_mrelease performance
-> > > and will likely need later optimization.
-> > 
-> > I am not sure there is any promise that process_mrelease will run in
-> > parallel with the exiting process. In fact the primary purpose of this
-> > syscall is to provide a reliable way to oom kill from user space. If you
-> > want to optimize process exit resp. its exit_mmap part then you should
-> > be using other means. So I would be careful calling this a regression.
-> > 
-> > I do agree that taking the reference count is the right approach here. I
-> > was wrong previously [1] when saying that pinning the mm struct is
-> > sufficient. I have completely forgot about the subtle sync in exit_mmap.
-> > One way we can approach that would be to take exclusive mmap_sem
-> > throughout the exit_mmap unconditionally. There was a push back against
-> > that though so arguments would have to be re-evaluated.
-> 
-> I have another reason for wanting to take the mmap_sem throughout
-> exit_mmap.  Liam and I are working on using the Maple tree to replace
-> the rbtree & vma linked list.  It uses lockdep to check that you haven't
-> forgotten to take a lock (as of two days ago, that mean the mmap_sem
-> or the RCU read lock) when walking the tree.
-> 
-> So I'd like to hold it over:
-> 
->  - unlock_range()
->  - unmap_vmas()
->  - free_pgtables()
->  - while (vma) remove_vma()
-> 
-> Which is basically the whole of exit_mmap().  I'd like to know more
-> about why there was pushback on holding the mmap_lock across this
-> -- we're exiting, so nobody else should have a reference to the mm?
+Changelog v1 -> v2:
+  - https://lore.kernel.org/all/20211008123909.1901-1-mihail.chindris@analog.com
+  - Order compatilbe in alphabetic order
+  - Fix comments in yaml
+  - Grup struct by types
+  - Drop usless "if (err)"
+  - Handle error in ad3552r_read_reg_wrapper
+  - ad3552r_find_range: u32 -> s32
+  - Add fwnode_handle_put(custom_gain_child); in good path too
+  - Vals[0] -> val
+  - Fix: fwnode_handle_put in ad3552r_configure_device
+  - Fix indio_dev->name
+  - Rename custom_gain_child -> gain_child
+  - Remove intermediary functions and write code inline where possible
+  - Add ad3552r_field_prep helper function
+  - Dev_err -> dev_warn for vref supply check
+  - Replace dev_err with dev_err_probe
+  - Remove channel for simultaneous update and do update mask register if both
+    channels values are the same.
 
-https://lore.kernel.org/all/20170724072332.31903-1-mhocko@kernel.org/
+Changelog v0 -> v1:
+  - Split https://lore.kernel.org/all/20210820165927.4524-1-mihail.chindris@analog.com
+    and move ad3552r driver to this serie.
+  - Remove precision_mode abi
+  - Remove adi,synch_channels dt property
+  - Use vref-supply instead of adi,vref-select
+  - Remove unimplemented spi modes
+  - Change output-range format and use enums
+  - Update description for custom-output-range-config to be more clear
+  - Add datasheet tag
+  - Use GENMASK for defines
+  - Remove tomicro define
+  - Use get_unaligned_be16 and put_unaligned_be16
+  - Remove unnecessary checks
+  - Add comment for AD3552R_CH_DAC_PAGE channel
+  - Fix indent
+  - Remove irq trigger
+  - Remove irelevant checks
+  - Rename ad3552r_read_reg_pool to ad3552r_read_reg_wrapper.
+  - Add support for ad3542r
+
+V0:
+  * Add ad3552r example to https://lore.kernel.org/linux-iio/20210219124012.92897-1-alexandru.ardelean@analog.com
+
+Mihail Chindris (2):
+  dt-bindings: iio: dac: Add adi,ad3552r.yaml
+  drivers:iio:dac: Add AD3552R driver support
+
+ .../bindings/iio/dac/adi,ad3552r.yaml         |  190 +++
+ drivers/iio/dac/Kconfig                       |   10 +
+ drivers/iio/dac/Makefile                      |    1 +
+ drivers/iio/dac/ad3552r.c                     | 1199 +++++++++++++++++
+ 4 files changed, 1400 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+ create mode 100644 drivers/iio/dac/ad3552r.c
+
+
+base-commit: ef226dcf3d88697a06335fbc55c4263ab164b135
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
