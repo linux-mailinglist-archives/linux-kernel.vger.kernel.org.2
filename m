@@ -2,455 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F1C43802E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE93438035
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhJVWVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbhJVWVG (ORCPT
+        id S234311AbhJVW32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:29:28 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:10184 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233793AbhJVW31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:21:06 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA71C061764;
-        Fri, 22 Oct 2021 15:18:48 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id o11so4705807ljg.10;
-        Fri, 22 Oct 2021 15:18:48 -0700 (PDT)
+        Fri, 22 Oct 2021 18:29:27 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MKamcg002968;
+        Fri, 22 Oct 2021 15:27:03 -0700
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3buu21ajtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 15:27:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FbSedIuOcbpPvj46xNn4Vi2qQDkC3NZ9ColGzT2QU/e6/fmBNq33LWT7UrOo1p2EtD/y8mDk61+iKKXDyzyHTvJbZ89iljBE5lLc2Pxg5I/i4XONRlywOOOgm8Mt/vII4UgqjdZJpgbKRoIZEVLoKHoai3RI42CGwzT7Bb5snuKj01aDewDASL/MkPYfOVkiIzftLZ4x7hy4jgvUh1U/UKbR4QQZ7ED0mZxVB8SrUVXbDOFw8085WV8SomKVGL1gFs1kfgViDXoGBfnsnUa61C+G5AwJWflwkbFFoxhyp68XxpQu8eTsvbuH94WtnZtUrFCFO+yEC29j83aidaYYBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Xn+rGfsJQIdv4a23u86LawGVhJvs+R2bN+JW4Ne9lyQ=;
+ b=AHuxH0ibbS5YcXx8H+HdL+Ow4hO5qSAVXrIyYVM+Nmv2e1JvtOEymMXXT3K8Y6zb4vO0pntSKhJPokoWkSwk1KfpwATDTcRYCDBqoWRvSskpwRTTceLyiF1/c/DwNV0MeTwyzhlib/pfIfGO92S+verI6e9WubOVfkA5DlIYkkAqlSi1c7oZqBUAEMK2Sj5/TNR3bWRzZkEIQpuuOtw4T91EpsON3iXIYfZLJR26g/BG+OKFWc8Dl+J7EPA54ny0RGqzzALEoy41fj9F6aPdvZeyiLlD9e36gp2rx4sXhFcGsQw5AwgM2opUqaPJ8i/rzpV+vJjFC/hP4X7uMz0ovw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=oALE7KNvmSJUE/C7CSWLeryh2y5nJQ/18BaNAYGn4e8=;
-        b=RIt5pPJpb9vRP4Zf5Codg3wOou23lDtH2JjRmxoG66xDcxMlRpJEbd3GsttcxY7YuL
-         GCBE9yz417DmNh3725xNItEG35gABObbqPYyKxa0lhpR5BCT715bPf7QQyvNOTQmeC7A
-         vTN2gTpQEKdmbArowRn/82wJc6G6Dghuy9sSPNIT3aHFFkRyPi77xoRpUO2TqE7Ib+tK
-         Ms9IG9LFrpUq97jd29u4d4AsaPOXR/zJ/cKZaA2GoTiVGv/oORnTvyFqlOCeboz0jRFC
-         fHjtrJYsAr3Qpn8bQuyZKJG9CMbvscabQBlEhop+6wolVIzIzH8DQHKarmLrxxwjaPQV
-         iuLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=oALE7KNvmSJUE/C7CSWLeryh2y5nJQ/18BaNAYGn4e8=;
-        b=hSd1z/KW2vKX4Y27dPnrbNus3LkdWE7KSPInqfBdqL6/5Q/x38mE/eFGFnc7JVFLbz
-         h6axi9nG1mJgnMk2QufpDoc/MbU437YVQ9/IjG51lTmY8ifx9Ltv8xXwCOtt/vvUMp5N
-         93xapvuD/lzw8EMKMJWvh3NMMC9yYjHic0qeAhsiqhoaLdwBnfDJhyuFAsdGFIotKJ1o
-         hxmK4ELqVoBeIiSqg72FBit5UhHsm26Bw/cFccBwVv6ymzHplDx5x2jlvRF2I2lZwc/v
-         d5lOHFJz4arefNNfUD1p71vIKUWHzivtfs4UtKxB+4Rbl/GAitjm0fe2UF2Gt6U7SzrJ
-         +M8A==
-X-Gm-Message-State: AOAM533dHlzClnV9keAwocomzMq9pVF3K2ShwG06oyRDtc0Gt95mFRsE
-        gmqraaL1G7Nw6kL2qxf3tvXjmw6z6F+JWmiVMuM=
-X-Google-Smtp-Source: ABdhPJwLhyAsl2pZszG+EtdczmL/tBL54db6Is5GUZQfPd4EoEz/w2hZRDamOb+QiRhBSHI54+fdolEXjDAEwcy7ZM4=
-X-Received: by 2002:a2e:a788:: with SMTP id c8mr2651601ljf.75.1634941126842;
- Fri, 22 Oct 2021 15:18:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211021203152.29312-1-semen.protsenko@linaro.org>
- <20211021203152.29312-2-semen.protsenko@linaro.org> <864f52d2-1336-eaca-1647-99a0f55da6f9@gmail.com>
- <CAPLW+4kgAKut9fPJzZapBvVpprno++O3g3CFOE-Pj=0Oxb9McQ@mail.gmail.com>
-In-Reply-To: <CAPLW+4kgAKut9fPJzZapBvVpprno++O3g3CFOE-Pj=0Oxb9McQ@mail.gmail.com>
-Reply-To: cwchoi00@gmail.com
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Date:   Sat, 23 Oct 2021 07:18:10 +0900
-Message-ID: <CAGTfZH153PS40GcOB08HXzXPAr4NY-BWjbieQE8ExS+TqV-DYw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] clk: samsung: exynos850: Implement CMU_APM domain
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xn+rGfsJQIdv4a23u86LawGVhJvs+R2bN+JW4Ne9lyQ=;
+ b=KpPmu3LjDMbMjxZ1Dc/Eps0SnQcQ48DLQB4bXDSRULkNX+bjesS/C1BjzcmHF9KdiYGRJxGbjmDmnmg7Z4A7gXCLgq6dO7STacK2JwRDLSdy4Mwh9HhOm04wgUUleH2fQe9+yOJllKYDq+nMcAougsZlwbLjDmicU4AkD1LK3M8=
+Received: from SJ0PR18MB4009.namprd18.prod.outlook.com (2603:10b6:a03:2eb::24)
+ by SJ0PR18MB3913.namprd18.prod.outlook.com (2603:10b6:a03:2ea::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
+ 2021 22:27:01 +0000
+Received: from SJ0PR18MB4009.namprd18.prod.outlook.com
+ ([fe80::919c:1891:e266:2502]) by SJ0PR18MB4009.namprd18.prod.outlook.com
+ ([fe80::919c:1891:e266:2502%8]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
+ 22:27:01 +0000
+From:   "Volodymyr Mytnyk [C]" <vmytnyk@marvell.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        "Vadym Kochan [C]" <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        "Taras Chornyi [C]" <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3] net: marvell: prestera: add firmware v4.0
+ support
+Thread-Topic: [PATCH net-next v3] net: marvell: prestera: add firmware v4.0
+ support
+Thread-Index: AQHXx5PuZAeJN1SxmU6bEwmj7rv/2Q==
+Date:   Fri, 22 Oct 2021 22:27:01 +0000
+Message-ID: <SJ0PR18MB400940A0C69DEC9836A4F610B2809@SJ0PR18MB4009.namprd18.prod.outlook.com>
+References: <1634722349-23693-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+ <YXKuOSDraUsaN75U@lunn.ch>
+In-Reply-To: <YXKuOSDraUsaN75U@lunn.ch>
+Accept-Language: en-GB, uk-UA, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 8ad3394b-64fe-c39f-3dfa-a0f679a10de7
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1eaa06b4-003d-4191-74da-08d995ab1184
+x-ms-traffictypediagnostic: SJ0PR18MB3913:
+x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
+x-microsoft-antispam-prvs: <SJ0PR18MB3913E212CB0D6AAC255DD8B5B2809@SJ0PR18MB3913.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UaKTcP/TmcBF0UCRvEg4h+6PnQh5OwvICwcaYe5O3LpnkUvakTjFuQdzIDCB96ZUraWauomtZh1NgSBmlcam+mvIcsRffYSyVYvwuy+WujhnQya8as6SbmRBPG5jwMmYPWoT1bZMC+o+eHjrw4qc1WF+XxgpD5JbI5JtMXp+fNEJQwtkM5TeIP0wE8WpJ0i7A79/p/lW5OpRg2CS9fggziz64lwVudYaoxhuSXeDDdYJMSMFy5Y8t8DX7JT3Jk0OHXU01sTUzVfL9HK8kTYpEEu4bECc4SE1A+Eyta6NRDwm3nePpOQfvHmgpA7PylRDvR3FLoUc0z6sJ8AeTz03hK/ZcNbNpKsViLIKEjgAakTVItIVB4udIjhneM7FFR+9JwDFPNP+vyaFq8zfiVNnwk47W8lN8T+HspvYn0bcAjMMx7Qg43PqqpTI0dIGWP4eFLF2CJDb77Ot0ywgu45kwur1jGOEFOYN9F8GOD9AYXvZoA/XmeWQgUX2P09pVf9EZ4gHK3zNr5jjPcdSuIyJCAFoJFU7+MPpXUhw0iW7t2eiBzE5htgePJzL3/Q5chJmcpwvD8/Po0XNxI9yn3ZrG+UMKfQUhBzMRK6G79OMx7V5HzyCnlcVto50AscIUsbLrOD0VmkNev5L2dbX/RbpUyFplwAkeHpvOt2llGUIBXbbVeJh+JgyWiDel6dP3QzPtQlBKINkURPJcQM/IpCgCQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB4009.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(66446008)(6916009)(8936002)(2906002)(508600001)(76116006)(316002)(33656002)(38100700002)(64756008)(66476007)(38070700005)(66946007)(54906003)(6506007)(8676002)(71200400001)(66556008)(26005)(5660300002)(122000001)(9686003)(55236004)(7696005)(86362001)(52536014)(4326008)(55016002)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?uQlD6cLcYsn7BTgVgQ5nKgM03lMQIXoorVdn3nESQwLU4kc8qZjOR0gHrQ?=
+ =?iso-8859-1?Q?o3DnipXgKWIydolw4+hSCspaOP1Q2oJn+sVNh+MOTEni+7ep/MD6WsAkfT?=
+ =?iso-8859-1?Q?lKAc5wPniPN5t1+tsPo6fMyKirJ4pEu7E+as2qovi59iuhVCGWH6gmPZJq?=
+ =?iso-8859-1?Q?1MsGog6I7nOXI5qAIZbvUmXAbNNiWFTv68REURGJu/txdI66OnemetMio2?=
+ =?iso-8859-1?Q?vVPRI7ls75aqa2mFn1zlHyqI846IKoqTYumxkis9DQ6ysN8Sn92WpWT3D8?=
+ =?iso-8859-1?Q?jpGwUzG6htveq/S6ypRJmRAi13qtjG4BDsmwX8iDgepac5f5xwneVIZ1/X?=
+ =?iso-8859-1?Q?eiMiXIG+MEfDVyteewoVy4DjIRtWY4TrcpfFa01OzEKg9D7g6fhI8Qp4Py?=
+ =?iso-8859-1?Q?zjqRog8ioNdCJMcNVjAtBGnyTO5n2avXzaEd+0K+luYAKSg7uexN2AoflM?=
+ =?iso-8859-1?Q?7kpS5MpLydQTd/RnBXmBjX46qKKkpTkIctOMe24yk6BYulosyxoA6YCAnv?=
+ =?iso-8859-1?Q?zPXMWa4QjCzN4qPp/uhmVtbwEd++8Ek6VhVW+JNIfBw2w8/QwoTER9cjh9?=
+ =?iso-8859-1?Q?2mk62WpoLgMJOMhdRFcIiZUgxn8oP2lfqh+3KpVsl4p52vg3N95PfbiIn7?=
+ =?iso-8859-1?Q?B6BN2QGgH4OT/0RkLgIET8x4g8E1snpAVxQE7yqUbhEtgPUX71GCL1ny3W?=
+ =?iso-8859-1?Q?EoI5rAlUSzPI+Cpsn2br4EaWcnLPDztyPmBG1mEIPEvIVuFm9LqqHf+0Oy?=
+ =?iso-8859-1?Q?tblFaUQ5uDVF2B+H7TBQyrYVjpxvzQyP8+I9svjt14EXyYdu9dlcKwo0dk?=
+ =?iso-8859-1?Q?McLAgxd3K93dL57M96I7ysTxz1X6NKGD9EMf42MwsK8p8ujufZbortDFFu?=
+ =?iso-8859-1?Q?3y32a8QEHQCzmzk/V092xzDf4d60yXwA0ZHs4HlbScAkNHTBSTm9qN11Gw?=
+ =?iso-8859-1?Q?WhmHikNTMC64XtQwFIPkrjHU8mkeuaS65j7cFPZKXjeuuYLfToUhoLKryc?=
+ =?iso-8859-1?Q?qvGdBzMpVf1m6ABUsJAuZ6BwQxjO7T/MLS83zFLqoCuJM7asfStIiRZ91S?=
+ =?iso-8859-1?Q?f9pj0QZCN/FF0LY5YnP7zV6HBY1XxAh/zvGuS4VrrUfAeE5M3fRtHFb6v2?=
+ =?iso-8859-1?Q?ni2CLhM1MrczBZ532soKLPPuu5HzGQ5JWA8xOQad7W+KlQjZezjy9KaXJu?=
+ =?iso-8859-1?Q?fCnhWcITbbeD+pfhJMkOBY7V0BHNUqe0dlocTL/W2dbgVhz9qhpoHIpTIa?=
+ =?iso-8859-1?Q?vrZ3bF1jDdXuxYZyJiZl/r412gmqe69d8ga+E4n+6Kv8E8yacT7osc+Yc+?=
+ =?iso-8859-1?Q?97+3E9XJBVD33kCTwiFnoCljcnU89ikpe23mnoOC5xtCOLIe44YQlIFxqH?=
+ =?iso-8859-1?Q?XdCPGYgdeyPrRcfdqUPB3uLfqtr+WeLvQeo9HOba7n+mL2gdse8dZ9I4Uw?=
+ =?iso-8859-1?Q?c0a/UU+xk0bOGN3kLWukLUHszlB+6LAGHE390YP+DRqTLhQDkODMTzoW2M?=
+ =?iso-8859-1?Q?Y=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB4009.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1eaa06b4-003d-4191-74da-08d995ab1184
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2021 22:27:01.2846
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vmytnyk@marvell.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR18MB3913
+X-Proofpoint-GUID: bv2slD64Jq5N3bmgnUutma6D8Cy1cXRv
+X-Proofpoint-ORIG-GUID: bv2slD64Jq5N3bmgnUutma6D8Cy1cXRv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_05,2021-10-22_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 10. 22. =EC=98=A4=ED=9B=84 10:39, Sam Protsenko wrote:
-> On Fri, 22 Oct 2021 at 11:58, Chanwoo Choi <cwchoi00@gmail.com> wrote:
->>
->> On 21. 10. 22. =EC=98=A4=EC=A0=84 5:31, Sam Protsenko wrote:
->>> CMU_APM clock domain provides clocks for APM IP-core (Active Power
->>> Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailbox=
-,
->>> Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
->>>
->>> This patch adds next clocks:
->>>     - bus clocks in CMU_TOP needed for CMU_APM
->>>     - all internal CMU_APM clocks
->>>     - leaf clocks for I3C, Speedy and RTC IP-cores
->>>     - bus clocks for CMU_CMGP and CMU_CHUB
->>>
->>> CMU_APM doesn't belong to Power Domains, but platform driver is used fo=
-r
->>> its registration to keep its bus clock always running. Otherwise rtc-s3=
-c
->>> driver disables that clock and system freezes.
->>>
->>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
->>> ---
->>>    drivers/clk/samsung/clk-exynos850.c   | 142 ++++++++++++++++++++++++=
-+-
->>>    include/dt-bindings/clock/exynos850.h | 107 +++++++++++--------
->>>    2 files changed, 208 insertions(+), 41 deletions(-)
->>>
->>> diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/=
-clk-exynos850.c
->>> index 2294989e244c..95e373d17b42 100644
->>> --- a/drivers/clk/samsung/clk-exynos850.c
->>> +++ b/drivers/clk/samsung/clk-exynos850.c
->>> @@ -72,6 +72,7 @@ static void __init exynos850_init_clocks(struct devic=
-e_node *np,
->>>    #define PLL_CON3_PLL_SHARED0                        0x014c
->>>    #define PLL_CON0_PLL_SHARED1                        0x0180
->>>    #define PLL_CON3_PLL_SHARED1                        0x018c
->>> +#define CLK_CON_MUX_MUX_CLKCMU_APM_BUS               0x1000
->>>    #define CLK_CON_MUX_MUX_CLKCMU_CORE_BUS             0x1014
->>>    #define CLK_CON_MUX_MUX_CLKCMU_CORE_CCI             0x1018
->>>    #define CLK_CON_MUX_MUX_CLKCMU_CORE_MMC_EMBD        0x101c
->>> @@ -83,6 +84,7 @@ static void __init exynos850_init_clocks(struct devic=
-e_node *np,
->>>    #define CLK_CON_MUX_MUX_CLKCMU_PERI_BUS             0x1070
->>>    #define CLK_CON_MUX_MUX_CLKCMU_PERI_IP              0x1074
->>>    #define CLK_CON_MUX_MUX_CLKCMU_PERI_UART    0x1078
->>> +#define CLK_CON_DIV_CLKCMU_APM_BUS           0x180c
->>>    #define CLK_CON_DIV_CLKCMU_CORE_BUS         0x1820
->>>    #define CLK_CON_DIV_CLKCMU_CORE_CCI         0x1824
->>>    #define CLK_CON_DIV_CLKCMU_CORE_MMC_EMBD    0x1828
->>> @@ -100,6 +102,7 @@ static void __init exynos850_init_clocks(struct dev=
-ice_node *np,
->>>    #define CLK_CON_DIV_PLL_SHARED1_DIV2                0x1898
->>>    #define CLK_CON_DIV_PLL_SHARED1_DIV3                0x189c
->>>    #define CLK_CON_DIV_PLL_SHARED1_DIV4                0x18a0
->>> +#define CLK_CON_GAT_GATE_CLKCMU_APM_BUS              0x2008
->>>    #define CLK_CON_GAT_GATE_CLKCMU_CORE_BUS    0x201c
->>>    #define CLK_CON_GAT_GATE_CLKCMU_CORE_CCI    0x2020
->>>    #define CLK_CON_GAT_GATE_CLKCMU_CORE_MMC_EMBD       0x2024
->>> @@ -122,6 +125,7 @@ static const unsigned long top_clk_regs[] __initcon=
-st =3D {
->>>        PLL_CON3_PLL_SHARED0,
->>>        PLL_CON0_PLL_SHARED1,
->>>        PLL_CON3_PLL_SHARED1,
->>> +     CLK_CON_MUX_MUX_CLKCMU_APM_BUS,
->>>        CLK_CON_MUX_MUX_CLKCMU_CORE_BUS,
->>>        CLK_CON_MUX_MUX_CLKCMU_CORE_CCI,
->>>        CLK_CON_MUX_MUX_CLKCMU_CORE_MMC_EMBD,
->>> @@ -133,6 +137,7 @@ static const unsigned long top_clk_regs[] __initcon=
-st =3D {
->>>        CLK_CON_MUX_MUX_CLKCMU_PERI_BUS,
->>>        CLK_CON_MUX_MUX_CLKCMU_PERI_IP,
->>>        CLK_CON_MUX_MUX_CLKCMU_PERI_UART,
->>> +     CLK_CON_DIV_CLKCMU_APM_BUS,
->>>        CLK_CON_DIV_CLKCMU_CORE_BUS,
->>>        CLK_CON_DIV_CLKCMU_CORE_CCI,
->>>        CLK_CON_DIV_CLKCMU_CORE_MMC_EMBD,
->>> @@ -150,6 +155,7 @@ static const unsigned long top_clk_regs[] __initcon=
-st =3D {
->>>        CLK_CON_DIV_PLL_SHARED1_DIV2,
->>>        CLK_CON_DIV_PLL_SHARED1_DIV3,
->>>        CLK_CON_DIV_PLL_SHARED1_DIV4,
->>> +     CLK_CON_GAT_GATE_CLKCMU_APM_BUS,
->>>        CLK_CON_GAT_GATE_CLKCMU_CORE_BUS,
->>>        CLK_CON_GAT_GATE_CLKCMU_CORE_CCI,
->>>        CLK_CON_GAT_GATE_CLKCMU_CORE_MMC_EMBD,
->>> @@ -183,6 +189,8 @@ static const struct samsung_pll_clock top_pll_clks[=
-] __initconst =3D {
->>>    PNAME(mout_shared0_pll_p)   =3D { "oscclk", "fout_shared0_pll" };
->>>    PNAME(mout_shared1_pll_p)   =3D { "oscclk", "fout_shared1_pll" };
->>>    PNAME(mout_mmc_pll_p)               =3D { "oscclk", "fout_mmc_pll" }=
-;
->>> +/* List of parent clocks for Muxes in CMU_TOP: for CMU_APM */
->>> +PNAME(mout_clkcmu_apm_bus_p) =3D { "dout_shared0_div4", "pll_shared1_d=
-iv4" };
->>>    /* List of parent clocks for Muxes in CMU_TOP: for CMU_CORE */
->>>    PNAME(mout_core_bus_p)              =3D { "dout_shared1_div2", "dout=
-_shared0_div3",
->>>                                    "dout_shared1_div3", "dout_shared0_d=
-iv4" };
->>> @@ -222,6 +230,10 @@ static const struct samsung_mux_clock top_mux_clks=
-[] __initconst =3D {
->>>        MUX(CLK_MOUT_MMC_PLL, "mout_mmc_pll", mout_mmc_pll_p,
->>>            PLL_CON0_PLL_MMC, 4, 1),
->>>
->>> +     /* APM */
->>> +     MUX(CLK_MOUT_CLKCMU_APM_BUS, "mout_clkcmu_apm_bus",
->>> +         mout_clkcmu_apm_bus_p, CLK_CON_MUX_MUX_CLKCMU_APM_BUS, 0, 1),
->>> +
->>>        /* CORE */
->>>        MUX(CLK_MOUT_CORE_BUS, "mout_core_bus", mout_core_bus_p,
->>>            CLK_CON_MUX_MUX_CLKCMU_CORE_BUS, 0, 2),
->>> @@ -268,6 +280,10 @@ static const struct samsung_div_clock top_div_clks=
-[] __initconst =3D {
->>>        DIV(CLK_DOUT_SHARED1_DIV4, "dout_shared1_div4", "dout_shared1_di=
-v2",
->>>            CLK_CON_DIV_PLL_SHARED1_DIV4, 0, 1),
->>>
->>> +     /* APM */
->>> +     DIV(CLK_DOUT_CLKCMU_APM_BUS, "dout_clkcmu_apm_bus",
->>> +         "gout_clkcmu_apm_bus", CLK_CON_DIV_CLKCMU_APM_BUS, 0, 3),
->>> +
->>>        /* CORE */
->>>        DIV(CLK_DOUT_CORE_BUS, "dout_core_bus", "gout_core_bus",
->>>            CLK_CON_DIV_CLKCMU_CORE_BUS, 0, 4),
->>> @@ -310,6 +326,10 @@ static const struct samsung_gate_clock top_gate_cl=
-ks[] __initconst =3D {
->>>        GATE(CLK_GOUT_CORE_SSS, "gout_core_sss", "mout_core_sss",
->>>             CLK_CON_GAT_GATE_CLKCMU_CORE_SSS, 21, 0, 0),
->>>
->>> +     /* APM */
->>> +     GATE(CLK_GOUT_CLKCMU_APM_BUS, "gout_clkcmu_apm_bus",
->>> +          "mout_clkcmu_apm_bus", CLK_CON_GAT_GATE_CLKCMU_APM_BUS, 21, =
-0, 0),
->>> +
->>>        /* DPU */
->>>        GATE(CLK_GOUT_DPU, "gout_dpu", "mout_dpu",
->>>             CLK_CON_GAT_GATE_CLKCMU_DPU, 21, 0, 0),
->>> @@ -354,6 +374,124 @@ static void __init exynos850_cmu_top_init(struct =
-device_node *np)
->>>    CLK_OF_DECLARE(exynos850_cmu_top, "samsung,exynos850-cmu-top",
->>>               exynos850_cmu_top_init);
->>>
->>> +/* ---- CMU_APM ------------------------------------------------------=
-------- */
->>> +
->>> +/* Register Offset definitions for CMU_APM (0x11800000) */
->>> +#define PLL_CON0_MUX_CLKCMU_APM_BUS_USER             0x0600
->>> +#define PLL_CON0_MUX_CLK_RCO_APM_I3C_USER            0x0610
->>> +#define PLL_CON0_MUX_CLK_RCO_APM_USER                        0x0620
->>> +#define PLL_CON0_MUX_DLL_USER                                0x0630
->>> +#define CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS                      0x1000
->>> +#define CLK_CON_MUX_MUX_CLK_APM_BUS                  0x1004
->>> +#define CLK_CON_MUX_MUX_CLK_APM_I3C                  0x1008
->>> +#define CLK_CON_DIV_CLKCMU_CHUB_BUS                  0x1800
->>> +#define CLK_CON_DIV_DIV_CLK_APM_BUS                  0x1804
->>> +#define CLK_CON_DIV_DIV_CLK_APM_I3C                  0x1808
->>> +#define CLK_CON_GAT_CLKCMU_CMGP_BUS                  0x2000
->>> +#define CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS             0x2014
->>> +#define CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK          0x2024
->>> +#define CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK              0x2028
->>> +#define CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK     0x2034
->>> +#define CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK     0x2038
->>> +#define CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK         0x20bc
->>> +
->>> +static const unsigned long apm_clk_regs[] __initconst =3D {
->>> +     PLL_CON0_MUX_CLKCMU_APM_BUS_USER,
->>> +     PLL_CON0_MUX_CLK_RCO_APM_I3C_USER,
->>> +     PLL_CON0_MUX_CLK_RCO_APM_USER,
->>> +     PLL_CON0_MUX_DLL_USER,
->>> +     CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS,
->>> +     CLK_CON_MUX_MUX_CLK_APM_BUS,
->>> +     CLK_CON_MUX_MUX_CLK_APM_I3C,
->>> +     CLK_CON_DIV_CLKCMU_CHUB_BUS,
->>> +     CLK_CON_DIV_DIV_CLK_APM_BUS,
->>> +     CLK_CON_DIV_DIV_CLK_APM_I3C,
->>> +     CLK_CON_GAT_CLKCMU_CMGP_BUS,
->>> +     CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS,
->>> +     CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK,
->>> +     CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK,
->>> +     CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK,
->>> +     CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK,
->>> +     CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK,
->>> +};
->>> +
->>> +/* List of parent clocks for Muxes in CMU_APM */
->>> +PNAME(mout_apm_bus_user_p)   =3D { "oscclk_rco_apm", "dout_clkcmu_apm_=
-bus" };
->>> +PNAME(mout_rco_apm_i3c_user_p)       =3D { "oscclk_rco_apm", "clk_rco_=
-i3c_pmic" };
->>> +PNAME(mout_rco_apm_user_p)   =3D { "oscclk_rco_apm", "clk_rco_apm__alv=
-" };
->>> +PNAME(mout_dll_user_p)               =3D { "oscclk_rco_apm", "clk_dll_=
-dco" };
->>> +PNAME(mout_clkcmu_chub_bus_p)        =3D { "mout_apm_bus_user", "mout_=
-dll_user" };
->>> +PNAME(mout_apm_bus_p)                =3D { "mout_rco_apm_user", "mout_=
-apm_bus_user",
->>> +                                 "mout_dll_user", "oscclk_rco_apm" };
->>> +PNAME(mout_apm_i3c_p)                =3D { "dout_apm_i3c", "mout_rco_a=
-pm_i3c_user" };
->>> +
->>> +static const struct samsung_fixed_rate_clock apm_fixed_clks[] __initco=
-nst =3D {
->>> +     FRATE(CLK_RCO_I3C_PMIC, "clk_rco_i3c_pmic", NULL, 0, 491520000),
->>> +     FRATE(OSCCLK_RCO_APM, "oscclk_rco_apm", NULL, 0, 24576000),
->>> +     FRATE(CLK_RCO_APM__ALV, "clk_rco_apm__alv", NULL, 0, 49152000),
->>> +     FRATE(CLK_DLL_DCO, "clk_dll_dco", NULL, 0, 360000000),
->>> +};
->>> +
->>> +static const struct samsung_mux_clock apm_mux_clks[] __initconst =3D {
->>> +     MUX(CLK_MOUT_APM_BUS_USER, "mout_apm_bus_user", mout_apm_bus_user=
-_p,
->>> +         PLL_CON0_MUX_CLKCMU_APM_BUS_USER, 4, 1),
->>> +     MUX(CLK_MOUT_RCO_APM_I3C_USER, "mout_rco_apm_i3c_user",
->>> +         mout_rco_apm_i3c_user_p, PLL_CON0_MUX_CLK_RCO_APM_I3C_USER, 4=
-, 1),
->>> +     MUX(CLK_MOUT_RCO_APM_USER, "mout_rco_apm_user", mout_rco_apm_user=
-_p,
->>> +         PLL_CON0_MUX_CLK_RCO_APM_USER, 4, 1),
->>> +     MUX(CLK_MOUT_DLL_USER, "mout_dll_user", mout_dll_user_p,
->>> +         PLL_CON0_MUX_DLL_USER, 4, 1),
->>> +     MUX(CLK_MOUT_CLKCMU_CHUB_BUS, "mout_clkcmu_chub_bus",
->>> +         mout_clkcmu_chub_bus_p, CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS, 0, 1=
-),
->>> +     MUX(CLK_MOUT_APM_BUS, "mout_apm_bus", mout_apm_bus_p,
->>> +         CLK_CON_MUX_MUX_CLK_APM_BUS, 0, 2),
->>> +     MUX(CLK_MOUT_APM_I3C, "mout_apm_i3c", mout_apm_i3c_p,
->>> +         CLK_CON_MUX_MUX_CLK_APM_I3C, 0, 1),
->>> +};
->>> +
->>> +static const struct samsung_div_clock apm_div_clks[] __initconst =3D {
->>> +     DIV(CLK_DOUT_CLKCMU_CHUB_BUS, "dout_clkcmu_chub_bus",
->>> +         "gout_clkcmu_chub_bus",
->>> +         CLK_CON_DIV_CLKCMU_CHUB_BUS, 0, 3),
->>> +     DIV(CLK_DOUT_APM_BUS, "dout_apm_bus", "mout_apm_bus",
->>> +         CLK_CON_DIV_DIV_CLK_APM_BUS, 0, 3),
->>> +     DIV(CLK_DOUT_APM_I3C, "dout_apm_i3c", "mout_apm_bus",
->>> +         CLK_CON_DIV_DIV_CLK_APM_I3C, 0, 3),
->>> +};
->>> +
->>> +static const struct samsung_gate_clock apm_gate_clks[] __initconst =3D=
- {
->>> +     GATE(CLK_GOUT_CLKCMU_CMGP_BUS, "gout_clkcmu_cmgp_bus", "dout_apm_=
-bus",
->>> +          CLK_CON_GAT_CLKCMU_CMGP_BUS, 21, 0, 0),
->>> +     GATE(CLK_GOUT_CLKCMU_CHUB_BUS, "gout_clkcmu_chub_bus",
->>> +          "mout_clkcmu_chub_bus",
->>> +          CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS, 21, 0, 0),
->>> +     GATE(CLK_GOUT_RTC_PCLK, "gout_rtc_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_TOP_RTC_PCLK, "gout_top_rtc_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_I3C_PCLK, "gout_i3c_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_I3C_SCLK, "gout_i3c_sclk", "mout_apm_i3c",
->>> +          CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_SPEEDY_PCLK, "gout_speedy_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK, 21, 0, 0),
->>> +};
->>> +
->>> +static const struct samsung_cmu_info apm_cmu_info __initconst =3D {
->>> +     .mux_clks               =3D apm_mux_clks,
->>> +     .nr_mux_clks            =3D ARRAY_SIZE(apm_mux_clks),
->>> +     .div_clks               =3D apm_div_clks,
->>> +     .nr_div_clks            =3D ARRAY_SIZE(apm_div_clks),
->>> +     .gate_clks              =3D apm_gate_clks,
->>> +     .nr_gate_clks           =3D ARRAY_SIZE(apm_gate_clks),
->>> +     .fixed_clks             =3D apm_fixed_clks,
->>> +     .nr_fixed_clks          =3D ARRAY_SIZE(apm_fixed_clks),
->>> +     .nr_clk_ids             =3D APM_NR_CLK,
->>> +     .clk_regs               =3D apm_clk_regs,
->>> +     .nr_clk_regs            =3D ARRAY_SIZE(apm_clk_regs),
->>> +     .clk_name               =3D "dout_clkcmu_apm_bus",
->>> +};
->>> +
->>>    /* ---- CMU_HSI ----------------------------------------------------=
---------- */
->>>
->>>    /* Register Offset definitions for CMU_HSI (0x13400000) */
->>> @@ -801,9 +939,11 @@ static int __init exynos850_cmu_probe(struct platf=
-orm_device *pdev)
->>>        return 0;
->>>    }
->>>
->>> -/* CMUs which belong to Power Domains and need runtime PM to be implem=
-ented */
->>>    static const struct of_device_id exynos850_cmu_of_match[] =3D {
->>>        {
->>> +             .compatible =3D "samsung,exynos850-cmu-apm",
->>> +             .data =3D &apm_cmu_info,
->>> +     }, {
->>>                .compatible =3D "samsung,exynos850-cmu-hsi",
->>>                .data =3D &hsi_cmu_info,
->>>        }, {
->>> diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-binding=
-s/clock/exynos850.h
->>> index 8999184f94a2..c65e0300a8d3 100644
->>> --- a/include/dt-bindings/clock/exynos850.h
->>> +++ b/include/dt-bindings/clock/exynos850.h
->>> @@ -16,46 +16,73 @@
->>>    #define CLK_MOUT_SHARED0_PLL                4
->>>    #define CLK_MOUT_SHARED1_PLL                5
->>>    #define CLK_MOUT_MMC_PLL            6
->>> -#define CLK_MOUT_CORE_BUS            7
->>> -#define CLK_MOUT_CORE_CCI            8
->>> -#define CLK_MOUT_CORE_MMC_EMBD               9
->>> -#define CLK_MOUT_CORE_SSS            10
->>> -#define CLK_MOUT_DPU                 11
->>> -#define CLK_MOUT_HSI_BUS             12
->>> -#define CLK_MOUT_HSI_MMC_CARD                13
->>> -#define CLK_MOUT_HSI_USB20DRD                14
->>> -#define CLK_MOUT_PERI_BUS            15
->>> -#define CLK_MOUT_PERI_UART           16
->>> -#define CLK_MOUT_PERI_IP             17
->>> -#define CLK_DOUT_SHARED0_DIV3                18
->>> -#define CLK_DOUT_SHARED0_DIV2                19
->>> -#define CLK_DOUT_SHARED1_DIV3                20
->>> -#define CLK_DOUT_SHARED1_DIV2                21
->>> -#define CLK_DOUT_SHARED0_DIV4                22
->>> -#define CLK_DOUT_SHARED1_DIV4                23
->>> -#define CLK_DOUT_CORE_BUS            24
->>> -#define CLK_DOUT_CORE_CCI            25
->>> -#define CLK_DOUT_CORE_MMC_EMBD               26
->>> -#define CLK_DOUT_CORE_SSS            27
->>> -#define CLK_DOUT_DPU                 28
->>> -#define CLK_DOUT_HSI_BUS             29
->>> -#define CLK_DOUT_HSI_MMC_CARD                30
->>> -#define CLK_DOUT_HSI_USB20DRD                31
->>> -#define CLK_DOUT_PERI_BUS            32
->>> -#define CLK_DOUT_PERI_UART           33
->>> -#define CLK_DOUT_PERI_IP             34
->>> -#define CLK_GOUT_CORE_BUS            35
->>> -#define CLK_GOUT_CORE_CCI            36
->>> -#define CLK_GOUT_CORE_MMC_EMBD               37
->>> -#define CLK_GOUT_CORE_SSS            38
->>> -#define CLK_GOUT_DPU                 39
->>> -#define CLK_GOUT_HSI_BUS             40
->>> -#define CLK_GOUT_HSI_MMC_CARD                41
->>> -#define CLK_GOUT_HSI_USB20DRD                42
->>> -#define CLK_GOUT_PERI_BUS            43
->>> -#define CLK_GOUT_PERI_UART           44
->>> -#define CLK_GOUT_PERI_IP             45
->>> -#define TOP_NR_CLK                   46
->>> +#define CLK_MOUT_CLKCMU_APM_BUS              7
->>> +#define CLK_MOUT_CORE_BUS            8
->>
->>
->> Basically, you can never change the already defined clock id
->> in nclude/dt-bindings/clock/*.h because of supporting
->> the compatibility of dtb files which were using the
->> already defined clock id instead of changed clock id
->>
->> If you want to add new clock with new clock id,
->> you have to define the new clock id at the end of defined clock
->> like the next of CLK_GOUT_PERI_IP for TOP domain case.
->>
->
-> Thanks for explaining that in details, Chanwoo. As Krzysztof pointed
-> out, right now there are no dts users of this clock driver in upstream
-> kernel (I didn't submit it yet), so it'd nice if this one can be taken
-> as is. In future I'll increment the last clock ID. Guess it was my OCD
-> talking, trying to keep all clock IDs grouped by clock type :)
-
-I know that there are no user for this clock. So that it doesn't make
-the real break for compatibility. But, when some kernel developers might
-check the kernel history by git command, they never know the history
-only we know. If there are any critical reason, I don't prefer to break
-the rule of clock id defintion for patch history.
-
-Just I want to keep the original rule of clock id patch in order to remove
-the potential confusion. It is not a strong objection. But In my case,
-I cannot reply the ack. Thanks for your work.
-
---
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+> On Wed, Oct 20, 2021 at 12:32:28PM +0300, Volodymyr Mytnyk wrote:=0A=
+> > From: Volodymyr Mytnyk <vmytnyk@marvell.com>=0A=
+> > =0A=
+> > Add firmware (FW) version 4.0 support for Marvell Prestera=0A=
+> > driver.=0A=
+> > =0A=
+> > Major changes have been made to new v4.0 FW ABI to add support=0A=
+> > of new features, introduce the stability of the FW ABI and ensure=0A=
+> > better forward compatibility for the future driver vesrions.=0A=
+> > =0A=
+> > Current v4.0 FW feature set support does not expect any changes=0A=
+> > to ABI, as it was defined and tested through long period of time.=0A=
+> > The ABI may be extended in case of new features, but it will not=0A=
+> > break the backward compatibility.=0A=
+> > =0A=
+> > ABI major changes done in v4.0:=0A=
+> > - L1 ABI, where MAC and PHY API configuration are split.=0A=
+> > - ACL has been split to low-level TCAM and Counters ABI=0A=
+> >=A0=A0 to provide more HW ACL capabilities for future driver=0A=
+> >=A0=A0 versions.=0A=
+> > =0A=
+> > To support backward support, the addition compatibility layer is=0A=
+> > required in the driver which will have two different codebase under=0A=
+> > "if FW-VER elif FW-VER else" conditions that will be removed=0A=
+> > in the future anyway, So, the idea was to break backward support=0A=
+> > and focus on more stable FW instead of supporting old version=0A=
+> > with very minimal and limited set of features/capabilities.=0A=
+> =A0=0A=
+> > +/* TODO: add another parameters here: modes, etc... */=0A=
+> > +struct prestera_port_phy_config {=0A=
+> > +=A0=A0=A0=A0 bool admin;=0A=
+> > +=A0=A0=A0=A0 u32 mode;=0A=
+> > +=A0=A0=A0=A0 u8 mdix;=0A=
+> > +};=0A=
+> =0A=
+> > @@ -242,10 +246,44 @@ union prestera_msg_port_param {=0A=
+> >=A0=A0=A0=A0=A0=A0=A0 u8=A0 duplex;=0A=
+> >=A0=A0=A0=A0=A0=A0=A0 u8=A0 fec;=0A=
+> >=A0=A0=A0=A0=A0=A0=A0 u8=A0 fc;=0A=
+> > -=A0=A0=A0=A0 struct prestera_msg_port_mdix_param mdix;=0A=
+> > -=A0=A0=A0=A0 struct prestera_msg_port_autoneg_param autoneg;=0A=
+> > +=0A=
+> > +=A0=A0=A0=A0 union {=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct {=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* TODO: =
+merge it with "mode" */=0A=
+> =0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct {=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* TODO: =
+merge it with "mode" */=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u8 admin:=
+1;=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u8 adv_en=
+able;=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u64 modes=
+;=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* TODO: =
+merge it with modes */=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u32 mode;=
+=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u8 mdix;=
+=0A=
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 } phy;=0A=
+> =0A=
+> You claim this is stable, yet there are four TODOs. Please could you=0A=
+> convince us you can actually do these TODO without breaking the=0A=
+> ABI. Can you add more members to the end of these structures, and the=0A=
+> firmware/driver can know they are there? Since these are often unions,=0A=
+> you might not be able to tell from the length of the message=0A=
+> exchanged.=0A=
+=0A=
+Those TODOs are not valid anymore, will just remove the comments. No merge=
+=0A=
+is needed :) Adding new members to the end will be fine for the firmware=0A=
+& driver.=0A=
+=0A=
+> =0A=
+> As Jakub pointed out, your structures have horrible alignment. Have=0A=
+> you run this on both 32 and 64 bit systems? It would be good to add=0A=
+> =0A=
+> BUILD_BUG_ON(sizeof(*foo) !=3D 42)=0A=
+> =0A=
+> for all the structures that get passed to/from the firmware.=0A=
+> =0A=
+> =A0=A0=A0 Andrew=0A=
+=0A=
+Most of the testing is done on 64 bit system. On 32 should be fine also, as=
+=0A=
+the structure is packed & aligned. Anyway, I think to add build checking is=
+=0A=
+good idea to make sure the size is fine on both systems. Thanks.=0A=
+=0A=
+  Volodymyr=
