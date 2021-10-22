@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1B5437F71
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498CC437F73
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhJVUsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39722 "EHLO mail.kernel.org"
+        id S234324AbhJVUso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:48:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232411AbhJVUsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 16:48:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 24ACA60F6F;
-        Fri, 22 Oct 2021 20:46:14 +0000 (UTC)
+        id S234319AbhJVUsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 16:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D142760F6F;
+        Fri, 22 Oct 2021 20:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634935574;
-        bh=uswNvpg55G3awKi9Iup1xCfpiJYUzbe1wsO9Sh88fsY=;
+        s=k20201202; t=1634935584;
+        bh=bVhrdaBlaimshD3NhLP3nYWTKZPKZiGLsgsDY3YMQjo=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KaFmzfXuatHFIUpTSoc3UMF6A9DxnBU8kmwdIXuMcVOQVGjy8RaOEl0HJJMiqKbA5
-         MJQkuMMQflKDEGOVq53NFdrxWg9qbGHzKOyBYGWKtAxlikrqtBi15KhQcfEt8CLI58
-         BHW1DKckzxo+aJ6XUl4uM/gDD+FSszlUSfUtkDoqKJCI5gGaoS5KZZULuxH1n7ZitG
-         2fNTlNx+laJywBT9XOTwJXhMUfCwSaXkVDpUugWXumXtmHxeGuV6zWDoILfq129mNk
-         1HUr5gRkVKid8VrIYV+YykhQqBQMhHtCrEeUIRN0FsKROlMf+kw0xNLDz9CGCIS1O5
-         8p8W0tpOdmYzA==
+        b=FDFwjM1HYsSYJzqI+seA+AnB7SzM3O900IHpY7aOEBWNDywP+dJ+Xxsnv95MI0umP
+         6UuiBxvcS/BvO3RKaMMq+EprWbbBZGo9lrn8uT7qV4ocEnB4goggnWtA/WdzUsHo9s
+         vM6CZblXZ8goGCelSRYO14WLhvVzSYxsHIszKYFYlfbbj+hfwT7zVdAZAeCetJG4qX
+         5zh1f52VVYhygstV4Gi5E0kVi7hh5gkm3vgRdcmkF2EtGz9pqKqVYjfVsvaTDWrCgL
+         WA45VyxjautDCloVuq1BBfrRZGTfxf4BqjWARGkuYwIjh4dYeq9nMU+Ug61RfmvqaM
+         6WzesJ9J6+Sxw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1140E609E2;
-        Fri, 22 Oct 2021 20:46:14 +0000 (UTC)
-Subject: Re: [GIT PULL] fuse fixes for 5.15-rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C78D860A2A;
+        Fri, 22 Oct 2021 20:46:24 +0000 (UTC)
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.15
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YXLV8NeDTaBH3g/b@miu.piliscsaba.redhat.com>
-References: <YXLV8NeDTaBH3g/b@miu.piliscsaba.redhat.com>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YXLV8NeDTaBH3g/b@miu.piliscsaba.redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.15-rc7
-X-PR-Tracked-Commit-Id: 964d32e512670c7b87870e30cfed2303da86d614
+In-Reply-To: <20211022193115.l5doheww7ljub6dj@liuwe-devbox-debian-v2>
+References: <20211022193115.l5doheww7ljub6dj@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211022193115.l5doheww7ljub6dj@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211022
+X-PR-Tracked-Commit-Id: 8017c99680fa65e1e8d999df1583de476a187830
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5ab2ed0a8d75ce55ade89e3ff6b75bef7d9fa53f
-Message-Id: <163493557400.22044.9876340192451867732.pr-tracker-bot@kernel.org>
-Date:   Fri, 22 Oct 2021 20:46:14 +0000
-To:     Miklos Szeredi <miklos@szeredi.hu>
+X-PR-Merge-Commit-Id: 477b4e80c57f787cf8f494ccb9be23a23642b2f2
+Message-Id: <163493558481.22044.17386270021879893363.pr-tracker-bot@kernel.org>
+Date:   Fri, 22 Oct 2021 20:46:24 +0000
+To:     Wei Liu <wei.liu@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        sthemmin@microsoft.com, Michael Kelley <mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 22 Oct 2021 17:17:04 +0200:
+The pull request you sent on Fri, 22 Oct 2021 19:31:15 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.15-rc7
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211022
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5ab2ed0a8d75ce55ade89e3ff6b75bef7d9fa53f
+https://git.kernel.org/torvalds/c/477b4e80c57f787cf8f494ccb9be23a23642b2f2
 
 Thank you!
 
