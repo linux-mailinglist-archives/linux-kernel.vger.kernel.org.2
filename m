@@ -2,97 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766F243726F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1B143727B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhJVHA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbhJVHA1 (ORCPT
+        id S231984AbhJVHEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:04:08 -0400
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:51733 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhJVHEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:00:27 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39CBC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 23:58:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id s61-20020a17090a69c300b0019f663cfcd1so5007002pjj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 23:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c7Ryh42xjoZrd458X0PuRKzO/jGZ4LiJFN49yEEUKqU=;
-        b=qBAzCypTQajk5c9kRrbb3OjnMB83pysGa8f0+yBZdKL3RKQ9HraA7zOzdmRoSKAmve
-         CnOAiNK9bzTLXT656DXcuMss006ywRhgEFfULF+cZJzghyce6Ot5MjPSSgouy1gG7Trp
-         dcoATQqZj9/ZVmWRLErSAWHIAmmljTluNWtfllA4/Shl08bLf4y0M/w7KbzDSpRWn7OH
-         zihPq9LHC0G05PZBso4aRpbkrDr6jf41VDoIb2YOrMiEdCf/4MFLh+2fuduJyU0BQVdb
-         745oMHnJMUCETHWzU5q90ajexcmQZ3PeLWiNUhAybl/o9HhV3scHsmdFOjPfRQ1ynbNk
-         0GOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c7Ryh42xjoZrd458X0PuRKzO/jGZ4LiJFN49yEEUKqU=;
-        b=twEsWeSGs78nvhqV9q8tifiWyismBegmBxSdEUj3XRn3hu2BTY0sHjnyNSipUWHyR5
-         wyh8FxlNQUpAzfdeob5tgZkMtwCE7vxNQCa8kOs2UpWjvA6a2dURZocXwCeIT/pTAB2z
-         eJU6qgNBduf+4aCgRUnuGVrXDI6PqcV3KmnkEDnvzKt07xy0A59bvAE2t917vgFtimQk
-         rH35yMFKqNZEOUsRq5XlOdZdyI0Z5sXoVpDliomJRmNjPzRRwUY9M93S7Qni+16x/8Gl
-         ktXC7gu12s1mcwjs/C9itSiaheNU5f5CJ06Vv7PBlgvx9vRgroKsBsv2UUXqhna6clLd
-         LRfQ==
-X-Gm-Message-State: AOAM531s1p7WGJHw2sW3ivJGLQ8Fxk8ck3GzPbUXgV3xL2uiLEUUdxg8
-        +aAhjkeHi8ZH3cIuK2CvRr5zTw==
-X-Google-Smtp-Source: ABdhPJwMKxqgWWNy65Dtf8Zi0C/hvEbDozlU/nTWVV0Se0KvR9Raf7/OcIkwhpzIom5qPtofGLcylA==
-X-Received: by 2002:a17:90a:f0c9:: with SMTP id fa9mr12611364pjb.107.1634885890395;
-        Thu, 21 Oct 2021 23:58:10 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id u23sm9841299pfg.162.2021.10.21.23.58.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 23:58:09 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 12:28:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        stratos-dev@op-lists.linaro.org,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        cohuck@redhat.com,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, conghui.chen@intel.com
-Subject: Re: [PATCH] i2c: virtio: Add support for zero-length requests
-Message-ID: <20211022065808.2rvbr6nvollz5mz6@vireshk-i7>
-References: <7c58868cd26d2fc4bd82d0d8b0dfb55636380110.1634808714.git.viresh.kumar@linaro.org>
- <0adf1c36-a00b-f16f-e631-439148c4f956@intel.com>
+        Fri, 22 Oct 2021 03:04:06 -0400
+X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 03:04:06 EDT
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id A42C028005312;
+        Fri, 22 Oct 2021 09:01:48 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 979BF16E5C7; Fri, 22 Oct 2021 09:01:48 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 09:01:48 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v3 18/25] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to
+ check read from hardware
+Message-ID: <20211022070148.GB17656@wunner.de>
+References: <cover.1634825082.git.naveennaidu479@gmail.com>
+ <c21290fe02a7a342a8b93c692586b6a2b6cde9e0.1634825082.git.naveennaidu479@gmail.com>
+ <20211021152253.pqc6xp3vnv5fpczj@theprophet>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0adf1c36-a00b-f16f-e631-439148c4f956@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20211021152253.pqc6xp3vnv5fpczj@theprophet>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-10-21, 14:51, Jie Deng wrote:
-> > +	if (!virtio_has_feature(vdev, VIRTIO_I2C_F_ZERO_LENGTH_REQUEST)) {
-> > +		dev_err(&vdev->dev, "Zero-length request feature is mandatory\n");
-> > +		return -EINVAL;
-> 
-> 
-> It might be better to return -EOPNOTSUPP ?
+On Thu, Oct 21, 2021 at 08:52:53PM +0530, Naveen Naidu wrote:
+> Lukas, I have not added your Acked-by tag from the v1 [1] of the patch 
+> series, since the RESPONSE_IS_PCI_ERROR macro definition slightly 
+> changed. I hope this was the right thing to do.
+[...]
+> If that is not the case please let me know. But I am not sure what to
+> do here? If RESPONSE_IS_PCI_ERROR does not fit here, should the right
+> option would be to revert/remove this patch from the series?
 
-Maybe that or one of these:
+My Acked-by still stands.  As for the macro name, I'm fine with
+whatever Bjorn and the community settle on. :)
 
-#define	EBADE		52	/* Invalid exchange */
-#define	EPROTO		71	/* Protocol error */
-#define	EPFNOSUPPORT	96	/* Protocol family not supported */
-#define	ECONNREFUSED	111	/* Connection refused */
+Thanks,
 
-Arnd, any suggestions ? This is about the mandatory feature not being offered by
-the device.
-
--- 
-viresh
+Lukas
