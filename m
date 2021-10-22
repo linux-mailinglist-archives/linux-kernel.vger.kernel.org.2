@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13727437F85
+	by mail.lfdr.de (Postfix) with ESMTP id 6E299437F86
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhJVUvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40568 "EHLO mail.kernel.org"
+        id S234573AbhJVUvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:51:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234372AbhJVUu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234375AbhJVUu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:50:59 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 466596124D;
+        by mail.kernel.org (Postfix) with ESMTPSA id 77C256121F;
         Fri, 22 Oct 2021 20:48:41 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1Sy-000QI8-E5;
+        id 1me1Sy-000QIn-KB;
         Fri, 22 Oct 2021 16:48:40 -0400
-Message-ID: <20211022204840.257309807@goodmis.org>
+Message-ID: <20211022204840.454218129@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:48:08 -0400
+Date:   Fri, 22 Oct 2021 16:48:09 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 12/40] bootconfig: Replace u16 and u32 with uint16_t and uint32_t
+Subject: [for-next][PATCH 13/40] bootconfig: Cleanup dummy headers in tools/bootconfig
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,204 +38,353 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Replace u16 and u32 with uint16_t and uint32_t so
-that the tools/bootconfig only needs <stdint.h>.
+Cleanup dummy headers in tools/bootconfig/include except
+for tools/bootconfig/include/linux/bootconfig.h.
+For this change, I use __KERNEL__ macro to split kernel
+header #include and introduce xbc_alloc_mem() and
+xbc_free_mem().
 
-Link: https://lkml.kernel.org/r/163187298835.2366983.9838262576854319669.stgit@devnote2
+Link: https://lkml.kernel.org/r/163187299574.2366983.18371329724128746091.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/linux/bootconfig.h              | 12 ++++++------
- lib/bootconfig.c                        | 16 ++++++++--------
- tools/bootconfig/include/linux/kernel.h |  4 +---
- tools/bootconfig/main.c                 | 20 ++++++++++----------
- 4 files changed, 25 insertions(+), 27 deletions(-)
+ include/linux/bootconfig.h                  | 10 +++++
+ lib/bootconfig.c                            | 43 +++++++++++++++++---
+ tools/bootconfig/Makefile                   |  2 +-
+ tools/bootconfig/include/linux/bootconfig.h | 45 ++++++++++++++++++++-
+ tools/bootconfig/include/linux/bug.h        | 12 ------
+ tools/bootconfig/include/linux/ctype.h      |  7 ----
+ tools/bootconfig/include/linux/errno.h      |  7 ----
+ tools/bootconfig/include/linux/kernel.h     | 14 -------
+ tools/bootconfig/include/linux/memblock.h   | 11 -----
+ tools/bootconfig/include/linux/string.h     | 32 ---------------
+ tools/bootconfig/main.c                     |  1 -
+ 11 files changed, 93 insertions(+), 91 deletions(-)
+ delete mode 100644 tools/bootconfig/include/linux/bug.h
+ delete mode 100644 tools/bootconfig/include/linux/ctype.h
+ delete mode 100644 tools/bootconfig/include/linux/errno.h
+ delete mode 100644 tools/bootconfig/include/linux/kernel.h
+ delete mode 100644 tools/bootconfig/include/linux/memblock.h
+ delete mode 100644 tools/bootconfig/include/linux/string.h
 
 diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index 85cdfd381877..a6f8dc51f168 100644
+index a6f8dc51f168..a4665c7ab07c 100644
 --- a/include/linux/bootconfig.h
 +++ b/include/linux/bootconfig.h
-@@ -25,10 +25,10 @@
-  * The checksum will be used with the BOOTCONFIG_MAGIC and the size for
-  * embedding the bootconfig in the initrd image.
+@@ -7,8 +7,18 @@
+  * Author: Masami Hiramatsu <mhiramat@kernel.org>
   */
--static inline __init u32 xbc_calc_checksum(void *data, u32 size)
-+static inline __init uint32_t xbc_calc_checksum(void *data, uint32_t size)
- {
- 	unsigned char *p = data;
--	u32 ret = 0;
-+	uint32_t ret = 0;
  
- 	while (size--)
- 		ret += *p++;
-@@ -38,10 +38,10 @@ static inline __init u32 xbc_calc_checksum(void *data, u32 size)
++#ifdef __KERNEL__
+ #include <linux/kernel.h>
+ #include <linux/types.h>
++#else /* !__KERNEL__ */
++/*
++ * NOTE: This is only for tools/bootconfig, because tools/bootconfig will
++ * run the parser sanity test.
++ * This does NOT mean linux/bootconfig.h is available in the user space.
++ * However, if you change this file, please make sure the tools/bootconfig
++ * has no issue on building and running.
++ */
++#endif
  
- /* XBC tree node */
- struct xbc_node {
--	u16 next;
--	u16 child;
--	u16 parent;
--	u16 data;
-+	uint16_t next;
-+	uint16_t child;
-+	uint16_t parent;
-+	uint16_t data;
- } __attribute__ ((__packed__));
- 
- #define XBC_KEY		0
+ #define BOOTCONFIG_MAGIC	"#BOOTCONFIG\n"
+ #define BOOTCONFIG_MAGIC_LEN	12
 diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index 953789171858..a2f5f582181d 100644
+index a2f5f582181d..a056ae137750 100644
 --- a/lib/bootconfig.c
 +++ b/lib/bootconfig.c
-@@ -244,7 +244,7 @@ int __init xbc_node_compose_key_after(struct xbc_node *root,
- 				      struct xbc_node *node,
- 				      char *buf, size_t size)
+@@ -4,6 +4,7 @@
+  * Masami Hiramatsu <mhiramat@kernel.org>
+  */
+ 
++#ifdef __KERNEL__
+ #include <linux/bootconfig.h>
+ #include <linux/bug.h>
+ #include <linux/ctype.h>
+@@ -11,6 +12,16 @@
+ #include <linux/kernel.h>
+ #include <linux/memblock.h>
+ #include <linux/string.h>
++#else /* !__KERNEL__ */
++/*
++ * NOTE: This is only for tools/bootconfig, because tools/bootconfig will
++ * run the parser sanity test.
++ * This does NOT mean lib/bootconfig.c is available in the user space.
++ * However, if you change this file, please make sure the tools/bootconfig
++ * has no issue on building and running.
++ */
++#include <linux/bootconfig.h>
++#endif
+ 
+ /*
+  * Extra Boot Config (XBC) is given as tree-structured ascii text of
+@@ -31,6 +42,29 @@ static int xbc_err_pos __initdata;
+ static int open_brace[XBC_DEPTH_MAX] __initdata;
+ static int brace_index __initdata;
+ 
++#ifdef __KERNEL__
++static inline void *xbc_alloc_mem(size_t size)
++{
++	return memblock_alloc(size, SMP_CACHE_BYTES);
++}
++
++static inline void xbc_free_mem(void *addr, size_t size)
++{
++	memblock_free_ptr(addr, size);
++}
++
++#else /* !__KERNEL__ */
++
++static inline void *xbc_alloc_mem(size_t size)
++{
++	return malloc(size);
++}
++
++static inline void xbc_free_mem(void *addr, size_t size)
++{
++	free(addr);
++}
++#endif
+ /**
+  * xbc_get_info() - Get the information of loaded boot config
+  * node_size: A pointer to store the number of nodes.
+@@ -859,11 +893,11 @@ static int __init xbc_parse_tree(void)
+  */
+ void __init xbc_exit(void)
  {
--	u16 keys[XBC_DEPTH_MAX];
-+	uint16_t keys[XBC_DEPTH_MAX];
- 	int depth = 0, ret = 0, total = 0;
- 
- 	if (!node || node == root)
-@@ -359,21 +359,21 @@ const char * __init xbc_node_find_next_key_value(struct xbc_node *root,
- 
- /* XBC parse and tree build */
- 
--static int __init xbc_init_node(struct xbc_node *node, char *data, u32 flag)
-+static int __init xbc_init_node(struct xbc_node *node, char *data, uint32_t flag)
- {
- 	unsigned long offset = data - xbc_data;
- 
- 	if (WARN_ON(offset >= XBC_DATA_MAX))
- 		return -EINVAL;
- 
--	node->data = (u16)offset | flag;
-+	node->data = (uint16_t)offset | flag;
- 	node->child = 0;
- 	node->next = 0;
- 
- 	return 0;
+-	memblock_free_ptr(xbc_data, xbc_data_size);
++	xbc_free_mem(xbc_data, xbc_data_size);
+ 	xbc_data = NULL;
+ 	xbc_data_size = 0;
+ 	xbc_node_num = 0;
+-	memblock_free_ptr(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
++	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
+ 	xbc_nodes = NULL;
+ 	brace_index = 0;
  }
- 
--static struct xbc_node * __init xbc_add_node(char *data, u32 flag)
-+static struct xbc_node * __init xbc_add_node(char *data, uint32_t flag)
- {
- 	struct xbc_node *node;
- 
-@@ -403,7 +403,7 @@ static inline __init struct xbc_node *xbc_last_child(struct xbc_node *node)
- 	return node;
- }
- 
--static struct xbc_node * __init __xbc_add_sibling(char *data, u32 flag, bool head)
-+static struct xbc_node * __init __xbc_add_sibling(char *data, uint32_t flag, bool head)
- {
- 	struct xbc_node *sib, *node = xbc_add_node(data, flag);
- 
-@@ -430,17 +430,17 @@ static struct xbc_node * __init __xbc_add_sibling(char *data, u32 flag, bool hea
- 	return node;
- }
- 
--static inline struct xbc_node * __init xbc_add_sibling(char *data, u32 flag)
-+static inline struct xbc_node * __init xbc_add_sibling(char *data, uint32_t flag)
- {
- 	return __xbc_add_sibling(data, flag, false);
- }
- 
--static inline struct xbc_node * __init xbc_add_head_sibling(char *data, u32 flag)
-+static inline struct xbc_node * __init xbc_add_head_sibling(char *data, uint32_t flag)
- {
- 	return __xbc_add_sibling(data, flag, true);
- }
- 
--static inline __init struct xbc_node *xbc_add_child(char *data, u32 flag)
-+static inline __init struct xbc_node *xbc_add_child(char *data, uint32_t flag)
- {
- 	struct xbc_node *node = xbc_add_sibling(data, flag);
- 
-diff --git a/tools/bootconfig/include/linux/kernel.h b/tools/bootconfig/include/linux/kernel.h
-index c4854b8e7023..39f306c18dd0 100644
---- a/tools/bootconfig/include/linux/kernel.h
-+++ b/tools/bootconfig/include/linux/kernel.h
-@@ -3,11 +3,9 @@
- #define _SKC_LINUX_KERNEL_H
- 
- #include <stdlib.h>
-+#include <stdint.h>
- #include <stdbool.h>
- 
--typedef unsigned short u16;
--typedef unsigned int   u32;
--
- #define unlikely(cond)	(cond)
- 
- #define __init
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index adc6c6e73fa9..fb7c9fb953d7 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -178,7 +178,7 @@ static int load_xbc_from_initrd(int fd, char **buf)
- {
- 	struct stat stat;
- 	int ret;
--	u32 size = 0, csum = 0, rcsum;
-+	uint32_t size = 0, csum = 0, rcsum;
- 	char magic[BOOTCONFIG_MAGIC_LEN];
- 	const char *msg;
- 
-@@ -202,11 +202,11 @@ static int load_xbc_from_initrd(int fd, char **buf)
- 	if (lseek(fd, -(8 + BOOTCONFIG_MAGIC_LEN), SEEK_END) < 0)
- 		return pr_errno("Failed to lseek for size", -errno);
- 
--	if (read(fd, &size, sizeof(u32)) < 0)
-+	if (read(fd, &size, sizeof(uint32_t)) < 0)
- 		return pr_errno("Failed to read size", -errno);
- 	size = le32toh(size);
- 
--	if (read(fd, &csum, sizeof(u32)) < 0)
-+	if (read(fd, &csum, sizeof(uint32_t)) < 0)
- 		return pr_errno("Failed to read checksum", -errno);
- 	csum = le32toh(csum);
- 
-@@ -364,7 +364,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 	size_t total_size;
- 	struct stat stat;
- 	const char *msg;
--	u32 size, csum;
-+	uint32_t size, csum;
- 	int pos, pad;
- 	int ret, fd;
- 
-@@ -378,7 +378,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 
- 	/* Backup the bootconfig data */
- 	data = calloc(size + BOOTCONFIG_ALIGN +
--		      sizeof(u32) + sizeof(u32) + BOOTCONFIG_MAGIC_LEN, 1);
-+		      sizeof(uint32_t) + sizeof(uint32_t) + BOOTCONFIG_MAGIC_LEN, 1);
- 	if (!data)
- 		return -ENOMEM;
- 	memcpy(data, buf, size);
-@@ -426,17 +426,17 @@ static int apply_xbc(const char *path, const char *xbc_path)
+@@ -902,7 +936,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 		return -ERANGE;
  	}
  
- 	/* To align up the total size to BOOTCONFIG_ALIGN, get padding size */
--	total_size = stat.st_size + size + sizeof(u32) * 2 + BOOTCONFIG_MAGIC_LEN;
-+	total_size = stat.st_size + size + sizeof(uint32_t) * 2 + BOOTCONFIG_MAGIC_LEN;
- 	pad = ((total_size + BOOTCONFIG_ALIGN - 1) & (~BOOTCONFIG_ALIGN_MASK)) - total_size;
- 	size += pad;
+-	xbc_data = memblock_alloc(size + 1, SMP_CACHE_BYTES);
++	xbc_data = xbc_alloc_mem(size + 1);
+ 	if (!xbc_data) {
+ 		if (emsg)
+ 			*emsg = "Failed to allocate bootconfig data";
+@@ -912,8 +946,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 	xbc_data[size] = '\0';
+ 	xbc_data_size = size + 1;
  
- 	/* Add a footer */
- 	p = data + size;
--	*(u32 *)p = htole32(size);
--	p += sizeof(u32);
-+	*(uint32_t *)p = htole32(size);
-+	p += sizeof(uint32_t);
+-	xbc_nodes = memblock_alloc(sizeof(struct xbc_node) * XBC_NODE_MAX,
+-				   SMP_CACHE_BYTES);
++	xbc_nodes = xbc_alloc_mem(sizeof(struct xbc_node) * XBC_NODE_MAX);
+ 	if (!xbc_nodes) {
+ 		if (emsg)
+ 			*emsg = "Failed to allocate bootconfig nodes";
+diff --git a/tools/bootconfig/Makefile b/tools/bootconfig/Makefile
+index f1eec3ccbe18..566c3e0ee561 100644
+--- a/tools/bootconfig/Makefile
++++ b/tools/bootconfig/Makefile
+@@ -17,7 +17,7 @@ ALL_PROGRAMS := $(patsubst %,$(OUTPUT)%,$(ALL_TARGETS))
  
--	*(u32 *)p = htole32(csum);
--	p += sizeof(u32);
-+	*(uint32_t *)p = htole32(csum);
-+	p += sizeof(uint32_t);
+ all: $(ALL_PROGRAMS) test
  
- 	memcpy(p, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
- 	p += BOOTCONFIG_MAGIC_LEN;
+-$(OUTPUT)bootconfig: main.c $(LIBSRC)
++$(OUTPUT)bootconfig: main.c include/linux/bootconfig.h $(LIBSRC)
+ 	$(CC) $(filter %.c,$^) $(CFLAGS) -o $@
+ 
+ test: $(ALL_PROGRAMS) test-bootconfig.sh
+diff --git a/tools/bootconfig/include/linux/bootconfig.h b/tools/bootconfig/include/linux/bootconfig.h
+index de7f30f99af3..6784296a0692 100644
+--- a/tools/bootconfig/include/linux/bootconfig.h
++++ b/tools/bootconfig/include/linux/bootconfig.h
+@@ -2,10 +2,53 @@
+ #ifndef _BOOTCONFIG_LINUX_BOOTCONFIG_H
+ #define _BOOTCONFIG_LINUX_BOOTCONFIG_H
+ 
+-#include "../../../../include/linux/bootconfig.h"
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <stdbool.h>
++#include <ctype.h>
++#include <errno.h>
++#include <string.h>
++
+ 
+ #ifndef fallthrough
+ # define fallthrough
+ #endif
+ 
++#define WARN_ON(cond)	\
++	((cond) ? printf("Internal warning(%s:%d, %s): %s\n",	\
++			__FILE__, __LINE__, __func__, #cond) : 0)
++
++#define unlikely(cond)	(cond)
++
++/* Copied from lib/string.c */
++static inline char *skip_spaces(const char *str)
++{
++	while (isspace(*str))
++		++str;
++	return (char *)str;
++}
++
++static inline char *strim(char *s)
++{
++	size_t size;
++	char *end;
++
++	size = strlen(s);
++	if (!size)
++		return s;
++
++	end = s + size - 1;
++	while (end >= s && isspace(*end))
++		end--;
++	*(end + 1) = '\0';
++
++	return skip_spaces(s);
++}
++
++#define __init
++#define __initdata
++
++#include "../../../../include/linux/bootconfig.h"
++
+ #endif
+diff --git a/tools/bootconfig/include/linux/bug.h b/tools/bootconfig/include/linux/bug.h
+deleted file mode 100644
+index 7b65a389c0dd..000000000000
+--- a/tools/bootconfig/include/linux/bug.h
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _SKC_LINUX_BUG_H
+-#define _SKC_LINUX_BUG_H
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-
+-#define WARN_ON(cond)	\
+-	((cond) ? printf("Internal warning(%s:%d, %s): %s\n",	\
+-			__FILE__, __LINE__, __func__, #cond) : 0)
+-
+-#endif
+diff --git a/tools/bootconfig/include/linux/ctype.h b/tools/bootconfig/include/linux/ctype.h
+deleted file mode 100644
+index c56ecc136448..000000000000
+--- a/tools/bootconfig/include/linux/ctype.h
++++ /dev/null
+@@ -1,7 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _SKC_LINUX_CTYPE_H
+-#define _SKC_LINUX_CTYPE_H
+-
+-#include <ctype.h>
+-
+-#endif
+diff --git a/tools/bootconfig/include/linux/errno.h b/tools/bootconfig/include/linux/errno.h
+deleted file mode 100644
+index 5d9f91ec2fda..000000000000
+--- a/tools/bootconfig/include/linux/errno.h
++++ /dev/null
+@@ -1,7 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _SKC_LINUX_ERRNO_H
+-#define _SKC_LINUX_ERRNO_H
+-
+-#include <asm/errno.h>
+-
+-#endif
+diff --git a/tools/bootconfig/include/linux/kernel.h b/tools/bootconfig/include/linux/kernel.h
+deleted file mode 100644
+index 39f306c18dd0..000000000000
+--- a/tools/bootconfig/include/linux/kernel.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _SKC_LINUX_KERNEL_H
+-#define _SKC_LINUX_KERNEL_H
+-
+-#include <stdlib.h>
+-#include <stdint.h>
+-#include <stdbool.h>
+-
+-#define unlikely(cond)	(cond)
+-
+-#define __init
+-#define __initdata
+-
+-#endif
+diff --git a/tools/bootconfig/include/linux/memblock.h b/tools/bootconfig/include/linux/memblock.h
+deleted file mode 100644
+index f2e506f7d57f..000000000000
+--- a/tools/bootconfig/include/linux/memblock.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _XBC_LINUX_MEMBLOCK_H
+-#define _XBC_LINUX_MEMBLOCK_H
+-
+-#include <stdlib.h>
+-
+-#define SMP_CACHE_BYTES	0
+-#define memblock_alloc(size, align)	malloc(size)
+-#define memblock_free_ptr(paddr, size)	free(paddr)
+-
+-#endif
+diff --git a/tools/bootconfig/include/linux/string.h b/tools/bootconfig/include/linux/string.h
+deleted file mode 100644
+index 8267af75153a..000000000000
+--- a/tools/bootconfig/include/linux/string.h
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _SKC_LINUX_STRING_H
+-#define _SKC_LINUX_STRING_H
+-
+-#include <string.h>
+-
+-/* Copied from lib/string.c */
+-static inline char *skip_spaces(const char *str)
+-{
+-	while (isspace(*str))
+-		++str;
+-	return (char *)str;
+-}
+-
+-static inline char *strim(char *s)
+-{
+-	size_t size;
+-	char *end;
+-
+-	size = strlen(s);
+-	if (!size)
+-		return s;
+-
+-	end = s + size - 1;
+-	while (end >= s && isspace(*end))
+-		end--;
+-	*(end + 1) = '\0';
+-
+-	return skip_spaces(s);
+-}
+-
+-#endif
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index fb7c9fb953d7..156b62a163c5 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -12,7 +12,6 @@
+ #include <errno.h>
+ #include <endian.h>
+ 
+-#include <linux/kernel.h>
+ #include <linux/bootconfig.h>
+ 
+ #define pr_err(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
 -- 
 2.33.0
