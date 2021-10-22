@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F74437F95
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A756437F96
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234381AbhJVUwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40888 "EHLO mail.kernel.org"
+        id S234749AbhJVUwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:52:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234413AbhJVUvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234414AbhJVUvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:51:02 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ABDA61391;
+        by mail.kernel.org (Postfix) with ESMTPSA id 86DF0613A3;
         Fri, 22 Oct 2021 20:48:44 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1T1-000QRJ-Gc;
+        id 1me1T1-000QRr-Mc;
         Fri, 22 Oct 2021 16:48:43 -0400
-Message-ID: <20211022204843.355443318@goodmis.org>
+Message-ID: <20211022204843.538283379@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:48:24 -0400
+Date:   Fri, 22 Oct 2021 16:48:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jiri Olsa <jolsa@kernel.org>
-Subject: [for-next][PATCH 28/40] ftrace: Add multi direct modify interface
+Subject: [for-next][PATCH 29/40] ftrace/samples: Add multi direct interface test module
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,119 +38,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jiri Olsa <jolsa@redhat.com>
 
-Adding interface to modify registered direct function
-for ftrace_ops. Adding following function:
+Adding simple module that uses multi direct interface:
 
-   modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+  register_ftrace_direct_multi
+  unregister_ftrace_direct_multi
 
-The function changes the currently registered direct
-function for all attached functions.
+The init function registers trampoline for 2 functions,
+and exit function unregisters them.
 
-Link: https://lkml.kernel.org/r/20211008091336.33616-8-jolsa@kernel.org
+Link: https://lkml.kernel.org/r/20211008091336.33616-9-jolsa@kernel.org
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/linux/ftrace.h |  6 ++++
- kernel/trace/ftrace.c  | 62 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+ samples/ftrace/Makefile              |  1 +
+ samples/ftrace/ftrace-direct-multi.c | 52 ++++++++++++++++++++++++++++
+ 2 files changed, 53 insertions(+)
+ create mode 100644 samples/ftrace/ftrace-direct-multi.c
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 0158261cac9f..9999e29187de 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -326,6 +326,8 @@ int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
- unsigned long ftrace_find_rec_direct(unsigned long ip);
- int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
- int unregister_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
-+int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
-+
- #else
- struct ftrace_ops;
- # define ftrace_direct_func_count 0
-@@ -365,6 +367,10 @@ static inline int unregister_ftrace_direct_multi(struct ftrace_ops *ops, unsigne
- {
- 	return -ENODEV;
- }
-+static inline int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-+{
-+	return -ENODEV;
-+}
- #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+diff --git a/samples/ftrace/Makefile b/samples/ftrace/Makefile
+index 4ce896e10b2e..ab1d1c05c288 100644
+--- a/samples/ftrace/Makefile
++++ b/samples/ftrace/Makefile
+@@ -3,6 +3,7 @@
+ obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct.o
+ obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-too.o
+ obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-modify.o
++obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-multi.o
  
- #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index a05b25fb77d8..30120342176e 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5543,6 +5543,68 @@ int unregister_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- 	return err;
- }
- EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
+ CFLAGS_sample-trace-array.o := -I$(src)
+ obj-$(CONFIG_SAMPLE_TRACE_ARRAY) += sample-trace-array.o
+diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
+new file mode 100644
+index 000000000000..2a5b1fb7ac14
+--- /dev/null
++++ b/samples/ftrace/ftrace-direct-multi.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/module.h>
 +
-+/**
-+ * modify_ftrace_direct_multi - Modify an existing direct 'multi' call
-+ * to call something else
-+ * @ops: The address of the struct ftrace_ops object
-+ * @addr: The address of the new trampoline to call at @ops functions
-+ *
-+ * This is used to unregister currently registered direct caller and
-+ * register new one @addr on functions registered in @ops object.
-+ *
-+ * Note there's window between ftrace_shutdown and ftrace_startup calls
-+ * where there will be no callbacks called.
-+ *
-+ * Returns: zero on success. Non zero on error, which includes:
-+ *  -EINVAL - The @ops object was not properly registered.
-+ */
-+int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
++#include <linux/mm.h> /* for handle_mm_fault() */
++#include <linux/ftrace.h>
++#include <linux/sched/stat.h>
++
++void my_direct_func(unsigned long ip)
 +{
-+	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-+	struct ftrace_func_entry *entry, *iter;
-+	int i, size;
-+	int err;
-+
-+	if (check_direct_multi(ops))
-+		return -EINVAL;
-+	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-+		return -EINVAL;
-+
-+	mutex_lock(&direct_mutex);
-+	mutex_lock(&ftrace_lock);
-+
-+	/*
-+	 * Shutdown the ops, change 'direct' pointer for each
-+	 * ops entry in direct_functions hash and startup the
-+	 * ops back again.
-+	 *
-+	 * Note there is no callback called for @ops object after
-+	 * this ftrace_shutdown call until ftrace_startup is called
-+	 * later on.
-+	 */
-+	err = ftrace_shutdown(ops, 0);
-+	if (err)
-+		goto out_unlock;
-+
-+	size = 1 << hash->size_bits;
-+	for (i = 0; i < size; i++) {
-+		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-+			entry = __ftrace_lookup_ip(direct_functions, iter->ip);
-+			if (!entry)
-+				continue;
-+			entry->direct = addr;
-+		}
-+	}
-+
-+	err = ftrace_startup(ops, 0);
-+
-+ out_unlock:
-+	mutex_unlock(&ftrace_lock);
-+	mutex_unlock(&direct_mutex);
-+	return err;
++	trace_printk("ip %lx\n", ip);
 +}
-+EXPORT_SYMBOL_GPL(modify_ftrace_direct_multi);
- #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
- 
- /**
++
++extern void my_tramp(void *);
++
++asm (
++"	.pushsection    .text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:"
++"	pushq %rbp\n"
++"	movq %rsp, %rbp\n"
++"	pushq %rdi\n"
++"	movq 8(%rbp), %rdi\n"
++"	call my_direct_func\n"
++"	popq %rdi\n"
++"	leave\n"
++"	ret\n"
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++static struct ftrace_ops direct;
++
++static int __init ftrace_direct_multi_init(void)
++{
++	ftrace_set_filter_ip(&direct, (unsigned long) wake_up_process, 0, 0);
++	ftrace_set_filter_ip(&direct, (unsigned long) schedule, 0, 0);
++
++	return register_ftrace_direct_multi(&direct, (unsigned long) my_tramp);
++}
++
++static void __exit ftrace_direct_multi_exit(void)
++{
++	unregister_ftrace_direct_multi(&direct, (unsigned long) my_tramp);
++}
++
++module_init(ftrace_direct_multi_init);
++module_exit(ftrace_direct_multi_exit);
++
++MODULE_AUTHOR("Jiri Olsa");
++MODULE_DESCRIPTION("Example use case of using register_ftrace_direct_multi()");
++MODULE_LICENSE("GPL");
 -- 
 2.33.0
