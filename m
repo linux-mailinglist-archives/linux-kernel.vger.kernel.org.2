@@ -2,159 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDC44371C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065734371CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhJVGfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:35:15 -0400
-Received: from mail-dm6nam12on2087.outbound.protection.outlook.com ([40.107.243.87]:51851
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231773AbhJVGfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:35:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=To5eSQJwx3tDexH4IGJAGGmQoWZ0Zhr0Z/qGUAzg8sxpFVWExtY9ARPZzVAsmEb7YFWG+dgv3QEs3zZyfalfKNXtI62FNfCOivGeH7Vyl0agOweoeaHj7VieL2w3J+Ra0xRkRzrYKWx+53pXA2iNHKlAcoHYOTQG27/48Pspb6peBSJwZjBqG6kAu7dhJQxpqvbqb+6XLcYBXYFV9UGT/M7J9YrArIoDSe/p/ASGyr24eWh4cwBeWshHGn3VNWZLU2giA9hM2uE7qyIStz3+o88FfZuhkDOp1lHDuJwAE5rWD5xkyngbUSpHhmOIf8Mit9iMX7z4V1dFUo5FI9guyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Se1Qbu+Y9mhJc7XsX5Lcq06IkY3UNG3vMXR5kUf3UXA=;
- b=JdnBpsisu57qm3LX/ZwHTYN5suuRnS6cXJJaPWMBmN6Pqwx+Bt7oaZ9AUiHDKUSKzxbnIIYJKYsxQ35UzhhxNv9WPZ2aGH2aGf5KogmGiQZRp5uN6G0NFWB6tVQfkRKJEBLmLVfIZS07E52QVwdfPonjivl1Mx4MzcjY6at87La8ADgvtUdaiDSGiHk4uSGFnsJuQ4BE/vjBtMlyTmkQKmaize1/2ARXR6tgnZBlBH8aLWUtZZs1mwB4ts6SAA4DyUDShFP22bBPX9roz/EtYxxPM9NIDZVTIixXWQ5zb8V8oSDRO9nYjV5Rx3OOUqOrfvp65fmWcyGOw7hgmKuNbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Se1Qbu+Y9mhJc7XsX5Lcq06IkY3UNG3vMXR5kUf3UXA=;
- b=qSPFE+wHb75l7NZmdCWL3YIOi2swaDQUYgrt0jHns9jy4/mYIoqDXk9L96ByNaTLo5pOYnIRQfRAh9GNVjDcUI77ymg3CFUi9Qir9X9ykdIJjlE3Ba+3hR7X0wKWBE6le5tvBDBKRfzf4Ywr20+s0j1z86REz0MaT7TfPQ5lADA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14) by MWHPR12MB1487.namprd12.prod.outlook.com
- (2603:10b6:301:3::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
- 2021 06:32:53 +0000
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4628.018; Fri, 22 Oct
- 2021 06:32:53 +0000
-Subject: Re: [PATCH v2] dma-buf: heaps: init heaps in subsys_initcall
-To:     John Stultz <john.stultz@linaro.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20211022014850.22933-1-huangshuosheng@allwinnertech.com>
- <CALAqxLXNMvaT3OU3Y-aYkH+KJA_g1QSOZNJHqvzt21WPy=6UJw@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <776ec196-08dd-4308-4484-b6ef91d3d4e9@amd.com>
-Date:   Fri, 22 Oct 2021 08:32:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <CALAqxLXNMvaT3OU3Y-aYkH+KJA_g1QSOZNJHqvzt21WPy=6UJw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AS9PR06CA0256.eurprd06.prod.outlook.com
- (2603:10a6:20b:45f::7) To MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14)
+        id S231991AbhJVGf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232057AbhJVGfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 02:35:22 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED58C061220;
+        Thu, 21 Oct 2021 23:33:05 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id g79-20020a1c2052000000b00323023159e1so2197250wmg.2;
+        Thu, 21 Oct 2021 23:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K3ag/8I6dY0xnXzblFz/1w5mgGcBQvelgLc2shxtkfc=;
+        b=PTQEtRJkvbdBeeUpy0SiyY+F0rHKPnxxj2b5Rqzx40gPhHZTjIDHlWOqU1SWf9Ziso
+         7L4W22xUMO3/DeZnclGgp8yLPSDsuL5O/f4dgTTrKyomPfAsXmXCb45l4TxZmtGd6bo0
+         bJaOm7zJ/NDWtQzmEXnDIx1czxdgusih1AnMgVw7fsqim33dlN2lu+Acy811aBT2CxsY
+         sNGnhxhLNUYffLBe8b+JONuyOBmuFJIAD/d1Rd4HFlhgwq6+bhviz5XfSC23vXhDLlCf
+         ulrZsBlxyoTcZENsqmH8xAOvFKZMBOv5lSL1s5W62eat5DFy2x7SdBBos1fqHlx608kA
+         CXBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K3ag/8I6dY0xnXzblFz/1w5mgGcBQvelgLc2shxtkfc=;
+        b=yH0DHv5u5omkrciyd2mRq35KO6cTACwtrrYYfdyiW607Gy2BRKBLIlxFiRzLU7Fm9c
+         mdFtVI3eVGyj+IL55kezSVzcqMnfabtHh5fheBguNAOZinlQ5hZD9hIJrKEfpbQSQnwb
+         krBMq1zREh84MR0y7869YEtL2ONvtTlfSbImWTsVqEbLhzM8mT/s99nEh61SaEnA6mFH
+         LT6A+S/SclYnbJf9OQR0SkwykUVSn/iFqCo3AvQh6b9YJUzEc9R1LJ6YtCMlNTSxVWUU
+         /DG2FnWFSPmRVbyhqNoyVFS8dChZW5znWSCMwxOB9VBXMzdhB30jbkGA9xewEHNQ3j3i
+         1pTg==
+X-Gm-Message-State: AOAM531/xLG0OOP9WCfazi811gA2GY3PUBfKvcNiafRhkuiIX22KdGmH
+        2kCCNLVsYDXgku7Zdbaylfsi+TSUgv1/FdIVvgZ5Zu1oUSg=
+X-Google-Smtp-Source: ABdhPJzCAtRD5QUGKUs2UsgDv4VG1mUB5AiemLTR85yYtzJwMWcMfdK+dnfSplqLyFMDGsyrX5zALXT3wdbfHzhXGus=
+X-Received: by 2002:a1c:7dcb:: with SMTP id y194mr8906027wmc.8.1634884383912;
+ Thu, 21 Oct 2021 23:33:03 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [IPv6:2a02:908:1252:fb60:9826:b15:8db5:7240] (2a02:908:1252:fb60:9826:b15:8db5:7240) by AS9PR06CA0256.eurprd06.prod.outlook.com (2603:10a6:20b:45f::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Fri, 22 Oct 2021 06:32:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3a8d3968-44bf-4f5c-3eb9-08d99525c676
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1487:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB14870949DA9C8327F0C2826383809@MWHPR12MB1487.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hpWgp4DTC4YfDL/5c3UCXbaf/i6Uu3ahrQ+PZ2133DrmSQHxziyfxEEAYOasggC+vRPm4Ax/9nPp/cf5gQboPpkMzKPeR3lTR54G+W9F/Eu9AdoV9UbcypljqGfH9dI99GUVDuHrDiQ1A0gXzbBdF9+rZUCWO5Y7pDKPvk6Uh3dG5GLXs4uQ2r487W780cyNUHW+xVbuOumrafMM5Mw0jgzsgMgkTxVFeNlcRVcwrBvOecQbdtLob6lSTquXWCWIpVqDIA60PV8qxfPx7Q+nr8zrM1VyAmKySY103tJkbq6KyypcvPWJ5m03mGlZtULY3PH2WlusxiJezejZkuM2YG+J3FeUG9mDnEk99okr9qIywNxs5QjvSPNVlPiWDhiNMKwsZosJ9rk8Fw84g8GROJkNMSV3v/xurwI2OltKwMThMuIYIxUcHmLwhtSmQAFCyzLg3F319sInAK+6EH8Jr54HRhFPzNXgAlHj56tug9fRMaXuEC21NFf6YJZLwJJ9CCgNtgldBzLaQ2X/ywrLP+pvDLymNj95v9ysFzyaFDUAsEw+Zhocn9GSCXmEKl8PKf+2IHEQbBS5avOGEhShABaw0i1Ll4ZQZrEjz39q/wH3cXPAEo57elLIsuorsLkqEISYSEHeABHpqA2DE3TMRNEznB131skkCOrdmdtD0Ae2IOm+OTiE74dZ3fSXxCkzua7QsjQXhxAxn1Gf3jzoORWNEpDLvz0np/CxpPxLUhY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(66946007)(8676002)(316002)(6486002)(2906002)(4326008)(2616005)(6666004)(8936002)(186003)(5660300002)(54906003)(53546011)(110136005)(508600001)(31686004)(31696002)(38100700002)(36756003)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y3lPK3NSdXZjUXJZbTB4a05xY1VYaDhITVd3eFNHSUN1aU1HSTQvMFhyYjQ3?=
- =?utf-8?B?KzVTckhYaU9xOFFjQitPeThhSnA1K0ZzU2ZjSmRwekRtVjdWekVWcUFGeFFy?=
- =?utf-8?B?Z1N2b2tqZ01ZZjlOeXFXUXVQMGJ4VStyZmFBODBkSTNxVzBZYVpMNVR6SnR2?=
- =?utf-8?B?UlVkbnZURXNHOFJzYmV6WDF2ellzNjU0ZGt0NTM4OE93aEE5SDF3czNBN1dI?=
- =?utf-8?B?UHpaQ3Q3V2twaU9qMlJGdU13VEFyMFZiUEgyVWNRUkVaS240cndsblo5cmVS?=
- =?utf-8?B?K3NwTFNTMU5FQjVuYVVUR3hwRGtBazhFdy9aZnFUR2diWU1rWUtrdmwwZ2d1?=
- =?utf-8?B?S3hXUllkRVAxWGk4N0h4UXhuakMwckFwNExrWHkzWVZZTXBWK0doczg0VXNC?=
- =?utf-8?B?TVArc3JQLzdHWTlmbUlic3NVOHQyNGM4WUZiT2tVemJ2UTFzRHdMOEtkc3B5?=
- =?utf-8?B?ZXEzNGFjZmRXcVVqb3BQelpSUGpTSFRKaTFwMzFiUEx1WkRvQmNNL2hNQjMr?=
- =?utf-8?B?bk53ZWhRanIwaGQyOFRpc2RsUEtObSs1Z2g5Q0lmLzErdERBZ0VaMmpSYTV0?=
- =?utf-8?B?TWFocWFGcmxSZ0xhZG9pQzRRaWpnTnVqRjhIRTg2K1RkZmN5M2pIRHhIVkYz?=
- =?utf-8?B?YXBoRUNLVk9WVFNrVFZ2blcxTWh2Yk9JSnRGT21aVzFTWnNvTU9Wck5Md2Jy?=
- =?utf-8?B?TUw0YldMZmVRbnpTVmYzZG1ySENjSGlxNDQwdEpZOXlxNEdyK0x4TURMQ0VV?=
- =?utf-8?B?MjRYYVNrRE9GWFRsaWhSbVRBMUNwYzVsTGdOczRyTWJOT3FVVDc2ZitOR0pW?=
- =?utf-8?B?Q05GdCtGMDF2bTVHU2F4QVFwZlcwSjVVZDFlRkpqeFZJdEdXS040MVIrTHVh?=
- =?utf-8?B?cTEyZlUxN0Q1aGFFbjRtekN6SjVaWDdBRXpZQ1lNMlE4aVpORkVOaldVUmRH?=
- =?utf-8?B?M3ZXWTVUYWloR21GWFVTcTMxR09SZWFLTFN4bUNvVDROeHJ5eVA1RDRTY2hV?=
- =?utf-8?B?YjBabXZzY3M0K2N0SVh6RGRNNUJWcUtIVnU3T0xLMUtucjBGTVRBTDVTNnlD?=
- =?utf-8?B?ZzMwNDV2ZFdFL1BuZng5RkFjSFRHYnAyYjU0SVN0S1o1UkwwWVlTL29WVzc3?=
- =?utf-8?B?akhLL0xlazBNRmZ6M001ZnAvU0IreFk3azkyTFRYUk15OHZRcnRxMGZyVHRz?=
- =?utf-8?B?MC9vdXB4MVA0T1pzUGpISU9jNk9yZTdsdTlsUTdZU3dENTE4U29QRnNORVRy?=
- =?utf-8?B?TCsrY1k2SndCVzI5SW1ITThXeWl2c1FMbHd2VElONmRQMEdwQVdTemRXSTJP?=
- =?utf-8?B?VnE2T1RJTWZmWnVIUWs1aFgzU2szbTlWMk5KdEZseThtcXJpdXZIb0JCTmxr?=
- =?utf-8?B?WjFxYUd3WlFteFN0d3dUQVR5RGFwZXptU01xTXVWWEtCbm85ZHJUa2JrUUlm?=
- =?utf-8?B?Ymc4S2ZIM3FwM2xYU0E4OUxwR1VEZENBak9DRVdma3JKWTk4QTg4TUJPOGJ3?=
- =?utf-8?B?MmZ1MDZydzZwYVFLeFNMY2tYTnZkMVE0ZUVYYWFic3JNM1Iyd2NzM2hobllW?=
- =?utf-8?B?M09mQkMybEtRQy9uRlY2MFp6cjRHalN4THdWdEF2bG9sdEF6NUJYS1d2YUN6?=
- =?utf-8?B?Nml4SHVVNjFVd3RjKzRFT1cyeU1KR0J4d2R2M1dqVUhRU2NHbkg3am8xZVZo?=
- =?utf-8?B?VXpDQ2grR0FxWXltUktjNDhjSjVnenhMMk42enZOWFhZR0VKY2dqRHJvcmt1?=
- =?utf-8?B?Wk9QVXNPOVRJVnZKcXR4K0x3TXF1V0I0d0V3N1doZUVwaVJLZ0pwL1NNSFRD?=
- =?utf-8?B?bVpqS3Z3bDFGTFR5WkI1Z1J6QlZpZjYwd04wTGFuZCtvdTI3M0dKd3F1dU1s?=
- =?utf-8?B?VEZFNStuNWN2c2twZ0RjNTBtY3NzaUR0aE8xMHR5WVE0eGZ2c1RkWXBwYzdQ?=
- =?utf-8?B?Y25Kc1VIa0ZZcUhqTW1VM2ZrMitZR1gwRWRtdldPSWd6Rm5NVlE3QUFja3U0?=
- =?utf-8?Q?EFdNb+HsKza4eD/aGSzn521+ZWeZGc=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a8d3968-44bf-4f5c-3eb9-08d99525c676
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 06:32:52.9710
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ckoenig@amd.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1487
+References: <20211021153846.745289-1-omosnace@redhat.com> <YXGNZTJPxL9Q/GHt@t14s.localdomain>
+In-Reply-To: <YXGNZTJPxL9Q/GHt@t14s.localdomain>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Fri, 22 Oct 2021 14:32:52 +0800
+Message-ID: <CADvbK_eHsAjih9bAiH3d2cwkaizuYnn6gL85V6LdpWUrenMAxg@mail.gmail.com>
+Subject: Re: [PATCH] sctp: initialize endpoint LSM labels also on the client side
+To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>, selinux@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Richard Haines <richard_c_haines@btinternet.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Am 22.10.21 um 04:56 schrieb John Stultz:
-> On Thu, Oct 21, 2021 at 6:49 PM Shuosheng Huang
-> <huangshuosheng@allwinnertech.com> wrote:
->> Some built-in modules will failed to use dma-buf heap to allocate
->> memory if the heap drivers are too late to be initialized.
->> To fix this issue, move initialization of dma-buf heap drivers in
->> subsys_initcall() which is more earlier to be called.
-> Hey! Thanks so much for sending this out! I appreciate it!
+On Thu, Oct 21, 2021 at 11:55 PM Marcelo Ricardo Leitner
+<marcelo.leitner@gmail.com> wrote:
 >
-> So the change looks pretty straightforward to me, however, the
-> rationale for it is where we hit problems.
+> On Thu, Oct 21, 2021 at 05:38:46PM +0200, Ondrej Mosnacek wrote:
+> > The secid* fields in struct sctp_endpoint are used to initialize the
+> > labels of a peeloff socket created from the given association. Currently
+> > they are initialized properly when a new association is created on the
+> > server side (upon receiving an INIT packet), but not on the client side.
 >
-> With the upstream kernel, there are not yet any modules that directly
-> allocate from dmabuf heaps. So in the context of the upstream kernel,
-> the reasoning doesn't make much sense.
+> +Cc Xin
+Thanks Marcelo,
 
-I was already wondering which driver does that.
+security_sctp_assoc_request() is not supposed to call on the client side,
+as we can see on TCP. The client side's labels should be set to the
+connection by selinux_inet_conn_request(). But we can't do it based
+on the current hooks.
 
-> Now, I know folks have their own drivers that want to allocate from
-> dmabuf heaps, but those haven't been submitted upstream yet.
-> So maybe can you submit those patches that need this along with this
-> change so it would make sense as part of a patch series? It would be
-> trivial to justify including this patch then.
+The root problem is that the current hooks incorrectly treat sctp_endpoint
+in SCTP as request_sock in TCP, while it should've been sctp_association.
+We need a bigger change on the current security sctp code.
 
-Yes, agree. This patch here alone has no justification to be upstream.
-
-Regards,
-Christian.
-
->
-> thanks
-> -john
-
+I will post the patch series in hand, please take a look.
