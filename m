@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23374373C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256AA4373CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhJVIlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:41:52 -0400
-Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:60359 "EHLO
-        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232192AbhJVIlr (ORCPT
+        id S232282AbhJVIo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhJVIo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:41:47 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 5E6371C47B2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:39:29 +0100 (IST)
-Received: (qmail 28203 invoked from network); 22 Oct 2021 08:39:29 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Oct 2021 08:39:29 -0000
-Date:   Fri, 22 Oct 2021 09:39:27 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/8] Remove dependency on congestion_wait in mm/
-Message-ID: <20211022083927.GI3959@techsingularity.net>
-References: <20211019090108.25501-1-mgorman@techsingularity.net>
- <163486531001.17149.13533181049212473096@noble.neil.brown.name>
+        Fri, 22 Oct 2021 04:44:56 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C7CC061764;
+        Fri, 22 Oct 2021 01:42:38 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id e19so215106edy.0;
+        Fri, 22 Oct 2021 01:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9rMHji8kgf+m1porXcns682MpUeRt4z96dt4L6ZyjLc=;
+        b=oXEuAQPtB1gYaPl9YoqjUDxFnNnue1Mr3NiQMDM7grJKT0/tF180plb6gb1WyBHxDb
+         eiboqeXZlG2jjZLA1uRzymppl5uzcDeocO1kbQFgnevlYOdAjpolhZxBjKXw8eEAaxwN
+         +tOYj7uTOd7CPFAHC/aj+q7QZ8XGXFDH25C3+AEyMQWC0Wz7KbMZtTHi5hBNjL6VqK2v
+         xS83oYpecRXh4RuSuezcBJMQJJx7OZmCJUUJe8bTQli7cI2ia+wqAqSOMF+qN/dUyGh+
+         Y+BjnHXyY09Pj40X2AUFZpoqer1Fyeczj8PuvKAdt2Lxs0jEdTkayBu1GH4A4pFRq1zy
+         4E/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9rMHji8kgf+m1porXcns682MpUeRt4z96dt4L6ZyjLc=;
+        b=bvqWIIqeDtnPSPAhpeEs0jOiDof29A8JJ9TbqWUVg0QUt3tY92abSFfGrdBmXqlUYB
+         CQhGP3UNswI9Rk2Y8xNbnv0xdZahOk/+cL1Hpwu4arsXEp+nmeQ8/W4qR8TRGx/kyzbl
+         41fZ3LR3nY0/Fi2tNeD89u0JKnlhiu9kpjlsuaMfyen1JuyKZgqx3fAltPIaJAaBwfWG
+         0C75rHerELXBHpo2aAQd/qSwVyGdhHnyIs9eVUB+iBSRmpY9Ll1tF7vZDB32BbPA3uwk
+         52YneTFy2FAq7KDw0ocl0yqtoryI+JwBmKK3/jQvRLwNzYriDk/yN523Quc0JdjX8uz0
+         CQZg==
+X-Gm-Message-State: AOAM530lgqBv196LSqIwCp4IUojj0yjFDYccNrOvUeHKrAL5aafeBGnw
+        SCMB5WM1i7XNQ9fy9v9gYitHpjTvtWRZfTj/Ny8=
+X-Google-Smtp-Source: ABdhPJy0bWXnnvLSXyQCDfQotX5wHGejlFHaw6dDhsx3Z37fh+OyTdfcnQxhJw4p0N10FFgFATsYPm8TPGkzd/PRtUI=
+X-Received: by 2002:a50:e188:: with SMTP id k8mr15802135edl.119.1634892157363;
+ Fri, 22 Oct 2021 01:42:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <163486531001.17149.13533181049212473096@noble.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211022054740.25222-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211022054740.25222-1-lukas.bulwahn@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Oct 2021 11:41:41 +0300
+Message-ID: <CAHp75VePmGx-24XWocV9eUwh+uFw4seY83SyA7zG-pa-6T18_Q@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: drop obsolete file pattern in SDHCI DRIVER section
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 12:15:10PM +1100, NeilBrown wrote:
-> On Tue, 19 Oct 2021, Mel Gorman wrote:
-> > Changelog since v3
-> > o Count writeback completions for NR_THROTTLED_WRITTEN only
-> > o Use IRQ-safe inc_node_page_state
-> > o Remove redundant throttling
-> > 
-> > This series is also available at
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-reclaimcongest-v4r2
-> > 
-> > This series that removes all calls to congestion_wait
-> > in mm/ and deletes wait_iff_congested. 
-> 
-> Thanks for this.
-> I don't have sufficient expertise for a positive review, but it seems to
-> make sense with one exception which I have commented on separately.
-> 
+On Fri, Oct 22, 2021 at 8:49 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 5c67aa59bd8f ("mmc: sdhci-pci: Remove dead code (struct
+> sdhci_pci_data et al)") removes ./include/linux/mmc/sdhci-pci-data.h;
+> so, there is no further file that matches 'include/linux/mmc/sdhci*'.
+>
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+>
+>   warning: no file matches    F:    include/linux/mmc/sdhci*
+>
+> Drop this obsolete file pattern in SECURE DIGITAL HOST CONTROLLER
+> INTERFACE (SDHCI) DRIVER.
 
-A test battering NFS would still be nice!
+Thanks! I grepped by name but definitely haven't thought about wildcards.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> In general, I still don't like the use of wake_up_all(), though it won't
-> cause incorrect behaviour.
-> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20211021
+>
+> Ulf, please pick this minor non-urgent cleanup patch on top of the
+> commit above.
+>
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 44c590b762d1..c47ac3e938b7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17024,7 +17024,6 @@ M:      Adrian Hunter <adrian.hunter@intel.com>
+>  L:     linux-mmc@vger.kernel.org
+>  S:     Maintained
+>  F:     drivers/mmc/host/sdhci*
+> -F:     include/linux/mmc/sdhci*
+>
+>  SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
+>  M:     Eugen Hristev <eugen.hristev@microchip.com>
+> --
+> 2.26.2
+>
 
-Removing wake_up_all would be tricky. Ideally it would be prioritised but
-more importantly, some sort of guarantee should exist that enough wakeup
-events trigger to wake tasks before the timeout. That would need careful
-thinking about each reclaim reason. For example, if N tasks throttle on
-NOPROGRESS, there is no guarantee that N tasks are currently in reclaim
-that would wake each sleeping task as progress is made. It's similar
-for writeback, are enough pages under writeback to trigger each wakeup?
-A more subtle issue is if each reason should be strict if waking tasks one
-at a time. For example, a task sleeping on writeback might make progress
-for other reasons such as the working set changing during reclaim or a
-large task exiting. Of course the same concerns exist for the series as
-it stands but the worst case scenarios are mitigated by wake_up_all.
-
-> I would prefer the first patch would:
->  - define NR_VMSCAN_THROTTLE
->  - make reclaim_wait an array
->  - spelled nr_reclaim_throttled as nr_writeback_throttled
-> 
-> rather than leaving those changes for the second patch.  I think that
-> would make review easier.
-> 
-
-I can do this. Normally I try structure series from least-to-most
-controversial so that it can be cut at any point and still make sense
-so the array was defined in the second patch because that's when it is
-required. However, I already had defined the enum in patch 1 for the
-tracepoint so I might as well make it an array too.
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
