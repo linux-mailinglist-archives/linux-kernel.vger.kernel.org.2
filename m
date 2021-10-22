@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D2E437575
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C9F437579
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhJVKdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 06:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        id S232683AbhJVKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 06:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbhJVKdD (ORCPT
+        with ESMTP id S232603AbhJVKdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 06:33:03 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2C2C061243
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:30:45 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id b189-20020a1c1bc6000000b0030da052dd4fso2069698wmb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Uuv/l8Z6b7ekXd997KsXRmES+x1U5+fbUAKRi/yox+M=;
-        b=vghaXR6b/FRilDnKNasUTagEwjx71xTiFLLJGlqwS1Kt4HwnLry4XUcWZzxLBj/OQz
-         oUznLZuzo8Kuk40Jth9Fk5xHA5M6vfXd8YFCQyE6X7hFxtEW/R45xmoV7JYl+TyQtjXb
-         QsoHtr9g/zmGOunhX2Hxg50p6SJLu5pw/V7+6ccdZzfyPGApTQCzHRTNql+OBovdNaSI
-         HLAlWsh4BpZDrLK+ANYYnzZ4fsRaL6Td918BL4LNA1ktgdDDqbANnJNl7kzcXs3/8cFU
-         JowKUbqV/saw43egcZUcabjSN3aeHZE0Hj9IK3IWl7IwOoIVQO3LIEZXppCP9jQvMFdP
-         wgSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Uuv/l8Z6b7ekXd997KsXRmES+x1U5+fbUAKRi/yox+M=;
-        b=TKq6HLXztLVtEjbNyk6qt0Swd448PIDbp0t3rj0IAJFhROaoj8kaTkE6C274is8o9f
-         s+1Y/8VxuwGOBtHjZzrmPEw2/ehSbx24qaeHdDR16lV7Vu/QVVLaNVO9kYQAqKaOuXrF
-         y/V0bQdN7D+BUo7pRlSCg1P4mxdrKc+otS4OadOkVLPn/cL7LJD5U22qMwBZl5vBFUIg
-         cxHrFzSh4b/vGfV/tFJ2CMLrUBrSsnAbGn0KvwBiWqkiTmZt0/OWR9OZbQws+nIHpnKp
-         Hq0jdoIT1ZV+C3lAth4maDXdJlCz2ZUVvT3OBaWR1Wer2JaMJoIS19KZBUGukUGfBmcU
-         jT7Q==
-X-Gm-Message-State: AOAM530BN6xrGabmxurkZJBXgdpPa4xM8fQl3LET5+Z56jvytVZeo2UP
-        6I5pRS1zygGoIaUYZP4W40tCnQ==
-X-Google-Smtp-Source: ABdhPJyaZP5rL50oKIOhioIOY3zP1DE/WpC/skYPotutgfyEwmOodaalN0ZTqeBZqtWEPtstvY2nng==
-X-Received: by 2002:a05:600c:1990:: with SMTP id t16mr13516553wmq.124.1634898644446;
-        Fri, 22 Oct 2021 03:30:44 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id k17sm7393699wrc.93.2021.10.22.03.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 03:30:43 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 11:30:42 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        kernel@pengutronix.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        linux-imx@nxp.com, amitk@kernel.org, rui.zhang@intel.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, linux-hwmon@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v13 2/9] mfd: simple-mfd-i2c: Add a Kconfig name
-Message-ID: <YXKS0gpBAkZL4Dpg@google.com>
-References: <20211015122551.38951-1-alistair@alistair23.me>
- <20211015122551.38951-3-alistair@alistair23.me>
+        Fri, 22 Oct 2021 06:33:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0918FC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:31:00 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mdrp4-0005m4-1m; Fri, 22 Oct 2021 12:30:50 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mdrp3-0000WD-MR; Fri, 22 Oct 2021 12:30:49 +0200
+Date:   Fri, 22 Oct 2021 12:30:49 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 1/3] can: j1939: j1939_tp_cmd_recv(): ignore abort
+ message in the BAM transport
+Message-ID: <20211022103049.GD20681@pengutronix.de>
+References: <1634825057-47915-1-git-send-email-zhangchangzhong@huawei.com>
+ <1634825057-47915-2-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211015122551.38951-3-alistair@alistair23.me>
+In-Reply-To: <1634825057-47915-2-git-send-email-zhangchangzhong@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:29:26 up 246 days, 13:53, 123 users,  load average: 0.18, 0.14,
+ 0.14
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021, Alistair Francis wrote:
-
-> Add a Kconfig name to the "Simple Multi-Functional Device support (I2C)"
-> device so that it can be enabled via menuconfig.
+On Thu, Oct 21, 2021 at 10:04:15PM +0800, Zhang Changzhong wrote:
+> This patch prevents BAM transport from being closed by receiving abort
+> message, as specified in SAE-J1939-82 2015 (A.3.3 Row 4).
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 > ---
->  drivers/mfd/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  net/can/j1939/transport.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index bb5c4b8..2efa606 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -2081,6 +2081,9 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
+>  		break;
+>  
+>  	case J1939_ETP_CMD_ABORT: /* && J1939_TP_CMD_ABORT */
+> +		if (j1939_cb_is_broadcast(skcb))
 
-For my own reference (apply this as-is to your sign-off block):
+Please add here netdev_err_once("Abort to broadcast, ignoring!"), or
+something like this.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> +			return;
+> +
+>  		if (j1939_tp_im_transmitter(skcb))
+>  			j1939_xtp_rx_abort(priv, skb, true);
+>  
+> -- 
+> 2.9.5
+> 
+> 
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
