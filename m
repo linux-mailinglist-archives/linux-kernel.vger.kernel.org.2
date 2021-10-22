@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C8A437F7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E57437F79
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbhJVUvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40516 "EHLO mail.kernel.org"
+        id S234378AbhJVUu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234339AbhJVUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233872AbhJVUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:50:58 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 628436124A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DE04610A1;
         Fri, 22 Oct 2021 20:48:40 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1Sw-000QC4-Bk;
+        id 1me1Sw-000QCb-Hn;
         Fri, 22 Oct 2021 16:48:38 -0400
-Message-ID: <20211022204838.200954642@goodmis.org>
+Message-ID: <20211022204838.389856261@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:47:57 -0400
+Date:   Fri, 22 Oct 2021 16:47:58 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [for-next][PATCH 01/40] tracing: Initialize upper and lower vars in pid_list_refill_irq()
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 02/40] tracefs: Have tracefs directories not set OTH permission bits by
+ default
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,34 +38,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The upper and lower variables are set as link lists to add into the sparse
-array. If they are NULL, after the needed allocations are done, then there
-is nothing to add. But they need to be initialized to NULL for this to
-work.
+The tracefs file system is by default mounted such that only root user can
+access it. But there are legitimate reasons to create a group and allow
+those added to the group to have access to tracing. By changing the
+permissions of the tracefs mount point to allow access, it will allow
+group access to the tracefs directory.
 
-Link: https://lore.kernel.org/all/221bc7ba-a475-1cb9-1bbe-730bb9c2d448@canonical.com/
+There should not be any real reason to allow all access to the tracefs
+directory as it contains sensitive information. Have the default
+permission of directories being created not have any OTH (other) bits set,
+such that an admin that wants to give permission to a group has to first
+disable all OTH bits in the file system.
 
-Fixes: 8d6e90983ade ("tracing: Create a sparse bitmask for pid filtering")
-Reported-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lkml.kernel.org/r/20210818153038.664127804@goodmis.org
+
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/pid_list.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/tracefs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/pid_list.c b/kernel/trace/pid_list.c
-index cbf8031b2b99..a2ef1d18126a 100644
---- a/kernel/trace/pid_list.c
-+++ b/kernel/trace/pid_list.c
-@@ -333,8 +333,8 @@ static void pid_list_refill_irq(struct irq_work *iwork)
- {
- 	struct trace_pid_list *pid_list = container_of(iwork, struct trace_pid_list,
- 						       refill_irqwork);
--	union upper_chunk *upper;
--	union lower_chunk *lower;
-+	union upper_chunk *upper = NULL;
-+	union lower_chunk *lower = NULL;
- 	union upper_chunk **upper_next = &upper;
- 	union lower_chunk **lower_next = &lower;
- 	int upper_count;
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index 1261e8b41edb..925a621b432e 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -432,7 +432,8 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
+ 	if (unlikely(!inode))
+ 		return failed_creating(dentry);
+ 
+-	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
++	/* Do not set bits for OTH */
++	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUSR| S_IRGRP | S_IXUSR | S_IXGRP;
+ 	inode->i_op = ops;
+ 	inode->i_fop = &simple_dir_operations;
+ 
 -- 
 2.33.0
