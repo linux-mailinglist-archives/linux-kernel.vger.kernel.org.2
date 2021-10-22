@@ -2,188 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3974F4376B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6314376B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhJVMVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:21:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhJVMVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:21:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B396108B;
-        Fri, 22 Oct 2021 12:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634905142;
-        bh=FUishw8k4XRuNkUk0Ay8ewVfHmBDFHfAlBgLlhvOUA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z9q8HYNPVkPnLJqzg5XwTyDMSfbfo5npeR/doP0fFmN36EGN2XY4ubKCuxVIh84v4
-         fGJ2TJOvCV6T0THS20u4g/GRs0fok7IKqCJGB5ojpcJONgxV03SCpK67v3OlAQYW+q
-         s4hlmfn3e9fePF0y8da5IWZkNTjof7iWP0QKd0TE=
-Date:   Fri, 22 Oct 2021 14:19:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Luis R. Rodriguez" <mcgrof@kernel.org>
-Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
-        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
-        david.brown@linaro.org, bjorn.andersson@linaro.org,
-        linux-wireless@vger.kernel.org, keescook@chromium.org,
-        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
-        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
-        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
-        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
-        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
-        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
-        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
-        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 07/10] firmware_loader: rename EXTRA_FIRMWARE and
- EXTRA_FIRMWARE_DIR
-Message-ID: <YXKsNNONY/TlsK8a@kroah.com>
-References: <20211021155843.1969401-1-mcgrof@kernel.org>
- <20211021155843.1969401-8-mcgrof@kernel.org>
+        id S231691AbhJVMWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:22:10 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:40364 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231537AbhJVMWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:22:08 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M9KiFE026560;
+        Fri, 22 Oct 2021 14:19:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=W+avfcbVE3ooTZraWY0QHUAVP7fdnfpPvL3ByfAnco0=;
+ b=xo76YZwFxb1yVWVWLUct10G1AEatspQZxwFpEc2qOPRksjPznO/QS2ou35TQ8LRg/kls
+ 60FqDZo9ZtrJGCLa3EEwe+cP+ZJqB9+xvzhydouxqLiXqzsmRTVxiUSt8PPC/99S7ALD
+ GTzVLxbhKVELW42zz3Txtq4mz8etZ+krUn9Snyx2x01yhuTff6UUxyPMeyCO0vZouPJs
+ vtSZ3ZFb8P201Qa2ADi9BTdJJx+ilHL3bgB609x+A4UW79mk2Y5hzgOCdGT4cmOTsCaK
+ nk95SQ8umpVKR9uUgoGNG+bjyEF60gzGTsKOcgzA2mmgkDQTUFJBpLCXVWXhP1BB4w7k Mg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3butka12ar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 14:19:37 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E20CD10002A;
+        Fri, 22 Oct 2021 14:19:36 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D639C218111;
+        Fri, 22 Oct 2021 14:19:36 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct 2021 14:19:36
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <jic23@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <alexandre.torgue@foss.st.com>,
+        <fabrice.gasnier@foss.st.com>, <olivier.moysan@foss.st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH] iio: adc: stm32: fix a leak by resetting pcsel before disabling vdda
+Date:   Fri, 22 Oct 2021 14:19:29 +0200
+Message-ID: <1634905169-23762-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021155843.1969401-8-mcgrof@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_03,2021-10-21_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 08:58:40AM -0700, Luis R. Rodriguez wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Now that we've tied loose ends on the built-in firmware API,
-> rename the kconfig symbols for it to reflect more that they are
-> associated to the firmware_loader and to make it easier to
-> understand what they are for.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  .../driver-api/firmware/built-in-fw.rst       |  6 ++--
->  Documentation/x86/microcode.rst               |  8 ++---
->  arch/x86/Kconfig                              |  4 +--
->  drivers/base/firmware_loader/Kconfig          | 29 ++++++++++++-------
->  drivers/base/firmware_loader/builtin/Makefile |  6 ++--
->  drivers/staging/media/av7110/Kconfig          |  4 +--
->  6 files changed, 33 insertions(+), 24 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/firmware/built-in-fw.rst b/Documentation/driver-api/firmware/built-in-fw.rst
-> index bc1c961bace1..a9a0ab8c9512 100644
-> --- a/Documentation/driver-api/firmware/built-in-fw.rst
-> +++ b/Documentation/driver-api/firmware/built-in-fw.rst
-> @@ -8,11 +8,11 @@ the filesystem. Instead, firmware can be looked for inside the kernel
->  directly. You can enable built-in firmware using the kernel configuration
->  options:
->  
-> -  * CONFIG_EXTRA_FIRMWARE
-> -  * CONFIG_EXTRA_FIRMWARE_DIR
-> +  * CONFIG_FW_LOADER_BUILTIN_FILES
-> +  * CONFIG_FW_LOADER_BUILTIN_DIR
->  
->  There are a few reasons why you might want to consider building your firmware
-> -into the kernel with CONFIG_EXTRA_FIRMWARE:
-> +into the kernel with CONFIG_FW_LOADER_BUILTIN_FILES:
->  
->  * Speed
->  * Firmware is needed for accessing the boot device, and the user doesn't
-> diff --git a/Documentation/x86/microcode.rst b/Documentation/x86/microcode.rst
-> index a320d37982ed..2cacc7f60014 100644
-> --- a/Documentation/x86/microcode.rst
-> +++ b/Documentation/x86/microcode.rst
-> @@ -114,13 +114,13 @@ Builtin microcode
->  =================
->  
->  The loader supports also loading of a builtin microcode supplied through
-> -the regular builtin firmware method CONFIG_EXTRA_FIRMWARE. Only 64-bit is
-> -currently supported.
-> +the regular builtin firmware method using CONFIG_FW_LOADER_BUILTIN and
-> +CONFIG_FW_LOADER_BUILTIN_FILES. Only 64-bit is currently supported.
->  
->  Here's an example::
->  
-> -  CONFIG_EXTRA_FIRMWARE="intel-ucode/06-3a-09 amd-ucode/microcode_amd_fam15h.bin"
-> -  CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
-> +  CONFIG_FW_LOADER_BUILTIN_FILES="intel-ucode/06-3a-09 amd-ucode/microcode_amd_fam15h.bin"
-> +  CONFIG_FW_LOADER_BUILTIN_DIR="/lib/firmware"
->  
->  This basically means, you have the following tree structure locally::
->  
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 999907dd7544..cfb09dc7f21b 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1315,8 +1315,8 @@ config MICROCODE
->  	  initrd for microcode blobs.
->  
->  	  In addition, you can build the microcode into the kernel. For that you
-> -	  need to add the vendor-supplied microcode to the CONFIG_EXTRA_FIRMWARE
-> -	  config option.
-> +	  need to add the vendor-supplied microcode to the configuration option
-> +	  CONFIG_FW_LOADER_BUILTIN_FILES
->  
->  config MICROCODE_INTEL
->  	bool "Intel microcode loading support"
-> diff --git a/drivers/base/firmware_loader/Kconfig b/drivers/base/firmware_loader/Kconfig
-> index 5b24f3959255..2dc3e137d903 100644
-> --- a/drivers/base/firmware_loader/Kconfig
-> +++ b/drivers/base/firmware_loader/Kconfig
-> @@ -22,14 +22,14 @@ config FW_LOADER
->  	  You typically want this built-in (=y) but you can also enable this
->  	  as a module, in which case the firmware_class module will be built.
->  	  You also want to be sure to enable this built-in if you are going to
-> -	  enable built-in firmware (CONFIG_EXTRA_FIRMWARE).
-> +	  enable built-in firmware (CONFIG_FW_LOADER_BUILTIN_FILES).
->  
->  if FW_LOADER
->  
->  config FW_LOADER_PAGED_BUF
->  	bool
->  
-> -config EXTRA_FIRMWARE
-> +config FW_LOADER_BUILTIN_FILES
->  	string "Build named firmware blobs into the kernel binary"
->  	help
->  	  Device drivers which require firmware can typically deal with
-> @@ -43,14 +43,21 @@ config EXTRA_FIRMWARE
->  	  in boot and cannot rely on the firmware being placed in an initrd or
->  	  initramfs.
->  
-> -	  This option is a string and takes the (space-separated) names of the
-> +	  Support for built-in firmware is not supported if you are using
-> +	  the firmware loader as a module.
-> +
-> +	  This option is a string and takes the space-separated names of the
->  	  firmware files -- the same names that appear in MODULE_FIRMWARE()
->  	  and request_firmware() in the source. These files should exist under
-> -	  the directory specified by the EXTRA_FIRMWARE_DIR option, which is
-> +	  the directory specified by the FW_LOADER_BUILTIN_DIR option, which is
->  	  /lib/firmware by default.
->  
-> -	  For example, you might set CONFIG_EXTRA_FIRMWARE="usb8388.bin", copy
-> -	  the usb8388.bin file into /lib/firmware, and build the kernel. Then
-> +	  For example, you might have set:
-> +
-> +	  CONFIG_FW_LOADER_BUILTIN_FILES="usb8388.bin"
-> +
-> +	  After this you would copy the usb8388.bin file into directory
-> +	  specified by FW_LOADER_BUILTIN_DIR and build the kernel. Then
->  	  any request_firmware("usb8388.bin") will be satisfied internally
->  	  inside the kernel without ever looking at your filesystem at runtime.
->  
-> @@ -60,13 +67,15 @@ config EXTRA_FIRMWARE
->  	  image since it combines both GPL and non-GPL work. You should
->  	  consult a lawyer of your own before distributing such an image.
->  
-> -config EXTRA_FIRMWARE_DIR
-> -	string "Firmware blobs root directory"
-> +config FW_LOADER_BUILTIN_DIR
-> +	string "Directory with firmware to be built-in to the kernel"
->  	depends on EXTRA_FIRMWARE != ""
+Some I/Os are connected to ADC input channels, when the corresponding bit
+in PCSEL register are set on STM32H7 and STM32MP15. This is done in the
+prepare routine of stm32-adc driver.
+There are constraints here, as PCSEL shouldn't be set when VDDA supply
+is disabled. Enabling/disabling of VDDA supply in done via stm32-adc-core
+runtime PM routines (before/after ADC is enabled/disabled).
 
-You forgot to update this dependency :(
+Currently, PCSEL remains set when disabling ADC. Later on, PM runtime
+can disable the VDDA supply. This creates some conditions on I/Os that
+can start to leak current.
+So PCSEL needs to be cleared when disabling the ADC.
 
-I took the first 6 patches here, this one needs work.
+Fixes: 95e339b6e85d ("iio: adc: stm32: add support for STM32H7")
 
-thanks,
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/adc/stm32-adc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-greg k-h
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 5088de8..e3e7541 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -975,6 +975,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_adc *adc = iio_priv(indio_dev);
+ 
++	stm32_adc_writel(adc, STM32H7_ADC_PCSEL, 0);
+ 	stm32h7_adc_disable(indio_dev);
+ 	stm32h7_adc_enter_pwr_down(adc);
+ }
+-- 
+2.7.4
+
