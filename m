@@ -2,116 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D7843754B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350EB437550
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbhJVKO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 06:14:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58359 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232531AbhJVKO5 (ORCPT
+        id S232586AbhJVKPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 06:15:49 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:38130 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232515AbhJVKPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 06:14:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634897559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m9RugSDer7RJ0VTCrZoMBdAEz7BvSX18hwT5ubFXgK8=;
-        b=JwM2eWNOfI7EfrJknMx0C2r6+g1HE/ZnBfcgxqPZPrwM0h/SxBDqGdDqmxiia7qhPL5NRB
-        4nbNCyy67HGMFrkRY82h0d65Yco11owVZy6jTkBnatmeRh7d9WNPjZACxFf9opG8bJ/8xl
-        Fc8RmQdqOjINveSu2dCCHEHss67BxGY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-cAAxMG4UM2S1qVOUuck8vQ-1; Fri, 22 Oct 2021 06:12:38 -0400
-X-MC-Unique: cAAxMG4UM2S1qVOUuck8vQ-1
-Received: by mail-ed1-f71.google.com with SMTP id l10-20020a056402230a00b003db6977b694so3167957eda.23
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:12:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=m9RugSDer7RJ0VTCrZoMBdAEz7BvSX18hwT5ubFXgK8=;
-        b=rNZNZuN+gxo5HzHz4wd8NwNwwJyJvb3AZxpBHa5YjKtEyoHsouxE/NVKhz/Fo3xIME
-         E0664wdN1x+BsrA0/vQEyM5vn1vEraJ3pftAFd3Bpf9sI9EVgXuU1Rm+Zxx66Ng0BQtf
-         f+pRGws/ahcFK6Juxj9fyuZuP06ud5W1DklfW8yXuRbbs031pfcpMND3hWdgwfo+udKN
-         e7BPhHdwVRxLHi2aiqCQzt3XMTO6qj6s1Eo0L/5YUeO2ADqa8nblVI4sKfS+sQnBM8u+
-         iwJYI9+6VqMTs1k9uSs4p5ZqOeURxgzrw7oBHFv7RssSAhUCJUtu+duIZBKly11RS1Dy
-         H44w==
-X-Gm-Message-State: AOAM5318zdwuwAAQO0xMq+kql7Fnfapd4E+lJjRV/Hsxu4HT5AOyXKZ3
-        JbBatmxjuo6h8kSlg4whk1DlICyy6r1BSjOLAM0DmzU0Ws8kEWAM6gKOBnD0QFxDIk+3f3g5jd1
-        zx/GajxzQTxPKiGNYa7Il5p+r
-X-Received: by 2002:a17:906:1c43:: with SMTP id l3mr2665061ejg.248.1634897557288;
-        Fri, 22 Oct 2021 03:12:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAfZktJXuPCDHaZPcHu6CUYaNovhzRdAvTwiBezZpyP20PINdyYr8D38Mqu5aL272pdGnJaw==
-X-Received: by 2002:a17:906:1c43:: with SMTP id l3mr2665042ejg.248.1634897557094;
-        Fri, 22 Oct 2021 03:12:37 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h10sm4293228edk.41.2021.10.22.03.12.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 03:12:36 -0700 (PDT)
-Message-ID: <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
-Date:   Fri, 22 Oct 2021 12:12:35 +0200
+        Fri, 22 Oct 2021 06:15:45 -0400
+X-UUID: d80e3027f026469f9531ae037f3ae4a0-20211022
+X-UUID: d80e3027f026469f9531ae037f3ae4a0-20211022
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <jason-jh.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1832692527; Fri, 22 Oct 2021 18:13:24 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 22 Oct 2021 18:13:22 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 22 Oct
+ 2021 18:13:22 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 22 Oct 2021 18:13:22 +0800
+Message-ID: <29992126d39a7f381a516fdb9cd6e39f1e51afdb.camel@mediatek.com>
+Subject: Re: [PATCH v11 09/16] soc: mediatek: add mtk-mmsys support for
+ mt8195 vdosys0
+From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <hsinyi@chromium.org>, <fshao@chromium.org>,
+        <moudy.ho@mediatek.com>, <roy-cw.yeh@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        "Yongqiang Niu" <yongqiang.niu@mediatek.com>,
+        <nancy.lin@mediatek.com>, <singo.chang@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+Date:   Fri, 22 Oct 2021 18:13:22 +0800
+In-Reply-To: <8b509551-7cfa-f55c-fc0f-db7d0a3886eb@collabora.com>
+References: <20210921155218.10387-1-jason-jh.lin@mediatek.com>
+         <20210921155218.10387-10-jason-jh.lin@mediatek.com>
+         <8b509551-7cfa-f55c-fc0f-db7d0a3886eb@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-References: <20211022004927.1448382-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211022004927.1448382-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/21 02:49, Sean Christopherson wrote:
-> APICv cleanups and a dissertation on handling concurrent APIC access page
-> faults and APICv inhibit updates.
+Hi Angelo,
+
+Thanks for the reviews.
+
+
+On Thu, 2021-10-14 at 16:05 +0200, AngeloGioacchino Del Regno wrote:
+> > Add mt8195 vdosys0 clock driver name and routing table to
+> > the driver data of mtk-mmsys.
+> > 
+
+[snip]
+
+> >  
+> > ---
 > 
-> I've tested this but haven't hammered the AVIC stuff, I'd appreciate it if
-> someone with the Hyper-V setup can beat on the AVIC toggling.
-> 
-> Sean Christopherson (4):
->    KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
->      memslot
->    KVM: x86: Move SVM's APICv sanity check to common x86
->    KVM: x86: Move apicv_active flag from vCPU to in-kernel local APIC
->    KVM: x86: Use rw_semaphore for APICv lock to allow vCPU parallelism
-> 
->   arch/x86/include/asm/kvm_host.h |  3 +-
->   arch/x86/kvm/hyperv.c           |  4 +--
->   arch/x86/kvm/lapic.c            | 46 ++++++++++---------------
->   arch/x86/kvm/lapic.h            |  5 +--
->   arch/x86/kvm/mmu/mmu.c          | 29 ++++++++++++++--
->   arch/x86/kvm/svm/avic.c         |  2 +-
->   arch/x86/kvm/svm/svm.c          |  2 --
->   arch/x86/kvm/vmx/vmx.c          |  4 +--
->   arch/x86/kvm/x86.c              | 59 ++++++++++++++++++++++-----------
->   9 files changed, 93 insertions(+), 61 deletions(-)
+> Hello Jason,
+> thanks for the patch! However, there are a few things to improve:
 > 
 
-Queued, thanks.  I only made small edits to the comment in patch
-1, to make it very slightly shorter.
+[snip]
 
-	 * 2a. APICv is globally disabled but locally enabled, and this
-	 *     vCPU acquires mmu_lock before __kvm_request_apicv_update
-	 *     calls kvm_zap_gfn_range().  This vCPU will install a stale
-	 *     SPTE, but no one will consume it as (a) no vCPUs can be
-	 *     running due to the kick from KVM_REQ_APICV_UPDATE, and
-	 *     (b) because KVM_REQ_APICV_UPDATE is raised before the VM
-	 *     state is update, vCPUs attempting to service the request
-	 *     will block on apicv_update_lock.  The update flow will
-	 *     then zap the SPTE and release the lock.
+> > +#define MT8195_VDO0_SEL_IN					0xf34
+> > +#define MT8195_SEL_IN_VPP_MERGE_FROM_DSC_WRAP0_OUT		(0 <<
+> > 0)
+> 
+> Bitshifting 0 by 0 bits == 0, so this is simply 0.
+> 
+> > +#define MT8195_SEL_IN_VPP_MERGE_FROM_DISP_DITHER1		(1 <<
+> > 0)
+> 
+> I would write 0x1 here
+> 
+> > +#define MT8195_SEL_IN_VPP_MERGE_FROM_VDO1_VIRTUAL0		(2 <<
+> > 0)
+> 
+> ....and 0x2 here: bitshifting of 0 bits makes little sense.
+> 
+> > +#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0		
+> > (0 << 4)
+> 
+> Bitshifting 0 by 4 bits is still 0, so this is again 0.
+> This is repeated too many times, so I will not list it for all of the
+> occurrences.
+> 
+> > +#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE		(1 <<
+> > 4)
+> 
+> This is BIT(4).
+> 
+> > +#define MT8195_SEL_IN_DSC_WRAP1_IN_FROM_DISP_DITHER1		
+> > (0 << 5) > +#define MT8195_SEL_IN_DSC_WRAP1_IN_FROM_VPP_MERGE	
+> > 	(1 << 5)
+> 
+> ...and this is BIT(5)
+> 
+> > +#define MT8195_SEL_IN_SINA_VIRTUAL0_FROM_VPP_MERGE		(0 <<
+> > 8)
+> > +#define MT8195_SEL_IN_SINA_VIRTUAL0_FROM_DSC_WRAP1_OUT		
+> > (1 << 8)
+> 
+> BIT(8)
+> 
+> > +#define MT8195_SEL_IN_SINB_VIRTUAL0_FROM_DSC_WRAP0_OUT		
+> > (0 << 9)
+> > +#define MT8195_SEL_IN_DP_INTF0_FROM_DSC_WRAP1_OUT		(0 <<
+> > 12)
+> > +#define MT8195_SEL_IN_DP_INTF0_FROM_VPP_MERGE			
+> > (1 << 12)
+> 
+> BIT(12)
+> 
+> > +#define MT8195_SEL_IN_DP_INTF0_FROM_VDO1_VIRTUAL0		(2 <<
+> > 12)
+> 
+> BIT(13)
+> 
+> ... and please, use the BIT(nr) macro for all these bit definitions,
+> it's way more
+> readable like that.
+> 
+> Regards,
+> - Angelo
 
-Paolo
+Because the HW register design of MT8195_VDO0_SEL_IN 0xf34 is like
+this:
+
+bit[1:0] as MT8195_SEL_IN_VPP_MERGE and
+  value: 0 as MT8195_SEL_IN_VPP_MERGE_FROM_DSC_WRAP0_OUT
+  value: 1 as MT8195_SEL_IN_VPP_MERGE_FROM_DISP_DITHER1
+  value: 2 as MT8195_SEL_IN_VPP_MERGE_FROM_VDO1_VIRTUAL0
+bit[4:4] as MT8195_SEL_IN_DSC_WRAP0_IN and
+  value 0 as MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0
+  value 1 as MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE
+bit[5:5] as MT8195_SEL_IN_DSC_WRAP1_IN and
+  value 0 as
+MT8195_SEL_IN_DSC_WRAP1_IN_FROM_DISP_DITHER1
+  value 1 as
+MT8195_SEL_IN_DSC_WRAP1_IN_FROM_VPP_MERGE
+and so on...
+
+I think using BIT(nr) macro directly is not easy to debug.
+
+
+Is it better to define another MACRO like this?
+
+#define BIT_VAL(val, bit)  ((val) << (bit))
+#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0  BIT_VAL(0, 4)
+#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE  BIT_VAL(1, 4)
+...
+
+or
+
+#define MT8195_SEL_IN_DSC_WRAP0_IN (4)
+#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0  (0
+<< MT8195_SEL_IN_DSC_WRAP0_IN)
+#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE  (1 <<
+MT8195_SEL_IN_DSC_WRAP0_IN)
+...
+
+What do you think?
+
+
+Regards,
+Jason-JH Lin <jason-jh.lin@mediatek.com>
 
