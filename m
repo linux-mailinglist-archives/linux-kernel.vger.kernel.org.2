@@ -2,173 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E41437204
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FA2437234
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhJVGpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:45:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhJVGpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:45:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC1E360FE7;
-        Fri, 22 Oct 2021 06:43:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634885007;
-        bh=Ru/Z3TmyVyCg7ZOQGOOooZjIAeX9BcdeAuSHcNBwLjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xCajnFiIFvaf0JehoaKFyOeOIPbK7wIKSnevGwtvGQ7QvKLhOPjvvSWHMVnMixeBe
-         wOB/fmXp8nXA8s0HpBYKQ0ZkArJ65IeVO7pmL2neiWxEAVhRZ7UmuYgjLgZL9Ks5k4
-         6/9m0bKgnMu9AGGTdxKQoXjRdJuUv5nkL/5oRBuw=
-Date:   Fri, 22 Oct 2021 08:43:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] of: base: add function to check for status =
- "reserved"
-Message-ID: <YXJdi3IBzaqmSZ9b@kroah.com>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <20211022020032.26980-2-zev@bewilderbeest.net>
+        id S231942AbhJVGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:52:24 -0400
+Received: from mout-u-107.mailbox.org ([91.198.250.252]:45534 "EHLO
+        mout-u-107.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhJVGwX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 02:52:23 -0400
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 02:52:23 EDT
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [80.241.60.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-u-107.mailbox.org (Postfix) with ESMTPS id 4HbFFS5mZjzQkB9;
+        Fri, 22 Oct 2021 08:44:28 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH] i2c: mt76xx: add I2C_FUNC_NOSTART and I2C_M_REV_DIR_ADDR
+To:     "zhaojh329@gmail.com" <zhaojh329@gmail.com>
+Cc:     "matthias.bgg" <matthias.bgg@gmail.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <202110200007146639874@gmail.com>
+From:   Stefan Roese <sr@denx.de>
+Message-ID: <12006f4c-137c-4d78-fbaa-40776c65f079@denx.de>
+Date:   Fri, 22 Oct 2021 08:44:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022020032.26980-2-zev@bewilderbeest.net>
+In-Reply-To: <202110200007146639874@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 688E1131C
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:00:28PM -0700, Zev Weiss wrote:
-> Per v0.3 of the Devicetree Specification [0]:
+On 19.10.21 18:07, zhaojh329@gmail.com wrote:
+>   This patch adds I2C_FUNC_NOSTART and I2C_M_REV_DIR_ADDR support for
+> MediaTek MT7621/7628/7688. This is useful for some I2C slave chips,
+> such as 'drivers/input/joystick/as5011.c'.
 > 
->   Indicates that the device is operational, but should not be used.
->   Typically this is used for devices that are controlled by another
->   software component, such as platform firmware.
-> 
-> One use-case for this is in OpenBMC, where certain devices (such as a
-> BIOS flash chip) may be shared by the host and the BMC, but cannot be
-> accessed by the BMC during its usual boot-time device probing, because
-> they require additional (potentially elaborate) coordination with the
-> host to arbitrate which processor is controlling the device.
-> 
-> Devices marked with this status should thus be instantiated, but not
-> have a driver bound to them or be otherwise touched.
-> 
-> [0] https://github.com/devicetree-org/devicetree-specification/releases/download/v0.3/devicetree-specification-v0.3.pdf
-> 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> Signed-off-by: Jianhui Zhao <zhaojh329@gmail.com>
 > ---
->  drivers/of/base.c  | 56 +++++++++++++++++++++++++++++++++++++++-------
->  include/linux/of.h |  6 +++++
->  2 files changed, 54 insertions(+), 8 deletions(-)
+>   drivers/i2c/busses/i2c-mt7621.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/of/base.c b/drivers/of/base.c
-> index 0ac17256258d..3bd7c5b8a2cc 100644
-> --- a/drivers/of/base.c
-> +++ b/drivers/of/base.c
-> @@ -580,14 +580,16 @@ int of_machine_is_compatible(const char *compat)
->  EXPORT_SYMBOL(of_machine_is_compatible);
->  
->  /**
-> - *  __of_device_is_available - check if a device is available for use
-> + * __of_device_check_status - check if a device's status matches a particular string
->   *
-> - *  @device: Node to check for availability, with locks already held
-> + * @device: Node to check status of, with locks already held
-> + * @val: Status string to check for, or NULL for "okay"/"ok"
->   *
-> - *  Return: True if the status property is absent or set to "okay" or "ok",
-> - *  false otherwise
-> + * Return: True if status property exists and matches @val, or either "okay"
-> + * or "ok" if @val is NULL, or if status property is absent and @val is
-> + * "okay", "ok", or NULL.  False otherwise.
->   */
-> -static bool __of_device_is_available(const struct device_node *device)
-> +static bool __of_device_check_status(const struct device_node *device, const char *val)
->  {
->  	const char *status;
->  	int statlen;
-> @@ -596,17 +598,35 @@ static bool __of_device_is_available(const struct device_node *device)
->  		return false;
->  
->  	status = __of_get_property(device, "status", &statlen);
-> -	if (status == NULL)
-> -		return true;
-> +	if (!status) {
-> +		/* a missing status property is treated as "okay" */
-> +		status = "okay";
-> +		statlen = strlen(status) + 1; /* property lengths include the NUL terminator */
-> +	}
->  
->  	if (statlen > 0) {
-> -		if (!strcmp(status, "okay") || !strcmp(status, "ok"))
-> +		if (!val && (!strcmp(status, "okay") || !strcmp(status, "ok")))
-> +			return true;
-> +		else if (val && !strcmp(status, val))
-
-
-Ick, where is this string coming from?  The kernel or userspace or a
-device tree?  This feels very wrong, why is the kernel doing parsing
-like this of different options that all mean the same thing?
-
-
->  			return true;
->  	}
->  
->  	return false;
->  }
->  
-> +/**
-> + * __of_device_is_available - check if a device is available for use
-> + *
-> + * @device: Node to check for availability, with locks already held
-> + *
-> + * Return: True if the status property is absent or set to "okay" or "ok",
-> + * false otherwise
-> + */
-> +static bool __of_device_is_available(const struct device_node *device)
-> +{
-> +	return __of_device_check_status(device, NULL);
-> +}
+> diff --git a/drivers/i2c/busses/i2c-mt7621.c b/drivers/i2c/busses/i2c-mt7621.c
+> index 45fe4a7fe0c0..3d2763d9c090 100644
+> --- a/drivers/i2c/busses/i2c-mt7621.c
+> +++ b/drivers/i2c/busses/i2c-mt7621.c
+> @@ -150,6 +150,9 @@ static int mtk_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+>   	for (i = 0; i < num; i++) {
+>   		pmsg = &msgs[i];
+>   
+> +		if (pmsg->flags & I2C_M_NOSTART)
+> +			goto nostart;
 > +
->  /**
->   *  of_device_is_available - check if a device is available for use
->   *
-> @@ -628,6 +648,26 @@ bool of_device_is_available(const struct device_node *device)
->  }
->  EXPORT_SYMBOL(of_device_is_available);
->  
-> +/**
-> + * of_device_is_reserved - check if a device is marked as reserved
-> + *
-> + * @device: Node to check for reservation
-> + *
-> + * Return: True if the status property is set to "reserved", false otherwise
-> + */
-> +bool of_device_is_reserved(const struct device_node *device)
-> +{
-> +	unsigned long flags;
-> +	bool res;
-> +
-> +	raw_spin_lock_irqsave(&devtree_lock, flags);
-> +	res = __of_device_check_status(device, "reserved");
-> +	raw_spin_unlock_irqrestore(&devtree_lock, flags);
+>   		/* wait hardware idle */
+>   		ret = mtk_i2c_wait_idle(i2c);
+>   		if (ret)
+> @@ -174,6 +177,8 @@ static int mtk_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+>   		} else {
+>   			/* 7 bits address */
+>   			addr = i2c_8bit_addr_from_msg(pmsg);
+> +			if (pmsg->flags & I2C_M_REV_DIR_ADDR)
+> +				addr ^= 1;
+>   			iowrite32(addr, i2c->base + REG_SM0D0_REG);
+>   			ret = mtk_i2c_master_cmd(i2c, SM0CTL1_WRITE, 1);
+>   			if (ret)
+> @@ -187,6 +192,7 @@ static int mtk_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+>   				goto err_ack;
+>   		}
+>   
+> +nostart:
+>   		/* transfer data */
+>   		for (len = pmsg->len, j = 0; len > 0; len -= 8, j += 8) {
+>   			page_len = (len >= 8) ? 8 : len;
+> @@ -242,7 +248,8 @@ static int mtk_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+>   
+>   static u32 mtk_i2c_func(struct i2c_adapter *a)
+>   {
+> -	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_PROTOCOL_MANGLING;
+> +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_10BIT_ADDR
+> +		| I2C_FUNC_PROTOCOL_MANGLING | I2C_FUNC_NOSTART;
 
-Why is this a "raw" spinlock?
+Nit: I prefer to have the "|" at the end of the upper line instead of
+adding it in the 2nd line.
 
-Where is this status coming from?
+Other that this:
 
-> +
-> +	return res;
-> +}
-> +EXPORT_SYMBOL(of_device_is_reserved);
+Reviewed-by: Stefan Roese <sr@denx.de>
 
-EXPORT_SYMBOL_GPL()?
-
-thanks,
-
-greg k-h
+Thanks,
+Stefan
