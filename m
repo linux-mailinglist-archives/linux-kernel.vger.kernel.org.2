@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E19437EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEFD437EB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhJVTe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S233881AbhJVTgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbhJVTez (ORCPT
+        with ESMTP id S232029AbhJVTgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:34:55 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35176C061764;
-        Fri, 22 Oct 2021 12:32:38 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id x1-20020a17090a530100b001a1efa4ebe6so1545519pjh.0;
-        Fri, 22 Oct 2021 12:32:38 -0700 (PDT)
+        Fri, 22 Oct 2021 15:36:53 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77339C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:34:35 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id w23so3271756lje.7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KGuhaaAGa7HJ+q6TZKoJHHAr1+bKfVkj8J7RR7y3VKk=;
-        b=BJcJcsV+qyHQLSr36qxzk/eSZGcmfCMiSPjiHVz6HZXD8+N3JkwksLfFvpp6zUIM/f
-         yI6XKZsejKSqFH9UkVbCZdEkpL9G3MY8wkAXT1DFtbagRW5kBgLOBnx/UERtl/1nTUT7
-         YoQLFImQ9RH4+ZwxmsKMHcoFDiLbL6pWG+S8+VNq+4FghsVpSjpGMkd6OKxg3cO14RPm
-         6NkCWcSHWeFGogh9lzskX8krcdyBN1JMQg3SZ35I3xu8EbE5EfDWFOV5eBMbMlwzmspu
-         HDG8ls803XIdvrmpJIFQ3QKg/sGeVF1Wu4QFnY8tdh+tmF0P9RNCKf0Mc4uGnAZHojqa
-         NpCQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/vBd1duKKeiwwgrbJ6Sx7Bi57HhQ5rfNP7Q41l3kvVU=;
+        b=GmA0uidbgF4bNbkN4ZjQ/dxxiLgUrTbvSAFJ/k7eUb/VzsL0DBQZYOT4K6mZ8R+OZQ
+         We+jQ9aeC6/7nQuDVKO6wVc48enmhrvINQIgqy6KUVQPv+LIT+8Lyj45v94l6N/St171
+         N4ozbEyt1R7fn0yaLKOCyAO/c9pXn4ao7vn+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KGuhaaAGa7HJ+q6TZKoJHHAr1+bKfVkj8J7RR7y3VKk=;
-        b=2e49355ZqvMEquDuuUYoGkoi9bMIx+CjiJ7PTya22H30y/U7DYUzXRP9xVeOxHUAKR
-         G8UCZAdYaE6SDJc+4vplGWbrq1YTCiUvvo6kkVpdqMGma+eICWb4urgfv7NT0J3nSAEC
-         V6Ft8GBVjrBCoGauzKu85WNhdZxRBWd/mR8raVF8r3638ovA9TB4lx++oulw2C0aAfXh
-         RgYIoCGpMa//eumsZozakFwraBru3m6fYtAOqL1Jx4gTOq8QxfsNz4Ags5MaEI7+JL7a
-         16OsMnAzaMjJb4ep9aip4l3qH+Cc5lqFWFR7PhX/ywBgSGdzvPBklJLKiLosvq4nsPlv
-         0vsQ==
-X-Gm-Message-State: AOAM533dRJexWaCtj7qB8FHR3Xd8EoMi6dnM9l1HL9k+pxrFAVaZQepB
-        K0KuDulpSEmRF7Vv4sqlgHY=
-X-Google-Smtp-Source: ABdhPJwLgbkdtzb65l5w4UCp/RN4ia/VWySOZizprrGJxw11yK8FG5osK6NVFxsjHTQRMHno1bR4dA==
-X-Received: by 2002:a17:90b:185:: with SMTP id t5mr2143936pjs.54.1634931157771;
-        Fri, 22 Oct 2021 12:32:37 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id c12sm10560459pfc.161.2021.10.22.12.32.36
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/vBd1duKKeiwwgrbJ6Sx7Bi57HhQ5rfNP7Q41l3kvVU=;
+        b=Rw8lWhy/NQSq65FDLDA4K9n7LH4/DraJqd/9UuV+Ih8ujZVVxhpmO+tqKZWx/RbwQy
+         vgfRQefUPzStRgfl/gQZvmlc/81+19Re4Vimw1IZy0eqw7Fmci6cMe6ioula2oWOVV95
+         GbvkWmBy6ypqQRw0vyRNiiaToYpEwGGjBUBrKrYEkWdzhlDp8MF3f+rub+2354IOnFM3
+         DilhvVIOa2vDBbf5sPZpG+21lHmoAFl5KB5Bxz0a71nkjlEa8Uabomr8GaP1e87CKkFP
+         n4QF3cU6m04Aw8c7W4A/vTPBYbeQqi304aclUQpWsmgWxW4cvpBQbiBfktJmcWHBEcg4
+         sFcA==
+X-Gm-Message-State: AOAM533AmP1mMNQFXoF9r+4Xrf2raabyJ1yeZ02cZaOZ3CXmzlLZJRHd
+        PLdXWNYtSljTUpQpXVPPxCgCen+ypowU//5yn5A=
+X-Google-Smtp-Source: ABdhPJw3GIChCQmmmeySmcB27rnuMnS0CQDpsDQMRhLvfWNeHWGZ3mxMrj2gI2BG590VOjaKkHzvVw==
+X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr1965042ljp.239.1634931273195;
+        Fri, 22 Oct 2021 12:34:33 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id z5sm815855lfr.96.2021.10.22.12.34.31
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 12:32:37 -0700 (PDT)
-Subject: Re: [PATCH net v10] skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <2721362c-462b-878f-9e09-9f6c4353c73d@gmail.com>
- <644330dd-477e-0462-83bf-9f514c41edd1@virtuozzo.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <a55b298d-703f-d204-d425-a1d0704b2bb8@gmail.com>
-Date:   Fri, 22 Oct 2021 12:32:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 22 Oct 2021 12:34:32 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id p16so26513lfa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 12:34:31 -0700 (PDT)
+X-Received: by 2002:a05:6512:2245:: with SMTP id i5mr1436398lfu.655.1634931271702;
+ Fri, 22 Oct 2021 12:34:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <644330dd-477e-0462-83bf-9f514c41edd1@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211012141131.3c9a2eb1@gandalf.local.home> <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
+ <20211012145540.343541e9@gandalf.local.home> <CAHk-=wg6fw130AkO72GPFow9PHvP9odnC5LZ0UaY9bJQuF-C5A@mail.gmail.com>
+ <20211022083845.08fe5754@gandalf.local.home>
+In-Reply-To: <20211022083845.08fe5754@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 22 Oct 2021 09:34:15 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
+Message-ID: <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
+Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gavin Shan <gshan@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 22, 2021 at 2:38 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> It finally triggered again. And this time with this patch applied. But I
+> don't see the added printks anywhere in the dmesg.
 
+That's strange. Those printk's were added in the only places that do a
+"return 0".
 
-On 10/22/21 3:28 AM, Vasily Averin wrote:
-> Christoph Paasch reports [1] about incorrect skb->truesize
-> after skb_expand_head() call in ip6_xmit.
-> This may happen because of two reasons:
-> - skb_set_owner_w() for newly cloned skb is called too early,
-> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
-> In this case sk->sk_wmem_alloc should be adjusted too.
-> 
-> [1] https://lkml.org/lkml/2021/8/20/1082
-> 
-> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
-> Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
-> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
-> v10: is_skb_wmem() was moved into separate header (it depends on net/tcp.h)
->      use it after pskb_expand_head() insted of strange sock_edemux check
+Ok, there's also the dummy pud_set_huge() inline function that
+unconditionally returns zero, but that's only if you don't have
+CONFIG_HAVE_ARCH_HUGE_VMAP enabled. And then the testing code is
+disabled too.
 
-SGTM, thanks !
+> [  178.714431] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+> [  178.723726] ------------[ cut here ]------------
+> [  178.728389] WARNING: CPU: 2 PID: 1 at mm/debug_vm_pgtable.c:492 pud_huge_tests+0x42/0x68
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+That's literally that
+
+    WARN_ON(!pud_set_huge(..));
+
+and pud_set_huge() has two 'return 0' (and one 'return 1') and that
+patch added debug-printing to both of them.
+
+Oh, it shouldn't have been a pr_debug() that gets suppressed. It
+should have been a pr_warn() or something.
+
+My bad.
+
+                   Linus
