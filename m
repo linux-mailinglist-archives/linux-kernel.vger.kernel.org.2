@@ -2,282 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DDF437364
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BD9437530
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhJVIB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:01:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28008 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232261AbhJVIB0 (ORCPT
+        id S232552AbhJVJ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:59:33 -0400
+Received: from mx0b-0039f301.pphosted.com ([148.163.137.242]:40110 "EHLO
+        mx0b-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231944AbhJVJ7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:01:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634889549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZoWYLLUFZ8JY44SKry8OHyZeTm3yXeRKD2OKegls7I=;
-        b=RxQsVKb/eZ/rRNO/XF2IFs1755HwZpxWUfu+jXCQRGjTpNgnc3UVkGXwgzrxFbCLs6qnve
-        Gz+24vSMSDWizzX3HAWxkFveYhYMdaSmronW+zYk6DTfxoE3c4Mv+jeOtsTXadBiBCZybD
-        o/VWj7Fyk2s7+fSE6KWV+pQJq9ar6YM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-S6ExAGRvPmySgiPPtySjbQ-1; Fri, 22 Oct 2021 03:59:07 -0400
-X-MC-Unique: S6ExAGRvPmySgiPPtySjbQ-1
-Received: by mail-wm1-f69.google.com with SMTP id s25-20020a7bc399000000b0030da0f36afeso693879wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 00:59:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=kZoWYLLUFZ8JY44SKry8OHyZeTm3yXeRKD2OKegls7I=;
-        b=kwwZrnX2HAtxeHzQIT97Nv1aDawRzPWp5JW4ILmPd3b180FcUNWnQpZwFKQiC62GhC
-         OEDMcDJvpHGuTvjvQh2ZTkz7ZTX4GolRGQ/s9Gq/txB722QB7sLj3EZexjslcvD7ogls
-         gcJCwyDi9/9sNVQXYAFG4FXdH8YTvMVSH2mamcKbb3NXHJyCiGQc2Yegh2xEGfTjmjus
-         zGBGpNQzORf5HvZKtiRl6v9oFxyGMB3vtdS5wil55+0X/cfhAA3du00yE2F5H4/HGKP/
-         rC1M0egy1MyHbNExcirWIRZop9Ge/3PerpMargEWgMP0LXdn+pNqXp50jcSY+pjKAnL/
-         5rOA==
-X-Gm-Message-State: AOAM531OmknRHz5Qn0c6F0eBHFwVfWnn1mWR1sf2PI0td9kass+uYkcV
-        4myhvna/ApE5kX7S3EU53KXknNGGUKAzEapRY9u3ufPsc1TUNDxBeySy4Gi53QTwJdBJnkc7Cr6
-        LAYFDYPwsyHaXPZreqeF5bd0N
-X-Received: by 2002:a5d:6d8f:: with SMTP id l15mr14121158wrs.350.1634889546670;
-        Fri, 22 Oct 2021 00:59:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLtKFRJX+mIe1fizAqfht37OT+GQUelpvBz5XAYxttgYXk3SlQgfC0gIGg3GDQtW72nlShUA==
-X-Received: by 2002:a5d:6d8f:: with SMTP id l15mr14121107wrs.350.1634889546352;
-        Fri, 22 Oct 2021 00:59:06 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6324.dip0.t-ipconnect.de. [91.12.99.36])
-        by smtp.gmail.com with ESMTPSA id i17sm7855993wru.18.2021.10.22.00.59.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 00:59:05 -0700 (PDT)
-Message-ID: <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
-Date:   Fri, 22 Oct 2021 09:59:05 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
+        Fri, 22 Oct 2021 05:59:31 -0400
+X-Greylist: delayed 9134 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 05:59:31 EDT
+Received: from pps.filterd (m0174681.ppops.net [127.0.0.1])
+        by mx0b-0039f301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M73nBQ010281;
+        Fri, 22 Oct 2021 07:24:53 GMT
+Received: from eur02-ve1-obe.outbound.protection.outlook.com (mail-ve1eur02lp2057.outbound.protection.outlook.com [104.47.6.57])
+        by mx0b-0039f301.pphosted.com with ESMTP id 3burjyr1su-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 07:24:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WnRBkMG+2euy8J8zNoitLPCHvkHB1fAT453TEggDPKBIY09v/qFITF0ldr4CObPmxsR/9IMZPDW+e77Rg7wBq6Go7a86o5Fi+Ij30ZqMtWlDrKf82nii2f1og18WzlBs/mmvZ8hEkW0cboQjvWGq5VCwjKAme0xcWWcVUIZXr3UwlqXP6NLLV6dcOZStP40jSPfoSAA8l/9kngSN+EFD4BfixQpb1uUXH9aXxUPaGKa3aHJwmMyXGmfUOwKEHFW6Fq2leKIMe/04P5HbkpHOIlW+1LsfvqAb+Cr+5TrFW8ZLoliYAVgsDM22oVipkPXaQwcV+SfBzEXeE94lEbsRUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ImDmBO/Zg0RkZF9Xvf0lQkTb0mSLH2BIKOqkes4c+5k=;
+ b=G7fH1QKLaZ+4q8h0hpt0w9WgEoXHLiAeIsV9zAEqigyoyzzcVUcz5lR1XVJz7V3aJEbOC7kbkO8FnEH+oRRoTYbpv4X5hPYGed9DgaqnYWxE76H2Y4A6gXm/qwKZwKjXrFKQaIfXQzPRfDir6eS8xt/Un0mBnmq5vvvkofe7e9BEHPm8nzZ1MLOjhR+ON7X+069zmHevZVTvv20X9htrGPWnEqLhFlin0iAFjKvGk5QKa1kV6DeO6yrMgFxYIGR7JbRmsacFZGR2Ua8iRP4dYXP7OFxsrx/mneyQNCWPqp2xUD1w8ovB2Yvlj3C+wJ0F7qaO/qW6E5XYYELwyX9F1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
+ dkim=pass header.d=epam.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ImDmBO/Zg0RkZF9Xvf0lQkTb0mSLH2BIKOqkes4c+5k=;
+ b=VS2sFtOfQElNIiktqvaMYKr4dq3w0x4gAnzCatzQzIs8TQcm1yZaoVOUYFkWVmO7/l3GXdk0rG7sNCELlwohkcD81+sSr+SNBvg7vArpwcqDQoah90xeMmKp8b3J6P0x/MzGGirsMCLkqX5hRTkYNs0PZbF6UdiYlWs1sjjko8wEes56zkkE0Odm9I0DgIX78ndFBOyDO5V40hG7jzg+x1WhWET7ltobw/hYE3aNj9Xbb1UIMph+s/z6qnWLODLIdZWF1uzLH3c4/znCt9rZKRQhDLkHf2866Urg3lfaZFgug/6opSA0U4u4Pi6WzVM5w3IB8hEbD1T8cROmfhSkog==
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
+ by AM0PR03MB5940.eurprd03.prod.outlook.com (2603:10a6:208:15a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
+ 2021 07:24:51 +0000
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::c038:e032:595a:651]) by AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::c038:e032:595a:651%8]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
+ 07:24:51 +0000
+From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+To:     Juergen Gross <jgross@suse.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 2/5] xen: flag xen_drm_front to be not essential for
+ system boot
+Thread-Topic: [PATCH 2/5] xen: flag xen_drm_front to be not essential for
+ system boot
+Thread-Index: AQHXxxDqTORWeHdr+U+rFmdTnLsW1KvenauA
+Date:   Fri, 22 Oct 2021 07:24:51 +0000
+Message-ID: <63cfe3bb-93cf-2c5a-f33c-8f81d738c249@epam.com>
+References: <20211022064800.14978-1-jgross@suse.com>
+ <20211022064800.14978-3-jgross@suse.com>
+In-Reply-To: <20211022064800.14978-3-jgross@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-References: <YUpNLtlbNwdjTko0@moria.home.lan> <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org> <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org> <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org> <YXBUPguecSeSO6UD@moria.home.lan>
- <YXHdpQTL1Udz48fc@cmpxchg.org> <YXIZX0truEBv2YSz@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-In-Reply-To: <YXIZX0truEBv2YSz@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99a71d77-93d6-45ed-9a89-08d9952d0996
+x-ms-traffictypediagnostic: AM0PR03MB5940:
+x-microsoft-antispam-prvs: <AM0PR03MB5940E2FD6F852DE4AAFF64DBE7809@AM0PR03MB5940.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fyJxnzigc6FWLbOlEv92G3q95IH0qqCTn88Cixytfqi19a7zfQ9FLMFOjHRE/aL4ZCqzyxULByeJReSZYL58pMEYEU3dZG6f/F+Bs2HQ4gEg3wBkUNS9GwCaa+4TZhk68IxtRInTKhwQRMEM+IbUfGHTy+psDjp58sRc2AFuKrQgl/gwkOKYtZyKc03TfmN9YlJbp1Sc6BeLbX/1VcKMCCn7fwjLLECTsRwSymVxElk3Ikagj6tK0nGn8yXzZfXR8Ch+GdBseB/wAC9zqe7o62pTLEhGm6i7DTrARmUya5ElX5pvszoeLufFw3Z0SRkdGGM8nOqFqVuGj11do9pQpefLc2xOCvEtZDk+xQh0bjjv3zjlYyQBj9O1gNuiftpt549X1HBb8cVt7moQb6LSXdfhPHutwahoAKnVWGi0NNIyKBPyaFWCIMECtO8GTK18H09fwj3tUJPZJoiwOBqyxWj8qih0fVcafByxP+81it2dHKM9TDK3ZiUDHh5vUEMrkDewHJjRcIg0ELyM15dzvWA8Laa/QH7QYt5r4YWf/SlcvtEltyrDqc8TFGjVd4N1UY9e6WqlCLhg6ScH2S0un8P2XwPUVmTNMqW7DcopkBupROvct30W6gqyojIXfDpuRDa2i61iBngZzuHujShWK4K8BREubkODr3hMex6691QeEEJkXD0OSjH7czKdvqLxqQIbCMCBSk1sYkkimqNehmJbQyl7dDdwFnCLHjxwBVT3b4S0UIJulcCLMx5XcHGd
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(186003)(66476007)(76116006)(4744005)(6486002)(66946007)(2616005)(26005)(66556008)(91956017)(6506007)(8676002)(53546011)(71200400001)(5660300002)(8936002)(122000001)(38100700002)(2906002)(38070700005)(54906003)(110136005)(36756003)(6512007)(31686004)(31696002)(508600001)(64756008)(66446008)(86362001)(316002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WmVSRkdjV0diYzlZZ05wWUlLQUtTMHZyV2trOVQ4TmNqZi9YZzZBeE1iYzhF?=
+ =?utf-8?B?dnJ6NDNyMEU5MlQ3cjd5MStzR3oxamhBT0Q4UTdWZkYyaFBWUUU0UGFjK3F6?=
+ =?utf-8?B?RUZLVVg2b2U2cVpYcWxzT2V5VGhRbThoYXFTSHJKRFNQNCtULysyY3g1MWU5?=
+ =?utf-8?B?c3VKNTMzR0JSQzJqL3AyTUFLdWxnYXhrckt6YlJLYlU4enZTUU8vbkl2MW0z?=
+ =?utf-8?B?eU9PUkJ3Sm4yWVI5MXFmSkdMMktGWHVSb3dCdmExSkRVcjFkY3AxdU1pOHd6?=
+ =?utf-8?B?UXdHT3lkakVKTFNQRUx5blBwdmRtUkFDYUFhOHBKWFp3TTRXeXViSUdiT1BS?=
+ =?utf-8?B?dUlqcGZ2YlNCYUdPU3RwWjc5YlVZcTF0ZXhkVlVJdXVNV0hKRi92T3kyUUNt?=
+ =?utf-8?B?NG9hTm5RZFNyS2ViVXBCaXg1b2hVeGlBZmlJbGFwKy9HT0kvMzI5L3JHcTFn?=
+ =?utf-8?B?bWpKRXBKNUU5QVlYU2tyNFZKemVIZ3F2S0h2d0N4Wk9uWEJnMlloZUN1azE4?=
+ =?utf-8?B?WDk4RllxajVlcFNlZ2plQUxlc0taSWhyMjJGTVhqYllIWGZhNitvajhUeGln?=
+ =?utf-8?B?NXJST0xxdGpJS0xteEtRcDA4Y2pOUWROaDdJSjVlc0dMN3dlV3owMU1Ed1Qz?=
+ =?utf-8?B?Y245Ym1wVjVXeG1oNnlDRjJGUTc0V05PWStEakl4TFh6anl6YXpyc2paQUYy?=
+ =?utf-8?B?OVgyMU9GS0J4eVNWQXdZYWRxSytpUHlBazJZcG1KSGFjcG96dHZpSWVkaEhx?=
+ =?utf-8?B?VTEyMFRNS2RtZTVLUGxjQk1DS3VUcUtHcG5VTXVSK3dLL1JleWI1L0FSNGdO?=
+ =?utf-8?B?SHd0R2ZiUEE5YUljVUZYb044ZmI3ejFpaFgxMDZHRmQyMU1BbzRCeFJvM0d3?=
+ =?utf-8?B?S0R5bjM0aFBKOFVCdEVQR1VBMFJ4eGh3QTR5dlk3VUt4bHl0ZFg5UTZEdloy?=
+ =?utf-8?B?UjNqY2FrUm1obHRNUmZnT3RIL0Y3ZHAvLzUxT0pnZHBWSnl0dkFFS0JKZU5j?=
+ =?utf-8?B?dlpZSGZVZ001ODB1a0Q0OGpVS1dqZC9ReEhoOGZtbGV6Q0I4YTRRL2lRQ1Z0?=
+ =?utf-8?B?NUVyL2oxd1dzS1dYemtxSDd4Rlh1cnY2d3hiYnhyVU9QU1YrSXNQUE52cnZn?=
+ =?utf-8?B?YnUwMktySjFuMjhiNUpMalQ0UVpxb2t3QnRMT3BrNWJCWjVZODFVdVVFNEpu?=
+ =?utf-8?B?Ni9FMHpsdlN5aHh3amlLOHZyWEdybDFYQXlkeHV5R3dtK2p0akhMejN5SXRl?=
+ =?utf-8?B?YUVnVHJWS25xbS9Qd3A4VXFqeVhWK0VOUnI5YzI2dEg5NjVoY0pMaW93YXY2?=
+ =?utf-8?B?QlpIREtQcGZmZ003amgwYVEra1ZzQnVFQWcyaHNWemYxQ05QcDkrdFlJZ1NV?=
+ =?utf-8?B?OSt2U0FwMXhCYmhSelp2Y3NEaEg0OVVKQndXQkFqWlNYR1ErdWVkWlkvaEtM?=
+ =?utf-8?B?OThFcnVjR0VVc1EzQnkxVVRlTlR1WldSYmpCTExTQ1NvblNIY1RvYWVOQXVR?=
+ =?utf-8?B?VFNnaXRqMjVCK2ljUW9qbTNvOXE1QlVseW85ZGxMUG84RTdYUnArbnNoNnNT?=
+ =?utf-8?B?dndPSWFJVTlyWUlpdXRvWC81ZC9TcG5iSkVpbzZpZ2VrV0tKQ2JLRDI5ZmZk?=
+ =?utf-8?B?MkZUVVNPV0plVXpESXNnQzZlbXNBSEttWkphRFdtOTFCT1h2TDNnUncwYUlV?=
+ =?utf-8?B?dEl0NTlVL3RpbHpyRFA3aDdtS3RQamNPK2xCMFExbnJxVG1LQjFrWHlkd2NW?=
+ =?utf-8?B?UCszMUlxNUl5N294N09RMGlWTURmdlh5ZUZDUWR6bnRNWmhBd3VzQ0kxNXRx?=
+ =?utf-8?B?Njl0aU5HMndBZlJqWTM4ZHFZRlRDN1FRZ2ExN2o0b1ZGZTRxTHV4L0lmVk5w?=
+ =?utf-8?B?Y084L2hSOEV2UkxJNm83ME1xNEhURGJvYWE3KzhNN0tzKzJZYytLNVFSUFEz?=
+ =?utf-8?B?SUdXc2FnSWtpVkZTdHJyd2R4MndyTFQ1M3VTMXpUSGVwNzhkdEZ5bmNtRUZn?=
+ =?utf-8?B?UDE1S2pPMk93PT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B410ABFF3F727A47B21676DF15EA1DE1@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: epam.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99a71d77-93d6-45ed-9a89-08d9952d0996
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2021 07:24:51.6119
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Oleksandr_Andrushchenko@epam.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB5940
+X-Proofpoint-GUID: zbwEZ-90WaMM4tze-hqmI4wxp5BTC7zD
+X-Proofpoint-ORIG-GUID: zbwEZ-90WaMM4tze-hqmI4wxp5BTC7zD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_02,2021-10-21_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ mlxlogscore=999 lowpriorityscore=0 spamscore=0 impostorscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110220039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.21 03:52, Matthew Wilcox wrote:
-> On Thu, Oct 21, 2021 at 05:37:41PM -0400, Johannes Weiner wrote:
->> Here is my summary of the discussion, and my conclusion:
-> 
-> Thank you for this.  It's the clearest, most useful post on this thread,
-> including my own.  It really highlights the substantial points that
-> should be discussed.
-> 
->> The premise of the folio was initially to simply be a type that says:
->> I'm the headpage for one or more pages. Never a tailpage. Cool.
->>
->> However, after we talked about what that actually means, we seem to
->> have some consensus on the following:
->>
->> 	1) If folio is to be a generic headpage, it'll be the new
->> 	   dumping ground for slab, network, drivers etc. Nobody is
->> 	   psyched about this, hence the idea to split the page into
->> 	   subtypes which already resulted in the struct slab patches.
->>
->> 	2) If higher-order allocations are going to be the norm, it's
->> 	   wasteful to statically allocate full descriptors at a 4k
->> 	   granularity. Hence the push to eliminate overloading and do
->> 	   on-demand allocation of necessary descriptor space.
->>
->> I think that's accurate, but for the record: is there anybody who
->> disagrees with this and insists that struct folio should continue to
->> be the dumping ground for all kinds of memory types?
-> 
-> I think there's a useful distinction to be drawn between "where we're
-> going with this patchset", "where we're going in the next six-twelve
-> months" and "where we're going eventually".  I think we have minor
-> differences of opinion on the answers to those questions, and they can
-> be resolved as we go, instead of up-front.
-> 
-> My answer to that question is that, while this full conversion is not
-> part of this patch, struct folio is logically:
-> 
-> struct folio {
-> 	... almost everything that's currently in struct page ...
-> };
-> 
-> struct page {
->     unsigned long flags;
->     unsigned long compound_head;
->     union {
->         struct { /* First tail page only */
->             unsigned char compound_dtor;
->             unsigned char compound_order;
->             atomic_t compound_mapcount;
->             unsigned int compound_nr;
->         };
->         struct { /* Second tail page only */
->             atomic_t hpage_pinned_refcount;
->             struct list_head deferred_list;
->         };
->         unsigned long padding1[4];
->     };
->     unsigned int padding2[2];
-> #ifdef CONFIG_MEMCG
->     unsigned long padding3;
-> #endif
-> #ifdef WANT_PAGE_VIRTUAL
->     void *virtual;
-> #endif
-> #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
->     int _last_cpupid;
-> #endif
-> };
-> 
-> (I'm open to being told I have some of that wrong, eg maybe _last_cpupid
-> is actually part of struct folio and isn't a per-page property at all)
-> 
-> I'd like to get there in the next year.  I think dynamically allocating
-> memory descriptors is more than a year out.
-> 
-> Now, as far as struct folio being a dumping group, I would like to
-> split other things out from struct folio.  Let me address that below.
-> 
->> Let's assume the answer is "no" for now and move on.
->>
->> If folios are NOT the common headpage type, it begs two questions:
->>
->> 	1) What subtype(s) of page SHOULD it represent?
->>
->> 	   This is somewhat unclear at this time. Some say file+anon.
->> 	   It's also been suggested everything userspace-mappable, but
->> 	   that would again bring back major type punning. Who knows?
->>
->> 	   Vocal proponents of the folio type have made conflicting
->> 	   statements on this, which certainly gives me pause.
->>
->> 	2) What IS the common type used for attributes and code shared
->> 	   between subtypes?
->>
->> 	   For example: if a folio is anon+file, then the code that
->>            maps memory to userspace needs a generic type in order to
->>            map both folios and network pages. Same as the page table
->>            walkers, and things like GUP.
->>
->> 	   Will this common type be struct page? Something new? Are we
->> 	   going to duplicate the implementation for each subtype?
->>
->> 	   Another example: GUP can return tailpages. I don't see how
->> 	   it could return folio with even its most generic definition
->> 	   of "headpage".
->>
->> (But bottomline, it's not clear how folio can be the universal
->> headpage type and simultaneously avoid being the type dumping ground
->> that the page was. Maybe I'm not creative enough?)
-> 
-> This whole section is predicated on "If it is NOT the headpage type",
-> but I think this is a great list of why it _should_ be the generic
-> headpage type.
-> 
-> To answer a questions in here; GUP should continue to return precise
-> pages because that's what its callers expect.  But we should have a
-> better interface than GUP which returns a rather more compressed list
-> (something like today's biovec).
-> 
->> Anyway. I can even be convinved that we can figure out the exact fault
->> lines along which we split the page down the road.
->>
->> My worry is more about 2). A shared type and generic code is likely to
->> emerge regardless of how we split it. Think about it, the only world
->> in which that isn't true would be one in which either
->>
->> 	a) page subtypes are all the same, or
->> 	b) the subtypes have nothing in common
->>
->> and both are clearly bogus.
-> 
-> Amen!
-> 
-> I'm convinced that pgtable, slab and zsmalloc uses of struct page can all
-> be split out into their own types instead of being folios.  They have
-> little-to-nothing in common with anon+file; they can't be mapped into
-> userspace and they can't be on the LRU.  The only situation you can find
-> them in is something like compaction which walks PFNs.
-> 
-> I don't think we can split out ZONE_DEVICE and netpool into their own
-> types.  While they can't be on the LRU, they can be mapped to userspace,
-> like random device drivers.  So they can be found by GUP, and we want
-> (need) to be able to go to folio from there in order to get, lock and
-> set a folio as dirty.  Also, they have a mapcount as well as a refcount.
-> 
-> The real question, I think, is whether it's worth splitting anon & file
-> pages out from generic pages.  I can see arguments for it, but I can also
-> see arguments against it (whether it's two types: lru_mem and folio,
-> three types: anon_mem, file_mem and folio or even four types: ksm_mem,
-> anon_mem and file_mem).  I don't think a compelling argument has been
-> made either way.
-> 
-> Perhaps you could comment on how you'd see separate anon_mem and
-> file_mem types working for the memcg code?  Would you want to have
-> separate lock_anon_memcg() and lock_file_memcg(), or would you want
-> them to be cast to a common type like lock_folio_memcg()?
-
-FWIW,
-
-something like this would roughly express what I've been mumbling about:
-
-anon_mem    file_mem
-   |            |
-   ------|------
-      lru_mem       slab
-         |           |
-         -------------
-               |
-	      page
-
-I wouldn't include folios in this picture, because IMHO folios as of now
-are actually what we want to be "lru_mem", just which a much clearer
-name+description (again, IMHO).
-
-Going from file_mem -> page is easy, just casting pointers.
-Going from page -> file_mem requires going to the head page if it's a
-compound page.
-
-But we expect most interfaces to pass around a proper type (e.g.,
-lru_mem) instead of a page, which avoids having to lookup the compund
-head page. And each function can express which type it actually wants to
-consume. The filmap API wants to consume file_mem, so it should use that.
-
-And IMHO, with something above in mind and not having a clue which
-additional layers we'll really need, or which additional leaves we want
-to have, we would start with the leaves (e.g., file_mem, anon_mem, slab)
-and work our way towards the root. Just like we already started with slab.
-
-Maybe that makes sense.
-
--- 
-Thanks,
-
-David / dhildenb
-
+SGksIEp1ZXJnZW4hDQoNCk9uIDIyLjEwLjIxIDA5OjQ3LCBKdWVyZ2VuIEdyb3NzIHdyb3RlOg0K
+PiBTaW1pbGFyIHRvIHRoZSB2aXJ0dWFsIGZyYW1lIGJ1ZmZlciAodmZiKSB0aGUgcHYgZGlzcGxh
+eSBkcml2ZXIgaXMgbm90DQo+IGVzc2VudGlhbCBmb3IgYm9vdGluZyB0aGUgc3lzdGVtLiBTZXQg
+dGhlIHJlc3BlY3RpdmUgZmxhZy4NCj4NCj4gU2lnbmVkLW9mZi1ieTogSnVlcmdlbiBHcm9zcyA8
+amdyb3NzQHN1c2UuY29tPg0KUmV2aWV3ZWQtYnk6IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxv
+bGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNvbT4NCj4gLS0tDQo+ICAgZHJpdmVycy9ncHUv
+ZHJtL3hlbi94ZW5fZHJtX2Zyb250LmMgfCAxICsNCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
+cnRpb24oKykNCj4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS94ZW4veGVuX2RybV9m
+cm9udC5jIGIvZHJpdmVycy9ncHUvZHJtL3hlbi94ZW5fZHJtX2Zyb250LmMNCj4gaW5kZXggOWYx
+NGQ5OWM3NjNjLi5iYzc2MDUzMjRkYjMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS94
+ZW4veGVuX2RybV9mcm9udC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS94ZW4veGVuX2RybV9m
+cm9udC5jDQo+IEBAIC03NzMsNiArNzczLDcgQEAgc3RhdGljIHN0cnVjdCB4ZW5idXNfZHJpdmVy
+IHhlbl9kcml2ZXIgPSB7DQo+ICAgCS5wcm9iZSA9IHhlbl9kcnZfcHJvYmUsDQo+ICAgCS5yZW1v
+dmUgPSB4ZW5fZHJ2X3JlbW92ZSwNCj4gICAJLm90aGVyZW5kX2NoYW5nZWQgPSBkaXNwbGJhY2tf
+Y2hhbmdlZCwNCj4gKwkubm90X2Vzc2VudGlhbCA9IHRydWUsDQo+ICAgfTsNCj4gICANCj4gICBz
+dGF0aWMgaW50IF9faW5pdCB4ZW5fZHJ2X2luaXQodm9pZCkNCg==
