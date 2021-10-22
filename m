@@ -2,131 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248E4438049
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C1543804E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhJVWij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:38:39 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:33559 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbhJVWii (ORCPT
+        id S234463AbhJVWky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234460AbhJVWkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:38:38 -0400
-Received: by mail-ot1-f53.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso6189949otv.0;
-        Fri, 22 Oct 2021 15:36:20 -0700 (PDT)
+        Fri, 22 Oct 2021 18:40:53 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B933C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:38:35 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q187so4580036pgq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=miKkaKnwxzgg3C6dd9L/QtguzarKkK6TwUO49C5QKBM=;
+        b=MHAC8+hDOOMAbyKiG68EXm85QnV0usZrjzMIwf8guh2QGC/e7fEnbO8B2JQKoeffv/
+         D32ML33Y40rx5OGsSD9ufeKUsP2eDnBoxKtTeePvaC6YNuG9FPG4od0dtZgd7ZazLZij
+         RTJscCRIctw2shL7okfYllllc2jP0QoZvUG98=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oOXe3VMjgKim4OsLC2/pNiSdoxCkW2CDkjd2aP4EASQ=;
-        b=jcrb5WbHw+bgoj0q7kEOh0OGuFh4PLR/3LceV5z1nbwwlqKw6S118MeZaay89Omg0G
-         udbSsLoX3ckpMVOGoHcOAFKz2IyW9ahXTaYhoRcBbuZS4Ebt4c7IleNAo+iFHFPRIlBK
-         U4HEMyQZnG+IbyMc9rB6DGri/MQpFCQ29dbx07B+0Dd0vkFR8i6Uf5/9+ZMH/Tuzby+l
-         OSQT62zhkWESKzXfpvvk28WvzUJeV06LIHaLvPsV73+Nbo/aGay6Hnw5NX1ABdN4J9Eg
-         XWu1UVGbd3YyjQN2KKAT6QgtWluweyqOlQ47DfOOMyQNX8QBIGnlKmdFpjetD1FhNdq6
-         vh3Q==
-X-Gm-Message-State: AOAM532/nmIi7Qqzri0T5Bt4PdI4dgsx4AIOebDOtprAdTqb3SIK1aGP
-        +QmzriZch6ca5OLHZCd0TIyH0xHwyg==
-X-Google-Smtp-Source: ABdhPJz3YY0oBGgzE95RJYSfRS7Vop51WChSu23ig9VAzKncjIpwvEfV3xpMXLgwneL2AKN6pHrWgA==
-X-Received: by 2002:a05:6830:2386:: with SMTP id l6mr2082728ots.88.1634942180249;
-        Fri, 22 Oct 2021 15:36:20 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w17sm1981116otm.50.2021.10.22.15.36.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=miKkaKnwxzgg3C6dd9L/QtguzarKkK6TwUO49C5QKBM=;
+        b=yHRNK2wGOJyWmJXO+GHXdVb93z1oZAU/IF7RjqhBaIGObxldW3Rfz1eJcUl1hlCsIm
+         2QCQvDV4tbOC8Lv5vB+9tfhQhsxtghq51z+jRKKABxHmkDegcyXrulOxC69rRxqsccHc
+         JdoPH5OoDM8E2M671wwTfN/BTi9V8OnUbfVwXJ7c/ZbXBXnIk/SNVUWtqYgan+uk2cbw
+         +mowSlNK83e58rWk1eIA6stPUuIMgmKFbQodrR8Fy1O3O/zyRyWO1ba5JLloS3F/nfNZ
+         lDbMeA/8rD0O9QPFt6Y2XLxgSPgxjlc9tCa5xc3fACZykeOZE0sOwXNkA4yBN5UkTcQf
+         9HtQ==
+X-Gm-Message-State: AOAM533VUStMIkmJ7OcGr8FQCzuURUzVrXe61cB5HAfy+h80lAOg0xRt
+        lxMwyhSGCqITbNY57szVV0OCbg==
+X-Google-Smtp-Source: ABdhPJwRoongdv60Cafn06aP22vTK0PKsbo6MjG1PJQTEyuusnnfdlt7yWhuBCbM/1UtWweIqkP7yg==
+X-Received: by 2002:a63:740e:: with SMTP id p14mr1896649pgc.329.1634942314934;
+        Fri, 22 Oct 2021 15:38:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ip10sm10555664pjb.40.2021.10.22.15.38.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 15:36:19 -0700 (PDT)
-Received: (nullmailer pid 3294476 invoked by uid 1000);
-        Fri, 22 Oct 2021 22:36:18 -0000
-Date:   Fri, 22 Oct 2021 17:36:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>,
-        linux-spi@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
- description file to yaml
-Message-ID: <YXM84oCOAr6pSOw2@robh.at.kernel.org>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-5-miquel.raynal@bootlin.com>
- <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
- <20211021160932.4169f66f@xps13>
+        Fri, 22 Oct 2021 15:38:34 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 0/2] lkdtm/bugs: Check that a per-task stack canary exists
+Date:   Fri, 22 Oct 2021 15:38:24 -0700
+Message-Id: <20211022223826.330653-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021160932.4169f66f@xps13>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=848; h=from:subject; bh=AmtTDFE416bOnzEP4shIh6R7CaOVhj0S565/1wjTphY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhcz1hzWEbn4jVDkstel7Z8g0GFX+J1a2ZvpD5wjEX xqHBLOqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYXM9YQAKCRCJcvTf3G3AJlfJD/ 9SnIHLhM4ffgxebcLffDtztM1BzHoph5vLlpGalPedFmaOulLliESziV1vjSJvjpirSG8Bqn71vqLX 7KZpK/sMl1C8P3YOuu39Xs3Nt0YqjCvZFqximihZ/8GyOaAhjvazbyuY9k35a6hC6ZtK72eItSq+/0 oiQzg3uFNWVpWNKoJwzF1JmdiSlNe+uRS8nlbCyexqBdHqyDdu7e6XJTQ+H3uYIh3Mbmd04iqCYrdP Hwx7q6OWNSC2ChrK7cFcWkhEOEtqcG1kzGN7kNVglSeBnVJJwDy6lySK2zXENDgnETMozXcCD03rId IrXxRnW5cCkyAdUHURYj9Vl2qjNkZY2jznik0ulXhGW3Tdm7zsa9IEXCZlREQ9duR975U8ivysG7rJ OlAXK7fDMrRxC4XN9vfpqhMtmUnoCMF8xkHqzaox2cCqbBTEViE0nKpBh9B3anApPns4nsSHQoYykw W3dAxNiiMmq/LLPDn8vwi+Wr42V7MXUwl4elNiSgac8UZIorXSFwrlbHQD0OSHuYBqO6xjmjGE6dwa S8FZmOY/XojkB7I+1dp+7WyfDeLPg9mHZSMkjKXmTEQkF8SRsLYm7n3veUe01xrrKxwWTtW8dRf3QU IkWLbW6rbEt/87lvH8ic4g521/aDa8oAZ48MycKUIYeN+fUrCJyNhdimUdDw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 04:09:32PM +0200, Miquel Raynal wrote:
-> Hi Rob,
-> 
-> robh@kernel.org wrote on Wed, 20 Oct 2021 16:14:47 -0500:
-> 
-> > On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
-> > > Let's get rid of spi-nand.txt by converting it to yaml schema. While at
-> > > converting this file, let's actually pull all the generic properties
-> > > from nand-chip.yaml which might apply to a SPI-NAND chip.
-> > > 
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > ---
-> > >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
-> > >  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
-> > >  2 files changed, 27 insertions(+), 5 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
-> > >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> > >   
-> > 
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> > 
-> > yamllint warnings/errors:
-> > 
-> > dtschema/dtc warnings/errors:
-> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
-> > xargs: dt-doc-validate: exited with status 255; aborting
-> > make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
-> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
-> > make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
-> > make[1]: *** Waiting for unfinished jobs....
-> > make: *** [Makefile:1441: dt_binding_check] Error 2
-> 
-> I am not able to reproduce this error and in general I don't understand
-> it. There is no relationship between this change and
-> snps,dw-apb-ssi.yaml. Also the fact that nand-chip-yaml do not exist,
-> it was just created in the patch before so I wonder how much I should
-> trust this error.
+Hi,
 
-I think you can ignore this. The prior patch should have been applied, 
-but looks like it wasn't. My script's patch applying logic is not what 
-I'd call robust.
+This adds a test for per-task stack canaries to help verify the latest
+work in this area for arm[1]. Most architectures already support this
+under GCC, though there are some that are still lagging[2].
 
-> Also, maybe I am not using the tools properly, but it is very hard to
-> send correct bindings at the first try. Running make dt_binding_check
-> takes ages, any change in one yaml file will recheck the entire data
-> base and filtering out on a single yaml file is generally too
-> restrictive and still prints unrelated errors of syntax on other files.
+-Kees
 
-Do you set 'DT_SCHEMA_FILES'? That will check just the schema you set 
-it to. You still need to not set it at the end because any schema could 
-apply to any example, so we have to check everything.
+[1] https://lore.kernel.org/r/20211021142516.1843042-1-ardb@kernel.org
+[2] https://github.com/KSPP/linux/issues/29
 
-Also using DT_SCHEMA_FILES should be a bit faster with what's queued for 
-5.16.
+Kees Cook (2):
+  selftests/lkdtm: Add way to repeat a test
+  lkdtm/bugs: Check that a per-task stack canary exists
 
-> I don't know how much of this is actually expected and/or if someone is
-> working on it.
+ drivers/misc/lkdtm/bugs.c               | 77 +++++++++++++++++++++++++
+ drivers/misc/lkdtm/core.c               |  1 +
+ drivers/misc/lkdtm/lkdtm.h              |  1 +
+ tools/testing/selftests/lkdtm/config    |  1 +
+ tools/testing/selftests/lkdtm/run.sh    | 10 +++-
+ tools/testing/selftests/lkdtm/tests.txt |  1 +
+ 6 files changed, 90 insertions(+), 1 deletion(-)
 
-Due to python startup times being slow, it turns out to generally be 
-faster to not have make track changes and do things incrementally. 
-That's why all the schema are checked at once (though sharded with 
-xargs). So I'm not really sure there's much we can do. I've certainly 
-investigated it.
+-- 
+2.30.2
 
-Rob
