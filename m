@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256AA4373CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872FF4373D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhJVIo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbhJVIo4 (ORCPT
+        id S232341AbhJVIql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:46:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:29926 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231991AbhJVIqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:44:56 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C7CC061764;
-        Fri, 22 Oct 2021 01:42:38 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id e19so215106edy.0;
-        Fri, 22 Oct 2021 01:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9rMHji8kgf+m1porXcns682MpUeRt4z96dt4L6ZyjLc=;
-        b=oXEuAQPtB1gYaPl9YoqjUDxFnNnue1Mr3NiQMDM7grJKT0/tF180plb6gb1WyBHxDb
-         eiboqeXZlG2jjZLA1uRzymppl5uzcDeocO1kbQFgnevlYOdAjpolhZxBjKXw8eEAaxwN
-         +tOYj7uTOd7CPFAHC/aj+q7QZ8XGXFDH25C3+AEyMQWC0Wz7KbMZtTHi5hBNjL6VqK2v
-         xS83oYpecRXh4RuSuezcBJMQJJx7OZmCJUUJe8bTQli7cI2ia+wqAqSOMF+qN/dUyGh+
-         Y+BjnHXyY09Pj40X2AUFZpoqer1Fyeczj8PuvKAdt2Lxs0jEdTkayBu1GH4A4pFRq1zy
-         4E/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9rMHji8kgf+m1porXcns682MpUeRt4z96dt4L6ZyjLc=;
-        b=bvqWIIqeDtnPSPAhpeEs0jOiDof29A8JJ9TbqWUVg0QUt3tY92abSFfGrdBmXqlUYB
-         CQhGP3UNswI9Rk2Y8xNbnv0xdZahOk/+cL1Hpwu4arsXEp+nmeQ8/W4qR8TRGx/kyzbl
-         41fZ3LR3nY0/Fi2tNeD89u0JKnlhiu9kpjlsuaMfyen1JuyKZgqx3fAltPIaJAaBwfWG
-         0C75rHerELXBHpo2aAQd/qSwVyGdhHnyIs9eVUB+iBSRmpY9Ll1tF7vZDB32BbPA3uwk
-         52YneTFy2FAq7KDw0ocl0yqtoryI+JwBmKK3/jQvRLwNzYriDk/yN523Quc0JdjX8uz0
-         CQZg==
-X-Gm-Message-State: AOAM530lgqBv196LSqIwCp4IUojj0yjFDYccNrOvUeHKrAL5aafeBGnw
-        SCMB5WM1i7XNQ9fy9v9gYitHpjTvtWRZfTj/Ny8=
-X-Google-Smtp-Source: ABdhPJy0bWXnnvLSXyQCDfQotX5wHGejlFHaw6dDhsx3Z37fh+OyTdfcnQxhJw4p0N10FFgFATsYPm8TPGkzd/PRtUI=
-X-Received: by 2002:a50:e188:: with SMTP id k8mr15802135edl.119.1634892157363;
- Fri, 22 Oct 2021 01:42:37 -0700 (PDT)
+        Fri, 22 Oct 2021 04:46:40 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HbHpT6WhGzbnNZ;
+        Fri, 22 Oct 2021 16:39:45 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 16:44:20 +0800
+Received: from [10.174.176.245] (10.174.176.245) by
+ kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 16:44:19 +0800
+Subject: Re: [PATCH] Bluetooth: cmtp: fix possible panic when
+ cmtp_init_sockets() fails
+To:     Marcel Holtmann <marcel@holtmann.org>
+CC:     Karsten Keil <isdn@linux-pingi.de>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211022034417.766659-1-wanghai38@huawei.com>
+ <9D8B1F5B-8EFE-40CB-BC85-F6EC3483CC61@holtmann.org>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <ca60862b-594f-3b79-5683-1e3d78811f42@huawei.com>
+Date:   Fri, 22 Oct 2021 16:43:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20211022054740.25222-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20211022054740.25222-1-lukas.bulwahn@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 22 Oct 2021 11:41:41 +0300
-Message-ID: <CAHp75VePmGx-24XWocV9eUwh+uFw4seY83SyA7zG-pa-6T18_Q@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: drop obsolete file pattern in SDHCI DRIVER section
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9D8B1F5B-8EFE-40CB-BC85-F6EC3483CC61@holtmann.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 8:49 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 5c67aa59bd8f ("mmc: sdhci-pci: Remove dead code (struct
-> sdhci_pci_data et al)") removes ./include/linux/mmc/sdhci-pci-data.h;
-> so, there is no further file that matches 'include/linux/mmc/sdhci*'.
->
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
->
->   warning: no file matches    F:    include/linux/mmc/sdhci*
->
-> Drop this obsolete file pattern in SECURE DIGITAL HOST CONTROLLER
-> INTERFACE (SDHCI) DRIVER.
 
-Thanks! I grepped by name but definitely haven't thought about wildcards.
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20211021
+ÔÚ 2021/10/22 12:48, Marcel Holtmann Ð´µÀ:
+> Hi Wang,
 >
-> Ulf, please pick this minor non-urgent cleanup patch on top of the
-> commit above.
+>> I got a kernel BUG report when doing fault injection test:
+>>
+>> ------------[ cut here ]------------
+>> kernel BUG at lib/list_debug.c:45!
+>> ...
+>> RIP: 0010:__list_del_entry_valid.cold+0x12/0x4d
+>> ...
+>> Call Trace:
+>> proto_unregister+0x83/0x220
+>> cmtp_cleanup_sockets+0x37/0x40 [cmtp]
+>> cmtp_exit+0xe/0x1f [cmtp]
+>> do_syscall_64+0x35/0xb0
+>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> If cmtp_init_sockets() in cmtp_init() fails, cmtp_init() still returns
+>> success. This will cause a kernel bug when accessing uncreated ctmp
+>> related data when the module exits.
+>>
+>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
+>> net/bluetooth/cmtp/core.c | 6 ++++--
+>> 1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/net/bluetooth/cmtp/core.c b/net/bluetooth/cmtp/core.c
+>> index 0a2d78e811cf..ccf48f50afdf 100644
+>> --- a/net/bluetooth/cmtp/core.c
+>> +++ b/net/bluetooth/cmtp/core.c
+>> @@ -499,11 +499,13 @@ int cmtp_get_conninfo(struct cmtp_conninfo *ci)
+>>
+>> static int __init cmtp_init(void)
+>> {
+>> +	int err;
+>> +
+>> 	BT_INFO("CMTP (CAPI Emulation) ver %s", VERSION);
+>>
+>> -	cmtp_init_sockets();
+>> +	err = cmtp_init_sockets();
+>>
+>> -	return 0;
+>> +	return err;
+>> }
+> just do return cmtp_init_sockets();
 >
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
+> Regards
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 44c590b762d1..c47ac3e938b7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17024,7 +17024,6 @@ M:      Adrian Hunter <adrian.hunter@intel.com>
->  L:     linux-mmc@vger.kernel.org
->  S:     Maintained
->  F:     drivers/mmc/host/sdhci*
-> -F:     include/linux/mmc/sdhci*
+> Marcel
+Ok, I will send v2
+> .
 >
->  SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
->  M:     Eugen Hristev <eugen.hristev@microchip.com>
-> --
-> 2.26.2
->
-
-
 -- 
-With Best Regards,
-Andy Shevchenko
+Wang Hai
+
