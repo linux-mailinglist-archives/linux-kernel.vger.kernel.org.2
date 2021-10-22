@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBF043800B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 23:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550F5438013
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhJVWBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        id S234119AbhJVWFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbhJVWA7 (ORCPT
+        with ESMTP id S231382AbhJVWFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:00:59 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0233BC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 14:58:41 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id m14so4806910pfc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 14:58:41 -0700 (PDT)
+        Fri, 22 Oct 2021 18:05:08 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22E3C061764;
+        Fri, 22 Oct 2021 15:02:50 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id q19so4830461pfl.4;
+        Fri, 22 Oct 2021 15:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=46+z3KX/Bw5iK9i97ch1szfrniwqQXL3ZMhrfUJYmJ4=;
-        b=GSC3K9lzPP51HWJwei47eKc+OBCVdcdVlBoyks9BJEcC8OIXr9fWeGJ50E1/Uvgz7m
-         8akD6yaJZb9fZ38FHuc82VZNIQ0D2MsSiYGcn7TaS241qd61moEDti59lCe+owWZLRQ8
-         nPYaUt4pFIfBgIThkonwMQv0uwtB77jkLDDIcBwc6C3wLjLimOxd3tmTBaymohvaL5gU
-         JukOxKcLL9Eam56rNufU1/EtqKjV8AxbzCSXkoraci6Imam/QrNEK7EZOPGrvVXXBmBj
-         Omv7AeJ2g/UoKbLgQzO1k0tqd5G/dFBE+fjPF58P+D7/d/Tp6xrZnPtL7HpoKverAwrH
-         gLIA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Q2X/8VfwNdtvO4WHWKTeql6HD7EYi2Lj4H/w1gAQKOQ=;
+        b=KQ2jivUs2wDE3OjEusgktIGwnWNUDzbHG++RpaXHRhPj+V89CZvEPZEFxaZm4VxsQg
+         i0nT9+BmozmmdoMp7mmBQXS3bXB928eIS1ezKswG6k6JdBCURz6aIzqCCM94ps4eY7WW
+         fduhdNKFS+f12Bcz7EoLuHVPlMDzvQwkJq1FEG4+HlTlmWZVZWx3aT7rtXPEqld/vBCt
+         qQBstPnl/2NDzzZw29G4y2BLnizYo2RYYH2WnlWU6IhHs95S6mcrLdvlNQ4UANh5v65/
+         G4JP/GFljffQj0/BpOD/rm3MksztIFaGJfPULxTsHO/X6EoELQBLzZc14QsJbcmNuvzA
+         /+ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=46+z3KX/Bw5iK9i97ch1szfrniwqQXL3ZMhrfUJYmJ4=;
-        b=Rgs5UX7JsS5e41E/fdNfN3HQZaDrEyZvT43XMVPtadtRMzJJ9WP/okKTrk85MwACPj
-         YPrCcTeGw0SafidJ6v6m/g6LiEpTU77+X4LZhqhKGl9Ew4/A5k+Q7xrIoJjN137NFjDU
-         FLoOJXHRPkcxHqXy0abT5Ns46WtYdjWclDwZjFT5Dti0l3jA5CNpemx92b9inSm3S2WN
-         ORF0FTUivLxQH02WH8w9EsNuW1EED2egLoYqfVv3IZL6AWH0BUthyviMvkOSL2Ti2hbn
-         WVHthZIV1l7xhl+hFdseiGk3jlxM657iHEHZqywjeCKrqm0SbDhCiX9iyikEAi1msTvd
-         PHGQ==
-X-Gm-Message-State: AOAM532gMrqj/F93mGWdFXuwGoylinniWRvLWop+RT1hYzfffNYiODlg
-        jFFVQEfEEu1Tc4YpiZJOSrc=
-X-Google-Smtp-Source: ABdhPJyKRqV6NreYrq0O0o2ilKwZvjQQpb2270LjJgj01yHsXs4Z+AIQyyklUagcK8sLt6DpD0TmuQ==
-X-Received: by 2002:a63:77c4:: with SMTP id s187mr1785536pgc.50.1634939921221;
-        Fri, 22 Oct 2021 14:58:41 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id h2sm9921385pjk.44.2021.10.22.14.58.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Oct 2021 14:58:40 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v2 0/5] mm/mprotect: avoid unnecessary TLB flushes
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20211021200450.b13499c379a27dbfefe9f5e3@linux-foundation.org>
-Date:   Fri, 22 Oct 2021 14:58:39 -0700
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9E576E79-E4FD-4CB9-8BE5-142230C12E63@gmail.com>
-References: <20211021122112.592634-1-namit@vmware.com>
- <20211021200450.b13499c379a27dbfefe9f5e3@linux-foundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q2X/8VfwNdtvO4WHWKTeql6HD7EYi2Lj4H/w1gAQKOQ=;
+        b=gl0f5svjLVOobOAs67FYXxBSr0KBmDvC6pJ882IShw3FAkYYdp+Ksq1aGMSLnBvtxP
+         YsgtIS3SfXofHOQSbwpVHIhwZ8Y5IzKW5ZL9YzeKgFaYUgDnxefp78cTmL+8aCL2hLBk
+         HYDHy+/d+0ZyCWc0/6b3kMMnF69DDrZEkZDW72XCMJK0OgqhrYiJo9mG+Hh4WU1wwfaz
+         GSVoMlKrTiCh+KEny68h6HLVLhQs8LQPYM1r0a++J9Rt6j0WfEWanwujEBdapvMZ+/OG
+         TuHUO0wIx7JCmQOrsJ4LYk2da2QwBwLtMw47ok9PbR+9bFuWchyFUYqTCt9Ke3eoUsvC
+         5BGg==
+X-Gm-Message-State: AOAM531JTRt1miGjCR8fvBDd6fCvj9IuumdOJpo8nT3Ufy7K1Mk5qVYB
+        5q9eEn4Funnuw9bRHA3QwMg9b6fXCH0=
+X-Google-Smtp-Source: ABdhPJyi83RmmZlRicKRAYSWWka9IWiS1ZqEYUQHFMFH4oh2FUO2PsfM12waVM0aqMiSBQTG9v8/gA==
+X-Received: by 2002:a63:1950:: with SMTP id 16mr1772387pgz.346.1634940169552;
+        Fri, 22 Oct 2021 15:02:49 -0700 (PDT)
+Received: from [172.30.1.57] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id v22sm10920247pff.93.2021.10.22.15.02.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 15:02:48 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: clock: samsung: Document Exynos850
+ CMU_APM
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+References: <20211021203152.29312-1-semen.protsenko@linaro.org>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <d54a7dd3-d88b-81ce-cd80-02abd3e37165@gmail.com>
+Date:   Sat, 23 Oct 2021 07:02:43 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211021203152.29312-1-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21. 10. 22. 오전 5:31, Sam Protsenko wrote:
+> CMU_APM generates clocks for APM IP-core (Active Power Management). In
+> particular it generates RTC clocks, which are needed to enable rtc-s3c
+> driver on Exynos850 SoC.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>   .../clock/samsung,exynos850-clock.yaml        | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> index 7f8c91a29b91..5618cfa62f80 100644
+> --- a/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> @@ -32,6 +32,7 @@ properties:
+>     compatible:
+>       enum:
+>         - samsung,exynos850-cmu-top
+> +      - samsung,exynos850-cmu-apm
+>         - samsung,exynos850-cmu-core
+>         - samsung,exynos850-cmu-dpu
+>         - samsung,exynos850-cmu-hsi
+> @@ -68,6 +69,24 @@ allOf:
+>             items:
+>               - const: oscclk
+>   
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: samsung,exynos850-cmu-apm
+> +
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: External reference clock (26 MHz)
+> +            - description: CMU_APM bus clock (from CMU_TOP)
+> +
+> +        clock-names:
+> +          items:
+> +            - const: oscclk
+> +            - const: dout_clkcmu_apm_bus
+> +
+>     - if:
+>         properties:
+>           compatible:
+> 
 
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-> On Oct 21, 2021, at 8:04 PM, Andrew Morton <akpm@linux-foundation.org> =
-wrote:
->=20
-> On Thu, 21 Oct 2021 05:21:07 -0700 Nadav Amit <nadav.amit@gmail.com> =
-wrote:
->=20
->> This patch-set is intended to remove unnecessary TLB flushes. It is
->> based on feedback from v1 and several bugs I found in v1 myself.
->>=20
->> Basically, there are 3 optimizations in this patch-set:
->> 1. Avoiding TLB flushes on change_huge_pmd() that are only needed to
->>   prevent the A/D bits from changing.
->> 2. Use TLB batching infrastructure to batch flushes across VMAs and
->>   do better/fewer flushes.
->> 3. Avoid TLB flushes on permission demotion.
->>=20
->> Andrea asked for the aforementioned (2) to come after (3), but this
->> is not simple (specifically since change_prot_numa() needs the number
->> of pages affected).
->=20
-> [1/5] appears to be a significant fix which should probably be
-> backported into -stable kernels.  If you agree with this then I =
-suggest
-> it be prepared as a standalone patch, separate from the other four
-> patches.  With a cc:stable.
+Thanks.
 
-
-There is no functionality bug in the kernel. The Knights Landing bug
-was circumvented eventually by changing the swap entry structure so
-the access/dirty bits would not overlap with the swap entry data.
-
->=20
-> And the remaining patches are a performance optimization.  Has any
-> attempt been made to quantify the benefits?
-
-I included some data before [1]. In general the cost that is saved
-is the cost of a TLB flush/shootdown.
-
-I will modify my benchmark to test huge-pages (which were not
-included in the previous patch-set) and send results later. I would
-also try nodejs to see if there is a significant enough benefit.
-Nodejs crashed before (hence the 3rd patch added here), as it
-exec-protects/unprotects pages - I will see if the benefit shows in
-the benchmarks.
-
-[ The motivation behind the patches is to later introduce userfaultfd
-writeprotectv interface, and for my use-case that is under=20
-development this proved to improve performance considerably. ]
-
-
-
-[1] =
-https://lore.kernel.org/linux-mm/DA49DBBB-FFEE-4ACC-BB6C-364D07533C5E@vmwa=
-re.com/=
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
