@@ -2,779 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C8D43801D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB25438020
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhJVWKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:10:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhJVWKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:10:12 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE61160F6F;
-        Fri, 22 Oct 2021 22:07:53 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 18:07:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jeff Xie <xiehuan09@gmail.com>
-Cc:     mhiramat@kernel.org, mingo@redhat.com, chenhuacai@kernel.org,
-        linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [RFC PATCH v2] trace: Add trace any kernel object
-Message-ID: <20211022180752.0ed07b35@gandalf.local.home>
-In-Reply-To: <20211021185335.380810-1-xiehuan09@gmail.com>
-References: <20211021185335.380810-1-xiehuan09@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234104AbhJVWNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:13:17 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:8306 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231363AbhJVWNQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 18:13:16 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MK5qSv011085;
+        Fri, 22 Oct 2021 15:10:55 -0700
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3buu23tkj0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 15:10:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QLv6D1qkoIHGpAKZFxyfIx2g08Va6BzEz0/qtSe8KC6ofOeoIoK/H4s9BmDxl4SJYmw9R4u/JOtWJsZwe1GOFc9zo/dUJpRO96jQ5qfiWbVGkeKW0KbJ8s3h3R3PJmEMR4tcy0xG3Af4NwgDHFFWxGG4aocp7BiQUqF2Ev0rbnkOPC+IHiPwmkChVuNKmFAlyqyLBQuk+Cq1H86Lox1Sm1sawPoQr0+bEj5T/RVNTLprkVXf8q8lIEqKbGmIi9dvTnagh71mOKIcf/sm4EHIuAa4Za92UWyE9m8ZtcDJOcJOm8s90bJTrwCJ9jZWqYHSL1M8a+130A3Qoq03w60RIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qeWsEUFFNZ+smycJDuS33wqP6rCwVD7xBn1jXUJsJoE=;
+ b=GTVKYDCQ2nfwnutKuhMOxRg69liDpMUDywQ3K+KgemdJ5Y5OPPeIVne2wmTuEzSI49pMjVOCVGtUWyCKtszxTNfy9UFcHTHPodhEhqSOIh14JKBMQn0dzQOapYKRK8CAVHI1cbq25SrJu6dib+wRoeS6BOCqOq9SD/7xc7/IdeXqStLMEeEPtd0Yaynp3cyjmLjfv3584mP62RZoUXDLqG9/uJwIxQD36NkNdtE9qJAWRCaPiR1MUnoMP5D8ipzHlKQzrYI5qVJFa4ioJwcYnvVM/uleAS2I1xReIvfzRkLmNn7aoCFEdych0Cwd3P94gysRFrBtYRO7vbhvN5MdJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qeWsEUFFNZ+smycJDuS33wqP6rCwVD7xBn1jXUJsJoE=;
+ b=CwDFGsn9ppXglXd48OshI0YT8F3v2MnrI7SP8y8lRMpnVED9/yXgTiXKCLwprOqC7T1tf0fCziLY1q23fRqGVzTj85ZlKU1hyG80Kkxi9iCnhKdi9IeuaeoGhtguwbTezBDU6daNf1w+N2ZidkfKkEKCLCvft2ZtAWum6XyC8FM=
+Received: from SJ0PR18MB4009.namprd18.prod.outlook.com (2603:10b6:a03:2eb::24)
+ by BYAPR18MB2839.namprd18.prod.outlook.com (2603:10b6:a03:10f::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
+ 2021 22:10:53 +0000
+Received: from SJ0PR18MB4009.namprd18.prod.outlook.com
+ ([fe80::919c:1891:e266:2502]) by SJ0PR18MB4009.namprd18.prod.outlook.com
+ ([fe80::919c:1891:e266:2502%8]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
+ 22:10:53 +0000
+From:   "Volodymyr Mytnyk [C]" <vmytnyk@marvell.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        "Vadym Kochan [C]" <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        "Taras Chornyi [C]" <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3] net: marvell: prestera: add firmware v4.0
+ support
+Thread-Topic: [PATCH net-next v3] net: marvell: prestera: add firmware v4.0
+ support
+Thread-Index: AQHXx5Gtrc2y4KycUkKptGnFsuPHoQ==
+Date:   Fri, 22 Oct 2021 22:10:52 +0000
+Message-ID: <SJ0PR18MB4009C605F1A3B6AD13F3ADBDB2809@SJ0PR18MB4009.namprd18.prod.outlook.com>
+References: <1634722349-23693-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+ <YXKuOSDraUsaN75U@lunn.ch> <YXKzxvyZwsFmRaMf@lunn.ch>
+In-Reply-To: <YXKzxvyZwsFmRaMf@lunn.ch>
+Accept-Language: en-GB, uk-UA, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: c40e02d2-3a69-c89b-49f7-5f5fc6b87a8e
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9945138e-cd07-4d1e-b76c-08d995a8d066
+x-ms-traffictypediagnostic: BYAPR18MB2839:
+x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
+x-microsoft-antispam-prvs: <BYAPR18MB283974E92E2870D3C6709B73B2809@BYAPR18MB2839.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xkH8G0SjURV+AiBEfu9LHZ7BwB+kygE/gv/5OpFEA37nZ0Ky9jd5n+/Q5wfDguDr3cGDuoalP7ufzhw9cCqYWMQURGhFfkjiqeu2zrpDsEbwTWYEOOtK5cBP5iaEVYdLdcy7IQaufkvQkSMRYc81cmruqoTUB4v7yi+GjSrAPe+6fbyhdr7n9MjY2FKVwZjvhWJI741tnVDj1a4VOuu2eoAhlPRidjCntTKG3Gr+OHkGajnvmRVs69HejkGOHVQx8vUqGJmPIUzjCrLQiEOMUWmYOAFO0v6UsxRryf8jvzjO4gh/Fb8xt1W32znTfSTp6jkpXAWpqPoBZckvNJCK+D/jMrVQq51nTYjTthNas00jIQkNdFPbaRTzyJeyipKG6Fk1C4Pzv2nw5tXH0u8+F94a7zsftHZOIjGtHLWF91jV+pd0LHXrxYUR6BgdUnFEn1Vu5QIQoPWsu7qI4sUUnN9qVC0Ex4velHsKX1oLbfxk8ZU8IW4jZydznqTwoxZN8IdpQVi1DAC/TGDQ3xfJsCPgynyYuOCYdRb/+S0qodiG3+gvVK4XbWfbiiM9I39+YAiBQ9xgAc3KtziYTV4E3iSIpSrfGKC+cdoXmcN//vUimOMnWl8tNdnUdr5APmjZbwWM4NlT49qh6xkaL7bFCkm4Iin8ufyvgzcrMv+ZrbtWl0j5D+a0rG47eaxGVzg4YbV2bW0iDyv83Ft8McaZBA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB4009.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7696005)(33656002)(66556008)(38100700002)(86362001)(316002)(66446008)(2906002)(122000001)(64756008)(5660300002)(6506007)(26005)(508600001)(4326008)(83380400001)(52536014)(71200400001)(38070700005)(8936002)(186003)(66476007)(8676002)(54906003)(66946007)(9686003)(55016002)(76116006)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?ZsUm8th7tmliKw4wLzTYvVFqjCVKjToNi4iIJRM0II8YYWd4TFQf19HmvQ?=
+ =?iso-8859-1?Q?dkJXRoO/6a7BnmeE3SPROwKL8jhFDRkR/jveOWve5p2sWfojviTd5aDncG?=
+ =?iso-8859-1?Q?2RkC2rcd8L2SFHPAFBZ51zy5gJ4RtDWcv2jFDqHJ6mY5/PnE72eNqeEpfc?=
+ =?iso-8859-1?Q?6+9JdvGgO0cMmPLCMp+q+baQ60equqtUcfv8Zkn0u+wCUHQjQyGD5u2Uwo?=
+ =?iso-8859-1?Q?+GswqSKBng4oVacGq5QOi4vhiueweyyCVTmA1Luei1mpyXL/d2JaoPzTJ6?=
+ =?iso-8859-1?Q?CHtjtuq6tChbVNCpMMzS7JvEZGoaIv/O9tI9WKhzFyZUZcR9EOvMVfkvHe?=
+ =?iso-8859-1?Q?m5yy0+DDj3ABYAj5aGsIFsN2rQ9Jn2qMH1T4AA5EkPUGEziXPkaabAejal?=
+ =?iso-8859-1?Q?g1WI5wVsbOhiGFlv8TRYV9w/70SvH9eVbImVXC2uvzX+tK/RkywX9At96p?=
+ =?iso-8859-1?Q?zW8evoghPTJu1cwczaTrV/QTxkONdboYDH3/WeV68vpyj9qCTjT4qFsLvG?=
+ =?iso-8859-1?Q?lEKsSKzIMRHngI9XYYGnaxMHXLoFopJFWxzxAeNWDn8Fhw3zIkdC4mlR7i?=
+ =?iso-8859-1?Q?MQthZUZfN48Jo50MJmKhOblIltpS3nwNxVshoF7hyw4QyCj4VeB4F2YBMt?=
+ =?iso-8859-1?Q?xgPoXzS88OCcUK+qJCMhKUF1IPPuErE/VOEta4vLnz0gRj3mdsJO4pnXFh?=
+ =?iso-8859-1?Q?ZMP2P8oJd2Sp3E2hdk0CZ17fXspL/WYBo/e4MdBrkXrf2j0bnbGbsjoKRh?=
+ =?iso-8859-1?Q?TFsTd5xJq/WIRioyPOn/26zTIxoMN2GUEniwGnRosLpfuMw9R7aSgz+65/?=
+ =?iso-8859-1?Q?GWdXOobYzwnmfaLi7fLWdCZCXisiy2NplK14SF8eARoJRtrsMSzKUfFz2t?=
+ =?iso-8859-1?Q?UFffmVv79/Ik/4Ti0sVu+iRia4Ztd+iFgVrZTYw3Z2Vn+WD3IsOMJcW6Ml?=
+ =?iso-8859-1?Q?jsdw7evCEP651uWvSEWp2E3PqqTmHlr5x8ThkHeRBgRPK7S3pJmJfuTwWZ?=
+ =?iso-8859-1?Q?loEmIC6S5cZx2xJqVp+WLXogmU6bp1LDOvfSdWiaGsuF6OPhhlDHGhg6rb?=
+ =?iso-8859-1?Q?TqkhZwZzuK06tyBUmd1IGmuYiARptIY6s/B37I3EDjhmec4hGPuFErpF6F?=
+ =?iso-8859-1?Q?oF1zFJZIR7TfB8JUXECuT6KXxrBO0120RxVxJ5Ha7LLNLh5zasE61kPydm?=
+ =?iso-8859-1?Q?J9snKGGWWhQrn2/rKRu1mgpHmo4eRyv/O7yUWUxpqVD2ros8Wo9Tgb+y+T?=
+ =?iso-8859-1?Q?epBf9WqQyKqCzX1MU6VoI/HI8Y3ULXU0iNQUX0XzC+8pXP0dkF8DUdsgQu?=
+ =?iso-8859-1?Q?7C7l9mICVqoUyq7Sk4Dn2gqGkkHge9S/+F//amCXG4a5ETM7zeV+koJNaA?=
+ =?iso-8859-1?Q?B2YOxUpt2/748+lPOltTSS6loLWp//byPJWmYyeFhbweo1ihV1PP5rL7qv?=
+ =?iso-8859-1?Q?wHTGO2uU89ADCDwxABRxvrPGqXftiLClyVGw16TyyqnlZU+yADDn0TFh+L?=
+ =?iso-8859-1?Q?A=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB4009.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9945138e-cd07-4d1e-b76c-08d995a8d066
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2021 22:10:53.0414
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vmytnyk@marvell.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2839
+X-Proofpoint-GUID: zEb-m3fVVPHYYtov9G4EuRhmiihWslKm
+X-Proofpoint-ORIG-GUID: zEb-m3fVVPHYYtov9G4EuRhmiihWslKm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_05,2021-10-22_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 02:53:35 +0800
-Jeff Xie <xiehuan09@gmail.com> wrote:
-
-Hi Jeff!
-
-
-> Introduce a method based on function tracer and kprobe/uprobe/trace_event/
-> to trace any object in the linux kernel.
-> 
-> Usage:
-> When using kprobe/uprobe/trace_event/ we can use a new trigger(objfilter) 
-> to set object and tigger object trace.
-> 
-> For example:
-> 
-> For the function bio_add_page, we can trace the first argument:
-> 
-> int bio_add_page(struct bio *bio, struct page *page,
-> 				unsigned int len, unsigned int offset)
-> 				
-> [root@JeffXie ]# cd /sys/kernel/debug/tracing/
-> [root@JeffXie tracing]# echo 'p bio_add_page arg1=$arg1' > kprobe_events
-> [root@JeffXie tracing]# cd events/kprobes/p_bio_add_page_0/
-> [root@JeffXie p_bio_add_page_0]# echo 'objfilter:arg1 if comm == "cat"' > ./trigger
-> [root@JeffXie p_bio_add_page_0]# cat /test.txt
-> [root@JeffXie p_bio_add_page_0]# cd /sys/kernel/debug/tracing/
-> [root@JeffXie tracing]# cat ./trace
-> # tracer: nop
-> #
-> # entries-in-buffer/entries-written: 81/81   #P:4
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| / _-=> migrate-disable
-> #                              |||| /     delay
-> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-> #              | |         |   |||||     |         |
->              cat-122     [001] .....   111.193997: bio_add_page <-ext4_mpage_readpages object:0xffff888102a4b900
->              cat-122     [001] .....   111.193998: __bio_try_merge_page <-bio_add_page object:0xffff888102a4b900
->              cat-122     [001] .....   111.193998: __bio_add_page <-bio_add_page object:0xffff888102a4b900
->              cat-122     [001] .....   111.193998: submit_bio <-ext4_mpage_readpages object:0xffff888102a4b900
->              cat-122     [001] .....   111.193998: submit_bio_noacct <-ext4_mpage_readpages object:0xffff888102a4b900
->              cat-122     [001] .....   111.193999: __submit_bio <-submit_bio_noacct object:0xffff888102a4b900
->              cat-122     [001] .....   111.193999: submit_bio_checks <-__submit_bio object:0xffff888102a4b900
->              cat-122     [001] .....   111.193999: __cond_resched <-submit_bio_checks object:0xffff888102a4b900
->              cat-122     [001] .....   111.193999: rcu_all_qs <-__cond_resched object:0xffff888102a4b900
->              cat-122     [001] .....   111.194000: should_fail_bio <-submit_bio_checks object:0xffff888102a4b900
->              cat-122     [001] .....   111.194001: blk_mq_submit_bio <-__submit_bio object:0xffff888102a4b900
->              cat-122     [001] .....   111.194001: blk_attempt_plug_merge <-blk_mq_submit_bio object:0xffff888102a4b900
->              cat-122     [001] .....   111.194001: __blk_mq_sched_bio_merge <-blk_mq_submit_bio object:0xffff888102a4b900
->              cat-122     [001] .....   111.194002: __blk_mq_alloc_request <-blk_mq_submit_bio object:0xffff888102a4b900
->              cat-122     [001] .....   111.194002: blk_mq_get_tag <-__blk_mq_alloc_request object:0xffff888102a4b900
->              cat-122     [001] .....   111.194003: blk_account_io_start <-blk_mq_submit_bio object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194212: bio_advance <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194213: bio_endio <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194213: mpage_end_io <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194213: __read_end_io <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194218: bio_put <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194218: bio_free <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194218: bio_free <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194218: bvec_free <-bio_free object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194219: mempool_free <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194219: mempool_free <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194219: mempool_free_slab <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194219: mempool_free_slab <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194219: kmem_cache_free <-blk_update_request object:0xffff888102a4b900
->           <idle>-0       [001] d....   111.194219: kmem_cache_free <-blk_update_request object:0xffff888102a4b900
-> 
-> Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
-> ---
-> So far, it can trace the object from kprobe/uprobe/syscall tracepoint
-> and now it doesn't yet support the count for objfilter.
-> 
->  include/linux/ftrace.h              |  16 +++
->  include/linux/trace_events.h        |   1 +
->  kernel/trace/Kconfig                |   7 +
->  kernel/trace/Makefile               |   1 +
->  kernel/trace/trace.h                |   7 +
->  kernel/trace/trace_entries.h        |  17 +++
->  kernel/trace/trace_events_trigger.c | 122 ++++++++++++++++++
->  kernel/trace/trace_kprobe.c         |   1 +
->  kernel/trace/trace_object.c         | 191 ++++++++++++++++++++++++++++
->  kernel/trace/trace_output.c         |  40 ++++++
->  kernel/trace/trace_syscalls.c       |   1 +
->  kernel/trace/trace_uprobe.c         |   1 +
->  12 files changed, 405 insertions(+)
->  create mode 100644 kernel/trace/trace_object.c
-> 
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 832e65f06754..2d7e62bff6c5 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -1078,4 +1078,20 @@ unsigned long arch_syscall_addr(int nr);
->  
->  #endif /* CONFIG_FTRACE_SYSCALLS */
->  
-> +struct trace_event_file;
-> +
-> +#ifdef CONFIG_TRACE_OBJECT
-> +int init_trace_object(void);
-> +int exit_trace_object(void);
-> +void set_trace_object(void *obj);
-> +void record_trace_object(struct trace_event_file *trace_file,
-> +		struct pt_regs *regs);
-> +#else
-> +static inline int init_trace_object(void) { return 0; }
-> +static inline int exit_trace_object(void) { return 0; }
-> +static inline void set_trace_object(void *obj) { }
-> +static inline void record_trace_object(struct trace_event_file *trace_file,
-> +		struct pt_regs *regs) { }
-> +#endif /* CONFIG_TRACE_OBJECT */
-> +
->  #endif /* _LINUX_FTRACE_H */
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index 3e475eeb5a99..f6dcaca9c3fe 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -684,6 +684,7 @@ enum event_trigger_type {
->  	ETT_EVENT_HIST		= (1 << 4),
->  	ETT_HIST_ENABLE		= (1 << 5),
->  	ETT_EVENT_EPROBE	= (1 << 6),
-> +	ETT_TRACE_OBJECT	= (1 << 7),
->  };
->  
->  extern int filter_match_preds(struct event_filter *filter, void *rec);
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index 420ff4bc67fd..d302a0f085f9 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -237,6 +237,13 @@ config FUNCTION_PROFILER
->  
->  	  If in doubt, say N.
->  
-> +config TRACE_OBJECT
-> +	bool "Trace kernel object"
-> +	depends on FUNCTION_TRACER
-> +	default y
-> +	help
-> +	 This help kernel developer to trace any kernel object.
-> +
->  config STACK_TRACER
->  	bool "Trace max stack"
->  	depends on HAVE_FUNCTION_TRACER
-> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-> index 6de5d4d63165..6d9e78a488aa 100644
-> --- a/kernel/trace/Makefile
-> +++ b/kernel/trace/Makefile
-> @@ -66,6 +66,7 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += trace_functions_graph.o
->  obj-$(CONFIG_TRACE_BRANCH_PROFILING) += trace_branch.o
->  obj-$(CONFIG_BLK_DEV_IO_TRACE) += blktrace.o
->  obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += fgraph.o
-> +obj-$(CONFIG_TRACE_OBJECT) += trace_object.o
->  ifeq ($(CONFIG_BLOCK),y)
->  obj-$(CONFIG_EVENT_TRACING) += blktrace.o
->  endif
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index b7c0f8e160fb..6ac8f5aca070 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -49,6 +49,7 @@ enum trace_type {
->  	TRACE_TIMERLAT,
->  	TRACE_RAW_DATA,
->  	TRACE_FUNC_REPEATS,
-> +	TRACE_OBJECT,
->  
->  	__TRACE_LAST_TYPE,
->  };
-> @@ -460,6 +461,7 @@ extern void __ftrace_bad_type(void);
->  			  TRACE_GRAPH_RET);		\
->  		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
->  			  TRACE_FUNC_REPEATS);				\
-> +		IF_ASSIGN(var, ent, struct trace_object_entry, TRACE_OBJECT);\
->  		__ftrace_bad_type();					\
->  	} while (0)
->  
-> @@ -1950,6 +1952,11 @@ struct trace_min_max_param {
->  	u64		*max;
->  };
->  
-> +struct object_trigger_param {
-> +	struct pt_regs *regs;
-> +	int param;
-> +};
-> +
->  #define U64_STR_SIZE		24	/* 20 digits max */
->  
->  extern const struct file_operations trace_min_max_fops;
-> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-> index cd41e863b51c..bb120d9498a9 100644
-> --- a/kernel/trace/trace_entries.h
-> +++ b/kernel/trace/trace_entries.h
-> @@ -401,3 +401,20 @@ FTRACE_ENTRY(timerlat, timerlat_entry,
->  		 __entry->context,
->  		 __entry->timer_latency)
->  );
-> +
-> +/*
-> + * trace object entry:
-> + */
-> +FTRACE_ENTRY(object, trace_object_entry,
-> +
-> +	TRACE_OBJECT,
-> +
-> +	F_STRUCT(
-> +		__field(	unsigned long,		ip		)
-> +		__field(	unsigned long,		parent_ip	)
-> +		__field(	unsigned long,		object		)
-> +	),
-> +
-> +	F_printk(" %ps <-- %ps object:%lx\n",
-> +		 (void *)__entry->ip, (void *)__entry->parent_ip, __entry->object)
-> +);
-> diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-> index 3d5c07239a2a..d823854445e6 100644
-> --- a/kernel/trace/trace_events_trigger.c
-> +++ b/kernel/trace/trace_events_trigger.c
-
-OK, so you shouldn't be modifying this file.
-
-Look at how the histograms are done:
-
- kernel/trace/trace_events_hist.c
-
-All your code should be in your trace_object.c file.
-
-Although, looking at the trace_events_hist.c file myself, I see a lot of
-duplicate code in event_hist_trigger_func() where we can add helper
-functions to handle that.
-
-But for now, just duplicate the code ;-)
-
-I added Tom to the Cc, so that he knows where he needs to clean up his code!
-
-
-> @@ -756,12 +756,36 @@ int set_trigger_filter(char *filter_str,
->  	struct event_filter *filter = NULL, *tmp;
->  	int ret = -EINVAL;
->  	char *s;
-> +	unsigned long param;
-> +	struct object_trigger_param *obj_param;
-> +	int len;
->  
->  	if (!filter_str) /* clear the current filter */
->  		goto assign;
->  
->  	s = strsep(&filter_str, " \t");
->  
-> +	if (data->cmd_ops->trigger_type == ETT_TRACE_OBJECT) {
-> +		obj_param = data->private_data;
-> +		len = str_has_prefix(s, "arg");
-> +		if (!len)
-> +			goto out;
-> +		ret = kstrtoul(s + len, 10, &param);
-> +		if (ret || param == 0)
-> +			goto out;
-> +		obj_param = kmalloc(sizeof(*obj_param), GFP_KERNEL);
-> +		if (!obj_param) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +		data->private_data = obj_param;
-> +		obj_param->param = param;
-> +		init_trace_object();
-> +	}
-> +	if (!strlen(s) || !filter_str)
-> +		goto out;
-> +
-> +	s = strsep(&filter_str, " \t");
->  	if (!strlen(s) || strcmp(s, "if") != 0)
->  		goto out;
->  
-> @@ -1679,6 +1703,103 @@ static __init int register_trigger_traceon_traceoff_cmds(void)
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_TRACE_OBJECT
-> +
-> +static void
-> +trace_object_trigger(struct event_trigger_data *data,
-> +		   struct trace_buffer *buffer,  void *rec,
-> +		   struct ring_buffer_event *event)
-> +{
-> +
-> +	struct object_trigger_param *obj_param = data->private_data;
-> +	unsigned long param;
-> +
-> +	param = regs_get_kernel_argument(obj_param->regs, obj_param->param - 1);
-> +	set_trace_object((void *)param);
-> +}
-> +
-> +static void
-> +trace_object_trigger_free(struct event_trigger_ops *ops,
-> +		   struct event_trigger_data *data)
-> +{
-> +	if (WARN_ON_ONCE(data->ref <= 0))
-> +		return;
-> +
-> +	data->ref--;
-> +	if (!data->ref) {
-> +		exit_trace_object();
-> +		trigger_data_free(data);
-> +		kfree(data->private_data);
-> +	}
-> +}
-> +
-> +static void
-> +trace_object_count_trigger(struct event_trigger_data *data,
-> +			 struct trace_buffer *buffer, void *rec,
-> +			 struct ring_buffer_event *event)
-> +{
-> +	if (!data->count)
-> +		return;
-> +
-> +	if (data->count != -1)
-> +		(data->count)--;
-> +
-> +	trace_object_trigger(data, buffer, rec, event);
-> +}
-> +
-> +static int
-> +trace_object_trigger_print(struct seq_file *m, struct event_trigger_ops *ops,
-> +			 struct event_trigger_data *data)
-> +{
-> +	return event_trigger_print("objfilter", m, (void *)data->count,
-> +				   data->filter_str);
-> +}
-> +
-> +static struct event_trigger_ops objecttrace_trigger_ops = {
-> +	.func			= trace_object_trigger,
-> +	.print			= trace_object_trigger_print,
-> +	.init			= event_trigger_init,
-> +	.free			= trace_object_trigger_free,
-> +};
-> +
-> +static struct event_trigger_ops objecttrace_count_trigger_ops = {
-> +	.func			= trace_object_count_trigger,
-> +	.print			= trace_object_trigger_print,
-> +	.init			= event_trigger_init,
-> +	.free			= trace_object_trigger_free,
-> +};
-> +
-> +static struct event_trigger_ops *
-> +objecttrace_get_trigger_ops(char *cmd, char *param)
-> +{
-> +	return param ? &objecttrace_count_trigger_ops : &objecttrace_trigger_ops;
-> +}
-> +
-> +static struct event_command trigger_object_cmd = {
-> +	.name			= "objfilter",
-> +	.trigger_type		= ETT_TRACE_OBJECT,
-> +	.flags			= EVENT_CMD_FL_NEEDS_REC,
-> +	.func			= event_trigger_callback,
-> +	.reg			= register_trigger,
-> +	.unreg			= unregister_trigger,
-> +	.get_trigger_ops	= objecttrace_get_trigger_ops,
-> +	.set_filter		= set_trigger_filter,
-> +};
-> +
-> +static __init int register_trigger_object_cmd(void)
-> +{
-> +	int ret;
-> +
-> +	ret = register_event_command(&trigger_object_cmd);
-> +	WARN_ON(ret < 0);
-> +
-> +	return ret;
-> +}
-> +
-> +#else
-> +static __init int register_trigger_object_cmd(void) { return 0; }
-> +#endif
-
-All the above should be in the trace_object.c file.
-
-In kernel/trace/trace.h you can add:
-
-#ifdef CONFIG_TRACE_OBJECT
-extern int register_trigger_object_cmd(void);
-#else
-static inline int register_trigger_object_cmd(void) { return 0; }
-#endif
-
-Just below where the CONFIG_HIST_TRIGGERS is.
-
-And make the above "register_trace_object_cmd()" not static.
-
-
-> +
->  __init int register_trigger_cmds(void)
->  {
->  	register_trigger_traceon_traceoff_cmds();
-> @@ -1687,6 +1808,7 @@ __init int register_trigger_cmds(void)
->  	register_trigger_enable_disable_cmds();
->  	register_trigger_hist_enable_disable_cmds();
->  	register_trigger_hist_cmd();
-> +	register_trigger_object_cmd();
->  
->  	return 0;
->  }
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 3a64ba4bbad6..f80e86ff3d26 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1380,6 +1380,7 @@ __kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs,
->  
->  	WARN_ON(call != trace_file->event_call);
->  
-> +	record_trace_object(trace_file, regs);
->  	if (trace_trigger_soft_disabled(trace_file))
->  		return;
->  
-> diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
-> new file mode 100644
-> index 000000000000..33eef0a10809
-> --- /dev/null
-> +++ b/kernel/trace/trace_object.c
-> @@ -0,0 +1,191 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * trace any object
-> + * Copyright (C) 2021 Jeff Xie <xiehuan09@gmail.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "trace_object: " fmt
-> +
-> +#include "trace_output.h"
-> +
-> +static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
-> +static DEFINE_RAW_SPINLOCK(object_spin_lock);
-> +static struct trace_event_file event_trace_file;
-> +static LIST_HEAD(obj_head);
-> +static const int max_args_num = 6;
-> +static unsigned long trace_object_ref;
-> +
-> +struct trace_obj {
-> +	struct list_head head;
-> +	unsigned long obj;
-> +};
-> +
-> +void set_trace_object(void *obj)
-> +{
-> +	struct trace_obj *trace_obj;
-> +	struct trace_obj *new_obj;
-> +	unsigned long flags;
-> +
-> +	if (!obj)
-> +		goto out;
-> +
-> +	list_for_each_entry_rcu(trace_obj, &obj_head, head) {
-> +		if (trace_obj->obj == (unsigned long)obj)
-> +			goto out;
-> +	}
-> +
-> +	new_obj = kmalloc(sizeof(*new_obj), GFP_KERNEL);
-> +	if (!new_obj) {
-> +		pr_warn("allocate trace object fail\n");
-
-You shouldn't print because of allocation failure.
-
-But that doesn't matter, because you can't allocate here anyway. This is
-called from where the trace happens, and the kprobe could be inside the
-memory allocator, and if it is, you just deadlocked the machine.
-
-What you will need to do in this situation, is when the trigger is created,
-you need to allocate a pool of objects that you can get to. If that pool
-starts to fill up to some point, you will need to execute a work queue of
-some kind to add more objects to the pool.
-
-If you run out of objects before the pool can be refilled, then we can add
-a message to the ring buffer saying that happened.
-
-> +		goto out;
-> +	}
-> +
-
-The beginning of the function will have to have some kind of:
-
-	if (in_nmi())
-		return;
-
-Because we can't grab locks in nmi, and I believe a kprobe can be attached
-to one.
-
-> +	raw_spin_lock_irqsave(&object_spin_lock, flags);
-> +
-> +	new_obj->obj = (unsigned long)obj;
-> +
-> +	list_add_rcu(&new_obj->head, &obj_head);
-> +
-> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
-> +out:
-> +	return;
-> +}
-> +
-> +void record_trace_object(struct trace_event_file *trace_file,
-> +		struct pt_regs *regs)
-> +{
-> +
-> +	struct object_trigger_param *obj_param;
-> +	struct event_trigger_data *data;
-> +
-> +	list_for_each_entry_rcu(data, &trace_file->triggers, list) {
-> +		if (data->cmd_ops->trigger_type == ETT_TRACE_OBJECT) {
-> +			obj_param = data->private_data;
-> +			obj_param->regs = regs;
-> +		}
-> +	}
-> +
-> +}
-> +
-> +static inline void free_trace_object(void)
-> +{
-> +	struct trace_obj *trace_obj;
-> +
-> +	list_for_each_entry_rcu(trace_obj, &obj_head, head)
-> +		kfree(trace_obj);
-> +}
-> +
-> +static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
-> +				 unsigned long object)
-> +{
-> +
-> +	struct trace_buffer *buffer;
-> +	struct ring_buffer_event *event;
-> +	struct trace_object_entry *entry;
-> +	int pc;
-> +
-> +	pc = preempt_count();
-> +	event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
-> +			TRACE_OBJECT, sizeof(*entry), pc);
-> +	if (!event)
-> +		return;
-> +	entry   = ring_buffer_event_data(event);
-> +	entry->ip                       = ip;
-> +	entry->parent_ip                = parent_ip;
-> +	entry->object			= object;
-
-So here we are just recording the value we saw at the kprobe (not very
-interesting).
-
-I think we want the content of the object:
-
-	long val;
-
-	ret = copy_from_kernel_nofault(&val, object, sizeof(val));
-	if (ret)
-		val = 0;
-
-Then we can see what changed during this time.
-
-I think there's really a lot of potential here. Don't get discouraged,
-because kernel programming is not easy, and there's a lot you need to
-understand that is required knowledge in the kernel, but not a problem in
-user space.
-
-I'm happy to work with you to help you navigate through these waters. If
-you want to learn more about kernel programming, this is the perfect
-project to do so. I'll just let you know the pitfalls you make, so you
-learn from them and can correct them.
-
-Looking forward for updates from you ;-)
-
--- Steve
-
-> +
-> +	event_trigger_unlock_commit(&event_trace_file, buffer, event,
-> +		entry, pc);
-> +}
-> +
-> +static void
-> +trace_object_events_call(unsigned long ip, unsigned long parent_ip,
-> +		struct ftrace_ops *op, struct ftrace_regs *fregs)
-> +{
-> +	struct pt_regs *pt_regs = ftrace_get_regs(fregs);
-> +	unsigned long obj;
-> +	struct trace_obj *trace_obj;
-> +	long disabled;
-> +	int cpu, n;
-> +
-> +	preempt_disable_notrace();
-> +
-> +	cpu = raw_smp_processor_id();
-> +	disabled = atomic_inc_return(&per_cpu(trace_object_event_disable, cpu));
-> +
-> +	if (disabled != 1)
-> +		goto out;
-> +
-> +	if (list_empty(&obj_head))
-> +		goto out;
-> +
-> +	for (n = 0; n < max_args_num; n++) {
-> +		obj = regs_get_kernel_argument(pt_regs, n);
-> +		list_for_each_entry_rcu(trace_obj, &obj_head, head) {
-> +			if (trace_obj->obj == (unsigned long)obj)
-> +				submit_trace_object(ip, parent_ip, obj);
-> +		}
-> +	}
-> +
-> +out:
-> +	atomic_dec(&per_cpu(trace_object_event_disable, cpu));
-> +	preempt_enable_notrace();
-> +}
-> +
-> +static struct ftrace_ops trace_ops = {
-> +	.func  = trace_object_events_call,
-> +	.flags = FTRACE_OPS_FL_SAVE_REGS,
-> +};
-> +
-> +int init_trace_object(void)
-> +{
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	raw_spin_lock_irqsave(&object_spin_lock, flags);
-> +
-> +	if (++trace_object_ref != 1) {
-> +		ret = 0;
-> +		goto out_lock;
-> +	}
-> +
-> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
-> +
-> +	event_trace_file.tr = top_trace_array();
-> +	if (WARN_ON(!event_trace_file.tr)) {
-> +		ret = -1;
-> +		goto out;
-> +	}
-> +	ret = register_ftrace_function(&trace_ops);
-> +
-> +	return ret;
-> +
-> +out_lock:
-> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
-> +out:
-> +	return ret;
-> +}
-> +
-> +int exit_trace_object(void)
-> +{
-> +	int ret;
-> +	unsigned long flags;
-> +
-> +	raw_spin_lock_irqsave(&object_spin_lock, flags);
-> +
-> +	if (--trace_object_ref > 0) {
-> +		ret = 0;
-> +		goto out_lock;
-> +	}
-> +
-> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
-> +
-> +	free_trace_object();
-> +	ret = unregister_ftrace_function(&trace_ops);
-> +
-> +	return ret;
-> +
-> +out_lock:
-> +	raw_spin_unlock_irqrestore(&object_spin_lock, flags);
-> +	return ret;
-> +}
-> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> index c2ca40e8595b..76ca560af693 100644
-> --- a/kernel/trace/trace_output.c
-> +++ b/kernel/trace/trace_output.c
-> @@ -1552,6 +1552,45 @@ static struct trace_event trace_func_repeats_event = {
->  	.funcs		= &trace_func_repeats_funcs,
->  };
->  
-> +/* TRACE_OBJECT */
-> +static enum print_line_t trace_object_print(struct trace_iterator *iter, int flags,
-> +					struct trace_event *event)
-> +{
-> +	struct trace_object_entry *field;
-> +	struct trace_seq *s = &iter->seq;
-> +
-> +	trace_assign_type(field, iter->ent);
-> +	print_fn_trace(s, field->ip, field->parent_ip, flags);
-> +	trace_seq_printf(s, " object:0x%lx", field->object);
-> +	trace_seq_putc(s, '\n');
-> +
-> +	return trace_handle_return(s);
-> +}
-> +
-> +static enum print_line_t trace_object_raw(struct trace_iterator *iter, int flags,
-> +				      struct trace_event *event)
-> +{
-> +	struct trace_object_entry *field;
-> +
-> +	trace_assign_type(field, iter->ent);
-> +
-> +	trace_seq_printf(&iter->seq, "%lx %lx\n",
-> +			 field->ip,
-> +			 field->parent_ip);
-> +
-> +	return trace_handle_return(&iter->seq);
-> +}
-> +
-> +static struct trace_event_functions trace_object_funcs = {
-> +	.trace		= trace_object_print,
-> +	.raw		= trace_object_raw,
-> +};
-> +
-> +static struct trace_event trace_object_event = {
-> +	.type		= TRACE_OBJECT,
-> +	.funcs		= &trace_object_funcs,
-> +};
-> +
->  static struct trace_event *events[] __initdata = {
->  	&trace_fn_event,
->  	&trace_ctx_event,
-> @@ -1566,6 +1605,7 @@ static struct trace_event *events[] __initdata = {
->  	&trace_timerlat_event,
->  	&trace_raw_data_event,
->  	&trace_func_repeats_event,
-> +	&trace_object_event,
->  	NULL
->  };
->  
-> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-> index 8bfcd3b09422..5d4b09996414 100644
-> --- a/kernel/trace/trace_syscalls.c
-> +++ b/kernel/trace/trace_syscalls.c
-> @@ -312,6 +312,7 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
->  	if (!trace_file)
->  		return;
->  
-> +	record_trace_object(trace_file, regs);
->  	if (trace_trigger_soft_disabled(trace_file))
->  		return;
->  
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 225ce569bf8f..3811c07b9fa3 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -960,6 +960,7 @@ static void __uprobe_trace_func(struct trace_uprobe *tu,
->  	if (WARN_ON_ONCE(tu->tp.size + dsize > PAGE_SIZE))
->  		return;
->  
-> +	record_trace_object(trace_file, regs);
->  	if (trace_trigger_soft_disabled(trace_file))
->  		return;
->  
-
+> On Fri, Oct 22, 2021 at 02:27:37PM +0200, Andrew Lunn wrote:=0A=
+> > On Wed, Oct 20, 2021 at 12:32:28PM +0300, Volodymyr Mytnyk wrote:=0A=
+> > > From: Volodymyr Mytnyk <vmytnyk@marvell.com>=0A=
+> > > =0A=
+> > > Add firmware (FW) version 4.0 support for Marvell Prestera=0A=
+> > > driver.=0A=
+> > > =0A=
+> > > Major changes have been made to new v4.0 FW ABI to add support=0A=
+> > > of new features, introduce the stability of the FW ABI and ensure=0A=
+> > > better forward compatibility for the future driver vesrions.=0A=
+> > > =0A=
+> > > Current v4.0 FW feature set support does not expect any changes=0A=
+> > > to ABI, as it was defined and tested through long period of time.=0A=
+> > > The ABI may be extended in case of new features, but it will not=0A=
+> > > break the backward compatibility.=0A=
+> > > =0A=
+> > > ABI major changes done in v4.0:=0A=
+> > > - L1 ABI, where MAC and PHY API configuration are split.=0A=
+> > > - ACL has been split to low-level TCAM and Counters ABI=0A=
+> > >=A0=A0 to provide more HW ACL capabilities for future driver=0A=
+> > >=A0=A0 versions.=0A=
+> > > =0A=
+> > > To support backward support, the addition compatibility layer is=0A=
+> > > required in the driver which will have two different codebase under=
+=0A=
+> > > "if FW-VER elif FW-VER else" conditions that will be removed=0A=
+> > > in the future anyway, So, the idea was to break backward support=0A=
+> > > and focus on more stable FW instead of supporting old version=0A=
+> > > with very minimal and limited set of features/capabilities.=0A=
+> >=A0 =0A=
+> > > +/* TODO: add another parameters here: modes, etc... */=0A=
+> > > +struct prestera_port_phy_config {=0A=
+> > > +=A0=A0 bool admin;=0A=
+> > > +=A0=A0 u32 mode;=0A=
+> > > +=A0=A0 u8 mdix;=0A=
+> > > +};=0A=
+> > =0A=
+> > > @@ -242,10 +246,44 @@ union prestera_msg_port_param {=0A=
+> > >=A0=A0=A0=A0=A0 u8=A0 duplex;=0A=
+> > >=A0=A0=A0=A0=A0 u8=A0 fec;=0A=
+> > >=A0=A0=A0=A0=A0 u8=A0 fc;=0A=
+> > > -=A0=A0 struct prestera_msg_port_mdix_param mdix;=0A=
+> > > -=A0=A0 struct prestera_msg_port_autoneg_param autoneg;=0A=
+> > > +=0A=
+> > > +=A0=A0 union {=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct {=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* TODO: merg=
+e it with "mode" */=0A=
+> > =0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct {=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* TODO: merg=
+e it with "mode" */=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u8 admin:1;=
+=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u8 adv_enable=
+;=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u64 modes;=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* TODO: merg=
+e it with modes */=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u32 mode;=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 u8 mdix;=0A=
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 } phy;=0A=
+> =0A=
+> Please can you also make use of __le64, __le32, __le16 in messages=0A=
+> to/from the firmware, so sparse etc can help you catch were you are=0A=
+> missing htonl(), htons() etc.=0A=
+> =0A=
+>=A0=A0=A0 Andrew=0A=
+>=0A=
+=0A=
+Makes sense, will fix in next patch set.=0A=
+=0A=
+  Volodymyr=
