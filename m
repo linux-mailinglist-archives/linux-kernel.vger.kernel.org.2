@@ -2,160 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E23437495
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9A643748C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhJVJSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:18:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232580AbhJVJSP (ORCPT
+        id S232465AbhJVJR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhJVJR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:18:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634894158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UQGDJah/KreCof6wR/rgfBuc6vkWJYHgPEBv9eX/JPc=;
-        b=d1kwAftVlLQUzoNasjzT4JCiDV7LTR2SpM2RPIxBpSu+jMXYEjVUR6n1kkRwL3qiDOYFMW
-        RC0iRW5vyfDYcjlIkr0y3lfwF242ulfpo5ASvqDatwhOIyFtFUO41loeAVTooYAU/InMNW
-        bGi47YA8iS+i27R3UhJAYwzS/CANcwo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-gyuGcRQpMJigV3jEsxBj2g-1; Fri, 22 Oct 2021 05:15:56 -0400
-X-MC-Unique: gyuGcRQpMJigV3jEsxBj2g-1
-Received: by mail-ed1-f71.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso3088054edj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:15:55 -0700 (PDT)
+        Fri, 22 Oct 2021 05:17:27 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A743C061764;
+        Fri, 22 Oct 2021 02:15:10 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id j10so200009ilu.2;
+        Fri, 22 Oct 2021 02:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7DczJgTsrEUe66TRocDFUq17LG2eh3rHGp1OMow1/+w=;
+        b=cHca5wcCZFcIOzsxgI1SKRJm8zwJz8tYeN49PeA6DW51nZrTWPmUGV1y4rogZ4zSFc
+         FZMCPJHOh7X1ODHnoJNdw6DWP+YeSlhnfEaymoqnvhpfuP7onfUFf72lohDWEOb0hoLs
+         36jokar2MqMJ3pcYomSDGtSeTtvKnJGNSqxLypDcez+ghR3Vnj+vYl/0z1E/bZoWd2eB
+         OKCV/6+77knnFz0msLAAuecBmCe3xnK7tIdyNj+Vh3dzfeK4A7WCOOsEjPYVTdC5b/JU
+         OHo8kRyaBQuN6FrGp7cFTtM0FSUAcCNSpezlTec+R0Vh+F1i98sDepdpXGrfQwbzT7cj
+         k22w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=UQGDJah/KreCof6wR/rgfBuc6vkWJYHgPEBv9eX/JPc=;
-        b=Dc/v3FFUumgp3de6imB8qW46H2hR1Eb1Q3TACk1KzH0a9qpfyzKR6qkSZ2ImJ6tlMq
-         vPprUxCmIZD7/ETrtPeRAEkrjcJZeKFu3hroY1kgFHtBS3Ob80Z6uj1SDmwDiLMhzW2c
-         79+1V897BZg3znHUiwuyZ/zIwahMvCzynQrmdOkyBUAdIlNr0KYj1m8DTUaV1YemX1Jm
-         YBPQo0uAUn+wYXgMgbnDGiueQwnhYNooEcKxjyp+ijty2Wm5ijEaMsU92vrOKeOGLKSq
-         nI4viciwEZRBXXiDfgjevjjIr7hvhlZSx6ISlk44CR6bJoEmC3Ybcacwy6ONXbNmNlwi
-         jJiQ==
-X-Gm-Message-State: AOAM533GR0L45j8Ty4vogLVG6sRl1kAkxO7+KQrqul64n+xSKhqtJWdr
-        AHKMR/5JZL41sID+VxXU1kbuOBYXKR22crQhiy9w068nn9N41neGZmN/0/gG5L1eoAAA1sy9MFf
-        wXkaC744Jjj96D2aSedFOks9l
-X-Received: by 2002:a17:906:3842:: with SMTP id w2mr14414241ejc.28.1634894154922;
-        Fri, 22 Oct 2021 02:15:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfQltY1u0ItXDgZL8i6ARy0Vt6IVTLGAMHyDBta8ooLrUu+EKZ/xwgXevj9QBKoe2HYJE57A==
-X-Received: by 2002:a17:906:3842:: with SMTP id w2mr14414225ejc.28.1634894154746;
-        Fri, 22 Oct 2021 02:15:54 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id mp5sm1775558ejc.68.2021.10.22.02.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 02:14:57 -0700 (PDT)
-Message-ID: <39927c6d-8c55-5667-4aa0-31d746df90cc@redhat.com>
-Date:   Fri, 22 Oct 2021 11:14:20 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7DczJgTsrEUe66TRocDFUq17LG2eh3rHGp1OMow1/+w=;
+        b=ntNLzp29s4DWxinLW+uVHrVVQr9AXLcVAxRc+n0YD6l9EkoOtnIulQaFLgNLlq68D0
+         5MrPI+6Oq5bqHCECBkxhvz6fnaZXdQ+b/2Vlx4TOTE7vBXZ/UmlRy6q6qy+uWK/g+FSM
+         H14WAVHileMTnq3914H4U8rV44WKImg2tBZ3KweZOjxSihL0vhScVXteziSbxdQLr4kh
+         wnGzmFR6LFOIWmBzqfy+S6qobB4mgqrfd73+Zz8I7if+/ySyzoaOHvGNh5p9AbHFbXfL
+         Ii8W+ldVfdbuxMjzIxMp+yGBrvaGJEL9IH0i+NSO1DQ1mTYrFbH5m7Il146+t43N70I/
+         O6Uw==
+X-Gm-Message-State: AOAM532ngrqbcmVBBupcGm1cWd6/GXQFM49rjsxy+ElPrcoxUMAiObl0
+        hiszxUyXHXK4E7G/q4eMwqAjQHShDsyUQkmluMA=
+X-Google-Smtp-Source: ABdhPJztOeX0qbkcDhGUgqmJkz/Xjz1Z8hBdU+o7cNL+/8jFrXgzSoqv4ReeXcrxKop/kg/iRZYdgBvZCtGp/EOroWY=
+X-Received: by 2002:a05:6e02:1a05:: with SMTP id s5mr7531783ild.303.1634894109439;
+ Fri, 22 Oct 2021 02:15:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] platform/x86: lg-laptop: replace snprintf in show
- functions with sysfs_emit
-Content-Language: en-US
-To:     cgel.zte@gmail.com, matan@svgalib.org
-Cc:     markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20211022090722.1065457-1-ye.guojin@zte.com.cn>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211022090722.1065457-1-ye.guojin@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <1634633003-18132-1-git-send-email-dillon.minfei@gmail.com>
+ <1634633003-18132-10-git-send-email-dillon.minfei@gmail.com>
+ <CAL9mu0Jw99aeSmwy7gnY3XQK3V1V-C1-R8ET5jvSMz7niH=g4g@mail.gmail.com> <b43699a6-dc53-3fcd-6cc9-6b05025cad96@foss.st.com>
+In-Reply-To: <b43699a6-dc53-3fcd-6cc9-6b05025cad96@foss.st.com>
+From:   Dillon Min <dillon.minfei@gmail.com>
+Date:   Fri, 22 Oct 2021 17:14:32 +0800
+Message-ID: <CAL9mu0LUs0iwn2NUaUrbDjDGkB8dahdW+86RSeVJPpaP=V8f6A@mail.gmail.com>
+Subject: Re: [PATCH v6 09/10] clk: stm32: Fix ltdc's clock turn off by
+ clk_disable_unused() after system enter shell
+To:     "gabriel.fernandez@foss.st.com" <gabriel.fernandez@foss.st.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        mchehab+huawei@kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        ezequiel@collabora.com, gnurou@gmail.com,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
+        Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        hugues.fruchet@foss.st.com,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Gabriel
 
-On 10/22/21 11:07, cgel.zte@gmail.com wrote:
-> From: Ye Guojin <ye.guojin@zte.com.cn>
-> 
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING  use scnprintf or sprintf
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+Thanks for the quick response.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Best Regards
+Dillon
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/platform/x86/lg-laptop.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/lg-laptop.c b/drivers/platform/x86/lg-laptop.c
-> index 7e9351c36389..ae9293024c77 100644
-> --- a/drivers/platform/x86/lg-laptop.c
-> +++ b/drivers/platform/x86/lg-laptop.c
-> @@ -330,7 +330,7 @@ static ssize_t fan_mode_show(struct device *dev,
->  	status = r->integer.value & 0x01;
->  	kfree(r);
->  
-> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
-> +	return sysfs_emit(buffer, "%d\n", status);
->  }
->  
->  static ssize_t usb_charge_store(struct device *dev,
-> @@ -372,7 +372,7 @@ static ssize_t usb_charge_show(struct device *dev,
->  
->  	kfree(r);
->  
-> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
-> +	return sysfs_emit(buffer, "%d\n", status);
->  }
->  
->  static ssize_t reader_mode_store(struct device *dev,
-> @@ -414,7 +414,7 @@ static ssize_t reader_mode_show(struct device *dev,
->  
->  	kfree(r);
->  
-> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
-> +	return sysfs_emit(buffer, "%d\n", status);
->  }
->  
->  static ssize_t fn_lock_store(struct device *dev,
-> @@ -455,7 +455,7 @@ static ssize_t fn_lock_show(struct device *dev,
->  	status = !!r->buffer.pointer[0];
->  	kfree(r);
->  
-> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
-> +	return sysfs_emit(buffer, "%d\n", status);
->  }
->  
->  static ssize_t battery_care_limit_store(struct device *dev,
-> @@ -520,7 +520,7 @@ static ssize_t battery_care_limit_show(struct device *dev,
->  	if (status != 80 && status != 100)
->  		status = 0;
->  
-> -	return snprintf(buffer, PAGE_SIZE, "%d\n", status);
-> +	return sysfs_emit(buffer, "%d\n", status);
->  }
->  
->  static DEVICE_ATTR_RW(fan_mode);
-> 
-
+On Fri, 22 Oct 2021 at 17:10, gabriel.fernandez@foss.st.com
+<gabriel.fernandez@foss.st.com> wrote:
+>
+> Hi Dillon,
+>
+> You can add my Acked-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>
+> Best Regards
+> Gabriel
+>
+> On 10/22/21 9:25 AM, Dillon Min wrote:
+> > Hi Gabriel
+> >
+> > I guess you are the maintainer of stm32 clk subsystem from [1], Could
+> > you help to review this patch, just give a brief of the history:
+> >
+> > - this patch was acked by Stephen Boyd at [2].
+> > - reviewed by Patrice Chotard at [3].
+> >
+> > Without this patch , the kernel will turn off ltdc's clk after the
+> > system reach shell.
+> >
+> > [1] https://lore.kernel.org/lkml/AM8PR10MB4785545DC980090C1E7D66B281009@AM8PR10MB4785.EURPRD10.PROD.OUTLOOK.COM/
+> >
+> > [2] https://lore.kernel.org/linux-arm-kernel/159056850835.88029.9264848839121822798@swboyd.mtv.corp.google.com/
+> >
+> > [3] https://lore.kernel.org/lkml/6915fa2a-e211-476f-8317-6825e280c322@foss.st.com/#t
+> >
+> > Best Regards
+> > Dillon
+> >
+> > On Tue, 19 Oct 2021 at 16:44, Dillon Min <dillon.minfei@gmail.com> wrote:
+> >>
+> >> stm32's clk driver register two ltdc gate clk to clk core by
+> >> clk_hw_register_gate() and clk_hw_register_composite()
+> >>
+> >> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
+> >> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
+> >>
+> >> both of them point to the same offset of stm32's RCC register. after
+> >> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
+> >> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
+> >>
+> >> stm32f469/746/769 have the same issue, fix it.
+> >>
+> >> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
+> >> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> >> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
+> >> Link: https://lore.kernel.org/lkml/CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com/
+> >> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> >> ---
+> >> v6: no change.
+> >>
+> >>   drivers/clk/clk-stm32f4.c | 4 ----
+> >>   1 file changed, 4 deletions(-)
+> >>
+> >> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+> >> index af46176ad053..473dfe632cc5 100644
+> >> --- a/drivers/clk/clk-stm32f4.c
+> >> +++ b/drivers/clk/clk-stm32f4.c
+> >> @@ -129,7 +129,6 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
+> >>          { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+> >>   };
+> >>
+> >>   static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+> >> @@ -211,7 +210,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+> >>          { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+> >>   };
+> >>
+> >>   static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
+> >> @@ -286,7 +284,6 @@ static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
+> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
+> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+> >>   };
+> >>
+> >>   static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
+> >> @@ -364,7 +361,6 @@ static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
+> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
+> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+> >>          { STM32F4_RCC_APB2ENR, 30,      "mdio",         "apb2_div" },
+> >>   };
+> >>
+> >> --
+> >> 2.7.4
+> >>
