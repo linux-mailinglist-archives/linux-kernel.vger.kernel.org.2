@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2429B437BA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEEE437BA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbhJVRRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
+        id S233625AbhJVRRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233552AbhJVRRd (ORCPT
+        with ESMTP id S233552AbhJVRRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:17:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F30C061764;
-        Fri, 22 Oct 2021 10:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=A2qIKzLmaHiruo4ITVd737DFb76HJfGU1G5yRr7n2nA=; b=rHoviyfXzd/lrQqDvJrWfUZPJb
-        khSzljNSmZgr6NeCLmL2ZONpCIRpKB4oHioCY+rox2FwEHu4Ywt0HONuXefuBv/3UpAur5nkRyFqH
-        J7hTmn+S8ptHG7GDNZkQsDxTGe7GNJdFCUMvsLXKyIEUrYxwnpCxBnNzSCRtUP63ii5JIHDdRbHiS
-        xItouevSX03vuGJ4AWRBwdEVidWlfR+a84nHSvDQSoLkasicCW9qV0Wdkc1U02fJ62Z5EX4JRkSYW
-        8YR2rsMzwlL7ahaWXhIDk4BP1EtoaXVSoklKfpcXL6qO3C3iIfQS4m2fEqm+Mp9587qQjSmZLJysz
-        8qltYNeA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdy8H-00BbTQ-Sx; Fri, 22 Oct 2021 17:15:05 +0000
-Date:   Fri, 22 Oct 2021 10:15:05 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
-        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
-        david.brown@linaro.org, bjorn.andersson@linaro.org,
-        linux-wireless@vger.kernel.org, keescook@chromium.org,
-        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
-        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
-        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
-        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
-        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
-        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
-        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
-        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 08/10] firmware_loader: move builtin build helper to
- shared library
-Message-ID: <YXLxmbxLU/+eV+JH@bombadil.infradead.org>
-References: <20211021155843.1969401-1-mcgrof@kernel.org>
- <20211021155843.1969401-9-mcgrof@kernel.org>
- <YXKq8gJsQE/U9ZKq@kroah.com>
+        Fri, 22 Oct 2021 13:17:05 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB8BC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:14:47 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so5154006otl.11
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=khihIRBEDwfkgoT9XzW4kObgxI4RYFVX0d5V9aipBkI=;
+        b=JDzt2sgU2asdNcC2nctv1gQBaMXlCEYffS5ssU/Bhl7jtz1udhOlWYAbaY9MgQPnmC
+         9WPcfPdlElKtgv/Ds+SNc1X3RLhGQxd1X9uHVsrAePxPYezIJntxfN3D7kzuR/oTH6gy
+         hLwjKqsFCm6KKCjFhh16ZrDXiCzMgCoQosMHBukz5O4Xm3faQpoA3PsgIi0CpA3Vr+Ow
+         aF+lgfRPShuK2+mE4DZTRnud06RvFCZHTW1tzxq25MO2a3RH7vFnQmj/YhlpTQMjddbQ
+         3GE6JpDn1YfmndPhoglUiXkoFx57eGjkL9RfUl8Jw6tuh/CUCGiOahFYvpMrJ6tQUZ45
+         qcVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=khihIRBEDwfkgoT9XzW4kObgxI4RYFVX0d5V9aipBkI=;
+        b=vC1esgGsoXio0lxW6Eb9Jj3zQcwe51XoxJlRdVoLQw3msYQ+HB7zJIuKvQJLTsKwns
+         lFnWWSLVDISoCKhtTpn11kBiZIYfHXZ5ezFiKip95kdDcQiY2tRlpk6f3JIDKNWId8iz
+         4yCfYlumwP+40KLHF4thEkTNr/X8tuN/SFyb+WBBzq8ILcIFObtSao00pjiCewPPACp4
+         ortvx9adF7udn+Q/PqZrRaUd+9zA2TCfbt8eNyPeowKR2VL+S4+juy5YYEhZEYdZp+VE
+         VltF8Tln832MWII5xzIHGHVYrD/v8H+J1YRbrLHsG/4pasYnMhPCGfvi738zlDjL2jUt
+         LTGQ==
+X-Gm-Message-State: AOAM532QfWxgzrfdqHOS98CMi1IUKeXBMR0waDCBcVwCQLsb2LiZfGfZ
+        c8vQbo/MkpR0tZuxXC1tKXBs7w==
+X-Google-Smtp-Source: ABdhPJyUurLqXmz/k4ajla41wyPVwPizzTYqnndr7ozwJjgTBnhA4qlZm4eBgUKwrA4WcgYLFUDcdQ==
+X-Received: by 2002:a05:6830:2b11:: with SMTP id l17mr946819otv.298.1634922887137;
+        Fri, 22 Oct 2021 10:14:47 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id p14sm1522495oov.0.2021.10.22.10.14.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 10:14:46 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 10:16:28 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        abhinavk@codeaurora.org, Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3 2/2] phy: qcom: Introduce new eDP PHY driver
+Message-ID: <YXLx7EV7ZiMIxauO@ripper>
+References: <20211016232128.2341395-1-bjorn.andersson@linaro.org>
+ <20211016232128.2341395-2-bjorn.andersson@linaro.org>
+ <YXGmJFoeXwtTvl7p@matsya>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXKq8gJsQE/U9ZKq@kroah.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <YXGmJFoeXwtTvl7p@matsya>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 02:13:38PM +0200, Greg KH wrote:
-> On Thu, Oct 21, 2021 at 08:58:41AM -0700, Luis R. Rodriguez wrote:
-> > From: Luis Chamberlain <mcgrof@kernel.org>
+On Thu 21 Oct 10:40 PDT 2021, Vinod Koul wrote:
+
+> On 16-10-21, 16:21, Bjorn Andersson wrote:
+> > Many recent Qualcomm platforms comes with native DP and eDP support.
+> > This consists of a controller in the MDSS and a QMP-like PHY.
 > > 
-> > If we wanted to use a different directory for building target
-> > builtin firmware it is easier if we just have a shared library
-> > Makefile, and each target directory can then just include it and
-> > populate the respective needed variables. This reduces clutter,
-> > makes things easier to read, and also most importantly allows
-> > us to not have to try to magically adjust only one target
-> > kconfig symbol for built-in firmware files. Trying to do this
-> > can easily end up causing odd build issues if the user is not
-> > careful.
+> > While similar to the well known QMP block, the eDP PHY only has TX lanes
+> > and the programming sequences are slightly different. Rather than
+> > continuing the trend of parameterize the QMP driver to pieces, this
+> > introduces the support as a new driver.
 > > 
-> > As an example issue, if we are going to try to extend the
-> > FW_LOADER_BUILTIN_FILES list and FW_LOADER_BUILTIN_DIR in case
-> > of a new test firmware builtin support currently our only option
-> > would be modify the defaults of each of these in case test firmware
-> > builtin support was enabled. Defaults however won't augment a prior
-> > setting, and so if FW_LOADER_BUILTIN_DIR="/lib/firmware" and you
-> > and want this to be changed to something like
-> > FW_LOADER_BUILTIN_DIR="drivers/base/firmware_loader/test-builtin"
-> > the change will not take effect as a prior build already had it
-> > set, and the build would fail. Trying to augment / append the
-> > variables in the Makefile just makes this very difficult to
-> > read.
+> > The registration of link and pixel clocks are borrowed from the QMP
+> > driver. The non-DP link frequencies are omitted for now.
 > > 
-> > Using a library let's us split up possible built-in targets so
-> > that the user does not have to be involved. This will be used
-> > in a subsequent patch which will add another user to this
-> > built-in firmware library Makefile and demo how to use it outside
-> > of the default FW_LOADER_BUILTIN_DIR and FW_LOADER_BUILTIN_FILES.
-> > 
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > The eDP PHY is very similar to the dedicated (non-USB) DP PHY, but only
+> > the prior is supported for now.
 > 
-> I'm sorry, but I do not understand the need for this change at all.  You
-> are now building this as a library, but what uses this library?  The
-> patches after this series are just testing patches, to verify that the
-> code previous in this series is working correctly, it should not depend
-> on a new library that only the testing code requires, right?
+> since this is QMP phy, pls add an explanation why common QMP driver
+> is not used here?
+> 
 
-The last patch adds support to test built-in firmware, but most kernels
-will have and do want EXTRA_FIRMWARE="", and so there cannot be anything
-that can be tested. And so we need aother two pair of kconfig symbols
-which are independent to test built-in firmware. The reason for this is
-explained in the commit log, if we try to augment the EXTRA_FIRMWARE
-when enabling testing built-in firmware we can easily end up with odd
-build issues.
+Looked at this again, doesn't the second paragraph answer that?
 
-So this patch moves the logic to enable us to re-use the same built-in
-magic for two independent kconfig test symbols.
+> > +static int qcom_edp_phy_init(struct phy *phy)
+> > +{
+[..]
+> > +	writel(0x00, edp->edp + DP_PHY_AUX_CFG0);
+> > +	writel(0x13, edp->edp + DP_PHY_AUX_CFG1);
+> > +	writel(0x24, edp->edp + DP_PHY_AUX_CFG2);
+> > +	writel(0x00, edp->edp + DP_PHY_AUX_CFG3);
+> > +	writel(0x0a, edp->edp + DP_PHY_AUX_CFG4);
+> > +	writel(0x26, edp->edp + DP_PHY_AUX_CFG5);
+> > +	writel(0x0a, edp->edp + DP_PHY_AUX_CFG6);
+> > +	writel(0x03, edp->edp + DP_PHY_AUX_CFG7);
+> > +	writel(0x37, edp->edp + DP_PHY_AUX_CFG8);
+> > +	writel(0x03, edp->edp + DP_PHY_AUX_CFG9);
+> 
+> In qmp phy we use a table for this, that looks very elegant and I am
+> sure next rev will have different magic numbers, so should we go the
+> table approach here on as well..?
+> 
 
-  Luis
+Comparing the v3 and v4 USB/DP combo phy and this, the only number that
+differs is CFG_AUX2 and CFG_AUX8.
+
+CFG_AUX8 is 0x37 for eDP and 0xb7 for DP and AUX_CFG2 seems better to
+mask together, but I don't fully understand the content yet.
+
+I did check two other platforms and they have the same sequence, except
+one additional bit in AUX_CFG2. There also seem to be a few additional
+permutations of this value, so I don't think tables are the solution.
+
+
+So I think it's better if we leave this as proposed and then
+parameterize the two individual entries as needed when we go forward -
+or determine that I missed something.
+
+Regards,
+Bjorn
