@@ -2,104 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5607C43703A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4633A437036
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhJVC7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:59:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12121 "EHLO mga09.intel.com"
+        id S232594AbhJVCzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232125AbhJVC7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:59:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="229076023"
-X-IronPort-AV: E=Sophos;i="5.87,171,1631602800"; 
-   d="scan'208";a="229076023"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 19:56:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,171,1631602800"; 
-   d="scan'208";a="484494597"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 21 Oct 2021 19:56:46 -0700
-Cc:     baolu.lu@linux.intel.com, Sven Peter <sven@svenpeter.dev>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Alexander Graf <graf@amazon.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Will Deacon <will@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: Re: [PATCH v3 4/6] iommu: Move IOMMU pagesize check to attach_device
-To:     Marc Zyngier <maz@kernel.org>
-References: <20211019163737.46269-1-sven@svenpeter.dev>
- <20211019163737.46269-5-sven@svenpeter.dev>
- <9e25f2c0-d9d3-475d-e973-63be1891f9a5@linux.intel.com>
- <8735ovdbcv.wl-maz@kernel.org>
- <6a886030-cbc6-9e92-bf79-77b659da2915@linux.intel.com>
- <87wnm6bxx2.wl-maz@kernel.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <106088e3-2928-dace-e1b6-e1e74ffec366@linux.intel.com>
-Date:   Fri, 22 Oct 2021 10:52:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <87wnm6bxx2.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S232556AbhJVCz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 22:55:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5D266135E;
+        Fri, 22 Oct 2021 02:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634871193;
+        bh=ZOyHbxAA1KVGEYcWxP49OLWHjX0kWfehynxD5OBUUVw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MYl6fk548La85NrwC/69S4sKIJvdsbVdNXs9wgOfrX7zVeEh/JVjMuVJBaPLdbpOv
+         yHO9iNYMoEIeXZ4Knv8ctrzbhv+1IHA7gfgUii2lsO4Z1rDVMBq+9Vt7vQ5kaYqlcd
+         ZuG4B+l/nqSUKKafT4TqvA0ZbCZUdliClZeG8epA=
+Date:   Thu, 21 Oct 2021 19:53:11 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Jordy Zomer <jordy@jordyzomer.github.io>, linux-mm@kvack.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to
+ zero
+Message-Id: <20211021195311.6058b90f573641542605dae4@linux-foundation.org>
+In-Reply-To: <20211021154046.880251-1-keescook@chromium.org>
+References: <20211021154046.880251-1-keescook@chromium.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 4:10 PM, Marc Zyngier wrote:
-> On Thu, 21 Oct 2021 03:22:30 +0100,
-> Lu Baolu <baolu.lu@linux.intel.com> wrote:
->>
->> On 10/20/21 10:22 PM, Marc Zyngier wrote:
->>> On Wed, 20 Oct 2021 06:21:44 +0100,
->>> Lu Baolu <baolu.lu@linux.intel.com> wrote:
->>>>
->>>> On 2021/10/20 0:37, Sven Peter via iommu wrote:
->>>>> +	/*
->>>>> +	 * Check that CPU pages can be represented by the IOVA granularity.
->>>>> +	 * This has to be done after ops->attach_dev since many IOMMU drivers
->>>>> +	 * only limit domain->pgsize_bitmap after having attached the first
->>>>> +	 * device.
->>>>> +	 */
->>>>> +	ret = iommu_check_page_size(domain);
->>>>> +	if (ret) {
->>>>> +		__iommu_detach_device(domain, dev);
->>>>> +		return ret;
->>>>> +	}
->>>>
->>>> It looks odd. __iommu_attach_device() attaches an I/O page table for a
->>>> device. How does it relate to CPU pages? Why is it a failure case if CPU
->>>> page size is not covered?
->>>
->>> If you allocate a CPU PAGE_SIZE'd region, and point it at a device
->>> that now can DMA to more than what you have allocated because the
->>> IOMMU's own page size is larger, the device has now access to data it
->>> shouldn't see. In my book, that's a pretty bad thing.
->>
->> But even you enforce the CPU page size check here, this problem still
->> exists unless all DMA buffers are PAGE_SIZE aligned and sized, right?
-> 
-> Let me take a CPU analogy: you have a page that contains some user
-> data *and* a kernel secret. How do you map this page into userspace
-> without leaking the kernel secret?
-> 
-> PAGE_SIZE allocations are the unit of isolation, and this applies to
-> both CPU and IOMMU. If you have allocated a DMA buffer that is less
-> than a page, you then have to resort to bounce buffering, or accept
-> that your data isn't safe.
+On Thu, 21 Oct 2021 08:40:46 -0700 Kees Cook <keescook@chromium.org> wrote:
 
-I can understand the problems when IOMMU page sizes is larger than CPU
-page size. But the code itself is not clean. The vendor iommu drivers
-know more hardware details than the iommu core. It looks odd that the
-vendor iommu says "okay, I can attach this I/O page table to the
-device", but the iommu core says "no, you can't" and rolls everything
-back.
+> Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
+> After fd_install() finishes, the fd can be used by userspace and we can
+> have secret data in memory before the refcount_inc().
+> 
+> A straightforward mis-use where a user will predict the returned fd
+> in another thread before the syscall returns and will use it to store
+> secret data is somewhat dubious because such a user just shoots themself
+> in the foot.
+> 
+> But a more interesting mis-use would be to close the predicted fd and
+> decrement the refcount before the corresponding refcount_inc, this way
+> one can briefly drop the refcount to zero while there are other users
+> of secretmem."
+> 
+> Move fd_install() after refcount_inc().
 
-Best regards,
-baolu
+I added cc:stable.  Or doesn't the benefit/risk ratio justify that?
