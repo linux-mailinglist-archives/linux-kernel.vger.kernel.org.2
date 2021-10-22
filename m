@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F42437AF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10840437B11
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhJVQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:34:42 -0400
-Received: from mga14.intel.com ([192.55.52.115]:54271 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233286AbhJVQel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:34:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10145"; a="229607478"
-X-IronPort-AV: E=Sophos;i="5.87,173,1631602800"; 
-   d="scan'208";a="229607478"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 09:32:23 -0700
-X-IronPort-AV: E=Sophos;i="5.87,173,1631602800"; 
-   d="scan'208";a="534986075"
-Received: from alison-desk.jf.intel.com (HELO alison-desk) ([10.54.74.41])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 09:32:23 -0700
-Date:   Fri, 22 Oct 2021 09:40:11 -0700
-From:   Alison Schofield <alison.schofield@intel.com>
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 2/5] staging: vt6655: Rename
- `byInitCount` variable
-Message-ID: <20211022164011.GB464908@alison-desk>
-References: <cover.1634826774.git.karolinadrobnik@gmail.com>
- <53430b1183324f6a715999792a15df2ea6a3e206.1634826774.git.karolinadrobnik@gmail.com>
+        id S233277AbhJVQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:45:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232190AbhJVQpn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:45:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634921004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W/OkavNRtUwEaidR99EZr7U7XrYVv5pnh4kT4nN7WGM=;
+        b=N2rdvbfBcYkjsvMn8hfGWE78AHwESAbPnuwT5X5FlTwrmGeViEWMZRnhX6FYEbCudweKNj
+        W2Z1valErOA85AS+x54agaz61CgF0eBGXC9Rw5Z7eYUnwOi8GKNbUUuamlERzmwX28Ir/D
+        jU0ly5wBtnGdyA5T3clL1t/7NZ9kcwA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-560-jvaFY9w4OGOHVS0_3vZUPw-1; Fri, 22 Oct 2021 12:43:23 -0400
+X-MC-Unique: jvaFY9w4OGOHVS0_3vZUPw-1
+Received: by mail-ed1-f71.google.com with SMTP id u23-20020a50a417000000b003db23c7e5e2so4278200edb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:43:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=W/OkavNRtUwEaidR99EZr7U7XrYVv5pnh4kT4nN7WGM=;
+        b=iZh9eJkyFkIWwQz5MxCx9ATcfGhEROzmFLNhd/zVc6t+A7pJgCe1sA9ZWmFOalwUIl
+         s5WANveOeh3Bv/amWmviYHENe7u6gxlgt9SCU2I3JCiDPyE8lBEB/Agcg7Pp6CDaQ8oK
+         iodsx7y8Fqo/BOLtHGhEhzpSKkJrR5og3wI7IHpq2BdvvuQxajg51xNAk9SqBKrKLmUD
+         T5N2ZFsqdSos/PybHQaB4Mn5ClGKfXmBpneU+kFFht9TIWnMddqQ9vm3JbTJMdczSj+F
+         x9ERoQNXWhC2lZlnjkFToQ5ZPLn7dvVS1yfYNW9OYgC55mBEVYaxz2ZdQq+2U4nNHyCf
+         V8VA==
+X-Gm-Message-State: AOAM532NY/FMRgz2sZx9bQckGuhdU2fh9LBHJLMZxp3sp285w2zY3TCD
+        5VElLD9m84ISDqXGULBsbhyLBZF+yMk66ZvWVJ8vCrtp0up9yhARsMZ5nOx4hhbzy72LpilOjAG
+        yItkPutYaV/CQk/7NrQbrTFeE
+X-Received: by 2002:a17:906:2653:: with SMTP id i19mr740627ejc.193.1634921002225;
+        Fri, 22 Oct 2021 09:43:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiXVOl5W/K9kJG7nyZqMWMg/lvUNXM1hdAVlzoMF/Y76tqOHn/fFgp0oEeleNdyYrDQSUZ+w==
+X-Received: by 2002:a17:906:2653:: with SMTP id i19mr740598ejc.193.1634921002043;
+        Fri, 22 Oct 2021 09:43:22 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id jg13sm2336590ejc.26.2021.10.22.09.43.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 09:43:21 -0700 (PDT)
+Message-ID: <b931906f-b38e-1cb5-c797-65ef82c8b262@redhat.com>
+Date:   Fri, 22 Oct 2021 18:43:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53430b1183324f6a715999792a15df2ea6a3e206.1634826774.git.karolinadrobnik@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
+Content-Language: en-US
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211022004927.1448382-1-seanjc@google.com>
+ <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
+ <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:37:15AM +0100, Karolina Drobnik wrote:
-> Drop Hungarian notation in `byInitCount` variable in
-> `RFvWriteWakeProgSyn` function. Change it to use snake case.
+On 22/10/21 16:56, Maxim Levitsky wrote:
+>      vCPU0                                   vCPU1
+>      =====                                   =====
 > 
-> Fix issue detected by checkpatch.pl:
->   CHECK: Avoid CamelCase: <byInitCount>
+> - disable AVIC
+>                                          - #NPT on AVIC MMIO access
 
-Hi Karolina,
+vCPU1 is now OUTSIDE_GUEST_CODE
 
-This comment is for all the patches.
+>                                          -*stuck on something prior to the page fault code*
+> - enable AVIC
+>                                          -*still stuck on something prior to the page fault code*
+> - disable AVIC:
+>    - raise KVM_REQ_APICV_UPDATE request
 
-Commit msg:
-We've got plenty of space on that line, how about:
-"Rename byInitCount init_count"
+kvm_make_all_cpus_request does not wait for vCPU1
 
-(I say this because when someone searches by the oneliners it's
-nice to give as many keywords as possible - within the line limit)
+>    - zap the SPTE (does nothing, doesn't race
+>         with anything either)
 
+vCPU0 writes mmu_notifier_seq here
 
-Commit log:
-The log (why this patch is important) seems to be saying that
-snake case is the fix for Hungarian notation. I don't think that
-is completely true. Snake case avoids the camel case of Hungarian
-notation, but we are also dropping the type descriptor which is
-another signature of Hungarian notation.
+>                                          - now vCPU1 finally starts running the page fault code.
 
-Perhaps this would be more direct:
+vCPU1 reads mmu_notifier_seq here
 
-To align with the kernel coding style, remove the type from
-the variable name and do not use CamelCase.
+So yeah, I think you're right.
 
-Reported by checkpatch.pl:
-	CHECK: Avoid CamelCase: <byInitCount>
+The VM value doesn't have this problem, because it is always stored 
+before mmu_notifier_seq is incremented (on the write side) and loaded 
+after the mmu_notifier_seq (on the page fault side).  Therefore, if 
+vCPU1 sees a stale per-VM apicv_active flag, it is always going to see a 
+stale mmu_notifier_seq.
 
-(Not for the log, but a ref if you don't have:
-https://www.kernel.org/doc/html/v4.10/process/coding-style.html)
+With the per-vCPU flag, instead, the flag is written by 
+kvm_vcpu_update_apicv, and that can be long after mmu_notifier_seq is 
+incremented.
 
-Alison
+Paolo
 
+>                                          - vCPU1 AVIC is still enabled
+>                                            (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
+>                                            so the page fault code will populate the SPTE.
 > 
-> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
-> ---
->  drivers/staging/vt6655/rf.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>                                          - handle KVM_REQ_APICV_UPDATE
+>                                             - finally disable vCPU1 AVIC
 > 
-> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-> index 7e441309dd9c..36708af7d612 100644
-> --- a/drivers/staging/vt6655/rf.c
-> +++ b/drivers/staging/vt6655/rf.c
-> @@ -681,7 +681,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
->  {
->  	void __iomem *iobase = priv->port_offset;
->  	int i;
-> -	unsigned char byInitCount = 0;
-> +	unsigned char init_count = 0;
->  	unsigned char bySleepCount = 0;
->  
->  	VNSvOutPortW(iobase + MAC_REG_MISCFFNDEX, 0);
-> @@ -693,9 +693,9 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
->  			return false;
->  
->  		 /* Init Reg + Channel Reg (2) */
-> -		byInitCount = CB_AL2230_INIT_SEQ + 2;
-> +		init_count = CB_AL2230_INIT_SEQ + 2;
->  		bySleepCount = 0;
-> -		if (byInitCount > (MISCFIFO_SYNDATASIZE - bySleepCount))
-> +		if (init_count > (MISCFIFO_SYNDATASIZE - bySleepCount))
->  			return false;
->  
->  		for (i = 0; i < CB_AL2230_INIT_SEQ; i++)
-> @@ -709,9 +709,9 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
->  		/* Need to check, PLLON need to be low for channel setting */
->  	case RF_AIROHA7230:
->  		 /* Init Reg + Channel Reg (3) */
-> -		byInitCount = CB_AL7230_INIT_SEQ + 3;
-> +		init_count = CB_AL7230_INIT_SEQ + 3;
->  		bySleepCount = 0;
-> -		if (byInitCount > (MISCFIFO_SYNDATASIZE - bySleepCount))
-> +		if (init_count > (MISCFIFO_SYNDATASIZE - bySleepCount))
->  			return false;
->  
->  		if (uChannel <= CB_MAX_CHANNEL_24G) {
-> @@ -736,7 +736,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
->  		return false;
->  	}
->  
-> -	MACvSetMISCFifo(priv, MISCFIFO_SYNINFO_IDX, (unsigned long)MAKEWORD(bySleepCount, byInitCount));
-> +	MACvSetMISCFifo(priv, MISCFIFO_SYNINFO_IDX, (unsigned long)MAKEWORD(bySleepCount, init_count));
->  
->  	return true;
->  }
-> -- 
-> 2.30.2
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/53430b1183324f6a715999792a15df2ea6a3e206.1634826774.git.karolinadrobnik%40gmail.com.
+>                                          - VMRUN (vCPU1 AVIC disabled, SPTE populated)
+
