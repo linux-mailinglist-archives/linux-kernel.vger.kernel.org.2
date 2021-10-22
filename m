@@ -2,120 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D351A43744E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7D5437452
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhJVJG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:06:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38020 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232249AbhJVJGy (ORCPT
+        id S232554AbhJVJHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232460AbhJVJHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:06:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634893477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NJGZhkxj38uYQtmuRmaa5a4QRl7cPEpIp72Xf6GYbis=;
-        b=P01r7vf+j+Shx4/WX9StNxXhU5Fklnw7hrahPr3r1HoBc7ONbEJtoPkBY6ekKOzXKilkEg
-        dUPC9vBhido5O6i0iYDC0C6kLyKxO5MWFvmSQ2J4kZcRIp4WBCTyv96+43BETGf6YANS/b
-        MCHkPabM0T9qRYG/tUyDgBXKIbyh1mk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-9AmfcgBbMDG6dO9cNjMB3w-1; Fri, 22 Oct 2021 05:04:34 -0400
-X-MC-Unique: 9AmfcgBbMDG6dO9cNjMB3w-1
-Received: by mail-ed1-f72.google.com with SMTP id u10-20020a50d94a000000b003dc51565894so3017682edj.21
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:04:34 -0700 (PDT)
+        Fri, 22 Oct 2021 05:07:04 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F69C061764;
+        Fri, 22 Oct 2021 02:04:47 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id r2so2719183pgl.10;
+        Fri, 22 Oct 2021 02:04:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=90l1KbBHTcmRnRylUtTYdm/TLWGEifv+19uJGmj6Z0Y=;
+        b=YTfZCAG1qakiomElETlJBHfRaI3wlsyPGS9XKy1leAcAhbOnPp+a5UIrjGmmAUilSN
+         9XUKFhwpIFgUGq/CIBFcCuBni9+Qcv88Untvdrw4flS+uPzGVxgDiftP0/miC08dvpHN
+         8yfEef6ELrwBAcdX+ICS5yI6LhHUPCbg52wx+TtAZubCGnHGboJGVmKMkTg3z2/akMTZ
+         D1tirqUUPx/MGqquFAiD41Eo7Fy2g3dABB+r83rGFn4wWOPmx+TDOqTPa091OoRjQm8l
+         RYky6M6cRtH+loCGoBygm5iiXqAfxdToHY3Cz+uYc3rEfOB3KSLcvL+AHbwAHAJrqs2p
+         NOBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NJGZhkxj38uYQtmuRmaa5a4QRl7cPEpIp72Xf6GYbis=;
-        b=IffX+VzJVFFJmO5+PSslAPeVerSpQwE7iCLMUIKilzNsbb3TwoHKl71URO8I14u2g/
-         YCctJh1xa06cj0cxkLmCMO303+lql2IwdFhiTHpiOfpEx8+NC+dLelBlqmhWWLRSy/at
-         +eglWZocpV4G5mhCvT0DmiVXR7YGMCtn2kBUGblqB7WYr+MEJKH7pGSnW53QUiZDr77p
-         k8J3apz35xQkmNGpW6HmSdyig55Y2v/2vor7hpetsYdQ/T0sh8KEO3NbQCWezryJwpmP
-         sNN434JkyZB2L78d0vpbuAM7B/F/PyRlturlgUROpiwGQasnwoWeN20Gz9hBXQX0Nnz4
-         1kmQ==
-X-Gm-Message-State: AOAM532Ltj6dXxXpaJpEYARryPuOT5Hrv+FhOWMwSfb1UD4dGXjE3rhu
-        oUDs86Tz+PojDKHSAHVKVs0WkgccX1c8TdjWaSMuNPeQulJOe/8ldPVEd/RyDwCKphh4yxe751q
-        STMPRuzZjHkljnTcY0yThwhTM
-X-Received: by 2002:a17:907:6d9f:: with SMTP id sb31mr13655308ejc.109.1634893473606;
-        Fri, 22 Oct 2021 02:04:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxgaLxV/q19thSWzWkPVL40Td4avhVP3W53ZxVNiGvYCe3dCcT5gMVAl5iE2ggZ3DTJDYw6TQ==
-X-Received: by 2002:a17:907:6d9f:: with SMTP id sb31mr13655281ejc.109.1634893473415;
-        Fri, 22 Oct 2021 02:04:33 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id j1sm4078740edk.53.2021.10.22.02.04.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 02:04:32 -0700 (PDT)
-Message-ID: <fd11b3fb-1f14-cd9e-c6f7-cbea0aa6548b@redhat.com>
-Date:   Fri, 22 Oct 2021 11:04:31 +0200
+        bh=90l1KbBHTcmRnRylUtTYdm/TLWGEifv+19uJGmj6Z0Y=;
+        b=BcXn2x2OhAS3L+pRm4Eyb9bqy7L8oGogeNl9t3i46pl0QJFMJRmdI4a+xkMQx85y3Z
+         SyvzL11WtOWSGh1fYMdltO+3KylNGs9nr++JUUOgAxTUxNddz6kE8s1Pe2s7eWLBWrcu
+         GdoUjWLCk1G+B5mzb8xOOkHfKB4OuYkoimn5bWnrTU3QU8ZfShe+xUO8uJPvDoOiU/9W
+         dkm1tEGEiWSiK64riuCd4i+kSg5dIAFOumM1vG+PsFL8yJWwE1Ys3impBQYqyjObvdQG
+         CrjrxRu8YV7z9OZFI9J7Jgmwe86kWu8LPwFi4zCSR6Q01XAM2n4u3EPlgoOEbkImJXAp
+         E7QA==
+X-Gm-Message-State: AOAM533nTwHNpYvCkeZftM0UBATQIoXf4LIFAUcxu5N2HHHV/jAO61cq
+        WcDNSj9R9lAuVjKOHSG95SU=
+X-Google-Smtp-Source: ABdhPJxNNCBfV2oe7XKkcMzc8ZyOSfNlbt7B8Uqf6qQE1jLobTeKReN28jxzF+fVHDXoBl/lMueOJg==
+X-Received: by 2002:aa7:8609:0:b0:44b:346a:7404 with SMTP id p9-20020aa78609000000b0044b346a7404mr11106718pfn.86.1634893487031;
+        Fri, 22 Oct 2021 02:04:47 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c24sm8759072pgj.63.2021.10.22.02.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 02:04:46 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        ye.guojin@zte.com.cn, yuehaibing@huawei.com,
+        libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] libertas: replace snprintf in show functions with sysfs_emit
+Date:   Fri, 22 Oct 2021 09:04:38 +0000
+Message-Id: <20211022090438.1065286-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 05/11] clk: Introduce clk-tps68470 driver
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J.Wysocki" <rjw@rjwysocki.net>,
-        Wolfram Sang <wsa@the-dreams.de>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20211010185707.195883-1-hdegoede@redhat.com>
- <20211010185707.195883-6-hdegoede@redhat.com>
- <163415237957.936110.1269283416777498553@swboyd.mtv.corp.google.com>
- <4e5884d5-bcde-dac9-34fb-e29ed32f73c9@redhat.com>
- <CAHp75Ve_xqgnaCqc3oyDMWDE9kVm8HNOEcdMuDkOD9epwgfWnA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75Ve_xqgnaCqc3oyDMWDE9kVm8HNOEcdMuDkOD9epwgfWnA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-On 10/22/21 10:46, Andy Shevchenko wrote:
-> On Thu, Oct 21, 2021 at 8:31 PM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 10/13/21 21:12, Stephen Boyd wrote:
-> 
-> ...
-> 
->>>> +       regmap_write(clkdata->regmap, TPS68470_REG_CLKCFG1,
-> 
->>>> +                          (TPS68470_PLL_OUTPUT_ENABLE <<
->>>> +                          TPS68470_OUTPUT_A_SHIFT) |
-> 
-> One line, please?
-> 
->>>> +                          (TPS68470_PLL_OUTPUT_ENABLE <<
->>>> +                          TPS68470_OUTPUT_B_SHIFT));
-> 
-> Ditto.
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING  use scnprintf or sprintf
 
-Ack, both fixed for v4.
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Regards,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+---
+ drivers/net/wireless/marvell/libertas/mesh.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Hans
+diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
+index 6cbba84989b8..a58c1e141f2c 100644
+--- a/drivers/net/wireless/marvell/libertas/mesh.c
++++ b/drivers/net/wireless/marvell/libertas/mesh.c
+@@ -169,7 +169,7 @@ static ssize_t anycast_mask_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 12, "0x%X\n", le32_to_cpu(mesh_access.data[0]));
++	return sysfs_emit(buf, "0x%X\n", le32_to_cpu(mesh_access.data[0]));
+ }
+ 
+ /**
+@@ -222,7 +222,7 @@ static ssize_t prb_rsp_limit_show(struct device *dev,
+ 		return ret;
+ 
+ 	retry_limit = le32_to_cpu(mesh_access.data[1]);
+-	return snprintf(buf, 10, "%d\n", retry_limit);
++	return sysfs_emit(buf, "%d\n", retry_limit);
+ }
+ 
+ /**
+@@ -270,7 +270,7 @@ static ssize_t lbs_mesh_show(struct device *dev,
+ 			     struct device_attribute *attr, char *buf)
+ {
+ 	struct lbs_private *priv = to_net_dev(dev)->ml_priv;
+-	return snprintf(buf, 5, "0x%X\n", !!priv->mesh_dev);
++	return sysfs_emit(buf, "0x%X\n", !!priv->mesh_dev);
+ }
+ 
+ /**
+@@ -369,7 +369,7 @@ static ssize_t bootflag_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 12, "%d\n", le32_to_cpu(defs.bootflag));
++	return sysfs_emit(buf, "%d\n", le32_to_cpu(defs.bootflag));
+ }
+ 
+ /**
+@@ -419,7 +419,7 @@ static ssize_t boottime_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 12, "%d\n", defs.boottime);
++	return sysfs_emit(buf, "%d\n", defs.boottime);
+ }
+ 
+ /**
+@@ -479,7 +479,7 @@ static ssize_t channel_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 12, "%d\n", le16_to_cpu(defs.channel));
++	return sysfs_emit(buf, "%d\n", le16_to_cpu(defs.channel));
+ }
+ 
+ /**
+@@ -605,7 +605,7 @@ static ssize_t protocol_id_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 5, "%d\n", defs.meshie.val.active_protocol_id);
++	return sysfs_emit(buf, "%d\n", defs.meshie.val.active_protocol_id);
+ }
+ 
+ /**
+@@ -667,7 +667,7 @@ static ssize_t metric_id_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 5, "%d\n", defs.meshie.val.active_metric_id);
++	return sysfs_emit(buf, "%d\n", defs.meshie.val.active_metric_id);
+ }
+ 
+ /**
+@@ -729,7 +729,7 @@ static ssize_t capability_show(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, 5, "%d\n", defs.meshie.val.mesh_capability);
++	return sysfs_emit(buf, "%d\n", defs.meshie.val.mesh_capability);
+ }
+ 
+ /**
+-- 
+2.25.1
 
