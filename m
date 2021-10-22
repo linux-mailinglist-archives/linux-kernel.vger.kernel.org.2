@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAC343794C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAF343794E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhJVOvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233295AbhJVOvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:51:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233282AbhJVOvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 10:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233269AbhJVOvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D9861213;
-        Fri, 22 Oct 2021 14:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634914123;
-        bh=D7YiPLV5BWiABRuEJr1caIsL8j1JOmX/Rlc+/V7Zfbg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sHa0yAkhFeH0wZLIgP+ZI7JoVDO5tgcdXSeghzQbQK7n/dxfo66MH/BjWZ/GwXYsY
-         1lmUGj33d6m9ZyKJVNRgOnfGQf6661uVPXTNjyiQVYf2SEd27wMupbpxE5k1cNCRpM
-         Y7TGbObewe6NQWRkG0jIaqgVqtC6/OyDZcfm2mUoRVAe6k8KDCEsK8TLhu0x5e9V1T
-         FZLL09ifW1DG2+8UYL7E9psr+jwEKpcegXa58VLfO9xnwswOxplLAXtGgmLgW5fSFr
-         8ELzw3slNSG/FZEpwOCBZtuoxL1qo3u6UCLPNYi3DMe4PCTM2GBqA7Bf4muiaG2gcg
-         N136D/QBNtSLQ==
-Received: by mail-oi1-f169.google.com with SMTP id v77so5329881oie.1;
-        Fri, 22 Oct 2021 07:48:43 -0700 (PDT)
-X-Gm-Message-State: AOAM530FzKiqbAFhZAcm+0Y5Kh40LEFcrBIquFq8dAmAW//06pwQdR0l
-        JzAGEUch7G6/YKkutBhKiWvdu8rqA6nFDzYeQFE=
-X-Google-Smtp-Source: ABdhPJypGAKfqCWEfb5UwFvo4wdFO3IfTvhmWl1YbhLQa54b43BdKPBALNvuxXcnPQLKw9/L9/PCjOHfhxdGtFJefWc=
-X-Received: by 2002:aca:4bc4:: with SMTP id y187mr92315oia.174.1634914123022;
- Fri, 22 Oct 2021 07:48:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <ebf1eb2940405438a09d51d121ec0d02c8755558.1634752931.git.thomas.lendacky@amd.com>
- <9d9ca009-93c5-acc3-7445-d514c7878478@amd.com>
-In-Reply-To: <9d9ca009-93c5-acc3-7445-d514c7878478@amd.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 22 Oct 2021 16:48:31 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEDPwORj=oeQJ66FVD6WMjpxWiXX1Y317izHzRH1c1ncw@mail.gmail.com>
-Message-ID: <CAMj1kXEDPwORj=oeQJ66FVD6WMjpxWiXX1Y317izHzRH1c1ncw@mail.gmail.com>
-Subject: Re: [PATCH] x86/sme: Explicitly map new EFI memmap table as encrypted
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634914124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GDYILUdiGZppWbpkxu9Ohyx9A7+qklKlNzMSxmxk3cI=;
+        b=BRyn5xcZuh3BwppVfJfT3jzwJrCGxlSUXtDB27rGS2MRbWyDV9A+d4H6CeAwLLizzkmKh2
+        aF4HLB84NpRtnLOIR0IUH/SJTfktIRY7NFIdIhUXQqhUqMcpZyoxlpS+FAE4fyxoay8P6i
+        jfha1SLlREvs3tsAeCCcObRIzfhPcDo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-poNaKgl7PZitbN3TDAiucw-1; Fri, 22 Oct 2021 10:48:39 -0400
+X-MC-Unique: poNaKgl7PZitbN3TDAiucw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50F283FA1;
+        Fri, 22 Oct 2021 14:48:37 +0000 (UTC)
+Received: from starship (unknown [10.40.192.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C5945C1D5;
+        Fri, 22 Oct 2021 14:48:33 +0000 (UTC)
+Message-ID: <0dc5b2fbcf4513467d1a6f9bc378c2fe8298ab84.camel@redhat.com>
+Subject: Re: [PATCH v3 5/8] nSVM: use svm->nested.save to load vmcb12
+ registers and avoid TOC/TOU races
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "# 3.4.x" <stable@vger.kernel.org>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 22 Oct 2021 17:48:32 +0300
+In-Reply-To: <20211011143702.1786568-6-eesposit@redhat.com>
+References: <20211011143702.1786568-1-eesposit@redhat.com>
+         <20211011143702.1786568-6-eesposit@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 15:21, Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 10/20/21 1:02 PM, Tom Lendacky wrote:
-> > Reserving memory using efi_mem_reserve() calls into the x86
-> > efi_arch_mem_reserve() function. This function will insert a new EFI
-> > memory descriptor into the EFI memory map representing the area of
-> > memory to be reserved and marking it as EFI runtime memory. As part
-> > of adding this new entry, a new EFI memory map is allocated and mapped.
-> > The mapping is where a problem can occur. This new memory map is mapped
-> > using early_memremap() and generally mapped encrypted, unless the new
-> > memory for the mapping happens to come from an area of memory that is
-> > marked as EFI_BOOT_SERVICES_DATA memory.
+On Mon, 2021-10-11 at 10:36 -0400, Emanuele Giuseppe Esposito wrote:
+> Use the already checked svm->nested.save cached fields
+> (EFER, CR0, CR4, ...) instead of vmcb12's in
+> nested_vmcb02_prepare_save().
+> This prevents from creating TOC/TOU races, since the
+> guest could modify the vmcb12 fields.
+> 
+> This also avoids the need of force-setting EFER_SVME in
+> nested_vmcb02_prepare_save.
+> 
+> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 25 +++++++------------------
+>  1 file changed, 7 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index d07cd4b88acd..e08f2c31beae 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -234,13 +234,7 @@ static bool nested_vmcb_valid_sregs(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_svm *svm = to_svm(vcpu);
+>  	struct vmcb_save_area_cached *save = &svm->nested.save;
+> -	/*
+> -	 * FIXME: these should be done after copying the fields,
+> -	 * to avoid TOC/TOU races.  For these save area checks
+> -	 * the possible damage is limited since kvm_set_cr0 and
+> -	 * kvm_set_cr4 handle failure; EFER_SVME is an exception
+> -	 * so it is force-set later in nested_prepare_vmcb_save.
+> -	 */
+> +
+>  	if (CC(!(save->efer & EFER_SVME)))
+>  		return false;
+>  
+> @@ -476,15 +470,10 @@ static void nested_vmcb02_prepare_save(struct vcpu_svm *svm, struct vmcb *vmcb12
+>  
+>  	kvm_set_rflags(&svm->vcpu, vmcb12->save.rflags | X86_EFLAGS_FIXED);
+>  
+> -	/*
+> -	 * Force-set EFER_SVME even though it is checked earlier on the
+> -	 * VMCB12, because the guest can flip the bit between the check
+> -	 * and now.  Clearing EFER_SVME would call svm_free_nested.
+> -	 */
+> -	svm_set_efer(&svm->vcpu, vmcb12->save.efer | EFER_SVME);
+> +	svm_set_efer(&svm->vcpu, svm->nested.save.efer);
+>  
+> -	svm_set_cr0(&svm->vcpu, vmcb12->save.cr0);
+> -	svm_set_cr4(&svm->vcpu, vmcb12->save.cr4);
+> +	svm_set_cr0(&svm->vcpu, svm->nested.save.cr0);
+> +	svm_set_cr4(&svm->vcpu, svm->nested.save.cr4);
+>  
+>  	svm->vcpu.arch.cr2 = vmcb12->save.cr2;
+>  
+> @@ -499,8 +488,8 @@ static void nested_vmcb02_prepare_save(struct vcpu_svm *svm, struct vmcb *vmcb12
+>  
+>  	/* These bits will be set properly on the first execution when new_vmc12 is true */
+>  	if (unlikely(new_vmcb12 || vmcb_is_dirty(vmcb12, VMCB_DR))) {
+> -		svm->vmcb->save.dr7 = vmcb12->save.dr7 | DR7_FIXED_1;
+> -		svm->vcpu.arch.dr6  = vmcb12->save.dr6 | DR6_ACTIVE_LOW;
+> +		svm->vmcb->save.dr7 = svm->nested.save.dr7 | DR7_FIXED_1;
+> +		svm->vcpu.arch.dr6  = svm->nested.save.dr6 | DR6_ACTIVE_LOW;
+>  		vmcb_mark_dirty(svm->vmcb, VMCB_DR);
+>  	}
+>  }
+> @@ -609,7 +598,7 @@ int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
+>  	nested_vmcb02_prepare_control(svm);
+>  	nested_vmcb02_prepare_save(svm, vmcb12);
+>  
+> -	ret = nested_svm_load_cr3(&svm->vcpu, vmcb12->save.cr3,
+> +	ret = nested_svm_load_cr3(&svm->vcpu, svm->nested.save.cr3,
+>  				  nested_npt_enabled(svm), true);
+>  	if (ret)
+>  		return ret;
 
-This bit already sounds dodgy to me. At runtime, anything provided by
-the firmware that needs to be mapped unencrypted should be
-identifiable as such, regardless of the memory type. So why is there a
-special case for BS data?
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-> > In this case, the new memory will
-> > be mapped unencrypted. However, during replacement of the old memory map,
-> > efi_mem_type() is disabled, so the new memory map will now be long-term
-> > mapped encrypted (in efi.memmap), resulting in the map containing invalid
-> > data and causing the kernel boot to crash.
-> >
-> > Since it is known that the area will be mapped encrypted going forward,
-> > explicitly map the new memory map as encrypted using early_memremap_prot().
-> >
-> > Cc: <stable@vger.kernel.org> # 4.14.x
-> > Fixes: 8f716c9b5feb ("x86/mm: Add support to access boot related data in the clear")
-> > Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> > ---
-> >   arch/x86/platform/efi/quirks.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-> > index b15ebfe40a73..b0b848d6933a 100644
-> > --- a/arch/x86/platform/efi/quirks.c
-> > +++ b/arch/x86/platform/efi/quirks.c
-> > @@ -277,7 +277,8 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
-> >               return;
-> >       }
-> >
-> > -     new = early_memremap(data.phys_map, data.size);
-> > +     new = early_memremap_prot(data.phys_map, data.size,
-> > +                               pgprot_val(pgprot_encrypted(FIXMAP_PAGE_NORMAL)));
->
-> I should really have a comment above this as to why this version of the
-> early_memremap is being used.
->
-> Let me add that (and maybe work on the commit message a bit) and submit a
-> v2. But I'll hold off for a bit in case any discussion comes about.
->
+Best regards,
+	Maxim Levitsky
 
-For the [backported] change itself (with the comment added)
-
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-
-but I'd still like to understand if we can improve the situation with BS data.
