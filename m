@@ -2,110 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4F4437103
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC49437104
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhJVEp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 00:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        id S232064AbhJVEq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 00:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhJVEp4 (ORCPT
+        with ESMTP id S231997AbhJVEqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 00:45:56 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F5AC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:43:39 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id w17so1876549plg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2b8hUCDhenD3A68S7sjLVwnkOcO6p6v7nwBh27Bf6xE=;
-        b=SoM3r/7j/3Px8BWms9I+P9JYjaRtqXm0tpjhcipvjRZ6SDr7GmcfIw8faxA7aHWInJ
-         D+GUlO7Muw+p0A8hbbzBJ97/zYXFIYiI4KyhCh8kB5667qwWQKUDKYAZQxr2Bbid89f/
-         bU1l85s8lG6phRErDbbHbBKytvnNjG2MBaNo9UsaW9m2HBOnj0OvRhTMQvf92gJHti7T
-         6KVmr6qZqQP+xUSJKpoFPj1Qw2QZXCDRXcJn4Rd15U0kdzUPDMg//4C0+LPpor7VFlrh
-         58zWxGMVwhrvP+nTL+0+3ezBtiDTMLZHSO/+Du5sszjtAc+sqyo7i3Gtqc5yeeJ6nmwy
-         cNfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2b8hUCDhenD3A68S7sjLVwnkOcO6p6v7nwBh27Bf6xE=;
-        b=rBz/FUnVvstzIGq7WCITM1tcOs68tHdAFA+H25c/o62j3VLNwlhdTl3mNDN1noI9na
-         5v0JNn4bPCpnJmG6RkkkEEb86W5bO0JWsvlTmHwd/96EJuvi6W1GIrcdGHXHXc/+J+Bz
-         sz94nDcbzKvicnwUr/yDJfT8flLJ1ZdlSd+g0+PKjjTikk82jKa+Xuum3JG5lHMCFvl4
-         a5FJlLYDsJrVAODIseX7TSHe4JUyNjzIvJ0Unbfd8IHXCQPYr6V8Cfkk3kSW5h5F0Vcb
-         uzfZays8jmN6a+dAQXFzL4HcaMNAlkFNlBjTqNcN6BRmCt8HHMtQnJhs6nC0DLN/UhxE
-         FnoA==
-X-Gm-Message-State: AOAM531epO57lmE1D7SSqb9JcfaSn9B4ZAYTDZLEroMO3pMxeVzBGJYk
-        lVKDswgwMYXFWaTJIGWh75lQ7w==
-X-Google-Smtp-Source: ABdhPJwsYr7yGuAcdThYvhCb2+nCzIQTaKVAXmFBDnjK3FbIGqmHVsUpgVI6s30sjV81YcvwXZyyGQ==
-X-Received: by 2002:a17:90b:1645:: with SMTP id il5mr11540510pjb.158.1634877819289;
-        Thu, 21 Oct 2021 21:43:39 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id e9sm8693186pfv.189.2021.10.21.21.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 21:43:38 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 10:13:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        David Heidelberg <david@ixit.cz>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
-Message-ID: <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
-References: <20211019231905.2974-1-digetx@gmail.com>
- <YXAr4OlhucAibMlH@robh.at.kernel.org>
+        Fri, 22 Oct 2021 00:46:25 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46527C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:44:07 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 286C151D;
+        Fri, 22 Oct 2021 06:44:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634877844;
+        bh=eSwlb6YuqsR3uV5jKVNohlQDel9PmJlvK6dwAOAjDsE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KCypfD8VKzEQ/+Vk1MA66r5q6tixJm3CmYwu9qPcUX/i+r81BRaHbjC5WCmEwHKYh
+         0nNPUAPt+OC7sJMfebGkRQsQ3oyGBOCNI0ssp5ZPgq0PiFU6q0UjJFaPHCs9TwiB+3
+         VeGUGrrvKImkXOt9fiYUXcPWV6SAXB/c9X38IN/s=
+Date:   Fri, 22 Oct 2021 07:43:44 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Philip Chen <philipchen@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: Fix the bridge chain order for pre_enable /
+ post_disable
+Message-ID: <YXJBgNvkZb14AJDQ@pendragon.ideasonboard.com>
+References: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YXAr4OlhucAibMlH@robh.at.kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-21, 09:46, Rob Herring wrote:
-> On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
-> > Not all OPP table names and OPP entries consist of a single word. In
-> > particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
-> > and OPP entry name to have multi-worded names to silence DT checker
-> > warnings about the multi-word names separated by hyphen.
-> > 
-> > Reviewed-by: David Heidelberg <david@ixit.cz>
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-> > index ae3ae4d39843..298cf24af270 100644
-> > --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-> > +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-> > @@ -22,7 +22,7 @@ select: false
-> >  
-> >  properties:
-> >    $nodename:
-> > -    pattern: '^opp-table(-[a-z0-9]+)?$'
-> > +    pattern: '^opp-table(-[a-z0-9]+)*$'
+Hi Doug,
+
+Thank you for the patch.
+
+On Thu, Oct 21, 2021 at 12:29:01PM -0700, Douglas Anderson wrote:
+> Right now, the chaining order of
+> pre_enable/enable/disable/post_disable looks like this:
 > 
-> I don't see how this helps you. What I see needed upstream is a prefix:
+> pre_enable:   start from connector and move to encoder
+> enable:       start from encoder and move to connector
+> disable:      start from connector and move to encoder
+> post_disable: start from encoder and move to connector
 > 
-> '-?opp-table(-[0-9]+)?$'
+> In the above, it can be seen that at least pre_enable() and
+> post_disable() are opposites of each other and enable() and disable()
+> are opposites. However, it seems broken that pre_enable() and enable()
+> would not move in the same direction. In other parts of Linux you can
+> see that various stages move in the same order. For instance, during
+> system suspend the "early" calls run in the same order as the normal
+> calls run in the same order as the "late" calls run in the same order
+> as the "noirq" calls.
+> 
+> Let fix the above so that it makes more sense. Now we'll have:
+> 
+> pre_enable:   start from encoder and move to connector
+> enable:       start from encoder and move to connector
+> disable:      start from connector and move to encoder
+> post_disable: start from connector and move to encoder
+> 
+> This order is chosen because if there are parent-child relationships
+> anywhere I would expect that the encoder would be a parent and the
+> connector a child--not the other way around.
+> 
+> This can be important when using the DP AUX bus to instantiate a
+> panel. The DP AUX bus is likely part of a bridge driver and is a
+> parent of the panel. We'd like the bridge to be pre_enabled before the
+> panel and the panel to be post_disabled before the
+> bridge. Specifically, this allows pm_runtime_put_sync_suspend() in a
+> bridge driver's post_suspend to work properly even a panel is under
+> it.
+> 
+> NOTE: it's entirely possible that this change could break someone who
+> was relying on the old order. Hopefully this isn't the case, but if
+> this does break someone it seems like it's better to do it sonner
+> rather than later so we can fix everyone to handle the order that
+> makes the most sense.
 
-I wonder if we should disallow that to keep naming more consistent.
+I'm less hopeful than you are on this, changing the order of operations
+is very risky. I'm also concerned about hardware damage, the pre-enable
+operation is often used to power up devices, and powering up a source
+before a sink is dangerous as many devices don't like having I/O voltage
+applied to their pins before they get powered up. If you really want to
+land this, the patch needs very very broad testing, as well as a plan to
+address the power up issue.
 
-> Though really what I'd like to see is the OPP nodes moved into the 
-> device nodes they belong to when appropriate (i.e. when not shared 
-> between multiple devices).
-
-+1
-
-The only reason for keeping it outside was because CPUs were sharing them.
+> A FURTHER NOTE: Looking closer at commit 4e5763f03e10 ("drm/bridge:
+> ti-sn65dsi86: Wrap panel with panel-bridge") you can see that patch
+> inadvertently changed the order of things. The order used to be
+> correct (panel prepare was at the tail of the bridge enable) but it
+> became backwards. We'll restore the original order with this patch.
+> 
+> Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
+> Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+>  drivers/gpu/drm/drm_bridge.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index c96847fc0ebc..98808af59afd 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -583,18 +583,14 @@ EXPORT_SYMBOL(drm_bridge_chain_mode_set);
+>  void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
+>  {
+>  	struct drm_encoder *encoder;
+> -	struct drm_bridge *iter;
+>  
+>  	if (!bridge)
+>  		return;
+>  
+>  	encoder = bridge->encoder;
+> -	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+> -		if (iter->funcs->pre_enable)
+> -			iter->funcs->pre_enable(iter);
+> -
+> -		if (iter == bridge)
+> -			break;
+> +	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
+> +		if (bridge->funcs->pre_enable)
+> +			bridge->funcs->pre_enable(bridge);
+>  	}
+>  }
+>  EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
+> @@ -684,26 +680,30 @@ void drm_atomic_bridge_chain_post_disable(struct drm_bridge *bridge,
+>  					  struct drm_atomic_state *old_state)
+>  {
+>  	struct drm_encoder *encoder;
+> +	struct drm_bridge *iter;
+>  
+>  	if (!bridge)
+>  		return;
+>  
+>  	encoder = bridge->encoder;
+> -	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
+> -		if (bridge->funcs->atomic_post_disable) {
+> +	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+> +		if (iter->funcs->atomic_post_disable) {
+>  			struct drm_bridge_state *old_bridge_state;
+>  
+>  			old_bridge_state =
+>  				drm_atomic_get_old_bridge_state(old_state,
+> -								bridge);
+> +								iter);
+>  			if (WARN_ON(!old_bridge_state))
+>  				return;
+>  
+> -			bridge->funcs->atomic_post_disable(bridge,
+> -							   old_bridge_state);
+> -		} else if (bridge->funcs->post_disable) {
+> -			bridge->funcs->post_disable(bridge);
+> +			iter->funcs->atomic_post_disable(iter,
+> +							 old_bridge_state);
+> +		} else if (iter->funcs->post_disable) {
+> +			iter->funcs->post_disable(iter);
+>  		}
+> +
+> +		if (iter == bridge)
+> +			break;
+>  	}
+>  }
+>  EXPORT_SYMBOL(drm_atomic_bridge_chain_post_disable);
 
 -- 
-viresh
+Regards,
+
+Laurent Pinchart
