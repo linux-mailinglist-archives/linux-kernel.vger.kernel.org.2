@@ -2,141 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E211C437079
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999F0437080
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhJVD3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:29:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232606AbhJVD3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:29:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D38619BB;
-        Fri, 22 Oct 2021 03:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634873214;
-        bh=dzVTEjYRvmGezdHFFYtBNFqE16zf9YNbNz8le8VBIjQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qdc4pnTlrUjTjgzU9JkiOX5K4g7nVlz54G5x2dfMNCsUi4hCl90buh+usFnbV1R2F
-         CrfX+ZulE3uxYnvhDwezjEltulhqzRqs2LAI7LRWlnrfMObRLBTbMeQy3n8U+oVTIR
-         gAErfhkmBP0FJcCoSvVeWEhOksaf2C+dFRRxpfGY=
-Date:   Thu, 21 Oct 2021 20:26:52 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     <npiggin@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <edumazet@google.com>,
-        <wangkefeng.wang@huawei.com>, <guohanjun@huawei.com>,
-        <shakeelb@google.com>, <urezki@gmail.com>
-Subject: Re: [PATCH v3 2/2] mm/vmalloc: introduce
- alloc_pages_bulk_array_mempolicy to accelerate memory allocation
-Message-Id: <20211021202652.ff8568bd5d58fbcf32946f83@linux-foundation.org>
-In-Reply-To: <20211021080744.874701-3-chenwandun@huawei.com>
-References: <20211021080744.874701-1-chenwandun@huawei.com>
-        <20211021080744.874701-3-chenwandun@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232726AbhJVDha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232670AbhJVDh0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 23:37:26 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C98DC061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:09 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id m21so2086359pgu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Tq9TCe4y+2LqaSR/LbffoUfOqYJ6qwVCCAjmIO9uNDk=;
+        b=itmmIgzvxM8wXh+qClv/FuIhUtp1Nm1143qNgs888P9h+1O1yy/7m6jy7pS2ZdYm7E
+         RXz0Gt2o+piigjSht0ERLCqpV9wq4YY0eMFNgb4xVtenegaLjeipk6T+G4EsH1e2qD1x
+         EYQwlw9vrtWJ/doggqlzwhSU0agNIWQCOM9B0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tq9TCe4y+2LqaSR/LbffoUfOqYJ6qwVCCAjmIO9uNDk=;
+        b=z3FT3N2M4lOcOPY6Be9iKcVQ2WjJzxUo5/E1WihpLAOnubnWIHMOdnCMxwk5FzmIBx
+         kipKo8Fdfofm+eZiz3+6cnBSNKeenmCMDWMH49hVKtfVBN0MuSidvfz8W4GCOpIvI4vm
+         WWXdiShD7CtyB9T3OP1l1Q/SlCC34fXUIuOAckVq73MF0e7zx00L54Z1fT+O9/8EkcYo
+         1YYiEEkmnN9k1mH5MA4NPt77WW50YM84BHvC6ivjv3JDVw3YkBXXiNoSrARp8T+Dpjpx
+         pzgje8vI+ck57mLGLZ5VFnspH5Jv0cSAB9h76Y9Lbgu8PmjPJz5fiTZDABKUD21TlWXl
+         hzEA==
+X-Gm-Message-State: AOAM53008KqtKIhhTTOetdMsMnesFFhRO+zCseWR+K8yKjWlYOOmwyrT
+        n/5QURLJ2HETPZZyRtmzjLkDZTvibahuLg==
+X-Google-Smtp-Source: ABdhPJyxeuRxg63B7FyG23NoOKG14eUyr0a2vpGwzlC5uabse4lMnbVid3Jwws+S/HwS9oP844u1HA==
+X-Received: by 2002:a62:7850:0:b0:44c:5b71:2506 with SMTP id t77-20020a627850000000b0044c5b712506mr9697381pfc.37.1634873709085;
+        Thu, 21 Oct 2021 20:35:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m4sm26011pjl.11.2021.10.21.20.35.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 20:35:08 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:35:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Ingo Molnar <mingo@redhat.com>, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, mgorman@suse.de,
+        bristot@redhat.com,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, Michal Hocko <mhocko@suse.com>,
+        deller@gmx.de, Qi Zheng <zhengqi.arch@bytedance.com>, me@tobin.cc,
+        tycho@tycho.pizza, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        metze@samba.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, guoren@kernel.org,
+        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, jonas@southpole.se,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>, hca@linux.ibm.com,
+        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
+Message-ID: <202110212033.D533BAF@keescook>
+References: <20211008235504.2957528-1-keescook@chromium.org>
+ <f4b83c21-4e73-45b6-ae3a-17659be512c0@www.fastmail.com>
+ <202110211310.634B74A@keescook>
+ <08669c29-a19e-44a8-a53e-acfa773d4680@www.fastmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <08669c29-a19e-44a8-a53e-acfa773d4680@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 16:07:44 +0800 Chen Wandun <chenwandun@huawei.com> wrote:
-
-> It
-
-What is "it"?
-
-> will cause significant performance regressions in some situations
-> as Andrew mentioned in [1]. The main situation is vmalloc, vmalloc
-> will allocate pages with NUMA_NO_NODE by default, that will result
-> in alloc page one by one;
+On Thu, Oct 21, 2021 at 05:39:38PM -0700, Andy Lutomirski wrote:
 > 
-> In order to solve this, __alloc_pages_bulk and mempolicy should be
-> considered at the same time.
 > 
-> 1) If node is specified in memory allocation request, it will alloc
-> all pages by __alloc_pages_bulk.
+> On Thu, Oct 21, 2021, at 1:12 PM, Kees Cook wrote:
+> > On Thu, Oct 21, 2021 at 01:03:33PM -0700, Andy Lutomirski wrote:
+> >> 
+> >> 
+> >> On Fri, Oct 8, 2021, at 4:55 PM, Kees Cook wrote:
+> >> > This makes sure that wchan contains a sensible symbol when a process is
+> >> > blocked. Specifically this calls the sleep() syscall, and expects the
+> >> > architecture to have called schedule() from a function that has "sleep"
+> >> > somewhere in its name. For example, on the architectures I tested
+> >> > (x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
+> >> 
+> >> Is this really better than admitting that the whole mechanism is nonsense and disabling it?
+> >> 
+> >> We could have a fixed string for each task state and call it a day.
+> >
+> > I consider this to be "future work". In earlier discussions it came up,
+> > but there wasn't an obvious clean cost-free way to do this, so instead
+> > we're just fixing the broken corner and keeping the mostly working rest
+> > of it while cleaning up the weird edges. :)
 > 
-> 2) If interleaving allocate memory, it will cauculate how many pages
-> should be allocated in each node, and use __alloc_pages_bulk to alloc
-> pages in each node.
+> True, but we have the caveat that wchan is currently broken, so in some sense we have an easier time killing it now as compared to later.  But if we don't have a fully-fleshed-out idea for how to kill it, then I'm fine with waiting.
 
-This v3 patch didn't incorporate my two fixes, below.  It is usual to
-incorporate such fixes prior to resending.  I have retained those two
-fixes, now against v3.
+It's not actually that broken. Only ORC was fully broken, so all the
+other architectures (and non-ORC x86) have been fine. But given the
+method of fixing ORC vs wchan, it turns out we could further clean up
+the other architectures. But yes, no real plan to remove it, but the
+current series fixes things pretty well. :)
 
+-Kees
 
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix
+> 
+> >
+> > -- 
+> > Kees Cook
 
-make two functions static
-
-Cc: Chen Wandun <chenwandun@huawei.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- mm/mempolicy.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/mm/mempolicy.c~mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix
-+++ a/mm/mempolicy.c
-@@ -2196,7 +2196,7 @@ struct page *alloc_pages(gfp_t gfp, unsi
- }
- EXPORT_SYMBOL(alloc_pages);
- 
--unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
-+static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
- 		struct mempolicy *pol, unsigned long nr_pages,
- 		struct page **page_array)
- {
-@@ -2231,7 +2231,7 @@ unsigned long alloc_pages_bulk_array_int
- 	return total_allocated;
- }
- 
--unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
-+static unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
- 		struct mempolicy *pol, unsigned long nr_pages,
- 		struct page **page_array)
- {
-_
-
-
-
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix-2
-
-fix CONFIG_NUMA=n build.  alloc_pages_bulk_array_mempolicy() was undefined
-
-Cc: Chen Wandun <chenwandun@huawei.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- mm/vmalloc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/mm/vmalloc.c~mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix-2
-+++ a/mm/vmalloc.c
-@@ -2860,7 +2860,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 			 * otherwise memory may be allocated in only one node,
- 			 * but mempolcy want to alloc memory by interleaving.
- 			 */
--			if (nid == NUMA_NO_NODE)
-+			if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
- 				nr = alloc_pages_bulk_array_mempolicy(gfp,
- 							nr_pages_request,
- 							pages + nr_allocated);
-_
-
+-- 
+Kees Cook
