@@ -2,135 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0DB43755F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C939E437563
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbhJVKVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 06:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
+        id S232585AbhJVKZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 06:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbhJVKVI (ORCPT
+        with ESMTP id S232483AbhJVKZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 06:21:08 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36EFC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:18:50 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j21so8265639lfe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9PwSiIQWLcfaolIdxvWwpR3c2+g9ZZvb4TeLeXAtp7I=;
-        b=XlAoxvOju3kRrEbWVVrkeWXOZBnhXXzBoeAbtV9Om0vy1TUNyfyA3PzQ6slrVOLyTe
-         vclPvp+LJLC4I7H7Cncz0mk63K0J8vLZV7r65bJHi36LPpBxazNGDINrWJLNGoHDNuKV
-         aUC8TSui1v2agtVCH9opYzHAHdM2SeZ+CsFkyWYBL/MOnnf3pVqCx/ITnMyg7j6yDdzV
-         hzcZMDdCIdct4sHD0tv2outF319Ecf7KN/4eDEN5f4wbxPzoQ+3pQ8yc+7nADySxfB+h
-         97dwhOIhc1DVcK4IeZtIMnB/HDF+dyU9S1HrBTnnMrwGbFaLbRJwj670scjckB5TtRRm
-         Rj5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9PwSiIQWLcfaolIdxvWwpR3c2+g9ZZvb4TeLeXAtp7I=;
-        b=k0x0Zs9/I0Hr4AXCXbwavSbysILBSjhpj7ULPH5uj5gwAM9VnT9v/XH4Kl6Ox1uZPn
-         fBzGGUaL7j9R2sR0ShMBUkxURy+okJLzvR521eCpL0F/FYLHDyLWHG5jm0d9XmWACbk8
-         6w45G+RJy5msVZ0Z529LHEeCedek94guB5oGAUJ6m3wImd+K8J2HZEwESed+wOtpAOKv
-         r3P+sfrtvzsxJtaDeO2NVstwZhnA64tTR3DkhMXqkJYFirFl5GJMmI2RTJOnfTDRFRoX
-         h6pP3p3ZQKy3BL5v4nJw+mgvVik4DKeg3s+wRrzKFTjW86WV2H2PrXyGnqDBGI1s9TRy
-         qXZg==
-X-Gm-Message-State: AOAM5303l6blwD7o6OoEJYNXF6K8vSssBqPatJ2+svYIDGMCkCb7p+AD
-        eco3KMlMBxKHlZiSWWvvYV6TeviiB1vT2BgL8n6bUA==
-X-Google-Smtp-Source: ABdhPJysn3JD674/zWO/LNI2vU1vTlPQmuFiPMqcYqWDwA8hH7SNawpJxyWdEdC5ydnl3NtqN7LuCIMoOEpN4F+3q/M=
-X-Received: by 2002:a05:6512:4029:: with SMTP id br41mr11088973lfb.233.1634897929048;
- Fri, 22 Oct 2021 03:18:49 -0700 (PDT)
+        Fri, 22 Oct 2021 06:25:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98598C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:23:17 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mdrhb-0004xv-Ph; Fri, 22 Oct 2021 12:23:07 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mdrha-0000Bq-D4; Fri, 22 Oct 2021 12:23:06 +0200
+Date:   Fri, 22 Oct 2021 12:23:06 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Subject: Re: [PATCH net 2/3] can: j1939: j1939_can_recv(): ignore messages
+ with invalid source address
+Message-ID: <20211022102306.GB20681@pengutronix.de>
+References: <1634825057-47915-1-git-send-email-zhangchangzhong@huawei.com>
+ <1634825057-47915-3-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
- <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
- <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
- <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
- <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
- <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com>
- <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
- <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com>
- <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com> <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
-In-Reply-To: <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 22 Oct 2021 12:18:12 +0200
-Message-ID: <CAPDyKFooeseEXW-O8DCAd5Jku1n0iNXfHFt_HVjcfMYFvw4a2g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1634825057-47915-3-git-send-email-zhangchangzhong@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:22:09 up 246 days, 13:46, 123 users,  load average: 0.07, 0.13,
+ 0.15
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 21:56, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 21 Oct 2021 at 21:02, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Thu, Oct 21, 2021 at 8:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > >
-> > > > On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > [cut]
-> >
-> > > > So in theory you could check the pm_runtime_put_sync_suspend() return
-> > > > value and fall back to something like WFI if that's an error code.
-> > >
-> > > I have already tried that, but it simply got too complicated. The main
-> > > issue was that runtime PM could become disabled for the device in the
-> > > middle of executing the ->enter() callback.
-> >
-> > So IIUC the problem is that you cannot resume after suspending in that case.
-> >
-> > IOW, you need to guarantee that if the suspend is successful, the
-> > resume also will take place, but if the suspend fails, you basically
-> > don't care.
->
-> Exactly.
->
-> >
-> > > For example, if pm_runtime_get_sync() fails, I still need to make sure
-> > > the reference counting in genpd becomes correct - and I can't do that
-> > > using dev_pm_genpd_resume(). That's because it's not designed to be
-> > > called in this "unknown" suspend phase, but should be called after the
-> > > noirq phase and be properly balanced with dev_pm_genpd_suspend().
-> > >
-> > > In other words, the error path didn't work out for me.
-> >
-> > It should be sufficient to call wake_up_all_idle_cpus() in the suspend
-> > path before dpm_suspend_late(), because system suspend acquires a
-> > PM-runtime reference on every device.  IOW, it won't let any devices
-> > runtime-suspend, so if your power domain devices are resumed in that
-> > path, they will never suspend again in it and the
-> > pm_runtime_put_sync_suspend() in __psci_enter_domain_idle_state()
-> > becomes a reference counter management call which works regardless of
-> > whether or not PM runtime is disabled.
->
-> That sounds like a great idea, this should work too! Then the question
-> is, how to make that call to wake_up_all_idle_cpus() to become
-> optional - or only invoked for the cpuidle drivers that need it.
->
-> In any case, I will try this out, thanks for the suggestion!
+On Thu, Oct 21, 2021 at 10:04:16PM +0800, Zhang Changzhong wrote:
+> According to SAE-J1939-82 2015 (A.3.6 Row 2), a receiver should never
+> send TP.CM_CTS to the global address, so we can add a check in
+> j1939_can_recv() to drop messages with invalid source address.
+> 
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-I now recall that I have already tried this, but unfortunately it doesn't work.
+NACK. This will break Address Claiming, where first message is SA == 0xff
 
-The problem is that the dev->power.syscore flag is set for the device,
-which makes device_prepare() to bail out early and skip calling
-pm_runtime_get_noresume().
+> ---
+>  net/can/j1939/main.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index 08c8606..4f1e4bb 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -75,6 +75,10 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
+>  	skcb->addr.pgn = (cf->can_id >> 8) & J1939_PGN_MAX;
+>  	/* set default message type */
+>  	skcb->addr.type = J1939_TP;
+> +	if (!j1939_address_is_valid(skcb->addr.sa))
+> +		/* ignore messages whose sa is broadcast address */
+> +		goto done;
+> +
+>  	if (j1939_pgn_is_pdu1(skcb->addr.pgn)) {
+>  		/* Type 1: with destination address */
+>  		skcb->addr.da = skcb->addr.pgn;
+> -- 
+> 2.9.5
+> 
+> 
+> 
 
-Kind regards
-Uffe
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
