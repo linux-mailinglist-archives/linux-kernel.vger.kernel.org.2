@@ -2,151 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808F3437F45
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D736437F50
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhJVUW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:22:27 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:41709 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhJVUW0 (ORCPT
+        id S234173AbhJVU1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233644AbhJVU12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 16:22:26 -0400
-Received: by mail-il1-f198.google.com with SMTP id j6-20020a056e02218600b00259d3a59304so3182437ila.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 13:20:08 -0700 (PDT)
+        Fri, 22 Oct 2021 16:27:28 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE10C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 13:25:10 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id n7so782119ljp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 13:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VL4lca6iHsx6oQ/wg6H7clLpP/uNe7ZsGNa7hBqT+88=;
+        b=Xm2NbmUwKJoW+515TkyEWt2nuCvePzoqxLYJAFPnOe+lbdK5JzMmyaBBRaBeBIIVr6
+         5Y2Ltv7T1OVUR3yQVc1hEpZ4faavbhalIte0tSbwN89GggYecoOBuJphVvusUfCFdqxX
+         UgjPbDpPnxZpf2xYUJtsUcqxyBe+gW6XgMyZo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=6SshvQoAb1qCnuZwFL8aCZKQBiGLMPXUkOLXN32/nLs=;
-        b=QdfCOcAQJaxx0SGWlv057dSLw5yMIC3EPEPEwGqQLr4Bdq+MWg/iMUym5uT5qCb6O+
-         q0ra15MxidYuGT10gfGeIPINgRQ7oe9zO7aIelN7H3JAMsLxQJl7J2MIVCl0shMKipn1
-         FLmsJr3w6LYyH8KXemKVSP1tOoF+IbY8UO26D/Dp5CwFOMHzbeprbcDZDVMuWQHUWY+p
-         UFqiFkFVebfKxNbABYm/V7iiD6S+M4BRhR4Wh8lMaUcepBikvUFksJkbyLjCO2uyJqaO
-         3TymgEUvh0VEcwac8aR5HZZ6Lkt+znCG4YIU+MoQPCjBZ7JmKS37nJI5mNf0BsZrWFYE
-         zXDA==
-X-Gm-Message-State: AOAM533jbQvgPrGds9VXFoZSNpedxMPtZlkU3LZck5ikG7GKPkvx5fAL
-        uCqpkdUV61ZoZn8J1L/5gN266ilOWXM4QZWHmGMe9Z12LA+X
-X-Google-Smtp-Source: ABdhPJzXIEwLNIKuCGZS1MPOtRtv3TaniSIjoqCwG7uF1DKFgmGmgvhXCPQ1RvIMxaGC7zCWTkQFb8xqAiXDKWcJchonDNWj4YuB
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VL4lca6iHsx6oQ/wg6H7clLpP/uNe7ZsGNa7hBqT+88=;
+        b=XUPiicrhTtS56ttKoajPn9s1+kGAsjG+Pjcu7YwM9fSIT3Q8lUwE8DW9ZzJqffgrkR
+         /IKQBZNoZ5PNEuj3zTyH9YF8b0WWJk8aLJZaAdWG8AXZT2mmlZ8jr9KV+UHCnmiaAo8m
+         7SSfepHQefw/5OixtbLVjwIFe8Eih8kOWR90Gio9qvBN8J/uLR/xKm9QcPrmKqKg2hPL
+         AFLhFmk24zVjrCpj38b1oHUi2MiyhVCS9hVfnCBrwD0rfQld/iBHpXuV2eLsoftG/GQm
+         8rxgqJSRfpq0CH0pOfGoBVrf6K59CQ+05xoR+u3qADhnKwo1LowbnzEcKvsYdDywcQBh
+         Q4/w==
+X-Gm-Message-State: AOAM531mmnLoDc+9uDinJjMek2nxC0exaAqtJaDl4omXQQHk9xoH1byG
+        DEHdBYBtZT5W7qupA1c+3mkwLqcWy8Q3VS6BEhI=
+X-Google-Smtp-Source: ABdhPJwlpHsKPmzFYAiGx/tRVlpsVw9GZ1Odn5aT0Vu9nhZKmSbBxQCrjGbixJ724iDX81/cUTC8xw==
+X-Received: by 2002:a2e:9c94:: with SMTP id x20mr2069659lji.5.1634934308951;
+        Fri, 22 Oct 2021 13:25:08 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id i12sm823691lfb.234.2021.10.22.13.25.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 13:25:08 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id o26so1075183ljj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 13:25:08 -0700 (PDT)
+X-Received: by 2002:a2e:9945:: with SMTP id r5mr2174611ljj.249.1634934297582;
+ Fri, 22 Oct 2021 13:24:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1689:: with SMTP id f9mr1330382ila.216.1634934008084;
- Fri, 22 Oct 2021 13:20:08 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 13:20:08 -0700
-In-Reply-To: <b792adc1-ebf2-d0f7-4007-ed5c99ec3f79@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c87fbd05cef6bcb0@google.com>
-Subject: Re: [syzbot] WARNING in batadv_nc_mesh_free
-From:   syzbot <syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        paskripkin@gmail.com, sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
+References: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+ <CAHk-=wjmx7+PD0hzWj5Bg2b807xYD2KCZApTvFje=ufo+MxBMQ@mail.gmail.com>
+ <1041557.1634931616@warthog.procyon.org.uk> <CAHk-=wg2LQtWC3e4Z4EGQzEmsLjmk6jm67Ga6UMLY1MH6iDcNQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wg2LQtWC3e4Z4EGQzEmsLjmk6jm67Ga6UMLY1MH6iDcNQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 22 Oct 2021 10:24:41 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wi7K64wo4PtROxq_cLhfq-c-3aCbW5CjRfnKYA439YFUw@mail.gmail.com>
+Message-ID: <CAHk-=wi7K64wo4PtROxq_cLhfq-c-3aCbW5CjRfnKYA439YFUw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/53] fscache: Rewrite index API and management system
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Steve French <sfrench@samba.org>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Jeff Layton <jlayton@kernel.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Omar Sandoval <osandov@osandov.com>,
+        ceph-devel@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 22, 2021 at 9:58 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> and if (c) is the thing that all the network filesystem people want,
+> then what the heck is the point in keeping dead code around? At that
+> point, all the rename crap is just extra work, extra noise, and only a
+> distraction. There's no upside that I can see.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-general protection fault in batadv_nc_purge_paths
+Again, I'm not a fan of (c) as an option, but if done, then the
+simplest model would appear to be:
 
-RBP: 00007fe7b40631d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffe7ffd3def R14: 00007fe7b4063300 R15: 0000000000022000
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 1 PID: 9061 Comm: syz-executor.0 Not tainted 5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:batadv_nc_purge_paths+0x38/0x3f0 net/batman-adv/network-coding.c:437
-Code: 48 89 d3 49 89 f6 48 89 7c 24 58 49 bd 00 00 00 00 00 fc ff df e8 38 48 ab f7 4d 8d 7e 10 4c 89 f8 48 c1 e8 03 48 89 44 24 48 <42> 8a 04 28 84 c0 0f 85 88 03 00 00 41 8b 2f 31 ff 89 ee e8 20 4c
-RSP: 0018:ffffc9000d04eac0 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff888078270000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88807ec2cc80
-RBP: 00000000fffffff4 R08: ffffffff8154e5b4 R09: ffffed100fd85adc
-R10: ffffed100fd85adc R11: 0000000000000000 R12: ffff88807ec2cc80
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000010
-FS:  00007fe7b4063700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f359172e000 CR3: 000000005e749000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- batadv_nc_mesh_free+0x7a/0xf0 net/batman-adv/network-coding.c:1869
- batadv_mesh_free+0x6f/0x140 net/batman-adv/main.c:249
- batadv_mesh_init+0x5b1/0x620 net/batman-adv/main.c:230
- batadv_softif_init_late+0x8fe/0xd70 net/batman-adv/soft-interface.c:804
- register_netdevice+0x826/0x1c30 net/core/dev.c:10229
- __rtnl_newlink net/core/rtnetlink.c:3458 [inline]
- rtnl_newlink+0x14b3/0x1d10 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x934/0xe60 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x200/0x470 net/netlink/af_netlink.c:2510
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x814/0x9f0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0xa29/0xe50 net/netlink/af_netlink.c:1935
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg net/socket.c:724 [inline]
- ____sys_sendmsg+0x5b9/0x910 net/socket.c:2409
- ___sys_sendmsg net/socket.c:2463 [inline]
- __sys_sendmsg+0x36f/0x450 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fe7b48eda39
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe7b4063188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fe7b49f0f60 RCX: 00007fe7b48eda39
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 00007fe7b40631d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffe7ffd3def R14: 00007fe7b4063300 R15: 0000000000022000
-Modules linked in:
----[ end trace 67ff054734964acf ]---
-RIP: 0010:batadv_nc_purge_paths+0x38/0x3f0 net/batman-adv/network-coding.c:437
-Code: 48 89 d3 49 89 f6 48 89 7c 24 58 49 bd 00 00 00 00 00 fc ff df e8 38 48 ab f7 4d 8d 7e 10 4c 89 f8 48 c1 e8 03 48 89 44 24 48 <42> 8a 04 28 84 c0 0f 85 88 03 00 00 41 8b 2f 31 ff 89 ee e8 20 4c
-RSP: 0018:ffffc9000d04eac0 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff888078270000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88807ec2cc80
-RBP: 00000000fffffff4 R08: ffffffff8154e5b4 R09: ffffed100fd85adc
-R10: ffffed100fd85adc R11: 0000000000000000 R12: ffff88807ec2cc80
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000010
-FS:  00007fe7b4063700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc230f87020 CR3: 000000005e749000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	48 89 d3             	mov    %rdx,%rbx
-   3:	49 89 f6             	mov    %rsi,%r14
-   6:	48 89 7c 24 58       	mov    %rdi,0x58(%rsp)
-   b:	49 bd 00 00 00 00 00 	movabs $0xdffffc0000000000,%r13
-  12:	fc ff df
-  15:	e8 38 48 ab f7       	callq  0xf7ab4852
-  1a:	4d 8d 7e 10          	lea    0x10(%r14),%r15
-  1e:	4c 89 f8             	mov    %r15,%rax
-  21:	48 c1 e8 03          	shr    $0x3,%rax
-  25:	48 89 44 24 48       	mov    %rax,0x48(%rsp)
-* 2a:	42 8a 04 28          	mov    (%rax,%r13,1),%al <-- trapping instruction
-  2e:	84 c0                	test   %al,%al
-  30:	0f 85 88 03 00 00    	jne    0x3be
-  36:	41 8b 2f             	mov    (%r15),%ebp
-  39:	31 ff                	xor    %edi,%edi
-  3b:	89 ee                	mov    %ebp,%esi
-  3d:	e8                   	.byte 0xe8
-  3e:	20                   	.byte 0x20
-  3f:	4c                   	rex.WR
+ - remove the old fscache code, obviously disabling the Kconfig for it
+for each filesystem, all in one fell swoop.
 
+ - add the new fscache code (possibly preferably in sane chunks that
+explains the parts).
 
-Tested on:
+ - then do a "convert to new world order and enable" commit
+individually for each filesystem
 
-commit:         1d4590f5 Merge tag 'acpi-5.15-rc7' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=156e86c4b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d95853dad8472c91
-dashboard link: https://syzkaller.appspot.com/bug?extid=28b0702ada0bf7381f58
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16cb3daf300000
+but as mentioned, there's no sane way to bisect things, or have a sane
+development history in this kind of situation.
 
+                Linus
