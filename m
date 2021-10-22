@@ -2,74 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF808437898
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD2F437896
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbhJVOBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        id S232971AbhJVOBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbhJVOBv (ORCPT
+        with ESMTP id S231616AbhJVOBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:01:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9482CC061764;
-        Fri, 22 Oct 2021 06:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BR6uDgd4EQWygbQFY7F2sfj4ZCUokL+ukMCfSOOPYV8=; b=kEoNugZ1yNlPbNSl50sN+TR1UB
-        uHNC1LaF7I2zS04wHiJBkwmhyldxRNtb3zj+1xDe5/DQd1aJpBVAutnUDpmeFUkwPEpavNf6WzS7t
-        RO9sQwrEOB5fyM6FUl8QzseY0Yzm4Ie/LraGTtVJwYvGX3TpVHtMbbePlIeMXMWmleAL3w2dLEBoC
-        hKEa3kfwerSGQgd3e9Z6QhrDNhV2GcgbU8FkyrdWh4j3ZRrHlABMlVo2AvqnPU4PI3UG2htGk7NLa
-        hF5CzWjWTUxTGs3Tv3xxnMf2teOIrasc75t4WSnk2xfSWcHAhq8MZLUARrBCyclcGMB9qx/lIyQ0X
-        sEU16JOA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdv4g-00BacO-VL; Fri, 22 Oct 2021 13:59:11 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 07F69981F9D; Fri, 22 Oct 2021 15:59:10 +0200 (CEST)
-Date:   Fri, 22 Oct 2021 15:59:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH] rcuwait: do not enter RCU protection unless a wakeup is
- needed
-Message-ID: <20211022135909.GB174703@worktop.programming.kicks-ass.net>
-References: <20211020110638.797389-1-pbonzini@redhat.com>
- <YW/61zpycsD8/z4g@hirez.programming.kicks-ass.net>
- <98a72081-6a2b-b644-d029-edd03da84135@redhat.com>
- <CANRm+CyX+ZZh+LbLPBXEfMoExkx78qHpP-=yFCop9gX+LQeWDQ@mail.gmail.com>
- <bd4e3b80-fefd-43e8-e96b-ea81f21569bd@redhat.com>
- <CANRm+Cxpav5FqCBZoQv5BLnC160_RA3YDJc_CFabW7oMBFQ_5g@mail.gmail.com>
+        Fri, 22 Oct 2021 10:01:47 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1317DC061764;
+        Fri, 22 Oct 2021 06:59:30 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i24so847916lfj.13;
+        Fri, 22 Oct 2021 06:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r/XYzQj06TlWTxA1kKcI6lBOM9M4QsL12wnXXitW/rk=;
+        b=AqNMDhY2/584RrRisIDZh05BQb3tScvsSX4cYDYoyEORHJviHp+gFCMmGll/4icg9k
+         RQYy+/xK13UoZICKHzxL8hNEWs1XQMta4FLNkZmSzbj1QarQN0zEq1VKbme9/+iIVyOq
+         3Qw9YJq4S55v6AxmTKs/ZSfhtIM+9AMG0STKfeqw9GKbMUOCwuxkYwhFzSlRnGQZHiy3
+         ruAYgHTGwTbVH0nVaEeOMl35Zj7y1I4555cEeLjA9aN/LC3IgF9ODQZgr7Wf2nhKVHh2
+         IcFfIwXjzU4sSfBaOTbGtNr5uljHfb/LnLCaul8bkvrDORN31l+7QUtAADyuLYoHOFgk
+         2l/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r/XYzQj06TlWTxA1kKcI6lBOM9M4QsL12wnXXitW/rk=;
+        b=btWUJCtMmjt2tAc2/cabVClGuCuiKqAy17IuYRQsIOZHoQTWMwLbRMzgvuSeMQ0ldT
+         uRSWcOwlLQ+Ro+r3e+WLRPiD5WI4jnwW0bFsCjslmxy+Q8Y224OpHz7M0rIbUZm0TNCY
+         r/yg+qOTXC6bvnYuEUfx7+v1KpjPfHbXGY/XA63kd1ymO/wBkKL9LqDPGf+gh3eiYUMp
+         kW4k7ZCsnC/SdcuGOlVRItrFTo8MteogWZidgTbcL25JtKuSGtpUM2QItkSzsSKTnXv5
+         O+yaj3MPhus52kEcq3gl/r5r++R54VV1PZ7rS8ezkU1H7w4XhZ8kuu46Jj2ahMIXewqr
+         dmWQ==
+X-Gm-Message-State: AOAM530By1iKO40oh5IHCh7wx/maZTfL4kpDmpPDkl50uFUKO5wo+oWj
+        PBskaUGuxcPNsD5pZAxnxN806WXZvi0=
+X-Google-Smtp-Source: ABdhPJzTsAN6pB62BlnAxQwOmYHzWK0D02hhiwkjJ2/++Bk5izTC+RUhBtn8Og/7LtwWhhZj0va52A==
+X-Received: by 2002:ac2:4c49:: with SMTP id o9mr12269402lfk.482.1634911168499;
+        Fri, 22 Oct 2021 06:59:28 -0700 (PDT)
+Received: from mobilestation ([95.79.132.211])
+        by smtp.gmail.com with ESMTPSA id e8sm739946lft.308.2021.10.22.06.59.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 06:59:28 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:59:26 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, f.fainelli@gmail.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 0/3] genirq: Make irq_cpu_{on,off}line() an Octeon-special
+Message-ID: <20211022135926.nlxdmuu6tfhrqlui@mobilestation>
+References: <20211021170414.3341522-1-maz@kernel.org>
+ <20211022135353.ibze6z67xokbwkts@mobilestation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANRm+Cxpav5FqCBZoQv5BLnC160_RA3YDJc_CFabW7oMBFQ_5g@mail.gmail.com>
+In-Reply-To: <20211022135353.ibze6z67xokbwkts@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 08:08:41PM +0800, Wanpeng Li wrote:
-> On Wed, 20 Oct 2021 at 20:04, Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 20/10/21 14:01, Wanpeng Li wrote:
-> > > Yes, in the attachment.
-> > >
-> > >      Wanpeng
-> >
-> > This one does not have CONFIG_PREEMPT=y, let alone CONFIG_PREEMPT_RCU.
-> > It's completely impossible that this patch has an effect without those
-> > options.
+On Fri, Oct 22, 2021 at 04:53:56PM +0300, Serge Semin wrote:
+> Hello Marc
 > 
-> Sorry, should be this one in the attachment.
+> On Thu, Oct 21, 2021 at 06:04:11PM +0100, Marc Zyngier wrote:
+> > Now that Florian has updated BMIPS to not rely on irq_cpu_offline [1],
+> > it is pretty tempting to totally get of this misfeature. We can't
+> > really do that because Octeon uses it like crazy, but the couple of
+> > other users are easy to convert.
+> > 
+> > Once this is done, these helpers are hidden behind a config symbol
+> > that depends on the Octeon platform being selected. When Octeon is
+> > finally removed from the tree, we'll be able to drop this as well.
+> 
+> The whole series has been tested in kernel 5.13 running on
+> Baikal-T1 SoC (2x P5600 cores) with MIPS GIC used as the clock source
+> and clock event device.
 
-Uhhmmm.. you have lockdep enabled. You know you shouldn't be doing
-performance measurements with lockdep on, right?
+> Acked-by: Serge Semin <fancer.lancer@gmail.com>
+
+Ah, sorry. copy-pasted a wrong tag. Tested-by of course:
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Sergey
+
+> 
+> -Sergey
+> 
+> > 
+> > 
+> > Marc Zyngier (3):
+> >   MIPS: loongson64: Drop call to irq_cpu_offline()
+> >   irqchip/mips-gic: Get rid of the reliance on irq_cpu_online()
+> >   genirq: Hide irq_cpu_{on,off}line() behind a deprecated option
+> > 
+> >  arch/mips/loongson64/smp.c     |  1 -
+> >  drivers/irqchip/irq-mips-gic.c | 37 ++++++++++++++++++++++++----------
+> >  include/linux/irq.h            |  5 ++++-
+> >  kernel/irq/Kconfig             |  7 +++++++
+> >  kernel/irq/chip.c              |  2 ++
+> >  5 files changed, 39 insertions(+), 13 deletions(-)
+> > 
+> > -- 
+> > 2.30.2
+> > 
