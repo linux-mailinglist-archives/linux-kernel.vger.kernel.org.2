@@ -2,226 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017EC437911
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A60437919
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhJVOep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbhJVOen (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:34:43 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1FCC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:32:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id j205so2421029wmj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=PNcwmUDAOK4zi7Fdx67XtZH80G3RW8rJDdaDa8v/yQw=;
-        b=MmpSVY2TH/DDOuA9JovvGgJFC72YPMEPlm0V/LiD8UqFSOfLtV6C/zRlc0K8EI4Dyq
-         f9wGp74Jsv7wTmULQoHNVl0c2/Dl470ObJLpkmPtFQW5x7Aa6TIU0dN0bqdasA2cyAQT
-         UkOlg9oNkwL6IWTQ9u1kSOhKt1LH59WudWh6pl3mAUssedYzJlqRwhlbtj/1KIWaI42G
-         2qxZlmQGDn5QcBrb7vYrDiSequFAFC+x/yFG/rmj3YoacPJLYYH+Us7l41oi5q2ato4d
-         /X+7tYGj2on3glbmJWWIKxTJ3ObiElbLyibbEWEyVCXEE/NAOuMHGYQEbGyAFKQ5fUTT
-         HDqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=PNcwmUDAOK4zi7Fdx67XtZH80G3RW8rJDdaDa8v/yQw=;
-        b=hZb5S6L6hc49yxo1NFO4HXT+3uP8AhCYRuRxhSpgNzdzOMtS9Gl79lbGVvoeQCFoLc
-         AsYpu6oMcsBYO9iM6o5o1lU0LkhQiTtMR5XG6IjJSZXjzwaB+KmMHtplLZRuY/TSD3dg
-         4tBaPOXdxVKBpacmLlx07QGUNuUPIYBLuJIbC+BBq0G1X+Y76FbDBC3O9k+A62NSDOQg
-         XlsRpHJX2s3WUbN1CYUlMz9Ha31A9lyi+ZYqPDok9mICakPfeAEZ2LZfq/tccDiSAQfL
-         Y7WO8xHaTpPeTsucFufIJof5MHpLmRDj3yBsjUDvvn4S8SS6m9bJzMNqd3u9Z+OY8kvF
-         ZVcQ==
-X-Gm-Message-State: AOAM530xkKB46nsee5t3/K0rEbCrhy0Ka0NNG4jS4rsct+LxszVHb8ye
-        Xt904/4N+Rj04d48EHolG7Q36Q==
-X-Google-Smtp-Source: ABdhPJxB8HEaQtwmTUt3EAgd10zj7wUooGeYa3l8fx3eWKufh+9hESqQlK5PrevfDHs8ZWFiZhC2mQ==
-X-Received: by 2002:a05:600c:4eca:: with SMTP id g10mr28799320wmq.171.1634913144442;
-        Fri, 22 Oct 2021 07:32:24 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a691:2666:4ecf:26e9? ([2a01:e34:ed2f:f020:a691:2666:4ecf:26e9])
-        by smtp.googlemail.com with ESMTPSA id r4sm10578304wrz.58.2021.10.22.07.32.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 07:32:23 -0700 (PDT)
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        liuyun01@kylinos.cn, Johan Jonker <jbx6244@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Yuanzheng Song <songyuanzheng@huawei.com>,
-        Ziyang Xuan <william.xuanziyang@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal for v5.16
-Message-ID: <60a16c62-d14d-6943-f163-b2cc3d05c3b0@linaro.org>
-Date:   Fri, 22 Oct 2021 16:32:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233150AbhJVOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:36:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232949AbhJVOgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 10:36:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B4EA60EBD;
+        Fri, 22 Oct 2021 14:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634913270;
+        bh=MLWXQ6hUQsgTEzy98KOzfvOMHE4mKkzCkHTij0gPRCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b+O1INs+3Nu538GbjhQdOASEO2kI+QqCiyfyA2xPuiG8G8IvtLZqv/v4BZRi/sp0f
+         zXLdJQsYg1jhi9E7cw692HKOD6b14Rguv85/ObC/HCNZdKEvIIrwy3mh5EmT1HJOyl
+         ENuZ7w0QrlDylHPfFft6YWGjzg5ds2A4wWm2uaPI=
+Date:   Fri, 22 Oct 2021 16:34:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Rajat Jain <rajatja@google.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/6] PCI: allow for callback to prepare nascent subdev
+Message-ID: <YXLL8IPz2LcNqEj4@kroah.com>
+References: <20211022140714.28767-1-jim2101024@gmail.com>
+ <20211022140714.28767-3-jim2101024@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022140714.28767-3-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+On Fri, Oct 22, 2021 at 10:06:55AM -0400, Jim Quinlan wrote:
+> We would like the Broadcom STB PCIe root complex driver to be able to turn
+> off/on regulators[1] that provide power to endpoint[2] devices.  Typically,
+> the drivers of these endpoint devices are stock Linux drivers that are not
+> aware that these regulator(s) exist and must be turned on for the driver to
+> be probed.  The simple solution of course is to turn these regulators on at
+> boot and keep them on.  However, this solution does not satisfy at least
+> three of our usage modes:
+> 
+> 1. For example, one customer uses multiple PCIe controllers, but wants the
+> ability to, by script, turn any or all of them by and their subdevices off
+> to save power, e.g. when in battery mode.
+> 
+> 2. Another example is when a watchdog script discovers that an endpoint
+> device is in an unresponsive state and would like to unbind, power toggle,
+> and re-bind just the PCIe endpoint and controller.
+> 
+> 3. Of course we also want power turned off during suspend mode.  However,
+> some endpoint devices may be able to "wake" during suspend and we need to
+> recognise this case and veto the nominal act of turning off its regulator.
+> Such is the case with Wake-on-LAN and Wake-on-WLAN support where PCIe
+> end-point device needs to be kept powered on in order to receive network
+> packets and wake-up the system.
+> 
+> In all of these cases it is advantageous for the PCIe controller to govern
+> the turning off/on the regulators needed by the endpoint device.  The first
+> two cases can be done by simply unbinding and binding the PCIe controller,
+> if the controller has control of these regulators.
+> 
+> This commit solves the "chicken-and-egg" problem by providing a callback to
+> the RC driver when a downstream device is "discovered" by inspecting its
+> DT, and allowing said driver to allocate the device object prematurely in
+> order to get the regulator(s) and turn them on before the device's ID is
+> read.
+> 
+> [1] These regulators typically govern the actual power supply to the
+>     endpoint chip.  Sometimes they may be a the official PCIe socket
+>     power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
+>     the regulator(s) that supply power to the EP chip.
+> 
+> [2] The 99% configuration of our boards is a single endpoint device
+>     attached to the PCIe controller.  I use the term endpoint but it could
+>     possible mean a switch as well.
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  drivers/base/core.c    |  5 +++++
+>  drivers/pci/probe.c    | 47 ++++++++++++++++++++++++++++++++----------
+>  include/linux/device.h |  3 +++
+>  include/linux/pci.h    |  3 +++
+>  4 files changed, 47 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 249da496581a..62d9ac123ae5 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -2864,6 +2864,10 @@ static void klist_children_put(struct klist_node *n)
+>   */
+>  void device_initialize(struct device *dev)
+>  {
+> +	/* Return if this has been called already. */
+> +	if (dev->device_initialized)
+> +		return;
+> +
 
-  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+Ick, no!  Who would ever be calling this function more than once?  That
+"should" be impossible.
 
-are available in the Git repository at:
+This function should only be called by a bus when it first creates the
+structure and before anything is done with it.  As the bus itself
+controls the creation, it already "knows" when the structure was
+initialzed so it should not have to be called again.
 
+Please fix the bus logic that requires this, it is broken.
 
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.16-rc1
+Consider this a NACK for this patch, sorry.
 
-for you to fetch changes up to a67a46af4ad6342378e332b7420c1d1a2818c53f:
-
-  thermal/core: Deprecate changing cooling device state from userspace
-(2021-10-21 17:35:11 +0200)
-
-----------------------------------------------------------------
-- Constify a variable in thermal mmio driver (Rikard Falkeborn)
-
-- Add the current temperature in the netlink message when crossing a
-  trip point in order to prevent useless back and forth reading from
-  userspace (Daniel Lezcano)
-
-- Add support for the 'HC' variant on PM8998 pmic in order to support
-  vadc channels on recent QCom boards (Bjorn Andersson)
-
-- Add support of calibration values from hardware when they are fused
-  (Niklas Söderlund)
-
-- Fix NULL pointer dereference from the thermal_release callback when
-  an error occured in the thermal_zone_device_register() function
-  (Yuanzheng Song)
-
-- Fix use after free call in the __thermal_cooling_device_register()
-  function in the error path (Ziyang Xuan)
-
-- Fix compilation error for the LMh driver when CONFIG_QCOM_SCM is not
-  set (Jackie Liu)
-
-- Add a timeout when reading a register which can block forever under
-  certain circumstances in the tsens driver (Ansuel Smith)
-
-- Add DT binding for the reset lines and use them in the rockchip
-  sensor driver (Johan Jonker)
-
-- Add new uniphier NX1 SoC temperature sensor (Kunihiko Hayashi)
-
-- Save and restore the TCC value in the int340x driver (Antoine
-  Tenart)
-
-- Deprecate the cooling device state sysfs file writable and the user
-  space governor (Daniel Lezcano)
-
-----------------------------------------------------------------
-Ansuel Smith (1):
-      thermal/drivers/tsens: Add timeout to get_temp_tsens_valid
-
-Antoine Tenart (1):
-      thermal/drivers/int340x: Improve the tcc offset saving for
-suspend/resume
-
-Bjorn Andersson (2):
-      dt-bindings: thermal: qcom: add HC variant of adc-thermal monitor
-bindings
-      thermal/drivers/qcom/spmi-adc-tm5: Add support for HC variant
-
-Daniel Lezcano (3):
-      thermal/drivers/netlink: Add the temperature when crossing a trip
-point
-      thermal/core: Make the userspace governor deprecated
-      thermal/core: Deprecate changing cooling device state from userspace
-
-Jackie Liu (1):
-      thermal/drivers/qcom/lmh: make QCOM_LMH depends on QCOM_SCM
-
-Johan Jonker (3):
-      dt-bindings: thermal: allow more resets for tsadc node in
-rockchip-thermal.yaml
-      dt-bindings: thermal: remove redundant comments from
-rockchip-thermal.yaml
-      thermal/drivers/rockchip_thermal: Allow more resets for tsadc node
-
-Kunihiko Hayashi (2):
-      dt-bindings: thermal: uniphier: Add binding for NX1 SoC
-      thermal/drivers/uniphier: Add compatible string for NX1 SoC
-
-Niklas Söderlund (2):
-      thermal: rcar_gen3_thermal: Store thcode and ptat in priv data
-      thermal: rcar_gen3_thermal: Read calibration from hardware
-
-Rikard Falkeborn (1):
-      thermal/drivers/thermal_mmio: Constify static struct thermal_mmio_ops
-
-Yuanzheng Song (1):
-      thermal/core: Fix null pointer dereference in thermal_release()
-
-Ziyang Xuan (1):
-      thermal/core: fix a UAF bug in __thermal_cooling_device_register()
-
- Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm-hc.yaml
-     | 149
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Documentation/devicetree/bindings/thermal/rockchip-thermal.yaml
-     |  23 +++++++++++++----------
- Documentation/devicetree/bindings/thermal/socionext,uniphier-thermal.yaml   |   1 +
- drivers/thermal/gov_user_space.c
-     |   9 +++++++++
- drivers/thermal/intel/int340x_thermal/int3401_thermal.c
-     |   8 +++++++-
- drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-     |  36 ++++++++++++++++++++++++++++--------
- drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-     |   1 +
- drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-     |  18 +++++++++++++++++-
- drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci_legacy.c |   8 +++++++-
- drivers/thermal/qcom/Kconfig
-     |   2 +-
- drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-     |  41 ++++++++++++++++++++++++++++++++++++++++-
- drivers/thermal/qcom/tsens.c
-     |  29 ++++++++++++++---------------
- drivers/thermal/rcar_gen3_thermal.c
-     | 113
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------
- drivers/thermal/rockchip_thermal.c
-     |   2 +-
- drivers/thermal/thermal_core.c
-     |  22 ++++++++++++++++------
- drivers/thermal/thermal_mmio.c
-     |   2 +-
- drivers/thermal/thermal_netlink.c
-     |  11 ++++++-----
- drivers/thermal/thermal_netlink.h
-     |   8 ++++----
- drivers/thermal/thermal_sysfs.c
-     |   3 +++
- drivers/thermal/uniphier_thermal.c
-     |   4 ++++
- 20 files changed, 408 insertions(+), 82 deletions(-)
- create mode 100644
-Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm-hc.yaml
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+greg k-h
