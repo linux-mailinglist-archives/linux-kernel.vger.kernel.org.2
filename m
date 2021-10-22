@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2FE43757D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B76443757F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbhJVKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 06:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232677AbhJVKdT (ORCPT
+        id S232698AbhJVKdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 06:33:49 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:55807 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232573AbhJVKds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 06:33:19 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839E1C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:31:02 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso2839473wmd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:31:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0w1yn0kHGg+18Yn7SEFx6+dUjy1ROAw6/DrVLeyy5W4=;
-        b=shWDNK044FtksKPiZfQIkKAl/3u/UdHTelMBoDZsbd1h56DG7bm0LQnjMj4g9JmBP3
-         +kQFNVSbRFZEBUDGCm8zYgg0et6eSPNvJRJ19HUU4pKWSuQ5LKd/WQOWNK4k7zKhE3xj
-         D4ONnV191Ab1miQm/2RCvy7rO+DofrTAnGwVapgKC/hAhMRMs4JkY1hi7n3ZEVJ16ct9
-         VV2cx0BbHwGXEMdZ5sXjCNa1jGnYh2+LL9hvYE+ZGUsQ9KLqs/uaE3jRG/lSkMNTqba6
-         1wGxS9/XXWJ++KIiqtnp+F/IEHB1nWurV0KyooTDpTVklKJO9a6ptcWFfXyqeTJ4yqbF
-         /yfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0w1yn0kHGg+18Yn7SEFx6+dUjy1ROAw6/DrVLeyy5W4=;
-        b=zNnxyQAANmPDb3f0mslB+4M5eat/pJwWcg1O5G5PIuXaF2u54JkgOm3GRQo7g+3Cd6
-         6IPiWX3Y7jvKJcQVPPep2A1RMKt6FBK0dz4AXw4jka5o7aamEuy9Fcr5PtXEKQACllQ7
-         o0jki1+JDnm4g1KdIehxowVJzPm/QpPjouiU+JP7gJv5Rp3owu4vEGZ/ht/wj8wTRYX+
-         4pwU5HmABsX4Za/sevq7FQmD2sNI0tgyMfVL8Ixw/GDQn7/B4SSaAQmaepGZTTJBteh1
-         p+F7/PHu99cYKjUlaWSnMYhQpbgV59RN2aBDrQNEQ1sSeDXwSe79ZJRePVLbUeIzJEzI
-         KwWQ==
-X-Gm-Message-State: AOAM5329SsUmTsiDck+HlH1/snypan+a3X2TLIomH0FH2q/k89Sp3t8l
-        ppJgPYbvBfJaB5aNSAaCnAR9Lg==
-X-Google-Smtp-Source: ABdhPJwBDBAu78G4Mrc736dZlmiw1XOQycC0liaM/m7RdrV5TsQXA3ceFzJIOyDRGU3aQI3t8Eh9zA==
-X-Received: by 2002:a1c:1d44:: with SMTP id d65mr8403859wmd.29.1634898661163;
-        Fri, 22 Oct 2021 03:31:01 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id r39sm1862773wmp.2.2021.10.22.03.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 03:31:00 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 11:30:58 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        kernel@pengutronix.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        linux-imx@nxp.com, amitk@kernel.org, rui.zhang@intel.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, linux-hwmon@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v13 1/9] dt-bindings: mfd: Initial commit of
- silergy,sy7636a.yaml
-Message-ID: <YXKS4slSthfexrR6@google.com>
-References: <20211015122551.38951-1-alistair@alistair23.me>
- <20211015122551.38951-2-alistair@alistair23.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211015122551.38951-2-alistair@alistair23.me>
+        Fri, 22 Oct 2021 06:33:48 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id DD65B3200A1E;
+        Fri, 22 Oct 2021 06:31:30 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute3.internal (MEProxy); Fri, 22 Oct 2021 06:31:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=KbMpnRh1mWwjoX89UJ/WIrnsgzEo
+        huauhd3dYa3aqWQ=; b=R9bFt/6UFPwHQr8DQO6aCJbcQIJIwqBGhBfPKUV2GpLB
+        99WYb/K7rOvMFJv6E0HbSgdpOtnun6Zdg+hcE+NcopHSfTV1kv8R6JYPgnN1GyAo
+        plGZsqHhGt0KxCsftm7e5sDZa6dCTVi2UbbQG9p5JXP444JGKlQ8kMtYOZ3smpLZ
+        +r9gxTmMQLUyHv0O4cr65i/qblEiy5xZXhr3Fyiw6WptwQj+hRwE7c2K1JVln2mb
+        TX9dd5DQmhFgCDf37/98IKO6Swqile9nr4R4ZwboQsAiHnkeulh42UMKUDEH26jj
+        NmfdPuVtv1iIlZO6G74mS/BOalK4lIIsn1nysgmu1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KbMpnR
+        h1mWwjoX89UJ/WIrnsgzEohuauhd3dYa3aqWQ=; b=babQCnMTJIsdx1498obkxE
+        1e/jsWUbFsLUKg4LvJuf4RqvqJjm9BjWIZ3fhFpGoeFnUZ/aEV5R6nv7xVFfQn4S
+        3kCeonT3UHodPFskBqYxHoYbV9Uxas1z1O2tbMK+mmNmo8kv1hadlOiSmXUHhP3V
+        1t8aTzy1BW0n+eadmtQ59dO9rbuFW8n2Di7Uq/75bbH23uDs9crMuxB37kuFreEm
+        DutXlpA8+eVMSnDxFM5CmW8uFO4FzZtT4JDy0sUwirq69E5McQajw4CBf1QhoWDe
+        0lLUPDYzLcMQWmAUAp+7IBCMf2rSSWxmzZmCXww6ODNzPvgAqIwz/Vl/lE8wnhIw
+        ==
+X-ME-Sender: <xms:AZNyYbca8DV0CaeN_82ihSCNa13XFDrf9pQnaJV78VvwLZImI529Tw>
+    <xme:AZNyYRPm5UkAD4Izv7qnXlqM_W1txNZkb3q3ocBeqPFU5FU2OdclwGj0rGot1JLKo
+    VHchO4T5jV85OqaxT0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvkedgvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomheptehlihhs
+    thgrihhruceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrg
+    htthgvrhhnpeeuffekveehjeeltdeuveeikeelkeejhfejheduhfdtgfdtgfejjeekvdev
+    jeevueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:AZNyYUhgfI7b4HaXKZYfwGDKjsrVj3K1IctuoOQmQoB-0Xpqx1P5cQ>
+    <xmx:AZNyYc8aueCabnglVa746m2N2nbaqComQZjrSZpw-70WlTfF6XwRQg>
+    <xmx:AZNyYXso_nGlJJz4aZJUGT6fER1J7bjcyo5GetesBb5omBaUgElWeQ>
+    <xmx:ApNyYQ6qeYgbOeTFW1P61Ru7RaMPZ_nQL1rN6Z6fv4DWpGYSeV_KgA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id DAD0AAC0DD1; Fri, 22 Oct 2021 06:31:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
+Mime-Version: 1.0
+Message-Id: <bd49c44d-372e-453a-ac8e-04252b2eaba8@www.fastmail.com>
+In-Reply-To: <20211022125323.132b950d@canb.auug.org.au>
+References: <20211022125323.132b950d@canb.auug.org.au>
+Date:   Fri, 22 Oct 2021 20:31:08 +1000
+From:   Alistair <alistair@alistair23.me>
+To:     "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        "Mark Brown" <broonie@kernel.org>,
+        "Liam Girdwood" <lgirdwood@gmail.com>
+Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the regulator tree
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021, Alistair Francis wrote:
-
-> Initial support for the Silergy SY7636A Power Management chip
-> and regulator.
+On Fri, Oct 22, 2021, at 11:53 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/mfd/silergy,sy7636a.yaml         | 79 +++++++++++++++++++
->  1 file changed, 79 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> After merging the regulator tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/regulator/sy7636a-regulator.c:14:10: fatal error: linux/mfd/sy7636a.h: No such file or directory
+>    14 | #include <linux/mfd/sy7636a.h>
+>       |          ^~~~~~~~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   cb17820ef71e ("regulator: sy7636a: Remove requirement on sy7636a mfd")
 
-For my own reference (apply this as-is to your sign-off block):
+The above patch allows the sy7636a regulator to be built, as it no longer depends on
+the mfd driver directly.
+This fails to build on current upstream as the sy7636a header file isn't upstream
+yet. The header file is added earlier in the patch series.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+This patch should probably not be applied until after:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+
+Or if preferred I can split adding the header file into it's own patch that can be
+applied.
+
+Alistair
+
+
+> 
+> I have used the regulator tree from next-20211021 for today.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
