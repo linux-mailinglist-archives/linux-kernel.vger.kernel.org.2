@@ -2,141 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC124437B3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9A8437B40
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbhJVRCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbhJVRCT (ORCPT
+        id S233647AbhJVRDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:03:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54947 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233356AbhJVRDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:02:19 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1F1C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:00:01 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id o184so6245235iof.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kTen2SJ5OXpwrB3GYaVSgs5PSr8Wl3SgV5Rb/nQHzy4=;
-        b=OfBpCJAzSU6W7PZkLXvnp5uTA+iDkXVIdjqAMBeIpoljCUIE4H16rweL/sbBvPgjOz
-         a7XnxBwIYdIryHPaHA7ppp+xRkuJ8ZkGtFQ917cYf6DXBKPw/S1sutxiZQufEACp4UpT
-         PLnHHSzn4hQ4AhSAlnXGb0jGqcXGqNTs1nU6fnOh+AIxI5Q8oMN4iE7Fya+Xc4OOZBym
-         rRn0MMZj1yiUeB/E8pchAg4wkBwHmXHOyXkKHbDeAue4CSfMCyDa4KbzZTr3JaR9+GBS
-         VNmBEefGtXM9NaGbU0Rp/mPohCP047tLX02ikVEAVBUzcMC6NEhoorwouURdd7M5e8d/
-         nviw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kTen2SJ5OXpwrB3GYaVSgs5PSr8Wl3SgV5Rb/nQHzy4=;
-        b=y98KaqOYghNFj6HsK52S+cFu473N6fhv5bpF8M9k9neFjpUHj9hBpqdXPh6plR+29B
-         OguNlN1uu+nKuA3dJhH6G1K5olOE8THJn4D90Kzsc0M5rV+cX75bIN1x1xCXBitz5OAC
-         0XvASl1dP6Km6otVqV99aG/REweA/xYiNoJF9DAoHF1IgSxctLBzRDVWqAkIeX0fhrS+
-         Pq0YxHBOnJoV/M9RlTHaM6Lb9b31HKXTcxDq6S/wCacQcbSDv1noaAPXw7XlpbkXQIBA
-         f+QNvkoqrbA9pLtd0f9QdsA5MfGW2tcrltqkAfwYoy0mM0pHIZBWJxMkq4ChYYl21Oqx
-         CCQA==
-X-Gm-Message-State: AOAM531Q4+XS8XW2wYU/qDMTXmtJyIsAa257DEjK/quDre6/qUxFsr6p
-        h/k1yN3j5lq9kZ9uOxUduEF7LvXIMzB6PnuhgoQey5ZOsSiW9A==
-X-Google-Smtp-Source: ABdhPJzxQ0fZin7R9PkqV1UP1dkqBLaE11BhnPXYcqoa5W2nV/HynKJCgyp+2iBylPP9BT6beLI8s2+3hLU0rL6J7ec=
-X-Received: by 2002:a05:6602:168f:: with SMTP id s15mr547913iow.178.1634922001157;
- Fri, 22 Oct 2021 10:00:01 -0700 (PDT)
+        Fri, 22 Oct 2021 13:03:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634922042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yshbiWRhH57hDBd2s7uGmf9hnvbyLWUUUpBF4XakSm8=;
+        b=FbqbIENzhDiuCm1wMVH3Z+Z37kk278kA1JGrMtHJyqV2wdDu46UGknNQN2bezsS4nwunDt
+        unyPvJ3gAIlnp3kJSwNlZtdSfkWLFHH9dZ1166bqk6R7e6Jp9lTuRbXrWyyZkONzRpnwC1
+        Bdyoq6olCJkncD8jdmGwldpNbgvoqRM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-DFM9rR-_Pi26h97wOxpOwA-1; Fri, 22 Oct 2021 13:00:38 -0400
+X-MC-Unique: DFM9rR-_Pi26h97wOxpOwA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C2B610A8E00;
+        Fri, 22 Oct 2021 17:00:37 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D4AF60657;
+        Fri, 22 Oct 2021 17:00:36 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] More x86 KVM fixes for Linux 5.15-rc7
+Date:   Fri, 22 Oct 2021 13:00:36 -0400
+Message-Id: <20211022170036.1782205-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-3-saravanak@google.com>
- <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com> <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
-In-Reply-To: <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Fri, 22 Oct 2021 22:29:24 +0530
-Message-ID: <CAMi1Hd3M--+V6jPTV=psYGpOqi3UeQBs_FHqOg=oUf1hH-EU4w@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-arm-kernel@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>, linux-oxnas@groups.io,
-        linux-renesas-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        John Stultz <john.stultz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 05:13, Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Oct 21, 2021 at 4:21 AM Amit Pundir <amit.pundir@linaro.org> wrote:
-> >
-> > Hi Saravana,
-> >
-> > This patch broke v5.15-rc6 on RB5 (sm8250 | qcom/qrb5165-rb5.dts).
-> > I can't boot past this point https://www.irccloud.com/pastebin/raw/Nv6ZwHmW.
->
-> Amit top posting? How did that happen? :)
->
-> The fact you are seeing this issue is super strange though. The driver
-> literally does nothing other than allowing some sync_state() callbacks
-> to happen. I also grepped for the occurence of "simple-bus" in
-> arch/arm64/boot/dts/qcom/ and the only instance for 8250 is for the
-> soc node.
->
-> The only thing I can think of is that without my patch some
-> sync_state() callbacks weren't getting called and maybe it was masking
-> some other issue.
->
-> Can you try to boot with this log (see log patch below) and see if the
-> device hangs right after a sync_state() callback? Also, looking at the
-> different sync_state() implementations in upstream, I'm guessing one
-> of the devices isn't voting for interconnect bandwidth when it should
-> have.
->
-> Another thing you could do is boot without the simple-bus changes and
-> then look for all instances of "state_synced" in /sys/devices and then
-> see if any of them has the value "0" after boot up is complete.
+Linus,
 
-Turned out RB5 is not even reaching up to
-device_links_flush_sync_list() and seem to be stuck somewhere in
-device_links_driver_bound(). So I added more print logs to narrow down
-to any specific lock state but those additional prints seem to have
-added enough delay to unblock that particular driver (Serial:
-8250/16550 driver if I understood the logs correctly) and I eventually
-booted to UI.
+The following changes since commit 9f1ee7b169afbd10c3ad254220d1b37beb5798aa:
 
-On the booted RB5 *with* and *without* the simple-bus changes, I see 4
-instances of "0" state_synced nodes at:
+  KVM: SEV-ES: reduce ghcb_sa_len to 32 bits (2021-10-18 14:07:19 -0400)
 
-/sys/devices/platform/soc@0/9100000.interconnect/state_synced
-/sys/devices/platform/soc@0/1500000.interconnect/state_synced
-/sys/devices/platform/soc@0/1740000.interconnect/state_synced
-/sys/devices/platform/soc@0/163d000.interconnect/state_synced
+are available in the Git repository at:
 
-Regards,
-Amit Pundir
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
->
-> -Saravana
->
-> -- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -1099,6 +1099,7 @@ static void device_links_flush_sync_list(struct
-> list_head *list,
->                 if (dev != dont_lock_dev)
->                         device_lock(dev);
->
-> +               dev_info(dev, "Calling sync_state()\n");
->                 if (dev->bus->sync_state)
->                         dev->bus->sync_state(dev);
->                 else if (dev->driver && dev->driver->sync_state)
+for you to fetch changes up to 95e16b4792b0429f1933872f743410f00e590c55:
+
+  KVM: SEV-ES: go over the sev_pio_data buffer in multiple passes if needed (2021-10-22 10:09:13 -0400)
+
+----------------------------------------------------------------
+* Cache coherency fix for SEV live migration
+* Fix for instruction emulation with PKU
+* fixes for rare delaying of interrupt delivery
+* fix for SEV-ES buffer overflow
+
+----------------------------------------------------------------
+Chenyi Qiang (1):
+      KVM: MMU: Reset mmu->pkru_mask to avoid stale data
+
+Masahiro Kozuka (1):
+      KVM: SEV: Flush cache on non-coherent systems before RECEIVE_UPDATE_DATA
+
+Paolo Bonzini (9):
+      KVM: x86: check for interrupts before deciding whether to exit the fast path
+      KVM: nVMX: promptly process interrupts delivered while in guest mode
+      KVM: SEV-ES: rename guest_ins_data to sev_pio_data
+      KVM: x86: leave vcpu->arch.pio.count alone in emulator_pio_in_out
+      KVM: SEV-ES: clean up kvm_sev_es_ins/outs
+      KVM: x86: split the two parts of emulator_pio_in
+      KVM: x86: remove unnecessary arguments from complete_emulator_pio_in
+      KVM: SEV-ES: keep INS functions together
+      KVM: SEV-ES: go over the sev_pio_data buffer in multiple passes if needed
+
+ arch/x86/include/asm/kvm_host.h |   3 +-
+ arch/x86/kvm/mmu/mmu.c          |   6 +-
+ arch/x86/kvm/svm/sev.c          |   7 ++
+ arch/x86/kvm/vmx/vmx.c          |  17 ++---
+ arch/x86/kvm/x86.c              | 150 +++++++++++++++++++++++++++-------------
+ 5 files changed, 121 insertions(+), 62 deletions(-)
+
