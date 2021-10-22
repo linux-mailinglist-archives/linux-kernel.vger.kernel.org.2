@@ -2,277 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F039437B72
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F292437B76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233711AbhJVRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233838AbhJVRHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:07:37 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B36C061220;
-        Fri, 22 Oct 2021 10:04:40 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id t11so3151022plq.11;
-        Fri, 22 Oct 2021 10:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Atun2XzPcF2gQ2cFelDuDf6hZcJLP5wmun4wG8uLgTg=;
-        b=ehEzXEOXQ5KJlHU9KCtkcgahWx9N0fv7UE3GOTTVaIufyIpBM+KyE/epTJk/OoX19P
-         fOigU8PZHpOyeR3j4P/Uotf1L1t7gXFyZNLqIIU3hxuweVI9m5XiSUoiNz2+WFpT90C6
-         6c/SFE0gpdFA/YZrv4WxXHh8KZ0F0uOlDhi9Sn/2FKpnGNFvwlLbAgX0zMnYAJ3AHkUh
-         1TjxxEK7CVpDHYNBMTkquO4Uzo7gaMSQKFd3QDlsUHV6efe6gm4tL/nhNKqcFmQkxz5B
-         mvgIhrACvFzxgqvubJaADiftt+3VvWYl28faULNSMlfbf22CsmzI2oHujfv3A9dnSeeC
-         wwqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Atun2XzPcF2gQ2cFelDuDf6hZcJLP5wmun4wG8uLgTg=;
-        b=PRtqmbPuXcuDCQrpVqQZiXcD2slkeZY3SGIN2gMyJ95n2EUeyId80XkKv0TzVQCrMj
-         gLjsYoKjHcEOLhKwwG9nqbjVl0Ah5ZMeBBK7hsBYeggp/+dQGFSRNuizOiOEgL6XrNOc
-         ZcQHAMKQKPL5Wt0KPPrVpuNa5XkBk8HAmIilQaMOYMROszVgNWsOw+WUPi72r3SgHkG5
-         L9ahbg7VrHmOOUH2VezfhthogIMbWCseSpCiNIeTgsJSa3L9obL9JoBBVjrttj96iaEc
-         GjBKir7XnOKN0EANuF2/FJAkA9I5nl6Zae6NWmNlTXAWm+QSL+Yza5R6Zg5/YGUBz0KC
-         5waw==
-X-Gm-Message-State: AOAM530AcJLNk+viXBOztQwI0dZMV3dUd1mXY1Yrm2Ve23wJUcgU6iQc
-        f5RlaiGTJNANQp5hCTUfppyBj1zM1cM=
-X-Google-Smtp-Source: ABdhPJyuD+kv4M42bYgaTqWiN3Mb9J60eG5D/doNRTJOmZ58uBqcEdy0PxPDH30tAimIyAsdKxFPnA==
-X-Received: by 2002:a17:90a:e57:: with SMTP id p23mr1232215pja.154.1634922279448;
-        Fri, 22 Oct 2021 10:04:39 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p25sm12262866pfh.86.2021.10.22.10.04.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 10:04:38 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211005153209.GA1083986@bhelgaas>
- <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
- <20211005194301.enb5jddzdgczcolx@pali>
- <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
- <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f648bc89-f08b-e806-45f9-5a1b61686e19@gmail.com>
-Date:   Fri, 22 Oct 2021 10:04:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233691AbhJVRJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:09:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:56842 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233356AbhJVRJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 13:09:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBDFC1063;
+        Fri, 22 Oct 2021 10:06:43 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 280EE3F73D;
+        Fri, 22 Oct 2021 10:06:40 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 18:06:37 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        zhengqi.arch@bytedance.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-arch@vger.kernel.org, ardb@kernel.org,
+        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
+        broonie@kernel.org
+Subject: Re: [PATCH 4/7] arch: Make ARCH_STACKWALK independent of STACKTRACE
+Message-ID: <20211022170637.GH86184@C02TD0UTHF1T.local>
+References: <20211022150933.883959987@infradead.org>
+ <20211022152104.356586621@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022152104.356586621@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 7:07 PM, Florian Fainelli wrote:
-> 
-> 
-> On 10/5/2021 3:25 PM, Jeremy Linton wrote:
->> Hi,
->>
->> On 10/5/21 2:43 PM, Pali Rohár wrote:
->>> Hello!
->>>
->>> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
->>>> Hi,
->>>>
->>>> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
->>>>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
->>>>>> Additionally, some basic bus/device filtering exist to avoid sending
->>>>>> config transactions to invalid devices on the RP's primary or
->>>>>> secondary bus. A basic link check is also made to assure that
->>>>>> something is operational on the secondary side before probing the
->>>>>> remainder of the config space. If either of these constraints are
->>>>>> violated and a config operation is lost in the ether because an EP
->>>>>> doesn't respond an unrecoverable SERROR is raised.
->>>>>
->>>>> It's not "lost"; I assume the root port raises an error because it
->>>>> can't send a transaction over a link that is down.
->>>>
->>>> The problem is AFAIK because the root port doesn't do that.
->>>
->>> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
->>> guess contains also logic for Root Port) does not signal transaction
->>> failure for config requests? Or it is just your opinion? Because I'm
->>> dealing with similar issues and I'm trying to find a way how to detect
->>> if some PCIe IP signal transaction error via AXI SLVERR response OR it
->>> just does not send any response back. So if you know some way how to
->>> check which one it is, I would like to know it too.
->>
->> This is my _opinion_ based on what I've heard of some other IP
->> integration issues, and what i've seen poking at this one from the
->> perspective of a SW guy rather than a HW guy. So, basically worthless.
->> But, you should consider that most of these cores/interconnects aren't
->> aware of PCIe completion semantics so its the root ports
->> responsibility to say, gracefully translate a non-posted write that
->> doesn't have a completion for the interconnects its attached to,
->> rather than tripping something generic like a SLVERR.
->>
->> Anyway, for this I would poke around the pile of exception registers,
->> with your specific processors manual handy because a lot of them are
->> implementation defined.
-> 
-> I should be able to get you an answer in the new few days whether
-> configuration space requests also generate an error towards the ARM CPU,
-> since memory space requests most definitively do.
+On Fri, Oct 22, 2021 at 05:09:37PM +0200, Peter Zijlstra wrote:
+> Make arch_stack_walk() available for ARCH_STACKWALK architectures
+> without it being entangled in STACKTRACE.
 
-Did not get an answer from the design team, but going through our bug
-tracker, there were evidences of configuration space accesses also
-generating external aborts:
+Nice!
 
-[    8.988237] Unhandled fault: synchronous external abort (0x96000210)
-at 0xffffff8009539004
-[    8.996539] Internal error: : 96000210 [#1] SMP
-[    9.001107] Modules linked in:
-[    9.004215] CPU: 2 PID: 6 Comm: kworker/u8:0 Not tainted
-4.9.51-gstb-4.9 #1
-[    9.011216] Hardware name: BCM97278SV (DT)
-[    9.015365] Workqueue: events_unbound async_run_entry_fn
-[    9.020728] task: ffffffc00a4ab5c0 task.stack: ffffffc00a4e4000
-[    9.026698] PC is at pci_generic_config_read32+0x30/0xb0
-[    9.032053] LR is at pci_generic_config_read32+0x2c/0xb0
-[    9.037403] pc : [<ffffff8008394eb8>] lr : [<ffffff8008394eb4>]
-pstate: 800000c5
-[    9.044852] sp : ffffffc00a4e7ba0
-[    9.048197] x29: ffffffc00a4e7ba0 x28: ffffffc00a40caa8
-[    9.053574] x27: ffffffc00a40c878 x26: ffffffc00a40c820
-[    9.058949] x25: ffffff800935c77d x24: 0000000000000040
-[    9.064323] x23: ffffff80093d5ac0 x22: ffffffc00a4e7c66
-[    9.069698] x21: ffffffc00a4e7c24 x20: 0000000000000002
-[    9.075072] x19: 000000000000004c x18: ffffffffffffffff
-[    9.080448] x17: fffeffffb7ffffff x16: fffffdffb6ffffff
-[    9.085822] x15: 0000000000000000 x14: ffffffc009e8fdb8
-[    9.091196] x13: 0000000000000014 x12: 0000000000000000
-[    9.096571] x11: 0000000000000000 x10: 00000000000006d0
-[    9.101946] x9 : ffffffc00a4e4000 x8 : ffffffc00a4abcf0
-[    9.107322] x7 : 0000000000005ec7 x6 : 0000000000000005
-[    9.112696] x5 : ffffff8009530000 x4 : ffffff80087da530
-[    9.118073] x3 : ffffff8009539000 x2 : 000000000000004c
-[    9.123448] x1 : 0000000000009004 x0 : ffffff8009539004
-[    9.128823]
-[    9.130341] Process kworker/u8:0 (pid: 6, stack limit =
-0xffffffc00a4e4020)
-[    9.137346] Stack: (0xffffffc00a4e7ba0 to 0xffffffc00a4e8000)
-[    9.143136] 7ba0: ffffffc00a4e7bd0 ffffff8008394be4 ffffff8009306000
-0000000000000087
-[    9.151029] 7bc0: ffffffc009838000 ffffff800878a170 ffffffc00a4e7c30
-ffffff800839b004
-[    9.158923] 7be0: ffffffc00a5bb000 0000000000000000 ffffff8009306000
-ffffff80088f7048
-[    9.166814] 7c00: 0000000000000000 ffffffc00a40c800 ffffff80092d7440
-000000000000004c
-[    9.174706] 7c20: 0000000000000002 0000000000040933 ffffffc00a4e7c70
-ffffff800839e570
-[    9.182598] 7c40: ffffffc00a5bb000 ffffff80093d5000 0000000000000000
-ffffff80088f7048
-[    9.190490] 7c60: ffffffc00a5bb0a0 0000000000040933 ffffffc00a4e7c90
-ffffff80083a1cc4
-[    9.198383] 7c80: ffffffc00a5bb0a0 ffffffc00a5bb000 ffffffc00a4e7cc0
-ffffff800845c9cc
-[    9.206275] 7ca0: ffffffc00a5bb0a0 ffffff80083a1ca0 0000000000000010
-ffffffc00a4ab5c0
-[    9.214167] 7cc0: ffffffc00a4e7d00 ffffff800845cab4 ffffffc00a5bb0a0
-0000000000000000
-[    9.222060] 7ce0: 0000000000000010 0000000000000000 ffffffc00a455100
-ffffff800845ca80
-[    9.229953] 7d00: ffffffc00a4e7d30 ffffff800845cc84 ffffff80093d9828
-ffffffc00a5bb0a0
-[    9.237845] 7d20: ffffffc009decd00 0000000000000000 ffffffc00a4e7d50
-ffffff80080ba464
-[    9.245737] 7d40: ffffffc009decd20 ffffff80093a3000 ffffffc00a4e7d80
-ffffff80080b0f28
-[    9.253628] 7d60: 0000000000000000 ffffffc00a454e40 ffffffc009decd20
-0000000000000000
-[    9.261521] 7d80: ffffffc00a4e7dc0 ffffff80080b1130 ffffffc00a454e40
-ffffffc00a40c800
-[    9.269413] 7da0: ffffffc00a454e70 ffffffc00a40c820 ffffff8009306000
-ffffffc00a4e4000
-[    9.277305] 7dc0: ffffffc00a4e7e20 ffffff80080b7194 ffffffc00a494400
-ffffffc00a4e4000
-[    9.285198] 7de0: ffffff80088afc00 ffffffc00a454e40 ffffff80080b10e8
-0000000000000000
-[    9.293088] 7e00: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.300981] 7e20: 0000000000000000 ffffff8008082900 ffffff80080b70a0
-ffffffc00a494400
-[    9.308872] 7e40: 0000000000000000 0000000000000000 0000000000000000
-705afddc1b1ccaa8
-[    9.316764] 7e60: 0000000000000000 ffffff80080bff90 ffffffc00a454e40
-ffffffc000000000
-[    9.324656] 7e80: 0000000000000000 ffffffc00a4e7e88 ffffffc00a4e7e88
-0000000000000000
-[    9.332547] 7ea0: 0000000000000000 ffffffc00a4e7ea8 ffffffc00a4e7ea8
-0000000000040933
-[    9.340438] 7ec0: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.348329] 7ee0: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.356219] 7f00: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.364111] 7f20: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.372002] 7f40: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.379894] 7f60: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.387785] 7f80: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.395675] 7fa0: 0000000000000000 0000000000000000 0000000000000000
-0000000000000000
-[    9.403566] 7fc0: 0000000000000000 0000000000000005 0000000000000000
-0000000000000000
-[    9.411458] 7fe0: 0000000000000000 0000000000000000 46525cd6105c6384
-aa9421d6b6fa9074
-[    9.419343] Call trace:
-[    9.421821] Exception stack(0xffffffc00a4e79b0 to 0xffffffc00a4e7ae0)
-[    9.428301] 79a0:                                   000000000000004c
-0000008000000000
-[    9.436193] 79c0: ffffffc00a4e7ba0 ffffff8008394eb8 00000000800000c5
-ffffffc07fe8e440
-[    9.444086] 79e0: ffffffc00a4efd98 0000000000000007 ffffffc000000000
-ffffff8009539004
-[    9.451977] 7a00: 0000000000000000 ffffffc009bfbe40 ffffff80092d7440
-ffffff80092d7440
-[    9.459869] 7a20: 0000000000000002 ffffff80080c3ee8 ffffffc009bfbe40
-ffffffc07fe64440
-[    9.467761] 7a40: 0000000200000000 ffffffc07fe8e440 ffffffc00a4e7a90
-ffffff80080c3ee8
-[    9.475652] 7a60: 0000000000000001 0000000000040933 ffffff8009539004
-0000000000009004
-[    9.483544] 7a80: 000000000000004c ffffff8009539000 ffffff80087da530
-ffffff8009530000
-[    9.491435] 7aa0: 0000000000000005 0000000000005ec7 ffffffc00a4abcf0
-ffffffc00a4e4000
-[    9.499327] 7ac0: 00000000000006d0 0000000000000000 0000000000000000
-0000000000000014
-[    9.507223] [<ffffff8008394eb8>] pci_generic_config_read32+0x30/0xb0
-[    9.513623] [<ffffff8008394be4>] pci_bus_read_config_word+0x9c/0xc0
-[    9.519936] [<ffffff800839b004>] pci_raw_set_power_state+0x7c/0x248
-[    9.526250] [<ffffff800839e570>] pci_power_up+0x50/0x68
-[    9.531516] [<ffffff80083a1cc4>] pci_pm_resume_noirq+0x24/0xc0
-[    9.537395] [<ffffff800845c9cc>] dpm_run_callback+0x4c/0xc0
-[    9.543008] [<ffffff800845cab4>] device_resume_noirq+0x74/0x220
-[    9.548969] [<ffffff800845cc84>] async_resume_noirq+0x24/0x58
-[    9.554757] [<ffffff80080ba464>] async_run_entry_fn+0x3c/0x160
-[    9.560635] [<ffffff80080b0f28>] process_one_work+0x1d0/0x390
-[    9.566424] [<ffffff80080b1130>] worker_thread+0x48/0x4b0
-[    9.571863] [<ffffff80080b7194>] kthread+0xf4/0x108
-[    9.576782] [<ffffff8008082900>] ret_from_fork+0x10/0x50
-[    9.582136] Code: f9406005 f94008a3 d63f0060 b4000320 (b9400001)
-[    9.588311] ---[ end trace efc83c99ae7412ee ]---
--- 
-Florian
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+
+This looks good to me.
+
+I gave this a spin on arm64, which builds and boots fine with or without
+CONFIG_STACKTRACE, and this doesn't seem to regress /proc/*/{wchan,
+stack}, so:
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Mark Rutland <mark.rutland@arm.com>
+
+Madhavan (Cc'd) has patches to clean up arm64's various unwinders to use
+arch_stack_walk(), and it would be good if we could build atop this
+rather than having to unconditionally enable STACKTRACE and expose
+/proc/*/stack (which should really just be for debugging the unwinder,
+and not something distros should ever have enabled).
+
+Once this settles, would it be possible to place this (and the __sched
+change to __switch_to) on a stable branch somewhere?
+
+Thanks,
+Mark.
+
+> ---
+>  arch/arm/kernel/stacktrace.c   |    2 --
+>  arch/arm64/kernel/stacktrace.c |    4 ----
+>  arch/powerpc/kernel/Makefile   |    3 +--
+>  arch/riscv/kernel/stacktrace.c |    4 ----
+>  arch/s390/kernel/Makefile      |    3 +--
+>  arch/x86/kernel/Makefile       |    2 +-
+>  include/linux/stacktrace.h     |   33 +++++++++++++++++----------------
+>  7 files changed, 20 insertions(+), 31 deletions(-)
+> 
+> --- a/arch/arm/kernel/stacktrace.c
+> +++ b/arch/arm/kernel/stacktrace.c
+> @@ -87,7 +87,6 @@ void notrace walk_stackframe(struct stac
+>  }
+>  EXPORT_SYMBOL(walk_stackframe);
+>  
+> -#ifdef CONFIG_STACKTRACE
+>  noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>  				      void *cookie, struct task_struct *task,
+>  				      struct pt_regs *regs)
+> @@ -113,4 +112,3 @@ noinline notrace void arch_stack_walk(st
+>  			break;
+>  	}
+>  }
+> -#endif
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -216,8 +216,6 @@ void show_stack(struct task_struct *tsk,
+>  	barrier();
+>  }
+>  
+> -#ifdef CONFIG_STACKTRACE
+> -
+>  noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>  			      void *cookie, struct task_struct *task,
+>  			      struct pt_regs *regs)
+> @@ -236,5 +234,3 @@ noinline notrace void arch_stack_walk(st
+>  
+>  	walk_stackframe(task, &frame, consume_entry, cookie);
+>  }
+> -
+> -#endif
+> --- a/arch/powerpc/kernel/Makefile
+> +++ b/arch/powerpc/kernel/Makefile
+> @@ -47,7 +47,7 @@ obj-y				:= cputable.o syscalls.o \
+>  				   udbg.o misc.o io.o misc_$(BITS).o \
+>  				   of_platform.o prom_parse.o firmware.o \
+>  				   hw_breakpoint_constraints.o interrupt.o \
+> -				   kdebugfs.o
+> +				   kdebugfs.o stacktrace.o
+>  obj-y				+= ptrace/
+>  obj-$(CONFIG_PPC64)		+= setup_64.o \
+>  				   paca.o nvram_64.o note.o
+> @@ -116,7 +116,6 @@ obj-$(CONFIG_OPTPROBES)		+= optprobes.o
+>  obj-$(CONFIG_KPROBES_ON_FTRACE)	+= kprobes-ftrace.o
+>  obj-$(CONFIG_UPROBES)		+= uprobes.o
+>  obj-$(CONFIG_PPC_UDBG_16550)	+= legacy_serial.o udbg_16550.o
+> -obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+>  obj-$(CONFIG_SWIOTLB)		+= dma-swiotlb.o
+>  obj-$(CONFIG_ARCH_HAS_DMA_SET_MASK) += dma-mask.o
+>  
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -139,12 +139,8 @@ unsigned long __get_wchan(struct task_st
+>  	return pc;
+>  }
+>  
+> -#ifdef CONFIG_STACKTRACE
+> -
+>  noinline void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  		     struct task_struct *task, struct pt_regs *regs)
+>  {
+>  	walk_stackframe(task, regs, consume_entry, cookie);
+>  }
+> -
+> -#endif /* CONFIG_STACKTRACE */
+> --- a/arch/s390/kernel/Makefile
+> +++ b/arch/s390/kernel/Makefile
+> @@ -40,7 +40,7 @@ obj-y	+= sysinfo.o lgr.o os_info.o machi
+>  obj-y	+= runtime_instr.o cache.o fpu.o dumpstack.o guarded_storage.o sthyi.o
+>  obj-y	+= entry.o reipl.o relocate_kernel.o kdebugfs.o alternative.o
+>  obj-y	+= nospec-branch.o ipl_vmparm.o machine_kexec_reloc.o unwind_bc.o
+> -obj-y	+= smp.o text_amode31.o
+> +obj-y	+= smp.o text_amode31.o stacktrace.o
+>  
+>  extra-y				+= head64.o vmlinux.lds
+>  
+> @@ -55,7 +55,6 @@ compat-obj-$(CONFIG_AUDIT)	+= compat_aud
+>  obj-$(CONFIG_COMPAT)		+= compat_linux.o compat_signal.o
+>  obj-$(CONFIG_COMPAT)		+= $(compat-obj-y)
+>  obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> -obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+>  obj-$(CONFIG_KPROBES)		+= kprobes.o
+>  obj-$(CONFIG_KPROBES)		+= kprobes_insn_page.o
+>  obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -84,7 +84,7 @@ obj-$(CONFIG_IA32_EMULATION)	+= tls.o
+>  obj-y				+= step.o
+>  obj-$(CONFIG_INTEL_TXT)		+= tboot.o
+>  obj-$(CONFIG_ISA_DMA_API)	+= i8237.o
+> -obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+> +obj-y				+= stacktrace.o
+>  obj-y				+= cpu/
+>  obj-y				+= acpi/
+>  obj-y				+= reboot.o
+> --- a/include/linux/stacktrace.h
+> +++ b/include/linux/stacktrace.h
+> @@ -8,21 +8,6 @@
+>  struct task_struct;
+>  struct pt_regs;
+>  
+> -#ifdef CONFIG_STACKTRACE
+> -void stack_trace_print(const unsigned long *trace, unsigned int nr_entries,
+> -		       int spaces);
+> -int stack_trace_snprint(char *buf, size_t size, const unsigned long *entries,
+> -			unsigned int nr_entries, int spaces);
+> -unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+> -			      unsigned int skipnr);
+> -unsigned int stack_trace_save_tsk(struct task_struct *task,
+> -				  unsigned long *store, unsigned int size,
+> -				  unsigned int skipnr);
+> -unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+> -				   unsigned int size, unsigned int skipnr);
+> -unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
+> -
+> -/* Internal interfaces. Do not use in generic code */
+>  #ifdef CONFIG_ARCH_STACKWALK
+>  
+>  /**
+> @@ -75,8 +60,24 @@ int arch_stack_walk_reliable(stack_trace
+>  
+>  void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
+>  			  const struct pt_regs *regs);
+> +#endif /* CONFIG_ARCH_STACKWALK */
+>  
+> -#else /* CONFIG_ARCH_STACKWALK */
+> +#ifdef CONFIG_STACKTRACE
+> +void stack_trace_print(const unsigned long *trace, unsigned int nr_entries,
+> +		       int spaces);
+> +int stack_trace_snprint(char *buf, size_t size, const unsigned long *entries,
+> +			unsigned int nr_entries, int spaces);
+> +unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+> +			      unsigned int skipnr);
+> +unsigned int stack_trace_save_tsk(struct task_struct *task,
+> +				  unsigned long *store, unsigned int size,
+> +				  unsigned int skipnr);
+> +unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+> +				   unsigned int size, unsigned int skipnr);
+> +unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
+> +
+> +#ifndef CONFIG_ARCH_STACKWALK
+> +/* Internal interfaces. Do not use in generic code */
+>  struct stack_trace {
+>  	unsigned int nr_entries, max_entries;
+>  	unsigned long *entries;
+> 
+> 
