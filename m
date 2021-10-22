@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF33C437856
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A135143785E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhJVNus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:50:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51681 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232941AbhJVNun (ORCPT
+        id S232976AbhJVNvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhJVNvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:50:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634910505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AFmaoASDnexdE5qQmKYftfXRHv4WPfWCY1vwNo1gixg=;
-        b=S2+Jci2K3YRdOE52zQUv2gdg9B01Y64feKff76L8891WpeDudHNx245r/azNLT8lvTNq6S
-        MJqfehPdzOOTld1ACedQEH3yb9SPTvH5ubveuvHb5FTCbpas2Y3UbZMGGm/hJUaHoWX+De
-        J4XaivDfMjqEAX6N9ZzGDVRVjqNFcSg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21--DB3FbjyNTyzVRkscyJWwg-1; Fri, 22 Oct 2021 09:48:23 -0400
-X-MC-Unique: -DB3FbjyNTyzVRkscyJWwg-1
-Received: by mail-wm1-f69.google.com with SMTP id f63-20020a1c3842000000b0032a621260deso1156138wma.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:48:23 -0700 (PDT)
+        Fri, 22 Oct 2021 09:51:54 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36B4C061764;
+        Fri, 22 Oct 2021 06:49:36 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g8so1581568edb.12;
+        Fri, 22 Oct 2021 06:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=fvpZOAAFqxccN6t+CkdWkIvI92JSi1/qd9eo1f100tM=;
+        b=qK9+vhHUBre4dSbVZnMg9iLlSAaWTkFDw/6rsVihuUHzgHhI3DAxax8zi+w1dm+c/m
+         aEBt5MScBHqjDU16eLExVW38nzjc6dYjx4y1d8xjDqUkZcpFpk1AqDs23xq2s/huDoUN
+         z7FComNlz+im9abOzIoX4qN24GtdNRqXlIbxR6RxjU17GyBEiu2K2KEAYzfKPlbg6BTf
+         biZkG3w83ObAQ4vyz2Hcsnt2toYcaVxT9fe/YFgFS1ya5md0VegdTFxkyJWFIGcdgxx0
+         NprRH7lEdL0rsdFkPs3DTurwkpkBjHpavW5zczjFDAMnQTKo6X9YccQKjuoikRF8l9vH
+         yxYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=AFmaoASDnexdE5qQmKYftfXRHv4WPfWCY1vwNo1gixg=;
-        b=Tio7gCXeiDvAGhYxDqqFlVcbQOqxD3t0JbDhWU7IK+vGGggCjYj751uI7hr72uqL+X
-         bheGeHX/QGnXruPcjTL+gIz/qt9zYJtxUR3xJN1VGqx0BILehz+N3XDajWTM/a2PFLKM
-         nUu24kKUNQRg5VtLSo7c7yPbdpB8PaAFWpUBvpY5fUjQtNmAtCf57XV9bV5hb9v8x6wO
-         +6YWQsdHo9qbmQSINlfNq4XxrAI4sKDoWIW8AuyNYy//5N0XmeRu4F3SJBR+8ZcpVwPV
-         BC8W/UN1iQ8RK6vBObslbFpom9AVqtUoK9zIWDXuG03RZTS91HPFIjFKqseAx5ZTO9tR
-         0yEg==
-X-Gm-Message-State: AOAM531Ds++E4SimTYlpHxwepKNtkItj1jLWq8SVBt9FOGplBJdmV5Kh
-        5+NbelcCoRPIv7HkRPKQ28VZfus4ce2cfucW11sLGalZs7un05uC7QUS5AHEyMXaedXSkSOxL7m
-        ab1HmX0H66dbxOdSEYRiQXYQ1AuXE1Bl/I5biH9RXLwfoHehniGdY7+Sie2iSPIiGNlQdemkwxi
-        Nf
-X-Received: by 2002:a05:600c:3511:: with SMTP id h17mr28648716wmq.144.1634910502414;
-        Fri, 22 Oct 2021 06:48:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzcb9UsH4+XyNMhSajPj+HJcLfs6908IOjXwLy/YhyfZQEySIf0pwRdUhBu0EDwAJytLic7lA==
-X-Received: by 2002:a05:600c:3511:: with SMTP id h17mr28648682wmq.144.1634910502194;
-        Fri, 22 Oct 2021 06:48:22 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:31cb:e591:1e1e:abde:a8f1])
-        by smtp.gmail.com with ESMTPSA id v18sm8270951wrm.63.2021.10.22.06.48.20
+        bh=fvpZOAAFqxccN6t+CkdWkIvI92JSi1/qd9eo1f100tM=;
+        b=Rytg+jR1XqDMNSUtFJg0MoRlVClhQ4jwQkmQBpUpaFC+B+ppy7oKElaK0ze84hQsI+
+         Zn95QToJNpgRUMf+q8Dp8l6hcu7CnX/LsfsX4K5c7gFE36UFbL7g8KqJvptTTXZCtB49
+         LkkR4aRQYegzzz+jOJdAl5qTgb/mBkxUKSdALtY9eW9ewKjOafQJjvaNhdqHnI0GqGpt
+         ikTyr2ghZHFRw4284JovxDWHP6pX7nh438OVLW83QQ9JLTcErll6eGTDPwywkJFvJE0C
+         sNz3YdJWTd6CpFAYQgkR7MSVx7xtaU+PLz5uObVfgRWbe8tbw7l3+ylNpY64n7SSDojz
+         EfIA==
+X-Gm-Message-State: AOAM533gREyRJTQHrRptngbLvTlv//pwlCeV1GyW2rK7ePilWtDos7vL
+        scLEw5q3AqTg7YUCgcqrbE8=
+X-Google-Smtp-Source: ABdhPJyRismCHPkF/z+GwcqNJajj9EJ/kUo7tTLGiuNdQJVUkKA/c5g6tAnzWasnKWpzgPGHZtgF+Q==
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr82958edz.369.1634910575197;
+        Fri, 22 Oct 2021 06:49:35 -0700 (PDT)
+Received: from [192.168.8.198] ([148.252.133.195])
+        by smtp.gmail.com with ESMTPSA id m3sm5103729edc.11.2021.10.22.06.49.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 06:48:21 -0700 (PDT)
-Subject: Re: [PATCH v3 4/8] nSVM: use vmcb_save_area_cached in
- nested_vmcb_valid_sregs()
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20211011143702.1786568-1-eesposit@redhat.com>
- <20211011143702.1786568-5-eesposit@redhat.com>
- <48953634-5b7c-72d6-5fcb-a1b25800f443@redhat.com>
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Message-ID: <f374979b-e2e3-ca6c-9055-a5e9ac107a2d@redhat.com>
-Date:   Fri, 22 Oct 2021 15:48:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 22 Oct 2021 06:49:34 -0700 (PDT)
+Message-ID: <85f96aab-4127-f494-9718-d7bfc035db54@gmail.com>
+Date:   Fri, 22 Oct 2021 14:49:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <48953634-5b7c-72d6-5fcb-a1b25800f443@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] INFO: task hung in io_wqe_worker
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000000012fb05cee99477@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <0000000000000012fb05cee99477@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/10/2021 09:14, Paolo Bonzini wrote:
-> On 11/10/21 16:36, Emanuele Giuseppe Esposito wrote:
->> +
->> +out_free_save:
->> +    memset(&svm->nested.save, 0, sizeof(struct vmcb_save_area_cached));
->> +
+On 10/22/21 05:38, syzbot wrote:
+> Hello,
 > 
-> This memset is not strictly necessary, is it?  (Same for out_free_ctl 
-> later on).
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> INFO: task hung in io_wqe_worker
 > 
+> INFO: task iou-wrk-9392:9401 blocked for more than 143 seconds.
+>        Not tainted 5.15.0-rc2-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:iou-wrk-9392    state:D stack:27952 pid: 9401 ppid:  7038 flags:0x00004004
+> Call Trace:
+>   context_switch kernel/sched/core.c:4940 [inline]
+>   __schedule+0xb44/0x5960 kernel/sched/core.c:6287
+>   schedule+0xd3/0x270 kernel/sched/core.c:6366
+>   schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
+>   do_wait_for_common kernel/sched/completion.c:85 [inline]
+>   __wait_for_common kernel/sched/completion.c:106 [inline]
+>   wait_for_common kernel/sched/completion.c:117 [inline]
+>   wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
+>   io_worker_exit fs/io-wq.c:183 [inline]
+>   io_wqe_worker+0x66d/0xc40 fs/io-wq.c:597
+>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-It was just to keep the struct clean in case of error, but
-you are right, it can be removed.
+Easily reproducible, it's stuck in
 
-Thank you,
-Emanuele
+static void io_worker_exit(struct io_worker *worker)
+{
+	...
+	wait_for_completion(&worker->ref_done);
+	...
+}
 
+The reference belongs to a create_worker_cb() task_work item. It's expected
+to either be executed or cancelled by io_wq_exit_workers(), but the owner
+task never goes __io_uring_cancel (called in do_exit()) and so never
+reaches io_wq_exit_workers().
+
+Following the owner task, cat /proc/<pid>/stack:
+
+[<0>] do_coredump+0x1d0/0x10e0
+[<0>] get_signal+0x4a3/0x960
+[<0>] arch_do_signal_or_restart+0xc3/0x6d0
+[<0>] exit_to_user_mode_prepare+0x10e/0x190
+[<0>] irqentry_exit_to_user_mode+0x9/0x20
+[<0>] irqentry_exit+0x36/0x40
+[<0>] exc_page_fault+0x95/0x190
+[<0>] asm_exc_page_fault+0x1e/0x30
+
+(gdb) l *(do_coredump+0x1d0-5)
+0xffffffff81343ccb is in do_coredump (fs/coredump.c:469).
+464
+465             if (core_waiters > 0) {
+466                     struct core_thread *ptr;
+467
+468                     freezer_do_not_count();
+469                     wait_for_completion(&core_state->startup);
+470                     freezer_count();
+
+Can't say anything more at the moment as not familiar with coredump
+
+-- 
+Pavel Begunkov
