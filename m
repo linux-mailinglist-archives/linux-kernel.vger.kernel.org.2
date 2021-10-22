@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C896143776B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AF743777A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhJVMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:53:47 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52374 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229842AbhJVMxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:53:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=qA1QSREbL+LNXCMCLcrPj0ob8I+E19DdMPB2HSLLjeI=; b=uR/3Xr6BHdhrXof2BhEmPlZ4kU
-        qiYlmBcxjydDc85MFhH0FX/AgyO6tXR2l3X7IkbjEgvruXydtIm5vRCBmPS367GP0xErwSBAeS6mx
-        nD6v6Sgi6XAqbrce+LmOWSR/lojZn8Nu/i60tSCj7hpjEMyj3G/ohT/4UPb+QZbTUIOg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mdu10-00BNtA-VH; Fri, 22 Oct 2021 14:51:18 +0200
-Date:   Fri, 22 Oct 2021 14:51:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
-Cc:     kuba@kernel.org, mickeyr@marvell.com, serhiy.pshyk@plvision.eu,
-        taras.chornyi@plvision.eu, Volodymyr Mytnyk <vmytnyk@marvell.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Yevhen Orlov <yevhen.orlov@plvision.eu>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] net: marvell: prestera: add firmware v4.0
- support
-Message-ID: <YXKzxvyZwsFmRaMf@lunn.ch>
-References: <1634722349-23693-1-git-send-email-volodymyr.mytnyk@plvision.eu>
- <YXKuOSDraUsaN75U@lunn.ch>
+        id S232008AbhJVM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:57:07 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55298 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231739AbhJVM5F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:57:05 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M8o97r015566;
+        Fri, 22 Oct 2021 14:54:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=4545gzfZpCF9d4g2LqSdYVerquj8M+OCHoiQEKzehvo=;
+ b=11Sm4BRyGAwYvbbovptqZlLDfmiq6cqlJMw3KNOM3HIqLkevMpvD2bpnSa0qdzJbvXib
+ 2w1UZCamUq4uvRgrvM/YXel2WOd+/sPcSrroLDUxAL69LFptZ0J2BL+FZaoDwg+hfe82
+ j5PET/MvVgbLl1T/sof0zj+mTVXMe4KMIWkn0a6z3v/Qvc9SFn0hEvTmHpxe+vtpb8y1
+ WMXDLSGOH5e+je5sVisScElNpESn/oM/GzgJre2WnNlfWfFmV5/Bin94YcOkYPMM5vTi
+ f866Ns+rVXy5oVd+Uqi6B8dmYtn8XlJ1PIVLN5a3Q8uW/o4cWGloyLll0l126JyCBq06 fQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3but4y1eu8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 14:54:39 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9541A10002A;
+        Fri, 22 Oct 2021 14:54:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8705221A226;
+        Fri, 22 Oct 2021 14:54:38 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct 2021 14:54:38
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v6 00/10] Restructure the rpmsg_char driver and introduce rpmsg_ctrl driver.
+Date:   Fri, 22 Oct 2021 14:54:16 +0200
+Message-ID: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXKuOSDraUsaN75U@lunn.ch>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_03,2021-10-22_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 02:27:37PM +0200, Andrew Lunn wrote:
-> On Wed, Oct 20, 2021 at 12:32:28PM +0300, Volodymyr Mytnyk wrote:
-> > From: Volodymyr Mytnyk <vmytnyk@marvell.com>
-> > 
-> > Add firmware (FW) version 4.0 support for Marvell Prestera
-> > driver.
-> > 
-> > Major changes have been made to new v4.0 FW ABI to add support
-> > of new features, introduce the stability of the FW ABI and ensure
-> > better forward compatibility for the future driver vesrions.
-> > 
-> > Current v4.0 FW feature set support does not expect any changes
-> > to ABI, as it was defined and tested through long period of time.
-> > The ABI may be extended in case of new features, but it will not
-> > break the backward compatibility.
-> > 
-> > ABI major changes done in v4.0:
-> > - L1 ABI, where MAC and PHY API configuration are split.
-> > - ACL has been split to low-level TCAM and Counters ABI
-> >   to provide more HW ACL capabilities for future driver
-> >   versions.
-> > 
-> > To support backward support, the addition compatibility layer is
-> > required in the driver which will have two different codebase under
-> > "if FW-VER elif FW-VER else" conditions that will be removed
-> > in the future anyway, So, the idea was to break backward support
-> > and focus on more stable FW instead of supporting old version
-> > with very minimal and limited set of features/capabilities.
->  
-> > +/* TODO: add another parameters here: modes, etc... */
-> > +struct prestera_port_phy_config {
-> > +	bool admin;
-> > +	u32 mode;
-> > +	u8 mdix;
-> > +};
-> 
-> > @@ -242,10 +246,44 @@ union prestera_msg_port_param {
-> >  	u8  duplex;
-> >  	u8  fec;
-> >  	u8  fc;
-> > -	struct prestera_msg_port_mdix_param mdix;
-> > -	struct prestera_msg_port_autoneg_param autoneg;
-> > +
-> > +	union {
-> > +		struct {
-> > +			/* TODO: merge it with "mode" */
-> 
-> > +		struct {
-> > +			/* TODO: merge it with "mode" */
-> > +			u8 admin:1;
-> > +			u8 adv_enable;
-> > +			u64 modes;
-> > +			/* TODO: merge it with modes */
-> > +			u32 mode;
-> > +			u8 mdix;
-> > +		} phy;
+Main update from V5 [1] 
+This series is a re-merging of 3 series in one (I increased patchset version based on the first one):
 
-Please can you also make use of __le64, __le32, __le16 in messages
-to/from the firmware, so sparse etc can help you catch were you are
-missing htonl(), htons() etc.
+- Restructure the rpmsg char to decorrelate the control part (v5) [1].
+- Introduce a generic IOCTL interface for RPMsg channels management (V4) [2].
+- rpmsg: ctrl: Introduce new RPMSG_CREATE/RELEASE_DEV_IOCTL controls (V3) [3]
 
-    Andrew
+With update based on Bjorn Andersson comments:
+ - comment the use of the IS_REACHABLE macro
+ - Migrate the creation of the rpmsg class from the rpmsg_char.c to rpmsg_core.c
+ - refactor the rpmsg_chrdev_eptdev_create in two sub function to address potential race
+   condition reported by Bjorn in rpmsg_chrdev_probe[4].
+
+And a new patch to fix ns announcement on default endpoint creation.
+
+Patchset description:
+
+The current rpmsg_char module implements a /dev/rpmsg_ctrl interface that provides the ability to
+instantiate char devices (/dev/rpmsgX) associated with an rpmsg endpoint for communication with the
+remote processor.
+This implementation fit with QCOM rpmsg backend but not with themagement by chanel implemented in 
+the generic rpmsg virtio backend.
+This series restructures the rpmsg_char driver to decorrelate the control part from the data part
+in order to improve its compatible with the rpmsg virtio backend.
+
+Objective:
+- Expose a /dev/rpmsg_ctrlX interface for the application that is no longer dedicated to the
+  rpmsg_char but generalized to all rpmsg services. This offers capability to create and destroy
+  rpmsg channels from a user's application initiative (using the new RPMSG_CREATE_DEV_IOCTL and
+  RPMSG_DESTROY_DEV_IOCTL controls).
+  An application will be able to create/establish an rpmsg communication channel to communicate
+  with the remote processor, and not only wait the remote processor initiative.
+  This is interesting for example to establish a temporary communication link for diagnosis,
+  calibration, debugging... or instantiate  new data flows on some user actions.
+- Add capability to probe the rpmsg_char device at the initiative of the remote processor
+ (rpmsg service announcement mechanism).
+  This allows platforms based on the rpmsg virtio backend to create the /dev/rpmgX interface with
+  a rpmsg name service announcement.
+
+Subsets:
+  - Extract the control part of the char dev and create the rpmsg_ctrl.c file (patches 1 to 4)
+  - Introduce the "rpmsg-raw" channel in rpmsg_char(patches 5 to 8)
+  - Introduce the RPMSG_CREATE_DEV_IOCTL IOCTL and RPMSG_DESTROY_DEV_IOCTL to instantiate RPMsg
+    devices (patch 9)
+    The application can then create or release a channel by specifying:
+       - the name service of the device to instantiate.   
+       - the source address.
+       - the destination address.
+  - Send a ns announcement to the remote processor on default endpoint creation (patche 10)
+
+This series can be applied and tested on git/remoteproc/linux.git[5] for-next branch (6ee5808de074).
+
+[1] https://lore.kernel.org/all/20210712123752.10449-1-arnaud.pouliquen@foss.st.com/
+[2] https://lore.kernel.org/all/20210217132905.1485-1-arnaud.pouliquen@foss.st.com/
+[3] https://lore.kernel.org/all/20210712132303.25058-1-arnaud.pouliquen@foss.st.com/
+[4] https://lkml.org/lkml/2021/10/8/1158
+[5] https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git 
+
+Arnaud Pouliquen (10):
+  rpmsg: char: Export eptdev create an destroy functions
+  rpmsg: create the rpmsg class in core instead of in rpmsg char
+  rpmsg: Move the rpmsg control device from rpmsg_char to rpmsg_ctrl
+  rpmsg: Update rpmsg_chrdev_register_device function
+  rpmsg: char: Refactor rpmsg_chrdev_eptdev_create function
+  rpmsg: Introduce rpmsg_create_default_ept function
+  rpmsg: char: Add possibility to use default endpoint of the rpmsg
+    device.
+  rpmsg: char: Introduce the "rpmsg-raw" channel
+  rpmsg: ctrl: Introduce new RPMSG_CREATE/RELEASE_DEV_IOCTL controls
+  rpmsg: core: send a ns announcement when a default endpoint is created
+
+ drivers/rpmsg/Kconfig             |   9 ++
+ drivers/rpmsg/Makefile            |   1 +
+ drivers/rpmsg/qcom_glink_native.c |   2 +-
+ drivers/rpmsg/qcom_smd.c          |   2 +-
+ drivers/rpmsg/rpmsg_char.c        | 247 +++++++++++-------------------
+ drivers/rpmsg/rpmsg_char.h        |  59 +++++++
+ drivers/rpmsg/rpmsg_core.c        |  88 ++++++++++-
+ drivers/rpmsg/rpmsg_ctrl.c        | 245 +++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |   8 +-
+ drivers/rpmsg/virtio_rpmsg_bus.c  |   2 +-
+ include/linux/rpmsg.h             |  23 +++
+ include/uapi/linux/rpmsg.h        |  10 ++
+ 12 files changed, 530 insertions(+), 166 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_char.h
+ create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+
+-- 
+2.17.1
+
