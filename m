@@ -2,232 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C83437DA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E82437DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhJVTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:08:16 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55442 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234219AbhJVTIJ (ORCPT
+        id S234114AbhJVTI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:08:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44040 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234228AbhJVTIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:08:09 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 511C41FD63;
-        Fri, 22 Oct 2021 19:05:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634929550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 22 Oct 2021 15:08:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634929563;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c6+VLXMFqOxQ0TPtQ6oBMMHDLw7HjDRHFm8X+Rt/J2Y=;
-        b=XMG2NNRPUUth27GOBYD+hNyPYifUuukXIEilep3iPhfsfUAyro4t9pl2xYo5gcMGW0jOh5
-        AqcJNzdqe6jYbhzAkmjAS/mMtK72/nxg/fjNwBsBEMlHR/D+Wq3ufUYUMGW+0KO9ze3HLz
-        M5JGpLhEHCXmzWb3jgD/U8kevNX210o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634929550;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c6+VLXMFqOxQ0TPtQ6oBMMHDLw7HjDRHFm8X+Rt/J2Y=;
-        b=Q1xSUUJfUeeLSieLK7d01t5RNQ4S/yh5nC3oLumRHSzRdJXMRwayinYWXbOvr6GtTH0dfW
-        a2n9fywE9QwCAnAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=5u6FsY60ZEf/aq91jODyRvm26gKiZCdUvfiTMHL93vo=;
+        b=R1a8kLMEoWVEyTNBwFH33O04A9OccRLApb85iy6AeXQ6QfO1JcQa87nM1AaUhHCLfZrMig
+        lO4UmGeNz3UXtdTeSPvo5eVwFXNcVfBYg0PXk1l3fKjLsaYdWKyBcG8wZ/6b9VBuDhzoNA
+        zgqi9rCi16pWzjAA7/1pwwZ3OEGLeec=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-07Qt9FavOLqXEurIohmbUw-1; Fri, 22 Oct 2021 15:05:58 -0400
+X-MC-Unique: 07Qt9FavOLqXEurIohmbUw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1177213D02;
-        Fri, 22 Oct 2021 19:05:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6lmxAo4Lc2EdYwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Fri, 22 Oct 2021 19:05:50 +0000
-Message-ID: <14a41bd8-cd70-b9d0-ce1c-869cfde8bdcb@suse.de>
-Date:   Fri, 22 Oct 2021 21:05:49 +0200
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20D0318D6A2A;
+        Fri, 22 Oct 2021 19:05:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E20A519D9D;
+        Fri, 22 Oct 2021 19:05:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v2 29/53] cachefiles: Introduce new driver
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Omar Sandoval <osandov@osandov.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 22 Oct 2021 20:05:52 +0100
+Message-ID: <163492955211.1038219.12440210955398087211.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+References: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
- framebuffers removal
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Robinson <pbrobinson@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20211022144040.3418284-1-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211022144040.3418284-1-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------8LPjZuTh2kcjBYHT0j0h4Gw5"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------8LPjZuTh2kcjBYHT0j0h4Gw5
-Content-Type: multipart/mixed; boundary="------------P0gTBgFNbeAasGZcp0L7LbcV";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: Peter Robinson <pbrobinson@gmail.com>, Neal Gompa <ngompa13@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
-Message-ID: <14a41bd8-cd70-b9d0-ce1c-869cfde8bdcb@suse.de>
-Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
- framebuffers removal
-References: <20211022144040.3418284-1-javierm@redhat.com>
-In-Reply-To: <20211022144040.3418284-1-javierm@redhat.com>
+Introduce basic skeleton of the new, rewritten cachefiles driver.
 
---------------P0gTBgFNbeAasGZcp0L7LbcV
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-cachefs@redhat.com
+---
 
-SGksDQoNCnRoYW5rcyBmb3Igc2VuZGluZyB0aGUgcGF0Y2ggb3V0IHF1aWNrbHkuDQoNCkFt
-IDIyLjEwLjIxIHVtIDE2OjQwIHNjaHJpZWIgSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzOg0K
-PiBUaGUgc2ltcGxlZHJtIGRyaXZlciBhbGxvd3MgdG8gdXNlIHRoZSBmcmFtZSBidWZmZXIg
-dGhhdCB3YXMgc2V0LXVwIGJ5IHRoZQ0KPiBmaXJtd2FyZS4gVGhpcyBnaXZlcyBlYXJseSB2
-aWRlbyBvdXRwdXQgYmVmb3JlIHRoZSBwbGF0Zm9ybSBEUk0gZHJpdmVyIGlzDQo+IHByb2Jl
-ZCBhbmQgdGFrZXMgb3Zlci4NCj4gDQo+IEJ1dCBpdCB3b3VsZCBiZSB1c2VmdWwgdG8gaGF2
-ZSBhIHdheSB0byBkaXNhYmxlIHRoaXMgdGFrZSBvdmVyIGJ5IHRoZSByZWFsDQo+IERSTSBk
-cml2ZXJzLiBGb3IgZXhhbXBsZSwgdGhlcmUgbWF5IGJlIGJ1Z3MgaW4gdGhlIERSTSBkcml2
-ZXJzIHRoYXQgY291bGQNCj4gY2F1c2UgdGhlIGRpc3BsYXkgb3V0cHV0IHRvIG5vdCB3b3Jr
-IGNvcnJlY3RseS4NCj4gDQo+IEZvciB0aG9zZSBjYXNlcywgaXQgd291bGQgYmUgZ29vZCB0
-byBrZWVwIHRoZSBzaW1wbGVkcm0gZHJpdmVyIGluc3RlYWQgYW5kDQo+IGF0IGxlYXN0IGdl
-dCBhIHdvcmtpbmcgZGlzcGxheSBhcyBzZXQtdXAgYnkgdGhlIGZpcm13YXJlLg0KPiANCj4g
-TGV0J3MgYWRkIGEgZHJtLnJlbW92ZV9mYiBib29sZWFuIGtlcm5lbCBjb21tYW5kIGxpbmUg
-cGFyYW1ldGVyLCB0aGF0IHdoZW4NCj4gc2V0IHRvIGZhbHNlIHdpbGwgcHJldmVudCB0aGUg
-Y29uZmxpY3RpbmcgZnJhbWVidWZmZXJzIHRvIGJlaW5nIHJlbW92ZWQuDQo+IA0KPiBTaW5j
-ZSB0aGUgZHJpdmVycyBjYWxsIGRybV9hcGVydHVyZV9yZW1vdmVfY29uZmxpY3RpbmdfZnJh
-bWVidWZmZXJzKCkgdmVyeQ0KPiBlYXJseSBpbiB0aGVpciBwcm9iZSBjYWxsYmFjaywgdGhp
-cyB3aWxsIGNhdXNlIHRoZSBkcml2ZXJzJyBwcm9iZSB0byBmYWlsLg0KPiANCj4gVGhhbmtz
-IHRvIE5lYWwgR29tcGEgZm9yIHRoZSBzdWdnZXN0aW9uIGFuZCBUaG9tYXMgWmltbWVybWFu
-biBmb3IgdGhlIGlkZWENCj4gb24gaG93IHRoaXMgY291bGQgYmUgaW1wbGVtZW50ZWQuDQo+
-IA0KPiBTdWdnZXN0ZWQtYnk6IE5lYWwgR29tcGEgPG5nb21wYTEzQGdtYWlsLmNvbT4NCj4g
-U2lnbmVkLW9mZi1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXJtQHJlZGhh
-dC5jb20+DQo+IC0tLQ0KPiBIZWxsbywNCj4gDQo+IEknbSBzZW5kaW5nIHRoaXMgYXMgYW4g
-UkZDIGJlY2F1c2UgSSB3YXNuJ3Qgc3VyZSBhYm91dCB0aGUgY29ycmVjdCBuYW1lIGZvcg0K
-PiB0aGlzIG1vZHVsZSBwYXJhbWV0ZXIsIGFuZCBhbHNvIGlmICdyZW1vdmVfZmI9MCcgaXMg
-aW50aXR1dGl2ZSBvciBpbnN0ZWFkIGENCj4gcGFyYW1ldGVyIHRoYXQncyBlbmFibGVkIGlz
-IHByZWZlcnJlZCAoaS5lOiAnZGlzYWJsZV9mYl9yZW1vdmFsPTEnKS4NCj4gDQo+IEJlc3Qg
-cmVnYXJkcywNCj4gSmF2aWVyDQo+IA0KPiAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1
-cmUuYyB8IDE5ICsrKysrKysrKysrKysrKysrKysNCj4gICAxIGZpbGUgY2hhbmdlZCwgMTkg
-aW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9kcm1f
-YXBlcnR1cmUuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1cmUuYw0KPiBpbmRleCA3
-NGJkNGE3NmIyNTMuLjBiNDU0YzhmNzQ2NSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUv
-ZHJtL2RybV9hcGVydHVyZS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1
-cmUuYw0KPiBAQCAtMTQsNiArMTQsMTEgQEANCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9kcnYu
-aD4NCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9wcmludC5oPg0KPiAgIA0KPiArc3RhdGljIGJv
-b2wgZHJtX2FwZXJ0dXJlX3JlbW92ZV9mYiA9IHRydWU7DQoNCkdsb2JhbCB2YXJpYWJsZXMg
-c2hvdWxkIGRlZmF1bHQgdG8gemVybyBpZiBzb21laG93IHBvc3NpYmxlLiBUaGlzIHdheSwg
-DQp0aGV5IGNhbiBhbGwgYmUgc3RvcmVkIGluIHRoZSBCU1Mgc2VnbWVudCBhbmQgYmFja2Vk
-IGJ5IGEgc2luZ2xlIHNoYXJlZCANCnplcm8tZmlsbGVkIHBhZ2UuIE90aGVyd2lzZSB0aGV5
-IHJlcXVpcmUgYWN0dWFsIG1lbW9yeS4gSW4gdGhlIHdvcnN0IA0KY2FzZSwgeW91J2QgYWxs
-b2NhdGUgYSBmdWxsIHBhZ2UgdG8gaG9sZCBhIHNpbmdsZSBib29sZWFuLg0KDQo+ICttb2R1
-bGVfcGFyYW1fbmFtZWQocmVtb3ZlX2ZiLCBkcm1fYXBlcnR1cmVfcmVtb3ZlX2ZiLCBib29s
-LCAwNjAwKTsNCj4gK01PRFVMRV9QQVJNX0RFU0MocmVtb3ZlX2ZiLA0KPiArCQkgIkFsbG93
-IGNvbmZsaWN0aW5nIGZyYW1lYnVmZmVycyByZW1vdmFsIFtkZWZhdWx0PXRydWVdIik7DQo+
-ICsNCg0KQW5kIHdpdGggdmFyaWFibGVzIHNldCB0byB6ZXJvLCBhIGNvbW1hbmQtbGluZSBw
-YXJhbWV0ZXIgZW5hYmxlcyANCm5vbi1kZWZhdWx0IGJlaGF2aW9yIChpLmUuLCAiZHJtLXBh
-cmFtPTEiKS4gVGhhdCBtb3JlIGxvZ2ljYWwgdGhhbiB0aGUgDQpvdGhlciB3YXkgYXJvdW5k
-IElNSE8uDQoNCj4gICAvKioNCj4gICAgKiBET0M6IG92ZXJ2aWV3DQo+ICAgICoNCj4gQEAg
-LTI4Myw2ICsyODgsOSBAQCBzdGF0aWMgdm9pZCBkcm1fYXBlcnR1cmVfZGV0YWNoX2RyaXZl
-cnMocmVzb3VyY2Vfc2l6ZV90IGJhc2UsIHJlc291cmNlX3NpemVfdCBzaQ0KPiAgICAqIFRo
-aXMgZnVuY3Rpb24gcmVtb3ZlcyBncmFwaGljcyBkZXZpY2UgZHJpdmVycyB3aGljaCB1c2Ug
-bWVtb3J5IHJhbmdlIGRlc2NyaWJlZCBieQ0KPiAgICAqIEBiYXNlIGFuZCBAc2l6ZS4NCj4g
-ICAgKg0KPiArICogVGhlIGNvbmZsaWN0aW5nIGZyYW1lYnVmZmVycyByZW1vdmFsIGNhbiBi
-ZSBkaXNhYmxlZCBieSBzZXR0aW5nIHRoZSBkcm0ucmVtb3ZlX2ZiPTAga2VybmVsDQo+ICsg
-KiBjb21tYW5kIGxpbmUgb3B0aW9uLiBXaGVuIHRoaXMgaXMgZGlzYWJsZWQsIHRoZSBmdW5j
-dGlvbiB3aWxsIHJldHVybiBhbiAtRUlOVkFMIGVycm5vIGNvZGUuDQoNClBsZWFzZSB1c2Ug
-LUVCVVNZIGZvciB0aGUgZXJyb3IuIFRoYXQncyB3aGF0IHRoZSBhY3F1aXJlIGZ1bmN0aW9u
-IA0KcmV0dXJucyBpbiBjYXNlIG9mIGEgY29uZmxpY3QuDQoNCj4gKyAqDQo+ICAgICogUmV0
-dXJuczoNCj4gICAgKiAwIG9uIHN1Y2Nlc3MsIG9yIGEgbmVnYXRpdmUgZXJybm8gY29kZSBv
-dGhlcndpc2UNCj4gICAgKi8NCj4gQEAgLTI5Miw3ICszMDAsMTIgQEAgaW50IGRybV9hcGVy
-dHVyZV9yZW1vdmVfY29uZmxpY3RpbmdfZnJhbWVidWZmZXJzKHJlc291cmNlX3NpemVfdCBi
-YXNlLCByZXNvdXJjZV8NCj4gICAjaWYgSVNfUkVBQ0hBQkxFKENPTkZJR19GQikNCg0KUmF0
-aGVyIG5vdCBzcGxpdCB1cCB0aGlzIGJsb2NrLiBJdCdzIGJldHRlciBzdHlsZSB0byBwdXQg
-dGhlIA0KZmJkZXYtcmVsYXRlZCBjb2RlIGludG8gYSBoZWxwZXIgYW5kIGNhbGwgaXQgdW5j
-b25kaXRpb25hbGx5Lg0KDQpzdGF0aWMgZHJtX2FwZXJ0dXJlX3JlbW92ZV9jb25mbGljdGlu
-Z19mYmRldl9mcmFtZWJ1ZmZlcnMoKQ0Kew0KI2lmIChGQikNCgkuLi4NCiNlbmRpZg0KCXJl
-dHVybiAwOw0KfQ0KDQo+ICAgCXN0cnVjdCBhcGVydHVyZXNfc3RydWN0ICphOw0KPiAgIAlp
-bnQgcmV0Ow0KPiArI2VuZGlmDQo+ICsNCj4gKwlpZiAoIWRybV9hcGVydHVyZV9yZW1vdmVf
-ZmIpDQo+ICsJCXJldHVybiAtRUlOVkFMOw0KDQpUaGVyZSdzIHN0aWxsIHRoZSBxdWVzdGlv
-biBvZiB0aGUgc2VtYW50aWNzIG9mIHRoaXMgcGFyYW1ldGVyLiBJdCdzIGEgDQpiaXQgZnV6
-enkuDQoNCklmIHlvdSB1c2UgJ2Rpc2FibGVfaGFuZG92ZXInIChhcyB5b3UgbWVudGlvbmVk
-IGluIGFub3RoZXIgbWFpbCksIGl0IA0Kd291bGQgbWVhbiB0aGF0IG9ubHkgdGhlIGhhbmRv
-dmVyIGl0c2VsZiBpcyBkaXNhYmxlZC4gU28gaWYgc2ltcGxlZHJtIGlzIA0Kbm90IGJvdW5k
-IHRvIHRoZSBkZXZpY2UsIHRoZW4gYSBuYXRpdmUgZHJpdmVyIHNob3VsZCBsb2FkLiBUaGF0
-IHdvdWxkIGJlIA0KaGFyZCB0byBpbXBsZW1lbnQgd2l0aCB0aGUgY3VycmVudCBjb2RlIGJh
-c2UsIHdoZXJlIHdlIGhhdmUgdG8gdGFrZSBvbGQgDQpmYmRldiBkcml2ZXJzIGludG8gYWNj
-b3VudC4NCg0KKEFuZCB0byBiZSBwZWRhbnRpYywgd2UgZG9uJ3QgcmVhbGx5IGRvIGEgaGFu
-ZG92ZXIgb2YgdGhlIGRldmljZS4gV2UgDQpob3QtdW5wbHVnIHRoZSBnZW5lcmljIHBsYXRm
-b3JtIGRldmljZSwgc28gdGhhdCB0aGUgZHJpdmVyIGZvciB0aGUgDQpuYXRpdmUgZGV2aWNl
-IGNhbiBvcGVyYXRlIHRoZSBIVyB3aXRob3V0IGludGVyZmVyZW5jZS4pDQoNClNpbXBsZWRy
-bSBvbmx5IGFjcXVpcmVzIGFuIGFwZXJ0dXJlLCBidXQgbmV2ZXIgcmVtb3ZlcyBhIGRyaXZl
-ci4gSWYgDQp0aGVyZSBpcyBhIGRyaXZlciBhbHJlYWR5LCBzaW1wbGVkcm0gd291bGQgZmFp
-bC4gT25seSBuYXRpdmUgZHJpdmVycyB0cnkgDQp0byByZW1vdmUgZHJpdmVycyBhbmQgd291
-bGQgdHJpZ2dlciB0aGUgdGVzdC4gU28geW91ciBwYXRjaCBpcyBtb3JlIA0Kc29tZXRoaW5n
-IGxpa2UgJ2Rpc2FibGVfbmF0aXZlX2RyaXZlcnMnLg0KDQpJJ2QgZ28gd2l0aCAnZGlzYWJs
-ZV9uYXRpdmVfZHJpdmVycycsIG9yIG1heWJlICdkaXNhYmxlX2RldmljZV9oYW5kb3Zlcicg
-DQphcyBhIHNlY29uZCBvcHRpb24uIElmIHNpbXBsZWRybSwgb3IgYW55IG90aGVyIGdlbmVy
-aWMgRFJNIGRyaXZlciwgd291bGQgDQpldmVyIHRyeSB0byByZW1vdmUgYW4gZXhpc3Rpbmcg
-ZHJpdmVyIGZyb20gYSBkZXZpY2UsIHdlJ2QgaGF2ZSB0byANCmRpc3Rpbmd1aXNoIGJldHdl
-ZW4gbmF0aXZlIGFuZCBnZW5lcmljIGRyaXZlcnMuIEJ1dCB0aGF0J3MgYSB0cml2aWFsIA0K
-cHJvYmxlbSBmb3IgbGF0ZXIuDQoNCj4gICANCj4gKyNpZiBJU19SRUFDSEFCTEUoQ09ORklH
-X0ZCKQ0KPiAgIAlhID0gYWxsb2NfYXBlcnR1cmVzKDEpOw0KPiAgIAlpZiAoIWEpDQo+ICAg
-CQlyZXR1cm4gLUVOT01FTTsNCj4gQEAgLTMyMiw2ICszMzUsOSBAQCBFWFBPUlRfU1lNQk9M
-KGRybV9hcGVydHVyZV9yZW1vdmVfY29uZmxpY3RpbmdfZnJhbWVidWZmZXJzKTsNCj4gICAg
-KiBmb3IgYW55IG9mIEBwZGV2J3MgbWVtb3J5IGJhcnMuIFRoZSBmdW5jdGlvbiBhc3N1bWVz
-IHRoYXQgUENJIGRldmljZSB3aXRoDQo+ICAgICogc2hhZG93ZWQgUk9NIGRyaXZlcyBhIHBy
-aW1hcnkgZGlzcGxheSBhbmQgc28ga2lja3Mgb3V0IHZnYTE2ZmIuDQo+ICAgICoNCj4gKyAq
-IFRoZSBjb25mbGljdGluZyBmcmFtZWJ1ZmZlcnMgcmVtb3ZhbCBjYW4gYmUgZGlzYWJsZWQg
-Ynkgc2V0dGluZyB0aGUgZHJtLnJlbW92ZV9mYj0wIGtlcm5lbA0KPiArICogY29tbWFuZCBs
-aW5lIG9wdGlvbi4gV2hlbiB0aGlzIGlzIGRpc2FibGVkLCB0aGUgZnVuY3Rpb24gd2lsbCBy
-ZXR1cm4gYW4gLUVJTlZBTCBlcnJubyBjb2RlLg0KPiArICoNCj4gICAgKiBSZXR1cm5zOg0K
-PiAgICAqIDAgb24gc3VjY2Vzcywgb3IgYSBuZWdhdGl2ZSBlcnJubyBjb2RlIG90aGVyd2lz
-ZQ0KPiAgICAqLw0KPiBAQCAtMzMxLDYgKzM0Nyw5IEBAIGludCBkcm1fYXBlcnR1cmVfcmVt
-b3ZlX2NvbmZsaWN0aW5nX3BjaV9mcmFtZWJ1ZmZlcnMoc3RydWN0IHBjaV9kZXYgKnBkZXYs
-DQo+ICAgCXJlc291cmNlX3NpemVfdCBiYXNlLCBzaXplOw0KPiAgIAlpbnQgYmFyLCByZXQg
-PSAwOw0KPiAgIA0KPiArCWlmICghZHJtX2FwZXJ0dXJlX3JlbW92ZV9mYikNCj4gKwkJcmV0
-dXJuIC1FSU5WQUw7DQoNCi1FQlVTWSBhZ2Fpbg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0K
-DQo+ICsNCj4gICAJZm9yIChiYXIgPSAwOyBiYXIgPCBQQ0lfU1REX05VTV9CQVJTOyArK2Jh
-cikgew0KPiAgIAkJaWYgKCEocGNpX3Jlc291cmNlX2ZsYWdzKHBkZXYsIGJhcikgJiBJT1JF
-U09VUkNFX01FTSkpDQo+ICAgCQkJY29udGludWU7DQo+IA0KDQotLSANClRob21hcyBaaW1t
-ZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0
-aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2Vy
-bWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZl
-bGl4IEltZW5kw7ZyZmZlcg0K
+ fs/Kconfig                        |    1 
+ fs/Makefile                       |    1 
+ fs/cachefiles/Kconfig             |   21 +++++++
+ fs/cachefiles/Makefile            |    9 +++
+ fs/cachefiles/internal.h          |  118 +++++++++++++++++++++++++++++++++++++
+ fs/cachefiles/main.c              |   53 +++++++++++++++++
+ include/trace/events/cachefiles.h |   49 +++++++++++++++
+ 7 files changed, 252 insertions(+)
+ create mode 100644 fs/cachefiles/Kconfig
+ create mode 100644 fs/cachefiles/Makefile
+ create mode 100644 fs/cachefiles/internal.h
+ create mode 100644 fs/cachefiles/main.c
+ create mode 100644 include/trace/events/cachefiles.h
 
---------------P0gTBgFNbeAasGZcp0L7LbcV--
+diff --git a/fs/Kconfig b/fs/Kconfig
+index 68f662c09a8d..001fd1a9115c 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -132,6 +132,7 @@ menu "Caches"
+ 
+ source "fs/netfs/Kconfig"
+ source "fs/fscache/Kconfig"
++source "fs/cachefiles/Kconfig"
+ source "fs/fscache_old/Kconfig"
+ source "fs/cachefiles_old/Kconfig"
+ 
+diff --git a/fs/Makefile b/fs/Makefile
+index 0dd8a4d526ad..09703d49ac90 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -126,6 +126,7 @@ obj-$(CONFIG_AFS_FS)		+= afs/
+ obj-$(CONFIG_NILFS2_FS)		+= nilfs2/
+ obj-$(CONFIG_BEFS_FS)		+= befs/
+ obj-$(CONFIG_HOSTFS)		+= hostfs/
++obj-$(CONFIG_CACHEFILES)	+= cachefiles/
+ obj-$(CONFIG_CACHEFILES_OLD)	+= cachefiles_old/
+ obj-$(CONFIG_DEBUG_FS)		+= debugfs/
+ obj-$(CONFIG_TRACING)		+= tracefs/
+diff --git a/fs/cachefiles/Kconfig b/fs/cachefiles/Kconfig
+new file mode 100644
+index 000000000000..6827b40f7ddc
+--- /dev/null
++++ b/fs/cachefiles/Kconfig
+@@ -0,0 +1,21 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++config CACHEFILES
++	tristate "Filesystem caching on files"
++	depends on FSCACHE && BLOCK
++	help
++	  This permits use of a mounted filesystem as a cache for other
++	  filesystems - primarily networking filesystems - thus allowing fast
++	  local disk to enhance the speed of slower devices.
++
++	  See Documentation/filesystems/caching/cachefiles.rst for more
++	  information.
++
++config CACHEFILES_DEBUG
++	bool "Debug CacheFiles"
++	depends on CACHEFILES
++	help
++	  This permits debugging to be dynamically enabled in the filesystem
++	  caching on files module.  If this is set, the debugging output may be
++	  enabled by setting bits in /sys/modules/cachefiles/parameter/debug or
++	  by including a debugging specifier in /etc/cachefilesd.conf.
+diff --git a/fs/cachefiles/Makefile b/fs/cachefiles/Makefile
+new file mode 100644
+index 000000000000..a7f3e982e249
+--- /dev/null
++++ b/fs/cachefiles/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for caching in a mounted filesystem
++#
++
++cachefiles-y := \
++	main.o
++
++obj-$(CONFIG_CACHEFILES) := cachefiles.o
+diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
+new file mode 100644
+index 000000000000..55da223e49a9
+--- /dev/null
++++ b/fs/cachefiles/internal.h
+@@ -0,0 +1,118 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/* General netfs cache on cache files internal defs
++ *
++ * Copyright (C) 2021 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ */
++
++#ifdef pr_fmt
++#undef pr_fmt
++#endif
++
++#define pr_fmt(fmt) "CacheFiles: " fmt
++
++
++#include <linux/fscache-cache.h>
++#include <linux/timer.h>
++#include <linux/wait_bit.h>
++#include <linux/cred.h>
++#include <linux/workqueue.h>
++#include <linux/security.h>
++
++extern unsigned cachefiles_debug;
++#define CACHEFILES_DEBUG_KENTER	1
++#define CACHEFILES_DEBUG_KLEAVE	2
++#define CACHEFILES_DEBUG_KDEBUG	4
++
++
++/*
++ * debug tracing
++ */
++#define dbgprintk(FMT, ...) \
++	printk("[%-6.6s] "FMT"\n", current->comm, ##__VA_ARGS__)
++
++#define kenter(FMT, ...) dbgprintk("==> %s("FMT")", __func__, ##__VA_ARGS__)
++#define kleave(FMT, ...) dbgprintk("<== %s()"FMT"", __func__, ##__VA_ARGS__)
++#define kdebug(FMT, ...) dbgprintk(FMT, ##__VA_ARGS__)
++
++
++#if defined(__KDEBUG)
++#define _enter(FMT, ...) kenter(FMT, ##__VA_ARGS__)
++#define _leave(FMT, ...) kleave(FMT, ##__VA_ARGS__)
++#define _debug(FMT, ...) kdebug(FMT, ##__VA_ARGS__)
++
++#elif defined(CONFIG_CACHEFILES_DEBUG)
++#define _enter(FMT, ...)				\
++do {							\
++	if (cachefiles_debug & CACHEFILES_DEBUG_KENTER)	\
++		kenter(FMT, ##__VA_ARGS__);		\
++} while (0)
++
++#define _leave(FMT, ...)				\
++do {							\
++	if (cachefiles_debug & CACHEFILES_DEBUG_KLEAVE)	\
++		kleave(FMT, ##__VA_ARGS__);		\
++} while (0)
++
++#define _debug(FMT, ...)				\
++do {							\
++	if (cachefiles_debug & CACHEFILES_DEBUG_KDEBUG)	\
++		kdebug(FMT, ##__VA_ARGS__);		\
++} while (0)
++
++#else
++#define _enter(FMT, ...) no_printk("==> %s("FMT")", __func__, ##__VA_ARGS__)
++#define _leave(FMT, ...) no_printk("<== %s()"FMT"", __func__, ##__VA_ARGS__)
++#define _debug(FMT, ...) no_printk(FMT, ##__VA_ARGS__)
++#endif
++
++#if 1 /* defined(__KDEBUGALL) */
++
++#define ASSERT(X)							\
++do {									\
++	if (unlikely(!(X))) {						\
++		pr_err("\n");						\
++		pr_err("Assertion failed\n");		\
++		BUG();							\
++	}								\
++} while (0)
++
++#define ASSERTCMP(X, OP, Y)						\
++do {									\
++	if (unlikely(!((X) OP (Y)))) {					\
++		pr_err("\n");						\
++		pr_err("Assertion failed\n");		\
++		pr_err("%lx " #OP " %lx is false\n",			\
++		       (unsigned long)(X), (unsigned long)(Y));		\
++		BUG();							\
++	}								\
++} while (0)
++
++#define ASSERTIF(C, X)							\
++do {									\
++	if (unlikely((C) && !(X))) {					\
++		pr_err("\n");						\
++		pr_err("Assertion failed\n");		\
++		BUG();							\
++	}								\
++} while (0)
++
++#define ASSERTIFCMP(C, X, OP, Y)					\
++do {									\
++	if (unlikely((C) && !((X) OP (Y)))) {				\
++		pr_err("\n");						\
++		pr_err("Assertion failed\n");		\
++		pr_err("%lx " #OP " %lx is false\n",			\
++		       (unsigned long)(X), (unsigned long)(Y));		\
++		BUG();							\
++	}								\
++} while (0)
++
++#else
++
++#define ASSERT(X)			do {} while (0)
++#define ASSERTCMP(X, OP, Y)		do {} while (0)
++#define ASSERTIF(C, X)			do {} while (0)
++#define ASSERTIFCMP(C, X, OP, Y)	do {} while (0)
++
++#endif
+diff --git a/fs/cachefiles/main.c b/fs/cachefiles/main.c
+new file mode 100644
+index 000000000000..47bc1cc078de
+--- /dev/null
++++ b/fs/cachefiles/main.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Network filesystem caching backend to use cache files on a premounted
++ * filesystem
++ *
++ * Copyright (C) 2021 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/sched.h>
++#include <linux/completion.h>
++#include <linux/slab.h>
++#include <linux/fs.h>
++#include <linux/file.h>
++#include <linux/namei.h>
++#include <linux/mount.h>
++#include <linux/statfs.h>
++#include <linux/sysctl.h>
++#include <linux/miscdevice.h>
++#include <linux/netfs.h>
++#include <trace/events/netfs.h>
++#define CREATE_TRACE_POINTS
++#include "internal.h"
++
++unsigned cachefiles_debug;
++module_param_named(debug, cachefiles_debug, uint, S_IWUSR | S_IRUGO);
++MODULE_PARM_DESC(cachefiles_debug, "CacheFiles debugging mask");
++
++MODULE_DESCRIPTION("Mounted-filesystem based cache");
++MODULE_AUTHOR("Red Hat, Inc.");
++MODULE_LICENSE("GPL");
++
++/*
++ * initialise the fs caching module
++ */
++static int __init cachefiles_init(void)
++{
++	pr_info("Loaded\n");
++	return 0;
++}
++
++fs_initcall(cachefiles_init);
++
++/*
++ * clean up on module removal
++ */
++static void __exit cachefiles_exit(void)
++{
++	pr_info("Unloading\n");
++}
++
++module_exit(cachefiles_exit);
+diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
+new file mode 100644
+index 000000000000..5ee0aabb20be
+--- /dev/null
++++ b/include/trace/events/cachefiles.h
+@@ -0,0 +1,49 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/* CacheFiles tracepoints
++ *
++ * Copyright (C) 2021 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM cachefiles
++
++#if !defined(_TRACE_CACHEFILES_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_CACHEFILES_H
++
++#include <linux/tracepoint.h>
++
++/*
++ * Define enums for tracing information.
++ */
++#ifndef __CACHEFILES_DECLARE_TRACE_ENUMS_ONCE_ONLY
++#define __CACHEFILES_DECLARE_TRACE_ENUMS_ONCE_ONLY
++
++#endif
++
++/*
++ * Define enum -> string mappings for display.
++ */
++
++
++/*
++ * Export enum symbols via userspace.
++ */
++#undef EM
++#undef E_
++#define EM(a, b) TRACE_DEFINE_ENUM(a);
++#define E_(a, b) TRACE_DEFINE_ENUM(a);
++
++/*
++ * Now redefine the EM() and E_() macros to map the enums to the strings that
++ * will be printed in the output.
++ */
++#undef EM
++#undef E_
++#define EM(a, b)	{ a, b },
++#define E_(a, b)	{ a, b }
++
++
++#endif /* _TRACE_CACHEFILES_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
 
---------------8LPjZuTh2kcjBYHT0j0h4Gw5
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFzC40FAwAAAAAACgkQlh/E3EQov+D9
-mQ/+NtVrm6agbI5c3x9+Say3d2dD50rXbO2PK+g0F1HnoXnAu982SuZyLCtBWJI1C9c6Ybbimelx
-c06OHCNHy1h1hmwLhswMHWcZRE7QIjnDy9TPEWHRfFOxFaNAMbOX3RHH4NmtFEyvbVt+RcK5B+xn
-fFEGPxguDWYYvMN501qELNWYTQhRPMonRb+41YtT0q++GkLfS5Tfe1dYu2orCbBylR5eoCYZdxzf
-qt5xZ9lIiYr4RVhFBDSrPop3vrEBEvOBtD/nlTakio/QQHb8aR4DOb5tkOlJJPwYxeWd0RetnM1J
-XpGC88Wp7q+n6oWv2d+ai1M5iDhyha9kJe5Rvg5TnX+OjXgWH3nBV2svkuMsB71GuJ2205lzhtOb
-6L75tHxA1te+DTxXxgffIwjnUxb77zy6eWw67n/8Q3sI1PbbdWnNz2mvUsuVsppQIXXJsxbtN+XJ
-+pqxqPYDUj8BeEuid6y0W8c+BMc0ZPnpJi9ocPSwQxMZpS70fuJSi8mbIdY51eshFXlVfoMI2fbe
-JRmOVGf80gbX04EiNDc98j5xBreOwz3D8oMZzxEZMzUyk5kpZw94A/Wl7ZAdbtKo3Yl0UrH31mgi
-ysr/YHiMuKchHahywjyB1CUxoAuTC3yMjHK8FRmCOmo1l0/uWae29oXedNH/6z19JXhZXbiE45G/
-YDc=
-=eOeR
------END PGP SIGNATURE-----
-
---------------8LPjZuTh2kcjBYHT0j0h4Gw5--
