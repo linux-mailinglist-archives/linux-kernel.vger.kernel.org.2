@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B74D437693
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE002437696
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhJVMP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhJVMP5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:15:57 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FA0C061764;
-        Fri, 22 Oct 2021 05:13:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=3wIAhdbhEaLw/yRwzmamNQcdld+HiTYFy2ksoftYD9w=; b=SVu7st9wzFxaS9T7pl1sZoT4c6
-        vOkd0l7xskv7YHCReQwSnv3wi/2oLmNVvNvS0e3lusLRUnlH48vvCvd+wAsHqOYVCSkfbm5QXwBWy
-        BACVkGkQlB0hU9sg10AfEQzmfjtMwR1zL9Kppdt58Fjy4UokJDXc+Z+dwmpbNi1d5TvS5uH2JYXCQ
-        eyXf9EeX9UtoI3SnwuLvc1DKz0psHp5v07mG8Ah7Wd+j5mKpDMSmlin4UkKauc0ynils+HmFi8yXb
-        xYIPA/WmSVznVwpFfiYUFfANYVlXbDPRmUufMxL4FlPZdxIntPpwqCX8hy+RL4Pppo4tLaoWAQOBd
-        ZFt0rOxA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55232)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mdtQS-0001fz-At; Fri, 22 Oct 2021 13:13:32 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mdtQQ-0001Al-PH; Fri, 22 Oct 2021 13:13:30 +0100
-Date:   Fri, 22 Oct 2021 13:13:30 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v4 01/14] net: phy: at803x: replace AT803X_DEVICE_ADDR
- with MDIO_MMD_PCS
-Message-ID: <YXKq6j/CnQ/i34ZB@shell.armlinux.org.uk>
-References: <20211022120624.18069-1-luoj@codeaurora.org>
- <20211022120624.18069-2-luoj@codeaurora.org>
+        id S231927AbhJVMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230471AbhJVMP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:15:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73BFB6101C;
+        Fri, 22 Oct 2021 12:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634904821;
+        bh=0Jm729A//8Gt6aSpcc+e0DHH9iZ1PE/6ep8ru4Kc8to=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jSFp2NVnT5t2g3+IA1M+f0gn8ac4es5WuyfjANrKbE6rlHjQZBE1RYCQ6URdbX2Tc
+         UaVKYOAb/DY7DT8VuJFuPSOKCTjSJKBPCHeItWSWlvznwo4Uz7XSlx0zeKhWrUvNXM
+         XoYa5Uo2ITzL/AuHPGeHTovMLFh4HOxTqVS0ia7g=
+Date:   Fri, 22 Oct 2021 14:13:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Luis R. Rodriguez" <mcgrof@kernel.org>
+Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
+        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
+        david.brown@linaro.org, bjorn.andersson@linaro.org,
+        linux-wireless@vger.kernel.org, keescook@chromium.org,
+        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
+        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
+        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
+        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
+        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
+        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
+        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
+        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 08/10] firmware_loader: move builtin build helper to
+ shared library
+Message-ID: <YXKq8gJsQE/U9ZKq@kroah.com>
+References: <20211021155843.1969401-1-mcgrof@kernel.org>
+ <20211021155843.1969401-9-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022120624.18069-2-luoj@codeaurora.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20211021155843.1969401-9-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 08:06:11PM +0800, Luo Jie wrote:
-> Replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS defined in mdio.h.
+On Thu, Oct 21, 2021 at 08:58:41AM -0700, Luis R. Rodriguez wrote:
+> From: Luis Chamberlain <mcgrof@kernel.org>
 > 
-> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> If we wanted to use a different directory for building target
+> builtin firmware it is easier if we just have a shared library
+> Makefile, and each target directory can then just include it and
+> populate the respective needed variables. This reduces clutter,
+> makes things easier to read, and also most importantly allows
+> us to not have to try to magically adjust only one target
+> kconfig symbol for built-in firmware files. Trying to do this
+> can easily end up causing odd build issues if the user is not
+> careful.
+> 
+> As an example issue, if we are going to try to extend the
+> FW_LOADER_BUILTIN_FILES list and FW_LOADER_BUILTIN_DIR in case
+> of a new test firmware builtin support currently our only option
+> would be modify the defaults of each of these in case test firmware
+> builtin support was enabled. Defaults however won't augment a prior
+> setting, and so if FW_LOADER_BUILTIN_DIR="/lib/firmware" and you
+> and want this to be changed to something like
+> FW_LOADER_BUILTIN_DIR="drivers/base/firmware_loader/test-builtin"
+> the change will not take effect as a prior build already had it
+> set, and the build would fail. Trying to augment / append the
+> variables in the Makefile just makes this very difficult to
+> read.
+> 
+> Using a library let's us split up possible built-in targets so
+> that the user does not have to be involved. This will be used
+> in a subsequent patch which will add another user to this
+> built-in firmware library Makefile and demo how to use it outside
+> of the default FW_LOADER_BUILTIN_DIR and FW_LOADER_BUILTIN_FILES.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-On v3, Andrew gave you a reviewed-by. You need to carry those forward
-especially if the patches have not changed.
+I'm sorry, but I do not understand the need for this change at all.  You
+are now building this as a library, but what uses this library?  The
+patches after this series are just testing patches, to verify that the
+code previous in this series is working correctly, it should not depend
+on a new library that only the testing code requires, right?
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+confused,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+greg k-h
