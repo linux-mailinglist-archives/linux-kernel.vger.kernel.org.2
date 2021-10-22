@@ -2,182 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E9C437709
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1B0437712
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhJVMZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:25:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43717 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232796AbhJVMZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:25:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634905368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lm3PNIF2S0K4K4WLBOwjvTNY9grqBtS5TFJa0ZgTsDk=;
-        b=eCdu275zAZvc9MEEmwnif43/X1WdIsIDxHEGwLh0OKmhR4s5nVtXAxV3VHlwIDzmd7iNVn
-        tRZuJ53X0lZbLTGya69N/tOaG7oz76WBpozLSiJ0pAyrs4pQPYCDW0lrSkg3WOoWBFj3TC
-        4/q6b6+IoAkZHvsvX1M0SE/hYh8cER4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-mn3usaUZPWugGbMT3iKWNg-1; Fri, 22 Oct 2021 08:22:47 -0400
-X-MC-Unique: mn3usaUZPWugGbMT3iKWNg-1
-Received: by mail-wm1-f69.google.com with SMTP id k126-20020a1ca184000000b003231d0e329bso1084668wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:22:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=Lm3PNIF2S0K4K4WLBOwjvTNY9grqBtS5TFJa0ZgTsDk=;
-        b=jvIsHoNCzb4qZBxsB+cj6waDV8A14G/sDF9wZumc0E/TgXiXcRiAAzbS0WVY6zrUap
-         NMkaA77C0lkXAKmvTOsyRO53fGvZPbf1hWS+ZW1PGnoy7+nm3mrn6VVfTvGTxlgFjXFm
-         ZtLJwoGL3idorE1evKpSGvo/2pqh1tlgszhM/ijqOXPIlb2AnaPRUf2olb7zTRxlU3IZ
-         Ln/HPwzb4RTQMjPt8UN/LdpzKuOeSW0RFtX+eqGzey9IPUiqLf39Jd6brSVpp04FWFse
-         lej9ifaSglqEO+dPGSVKTkZiFHmv8tgC8VCtUmliDM9rRsH1q6jeFtOqCC88S7/Ytu5G
-         v+SQ==
-X-Gm-Message-State: AOAM532OJft4PHjGv3XlWEaRBlhbvtxTRUhYR7OaOJ3X38VHe3srpOIR
-        +tQAQGj010V6yVKVExQDNwWn4o8OM796oxGnJbRKPcy+qnDuP4du82K6smtuIqmH308V8hI7Z6d
-        S5Hnd06AE5fBWHsdHa3ZnpdK5
-X-Received: by 2002:a5d:6442:: with SMTP id d2mr15549579wrw.356.1634905366092;
-        Fri, 22 Oct 2021 05:22:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9Ax08EtLUCC0p7CmqxJQykoibwilBZDOykjM7r34VB3UtotJaWTHceuBHMMxN5DPCje07gQ==
-X-Received: by 2002:a5d:6442:: with SMTP id d2mr15549549wrw.356.1634905365864;
-        Fri, 22 Oct 2021 05:22:45 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6324.dip0.t-ipconnect.de. [91.12.99.36])
-        by smtp.gmail.com with ESMTPSA id k17sm7652830wrc.93.2021.10.22.05.22.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 05:22:45 -0700 (PDT)
-Message-ID: <3cd2d3d2-6d97-3cd6-b273-6e52aa6066c9@redhat.com>
-Date:   Fri, 22 Oct 2021 14:22:44 +0200
+        id S231731AbhJVM0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:26:15 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59430 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229842AbhJVM0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:26:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="315496042"
+X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
+   d="scan'208";a="315496042"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 05:23:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
+   d="scan'208";a="484664022"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga007.jf.intel.com with ESMTP; 22 Oct 2021 05:23:54 -0700
+Subject: Re: [RFC] Support Intel-PT code build in 32-bit arches
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     John Garry <john.garry@huawei.com>, peterz@infradead.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, mingo@redhat.com,
+        irogers@google.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, James Clark <James.Clark@arm.com>
+References: <1634316507-227751-1-git-send-email-john.garry@huawei.com>
+ <YXAoOgRVfkzr5vcS@kernel.org>
+ <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
+ <YXBRF0vM8sEwherG@kernel.org> <YXHOBXiIXP9b3xps@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <becd9eb5-53d1-bde4-14a6-4ac2bb955508@intel.com>
+Date:   Fri, 22 Oct 2021 15:23:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 2/2] memblock: exclude MEMBLOCK_NOMAP regions from
- kmemleak
+In-Reply-To: <YXHOBXiIXP9b3xps@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20211021070929.23272-1-rppt@kernel.org>
- <20211021070929.23272-3-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211021070929.23272-3-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.21 09:09, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Vladimir Zapolskiy reports:
-> 
-> commit a7259df76702 ("memblock: make memblock_find_in_range method private")
-> invokes a kernel panic while running kmemleak on OF platforms with nomaped
-> regions:
-> 
->   Unable to handle kernel paging request at virtual address fff000021e00000
->   [...]
->     scan_block+0x64/0x170
->     scan_gray_list+0xe8/0x17c
->     kmemleak_scan+0x270/0x514
->     kmemleak_write+0x34c/0x4ac
-> 
-> The memory allocated from memblock is registered with kmemleak, but if it
-> is marked MEMBLOCK_NOMAP it won't have linear map entries so an attempt to
-> scan such areas will fault.
-> 
-> Ideally, memblock_mark_nomap() would inform kmemleak to ignore
-> MEMBLOCK_NOMAP memory, but it can be called before kmemleak interfaces
-> operating on physical addresses can use __va() conversion.
-> 
-> Make sure that functions that mark allocated memory as MEMBLOCK_NOMAP take
-> care of informing kmemleak to ignore such memory.
-> 
-> Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
-> Link: https://lore.kernel.org/all/c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com
-> Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
-> Reported-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  drivers/acpi/tables.c        | 3 +++
->  drivers/of/of_reserved_mem.c | 2 ++
->  mm/memblock.c                | 3 +++
->  3 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-> index f9383736fa0f..71419eb16e09 100644
-> --- a/drivers/acpi/tables.c
-> +++ b/drivers/acpi/tables.c
-> @@ -21,6 +21,7 @@
->  #include <linux/earlycpio.h>
->  #include <linux/initrd.h>
->  #include <linux/security.h>
-> +#include <linux/kmemleak.h>
->  #include "internal.h"
+On 21/10/2021 23:31, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Oct 20, 2021 at 02:25:43PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Wed, Oct 20, 2021 at 03:41:01PM +0100, John Garry escreveu:
+>>> I suppose the best thing now is to send a patch on top once perf/core
+>>> contains that commit. Let me know otherwise.
 >  
->  #ifdef CONFIG_ACPI_CUSTOM_DSDT
-> @@ -601,6 +602,8 @@ void __init acpi_table_upgrade(void)
->  	 */
->  	arch_reserve_mem_area(acpi_tables_addr, all_tables_size);
+>> You can send a v2, as:
 >  
-> +	kmemleak_ignore_phys(acpi_tables_addr);
-> +
->  	/*
->  	 * early_ioremap only can remap 256k one time. If we map all
->  	 * tables one time, we will hit the limit. Need to map chunks
-> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> index 59c1390cdf42..9da8835ba5a5 100644
-> --- a/drivers/of/of_reserved_mem.c
-> +++ b/drivers/of/of_reserved_mem.c
-> @@ -21,6 +21,7 @@
->  #include <linux/sort.h>
->  #include <linux/slab.h>
->  #include <linux/memblock.h>
-> +#include <linux/kmemleak.h>
->  
->  #include "of_private.h"
->  
-> @@ -46,6 +47,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
->  		err = memblock_mark_nomap(base, size);
->  		if (err)
->  			memblock_free(base, size);
-> +		kmemleak_ignore_phys(base);
->  	}
->  
->  	return err;
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 184dcd2e5d99..dab804b09d62 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -932,6 +932,9 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
->   * covered by the memory map. The struct page representing NOMAP memory
->   * frames in the memory map will be PageReserved()
->   *
-> + * Note: if the memory being marked %MEMBLOCK_NOMAP was allocated from
-> + * memblock, the caller must inform kmemleak to ignore that memory
-> + *
->   * Return: 0 on success, -errno on failure.
->   */
->  int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
+>>   29     8.60 debian:experimental-x-mipsel  : FAIL gcc version 11.2.0 (Debian 11.2.0-9)
+>>     util/intel-pt.c: In function 'intel_pt_synth_pebs_sample':
+>>     util/intel-pt.c:2146:33: error: passing argument 1 of 'find_first_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+>>      2146 |         for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
+>>     /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:37:38: note: in definition of macro 'for_each_set_bit'
+>>        37 |         for ((bit) = find_first_bit((addr), (size));            \
+>>           |                                      ^~~~
+>>     In file included from /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops.h:21,
+>>                      from /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:34,
+>>                      from /git/perf-5.15.0-rc4/tools/include/linux/bitmap.h:6,
+>>                      from util/header.h:10,
+>>                      from util/session.h:7,
+>>                      from util/intel-pt.c:16:
+>>     /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops/find.h:109:51: note: expected 'const long unsigned int *' but argument is of type 'const uint64_t *' {aka 'const long long unsigned int *'}
+>>
+>>  Adrian, this is on:
+>>
+>>  commit 803a3c9233990e1adac8ea2421e3759c2d380cf8
+>> Author: Adrian Hunter <adrian.hunter@intel.com>
+>> Date:   Tue Sep 7 19:39:03 2021 +0300
+>>
+>>     perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+>>
+>>     Originally, software only supported redirecting at most one PEBS event to
+>>     Intel PT (PEBS-via-PT) because it was not able to differentiate one event
+>>     from another. To overcome that, add support for the
+>>     PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
+>>
+>>     Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>>     Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>>
+>>
+>> That is still just on tmp.perf/core, so we can fix it, probably its just
+>> making that uint64_t into a unsigned long, will check later if you don't
+>> beat me to it.
 > 
+> Adrian,
+> 
+> 	Probably we should just disable Intel PT support from being
+> built on 32-bit arches, right? I don't know if anybody is interested on
+> that, my tests just try to figure out if it continues to build, and if
+> fixing any problem isn't costly, which in this case is more than my
+> threshold, wdyt?
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+It feels like bad form not to compile on 32-bit.
 
--- 
-Thanks,
+In this case we could just cast it, and I see that has been done
+in other places for for_each_set_bit(), but (and maybe I've got
+it wrong) that wouldn't work for a 32-bit big endian system?
 
-David / dhildenb
+The following might cover all cases, do you think?
+
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 1073c56a512c..7c979ffefade 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -2129,9 +2129,17 @@ static int intel_pt_synth_single_pebs_sample(struct intel_pt_queue *ptq)
+ 	return intel_pt_do_synth_pebs_sample(ptq, evsel, id);
+ }
+ 
++/* For 32-bit big endian, put the longs from u64 in correct order */
++#define U64_BITS(var, val)		\
++	unsigned long var[] = {		\
++		[0] = (val),		\
++		[1] = (val) >> 32,	\
++	}
++
+ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
+ {
+ 	const struct intel_pt_blk_items *items = &ptq->state->items;
++	U64_BITS(ac_bits, items->applicable_counters);
+ 	struct intel_pt_pebs_event *pe;
+ 	struct intel_pt *pt = ptq->pt;
+ 	int err = -EINVAL;
+@@ -2143,7 +2151,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
+ 		return intel_pt_synth_single_pebs_sample(ptq);
+ 	}
+ 
+-	for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
++	for_each_set_bit(hw_id, ac_bits,  INTEL_PT_MAX_PEBS) {
+ 		pe = &ptq->pebs[hw_id];
+ 		if (!pe->evsel) {
+ 			if (!pt->single_pebs)
 
