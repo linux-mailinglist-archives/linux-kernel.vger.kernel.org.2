@@ -2,419 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978F84378C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108CC4378CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhJVOLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:11:22 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40744
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233010AbhJVOLT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:11:19 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D6A764029D
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 14:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634911740;
-        bh=sd4gav7kh1KOMnYU5zGg8l6YeO9JOXQJRL4CFEH7Uag=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=qQTPawhcgoOVnozQ+W90QA71/wDU92j2J0OYTlCInPUkSLN7Wy3uSSVik2UKLc1JE
-         Voe8B+dDzWvx3kfI4reO8DyNdO34m3dbETHwDeT/A2Tzor+qkkeuP2eSqUV3rfitxe
-         6tKfcTPVZ2eMs6DGHtWYFxRgovusnn7D1Gij/MAvUwjkctiPfRhJBOVFqLXNcIuv5c
-         0n5SpqtN4/172UicPPF3bFezk9z+OVvOLW7aOetsqws1x942vd5gEu/Ez3uaSIW4IP
-         EHvSdB8o/viSlhOxCPm7YImaZ27pj54AqN8QjCywCtSxJGwqTwki8kCgkMOYWEu8MJ
-         0oF+kINKULeZw==
-Received: by mail-lf1-f69.google.com with SMTP id i6-20020a056512318600b003fd8c8c2677so1808148lfe.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:09:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sd4gav7kh1KOMnYU5zGg8l6YeO9JOXQJRL4CFEH7Uag=;
-        b=6Fb6T/ZVtOcgwAtjYsL+dTEUm8sU6/muUGBHTMEgpq9shn21TKngI57i6jmbfkTzIB
-         cU9F9xeiJgNFTSGJamzI+GV22TY3FarhWCj4kT9WKnmAD4iOKjG624GL4Ie9q9aAU9iN
-         7OD0PaNbQ5XDeMLNK8RKRhYNM1T2hCVC7GCEqVfenTJU7erGCblS+YUJ8pswaRqU81gd
-         nS0RofawbrLpprEH5m1V8iXwKWlvg2SJHkwxcEFk9kXNAE1ONsNInIRXJVkB578vH9hf
-         jQBLzBXUmP2giHXfzurOyQlxfy9nCwHji64RKSxVF1FmYG8R4bLnqXwILV0SVofSuERs
-         YIjw==
-X-Gm-Message-State: AOAM530R0CU2APiZFQT0hjtjkOwj4BZGthaOur3oq6LgGvs6ydUADfg1
-        N2t9dCebclSdslyHJkg4Day6vBsbhX4iM9h0jic9N9n6DE6FoUUgRWovmSRt4gVX3O12Gr8PUHm
-        HjTjbXIGb6fuc2UlBK37SQlDG/E/TZaMQC++fz9TOUw==
-X-Received: by 2002:ac2:4e98:: with SMTP id o24mr11985234lfr.295.1634911736680;
-        Fri, 22 Oct 2021 07:08:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWZEdkfWvz5qkw5c7wxM3p6wJph3ZoBzcslD+K0xFjC7FIM9gNHhUI7Smxn6DzMjSBsQCpGQ==
-X-Received: by 2002:ac2:4e98:: with SMTP id o24mr11985182lfr.295.1634911736280;
-        Fri, 22 Oct 2021 07:08:56 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id e8sm742053lft.308.2021.10.22.07.08.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 07:08:55 -0700 (PDT)
-Subject: Re: [PATCH 2/2] clk: samsung: exynos850: Implement CMU_APM domain
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Chanwoo Choi <cwchoi00@gmail.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-References: <20211021203152.29312-1-semen.protsenko@linaro.org>
- <20211021203152.29312-2-semen.protsenko@linaro.org>
- <864f52d2-1336-eaca-1647-99a0f55da6f9@gmail.com>
- <CAPLW+4kgAKut9fPJzZapBvVpprno++O3g3CFOE-Pj=0Oxb9McQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <56f72813-9483-0f65-bff3-cfb85e18dab3@canonical.com>
-Date:   Fri, 22 Oct 2021 16:08:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233077AbhJVONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:13:51 -0400
+Received: from mout.gmx.net ([212.227.15.18]:39623 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232244AbhJVONq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 10:13:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634911859;
+        bh=vujfeMuBrUuuTlmusG8h3g2DSrTlcZ4DkGKFVEwSHo8=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=DRKlzadMhWGJc6+kIDLJqK2HyeSjNBUSf1mDOOko6uonxZ0XmJB8LuqPk9IMxhT8M
+         HIqwI3mRdATBCHY1fj3XMJF5gOStLBLTnYLND5AKIIgLBMkVk7r9JkQSvx7m2rBwzz
+         qBwn2oMcnq/az6+XktN0KJ06q9jYgHWf5OpZFbqs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.180.101]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ygO-1ma5Ej23fi-0063uT; Fri, 22
+ Oct 2021 16:10:59 +0200
+Message-ID: <f76f2e53-f179-ebcb-0b29-7d76588b5ee0@gmx.de>
+Date:   Fri, 22 Oct 2021 16:10:35 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAPLW+4kgAKut9fPJzZapBvVpprno++O3g3CFOE-Pj=0Oxb9McQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
+References: <20211022120058.1031690-1-arnd@kernel.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20211022120058.1031690-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dvfUKgNArSXkFOAG642hgJ+NCLPr8U/Y8j+xJ1cQSnJMG5ZBohE
+ QE2JEVtTuIGyPxJoOhxNwRi2TZMmV+qSU2CTm2McWAyp78m/oxb+M58kNTRiBV33w10sD5D
+ 7H8nzoEjQciUx/DgmJRFUBdM7EOS5w9m1l7wUOpRxFMMj3HFdu/A8SsEErkNaeN/hre3VcI
+ jOYRTyGpLJLcsNHPAzvaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+8KKO5IzmXY=:+EDVQ7Ok1o3Qrd4rtP8JMi
+ hp7fzbyfCYNV+gmUYZ7KPY8CSspGQhOCLYUfMQg63Fg3zw/tAgKL8z4EGwSSkA5vxsd4D4KAt
+ uEsk3qRKLxWx9o4w42Ks2qLDVDljrNK/bMLijcHMypY+gfHUEZr36NHaLXqfyH4iu/LRq5Yp+
+ 5moR/+czjF1Pqo98Feey2kHZGdU1NzxchIpX3o9jd/TxXKIK/mmtr8Y5zMfydgUWVBiwMlHnv
+ NFecSphiKkbJjS5Rv2qp8tFzvbim0ipOOEjvAEeMhujOSW+erDaaQLyNhFYf4PM1quFWZ4PTM
+ Qj8EMQLwfwBXniieaeM2Oq3BhCn98aDuNeVHg8fQemLy3VkL9OYNdiOJNW0ygEr+Zl6rc21Xr
+ nq7pcaNirjSuxtL7E0btufN+o2o1YT88sD7JSseStRLVarDd5apzkLeOfyCaNlOLygk5n9Zly
+ Dvn+lhLx5uOEL4BDa6Ll1i+FZ32UJOgVo5oG3m6HY+I7c1nsntFTeFuihtUWJt5kjQyYuxIMn
+ pKiXJXBsESLNzV27GMWQEhWfNKalv4bj/QZBnZiPaXYuJzsLk5cqfcDjNPFKaSb7iiC5OcM7I
+ 7jZbByEk9440BcVPgZNMMR6oYubohe3HnvP3mERCBrkkZXD8BupgMoSrDD/bX5/rFjIcXfU3y
+ pWcxqER92o9VNyWWrOQvUEcM2Bj+QzUPBUB+RueQQuCf/OvJOifQw528iG9RV9eEITZApQanL
+ O7Fw7rxyBKeFJqorHUfDLpmkhvcqtKIq3O43JoahJ+hNutLd87K3+TizSSHyGlU2odQkdxKSy
+ fT22d1J+mFduKw1Ssc85F2jb0n9HhNu4J12zXa2ZKv9raFrjQDeUbpn+OWT2pyKKT6AToeadW
+ m7+ewFLs/hQ2/CrgTg/Z6/vOB802X9KRNUnUvZlxkxtwKFMiPFjWEGugt5MmvjMXo8/aZT0bs
+ 0d+ou9U/9rlQj9nKffCRIfHfQyCbwnd4d8xhEiignDSIS69LFcp19P1cHL2y1yo52fuxg4Ptm
+ EgZWn5ONJU4+3e1+oPW0XE+dRWqHZvqvyaAPo6xZVahZFepQ2PBGftdXtX3hW3T9iVYOi0w3c
+ VU94PjQPIv/rnM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/2021 15:39, Sam Protsenko wrote:
-> On Fri, 22 Oct 2021 at 11:58, Chanwoo Choi <cwchoi00@gmail.com> wrote:
->>
->> On 21. 10. 22. 오전 5:31, Sam Protsenko wrote:
->>> CMU_APM clock domain provides clocks for APM IP-core (Active Power
->>> Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailbox,
->>> Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
->>>
->>> This patch adds next clocks:
->>>    - bus clocks in CMU_TOP needed for CMU_APM
->>>    - all internal CMU_APM clocks
->>>    - leaf clocks for I3C, Speedy and RTC IP-cores
->>>    - bus clocks for CMU_CMGP and CMU_CHUB
->>>
->>> CMU_APM doesn't belong to Power Domains, but platform driver is used for
->>> its registration to keep its bus clock always running. Otherwise rtc-s3c
->>> driver disables that clock and system freezes.
->>>
->>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
->>> ---
->>>   drivers/clk/samsung/clk-exynos850.c   | 142 +++++++++++++++++++++++++-
->>>   include/dt-bindings/clock/exynos850.h | 107 +++++++++++--------
->>>   2 files changed, 208 insertions(+), 41 deletions(-)
->>>
->>> diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
->>> index 2294989e244c..95e373d17b42 100644
->>> --- a/drivers/clk/samsung/clk-exynos850.c
->>> +++ b/drivers/clk/samsung/clk-exynos850.c
->>> @@ -72,6 +72,7 @@ static void __init exynos850_init_clocks(struct device_node *np,
->>>   #define PLL_CON3_PLL_SHARED0                        0x014c
->>>   #define PLL_CON0_PLL_SHARED1                        0x0180
->>>   #define PLL_CON3_PLL_SHARED1                        0x018c
->>> +#define CLK_CON_MUX_MUX_CLKCMU_APM_BUS               0x1000
->>>   #define CLK_CON_MUX_MUX_CLKCMU_CORE_BUS             0x1014
->>>   #define CLK_CON_MUX_MUX_CLKCMU_CORE_CCI             0x1018
->>>   #define CLK_CON_MUX_MUX_CLKCMU_CORE_MMC_EMBD        0x101c
->>> @@ -83,6 +84,7 @@ static void __init exynos850_init_clocks(struct device_node *np,
->>>   #define CLK_CON_MUX_MUX_CLKCMU_PERI_BUS             0x1070
->>>   #define CLK_CON_MUX_MUX_CLKCMU_PERI_IP              0x1074
->>>   #define CLK_CON_MUX_MUX_CLKCMU_PERI_UART    0x1078
->>> +#define CLK_CON_DIV_CLKCMU_APM_BUS           0x180c
->>>   #define CLK_CON_DIV_CLKCMU_CORE_BUS         0x1820
->>>   #define CLK_CON_DIV_CLKCMU_CORE_CCI         0x1824
->>>   #define CLK_CON_DIV_CLKCMU_CORE_MMC_EMBD    0x1828
->>> @@ -100,6 +102,7 @@ static void __init exynos850_init_clocks(struct device_node *np,
->>>   #define CLK_CON_DIV_PLL_SHARED1_DIV2                0x1898
->>>   #define CLK_CON_DIV_PLL_SHARED1_DIV3                0x189c
->>>   #define CLK_CON_DIV_PLL_SHARED1_DIV4                0x18a0
->>> +#define CLK_CON_GAT_GATE_CLKCMU_APM_BUS              0x2008
->>>   #define CLK_CON_GAT_GATE_CLKCMU_CORE_BUS    0x201c
->>>   #define CLK_CON_GAT_GATE_CLKCMU_CORE_CCI    0x2020
->>>   #define CLK_CON_GAT_GATE_CLKCMU_CORE_MMC_EMBD       0x2024
->>> @@ -122,6 +125,7 @@ static const unsigned long top_clk_regs[] __initconst = {
->>>       PLL_CON3_PLL_SHARED0,
->>>       PLL_CON0_PLL_SHARED1,
->>>       PLL_CON3_PLL_SHARED1,
->>> +     CLK_CON_MUX_MUX_CLKCMU_APM_BUS,
->>>       CLK_CON_MUX_MUX_CLKCMU_CORE_BUS,
->>>       CLK_CON_MUX_MUX_CLKCMU_CORE_CCI,
->>>       CLK_CON_MUX_MUX_CLKCMU_CORE_MMC_EMBD,
->>> @@ -133,6 +137,7 @@ static const unsigned long top_clk_regs[] __initconst = {
->>>       CLK_CON_MUX_MUX_CLKCMU_PERI_BUS,
->>>       CLK_CON_MUX_MUX_CLKCMU_PERI_IP,
->>>       CLK_CON_MUX_MUX_CLKCMU_PERI_UART,
->>> +     CLK_CON_DIV_CLKCMU_APM_BUS,
->>>       CLK_CON_DIV_CLKCMU_CORE_BUS,
->>>       CLK_CON_DIV_CLKCMU_CORE_CCI,
->>>       CLK_CON_DIV_CLKCMU_CORE_MMC_EMBD,
->>> @@ -150,6 +155,7 @@ static const unsigned long top_clk_regs[] __initconst = {
->>>       CLK_CON_DIV_PLL_SHARED1_DIV2,
->>>       CLK_CON_DIV_PLL_SHARED1_DIV3,
->>>       CLK_CON_DIV_PLL_SHARED1_DIV4,
->>> +     CLK_CON_GAT_GATE_CLKCMU_APM_BUS,
->>>       CLK_CON_GAT_GATE_CLKCMU_CORE_BUS,
->>>       CLK_CON_GAT_GATE_CLKCMU_CORE_CCI,
->>>       CLK_CON_GAT_GATE_CLKCMU_CORE_MMC_EMBD,
->>> @@ -183,6 +189,8 @@ static const struct samsung_pll_clock top_pll_clks[] __initconst = {
->>>   PNAME(mout_shared0_pll_p)   = { "oscclk", "fout_shared0_pll" };
->>>   PNAME(mout_shared1_pll_p)   = { "oscclk", "fout_shared1_pll" };
->>>   PNAME(mout_mmc_pll_p)               = { "oscclk", "fout_mmc_pll" };
->>> +/* List of parent clocks for Muxes in CMU_TOP: for CMU_APM */
->>> +PNAME(mout_clkcmu_apm_bus_p) = { "dout_shared0_div4", "pll_shared1_div4" };
->>>   /* List of parent clocks for Muxes in CMU_TOP: for CMU_CORE */
->>>   PNAME(mout_core_bus_p)              = { "dout_shared1_div2", "dout_shared0_div3",
->>>                                   "dout_shared1_div3", "dout_shared0_div4" };
->>> @@ -222,6 +230,10 @@ static const struct samsung_mux_clock top_mux_clks[] __initconst = {
->>>       MUX(CLK_MOUT_MMC_PLL, "mout_mmc_pll", mout_mmc_pll_p,
->>>           PLL_CON0_PLL_MMC, 4, 1),
->>>
->>> +     /* APM */
->>> +     MUX(CLK_MOUT_CLKCMU_APM_BUS, "mout_clkcmu_apm_bus",
->>> +         mout_clkcmu_apm_bus_p, CLK_CON_MUX_MUX_CLKCMU_APM_BUS, 0, 1),
->>> +
->>>       /* CORE */
->>>       MUX(CLK_MOUT_CORE_BUS, "mout_core_bus", mout_core_bus_p,
->>>           CLK_CON_MUX_MUX_CLKCMU_CORE_BUS, 0, 2),
->>> @@ -268,6 +280,10 @@ static const struct samsung_div_clock top_div_clks[] __initconst = {
->>>       DIV(CLK_DOUT_SHARED1_DIV4, "dout_shared1_div4", "dout_shared1_div2",
->>>           CLK_CON_DIV_PLL_SHARED1_DIV4, 0, 1),
->>>
->>> +     /* APM */
->>> +     DIV(CLK_DOUT_CLKCMU_APM_BUS, "dout_clkcmu_apm_bus",
->>> +         "gout_clkcmu_apm_bus", CLK_CON_DIV_CLKCMU_APM_BUS, 0, 3),
->>> +
->>>       /* CORE */
->>>       DIV(CLK_DOUT_CORE_BUS, "dout_core_bus", "gout_core_bus",
->>>           CLK_CON_DIV_CLKCMU_CORE_BUS, 0, 4),
->>> @@ -310,6 +326,10 @@ static const struct samsung_gate_clock top_gate_clks[] __initconst = {
->>>       GATE(CLK_GOUT_CORE_SSS, "gout_core_sss", "mout_core_sss",
->>>            CLK_CON_GAT_GATE_CLKCMU_CORE_SSS, 21, 0, 0),
->>>
->>> +     /* APM */
->>> +     GATE(CLK_GOUT_CLKCMU_APM_BUS, "gout_clkcmu_apm_bus",
->>> +          "mout_clkcmu_apm_bus", CLK_CON_GAT_GATE_CLKCMU_APM_BUS, 21, 0, 0),
->>> +
->>>       /* DPU */
->>>       GATE(CLK_GOUT_DPU, "gout_dpu", "mout_dpu",
->>>            CLK_CON_GAT_GATE_CLKCMU_DPU, 21, 0, 0),
->>> @@ -354,6 +374,124 @@ static void __init exynos850_cmu_top_init(struct device_node *np)
->>>   CLK_OF_DECLARE(exynos850_cmu_top, "samsung,exynos850-cmu-top",
->>>              exynos850_cmu_top_init);
->>>
->>> +/* ---- CMU_APM ------------------------------------------------------------- */
->>> +
->>> +/* Register Offset definitions for CMU_APM (0x11800000) */
->>> +#define PLL_CON0_MUX_CLKCMU_APM_BUS_USER             0x0600
->>> +#define PLL_CON0_MUX_CLK_RCO_APM_I3C_USER            0x0610
->>> +#define PLL_CON0_MUX_CLK_RCO_APM_USER                        0x0620
->>> +#define PLL_CON0_MUX_DLL_USER                                0x0630
->>> +#define CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS                      0x1000
->>> +#define CLK_CON_MUX_MUX_CLK_APM_BUS                  0x1004
->>> +#define CLK_CON_MUX_MUX_CLK_APM_I3C                  0x1008
->>> +#define CLK_CON_DIV_CLKCMU_CHUB_BUS                  0x1800
->>> +#define CLK_CON_DIV_DIV_CLK_APM_BUS                  0x1804
->>> +#define CLK_CON_DIV_DIV_CLK_APM_I3C                  0x1808
->>> +#define CLK_CON_GAT_CLKCMU_CMGP_BUS                  0x2000
->>> +#define CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS             0x2014
->>> +#define CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK          0x2024
->>> +#define CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK              0x2028
->>> +#define CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK     0x2034
->>> +#define CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK     0x2038
->>> +#define CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK         0x20bc
->>> +
->>> +static const unsigned long apm_clk_regs[] __initconst = {
->>> +     PLL_CON0_MUX_CLKCMU_APM_BUS_USER,
->>> +     PLL_CON0_MUX_CLK_RCO_APM_I3C_USER,
->>> +     PLL_CON0_MUX_CLK_RCO_APM_USER,
->>> +     PLL_CON0_MUX_DLL_USER,
->>> +     CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS,
->>> +     CLK_CON_MUX_MUX_CLK_APM_BUS,
->>> +     CLK_CON_MUX_MUX_CLK_APM_I3C,
->>> +     CLK_CON_DIV_CLKCMU_CHUB_BUS,
->>> +     CLK_CON_DIV_DIV_CLK_APM_BUS,
->>> +     CLK_CON_DIV_DIV_CLK_APM_I3C,
->>> +     CLK_CON_GAT_CLKCMU_CMGP_BUS,
->>> +     CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS,
->>> +     CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK,
->>> +     CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK,
->>> +     CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK,
->>> +     CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK,
->>> +     CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK,
->>> +};
->>> +
->>> +/* List of parent clocks for Muxes in CMU_APM */
->>> +PNAME(mout_apm_bus_user_p)   = { "oscclk_rco_apm", "dout_clkcmu_apm_bus" };
->>> +PNAME(mout_rco_apm_i3c_user_p)       = { "oscclk_rco_apm", "clk_rco_i3c_pmic" };
->>> +PNAME(mout_rco_apm_user_p)   = { "oscclk_rco_apm", "clk_rco_apm__alv" };
->>> +PNAME(mout_dll_user_p)               = { "oscclk_rco_apm", "clk_dll_dco" };
->>> +PNAME(mout_clkcmu_chub_bus_p)        = { "mout_apm_bus_user", "mout_dll_user" };
->>> +PNAME(mout_apm_bus_p)                = { "mout_rco_apm_user", "mout_apm_bus_user",
->>> +                                 "mout_dll_user", "oscclk_rco_apm" };
->>> +PNAME(mout_apm_i3c_p)                = { "dout_apm_i3c", "mout_rco_apm_i3c_user" };
->>> +
->>> +static const struct samsung_fixed_rate_clock apm_fixed_clks[] __initconst = {
->>> +     FRATE(CLK_RCO_I3C_PMIC, "clk_rco_i3c_pmic", NULL, 0, 491520000),
->>> +     FRATE(OSCCLK_RCO_APM, "oscclk_rco_apm", NULL, 0, 24576000),
->>> +     FRATE(CLK_RCO_APM__ALV, "clk_rco_apm__alv", NULL, 0, 49152000),
->>> +     FRATE(CLK_DLL_DCO, "clk_dll_dco", NULL, 0, 360000000),
->>> +};
->>> +
->>> +static const struct samsung_mux_clock apm_mux_clks[] __initconst = {
->>> +     MUX(CLK_MOUT_APM_BUS_USER, "mout_apm_bus_user", mout_apm_bus_user_p,
->>> +         PLL_CON0_MUX_CLKCMU_APM_BUS_USER, 4, 1),
->>> +     MUX(CLK_MOUT_RCO_APM_I3C_USER, "mout_rco_apm_i3c_user",
->>> +         mout_rco_apm_i3c_user_p, PLL_CON0_MUX_CLK_RCO_APM_I3C_USER, 4, 1),
->>> +     MUX(CLK_MOUT_RCO_APM_USER, "mout_rco_apm_user", mout_rco_apm_user_p,
->>> +         PLL_CON0_MUX_CLK_RCO_APM_USER, 4, 1),
->>> +     MUX(CLK_MOUT_DLL_USER, "mout_dll_user", mout_dll_user_p,
->>> +         PLL_CON0_MUX_DLL_USER, 4, 1),
->>> +     MUX(CLK_MOUT_CLKCMU_CHUB_BUS, "mout_clkcmu_chub_bus",
->>> +         mout_clkcmu_chub_bus_p, CLK_CON_MUX_MUX_CLKCMU_CHUB_BUS, 0, 1),
->>> +     MUX(CLK_MOUT_APM_BUS, "mout_apm_bus", mout_apm_bus_p,
->>> +         CLK_CON_MUX_MUX_CLK_APM_BUS, 0, 2),
->>> +     MUX(CLK_MOUT_APM_I3C, "mout_apm_i3c", mout_apm_i3c_p,
->>> +         CLK_CON_MUX_MUX_CLK_APM_I3C, 0, 1),
->>> +};
->>> +
->>> +static const struct samsung_div_clock apm_div_clks[] __initconst = {
->>> +     DIV(CLK_DOUT_CLKCMU_CHUB_BUS, "dout_clkcmu_chub_bus",
->>> +         "gout_clkcmu_chub_bus",
->>> +         CLK_CON_DIV_CLKCMU_CHUB_BUS, 0, 3),
->>> +     DIV(CLK_DOUT_APM_BUS, "dout_apm_bus", "mout_apm_bus",
->>> +         CLK_CON_DIV_DIV_CLK_APM_BUS, 0, 3),
->>> +     DIV(CLK_DOUT_APM_I3C, "dout_apm_i3c", "mout_apm_bus",
->>> +         CLK_CON_DIV_DIV_CLK_APM_I3C, 0, 3),
->>> +};
->>> +
->>> +static const struct samsung_gate_clock apm_gate_clks[] __initconst = {
->>> +     GATE(CLK_GOUT_CLKCMU_CMGP_BUS, "gout_clkcmu_cmgp_bus", "dout_apm_bus",
->>> +          CLK_CON_GAT_CLKCMU_CMGP_BUS, 21, 0, 0),
->>> +     GATE(CLK_GOUT_CLKCMU_CHUB_BUS, "gout_clkcmu_chub_bus",
->>> +          "mout_clkcmu_chub_bus",
->>> +          CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS, 21, 0, 0),
->>> +     GATE(CLK_GOUT_RTC_PCLK, "gout_rtc_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_APBIF_RTC_PCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_TOP_RTC_PCLK, "gout_top_rtc_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_APBIF_TOP_RTC_PCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_I3C_PCLK, "gout_i3c_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_PCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_I3C_SCLK, "gout_i3c_sclk", "mout_apm_i3c",
->>> +          CLK_CON_GAT_GOUT_APM_I3C_APM_PMIC_I_SCLK, 21, 0, 0),
->>> +     GATE(CLK_GOUT_SPEEDY_PCLK, "gout_speedy_pclk", "dout_apm_bus",
->>> +          CLK_CON_GAT_GOUT_APM_SPEEDY_APM_PCLK, 21, 0, 0),
->>> +};
->>> +
->>> +static const struct samsung_cmu_info apm_cmu_info __initconst = {
->>> +     .mux_clks               = apm_mux_clks,
->>> +     .nr_mux_clks            = ARRAY_SIZE(apm_mux_clks),
->>> +     .div_clks               = apm_div_clks,
->>> +     .nr_div_clks            = ARRAY_SIZE(apm_div_clks),
->>> +     .gate_clks              = apm_gate_clks,
->>> +     .nr_gate_clks           = ARRAY_SIZE(apm_gate_clks),
->>> +     .fixed_clks             = apm_fixed_clks,
->>> +     .nr_fixed_clks          = ARRAY_SIZE(apm_fixed_clks),
->>> +     .nr_clk_ids             = APM_NR_CLK,
->>> +     .clk_regs               = apm_clk_regs,
->>> +     .nr_clk_regs            = ARRAY_SIZE(apm_clk_regs),
->>> +     .clk_name               = "dout_clkcmu_apm_bus",
->>> +};
->>> +
->>>   /* ---- CMU_HSI ------------------------------------------------------------- */
->>>
->>>   /* Register Offset definitions for CMU_HSI (0x13400000) */
->>> @@ -801,9 +939,11 @@ static int __init exynos850_cmu_probe(struct platform_device *pdev)
->>>       return 0;
->>>   }
->>>
->>> -/* CMUs which belong to Power Domains and need runtime PM to be implemented */
->>>   static const struct of_device_id exynos850_cmu_of_match[] = {
->>>       {
->>> +             .compatible = "samsung,exynos850-cmu-apm",
->>> +             .data = &apm_cmu_info,
->>> +     }, {
->>>               .compatible = "samsung,exynos850-cmu-hsi",
->>>               .data = &hsi_cmu_info,
->>>       }, {
->>> diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
->>> index 8999184f94a2..c65e0300a8d3 100644
->>> --- a/include/dt-bindings/clock/exynos850.h
->>> +++ b/include/dt-bindings/clock/exynos850.h
->>> @@ -16,46 +16,73 @@
->>>   #define CLK_MOUT_SHARED0_PLL                4
->>>   #define CLK_MOUT_SHARED1_PLL                5
->>>   #define CLK_MOUT_MMC_PLL            6
->>> -#define CLK_MOUT_CORE_BUS            7
->>> -#define CLK_MOUT_CORE_CCI            8
->>> -#define CLK_MOUT_CORE_MMC_EMBD               9
->>> -#define CLK_MOUT_CORE_SSS            10
->>> -#define CLK_MOUT_DPU                 11
->>> -#define CLK_MOUT_HSI_BUS             12
->>> -#define CLK_MOUT_HSI_MMC_CARD                13
->>> -#define CLK_MOUT_HSI_USB20DRD                14
->>> -#define CLK_MOUT_PERI_BUS            15
->>> -#define CLK_MOUT_PERI_UART           16
->>> -#define CLK_MOUT_PERI_IP             17
->>> -#define CLK_DOUT_SHARED0_DIV3                18
->>> -#define CLK_DOUT_SHARED0_DIV2                19
->>> -#define CLK_DOUT_SHARED1_DIV3                20
->>> -#define CLK_DOUT_SHARED1_DIV2                21
->>> -#define CLK_DOUT_SHARED0_DIV4                22
->>> -#define CLK_DOUT_SHARED1_DIV4                23
->>> -#define CLK_DOUT_CORE_BUS            24
->>> -#define CLK_DOUT_CORE_CCI            25
->>> -#define CLK_DOUT_CORE_MMC_EMBD               26
->>> -#define CLK_DOUT_CORE_SSS            27
->>> -#define CLK_DOUT_DPU                 28
->>> -#define CLK_DOUT_HSI_BUS             29
->>> -#define CLK_DOUT_HSI_MMC_CARD                30
->>> -#define CLK_DOUT_HSI_USB20DRD                31
->>> -#define CLK_DOUT_PERI_BUS            32
->>> -#define CLK_DOUT_PERI_UART           33
->>> -#define CLK_DOUT_PERI_IP             34
->>> -#define CLK_GOUT_CORE_BUS            35
->>> -#define CLK_GOUT_CORE_CCI            36
->>> -#define CLK_GOUT_CORE_MMC_EMBD               37
->>> -#define CLK_GOUT_CORE_SSS            38
->>> -#define CLK_GOUT_DPU                 39
->>> -#define CLK_GOUT_HSI_BUS             40
->>> -#define CLK_GOUT_HSI_MMC_CARD                41
->>> -#define CLK_GOUT_HSI_USB20DRD                42
->>> -#define CLK_GOUT_PERI_BUS            43
->>> -#define CLK_GOUT_PERI_UART           44
->>> -#define CLK_GOUT_PERI_IP             45
->>> -#define TOP_NR_CLK                   46
->>> +#define CLK_MOUT_CLKCMU_APM_BUS              7
->>> +#define CLK_MOUT_CORE_BUS            8
->>
->>
->> Basically, you can never change the already defined clock id
->> in nclude/dt-bindings/clock/*.h because of supporting
->> the compatibility of dtb files which were using the
->> already defined clock id instead of changed clock id
->>
->> If you want to add new clock with new clock id,
->> you have to define the new clock id at the end of defined clock
->> like the next of CLK_GOUT_PERI_IP for TOP domain case.
->>
-> 
-> Thanks for explaining that in details, Chanwoo. As Krzysztof pointed
-> out, right now there are no dts users of this clock driver in upstream
-> kernel (I didn't submit it yet), so it'd nice if this one can be taken
-> as is. In future I'll increment the last clock ID. Guess it was my OCD
-> talking, trying to keep all clock IDs grouped by clock type :)
+On 10/22/21 13:59, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> parisc, ia64 and powerpc32 are the only remaining architectures that
+> provide custom arch_{spin,read,write}_lock_flags() functions, which are
+> meant to re-enable interrupts while waiting for a spinlock.
+>
+> However, none of these can actually run into this codepath, because
+> it is only called on architectures without CONFIG_GENERIC_LOCKBREAK,
+> or when CONFIG_DEBUG_LOCK_ALLOC is set without CONFIG_LOCKDEP, and none
+> of those combinations are possible on the three architectures.
+>
+> Going back in the git history, it appears that arch/mn10300 may have
+> been able to run into this code path, but there is a good chance that
+> it never worked. On the architectures that still exist, it was
+> already impossible to hit back in 2008 after the introduction of
+> CONFIG_GENERIC_LOCKBREAK, and possibly earlier.
+>
+> As this is all dead code, just remove it and the helper functions built
+> around it. For arch/ia64, the inline asm could be cleaned up, but
+> it seems safer to leave it untouched.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Yes, I think now breaking DTBs is allowed because this is a new driver
-and there are no users of it. Kind of exception.
+Acked-by: Helge Deller <deller@gmx.de>  # parisc
 
-Best regards,
-Krzysztof
+Helge
+
+> ---
+>  arch/ia64/include/asm/spinlock.h           | 23 ++++++----------------
+>  arch/openrisc/include/asm/spinlock.h       |  3 ---
+>  arch/parisc/include/asm/spinlock.h         | 15 --------------
+>  arch/powerpc/include/asm/simple_spinlock.h | 21 --------------------
+>  arch/s390/include/asm/spinlock.h           |  8 --------
+>  include/linux/lockdep.h                    | 17 ----------------
+>  include/linux/rwlock.h                     | 15 --------------
+>  include/linux/rwlock_api_smp.h             |  6 ++----
+>  include/linux/spinlock.h                   | 13 ------------
+>  include/linux/spinlock_api_smp.h           |  9 ---------
+>  include/linux/spinlock_up.h                |  1 -
+>  kernel/locking/spinlock.c                  |  3 +--
+>  12 files changed, 9 insertions(+), 125 deletions(-)
+>
+> diff --git a/arch/ia64/include/asm/spinlock.h b/arch/ia64/include/asm/sp=
+inlock.h
+> index 864775970c50..0e5c1ad3239c 100644
+> --- a/arch/ia64/include/asm/spinlock.h
+> +++ b/arch/ia64/include/asm/spinlock.h
+> @@ -124,18 +124,13 @@ static __always_inline void arch_spin_unlock(arch_=
+spinlock_t *lock)
+>  	__ticket_spin_unlock(lock);
+>  }
+>
+> -static __always_inline void arch_spin_lock_flags(arch_spinlock_t *lock,
+> -						  unsigned long flags)
+> -{
+> -	arch_spin_lock(lock);
+> -}
+> -#define arch_spin_lock_flags	arch_spin_lock_flags
+> -
+>  #ifdef ASM_SUPPORTED
+>
+>  static __always_inline void
+> -arch_read_lock_flags(arch_rwlock_t *lock, unsigned long flags)
+> +arch_read_lock(arch_rwlock_t *lock)
+>  {
+> +	unsigned long flags =3D 0;
+> +
+>  	__asm__ __volatile__ (
+>  		"tbit.nz p6, p0 =3D %1,%2\n"
+>  		"br.few 3f\n"
+> @@ -157,13 +152,8 @@ arch_read_lock_flags(arch_rwlock_t *lock, unsigned =
+long flags)
+>  		: "p6", "p7", "r2", "memory");
+>  }
+>
+> -#define arch_read_lock_flags arch_read_lock_flags
+> -#define arch_read_lock(lock) arch_read_lock_flags(lock, 0)
+> -
+>  #else /* !ASM_SUPPORTED */
+>
+> -#define arch_read_lock_flags(rw, flags) arch_read_lock(rw)
+> -
+>  #define arch_read_lock(rw)								\
+>  do {											\
+>  	arch_rwlock_t *__read_lock_ptr =3D (rw);						\
+> @@ -186,8 +176,10 @@ do {								\
+>  #ifdef ASM_SUPPORTED
+>
+>  static __always_inline void
+> -arch_write_lock_flags(arch_rwlock_t *lock, unsigned long flags)
+> +arch_write_lock(arch_rwlock_t *lock)
+>  {
+> +	unsigned long flags =3D 0;
+> +
+>  	__asm__ __volatile__ (
+>  		"tbit.nz p6, p0 =3D %1, %2\n"
+>  		"mov ar.ccv =3D r0\n"
+> @@ -210,9 +202,6 @@ arch_write_lock_flags(arch_rwlock_t *lock, unsigned =
+long flags)
+>  		: "ar.ccv", "p6", "p7", "r2", "r29", "memory");
+>  }
+>
+> -#define arch_write_lock_flags arch_write_lock_flags
+> -#define arch_write_lock(rw) arch_write_lock_flags(rw, 0)
+> -
+>  #define arch_write_trylock(rw)							\
+>  ({										\
+>  	register long result;							\
+> diff --git a/arch/openrisc/include/asm/spinlock.h b/arch/openrisc/includ=
+e/asm/spinlock.h
+> index a8940bdfcb7e..264944a71535 100644
+> --- a/arch/openrisc/include/asm/spinlock.h
+> +++ b/arch/openrisc/include/asm/spinlock.h
+> @@ -19,9 +19,6 @@
+>
+>  #include <asm/qrwlock.h>
+>
+> -#define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
+> -#define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
+> -
+>  #define arch_spin_relax(lock)	cpu_relax()
+>  #define arch_read_relax(lock)	cpu_relax()
+>  #define arch_write_relax(lock)	cpu_relax()
+> diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/as=
+m/spinlock.h
+> index fa5ee8a45dbd..a6e5d66a7656 100644
+> --- a/arch/parisc/include/asm/spinlock.h
+> +++ b/arch/parisc/include/asm/spinlock.h
+> @@ -23,21 +23,6 @@ static inline void arch_spin_lock(arch_spinlock_t *x)
+>  			continue;
+>  }
+>
+> -static inline void arch_spin_lock_flags(arch_spinlock_t *x,
+> -					unsigned long flags)
+> -{
+> -	volatile unsigned int *a;
+> -
+> -	a =3D __ldcw_align(x);
+> -	while (__ldcw(a) =3D=3D 0)
+> -		while (*a =3D=3D 0)
+> -			if (flags & PSW_SM_I) {
+> -				local_irq_enable();
+> -				local_irq_disable();
+> -			}
+> -}
+> -#define arch_spin_lock_flags arch_spin_lock_flags
+> -
+>  static inline void arch_spin_unlock(arch_spinlock_t *x)
+>  {
+>  	volatile unsigned int *a;
+> diff --git a/arch/powerpc/include/asm/simple_spinlock.h b/arch/powerpc/i=
+nclude/asm/simple_spinlock.h
+> index 8985791a2ba5..7ae6aeef8464 100644
+> --- a/arch/powerpc/include/asm/simple_spinlock.h
+> +++ b/arch/powerpc/include/asm/simple_spinlock.h
+> @@ -123,27 +123,6 @@ static inline void arch_spin_lock(arch_spinlock_t *=
+lock)
+>  	}
+>  }
+>
+> -static inline
+> -void arch_spin_lock_flags(arch_spinlock_t *lock, unsigned long flags)
+> -{
+> -	unsigned long flags_dis;
+> -
+> -	while (1) {
+> -		if (likely(__arch_spin_trylock(lock) =3D=3D 0))
+> -			break;
+> -		local_save_flags(flags_dis);
+> -		local_irq_restore(flags);
+> -		do {
+> -			HMT_low();
+> -			if (is_shared_processor())
+> -				splpar_spin_yield(lock);
+> -		} while (unlikely(lock->slock !=3D 0));
+> -		HMT_medium();
+> -		local_irq_restore(flags_dis);
+> -	}
+> -}
+> -#define arch_spin_lock_flags arch_spin_lock_flags
+> -
+>  static inline void arch_spin_unlock(arch_spinlock_t *lock)
+>  {
+>  	__asm__ __volatile__("# arch_spin_unlock\n\t"
+> diff --git a/arch/s390/include/asm/spinlock.h b/arch/s390/include/asm/sp=
+inlock.h
+> index ef59588a3042..888a2f1c9ee3 100644
+> --- a/arch/s390/include/asm/spinlock.h
+> +++ b/arch/s390/include/asm/spinlock.h
+> @@ -67,14 +67,6 @@ static inline void arch_spin_lock(arch_spinlock_t *lp=
+)
+>  		arch_spin_lock_wait(lp);
+>  }
+>
+> -static inline void arch_spin_lock_flags(arch_spinlock_t *lp,
+> -					unsigned long flags)
+> -{
+> -	if (!arch_spin_trylock_once(lp))
+> -		arch_spin_lock_wait(lp);
+> -}
+> -#define arch_spin_lock_flags	arch_spin_lock_flags
+> -
+>  static inline int arch_spin_trylock(arch_spinlock_t *lp)
+>  {
+>  	if (!arch_spin_trylock_once(lp))
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 9fe165beb0f9..467b94257105 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -481,23 +481,6 @@ do {								\
+>
+>  #endif /* CONFIG_LOCK_STAT */
+>
+> -#ifdef CONFIG_LOCKDEP
+> -
+> -/*
+> - * On lockdep we dont want the hand-coded irq-enable of
+> - * _raw_*_lock_flags() code, because lockdep assumes
+> - * that interrupts are not re-enabled during lock-acquire:
+> - */
+> -#define LOCK_CONTENDED_FLAGS(_lock, try, lock, lockfl, flags) \
+> -	LOCK_CONTENDED((_lock), (try), (lock))
+> -
+> -#else /* CONFIG_LOCKDEP */
+> -
+> -#define LOCK_CONTENDED_FLAGS(_lock, try, lock, lockfl, flags) \
+> -	lockfl((_lock), (flags))
+> -
+> -#endif /* CONFIG_LOCKDEP */
+> -
+>  #ifdef CONFIG_PROVE_LOCKING
+>  extern void print_irqtrace_events(struct task_struct *curr);
+>  #else
+> diff --git a/include/linux/rwlock.h b/include/linux/rwlock.h
+> index 7ce9a51ae5c0..2c0ad417ce3c 100644
+> --- a/include/linux/rwlock.h
+> +++ b/include/linux/rwlock.h
+> @@ -30,31 +30,16 @@ do {								\
+>
+>  #ifdef CONFIG_DEBUG_SPINLOCK
+>   extern void do_raw_read_lock(rwlock_t *lock) __acquires(lock);
+> -#define do_raw_read_lock_flags(lock, flags) do_raw_read_lock(lock)
+>   extern int do_raw_read_trylock(rwlock_t *lock);
+>   extern void do_raw_read_unlock(rwlock_t *lock) __releases(lock);
+>   extern void do_raw_write_lock(rwlock_t *lock) __acquires(lock);
+> -#define do_raw_write_lock_flags(lock, flags) do_raw_write_lock(lock)
+>   extern int do_raw_write_trylock(rwlock_t *lock);
+>   extern void do_raw_write_unlock(rwlock_t *lock) __releases(lock);
+>  #else
+> -
+> -#ifndef arch_read_lock_flags
+> -# define arch_read_lock_flags(lock, flags)	arch_read_lock(lock)
+> -#endif
+> -
+> -#ifndef arch_write_lock_flags
+> -# define arch_write_lock_flags(lock, flags)	arch_write_lock(lock)
+> -#endif
+> -
+>  # define do_raw_read_lock(rwlock)	do {__acquire(lock); arch_read_lock(&=
+(rwlock)->raw_lock); } while (0)
+> -# define do_raw_read_lock_flags(lock, flags) \
+> -		do {__acquire(lock); arch_read_lock_flags(&(lock)->raw_lock, *(flags)=
+); } while (0)
+>  # define do_raw_read_trylock(rwlock)	arch_read_trylock(&(rwlock)->raw_l=
+ock)
+>  # define do_raw_read_unlock(rwlock)	do {arch_read_unlock(&(rwlock)->raw=
+_lock); __release(lock); } while (0)
+>  # define do_raw_write_lock(rwlock)	do {__acquire(lock); arch_write_lock=
+(&(rwlock)->raw_lock); } while (0)
+> -# define do_raw_write_lock_flags(lock, flags) \
+> -		do {__acquire(lock); arch_write_lock_flags(&(lock)->raw_lock, *(flags=
+)); } while (0)
+>  # define do_raw_write_trylock(rwlock)	arch_write_trylock(&(rwlock)->raw=
+_lock)
+>  # define do_raw_write_unlock(rwlock)	do {arch_write_unlock(&(rwlock)->r=
+aw_lock); __release(lock); } while (0)
+>  #endif
+> diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_s=
+mp.h
+> index abfb53ab11be..f1db6f17c4fb 100644
+> --- a/include/linux/rwlock_api_smp.h
+> +++ b/include/linux/rwlock_api_smp.h
+> @@ -157,8 +157,7 @@ static inline unsigned long __raw_read_lock_irqsave(=
+rwlock_t *lock)
+>  	local_irq_save(flags);
+>  	preempt_disable();
+>  	rwlock_acquire_read(&lock->dep_map, 0, 0, _RET_IP_);
+> -	LOCK_CONTENDED_FLAGS(lock, do_raw_read_trylock, do_raw_read_lock,
+> -			     do_raw_read_lock_flags, &flags);
+> +	LOCK_CONTENDED(lock, do_raw_read_trylock, do_raw_read_lock);
+>  	return flags;
+>  }
+>
+> @@ -184,8 +183,7 @@ static inline unsigned long __raw_write_lock_irqsave=
+(rwlock_t *lock)
+>  	local_irq_save(flags);
+>  	preempt_disable();
+>  	rwlock_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+> -	LOCK_CONTENDED_FLAGS(lock, do_raw_write_trylock, do_raw_write_lock,
+> -			     do_raw_write_lock_flags, &flags);
+> +	LOCK_CONTENDED(lock, do_raw_write_trylock, do_raw_write_lock);
+>  	return flags;
+>  }
+>
+> diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+> index c04e99edfe92..40e467cdee2d 100644
+> --- a/include/linux/spinlock.h
+> +++ b/include/linux/spinlock.h
+> @@ -176,7 +176,6 @@ do {									\
+>
+>  #ifdef CONFIG_DEBUG_SPINLOCK
+>   extern void do_raw_spin_lock(raw_spinlock_t *lock) __acquires(lock);
+> -#define do_raw_spin_lock_flags(lock, flags) do_raw_spin_lock(lock)
+>   extern int do_raw_spin_trylock(raw_spinlock_t *lock);
+>   extern void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock);
+>  #else
+> @@ -187,18 +186,6 @@ static inline void do_raw_spin_lock(raw_spinlock_t =
+*lock) __acquires(lock)
+>  	mmiowb_spin_lock();
+>  }
+>
+> -#ifndef arch_spin_lock_flags
+> -#define arch_spin_lock_flags(lock, flags)	arch_spin_lock(lock)
+> -#endif
+> -
+> -static inline void
+> -do_raw_spin_lock_flags(raw_spinlock_t *lock, unsigned long *flags) __ac=
+quires(lock)
+> -{
+> -	__acquire(lock);
+> -	arch_spin_lock_flags(&lock->raw_lock, *flags);
+> -	mmiowb_spin_lock();
+> -}
+> -
+>  static inline int do_raw_spin_trylock(raw_spinlock_t *lock)
+>  {
+>  	int ret =3D arch_spin_trylock(&(lock)->raw_lock);
+> diff --git a/include/linux/spinlock_api_smp.h b/include/linux/spinlock_a=
+pi_smp.h
+> index 6b8e1a0b137b..51fa0dab68c4 100644
+> --- a/include/linux/spinlock_api_smp.h
+> +++ b/include/linux/spinlock_api_smp.h
+> @@ -108,16 +108,7 @@ static inline unsigned long __raw_spin_lock_irqsave=
+(raw_spinlock_t *lock)
+>  	local_irq_save(flags);
+>  	preempt_disable();
+>  	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+> -	/*
+> -	 * On lockdep we dont want the hand-coded irq-enable of
+> -	 * do_raw_spin_lock_flags() code, because lockdep assumes
+> -	 * that interrupts are not re-enabled during lock-acquire:
+> -	 */
+> -#ifdef CONFIG_LOCKDEP
+>  	LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);
+> -#else
+> -	do_raw_spin_lock_flags(lock, &flags);
+> -#endif
+>  	return flags;
+>  }
+>
+> diff --git a/include/linux/spinlock_up.h b/include/linux/spinlock_up.h
+> index 0ac9112c1bbe..16521074b6f7 100644
+> --- a/include/linux/spinlock_up.h
+> +++ b/include/linux/spinlock_up.h
+> @@ -62,7 +62,6 @@ static inline void arch_spin_unlock(arch_spinlock_t *l=
+ock)
+>  #define arch_spin_is_locked(lock)	((void)(lock), 0)
+>  /* for sched/core.c and kernel_lock.c: */
+>  # define arch_spin_lock(lock)		do { barrier(); (void)(lock); } while (0=
+)
+> -# define arch_spin_lock_flags(lock, flags)	do { barrier(); (void)(lock)=
+; } while (0)
+>  # define arch_spin_unlock(lock)	do { barrier(); (void)(lock); } while (=
+0)
+>  # define arch_spin_trylock(lock)	({ barrier(); (void)(lock); 1; })
+>  #endif /* DEBUG_SPINLOCK */
+> diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
+> index c5830cfa379a..b562f9289372 100644
+> --- a/kernel/locking/spinlock.c
+> +++ b/kernel/locking/spinlock.c
+> @@ -378,8 +378,7 @@ unsigned long __lockfunc _raw_spin_lock_irqsave_nest=
+ed(raw_spinlock_t *lock,
+>  	local_irq_save(flags);
+>  	preempt_disable();
+>  	spin_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
+> -	LOCK_CONTENDED_FLAGS(lock, do_raw_spin_trylock, do_raw_spin_lock,
+> -				do_raw_spin_lock_flags, &flags);
+> +	LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);
+>  	return flags;
+>  }
+>  EXPORT_SYMBOL(_raw_spin_lock_irqsave_nested);
+>
+
