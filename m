@@ -2,314 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E569D43717D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1C1437173
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhJVGC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:02:56 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:29399 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJVGCy (ORCPT
+        id S230332AbhJVGAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbhJVGAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:02:54 -0400
-X-UUID: 960a02e49fb44f058518b8afd9c78ae6-20211021
-X-UUID: 960a02e49fb44f058518b8afd9c78ae6-20211021
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1288111129; Thu, 21 Oct 2021 23:00:35 -0700
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 21 Oct 2021 22:57:20 -0700
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 22 Oct 2021 13:57:12 +0800
-Message-ID: <17ab658e84a127183f0e9ce0968c4bbf6b0a29f7.camel@mediatek.com>
-Subject: Re: [PATCH v6 3/3] arm64: dts: mediatek: add basic mt7986b support
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
-Date:   Fri, 22 Oct 2021 13:57:12 +0800
-In-Reply-To: <632e8d11-269c-d329-abf4-5d462aac4df4@gmail.com>
-References: <20211014074403.17346-1-sam.shih@mediatek.com>
-         <20211014074403.17346-4-sam.shih@mediatek.com>
-         <632e8d11-269c-d329-abf4-5d462aac4df4@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Fri, 22 Oct 2021 02:00:22 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8331C061764;
+        Thu, 21 Oct 2021 22:58:04 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id bq11so507803lfb.10;
+        Thu, 21 Oct 2021 22:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YBqZ2/WOjzFpakGpLZqp4pTnNIzI3k69qYYA40+nsis=;
+        b=lXhUDsy8yUWIDFjjiXAOqAibq/tVSSErBHVs+3nhznGA605bJYXCviOhpL2tuNgWC1
+         9ieEq+sXXLF3o5P6jYEywU4zuiZUv3RQ23ohd7Xpzi6933k9SuLVRydbcE+QcCI/oc5s
+         +n0m4qTYneQ9YQ0onKYjzqnQmea2m6teqz18XZcuQ7M7eytbtbEJO47tFtFxuw7YLkM2
+         +Tw5V9ZSh/kFTuZ2G2SzVhpSmshHana4gjBi9xD4nYSpPJspNpHz62DX6Qx7OBEXWREj
+         xvxvrc2BewV4Qhm+pbLB47uvE3lXm9URP7b1LXCZJu56E1cUDFSBqgU+cNU8DWV/iiXU
+         r/dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YBqZ2/WOjzFpakGpLZqp4pTnNIzI3k69qYYA40+nsis=;
+        b=blLW34IhEgJ/Inuz/oyIwZZ9nZ8QiiLa1uDglmd2KJCBYIVE1TGI2rUctSzJgQOj9Y
+         JWVdp6Pm3SY1S0kMoukQiWnJ52/w1SdJk0yePrgliXTdBEw8ewL+7X1P8E+n4s3MB8It
+         hk9UR2gpqrp0Y00CGh6ghMI+PrNe3CW1L/ejN+qWNjExfnckxDLHObiMLQ34e8AXRSfj
+         IfqJIJ6bG0ivn4Z0ysHg5zCrDusD4ugaLYSTVTvGY4Mvs+Ub+8T0d0Txps9mE7gO8yCA
+         HBJiYza2komSifBpbyc4ssTuiEe9nh5OwQcPynTKW92KS9belU9E/VRWJoxDM+qXJlnk
+         Yiug==
+X-Gm-Message-State: AOAM532qmbSdWzYQWF70l/Yb2GCmE+La1uoSzyeyOfuIclRmIvYnOCtC
+        gVv2M4ulLt4MHj89w5OrEoRvaoc3MGE=
+X-Google-Smtp-Source: ABdhPJyXHKRTOCpaI9IpWlp8wQuhrn2y3HW9UFhN3SNR7MxhhHE27VV4q1409BMTc41rdrwrn/mQPg==
+X-Received: by 2002:a05:6512:10d3:: with SMTP id k19mr9608407lfg.438.1634882283081;
+        Thu, 21 Oct 2021 22:58:03 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-61-202.dynamic.spd-mgts.ru. [94.29.61.202])
+        by smtp.googlemail.com with ESMTPSA id t3sm634511lfc.216.2021.10.21.22.58.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 22:58:02 -0700 (PDT)
+Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
+ device tree
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211021115501.14932-1-digetx@gmail.com>
+ <YXHdoFAgGlxoI0Jx@qmqm.qmqm.pl>
+ <29b38423-631e-192e-b006-aa0d258c8030@gmail.com>
+ <YXHmOT+inPg7as0x@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0a48c38e-1841-0dc9-473e-5dbe67ce04d5@gmail.com>
+Date:   Fri, 22 Oct 2021 08:58:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+In-Reply-To: <YXHmOT+inPg7as0x@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias, Rob and Maintainers,
-
-For memory nodes in DT,
-I have replied in this thread:
-
-https://lore.kernel.org/lkml/632e8d11-269c-d329-abf4-5d462aac4df4@gmail.com/t/#ma52ca22a3c6dc109eea034bc94f4f22e13f105ff
-
-I have added memory node back to the DT.
-This is V7 for the patchset:
-
-https://lore.kernel.org/all/20211018114009.13350-1-sam.shih@mediatek.com/
-
-Just Gentle ping for this patch.
-Thanks
-
-Best Regards,
-Sam
-
-
-On Thu, 2021-10-14 at 17:32 +0200, Matthias Brugger wrote:
+22.10.2021 01:14, Michał Mirosław пишет:
+> On Fri, Oct 22, 2021 at 12:46:23AM +0300, Dmitry Osipenko wrote:
+>> 22.10.2021 00:37, Michał Mirosław пишет:
+>>> On Thu, Oct 21, 2021 at 02:55:01PM +0300, Dmitry Osipenko wrote:
+>>>> Older device-trees don't specify padctrl interrupt and xhci-tegra driver
+>>>> now fails to probe with -EINVAL using those device-trees. Check interrupt
+>>>> presence and disallow runtime PM suspension if it's missing to fix the
+>>>> trouble.
+>>> [...]
+>>>> --- a/drivers/usb/host/xhci-tegra.c
+>>>> +++ b/drivers/usb/host/xhci-tegra.c
+>>>> @@ -1454,10 +1454,13 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+>>>>  		goto put_padctl;
+>>>>  	}
+>>>>  
+>>>> -	tegra->padctl_irq = of_irq_get(np, 0);
+>>>> -	if (tegra->padctl_irq <= 0) {
+>>>> -		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
+>>>> -		goto put_padctl;
+>>>> +	/* Older device-trees don't specify padctrl interrupt */
+>>>> +	if (of_property_read_bool(np, "interrupts")) {
+>>>
+>>> Does this catch "interrupts-extended"?
+>>
+>> No, Tegra doesn't use interrupts-extended.
 > 
-> On 14/10/2021 09:44, Sam Shih wrote:
-> > Add basic chip support for Mediatek mt7986b, include
-> > basic uart nodes, rng node and watchdog node.
-> > 
-> > Add cpu node, timer node, gic node, psci and reserved-memory node
-> > for ARM Trusted Firmware.
-> > 
-> > Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> > 
-> > ---
-> > v6: separate basic part into a single patch series
-> > v5: follow reviewr's comment: removed clock freqency node in timer
-> > due to
-> >      we have set CNTFRQ_EL0 in ATF firmware, and also corrected
-> > GICD range
-> > v4: added missing gic register bases, and fixed range of GICR
-> > v3: used the stdout-path instead of console=ttyS0
-> > v2: modified clock and uart node due to clock driver updated
-> > ---
-> >   arch/arm64/boot/dts/mediatek/Makefile        |   1 +
-> >   arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts |  26 ++++
-> >   arch/arm64/boot/dts/mediatek/mt7986b.dtsi    | 149
-> > +++++++++++++++++++
-> >   3 files changed, 176 insertions(+)
-> >   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> >   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> > 
-> > diff --git a/arch/arm64/boot/dts/mediatek/Makefile
-> > b/arch/arm64/boot/dts/mediatek/Makefile
-> > index e6c3a73b9e4a..d555e43d1ccc 100644
-> > --- a/arch/arm64/boot/dts/mediatek/Makefile
-> > +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> > @@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
-> >   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
-> >   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
-> >   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
-> > +dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986b-rfb.dtb
-> >   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
-> >   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
-> >   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> > b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> > new file mode 100644
-> > index 000000000000..95a202505bb2
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> > @@ -0,0 +1,26 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > +/*
-> > + * Copyright (C) 2021 MediaTek Inc.
-> > + * Author: Sam.Shih <sam.shih@mediatek.com>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "mt7986b.dtsi"
-> > +
-> > +/ {
-> > +	model = "MediaTek MT7986b RFB";
-> > +	compatible = "mediatek,mt7986b-rfb";
-> > +
-> > +	aliases {
-> > +		serial0 = &uart0;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path = "serial0:115200n8";
-> > +		bootargs = "earlycon=uart8250,mmio32,0x11002000
-> > swiotlb=512";
-> > +	};
-> > +};
-> > +
-> > +&uart0 {
-> > +	status = "okay";
-> > +};
+> I believe it is generic and equivalent to "interrupt-parent" +
+> "interrupts" properties, so people might as well put this in
+> the DT to save (or loose) a few bytes.
 > 
-> We are missing a memory node here. I wonder how the board was able to
-> boot 
-> without memory. Did you test this series?
-> 
-> Regards,
-> Matthias
-> 
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> > b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> > new file mode 100644
-> > index 000000000000..2b8e0a382398
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> > @@ -0,0 +1,149 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > +/*
-> > + * Copyright (C) 2021 MediaTek Inc.
-> > + * Author: Sam.Shih <sam.shih@mediatek.com>
-> > + */
-> > +
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> > +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +
-> > +/ {
-> > +	compatible = "mediatek,mt7986b";
-> > +	interrupt-parent = <&gic>;
-> > +	#address-cells = <2>;
-> > +	#size-cells = <2>;
-> > +
-> > +	system_clk: dummy40m {
-> > +		compatible = "fixed-clock";
-> > +		clock-frequency = <40000000>;
-> > +		#clock-cells = <0>;
-> > +	};
-> > +
-> > +	cpus {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +		cpu0: cpu@0 {
-> > +			device_type = "cpu";
-> > +			compatible = "arm,cortex-a53";
-> > +			enable-method = "psci";
-> > +			reg = <0x0>;
-> > +			#cooling-cells = <2>;
-> > +		};
-> > +
-> > +		cpu1: cpu@1 {
-> > +			device_type = "cpu";
-> > +			compatible = "arm,cortex-a53";
-> > +			enable-method = "psci";
-> > +			reg = <0x1>;
-> > +			#cooling-cells = <2>;
-> > +		};
-> > +
-> > +		cpu2: cpu@2 {
-> > +			device_type = "cpu";
-> > +			compatible = "arm,cortex-a53";
-> > +			enable-method = "psci";
-> > +			reg = <0x2>;
-> > +			#cooling-cells = <2>;
-> > +		};
-> > +
-> > +		cpu3: cpu@3 {
-> > +			device_type = "cpu";
-> > +			enable-method = "psci";
-> > +			compatible = "arm,cortex-a53";
-> > +			reg = <0x3>;
-> > +			#cooling-cells = <2>;
-> > +		};
-> > +	};
-> > +
-> > +	psci {
-> > +		compatible  = "arm,psci-0.2";
-> > +		method      = "smc";
-> > +	};
-> > +
-> > +	reserved-memory {
-> > +		#address-cells = <2>;
-> > +		#size-cells = <2>;
-> > +		ranges;
-> > +		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
-> > +		secmon_reserved: secmon@43000000 {
-> > +			reg = <0 0x43000000 0 0x30000>;
-> > +			no-map;
-> > +		};
-> > +	};
-> > +
-> > +	timer {
-> > +		compatible = "arm,armv8-timer";
-> > +		interrupt-parent = <&gic>;
-> > +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-> > +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-> > +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-> > +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-> > +	};
-> > +
-> > +	soc {
-> > +		#address-cells = <2>;
-> > +		#size-cells = <2>;
-> > +		compatible = "simple-bus";
-> > +		ranges;
-> > +
-> > +		gic: interrupt-controller@c000000 {
-> > +			compatible = "arm,gic-v3";
-> > +			#interrupt-cells = <3>;
-> > +			interrupt-parent = <&gic>;
-> > +			interrupt-controller;
-> > +			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
-> > +			      <0 0x0c080000 0 0x80000>,  /* GICR */
-> > +			      <0 0x0c400000 0 0x2000>,   /* GICC */
-> > +			      <0 0x0c410000 0 0x1000>,   /* GICH */
-> > +			      <0 0x0c420000 0 0x2000>;   /* GICV */
-> > +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> > +		};
-> > +
-> > +		watchdog: watchdog@1001c000 {
-> > +			compatible = "mediatek,mt7986-wdt",
-> > +				     "mediatek,mt6589-wdt";
-> > +			reg = <0 0x1001c000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> > +			#reset-cells = <1>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		trng: trng@1020f000 {
-> > +			compatible = "mediatek,mt7986-rng",
-> > +				     "mediatek,mt7623-rng";
-> > +			reg = <0 0x1020f000 0 0x100>;
-> > +			clocks = <&system_clk>;
-> > +			clock-names = "rng";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		uart0: serial@11002000 {
-> > +			compatible = "mediatek,mt7986-uart",
-> > +				     "mediatek,mt6577-uart";
-> > +			reg = <0 0x11002000 0 0x400>;
-> > +			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&system_clk>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		uart1: serial@11003000 {
-> > +			compatible = "mediatek,mt7986-uart",
-> > +				     "mediatek,mt6577-uart";
-> > +			reg = <0 0x11003000 0 0x400>;
-> > +			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&system_clk>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		uart2: serial@11004000 {
-> > +			compatible = "mediatek,mt7986-uart",
-> > +				     "mediatek,mt6577-uart";
-> > +			reg = <0 0x11004000 0 0x400>;
-> > +			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&system_clk>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +	};
-> > +
-> > +};
-> > 
+> You could just check if of_irq_get() returned -EINVAL instead of
+> matching "interrupts" property.
 
+It should be a bad idea to rely on -EINVAL since it's ambiguous error code.
+
+Perhaps it's fine to assume that today of_irq_get() may only return
+-EINVAL in a case of a missing DT property, but then it should be two
+patches here:
+
+1. Use -EINVAL and backport this fix to stable kernel.
+2. Change of_irq_get() to return -ENOENT for a missing property and
+change tegra_xusb_probe() accordingly.
