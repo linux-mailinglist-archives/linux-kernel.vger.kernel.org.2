@@ -2,308 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BF9437B65
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F039437B72
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhJVRGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:06:04 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:30172 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233714AbhJVRFZ (ORCPT
+        id S233711AbhJVRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233838AbhJVRHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:05:25 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MEhEBn008220;
-        Fri, 22 Oct 2021 10:02:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=GuPW9/WzC1M9tYeEWlvIp7AF3nu9SPdYehR9sfaZgdg=;
- b=aWwEjCmACiM1bps9qQVZsTXKIskkNwiH/M9SL05rSeaSsDpJPL7SHd4TrgoHwTqsFj0T
- UVod3fw1sW2reEAEW4Tuu/kAhM2UCOJDq0pg38xmTK6bfyO2sKeyOZ5/mARXg7GB2GNF
- wfAUKQ/cGlzk+chC7fpGUQ73xGih1Biq0k6XBuwJMviZRebzRvNx8+OK0oHzL4QEb/rO
- 2QfkDJt930sxtvq6TTDBUAQqUwbEO+8HBF7WY3XPvETUR/sw1ZzEf68TLlDfQYC8w9m6
- eAAY3CAs7szh9RvdHiW6EHOLXpBwyzbLjg407Y9Owscso8NqO2kuxjxCpajJQMexxW0O Zw== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 3buxg0rm52-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 10:02:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R8nIyQPx8iNq37LAH1/9k2JxXD+80udtWSYKYDrHxIX5wm5Rfyu3MfFhJbmIm32lcN4Eouo1zs2LHdER/ZuiSFeNJapxDTYQLe8SJ/g1PRiSRLyX1JMc7w3YigCuDhNQms48jG7Bs40VJwmXI6MvWIeN8ukM7VWDHi0E4oqzmWrf56fLlVHSBjIJbJXLk029XCWLUMqs1Fijehb4JKsMxOspGK6k47QI9EmnQGXH3KFj/jxcAitpY0ZOTCQRrXnuk+QF9r5ninVZoGQV1kT6ewuBjmiCsNOYJsnACKqfyVQoi+6uODLEsUOiYwdMJNx3hbKpeiaxY3OueK5YfATmdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GuPW9/WzC1M9tYeEWlvIp7AF3nu9SPdYehR9sfaZgdg=;
- b=RP5LdVufpbAfCj+JRYH6edZIZkMNelvpx42mjdZcNlZ4st3Bbi324YfC/8o2jY+/5FXteC2FJnydFIFhi6sRqd49HnCTCDwBgceOeOsp+550NVmEJjRwHM3JNKxw+pc/N0ohbmxDmkWTnXyEGJHh+kLZ0Ft/vkhlHuC9SjVyDPGlaWnaAgFvR47BU6JsPvVbwex5aWco5gGvSHZpmGGr3l/vmPcHnusJjmGpqsxk1CoNJ4BvGl2tBL3fgoAYuaa4/abiBllehhX3WwTUs03zxPvG1bNz6NOwV3sH5JPqh+NU0sLiodV/4OIusOBStIGl+GIcEdIqXR5DU0dG/yOtWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GuPW9/WzC1M9tYeEWlvIp7AF3nu9SPdYehR9sfaZgdg=;
- b=iVZvu7uBq9fkmOZgw0/PfqPVWAMm59a++s50xtZLhkMCTIOrLDG3VJdI0sIHAEjijHQCrWdpmr4P32Hgw2Mu0qiVJ4NSc56cy8v14QitRaeqWbted5iuFJm1xqwFheItuKbymnViI/jdL7c2oq/Doe/T57Jm5dYfWlfRfY31QqE=
-Received: from BN8PR12CA0024.namprd12.prod.outlook.com (2603:10b6:408:60::37)
- by DM8PR07MB8774.namprd07.prod.outlook.com (2603:10b6:8:21::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Fri, 22 Oct
- 2021 17:02:55 +0000
-Received: from BN8NAM12FT042.eop-nam12.prod.protection.outlook.com
- (2603:10b6:408:60:cafe::22) by BN8PR12CA0024.outlook.office365.com
- (2603:10b6:408:60::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend
- Transport; Fri, 22 Oct 2021 17:02:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- BN8NAM12FT042.mail.protection.outlook.com (10.13.182.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.8 via Frontend Transport; Fri, 22 Oct 2021 17:02:54 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 19MH2iNS008564
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Oct 2021 10:02:54 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 22 Oct 2021 19:02:39 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 22 Oct 2021 19:02:39 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 19MH2dHZ018949;
-        Fri, 22 Oct 2021 19:02:39 +0200
-Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 19MH2df2018948;
-        Fri, 22 Oct 2021 19:02:39 +0200
-From:   Swapnil Jakhade <sjakhade@cadence.com>
-To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>, <a-govindraju@ti.com>
-Subject: [PATCH v3 15/15] phy: cadence: Sierra: Add support for derived reference clock output
-Date:   Fri, 22 Oct 2021 19:02:36 +0200
-Message-ID: <20211022170236.18839-16-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20211022170236.18839-1-sjakhade@cadence.com>
-References: <20211022170236.18839-1-sjakhade@cadence.com>
+        Fri, 22 Oct 2021 13:07:37 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B36C061220;
+        Fri, 22 Oct 2021 10:04:40 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id t11so3151022plq.11;
+        Fri, 22 Oct 2021 10:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Atun2XzPcF2gQ2cFelDuDf6hZcJLP5wmun4wG8uLgTg=;
+        b=ehEzXEOXQ5KJlHU9KCtkcgahWx9N0fv7UE3GOTTVaIufyIpBM+KyE/epTJk/OoX19P
+         fOigU8PZHpOyeR3j4P/Uotf1L1t7gXFyZNLqIIU3hxuweVI9m5XiSUoiNz2+WFpT90C6
+         6c/SFE0gpdFA/YZrv4WxXHh8KZ0F0uOlDhi9Sn/2FKpnGNFvwlLbAgX0zMnYAJ3AHkUh
+         1TjxxEK7CVpDHYNBMTkquO4Uzo7gaMSQKFd3QDlsUHV6efe6gm4tL/nhNKqcFmQkxz5B
+         mvgIhrACvFzxgqvubJaADiftt+3VvWYl28faULNSMlfbf22CsmzI2oHujfv3A9dnSeeC
+         wwqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Atun2XzPcF2gQ2cFelDuDf6hZcJLP5wmun4wG8uLgTg=;
+        b=PRtqmbPuXcuDCQrpVqQZiXcD2slkeZY3SGIN2gMyJ95n2EUeyId80XkKv0TzVQCrMj
+         gLjsYoKjHcEOLhKwwG9nqbjVl0Ah5ZMeBBK7hsBYeggp/+dQGFSRNuizOiOEgL6XrNOc
+         ZcQHAMKQKPL5Wt0KPPrVpuNa5XkBk8HAmIilQaMOYMROszVgNWsOw+WUPi72r3SgHkG5
+         L9ahbg7VrHmOOUH2VezfhthogIMbWCseSpCiNIeTgsJSa3L9obL9JoBBVjrttj96iaEc
+         GjBKir7XnOKN0EANuF2/FJAkA9I5nl6Zae6NWmNlTXAWm+QSL+Yza5R6Zg5/YGUBz0KC
+         5waw==
+X-Gm-Message-State: AOAM530AcJLNk+viXBOztQwI0dZMV3dUd1mXY1Yrm2Ve23wJUcgU6iQc
+        f5RlaiGTJNANQp5hCTUfppyBj1zM1cM=
+X-Google-Smtp-Source: ABdhPJyuD+kv4M42bYgaTqWiN3Mb9J60eG5D/doNRTJOmZ58uBqcEdy0PxPDH30tAimIyAsdKxFPnA==
+X-Received: by 2002:a17:90a:e57:: with SMTP id p23mr1232215pja.154.1634922279448;
+        Fri, 22 Oct 2021 10:04:39 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id p25sm12262866pfh.86.2021.10.22.10.04.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 10:04:38 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211005153209.GA1083986@bhelgaas>
+ <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
+ <20211005194301.enb5jddzdgczcolx@pali>
+ <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
+ <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f648bc89-f08b-e806-45f9-5a1b61686e19@gmail.com>
+Date:   Fri, 22 Oct 2021 10:04:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e90dbd78-7416-49f1-52c9-08d9957dca86
-X-MS-TrafficTypeDiagnostic: DM8PR07MB8774:
-X-Microsoft-Antispam-PRVS: <DM8PR07MB8774BD6B6AF09EADFF0B28A2C5809@DM8PR07MB8774.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:586;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8P4E3DhZ+AqDagPgaddE1R79MHRmqnAfN+zvk6/0n6RCHiHPQKtRXdUsKecOLLqx+w5dQ2lZa0tBh2T2bsvJtNEYuQM7nVuHjnwEU1JbFtyZay1R9H/8ipzpQXV+08EFmsdsWm3B5aInZVJTFUVno7Lso0Nyf9qXtpu1OJ902Hj/i9Okgd3EhGToeByoUwjZbLZyafOaSHCK+ocl7T20XD5M7Ylap5VvMoULQfQ9CDk4N7X6u6KEaUZQunaATtzy1Vut2vKKxihB4xfNjSGgKL0O7js48jmdjX/xEkQyXR9/gYGYu8Rz1qRxTLRBmCXXRWh+r7yHiuU0SCfORJecBLrlzw6BgUp6/tteCSC7+0XxHHRsa+bV+obkLQDVqPX+Kbwzw951vmOcl7GJEAesYSKZJ1idaTd03k0PirlHEBf1+DSCCAXqfLLSdxWFs0/Hdfea6SFu8lpzDfw27LS1GqzGzGEKFhfo5SxUSZ6eFwHhlL2yKzEad2YGaS5KTVKEtSFy+2S8XCbrK3m4KVpFSbahPpW8KR2HzgaH5XuMDeeoBmi+Wv2PqQZWybrAol0VxDgTlcZhqrcI7eXvyrloq6V9gVByNF5YYWn0GtIORpUxW+HUH6aWLP9IW9A3QYQawmYNc+Dk+YRZ2Sz1syloFbVjiBrNT+pt5TMQajhRau2TNHC8qOKHz3hhAXp8ieprIwlYAbenujQpJWmiw0LQqPTTjkARdODuSGmaRBDkIPyziRc3cHmPWFBHZqsTct+qvJRCtcaJPH/K/BPSu3dtHQ==
-X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(36092001)(36840700001)(46966006)(7636003)(2616005)(1076003)(42186006)(426003)(2906002)(83380400001)(6666004)(316002)(70586007)(70206006)(4326008)(26005)(508600001)(36756003)(8676002)(336012)(47076005)(356005)(86362001)(36860700001)(5660300002)(186003)(54906003)(110136005)(82310400003)(8936002)(36906005)(309714004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 17:02:54.9457
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e90dbd78-7416-49f1-52c9-08d9957dca86
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT042.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR07MB8774
-X-Proofpoint-GUID: hwMGsw6qdRNMI8Cwtl6jBofnuxbHfyNt
-X-Proofpoint-ORIG-GUID: hwMGsw6qdRNMI8Cwtl6jBofnuxbHfyNt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_04,2021-10-22_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
- priorityscore=1501 lowpriorityscore=0 clxscore=1015 bulkscore=0
- adultscore=0 spamscore=0 malwarescore=0 phishscore=0 impostorscore=0
- mlxscore=0 mlxlogscore=999 suspectscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110220099
+In-Reply-To: <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sierra has derived differential reference clock output which is sourced
-after the spread spectrum generation has been added. Add support to drive
-derived reference clock out of serdes. Model this derived clock as a
-"clock" so that platforms using this can enable it.
+On 10/5/21 7:07 PM, Florian Fainelli wrote:
+> 
+> 
+> On 10/5/2021 3:25 PM, Jeremy Linton wrote:
+>> Hi,
+>>
+>> On 10/5/21 2:43 PM, Pali Rohár wrote:
+>>> Hello!
+>>>
+>>> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
+>>>> Hi,
+>>>>
+>>>> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
+>>>>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+>>>>>> Additionally, some basic bus/device filtering exist to avoid sending
+>>>>>> config transactions to invalid devices on the RP's primary or
+>>>>>> secondary bus. A basic link check is also made to assure that
+>>>>>> something is operational on the secondary side before probing the
+>>>>>> remainder of the config space. If either of these constraints are
+>>>>>> violated and a config operation is lost in the ether because an EP
+>>>>>> doesn't respond an unrecoverable SERROR is raised.
+>>>>>
+>>>>> It's not "lost"; I assume the root port raises an error because it
+>>>>> can't send a transaction over a link that is down.
+>>>>
+>>>> The problem is AFAIK because the root port doesn't do that.
+>>>
+>>> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
+>>> guess contains also logic for Root Port) does not signal transaction
+>>> failure for config requests? Or it is just your opinion? Because I'm
+>>> dealing with similar issues and I'm trying to find a way how to detect
+>>> if some PCIe IP signal transaction error via AXI SLVERR response OR it
+>>> just does not send any response back. So if you know some way how to
+>>> check which one it is, I would like to know it too.
+>>
+>> This is my _opinion_ based on what I've heard of some other IP
+>> integration issues, and what i've seen poking at this one from the
+>> perspective of a SW guy rather than a HW guy. So, basically worthless.
+>> But, you should consider that most of these cores/interconnects aren't
+>> aware of PCIe completion semantics so its the root ports
+>> responsibility to say, gracefully translate a non-posted write that
+>> doesn't have a completion for the interconnects its attached to,
+>> rather than tripping something generic like a SLVERR.
+>>
+>> Anyway, for this I would poke around the pile of exception registers,
+>> with your specific processors manual handy because a lot of them are
+>> implementation defined.
+> 
+> I should be able to get you an answer in the new few days whether
+> configuration space requests also generate an error towards the ARM CPU,
+> since memory space requests most definitively do.
 
-Sierra Main LC VCO PLL divider 1 clock is programmed to output 100MHz
-clock output.
+Did not get an answer from the design team, but going through our bug
+tracker, there were evidences of configuration space accesses also
+generating external aborts:
 
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/phy/cadence/phy-cadence-sierra.c | 109 ++++++++++++++++++++++-
- 1 file changed, 108 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index 0deb627845b1..626d2d702f6c 100644
---- a/drivers/phy/cadence/phy-cadence-sierra.c
-+++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -34,6 +34,7 @@
- #define SIERRA_CMN_PLLLC_LF_COEFF_MODE1_PREG		0x49
- #define SIERRA_CMN_PLLLC_LF_COEFF_MODE0_PREG		0x4A
- #define SIERRA_CMN_PLLLC_LOCK_CNTSTART_PREG		0x4B
-+#define SIERRA_CMN_PLLLC_CLK1_PREG			0x4D
- #define SIERRA_CMN_PLLLC_BWCAL_MODE1_PREG		0x4F
- #define SIERRA_CMN_PLLLC_BWCAL_MODE0_PREG		0x50
- #define SIERRA_CMN_PLLLC_DSMCORR_PREG			0x51
-@@ -203,7 +204,7 @@
- #define SIERRA_MAX_LANES				16
- #define PLL_LOCK_TIME					100000
- 
--#define CDNS_SIERRA_OUTPUT_CLOCKS			2
-+#define CDNS_SIERRA_OUTPUT_CLOCKS			3
- #define CDNS_SIERRA_INPUT_CLOCKS			5
- enum cdns_sierra_clock_input {
- 	PHY_CLK,
-@@ -226,10 +227,15 @@ static const struct reg_field pllctrl_lock =
- 				REG_FIELD(SIERRA_PLLCTRL_STATUS_PREG, 0, 0);
- static const struct reg_field phy_iso_link_ctrl_1 =
- 				REG_FIELD(SIERRA_PHY_ISO_LINK_CTRL, 1, 1);
-+static const struct reg_field cmn_plllc_clk1outdiv_preg =
-+				REG_FIELD(SIERRA_CMN_PLLLC_CLK1_PREG, 0, 6);
-+static const struct reg_field cmn_plllc_clk1_en_preg =
-+				REG_FIELD(SIERRA_CMN_PLLLC_CLK1_PREG, 12, 12);
- 
- static const char * const clk_names[] = {
- 	[CDNS_SIERRA_PLL_CMNLC] = "pll_cmnlc",
- 	[CDNS_SIERRA_PLL_CMNLC1] = "pll_cmnlc1",
-+	[CDNS_SIERRA_DERIVED_REFCLK] = "refclk_der",
- };
- 
- enum cdns_sierra_cmn_plllc {
-@@ -277,6 +283,16 @@ static u32 cdns_sierra_pll_mux_table[][SIERRA_NUM_CMN_PLLC_PARENTS] = {
- 	[CMN_PLLLC1] = { 1, 0 },
- };
- 
-+struct cdns_sierra_derived_refclk {
-+	struct clk_hw           hw;
-+	struct regmap_field     *cmn_plllc_clk1outdiv_preg;
-+	struct regmap_field     *cmn_plllc_clk1_en_preg;
-+	struct clk_init_data	clk_data;
-+};
-+
-+#define to_cdns_sierra_derived_refclk(_hw)	\
-+			container_of(_hw, struct cdns_sierra_derived_refclk, hw)
-+
- enum cdns_sierra_phy_type {
- 	TYPE_NONE,
- 	TYPE_PCIE,
-@@ -766,6 +782,91 @@ static int cdns_sierra_phy_register_pll_mux(struct cdns_sierra_phy *sp)
- 	return 0;
- }
- 
-+static int cdns_sierra_derived_refclk_enable(struct clk_hw *hw)
-+{
-+	struct cdns_sierra_derived_refclk *derived_refclk = to_cdns_sierra_derived_refclk(hw);
-+
-+	regmap_field_write(derived_refclk->cmn_plllc_clk1_en_preg, 0x1);
-+
-+	/* Programming to get 100Mhz clock output in ref_der_clk_out 5GHz VCO/50 = 100MHz */
-+	regmap_field_write(derived_refclk->cmn_plllc_clk1outdiv_preg, 0x2E);
-+
-+	return 0;
-+}
-+
-+static void cdns_sierra_derived_refclk_disable(struct clk_hw *hw)
-+{
-+	struct cdns_sierra_derived_refclk *derived_refclk = to_cdns_sierra_derived_refclk(hw);
-+
-+	regmap_field_write(derived_refclk->cmn_plllc_clk1_en_preg, 0);
-+}
-+
-+static int cdns_sierra_derived_refclk_is_enabled(struct clk_hw *hw)
-+{
-+	struct cdns_sierra_derived_refclk *derived_refclk = to_cdns_sierra_derived_refclk(hw);
-+	int val;
-+
-+	regmap_field_read(derived_refclk->cmn_plllc_clk1_en_preg, &val);
-+
-+	return !!val;
-+}
-+
-+static const struct clk_ops cdns_sierra_derived_refclk_ops = {
-+	.enable = cdns_sierra_derived_refclk_enable,
-+	.disable = cdns_sierra_derived_refclk_disable,
-+	.is_enabled = cdns_sierra_derived_refclk_is_enabled,
-+};
-+
-+static int cdns_sierra_derived_refclk_register(struct cdns_sierra_phy *sp)
-+{
-+	struct cdns_sierra_derived_refclk *derived_refclk;
-+	struct device *dev = sp->dev;
-+	struct regmap_field *field;
-+	struct clk_init_data *init;
-+	struct regmap *regmap;
-+	char clk_name[100];
-+	struct clk *clk;
-+
-+	derived_refclk = devm_kzalloc(dev, sizeof(*derived_refclk), GFP_KERNEL);
-+	if (!derived_refclk)
-+		return -ENOMEM;
-+
-+	snprintf(clk_name, sizeof(clk_name), "%s_%s", dev_name(dev),
-+		 clk_names[CDNS_SIERRA_DERIVED_REFCLK]);
-+
-+	init = &derived_refclk->clk_data;
-+
-+	init->ops = &cdns_sierra_derived_refclk_ops;
-+	init->flags = 0;
-+	init->name = clk_name;
-+
-+	regmap = sp->regmap_common_cdb;
-+
-+	field = devm_regmap_field_alloc(dev, regmap, cmn_plllc_clk1outdiv_preg);
-+	if (IS_ERR(field)) {
-+		dev_err(dev, "cmn_plllc_clk1outdiv_preg reg field init failed\n");
-+		return PTR_ERR(field);
-+	}
-+	derived_refclk->cmn_plllc_clk1outdiv_preg = field;
-+
-+	field = devm_regmap_field_alloc(dev, regmap, cmn_plllc_clk1_en_preg);
-+	if (IS_ERR(field)) {
-+		dev_err(dev, "cmn_plllc_clk1_en_preg reg field init failed\n");
-+		return PTR_ERR(field);
-+	}
-+	derived_refclk->cmn_plllc_clk1_en_preg = field;
-+
-+	derived_refclk->hw.init = init;
-+
-+	clk = devm_clk_register(dev, &derived_refclk->hw);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+
-+	sp->output_clks[CDNS_SIERRA_DERIVED_REFCLK] = clk;
-+
-+	return 0;
-+}
-+
- static void cdns_sierra_clk_unregister(struct cdns_sierra_phy *sp)
- {
- 	struct device *dev = sp->dev;
-@@ -786,6 +887,12 @@ static int cdns_sierra_clk_register(struct cdns_sierra_phy *sp)
- 		return ret;
- 	}
- 
-+	ret = cdns_sierra_derived_refclk_register(sp);
-+	if (ret) {
-+		dev_err(dev, "Failed to register derived refclk\n");
-+		return ret;
-+	}
-+
- 	sp->clk_data.clks = sp->output_clks;
- 	sp->clk_data.clk_num = CDNS_SIERRA_OUTPUT_CLOCKS;
- 	ret = of_clk_add_provider(node, of_clk_src_onecell_get, &sp->clk_data);
+[    8.988237] Unhandled fault: synchronous external abort (0x96000210)
+at 0xffffff8009539004
+[    8.996539] Internal error: : 96000210 [#1] SMP
+[    9.001107] Modules linked in:
+[    9.004215] CPU: 2 PID: 6 Comm: kworker/u8:0 Not tainted
+4.9.51-gstb-4.9 #1
+[    9.011216] Hardware name: BCM97278SV (DT)
+[    9.015365] Workqueue: events_unbound async_run_entry_fn
+[    9.020728] task: ffffffc00a4ab5c0 task.stack: ffffffc00a4e4000
+[    9.026698] PC is at pci_generic_config_read32+0x30/0xb0
+[    9.032053] LR is at pci_generic_config_read32+0x2c/0xb0
+[    9.037403] pc : [<ffffff8008394eb8>] lr : [<ffffff8008394eb4>]
+pstate: 800000c5
+[    9.044852] sp : ffffffc00a4e7ba0
+[    9.048197] x29: ffffffc00a4e7ba0 x28: ffffffc00a40caa8
+[    9.053574] x27: ffffffc00a40c878 x26: ffffffc00a40c820
+[    9.058949] x25: ffffff800935c77d x24: 0000000000000040
+[    9.064323] x23: ffffff80093d5ac0 x22: ffffffc00a4e7c66
+[    9.069698] x21: ffffffc00a4e7c24 x20: 0000000000000002
+[    9.075072] x19: 000000000000004c x18: ffffffffffffffff
+[    9.080448] x17: fffeffffb7ffffff x16: fffffdffb6ffffff
+[    9.085822] x15: 0000000000000000 x14: ffffffc009e8fdb8
+[    9.091196] x13: 0000000000000014 x12: 0000000000000000
+[    9.096571] x11: 0000000000000000 x10: 00000000000006d0
+[    9.101946] x9 : ffffffc00a4e4000 x8 : ffffffc00a4abcf0
+[    9.107322] x7 : 0000000000005ec7 x6 : 0000000000000005
+[    9.112696] x5 : ffffff8009530000 x4 : ffffff80087da530
+[    9.118073] x3 : ffffff8009539000 x2 : 000000000000004c
+[    9.123448] x1 : 0000000000009004 x0 : ffffff8009539004
+[    9.128823]
+[    9.130341] Process kworker/u8:0 (pid: 6, stack limit =
+0xffffffc00a4e4020)
+[    9.137346] Stack: (0xffffffc00a4e7ba0 to 0xffffffc00a4e8000)
+[    9.143136] 7ba0: ffffffc00a4e7bd0 ffffff8008394be4 ffffff8009306000
+0000000000000087
+[    9.151029] 7bc0: ffffffc009838000 ffffff800878a170 ffffffc00a4e7c30
+ffffff800839b004
+[    9.158923] 7be0: ffffffc00a5bb000 0000000000000000 ffffff8009306000
+ffffff80088f7048
+[    9.166814] 7c00: 0000000000000000 ffffffc00a40c800 ffffff80092d7440
+000000000000004c
+[    9.174706] 7c20: 0000000000000002 0000000000040933 ffffffc00a4e7c70
+ffffff800839e570
+[    9.182598] 7c40: ffffffc00a5bb000 ffffff80093d5000 0000000000000000
+ffffff80088f7048
+[    9.190490] 7c60: ffffffc00a5bb0a0 0000000000040933 ffffffc00a4e7c90
+ffffff80083a1cc4
+[    9.198383] 7c80: ffffffc00a5bb0a0 ffffffc00a5bb000 ffffffc00a4e7cc0
+ffffff800845c9cc
+[    9.206275] 7ca0: ffffffc00a5bb0a0 ffffff80083a1ca0 0000000000000010
+ffffffc00a4ab5c0
+[    9.214167] 7cc0: ffffffc00a4e7d00 ffffff800845cab4 ffffffc00a5bb0a0
+0000000000000000
+[    9.222060] 7ce0: 0000000000000010 0000000000000000 ffffffc00a455100
+ffffff800845ca80
+[    9.229953] 7d00: ffffffc00a4e7d30 ffffff800845cc84 ffffff80093d9828
+ffffffc00a5bb0a0
+[    9.237845] 7d20: ffffffc009decd00 0000000000000000 ffffffc00a4e7d50
+ffffff80080ba464
+[    9.245737] 7d40: ffffffc009decd20 ffffff80093a3000 ffffffc00a4e7d80
+ffffff80080b0f28
+[    9.253628] 7d60: 0000000000000000 ffffffc00a454e40 ffffffc009decd20
+0000000000000000
+[    9.261521] 7d80: ffffffc00a4e7dc0 ffffff80080b1130 ffffffc00a454e40
+ffffffc00a40c800
+[    9.269413] 7da0: ffffffc00a454e70 ffffffc00a40c820 ffffff8009306000
+ffffffc00a4e4000
+[    9.277305] 7dc0: ffffffc00a4e7e20 ffffff80080b7194 ffffffc00a494400
+ffffffc00a4e4000
+[    9.285198] 7de0: ffffff80088afc00 ffffffc00a454e40 ffffff80080b10e8
+0000000000000000
+[    9.293088] 7e00: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.300981] 7e20: 0000000000000000 ffffff8008082900 ffffff80080b70a0
+ffffffc00a494400
+[    9.308872] 7e40: 0000000000000000 0000000000000000 0000000000000000
+705afddc1b1ccaa8
+[    9.316764] 7e60: 0000000000000000 ffffff80080bff90 ffffffc00a454e40
+ffffffc000000000
+[    9.324656] 7e80: 0000000000000000 ffffffc00a4e7e88 ffffffc00a4e7e88
+0000000000000000
+[    9.332547] 7ea0: 0000000000000000 ffffffc00a4e7ea8 ffffffc00a4e7ea8
+0000000000040933
+[    9.340438] 7ec0: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.348329] 7ee0: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.356219] 7f00: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.364111] 7f20: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.372002] 7f40: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.379894] 7f60: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.387785] 7f80: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.395675] 7fa0: 0000000000000000 0000000000000000 0000000000000000
+0000000000000000
+[    9.403566] 7fc0: 0000000000000000 0000000000000005 0000000000000000
+0000000000000000
+[    9.411458] 7fe0: 0000000000000000 0000000000000000 46525cd6105c6384
+aa9421d6b6fa9074
+[    9.419343] Call trace:
+[    9.421821] Exception stack(0xffffffc00a4e79b0 to 0xffffffc00a4e7ae0)
+[    9.428301] 79a0:                                   000000000000004c
+0000008000000000
+[    9.436193] 79c0: ffffffc00a4e7ba0 ffffff8008394eb8 00000000800000c5
+ffffffc07fe8e440
+[    9.444086] 79e0: ffffffc00a4efd98 0000000000000007 ffffffc000000000
+ffffff8009539004
+[    9.451977] 7a00: 0000000000000000 ffffffc009bfbe40 ffffff80092d7440
+ffffff80092d7440
+[    9.459869] 7a20: 0000000000000002 ffffff80080c3ee8 ffffffc009bfbe40
+ffffffc07fe64440
+[    9.467761] 7a40: 0000000200000000 ffffffc07fe8e440 ffffffc00a4e7a90
+ffffff80080c3ee8
+[    9.475652] 7a60: 0000000000000001 0000000000040933 ffffff8009539004
+0000000000009004
+[    9.483544] 7a80: 000000000000004c ffffff8009539000 ffffff80087da530
+ffffff8009530000
+[    9.491435] 7aa0: 0000000000000005 0000000000005ec7 ffffffc00a4abcf0
+ffffffc00a4e4000
+[    9.499327] 7ac0: 00000000000006d0 0000000000000000 0000000000000000
+0000000000000014
+[    9.507223] [<ffffff8008394eb8>] pci_generic_config_read32+0x30/0xb0
+[    9.513623] [<ffffff8008394be4>] pci_bus_read_config_word+0x9c/0xc0
+[    9.519936] [<ffffff800839b004>] pci_raw_set_power_state+0x7c/0x248
+[    9.526250] [<ffffff800839e570>] pci_power_up+0x50/0x68
+[    9.531516] [<ffffff80083a1cc4>] pci_pm_resume_noirq+0x24/0xc0
+[    9.537395] [<ffffff800845c9cc>] dpm_run_callback+0x4c/0xc0
+[    9.543008] [<ffffff800845cab4>] device_resume_noirq+0x74/0x220
+[    9.548969] [<ffffff800845cc84>] async_resume_noirq+0x24/0x58
+[    9.554757] [<ffffff80080ba464>] async_run_entry_fn+0x3c/0x160
+[    9.560635] [<ffffff80080b0f28>] process_one_work+0x1d0/0x390
+[    9.566424] [<ffffff80080b1130>] worker_thread+0x48/0x4b0
+[    9.571863] [<ffffff80080b7194>] kthread+0xf4/0x108
+[    9.576782] [<ffffff8008082900>] ret_from_fork+0x10/0x50
+[    9.582136] Code: f9406005 f94008a3 d63f0060 b4000320 (b9400001)
+[    9.588311] ---[ end trace efc83c99ae7412ee ]---
 -- 
-2.26.1
-
+Florian
