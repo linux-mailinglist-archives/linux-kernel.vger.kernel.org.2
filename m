@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66194374EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C39B4374F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhJVJoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:44:32 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4020 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhJVJob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:44:31 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HbK6101Khz67mB7;
-        Fri, 22 Oct 2021 17:38:17 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 11:42:12 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 10:42:11 +0100
-Subject: Re: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     <peterz@infradead.org>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <mingo@redhat.com>, <irogers@google.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kjain@linux.ibm.com>, <james.clark@arm.com>
-References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
- <1634807805-40093-3-git-send-email-john.garry@huawei.com>
- <YXFhr2YoVp9GPsDM@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <86aee893-0b6b-bce3-d1aa-3b66365592d1@huawei.com>
-Date:   Fri, 22 Oct 2021 10:42:11 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S232502AbhJVJqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232038AbhJVJqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 05:46:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A737B610EA;
+        Fri, 22 Oct 2021 09:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634895826;
+        bh=dReKDaKJwqW3Io2bve4J9VXECU2Jr66ov+QZ5vpHXXE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=TAzoAt/+5wohwJmdHC32vbbltcslPkFnm0pw8jVFs8mGVLs0IRWuz5/AZMR+PAJlm
+         r+WgFzNJ1bvzBWZw3i0xydoJrXpqN0F8Md7NqXQHiyyztIqEHw7I+0MgjbAdyhuZEA
+         58uzEIFDBVZ2MaxhK79HgArwGhRkZ793G/Ll5NqsW+lZD0DdiAWaAgI7nXvGoynXW6
+         GPADNCSOcAd2rnfcPZ2jWSjEocw3dnzbfgzaL86f7Efty6m5fx4807i586B8n7KHrA
+         +3o0KT1CN9li14SArDyMGMRqkKlAv/o+jCjxmmHthKPVVdRq+z0e2T36IuVWkHMjo0
+         Se1J5PFvctiEg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Xin Hao <xhao@linux.alibaba.com>
+Cc:     SeongJae Park <sj@kernel.org>, sjpark@amazon.de,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] mm/damon/dbgfs: Optimize target_ids interface write operation
+Date:   Fri, 22 Oct 2021 09:43:41 +0000
+Message-Id: <20211022094341.3966-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <YXFhr2YoVp9GPsDM@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml731-chm.china.huawei.com (10.201.108.82) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <a23c6f23-cf6b-1833-5603-363c45df933f@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 13:48, Jiri Olsa wrote:
->> +HOSTCFLAGS += -Wall
->> +HOSTCFLAGS += -Wextra
->> +
->>   # Enforce a non-executable stack, as we may regress (again) in the future by
->>   # adding assembler files missing the .GNU-stack linker note.
->>   LDFLAGS += -Wl,-z,noexecstack
->> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
->> index 7df13e74450c..118bcdc70bb4 100644
->> --- a/tools/perf/Makefile.perf
->> +++ b/tools/perf/Makefile.perf
->> @@ -226,7 +226,7 @@ else
->>   endif
->>   
->>   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
->> -export HOSTCC HOSTLD HOSTAR
->> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
->>   
->>   include $(srctree)/tools/build/Makefile.include
->>   
->> diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
->> index a055dee6a46a..d5c287f069a2 100644
->> --- a/tools/perf/pmu-events/Build
->> +++ b/tools/perf/pmu-events/Build
->> @@ -1,7 +1,7 @@
->>   hostprogs := jevents
->>   
->>   jevents-y	+= json.o jsmn.o jevents.o
->> -HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
->> +HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
-> so the the host cflags are made of:
+On Fri, 22 Oct 2021 10:43:22 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+
 > 
-> host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+> On 2021/10/22 上午1:30, SeongJae Park wrote:
+> > Hello Xin,
+> >
+> > On Fri, 22 Oct 2021 00:44:16 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+> >
+> >> When we want to clear previously set target ids,
+> >> For example, it works as below now:
+> >>      # echo 42 > target_ids
+> >>      # cat target_ids
+> >>      42
+> >>      # echo > target_ids
+> >>      # cat target_ids
+> >>
+> >> But in 'dbgfs_target_ids_write', there is no need to
+> >> execute other codes, except call 'damon_set_targets'
+> >> to clear previously set target ids. So there adds
+> >> the 'nr_targets' judgment, if the value is 0, just
+> >> call 'damon_set_targets', and then return.
+> > It's true that it executes some unnecessary code.  However, I unsure if that is
+> > a problem, as the code that will be additionally executed in this case are
+> > quite simple ones, and therefore not supposed to incur viewable overhead.
+> > After all, this is not a performance critical path.
 > 
+> Thank you for your detailed explanation. I may not describe it clearly, 
+> making you think that i am making this
+> 
+> modification to improve performance，I just want to avoid irrelevant code 
+> execution, thank you so much.
 
-ok, so IIRC, then the rule for building .o from .c in 
-tools/build/Makefile.build will pick up HOSTCFLAGS through this 
-variable, so we then don't need to explicitly mention it in the 
-per-target rule, so can have this as before in pmu-events/Build
+I guess I didn't make my point clear enough, sorry.  My concern in this patch
+is the fact that it is adding more code.  IMHO, as the code is already working
+correctly and benefit of this change is quite subtle as you also agreed, adding
+the code here doesn't seem worthy but only making it harder to maintain, to me.
 
-HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+If I'm missing something, please let me know.
 
-right?
-
-(Indeed I guess that we can get rid of -I$(srctree)/tools/include as well)
 
 Thanks,
-John
+SJ
 
-
-> can't you use KBUILD_HOSTCFLAGS?
-> 
-> also perhaps we could rename KBUILD_HOSTCFLAGS to HOSTCFLAGS?
-> the name seems like leftover from kbuild move
-> 
-> jirka
-> 
->>   pmu-events-y	+= pmu-events.o
->>   JDIR		=  pmu-events/arch/$(SRCARCH)
->>   JSON		=  $(shell [ -d $(JDIR) ] &&	
-
-
-
+[...]
