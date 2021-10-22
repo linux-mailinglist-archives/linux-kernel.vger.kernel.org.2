@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A8143738F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EC943738B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhJVITr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:19:47 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4019 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhJVITo (ORCPT
+        id S232202AbhJVIRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:17:11 -0400
+Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:34099 "EHLO
+        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232021AbhJVIRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:19:44 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HbHDB1BSMz67Cp1;
-        Fri, 22 Oct 2021 16:13:30 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 10:17:25 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 09:17:22 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <naresh.kamboju@linaro.org>,
-        <anders.roxell@linaro.org>, <arnd@arndb.de>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH] blk-mq-sched: Don't reference queue tagset in blk_mq_sched_tags_teardown()
-Date:   Fri, 22 Oct 2021 16:12:20 +0800
-Message-ID: <1634890340-15432-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Fri, 22 Oct 2021 04:17:10 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id E543EFB318
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 09:14:51 +0100 (IST)
+Received: (qmail 24056 invoked from network); 22 Oct 2021 08:14:51 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Oct 2021 08:14:51 -0000
+Date:   Fri, 22 Oct 2021 09:14:50 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/8] mm/vmscan: Increase the timeout if page reclaim is
+ not making progress
+Message-ID: <20211022081450.GH3959@techsingularity.net>
+References: <20211019090108.25501-1-mgorman@techsingularity.net>
+ <20211019090108.25501-8-mgorman@techsingularity.net>
+ <163486486314.17149.7181265861483962024@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <163486486314.17149.7181265861483962024@noble.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should not reference the queue tagset in blk_mq_sched_tags_teardown()
-(see function comment) for the blk-mq flags, so use the passed flags
-instead.
+On Fri, Oct 22, 2021 at 12:07:43PM +1100, NeilBrown wrote:
+> On Tue, 19 Oct 2021, Mel Gorman wrote:
+> > Tracing of the stutterp workload showed the following delays
+> > 
+> >       1 usect_delayed=124000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=128000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=176000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=536000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=544000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=556000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=624000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=716000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       1 usect_delayed=772000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >       2 usect_delayed=512000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >      16 usect_delayed=120000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >      53 usect_delayed=116000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >     116 usect_delayed=112000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >    5907 usect_delayed=108000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> >   71741 usect_delayed=104000 reason=VMSCAN_THROTTLE_NOPROGRESS
+> > 
+> > All the throttling hit the full timeout and then there was wakeup delays
+> > meaning that the wakeups are premature as no other reclaimer such as
+> > kswapd has made progress. This patch increases the maximum timeout.
+> 
+> Would love to see the comparable tracing results for after the patch.
+> 
 
-This solves a use-after-free, similarly fixed earlier (and since broken
-again) in commit f0c1c4d2864e ("blk-mq: fix use-after-free in
-blk_mq_exit_sched").
+They're in the leader. The trace figures in the changelog are the ones I
+had at the time the patch was developed and I didn't keep them up to date
+to reduce overall test time. At the last set of results, some throttling
+was still hitting the full timeout;
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
-Fixes: e155b0c238b2 ("blk-mq: Use shared tags for shared sbitmap support")
-Signed-off-by: John Garry <john.garry@huawei.com>
+  [....]
+    843 usec_timeout=500000 usect_delayed=12000 reason=VMSCAN_THROTTLE_NOPROGRESS
+   1299 usec_timeout=500000 usect_delayed=104000 reason=VMSCAN_THROTTLE_NOPROGRESS
+   2839 usec_timeout=500000 usect_delayed=8000 reason=VMSCAN_THROTTLE_NOPROGRESS
+  10111 usec_timeout=500000 usect_delayed=4000 reason=VMSCAN_THROTTLE_NOPROGRESS
+  21492 usec_timeout=500000 usect_delayed=0 reason=VMSCAN_THROTTLE_NOPROGRESS
+  36441 usec_timeout=500000 usect_delayed=500000 reason=VMSCAN_THROTTLE_NOPROGRESS
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index e85b7556b096..6a9444848e3a 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -541,7 +541,7 @@ static void blk_mq_sched_tags_teardown(struct request_queue *q, unsigned int fla
- 
- 	queue_for_each_hw_ctx(q, hctx, i) {
- 		if (hctx->sched_tags) {
--			if (!blk_mq_is_shared_tags(q->tag_set->flags))
-+			if (!blk_mq_is_shared_tags(flags))
- 				blk_mq_free_rq_map(hctx->sched_tags);
- 			hctx->sched_tags = NULL;
- 		}
+
 -- 
-2.17.1
-
+Mel Gorman
+SUSE Labs
