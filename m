@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CAB4374AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F387A4374B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhJVJZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:25:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:51928 "EHLO foss.arm.com"
+        id S232395AbhJVJ2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231563AbhJVJZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:25:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46697ED1;
-        Fri, 22 Oct 2021 02:23:07 -0700 (PDT)
-Received: from FVFF77S0Q05N (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20CC63F70D;
-        Fri, 22 Oct 2021 02:23:05 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 10:23:02 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christoph =?utf-8?Q?M=C3=BCllner?= <christophm30@gmail.com>,
-        Stafford Horne <shorne@gmail.com>
-Subject: Re: [PATCH] locking: Generic ticket lock
-Message-ID: <YXKC9qh+evVmUuLI@FVFF77S0Q05N>
-References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+        id S232307AbhJVJ2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 05:28:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 680A761108;
+        Fri, 22 Oct 2021 09:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634894753;
+        bh=SIajMzLMNLMQsXTgkbt6SFijgk+sopysJiFHmBc20sQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HAdmLtA1ZZ2p/8+7hX8RFGkNh6xtZgdqS7jgKxxH+Zvt2k3Re+7ga/Ysz95AgLTQe
+         wJ9l+Jqauncd4An8QjuPZHkA1M+MZftAjlQ/xiufaDddRYc2GTug6w9W7Apq+nWCiq
+         lTNI+K8kwQ/1kac8UhUgHMgiHV0rMsgIhlexSzIw=
+Date:   Fri, 22 Oct 2021 11:25:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Georgi Djakov <djakov@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] interconnect changes for 5.16
+Message-ID: <YXKDjMIqkasGXgJz@kroah.com>
+References: <20211022091326.28826-1-djakov@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+In-Reply-To: <20211022091326.28826-1-djakov@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Fri, Oct 22, 2021 at 12:13:26PM +0300, Georgi Djakov wrote:
+> Hello Greg,
+> 
+> This is the pull request with interconnect changes for the 5.16-rc1
+> merge window. It contains just driver updates. The details are in the
+> signed tag.
+> 
+> All patches have been in linux-next for more than two weeks. No issues
+> have been reported so far. Please pull into char-misc-next.
+> 
+> Thanks,
+> Georgi
+> 
+> The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+> 
+>   Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.16-rc1
 
-On Thu, Oct 21, 2021 at 03:05:15PM +0200, Peter Zijlstra wrote:
-> +static __always_inline void ticket_lock(arch_spinlock_t *lock)
-> +{
-> +	u32 val = atomic_fetch_add_acquire(ONE_TICKET, lock);
+Pulled and pushed out, thanks.
 
-I wonder, should these atomics be arch_atomic_*(), in case an arch_ or raw_
-lock is used in noinstr code? The plain atomic_*() forms can have explicit
-inline instrumentation.
-
-I haven't seen any issues with qspinlock so far, and that also uses the
-(instrumented) atomics, so maybe that's not actually a problem, but I'm not
-sure what we intend here w.r.t.  instrumentability.
-
-Thanks,
-Mark.
+greg k-h
