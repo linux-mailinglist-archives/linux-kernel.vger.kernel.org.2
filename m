@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539A0437434
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A5043743A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhJVJEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:04:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:51704 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhJVJEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:04:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DC56ED1;
-        Fri, 22 Oct 2021 02:02:34 -0700 (PDT)
-Received: from FVFF77S0Q05N (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D26BC3F70D;
-        Fri, 22 Oct 2021 02:02:30 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 10:02:28 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        maz@kernel.org, nickhu@andestech.com, palmer@dabbelt.com,
-        paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, torvalds@linux-foundation.org,
-        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
-Subject: Re: [PATCH 05/15] irq: add generic_handle_arch_irq()
-Message-ID: <YXJ+JObUxKUXxr+1@FVFF77S0Q05N>
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-6-mark.rutland@arm.com>
- <YXIdkj2x0+yw+TIf@piliu.users.ipa.redhat.com>
+        id S232498AbhJVJFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232440AbhJVJFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 05:05:12 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC950C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:02:55 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id y7so3040403pfg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=msbDcleCepniN71Jbfw+vut9V5dOaKH1ffaAk/GfhN8=;
+        b=E1G3WDLtdrx5dbmY+vSfucTmKfMrg5MxQhvbBTKQ6bM4w6mkqg0PG+tuPvVjmK1bKV
+         c8XblbLaxCRPdVrGzbnR7lgfNQouMTaCBnht++H7vUh8oCisE6tkA1xjXbiGCGcGxx65
+         U9td/htxkQDL6Jn7j1cfMKmJcnjzANmZGmsT6WrQ3xlnU9xS2GqUdVSlIBkmmUAHyZIY
+         QSN/tao3ubRqw8A/nbrwpVY80zEyryVq5hLuDDEx5FqKihnw69TxFWbkAi1blAe3IrSd
+         wmc8BY2ahPOkzBIYQahhbzp4RkEDYnCQQc8gq9NTVuzMfSwsqweV5NGiHKni4YuXovi8
+         i8gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=msbDcleCepniN71Jbfw+vut9V5dOaKH1ffaAk/GfhN8=;
+        b=uAtYgTUwyeQZo4BVK2zfyZNeiMHlT5m1TZSIUl+3sc06KLkI4wHFfsmBd25INFo0hA
+         52Ydm5S0bY9uZYVF/cqoToQeluj/6uW0enqTd+qB5ShwcqD0UlnEjgtCxdbZpEhdjkrM
+         IsNOdTrcsX1FRDi1uHr2z5L5qCCPZkVZNLvZdFjWZCQbjgcmW5Pv3YmGrSyPqigJ0MbF
+         q5Gi/g4eqvGwTonq74rWvHyzF5kaTiA1H4kD9u4A2z4ZjZ6tAEA+WMUWSgdrp48qYNSw
+         1rH5jVQOIbdOLNjcmNdjuvUzSxhklSK+wndV0PLSZTrHHi4idfY4BcVXughm2t4zo+sH
+         TqOQ==
+X-Gm-Message-State: AOAM532uNWug6+/0ybYidIov/rN8kKOZQW9Smhl3aPHm8WAOzyWfpRfY
+        cM9gHTkxKlsptJx+nrkmejk=
+X-Google-Smtp-Source: ABdhPJyUZiwUpwKIodA4Cnad8fN4HiPuttYHQzbicyC6mZFiSw9GIk4Sd+qUfVqsuOYQKnZ1xDyRsQ==
+X-Received: by 2002:a63:2a88:: with SMTP id q130mr6099149pgq.169.1634893375500;
+        Fri, 22 Oct 2021 02:02:55 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e9sm9843411pfv.189.2021.10.22.02.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 02:02:54 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     joe@perches.com
+Cc:     alistair@popple.id.au, cgel.zte@gmail.com, eajames@linux.ibm.com,
+        jk@ozlabs.org, joel@jms.id.au, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, ye.guojin@zte.com.cn,
+        zealci@zte.com.cn
+Subject: [PATCH v2] fsi: master: replace snprintf in show functions with sysfs_emit
+Date:   Fri, 22 Oct 2021 09:02:48 +0000
+Message-Id: <20211022090248.1065217-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ccb3ab4d533de55260b98c7168bfa4460c5f3fcc.camel@perches.com>
+References: <ccb3ab4d533de55260b98c7168bfa4460c5f3fcc.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXIdkj2x0+yw+TIf@piliu.users.ipa.redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:10:26AM +0800, Pingfan Liu wrote:
-> On Thu, Oct 21, 2021 at 07:02:26PM +0100, Mark Rutland wrote:
-> > Several architectures select GENERIC_IRQ_MULTI_HANDLER and branch to
-> > handle_arch_irq() without performing any entry accounting.
-> > 
-> > Add a generic wrapper to handle the commoon irqentry work when invoking
-> > handle_arch_irq(). Where an architecture needs to perform some entry
-> > accounting itself, it will need to invoke handle_arch_irq() itself.
-> > 
-> > In subsequent patches it will become the responsibilty of the entry code
-> > to set the irq regs when entering an IRQ (rather than deferring this to
-> > an irqchip handler), so generic_handle_arch_irq() is made to set the irq
-> > regs now. This can be redundant in some cases, but is never harmful as
-> > saving/restoring the old regs nests safely.
-> > 
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > ---
-> >  kernel/irq/handle.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
-> > index 221d80c31e94..27182003b879 100644
-> > --- a/kernel/irq/handle.c
-> > +++ b/kernel/irq/handle.c
-> > @@ -14,6 +14,8 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/kernel_stat.h>
-> >  
-> > +#include <asm/irq_regs.h>
-> > +
-> >  #include <trace/events/irq.h>
-> >  
-> >  #include "internals.h"
-> > @@ -226,4 +228,20 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
-> >  	handle_arch_irq = handle_irq;
-> >  	return 0;
-> >  }
-> > +
-> > +/**
-> > + * generic_handle_arch_irq - root irq handler for architectures which do no
-> > + *                           entry accounting themselves
-> > + * @regs:	Register file coming from the low-level handling code
-> > + */
-> > +asmlinkage void noinstr generic_handle_arch_irq(struct pt_regs *regs)
-> > +{
-> > +	struct pt_regs *old_regs;
-> > +
-> > +	irq_enter();
-> > +	old_regs = set_irq_regs(regs);
-> > +	handle_arch_irq(regs);
-> 
-> After all involved arches call generic_handle_arch_irq(), can
-> handle_arch_irq be encapsulated by declaring as static?
-> 
-> Two places need to be fixed for this purpose:
-> -1. absorb the logic about handle_arch_irq in arm64/kernel/irq.c
-> -2. In arm, setup_arch(), 
->     #ifdef CONFIG_GENERIC_IRQ_MULTI_HANDLER
->             handle_arch_irq = mdesc->handle_irq;
->     #endif
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-That arm bit would need to be set_handle_irq(mdesc->handle_irq); anywhere it
-uses handle_arch_irq it's depending on the CONFIG_GENERIC_IRQ_MULTI_HANDLER
-definition.
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING  use scnprintf or sprintf
 
-While I agree it would seem nice to encapsulate this, in future we want
-architectures to move to the more correct entry sequencing described in the
-cover letter, and when that happens they should invoke handle_arch_irq()
-directly, so I think this is best to leave as-is.
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-We have custom logic on arm64 because we want to handle IRQ and FIQ
-consistently, and there wasn't a neat way to bodge that into the generic code,
-but that issue doesn't apply to the other users of
-CONFIG_GENERIC_IRQ_MULTI_HANDLER.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+---
 
-Thanks,
-Mark.
+Changes since v1:
+ - remove unnecessary ?: since external_mode is already bool.
+
+ drivers/fsi/fsi-master-ast-cf.c | 3 +--
+ drivers/fsi/fsi-master-gpio.c   | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/fsi/fsi-master-ast-cf.c b/drivers/fsi/fsi-master-ast-cf.c
+index 24292acdbaf8..7f3303854e23 100644
+--- a/drivers/fsi/fsi-master-ast-cf.c
++++ b/drivers/fsi/fsi-master-ast-cf.c
+@@ -1083,8 +1083,7 @@ static ssize_t external_mode_show(struct device *dev,
+ {
+ 	struct fsi_master_acf *master = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
+-			master->external_mode ? 1 : 0);
++	return sysfs_emit(buf, "%u\n", master->external_mode);
+ }
+ 
+ static ssize_t external_mode_store(struct device *dev,
+diff --git a/drivers/fsi/fsi-master-gpio.c b/drivers/fsi/fsi-master-gpio.c
+index 7d5f29b4b595..b8538a851675 100644
+--- a/drivers/fsi/fsi-master-gpio.c
++++ b/drivers/fsi/fsi-master-gpio.c
+@@ -718,8 +718,7 @@ static ssize_t external_mode_show(struct device *dev,
+ {
+ 	struct fsi_master_gpio *master = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
+-			master->external_mode ? 1 : 0);
++	return sysfs_emit(buf, "%u\n", master->external_mode);
+ }
+ 
+ static ssize_t external_mode_store(struct device *dev,
+-- 
+2.25.1
+
