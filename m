@@ -2,246 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1011C4372CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AC04372E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhJVHg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:36:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33206 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhJVHgY (ORCPT
+        id S232268AbhJVHlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232140AbhJVHlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:36:24 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Fri, 22 Oct 2021 03:41:02 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448DEC061764;
+        Fri, 22 Oct 2021 00:38:45 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 86C262197F;
-        Fri, 22 Oct 2021 07:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634888046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fnrILhOsdhDoqefufopQipvYiwZJNHEk+YhPHhT8LNs=;
-        b=gVFJe/75JgdII+nyKN4CY1GDnnKavmsp03xZsagBfrhea6AJJs56+bcatktdrHVP+llPiz
-        h5+uPhDyjSVhBW8XOk99QTIkmkYA9pKSdGhtODdu9hYjIBWoV6WR4I/TwKaHHSm+DuUS2m
-        m+AcIZ7DdJKDMbWAzBMSMnsIV8HILls=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BEE2213C7A;
-        Fri, 22 Oct 2021 07:34:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /BeyLG1pcmFiKQAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 22 Oct 2021 07:34:05 +0000
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        xen-devel@lists.xenproject.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <20211022064800.14978-1-jgross@suse.com>
- <c4f534f1-8f07-085e-6a10-edbeb884d1a4@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 0/5] xen: cleanup detection of non-essential pv devices
-Message-ID: <00ae0535-22e3-5467-9c0d-8e2f7a8793b5@suse.com>
-Date:   Fri, 22 Oct 2021 09:34:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id BBD643F5;
+        Fri, 22 Oct 2021 00:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1634888325;
+        bh=kLThclivvucdLvqBkWXzBYC9PcfYiKpUKEDKsLyPwD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GY2tE09MyBfvWd3WTZAsuQi6XkbgwBKuEkwCUxl1EWLlDdEoIm+gkWpZI4QvDQ0WJ
+         ON2/OtO9q3/7K+sPG8xvQBUu30Uj0bYfAISTDmpOgKWuNQpM9ASBJHx7iyvG1UodCX
+         kGMU27vb/jvcgQHwu2A6F8DF2P6gIxLW4kXFtrK0=
+Date:   Fri, 22 Oct 2021 00:38:40 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] of: base: add function to check for status =
+ "reserved"
+Message-ID: <YXJqgNDOaNLzTg0T@hatter.bewilderbeest.net>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <20211022020032.26980-2-zev@bewilderbeest.net>
+ <YXJdi3IBzaqmSZ9b@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <c4f534f1-8f07-085e-6a10-edbeb884d1a4@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="YvdluBdUp3DXuRKhlN5HNuKdU3k8LezFO"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YXJdi3IBzaqmSZ9b@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YvdluBdUp3DXuRKhlN5HNuKdU3k8LezFO
-Content-Type: multipart/mixed; boundary="aXNRS2JOiFT36L2Znoe6tP3phbNNMU6Ha";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- xen-devel@lists.xenproject.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Message-ID: <00ae0535-22e3-5467-9c0d-8e2f7a8793b5@suse.com>
-Subject: Re: [PATCH 0/5] xen: cleanup detection of non-essential pv devices
-References: <20211022064800.14978-1-jgross@suse.com>
- <c4f534f1-8f07-085e-6a10-edbeb884d1a4@suse.com>
-In-Reply-To: <c4f534f1-8f07-085e-6a10-edbeb884d1a4@suse.com>
-
---aXNRS2JOiFT36L2Znoe6tP3phbNNMU6Ha
-Content-Type: multipart/mixed;
- boundary="------------05C3AAE5BEB34C7C12A2BC5C"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------05C3AAE5BEB34C7C12A2BC5C
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 22.10.21 09:24, Jan Beulich wrote:
-> On 22.10.2021 08:47, Juergen Gross wrote:
->> Today the non-essential pv devices are hard coded in the xenbus driver=
-
->> and this list is lacking multiple entries.
+On Thu, Oct 21, 2021 at 11:43:23PM PDT, Greg Kroah-Hartman wrote:
+>On Thu, Oct 21, 2021 at 07:00:28PM -0700, Zev Weiss wrote:
+>> Per v0.3 of the Devicetree Specification [0]:
 >>
->> This series reworks the detection logic of non-essential devices by
->> adding a flag for that purpose to struct xenbus_driver.
->=20
-> I'm wondering whether it wouldn't better be the other way around: The
-> (hopefully few) essential ones get flagged, thus also making it more
-> prominent during patch review that a flag gets added (and justification=
+>>   Indicates that the device is operational, but should not be used.
+>>   Typically this is used for devices that are controlled by another
+>>   software component, such as platform firmware.
+>>
+>> One use-case for this is in OpenBMC, where certain devices (such as a
+>> BIOS flash chip) may be shared by the host and the BMC, but cannot be
+>> accessed by the BMC during its usual boot-time device probing, because
+>> they require additional (potentially elaborate) coordination with the
+>> host to arbitrate which processor is controlling the device.
+>>
+>> Devices marked with this status should thus be instantiated, but not
+>> have a driver bound to them or be otherwise touched.
+>>
+>> [0] https://github.com/devicetree-org/devicetree-specification/releases/download/v0.3/devicetree-specification-v0.3.pdf
+>>
+>> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>> ---
+>>  drivers/of/base.c  | 56 +++++++++++++++++++++++++++++++++++++++-------
+>>  include/linux/of.h |  6 +++++
+>>  2 files changed, 54 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/of/base.c b/drivers/of/base.c
+>> index 0ac17256258d..3bd7c5b8a2cc 100644
+>> --- a/drivers/of/base.c
+>> +++ b/drivers/of/base.c
+>> @@ -580,14 +580,16 @@ int of_machine_is_compatible(const char *compat)
+>>  EXPORT_SYMBOL(of_machine_is_compatible);
+>>
+>>  /**
+>> - *  __of_device_is_available - check if a device is available for use
+>> + * __of_device_check_status - check if a device's status matches a particular string
+>>   *
+>> - *  @device: Node to check for availability, with locks already held
+>> + * @device: Node to check status of, with locks already held
+>> + * @val: Status string to check for, or NULL for "okay"/"ok"
+>>   *
+>> - *  Return: True if the status property is absent or set to "okay" or "ok",
+>> - *  false otherwise
+>> + * Return: True if status property exists and matches @val, or either "okay"
+>> + * or "ok" if @val is NULL, or if status property is absent and @val is
+>> + * "okay", "ok", or NULL.  False otherwise.
+>>   */
+>> -static bool __of_device_is_available(const struct device_node *device)
+>> +static bool __of_device_check_status(const struct device_node *device, const char *val)
+>>  {
+>>  	const char *status;
+>>  	int statlen;
+>> @@ -596,17 +598,35 @@ static bool __of_device_is_available(const struct device_node *device)
+>>  		return false;
+>>
+>>  	status = __of_get_property(device, "status", &statlen);
+>> -	if (status == NULL)
+>> -		return true;
+>> +	if (!status) {
+>> +		/* a missing status property is treated as "okay" */
+>> +		status = "okay";
+>> +		statlen = strlen(status) + 1; /* property lengths include the NUL terminator */
+>> +	}
+>>
+>>  	if (statlen > 0) {
+>> -		if (!strcmp(status, "okay") || !strcmp(status, "ok"))
+>> +		if (!val && (!strcmp(status, "okay") || !strcmp(status, "ok")))
+>> +			return true;
+>> +		else if (val && !strcmp(status, val))
+>
+>
+>Ick, where is this string coming from?  The kernel or userspace or a
+>device tree?  This feels very wrong, why is the kernel doing parsing
+>like this of different options that all mean the same thing?
+>
 
-> provided), instead of having to spot the lack of a flag getting set.
+Which string do you mean by "this string"?  'status' comes from a 
+property of the device tree node; 'val' will be one of a small set of 
+string constants passed by the caller.  Accepting either spelling of 
+"okay"/"ok" has been in place since 2008 (commit 834d97d45220, 
+"[POWERPC] Add of_device_is_available function"); using NULL as a 
+shorthand for those two strings was a suggestion that came up in review 
+feedback on a previous incarnation of these patches 
+(https://lore.kernel.org/openbmc/CAL_Jsq+rKGv39zHTxNx0A7=X4K48nXRLqWonecG5SobdJq3yKw@mail.gmail.com/T/#u).
 
-Not flagging a non-essential one is less problematic than not flagging
-an essential driver IMO.
+>
+>>  			return true;
+>>  	}
+>>
+>>  	return false;
+>>  }
+>>
+>> +/**
+>> + * __of_device_is_available - check if a device is available for use
+>> + *
+>> + * @device: Node to check for availability, with locks already held
+>> + *
+>> + * Return: True if the status property is absent or set to "okay" or "ok",
+>> + * false otherwise
+>> + */
+>> +static bool __of_device_is_available(const struct device_node *device)
+>> +{
+>> +	return __of_device_check_status(device, NULL);
+>> +}
+>> +
+>>  /**
+>>   *  of_device_is_available - check if a device is available for use
+>>   *
+>> @@ -628,6 +648,26 @@ bool of_device_is_available(const struct device_node *device)
+>>  }
+>>  EXPORT_SYMBOL(of_device_is_available);
+>>
+>> +/**
+>> + * of_device_is_reserved - check if a device is marked as reserved
+>> + *
+>> + * @device: Node to check for reservation
+>> + *
+>> + * Return: True if the status property is set to "reserved", false otherwise
+>> + */
+>> +bool of_device_is_reserved(const struct device_node *device)
+>> +{
+>> +	unsigned long flags;
+>> +	bool res;
+>> +
+>> +	raw_spin_lock_irqsave(&devtree_lock, flags);
+>> +	res = __of_device_check_status(device, "reserved");
+>> +	raw_spin_unlock_irqrestore(&devtree_lock, flags);
+>
+>Why is this a "raw" spinlock?
+>
 
-For some drivers I'm on the edge, BTW. The pv 9pfs driver ought to be
-non-essential in most cases, but there might be use cases where it is
-needed, so I didn't set its non_essential flag.
+devtree_lock being a raw_spinlock_t appears to date from commit 
+d6d3c4e65651 ("OF: convert devtree lock from rw_lock to raw spinlock"); 
+"required for preempt-rt", according to Thomas Gleixner's commit 
+message.
 
-Same applies to pv-usb and maybe pv-scsi, while pv-tpm probably really
-is essential.
+>Where is this status coming from?
+>
 
-With the current series I'm ending up with 6 non-essential drivers and
-6 essential ones, so either way needs the same number of drivers
-modified.
+This would be specified in a DT node, e.g. via something like:
+
+   &somedev {
+     compatible = "foobar";
+     status = "reserved";
+     /* ... */
+   };
+
+>> +
+>> +	return res;
+>> +}
+>> +EXPORT_SYMBOL(of_device_is_reserved);
+>
+>EXPORT_SYMBOL_GPL()?
+>
+
+Its closest existing sibling, of_device_is_available(), is a plain 
+EXPORT_SYMBOL(); if we want to convert things more broadly that'd be 
+fine with me, but having one be GPL-only and the other not seems like 
+it'd be a bit confusing and inconsistent?
 
 
-Juergen
+Thanks,
+Zev
 
---------------05C3AAE5BEB34C7C12A2BC5C
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------05C3AAE5BEB34C7C12A2BC5C--
-
---aXNRS2JOiFT36L2Znoe6tP3phbNNMU6Ha--
-
---YvdluBdUp3DXuRKhlN5HNuKdU3k8LezFO
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFyaW0FAwAAAAAACgkQsN6d1ii/Ey+/
-mQf+LFgKttHG9U1GFsmgad1/cMvgMbcyn2AcZkkzdzE0JSvS8vEwkEtPV+5/B1ZRcWHMBy0qzLUU
-TZ02dm/hChDYWgZBJRHoYmtLM5HajuXj1cRrvE7UEjAVTTIA8gZTm1oCsdXg+LEFOBYydRIg5rA7
-YAjr1Skcr3NEpkfHWuZuEJ9sbmOO5nMmA/hKKXu1i0P2a29m4vCMaacTtmcgZuJWdluzxbBv9swi
-q91QZslhU7gX++eRN1AtZGBAZcieznQVks1BcwBu0sW3GJUBXeOoSKD4j1GH8wZ2u21W0lU2I3Pp
-5aSffUxsGFOluHqmEV0LQT+DsBoXDWLWLambX0iVyA==
-=JnIb
------END PGP SIGNATURE-----
-
---YvdluBdUp3DXuRKhlN5HNuKdU3k8LezFO--
