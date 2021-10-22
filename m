@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B99437569
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F5C43756C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 12:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhJVK3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 06:29:02 -0400
-Received: from mout.gmx.net ([212.227.17.22]:59249 "EHLO mout.gmx.net"
+        id S232601AbhJVKbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 06:31:22 -0400
+Received: from relay.sw.ru ([185.231.240.75]:57254 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232483AbhJVK3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 06:29:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634898371;
-        bh=5pQ0UIyCuEkYj1S7J/C65hOgpZIs3Is7agey6DO509A=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=G65ugNP1KhvZiWSB93tYpVnX8ZvffGBKkZfJrXJZikes60YEBUCWPn5OMxcYMVFd9
-         8jLUE5g2x7mQiFoGgBa93gyDfQ9aDHs4R8d3R2b59fdmVveAkhdSDgtDOat9oWil4C
-         BUMYERvyQhCTlsreSwUzFcIwQcIudRZybUBvqzXQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.113]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MA7KU-1mWlHl08vy-00BbDn; Fri, 22
- Oct 2021 12:26:11 +0200
-Message-ID: <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 22 Oct 2021 12:26:08 +0200
-In-Reply-To: <20211021145603.5313-2-mgorman@techsingularity.net>
-References: <20211021145603.5313-1-mgorman@techsingularity.net>
-         <20211021145603.5313-2-mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S232483AbhJVKbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 06:31:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=XQ6Ahg85i45HJD/1pzC326y13kc7dgKywmzoKnkSAn8=; b=ZYlerleCmMyBLkC/HsF
+        T+OpLAUDsBywovDRHJd6fHPdsNHfrGJk1ZqvJO5kTyAzqSrLl8kPC0cog00oK2lnccYVeUth+Sx2w
+        mwxXREGc1fWsjwuyiQIpD5YTQQJ5h1L8lxPLnLS721GMO1R3qkjOzo2SkGb2Owv7sWbRiKJXo8Y=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdrnH-006pEx-4a; Fri, 22 Oct 2021 13:28:59 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH net v10] skb_expand_head() adjust skb->truesize incorrectly
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Christoph Paasch <christoph.paasch@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <2721362c-462b-878f-9e09-9f6c4353c73d@gmail.com>
+Message-ID: <644330dd-477e-0462-83bf-9f514c41edd1@virtuozzo.com>
+Date:   Fri, 22 Oct 2021 13:28:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:zjsCGx40dgYNkdcSzgpgcx9bZmnfMhAJgwdMhSFDaJUpF5p6tr3
- KPS2aYKXR6rQJHd2DZsrrzjZZJfkKHSJHBjiaVtvvKsnHRTwspyvSt1LyjKHhQNq+rn7+8X
- nN02CJ80Fcm6Mk92y2MM4mCOlxwByxhQO85IdFxR3huwbBfN9t3qbRjE1PPmabfbutZ6Q15
- YP+aZXIZ+nBDkbd/A52pw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+Vfz4lR8lUc=:7PqE1OUtL6jy7jEM16K1fZ
- HwJGqst2LfMDHMf1mJTs8nDaOnJUsDcNVzj1usggc2Nmf8CDu59FJ10kszG8fiT1SWG5pDDpa
- Lp3377a/C3qbvwQ1pkbR72/xv0tCnfeY/6ScMGe96jyt1BoJuP86EDVewhLxVu8SUaf12cdIR
- qew4VZC3WUHZWE4dh+mrkMBF2DX4dk+kBn+x314AqxKPC4zPRKUkoyeSia35S4A6BHdxE1rHA
- So1yJzIf7RIdmgbXWF9MM4gZ5v2mEGA9PovTejqmKVjQ5DfKintGkyO9zMGQ6ShKp8InTMkHz
- 96GZyj7X8W7OARd1O+amY6GDuUq8DGc8eIE9sPzf0zo/8FniuE4X27wKr2wYYdYaU9/1/yJTU
- haNL90zB3121FovQZEj8w3KT6d/vibs0J33JPDiKu2lZfk82d+OTlouX/gtQlnG6YSiy4+KZT
- BNkQpWvD7XwAIvSuiQL9i0GMGRjG8TnEfxMmwMrVzsY+4Zt2arohHNqdPj2rPjX84yVIUYool
- AD/1qBCrSbkQPhLgI+wxc8I5ViUJgeADMfTcAMyVJiySj3L3zS74vPjqlBxNvY1ytwfTtfVdy
- RzXKNSNKL0o+yfq0gDcl9XMt1X/kB/qIlDNmUR0D7V4MkTtbvuIJHInLZzlLpkLskPaGdt+Ag
- d5NYngQ9geQrZMIqqb37VQlk9useVG8xKn+nOzu4kfkUGq0XLC3kd6SOLsDvfwY3uOvFrPlsk
- RFfjT99WNxqhN9WpL+K6tVYqBBC1kvrTvh8wxfBybtPgw2D5XH2bQ7qephkyo7f5P9HazRQsV
- ucNqvBkJrFGXYF1w9CvbE4muT0t3wA1fe0Ln/s44DAxtk0I7WmpMzwrUjlkCHTy+wW7IsbHVE
- K9l9EQ0EAW1/ytVnMM/l6qsnIkq3nQYHHwqLcz49wcmTyooS/SoTk8VNeywYS/K2woIIvSP6o
- v4CQ+g0srzWW1HJSJ3IrAJ6yMzCuzqso/dlmcHm44jmrH+yQK3KPPXV0h+BXYB8aSA0LLIGhY
- J410zXr7W4ED0jrG6SIrkGYR126veFUejIfoWdnxg78UAB0Jo1bhUaDrECLNGlF32xTeKLiT1
- pvHGVuMfUAJL84=
+In-Reply-To: <2721362c-462b-878f-9e09-9f6c4353c73d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTEwLTIxIGF0IDE1OjU2ICswMTAwLCBNZWwgR29ybWFuIHdyb3RlOg0KPiAN
-Cj4gRnJvbSBhZGRpdGlvbmFsIHRlc3RzIG9uIHZhcmlvdXMgc2VydmVycywgdGhlIGltcGFjdCBp
-cyBtYWNoaW5lIGRlcGVuZGFudA0KPiBidXQgZ2VuZXJhbGx5IHRoaXMgcGF0Y2ggaW1wcm92ZXMg
-dGhlIHNpdHVhdGlvbi4NCj4gDQo+IGhhY2tiZW5jaC1wcm9jZXNzLXBpcGVzDQo+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDUuMTUuMC1yYzPCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgNS4xNS4wLXJjMw0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB2YW5pbGxhwqAgc2NoZWQtd2FrZWVm
-bGlwcy12MXIxDQo+IEFtZWFuwqDCoMKgwqAgMcKgwqDCoMKgwqDCoMKgIDAuMzY2NyAowqDCoCAw
-LjAwJSnCoMKgwqDCoMKgIDAuMzg5MCAowqAgLTYuMDklKQ0KPiBBbWVhbsKgwqDCoMKgIDTCoMKg
-wqDCoMKgwqDCoCAwLjUzNDMgKMKgwqAgMC4wMCUpwqDCoMKgwqDCoCAwLjUyMTcgKMKgwqAgMi4z
-NyUpDQo+IEFtZWFuwqDCoMKgwqAgN8KgwqDCoMKgwqDCoMKgIDAuNTMwMCAowqDCoCAwLjAwJSnC
-oMKgwqDCoMKgIDAuNTM4NyAowqAgLTEuNjQlKQ0KPiBBbWVhbsKgwqDCoMKgIDEywqDCoMKgwqDC
-oMKgIDAuNTczNyAowqDCoCAwLjAwJSnCoMKgwqDCoMKgIDAuNTQ0MyAowqDCoCA1LjExJSkNCj4g
-QW1lYW7CoMKgwqDCoCAyMcKgwqDCoMKgwqDCoCAwLjY3MjcgKMKgwqAgMC4wMCUpwqDCoMKgwqDC
-oCAwLjY0ODcgKMKgwqAgMy41NyUpDQo+IEFtZWFuwqDCoMKgwqAgMzDCoMKgwqDCoMKgwqAgMC44
-NTgzICjCoMKgIDAuMDAlKcKgwqDCoMKgwqAgMC44MDMzICjCoMKgIDYuNDElKQ0KPiBBbWVhbsKg
-wqDCoMKgIDQ4wqDCoMKgwqDCoMKgIDEuMzk3NyAowqDCoCAwLjAwJSnCoMKgwqDCoMKgIDEuMjQw
-MCAqwqAgMTEuMjglKg0KPiBBbWVhbsKgwqDCoMKgIDc5wqDCoMKgwqDCoMKgIDEuOTc5MCAowqDC
-oCAwLjAwJSnCoMKgwqDCoMKgIDEuODIwMCAqwqDCoCA4LjAzJSoNCj4gQW1lYW7CoMKgwqDCoCAx
-MTDCoMKgwqDCoMKgIDIuODAyMCAowqDCoCAwLjAwJSnCoMKgwqDCoMKgIDIuNTgyMCAqwqDCoCA3
-Ljg1JSoNCj4gQW1lYW7CoMKgwqDCoCAxNDHCoMKgwqDCoMKgIDMuNjY4MyAowqDCoCAwLjAwJSnC
-oMKgwqDCoMKgIDMuMjIwMyAqwqAgMTIuMjElKg0KPiBBbWVhbsKgwqDCoMKgIDE3MsKgwqDCoMKg
-wqAgNC42Njg3ICjCoMKgIDAuMDAlKcKgwqDCoMKgwqAgMy44MjAwICrCoCAxOC4xOCUqDQo+IEFt
-ZWFuwqDCoMKgwqAgMjAzwqDCoMKgwqDCoCA1LjIxODMgKMKgwqAgMC4wMCUpwqDCoMKgwqDCoCA0
-LjMzNTcgKsKgIDE2LjkxJSoNCj4gQW1lYW7CoMKgwqDCoCAyMzTCoMKgwqDCoMKgIDYuMTA3NyAo
-wqDCoCAwLjAwJSnCoMKgwqDCoMKgIDQuODA0NyAqwqAgMjEuMzMlKg0KPiBBbWVhbsKgwqDCoMKg
-IDI2NcKgwqDCoMKgwqAgNy4xMzEzICjCoMKgIDAuMDAlKcKgwqDCoMKgwqAgNS4xMjQzICrCoCAy
-OC4xNCUqDQo+IEFtZWFuwqDCoMKgwqAgMjk2wqDCoMKgwqDCoCA3Ljc1NTcgKMKgwqAgMC4wMCUp
-wqDCoMKgwqDCoCA1LjU5NDAgKsKgIDI3Ljg3JSoNCj4gDQo+IFdoaWxlIGRpZmZlcmVudCBtYWNo
-aW5lcyBzaG93ZWQgZGlmZmVyZW50IHJlc3VsdHMsIGluIGdlbmVyYWwNCj4gdGhlcmUgd2VyZSBt
-dWNoIGxlc3MgQ1BVIG1pZ3JhdGlvbnMgb2YgdGFza3MNCg0KUGF0Y2hsZXQgaGVscGVkIGhhY2ti
-ZW5jaD8gIFRoYXQncy4uIHVuZXhwZWN0ZWQgKGF0IGxlYXN0IGJ5IG1lKS4NCg0KPiB0YmVuY2g0
-DQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-NS4xNS4wLXJjM8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA1LjE1LjAtcmMzDQo+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmFuaWxs
-YcKgIHNjaGVkLXdha2VlZmxpcHMtdjFyMQ0KPiBIbWVhbsKgwqDCoMKgIDHCoMKgwqDCoMKgwqDC
-oMKgIDgyNC4wNSAowqDCoCAwLjAwJSnCoMKgwqDCoMKgIDgwMi41NiAqwqAgLTIuNjElKg0KPiBI
-bWVhbsKgwqDCoMKgIDLCoMKgwqDCoMKgwqDCoCAxNTc4LjQ5ICjCoMKgIDAuMDAlKcKgwqDCoMKg
-IDE2NDUuMTEgKsKgwqAgNC4yMiUqDQo+IEhtZWFuwqDCoMKgwqAgNMKgwqDCoMKgwqDCoMKgIDI5
-NTkuMDggKMKgwqAgMC4wMCUpwqDCoMKgwqAgMjk4NC43NSAqwqDCoCAwLjg3JSoNCj4gSG1lYW7C
-oMKgwqDCoCA4wqDCoMKgwqDCoMKgwqAgNTA4MC4wOSAowqDCoCAwLjAwJSnCoMKgwqDCoCA1MTcz
-LjM1ICrCoMKgIDEuODQlKg0KPiBIbWVhbsKgwqDCoMKgIDE2wqDCoMKgwqDCoMKgIDgyNzYuMDIg
-KMKgwqAgMC4wMCUpwqDCoMKgwqAgOTMyNy4xNyAqwqAgMTIuNzAlKg0KPiBIbWVhbsKgwqDCoMKg
-IDMywqDCoMKgwqDCoCAxNTUwMS42MSAowqDCoCAwLjAwJSnCoMKgwqAgMTU5MjUuNTUgKsKgwqAg
-Mi43MyUqDQo+IEhtZWFuwqDCoMKgwqAgNjTCoMKgwqDCoMKgIDI3MzEzLjY3ICjCoMKgIDAuMDAl
-KcKgwqDCoCAyNDEwNy44MSAqIC0xMS43NCUqDQo+IEhtZWFuwqDCoMKgwqAgMTI4wqDCoMKgwqAg
-MzI5MjguMTkgKMKgwqAgMC4wMCUpwqDCoMKgIDM2MjYxLjc1ICrCoCAxMC4xMiUqDQo+IEhtZWFu
-wqDCoMKgwqAgMjU2wqDCoMKgwqAgMzU0MzQuNzMgKMKgwqAgMC4wMCUpwqDCoMKgIDM4NjcwLjYx
-ICrCoMKgIDkuMTMlKg0KPiBIbWVhbsKgwqDCoMKgIDUxMsKgwqDCoMKgIDUwMDk4LjM0ICjCoMKg
-IDAuMDAlKcKgwqDCoCA1MzI0My43NSAqwqDCoCA2LjI4JSoNCj4gSG1lYW7CoMKgwqDCoCAxMDI0
-wqDCoMKgIDY5NTAzLjY5ICjCoMKgIDAuMDAlKcKgwqDCoCA2NzQyNS4yNiAqwqAgLTIuOTklKg0K
-PiANCj4gQml0IG9mIGEgbWl4ZWQgYmFnIGJ1dCB3aW5zIG1vcmUgdGhhbiBpdCBsb3Nlcy4NCg0K
-SG0uICBJZiBwYXRjaGxldCByZXBlYXRhYmx5IGltcGFjdHMgYnVkZHkgcGFpcnMgb25lIHdheSBv
-ciB0aGUgb3RoZXIsDQppdCBzaG91bGQgcHJvYmFibHkgYmUgdG9zc2VkIG91dCB0aGUgbmVhcmVz
-dCB3aW5kb3cuDQoNCg0KCS1NaWtlDQo=
+Christoph Paasch reports [1] about incorrect skb->truesize
+after skb_expand_head() call in ip6_xmit.
+This may happen because of two reasons:
+- skb_set_owner_w() for newly cloned skb is called too early,
+before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+- pskb_expand_head() does not adjust truesize in (skb->sk) case.
+In this case sk->sk_wmem_alloc should be adjusted too.
+
+[1] https://lkml.org/lkml/2021/8/20/1082
+
+Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
+Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+v10: is_skb_wmem() was moved into separate header (it depends on net/tcp.h)
+     use it after pskb_expand_head() insted of strange sock_edemux check
+v9: restored sock_edemux check
+v8: clone non-wmem skb
+v7 (from kuba@):
+    shift more magic into helpers,
+    follow Eric's advice and don't inherit non-wmem skbs for now
+v6: fixed delta,
+    improved comments
+v5: fixed else condition, thanks to Eric
+    reworked update of expanded skb,
+    added corresponding comments
+v4: decided to use is_skb_wmem() after pskb_expand_head() call
+    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric
+Dumazet
+v3: removed __pskb_expand_head(),
+    added is_skb_wmem() helper for skb with wmem-compatible destructors
+    there are 2 ways to use it:
+     - before pskb_expand_head(), to create skb clones
+     - after successfull pskb_expand_head() to change owner on extended
+       skb.
+v2: based on patch version from Eric Dumazet,
+    added __pskb_expand_head() function, which can be forced
+    to adjust skb->truesize and sk->sk_wmem_alloc.
+
+ net/core/skbuff.c          | 36 +++++++++++++++++++++++-------------
+ net/core/sock_destructor.h | 12 ++++++++++++
+ 2 files changed, 35 insertions(+), 13 deletions(-)
+ create mode 100644 net/core/sock_destructor.h
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 2170bea2c7de..fe9358437380 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -80,6 +80,7 @@
+ #include <linux/indirect_call_wrapper.h>
+ 
+ #include "datagram.h"
++#include "sock_destructor.h"
+ 
+ struct kmem_cache *skbuff_head_cache __ro_after_init;
+ static struct kmem_cache *skbuff_fclone_cache __ro_after_init;
+@@ -1804,30 +1805,39 @@ EXPORT_SYMBOL(skb_realloc_headroom);
+ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+ {
+ 	int delta = headroom - skb_headroom(skb);
++	int osize = skb_end_offset(skb);
++	struct sock *sk = skb->sk;
+ 
+ 	if (WARN_ONCE(delta <= 0,
+ 		      "%s is expecting an increase in the headroom", __func__))
+ 		return skb;
+ 
+-	/* pskb_expand_head() might crash, if skb is shared */
+-	if (skb_shared(skb)) {
++	delta = SKB_DATA_ALIGN(delta);
++	/* pskb_expand_head() might crash, if skb is shared. */
++	if (skb_shared(skb) || !is_skb_wmem(skb)) {
+ 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+ 
+-		if (likely(nskb)) {
+-			if (skb->sk)
+-				skb_set_owner_w(nskb, skb->sk);
+-			consume_skb(skb);
+-		} else {
+-			kfree_skb(skb);
+-		}
++		if (unlikely(!nskb))
++			goto fail;
++
++		if (sk)
++			skb_set_owner_w(nskb, sk);
++		consume_skb(skb);
+ 		skb = nskb;
+ 	}
+-	if (skb &&
+-	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+-		kfree_skb(skb);
+-		skb = NULL;
++	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC))
++		goto fail;
++
++	if (sk && is_skb_wmem(skb)) {
++		delta = skb_end_offset(skb) - osize;
++		refcount_add(delta, &sk->sk_wmem_alloc);
++		skb->truesize += delta;
+ 	}
+ 	return skb;
++
++fail:
++	kfree_skb(skb);
++	return NULL;
+ }
+ EXPORT_SYMBOL(skb_expand_head);
+ 
+diff --git a/net/core/sock_destructor.h b/net/core/sock_destructor.h
+new file mode 100644
+index 000000000000..2f396e6bfba5
+--- /dev/null
++++ b/net/core/sock_destructor.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _NET_CORE_SOCK_DESTRUCTOR_H
++#define _NET_CORE_SOCK_DESTRUCTOR_H
++#include <net/tcp.h>
++
++static inline bool is_skb_wmem(const struct sk_buff *skb)
++{
++	return skb->destructor == sock_wfree ||
++	       skb->destructor == __sock_wfree ||
++	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
++}
++#endif
+-- 
+2.32.0
+
