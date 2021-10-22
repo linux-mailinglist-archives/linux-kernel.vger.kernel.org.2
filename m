@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A9C4374ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66194374EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhJVJmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:42:37 -0400
-Received: from mail-pf1-f178.google.com ([209.85.210.178]:37495 "EHLO
-        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbhJVJmd (ORCPT
+        id S232404AbhJVJoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:44:32 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4020 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231944AbhJVJob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:42:33 -0400
-Received: by mail-pf1-f178.google.com with SMTP id q19so3130200pfl.4;
-        Fri, 22 Oct 2021 02:40:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2DRet2N5HhCm6h5wynnS1gaOYbkbGXzOrerbjjC0E3g=;
-        b=Jrkj7Jx9VmBivqrIstT5FQ0tLVNsID3nHIkQBDPtRh693hp0l2M+vwDTZWwH8Lbxtr
-         LnNOXPEoA8FcICMv8yUk4RTPW7QlSWU+pLolsrYWpZnELe07BesyDZHVDiU2+kVaPXBf
-         38bt1sw4J2ijStGsfnNa3IFwXlvw0nFq69cMgiLV3Od620tFd4xpxfaKkWMRaOVWUW2Z
-         nDBLzf0FbjGLd3UO/Sz4bf+P5Z2SI10s3EbmccvpVa3HWk2GwvppAD+18Rtzk+JdTaPO
-         yASB+VH+TpLlKJp1dY5bAMnU94mZGHUNmjER79pHeufJ49J59vq0yYf+9SQCV82+0y67
-         Xzyg==
-X-Gm-Message-State: AOAM532EV4cWAG4PnESuapwrRCmLoctHc7OPuGQ8UyCZBkEFw8r7eegm
-        FefogQ1DrYrr8eV3+B3hHlGsKuWBAJJ2umwslS4=
-X-Google-Smtp-Source: ABdhPJyblyCb0CC4y8acTqNncuSqdbB5QocuyXB3xV6V6A5/kNsqxhKmEJEGhcR1xInlPyJlLfr9PFvQz/JeTr9ws8o=
-X-Received: by 2002:a62:5257:0:b0:44c:ed84:350a with SMTP id
- g84-20020a625257000000b0044ced84350amr11091780pfb.79.1634895616438; Fri, 22
- Oct 2021 02:40:16 -0700 (PDT)
+        Fri, 22 Oct 2021 05:44:31 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HbK6101Khz67mB7;
+        Fri, 22 Oct 2021 17:38:17 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 11:42:12 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 10:42:11 +0100
+Subject: Re: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <peterz@infradead.org>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <mingo@redhat.com>, <irogers@google.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kjain@linux.ibm.com>, <james.clark@arm.com>
+References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
+ <1634807805-40093-3-git-send-email-john.garry@huawei.com>
+ <YXFhr2YoVp9GPsDM@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <86aee893-0b6b-bce3-d1aa-3b66365592d1@huawei.com>
+Date:   Fri, 22 Oct 2021 10:42:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-2-kernel@esmil.dk>
- <CAHp75VfD73Nsrp-3hMzFtuEAfka+rRc=2m0ZZYddhWBAzg=QAw@mail.gmail.com>
-In-Reply-To: <CAHp75VfD73Nsrp-3hMzFtuEAfka+rRc=2m0ZZYddhWBAzg=QAw@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Fri, 22 Oct 2021 11:40:05 +0200
-Message-ID: <CANBLGcxJGgi9nuT6LpjGgPj1bg0aW-ELRCAO0Csv3xi82gTCnQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/16] RISC-V: Add StarFive SoC Kconfig option
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YXFhr2YoVp9GPsDM@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml731-chm.china.huawei.com (10.201.108.82) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 10:51, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> On Thu, Oct 21, 2021 at 8:42 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> >
-> > Add StarFive Kconfig option to select SoC specific and common drivers
-> > required for these SoCs.
->
-> ...
->
-> > +config SOC_STARFIVE
-> > +       bool "StarFive SoCs"
-> > +       select PINCTRL
-> > +       select RESET_CONTROLLER
->
-> > +       select SIFIVE_PLIC
->
-> If this is well understood and platform related the above two are too
-> generic. Why have you selected them?
+On 21/10/2021 13:48, Jiri Olsa wrote:
+>> +HOSTCFLAGS += -Wall
+>> +HOSTCFLAGS += -Wextra
+>> +
+>>   # Enforce a non-executable stack, as we may regress (again) in the future by
+>>   # adding assembler files missing the .GNU-stack linker note.
+>>   LDFLAGS += -Wl,-z,noexecstack
+>> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+>> index 7df13e74450c..118bcdc70bb4 100644
+>> --- a/tools/perf/Makefile.perf
+>> +++ b/tools/perf/Makefile.perf
+>> @@ -226,7 +226,7 @@ else
+>>   endif
+>>   
+>>   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+>> -export HOSTCC HOSTLD HOSTAR
+>> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+>>   
+>>   include $(srctree)/tools/build/Makefile.include
+>>   
+>> diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+>> index a055dee6a46a..d5c287f069a2 100644
+>> --- a/tools/perf/pmu-events/Build
+>> +++ b/tools/perf/pmu-events/Build
+>> @@ -1,7 +1,7 @@
+>>   hostprogs := jevents
+>>   
+>>   jevents-y	+= json.o jsmn.o jevents.o
+>> -HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+>> +HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
+> so the the host cflags are made of:
+> 
+> host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+> 
 
-From your last comments the criterion seemed to be to only add it here
-if it would otherwise fail to boot. Well it does fail to boot without
-the reset and pinctrl drivers. The clock driver too, but RISCV already
-selects COMMON_CLK. Once PINCTRL and RESET_CONTROLLER is selected the
-specific drivers defaults to SOC_STARFIVE.
+ok, so IIRC, then the rule for building .o from .c in 
+tools/build/Makefile.build will pick up HOSTCFLAGS through this 
+variable, so we then don't need to explicitly mention it in the 
+per-target rule, so can have this as before in pmu-events/Build
 
-Alternatively we'd select the drivers too, but I can't promise that
-future StarFive chips will need the same JH7100 clock and reset
-drivers. Doing it this way means that selecting SOC_STARFIVE by
-default gives you a kernel that will boot on all StarFive SoCs, but
-you can still customise it further to your particular chip. It seems
-like SOC_SIFIVE is doing the same.
+HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
 
-> > +       help
-> > +         This enables support for StarFive SoC platform hardware.
->
-> Not too much to read here. What is the point of this help?
-> I would elaborate what kind of platform it may support, what kind of
-> drivers it selects due to necessity of the accomplishing the boot
-> process, etc.
+right?
 
-This is exactly as the other descriptions in this file. I don't know
-why SOC_STARFIVE should be special.
+(Indeed I guess that we can get rid of -I$(srctree)/tools/include as well)
 
-/Emil
+Thanks,
+John
+
+
+> can't you use KBUILD_HOSTCFLAGS?
+> 
+> also perhaps we could rename KBUILD_HOSTCFLAGS to HOSTCFLAGS?
+> the name seems like leftover from kbuild move
+> 
+> jirka
+> 
+>>   pmu-events-y	+= pmu-events.o
+>>   JDIR		=  pmu-events/arch/$(SRCARCH)
+>>   JSON		=  $(shell [ -d $(JDIR) ] &&	
+
+
+
