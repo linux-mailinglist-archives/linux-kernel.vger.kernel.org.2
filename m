@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63012436F36
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB6B436F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbhJVBCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 21:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
+        id S232391AbhJVBCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 21:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbhJVBC3 (ORCPT
+        with ESMTP id S232274AbhJVBCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 21:02:29 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E67C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:00:13 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y18-20020a25a092000000b005bddb39f160so2232701ybh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:00:13 -0700 (PDT)
+        Thu, 21 Oct 2021 21:02:32 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B9CC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:00:15 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id s7-20020a25aa07000000b005bfb84d2315so2377964ybi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=CEz0cfqyCM1YyDBPzVH5K8gS+lZ/6FKI3lwCTpkXChk=;
-        b=JOb+bIFN0HacDWgyRwY6VNvFaTuKUPGHZmjICmx3VcLLP/4rhG8aPWlawdn1qJzGWX
-         nwpBsO3t64oSX6vfq9iyK1YQpYA9kWLwqTVzFntPlxYuGsUakbnb7WtHaGWvxNeMKPzc
-         6rDKeKnKqE9LAn1klw2+nQN6VLQuCUyFwNPZcOxuKuwhZiPrV6RChvYm97OeK0lN9f+A
-         6GZHkrRhymW7HNBgSkCZD+ZtFN+/G8cOzP4cAD26nKB7yHix+61ACF+eGmBBP6Es504U
-         dqx77F+KmkIA9fZJBZbT8V1gX7FAckk4DDNF/oXZfKaaD4ymGjpQwmOQ3mm8suizAfhp
-         MXFA==
+        bh=uP76BeEeyXiZDzx4DIrX06PdaoPoy0ZNNySRA0QIYsU=;
+        b=WqKQiYLyxfWi42AoyORk0WwzfZ5dxrdBbQL/FYgz2YnvU1o38Kt+qzjesKjE70PuuI
+         zcuwvcvgvDTJVzpEjcRGYz0OkbWtB6eccqUQ6HAeWDZvU/KvwTqfwwQsLTgWebBfYDsN
+         YSuK8r8rkeRJm10mlN02jSPJ+BV43n6OHcY8X4y4lMd4QwfU1v8VCzqZa8v3Tg3jXTLh
+         bkftO6e56jg6u0a6UXQ3f8q339wUW5jHrJG3/zFBZStyRDh1N52xHMk8GWB5wzA3vIPO
+         ztOROz6NDjLyAbHyQ9/+v3rfd8aRDkW+/kNaHXRBjAVo7IeuXX6vk7VxhO644Pnbzr5i
+         joRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=CEz0cfqyCM1YyDBPzVH5K8gS+lZ/6FKI3lwCTpkXChk=;
-        b=TnTk9ahgvgDAKtJe1svtoC38RVbkiw4f91CvFehvBgENdWX0rgGR2B999l/04dUwAF
-         6iOe9JCTjJXLWUJSxU9Bt8T309hOWU6wABxn2n8pKeYYnZlH9lCx/9ORDw0Vj+qmil+c
-         Azypn8vnMnfCphsehVNfwZIKP7kw4vmtFc2H8oCyvRMW/ZSlj4tZCFf/i9OCAWDgRJTn
-         ulpPvmXP65UK3IJ0TtKhSD00AGDqK1cl/bz4j/iHgNAGGER65swtdE4GYVC2tu8uvuSC
-         jE5oHiDWUTS8H4Sg24pj9ALwK8EC8sb6ETr80/155aiB+2JcZhKYoZ3enM6J6vcJ0AOh
-         2Nxw==
-X-Gm-Message-State: AOAM531moTBfi4S/9ZkCPg9JKO2sVhoKXn1vKyXcruNhGKzGNpdizGkg
-        SY0peEQKwzY+3xfnqrznyBrwyHxmKwk=
-X-Google-Smtp-Source: ABdhPJyvAeFY5DSnXh01pytX15xxReq4+Fub+mZQ0bKtNl31NsAju/a48GfejbdSbDI6R3rgKed6Py9hvDc=
+        bh=uP76BeEeyXiZDzx4DIrX06PdaoPoy0ZNNySRA0QIYsU=;
+        b=B1TP1l7TCPj86mVE8QzLvjCxCr7m6mLYqm3NFu1K9Xl0g8NrsK2a/h+rpbTSrWDuKn
+         VrA6oj1PjFoSISTvLVmwXPTFYbyfA39DNsTRZPEaKMUXR6HAeLgkP5gJ5hXgAgRpkqKd
+         B7Ng8BLVjxL23ysr1PGJ3aw2f75V0CFpwoRwKYPNFjhWCgDsN6LxdlKUkk+q5dwfUxZ/
+         Z8Eh6hy27nedsmUyahHVdeYFpk8rKiMxoq/XQrlmYauvl/sXSVXofUsRlZHSSgRT71cg
+         4QyiDCXcgLESGAnWpgL7eh9xHqmxikoAWMDIZxhKSyZ6HOuxJyxzdXtPGa+F+rW/QVtf
+         f4fg==
+X-Gm-Message-State: AOAM5313/LsqymWpiw060EHRHH97BxYkTajQjVfdGnyAfiYH+6i2ucix
+        zV+4JatSTPOQ852kxMh1FFtYPmXa15U=
+X-Google-Smtp-Source: ABdhPJzAJQDqCQs20zjnyfOitNCdEJd9CehByjoCIBNad13zC1kmmiA4SDp1lQtSLi6L0W3lpUGu2A9cBm8=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:db63:c8c0:4e69:449d])
- (user=seanjc job=sendgmr) by 2002:a25:c84:: with SMTP id 126mr9369570ybm.540.1634864412515;
- Thu, 21 Oct 2021 18:00:12 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:9248:: with SMTP id e8mr9995072ybo.373.1634864414814;
+ Thu, 21 Oct 2021 18:00:14 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 21 Oct 2021 18:00:04 -0700
+Date:   Thu, 21 Oct 2021 18:00:05 -0700
 In-Reply-To: <20211022010005.1454978-1-seanjc@google.com>
-Message-Id: <20211022010005.1454978-3-seanjc@google.com>
+Message-Id: <20211022010005.1454978-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211022010005.1454978-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 2/3] KVM: x86/mmu: Drop a redundant remote TLB flush in kvm_zap_gfn_range()
+Subject: [PATCH 3/3] KVM: x86/mmu: Extract zapping of rmaps for gfn range to
+ separate helper
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,35 +69,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove an unnecessary remote TLB flush in kvm_zap_gfn_range() now that
-said function holds mmu_lock for write for its entire duration.  The
-flush was added by the now-reverted commit to allow TDP MMU to flush while
-holding mmu_lock for read, as the transition from write=>read required
-dropping the lock and thus a pending flush needed to be serviced.
+Extract the zapping of rmaps, a.k.a. legacy MMU, for a gfn range to a
+separate helper to clean up the unholy mess that kvm_zap_gfn_range() has
+become.  In addition to deep nesting, the rmaps zapping spreads out the
+declaration of several variables and is generally a mess.  Clean up the
+mess now so that future work to improve the memslots implementation
+doesn't need to deal with it.
 
-Fixes: 5a324c24b638 ("Revert "KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock"")
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
 Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 52 ++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index f82b192bba0b..e8b8a665e2e9 100644
+index e8b8a665e2e9..182d35a216d4 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5700,9 +5700,6 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 						end - 1, true, flush);
- 			}
- 		}
--		if (flush)
--			kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
--							   gfn_end - gfn_start);
- 	}
+@@ -5667,40 +5667,48 @@ void kvm_mmu_uninit_vm(struct kvm *kvm)
+ 	kvm_mmu_uninit_tdp_mmu(kvm);
+ }
+ 
++static bool __kvm_zap_rmaps(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
++{
++	const struct kvm_memory_slot *memslot;
++	struct kvm_memslots *slots;
++	bool flush = false;
++	gfn_t start, end;
++	int i;
++
++	if (!kvm_memslots_have_rmaps(kvm))
++		return flush;
++
++	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
++		slots = __kvm_memslots(kvm, i);
++		kvm_for_each_memslot(memslot, slots) {
++			start = max(gfn_start, memslot->base_gfn);
++			end = min(gfn_end, memslot->base_gfn + memslot->npages);
++			if (start >= end)
++				continue;
++
++			flush = slot_handle_level_range(kvm, memslot, kvm_zap_rmapp,
++							PG_LEVEL_4K, KVM_MAX_HUGEPAGE_LEVEL,
++							start, end - 1, true, flush);
++		}
++	}
++
++	return flush;
++}
++
+ /*
+  * Invalidate (zap) SPTEs that cover GFNs from gfn_start and up to gfn_end
+  * (not including it)
+  */
+ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+ {
+-	struct kvm_memslots *slots;
+-	struct kvm_memory_slot *memslot;
++	bool flush;
+ 	int i;
+-	bool flush = false;
+ 
+ 	write_lock(&kvm->mmu_lock);
+ 
+ 	kvm_inc_notifier_count(kvm, gfn_start, gfn_end);
+ 
+-	if (kvm_memslots_have_rmaps(kvm)) {
+-		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+-			slots = __kvm_memslots(kvm, i);
+-			kvm_for_each_memslot(memslot, slots) {
+-				gfn_t start, end;
+-
+-				start = max(gfn_start, memslot->base_gfn);
+-				end = min(gfn_end, memslot->base_gfn + memslot->npages);
+-				if (start >= end)
+-					continue;
+-
+-				flush = slot_handle_level_range(kvm,
+-						(const struct kvm_memory_slot *) memslot,
+-						kvm_zap_rmapp, PG_LEVEL_4K,
+-						KVM_MAX_HUGEPAGE_LEVEL, start,
+-						end - 1, true, flush);
+-			}
+-		}
+-	}
++	flush = __kvm_zap_rmaps(kvm, gfn_start, gfn_end);
  
  	if (is_tdp_mmu_enabled(kvm)) {
+ 		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
