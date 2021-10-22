@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A135143785E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F48437864
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhJVNvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhJVNvy (ORCPT
+        id S232873AbhJVNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:52:52 -0400
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:38832 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhJVNwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:51:54 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36B4C061764;
-        Fri, 22 Oct 2021 06:49:36 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g8so1581568edb.12;
-        Fri, 22 Oct 2021 06:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=fvpZOAAFqxccN6t+CkdWkIvI92JSi1/qd9eo1f100tM=;
-        b=qK9+vhHUBre4dSbVZnMg9iLlSAaWTkFDw/6rsVihuUHzgHhI3DAxax8zi+w1dm+c/m
-         aEBt5MScBHqjDU16eLExVW38nzjc6dYjx4y1d8xjDqUkZcpFpk1AqDs23xq2s/huDoUN
-         z7FComNlz+im9abOzIoX4qN24GtdNRqXlIbxR6RxjU17GyBEiu2K2KEAYzfKPlbg6BTf
-         biZkG3w83ObAQ4vyz2Hcsnt2toYcaVxT9fe/YFgFS1ya5md0VegdTFxkyJWFIGcdgxx0
-         NprRH7lEdL0rsdFkPs3DTurwkpkBjHpavW5zczjFDAMnQTKo6X9YccQKjuoikRF8l9vH
-         yxYg==
+        Fri, 22 Oct 2021 09:52:49 -0400
+Received: by mail-pl1-f181.google.com with SMTP id i5so2735843pla.5;
+        Fri, 22 Oct 2021 06:50:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=fvpZOAAFqxccN6t+CkdWkIvI92JSi1/qd9eo1f100tM=;
-        b=Rytg+jR1XqDMNSUtFJg0MoRlVClhQ4jwQkmQBpUpaFC+B+ppy7oKElaK0ze84hQsI+
-         Zn95QToJNpgRUMf+q8Dp8l6hcu7CnX/LsfsX4K5c7gFE36UFbL7g8KqJvptTTXZCtB49
-         LkkR4aRQYegzzz+jOJdAl5qTgb/mBkxUKSdALtY9eW9ewKjOafQJjvaNhdqHnI0GqGpt
-         ikTyr2ghZHFRw4284JovxDWHP6pX7nh438OVLW83QQ9JLTcErll6eGTDPwywkJFvJE0C
-         sNz3YdJWTd6CpFAYQgkR7MSVx7xtaU+PLz5uObVfgRWbe8tbw7l3+ylNpY64n7SSDojz
-         EfIA==
-X-Gm-Message-State: AOAM533gREyRJTQHrRptngbLvTlv//pwlCeV1GyW2rK7ePilWtDos7vL
-        scLEw5q3AqTg7YUCgcqrbE8=
-X-Google-Smtp-Source: ABdhPJyRismCHPkF/z+GwcqNJajj9EJ/kUo7tTLGiuNdQJVUkKA/c5g6tAnzWasnKWpzgPGHZtgF+Q==
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr82958edz.369.1634910575197;
-        Fri, 22 Oct 2021 06:49:35 -0700 (PDT)
-Received: from [192.168.8.198] ([148.252.133.195])
-        by smtp.gmail.com with ESMTPSA id m3sm5103729edc.11.2021.10.22.06.49.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 06:49:34 -0700 (PDT)
-Message-ID: <85f96aab-4127-f494-9718-d7bfc035db54@gmail.com>
-Date:   Fri, 22 Oct 2021 14:49:36 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e4VAlxqjX7tVS4RVU1hVLMwxlt5HBKt4g0cT2A4i/lc=;
+        b=CQm86dOsCIjWXawe3/g/e4cs0g6/TUg6PmP6hYoQDl1Zcvv+5uvYJbEtgF6VFROEHr
+         oztYhNAeb18MUGa/RK9O1PN0wHysJiez5sHpViiPltj0fPsoGzl20EHJBbyVSdw9iN4b
+         hB0PDPM1ECf6uXWbIDITJ9IruZcJ/k3NgdyLqpjp/Yk5a/7hjQPkqgrEaTbzHB5mz5vI
+         sBQZzQwXfFSs+B4LYz5G0Jbd1DrTPCek1Wq1XtsFHygBA80wLFl5msAFunQ/PCyp4EZc
+         P5GAjBHEaV1WMr7olA4VESK7TpbTsW7OYQUv6KGYd4nCfgx9dBeVu7U5riIfhqMDbMG1
+         lFSA==
+X-Gm-Message-State: AOAM533TdPzLqSPNeEwH6WCs5XnYRvtS0QbKaN/hVjgLLZXlpooag0tF
+        tx15TPh4oYHEHnH8vLpm25KGqz/o4g7r3siSiNU=
+X-Google-Smtp-Source: ABdhPJxD84S/qyVc64yZN7zn360JIvYLyRoTZQ+nTLW8NPOh4R0Onceuz8xIbXKjs/Zs0RMr8FooFXCbqrByMUrAzuI=
+X-Received: by 2002:a17:90b:390f:: with SMTP id ob15mr13560608pjb.185.1634910632123;
+ Fri, 22 Oct 2021 06:50:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] INFO: task hung in io_wqe_worker
-Content-Language: en-US
-To:     syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000000012fb05cee99477@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <0000000000000012fb05cee99477@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+ <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+ <CANBLGcysKdqo+FioSkhd1PZRLzPF=fRJrCTsUGR7vXcn2WpYHg@mail.gmail.com> <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
+In-Reply-To: <CAHp75VditKnEcPKgqxz7NfG3ZWLZCu=pW=8qw7HS_iWePTj5Qw@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 22 Oct 2021 15:50:21 +0200
+Message-ID: <CANBLGcxDUNib4C0mrP1bYnJSLyZn7rmV1wwJyj5tK4-nbMnu9g@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 05:38, syzbot wrote:
-> Hello,
-> 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> INFO: task hung in io_wqe_worker
-> 
-> INFO: task iou-wrk-9392:9401 blocked for more than 143 seconds.
->        Not tainted 5.15.0-rc2-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:iou-wrk-9392    state:D stack:27952 pid: 9401 ppid:  7038 flags:0x00004004
-> Call Trace:
->   context_switch kernel/sched/core.c:4940 [inline]
->   __schedule+0xb44/0x5960 kernel/sched/core.c:6287
->   schedule+0xd3/0x270 kernel/sched/core.c:6366
->   schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
->   do_wait_for_common kernel/sched/completion.c:85 [inline]
->   __wait_for_common kernel/sched/completion.c:106 [inline]
->   wait_for_common kernel/sched/completion.c:117 [inline]
->   wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
->   io_worker_exit fs/io-wq.c:183 [inline]
->   io_wqe_worker+0x66d/0xc40 fs/io-wq.c:597
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+On Fri, 22 Oct 2021 at 15:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Fri, Oct 22, 2021 at 4:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Fri, 22 Oct 2021 at 14:56, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> ...
+>
+> > > Why all these ugly % 32 against constants?
+> >
+> > Because the JH7100_RST_ values goes higher than 31. There is a
+> > BIT_MASK macro, but that does % BITS_PER_LONG and this is a 64bit
+> > machine.
+>
+> And? It's exactly what you have to use!
 
-Easily reproducible, it's stuck in
 
-static void io_worker_exit(struct io_worker *worker)
-{
-	...
-	wait_for_completion(&worker->ref_done);
-	...
-}
+> > > Can you convert this to simple
+> > >
+> > >   if (assert)
+> > >     ret = readl_...
+> > >   else
+> > >     ret = readl_...
+> > >
+> > > below?
+> >
+> > I don't see how that would work. We're using the done value in in the
+> > readl_poll_timeout. Maybe you can be a bit more explicit.
+>
+> Supply done either == mask or == ^mask. Try it.
 
-The reference belongs to a create_worker_cb() task_work item. It's expected
-to either be executed or cancelled by io_wq_exit_workers(), but the owner
-task never goes __io_uring_cancel (called in do_exit()) and so never
-reaches io_wq_exit_workers().
+So you want this?
+if (assert)
+  ret = readl_poll_timeout_atomic(reg_status, value, (value & mask) ==
+done, 0, 1000);
+else
+  ret = readl_poll_timeout_atomic(reg_status, value, (value & mask) ==
+^done, 0, 1000);
 
-Following the owner task, cat /proc/<pid>/stack:
-
-[<0>] do_coredump+0x1d0/0x10e0
-[<0>] get_signal+0x4a3/0x960
-[<0>] arch_do_signal_or_restart+0xc3/0x6d0
-[<0>] exit_to_user_mode_prepare+0x10e/0x190
-[<0>] irqentry_exit_to_user_mode+0x9/0x20
-[<0>] irqentry_exit+0x36/0x40
-[<0>] exc_page_fault+0x95/0x190
-[<0>] asm_exc_page_fault+0x1e/0x30
-
-(gdb) l *(do_coredump+0x1d0-5)
-0xffffffff81343ccb is in do_coredump (fs/coredump.c:469).
-464
-465             if (core_waiters > 0) {
-466                     struct core_thread *ptr;
-467
-468                     freezer_do_not_count();
-469                     wait_for_completion(&core_state->startup);
-470                     freezer_count();
-
-Can't say anything more at the moment as not familiar with coredump
-
--- 
-Pavel Begunkov
+The compiler might be clever enough, but I'd worry the long body of
+the readl_poll_timeout_atomic macro is inline twice. Rather than just
+flipping the bit in `done`.
