@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3508437A30
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C4D437A32
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbhJVPl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:41:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21813 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233222AbhJVPl4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:41:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634917178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SKwUK85QUS5UvGDvhSdm0UayuQZWDZ03hElSfZLYkFI=;
-        b=Hl1g7q72ig7wke6mcio1Kols026+b8YCtU9VkCV/pvcPx/1phOGQVoFbAC6EQ3Jg+qB9+I
-        KtDQdd+MzvOnTiAxkwTAwVbiRY5LVmoy1o2O0e1cRxGlxlozI2vE5AOuFib/7OEoPaZ9V/
-        1etKAvxdXP2ynQ0BDKfze0JVM4Yin58=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-Ueq-nJDMO02g3l7HjQastQ-1; Fri, 22 Oct 2021 11:39:35 -0400
-X-MC-Unique: Ueq-nJDMO02g3l7HjQastQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DAB81806688;
-        Fri, 22 Oct 2021 15:39:33 +0000 (UTC)
-Received: from starship (unknown [10.40.192.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF7AA10016F2;
-        Fri, 22 Oct 2021 15:39:30 +0000 (UTC)
-Message-ID: <b17bbdd2872513ba98daac63b5bf3c578bde6a61.camel@redhat.com>
-Subject: Re: [PATCH 1/3] KVM: x86/mmu: Drop a redundant, broken remote TLB
- flush
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Ben Gardon <bgardon@google.com>
-Date:   Fri, 22 Oct 2021 18:39:29 +0300
-In-Reply-To: <20211022010005.1454978-2-seanjc@google.com>
-References: <20211022010005.1454978-1-seanjc@google.com>
-         <20211022010005.1454978-2-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S233372AbhJVPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:42:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:56094 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233222AbhJVPms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:42:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2616D1FB;
+        Fri, 22 Oct 2021 08:40:30 -0700 (PDT)
+Received: from [10.57.27.181] (unknown [10.57.27.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E04DE3F694;
+        Fri, 22 Oct 2021 08:40:27 -0700 (PDT)
+Subject: Re: [RFCv1 4/4] perf: arm_spe: Dynamically switch PID tracing to
+ contextidr
+From:   James Clark <james.clark@arm.com>
+To:     Leo Yan <leo.yan@linaro.org>
+References: <20211021134530.206216-1-leo.yan@linaro.org>
+ <20211021134530.206216-5-leo.yan@linaro.org>
+ <854fb1a2-e5f1-f237-685f-8ddb0557c98b@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <cb62ba81-0e86-c4d8-a5bb-65382db40ada@arm.com>
+Date:   Fri, 22 Oct 2021 16:40:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <854fb1a2-e5f1-f237-685f-8ddb0557c98b@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-21 at 18:00 -0700, Sean Christopherson wrote:
-> A recent commit to fix the calls to kvm_flush_remote_tlbs_with_address()
-> in kvm_zap_gfn_range() inadvertantly added yet another flush instead of
-> fixing the existing flush.  Drop the redundant flush, and fix the params
-> for the existing flush.
-> 
-> Fixes: 2822da446640 ("KVM: x86/mmu: fix parameters to kvm_flush_remote_tlbs_with_address")
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c6ddb042b281..f82b192bba0b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5709,13 +5709,11 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->  		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
->  			flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, gfn_start,
->  							  gfn_end, flush);
-> -		if (flush)
-> -			kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> -							   gfn_end - gfn_start);
->  	}
->  
->  	if (flush)
-> -		kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-> +		kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> +						   gfn_end - gfn_start);
->  
->  	kvm_dec_notifier_count(kvm, gfn_start, gfn_end);
->  
-Opps, I didn't notice that the revert added back another flush. I probablyhaven't had
-the revert in place when I wrote the patch that fixed parameters to 
-kvm_flush_remote_tlbs_with_address.
 
-Best regards,
-	Maxim Levitsky
+
+On 22/10/2021 16:36, James Clark wrote:
+> 
+> 
+> On 21/10/2021 14:45, Leo Yan wrote:
+>> Now Arm64 provides API for enabling and disable PID tracing, Arm SPE
+>> driver invokes these functions to dynamically enable it during
+>> profiling when the program runs in root PID name space, and disable PID
+>> tracing when the perf event is stopped.
+>>
+>> Device drivers should not depend on CONFIG_PID_IN_CONTEXTIDR for PID
+>> tracing, so this patch uses the consistent condition for setting bit
+>> EL1_CX for PMSCR.
+> 
+> Hi Leo,
+> 
+> I've been testing this change, but I'm seeing something strange. Not sure
+> if it's a problem on my side or not yet. With this command:
+> 
+>  sudo ./perf record -vvv -e arm_spe//u -- taskset --cpu-list 1 bash -c ls
+> 
+> I'm only seeing 0 values for context:
+> 
+>  sudo ./perf report -D | grep CONTEXT
+> 
+> .  00038dce:  65 00 00 00 00                                  CONTEXT 0x0 el2
+> .  00038e0e:  65 00 00 00 00                                  CONTEXT 0x0 el2
+> 
+> I added a printk to the function, and I see it print non zero values, although
+> there are some zero ones mixed in there too:
+> 
+>  diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+> index 0c1669db19a1..8f0fb43a5fac 100644
+> --- a/arch/arm64/include/asm/mmu_context.h
+> +++ b/arch/arm64/include/asm/mmu_context.h
+> @@ -33,7 +33,8 @@ static inline void contextidr_thread_switch(struct task_struct *next)
+>         if (!static_branch_unlikely(&contextidr_in_use))
+>                 return;
+>  
+> -       write_sysreg(task_pid_nr(next), contextidr_el1);
+> +       printk("Set %d\n", task_pid_nr(next));
+> +       write_sysreg(task_pid_nr(next), contextidr_el2);
+
+Ignore this second line change, that doesn't even compile. It's just the printk that I added.
 
