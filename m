@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68428437FE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 23:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCD5437FE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 23:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhJVVRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 17:17:34 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:35344 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhJVVRd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 17:17:33 -0400
-Received: by mail-oi1-f178.google.com with SMTP id r6so6644286oiw.2;
-        Fri, 22 Oct 2021 14:15:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=SuKbx3l8/3Tb+8asLIIggnjcIA0EB5OZape1jN9uKws=;
-        b=7IFYczMajKcifQ3nduB9Ovwnj8qEgHV3u5pDGiRFN2pfe6UEGE/wDJqKUtSVuPkULn
-         VzoMeShKYKQf38Kn7pwD2vDt0eb36Wqjb7l2h13Fk88hdV1QX8PKO4H2tp5ZaxSCrPa8
-         YZRs+uhQevVX0v55grLYKJlbS/J/RQsOTGUB0Hg3akJ8+boeoRAGzNFFqot15PNQYSq7
-         PcEsHBFz1cV1eA2akn4TPk7EnY98e6BbyH7JqDqhXh7dfKhVbxxEnFj2M0hKqNmnyelP
-         mGCAwXjyHIDaphrrUj31kz8ZbwYr9DOaZfzPNkAKxyjahn3JxdoipytqCD+hZJhPsoPu
-         N5+A==
-X-Gm-Message-State: AOAM530ioI4oz0art21+4wlfw42xkcTadsh1z39C3RNrhi3OJce77J6p
-        nzw0O6OiL//OjZUAHzxmgw==
-X-Google-Smtp-Source: ABdhPJyfbGTc/n/GfKJoH0JNZeeP/r9GRYDLNhD4cV5kxaOaMFhGneAVaQ0b5spRIPRg6lPdQ/DKlw==
-X-Received: by 2002:aca:1b03:: with SMTP id b3mr1573515oib.173.1634937315231;
-        Fri, 22 Oct 2021 14:15:15 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j4sm2045461oia.56.2021.10.22.14.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 14:15:14 -0700 (PDT)
-Received: (nullmailer pid 3183548 invoked by uid 1000);
-        Fri, 22 Oct 2021 21:15:13 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        james.quinlan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-pci@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Saenz Julienne <nsaenzjulienne@suse.de>
-In-Reply-To: <20211022140714.28767-2-jim2101024@gmail.com>
-References: <20211022140714.28767-1-jim2101024@gmail.com> <20211022140714.28767-2-jim2101024@gmail.com>
-Subject: Re: [PATCH v5 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP voltage regulators
-Date:   Fri, 22 Oct 2021 16:15:13 -0500
-Message-Id: <1634937313.387025.3183547.nullmailer@robh.at.kernel.org>
+        id S232226AbhJVVVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 17:21:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231997AbhJVVVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 17:21:51 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D100610A4;
+        Fri, 22 Oct 2021 21:19:32 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 17:19:30 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gavin Shan <gshan@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
+Message-ID: <20211022171930.41d7f5d7@gandalf.local.home>
+In-Reply-To: <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
+References: <20211012141131.3c9a2eb1@gandalf.local.home>
+        <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
+        <20211012145540.343541e9@gandalf.local.home>
+        <CAHk-=wg6fw130AkO72GPFow9PHvP9odnC5LZ0UaY9bJQuF-C5A@mail.gmail.com>
+        <20211022083845.08fe5754@gandalf.local.home>
+        <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 10:06:54 -0400, Jim Quinlan wrote:
-> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> allows optional regulators to be attached and controlled by the PCIe RC
-> driver.  That being said, this driver searches in the DT subnode (the EP
-> node, eg pci@0,0) for the regulator property.
-> 
-> The use of a regulator property in the pcie EP subnode such as
-> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> file at
-> 
-> https://github.com/devicetree-org/dt-schema/pull/54
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  .../bindings/pci/brcm,stb-pcie.yaml           | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
+On Fri, 22 Oct 2021 09:34:15 -1000
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml:169:111: [warning] line too long (111 > 110 characters) (line-length)
+> Oh, it shouldn't have been a pr_debug() that gets suppressed. It
+> should have been a pr_warn() or something.
 
-dtschema/dtc warnings/errors:
+Yeah, pr_debug() usually doesn't get printed.
 
-doc reference errors (make refcheckdocs):
+I'll update your patch.
 
-See https://patchwork.ozlabs.org/patch/1544972
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-- Steve
 
