@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4463437730
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC10F437733
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhJVMi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:38:59 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:45579 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhJVMiz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:38:55 -0400
-Received: by mail-oi1-f174.google.com with SMTP id z126so4782341oiz.12;
-        Fri, 22 Oct 2021 05:36:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wq+ijz7hkrgAvLrrYeAZpXxYO+s2Ax5t9fMYOLTN/Nw=;
-        b=kpn5dG8oOfStWUuVEzJmrxruVxqmXzkMKkZpEAohhAWTQKjp/j8Dw8kV8+UTxZ7pKW
-         63djW3SLdu1fCDg/EVFxtK7O9uMMdGTyuWtaK5y1adIVd74slmmezo20RT1bj8t5hOmM
-         3SQcnZcpzjDZs4j6y4zPC4o0Hd1YtX2nRQlDztQE2cngBk15xfVK4yMfWbbv9jpeewpW
-         I3XBWW/7pZmCKSYDYIrH1OatVueYv4AxjRFxaexqLg9ACmPAJnnbHgH+Ec3LyE1U2xW+
-         H92U5GNJmBV1JL12AOsa1GXJvMsAN9wO+EP3uU2H7bc1pEq+n1JncLEnmCyfkjjlYnYd
-         8rzg==
-X-Gm-Message-State: AOAM532Rw5hghmTpzJwstqOBc32huHfCNDkHx2NmUIz/0AlEy3nwmWqI
-        QHXdpmQ+M2mNOVAVI1RlS4XmmsvbtKOjhAQc1B5Be2zh
-X-Google-Smtp-Source: ABdhPJzM+YiKjpNohzo9egAZ1k5JoidFckV6+T/fZjiDsXCm0z0lzC35OwgLubhOaffF9Qg0l/Wy1p4MLcDFyU8c9jI=
-X-Received: by 2002:aca:5c5:: with SMTP id 188mr9339669oif.154.1634906197810;
- Fri, 22 Oct 2021 05:36:37 -0700 (PDT)
+        id S232130AbhJVMjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:39:10 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56244 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232263AbhJVMjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:39:03 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mdtmr-00032l-Eq; Fri, 22 Oct 2021 20:36:41 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mdtmq-0001p1-D1; Fri, 22 Oct 2021 20:36:40 +0800
+Date:   Fri, 22 Oct 2021 20:36:40 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        linux-crypto@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: tcrypt - fix skcipher multi-buffer tests for
+ 1420B blocks
+Message-ID: <20211022123640.GC6920@gondor.apana.org.au>
+References: <20211015073918.4837-1-horia.geanta@nxp.com>
 MIME-Version: 1.0
-References: <20211022073910.14398-1-songkai01@inspur.com>
-In-Reply-To: <20211022073910.14398-1-songkai01@inspur.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 22 Oct 2021 14:36:26 +0200
-Message-ID: <CAJZ5v0ixPr8WN9hdTtqj1S4XakhH9hJSWJSf9EthdyMEScaOhQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: CPPC: fix return value in register_pcc_channel()
-To:     Kai Song <songkai01@inspur.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015073918.4837-1-horia.geanta@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 9:39 AM Kai Song <songkai01@inspur.com> wrote:
->
-> It uses IS_ERR to judge the return value of
-> pcc_mbox_request_channel().If it is invalid, maybe we should
-> use PTR_ERR to get the correct return value.
-
-Either there is a reason to make this change or there isn't.
-
-If there is a reason, then what is it?
-
-> Signed-off-by: Kai Song <songkai01@inspur.com>
+On Fri, Oct 15, 2021 at 10:39:18AM +0300, Horia Geantă wrote:
+> Commit ad6d66bcac77e ("crypto: tcrypt - include 1420 byte blocks in aead and skcipher benchmarks")
+> mentions:
+> > power-of-2 block size. So let's add 1420 bytes explicitly, and round
+> > it up to the next blocksize multiple of the algo in question if it
+> > does not support 1420 byte blocks.
+> but misses updating skcipher multi-buffer tests.
+> 
+> Fix this by using the proper (rounded) input size.
+> 
+> Fixes: ad6d66bcac77e ("crypto: tcrypt - include 1420 byte blocks in aead and skcipher benchmarks")
+> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
 > ---
->  drivers/acpi/cppc_acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index bd482108310c..0bbb5fa27ce7 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -503,7 +503,7 @@ static int register_pcc_channel(int pcc_ss_idx)
->                 if (IS_ERR(pcc_data[pcc_ss_idx]->pcc_channel)) {
->                         pr_err("Failed to find PCC channel for subspace %d\n",
->                                pcc_ss_idx);
-> -                       return -ENODEV;
-> +                       return PTR_ERR(pcc_data[pcc_ss_idx]->pcc_channel);
->                 }
->
->                 /*
-> --
-> 2.27.0
->
+>  crypto/tcrypt.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
