@@ -2,135 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC0D436F91
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFC1436F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 03:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhJVBtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 21:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJVBtU (ORCPT
+        id S231679AbhJVBwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 21:52:01 -0400
+Received: from out28-148.mail.aliyun.com ([115.124.28.148]:50247 "EHLO
+        out28-148.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhJVBwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 21:49:20 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AD3C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:47:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id p8-20020a056902114800b005bad2571fbeso2327698ybu.23
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 18:47:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=OSz5Xs/L17ZVVFibJw8deZ4Hpezvx7aG8ZEAixdJaAQ=;
-        b=HtioIS3XvjJWvKb20k1mf4Zj5siAmZj1FBi/lBdkkAdxYzwIqeBQm0wDo8mScUhPtz
-         /6aeFgG9jBeyNeSwA8rRbd4Ty7xf7sy2LA0VfTezC85UujHZQoMDuWgFEM7A7XmrTZZ6
-         yPwkg+vN9HhSJtHfOUM+HTAwKuarMvUC7lEqnpOaDt9Ns1ohpR3Xfzt6l+lbF5XJX2ri
-         OZn2jlAFqSDDV3FRJ8rs254BxBIblUb1PBSVgVg55cy4GHBlBlFZmXDR29h7JnoOubg/
-         Y8i9IMtLYPS7ZGxNEgDMj+ldVTgdVmWTMN/AJEKsJtmDbQTAjFFgPyUDN3a9u/gJKTM/
-         jxNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=OSz5Xs/L17ZVVFibJw8deZ4Hpezvx7aG8ZEAixdJaAQ=;
-        b=NVn0h4r2ANyS2mfT2w0yZf3K5gflhg4c0N2S+9NW2fpoxhH7N6/KMQRvOA0FU/YGl7
-         tINXlgqXJl/q12NV1S7ZmOP2BanMG7hpZSNbgyDQKnV9Kif5lOIV5qDF+pMwdh5raYN2
-         yF21k0U9eJWVY+X2WSTmA2I8Fg2bW57gki/qAbSlufrITPS+qeCUVepTonDs90f1l6Vv
-         A/bYgZsXRZt159Dwcj7BDCTCbAXLvkjVhwF9BSHOovxLsBrlNSYtMWOsBd+jwUGb0+XM
-         kLdE+fg3/FPJCqDqIFLWAj8D9eJWuU/w50IDKr4guvu23ZFdxXYdmmKXrqLTspjlk5yi
-         hhaQ==
-X-Gm-Message-State: AOAM530TUcEmNb+zjmV4gBsWD0+iyQCTXEzCI9X2o7xrpvBrKR6Fz05h
-        4KAE4FIBgVQaBhyRkUB1gJvn/LJuEWY=
-X-Google-Smtp-Source: ABdhPJyPE9Pi2rOd+GtIRKy74MwB8b6FJ6jUd7F71YgVyepNEY0BZggKczOYEcmw6bLz121N12RDlg9MYXA=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:c063:38ee:4ca3:d373])
- (user=surenb job=sendgmr) by 2002:a25:c344:: with SMTP id t65mr10532797ybf.409.1634867222322;
- Thu, 21 Oct 2021 18:47:02 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 18:46:58 -0700
-Message-Id: <20211022014658.263508-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     akpm@linux-foundation.org
-Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, david@redhat.com,
-        jannh@google.com, shakeelb@google.com, luto@kernel.org,
-        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 21 Oct 2021 21:52:00 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1947132|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00895314-0.00138788-0.989659;FP=13645255560291118206|1|1|8|0|-1|-1|-1;HT=ay29a033018047211;MF=huangshuosheng@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.LflF5bR_1634867362;
+Received: from allwinnertech.com(mailfrom:huangshuosheng@allwinnertech.com fp:SMTPD_---.LflF5bR_1634867362)
+          by smtp.aliyun-inc.com(10.147.40.44);
+          Fri, 22 Oct 2021 09:49:41 +0800
+From:   Shuosheng Huang <huangshuosheng@allwinnertech.com>
+To:     sumit.semwal@linaro.org, lmark@codeaurora.org, labbott@redhat.com,
+        Brian.Starkey@arm.com, john.stultz@linaro.org,
+        christian.koenig@amd.com
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>
+Subject: [PATCH v2] dma-buf: heaps: init heaps in subsys_initcall
+Date:   Fri, 22 Oct 2021 09:48:50 +0800
+Message-Id: <20211022014850.22933-1-huangshuosheng@allwinnertech.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Race between process_mrelease and exit_mmap, where free_pgtables is
-called while __oom_reap_task_mm is in progress, leads to kernel crash
-during pte_offset_map_lock call. oom-reaper avoids this race by setting
-MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-fix this race, however that would be considered a hack. Fix this race
-by elevating mm->mm_users and preventing exit_mmap from executing until
-process_mrelease is finished. Patch slightly refactors the code to adapt
-for a possible mmget_not_zero failure.
-This fix has considerable negative impact on process_mrelease performance
-and will likely need later optimization.
+Some built-in modules will failed to use dma-buf heap to allocate
+memory if the heap drivers are too late to be initialized.
+To fix this issue, move initialization of dma-buf heap drivers in
+subsys_initcall() which is more earlier to be called.
 
-Fixes: 884a7e5964e0 ("mm: introduce process_mrelease system call")
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
 ---
- mm/oom_kill.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/dma-buf/heaps/cma_heap.c    | 2 +-
+ drivers/dma-buf/heaps/system_heap.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 831340e7ad8b..989f35a2bbb1 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -1150,7 +1150,7 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
- 	struct task_struct *task;
- 	struct task_struct *p;
- 	unsigned int f_flags;
--	bool reap = true;
-+	bool reap = false;
- 	struct pid *pid;
- 	long ret = 0;
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 0c05b79870f9..e051403a346d 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -400,6 +400,6 @@ static int add_default_cma_heap(void)
  
-@@ -1177,15 +1177,15 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
- 		goto put_task;
- 	}
+ 	return ret;
+ }
+-module_init(add_default_cma_heap);
++subsys_initcall(add_default_cma_heap);
+ MODULE_DESCRIPTION("DMA-BUF CMA Heap");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..3d6927657ec9 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -435,5 +435,5 @@ static int system_heap_create(void)
  
--	mm = p->mm;
--	mmgrab(mm);
--
--	/* If the work has been done already, just exit with success */
--	if (test_bit(MMF_OOM_SKIP, &mm->flags))
--		reap = false;
--	else if (!task_will_free_mem(p)) {
--		reap = false;
--		ret = -EINVAL;
-+	if (mmget_not_zero(p->mm)) {
-+		mm = p->mm;
-+		if (task_will_free_mem(p))
-+			reap = true;
-+		else {
-+			/* Error only if the work has not been done already */
-+			if (!test_bit(MMF_OOM_SKIP, &mm->flags))
-+				ret = -EINVAL;
-+		}
- 	}
- 	task_unlock(p);
- 
-@@ -1201,7 +1201,8 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
- 	mmap_read_unlock(mm);
- 
- drop_mm:
--	mmdrop(mm);
-+	if (mm)
-+		mmput(mm);
- put_task:
- 	put_task_struct(task);
- put_pid:
+ 	return 0;
+ }
+-module_init(system_heap_create);
++subsys_initcall(system_heap_create);
+ MODULE_LICENSE("GPL v2");
 -- 
-2.33.0.1079.g6e70778dc9-goog
+2.29.0
 
