@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2BD43799A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DFC43799C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhJVPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:08:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:55510 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233073AbhJVPIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:08:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2E661FB;
-        Fri, 22 Oct 2021 08:06:24 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33DB23F694;
-        Fri, 22 Oct 2021 08:06:20 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 16:06:17 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
-        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        torvalds@linux-foundation.org, tsbogend@alpha.franken.de,
-        vgupta@kernel.org, will@kernel.org
-Subject: Re: [PATCH 15/15] irq: remove handle_domain_{irq,nmi}()
-Message-ID: <20211022150617.GC86184@C02TD0UTHF1T.local>
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-16-mark.rutland@arm.com>
- <87o87hbcie.wl-maz@kernel.org>
+        id S233381AbhJVPIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233385AbhJVPIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:08:52 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB24AC061348
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:06:34 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id o20so1058713wro.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:06:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bIvrqPUuxcoH0q6+3l1CYyqJkwrcb2T7uuS0LcS4Xjo=;
+        b=ASrm3smHMtCHvAbDwIx8QoXfpW74ObcmTPPb+utN5FzQ5kW1ihXXzfhKVHeNJ8+gI2
+         1gH3kRpgA0llpjIU3Tp0vwehNBplj9bkpj9KC5qzrdZSvojG+f6sa8TASpec6F7jJSE5
+         y8xNYfDZygiSc6A9jE6+hF+ELkCr96vS/taqQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bIvrqPUuxcoH0q6+3l1CYyqJkwrcb2T7uuS0LcS4Xjo=;
+        b=GTDVHzWkWSzT+Osaz1a086dRTA68Lg/rTEXS4Xwz2Z+mebxyT9HmPTJwZK8ICP16j1
+         77rWRbFZiciM2lRX2+KnYzoRoUAVCOLD0XJVTxauTUg1htOHJOiuRZjpoqZ5A37bnpV+
+         ximZ158ftk7A/lsMRzJBwm7g04QNkO3ZTryITtMggHOBYIF/0R4+SJan6h2xJhMWGqu/
+         iG/vlVEYXSQB6ETdlw98yyNiL3fWK56wnhuwyJ2OIhJf8+fwCewKPc6e69ffmJ7MX/8M
+         jC8lbyMBBRD4SzCLtDjL9lnv+lcfunkv/AB0GaBX1vQ5d/R+COevcXyL5nd5u5XSdq2d
+         Z9/w==
+X-Gm-Message-State: AOAM531uxM9Ag8+wBEHEQ8DtqUptYczk9AUqpZo8GyiNYgSmD9xLRE1O
+        6fks2Ujq+KKdRDkPizsyIVceQb8sI+SSAGIa9l+qCA==
+X-Google-Smtp-Source: ABdhPJw/+cohLedLGM0slfaQoKoLKSxgcj8S/9byAKQDcpXFqlLlOVLMJXyo+pno1NqRHLZA/3niJVNkuExhdjL7Gp4=
+X-Received: by 2002:adf:ba87:: with SMTP id p7mr518137wrg.282.1634915193241;
+ Fri, 22 Oct 2021 08:06:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o87hbcie.wl-maz@kernel.org>
+References: <20211022140714.28767-1-jim2101024@gmail.com> <20211022140714.28767-6-jim2101024@gmail.com>
+ <YXLNLWNKkcYodqCG@sirena.org.uk>
+In-Reply-To: <YXLNLWNKkcYodqCG@sirena.org.uk>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Fri, 22 Oct 2021 11:06:21 -0400
+Message-ID: <CA+-6iNyT5-X63bdioNQaY=htyev2KPEhELQAFcvH06sLMVo-qQ@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] PCI: brcmstb: Do not turn off regulators if EP can
+ wake up
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 11:05:29AM +0100, Marc Zyngier wrote:
-> On Thu, 21 Oct 2021 19:02:36 +0100,
-> Mark Rutland <mark.rutland@arm.com> wrote:
-> > 
-> > Now that entry code handles IRQ entry (including setting the IRQ regs)
-> > before calling irqchip code, irqchip code can safely call
-> > generic_handle_domain_irq(), and there's no functional reason for it to
-> > call handle_domain_irq().
-> > 
-> > Let's cement this split of responsibility and remove handle_domain_irq()
-> > entirely, updating irqchip drivers to call generic_handle_domain_irq().
-> > 
-> > For consistency, handle_domain_nmi() is similarly removed and replaced
-> > with a generic_handle_domain_nmi() function which also does not perform
-> > any entry logic.
-> > 
-> > Previously handle_domain_{irq,nmi}() had a WARN_ON() which would fire
-> > when they were called in an inappropriate context. So that we can
-> > identify similar issues going forward, similar WARN_ON_ONCE() logic is
-> > added to the generic_handle_*() functions, and comments are updated for
-> > clarity and consistency.
-> > 
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> 
-> [...]
-> 
-> > -/**
-> > - * handle_domain_nmi - Invoke the handler for a HW irq belonging to a domain
-> > - * @domain:	The domain where to perform the lookup
-> > - * @hwirq:	The HW irq number to convert to a logical one
-> > - * @regs:	Register file coming from the low-level handling code
-> > - *
-> > - *		This function must be called from an NMI context.
-> >   *
-> > - * Returns:	0 on success, or -EINVAL if conversion has failed
-> > - */
-> > -int handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq,
-> > -		      struct pt_regs *regs)
-> > + * 		This function must be called from an NMI context with irq regs
-> > + * 		initialized.
-> > + **/
-> > +int generic_handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq)
-> >  {
-> > -	struct pt_regs *old_regs = set_irq_regs(regs);
-> > -	int ret;
-> > -
-> > -	/*
-> > -	 * NMI context needs to be setup earlier in order to deal with tracing.
-> > -	 */
-> > -	WARN_ON(!in_nmi());
-> > -
-> > -	ret = generic_handle_domain_irq(domain, hwirq);
-> > -
-> > -	set_irq_regs(old_regs);
-> > -	return ret;
-> > +	WARN_ON_ONCE(!in_nmi());
-> > +	return handle_irq_desc(irq_resolve_mapping(domain, hwirq));
-> >  }
-> > -#endif
-> > +EXPORT_SYMBOL_GPL(generic_handle_domain_nmi);
-> 
-> nit: we don't need this export (only a root controller can handle
-> NMIs), and that's the sort of thing I would really want to avoid
-> exposing to modules.
+On Fri, Oct 22, 2021 at 10:39 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Oct 22, 2021 at 10:06:58AM -0400, Jim Quinlan wrote:
+>
+> > +enum {
+> > +     TURN_OFF,               /* Turn regulators off, unless an EP is wakeup-capable */
+> > +     TURN_OFF_ALWAYS,        /* Turn regulators off, no exceptions */
+> > +     TURN_ON,                /* Turn regulators on, unless pcie->ep_wakeup_capable */
+> > +};
+> > +
+> > +static int brcm_set_regulators(struct brcm_pcie *pcie, int how)
+> > +{
+> > +     struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
+>
+> I can't help but think this would be easier to follow as multiple
+> functions, there is very little code sharing between the different
+> paths especially the on and off paths.
+Agree; I just wanted to make less changes to struct pci_host_bridge.  Will fix.
 
-Sure, I'll drop that; I'd only added that for symmetry with
-generic_handle_domain_irq(), and I don't need it to be exported.
+>
+> >       if (pcie->num_supplies) {
+> > -             (void)brcm_set_regulators(pcie, false);
+> > +             (void)brcm_set_regulators(pcie, TURN_OFF_ALWAYS);
+>
+> I should've mentioned this on the earlier path but it's not normal Linux
+> style to cast return values to void and looks worrying.
+Got it.
 
 Thanks,
-Mark.
+JimQ
