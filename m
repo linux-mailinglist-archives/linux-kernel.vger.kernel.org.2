@@ -2,235 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAAD437D90
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CA7437DE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbhJVTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:07:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28367 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234212AbhJVTH0 (ORCPT
+        id S233568AbhJVTKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:10:40 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:2075 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234309AbhJVTKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634929508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+EtOHSphb6Q0NtS/equNMZvHtnI/Q3HIjX9WVypO5RQ=;
-        b=YmL+1DrqnWcVANU0xEb9bqe/k9OO66OR1j7DjNTPHErTQBCdQh/jbg5nYnDbTQ+UNliMzy
-        AeXyVAUVkz1Si+jESjNke8nIYB0OnCJ9SDK+x70pFHGKdqDg4a0gHO+Hc4DnyMmnXSuIRK
-        eGM30eQKCmW5Q5JI7KxKrNhQLSBeQK4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-m22tksXfOniOuIbfClVuHg-1; Fri, 22 Oct 2021 15:05:05 -0400
-X-MC-Unique: m22tksXfOniOuIbfClVuHg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B329802B4F;
-        Fri, 22 Oct 2021 19:05:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4914460C04;
-        Fri, 22 Oct 2021 19:04:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2 25/53] fscache: Provide fallback I/O functions
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@kernel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 22 Oct 2021 20:04:54 +0100
-Message-ID: <163492949429.1038219.2330338330511845559.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
-References: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 22 Oct 2021 15:10:01 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M9qZO2002736;
+        Fri, 22 Oct 2021 12:07:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=xqhdQt/sUJfr6QnIrgSfct6aj/mXG9NyHlYg03zAFQw=;
+ b=ZCko22VaS8YJS58bI+1VoJgfMqzFPlshbwHaYtobcrsIS64+v7UlDncv63biTNBMC9rt
+ eZguqxj4gQz5DECAtwM9XpTXvLTKLlhji8IspToW7pjkFSRNZieoaqNM25szigQZi17U
+ 5qfhhCuz8OEpoS2W/Ek1TBJ3j2/xkQnTTsob4HGeB1KwRImeQKSxs3Dy3u0mEbxLsS5P
+ KiQRZJ8zs/T7Kwytv0qTfqETxUW8b96lHGmGb5mSFOXw5tGfu+rRsN9iXtVavTcfc+5r
+ WQ2Zct4ZB6S8WrjxLtdxni0uh7tazD2Y29H8AixWq28la84zTtc4VqV7+W7NtRj67wY/ Sw== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3buu21a0ha-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 12:07:38 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct
+ 2021 12:05:19 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Fri, 22 Oct 2021 12:05:19 -0700
+Received: from machine421.marvell.com (unknown [10.29.37.2])
+        by maili.marvell.com (Postfix) with ESMTP id 58B643F7073;
+        Fri, 22 Oct 2021 12:05:18 -0700 (PDT)
+From:   Sunil Goutham <sgoutham@marvell.com>
+To:     <herbert@gondor.apana.org.au>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Sunil Goutham <sgoutham@marvell.com>
+Subject: [PATCH] hwrng: cavium: Check health status while reading random data
+Date:   Sat, 23 Oct 2021 00:35:05 +0530
+Message-ID: <1634929505-16205-1-git-send-email-sgoutham@marvell.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Proofpoint-GUID: MJudHdL-5-BwIw5kgEf2i84kGu8zRFtn
+X-Proofpoint-ORIG-GUID: MJudHdL-5-BwIw5kgEf2i84kGu8zRFtn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_04,2021-10-22_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide functions to perform fallback I/O:
+This RNG device is present on Marvell OcteonTx2 silicons as well and
+also provides entropy health status.
 
-	int fscache_fallback_read_page(struct fscache_cookie *cookie,
-				       struct page *page);
-	int fscache_fallback_write_page(struct fscache_cookie *cookie,
-					struct page *page);
+HW continuously checks health condition of entropy and reports
+faults. Fault is in terms of co-processor cycles since last fault
+detected. This doesn't get cleared and only updated when new fault
+is detected. Also there are chances of detecting false positives.
+So to detect a entropy failure SW has to check if failures are
+persistent ie cycles elapsed is frequently updated by HW.
 
-These read and write a page to the cache described by the cookie.  The page
-index and size indicate the size and location of the operation.  They operate
-synchronously.
+This patch adds support to detect health failures using below algo.
+1. Consider any fault detected before 10ms as a false positive and ignore.
+   10ms is chosen randomly, no significance.
+2. Upon first failure detection make a note of cycles elapsed and when this
+   error happened in realtime (cntvct).
+3. Upon subsequent failure, check if this is new or a old one by comparing
+   current cycles with the ones since last failure. cycles or time since
+   last failure is calculated using cycles and time info captured at (2).
 
-[!] NOTE: These should be considered dangerous and may malfunction if the
-cache is backed by an extent-based filesystem such as ext4, xfs or btrfs due
-to the disk filesystem inserting or removing bridging blocks of zeros to
-optimise the extent layout.  This can cause data corruption.
+HEALTH_CHECK status register is not available to VF, hence had to map
+PF registers. Also since cycles are in terms of co-processor cycles,
+had to retrieve co-processor clock rate from RST device.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-cachefs@redhat.com
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 ---
+ drivers/char/hw_random/cavium-rng-vf.c | 194 +++++++++++++++++++++++++++++++--
+ drivers/char/hw_random/cavium-rng.c    |  11 +-
+ 2 files changed, 189 insertions(+), 16 deletions(-)
 
- fs/fscache/io.c         |   66 +++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/fscache.h |   48 ++++++++++++++++++++++++++++++++++
- 2 files changed, 114 insertions(+)
-
-diff --git a/fs/fscache/io.c b/fs/fscache/io.c
-index 0c74dbb91fea..0c128e61df81 100644
---- a/fs/fscache/io.c
-+++ b/fs/fscache/io.c
-@@ -151,6 +151,72 @@ int __fscache_begin_read_operation(struct netfs_cache_resources *cres,
- }
- EXPORT_SYMBOL(__fscache_begin_read_operation);
+diff --git a/drivers/char/hw_random/cavium-rng-vf.c b/drivers/char/hw_random/cavium-rng-vf.c
+index 3de4a6a..6f66919 100644
+--- a/drivers/char/hw_random/cavium-rng-vf.c
++++ b/drivers/char/hw_random/cavium-rng-vf.c
+@@ -1,10 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * Hardware Random Number Generator support for Cavium, Inc.
+- * Thunder processor family.
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
++ * Hardware Random Number Generator support.
++ * Cavium Thunder, Marvell OcteonTx/Tx2 processor families.
+  *
+  * Copyright (C) 2016 Cavium, Inc.
+  */
+@@ -15,16 +12,146 @@
+ #include <linux/pci.h>
+ #include <linux/pci_ids.h>
  
-+/*
-+ * Fallback page reading interface.
-+ */
-+int __fscache_fallback_read_page(struct fscache_cookie *cookie, struct page *page)
++#include <asm/arch_timer.h>
++
++/* PCI device IDs */
++#define	PCI_DEVID_CAVIUM_RNG_PF		0xA018
++#define	PCI_DEVID_CAVIUM_RNG_VF		0xA033
++
++#define HEALTH_STATUS_REG		0x38
++
++/* RST device info */
++#define PCI_DEVICE_ID_RST_OTX2		0xA085
++#define RST_BOOT_REG			0x1600ULL
++#define CLOCK_BASE_RATE			50000000ULL
++#define MSEC_TO_NSEC(x)			(x * 1000000)
++
+ struct cavium_rng {
+ 	struct hwrng ops;
+ 	void __iomem *result;
++	void __iomem *pf_regbase;
++	struct pci_dev *pdev;
++	u64  clock_rate;
++	u64  prev_error;
++	u64  prev_time;
+ };
+ 
++static inline bool is_octeontx(struct pci_dev *pdev)
 +{
-+	struct netfs_cache_resources cres;
-+	struct iov_iter iter;
-+	struct bio_vec bvec[1];
-+	int ret;
++	if (midr_is_cpu_model_range(read_cpuid_id(), MIDR_THUNDERX_83XX,
++				    MIDR_CPU_VAR_REV(0, 0),
++				    MIDR_CPU_VAR_REV(3, 0)) ||
++	    midr_is_cpu_model_range(read_cpuid_id(), MIDR_THUNDERX_81XX,
++				    MIDR_CPU_VAR_REV(0, 0),
++				    MIDR_CPU_VAR_REV(3, 0)) ||
++	    midr_is_cpu_model_range(read_cpuid_id(), MIDR_THUNDERX,
++				    MIDR_CPU_VAR_REV(0, 0),
++				    MIDR_CPU_VAR_REV(3, 0)))
++		return true;
 +
-+	_enter("%lx", page->index);
++	return false;
++}
 +
-+	memset(&cres, 0, sizeof(cres));
-+	bvec[0].bv_page		= page;
-+	bvec[0].bv_offset	= 0;
-+	bvec[0].bv_len		= PAGE_SIZE;
-+	iov_iter_bvec(&iter, READ, bvec, ARRAY_SIZE(bvec), PAGE_SIZE);
++static u64 rng_get_coprocessor_clkrate(void)
++{
++	u64 ret = CLOCK_BASE_RATE * 16; /* Assume 800Mhz as default */
++	struct pci_dev *pdev;
++	void __iomem *base;
 +
-+	ret = fscache_begin_operation(&cres, cookie, FSCACHE_WANT_READ,
-+				      fscache_access_io_write);
-+	if (ret < 0)
-+		return ret;
++	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
++			      PCI_DEVICE_ID_RST_OTX2, NULL);
++	if (!pdev)
++		goto error;
 +
-+	ret = fscache_read(&cres, page_offset(page), &iter, NETFS_READ_HOLE_FAIL,
-+			   NULL, NULL);
-+	fscache_end_operation(&cres);
-+	_leave(" = %d", ret);
++	base = pci_ioremap_bar(pdev, 0);
++	if (!base)
++		goto error_put_pdev;
++
++	/* RST: PNR_MUL * 50Mhz gives clockrate */
++	ret = CLOCK_BASE_RATE * ((readq(base + RST_BOOT_REG) >> 33) & 0x3F);
++
++	iounmap(base);
++
++error_put_pdev:
++	pci_dev_put(pdev);
++
++error:
 +	return ret;
 +}
-+EXPORT_SYMBOL(__fscache_fallback_read_page);
 +
-+/*
-+ * Fallback page writing interface.
-+ */
-+int __fscache_fallback_write_page(struct fscache_cookie *cookie, struct page *page)
++static int check_rng_health(struct cavium_rng *rng)
 +{
-+	struct netfs_cache_resources cres;
-+	struct iov_iter iter;
-+	struct bio_vec bvec[1];
-+	int ret;
++	u64 cur_err, cur_time;
++	u64 status, cycles;
++	u64 time_elapsed;
 +
-+	_enter("%lx", page->index);
 +
-+	memset(&cres, 0, sizeof(cres));
-+	bvec[0].bv_page		= page;
-+	bvec[0].bv_offset	= 0;
-+	bvec[0].bv_len		= PAGE_SIZE;
-+	iov_iter_bvec(&iter, WRITE, bvec, ARRAY_SIZE(bvec), PAGE_SIZE);
++	/* Skip checking health for OcteonTx */
++	if (!rng->pf_regbase)
++		return 0;
 +
-+	ret = fscache_begin_operation(&cres, cookie, FSCACHE_WANT_WRITE,
-+				      fscache_access_io_write);
-+	if (ret < 0)
++	status = readq(rng->pf_regbase + HEALTH_STATUS_REG);
++	if (status & BIT_ULL(0)) {
++		dev_err(&rng->pdev->dev, "HWRNG: Startup health test failed\n");
++		return -EIO;
++	}
++
++	cycles = status >> 1;
++	if (!cycles)
++		return 0;
++
++	cur_time = arch_timer_read_counter();
++
++	/* RNM_HEALTH_STATUS[CYCLES_SINCE_HEALTH_FAILURE]
++	 * Number of coprocessor cycles times 2 since the last failure.
++	 * This field doesn't get cleared/updated until another failure.
++	 */
++	cycles = cycles / 2;
++	cur_err = (cycles * 1000000000) / rng->clock_rate; /* In nanosec */
++
++	/* Ignore errors that happenned a long time ago, these
++	 * are most likely false positive errors.
++	 */
++	if (cur_err > MSEC_TO_NSEC(10)) {
++		rng->prev_error = 0;
++		rng->prev_time = 0;
++		return 0;
++	}
++
++	if (rng->prev_error) {
++		/* Calculate time elapsed since last error
++		 * '1' tick of CNTVCT is 10ns, since it runs at 100Mhz.
++		 */
++		time_elapsed = (cur_time - rng->prev_time) * 10;
++		time_elapsed += rng->prev_error;
++
++		/* Check if current error is a new one or the old one itself.
++		 * If error is a new one then consider there is a persistent
++		 * issue with entropy, declare hardware failure.
++		 */
++		if (cur_err < time_elapsed) {
++			dev_err(&rng->pdev->dev, "HWRNG failure detected\n");
++			rng->prev_error = cur_err;
++			rng->prev_time = cur_time;
++			return -EIO;
++		}
++	}
++
++	rng->prev_error = cur_err;
++	rng->prev_time = cur_time;
++	return 0;
++}
++
+ /* Read data from the RNG unit */
+ static int cavium_rng_read(struct hwrng *rng, void *dat, size_t max, bool wait)
+ {
+ 	struct cavium_rng *p = container_of(rng, struct cavium_rng, ops);
+ 	unsigned int size = max;
++	int err = 0;
++
++	err = check_rng_health(p);
++	if (err)
++		return err;
+ 
+ 	while (size >= 8) {
+ 		*((u64 *)dat) = readq(p->result);
+@@ -39,6 +166,39 @@ static int cavium_rng_read(struct hwrng *rng, void *dat, size_t max, bool wait)
+ 	return max;
+ }
+ 
++static int cavium_map_pf_regs(struct cavium_rng *rng)
++{
++	struct pci_dev *pdev;
++
++	/* Health status is not supported on 83xx, skip mapping PF CSRs */
++	if (is_octeontx(rng->pdev)) {
++		rng->pf_regbase = NULL;
++		return 0;
++	}
++
++	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
++			      PCI_DEVID_CAVIUM_RNG_PF, NULL);
++	if (!pdev) {
++		dev_err(&pdev->dev, "Cannot find RNG PF device\n");
++		return -EIO;
++	}
++
++	rng->pf_regbase = ioremap(pci_resource_start(pdev, 0),
++				  pci_resource_len(pdev, 0));
++	if (!rng->pf_regbase) {
++		dev_err(&pdev->dev, "Failed to map PF CSR region\n");
++		pci_dev_put(pdev);
++		return -ENOMEM;
++	}
++
++	pci_dev_put(pdev);
++
++	/* Get co-processor clock rate */
++	rng->clock_rate = rng_get_coprocessor_clkrate();
++
++	return 0;
++}
++
+ /* Map Cavium RNG to an HWRNG object */
+ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 			 const struct	pci_device_id	*id)
+@@ -50,6 +210,8 @@ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 	if (!rng)
+ 		return -ENOMEM;
+ 
++	rng->pdev = pdev;
++
+ 	/* Map the RNG result */
+ 	rng->result = pcim_iomap(pdev, 0, 0);
+ 	if (!rng->result) {
+@@ -67,6 +229,11 @@ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 
+ 	pci_set_drvdata(pdev, rng);
+ 
++	/* Health status is available only at PF, hence map PF registers. */
++	ret = cavium_map_pf_regs(rng);
++	if (ret)
 +		return ret;
 +
-+	ret = cres.ops->prepare_fallback_write(&cres, page_index(page));
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = fscache_write(&cres, page_offset(page), &iter, NULL, NULL);
-+out:
-+	fscache_end_operation(&cres);
-+	_leave(" = %d", ret);
-+	return ret;
-+}
-+EXPORT_SYMBOL(__fscache_fallback_write_page);
-+
- struct fscache_write_request {
- 	struct netfs_cache_resources cache_resources;
- 	struct address_space	*mapping;
-diff --git a/include/linux/fscache.h b/include/linux/fscache.h
-index b3b625d0834c..2996b417c5d0 100644
---- a/include/linux/fscache.h
-+++ b/include/linux/fscache.h
-@@ -171,6 +171,10 @@ extern void __fscache_invalidate(struct fscache_cookie *, const void *, loff_t,
- #ifdef FSCACHE_USE_NEW_IO_API
- extern int __fscache_begin_read_operation(struct netfs_cache_resources *, struct fscache_cookie *);
- #endif
-+#ifdef FSCACHE_USE_FALLBACK_IO_API
-+extern int __fscache_fallback_read_page(struct fscache_cookie *, struct page *);
-+extern int __fscache_fallback_write_page(struct fscache_cookie *, struct page *);
-+#endif
- 
- extern void __fscache_write_to_cache(struct fscache_cookie *, struct address_space *,
- 				     loff_t, size_t, loff_t, netfs_io_terminated_t, void *);
-@@ -555,4 +559,48 @@ static inline void fscache_write_to_cache(struct fscache_cookie *cookie,
+ 	ret = devm_hwrng_register(&pdev->dev, &rng->ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Error registering device as HWRNG.\n");
+@@ -76,10 +243,18 @@ static int cavium_rng_probe_vf(struct	pci_dev		*pdev,
+ 	return 0;
  }
- #endif /* FSCACHE_USE_NEW_IO_API */
  
-+#ifdef FSCACHE_USE_FALLBACK_IO_API
-+
-+/**
-+ * fscache_fallback_read_page - Read a page from a cache object (DANGEROUS)
-+ * @cookie: The cookie representing the cache object
-+ * @page: The page to be read to
-+ *
-+ * Synchronously read a page from the cache.  The page's offset is used to
-+ * indicate where to read.
-+ *
-+ * This is dangerous and should be moved away from as it relies on the
-+ * assumption that the backing filesystem will exactly record the blocks we
-+ * have stored there.
-+ */
-+static inline
-+int fscache_fallback_read_page(struct fscache_cookie *cookie, struct page *page)
++/* Remove the VF */
++static void cavium_rng_remove_vf(struct pci_dev *pdev)
 +{
-+	if (fscache_cookie_enabled(cookie))
-+		return __fscache_fallback_read_page(cookie, page);
-+	return -ENOBUFS;
++	struct cavium_rng *rng;
++
++	rng = pci_get_drvdata(pdev);
++	iounmap(rng->pf_regbase);
 +}
-+
-+/**
-+ * fscache_fallback_write_page - Write a page to a cache object (DANGEROUS)
-+ * @cookie: The cookie representing the cache object
-+ * @page: The page to be written from
-+ *
-+ * Synchronously write a page to the cache.  The page's offset is used to
-+ * indicate where to write.
-+ *
-+ * This is dangerous and should be moved away from as it relies on the
-+ * assumption that the backing filesystem will exactly record the blocks we
-+ * have stored there.
-+ */
-+static inline
-+int fscache_fallback_write_page(struct fscache_cookie *cookie, struct page *page)
-+{
-+	if (fscache_cookie_enabled(cookie))
-+		return __fscache_fallback_write_page(cookie, page);
-+	return -ENOBUFS;
-+}
-+
-+#endif /* FSCACHE_USE_FALLBACK_IO_API */
-+
- #endif /* _LINUX_FSCACHE_H */
-
+ 
+ static const struct pci_device_id cavium_rng_vf_id_table[] = {
+-	{ PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, 0xa033), 0, 0, 0},
+-	{0,},
++	{ PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, PCI_DEVID_CAVIUM_RNG_VF) },
++	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, cavium_rng_vf_id_table);
+ 
+@@ -87,8 +262,9 @@ static struct pci_driver cavium_rng_vf_driver = {
+ 	.name		= "cavium_rng_vf",
+ 	.id_table	= cavium_rng_vf_id_table,
+ 	.probe		= cavium_rng_probe_vf,
++	.remove		= cavium_rng_remove_vf,
+ };
+ module_pci_driver(cavium_rng_vf_driver);
+ 
+ MODULE_AUTHOR("Omer Khaliq <okhaliq@caviumnetworks.com>");
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/char/hw_random/cavium-rng.c b/drivers/char/hw_random/cavium-rng.c
+index 63d6e68..b965792 100644
+--- a/drivers/char/hw_random/cavium-rng.c
++++ b/drivers/char/hw_random/cavium-rng.c
+@@ -1,10 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * Hardware Random Number Generator support for Cavium Inc.
+- * Thunder processor family.
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
++ * Hardware Random Number Generator support.
++ * Cavium Thunder, Marvell OcteonTx/Tx2 processor families.
+  *
+  * Copyright (C) 2016 Cavium, Inc.
+  */
+@@ -91,4 +88,4 @@ static struct pci_driver cavium_rng_pf_driver = {
+ 
+ module_pci_driver(cavium_rng_pf_driver);
+ MODULE_AUTHOR("Omer Khaliq <okhaliq@caviumnetworks.com>");
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
