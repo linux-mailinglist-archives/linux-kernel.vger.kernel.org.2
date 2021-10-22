@@ -2,58 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DBA437DBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB079437DC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhJVTJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234220AbhJVTIz (ORCPT
+        id S233267AbhJVTJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:09:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234326AbhJVTJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:08:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B623CC061766;
-        Fri, 22 Oct 2021 12:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=czZn4VgqgqNJZ5Ppv/JT4RKi26ol2gC5wRXk/+FQiV8=; b=pggwe4kTbZvPnmJLNjyp+NhKxp
-        sMZBaZ1QWGY9jcKawWjPON02h7ERgshn8veGx2RRHV7Ar3Pg1OUhQLJhpljtLQMmn//nyoQU3CL9E
-        lgf3W0Ep7sW4SA6hN1mmuj2sJj0uuD/8OGS9Dh075xzzyAuwY1G9LgslFCOEafGKQ7MKUAK0iuhMS
-        ylWeDgCopcyFaxMrGpKvKoO1/K5sLWW0E30CXHJUd1+A4ddp9p+pEcxUIYY1mvZiQ+2Pu1bod5uSH
-        vdb39+JYmlvEHvk0g5BDxVATI+0FPZPFSwdrXMag419rZY9v3z0pfDBf86L7KP3kAYMPIaJygsbBh
-        6jnfoCjQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdzsC-00BoDf-LG; Fri, 22 Oct 2021 19:06:36 +0000
-Date:   Fri, 22 Oct 2021 12:06:36 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Minchan Kim <minchan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 4/4] zram: replace fsync_bdev with sync_blockdev
-Message-ID: <YXMLvK6U4uPba/oL@bombadil.infradead.org>
-References: <20211020015548.2374568-1-ming.lei@redhat.com>
- <20211020015548.2374568-5-ming.lei@redhat.com>
+        Fri, 22 Oct 2021 15:09:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634929617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0FNAZqHV+9loKM6DOr8EgJ4Vdd0ANZRxxJWFLeXiMmw=;
+        b=EQLvpWWkkYtO2Ooz4dS2GaWGk5PVYIdDnxV6QzAmqFUQIgcfO8PnJo5obYmT06sgCM/KNV
+        f1prMGV5RBGpWygYmX1cpVK3K2Le/S38vxN93fTFdojO6pD/ZlFlqZ3zvJwYawdmdUvVSZ
+        g7YpO7JC+7VrhczA9YN0uJRUX4GECJU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-RwjIMXKIMcypyHTQiCX8MA-1; Fri, 22 Oct 2021 15:06:51 -0400
+X-MC-Unique: RwjIMXKIMcypyHTQiCX8MA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7353A801FCE;
+        Fri, 22 Oct 2021 19:06:49 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74DF060C04;
+        Fri, 22 Oct 2021 19:06:43 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v2 33/53] cachefiles: Add I/O error reporting macros
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Omar Sandoval <osandov@osandov.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 22 Oct 2021 20:06:42 +0100
+Message-ID: <163492960262.1038219.8002050280041934104.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+References: <163492911924.1038219.13107463173777870713.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020015548.2374568-5-ming.lei@redhat.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:55:48AM +0800, Ming Lei wrote:
-> When calling fsync_bdev(), zram driver guarantees that the bdev won't be
-> opened by anyone, then there can't be one active fs/superblock over the
-> zram bdev, so replace fsync_bdev with sync_blockdev.
-> 
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Add a couple of macros to report I/O errors and to tell fscache that the
+cache is in trouble.
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-cachefs@redhat.com
+---
 
-  Luis
+ fs/cachefiles/internal.h |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
+index d615213a2fa1..230a1a2bf01d 100644
+--- a/fs/cachefiles/internal.h
++++ b/fs/cachefiles/internal.h
+@@ -153,6 +153,26 @@ static inline int cachefiles_inject_remove_error(void)
+ 	return cachefiles_error_injection_state & 2 ? -EIO : 0;
+ }
+ 
++/*
++ * error handling
++ */
++
++#define cachefiles_io_error(___cache, FMT, ...)		\
++do {							\
++	pr_err("I/O Error: " FMT"\n", ##__VA_ARGS__);	\
++	fscache_io_error((___cache)->cache);		\
++	set_bit(CACHEFILES_DEAD, &(___cache)->flags);	\
++} while (0)
++
++#define cachefiles_io_error_obj(object, FMT, ...)			\
++do {									\
++	struct cachefiles_cache *___cache;				\
++									\
++	___cache = (object)->volume->cache;				\
++	cachefiles_io_error(___cache, FMT " [o=%08x]", ##__VA_ARGS__,	\
++			    (object)->debug_id);			\
++} while (0)
++
+ 
+ /*
+  * debug tracing
+
+
