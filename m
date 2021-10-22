@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67204438073
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CED3438079
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhJVXEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 19:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhJVXEH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:04:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74602C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 16:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ThrVyvhYD0JHsukgsvqkog71VG0MPB0g06xCAvRcMD4=; b=e8Cjs7buEx4bsEfiWkh2nzBPNz
-        T6KFnfVL6DevecROt5TglVhfYYQGXPMbo/1J8wk4pvToIexT0CcYsly6pIuz9xmYqHdrwL0eVg6DE
-        wYqXX3wu+75vXysyCx63BGt+G7bbPs6DKSlXdc7zO3IijrG39ojmAllglEznUwdodDI7JImuuTjC9
-        +O09IjlYRo/MUZO1yRuBkgObYcYdeDqIcnSkUR4hPf6DaQQNqvFB+n4RR4fi+2r0QpCKxgQZeWM0c
-        +kPrkKklGLE1XZ24d3qhoQHJcNqjNWhNzet2P6TU2oB+SLZFtbE513TDB+Quedq0Es8a2M4PYbzD7
-        /AbDzNjA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1me3Xn-00C5aV-1J; Fri, 22 Oct 2021 23:01:47 +0000
-Subject: Re: [PATCH] reset: Add Sunplus SP7021 reset driver
-To:     qinjian <qinjian@cqplus1.com>, p.zabel@pengutronix.de
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wells.lu@sunplus.com
-References: <20211022091157.456755-1-qinjian@cqplus1.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d32de27d-510e-520e-f616-4167a6ceebb4@infradead.org>
-Date:   Fri, 22 Oct 2021 16:01:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231603AbhJVXNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 19:13:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230463AbhJVXNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 19:13:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7769161039;
+        Fri, 22 Oct 2021 23:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634944248;
+        bh=auW2dQOL4ArLJIm2vU2QQG2Gwnc2dGDZzVEL90tmlSU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sJICpNRDotoPwB2mj9p1+Lx9tKpAZpbbiPqSMhKyWEHXTse3PWmwLxcrPiok4EGgO
+         Vdm0otGyay6s7HOVkyX8WxRRNpRkTu27gAXkyOZtpOXcQeOKS/iJ0pmqSwr27ycjon
+         AJdInWpIMwSIKWi1Ce1eoBcWnRP1XmQ/2wpW8JcyevIGQRGR8OIpcWpr9fj9i/pISt
+         3YbLJbyPDrSN9kJIaj92x68etfBBMaMWyYDap+hqTU2xZ+25j8VDh3i22rt+Jl+1Mz
+         jkPzSooNFKLGxlPIzmZGbXlo5zexpnRJ7bXPfAHvf4MxxLvXKhwnz+iJjxHqDsc8vg
+         ddF4zaNr0Sdtw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4080D5C0BF4; Fri, 22 Oct 2021 16:10:48 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:10:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] refscale: simplify the errexit checkpoint
+Message-ID: <20211022231048.GF880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20211022091157.456755-1-qinjian@cqplus1.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 2:11 AM, qinjian wrote:
-> Add reset driver for Sunplus SP7021 SoC.
-> 
-> Signed-off-by: qinjian <qinjian@cqplus1.com>
+On Fri, Oct 22, 2021 at 06:51:10PM +0800, Li Zhijian wrote:
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+
+Good catch!
+
+But given that errexit is only set once at the beginning, why not
+eliminate this local variable in favor of a goto at the point that it
+is currently assigned to?  That would permit further simplification.
+
+							Thanx, Paul
+
 > ---
->   MAINTAINERS                   |   1 +
->   drivers/reset/Kconfig         |   9 ++
->   drivers/reset/Makefile        |   1 +
->   drivers/reset/reset-sunplus.c | 159 ++++++++++++++++++++++++++++++++++
->   4 files changed, 170 insertions(+)
->   create mode 100644 drivers/reset/reset-sunplus.c
+>  kernel/rcu/refscale.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
 > 
-
-Hi,
-
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index be799a5ab..3e2e49998 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -249,6 +249,15 @@ config RESET_TI_SYSCON
->   	  you wish to use the reset framework for such memory-mapped devices,
->   	  say Y here. Otherwise, say N.
->   
-> +config RESET_SUNPLUS
-> +	bool "Sunplus SoCs Reset Driver"
-> +	default SOC_SP7021 || SOC_Q645
-> +	help
-> +	  This enables the reset driver support for Sunplus SP7021 and Q645
-> +	  SoC family. Say Y if you want to control reset signals by the reset
-> +	  controller. Otherwise, say N.
-> +	  This will be enabled by default.
-
-What does that last sentence mean?
-
-thanks.
--- 
-~Randy
+> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+> index 66dc14cf5687..2cbe2a2ba387 100644
+> --- a/kernel/rcu/refscale.c
+> +++ b/kernel/rcu/refscale.c
+> @@ -698,26 +698,25 @@ static int main_func(void *arg)
+>  	// Print the average of all experiments
+>  	SCALEOUT("END OF TEST. Calculating average duration per loop (nanoseconds)...\n");
+>  
+> -	if (!errexit) {
+> -		buf[0] = 0;
+> -		strcat(buf, "\n");
+> -		strcat(buf, "Runs\tTime(ns)\n");
+> -	}
+> +	if (errexit)
+> +		goto err;
+> +
+> +	buf[0] = 0;
+> +	strcat(buf, "\n");
+> +	strcat(buf, "Runs\tTime(ns)\n");
+>  
+>  	for (exp = 0; exp < nruns; exp++) {
+>  		u64 avg;
+>  		u32 rem;
+>  
+> -		if (errexit)
+> -			break;
+>  		avg = div_u64_rem(result_avg[exp], 1000, &rem);
+>  		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
+>  		strcat(buf, buf1);
+>  	}
+>  
+> -	if (!errexit)
+> -		SCALEOUT("%s", buf);
+> +	SCALEOUT("%s", buf);
+>  
+> +err:
+>  	// This will shutdown everything including us.
+>  	if (shutdown) {
+>  		shutdown_start = 1;
+> -- 
+> 2.33.0
+> 
+> 
+> 
