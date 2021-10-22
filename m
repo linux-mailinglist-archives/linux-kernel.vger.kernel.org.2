@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D0D437B36
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC124437B3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhJVRAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:00:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:56718 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233413AbhJVRAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:00:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C5501063;
-        Fri, 22 Oct 2021 09:57:47 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F252E3F73D;
-        Fri, 22 Oct 2021 09:57:43 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 17:57:41 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        zhengqi.arch@bytedance.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-arch@vger.kernel.org, ardb@kernel.org
-Subject: Re: [PATCH 2/7] stacktrace,sched: Make stack_trace_save_tsk() more
- robust
-Message-ID: <20211022165741.GG86184@C02TD0UTHF1T.local>
-References: <20211022150933.883959987@infradead.org>
- <20211022152104.215612498@infradead.org>
- <202110220919.46F58199D@keescook>
- <20211022164514.GE174703@worktop.programming.kicks-ass.net>
+        id S233628AbhJVRCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233413AbhJVRCT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 13:02:19 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1F1C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:00:01 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id o184so6245235iof.6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kTen2SJ5OXpwrB3GYaVSgs5PSr8Wl3SgV5Rb/nQHzy4=;
+        b=OfBpCJAzSU6W7PZkLXvnp5uTA+iDkXVIdjqAMBeIpoljCUIE4H16rweL/sbBvPgjOz
+         a7XnxBwIYdIryHPaHA7ppp+xRkuJ8ZkGtFQ917cYf6DXBKPw/S1sutxiZQufEACp4UpT
+         PLnHHSzn4hQ4AhSAlnXGb0jGqcXGqNTs1nU6fnOh+AIxI5Q8oMN4iE7Fya+Xc4OOZBym
+         rRn0MMZj1yiUeB/E8pchAg4wkBwHmXHOyXkKHbDeAue4CSfMCyDa4KbzZTr3JaR9+GBS
+         VNmBEefGtXM9NaGbU0Rp/mPohCP047tLX02ikVEAVBUzcMC6NEhoorwouURdd7M5e8d/
+         nviw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kTen2SJ5OXpwrB3GYaVSgs5PSr8Wl3SgV5Rb/nQHzy4=;
+        b=y98KaqOYghNFj6HsK52S+cFu473N6fhv5bpF8M9k9neFjpUHj9hBpqdXPh6plR+29B
+         OguNlN1uu+nKuA3dJhH6G1K5olOE8THJn4D90Kzsc0M5rV+cX75bIN1x1xCXBitz5OAC
+         0XvASl1dP6Km6otVqV99aG/REweA/xYiNoJF9DAoHF1IgSxctLBzRDVWqAkIeX0fhrS+
+         Pq0YxHBOnJoV/M9RlTHaM6Lb9b31HKXTcxDq6S/wCacQcbSDv1noaAPXw7XlpbkXQIBA
+         f+QNvkoqrbA9pLtd0f9QdsA5MfGW2tcrltqkAfwYoy0mM0pHIZBWJxMkq4ChYYl21Oqx
+         CCQA==
+X-Gm-Message-State: AOAM531Q4+XS8XW2wYU/qDMTXmtJyIsAa257DEjK/quDre6/qUxFsr6p
+        h/k1yN3j5lq9kZ9uOxUduEF7LvXIMzB6PnuhgoQey5ZOsSiW9A==
+X-Google-Smtp-Source: ABdhPJzxQ0fZin7R9PkqV1UP1dkqBLaE11BhnPXYcqoa5W2nV/HynKJCgyp+2iBylPP9BT6beLI8s2+3hLU0rL6J7ec=
+X-Received: by 2002:a05:6602:168f:: with SMTP id s15mr547913iow.178.1634922001157;
+ Fri, 22 Oct 2021 10:00:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022164514.GE174703@worktop.programming.kicks-ass.net>
+References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-3-saravanak@google.com>
+ <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com> <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
+In-Reply-To: <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Fri, 22 Oct 2021 22:29:24 +0530
+Message-ID: <CAMi1Hd3M--+V6jPTV=psYGpOqi3UeQBs_FHqOg=oUf1hH-EU4w@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-arm-kernel@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>, linux-oxnas@groups.io,
+        linux-renesas-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 06:45:14PM +0200, Peter Zijlstra wrote:
-> On Fri, Oct 22, 2021 at 09:25:02AM -0700, Kees Cook wrote:
-> > On Fri, Oct 22, 2021 at 05:09:35PM +0200, Peter Zijlstra wrote:
-> > >  /**
-> > >   * stack_trace_save_tsk - Save a task stack trace into a storage array
-> > >   * @task:	The task to examine
-> > > @@ -135,7 +142,6 @@ EXPORT_SYMBOL_GPL(stack_trace_save);
-> > >  unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
-> > >  				  unsigned int size, unsigned int skipnr)
-> > >  {
-> > > -	stack_trace_consume_fn consume_entry = stack_trace_consume_entry_nosched;
-> > >  	struct stacktrace_cookie c = {
-> > >  		.store	= store,
-> > >  		.size	= size,
-> > > @@ -143,11 +149,8 @@ unsigned int stack_trace_save_tsk(struct
-> > >  		.skip	= skipnr + (current == tsk),
-> > >  	};
-> > >  
-> > > -	if (!try_get_task_stack(tsk))
-> > > -		return 0;
-> > > +	task_try_func(tsk, try_arch_stack_walk_tsk, &c);
-> > 
-> > Pardon my thin understanding of the scheduler, but I assume this change
-> > doesn't mean stack_trace_save_tsk() stops working for "current", right?
-> > In trying to answer this for myself, I couldn't convince myself what value
-> > current->__state have here. Is it one of TASK_(UN)INTERRUPTIBLE ?
-> 
-> current really shouldn't be using stack_trace_save_tsk(), and no you're
-> quite right, it will not work for current, irrespective of ->__state,
-> current will always be ->on_rq.
+On Fri, 22 Oct 2021 at 05:13, Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Oct 21, 2021 at 4:21 AM Amit Pundir <amit.pundir@linaro.org> wrote:
+> >
+> > Hi Saravana,
+> >
+> > This patch broke v5.15-rc6 on RB5 (sm8250 | qcom/qrb5165-rb5.dts).
+> > I can't boot past this point https://www.irccloud.com/pastebin/raw/Nv6ZwHmW.
+>
+> Amit top posting? How did that happen? :)
+>
+> The fact you are seeing this issue is super strange though. The driver
+> literally does nothing other than allowing some sync_state() callbacks
+> to happen. I also grepped for the occurence of "simple-bus" in
+> arch/arm64/boot/dts/qcom/ and the only instance for 8250 is for the
+> soc node.
+>
+> The only thing I can think of is that without my patch some
+> sync_state() callbacks weren't getting called and maybe it was masking
+> some other issue.
+>
+> Can you try to boot with this log (see log patch below) and see if the
+> device hangs right after a sync_state() callback? Also, looking at the
+> different sync_state() implementations in upstream, I'm guessing one
+> of the devices isn't voting for interconnect bandwidth when it should
+> have.
+>
+> Another thing you could do is boot without the simple-bus changes and
+> then look for all instances of "state_synced" in /sys/devices and then
+> see if any of them has the value "0" after boot up is complete.
 
-Heh, we raced to say the same thing. :)
+Turned out RB5 is not even reaching up to
+device_links_flush_sync_list() and seem to be stuck somewhere in
+device_links_driver_bound(). So I added more print logs to narrow down
+to any specific lock state but those additional prints seem to have
+added enough delay to unblock that particular driver (Serial:
+8250/16550 driver if I understood the logs correctly) and I eventually
+booted to UI.
 
-> I started auditing stack_trace_save_tsk() users a few days ago, but
-> didn't look for this particular issue. I suppose I'll have to start over
-> with that.
+On the booted RB5 *with* and *without* the simple-bus changes, I see 4
+instances of "0" state_synced nodes at:
 
-FWIW, this shape of thing was one of the reasons I wanted to split
-arch_stack_walk() into separate:
+/sys/devices/platform/soc@0/9100000.interconnect/state_synced
+/sys/devices/platform/soc@0/1500000.interconnect/state_synced
+/sys/devices/platform/soc@0/1740000.interconnect/state_synced
+/sys/devices/platform/soc@0/163d000.interconnect/state_synced
 
-* arch_stack_walk_current()
-* arch_stack_walk_current_regs()
-* arch_stack_walk_blocked_task()
+Regards,
+Amit Pundir
 
-... with similar applying here, since otherwise people won't consider
-the distinction between current / !current at the caller level, leading
-to junk like this.
-
-Thanks,
-Mark.
+>
+> -Saravana
+>
+> -- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1099,6 +1099,7 @@ static void device_links_flush_sync_list(struct
+> list_head *list,
+>                 if (dev != dont_lock_dev)
+>                         device_lock(dev);
+>
+> +               dev_info(dev, "Calling sync_state()\n");
+>                 if (dev->bus->sync_state)
+>                         dev->bus->sync_state(dev);
+>                 else if (dev->driver && dev->driver->sync_state)
