@@ -2,158 +2,649 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFB843736C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E344373A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhJVIFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:05:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:29042 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231984AbhJVIFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:05:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="292716084"
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="292716084"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 01:02:53 -0700
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="663090522"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 01:02:51 -0700
-Date:   Fri, 22 Oct 2021 16:22:43 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [vmlinux.lds.h]  d4c6399900:
- BUG:unable_to_handle_page_fault_for_address
-Message-ID: <20211022082243.GB23206@xsang-OptiPlex-9020>
-References: <20210903053159.GA29784@xsang-OptiPlex-9020>
- <YTJumKboBddccDUJ@Ryzen-9-3900X.localdomain>
+        id S232213AbhJVI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:26:39 -0400
+Received: from [113.204.237.245] ([113.204.237.245]:46410 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231984AbhJVI0i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:26:38 -0400
+X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
+        LIVER,40,3)
+Received: from 172.28.114.216
+        by cqmailgates with MailGates ESMTP Server V5.0(10973:0:AUTH_RELAY)
+        (envelope-from <qinjian@cqplus1.com>); Fri, 22 Oct 2021 16:23:56 +0800 (CST)
+From:   qinjian <qinjian@cqplus1.com>
+To:     tglx@linutronix.de
+Cc:     maz@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, wells.lu@sunplus.com,
+        qinjian <qinjian@cqplus1.com>
+Subject: [PATCH] irqchip: Add support for Sunplus SP7021 interrupt controller
+Date:   Fri, 22 Oct 2021 16:23:28 +0800
+Message-Id: <20211022082328.432357-1-qinjian@cqplus1.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTJumKboBddccDUJ@Ryzen-9-3900X.localdomain>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Nathan Chancellor,
+Add interrupt driver for Sunplus SP7021 SoC.
 
-On Fri, Sep 03, 2021 at 11:51:04AM -0700, Nathan Chancellor wrote:
-> On Fri, Sep 03, 2021 at 01:31:59PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-9):
-> > 
-> > commit: d4c6399900364facd84c9e35ce1540b6046c345f ("vmlinux.lds.h: Avoid orphan section with !SMP")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > 
-> > 
-> > in testcase: trinity
-> > version: trinity-x86_64-03f10b67-1_20210401
-> > with following parameters:
-> > 
-> > 	runtime: 300s
-> > 
-> > test-description: Trinity is a linux system call fuzz tester.
-> > test-url: http://codemonkey.org.uk/projects/trinity/
-> > 
-> > 
-> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> > 
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > 
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > 
-> > 
-> > [  103.254262] BUG: unable to handle page fault for address: ffffffffbb443040
-> > [  103.255486] #PF: supervisor write access in kernel mode
-> > [  103.256427] #PF: error_code(0x0002) - not-present page
-> > [  103.257362] PGD 2cec37067 P4D 2cec37067 PUD 2cec38063 PMD 100235063 PTE 800ffffd2f9bc062
-> > [  103.258757] Oops: 0002 [#1] KASAN PTI
-> > [  103.259355] CPU: 0 PID: 1 Comm: swapper Not tainted 5.13.0-rc2+ #1
-> > [  103.260390] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> > [  103.261811] RIP: 0010:kvm_guest_apic_eoi_write+0x12/0x90
-> > [  103.262740] Code: 00 48 c7 c7 28 8d b1 ba e8 2b b5 60 00 eb cc 66 0f 1f 84 00 00 00 00 00 53 be 08 00 00 00 48 c7 c7 40 30 44 bb e8 ee b8 60 00 <48> 0f ba 35 95 d0 59 05 00 72 4e 48 c7 c0 80 fc 7f b9 48 ba 00 00
-> > [  103.265736] RSP: 0018:ffffc90000007fc8 EFLAGS: 00010046
-> > [  103.266640] RAX: 0000000000000001 RBX: ffffffffb97ffa40 RCX: ffffffffb5ea5fa2
-> > [  103.267869] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffffffbb443040
-> > [  103.269087] RBP: 0000000000000000 R08: 0000000000000001 R09: fffffbfff7688609
-> > [  103.270329] R10: ffffffffbb443047 R11: fffffbfff7688608 R12: 0000000000000000
-> > [  103.271490] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > [  103.272646] FS:  0000000000000000(0000) GS:ffffffffb9a7f000(0000) knlGS:0000000000000000
-> > [  103.273993] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  103.274963] CR2: ffffffffbb443040 CR3: 00000002cec34000 CR4: 00000000000406b0
-> > [  103.276150] Call Trace:
-> > [  103.276564]  <IRQ>
-> > [  103.276913]  __sysvec_apic_timer_interrupt+0x62/0x370
-> > [  103.277781]  sysvec_apic_timer_interrupt+0x62/0x80
-> > [  103.278602]  </IRQ>
-> > [  103.278984]  asm_sysvec_apic_timer_interrupt+0x12/0x20
-> > [  103.279890] RIP: 0010:call_rcu+0xc/0x150
-> > [  103.280559] Code: c7 c7 e0 db 05 ba e8 d3 23 33 02 85 c0 75 cc eb 9f 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 b8 00 00 00 00 00 fc ff df 55 53 <48> 89 fb 48 83 c7 08 48 89 fa 48 c1 ea 03 48 83 ec 08 80 3c 02 00
-> > [  103.283542] RSP: 0018:ffffc9000001fdb8 EFLAGS: 00000246
-> > [  103.284404] RAX: dffffc0000000000 RBX: fffff52000003fc6 RCX: 1ffffffff75653d5
-> > [  103.285532] RDX: 1ffff92000003fdd RSI: ffffffffb60b1810 RDI: ffffc9000001fe80
-> > [  103.286712] RBP: ffffc9000001fe80 R08: ffffc9000001fe60 R09: 0000000000000000
-> > [  103.287888] R10: 0000000000000001 R11: ffffc9000001fe90 R12: ffffc9000001fe60
-> > [  103.289058] R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000000
-> > [  103.290290]  ? rcu_tasks_pregp_step+0x10/0x10
-> > [  103.291029]  __wait_rcu_gp+0x160/0x440
-> > [  103.291650]  rcu_barrier+0x83/0xc0
-> > [  103.292234]  ? poll_state_synchronize_rcu+0x10/0x10
-> > [  103.293040]  ? synchronize_rcu+0x80/0x80
-> > [  103.293720]  ? lockdep_hardirqs_on_prepare+0x26b/0x3e0
-> > [  103.294554]  ? trace_hardirqs_on+0x3d/0x1d0
-> > [  103.295279]  ? _vdso_data+0xf80/0xf80
-> > [  103.295919]  ? _vdso_data+0xf80/0xf80
-> > [  103.296525]  ? free_kernel_image_pages+0xd/0x30
-> > [  103.297307]  ? rest_init+0x18e/0x18e
-> > [  103.297937]  kernel_init+0x20/0x112
-> > [  103.298537]  ret_from_fork+0x22/0x30
-> > [  103.299197] Modules linked in:
-> > [  103.299740] CR2: ffffffffbb443040
-> > [  103.300304] ---[ end trace 733607da50d3f759 ]---
-> > 
-> > 
-> > To reproduce:
-> > 
-> >         
-> > 
-> >         git clone https://github.com/intel/lkp-tests.git
-> >         cd lkp-tests
-> >         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
-> 
-> Hi,
-> 
-> This command mentions a bzImage but there is not one attached here nor
-> is the configuration file attached or linked anywhere so I am not really
-> able to investigate this without either of those :)
+Signed-off-by: qinjian <qinjian@cqplus1.com>
+---
+ MAINTAINERS                       |   1 +
+ drivers/irqchip/Kconfig           |   9 +
+ drivers/irqchip/Makefile          |   1 +
+ drivers/irqchip/irq-sp7021-intc.c | 557 ++++++++++++++++++++++++++++++
+ 4 files changed, 568 insertions(+)
+ create mode 100644 drivers/irqchip/irq-sp7021-intc.c
 
-sorry for late.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 123616bb9..65cd295e9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2663,6 +2663,7 @@ F:	Documentation/devicetree/bindings/arm/sunplus,sp7021.yaml
+ F:	Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+ F:	Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
+ F:	Documentation/devicetree/bindings/reset/sunplus,reset.yaml
++F:	drivers/irqchip/irq-sp7021-intc.c
+ F:	include/dt-bindings/clock/sp-sp7021.h
+ F:	include/dt-bindings/interrupt-controller/sp7021-intc.h
+ F:	include/dt-bindings/reset/sp-sp7021.h
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index aca7b595c..52bd16363 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -602,4 +602,13 @@ config APPLE_AIC
+ 	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
+ 	  such as the M1.
+ 
++config SUNPLUS_SP7021_INTC
++	bool "Sunplus SP7021 interrupt controller"
++	help
++	  Support for the Sunplus SP7021 Interrupt Controller IP core.
++	  This is used as a primary controller with SP7021 ChipP and can also
++	  be used as a secondary chained controller on SP7021 ChipC.
++
++	  If you don't know what to do here, say Y.
++
+ endmenu
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index f88cbf36a..75411f654 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -116,3 +116,4 @@ obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
+ obj-$(CONFIG_WPCM450_AIC)		+= irq-wpcm450-aic.o
+ obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
+ obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
++obj-$(CONFIG_SUNPLUS_SP7021_INTC)	+= irq-sp7021-intc.o
+diff --git a/drivers/irqchip/irq-sp7021-intc.c b/drivers/irqchip/irq-sp7021-intc.c
+new file mode 100644
+index 000000000..2d26681d3
+--- /dev/null
++++ b/drivers/irqchip/irq-sp7021-intc.c
+@@ -0,0 +1,557 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) Sunplus Technology Co., Ltd.
++ *       All rights reserved.
++ */
++#include <linux/irq.h>
++#include <linux/irqdomain.h>
++#include <linux/io.h>
++#ifdef CONFIG_ARM
++#include <asm/exception.h>
++#include <asm/mach/irq.h>
++#else
++#define __exception_irq_entry
++#endif
++#include <linux/irqchip.h>
++#include <linux/irqchip/chained_irq.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <dt-bindings/interrupt-controller/sp7021-intc.h>
++
++#if defined(CONFIG_SOC_SP7021)
++#define SUPPORT_IRQ_GRP_REG
++#endif
++
++#define SP_INTC_HWIRQ_MIN     0
++#define SP_INTC_HWIRQ_MAX     223
++
++struct intG0Reg_st {
++	/* Interrupt G0 */
++	u32 intr_type[7];
++	u32 intr_polarity[7];
++	u32 priority[7];
++	u32 intr_mask[7];
++	u32 g15_reserved_0[4];
++};
++
++struct intG1Reg_st {
++	/* Interrupt G1 */
++	u32 intr_clr[7];
++	u32 masked_fiqs[7];
++	u32 masked_irqs[7];
++	u32 g21_reserved_0[10];
++#ifdef SUPPORT_IRQ_GRP_REG
++	u32 intr_group;
++#else
++	u32 rsvd_31;
++#endif
++};
++
++static struct sp_intctl {
++	__iomem struct intG0Reg_st *g0;
++	__iomem struct intG1Reg_st *g1;
++	int hwirq_start;
++	int hwirq_end;   /* exclude */
++	struct irq_domain *domain;
++	struct device_node *node;
++	spinlock_t lock;
++	int virq[2];
++} sp_intc;
++
++#define WORKAROUND_FOR_EDGE_TRIGGER_BUG 1
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++#define HW_IRQ_GPIO_INT0                120
++#define HW_IRQ_GPIO_INT7                127
++#define SP_IRQ_TYPE_EDGE_NONE           0x00
++#define SP_IRQ_TYPE_EDGE_RISING         0x01
++#define SP_IRQ_TYPE_EDGE_FALLING        0x02
++#define SP_IRQ_TYPE_EDGE_ACTIVE         0x80
++static char edge_trigger[SP_INTC_HWIRQ_MAX-SP_INTC_HWIRQ_MIN];
++#endif
++
++static void sp_intc_ack_irq(struct irq_data *data);
++static void sp_intc_mask_irq(struct irq_data *data);
++static void sp_intc_unmask_irq(struct irq_data *data);
++static int sp_intc_set_type(struct irq_data *data, unsigned int flow_type);
++
++static struct irq_chip sp_intc_chip = {
++	.name = "sp_intc",
++	.irq_ack = sp_intc_ack_irq,
++	.irq_mask = sp_intc_mask_irq,
++	.irq_unmask = sp_intc_unmask_irq,
++	.irq_set_type = sp_intc_set_type,
++};
++
++static void sp_intc_ack_irq(struct irq_data *data)
++{
++	u32 idx, mask;
++
++	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
++		return;
++
++	idx = data->hwirq / 32;
++	mask = (1 << (data->hwirq % 32));
++
++	spin_lock(&sp_intc.lock);
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++	if (edge_trigger[data->hwirq] & (SP_IRQ_TYPE_EDGE_RISING|SP_IRQ_TYPE_EDGE_FALLING)) {
++		u32 trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
++
++		if (edge_trigger[data->hwirq] == SP_IRQ_TYPE_EDGE_RISING)
++			trig_lvl |= mask;
++		else
++			trig_lvl &= ~mask;
++
++		writel_relaxed(trig_lvl, &sp_intc.g0->intr_polarity[idx]);
++		edge_trigger[data->hwirq] |= SP_IRQ_TYPE_EDGE_ACTIVE;
++	}
++#endif
++	writel_relaxed(mask, &sp_intc.g1->intr_clr[idx]);
++	spin_unlock(&sp_intc.lock);
++}
++
++static void sp_intc_mask_irq(struct irq_data *data)
++{
++	u32 idx, mask;
++
++	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
++		return;
++
++	idx = data->hwirq / 32;
++
++	spin_lock(&sp_intc.lock);
++	mask = readl_relaxed(&sp_intc.g0->intr_mask[idx]);
++	mask &= ~(1 << (data->hwirq % 32));
++	writel_relaxed(mask, &sp_intc.g0->intr_mask[idx]);
++	spin_unlock(&sp_intc.lock);
++}
++
++static void sp_intc_unmask_irq(struct irq_data *data)
++{
++	u32 idx, mask;
++
++	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
++		return;
++
++	idx = data->hwirq / 32;
++	spin_lock(&sp_intc.lock);
++	mask = readl_relaxed(&sp_intc.g0->intr_mask[idx]);
++	mask |= (1 << (data->hwirq % 32));
++	writel_relaxed(mask, &sp_intc.g0->intr_mask[idx]);
++	spin_unlock(&sp_intc.lock);
++}
++
++static int sp_intc_set_type(struct irq_data *data, unsigned int flow_type)
++{
++	u32 idx, mask;
++	u32 edge_type; /* 0=level, 1=edge */
++	u32 trig_lvl;  /* 0=high, 1=low */
++	unsigned long flags;
++
++	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
++		return -EBADR;
++
++	/* update the chip/handler */
++	if (flow_type & IRQ_TYPE_LEVEL_MASK)
++		irq_set_chip_handler_name_locked(data, &sp_intc_chip,
++						   handle_level_irq, NULL);
++	else
++		irq_set_chip_handler_name_locked(data, &sp_intc_chip,
++						   handle_edge_irq, NULL);
++
++	idx = data->hwirq / 32;
++
++	spin_lock_irqsave(&sp_intc.lock, flags);
++
++	edge_type = readl_relaxed(&sp_intc.g0->intr_type[idx]);
++	trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
++	mask = (1 << (data->hwirq % 32));
++
++	switch (flow_type) {
++	case IRQ_TYPE_EDGE_RISING:
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		if ((data->hwirq >= HW_IRQ_GPIO_INT0) && (data->hwirq <= HW_IRQ_GPIO_INT7)) {
++			edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_RISING;
++			writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
++		} else {
++			writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
++		}
++#else
++		writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
++#endif
++		writel_relaxed((trig_lvl & ~mask), &sp_intc.g0->intr_polarity[idx]);
++		break;
++	case IRQ_TYPE_EDGE_FALLING:
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		if ((data->hwirq >= HW_IRQ_GPIO_INT0) && (data->hwirq <= HW_IRQ_GPIO_INT7)) {
++			edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_FALLING;
++			writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
++		} else {
++			writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
++		}
++#else
++		writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
++#endif
++		writel_relaxed((trig_lvl | mask), &sp_intc.g0->intr_polarity[idx]);
++		break;
++	case IRQ_TYPE_LEVEL_HIGH:
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_NONE;
++#endif
++		writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
++		writel_relaxed((trig_lvl & ~mask), &sp_intc.g0->intr_polarity[idx]);
++		break;
++	case IRQ_TYPE_LEVEL_LOW:
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_NONE;
++#endif
++		writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
++		writel_relaxed((trig_lvl | mask), &sp_intc.g0->intr_polarity[idx]);
++		break;
++	default:
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_NONE;
++#endif
++		spin_unlock_irqrestore(&sp_intc.lock, flags);
++		pr_err("%s: type=%d\n", __func__, flow_type);
++		return -EBADR;
++	}
++
++	spin_unlock_irqrestore(&sp_intc.lock, flags);
++
++	return IRQ_SET_MASK_OK;
++}
++
++/* prio=1 (normal), prio=0 (dedicated) */
++static void sp_intc_set_prio(u32 hwirq, u32 prio)
++{
++	u32 idx, mask;
++
++	if ((hwirq < sp_intc.hwirq_start) || (hwirq >= sp_intc.hwirq_end))
++		return;
++
++	idx = hwirq / 32;
++
++	spin_lock(&sp_intc.lock);
++	mask = readl_relaxed(&sp_intc.g0->priority[idx]);
++	if (prio)
++		mask |= (1 << (hwirq % 32));
++	else
++		mask &= ~(1 << (hwirq % 32));
++	writel_relaxed(mask, &sp_intc.g0->priority[idx]);
++	spin_unlock(&sp_intc.lock);
++}
++
++/* return -1 if no interrupt # */
++static int sp_intc_get_ext0_irq(void)
++{
++	int hwirq, mask;
++	int i;
++
++#ifdef SUPPORT_IRQ_GRP_REG
++	mask = (readl_relaxed(&sp_intc.g1->intr_group) >> 8) & 0x7f; /* [14:8] for irq group */
++	if (mask) {
++		i = fls(mask) - 1;
++#else
++	for (i = 0; i < 7; i++) {
++#endif
++		mask = readl_relaxed(&sp_intc.g1->masked_irqs[i]);
++		if (mask) {
++			hwirq = (i << 5) + fls(mask) - 1;
++			return hwirq;
++		}
++	}
++	return -1;
++}
++
++static int sp_intc_get_ext1_irq(void)
++{
++	int hwirq, mask;
++	int i;
++
++#ifdef SUPPORT_IRQ_GRP_REG
++	mask = (readl_relaxed(&sp_intc.g1->intr_group) >> 0) & 0x7f; /* [6:0] for fiq group */
++	if (mask) {
++		i = fls(mask) - 1;
++#else
++	for (i = 0; i < 7; i++) {
++#endif
++		mask = readl_relaxed(&sp_intc.g1->masked_fiqs[i]);
++		if (mask) {
++			hwirq = (i << 5) + fls(mask) - 1;
++			return hwirq;
++		}
++	}
++	return -1;
++}
++
++static void sp_intc_handle_ext0_cascaded(struct irq_desc *desc)
++{
++	struct irq_chip *host_chip = irq_desc_get_chip(desc);
++	int hwirq;
++
++	chained_irq_enter(host_chip, desc);
++
++	while ((hwirq = sp_intc_get_ext0_irq()) >= 0) {
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		if (edge_trigger[hwirq] & SP_IRQ_TYPE_EDGE_ACTIVE) {
++			u32 idx = hwirq / 32;
++			u32 trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
++			u32 mask = 1 << (hwirq % 32);
++
++			edge_trigger[hwirq] &= ~SP_IRQ_TYPE_EDGE_ACTIVE;
++			if (edge_trigger[hwirq] == SP_IRQ_TYPE_EDGE_RISING)
++				trig_lvl &= ~mask;
++			else
++				trig_lvl |= mask;
++
++			writel_relaxed(trig_lvl, &sp_intc.g0->intr_polarity[idx]);
++		} else
++			generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
++#else
++		generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
++#endif
++	}
++
++	chained_irq_exit(host_chip, desc);
++}
++
++static void sp_intc_handle_ext1_cascaded(struct irq_desc *desc)
++{
++	struct irq_chip *host_chip = irq_desc_get_chip(desc);
++	int hwirq;
++
++	chained_irq_enter(host_chip, desc);
++
++	while ((hwirq = sp_intc_get_ext1_irq()) >= 0) {
++#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
++		if (edge_trigger[hwirq] & SP_IRQ_TYPE_EDGE_ACTIVE) {
++			u32 idx = hwirq / 32;
++			u32 trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
++			u32 mask = 1 << (hwirq % 32);
++
++			edge_trigger[hwirq] &= ~SP_IRQ_TYPE_EDGE_ACTIVE;
++			if (edge_trigger[hwirq] == SP_IRQ_TYPE_EDGE_RISING)
++				trig_lvl &= ~mask;
++			else
++				trig_lvl |= mask;
++
++			writel_relaxed(trig_lvl, &sp_intc.g0->intr_polarity[idx]);
++		} else
++			generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
++#else
++		generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
++#endif
++	}
++
++	chained_irq_exit(host_chip, desc);
++}
++
++static int sp_intc_handle_one_round(struct pt_regs *regs)
++{
++	int ret = -EINVAL;
++	int hwirq;
++
++	while ((hwirq = sp_intc_get_ext0_irq()) >= 0) {
++		handle_domain_irq(sp_intc.domain, hwirq, regs);
++		ret = 0;
++	}
++
++	return ret;
++}
++
++/* 8388: level-triggered hwirq# may come slower than IRQ */
++#define SPURIOUS_RETRY  30
++
++static void __exception_irq_entry sp_intc_handle_irq(struct pt_regs *regs)
++{
++	int err;
++	int first_int = 1;
++	int retry = 0;
++
++	do {
++		err = sp_intc_handle_one_round(regs);
++
++		if (!err)
++			first_int = 0;
++
++		if (first_int && err) { /* spurious irq */
++			if (retry++ < SPURIOUS_RETRY)
++				continue;
++		}
++	} while (!err);
++}
++
++static int sp_intc_irq_domain_map(struct irq_domain *domain, unsigned int irq,
++				  irq_hw_number_t hwirq)
++{
++	irq_set_chip_and_handler(irq, &sp_intc_chip, handle_level_irq);
++	irq_set_chip_data(irq, &sp_intc_chip);
++	irq_set_noprobe(irq);
++
++	return 0;
++}
++
++static void __init sp_intc_chip_init(int hwirq_start, int hwirq_end,
++				     void __iomem *base0, void __iomem *base1)
++{
++	int i;
++
++	sp_intc.g0 = base0;
++	sp_intc.g1 = base1;
++	sp_intc.hwirq_start = hwirq_start;
++	sp_intc.hwirq_end = hwirq_end;
++
++	for (i = 0; i < 7; i++) {
++		/* all mask */
++		writel_relaxed(0, &sp_intc.g0->intr_mask[i]);
++		/* all edge */
++		writel_relaxed(~0, &sp_intc.g0->intr_type[i]);
++		/* all high-active */
++		writel_relaxed(0, &sp_intc.g0->intr_polarity[i]);
++		/* all irq */
++		writel_relaxed(~0, &sp_intc.g0->priority[i]);
++		/* all clear */
++		writel_relaxed(~0, &sp_intc.g1->intr_clr[i]);
++	}
++}
++
++int sp_intc_xlate_of(struct irq_domain *d, struct device_node *node,
++			  const u32 *intspec, unsigned int intsize,
++			  irq_hw_number_t *out_hwirq, unsigned int *out_type)
++{
++	int ret = 0;
++	u32 ext_num;
++
++	if (WARN_ON(intsize < 2))
++		return -EINVAL;
++
++	*out_hwirq = intspec[0];
++	*out_type = intspec[1] & IRQ_TYPE_SENSE_MASK;
++	ext_num = (intspec[1] & SP_INTC_EXT_INT_MASK) >> SP_INTC_EXT_INT_SHFIT;
++
++	/* set ext_int1 to high priority */
++	if (ext_num != 1)
++		ext_num = 0;
++
++	if (ext_num)
++		sp_intc_set_prio(*out_hwirq, 0); /* priority=0 */
++
++	return ret;
++}
++
++static const struct irq_domain_ops sp_intc_dm_ops = {
++	.xlate = sp_intc_xlate_of,
++	.map = sp_intc_irq_domain_map,
++};
++
++int __init sp_intc_init(int hwirq_start, int irqs, void __iomem *base0, void __iomem *base1)
++{
++	sp_intc_chip_init(hwirq_start, hwirq_start + irqs, base0, base1);
++
++	sp_intc.domain = irq_domain_add_legacy(NULL, irqs, hwirq_start,
++			sp_intc.hwirq_start, &sp_intc_dm_ops, &sp_intc);
++	if (!sp_intc.domain)
++		panic("%s: unable to create legacy domain\n", __func__);
++
++	set_handle_irq(sp_intc_handle_irq);
++
++	return 0;
++}
++
++#if defined(CONFIG_SOC_SP7021)
++static cpumask_t *u2cpumask(u32 mask, cpumask_t *cpumask)
++{
++	unsigned int i;
++
++	for (i = 0; i < 4; i++) {
++		if (mask & (1 << i))
++			cpumask_set_cpu(i, cpumask);
++		else
++			cpumask_clear_cpu(i, cpumask);
++	}
++	return cpumask;
++}
++
++static int __init sp_intc_ext_adjust(void)
++{
++	u32 mask;
++	static cpumask_t cpumask;
++	struct device_node *node = sp_intc.node;
++
++	if (num_online_cpus() <= 1) {
++		pr_info("single core: skip ext adjust\n");
++		return 0;
++	}
++
++	cpumask = CPU_MASK_NONE;
++	if (!of_property_read_u32(node, "ext0-mask", &mask)) {
++		pr_info("%d: ext0-mask=0x%x\n", sp_intc.virq[0], mask);
++		if (irq_set_affinity(sp_intc.virq[0], u2cpumask(mask, &cpumask)))
++			pr_err("failed to set ext0 cpumask=0x%x\n", mask);
++	}
++
++	cpumask = CPU_MASK_NONE;
++	if (!of_property_read_u32(node, "ext1-mask", &mask)) {
++		pr_info("%d: ext1-mask=0x%x\n", sp_intc.virq[1], mask);
++		if (irq_set_affinity(sp_intc.virq[1], u2cpumask(mask, &cpumask)))
++			pr_err("failed to set ext1 cpumask=0x%x\n", mask);
++	}
++
++	return 0;
++}
++arch_initcall(sp_intc_ext_adjust)
++#endif
++
++#ifdef CONFIG_OF
++int __init sp_intc_init_dt(struct device_node *node, struct device_node *parent)
++{
++	void __iomem *base0, *base1;
++
++	base0 = of_iomap(node, 0);
++	if (!base0)
++		panic("unable to map sp-intc base 0\n");
++
++	base1 = of_iomap(node, 1);
++	if (!base1)
++		panic("unable to map sp-intc base 1\n");
++
++	sp_intc.node = node;
++
++	sp_intc_chip_init(SP_INTC_HWIRQ_MIN, SP_INTC_HWIRQ_MAX, base0, base1);
++
++	sp_intc.domain = irq_domain_add_linear(node, sp_intc.hwirq_end - sp_intc.hwirq_start,
++			&sp_intc_dm_ops, &sp_intc);
++	if (!sp_intc.domain)
++		panic("%s: unable to create linear domain\n", __func__);
++
++	spin_lock_init(&sp_intc.lock);
++
++	if (parent) {
++		sp_intc.virq[0] = irq_of_parse_and_map(node, 0);
++		if (sp_intc.virq[0]) {
++			irq_set_chained_handler_and_data(sp_intc.virq[0],
++				sp_intc_handle_ext0_cascaded, &sp_intc);
++		} else {
++			panic("%s: missed ext0 irq in DT\n", __func__);
++		}
++
++		sp_intc.virq[1] = irq_of_parse_and_map(node, 1);
++		if (sp_intc.virq[1]) {
++			irq_set_chained_handler_and_data(sp_intc.virq[1],
++				sp_intc_handle_ext1_cascaded, &sp_intc);
++		} else {
++			panic("%s: missed ext1 irq in DT\n", __func__);
++		}
++	} else {
++		set_handle_irq(sp_intc_handle_irq);
++	}
++
++	return 0;
++}
++IRQCHIP_DECLARE(sp_intc, "sunplus,sp7021-intc", sp_intc_init_dt);
++#endif
++
++MODULE_AUTHOR("Qin Jian <qinjian@cqplus1.com>");
++MODULE_DESCRIPTION("Sunplus SP7021 Interrupt Controller Driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.33.1
 
-the original report was based on a randconfig.
-unfortunately, one env issue caused we lost that config and related kernel
-images.
-and there is maybe other issues which caused we didn't attach that config
-in original report as we usually do.
-
-in brief, we cannot reproduce this issue now. sorry for inconvenience.
-
-and what you mentioned that there is no bzImage should be caused by same
-issue which caused no config attached. normally we supply the reproducer
-about how to build bzImage based on attached config.
-
-we are updating our code to avoid such issues in the future.
-
-> 
-> Cheers,
-> Nathan
