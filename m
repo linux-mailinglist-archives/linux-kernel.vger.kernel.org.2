@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C6F43773D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C755437743
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhJVMlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:41:25 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:46396 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230408AbhJVMlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:41:23 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M8oAI7015574;
-        Fri, 22 Oct 2021 14:38:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=IZsl6uDSkRbqjxsBR6K5ycdFS1rDWon59p3JRZb3iOM=;
- b=jb8gedRa3xzAwLy6UUq/gI/pRUBCNz1C5kZgjuKb49JM2Lr8b1ZLLgSCACwz5tKTHOYB
- ftQlPTmFYPy8/394Xf//A0tAvyzrVgmrZUKMqOuZwifIDH/o65s07702E/HEdQYVPptc
- I1taEqI37dQOCFJ9A4BzTzAzn4xryoiXCiY0JLNopQx3IP8heytrmTU78TPDqopiT0QR
- CyrUlJpUfFfzIdOoVF4JdcbiXrg9huswzpMC5qbqjlnR4g4yOuw18EjuCEJLQk9BCyhM
- rO9Cg/OV1ESGcZvCIOirfBzPLlDIKqOcsiyzLdoDFFXKDJKx4rLU2cotssEjDikGmup4 hA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3but4y1cc3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 14:38:55 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 81F9F10002A;
-        Fri, 22 Oct 2021 14:38:54 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7A5F821F0A5;
-        Fri, 22 Oct 2021 14:38:54 +0200 (CEST)
-Received: from lmecxl0577.lme.st.com (10.75.127.51) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct
- 2021 14:38:53 +0200
-Subject: Re: [PATCH] iio: adc: stm32: fix a leak by resetting pcsel before
- disabling vdda
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>, <jic23@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <alexandre.torgue@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <1634905169-23762-1-git-send-email-fabrice.gasnier@foss.st.com>
-From:   Olivier MOYSAN <olivier.moysan@foss.st.com>
-Message-ID: <77f3593a-0e94-f5ab-f102-86ba8d0f1a3b@foss.st.com>
-Date:   Fri, 22 Oct 2021 14:38:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232371AbhJVMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:42:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231406AbhJVMmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:42:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8FC06109E;
+        Fri, 22 Oct 2021 12:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634906414;
+        bh=2Z+o2+30mNg914LIaZtsCZnmUOKwHnVi9WzJ8Xa43Qs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WesYg691D+Y6BorwKUaX8QUZqofulZNzQw4S5xUS/KLKYC6rhVMmPw+l57nMBOvW9
+         1ZVVOklCdsJiuiXBPHO8R9YyS8NHbjfpRKKzxW/wKe6NoDthhQaQFdNFG4pgkgNxYD
+         PMR5dQbBiVD1fITCwvWRBlkf9eYFcqg7vcZzTY0dnMvoL4zrRILjf/JmfngAZkvbLU
+         jDiTe/ilpCl+asp7gpiJ70FFq7RGPEN1bq3ONrmZ8CaK4ObsM4yUgNTVn3IX5aQhxN
+         0LvqXvcsrG+PIiKbwatpkdSptELJrLbXP0R5xEM8p6mGWLmvd9h8h3K8uovhdrRurd
+         iiRIYJyyFYxpw==
+Date:   Fri, 22 Oct 2021 13:40:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Alistair <alistair@alistair23.me>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the regulator tree
+Message-ID: <YXKxKwje0evUT0hT@sirena.org.uk>
+References: <20211022125323.132b950d@canb.auug.org.au>
+ <bd49c44d-372e-453a-ac8e-04252b2eaba8@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1634905169-23762-1-git-send-email-fabrice.gasnier@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_03,2021-10-22_01,2020-04-07_01
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="evsjRRr4aa0EOz7i"
+Content-Disposition: inline
+In-Reply-To: <bd49c44d-372e-453a-ac8e-04252b2eaba8@www.fastmail.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabrice,
 
-On 10/22/21 2:19 PM, Fabrice Gasnier wrote:
-> Some I/Os are connected to ADC input channels, when the corresponding bit
-> in PCSEL register are set on STM32H7 and STM32MP15. This is done in the
-> prepare routine of stm32-adc driver.
-> There are constraints here, as PCSEL shouldn't be set when VDDA supply
-> is disabled. Enabling/disabling of VDDA supply in done via stm32-adc-core
-> runtime PM routines (before/after ADC is enabled/disabled).
-> 
-> Currently, PCSEL remains set when disabling ADC. Later on, PM runtime
-> can disable the VDDA supply. This creates some conditions on I/Os that
-> can start to leak current.
-> So PCSEL needs to be cleared when disabling the ADC.
-> 
-> Fixes: 95e339b6e85d ("iio: adc: stm32: add support for STM32H7")
-> 
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> ---
->   drivers/iio/adc/stm32-adc.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> index 5088de8..e3e7541 100644
-> --- a/drivers/iio/adc/stm32-adc.c
-> +++ b/drivers/iio/adc/stm32-adc.c
-> @@ -975,6 +975,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
->   {
->   	struct stm32_adc *adc = iio_priv(indio_dev);
->   
-> +	stm32_adc_writel(adc, STM32H7_ADC_PCSEL, 0);
->   	stm32h7_adc_disable(indio_dev);
->   	stm32h7_adc_enter_pwr_down(adc);
->   }
-> 
+--evsjRRr4aa0EOz7i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
+On Fri, Oct 22, 2021 at 08:31:08PM +1000, Alistair wrote:
 
-Thanks
-Olivier
+> This patch should probably not be applied until after:
+
+> mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+
+> Or if preferred I can split adding the header file into it's own patch that can be
+> applied.
+
+Let's just add the dependency back until the MFD gets sorted out :/
+
+--evsjRRr4aa0EOz7i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFysSoACgkQJNaLcl1U
+h9BIyAf5AeI7eKpfm5YR6DUHxK5x/vTOrdsDeathntLOJ4qdFQ4l7bAXi5aoAGvO
+0mvmHdnokL64E37uYYG9NhDiMlDPCzgukEP2O4XCsNm9O69B3/5gNIuxP7O+GFPp
+qvcw/kIehzWC7q44DPPHtGewDQUACEqMFBgF6CukJ6QhdNLfg2EswNkVRSWp3o03
+bB8Twh4FE4k2R4Zoes9bmA2PSwPNSjD63GHBhNaXZshnK9P2gQFEm5OYZ2JQJ5Gs
+9g+4jI1uLoKKPcm2zl06D6MlUEXGjqJ2GQg/M0Nh3dwlJRjLqQbZucelv2nlIqNK
+yrGVcEGI+SJu0SeNhBg9pAFniUcjGA==
+=TxHw
+-----END PGP SIGNATURE-----
+
+--evsjRRr4aa0EOz7i--
