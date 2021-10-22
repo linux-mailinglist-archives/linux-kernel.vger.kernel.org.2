@@ -2,53 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0058C43807C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A43E43807D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJVXRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 19:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJVXRq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:17:46 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98184C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 16:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3zlCnVEVcta2MtBWsgS/Tybs/RLk1R8UL/fZPbL2R8w=; b=ZOC1L5UJ0dalx5agQ66MagvMbR
-        d30bKwXRgvqQGUBeRTrmSCgQ9TGoBsT1TpYlFwT0ykmJXOz8MIT+JcB1FmStOWWGvUeOYpZdNdj1S
-        9rqXSHHqQVs/zn7H5E8TUfxO0Lygy4sWH7mAjkSd1rfu5QiGdz48dvo52hZjxHUcZjGd4FlPm3RTE
-        efrPbv5pdwOot8hjm7xq3vJR0JwXgZJ6hdHW1E7NAXvwevmnZe/LKaei8uOOKdrhbeAZmtgr84UZ0
-        gfj9bVshaB9xcsJfdOpxndbH44z1yjIMHJNFoSFN3uvEq7T5Hx4Zzj6I+YsbyTuFa0xoDiN1aGFvd
-        2GPxLnCg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1me3ky-00C6aT-Kx; Fri, 22 Oct 2021 23:15:24 +0000
-Date:   Fri, 22 Oct 2021 16:15:24 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     dhowells@redhat.com, neilb@suse.de
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] afs: simplify sget_fc() call
-Message-ID: <YXNGDPMRD+K6nmCu@bombadil.infradead.org>
-References: <20210726202253.2226788-1-mcgrof@kernel.org>
+        id S231803AbhJVXSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 19:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhJVXSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 19:18:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22BBD61038;
+        Fri, 22 Oct 2021 23:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634944556;
+        bh=bb3dGdJ0lagW2FIIHI5Qm8VCtMbuQ+nAr16JtmAv09o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=idKvV55LR7SoTskQnqI5eQmaOsFnoDoKXBpI6ldDCCDuSQzzj8evhuqGZUGmiBkG+
+         Lb6DbimXhEPOBf0r6Yg8UYxsc9CT5rI0lpkMn8wYYIfb7kMoVUGELfaZjgYLIvpOSW
+         rhIsGTcOqP+kXdsMQxwZquymd3e/6SUdt6Jc5LqLA7dHCeERdNRjuAqoKkl06nGgPQ
+         UQeBSMRfIYiSV7bIKEk+zn5Jiirg6dRZdVC1m80GgRslu4YGzMTU1aUG/j4AMBewnj
+         wZF3B4898ZyPcCNX6gEZg9KpUIcHwGIAa6h6HTittKDyZ6bwnOCPm5RI9p47fwJjat
+         p76dPXd++/yRQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DD4CE5C0BF4; Fri, 22 Oct 2021 16:15:55 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:15:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 2/2] refscale: prevent buffer to pr_alert() being too long
+Message-ID: <20211022231555.GG880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
+ <20211022105111.29455-2-lizhijian@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726202253.2226788-1-mcgrof@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211022105111.29455-2-lizhijian@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 01:22:53PM -0700, Luis Chamberlain wrote:
-> We can just use set_anon_super_fc(), no need for our own
-> custom implementation of something we already have available.
+On Fri, Oct 22, 2021 at 06:51:11PM +0800, Li Zhijian wrote:
+> 0Day/LKP observed that the refscale results become incompleted
+> when a larger nruns(such as 300) is specified.
+> It seems that printk() can accept < 1024 buffer at once.
+> Print the buffer if its length exceeds 800 simply.
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> CC: Philip Li <philip.li@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-*poke*
+Good catch!  A couple of questions below.
 
- Luis
+						Thanx, Paul
+
+> ---
+>  kernel/rcu/refscale.c | 23 +++++++++++++----------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+> index 2cbe2a2ba387..b1b9052010fd 100644
+> --- a/kernel/rcu/refscale.c
+> +++ b/kernel/rcu/refscale.c
+> @@ -604,7 +604,7 @@ static u64 process_durations(int n)
+>  	char *buf;
+>  	u64 sum = 0;
+>  
+> -	buf = kmalloc(128 + nreaders * 32, GFP_KERNEL);
+> +	buf = kmalloc(64 * 20, GFP_KERNEL);
+
+This allocation (and the one below) is 1280 bytes rather than
+1024 bytes.  Why the extra couple hundred bytes?
+
+>  	if (!buf)
+>  		return 0;
+>  	buf[0] = 0;
+> @@ -617,13 +617,15 @@ static u64 process_durations(int n)
+>  
+>  		if (i % 5 == 0)
+>  			strcat(buf, "\n");
+> +		if (strlen(buf) > 800) {
+> +			pr_alert("%s", buf);
+
+Does the tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
+script also require changes to handle the partial lines?
+
+Same for the later comparison against 800.
+
+> +			buf[0] = 0;
+> +		}
+>  		strcat(buf, buf1);
+>  
+>  		sum += rt->last_duration_ns;
+>  	}
+> -	strcat(buf, "\n");
+> -
+> -	SCALEOUT("%s\n", buf);
+> +	pr_alert("%s\n", buf);
+>  
+>  	kfree(buf);
+>  	return sum;
+> @@ -648,7 +650,7 @@ static int main_func(void *arg)
+>  
+>  	VERBOSE_SCALEOUT("main_func task started");
+>  	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
+> -	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
+> +	buf = kzalloc(64 * 20, GFP_KERNEL);
+>  	if (!result_avg || !buf) {
+>  		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
+>  		errexit = true;
+> @@ -701,10 +703,7 @@ static int main_func(void *arg)
+>  	if (errexit)
+>  		goto err;
+>  
+> -	buf[0] = 0;
+> -	strcat(buf, "\n");
+> -	strcat(buf, "Runs\tTime(ns)\n");
+> -
+> +	pr_alert("Runs\tTime(ns)\n");
+>  	for (exp = 0; exp < nruns; exp++) {
+>  		u64 avg;
+>  		u32 rem;
+> @@ -712,9 +711,13 @@ static int main_func(void *arg)
+>  		avg = div_u64_rem(result_avg[exp], 1000, &rem);
+>  		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
+>  		strcat(buf, buf1);
+> +		if (strlen(buf) > 800) {
+> +			pr_alert("%s", buf);
+> +			buf[0] = 0;
+> +		}
+>  	}
+>  
+> -	SCALEOUT("%s", buf);
+> +	pr_alert("%s", buf);
+>  
+>  err:
+>  	// This will shutdown everything including us.
+> -- 
+> 2.33.0
+> 
+> 
+> 
