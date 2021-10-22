@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832FA437059
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE82943705D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhJVDFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232695AbhJVDFu (ORCPT
+        id S232498AbhJVDHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:07:18 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49876
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231144AbhJVDHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:05:50 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56B4C061764;
-        Thu, 21 Oct 2021 20:03:33 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id y17so2796238ilb.9;
-        Thu, 21 Oct 2021 20:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XK3a1LwqzUeACg4aXNx630V9gtFWyhO4gs8m0Vnr7Ls=;
-        b=fu6JyUIqLhrpitkAaY4qmPTW7IR37wQcNqhQZfBjIwh9vhX+7NJrPYD24B8ekLX+OT
-         F4BsT/30vU5QoNUENoTGq1CWSJKUJbZ2gGaHu/CQbzfKuigC7LzRL6aOeyV5ox5pWfMV
-         igDHdYTLqv2zGREhGnuEmCmQe90MXxTcgdyZMglzyM+O1ybUhtguxFpwW1wMLEG47fYC
-         wA164Xiq8F3jHm5upLyh672SJ19n+vxnixZyA5LBFxfsZ8tkY9nJCw0Ecb6uk1EU4V52
-         38c4E0gYBjBFYJHAJr6AF29DJZpbL8eGLOLivdKB+g03AVyG8zATwGGFvKFRPVlkFfii
-         k38A==
+        Thu, 21 Oct 2021 23:07:15 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 33E1C3FFEE
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 03:04:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634871898;
+        bh=czP4Ea2xbNw6ZO8jbHXfBJMEwAvUTKs/9udO2IJpk58=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=q9TSZG80DKOGmJLLszOiMTPcHaGPUigKvzifjD/YY8aSoFNNjbXB1ViOlk1df3Qc2
+         HYQRO31+KOLuFsAO0CphnpvyqZKNiKmHsdGeX6U78DyPzujKt82MbC87EBWdq2LVfn
+         aCejHEKA288Eb134liSN2j1uZ/cioPC5yCPbI7MBWtcsvEwC7iDr4/Zwm1RXeIlGlJ
+         MyjpXsh6x8J/wcbKMwiiAAKL1VGHsTCH+x7iR4WV6h7pCFMzPmuJVnWTEt3E1/0gSl
+         ptaGGxkzTPy9IIL1SN5hwAbAo4XKQaIuwwE8RAlLv5ZGhK97/t7Etd89ruwcP9WXhE
+         lF8XfVFRteONw==
+Received: by mail-ot1-f69.google.com with SMTP id w9-20020a056830078900b0054e753940beso1268128ots.15
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:04:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XK3a1LwqzUeACg4aXNx630V9gtFWyhO4gs8m0Vnr7Ls=;
-        b=LKXzYk34R7VAQWpQN1sO9/9FeMsslffR3IDVuVMHrG9LJEM+PwFDACSMS6pAxApukt
-         0I17ZbQM0TxbOCCq9URbDXbhC4MNOQoIIam27lDCh3AQuhnGPviM9R7YfMfZ6UDucHRA
-         +Tr8Bx9fn0Fy6U3eMmz84db+8jxaXDSBUb0M8bSQBT3xGFjy6UiNapyzq2PfIKkwfLBW
-         sfjrRjTS2zPf81V0zu9DzhWlM3L+tV/wfBmG72wq5674vTR78HIY+AvmiHrc3bCIEakk
-         IZCHG4FDTa+rhnCejn2ykoSSTfZdwksPsr6iWIFXlYUSufqbV3Qa/G8zT/JluVYTIhi5
-         zbuw==
-X-Gm-Message-State: AOAM531fxvBRTVTixLsDUhcqLhccDbhyl9Zf/4IrWZUBSaHZZa05eKqD
-        Zb2iUzsqgFzCEftHP9kh0jf//0uwcMyXRry8kOk=
-X-Google-Smtp-Source: ABdhPJz02azZOOkaFJCIcObCEOdOGg69b65VhU1I8rcmQuAkwMDKAF/8hy4Ve4MZXSCBT+vaD6JeyErBlMaljaV2pdY=
-X-Received: by 2002:a05:6e02:893:: with SMTP id z19mr6053922ils.224.1634871806321;
- Thu, 21 Oct 2021 20:03:26 -0700 (PDT)
+        bh=czP4Ea2xbNw6ZO8jbHXfBJMEwAvUTKs/9udO2IJpk58=;
+        b=hFvdRx0cR72TwyDLM3NmTbziAeFy5prvM1M4eWfb9nm8r+GHwJM9PYa0Juwh6t3Mcr
+         wWdlYYJMHYwawZ6gwB+tnZj46yERk+7seOIyOiizSTOOQMaJ8Z7JjtzldXvQNuxDXp/2
+         LrntTqQMoynkOFHTv8DCrd9qt/g9+KWB/bHNYGwOMYzJ0dsbJrtzv0i9+Fg+Rfkc9jJ1
+         NX82cbHhdJz+1l8wM+z+ZHFZN4qKnRSTBNdtcI23vFDZjvSCVCMXtvwFHTJ2iawnCY+I
+         7nSOYxCKoVsnSWlFgDIgsdFpoQzMf/ilYswzVb5rdnyC0hhK6tWZo5lgoMaAfVVsPDYX
+         86hQ==
+X-Gm-Message-State: AOAM5302NbpF47alH3BELDFZ1zJmcUCFQgSFNnVrpH/nGNvMvH2vDbIr
+        zjSV071P+NMgsWDg7E9/gpMJEwg1uFsX6WwiCDHJynpC4+AYcNP//NjebJKericWNFdi3/StwhN
+        8W4zaqIyJ+MvwQwCwI5W96kPXKTKxkLkDSajAyvlJjfYTsMKrY7ko5mB3Nw==
+X-Received: by 2002:a9d:7b49:: with SMTP id f9mr7872673oto.11.1634871897079;
+        Thu, 21 Oct 2021 20:04:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxrGgk5WJvr6Krib82/6R5NLnLs2soauLJ1bJ9ZM09LF2vJUdZI1z78f9FH+iGor3wn7boMKQMksA61S53sZA=
+X-Received: by 2002:a9d:7b49:: with SMTP id f9mr7872656oto.11.1634871896762;
+ Thu, 21 Oct 2021 20:04:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022010005.1454978-1-seanjc@google.com> <20211022010005.1454978-2-seanjc@google.com>
- <CAJhGHyCA-nfoJPmQxVWRtu+iJk3aj9ZdNH630RjrQJ_vYnZ3Gg@mail.gmail.com>
-In-Reply-To: <CAJhGHyCA-nfoJPmQxVWRtu+iJk3aj9ZdNH630RjrQJ_vYnZ3Gg@mail.gmail.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 22 Oct 2021 11:03:15 +0800
-Message-ID: <CAJhGHyDHwz-ADZdUUcFd+PswTKKQRi=UDkZGQVu1erRbDFMSKQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] KVM: x86/mmu: Drop a redundant, broken remote TLB flush
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Ben Gardon <bgardon@google.com>
+References: <20210812153944.813949-1-kai.heng.feng@canonical.com>
+ <CAAd53p7sPoH-MD9VMh1u+mf_E7Mc2xVfkHbhN4PCdxQM+v274g@mail.gmail.com> <6289c754-3580-4102-8ff2-666c3cad8da2@intel.com>
+In-Reply-To: <6289c754-3580-4102-8ff2-666c3cad8da2@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 22 Oct 2021 11:04:44 +0800
+Message-ID: <CAAd53p5ZUDjjaWPHE4p1vg=3LzcCovngdS8VO0uFuVanEtAAYg@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: Check PCIe upstream port for PME support
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:58 AM Lai Jiangshan
-<jiangshanlai+lkml@gmail.com> wrote:
+On Fri, Oct 22, 2021 at 3:13 AM Rafael J. Wysocki
+<rafael.j.wysocki@intel.com> wrote:
 >
-> On Fri, Oct 22, 2021 at 9:01 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > A recent commit to fix the calls to kvm_flush_remote_tlbs_with_address()
-> > in kvm_zap_gfn_range() inadvertantly added yet another flush instead of
-> > fixing the existing flush.  Drop the redundant flush, and fix the params
-> > for the existing flush.
-> >
-> > Fixes: 2822da446640 ("KVM: x86/mmu: fix parameters to kvm_flush_remote_tlbs_with_address")
-> > Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> > Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index c6ddb042b281..f82b192bba0b 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -5709,13 +5709,11 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
-> >                 for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
-> >                         flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, gfn_start,
-> >                                                           gfn_end, flush);
-> > -               if (flush)
-> > -                       kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> > -                                                          gfn_end - gfn_start);
+> On 10/21/2021 8:56 AM, Kai-Heng Feng wrote:
+> > On Thu, Aug 12, 2021 at 11:39 PM Kai-Heng Feng
+> > <kai.heng.feng@canonical.com> wrote:
+> >> Some platforms cannot detect ethernet hotplug once its upstream port is
+> >> runtime suspended because PME isn't granted by BIOS _OSC. The issue can
+> >> be workarounded by "pcie_ports=native".
+> >>
+> >> The vendor confirmed that the PME in _OSC is disabled intentionally for
+> >> system stability issues on the other OS, so we should also honor the PME
+> >> setting here.
+> >>
+> >> So before marking PME support status for the device, check
+> >> PCI_EXP_RTCTL_PMEIE bit to ensure PME interrupt is either enabled by
+> >> firmware or OS.
+> >>
+> >> Cc: Lukas Wunner <lukas@wunner.de>
+> >> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> >> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213873
+> >> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > A gentle ping...
 >
-> In the recent queue branch of kvm tree, there is the same "if (flush)" in
-> the previous "if (kvm_memslots_have_rmaps(kvm))" branch.  The "if (flush)"
-> branch needs to be removed too.
+> Any chance to CC this to linux-pm too?
 
-Oh, it is in the patch 2. For patch 1 and 2:
-
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Will remember this next time.
 
 >
-> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+> So you basically want to check whether or not the PME interrupts are
+> configured on the port?
+
+Yes, that's the idea here.
+
+Kai-Heng
+
 >
-> >         }
-> >
-> >         if (flush)
-> > -               kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-> > +               kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> > +                                                  gfn_end - gfn_start);
-> >
-> >         kvm_dec_notifier_count(kvm, gfn_start, gfn_end);
-> >
-> > --
-> > 2.33.0.1079.g6e70778dc9-goog
-> >
+>
+> >> ---
+> >> v2:
+> >>   - Instead of prevent root port from runtime suspending, skip
+> >>     initializing PME status for the downstream device.
+> >>
+> >>   drivers/pci/pci.c | 28 +++++++++++++++++++++++++++-
+> >>   1 file changed, 27 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> >> index aacf575c15cf..4344dc302edd 100644
+> >> --- a/drivers/pci/pci.c
+> >> +++ b/drivers/pci/pci.c
+> >> @@ -2294,6 +2294,32 @@ void pci_pme_wakeup_bus(struct pci_bus *bus)
+> >>                  pci_walk_bus(bus, pci_pme_wakeup, (void *)true);
+> >>   }
+> >>
+> >> +#ifdef CONFIG_PCIE_PME
+> >> +static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
+> >> +{
+> >> +       struct pci_dev *bridge = pci_upstream_bridge(dev);
+> >> +       u16 val;
+> >> +       int ret;
+> >> +
+> >> +       if (!bridge)
+> >> +               return true;
+> >> +
+> >> +       if (pci_pcie_type(bridge) != PCI_EXP_TYPE_ROOT_PORT &&
+> >> +           pci_pcie_type(bridge) != PCI_EXP_TYPE_RC_EC)
+> >> +               return true;
+> >> +
+> >> +       ret = pcie_capability_read_word(bridge, PCI_EXP_RTCTL, &val);
+> >> +       if (ret)
+> >> +               return false;
+> >> +
+> >> +       return val & PCI_EXP_RTCTL_PMEIE;
+> >> +}
+> >> +#else
+> >> +static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
+> >> +{
+> >> +       return true;
+> >> +}
+> >> +#endif
+> >>
+> >>   /**
+> >>    * pci_pme_capable - check the capability of PCI device to generate PME#
+> >> @@ -3095,7 +3121,7 @@ void pci_pm_init(struct pci_dev *dev)
+> >>          }
+> >>
+> >>          pmc &= PCI_PM_CAP_PME_MASK;
+> >> -       if (pmc) {
+> >> +       if (pmc && pci_pcie_port_pme_enabled(dev)) {
+> >>                  pci_info(dev, "PME# supported from%s%s%s%s%s\n",
+> >>                           (pmc & PCI_PM_CAP_PME_D0) ? " D0" : "",
+> >>                           (pmc & PCI_PM_CAP_PME_D1) ? " D1" : "",
+> >> --
+> >> 2.32.0
+> >>
+>
