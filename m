@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768AB437150
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D99F43715A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhJVFZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 01:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        id S230086AbhJVFg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 01:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhJVFZi (ORCPT
+        with ESMTP id S229478AbhJVFgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 01:25:38 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6438DC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 22:23:21 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id b9so4348137ybc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 22:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/K7g7u2ztiiMpfLD3ufFGiu7hRc5OC0Hi+SvzjKN4Uk=;
-        b=ly0FbEE9Cx2o0m+sLygjae/WePo6aZBdJEycwr+AxFGMCElMOUSKMnm3dNn6yydnFD
-         IeCJVcOc0fhI8EOODak6bDjP5jmdEdrwK9klZmCv393MLULV2izorxk+R2zF2uUMOSTI
-         6YHAOGEZWpBJ9UmRlHOot/gSWeRJezJYsWzq/3+5475yi8MeNEd4eKZgk1u2VnuCmxT+
-         bR7iVcEuthyMWB1WNLejEWG+ylqhYCQUMq61fWB6+Tjz9iTbNOzbcTRjjMaGHPnqRnZY
-         TEbIS3zdaAYvypoQ0D+jKp9Fgb6/OrurOSihIUF7xWw5s/3kX+Ywf9jM36iNmm+c8zxg
-         JJJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/K7g7u2ztiiMpfLD3ufFGiu7hRc5OC0Hi+SvzjKN4Uk=;
-        b=3+vRY/bU5WQ9uiI91oujZBL5bu2fBJMzSglD+d6JlwPU7dCp6QZvTTrxPExscvmOmV
-         /1WwYwb8VG+xUP/9FNe+HTxam9dbnuK+TYkvy2Yu2W82kYZ9vIEQPKikS8n554SXUaTe
-         q4ql8Hs95CJeIQ3e4xn/faI/PlDPiZajqET+jtOjyct5Ia8NRlO3SbGLabx15ali9XS/
-         TqGITLPjVMt4yvY/75cj/ZMB/T1qZ/UoYLF4hgP+aWLPzVVzQ0UD+KnOV49eKNvbv5vB
-         SDqra6CZsiKb63HR2kn4yb2y4DbxYp+cC5oJgNMi2dmFQuPyxQHHk/qjwWohUWISzN+i
-         pnMQ==
-X-Gm-Message-State: AOAM5315wWVXXSP5XFp08brAUrjlbKllDGW3pKApokXpLrSIeL0/072q
-        F6LM8GPNatIT190al4VqwJZQE7Gz/59EMqurHeEiFA==
-X-Google-Smtp-Source: ABdhPJyxZCUyr4sMHK+JfeiRtzhmYvXjKxyFRS/5VnhxOej5AiUTE/+OV68+Q8FkKKW+Dxu+8ENslNiFqTzqpBJ17+w=
-X-Received: by 2002:a25:d1d3:: with SMTP id i202mr11392808ybg.487.1634880200329;
- Thu, 21 Oct 2021 22:23:20 -0700 (PDT)
+        Fri, 22 Oct 2021 01:36:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DA1C061764;
+        Thu, 21 Oct 2021 22:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xcBYXoniZzY7ZLTTZ2jfTzgN29460ApB4jiwLahdOXs=; b=wi8pPE/qofJdTPE+Mth0DB7fNI
+        rLPT6fRiQAjOngtkmahECmF4xzDu8RZ+I/Bq734xorg82BkoG4CBsYixbbryGpWiTbMGMW53DukOP
+        YTn3+gU8/n5KPFtd5gq+hgqf8YPpCjFqy6j+Flp4pEEuq2my4/sz0/BIdeXcDe+Z7fioDGk77K1si
+        QlkDEAuPF2HNERwYHk7orbA89KtEJOGSzrBOzpoZh72/Pb863SQdM1QLRqbOnjHw00yWQLJywtl+N
+        V+3W/8U+69VhnkaEcfn7BnEWN0S9AvZaE3zTOp7odX3xsFVaAhE5U0RUMtrOqpTqi2gqYoORmRq1g
+        /XqKfgQg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdnBN-009lTo-6z; Fri, 22 Oct 2021 05:33:33 +0000
+Date:   Thu, 21 Oct 2021 22:33:33 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH 4/6] dm,dax,pmem: prepare dax_copy_to/from_iter() APIs
+ with DAXDEV_F_RECOVERY
+Message-ID: <YXJNLTmcPaShrLoT@infradead.org>
+References: <20211021001059.438843-1-jane.chu@oracle.com>
+ <20211021001059.438843-5-jane.chu@oracle.com>
+ <YXFOlKWUuwFUJxUZ@infradead.org>
+ <325baeaf-54f6-dea0-ed2b-6be5a2ec47db@oracle.com>
 MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <20211021192454.72ada9b3d59460cc3c037d2c@linux-foundation.org>
-In-Reply-To: <20211021192454.72ada9b3d59460cc3c037d2c@linux-foundation.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 21 Oct 2021 22:23:09 -0700
-Message-ID: <CAJuCfpEcvuYu5OhXMVz5g4OK+-a_jnF9MNtu17VP5V23r2oWtw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <325baeaf-54f6-dea0-ed2b-6be5a2ec47db@oracle.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 7:25 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Thu, 21 Oct 2021 18:46:58 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
->
-> > Race between process_mrelease and exit_mmap, where free_pgtables is
-> > called while __oom_reap_task_mm is in progress, leads to kernel crash
-> > during pte_offset_map_lock call. oom-reaper avoids this race by setting
-> > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-> > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-> > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-> > fix this race, however that would be considered a hack. Fix this race
-> > by elevating mm->mm_users and preventing exit_mmap from executing until
-> > process_mrelease is finished. Patch slightly refactors the code to adapt
-> > for a possible mmget_not_zero failure.
-> > This fix has considerable negative impact on process_mrelease performance
-> > and will likely need later optimization.
->
-> Has the impact been quantified?
+On Fri, Oct 22, 2021 at 12:49:15AM +0000, Jane Chu wrote:
+> I've looked through your "futher decouple DAX from block devices" series 
+> and likes the use of xarray in place of the host hash list.
+> Which upstream version is the series based upon?
+> If it's based on your development repo, I'd be happy to take a clone
+> and rebase my patches on yours if you provide a link. Please let me
+> know the best way to cooperate.
 
-A ball-park figure for a large process (6GB) it takes 4x times longer
-for process_mrelease to exit.
+It is based on linux-next from when it was posted.  A git tree is here:
 
->
-> And where's the added cost happening?  The changes all look quite
-> lightweight?
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-block-cleanup
 
-I think it's caused by the fact that exit_mmap and all other cleanup
-routines happening on the last mmput are postponed until
-process_mrelease finishes __oom_reap_task_mm and drops mm->mm_users. I
-suspect all that cleanup is happening at the end of process_mrelease
-now and that might be contributing to the regression. I didn't have
-time yet to fully understand all the reasons for that regression but
-wanted to fix the crash first. Will proceed with more investigation
-and hopefully with a quick fix for the lost performance.
+> That said, I'm unclear at what you're trying to suggest with respect
+> to the 'DAXDEV_F_RECOVERY' flag.  The flag came from upper dax-fs
+> call stack to the dm target layer, and the dm targets are equipped
+> with handling pmem driver specific task, so it appears that the flag 
+> would need to be passed down to the native pmem layer, right?
+> Am I totally missing your point?
 
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+We'll need to pass it through (assuming we want to keep supporting
+dm, see the recent discussion with Dan).
+
+FYI, here is a sketch where I'd like to move to, but this isn't properly
+tested yet:
+
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
+
+To support something like DAXDEV_F_RECOVERYwe'd need a separate
+dax_operations methods.  Which to me suggest it probably should be
+a different operation (fallocate / ioctl / etc) as Darrick did earlier.
