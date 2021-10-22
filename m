@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D29437816
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A7D43781C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbhJVNjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
+        id S232908AbhJVNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbhJVNjE (ORCPT
+        with ESMTP id S231537AbhJVNkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:39:04 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5FFC061764;
-        Fri, 22 Oct 2021 06:36:46 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id e19so3227197edy.0;
-        Fri, 22 Oct 2021 06:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3VqjR5oI/ait3rohMOusYdeugPboOfYtc3O9o05eMHQ=;
-        b=Q1yRtDerJPfkd6V6vThQqZzlZX02K8g1faPyh5JvGtWbxyqlvyJdVLUGTYwPQ3saLq
-         //fIB06jwTGHRGxKPLs8MJWyLB830xmXmsTkCETeG1taPcahOXie4rvc7CK5zltFt8oF
-         oPUshuRuTnd0iZXy0ny9kVNx8mrm1ouS31YXXV69DYolYaT48xWqECVE7DhkqpFj8Azm
-         VWMFDlsZTra/bzin+kya2NessF7ZGFHODA9zaBsoaYq5uCJaZikR/QWJcRu4iqFGwBxl
-         7SUxGngqa3kITyZSSsSKeCn5rbO8WWtCwQv7XozRKVi8eu+fjf3xq7bGmV9vMO/W2GeJ
-         DmEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3VqjR5oI/ait3rohMOusYdeugPboOfYtc3O9o05eMHQ=;
-        b=LA0O2ritGvHs42KGT2DfYX62qe8ITDzUTgz14pdTQ+Ni3AIMsYNJcA40Pn5JOabVnK
-         87brKmiOojCeim57Kn+uUWiTdUQnb34hf6CvomFeL2qRkZNdOscWyHoWxwyhS4c1uOP7
-         MxqPczorrJT46LtNePqqPBjn3DAXg5Ndoj4hDx3IL3vLEiDlMTjdH+wWgm0dvaXKyRZU
-         SrTMT8KhUlbWi2Y924iVUpBeTIxEHzHvo7/VYtS5qeJE+ESnIMVmumuODQoLDmuMSNLG
-         VSvoygyK/RZYigSjMDhGQYmou2BW9i+PGOU5O6Ln+bmTE/I8mB5ys7gTCpfZq21XSFMq
-         3GHA==
-X-Gm-Message-State: AOAM5318jS0lKWZF04wL+wimiEv+AuQOU5uWYs63r2B+KakiCXel7Ruh
-        yyGYxtyrdky1OwUpy6cALAS+zFqZ/EFuSTLHAyU=
-X-Google-Smtp-Source: ABdhPJxTUPfm1rVOGx8gokzVv5igP9B4UGk9EquAWiBprb/AKADuLLwJMD4BsQNPgSHNpLkA0ym/zi0SHdqrUZTvc64=
-X-Received: by 2002:a17:906:5a47:: with SMTP id my7mr14903725ejc.128.1634909805119;
- Fri, 22 Oct 2021 06:36:45 -0700 (PDT)
+        Fri, 22 Oct 2021 09:40:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B711C061764;
+        Fri, 22 Oct 2021 06:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YgWZDC+Wt+FMuTw2rUyL55kUPg5w44la2cDM9kWoNAY=; b=nxtIQpNLTOpqefUh0SYAoMiVyg
+        J2VtESrziXUqa1XdBhgbccKV3W2IW/Upd3dSn0nm2libiEvcb+2DgK32n/94jRyDViCESdyA48KW2
+        SQkNtlR+Z0gHQlKDNCCmloX81KrYYDXae9oYfcRdD/YhsTfOwq9WeGReGeU6xv4q7DRI0UQRyjsDg
+        SIO71BWKcp67p0j7V0GULsYWDsQTinFdjReK4shBQ8ot1sCw/CeU9uF7c7QlXX2Dz2z/8d/sPIo3z
+        ZK6gHuVoTegBrUJevdVMq5Z02rS/YWCYYFs7gl6wAbhtP1g5JAZfYUdb0UsPEE3yDUN8ewd+VaDZf
+        rnKN24Vg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mduiQ-00DvTb-LS; Fri, 22 Oct 2021 13:36:22 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2AD97981F9D; Fri, 22 Oct 2021 15:36:09 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 15:36:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched: Add cluster scheduler level for x86
+Message-ID: <20211022133609.GA174703@worktop.programming.kicks-ass.net>
+References: <20210924085104.44806-4-21cnbao@gmail.com>
+ <163429109791.25758.3107620034958821511.tip-bot2@tip-bot2>
+ <9e7b0c92-5a3b-8099-8c69-83a9d62aced4@amd.com>
+ <20211020195131.GT174703@worktop.programming.kicks-ass.net>
+ <df3f2127-47be-cfd6-9c19-5f0aacf014f4@amd.com>
+ <20211020202542.GU174703@worktop.programming.kicks-ass.net>
+ <20211020203619.GC174730@worktop.programming.kicks-ass.net>
+ <20211020204056.GD174730@worktop.programming.kicks-ass.net>
+ <e3c4f4a4-fe73-dc5e-65ee-0519c868f699@amd.com>
 MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-7-kernel@esmil.dk>
- <CAHp75VcS7ZZCciAgBH2QU7u8CiHzveAOsvSdv2DQBvpBn_6opQ@mail.gmail.com> <CANBLGcyHpxuT9N+H8Lk=5CjMb1=-17_sH3dBzALCMYpAEZfeuw@mail.gmail.com>
-In-Reply-To: <CANBLGcyHpxuT9N+H8Lk=5CjMb1=-17_sH3dBzALCMYpAEZfeuw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 22 Oct 2021 16:35:49 +0300
-Message-ID: <CAHp75VfjmYONiuaQMybCvnfswZKvwBVAXH+sFirOoOb9YEzYHg@mail.gmail.com>
-Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3c4f4a4-fe73-dc5e-65ee-0519c868f699@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 4:13 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> On Fri, 22 Oct 2021 at 14:34, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Fri, Oct 22, 2021 at 08:31:40AM -0500, Tom Lendacky wrote:
+> On 10/20/21 3:40 PM, Peter Zijlstra wrote:
+> >   arch/x86/kernel/smpboot.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> > index 849159797101..c2671b2333d1 100644
+> > --- a/arch/x86/kernel/smpboot.c
+> > +++ b/arch/x86/kernel/smpboot.c
+> > @@ -472,7 +472,7 @@ static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+> >   	/* Do not match if we do not have a valid APICID for cpu: */
+> >   	if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
+> > -		return false;
+> > +		return match_smt(c, o); /* assume at least SMT shares L2 */
+> 
+> This does eliminate the message and seems like an appropriate thing to do,
+> in general, if the l2c id is not set.
+> 
+> We're looking into setting the l2c id for AMD platforms, but need to test
+> against some older platforms. We'll let you know the results next week.
+> 
+> In the mean time, it is probably best to at least apply your above patch.
 
-...
+OK, I'll go write up a Changelog and stick on your Reported- and
+Tested-by tags.
 
-> Hmm.. this function doesn't return int, but struct clk_hw *, hence the ERR_PTR.
-
-Ah, indeed, sorry. Got your point.
-
-Of course one may try 'return ERR_PTR(dev_err_probe())', but this looks ugly.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks!
