@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4C44374D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21614374DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhJVJiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:38:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:52032 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhJVJiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:38:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E4B21063;
-        Fri, 22 Oct 2021 02:36:05 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.54.218])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37B303F70D;
-        Fri, 22 Oct 2021 02:36:03 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     bhelgaas@google.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        robh@kernel.org, kishon@ti.com, kw@linux.com, tjoseph@cadence.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH] PCI: j721e: Fix an error handling path in 'j721e_pcie_probe()'
-Date:   Fri, 22 Oct 2021 10:35:58 +0100
-Message-Id: <163489533869.17392.2233519953795577688.b4-ty@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <db477b0cb444891a17c4bb424467667dc30d0bab.1624794264.git.christophe.jaillet@wanadoo.fr>
-References: <db477b0cb444891a17c4bb424467667dc30d0bab.1624794264.git.christophe.jaillet@wanadoo.fr>
+        id S232488AbhJVJkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232402AbhJVJkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 05:40:00 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F9EC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:37:43 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id s19so773472wra.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:37:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TrLGl5J1Fh0jBQ3bl4JSYt92D3B2FEdMHUQ1wG7PfLM=;
+        b=BtXoJwbcssnAYaQiLN8TVnM1N6szpyGOWkHG+klTa3lYOOK7SD3bPMJDQKr6ugldKa
+         X/h9RaNBWNhhtyeBkwfFRal8W/0PQ0B1mjP30ce/cPPuEnL+LUG2uZ0BGGd/WpRsvEsz
+         xSq4RWDb7IShOmcOz6hISkeHC+11R/RMrUa0JM6YjQ7tSkoiMKzbWaUJMntFOzobl+K9
+         Kq/K9KupUqJMp7dGpN9sKIcvsAUSl1s8QTvOvXIKgHAGDYj9wOF1jpQLRR6BBDchJnkF
+         ZB+T/8hxFtpE9CB8ICqjQ97sWQ3fZDDTpe8II5D/pzZRslyedOQbrqsWTZ5MXW6eIfuP
+         vgfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TrLGl5J1Fh0jBQ3bl4JSYt92D3B2FEdMHUQ1wG7PfLM=;
+        b=vYudT29FUCqbmFttoFde5hLlc6dmHa/Ijwa2zNMHOMqpNNPOkMxzYAGmfrAlHtkfY/
+         9jyzq9pwlgRqX5PpzYTJx6ZTLkp0bppI9FwHWbCACpmgY+ikHOAgWFlgPRS5niY1r4sK
+         z4/Hed97Knas/+XsqbxWLixWHx/Pm8y0yqO/2gVkasRe2JMXpd8tpKHBQ0STc6d34+fs
+         cQNeDz9fcl5Q19rcJQPr8wJE46VYizX2YnmN4ShL3STRFsYkMdXT7SJcGRsYzxhBWAZ3
+         3vGHfU1gRDcLm0hJ7NAM3d9SARxu89COm0TpSj++EXm+WOj28obZuuFDFF090/GFXc5e
+         PlrQ==
+X-Gm-Message-State: AOAM532k30NcNdKYmtRkt7jcWie+FJfVc7rWN5OUQd1XmPyK74VDy2SL
+        DfxZQxNgrWvRlnEAzEmiOu2PXpteOfhXQwXI
+X-Google-Smtp-Source: ABdhPJy23x8Y3fnkzITNiQKGVTYLReIhfCXxeOtizg8lIJkcKVMmu/UXzVLHBvyi2TOdL7Whq6Pfkg==
+X-Received: by 2002:a5d:4481:: with SMTP id j1mr15034248wrq.6.1634895461773;
+        Fri, 22 Oct 2021 02:37:41 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id r15sm1643602wru.9.2021.10.22.02.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 02:37:41 -0700 (PDT)
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: [PATCH 0/5] staging: vt6655: `RFvWriteWakeProgSyn` variables rename
+Date:   Fri, 22 Oct 2021 10:37:13 +0100
+Message-Id: <cover.1634826774.git.karolinadrobnik@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 13:46:24 +0200, Christophe JAILLET wrote:
-> If an error occurs after a successful 'cdns_pcie_init_phy()' call, it must
-> be undone by a 'cdns_pcie_disable_phy()' call, as already done above and
-> below.
-> 
-> Update the 'goto' to branch at the correct place of the error handling
-> path.
-> 
-> [...]
+This patch set is a preparation work for `RFvWriteWakeProgSyn`
+refactoring. It includes removal of Hungarian notation in
+local variables and function parameters and changing them
+to use snake case.
 
-Applied to pci/cadence, thanks!
+Karolina Drobnik (5):
+  staging: vt6655: Rename `ii` variable
+  staging: vt6655: Rename `byInitCount` variable
+  staging: vt6655: Rename `bySleepCount` variable
+  staging: vt6655: Rename `uChannel` variable
+  staging: vt6655: Rename `byRFType` variable
 
-[1/1] PCI: j721e: Fix an error handling path in 'j721e_pcie_probe()'
-      https://git.kernel.org/lpieralisi/pci/c/1faff614aa
+ drivers/staging/vt6655/rf.c | 60 ++++++++++++++++++-------------------
+ drivers/staging/vt6655/rf.h |  2 +-
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
-Thanks,
-Lorenzo
+-- 
+2.30.2
+
