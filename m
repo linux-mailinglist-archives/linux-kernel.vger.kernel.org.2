@@ -2,649 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E344373A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D2E4373A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhJVI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:26:39 -0400
-Received: from [113.204.237.245] ([113.204.237.245]:46410 "EHLO
-        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231984AbhJVI0i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:26:38 -0400
-X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
-        LIVER,40,3)
-Received: from 172.28.114.216
-        by cqmailgates with MailGates ESMTP Server V5.0(10973:0:AUTH_RELAY)
-        (envelope-from <qinjian@cqplus1.com>); Fri, 22 Oct 2021 16:23:56 +0800 (CST)
-From:   qinjian <qinjian@cqplus1.com>
-To:     tglx@linutronix.de
-Cc:     maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, wells.lu@sunplus.com,
-        qinjian <qinjian@cqplus1.com>
-Subject: [PATCH] irqchip: Add support for Sunplus SP7021 interrupt controller
-Date:   Fri, 22 Oct 2021 16:23:28 +0800
-Message-Id: <20211022082328.432357-1-qinjian@cqplus1.com>
-X-Mailer: git-send-email 2.33.1
+        id S232319AbhJVIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:30:43 -0400
+Received: from mga17.intel.com ([192.55.52.151]:37716 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232060AbhJVIam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 04:30:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="210046918"
+X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
+   d="gz'50?scan'50,208,50";a="210046918"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 01:28:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
+   d="gz'50?scan'50,208,50";a="445203190"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 22 Oct 2021 01:27:58 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mdpu9-000FSN-Np; Fri, 22 Oct 2021 08:27:57 +0000
+Date:   Fri, 22 Oct 2021 16:27:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>
+Subject: ERROR: modpost: "devm_ioremap"
+ [drivers/input/keyboard/samsung-keypad.ko] undefined!
+Message-ID: <202110221601.P0Pw87th-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interrupt driver for Sunplus SP7021 SoC.
 
-Signed-off-by: qinjian <qinjian@cqplus1.com>
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Alexander,
+
+First bad commit (maybe != root cause):
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   64222515138e43da1fcf288f0289ef1020427b87
+commit: ef019c5daf032dce0b95ed4d45bfec93c4fbcb9f PHY: Ingenic: fix unconditional build of phy-ingenic-usb
+date:   10 months ago
+config: s390-randconfig-r044-20211021 (attached as .config)
+compiler: s390-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef019c5daf032dce0b95ed4d45bfec93c4fbcb9f
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout ef019c5daf032dce0b95ed4d45bfec93c4fbcb9f
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "devm_ioremap" [drivers/input/keyboard/samsung-keypad.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/pcmcia/pcmcia.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/pcmcia/pcmcia.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+
 ---
- MAINTAINERS                       |   1 +
- drivers/irqchip/Kconfig           |   9 +
- drivers/irqchip/Makefile          |   1 +
- drivers/irqchip/irq-sp7021-intc.c | 557 ++++++++++++++++++++++++++++++
- 4 files changed, 568 insertions(+)
- create mode 100644 drivers/irqchip/irq-sp7021-intc.c
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 123616bb9..65cd295e9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2663,6 +2663,7 @@ F:	Documentation/devicetree/bindings/arm/sunplus,sp7021.yaml
- F:	Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
- F:	Documentation/devicetree/bindings/reset/sunplus,reset.yaml
-+F:	drivers/irqchip/irq-sp7021-intc.c
- F:	include/dt-bindings/clock/sp-sp7021.h
- F:	include/dt-bindings/interrupt-controller/sp7021-intc.h
- F:	include/dt-bindings/reset/sp-sp7021.h
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index aca7b595c..52bd16363 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -602,4 +602,13 @@ config APPLE_AIC
- 	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
- 	  such as the M1.
- 
-+config SUNPLUS_SP7021_INTC
-+	bool "Sunplus SP7021 interrupt controller"
-+	help
-+	  Support for the Sunplus SP7021 Interrupt Controller IP core.
-+	  This is used as a primary controller with SP7021 ChipP and can also
-+	  be used as a secondary chained controller on SP7021 ChipC.
-+
-+	  If you don't know what to do here, say Y.
-+
- endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index f88cbf36a..75411f654 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -116,3 +116,4 @@ obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
- obj-$(CONFIG_WPCM450_AIC)		+= irq-wpcm450-aic.o
- obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
- obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
-+obj-$(CONFIG_SUNPLUS_SP7021_INTC)	+= irq-sp7021-intc.o
-diff --git a/drivers/irqchip/irq-sp7021-intc.c b/drivers/irqchip/irq-sp7021-intc.c
-new file mode 100644
-index 000000000..2d26681d3
---- /dev/null
-+++ b/drivers/irqchip/irq-sp7021-intc.c
-@@ -0,0 +1,557 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) Sunplus Technology Co., Ltd.
-+ *       All rights reserved.
-+ */
-+#include <linux/irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/io.h>
-+#ifdef CONFIG_ARM
-+#include <asm/exception.h>
-+#include <asm/mach/irq.h>
-+#else
-+#define __exception_irq_entry
-+#endif
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <dt-bindings/interrupt-controller/sp7021-intc.h>
-+
-+#if defined(CONFIG_SOC_SP7021)
-+#define SUPPORT_IRQ_GRP_REG
-+#endif
-+
-+#define SP_INTC_HWIRQ_MIN     0
-+#define SP_INTC_HWIRQ_MAX     223
-+
-+struct intG0Reg_st {
-+	/* Interrupt G0 */
-+	u32 intr_type[7];
-+	u32 intr_polarity[7];
-+	u32 priority[7];
-+	u32 intr_mask[7];
-+	u32 g15_reserved_0[4];
-+};
-+
-+struct intG1Reg_st {
-+	/* Interrupt G1 */
-+	u32 intr_clr[7];
-+	u32 masked_fiqs[7];
-+	u32 masked_irqs[7];
-+	u32 g21_reserved_0[10];
-+#ifdef SUPPORT_IRQ_GRP_REG
-+	u32 intr_group;
-+#else
-+	u32 rsvd_31;
-+#endif
-+};
-+
-+static struct sp_intctl {
-+	__iomem struct intG0Reg_st *g0;
-+	__iomem struct intG1Reg_st *g1;
-+	int hwirq_start;
-+	int hwirq_end;   /* exclude */
-+	struct irq_domain *domain;
-+	struct device_node *node;
-+	spinlock_t lock;
-+	int virq[2];
-+} sp_intc;
-+
-+#define WORKAROUND_FOR_EDGE_TRIGGER_BUG 1
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+#define HW_IRQ_GPIO_INT0                120
-+#define HW_IRQ_GPIO_INT7                127
-+#define SP_IRQ_TYPE_EDGE_NONE           0x00
-+#define SP_IRQ_TYPE_EDGE_RISING         0x01
-+#define SP_IRQ_TYPE_EDGE_FALLING        0x02
-+#define SP_IRQ_TYPE_EDGE_ACTIVE         0x80
-+static char edge_trigger[SP_INTC_HWIRQ_MAX-SP_INTC_HWIRQ_MIN];
-+#endif
-+
-+static void sp_intc_ack_irq(struct irq_data *data);
-+static void sp_intc_mask_irq(struct irq_data *data);
-+static void sp_intc_unmask_irq(struct irq_data *data);
-+static int sp_intc_set_type(struct irq_data *data, unsigned int flow_type);
-+
-+static struct irq_chip sp_intc_chip = {
-+	.name = "sp_intc",
-+	.irq_ack = sp_intc_ack_irq,
-+	.irq_mask = sp_intc_mask_irq,
-+	.irq_unmask = sp_intc_unmask_irq,
-+	.irq_set_type = sp_intc_set_type,
-+};
-+
-+static void sp_intc_ack_irq(struct irq_data *data)
-+{
-+	u32 idx, mask;
-+
-+	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
-+		return;
-+
-+	idx = data->hwirq / 32;
-+	mask = (1 << (data->hwirq % 32));
-+
-+	spin_lock(&sp_intc.lock);
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+	if (edge_trigger[data->hwirq] & (SP_IRQ_TYPE_EDGE_RISING|SP_IRQ_TYPE_EDGE_FALLING)) {
-+		u32 trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
-+
-+		if (edge_trigger[data->hwirq] == SP_IRQ_TYPE_EDGE_RISING)
-+			trig_lvl |= mask;
-+		else
-+			trig_lvl &= ~mask;
-+
-+		writel_relaxed(trig_lvl, &sp_intc.g0->intr_polarity[idx]);
-+		edge_trigger[data->hwirq] |= SP_IRQ_TYPE_EDGE_ACTIVE;
-+	}
-+#endif
-+	writel_relaxed(mask, &sp_intc.g1->intr_clr[idx]);
-+	spin_unlock(&sp_intc.lock);
-+}
-+
-+static void sp_intc_mask_irq(struct irq_data *data)
-+{
-+	u32 idx, mask;
-+
-+	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
-+		return;
-+
-+	idx = data->hwirq / 32;
-+
-+	spin_lock(&sp_intc.lock);
-+	mask = readl_relaxed(&sp_intc.g0->intr_mask[idx]);
-+	mask &= ~(1 << (data->hwirq % 32));
-+	writel_relaxed(mask, &sp_intc.g0->intr_mask[idx]);
-+	spin_unlock(&sp_intc.lock);
-+}
-+
-+static void sp_intc_unmask_irq(struct irq_data *data)
-+{
-+	u32 idx, mask;
-+
-+	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
-+		return;
-+
-+	idx = data->hwirq / 32;
-+	spin_lock(&sp_intc.lock);
-+	mask = readl_relaxed(&sp_intc.g0->intr_mask[idx]);
-+	mask |= (1 << (data->hwirq % 32));
-+	writel_relaxed(mask, &sp_intc.g0->intr_mask[idx]);
-+	spin_unlock(&sp_intc.lock);
-+}
-+
-+static int sp_intc_set_type(struct irq_data *data, unsigned int flow_type)
-+{
-+	u32 idx, mask;
-+	u32 edge_type; /* 0=level, 1=edge */
-+	u32 trig_lvl;  /* 0=high, 1=low */
-+	unsigned long flags;
-+
-+	if ((data->hwirq < sp_intc.hwirq_start) || (data->hwirq >= sp_intc.hwirq_end))
-+		return -EBADR;
-+
-+	/* update the chip/handler */
-+	if (flow_type & IRQ_TYPE_LEVEL_MASK)
-+		irq_set_chip_handler_name_locked(data, &sp_intc_chip,
-+						   handle_level_irq, NULL);
-+	else
-+		irq_set_chip_handler_name_locked(data, &sp_intc_chip,
-+						   handle_edge_irq, NULL);
-+
-+	idx = data->hwirq / 32;
-+
-+	spin_lock_irqsave(&sp_intc.lock, flags);
-+
-+	edge_type = readl_relaxed(&sp_intc.g0->intr_type[idx]);
-+	trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
-+	mask = (1 << (data->hwirq % 32));
-+
-+	switch (flow_type) {
-+	case IRQ_TYPE_EDGE_RISING:
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		if ((data->hwirq >= HW_IRQ_GPIO_INT0) && (data->hwirq <= HW_IRQ_GPIO_INT7)) {
-+			edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_RISING;
-+			writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
-+		} else {
-+			writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
-+		}
-+#else
-+		writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
-+#endif
-+		writel_relaxed((trig_lvl & ~mask), &sp_intc.g0->intr_polarity[idx]);
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		if ((data->hwirq >= HW_IRQ_GPIO_INT0) && (data->hwirq <= HW_IRQ_GPIO_INT7)) {
-+			edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_FALLING;
-+			writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
-+		} else {
-+			writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
-+		}
-+#else
-+		writel_relaxed((edge_type | mask), &sp_intc.g0->intr_type[idx]);
-+#endif
-+		writel_relaxed((trig_lvl | mask), &sp_intc.g0->intr_polarity[idx]);
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_NONE;
-+#endif
-+		writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
-+		writel_relaxed((trig_lvl & ~mask), &sp_intc.g0->intr_polarity[idx]);
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_NONE;
-+#endif
-+		writel_relaxed((edge_type & ~mask), &sp_intc.g0->intr_type[idx]);
-+		writel_relaxed((trig_lvl | mask), &sp_intc.g0->intr_polarity[idx]);
-+		break;
-+	default:
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		edge_trigger[data->hwirq] = SP_IRQ_TYPE_EDGE_NONE;
-+#endif
-+		spin_unlock_irqrestore(&sp_intc.lock, flags);
-+		pr_err("%s: type=%d\n", __func__, flow_type);
-+		return -EBADR;
-+	}
-+
-+	spin_unlock_irqrestore(&sp_intc.lock, flags);
-+
-+	return IRQ_SET_MASK_OK;
-+}
-+
-+/* prio=1 (normal), prio=0 (dedicated) */
-+static void sp_intc_set_prio(u32 hwirq, u32 prio)
-+{
-+	u32 idx, mask;
-+
-+	if ((hwirq < sp_intc.hwirq_start) || (hwirq >= sp_intc.hwirq_end))
-+		return;
-+
-+	idx = hwirq / 32;
-+
-+	spin_lock(&sp_intc.lock);
-+	mask = readl_relaxed(&sp_intc.g0->priority[idx]);
-+	if (prio)
-+		mask |= (1 << (hwirq % 32));
-+	else
-+		mask &= ~(1 << (hwirq % 32));
-+	writel_relaxed(mask, &sp_intc.g0->priority[idx]);
-+	spin_unlock(&sp_intc.lock);
-+}
-+
-+/* return -1 if no interrupt # */
-+static int sp_intc_get_ext0_irq(void)
-+{
-+	int hwirq, mask;
-+	int i;
-+
-+#ifdef SUPPORT_IRQ_GRP_REG
-+	mask = (readl_relaxed(&sp_intc.g1->intr_group) >> 8) & 0x7f; /* [14:8] for irq group */
-+	if (mask) {
-+		i = fls(mask) - 1;
-+#else
-+	for (i = 0; i < 7; i++) {
-+#endif
-+		mask = readl_relaxed(&sp_intc.g1->masked_irqs[i]);
-+		if (mask) {
-+			hwirq = (i << 5) + fls(mask) - 1;
-+			return hwirq;
-+		}
-+	}
-+	return -1;
-+}
-+
-+static int sp_intc_get_ext1_irq(void)
-+{
-+	int hwirq, mask;
-+	int i;
-+
-+#ifdef SUPPORT_IRQ_GRP_REG
-+	mask = (readl_relaxed(&sp_intc.g1->intr_group) >> 0) & 0x7f; /* [6:0] for fiq group */
-+	if (mask) {
-+		i = fls(mask) - 1;
-+#else
-+	for (i = 0; i < 7; i++) {
-+#endif
-+		mask = readl_relaxed(&sp_intc.g1->masked_fiqs[i]);
-+		if (mask) {
-+			hwirq = (i << 5) + fls(mask) - 1;
-+			return hwirq;
-+		}
-+	}
-+	return -1;
-+}
-+
-+static void sp_intc_handle_ext0_cascaded(struct irq_desc *desc)
-+{
-+	struct irq_chip *host_chip = irq_desc_get_chip(desc);
-+	int hwirq;
-+
-+	chained_irq_enter(host_chip, desc);
-+
-+	while ((hwirq = sp_intc_get_ext0_irq()) >= 0) {
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		if (edge_trigger[hwirq] & SP_IRQ_TYPE_EDGE_ACTIVE) {
-+			u32 idx = hwirq / 32;
-+			u32 trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
-+			u32 mask = 1 << (hwirq % 32);
-+
-+			edge_trigger[hwirq] &= ~SP_IRQ_TYPE_EDGE_ACTIVE;
-+			if (edge_trigger[hwirq] == SP_IRQ_TYPE_EDGE_RISING)
-+				trig_lvl &= ~mask;
-+			else
-+				trig_lvl |= mask;
-+
-+			writel_relaxed(trig_lvl, &sp_intc.g0->intr_polarity[idx]);
-+		} else
-+			generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
-+#else
-+		generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
-+#endif
-+	}
-+
-+	chained_irq_exit(host_chip, desc);
-+}
-+
-+static void sp_intc_handle_ext1_cascaded(struct irq_desc *desc)
-+{
-+	struct irq_chip *host_chip = irq_desc_get_chip(desc);
-+	int hwirq;
-+
-+	chained_irq_enter(host_chip, desc);
-+
-+	while ((hwirq = sp_intc_get_ext1_irq()) >= 0) {
-+#ifdef WORKAROUND_FOR_EDGE_TRIGGER_BUG
-+		if (edge_trigger[hwirq] & SP_IRQ_TYPE_EDGE_ACTIVE) {
-+			u32 idx = hwirq / 32;
-+			u32 trig_lvl = readl_relaxed(&sp_intc.g0->intr_polarity[idx]);
-+			u32 mask = 1 << (hwirq % 32);
-+
-+			edge_trigger[hwirq] &= ~SP_IRQ_TYPE_EDGE_ACTIVE;
-+			if (edge_trigger[hwirq] == SP_IRQ_TYPE_EDGE_RISING)
-+				trig_lvl &= ~mask;
-+			else
-+				trig_lvl |= mask;
-+
-+			writel_relaxed(trig_lvl, &sp_intc.g0->intr_polarity[idx]);
-+		} else
-+			generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
-+#else
-+		generic_handle_irq(irq_find_mapping(sp_intc.domain, (unsigned int)hwirq));
-+#endif
-+	}
-+
-+	chained_irq_exit(host_chip, desc);
-+}
-+
-+static int sp_intc_handle_one_round(struct pt_regs *regs)
-+{
-+	int ret = -EINVAL;
-+	int hwirq;
-+
-+	while ((hwirq = sp_intc_get_ext0_irq()) >= 0) {
-+		handle_domain_irq(sp_intc.domain, hwirq, regs);
-+		ret = 0;
-+	}
-+
-+	return ret;
-+}
-+
-+/* 8388: level-triggered hwirq# may come slower than IRQ */
-+#define SPURIOUS_RETRY  30
-+
-+static void __exception_irq_entry sp_intc_handle_irq(struct pt_regs *regs)
-+{
-+	int err;
-+	int first_int = 1;
-+	int retry = 0;
-+
-+	do {
-+		err = sp_intc_handle_one_round(regs);
-+
-+		if (!err)
-+			first_int = 0;
-+
-+		if (first_int && err) { /* spurious irq */
-+			if (retry++ < SPURIOUS_RETRY)
-+				continue;
-+		}
-+	} while (!err);
-+}
-+
-+static int sp_intc_irq_domain_map(struct irq_domain *domain, unsigned int irq,
-+				  irq_hw_number_t hwirq)
-+{
-+	irq_set_chip_and_handler(irq, &sp_intc_chip, handle_level_irq);
-+	irq_set_chip_data(irq, &sp_intc_chip);
-+	irq_set_noprobe(irq);
-+
-+	return 0;
-+}
-+
-+static void __init sp_intc_chip_init(int hwirq_start, int hwirq_end,
-+				     void __iomem *base0, void __iomem *base1)
-+{
-+	int i;
-+
-+	sp_intc.g0 = base0;
-+	sp_intc.g1 = base1;
-+	sp_intc.hwirq_start = hwirq_start;
-+	sp_intc.hwirq_end = hwirq_end;
-+
-+	for (i = 0; i < 7; i++) {
-+		/* all mask */
-+		writel_relaxed(0, &sp_intc.g0->intr_mask[i]);
-+		/* all edge */
-+		writel_relaxed(~0, &sp_intc.g0->intr_type[i]);
-+		/* all high-active */
-+		writel_relaxed(0, &sp_intc.g0->intr_polarity[i]);
-+		/* all irq */
-+		writel_relaxed(~0, &sp_intc.g0->priority[i]);
-+		/* all clear */
-+		writel_relaxed(~0, &sp_intc.g1->intr_clr[i]);
-+	}
-+}
-+
-+int sp_intc_xlate_of(struct irq_domain *d, struct device_node *node,
-+			  const u32 *intspec, unsigned int intsize,
-+			  irq_hw_number_t *out_hwirq, unsigned int *out_type)
-+{
-+	int ret = 0;
-+	u32 ext_num;
-+
-+	if (WARN_ON(intsize < 2))
-+		return -EINVAL;
-+
-+	*out_hwirq = intspec[0];
-+	*out_type = intspec[1] & IRQ_TYPE_SENSE_MASK;
-+	ext_num = (intspec[1] & SP_INTC_EXT_INT_MASK) >> SP_INTC_EXT_INT_SHFIT;
-+
-+	/* set ext_int1 to high priority */
-+	if (ext_num != 1)
-+		ext_num = 0;
-+
-+	if (ext_num)
-+		sp_intc_set_prio(*out_hwirq, 0); /* priority=0 */
-+
-+	return ret;
-+}
-+
-+static const struct irq_domain_ops sp_intc_dm_ops = {
-+	.xlate = sp_intc_xlate_of,
-+	.map = sp_intc_irq_domain_map,
-+};
-+
-+int __init sp_intc_init(int hwirq_start, int irqs, void __iomem *base0, void __iomem *base1)
-+{
-+	sp_intc_chip_init(hwirq_start, hwirq_start + irqs, base0, base1);
-+
-+	sp_intc.domain = irq_domain_add_legacy(NULL, irqs, hwirq_start,
-+			sp_intc.hwirq_start, &sp_intc_dm_ops, &sp_intc);
-+	if (!sp_intc.domain)
-+		panic("%s: unable to create legacy domain\n", __func__);
-+
-+	set_handle_irq(sp_intc_handle_irq);
-+
-+	return 0;
-+}
-+
-+#if defined(CONFIG_SOC_SP7021)
-+static cpumask_t *u2cpumask(u32 mask, cpumask_t *cpumask)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < 4; i++) {
-+		if (mask & (1 << i))
-+			cpumask_set_cpu(i, cpumask);
-+		else
-+			cpumask_clear_cpu(i, cpumask);
-+	}
-+	return cpumask;
-+}
-+
-+static int __init sp_intc_ext_adjust(void)
-+{
-+	u32 mask;
-+	static cpumask_t cpumask;
-+	struct device_node *node = sp_intc.node;
-+
-+	if (num_online_cpus() <= 1) {
-+		pr_info("single core: skip ext adjust\n");
-+		return 0;
-+	}
-+
-+	cpumask = CPU_MASK_NONE;
-+	if (!of_property_read_u32(node, "ext0-mask", &mask)) {
-+		pr_info("%d: ext0-mask=0x%x\n", sp_intc.virq[0], mask);
-+		if (irq_set_affinity(sp_intc.virq[0], u2cpumask(mask, &cpumask)))
-+			pr_err("failed to set ext0 cpumask=0x%x\n", mask);
-+	}
-+
-+	cpumask = CPU_MASK_NONE;
-+	if (!of_property_read_u32(node, "ext1-mask", &mask)) {
-+		pr_info("%d: ext1-mask=0x%x\n", sp_intc.virq[1], mask);
-+		if (irq_set_affinity(sp_intc.virq[1], u2cpumask(mask, &cpumask)))
-+			pr_err("failed to set ext1 cpumask=0x%x\n", mask);
-+	}
-+
-+	return 0;
-+}
-+arch_initcall(sp_intc_ext_adjust)
-+#endif
-+
-+#ifdef CONFIG_OF
-+int __init sp_intc_init_dt(struct device_node *node, struct device_node *parent)
-+{
-+	void __iomem *base0, *base1;
-+
-+	base0 = of_iomap(node, 0);
-+	if (!base0)
-+		panic("unable to map sp-intc base 0\n");
-+
-+	base1 = of_iomap(node, 1);
-+	if (!base1)
-+		panic("unable to map sp-intc base 1\n");
-+
-+	sp_intc.node = node;
-+
-+	sp_intc_chip_init(SP_INTC_HWIRQ_MIN, SP_INTC_HWIRQ_MAX, base0, base1);
-+
-+	sp_intc.domain = irq_domain_add_linear(node, sp_intc.hwirq_end - sp_intc.hwirq_start,
-+			&sp_intc_dm_ops, &sp_intc);
-+	if (!sp_intc.domain)
-+		panic("%s: unable to create linear domain\n", __func__);
-+
-+	spin_lock_init(&sp_intc.lock);
-+
-+	if (parent) {
-+		sp_intc.virq[0] = irq_of_parse_and_map(node, 0);
-+		if (sp_intc.virq[0]) {
-+			irq_set_chained_handler_and_data(sp_intc.virq[0],
-+				sp_intc_handle_ext0_cascaded, &sp_intc);
-+		} else {
-+			panic("%s: missed ext0 irq in DT\n", __func__);
-+		}
-+
-+		sp_intc.virq[1] = irq_of_parse_and_map(node, 1);
-+		if (sp_intc.virq[1]) {
-+			irq_set_chained_handler_and_data(sp_intc.virq[1],
-+				sp_intc_handle_ext1_cascaded, &sp_intc);
-+		} else {
-+			panic("%s: missed ext1 irq in DT\n", __func__);
-+		}
-+	} else {
-+		set_handle_irq(sp_intc_handle_irq);
-+	}
-+
-+	return 0;
-+}
-+IRQCHIP_DECLARE(sp_intc, "sunplus,sp7021-intc", sp_intc_init_dt);
-+#endif
-+
-+MODULE_AUTHOR("Qin Jian <qinjian@cqplus1.com>");
-+MODULE_DESCRIPTION("Sunplus SP7021 Interrupt Controller Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.33.1
+--EeQfGwPcQSOJBaQU
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+
+--EeQfGwPcQSOJBaQU--
