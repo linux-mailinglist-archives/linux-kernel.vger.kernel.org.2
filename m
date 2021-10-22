@@ -2,185 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A513E437798
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E9D43779C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhJVM60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        id S232805AbhJVM7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhJVM6Z (ORCPT
+        with ESMTP id S232813AbhJVM7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:58:25 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB45C061764;
-        Fri, 22 Oct 2021 05:56:07 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id t16so5048563eds.9;
-        Fri, 22 Oct 2021 05:56:07 -0700 (PDT)
+        Fri, 22 Oct 2021 08:59:20 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D968C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:57:02 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id d13so1424237ljg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+qOi8f1v4+rJCxOKM/1lFt8oaZPEX6smhRzqey4rSCg=;
-        b=YivvG/JsMBUvbb3Fs9tTmqksEjk8+rN0v5A+vUK4z8jS13RgQj58cSSwV7Hs+IWsGB
-         adNRyKbM3yrg9wi18C8DLlOUORLq1BF4FYNWg7JzYi9UuIUeEq4Rn/rDkk/y1zhLxtEc
-         aOJwG8ueEq8fZmlCGlZRCr1VCFNZmF0LBwCeNKdP2CPqZ8YkdZryhKGqdvn5XSpjL1oP
-         4o6i1XlLhy5Ivwsx0XRyu4wrcaRPgu1kTvO9jQ+GdztgGf9HLtxndmPFXuqPLPJ6Ep1B
-         hDkRcHpvS7zlSUe5S45XqZYbcF6yhFGCeBVedFGDj8jrOQeCynGBXo9ZCYD+Q7EnHKgo
-         5Pew==
+        bh=Abf1EK7igg1BriA0e8T8lClrB5y9+Gsf1155IsU+KtY=;
+        b=NDAlECpKEoiIXNYVnBNLY5NGNcMxFCHaLejYCd70ls9LFrXyETzW/5O6sak6RhKhpE
+         z9rnKUJgTkXrHxWIVXuEX21lw9NoZWfYt3x2yye4Rv4Nri3ncHigWjRscrje4fW/vCpB
+         mWb49t+5KXxRNBcvehuydsu4RS2BSyzqWRThr4EB7IofCuCQjc6t5JgIA1s+4MbVx4dD
+         NednvzaqcjCw9wIX9wD35vJfdZKSc5T5jr1+lH/TpqSwaxlaCzkB7LgFHqR9YgQ+jz+p
+         rCSN/m7TsqqPFpMjHIc1T32xKDFIqJlZ4knZgmXQD1xbmy4zG5DS+MnqY97tO6FMqdDe
+         C64g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+qOi8f1v4+rJCxOKM/1lFt8oaZPEX6smhRzqey4rSCg=;
-        b=5+uTAOrr2V0dcaVJzZBFq07KW7zK7NmkyRwdwtaiARaSfz73n3ZxgLedNJdgSCcE33
-         xsKyityjBnqQSTB2SAf3jTt3XUjh1D1Q0xdaYWAXKfWPftFNBwilaeQHj7qe1gdxAfoH
-         HveW2bflwxYw9eH6MhI+w6Nvtub3vlCjjtwlyzuKcHub7IIng4wHQLh5JYWruMfWnqpw
-         kPIHTBH3bdwWhTKtepq6wqfueuiyEVgqYvI3hFTic+u0Oeb7H2EMicbiW6AnyJM47C1Z
-         idX1VBSMCDr09/3awkhzPErZG3HVj0hNUbt2Ta23hUKYV90LTEU89hFqmESnw62yeHkW
-         97ng==
-X-Gm-Message-State: AOAM532Q4yyAHXMJDDEFOxDdejELBl7sReiYReMuxZCtVmG54PNyRhWk
-        IHK7LNQsA420HTBS2U1DXi9Qi+WWM0BQtftyME8=
-X-Google-Smtp-Source: ABdhPJxjmbZn/mKzz2MeCcWBTlXcYFWWJdlvVwlzqH5Cmn9IpfIf34cJh9HoSyv6xIrG1HUL+9nURIo/Rrh/wNmzfU8=
-X-Received: by 2002:a17:906:5a47:: with SMTP id my7mr14665000ejc.128.1634907366155;
- Fri, 22 Oct 2021 05:56:06 -0700 (PDT)
+        bh=Abf1EK7igg1BriA0e8T8lClrB5y9+Gsf1155IsU+KtY=;
+        b=wygrrVLpXo6VawtwFdW05gcoxsuliqFs0hpfkqaraqyMB0yuOX4EUjz7jSZUMu1QDS
+         Sg594BJIFk2oGF83D+/jgJExETQyJ6UUOWoQwYoQh0rd9fWGWckCxXR+Ia+O6do8D2+H
+         5aZkOmqvzzqeBdhO9q47ayzC/vFixCcrJTk7psYEZqrxHEmGl5cOTzbjyquWMRgIdA77
+         yX564AvbvDYoHxGONSQreY1SaudGjrrvGMwJjf6C2XdHZNGPKajZTKrekids4ORi5Qt3
+         D+NSnEqmaZFmH+qovN0MWXU63U11LbqbFoP3wfEmpfGPivulmMY5S9cojK5JO/geo7/y
+         7PAA==
+X-Gm-Message-State: AOAM531WekF4B7A7MI3UE+7racYSY+vC0VG5wCEz0g7z3TaGhJOBeTbI
+        llK0uzuNi+Ay4+IVwIJ2cN6cahnDA8jKvH/9kcW8kQ==
+X-Google-Smtp-Source: ABdhPJxXiHmUz9G+W9AqJBQiAgy1DXVb8O+Ej4Jwc5biLtBLLgM0eVNbB8MvQFSke5a4kaxCRWSJKlwGfenY32P4vuM=
+X-Received: by 2002:a05:651c:11c4:: with SMTP id z4mr12755222ljo.463.1634907420771;
+ Fri, 22 Oct 2021 05:57:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
-In-Reply-To: <20211021174223.43310-10-kernel@esmil.dk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 22 Oct 2021 15:55:10 +0300
-Message-ID: <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
+ <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+ <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+ <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com>
+ <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
+ <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com>
+ <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
+ <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
+ <CAPDyKFooeseEXW-O8DCAd5Jku1n0iNXfHFt_HVjcfMYFvw4a2g@mail.gmail.com> <CAJZ5v0i5qQ7bXoG3cK2LESibKRb3sahmaC-M2_mgwqSSS6Sz1Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0i5qQ7bXoG3cK2LESibKRb3sahmaC-M2_mgwqSSS6Sz1Q@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 22 Oct 2021 14:56:23 +0200
+Message-ID: <CAPDyKFr8fSBbQVknws0BEXX-3fFg8XCLSJToCXc-26wdKb83qA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Fri, 22 Oct 2021 at 14:02, Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> Add a driver for the StarFive JH7100 reset controller.
+> On Fri, Oct 22, 2021 at 12:18 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Thu, 21 Oct 2021 at 21:56, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > On Thu, 21 Oct 2021 at 21:02, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > >
+> > > > On Thu, Oct 21, 2021 at 8:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > >
+> > > > > On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > >
+> > > > [cut]
+> > > >
+> > > > > > So in theory you could check the pm_runtime_put_sync_suspend() return
+> > > > > > value and fall back to something like WFI if that's an error code.
+> > > > >
+> > > > > I have already tried that, but it simply got too complicated. The main
+> > > > > issue was that runtime PM could become disabled for the device in the
+> > > > > middle of executing the ->enter() callback.
+> > > >
+> > > > So IIUC the problem is that you cannot resume after suspending in that case.
+> > > >
+> > > > IOW, you need to guarantee that if the suspend is successful, the
+> > > > resume also will take place, but if the suspend fails, you basically
+> > > > don't care.
+> > >
+> > > Exactly.
+> > >
+> > > >
+> > > > > For example, if pm_runtime_get_sync() fails, I still need to make sure
+> > > > > the reference counting in genpd becomes correct - and I can't do that
+> > > > > using dev_pm_genpd_resume(). That's because it's not designed to be
+> > > > > called in this "unknown" suspend phase, but should be called after the
+> > > > > noirq phase and be properly balanced with dev_pm_genpd_suspend().
+> > > > >
+> > > > > In other words, the error path didn't work out for me.
+> > > >
+> > > > It should be sufficient to call wake_up_all_idle_cpus() in the suspend
+> > > > path before dpm_suspend_late(), because system suspend acquires a
+> > > > PM-runtime reference on every device.  IOW, it won't let any devices
+> > > > runtime-suspend, so if your power domain devices are resumed in that
+> > > > path, they will never suspend again in it and the
+> > > > pm_runtime_put_sync_suspend() in __psci_enter_domain_idle_state()
+> > > > becomes a reference counter management call which works regardless of
+> > > > whether or not PM runtime is disabled.
+> > >
+> > > That sounds like a great idea, this should work too! Then the question
+> > > is, how to make that call to wake_up_all_idle_cpus() to become
+> > > optional - or only invoked for the cpuidle drivers that need it.
+>
+> It need not be optional.
+>
+> For suspend-to-idle it doesn't matter, because all CPUs will be woken
+> up from idle shortly anyway.
+>
+> For other suspend variants this doesn't matter, because all secondary
+> CPUs will be taken offline shortly and the primary CPU will call into
+> the platform "sleep" handler.
+>
+> > >
+> > > In any case, I will try this out, thanks for the suggestion!
+> >
+> > I now recall that I have already tried this, but unfortunately it doesn't work.
+> >
+> > The problem is that the dev->power.syscore flag is set for the device,
+> > which makes device_prepare() to bail out early and skip calling
+> > pm_runtime_get_noresume().
+>
+> This needs to be fixed, then.
 
-...
+So bumping the usage count even if the dev->power.syscore is set,
+should be fine? (And of course dropping it in the complete phase).
 
-> +config RESET_STARFIVE_JH7100
-> +       bool "StarFive JH7100 Reset Driver"
-> +       depends on SOC_STARFIVE || COMPILE_TEST
+I can work with that, let me try!
 
-> +       depends on OF
-
-No evidence of this dependency. Why to limit test coverage?
-
-> +       default SOC_STARFIVE
-
-...
-
-> +/*
-> + * Reset driver for the StarFive JH7100 SoC
-> + *
-> + * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-
-> + *
-
-Redundant empty line.
-
-> + */
-
-...
-
-> +#include <linux/of_device.h>
-
-No evidence of any usage of this header. Perhaps you meant mod_devicetable.h?
-
-...
-
-> +static const u32 jh7100_reset_asserted[4] = {
-
-> +       BIT(JH7100_RST_U74 % 32) |
-> +       BIT(JH7100_RST_VP6_DRESET % 32) |
-> +       BIT(JH7100_RST_VP6_BRESET % 32),
-
-It's hard to notice that this is only one entry. See also below.
-
-> +       BIT(JH7100_RST_HIFI4_DRESET % 32) |
-> +       BIT(JH7100_RST_HIFI4_BRESET % 32),
-> +
-> +       BIT(JH7100_RST_E24 % 32)
-
-+ Comma.
-
-> +};
-
-Why all these ugly % 32 against constants?
-
-...
-
-> +       if (!assert)
-> +               done ^= mask;
-
-Can you convert this to simple
-
-  if (assert)
-    ret = readl_...
-  else
-    ret = readl_...
-
-below?
-
-> +       spin_lock_irqsave(&data->lock, flags);
-> +
-> +       value = readl(reg_assert);
-> +       if (assert)
-> +               value |= mask;
-> +       else
-> +               value &= ~mask;
-> +       writel(value, reg_assert);
-
-> +       /* if the associated clock is gated, deasserting might otherwise hang forever */
-> +       ret = readl_poll_timeout(reg_status, value, (value & mask) == done, 0, 1000);
-
-You run delays under spin lock. You need to use _atomic variant.
-
-> +       spin_unlock_irqrestore(&data->lock, flags);
-
-...
-
-> +       u32 value = (readl(reg_status) ^ jh7100_reset_asserted[offset]) & mask;
-
-> +       dev_dbg(rcdev->dev, "status(%lu) = %d\n", id, !value);
-> +       return !value;
-
-Dup of ! operator. Can it be value = !(...); above?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Kind regards
+Uffe
