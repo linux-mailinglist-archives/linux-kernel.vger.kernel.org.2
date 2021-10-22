@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5665C4377A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3D74377A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhJVNHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhJVNHB (ORCPT
+        id S231928AbhJVNGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:06:03 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:49306 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhJVNGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:07:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F98EC061764;
-        Fri, 22 Oct 2021 06:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ceLFPSG9PwcNCS8a9ytFESTTipwib/6u0uhFzDsr/gQ=; b=hgK8dCxE5kiokMvHI8BrX1mKtt
-        uSTgVRfw2SS+zqxcRwMvTW7KsBE/5jLZEwn7AeRau+yKPd1kXQhEaiCKERpKcUoIf65Hgw2fKllDe
-        X05UHY/6IxtRHvBUa6xESlRKmUvsDTvbpwqKsu2TTiJrpx/TWKgfjhNL/i1V8yORkgaF+1HUu9Eyy
-        kaJ9MLr18hdFV8TQYMgTUAj6vDgEJq993PdZtFSnDG4u88Zz1tykYo1vObr+OkkgLMJOIqRk++3Qt
-        YVEoSTdIIbxsgYnMb1pxKO6NR9yz0ZoQsngHLniDwUpyBKIbGuggTXS41E9+zyymcnk8AlPvFWs6q
-        j2CF7SGQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mduAi-00Dud6-RP; Fri, 22 Oct 2021 13:01:52 +0000
-Date:   Fri, 22 Oct 2021 14:01:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YXK2ICKi6fjNfr4X@casper.infradead.org>
-References: <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
- <YXBUPguecSeSO6UD@moria.home.lan>
- <YXHdpQTL1Udz48fc@cmpxchg.org>
- <YXIZX0truEBv2YSz@casper.infradead.org>
- <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
+        Fri, 22 Oct 2021 09:06:01 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 324655051da6db55; Fri, 22 Oct 2021 15:03:43 +0200
+Received: from kreacher.localnet (unknown [213.134.175.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 208BE66A92E;
+        Fri, 22 Oct 2021 15:03:41 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Norbert <nbrtt01@gmail.com>, Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yunfeng Ye <yeyunfeng@huawei.com>, frederic@kernel.org
+Subject: Re: Performance regression: thread wakeup time (latency) increased up to 3x
+Date:   Fri, 22 Oct 2021 15:03:40 +0200
+Message-ID: <4674203.GXAFRqVoOG@kreacher>
+In-Reply-To: <YW1ZjroFfmKM9HJe@hirez.programming.kicks-ass.net>
+References: <035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com> <8691a8ec-410d-afe8-f468-eefe698c6751@gmail.com> <YW1ZjroFfmKM9HJe@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.233
+X-CLIENT-HOSTNAME: 213.134.175.233
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgkeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeetgefgleetgeduheeugeeikeevudelueelvdeufeejfeffgeefjedugfetfeehhfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddujeehrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdeffedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehnsghrthhttddusehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprhhoshhtvgguthesghhoohgumhhishdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhnghho
+ sehrvgguhhgrthdrtghomhdprhgtphhtthhopehtghhlgieslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopeihvgihuhhnfhgvnhhgsehhuhgrfigvihdrtghomhdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 09:59:05AM +0200, David Hildenbrand wrote:
-> something like this would roughly express what I've been mumbling about:
+On Monday, October 18, 2021 1:25:02 PM CEST Peter Zijlstra wrote:
+> On Fri, Oct 15, 2021 at 09:08:58PM -0700, Norbert wrote:
 > 
-> anon_mem    file_mem
->    |            |
->    ------|------
->       lru_mem       slab
->          |           |
->          -------------
->                |
-> 	      page
+> > > > > On Fri, Oct 15, 2021 at 12:43:45AM -0700, Norbert wrote:
+> > > > > > Performance regression: thread wakeup time (latency) increased up to 3x.
+> > > > > > 
+> > > > > > Happened between 5.13.8 and 5.14.0. Still happening at least on 5.14.11.
 > 
-> I wouldn't include folios in this picture, because IMHO folios as of now
-> are actually what we want to be "lru_mem", just which a much clearer
-> name+description (again, IMHO).
-
-I think folios are a superset of lru_mem.  To enhance your drawing:
-
-page
-   folio
-      lru_mem
-         anon_mem
-	 ksm
-         file_mem
-      netpool
-      devmem
-      zonedev
-   slab
-   pgtable
-   buddy
-   zsmalloc
-   vmalloc
-
-I have a little list of memory types here:
-https://kernelnewbies.org/MemoryTypes
-
-Let me know if anything is missing.
-
-> Going from file_mem -> page is easy, just casting pointers.
-> Going from page -> file_mem requires going to the head page if it's a
-> compound page.
+> > So git-bisect finally identified the following commit.
+> > The performance difference came in a single step. Times were consistent with
+> > my first post either the slow time or the fast time,
+> > as far as I could tell during the bisection.
+> > 
+> > It is a bit unfortunate that this comes from an attempt to reduce OS noise.
+> > 
+> > -----------------------------------------------------
+> > commit a5183862e76fdc25f36b39c2489b816a5c66e2e5
+> > Author: Yunfeng Ye <yeyunfeng@huawei.com>
+> > Date:   Thu May 13 01:29:16 2021 +0200
+> > 
+> >     tick/nohz: Conditionally restart tick on idle exit
+> > 
+> >     In nohz_full mode, switching from idle to a task will unconditionally
+> >     issue a tick restart. If the task is alone in the runqueue or is the
+> >     highest priority, the tick will fire once then eventually stop. But that
+> >     alone is still undesired noise.
+> > 
+> >     Therefore, only restart the tick on idle exit when it's strictly
+> >     necessary.
+> > 
+> >     Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+> >     Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> >     Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> >     Acked-by: Peter Zijlstra <peterz@infradead.org>
+> >     Link:
+> > https://lore.kernel.org/r/20210512232924.150322-3-frederic@kernel.org
+> > -----------------------------------------------------
+> > 
+> > Is there anything else to do to complete this report?
 > 
-> But we expect most interfaces to pass around a proper type (e.g.,
-> lru_mem) instead of a page, which avoids having to lookup the compund
-> head page. And each function can express which type it actually wants to
-> consume. The filmap API wants to consume file_mem, so it should use that.
+> So it _could_ be you're seeing increased use of deeper idle states due
+> to less noise. I'm forever forgetting what the most friendly tool is for
+> checking that (powertop can I think), Rafael?
+
+You can use turbostat too.
+
+> One thing to try is boot with idle=halt and see if that makes a
+> different.
 > 
-> And IMHO, with something above in mind and not having a clue which
-> additional layers we'll really need, or which additional leaves we want
-> to have, we would start with the leaves (e.g., file_mem, anon_mem, slab)
-> and work our way towards the root. Just like we already started with slab.
+> Also, let me Cc all the people involved.. the thread starts:
+> 
+>   https://lkml.kernel.org/r/035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com
+> 
 
-That assumes that the "root" layers already handle compound pages
-properly.  For example, nothing in mm/page-writeback.c does; it assumes
-everything is an order-0 page.  So working in the opposite direction
-makes sense because it tells us what has already been converted and is
-thus safe to call.
 
-And starting with file_mem makes the supposition that it's worth splitting
-file_mem from anon_mem.  I believe that's one or two steps further than
-it's worth, but I can be convinced otherwise.  For example, do we have
-examples of file pages being passed to routines that expect anon pages?
-Most routines that I've looked at expect to see both file & anon pages,
-and treat them either identically or do slightly different things.
-But those are just the functions I've looked at; your experience may be
-quite different.
+
+
