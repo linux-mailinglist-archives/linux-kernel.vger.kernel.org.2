@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A38B437069
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A4043706C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbhJVDO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232570AbhJVDO5 (ORCPT
+        id S232848AbhJVDPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:15:44 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:32805 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232641AbhJVDPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:14:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E17FC061764;
-        Thu, 21 Oct 2021 20:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=W0LD9iPvxxhEJ3MC2BpmyEY64d7qaINAGgTsXYSy428=; b=cYDUUwCiDlFw5AzyRMN9tlggeH
-        9bieqFxqnVXkwZshKFtrCWiWTRj42Do3v3duec5Oh2NeBr/KtY2JFs19YrFYe0pjKgkjitbcJVU74
-        3L08/bDkVn1tUvxtnfojRZTI4YQuqf0qGPiYnvURf63sODp5N4b02/KHuPw9GCLRd3M6EmVk8Ojgu
-        oBS83rFU7lxFzpRkPtkVGxQiFpQdqzIyU3p0je/yXb3QsaRNe4eexfYRYdsHlsX8Pbp3yHsoQjWpz
-        Wurr52oXnhVFBC7Wm/ZyMZRdkLB1Q5ijXqsDPwyM11+aSkVj9GJTqnh7As2hIZpDy+Zf5omesnM5z
-        tH6JZAqw==;
-Received: from [2602:306:c5a2:a380:b27b:25ff:fe2c:51a8]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdkxM-00DffH-LH; Fri, 22 Oct 2021 03:11:19 +0000
-Subject: Re: [PATCH 00/13] block: add_disk() error handling stragglers
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, jim@jtan.com, minchan@kernel.org,
-        ngupta@vflare.org, senozhatsky@chromium.org, richard@nod.at,
-        miquel.raynal@bootlin.com, vigneshr@ti.com,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
-        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
-        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
- <YW2duaTqf3qUbTIm@bombadil.infradead.org>
-From:   Geoff Levand <geoff@infradead.org>
-Message-ID: <24bc86d0-9d8d-8c8a-7f74-a87f9089342b@infradead.org>
-Date:   Thu, 21 Oct 2021 20:10:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 21 Oct 2021 23:15:42 -0400
+Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 949F582;
+        Thu, 21 Oct 2021 20:13:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1634872404;
+        bh=LLNRJiKGUMP7EoEUR5wD7aBtbHYbva/6dCa1Qn54veA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IKgkUD9bQNVd0XbhImJSr8B9499DdErazMVErWDoirEAEC+tFs0P/BCzyQWEi625B
+         CLioUn/XybYiEDiTPUzYo2PGkG5J08gr84dqq6JWu+2nTxAfL0l15t8F1DEgteW6Mi
+         hdfS4zkF/77d6chq5yp1zOLPgb6rIMlbASLrxKio=
+Date:   Thu, 21 Oct 2021 20:13:19 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
+Message-ID: <YXIsTxprltXzBv+6@hatter.bewilderbeest.net>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <CAL_JsqLmonXoV2qJ4zY1wfDTRuQAYQuymXEB2kTpUmkKWwPGjg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YW2duaTqf3qUbTIm@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqLmonXoV2qJ4zY1wfDTRuQAYQuymXEB2kTpUmkKWwPGjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luis,
-
-On 10/18/21 9:15 AM, Luis Chamberlain wrote:
-> On Sun, Oct 17, 2021 at 08:26:33AM -0700, Geoff Levand wrote:
->> Hi Luis,
+On Thu, Oct 21, 2021 at 07:58:46PM PDT, Rob Herring wrote:
+>On Thu, Oct 21, 2021 at 9:00 PM Zev Weiss <zev@bewilderbeest.net> wrote:
 >>
->> On 10/15/21 4:52 PM, Luis Chamberlain wrote:
->>> This patch set consists of al the straggler drivers for which we have
->>> have no patch reviews done for yet. I'd like to ask for folks to please
->>> consider chiming in, specially if you're the maintainer for the driver.
->>> Additionally if you can specify if you'll take the patch in yourself or
->>> if you want Jens to take it, that'd be great too.
+>> Hello all,
 >>
->> Do you have a git repo with the patch set applied that I can use to test with?
-> 
-> Sure, although the second to last patch is in a state of flux given
-> the ataflop driver currently is broken and so we're seeing how to fix
-> that first:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211011-for-axboe-add-disk-error-handling
+>> This series is another incarnation of a couple other patchsets I've
+>> posted recently [0, 1], but again different enough in overall
+>> structure that I'm not sure it's exactly a v2 (or v3).
+>>
+>> As compared to [1], it abandons the writable binary sysfs files and at
+>> Frank's suggestion returns to an approach more akin to [0], though
+>> without any driver-specific (aspeed-smc) changes, which I figure might
+>> as well be done later in a separate series once appropriate
+>> infrastructure is in place.
+>
+>I skimmed this, and overall I like the approach.
+>
+>> The basic idea is to implement support for a status property value
+>> that's documented in the DT spec [2], but thus far not used at all in
+>> the kernel (or anywhere else I'm aware of): "reserved".  According to
+>> the spec (section 2.3.4, Table 2.4), this status:
+>>
+>>   Indicates that the device is operational, but should not be used.
+>>   Typically this is used for devices that are controlled by another
+>>   software component, such as platform firmware.
+>>
+>> With these changes, devices marked as reserved are (at least in some
+>> cases, more on this later) instantiated, but will not have drivers
+>> bound to them unless and until userspace explicitly requests it by
+>> writing the device's name to the driver's sysfs 'bind' file.  This
+>> enables appropriate handling of hardware arrangements that can arise
+>> in contexts like OpenBMC, where a device may be shared with another
+>> external controller not under the kernel's control (for example, the
+>> flash chip storing the host CPU's firmware, shared by the BMC and the
+>> host CPU and exclusively under the control of the latter by default).
+>> Such a device can be marked as reserved so that the kernel refrains
+>> from touching it until appropriate preparatory steps have been taken
+>> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
+>> processor has control of the firmware flash).
+>>
+>> Patches 1-3 provide some basic plumbing for checking the "reserved"
+>> status of a device, patch 4 is the main driver-core change, and patch
+>> 5 tweaks the OF platform code to not skip reserved devices so that
+>> they can actually be instantiated.
+>>
+>> One shortcoming of this series is that it doesn't automatically apply
+>> universally across all busses and drivers -- patch 5 enables support
+>> for platform devices, but similar changes would be required for
+>> support in other busses (e.g. in of_register_spi_devices(),
+>> of_i2c_register_devices(), etc.) and drivers that instantiate DT
+>> devices.  Since at present a "reserved" status is treated as
+>> equivalent to "disabled" and this series preserves that status quo in
+>> those cases I'd hope this wouldn't be considered a deal-breaker, but
+>> a thing to be aware of at least.
+>>
+>> Greg: I know on [1] you had commented nack-ing the addition of boolean
+>> function parameters; patch 4 adds a flags mask instead in an analogous
+>> situation.  I'm not certain how much of an improvement you'd consider
+>> that (hopefully at least slightly better, in that the arguments passed
+>> at the call site are more self-explanatory); if that's still
+>> unsatisfactory I'd welcome any suggested alternatives.
+>
+>Can't we add a flag bit in struct device to reflect manual binding?
+>bind will set it and unbind clears it.
+>
 
-That branch has so many changes applied on top of the base v5.15-rc4
-that the patches I need to apply to test on PS3 with don't apply.
+I considered this (and actually drafted up a version that did exactly 
+that), but it seemed like turning a parameter-passing problem into a 
+state-maintenance problem (finding all the places that flag would need 
+to be cleared and ensuring newly-added ones don't get missed, which 
+unlike a function parameter the compiler can't really check for us).  
+Given that the live range (definition to use) of that value is entirely 
+within the codepath of a single call-chain (bind_store() -> 
+device_driver_attach() -> __driver_probe_device()), continuing to 
+maintain that state beyond that call chain seemed like unnecessary 
+complexity to me, but if there's a consensus that that would actually be 
+preferable I can certainly do it that way instead.
 
-Do you have something closer to say v5.15-rc5?  Preferred would be
-just your add_disk() error handling patches plus what they depend
-on.
 
-Thanks.
+Zev
 
--Geoff
