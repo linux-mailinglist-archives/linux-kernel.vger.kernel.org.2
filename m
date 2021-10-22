@@ -2,166 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AF04379A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB684379B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhJVPPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbhJVPPd (ORCPT
+        id S233054AbhJVPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:18:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231635AbhJVPSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:15:33 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C97C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:13:15 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so6006969pjl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sPRBp7qOSoApkIeJnbeB/3ed+SUDtLUTVg/TejCrXfE=;
-        b=xpDtC/mhBDh5II7WdSh6uTxOmIQRSQDZzwbSUYKSqWGBOpSTZHaURu/Ew+VyDCGQrX
-         TrjjzMYr3XNZ7OMHWde+WKcu1Kk2Hm9RA6hLAHnMhl/vxomVhek4hirnU5fynzQRAUWj
-         Timb1UPgYboPUePwpR/ddoyMiOTawQ/iraxCpIxsFKuJvmc6OrLoH3rZolk7O+Md/y2Y
-         xYXeYkxBlrNvIriQx54aawLQeev79By6UN9Hkvw8DgwhuwtCir+OF16NJfIsEJ8grar5
-         pY5E8b6OX8ITKjbsbNvEoIa72iVvrR7pOr5c5HehDHfhXmwCB/ln/fsNjaiU8l/s77Uk
-         s3Qg==
+        Fri, 22 Oct 2021 11:18:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634915781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pGKg98798sR7hDdh2nqAXz7sKPnZ3GW7bRVI1o0f6mc=;
+        b=EJ7sT7KoVrV5cGIXkuTul4dyhKvbdWmdu/g4b5hc8bJ2YKMtRj2NY50fJlOUrGXyasZBl6
+        YT1aluwCLBUT/2aHCcQxUI+7gKYgitDhBJ2tQnNCrygaMd1IBqMmTCcjr5kHVWF7XAoMcu
+        Rxdm1lqEuRNs18DvFry9DxsBRRyemug=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-IygQvx73NwWeRVm8nxui_Q-1; Fri, 22 Oct 2021 11:16:19 -0400
+X-MC-Unique: IygQvx73NwWeRVm8nxui_Q-1
+Received: by mail-wm1-f71.google.com with SMTP id v18-20020a7bcb52000000b00322fea1d5b7so1161869wmj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:16:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sPRBp7qOSoApkIeJnbeB/3ed+SUDtLUTVg/TejCrXfE=;
-        b=quTK/izRqWX07oZz52tcDr8cGEOFkOQoWOd7FQsE0N6qdv/a0566bJzmxsGTaFbdqr
-         M88+QnlCN59bSE/7Cp+uZSjQo7zdweZXmutTXVnzV+TkqiLZRT/ms93N8UqgrjqBCpGf
-         nu0I7x3KTm0k7WEdwcvKzWWlOg5ii1lLlqxyKkQpPaJreOnWWnfmZBpHiQ4jNifwNINh
-         cOsms6D1qFHF+Nanp3e9CaM54v70IyOVJM1oABmc58ytf7Q3ZiBDqb4ek173i3r9/Jz7
-         Pcap0YPzbDYdiLFjLAYkVGLqexuwT06QjcG342+OCMZRiZnrcurSb28MA3h+CYquZQir
-         xPdw==
-X-Gm-Message-State: AOAM532ri9k4vpV5qAp9v/GjW90ASBzDl/hso4fExu2LbZJ7TpK5cb7L
-        mtNMgRM8Y41flYoCosR7DlBezw==
-X-Google-Smtp-Source: ABdhPJzGAOVDQyJGbL58/ri5pISRJP0iKn0crTC4MoVQHpDPoJeGtLhPdp22ONYeUFgZKjvOW4diBQ==
-X-Received: by 2002:a17:90b:4c4d:: with SMTP id np13mr15342183pjb.193.1634915595236;
-        Fri, 22 Oct 2021 08:13:15 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id b130sm10092757pfb.9.2021.10.22.08.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 08:13:13 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 09:13:11 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        catalin.marinas@arm.com, anshuman.khandual@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org, maz@kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/15] arm64: Self-hosted trace related errata
- workarounds
-Message-ID: <20211022151311.GA3598787@p14s>
-References: <20211019163153.3692640-1-suzuki.poulose@arm.com>
- <20211020154207.GA3456574@p14s>
- <20211021085313.GA15622@willie-the-truck>
- <20211021163531.GA3561043@p14s>
- <20211021164730.GA16889@willie-the-truck>
- <YXJk3lkEm0tSUBwB@kroah.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=pGKg98798sR7hDdh2nqAXz7sKPnZ3GW7bRVI1o0f6mc=;
+        b=JOL48JOCdM/y/OlW8FB0g3HhMV3mj9EoDTqemXt9G1GqQmvcuVnBtiZzWAlVNPHkc8
+         nncDpl6u1m8cSnI5tPQovKo1zA5Gbm3Gn7ifUDiCH5qOSe58R/PH1q0LyH1CutUjphYc
+         rKJoapWOyJjH4pyMMtBldka+LaG14Sy4RDFLGkKRRr5mpttRBiLdSx5mVHtM0cQSMUlj
+         XICNWBiNG+9FShSMYsOsX1Pq+SQSEvkWhLZQ3ZvzEPxt0i37OjxsJp38u1sSMpYDdTRb
+         EOMZ5kB6Rmdk9ULTA8NI1ufeGMf0uOdca3e42CF8TUC1XTWRN4+rdgabJZjJrzqgM38I
+         s8XQ==
+X-Gm-Message-State: AOAM5305O+s4x5v6pHPrFB0T+fZhTQX6R/PTtMEiSKB7WhkUrpCE7yvO
+        zyP81EDKUJX7UkkT2qzESoUB5qmaVeoG1/XEHqBcJ3h76DIjbV7qYAGz6ZTTc897FSIdIuqSySI
+        1+PT1DPkMpr2T2nexYcMWo+v3
+X-Received: by 2002:adf:fa8b:: with SMTP id h11mr627052wrr.74.1634915778351;
+        Fri, 22 Oct 2021 08:16:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEKQAQpr7NQ++0cIjm/8luZl970ACFAB+piCj+X1eATgioaVsZPPinY4goUeNvEb0f2ZXSww==
+X-Received: by 2002:adf:fa8b:: with SMTP id h11mr627019wrr.74.1634915778129;
+        Fri, 22 Oct 2021 08:16:18 -0700 (PDT)
+Received: from [192.168.1.128] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id l20sm12942958wmq.42.2021.10.22.08.16.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 08:16:17 -0700 (PDT)
+Message-ID: <352163b2-2946-aec8-16b4-fd6f01373ff2@redhat.com>
+Date:   Fri, 22 Oct 2021 17:16:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXJk3lkEm0tSUBwB@kroah.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
+ framebuffers removal
+Content-Language: en-US
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20211022144040.3418284-1-javierm@redhat.com>
+ <CAEg-Je_v0zvOs1dOZ3P0qsPDO7LC8xk0zxQBLH6gr65V82dnPA@mail.gmail.com>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <CAEg-Je_v0zvOs1dOZ3P0qsPDO7LC8xk0zxQBLH6gr65V82dnPA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 09:14:38AM +0200, Greg KH wrote:
-> On Thu, Oct 21, 2021 at 05:47:31PM +0100, Will Deacon wrote:
-> > Hi Mathieu,
-> > 
-> > [CC Greg]
-> > 
-> > On Thu, Oct 21, 2021 at 10:35:31AM -0600, Mathieu Poirier wrote:
-> > > On Thu, Oct 21, 2021 at 09:53:14AM +0100, Will Deacon wrote:
-> > > > On Wed, Oct 20, 2021 at 09:42:07AM -0600, Mathieu Poirier wrote:
-> > > > > On Tue, Oct 19, 2021 at 05:31:38PM +0100, Suzuki K Poulose wrote:
-> > > > > > Suzuki K Poulose (15):
-> > > > > >   arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
-> > > > > >   arm64: errata: Add detection for TRBE overwrite in FILL mode
-> > > > > >   arm64: errata: Add workaround for TSB flush failures
-> > > > > >   arm64: errata: Add detection for TRBE write to out-of-range
-> > > > > >   coresight: trbe: Add a helper to calculate the trace generated
-> > > > > >   coresight: trbe: Add a helper to pad a given buffer area
-> > > > > >   coresight: trbe: Decouple buffer base from the hardware base
-> > > > > >   coresight: trbe: Allow driver to choose a different alignment
-> > > > > >   coresight: trbe: Add infrastructure for Errata handling
-> > > > > >   coresight: trbe: Workaround TRBE errata overwrite in FILL mode
-> > > > > >   coresight: trbe: Add a helper to determine the minimum buffer size
-> > > > > >   coresight: trbe: Make sure we have enough space
-> > > > > >   coresight: trbe: Work around write to out of range
-> > > > > >   arm64: errata: Enable workaround for TRBE overwrite in FILL mode
-> > > > > >   arm64: errata: Enable TRBE workaround for write to out-of-range
-> > > > > >     address
-> > > > > > 
-> > > > > >  Documentation/arm64/silicon-errata.rst       |  12 +
-> > > > > >  arch/arm64/Kconfig                           | 111 ++++++
-> > > > > >  arch/arm64/include/asm/barrier.h             |  16 +-
-> > > > > >  arch/arm64/include/asm/cputype.h             |   4 +
-> > > > > >  arch/arm64/kernel/cpu_errata.c               |  64 +++
-> > > > > >  arch/arm64/tools/cpucaps                     |   3 +
-> > > > > >  drivers/hwtracing/coresight/coresight-trbe.c | 394 +++++++++++++++++--
-> > > > > >  7 files changed, 567 insertions(+), 37 deletions(-)
-> > > > > 
-> > > > > I have applied this set.
-> > > > 
-> > > > Mathieu -- the plan here (which we have discussed on the list [1]) is
-> > > > for the first four patches to be shared with arm64. Since you've gone
-> > > > ahead and applied the whole series, please can you provide me a stable
-> > > > branch with the first four patches only so that I can include them in
-> > > > the arm64 tree?
-> > > > 
-> > > > Failing that, I can create a branch for you to pull and apply the remaining
-> > > > patches on top.
-> > > > 
-> > > > Please let me know.
-> > > 
-> > > Coresight patches flow through Greg's tree and as such the coresight-next tree
-> > > gets rebased anyway.  I will remove the first 4 patches and push again.  By the
-> > > way do you also want to pick up patches 14 and 16 since they are concerned with
-> > > "arch/arm64/Kconfig" or should I keep them?
-> > 
-> > I'll take the first 4 and put them on a stable branch, which you can choose
-> > to pull if you like (but please don't rebase it or we'll end up with
-> > duplicate commits). The rest of the patches, including the later Kconfig
-> > changes, are yours but I doubt they'll apply cleanly without the initial
-> > changes.
-> > 
-> > Are you sure Greg rebases everything? That sounds a bit weird to me, as it
-> > means it's impossible to share branches with other trees. How do you usually
-> > handle this situation?
+Hello Neal,
+
+Thanks for your feedback.
+
+On 10/22/21 16:56, Neal Gompa wrote:
+> On Fri, Oct 22, 2021 at 10:40 AM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>>
+>> The simpledrm driver allows to use the frame buffer that was set-up by the
+>> firmware. This gives early video output before the platform DRM driver is
+>> probed and takes over.
+>>
+>> But it would be useful to have a way to disable this take over by the real
+>> DRM drivers. For example, there may be bugs in the DRM drivers that could
+>> cause the display output to not work correctly.
+>>
+>> For those cases, it would be good to keep the simpledrm driver instead and
+>> at least get a working display as set-up by the firmware.
+>>
+>> Let's add a drm.remove_fb boolean kernel command line parameter, that when
+>> set to false will prevent the conflicting framebuffers to being removed.
+>>
+>> Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
+>> early in their probe callback, this will cause the drivers' probe to fail.
+>>
+>> Thanks to Neal Gompa for the suggestion and Thomas Zimmermann for the idea
+>> on how this could be implemented.
+>>
+>> Suggested-by: Neal Gompa <ngompa13@gmail.com>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>> ---
+>> Hello,
+>>
+>> I'm sending this as an RFC because I wasn't sure about the correct name for
+>> this module parameter, and also if 'remove_fb=0' is intitutive or instead a
+>> parameter that's enabled is preferred (i.e: 'disable_fb_removal=1').
+>>
 > 
-> No, I never rebase my trees.  For coresight patches I take them as
-> emailed patches due to previous history requiring me to review them all
-> myself.  If this is an issue here, I can always take a pull request as
-> long as you all don't want my review :)
-
-Can you expand on the "previous history requiring" you to review coresight
-patches?
-
-Rebasing the coresight-next tree when patches are pulled in the char-misc tree
-causes problems when features involve other subsystems.  I definitely appreciate
-reviews of coresight patches from anyone. The subsystem has grown to be very
-complex and more reviewers mean higher probabilities of catching problems.
-There has to be a way for that to continue while making it easier to collaborate
-with other subsystems.
-
-For this particular patchset, Will has picked up the first 4 patches, I will pick up
-patches 5 to 13 and patches 14 and 15 will have to go in the next cycle.  I
-doubt this is the best we can do.
-
-Regards,
-Mathieu
-
+> In general, I think the patch is fine, but it might make sense to name
+> the parameter after the *effect* rather than the *action*. That is,
+> the effect of this option is that we don't probe and hand over to a
+> more appropriate hardware DRM driver.
 > 
-> thanks,
+> Since the effect (in DRM terms) is that we don't use platform DRM
+> modules, perhaps we could name the option one of these:
 > 
-> greg k-h
+> * drm.noplatformdrv
+> * drm.simpledrv
+> * drm.force_simple
+>
+
+or maybe drm.disable_handover ? Naming is hard...
+ 
+> I'm inclined to say we should use the drm.* namespace for the cmdline
+> option because that makes it clear what subsystem it affects. The
+> legacy "nomodeset" option kind of sucked because it didn't really tell
+> you what that meant, and I'd rather not repeat that mistake.
+>
+
+Yes, agreed. In fact, that is the case for this patch since the param is
+in the drm module. I just forgot to mention the namespace in the last
+paragraph of the comment.
+
+Best regards, -- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
+
