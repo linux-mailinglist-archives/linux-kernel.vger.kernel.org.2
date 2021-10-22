@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9DD4374E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A9C4374ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhJVJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:41:03 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:41678 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhJVJlB (ORCPT
+        id S232467AbhJVJmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:42:37 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:37495 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232038AbhJVJmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:41:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634895524; x=1666431524;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=FwWHFiTyuZ4DhFbgzIdL2AIGl6n8DFMRj6YhMJTHOic=;
-  b=GlX+x4dGcuUf72e4A5G5Kn+w3+dTs8tkVO++wkBR1euLsMi+4FdTZDWK
-   W8xBqybrHvMfPiD2M9LlAtVg6eYZhWjoyx137eH4WsfmcIWQk5SzWMajE
-   eCDIc6t69uu8ZZaKyX8sZm+eTk+NqIk/2oq7TCSL1j3NVB7DiEiyB9B2s
-   RsmgsVNISZlRsw2syMG2tnvLjo3LIQm+SL1qYs1M9gzrAnRu9ZU53ZVlT
-   tWg6LMRUisqQA8qKVL/jBdbWDYRHzTgdjKIu0/K7ytBXZXFH/fVI0CG0i
-   2Ybipm7cDUF+XQQPZTWC43FxgmVmSAT6rCeAUXbEgvCAT9LgnSyLwDOrX
-   w==;
-IronPort-SDR: 4h2g7uZ3dTfBnXeVb5dsOcCgEjDE3UseshPGlYc3xcYoxTa0Zgw5XYApD6UyN4P+h+pMNDvVcl
- r0DVPtmUNuXn0sIwY8TiSCrqdgzkHi5kGcL1xRAlWHAVYsn40HeS1wJk3RSvw4nkwmzIMYiKgN
- BWeB4PbzIVZX6yi75De4recayzH4IBexm419c3A+ZGi/tfu8Vqps88dmL95u7wxFQVBCc8H8vZ
- vaFo6TrcDapfh1/ezYFDz8iSqxf7Z/M3Kc1CmNks4ZjxT4bPuka5UvgqijqFMA/RZI4wsQsP86
- DdIk1L6Yr/IelK68W8adTSUs
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; 
-   d="scan'208";a="73939202"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Oct 2021 02:38:44 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 22 Oct 2021 02:38:43 -0700
-Received: from [10.171.246.101] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Fri, 22 Oct 2021 02:38:41 -0700
-Subject: Re: linux-next: manual merge of the at91 tree with Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Nicolas Ferre <nicolas.ferre@atmel.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211022085641.57d666a4@canb.auug.org.au>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <0235edf0-9b33-9a88-3793-9062e59b8711@microchip.com>
-Date:   Fri, 22 Oct 2021 11:38:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 22 Oct 2021 05:42:33 -0400
+Received: by mail-pf1-f178.google.com with SMTP id q19so3130200pfl.4;
+        Fri, 22 Oct 2021 02:40:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2DRet2N5HhCm6h5wynnS1gaOYbkbGXzOrerbjjC0E3g=;
+        b=Jrkj7Jx9VmBivqrIstT5FQ0tLVNsID3nHIkQBDPtRh693hp0l2M+vwDTZWwH8Lbxtr
+         LnNOXPEoA8FcICMv8yUk4RTPW7QlSWU+pLolsrYWpZnELe07BesyDZHVDiU2+kVaPXBf
+         38bt1sw4J2ijStGsfnNa3IFwXlvw0nFq69cMgiLV3Od620tFd4xpxfaKkWMRaOVWUW2Z
+         nDBLzf0FbjGLd3UO/Sz4bf+P5Z2SI10s3EbmccvpVa3HWk2GwvppAD+18Rtzk+JdTaPO
+         yASB+VH+TpLlKJp1dY5bAMnU94mZGHUNmjER79pHeufJ49J59vq0yYf+9SQCV82+0y67
+         Xzyg==
+X-Gm-Message-State: AOAM532EV4cWAG4PnESuapwrRCmLoctHc7OPuGQ8UyCZBkEFw8r7eegm
+        FefogQ1DrYrr8eV3+B3hHlGsKuWBAJJ2umwslS4=
+X-Google-Smtp-Source: ABdhPJyblyCb0CC4y8acTqNncuSqdbB5QocuyXB3xV6V6A5/kNsqxhKmEJEGhcR1xInlPyJlLfr9PFvQz/JeTr9ws8o=
+X-Received: by 2002:a62:5257:0:b0:44c:ed84:350a with SMTP id
+ g84-20020a625257000000b0044ced84350amr11091780pfb.79.1634895616438; Fri, 22
+ Oct 2021 02:40:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211022085641.57d666a4@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-2-kernel@esmil.dk>
+ <CAHp75VfD73Nsrp-3hMzFtuEAfka+rRc=2m0ZZYddhWBAzg=QAw@mail.gmail.com>
+In-Reply-To: <CAHp75VfD73Nsrp-3hMzFtuEAfka+rRc=2m0ZZYddhWBAzg=QAw@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 22 Oct 2021 11:40:05 +0200
+Message-ID: <CANBLGcxJGgi9nuT6LpjGgPj1bg0aW-ELRCAO0Csv3xi82gTCnQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/16] RISC-V: Add StarFive SoC Kconfig option
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 at 23:56, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the at91 tree got a conflict in:
-> 
->    arch/arm/boot/dts/sama7g5.dtsi
-> 
-> between commit:
-> 
->    6f3466228451 ("ARM: dts: at91: sama7g5: add chipid")
-> 
-> from Linus' tree and commit:
-> 
->    9430ff34385e ("ARM: dts: at91: sama7g5: add tcb nodes")
-> 
-> from the at91 tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+On Fri, 22 Oct 2021 at 10:51, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Thu, Oct 21, 2021 at 8:42 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> >
+> > Add StarFive Kconfig option to select SoC specific and common drivers
+> > required for these SoCs.
+>
+> ...
+>
+> > +config SOC_STARFIVE
+> > +       bool "StarFive SoCs"
+> > +       select PINCTRL
+> > +       select RESET_CONTROLLER
+>
+> > +       select SIFIVE_PLIC
+>
+> If this is well understood and platform related the above two are too
+> generic. Why have you selected them?
 
-Stephen,
+From your last comments the criterion seemed to be to only add it here
+if it would otherwise fail to boot. Well it does fail to boot without
+the reset and pinctrl drivers. The clock driver too, but RISCV already
+selects COMMON_CLK. Once PINCTRL and RESET_CONTROLLER is selected the
+specific drivers defaults to SOC_STARFIVE.
 
-Yes, carry this fix please.
-It's handled in arm-soc tree by Arnd and Olof: should not be a problem 
-upstream.
+Alternatively we'd select the drivers too, but I can't promise that
+future StarFive chips will need the same JH7100 clock and reset
+drivers. Doing it this way means that selecting SOC_STARFIVE by
+default gives you a kernel that will boot on all StarFive SoCs, but
+you can still customise it further to your particular chip. It seems
+like SOC_SIFIVE is doing the same.
 
-Thanks, best regards,
-   Nicolas
+> > +       help
+> > +         This enables support for StarFive SoC platform hardware.
+>
+> Not too much to read here. What is the point of this help?
+> I would elaborate what kind of platform it may support, what kind of
+> drivers it selects due to necessity of the accomplishing the boot
+> process, etc.
 
--- 
-Nicolas Ferre
+This is exactly as the other descriptions in this file. I don't know
+why SOC_STARFIVE should be special.
+
+/Emil
