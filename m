@@ -2,136 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0427F43740A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAD1437411
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhJVI5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:57:02 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44336
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232180AbhJVI5B (ORCPT
+        id S232400AbhJVI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:57:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52416 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhJVI5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:57:01 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 22 Oct 2021 04:57:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A2B641FD58;
+        Fri, 22 Oct 2021 08:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634892919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i3+Uq4UVNBn028/JKXLqD4OiZxT03waqoqBrFgoR68s=;
+        b=rYy6eAW81DVWQ4qIapbCVxcjYhvwbEUMsRYrCuUlK8wERzwwrBAADvSBBCEGowtQyGVW2G
+        1+Q4WlTvriLaT/KtIsrsaiz97VnyIm+h89JuaaJUEFfbqfiE/+x00hqwNIWoSSMHda2jl7
+        wlQTz0oymuS2IXzMxFDWXMJmNcYymvk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5593B40019
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:54:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634892883;
-        bh=Carl7Pe6UmGLChoOIKcp8s0kxXVp6AfE+vBYtcnHbFY=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=JufsuybBEhwKQE9NftAXZCx9A9/4YjcT4fEtR4uneBC9aOWvBLD4TGJZSlSvL16I3
-         p7V5SYXm0zqOuMDM8S46qnVP5XHFY/MrCcqTftSvfwzGqitLQ0oXIKyoxjCviJwm1m
-         rDoYfhbdjuMuoklh1vpM/ii3uB/nC3JCgV4f090BvIfVPyQdWlcbXK1UXMEg5uP8jm
-         yWl0/Ai5TiHHHlWXWygo/SXjDP4wZQenzc0AuuM8OUu6ZWtCCqCv5Z4Q8c2eUw8/m3
-         nB9pyfid9X6+qOe2vufyDtt/cHq0U9lDMOCN/z0/qNaztaCIIFSrhc2rAaoVJ2JNfo
-         L1Bnz3q/QaA2w==
-Received: by mail-lf1-f71.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso1435696lfg.16
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:54:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Carl7Pe6UmGLChoOIKcp8s0kxXVp6AfE+vBYtcnHbFY=;
-        b=4SiNiKIlFVoG0YQPME6ueAyRJNVUql2C5x34sT+9gwxmA6SmH2QA0P4BwziALjV0HU
-         Y6KFNonleDRX4hL4vz0ImKLTQv/NVolbImU+3NpKKDuWVqITfGE7Pa0KYWKacF7qge+M
-         OCsQcpdCwpapVCMMGK47KvGAiB6GZfCwCIFTvJoDsLn+78vIivji13jqnOHOH/P9e6hM
-         an7D7lCT8u3wG67n2hyQqeaJ66CYy05bHrDKrwz9gD5jmQUtRzqF/Pa6iiMcfHQMs0LZ
-         6o4jV1wl2Qm0VSocaO2oR1ppvY8foQ83xWPo1I55Q8mXCXHog9zjvXlQKYmPrEtWwOEm
-         Ntuw==
-X-Gm-Message-State: AOAM533mZArFTC8TeuCdUcwviK/FuNcwsJRZt4CAuwuvjEsFJ8K/pIt3
-        tP4htscQcmoNgavFMxXqNM4xRo7ymPF/llf/rHyctP+pq/1jDnXCruh8rbNSNejj11VfWlGCMAW
-        U/MHmCYSvAh+Q4PC12SwjfpdN1bVQaXhAWXkUalwNgw==
-X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr10077221lfu.637.1634892882585;
-        Fri, 22 Oct 2021 01:54:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5wXH8lLMcrlGOHByO1io8mqLUATcdtW9OlmDbgC+tn9pMODi48vzpNaBtkjOvs2FFTEUCjQ==
-X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr10077200lfu.637.1634892882331;
-        Fri, 22 Oct 2021 01:54:42 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id v5sm676876lfo.49.2021.10.22.01.54.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 01:54:41 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] rtc: s3c: Add time range
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211021202256.28517-1-semen.protsenko@linaro.org>
- <20211021202256.28517-4-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <f3c2d2cd-1099-5997-3516-e48f43e3cf94@canonical.com>
-Date:   Fri, 22 Oct 2021 10:54:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by relay2.suse.de (Postfix) with ESMTPS id 65512A3B89;
+        Fri, 22 Oct 2021 08:55:18 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 10:55:17 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg v2 1/2] mm, oom: do not trigger out_of_memory from
+ the #PF
+Message-ID: <YXJ8daC9Ex1x1Rbq@dhcp22.suse.cz>
+References: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
+ <cover.1634889066.git.vvs@virtuozzo.com>
+ <91d9196e-842a-757f-a3f2-caeb4a89a0d8@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <20211021202256.28517-4-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91d9196e-842a-757f-a3f2-caeb4a89a0d8@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 22:22, Sam Protsenko wrote:
-> This RTC driver starts counting from 2000 to avoid Y2K problem. Also it
-> only supports 100 years range for all RTCs.  Provide that info to RTC
-> framework. Also remove check for 100 years range in s3c_rtc_settime(),
-> as RTC core won't pass any invalid values to the driver, now that
-> correct range is set.
+On Fri 22-10-21 11:11:09, Vasily Averin wrote:
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> Here is the rationale on 100 years range limitation. Info on different
-> Samsung RTCs (credit goes to Krzysztof Kozlowski):
->   - All S3C chips have only 8-bit wide year register (can store 100
->     years range in BCD format)
->   - S5Pv210 and Exynos chips have 12-bit year register (can store 1000
->     years range in BCD format)
+> Any allocation failure during the #PF path will return with VM_FAULT_OOM
+> which in turn results in pagefault_out_of_memory. This can happen for
+> 2 different reasons. a) Memcg is out of memory and we rely on
+> mem_cgroup_oom_synchronize to perform the memcg OOM handling or b)
+> normal allocation fails.
 > 
-> But in reality we usually can't make use of those 12 bits either:
->   - RTCs might think that both 2000 and 2100 years are leap years. So
->     when the YEAR register is 0, RTC goes from 28 Feb to 29 Feb, and
->     when the YEAR register is 100, RTC also goes from 28 Feb to 29 Feb.
->     This is of course incorrect: RTC breaks leap year criteria, which
->     breaks the time contiguity, which leads to inability to use the RTC
->     after year of 2099. It was found for example on Exynos850 SoC.
->   - Despite having 12 bits for holding the year value, RTC might
->     overflow the year value internally much earlier. For example, on
->     Exynos850 the RTC overflows when YEAR=159, making the next YEAR=0.
->     This way RTC actually has range of 160 years, not 1000 as one may
->     think.
+> The later is quite problematic because allocation paths already trigger
+> out_of_memory and the page allocator tries really hard to not fail
+> allocations. Anyway, if the OOM killer has been already invoked there
+> is no reason to invoke it again from the #PF path. Especially when the
+> OOM condition might be gone by that time and we have no way to find out
+> other than allocate.
 > 
-> All that said, there is no sense in trying to increase the time range
-> for more than 100 years on RTCs that seem capable of that. It also
-> doesn't have too much practical value -- current hardware will be
-> probably obsolete by 2100.
+> Moreover if the allocation failed and the OOM killer hasn't been
+> invoked then we are unlikely to do the right thing from the #PF context
+> because we have already lost the allocation context and restictions and
+> therefore might oom kill a task from a different NUMA domain.
 > 
-> Tested manually on Exynos850 RTC:
+> An allocation might fail also when the current task is the oom victim
+> and there are no memory reserves left and we should simply bail out
+> from the #PF rather than invoking out_of_memory.
 > 
->     $ date -s "1999-12-31 23:59:50"
->     $ hwclock -w -f /dev/rtc0
->     $ date -s "2100-01-01 00:00:00"
->     $ hwclock -w -f /dev/rtc0
->     $ date -s "2000-01-01 00:00:00"
->     $ hwclock -w -f /dev/rtc0
->     $ hwclock -r -f /dev/rtc0
->     $ date -s "2099-12-31 23:59:50"
->     $ hwclock -w -f /dev/rtc0
->     $ hwclock -r -f /dev/rtc0
+> This all suggests that there is no legitimate reason to trigger
+> out_of_memory from pagefault_out_of_memory so drop it. Just to be sure
+> that no #PF path returns with VM_FAULT_OOM without allocation print a
+> warning that this is happening before we restart the #PF.
+
+Thanks for reviving my old patch! I still do think this is the right
+direction. I would argue that we should split this into two stages as
+already mentioned. First to add a bail out on fatal_signal_pending
+because that is a trivial thing to do and it should be obviously safer.
+Then we can remove out_of_memory completely. That should be obviously
+right thing to do but if it turns out we have missed something we would
+need to revert that part.
+
+> [VvS: #PF allocation can hit into limit of cgroup v1 kmem controlle.
+> This is a local problem related to memcg, however, it causes unnecessary
+> global OOM kills that are repeated over and over again and escalate into
+> a real disaster.  It was broken long time ago, most likely since
+> 6a1a0d3b625a ("mm: allocate kernel pages to the right memcg").
+> In upstream the problem will be fixed by removing the outdated kmem limit,
+> however stable and LTS kernels cannot do it and are still affected.
+> This patch fixes the problem and should be backported into stable.]
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Fixes: 6a1a0d3b625a ("mm: allocate kernel pages to the right memcg")
+
+I am not sure the sha1 is the right one but the issue is there since
+kmem accounting has been introduced so it should be around that time.
+Maybe do not name the specific commit but stick to something like
+"This has been broken since kmem accounting has been introduced for
+cgroup v1 (3.8). There was no kmem specific reclaim for the separate
+limit so the only way to handle kmem hard limit was to return with
+ENOMEM."
+
+> Cc: stable@vger.kernel.org
+
+I am still not sure this really needs a stable backport. There are no
+bug reports for years so I strongly suspect people are simply not using
+kmem hard limit with cgroup v1.
+
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> Reviewed-by: Vasily Averin <vvs@virtuozzo.com>
+
+Btw. you should be adding your s-o-b here.
+
 > ---
-> Changes in v2:
->   - Removed check for 100 years range in s3c_rtc_settime()
->   - Improved the commit message
+>  mm/oom_kill.c | 23 ++++++++++-------------
+>  1 file changed, 10 insertions(+), 13 deletions(-)
 > 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 831340e7ad8b..f98954befafb 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -1120,27 +1120,24 @@ bool out_of_memory(struct oom_control *oc)
+>  }
+>  
+>  /*
+> - * The pagefault handler calls here because it is out of memory, so kill a
+> - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
+> - * killing is already in progress so do nothing.
+> + * The pagefault handler calls here because some allocation has failed. We have
+> + * to take care of the memcg OOM here because this is the only safe context without
+> + * any locks held but let the oom killer triggered from the allocation context care
+> + * about the global OOM.
+>   */
+>  void pagefault_out_of_memory(void)
+>  {
+> -	struct oom_control oc = {
+> -		.zonelist = NULL,
+> -		.nodemask = NULL,
+> -		.memcg = NULL,
+> -		.gfp_mask = 0,
+> -		.order = 0,
+> -	};
+> +	static DEFINE_RATELIMIT_STATE(pfoom_rs, DEFAULT_RATELIMIT_INTERVAL,
+> +				      DEFAULT_RATELIMIT_BURST);
+>  
+>  	if (mem_cgroup_oom_synchronize(true))
+>  		return;
+>  
+> -	if (!mutex_trylock(&oom_lock))
+> +	if (fatal_signal_pending(current))
+>  		return;
+> -	out_of_memory(&oc);
+> -	mutex_unlock(&oom_lock);
+> +
+> +	if (__ratelimit(&pfoom_rs))
+> +		pr_warn("Huh VM_FAULT_OOM leaked out to the #PF handler. Retrying PF\n");
+>  }
+>  
+>  SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> -- 
+> 2.32.0
 
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-
-Best regards,
-Krzysztof
+-- 
+Michal Hocko
+SUSE Labs
