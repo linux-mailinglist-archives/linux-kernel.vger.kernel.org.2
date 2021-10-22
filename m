@@ -2,70 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799E7437714
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA90437665
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhJVM0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S230436AbhJVMJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhJVM0g (ORCPT
+        with ESMTP id S230155AbhJVMI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:26:36 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1950C061766;
-        Fri, 22 Oct 2021 05:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nBPXAxp8jG+dtVLA+/+js/8q7VpKJL9S5SfJVd3OHdA=; b=prAUfbzX3kI1dtn/jQfO1w/jYw
-        2iEJAnGPsxe54bGSf096vTBFNdj4SQk52FK0CRBmlz12rcSJdR6kT3VGSJJsO732bggy/j9fIkW6c
-        yVn2ZqDWPSot/DYWt5vNnFTwsWJpbkiQawQyWroLcIuKom9MuVBnWKUCvgffOI/IZ/juSl9oSnD/k
-        0XPgEtpsQZDekntwOicTmjuRUiZ49iZY1DQVcwswltXEJF2P3xGTYsOymWHyAw2Cyc023077QBJTc
-        +aUj3wGRdBtUFehU99xwBmQvIuO9LjAHWQF53aojLJJ2d4IJGC8WiG6sft8lwDsMFi6IPlwEq+8QN
-        h6c3lffQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdtaf-00BZsz-GH; Fri, 22 Oct 2021 12:24:05 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7E2F79812EB; Fri, 22 Oct 2021 00:37:19 +0200 (CEST)
-Date:   Fri, 22 Oct 2021 00:37:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <20211021223719.GY174703@worktop.programming.kicks-ass.net>
-References: <20211020104442.021802560@infradead.org>
- <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
- <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
- <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
+        Fri, 22 Oct 2021 08:08:59 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB837C061764;
+        Fri, 22 Oct 2021 05:06:41 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id t9so520442lfd.1;
+        Fri, 22 Oct 2021 05:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R84D4r5FDARD/g2x4xeRmi2uz90HxOZb8w5h12y7ut8=;
+        b=B/HOvEO5kKCZyxZM+elLWHPy4zHRSzOIWXG6wYfi895M/WVqzNFbT53DYErRvwXujp
+         XlUVYujetUVeWxeQmhj9eW+gj0pLadHZsoXAn7kaZ1GMO0SJL0sdl51UWsk3VZWR0TcP
+         eNRmNpoUhZbzl65l8m/8GkpHoZ7u/dmwjSCOuHcWI3q1hDSb5t8K0uje/zxCa7/L0gHt
+         TTm08hGuhKbDb4FpX1Z/gYoQcLbCyKQtpBuxv/YcONd8xFbDKAT117b9OQ/e25JlPYm8
+         +ykIwo40NC9qvTke9oNzqkhoGOLMotRkkGcN3l0Rww/yYUdBMR+G9my+BT/wOgPOBVEk
+         bflA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R84D4r5FDARD/g2x4xeRmi2uz90HxOZb8w5h12y7ut8=;
+        b=W0CoRLAulcH+xwRDg9Coek9cZLpYJv0oxgM19LxekQKiAAJ0EUKcxy3KYqJ8b7+Xyq
+         9VDLD9fBKQWjWqcm1PM7WhKgvP7CidnLCPeaOTGEfnqf5sCHu6UaO1KYHfNBag8y9mAU
+         ZmxH5fSPpUJddFiW4bJXMpSWP0qTNgexOMOXDVmDULRgkGI2LGCfuOCEtFKx5Z/21aDA
+         Qn4dYUpjW3CNPZjdH5mK6WuX2qVbj0siN6+a+9mORVPfxQfKA9QbZ+fKeCfC4UgUX3mG
+         mXz3ehSA9PcKeHrAelqjpPOSOGgtzr7TykZP6UKN+DM0+1Mar7aHjeMZwOD2yK40951W
+         xwng==
+X-Gm-Message-State: AOAM531nTcRMnHStIJwe4wPHu8wkmwTym4syobtJbs429+Dszx0qZXyR
+        0Oi4bBzeTZIqC6tBax2r47YlwG3771Dtl06QJq8=
+X-Google-Smtp-Source: ABdhPJyzFpyP0COpqxNMoju9KRywPlL0uzmAAZt7vzpS1TRsvN+hRj8eVtTncT5Hjno9P3zXfcxRHw==
+X-Received: by 2002:a05:6512:3393:: with SMTP id h19mr11367891lfg.363.1634904400116;
+        Fri, 22 Oct 2021 05:06:40 -0700 (PDT)
+Received: from trashcan.lan (public-nat-10.vpngate.v4.open.ad.jp. [219.100.37.242])
+        by smtp.gmail.com with ESMTPSA id bu21sm715299lfb.39.2021.10.22.05.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 05:06:39 -0700 (PDT)
+From:   Vladimir Lypak <vladimir.lypak@gmail.com>
+To:     Vladimir Lypak <vladimir.lypak@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/a5xx: Eliminate condition on setup of SMMU CP_PROTECT
+Date:   Fri, 22 Oct 2021 11:31:23 +0000
+Message-Id: <20211022113128.102304-1-vladimir.lypak@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:03:33AM -0700, Alexei Starovoitov wrote:
+Only GPU that has larger SMMU region size (0x8000 dwords) is A530.
+All other GPUs have 0x4000 SMMU region. However those GPUs work
+correctly with larger range protected because there is no known
+registers after SMMU region.
+This patch needs to be backported to stable releases because A540 GPU
+was forgotten to get its branch (that would set up protected region of
+0x4000 dwords).
 
-> > I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
-> > lot more robust than the 64bit one and I couldn't figure out why the
-> > difference.
-> 
-> Interesting. Daniel will recognize that trick then :)
+Fixes: b5f103ab98c7 ("drm/msm: gpu: Add A5XX target support")
+Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+---
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-> > Is there concurrency on the jit?
-> 
-> The JIT of different progs can happen in parallel.
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+index 5e2750eb3810..ecf6318a247f 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+@@ -851,11 +851,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+ 	/* UCHE */
+ 	gpu_write(gpu, REG_A5XX_CP_PROTECT(16), ADRENO_PROTECT_RW(0xE80, 16));
+ 
+-	if (adreno_is_a508(adreno_gpu) || adreno_is_a509(adreno_gpu) ||
+-	    adreno_is_a510(adreno_gpu) || adreno_is_a512(adreno_gpu) ||
+-	    adreno_is_a530(adreno_gpu))
+-		gpu_write(gpu, REG_A5XX_CP_PROTECT(17),
+-			ADRENO_PROTECT_RW(0x10000, 0x8000));
++	/* SMMU */
++	gpu_write(gpu, REG_A5XX_CP_PROTECT(17), ADRENO_PROTECT_RW(0x10000, 0x8000));
+ 
+ 	gpu_write(gpu, REG_A5XX_RBBM_SECVID_TSB_CNTL, 0);
+ 	/*
+-- 
+2.33.0
 
-In that case I don't think the patch is safe. I'll see if I can find a
-variant that doesn't use static storage.
