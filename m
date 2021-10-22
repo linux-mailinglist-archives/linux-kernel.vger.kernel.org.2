@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE08437289
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448624372D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhJVHOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhJVHOQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:14:16 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A010C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 00:11:59 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id m42so1903490wms.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 00:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yIa6E/k8roJgRdabf3ndgbTTDoOGJ85US9AeRzUkbNo=;
-        b=c04Px1A/n8RDfZ3bxtjde3WudxXpEMma/E6/tyegFKiGoi7EB23VDT8upDoJOpDTfO
-         ubZWbS6HdPldVB/OlgtQzi+I/zA4lVZ2Q4Ztkm2RqzAK+qDn6u1jBXjvFWFBAhfkx/64
-         bbnRyIt/u5NU5ktxx5NU/0mW5DDSysxwdVhtYQvUGsne6PtN4gnqjOrycXB+Ja072mGM
-         BVYueleCos9aD2zhyuX42v34SQYerid+42PMbqyf5l10xBvUBijczPld77aWY7MuF5sE
-         ml8cpmoYW0UHqph8d0mYPTHq3pMP4YIHkNqHoRIyC+0jvhI1qdLcCzWsrSD1+9q+oLC0
-         zKdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yIa6E/k8roJgRdabf3ndgbTTDoOGJ85US9AeRzUkbNo=;
-        b=wB1yy67JS9lLvOJB8zLgLeSPIrK1WYtrhA5wwbufyv3mt+VHXFC0HgHb0GvisgrF2q
-         t+nRvgquxJxausaBwmZ+BdrypLsR8Qvl2jjkoax2O4FxYegLNsX3Xdqz/WUfZT+CQQlQ
-         2uB/Nj4JNSl0R0sOzm1AMBprxv3qLOHF/Zjk75v4+JtWs62M23MZX5qz8M+lqWdAe9GR
-         P+Xo09jRNI3WoYxh1kW3aVTD2A4o+OrozyGUU2LL/qDy+5DDh27HUJdFN8vISPMOxJtH
-         2sFDEgPKJM0/rVI8jS2NBFwVCU9Db51ZiSSDerLeaU3PtAcKcSfTATOqayjJmISj/DrT
-         ZOwA==
-X-Gm-Message-State: AOAM531jjgS4kwn9gP4GXFQOJPRxcN7fKsehG89VjgHMT34hXkvq3Ee+
-        QiWEKinITXXin96Ddg7bh/w=
-X-Google-Smtp-Source: ABdhPJw33wO03azS0afaTwb4cziYj7DERCH2I7PoCEcN7ZDBJ4RL4Nrv74aAtJH1fTj412bUgH6cVw==
-X-Received: by 2002:a1c:ac03:: with SMTP id v3mr12416623wme.127.1634886717753;
-        Fri, 22 Oct 2021 00:11:57 -0700 (PDT)
-Received: from gmail.com (563BB2F5.dsl.pool.telekom.hu. [86.59.178.245])
-        by smtp.gmail.com with ESMTPSA id 6sm2887434wma.48.2021.10.22.00.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 00:11:57 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 22 Oct 2021 09:11:55 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Subject: Re: MAINTAINERS: Add Dave Hansen to the x86 maintainer team
-Message-ID: <YXJkO9MiUzyWceOi@gmail.com>
-References: <87zgr3flq7.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zgr3flq7.ffs@tglx>
+        id S232134AbhJVHkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:40:09 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:45906 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231773AbhJVHkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:40:08 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D7651201B52;
+        Fri, 22 Oct 2021 09:37:49 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9FC132005EC;
+        Fri, 22 Oct 2021 09:37:49 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 4D5BB183AC94;
+        Fri, 22 Oct 2021 15:37:48 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, jingoohan1@gmail.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH v3 0/7] PCI: imx6: refine codes and add compliance tests mode support
+Date:   Fri, 22 Oct 2021 15:12:23 +0800
+Message-Id: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series patches refine pci-imx6 driver and do the following changes.
+- Encapsulate the clock enable into one standalone function
+- Add the error propagation from host_init
+- Add one new host_exit callback, used to balance the usage of the
+  regulator and clocks when link never came up
+- Add the compliance tests mode support
 
-* Thomas Gleixner <tglx@linutronix.de> wrote:
+Main changes from v2 to v3:
+- Add "Reviewed-by: Lucas Stach <l.stach@pengutronix.de>" tag into
+  first two patches.
+- Add a Fixes tag into #3 patch.
+- Split the #4 of v2 to two patches, one is clock disable codes move,
+  the other one is the acutal clock unbalance fix.
+- Add a new host_exit() callback into dw_pcie_host_ops, then it could be
+  invoked to handle the unbalance issue in the error handling after
+  host_init() function when link is down.
+- Add a new host_exit() callback for i.MX PCIe driver to handle this case
+  in the error handling after host_init.
 
-> Dave is already listed as x86/mm maintainer, has a profund knowledge of
-> the x86 architecture in general and a good taste in terms of kernel
-> programming in general.
-> 
-> Add him as a full x86 maintainer with all rights and duties.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  MAINTAINERS |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20336,6 +20336,7 @@ X86 ARCHITECTURE (32-BIT AND 64-BIT)
->  M:	Thomas Gleixner <tglx@linutronix.de>
->  M:	Ingo Molnar <mingo@redhat.com>
->  M:	Borislav Petkov <bp@alien8.de>
-> +M:	Dave Hansen <dave.hansen@linux.intel.com>
->  M:	x86@kernel.org
->  R:	"H. Peter Anvin" <hpa@zytor.com>
->  L:	linux-kernel@vger.kernel.org
+Main changes from v1 to v2:
+Regarding Lucas' comments.
+  - Move the placement of the new imx6_pcie_clk_enable() to avoid the
+    forward declarition.
+  - Seperate the second patch of v1 patch-set to three patches.
+  - Use the module_param to replace the kernel command line.
+Regarding Bjorn's comments:
+  - Use the cover-letter for a multi-patch series.
+  - Correct the subject line, and refine the commit logs. For example,
+    remove the timestamp of the logs.
 
-Acked-by: Ingo Molnar <mingo@kernel.org>
+drivers/pci/controller/dwc/pci-imx6.c             | 176 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------------------
+drivers/pci/controller/dwc/pcie-designware-host.c |   5 ++-
+drivers/pci/controller/dwc/pcie-designware.h      |   1 +
+3 files changed, 119 insertions(+), 63 deletions(-)
 
-Welcome Dave!!
-
-	Ingo
+[PATCH v3 1/7] PCI: imx6: Encapsulate the clock enable into one
+[PATCH v3 2/7] PCI: imx6: Add the error propagation from host_init
+[PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never came
+[PATCH v3 4/7] PCI: imx6: move the clock disable function to a proper
+[PATCH v3 5/7] PCI: dwc: add a new callback host exit function into
+[PATCH v3 6/7] PCI: imx6: Fix the reference handling unbalance when
+[PATCH v3 7/7] PCI: imx6: Add the compliance tests mode support
