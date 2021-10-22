@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B810438070
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67204438073
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhJVXCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 19:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        id S231818AbhJVXEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 19:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhJVXCe (ORCPT
+        with ESMTP id S229707AbhJVXEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:02:34 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3358C061764;
-        Fri, 22 Oct 2021 16:00:16 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id l203so203359pfd.2;
-        Fri, 22 Oct 2021 16:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rVeb3D+tSGKrjPnkZcjhGXbXuNKnnYnp+e4vgWt4h2M=;
-        b=dJS/9S5uflOW3sBIPc+Xia2ya40eWIzrAxPxWOf2eWYnAgSAb4AOqXjXdPn42jG7dl
-         1FgP+M21K7n3dG7LAO2e9T3qLOE6Ht1KF29wSo5aGa75cyjyaapaTQdHfAgxcqn/inAB
-         SinFbFPdJH/tvPwyblI7Aym+08AIKqroiBEB6oqBU5tkBxXRUm0UtPOam7nAcMHEmJUv
-         5JCBiynVfI8LxQnEaaQiqjxEKiK9fXhB9FvDERkxALCPQZ3Gg8TmSmK/winnXGnZ0q33
-         tKRxHqfE2tZU7GvEvHd4VccZEB2rSVASzN4puy3gqlT6IjbwKuI7TYJtvE1HdWKNdQDD
-         pxDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rVeb3D+tSGKrjPnkZcjhGXbXuNKnnYnp+e4vgWt4h2M=;
-        b=jkCvWgViEUzOlIyYneErT8tqfVUG0R1Q0Ct0AAyOYjbuSrQcF8fLmI3Yc5+pkXj+tO
-         0zJiha55jaw1u1UnnNBrGaehVuwutzDER3uN688VUf2VfX27qE+qfChtedT1QfXsMpOr
-         c9LyRuq2wSXqbTZGlVtDtH4iBeq/SWatODBx5uw7P9eOrvOy5J5H25lujEU6urxtKm4I
-         GQOJJVGrhWTmPgX2+EIMe3zRi/ferKHkvfGa9DXyzMbZdQI0vEA14zb/mnBfks1s529q
-         0e8yLKJORudWjW7NwJkoDtCu689Hk7UnftujqLWWEtK6l0ygMhy43SbBD9Z8T3/r/Upm
-         EThQ==
-X-Gm-Message-State: AOAM533TZFjTrFLPmvmPjQ1xilOanmcuPxJp1Iei6+SzKcKNIvqzscee
-        HVL7Oc0L0KrBiZvF7aTLbPs=
-X-Google-Smtp-Source: ABdhPJxSWFqWF2w2ZtWJBNcVJhl25Lqjy9w320ZKAduyMew0sXIGfA/TfuvWyrtes6ZfX+s9MAdoeQ==
-X-Received: by 2002:a05:6a00:856:b0:44c:f184:9320 with SMTP id q22-20020a056a00085600b0044cf1849320mr2651202pfk.81.1634943615929;
-        Fri, 22 Oct 2021 16:00:15 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id a21sm10273011pju.57.2021.10.22.16.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 16:00:15 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 22 Oct 2021 13:00:13 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH 3/3] bpf: Implement prealloc for task_local_storage
-Message-ID: <YXNCfQvOLlT8yXkH@slm.duckdns.org>
-References: <YXB5Mec4ahxXRx8K@slm.duckdns.org>
- <YXB5hWFCzJDISnrK@slm.duckdns.org>
- <20211022224733.woyxljoudm3th7vq@kafai-mbp.dhcp.thefacebook.com>
+        Fri, 22 Oct 2021 19:04:07 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74602C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 16:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=ThrVyvhYD0JHsukgsvqkog71VG0MPB0g06xCAvRcMD4=; b=e8Cjs7buEx4bsEfiWkh2nzBPNz
+        T6KFnfVL6DevecROt5TglVhfYYQGXPMbo/1J8wk4pvToIexT0CcYsly6pIuz9xmYqHdrwL0eVg6DE
+        wYqXX3wu+75vXysyCx63BGt+G7bbPs6DKSlXdc7zO3IijrG39ojmAllglEznUwdodDI7JImuuTjC9
+        +O09IjlYRo/MUZO1yRuBkgObYcYdeDqIcnSkUR4hPf6DaQQNqvFB+n4RR4fi+2r0QpCKxgQZeWM0c
+        +kPrkKklGLE1XZ24d3qhoQHJcNqjNWhNzet2P6TU2oB+SLZFtbE513TDB+Quedq0Es8a2M4PYbzD7
+        /AbDzNjA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1me3Xn-00C5aV-1J; Fri, 22 Oct 2021 23:01:47 +0000
+Subject: Re: [PATCH] reset: Add Sunplus SP7021 reset driver
+To:     qinjian <qinjian@cqplus1.com>, p.zabel@pengutronix.de
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wells.lu@sunplus.com
+References: <20211022091157.456755-1-qinjian@cqplus1.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d32de27d-510e-520e-f616-4167a6ceebb4@infradead.org>
+Date:   Fri, 22 Oct 2021 16:01:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022224733.woyxljoudm3th7vq@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211022091157.456755-1-qinjian@cqplus1.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Fri, Oct 22, 2021 at 03:47:33PM -0700, Martin KaFai Lau wrote:
-...
-> > +	for_each_process_thread(g, p) {
-> I am thinking if this loop can be done in bpf iter.
+On 10/22/21 2:11 AM, qinjian wrote:
+> Add reset driver for Sunplus SP7021 SoC.
 > 
-> If the bpf_local_storage_map is sleepable safe (not yet done but there is
-> an earlier attempt [0]),  bpf_local_storage_update() should be able to
-> alloc without GFP_ATOMIC by sleepable bpf prog and this potentially
-> will be useful in general for other sleepable use cases.
+> Signed-off-by: qinjian <qinjian@cqplus1.com>
+> ---
+>   MAINTAINERS                   |   1 +
+>   drivers/reset/Kconfig         |   9 ++
+>   drivers/reset/Makefile        |   1 +
+>   drivers/reset/reset-sunplus.c | 159 ++++++++++++++++++++++++++++++++++
+>   4 files changed, 170 insertions(+)
+>   create mode 100644 drivers/reset/reset-sunplus.c
 > 
-> For example, if a sleepable bpf iter prog can run in this loop (or the existing
-> bpf task iter loop is as good?), the iter bpf prog can call
-> bpf_task_storage_get(BPF_SK_STORAGE_GET_F_CREATE) on a sleepable
-> bpf_local_storage_map.
 
-Yeah, whatever that can walk all the existing tasks should do, and I think
-the locked section can be shrunk too.
+Hi,
 
-        percpu_down_write(&threadgroup_rwsem);
-        list_add_tail(&smap->prealloc_node, &prealloc_smaps);
-        percpu_up_write(&threadgroup_rwsem);
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index be799a5ab..3e2e49998 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -249,6 +249,15 @@ config RESET_TI_SYSCON
+>   	  you wish to use the reset framework for such memory-mapped devices,
+>   	  say Y here. Otherwise, say N.
+>   
+> +config RESET_SUNPLUS
+> +	bool "Sunplus SoCs Reset Driver"
+> +	default SOC_SP7021 || SOC_Q645
+> +	help
+> +	  This enables the reset driver support for Sunplus SP7021 and Q645
+> +	  SoC family. Say Y if you want to control reset signals by the reset
+> +	  controller. Otherwise, say N.
+> +	  This will be enabled by default.
 
-        // Here, it's guaranteed that all new tasks are guaranteed to
-        // prealloc on fork.
+What does that last sentence mean?
 
-        Iterate all tasks in whatever way and allocate if necessary;
-
-Thanks.
-
+thanks.
 -- 
-tejun
+~Randy
