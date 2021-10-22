@@ -2,154 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1432F43787D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9BF437892
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbhJVN7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
+        id S233062AbhJVOAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbhJVN7V (ORCPT
+        with ESMTP id S233097AbhJVOAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:59:21 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAD9C061348;
-        Fri, 22 Oct 2021 06:57:03 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id g8so1667480edb.12;
-        Fri, 22 Oct 2021 06:57:03 -0700 (PDT)
+        Fri, 22 Oct 2021 10:00:25 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2806EC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:58:07 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id bq11so2975255lfb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:references:in-reply-to:content-transfer-encoding;
-        bh=9GBIxqxLAlUdSLI0YT0QE1Q+00ajjsz6MzjdElN8icY=;
-        b=mPvvKMcvchT4dJR4dhprsuM6ofDu8X57XUEhtWepqt3uh0CptChxEl3BHyoHTaeZlA
-         wgTxDck6bnduJrCL6/i2TlWQAlFCjPMFv3YEnQ3UaSm5LXd7xaYp++TWYacoV2GjnXud
-         jKS9xIHqfG9RELYdrPodx8hr/sM63RjYVqN48E5eyhBIYxUbePrdn7iVoYJmtmw1qh4v
-         cXDFLP3tNGbBtAvj5br7akPmjNtGLoKo7442AaUhAztEJNPZ+1l3KnJLniZVw0EaRJ5z
-         dusOCp+2Hd0FaLDnqyUN0vpkxhovFkGqjNt9D9p+qA+qU2t2h6x9e68N30MRORzHSaRv
-         mDmg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kXXjrgFD9GxycZP7psxdDamDNFUN7x5Wjjbi/hjihFg=;
+        b=iK8wS2ZKDL+XOVbhiW7h++R+sR2QK02X8jWaX1Xr56UYrdIsKQI7oqjt/rn7Kzy6Vm
+         kv5dNMoixvnYRQ56ojAX/RQKDZJi3gbD6WPcm8n7EICq3k22xVHN1Pnl5XHUGwXRf08i
+         wynK09w/BRhN5+uW16FVE8Hj2bhLmhtwitMNoKxpMmzS+hEdH55dwQMR8jCKpDPla9wT
+         GZkfDR3iXMsWD6vxCo1pZgZUDqierhl2C/e+WYEXJPbCQo924mwY6zOSaPA+gf6vBVpz
+         j5rWcb4JJx0QxKh5tj14jXVkb728QMArDpHkwamllIq85la430YGW8K3q/zZX9mIr42I
+         5URg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=9GBIxqxLAlUdSLI0YT0QE1Q+00ajjsz6MzjdElN8icY=;
-        b=zYj2vDGG/6doOO+jkfiz6BQQYRjwiPI+RbwHEXjDoZE5DhvIK3LXnx35ukTsqlW7pU
-         dbmeO20abWDg4al8O6ENr2miqmLxsoYIw0HMlKmM1ya2pi23uw/88pwSvDwwU7zK6K65
-         Z3KYoez0FthoCwegKCcZ1GWExP9oRg2VTtnytKlLdlIE3tJmroMjrMPbq0qjpOw6vYfq
-         3WkVml+F20NMQ3k/WFhTIU5J+wLzp+6kjmCkhVjKilN/9rnV41TJwScI2qggDPnCbkmL
-         Zmp9p+M7lsdTQ3xIlwyFC9Z9UHpqDx4CJB1Kq4rL8wHhF5JtJyvjKHoBbKVF2t67bn0G
-         V+8w==
-X-Gm-Message-State: AOAM530M3daq+W8urtTP4xVQEh8Wbx/RdwC2GWwoRbtbMO0JKSzkRVR1
-        Y8tc26eSA8q4PtllyMNFZPU=
-X-Google-Smtp-Source: ABdhPJzK4/m7d8b2POhowwRi9D4reOUw1wVmvLprb7a11dSUV7QrYXinbt73eazNAGqaAI4FZ1johw==
-X-Received: by 2002:a50:be82:: with SMTP id b2mr254859edk.56.1634911021979;
-        Fri, 22 Oct 2021 06:57:01 -0700 (PDT)
-Received: from [192.168.8.198] ([148.252.133.195])
-        by smtp.gmail.com with ESMTPSA id t19sm3785490ejb.115.2021.10.22.06.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 06:57:01 -0700 (PDT)
-Message-ID: <27280d59-88ff-7eeb-1e43-eb9bd23df761@gmail.com>
-Date:   Fri, 22 Oct 2021 14:57:04 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kXXjrgFD9GxycZP7psxdDamDNFUN7x5Wjjbi/hjihFg=;
+        b=oGnazDJlcONqds8l1P3Yz8BDiwnrBawWgHnJKcHJM5JuMFFT9AcIcQ6e/jZ27Jg+iY
+         zU/9BeA+6x4zP5FWY5CeG5CJMo1MnH2UeXqwVsYBH0HE9OlCRzq733cHbFtzGGQq+/sW
+         69ZV9ph3/IFuecvNy1IW6eWBSvMx8T9kyn3wEf4ja2jJ3vZSY43KLCz6x/OX7TNot2Nf
+         ACGfB8oFub+4+P0STilMxx27RFtyO9oLv+n6b9WY+X5c5QvxhJGsoe1byHs2X4j9at5P
+         8DaswLzNgu3Hz1UmLd3jy2vfmEp0XC+77niqlFJpZAAsyV1OJQDOkT4pp3N5eDKsS9CM
+         a6KA==
+X-Gm-Message-State: AOAM531qWtGJnZQ2YTjxYAa8e2VX0CdurTvN2YRBix+zVvfVHD5lgJri
+        1skQgWHTM7/zImvyJqekOlxC8jmICmLsWxaZx83sdg==
+X-Google-Smtp-Source: ABdhPJzDz4PMdhgbqAyGI0Nco6rp1BpNUsAvdub7hQ7KocotcyVYeX5QmW1BGnvEs+UrCtgsC+vmKHvfk7RmSlvTico=
+X-Received: by 2002:a05:6512:3254:: with SMTP id c20mr10693589lfr.254.1634911085502;
+ Fri, 22 Oct 2021 06:58:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] INFO: task hung in io_wqe_worker
-Content-Language: en-US
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000000012fb05cee99477@google.com>
- <85f96aab-4127-f494-9718-d7bfc035db54@gmail.com>
-In-Reply-To: <85f96aab-4127-f494-9718-d7bfc035db54@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <5773062.lOV4Wx5bFT@kreacher>
+In-Reply-To: <5773062.lOV4Wx5bFT@kreacher>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 22 Oct 2021 15:57:29 +0200
+Message-ID: <CAPDyKFpp5MjiD0MPd878HueXkZZH2vj_ddi-g3-ZL5rXODjdcA@mail.gmail.com>
+Subject: Re: [PATCH] PM: sleep: Do not let "syscore" devices runtime-suspend
+ during system transitions
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Maulik Shah <mkshah@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 14:49, Pavel Begunkov wrote:
-> On 10/22/21 05:38, syzbot wrote:
->> Hello,
->>
->> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
->> INFO: task hung in io_wqe_worker
->>
->> INFO: task iou-wrk-9392:9401 blocked for more than 143 seconds.
->>        Not tainted 5.15.0-rc2-syzkaller #0
->> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:iou-wrk-9392    state:D stack:27952 pid: 9401 ppid:  7038 flags:0x00004004
->> Call Trace:
->>   context_switch kernel/sched/core.c:4940 [inline]
->>   __schedule+0xb44/0x5960 kernel/sched/core.c:6287
->>   schedule+0xd3/0x270 kernel/sched/core.c:6366
->>   schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
->>   do_wait_for_common kernel/sched/completion.c:85 [inline]
->>   __wait_for_common kernel/sched/completion.c:106 [inline]
->>   wait_for_common kernel/sched/completion.c:117 [inline]
->>   wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
->>   io_worker_exit fs/io-wq.c:183 [inline]
->>   io_wqe_worker+0x66d/0xc40 fs/io-wq.c:597
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> 
-> Easily reproducible, it's stuck in
-> 
-> static void io_worker_exit(struct io_worker *worker)
-> {
->      ...
->      wait_for_completion(&worker->ref_done);
->      ...
-> }
-> 
-> The reference belongs to a create_worker_cb() task_work item. It's expected
-> to either be executed or cancelled by io_wq_exit_workers(), but the owner
-> task never goes __io_uring_cancel (called in do_exit()) and so never
-> reaches io_wq_exit_workers().
-> 
-> Following the owner task, cat /proc/<pid>/stack:
-> 
-> [<0>] do_coredump+0x1d0/0x10e0
-> [<0>] get_signal+0x4a3/0x960
-> [<0>] arch_do_signal_or_restart+0xc3/0x6d0
-> [<0>] exit_to_user_mode_prepare+0x10e/0x190
-> [<0>] irqentry_exit_to_user_mode+0x9/0x20
-> [<0>] irqentry_exit+0x36/0x40
-> [<0>] exc_page_fault+0x95/0x190
-> [<0>] asm_exc_page_fault+0x1e/0x30
-> 
-> (gdb) l *(do_coredump+0x1d0-5)
-> 0xffffffff81343ccb is in do_coredump (fs/coredump.c:469).
-> 464
-> 465             if (core_waiters > 0) {
-> 466                     struct core_thread *ptr;
-> 467
-> 468                     freezer_do_not_count();
-> 469                     wait_for_completion(&core_state->startup);
-> 470                     freezer_count();
-> 
-> Can't say anything more at the moment as not familiar with coredump
+On Fri, 22 Oct 2021 at 14:58, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> There is no reason to allow "syscore" devices to runtime-suspend
+> during system-wide PM transitions, because they are subject to the
+> same possible failure modes as any other devices in that respect.
+>
+> Accordingly, change device_prepare() and device_complete() to call
+> pm_runtime_get_noresume() and pm_runtime_put(), respectively, for
+> "syscore" devices too.
+>
+> Fixes: 057d51a1268f ("Merge branch 'pm-sleep'")
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
 
-A simple hack allowing task works to be executed from there
-workarounds the problem
+This makes perfect sense for me too.
 
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 3224dee44d30..f6f9dfb02296 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -466,7 +466,8 @@ static int coredump_wait(int exit_code, struct core_state *core_state)
-  		struct core_thread *ptr;
-  
-  		freezer_do_not_count();
--		wait_for_completion(&core_state->startup);
-+		while (wait_for_completion_interruptible(&core_state->startup))
-+			tracehook_notify_signal();
-  		freezer_count();
-  		/*
-  		 * Wait for all the threads to become inactive, so that
+Kind regards
+Uffe
 
-
-
--- 
-Pavel Begunkov
+> ---
+>  drivers/base/power/main.c |    9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> Index: linux-pm/drivers/base/power/main.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/power/main.c
+> +++ linux-pm/drivers/base/power/main.c
+> @@ -1048,7 +1048,7 @@ static void device_complete(struct devic
+>         const char *info = NULL;
+>
+>         if (dev->power.syscore)
+> -               return;
+> +               goto out;
+>
+>         device_lock(dev);
+>
+> @@ -1078,6 +1078,7 @@ static void device_complete(struct devic
+>
+>         device_unlock(dev);
+>
+> +out:
+>         pm_runtime_put(dev);
+>  }
+>
+> @@ -1789,9 +1790,6 @@ static int device_prepare(struct device
+>         int (*callback)(struct device *) = NULL;
+>         int ret = 0;
+>
+> -       if (dev->power.syscore)
+> -               return 0;
+> -
+>         /*
+>          * If a device's parent goes into runtime suspend at the wrong time,
+>          * it won't be possible to resume the device.  To prevent this we
+> @@ -1800,6 +1798,9 @@ static int device_prepare(struct device
+>          */
+>         pm_runtime_get_noresume(dev);
+>
+> +       if (dev->power.syscore)
+> +               return 0;
+> +
+>         device_lock(dev);
+>
+>         dev->power.wakeup_path = false;
+>
+>
+>
