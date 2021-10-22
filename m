@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60153437A73
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ADD437A76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbhJVP6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:58:34 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:45494 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232107AbhJVP62 (ORCPT
+        id S233141AbhJVQA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232107AbhJVQAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:58:28 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id DA553822AB;
-        Fri, 22 Oct 2021 18:56:07 +0300 (MSK)
+        Fri, 22 Oct 2021 12:00:23 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F50C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:58:05 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g141so3315316wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1634918167;
-        bh=YOq5hRPWPXZWRVKy7bnM5IrY3Tf2tWJN1KcRTVcIT5A=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=hHLJ+Z5Nnnb93SNIuWuF0/IBwg2m9NDjZZysaR+/SmD8CgfCSeq+JLCAIr3P/5lqE
-         KhbGqsRn9m+WQVG0zMP0Kc2UEezW896F3hq/mu9G6akD2op+x+A5QwUh+Dzeot9RGc
-         n9ZXJa1xU0nCENyNsvxRVh4jOToZVcVs4HkM/oRI=
-Received: from [192.168.211.69] (192.168.211.69) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 22 Oct 2021 18:56:07 +0300
-Message-ID: <a4ce42f1-19b4-67ac-660d-228ae10f125c@paragon-software.com>
-Date:   Fri, 22 Oct 2021 18:56:07 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: [PATCH 4/4] fs/ntfs3: Update i_ctime when xattr is added
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
-In-Reply-To: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=oxg7wtYVb2I8ZNupHXd2gl7ipYhOJwG6Q/eeUjge9ic=;
+        b=mObrmk3neCUnsocnuZ1ARAuQDBLO2Pv0jgshOruwD4Pp1dH5du/dxLfpPtLC/BK8EK
+         gkrEHLoo32P5ycx9wBLj8bRKBIBLeexPKSM0epgdp1a/fcAmHkIltMNndDtKcvzGBPDL
+         KPPAuyn+L/K5FiL6s/mWb6aA9hXCS/GVW7VwzuSyJp2M0aKTSy65rO1Z6tpQWZOe9vpm
+         aGZ6hr96qqs3V+dcTjqezDAyQtuv4k/Vld1b/dbRObxiLYrFcsxNSiqw8dJMycqfnWpW
+         skkg7umXzpJATMSqK2EPoHMaP+qFuwTniSJeCI5nF/6BLbXqVClv7sz3R2URE3Pv5wd7
+         uNvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=oxg7wtYVb2I8ZNupHXd2gl7ipYhOJwG6Q/eeUjge9ic=;
+        b=NL02SUcRAhB//YaSSyLJlhIgOhLmUhAS8A2HcyD0lmElU6liCFBODFaR+t0fVRGvkI
+         1/8ye6YOuj57dYl8e2lK5BVU95bKo0edzhz42frnTugMExWzAAJO/uLBy4mPZHM0k4x3
+         q0QnSkl6TWtNNzFFiKy0zx5J+Bk+LDAoNbw0552aQHaY3B9q+hHNvonXH66AFc9vVzUx
+         WbBjMwEXsaA6eHGlD8ydhLg09Y4b4x3U7MAGELWPPmlXbxzYuezuUeFrT4tNfQXMwg6Y
+         nKNlqS1KP4K/3DzI1ExT2Jss1pmK2nW9lEwJz7xcb2KYWPSmSM/47QQY9fSdWT+LuZgY
+         bKtg==
+X-Gm-Message-State: AOAM530Ho9d4VaZT5IcDkDrJ+9olKXcOKOZQHS35UTHtvAQzPcQfprkF
+        ZC53psw+lgQVL19GjEXPdH0=
+X-Google-Smtp-Source: ABdhPJyuX+UxDE43oOxLtTPF+QzO5lezSDRse91WnwSQJocAbTWj/Pta2ldHRGdH3fuIR8C0LSUAqw==
+X-Received: by 2002:a1c:cc0f:: with SMTP id h15mr587438wmb.37.1634918284369;
+        Fri, 22 Oct 2021 08:58:04 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id k17sm8152897wrq.7.2021.10.22.08.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 08:58:04 -0700 (PDT)
+Message-ID: <bf2a82e5a5f296ea66bda0cef84acbf78e88ffe3.camel@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH 5/5] staging: vt6655: Rename
+ `byRFType` variable
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     Praveen Kumar <kpraveen.lkml@gmail.com>,
+        outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Fri, 22 Oct 2021 16:58:02 +0100
+In-Reply-To: <049d4b3e-ed32-9b48-0c2e-19f9af95ca37@gmail.com>
+References: <cover.1634826774.git.karolinadrobnik@gmail.com>
+         <f0b6818d2b15982081bebaf14f830f4646f61fe2.1634826774.git.karolinadrobnik@gmail.com>
+         <049d4b3e-ed32-9b48-0c2e-19f9af95ca37@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.69]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ctime wasn't updated after setfacl command.
-This commit fixes xfstest generic/307
-Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
+Hi Praveen,
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/xattr.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks for taking a look at my patch.
 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index bc3144608ce1..702775a559f5 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -994,6 +994,9 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
- 	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
- 
- out:
-+	inode->i_ctime = current_time(inode);
-+	mark_inode_dirty(inode);
-+
- 	return err;
- }
- 
--- 
-2.33.0
+On Fri, 2021-10-22 at 19:56 +0530, Praveen Kumar wrote:
+> IMO, probably we can sync RFbSelectChannel as well with similar
+> notation in another patch.
+> 
+> >  bool RFbInit(struct vnt_private *priv);
+> > -bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char
+> > byRFType, u16 channel);
+> > +bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char
+> > rf_type, u16 channel);
+> >  bool RFbSetPower(struct vnt_private *priv, unsigned int rate, u16
+> > uCH);
+> >  bool RFbRawSetPower(struct vnt_private *priv, unsigned char byPwr,
+> >                     unsigned int rate);
+
+That's a good idea. I plan to clean up `RFvWriteWakeProgSyn` completely
+first and then I can move on to this one.
+
+
+Thanks,
+Karolina
 
 
