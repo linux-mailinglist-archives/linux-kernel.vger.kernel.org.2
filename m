@@ -2,138 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F32F43803C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BCB43803E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhJVWeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
+        id S234412AbhJVWeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbhJVWeI (ORCPT
+        with ESMTP id S234336AbhJVWeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:34:08 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97681C061348
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:31:50 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id j8so10432824uak.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:31:50 -0700 (PDT)
+        Fri, 22 Oct 2021 18:34:22 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599C3C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:32:04 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id g36so1505653lfv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QLRoAaM9Isx2SYKNZgDhEi8NKtlHeAAiw6Jpcyu0C08=;
-        b=wM+wdMFPI30xl5+kiTT1+ZZ5ugZcjAXQoxfAO8Ss8G193/Mvfmmd9KrXbKO1573HGX
-         okhtvKolp7RtdPGuwm6a09Kg3w3S51+YZo8Y7YZYUpU1KrXL+e2E/MdIWqpcO2vBTAWs
-         qBv9aazLIWKR+wOi71bzN7SNqcQlpiwJd7wqoh8gPBhM1oFKCz2wE12XWC1SxgtpcUYP
-         GrCsDvFpRVRO4GEiGq9WtBRyAqKrhU4meWuL7ZIVg0ks2IodwXWGkBXvB6cFz3TnYYFx
-         1Al/Ntsx88T3NZ0cqahOPKMliHEKdcfY1W4WI9KeWpjFzCJPWNCuA5GEkFcFOnY3LvSW
-         HJhg==
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hZeH/6FHgerT+YH6jl5wZNUAXEzrpwBKg9kN8iwOAaY=;
+        b=yxrVbSMAz/RZ/VDn9pVr3nNNhqz1tYPOSqgH7Wq/2V3kCcr84pdYz4/S1g7ICC/LrA
+         3qVxNxy3gLG4Pt903bQUtQh9X9tKzRAicdo2psctU9sP4ygrueC+ZX8yXEPnQDJvahXe
+         9LkqIi6O6hXopC4bINvgCDObrZ1YA5xzZnsxocyy0tSRe+65bCCmA9w3GVRiyw8nNJp+
+         6qeKRiB92it9IQiWK2Lr/pGCtmEygTxp5bEhaUYNQ3qwlDmIg1lFlXoCTCoBKfZHfdYi
+         oinkZCEILXJCje4mOT1djUNdEQa+JZpZFB92IwtdfCm2eERVtjDGHoR1TPII9LLzgQ0G
+         fG+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QLRoAaM9Isx2SYKNZgDhEi8NKtlHeAAiw6Jpcyu0C08=;
-        b=M4UimTJNu2fX/2nb9RxzlDWb6kCruyR2m94gejHb4bQeZCWZX827Cy1ZOghQGrCECi
-         rbSHryUOFTGcva2QRS7cksZJlq+my12qW2+Hb1YU1anzSNBCZU0H+uwOxmINtNWUiUHn
-         rXwyR9Ropi+can4GLErcb5EBkqBsAEmZi+Bc0nFwXUkU6unObYBS3/lRKwHIB5L2znBk
-         zsWqBxv/wPBQdIlsubTCb//bSOUMRxpROVy1AxV7CbrZhlngMDozBRBkBeOLJa9P8ogw
-         4yoSOriMPkUVxU0k/36KsfElbYeFpN5mCFzkOMoaUWzmOUMj62xCkphlt1Ky/A6qCIM2
-         gRQA==
-X-Gm-Message-State: AOAM530cQLDy4vJqAToVD0ayLcibenoQ0JjxPhuYToCUWWDx8+WUIxEL
-        uEaAglmRzQd5kQwIesKCgP4PAHB1HVJ0Bep+HBGYug==
-X-Google-Smtp-Source: ABdhPJzKLiNWVJSNzHAVe+uiS1jdtEVGUMYWrOZB/jm0v0Qbk+rhViEBBsEP6XEXq21q78Pl7gi2NkXHPU4M0C39BaM=
-X-Received: by 2002:a9f:21b7:: with SMTP id 52mr3227824uac.9.1634941909421;
- Fri, 22 Oct 2021 15:31:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hZeH/6FHgerT+YH6jl5wZNUAXEzrpwBKg9kN8iwOAaY=;
+        b=kw3jHFUMFSBM++mkHaySJVm6r1Q7QWM4q0SpDJuKRArSqNPn3v8mKEVBmYLow2HLfR
+         4aM3nBJJlnz9fsdpduGteSQngKpM0XewdDvUMzh5Q2i3YZrBkBPNmzkSj5DFhfOJ/5MV
+         Uqq+pEVXdwnrz44XefZGI0ZAWgn92xTPvrUsaKXQBUX2g1ORtvpZbYk7i/BUEaQsdkFw
+         PDbfs23NGROoO2xlDHhb6ivJVIFjkIBvrdy6BeReERO4TMMtmotNSmu5pqBBziSEwJmt
+         zHil36qMcIqD2ePTkwPBZXsoZjiCvV2nesZl8GUv0LsBSwCLdBvcgTx6kJuY8MlZndGm
+         ov0A==
+X-Gm-Message-State: AOAM533/ls5mGmge88LNH7eUxhM8CFxQ6tB8FbFnclRGdgC2Y+UaQvDn
+        uaW79brHBkR/MoeULwbPT+ho0A==
+X-Google-Smtp-Source: ABdhPJxslEdeY48PfIuW3Id4S4XGhwm9T2BXoWVdP/dYwY8FfGSPxSjLdrvxp+HzyfWXtnIsG9rZBQ==
+X-Received: by 2002:a05:6512:21cb:: with SMTP id d11mr2208016lft.579.1634941922655;
+        Fri, 22 Oct 2021 15:32:02 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id x4sm848531lfq.246.2021.10.22.15.32.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 15:32:02 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id CED1F10315F; Sat, 23 Oct 2021 01:32:06 +0300 (+03)
+Date:   Sat, 23 Oct 2021 01:32:06 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, song@kernel.org, william.kucharski@oracle.com,
+        hughd@google.com, shy828301@gmail.com
+Subject: Re: [PATCH RESEND] mm, thp: bail out early in collapse_file for
+ writeback page
+Message-ID: <20211022223206.2ns74vvfbap2i4p7@box.shutemov.name>
+References: <20211022023052.33114-1-rongwei.wang@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20211021203152.29312-1-semen.protsenko@linaro.org>
- <20211021203152.29312-2-semen.protsenko@linaro.org> <864f52d2-1336-eaca-1647-99a0f55da6f9@gmail.com>
- <CAPLW+4kgAKut9fPJzZapBvVpprno++O3g3CFOE-Pj=0Oxb9McQ@mail.gmail.com> <CAGTfZH153PS40GcOB08HXzXPAr4NY-BWjbieQE8ExS+TqV-DYw@mail.gmail.com>
-In-Reply-To: <CAGTfZH153PS40GcOB08HXzXPAr4NY-BWjbieQE8ExS+TqV-DYw@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sat, 23 Oct 2021 01:31:37 +0300
-Message-ID: <CAPLW+4mx67JcSk21ntac=WGM27GA0wMFU-r6zAHi+5i6UKMNrw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] clk: samsung: exynos850: Implement CMU_APM domain
-To:     Chanwoo Choi <cwchoi00@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022023052.33114-1-rongwei.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Oct 2021 at 01:18, Chanwoo Choi <cwchoi00@gmail.com> wrote:
->
-> On 21. 10. 22. =EC=98=A4=ED=9B=84 10:39, Sam Protsenko wrote:
-> > On Fri, 22 Oct 2021 at 11:58, Chanwoo Choi <cwchoi00@gmail.com> wrote:
-> >>
-> >> On 21. 10. 22. =EC=98=A4=EC=A0=84 5:31, Sam Protsenko wrote:
-> >>> CMU_APM clock domain provides clocks for APM IP-core (Active Power
-> >>> Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailb=
-ox,
-> >>> Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
-> >>>
-> >>> This patch adds next clocks:
-> >>>     - bus clocks in CMU_TOP needed for CMU_APM
-> >>>     - all internal CMU_APM clocks
-> >>>     - leaf clocks for I3C, Speedy and RTC IP-cores
-> >>>     - bus clocks for CMU_CMGP and CMU_CHUB
-> >>>
-> >>> CMU_APM doesn't belong to Power Domains, but platform driver is used =
-for
-> >>> its registration to keep its bus clock always running. Otherwise rtc-=
-s3c
-> >>> driver disables that clock and system freezes.
-> >>>
-> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >>> ---
+On Fri, Oct 22, 2021 at 10:30:52AM +0800, Rongwei Wang wrote:
+> Currently collapse_file does not explicitly check PG_writeback, instead,
+> page_has_private and try_to_release_page are used to filter writeback
+> pages. This does not work for xfs with blocksize equal to or larger
+> than pagesize, because in such case xfs has no page->private.
+> 
+> This makes collapse_file bail out early for writeback page. Otherwise,
+> xfs end_page_writeback will panic as follows.
+> 
+> page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
+> aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
+> flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
+> raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
+> raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
+> page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
+> page->mem_cgroup:ffff0000c3e9a000
+> ------------[ cut here ]------------
+> kernel BUG at include/linux/mm.h:1212!
+> Internal error: Oops - BUG: 0 [#1] SMP
+> Modules linked in:
+> BUG: Bad page state in process khugepaged  pfn:84ef32
+>  xfs(E)
+> page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
+>  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
+> CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
+> pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+> pc : end_page_writeback+0x1c0/0x214
+> lr : end_page_writeback+0x1c0/0x214
+> sp : ffff800011ce3cc0
+> x29: ffff800011ce3cc0 x28: 0000000000000000
+> x27: ffff000c04608040 x26: 0000000000000000
+> x25: ffff000c04608040 x24: 0000000000001000
+> x23: ffff0003f88c8530 x22: 0000000000001000
+> x21: ffff0003f88c8530 x20: 0000000000000000
+> x19: fffffe00201bcc80 x18: 0000000000000030
+> x17: 0000000000000000 x16: 0000000000000000
+> x15: ffff000c018f9760 x14: ffffffffffffffff
+> x13: ffff8000119d72b0 x12: ffff8000119d6ee3
+> x11: ffff8000117b69b8 x10: 00000000ffff8000
+> x9 : ffff800010617534 x8 : 0000000000000000
+> x7 : ffff8000114f69b8 x6 : 000000000000000f
+> x5 : 0000000000000000 x4 : 0000000000000000
+> x3 : 0000000000000400 x2 : 0000000000000000
+> x1 : 0000000000000000 x0 : 0000000000000000
+> Call trace:
+>  end_page_writeback+0x1c0/0x214
+>  iomap_finish_page_writeback+0x13c/0x204
+>  iomap_finish_ioend+0xe8/0x19c
+>  iomap_writepage_end_bio+0x38/0x50
+>  bio_endio+0x168/0x1ec
+>  blk_update_request+0x278/0x3f0
+>  blk_mq_end_request+0x34/0x15c
+>  virtblk_request_done+0x38/0x74 [virtio_blk]
+>  blk_done_softirq+0xc4/0x110
+>  __do_softirq+0x128/0x38c
+>  __irq_exit_rcu+0x118/0x150
+>  irq_exit+0x1c/0x30
+>  __handle_domain_irq+0x8c/0xf0
+>  gic_handle_irq+0x84/0x108
+>  el1_irq+0xcc/0x180
+>  arch_cpu_idle+0x18/0x40
+>  default_idle_call+0x4c/0x1a0
+>  cpuidle_idle_call+0x168/0x1e0
+>  do_idle+0xb4/0x104
+>  cpu_startup_entry+0x30/0x9c
+>  secondary_start_kernel+0x104/0x180
+> Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
+> ---[ end trace 4a88c6a074082f8c ]---
+> Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+> 
+> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+> Suggested-by: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+> Cc: <stable@vger.kernel.org>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-...snip...
+Okay, it makes sense:
 
-> >> Basically, you can never change the already defined clock id
-> >> in nclude/dt-bindings/clock/*.h because of supporting
-> >> the compatibility of dtb files which were using the
-> >> already defined clock id instead of changed clock id
-> >>
-> >> If you want to add new clock with new clock id,
-> >> you have to define the new clock id at the end of defined clock
-> >> like the next of CLK_GOUT_PERI_IP for TOP domain case.
-> >>
-> >
-> > Thanks for explaining that in details, Chanwoo. As Krzysztof pointed
-> > out, right now there are no dts users of this clock driver in upstream
-> > kernel (I didn't submit it yet), so it'd nice if this one can be taken
-> > as is. In future I'll increment the last clock ID. Guess it was my OCD
-> > talking, trying to keep all clock IDs grouped by clock type :)
->
-> I know that there are no user for this clock. So that it doesn't make
-> the real break for compatibility. But, when some kernel developers might
-> check the kernel history by git command, they never know the history
-> only we know. If there are any critical reason, I don't prefer to break
-> the rule of clock id defintion for patch history.
->
-> Just I want to keep the original rule of clock id patch in order to remov=
-e
-> the potential confusion. It is not a strong objection. But In my case,
-> I cannot reply the ack. Thanks for your work.
->
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Actually I was thinking about the same -- setting a bad example and
-stuff. It's not a big deal, I'll send v2 soon :)
+I would also add a sentance in the commit message that PG_writeback
+setting is serialized with page_lock(). I have not had experience with
+writeback and it was something that I had to dig up.
 
-> --
-> Best Regards,
-> Samsung Electronics
-> Chanwoo Choi
+> ---
+>  mm/khugepaged.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 045cc579f724..48de4e1b0783 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
+>  				filemap_flush(mapping);
+>  				result = SCAN_FAIL;
+>  				goto xa_unlocked;
+> +			} else if (PageWriteback(page)) {
+> +				xas_unlock_irq(&xas);
+> +				result = SCAN_FAIL;
+> +				goto xa_unlocked;
+>  			} else if (trylock_page(page)) {
+>  				get_page(page);
+>  				xas_unlock_irq(&xas);
+> @@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
+>  			goto out_unlock;
+>  		}
+>  
+> -		if (!is_shmem && PageDirty(page)) {
+> +		if (!is_shmem && (PageDirty(page) ||
+> +				  PageWriteback(page))) {
+>  			/*
+>  			 * khugepaged only works on read-only fd, so this
+>  			 * page is dirty because it hasn't been flushed
+> -- 
+> 2.27.0
+> 
+> 
+
+-- 
+ Kirill A. Shutemov
