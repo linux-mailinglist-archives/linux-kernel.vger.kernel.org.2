@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27AD437081
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B186437082
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhJVDhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
+        id S232823AbhJVDjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbhJVDho (ORCPT
+        with ESMTP id S232538AbhJVDjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:37:44 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E899CC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:27 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u5so65587ljo.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:27 -0700 (PDT)
+        Thu, 21 Oct 2021 23:39:04 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21461C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:36:48 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id t184so2109529pgd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BqT2MNgCMvC56gM6epqF9SynfFWqpGi6ijMkvCKV6ok=;
-        b=g723SQX6OS2aWzvqRjNGS8WOBk/fIGq4kYG2gc5mdB+aBXLC2sSPkNxwRTN0hLZwl+
-         ABpshxvj8GOZE3IRklzpBL+yToj0FOLQTTw2GCaMsdDL+PilAW87F4LgGipPQRS8RvdS
-         Fi6ljfqBb3Qwomd3jixWG5AnCmHnDXWdUJuJw=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yAz64XIhlQBZNBnGUwXLP3Q0o9guBMfXqZK7N1tafFQ=;
+        b=MdcbHbmYFrZwidG4ivVcTal/AQkZHXTHmq39wjDnqhOXA9a4irdjRi+0YKTGjAzqRQ
+         u88ajkl4rXfp16U+pZmvH58tI+gHU2ufrB1hMcGCs4RRLOLyU3Pc7QQ+drpxlTGk5vht
+         Cyw/+2WAz05d/Pp6hyRdO9yL+7doqlPu3obwM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BqT2MNgCMvC56gM6epqF9SynfFWqpGi6ijMkvCKV6ok=;
-        b=msS+M3ypKTiTJHQb5gDzlomMhBAXbvUYz4Z0vRuKkhwbVG1IEQfDhOmxowP9eawwJc
-         eWZv+K5ut7vekqg4kXMCzvakwroyWGyJaU18c5mD1zVEBw9yu0sNF1V18VbSFfb4f0si
-         SPoQdJi4QCxYj0177R6haUsl7cqlQOpUFbGD1MiXavQHF2lXMcRq5sJSlbfcn/laaKyS
-         IROpo/FAm0mepBP3jQh6T7y3VLLmf5X9elUJAUYVpnSx03aXBq9bwzXGvakO+fEPV+to
-         Av43Z53AeWtqaE2ZMDGISrs++JLUUiJbrneezyJytswirywpqVSGq0WfUyN71Kq787Zc
-         qjww==
-X-Gm-Message-State: AOAM532BQBV2dpAkH/P4f1ROGf+9MX9cWbyMActWRlvlHoUlVeEg7EvM
-        c3FAuNvT6oNV9MCcMeniocOg32we38SJhu4H
-X-Google-Smtp-Source: ABdhPJwSDF6bNLWh+opqvOSKxCv2czCFjUgRWA3nA8MoAp5G7BqgPMnUvjk9Z5U3/sW4AhssaFSKYQ==
-X-Received: by 2002:a2e:870b:: with SMTP id m11mr10338946lji.92.1634873726019;
-        Thu, 21 Oct 2021 20:35:26 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id i1sm606977lfr.287.2021.10.21.20.35.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 20:35:24 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id r6so1870385ljg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:35:24 -0700 (PDT)
-X-Received: by 2002:a2e:a4b6:: with SMTP id g22mr3044840ljm.191.1634873724423;
- Thu, 21 Oct 2021 20:35:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yAz64XIhlQBZNBnGUwXLP3Q0o9guBMfXqZK7N1tafFQ=;
+        b=494Ci3oVaNrDY9hlbQFVx6Y6Xw4sWcPJpzWBbq1iNrHaO3mZUMLR8e72RC69BP0DWv
+         NVT22WO2rEvM2P3JvcHZElYACkrxoBFszx5ipAInMOZRVF3gmeWYLaLqBMLIH8zEvLrk
+         okURgnvmGYwoGiNyEoAv7YPHQJ+dxp9GfuMKL1VjKylQdQ+4goyulAsajnAGUpmUNYSS
+         lFbIHMZlCh22XnUvfY9RPRZ9z4+EOEbx6ITBSEMDcfKEBxrZ5MnbcCB5T357NCC3tD9F
+         /2GyaPVuXoNzNhcDYySxC5ziUMyaLQK8KLEE0C7BYZn/UnRUY3o3X6/0SKqWs4LPSR+K
+         CoNw==
+X-Gm-Message-State: AOAM532vlEqmt4G9an+7IoVSCIxxC6lez7YlICgx/os3wqH/f6Z9A9Eg
+        BCGN6pUFKKu1Pz+SloJahx4CqUZl3j0X4g==
+X-Google-Smtp-Source: ABdhPJzvAhuE3DUhREpm/Zrpa8iVn6im6hk5pYhPMaTiWlKwZplgxU7VUGTCldspVS8nhSS8uV06aw==
+X-Received: by 2002:a05:6a00:1592:b0:44d:25e9:759e with SMTP id u18-20020a056a00159200b0044d25e9759emr9727922pfk.19.1634873807658;
+        Thu, 21 Oct 2021 20:36:47 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i13sm6681083pgf.77.2021.10.21.20.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 20:36:47 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:36:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Yang <davidcomponentone@gmail.com>
+Cc:     Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>, arnd@arndb.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH lkdtm] lkdtm: Fix reference preceded by free
+Message-ID: <202110212035.1680E1E@keescook>
+References: <20211022012832.10644-1-yang.guang5@zte.com.cn>
+ <CA+E=9osPJSZDqHkd0j-JwL7Tufs3vG3tRtG94+Rsdo4kVgBjAg@mail.gmail.com>
 MIME-Version: 1.0
-References: <877de6e589.fsf@disp2133>
-In-Reply-To: <877de6e589.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 Oct 2021 17:35:08 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
-Message-ID: <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
-Subject: Re: [GIT PULL] ucount fixes for v5.15
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Rune Kleveland <rune.kleveland@infomedia.dk>,
-        Yu Zhao <yuzhao@google.com>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        Antoine Martin <antoine@nagafix.co.uk>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+E=9osPJSZDqHkd0j-JwL7Tufs3vG3tRtG94+Rsdo4kVgBjAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 6:04 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+On Fri, Oct 22, 2021 at 09:38:59AM +0800, David Yang wrote:
+> From: Yang Guang <yang.guang5@zte.com.cn>
+> >
+> > The coccinelle check report:
+> > ./drivers/misc/lkdtm/heap.c:115:7-11:
+> > ERROR: reference preceded by free on line 112
+> > Moving the "kfree(base)" after using place to fix it.
+> >
+> > Reported-by: Zeal Robot <zealci@zte.com.cn>
+> > Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 >
->  kernel/cred.c                | 9 ++++-----
->  security/keys/process_keys.c | 8 ++++++++
->  2 files changed, 12 insertions(+), 5 deletions(-)
+> Please ignore this patch. Thanks.
 
-That's not remotely the right diffstat.
+Heh, no worries. It's nice to know that the Coccinelle checks are
+finding broken things, though! :) (It's just that LKDTM is intentionally
+broken.) ;)
 
-What's going on?
-
-The shortlog was correct, and I pulled the branch, because everything
-else looked ok, but that diffstat in the pull request was some
-complete fantasy.
-
-If I were to guess, I think the diffstat may be everything _but_ that
-first ("ucounts: Fix signal ucount refcounting") fix. I just don't see
-how/why you'd get that as part of the pull request.
-
-                  Linus
-
-                     Linus
+-- 
+Kees Cook
