@@ -2,53 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314AB437C6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E06437C76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbhJVSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
+        id S233734AbhJVSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233417AbhJVSIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:08:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF126120D;
-        Fri, 22 Oct 2021 18:06:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634925974;
-        bh=/KuhCiWfjX8v3AMvfNSEg2zLjZf0VFNSUeefW/M0Mfs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Chuxd2Ta0ctKe+6RKOFEk9zXQFwp+/jkLW7e1Y+IQxXkbKSdeJQmdaUCai+t//7F/
-         G2jQDf8dleq1i+1pShhOASpyoaYgc4zeeh/08Wgew2K4zLr6OWSRpOpqmBFx9ad3SH
-         +uNn+QjYv5Ro7DvJnaRf9b11eE7yNFYeW7QHRAlWsU8mgNXdaBo8QQyYB5usyIIbSA
-         wOjuaB51MBEglp6ikUUYhtvZb+2yj9MEUun9ibHWrGvlttIb2EorAU7Xbpfzc/PnCl
-         i1b2zpuoQxRf9LCAcP/abWBOvmTB7Mu3a0DU1oy7FRNXKF8cf9zOHXwZP1D94rUUZo
-         QxAldBA9FvbUA==
-Date:   Fri, 22 Oct 2021 11:06:12 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     luo penghao <cgel.zte@gmail.com>
-Cc:     SimonHorman <horms@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] octeontx2-af: Remove redundant assignment
- and parentheses
-Message-ID: <20211022110612.2041efc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211022095321.1065922-1-luo.penghao@zte.com.cn>
-References: <20211022095321.1065922-1-luo.penghao@zte.com.cn>
+        id S233380AbhJVSJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 14:09:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32ED1610A4;
+        Fri, 22 Oct 2021 18:06:49 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 19:06:45 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXL9tRher7QVmq6N@arm.com>
+References: <20211019134204.3382645-1-agruenba@redhat.com>
+ <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com>
+ <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com>
+ <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 09:53:21 +0000 luo penghao wrote:
-> Subject: [PATCH linux-next] octeontx2-af: Remove redundant assignment and parentheses
+On Wed, Oct 20, 2021 at 08:19:40PM -1000, Linus Torvalds wrote:
+> On Wed, Oct 20, 2021 at 12:44 PM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> >
+> > However, with MTE doing both get_user() every 16 bytes and
+> > gup can get pretty expensive.
+> 
+> So I really think that anything that is performance-critical had
+> better only do the "fault_in_write()" code path in the cold error path
+> where you took a page fault.
+[...]
+> So I wouldn't worry too much about the performance concerns. It simply
+> shouldn't be a common or hot path.
+> 
+> And yes, I've seen code that does that "fault_in_xyz()" before the
+> critical operation that cannot take page faults, and does it
+> unconditionally.
+> 
+> But then it isn't the "fault_in_xyz()" that should be blamed if it is
+> slow, but the caller that does things the wrong way around.
 
-octeontx2-af ? I don't think so:
+Some more thinking out loud. I did some unscientific benchmarks on a
+Raspberry Pi 4 with the filesystem in a RAM block device and a
+"dd if=/dev/zero of=/mnt/test" writing 512MB in 1MB blocks. I changed
+fault_in_readable() in linux-next to probe every 16 bytes:
 
->  drivers/net/ethernet/marvell/sky2.c | 2 +-
+- ext4 drops from around 261MB/s to 246MB/s: 5.7% penalty
 
-Please make sure you CC _all_ maintainers of the driver.
+- btrfs drops from around 360MB/s to 337MB/s: 6.4% penalty
+
+For generic_perform_write() Dave Hansen attempted to move the fault-in
+after the uaccess in commit 998ef75ddb57 ("fs: do not prefault
+sys_write() user buffer pages"). This was reverted as it was exposing an
+ext4 bug. I don't whether it was fixed but re-applying Dave's commit
+avoids the performance drop.
+
+btrfs_buffered_write() has a comment about faulting pages in before
+locking them in prepare_pages(). I suspect it's a similar problem and
+the fault_in() could be moved, though I can't say I understand this code
+well enough.
+
+Probing only the first byte(s) in fault_in() would be ideal, no need to
+go through all filesystems and try to change the uaccess/probing order.
+
+-- 
+Catalin
