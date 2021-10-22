@@ -2,105 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B02437793
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A513E437798
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhJVM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:58:14 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55842 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232862AbhJVM6H (ORCPT
+        id S232904AbhJVM60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232805AbhJVM6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:58:07 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M8o9P3015561;
-        Fri, 22 Oct 2021 14:55:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=2Cklww60Q60zoiXLscctpP7BlF1nmV/g12ZYeNXatR0=;
- b=ef6vT5eNRYg7aQtwFGMMNdEnNjFeRaspUwMerN0nhs1o3w8iN0LClVkyIDJkkSNz84X5
- OrZ7p/7S/EOxJmf9kigYd4Ulp2y4hJvKlAGyXX9Gip2U8pBWQXrtGICg05JHmilW/X7l
- IaT1EgzMojE0WjQbF30vtAE9YwuaU9Qw2r6JfIDWIdUuK9m5bOw40JRZffeRKTHuEdZn
- DWsmcU9hAntz8lW0/D3ExpqsWN0fw2u0VliESui6RCXznWvRPkfr3vdCyLTLbq2yvyAj
- mKHv4nEQdPP4gEi1XCR9FLvRVip0WaC/+0Czskz1E2ckeic/6+WZ4mQntMWsv3xzwKvo jQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3but4y1f1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 14:55:47 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 58C0D10002A;
-        Fri, 22 Oct 2021 14:55:47 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5145421FEAD;
-        Fri, 22 Oct 2021 14:55:47 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct 2021 14:55:46
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v6 10/10] rpmsg: core: send a ns announcement when a default endpoint is created
-Date:   Fri, 22 Oct 2021 14:54:26 +0200
-Message-ID: <20211022125426.2579-11-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+        Fri, 22 Oct 2021 08:58:25 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB45C061764;
+        Fri, 22 Oct 2021 05:56:07 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id t16so5048563eds.9;
+        Fri, 22 Oct 2021 05:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+qOi8f1v4+rJCxOKM/1lFt8oaZPEX6smhRzqey4rSCg=;
+        b=YivvG/JsMBUvbb3Fs9tTmqksEjk8+rN0v5A+vUK4z8jS13RgQj58cSSwV7Hs+IWsGB
+         adNRyKbM3yrg9wi18C8DLlOUORLq1BF4FYNWg7JzYi9UuIUeEq4Rn/rDkk/y1zhLxtEc
+         aOJwG8ueEq8fZmlCGlZRCr1VCFNZmF0LBwCeNKdP2CPqZ8YkdZryhKGqdvn5XSpjL1oP
+         4o6i1XlLhy5Ivwsx0XRyu4wrcaRPgu1kTvO9jQ+GdztgGf9HLtxndmPFXuqPLPJ6Ep1B
+         hDkRcHpvS7zlSUe5S45XqZYbcF6yhFGCeBVedFGDj8jrOQeCynGBXo9ZCYD+Q7EnHKgo
+         5Pew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+qOi8f1v4+rJCxOKM/1lFt8oaZPEX6smhRzqey4rSCg=;
+        b=5+uTAOrr2V0dcaVJzZBFq07KW7zK7NmkyRwdwtaiARaSfz73n3ZxgLedNJdgSCcE33
+         xsKyityjBnqQSTB2SAf3jTt3XUjh1D1Q0xdaYWAXKfWPftFNBwilaeQHj7qe1gdxAfoH
+         HveW2bflwxYw9eH6MhI+w6Nvtub3vlCjjtwlyzuKcHub7IIng4wHQLh5JYWruMfWnqpw
+         kPIHTBH3bdwWhTKtepq6wqfueuiyEVgqYvI3hFTic+u0Oeb7H2EMicbiW6AnyJM47C1Z
+         idX1VBSMCDr09/3awkhzPErZG3HVj0hNUbt2Ta23hUKYV90LTEU89hFqmESnw62yeHkW
+         97ng==
+X-Gm-Message-State: AOAM532Q4yyAHXMJDDEFOxDdejELBl7sReiYReMuxZCtVmG54PNyRhWk
+        IHK7LNQsA420HTBS2U1DXi9Qi+WWM0BQtftyME8=
+X-Google-Smtp-Source: ABdhPJxjmbZn/mKzz2MeCcWBTlXcYFWWJdlvVwlzqH5Cmn9IpfIf34cJh9HoSyv6xIrG1HUL+9nURIo/Rrh/wNmzfU8=
+X-Received: by 2002:a17:906:5a47:: with SMTP id my7mr14665000ejc.128.1634907366155;
+ Fri, 22 Oct 2021 05:56:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_03,2021-10-22_01,2020-04-07_01
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+In-Reply-To: <20211021174223.43310-10-kernel@esmil.dk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Oct 2021 15:55:10 +0300
+Message-ID: <CAHp75VcUv6WH0--FANpRExCdEOJNVo8KCtJ2Go090=FZq-Y0UQ@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a channel is created by user space application with the
-RPMSG_CREATE_DEV_IOCTL controls, a ns announcement has to be sent
-(depending on backend) to inform the remote side that a new service
-is available.
+On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> Add a driver for the StarFive JH7100 reset controller.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+...
 
-diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-index 92557c49d460..4c0c605473c7 100644
---- a/drivers/rpmsg/rpmsg_core.c
-+++ b/drivers/rpmsg/rpmsg_core.c
-@@ -160,6 +160,7 @@ struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
- 						struct rpmsg_channel_info chinfo)
- {
- 	struct rpmsg_endpoint *ept;
-+	int err = 0;
- 
- 	if (WARN_ON(!rpdev))
- 		return NULL;
-@@ -179,6 +180,16 @@ struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
- 	rpdev->ept = ept;
- 	rpdev->src = ept->addr;
- 
-+	if (rpdev->ops->announce_create)
-+		err = rpdev->ops->announce_create(rpdev);
-+	if (err) {
-+		rpmsg_destroy_ept(ept);
-+		rpdev->ept = NULL;
-+		rpdev->src = RPMSG_ADDR_ANY;
-+
-+		return NULL;
-+	}
-+
- 	return ept;
- }
- EXPORT_SYMBOL(rpmsg_create_default_ept);
+> +config RESET_STARFIVE_JH7100
+> +       bool "StarFive JH7100 Reset Driver"
+> +       depends on SOC_STARFIVE || COMPILE_TEST
+
+> +       depends on OF
+
+No evidence of this dependency. Why to limit test coverage?
+
+> +       default SOC_STARFIVE
+
+...
+
+> +/*
+> + * Reset driver for the StarFive JH7100 SoC
+> + *
+> + * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
+
+> + *
+
+Redundant empty line.
+
+> + */
+
+...
+
+> +#include <linux/of_device.h>
+
+No evidence of any usage of this header. Perhaps you meant mod_devicetable.h?
+
+...
+
+> +static const u32 jh7100_reset_asserted[4] = {
+
+> +       BIT(JH7100_RST_U74 % 32) |
+> +       BIT(JH7100_RST_VP6_DRESET % 32) |
+> +       BIT(JH7100_RST_VP6_BRESET % 32),
+
+It's hard to notice that this is only one entry. See also below.
+
+> +       BIT(JH7100_RST_HIFI4_DRESET % 32) |
+> +       BIT(JH7100_RST_HIFI4_BRESET % 32),
+> +
+> +       BIT(JH7100_RST_E24 % 32)
+
++ Comma.
+
+> +};
+
+Why all these ugly % 32 against constants?
+
+...
+
+> +       if (!assert)
+> +               done ^= mask;
+
+Can you convert this to simple
+
+  if (assert)
+    ret = readl_...
+  else
+    ret = readl_...
+
+below?
+
+> +       spin_lock_irqsave(&data->lock, flags);
+> +
+> +       value = readl(reg_assert);
+> +       if (assert)
+> +               value |= mask;
+> +       else
+> +               value &= ~mask;
+> +       writel(value, reg_assert);
+
+> +       /* if the associated clock is gated, deasserting might otherwise hang forever */
+> +       ret = readl_poll_timeout(reg_status, value, (value & mask) == done, 0, 1000);
+
+You run delays under spin lock. You need to use _atomic variant.
+
+> +       spin_unlock_irqrestore(&data->lock, flags);
+
+...
+
+> +       u32 value = (readl(reg_status) ^ jh7100_reset_asserted[offset]) & mask;
+
+> +       dev_dbg(rcdev->dev, "status(%lu) = %d\n", id, !value);
+> +       return !value;
+
+Dup of ! operator. Can it be value = !(...); above?
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
