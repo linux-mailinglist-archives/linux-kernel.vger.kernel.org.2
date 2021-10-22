@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50081436EE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10178436EE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhJVAib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJVAia (ORCPT
+        id S231996AbhJVAjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:39:51 -0400
+Received: from mail-qv1-f47.google.com ([209.85.219.47]:35458 "EHLO
+        mail-qv1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231770AbhJVAjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:38:30 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AF8C061766;
-        Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id i1so1537449plr.13;
-        Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4NyLIt9iLg6rZ1QK5VsbahId9/COsWCMPmtuER6RfUg=;
-        b=bplMtp7hlQ2ltpCHyZDdZlhsDlgsw1Es32HK+cub4W72PQrTpsxbebomL2a0G7o/tU
-         Qhfuwg/SoWG5U1/bi62Z6YHhMkqV8nnrYIYZiYn4R/jFbdxxKpAGiRNHdJJ49ieqoevf
-         XZ7mkuig5cINTG8YkAyzLG3RIygG6V4gikqyUkDwJEM9kIcF9rg0z8Yfk3++atPCE20Y
-         goMdglQAlDaw1IgrKVPJjBLtLsvpOlchs/b1/g1+tztNH0SAesb0W8v8S/JxfTQl9jHB
-         rMvIzW8V4QEj0gEVgAhAYuARQHNGWN9uvoRCF4EhPzuGiosPZ0K8gIDbO6inUiSdvYJU
-         fIfQ==
+        Thu, 21 Oct 2021 20:39:49 -0400
+Received: by mail-qv1-f47.google.com with SMTP id a16so1538095qvm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 17:37:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4NyLIt9iLg6rZ1QK5VsbahId9/COsWCMPmtuER6RfUg=;
-        b=Marb2D6QCccHUnZtaeGWgFN35rV9ecOaNGCaughtOHxzxv/B9zcIkBudZUkRSScbPH
-         CBx1SGY08jWuLxDwZm5qqo0OS0iG5grdkxy6earyR7b0ktf/4QZre9+seDmh80fo7v8q
-         exrk4PZ6xyKz3cFErWGOLILZAwINRud7hkTQGBJbD9q4pu7KCQfKMogUQRVbVt9stOQH
-         oJBvCsp/wR5hWs678xYuNU+CUxFuD9sHLAGOYuCAdNuqn4mWOSZaRgncSwWlZ+h/DYye
-         9xEz1WVjbdHMM9vxrVeJIFoRU6ldRayatuY1F9MAD+LXtISK8KOw7RrxmHWwVxsD0EjY
-         ipHg==
-X-Gm-Message-State: AOAM530PphpD0sl3j6+or9JJXHpvoiSC2DwPuFBsYi6uuA3QDMWQDbRr
-        +3TiE9WjsnKu6EGXdhh7GP23JVm+L/19geOhwas=
-X-Google-Smtp-Source: ABdhPJzx+ge6JKoDTskH6nB+UW4cv10c4x1D7XvWUxpTXRXFXz1xIiK+P2rRY2QiNoMDW/dHjczEOmKroX9vu7zCYew=
-X-Received: by 2002:a17:90b:4a4d:: with SMTP id lb13mr9954808pjb.122.1634862973288;
- Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
+        bh=k8cCGwIM+MEipkZPPkMbL/O4ATGbMjxLb4ByRgUs5DA=;
+        b=Pqj9CkCj8Um/Uq6/E8bZchkM2kFXByYCAU9a13chVECBgNsO4TcXpQDSCUdHKss8aE
+         cF8/e3MkZCzu956X+Tv++jRKXtAmsZ6miepoSwi4iqMupyi3aXJYCicrXbtH+p6xx8tb
+         ZyRTQWFCCygIV/dMoTVGBRyzSOMggjz68yv+1ylAOo5C7VtKgWybB+mGxMRva/RvqWbg
+         Z25RbPxfyOebvbfT5q435IAH4RfJy+o1H/3OQLKSXSF1dpB0eDn7WLTyhH/TITvGGVQQ
+         Pe3W7TUFmqa5rWyI6ajGTN8yk/8ErCvKeihkvvAxQlhQ5H6Zb1c7fy7c9zIDkznNVZKI
+         aaMg==
+X-Gm-Message-State: AOAM533dgL4sr/ySYnVRrL4b+S+wSGyeWsKFO/te95v/smlNuZHtCASu
+        xi4VXx2ZXjiAy3LnxdehgKuprDqosBU=
+X-Google-Smtp-Source: ABdhPJyFqSL9fNJV+JVDU7GYhEJvVykuzJmdCVZod6vf9hUv9/HkuTKJxWd/cTE/QjcxPTuiC2ec6Q==
+X-Received: by 2002:a05:6214:5086:: with SMTP id kk6mr8432174qvb.63.1634863052175;
+        Thu, 21 Oct 2021 17:37:32 -0700 (PDT)
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com. [209.85.160.181])
+        by smtp.gmail.com with ESMTPSA id s189sm3309420qka.100.2021.10.21.17.37.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 17:37:32 -0700 (PDT)
+Received: by mail-qt1-f181.google.com with SMTP id g17so2164712qtk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 17:37:31 -0700 (PDT)
+X-Received: by 2002:ac8:74c7:: with SMTP id j7mr9593942qtr.118.1634863051346;
+ Thu, 21 Oct 2021 17:37:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211019125856.2566882-1-zhudi2@huawei.com>
-In-Reply-To: <20211019125856.2566882-1-zhudi2@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:36:02 -0700
-Message-ID: <CAADnVQ+MLy8Ub8FL4ak92Wh+LqUg5npfHc_u3bgDqk-U7LB3Ww@mail.gmail.com>
-Subject: Re: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
-To:     Di Zhu <zhudi2@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210908071631.660-1-caihuoqing@baidu.com> <20210908071631.660-2-caihuoqing@baidu.com>
+In-Reply-To: <20210908071631.660-2-caihuoqing@baidu.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Thu, 21 Oct 2021 19:37:20 -0500
+X-Gmail-Original-Message-ID: <CADRPPNT-ZGsn_04J8tLuyACqpdtSE0b8qg0dC7jPgTZcMhx26g@mail.gmail.com>
+Message-ID: <CADRPPNT-ZGsn_04J8tLuyACqpdtSE0b8qg0dC7jPgTZcMhx26g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] soc: fsl: rcpm: Make use of the helper function devm_platform_ioremap_resource()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 5:59 AM Di Zhu <zhudi2@huawei.com> wrote:
-> +               break;
-> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> +       case BPF_SK_SKB_STREAM_PARSER:
-> +               *prog = READ_ONCE(progs->skb_parser);
+On Wed, Sep 8, 2021 at 2:20 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
+>
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-skb_parser?
-Please don't submit patches that don't even build.
+Applied for next.  Thanks.
+
+> ---
+>  drivers/soc/fsl/rcpm.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+>
+> diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c
+> index 90d3f4060b0c..3d0cae30c769 100644
+> --- a/drivers/soc/fsl/rcpm.c
+> +++ b/drivers/soc/fsl/rcpm.c
+> @@ -146,7 +146,6 @@ static const struct dev_pm_ops rcpm_pm_ops = {
+>  static int rcpm_probe(struct platform_device *pdev)
+>  {
+>         struct device   *dev = &pdev->dev;
+> -       struct resource *r;
+>         struct rcpm     *rcpm;
+>         int ret;
+>
+> @@ -154,11 +153,7 @@ static int rcpm_probe(struct platform_device *pdev)
+>         if (!rcpm)
+>                 return -ENOMEM;
+>
+> -       r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -       if (!r)
+> -               return -ENODEV;
+> -
+> -       rcpm->ippdexpcr_base = devm_ioremap_resource(&pdev->dev, r);
+> +       rcpm->ippdexpcr_base = devm_platform_ioremap_resource(pdev, 0);
+>         if (IS_ERR(rcpm->ippdexpcr_base)) {
+>                 ret =  PTR_ERR(rcpm->ippdexpcr_base);
+>                 return ret;
+> --
+> 2.25.1
+>
