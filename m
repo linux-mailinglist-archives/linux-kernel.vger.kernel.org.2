@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C6F43704F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6610C437056
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhJVDBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:01:49 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:50940 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232726AbhJVDBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:01:41 -0400
-Received: from BC-Mail-EX04.internal.baidu.com (unknown [172.31.51.44])
-        by Forcepoint Email with ESMTPS id AD93910DD569BC6C80B1;
-        Fri, 22 Oct 2021 10:59:23 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-EX04.internal.baidu.com (172.31.51.44) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Fri, 22 Oct 2021 10:59:23 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 22 Oct 2021 10:59:22 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <rostedt@goodmis.org>
-CC:     Cai Huoqing <caihuoqing@baidu.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Subject: [PATCH v3 6/6] trace/hwlat: Make use of the helper function kthread_run_on_cpu()
-Date:   Fri, 22 Oct 2021 10:57:09 +0800
-Message-ID: <20211022025711.3673-7-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211022025711.3673-1-caihuoqing@baidu.com>
-References: <20211022025711.3673-1-caihuoqing@baidu.com>
+        id S232799AbhJVDDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232661AbhJVDDD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 23:03:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53E1C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VkfP0BQNS3FE9QhrfQNys6FB6k6JJJc7e6jw1eQ9Db8=; b=AOjGpvdQf1WdT1MqcEyvAVsBol
+        1NoLZbN3rbR3Z9QcllZALHSh1+bSxGBrgt7hDiX9MoK6d5jrO88yvScCDH5LymP2s+DhJ58jt8RDX
+        T8TIP+CRb+u12oVLUeKF1J9X4OpW6oCMYCd+Dz5aOPyGLD/SXrCHQT2F7f5NksYArNath/UJNqqKI
+        baWD9voJy0e+44oCpVGGCd48t+/X0TgQPQ89oMrYhGBzfdzbjAc6hhyygerWGxa5RU7VwngUhbVma
+        F6tHQPjGX46q0cIKotO0mC41XQC3zwmQrGW67kKlRGrlywykk820jgigebf2mdyOD4fSNQ6ZCbIq4
+        SToetSiw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdkl3-00DfGS-93; Fri, 22 Oct 2021 02:58:26 +0000
+Date:   Fri, 22 Oct 2021 03:58:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Manjong Lee <mj0123.lee@samsung.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, nanich.lee@samsung.com,
+        yt0928.kim@samsung.com, junho89.kim@samsung.com,
+        jisoo2146.oh@samsung.com
+Subject: Re: [PATCH 1/1] mm: bdi: Initialize bdi_min_ratio when bdi unregister
+Message-ID: <YXIoxefk8UDDCt0M@casper.infradead.org>
+References: <CGME20211021072307epcas1p4aa4388c13e71a66e3e1d5f7ee68b5a7f@epcas1p4.samsung.com>
+ <20211021161942.5983-1-mj0123.lee@samsung.com>
+ <YXFMJJ3u+x34iNy0@infradead.org>
+ <YXFWmo9v65kJWVWC@casper.infradead.org>
+ <20211021194530.1fabf4fa45cfe3bee6598484@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex28.internal.baidu.com (172.31.51.22) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021194530.1fabf4fa45cfe3bee6598484@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace kthread_create_on_cpu/wake_up_process()
-with kthread_run_on_cpu() to simplify the code.
+On Thu, Oct 21, 2021 at 07:45:30PM -0700, Andrew Morton wrote:
+> On Thu, 21 Oct 2021 13:01:30 +0100 Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> > On Thu, Oct 21, 2021 at 04:16:52AM -0700, Christoph Hellwig wrote:
+> > > On Fri, Oct 22, 2021 at 01:19:43AM +0900, Manjong Lee wrote:
+> > > > Because when sdcard is removed, bdi_min_ratio value will remain.
+> > > > Currently, the only way to reset bdi_ min_ratio is to reboot.
+> > > 
+> > > But bdis that are unregistered are never re-registered.  What is
+> > > the problem you're trying to solve?
+> > 
+> > The global bdi_min_ratio needs to be adjusted.  See
+> > bdi_set_min_ratio() in mm/page-writeback.c.
+> 
+> I added cc:stable to this and tweaked the comment & coding style a bit:
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- kernel/trace/trace_hwlat.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Definitely improvements on that front.
 
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 1b83d75eb103..0e555335f095 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -491,18 +491,14 @@ static void stop_per_cpu_kthreads(void)
- static int start_cpu_kthread(unsigned int cpu)
- {
- 	struct task_struct *kthread;
--	char comm[24];
- 
--	snprintf(comm, 24, "hwlatd/%d", cpu);
--
--	kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
-+	kthread = kthread_run_on_cpu(kthread_fn, NULL, cpu, "hwlatd/%u");
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
- 		return -ENOMEM;
- 	}
- 
- 	per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
--	wake_up_process(kthread);
- 
- 	return 0;
- }
--- 
-2.25.1
-
+I don't know the BDI code particularly well, and the implementation of
+bdi_set_min_ratio() confuses me, so I can't say whether the original
+patch is clearly correct or not.
