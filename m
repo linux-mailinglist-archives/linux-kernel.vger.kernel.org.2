@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8ED437ABA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE1B437AC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbhJVQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:17:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233562AbhJVQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:17:57 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6F406112F;
-        Fri, 22 Oct 2021 16:15:38 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 12:15:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/9] kprobes: Add a test case for stacktrace from
- kretprobe handler
-Message-ID: <20211022121537.32821979@gandalf.local.home>
-In-Reply-To: <163477767243.264901.10894979830215919916.stgit@devnote2>
-References: <163477765570.264901.3851692300287671122.stgit@devnote2>
-        <163477767243.264901.10894979830215919916.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233304AbhJVQT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhJVQTZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:19:25 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C40AC061764;
+        Fri, 22 Oct 2021 09:17:07 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id oa4so3329092pjb.2;
+        Fri, 22 Oct 2021 09:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3tpF8psWtUoCeudXCjGBTb1UEIop9a/1h7pHnpAQDUM=;
+        b=EjD0/oqheijO7SYU1aeWIK74EUiHbHOrkRAeGC7oltWD739hf4khiXeT5Ep4Sg1yYS
+         UrZkVryWqtVMSUfxKxi6kT0eYLigpC1SDnrrenQbVpQtExjyEluL+1s+KDhiUZ9IYzvT
+         1kdkLGc4XcQThMnG8dDwGXbewYdL8qUJv76pxZAaxnFSR8xozmoF2Nq1N9qjtkauqJoZ
+         L7jaYPBTlktN6afVEwpUltPrKjpUhScYx8C6mH9wLB/6VyO1wytAiCihiLk5amPlUu04
+         FZmpquJu9Lopo1bLr7rStacgizcnWIWSyVs+w/afIWSY4ra0CM7iUHXHZJQnYMNJT9Cs
+         CX2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3tpF8psWtUoCeudXCjGBTb1UEIop9a/1h7pHnpAQDUM=;
+        b=3k9LooQFQsISCVIHzLMKL0KIXqSqyi+tXc4HTMZPKXgEJbISHyXfql3mNOkWnCMHk1
+         /X+S8Ni50xt+eT73wsWlGwoTQItJ/cFKKJMSElcBXSuux92ZHHJhq86vi1XMBxJww1ba
+         ujCHdmzWmLmXWMgbyz63qgxuodka7oateZnblhy8f25WGnWAloLQ/9ylZcPulawJ8yvT
+         ndKC/NWNLK+o28J4G3OvK7APdhSEw02fi4wBSw/lYmluDnpJPOTWqxH8jugrBBNEV+S7
+         3EcIfLdGB+w3zfn8EcQIM86iqWw54T6xU1NcLmTh+xfH1n+8KCrAGLqzV85yxtUmIEyP
+         9JAA==
+X-Gm-Message-State: AOAM531YlXN0v4Mk7yWplAcVTtmhJ/c9dEsCVfmwvSmZ1eR60GRVKhUJ
+        +B1WqZoi0zHy6TcmPYxOJiwW1jXBwok=
+X-Google-Smtp-Source: ABdhPJz1HG4jLhZOnLKRxy8HROVGOEM+hj2HH0aSPq46VcFm6nzcKpbTtOD4/pQ5IDo+AX/gNXucKQ==
+X-Received: by 2002:a17:902:dacb:b0:13e:f6c3:57dd with SMTP id q11-20020a170902dacb00b0013ef6c357ddmr653568plx.45.1634919426479;
+        Fri, 22 Oct 2021 09:17:06 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id nn14sm9866556pjb.27.2021.10.22.09.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 09:17:05 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET
+        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 0/3] Support for 16nm EPHY in GENET
+Date:   Fri, 22 Oct 2021 09:17:00 -0700
+Message-Id: <20211022161703.3360330-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 09:54:32 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi David, Jakub,
 
-> Add a test case for stacktrace from kretprobe handler and
-> nested kretprobe handlers.
-> 
-> This test checks both of stack trace inside kretprobe handler
-> and stack trace from pt_regs. Those stack trace must include
-> actual function return address instead of kretprobe trampoline.
-> The nested kretprobe stacktrace test checks whether the unwinder
-> can correctly unwind the call frame on the stack which has been
-> modified by the kretprobe.
-> 
-> Since the stacktrace on kretprobe is correctly fixed only on x86,
-> this introduces a meta kconfig ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-> which tells user that the stacktrace on kretprobe is correct or not.
-> 
-> The test results will be shown like below;
-> 
->  TAP version 14
->  1..1
->      # Subtest: kprobes_test
->      1..6
->      ok 1 - test_kprobe
->      ok 2 - test_kprobes
->      ok 3 - test_kretprobe
->      ok 4 - test_kretprobes
->      ok 5 - test_stacktrace_on_kretprobe
->      ok 6 - test_stacktrace_on_nested_kretprobe
->  # kprobes_test: pass:6 fail:0 skip:0 total:6
->  # Totals: pass:6 fail:0 skip:0 total:6
->  ok 1 - kprobes_test
+Recent Broadcom STB devices using GENET are taped out in a 16nm process
+and utilize an internal 10/100 EPHY which requires a small set of
+changes to the GENET driver for power up/down. The first patch adds an
+EPHY driver entry for 7712, the second patch updates the DT binding and
+the last patch modifies GENET accordingly.
 
-So my allmodconfig test failed on this:
+Florian Fainelli (3):
+  net: phy: bcm7xxx: Add EPHY entry for 7712
+  dt-bindings: net: bcmgenet: Document 7712 binding
+  net: bcmgenet: Add support for 7712 16nm internal EPHY
 
-ERROR: modpost: "stack_trace_save_regs" [kernel/test_kprobes.ko] undefined!
+ .../devicetree/bindings/net/brcm,bcmgenet.txt       |  3 ++-
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c      | 13 +++++++++++--
+ drivers/net/ethernet/broadcom/genet/bcmgenet.h      |  2 ++
+ drivers/net/ethernet/broadcom/genet/bcmmii.c        |  7 ++++---
+ drivers/net/phy/bcm7xxx.c                           |  2 ++
+ include/linux/brcmphy.h                             |  1 +
+ 6 files changed, 22 insertions(+), 6 deletions(-)
 
+-- 
+2.25.1
 
-> +	/*
-> +	 * Test stacktrace from pt_regs at the return address. Thus the stack
-> +	 * trace must start from the target return address.
-> +	 */
-> +	ret = stack_trace_save_regs(regs, stack_buf, STACK_BUF_SIZE, 0);
-> +	KUNIT_EXPECT_NE(current_test, ret, 0);
-> +	KUNIT_EXPECT_EQ(current_test, stack_buf[0], target_return_address[1]);
-> +
-> +	return 0;
-> +}
-
-It appears that that "stack_trace_save_regs" is not exported. And this code
-can be compiled as a module.
-
-I'm going to continue testing my code, as I have over 40 patches that need
-to go into next. I'll just rebase removing this commit only (hopefully
-nothing else breaks), and if everything then passes, I'll push to next.
-
--- Steve
