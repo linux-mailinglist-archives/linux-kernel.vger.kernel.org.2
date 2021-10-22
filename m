@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8270F437758
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BFD437725
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhJVMoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:44:01 -0400
-Received: from sv3058.xserver.jp ([202.254.234.59]:57732 "EHLO
-        sv3058.xserver.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhJVMny (ORCPT
+        id S231569AbhJVMfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhJVMfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:43:54 -0400
-X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 08:43:54 EDT
-Received: from virusgw2401.xserver.jp (virusgw2401.xserver.jp [202.254.232.243])
-        by sv3058.xserver.jp (Postfix) with ESMTP id A9B8F180689CA3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 21:32:06 +0900 (JST)
-Received: from sv3058.xserver.jp (202.254.234.59)
- by virusgw2401.xserver.jp (F-Secure/fsigk_smtp/521/virusgw2401.xserver.jp);
- Fri, 22 Oct 2021 21:32:05 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw2401.xserver.jp)
-Received: by sv3058.xserver.jp (Postfix, from userid 20051)
-        id A534C1805DB419; Fri, 22 Oct 2021 21:32:06 +0900 (JST)
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?44GK5ZWP5ZCI44Gb44GC44KK44GM44Go44GG44GU44GW44GE44G+44GX44Gf?=  =?UTF-8?B?44CM44OX44Oq44Oz44OI5Z+65p2/44GvTlRXIEluYy4g44CN?=
-Date:   Fri, 22 Oct 2021 12:32:06 +0000
-From:   =?UTF-8?B?44OX44Oq44Oz44OI5Z+65p2/44GvTlRXIEluYy4=?= 
-        <info@ntw-web.com>
-Reply-To: info@ntw-web.com
-Message-ID: <HLBnSw7jDlHvQRtnkXb3BLrKxvy8VhvGJ2bj1OHHXs@www.ntw-web.com>
-X-Mailer: PHPMailer 6.5.0 (https://github.com/PHPMailer/PHPMailer)
+        Fri, 22 Oct 2021 08:35:52 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB6DC061764;
+        Fri, 22 Oct 2021 05:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oMgAZY+F/sdM3t95WtfAYVamdvU9COWI2QoJJs9rXhA=; b=zePx9o6jBuEgS3fYc5fORTTX3e
+        pO70ymBnVsxWbVxiMS62akdvmPl6e/oHAgP6XlRfDdEo7a4iKdN2gbl7QRLexHgbkxQs20YcnTh8e
+        828dYftPHDEqMGlNiOYYsmi7lfL9isK5kFP9FPvvhTwGW3gNId/j16eAhfMIXd9Aiq/ITWlVhWugt
+        yTSJ5ZhMRTyiGGDAVRGZ0dM79yoYkbf3GhP1byQql83unznGncq9Mm9DB/mSPk9Wic8RRKAmpg4sA
+        WK4cyZ4llIvGogO2v2ST63VvEELF0p2GLWizH/LEBBySeAlgklFCmI3jprRn9Tansc9UzaLYKqcKZ
+        9ZY82Z+g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55236)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mdtjp-0001ht-2N; Fri, 22 Oct 2021 13:33:33 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mdtjn-0001B8-Oj; Fri, 22 Oct 2021 13:33:31 +0100
+Date:   Fri, 22 Oct 2021 13:33:31 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [RFC net-next PATCH 07/16] net: phylink: Add helpers for c22
+ registers without MDIO
+Message-ID: <YXKvmwwUNnIlROsv@shell.armlinux.org.uk>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-8-sean.anderson@seco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004191527.1610759-8-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NTW Inc.までお問合せ頂きましてありがとうございました。
+On Mon, Oct 04, 2021 at 03:15:18PM -0400, Sean Anderson wrote:
+> Some devices expose memory-mapped c22-compliant PHYs. Because these
+> devices do not have an MDIO bus, we cannot use the existing helpers.
+> Refactor the existing helpers to allow supplying the values for c22
+> registers directly, instead of using MDIO to access them. Only get_state
+> and set_adversisement are converted, since they contain the most complex
+> logic.
 
-以下の内容でお問合せを承りました。
+I think this patch is useful on its own, there are certainly cases
+where being able to hold the MII bus lock while reading the BMSR/LPA
+registers would be advantageous. Please can you update the patch
+against net-next and submit it?
 
-会社名：
-❤️ There are candid videos for you! Click here: http://bit.do/hotvideo2?n3z ❤️
-
-部署名：
-mrkdcby
-
-役所名：
-buh37s
-
-氏名：
-8o8nvpq uq5v6h
-
-ふりがな：
-132zy2 9sqe0ey
-
-電話番号：
-647808176086
-
-住所：
-〒 22296
-vkq4j1f 
-sh9gffl3
-sh8zxl
-
-メッセージ本文:
-2r63qr7
-
-後ほど弊社担当よりご連絡を差し上げます。宜しくお願い申し上げます。
-
-NTW Inc.
+Thanks.
 
 -- 
-このメールは プリント基板はNTW Inc. (http://www.ntw-web.com) のお問い合わせフォームから送信されました
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
