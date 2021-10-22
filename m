@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1C1437173
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0BE437177
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 07:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhJVGAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        id S231252AbhJVGAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhJVGAW (ORCPT
+        with ESMTP id S230086AbhJVGAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:00:22 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8331C061764;
-        Thu, 21 Oct 2021 22:58:04 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bq11so507803lfb.10;
-        Thu, 21 Oct 2021 22:58:04 -0700 (PDT)
+        Fri, 22 Oct 2021 02:00:52 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22138C061764;
+        Thu, 21 Oct 2021 22:58:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i6so516638lfv.9;
+        Thu, 21 Oct 2021 22:58:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YBqZ2/WOjzFpakGpLZqp4pTnNIzI3k69qYYA40+nsis=;
-        b=lXhUDsy8yUWIDFjjiXAOqAibq/tVSSErBHVs+3nhznGA605bJYXCviOhpL2tuNgWC1
-         9ieEq+sXXLF3o5P6jYEywU4zuiZUv3RQ23ohd7Xpzi6933k9SuLVRydbcE+QcCI/oc5s
-         +n0m4qTYneQ9YQ0onKYjzqnQmea2m6teqz18XZcuQ7M7eytbtbEJO47tFtFxuw7YLkM2
-         +Tw5V9ZSh/kFTuZ2G2SzVhpSmshHana4gjBi9xD4nYSpPJspNpHz62DX6Qx7OBEXWREj
-         xvxvrc2BewV4Qhm+pbLB47uvE3lXm9URP7b1LXCZJu56E1cUDFSBqgU+cNU8DWV/iiXU
-         r/dg==
+        bh=LjFmEeV00RuFncTblJ5Dy7JPoBVQH1IRuNrpKBOX7Sk=;
+        b=ofO598ygKjxBqO2DT5JrnUeVP8xaYK5mJYy0mg9YogHwEmITstNU5oU9xRi+kc6GtZ
+         PIeq1o8QJ1orsMKRgHnrO2mxzGncDlkRQNw/ORDGp1rpvh58xTgahr1NQ+D5W+43c3Mk
+         sHiH/6bbY3jHU3i2N4sESlejbpjQrKSUGVL8o3RMVjorzBzAfE+ts1MV1qEN8DxvnLCv
+         5WsKyEZ8DJNmizkSCrUME7yZuuEMwhR47NlVoZWjo5P0GSLqiaX7VZaQ9ETsyO3lRKOS
+         l3pIwa4bCbXlEAImbZZKsvY7vFZYEbm6GoZ8cKjSM+q2KGyli6CC6vfISAfuTQ6ukC0h
+         6TtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=YBqZ2/WOjzFpakGpLZqp4pTnNIzI3k69qYYA40+nsis=;
-        b=blLW34IhEgJ/Inuz/oyIwZZ9nZ8QiiLa1uDglmd2KJCBYIVE1TGI2rUctSzJgQOj9Y
-         JWVdp6Pm3SY1S0kMoukQiWnJ52/w1SdJk0yePrgliXTdBEw8ewL+7X1P8E+n4s3MB8It
-         hk9UR2gpqrp0Y00CGh6ghMI+PrNe3CW1L/ejN+qWNjExfnckxDLHObiMLQ34e8AXRSfj
-         IfqJIJ6bG0ivn4Z0ysHg5zCrDusD4ugaLYSTVTvGY4Mvs+Ub+8T0d0Txps9mE7gO8yCA
-         HBJiYza2komSifBpbyc4ssTuiEe9nh5OwQcPynTKW92KS9belU9E/VRWJoxDM+qXJlnk
-         Yiug==
-X-Gm-Message-State: AOAM532qmbSdWzYQWF70l/Yb2GCmE+La1uoSzyeyOfuIclRmIvYnOCtC
-        gVv2M4ulLt4MHj89w5OrEoRvaoc3MGE=
-X-Google-Smtp-Source: ABdhPJyXHKRTOCpaI9IpWlp8wQuhrn2y3HW9UFhN3SNR7MxhhHE27VV4q1409BMTc41rdrwrn/mQPg==
-X-Received: by 2002:a05:6512:10d3:: with SMTP id k19mr9608407lfg.438.1634882283081;
-        Thu, 21 Oct 2021 22:58:03 -0700 (PDT)
+        bh=LjFmEeV00RuFncTblJ5Dy7JPoBVQH1IRuNrpKBOX7Sk=;
+        b=orCEgal+y0lEIrGbiv0LXk6DrvkbOKA9DPBsFpvAvAPosDpqy47psQphhtM2slbRrD
+         7yYpdfDj+4kAISHXvkBzOru4i8SxLvVR97cyg8kt4Z6w8BJN7P8E/w2p+2Ap7Pqp/GsH
+         yITvYY3gwXYQEseySdsFTYps/00zqHJj3I8Nlf+YIGOpBR59hL8ra4ENPvMEeD3AJAT0
+         /Kj59wybKm8uo4+130W73ZQC4bSFfWzqHxPWaUvIiXuBpTHNVyXLjzdy5JHkNLBQgB6w
+         U39nsCE5H+G2WDsWrW0yOrr5hMm76ycxDuXvEIDWDbWJYYazgr5jaOKIDWMI5Fx8DPZb
+         PP0A==
+X-Gm-Message-State: AOAM533AEeUpDmCDlq25IpNsIwc8iou8k/rznB7CAxrG5O4S5136F86e
+        u+gLrSmHmG6Yt2IEHTSo+3TiZPj6ff0=
+X-Google-Smtp-Source: ABdhPJzfP+XFNKubQWaoU3N36DnYL2ckZCnZPzWNBKTZGZwUw9z6pE4uNby581VLTrXRJ9ycegKIpw==
+X-Received: by 2002:a05:6512:3d14:: with SMTP id d20mr2840289lfv.542.1634882313098;
+        Thu, 21 Oct 2021 22:58:33 -0700 (PDT)
 Received: from [192.168.2.145] (94-29-61-202.dynamic.spd-mgts.ru. [94.29.61.202])
-        by smtp.googlemail.com with ESMTPSA id t3sm634511lfc.216.2021.10.21.22.58.02
+        by smtp.googlemail.com with ESMTPSA id v3sm788208ljv.7.2021.10.21.22.58.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 22:58:02 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
- device tree
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211021115501.14932-1-digetx@gmail.com>
- <YXHdoFAgGlxoI0Jx@qmqm.qmqm.pl>
- <29b38423-631e-192e-b006-aa0d258c8030@gmail.com>
- <YXHmOT+inPg7as0x@qmqm.qmqm.pl>
+        Thu, 21 Oct 2021 22:58:32 -0700 (PDT)
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211019231905.2974-1-digetx@gmail.com>
+ <YXAr4OlhucAibMlH@robh.at.kernel.org>
+ <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
 From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0a48c38e-1841-0dc9-473e-5dbe67ce04d5@gmail.com>
-Date:   Fri, 22 Oct 2021 08:58:02 +0300
+Message-ID: <6e26c2fe-9288-1d90-585f-f173e693d9e8@gmail.com>
+Date:   Fri, 22 Oct 2021 08:58:32 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YXHmOT+inPg7as0x@qmqm.qmqm.pl>
+In-Reply-To: <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,45 +73,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.10.2021 01:14, Michał Mirosław пишет:
-> On Fri, Oct 22, 2021 at 12:46:23AM +0300, Dmitry Osipenko wrote:
->> 22.10.2021 00:37, Michał Mirosław пишет:
->>> On Thu, Oct 21, 2021 at 02:55:01PM +0300, Dmitry Osipenko wrote:
->>>> Older device-trees don't specify padctrl interrupt and xhci-tegra driver
->>>> now fails to probe with -EINVAL using those device-trees. Check interrupt
->>>> presence and disallow runtime PM suspension if it's missing to fix the
->>>> trouble.
->>> [...]
->>>> --- a/drivers/usb/host/xhci-tegra.c
->>>> +++ b/drivers/usb/host/xhci-tegra.c
->>>> @@ -1454,10 +1454,13 @@ static int tegra_xusb_probe(struct platform_device *pdev)
->>>>  		goto put_padctl;
->>>>  	}
->>>>  
->>>> -	tegra->padctl_irq = of_irq_get(np, 0);
->>>> -	if (tegra->padctl_irq <= 0) {
->>>> -		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
->>>> -		goto put_padctl;
->>>> +	/* Older device-trees don't specify padctrl interrupt */
->>>> +	if (of_property_read_bool(np, "interrupts")) {
+22.10.2021 07:43, Viresh Kumar пишет:
+> On 20-10-21, 09:46, Rob Herring wrote:
+>> On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
+>>> Not all OPP table names and OPP entries consist of a single word. In
+>>> particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
+>>> and OPP entry name to have multi-worded names to silence DT checker
+>>> warnings about the multi-word names separated by hyphen.
 >>>
->>> Does this catch "interrupts-extended"?
+>>> Reviewed-by: David Heidelberg <david@ixit.cz>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>>> index ae3ae4d39843..298cf24af270 100644
+>>> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>>> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>>> @@ -22,7 +22,7 @@ select: false
+>>>  
+>>>  properties:
+>>>    $nodename:
+>>> -    pattern: '^opp-table(-[a-z0-9]+)?$'
+>>> +    pattern: '^opp-table(-[a-z0-9]+)*$'
 >>
->> No, Tegra doesn't use interrupts-extended.
+>> I don't see how this helps you. What I see needed upstream is a prefix:
+>>
+>> '-?opp-table(-[0-9]+)?$'
 > 
-> I believe it is generic and equivalent to "interrupt-parent" +
-> "interrupts" properties, so people might as well put this in
-> the DT to save (or loose) a few bytes.
+> I wonder if we should disallow that to keep naming more consistent.
 > 
-> You could just check if of_irq_get() returned -EINVAL instead of
-> matching "interrupts" property.
+>> Though really what I'd like to see is the OPP nodes moved into the 
+>> device nodes they belong to when appropriate (i.e. when not shared 
+>> between multiple devices).
+> 
+> +1
+> 
+> The only reason for keeping it outside was because CPUs were sharing them.
+> 
 
-It should be a bad idea to rely on -EINVAL since it's ambiguous error code.
-
-Perhaps it's fine to assume that today of_irq_get() may only return
--EINVAL in a case of a missing DT property, but then it should be two
-patches here:
-
-1. Use -EINVAL and backport this fix to stable kernel.
-2. Change of_irq_get() to return -ENOENT for a missing property and
-change tegra_xusb_probe() accordingly.
+Not very doable for Tegra device-trees. Those OPP tables are huge, it's
+impractical to put them into device nodes.
