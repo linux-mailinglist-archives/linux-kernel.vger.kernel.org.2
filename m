@@ -2,62 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD249437A5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3D9437A61
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhJVP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:56:04 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:44963 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229484AbhJVPz7 (ORCPT
+        id S233379AbhJVP4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:56:06 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:47726 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233268AbhJVP4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:55:59 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id E7ABB81C3F;
-        Fri, 22 Oct 2021 18:53:39 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1634918019;
-        bh=Lxw5GkdUO2KWgwUcR9Ex5W3ZS1/0b0VHIXt7Vr5Qi6Y=;
-        h=Date:To:CC:From:Subject;
-        b=UzBQYO2a/+BZxw0JTN+IsGvwUR7yTPczHxEy0wJtN9URAQUdks8lSmQ8ITKALUsbH
-         qzU+Ylk/iO01rHQzGoDlijMrOXAwkCd1ieAaK73PAT0bXIkjoo+vIj35WjDlD4Pifd
-         9ybVVGutu6Vu9N0CcuxrKWb2z5J54V0PbFPMtIuU=
-Received: from [192.168.211.69] (192.168.211.69) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 22 Oct 2021 18:53:39 +0300
-Message-ID: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
-Date:   Fri, 22 Oct 2021 18:53:38 +0300
+        Fri, 22 Oct 2021 11:56:04 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id a55714590f225a46; Fri, 22 Oct 2021 17:53:45 +0200
+Received: from kreacher.localnet (unknown [213.134.175.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5FB0166A9BA;
+        Fri, 22 Oct 2021 17:53:44 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] PM: suspend: Use valid_state() consistently
+Date:   Fri, 22 Oct 2021 17:53:43 +0200
+Message-ID: <2617889.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH 0/4] fs/ntfs3: Various fixes for xattr and files
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.69]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-CLIENT-IP: 213.134.175.233
+X-CLIENT-HOSTNAME: 213.134.175.233
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedguddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppedvudefrddufeegrddujeehrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdeffedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=2 Fuz1=2 Fuz2=2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Various problems were detected by xfstests.
-This series aims to fix them.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Konstantin Komarov (4):
-  fs/ntfs3: Keep preallocated only if option prealloc enabled
-  fs/ntfs3: Restore ntfs_xattr_get_acl and ntfs_xattr_set_acl functions
-  fs/ntfs3: Optimize locking in ntfs_save_wsl_perm
-  fs/ntfs3: Update i_ctime when xattr is added
+Make valid_state() check if the ->enter callback is present in
+suspend_ops (only PM_SUSPEND_TO_IDLE can be valid otherwise) and
+make sleep_state_supported() call valid_state() consistently to
+validate the states other than PM_SUSPEND_TO_IDLE.
 
- fs/ntfs3/file.c  |   2 +-
- fs/ntfs3/xattr.c | 123 ++++++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 113 insertions(+), 12 deletions(-)
+While at it, clean up the comment in valid_state().
 
--- 
-2.33.0
+No expected functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ kernel/power/suspend.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+Index: linux-pm/kernel/power/suspend.c
+===================================================================
+--- linux-pm.orig/kernel/power/suspend.c
++++ linux-pm/kernel/power/suspend.c
+@@ -160,11 +160,13 @@ EXPORT_SYMBOL_GPL(s2idle_wake);
+ static bool valid_state(suspend_state_t state)
+ {
+ 	/*
+-	 * PM_SUSPEND_STANDBY and PM_SUSPEND_MEM states need low level
+-	 * support and need to be valid to the low level
+-	 * implementation, no valid callback implies that none are valid.
++	 * The PM_SUSPEND_STANDBY and PM_SUSPEND_MEM states require low-level
++	 * support and need to be valid to the low-level implementation.
++	 *
++	 * No ->valid() or ->enter() callback implies that none are valid.
+ 	 */
+-	return suspend_ops && suspend_ops->valid && suspend_ops->valid(state);
++	return suspend_ops && suspend_ops->valid && suspend_ops->valid(state) &&
++		suspend_ops->enter;
+ }
+ 
+ void __init pm_states_init(void)
+@@ -236,7 +238,7 @@ EXPORT_SYMBOL_GPL(suspend_valid_only_mem
+ 
+ static bool sleep_state_supported(suspend_state_t state)
+ {
+-	return state == PM_SUSPEND_TO_IDLE || (suspend_ops && suspend_ops->enter);
++	return state == PM_SUSPEND_TO_IDLE || valid_state(state);
+ }
+ 
+ static int platform_suspend_prepare(suspend_state_t state)
+
+
 
