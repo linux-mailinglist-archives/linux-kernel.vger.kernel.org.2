@@ -2,153 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177494378A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127994378A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhJVOFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbhJVOFl (ORCPT
+        id S233070AbhJVOFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:05:48 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33710 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232327AbhJVOFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:05:41 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD307C061764;
+        Fri, 22 Oct 2021 10:05:42 -0400
+Received: by mail-ot1-f46.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso4546874otv.0;
+        Fri, 22 Oct 2021 07:03:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=ruomGZWulywzz0DW4LCulUIbelTIOWKA2nEOcoXqZVQ=;
+        b=HBQDAiS1vAoLDFStjMPQv7jFaIwYktbcRD+C4pTuICHC+DBngi1GYnqdJPjVWA1RE9
+         3y1REAoytl8Pi7Z2qsW0TGL5H8pv2CqlyMa7paJg+P0C/aDVvCWU0aL1lwPUeEtZJ1ls
+         eggb+5/Czk8t4pvBjKtKJAe/PKq0oKrZxtRJYydwaEzR9e3mI06ciVEJMrer/eAUijlm
+         1lIYQThg4MqWDvsglelXt6MciBoOtPze2rduuRuaCBnyqTvz7+oJoW+swe+yRhSDVAsq
+         xBESuqsywoyY7T6PQAM5k0lImRmmiwTTD7pbhtKaPkNN33fRt4CcgraNW3tRf2hB7CHX
+         37jg==
+X-Gm-Message-State: AOAM533ZkGXku2eVnTP2LHU9D3X7az16CiDOkE3fLR1uXOSzs3zGmhXY
+        0DKBhCuuPgXBnOl+uG06HA==
+X-Google-Smtp-Source: ABdhPJxkMg/NZ5wUa6Nul/xYxYkUKtq6kFY+pO/P1RKtbuibdALy7J5ZE2ubhQGOb8Tl3mh6ADQ53Q==
+X-Received: by 2002:a9d:490e:: with SMTP id e14mr73853otf.194.1634911404119;
+        Fri, 22 Oct 2021 07:03:24 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id n12sm1675885otq.32.2021.10.22.07.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 22 Oct 2021 07:03:23 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:50fa:5c7d:20f4:e8d3] (unknown [IPv6:2a02:810a:880:f54:50fa:5c7d:20f4:e8d3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3DBD31F454AB;
-        Fri, 22 Oct 2021 15:03:21 +0100 (BST)
-Subject: Re: [PATCH v3 13/33] iommu/mediatek: Remove the power status checking
- in tlb flush all
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, chao.hao@mediatek.com,
-        yen-chang.chen@mediatek.com,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <20210923115840.17813-1-yong.wu@mediatek.com>
- <20210923115840.17813-14-yong.wu@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <6cff0b97-b861-e02d-e76f-2510c962c452@collabora.com>
-Date:   Fri, 22 Oct 2021 16:03:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210923115840.17813-14-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: (nullmailer pid 2582197 invoked by uid 1000);
+        Fri, 22 Oct 2021 14:03:22 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     qinjian <qinjian@cqplus1.com>
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        tglx@linutronix.de
+In-Reply-To: <20211022060737.281116-1-qinjian@cqplus1.com>
+References: <20211022060737.281116-1-qinjian@cqplus1.com>
+Subject: Re: [PATCH 2/4] dt-bindings: interrupt-controller: Add bindings for SP7021 interrupt controller
+Date:   Fri, 22 Oct 2021 09:03:22 -0500
+Message-Id: <1634911402.732539.2582196.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-
-On 23.09.21 13:58, Yong Wu wrote:
-> To simplify the code, Remove the power status checking in the
-> tlb_flush_all, remove this:
->     if (pm_runtime_get_if_in_use(data->dev) <= 0)
-> 	    continue;
+On Fri, 22 Oct 2021 14:07:37 +0800, qinjian wrote:
+> Add documentation to describe Sunplus SP7021 interrupt controller bindings.
 > 
-> After this patch, the mtk_iommu_tlb_flush_all will be called from
-> a) isr
-> b) pm runtime resume callback
-> c) tlb flush range fail case
-> d) iommu_create_device_direct_mappings
->     -> iommu_flush_iotlb_all
-> In first three cases, the power and clock always are enabled; d) is direct
-
-Regarding case "c) tlb flush range fail case", I found out that this often happens
-when the iommu is used while it is runtime suspended. For example the mtk-vcodec
-encoder driver calls "pm_runtime_resume_and_get" only when it starts streaming but
-buffers allocation is done in 'v4l2_reqbufs' before "pm_runtime_resume_and_get" is called
-and then I see the warning "Partial TLB flush timed out, falling back to full flush"
-I am not sure how to fix that issue, but it seems that case 'c)' might indicate that
-power and clock are actually not enabled.
-
-> mapping, the tlb flush is unnecessay since we already have tlb_flush_all
-> in the pm_runtime_resume callback. When the iommu's power status is
-> changed to active, the tlb always is clean.
-> 
-> In addition, there still are 2 reasons that don't add PM status checking
-> in the tlb flush all:
-> a) Write tlb flush all register also is ok even though the HW has no
-> power and clocks. Write ignore.
-> b) pm_runtime_get_if_in_use(m4udev) is 0 when the tlb_flush_all
-> is called frm pm_runtime_resume cb. From this point, we can not add
-> this code above in this tlb_flush_all.
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Signed-off-by: qinjian <qinjian@cqplus1.com>
 > ---
->   drivers/iommu/mtk_iommu.c | 20 +++++++-------------
->   1 file changed, 7 insertions(+), 13 deletions(-)
+>  .../sunplus,sp7021-intc.yaml                  | 69 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 +
+>  .../interrupt-controller/sp7021-intc.h        | 24 +++++++
+>  3 files changed, 95 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
+>  create mode 100644 include/dt-bindings/interrupt-controller/sp7021-intc.h
 > 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index e9e94944ed91..4a33b6c6b1db 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -204,10 +204,14 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
->   	return container_of(dom, struct mtk_iommu_domain, domain);
->   }
->   
-> -static void mtk_iommu_tlb_do_flush_all(struct mtk_iommu_data *data)
-> +static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
->   {
->   	unsigned long flags;
->   
-> +	/*
-> +	 * No need get power status since the HW PM status nearly is active
-> +	 * when entering here.
-> +	 */
->   	spin_lock_irqsave(&data->tlb_lock, flags);
->   	writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
->   		       data->base + data->plat_data->inv_sel_reg);
-> @@ -216,16 +220,6 @@ static void mtk_iommu_tlb_do_flush_all(struct mtk_iommu_data *data)
->   	spin_unlock_irqrestore(&data->tlb_lock, flags);
->   }
->   
-> -static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
-> -{
-> -	if (pm_runtime_get_if_in_use(data->dev) <= 0)
-> -		return;
-> -
-> -	mtk_iommu_tlb_do_flush_all(data);
-> -
-> -	pm_runtime_put(data->dev);
-> -}
-> -
->   static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
->   					   struct mtk_iommu_data *data)
->   {
-> @@ -263,7 +257,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
->   		if (ret) {
->   			dev_warn(data->dev,
->   				 "Partial TLB flush timed out, falling back to full flush\n");
-> -			mtk_iommu_tlb_do_flush_all(data);
-> +			mtk_iommu_tlb_flush_all(data);
->   		}
->   
->   		if (has_pm)
-> @@ -993,7 +987,7 @@ static int __maybe_unused mtk_iommu_runtime_resume(struct device *dev)
->   	 *
->   	 * Thus, Make sure the tlb always is clean after each PM resume.
->   	 */
-> -	mtk_iommu_tlb_do_flush_all(data);
-> +	mtk_iommu_tlb_flush_all(data);
->   
->   	/*
->   	 * Uppon first resume, only enable the clk and return, since the values of the
-> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.example.dt.yaml: interrupt-controller@9c000780: reg: [[2617247616, 128], [2617248384, 128]] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1544791
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
