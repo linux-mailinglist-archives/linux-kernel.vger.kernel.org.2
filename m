@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4D4437003
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B3A437005
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhJVCdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhJVCdH (ORCPT
+        id S232445AbhJVCdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:33:17 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38649 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232435AbhJVCdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:33:07 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BFFC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:30:50 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id p16so264444lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cbgzVLDCT8DipeBdsMkDowoxxylwz2da/ifUpbOh8z0=;
-        b=aYdcT/n7CqiA/S03OD1v/gZ0kFeK1PDL0lbPxqn104neWrT3qjy5Y6eL+8vHQrxt+h
-         oDvWfNFAoUdvOICh0XHKZOWmwBJf6fUUWWLjSlhQrvjMiomhUTFGWClWL1HzZ9q2WL4O
-         1ego9HzyYIvaXZ0i0rLIDMjdtPo9LTw/DYSYY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cbgzVLDCT8DipeBdsMkDowoxxylwz2da/ifUpbOh8z0=;
-        b=aMfZ71r99GUN4bpbfHQBd3GnHfs+g0E/ieR+sumOAYUGNSLQaDiZRECl+QRxTdXTAg
-         KVjNysu5bzPEP9ehToqfz+5LBf9ki9c8grQTdDgA5zmUAE/HA9Htut6b7Mekc73h3Ajr
-         YWbr8KOApijrvIVo2L0sZ8UB1n1PUYCz23gDYQkcCXpUvPoVD1GGdYpScTXEqtZ2fiOO
-         3OXEHKqc2JO3nRJhDsbOj74RBeOIK3pO82Pvf9OwvZQDYdy3IfEeKkjnSwpvXcnEu2xc
-         FDZooK2XZ6ifqLRQbKCOtwcByD/7ieVHzkLcnmT9jjhfVbILZkqMLWaPare+2O/ikf2d
-         C0dg==
-X-Gm-Message-State: AOAM532U0M/7uT49mAXQXp47A202+ClUN3pbsi0jd8AAc0WqSom/CE+E
-        IfIHdDZJMgPxVD0WWNIQPcNit7Gf9OCLA1TL
-X-Google-Smtp-Source: ABdhPJwNWvXVHPblx/6d8qxSKyiDvWzWzPkLKuh39uQnxNHBUdlUbO1zcDoJko/tmGvAcUYmu7KZKw==
-X-Received: by 2002:a05:6512:692:: with SMTP id t18mr8594543lfe.572.1634869848135;
-        Thu, 21 Oct 2021 19:30:48 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id g5sm603923lfr.115.2021.10.21.19.30.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 19:30:47 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id s19so2324075ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:30:46 -0700 (PDT)
-X-Received: by 2002:a2e:a407:: with SMTP id p7mr10376944ljn.68.1634869846779;
- Thu, 21 Oct 2021 19:30:46 -0700 (PDT)
+        Thu, 21 Oct 2021 22:33:16 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UtC8jTQ_1634869856;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UtC8jTQ_1634869856)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 22 Oct 2021 10:30:57 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     akpm@linux-foundation.org, willy@infradead.org, song@kernel.org,
+        william.kucharski@oracle.com, hughd@google.com, shy828301@gmail.com
+Subject: [PATCH RESEND] mm, thp: bail out early in collapse_file for writeback page
+Date:   Fri, 22 Oct 2021 10:30:52 +0800
+Message-Id: <20211022023052.33114-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk> <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
- <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk> <YS40qqmXL7CMFLGq@arm.com>
- <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk> <YWR2cPKeDrc0uHTK@arm.com>
- <CAHk-=wjvQWj7mvdrgTedUW50c2fkdn6Hzxtsk-=ckkMrFoTXjQ@mail.gmail.com>
- <YWSnvq58jDsDuIik@arm.com> <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
- <CAHc6FU7bpjAxP+4dfE-C0pzzQJN1p=C2j3vyXwUwf7fF9JF72w@mail.gmail.com>
- <YXE7fhDkqJbfDk6e@arm.com> <CAHc6FU5xTMOxuiEDyc9VO_V98=bvoDc-0OFi4jsGPgWJWjRJWQ@mail.gmail.com>
-In-Reply-To: <CAHc6FU5xTMOxuiEDyc9VO_V98=bvoDc-0OFi4jsGPgWJWjRJWQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 Oct 2021 16:30:30 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgvnU2PXFMpsNErdwE=tXGymLHe275jWkBhCbGiixWU5g@mail.gmail.com>
-Message-ID: <CAHk-=wgvnU2PXFMpsNErdwE=tXGymLHe275jWkBhCbGiixWU5g@mail.gmail.com>
-Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 4:42 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
->
-> But probing the entire memory range in fault domain granularity in the
-> page fault-in functions still doesn't actually make sense. Those
-> functions really only need to guarantee that we'll be able to make
-> progress eventually. From that point of view, it should be enough to
-> probe the first byte of the requested memory range
+Currently collapse_file does not explicitly check PG_writeback, instead,
+page_has_private and try_to_release_page are used to filter writeback
+pages. This does not work for xfs with blocksize equal to or larger
+than pagesize, because in such case xfs has no page->private.
 
-That's probably fine.
+This makes collapse_file bail out early for writeback page. Otherwise,
+xfs end_page_writeback will panic as follows.
 
-Although it should be more than one byte - "copy_from_user()" might do
-word-at-a-time optimizations, so you could have an infinite loop of
+page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
+aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
+flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
+raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
+raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
+page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
+page->mem_cgroup:ffff0000c3e9a000
+------------[ cut here ]------------
+kernel BUG at include/linux/mm.h:1212!
+Internal error: Oops - BUG: 0 [#1] SMP
+Modules linked in:
+BUG: Bad page state in process khugepaged  pfn:84ef32
+ xfs(E)
+page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
+ libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
+CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+pc : end_page_writeback+0x1c0/0x214
+lr : end_page_writeback+0x1c0/0x214
+sp : ffff800011ce3cc0
+x29: ffff800011ce3cc0 x28: 0000000000000000
+x27: ffff000c04608040 x26: 0000000000000000
+x25: ffff000c04608040 x24: 0000000000001000
+x23: ffff0003f88c8530 x22: 0000000000001000
+x21: ffff0003f88c8530 x20: 0000000000000000
+x19: fffffe00201bcc80 x18: 0000000000000030
+x17: 0000000000000000 x16: 0000000000000000
+x15: ffff000c018f9760 x14: ffffffffffffffff
+x13: ffff8000119d72b0 x12: ffff8000119d6ee3
+x11: ffff8000117b69b8 x10: 00000000ffff8000
+x9 : ffff800010617534 x8 : 0000000000000000
+x7 : ffff8000114f69b8 x6 : 000000000000000f
+x5 : 0000000000000000 x4 : 0000000000000000
+x3 : 0000000000000400 x2 : 0000000000000000
+x1 : 0000000000000000 x0 : 0000000000000000
+Call trace:
+ end_page_writeback+0x1c0/0x214
+ iomap_finish_page_writeback+0x13c/0x204
+ iomap_finish_ioend+0xe8/0x19c
+ iomap_writepage_end_bio+0x38/0x50
+ bio_endio+0x168/0x1ec
+ blk_update_request+0x278/0x3f0
+ blk_mq_end_request+0x34/0x15c
+ virtblk_request_done+0x38/0x74 [virtio_blk]
+ blk_done_softirq+0xc4/0x110
+ __do_softirq+0x128/0x38c
+ __irq_exit_rcu+0x118/0x150
+ irq_exit+0x1c/0x30
+ __handle_domain_irq+0x8c/0xf0
+ gic_handle_irq+0x84/0x108
+ el1_irq+0xcc/0x180
+ arch_cpu_idle+0x18/0x40
+ default_idle_call+0x4c/0x1a0
+ cpuidle_idle_call+0x168/0x1e0
+ do_idle+0xb4/0x104
+ cpu_startup_entry+0x30/0x9c
+ secondary_start_kernel+0x104/0x180
+Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
+---[ end trace 4a88c6a074082f8c ]---
+Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
 
- (a) copy_from_user() fails because the chunk it tried to get failed partly
+Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+Suggested-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+---
+ mm/khugepaged.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
- (b) fault_in() probing succeeds, because the beginning part is fine
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 045cc579f724..48de4e1b0783 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
+ 				filemap_flush(mapping);
+ 				result = SCAN_FAIL;
+ 				goto xa_unlocked;
++			} else if (PageWriteback(page)) {
++				xas_unlock_irq(&xas);
++				result = SCAN_FAIL;
++				goto xa_unlocked;
+ 			} else if (trylock_page(page)) {
+ 				get_page(page);
+ 				xas_unlock_irq(&xas);
+@@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
+ 			goto out_unlock;
+ 		}
+ 
+-		if (!is_shmem && PageDirty(page)) {
++		if (!is_shmem && (PageDirty(page) ||
++				  PageWriteback(page))) {
+ 			/*
+ 			 * khugepaged only works on read-only fd, so this
+ 			 * page is dirty because it hasn't been flushed
+-- 
+2.27.0
 
-so I agree that the fault-in code doesn't need to do the whole area,
-but it needs to at least do some <N bytes, up to length> thing, to
-handle the situation where the copy_to/from_user requires more than a
-single byte.
-
-                 Linus
