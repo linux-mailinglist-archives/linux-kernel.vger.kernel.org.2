@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C919437F7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B4A437F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhJVUvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:51:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40508 "EHLO mail.kernel.org"
+        id S234388AbhJVUvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234337AbhJVUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234215AbhJVUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:50:58 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57DDF61208;
+        by mail.kernel.org (Postfix) with ESMTPSA id 502FD610D0;
         Fri, 22 Oct 2021 20:48:40 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1Sw-000QDf-Tm;
-        Fri, 22 Oct 2021 16:48:38 -0400
-Message-ID: <20211022204838.759134944@goodmis.org>
+        id 1me1Sx-000QED-3V;
+        Fri, 22 Oct 2021 16:48:39 -0400
+Message-ID: <20211022204838.945182353@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:48:00 -0400
+Date:   Fri, 22 Oct 2021 16:48:01 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Weizhao Ouyang <o451686892@gmail.com>
-Subject: [for-next][PATCH 04/40] ftrace: Cleanup ftrace_dyn_arch_init()
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-next][PATCH 05/40] bootconfig: Allocate xbc_data inside xbc_init()
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,238 +36,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Weizhao Ouyang <o451686892@gmail.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
-ftrace_dyn_arch_init() to cleanup them.
+Allocate 'xbc_data' in the xbc_init() so that it does
+not need to care about the ownership of the copied
+data.
 
-Link: https://lkml.kernel.org/r/20210909090216.1955240-1-o451686892@gmail.com
+Link: https://lkml.kernel.org/r/163177339986.682366.898762699429769117.stgit@devnote2
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
-Acked-by: Helge Deller <deller@gmx.de> (parisc)
-Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/arm/kernel/ftrace.c        | 5 -----
- arch/arm64/kernel/ftrace.c      | 5 -----
- arch/csky/kernel/ftrace.c       | 5 -----
- arch/ia64/kernel/ftrace.c       | 6 ------
- arch/microblaze/kernel/ftrace.c | 5 -----
- arch/nds32/kernel/ftrace.c      | 5 -----
- arch/parisc/kernel/ftrace.c     | 5 -----
- arch/riscv/kernel/ftrace.c      | 5 -----
- arch/s390/kernel/ftrace.c       | 5 -----
- arch/sh/kernel/ftrace.c         | 5 -----
- arch/sparc/kernel/ftrace.c      | 5 -----
- arch/x86/kernel/ftrace.c        | 5 -----
- kernel/trace/ftrace.c           | 5 +++++
- 13 files changed, 5 insertions(+), 61 deletions(-)
+ include/linux/bootconfig.h |  2 +-
+ init/main.c                | 13 ++-----------
+ lib/bootconfig.c           | 33 +++++++++++++++++++++------------
+ tools/bootconfig/main.c    |  6 +++---
+ 4 files changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
-index 3c83b5d29697..a006585e1c09 100644
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -193,11 +193,6 @@ int ftrace_make_nop(struct module *mod,
- 
- 	return ret;
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-index 7f467bd9db7a..fc62dfe73f93 100644
---- a/arch/arm64/kernel/ftrace.c
-+++ b/arch/arm64/kernel/ftrace.c
-@@ -236,11 +236,6 @@ void arch_ftrace_update_code(int command)
- 	command |= FTRACE_MAY_SLEEP;
- 	ftrace_modify_all_code(command);
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
-index b4a7ec1517ff..50bfcf129078 100644
---- a/arch/csky/kernel/ftrace.c
-+++ b/arch/csky/kernel/ftrace.c
-@@ -133,11 +133,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 				(unsigned long)func, true, true);
- 	return ret;
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-diff --git a/arch/ia64/kernel/ftrace.c b/arch/ia64/kernel/ftrace.c
-index b2ab2d58fb30..d6360fd404ab 100644
---- a/arch/ia64/kernel/ftrace.c
-+++ b/arch/ia64/kernel/ftrace.c
-@@ -194,9 +194,3 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	flush_icache_range(addr, addr + 16);
- 	return 0;
- }
--
--/* run from kstop_machine */
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
-diff --git a/arch/microblaze/kernel/ftrace.c b/arch/microblaze/kernel/ftrace.c
-index 224eea40e1ee..188749d62709 100644
---- a/arch/microblaze/kernel/ftrace.c
-+++ b/arch/microblaze/kernel/ftrace.c
-@@ -163,11 +163,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 	return ret;
+diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+index 537e1b991f11..62e09b788172 100644
+--- a/include/linux/bootconfig.h
++++ b/include/linux/bootconfig.h
+@@ -271,7 +271,7 @@ static inline int __init xbc_node_compose_key(struct xbc_node *node,
  }
  
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
+ /* XBC node initializer */
+-int __init xbc_init(char *buf, const char **emsg, int *epos);
++int __init xbc_init(const char *buf, size_t size, const char **emsg, int *epos);
+ 
+ 
+ /* XBC cleanup data structures */
+diff --git a/init/main.c b/init/main.c
+index 81a79a77db46..d894989d86bc 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -409,7 +409,7 @@ static void __init setup_boot_config(void)
+ 	const char *msg;
+ 	int pos;
+ 	u32 size, csum;
+-	char *data, *copy, *err;
++	char *data, *err;
+ 	int ret;
+ 
+ 	/* Cut out the bootconfig data even if we have no bootconfig option */
+@@ -442,16 +442,7 @@ static void __init setup_boot_config(void)
+ 		return;
+ 	}
+ 
+-	copy = memblock_alloc(size + 1, SMP_CACHE_BYTES);
+-	if (!copy) {
+-		pr_err("Failed to allocate memory for bootconfig\n");
+-		return;
+-	}
 -
- int ftrace_update_ftrace_func(ftrace_func_t func)
+-	memcpy(copy, data, size);
+-	copy[size] = '\0';
+-
+-	ret = xbc_init(copy, &msg, &pos);
++	ret = xbc_init(data, size, &msg, &pos);
+ 	if (ret < 0) {
+ 		if (pos < 0)
+ 			pr_err("Failed to init bootconfig: %s.\n", msg);
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index 5ae248b29373..66b02fddfea8 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -789,6 +789,7 @@ static int __init xbc_verify_tree(void)
+  */
+ void __init xbc_destroy_all(void)
  {
- 	unsigned long ip = (unsigned long)(&ftrace_call);
-diff --git a/arch/nds32/kernel/ftrace.c b/arch/nds32/kernel/ftrace.c
-index 0e23e3a8df6b..f0ef4842d191 100644
---- a/arch/nds32/kernel/ftrace.c
-+++ b/arch/nds32/kernel/ftrace.c
-@@ -84,11 +84,6 @@ void _ftrace_caller(unsigned long parent_ip)
- 	/* restore all state needed by the compiler epilogue */
- }
++	memblock_free_ptr(xbc_data, xbc_data_size);
+ 	xbc_data = NULL;
+ 	xbc_data_size = 0;
+ 	xbc_node_num = 0;
+@@ -799,19 +800,20 @@ void __init xbc_destroy_all(void)
  
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- static unsigned long gen_sethi_insn(unsigned long addr)
+ /**
+  * xbc_init() - Parse given XBC file and build XBC internal tree
+- * @buf: boot config text
++ * @data: The boot config text original data
++ * @size: The size of @data
+  * @emsg: A pointer of const char * to store the error message
+  * @epos: A pointer of int to store the error position
+  *
+- * This parses the boot config text in @buf. @buf must be a
+- * null terminated string and smaller than XBC_DATA_MAX.
++ * This parses the boot config text in @data. @size must be smaller
++ * than XBC_DATA_MAX.
+  * Return the number of stored nodes (>0) if succeeded, or -errno
+  * if there is any error.
+  * In error cases, @emsg will be updated with an error message and
+  * @epos will be updated with the error position which is the byte offset
+  * of @buf. If the error is not a parser error, @epos will be -1.
+  */
+-int __init xbc_init(char *buf, const char **emsg, int *epos)
++int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
  {
- 	unsigned long opcode = 0x46000000;
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 0a1e75af5382..01581f715737 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -94,11 +94,6 @@ int ftrace_disable_ftrace_graph_caller(void)
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
+ 	char *p, *q;
+ 	int ret, c;
+@@ -824,28 +826,35 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+ 			*emsg = "Bootconfig is already initialized";
+ 		return -EBUSY;
+ 	}
 -
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- int ftrace_update_ftrace_func(ftrace_func_t func)
- {
- 	return 0;
-diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-index 7f1e5203de88..4716f4cdc038 100644
---- a/arch/riscv/kernel/ftrace.c
-+++ b/arch/riscv/kernel/ftrace.c
-@@ -154,11 +154,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+-	ret = strlen(buf);
+-	if (ret > XBC_DATA_MAX - 1 || ret == 0) {
++	if (size > XBC_DATA_MAX || size == 0) {
+ 		if (emsg)
+-			*emsg = ret ? "Config data is too big" :
++			*emsg = size ? "Config data is too big" :
+ 				"Config data is empty";
+ 		return -ERANGE;
+ 	}
  
- 	return ret;
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-index 1d94ffdf347b..5165bf344f95 100644
---- a/arch/s390/kernel/ftrace.c
-+++ b/arch/s390/kernel/ftrace.c
-@@ -262,11 +262,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	return 0;
- }
- 
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- void arch_ftrace_update_code(int command)
- {
- 	if (ftrace_shared_hotpatch_trampoline(NULL))
-diff --git a/arch/sh/kernel/ftrace.c b/arch/sh/kernel/ftrace.c
-index 295c43315bbe..930001bb8c6a 100644
---- a/arch/sh/kernel/ftrace.c
-+++ b/arch/sh/kernel/ftrace.c
-@@ -252,11 +252,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 
- 	return ftrace_modify_code(rec->ip, old, new);
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/sparc/kernel/ftrace.c b/arch/sparc/kernel/ftrace.c
-index 684b84ce397f..eaead3da8e03 100644
---- a/arch/sparc/kernel/ftrace.c
-+++ b/arch/sparc/kernel/ftrace.c
-@@ -82,11 +82,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	new = ftrace_call_replace(ip, (unsigned long)func);
- 	return ftrace_modify_code(ip, old, new);
- }
--
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
- #endif
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 1b3ce3b4a2a2..23d221a9a3cd 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -252,11 +252,6 @@ void arch_ftrace_update_code(int command)
- 	ftrace_modify_all_code(command);
- }
- 
--int __init ftrace_dyn_arch_init(void)
--{
--	return 0;
--}
--
- /* Currently only x86_64 supports dynamic trampolines */
- #ifdef CONFIG_X86_64
- 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 0a0dbc2d411b..2c3e9760df7f 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6847,6 +6847,11 @@ void __init ftrace_free_init_mem(void)
- 	ftrace_free_mem(NULL, start, end);
- }
- 
-+int __init __weak ftrace_dyn_arch_init(void)
-+{
-+	return 0;
-+}
++	xbc_data = memblock_alloc(size + 1, SMP_CACHE_BYTES);
++	if (!xbc_data) {
++		if (emsg)
++			*emsg = "Failed to allocate bootconfig data";
++		return -ENOMEM;
++	}
++	memcpy(xbc_data, data, size);
++	xbc_data[size] = '\0';
++	xbc_data_size = size + 1;
 +
- void __init ftrace_init(void)
- {
- 	extern unsigned long __start_mcount_loc[];
+ 	xbc_nodes = memblock_alloc(sizeof(struct xbc_node) * XBC_NODE_MAX,
+ 				   SMP_CACHE_BYTES);
+ 	if (!xbc_nodes) {
+ 		if (emsg)
+ 			*emsg = "Failed to allocate bootconfig nodes";
++		xbc_destroy_all();
+ 		return -ENOMEM;
+ 	}
+ 	memset(xbc_nodes, 0, sizeof(struct xbc_node) * XBC_NODE_MAX);
+-	xbc_data = buf;
+-	xbc_data_size = ret + 1;
+-	last_parent = NULL;
+ 
+-	p = buf;
++	last_parent = NULL;
++	p = xbc_data;
+ 	do {
+ 		q = strpbrk(p, "{}=+;:\n#");
+ 		if (!q) {
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index fd67496a947f..7269c9e35335 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -229,7 +229,7 @@ static int load_xbc_from_initrd(int fd, char **buf)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = xbc_init(*buf, &msg, NULL);
++	ret = xbc_init(*buf, size, &msg, NULL);
+ 	/* Wrong data */
+ 	if (ret < 0) {
+ 		pr_err("parse error: %s.\n", msg);
+@@ -269,7 +269,7 @@ static int init_xbc_with_error(char *buf, int len)
+ 	if (!copy)
+ 		return -ENOMEM;
+ 
+-	ret = xbc_init(buf, &msg, &pos);
++	ret = xbc_init(buf, len, &msg, &pos);
+ 	if (ret < 0)
+ 		show_xbc_error(copy, msg, pos);
+ 	free(copy);
+@@ -382,7 +382,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
+ 	memcpy(data, buf, size);
+ 
+ 	/* Check the data format */
+-	ret = xbc_init(buf, &msg, &pos);
++	ret = xbc_init(buf, size, &msg, &pos);
+ 	if (ret < 0) {
+ 		show_xbc_error(data, msg, pos);
+ 		free(data);
 -- 
 2.33.0
