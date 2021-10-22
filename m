@@ -2,134 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9BF437892
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B8E43788D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233062AbhJVOAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
+        id S233087AbhJVOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233097AbhJVOAZ (ORCPT
+        with ESMTP id S233131AbhJVN75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:00:25 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2806EC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:58:07 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id bq11so2975255lfb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 06:58:07 -0700 (PDT)
+        Fri, 22 Oct 2021 09:59:57 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA03AC061227;
+        Fri, 22 Oct 2021 06:57:39 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id w23so1785713lje.7;
+        Fri, 22 Oct 2021 06:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kXXjrgFD9GxycZP7psxdDamDNFUN7x5Wjjbi/hjihFg=;
-        b=iK8wS2ZKDL+XOVbhiW7h++R+sR2QK02X8jWaX1Xr56UYrdIsKQI7oqjt/rn7Kzy6Vm
-         kv5dNMoixvnYRQ56ojAX/RQKDZJi3gbD6WPcm8n7EICq3k22xVHN1Pnl5XHUGwXRf08i
-         wynK09w/BRhN5+uW16FVE8Hj2bhLmhtwitMNoKxpMmzS+hEdH55dwQMR8jCKpDPla9wT
-         GZkfDR3iXMsWD6vxCo1pZgZUDqierhl2C/e+WYEXJPbCQo924mwY6zOSaPA+gf6vBVpz
-         j5rWcb4JJx0QxKh5tj14jXVkb728QMArDpHkwamllIq85la430YGW8K3q/zZX9mIr42I
-         5URg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6fLS1JO7zsxW7Z2Kfv8Wr2ag0OrluFFsUbpXIuB+m/Y=;
+        b=l3lrJlb2M2EtK5287jXBMcWS1vitGrf8c9kpL339NI4WEf31UD44TEcbljzEVoFphe
+         20VgIrqQC+6N9Mv5ggl9pHlvQobU1KOAOGNW3zLIoWxY96R20Vf4j6HWbvo9uS3g5p3+
+         XDZAQJpzAv0LhK1mohA30R7fCbROm/oehMmGOeOoAxQWaJNf/lrJ8u1gezrBpvHOa8cK
+         UuEX/V9gF4az1jN88S2deFYKtS4M7c/LYap64xuFF94IkvRS1Ep3dzvh2yw8YUmR225Q
+         IFaXJnPZmausQzIed049RPsb4NPpv8rzRyu/YysszfwFr1CLwH4pGxuihdKk3C8IBNr4
+         D9Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kXXjrgFD9GxycZP7psxdDamDNFUN7x5Wjjbi/hjihFg=;
-        b=oGnazDJlcONqds8l1P3Yz8BDiwnrBawWgHnJKcHJM5JuMFFT9AcIcQ6e/jZ27Jg+iY
-         zU/9BeA+6x4zP5FWY5CeG5CJMo1MnH2UeXqwVsYBH0HE9OlCRzq733cHbFtzGGQq+/sW
-         69ZV9ph3/IFuecvNy1IW6eWBSvMx8T9kyn3wEf4ja2jJ3vZSY43KLCz6x/OX7TNot2Nf
-         ACGfB8oFub+4+P0STilMxx27RFtyO9oLv+n6b9WY+X5c5QvxhJGsoe1byHs2X4j9at5P
-         8DaswLzNgu3Hz1UmLd3jy2vfmEp0XC+77niqlFJpZAAsyV1OJQDOkT4pp3N5eDKsS9CM
-         a6KA==
-X-Gm-Message-State: AOAM531qWtGJnZQ2YTjxYAa8e2VX0CdurTvN2YRBix+zVvfVHD5lgJri
-        1skQgWHTM7/zImvyJqekOlxC8jmICmLsWxaZx83sdg==
-X-Google-Smtp-Source: ABdhPJzDz4PMdhgbqAyGI0Nco6rp1BpNUsAvdub7hQ7KocotcyVYeX5QmW1BGnvEs+UrCtgsC+vmKHvfk7RmSlvTico=
-X-Received: by 2002:a05:6512:3254:: with SMTP id c20mr10693589lfr.254.1634911085502;
- Fri, 22 Oct 2021 06:58:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6fLS1JO7zsxW7Z2Kfv8Wr2ag0OrluFFsUbpXIuB+m/Y=;
+        b=Y0nOMJKe+yL39wbWS027kqzPa3YIIuEFnSqn9c1blPhWUfpnqHqfQNyxQDOeUP+46G
+         /Ow/zuksS0acWr62Xt8fiIcIdYrWFGyQORMZEhATHd8s6xpwcWbt/M3nGZEWlJjoPsbv
+         PSjyicuOnKYOOoKDl5vW+jaJ1AutZwbP/Iix26hfBJlEu0OvLQ5949GMUSAlIMFa1W7H
+         sE5406CyOLBvXXTnPEBDfmeU4BWZa6jcYSa8i3rfcmj/o/zw087biFTCbh7EHSXDugMM
+         AyqZwnqMptN00QoQZdBR+lm2SQvFvfKX2P9So2IATyXKzS8EjPKz8j2kSOSLLHtmI+JV
+         uakw==
+X-Gm-Message-State: AOAM533YZq5/dZve6rOatZSCWNtkCwlCMFaT2wOpDc3601jY4W6SlxJL
+        I+2jes8QnD0SGQvWUkIJ/dY=
+X-Google-Smtp-Source: ABdhPJzOrzhPSH6UZcwJe1t4Lv1xEd3CAbPew4RUvstf9+eIa+kuDIn/404Fxl6Wkz4mMSr3CH+5oQ==
+X-Received: by 2002:a2e:a48c:: with SMTP id h12mr174072lji.252.1634911058260;
+        Fri, 22 Oct 2021 06:57:38 -0700 (PDT)
+Received: from mobilestation ([95.79.132.211])
+        by smtp.gmail.com with ESMTPSA id f8sm743028lfq.168.2021.10.22.06.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 06:57:37 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:57:35 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, f.fainelli@gmail.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/3] irqchip/mips-gic: Get rid of the reliance on
+ irq_cpu_online()
+Message-ID: <20211022135735.d6irp3hrolz2svhs@mobilestation>
+References: <20211021170414.3341522-1-maz@kernel.org>
+ <20211021170414.3341522-3-maz@kernel.org>
 MIME-Version: 1.0
-References: <5773062.lOV4Wx5bFT@kreacher>
-In-Reply-To: <5773062.lOV4Wx5bFT@kreacher>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 22 Oct 2021 15:57:29 +0200
-Message-ID: <CAPDyKFpp5MjiD0MPd878HueXkZZH2vj_ddi-g3-ZL5rXODjdcA@mail.gmail.com>
-Subject: Re: [PATCH] PM: sleep: Do not let "syscore" devices runtime-suspend
- during system transitions
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Maulik Shah <mkshah@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021170414.3341522-3-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 14:58, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> There is no reason to allow "syscore" devices to runtime-suspend
-> during system-wide PM transitions, because they are subject to the
-> same possible failure modes as any other devices in that respect.
->
-> Accordingly, change device_prepare() and device_complete() to call
-> pm_runtime_get_noresume() and pm_runtime_put(), respectively, for
-> "syscore" devices too.
->
-> Fixes: 057d51a1268f ("Merge branch 'pm-sleep'")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
+On Thu, Oct 21, 2021 at 06:04:13PM +0100, Marc Zyngier wrote:
+> The MIPS GIC driver uses irq_cpu_online() to go and program the
+> per-CPU interrupts. However, this method iterates over all IRQs
+> in the system, despite only 3 per-CPU interrupts being of interest.
+> 
+> Let's be terribly bold and do the iteration ourselves. To ensure
+> mutual exclusion, hold the gic_lock spinlock that is otherwise
+> taken while dealing with these interrupts.
 
-This makes perfect sense for me too.
+Please consider a nitpick below. Other than that looks good:
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-Kind regards
-Uffe
-
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 > ---
->  drivers/base/power/main.c |    9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> Index: linux-pm/drivers/base/power/main.c
-> ===================================================================
-> --- linux-pm.orig/drivers/base/power/main.c
-> +++ linux-pm/drivers/base/power/main.c
-> @@ -1048,7 +1048,7 @@ static void device_complete(struct devic
->         const char *info = NULL;
->
->         if (dev->power.syscore)
-> -               return;
-> +               goto out;
->
->         device_lock(dev);
->
-> @@ -1078,6 +1078,7 @@ static void device_complete(struct devic
->
->         device_unlock(dev);
->
-> +out:
->         pm_runtime_put(dev);
+>  drivers/irqchip/irq-mips-gic.c | 37 ++++++++++++++++++++++++----------
+>  1 file changed, 26 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+> index 54c7092cc61d..45c83dd804a0 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -381,24 +381,35 @@ static void gic_unmask_local_irq_all_vpes(struct irq_data *d)
+>  	spin_unlock_irqrestore(&gic_lock, flags);
 >  }
->
-> @@ -1789,9 +1790,6 @@ static int device_prepare(struct device
->         int (*callback)(struct device *) = NULL;
->         int ret = 0;
->
-> -       if (dev->power.syscore)
-> -               return 0;
-> -
->         /*
->          * If a device's parent goes into runtime suspend at the wrong time,
->          * it won't be possible to resume the device.  To prevent this we
-> @@ -1800,6 +1798,9 @@ static int device_prepare(struct device
->          */
->         pm_runtime_get_noresume(dev);
->
-> +       if (dev->power.syscore)
-> +               return 0;
+>  
+> -static void gic_all_vpes_irq_cpu_online(struct irq_data *d)
+> +static void gic_all_vpes_irq_cpu_online(void)
+>  {
+> -	struct gic_all_vpes_chip_data *cd;
+> -	unsigned int intr;
+
+> +	static unsigned int local_intrs[] = {
+
+What about adding 'const' here?
+
+-Sergey
+
+> +		GIC_LOCAL_INT_TIMER,
+> +		GIC_LOCAL_INT_PERFCTR,
+> +		GIC_LOCAL_INT_FDC,
+> +	};
+> +	unsigned long flags;
+> +	int i;
+>  
+> -	intr = GIC_HWIRQ_TO_LOCAL(d->hwirq);
+> -	cd = irq_data_get_irq_chip_data(d);
+> +	spin_lock_irqsave(&gic_lock, flags);
+>  
+> -	write_gic_vl_map(mips_gic_vx_map_reg(intr), cd->map);
+> -	if (cd->mask)
+> -		write_gic_vl_smask(BIT(intr));
+> +	for (i = 0; i < ARRAY_SIZE(local_intrs); i++) {
+> +		unsigned int intr = local_intrs[i];
+> +		struct gic_all_vpes_chip_data *cd;
 > +
->         device_lock(dev);
->
->         dev->power.wakeup_path = false;
->
->
->
+> +		cd = &gic_all_vpes_chip_data[intr];
+> +		write_gic_vl_map(mips_gic_vx_map_reg(intr), cd->map);
+> +		if (cd->mask)
+> +			write_gic_vl_smask(BIT(intr));
+> +	}
+> +
+> +	spin_unlock_irqrestore(&gic_lock, flags);
+>  }
+>  
+>  static struct irq_chip gic_all_vpes_local_irq_controller = {
+>  	.name			= "MIPS GIC Local",
+>  	.irq_mask		= gic_mask_local_irq_all_vpes,
+>  	.irq_unmask		= gic_unmask_local_irq_all_vpes,
+> -	.irq_cpu_online		= gic_all_vpes_irq_cpu_online,
+>  };
+>  
+>  static void __gic_irq_dispatch(void)
+> @@ -477,6 +488,10 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
+>  	intr = GIC_HWIRQ_TO_LOCAL(hwirq);
+>  	map = GIC_MAP_PIN_MAP_TO_PIN | gic_cpu_pin;
+>  
+> +	/*
+> +	 * If adding support for more per-cpu interrupts, keep the the
+> +	 * array in gic_all_vpes_irq_cpu_online() in sync.
+> +	 */
+>  	switch (intr) {
+>  	case GIC_LOCAL_INT_TIMER:
+>  		/* CONFIG_MIPS_CMP workaround (see __gic_init) */
+> @@ -663,8 +678,8 @@ static int gic_cpu_startup(unsigned int cpu)
+>  	/* Clear all local IRQ masks (ie. disable all local interrupts) */
+>  	write_gic_vl_rmask(~0);
+>  
+> -	/* Invoke irq_cpu_online callbacks to enable desired interrupts */
+> -	irq_cpu_online();
+> +	/* Enable desired interrupts */
+> +	gic_all_vpes_irq_cpu_online();
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.2
+> 
