@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99015437889
+	by mail.lfdr.de (Postfix) with ESMTP id E2CBB43788A
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhJVOAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:00:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:54606 "EHLO foss.arm.com"
+        id S233115AbhJVOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:00:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:54648 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232958AbhJVN7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:59:42 -0400
+        id S233053AbhJVN7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 09:59:46 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F17941516;
-        Fri, 22 Oct 2021 06:57:24 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEE59152B;
+        Fri, 22 Oct 2021 06:57:28 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D62703F694;
-        Fri, 22 Oct 2021 06:57:21 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B881F3F694;
+        Fri, 22 Oct 2021 06:57:25 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
@@ -28,9 +28,9 @@ Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
         paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
         shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
         tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCH v6 08/10] openrisc: snapshot thread flags
-Date:   Fri, 22 Oct 2021 14:56:41 +0100
-Message-Id: <20211022135643.7442-9-mark.rutland@arm.com>
+Subject: [PATCH v6 09/10] powerpc: snapshot thread flags
+Date:   Fri, 22 Oct 2021 14:56:42 +0100
+Message-Id: <20211022135643.7442-10-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211022135643.7442-1-mark.rutland@arm.com>
 References: <20211022135643.7442-1-mark.rutland@arm.com>
@@ -49,27 +49,88 @@ using them. Some places already use READ_ONCE() for that, others do not.
 Convert them all to the new flag accessor helpers.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Acked-by: Stafford Horne <shorne@gmail.com>
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
 ---
- arch/openrisc/kernel/signal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/interrupt.c     | 13 ++++++-------
+ arch/powerpc/kernel/ptrace/ptrace.c |  3 +--
+ 2 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/arch/openrisc/kernel/signal.c b/arch/openrisc/kernel/signal.c
-index 1ebcff271096..a730a914c2b4 100644
---- a/arch/openrisc/kernel/signal.c
-+++ b/arch/openrisc/kernel/signal.c
-@@ -315,7 +315,7 @@ do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
- 			}
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index de10a2697258..2e497e7cabcc 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -181,7 +181,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
+ 
+ 	local_irq_enable();
+ 
+-	if (unlikely(current_thread_info()->flags & _TIF_SYSCALL_DOTRACE)) {
++	if (unlikely(read_thread_flags() & _TIF_SYSCALL_DOTRACE)) {
+ 		if (unlikely(trap_is_unsupported_scv(regs))) {
+ 			/* Unsupported scv vector */
+ 			_exception(SIGILL, regs, ILL_ILLOPC, regs->nip);
+@@ -343,7 +343,7 @@ interrupt_exit_user_prepare_main(unsigned long ret, struct pt_regs *regs)
+ 	unsigned long ti_flags;
+ 
+ again:
+-	ti_flags = READ_ONCE(current_thread_info()->flags);
++	ti_flags = read_thread_flags();
+ 	while (unlikely(ti_flags & (_TIF_USER_WORK_MASK & ~_TIF_RESTORE_TM))) {
+ 		local_irq_enable();
+ 		if (ti_flags & _TIF_NEED_RESCHED) {
+@@ -359,7 +359,7 @@ interrupt_exit_user_prepare_main(unsigned long ret, struct pt_regs *regs)
+ 			do_notify_resume(regs, ti_flags);
  		}
  		local_irq_disable();
--		thread_flags = current_thread_info()->flags;
-+		thread_flags = read_thread_flags();
- 	} while (thread_flags & _TIF_WORK_MASK);
- 	return 0;
- }
+-		ti_flags = READ_ONCE(current_thread_info()->flags);
++		ti_flags = read_thread_flags();
+ 	}
+ 
+ 	if (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && IS_ENABLED(CONFIG_PPC_FPU)) {
+@@ -437,7 +437,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+ 	/* Check whether the syscall is issued inside a restartable sequence */
+ 	rseq_syscall(regs);
+ 
+-	ti_flags = current_thread_info()->flags;
++	ti_flags = read_thread_flags();
+ 
+ 	if (unlikely(r3 >= (unsigned long)-MAX_ERRNO) && is_not_scv) {
+ 		if (likely(!(ti_flags & (_TIF_NOERROR | _TIF_RESTOREALL)))) {
+@@ -532,8 +532,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+ 	unsigned long flags;
+ 	unsigned long ret = 0;
+ 	unsigned long kuap;
+-	bool stack_store = current_thread_info()->flags &
+-						_TIF_EMULATE_STACK_STORE;
++	bool stack_store = read_thread_flags() & _TIF_EMULATE_STACK_STORE;
+ 
+ 	if (regs_is_unrecoverable(regs))
+ 		unrecoverable_exception(regs);
+@@ -554,7 +553,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+ again:
+ 		if (IS_ENABLED(CONFIG_PREEMPT)) {
+ 			/* Return to preemptible kernel context */
+-			if (unlikely(current_thread_info()->flags & _TIF_NEED_RESCHED)) {
++			if (unlikely(read_thread_flags() & _TIF_NEED_RESCHED)) {
+ 				if (preempt_count() == 0)
+ 					preempt_schedule_irq();
+ 			}
+diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
+index 7c7093c17c45..c43f77e2ac31 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace.c
++++ b/arch/powerpc/kernel/ptrace/ptrace.c
+@@ -260,8 +260,7 @@ long do_syscall_trace_enter(struct pt_regs *regs)
+ {
+ 	u32 flags;
+ 
+-	flags = READ_ONCE(current_thread_info()->flags) &
+-		(_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE);
++	flags = read_thread_flags() & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE);
+ 
+ 	if (flags) {
+ 		int rc = tracehook_report_syscall_entry(regs);
 -- 
 2.11.0
 
