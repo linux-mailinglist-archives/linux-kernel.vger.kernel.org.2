@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCCF4376C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB7F4376C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhJVMWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:22:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59284 "EHLO
+        id S232285AbhJVMWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:22:38 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59344 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232013AbhJVMWc (ORCPT
+        with ESMTP id S231967AbhJVMWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:22:32 -0400
-X-UUID: 9f41b84ea4ec48678e3260e2dfa2abce-20211022
-X-UUID: 9f41b84ea4ec48678e3260e2dfa2abce-20211022
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        Fri, 22 Oct 2021 08:22:33 -0400
+X-UUID: 4d33e353761c4e51b9d6dae719e1efd8-20211022
+X-UUID: 4d33e353761c4e51b9d6dae719e1efd8-20211022
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <sam.shih@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1794483962; Fri, 22 Oct 2021 20:20:11 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 91488653; Fri, 22 Oct 2021 20:20:13 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 22 Oct 2021 20:20:09 +0800
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 22 Oct 2021 20:20:12 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 22 Oct 2021 20:20:09 +0800
+ Transport; Fri, 22 Oct 2021 20:20:12 +0800
 From:   Sam Shih <sam.shih@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -41,9 +41,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
 CC:     John Crispin <john@phrozen.org>,
         Ryder Lee <Ryder.Lee@mediatek.com>,
         Sam Shih <sam.shih@mediatek.com>
-Subject: [PATCH v6 4/5] arm64: dts: mediatek: add clock support for mt7986a
-Date:   Fri, 22 Oct 2021 20:19:43 +0800
-Message-ID: <20211022121944.25687-5-sam.shih@mediatek.com>
+Subject: [PATCH v6 5/5] arm64: dts: mediatek: add clock support for mt7986b
+Date:   Fri, 22 Oct 2021 20:19:44 +0800
+Message-ID: <20211022121944.25687-6-sam.shih@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20211022121944.25687-1-sam.shih@mediatek.com>
 References: <20211022121944.25687-1-sam.shih@mediatek.com>
@@ -61,13 +61,13 @@ Signed-off-by: Sam Shih <sam.shih@mediatek.com>
 ---
 v6: Used lowercase hex values in clock DT
 ---
- arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 68 +++++++++++++++++++++--
+ arch/arm64/boot/dts/mediatek/mt7986b.dtsi | 68 +++++++++++++++++++++--
  1 file changed, 63 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-index 75912bcf6c9c..1938fab455d5 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
+index 2b8e0a382398..c3e56ea18638 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
 @@ -6,6 +6,7 @@
  
  #include <dt-bindings/interrupt-controller/irq.h>
@@ -75,7 +75,7 @@ index 75912bcf6c9c..1938fab455d5 100644
 +#include <dt-bindings/clock/mt7986-clk.h>
  
  / {
- 	compatible = "mediatek,mt7986a";
+ 	compatible = "mediatek,mt7986b";
 @@ -13,10 +14,11 @@ / {
  	#address-cells = <2>;
  	#size-cells = <2>;
