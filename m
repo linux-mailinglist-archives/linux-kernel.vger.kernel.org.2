@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43E4437707
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E9C437709
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhJVMZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:25:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45156 "EHLO
+        id S232771AbhJVMZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:25:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43717 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232771AbhJVMZA (ORCPT
+        by vger.kernel.org with ESMTP id S232796AbhJVMZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:25:00 -0400
+        Fri, 22 Oct 2021 08:25:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634905362;
+        s=mimecast20190719; t=1634905368;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H4uN7Bo4U3+y1C7VgbQp7PPLcg56dNWgwH6BAkaQdkM=;
-        b=b6t2rhm8G5k+PZhKmqpl2xITuU6k0+VV3FMVq3uF10Fev9aN9LMteLWMK1eGsYDSZ7kwCC
-        0wXJGBP4BwkHj90k/DDpzdWQLFGs1XyMfPXrewQiCYhkvl97tBrcVegwLI+im8Bc9pv8px
-        D1ody2u3nYYA18FcUYH7Leqm5T+O4xk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-sY2_qnZfPLGMP0ZNXNkr0g-1; Fri, 22 Oct 2021 08:22:41 -0400
-X-MC-Unique: sY2_qnZfPLGMP0ZNXNkr0g-1
-Received: by mail-wr1-f72.google.com with SMTP id f2-20020a5d50c2000000b00167f5c0a206so326474wrt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:22:41 -0700 (PDT)
+        bh=Lm3PNIF2S0K4K4WLBOwjvTNY9grqBtS5TFJa0ZgTsDk=;
+        b=eCdu275zAZvc9MEEmwnif43/X1WdIsIDxHEGwLh0OKmhR4s5nVtXAxV3VHlwIDzmd7iNVn
+        tRZuJ53X0lZbLTGya69N/tOaG7oz76WBpozLSiJ0pAyrs4pQPYCDW0lrSkg3WOoWBFj3TC
+        4/q6b6+IoAkZHvsvX1M0SE/hYh8cER4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-mn3usaUZPWugGbMT3iKWNg-1; Fri, 22 Oct 2021 08:22:47 -0400
+X-MC-Unique: mn3usaUZPWugGbMT3iKWNg-1
+Received: by mail-wm1-f69.google.com with SMTP id k126-20020a1ca184000000b003231d0e329bso1084668wme.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:22:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=H4uN7Bo4U3+y1C7VgbQp7PPLcg56dNWgwH6BAkaQdkM=;
-        b=g4jLEcyub/HoWtt/tn7WT/H5Eov2IT3s8oOJfrkL9pFb7wN7W/e7odf41TlOA3NF4a
-         0Bau5xy+Ob/IYQOz9E2JoBN8ocWhp4uh5jLlkzpo7INvgNs7fdc8cNBLMzgQZcdrEK8x
-         To2IA8jNkp1alNSRekYigAA6TayckQJJDHFkOscp/xLeGSuviwpDCU4m04PPMgl2P0NP
-         zQqpNA3oIC5dmzkRUKOJCYeJE6QNGMKIpRbok+XIJmEzctv9ErXfY4BM4rFoHufcLXCm
-         fV0Jiu1aOSS72VV+ot+bUs7bApeBw1bflxhS6pjDpbN8KvUhLz7a1NA5SwmSA4u3vOp7
-         4ZbA==
-X-Gm-Message-State: AOAM532LXFbeeBORpDPKCkr0t92VQ8kXZOVIJGnjm59awkHnD1WGKVZi
-        xZRVLy8U/EZu8deeUnRL1X2KnbPGLErpgZVXTtDKC0MLZdxqxuC91f25PNzO9pNndvEnb838ZDq
-        IsSpZXAwRIclv536rT9TFL0F9
-X-Received: by 2002:a1c:1bd8:: with SMTP id b207mr4319670wmb.56.1634905360115;
-        Fri, 22 Oct 2021 05:22:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxG67dsJQyALfIVg8+DPj8y7znG/Th6gJWPkok4xufbVKbgDi71GNG3OuLNdOFz/0NO2m79Dg==
-X-Received: by 2002:a1c:1bd8:: with SMTP id b207mr4319645wmb.56.1634905359929;
-        Fri, 22 Oct 2021 05:22:39 -0700 (PDT)
+        bh=Lm3PNIF2S0K4K4WLBOwjvTNY9grqBtS5TFJa0ZgTsDk=;
+        b=jvIsHoNCzb4qZBxsB+cj6waDV8A14G/sDF9wZumc0E/TgXiXcRiAAzbS0WVY6zrUap
+         NMkaA77C0lkXAKmvTOsyRO53fGvZPbf1hWS+ZW1PGnoy7+nm3mrn6VVfTvGTxlgFjXFm
+         ZtLJwoGL3idorE1evKpSGvo/2pqh1tlgszhM/ijqOXPIlb2AnaPRUf2olb7zTRxlU3IZ
+         Ln/HPwzb4RTQMjPt8UN/LdpzKuOeSW0RFtX+eqGzey9IPUiqLf39Jd6brSVpp04FWFse
+         lej9ifaSglqEO+dPGSVKTkZiFHmv8tgC8VCtUmliDM9rRsH1q6jeFtOqCC88S7/Ytu5G
+         v+SQ==
+X-Gm-Message-State: AOAM532OJft4PHjGv3XlWEaRBlhbvtxTRUhYR7OaOJ3X38VHe3srpOIR
+        +tQAQGj010V6yVKVExQDNwWn4o8OM796oxGnJbRKPcy+qnDuP4du82K6smtuIqmH308V8hI7Z6d
+        S5Hnd06AE5fBWHsdHa3ZnpdK5
+X-Received: by 2002:a5d:6442:: with SMTP id d2mr15549579wrw.356.1634905366092;
+        Fri, 22 Oct 2021 05:22:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9Ax08EtLUCC0p7CmqxJQykoibwilBZDOykjM7r34VB3UtotJaWTHceuBHMMxN5DPCje07gQ==
+X-Received: by 2002:a5d:6442:: with SMTP id d2mr15549549wrw.356.1634905365864;
+        Fri, 22 Oct 2021 05:22:45 -0700 (PDT)
 Received: from [192.168.3.132] (p5b0c6324.dip0.t-ipconnect.de. [91.12.99.36])
-        by smtp.gmail.com with ESMTPSA id k6sm8042191wri.83.2021.10.22.05.22.39
+        by smtp.gmail.com with ESMTPSA id k17sm7652830wrc.93.2021.10.22.05.22.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 05:22:39 -0700 (PDT)
-Message-ID: <8ecb9287-5141-81f5-c1a0-63b6aa86eb69@redhat.com>
-Date:   Fri, 22 Oct 2021 14:22:38 +0200
+        Fri, 22 Oct 2021 05:22:45 -0700 (PDT)
+Message-ID: <3cd2d3d2-6d97-3cd6-b273-6e52aa6066c9@redhat.com>
+Date:   Fri, 22 Oct 2021 14:22:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
-Subject: Re: [PATCH v2 1/2] Revert "memblock: exclude NOMAP regions from
- kmemleak"
+Subject: Re: [PATCH v2 2/2] memblock: exclude MEMBLOCK_NOMAP regions from
+ kmemleak
 Content-Language: en-US
 To:     Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -69,10 +69,10 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
         linux-kernel@vger.kernel.org
 References: <20211021070929.23272-1-rppt@kernel.org>
- <20211021070929.23272-2-rppt@kernel.org>
+ <20211021070929.23272-3-rppt@kernel.org>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20211021070929.23272-2-rppt@kernel.org>
+In-Reply-To: <20211021070929.23272-3-rppt@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -82,74 +82,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 21.10.21 09:09, Mike Rapoport wrote:
 > From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Commit 6e44bd6d34d6 ("memblock: exclude NOMAP regions from kmemleak")
-> breaks boot on EFI systems with kmemleak and VM_DEBUG enabled:
+> Vladimir Zapolskiy reports:
 > 
-> efi: Processing EFI memory map:
-> efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> ------------[ cut here ]------------
-> kernel BUG at mm/kmemleak.c:1140!
-> Internal error: Oops - BUG: 0 [#1] SMP
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper Not tainted 5.15.0-rc6-next-20211019+ #104
-> pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : kmemleak_free_part_phys+0x64/0x8c
-> lr : kmemleak_free_part_phys+0x38/0x8c
-> sp : ffff800011eafbc0
-> x29: ffff800011eafbc0 x28: 1fffff7fffb41c0d x27: fffffbfffda0e068
-> x26: 0000000092000000 x25: 1ffff000023d5f94 x24: ffff800011ed84d0
-> x23: ffff800011ed84c0 x22: ffff800011ed83d8 x21: 0000000000900000
-> x20: ffff800011782000 x19: 0000000092000000 x18: ffff800011ee0730
-> x17: 0000000000000000 x16: 0000000000000000 x15: 1ffff0000233252c
-> x14: ffff800019a905a0 x13: 0000000000000001 x12: ffff7000023d5ed7
-> x11: 1ffff000023d5ed6 x10: ffff7000023d5ed6 x9 : dfff800000000000
-> x8 : ffff800011eaf6b7 x7 : 0000000000000001 x6 : ffff800011eaf6b0
-> x5 : 00008ffffdc2a12a x4 : ffff7000023d5ed7 x3 : 1ffff000023dbf99
-> x2 : 1ffff000022f0463 x1 : 0000000000000000 x0 : ffffffffffffffff
-> Call trace:
->  kmemleak_free_part_phys+0x64/0x8c
->  memblock_mark_nomap+0x5c/0x78
->  reserve_regions+0x294/0x33c
->  efi_init+0x2d0/0x490
->  setup_arch+0x80/0x138
->  start_kernel+0xa0/0x3ec
->  __primary_switched+0xc0/0xc8
-> Code: 34000041 97d526e7 f9418e80 36000040 (d4210000)
-> random: get_random_bytes called from print_oops_end_marker+0x34/0x80 with crng_init=0
-> ---[ end trace 0000000000000000 ]---
+> commit a7259df76702 ("memblock: make memblock_find_in_range method private")
+> invokes a kernel panic while running kmemleak on OF platforms with nomaped
+> regions:
 > 
-> The crash happens because kmemleak_free_part_phys() tries to use __va()
-> before memstart_addr is initialized and this triggers a VM_BUG_ON() in
-> arch/arm64/include/asm/memory.h:
+>   Unable to handle kernel paging request at virtual address fff000021e00000
+>   [...]
+>     scan_block+0x64/0x170
+>     scan_gray_list+0xe8/0x17c
+>     kmemleak_scan+0x270/0x514
+>     kmemleak_write+0x34c/0x4ac
 > 
-> Revert 6e44bd6d34d6 ("memblock: exclude NOMAP regions from kmemleak"), the
-> issue it is fixing will be fixed differently.
+> The memory allocated from memblock is registered with kmemleak, but if it
+> is marked MEMBLOCK_NOMAP it won't have linear map entries so an attempt to
+> scan such areas will fault.
 > 
-> Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+> Ideally, memblock_mark_nomap() would inform kmemleak to ignore
+> MEMBLOCK_NOMAP memory, but it can be called before kmemleak interfaces
+> operating on physical addresses can use __va() conversion.
+> 
+> Make sure that functions that mark allocated memory as MEMBLOCK_NOMAP take
+> care of informing kmemleak to ignore such memory.
+> 
+> Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
+> Link: https://lore.kernel.org/all/c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com
+> Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
+> Reported-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > ---
->  mm/memblock.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
+>  drivers/acpi/tables.c        | 3 +++
+>  drivers/of/of_reserved_mem.c | 2 ++
+>  mm/memblock.c                | 3 +++
+>  3 files changed, 8 insertions(+)
 > 
+> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+> index f9383736fa0f..71419eb16e09 100644
+> --- a/drivers/acpi/tables.c
+> +++ b/drivers/acpi/tables.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/earlycpio.h>
+>  #include <linux/initrd.h>
+>  #include <linux/security.h>
+> +#include <linux/kmemleak.h>
+>  #include "internal.h"
+>  
+>  #ifdef CONFIG_ACPI_CUSTOM_DSDT
+> @@ -601,6 +602,8 @@ void __init acpi_table_upgrade(void)
+>  	 */
+>  	arch_reserve_mem_area(acpi_tables_addr, all_tables_size);
+>  
+> +	kmemleak_ignore_phys(acpi_tables_addr);
+> +
+>  	/*
+>  	 * early_ioremap only can remap 256k one time. If we map all
+>  	 * tables one time, we will hit the limit. Need to map chunks
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 59c1390cdf42..9da8835ba5a5 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/sort.h>
+>  #include <linux/slab.h>
+>  #include <linux/memblock.h>
+> +#include <linux/kmemleak.h>
+>  
+>  #include "of_private.h"
+>  
+> @@ -46,6 +47,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
+>  		err = memblock_mark_nomap(base, size);
+>  		if (err)
+>  			memblock_free(base, size);
+> +		kmemleak_ignore_phys(base);
+>  	}
+>  
+>  	return err;
 > diff --git a/mm/memblock.c b/mm/memblock.c
-> index 5c3503c98b2f..184dcd2e5d99 100644
+> index 184dcd2e5d99..dab804b09d62 100644
 > --- a/mm/memblock.c
 > +++ b/mm/memblock.c
-> @@ -936,12 +936,7 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+> @@ -932,6 +932,9 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+>   * covered by the memory map. The struct page representing NOMAP memory
+>   * frames in the memory map will be PageReserved()
+>   *
+> + * Note: if the memory being marked %MEMBLOCK_NOMAP was allocated from
+> + * memblock, the caller must inform kmemleak to ignore that memory
+> + *
+>   * Return: 0 on success, -errno on failure.
 >   */
 >  int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
->  {
-> -	int ret = memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
-> -
-> -	if (!ret)
-> -		kmemleak_free_part_phys(base, size);
-> -
-> -	return ret;
-> +	return memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
->  }
->  
->  /**
 > 
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
