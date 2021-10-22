@@ -2,170 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA9C437300
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C180437303
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhJVHqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbhJVHqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:46:11 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D8CC061764;
-        Fri, 22 Oct 2021 00:43:54 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id d3so3333249wrh.8;
-        Fri, 22 Oct 2021 00:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QDe8eGn1242gSfR7Is43fRQHdJR93magL2F5GakfHEE=;
-        b=mjxadADG3/7KVemwPXS50oEIEXflR9aiQ/P8tEKIYGuxFixdw96R+9yMdN7mPVO1GS
-         eFT2suEIg9Y592iMRV9s40AfwLs2ncJ1aN5UEtbz9WPmR59kzaECpfBS77Anku1YNu3/
-         AQC8fl6BZHD6O0CQyj6GvwiVBMLGb4OO9EVt2Et5BkLUGpk8wqt8gZUF6OjIaLIJTaTU
-         nL0xiVJgGDKJSGeV6xE5esknbaeq9h6hzoDkP3HnbZTpsyd5dx385PLuqGLirnWTB+zN
-         beKDI+MwOBzxNfNJAz5Mb25SN7FSnh0ZLliQ+/H1BKqcD8QUFg+qXThCYX2VsydXZkqg
-         uwaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=QDe8eGn1242gSfR7Is43fRQHdJR93magL2F5GakfHEE=;
-        b=3CGRRlKrg8Q+1kz+DTWLzWoNxEjAZdld4YNj51g7EYATagKD4Rix27g8CJfUY4hdn4
-         WQumMdzZlAsvAEGrZClXZ8tONot2d7S1mBqCLPWYjq/eEPOGgeGppZ1xomJTQu3TNH5a
-         D4mDe00bigOjCesTflxNgi9/eE0BhVWxfP4F6Anoph1uV2C1bHa+QnEZgDiOLbBhiMna
-         WExu9Gvcfggf19DfJd6O3AcgNhJ6XTQ/J9ayJLlyGgz5Rf3TyjkDTa8/Gp1VBJS5tK3c
-         6lO/4Gj3DLguwbtQKDMS5B9pxNM3ECmAkysyIWy0Ibw62SkJryak5tBn+5lc/kIaoAtb
-         O08w==
-X-Gm-Message-State: AOAM533QEP3CgH/QDE9Q2ZUCp3JXzh+j5gRa3ad1qUYQBuYX7yUP7Hce
-        CbSzm02MsMrp4E4/4POe1s+F30GdWDc=
-X-Google-Smtp-Source: ABdhPJzaRDW7PH4hkD8Yjx/uOud9MZymvRbT6QqTBQp3bTMfCiG+bNXFb4YbR7YmIjI0E5J+khiHjw==
-X-Received: by 2002:a5d:64c5:: with SMTP id f5mr13417395wri.321.1634888632758;
-        Fri, 22 Oct 2021 00:43:52 -0700 (PDT)
-Received: from gmail.com (563BB2F5.dsl.pool.telekom.hu. [86.59.178.245])
-        by smtp.gmail.com with ESMTPSA id i203sm10161968wma.48.2021.10.22.00.43.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 00:43:52 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 22 Oct 2021 09:43:50 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH] stacktrace: Provide stack_trace_save_tsk() stub in the
- !CONFIG_STACKTRACE case too
-Message-ID: <YXJrtiFgwMCYNAAM@gmail.com>
-References: <20211018172330.379b2061@canb.auug.org.au>
- <60e736e7-cc37-9fea-a0fb-6628f87e741c@bytedance.com>
+        id S231991AbhJVHrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231773AbhJVHru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:47:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F1A610E7;
+        Fri, 22 Oct 2021 07:45:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634888733;
+        bh=Z6yQcmBJ8aKfu0i1OuEPtt3St4z1ZRFhgXV88+Wc/t8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z92mTEMa5gPnLSdnBhIHMxh2Od0alhF7AyEqH4PTZeVA1dOLYtzXUSfQe4x31kymC
+         KPANlAmMm4w7oA/DJpYJkmJPSFtGxMmtiah31rNZSFAWcgffHwY/uBYJ9rgclqNsAv
+         ugUogTE0cvYY2d5iI3psRj+OQlsZO+Ywc38pEs0o=
+Date:   Fri, 22 Oct 2021 09:45:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] of: base: add function to check for status =
+ "reserved"
+Message-ID: <YXJsG1E5fWpddKHx@kroah.com>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <20211022020032.26980-2-zev@bewilderbeest.net>
+ <YXJdi3IBzaqmSZ9b@kroah.com>
+ <YXJqgNDOaNLzTg0T@hatter.bewilderbeest.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60e736e7-cc37-9fea-a0fb-6628f87e741c@bytedance.com>
+In-Reply-To: <YXJqgNDOaNLzTg0T@hatter.bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-
-> 
-> 
-> On 10/18/21 2:23 PM, Stephen Rothwell wrote:
-> > Hi all,
+On Fri, Oct 22, 2021 at 12:38:40AM -0700, Zev Weiss wrote:
+> On Thu, Oct 21, 2021 at 11:43:23PM PDT, Greg Kroah-Hartman wrote:
+> > On Thu, Oct 21, 2021 at 07:00:28PM -0700, Zev Weiss wrote:
+> > > Per v0.3 of the Devicetree Specification [0]:
+> > > 
+> > >   Indicates that the device is operational, but should not be used.
+> > >   Typically this is used for devices that are controlled by another
+> > >   software component, such as platform firmware.
+> > > 
+> > > One use-case for this is in OpenBMC, where certain devices (such as a
+> > > BIOS flash chip) may be shared by the host and the BMC, but cannot be
+> > > accessed by the BMC during its usual boot-time device probing, because
+> > > they require additional (potentially elaborate) coordination with the
+> > > host to arbitrate which processor is controlling the device.
+> > > 
+> > > Devices marked with this status should thus be instantiated, but not
+> > > have a driver bound to them or be otherwise touched.
+> > > 
+> > > [0] https://github.com/devicetree-org/devicetree-specification/releases/download/v0.3/devicetree-specification-v0.3.pdf
+> > > 
+> > > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> > > ---
+> > >  drivers/of/base.c  | 56 +++++++++++++++++++++++++++++++++++++++-------
+> > >  include/linux/of.h |  6 +++++
+> > >  2 files changed, 54 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/drivers/of/base.c b/drivers/of/base.c
+> > > index 0ac17256258d..3bd7c5b8a2cc 100644
+> > > --- a/drivers/of/base.c
+> > > +++ b/drivers/of/base.c
+> > > @@ -580,14 +580,16 @@ int of_machine_is_compatible(const char *compat)
+> > >  EXPORT_SYMBOL(of_machine_is_compatible);
+> > > 
+> > >  /**
+> > > - *  __of_device_is_available - check if a device is available for use
+> > > + * __of_device_check_status - check if a device's status matches a particular string
+> > >   *
+> > > - *  @device: Node to check for availability, with locks already held
+> > > + * @device: Node to check status of, with locks already held
+> > > + * @val: Status string to check for, or NULL for "okay"/"ok"
+> > >   *
+> > > - *  Return: True if the status property is absent or set to "okay" or "ok",
+> > > - *  false otherwise
+> > > + * Return: True if status property exists and matches @val, or either "okay"
+> > > + * or "ok" if @val is NULL, or if status property is absent and @val is
+> > > + * "okay", "ok", or NULL.  False otherwise.
+> > >   */
+> > > -static bool __of_device_is_available(const struct device_node *device)
+> > > +static bool __of_device_check_status(const struct device_node *device, const char *val)
+> > >  {
+> > >  	const char *status;
+> > >  	int statlen;
+> > > @@ -596,17 +598,35 @@ static bool __of_device_is_available(const struct device_node *device)
+> > >  		return false;
+> > > 
+> > >  	status = __of_get_property(device, "status", &statlen);
+> > > -	if (status == NULL)
+> > > -		return true;
+> > > +	if (!status) {
+> > > +		/* a missing status property is treated as "okay" */
+> > > +		status = "okay";
+> > > +		statlen = strlen(status) + 1; /* property lengths include the NUL terminator */
+> > > +	}
+> > > 
+> > >  	if (statlen > 0) {
+> > > -		if (!strcmp(status, "okay") || !strcmp(status, "ok"))
+> > > +		if (!val && (!strcmp(status, "okay") || !strcmp(status, "ok")))
+> > > +			return true;
+> > > +		else if (val && !strcmp(status, val))
 > > 
-> > After merging the tip tree, today's linux-next build (x86_64 allnoconfig)
-> > failed like this:
 > > 
-> > arch/x86/kernel/process.c: In function '__get_wchan':
-> > arch/x86/kernel/process.c:950:2: error: implicit declaration of function 'stack_trace_save_tsk' [-Werror=implicit-function-declaration]
-> >    950 |  stack_trace_save_tsk(p, &entry, 1, 0);
-> >        |  ^~~~~~~~~~~~~~~~~~~~
-> > cc1: some warnings being treated as errors
+> > Ick, where is this string coming from?  The kernel or userspace or a
+> > device tree?  This feels very wrong, why is the kernel doing parsing
+> > like this of different options that all mean the same thing?
 > > 
-> > Caused by commit
-> > 
-> >    bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
-> > 
-> > stack_trace_save_tsk() requires CONFIG_STACKTRACE which is not set for
-> > this build.
 > 
-> Maybe get_wchan() can be updated to:
+> Which string do you mean by "this string"?  'status' comes from a property
+> of the device tree node; 'val' will be one of a small set of string
+> constants passed by the caller.  Accepting either spelling of "okay"/"ok"
+> has been in place since 2008 (commit 834d97d45220, "[POWERPC] Add
+> of_device_is_available function"); using NULL as a shorthand for those two
+> strings was a suggestion that came up in review feedback on a previous
+> incarnation of these patches (https://lore.kernel.org/openbmc/CAL_Jsq+rKGv39zHTxNx0A7=X4K48nXRLqWonecG5SobdJq3yKw@mail.gmail.com/T/#u).
+
+I was referring to "okay".  And if this really is a "we take either"
+type of thing, shouldn't there be a single function to call for this
+type of test, much like we have some of the sysfs helpers?
+
+And what about using match_string() as well?
+
+> > >  			return true;
+> > >  	}
+> > > 
+> > >  	return false;
+> > >  }
+> > > 
+> > > +/**
+> > > + * __of_device_is_available - check if a device is available for use
+> > > + *
+> > > + * @device: Node to check for availability, with locks already held
+> > > + *
+> > > + * Return: True if the status property is absent or set to "okay" or "ok",
+> > > + * false otherwise
+> > > + */
+> > > +static bool __of_device_is_available(const struct device_node *device)
+> > > +{
+> > > +	return __of_device_check_status(device, NULL);
+> > > +}
+> > > +
+> > >  /**
+> > >   *  of_device_is_available - check if a device is available for use
+> > >   *
+> > > @@ -628,6 +648,26 @@ bool of_device_is_available(const struct device_node *device)
+> > >  }
+> > >  EXPORT_SYMBOL(of_device_is_available);
+> > > 
+> > > +/**
+> > > + * of_device_is_reserved - check if a device is marked as reserved
+> > > + *
+> > > + * @device: Node to check for reservation
+> > > + *
+> > > + * Return: True if the status property is set to "reserved", false otherwise
+> > > + */
+> > > +bool of_device_is_reserved(const struct device_node *device)
+> > > +{
+> > > +	unsigned long flags;
+> > > +	bool res;
+> > > +
+> > > +	raw_spin_lock_irqsave(&devtree_lock, flags);
+> > > +	res = __of_device_check_status(device, "reserved");
+> > > +	raw_spin_unlock_irqrestore(&devtree_lock, flags);
+> > 
+> > Why is this a "raw" spinlock?
+> > 
 > 
-> unsigned long get_wchan(struct task_struct *p)
-> {
-> #ifdef CONFIG_STACKTRACE
-> 	unsigned long entry = 0;
+> devtree_lock being a raw_spinlock_t appears to date from commit d6d3c4e65651
+> ("OF: convert devtree lock from rw_lock to raw spinlock"); "required for
+> preempt-rt", according to Thomas Gleixner's commit message.
 > 
-> 	stack_trace_save_tsk(p, &entry, 1, 0);
-> 	return entry;
-> #else /* CONFIG_STACKTRACE */
-> 	return 0;
-> #endif
-> }
+> > Where is this status coming from?
+> > 
+> 
+> This would be specified in a DT node, e.g. via something like:
+> 
+>   &somedev {
+>     compatible = "foobar";
+>     status = "reserved";
+>     /* ... */
+>   };
+> 
+> > > +
+> > > +	return res;
+> > > +}
+> > > +EXPORT_SYMBOL(of_device_is_reserved);
+> > 
+> > EXPORT_SYMBOL_GPL()?
+> > 
+> 
+> Its closest existing sibling, of_device_is_available(), is a plain
+> EXPORT_SYMBOL(); if we want to convert things more broadly that'd be fine
+> with me, but having one be GPL-only and the other not seems like it'd be a
+> bit confusing and inconsistent?
 
-And repeat the same ugliness in every single function that happens to use 
-the stack_trace_save_tsk() API??
+Ah, ok, you are following the rest of this file for this, and the
+locking stuff, sorry, I was not familiar with it.
 
-The correct solution is to define stack_trace_save_tsk() in the 
-!CONFIG_STACKTRACE case too, as the patch below does.
+thanks,
 
-Thanks,
-
-	Ingo
-
-==============================>
-From: Ingo Molnar <mingo@kernel.org>
-Date: Fri, 22 Oct 2021 09:40:27 +0200
-Subject: [PATCH] stacktrace: Provide stack_trace_save_tsk() stub in the !CONFIG_STACKTRACE case too
-
-The following commit:
-
-  bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
-
-Added stack_trace_save_tsk() use to __get_wchan(), while this method is not
-unconditionally defined: it's not available in the !CONFIG_STACKTRACE case.
-
-Give a default implementation that does nothing.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
-Cc: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- include/linux/stacktrace.h | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
-index 9edecb494e9e..3ccaf599630f 100644
---- a/include/linux/stacktrace.h
-+++ b/include/linux/stacktrace.h
-@@ -91,8 +91,19 @@ extern void save_stack_trace_tsk(struct task_struct *tsk,
- extern int save_stack_trace_tsk_reliable(struct task_struct *tsk,
- 					 struct stack_trace *trace);
- extern void save_stack_trace_user(struct stack_trace *trace);
-+
- #endif /* !CONFIG_ARCH_STACKWALK */
--#endif /* CONFIG_STACKTRACE */
-+
-+#else /* !CONFIG_STACKTRACE: */
-+static inline unsigned int
-+stack_trace_save_tsk(struct task_struct *task,
-+		     unsigned long *store, unsigned int size,
-+		     unsigned int skipnr)
-+{
-+	return -ENOSYS;
-+}
-+
-+#endif /* !CONFIG_STACKTRACE */
- 
- #if defined(CONFIG_STACKTRACE) && defined(CONFIG_HAVE_RELIABLE_STACKTRACE)
- int stack_trace_save_tsk_reliable(struct task_struct *tsk, unsigned long *store,
+greg k-h
