@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E79043708A
+	by mail.lfdr.de (Postfix) with ESMTP id 920D543708B
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 05:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhJVDlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232845AbhJVDlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:41:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB75D610A4;
-        Fri, 22 Oct 2021 03:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634873939;
-        bh=9TMOq2xQPIJH4U6BSsyCI1yOB5IvYFxcsxgSaPT7PFY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nO0WJv17dRlACHIr/0GNZYQnsy6tXHHuwlZjcd6so1f3kCb3EvbBJHg4fkhQJg+7G
-         O2kyXtKYneEt0ZLHZrHz4hrrKuI9UZqLBMfY3OoMRZg9Bz7xWV8Mpmk0UWDVOOFWX0
-         Cf7x8TnbV/CLoKsyzLHZvgX+bod9cAwaAcGHJMuI=
-Date:   Thu, 21 Oct 2021 20:38:56 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org,
-        Marco Elver <elver@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
+        id S232876AbhJVDlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232845AbhJVDlW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 23:41:22 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50366C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:39:05 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id i1so1770078plr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 20:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yy5rRpKo2fw53nbqx7qopu8aspq5/Q7NCCnnOq+gk3c=;
+        b=Cn2Xsk7upRNROV5qt7FnTqWCajekr42FLh6s8J2a0aJQ836/Z3uSQ4Vk6PVWjRrdkg
+         2fwCtanYMpNbn6R6rA6TPEAd6mvvkyZ7K5BDsCm3l2i5KHjSU6q31Qlh+Swh10NBpXpd
+         wRVPrLAKa+et+O/gGLSt0NR6gkxStW4ptwf0k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yy5rRpKo2fw53nbqx7qopu8aspq5/Q7NCCnnOq+gk3c=;
+        b=0/ARa67PynYoWCUlwKoAK+sgXm5nCDlMFqV+6BNEYHU1Z0c3zRKzrjFFJnyWAV1Ikm
+         MB5JZnSdEPtnrRp924yw2OQ2KEifaXqPAh4F/pXlUJUNa8/Iacnajbug5zWllofyVgdl
+         yRljJ+4S0OqWzJa8hSa2mjBEOF8Mr39GTunGYo3clLKTlqY/Sl9oXWgxe7jenPTSPaez
+         8f4GTq5q3dmBudpaiOxopchVyQM1p0c6vah5dWfzrCsC1UCh3wENcZmv7U81rzecEWrq
+         1B2WAMDAXSVh7LsPahSCdtFsc4otOF859XXb3uRis/AEmX6rmmXFZGILpbjxDmQdHV0F
+         pRvw==
+X-Gm-Message-State: AOAM532B/4z7/FkyVvbFRTmB2j3ANbebsu9sN9oAkhGqdED7x8R8XBss
+        mNBYzWa7+M9tjI2bi+1iMLHlfQ==
+X-Google-Smtp-Source: ABdhPJyTM8I19F2FqzotuNQUV0QBtp7k6bw9s+ngwQ75RmF0tNa9jRPSOazWUsPVmZ5KB0k4z3J6jw==
+X-Received: by 2002:a17:90b:3886:: with SMTP id mu6mr11450646pjb.40.1634873944883;
+        Thu, 21 Oct 2021 20:39:04 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d137sm8200122pfd.72.2021.10.21.20.39.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 20:39:04 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:39:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Jordy Zomer <jordy@jordyzomer.github.io>, linux-mm@kvack.org,
         Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [next] [dragonboard 410c] Unable to handle kernel paging
- request at virtual address 00000000007c4240
-Message-Id: <20211021203856.1151daebedef7b180fdfec22@linux-foundation.org>
-In-Reply-To: <2a692365-cfa1-64f2-34e0-8aa5674dce5e@suse.cz>
-References: <CA+G9fYv3jAjBKHM-CjrMzNgrptx-rpYVmGaD39OBiBeuz7osfg@mail.gmail.com>
-        <80ab567d-74f3-e14b-3c30-e64bbd64b354@suse.cz>
-        <87fssuojoc.fsf@intel.com>
-        <2a692365-cfa1-64f2-34e0-8aa5674dce5e@suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to zero
+Message-ID: <202110212037.E18CD404@keescook>
+References: <20211021154046.880251-1-keescook@chromium.org>
+ <20211021195311.6058b90f573641542605dae4@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021195311.6058b90f573641542605dae4@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 19:51:20 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
-
-> >> Then we have to figure out how to order a fix between DRM and mmotm...
-> > 
-> > That is the question! The problem exists only in the merge of the
-> > two. On current DRM side stack_depot_init() exists but it's __init and
-> > does not look safe to call multiple times. And obviously my changes
-> > don't exist at all in mmotm.
-> > 
-> > I guess one (admittedly hackish) option is to first add a patch in
-> > drm-next (or drm-misc-next) that makes it safe to call
-> > stack_depot_init() multiple times in non-init context. It would be
-> > dropped in favour of your changes once the trees get merged together.
-> > 
-> > Or is there some way for __drm_stack_depot_init() to detect whether it
-> > should call stack_depot_init() or not, i.e. whether your changes are
-> > there or not?
+On Thu, Oct 21, 2021 at 07:53:11PM -0700, Andrew Morton wrote:
+> On Thu, 21 Oct 2021 08:40:46 -0700 Kees Cook <keescook@chromium.org> wrote:
 > 
-> Let's try the easiest approach first. AFAIK mmotm series is now split to
-> pre-next and post-next part
+> > Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
+> > After fd_install() finishes, the fd can be used by userspace and we can
+> > have secret data in memory before the refcount_inc().
+> > 
+> > A straightforward mis-use where a user will predict the returned fd
+> > in another thread before the syscall returns and will use it to store
+> > secret data is somewhat dubious because such a user just shoots themself
+> > in the foot.
+> > 
+> > But a more interesting mis-use would be to close the predicted fd and
+> > decrement the refcount before the corresponding refcount_inc, this way
+> > one can briefly drop the refcount to zero while there are other users
+> > of secretmem."
+> > 
+> > Move fd_install() after refcount_inc().
+> 
+> I added cc:stable.  Or doesn't the benefit/risk ratio justify that?
 
-It has been this way for many years!
+I hadn't because commit 110860541f44 ("mm/secretmem: use refcount_t
+instead of atomic_t") wasn't, and this would build on top of it.
 
-> and moving my patch
-> lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc.patch
-> with the following fixup to the post-next part should solve this. Would that
-> work, Andrew? Thanks.
+I think the exposure is very small in both places, so probably best to
+avoid the churn, but I'm not _opposed_ to it.
 
-For this reason.  No probs, thanks.
-
-I merge up the post-linux-next parts late in the merge window.  I do
-need to manually check that the prerequisites are in mainline, because
-sometimes the patches apply OK but don't make sense.
+-- 
+Kees Cook
