@@ -2,120 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF53437979
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC74E437977
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhJVPDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:03:41 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:40412 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhJVPDj (ORCPT
+        id S233166AbhJVPDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232842AbhJVPDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:03:39 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:46816)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdw2r-003aFJ-0J; Fri, 22 Oct 2021 09:01:21 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34440 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdw2p-00Ev8j-A8; Fri, 22 Oct 2021 09:01:20 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Rune Kleveland <rune.kleveland@infomedia.dk>,
-        Yu Zhao <yuzhao@google.com>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        Antoine Martin <antoine@nagafix.co.uk>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <877de6e589.fsf@disp2133>
-        <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
-Date:   Fri, 22 Oct 2021 09:59:57 -0500
-In-Reply-To: <CAHk-=wjAj+wgHXqkcGuQR9xo3C2G569TB2i5PmFLyK6BAkr2_w@mail.gmail.com>
-        (Linus Torvalds's message of "Thu, 21 Oct 2021 17:35:08 -1000")
-Message-ID: <87fsst6r6a.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 22 Oct 2021 11:03:32 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AE1C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:01:14 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id y132-20020a1c7d8a000000b0032ca5765d6cso427084wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GIPpv6Q0RJFERejdEdswNrUDirFtVwEww7SCPVpfCjQ=;
+        b=O4Vxj1rjyTbXhumLouMUWEvAckNJE/a15KBm+8m57gyA9GZFix4TLEWN6e1KUFHIUz
+         z5y57C92vtUV+Z7ZXLcg7SXc2cTMnAH4Dz4UrlNCuMaG9dztkQlbkuShtxJPUKgaOWB9
+         JCO8j/8yvLOCsEgrPoygGB7dHNU2+DynHUvdI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GIPpv6Q0RJFERejdEdswNrUDirFtVwEww7SCPVpfCjQ=;
+        b=12nkMTlThFJILJWDk3hhyG82LMms6oURNiXppnwTQLngmHir9smG8RKSE0DwL4OQKF
+         SBHqLswLya6c/M5nlX7hr31fhKzyuzv2HokC/dNwCbEZZZkFToODrKIka5sUN5aCzVMf
+         cdjdXmYVgvEa5SA1GvvPyNJiajEjTlHBtySlS1kmDRSFC9kETR7N0uMXZ+LyCbVGMbEb
+         Etb52iySHZQTj+Wtqu7xyxJYNLPysez42/rnf7qiZLkbeROUyL2bDYn7glaIw+EhOEbc
+         aPD90IkGPO1+VTEP+dehEy3PnIP45QZaNcbx4AZML+yp9ZKnQPXeYdl5uzaUMDwz4Km2
+         gwNw==
+X-Gm-Message-State: AOAM533jUjE1exR0Ch8h7w8+kqpCNL+agHaVSFvEzZrjnDIBPSuKgdzd
+        /G6etdeHtsFd+IYcTNUb4aNoYh5iRKBpSP2pQlGLvA==
+X-Google-Smtp-Source: ABdhPJwdTb3qaUKpHim2L/0QLli2VruHSN+i3ykNrqX/FYTJ6n/dl0342/3LFdfNM66K/9xy/EhQsx/gyziYM4uYGSQ=
+X-Received: by 2002:a1c:2b04:: with SMTP id r4mr30503767wmr.48.1634914872995;
+ Fri, 22 Oct 2021 08:01:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdw2p-00Ev8j-A8;;;mid=<87fsst6r6a.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+trmELuUB54LDvZVfvhFlo7HQc4mnbrD4=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4950]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1056 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 17 (1.7%), b_tie_ro: 16 (1.5%), parse: 0.82
-        (0.1%), extract_message_metadata: 22 (2.1%), get_uri_detail_list: 0.94
-        (0.1%), tests_pri_-1000: 33 (3.1%), tests_pri_-950: 1.52 (0.1%),
-        tests_pri_-900: 1.24 (0.1%), tests_pri_-90: 330 (31.2%), check_bayes:
-        311 (29.4%), b_tokenize: 6 (0.5%), b_tok_get_all: 104 (9.9%),
-        b_comp_prob: 2.3 (0.2%), b_tok_touch_all: 193 (18.3%), b_finish: 1.20
-        (0.1%), tests_pri_0: 636 (60.2%), check_dkim_signature: 0.66 (0.1%),
-        check_dkim_adsp: 3.2 (0.3%), poll_dns_idle: 1.16 (0.1%), tests_pri_10:
-        2.3 (0.2%), tests_pri_500: 9 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] ucount fixes for v5.15
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20211022140714.28767-1-jim2101024@gmail.com> <20211022140714.28767-3-jim2101024@gmail.com>
+ <YXLL8IPz2LcNqEj4@kroah.com>
+In-Reply-To: <YXLL8IPz2LcNqEj4@kroah.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Fri, 22 Oct 2021 11:01:01 -0400
+Message-ID: <CA+-6iNxPN0+Ge5AES-pChQvjM9OKeT__fy-nrE5obwJ0QcY1vw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/6] PCI: allow for callback to prepare nascent subdev
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Rajat Jain <rajatja@google.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
-
-> On Thu, Oct 21, 2021 at 6:04 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->>  kernel/cred.c                | 9 ++++-----
->>  security/keys/process_keys.c | 8 ++++++++
->>  2 files changed, 12 insertions(+), 5 deletions(-)
+On Fri, Oct 22, 2021 at 10:34 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> That's not remotely the right diffstat.
+> On Fri, Oct 22, 2021 at 10:06:55AM -0400, Jim Quinlan wrote:
+> > We would like the Broadcom STB PCIe root complex driver to be able to turn
+> > off/on regulators[1] that provide power to endpoint[2] devices.  Typically,
+> > the drivers of these endpoint devices are stock Linux drivers that are not
+> > aware that these regulator(s) exist and must be turned on for the driver to
+> > be probed.  The simple solution of course is to turn these regulators on at
+> > boot and keep them on.  However, this solution does not satisfy at least
+> > three of our usage modes:
+> >
+> > 1. For example, one customer uses multiple PCIe controllers, but wants the
+> > ability to, by script, turn any or all of them by and their subdevices off
+> > to save power, e.g. when in battery mode.
+> >
+> > 2. Another example is when a watchdog script discovers that an endpoint
+> > device is in an unresponsive state and would like to unbind, power toggle,
+> > and re-bind just the PCIe endpoint and controller.
+> >
+> > 3. Of course we also want power turned off during suspend mode.  However,
+> > some endpoint devices may be able to "wake" during suspend and we need to
+> > recognise this case and veto the nominal act of turning off its regulator.
+> > Such is the case with Wake-on-LAN and Wake-on-WLAN support where PCIe
+> > end-point device needs to be kept powered on in order to receive network
+> > packets and wake-up the system.
+> >
+> > In all of these cases it is advantageous for the PCIe controller to govern
+> > the turning off/on the regulators needed by the endpoint device.  The first
+> > two cases can be done by simply unbinding and binding the PCIe controller,
+> > if the controller has control of these regulators.
+> >
+> > This commit solves the "chicken-and-egg" problem by providing a callback to
+> > the RC driver when a downstream device is "discovered" by inspecting its
+> > DT, and allowing said driver to allocate the device object prematurely in
+> > order to get the regulator(s) and turn them on before the device's ID is
+> > read.
+> >
+> > [1] These regulators typically govern the actual power supply to the
+> >     endpoint chip.  Sometimes they may be a the official PCIe socket
+> >     power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
+> >     the regulator(s) that supply power to the EP chip.
+> >
+> > [2] The 99% configuration of our boards is a single endpoint device
+> >     attached to the PCIe controller.  I use the term endpoint but it could
+> >     possible mean a switch as well.
+> >
+> > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> > ---
+> >  drivers/base/core.c    |  5 +++++
+> >  drivers/pci/probe.c    | 47 ++++++++++++++++++++++++++++++++----------
+> >  include/linux/device.h |  3 +++
+> >  include/linux/pci.h    |  3 +++
+> >  4 files changed, 47 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 249da496581a..62d9ac123ae5 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -2864,6 +2864,10 @@ static void klist_children_put(struct klist_node *n)
+> >   */
+> >  void device_initialize(struct device *dev)
+> >  {
+> > +     /* Return if this has been called already. */
+> > +     if (dev->device_initialized)
+> > +             return;
+> > +
 >
-> What's going on?
-
-Sigh.  I sent the diffstat from when I sent the additional patches
-out for review instead of the diffstat for the entire branch I was
-asking you to pull.
-
-I really should have named things differently on my end when I sent
-the additional changes out for review.
-
-The correct diffstat should have been.
-
- include/linux/user_namespace.h |  2 ++
- kernel/cred.c                  |  9 ++++----
- kernel/signal.c                | 25 ++++++---------------
- kernel/ucount.c                | 49 ++++++++++++++++++++++++++++++++++++++++++
- security/keys/process_keys.c   |  8 +++++++
- 5 files changed, 69 insertions(+), 24 deletions(-)
-
-
-> The shortlog was correct, and I pulled the branch, because everything
-> else looked ok, but that diffstat in the pull request was some
-> complete fantasy.
+> Ick, no!  Who would ever be calling this function more than once?  That
+> "should" be impossible.
 >
-> If I were to guess, I think the diffstat may be everything _but_ that
-> first ("ucounts: Fix signal ucount refcounting") fix. I just don't see
-> how/why you'd get that as part of the pull request.
+> This function should only be called by a bus when it first creates the
+> structure and before anything is done with it.  As the bus itself
+> controls the creation, it already "knows" when the structure was
+> initialzed so it should not have to be called again.
 
-You are exactly right.
 
-My apologies for the confusion.
-Eric
+
+>
+> Please fix the bus logic that requires this, it is broken.
+Got it, thanks for the prompt reply.
+
+JimQ
+>
+> Consider this a NACK for this patch, sorry.
+>
+> greg k-h
