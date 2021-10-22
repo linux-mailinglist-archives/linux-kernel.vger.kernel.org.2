@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F58437F97
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68530437F98
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 22:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhJVUwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 16:52:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40568 "EHLO mail.kernel.org"
+        id S234767AbhJVUw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 16:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234425AbhJVUvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234426AbhJVUvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Oct 2021 16:51:03 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B48FE613A7;
+        by mail.kernel.org (Postfix) with ESMTPSA id E4516613AD;
         Fri, 22 Oct 2021 20:48:44 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1me1T1-000QSR-Sa;
-        Fri, 22 Oct 2021 16:48:43 -0400
-Message-ID: <20211022204843.717752020@goodmis.org>
+        id 1me1T2-000QT0-2L;
+        Fri, 22 Oct 2021 16:48:44 -0400
+Message-ID: <20211022204843.904040848@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 Oct 2021 16:48:26 -0400
+Date:   Fri, 22 Oct 2021 16:48:27 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: [for-next][PATCH 30/40] ftrace/direct: Do not disable when switching direct callers
+        Petr Mladek <pmladek@suse.com>
+Subject: [for-next][PATCH 31/40] tracing: Explain the trace recursion transition bit better
 References: <20211022204756.099054287@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,132 +38,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Currently to switch a set of "multi" direct trampolines from one
-trampoline to another, a full shutdown of the current set needs to be
-done, followed by an update to what trampoline the direct callers would
-call, and then re-enabling the callers. This leaves a time when the
-functions will not be calling anything, and events may be missed.
+The current text of the explanation of the transition bit in the trace
+recursion protection is not very clear. Improve the text, so that when all
+the archs no longer have the issue of tracing between a start of a new
+(interrupt) context and updating the preempt_count to reflect the new
+context, that it may be removed.
 
-Instead, use a trick to allow all the functions with direct trampolines
-attached will always call either the new or old trampoline while the
-switch is happening. To do this, first attach a "dummy" callback via
-ftrace to all the functions that the current direct trampoline is attached
-to. This will cause the functions to call the "list func" instead of the
-direct trampoline. The list function will call the direct trampoline
-"helper" that will set the function it should call as it returns back to
-the ftrace trampoline.
+Link: https://lore.kernel.org/all/20211018220203.064a42ed@gandalf.local.home/
 
-At this moment, the direct caller descriptor can safely update the direct
-call trampoline. The list function will pick either the new or old
-function (depending on the memory coherency model of the architecture).
-
-Now removing the dummy function from each of the locations of the direct
-trampoline caller, will put back the direct call, but now to the new
-trampoline.
-
-A better visual is:
-
-[ Changing direct call from my_direct_1 to my_direct_2 ]
-
-  <traced_func>:
-     call my_direct_1
-
- ||||||||||||||||||||
- vvvvvvvvvvvvvvvvvvvv
-
-  <traced_func>:
-     call ftrace_caller
-
-  <ftrace_caller>:
-    [..]
-    call ftrace_ops_list_func
-
-	ftrace_ops_list_func()
-	{
-		ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
-	}
-
-   call rax (to either my_direct_1 or my_direct_2
-
- ||||||||||||||||||||
- vvvvvvvvvvvvvvvvvvvv
-
-  <traced_func>:
-     call my_direct_2
-
-Link: https://lore.kernel.org/all/20211014162819.5c85618b@gandalf.local.home/
-
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Suggested-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 34 ++++++++++++++++++++--------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+ include/linux/trace_recursion.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 30120342176e..f90ed00a6d5b 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
-  */
- int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- {
--	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-+	struct ftrace_hash *hash;
- 	struct ftrace_func_entry *entry, *iter;
-+	static struct ftrace_ops tmp_ops = {
-+		.func		= ftrace_stub,
-+		.flags		= FTRACE_OPS_FL_STUB,
-+	};
- 	int i, size;
- 	int err;
- 
-@@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- 		return -EINVAL;
- 
- 	mutex_lock(&direct_mutex);
--	mutex_lock(&ftrace_lock);
-+
-+	/* Enable the tmp_ops to have the same functions as the direct ops */
-+	ftrace_ops_init(&tmp_ops);
-+	tmp_ops.func_hash = ops->func_hash;
-+
-+	err = register_ftrace_function(&tmp_ops);
-+	if (err)
-+		goto out_direct;
- 
- 	/*
--	 * Shutdown the ops, change 'direct' pointer for each
--	 * ops entry in direct_functions hash and startup the
--	 * ops back again.
--	 *
--	 * Note there is no callback called for @ops object after
--	 * this ftrace_shutdown call until ftrace_startup is called
--	 * later on.
-+	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-+	 * We can safely change the direct functions attached to each entry.
- 	 */
--	err = ftrace_shutdown(ops, 0);
--	if (err)
--		goto out_unlock;
-+	mutex_lock(&ftrace_lock);
- 
-+	hash = ops->func_hash->filter_hash;
- 	size = 1 << hash->size_bits;
- 	for (i = 0; i < size; i++) {
- 		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-@@ -5597,10 +5602,11 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- 		}
- 	}
- 
--	err = ftrace_startup(ops, 0);
-+	/* Removing the tmp_ops will add the updated direct callers to the functions */
-+	unregister_ftrace_function(&tmp_ops);
- 
-- out_unlock:
- 	mutex_unlock(&ftrace_lock);
-+ out_direct:
- 	mutex_unlock(&direct_mutex);
- 	return err;
- }
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index 1d8cce02c3fb..24f284eb55a7 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -168,8 +168,12 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 	bit = trace_get_context_bit() + start;
+ 	if (unlikely(val & (1 << bit))) {
+ 		/*
+-		 * It could be that preempt_count has not been updated during
+-		 * a switch between contexts. Allow for a single recursion.
++		 * If an interrupt occurs during a trace, and another trace
++		 * happens in that interrupt but before the preempt_count is
++		 * updated to reflect the new interrupt context, then this
++		 * will think a recursion occurred, and the event will be dropped.
++		 * Let a single instance happen via the TRANSITION_BIT to
++		 * not drop those events.
+ 		 */
+ 		bit = TRACE_TRANSITION_BIT;
+ 		if (val & (1 << bit)) {
 -- 
 2.33.0
