@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BFD437725
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5ACF43772C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhJVMfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
+        id S232041AbhJVMhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhJVMfw (ORCPT
+        with ESMTP id S230342AbhJVMhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:35:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB6DC061764;
-        Fri, 22 Oct 2021 05:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=oMgAZY+F/sdM3t95WtfAYVamdvU9COWI2QoJJs9rXhA=; b=zePx9o6jBuEgS3fYc5fORTTX3e
-        pO70ymBnVsxWbVxiMS62akdvmPl6e/oHAgP6XlRfDdEo7a4iKdN2gbl7QRLexHgbkxQs20YcnTh8e
-        828dYftPHDEqMGlNiOYYsmi7lfL9isK5kFP9FPvvhTwGW3gNId/j16eAhfMIXd9Aiq/ITWlVhWugt
-        yTSJ5ZhMRTyiGGDAVRGZ0dM79yoYkbf3GhP1byQql83unznGncq9Mm9DB/mSPk9Wic8RRKAmpg4sA
-        WK4cyZ4llIvGogO2v2ST63VvEELF0p2GLWizH/LEBBySeAlgklFCmI3jprRn9Tansc9UzaLYKqcKZ
-        9ZY82Z+g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55236)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mdtjp-0001ht-2N; Fri, 22 Oct 2021 13:33:33 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mdtjn-0001B8-Oj; Fri, 22 Oct 2021 13:33:31 +0100
-Date:   Fri, 22 Oct 2021 13:33:31 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [RFC net-next PATCH 07/16] net: phylink: Add helpers for c22
- registers without MDIO
-Message-ID: <YXKvmwwUNnIlROsv@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-8-sean.anderson@seco.com>
+        Fri, 22 Oct 2021 08:37:06 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF4DC061764;
+        Fri, 22 Oct 2021 05:34:48 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w19so1046771edd.2;
+        Fri, 22 Oct 2021 05:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sJaedp+WwFniAnsPOoxdNlKqeKWuyKqfMjHYa+KV7DM=;
+        b=psg2ERjBTmguvun4iRACGpDey3AvgvUOnPmxWUCYXNVPU2Lja48yf8k+qfNAZHOwvE
+         mdx3NZ0QRraYobiycacjFN6GrT7SLBMgp8n8Kqr/AvOabhepU1KW/RVlwhMr3BwMhdG+
+         p/zqmQMKhWN3xPImJkgHjc/eH9wQ5b7oURXn4dazCZpAlvpXKQAc2n4p8pJCc++RwtFl
+         k+1IlequuJarwJ4yBYhG+DbtcgFq8+azfLBvpEO0/5QbHqJ1Jv/O6hG34TPMH1wzYs6M
+         oEfjywrYcb0XcWD2TlkYM83WX4je/xXED6cfzrUGgUk4MS6heQk4AGP3/k/LW6FFf8sD
+         5cXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sJaedp+WwFniAnsPOoxdNlKqeKWuyKqfMjHYa+KV7DM=;
+        b=sz2CxHbXKfshMVHzxBWLN/bmmTFzt/P58FHBVNo6vdbkF6A91ifTyYyqcp2hQ2C3Hx
+         z+VDU8K8E6yCjaJL4YTNuvEj28WRurD4lLWeFHYbjIwkaVGFZBm+X+aYNCt1ws4vKuuN
+         Hn91bFUezWLzbV1f0yAVdCsyROn1eVrL4W91HDXukVN7e5u4vWSrquen3DetwrzY7nAD
+         HMbk/8Md2CHyMmLfMUDU33RAeLaa4Z1YWrmpGPRMph5wLYHDpXYJh9zSiGSgzs3jUBXx
+         y4Y84awf2jF6xBw07EM/K9vUoysDMLGz+P8IvD7SqglInxeTciC6iLxjmigwMy0UCkZ9
+         swqQ==
+X-Gm-Message-State: AOAM530094OoWgu4RhEmFXW5O2uKXY9jph3MfqZh2LmuLriWGAwV3tm9
+        4OGOAcWEioy+PsfeSnwq0YVhctwV8XHDbIdKXWw=
+X-Google-Smtp-Source: ABdhPJzELMMCdF3V0ssE/+Finv7LByJ4VhsgFR1Ko44YZnSsrQh8x6Ri7/3ky81qJckrRAZEb9X0ta8R9EPXbJ4mi0w=
+X-Received: by 2002:aa7:c0d2:: with SMTP id j18mr17043167edp.107.1634906087448;
+ Fri, 22 Oct 2021 05:34:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-8-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-7-kernel@esmil.dk>
+In-Reply-To: <20211021174223.43310-7-kernel@esmil.dk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 22 Oct 2021 15:33:50 +0300
+Message-ID: <CAHp75VcS7ZZCciAgBH2QU7u8CiHzveAOsvSdv2DQBvpBn_6opQ@mail.gmail.com>
+Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:18PM -0400, Sean Anderson wrote:
-> Some devices expose memory-mapped c22-compliant PHYs. Because these
-> devices do not have an MDIO bus, we cannot use the existing helpers.
-> Refactor the existing helpers to allow supplying the values for c22
-> registers directly, instead of using MDIO to access them. Only get_state
-> and set_adversisement are converted, since they contain the most complex
-> logic.
+On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-I think this patch is useful on its own, there are certainly cases
-where being able to hold the MII bus lock while reading the BMSR/LPA
-registers would be advantageous. Please can you update the patch
-against net-next and submit it?
+...
 
-Thanks.
+> +static struct clk_hw *clk_starfive_jh7100_get(struct of_phandle_args *clkspec, void *data)
+> +{
+> +       struct clk_starfive_jh7100_priv *priv = data;
+> +       unsigned int idx = clkspec->args[0];
+> +
+> +       if (idx >= JH7100_CLK_END) {
+> +               dev_err(priv->dev, "invalid clock index %u\n", idx);
+> +               return ERR_PTR(-EINVAL);
+
+After this
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=7065f92255bb2468dbb9aa0537ff186ef64d5a02
+It's okay to use
+
+> +       }
+
+       if (idx >= JH7100_CLK_END)
+               return dev_err_probe(priv->dev, -EINVAL, "invalid clock
+index %u\n", idx);
+
+Ditto for other similar cases.
+
+> +       if (idx >= JH7100_CLK_PLL0_OUT)
+> +               return priv->pll[idx - JH7100_CLK_PLL0_OUT];
+> +
+> +       return &priv->reg[idx].hw;
+> +}
+
+...
+
+> +       while (idx)
+> +               clk_hw_unregister(&priv->reg[--idx].hw);
+
+I still consider that usual pattern, i.e.
+
+       while (idx--)
+               clk_hw_unregister(&priv->reg[idx].hw);
+
+but since you are pushing hard for your variant I'll leave it to the
+maintainers and author.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+With Best Regards,
+Andy Shevchenko
