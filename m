@@ -2,150 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF62437964
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A4243796B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 16:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbhJVOyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 10:54:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57578 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233073AbhJVOyI (ORCPT
+        id S233096AbhJVO7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 10:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232842AbhJVO7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:54:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634914311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LJy0TbYPUEu7s3b9vebFORfNw2jMil9GFR8f8Kyxi+A=;
-        b=bCQYyOPRkjHTKs33fFEDNhPfESh+o9xiJW/cyWh3rXQZfPuR+Fa/Tkzb8evFj9EY1ZJ5PH
-        ZXIeKLfL6e4ReDuTlcUUFJf/glrBZXLYHENu3BiRck2LflVURtYnnjDp4mTXvd/7Mtse1p
-        G8kRNJUDndSyenBS8PxlyruPnywfs18=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-en1edNvDNfSL7eZVwJpQ9A-1; Fri, 22 Oct 2021 10:51:47 -0400
-X-MC-Unique: en1edNvDNfSL7eZVwJpQ9A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DDA81006AA6;
-        Fri, 22 Oct 2021 14:51:46 +0000 (UTC)
-Received: from starship (unknown [10.40.192.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8748E5D9DE;
-        Fri, 22 Oct 2021 14:51:42 +0000 (UTC)
-Message-ID: <5769f5eca1d55f9d94a2fe6d957041b3fb856a12.camel@redhat.com>
-Subject: Re: [PATCH v3 8/8] nSVM: remove unnecessary parameter in
- nested_vmcb_check_controls
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 22 Oct 2021 17:51:41 +0300
-In-Reply-To: <20211011143702.1786568-9-eesposit@redhat.com>
-References: <20211011143702.1786568-1-eesposit@redhat.com>
-         <20211011143702.1786568-9-eesposit@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Fri, 22 Oct 2021 10:59:11 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED7DC061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:56:53 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 67so7574908yba.6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 07:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xJta1LgbGikUaHeLMB8kAoU0t7xQlrmtTQ9nyeUNTBQ=;
+        b=pSvSBNfOJuEMbAhhFhVbSuj2ODm9tTRno/unAAt1EDe971a40kvDf5akrEHB3AatmF
+         MXCSYedNalukwZoghqjacHYTzadBTdcUq2EiIjwRaua/RBMz4KCnYzI3FFj106IQ+ATq
+         UKkZVhQO+z2SQOUrW4SJgas/9zcVpdQE8bA2vyAAtTpdl2kWn8fbgxDhiANE+d5dhfo3
+         KE+4WfzV6L6SlDfmahgxygwV/a1HKnKz9HjPT3yMlUqnG+DMl53JRunr4J3BkazZPTgO
+         3U1DJLFcaIg0Xv16Om2brTyC0TgF7veIAtKz5xDfWaFa142KaJQVh61HxGp6VVcNpd14
+         eJ/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xJta1LgbGikUaHeLMB8kAoU0t7xQlrmtTQ9nyeUNTBQ=;
+        b=j7tSZsnwSw5MYr4pTcJ1GNc1JlaB2QtO6eEvPFJiHRK6+1+A5VTzLHKc4SHBy96eUE
+         N093noRwu9XQC7zsmv/mUhMYy8mmOHBR5I7+r7RCN2tTX4qywxu8DoYpIySr0IQ7+7uo
+         d3OQx/LL06oFuyBS6+3DvYanPD/vtTMHwfBL1L3SaeZmWgS7V8pylwRlcsNhNCj1sSK8
+         Of/HscjKdZIuLC5eDavBnDMoQJ5azj5UyJQxty7+sINCIp8SNGOYyvBtQn9iHGx+cDdf
+         q7wi2JPVbfJoSSrxJ801j1blLZC2nXhrSElGyXUtlUG2RFWlRQrCp4aFed7FPd5gtn+V
+         VVlQ==
+X-Gm-Message-State: AOAM530UNw2YQjE8cer5p/wRZlLHRnvUjiMrGWRYKJShKeSSjiiS2DXA
+        NwQEJH3eieWhYjO2SWsBRZ02Qa8VkB2tLeJXVcw=
+X-Google-Smtp-Source: ABdhPJwQ8YKApfhcSCGdyFijKioRrFOwGLLjqapBaunO/xsdVEnOUhcTteiHxyfCwknFhBGe0ozH32t0W/oEzAZksk0=
+X-Received: by 2002:a05:6902:701:: with SMTP id k1mr280979ybt.298.1634914612428;
+ Fri, 22 Oct 2021 07:56:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20211022144040.3418284-1-javierm@redhat.com>
+In-Reply-To: <20211022144040.3418284-1-javierm@redhat.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Fri, 22 Oct 2021 10:56:16 -0400
+Message-ID: <CAEg-Je_v0zvOs1dOZ3P0qsPDO7LC8xk0zxQBLH6gr65V82dnPA@mail.gmail.com>
+Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
+ framebuffers removal
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-11 at 10:37 -0400, Emanuele Giuseppe Esposito wrote:
-> Just as in nested_vmcb_valid_sregs, we only need the vcpu param
-> to perform the checks on vmcb nested state, since we always
-> look at the cached fields.
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+On Fri, Oct 22, 2021 at 10:40 AM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+>
+> The simpledrm driver allows to use the frame buffer that was set-up by th=
+e
+> firmware. This gives early video output before the platform DRM driver is
+> probed and takes over.
+>
+> But it would be useful to have a way to disable this take over by the rea=
+l
+> DRM drivers. For example, there may be bugs in the DRM drivers that could
+> cause the display output to not work correctly.
+>
+> For those cases, it would be good to keep the simpledrm driver instead an=
+d
+> at least get a working display as set-up by the firmware.
+>
+> Let's add a drm.remove_fb boolean kernel command line parameter, that whe=
+n
+> set to false will prevent the conflicting framebuffers to being removed.
+>
+> Since the drivers call drm_aperture_remove_conflicting_framebuffers() ver=
+y
+> early in their probe callback, this will cause the drivers' probe to fail=
+.
+>
+> Thanks to Neal Gompa for the suggestion and Thomas Zimmermann for the ide=
+a
+> on how this could be implemented.
+>
+> Suggested-by: Neal Gompa <ngompa13@gmail.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 > ---
->  arch/x86/kvm/svm/nested.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 13be1002ad1c..19bce3819cce 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -209,9 +209,11 @@ static bool nested_svm_check_bitmap_pa(struct kvm_vcpu *vcpu, u64 pa, u32 size)
->  	    kvm_vcpu_is_legal_gpa(vcpu, addr + size - 1);
->  }
->  
-> -static bool nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
-> -				       struct vmcb_ctrl_area_cached *control)
-> +static bool nested_vmcb_check_controls(struct kvm_vcpu *vcpu)
->  {
-> +	struct vcpu_svm *svm = to_svm(vcpu);
-> +	struct vmcb_ctrl_area_cached *control = &svm->nested.ctl;
-> +
->  	if (CC(!vmcb12_is_intercept(control, INTERCEPT_VMRUN)))
->  		return false;
->  
-> @@ -651,7 +653,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
->  	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
->  
->  	if (!nested_vmcb_valid_sregs(vcpu) ||
-> -	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
-> +	    !nested_vmcb_check_controls(vcpu)) {
->  		vmcb12->control.exit_code    = SVM_EXIT_ERR;
->  		vmcb12->control.exit_code_hi = 0;
->  		vmcb12->control.exit_info_1  = 0;
-> @@ -1367,7 +1369,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->  
->  	ret = -EINVAL;
->  	nested_copy_vmcb_control_to_cache(svm, ctl);
-> -	if (!nested_vmcb_check_controls(vcpu, &svm->nested.ctl))
-> +	if (!nested_vmcb_check_controls(vcpu))
->  		goto out_free_ctl;
->  
->  	/*
+> Hello,
+>
+> I'm sending this as an RFC because I wasn't sure about the correct name f=
+or
+> this module parameter, and also if 'remove_fb=3D0' is intitutive or inste=
+ad a
+> parameter that's enabled is preferred (i.e: 'disable_fb_removal=3D1').
+>
 
-Because of the issue I pointed out in patch 7, you probably want:
+In general, I think the patch is fine, but it might make sense to name
+the parameter after the *effect* rather than the *action*. That is,
+the effect of this option is that we don't probe and hand over to a
+more appropriate hardware DRM driver.
 
+Since the effect (in DRM terms) is that we don't use platform DRM
+modules, perhaps we could name the option one of these:
 
-static bool __nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
-                                         struct vmcb_ctrl_area_cached *control)
-{
-	....
-}
+* drm.noplatformdrv
+* drm.simpledrv
+* drm.force_simple
 
-
-static bool nested_vmcb_check_controls(struct kvm_vcpu *vcpu)
-{
-	return __nested_vmcb_check_controls(vcpu, &svm->nested.ctl);
-}
+I'm inclined to say we should use the drm.* namespace for the cmdline
+option because that makes it clear what subsystem it affects. The
+legacy "nomodeset" option kind of sucked because it didn't really tell
+you what that meant, and I'd rather not repeat that mistake.
 
 
 
-Same for nested_vmcb_valid_sregs 
-(maybe you even want to rename it to nested_vmcb_check_save while at it?):
 
-
-static bool __nested_vmcb_check_save(struct kvm_vcpu *vcpu, struct vmcb_save_area_cached *save)
-{
-	...
-}
-
-
-static bool nested_vmcb_check_save(struct kvm_vcpu *vcpu)
-{
-	return __nested_vmcb_check_save(vcpu, &svm->nested.save);
-
-}
-
-
-Best regards,
-	Maxim Levitsky
-
-
-
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
