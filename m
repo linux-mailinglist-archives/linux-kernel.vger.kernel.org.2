@@ -2,159 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EB1436FF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF07A436FF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhJVC3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:29:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231887AbhJVC3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:29:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 257FB613DA
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634869620;
-        bh=E5i+silWbs1r5UQTsWFM1WSBLmfoDJzLk7uPklQY11k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cGZHGCg0VzcsSBFYJ9HVs/7mxNa756cRLZFqMSxeoy0/gGxyyZBOwOhhALu8fvnEc
-         +dhXCOhTShS6mye1gWvJPiE/aq2QJGI1c36pQ1UEsaIWzxBmy5FPV4VXZJrUsE/PlY
-         McQE4Qy9XX3w7H0wkdwsir8vEjBnyiGPgoJRFfEwEVnczVl170iX7MfyaMm4m0kHmj
-         Wj+VFucxoObc7inEYzzSkSevvEf9zsVu1n0FpAp7dWMz+L5SC3ip2XP16IjXB2NGLT
-         kFzhi5J552Jlk+TEacYquT0elJPx7qyV+kAcvAsDcAAKwIGYD2Tc5FDn5Xk6S689AA
-         HqZxFUFk5T9qg==
-Received: by mail-ua1-f52.google.com with SMTP id k28so687601uaa.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:27:00 -0700 (PDT)
-X-Gm-Message-State: AOAM531aSoUKOahR620veBkaucJiZlfSti4kWnKpg9Gk+A2rgeYCDOtK
-        abXo4G6ydUXhOLcYXp60amRerjBpKQGIht0JQJk=
-X-Google-Smtp-Source: ABdhPJwFrlQkji5/T3quIOABdZBsuG6/z8XG5+RL4oS/xrLElhWy+BNe/3eKV2xRfyndFnnu4RjbIrTgteDNSX8+lIk=
-X-Received: by 2002:a05:6102:c4d:: with SMTP id y13mr11538365vss.33.1634869619073;
- Thu, 21 Oct 2021 19:26:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211021180236.37428-1-mark.rutland@arm.com> <20211021180236.37428-12-mark.rutland@arm.com>
- <CAJF2gTQOtz_=0anK0SdwJJ+Nu+eX1DKRMP+MMiFwpojgf43nyg@mail.gmail.com>
-In-Reply-To: <CAJF2gTQOtz_=0anK0SdwJJ+Nu+eX1DKRMP+MMiFwpojgf43nyg@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 22 Oct 2021 10:26:48 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTS7pWBBaYmNNuzGUT4DBkQtWVvyzFBrR02CMms1yCQHvg@mail.gmail.com>
-Message-ID: <CAJF2gTS7pWBBaYmNNuzGUT4DBkQtWVvyzFBrR02CMms1yCQHvg@mail.gmail.com>
-Subject: Re: [PATCH 11/15] irq: csky: perform irqentry in entry code
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>, kernelfans@gmail.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        vgupta@kernel.org, Will Deacon <will@kernel.org>
+        id S232263AbhJVCbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhJVCbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 22:31:22 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB6DC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:29:05 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id jz23-20020a17090b14d700b001a1d69b0215so947223pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:29:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=5ZMpMtjR+wLOolLwIfiGLGJ0aQUfB1I4d9AgzhjDlQE=;
+        b=SMUDcX7nCULVnXJiTLztKbrv7nsnJyfQto4brqP12SZrZqIDlHUN7HpIfWrxUNAuof
+         VNuf9o+sJsUy89BJbqJYJSh88KZVFT7oA7scSZgdfuHoMysrOskKowt22ya+H+bNE2bt
+         7qsqNuAd8mXQyQPPBG4nLL7Pty+MZtKECe9FrIOxjzSpKMDx+kWKn+3C3lm6aV6OHW7d
+         tgf9493Vi78nzGjs9ieoPjidtrct3BeAisWlxFhmqW7BUhixVWMIE32jbK+EFLWgQ8Yh
+         ka5jsqSWrcygTUVRW2aMsbQGwFtJfdZu9zgwhvwlObW9Eub+Xb341Eoh1rlkHi0FfpLu
+         vmMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=5ZMpMtjR+wLOolLwIfiGLGJ0aQUfB1I4d9AgzhjDlQE=;
+        b=n+AEvJ1wqddf65AQuoT0n0QzEm3bK1Bz23VYmNRWf1J7PpewgEJFiwF4AjQ0Q1WxMf
+         ekd0sLOwjO+x0tcNAW+n1GIqQq0M/r60XdnXqN2I//JFOLkC3qGXmPNT72+6PIhjE2hX
+         SVGxZA5A7T42kN1ACtBJK1LXeM72Rk376ZtsUlnKiAsWUm0q+brHysL/wiU4FOCCZnqx
+         cDAIp1qH/2oZoIC9O5qg44k21QCWsnBSg8qZGouOFpaZIgXWV0kMXBrphMq8awOO0RKW
+         iSFCDLOygPQqQHYZEPzpXyXIz6egQ8dzROcWPmaaMsNHR+ZfdOAtdc3peWdaI7GolRPZ
+         CuIw==
+X-Gm-Message-State: AOAM530lXGXs18ak5hEAxWtcc/0T2INWaK1XT0ZM4AeVC+N7NEJTAx7w
+        /psudEg67gG/ttM1qdS9Aesm6Uap+F+U
+X-Google-Smtp-Source: ABdhPJwtLEwAqBwXo0oxWaUpZCjXEkUjOPQSDHYzyzqFzbJOeWVgvxOVF7Io8wGY6faM+UgPKsjXdcI6RGOG
+X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:cc25:d9a3:4b5:37b9])
+ (user=rajatja job=sendgmr) by 2002:aa7:8bd3:0:b0:44c:68b3:a52e with SMTP id
+ s19-20020aa78bd3000000b0044c68b3a52emr9578300pfd.74.1634869744744; Thu, 21
+ Oct 2021 19:29:04 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 19:28:56 -0700
+Message-Id: <20211022022859.1888836-1-rajatja@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH 0/3] i2c: Enable async resume for i2c devices
+From:   Rajat Jain <rajatja@google.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dtor@google.com
+Cc:     Rajat Jain <rajatja@google.com>, rajatxjain@gmail.com,
+        dbasehore@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:19 AM Guo Ren <guoren@kernel.org> wrote:
->
-> On Fri, Oct 22, 2021 at 2:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > In preparation for removing HANDLE_DOMAIN_IRQ_IRQENTRY, have arch/csky
-> > perform all the irqentry accounting in its entry code. As arch/csky uses
-> > GENERIC_IRQ_MULTI_HANDLER, we can use generic_handle_arch_irq() to do
-> > so.
-> >
-> > There should be no functional change as a result of this patch.
-> >
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Guo Ren <guoren@kernel.org>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > ---
-> >  arch/csky/Kconfig        | 1 -
-> >  arch/csky/kernel/entry.S | 2 +-
-> >  arch/csky/kernel/irq.c   | 5 -----
-> >  3 files changed, 1 insertion(+), 7 deletions(-)
-> >
-> > diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> > index 45f03f674a61..9d4d898df76b 100644
-> > --- a/arch/csky/Kconfig
-> > +++ b/arch/csky/Kconfig
-> > @@ -18,7 +18,6 @@ config CSKY
-> >         select DMA_DIRECT_REMAP
-> >         select IRQ_DOMAIN
-> >         select HANDLE_DOMAIN_IRQ
-> > -       select HANDLE_DOMAIN_IRQ_IRQENTRY
-> >         select DW_APB_TIMER_OF
-> >         select GENERIC_IOREMAP
-> >         select GENERIC_LIB_ASHLDI3
-> > diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
-> > index 00e3c8ebf9b8..a4ababf25e24 100644
-> > --- a/arch/csky/kernel/entry.S
-> > +++ b/arch/csky/kernel/entry.S
-> > @@ -249,7 +249,7 @@ ENTRY(csky_irq)
-> >
-> >
-> >         mov     a0, sp
-> > -       jbsr    csky_do_IRQ
-> > +       jbsr    generic_handle_arch_irq
-> >
-> >         jmpi    ret_from_exception
-> >
-> > diff --git a/arch/csky/kernel/irq.c b/arch/csky/kernel/irq.c
-> > index 03a1930f1cbb..fcdaf3156286 100644
-> > --- a/arch/csky/kernel/irq.c
-> > +++ b/arch/csky/kernel/irq.c
-> > @@ -15,8 +15,3 @@ void __init init_IRQ(void)
-> >         setup_smp_ipi();
-> >  #endif
-> >  }
-> > -
-> > -asmlinkage void __irq_entry csky_do_IRQ(struct pt_regs *regs)
-> > -{
-> > -       handle_arch_irq(regs);
-> > -}
->
-> Seems the previous code has lost old_regs save/restore?
->
-> +       struct pt_regs *old_regs;
-> +
-> +       irq_enter();
-> +       old_regs = set_irq_regs(regs);
-> +       handle_arch_irq(regs);
-> +       set_irq_regs(old_regs);
-> +       irq_exit();
+PM Core allows buses and drivers to specify if they'd like their devices
+to suspend/resume synchronously or asynchronously. When resuming:
 
-Sorry, handle_domain_irq has done it, and C-SKY's IPI is in the
-handle_domain_irq.
+1) SYNCHRONOUS DEVICES:
+ - All synchronous devices (system wide!) are resumed in a single thread,
+   serially i.e. one after the other. So their resume latencies add up,
+   and also, this results in unnecessary and unnatural waiting order.
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+   In my current system (total resume time ~895ms) and this is the trend
+   on almost all chromebooks in the past 3-4 years (we carry patch3 in
+   our tree already, without which it would be even more worse):
+   https://rajatxjain.github.io/public_shared/resume_before_patches.html
+   As you can see I2C devices do not even begin to resume until 450ms,
+   waiting unnaturally for another device i915 to finish resuming: 
 
->
-> > --
-> > 2.11.0
-> >
->
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
+   I2C touchscreen device (resume latency = 374 ms) - asynchronous
+   -> (waiting on) I2C adapter resume (synchronous)
+     -> (waiting on) Designware resume (synchronous)
+       -> (waiting on) intel_backlight resume (synchronous)
+         -> (waiting on) its PARENT i915 resume (asynchronous resume
+                                                       time = 376ms)
+   As you can see the two biggest resume routines are both run serially
+   after one another (even though they don't have any real dependency)
+   thus increasing the system critical resume path. If we can run them
+   concurrently, we can cut down the system resume time considerably. 
+ 
+2) ASYNCHRONOUS DEVICES: 
+- On the other hand, all asynchronous devices's resume routines are
+  scheduled so they can run in parallel with other asynchronous
+  routines. PM core still ensures for both async/sync devices that:
+   - All parent child relations are honored.
+   - Any device dependencies are honored. Device dependencies between
+     any 2 unrelated devices can be specified using device_link_add().
+   - Async resume devices are sychnronized at the end of each
+     suspend/resume phase, before moving onto next.
 
+   With these patches in place, the I2C devices can resume in parallel
+   with i915: 
+   https://rajatxjain.github.io/public_shared/resume_after_patch.html
 
+As far as I understand, the only reason we might not want a device to be
+marked for asynchronous resume is if we suspect it cannot handle
+concurrent resume with other devices, which does not look to be the
+case. 
+    
+This patchset marks the designware, the I2c adapters, and the i2c 
+clients for asynchronous suspend/resume. In case it helps to gain any
+confidence, the patch 3 (for i2c clients) has been included and shipping
+on all our chromebooks for the past 3+ years, and has not shown any
+issues. The designware and i2c adapters should be easier.
+
+Derek Basehore (1):
+  i2c: enable async suspend/resume on i2c client devices
+
+Rajat Jain (2):
+  i2c: designware: Enable async suspend / resume of designware devices
+  i2c: enable async suspend/resume for i2c adapters
+
+ drivers/i2c/busses/i2c-designware-platdrv.c | 2 ++
+ drivers/i2c/i2c-core-base.c                 | 2 ++
+ 2 files changed, 4 insertions(+)
 
 -- 
-Best Regards
- Guo Ren
+2.33.0.1079.g6e70778dc9-goog
 
-ML: https://lore.kernel.org/linux-csky/
