@@ -2,221 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F24437C63
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722B1437C5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhJVSBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:01:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:57334 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233975AbhJVSBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:01:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1B6B1063;
-        Fri, 22 Oct 2021 10:59:02 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DC623F73D;
-        Fri, 22 Oct 2021 10:58:57 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 18:58:54 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vladimir Murzin <vladimir.murzin@arm.com>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        maz@kernel.org, nickhu@andestech.com, palmer@dabbelt.com,
-        paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, torvalds@linux-foundation.org,
-        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
-Subject: Re: [PATCH 09/15] irq: arm: perform irqentry in entry code
-Message-ID: <20211022175854.GK86184@C02TD0UTHF1T.local>
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-10-mark.rutland@arm.com>
- <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
- <20211022153602.GE86184@C02TD0UTHF1T.local>
- <1dc39ac9-1a05-cf8d-2aef-633903a6338d@arm.com>
+        id S233836AbhJVSBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:01:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40816 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233278AbhJVSBQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 14:01:16 -0400
+Date:   Fri, 22 Oct 2021 17:58:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634925537;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sCcpap8OVe3PPIHU8LWOB8VyXxCtSLtVw5cEKKnSTnY=;
+        b=dJ/e1xxyzXGJiMBwcbtyXwJLka6n310ezkco2TK9nWQGnYixLyrmbaWe2cV28TIBGGitOj
+        ZAYQqP1pO08wvB7G1sVRN0HvSJw5TmWPrcVbGuiU7fSy1IP5suN98rwL+pUqmL6ytx1pdp
+        u7itTOu0ig6Rru4VmSH79wl+NVjQW7pcMnuybY77f6nPu1EB5Wy384+SEkMIbjwYgNB/Jt
+        pbVcKJ6eOyIrGd7UUdF7qqSWFdko4Ke8tRHnkgtRwEKG387sgniXiAafVchj3y+IoRF1Qw
+        YWvXpdInoUtclpe1efS7gjH8mvLHl/zk0C73wYWGvca4PklIifqJQofN9Q261Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634925537;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sCcpap8OVe3PPIHU8LWOB8VyXxCtSLtVw5cEKKnSTnY=;
+        b=bjRBRef1aHst1RhocHLaaOQwFA+QrqmzNXQfiQpqdDjK3RJ12MIaa+RIKr3UEaGUZvi7kd
+        Zgu3Sa3lnXt0uyDA==
+From:   "tip-bot2 for Paolo Bonzini" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx/virt: implement SGX_IOC_VEPC_REMOVE ioctl
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211021201155.1523989-3-pbonzini@redhat.com>
+References: <20211021201155.1523989-3-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1dc39ac9-1a05-cf8d-2aef-633903a6338d@arm.com>
+Message-ID: <163492553586.626.6203146268884288075.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:34:20PM +0100, Vladimir Murzin wrote:
-> On 10/22/21 4:36 PM, Mark Rutland wrote:
-> > On Fri, Oct 22, 2021 at 04:18:18PM +0100, Vladimir Murzin wrote:
-> >> Hi Mark,
-> >>
-> >> On 10/21/21 7:02 PM, Mark Rutland wrote:
-> >>> +/*
-> >>> + * TODO: restructure the ARMv7M entry logic so that this entry logic can live
-> >>> + * in arch code.
-> >>> + */
-> >>> +asmlinkage void __exception_irq_entry
-> >>> +static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
-> >>
-> >> I'm seeing build time failure...
-> >>
-> >> drivers/irqchip/irq-nvic.c:50:8: error: two or more data types in declaration specifiers
-> >>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
-> >>         ^~~~
-> >> drivers/irqchip/irq-nvic.c:50:13: warning: 'nvic_handle_irq' defined but not used [-Wunused-function]
-> >>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
-> >>
-> >> I've fixed that locally and planing to give it a go...
-> > 
-> > Ah, whoops. I've removed the extraneous `static void` from
-> > nvic_handle_irq() and build tested that as part of stm32_defconfig.
-> > 
-> > The updated version is in my irq/handle-domain-irq branch at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
-> > 
-> 
-> $ cat /proc/interrupts
->            CPU0       
->  16:         24  nvic_irq   4 Edge      mps2-clkevt
->  17:          0  nvic_irq  32 Edge      mps2-uart-rx
->  18:          6  nvic_irq  33 Edge      mps2-uart-tx
->  19:          0  nvic_irq  47 Edge      mps2-uart-overrun
-> Err:          0
-> 
-> So if it helps feel free to add my 
-> 
-> Tested-by: Vladimir Murzin <vladimir.murzin@arm.com> # ARMv7M
+The following commit has been merged into the x86/sgx branch of tip:
 
-Thanks!
+Commit-ID:     ae095b16fc652f459e6c16a256834985c85ecc4d
+Gitweb:        https://git.kernel.org/tip/ae095b16fc652f459e6c16a256834985c85ecc4d
+Author:        Paolo Bonzini <pbonzini@redhat.com>
+AuthorDate:    Thu, 21 Oct 2021 16:11:55 -04:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 22 Oct 2021 08:32:12 -07:00
 
-I've folded that in and uppdated the branch.
+x86/sgx/virt: implement SGX_IOC_VEPC_REMOVE ioctl
 
-> As for TODO, is [1] look something you have been thinking of? IIUC,
-> the show stopper is that hwirq is being passed from exception entry
-> which retrieved via xPSR (IPSR to be precise). OTOH hwirq also available
-> via Interrupt Controller Status Register (ICSR) thus can be used in
-> driver itself... I gave [1] a go and it runs fine, yet I admit I might
-> be missing something...
+For bare-metal SGX on real hardware, the hardware provides guarantees
+SGX state at reboot.  For instance, all pages start out uninitialized.
+The vepc driver provides a similar guarantee today for freshly-opened
+vepc instances, but guests such as Windows expect all pages to be in
+uninitialized state on startup, including after every guest reboot.
 
-I hadn't thought about it in much detail, but that looks good!
+Some userspace implementations of virtual SGX would rather avoid having
+to close and reopen the /dev/sgx_vepc file descriptor and re-mmap the
+virtual EPC.  For example, they could sandbox themselves after the guest
+starts and forbid further calls to open(), in order to mitigate exploits
+from untrusted guests.
 
-I was wondering if we needed something like a
-handle_arch_vectored_irq(), but if we can rely on the ICSR that seems
-simpler overall. I'm not at all familiar with M-class, so I'm not sure
-if there are pitfalls in this area.
+Therefore, add a ioctl that does this with EREMOVE.  Userspace can
+invoke the ioctl to bring its vEPC pages back to uninitialized state.
+There is a possibility that some pages fail to be removed if they are
+SECS pages, and the child and SECS pages could be in separate vEPC
+regions.  Therefore, the ioctl returns the number of EREMOVE failures,
+telling userspace to try the ioctl again after it's done with all
+vEPC regions.  A more verbose description of the correct usage and
+the possible error conditions is documented in sgx.rst.
 
-Thanks,
-Mark.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lkml.kernel.org/r/20211021201155.1523989-3-pbonzini@redhat.com
+---
+ Documentation/x86/sgx.rst       | 35 +++++++++++++++++++++-
+ arch/x86/include/uapi/asm/sgx.h |  2 +-
+ arch/x86/kernel/cpu/sgx/virt.c  | 53 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 90 insertions(+)
 
-> 
-> [1] 
-> 
-> ---
->  arch/arm/include/asm/v7m.h  |  3 ++-
->  arch/arm/kernel/entry-v7m.S | 10 +++-------
->  drivers/irqchip/Kconfig     |  1 +
->  drivers/irqchip/irq-nvic.c  | 21 +++++----------------
->  4 files changed, 11 insertions(+), 24 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/v7m.h b/arch/arm/include/asm/v7m.h
-> index b1bad30b15d2..f047629887e7 100644
-> --- a/arch/arm/include/asm/v7m.h
-> +++ b/arch/arm/include/asm/v7m.h
-> @@ -13,6 +13,7 @@
->  #define V7M_SCB_ICSR_PENDSVSET			(1 << 28)
->  #define V7M_SCB_ICSR_PENDSVCLR			(1 << 27)
->  #define V7M_SCB_ICSR_RETTOBASE			(1 << 11)
-> +#define V7M_SCB_ICSR_VECTACTIVE			0x000001ff
->  
->  #define V7M_SCB_VTOR			0x08
->  
-> @@ -38,7 +39,7 @@
->  #define V7M_SCB_SHCSR_MEMFAULTENA		(1 << 16)
->  
->  #define V7M_xPSR_FRAMEPTRALIGN			0x00000200
-> -#define V7M_xPSR_EXCEPTIONNO			0x000001ff
-> +#define V7M_xPSR_EXCEPTIONNO			V7M_SCB_ICSR_VECTACTIVE
->  
->  /*
->   * When branching to an address that has bits [31:28] == 0xf an exception return
-> diff --git a/arch/arm/kernel/entry-v7m.S b/arch/arm/kernel/entry-v7m.S
-> index 2e872a248e31..901c7cd1b1ce 100644
-> --- a/arch/arm/kernel/entry-v7m.S
-> +++ b/arch/arm/kernel/entry-v7m.S
-> @@ -72,14 +72,10 @@ __irq_entry:
->  	@
->  	@ Invoke the IRQ handler
->  	@
-> -	mrs	r0, ipsr
-> -	ldr	r1, =V7M_xPSR_EXCEPTIONNO
-> -	and	r0, r1
-> -	sub	r0, #16
-> -	mov	r1, sp
-> +	mov	r0, sp
->  	stmdb	sp!, {lr}
-> -	@ routine called with r0 = irq number, r1 = struct pt_regs *
-> -	bl	nvic_handle_irq
-> +	@ routine called with r0 = struct pt_regs *
-> +	bl	generic_handle_arch_irq
->  
->  	pop	{lr}
->  	@
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index aca7b595c4c7..b59a0bc0cd80 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -58,6 +58,7 @@ config ARM_NVIC
->  	bool
->  	select IRQ_DOMAIN_HIERARCHY
->  	select GENERIC_IRQ_CHIP
-> +	select GENERIC_IRQ_MULTI_HANDLER
->  
->  config ARM_VIC
->  	bool
-> diff --git a/drivers/irqchip/irq-nvic.c b/drivers/irqchip/irq-nvic.c
-> index 63bac3f78863..52ff0ed19f2f 100644
-> --- a/drivers/irqchip/irq-nvic.c
-> +++ b/drivers/irqchip/irq-nvic.c
-> @@ -37,25 +37,13 @@
->  
->  static struct irq_domain *nvic_irq_domain;
->  
-> -static void __nvic_handle_irq(irq_hw_number_t hwirq)
-> +static void __irq_entry nvic_handle_irq(struct pt_regs *regs)
->  {
-> -	generic_handle_domain_irq(nvic_irq_domain, hwirq);
-> -}
-> +	unsigned long icsr = readl_relaxed(BASEADDR_V7M_SCB + V7M_SCB_ICSR);
-> +	irq_hw_number_t hwirq =  (icsr & V7M_SCB_ICSR_VECTACTIVE) - 16;
->  
-> -/*
-> - * TODO: restructure the ARMv7M entry logic so that this entry logic can live
-> - * in arch code.
-> - */
-> -asmlinkage void __exception_irq_entry
-> -nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
-> -{
-> -	struct pt_regs *old_regs;
->  
-> -	irq_enter();
-> -	old_regs = set_irq_regs(regs);
-> -	__nvic_handle_irq(hwirq);
-> -	set_irq_regs(old_regs);
-> -	irq_exit();
-> +	generic_handle_domain_irq(nvic_irq_domain, hwirq);
->  }
->  
->  static int nvic_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
-> @@ -141,6 +129,7 @@ static int __init nvic_of_init(struct device_node *node,
->  	for (i = 0; i < irqs; i += 4)
->  		writel_relaxed(0, nvic_base + NVIC_IPR + i);
->  
-> +	set_handle_irq(nvic_handle_irq);
->  	return 0;
->  }
->  IRQCHIP_DECLARE(armv7m_nvic, "arm,armv7m-nvic", nvic_of_init);
-> 
-> > Thanks,
-> > Mark.
-> > 
-> 
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96..a608f66 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -250,3 +250,38 @@ user wants to deploy SGX applications both on the host and in guests
+ on the same machine, the user should reserve enough EPC (by taking out
+ total virtual EPC size of all SGX VMs from the physical EPC size) for
+ host SGX applications so they can run with acceptable performance.
++
++Architectural behavior is to restore all EPC pages to an uninitialized
++state also after a guest reboot.  Because this state can be reached only
++through the privileged ``ENCLS[EREMOVE]`` instruction, ``/dev/sgx_vepc``
++provides the ``SGX_IOC_VEPC_REMOVE_ALL`` ioctl to execute the instruction
++on all pages in the virtual EPC.
++
++``EREMOVE`` can fail for three reasons.  Userspace must pay attention
++to expected failures and handle them as follows:
++
++1. Page removal will always fail when any thread is running in the
++   enclave to which the page belongs.  In this case the ioctl will
++   return ``EBUSY`` independent of whether it has successfully removed
++   some pages; userspace can avoid these failures by preventing execution
++   of any vcpu which maps the virtual EPC.
++
++2. Page removal will cause a general protection fault if two calls to
++   ``EREMOVE`` happen concurrently for pages that refer to the same
++   "SECS" metadata pages.  This can happen if there are concurrent
++   invocations to ``SGX_IOC_VEPC_REMOVE_ALL``, or if a ``/dev/sgx_vepc``
++   file descriptor in the guest is closed at the same time as
++   ``SGX_IOC_VEPC_REMOVE_ALL``; it will also be reported as ``EBUSY``.
++   This can be avoided in userspace by serializing calls to the ioctl()
++   and to close(), but in general it should not be a problem.
++
++3. Finally, page removal will fail for SECS metadata pages which still
++   have child pages.  Child pages can be removed by executing
++   ``SGX_IOC_VEPC_REMOVE_ALL`` on all ``/dev/sgx_vepc`` file descriptors
++   mapped into the guest.  This means that the ioctl() must be called
++   twice: an initial set of calls to remove child pages and a subsequent
++   set of calls to remove SECS pages.  The second set of calls is only
++   required for those mappings that returned a nonzero value from the
++   first call.  It indicates a bug in the kernel or the userspace client
++   if any of the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls has
++   a return code other than 0.
+diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+index 9690d68..f4b8158 100644
+--- a/arch/x86/include/uapi/asm/sgx.h
++++ b/arch/x86/include/uapi/asm/sgx.h
+@@ -27,6 +27,8 @@ enum sgx_page_flags {
+ 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
+ #define SGX_IOC_ENCLAVE_PROVISION \
+ 	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_provision)
++#define SGX_IOC_VEPC_REMOVE_ALL \
++	_IO(SGX_MAGIC, 0x04)
+ 
+ /**
+  * struct sgx_enclave_create - parameter structure for the
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+index 59cdf3f..6a77a14 100644
+--- a/arch/x86/kernel/cpu/sgx/virt.c
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -150,6 +150,41 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
+ 	return 0;
+ }
+ 
++static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
++{
++	struct sgx_epc_page *entry;
++	unsigned long index;
++	long failures = 0;
++
++	xa_for_each(&vepc->page_array, index, entry) {
++		int ret = sgx_vepc_remove_page(entry);
++		if (ret) {
++			if (ret == SGX_CHILD_PRESENT) {
++				/* The page is a SECS, userspace will retry.  */
++				failures++;
++			} else {
++				/*
++				 * Report errors due to #GP or SGX_ENCLAVE_ACT; do not
++				 * WARN, as userspace can induce said failures by
++				 * calling the ioctl concurrently on multiple vEPCs or
++				 * while one or more CPUs is running the enclave.  Only
++				 * a #PF on EREMOVE indicates a kernel/hardware issue.
++				 */
++				WARN_ON_ONCE(encls_faulted(ret) &&
++					     ENCLS_TRAPNR(ret) != X86_TRAP_GP);
++				return -EBUSY;
++			}
++		}
++		cond_resched();
++	}
++
++	/*
++	 * Return the number of SECS pages that failed to be removed, so
++	 * userspace knows that it has to retry.
++	 */
++	return failures;
++}
++
+ static int sgx_vepc_release(struct inode *inode, struct file *file)
+ {
+ 	struct sgx_vepc *vepc = file->private_data;
+@@ -235,9 +270,27 @@ static int sgx_vepc_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
++static long sgx_vepc_ioctl(struct file *file,
++			   unsigned int cmd, unsigned long arg)
++{
++	struct sgx_vepc *vepc = file->private_data;
++
++	switch (cmd) {
++	case SGX_IOC_VEPC_REMOVE_ALL:
++		if (arg)
++			return -EINVAL;
++		return sgx_vepc_remove_all(vepc);
++
++	default:
++		return -ENOTTY;
++	}
++}
++
+ static const struct file_operations sgx_vepc_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= sgx_vepc_open,
++	.unlocked_ioctl	= sgx_vepc_ioctl,
++	.compat_ioctl	= sgx_vepc_ioctl,
+ 	.release	= sgx_vepc_release,
+ 	.mmap		= sgx_vepc_mmap,
+ };
