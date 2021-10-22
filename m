@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60464370FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4F4437103
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 06:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhJVEk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 00:40:29 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:53050 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbhJVEk0 (ORCPT
+        id S232033AbhJVEp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 00:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhJVEp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 00:40:26 -0400
-Received: by mail-il1-f199.google.com with SMTP id h6-20020a92c266000000b002590d9f7d14so1750353ild.19
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:38:09 -0700 (PDT)
+        Fri, 22 Oct 2021 00:45:56 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F5AC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:43:39 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id w17so1876549plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 21:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2b8hUCDhenD3A68S7sjLVwnkOcO6p6v7nwBh27Bf6xE=;
+        b=SoM3r/7j/3Px8BWms9I+P9JYjaRtqXm0tpjhcipvjRZ6SDr7GmcfIw8faxA7aHWInJ
+         D+GUlO7Muw+p0A8hbbzBJ97/zYXFIYiI4KyhCh8kB5667qwWQKUDKYAZQxr2Bbid89f/
+         bU1l85s8lG6phRErDbbHbBKytvnNjG2MBaNo9UsaW9m2HBOnj0OvRhTMQvf92gJHti7T
+         6KVmr6qZqQP+xUSJKpoFPj1Qw2QZXCDRXcJn4Rd15U0kdzUPDMg//4C0+LPpor7VFlrh
+         58zWxGMVwhrvP+nTL+0+3ezBtiDTMLZHSO/+Du5sszjtAc+sqyo7i3Gtqc5yeeJ6nmwy
+         cNfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=vchcYTHN/K+H4jbPQN/xLM29fx99UupAlN/YiAlKbjQ=;
-        b=A39EHm/+TLPN+2fMECFsnl8AlgMO4uzf7aQuBPBuGKPyZS2+BRzOglYSwO7+sUTKDz
-         nFcuVBqRlm7ILahF0CzW1/+z+0WReyXOEAzBIDfbPDGcQO/8fSU1S8HeLajIF67usUun
-         IH1xdap6RgTBu8RjVV5T5VYQgGFbnD2aQcVySVU/JESxmbW+Qu33e8XZDC9QZb1K8i+H
-         G5YbgfQRIiQtk+d3QUTXI4tIna9HD2PgBhhiA7YZy38LKzsCSkNEbcxMeJpJsNPsfDOk
-         ziriayaziO5w+7wso+I6VRh24q0tW5mU3Hr7ux7rabe47dQNuegYEF5FSKVf/LoTT/bp
-         X9xQ==
-X-Gm-Message-State: AOAM531NbSUNuEpiZ8OXbfuSMF/euTUDIUVIIs0qiX88wdKxLV21nGte
-        sL5wRbWvjtMlKAy+adHWky7PM92jXaHBwUTWwRI+zt80gyHZ
-X-Google-Smtp-Source: ABdhPJy1vDT/1ZPsCsdLuWYj7qjsyIod7YpOXR1Ia1h3YKr6jTyZXl6US5eEmbFkKtxPmKrAGv1gqDW/3aeULWOj1wlcEyi1IPKL
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2b8hUCDhenD3A68S7sjLVwnkOcO6p6v7nwBh27Bf6xE=;
+        b=rBz/FUnVvstzIGq7WCITM1tcOs68tHdAFA+H25c/o62j3VLNwlhdTl3mNDN1noI9na
+         5v0JNn4bPCpnJmG6RkkkEEb86W5bO0JWsvlTmHwd/96EJuvi6W1GIrcdGHXHXc/+J+Bz
+         sz94nDcbzKvicnwUr/yDJfT8flLJ1ZdlSd+g0+PKjjTikk82jKa+Xuum3JG5lHMCFvl4
+         a5FJlLYDsJrVAODIseX7TSHe4JUyNjzIvJ0Unbfd8IHXCQPYr6V8Cfkk3kSW5h5F0Vcb
+         uzfZays8jmN6a+dAQXFzL4HcaMNAlkFNlBjTqNcN6BRmCt8HHMtQnJhs6nC0DLN/UhxE
+         FnoA==
+X-Gm-Message-State: AOAM531epO57lmE1D7SSqb9JcfaSn9B4ZAYTDZLEroMO3pMxeVzBGJYk
+        lVKDswgwMYXFWaTJIGWh75lQ7w==
+X-Google-Smtp-Source: ABdhPJwsYr7yGuAcdThYvhCb2+nCzIQTaKVAXmFBDnjK3FbIGqmHVsUpgVI6s30sjV81YcvwXZyyGQ==
+X-Received: by 2002:a17:90b:1645:: with SMTP id il5mr11540510pjb.158.1634877819289;
+        Thu, 21 Oct 2021 21:43:39 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id e9sm8693186pfv.189.2021.10.21.21.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 21:43:38 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 10:13:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        David Heidelberg <david@ixit.cz>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+Message-ID: <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
+References: <20211019231905.2974-1-digetx@gmail.com>
+ <YXAr4OlhucAibMlH@robh.at.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2d4d:: with SMTP id d13mr7161427iow.53.1634877489285;
- Thu, 21 Oct 2021 21:38:09 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 21:38:09 -0700
-In-Reply-To: <b9863d9b-11d3-8117-256b-714ae38f5494@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000012fb05cee99477@google.com>
-Subject: Re: [syzbot] INFO: task hung in io_wqe_worker
-From:   syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXAr4OlhucAibMlH@robh.at.kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 20-10-21, 09:46, Rob Herring wrote:
+> On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
+> > Not all OPP table names and OPP entries consist of a single word. In
+> > particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
+> > and OPP entry name to have multi-worded names to silence DT checker
+> > warnings about the multi-word names separated by hyphen.
+> > 
+> > Reviewed-by: David Heidelberg <david@ixit.cz>
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> > index ae3ae4d39843..298cf24af270 100644
+> > --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> > +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> > @@ -22,7 +22,7 @@ select: false
+> >  
+> >  properties:
+> >    $nodename:
+> > -    pattern: '^opp-table(-[a-z0-9]+)?$'
+> > +    pattern: '^opp-table(-[a-z0-9]+)*$'
+> 
+> I don't see how this helps you. What I see needed upstream is a prefix:
+> 
+> '-?opp-table(-[0-9]+)?$'
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: task hung in io_wqe_worker
+I wonder if we should disallow that to keep naming more consistent.
 
-INFO: task iou-wrk-9392:9401 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc2-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:iou-wrk-9392    state:D stack:27952 pid: 9401 ppid:  7038 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0xb44/0x5960 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
- io_worker_exit fs/io-wq.c:183 [inline]
- io_wqe_worker+0x66d/0xc40 fs/io-wq.c:597
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Though really what I'd like to see is the OPP nodes moved into the 
+> device nodes they belong to when appropriate (i.e. when not shared 
+> between multiple devices).
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/27:
- #0: ffffffff8b981ae0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-1 lock held by cron/6230:
- #0: ffff8880b9c31a58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:474
-1 lock held by in:imklog/6237:
- #0: ffff88801db6ad70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
++1
 
-=============================================
+The only reason for keeping it outside was because CPUs were sharing them.
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 27 Comm: khungtaskd Not tainted 5.15.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xc1d/0xf50 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 6872 Comm: kworker/0:4 Not tainted 5.15.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events nsim_dev_trap_report_work
-RIP: 0010:set_canary_byte mm/kfence/core.c:214 [inline]
-RIP: 0010:for_each_canary mm/kfence/core.c:249 [inline]
-RIP: 0010:kfence_guarded_alloc mm/kfence/core.c:321 [inline]
-RIP: 0010:__kfence_alloc+0x635/0xca0 mm/kfence/core.c:779
-Code: 71 8a b8 ff 48 8b 6c 24 10 48 be 00 00 00 00 00 fc ff df 48 c1 ed 03 48 01 f5 4d 39 f7 73 5c e8 81 84 b8 ff 4c 89 f8 45 89 fe <4c> 89 fa 48 c1 e8 03 41 83 e6 07 83 e2 07 48 b9 00 00 00 00 00 fc
-RSP: 0018:ffffc9000548fb48 EFLAGS: 00000093
-RAX: ffff88823bce0d4b RBX: ffffffff9028ec08 RCX: 0000000000000000
-RDX: ffff888079f7d580 RSI: ffffffff81be60df RDI: 0000000000000003
-RBP: fffffbfff2051d8e R08: ffff88823bce0d4b R09: ffffffff8eef500f
-R10: ffffffff81be6131 R11: 0000000000000001 R12: ffff8881441fa000
-R13: 00000000000000e8 R14: 000000003bce0d4b R15: ffff88823bce0d4b
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007efccb07f000 CR3: 000000000b68e000 CR4: 0000000000350ef0
-Call Trace:
- kfence_alloc include/linux/kfence.h:124 [inline]
- slab_alloc_node mm/slub.c:3124 [inline]
- kmem_cache_alloc_node+0x213/0x3d0 mm/slub.c:3242
- __alloc_skb+0x20b/0x340 net/core/skbuff.c:414
- alloc_skb include/linux/skbuff.h:1116 [inline]
- nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:664 [inline]
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:721 [inline]
- nsim_dev_trap_report_work+0x2ac/0xbd0 drivers/net/netdevsim/dev.c:762
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess):
-   0:	71 8a                	jno    0xffffff8c
-   2:	b8 ff 48 8b 6c       	mov    $0x6c8b48ff,%eax
-   7:	24 10                	and    $0x10,%al
-   9:	48 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%rsi
-  10:	fc ff df
-  13:	48 c1 ed 03          	shr    $0x3,%rbp
-  17:	48 01 f5             	add    %rsi,%rbp
-  1a:	4d 39 f7             	cmp    %r14,%r15
-  1d:	73 5c                	jae    0x7b
-  1f:	e8 81 84 b8 ff       	callq  0xffb884a5
-  24:	4c 89 f8             	mov    %r15,%rax
-  27:	45 89 fe             	mov    %r15d,%r14d
-* 2a:	4c 89 fa             	mov    %r15,%rdx <-- trapping instruction
-  2d:	48 c1 e8 03          	shr    $0x3,%rax
-  31:	41 83 e6 07          	and    $0x7,%r14d
-  35:	83 e2 07             	and    $0x7,%edx
-  38:	48                   	rex.W
-  39:	b9 00 00 00 00       	mov    $0x0,%ecx
-  3e:	00 fc                	add    %bh,%ah
-
-
-Tested on:
-
-commit:         b22fa62a io_uring: apply worker limits to previous users
-git tree:       git://git.kernel.dk/linux-block io_uring-5.15
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a3172cb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cf1d1005f4fd6ccb
-dashboard link: https://syzkaller.appspot.com/bug?extid=27d62ee6f256b186883e
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
+-- 
+viresh
