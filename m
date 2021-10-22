@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256EB437373
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F97437376
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 10:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhJVIHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 04:07:44 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41093 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhJVIHn (ORCPT
+        id S232374AbhJVIII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 04:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232343AbhJVIIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:07:43 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HbH2n6Vksz4xbL;
-        Fri, 22 Oct 2021 19:05:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634889924;
-        bh=y7UzlJGSOz7NbfAOaTJWKfNCqFzC+UB+thH/t9IZhp0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EJ3FGQiNmWQwIJJQuaiElVy/7wW40LC8x2h33RIiejYtx9wQ0MWk25x0dT7NyGLxi
-         kYt369kU9g0qpObuuixSZqKwGeGfEwKUFzWj3ZyBRrCIqJ9bYmH1+anysDFKAKsjAQ
-         vgCrA8CfD8zoiyjEsyEuQJoa7P1dUlEhCuROGa+bjHwFHFIcH5yv4olQ0FGXkrxOzU
-         cTNCXW0dCaqRJwOB7iJTwejwB9xgi0EqGXi1zvf0O6EZKrsxxDbZZEkbiK2weWtIyV
-         UQHLMmX01jbDb5lWxMZqGMTZvxglQ3wfGVSGhYIazVsuwvJ7Sjg/dckpSzhhmhffUm
-         WLq9v4G+gTLgw==
-Date:   Fri, 22 Oct 2021 19:05:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>, Arnd Bergmann <arnd@arndb.de>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg, kmem: mark cancel_charge() inline
-Message-ID: <20211022190521.4bb1ed8f@canb.auug.org.au>
-In-Reply-To: <20211022070542.679839-1-arnd@kernel.org>
-References: <20211022070542.679839-1-arnd@kernel.org>
+        Fri, 22 Oct 2021 04:08:06 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658AEC061348
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:05:49 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r10so194087wra.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 01:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LwLOjATYr16Reu88cmUIiFsuPl67ksCMcRHqfpd8xTg=;
+        b=byB4vm/duyudlBLRci0SgANJ0Wauf4h1mxCu9AeH943eO2VqyYEln2BOc8qI8NrEES
+         eXv2Fs8+MIZ41siPMuzbBtpWnKbFQGDSZfqgd5WK49TzTJiqeIq++RoGSBWyKeo374ac
+         t2xFjdSUvjpx97E5IxA/CjSjk+Q7f4SYZhSYYeZy5Jvtld6mHQsTliODHQE+y7ZiW9TX
+         wPcshckxpjxYl9cvaKGzMUrmUQPUWE/nDcKjvD6uSXKIXoyI/9bMxwwrr988txUvhXS3
+         GXA8O/RDETEG8HdL16v1hlsFTJ6xL5z/Kp9r9K/DFkJyUm6rAI9N6ZUs9bDijENN2vZA
+         7JQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LwLOjATYr16Reu88cmUIiFsuPl67ksCMcRHqfpd8xTg=;
+        b=H5uOS5EgTGtK3/U4gpuTHfvmtOonLHZpEzz8tBqAgvZLrtP2cUCgUZnOw5xXJAxxBl
+         Dl/qnEfJRqw7L8nltp1AwRf7XRplj1ETu1CFDPDybKSzjDlIyYiKtOgLWB5wAT1WQQVf
+         4RE0g+YgCy6P//vnn+7wqNBeprifbgNzsMsfdZ/msHG+3IWeCmYk5PIMrYWlGD7i6JYx
+         NTFXaIBqNU4qVDTLUdduMaTU14bJYYYDDw8p05OYxfvultF+Fq8k1JsDFvI1n7CARJfu
+         0v0qhaShyefANcK8gGVZpXRSduHsGfn2cp9sxIIz9XqKP2K6VBQtFrpgSw/SukPgteLO
+         UGsQ==
+X-Gm-Message-State: AOAM5327ufbjJzpdAhk3gmUsK3bXyHi03s2wGVaYC186JrzDKRBCsbzD
+        YiOnPV5WhvmnYswb5TLRxHmodQ==
+X-Google-Smtp-Source: ABdhPJy1gKz+t3xHUGfmL2xIDoRAS+7r13b/9+FPupmzbGivyUoJ3E//1yaY1pzMin2NHQFEyLUtSQ==
+X-Received: by 2002:a05:6000:156e:: with SMTP id 14mr9707827wrz.358.1634889947953;
+        Fri, 22 Oct 2021 01:05:47 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id l6sm7283123wmg.10.2021.10.22.01.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 01:05:47 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 09:05:45 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>, Wolfram Sang <wsa@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] mfd: tps80031: Remove driver
+Message-ID: <YXJw2fX42REHylOy@google.com>
+References: <20211021192258.21968-1-digetx@gmail.com>
+ <20211021192258.21968-4-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/saRK=0Kvrkqc=N/ijlFU0At";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211021192258.21968-4-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/saRK=0Kvrkqc=N/ijlFU0At
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 21 Oct 2021, Dmitry Osipenko wrote:
 
-Hi all,
-
-On Fri, 22 Oct 2021 09:05:35 +0200 Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> cancel_charge() is no longer called for CONFIG_MEMCG_KMEM on NOMMU
-> targets, which causes a compiletime warning:
->=20
-> mm/memcontrol.c:2774:13: error: unused function 'cancel_charge' [-Werror,=
--Wunused-function]
->=20
-> Remove the now-incorrect #ifdef and just mark the function
-> 'inline' like the other related helpers. This is simpler
-> and means we no longer have to match the #ifdef with the
-> caller.
->=20
-> Fixes: 5f3345c17079 ("memcg, kmem: further deprecate kmem.limit_in_bytes")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Driver was upstreamed in 2013 and never got a user, remove it.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
-> The 5f3345c17079 commit is in -mm, so the commit ID is not
-> stable. Feel free to just fold this into the other patch, or
-> take out that reference
-> ---
->  mm/memcontrol.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->=20
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6538595994d2..9edccfeac804 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2770,8 +2770,7 @@ static inline int try_charge(struct mem_cgroup *mem=
-cg, gfp_t gfp_mask,
->  	return try_charge_memcg(memcg, gfp_mask, nr_pages);
->  }
-> =20
-> -#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
-> -static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_page=
-s)
-> +static inline void cancel_charge(struct mem_cgroup *memcg, unsigned int =
-nr_pages)
->  {
->  	if (mem_cgroup_is_root(memcg))
->  		return;
-> @@ -2780,7 +2779,6 @@ static void cancel_charge(struct mem_cgroup *memcg,=
- unsigned int nr_pages)
->  	if (do_memsw_account())
->  		page_counter_uncharge(&memcg->memsw, nr_pages);
->  }
-> -#endif
-> =20
->  static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
->  {
-> --=20
-> 2.29.2
->=20
+>  drivers/mfd/Kconfig          |  14 -
+>  drivers/mfd/Makefile         |   1 -
+>  drivers/mfd/tps80031.c       | 526 -----------------------------
+>  include/linux/mfd/tps80031.h | 637 -----------------------------------
+>  4 files changed, 1178 deletions(-)
+>  delete mode 100644 drivers/mfd/tps80031.c
+>  delete mode 100644 include/linux/mfd/tps80031.h
 
-Added to linux-next today.
+> -static const struct i2c_device_id tps80031_id_table[] = {
+> -	{ "tps80031", TPS80031 },
+> -	{ "tps80032", TPS80032 },
+> -	{ }
+> -};
 
---=20
-Cheers,
-Stephen Rothwell
+This is an I2C driver, right?
 
---Sig_/saRK=0Kvrkqc=N/ijlFU0At
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I was under the impression that Linux could do auto-probing on I2C
+devices?  Such that they do not require platform code or DT in order
+to bind?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFycMEACgkQAVBC80lX
-0Gzniwf/fRSX+NHa237AJ7OKPkwZsfL3jn/JWcd7YuAmUyyr4bzm/lsfrLozQ8yh
-LTRdTkHPmBxKit3L+/nqFV6ugq3IjKirjQIU5fkrufA/yGzp9jS1m0MMep3T6Fuo
-FEVd8nFPDvgECH8/4dZ4YOi56u3y5c/gJnAsrLmAbtQ9Ywy2mFyRYhd/C1bB6OCF
-Gkg9/s9nIx3w5MkI/xAoY9ZT1U/i4RLdXZWEx+13qO11KjNm0ytJP+Sj/lMQVmiy
-zKpDl6LXARESzTvypv+NZ+KAHylKgk0MlpqV5Ysn9tDj1RkKex1Xysbdk0TahfHw
-1qptAdfizwEJce5gGxHyMvsv+ljl+g==
-=8ouZ
------END PGP SIGNATURE-----
-
---Sig_/saRK=0Kvrkqc=N/ijlFU0At--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
