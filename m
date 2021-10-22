@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642E6437A5E
+	by mail.lfdr.de (Postfix) with ESMTP id AD249437A5F
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhJVP4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbhJVPz5 (ORCPT
+        id S233293AbhJVP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:56:04 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:44963 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229484AbhJVPz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:55:57 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE37C061764;
-        Fri, 22 Oct 2021 08:53:40 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id e10so8606526uab.3;
-        Fri, 22 Oct 2021 08:53:40 -0700 (PDT)
+        Fri, 22 Oct 2021 11:55:59 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id E7ABB81C3F;
+        Fri, 22 Oct 2021 18:53:39 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=o7tbFS9qrfqSlJTs8nJFhBp8hx7F/c4cT0wa5yen+WA=;
-        b=UYyUDNmz2oq8WKKtGEB44bjHW7r4qFVp+HfV5MqQ6bW008fLhs/8SGoVgyoYDf1OSf
-         JKd95p1OCwY1elMNoIrIE9tJvtEquaTSwa+VjNWgdBttuFOo13xddquv5b1NfkymgejH
-         3f5iygTZQbsJT5gjz4t7Y49aWUA+rtNR2seXvrhhg0lSMuP9BWMFwLgDZRKMwRzqpjDV
-         t0Ddq7GKvWaxEm6Dsi+cIBtsHfhZMKYep3Oz9h+zQy7t2YgLxorxTKKpjCUOWS2xZpQE
-         9LznQkFOSaqY4H9EVVxISC9bdxe+mFShjubcl+zMHGod7UaEFNpf6ss6T9Fkw9NCgQVr
-         F/8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=o7tbFS9qrfqSlJTs8nJFhBp8hx7F/c4cT0wa5yen+WA=;
-        b=63uWC9laW1HgRSu6yw1yz3IQjoMB9ZAMNpyAtZ3cvj+LiYIdrt/2vPwpwBeS7DQs5/
-         rw6X7ZNMy6JD9aBGc6kQuOY52SjxRUoAQujM8Xck+zjrGI+6cVigTw9pbyTn9XqpKYQM
-         fvOJoiaMuLHDwWRVtnkTQnqGJlv1jMO9NdplTPZSjSSpTrQj6vYaSCrUueJId+3NfVlD
-         3BjYkPmSnxzBlx5cP+pz5tdMUv8bTmLz+wy+mPqgIRzoIrI+yrlcbhlvqqCUXLN2MQYb
-         /ZmZM2JWXE2GvH3kIchE2O+Io8lXeRJExUbW5R0jq7DEr584nfDKUbEcykKQYs49fL+C
-         gAfg==
-X-Gm-Message-State: AOAM5327mFWXzENOMIPBacR7sP9EkbLyj16ysMBb5+ZgAH/0yJDy3h/J
-        uogUXsVS8ky9PxlxeXp7ggliouWe7doiM2h7HbBRt2m2d3E=
-X-Google-Smtp-Source: ABdhPJzk5OL0oMSoZb+L0++up544jUAsZWSYHmO8+4ftHvjMafms3ps/20awAUBZn6XpcoFIis/Rzuq0a+MaBzThhBI=
-X-Received: by 2002:a67:f544:: with SMTP id z4mr348851vsn.19.1634918019064;
- Fri, 22 Oct 2021 08:53:39 -0700 (PDT)
+        d=paragon-software.com; s=mail; t=1634918019;
+        bh=Lxw5GkdUO2KWgwUcR9Ex5W3ZS1/0b0VHIXt7Vr5Qi6Y=;
+        h=Date:To:CC:From:Subject;
+        b=UzBQYO2a/+BZxw0JTN+IsGvwUR7yTPczHxEy0wJtN9URAQUdks8lSmQ8ITKALUsbH
+         qzU+Ylk/iO01rHQzGoDlijMrOXAwkCd1ieAaK73PAT0bXIkjoo+vIj35WjDlD4Pifd
+         9ybVVGutu6Vu9N0CcuxrKWb2z5J54V0PbFPMtIuU=
+Received: from [192.168.211.69] (192.168.211.69) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 22 Oct 2021 18:53:39 +0300
+Message-ID: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
+Date:   Fri, 22 Oct 2021 18:53:38 +0300
 MIME-Version: 1.0
-From:   Lijun Pan <lijunp213@gmail.com>
-Date:   Fri, 22 Oct 2021 10:53:28 -0500
-Message-ID: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
-Subject: Unsubscription Incident
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH 0/4] fs/ntfs3: Various fixes for xattr and files
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.69]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Various problems were detected by xfstests.
+This series aims to fix them.
 
-From Oct 11, I did not receive any emails from both linux-kernel and
-netdev mailing list. Did anyone encounter the same issue? I subscribed
-again and I can receive incoming emails now. However, I figured out
-that anyone can unsubscribe your email without authentication. Maybe
-it is just a one-time issue that someone accidentally unsubscribed my
-email. But I would recommend that our admin can add one more
-authentication step before unsubscription to make the process more
-secure.
+Konstantin Komarov (4):
+  fs/ntfs3: Keep preallocated only if option prealloc enabled
+  fs/ntfs3: Restore ntfs_xattr_get_acl and ntfs_xattr_set_acl functions
+  fs/ntfs3: Optimize locking in ntfs_save_wsl_perm
+  fs/ntfs3: Update i_ctime when xattr is added
 
-Thanks,
-Lijun
+ fs/ntfs3/file.c  |   2 +-
+ fs/ntfs3/xattr.c | 123 ++++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 113 insertions(+), 12 deletions(-)
+
+-- 
+2.33.0
+
