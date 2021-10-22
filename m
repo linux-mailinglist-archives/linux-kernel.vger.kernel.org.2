@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E35C437EEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0C2437EEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbhJVT7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:59:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41416 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234190AbhJVT6u (ORCPT
+        id S232380AbhJVT7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234235AbhJVT6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:58:50 -0400
-Date:   Fri, 22 Oct 2021 19:56:30 -0000
+        Fri, 22 Oct 2021 15:58:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AA5C061766;
+        Fri, 22 Oct 2021 12:56:33 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 19:56:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634932591;
+        s=2020; t=1634932592;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DTor6TVHpKjixbtYZRLE7C1RWvrGzehOm+tc4i27YPI=;
-        b=k348aGgfjLBY1CMtF6pRM2jwnyEgzrhOfGrB6tUj2/sbVu1MsVnYjbHDUIIwhMnurRfqRf
-        vhRQrAi6njESFgE9Hcjirm/yYELz3jf+DEPUotHF+FTVjCJAfihjs33Ltedmgg7YydWnvh
-        SQlw/Cvwloc3SH/RSpCmLXxGlHI8+8cTyHOfs7I+uHH94q5YxlfRzmbfKkqXo4wMP8I2+B
-        ERnL8nlgcPru4MOjGxkhOo0blkDj2db5SoZaLeqP0VvcOCMBtLOthxUMPaOx7FF9lcq1RF
-        o9Wvh37oAoVZazF/usqdapAEaIhizk1aHNTiOHMq8/JBcogv1AKuLbTzQqOE4Q==
+        bh=Jfje8YW+0qsmZLq0Poj+O1v9foCTTHwZk0N5bqDooj8=;
+        b=V5CztjpAG8FYbI5jEjsoCTBRAiHnQVCRIQkfAsv2qi1xg4W4oQPkM8KR1KdL6OSkaGbXAn
+        RUqYgOKTa/9nnE7t7aEPa+tMXq+rqn72PFbHc5UbFUZ8IlGQ6gPTa+FQ2ToP6B0QZ/JP4h
+        ZFnOqefjDtMap7iktovH+M2xMJBbQLTvDNV6PgzYQZ0vYWnpnv2IgcsB00F9n5pWlBTWHM
+        PIYzxMQaeWhXEnwtY4BqOAG/H7KdgO3t0OGMuEc5CBWBXwNbFRsILUkmevjDaWLuIcNznz
+        P+m3DdgTRwlWNWG3HivsEJ/Oh0xtxEUzYG8uZBfSHb+n5Z8hoHakVX5xnqajLA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634932591;
+        s=2020e; t=1634932592;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DTor6TVHpKjixbtYZRLE7C1RWvrGzehOm+tc4i27YPI=;
-        b=GHqP8bUNqiKrUMeI8Ig6Yer0DsSqwvvArV6G2De1jZqo3qw1B//qoe+1CJntJyOyY+aQhj
-        C4rVoZNcHBFW1vCA==
+        bh=Jfje8YW+0qsmZLq0Poj+O1v9foCTTHwZk0N5bqDooj8=;
+        b=eVbzgI+vNvoUrd+AQhF7wtdZaxn0UpD/+2g3pl3RKV2FgHdVpGQss94LfgT9oJ+NF8CCbT
+        U2c+ZnMLiXFkzGAQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Cleanup fpu__init_system_xstate_size_legacy()
+Subject: [tip: x86/fpu] x86/fpu: Provide struct fpu_config
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211014230739.184014242@linutronix.de>
-References: <20211014230739.184014242@linutronix.de>
+In-Reply-To: <20211014230739.126107370@linutronix.de>
+References: <20211014230739.126107370@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163493259093.626.13694318187887947288.tip-bot2@tip-bot2>
+Message-ID: <163493259162.626.9826889378679636793.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,50 +60,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     617473acdfe45aa9aa2be23cd5b02da7cd2717f8
-Gitweb:        https://git.kernel.org/tip/617473acdfe45aa9aa2be23cd5b02da7cd2717f8
+Commit-ID:     578971f4e228f386ad4d7ce16e979f2ed922de54
+Gitweb:        https://git.kernel.org/tip/578971f4e228f386ad4d7ce16e979f2ed922de54
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 15 Oct 2021 01:09:31 +02:00
+AuthorDate:    Fri, 15 Oct 2021 01:09:29 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 21 Oct 2021 19:18:43 +02:00
+CommitterDate: Thu, 21 Oct 2021 19:17:58 +02:00
 
-x86/fpu: Cleanup fpu__init_system_xstate_size_legacy()
+x86/fpu: Provide struct fpu_config
 
-Clean the function up before making changes.
+Provide a struct to store information about the maximum supported and the
+default feature set and buffer sizes for both user and kernel space.
 
-No functional change.
+This allows quick retrieval of this information for the upcoming support
+for dynamically enabled features.
+
+ [ bp: Add vertical spacing between the struct members. ]
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211014230739.184014242@linutronix.de
+Link: https://lkml.kernel.org/r/20211014230739.126107370@linutronix.de
 ---
- arch/x86/kernel/fpu/init.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/fpu/types.h | 42 +++++++++++++++++++++++++++++++-
+ arch/x86/kernel/fpu/core.c       |  4 +++-
+ 2 files changed, 46 insertions(+)
 
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 65d763f..c9293ad 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -199,17 +199,12 @@ static void __init fpu__init_system_xstate_size_legacy(void)
- 	 * Note that xstate sizes might be overwritten later during
- 	 * fpu__init_system_xstate().
+diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
+index 3a12e97..a32be07 100644
+--- a/arch/x86/include/asm/fpu/types.h
++++ b/arch/x86/include/asm/fpu/types.h
+@@ -378,4 +378,46 @@ struct fpu {
  	 */
--
--	if (!boot_cpu_has(X86_FEATURE_FPU)) {
-+	if (!cpu_feature_enabled(X86_FEATURE_FPU))
- 		fpu_kernel_xstate_size = sizeof(struct swregs_state);
--	} else {
--		if (boot_cpu_has(X86_FEATURE_FXSR))
--			fpu_kernel_xstate_size =
--				sizeof(struct fxregs_state);
--		else
--			fpu_kernel_xstate_size =
--				sizeof(struct fregs_state);
--	}
-+	else if (cpu_feature_enabled(X86_FEATURE_FXSR))
-+		fpu_kernel_xstate_size = sizeof(struct fxregs_state);
-+	else
-+		fpu_kernel_xstate_size = sizeof(struct fregs_state);
+ };
  
- 	fpu_user_xstate_size = fpu_kernel_xstate_size;
- 	fpstate_reset(&current->thread.fpu);
++/*
++ * FPU state configuration data. Initialized at boot time. Read only after init.
++ */
++struct fpu_state_config {
++	/*
++	 * @max_size:
++	 *
++	 * The maximum size of the register state buffer. Includes all
++	 * supported features except independent managed features.
++	 */
++	unsigned int		max_size;
++
++	/*
++	 * @default_size:
++	 *
++	 * The default size of the register state buffer. Includes all
++	 * supported features except independent managed features and
++	 * features which have to be requested by user space before usage.
++	 */
++	unsigned int		default_size;
++
++	/*
++	 * @max_features:
++	 *
++	 * The maximum supported features bitmap. Does not include
++	 * independent managed features.
++	 */
++	u64 max_features;
++
++	/*
++	 * @default_features:
++	 *
++	 * The default supported features bitmap. Does not include
++	 * independent managed features and features which have to
++	 * be requested by user space before usage.
++	 */
++	u64 default_features;
++};
++
++/* FPU state configuration information */
++extern struct fpu_state_config fpu_kernel_cfg, fpu_user_cfg;
++
+ #endif /* _ASM_X86_FPU_H */
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index b497eca..3512bb2 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -25,6 +25,10 @@
+ #define CREATE_TRACE_POINTS
+ #include <asm/trace/fpu.h>
+ 
++/* The FPU state configuration data for kernel and user space */
++struct fpu_state_config	fpu_kernel_cfg __ro_after_init;
++struct fpu_state_config fpu_user_cfg __ro_after_init;
++
+ /*
+  * Represents the initial FPU state. It's mostly (but not completely) zeroes,
+  * depending on the FPU hardware format:
