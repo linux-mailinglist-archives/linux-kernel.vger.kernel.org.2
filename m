@@ -2,192 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BCB43803E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248E4438049
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 00:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbhJVWeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 18:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234336AbhJVWeW (ORCPT
+        id S234452AbhJVWij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 18:38:39 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:33559 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234436AbhJVWii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 18:34:22 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599C3C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:32:04 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g36so1505653lfv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 15:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hZeH/6FHgerT+YH6jl5wZNUAXEzrpwBKg9kN8iwOAaY=;
-        b=yxrVbSMAz/RZ/VDn9pVr3nNNhqz1tYPOSqgH7Wq/2V3kCcr84pdYz4/S1g7ICC/LrA
-         3qVxNxy3gLG4Pt903bQUtQh9X9tKzRAicdo2psctU9sP4ygrueC+ZX8yXEPnQDJvahXe
-         9LkqIi6O6hXopC4bINvgCDObrZ1YA5xzZnsxocyy0tSRe+65bCCmA9w3GVRiyw8nNJp+
-         6qeKRiB92it9IQiWK2Lr/pGCtmEygTxp5bEhaUYNQ3qwlDmIg1lFlXoCTCoBKfZHfdYi
-         oinkZCEILXJCje4mOT1djUNdEQa+JZpZFB92IwtdfCm2eERVtjDGHoR1TPII9LLzgQ0G
-         fG+g==
+        Fri, 22 Oct 2021 18:38:38 -0400
+Received: by mail-ot1-f53.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso6189949otv.0;
+        Fri, 22 Oct 2021 15:36:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hZeH/6FHgerT+YH6jl5wZNUAXEzrpwBKg9kN8iwOAaY=;
-        b=kw3jHFUMFSBM++mkHaySJVm6r1Q7QWM4q0SpDJuKRArSqNPn3v8mKEVBmYLow2HLfR
-         4aM3nBJJlnz9fsdpduGteSQngKpM0XewdDvUMzh5Q2i3YZrBkBPNmzkSj5DFhfOJ/5MV
-         Uqq+pEVXdwnrz44XefZGI0ZAWgn92xTPvrUsaKXQBUX2g1ORtvpZbYk7i/BUEaQsdkFw
-         PDbfs23NGROoO2xlDHhb6ivJVIFjkIBvrdy6BeReERO4TMMtmotNSmu5pqBBziSEwJmt
-         zHil36qMcIqD2ePTkwPBZXsoZjiCvV2nesZl8GUv0LsBSwCLdBvcgTx6kJuY8MlZndGm
-         ov0A==
-X-Gm-Message-State: AOAM533/ls5mGmge88LNH7eUxhM8CFxQ6tB8FbFnclRGdgC2Y+UaQvDn
-        uaW79brHBkR/MoeULwbPT+ho0A==
-X-Google-Smtp-Source: ABdhPJxslEdeY48PfIuW3Id4S4XGhwm9T2BXoWVdP/dYwY8FfGSPxSjLdrvxp+HzyfWXtnIsG9rZBQ==
-X-Received: by 2002:a05:6512:21cb:: with SMTP id d11mr2208016lft.579.1634941922655;
-        Fri, 22 Oct 2021 15:32:02 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id x4sm848531lfq.246.2021.10.22.15.32.01
+        bh=oOXe3VMjgKim4OsLC2/pNiSdoxCkW2CDkjd2aP4EASQ=;
+        b=jcrb5WbHw+bgoj0q7kEOh0OGuFh4PLR/3LceV5z1nbwwlqKw6S118MeZaay89Omg0G
+         udbSsLoX3ckpMVOGoHcOAFKz2IyW9ahXTaYhoRcBbuZS4Ebt4c7IleNAo+iFHFPRIlBK
+         U4HEMyQZnG+IbyMc9rB6DGri/MQpFCQ29dbx07B+0Dd0vkFR8i6Uf5/9+ZMH/Tuzby+l
+         OSQT62zhkWESKzXfpvvk28WvzUJeV06LIHaLvPsV73+Nbo/aGay6Hnw5NX1ABdN4J9Eg
+         XWu1UVGbd3YyjQN2KKAT6QgtWluweyqOlQ47DfOOMyQNX8QBIGnlKmdFpjetD1FhNdq6
+         vh3Q==
+X-Gm-Message-State: AOAM532/nmIi7Qqzri0T5Bt4PdI4dgsx4AIOebDOtprAdTqb3SIK1aGP
+        +QmzriZch6ca5OLHZCd0TIyH0xHwyg==
+X-Google-Smtp-Source: ABdhPJz3YY0oBGgzE95RJYSfRS7Vop51WChSu23ig9VAzKncjIpwvEfV3xpMXLgwneL2AKN6pHrWgA==
+X-Received: by 2002:a05:6830:2386:: with SMTP id l6mr2082728ots.88.1634942180249;
+        Fri, 22 Oct 2021 15:36:20 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id w17sm1981116otm.50.2021.10.22.15.36.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 15:32:02 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id CED1F10315F; Sat, 23 Oct 2021 01:32:06 +0300 (+03)
-Date:   Sat, 23 Oct 2021 01:32:06 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, akpm@linux-foundation.org,
-        willy@infradead.org, song@kernel.org, william.kucharski@oracle.com,
-        hughd@google.com, shy828301@gmail.com
-Subject: Re: [PATCH RESEND] mm, thp: bail out early in collapse_file for
- writeback page
-Message-ID: <20211022223206.2ns74vvfbap2i4p7@box.shutemov.name>
-References: <20211022023052.33114-1-rongwei.wang@linux.alibaba.com>
+        Fri, 22 Oct 2021 15:36:19 -0700 (PDT)
+Received: (nullmailer pid 3294476 invoked by uid 1000);
+        Fri, 22 Oct 2021 22:36:18 -0000
+Date:   Fri, 22 Oct 2021 17:36:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>,
+        linux-spi@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
+ description file to yaml
+Message-ID: <YXM84oCOAr6pSOw2@robh.at.kernel.org>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+ <20211020142809.349347-5-miquel.raynal@bootlin.com>
+ <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
+ <20211021160932.4169f66f@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022023052.33114-1-rongwei.wang@linux.alibaba.com>
+In-Reply-To: <20211021160932.4169f66f@xps13>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:30:52AM +0800, Rongwei Wang wrote:
-> Currently collapse_file does not explicitly check PG_writeback, instead,
-> page_has_private and try_to_release_page are used to filter writeback
-> pages. This does not work for xfs with blocksize equal to or larger
-> than pagesize, because in such case xfs has no page->private.
+On Thu, Oct 21, 2021 at 04:09:32PM +0200, Miquel Raynal wrote:
+> Hi Rob,
 > 
-> This makes collapse_file bail out early for writeback page. Otherwise,
-> xfs end_page_writeback will panic as follows.
+> robh@kernel.org wrote on Wed, 20 Oct 2021 16:14:47 -0500:
 > 
-> page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-> aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-> flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-> raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-> raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-> page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-> page->mem_cgroup:ffff0000c3e9a000
-> ------------[ cut here ]------------
-> kernel BUG at include/linux/mm.h:1212!
-> Internal error: Oops - BUG: 0 [#1] SMP
-> Modules linked in:
-> BUG: Bad page state in process khugepaged  pfn:84ef32
->  xfs(E)
-> page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
->  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-> CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-> pc : end_page_writeback+0x1c0/0x214
-> lr : end_page_writeback+0x1c0/0x214
-> sp : ffff800011ce3cc0
-> x29: ffff800011ce3cc0 x28: 0000000000000000
-> x27: ffff000c04608040 x26: 0000000000000000
-> x25: ffff000c04608040 x24: 0000000000001000
-> x23: ffff0003f88c8530 x22: 0000000000001000
-> x21: ffff0003f88c8530 x20: 0000000000000000
-> x19: fffffe00201bcc80 x18: 0000000000000030
-> x17: 0000000000000000 x16: 0000000000000000
-> x15: ffff000c018f9760 x14: ffffffffffffffff
-> x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-> x11: ffff8000117b69b8 x10: 00000000ffff8000
-> x9 : ffff800010617534 x8 : 0000000000000000
-> x7 : ffff8000114f69b8 x6 : 000000000000000f
-> x5 : 0000000000000000 x4 : 0000000000000000
-> x3 : 0000000000000400 x2 : 0000000000000000
-> x1 : 0000000000000000 x0 : 0000000000000000
-> Call trace:
->  end_page_writeback+0x1c0/0x214
->  iomap_finish_page_writeback+0x13c/0x204
->  iomap_finish_ioend+0xe8/0x19c
->  iomap_writepage_end_bio+0x38/0x50
->  bio_endio+0x168/0x1ec
->  blk_update_request+0x278/0x3f0
->  blk_mq_end_request+0x34/0x15c
->  virtblk_request_done+0x38/0x74 [virtio_blk]
->  blk_done_softirq+0xc4/0x110
->  __do_softirq+0x128/0x38c
->  __irq_exit_rcu+0x118/0x150
->  irq_exit+0x1c/0x30
->  __handle_domain_irq+0x8c/0xf0
->  gic_handle_irq+0x84/0x108
->  el1_irq+0xcc/0x180
->  arch_cpu_idle+0x18/0x40
->  default_idle_call+0x4c/0x1a0
->  cpuidle_idle_call+0x168/0x1e0
->  do_idle+0xb4/0x104
->  cpu_startup_entry+0x30/0x9c
->  secondary_start_kernel+0x104/0x180
-> Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
-> ---[ end trace 4a88c6a074082f8c ]---
-> Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+> > On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
+> > > Let's get rid of spi-nand.txt by converting it to yaml schema. While at
+> > > converting this file, let's actually pull all the generic properties
+> > > from nand-chip.yaml which might apply to a SPI-NAND chip.
+> > > 
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > ---
+> > >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
+> > >  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
+> > >  2 files changed, 27 insertions(+), 5 deletions(-)
+> > >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+> > >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> > >   
+> > 
+> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> > 
+> > yamllint warnings/errors:
+> > 
+> > dtschema/dtc warnings/errors:
+> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> > xargs: dt-doc-validate: exited with status 255; aborting
+> > make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
+> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> > make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
+> > make[1]: *** Waiting for unfinished jobs....
+> > make: *** [Makefile:1441: dt_binding_check] Error 2
 > 
-> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-> Suggested-by: Yang Shi <shy828301@gmail.com>
-> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-> Cc: <stable@vger.kernel.org>
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
+> I am not able to reproduce this error and in general I don't understand
+> it. There is no relationship between this change and
+> snps,dw-apb-ssi.yaml. Also the fact that nand-chip-yaml do not exist,
+> it was just created in the patch before so I wonder how much I should
+> trust this error.
 
-Okay, it makes sense:
+I think you can ignore this. The prior patch should have been applied, 
+but looks like it wasn't. My script's patch applying logic is not what 
+I'd call robust.
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Also, maybe I am not using the tools properly, but it is very hard to
+> send correct bindings at the first try. Running make dt_binding_check
+> takes ages, any change in one yaml file will recheck the entire data
+> base and filtering out on a single yaml file is generally too
+> restrictive and still prints unrelated errors of syntax on other files.
 
-I would also add a sentance in the commit message that PG_writeback
-setting is serialized with page_lock(). I have not had experience with
-writeback and it was something that I had to dig up.
+Do you set 'DT_SCHEMA_FILES'? That will check just the schema you set 
+it to. You still need to not set it at the end because any schema could 
+apply to any example, so we have to check everything.
 
-> ---
->  mm/khugepaged.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 045cc579f724..48de4e1b0783 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
->  				filemap_flush(mapping);
->  				result = SCAN_FAIL;
->  				goto xa_unlocked;
-> +			} else if (PageWriteback(page)) {
-> +				xas_unlock_irq(&xas);
-> +				result = SCAN_FAIL;
-> +				goto xa_unlocked;
->  			} else if (trylock_page(page)) {
->  				get_page(page);
->  				xas_unlock_irq(&xas);
-> @@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
->  			goto out_unlock;
->  		}
->  
-> -		if (!is_shmem && PageDirty(page)) {
-> +		if (!is_shmem && (PageDirty(page) ||
-> +				  PageWriteback(page))) {
->  			/*
->  			 * khugepaged only works on read-only fd, so this
->  			 * page is dirty because it hasn't been flushed
-> -- 
-> 2.27.0
-> 
-> 
+Also using DT_SCHEMA_FILES should be a bit faster with what's queued for 
+5.16.
 
--- 
- Kirill A. Shutemov
+> I don't know how much of this is actually expected and/or if someone is
+> working on it.
+
+Due to python startup times being slow, it turns out to generally be 
+faster to not have make track changes and do things incrementally. 
+That's why all the schema are checked at once (though sharded with 
+xargs). So I'm not really sure there's much we can do. I've certainly 
+investigated it.
+
+Rob
