@@ -2,79 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620DB436EDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4A3436EE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 02:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbhJVAgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 20:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S232192AbhJVAhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 20:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJVAgx (ORCPT
+        with ESMTP id S229512AbhJVAhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:36:53 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E68C061764;
-        Thu, 21 Oct 2021 17:34:37 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id v20so1560122plo.7;
-        Thu, 21 Oct 2021 17:34:37 -0700 (PDT)
+        Thu, 21 Oct 2021 20:37:52 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78C7C061766;
+        Thu, 21 Oct 2021 17:35:35 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id 3so51921ilq.7;
+        Thu, 21 Oct 2021 17:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yqPz9UwGOL2oABwNBSlqj+l8EL/eOZPQBNaJklwRa/Y=;
-        b=Zj0bq3XMN9csha0L+Lyafo/XEJ+3FzTLi3q+OsMfh7ovp6D6xpKprFvgJ6AhxAYB6V
-         QzsJkBx1VcJlr0mlDLn1mrxYWJgSktoIDVmH4+6kd9Kz2RmZ4fAWozhOGT0Hvw+Bo7em
-         OVOAJjObWPnhKZ1fDZSpKMKrbqBdBQRN584mwECQSGM/WoYcmCI6L+ESc/Db1HkQE2ct
-         yVFai21IBH7g4MW3eNDC//ZQTCDHAjJEzBR6PQ+MdsxnyIyXJZhj5MmggOKnIQnRSKFD
-         /KQq5KspfnS4XuUZZsCy9cTLp5JhfEfvTjOxtaGHVGXKLVZgeJIBYTnMhM5AoLZawNmP
-         SKrw==
+         :cc:content-transfer-encoding;
+        bh=4wOTzbqLNYqxGFNwDAYixOtsIL9GISPycQH+77EFemU=;
+        b=YvozeOiT87sbTM6nN+buHxQFa8IoQ0P7Qvwpv7KUJ5Ky1YPYaLuj72DBTC2cVLlHXM
+         2ST6sUvojU1p1+OqgucRhIW4uMAzCVq5Hj9PXhoNxAX+4lsplb/oyFajDXzOTtg8frvw
+         cypbq0e0BAYThQB9tL/0dNqdlibBbDPSEAOJMjjXYBXTHnLn2Gk5ULramCYQGB22q1SB
+         cfG9NdEkCnzH50BMY8vKG/68eNqbO/nvngZdFLQwxwfYxeyYM3pqA88+zGPpWa3/SgTA
+         wcZykSIuI8sc1Ocbe1Bx4xDYSxbF1MsEKDTxYbv4kENmmhkfs+XD2LjMNDGepDtzVAt7
+         2eYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yqPz9UwGOL2oABwNBSlqj+l8EL/eOZPQBNaJklwRa/Y=;
-        b=BnA5Qeq8POWQeqSqLDJP/+4PAKbJvy2k/Ir7INwQ72/Cq4X3Y8IFIqDGsjkNgA391b
-         i/Yv7HbgpDNmIYWcOeNaBIFTnQnmzImLObxc2jxB8br5GbAC7TLl8i/gjV0oucX566VI
-         IxFrjUlfsBn4NVPcCJoa5O3DmbA3cBnPO0mU0tVDvDjV5QmVhGi/7Lwogwd6rNUdPGNF
-         bZvTh5smzlg6wQKsHLOJogVT7eIv67CsB3coDWAQcObdzLmBhrNkBhkrmvQC00RWlGe9
-         jyOx1Ozrm6ncMwVwIaOXjJvz48Xp26K3viCCJLum+IHCwFUMq5C12wiNYXOVng/VNOE+
-         D+sg==
-X-Gm-Message-State: AOAM532FicRn1aB9TKj6XyUm9VJ1UNsvuZI6W4JGl7UShV9ehaSDkM65
-        hB+2E8xeLBjRfoD+t2g57Q4mIlDl7rLALai7pyY=
-X-Google-Smtp-Source: ABdhPJyF09dUixHxh34wDIUzRjS++Vw65D3ix9lvCpIigyHgvAy1i8yfNHIW2r9EiP+fEA0krl9HUx7aOUa8H1lASG0=
-X-Received: by 2002:a17:90b:3148:: with SMTP id ip8mr10296860pjb.62.1634862876489;
- Thu, 21 Oct 2021 17:34:36 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4wOTzbqLNYqxGFNwDAYixOtsIL9GISPycQH+77EFemU=;
+        b=NPvzjTs/O7hyzgSk8E1V/zT9n1bhuBMlXuE5i8JrDJp5CYDjdE7UtzaXlCvHPsIsp3
+         gNZNJ7wUQy3ShIj6uDTPML5W8mQZtp1sh7i+kdzlVZli/ssh191zYWUUCrk2Q4O+dhG1
+         0zuPcs2Lw9JhrF/ZAT9OBdQNVWpoq5pQTrZmzvP6F85zdApiSB50EXp31hxyfuBqvUPE
+         /+M1Yy8Y94vPo4Ocusc3g3ClyHK8kE4vRaHfGBVbv91jDZ/gogb3WHsS+9ukY+oZ9xAz
+         +7T1aSNpjrPTr0Yyl0ABj7iAnbUm2B9coF81FRVYPBYbNk+0GfnHtG/3ztqRZZ2AHq4a
+         f7dA==
+X-Gm-Message-State: AOAM532cfPgfpYwr213F1+kN81KB3u5VxhpfL1x+BTH+nhsdm4IBMAn0
+        pylScZOU+AZdoYHjtnILwbm+feWrHXtYhkeDc+o=
+X-Google-Smtp-Source: ABdhPJwUjjD774ZWmkk3Y98Gmg1kYsj+1guRPYqrCm+yYij8RTzuNK7ayek3KPpOyip8e4cEna5y6Kqmrl1lWOD0pl0=
+X-Received: by 2002:a05:6e02:1bab:: with SMTP id n11mr157789ili.290.1634862935056;
+ Thu, 21 Oct 2021 17:35:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021151528.116818-1-lmb@cloudflare.com> <20211021151528.116818-2-lmb@cloudflare.com>
-In-Reply-To: <20211021151528.116818-2-lmb@cloudflare.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:34:25 -0700
-Message-ID: <CAADnVQLuhuAHe1e0gBZQTDynys5pXwWbp0BOZ6o6+J7a8gun9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <20211020223920.2810727-1-alistair.francis@opensource.wdc.com> <YXFqYJsPYA4c4Fqw@kernel.org>
+In-Reply-To: <YXFqYJsPYA4c4Fqw@kernel.org>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 22 Oct 2021 10:35:08 +1000
+Message-ID: <CAKmqyKMMQ7UaUTaCBHWrrtT-W+s5-ERAx6H97oOdNyCoXG7ngg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] perf bench futex: Call the futex syscall from a function
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Davidlohr Bueso <dbueso@suse.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 8:16 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Thu, Oct 21, 2021 at 11:25 PM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> Allow atomic exchange via RENAME_EXCHANGE when using simple_rename.
-> This affects binderfs, ramfs, hubetlbfs and bpffs. There isn't much
-> to do except update the various *time fields.
+> Em Thu, Oct 21, 2021 at 08:39:17AM +1000, Alistair Francis escreveu:
+> > From: Alistair Francis <alistair.francis@wdc.com>
+> >
+> > In preparation for a more complex futex() function let's convert the
+> > current macro into two functions. We need two functions to avoid
+> > compiler failures as the macro is overloaded.
+> >
+> > This will allow us to include pre-processor conditionals in the futex
+> > syscall functions.
+> >
+> > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> > Acked-by: Davidlohr Bueso <dbueso@suse.de>
+> > ---
+> >  tools/perf/bench/futex.h | 43 ++++++++++++++++++++++++----------------
+> >  1 file changed, 26 insertions(+), 17 deletions(-)
 >
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Right after applying this one:
+>
+> In file included from bench/futex-hash.c:29:
+> bench/futex.h: In function =E2=80=98futex_syscall=E2=80=99:
+> bench/futex.h:52:61: error: =E2=80=98ts32=E2=80=99 undeclared (first use =
+in this function); did you mean =E2=80=98s32=E2=80=99?
+>    52 |         return syscall(SYS_futex, uaddr, op | opflags, val, ts32,=
+ uaddr2, val3);
+>       |                                                             ^~~~
+>       |                                                             s32
 
-Al,
+Sorry about that. There is a copy and paste error here. I have fixed this p=
+atch.
 
-could you please Ack this patch so we can route the whole set through
-bpf-next tree?
+Alistair
+
+> bench/futex.h:52:61: note: each undeclared identifier is reported only on=
+ce for each function it appears in
+> bench/futex.h:49:82: error: unused parameter =E2=80=98timeout=E2=80=99 [-=
+Werror=3Dunused-parameter]
+>    49 | futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, s=
+truct timespec *timeout,
+>       |                                                                 ~=
+~~~~~~~~~~~~~~~~^~~~~~~
+> bench/futex.h:53:1: error: control reaches end of non-void function [-Wer=
+ror=3Dreturn-type]
+>    53 | }
+>       | ^
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp=
+/build/perf/bench/futex-hash.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> In file included from bench/futex-wake-parallel.c:31:
+> bench/futex.h: In function =E2=80=98futex_syscall=E2=80=99:
+> bench/futex.h:52:61: error: =E2=80=98ts32=E2=80=99 undeclared (first use =
+in this function); did you mean =E2=80=98s32=E2=80=99?
+>    52 |         return syscall(SYS_futex, uaddr, op | opflags, val, ts32,=
+ uaddr2, val3);
+>       |                                                             ^~~~
+>       |                                                             s32
+> bench/futex.h:52:61: note: each undeclared identifier is reported only on=
+ce for each function it appears in
+> bench/futex.h:49:82: error: unused parameter =E2=80=98timeout=E2=80=99 [-=
+Werror=3Dunused-parameter]
+>    49 | futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, s=
+truct timespec *timeout,
+>       |                                                                 ~=
+~~~~~~~~~~~~~~~~^~~~~~~
+> bench/futex.h:53:1: error: control reaches end of non-void function [-Wer=
+ror=3Dreturn-type]
+>    53 | }
+>       | ^
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp=
+/build/perf/bench/futex-wake-parallel.o] Error 1
+> In file included from bench/futex-requeue.c:26:
+> bench/futex.h: In function =E2=80=98futex_syscall=E2=80=99:
+> bench/futex.h:52:61: error: =E2=80=98ts32=E2=80=99 undeclared (first use =
+in this function); did you mean =E2=80=98s32=E2=80=99?
+>    52 |         return syscall(SYS_futex, uaddr, op | opflags, val, ts32,=
+ uaddr2, val3);
+>       |                                                             ^~~~
+>       |                                                             s32
+> bench/futex.h:52:61: note: each undeclared identifier is reported only on=
+ce for each function it appears in
+> bench/futex.h:49:82: error: unused parameter =E2=80=98timeout=E2=80=99 [-=
+Werror=3Dunused-parameter]
+>    49 | futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, s=
+truct timespec *timeout,
+>       |                                                                 ~=
+~~~~~~~~~~~~~~~~^~~~~~~
+> bench/futex.h:53:1: error: control reaches end of non-void function [-Wer=
+ror=3Dreturn-type]
+>    53 | }
+>       | ^
+> cc1: all warnings being treated as errors
+> In file included from bench/futex-lock-pi.c:19:
+> bench/futex.h: In function =E2=80=98futex_syscall=E2=80=99:
+> bench/futex.h:52:61: error: =E2=80=98ts32=E2=80=99 undeclared (first use =
+in this function); did you mean =E2=80=98s32=E2=80=99?
+>    52 |         return syscall(SYS_futex, uaddr, op | opflags, val, ts32,=
+ uaddr2, val3);
+>       |                                                             ^~~~
+>       |                                                             s32
+> bench/futex.h:52:61: note: each undeclared identifier is reported only on=
+ce for each function it appears in
+> bench/futex.h:49:82: error: unused parameter =E2=80=98timeout=E2=80=99 [-=
+Werror=3Dunused-parameter]
+>    49 | futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, s=
+truct timespec *timeout,
+>       |                                                                 ~=
+~~~~~~~~~~~~~~~~^~~~~~~
+> bench/futex.h:53:1: error: control reaches end of non-void function [-Wer=
+ror=3Dreturn-type]
+>    53 | }
+>       | ^
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp=
+/build/perf/bench/futex-requeue.o] Error 1
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp=
+/build/perf/bench/futex-lock-pi.o] Error 1
+> In file included from bench/futex-wake.c:25:
+> bench/futex.h: In function =E2=80=98futex_syscall=E2=80=99:
+> bench/futex.h:52:61: error: =E2=80=98ts32=E2=80=99 undeclared (first use =
+in this function); did you mean =E2=80=98s32=E2=80=99?
+>    52 |         return syscall(SYS_futex, uaddr, op | opflags, val, ts32,=
+ uaddr2, val3);
+>       |                                                             ^~~~
+>       |                                                             s32
+> bench/futex.h:52:61: note: each undeclared identifier is reported only on=
+ce for each function it appears in
+> bench/futex.h:49:82: error: unused parameter =E2=80=98timeout=E2=80=99 [-=
+Werror=3Dunused-parameter]
+>    49 | futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, s=
+truct timespec *timeout,
+>       |                                                                 ~=
+~~~~~~~~~~~~~~~~^~~~~~~
+> bench/futex.h:53:1: error: control reaches end of non-void function [-Wer=
+ror=3Dreturn-type]
+>    53 | }
+>       | ^
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp=
+/build/perf/bench/futex-wake.o] Error 1
+> make[3]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:139: ben=
+ch] Error 2
+> make[3]: *** Waiting for unfinished jobs....
+> make[2]: *** [Makefile.perf:660: /tmp/build/perf/perf-in.o] Error 2
+> make[1]: *** [Makefile.perf:240: sub-make] Error 2
+> make: *** [Makefile:113: install-bin] Error 2
+> make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+>
+>  Performance counter stats for 'make -k BUILD_BPF_SKEL=3D1 CORESIGHT=3D1 =
+PYTHON=3Dpython3 O=3D/tmp/build/perf -C tools/perf install-bin':
+>
+>           2,467.00 msec task-clock:u              #    1.263 CPUs utilize=
+d
+>           2,457.82 msec cpu-clock:u               #    1.259 CPUs utilize=
+d
+>
+>        1.952573032 seconds time elapsed
+>
+>        1.444401000 seconds user
+>        1.111434000 seconds sys
+>
+>
+> =E2=AC=A2[acme@toolbox perf]$
+>
+>
