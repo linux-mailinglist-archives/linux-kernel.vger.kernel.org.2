@@ -2,61 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1B143727B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFF1437281
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhJVHEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:04:08 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:51733 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhJVHEG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:04:06 -0400
-X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Oct 2021 03:04:06 EDT
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id A42C028005312;
-        Fri, 22 Oct 2021 09:01:48 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 979BF16E5C7; Fri, 22 Oct 2021 09:01:48 +0200 (CEST)
-Date:   Fri, 22 Oct 2021 09:01:48 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v3 18/25] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to
- check read from hardware
-Message-ID: <20211022070148.GB17656@wunner.de>
-References: <cover.1634825082.git.naveennaidu479@gmail.com>
- <c21290fe02a7a342a8b93c692586b6a2b6cde9e0.1634825082.git.naveennaidu479@gmail.com>
- <20211021152253.pqc6xp3vnv5fpczj@theprophet>
+        id S231898AbhJVHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:08:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229609AbhJVHIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:08:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A09D560ED3;
+        Fri, 22 Oct 2021 07:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634886348;
+        bh=iLRhWGhOtATtNXfjLsY/C/FzcVIkkj6omLPayvSrHVc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WvBpQzKjqVFToSn3i2NADviklR3XuCrbfuC3GBfqsU7+otQA2XAlMiiV1wNk7LED6
+         T0Vu2AL+7me+PouplKBEcm7CD5tf8wQJ91BYw5i+tcyIBxIRl9I5A8bCQAaM8/ukdf
+         4hOSK/JiM35OiNJP6W9PhHmDIRrotBP57yFezB7OjY3U+DWO7nKc7Xcqz9Vm/ELfDR
+         BRfJczzddWZwsF620p9imsVc5UiigA2Rxk4jplLQL11LFAdYJ962ELZRsVcVMgEoLX
+         Y+9K0EkVREF4npPNMmr3rcKTSeiwG/XEXNxmlxkFz2ILlfy336WBO7XpAU8+6EUP5w
+         NB8i6vWNlwLZA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Shakeel Butt <shakeelb@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] memcg, kmem: mark cancel_charge() inline
+Date:   Fri, 22 Oct 2021 09:05:35 +0200
+Message-Id: <20211022070542.679839-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021152253.pqc6xp3vnv5fpczj@theprophet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 08:52:53PM +0530, Naveen Naidu wrote:
-> Lukas, I have not added your Acked-by tag from the v1 [1] of the patch 
-> series, since the RESPONSE_IS_PCI_ERROR macro definition slightly 
-> changed. I hope this was the right thing to do.
-[...]
-> If that is not the case please let me know. But I am not sure what to
-> do here? If RESPONSE_IS_PCI_ERROR does not fit here, should the right
-> option would be to revert/remove this patch from the series?
+From: Arnd Bergmann <arnd@arndb.de>
 
-My Acked-by still stands.  As for the macro name, I'm fine with
-whatever Bjorn and the community settle on. :)
+cancel_charge() is no longer called for CONFIG_MEMCG_KMEM on NOMMU
+targets, which causes a compiletime warning:
 
-Thanks,
+mm/memcontrol.c:2774:13: error: unused function 'cancel_charge' [-Werror,-Wunused-function]
 
-Lukas
+Remove the now-incorrect #ifdef and just mark the function
+'inline' like the other related helpers. This is simpler
+and means we no longer have to match the #ifdef with the
+caller.
+
+Fixes: 5f3345c17079 ("memcg, kmem: further deprecate kmem.limit_in_bytes")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+The 5f3345c17079 commit is in -mm, so the commit ID is not
+stable. Feel free to just fold this into the other patch, or
+take out that reference
+---
+ mm/memcontrol.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6538595994d2..9edccfeac804 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2770,8 +2770,7 @@ static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	return try_charge_memcg(memcg, gfp_mask, nr_pages);
+ }
+ 
+-#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
+-static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
++static inline void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+ {
+ 	if (mem_cgroup_is_root(memcg))
+ 		return;
+@@ -2780,7 +2779,6 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	if (do_memsw_account())
+ 		page_counter_uncharge(&memcg->memsw, nr_pages);
+ }
+-#endif
+ 
+ static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ {
+-- 
+2.29.2
+
