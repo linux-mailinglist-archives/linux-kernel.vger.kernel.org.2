@@ -2,90 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F7B437C69
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314AB437C6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbhJVSFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:05:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:57394 "EHLO foss.arm.com"
+        id S233648AbhJVSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:08:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232258AbhJVSFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:05:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 310F81063;
-        Fri, 22 Oct 2021 11:02:49 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B6C73F73D;
-        Fri, 22 Oct 2021 11:02:46 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 19:02:43 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     madvenka@linux.microsoft.com
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Subject: Re: [PATCH v10 01/11] arm64: Select STACKTRACE in arch/arm64/Kconfig
-Message-ID: <20211022180243.GL86184@C02TD0UTHF1T.local>
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-2-madvenka@linux.microsoft.com>
+        id S233417AbhJVSIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 14:08:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF126120D;
+        Fri, 22 Oct 2021 18:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634925974;
+        bh=/KuhCiWfjX8v3AMvfNSEg2zLjZf0VFNSUeefW/M0Mfs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Chuxd2Ta0ctKe+6RKOFEk9zXQFwp+/jkLW7e1Y+IQxXkbKSdeJQmdaUCai+t//7F/
+         G2jQDf8dleq1i+1pShhOASpyoaYgc4zeeh/08Wgew2K4zLr6OWSRpOpqmBFx9ad3SH
+         +uNn+QjYv5Ro7DvJnaRf9b11eE7yNFYeW7QHRAlWsU8mgNXdaBo8QQyYB5usyIIbSA
+         wOjuaB51MBEglp6ikUUYhtvZb+2yj9MEUun9ibHWrGvlttIb2EorAU7Xbpfzc/PnCl
+         i1b2zpuoQxRf9LCAcP/abWBOvmTB7Mu3a0DU1oy7FRNXKF8cf9zOHXwZP1D94rUUZo
+         QxAldBA9FvbUA==
+Date:   Fri, 22 Oct 2021 11:06:12 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     luo penghao <cgel.zte@gmail.com>
+Cc:     SimonHorman <horms@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] octeontx2-af: Remove redundant assignment
+ and parentheses
+Message-ID: <20211022110612.2041efc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211022095321.1065922-1-luo.penghao@zte.com.cn>
+References: <20211022095321.1065922-1-luo.penghao@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015025847.17694-2-madvenka@linux.microsoft.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Madhavan,
+On Fri, 22 Oct 2021 09:53:21 +0000 luo penghao wrote:
+> Subject: [PATCH linux-next] octeontx2-af: Remove redundant assignment and parentheses
 
-Apolgoies for the delay in getting round to this.
+octeontx2-af ? I don't think so:
 
-On Thu, Oct 14, 2021 at 09:58:37PM -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> Currently, there are multiple functions in ARM64 code that walk the
-> stack using start_backtrace() and unwind_frame() or start_backtrace()
-> and walk_stackframe(). They should all be converted to use
-> arch_stack_walk(). This makes maintenance easier.
-> 
-> To do that, arch_stack_walk() must always be defined. arch_stack_walk()
-> is within #ifdef CONFIG_STACKTRACE. So, select STACKTRACE in
-> arch/arm64/Kconfig.
+>  drivers/net/ethernet/marvell/sky2.c | 2 +-
 
-I'd prefer if we could decouple ARCH_STACKWALK from STACKTRACE, so that
-we don't have to expose /proc/*/stack unconditionally, which Peter
-Zijlstra has a patch for:
-
-  https://lore.kernel.org/lkml/20211022152104.356586621@infradead.org/
-
-... but regardless the rest of the series looks pretty good, so I'll go
-review that, and we can figure out how to queue the bits and pieces in
-the right order.
-
-Thanks,
-Mark.
-
-> 
-> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-> ---
->  arch/arm64/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index fdcd54d39c1e..bfb0ce60d820 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -35,6 +35,7 @@ config ARM64
->  	select ARCH_HAS_SET_DIRECT_MAP
->  	select ARCH_HAS_SET_MEMORY
->  	select ARCH_STACKWALK
-> +	select STACKTRACE
->  	select ARCH_HAS_STRICT_KERNEL_RWX
->  	select ARCH_HAS_STRICT_MODULE_RWX
->  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-> -- 
-> 2.25.1
-> 
+Please make sure you CC _all_ maintainers of the driver.
