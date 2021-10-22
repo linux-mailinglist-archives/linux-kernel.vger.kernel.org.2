@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4633A437036
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC00437039
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbhJVCzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:55:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232556AbhJVCz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:55:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5D266135E;
-        Fri, 22 Oct 2021 02:53:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634871193;
-        bh=ZOyHbxAA1KVGEYcWxP49OLWHjX0kWfehynxD5OBUUVw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MYl6fk548La85NrwC/69S4sKIJvdsbVdNXs9wgOfrX7zVeEh/JVjMuVJBaPLdbpOv
-         yHO9iNYMoEIeXZ4Knv8ctrzbhv+1IHA7gfgUii2lsO4Z1rDVMBq+9Vt7vQ5kaYqlcd
-         ZuG4B+l/nqSUKKafT4TqvA0ZbCZUdliClZeG8epA=
-Date:   Thu, 21 Oct 2021 19:53:11 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Jordy Zomer <jordy@jordyzomer.github.io>, linux-mm@kvack.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to
- zero
-Message-Id: <20211021195311.6058b90f573641542605dae4@linux-foundation.org>
-In-Reply-To: <20211021154046.880251-1-keescook@chromium.org>
-References: <20211021154046.880251-1-keescook@chromium.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232616AbhJVC6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:58:55 -0400
+Received: from ssh248.corpemail.net ([210.51.61.248]:9354 "EHLO
+        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232603AbhJVC6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 22:58:52 -0400
+Received: from ([60.208.111.195])
+        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id PCA00130;
+        Fri, 22 Oct 2021 10:56:30 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201604.home.langchao.com (10.100.2.4) with Microsoft SMTP Server id
+ 15.1.2308.14; Fri, 22 Oct 2021 10:55:57 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <Larry.Finger@lwfinger.net>, <phil@philpotter.co.uk>,
+        <straube.linux@gmail.com>, <linux-staging@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, Kai Song <songkai01@inspur.com>
+Subject: [PATCH] staging: r8188eu: Use memdup_user instead of kmalloc/copy_from_user
+Date:   Fri, 22 Oct 2021 10:55:55 +0800
+Message-ID: <20211022025555.6612-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.200.104.119]
+tUid:   20211022105630129e2bae6274888de4809c42d710a487
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 08:40:46 -0700 Kees Cook <keescook@chromium.org> wrote:
+Use memdup_user helper instead of open-coding to simplify
+the code.
 
-> Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
-> After fd_install() finishes, the fd can be used by userspace and we can
-> have secret data in memory before the refcount_inc().
-> 
-> A straightforward mis-use where a user will predict the returned fd
-> in another thread before the syscall returns and will use it to store
-> secret data is somewhat dubious because such a user just shoots themself
-> in the foot.
-> 
-> But a more interesting mis-use would be to close the predicted fd and
-> decrement the refcount before the corresponding refcount_inc, this way
-> one can briefly drop the refcount to zero while there are other users
-> of secretmem."
-> 
-> Move fd_install() after refcount_inc().
+Signed-off-by: Kai Song <songkai01@inspur.com>
+---
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-I added cc:stable.  Or doesn't the benefit/risk ratio justify that?
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index 0201f6fbeb25..96a08cc5a1ed 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -1984,14 +1984,10 @@ static int rtw_wx_read32(struct net_device *dev,
+ 	padapter = (struct adapter *)rtw_netdev_priv(dev);
+ 	p = &wrqu->data;
+ 	len = p->length;
+-	ptmp = kmalloc(len, GFP_KERNEL);
+-	if (!ptmp)
+-		return -ENOMEM;
+ 
+-	if (copy_from_user(ptmp, p->pointer, len)) {
+-		kfree(ptmp);
+-		return -EFAULT;
+-	}
++	ptmp = memdup_user(p->pointer, len);
++	if (IS_ERR(ptmp))
++		return PTR_ERR(ptmp);
+ 
+ 	bytes = 0;
+ 	addr = 0;
+-- 
+2.27.0
+
