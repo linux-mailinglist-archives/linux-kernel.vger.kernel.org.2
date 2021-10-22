@@ -2,140 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B3A437005
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A97543700C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhJVCdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 22:33:17 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38649 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232435AbhJVCdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:33:16 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UtC8jTQ_1634869856;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UtC8jTQ_1634869856)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 22 Oct 2021 10:30:57 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     akpm@linux-foundation.org, willy@infradead.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com, shy828301@gmail.com
-Subject: [PATCH RESEND] mm, thp: bail out early in collapse_file for writeback page
-Date:   Fri, 22 Oct 2021 10:30:52 +0800
-Message-Id: <20211022023052.33114-1-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
+        id S231872AbhJVCgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 22:36:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231518AbhJVCgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 22:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71A0161409
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 02:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634870045;
+        bh=S30f/+4VZLDl1PWHOF5O1gKoF4vRAQfxCHgNTi38Jjc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TcBj99OyD6zWF3UwXNFRErx0LcXWJ57hWLCAODhAwPN6kY0KPhyGt21FAMPg1GZl3
+         pzj8LGVJ1PNHo5dBfsUhGMqkl+YPLS8DPL5+cCJaaJilShS3WuLiANd0JHZOdlZdtO
+         f8N/IQVGM5SZ6+h8P+UHxSvVyLWG5yWeSWMF+ypSav4rLK5oCWl6LtTMMUSki0fBxy
+         lOq9fUns4i7EN9kbED2E/rNXGQx+mew4oOVbyx2Z9/Nno5cj94g3uqYvBbaEBRgiV3
+         Q9QwLKPoPZjsKPJtf14vst6AfEmWH88h58srGo1tE9yLgOTea6tAwJWjcVto6rOGBJ
+         4ZwU1WzPgCITA==
+Received: by mail-ua1-f53.google.com with SMTP id u5so4912860uao.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 19:34:05 -0700 (PDT)
+X-Gm-Message-State: AOAM530QblCTitzkz7gpBmajVpRvfDGMVfxAXlTBnVkgffBaOfvWXJ5q
+        2sPm85hb3AKVuoKHe5evaFtNE/gHO9EKA+czAG8=
+X-Google-Smtp-Source: ABdhPJy/gyI83O9ILS2ZQF4EyRY5my4JsnhH7AcK0SI5BOBkb/f1C1jqqt5MBh/7WO98B6H39eooKYLw5GLQaGG8CAc=
+X-Received: by 2002:a67:ca1c:: with SMTP id z28mr11938388vsk.11.1634870044525;
+ Thu, 21 Oct 2021 19:34:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211021180236.37428-1-mark.rutland@arm.com> <20211021180236.37428-6-mark.rutland@arm.com>
+In-Reply-To: <20211021180236.37428-6-mark.rutland@arm.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 22 Oct 2021 10:33:53 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTShTh5be3SxaVwAzbXTb=LZi-qfweXBvyLeg9TyKgfLNg@mail.gmail.com>
+Message-ID: <CAJF2gTShTh5be3SxaVwAzbXTb=LZi-qfweXBvyLeg9TyKgfLNg@mail.gmail.com>
+Subject: Re: [PATCH 05/15] irq: add generic_handle_arch_irq()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>, kernelfans@gmail.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>, Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        vgupta@kernel.org, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently collapse_file does not explicitly check PG_writeback, instead,
-page_has_private and try_to_release_page are used to filter writeback
-pages. This does not work for xfs with blocksize equal to or larger
-than pagesize, because in such case xfs has no page->private.
+On Fri, Oct 22, 2021 at 2:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Several architectures select GENERIC_IRQ_MULTI_HANDLER and branch to
+> handle_arch_irq() without performing any entry accounting.
+>
+> Add a generic wrapper to handle the commoon irqentry work when invoking
+> handle_arch_irq(). Where an architecture needs to perform some entry
+> accounting itself, it will need to invoke handle_arch_irq() itself.
+>
+> In subsequent patches it will become the responsibilty of the entry code
+> to set the irq regs when entering an IRQ (rather than deferring this to
+> an irqchip handler), so generic_handle_arch_irq() is made to set the irq
+> regs now. This can be redundant in some cases, but is never harmful as
+> saving/restoring the old regs nests safely.
+Shall we remove old_regs save/restore in handle_domain_irq? It's duplicated.
 
-This makes collapse_file bail out early for writeback page. Otherwise,
-xfs end_page_writeback will panic as follows.
+>
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  kernel/irq/handle.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
+> index 221d80c31e94..27182003b879 100644
+> --- a/kernel/irq/handle.c
+> +++ b/kernel/irq/handle.c
+> @@ -14,6 +14,8 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/kernel_stat.h>
+>
+> +#include <asm/irq_regs.h>
+> +
+>  #include <trace/events/irq.h>
+>
+>  #include "internals.h"
+> @@ -226,4 +228,20 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
+>         handle_arch_irq = handle_irq;
+>         return 0;
+>  }
+> +
+> +/**
+> + * generic_handle_arch_irq - root irq handler for architectures which do no
+> + *                           entry accounting themselves
+> + * @regs:      Register file coming from the low-level handling code
+> + */
+> +asmlinkage void noinstr generic_handle_arch_irq(struct pt_regs *regs)
+> +{
+> +       struct pt_regs *old_regs;
+> +
+> +       irq_enter();
+> +       old_regs = set_irq_regs(regs);
+> +       handle_arch_irq(regs);
+> +       set_irq_regs(old_regs);
+> +       irq_exit();
+> +}
+>  #endif
+> --
+> 2.11.0
+>
 
-page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-page->mem_cgroup:ffff0000c3e9a000
-------------[ cut here ]------------
-kernel BUG at include/linux/mm.h:1212!
-Internal error: Oops - BUG: 0 [#1] SMP
-Modules linked in:
-BUG: Bad page state in process khugepaged  pfn:84ef32
- xfs(E)
-page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
- libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : end_page_writeback+0x1c0/0x214
-lr : end_page_writeback+0x1c0/0x214
-sp : ffff800011ce3cc0
-x29: ffff800011ce3cc0 x28: 0000000000000000
-x27: ffff000c04608040 x26: 0000000000000000
-x25: ffff000c04608040 x24: 0000000000001000
-x23: ffff0003f88c8530 x22: 0000000000001000
-x21: ffff0003f88c8530 x20: 0000000000000000
-x19: fffffe00201bcc80 x18: 0000000000000030
-x17: 0000000000000000 x16: 0000000000000000
-x15: ffff000c018f9760 x14: ffffffffffffffff
-x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-x11: ffff8000117b69b8 x10: 00000000ffff8000
-x9 : ffff800010617534 x8 : 0000000000000000
-x7 : ffff8000114f69b8 x6 : 000000000000000f
-x5 : 0000000000000000 x4 : 0000000000000000
-x3 : 0000000000000400 x2 : 0000000000000000
-x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- end_page_writeback+0x1c0/0x214
- iomap_finish_page_writeback+0x13c/0x204
- iomap_finish_ioend+0xe8/0x19c
- iomap_writepage_end_bio+0x38/0x50
- bio_endio+0x168/0x1ec
- blk_update_request+0x278/0x3f0
- blk_mq_end_request+0x34/0x15c
- virtblk_request_done+0x38/0x74 [virtio_blk]
- blk_done_softirq+0xc4/0x110
- __do_softirq+0x128/0x38c
- __irq_exit_rcu+0x118/0x150
- irq_exit+0x1c/0x30
- __handle_domain_irq+0x8c/0xf0
- gic_handle_irq+0x84/0x108
- el1_irq+0xcc/0x180
- arch_cpu_idle+0x18/0x40
- default_idle_call+0x4c/0x1a0
- cpuidle_idle_call+0x168/0x1e0
- do_idle+0xb4/0x104
- cpu_startup_entry+0x30/0x9c
- secondary_start_kernel+0x104/0x180
-Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
----[ end trace 4a88c6a074082f8c ]---
-Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
 
-Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-Suggested-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
----
- mm/khugepaged.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..48de4e1b0783 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
- 				filemap_flush(mapping);
- 				result = SCAN_FAIL;
- 				goto xa_unlocked;
-+			} else if (PageWriteback(page)) {
-+				xas_unlock_irq(&xas);
-+				result = SCAN_FAIL;
-+				goto xa_unlocked;
- 			} else if (trylock_page(page)) {
- 				get_page(page);
- 				xas_unlock_irq(&xas);
-@@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
- 			goto out_unlock;
- 		}
- 
--		if (!is_shmem && PageDirty(page)) {
-+		if (!is_shmem && (PageDirty(page) ||
-+				  PageWriteback(page))) {
- 			/*
- 			 * khugepaged only works on read-only fd, so this
- 			 * page is dirty because it hasn't been flushed
 -- 
-2.27.0
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
