@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E20343782F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697ED437837
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 15:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhJVNm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 09:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbhJVNmS (ORCPT
+        id S232894AbhJVNn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 09:43:58 -0400
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:37656 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhJVNn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:42:18 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D153C061243;
-        Fri, 22 Oct 2021 06:40:01 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so3127502pjb.0;
-        Fri, 22 Oct 2021 06:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=VyuNv/wxaNQgxYmmFQJvMD+vS7wEW2zYfkmJZgPEJ50=;
-        b=enq/FYZGYWHIVmwxT7Me498mHtFTvdIPZ+9pmwRCMBa6Saa2z6OcwEnoEnSHtBwsXk
-         21E7CyG/6l98sy1BHuDqNLp4gxnpNZfSLYGRKiReTKI8NGJvlY2pncPx0cNUdrOUIGJV
-         woBqWXceSHfNUy84YVLyyO3JMdLk9jpy6x5TOFx1NDfnqx6w1aL1aTmr5F1vV9ErXNcH
-         SR3/OUhHCQYYYtSSdz+4oPPt9kbadRO9/C0mybdJVf7A3IODb0/8xPTBr6r9foqmqcr9
-         3XdygMxtCiVb5CqAvsJSPS0ka/Atf3FmU+25bjlR9CkXSjURiR7pDY8gihm8TM1ZkBnu
-         YIMw==
+        Fri, 22 Oct 2021 09:43:57 -0400
+Received: by mail-pg1-f169.google.com with SMTP id s136so3362085pgs.4;
+        Fri, 22 Oct 2021 06:41:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=VyuNv/wxaNQgxYmmFQJvMD+vS7wEW2zYfkmJZgPEJ50=;
-        b=C1+gGTscoq2zAMSAxFyIzwWRN61AHqmDFQ5d0jXMjltoVecMQLSBoFY/NFsSn5hAqN
-         rOfF2ecGNNgU37SMazjj9bYpcasnYXjRARCpg0dK7GGViL5rCjACM+xbKk3oXyLT7EmY
-         //EMLeXbNdmjAuOPUuEJRKUv9AcVGAiAnsimrnbh6JdrB3b7pdIV+8ezn57JXf7cByOy
-         G2tHfL3hX0oOHwqzVRuqNVBb5Ix5Ea9YACJVpHGyZbWXq35X6qKGDMX9iz6K/wwTolrP
-         XHIJx2xamEnnfjho+socMIvBpja6KSZU0N9ewQSJrERdaRHwGEf5C7iKXdwT1t7jPUew
-         9uFg==
-X-Gm-Message-State: AOAM5336ByaIkoUZGpJ4u1jhBsZMtv6bfyrfi6MSfsoA8UILMjUiDXxS
-        +w9q85i52rJFgeMeTtZXAKM=
-X-Google-Smtp-Source: ABdhPJweU/0TBCUzDM1adxMha2tHP6MJa2AkINYyDrAB6GEDW0zqfONLUg7bmnjPvLQ9GETEZINl9A==
-X-Received: by 2002:a17:90b:3505:: with SMTP id ls5mr10214208pjb.31.1634910000702;
-        Fri, 22 Oct 2021 06:40:00 -0700 (PDT)
-Received: from ?IPV6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:1a:efeb::a31c])
-        by smtp.gmail.com with ESMTPSA id x2sm2896261pjd.50.2021.10.22.06.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 06:40:00 -0700 (PDT)
-Message-ID: <00946764-7fe0-675f-7b3e-9fb3b8e3eb89@gmail.com>
-Date:   Fri, 22 Oct 2021 21:39:48 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0+jUS6xI/DPxP6ZrnElaJwUrZ90DL/yMXbpKtqC1M5U=;
+        b=ePWHyTMkORA7tnc6JaFty0BLUcKjaPliYWF6AJ5IURM5Q+xuHcL6j9LYabDYaR8Crw
+         QJi6kmT0ydtT4LTOQe5H438PjR4ODwlGWgnCp2PVZWnkSrJiYeiBfpHRZxFwebP0FLCZ
+         ney9hnHW2aMUsgiIHeD2hPgGA14wRMYSwyh1mSSZXotLTxZ8uJNU/4oL+cVStKgYi/tf
+         izgqw9Ie+//H6gC8p8hbyBHJes3xo1ahKz0IdjOj4uKJXxdkGH/xB4xG1cenZj0sYs4i
+         gYjgC5x4UC0Lbqm7ABer2lSOfyPGzMc1x8iGERL2tQo+0gWIqJ4RCyPWYJ397C9K/xnH
+         kUZQ==
+X-Gm-Message-State: AOAM533aaIEYop69cewIdsrFPFUg/56emo5umgu7GjQIjGxoCPohJnFV
+        yUtYWBySOBdYPTXvKWpU+jlwJ//Awanah7ZVpeo=
+X-Google-Smtp-Source: ABdhPJx2bEGH38tYpjnj/Z7q11aMhmbP/LA+2K64aHqc6A0Bq7iVVU1ut4Jrlho/aCrHoSS8iE9jknaEW8LIrs98Szs=
+X-Received: by 2002:a63:7047:: with SMTP id a7mr9320545pgn.458.1634910099521;
+ Fri, 22 Oct 2021 06:41:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH V8 5/9] x86/sev-es: Expose sev_es_ghcb_hv_call() to call
- ghcb hv call out of sev code
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
-        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        rientjes@google.com, pgonda@google.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        saravanand@fb.com, aneesh.kumar@linux.ibm.com, hannes@cmpxchg.org,
-        tj@kernel.org, michael.h.kelley@microsoft.com,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
-        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
-        dave.hansen@intel.com
-References: <20211021154110.3734294-1-ltykernel@gmail.com>
- <20211021154110.3734294-6-ltykernel@gmail.com> <YXGTwppQ8syUyJ72@zn.tnic>
-From:   Tianyu Lan <ltykernel@gmail.com>
-In-Reply-To: <YXGTwppQ8syUyJ72@zn.tnic>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-10-kernel@esmil.dk>
+ <8735otjjjx.fsf@igel.home>
+In-Reply-To: <8735otjjjx.fsf@igel.home>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Fri, 22 Oct 2021 15:41:28 +0200
+Message-ID: <CANBLGcw+2MYSDmnKSjJHjPVGWo22kXngRpfQq2xrr8BYYLbhOw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/2021 12:22 AM, Borislav Petkov wrote:
-> On Thu, Oct 21, 2021 at 11:41:05AM -0400, Tianyu Lan wrote:
->> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
->> index ea9abd69237e..368ed36971e3 100644
->> --- a/arch/x86/kernel/sev-shared.c
->> +++ b/arch/x86/kernel/sev-shared.c
->> @@ -124,10 +124,9 @@ static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt
->>   	return ES_VMM_ERROR;
->>   }
->>   
->> -static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->> -					  struct es_em_ctxt *ctxt,
->> -					  u64 exit_code, u64 exit_info_1,
->> -					  u64 exit_info_2)
->> +enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb, bool set_ghcb_msr,
->> +				   struct es_em_ctxt *ctxt, u64 exit_code,
->> +				   u64 exit_info_1, u64 exit_info_2)
->>   {
->>   	/* Fill in protocol and format specifiers */
->>   	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
->> @@ -137,7 +136,15 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->>   	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
->>   	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
->>   
->> -	sev_es_wr_ghcb_msr(__pa(ghcb));
->> +	/*
->> +	 * Hyper-V unenlightened guests use a paravisor for communicating and
->> +	 * GHCB pages are being allocated and set up by that paravisor. Linux
->> +	 * should not change ghcb page pa in such case and so add set_ghcb_msr
-> 
-> "... not change the GHCB page's physical address."
-> 
-> Remove the "so add... " rest.
-> 
-> Otherwise, LGTM.
-> 
-> Do you want me to take it through the tip tree?
+On Fri, 22 Oct 2021 at 15:06, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> On Okt 21 2021, Emil Renner Berthing wrote:
+>
+> > +config RESET_STARFIVE_JH7100
+> > +     bool "StarFive JH7100 Reset Driver"
+> > +     depends on SOC_STARFIVE || COMPILE_TEST
+>
+> Why does it need to depend on SOC_STARFIVE?
 
-Yes, please and this patch is based on the your clean up patch which is 
-already in the tip sev branch.
+It strictly doesn't but most other drivers in the same Kconfig file
+also depends on ARCH_something or SOC_something. In particular
+RESET_K210 depends on SOC_CANAAN. I think this is to prevent
+overwhelming the user with useless choices if they didn't enable the
+relevant SoC, and for others there are the COMPILE_TEST option.
+
+/Emil
