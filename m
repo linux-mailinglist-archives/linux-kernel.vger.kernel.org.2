@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7204380B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913684380B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbhJVXkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 19:40:00 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:41700 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJVXj6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:39:58 -0400
-Received: by mail-oi1-f181.google.com with SMTP id bk18so6949016oib.8;
-        Fri, 22 Oct 2021 16:37:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zSuAE3RSJ43llp8C+stYHPq0rTTeRWYXzdSTZgPFCs4=;
-        b=aFvJ8JMlp5j90QHvB9uqaldZ/NgYFaC7uwjbznIwCj0/+YXuqDWI7IfBnLVluFS6uQ
-         JlG1GCe4svCdulycyqqE6+oBjEpI45ZEr7uV5OdhXPvsdlX0RPgLzj//mlOafj56XhjJ
-         LD5TaP8ArAP1l+0HL9+vixPM2D6nh01/8SwQS4kNE1nXE88lkTANleKFKYRnycDy8RZl
-         L2xOiRHb+mt2Motbh50IWT7bsaNb3+w/d8IgAlw1kCcTI3KGaOvqlyiGFRfx84Aplr2u
-         5I9J2jmG9zexE+96prkkFl5LsX3CwObVK41fw814jx4o2Jge2L0XTZ21VljwDL64LpJl
-         DrmA==
-X-Gm-Message-State: AOAM533tkMsdx6GABtR+GkcB8EIobVLc63ztNbCLp/hFD2ssNcQ1avo3
-        RshEvA8kc6ufjAiLEaQtdQ==
-X-Google-Smtp-Source: ABdhPJygMuUHKwqjAYXnJQ+sF4UCg9hIvLQi6e+ekBq4QT4WLoGAHQT+sUEZ856SUYdCTJjATVBiLQ==
-X-Received: by 2002:a05:6808:a1d:: with SMTP id n29mr3711706oij.164.1634945860291;
-        Fri, 22 Oct 2021 16:37:40 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m7sm2271061oiw.49.2021.10.22.16.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 16:37:39 -0700 (PDT)
-Received: (nullmailer pid 3386546 invoked by uid 1000);
-        Fri, 22 Oct 2021 23:37:38 -0000
-Date:   Fri, 22 Oct 2021 18:37:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
-        codrin.ciubotariu@microchip.com, ludovic.desroches@microchip.com,
-        linux-i2c@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, nicolas.ferre@microchip.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: i2c: at91: Extend compatible list for
- lan966x
-Message-ID: <YXNLQlUKgloigEd8@robh.at.kernel.org>
-References: <20211012140718.2138278-1-horatiu.vultur@microchip.com>
- <20211012140718.2138278-2-horatiu.vultur@microchip.com>
+        id S232598AbhJVXlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 19:41:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhJVXlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 19:41:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 086506103E;
+        Fri, 22 Oct 2021 23:38:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634945929;
+        bh=olDPmhMrBudTdZteDXn1SDovIWktyk2aO/XmBRsIzkc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AZq33Mfr4EBhn7MK3QdXpz8it4MYxCXGSh7ykgv801bYJ1Cv66/6vcP7WNuycrvzt
+         LDCxgFFd2TspBqCD/8b2+WpZzaQehGPgySgannuw7cKcEMaZLrQ8nC/g5AxKC4qfcv
+         804aWDrjsjObcuqq8egMBWpS+5v/0AUbFyVeqDjMg8MY8m6KqBpUZCsUhDbnAKLHbd
+         B9M9wbbBmofkiTlISHZXbodswHLNY0CSeYgRruQNC/x/UT54hfKCEc7RmHyCS/OpV/
+         0oCCjQO/ebmrZ1ZU/qUI6gdEmBcWMQOfXSmSpsEcrMdNDcUdjqqp6CW1tX87B/M7Tu
+         M49hZGDUDQCWw==
+Date:   Fri, 22 Oct 2021 16:38:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] net: dsa: sja1105: Add of_node_put() before return
+Message-ID: <20211022163848.07aa8fd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211021094606.7118-1-wanjiabing@vivo.com>
+References: <20211021094606.7118-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012140718.2138278-2-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 16:07:17 +0200, Horatiu Vultur wrote:
-> Extend compatible list and the i2c-sda-hold-time-ns property
-> with 'microchip,lan966x-i2c'
+On Thu, 21 Oct 2021 05:46:06 -0400 Wan Jiabing wrote:
+> Fix following coccicheck warning:
+> ./drivers/net/dsa/sja1105/sja1105_main.c:1193:1-33: WARNING: Function
+> for_each_available_child_of_node should have of_node_put() before return.
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-at91.txt | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> Early exits from for_each_available_child_of_node should decrement the
+> node reference counter.
 > 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied, thanks.
