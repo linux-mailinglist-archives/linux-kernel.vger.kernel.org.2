@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8034C4379DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932934379E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbhJVP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:27:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25063 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233414AbhJVP1R (ORCPT
+        id S233497AbhJVP16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233520AbhJVP1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:27:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634916299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WKn/MMnrjzSTMvrkCX2L7r2/M5K0U88gx7mskxYYYD8=;
-        b=PPxKsEu/pBMspA3dFpP/TF0u33zvmJHP7KyzDsBNjK+0O+7YsK52gwS1UJxTuyL/EX1S0t
-        ejj+9885F42Baxm9d0grs1cPd6nRM6F44HxFNfIW44KXwdoDk9Qcjo9p2AzYnRMzFyIbQY
-        AeFNY5Nt5grpxSYeOSKBWfDjfJkeDt4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-ivzLzqAnO72d79Kko2QgPg-1; Fri, 22 Oct 2021 11:24:55 -0400
-X-MC-Unique: ivzLzqAnO72d79Kko2QgPg-1
-Received: by mail-ed1-f71.google.com with SMTP id d3-20020a056402516300b003db863a248eso4020254ede.16
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:24:55 -0700 (PDT)
+        Fri, 22 Oct 2021 11:27:50 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3799C061227;
+        Fri, 22 Oct 2021 08:25:27 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso3332462pjw.2;
+        Fri, 22 Oct 2021 08:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zKpDKUZAfp4wYPYwfEUtSMep8X49ABj3gb2Vj1km3eg=;
+        b=atrXfRV1sRblaNIFM9kCrDIy26fpdl4yfaJ7fiL9UKQpQZ2Sr2ptJzEZnUtA6cO3jm
+         I5NpVi+Bz0SAXKt5tbfaFyel8TjZqxafYLsBWzCdnETCqZplOch47LaG8vbi0hb0sINC
+         Ab7WtTlJDE+F6u2HFwbT2oWnvYMMqCzEp7/8DwnzBS3LDnm6iNJJEPmL7D3yY/ucrpd1
+         TtmU9G08Qj9EB+nwKqtQ5ADVYgnvIibd8oPukPBX03eLJ2H7AhOZu8Z35IW2fzocO0Zm
+         Z6dF49r++inUyCxO5KhW15iKuL5H9DllKIenYxHweHgzmG4z11RZu7zGkGPVIyRW7miu
+         d1gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=WKn/MMnrjzSTMvrkCX2L7r2/M5K0U88gx7mskxYYYD8=;
-        b=dWSBAm86s1QuMPEDrEmG1s8XiTJG0Yg11/UBlUPe7rvYmmdfIiCba4+L8PQxXgAyeH
-         flnTQFiQzBuz3Q2UVXrahgI1AmjCC/AAB2oY0lQFlMynl5gDnTCR9pfMDYvYI3FyXCZ0
-         5jhCp3Np8RB0WGZzner3OjNrAI+vADRDTsTDBsbqvE+BCxuIEwVDEW1wxyzisjWIWDqs
-         YOyyq6e758EMHYb5sZp8rBlf9XQuLONbThuwdG3QXgcrR5uTb4v4k/8mVq2JhqnNHkM2
-         fh63yC+zb3Awp5mlyBVPhHbpObQi+WWCWuI4gQdSLOI7SRXhDQ4RTqANHs8oJhrX6aIk
-         TQhA==
-X-Gm-Message-State: AOAM530E7fARWbXILrkUra+WPwmQ9Ql6+rOH4zoxKnta7UItaK9xjNDB
-        WFsotz3csKBJxHM2BJcphlRUIjf2GooGyo/nwHgDOUoiOcVsDMW1jSDsdW8DQE+bp/UCtUTroCg
-        S/9nPHGy+8hIWw7yqhFyu5dDu
-X-Received: by 2002:a17:906:ca18:: with SMTP id jt24mr227107ejb.325.1634916294056;
-        Fri, 22 Oct 2021 08:24:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw1gMsV0VbjksXEJRF9KOJy6vrhOLALRqiJ74io2ME1xy22uV1bJNsaAASMo+PgzQ54ZbscQg==
-X-Received: by 2002:a17:906:ca18:: with SMTP id jt24mr227080ejb.325.1634916293883;
-        Fri, 22 Oct 2021 08:24:53 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id l23sm3922047ejn.15.2021.10.22.08.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 08:24:53 -0700 (PDT)
-Message-ID: <44630562-a855-f3e2-a427-9f3da3abdd70@redhat.com>
-Date:   Fri, 22 Oct 2021 17:24:52 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zKpDKUZAfp4wYPYwfEUtSMep8X49ABj3gb2Vj1km3eg=;
+        b=evlkY2rw9+9JX02Bub09uq/UyN4dYaGi/trkoPjMk613Bj8aj+iC1Ff9HfuH5BIPTO
+         vZz1iRERS2p3kHNwSff0Z8iHWAQutv2oJ4yQcU/2E9Pww05ek8ff9wcOUZrLFZs7cFD9
+         /weZjhZ6dtPrpnMiaAs4Udz5Qe8PD7gjtN2LM5vHHI3nA0ONtFHoEdhq/QIoT9Px+Zzk
+         J/i3HfD9sxvHqtzHJ5vH8KGUmugqny32R5XgGL9n9i+Nc6TMpIhbOzFyKhrbM4Lnzb92
+         VoD+yDD9unlAKh/4+sl+cPVG9Y3bDxCs9cXzOl682NdoCig1TTsbnAGu41DRpAgfnvnb
+         Plvw==
+X-Gm-Message-State: AOAM532QFXKxMChTnA8Jl0ibF+D5ABp4ySyD/aRsh5CHwMz940hpMsGl
+        yUTFi+myJxDwnd97VrInrMl4k73xp21XCr2aJDk=
+X-Google-Smtp-Source: ABdhPJyZf/uZDVv6mpEi/TBQcoLmnVs4AcZX6iMc9bpOSeBvdKoiQX8s/HdU7RCmPYPY+3H3wzWF0MkfP3qGJqWfnLU=
+X-Received: by 2002:a17:90b:3148:: with SMTP id ip8mr667370pjb.62.1634916327395;
+ Fri, 22 Oct 2021 08:25:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v6 1/4] KVM: x86: Clarify the kvm_run.emulation_failure
- structure layout
-Content-Language: en-US
-To:     David Edmondson <david.edmondson@oracle.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        kvm@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        David Matlack <dmatlack@google.com>
-References: <20210920103737.2696756-1-david.edmondson@oracle.com>
- <20210920103737.2696756-2-david.edmondson@oracle.com>
- <YWYeJ9TtfRwBk/5D@google.com> <cunfst5ff37.fsf@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <cunfst5ff37.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211022103348.284562-1-zhudi2@huawei.com>
+In-Reply-To: <20211022103348.284562-1-zhudi2@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 22 Oct 2021 08:25:16 -0700
+Message-ID: <CAADnVQJV7mFLE7_vPH8wcZqDsLhuZGqLk9sbrxWOeELL4X=NVg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+To:     Di Zhu <zhudi2@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/21 11:29, David Edmondson wrote:
-> On Tuesday, 2021-10-12 at 23:45:43 GMT, Sean Christopherson wrote:
-> 
->> On Mon, Sep 20, 2021, David Edmondson wrote:
->>> Until more flags for kvm_run.emulation_failure flags are defined, it
->>> is undetermined whether new payload elements corresponding to those
->>> flags will be additive or alternative. As a hint to userspace that an
->>> alternative is possible, wrap the current payload elements in a union.
->>>
->>> Suggested-by: Sean Christopherson <seanjc@google.com>
->>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
->>> ---
->>
->> To complete the set... :-)
->>
->> Reviewed-by: Sean Christopherson <seanjc@google.com>
-> 
-> Thanks!
-> 
+On Fri, Oct 22, 2021 at 3:34 AM Di Zhu <zhudi2@huawei.com> wrote:
+>
+> Right now there is no way to query whether BPF programs are
+> attached to a sockmap or not.
+>
+> we can use the standard interface in libbpf to query, such as:
+> bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+> the mapFd is the fd of sockmap.
+>
+> Signed-off-by: Di Zhu <zhudi2@huawei.com>
 
-Queued, thanks!
-
-Paolo
-
+The feature looks fine, but it needs a selftest.
