@@ -2,445 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2FF437BD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD41437BE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 19:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhJVR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 13:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
+        id S233610AbhJVRcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 13:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233872AbhJVR2K (ORCPT
+        with ESMTP id S231453AbhJVRcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:28:10 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C336C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:25:53 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id v20so3208409plo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 10:25:53 -0700 (PDT)
+        Fri, 22 Oct 2021 13:32:09 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43319C061764;
+        Fri, 22 Oct 2021 10:29:52 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso6280587pjm.4;
+        Fri, 22 Oct 2021 10:29:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mw+HRTpCizRSush1bYJcwNpbU4lyMkXJCLmU1NuNo9I=;
-        b=H9W58RxFjKyPmIR1s96jTDrDCVM6AvTKBZD+d5mrNXBvHCxNyScmjsHdFIlbsEDtAU
-         vi7szoviYSoZCW7q30FkwalQWBs3jVXKEy+bwm2Ud71I5FWkgpotIQGgVvwRyiEJPgzp
-         FAWC6EB8vcCzhVIU55uo7KFPPon/6j2j7S5cNngrG4oLXGym78HUnJSleUddeHV3nR0u
-         ma2w8sBmZrG9xulErWnGiF/GVyeceEBbAWsBjPg9Z1OTEFQBQFZLux5Ys7QTXkL/6o+x
-         h4dBtGHLPcfBVj9E2OXYQvX452N3TJwZ1BzN7j6Tzc1mSRoKLNXvyZ4ULxHS4PFnX6uy
-         x9/g==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9g3SS96B24RbA0UM0N0/J0717Xuebx832cXs0RhSY7g=;
+        b=l/2NN9IRgQDaV1hDk4pHNDsUHOTFbp3o+nZCTFf6GnamLb9K/Sn36TQf8TlNmX1cFh
+         12Ubuvp4UHnBWV0HihqyjYnBjSou7UBSFem2RURf42hm7Ynk8nAXsXAK9nqxbUqacCRZ
+         HV4IogaW0XmEdAFQv4dzTzJj7g6WVlCq2hWR5l+k/fy+qQwmNWHI7NIaq54m0nlkpAuD
+         eUKbom5zYkxPnBIutfY4OwsAbxdfVuWv+M8+3AuoH6ukrrEqeMXBiMlfymTq2jKrsMLT
+         aPEjAfdFpsgWwxM1JlB/7DDbuSOefAi4xCGX1l351+gyapj6V+T2f3YiA25bikwKEodS
+         BEkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mw+HRTpCizRSush1bYJcwNpbU4lyMkXJCLmU1NuNo9I=;
-        b=U8PiWJlQTeoLhHZzAzwbG2G2UI8d8H97LcDH1AYqfchebt7JVOCcYFFQvfFHb07s0Y
-         G3bA1zHIQAjTZhmn+8GvTA6FdKA0gXVFJPZp8l8Nh4G382kPiquGvqpphZ1Qtmzitzre
-         Bm3hvBt6SdCRZ16pUWvAHbS2X3a6Wtz3vEEuHOC9HfphdEnnObdKwvLCz6gALHgIXVaj
-         gL/7yLDO6B/yNkJjN9h0Mauw1N67aRvUoy36bw+kifZjdXorve08NXY1s2Su2yuVgPXR
-         tmlDStgwj/hO0qGX5kREpFK0TPYaW+CuGyLXyxH7gcGxDC70W74ZAyJi6mn8rK8c9iWf
-         s33Q==
-X-Gm-Message-State: AOAM5328+uygGkez7u//mlE2ELb3VG5StUePFRpA/aDc9Px9tK9D7skj
-        x53mjr8T1Ed+udyE/myH2DK+Ig==
-X-Google-Smtp-Source: ABdhPJyM662f62eKlRkfIzbTQRnfCtVX11iAhUuwPz23LMkEznsbOgZuei9vE3J5xoXgHGQgMRldxg==
-X-Received: by 2002:a17:90b:1c06:: with SMTP id oc6mr16250572pjb.142.1634923552502;
-        Fri, 22 Oct 2021 10:25:52 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 23sm13443238pjc.37.2021.10.22.10.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 10:25:50 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 11:25:48 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        Bruce Ashfield <bruce.ashfield@xilinx.com>
-Subject: Re: [RFC PATCH 2/7] remoteproc: Move rvdev management in rproc_virtio
-Message-ID: <20211022172548.GA3659113@p14s>
-References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
- <20211001101234.4247-3-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9g3SS96B24RbA0UM0N0/J0717Xuebx832cXs0RhSY7g=;
+        b=su2XhJO1n4Nz0uNglJ62+MsqkrdvXcxCR/0Tm9Urqfzaz3T5Hx8pCSc1khGGy+Zo9M
+         ZlmEBdd/fCCAY9lySEQ2L1HSguhdjC4ZSmwIqfxa+NIuSmOQuSsd2pT9wJ+ypvkcWy5S
+         E0gURbVrlPqopnGHfJlMdk/4ptOGTKhBoqVZ4Y9O3ccdCB8itNcf5HFtObaqJXBI4w3v
+         bsZMU3UQRuscXA3pWimoaHZJppvo+986vzasOb4ZfJHEH9rEjj714z28aJ0dDp04bOFW
+         CQFLNW5wmeIqOAQBDZW3KrgPL0kUxirNk5cOcLkcaVaAf8FKy/Q7WvPpDcEJZq+yVccc
+         4taQ==
+X-Gm-Message-State: AOAM531zB1mm/b6DNfwI6R/O4KgulE6YJt//aFBnGyPti+YnuD/HrRO8
+        NYNj2He5heANo5HYPncFHsYyLVtPC54=
+X-Google-Smtp-Source: ABdhPJxezLurfmK5izcjd7eKKLaTo3YUGvjArBGaamxSn1mIbVxxT9SKHmOZQoQpE1e3adlA2481hw==
+X-Received: by 2002:a17:90a:e7ca:: with SMTP id kb10mr16062293pjb.139.1634923791080;
+        Fri, 22 Oct 2021 10:29:51 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id gk1sm11992725pjb.2.2021.10.22.10.29.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 10:29:50 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211005153209.GA1083986@bhelgaas>
+ <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
+ <20211005194301.enb5jddzdgczcolx@pali>
+ <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
+ <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
+ <f648bc89-f08b-e806-45f9-5a1b61686e19@gmail.com>
+ <20211022171728.vlxb3sfebfpgijmp@pali>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3a956549-3304-5a4c-3058-eccfac44d31b@gmail.com>
+Date:   Fri, 22 Oct 2021 10:29:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001101234.4247-3-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <20211022171728.vlxb3sfebfpgijmp@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-More comments...
-
-The title should probably be:
-
-"remoteproc: Move rproc_vdev management to remoteproc_virtio.c"
-
-
-On Fri, Oct 01, 2021 at 12:12:29PM +0200, Arnaud Pouliquen wrote:
-> Move functions related to the management of the rproc_vdev
-> structure in the remoteproc virtio.
-> The aim is to decorrelate as possible the virtio management form
-
-s/form/from
-
-> the core part.
+On 10/22/21 10:17 AM, Pali Rohár wrote:
+> On Friday 22 October 2021 10:04:36 Florian Fainelli wrote:
+>> On 10/5/21 7:07 PM, Florian Fainelli wrote:
+>>>
+>>>
+>>> On 10/5/2021 3:25 PM, Jeremy Linton wrote:
+>>>> Hi,
+>>>>
+>>>> On 10/5/21 2:43 PM, Pali Rohár wrote:
+>>>>> Hello!
+>>>>>
+>>>>> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
+>>>>>>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+>>>>>>>> Additionally, some basic bus/device filtering exist to avoid sending
+>>>>>>>> config transactions to invalid devices on the RP's primary or
+>>>>>>>> secondary bus. A basic link check is also made to assure that
+>>>>>>>> something is operational on the secondary side before probing the
+>>>>>>>> remainder of the config space. If either of these constraints are
+>>>>>>>> violated and a config operation is lost in the ether because an EP
+>>>>>>>> doesn't respond an unrecoverable SERROR is raised.
+>>>>>>>
+>>>>>>> It's not "lost"; I assume the root port raises an error because it
+>>>>>>> can't send a transaction over a link that is down.
+>>>>>>
+>>>>>> The problem is AFAIK because the root port doesn't do that.
+>>>>>
+>>>>> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
+>>>>> guess contains also logic for Root Port) does not signal transaction
+>>>>> failure for config requests? Or it is just your opinion? Because I'm
+>>>>> dealing with similar issues and I'm trying to find a way how to detect
+>>>>> if some PCIe IP signal transaction error via AXI SLVERR response OR it
+>>>>> just does not send any response back. So if you know some way how to
+>>>>> check which one it is, I would like to know it too.
+>>>>
+>>>> This is my _opinion_ based on what I've heard of some other IP
+>>>> integration issues, and what i've seen poking at this one from the
+>>>> perspective of a SW guy rather than a HW guy. So, basically worthless.
+>>>> But, you should consider that most of these cores/interconnects aren't
+>>>> aware of PCIe completion semantics so its the root ports
+>>>> responsibility to say, gracefully translate a non-posted write that
+>>>> doesn't have a completion for the interconnects its attached to,
+>>>> rather than tripping something generic like a SLVERR.
+>>>>
+>>>> Anyway, for this I would poke around the pile of exception registers,
+>>>> with your specific processors manual handy because a lot of them are
+>>>> implementation defined.
+>>>
+>>> I should be able to get you an answer in the new few days whether
+>>> configuration space requests also generate an error towards the ARM CPU,
+>>> since memory space requests most definitively do.
+>>
+>> Did not get an answer from the design team, but going through our bug
+>> tracker, there were evidences of configuration space accesses also
+>> generating external aborts:
+>>
+>> [    8.988237] Unhandled fault: synchronous external abort (0x96000210) at 0xffffff8009539004
+>> [    9.026698] PC is at pci_generic_config_read32+0x30/0xb0
 > 
-> Due to the strong correlation between the vrings and the resource table
-> the vrings management is kept in the remoteproc core.
+> So this is error caused by reading from config space.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c     | 127 -----------------------
->  drivers/remoteproc/remoteproc_internal.h |  19 +++-
->  drivers/remoteproc/remoteproc_virtio.c   | 121 ++++++++++++++++++++-
->  3 files changed, 134 insertions(+), 133 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 7c783ca291a7..67ccd088db8f 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -434,119 +434,6 @@ void rproc_free_vring(struct rproc_vring *rvring)
->  	}
->  }
->  
-> -static int rproc_vdev_do_start(struct rproc_subdev *subdev)
-> -{
-> -	struct rproc_vdev *rvdev = container_of(subdev, struct rproc_vdev, subdev);
-> -
-> -	return rproc_add_virtio_dev(rvdev, rvdev->id);
-> -}
-> -
-> -static void rproc_vdev_do_stop(struct rproc_subdev *subdev, bool crashed)
-> -{
-> -	struct rproc_vdev *rvdev = container_of(subdev, struct rproc_vdev, subdev);
-> -	int ret;
-> -
-> -	ret = device_for_each_child(&rvdev->dev, NULL, rproc_remove_virtio_dev);
-> -	if (ret)
-> -		dev_warn(&rvdev->dev, "can't remove vdev child device: %d\n", ret);
-> -}
-> -
-> -/**
-> - * rproc_rvdev_release() - release the existence of a rvdev
-> - *
-> - * @dev: the subdevice's dev
-> - */
-> -static void rproc_rvdev_release(struct device *dev)
-> -{
-> -	struct rproc_vdev *rvdev = container_of(dev, struct rproc_vdev, dev);
-> -
-> -	of_reserved_mem_device_release(dev);
-> -
-> -	kfree(rvdev);
-> -}
-> -
-> -static int copy_dma_range_map(struct device *to, struct device *from)
-> -{
-> -	const struct bus_dma_region *map = from->dma_range_map, *new_map, *r;
-> -	int num_ranges = 0;
-> -
-> -	if (!map)
-> -		return 0;
-> -
-> -	for (r = map; r->size; r++)
-> -		num_ranges++;
-> -
-> -	new_map = kmemdup(map, array_size(num_ranges + 1, sizeof(*map)),
-> -			  GFP_KERNEL);
-> -	if (!new_map)
-> -		return -ENOMEM;
-> -	to->dma_range_map = new_map;
-> -	return 0;
-> -}
-> -
-> -static void rproc_register_rvdev(struct rproc_vdev *rvdev)
-> -{
-> -	if (rvdev && rvdev->rproc)
-> -		list_add_tail(&rvdev->node, &rvdev->rproc->rvdevs);
-> -}
-> -
-> -static void rproc_unregister_rvdev(struct rproc_vdev *rvdev)
-> -{
-> -	if (rvdev)
-> -		list_del(&rvdev->node);
-> -}
-> -
-> -static int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
-> -{
-> -	struct rproc *rproc = rvdev->rproc;
-> -	char name[16];
-> -	int ret;
-> -
-> -	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
-> -	rvdev->dev.parent = &rproc->dev;
-> -	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
-> -	if (ret)
-> -		return ret;
-> -
-> -	rvdev->dev.release = rproc_rvdev_release;
-> -	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
-> -	dev_set_drvdata(&rvdev->dev, rvdev);
-> -
-> -	ret = device_register(&rvdev->dev);
-> -	if (ret) {
-> -		put_device(&rvdev->dev);
-> -		return ret;
-> -	}
-> -	/* Make device dma capable by inheriting from parent's capabilities */
-> -	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
-> -
-> -	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
-> -					   dma_get_mask(rproc->dev.parent));
-> -	if (ret) {
-> -		dev_warn(&rvdev->dev,
-> -			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
-> -			 dma_get_mask(rproc->dev.parent), ret);
-> -	}
-> -
-> -	rproc_register_rvdev(rvdev);
-> -
-> -	rvdev->subdev.start = rproc_vdev_do_start;
-> -	rvdev->subdev.stop = rproc_vdev_do_stop;
-> -
-> -	rproc_add_subdev(rproc, &rvdev->subdev);
-> -
-> -	return 0;
-> -}
-> -
-> -static void rproc_rvdev_remove_device(struct rproc_vdev *rvdev)
-> -{
-> -	struct rproc *rproc = rvdev->rproc;
-> -
-> -	rproc_remove_subdev(rproc, &rvdev->subdev);
-> -	rproc_unregister_rvdev(rvdev);
-> -	device_unregister(&rvdev->dev);
-> -}
-> -
->  /**
->   * rproc_handle_vdev() - handle a vdev fw resource
->   * @rproc: the remote processor
-> @@ -648,20 +535,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
->  	return ret;
->  }
->  
-> -void rproc_vdev_release(struct kref *ref)
-> -{
-> -	struct rproc_vdev *rvdev = container_of(ref, struct rproc_vdev, refcount);
-> -	struct rproc_vring *rvring;
-> -	int id;
-> -
-> -	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
-> -		rvring = &rvdev->vring[id];
-> -		rproc_free_vring(rvring);
-> -	}
-> -
-> -	rproc_rvdev_remove_device(rvdev);
-> -}
-> -
->  /**
->   * rproc_handle_trace() - handle a shared trace buffer resource
->   * @rproc: the remote processor
-> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-> index a328e634b1de..152fe2e8668a 100644
-> --- a/drivers/remoteproc/remoteproc_internal.h
-> +++ b/drivers/remoteproc/remoteproc_internal.h
-> @@ -26,14 +26,13 @@ struct rproc_debug_trace {
->  
->  /* from remoteproc_core.c */
->  void rproc_release(struct kref *kref);
-> -irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
-> -void rproc_vdev_release(struct kref *ref);
->  int rproc_of_parse_firmware(struct device *dev, int index,
->  			    const char **fw_name);
->  
->  /* from remoteproc_virtio.c */
-> -int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id);
-> -int rproc_remove_virtio_dev(struct device *dev, void *data);
-> +int rproc_rvdev_add_device(struct rproc_vdev *rvdev);
-> +irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
-> +void rproc_vdev_release(struct kref *ref);
->  
->  /* from remoteproc_debugfs.c */
->  void rproc_remove_trace_file(struct dentry *tfile);
-> @@ -196,4 +195,16 @@ bool rproc_u64_fit_in_size_t(u64 val)
->  	return (val <= (size_t) -1);
->  }
->  
-> +static inline void rproc_register_rvdev(struct rproc_vdev *rvdev)
-> +{
-> +	if (rvdev && rvdev->rproc)
-> +		list_add_tail(&rvdev->node, &rvdev->rproc->rvdevs);
-> +}
-> +
-> +static inline void rproc_unregister_rvdev(struct rproc_vdev *rvdev)
-> +{
-> +	if (rvdev)
-> +		list_del(&rvdev->node);
-> +}
-> +
->  #endif /* REMOTEPROC_INTERNAL_H */
-> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-> index cf4d54e98e6a..5e5a78b3243f 100644
-> --- a/drivers/remoteproc/remoteproc_virtio.c
-> +++ b/drivers/remoteproc/remoteproc_virtio.c
-> @@ -9,7 +9,9 @@
->   * Brian Swetland <swetland@google.com>
->   */
->  
-> +#include <linux/dma-direct.h>
->  #include <linux/dma-map-ops.h>
-> +#include <linux/dma-mapping.h>
+> Can you check if also writing to config space can trigger some crash? If
+> yes, I would like to know if write would be also synchronous or rather
+> asynchronous abort.
 
-Please see if either dma-direct.h and dma-mapping.h can be removed from
-remoteproc_core.c
+Yes it does and AFAICT it always shows up as a system error interrupt,
+here is an example:
 
->  #include <linux/export.h>
->  #include <linux/of_reserved_mem.h>
->  #include <linux/remoteproc.h>
-> @@ -23,6 +25,25 @@
->  
->  #include "remoteproc_internal.h"
->  
-> +static int copy_dma_range_map(struct device *to, struct device *from)
-> +{
-> +	const struct bus_dma_region *map = from->dma_range_map, *new_map, *r;
-> +	int num_ranges = 0;
-> +
-> +	if (!map)
-> +		return 0;
-> +
-> +	for (r = map; r->size; r++)
-> +		num_ranges++;
-> +
-> +	new_map = kmemdup(map, array_size(num_ranges + 1, sizeof(*map)),
-> +			  GFP_KERNEL);
-> +	if (!new_map)
-> +		return -ENOMEM;
-> +	to->dma_range_map = new_map;
-> +	return 0;
-> +}
-> +
->  /* kick the remote processor, and let it know which virtqueue to poke at */
->  static bool rproc_virtio_notify(struct virtqueue *vq)
->  {
-> @@ -327,7 +348,7 @@ static void rproc_virtio_dev_release(struct device *dev)
->   *
->   * Return: 0 on success or an appropriate error value otherwise
->   */
-> -int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
-> +static int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
->  {
->  	struct rproc *rproc = rvdev->rproc;
->  	struct device *dev = &rvdev->dev;
-> @@ -435,10 +456,106 @@ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
->   *
->   * Return: 0
->   */
-> -int rproc_remove_virtio_dev(struct device *dev, void *data)
-> +static int rproc_remove_virtio_dev(struct device *dev, void *data)
->  {
->  	struct virtio_device *vdev = dev_to_virtio(dev);
->  
->  	unregister_virtio_device(vdev);
->  	return 0;
->  }
-> +
-> +static int rproc_vdev_do_start(struct rproc_subdev *subdev)
-> +{
-> +	struct rproc_vdev *rvdev = container_of(subdev, struct rproc_vdev, subdev);
-> +
-> +	return rproc_add_virtio_dev(rvdev, rvdev->id);
-> +}
-> +
-> +static void rproc_vdev_do_stop(struct rproc_subdev *subdev, bool crashed)
-> +{
-> +	struct rproc_vdev *rvdev = container_of(subdev, struct rproc_vdev, subdev);
-> +	int ret;
-> +
-> +	ret = device_for_each_child(&rvdev->dev, NULL, rproc_remove_virtio_dev);
-> +	if (ret)
-> +		dev_warn(&rvdev->dev, "can't remove vdev child device: %d\n", ret);
-> +}
-> +
-> +/**
-> + * rproc_rvdev_release() - release the existence of a rvdev
-> + *
-> + * @dev: the subdevice's dev
-> + */
-> +static void rproc_rvdev_release(struct device *dev)
-> +{
-> +	struct rproc_vdev *rvdev = container_of(dev, struct rproc_vdev, dev);
-> +
-> +	of_reserved_mem_device_release(dev);
-> +
-> +	kfree(rvdev);
-> +}
-> +
-> +int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
-> +{
-> +	struct rproc *rproc = rvdev->rproc;
-> +	char name[16];
-> +	int ret;
-> +
-> +	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
-> +	rvdev->dev.parent = &rproc->dev;
-> +	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
-> +	if (ret)
-> +		return ret;
-> +
-> +	rvdev->dev.release = rproc_rvdev_release;
-> +	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
-> +	dev_set_drvdata(&rvdev->dev, rvdev);
-> +
-> +	ret = device_register(&rvdev->dev);
-> +	if (ret) {
-> +		put_device(&rvdev->dev);
-> +		return ret;
-> +	}
-> +	/* Make device dma capable by inheriting from parent's capabilities */
-> +	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
-> +
-> +	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
-> +					   dma_get_mask(rproc->dev.parent));
-> +	if (ret) {
-> +		dev_warn(&rvdev->dev,
-> +			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
-> +			 dma_get_mask(rproc->dev.parent), ret);
-> +	}
-> +
-> +	rproc_register_rvdev(rvdev);
-> +
-> +	rvdev->subdev.start = rproc_vdev_do_start;
-> +	rvdev->subdev.stop = rproc_vdev_do_stop;
-> +
-> +	rproc_add_subdev(rproc, &rvdev->subdev);
-> +
-> +	return 0;
-> +}
-> +
-> +static void rproc_rvdev_remove_device(struct rproc_vdev *rvdev)
-> +{
-> +	struct rproc *rproc = rvdev->rproc;
-> +
-> +	rproc_remove_subdev(rproc, &rvdev->subdev);
-> +	rproc_unregister_rvdev(rvdev);
-> +	device_unregister(&rvdev->dev);
-> +}
-> +
-> +void rproc_vdev_release(struct kref *ref)
-> +{
-> +	struct rproc_vdev *rvdev = container_of(ref, struct rproc_vdev, refcount);
-> +	struct rproc_vring *rvring;
-> +	int id;
-> +
-> +	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
-> +		rvring = &rvdev->vring[id];
-> +		rproc_free_vring(rvring);
-> +	}
-> +
-> +	rproc_rvdev_remove_device(rvdev);
-> +}
-> -- 
-> 2.17.1
-> 
+# setpci -d *:* latency_timer=40
+[   25.909644] SError Interrupt on CPU2, code 0xbf000002 -- SError
+[   25.909647] CPU: 2 PID: 1676 Comm: setpci Not tainted
+5.10.70-0.2pre-ge3872e15011b #2
+[   25.909649] Hardware name: BCM972165SV_V10 (DT)
+[   25.909651] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[   25.909652] pc : pci_user_write_config_byte+0x6c/0x78
+[   25.909654] lr : pci_user_write_config_byte+0x68/0x78
+[   25.909655] sp : ffffffc015853c20
+[   25.909656] x29: ffffffc015853c20 x28: ffffff8003053000
+[   25.909661] x27: 0000000000000000 x26: 0000000000000000
+[   25.909664] x25: 0000000000000001 x24: ffffff8004a23780
+[   25.909668] x23: ffffff80049aa000 x22: ffffffc015853d68
+[   25.909671] x21: 0000000000000040 x20: 000000000000000d
+[   25.909674] x19: 000000000000000e x18: 0000000000000000
+[   25.909677] x17: 0000000000000000 x16: 0000000000000000
+[   25.909680] x15: 0000000000000000 x14: 0000000000000000
+[   25.909684] x13: 0000000000000000 x12: 0000000000000000
+[   25.909687] x11: 0000000000000000 x10: 0000000000000000
+[   25.909690] x9 : ffffffc010483214 x8 : 0000000000000000
+[   25.909693] x7 : ffffff800498df00 x6 : ffffff80049a8380
+[   25.909696] x5 : ffffffc015510000 x4 : ffffff80049a9800
+[   25.909699] x3 : 0000000000000000 x2 : 000000000000000d
+[   25.909702] x1 : 0000000000000000 x0 : 0000000000000000
+[   25.909706] Kernel panic - not syncing: Asynchronous SError Interrupt
+[   25.909708] CPU: 2 PID: 1676 Comm: setpci Not tainted
+5.10.70-0.2pre-ge3872e15011b #2
+[   25.909710] Hardware name: BCM972165SV_V10 (DT)
+[   25.909711] Call trace:
+[   25.909712]  dump_backtrace+0x0/0x1d0
+[   25.909713]  show_stack+0x1c/0x24
+[   25.909714]  dump_stack+0xd0/0x12c
+[   25.909716]  panic+0x128/0x308
+[   25.909717]  nmi_panic+0x50/0x70
+[   25.909718]  arm64_serror_panic+0x74/0x80
+[   25.909720]  do_serror+0x28/0x60
+[   25.909721]  el1_error+0x8c/0x10c
+[   25.909722]  pci_user_write_config_byte+0x6c/0x78
+[   25.909724]  pci_write_config+0x7c/0x1a0
+[   25.909725]  sysfs_kf_bin_write+0x64/0x84
+[   25.909727]  kernfs_fop_write_iter+0xbc/0x170
+[   25.909728]  new_sync_write+0x80/0xcc
+[   25.909729]  vfs_write+0xec/0x110
+[   25.909730]  ksys_pwrite64+0x50/0x8c
+[   25.909732]  __arm64_sys_pwrite64+0x20/0x28
+[   25.909733]  el0_svc_common.constprop.4+0x100/0x184
+[   25.909735]  do_el0_svc+0x38/0x78
+[   25.909736]  el0_svc+0x1c/0x28
+[   25.909737]  el0_sync_handler+0x64/0x12c
+[   25.909738]  el0_sync+0x148/0x180
+[   25.909775] brcm-pcie 8b20000.pcie: Error: CFG Acc, 32bit, Write,
+Bus=1, Dev=0, Fun=0, Reg=0xc, lanes=01000000
+[   26.136082] brcm-pcie 8b20000.pcie:  Type: TO=0 Abt=0 UnsupReq=0
+AccTO=0 AccDsbld=1 Acc64bit=0
+[   26.144709] SMP: stopping secondary CPUs
+[   26.144711] Kernel Offset: disabled
+[   26.144712] CPU features: 0x0040002,24002004
+[   26.144713] Memory Limit: none
+
+-- 
+Florian
