@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADBE4372E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A4843728D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhJVHk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:40:27 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:46062 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232241AbhJVHkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:40:14 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B82812005EC;
-        Fri, 22 Oct 2021 09:37:56 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4CD50201B51;
-        Fri, 22 Oct 2021 09:37:56 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id CD9D5183AD05;
-        Fri, 22 Oct 2021 15:37:54 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, jingoohan1@gmail.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH v3 7/7] PCI: imx6: Add the compliance tests mode support
-Date:   Fri, 22 Oct 2021 15:12:30 +0800
-Message-Id: <1634886750-13861-8-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S232029AbhJVHQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:16:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230332AbhJVHQa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 03:16:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634886853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oV5i5voiy3Imk+s4Dg9nNxLfsORlDwNjfDlexw2766M=;
+        b=isyuHfty0cn8iW+3EP4lueg1zrJOLCzEaQBqJs/MA02rdYWKQ+LkgQLmvLjxClnWsIn6Kw
+        lUgSLOsj4z3Vj8qFUwE2czOE/vry8HqCJUJK+pWiHvBQ7I2eJBOY2+fCORT5pn5WngNl18
+        +nReyMc5x8OPjFBSKUsam2EVA1x2fgE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-yeNJ5VfYM1iZhiarPh00ow-1; Fri, 22 Oct 2021 03:14:11 -0400
+X-MC-Unique: yeNJ5VfYM1iZhiarPh00ow-1
+Received: by mail-ed1-f69.google.com with SMTP id u10-20020a50d94a000000b003dc51565894so2754841edj.21
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 00:14:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oV5i5voiy3Imk+s4Dg9nNxLfsORlDwNjfDlexw2766M=;
+        b=P7En/ptGq4dwyhtctdt/V+NevQMSA39/YELR0EygooHzsOTiPvDTyXAn4Uro0FdRn/
+         F9VK021GBDyMq8slzKEB+9p+s1Mc/ge64tTvKjaMMDeon3KzYrIwjTi4MS5mr0hMF7nB
+         4d1fUH+Gm7D8bxcZZAmoPUt/4sg7pS1Jy4YlImHyyJClf5I7hH2OblPtlINNmR7kkajG
+         Jg7K4SpxyY5Zzgfpi8dFww8bSWMjcP2BmPMUC/jzEDQa28Z8VQdcMvCvqQp0kUJH/XG2
+         xbYYSjMJCkB/vDaijJqH3goZ/B9yoDsJdnyaz0tMw+mP93skeQ4AFLSINZuXgfi9+AQt
+         LO/A==
+X-Gm-Message-State: AOAM5328k8HlGDhLYP4cYaL9PZgtrsthVlaavDrYQgQoaieF0bLP7NRX
+        T2V93ZBKp5zZm5sk2Xl7SL30yE+HxF489oDITZiVDuyar0s41izqpTSe0xBWMfIiB3GWhnBNBiS
+        HTxv6VndNpRyr/wVmSlsO4a+h
+X-Received: by 2002:aa7:c650:: with SMTP id z16mr14844639edr.54.1634886850472;
+        Fri, 22 Oct 2021 00:14:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqUZHn7yRUdny+ATjDDvgaeLq/ldSODVR22HdNwc2fe9x4BGa+STkcDGXCJnPCg5XJo8l5rw==
+X-Received: by 2002:aa7:c650:: with SMTP id z16mr14844610edr.54.1634886850252;
+        Fri, 22 Oct 2021 00:14:10 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id z18sm3396225ejl.67.2021.10.22.00.14.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Oct 2021 00:14:09 -0700 (PDT)
+Message-ID: <419f25f5-41ef-1389-1103-3bbe4aa4ddd3@redhat.com>
+Date:   Fri, 22 Oct 2021 09:14:08 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v3 7/8] nSVM: use vmcb_ctrl_area_cached instead of
+ vmcb_control_area in struct svm_nested_state
+Content-Language: en-US
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20211011143702.1786568-1-eesposit@redhat.com>
+ <20211011143702.1786568-8-eesposit@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211011143702.1786568-8-eesposit@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refer to the system board signal Quality of PCIe archiecture PHY test
-specification. Signal quality tests(for example: jitters,  differential
-eye opening and so on ) can be executed with devices in the
-polling.compliance state.
+On 11/10/21 16:37, Emanuele Giuseppe Esposito wrote:
+> ZE))
+>   		return -EFAULT;
+> -	if (copy_to_user(&user_vmcb->control, &svm->nested.ctl,
+> +	nested_copy_vmcb_cache_to_control(&ctl_temp, &svm->nested.ctl);
+> +	if (copy_to_user(&user_vmcb->control, &ctl_temp,
+>   			 sizeof(user_vmcb->control)))
+>   		return -EFAULT;
 
-To let the device support polling.compliance stat, the clocks and powers
-shouldn't be turned off when the probe of device driver is failed.
+This needs a memset of ctl_temp so that kernel memory contents are not
+leaked to userspace.  However, it's also better to avoid large structs
+on the stack, and do a quick kzalloc/kfree instead:
 
-Based on CLB(Compliance Load Board) Test Fixture and so on test
-equipments, the PHY link would be down during the compliance tests.
-Refer to this scenario, add the i.MX PCIe compliance tests mode enable
-support, and keep the clocks and powers on, and finish the driver probe
-without error return.
-
-Use the "pci_imx6.compliance=1" in kernel command line to enable the
-compliance tests mode.
-
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 34 ++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index c723df053574..0eb84fae817d 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -143,6 +143,10 @@ struct imx6_pcie {
- #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
- #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
- 
-+static bool imx6_pcie_cmp_mode;
-+module_param_named(compliance, imx6_pcie_cmp_mode, bool, 0644);
-+MODULE_PARM_DESC(compliance, "i.MX PCIe compliance test mode (1=compliance test mode enabled)");
+-	nested_copy_vmcb_cache_to_control(&ctl_temp, &svm->nested.ctl);
+-	if (copy_to_user(&user_vmcb->control, &ctl_temp,
+-			 sizeof(user_vmcb->control)))
 +
- static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
- {
- 	struct dw_pcie *pci = imx6_pcie->pci;
-@@ -812,10 +816,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
- 	 * started in Gen2 mode, there is a possibility the devices on the
- 	 * bus will not be detected at all.  This happens with PCIe switches.
- 	 */
--	tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
--	tmp &= ~PCI_EXP_LNKCAP_SLS;
--	tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
--	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	if (!imx6_pcie_cmp_mode) {
-+		tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-+		tmp &= ~PCI_EXP_LNKCAP_SLS;
-+		tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
-+		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	}
- 
- 	/* Start LTSSM. */
- 	imx6_pcie_ltssm_enable(dev);
-@@ -903,10 +909,13 @@ static void imx6_pcie_host_exit(struct pcie_port *pp)
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	struct imx6_pcie *imx6_pcie = to_imx6_pcie(pci);
- 
--	imx6_pcie_reset_phy(imx6_pcie);
--	imx6_pcie_clk_disable(imx6_pcie);
--	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
--		regulator_disable(imx6_pcie->vpcie);
-+	if (!imx6_pcie_cmp_mode) {
-+		imx6_pcie_reset_phy(imx6_pcie);
-+		imx6_pcie_clk_disable(imx6_pcie);
-+		if (imx6_pcie->vpcie
-+		    && regulator_is_enabled(imx6_pcie->vpcie) > 0)
-+			regulator_disable(imx6_pcie->vpcie);
-+	}
- }
- 
- static const struct dw_pcie_host_ops imx6_pcie_host_ops = {
-@@ -1191,8 +1200,15 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = dw_pcie_host_init(&pci->pp);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (imx6_pcie_cmp_mode) {
-+			dev_info(dev, "Driver loaded with compliance test mode enabled.\n");
-+			ret = 0;
-+		} else {
-+			dev_err(dev, "Unable to add pcie port.\n");
-+		}
- 		return ret;
-+	}
- 
- 	if (pci_msi_enabled()) {
- 		u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_MSI);
--- 
-2.25.1
++	ctl = kzalloc(sizeof(*ctl), GFP_KERNEL);
++	if (!ctl)
++		return -ENOMEM;
++	nested_copy_vmcb_cache_to_control(ctl, &svm->nested.ctl);
++	r = copy_to_user(&user_vmcb->control, ctl,
++			 sizeof(user_vmcb->control));
++	kfree(ctl);
++	if (r)
+  		return -EFAULT;
+
+I can do this change when committing too.
+
+Paolo
 
