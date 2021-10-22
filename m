@@ -2,356 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93200437DAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C83437DA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 21:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhJVTIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 15:08:34 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:14880 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234180AbhJVTIZ (ORCPT
+        id S234175AbhJVTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 15:08:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55442 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234219AbhJVTIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 15:08:25 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MI1L9Y027916;
-        Fri, 22 Oct 2021 19:05:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=B3vksbmqLnuLOMQIZ2gsGxTMgTm093B4DGpiMer4Jfo=;
- b=DymGFe++uFC9gWhywv4ZZNhA292F1UxyZ2WCMyYWJfZUp72ZFm3ObFUiMt0OmNm6qgci
- XpE05jUhbwf0LhT6Posjo+UxKKypmEgfWvDR725iCPQFng+5+4Kdo2G3y3ShqCUcDUSV
- XJVyBzphIwlLWj1YGqg69YWylbd4fIClLPfpbU00euyPC7nvNbiUBm25xcy8eygblLJ8
- FW3BT7NjGAnPNDKrW6LjJOWn2m+ph5Mh5IplGR+hJwhGkZufgg1YDGxEbCRTrCHO18ic
- CaEp6VedqLOz2uOKWG2+kSnabEAYyqcOR56cMCRL4PmOHeqjzsmu5hMeTXBAG8D1gHu5 5A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3buta8axvy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Oct 2021 19:05:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19MIphLE049902;
-        Fri, 22 Oct 2021 19:05:52 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by userp3020.oracle.com with ESMTP id 3br8gyd027-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Oct 2021 19:05:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mIbjXG4zACWJZTBrT/EYOVLlHG2q5CIoe9hqFnIaDU8EdLQgW63DbKmOd3HYMtNhkqvsYO1HdYJfEUxC0ifSf8TxQ+4bkttWq4+uxMzCRc/38SZ7rLmnjtjDZpHVCZt2EG4os950P/zsEYrM0Obz0d7udd9Xl8hbuS8AYgOiLeJrjdP1rlLL8FEq/uxSGMYsWhRv0rDw60pizeF0QJ+FpCKe5elJs5/71V3zD+b4ffqDDmT14QqomolKVP6/HUQAHVvRjrsDxL93MuTBXZnZReuhxNplHHZrjLjvHQqpmLkcw4y8MC0ve8YTJsbMOqneh4KHZEzhIybmB2ep9BSkEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B3vksbmqLnuLOMQIZ2gsGxTMgTm093B4DGpiMer4Jfo=;
- b=ThohQt181bVByOYTAZF5q/wpnCOqd43gXC9kBaazY7Y9eIbv04rmMgmS8rwW5hDXvtD2EWQl7efTmrGXpIbzX3CdAwcAiC8hTWdyGgEwcwyBNsw8LM0zCEQLP5+bu9LG7v+u+axAJNq2UKR6D9IOzTV807mWyHsaRkJ0IFKz+/Q+jnackRplDhQu+HFrsdggPgmLrkZ5OLPEMoGlOdat3d9GWWO5eszdmMwawOhOIrsMNWu6BzCX2N2A183VzCA9J6fmfNoRmqbWMs18foKOPNGqU44FBu+z/H3o5dVrWd9z8J+J1i5Z5CQ/zJF50J4nYmUedAUcaIh6mg9J1CrkYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B3vksbmqLnuLOMQIZ2gsGxTMgTm093B4DGpiMer4Jfo=;
- b=p1E91mVgNIWEElHKxk25d3xi3/JBjaFFI87kzRBAw7GV0ZliudZXyDidgEoBY5EfMKig6aUj2qs44RjztJXK5xTg4ah91xSqnpxk6uVTpK/XbxmI4DQa+EdJCbfOR8Wa3s86JgHXcL8toG7XEcjNlM+3LoISp31wue79Jp62szk=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB3303.namprd10.prod.outlook.com (2603:10b6:a03:153::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
- 2021 19:05:49 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::bc59:71de:1590:cbf5]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::bc59:71de:1590:cbf5%6]) with mapi id 15.20.4608.018; Fri, 22 Oct 2021
- 19:05:49 +0000
-Subject: Re: [PATCH v4 4/5] hugetlb: add demote bool to gigantic page routines
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Nghia Le <nghialm78@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211007181918.136982-1-mike.kravetz@oracle.com>
- <20211007181918.136982-5-mike.kravetz@oracle.com>
- <20211018075851.GB11960@linux>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <ddd1a08f-8001-c844-5734-16476ce34d5f@oracle.com>
-Date:   Fri, 22 Oct 2021 12:05:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20211018075851.GB11960@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR19CA0069.namprd19.prod.outlook.com
- (2603:10b6:300:94::31) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        Fri, 22 Oct 2021 15:08:09 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 511C41FD63;
+        Fri, 22 Oct 2021 19:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634929550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c6+VLXMFqOxQ0TPtQ6oBMMHDLw7HjDRHFm8X+Rt/J2Y=;
+        b=XMG2NNRPUUth27GOBYD+hNyPYifUuukXIEilep3iPhfsfUAyro4t9pl2xYo5gcMGW0jOh5
+        AqcJNzdqe6jYbhzAkmjAS/mMtK72/nxg/fjNwBsBEMlHR/D+Wq3ufUYUMGW+0KO9ze3HLz
+        M5JGpLhEHCXmzWb3jgD/U8kevNX210o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634929550;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c6+VLXMFqOxQ0TPtQ6oBMMHDLw7HjDRHFm8X+Rt/J2Y=;
+        b=Q1xSUUJfUeeLSieLK7d01t5RNQ4S/yh5nC3oLumRHSzRdJXMRwayinYWXbOvr6GtTH0dfW
+        a2n9fywE9QwCAnAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1177213D02;
+        Fri, 22 Oct 2021 19:05:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6lmxAo4Lc2EdYwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 22 Oct 2021 19:05:50 +0000
+Message-ID: <14a41bd8-cd70-b9d0-ce1c-869cfde8bdcb@suse.de>
+Date:   Fri, 22 Oct 2021 21:05:49 +0200
 MIME-Version: 1.0
-Received: from [192.168.2.123] (50.38.35.18) by MWHPR19CA0069.namprd19.prod.outlook.com (2603:10b6:300:94::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Fri, 22 Oct 2021 19:05:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a5a88d3-65fa-4648-bffb-08d9958ef5c5
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3303:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB33034026A0ACB90097F00B26E2809@BYAPR10MB3303.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BCvqU2hvmM6WRZoMA2K2dK7LU7rvIK2j0HOss/foNwj2fhQJnFbsV2riKwrHtbM0tf8JIBNu2FJW1T8/BFq6pCtV2RRXBwhTsxmZ7BJQaRKj8l4XYFhlh2XdrW2m98bDpy3GHuIfP6n/egmwodNtTSw9cRtdQTFR1NGhJqlXcrrIAl50eY/hy4md7iuPORgrUeyBgLfn/PnRFWjwkFD1tmsOF5+sLMSWSNVSb11EudR6rQYZJNsYoIyG9K+458ZnXT9XsTd1e7RL6j4aZOVjmVFWea2tz0KuvPyyLi/0XmyouwD22HKVJml71zsE0T1DstKKOpktmhG9Vy5ORgEoTk7TC4BHS9IxlySbC+pI82fPJhi39Yc6d/rxV7R0f4ezXf/zAeZc3fItR731bNRsB7oyx8W3Zrf7IFbcSp9oodws/68P8bdX7gVDqJjTCR2PQF+YVFUqlnIvjS1hcYtQa/pafOLSUnXQqlCwuxNgSIOAR9VOIGp9pY5cMHPxXxrlJ4hobzZOB7KuoApneYN7nisCYZ2cQxzWLCIw3ddbFffwAqSA6Hes22GA660McMaWPP3x9OdWM2vN5rPER7YlfPbuqGst/nnAOUBc/CLM3zb08Nx2xohHX6uk4crYFa7g2o7AhqCBV6bJk4+2ReqHqiNnOeLX+hu9DEjML1gBGlMicTdNxVuUl2s0+mPBqASaH4LhpJHeQHPvvDcDmnNKxzInhPo9mxfbFRDaXRLqZKlmeyDjX+mic46TkAtxOYRVPZRwVMUdn/VsuWmUdxeQ2tfAbLCZwucrioaFkDPLywSRDePn1OBrd4P/KHjEodqYY00dChEMbMAxJFPyz46sUGDiQzBCS+t+ZOg4o6yrZrZ66RrMCIeLdBGurot0n567y8p27f9TezQz8NyaEU/u+A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6916009)(38350700002)(966005)(38100700002)(508600001)(83380400001)(8936002)(2906002)(316002)(66946007)(54906003)(66556008)(5660300002)(53546011)(16576012)(8676002)(26005)(2616005)(6486002)(66476007)(956004)(31686004)(52116002)(44832011)(86362001)(7416002)(36756003)(4326008)(31696002)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TUJmZFFlcWp4V0xnQXU5SGpVWnZoOWtHTkdkeUpZN1hicXllNi9VUHpheUUz?=
- =?utf-8?B?cmRBYWpua1YzcmVSOHMzZHNQUlRaQlVlQWhwMUtrRmp5ZTFtdWg1N1pmeVVx?=
- =?utf-8?B?TTBxWk1sVzIxbTI0N0pINEVoQlVTN3pGZ3hPM2FnVXR5dzhVRHN3SFJwNDJH?=
- =?utf-8?B?SUVwSWJGVFVQY3gyZXVtdnAzdUZoSmNRVkpraWdZUVdvTkdjNHY2SHNRbW5F?=
- =?utf-8?B?UGhKc0tCVzYzUHpLSTErSzVBUDdLRWI1T3JNKzJWQ2tENm1MVUlSbVBJTm9D?=
- =?utf-8?B?amN2R0JrcWVlUTlkbjdRVzBHSTNDV1ZnOUdqREJ5M3BrUHdydjAvdmpCcStV?=
- =?utf-8?B?ZHVsVGZHamNKT1AyblVDTkZ3VjU4TzlZMS9reUFGUjBSOEdPK2JKb0kzVWhD?=
- =?utf-8?B?OGJpRVdoYXQ3bDZXdUxTUDR6NURlbXZXUHRpUjcxbGRYL2VIR29oRkJWMFlT?=
- =?utf-8?B?VDJDaERJTzVnWlBUbFdQOVg1OEdIZGdZaWNIRVFmRDl4TEdoOFFzcmVCL1lp?=
- =?utf-8?B?MFNDSk9YZ3doR0pwK2dxRVMyeFAwT0VqRFNxT3d5YjRBNFY1Q3lqdCtRTUpw?=
- =?utf-8?B?d29iKzJ2VW9QVm44RUkwUkIycFZjd2twWkJ0aitPNG9ibEF1MmE3NHJ3OHd6?=
- =?utf-8?B?S3l1Sk5Ga0FFS0RmWDhOYXByQWswUlhwL1V4RzluSG82V0hiQUZqalRmREV3?=
- =?utf-8?B?Si9BOHA4WWV3SkhQYVVRcVU5MEVkS3V0NmFIR0RhMHFKL2RNVTdpNCtoMEJt?=
- =?utf-8?B?OUgvY1BhRFhTUGdyNnh4aUI0L3MySThXK1ArZWRGb1VGZ3NRbHZEUGFTdTIv?=
- =?utf-8?B?bmMrSjJBT2h5dzlGbDdabVJleVM4dDVtYjcvdVNQZmsvL2xJQncxSkgrZ2ZK?=
- =?utf-8?B?NWF5dTZ0M3cvdXdDZ3dLMS9FMENYV2lLNjViQ2V6aUsyb25sRWpSSkJZVWZ3?=
- =?utf-8?B?OFBjV0ZqMityK0dxVmY2RmtRalNNb1VyVEFSNk51ZnY0cHVzL0lkcVRiTFNV?=
- =?utf-8?B?UlNoZ3UvdE42R01nWEo3MEVYREttK3lnck5rL3AwT1pSU3ZLZGYwU29sYksr?=
- =?utf-8?B?L1RNbEJ0NzJuOEt3d0dsUXpLWSszcGZxckVyTjMvcGxjR016Zm1vNHVaYVUz?=
- =?utf-8?B?NmtyUE9FdU85cndDZFV1TW1IbmVWdW5hb240d2hWZGtNeCtETFlIZW1SS3lE?=
- =?utf-8?B?NTl4OEY5WkhjaW1PYXZwVU4zT3NZTWNrcTBmZUg4WUhtWkRudjNmN0orMm1r?=
- =?utf-8?B?UlFWNEFnTnN0REs5L0VnSi9OeTd0UkxRc3JXTnZBRDNCN3pjakNnTDZqYUQ5?=
- =?utf-8?B?OUtJc1BkUzBvUTA4c2JPTTd3SlY4ZGN2aXZwT09yUWdBSEdVTEY3citSVDQr?=
- =?utf-8?B?RzBXNjF2Nzg5TlNkazRnTDBJNWQvdU5PemJXY3lac0FCM0cxT0N3RUxGaHYr?=
- =?utf-8?B?ejlabyszeUllZ1dLYlMvcytTblE0STBLb2pxNjl5U1RFOXdHbTF3dGxFZklH?=
- =?utf-8?B?L1RqYWpWZFJMM1JQcERHanlnNlk2OUs4enkwcEs0ZXE3eUZ0aDl4UTZJRHdI?=
- =?utf-8?B?dkhLYUs2aG1VWCtNYnZ5a0FBTGRCcEI4VEwwYmphVVQvbWhyckt0RzBjZ2JH?=
- =?utf-8?B?RmZwQURwY24wbHlCZWlpdGtoSEZoVnFjNjVQTU9yMFNqRUFKOVdKVWV1S0ti?=
- =?utf-8?B?dnU4K2dubzZCcnEyb2c2RkQ1c2hVbEZocjY4T2tSTktiNTVjdENFZVc5UEZy?=
- =?utf-8?B?OGVJRWM2YjlqdGkwSlNDYy82RDdZK3FsRml1UEs4Skd2d3JTMXJTSGNMaWh2?=
- =?utf-8?B?U2NMa2FmSTgxOFV4SWRKQzZNREFLZEkvTnRoRmpGZHc3aWU3RlBQcFI0c1Fk?=
- =?utf-8?B?T3lkSWlDS2pOSFBPRmNCYkdBdGduaW9ta3FKWnU1ejNxUGdpZ2NyZmVRTTA5?=
- =?utf-8?Q?3rftIQDBqwL8PBB0btbMBjXhMncZg+g4?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a5a88d3-65fa-4648-bffb-08d9958ef5c5
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 19:05:49.2501
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mike.kravetz@oracle.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3303
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10145 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110220107
-X-Proofpoint-GUID: aukRwU709phMj4XgX6KiCFQjHdtCpUq3
-X-Proofpoint-ORIG-GUID: aukRwU709phMj4XgX6KiCFQjHdtCpUq3
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
+ framebuffers removal
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Robinson <pbrobinson@gmail.com>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20211022144040.3418284-1-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211022144040.3418284-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------8LPjZuTh2kcjBYHT0j0h4Gw5"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 12:58 AM, Oscar Salvador wrote:
-> On Thu, Oct 07, 2021 at 11:19:17AM -0700, Mike Kravetz wrote:
->> The routines remove_hugetlb_page and destroy_compound_gigantic_page
->> will remove a gigantic page and make the set of base pages ready to be
->> returned to a lower level allocator.  In the process of doing this, they
->> make all base pages reference counted.
->>
->> The routine prep_compound_gigantic_page creates a gigantic page from a
->> set of base pages.  It assumes that all these base pages are reference
->> counted.
->>
->> During demotion, a gigantic page will be split into huge pages of a
->> smaller size.  This logically involves use of the routines,
->> remove_hugetlb_page, and destroy_compound_gigantic_page followed by
->> prep_compound*_page for each smaller huge page.
->>
->> When pages are reference counted (ref count >= 0), additional
->> speculative ref counts could be taken.  This could result in errors
-> 
-> It would be great to learn about those cases involving speculative ref counts.
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------8LPjZuTh2kcjBYHT0j0h4Gw5
+Content-Type: multipart/mixed; boundary="------------P0gTBgFNbeAasGZcp0L7LbcV";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: Peter Robinson <pbrobinson@gmail.com>, Neal Gompa <ngompa13@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
+Message-ID: <14a41bd8-cd70-b9d0-ce1c-869cfde8bdcb@suse.de>
+Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
+ framebuffers removal
+References: <20211022144040.3418284-1-javierm@redhat.com>
+In-Reply-To: <20211022144040.3418284-1-javierm@redhat.com>
 
-How about if this commit message provides links to previous commits
-describing these issues?  There are pretty extensive descriptions in
-those previous commits, so no need to repeat here IMO.
+--------------P0gTBgFNbeAasGZcp0L7LbcV
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-The patch with an updated commit message is below.
+SGksDQoNCnRoYW5rcyBmb3Igc2VuZGluZyB0aGUgcGF0Y2ggb3V0IHF1aWNrbHkuDQoNCkFt
+IDIyLjEwLjIxIHVtIDE2OjQwIHNjaHJpZWIgSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzOg0K
+PiBUaGUgc2ltcGxlZHJtIGRyaXZlciBhbGxvd3MgdG8gdXNlIHRoZSBmcmFtZSBidWZmZXIg
+dGhhdCB3YXMgc2V0LXVwIGJ5IHRoZQ0KPiBmaXJtd2FyZS4gVGhpcyBnaXZlcyBlYXJseSB2
+aWRlbyBvdXRwdXQgYmVmb3JlIHRoZSBwbGF0Zm9ybSBEUk0gZHJpdmVyIGlzDQo+IHByb2Jl
+ZCBhbmQgdGFrZXMgb3Zlci4NCj4gDQo+IEJ1dCBpdCB3b3VsZCBiZSB1c2VmdWwgdG8gaGF2
+ZSBhIHdheSB0byBkaXNhYmxlIHRoaXMgdGFrZSBvdmVyIGJ5IHRoZSByZWFsDQo+IERSTSBk
+cml2ZXJzLiBGb3IgZXhhbXBsZSwgdGhlcmUgbWF5IGJlIGJ1Z3MgaW4gdGhlIERSTSBkcml2
+ZXJzIHRoYXQgY291bGQNCj4gY2F1c2UgdGhlIGRpc3BsYXkgb3V0cHV0IHRvIG5vdCB3b3Jr
+IGNvcnJlY3RseS4NCj4gDQo+IEZvciB0aG9zZSBjYXNlcywgaXQgd291bGQgYmUgZ29vZCB0
+byBrZWVwIHRoZSBzaW1wbGVkcm0gZHJpdmVyIGluc3RlYWQgYW5kDQo+IGF0IGxlYXN0IGdl
+dCBhIHdvcmtpbmcgZGlzcGxheSBhcyBzZXQtdXAgYnkgdGhlIGZpcm13YXJlLg0KPiANCj4g
+TGV0J3MgYWRkIGEgZHJtLnJlbW92ZV9mYiBib29sZWFuIGtlcm5lbCBjb21tYW5kIGxpbmUg
+cGFyYW1ldGVyLCB0aGF0IHdoZW4NCj4gc2V0IHRvIGZhbHNlIHdpbGwgcHJldmVudCB0aGUg
+Y29uZmxpY3RpbmcgZnJhbWVidWZmZXJzIHRvIGJlaW5nIHJlbW92ZWQuDQo+IA0KPiBTaW5j
+ZSB0aGUgZHJpdmVycyBjYWxsIGRybV9hcGVydHVyZV9yZW1vdmVfY29uZmxpY3RpbmdfZnJh
+bWVidWZmZXJzKCkgdmVyeQ0KPiBlYXJseSBpbiB0aGVpciBwcm9iZSBjYWxsYmFjaywgdGhp
+cyB3aWxsIGNhdXNlIHRoZSBkcml2ZXJzJyBwcm9iZSB0byBmYWlsLg0KPiANCj4gVGhhbmtz
+IHRvIE5lYWwgR29tcGEgZm9yIHRoZSBzdWdnZXN0aW9uIGFuZCBUaG9tYXMgWmltbWVybWFu
+biBmb3IgdGhlIGlkZWENCj4gb24gaG93IHRoaXMgY291bGQgYmUgaW1wbGVtZW50ZWQuDQo+
+IA0KPiBTdWdnZXN0ZWQtYnk6IE5lYWwgR29tcGEgPG5nb21wYTEzQGdtYWlsLmNvbT4NCj4g
+U2lnbmVkLW9mZi1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXJtQHJlZGhh
+dC5jb20+DQo+IC0tLQ0KPiBIZWxsbywNCj4gDQo+IEknbSBzZW5kaW5nIHRoaXMgYXMgYW4g
+UkZDIGJlY2F1c2UgSSB3YXNuJ3Qgc3VyZSBhYm91dCB0aGUgY29ycmVjdCBuYW1lIGZvcg0K
+PiB0aGlzIG1vZHVsZSBwYXJhbWV0ZXIsIGFuZCBhbHNvIGlmICdyZW1vdmVfZmI9MCcgaXMg
+aW50aXR1dGl2ZSBvciBpbnN0ZWFkIGENCj4gcGFyYW1ldGVyIHRoYXQncyBlbmFibGVkIGlz
+IHByZWZlcnJlZCAoaS5lOiAnZGlzYWJsZV9mYl9yZW1vdmFsPTEnKS4NCj4gDQo+IEJlc3Qg
+cmVnYXJkcywNCj4gSmF2aWVyDQo+IA0KPiAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1
+cmUuYyB8IDE5ICsrKysrKysrKysrKysrKysrKysNCj4gICAxIGZpbGUgY2hhbmdlZCwgMTkg
+aW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9kcm1f
+YXBlcnR1cmUuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1cmUuYw0KPiBpbmRleCA3
+NGJkNGE3NmIyNTMuLjBiNDU0YzhmNzQ2NSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUv
+ZHJtL2RybV9hcGVydHVyZS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXBlcnR1
+cmUuYw0KPiBAQCAtMTQsNiArMTQsMTEgQEANCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9kcnYu
+aD4NCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9wcmludC5oPg0KPiAgIA0KPiArc3RhdGljIGJv
+b2wgZHJtX2FwZXJ0dXJlX3JlbW92ZV9mYiA9IHRydWU7DQoNCkdsb2JhbCB2YXJpYWJsZXMg
+c2hvdWxkIGRlZmF1bHQgdG8gemVybyBpZiBzb21laG93IHBvc3NpYmxlLiBUaGlzIHdheSwg
+DQp0aGV5IGNhbiBhbGwgYmUgc3RvcmVkIGluIHRoZSBCU1Mgc2VnbWVudCBhbmQgYmFja2Vk
+IGJ5IGEgc2luZ2xlIHNoYXJlZCANCnplcm8tZmlsbGVkIHBhZ2UuIE90aGVyd2lzZSB0aGV5
+IHJlcXVpcmUgYWN0dWFsIG1lbW9yeS4gSW4gdGhlIHdvcnN0IA0KY2FzZSwgeW91J2QgYWxs
+b2NhdGUgYSBmdWxsIHBhZ2UgdG8gaG9sZCBhIHNpbmdsZSBib29sZWFuLg0KDQo+ICttb2R1
+bGVfcGFyYW1fbmFtZWQocmVtb3ZlX2ZiLCBkcm1fYXBlcnR1cmVfcmVtb3ZlX2ZiLCBib29s
+LCAwNjAwKTsNCj4gK01PRFVMRV9QQVJNX0RFU0MocmVtb3ZlX2ZiLA0KPiArCQkgIkFsbG93
+IGNvbmZsaWN0aW5nIGZyYW1lYnVmZmVycyByZW1vdmFsIFtkZWZhdWx0PXRydWVdIik7DQo+
+ICsNCg0KQW5kIHdpdGggdmFyaWFibGVzIHNldCB0byB6ZXJvLCBhIGNvbW1hbmQtbGluZSBw
+YXJhbWV0ZXIgZW5hYmxlcyANCm5vbi1kZWZhdWx0IGJlaGF2aW9yIChpLmUuLCAiZHJtLXBh
+cmFtPTEiKS4gVGhhdCBtb3JlIGxvZ2ljYWwgdGhhbiB0aGUgDQpvdGhlciB3YXkgYXJvdW5k
+IElNSE8uDQoNCj4gICAvKioNCj4gICAgKiBET0M6IG92ZXJ2aWV3DQo+ICAgICoNCj4gQEAg
+LTI4Myw2ICsyODgsOSBAQCBzdGF0aWMgdm9pZCBkcm1fYXBlcnR1cmVfZGV0YWNoX2RyaXZl
+cnMocmVzb3VyY2Vfc2l6ZV90IGJhc2UsIHJlc291cmNlX3NpemVfdCBzaQ0KPiAgICAqIFRo
+aXMgZnVuY3Rpb24gcmVtb3ZlcyBncmFwaGljcyBkZXZpY2UgZHJpdmVycyB3aGljaCB1c2Ug
+bWVtb3J5IHJhbmdlIGRlc2NyaWJlZCBieQ0KPiAgICAqIEBiYXNlIGFuZCBAc2l6ZS4NCj4g
+ICAgKg0KPiArICogVGhlIGNvbmZsaWN0aW5nIGZyYW1lYnVmZmVycyByZW1vdmFsIGNhbiBi
+ZSBkaXNhYmxlZCBieSBzZXR0aW5nIHRoZSBkcm0ucmVtb3ZlX2ZiPTAga2VybmVsDQo+ICsg
+KiBjb21tYW5kIGxpbmUgb3B0aW9uLiBXaGVuIHRoaXMgaXMgZGlzYWJsZWQsIHRoZSBmdW5j
+dGlvbiB3aWxsIHJldHVybiBhbiAtRUlOVkFMIGVycm5vIGNvZGUuDQoNClBsZWFzZSB1c2Ug
+LUVCVVNZIGZvciB0aGUgZXJyb3IuIFRoYXQncyB3aGF0IHRoZSBhY3F1aXJlIGZ1bmN0aW9u
+IA0KcmV0dXJucyBpbiBjYXNlIG9mIGEgY29uZmxpY3QuDQoNCj4gKyAqDQo+ICAgICogUmV0
+dXJuczoNCj4gICAgKiAwIG9uIHN1Y2Nlc3MsIG9yIGEgbmVnYXRpdmUgZXJybm8gY29kZSBv
+dGhlcndpc2UNCj4gICAgKi8NCj4gQEAgLTI5Miw3ICszMDAsMTIgQEAgaW50IGRybV9hcGVy
+dHVyZV9yZW1vdmVfY29uZmxpY3RpbmdfZnJhbWVidWZmZXJzKHJlc291cmNlX3NpemVfdCBi
+YXNlLCByZXNvdXJjZV8NCj4gICAjaWYgSVNfUkVBQ0hBQkxFKENPTkZJR19GQikNCg0KUmF0
+aGVyIG5vdCBzcGxpdCB1cCB0aGlzIGJsb2NrLiBJdCdzIGJldHRlciBzdHlsZSB0byBwdXQg
+dGhlIA0KZmJkZXYtcmVsYXRlZCBjb2RlIGludG8gYSBoZWxwZXIgYW5kIGNhbGwgaXQgdW5j
+b25kaXRpb25hbGx5Lg0KDQpzdGF0aWMgZHJtX2FwZXJ0dXJlX3JlbW92ZV9jb25mbGljdGlu
+Z19mYmRldl9mcmFtZWJ1ZmZlcnMoKQ0Kew0KI2lmIChGQikNCgkuLi4NCiNlbmRpZg0KCXJl
+dHVybiAwOw0KfQ0KDQo+ICAgCXN0cnVjdCBhcGVydHVyZXNfc3RydWN0ICphOw0KPiAgIAlp
+bnQgcmV0Ow0KPiArI2VuZGlmDQo+ICsNCj4gKwlpZiAoIWRybV9hcGVydHVyZV9yZW1vdmVf
+ZmIpDQo+ICsJCXJldHVybiAtRUlOVkFMOw0KDQpUaGVyZSdzIHN0aWxsIHRoZSBxdWVzdGlv
+biBvZiB0aGUgc2VtYW50aWNzIG9mIHRoaXMgcGFyYW1ldGVyLiBJdCdzIGEgDQpiaXQgZnV6
+enkuDQoNCklmIHlvdSB1c2UgJ2Rpc2FibGVfaGFuZG92ZXInIChhcyB5b3UgbWVudGlvbmVk
+IGluIGFub3RoZXIgbWFpbCksIGl0IA0Kd291bGQgbWVhbiB0aGF0IG9ubHkgdGhlIGhhbmRv
+dmVyIGl0c2VsZiBpcyBkaXNhYmxlZC4gU28gaWYgc2ltcGxlZHJtIGlzIA0Kbm90IGJvdW5k
+IHRvIHRoZSBkZXZpY2UsIHRoZW4gYSBuYXRpdmUgZHJpdmVyIHNob3VsZCBsb2FkLiBUaGF0
+IHdvdWxkIGJlIA0KaGFyZCB0byBpbXBsZW1lbnQgd2l0aCB0aGUgY3VycmVudCBjb2RlIGJh
+c2UsIHdoZXJlIHdlIGhhdmUgdG8gdGFrZSBvbGQgDQpmYmRldiBkcml2ZXJzIGludG8gYWNj
+b3VudC4NCg0KKEFuZCB0byBiZSBwZWRhbnRpYywgd2UgZG9uJ3QgcmVhbGx5IGRvIGEgaGFu
+ZG92ZXIgb2YgdGhlIGRldmljZS4gV2UgDQpob3QtdW5wbHVnIHRoZSBnZW5lcmljIHBsYXRm
+b3JtIGRldmljZSwgc28gdGhhdCB0aGUgZHJpdmVyIGZvciB0aGUgDQpuYXRpdmUgZGV2aWNl
+IGNhbiBvcGVyYXRlIHRoZSBIVyB3aXRob3V0IGludGVyZmVyZW5jZS4pDQoNClNpbXBsZWRy
+bSBvbmx5IGFjcXVpcmVzIGFuIGFwZXJ0dXJlLCBidXQgbmV2ZXIgcmVtb3ZlcyBhIGRyaXZl
+ci4gSWYgDQp0aGVyZSBpcyBhIGRyaXZlciBhbHJlYWR5LCBzaW1wbGVkcm0gd291bGQgZmFp
+bC4gT25seSBuYXRpdmUgZHJpdmVycyB0cnkgDQp0byByZW1vdmUgZHJpdmVycyBhbmQgd291
+bGQgdHJpZ2dlciB0aGUgdGVzdC4gU28geW91ciBwYXRjaCBpcyBtb3JlIA0Kc29tZXRoaW5n
+IGxpa2UgJ2Rpc2FibGVfbmF0aXZlX2RyaXZlcnMnLg0KDQpJJ2QgZ28gd2l0aCAnZGlzYWJs
+ZV9uYXRpdmVfZHJpdmVycycsIG9yIG1heWJlICdkaXNhYmxlX2RldmljZV9oYW5kb3Zlcicg
+DQphcyBhIHNlY29uZCBvcHRpb24uIElmIHNpbXBsZWRybSwgb3IgYW55IG90aGVyIGdlbmVy
+aWMgRFJNIGRyaXZlciwgd291bGQgDQpldmVyIHRyeSB0byByZW1vdmUgYW4gZXhpc3Rpbmcg
+ZHJpdmVyIGZyb20gYSBkZXZpY2UsIHdlJ2QgaGF2ZSB0byANCmRpc3Rpbmd1aXNoIGJldHdl
+ZW4gbmF0aXZlIGFuZCBnZW5lcmljIGRyaXZlcnMuIEJ1dCB0aGF0J3MgYSB0cml2aWFsIA0K
+cHJvYmxlbSBmb3IgbGF0ZXIuDQoNCj4gICANCj4gKyNpZiBJU19SRUFDSEFCTEUoQ09ORklH
+X0ZCKQ0KPiAgIAlhID0gYWxsb2NfYXBlcnR1cmVzKDEpOw0KPiAgIAlpZiAoIWEpDQo+ICAg
+CQlyZXR1cm4gLUVOT01FTTsNCj4gQEAgLTMyMiw2ICszMzUsOSBAQCBFWFBPUlRfU1lNQk9M
+KGRybV9hcGVydHVyZV9yZW1vdmVfY29uZmxpY3RpbmdfZnJhbWVidWZmZXJzKTsNCj4gICAg
+KiBmb3IgYW55IG9mIEBwZGV2J3MgbWVtb3J5IGJhcnMuIFRoZSBmdW5jdGlvbiBhc3N1bWVz
+IHRoYXQgUENJIGRldmljZSB3aXRoDQo+ICAgICogc2hhZG93ZWQgUk9NIGRyaXZlcyBhIHBy
+aW1hcnkgZGlzcGxheSBhbmQgc28ga2lja3Mgb3V0IHZnYTE2ZmIuDQo+ICAgICoNCj4gKyAq
+IFRoZSBjb25mbGljdGluZyBmcmFtZWJ1ZmZlcnMgcmVtb3ZhbCBjYW4gYmUgZGlzYWJsZWQg
+Ynkgc2V0dGluZyB0aGUgZHJtLnJlbW92ZV9mYj0wIGtlcm5lbA0KPiArICogY29tbWFuZCBs
+aW5lIG9wdGlvbi4gV2hlbiB0aGlzIGlzIGRpc2FibGVkLCB0aGUgZnVuY3Rpb24gd2lsbCBy
+ZXR1cm4gYW4gLUVJTlZBTCBlcnJubyBjb2RlLg0KPiArICoNCj4gICAgKiBSZXR1cm5zOg0K
+PiAgICAqIDAgb24gc3VjY2Vzcywgb3IgYSBuZWdhdGl2ZSBlcnJubyBjb2RlIG90aGVyd2lz
+ZQ0KPiAgICAqLw0KPiBAQCAtMzMxLDYgKzM0Nyw5IEBAIGludCBkcm1fYXBlcnR1cmVfcmVt
+b3ZlX2NvbmZsaWN0aW5nX3BjaV9mcmFtZWJ1ZmZlcnMoc3RydWN0IHBjaV9kZXYgKnBkZXYs
+DQo+ICAgCXJlc291cmNlX3NpemVfdCBiYXNlLCBzaXplOw0KPiAgIAlpbnQgYmFyLCByZXQg
+PSAwOw0KPiAgIA0KPiArCWlmICghZHJtX2FwZXJ0dXJlX3JlbW92ZV9mYikNCj4gKwkJcmV0
+dXJuIC1FSU5WQUw7DQoNCi1FQlVTWSBhZ2Fpbg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0K
+DQo+ICsNCj4gICAJZm9yIChiYXIgPSAwOyBiYXIgPCBQQ0lfU1REX05VTV9CQVJTOyArK2Jh
+cikgew0KPiAgIAkJaWYgKCEocGNpX3Jlc291cmNlX2ZsYWdzKHBkZXYsIGJhcikgJiBJT1JF
+U09VUkNFX01FTSkpDQo+ICAgCQkJY29udGludWU7DQo+IA0KDQotLSANClRob21hcyBaaW1t
+ZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0
+aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2Vy
+bWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZl
+bGl4IEltZW5kw7ZyZmZlcg0K
 
-From 10fcff70c809402901a93ea507d5506c87a8227d Mon Sep 17 00:00:00 2001
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Fri, 22 Oct 2021 11:50:31 -0700
-Subject: [PATCH v4 4/5] hugetlb: add demote bool to gigantic page routines
+--------------P0gTBgFNbeAasGZcp0L7LbcV--
 
-The routines remove_hugetlb_page and destroy_compound_gigantic_page
-will remove a gigantic page and make the set of base pages ready to be
-returned to a lower level allocator.  In the process of doing this, they
-make all base pages reference counted.
+--------------8LPjZuTh2kcjBYHT0j0h4Gw5
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-The routine prep_compound_gigantic_page creates a gigantic page from a
-set of base pages.  It assumes that all these base pages are reference
-counted.
+-----BEGIN PGP SIGNATURE-----
 
-During demotion, a gigantic page will be split into huge pages of a
-smaller size.  This logically involves use of the routines,
-remove_hugetlb_page, and destroy_compound_gigantic_page followed by
-prep_compound*_page for each smaller huge page.
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFzC40FAwAAAAAACgkQlh/E3EQov+D9
+mQ/+NtVrm6agbI5c3x9+Say3d2dD50rXbO2PK+g0F1HnoXnAu982SuZyLCtBWJI1C9c6Ybbimelx
+c06OHCNHy1h1hmwLhswMHWcZRE7QIjnDy9TPEWHRfFOxFaNAMbOX3RHH4NmtFEyvbVt+RcK5B+xn
+fFEGPxguDWYYvMN501qELNWYTQhRPMonRb+41YtT0q++GkLfS5Tfe1dYu2orCbBylR5eoCYZdxzf
+qt5xZ9lIiYr4RVhFBDSrPop3vrEBEvOBtD/nlTakio/QQHb8aR4DOb5tkOlJJPwYxeWd0RetnM1J
+XpGC88Wp7q+n6oWv2d+ai1M5iDhyha9kJe5Rvg5TnX+OjXgWH3nBV2svkuMsB71GuJ2205lzhtOb
+6L75tHxA1te+DTxXxgffIwjnUxb77zy6eWw67n/8Q3sI1PbbdWnNz2mvUsuVsppQIXXJsxbtN+XJ
++pqxqPYDUj8BeEuid6y0W8c+BMc0ZPnpJi9ocPSwQxMZpS70fuJSi8mbIdY51eshFXlVfoMI2fbe
+JRmOVGf80gbX04EiNDc98j5xBreOwz3D8oMZzxEZMzUyk5kpZw94A/Wl7ZAdbtKo3Yl0UrH31mgi
+ysr/YHiMuKchHahywjyB1CUxoAuTC3yMjHK8FRmCOmo1l0/uWae29oXedNH/6z19JXhZXbiE45G/
+YDc=
+=eOeR
+-----END PGP SIGNATURE-----
 
-When pages are reference counted (ref count >= 0), additional
-speculative ref counts could be taken as described in previous
-commits [1] and [2].  This could result in errors while demoting
-a huge page.  Quite a bit of code would need to be created to
-handle all possible issues.
-
-Instead of dealing with the possibility of speculative ref counts, avoid
-the possibility by keeping ref counts at zero during the demote process.
-Add a boolean 'demote' to the routines remove_hugetlb_page,
-destroy_compound_gigantic_page and prep_compound_gigantic_page.  If the
-boolean is set, the remove and destroy routines will not reference count
-pages and the prep routine will not expect reference counted pages.
-
-'*_for_demote' wrappers of the routines will be added in a subsequent
-patch where this functionality is used.
-
-[1] https://lore.kernel.org/linux-mm/20210622021423.154662-3-mike.kravetz@oracle.com/
-[2] https://lore.kernel.org/linux-mm/20210809184832.18342-3-mike.kravetz@oracle.com/
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- mm/hugetlb.c | 54 +++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 43 insertions(+), 11 deletions(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 21a9c353c2ae..bb724a393864 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1271,8 +1271,8 @@ static int hstate_next_node_to_free(struct hstate *h, nodemask_t *nodes_allowed)
- 		nr_nodes--)
- 
- #ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
--static void destroy_compound_gigantic_page(struct page *page,
--					unsigned int order)
-+static void __destroy_compound_gigantic_page(struct page *page,
-+					unsigned int order, bool demote)
- {
- 	int i;
- 	int nr_pages = 1 << order;
-@@ -1284,7 +1284,8 @@ static void destroy_compound_gigantic_page(struct page *page,
- 	for (i = 1; i < nr_pages; i++, p = mem_map_next(p, page, i)) {
- 		p->mapping = NULL;
- 		clear_compound_head(p);
--		set_page_refcounted(p);
-+		if (!demote)
-+			set_page_refcounted(p);
- 	}
- 
- 	set_compound_order(page, 0);
-@@ -1292,6 +1293,12 @@ static void destroy_compound_gigantic_page(struct page *page,
- 	__ClearPageHead(page);
- }
- 
-+static void destroy_compound_gigantic_page(struct page *page,
-+					unsigned int order)
-+{
-+	__destroy_compound_gigantic_page(page, order, false);
-+}
-+
- static void free_gigantic_page(struct page *page, unsigned int order)
- {
- 	/*
-@@ -1364,12 +1371,15 @@ static inline void destroy_compound_gigantic_page(struct page *page,
- 
- /*
-  * Remove hugetlb page from lists, and update dtor so that page appears
-- * as just a compound page.  A reference is held on the page.
-+ * as just a compound page.
-+ *
-+ * A reference is held on the page, except in the case of demote.
-  *
-  * Must be called with hugetlb lock held.
-  */
--static void remove_hugetlb_page(struct hstate *h, struct page *page,
--							bool adjust_surplus)
-+static void __remove_hugetlb_page(struct hstate *h, struct page *page,
-+							bool adjust_surplus,
-+							bool demote)
- {
- 	int nid = page_to_nid(page);
- 
-@@ -1407,8 +1417,12 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
- 	 *
- 	 * This handles the case where more than one ref is held when and
- 	 * after update_and_free_page is called.
-+	 *
-+	 * In the case of demote we do not ref count the page as it will soon
-+	 * be turned into a page of smaller size.
- 	 */
--	set_page_refcounted(page);
-+	if (!demote)
-+		set_page_refcounted(page);
- 	if (hstate_is_gigantic(h))
- 		set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
- 	else
-@@ -1418,6 +1432,12 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
- 	h->nr_huge_pages_node[nid]--;
- }
- 
-+static void remove_hugetlb_page(struct hstate *h, struct page *page,
-+							bool adjust_surplus)
-+{
-+	__remove_hugetlb_page(h, page, adjust_surplus, false);
-+}
-+
- static void add_hugetlb_page(struct hstate *h, struct page *page,
- 			     bool adjust_surplus)
- {
-@@ -1681,7 +1701,8 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
- 	spin_unlock_irq(&hugetlb_lock);
- }
- 
--static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
-+static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
-+								bool demote)
- {
- 	int i, j;
- 	int nr_pages = 1 << order;
-@@ -1719,10 +1740,16 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
- 		 * the set of pages can not be converted to a gigantic page.
- 		 * The caller who allocated the pages should then discard the
- 		 * pages using the appropriate free interface.
-+		 *
-+		 * In the case of demote, the ref count will be zero.
- 		 */
--		if (!page_ref_freeze(p, 1)) {
--			pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
--			goto out_error;
-+		if (!demote) {
-+			if (!page_ref_freeze(p, 1)) {
-+				pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
-+				goto out_error;
-+			}
-+		} else {
-+			VM_BUG_ON_PAGE(page_count(p), p);
- 		}
- 		set_page_count(p, 0);
- 		set_compound_head(p, page);
-@@ -1747,6 +1774,11 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
- 	return false;
- }
- 
-+static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
-+{
-+	return __prep_compound_gigantic_page(page, order, false);
-+}
-+
- /*
-  * PageHuge() only returns true for hugetlbfs pages, but not for normal or
-  * transparent huge pages.  See the PageTransHuge() documentation for more
--- 
-2.31.1
-
+--------------8LPjZuTh2kcjBYHT0j0h4Gw5--
