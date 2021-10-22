@@ -2,207 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0005D437AFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7962F437B03
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 18:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbhJVQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:36:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:56508 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhJVQgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:36:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EE7B1FB;
-        Fri, 22 Oct 2021 09:34:27 -0700 (PDT)
-Received: from [10.57.20.104] (unknown [10.57.20.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C82013F73D;
-        Fri, 22 Oct 2021 09:34:22 -0700 (PDT)
-Subject: Re: [PATCH 09/15] irq: arm: perform irqentry in entry code
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        maz@kernel.org, nickhu@andestech.com, palmer@dabbelt.com,
-        paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, torvalds@linux-foundation.org,
-        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-10-mark.rutland@arm.com>
- <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
- <20211022153602.GE86184@C02TD0UTHF1T.local>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <1dc39ac9-1a05-cf8d-2aef-633903a6338d@arm.com>
-Date:   Fri, 22 Oct 2021 17:34:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S233585AbhJVQiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:38:23 -0400
+Received: from mail-eopbgr140042.outbound.protection.outlook.com ([40.107.14.42]:5957
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229968AbhJVQiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:38:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QyR88000TtF6L/qp+nYoD9DEq8hPChYP25S0yD1ilwp1kd7lhRqT34l7dFiR3EzMcpDShOEJ49Mx15KmKu9kjrDog/mAfbW2VuWI0p6e4LbrAfRHrglU6gBQLAgMXlf+K4uVvr9MYXEYw3IPajeiZoks1wnfzwc7ooM7IhdMVShA2eGgWjB+OiC7O6mVZZKA9MWV3ysFkRfeVfSz6iZ6t+BnBSceG3jovpwULvDdNIrVL60QYt+/sI0HG1y/nqHa0NSZyp9EgmwwopUqPGvSTM729sSW6asz2AEj0VIcFddWF02Dzfr0ex8lPDzL7h+Olp1uoz9FBcKTj/GQeblQ6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8Y4tLCv3Y3CiM7gtJUwihWe+hjKK4/oPQp2dMCrg7bM=;
+ b=OSebc0hBnGK04VCKIM55AAiwKughBbfml2arH7ezwvmcM5PGr8QykyjAUVKqebyWZZbg53+4rOwoqQhyxWbpR39yt1NMKFI7nTQUd0y8Yt0pp9XN4MdDyXM0iQD5YMoNm+e90uNdd7GOlGoYHaMtGkv4KVVK3Xq0M2Wzm1WX/PIKULmXDW1WiAKpiXZ8u6ShDeXbgDRWXQxjwegkXQ65cDMaSvCf+Qklmfyi0Vei6e0PDsTiYij3KlnTSTheLIrGF7vaRy+y3nBqTLwbpRiQKWJd+D+HQH7RQiNg2zjxEA5Cmsrres9/iKXBnL4agaBhTla+VoTFkM5FriwIhEEGTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Y4tLCv3Y3CiM7gtJUwihWe+hjKK4/oPQp2dMCrg7bM=;
+ b=TZ5nICyaEWZVvonVoXaLaa4Qqttp4QHqQdVFTzBtgJ43/4RkRY2UbrNPQewdg9wHLQ2y5VNJxwWIqwRXBZFwe2d6zk5pwR5MN7pd1+DYqM3xO9ldR345Dl8F9F1dMyaMJMSNM5Drcq81a5z7os/wKf1UfsmDslPAOPyoHcQxQZE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DB9PR03MB7418.eurprd03.prod.outlook.com (2603:10a6:10:22e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Fri, 22 Oct
+ 2021 16:35:59 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::a9aa:f363:66e:fadf]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::a9aa:f363:66e:fadf%6]) with mapi id 15.20.4608.018; Fri, 22 Oct 2021
+ 16:35:59 +0000
+From:   Sean Anderson <sean.anderson@seco.com>
+To:     netdev@vger.kernel.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Sean Anderson <sean.anderson@seco.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Subject: [net-next PATCH 1/2] dt-bindings: net: macb: Add mdio bus child node
+Date:   Fri, 22 Oct 2021 12:35:47 -0400
+Message-Id: <20211022163548.3380625-1-sean.anderson@seco.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR13CA0017.namprd13.prod.outlook.com
+ (2603:10b6:208:160::30) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
 MIME-Version: 1.0
-In-Reply-To: <20211022153602.GE86184@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from plantagenet.inhand.com (50.195.82.171) by MN2PR13CA0017.namprd13.prod.outlook.com (2603:10b6:208:160::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend Transport; Fri, 22 Oct 2021 16:35:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4cc4d16e-e8a3-4900-c1cc-08d9957a078d
+X-MS-TrafficTypeDiagnostic: DB9PR03MB7418:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB9PR03MB74189895132202B58E08869D96809@DB9PR03MB7418.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: emipfumIICNl31Y69Jk/zUVVe5bOBRgg1Z6UQ4IjhOL6g2K3dFabbZMzUzThimmVVd4z1qW2b31o7BFyd9kLM5D5ux+D5lkfUugLFf26rFBFni6p5qFIEQq3V57z8pOPw6QuG8Ohsh7S1xa8lKuRYgbh2Az5Y/itDIUKecLdJ1lZiGcxUAdvIzJktpQPjIwx3iTwykgP5MXzwHGRAVdw5ysZ0HWSg44s/ud5ZriH5p1v/u2pE3ryMpuwFi6hhzsc9vfUMaLajHR/n7OzS6YU0iWHfc01MR2+qOwtnW3Rg5ZnkXvim0RnqTO79fHYUxAsnO1zApZTbp1oZAuhDMsnM2sisadjmyxopDEy/Zy4Vqyvq90PpSp4xhkWXfgRctWrPYk4slcqrdtSBeTB3Pv5ksNPEP1EBgtIu0cWl/Abp5buKSP+1QFi8hDpwhyqYz48HIDGfWGiwVhWwlQBZ11h3KgiooR8aBCQN1pOIwhN+Y1xWXEAUOq4uLgEF9DoXfqKWFlo7+l/Y6Dd1DkvmD6d0MTimLya3zJOBExU+b3lSz9hUiALyJKRQoIwEDdfKsOTZHdYiigjB+Bw1TBoH9IhLzi8YNfyZb2oX10K9vNkUrUKUBFs2dTIfx07TX9OXVuZXWRBiC70s6SwP3/kCUa5JITPxhyU6GL1mu0+86WeTDlUzFyldAjIrSFanmpKnHKlJvHFmi+n5Q3Ym+bWGDg1OA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(8936002)(508600001)(66476007)(66556008)(38100700002)(38350700002)(2616005)(4326008)(6666004)(1076003)(6512007)(5660300002)(4744005)(110136005)(54906003)(36756003)(66946007)(86362001)(83380400001)(44832011)(26005)(52116002)(186003)(316002)(2906002)(8676002)(6486002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SyPfogVQeq6r/OKd29w4O/Vke2mWSwjWnClT7apayxf98lFLioj4nMTjjhCA?=
+ =?us-ascii?Q?JCh9lL82zHv/uLQJMy35q+iSIpzaizrjP9j0HMm4T6biyVkEHAHtZ6OuKiCD?=
+ =?us-ascii?Q?Zw16BWNXW9Ty4WCgXtdWbCfvhvAmwyd9v8LYYCnkLI9Uk3aN91e8v9K/vYvX?=
+ =?us-ascii?Q?KEtVJVNr8iZd4ZztTzJ+FcxTk3brb5iDLcbkQUtnHboVzfN2CvwT+zH0f61u?=
+ =?us-ascii?Q?vLYu1cev84sH7RSMekIISeucrpWm/RlYOf8AP1gUYMUuDaC0Vkd+arH2Jpbi?=
+ =?us-ascii?Q?Kqj3dKdLglt6wXQkSOB1X+fhmV5MGE9qUwP47bREvrpbwgGxuxARQH1xPDj9?=
+ =?us-ascii?Q?VIMKX9xQYMC4M6OHMcxdX3wJKQXMe139PQnsd4q9v+H9Non4to8W3jRRMWFZ?=
+ =?us-ascii?Q?NKEUe3w3bIbDD2dclEbiPKwETlcC7Hf/oKwop7r2YCf2m7+0cXBtGQxMTjUT?=
+ =?us-ascii?Q?tjIsZ8NkR8as+NtPEQtSTdqYNeIEh8fVcOFCGj9gMXErbyH1rdWMFplaJAyH?=
+ =?us-ascii?Q?A2mKX1l3WrJlHjPfc1Ov6xPB9s1+3D9mxaaks3fp1uqYuddYmk+R3r2rgUnh?=
+ =?us-ascii?Q?gqMWkP3fiFY9WLkjbhJ7mBF3KOWOUPFtd/TnN5rlgpJX67E/lvdp+Lk4koSp?=
+ =?us-ascii?Q?5+Ch2joM+rsMa7Twtl5DF2qABxpNOa5F8occNMky8mea5vL6l0nbNdGsIesy?=
+ =?us-ascii?Q?qQfxBazN7BVugbcqY0pYVNT7IfYhsrgK5xHN14adMRNDyX3dC3rGOkb2gQAT?=
+ =?us-ascii?Q?IwEclQKrnhMzYygMnQYvbnlcWj1FvSu3bAfobKTFU2AzAiEKDea3OY5nxQi+?=
+ =?us-ascii?Q?wD7IgH7i76lHTrT63zUXvDZEtPnduJcH7WqygcH8hmbUxlMSWxSIfhiC46Fc?=
+ =?us-ascii?Q?ArjW+/mqdXr6dZpsiToG1rleNGUPBusm+o7rFBKCpAj/jmpUB58cO+UbRtv4?=
+ =?us-ascii?Q?nAPM3h0bqCJa4HFdsMPKRwa/EAvyxp87DgdKuUroq4EinnWMHdwWj3/vgzQN?=
+ =?us-ascii?Q?oimeP08II0vg//PzH/hMXQHcuIryQYg1af1ufNHIaO1lD3iCKOCK9kurZ6Q2?=
+ =?us-ascii?Q?n4z+JL0BFg93ed0jkH3xlQis2ohaknCWfXC43gws+yIaAuKovfadmBELvveJ?=
+ =?us-ascii?Q?fcWKSJclwxyyWOETFdQew+m06q7PRbKESOzriWvzW8ta43O7vAgDxeyIj58Y?=
+ =?us-ascii?Q?vctKEq343WRaYSOwAX0y18knnLkLPYf39Dlr2eFkhiG/4Wk0JwYD1kvLoWcz?=
+ =?us-ascii?Q?y5jy+clRek83XrVfAN6UEanNqBfWVSCYTIavx3OVvjeDockiyLDM4bz6KQyc?=
+ =?us-ascii?Q?KNNMV7H4L289VZY490TnpHWd?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4cc4d16e-e8a3-4900-c1cc-08d9957a078d
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 16:35:59.6984
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sean.anderson@seco.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR03MB7418
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 4:36 PM, Mark Rutland wrote:
-> On Fri, Oct 22, 2021 at 04:18:18PM +0100, Vladimir Murzin wrote:
->> Hi Mark,
->>
->> On 10/21/21 7:02 PM, Mark Rutland wrote:
->>> +/*
->>> + * TODO: restructure the ARMv7M entry logic so that this entry logic can live
->>> + * in arch code.
->>> + */
->>> +asmlinkage void __exception_irq_entry
->>> +static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->>
->> I'm seeing build time failure...
->>
->> drivers/irqchip/irq-nvic.c:50:8: error: two or more data types in declaration specifiers
->>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->>         ^~~~
->> drivers/irqchip/irq-nvic.c:50:13: warning: 'nvic_handle_irq' defined but not used [-Wunused-function]
->>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->>
->> I've fixed that locally and planing to give it a go...
-> 
-> Ah, whoops. I've removed the extraneous `static void` from
-> nvic_handle_irq() and build tested that as part of stm32_defconfig.
-> 
-> The updated version is in my irq/handle-domain-irq branch at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
-> 
+This adds an optional mdio bus child node. If present, the mac will
+look for PHYs there instead of directly under the top-level node. This
+eliminates any ambiguity about whether child nodes are PHYs, and allows
+the MDIO bus to contain non-PHY devices.
 
-$ cat /proc/interrupts
-           CPU0       
- 16:         24  nvic_irq   4 Edge      mps2-clkevt
- 17:          0  nvic_irq  32 Edge      mps2-uart-rx
- 18:          6  nvic_irq  33 Edge      mps2-uart-tx
- 19:          0  nvic_irq  47 Edge      mps2-uart-overrun
-Err:          0
-
-So if it helps feel free to add my 
-
-Tested-by: Vladimir Murzin <vladimir.murzin@arm.com> # ARMv7M
-
-As for TODO, is [1] look something you have been thinking of? IIUC,
-the show stopper is that hwirq is being passed from exception entry
-which retrieved via xPSR (IPSR to be precise). OTOH hwirq also available
-via Interrupt Controller Status Register (ICSR) thus can be used in
-driver itself... I gave [1] a go and it runs fine, yet I admit I might
-be missing something...
-
-[1] 
-
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 ---
- arch/arm/include/asm/v7m.h  |  3 ++-
- arch/arm/kernel/entry-v7m.S | 10 +++-------
- drivers/irqchip/Kconfig     |  1 +
- drivers/irqchip/irq-nvic.c  | 21 +++++----------------
- 4 files changed, 11 insertions(+), 24 deletions(-)
 
-diff --git a/arch/arm/include/asm/v7m.h b/arch/arm/include/asm/v7m.h
-index b1bad30b15d2..f047629887e7 100644
---- a/arch/arm/include/asm/v7m.h
-+++ b/arch/arm/include/asm/v7m.h
-@@ -13,6 +13,7 @@
- #define V7M_SCB_ICSR_PENDSVSET			(1 << 28)
- #define V7M_SCB_ICSR_PENDSVCLR			(1 << 27)
- #define V7M_SCB_ICSR_RETTOBASE			(1 << 11)
-+#define V7M_SCB_ICSR_VECTACTIVE			0x000001ff
- 
- #define V7M_SCB_VTOR			0x08
- 
-@@ -38,7 +39,7 @@
- #define V7M_SCB_SHCSR_MEMFAULTENA		(1 << 16)
- 
- #define V7M_xPSR_FRAMEPTRALIGN			0x00000200
--#define V7M_xPSR_EXCEPTIONNO			0x000001ff
-+#define V7M_xPSR_EXCEPTIONNO			V7M_SCB_ICSR_VECTACTIVE
- 
- /*
-  * When branching to an address that has bits [31:28] == 0xf an exception return
-diff --git a/arch/arm/kernel/entry-v7m.S b/arch/arm/kernel/entry-v7m.S
-index 2e872a248e31..901c7cd1b1ce 100644
---- a/arch/arm/kernel/entry-v7m.S
-+++ b/arch/arm/kernel/entry-v7m.S
-@@ -72,14 +72,10 @@ __irq_entry:
- 	@
- 	@ Invoke the IRQ handler
- 	@
--	mrs	r0, ipsr
--	ldr	r1, =V7M_xPSR_EXCEPTIONNO
--	and	r0, r1
--	sub	r0, #16
--	mov	r1, sp
-+	mov	r0, sp
- 	stmdb	sp!, {lr}
--	@ routine called with r0 = irq number, r1 = struct pt_regs *
--	bl	nvic_handle_irq
-+	@ routine called with r0 = struct pt_regs *
-+	bl	generic_handle_arch_irq
- 
- 	pop	{lr}
- 	@
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index aca7b595c4c7..b59a0bc0cd80 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -58,6 +58,7 @@ config ARM_NVIC
- 	bool
- 	select IRQ_DOMAIN_HIERARCHY
- 	select GENERIC_IRQ_CHIP
-+	select GENERIC_IRQ_MULTI_HANDLER
- 
- config ARM_VIC
- 	bool
-diff --git a/drivers/irqchip/irq-nvic.c b/drivers/irqchip/irq-nvic.c
-index 63bac3f78863..52ff0ed19f2f 100644
---- a/drivers/irqchip/irq-nvic.c
-+++ b/drivers/irqchip/irq-nvic.c
-@@ -37,25 +37,13 @@
- 
- static struct irq_domain *nvic_irq_domain;
- 
--static void __nvic_handle_irq(irq_hw_number_t hwirq)
-+static void __irq_entry nvic_handle_irq(struct pt_regs *regs)
- {
--	generic_handle_domain_irq(nvic_irq_domain, hwirq);
--}
-+	unsigned long icsr = readl_relaxed(BASEADDR_V7M_SCB + V7M_SCB_ICSR);
-+	irq_hw_number_t hwirq =  (icsr & V7M_SCB_ICSR_VECTACTIVE) - 16;
- 
--/*
-- * TODO: restructure the ARMv7M entry logic so that this entry logic can live
-- * in arch code.
-- */
--asmlinkage void __exception_irq_entry
--nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
--{
--	struct pt_regs *old_regs;
- 
--	irq_enter();
--	old_regs = set_irq_regs(regs);
--	__nvic_handle_irq(hwirq);
--	set_irq_regs(old_regs);
--	irq_exit();
-+	generic_handle_domain_irq(nvic_irq_domain, hwirq);
- }
- 
- static int nvic_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
-@@ -141,6 +129,7 @@ static int __init nvic_of_init(struct device_node *node,
- 	for (i = 0; i < irqs; i += 4)
- 		writel_relaxed(0, nvic_base + NVIC_IPR + i);
- 
-+	set_handle_irq(nvic_handle_irq);
- 	return 0;
- }
- IRQCHIP_DECLARE(armv7m_nvic, "arm,armv7m-nvic", nvic_of_init);
+ Documentation/devicetree/bindings/net/macb.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> Thanks,
-> Mark.
-> 
+diff --git a/Documentation/devicetree/bindings/net/macb.txt b/Documentation/devicetree/bindings/net/macb.txt
+index af9df2f01a1c..a1b06fd1962e 100644
+--- a/Documentation/devicetree/bindings/net/macb.txt
++++ b/Documentation/devicetree/bindings/net/macb.txt
+@@ -30,6 +30,10 @@ Required properties:
+ 	Optional elements: 'tsu_clk'
+ - clocks: Phandles to input clocks.
+ 
++Optional properties:
++- mdio: node containing PHY children. If this node is not present, then PHYs
++        will be direct children.
++
+ The MAC address will be determined using the optional properties
+ defined in ethernet.txt.
+ 
+-- 
+2.25.1
 
