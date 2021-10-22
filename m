@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105E8437995
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C960C437998
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhJVPH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:07:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:55436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233069AbhJVPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:07:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A3F31FB;
-        Fri, 22 Oct 2021 08:05:37 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB3533F694;
-        Fri, 22 Oct 2021 08:05:32 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 16:05:24 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
-        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        torvalds@linux-foundation.org, tsbogend@alpha.franken.de,
-        vgupta@kernel.org, will@kernel.org
-Subject: Re: [PATCH 01/15] irq: mips: avoid nested irq_enter()
-Message-ID: <20211022150524.GA86184@C02TD0UTHF1T.local>
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-2-mark.rutland@arm.com>
- <87mtn1bazk.wl-maz@kernel.org>
+        id S233069AbhJVPI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233328AbhJVPIV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:08:21 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7734DC061764;
+        Fri, 22 Oct 2021 08:06:03 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id b188so5735966iof.8;
+        Fri, 22 Oct 2021 08:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qVVsTDUrtPi9axG7J2CY7suNlJkonFS3kBGptu3oqok=;
+        b=C+cQsZYJlGFoVA4oVmtk98n2U50j/6jqYzO5QRE3aq2vpW6e5sxSYGm7JbSbtWcDja
+         HzTbvDZjqC+5mWTM7a8OcQBICkofjoH9mHyBcAk1JLx5n+IeQmcP2dJfzqjdwZrGq4g9
+         rNIiCWIUmTlNKk4DZf06wCZ8Xz3jhDUWsyIINPgDAO/PkopJSscOfnNUzwE+6MCsuXW0
+         AgWmFPeplYMLQzMSuZtwx7bcuFjHJyIKUQ7fBuW+IFLQucFoOysfxh4gynjpF+c2TtCi
+         JD4tM1GiW3xTEJQgOtZ9Kau2KH47cMcF756zcVfFj0EmDYLMliK+2f6YXUmUOw4MR3E9
+         qzEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qVVsTDUrtPi9axG7J2CY7suNlJkonFS3kBGptu3oqok=;
+        b=Gs2t9ZuCB9FjaRpoF3uJm3ARVAWG2ZeuWaECCKydxctPxQAZHbFyYEdDWu68Pi6BeX
+         n2Ht9TFJKOBl2PMR7nnhc5FNQXc6Nax3sIdF6EEpp/Cak1lWjLPWOFUI1v5DO+R8fiG1
+         bmY+970DWhK6+hspKCDbrN4NKqU9N572lYbf30sL19TdEX3cgrTfM0JrFL/ktwUGyW0e
+         0N/8BKskshShibVGqDqmd9veX1WiFaiERUF9g2RUnJyoCsC6ZGD8vrIwN459ZvCDY/rx
+         nJLfeKsLShS4b+gR20m/B1XlVjUu7NQjG+lT3v1W+v8aE4/pyWShdaO143ldfldyh4dL
+         4KWw==
+X-Gm-Message-State: AOAM532/Bx6fTtsKvXgCmkEAgPtfBj1hhiMhURjs8xL6B0KIWLf/FbrQ
+        A9RJzNdANl2Xa1gHPsZu1xdiYSdmkEr4mIyECFA=
+X-Google-Smtp-Source: ABdhPJy3ZIiQi/5sWqfx1QyzFhNnOkXgVWti4Dkxq2GC7Ba1VEdpWMx4zRepm6UINJvzFoio9JarONE+xtBgJqexSKw=
+X-Received: by 2002:a05:6602:15cc:: with SMTP id f12mr88635iow.33.1634915162804;
+ Fri, 22 Oct 2021 08:06:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mtn1bazk.wl-maz@kernel.org>
+References: <20210917133357.1911092-1-sudeep.holla@arm.com>
+ <20211011100949.4ck26vos5apts45e@bogus> <20211021165439.2cgyjjm5bwb6ydbv@bogus>
+In-Reply-To: <20211021165439.2cgyjjm5bwb6ydbv@bogus>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Fri, 22 Oct 2021 10:05:52 -0500
+Message-ID: <CABb+yY1xtjnstr432VLk+geuycKWq0BxAoCL7-eN+9wvVZ=t2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] mailbox: pcc: Add support for PCCT extended PCC subspaces
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 11:38:23AM +0100, Marc Zyngier wrote:
-> On Thu, 21 Oct 2021 19:02:22 +0100,
-> Mark Rutland <mark.rutland@arm.com> wrote:
-> > 
-> > As bcm6345_l1_irq_handle() is a chained irqchip handler, it will be
-> > invoked within the context of the root irqchip handler, which must have
-> > entered IRQ context already.
-> > 
-> > When bcm6345_l1_irq_handle() calls arch/mips's do_IRQ() , this will nest
-> > another call to irq_enter(), and the resulting nested increment to
-> > `rcu_data.dynticks_nmi_nesting` will cause rcu_is_cpu_rrupt_from_idle()
-> > to fail to identify wakeups from idle, resulting in failure to preempt,
-> > and RCU stalls.
-> > 
-> > Chained irqchip handlers must invoke IRQ handlers by way of thee core
-> > irqchip code, i.e. generic_handle_irq() or generic_handle_domain_irq()
-> > and should not call do_IRQ(), which is intended only for root irqchip
-> > handlers.
-> > 
-> > Fix bcm6345_l1_irq_handle() by calling generic_handle_irq() directly.
-> > 
-> > Fixes: c7c42ec2baa1de7a ("irqchips/bmips: Add bcm6345-l1 interrupt controller")
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > ---
-> >  drivers/irqchip/irq-bcm6345-l1.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-> > index e3483789f4df..1bd0621c4ce2 100644
-> > --- a/drivers/irqchip/irq-bcm6345-l1.c
-> > +++ b/drivers/irqchip/irq-bcm6345-l1.c
-> > @@ -140,7 +140,7 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
-> >  		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
-> >  			irq = irq_linear_revmap(intc->domain, base + hwirq);
-> >  			if (irq)
-> > -				do_IRQ(irq);
-> > +				generic_handle_irq(irq);
-> >  			else
-> >  				spurious_interrupt();
-> >  		}
-> 
-> A marginally better fix would be to have:
-> 
-> diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-> index 1bd0621c4ce2..fd079215c17f 100644
-> --- a/drivers/irqchip/irq-bcm6345-l1.c
-> +++ b/drivers/irqchip/irq-bcm6345-l1.c
-> @@ -132,16 +132,12 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
->  		int base = idx * IRQS_PER_WORD;
->  		unsigned long pending;
->  		irq_hw_number_t hwirq;
-> -		unsigned int irq;
->  
->  		pending = __raw_readl(cpu->map_base + reg_status(intc, idx));
->  		pending &= __raw_readl(cpu->map_base + reg_enable(intc, idx));
->  
->  		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
-> -			irq = irq_linear_revmap(intc->domain, base + hwirq);
-> -			if (irq)
-> -				generic_handle_irq(irq);
-> -			else
-> +			if (generic_handle_domain_irq(intc->domain, base + hwirq))
->  				spurious_interrupt();
->  		}
->  	}
-> 
-> but we can also tackle that separately if you'd rather keep the change
-> minimal.
+On Thu, Oct 21, 2021 at 11:54 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> Hi Jassi,
+>
+> Gentle ping!
+>
+I'll pick them.
 
-I'll add that to the series immediately after this patch, to keep this
-change minimal for backporting.
-
-Thanks,
-Mark.
+thanks.
