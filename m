@@ -2,277 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CBA437A81
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B567437A7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhJVQCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 12:02:02 -0400
-Received: from mail-db8eur05on2043.outbound.protection.outlook.com ([40.107.20.43]:18401
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233484AbhJVQB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:01:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EeElO+0g5k3I3gfSMXMsnGNlA2xBY1d960BIWwPswhQegKr5cGo7wdsoEr3M4q7N5XvIess5NM6j3tXlfF9mfsXRhm2N5a3SPtT+FpyjGdfnsdTvjIZLYJn8ARwOV9wA5raFqVoKdwI6+u/ZHoPT5bxsc7eEdmlpzy3WbAwZhnvHWdZzZy1EOWyud18dQ+dxD55h49Ux6yc/o9iMh8gzyMLPI39gaqJDu3b5OSC8YCzBOaC3prXASgxlQmlGCNssgxGKsFgKsTUwGSRXXF5ecAmXMNECt2HyBTjQJtf8lQKLzN4qE4aV8XsSeC4tnGzcvhI18NHrfozZAQwg50S4GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Yv2UB8kq7sV3+P4J38XEo7u7FfpYsmn0ukb6hvA6iXA=;
- b=Iodj9pAwmLZtLX/+ncL3G9JSKzjos/R5sNTCYNdg0LulEKkm+d4WvZwWNAlYWMbEeBe0Bt+05v6fyXSRC0EPZ4PMOGtlK85xDfRFzTUJhjYuL7EYH/on7OWErMfOKZJCkDUX7HfS9KFhEbN6Dis/FqObVVzOnMectDw96FmF6V0q3Vz7nnlwVE8HTnvnkb/xPAWrhD8Z9ZxvnA0Sa5t4L2MC0ljEyngwgTsiaF28dGYnRkrdiAG0MLPTIcAv7LQlfgBxMEG7t1lnJfartajT1OD2sRSYLfHurdB+4ryECf6If8S1kN96BNu9BWAmC/KRwYKn2oqnYQydhWu+unDeBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
+        id S233384AbhJVQBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 12:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhJVQBq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 12:01:46 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1097C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:59:28 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id f5so3679165pgc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 08:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yv2UB8kq7sV3+P4J38XEo7u7FfpYsmn0ukb6hvA6iXA=;
- b=4V7qm6emdVEzVgdss320ghXgZoHJu3QbJx7cV1+g2EWMDxAWq1mQVOdzGIMkQC9XdkFsrwtn3IEJIy66NtOauWk683bLr7E9lz1Ce3YHbnr7Q0NwTqVAeobCXQNueIo0+UUoFsOQ59CIje7PioqTFJoe0uIHXk7G7jsL7vtrMd0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
- by DB7PR03MB4522.eurprd03.prod.outlook.com (2603:10a6:10:1a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Fri, 22 Oct
- 2021 15:59:37 +0000
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::a9aa:f363:66e:fadf]) by DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::a9aa:f363:66e:fadf%6]) with mapi id 15.20.4608.018; Fri, 22 Oct 2021
- 15:59:37 +0000
-From:   Sean Anderson <sean.anderson@seco.com>
-To:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: [net-next PATCH v2 3/3] net: Convert more users of mdiobus_* to mdiodev_*
-Date:   Fri, 22 Oct 2021 11:59:14 -0400
-Message-Id: <20211022155914.3347672-3-sean.anderson@seco.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211022155914.3347672-1-sean.anderson@seco.com>
-References: <20211022155914.3347672-1-sean.anderson@seco.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR01CA0036.prod.exchangelabs.com (2603:10b6:208:10c::49)
- To DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+        d=gateworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oNbqT/ZIY+2ihfgs1jSUlxf/LlMDPFJWHkiAAlyomrc=;
+        b=QKHmz4eo8IjfcZaNUX6jEBjzLEz70RrzRH28u+7mEl7RFRQOpGn+NH5fghgwkW56mt
+         W7OI5pyZf0EB8XE+qSqAyo3v9SXabBsqrn2Jp/Dr5McSJXS1SeqGjosndpGXLY8Io6xf
+         SvNtUBZV8kI5VWSR9hthdk075oUEglPL/Yu+Vxp7Jvkxu10zT++Mjb0Q8RzibByeNyWr
+         77LbODiNLC8z+rCopmufb8JR0iFrYph8alMxx3n+2HLvzOU9+LkpFTgvQziBsA7vnbk3
+         33T/16YVPhGCh61axZJfdFyIH/yBMKzBryltjCtk3LBAXSe+1E7jIutXyCnuSbek3KBC
+         SN9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oNbqT/ZIY+2ihfgs1jSUlxf/LlMDPFJWHkiAAlyomrc=;
+        b=HP8rYtdnV9/yhYsErxjHGQ/4THwK04xxdzIS7KlFnKjn2DCVofxzG0SkKx6bdZllIN
+         nOvsIJQOm3Q1CcoEjPLLXTmnuNtR7EYxwmU71EGiHHjaHHwrWxOytozy9YQPeB5AGtB6
+         NEBw5Qv4zu95c3Y8NfkJJrkTneX7TwagtyXkZPliYmg0cl3RHVbgVXv0q3wXaKIlXRhG
+         tiQcsptL+CphQ7DUXJyq4fPndtYfNsNK51UPaDa5CA1tkUyk/nuAwavogh37aTEaC01E
+         MIA4raRaDKuzoy9p8/Q5kqFmfPoJR0axqqN9hQbv61AbycgSN0KiSnuDiUwxM7ToSqlN
+         mkJA==
+X-Gm-Message-State: AOAM533xo+iwdZYunF6bg2Lch7O12JW41mtCuNO9P50FF+naJr9JjZvu
+        fW+UumCUB1fZKk5A9UFCCLtxSfsov67Edkiigg7J4n/ITfCAdQ==
+X-Google-Smtp-Source: ABdhPJw6ZFNVl6dISzqQDyF5lFaDp4dOWg2DT+bDycOyBgz5C5vDNgKtC0B/bJ3r8tZqkKUvWfK2b6dhaTnRQAevFS0=
+X-Received: by 2002:a63:2bd5:: with SMTP id r204mr391533pgr.407.1634918368326;
+ Fri, 22 Oct 2021 08:59:28 -0700 (PDT)
 MIME-Version: 1.0
-Received: from plantagenet.inhand.com (50.195.82.171) by MN2PR01CA0036.prod.exchangelabs.com (2603:10b6:208:10c::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Fri, 22 Oct 2021 15:59:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fe371e71-69ef-4f29-7502-08d99574f2fd
-X-MS-TrafficTypeDiagnostic: DB7PR03MB4522:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR03MB4522F804E1BF32E60979CEA396809@DB7PR03MB4522.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1TPenzVoHuZPhV2BkrSFtO9QD/wajUXf6QlzipgzLvK7q9RkVp35qTVhzfnfRyLL2BqAz/5Vhe7XVJJD/kmt6KvO8Dw3YrUcmjw5rsX/Y95mis1ByFQrNBSi7ZR3YSlV/OqaWtsiesFtG71naMzMOC5Feg6jwhZjXOX6ekbLtJ51Ud6iIuWJeovChhqIsGUHOCKDhisQ/PzKJptWrQXkA3ZMTDDNZmbLW3if5wesHo+15pVARzpij+NN5e4Ql3RdR9tILwKMAr6dZYEePFF/4OWZyQeDeb0O3xHUwH403BQZxti+YnF/gEhelzVTLdd8ZPBOuMIOCvT3XhSzaHKxeKiuGyTauESBRU7qgfYPgHIVzBQ2Q/NFmGOE7vwd0wOZq2QWLmQWbHmaK8afrCsJa09a3EByeh5oYFXfbbst5jUpCjCVsyjayf7W44BNiBYcVMqFI0JU5/+IM8SSynl3Tz0V/Z+j7iB7X15RcRoDakI5pcoxemAWAuI3bCocMD4ED1tJqrpKhNLddhR4qoIUvQWqNPorLWzKsprFQktSANt3Z+0XV27kXeBaghgPdVndzNaQnVUMq3fIDCeQ9kRfAID3kjsqG4V9Aubu30xBQxRd0cJmUG3CnVk8oCBFfrvpjY2M5lqLMjjEaXZ5ZghNo1XcyIcgA3o9yTjCyC1M4oYVzr7xzC9Go+WYUambk1cP/oLZwBndlRABbkGAVCmKHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(8936002)(110136005)(2906002)(26005)(83380400001)(66946007)(6486002)(6506007)(54906003)(5660300002)(52116002)(86362001)(7416002)(186003)(508600001)(4326008)(66476007)(36756003)(8676002)(66556008)(6666004)(44832011)(2616005)(956004)(38100700002)(38350700002)(1076003)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r9JUmm+kioZzJD8pFutw+bA9h41Rf8jW5xb8FOiARdKgtkOTrFG9WGOhn+z3?=
- =?us-ascii?Q?wgYyoGqr0bzoVcRGab2pq5e51hI0QlnEc+ex8kP+zzzGtVND/gYTx8x4TeuS?=
- =?us-ascii?Q?XdOLpbbAxCpLE/nJr/AY3nNsZtwO4XAhP45QLTZRFDnm3L6wVeRv7XqfUIMb?=
- =?us-ascii?Q?/NnAb6gAflhNi4Ql5E64GhpHiPC5Ba6i9gGRRy29omgmpUAB+Nn+Ow9IyiBj?=
- =?us-ascii?Q?VP26sEVYjYm3DeY30T1igRvKJK9DBSvLWKfeE3c2R1ZUk2bgG7MpM1o7ZyV7?=
- =?us-ascii?Q?LY7dATzLqKCw6KoGdMxs9/oWf/UD3yoGxZ0UR+ZS5FnffWecImw9iFiRLX+0?=
- =?us-ascii?Q?WESsTtZOKF1YX4Z6nz3MSw+NMpn8EJVyHKiZTcNwXHwGZbTopcZZp/QLZsbV?=
- =?us-ascii?Q?z3HXPnre0uRdWOTHERiXXmOJs9q+wd6YBTv/w0RzEvI0beVQ9VBeN6k2Qh3e?=
- =?us-ascii?Q?b+Xgzav/a5EMbHo/4CGgKKWZ4ASLJsl3LnRQMny8/FDNWc+tTy5wC+rPFdJ2?=
- =?us-ascii?Q?YvVoGn4egmZx48pFTY9/XzVu/ZDsFNHYWQTf7K+27x+uawtJjcgRj1VCadAZ?=
- =?us-ascii?Q?vE2dHM1PKZrzeghJJqg/PngnXGgoH1tSLdIGwe6e7z6eY4z0inbML5Gjn7KM?=
- =?us-ascii?Q?UOuvaocAQJJCQmMwmrQKlqyqjzmDItqT3MoskhzETMKuMY9fZAb0MLmjnx8N?=
- =?us-ascii?Q?W1JPa/j9uD52XCgvDRO0yWgCph3tN82uw9UYKFtgXGK+5FV2YV37Jmo0SAhe?=
- =?us-ascii?Q?VNeZBNrVAsYk2s+YqJ//abOuOY5wzWOC3BCvm9JeYOOgcldDU6zB0W6YLrf5?=
- =?us-ascii?Q?y4GpQY8e9c3khcbXApCTI2Bx0Pg4Ak1/BWtRtQbZ1hQ5cXsVzikVwTs9850i?=
- =?us-ascii?Q?R5CeWDEs/ySGA3DrX9N3DZGNoNyUexMjtjzdYY3O6JsEp/dlFz1OOYsHQauh?=
- =?us-ascii?Q?DKRqBGclaIo9X65As6VP6tBBGmZAaKi5GrJTOgKJbNLwGOibV1ZoIEJpX7aN?=
- =?us-ascii?Q?AJpMYTRTzzCv5Ao1KwoLYcrremhch6NNmnUG29pWS+NMqa2Dhaqk48iEkEcn?=
- =?us-ascii?Q?gdMdnXY4cGXHbOpXS1+83FVs7/V+k9UNtkE1LIF9FG4o3gtYt8/bXPHP5LxT?=
- =?us-ascii?Q?spF9b3htvvxbHk0xcHPLn6ZfXu+aFMvjgtQ1/UvCPIBTlWV4vzj66zpdhS5Q?=
- =?us-ascii?Q?dZ8rNr6+DWhtFh7w5Ic3LOMPG7CBVh6uJ6ntlwGs35+26Ee+un9hrYXXBOOu?=
- =?us-ascii?Q?OBsXEn7VsbKe3EQ3vUQVX0jdjHEfTmQQoPZXj5l+6zLQ5cYnYkxwJvd6wTWF?=
- =?us-ascii?Q?XRtRjab0ecsNNr3hFrYUQADA?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe371e71-69ef-4f29-7502-08d99574f2fd
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 15:59:37.6276
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sean.anderson@seco.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR03MB4522
+References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
+ <CAJ+vNU2b-=T_gTsRBvdF7SRUZopEFOU_Np8mEJn8bOpn5b5FaA@mail.gmail.com>
+ <AS8PR04MB8676B2AC24E2769D47A1ED478CBD9@AS8PR04MB8676.eurprd04.prod.outlook.com>
+ <CAJ+vNU2AitmxCyam5FArmxAD41QUU=5CF_0JZhm+uzdkRbr7kw@mail.gmail.com>
+ <AS8PR04MB8676840D7EDD56D10F9471288CBE9@AS8PR04MB8676.eurprd04.prod.outlook.com>
+ <CAJ+vNU2GU5=mM5+2Yg9gAuU0RSdJHWEU_+ykmz-qUWfsOnRJ8g@mail.gmail.com>
+ <AS8PR04MB867624A8A5B6AE27D6A9160F8CBF9@AS8PR04MB8676.eurprd04.prod.outlook.com>
+ <CAJ+vNU1Si_bv0_2j5AU-v_1QtUGqwU_4u=NksAVFFXXkkNC1Sw@mail.gmail.com> <AS8PR04MB8676D9FFB6506A09D104E32A8C809@AS8PR04MB8676.eurprd04.prod.outlook.com>
+In-Reply-To: <AS8PR04MB8676D9FFB6506A09D104E32A8C809@AS8PR04MB8676.eurprd04.prod.outlook.com>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Fri, 22 Oct 2021 08:59:16 -0700
+Message-ID: <CAJ+vNU0cLd7oex5uUyJenqs229gsgZe_Vpu3uyKGw1=B+Uu5YQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie support
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This converts users of mdiobus to mdiodev using the following semantic
-patch:
+On Thu, Oct 21, 2021 at 5:43 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
+>
+> > -----Original Message-----
+> > From: Tim Harvey <tharvey@gateworks.com>
+> > Sent: Friday, October 22, 2021 12:25 AM
+> > To: Richard Zhu <hongxing.zhu@nxp.com>
+> > Cc: Lucas Stach <l.stach@pengutronix.de>; Kishon Vijay Abraham I
+> > <kishon@ti.com>; vkoul@kernel.org; Rob Herring <robh@kernel.org>;
+> > galak@kernel.crashing.org; Shawn Guo <shawnguo@kernel.org>;
+> > linux-phy@lists.infradead.org; Device Tree Mailing List
+> > <devicetree@vger.kernel.org>; Linux ARM Mailing List
+> > <linux-arm-kernel@lists.infradead.org>; open list
+> > <linux-kernel@vger.kernel.org>; Sascha Hauer <kernel@pengutronix.de>;
+> > dl-linux-imx <linux-imx@nxp.com>
+> > Subject: Re: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
+> > support
+> >
+> > On Wed, Oct 20, 2021 at 8:32 PM Richard Zhu <hongxing.zhu@nxp.com>
+> > wrote:
+> > >
+> > > <snipped...>
+> > > >
+> > > > Richard,
+> > > >
+> > > > What is this 'invalid resource' about? I see that with my downstream
+> > > > IMX8MM PCIe driver as well and have been asked about it.
+> > > >
+> > > [Richard Zhu] Hi Tim:
+> > > This complain is caused by the following codes in pcie-designware.c driver.
+> > > I'm not sure that why there is only size assignment after the res valid check,
+> > and do nothing if the res is invalid.
+> > > It seems that it is an expected design logic refer to the later codes.
+> > >                 if (!pci->atu_base) {
+> > >                         struct resource *res =
+> > >
+> > platform_get_resource_byname(pdev, IORESOURCE_MEM, "atu");
+> > >                         if (res)
+> > >                                 pci->atu_size = resource_size(res);
+> > >                         pci->atu_base =
+> > devm_ioremap_resource(dev, res);
+> > >                         if (IS_ERR(pci->atu_base))
+> > >                                 pci->atu_base = pci->dbi_base +
+> > DEFAULT_DBI_ATU_OFFSET;
+> > >                 }
+> > >
+> > > Since the default offset is used on i.MX8MM, the "atu" is not specified in
+> > i.MX8MM PCIe DT node, so there is no real res at all.
+> > > Then, devm_ioremap_resource() would complain the invalid resource.
+> >
+> > I think you are saying a change should be made like this:
+> > diff --git a/drivers/pci/controller/dwc/pcie-designware.c
+> > b/drivers/pci/controller/dwc/pcie-designware.c
+> > index a945f0c0e73d..3254f60d1713 100644
+> > --- a/drivers/pci/controller/dwc/pcie-designware.c
+> > +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> > @@ -671,10 +671,11 @@ void dw_pcie_iatu_detect(struct dw_pcie *pci)
+> >                 if (!pci->atu_base) {
+> >                         struct resource *res =
+> >
+> > platform_get_resource_byname(pdev,
+> > IORESOURCE_MEM, "atu");
+> > -                       if (res)
+> > +                       if (res) {
+> >                                 pci->atu_size = resource_size(res);
+> > -                       pci->atu_base = devm_ioremap_resource(dev,
+> > res);
+> > -                       if (IS_ERR(pci->atu_base))
+> > +                               pci->atu_base =
+> > devm_ioremap_resource(dev, res);
+> > +                       }
+> > +                       if (!pci->atu_base || IS_ERR(pci->atu_base))
+> >                                 pci->atu_base = pci->dbi_base +
+> > DEFAULT_DBI_ATU_OFFSET;
+> >                 }
+> >
+> > so that it looks like this:
+> >                 if (!pci->atu_base) {
+> >                         struct resource *res =
+> >
+> > platform_get_resource_byname(pdev,
+> > IORESOURCE_MEM, "atu");
+> >                         if (res) {
+> >                                 pci->atu_size = resource_size(res);
+> >                                 pci->atu_base =
+> > devm_ioremap_resource(dev, res);
+> >                         }
+> >                         if (!pci->atu_base || IS_ERR(pci->atu_base))
+> >                                 pci->atu_base = pci->dbi_base +
+> > DEFAULT_DBI_ATU_OFFSET;
+> >                 }
+> >
+> > Right?
+> [Richard Zhu] Yes, it is. The res shouldn't be remapped if it is invalid resource memory.
 
-@@
-identifier mdiodev;
-expression regnum;
-@@
+Ok, I will submit a patch for that.
 
-- mdiobus_read(mdiodev->bus, mdiodev->addr, regnum)
-+ mdiodev_read(mdiodev, regnum)
+>
+> >
+> > >
+> > > > > [    1.316305] imx6q-pcie 33800000.pcie: iATU unroll: enabled
+> > > > > [    1.321799] imx6q-pcie 33800000.pcie: Detected iATU regions: 4
+> > > > outbound, 4 inbound
+> > > > > [    1.429803] imx6q-pcie 33800000.pcie: Link up
+> > > > > [    1.534497] imx6q-pcie 33800000.pcie: Link up
+> > > > > [    1.538870] imx6q-pcie 33800000.pcie: Link up, Gen2
+> > > > > [    1.550364] imx6q-pcie 33800000.pcie: Link up
+> > > > > [    1.550487] imx6q-pcie 33800000.pcie: PCI host bridge to bus
+> > 0000:00
+> > > > > [    1.565545] pci_bus 0000:00: root bus resource [bus 00-ff]
+> > > > > [    1.573834] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+> > > > > [    1.580055] pci_bus 0000:00: root bus resource [mem
+> > > > 0x18000000-0x1fefffff]
+> > > > > [    1.586968] pci 0000:00:00.0: [16c3:abcd] type 01 class 0x060400
+> > > > > [    1.592997] pci 0000:00:00.0: reg 0x10: [mem
+> > 0x00000000-0x000fffff]
+> > > > > [    1.599282] pci 0000:00:00.0: reg 0x38: [mem
+> > 0x00000000-0x0000ffff
+> > > > pref]
+> > > > > [    1.606033] pci 0000:00:00.0: supports D1
+> > > > > [    1.610053] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> > > > D3cold
+> > > > > [    1.618206] pci 0000:01:00.0: [15b7:5002] type 00 class 0x010802
+> > > > > [    1.624293] pci 0000:01:00.0: reg 0x10: [mem
+> > 0x00000000-0x00003fff
+> > > > 64bit]
+> > > > > [    1.631177] pci 0000:01:00.0: reg 0x20: [mem
+> > 0x00000000-0x000000ff
+> > > > 64bit]
+> > > > > [    1.638409] pci 0000:01:00.0: 4.000 Gb/s available PCIe bandwidth,
+> > > > limited by 5.0 GT/s PCIe x1 link at 0000:00:00.0 (capable of 31.504
+> > > > Gb/s with
+> > > > 8.0 GT/s PCIe x4 link)
+> > > > > [    1.664931] pci 0000:00:00.0: BAR 0: assigned [mem
+> > > > 0x18000000-0x180fffff]
+> > > > > [    1.671745] pci 0000:00:00.0: BAR 14: assigned [mem
+> > > > 0x18100000-0x181fffff]
+> > > > > [    1.678634] pci 0000:00:00.0: BAR 6: assigned [mem
+> > > > 0x18200000-0x1820ffff pref]
+> > > > > [    1.685873] pci 0000:01:00.0: BAR 0: assigned [mem
+> > > > 0x18100000-0x18103fff 64bit]
+> > > > > [    1.693222] pci 0000:01:00.0: BAR 4: assigned [mem
+> > > > 0x18104000-0x181040ff 64bit]
+> > > > > [    1.700577] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
+> > > > > [    1.705814] pci 0000:00:00.0:   bridge window [mem
+> > > > 0x18100000-0x181fffff]
+> > > > > [    1.712972] pcieport 0000:00:00.0: PME: Signaling with IRQ 216
+> > > > > "
+> > > > > Regarding the log you pasted, it seems that the clock is not feed
+> > > > > to PHY
+> > > > properly.
+> > > > >
+> > > > > Anyway, let's waiting for the v4 series, then make a try. Thanks
+> > > > > for your
+> > > > great help to make the double tests.
+> > > > >
+> > > >
+> > > > My boards do not use CLKREQ# so I do not have that defined in pinmux
+> > > > and I found that if I add MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B
+> > PCIe
+> > > > works on my board but this isn't a solution just a work-around (I
+> > > > have boards that use the only two possible pins for CLKREQ as other
+> > features).
+> > > >
+> > > > Similarly you will find on the imx8mm-evk if you comment out the
+> > > > CLKREQ (which isn't required) the imx8mmevk will end up hanging like my
+> > boards:
+> > > [Richard Zhu] Hi Tim:
+> > > Regarding the SPEC, the CLKREQ# is mandatory required, and should be
+> > configured as an open drain, active low signal.
+> > > And this signal should be driven low by the PCIe M.2 device to request the
+> > REF clock be available(active low).
+> > > So, there is such kind of CLKREQ# pin definition on i.MX8MM EVK board.
+> > >
+> > > Anyway, I think the external OSC circuit should be always running if there is
+> > no CLKREQ# on your HW board design.
+> > >
+> >
+> > The way I understand it is CLKREQ# allows the host to disable the REFCLK
+> > when not needed for power savings so it would seem optional to implement
+> > that and if not implemented should be left unconnected on the card.
+> >
+> [Richard Zhu] No, not that way. Regarding the SPEC, this signal is mandatory required.
+> Especially for the L1ss usages. This signal would be OD(open drain), bi-directional, and might be
+> driven low/high by RC or EP automatically if L1ss modes are enabled.
+> You can make reference to the "ECN_L1_PM_Substates_with_CLKREQ_31_May_2013_Rev10a", or
+> the chapter 5.5 L1 PM Substates of "PCI Express Base Specification, Rev. 4.0 Version 1.0".
+>
 
-@@
-identifier mdiodev;
-expression regnum, val;
-@@
+CLKREQ is only mandatory if you wish to support clock power
+management. Many boards with a PCI host controller do not support
+this.
 
-- mdiobus_write(mdiodev->bus, mdiodev->addr, regnum, val)
-+ mdiodev_write(mdiodev, regnum, val)
+> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > > > b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > > > index 5ce43daa0c8b..f0023b48f475 100644
+> > > > --- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > > > @@ -448,7 +448,9 @@
+> > > >
+> > > >         pinctrl_pcie0: pcie0grp {
+> > > >                 fsl,pins = <
+> > > > +/*
+> > > >
+> > > > MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B    0x61
+> > > > +*/
+> > > >
+> > MX8MM_IOMUXC_SAI2_RXFS_GPIO4_IO21
+> > > > 0x41
+> > > >                 >;
+> > > >         };
+> > > >
+> > > > I have PCIe working with a driver that I ported from NXP's kernel
+> > > > which differs from your driver in that the PCIe PHY is not
+> > > > abstracted to its own driver so I think this has something to do
+> > > > with the order in which the phy is reset or initialized? The configuration of
+> > gpr14 bits looks correct to me.
+> > > [Richard Zhu] The CLKREQ# PIN definition shouldn't be masked.
+> > > In the NXP's local BSP kernel, I just force CLKREQ# low to level up the HW
+> > compatibility.
+> > > That's might the reason why the PCIe works on your HW board although the
+> > CLKREQ# PIN is not defined.
+> > > This method is a little rude and violate the SPEC, and not recommended
+> > although it levels up the HW compatibility.
+> > > So I drop this method in this series.
+> > >
+> >
+> > Sorry, I don't understand what you are saying here. Is there a change you are
+> > going to make to v4 that will make this work for the evk and my boards? What
+> > is that change exactly?
+> [Richard Zhu] No. What I said above is that the CLKREQ# is forced to be low in NXP
+> local BSP kernel. I guess this might be the reason why your board works.
+>
+> BIT11 and BIT10 of IOMUXC_GPR14 can be used to force the CLKREQ# to be low.
+> Set CLKREQ_OVERRIDE_EN(bit10) 1b1, then write one zero to CLKREQ_OVERRIDE(bit11).
+>
 
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
-I am not too experienced with coccinelle, so pointers would be
-appreciated. In particular, is it possible to convert things like
+Ok, that makes sense. Those bits are not explained well in the
+IMX8MMRM. As my board's external REFCLK is always enabled that must
+gate the clock internally to the host controller block.
 
-bus = mdiodev->bus;
-addr = mdiodev->addr;
-mdiobus_foo(bus, addr, ...);
+I can confirm that asserting those GPR14 bits does resolve my issue:
 
-in a generic way?
+#define IMX8MM_GPR_PCIE_CLKREQ_OVERRIDE_VAL    BIT(11)
+#define IMX8MM_GPR_PCIE_CLKREQ_OVERRIDE_EN     BIT(10)
 
-(no changes since v1)
+       /*
+        * for boards that do not connect CLKREQ#,
+        * override CLKREQ# and drive it low internally
+        */
+       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
+                          IMX8MM_GPR_PCIE_CLKREQ_OVERRIDE_VAL, 0);
+       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
+                          IMX8MM_GPR_PCIE_CLKREQ_OVERRIDE_EN, 1);
 
- drivers/base/regmap/regmap-mdio.c       |  6 +++---
- drivers/net/dsa/xrs700x/xrs700x_mdio.c  | 12 ++++++------
- drivers/phy/broadcom/phy-bcm-ns-usb3.c  |  2 +-
- drivers/phy/broadcom/phy-bcm-ns2-pcie.c |  6 ++----
- 4 files changed, 12 insertions(+), 14 deletions(-)
+Should this be added as a 'fsl,clkreq-unsupported' flag that needs to
+be set true to implement the above code?
 
-diff --git a/drivers/base/regmap/regmap-mdio.c b/drivers/base/regmap/regmap-mdio.c
-index 6a20201299f5..f7293040a2b1 100644
---- a/drivers/base/regmap/regmap-mdio.c
-+++ b/drivers/base/regmap/regmap-mdio.c
-@@ -14,7 +14,7 @@ static int regmap_mdio_read(struct mdio_device *mdio_dev, u32 reg, unsigned int
- {
- 	int ret;
- 
--	ret = mdiobus_read(mdio_dev->bus, mdio_dev->addr, reg);
-+	ret = mdiodev_read(mdio_dev, reg);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -24,7 +24,7 @@ static int regmap_mdio_read(struct mdio_device *mdio_dev, u32 reg, unsigned int
- 
- static int regmap_mdio_write(struct mdio_device *mdio_dev, u32 reg, unsigned int val)
- {
--	return mdiobus_write(mdio_dev->bus, mdio_dev->addr, reg, val);
-+	return mdiodev_write(mdio_dev, reg, val);
- }
- 
- static int regmap_mdio_c22_read(void *context, unsigned int reg, unsigned int *val)
-@@ -44,7 +44,7 @@ static int regmap_mdio_c22_write(void *context, unsigned int reg, unsigned int v
- 	if (unlikely(reg & ~REGNUM_C22_MASK))
- 		return -ENXIO;
- 
--	return mdiobus_write(mdio_dev->bus, mdio_dev->addr, reg, val);
-+	return mdiodev_write(mdio_dev, reg, val);
- }
- 
- static const struct regmap_bus regmap_mdio_c22_bus = {
-diff --git a/drivers/net/dsa/xrs700x/xrs700x_mdio.c b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-index d01cf1073d49..127a677d1f39 100644
---- a/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-+++ b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-@@ -31,7 +31,7 @@ static int xrs700x_mdio_reg_read(void *context, unsigned int reg,
- 
- 	uval = (u16)FIELD_GET(GENMASK(31, 16), reg);
- 
--	ret = mdiobus_write(mdiodev->bus, mdiodev->addr, XRS_MDIO_IBA1, uval);
-+	ret = mdiodev_write(mdiodev, XRS_MDIO_IBA1, uval);
- 	if (ret < 0) {
- 		dev_err(dev, "xrs mdiobus_write returned %d\n", ret);
- 		return ret;
-@@ -39,13 +39,13 @@ static int xrs700x_mdio_reg_read(void *context, unsigned int reg,
- 
- 	uval = (u16)((reg & GENMASK(15, 1)) | XRS_IB_READ);
- 
--	ret = mdiobus_write(mdiodev->bus, mdiodev->addr, XRS_MDIO_IBA0, uval);
-+	ret = mdiodev_write(mdiodev, XRS_MDIO_IBA0, uval);
- 	if (ret < 0) {
- 		dev_err(dev, "xrs mdiobus_write returned %d\n", ret);
- 		return ret;
- 	}
- 
--	ret = mdiobus_read(mdiodev->bus, mdiodev->addr, XRS_MDIO_IBD);
-+	ret = mdiodev_read(mdiodev, XRS_MDIO_IBD);
- 	if (ret < 0) {
- 		dev_err(dev, "xrs mdiobus_read returned %d\n", ret);
- 		return ret;
-@@ -64,7 +64,7 @@ static int xrs700x_mdio_reg_write(void *context, unsigned int reg,
- 	u16 uval;
- 	int ret;
- 
--	ret = mdiobus_write(mdiodev->bus, mdiodev->addr, XRS_MDIO_IBD, (u16)val);
-+	ret = mdiodev_write(mdiodev, XRS_MDIO_IBD, (u16)val);
- 	if (ret < 0) {
- 		dev_err(dev, "xrs mdiobus_write returned %d\n", ret);
- 		return ret;
-@@ -72,7 +72,7 @@ static int xrs700x_mdio_reg_write(void *context, unsigned int reg,
- 
- 	uval = (u16)FIELD_GET(GENMASK(31, 16), reg);
- 
--	ret = mdiobus_write(mdiodev->bus, mdiodev->addr, XRS_MDIO_IBA1, uval);
-+	ret = mdiodev_write(mdiodev, XRS_MDIO_IBA1, uval);
- 	if (ret < 0) {
- 		dev_err(dev, "xrs mdiobus_write returned %d\n", ret);
- 		return ret;
-@@ -80,7 +80,7 @@ static int xrs700x_mdio_reg_write(void *context, unsigned int reg,
- 
- 	uval = (u16)((reg & GENMASK(15, 1)) | XRS_IB_WRITE);
- 
--	ret = mdiobus_write(mdiodev->bus, mdiodev->addr, XRS_MDIO_IBA0, uval);
-+	ret = mdiodev_write(mdiodev, XRS_MDIO_IBA0, uval);
- 	if (ret < 0) {
- 		dev_err(dev, "xrs mdiobus_write returned %d\n", ret);
- 		return ret;
-diff --git a/drivers/phy/broadcom/phy-bcm-ns-usb3.c b/drivers/phy/broadcom/phy-bcm-ns-usb3.c
-index b1adaecc26f8..bbfad209c890 100644
---- a/drivers/phy/broadcom/phy-bcm-ns-usb3.c
-+++ b/drivers/phy/broadcom/phy-bcm-ns-usb3.c
-@@ -183,7 +183,7 @@ static int bcm_ns_usb3_mdio_phy_write(struct bcm_ns_usb3 *usb3, u16 reg,
- {
- 	struct mdio_device *mdiodev = usb3->mdiodev;
- 
--	return mdiobus_write(mdiodev->bus, mdiodev->addr, reg, value);
-+	return mdiodev_write(mdiodev, reg, value);
- }
- 
- static int bcm_ns_usb3_mdio_probe(struct mdio_device *mdiodev)
-diff --git a/drivers/phy/broadcom/phy-bcm-ns2-pcie.c b/drivers/phy/broadcom/phy-bcm-ns2-pcie.c
-index 4c7d11d2b378..9e7434a0d3e0 100644
---- a/drivers/phy/broadcom/phy-bcm-ns2-pcie.c
-+++ b/drivers/phy/broadcom/phy-bcm-ns2-pcie.c
-@@ -29,14 +29,12 @@ static int ns2_pci_phy_init(struct phy *p)
- 	int rc;
- 
- 	/* select the AFE 100MHz block page */
--	rc = mdiobus_write(mdiodev->bus, mdiodev->addr,
--			   BLK_ADDR_REG_OFFSET, PLL_AFE1_100MHZ_BLK);
-+	rc = mdiodev_write(mdiodev, BLK_ADDR_REG_OFFSET, PLL_AFE1_100MHZ_BLK);
- 	if (rc)
- 		goto err;
- 
- 	/* set the 100 MHz reference clock amplitude to 2.05 v */
--	rc = mdiobus_write(mdiodev->bus, mdiodev->addr,
--			   PLL_CLK_AMP_OFFSET, PLL_CLK_AMP_2P05V);
-+	rc = mdiodev_write(mdiodev, PLL_CLK_AMP_OFFSET, PLL_CLK_AMP_2P05V);
- 	if (rc)
- 		goto err;
- 
--- 
-2.25.1
+Best regards,
 
+Tim
