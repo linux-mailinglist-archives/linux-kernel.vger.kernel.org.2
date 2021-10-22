@@ -2,76 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC87437677
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876BF437688
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhJVMJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:09:54 -0400
-Received: from unicom146.biz-email.net ([210.51.26.146]:9838 "EHLO
-        unicom146.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhJVMJZ (ORCPT
+        id S231408AbhJVMMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:12:54 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:36732 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230155AbhJVMMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:09:25 -0400
-Received: from ([60.208.111.195])
-        by unicom146.biz-email.net ((LNX1044)) with ASMTP (SSL) id QOD00159;
-        Fri, 22 Oct 2021 20:06:59 +0800
-Received: from localhost.localdomain (10.200.104.119) by
- jtjnmail201604.home.langchao.com (10.100.2.4) with Microsoft SMTP Server id
- 15.1.2308.14; Fri, 22 Oct 2021 20:07:00 +0800
-From:   Kai Song <songkai01@inspur.com>
-To:     <jani.nikula@linux.intel.com>, <joonas.lahtinen@linux.intel.com>,
-        <rodrigo.vivi@intel.com>
-CC:     <airlied@linux.ie>, <daniel@ffwll.ch>, <jason@jlekstrand.net>,
-        <thomas.hellstrom@linux.intel.com>, <matthew.auld@intel.com>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Kai Song <songkai01@inspur.com>
-Subject: [PATCH] drm/i915/selftests: Fix inconsistent IS_ERR and PTR_ERR
-Date:   Fri, 22 Oct 2021 20:06:55 +0800
-Message-ID: <20211022120655.22173-1-songkai01@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 22 Oct 2021 08:12:52 -0400
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id BBF0963F45;
+        Fri, 22 Oct 2021 14:08:50 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 14:10:30 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipvs: autoload ipvs on genl access
+Message-ID: <YXKqNos44XqQYXOi@salvia>
+References: <20211021130255.4177-1-linux@weissschuh.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.119]
-tUid:   2021102220065935d306d5aee3ec50df61f00ae9b372c3
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211021130255.4177-1-linux@weissschuh.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix inconsistent IS_ERR and PTR_ERR in i915_gem_dmabuf.c
+On Thu, Oct 21, 2021 at 03:02:55PM +0200, Thomas Weißschuh wrote:
+> The kernel provides the functionality to automatically load modules
+> providing genl families. Use this to remove the need for users to
+> manually load the module.
 
-Signed-off-by: Kai Song <songkai01@inspur.com>
----
- drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-index 4a6bb64c3a35..3cc74b0fed06 100644
---- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-@@ -102,7 +102,7 @@ static int igt_dmabuf_import_same_driver_lmem(void *arg)
- 	obj = __i915_gem_object_create_user(i915, PAGE_SIZE, &lmem, 1);
- 	if (IS_ERR(obj)) {
- 		pr_err("__i915_gem_object_create_user failed with err=%ld\n",
--		       PTR_ERR(dmabuf));
-+		       PTR_ERR(obj));
- 		err = PTR_ERR(obj);
- 		goto out_ret;
- 	}
-@@ -158,7 +158,7 @@ static int igt_dmabuf_import_same_driver(struct drm_i915_private *i915,
- 					    regions, num_regions);
- 	if (IS_ERR(obj)) {
- 		pr_err("__i915_gem_object_create_user failed with err=%ld\n",
--		       PTR_ERR(dmabuf));
-+		       PTR_ERR(obj));
- 		err = PTR_ERR(obj);
- 		goto out_ret;
- 	}
--- 
-2.27.0
-
+Applied, thanks
