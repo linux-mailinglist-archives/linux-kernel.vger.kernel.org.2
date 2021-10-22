@@ -2,181 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9A643748C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D77643748E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 11:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhJVJR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 05:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbhJVJR1 (ORCPT
+        id S232546AbhJVJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 05:17:39 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54314 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232527AbhJVJRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:17:27 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A743C061764;
-        Fri, 22 Oct 2021 02:15:10 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id j10so200009ilu.2;
-        Fri, 22 Oct 2021 02:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7DczJgTsrEUe66TRocDFUq17LG2eh3rHGp1OMow1/+w=;
-        b=cHca5wcCZFcIOzsxgI1SKRJm8zwJz8tYeN49PeA6DW51nZrTWPmUGV1y4rogZ4zSFc
-         FZMCPJHOh7X1ODHnoJNdw6DWP+YeSlhnfEaymoqnvhpfuP7onfUFf72lohDWEOb0hoLs
-         36jokar2MqMJ3pcYomSDGtSeTtvKnJGNSqxLypDcez+ghR3Vnj+vYl/0z1E/bZoWd2eB
-         OKCV/6+77knnFz0msLAAuecBmCe3xnK7tIdyNj+Vh3dzfeK4A7WCOOsEjPYVTdC5b/JU
-         OHo8kRyaBQuN6FrGp7cFTtM0FSUAcCNSpezlTec+R0Vh+F1i98sDepdpXGrfQwbzT7cj
-         k22w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7DczJgTsrEUe66TRocDFUq17LG2eh3rHGp1OMow1/+w=;
-        b=ntNLzp29s4DWxinLW+uVHrVVQr9AXLcVAxRc+n0YD6l9EkoOtnIulQaFLgNLlq68D0
-         5MrPI+6Oq5bqHCECBkxhvz6fnaZXdQ+b/2Vlx4TOTE7vBXZ/UmlRy6q6qy+uWK/g+FSM
-         H14WAVHileMTnq3914H4U8rV44WKImg2tBZ3KweZOjxSihL0vhScVXteziSbxdQLr4kh
-         wnGzmFR6LFOIWmBzqfy+S6qobB4mgqrfd73+Zz8I7if+/ySyzoaOHvGNh5p9AbHFbXfL
-         Ii8W+ldVfdbuxMjzIxMp+yGBrvaGJEL9IH0i+NSO1DQ1mTYrFbH5m7Il146+t43N70I/
-         O6Uw==
-X-Gm-Message-State: AOAM532ngrqbcmVBBupcGm1cWd6/GXQFM49rjsxy+ElPrcoxUMAiObl0
-        hiszxUyXHXK4E7G/q4eMwqAjQHShDsyUQkmluMA=
-X-Google-Smtp-Source: ABdhPJztOeX0qbkcDhGUgqmJkz/Xjz1Z8hBdU+o7cNL+/8jFrXgzSoqv4ReeXcrxKop/kg/iRZYdgBvZCtGp/EOroWY=
-X-Received: by 2002:a05:6e02:1a05:: with SMTP id s5mr7531783ild.303.1634894109439;
- Fri, 22 Oct 2021 02:15:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <1634633003-18132-1-git-send-email-dillon.minfei@gmail.com>
- <1634633003-18132-10-git-send-email-dillon.minfei@gmail.com>
- <CAL9mu0Jw99aeSmwy7gnY3XQK3V1V-C1-R8ET5jvSMz7niH=g4g@mail.gmail.com> <b43699a6-dc53-3fcd-6cc9-6b05025cad96@foss.st.com>
-In-Reply-To: <b43699a6-dc53-3fcd-6cc9-6b05025cad96@foss.st.com>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Fri, 22 Oct 2021 17:14:32 +0800
-Message-ID: <CAL9mu0LUs0iwn2NUaUrbDjDGkB8dahdW+86RSeVJPpaP=V8f6A@mail.gmail.com>
-Subject: Re: [PATCH v6 09/10] clk: stm32: Fix ltdc's clock turn off by
- clk_disable_unused() after system enter shell
-To:     "gabriel.fernandez@foss.st.com" <gabriel.fernandez@foss.st.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        mchehab+huawei@kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        ezequiel@collabora.com, gnurou@gmail.com,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
-        Patrice CHOTARD <patrice.chotard@foss.st.com>,
-        hugues.fruchet@foss.st.com,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
+        Fri, 22 Oct 2021 05:17:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634894120; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=uQr8BvZjWmmKxBH750LS9eoWoqnWOCF3cqNu/hoRFm4=; b=kYPI9j5Mqi1ijfdAk6OlFKxiakauBX7sQHSuIgNeuO12nXCfiALiSK1JGCwJVhjcKL1E67wh
+ OCDs1/+rj09nD0bWSCx3i4HC2PEDtZo4+JldnA0xc6zh+dCPWcP5mP23WJBvbdPAo7zRUbXg
+ Zexjp85Mov0z3n4o5aG8A2iXYAI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6172812314914866fa7834c1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Oct 2021 09:15:15
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DF800C43619; Fri, 22 Oct 2021 09:15:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.137] (unknown [27.61.247.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3E390C4338F;
+        Fri, 22 Oct 2021 09:15:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3E390C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org>
+ <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
+ <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+ <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+ <CAPDyKFr_-ON1JWXe3W7DAXUzKdrceqXPwLAdHnKeXajy=pFnug@mail.gmail.com>
+ <CAJZ5v0itweerfbq8NE9rEonZ2Nfu_nfKgERv2tweeLO4fgAgLg@mail.gmail.com>
+ <CAPDyKFrOSd2xEXuvDki9Em+xFLHfeTfZz3NtnWwNmWB1H6i=Kg@mail.gmail.com>
+ <CAJZ5v0j3a_m5T9nbxk4VSuABOq12JEC0fi=0SQ8+=Vwv-qDeOA@mail.gmail.com>
+ <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <28b0c55c-aa3e-8956-7be3-594e7b340107@codeaurora.org>
+Date:   Fri, 22 Oct 2021 14:45:06 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <CAPDyKFpjy5sZo6ayqPx07Jzs4J2yePy=cZk=k6VjhWB7zGeedg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gabriel
+Hi,
 
-Thanks for the quick response.
+On 10/22/2021 1:26 AM, Ulf Hansson wrote:
+> On Thu, 21 Oct 2021 at 21:02, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>>
+>> On Thu, Oct 21, 2021 at 8:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>>>
+>>> On Thu, 21 Oct 2021 at 18:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>>>>
+>>>> On Thu, Oct 21, 2021 at 6:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>>
+>> [cut]
+>>
+>>>> So in theory you could check the pm_runtime_put_sync_suspend() return
+>>>> value and fall back to something like WFI if that's an error code.
+>>>
+>>> I have already tried that, but it simply got too complicated. The main
+>>> issue was that runtime PM could become disabled for the device in the
+>>> middle of executing the ->enter() callback.
+>>
+>> So IIUC the problem is that you cannot resume after suspending in that case.
+>>
+>> IOW, you need to guarantee that if the suspend is successful, the
+>> resume also will take place, but if the suspend fails, you basically
+>> don't care.
+> 
+> Exactly.
+> 
+>>
+>>> For example, if pm_runtime_get_sync() fails, I still need to make sure
+>>> the reference counting in genpd becomes correct - and I can't do that
+>>> using dev_pm_genpd_resume(). That's because it's not designed to be
+>>> called in this "unknown" suspend phase, but should be called after the
+>>> noirq phase and be properly balanced with dev_pm_genpd_suspend().
+>>>
+>>> In other words, the error path didn't work out for me.
+>>
+>> It should be sufficient to call wake_up_all_idle_cpus() in the suspend
+>> path before dpm_suspend_late(), because system suspend acquires a
+>> PM-runtime reference on every device.  IOW, it won't let any devices
+>> runtime-suspend, so if your power domain devices are resumed in that
+>> path, they will never suspend again in it and the
+>> pm_runtime_put_sync_suspend() in __psci_enter_domain_idle_state()
+>> becomes a reference counter management call which works regardless of
+>> whether or not PM runtime is disabled.
+> 
+> That sounds like a great idea, this should work too! Then the question
+> is, how to make that call to wake_up_all_idle_cpus() to become
+> optional - or only invoked for the cpuidle drivers that need it.
+> 
+> In any case, I will try this out, thanks for the suggestion!
+> 
+> Kind regards
+> Uffe
 
-Best Regards
-Dillon
+This may not work given that CPUs may re-enter idle after call to 
+wake_up_all_idle_cpus() is finished.
 
-On Fri, 22 Oct 2021 at 17:10, gabriel.fernandez@foss.st.com
-<gabriel.fernandez@foss.st.com> wrote:
->
-> Hi Dillon,
->
-> You can add my Acked-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->
-> Best Regards
-> Gabriel
->
-> On 10/22/21 9:25 AM, Dillon Min wrote:
-> > Hi Gabriel
-> >
-> > I guess you are the maintainer of stm32 clk subsystem from [1], Could
-> > you help to review this patch, just give a brief of the history:
-> >
-> > - this patch was acked by Stephen Boyd at [2].
-> > - reviewed by Patrice Chotard at [3].
-> >
-> > Without this patch , the kernel will turn off ltdc's clk after the
-> > system reach shell.
-> >
-> > [1] https://lore.kernel.org/lkml/AM8PR10MB4785545DC980090C1E7D66B281009@AM8PR10MB4785.EURPRD10.PROD.OUTLOOK.COM/
-> >
-> > [2] https://lore.kernel.org/linux-arm-kernel/159056850835.88029.9264848839121822798@swboyd.mtv.corp.google.com/
-> >
-> > [3] https://lore.kernel.org/lkml/6915fa2a-e211-476f-8317-6825e280c322@foss.st.com/#t
-> >
-> > Best Regards
-> > Dillon
-> >
-> > On Tue, 19 Oct 2021 at 16:44, Dillon Min <dillon.minfei@gmail.com> wrote:
-> >>
-> >> stm32's clk driver register two ltdc gate clk to clk core by
-> >> clk_hw_register_gate() and clk_hw_register_composite()
-> >>
-> >> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
-> >> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
-> >>
-> >> both of them point to the same offset of stm32's RCC register. after
-> >> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
-> >> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
-> >>
-> >> stm32f469/746/769 have the same issue, fix it.
-> >>
-> >> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
-> >> Acked-by: Stephen Boyd <sboyd@kernel.org>
-> >> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
-> >> Link: https://lore.kernel.org/lkml/CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com/
-> >> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> >> ---
-> >> v6: no change.
-> >>
-> >>   drivers/clk/clk-stm32f4.c | 4 ----
-> >>   1 file changed, 4 deletions(-)
-> >>
-> >> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-> >> index af46176ad053..473dfe632cc5 100644
-> >> --- a/drivers/clk/clk-stm32f4.c
-> >> +++ b/drivers/clk/clk-stm32f4.c
-> >> @@ -129,7 +129,6 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
-> >>          { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
-> >>   };
-> >>
-> >>   static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
-> >> @@ -211,7 +210,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
-> >>          { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
-> >>   };
-> >>
-> >>   static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
-> >> @@ -286,7 +284,6 @@ static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
-> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
-> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
-> >>   };
-> >>
-> >>   static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
-> >> @@ -364,7 +361,6 @@ static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
-> >>          { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
-> >> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
-> >>          { STM32F4_RCC_APB2ENR, 30,      "mdio",         "apb2_div" },
-> >>   };
-> >>
-> >> --
-> >> 2.7.4
-> >>
+say a case where,
+
+1. wake_up_all_idle_cpus() is called first then
+2. __device_suspend_late() does __pm_runtime_disable() for all CPU devices.
+
+inbetween 1 and 2, CPUs may have entered idle again and would have done
+pm_runtime_put_sync_suspend() while entering idle from cpuidle-psci.
+
+I was thinking if PM-QoS may be of help here, before runtime PM is 
+disabled, if QoS is taken with less value (say 1us) then all CPUs will
+wake up to serve the QoS and then stay in simple WFI() due to QoS and 
+won't do any runtime put/get, which serve similar to cpuidle_pause() + 
+default idle call.
+
+if QoS can be somehow taken from cpuidle-psci driver registering for 
+suspend ops? it won't effect other archs/idle drivers.
+
+Thanks,
+Maulik
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
