@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756774379E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D7C4379F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 17:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhJVPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 11:30:34 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48379 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233413AbhJVPac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:30:32 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0BF8F581028;
-        Fri, 22 Oct 2021 11:28:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 22 Oct 2021 11:28:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        bryanbrattlof.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=fm1; bh=jm5
-        35Za6sh/ySynJN8Vk1XMpgk0ttaD5Sc5KIyeAwPQ=; b=a1omWhWo1sT+IDYU/jO
-        GIv46zn8YU0s8oXLnjvMUip+LvFzqdW33UxAatwl+dYIu8lb7MinkPzLC6Khpzu1
-        0IpABxSavnxgH1H3gDTdmUS9FZzTTlZx6TBgP7MvmnqfHC04vb1HQ6PUw8GMkqFE
-        cq6kVIDgOZaNnd0htE+6djFeOyr8VrIOs8tqp7q7aPm1j/nmyn5NbbV+25YNmnIh
-        VL0gzT3ZnGJXMOzq5iTE6NHmUEfZaidPCYR4+rHb74PJaCZVEBhc2OSL9HVHQ4ra
-        Cx1nHJpEsjavaC6ucASUUx7ZM2sJnZH4FuN0zZFGynVbxeT2h5BGg6jNpTqjycoJ
-        fHg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jm535Z
-        a6sh/ySynJN8Vk1XMpgk0ttaD5Sc5KIyeAwPQ=; b=ByjeSmQaP2WWIcTbfk0Xm2
-        ELXFLDT78IgM0kXEwNJ8KNoD6m8D7nKHpO+cUChwVVh781ZwuYjSrGgkgEyuzsJz
-        XRBJ0HUP3lOobx6cTMB7ZrWa6Mobe0/8ZKsMoclkPJvawB+XGNM/ASALZFuHiWFG
-        JZa2HLTtDVOEwyU+cFKHvYOnPqlatrzy0Du4HWZBjPiqgl6jnUwZJ8f5WxedQWob
-        +poguGtVbORsFdUCdklGE7FjaL9Ek90S+T3KhxVz9r3y3pdLsIgUGtJOIO0HOd03
-        8nCkTOYzHLpdIGKYKGRp9x8eIPbhzouoIfUXLEJli3BIPf4r3TDsysoUkSyjYsuQ
-        ==
-X-ME-Sender: <xms:jthyYUUwPxzGRJX81yXjAr9CfM_MnQq4pZVcTWroL-qHMGX8TZ8WQw>
-    <xme:jthyYYmn12kw47e9Y_mNTbjYN5GZeuKgKtoL4a2ku7b7yPWRMuFPZVZIgkdewIKeD
-    7WX_WWB8t-ypu9dCSk>
-X-ME-Received: <xmr:jthyYYbDAwntvrH0hREK817orT-S6Vas21-YsLGvTNefAxGzEKcC1QYRMQBoOKiOpwFbejI5ltEt2xG8Pgns>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvkedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpeeurhihrghn
-    uceurhgrthhtlhhofhcuoehhvghllhhosegsrhihrghnsghrrghtthhlohhfrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeevtdelgfefjeduvddvgfefhfeggfdvheejhfdvhfegudev
-    gfeitddtjeffkeejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehhvghllhhosegsrhihrghnsghrrghtthhlohhfrdgtohhm
-X-ME-Proxy: <xmx:jthyYTUQsPD6uzA0loqM2LzbjhfBe-fSrM14Pss67JwAFiCeSNtKGg>
-    <xmx:jthyYelIpswmJ0ezXSJpLhIWLbXmNFlWcTxYRoCeYAXos_3pXWLa0g>
-    <xmx:jthyYYf9AE5t7baleMY6akL_hZagsLmF-2heWaKzTC2UYEBZe00RQQ>
-    <xmx:jthyYUmpqvIuccOr1x_ctufQNX53llFjsU7PLRk2oBcYs2Hq_GDRk8H4HNo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Oct 2021 11:28:13 -0400 (EDT)
-Received: (nullmailer pid 3724631 invoked by uid 1000);
-        Fri, 22 Oct 2021 15:28:12 -0000
-Date:   Fri, 22 Oct 2021 11:28:12 -0400
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-To:     Kushal Kothari <kushalkothari285@gmail.com>
-Cc:     gregkh@linuxfoundation.org, kush19992810@gmail.com,
-        outreachy-kernel@googlegroups.com, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, fmdefrancesco@gmail.com,
-        marcocesati@gmail.com, straube.linux@gmail.com,
-        philippesdixon@gmail.com, manuelpalenzuelamerino@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        mike.rapoport@gmail.com, kushalkotharitest@googlegroups.com
-Subject: Re: [PATCH v3 1/4] staging: rtl8723bs: core: Remove true and false
- comparison
-Message-ID: <20211022152812.yv4nicwpzmwggn25@h510>
-References: <cover.1634906059.git.kushalkothari285@gmail.com>
- <7d5df4b8aacd961d0de367cbd73a8b75272652a8.1634906059.git.kushalkothari285@gmail.com>
+        id S233178AbhJVPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 11:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232384AbhJVPeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:34:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DCEC6054E;
+        Fri, 22 Oct 2021 15:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634916740;
+        bh=dsX++Uq9HxwTDlQDY7ato4NKF0kNAEUBDapYaqRA0mI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lQWW/kv4bYwG2eiGsk3PVYg9jXIMXMKfD1qt40pxIisJzhuO9iPyELNTcPrDIMU//
+         ECQ8d9i3TlKupqDUH+GCtLlcdYYrJcWNhBfitlIYYJBJ0roxybxflXr43fn+G2i7pf
+         jfqsWwqGSzJTco7W/4iE4hQ+VOp97sdF9Ww+kWi91vm3wjzGQxZxZ2KHmfujNLKQvy
+         1Ns3wrxF5xFusbkj8TBUOzXWxc+Gaeq5Gy10uLTThbfYTY100ke9UKU1GnUj4Yv3Z5
+         1jXHMi96uF3jATU7SHVhhs3zNKBkHktLInR0tgccjaxATjTSJAE2+KQ35nBtAM4MKk
+         gBaue/wr7AXcw==
+Message-ID: <3ddb4013-8d63-7c00-6fdd-1f21752bd60c@kernel.org>
+Date:   Fri, 22 Oct 2021 23:32:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7d5df4b8aacd961d0de367cbd73a8b75272652a8.1634906059.git.kushalkothari285@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [f2fs-dev] [PATCH] f2fs: remove circular locking between
+ sb_internal and fs_reclaim
+Content-Language: en-US
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+References: <20211014190503.717830-1-daeho43@gmail.com>
+ <e8b106fb-2878-2fa9-788f-965eef179a85@kernel.org>
+ <CACOAw_yupuz+Xx-z9V0UaExuARHd8H9rruWCa2yj5-mgkeuUtQ@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <CACOAw_yupuz+Xx-z9V0UaExuARHd8H9rruWCa2yj5-mgkeuUtQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kushal,
+On 2021/10/22 0:44, Daeho Jeong wrote:
+> There is a deadlock between sb_internal lock (sb_start_intwrite()) and
+> dquot related lock.
+> It's because we call f2fs_truncate(), which eventually calls
+> dquot_initialize(), while holding sb_internal lock.
+> So, I called dquot_initialize() in advance to make the 2nd calling of
+> it in f2fs_truncate() ineffective.
+> This is similar with the thing in f2fs_evict_inode() in inode.c
 
-On this day, October 22, 2021, thus sayeth Kushal Kothari:
-> Remove comparison to true and false in if statement.
-> Issue found with checkpatch.pl.
-> CHECK: Using comparison to true is error prone
-> CHECK: Using comparison to false is error prone
+Well, if dquot_initialize() fails in f2fs_drop_inode(), will we still run
+into deadlock?
+
+Thanks,
+
 > 
-> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
+> Thanks,
 > 
-> Changes in v3: Enclose the version number inside the square bracket.
-> Changes in v2: Unnecessary parantheses handled in *v2 staging: rtl8723bs: core: Remove unnecessary parentheses*
-
-You may want to move these version notes below the cutoff so they won't 
-be included in the body of your commit message. 
-
-> ---
-
-[here]
-
->  drivers/staging/rtl8723bs/core/rtw_cmd.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> index 2624e994513f..acd4e8b1fad5 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> @@ -371,7 +371,7 @@ void rtw_free_cmd_obj(struct cmd_obj *pcmd)
-
-~Bryan
+> On Thu, Oct 21, 2021 at 5:11 AM Chao Yu <chao@kernel.org> wrote:
+>>
+>> On 2021/10/15 3:05, Daeho Jeong wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> We detected the below circular locking dependency between sb_internal
+>>> and fs_reclaim. So, removed it by calling dquot_initialize() before
+>>> sb_start_intwrite().
+>>>
+>>>    ======================================================
+>>>    WARNING: possible circular locking dependency detected
+>>>    ------------------------------------------------------
+>>>    kswapd0/133 is trying to acquire lock:
+>>> ffffff80d5fb9680 (sb_internal#2){.+.+}-{0:0}, at: evict+0xd4/0x2f8
+>>>
+>>> but task is already holding lock:
+>>> ffffffda597c93a8 (fs_reclaim){+.+.}-{0:0}, at:
+>>> __fs_reclaim_acquire+0x4/0x50
+>>>
+>>> which lock already depends on the new lock.
+>>> ...
+>>> other info that might help us debug this:
+>>>
+>>>    Chain exists of:
+>>>
+>>> sb_internal#2 --> &s->s_dquot.dqio_sem --> fs_reclaim
+>>>
+>>>     Possible unsafe locking scenario:
+>>>
+>>>           CPU0                    CPU1
+>>>           ----                    ----
+>>>      lock(fs_reclaim);
+>>>                                   lock(&s->s_dquot.dqio_sem);
+>>>                                   lock(fs_reclaim);
+>>>      lock(sb_internal#2);
+>>
+>> Sorry, I still didn't get the root cause of this deadlock issue, could
+>> you please explain more about this?
+>>
+>> And why calling dquot_initialize() in drop_inode() could break the
+>> circular locking dependency?
+>>
+>> Thanks,
+>>
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> ---
+>>>    fs/f2fs/super.c | 2 ++
+>>>    1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>> index 86eeb019cc52..a133932333c5 100644
+>>> --- a/fs/f2fs/super.c
+>>> +++ b/fs/f2fs/super.c
+>>> @@ -1370,6 +1370,8 @@ static int f2fs_drop_inode(struct inode *inode)
+>>>                        /* should remain fi->extent_tree for writepage */
+>>>                        f2fs_destroy_extent_node(inode);
+>>>
+>>> +                     dquot_initialize(inode);
+>>> +
+>>>                        sb_start_intwrite(inode->i_sb);
+>>>                        f2fs_i_size_write(inode, 0);
+>>>
+>>>
