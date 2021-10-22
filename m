@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6955743703E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F143437043
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 04:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhJVDAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 23:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbhJVDAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 23:00:45 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9164AC061764;
-        Thu, 21 Oct 2021 19:58:28 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id w10so2760092ilc.13;
-        Thu, 21 Oct 2021 19:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JJZ2MAKVYdxAS+mpk10bxj7MmoBWIH5E++cOcaLba/c=;
-        b=BzS+0q1/cG3XY4vAHNdFz55I6gcPQ3YYDOpvYI0jPSb/NwRfQw11pNDGoC+aKT21u6
-         bxSD6SuSVVS4y4V32wlvITJUrL5ZT67wVYFydmUfZvZF41y1tRWaXG0dEu30wRNq1Ntc
-         xOxZnNk19L7XQM3fiDbjve2D/Y5UimCxan+Twx4V595Zt2ACFI1vNaBCzdXq2sM6RoD+
-         SCGwQmdcOkr7KI1YCAbIQU8lPFO4mD+5bfT2YOP3cDarjz46e8I8Wl8PaPoGfURMNo8t
-         gH8GyDtzOg8Qb8ZFmRuNy1ngAhMT7/ui6/PVqCF8ZSF36HUQNGhfyT6ot5hrEq3mzHxF
-         hX9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JJZ2MAKVYdxAS+mpk10bxj7MmoBWIH5E++cOcaLba/c=;
-        b=MXPGye3pjIZsZXk5sEAx9k/Gvo5eX3GTdxYzu690YVfksWu7Nuocfkz6bPnGB2QNkN
-         uSbhtjMTSanWWgpD9oG5bkA0laTO9kBpddRSqkrEQgViUdagMQx9Zzea2EBBtesbcK5s
-         gut6pWulQU6uzY2jztdv2dR6Zwq6HfpMhnSUyc8V4oArsq1LVc2jTxlLywOgE4TCiQSY
-         mc+M3SHtgK9AX7jY+4cAoJxD5BBWiIBrJw2slF4Rn2Wgcb6skPPb7dgP1J7jsLW3/AXu
-         Zv4Sg+SJwoEbB+jBYHgxt4T1XpPj5bXb3xmb0LpxY1AlLzVCqx7O9pD2u6coo+Pl5V9f
-         B7Qg==
-X-Gm-Message-State: AOAM5331z5tAOQTZH1/Ath89HG0Ubw5duEOaayyAx21wvKM5DHQnwwsC
-        Km2B/XFnjDfbgXqViBBOO7aGr7IZ2DtZjkAmSd4=
-X-Google-Smtp-Source: ABdhPJxc2Czk357aHbZ/7WTuGXgvxVMuR0piDBWRjF+zKc18a/IrPk7TSLtT0ckawNhREG8WGZdT2XPAfhoiDXCKxe8=
-X-Received: by 2002:a05:6e02:687:: with SMTP id o7mr779540ils.222.1634871507725;
- Thu, 21 Oct 2021 19:58:27 -0700 (PDT)
+        id S232679AbhJVDBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 23:01:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232672AbhJVDBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 23:01:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B842261452;
+        Fri, 22 Oct 2021 02:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634871550;
+        bh=Yx7hUNcdU7Pjbr2DHTM7OpeDrskZ2MkKxAaVsic7w4U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pc7z+fd3SrnIL/SVNOWqwWqOMHf/0QnE8nHMctfUrWMgSVdbUGeqb10ba6blwWjV9
+         MO7ki/IdYYsvzU0S2vIX9RSXhfZdQ2o2JkdfFBCzexJgA4tQ/LCmjT3sxKNr9LNKIg
+         75oP35US8tRhAenEN5yqeI5NgGIWbeb6wqzZ95zfbvsFLfC2wop2kneVA1QOrNoLXt
+         TZie1aN8UnDaDrx2yrW75icCpwSgOcMIhBin/kkeCD9jntRbthqffZG8Kub92a/jdy
+         L+iAagvN/npFTN7czEuo8795ahqTVb3DQTy6fKiUgN4qUfFcFiKabE3+EgRf8R7lBY
+         Kyby4gAH+WlDw==
+Received: by mail-lj1-f177.google.com with SMTP id 204so313738ljf.9;
+        Thu, 21 Oct 2021 19:59:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530vVOjS5biOkAqyK9jHoDXORUEa112ka8lR16GtpTUyG0tpX4mx
+        oaN569ua8O+UPUzrD/7tUNvbws3lnIh6DszhGA==
+X-Google-Smtp-Source: ABdhPJyKcuSchhqdUFBGWZomm/WCOyI5oKt9pUJYKJhlLAGPFhFZwlXz7BibhttikR3f4Am4xBWs+ZsDT6ZpXnVBe4Y=
+X-Received: by 2002:a05:6402:643:: with SMTP id u3mr4233174edx.164.1634871537946;
+ Thu, 21 Oct 2021 19:58:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022010005.1454978-1-seanjc@google.com> <20211022010005.1454978-2-seanjc@google.com>
-In-Reply-To: <20211022010005.1454978-2-seanjc@google.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 22 Oct 2021 10:58:15 +0800
-Message-ID: <CAJhGHyCA-nfoJPmQxVWRtu+iJk3aj9ZdNH630RjrQJ_vYnZ3Gg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] KVM: x86/mmu: Drop a redundant, broken remote TLB flush
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Ben Gardon <bgardon@google.com>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+In-Reply-To: <20211022020032.26980-1-zev@bewilderbeest.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 21 Oct 2021 21:58:46 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLmonXoV2qJ4zY1wfDTRuQAYQuymXEB2kTpUmkKWwPGjg@mail.gmail.com>
+Message-ID: <CAL_JsqLmonXoV2qJ4zY1wfDTRuQAYQuymXEB2kTpUmkKWwPGjg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 9:01 AM Sean Christopherson <seanjc@google.com> wrote:
+On Thu, Oct 21, 2021 at 9:00 PM Zev Weiss <zev@bewilderbeest.net> wrote:
 >
-> A recent commit to fix the calls to kvm_flush_remote_tlbs_with_address()
-> in kvm_zap_gfn_range() inadvertantly added yet another flush instead of
-> fixing the existing flush.  Drop the redundant flush, and fix the params
-> for the existing flush.
+> Hello all,
 >
-> Fixes: 2822da446640 ("KVM: x86/mmu: fix parameters to kvm_flush_remote_tlbs_with_address")
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> This series is another incarnation of a couple other patchsets I've
+> posted recently [0, 1], but again different enough in overall
+> structure that I'm not sure it's exactly a v2 (or v3).
 >
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c6ddb042b281..f82b192bba0b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5709,13 +5709,11 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->                 for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
->                         flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, gfn_start,
->                                                           gfn_end, flush);
-> -               if (flush)
-> -                       kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> -                                                          gfn_end - gfn_start);
+> As compared to [1], it abandons the writable binary sysfs files and at
+> Frank's suggestion returns to an approach more akin to [0], though
+> without any driver-specific (aspeed-smc) changes, which I figure might
+> as well be done later in a separate series once appropriate
+> infrastructure is in place.
 
-In the recent queue branch of kvm tree, there is the same "if (flush)" in
-the previous "if (kvm_memslots_have_rmaps(kvm))" branch.  The "if (flush)"
-branch needs to be removed too.
+I skimmed this, and overall I like the approach.
 
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+> The basic idea is to implement support for a status property value
+> that's documented in the DT spec [2], but thus far not used at all in
+> the kernel (or anywhere else I'm aware of): "reserved".  According to
+> the spec (section 2.3.4, Table 2.4), this status:
+>
+>   Indicates that the device is operational, but should not be used.
+>   Typically this is used for devices that are controlled by another
+>   software component, such as platform firmware.
+>
+> With these changes, devices marked as reserved are (at least in some
+> cases, more on this later) instantiated, but will not have drivers
+> bound to them unless and until userspace explicitly requests it by
+> writing the device's name to the driver's sysfs 'bind' file.  This
+> enables appropriate handling of hardware arrangements that can arise
+> in contexts like OpenBMC, where a device may be shared with another
+> external controller not under the kernel's control (for example, the
+> flash chip storing the host CPU's firmware, shared by the BMC and the
+> host CPU and exclusively under the control of the latter by default).
+> Such a device can be marked as reserved so that the kernel refrains
+> from touching it until appropriate preparatory steps have been taken
+> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
+> processor has control of the firmware flash).
+>
+> Patches 1-3 provide some basic plumbing for checking the "reserved"
+> status of a device, patch 4 is the main driver-core change, and patch
+> 5 tweaks the OF platform code to not skip reserved devices so that
+> they can actually be instantiated.
+>
+> One shortcoming of this series is that it doesn't automatically apply
+> universally across all busses and drivers -- patch 5 enables support
+> for platform devices, but similar changes would be required for
+> support in other busses (e.g. in of_register_spi_devices(),
+> of_i2c_register_devices(), etc.) and drivers that instantiate DT
+> devices.  Since at present a "reserved" status is treated as
+> equivalent to "disabled" and this series preserves that status quo in
+> those cases I'd hope this wouldn't be considered a deal-breaker, but
+> a thing to be aware of at least.
+>
+> Greg: I know on [1] you had commented nack-ing the addition of boolean
+> function parameters; patch 4 adds a flags mask instead in an analogous
+> situation.  I'm not certain how much of an improvement you'd consider
+> that (hopefully at least slightly better, in that the arguments passed
+> at the call site are more self-explanatory); if that's still
+> unsatisfactory I'd welcome any suggested alternatives.
 
->         }
->
->         if (flush)
-> -               kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-> +               kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> +                                                  gfn_end - gfn_start);
->
->         kvm_dec_notifier_count(kvm, gfn_start, gfn_end);
->
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
+Can't we add a flag bit in struct device to reflect manual binding?
+bind will set it and unbind clears it.
+
+Rob
