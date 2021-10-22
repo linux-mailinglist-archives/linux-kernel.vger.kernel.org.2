@@ -2,226 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CCF43763E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 13:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D471B437648
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhJVL6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 07:58:50 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:9020 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231308AbhJVL6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 07:58:48 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MBjueW026317;
-        Fri, 22 Oct 2021 11:56:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=subject : to : cc
- : references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=wsab649gLJGi//T9euidn7LFas7vqxiCVMXZVelw0Hk=;
- b=Y0pe9BFIgvOEXDVaPg6DF3ET1J6Tv1QRgyfhSyv6TvzZFvzyCg60erPSmc1EdU7H6mj6
- +mcfOUv3iCsAQt52dVx8TKm3iO2S9ye45PE5P+pCvufdgRT2yqzL4EZgHIo5Ic27WmWk
- dnMfxk/0pPgOwVn3T9A5wu6ev85ytjuKCBm/NCwZBKase8FwziUGQ2YtgCY8621Z7vnX
- Ghy22ubYvFxMlYSsmCj0wg+XlqSBg+tL7wWQg6iCSak+Enh9hLZo/nX0o2Xaw5h8psYa
- Y5QnL6ayl8Pf0L0W6sGITFOyff4K8EX6AzXXsmNllGky8xu44hWOyVM8WKb1wZcuCsTo YA== 
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2040.outbound.protection.outlook.com [104.47.56.40])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3bu0uk99jy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 11:56:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hPwwcZPGptPLkYxz+LqIjciU1s0D5U2jqACDTVq4eHjb3YAOoVLWNd6lmebwjYErv4l1cLy33ZfbSoe0izUoN36POcfX6I7WhMEqn//UMdGmyaapc3/o8QmM4ZFnWVjHSNhGH9esWbpTHeS2GfzmJROS+gliNC0l+289VUjum4OtyUoPYmbF5sae3KX95tnLOeJlecvpw6HMbAPIJTyTVX/bRkj+cwkNqT4HT7LVWY36nObAorBL6Qf3KUkVLAK3fz5B+hFq4oUQVF+0ofznbZHU7oZNib7A0dVYjNDIO8lJ7t/ZGD1ZRZnHxAty9DAOUxu5429KRrlDIOtrJWnRPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wsab649gLJGi//T9euidn7LFas7vqxiCVMXZVelw0Hk=;
- b=CuV4NMoRvCmayCia7pgNOVWTqZrvjYC04zH18FQn6I3zqH9uwcSS3VyrkTdRpbrQNxWE2NA2rugbR2emKg9uf6yPlwypprVEaXiFLp6W33dxyXgh+3Oa0SWNcgaIWuwEfwuVYU6MXwTJg32rurgsCVuv3XXpFgwRAW0Ny6G1+083zKZ/PatBtuYzEGS1Y4rErg30ZhrRZlVVryV+IEFor0lWPzAXyg+v7/d0cwuaOBdoOfTj2p9ugx/3xNfokqs1ACOXhhIaSL6yloZR5yYYyBqde7o1hQKcspnPRu6zDWZE5NGbZJNyc+pbQyg1oFanYIScKz2X+wJviJ2T1uU9ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from PH7PR11MB5819.namprd11.prod.outlook.com (2603:10b6:510:13b::9)
- by PH0PR11MB5079.namprd11.prod.outlook.com (2603:10b6:510:3d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
- 2021 11:55:59 +0000
-Received: from PH7PR11MB5819.namprd11.prod.outlook.com
- ([fe80::3508:ff4c:362d:579c]) by PH7PR11MB5819.namprd11.prod.outlook.com
- ([fe80::3508:ff4c:362d:579c%7]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
- 11:55:59 +0000
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        mkoutny@suse.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YXIUMJWrXUcrvZf5@carbon.DHCP.thefacebook.com>
-From:   Quanyang Wang <quanyang.wang@windriver.com>
-Message-ID: <35e9e89f-d92f-06f9-b919-ef956d99d7df@windriver.com>
-Date:   Fri, 22 Oct 2021 19:55:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <YXIUMJWrXUcrvZf5@carbon.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HK2PR02CA0211.apcprd02.prod.outlook.com
- (2603:1096:201:20::23) To PH7PR11MB5819.namprd11.prod.outlook.com
- (2603:10b6:510:13b::9)
+        id S230426AbhJVMDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:03:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhJVMD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:03:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB6660C4C;
+        Fri, 22 Oct 2021 12:01:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634904070;
+        bh=qtLhW6yJc0m7cAPxwCcpju0k0Trvuqus6DX8RjrMrwQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SAu9tSKCbqiJGF0fecRlvTkO/vclPKkUQHrLN615nSNbXoZjf33R7XvYXI5QsEkG+
+         c2EPr9rRutH1pzDZpBdjqtFclTmCJY2KuDd9ND8HboYNcNPjWcQ1Xoxw1E0ccYFfpa
+         Y+lpOpH2rdPgBzWPapFLNfYOReMJTfoQlRAJotreNpssaXo83NTLDnXaWHRHrK7UaS
+         OjqCeDgCfW/uJHO9Q3z46GJbdNJcU0Ig2mNldTDelBss2UrmemrQdjUJ5oEri8e3fV
+         pXex+MOYJcIpeh9QjfL9ehSGPNv+sT2If1HZwy4L6gFxVglwCpW7yBWAdP0UulQXQw
+         hrZ3PBI60yxzg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
+Subject: [PATCH] locking: remove spin_lock_flags() etc
+Date:   Fri, 22 Oct 2021 13:59:38 +0200
+Message-Id: <20211022120058.1031690-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Received: from [128.224.162.199] (60.247.85.82) by HK2PR02CA0211.apcprd02.prod.outlook.com (2603:1096:201:20::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Fri, 22 Oct 2021 11:55:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b27e513-685e-44f4-8ea8-08d99552ea02
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5079:
-X-Microsoft-Antispam-PRVS: <PH0PR11MB5079827D4709540AE3891BC8F0809@PH0PR11MB5079.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OfYZUHy5lMlj2TNC/zvjsCeH2F8u/UeSBK9ioEd8cV03cv/8l5FYIK0nIsy+5cchLBLpIteLwhDfH7Mav49bR3YskkmQx3Frcw6q9XqTAaJbuEa7nonRdBV5NQ5b5pB8cIo+cQSIHaSkjOz+a1qmsL1ihvOOx6wqn0X76sLa3kAVk6aXVQR7RWtv+l9GaXNtxJhyhL2krnFCpGVP7RHtm7xaGfSTu/tujR7hjxf32J0Noawf/MlcwDuUPSdcsfQkU0bVSnFH8H4HPcdZXL9UhlUNIZsSC4ySrfZS04mT/WPBQvPdiQCe6UvnKzWRjk+GxESvB5w3BswnJQ6sbJquhsGpuyJikroEjP+kdnePxLOATlR8JctoCfpPUjPhIolV7TlYUap9NSR3fxZtJfuGJ30Sw1rQrkQdzo5b0VG3P3Zq2FxJuBBKlXsfSYjjSkSp/boui0dDNYEu/ZTMKq84SYJoUJIcRKA8MtukysS7VE3qCQQfdZaDASVX7IPvsYPXxc7Yjwt9xB0710HzKnpbHr6SEMBSPUtRycRLA30/ZMcvlyC6Q8Nee4uDsGUKIlpzjY6LLslMescm5+VPErUURE/+OOi8tkfbscB0REbWx6o2FJ4tk+B+y/WFQuhuqpXp5GC+wJ3as3r110ePuIX8Q0OThyMCzxCILVGfYF7oBAtI0zXxFMpLur2N6WBoVZyBxnsX1+lgWd7djuR6Qe06JVDLqUTeOEYx3EFP+3KSMUMJ9ORMo5HA5N+9xaA7nKmbD+vVDdMhljE3DAI+NgXirrF+6lohxxkS9BxwkQlFO60=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(4326008)(6706004)(508600001)(6486002)(186003)(26005)(8936002)(66946007)(66556008)(54906003)(316002)(8676002)(6916009)(66476007)(7416002)(38100700002)(2906002)(86362001)(5660300002)(16576012)(52116002)(31696002)(44832011)(31686004)(53546011)(2616005)(956004)(36756003)(38350700002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NTROU3B1MjJuTmNTK0QySWNvZ0NLSElDSFJtVDlGTWZJOXJTQ25UaGZLSURU?=
- =?utf-8?B?YmlZc3Z1cDB4bW9Ma0FhWk9iejRxaEVDTmhRcWxTc0RnVVB6Z2dibjZlckJQ?=
- =?utf-8?B?U3BEck8waXp1MlBXc2QrZkFsZWdWNXdONWJiU3RPTlpuN2ZnWmJJSGl1cWp3?=
- =?utf-8?B?N1RQeGpBQ1ZLTVJER1E5SHEzQmhTenNtUUhrYlV0b1hGVFBiUzlNdUhMSzJ4?=
- =?utf-8?B?QW4rWDIvaEp6YzNTckJEYWtUQjY0NFNaQ0VGMDcramQvTmZ0RFRBSTN0b2JH?=
- =?utf-8?B?RXFtTkp6Qi9XOXNlL3RwdVpOaFFaYzVaTitBLzhvdW5WeUppYW9lVitpK3pR?=
- =?utf-8?B?aGhFYWVNUEpCZkpna3k5dGJWeTlaQkYrL3BJTHpRbDVPazdmK0NvMmN0UldG?=
- =?utf-8?B?cVpIbUgwVlYrK3AxUGxIMEllMzJtOGN0REVIY3dGVitIUmdSbEtvbVg3Ly9C?=
- =?utf-8?B?YlhDcW40cUYxZ2FLNStZclYxUnVvL2prMnNCTE9McE5XR01iNit1eUdraFQr?=
- =?utf-8?B?RWFOVk1QRjFKaFFwQi85cExBM3F5cTBDWTA3OEp5U08wbkZrSmZWRkdnS2x4?=
- =?utf-8?B?Rm5Id2U4bkJ2N0VUemlqY1pLY0FPUkY3Y1lFWXpyVXljUWhLTHRJOTlzczh2?=
- =?utf-8?B?b2ZpUnN6QVMyNTJhSld1Um1JY2drbnZ5NlZaQk1IS2NZSGhlYW1pRkxkaGov?=
- =?utf-8?B?cDNRQ2EzYlJMbThHMm02QURPUkRZS3hBMjl0NmgyeENSL3AvRFVIdytCOXd2?=
- =?utf-8?B?Ymlad1p4YU1qZlBITG1WU2swUys1Ykt4TFRPNkhUeUxTQWQ3bVhWejJDaVNn?=
- =?utf-8?B?NzVtRVd4U3BPWEhzemJZV1BIaGhMMUNLdGdseEwzcEY2R3JHTlF6Y0kwUlFR?=
- =?utf-8?B?SmF6ZWRpVC9HdmMxNzZVMjJFYW9vd0Y2Q3pQaVRGaCtKMUxQM1ZvWjMyVGV4?=
- =?utf-8?B?QWMxZEVyK0VhRjR3OWZOVG9sZ0FGM2xLckxicFgzTXdmR29KY3ZwSU8wcHN2?=
- =?utf-8?B?SjIrbU5qRTR3YkczKzFub0hJZGxnQkhWSlhuY01sTWNKZXhFMjVnWjJiNVh4?=
- =?utf-8?B?WDJQL09lYkJDenRKMmlzVjBTM1JuSkZUb2p5RTg5SlBCd3Njb25sTjhtTW01?=
- =?utf-8?B?c01CVXk5NGczbXJjSnVScmd3aTBNRFFWcFhqTWpwUUNPaUthY0RCcUxCZUM5?=
- =?utf-8?B?bFhuRldwN2tJa3BGNUVuWHlERFE0SzUxZ2ZZMmpmaFJRaEZCRkpiNC96QU91?=
- =?utf-8?B?R3FsSEUyald6aHdGa2JFeFVTRjlXTHJzcXVoQmVJd21GTGdCWTdTdGNJTzF1?=
- =?utf-8?B?dUtoODJBMUhBcitiamd4dmkza2VjVDlQbm0zcG52Q2I3TzFjeHRLQktpOWZW?=
- =?utf-8?B?aHB1cVh3L1kxQUdyNWxrV3h2RmJKaVpMMEQ2em9XejhDYXl2UlVXdUZjZk1J?=
- =?utf-8?B?QzZnNno0U1lzZTEwNm0rQ0FiVDE5NHBCcU00bmpSQ21XRVNnNEFOeno3NzVP?=
- =?utf-8?B?Y3YwWlpJWWhYN05KZDR0c2oyUmloU2ZrVFVlNDAwYUw5WGVNQUYwM1ZBZkti?=
- =?utf-8?B?cEtLSVY5OEJzRndha2ZOalp4eG4xNjdZeVAzeUFueVZ6T3Y0V0VrU21rSmRD?=
- =?utf-8?B?dU5KSzI4SGxURmRzeWhhT20ycGRYQ3pXUDJva1c4M3hzanhLRHhKMmVleWNY?=
- =?utf-8?B?aHptUjIrTnVFTENFenpyN3dXNlp6Q3NUckRNTk9BRGJZQThhcVVHY3dJbXVF?=
- =?utf-8?B?dENpTC9qbU9YcEw5M0gwemtmaGxJMjZyc25vS3NXQ1NDM0I1dGFOcVV5cTN6?=
- =?utf-8?B?TENxNWZKdk9vcWpQL24vU1AyR3I4Tm1QZEY0R0FiTTRPU3JHVndhTU1lQlQ3?=
- =?utf-8?B?VlpwWGo3SlM2Y2FsQzNTVjMxNitMY1k1TTlDdmttOVpoQTV2d3c5L1BTQms2?=
- =?utf-8?Q?E/XuHbtfQPVrYxwGakjsgu4yufL+hYqB?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b27e513-685e-44f4-8ea8-08d99552ea02
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 11:55:59.6683
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: quanyang.wang@windriver.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5079
-X-Proofpoint-ORIG-GUID: tcCL2iwepCNZnbn30kZrOukyDroWkb3H
-X-Proofpoint-GUID: tcCL2iwepCNZnbn30kZrOukyDroWkb3H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_03,2021-10-21_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015 mlxscore=0
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110220067
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roman,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 10/22/21 9:30 AM, Roman Gushchin wrote:
-> On Mon, Oct 18, 2021 at 03:56:23PM +0800, quanyang.wang@windriver.com wrote:
->> From: Quanyang Wang <quanyang.wang@windriver.com>
->>
->> When enabling CONFIG_CGROUP_BPF, kmemleak can be observed by running
->> the command as below:
->>
->>      $mount -t cgroup -o none,name=foo cgroup cgroup/
->>      $umount cgroup/
->>
->> unreferenced object 0xc3585c40 (size 64):
->>    comm "mount", pid 425, jiffies 4294959825 (age 31.990s)
->>    hex dump (first 32 bytes):
->>      01 00 00 80 84 8c 28 c0 00 00 00 00 00 00 00 00  ......(.........
->>      00 00 00 00 00 00 00 00 6c 43 a0 c3 00 00 00 00  ........lC......
->>    backtrace:
->>      [<e95a2f9e>] cgroup_bpf_inherit+0x44/0x24c
->>      [<1f03679c>] cgroup_setup_root+0x174/0x37c
->>      [<ed4b0ac5>] cgroup1_get_tree+0x2c0/0x4a0
->>      [<f85b12fd>] vfs_get_tree+0x24/0x108
->>      [<f55aec5c>] path_mount+0x384/0x988
->>      [<e2d5e9cd>] do_mount+0x64/0x9c
->>      [<208c9cfe>] sys_mount+0xfc/0x1f4
->>      [<06dd06e0>] ret_fast_syscall+0x0/0x48
->>      [<a8308cb3>] 0xbeb4daa8
->>
->> This is because that since the commit 2b0d3d3e4fcf ("percpu_ref: reduce
->> memory footprint of percpu_ref in fast path") root_cgrp->bpf.refcnt.data
->> is allocated by the function percpu_ref_init in cgroup_bpf_inherit which
->> is called by cgroup_setup_root when mounting, but not freed along with
->> root_cgrp when umounting. Adding cgroup_bpf_offline which calls
->> percpu_ref_kill to cgroup_kill_sb can free root_cgrp->bpf.refcnt.data in
->> umount path.
->>
->> This patch also fixes the commit 4bfc0bb2c60e ("bpf: decouple the lifetime
->> of cgroup_bpf from cgroup itself"). A cgroup_bpf_offline is needed to do a
->> cleanup that frees the resources which are allocated by cgroup_bpf_inherit
->> in cgroup_setup_root.
->>
->> And inside cgroup_bpf_offline, cgroup_get() is at the beginning and
->> cgroup_put is at the end of cgroup_bpf_release which is called by
->> cgroup_bpf_offline. So cgroup_bpf_offline can keep the balance of
->> cgroup's refcount.
->>
->> Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
->> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
->> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->> ---
->> V1 ---> V2:
->> 1. As per Daniel's suggestion, add description to commit msg about the
->> balance of cgroup's refcount in cgroup_bpf_offline.
->> 2. As per Michal's suggestion, add tag "Fixes: 4bfc0bb2c60e" and add
->> description about it.
->> 3. Fix indentation on the percpu_ref_is_dying line.
-> 
-> Acked-by: Roman Gushchin <guro@fb.com>
-> 
-> The fix looks correct, two fixes tag are fine too, if only it won't
-> confuse scripts picking up patches for stable backports.
-> 
-> In fact, it's a very cold path, which is arguably never hit in the real
-> life. On cgroup v2 it's not an issue. I'm not sure we need a stable
-> backport at all, only if it creates a noise for some automation tests.
-> 
-> Quanyang, out of curiosity, how did you find it?
-I ran ltp testsuite to find this.
+parisc, ia64 and powerpc32 are the only remaining architectures that
+provide custom arch_{spin,read,write}_lock_flags() functions, which are
+meant to re-enable interrupts while waiting for a spinlock.
 
-./runltp -f controllers -s cgroup
+However, none of these can actually run into this codepath, because
+it is only called on architectures without CONFIG_GENERIC_LOCKBREAK,
+or when CONFIG_DEBUG_LOCK_ALLOC is set without CONFIG_LOCKDEP, and none
+of those combinations are possible on the three architectures.
 
-Thanks,
-Quanyang
-> 
-> Anyway, thanks for catching and fixing it!
-> 
-> Roman
-> 
+Going back in the git history, it appears that arch/mn10300 may have
+been able to run into this code path, but there is a good chance that
+it never worked. On the architectures that still exist, it was
+already impossible to hit back in 2008 after the introduction of
+CONFIG_GENERIC_LOCKBREAK, and possibly earlier.
+
+As this is all dead code, just remove it and the helper functions built
+around it. For arch/ia64, the inline asm could be cleaned up, but
+it seems safer to leave it untouched.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/ia64/include/asm/spinlock.h           | 23 ++++++----------------
+ arch/openrisc/include/asm/spinlock.h       |  3 ---
+ arch/parisc/include/asm/spinlock.h         | 15 --------------
+ arch/powerpc/include/asm/simple_spinlock.h | 21 --------------------
+ arch/s390/include/asm/spinlock.h           |  8 --------
+ include/linux/lockdep.h                    | 17 ----------------
+ include/linux/rwlock.h                     | 15 --------------
+ include/linux/rwlock_api_smp.h             |  6 ++----
+ include/linux/spinlock.h                   | 13 ------------
+ include/linux/spinlock_api_smp.h           |  9 ---------
+ include/linux/spinlock_up.h                |  1 -
+ kernel/locking/spinlock.c                  |  3 +--
+ 12 files changed, 9 insertions(+), 125 deletions(-)
+
+diff --git a/arch/ia64/include/asm/spinlock.h b/arch/ia64/include/asm/spinlock.h
+index 864775970c50..0e5c1ad3239c 100644
+--- a/arch/ia64/include/asm/spinlock.h
++++ b/arch/ia64/include/asm/spinlock.h
+@@ -124,18 +124,13 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
+ 	__ticket_spin_unlock(lock);
+ }
+ 
+-static __always_inline void arch_spin_lock_flags(arch_spinlock_t *lock,
+-						  unsigned long flags)
+-{
+-	arch_spin_lock(lock);
+-}
+-#define arch_spin_lock_flags	arch_spin_lock_flags
+-
+ #ifdef ASM_SUPPORTED
+ 
+ static __always_inline void
+-arch_read_lock_flags(arch_rwlock_t *lock, unsigned long flags)
++arch_read_lock(arch_rwlock_t *lock)
+ {
++	unsigned long flags = 0;
++
+ 	__asm__ __volatile__ (
+ 		"tbit.nz p6, p0 = %1,%2\n"
+ 		"br.few 3f\n"
+@@ -157,13 +152,8 @@ arch_read_lock_flags(arch_rwlock_t *lock, unsigned long flags)
+ 		: "p6", "p7", "r2", "memory");
+ }
+ 
+-#define arch_read_lock_flags arch_read_lock_flags
+-#define arch_read_lock(lock) arch_read_lock_flags(lock, 0)
+-
+ #else /* !ASM_SUPPORTED */
+ 
+-#define arch_read_lock_flags(rw, flags) arch_read_lock(rw)
+-
+ #define arch_read_lock(rw)								\
+ do {											\
+ 	arch_rwlock_t *__read_lock_ptr = (rw);						\
+@@ -186,8 +176,10 @@ do {								\
+ #ifdef ASM_SUPPORTED
+ 
+ static __always_inline void
+-arch_write_lock_flags(arch_rwlock_t *lock, unsigned long flags)
++arch_write_lock(arch_rwlock_t *lock)
+ {
++	unsigned long flags = 0;
++
+ 	__asm__ __volatile__ (
+ 		"tbit.nz p6, p0 = %1, %2\n"
+ 		"mov ar.ccv = r0\n"
+@@ -210,9 +202,6 @@ arch_write_lock_flags(arch_rwlock_t *lock, unsigned long flags)
+ 		: "ar.ccv", "p6", "p7", "r2", "r29", "memory");
+ }
+ 
+-#define arch_write_lock_flags arch_write_lock_flags
+-#define arch_write_lock(rw) arch_write_lock_flags(rw, 0)
+-
+ #define arch_write_trylock(rw)							\
+ ({										\
+ 	register long result;							\
+diff --git a/arch/openrisc/include/asm/spinlock.h b/arch/openrisc/include/asm/spinlock.h
+index a8940bdfcb7e..264944a71535 100644
+--- a/arch/openrisc/include/asm/spinlock.h
++++ b/arch/openrisc/include/asm/spinlock.h
+@@ -19,9 +19,6 @@
+ 
+ #include <asm/qrwlock.h>
+ 
+-#define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
+-#define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
+-
+ #define arch_spin_relax(lock)	cpu_relax()
+ #define arch_read_relax(lock)	cpu_relax()
+ #define arch_write_relax(lock)	cpu_relax()
+diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
+index fa5ee8a45dbd..a6e5d66a7656 100644
+--- a/arch/parisc/include/asm/spinlock.h
++++ b/arch/parisc/include/asm/spinlock.h
+@@ -23,21 +23,6 @@ static inline void arch_spin_lock(arch_spinlock_t *x)
+ 			continue;
+ }
+ 
+-static inline void arch_spin_lock_flags(arch_spinlock_t *x,
+-					unsigned long flags)
+-{
+-	volatile unsigned int *a;
+-
+-	a = __ldcw_align(x);
+-	while (__ldcw(a) == 0)
+-		while (*a == 0)
+-			if (flags & PSW_SM_I) {
+-				local_irq_enable();
+-				local_irq_disable();
+-			}
+-}
+-#define arch_spin_lock_flags arch_spin_lock_flags
+-
+ static inline void arch_spin_unlock(arch_spinlock_t *x)
+ {
+ 	volatile unsigned int *a;
+diff --git a/arch/powerpc/include/asm/simple_spinlock.h b/arch/powerpc/include/asm/simple_spinlock.h
+index 8985791a2ba5..7ae6aeef8464 100644
+--- a/arch/powerpc/include/asm/simple_spinlock.h
++++ b/arch/powerpc/include/asm/simple_spinlock.h
+@@ -123,27 +123,6 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+ 	}
+ }
+ 
+-static inline
+-void arch_spin_lock_flags(arch_spinlock_t *lock, unsigned long flags)
+-{
+-	unsigned long flags_dis;
+-
+-	while (1) {
+-		if (likely(__arch_spin_trylock(lock) == 0))
+-			break;
+-		local_save_flags(flags_dis);
+-		local_irq_restore(flags);
+-		do {
+-			HMT_low();
+-			if (is_shared_processor())
+-				splpar_spin_yield(lock);
+-		} while (unlikely(lock->slock != 0));
+-		HMT_medium();
+-		local_irq_restore(flags_dis);
+-	}
+-}
+-#define arch_spin_lock_flags arch_spin_lock_flags
+-
+ static inline void arch_spin_unlock(arch_spinlock_t *lock)
+ {
+ 	__asm__ __volatile__("# arch_spin_unlock\n\t"
+diff --git a/arch/s390/include/asm/spinlock.h b/arch/s390/include/asm/spinlock.h
+index ef59588a3042..888a2f1c9ee3 100644
+--- a/arch/s390/include/asm/spinlock.h
++++ b/arch/s390/include/asm/spinlock.h
+@@ -67,14 +67,6 @@ static inline void arch_spin_lock(arch_spinlock_t *lp)
+ 		arch_spin_lock_wait(lp);
+ }
+ 
+-static inline void arch_spin_lock_flags(arch_spinlock_t *lp,
+-					unsigned long flags)
+-{
+-	if (!arch_spin_trylock_once(lp))
+-		arch_spin_lock_wait(lp);
+-}
+-#define arch_spin_lock_flags	arch_spin_lock_flags
+-
+ static inline int arch_spin_trylock(arch_spinlock_t *lp)
+ {
+ 	if (!arch_spin_trylock_once(lp))
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 9fe165beb0f9..467b94257105 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -481,23 +481,6 @@ do {								\
+ 
+ #endif /* CONFIG_LOCK_STAT */
+ 
+-#ifdef CONFIG_LOCKDEP
+-
+-/*
+- * On lockdep we dont want the hand-coded irq-enable of
+- * _raw_*_lock_flags() code, because lockdep assumes
+- * that interrupts are not re-enabled during lock-acquire:
+- */
+-#define LOCK_CONTENDED_FLAGS(_lock, try, lock, lockfl, flags) \
+-	LOCK_CONTENDED((_lock), (try), (lock))
+-
+-#else /* CONFIG_LOCKDEP */
+-
+-#define LOCK_CONTENDED_FLAGS(_lock, try, lock, lockfl, flags) \
+-	lockfl((_lock), (flags))
+-
+-#endif /* CONFIG_LOCKDEP */
+-
+ #ifdef CONFIG_PROVE_LOCKING
+ extern void print_irqtrace_events(struct task_struct *curr);
+ #else
+diff --git a/include/linux/rwlock.h b/include/linux/rwlock.h
+index 7ce9a51ae5c0..2c0ad417ce3c 100644
+--- a/include/linux/rwlock.h
++++ b/include/linux/rwlock.h
+@@ -30,31 +30,16 @@ do {								\
+ 
+ #ifdef CONFIG_DEBUG_SPINLOCK
+  extern void do_raw_read_lock(rwlock_t *lock) __acquires(lock);
+-#define do_raw_read_lock_flags(lock, flags) do_raw_read_lock(lock)
+  extern int do_raw_read_trylock(rwlock_t *lock);
+  extern void do_raw_read_unlock(rwlock_t *lock) __releases(lock);
+  extern void do_raw_write_lock(rwlock_t *lock) __acquires(lock);
+-#define do_raw_write_lock_flags(lock, flags) do_raw_write_lock(lock)
+  extern int do_raw_write_trylock(rwlock_t *lock);
+  extern void do_raw_write_unlock(rwlock_t *lock) __releases(lock);
+ #else
+-
+-#ifndef arch_read_lock_flags
+-# define arch_read_lock_flags(lock, flags)	arch_read_lock(lock)
+-#endif
+-
+-#ifndef arch_write_lock_flags
+-# define arch_write_lock_flags(lock, flags)	arch_write_lock(lock)
+-#endif
+-
+ # define do_raw_read_lock(rwlock)	do {__acquire(lock); arch_read_lock(&(rwlock)->raw_lock); } while (0)
+-# define do_raw_read_lock_flags(lock, flags) \
+-		do {__acquire(lock); arch_read_lock_flags(&(lock)->raw_lock, *(flags)); } while (0)
+ # define do_raw_read_trylock(rwlock)	arch_read_trylock(&(rwlock)->raw_lock)
+ # define do_raw_read_unlock(rwlock)	do {arch_read_unlock(&(rwlock)->raw_lock); __release(lock); } while (0)
+ # define do_raw_write_lock(rwlock)	do {__acquire(lock); arch_write_lock(&(rwlock)->raw_lock); } while (0)
+-# define do_raw_write_lock_flags(lock, flags) \
+-		do {__acquire(lock); arch_write_lock_flags(&(lock)->raw_lock, *(flags)); } while (0)
+ # define do_raw_write_trylock(rwlock)	arch_write_trylock(&(rwlock)->raw_lock)
+ # define do_raw_write_unlock(rwlock)	do {arch_write_unlock(&(rwlock)->raw_lock); __release(lock); } while (0)
+ #endif
+diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_smp.h
+index abfb53ab11be..f1db6f17c4fb 100644
+--- a/include/linux/rwlock_api_smp.h
++++ b/include/linux/rwlock_api_smp.h
+@@ -157,8 +157,7 @@ static inline unsigned long __raw_read_lock_irqsave(rwlock_t *lock)
+ 	local_irq_save(flags);
+ 	preempt_disable();
+ 	rwlock_acquire_read(&lock->dep_map, 0, 0, _RET_IP_);
+-	LOCK_CONTENDED_FLAGS(lock, do_raw_read_trylock, do_raw_read_lock,
+-			     do_raw_read_lock_flags, &flags);
++	LOCK_CONTENDED(lock, do_raw_read_trylock, do_raw_read_lock);
+ 	return flags;
+ }
+ 
+@@ -184,8 +183,7 @@ static inline unsigned long __raw_write_lock_irqsave(rwlock_t *lock)
+ 	local_irq_save(flags);
+ 	preempt_disable();
+ 	rwlock_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+-	LOCK_CONTENDED_FLAGS(lock, do_raw_write_trylock, do_raw_write_lock,
+-			     do_raw_write_lock_flags, &flags);
++	LOCK_CONTENDED(lock, do_raw_write_trylock, do_raw_write_lock);
+ 	return flags;
+ }
+ 
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index c04e99edfe92..40e467cdee2d 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -176,7 +176,6 @@ do {									\
+ 
+ #ifdef CONFIG_DEBUG_SPINLOCK
+  extern void do_raw_spin_lock(raw_spinlock_t *lock) __acquires(lock);
+-#define do_raw_spin_lock_flags(lock, flags) do_raw_spin_lock(lock)
+  extern int do_raw_spin_trylock(raw_spinlock_t *lock);
+  extern void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock);
+ #else
+@@ -187,18 +186,6 @@ static inline void do_raw_spin_lock(raw_spinlock_t *lock) __acquires(lock)
+ 	mmiowb_spin_lock();
+ }
+ 
+-#ifndef arch_spin_lock_flags
+-#define arch_spin_lock_flags(lock, flags)	arch_spin_lock(lock)
+-#endif
+-
+-static inline void
+-do_raw_spin_lock_flags(raw_spinlock_t *lock, unsigned long *flags) __acquires(lock)
+-{
+-	__acquire(lock);
+-	arch_spin_lock_flags(&lock->raw_lock, *flags);
+-	mmiowb_spin_lock();
+-}
+-
+ static inline int do_raw_spin_trylock(raw_spinlock_t *lock)
+ {
+ 	int ret = arch_spin_trylock(&(lock)->raw_lock);
+diff --git a/include/linux/spinlock_api_smp.h b/include/linux/spinlock_api_smp.h
+index 6b8e1a0b137b..51fa0dab68c4 100644
+--- a/include/linux/spinlock_api_smp.h
++++ b/include/linux/spinlock_api_smp.h
+@@ -108,16 +108,7 @@ static inline unsigned long __raw_spin_lock_irqsave(raw_spinlock_t *lock)
+ 	local_irq_save(flags);
+ 	preempt_disable();
+ 	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+-	/*
+-	 * On lockdep we dont want the hand-coded irq-enable of
+-	 * do_raw_spin_lock_flags() code, because lockdep assumes
+-	 * that interrupts are not re-enabled during lock-acquire:
+-	 */
+-#ifdef CONFIG_LOCKDEP
+ 	LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);
+-#else
+-	do_raw_spin_lock_flags(lock, &flags);
+-#endif
+ 	return flags;
+ }
+ 
+diff --git a/include/linux/spinlock_up.h b/include/linux/spinlock_up.h
+index 0ac9112c1bbe..16521074b6f7 100644
+--- a/include/linux/spinlock_up.h
++++ b/include/linux/spinlock_up.h
+@@ -62,7 +62,6 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
+ #define arch_spin_is_locked(lock)	((void)(lock), 0)
+ /* for sched/core.c and kernel_lock.c: */
+ # define arch_spin_lock(lock)		do { barrier(); (void)(lock); } while (0)
+-# define arch_spin_lock_flags(lock, flags)	do { barrier(); (void)(lock); } while (0)
+ # define arch_spin_unlock(lock)	do { barrier(); (void)(lock); } while (0)
+ # define arch_spin_trylock(lock)	({ barrier(); (void)(lock); 1; })
+ #endif /* DEBUG_SPINLOCK */
+diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
+index c5830cfa379a..b562f9289372 100644
+--- a/kernel/locking/spinlock.c
++++ b/kernel/locking/spinlock.c
+@@ -378,8 +378,7 @@ unsigned long __lockfunc _raw_spin_lock_irqsave_nested(raw_spinlock_t *lock,
+ 	local_irq_save(flags);
+ 	preempt_disable();
+ 	spin_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
+-	LOCK_CONTENDED_FLAGS(lock, do_raw_spin_trylock, do_raw_spin_lock,
+-				do_raw_spin_lock_flags, &flags);
++	LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);
+ 	return flags;
+ }
+ EXPORT_SYMBOL(_raw_spin_lock_irqsave_nested);
+-- 
+2.29.2
+
