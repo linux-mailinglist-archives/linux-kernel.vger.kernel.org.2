@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD6B437643
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E763437649
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhJVMDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:03:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20538 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhJVMC5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:02:57 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MBHb0C022982;
-        Fri, 22 Oct 2021 08:00:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=zbRAtwbV0yx67PeGyPkZkCwM8yZfQr/7TLO3pF+OYUg=;
- b=r3corEGgRfdR+8wy4ZseE1eNgoqiyxWMtXXE55xcq7njryWzp/LIpN30f+FX8XQ85Nzc
- jQGXaTziNV2ghFloQzQu2F+oVPLQH4O98d9G9F6zYfnGpHvtK7J47GXwncCw7UGvns+1
- BgIAq4jI/fXqOcSryCA2PGHc7dFO5W03f7RHcM6C96wKpyLSe8A67CcKIXUvoY2M+Uyu
- 6kVljgL5n11CP89P0E7YKv+TUGP+NmvNLmu6DLo81mTEs36J/2+ytELjg7FZRpCgeTs+
- TH3AlH4bt2hxKiVoRheJQClPYsX5wonJCO45w3zUpW/xf19UsC9bPasxVGV6uYHpbvUv UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3buva1rs3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 08:00:39 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19MBqgj6028213;
-        Fri, 22 Oct 2021 08:00:38 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3buva1rrxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 08:00:38 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19MBwOZE014818;
-        Fri, 22 Oct 2021 12:00:26 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bqpcbg020-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 12:00:26 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19MBsGoj54657294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Oct 2021 11:54:16 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D50C6520A4;
-        Fri, 22 Oct 2021 12:00:14 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.90.70])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6302E52098;
-        Fri, 22 Oct 2021 12:00:14 +0000 (GMT)
-Subject: Re: [PATCH] KVM: s390: Fix handle_sske page fault handling
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211022112913.211986-1-scgl@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <723441ee-2744-32c3-1820-3307bf98fce5@de.ibm.com>
-Date:   Fri, 22 Oct 2021 14:00:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231375AbhJVMDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:03:35 -0400
+Received: from mout.gmx.net ([212.227.17.21]:45367 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230155AbhJVMD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 08:03:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634904042;
+        bh=CV0bzqAO8xhY3j1WtbeSZ+D5Dn8OhUt0AEt1/gMj7+U=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=G6XJ6weTRoS/MvonxLAV4cyBsej5LR0tCDtcT8u9+E+G/0PDBCBzJprrr4b0TUdCT
+         NaOg6kYR97HEmtAd1RVBRXbCqj5mL4uiVl31/IOLDoM9Yl8M1fzjgZqzZScTUTWDD1
+         t00TQcbSfB5s+eyfeh5ntcIVUhP0pMyPnQdju4CU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.113]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MxUrx-1mtWEa3Z9t-00xtRH; Fri, 22
+ Oct 2021 14:00:41 +0200
+Message-ID: <2fd273f7284c78b65927b2b2572a66985cee0199.camel@gmx.de>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 22 Oct 2021 14:00:38 +0200
+In-Reply-To: <20211022110534.GJ3959@techsingularity.net>
+References: <20211021145603.5313-1-mgorman@techsingularity.net>
+         <20211021145603.5313-2-mgorman@techsingularity.net>
+         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
+         <20211022110534.GJ3959@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-In-Reply-To: <20211022112913.211986-1-scgl@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5BDpXmbaeVuyn_Hee4-TZah6CmyQHddD
-X-Proofpoint-ORIG-GUID: VJ6xXjgpbgs1XHnPggM7BzaDLY2U2HD5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_03,2021-10-21_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110220068
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Lz2y05m0t9AO/lc7DM+cX8VtslQiwOxSUt32F3LvNV1JGJRZI/t
+ Ib/HxfG11By5l8GBM3FNgywxdZlngcszMfhuPdGQxWFiEa7M84RhciWp0Q5l8dOkTKVgpb9
+ 40rZymR42Qek2ClqO+LcBCd76llDIg5ETDksBGjscpvx2soAapSrLPzzgK2KZeSpx+LwzWy
+ mZynS62cmseDCKo3j9izA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XgErVOZclIw=:q3TMD6jxCCH+zC+R0+Y9hj
+ +Uhmv/LwxP9sJE6OfCFEQXd8uhdprmXSNkFwidCM/uB76ezodckodZJO1b5So907IEiJe/uUk
+ /knVw57kW3hUqyOYCiC7nBcO5FNQjEh8NCLQaqk7ZVY7CBoIKiUdjNflNN84o2sQK6+5/cWo2
+ 4yHnpQs2YWl/j5+Kpv82zrCajNvLmya4Bhj+Ds49ZHzgFzzoJqhRHmJFI2Z4SZ/hyBZH3swMW
+ ILvAt/rCe/uxQsoJnnUO/4GMnCFwJet7vfUsdnyLQrz5qXKDm2BsJNpIVBwJKFbnc8XvFSoUT
+ yJHtGg1S3/O91rlMFkOwmJOdlaRwt7Gcv/MdKCzhaTRiZZ56BiOvc4/pn9sHX2iVNDwMqY9Ve
+ Wy7Tl2YBkx7B8q58mzOVwM4W+fzqY0DMK+GntgplyOVjFLjwwb60cGNjT6nw8QyGlYrK4/Ikk
+ ngvPA20dluYuTTLPGzkYlrVv4ftKCPPiI/mD66z2QkrwXrvCwPmpDbb9BsvHYxaw1PBkcPKP0
+ rBmy7gUX58CRlIZoNJQh8clv5LOITPescc3fkRdRTBJ/7VDFJ/KNwsGyMBws/3bDqhGX5p/pW
+ /iuMtUCiYDdbfYddiKMj13TY0kLwP6tiDbgY8iWGxyJqJpihSD/Yv4mx+jMWEr2aNhAnTVFAR
+ /qJeuB8YSGdwyo6cK5YYhYY9Fa18/ukXprqmJrEPEOX4yqUEaglgFRjQMqn94dQhJ2HdYF0gp
+ DuWgmNIN4vLfDZFnB6r1rOjukX8vcOeTX+j82xch+7vA48bzOwPC6v4ELCxDhem8ecK62QPd6
+ se/SAbpuPXnVw2Ur3EJXiv6lXyhiDDIHsRyXmSta9qbLpR/NRaXoCGuMl6AJ/HhzGthhJHyRT
+ dKyAIthXruDEiBy4zfCc+VRl+amOmR2IYeMhhftQCBrbnlS4xPpQog/nAWgDg29wSjMIe0zHy
+ XdSRwnMMH0YTXfNN31YB9z5nG65GEn0WgizJzo1ipdKJTonCne0RB+2ibZM0zxAHknynW8xiC
+ +1tW+sgot7SXqjs26gVV4OeDG9IdMhWNFou0Rbh6iTD9GeNiXstHt8kdnABEp4O/h4WsBaFvF
+ 8Rd4oIijh0qSik=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 22.10.21 um 13:29 schrieb Janis Schoetterl-Glausch:
-> Retry if fixup_user_fault succeeds.
+On Fri, 2021-10-22 at 12:05 +0100, Mel Gorman wrote:
+> On Fri, Oct 22, 2021 at 12:26:08PM +0200, Mike Galbraith wrote:
+>
+> >
+> > Hm.=C2=A0 If patchlet repeatably impacts buddy pairs one way or the ot=
+her,
+> > it should probably be tossed out the nearest window.
+> >
+>
+> I don't see how buddy pairing would be impacted although there is likely
+> differences in the degree tasks get preempted due to pulling tasks.
 
-Maybe rephrase that with a more verbose description (e.g. if fixup_user_fault succeeds
-we return EAGAIN and thus we ust retry the loop and  blabla....)
+Hohum, numbers get to say whatever (weirdness) they want to I suppose.
 
-> The same issue in handle_pfmf was fixed by
-> a11bdb1a6b78 (KVM: s390: Fix pfmf and conditional skey emulation).
-> 
-> Fixes: bd096f644319 ("KVM: s390: Add skey emulation fault handling")
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+btw, below are some desktop impact numbers I had collected.
 
-Patch itself looks good:
+box =3D i7-4790 quad+smt
+desktop vs massive_intr 8 9999 (8 x 8ms run/1ms sleep, for 9999 secs.. eff=
+ectively forever)
+perf sched record -a -- su mikeg -c 'firefox https://www.youtube.com/watch=
+?v=3Daqz-KE-bpKQ'& sleep 300 && killall perf firefox
+                     runtime              runtime               sum delay =
+     sum delay        sum delay       switches      desktop
+patch/features       total          util  massive_intr   util   total     =
+     massive_intr     desktop        total/massive  util
+virgin/stock         2267347.921 ms 94.4% 1932675.152 ms 80.5%  158611.016=
+ ms  133309.938 ms    25301.078 ms  594780/441157   13.9%
+virgin/-wa_weight    2236871.408 ms 93.2% 1881464.401 ms 78.3%  255785.391=
+ ms  243958.616 ms    11826.775 ms 1525470/1424083  14.8%
+                          -1.34%    -1.2%                -2.2%            =
+                        -13.474 s                   +0.9%
+wake_wide/stock      2254335.961 ms 93.9% 1917834.157 ms 79.9%  164766.194=
+ ms  141974.540 ms    22791.654 ms  720711/599064   14.0%
 
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> ---
->   arch/s390/kvm/priv.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-> index 53da4ceb16a3..417154b314a6 100644
-> --- a/arch/s390/kvm/priv.c
-> +++ b/arch/s390/kvm/priv.c
-> @@ -397,6 +397,8 @@ static int handle_sske(struct kvm_vcpu *vcpu)
->   		mmap_read_unlock(current->mm);
->   		if (rc == -EFAULT)
->   			return kvm_s390_inject_program_int(vcpu, PGM_ADDRESSING);
-> +		if (rc == -EAGAIN)
-> +			continue;
->   		if (rc < 0)
->   			return rc;
->   		start += PAGE_SIZE;
-> 
+While patchlet mitigated the stacking somewhat, it wasn't meaningful to
+my test load (BigBuckBunny for the 10001th time).  PELT clearly stacks
+up the desktop pretty damn badly, but gets away with it.. in this case.
+
+OTOH, killing stacking graveyard dead via NO_WA_WEIGHT would have
+certainly dinged up cache quite a bit for the compute load had it been
+something other than a synthetic CPU burner, so there's a brownie point
+for PELT in the mix to go along with its stacking demerit.
+
+Given there was zero perceptible difference, the only thing patchlet
+really did was to give me a warm fuzzy knowing it was in there fighting
+the good fight against obscene *looking* stacking (with potential).
+
+	-Mike
