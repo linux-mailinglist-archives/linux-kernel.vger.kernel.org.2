@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217F6437760
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2065437762
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhJVMrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:47:07 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:40909 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhJVMrG (ORCPT
+        id S232390AbhJVMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhJVMrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:47:06 -0400
-Received: by mail-ua1-f43.google.com with SMTP id e2so7355525uax.7;
-        Fri, 22 Oct 2021 05:44:49 -0700 (PDT)
+        Fri, 22 Oct 2021 08:47:22 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C112C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:45:05 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id k26so3523718pfi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 05:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZSXmIrLAl3afDK6PDwyIug/C44A4sTZ8Dy+DY6Ye0ow=;
+        b=j/eeSmTftC+fX6ii84ej2gB8cRlWJXJkFFRQkTdkZnibrqmxuskKe7zLJvuS1XxUog
+         nrZxWKYuJgWBCViue7eD28TlwwRdvrNhxR4oE/q0BuIH+YcJa6S6O9jT1YhWr8JcSKsk
+         FauFQs6iai/1WwRXQNxEs/2A80gwa25+HK23OFK39QvKgL2d4Kdw0KahlCkWFFrVZ0Qr
+         x7pku5D8qYXg7MTIfoTxBtW96StjCmohNsUbLT6XArmqNpmtelspxs/rCwChba8Fb2ug
+         pXOuQtAeuf4/7NQno20CXBw4/wRYeKNWhrD8oCaKhTCpkv7WRDh2XHt0JlsMHzJ/Vywy
+         Y0Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=76x3pLWRTCP/TRw1WTSC3Z8xBZgXnwV9dr1N3FI35XA=;
-        b=ETAxcbdJEW2BMR3c4GlG5c2Ces+yleAIFYtWXd/UBgUpX1fuXu+y36ofN83I41PtzM
-         VoHr+2TNBGU44ZW6zbNxXM44D97OHqyXQ3bXkOzmPCuWAWJAiMBeec8ihFSJnJGxfXWr
-         mF8uE+NjXbpWSj0mOzvGXQOO3GeB+Oi6lwpRhN0fszuS36xMC9r/bKmKlASFEuH0nkmQ
-         8wzLziGizc998f36i1jhyAD6B5zkMylxVPOySXL21OCVz73FqwxYy94TKQ7+Y8MEhNAt
-         f2kaPO4QHPBrCuMWs4Avam5C17C1TSQpRDNxRSeNDbIZSt6qXe5q9PG1rNNo+Ws/KvXp
-         EGiQ==
-X-Gm-Message-State: AOAM530f1P+42Tc5wlITcJcDRsPdvnrjJyHjdgkudE5VQh4vbuePn198
-        LwicV2Vnad9O/43ZfgetzmxRcDLPk45NZQ==
-X-Google-Smtp-Source: ABdhPJzJ7nT9qULtKar+Jv+RzetLGP+UK6N10bk7KQKB6ggeYUkrz6KkV3x2Sgpxug8Z7HyVTRfoOQ==
-X-Received: by 2002:a67:d810:: with SMTP id e16mr5126900vsj.42.1634906688814;
-        Fri, 22 Oct 2021 05:44:48 -0700 (PDT)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id p191sm5020484vkp.31.2021.10.22.05.44.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Oct 2021 05:44:48 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id e5so278341uam.11;
-        Fri, 22 Oct 2021 05:44:48 -0700 (PDT)
-X-Received: by 2002:a05:6102:290c:: with SMTP id cz12mr14104011vsb.35.1634906688057;
- Fri, 22 Oct 2021 05:44:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZSXmIrLAl3afDK6PDwyIug/C44A4sTZ8Dy+DY6Ye0ow=;
+        b=4idDwR4Id8HdWSh3HaBzyIuYj9+lGhKN28/Qh6gHkAJ8F9s2sb+B9sCVAwxsqtmIov
+         sPrLR/gWd5W0XWJzPsse0CMM/UhyijWJv/0ER7lwN9mSF1QLm6ETEdu5Msm4VsmdNNzl
+         8F8pq2UETqi2o9E4dos/1kuHtvy6pH6TJXxgzxVuPTGLOeWU1QFBUe+cOGdJfmzL1skN
+         gPJ75s4pduOi6zLTB79VpIDb4kxBgAyMD2QJArEAa1lPSXdt9Yd7KVkTv1goPN8MtjW6
+         8FhLEBhvbnktdQXYVToFOxrC8Xj4oMNtD7rWVsAjAopu6JonbxkzhF9VF4YsCvbo5Ccp
+         yz4A==
+X-Gm-Message-State: AOAM532xqXukcrR/2BMmm8lBEy4y34kPcCQ6yPzzy43mzc+AZF0LqiGx
+        STvZ56AVRU1F2ZtKiUuIYvPTBA==
+X-Google-Smtp-Source: ABdhPJyu+jyaytCJXIE2r1mV+7xe0zsPOL+R6IxiX0E1NaOcTm8JqqVJ7HSp6m8ahkaVBN/CfKkUfw==
+X-Received: by 2002:a63:8c54:: with SMTP id q20mr7339066pgn.420.1634906705002;
+        Fri, 22 Oct 2021 05:45:05 -0700 (PDT)
+Received: from FVFDK26JP3YV.bytedance.net ([61.120.150.77])
+        by smtp.gmail.com with ESMTPSA id rj6sm13906646pjb.30.2021.10.22.05.45.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Oct 2021 05:45:04 -0700 (PDT)
+From:   Lei He <helei.sig11@bytedance.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        helei.sig11@bytedance.com, zhenweipi@bytedance.com
+Subject: [PATCH] crypto testmgr: fix wrong key length
+Date:   Fri, 22 Oct 2021 20:44:43 +0800
+Message-Id: <20211022124443.61507-1-helei.sig11@bytedance.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-7-kernel@esmil.dk>
- <CAHp75VcS7ZZCciAgBH2QU7u8CiHzveAOsvSdv2DQBvpBn_6opQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcS7ZZCciAgBH2QU7u8CiHzveAOsvSdv2DQBvpBn_6opQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 22 Oct 2021 14:44:36 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXJES+Jufhs--5vnXq=RwDF+WmZc7_C6Lc4gAVaY5sRRQ@mail.gmail.com>
-Message-ID: <CAMuHMdXJES+Jufhs--5vnXq=RwDF+WmZc7_C6Lc4gAVaY5sRRQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 2:34 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Oct 21, 2021 at 8:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > +       while (idx)
-> > +               clk_hw_unregister(&priv->reg[--idx].hw);
->
-> I still consider that usual pattern, i.e.
->
->        while (idx--)
->                clk_hw_unregister(&priv->reg[idx].hw);
->
-> but since you are pushing hard for your variant I'll leave it to the
-> maintainers and author.
+Fix wrong test data at testmgr.h, it seems to be caused
+by ignoring the last '\0' when calling sizeof.
 
-I agree with Andy.
+Signed-off-by: Lei He <helei.sig11@bytedance.com>
+---
+ crypto/testmgr.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index e6fca34b5b25..779720bf9364 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -1201,7 +1201,7 @@ static const struct akcipher_testvec pkcs1pad_rsa_tv_template[] = {
+ 	"\xd1\x86\x48\x55\xce\x83\xee\x8e\x51\xc7\xde\x32\x12\x47\x7d\x46"
+ 	"\xb8\x35\xdf\x41\x02\x01\x00\x02\x01\x00\x02\x01\x00\x02\x01\x00"
+ 	"\x02\x01\x00",
+-	.key_len = 804,
++	.key_len = 803,
+ 	/*
+ 	 * m is SHA256 hash of following message:
+ 	 * "\x49\x41\xbe\x0a\x0c\xc9\xf6\x35\x51\xe4\x27\x56\x13\x71\x4b\xd0"
+-- 
+2.11.0
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
