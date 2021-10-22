@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551EC437236
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A84E43723C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 08:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhJVGwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 02:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232183AbhJVGw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:52:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B720260F50;
-        Fri, 22 Oct 2021 06:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634885412;
-        bh=c9Eng1ii6V3IjK+Y3GNOcOMLUlsifakRFAI0XTxmwgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aZWGszIVMVJjGrRpfDp0oFm3sYhGJjcB73qcFkijcxBEOzNOQ5Os8l4MxBbLRjC80
-         NhcL28v6zWAurvX+nqMUmxFNob/xVgobgQAWYbZpxmmj5VWkaJ8a/K2qmeaIC9ACgv
-         GBnQaS/4YnVIgMp0jJgkqmWz18NoD5d3u/tjyRMk=
-Date:   Fri, 22 Oct 2021 08:50:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
-Message-ID: <YXJfHwzIdksUKPIe@kroah.com>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
+        id S232064AbhJVGwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 02:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhJVGwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 02:52:49 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89209C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 23:50:32 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id v20so2055555plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 23:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=WZ+ype5zlW+h8bFNZ2YEMsUet/zXlWYw0zBHW07P/JU=;
+        b=PlHArJGZkVc2JunuB9TYLN4D+5Ov9sm9BsrmHWNkShf+kyxPWYPlbP5dnnAJCuKagu
+         NEex02MH3cWJb0TNad1yrsM1Ja5AR6PSMFt6v2PFXP6Hetq2ShgA89vqrnP3vGske0Uv
+         h1bsoYOamJkyCxa7x58RquA25wfXSGqQop6WC6rqu2d6XZjMMiZmiGKyBxhQPGck2zTt
+         KDLHACMI0VG9J0pbINLTDtxAzrbCuM0/GRtpjN2rWKlmUJRDcVh16GKB+FRNV00W/vqu
+         9zjLh7tb762N6IhAP3WGSYMaBS+maU2yVcla60IFHUJe4dCWYSJRsSN6gNjH5VxjdvrK
+         nDIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=WZ+ype5zlW+h8bFNZ2YEMsUet/zXlWYw0zBHW07P/JU=;
+        b=xE50rOIZIn19wiCkAftWFCv2kn2zVEckoyglrT7q/rSzZEY4wYa3w+FYs3ifBnZCWw
+         oa212R/lCZayTLUG7hIG4uSyAZbRmBCHSveZ5So5P2YAdJP4YkQPXPStcqE+9/jsNmEF
+         pLPYTScjHYxejfV6hCtTATOvSnhT3yfQjXGaSsbEqZcPcUFelGJ3X8chaBlD17+6B1K3
+         D59Cl8HU1I25WXyZSPgRJv3G9u9OrOHebDvQNusrBVpzzkPnOHZqvhuAx9u/zUjLjfIH
+         1inYXHCj0470PaQFFzsFM2JbEa6doMzn08d8zNKgbcQAwesdXZW6WLn2tskWzehw/rLZ
+         1jkg==
+X-Gm-Message-State: AOAM530rgfT6sDA2FzM3dxYZojuTcWN83uPoAffZvXj37cV73v/6VYGP
+        J7Uk8QCeSisgXfK9PXQxaDB64A==
+X-Google-Smtp-Source: ABdhPJxQMjnCGTaknosIvlVPyTMdNa0CFzWJY6NyS1nvx/0OeI0uuhyCBQOcxv/Eo1m8QiMod18Abw==
+X-Received: by 2002:a17:902:6bc5:b0:13f:f585:4087 with SMTP id m5-20020a1709026bc500b0013ff5854087mr8495827plt.32.1634885431977;
+        Thu, 21 Oct 2021 23:50:31 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id me18sm8407427pjb.33.2021.10.21.23.50.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 23:50:31 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 12:20:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        David Heidelberg <david@ixit.cz>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+Message-ID: <20211022065029.x5a5oh7mh2sjofey@vireshk-i7>
+References: <20211019231905.2974-1-digetx@gmail.com>
+ <YXAr4OlhucAibMlH@robh.at.kernel.org>
+ <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
+ <48de7f40-deda-739d-96ca-e61ec5a0b257@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211022020032.26980-1-zev@bewilderbeest.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <48de7f40-deda-739d-96ca-e61ec5a0b257@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:00:27PM -0700, Zev Weiss wrote:
-> Hello all,
+On 22-10-21, 09:40, Dmitry Osipenko wrote:
+> 22.10.2021 07:43, Viresh Kumar пишет:
+> > On 20-10-21, 09:46, Rob Herring wrote:
+> >> On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
+> >>> Not all OPP table names and OPP entries consist of a single word. In
+> >>> particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
+> >>> and OPP entry name to have multi-worded names to silence DT checker
+> >>> warnings about the multi-word names separated by hyphen.
+> >>>
+> >>> Reviewed-by: David Heidelberg <david@ixit.cz>
+> >>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>> ---
+> >>>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
+> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> >>> index ae3ae4d39843..298cf24af270 100644
+> >>> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> >>> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> >>> @@ -22,7 +22,7 @@ select: false
+> >>>  
+> >>>  properties:
+> >>>    $nodename:
+> >>> -    pattern: '^opp-table(-[a-z0-9]+)?$'
+> >>> +    pattern: '^opp-table(-[a-z0-9]+)*$'
+> >>
+> >> I don't see how this helps you. What I see needed upstream is a prefix:
+> >>
+> >> '-?opp-table(-[0-9]+)?$'
+> > 
+> > I wonder if we should disallow that to keep naming more 
 > 
-> This series is another incarnation of a couple other patchsets I've
-> posted recently [0, 1], but again different enough in overall
-> structure that I'm not sure it's exactly a v2 (or v3).
+> I also think that postfix variant should be disallowed for consistency.
+> I sent out patches for both variants.
 > 
-> As compared to [1], it abandons the writable binary sysfs files and at
-> Frank's suggestion returns to an approach more akin to [0], though
-> without any driver-specific (aspeed-smc) changes, which I figure might
-> as well be done later in a separate series once appropriate
-> infrastructure is in place.
-> 
-> The basic idea is to implement support for a status property value
-> that's documented in the DT spec [2], but thus far not used at all in
-> the kernel (or anywhere else I'm aware of): "reserved".  According to
-> the spec (section 2.3.4, Table 2.4), this status:
-> 
->   Indicates that the device is operational, but should not be used.
->   Typically this is used for devices that are controlled by another
->   software component, such as platform firmware.
-> 
-> With these changes, devices marked as reserved are (at least in some
-> cases, more on this later) instantiated, but will not have drivers
-> bound to them unless and until userspace explicitly requests it by
-> writing the device's name to the driver's sysfs 'bind' file.  This
-> enables appropriate handling of hardware arrangements that can arise
-> in contexts like OpenBMC, where a device may be shared with another
-> external controller not under the kernel's control (for example, the
-> flash chip storing the host CPU's firmware, shared by the BMC and the
-> host CPU and exclusively under the control of the latter by default).
-> Such a device can be marked as reserved so that the kernel refrains
-> from touching it until appropriate preparatory steps have been taken
-> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
-> processor has control of the firmware flash).
-> 
-> Patches 1-3 provide some basic plumbing for checking the "reserved"
-> status of a device, patch 4 is the main driver-core change, and patch
-> 5 tweaks the OF platform code to not skip reserved devices so that
-> they can actually be instantiated.
+> V2 uses pattern that supports both naming schemes. If V2 is less
+> appropriate, then please take this V1.
 
-Again, the driver core should not care about this, that is up to the bus
-that wants to read these "reserved" values and do something with them or
-not (remember the bus is the thing that does the binding, not the driver
-core).
+I didn't like V2, we can mandate to keep it like opp-* and opp-table-*.
 
-But are you sure you are using the "reserved" field properly?  You are
-wanting to do "something" to the device to later on be able to then have
-the kernel touch the device, while it seems that the reason for this
-field is for the kernel to NEVER touch the device at all.  What will
-break if you change this logic?
+This patch looked okay to me, lets see what Rob has to say.
 
-> One shortcoming of this series is that it doesn't automatically apply
-> universally across all busses and drivers -- patch 5 enables support
-> for platform devices, but similar changes would be required for
-> support in other busses (e.g. in of_register_spi_devices(),
-> of_i2c_register_devices(), etc.) and drivers that instantiate DT
-> devices.  Since at present a "reserved" status is treated as
-> equivalent to "disabled" and this series preserves that status quo in
-> those cases I'd hope this wouldn't be considered a deal-breaker, but
-> a thing to be aware of at least.
-> 
-> Greg: I know on [1] you had commented nack-ing the addition of boolean
-> function parameters; patch 4 adds a flags mask instead in an analogous
-> situation.  I'm not certain how much of an improvement you'd consider
-> that (hopefully at least slightly better, in that the arguments passed
-> at the call site are more self-explanatory); if that's still
-> unsatisfactory I'd welcome any suggested alternatives.
-
-Flags are a bit better, yes, but still I do not think this is the right
-way to go here, see my comments on the patches...
-
-thanks,
-
-greg k-h
+-- 
+viresh
