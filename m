@@ -2,153 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2264372AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1B84372B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 09:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhJVH1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 03:27:06 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:52006 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231334AbhJVH1D (ORCPT
+        id S232174AbhJVH2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 03:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhJVH2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 03:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1634887485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+5aA5JWunl6cDqlrP3RRxmbEkj409sVyOwlDKFt7cS0=;
-        b=WzbQBjllQSyI0ARbHsYNNTA6qb/y7X9GQ8F0z3mH8XX7HMsPaJcKxFYrqYedCTGFiAvQHR
-        uCZj2Ha/uvvUlNbVcKnx7HEwltJLvu+fevDFAwNhTegALwAuEZTuFiKe8g8ATLhpOl8lLr
-        HAj8c/O7vd8NjG5Y293vFFexjIehPsE=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2113.outbound.protection.outlook.com [104.47.17.113])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-11-m3b__l39NUGNKSFgU8FKrQ-2; Fri, 22 Oct 2021 09:24:43 +0200
-X-MC-Unique: m3b__l39NUGNKSFgU8FKrQ-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aXoOIjkVHXyH5VWCgjKdEjml89yYP7/LIcWtUHQLKHKKAaBuw/FztvcuwYAdNTDeSY1QOWeIjsk4/FFzXRg5dt3LGhrgnzihSpiqlCtX6KrdMbbBIxNHJoEisJM7BBE5534nrcjXDgyaEEqfIU4CWTw1rQWR6RDX1S7/f2B/7GKapnpH2MQ4ZJhFiA/PK5D3/jBmZasLnM/svcOU6s4ZkII1gHKG/dU4d36hnTXelswSMfP9jgRltVwb3ZJ1Iz2bO7UxwnN9pnTAQGubWi8s5n2RTq9VBcHYhZkXf39yCXbwrfcEaMkg8K+TCraZcJnH7U4jOBZj1hTuYIkp2m4y3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+5aA5JWunl6cDqlrP3RRxmbEkj409sVyOwlDKFt7cS0=;
- b=GxOR6EOi9zZFXx4heDfh7T7WIJHUbnEwKGjf2jWrKGiBO1ffakSznMxsMluYZnTNc14j4vUvzkQcLZgCkZn4ars43i2k8VKpBd2MpAqTyAjCWoTRwSxvgHfhOveGh0BYSb5QTc2gssMvIZdLtQKpJFhJ9jZMg2ZUlXx+yfwdPIutOKOB+O3kFu94Il4K+6YznmkkL+njLzsg5Odz2wT7NBmAN9WYoPqWIHBJvHtxJ0sT4ew1EhGXOsQkUen/4fA6qiKzg9jtYtF1tCC0L+LPWA7LULUrOgEmkPJYCDQcl7gBbfXU6buJYwSqHYB1Q6pRvZJoG9kdsLrWOfaKGMMSKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0402MB3773.eurprd04.prod.outlook.com (2603:10a6:803:1c::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
- 2021 07:24:41 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::8062:d7cb:ca45:1898]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::8062:d7cb:ca45:1898%3]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
- 07:24:41 +0000
-Subject: Re: [PATCH 0/5] xen: cleanup detection of non-essential pv devices
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        xen-devel@lists.xenproject.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <20211022064800.14978-1-jgross@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <c4f534f1-8f07-085e-6a10-edbeb884d1a4@suse.com>
-Date:   Fri, 22 Oct 2021 09:24:38 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20211022064800.14978-1-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM6PR08CA0026.eurprd08.prod.outlook.com
- (2603:10a6:20b:c0::14) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Fri, 22 Oct 2021 03:28:19 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED233C061764;
+        Fri, 22 Oct 2021 00:26:01 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id a8so3257823ilj.10;
+        Fri, 22 Oct 2021 00:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xGW6THywkFBuOv9pHK/lIzKrkZB0E8ZIytUvD2+0Xw8=;
+        b=Eh4hasD9RvEAh6ImQl27Ae2v7t2vwvorjoDgIoYVCE+rXO0eIBgQvFwbIQD/g7hjG8
+         SSTAEDjo228I1eH+2ZxK0SNqiNxVzHLqlxLwDSAwsd18aQLw0b1mNmAb9all+hB2mt1P
+         HtjnOE/qSbehdmf4XR7Q2K1EF4Es5SwxR3eVL7gO/+iHL/XLFauKArm0YveFUS5BOF6t
+         JDpgpVP0CkCf1I9qARXL2F8saP3ocO6f3XRCFHfsLo/u+yY5EoF7iMCN4Xb1riPwcuB1
+         azWIRU2HmiQ6tokGswRjYjrvzN7oI8HAkjpBXK3cqtAA0umeZIVp1MTovtBth4wAqrWx
+         knzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xGW6THywkFBuOv9pHK/lIzKrkZB0E8ZIytUvD2+0Xw8=;
+        b=VT9/ygnsVUrMN5tV3C8HxZL9oKI1/mCvOXgy3SA8y27RVGnd7IJ8WnkMar0UFpjqve
+         PXgSrkrziLkjgBUAa8zul4W4DykXSMrVl6n2VRWO7BDVl/99Ya1mJskFPWneNT65BELX
+         Zn3fksUidRTMh4eh2q9segyLxjjKVzY2sMFZpEnCl9kYDD8IqgJ9fmzH6d3fTl7uj+Up
+         Vnc30KaJG3JeJgmbdcn25tdsSn92cHkOhInv+jLX+iOrdI/MCplr6Ej4R5lqu0HlRDt1
+         k8NZeIujRQaN/5eo+u0Q1ZaEXak7xtU2rmjB+BlaOw/+4mr8a2dgSI9GTK0fYVt9V4oU
+         W12A==
+X-Gm-Message-State: AOAM533nJNfOQWofWU8SIt0n9QQn7cdCtfUz5VgAIKPNRGoOkiH6G843
+        z/9hesze1IyMdy59GJgIg6kHPe3IU7lQZXNsEQg=
+X-Google-Smtp-Source: ABdhPJzptGfW29mWmQ2t1Ao8a4dPISAZrav5sOoX2pl1Jm+Kj5xoE3Qsw272r5sA9jxvbALGZVvbQPMQ5FuvNiZm1XY=
+X-Received: by 2002:a05:6e02:164e:: with SMTP id v14mr6777429ilu.320.1634887561381;
+ Fri, 22 Oct 2021 00:26:01 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by AM6PR08CA0026.eurprd08.prod.outlook.com (2603:10a6:20b:c0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Fri, 22 Oct 2021 07:24:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cc72ac65-a16c-4d9c-8173-08d9952d0344
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3773:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB377313A7B9A58A00D8058630B3809@VI1PR0402MB3773.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eijGHaq8+NVKXLDZhehKwUeaePIgKPgdNtejen1dJaLMwLom6gN6l47L2jjlP2OHc3/ZKyR9bNw8qrZZ6Ryr9Y26a80XkUL/24rCTNLMj830Th1VAf14Vf/c6bJE1cFldGgjdII0mwwT56T2eDgHJNREnjeZ9Y6Q61Rfc3XdExTvCrvBkcQb7V8c2j2TrCPjTNwga6cEm7JjvWcDBf61wzSZUajzKTPMDU6uDxlgq/5sXrPY45swTMpsq8sYbVZyQuUG5TN6zua6eS05HpxSrRk0QwJL9mLXu6B9x89ljwnULfXtgVLmfsIVsU+BJ7HekTPigHxtjTwDaFMj8wFyzZGp6eBWnEHe/kJhSY/9qS/ETyD+IhNb769awtoTAqvZxIHZRfDV4Oqn2++hHi2eSmhHgqchQXD0a8dJZiA7tcWWH87ATijpe5YqT/byWDk/IvAV7jlvh+5M4tqX9G/4ph0BeJb/t7iA6Aym8ekhI/4B8K9EVHy5MfuCaKa99TZkCz7DGR970jEZhWymnsRtQ+9JcxwlFgAQVL4AV6XZXOaSEKFu+q1py/wmH41hblBUDB3yFHkRGSzo6Lpta2lc/ZuLD6J5N+QEeshoPkGc8F9BeWjYHSKEklMEJ4IeaJLMIW3tEu2e1dNuAYtc/7Az1rF3D+mDVyh6ioEGxUtDXATfQz3AylIsGYDNWLVXswvQv9k0UttmJy8+SzbMC0h2WMJLGj2GK/t1F5OxgWMKYKL104t4+voxDSuDzFyeJ/4L
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(54906003)(31686004)(8936002)(16576012)(2616005)(38100700002)(8676002)(5660300002)(6862004)(66556008)(4326008)(66476007)(316002)(6486002)(37006003)(508600001)(956004)(186003)(6636002)(53546011)(31696002)(7416002)(26005)(2906002)(36756003)(83380400001)(4744005)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3Ztb0lBL1IyZ0N1N1VWTDg0Z05tOFlRWTRkSmFINWxuZ1gvSDhBVE5JMFB6?=
- =?utf-8?B?L1BaSGZPVGc0VmZjeUh3aVhDZkc3WDRmYmNlTHVSZEpZdFNPbkJrTVZwOHhq?=
- =?utf-8?B?aWNGd01QQTdObE9NZGtzcGFxcHJpeFErc1lEa0NsakkyUzVOYmsvNWVZOHpK?=
- =?utf-8?B?MWxqTmgwcHoyc0s2SERhNzhtMWwxeEQxWU9XRGF1RTJuYUpyU2lZL3Frb3cz?=
- =?utf-8?B?T2hzWDlpcXF1R0o4eUt5aktsUXhzT01qL3RsWUREQ3JoN2FONklNKzV2RDRW?=
- =?utf-8?B?bk1NWmcrb0NPOUszN2Z2OEl0V2JXN2Jsc1pXOFBacytCUW1MckFLb1FtRmRO?=
- =?utf-8?B?WHhnUE5jOUViUFNIVWxwTld6cS9paFowWllJU1RoMUhGRzluWVlzaVNRc1N0?=
- =?utf-8?B?VzJMbXJZWmozQ1dtZ2RUb2VMem5zd2F2Z0tIcnRGUXlNM0hEZlZtNjE4TEtK?=
- =?utf-8?B?T3pwM3RyVllNcm9LWDhQTFlNbFlrd2N1R0VSRXZiU3Jjd1VxV2hYdXhTRi8y?=
- =?utf-8?B?U2RzOHBtbkZQRk9LUFNpMVhhUnVMSnMycVE2bmJOYmU3MmpocHg4YWJMRTZ4?=
- =?utf-8?B?Z0FqNWxDVno2bGUxWHFlOWRzWVBjL2lUZERTM1ZWSnFjRERqaldtQ29NaHZN?=
- =?utf-8?B?ZXZLR00wT09mUElQNzVrdDY4S05sWE5iQmkwRlhUSmM2VGNScmd2Qk1tQ1Zn?=
- =?utf-8?B?djcrZlR0ejBwdHdGTUFtSDVFeDBYZUg1em9GY1NQV2FPcWdxMHJaeUZtYkVB?=
- =?utf-8?B?bHFzbEFzMllLZDFmYVN1bHpMZ0lDOUs4VUpTRTFjTUNEeHhISFZvcVhEeGF1?=
- =?utf-8?B?dTdHSFJiakZNWmR3dmc3TTg5d2dtYlZKeDEzVzdiOU9sUWNEOEdVMW9vY1BH?=
- =?utf-8?B?cDhPTHljcnhnNkFPbnZwb21kMmdJVnpZY2REbXJhNTByYTRKclNGNXNEZVJE?=
- =?utf-8?B?MkhOZHJFNW5vTEZOQm5rM3pkeGVtbmtrOXhDaUZLbU85RUM3VlMwYjBCaktJ?=
- =?utf-8?B?bzZRSFdxMW1TSGVtZ0JjZDNnSnk0dXQ3SXY1K0FFbkhYUEQ2V1l5M3RaTXFr?=
- =?utf-8?B?Qlc5YUwyTWFnK1ZZcnYwa01wdjFKMnI2NTM4MVJtRnBiZDc0NEF6M1FhVkZG?=
- =?utf-8?B?a0NQM1hyM3VzYTRyWlZyS2pGYmIraDY4RUZDRWtIT2VOZ2ZKWkZGb3BObW1Y?=
- =?utf-8?B?RnQ0eE54cmFZKys5aTFTSm1STng1TlcvTzNQZE9XaEJwVW5wVmJtNTJwVnM3?=
- =?utf-8?B?enQrTkgxaFhmT1NVWHFCdC9qQi9iYlRwT0F4WmVFVTJaZENxdWtSSjNHczFk?=
- =?utf-8?B?dzJMTUxFZFZqLy9uOFFYTXFtd3BQSE5vYy83dXpTNXFwQU0veTFCem94Tisv?=
- =?utf-8?B?WmNPV0F6YWV1S0U3SXFlUDlINlFQZWliOEZqZ1BhRzRPYXVBNlB2dTllUEEw?=
- =?utf-8?B?RVRMTE1MUU1YUGRKY3Vyak1pYkhobTNKR0wyTjNDMVplYWNMUXpINzduWFZF?=
- =?utf-8?B?UHQ5Yzcxc0hRTlltUC8zdTg4MFZrbGx4M21DY3g3NzRkVUVKc0ozSHZ2TjNP?=
- =?utf-8?B?YkZlS0xuSjFjSWhUSXE0RlFIcWFLemxYZEFIVVowUThocjh4bloyWUNpSndU?=
- =?utf-8?B?djVuUHB4aWdoZEV2ODg5dFlRL1l4RGhTd2htYzlicjR1dDZYS0VLOE5Ta1pn?=
- =?utf-8?B?KytUbG9vSUh0VGZvSGhFbVNQYTlwNXV0cElTWGNtb3A5YkZsODMxVGs1OHRm?=
- =?utf-8?B?VFJPQ2I4dG9NUU1xbVUzcGZSMVcyMHlpTU9JZXk1L2hSa0JWaEZXeUhpYk5S?=
- =?utf-8?B?SFlvU0JLaEFTR2F2MlhCOUtlYjB4TXRpaHB6N1ZjcVNaTlI4aFNuV0J5SXJM?=
- =?utf-8?B?VFlsKyt1UG9aSldtbVVVanFkandENWQzUEJwSWphQXpLTEJvM0NkaC9qRzUr?=
- =?utf-8?Q?YhrCTgfmS1s=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc72ac65-a16c-4d9c-8173-08d9952d0344
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 07:24:41.2263
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jbeulich@suse.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3773
+References: <1634633003-18132-1-git-send-email-dillon.minfei@gmail.com> <1634633003-18132-10-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1634633003-18132-10-git-send-email-dillon.minfei@gmail.com>
+From:   Dillon Min <dillon.minfei@gmail.com>
+Date:   Fri, 22 Oct 2021 15:25:25 +0800
+Message-ID: <CAL9mu0Jw99aeSmwy7gnY3XQK3V1V-C1-R8ET5jvSMz7niH=g4g@mail.gmail.com>
+Subject: Re: [PATCH v6 09/10] clk: stm32: Fix ltdc's clock turn off by
+ clk_disable_unused() after system enter shell
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        mchehab+huawei@kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        ezequiel@collabora.com, gnurou@gmail.com,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
+        gabriel.fernandez@foss.st.com
+Cc:     Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        hugues.fruchet@foss.st.com,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.2021 08:47, Juergen Gross wrote:
-> Today the non-essential pv devices are hard coded in the xenbus driver
-> and this list is lacking multiple entries.
-> 
-> This series reworks the detection logic of non-essential devices by
-> adding a flag for that purpose to struct xenbus_driver.
+Hi Gabriel
 
-I'm wondering whether it wouldn't better be the other way around: The
-(hopefully few) essential ones get flagged, thus also making it more
-prominent during patch review that a flag gets added (and justification
-provided), instead of having to spot the lack of a flag getting set.
+I guess you are the maintainer of stm32 clk subsystem from [1], Could
+you help to review this patch, just give a brief of the history:
 
-Jan
+- this patch was acked by Stephen Boyd at [2].
+- reviewed by Patrice Chotard at [3].
 
+Without this patch , the kernel will turn off ltdc's clk after the
+system reach shell.
+
+[1] https://lore.kernel.org/lkml/AM8PR10MB4785545DC980090C1E7D66B281009@AM8PR10MB4785.EURPRD10.PROD.OUTLOOK.COM/
+
+[2] https://lore.kernel.org/linux-arm-kernel/159056850835.88029.9264848839121822798@swboyd.mtv.corp.google.com/
+
+[3] https://lore.kernel.org/lkml/6915fa2a-e211-476f-8317-6825e280c322@foss.st.com/#t
+
+Best Regards
+Dillon
+
+On Tue, 19 Oct 2021 at 16:44, Dillon Min <dillon.minfei@gmail.com> wrote:
+>
+> stm32's clk driver register two ltdc gate clk to clk core by
+> clk_hw_register_gate() and clk_hw_register_composite()
+>
+> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
+> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
+>
+> both of them point to the same offset of stm32's RCC register. after
+> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
+> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
+>
+> stm32f469/746/769 have the same issue, fix it.
+>
+> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
+> Link: https://lore.kernel.org/lkml/CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com/
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> ---
+> v6: no change.
+>
+>  drivers/clk/clk-stm32f4.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+> index af46176ad053..473dfe632cc5 100644
+> --- a/drivers/clk/clk-stm32f4.c
+> +++ b/drivers/clk/clk-stm32f4.c
+> @@ -129,7 +129,6 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
+>         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>  };
+>
+>  static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+> @@ -211,7 +210,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+>         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>  };
+>
+>  static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
+> @@ -286,7 +284,6 @@ static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
+>         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
+> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>  };
+>
+>  static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
+> @@ -364,7 +361,6 @@ static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
+>         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
+> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 30,      "mdio",         "apb2_div" },
+>  };
+>
+> --
+> 2.7.4
+>
