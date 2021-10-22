@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DB4437C7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEED437C81
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233709AbhJVSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:14:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:57458 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231472AbhJVSOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:14:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A23B1063;
-        Fri, 22 Oct 2021 11:12:00 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D3023F73D;
-        Fri, 22 Oct 2021 11:11:57 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 19:11:54 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     madvenka@linux.microsoft.com
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 02/11] arm64: Make perf_callchain_kernel() use
- arch_stack_walk()
-Message-ID: <20211022181154.GM86184@C02TD0UTHF1T.local>
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-3-madvenka@linux.microsoft.com>
+        id S233629AbhJVSQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhJVSQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 14:16:24 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA841C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 11:14:06 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id l13so4805012edi.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 11:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iUVy5Ei4KUMRiHJuf/GMekzWocYSeyLp9wteBIU/ENY=;
+        b=B/70PtVdeJ6+wPmvf7bBT0YVw1ghfn6KBLNqkkQuC6l2NW4eKbB9vAyPnp88HJHHol
+         tLumGJNSClhbqCsdFi3ToCWvFL52qJCIGjcRY/KqjIvysGlPB33pCq2nsWnORgHsr0p9
+         0lVmCLTvHLv22KFp/AeZP70iupYrT16mqO7xxaYFHNIxFmD3A1+Zg4Kx6sB1CzhqYZGi
+         YJcS9AXbCOj78lyXscRYMzB7OH4D1uauXHIHCU9kAOBz0f8vVjIUbl5EATc+59QOictB
+         wkL/UO++/fqB89+6lgs25/lonIMGDTKlG8FVqGEp9K9BJhIuzckvRyGGlABWEtjbqURA
+         SRFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iUVy5Ei4KUMRiHJuf/GMekzWocYSeyLp9wteBIU/ENY=;
+        b=FITFecvveZHSNGmh6wn2r0Yz2UPQIZuSLjAQdtpOjblsEN/us7Cv9JJsnPLAHfNxxm
+         QVLkA/VNj+WDrnoV/cI3IHVEBwOEjv8LsYLQ1GHr00Xi8PoVRLLrdM4qxmFkMPzrF07v
+         OSh4G+yzVZJyckkLKMVuX//fofnM4+e1fRvae4e+RK3tNuo0Yg/iOLhSAkvM1O09UobK
+         sS+YxFAnmPr8yhEOIwf30O7kPfhyTStsNUPpTZ2am+rXKVDTZfGlFESvCCUJnctIyQ/o
+         CfXPFiqLw1VLKBDlO8xqwIN0b25jRWANBvxiQhiIydFEtLqx+Sba94NpNq0MbYUALsGd
+         kv6A==
+X-Gm-Message-State: AOAM530y5Vi+kcz3KEuZdXt+IzmKqaCMZBig7JGnG14y1AkQVUL+QZig
+        UEf8YelvCrxNHy4yVttNH+NoJnpZP9WQGcOgIP8=
+X-Google-Smtp-Source: ABdhPJwu4v3tFaybD5BXKvUuVzy9ahipsz/WXWVpaQOAkhbmqXaIyHcWB9ef8rv9818NiEDurbf7YkDJtcVPvMTugYs=
+X-Received: by 2002:a17:907:2091:: with SMTP id pv17mr1343837ejb.311.1634926445307;
+ Fri, 22 Oct 2021 11:14:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015025847.17694-3-madvenka@linux.microsoft.com>
+References: <20211022074619.57355-1-andrea.righi@canonical.com>
+ <YXKdRDKp+l6lis/R@casper.infradead.org> <CAHbLzkqFpADQmrPq572M-y53ChJzFJ+uDOHUzzeRFUTv0acq9A@mail.gmail.com>
+In-Reply-To: <CAHbLzkqFpADQmrPq572M-y53ChJzFJ+uDOHUzzeRFUTv0acq9A@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 22 Oct 2021 11:13:53 -0700
+Message-ID: <CAHbLzkqFnQub71so5Qpi-UrNt_VVUfX82Gz2FTqx48qa-M_UKw@mail.gmail.com>
+Subject: Re: [PATCH] mm: fix sleeping copy_huge_page called from atomic context
+To:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 09:58:38PM -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> Currently, perf_callchain_kernel() in ARM64 code walks the stack using
-> start_backtrace() and walk_stackframe(). Make it use arch_stack_walk()
-> instead. This makes maintenance easier.
-> 
-> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+On Fri, Oct 22, 2021 at 10:38 AM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Fri, Oct 22, 2021 at 4:16 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Fri, Oct 22, 2021 at 09:46:19AM +0200, Andrea Righi wrote:
+> > > copy_huge_page() can be called with mapping->private_lock held from
+> > > __buffer_migrate_page() -> migrate_page_copy(), so it is not safe to
+> > > do a cond_resched() in this context.
+> > >
+> > > Introduce migrate_page_copy_nowait() and copy_huge_page_nowait()
+> > > variants that can be used from an atomic context.
+> >
+> > I think this is a consequence of THPs being created when they should not
+> > be.  This is the wrong way to fix this problem; and I suspect it may
+> > already be fixed at least in -mm.  We should have taken this path:
+> >
+> >         if (!page_has_buffers(page))
+> >                 return migrate_page(mapping, newpage, page, mode);
+> >
+> > but since we didn't, we can infer that there's a THP which has buffers
+> > (this should never occur).  It's the same root cause as the invalidatepage
+> > problem, just with a very different signature.
+>
+> Yeah, exactly. And I replied to that syzbot report a few days ago
+> (https://lore.kernel.org/linux-mm/CAHbLzkoFaowaG8AU6tg_WMPdjcAdyE+Wafs7TJz1Z23TRg_d8A@mail.gmail.com/)
+> with the same conclusion.
+>
+> I'm not sure why Hugh didn't submit his patch, maybe he was waiting
+> for the test result from the bug reporter of that invalidatepage
+> issue? It should be fine, the fix is quite straightforward IMHO.
 
-This looks good to me; bailing out when perf_callchain_store() can't
-accept any more entries absolutely makes sense.
+Anyway if Hugh doesn't have time to do it, I could prepare the patch
+for formal review.
 
-I gave this a spin with:
-
-| #  perf record -g -c1 ls
-| #  perf report
-
-... and the recorded callchains look sane.
-
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-Tested-by: Mark Rutland <mark.rutland@arm.com>
-
-As mentioned on patch 1, I'd like to get this rebased atop Peter's
-untangling of ARCH_STACKWALK from STACKTRACE.
-
-Thanks,
-Mark.
-
-> ---
->  arch/arm64/kernel/perf_callchain.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
-> index 4a72c2727309..f173c448e852 100644
-> --- a/arch/arm64/kernel/perf_callchain.c
-> +++ b/arch/arm64/kernel/perf_callchain.c
-> @@ -140,22 +140,18 @@ void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
->  static bool callchain_trace(void *data, unsigned long pc)
->  {
->  	struct perf_callchain_entry_ctx *entry = data;
-> -	perf_callchain_store(entry, pc);
-> -	return true;
-> +	return perf_callchain_store(entry, pc) == 0;
->  }
->  
->  void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
->  			   struct pt_regs *regs)
->  {
-> -	struct stackframe frame;
-> -
->  	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
->  		/* We don't support guest os callchain now */
->  		return;
->  	}
->  
-> -	start_backtrace(&frame, regs->regs[29], regs->pc);
-> -	walk_stackframe(current, &frame, callchain_trace, entry);
-> +	arch_stack_walk(callchain_trace, entry, current, regs);
->  }
->  
->  unsigned long perf_instruction_pointer(struct pt_regs *regs)
-> -- 
-> 2.25.1
-> 
+>
+> >
