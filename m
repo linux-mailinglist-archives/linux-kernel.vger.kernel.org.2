@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E06437C76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DB4437C7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 20:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhJVSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 14:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
+        id S233709AbhJVSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 14:14:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:57458 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233380AbhJVSJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 14:09:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32ED1610A4;
-        Fri, 22 Oct 2021 18:06:49 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 19:06:45 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-Message-ID: <YXL9tRher7QVmq6N@arm.com>
-References: <20211019134204.3382645-1-agruenba@redhat.com>
- <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
- <YXBFqD9WVuU8awIv@arm.com>
- <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
- <YXCbv5gdfEEtAYo8@arm.com>
- <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+        id S231472AbhJVSOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 14:14:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A23B1063;
+        Fri, 22 Oct 2021 11:12:00 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D3023F73D;
+        Fri, 22 Oct 2021 11:11:57 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 19:11:54 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     madvenka@linux.microsoft.com
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 02/11] arm64: Make perf_callchain_kernel() use
+ arch_stack_walk()
+Message-ID: <20211022181154.GM86184@C02TD0UTHF1T.local>
+References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
+ <20211015025847.17694-1-madvenka@linux.microsoft.com>
+ <20211015025847.17694-3-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+In-Reply-To: <20211015025847.17694-3-madvenka@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 08:19:40PM -1000, Linus Torvalds wrote:
-> On Wed, Oct 20, 2021 at 12:44 PM Catalin Marinas
-> <catalin.marinas@arm.com> wrote:
-> >
-> > However, with MTE doing both get_user() every 16 bytes and
-> > gup can get pretty expensive.
+On Thu, Oct 14, 2021 at 09:58:38PM -0500, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 > 
-> So I really think that anything that is performance-critical had
-> better only do the "fault_in_write()" code path in the cold error path
-> where you took a page fault.
-[...]
-> So I wouldn't worry too much about the performance concerns. It simply
-> shouldn't be a common or hot path.
+> Currently, perf_callchain_kernel() in ARM64 code walks the stack using
+> start_backtrace() and walk_stackframe(). Make it use arch_stack_walk()
+> instead. This makes maintenance easier.
 > 
-> And yes, I've seen code that does that "fault_in_xyz()" before the
-> critical operation that cannot take page faults, and does it
-> unconditionally.
+> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+
+This looks good to me; bailing out when perf_callchain_store() can't
+accept any more entries absolutely makes sense.
+
+I gave this a spin with:
+
+| #  perf record -g -c1 ls
+| #  perf report
+
+... and the recorded callchains look sane.
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Mark Rutland <mark.rutland@arm.com>
+
+As mentioned on patch 1, I'd like to get this rebased atop Peter's
+untangling of ARCH_STACKWALK from STACKTRACE.
+
+Thanks,
+Mark.
+
+> ---
+>  arch/arm64/kernel/perf_callchain.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> But then it isn't the "fault_in_xyz()" that should be blamed if it is
-> slow, but the caller that does things the wrong way around.
-
-Some more thinking out loud. I did some unscientific benchmarks on a
-Raspberry Pi 4 with the filesystem in a RAM block device and a
-"dd if=/dev/zero of=/mnt/test" writing 512MB in 1MB blocks. I changed
-fault_in_readable() in linux-next to probe every 16 bytes:
-
-- ext4 drops from around 261MB/s to 246MB/s: 5.7% penalty
-
-- btrfs drops from around 360MB/s to 337MB/s: 6.4% penalty
-
-For generic_perform_write() Dave Hansen attempted to move the fault-in
-after the uaccess in commit 998ef75ddb57 ("fs: do not prefault
-sys_write() user buffer pages"). This was reverted as it was exposing an
-ext4 bug. I don't whether it was fixed but re-applying Dave's commit
-avoids the performance drop.
-
-btrfs_buffered_write() has a comment about faulting pages in before
-locking them in prepare_pages(). I suspect it's a similar problem and
-the fault_in() could be moved, though I can't say I understand this code
-well enough.
-
-Probing only the first byte(s) in fault_in() would be ideal, no need to
-go through all filesystems and try to change the uaccess/probing order.
-
--- 
-Catalin
+> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+> index 4a72c2727309..f173c448e852 100644
+> --- a/arch/arm64/kernel/perf_callchain.c
+> +++ b/arch/arm64/kernel/perf_callchain.c
+> @@ -140,22 +140,18 @@ void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
+>  static bool callchain_trace(void *data, unsigned long pc)
+>  {
+>  	struct perf_callchain_entry_ctx *entry = data;
+> -	perf_callchain_store(entry, pc);
+> -	return true;
+> +	return perf_callchain_store(entry, pc) == 0;
+>  }
+>  
+>  void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
+>  			   struct pt_regs *regs)
+>  {
+> -	struct stackframe frame;
+> -
+>  	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+>  		/* We don't support guest os callchain now */
+>  		return;
+>  	}
+>  
+> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+> -	walk_stackframe(current, &frame, callchain_trace, entry);
+> +	arch_stack_walk(callchain_trace, entry, current, regs);
+>  }
+>  
+>  unsigned long perf_instruction_pointer(struct pt_regs *regs)
+> -- 
+> 2.25.1
+> 
