@@ -2,228 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB114380BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D1B4380C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 01:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhJVXn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 19:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJVXn4 (ORCPT
+        id S231803AbhJVX4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 19:56:54 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:56128 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231293AbhJVX4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:43:56 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37695C061766;
-        Fri, 22 Oct 2021 16:41:38 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id o12so6406910ybk.1;
-        Fri, 22 Oct 2021 16:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nPJ9a7CQIvAdyA+WOKxT08L5sahv9vJ6Iua2FzEHVIU=;
-        b=WtcpSq41dJe0VvXdxdUm8KzkiMObft9FRmxcA9JDbHLfAY3q7Uwq2XQ4XtM9E8tCoH
-         xdR3ZBrnXBX+1jVHlDx2jpKWL24wnXkXNV15j2CSsivMNMB8umth3+T3V6SBnPb70eJ7
-         CkqtJvdPbmLPX/wnjviTuwKP5usyoPl5+9QTywCHMp7+Y7nYTWkO+v3bkwDhNTSvhjZn
-         hLpQCh5pKJnaMfm97v1ESbM5UuJxA0hEkOEl5ZzlJe62rBRyUiJwGiIvGj+mJmF8RUep
-         vO7q586reyeSc+Oiv/MlFiyTZhuDtCTnqoZQsswLx3dNThZ4d0MQ0n3ojuWH6bYuDXs8
-         AG7A==
+        Fri, 22 Oct 2021 19:56:42 -0400
+Received: by mail-il1-f200.google.com with SMTP id o8-20020a056e02068800b0025999dab84fso3421304ils.22
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 16:54:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nPJ9a7CQIvAdyA+WOKxT08L5sahv9vJ6Iua2FzEHVIU=;
-        b=rcaidWWUvW84xOLimWYDuN0FI+Ki9mtP1oQMHh4yUJ1RBmYE1SwDzykJ6haf8vL1VA
-         cEMlN4ltFN0qLNSg4AdFVxAPkXzn/fI93VBWhQg0izRih4RU/xLdOedGMO6ipmD6NgGa
-         6BpDAbfORVPBEWeetXpO6dg4Dymi/+Y+NMMVunstXshINu89w0XDYPWCCuRPp2WX6DbP
-         p0WsUaw1yTwIzgqgMgdAdEmlMvXQSVUlYu/EMBAX1Cuakr9B//cezqUz5szyD9uTIwUd
-         TzAaIwxw1yOhOwZE3jbiPQRq4bac7C3wHTlYgCQMtVrrrWNe5MLrA5R/cNpnJMnwui5B
-         Ml1Q==
-X-Gm-Message-State: AOAM530YBVgDAZuSR7nL1tK9Gj/Vi37LQwchciuXjcHjtH5VMTDumq9Y
-        XnW62gAzJbO0xCYpJqfuIXJpWSQG2wqOlqZig8A=
-X-Google-Smtp-Source: ABdhPJzSmDh/m1Z6b+6/xf79h92UrL7VtHeA/YDtBqv7ZXX0MjHsHM5t0iqxRutu4F9NwwQT14weZ0q8pLK92LXQgEU=
-X-Received: by 2002:a25:e7d7:: with SMTP id e206mr2669663ybh.267.1634946097494;
- Fri, 22 Oct 2021 16:41:37 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vdkW0hhANDDJA+JCyK9vJjex91cQAkOvKz7Fs8k2X84=;
+        b=IbvyBKFz1UCAHYs/uP4rA1GPWSai81HUKZPVY9l15pKEXYzW2x6TEfdmU5g9MG1kYP
+         tGKfUoBK8lKhVM9BSu0F0sFQFHqkjOc+AJx7EutfZJYPFgV2bKfOhZ8QL0gkxQS4Vz19
+         9NKC86nOry0dvJcL7LyHgeqPwBS7NN9rfSMkfE5HLRb1XvKkFZTbgrmlFjU4QN9OJOLx
+         iqn3L4sGODPMza5kMUIvIR+aSNPLprFnw5E/DulQU2xtg57BZa3oVqdvRfesBohkNKRT
+         akqDE2cHR1lbuzShCuXEfELeAC6gNyjmX3/LGD9mg5NhX5GSLuNMrn22j6G5i5Zbqc+k
+         P+2g==
+X-Gm-Message-State: AOAM531Uo2I300lciLaBW6Nig4oCdfWq9eh6uf3rWiJMiDLi6yKQ5NKh
+        nS0XFg07zvNskbVkFdrVGVnXcKjsJuADCt+Sc1W3nJS9i9No
+X-Google-Smtp-Source: ABdhPJw+MzeliCQ+7b7Hsq4zAj3tgiuHUSJLddUiPwYX/7FCDi4MDxi4Nr4LmLh6x1mT37uSjpyTlkNwaCoUgyYTB02VcvskXxmQ
 MIME-Version: 1.0
-References: <20211021034603.4458-1-laoar.shao@gmail.com> <20211021034603.4458-4-laoar.shao@gmail.com>
- <CAEf4BzYTEoDwWzXd91MeMH5Qr9L853Ff3Qq8_wnwfJ8GK0oLnw@mail.gmail.com> <CALOAHbB6KS8iscsz6y7zd=aGfKfo4jPbyMBKXL4ORY8taZRa8A@mail.gmail.com>
-In-Reply-To: <CALOAHbB6KS8iscsz6y7zd=aGfKfo4jPbyMBKXL4ORY8taZRa8A@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 Oct 2021 16:41:26 -0700
-Message-ID: <CAEf4Bzb6AcoiKotHD5Fg1gT3psAC34s54Yo7fmGUZtwcGBW2zQ@mail.gmail.com>
-Subject: Re: [PATCH v5 13/15] tools/testing/selftests/bpf: use
- TASK_COMM_LEN_16 instead of hard-coded 16
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
+X-Received: by 2002:a05:6e02:198e:: with SMTP id g14mr1776541ilf.280.1634946864523;
+ Fri, 22 Oct 2021 16:54:24 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 16:54:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000162f5005cef9bbf7@google.com>
+Subject: [syzbot] INFO: trying to register non-static key in
+ hci_uart_tty_receive (3)
+From:   syzbot <syzbot+f2725165900304ec97b6@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:36 PM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> On Fri, Oct 22, 2021 at 6:44 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 8:46 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > The hard-coded 16 is used in various bpf progs. These progs get task
-> > > comm either via bpf_get_current_comm() or prctl() or
-> > > bpf_core_read_str(), all of which can work well even if the task comm size
-> > > is changed.
-> > > Below is the detailed information,
-> > >
-> > > bpf_get_current_comm:
-> > >     progs/test_ringbuf.c
-> > >     progs/test_ringbuf_multi.c
-> > >
-> > > prctl:
-> > >     prog_tests/test_overhead.c
-> > >     prog_tests/trampoline_count.c
-> > >
-> > > bpf_core_read_str:
-> > >     progs/test_core_reloc_kernel.c
-> > >     progs/test_sk_storage_tracing.c
-> > >
-> > > We'd better replace the hard-coded 16 with TASK_COMM_LEN_16 to make it
-> > > more grepable.
-> > >
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Petr Mladek <pmladek@suse.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/Makefile                      | 2 +-
-> > >  tools/testing/selftests/bpf/prog_tests/ringbuf.c          | 3 ++-
-> > >  tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c    | 3 ++-
-> > >  .../testing/selftests/bpf/prog_tests/sk_storage_tracing.c | 3 ++-
-> > >  tools/testing/selftests/bpf/prog_tests/test_overhead.c    | 3 ++-
-> > >  tools/testing/selftests/bpf/prog_tests/trampoline_count.c | 3 ++-
-> > >  tools/testing/selftests/bpf/progs/profiler.h              | 7 ++++---
-> > >  tools/testing/selftests/bpf/progs/profiler.inc.h          | 8 ++++----
-> > >  tools/testing/selftests/bpf/progs/pyperf.h                | 4 ++--
-> > >  tools/testing/selftests/bpf/progs/strobemeta.h            | 6 +++---
-> > >  .../testing/selftests/bpf/progs/test_core_reloc_kernel.c  | 3 ++-
-> > >  tools/testing/selftests/bpf/progs/test_ringbuf.c          | 3 ++-
-> > >  tools/testing/selftests/bpf/progs/test_ringbuf_multi.c    | 3 ++-
-> > >  .../testing/selftests/bpf/progs/test_sk_storage_tracing.c | 5 +++--
-> > >  tools/testing/selftests/bpf/progs/test_skb_helpers.c      | 5 ++---
-> > >  tools/testing/selftests/bpf/progs/test_stacktrace_map.c   | 5 +++--
-> > >  tools/testing/selftests/bpf/progs/test_tracepoint.c       | 5 +++--
-> > >  17 files changed, 41 insertions(+), 30 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > index 799b88152e9e..5e72d783d3fe 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -279,7 +279,7 @@ MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-> > >
-> > >  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
-> > >  BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
-> > > -            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
-> > > +            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) -I${TOOLSINCDIR}  \
-> >
-> > please don't add new include paths unnecessarily. See my comment on
-> > another patch, if you add those new constants as enums, they will be
-> > automatically available in vmlinux BTF and thus in auto-generated
-> > vmlinux.h header (for those programs using it).
->
-> Yes, after converting it to enum, the BPF programs can get it from the
-> generated vmlinux.h.
->
-> > For others, I'd just
-> > leave hard-coded 16 or re-defined TASK_COMM_LEN_16 where appropriate.
-> >
->
-> It seems not all the BPF programs can include the vmlinux.h.
-> What we really care about here is the copy of task comm should be with
-> a nul terminator, if we can assure it, then the size used by the BPF
-> is not important.
-> I have checked the copy of task comm in all these BPF programs one by
-> one, and replaced the unsafe bpf_probe_read_kernel() with
-> bpf_probe_read_kernel_str(), after that change, I think we can leave
-> hard-coded 16 for the progs which can't include vmlinux.h.
+Hello,
 
-SGTM, thanks.
+syzbot found the following issue on:
 
->
-> > >              -I$(abspath $(OUTPUT)/../usr/include)
-> > >
-> > >  CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > > index 4706cee84360..ac82d57c09dc 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > > @@ -12,6 +12,7 @@
-> > >  #include <sys/sysinfo.h>
-> > >  #include <linux/perf_event.h>
-> > >  #include <linux/ring_buffer.h>
-> > > +#include <linux/sched/task.h>
-> > >  #include "test_ringbuf.lskel.h"
-> > >
-> > >  #define EDONE 7777
-> > > @@ -22,7 +23,7 @@ struct sample {
-> > >         int pid;
-> > >         int seq;
-> > >         long value;
-> > > -       char comm[16];
-> > > +       char comm[TASK_COMM_LEN_16];
-> >
-> > how much value is in this "grep-ability", really? I'm not convinced
-> > all this code churn is justified.
-> >
-> > >  };
-> > >
-> > >  static int sample_cnt;
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> > > index 167cd8a2edfd..f0748305ffd6 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> > > @@ -2,6 +2,7 @@
-> > >  #define _GNU_SOURCE
-> > >  #include <test_progs.h>
-> > >  #include <sys/epoll.h>
-> > > +#include <linux/sched/task.h>
-> > >  #include "test_ringbuf_multi.skel.h"
-> > >
-> > >  static int duration = 0;
-> >
-> > [...]
->
->
-> --
-> Thanks
-> Yafang
+HEAD commit:    519d81956ee2 Linux 5.15-rc6
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16787178b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1f7f46d98a0da80e
+dashboard link: https://syzkaller.appspot.com/bug?extid=f2725165900304ec97b6
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f2725165900304ec97b6@syzkaller.appspotmail.com
+
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 1 PID: 24628 Comm: syz-executor.5 Not tainted 5.15.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ assign_lock_key kernel/locking/lockdep.c:939 [inline]
+ register_lock_class+0xf79/0x10c0 kernel/locking/lockdep.c:1251
+ __lock_acquire+0x105/0x54a0 kernel/locking/lockdep.c:4894
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ hci_uart_tty_receive+0xc4/0x710 drivers/bluetooth/hci_ldisc.c:603
+ tiocsti drivers/tty/tty_io.c:2310 [inline]
+ tty_ioctl+0x909/0x1670 drivers/tty/tty_io.c:2719
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7ff49c1bfa39
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff4996b1188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ff49c2c3260 RCX: 00007ff49c1bfa39
+RDX: 0000000020000000 RSI: 0000000000005412 RDI: 0000000000000005
+RBP: 00007ff49c219c5f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffa845426f R14: 00007ff4996b1300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
