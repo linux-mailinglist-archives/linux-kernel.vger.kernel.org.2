@@ -2,189 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767EE43778F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B40443776F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 14:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhJVM5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 08:57:54 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56302 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232825AbhJVM5N (ORCPT
+        id S231440AbhJVM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 08:56:49 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:54480 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhJVM4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:57:13 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MAXM3w030715;
-        Fri, 22 Oct 2021 14:54:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=L3uD6wAGjynFy5k2UO0gyKUqRxQ2k8PGG1EstA7Sv7w=;
- b=jz7UT3T0uOR4TJh5tmsrU5+Q/mWpakaB0KrIjSl0xJiAN11kLoyRlk6vvGarXumgsXlp
- 7k/VJW3KDVTgJfbaB3i9doFEIDwVwmAQoh1orIl1l1Gn0dXQwiqzzlAWnlKojdURcLvc
- QEnWo2ypJKsj3Gpjg1oVNcx/ctnxhXP+5ZUrp3sOM+wN4PtRADWERr+mJeybDNtzD6QS
- pRkG4oMHuAqefb1dZpZciIQlmQeWWXF6PACjwzLWbxhxEgBnrrcGjnFjVdCCJwzgpO+H
- 7m/dafn20YTptY0OvUA/BUOH9R1d00Y7t3IS2AB4N+rGA4azFykif4CCCkZCORsAt7EP 5g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bupuytr83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Oct 2021 14:54:47 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 901B510002A;
-        Fri, 22 Oct 2021 14:54:46 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8801521A226;
-        Fri, 22 Oct 2021 14:54:46 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 22 Oct 2021 14:54:46
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v6 09/10] rpmsg: ctrl: Introduce new RPMSG_CREATE/RELEASE_DEV_IOCTL controls
-Date:   Fri, 22 Oct 2021 14:54:25 +0200
-Message-ID: <20211022125426.2579-10-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+        Fri, 22 Oct 2021 08:56:46 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 5dd49476cd0eb2b1; Fri, 22 Oct 2021 14:54:27 +0200
+Received: from kreacher.localnet (unknown [213.134.175.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id D821B66A92E;
+        Fri, 22 Oct 2021 14:54:26 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] ACPI: Add stubs for wakeup handler functions
+Date:   Fri, 22 Oct 2021 14:54:26 +0200
+Message-ID: <2615562.mvXUDI8C0e@kreacher>
+In-Reply-To: <20211019160401.8296-1-mario.limonciello@amd.com>
+References: <20211019160401.8296-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_03,2021-10-22_01,2020-04-07_01
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.233
+X-CLIENT-HOSTNAME: 213.134.175.233
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepvddufedrudefgedrudejhedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddvfeefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepmhgrrhhiohdrlhhimhhonhgtihgvlhhlohesrghmugdrtghomhdprhgtphhtthhopehlihhnuhhsrdifrghllhgvihhjsehlihhnrghrohdrohhrghdprhgtphhtthhopeeurghsrghvrghrrghjrdfprghtihhkrghrsegrmhgurdgtohhmpdhrtghpthhtohepufhhhigrmhdqshhunhgurghrrdfuqdhksegrmhgurdgtohhmpdhrtghpthhtoheplhhinhhugidqghhpihho
+ sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheppfgvhhgrlhdqsggrkhhulhgthhgrnhgurhgrrdfuhhgrhhesrghmugdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the user space application to create and release an rpmsg device
-by adding RPMSG_CREATE_DEV_IOCTL and RPMSG_RELEASE_DEV_IOCTL ioctrls to
-the /dev/rpmsg_ctrl interface
+CC: linux-acpi
 
-The RPMSG_CREATE_DEV_IOCTL Ioctl can be used to instantiate a local rpmsg
-device.
-Depending on the back-end implementation, the associated rpmsg driver is
-probed and a NS announcement can be sent to the remote processor.
+On Tuesday, October 19, 2021 6:04:00 PM CEST Mario Limonciello wrote:
+> commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+> added new functions for drivers to use during the s2idle wakeup path, but
+> didn't add stubs for when CONFIG_ACPI wasn't set.
+> 
+> Add those stubs in for other drivers to be able to use.
+> 
+> Fixes: ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>  include/linux/acpi.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 72e4f7fd268c..b31bcc0f4c89 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -976,6 +976,14 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
+>  	return -ENODEV;
+>  }
+>  
+> +static inline int acpi_register_wakeup_handler(
+> +	int wake_irq, bool (*wakeup)(void *context), void *context)
+> +{
+> +	return -EINVAL;
 
-The RPMSG_RELEASE_DEV_IOCTL allows the user application to release a
-rpmsg device created either by the remote processor or with the
-RPMSG_CREATE_DEV_IOCTL call.
-Depending on the back-end implementation, the associated rpmsg driver is
-removed and a NS destroy rpmsg can be sent to the remote processor.
+-ENOTSUPP ?
 
-Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/rpmsg/rpmsg_ctrl.c | 37 +++++++++++++++++++++++++++++++++----
- include/uapi/linux/rpmsg.h | 10 ++++++++++
- 2 files changed, 43 insertions(+), 4 deletions(-)
+> +}
+> +static inline void acpi_unregister_wakeup_handler(
+> +	bool (*wakeup)(void *context), void *context) { }
+> +
+>  #endif	/* !CONFIG_ACPI */
+>  
+>  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+> 
 
-diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-index 4734ce9d927b..b9b925ed2f32 100644
---- a/drivers/rpmsg/rpmsg_ctrl.c
-+++ b/drivers/rpmsg/rpmsg_ctrl.c
-@@ -23,6 +23,7 @@
- #include <uapi/linux/rpmsg.h>
- 
- #include "rpmsg_char.h"
-+#include "rpmsg_internal.h"
- 
- static dev_t rpmsg_major;
- 
-@@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
-  * @rpdev:	underlaying rpmsg device
-  * @cdev:	cdev for the ctrl device
-  * @dev:	device for the ctrl device
-+ * @ctrl_lock:	serialize the ioctrls.
-  */
- struct rpmsg_ctrldev {
- 	struct rpmsg_device *rpdev;
- 	struct cdev cdev;
- 	struct device dev;
-+	struct mutex ctrl_lock;
- };
- 
- static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
-@@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
- 	void __user *argp = (void __user *)arg;
- 	struct rpmsg_endpoint_info eptinfo;
- 	struct rpmsg_channel_info chinfo;
--
--	if (cmd != RPMSG_CREATE_EPT_IOCTL)
--		return -EINVAL;
-+	struct rpmsg_device *rpdev;
-+	int ret = 0;
- 
- 	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
- 		return -EFAULT;
-@@ -82,7 +84,33 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
- 	chinfo.src = eptinfo.src;
- 	chinfo.dst = eptinfo.dst;
- 
--	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
-+	mutex_lock(&ctrldev->ctrl_lock);
-+	switch (cmd) {
-+	case RPMSG_CREATE_EPT_IOCTL:
-+		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
-+		break;
-+
-+	case RPMSG_CREATE_DEV_IOCTL:
-+		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
-+		if (!rpdev) {
-+			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
-+			ret = -ENXIO;
-+		}
-+		break;
-+
-+	case RPMSG_RELEASE_DEV_IOCTL:
-+		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
-+		if (ret)
-+			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
-+				chinfo.name, ret);
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+	}
-+	mutex_unlock(&ctrldev->ctrl_lock);
-+
-+	return ret;
- };
- 
- static const struct file_operations rpmsg_ctrldev_fops = {
-@@ -120,6 +148,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
- 	dev->parent = &rpdev->dev;
- 	dev->class = rpmsg_get_class();
- 
-+	mutex_init(&ctrldev->ctrl_lock);
- 	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
- 	ctrldev->cdev.owner = THIS_MODULE;
- 
-diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
-index f5ca8740f3fb..1637e68177d9 100644
---- a/include/uapi/linux/rpmsg.h
-+++ b/include/uapi/linux/rpmsg.h
-@@ -33,4 +33,14 @@ struct rpmsg_endpoint_info {
-  */
- #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
- 
-+/**
-+ * Instantiate a new local rpmsg service device.
-+ */
-+#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
-+
-+/**
-+ * Release a local rpmsg device.
-+ */
-+#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
-+
- #endif
--- 
-2.17.1
+
+
 
