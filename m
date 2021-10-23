@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3BE4381E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 06:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D024381EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 07:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhJWEwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 00:52:36 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36710 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhJWEw3 (ORCPT
+        id S230293AbhJWFFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 01:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhJWFFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 00:52:29 -0400
-Received: by mail-io1-f70.google.com with SMTP id x21-20020a0566022c5500b005ddd625f399so4655548iov.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 21:50:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=mvePd5L1eky6kii+wlkb5JDOZo/0Hv/Enm522ESKj7E=;
-        b=qQ5659gaSvy+rxhcPn/48oVHmdIxMK/Qpbi32YrnDIjQYQ4Y1UVRb2fFb9CK87t7F8
-         sXInUtRSBpFlCiIe03zau++8aStDIfksIB7RztAK74um1o1NIN1euuttXwbfk5QVNeLW
-         UrPgj6V/al4nBTsLP0LJrThL+i4tY7J3HQNxty/Gc+LBsjEbTUDPXVv4ESWLONwhC9Vx
-         Nzg/L7/lH7jNUmUXOwdSDsKemYHyZoV/S5PnFvQGc0PKTa7PBJNe1lvKRfOYyU25yXQR
-         H7iyVOE7+eHXyG97ABkggfRo+HqlsLIhkVUffTe/0zDxiGDJCSD9dknhAEKYTt97V3L2
-         OB3Q==
-X-Gm-Message-State: AOAM532DEIsD+I72L7pf7sqIT3hkbeGlyCnlq78P8ib5KezW7LdFBWsP
-        7rGJ9NbDb4BOUAD2J6YUQ97UqYZduskFCSoMGSPSKHSN2AKl
-X-Google-Smtp-Source: ABdhPJzRejzoVuLjfxevXfIloGzhEE6WWMlDeOnHot44VK+A6KSR1zzyIrdx+0ZzffS+srM4B1JAZTs2vGvwqF8jcfAbuC1g48SW
+        Sat, 23 Oct 2021 01:05:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DECC061764;
+        Fri, 22 Oct 2021 22:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hKfR3/ryyitNRCxx14thpt1Pe6SRC47enbuHQnqPb6s=; b=ecpD4Qwjh5T3agQ5qTTl8GtazS
+        w8HThPRzeXp2YcS37McMWS94pO36xXo9FG7zvEhc06IFsxSbb2Qwlo7FtOje/iP67fHEZg64yh3vi
+        Mm5TaOJFNsqbf3MjFPFmmsp6iFcOcCKyd9Mafs/Z3z1nTJ0coG3N/xzJ/dpYyTfapY1HadzEXakKI
+        bVw8DDn5qKYrD8XMGtYjvwvM13VlF49ex+gPSA2+TzT7cOpsK/u/V2jKSqnSQ8YWLdSDNbi/JUhmW
+        blKvlxteuJ2MNVZatZET1jlnTSEGTVZpI5E4A3w1fCxoV5NNR66RLiS3yXsSdCPoIt5JorLe8TTVa
+        KxFz70TA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1me9Av-00CHxV-Uc; Sat, 23 Oct 2021 05:02:33 +0000
+Date:   Fri, 22 Oct 2021 22:02:33 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXOXaTNPkln3Blvt@infradead.org>
+References: <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <YXBUPguecSeSO6UD@moria.home.lan>
+ <YXHdpQTL1Udz48fc@cmpxchg.org>
+ <YXIZX0truEBv2YSz@casper.infradead.org>
+ <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
+ <YXK2ICKi6fjNfr4X@casper.infradead.org>
+ <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
+ <YXNx686gvsJMgS+z@casper.infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1504:: with SMTP id g4mr2343090iow.133.1634964610411;
- Fri, 22 Oct 2021 21:50:10 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 21:50:10 -0700
-In-Reply-To: <5e29e63c-d2b5-ae72-0e33-5a22e727be3c@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d2f5fa05cefddcf0@google.com>
-Subject: Re: [syzbot] WARNING in batadv_nc_mesh_free
-From:   syzbot <syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        paskripkin@gmail.com, sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXNx686gvsJMgS+z@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Oct 23, 2021 at 03:22:35AM +0100, Matthew Wilcox wrote:
+> You can see folios as a first step to disentangling some of the users
+> of struct page.  It certainly won't be the last step.  But I'd really
+> like to stop having theoretical discussions of memory types and get on
+> with writing code.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Agreed.  I think folios are really important to sort out the mess
+around compound pages ASAP.
 
-Reported-and-tested-by: syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
+I'm a lot more lukewarm on the other splits.  Yes, struct page is a
+mess, but I'm not sure creating gazillions of new types solve that
+mess.  Getting rid of a bunch of the crazy optimizations that abuse
+struct page fields might a better first step - or rather after the
+first step of folios which fix real bugs in compount handling and do
+enable sane handling of compound pages in the page cache.
 
-Tested on:
+> If that means we modify the fs APIs again in twelve
+> months to replace folios with file_mem, well, I'm OK with that.
 
-commit:         9c0c4d24 Merge tag 'block-5.15-2021-10-22' of git://gi..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d95853dad8472c91
-dashboard link: https://syzkaller.appspot.com/bug?extid=28b0702ada0bf7381f58
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1553d4c4b00000
-
-Note: testing is done by a robot and is best-effort only.
+I suspect we won't even need that so quickly if at all, but I'd rather
+have a little more churn rather than blocking this important work
+forever.
