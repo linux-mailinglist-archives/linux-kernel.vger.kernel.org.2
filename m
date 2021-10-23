@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787A8438502
+	by mail.lfdr.de (Postfix) with ESMTP id C0D58438503
 	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhJWThn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 15:37:43 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50147 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhJWThj (ORCPT
+        id S230496AbhJWTho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 15:37:44 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:45747 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhJWThj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 23 Oct 2021 15:37:39 -0400
-Received: by mail-il1-f198.google.com with SMTP id e10-20020a92194a000000b00258acd999afso4385633ilm.16
+Received: by mail-io1-f71.google.com with SMTP id k9-20020a5d91c9000000b005dc4a740599so5721695ior.12
         for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 12:35:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nTKy/b1KEgyo1EeTP7Q3lB04zZjv6HkFcUrltUrjhvs=;
-        b=yuvLdoAlakJZRcEB4GQ5+qSMO0GfJdFLXd5QOIAT20OwX3Yz2aQpBETYKndZEtw/VY
-         52bU9xMN7gASlv5sdtjFca+Ugy2+52f0PFos6kKpk9tZ+B+oSa/2xhCLlyAQXTMrhhR1
-         AtQLZmN3piuP3he96hHiJ8NYnIWeDHWY42KKABmmIZkNpP2D9ZuLf7olm5dzyDA0j3hj
-         144+4fmcJrYJFK+vxWcmbGpN7/AnfKtCEWmd0Joadf2FF5b3bqdMITXmIW4FXxiNLZPh
-         qkxSoo/F0uBRv/Ss1DEV9Bdzxak6ROYHYUokLLbhx4hKdM+Qjx2JXrPcEgTAerh1BfCZ
-         IUJw==
-X-Gm-Message-State: AOAM530BEvjEc5htrvoB7T43sfQp1FJysk1vrhMRwxbGasiGdvvFlekA
-        KkmdF36KH96AUv3vjnR2n7uAJgUBF1hAMeDVOmuq0BDbG9jU
-X-Google-Smtp-Source: ABdhPJwTsASnJUtJu6/m0KTF1qXMif/iV+YKRd289Nhhe4VX+V9dk8VgSpgnHF35tSxprZOEdq//emRWqAVpwkyyMWky8Qil1zRC
+        bh=o4rd6Mkpq1AQ9on8hbgP8TELF/6kZHRbq1idq5wO+Cg=;
+        b=Mh2fvKFNhSJkyMQ5OkuxkOE8iudi8DfcAuDUIMEoh8p67XCrQg6gf1a6C0Zg0uKbTV
+         S8lsG+1q8X0XbDzMbIX356mQ7MTJC9p6z8GA0BX2YsOpm2agNfXt6wlCTDpbwX2HgJKk
+         jlg0U4wp7Mg6h+voPdBC5IDRznWerAy+wUTkOy5DH0mAcT7KfztJWD/RGZ8nVuuhNqMd
+         Tbke/7F/jppbG+1DRHYTkDrWR7qvU4wKyYWk6DUUCqa91044hYAsXg3mDk33dtXQWqMN
+         jQwYFpYWrRnsp/7k8deTUPTqDHFGXYUfOZ05NpxISfyUSOpBOJR4xd8d8agGWwF6ja64
+         gQRw==
+X-Gm-Message-State: AOAM532O/WzlGtQAO+hoy8nbGSEw7GvWiER3oTvLQv/DCIjVF5RDbCKB
+        ZB2lw7PUmQh631pxOXRmJ4I3LmNPtJHMtKe6DiAREVj2Owuy
+X-Google-Smtp-Source: ABdhPJxqeaA8sqy0hYo/N8XZ/mP7Bmwj6PvbQPnGG8m5GoXOyi3MUdxVMrBtjvxiL4mT0sqR6GdRN//I5PYwMHdxniP/22qBpYQS
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:48c:: with SMTP id y12mr4807587iov.184.1635017719823;
- Sat, 23 Oct 2021 12:35:19 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 12:35:19 -0700
+X-Received: by 2002:a05:6602:14d2:: with SMTP id b18mr4688430iow.123.1635017720046;
+ Sat, 23 Oct 2021 12:35:20 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 12:35:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000064451505cf0a3aa2@google.com>
-Subject: [syzbot] WARNING: refcount bug in memfd_secret
-From:   syzbot <syzbot+75639e6a0331cd61d3e2@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, jordy@jordyzomer.github.io,
-        jordy@pwning.systems, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org
+Message-ID: <00000000000067a98805cf0a3a98@google.com>
+Subject: [syzbot] possible deadlock in snd_mixer_oss_ioctl1
+From:   syzbot <syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com>
+To:     alsa-devel@alsa-project.org, broonie@kernel.org, joe@perches.com,
+        lars@metafoo.de, linux-kernel@vger.kernel.org, perex@perex.cz,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com, tiwai@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,66 +48,93 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=115a0328b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59f3ef2b4077575
-dashboard link: https://syzkaller.appspot.com/bug?extid=75639e6a0331cd61d3e2
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a035c2b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ae869f300000
+HEAD commit:    cf6c9d12750c Add linux-next specific files for 20211022
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d3d4c4b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e694204255ade3a3
+dashboard link: https://syzkaller.appspot.com/bug?extid=ace149a75a9a0a399ac7
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c0530cb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1129c952b00000
 
 The issue was bisected to:
 
-commit 110860541f443f950c1274f217a1a3e298670a33
-Author: Jordy Zomer <jordy@jordyzomer.github.io>
-Date:   Wed Sep 8 02:56:18 2021 +0000
+commit 411cef6adfb38a5bb6bd9af3941b28198e7fb680
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Wed Oct 20 16:48:46 2021 +0000
 
-    mm/secretmem: use refcount_t instead of atomic_t
+    ALSA: mixer: oss: Fix racy access to slots
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1433ea1cb00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1633ea1cb00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1233ea1cb00000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167f6454b00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=157f6454b00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=117f6454b00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+75639e6a0331cd61d3e2@syzkaller.appspotmail.com
-Fixes: 110860541f44 ("mm/secretmem: use refcount_t instead of atomic_t")
+Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
+Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
 
-------------[ cut here ]------------
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 1 PID: 6529 at lib/refcount.c:25 refcount_warn_saturate+0x13d/0x1a0 lib/refcount.c:25
-Modules linked in:
-CPU: 1 PID: 6529 Comm: syz-executor563 Not tainted 5.15.0-rc6-syzkaller #0
+============================================
+WARNING: possible recursive locking detected
+5.15.0-rc6-next-20211022-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor206/6529 is trying to acquire lock:
+ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:316 [inline]
+ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x630/0x19a0 sound/core/oss/mixer_oss.c:375
+
+but task is already holding lock:
+ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:300 [inline]
+ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x4b1/0x19a0 sound/core/oss/mixer_oss.c:375
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&mixer->reg_mutex);
+  lock(&mixer->reg_mutex);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+1 lock held by syz-executor206/6529:
+ #0: ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:300 [inline]
+ #0: ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x4b1/0x19a0 sound/core/oss/mixer_oss.c:375
+
+stack backtrace:
+CPU: 0 PID: 6529 Comm: syz-executor206 Not tainted 5.15.0-rc6-next-20211022-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0x13d/0x1a0 lib/refcount.c:25
-Code: c7 80 e1 b3 8a 31 c0 e8 31 8e 3b fd 0f 0b eb a3 e8 b8 79 71 fd c6 05 43 86 b6 09 01 48 c7 c7 e0 e1 b3 8a 31 c0 e8 13 8e 3b fd <0f> 0b eb 85 e8 9a 79 71 fd c6 05 26 86 b6 09 01 48 c7 c7 40 e2 b3
-RSP: 0018:ffffc900012dfed0 EFLAGS: 00010246
-RAX: f8bc46cda99bde00 RBX: 0000000000000002 RCX: ffff88801e03d580
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000002 R08: ffffffff81695fe2 R09: ffffed10173a57a8
-R10: ffffed10173a57a8 R11: 0000000000000000 R12: ffff888078595180
-R13: ffff88806f5e8030 R14: 0000000000000003 R15: dffffc0000000000
-FS:  00005555558b2300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff91ea21000 CR3: 000000007077c000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- __do_sys_memfd_secret mm/secretmem.c:221 [inline]
- __se_sys_memfd_secret+0x2ea/0x350 mm/secretmem.c:194
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_deadlock_bug kernel/locking/lockdep.c:2956 [inline]
+ check_deadlock kernel/locking/lockdep.c:2999 [inline]
+ validate_chain kernel/locking/lockdep.c:3788 [inline]
+ __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5027
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __mutex_lock_common kernel/locking/mutex.c:607 [inline]
+ __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:740
+ snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:316 [inline]
+ snd_mixer_oss_ioctl1+0x630/0x19a0 sound/core/oss/mixer_oss.c:375
+ snd_mixer_oss_ioctl+0x40/0x50 sound/core/oss/mixer_oss.c:390
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f09de6c7f79
+RIP: 0033:0x7f0c06979fe9
 Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe81d58a98 EFLAGS: 00000246 ORIG_RAX: 00000000000001bf
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f09de6c7f79
-RDX: 00007f09de68ae83 RSI: 0000000000000012 RDI: 0000000000000000
-RBP: 00007f09de68bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f09de68bff0
+RSP: 002b:00007ffea97dd558 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0c06979fe9
+RDX: 0000000020000080 RSI: 00000000c0044d00 RDI: 0000000000000003
+RBP: 00007f0c0693dfd0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0c0693e060
 R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
 
 ---
