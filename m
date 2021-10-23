@@ -2,91 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C6743843F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 18:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BA5438442
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 18:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhJWQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 12:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60218 "EHLO mail.kernel.org"
+        id S230388AbhJWQJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 12:09:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhJWQHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 12:07:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51A1E6109E;
-        Sat, 23 Oct 2021 16:05:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635005115;
-        bh=a0FullCysk1UJY/SuwNW+JkwKz1DX5zFsZR7u65jCCk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YcA0X7ZJT9KPq++0vy4Zc9YPjW55ngCXT3XYqy0oc0V32YWSyFzKjWH46Wfk6JUB6
-         PCIDwfEBeDkcsFDGtdhqthdSSccuQ4eBo6P/LqmrXl9bChhrw5voAlYoYh7iNIzAji
-         I/i5bgtEUMvO3AEqG3qlH4MZ1DNT15pXqUIREZ0Yj9fWIMtdEKWa5Dl0hx2Av4mXBx
-         aZYfYYaL5Ja4lDViVX9MnZlv3E1cOX3kebEmYI6h4HSEkK5Cu3dI3EbNPUElSQ0S/m
-         arVBv2qit0AEO2JDL2ItsVAj0xcsKg0bg0oX/nPHGUknfGsiTy2YfqGtAARZUCZBYT
-         WlW6qCwcUiNFA==
-Received: by mail-wm1-f43.google.com with SMTP id 193-20020a1c01ca000000b00327775075f7so7440134wmb.5;
-        Sat, 23 Oct 2021 09:05:15 -0700 (PDT)
-X-Gm-Message-State: AOAM53104sgHT455SKw/nCLQ+2DmR7UQH8Q0rOPpZBlfJr0HxHgiM5nl
-        PG6STbi3Srwj7X7BDwhMJA7ar3RAApKwyU2XHuc=
-X-Google-Smtp-Source: ABdhPJzw9bHMXdBR8sTpnXzuM1z62QqWWvXCArLgXmJmvR/CFzjvKRNvYnRPFIYed1aqogH5ms1MCPnMvzTwp0uq874=
-X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr36618604wmq.82.1635005113773;
- Sat, 23 Oct 2021 09:05:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211022120058.1031690-1-arnd@kernel.org> <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
-In-Reply-To: <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 23 Oct 2021 18:04:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
-Message-ID: <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
-Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        Openrisc <openrisc@lists.librecores.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229954AbhJWQJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 12:09:19 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 709236101D;
+        Sat, 23 Oct 2021 16:07:00 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1meJXu-00169Q-6q; Sat, 23 Oct 2021 17:06:58 +0100
+Date:   Sat, 23 Oct 2021 17:06:57 +0100
+Message-ID: <87h7d7bu8u.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu, catalin.marinas@arm.com,
+        deanbo422@gmail.com, green.hu@gmail.com, guoren@kernel.org,
+        jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
+        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
+        stefan.kristiansson@saunalahti.fi, torvalds@linux-foundation.org,
+        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
+Subject: Re: [PATCH 00/15] irq: remove handle_domain_{irq,nmi}()
+In-Reply-To: <20211022151007.GD86184@C02TD0UTHF1T.local>
+References: <20211021180236.37428-1-mark.rutland@arm.com>
+        <87k0i5b91c.wl-maz@kernel.org>
+        <20211022151007.GD86184@C02TD0UTHF1T.local>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu, catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com, guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com, linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk, nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com, stefan.kristiansson@saunalahti.fi, torvalds@linux-foundation.org, tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 23, 2021 at 3:37 AM Waiman Long <longman@redhat.com> wrote:
->> On 10/22/21 7:59 AM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > As this is all dead code, just remove it and the helper functions built
-> > around it. For arch/ia64, the inline asm could be cleaned up, but
-> > it seems safer to leave it untouched.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Does that mean we can also remove the GENERIC_LOCKBREAK config option
-> from the Kconfig files as well?
+On Fri, 22 Oct 2021 16:10:07 +0100,
+Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> On Fri, Oct 22, 2021 at 12:20:31PM +0100, Marc Zyngier wrote:
+> > Hi Mark,
+> > 
+> > On Thu, 21 Oct 2021 19:02:21 +0100,
+> > Mark Rutland <mark.rutland@arm.com> wrote:
+> > > 
+> > > The handle_domain_{irq,nmi}() functions were oringally intended as a
+> > > convenience, but recent rework to entry code across the kernel tree has
+> > > demonstrated that they cause more pain than they're worth and prevent
+> > > architectures from being able to write robust entry code.
+> > > 
+> > > This series reworks the irq code to remove them, handling the necessary
+> > > entry work consistently in entry code (be it architectural or generic).
+> > 
+> > [...]
+> > 
+> > Thanks for going through the pain of putting this together. The
+> > couple of nits I mentioned notwithstanding:
+> > 
+> > Reviewed-by: Marc Zyngier <maz@kernel.org>
+> 
+> Thanks!
+> 
+> I've pushed out an updated version to my irq/handle-domain-irq branch
+> on kernel.org:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
+> 
+> That has two new patches you suggested:
+> 
+> * irq: mips: simplify bcm6345_l1_irq_handle()
+> * irq: unexport handle_irq_desc()
+> 
+> ... which I did not add your Reviewed-by to in case the commit messages
+> are garbage or something like that.
 
- I couldn't figure this out.
+I quickly eyeballed the patches, and they look OK to me. Feel free to
+add my RB tag to them.
 
-What I see is that the only architectures setting GENERIC_LOCKBREAK are
-nds32, parisc, powerpc, s390, sh and sparc64, while the only architectures
-implementing arch_spin_is_contended() are arm32, csky and ia64.
+> 
+> > It'd be good to work out a merging strategy once this has seen a bit
+> > of testing.
+> 
+> Conflict-wise, this merges near perfectly against next-20212022 aside
+> from a trivial conflict against arch/riscv/Kconfig:
+> 
+> | [mark@lakrids:~/src/linux]% git merge irq/handle-domain-irq
+> | Auto-merging arch/riscv/kernel/entry.S
+> | Auto-merging arch/riscv/Kconfig
+> | CONFLICT (content): Merge conflict in arch/riscv/Kconfig
+> | Auto-merging arch/nds32/Kconfig
+> | Auto-merging arch/mips/Kconfig
+> | Auto-merging arch/csky/Kconfig
+> | Auto-merging arch/arm64/Kconfig
+> | Auto-merging arch/arm/mach-s3c/irq-s3c24xx.c
+> | Auto-merging arch/arm/kernel/entry-armv.S
+> | Auto-merging arch/arm/Kconfig
+> | Auto-merging arch/arc/Kconfig
+> | Automatic merge failed; fix conflicts and then commit the result.
+> | [mark@lakrids:~/src/linux]% git diff
+> | diff --cc arch/riscv/Kconfig
+> | index 77a088d0a7e9,353e28f5f849..000000000000
+> | --- a/arch/riscv/Kconfig
+> | +++ b/arch/riscv/Kconfig
+> | @@@ -62,8 -62,6 +62,11 @@@ config RISC
+> |         select GENERIC_SCHED_CLOCK
+> |         select GENERIC_SMP_IDLE_THREAD
+> |         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+> | ++<<<<<<< HEAD
+> |  +      select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
+> |  +      select HANDLE_DOMAIN_IRQ
+> | ++=======
+> | ++>>>>>>> irq/handle-domain-irq
+> |         select HAVE_ARCH_AUDITSYSCALL
+> |         select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+> |         select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+> 
+> ... where the resolution is:
+> 
+> | diff --cc arch/riscv/Kconfig
+> | index 77a088d0a7e9,353e28f5f849..000000000000
+> | --- a/arch/riscv/Kconfig
+> | +++ b/arch/riscv/Kconfig
+> | @@@ -62,8 -62,6 +62,7 @@@ config RISC
+> |         select GENERIC_SCHED_CLOCK
+> |         select GENERIC_SMP_IDLE_THREAD
+> |         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+> |  +      select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
+> | -       select HANDLE_DOMAIN_IRQ
+> |         select HAVE_ARCH_AUDITSYSCALL
+> |         select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+> |         select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+> 
+> ... so I reckon we're not set for major pain there unless something new
+> appears in arch code in the next few days.
+> 
+> If we can get this onto a branch for linux-next ASAP, and if Linus is
+> happy with this having come together a little late, maybe we could queue
+> this in tip for v5.16, perhaps after -rc1 to let this soak, or waiting
+> to apply the final patch to make it easier to revert the arch changes if
+> needed?
 
-The part I don't understand is whether the option actually does anything
-useful any more after commit d89c70356acf ("locking/core: Remove break_lock
-field when CONFIG_GENERIC_LOCKBREAK=y").
+I'm happy to route it via the irqchip tree (and ultimately tip) if
+nobody objects (which also means getting Acks from the arch maintainers).
 
-      Arnd
+The branch would thus see a bit of -next before being sent to Linus.
+
+> I'd like to avoid sitting on this for an entire cycle if possible.
+
++1.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
