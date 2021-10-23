@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2C043840E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC258438419
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhJWPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 11:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
+        id S231165AbhJWPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 11:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhJWPoX (ORCPT
+        with ESMTP id S230388AbhJWPpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 11:44:23 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CB5C061714
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 08:42:04 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id b9so13962305ybc.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 08:42:04 -0700 (PDT)
+        Sat, 23 Oct 2021 11:45:12 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0816C061224
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 08:42:52 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e4so3688409wrc.7
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 08:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=bHvE+aIDG0UlR6PxtdJe0Mh+aPUtzEeHtOeV9ihSjDY=;
-        b=GNvMBRYfUbEP5H9NAZpIFDtpyOMS/XP7WycO0nFQeXVcg0QI7BIQUp4oE1Bb+03Vq5
-         9p2xUlV1imwSt+WRCsBHqdETromZE4hQX+jpYv1QCK2I/cnfPRxT9sO4WT7qkp/ORT6Z
-         u6dMxbR60vjcAc6X/19+2ExY7wNAmoVfh2uOrJoCe38ulfkeKnz/3Qp5ZO8GdC8hWGGk
-         /KjTqUlwiZR9fbfIgLR0t6RHuzloQvj1sN8hYpRsi4jBz6DvwEb+DNiC7ylymwC26bXx
-         d6MEilQ+6EEuRyNzvkRLCjIcqg7yE8WnrpNwVr1+6agY9/+n4a3JQSyWcGN02O9904Lt
-         StiQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=F26I+cBcpyIkdxRfcHLvmvj+TTSmfbBclURHJNpWXCA=;
+        b=AYtLHgTG+6uRU7+ihCnpuOHko6pqohXhhQkkijOFNs1K9R3uZtGzQ5Q1/HW70ikQOH
+         to4qY+MneU8Wp5m/9lAfflx+y719nabfpikWCEUlEWf4TV2mCVtwTqCiU9WBe0/PueVA
+         Ai5uemlRsLruanwKtfzO+GeDcAbGf94MhP9fVYsSthGmJThkp9aXQloZUCc7KpPJDIe5
+         ZDHZUIMzc7AFUI4sZuF8c0yufIwBcSuY8XEdvjlaOTWtthy6nwfYJOAMZizkpVyMjWcI
+         yYcYAJzSYs4KyL2X7l5KUECXBatU7ZxHLxcDM7wHj0/uSurwobyzbl1doBaHD0t2U4Ok
+         8KFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=bHvE+aIDG0UlR6PxtdJe0Mh+aPUtzEeHtOeV9ihSjDY=;
-        b=PXKPEDzJdwBa6OfhMS4VBhFEA41CM2XjEidCxCbRbZcL2zEijDR5xlYeC1YvsGE2tQ
-         wimfq2Qg0SUv36S9f5tQXhZ9E4OumnFkgrCLjyiAyDHKndcfb3skVsm7v30b0j2j3+uJ
-         Gt/gqEQOTS/rC6y0v5845jBACK4+X1R/QtbWX8ivlJppy/FkUfu/NKyAs+WxkROVnUpz
-         ZrPodWRSAQsqHw3gYnV+z9A980ixTawD4aD1XI0Pv92SQn2mXfaDbFoofrb7Ibtn2zFf
-         AO6MV8V3W5UKPDsTRoJZ9TcnFi0nuNxm741qFJ6OFHFpuX2hp6qXoNjaWSN7BeFap2nv
-         F+GA==
-X-Gm-Message-State: AOAM533nl7WWhgfrelVSAptgkKBVE4vTNHRIFcczk72JtaVToUz+XBvf
-        vqE+l+/Zty9G9jBadSNegUpmBV11Xfih4NC2gxI=
-X-Google-Smtp-Source: ABdhPJxZqwuAAPfigk5i0tFAv/2pUTs84MrkE7pdqMpFg12Su+ovtOOOQDgY+zMTB+LLutgWQYKGu9eSCi90fEYjIVQ=
-X-Received: by 2002:a25:ac05:: with SMTP id w5mr6591377ybi.260.1635003723707;
- Sat, 23 Oct 2021 08:42:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=F26I+cBcpyIkdxRfcHLvmvj+TTSmfbBclURHJNpWXCA=;
+        b=RYJCoHaqD43RkGaYRK3QZKBQeHrS5xVR/knDNDhiFK7a0IrkMFkevJfoMLLM0pNaUQ
+         AEBRhCDZkeVYVvFXVaOiAIjfECIYhm2qCfNEBEgFpaP9rPSNT4E/Og+xis2+X62Dt9Hy
+         pQ0M0lrIYC/dXeGpck+Ce4fNTWMwUfZ+oARZkfk5uoN64l+iC1tZ2u4GRUoartbvZrZu
+         o2umvNg3UIMClmGT2MchporFXCkAXElu9mssERVKjmAlHo4F/IfOQPmOCviKyYDtne5C
+         89Y8RfC3uU/XONIdOuzEFL244IwiCG8ki9PLbv8bXLdz/nOe7fRBGmr6dHJvceTz2Pgl
+         T/CA==
+X-Gm-Message-State: AOAM532GXSu1PQGBRoIQMuMrAIPC/vd3HKQTVXGbe9QculkuHamrqD/C
+        JT2pOxYSN8VEq24oTt4N1EuhrlVvUfK5UpjCwZA=
+X-Google-Smtp-Source: ABdhPJxbHWCQaA22XVwQFJLeK97z9oroWNyFUNBz/3teSSfazwM0svrL6URXAe5PADGpGE0jjZn5M2av0IBmVyuOXKg=
+X-Received: by 2002:adf:a411:: with SMTP id d17mr3075552wra.232.1635003770995;
+ Sat, 23 Oct 2021 08:42:50 -0700 (PDT)
 MIME-Version: 1.0
-Sender: beneditebadabadi0@gmail.com
-Received: by 2002:a05:7010:510f:b0:198:786e:1c01 with HTTP; Sat, 23 Oct 2021
- 08:42:03 -0700 (PDT)
-From:   Cherish Herman <cherish.herman01@gmail.com>
-Date:   Sat, 23 Oct 2021 16:42:03 +0100
-X-Google-Sender-Auth: kk4d6MrR7x4kpiRLKyMhUVWtpUw
-Message-ID: <CAH+qfO7uyZ6N4pFjFaifC65TC_10baL86SScf2FMmtH3OEiEkw@mail.gmail.com>
-Subject: Greetings !!!
+Received: by 2002:a1c:a916:0:0:0:0:0 with HTTP; Sat, 23 Oct 2021 08:42:50
+ -0700 (PDT)
+Reply-To: martinafrancis01@gmail.com
+From:   martinafran42 <martinafran42@gmail.com>
+Date:   Sat, 23 Oct 2021 08:42:50 -0700
+Message-ID: <CAC1Op46rzf-95OpiL4YE=Lzvu2F7NstX11WdGagxm5dfjjFJ3w@mail.gmail.com>
+Subject: =?UTF-8?Q?Dobry_dzie=C5=84_moja_droga?=
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, have you received my email Message ?
+--=20
+Dobry dzie=C5=84 moja droga
+Jak si=C4=99 masz i twoja rodzina.
+Jestem pani Martina Francis, chora wdowa pisz=C4=85ca ze szpitalnego =C5=82=
+=C3=B3=C5=BCka
+bez dziecka. Kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, aby=C5=9Bcie dowiedz=
+ieli si=C4=99 o moim
+pragnieniu przekazania sumy (2 700 000,00 USD MILION=C3=93W USD), kt=C3=B3r=
+=C4=85
+odziedziczy=C5=82am po moim zmar=C5=82ym m=C4=99=C5=BCu na cele charytatywn=
+e, obecnie
+fundusz jest nadal w banku. Niedawno m=C3=B3j lekarz powiedzia=C5=82 mi, =
+=C5=BCe mam
+powa=C5=BCn=C4=85 chorob=C4=99 nowotworow=C4=85 i moje =C5=BCycie nie jest =
+ju=C5=BC gwarantowane,
+dlatego podejmuj=C4=99 t=C4=99 decyzj=C4=99..
+
+Chc=C4=99, aby=C5=9Bcie skorzystali z tego funduszu dla ludzi ubogich,
+maltretowanych dzieci, mniej uprzywilejowanych, ko=C5=9Bcio=C5=82=C3=B3w, s=
+ieroci=C5=84c=C3=B3w
+i cierpi=C4=85cych wd=C3=B3w w spo=C5=82ecze=C5=84stwie.
+
+Prosz=C4=99, wr=C3=B3=C4=87 do mnie natychmiast po przeczytaniu tej wiadomo=
+=C5=9Bci, aby
+uzyska=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3w dotycz=C4=85cych tej age=
+ndy humanitarnej.
+
+Niech B=C3=B3g ci=C4=99 b=C5=82ogos=C5=82awi, kiedy czekam na twoj=C4=85 od=
+powied=C5=BA.
+
+Twoja siostra.
+Pani Martina Francis.
