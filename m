@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165FE43840B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B76438428
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhJWPlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 11:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhJWPle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 11:41:34 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1ADA60FE3;
-        Sat, 23 Oct 2021 15:39:12 +0000 (UTC)
-Date:   Sat, 23 Oct 2021 16:43:33 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, gregkh@linuxfoundation.org
-Subject: Re: [PATCH] iio: frequency: adrf6780: Fix
- adrf6780_spi_{read,write}()
-Message-ID: <20211023164333.36b2ea2c@jic23-huawei>
-In-Reply-To: <20211022195656.1513147-1-nathan@kernel.org>
-References: <20211022195656.1513147-1-nathan@kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230264AbhJWPwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 11:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhJWPwR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 11:52:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7814DC061714;
+        Sat, 23 Oct 2021 08:49:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=8WjsifxMEzwDn1bVZQuBHqGF9kBDXxwzGqyMOEK0hBQ=; b=VyHGKkIXT6nN2C6ClgziZsDpIP
+        CYqys9He8Gwx/VK5XYVY7/bu05m9ZVpdpqcf1+kjvl7ycA9C8HxK6BvkN9RlHdWj8asb+5OSkJ7E/
+        l6xBfBT5LbF+n1NYjiDgHVMhQsjHYVcvUbWfFvw+skl5zznn/iM+3Uf1eJ2QLiuzVwHvAfW9uJedS
+        sOXeI0/AK7BVC2bY5IJ9zu9/LEtnN/Q6fbIHaIslq6QxIo0WboyOds4wkfFcT7NRHjD+8NyF4ySVu
+        v7LC5wCF9JqLH01cTejK5bJ2EJg3dOWFSCyy1FbvuQIi3+JK8MbTfdFC+Nc1FqToeG5Q57yfbdzlB
+        mrdcoiRg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1meJHM-00CuB8-W3; Sat, 23 Oct 2021 15:49:53 +0000
+Subject: Re: [RFC 06/13] soc: mediatek: apu: Add apu core driver
+To:     Flora Fu <flora.fu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Yong Wu <yong.wu@mediatek.com>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>
+References: <20211023111409.30463-1-flora.fu@mediatek.com>
+ <20211023111409.30463-7-flora.fu@mediatek.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <35b6b7af-87f1-4390-faf8-9f44c192aedd@infradead.org>
+Date:   Sat, 23 Oct 2021 08:49:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211023111409.30463-7-flora.fu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 12:56:56 -0700
-Nathan Chancellor <nathan@kernel.org> wrote:
+Hi,
 
-> Clang warns:
-> 
-> drivers/iio/frequency/adrf6780.c:117:1: error: all paths through this
-> function will call itself [-Werror,-Winfinite-recursion]
-> {
-> ^
-> drivers/iio/frequency/adrf6780.c:138:1: error: all paths through this
-> function will call itself [-Werror,-Winfinite-recursion]
-> {
-> ^
-> 2 errors generated.
-> 
-> The underscore variants should be used here.
-> 
-> Fixes: 63aaf6d06d87 ("iio: frequency: adrf6780: add support for ADRF6780")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1490
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On 10/23/21 4:14 AM, Flora Fu wrote:
+> diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
+> index d9bac2710494..074b0cf24c44 100644
+> --- a/drivers/soc/mediatek/Kconfig
+> +++ b/drivers/soc/mediatek/Kconfig
+> @@ -24,6 +24,24 @@ config MTK_APU_PM
+>   	  APU power domain shall be enabled before accessing the
+>   	  internal sub modules.
+>   
+> +config MTK_APU
+> +	tristate "MediaTek APUSYS Support"
+> +	select REGMAP
+> +	select MTK_APU_PM
+> +	select MTK_SCP
+> +	help
+> +	  Say yes here to add support for the APU tinysys. The tinsys is
 
-Thanks Nathan, (bit embarrassed I missed this in review :(
-As you probably guessed I didn't run an llvm test this time - guess I should
-start doing that on a regular basis.
+	                                                       tinysys runs on
 
-We obviously have plenty of time to get this fix in place but
-seeing as I just sent a pull request for the driver a few hours before this
-patch:
+> +	  running on a micro processor in APU.
 
-Greg, would you mind picking this one up directly on top of
-[PULL] 2nd set of IIO new device support, features, cleanup for 5.16 
-if you take that pull request?
+	  a microprocessor in the APU.
 
-Message ID for this one is:
+> +	  Its firmware is load and boot from Kernel side. Kernel and tinysys use
 
-20211022195656.1513147-1-nathan@kernel.org
+	               is loaded and booted
 
-No problem if you'd rather I just queue this fix up for post merge
-window.
+> +	  IPI to tx/rx messages.
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+	      to send/receive messages.
 
-Thanks,
+> +
+> +config MTK_APU_DEBUG
+> +	tristate "MediaTek APUSYS debug functions"
+> +	depends on MTK_APU
+> +	help
+> +	  Say yes here to enalbe debug on APUSYS.
 
-Jonathan
+	                  enable
 
-> ---
->  drivers/iio/frequency/adrf6780.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/frequency/adrf6780.c b/drivers/iio/frequency/adrf6780.c
-> index abe8b30fceca..8255ffd174f6 100644
-> --- a/drivers/iio/frequency/adrf6780.c
-> +++ b/drivers/iio/frequency/adrf6780.c
-> @@ -118,7 +118,7 @@ static int adrf6780_spi_read(struct adrf6780_state *st, unsigned int reg,
->  	int ret;
->  
->  	mutex_lock(&st->lock);
-> -	ret = adrf6780_spi_read(st, reg, val);
-> +	ret = __adrf6780_spi_read(st, reg, val);
->  	mutex_unlock(&st->lock);
->  
->  	return ret;
-> @@ -139,7 +139,7 @@ static int adrf6780_spi_write(struct adrf6780_state *st, unsigned int reg,
->  	int ret;
->  
->  	mutex_lock(&st->lock);
-> -	ret = adrf6780_spi_write(st, reg, val);
-> +	ret = __adrf6780_spi_write(st, reg, val);
->  	mutex_unlock(&st->lock);
->  
->  	return ret;
-> 
-> base-commit: 77af145dc7eadcb78d38912b67d6a68050d21a9b
+> +	  Disable it if you don't need them.
 
+
+-- 
+~Randy
