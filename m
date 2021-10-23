@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790764383B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 14:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EE44383BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhJWMyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 08:54:12 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55582 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhJWMyL (ORCPT
+        id S230361AbhJWNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 09:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhJWNCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 08:54:11 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 66C032063658;
-        Sat, 23 Oct 2021 05:51:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 66C032063658
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1634993512;
-        bh=RdTHdq2wYecLPNsH3yc13xGJJ4ejMJTIX+ByLhv3VSk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fY62T29GRFOFNOt69w9wl8U9BzW+9fyDV+vhzs44GQvTi70UrYD6MfnSabWGKR+eF
-         fl8jnJLiXFyvQWlr7rRomiaeyBvPpbj9FxVN2hxxT/if4csTIGPvHo6YEqhyIBPD+z
-         8zF5sTnRY8ZsP/ucSA6Mv/f0NE5qlt+Od8U843co=
-Subject: Re: [PATCH v10 04/11] arm64: Make return_address() use
- arch_stack_walk()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-5-madvenka@linux.microsoft.com>
- <20211022185148.GA91654@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <9986ddf4-d992-ffd8-7032-a18fdbdb7bb1@linux.microsoft.com>
-Date:   Sat, 23 Oct 2021 07:51:50 -0500
+        Sat, 23 Oct 2021 09:02:30 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C9EC061764;
+        Sat, 23 Oct 2021 06:00:11 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x192so101657lff.12;
+        Sat, 23 Oct 2021 06:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+NSu/QnVZM5jPh0JEYqqX6lEuTLh9VBoJM2wyO5CrKU=;
+        b=EHTkByWoNHwHDODLAzRVnLDC4gmGztzIeq0qMjVl61DeLbdUNNGE3sRv3JJ9Zptzuj
+         i89ljGs8mEeazCkmFKgPf84byIegBDk0rWz93+KQgDf0Z8tz0W2v8Ja+N7yCCf2Cn1F5
+         SFD53Op1TPCszVmEVTv+J42XTvaC2ls15n6e3OlrcjhcNlcOpUB7M/Ch3WqIFqiAHohq
+         Z+nDwzzIRwpHuKfaDNLrecgp/Rvrhh1NnqvMsOBsUGLeQ4DZrxvyGpJgK1sSgrR6WuHI
+         LCeMFPeSTJQaUUkuCt2TTvrd+pwUnFg/2GgIiWVhPdygCcjzl3tMwVw/N/m56kURty6B
+         iDxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+NSu/QnVZM5jPh0JEYqqX6lEuTLh9VBoJM2wyO5CrKU=;
+        b=u1zuFoRyMGxi9FgzNgSoJ2yX0AgVURtcqek1Jh2xTNJ9IQfn1LqoHzjRw8f/fVNxSf
+         d9N8UZANS27gJlVoQGPfxrfPcqlz3oINS7Qxfva5t/Tt8rlIpglT3bOgg267WE7qGXLI
+         8nsaH938ChSyDVO4/wA8WPPe09hrNzENgyESva2s3tZ17d45QIiKU0OKZZ5hU4cfNXSu
+         8PrkcxfQcKYRs23repFmG8U0iCuklux9wgqAvdWtWayzS6kFrOeKV57ckLF+X4cGeyl4
+         du4V7IXEb7+iH2XjNG4CkzL68aO4JjO0tF2FEcyIfrNgjxN3gZWHCfZkYTeTeGtocoix
+         8x4g==
+X-Gm-Message-State: AOAM533gF/648qdGBmuEK7pWKpRdW2LauPPfyJFDbHTeMemt0AppafcI
+        4aYvR4f5FCD9LBEfgRv7pTIwGm8pUKg=
+X-Google-Smtp-Source: ABdhPJxDk2X0DcDvKiyqYs1250+vpJWhroRwznp1dn5v9eaZrSWqf5Mo6GW+eCIi023yuab5s8QxTw==
+X-Received: by 2002:a05:6512:21b1:: with SMTP id c17mr3697636lft.266.1634994009472;
+        Sat, 23 Oct 2021 06:00:09 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-53-128.dynamic.spd-mgts.ru. [94.29.53.128])
+        by smtp.googlemail.com with ESMTPSA id m23sm1032851lfh.129.2021.10.23.06.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Oct 2021 06:00:09 -0700 (PDT)
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211019231905.2974-1-digetx@gmail.com>
+ <YXAr4OlhucAibMlH@robh.at.kernel.org>
+ <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
+ <48de7f40-deda-739d-96ca-e61ec5a0b257@gmail.com>
+ <20211022065029.x5a5oh7mh2sjofey@vireshk-i7>
+ <9798d34b-4886-9d4a-9fb7-634aa323af02@gmail.com>
+ <20211022074551.ro22d7xj3idisvzv@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <356febd2-64a2-0451-2c73-9319e5223c57@gmail.com>
+Date:   Sat, 23 Oct 2021 16:00:08 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20211022185148.GA91654@C02TD0UTHF1T.local>
+In-Reply-To: <20211022074551.ro22d7xj3idisvzv@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/22/21 1:51 PM, Mark Rutland wrote:
-> On Thu, Oct 14, 2021 at 09:58:40PM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+22.10.2021 10:45, Viresh Kumar пишет:
+> On 22-10-21, 10:39, Dmitry Osipenko wrote:
+>> What we currently have for Tegra is a tegra-opps.dtsi and tegra.dtsi
+>> which includes the OPP's dtsi.
 >>
->> Currently, return_address() in ARM64 code walks the stack using
->> start_backtrace() and walk_stackframe(). Make it use arch_stack_walk()
->> instead. This makes maintenance easier.
+>> the tegra-opps.dtsi has this structure:
 >>
->> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->> ---
->>  arch/arm64/kernel/return_address.c | 6 +-----
->>  1 file changed, 1 insertion(+), 5 deletions(-)
+>> table: devname-opp-table {
+>> 	opp: ...
+>> };
 >>
->> diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
->> index a6d18755652f..92a0f4d434e4 100644
->> --- a/arch/arm64/kernel/return_address.c
->> +++ b/arch/arm64/kernel/return_address.c
->> @@ -35,15 +35,11 @@ NOKPROBE_SYMBOL(save_return_addr);
->>  void *return_address(unsigned int level)
->>  {
->>  	struct return_address_data data;
->> -	struct stackframe frame;
->>  
->>  	data.level = level + 2;
->>  	data.addr = NULL;
->>  
->> -	start_backtrace(&frame,
->> -			(unsigned long)__builtin_frame_address(0),
->> -			(unsigned long)return_address);
->> -	walk_stackframe(current, &frame, save_return_addr, &data);
->> +	arch_stack_walk(save_return_addr, &data, current, NULL);
+>> and tegra.dtsi:
+>>
+>> #include "tegra-opps.dtsi"
+>>
+>> device@0000 {
+>> 	operating-points-v2 = <&table>;
+>> };
+>>
+>> It just occurred to me that there is no need to move all tables to
+>> tegra.dtsi, but change structure of tegra-opps.dtsi to:
+>>
+>> device@0000 {
+>> 	operating-points-v2 = <&table>;
+>>
+>> 	table: opp-table {
+>> 		opp: ...
+>> 	};
+>> };
 > 
-> This looks equivalent to me. Previously the arguments to
-> start_backtrace() meant that walk_stackframe would report
-> return_address(), then the caller of return_address(), and so on. As
-> arch_stack_walk() starts from its immediate caller (i.e.
-> return_address()), that should result in the same trace.
+> I thought you would have already thought about that and I was surprised when you
+> saw the tables are big enough to be moved. I was wondering what does it really
+> mean :)
 > 
-> It would be nice if we could note something to that effect in the commit
-> message.
+>> Then there no need to change current naming scheme. Let me try to
+>> implement it and see how it goes.
 > 
-
-Will do.
-
-> I had a play with ftrace, which uses return_address(), and that all
-> looks sound.
+> That's good then.
 > 
 
-Thanks a lot!
+I implemented that approach and it works, but there are two problems:
 
->>  
->>  	if (!data.level)
->>  		return data.addr;
-> 
-> The end of this function currently does:
-> 
-> 	if (!data.level)
-> 		return data.addr;
-> 	else
-> 		return NULL;
-> 
-> ... but since we initialize data.addr to NULL, and save_return_addr()
-> only writes to data.addr when called at the correct level, we can
-> simplify that to:
-> 
-> 	return data.addr;
-> 
+1. I had to factor out OPP tables from SPI device-tree nodes because DTC doesn't allow to have them within SPI nodes [1] and dtb fails to compile.
 
-OK. I will make this change.
+[1] https://elixir.bootlin.com/linux/v5.15-rc6/source/scripts/dtc/checks.c#L1141
 
-> Regardles of that cleanup:
-> 
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> Tested-by: Mark Rutland <mark.rutland@arm.com>
-> 
+2. dtbs_check now warns about every opp-table sub-node, like this:
 
-Thanks a lot!
-
-> I'll continue reviewing the series next week.
-> 
-
-Great!
-
-Madhavan
+/home/runner/work/linux/linux/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-E1565.dt.yaml: memory-controller@7000f400: 'opp-table' does not match any of the regexes: '^emc-timings-[0-9]+$', 'pinctrl-[0-9]+'
+	From schema: /home/runner/work/linux/linux/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml
