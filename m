@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0784F4382B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B254382FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhJWJ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
+        id S231356AbhJWJ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 05:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhJWJ4I (ORCPT
+        with ESMTP id S230366AbhJWJ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 05:56:08 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F907C061348
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 02:53:49 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id r7so503418wrc.10
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 02:53:49 -0700 (PDT)
+        Sat, 23 Oct 2021 05:58:40 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D06C0611C2;
+        Sat, 23 Oct 2021 02:56:02 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id i24so2511397lfj.13;
+        Sat, 23 Oct 2021 02:56:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=tLEUfVhaDWp4OwmTFc7w3FrsNdUkC3A1CsKAQ60ZYsI=;
-        b=RCQbvFmpEDM7OfDrUhK5FEK4+iKN8U+oeK/J2gWF4EK2lmX+KMf2c1SdtxEbYGwpIR
-         dA2PoziDFLz3rmpiyeudghfcLBBq8RaWBuJZ/Vts55l/+Yivgy/2vagT2miT6raGn7lq
-         EaNCuwpMXUJCdj4FICc3mZN2LRzfaVTYksfPfkF5oqjc+hRtwBsv6TpQP9u5QngXjFje
-         7nZpQRkln/xfofTNDsRvjyz2Uln5DEhtwUhFG24HqfcH5zkSmRS/LMkeoeK3DCgid0Pu
-         Idm2Y74MWwPlgB3txWBbOLgXF/GCf371JVdmTW5w2ZQUjWKm7NxQuHgn0dXRRxYc5CKz
-         56Bg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LXv2Bng4C8uj1DNivI+o5gz96luQJc9s1jkjFvg2HPM=;
+        b=FNfLdmxXyGg552hX75/Ju2SLVddrS3u3m2N/LBTcy59HUYPb2JtpHiLmUjAvPlaMxP
+         LY3vbPS5xMLnp+Exyqy2PKaInV8DxfpXtAb8neFrZ/GrdFYis0zKrDV2c/bbr2KHJ+Uw
+         k18Cpp2YvbBDy37GV73VIgFjEGhKpazb2303L04g7tDXzR84f+PN5+DmDxIBI7rEVbSG
+         eVm34SU5GznIsuOJZd+GVJD8bvFdsV2BLg/4HQVNf5z6KPvKR6IcRdyrupj5ZdQjYCtF
+         VVLYsr3uIVPtnQ8rVZiHbZANIPbzubXc6c9p4VQ4l1y5rszXTGY82dr6kC9qNydy3md5
+         0hWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=tLEUfVhaDWp4OwmTFc7w3FrsNdUkC3A1CsKAQ60ZYsI=;
-        b=pJzUS2deViO/lUSefrye1NKwRhg0iVjLkzf5QgvgRfIfzSJkfBVz+7nGT/wCDtg3lY
-         IvtSKyDvut9m1zB/1RSioQeWXtGuxsG80jCR7Q5n6ghEfRhxmuRJ36EbiUTfdU0ioTYp
-         /XAb4K3pSGPWoOG2kAiUEzrMOwqQILn+RAfe30ahhRKZL+45gwispo4GN5bW25mE8LmG
-         tk1iQdvmfUEPJWGhPjSz1F0sanu9U+g0bcGKTj7DHis4hprOP57anQiA839Fs3jadFvy
-         zjtT5NQ3HIU3GifaHY77mwDJ1lAdIaWwHhQIySU1I4LzV2dp69EMQM5gLMSPMF0LKoNg
-         5ZIg==
-X-Gm-Message-State: AOAM530guUwJda1SrzNDgHzUtS42vWJc9KUoXx8u6TEuZGUyknAJRD0E
-        uI2kq+lP3Vne4l9u76HeZPkiiA==
-X-Google-Smtp-Source: ABdhPJwEezcVRcVFKWLFEMF1rpA0ueoOO4uTdT37OlZWy/RfmP8+IZ/Pguz8Pk+6u45gDuVsJ9oESw==
-X-Received: by 2002:a5d:6c65:: with SMTP id r5mr6630830wrz.26.1634982827717;
-        Sat, 23 Oct 2021 02:53:47 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id h22sm11290195wmq.42.2021.10.23.02.53.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Oct 2021 02:53:46 -0700 (PDT)
-Message-ID: <f060ea87-12d8-afaf-fc7d-2b2fd461b7e7@linaro.org>
-Date:   Sat, 23 Oct 2021 10:55:48 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LXv2Bng4C8uj1DNivI+o5gz96luQJc9s1jkjFvg2HPM=;
+        b=5XpH4KAg6GZytwuoV+UjaXMVSxD9hJCA+pblzIiTGBcYBW1mXxaYKFl9NROZaz/Ma+
+         5iMvgxugBONEP7lfkmbVSRXVjp5N/G72Em7dPvUuy6HKrR5qd+DEfu784OG0GsDnYI0o
+         c/7Fh3K4eD4SbIQ8eQb7gq5fBRUDRut4SA3SAx2xD7j4XLjGXLj0Or48xPIIAriBZ1ND
+         Mn1+racqAxu08XWhuAfSZ43kPB1QYG+dwYHCdSU1q8G8XbonR/nXhOwiCWjimwM0cj9Z
+         4kERzftMxbtSSCDlMFWJQamryZ9OGZ2h7DfknLIMwgvggYiJO9Uq4+6K+V0dALZTm3c+
+         hepA==
+X-Gm-Message-State: AOAM532fdafGYQ6Oqr6tpES3J3W00A+esT88Wtt4nwFr6KuLnztVJJNi
+        ooqk2Ey7GtTnkor0MOShuDD9vUunYJA=
+X-Google-Smtp-Source: ABdhPJzh395qQXJTPuGWeDEcS/35igOwFxdh/Pf4A1OMsfPxknPxuIH3cuL+1C6rzTvcjEnKVySFiw==
+X-Received: by 2002:a05:6512:926:: with SMTP id f6mr4904456lft.495.1634982961249;
+        Sat, 23 Oct 2021 02:56:01 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id v62sm980321lfa.23.2021.10.23.02.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 02:56:00 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 12:55:59 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        hgkamath@hotmail.com
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/4] fs/ntfs3: Keep preallocated only if option prealloc
+ enabled
+Message-ID: <20211023095559.ythxb2z2ptdrlr5s@kari-VirtualBox>
+References: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
+ <aaf41f35-b702-b391-1cff-de4688b3bb65@paragon-software.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/2] wcn36xx: add missing 5GHz channels 136 and 144
-Content-Language: en-US
-To:     Benjamin Li <benl@squareup.com>, Kalle Valo <kvalo@codeaurora.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211022235738.2970167-1-benl@squareup.com>
- <20211022235738.2970167-3-benl@squareup.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20211022235738.2970167-3-benl@squareup.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aaf41f35-b702-b391-1cff-de4688b3bb65@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/2021 00:57, Benjamin Li wrote:
-> These channels missing from scan results are a regression from downstream
-> prima.
+On Fri, Oct 22, 2021 at 06:54:31PM +0300, Konstantin Komarov wrote:
+> If size of file was reduced, we still kept allocated blocks.
+> This commit makes ntfs3 work as other fs like btrfs.
+> https://bugzilla.kernel.org/show_bug.cgi?id=214719
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214719
+> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
 > 
-> Signed-off-by: Benjamin Li <benl@squareup.com>
+> Reported-by: Ganapathi Kamath
+
+Add <hgkamath@hotmail.com>
+
+I also added to loop here. Ganapathi can you test if this patch fix your
+problem?
+
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 > ---
->   drivers/net/wireless/ath/wcn36xx/main.c | 2 ++
->   drivers/net/wireless/ath/wcn36xx/smd.c  | 1 +
->   2 files changed, 3 insertions(+)
+>  fs/ntfs3/file.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-> index 263af65a889a..13d09c66ae92 100644
-> --- a/drivers/net/wireless/ath/wcn36xx/main.c
-> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
-> @@ -85,7 +85,9 @@ static struct ieee80211_channel wcn_5ghz_channels[] = {
->   	CHAN5G(5620, 124, PHY_QUADRUPLE_CHANNEL_20MHZ_LOW_40MHZ_HIGH),
->   	CHAN5G(5640, 128, PHY_QUADRUPLE_CHANNEL_20MHZ_HIGH_40MHZ_HIGH),
->   	CHAN5G(5660, 132, PHY_QUADRUPLE_CHANNEL_20MHZ_LOW_40MHZ_LOW),
-> +	CHAN5G(5680, 136, PHY_QUADRUPLE_CHANNEL_20MHZ_HIGH_40MHZ_LOW),
->   	CHAN5G(5700, 140, PHY_QUADRUPLE_CHANNEL_20MHZ_LOW_40MHZ_HIGH),
-> +	CHAN5G(5720, 144, PHY_QUADRUPLE_CHANNEL_20MHZ_HIGH_40MHZ_HIGH),
->   	CHAN5G(5745, 149, PHY_QUADRUPLE_CHANNEL_20MHZ_LOW_40MHZ_LOW),
->   	CHAN5G(5765, 153, PHY_QUADRUPLE_CHANNEL_20MHZ_HIGH_40MHZ_LOW),
->   	CHAN5G(5785, 157, PHY_QUADRUPLE_CHANNEL_20MHZ_LOW_40MHZ_HIGH),
-> diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
-> index be6442b3c80b..9785327593d2 100644
-> --- a/drivers/net/wireless/ath/wcn36xx/smd.c
-> +++ b/drivers/net/wireless/ath/wcn36xx/smd.c
-> @@ -2396,6 +2396,7 @@ int wcn36xx_smd_feature_caps_exchange(struct wcn36xx *wcn)
->   	set_feat_caps(msg_body.feat_caps, STA_POWERSAVE);
->   	if (wcn->rf_id == RF_IRIS_WCN3680) {
->   		set_feat_caps(msg_body.feat_caps, DOT11AC);
-> +		set_feat_caps(msg_body.feat_caps, WLAN_CH144);
->   		set_feat_caps(msg_body.feat_caps, ANTENNA_DIVERSITY_SELECTION);
->   	}
->   
+> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+> index 43b1451bff53..3ac0482c6880 100644
+> --- a/fs/ntfs3/file.c
+> +++ b/fs/ntfs3/file.c
+> @@ -494,7 +494,7 @@ static int ntfs_truncate(struct inode *inode, loff_t new_size)
+>  
+>  	down_write(&ni->file.run_lock);
+>  	err = attr_set_size(ni, ATTR_DATA, NULL, 0, &ni->file.run, new_size,
+> -			    &new_valid, true, NULL);
+> +			    &new_valid, ni->mi.sbi->options->prealloc, NULL);
+>  	up_write(&ni->file.run_lock);
+>  
+>  	if (new_valid < ni->i_valid)
+> -- 
+> 2.33.0
 > 
-
-LGTM
-
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> 
