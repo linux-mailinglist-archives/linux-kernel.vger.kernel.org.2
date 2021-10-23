@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22F543828B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD1B43828C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhJWJL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhJWJL6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 05:11:58 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079E7C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 02:09:40 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id w15so5394139ilv.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 02:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=SaQJaLQJV1tXeTErb3iEo2Jt85n+Ln12ULE3k7m2zSU=;
-        b=j31Cf6o4Nz5HtZMQXJuCYvmZUDS9irb30YmETPUGptJeRdSme3m8ABP/cfswiSSBcf
-         Uwl8QWK4yo8iwt2qWvO/4bziHxEISJy4OQ7jpEae2FFtXXEXawgdeQS+OVrzf7CXTTbx
-         MA+bQ7LL8upOGMifydJBqbFjmx0oaboHD6mEx60MUHDOJnFsEPiwZ/2En6b4FyZOGJQv
-         G9vk1dnb3VLALmo+0FuGs5AoL1J197RDxaW8wnzjZ4mzW8fxNzzq5zibm/srWk9WS47f
-         9JJQ361/C47ZsZ5s3U0oKVlvkJHTIjMfQUifk4LBZvuGFEwJGvZ5/7sb9W7cqxub33vP
-         +4kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=SaQJaLQJV1tXeTErb3iEo2Jt85n+Ln12ULE3k7m2zSU=;
-        b=Q6Vu1pGO/XbaM9v6rPlH9m104yMwLOSlDHcBeHxT1961X1s/imIl6llAWE/Eyo3XxK
-         cMBuywxnTVAvk7I72HcRASKaLLs6hthz3iqgMO5t/x0NtLR0Etll2meoSa43STjp1SLX
-         b2kNit41SrrKRrWQ8uHouFTcf4BuorGFDGBx6GhxQwwV0bMIlPlp0UTzK46ubJHgsr+l
-         DSlALxRalR4dBQcYPL+oas6I6p/iPVu832Ar2u71TiX9qmLURkWXP8aWJZsIpgaCVb2E
-         ttGjP+mac+D6qm8rnjooP2N4rM6x9qJY+9+IMcgXZeL4ks0WioCqlZOyUt5eUsS+ydxv
-         ayHg==
-X-Gm-Message-State: AOAM5302HNpEkcRXERanh4d3NdpqeNIZx3V+fKxAi/ut8yUq9kvk0goH
-        XXU4BAj+RH2qLGfax8jt4/fkER1FJ11QXQV6TOw=
-X-Google-Smtp-Source: ABdhPJw7hFfSf+Rg3YFOSwDvVVe8fipWtfnrWDO0Fp4VHq5sAqCJswMlx5vuUtLIny4hZI6y8B38sIzVQSjFC+JQDtc=
-X-Received: by 2002:a05:6e02:893:: with SMTP id z19mr3004248ils.224.1634980179313;
- Sat, 23 Oct 2021 02:09:39 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ac0:eda2:0:0:0:0:0 with HTTP; Sat, 23 Oct 2021 02:09:38
- -0700 (PDT)
-Reply-To: mrschantelhermans@gmail.com
-From:   Mrs Chantel Hermans <leokunkur@gmail.com>
-Date:   Sat, 23 Oct 2021 02:09:38 -0700
-Message-ID: <CACE1W5WO0H+k9MU6NGP3m7fU-cGs7SxyhCnhLafYZVmr3dL5nA@mail.gmail.com>
-Subject: ATTENTION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S230140AbhJWJMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 05:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhJWJM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 05:12:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F7866105A;
+        Sat, 23 Oct 2021 09:10:09 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1meD2V-0013hq-8b; Sat, 23 Oct 2021 10:10:07 +0100
+Date:   Sat, 23 Oct 2021 10:10:07 +0100
+Message-ID: <87r1cct8cw.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 1/3] irqchip/gic-v3-its: Give the percpu rdist struct its own flags field
+In-Reply-To: <20211022103307.1711619-2-valentin.schneider@arm.com>
+References: <20211022103307.1711619-1-valentin.schneider@arm.com>
+        <20211022103307.1711619-2-valentin.schneider@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org, will@kernel.org, mark.rutland@arm.com, tglx@linutronix.de, bigeasy@linutronix.de, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 22 Oct 2021 11:33:05 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
+> 
+> Later patches will require tracking some per-rdist status. Reuse the bytes
+> "lost" to padding within the __percpu rdist struct as a flags field, and
+> re-encode ->lpi_enabled within said flags.
+> 
+> No change in functionality intended.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c   | 26 ++++++++++++++------------
+>  include/linux/irqchip/arm-gic-v3.h |  2 +-
+>  2 files changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index eb0882d15366..a688ed5c21e8 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -43,8 +43,10 @@
+>  #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
+>  #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
+>  
+> -#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
+> -#define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
+> +#define RDISTS_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
+> +#define RDISTS_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
+> +
+> +#define RDIST_FLAGS_LPI_ENABLED                 BIT(0)
+
+Just to reduce the churn and for me not to misread things (because
+RDIST/RDISTS is pretty confusing), how about leaving the original
+flags as is, and name the per-RD ones like:
+
+#define	RD_LOCAL_LPI_ENABLED	BIT(0)
+
+?
+
+Or something else that'd be adequately different from the original
+flags?
+
+Otherwise looks sensible.
+
+	M.
+
 -- 
-ATTENTION
-
-
-You have been compensated with the sum of 6.9 million dollars in this
-United Nation the payment will be issue into ATM Visa Card,
-
-
-and send to you from the Santander Bank of Spain we need your
-Address,Passport and your whatsapp number.
-
-
-THANKS
-Mrs Chantel Hermans
+Without deviation from the norm, progress is not possible.
