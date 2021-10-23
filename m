@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD474383FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2516D4383FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhJWPEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 11:04:07 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:64545 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhJWPEG (ORCPT
+        id S230280AbhJWPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 11:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhJWPJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 11:04:06 -0400
-Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 19NF18CF008358;
-        Sun, 24 Oct 2021 00:01:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
- Sun, 24 Oct 2021 00:01:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 19NF17p2008355
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 24 Oct 2021 00:01:07 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
- the #PF
-To:     Vasily Averin <vvs@virtuozzo.com>, Michal Hocko <mhocko@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
- <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
-Date:   Sun, 24 Oct 2021 00:01:07 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sat, 23 Oct 2021 11:09:13 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46551C061714;
+        Sat, 23 Oct 2021 08:06:54 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x192so153285lff.12;
+        Sat, 23 Oct 2021 08:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=UhVKiBkM27S8utl/+Lqsx9ZhjhKwnMJnJoQC1dkuYBw=;
+        b=p9qxO81kQYrkKeU6U/rkrAbu4nrgKkDBWB24T9b/7rp9T4sjyNUoZQxE9RmQ4sPVhF
+         IBfWQUpEQrCOcUdhMJE3k8bKXkoMgAAUftYKchN85rOYeMkg94a5GCeggJW1Dm8xwxQM
+         d0UHyBWi87xG5SCyjhTkIrsvBjc2T8qKlRxnTUJI1CPM/DtCGb7D2BXWCpnaq3roIDCr
+         bwOPLOiengkE4t4bF05iF0sapv41dOP71YTAUStkueVF8k9/RTRQl7+3ePsr2dUlEHm9
+         NTYVf8pmLkuuce32OGjqT8hyebCSARDg4rXYtGG9g+zr/xIpq+0lNhw66mr23+UQwFR1
+         Zj4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=UhVKiBkM27S8utl/+Lqsx9ZhjhKwnMJnJoQC1dkuYBw=;
+        b=A/UTlSD6WpMHuB//S00xCYsXg5l803Y7GWejy7HQ3l7tNwrPU++Pdb63NIjSBfgE+C
+         KE2zRJC0C6AbM3iqjr5WWkRRdXf8chE8GfOVKtNl04nIF0SnlNivR89487+YvJXx769x
+         po7uzM7mBfntoe9npRb0kOae2h6NDPX1ULORBSqUyJVXi6StEm88A8V9oK6MpaoddrX9
+         FsTRXUuApk4lznooJKvASEx896lMEKMZXIrXFZWaNhFz6v+nYNSAgrLw0RSl4fx0Byh0
+         A9OF6rwhmfBoEnACdWVagyiYoyA5cHlE4AsKIIAZaNGdU54Vfy673ancF3+9zyqoxD3+
+         VTCQ==
+X-Gm-Message-State: AOAM530Tcmwe05Q2EUg3rGMo5vIvSaRHTc942w9HI1KbumTcBePo4Ij6
+        XuHbWeWrK3WpgtnCpoUUDRgOI9ltWJ6w0mv708A09f2B05w=
+X-Google-Smtp-Source: ABdhPJxpIzSSD2q2KmIx/m8nlfIxWVTU/kNkPVGyN4E4uZfkQjX2F9cUxx+Kif31HG2AGNpVfx2NuJFH/dnxOYRY3Y4=
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr6453033lft.601.1635001612411;
+ Sat, 23 Oct 2021 08:06:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 23 Oct 2021 10:06:41 -0500
+Message-ID: <CAH2r5mvY5kWAHs=0Lzgst0rjRaej+VW1ZLdFc8kDJ-07QmWQsA@mail.gmail.com>
+Subject: [GIT PULL] ksmbd fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/23 22:20, Vasily Averin wrote:
->  /*
-> - * The pagefault handler calls here because it is out of memory, so kill a
-> - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
-> - * killing is already in progress so do nothing.
-> + * The pagefault handler calls here because some allocation has failed. We have
-> + * to take care of the memcg OOM here because this is the only safe context without
-> + * any locks held but let the oom killer triggered from the allocation context care
-> + * about the global OOM.
->   */
+Please pull the following changes since commit
+64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
 
-Excuse me for a stupid question. I consider
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
 
-  if (!mutex_trylock(&oom_lock))
-    return;
-  out_of_memory(&oc);
-  mutex_unlock(&oom_lock);
+are available in the Git repository at:
 
-here as the last resort (safeguard) when neither __alloc_pages_may_oom()
-nor mem_cgroup_out_of_memory() can make progress. This patch says
+  git://git.samba.org/ksmbd.git tags/5.15-rc6-ksmbd-fixes
 
-  let the oom killer triggered from the allocation context care
-  about the global OOM.
+for you to fetch changes up to 0d994cd482ee4e8e851388a70869beee51be1c54:
 
-but what if the OOM killer cannot be invoked from the allocation context?
-Is there a guarantee that all memory allocations which might result in
-VM_FAULT_OOM can invoke the OOM killer?
+  ksmbd: add buffer validation in session setup (2021-10-20 00:07:10 -0500)
+
+----------------------------------------------------------------
+Ten fixes for the ksmbd kernel server:
+- a security improvement to session establishment to reduce the
+possibility of dictionary attacks
+- fix to ensure that maximum i/o size negotiated in the protocol is
+not less than 64K and not more than 8MB to better match expected
+behavior
+- fix for crediting (flow control) important to properly verify that
+sufficient credits are available for the requested operation
+- seven additional buffer overflow, buffer validation checks
+
+Regression test results for current linux-next:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/89
+----------------------------------------------------------------
+Hyunchul Lee (3):
+      ksmbd: improve credits management
+      ksmbd: add buffer validation for smb direct
+      ksmbd: validate OutputBufferLength of QUERY_DIR, QUERY_INFO,
+IOCTL requests
+
+Marios Makassikis (1):
+      ksmbd: add buffer validation in session setup
+
+Namjae Jeon (5):
+      ksmbd: add validation in smb2_ioctl
+      ksmbd: fix potencial 32bit overflow from data area check in smb2_write
+      ksmbd: validate compound response buffer
+      ksmbd: limit read/write/trans buffer size not to exceed 8MB
+      ksmbd: throttle session setup failures to avoid dictionary attacks
+
+Ralph Boehme (1):
+      ksmbd: validate credit charge after validating SMB2 PDU body size
+
+ fs/ksmbd/auth.c             |  16 +-
+ fs/ksmbd/connection.c       |   2 +
+ fs/ksmbd/ksmbd_netlink.h    |   2 +
+ fs/ksmbd/mgmt/user_config.c |   2 +-
+ fs/ksmbd/mgmt/user_config.h |   1 +
+ fs/ksmbd/smb2misc.c         |  55 ++++---
+ fs/ksmbd/smb2ops.c          |   3 +
+ fs/ksmbd/smb2pdu.c          | 346 ++++++++++++++++++++++++++++---------------
+ fs/ksmbd/smb2pdu.h          |   2 +
+ fs/ksmbd/transport_ipc.c    |   3 +-
+ fs/ksmbd/transport_ipc.h    |   2 +-
+ fs/ksmbd/transport_rdma.c   |  21 ++-
+ fs/ksmbd/vfs.c              |   2 +-
+ fs/ksmbd/vfs.h              |   2 +-
+ 14 files changed, 306 insertions(+), 153 deletions(-)
+
+-- 
+Thanks,
+
+Steve
