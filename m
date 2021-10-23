@@ -2,191 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB85438435
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA8A438438
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 18:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhJWP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 11:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S230155AbhJWQDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 12:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhJWP5v (ORCPT
+        with ESMTP id S229901AbhJWQDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 11:57:51 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9ABDC061714;
-        Sat, 23 Oct 2021 08:55:32 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so7964574pji.5;
-        Sat, 23 Oct 2021 08:55:32 -0700 (PDT)
+        Sat, 23 Oct 2021 12:03:04 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB7FC061714;
+        Sat, 23 Oct 2021 09:00:44 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id g20so7646921qka.1;
+        Sat, 23 Oct 2021 09:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/pSiwo+cqnHDXHq5IyuMaCuGSJ1F7Qgv+xIG/gujbcY=;
-        b=Lo5pB7LK4ASUpV9T0nhmFJmhsvRgF4B3M+PdM2rUpggIiWX1T4rEhaDMyeXl+hE2BX
-         kftGkYKm2tnacs4oo871EiyVJvi8kLYBymnEZH1nFnOqSfS3SFgMXXITCtdpAdmFmOXW
-         G9NrOOwOS/IQfVvcr+8LzU/mGBBv+8e+Kg177FnK5pNsRvLQakBhS1CgoGKudLoaAMHa
-         sDpB2k6pHJOgWYfvu3EAwbCC5hEttKMFJsV/uBRpiQ17AkeQgxftgpLlasvzV+/CCf9z
-         T1de4yKQYlFEV7NozJgOYibWPlzXW7xCOQlaNv46lfzsT+xc7f+ntDfCeyKlIPPJ0aEQ
-         169g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qthr8cU1dSojgOgBBt4dT5UmFwa8J4R/24qOs7tEfOI=;
+        b=SW1HV4z3DDfn8pj9XE8+R6qNKJBkLTktSvZMfr3j+nyDqEl7eJIklPbA+ioEgkktQd
+         mBQMpVdA54dqQlvh/RSq/nBqQnxquZjFkCaGvAop64ZyB+SA9DQJ7Z1IZS9AAB2qgrYk
+         SMNEhTXuYVqZfGgdV4xt4hpbLJ6xY0WE6ZKGmUJJoTD2fONrNV6J9gHfT6cCLtjFOzBj
+         RRVVu6SVPDgbPydliOdQ/EqV0gnwk3NjRjjnI3p10GSWyY2ZW2xUhjItslmja+o4/l15
+         DuRRf7Fv03S785KppBZUOBOz6Cyt3PHYmanBztu9fmoocLXhyvEZ8Rlpbgy/KGNzfK7n
+         OI9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/pSiwo+cqnHDXHq5IyuMaCuGSJ1F7Qgv+xIG/gujbcY=;
-        b=EQLeCIWvSx7Q7FRd8WQvGIj0VGFWxr42KzAHryCcUMbsd8DK0NYhBOi93Hy1zrO37y
-         9DY1iNb+uTpW09MKi4V5LhDEynMfsIZK+WOv/rJrl0WgtuW0DtPQl8PD252p+HKW6I/w
-         iIqrYVYO8PlWGxMqoFopzKMXtshvvoheMht8X96i0DeAPIVkokmvlVv8CnqMH/m8I+RS
-         7I9oY0zn192noCpB8N5tfSetiCpg171rxM2V8Of/P3QvEjcRGpl5MuiKrb81dcQJybSz
-         qQlsg4pzX/+rWPMNB4iPV5QvWCppnTYSKLXbGCiS3qXIanmbdXG/CbQE67MEKSimVxb9
-         P3aw==
-X-Gm-Message-State: AOAM533opDix4OTCAxDEhgEhTrOBmNLhPr+uUS5WZHt8DgEd3+R6EVdU
-        8G5bMaJTuWwYLPud9MCIZVg=
-X-Google-Smtp-Source: ABdhPJxNTy5Vqw0d9jUVsUmEoGQNGNcpSYCHxtyx5N1R+Ctvdyrad7wp36YiAb+YNHiWwM6mI3qZ6A==
-X-Received: by 2002:a17:90b:1bc3:: with SMTP id oa3mr7847706pjb.75.1635004531693;
-        Sat, 23 Oct 2021 08:55:31 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id j1sm2212635pfj.155.2021.10.23.08.55.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qthr8cU1dSojgOgBBt4dT5UmFwa8J4R/24qOs7tEfOI=;
+        b=e2gvDAuZzOZOV/7y2INOu8pNfy4aezJUWMoeGkL6U2hsDpGxlVOAIgI6HhX537vQ9s
+         5EDwy+5eWYMPVZwdmIMfMUy7xfwVHttuypW6Y74N85+4Jb6Fg3HRTHphmzclb9Y6a6Oo
+         bLlipq1sessQiMfX1FJZCS6l6jav40lVp9HO5IQN9JxbQKCHxGW4gemwzLFS9fhVzW5D
+         SijWJE7NR7shzwR2prHoHmAJhObuE1ApHB0AAj+mi6t1Q/942oj7jYwVwKRqwlcjP7bk
+         nGyASvRZaeQIR9MtJKmZUTd8CzoeDzf+Z4yVjOakQ+CfMbIqwf58UcylrpP9eUrrkGIT
+         Tx1A==
+X-Gm-Message-State: AOAM533cfq2+Pv52q4n6s2D2iHwpmPqZKGssG5jRwCp5iOsc9eYIwWlB
+        0DbB5zAc1ccpAcPwVBJEOiepIJ4nlsUu
+X-Google-Smtp-Source: ABdhPJwOt99lzC+F3f94YhOfmD9szqqqxLxeUc+99UfI57we1FBO952e676doMC29RdKHILlnaJK9Q==
+X-Received: by 2002:a37:44c8:: with SMTP id r191mr5372123qka.507.1635004843919;
+        Sat, 23 Oct 2021 09:00:43 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id m28sm5835578qkm.23.2021.10.23.09.00.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 08:55:30 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Jessica Zhang <jesszhan@codeaurora.org>,
-        Mark Yacoub <markyacoub@google.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] drm/msm/dpu: Remove dynamic allocation from atomic context
-Date:   Sat, 23 Oct 2021 09:00:13 -0700
-Message-Id: <20211023160016.3322052-2-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211023160016.3322052-1-robdclark@gmail.com>
-References: <20211023160016.3322052-1-robdclark@gmail.com>
+        Sat, 23 Oct 2021 09:00:42 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 12:00:38 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXQxptoPALVHHPCU@moria.home.lan>
+References: <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <YXBUPguecSeSO6UD@moria.home.lan>
+ <YXHdpQTL1Udz48fc@cmpxchg.org>
+ <YXIZX0truEBv2YSz@casper.infradead.org>
+ <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
+ <YXK2ICKi6fjNfr4X@casper.infradead.org>
+ <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
+ <YXNx686gvsJMgS+z@casper.infradead.org>
+ <404bdc05-487f-3d47-6b30-0687b74c2f2f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <404bdc05-487f-3d47-6b30-0687b74c2f2f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Sat, Oct 23, 2021 at 11:58:42AM +0200, David Hildenbrand wrote:
+> I know, the crowd is screaming "we want folios, we need folios, get out
+> of the way". I know that the *compound page* handling is a mess and that
+> we want something to change that. The point I am making is that folios
+> are not necessarily what we *need*.
+> 
+> Types as discussed above are really just using the basic idea of a folio
+> lifted to the next level that not only avoid any kind of PageTail checks
+> but also any kind of type checks we have splattered all over the place.
+> IMHO that's a huge win when it comes to code readability and
+> maintainability. This also tackles the point Johannes made: folios being
+> the dumping ground for everything. And he has a point, because folios
+> are really just "not tail pages", so consequently they will 99% just
+> mimic what "struct page" does, and we all know what that means.
 
-We know the upper bound on # of mixers (ie. two), so lets just allocate
-this on the stack.
+Look, even if folios go this direction of being the compound page replacement,
+the "new dumping ground" argument is just completely bogus.
 
-Fixes:
+In introducing new types and type safety for struct page, it's not reasonable to
+try to solve everything at once - we don't know what an ideal end solution is
+going to look like, we can't see that far ahead. What is a reasonable approach
+is looking for where the fault lines in the way struct page is used now, and
+cutting along those lines, look at the result, then cut it up some more. If the
+first new type still inherits most of the mess in struct page but it solves real
+problems, that's not a failure, that's normal incremental progress!
 
-   BUG: sleeping function called from invalid context at include/linux/sched/mm.h:201
-   in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/0
-   INFO: lockdep is turned off.
-   irq event stamp: 43642
-   hardirqs last  enabled at (43641): [<ffffffe24dd276bc>] cpuidle_enter_state+0x158/0x25c
-   hardirqs last disabled at (43642): [<ffffffe24dfff450>] enter_el1_irq_or_nmi+0x10/0x1c
-   softirqs last  enabled at (43620): [<ffffffe24d4103fc>] __do_softirq+0x1e4/0x464
-   softirqs last disabled at (43615): [<ffffffe24d48bd90>] __irq_exit_rcu+0x104/0x150
-   CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.15.0-rc3-debug+ #105
-   Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
-   Call trace:
-    dump_backtrace+0x0/0x18c
-    show_stack+0x24/0x30
-    dump_stack_lvl+0xa0/0xd4
-    dump_stack+0x18/0x34
-    ___might_sleep+0x1e0/0x1f0
-    __might_sleep+0x78/0x8c
-    slab_pre_alloc_hook.constprop.0+0x48/0x6c
-    __kmalloc+0xc8/0x21c
-    dpu_crtc_vblank_callback+0x158/0x1f8
-    dpu_encoder_vblank_callback+0x70/0xc4
-    dpu_encoder_phys_vid_vblank_irq+0x50/0x12c
-    dpu_core_irq+0x1bc/0x1d0
-    dpu_irq+0x1c/0x28
-    msm_irq+0x34/0x40
-    __handle_irq_event_percpu+0x15c/0x308
-    handle_irq_event_percpu+0x3c/0x90
-    handle_irq_event+0x54/0x98
-    handle_level_irq+0xa0/0xd0
-    handle_irq_desc+0x2c/0x44
-    generic_handle_domain_irq+0x28/0x34
-    dpu_mdss_irq+0x90/0xe8
-    handle_irq_desc+0x2c/0x44
-    handle_domain_irq+0x54/0x80
-    gic_handle_irq+0xd4/0x148
-    call_on_irq_stack+0x2c/0x54
-    do_interrupt_handler+0x4c/0x64
-    el1_interrupt+0x30/0xd0
-    el1h_64_irq_handler+0x18/0x24
-    el1h_64_irq+0x78/0x7c
-    arch_local_irq_enable+0xc/0x14
-    cpuidle_enter+0x44/0x5c
-    do_idle+0x248/0x268
-    cpu_startup_entry+0x30/0x48
-    rest_init+0x188/0x19c
-    arch_call_rest_init+0x1c/0x28
-    start_kernel+0x704/0x744
-    __primary_switched+0xc0/0xc8
+--------
 
-Fixes: 78d9b458cc21 ("drm/msm/dpu: Add CRC support for DPU")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+More than that, I think you and Johannes heard what I was saying about imagining
+what the ideal end solution would look like with infinite refactoring and you
+two have been running way too far with that idea - the stuff you guys are
+talking about sounds overengineered to me - inheritence heirarchies before we've
+introduced the first new type!
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-index 0ae397044310..2523e829f485 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-@@ -182,21 +182,19 @@ static int dpu_crtc_get_crc(struct drm_crtc *crtc)
- {
- 	struct dpu_crtc_state *crtc_state;
- 	struct dpu_crtc_mixer *m;
--	u32 *crcs;
-+	u32 crcs[CRTC_DUAL_MIXERS];
- 
- 	int i = 0;
- 	int rc = 0;
- 
- 	crtc_state = to_dpu_crtc_state(crtc->state);
--	crcs = kcalloc(crtc_state->num_mixers, sizeof(*crcs), GFP_KERNEL);
- 
--	if (!crcs)
--		return -ENOMEM;
-+	BUILD_BUG_ON(ARRAY_SIZE(crcs) != ARRAY_SIZE(crtc_state->mixers));
- 
- 	/* Skip first 2 frames in case of "uncooked" CRCs */
- 	if (crtc_state->crc_frame_skip_count < 2) {
- 		crtc_state->crc_frame_skip_count++;
--		goto cleanup;
-+		return 0;
- 	}
- 
- 	for (i = 0; i < crtc_state->num_mixers; ++i) {
-@@ -210,16 +208,12 @@ static int dpu_crtc_get_crc(struct drm_crtc *crtc)
- 
- 		if (rc) {
- 			DRM_DEBUG_DRIVER("MISR read failed\n");
--			goto cleanup;
-+			return rc;
- 		}
- 	}
- 
--	rc = drm_crtc_add_crc_entry(crtc, true,
-+	return drm_crtc_add_crc_entry(crtc, true,
- 			drm_crtc_accurate_vblank_count(crtc), crcs);
--
--cleanup:
--	kfree(crcs);
--	return rc;
- }
- 
- static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
--- 
-2.31.1
+The point of such thought experiments is to imagine how simple things could be -
+and also to not take such thought experiments too seriously, because when we
+start refactoring real world code, that's when we discover what's actually
+_possible_.
 
+I ran into a major roadblock when I tried converting buddy allocator freelists
+to radix trees: freeing a page may require allocating a new page for the radix
+tree freelist, which is fine normally - we're freeing a page after all - but not
+if it's highmem. So right now I'm not sure if getting struct page down to two
+words is even possible. Oh well.
+
+> Your patches introduce the concept of folio across many layers and your
+> point is to eventually clean up later and eventually remove it from all
+> layers again. I can understand that approach, yet I am at least asking
+> the question if this is the right order to do this.
+> 
+> And again, I am not blocking this, I think cleaning up compound pages is
+> very nice. I'm asking questions to see how the concept of folios would
+> fit in long-term and if it would be required at all if types are done right.
+
+I'm also not really seeing the need to introduce folios as a replacement for all
+of compound pages, though - I think limiting it to file & anon and using the
+union-of-structs in struct page as the fault lines for introducing new types
+would be the reasonable thing to do. The struct slab patches were great, it's a
+real shame that the slab maintainers have been completely absent.
+
+Also introducing new types to be describing our current using of struct page
+isn't the only thing we should be doing - as we do that, that will (is!) uncover
+a lot of places where our ontology of struct page uses is just nonsensical (all
+the types of pages mapped into userspace!) - and part of our mission should be
+to clean those up.
+
+That does turn things into a much bigger project than what Matthew signed up
+for, but we shouldn't all be sitting on the sidelines here...
