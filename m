@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854064383C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13874383C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhJWNVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 09:21:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16628 "EHLO mga14.intel.com"
+        id S231322AbhJWNWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 09:22:14 -0400
+Received: from relay.sw.ru ([185.231.240.75]:56520 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhJWNVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 09:21:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10145"; a="229721453"
-X-IronPort-AV: E=Sophos;i="5.87,175,1631602800"; 
-   d="scan'208";a="229721453"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2021 06:19:21 -0700
-X-IronPort-AV: E=Sophos;i="5.87,175,1631602800"; 
-   d="scan'208";a="496049093"
-Received: from yli135-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.169.195])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2021 06:19:18 -0700
-Date:   Sat, 23 Oct 2021 21:19:14 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] tools: Introduce power/acpi/pfru/pfru
-Message-ID: <20211023131914.GB28269@chenyu5-mobl1>
-References: <cover.1634899519.git.yu.c.chen@intel.com>
- <0159379f2f15c79959fd597874f162ebc3cf711b.1634899519.git.yu.c.chen@intel.com>
- <YXMbJMifGM2izSZO@smile.fi.intel.com>
+        id S230476AbhJWNWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 09:22:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=DX974UacjLa5B8lLKBDGYPr0ueCh9q/0PqGjv1EsfYw=; b=Qqybfz2pU+1i6qU1cl+
+        n1/Ryq+c0MgrgrTKsIr+zAZ1FcRW64LaQxmTNiUdj22yblJrcLgq8hzUJ6nLnvPsVJAJt72LMbhfw
+        +odGC3WfLkhI4RMty6rnyhpI2Nrq4jD4t5JdjGwt3X6OlFXMtqtk18+4yM2yEuiOzojbz5hH3hs=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1meGw9-006vQI-Bm; Sat, 23 Oct 2021 16:19:49 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH memcg v3 1/3] mm, oom: pagefault_out_of_memory: don't force
+ global OOM for dying tasks
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+ <cover.1634994605.git.vvs@virtuozzo.com>
+Message-ID: <0828a149-786e-7c06-b70a-52d086818ea3@virtuozzo.com>
+Date:   Sat, 23 Oct 2021 16:19:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXMbJMifGM2izSZO@smile.fi.intel.com>
+In-Reply-To: <cover.1634994605.git.vvs@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 11:12:20PM +0300, Andy Shevchenko wrote:
-> On Sat, Oct 23, 2021 at 01:10:32AM +0800, Chen Yu wrote:
-> > Introduce a user space tool to make use of the interface exposed by
-> > Platform Firmware Runtime Update and Telemetry drivers. The users
-> > can use this tool to do firmware code injection, driver update and
-> > to retrieve the telemetry data.
-> 
-> ...
-> 
-> >  #include <linux/ioctl.h>
-> > +#ifdef __KERNEL__
-> >  #include <linux/uuid.h>
-> > +#else
-> > +#include <uuid/uuid.h>
-> > +#include <linux/types.h>
-> > +#endif
-> 
-> This is exactly my point why you mustn't use uuid.h in uAPI headers.
->
-Ok, will remove uuid.h. 
-> > +	while (1) {
-> 
-> Why not  while ((c = getopt_long(...)) != -1) ?
-> 
-Ok, changed it to this form.
-> > +		int option_index = 0;
-> > +
-> > +		c = getopt_long(argc, argv, option_string,
-> > +				long_options, &option_index);
-> > +		if (c == -1)
-> > +			break;
-> 
-> > +		}
-> > +	}
-> > +}
-> 
-> ...
-> 
-> > +	char *uuid = malloc(37);
-> 
-> libuuid doesn't have helpers for this?
-> 
-There's no helper for uuid allocation AFAIK.
-> Split assignment so if will be closer to its user.
-> 
-Ok, will do.
+Any allocation failure during the #PF path will return with VM_FAULT_OOM
+which in turn results in pagefault_out_of_memory which in own turn
+executes out_out_memory() and can kill a random task.
 
-thanks,
-Chenyu
+An allocation might fail when the current task is the oom victim
+and there are no memory reserves left. The OOM killer is already
+handled at the page allocator level for the global OOM and at the
+charging level for the memcg one. Both have much more information
+about the scope of allocation/charge request. This means that
+either the OOM killer has been invoked properly and didn't lead
+to the allocation success or it has been skipped because it couldn't
+have been invoked. In both cases triggering it from here is pointless
+and even harmful.
+
+It makes much more sense to let the killed task die rather than to
+wake up an eternally hungry oom-killer and send him to choose a fatter
+victim for breakfast.
+
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ mm/oom_kill.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 831340e7ad8b..1deef8c7a71b 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
+ 
++	if (fatal_signal_pending(current))
++		return;
++
+ 	if (!mutex_trylock(&oom_lock))
+ 		return;
+ 	out_of_memory(&oc);
+-- 
+2.32.0
+
