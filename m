@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38F3438494
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 19:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B8F438497
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 19:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhJWRqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 13:46:30 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:34296 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhJWRq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 13:46:28 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 6407D92009C; Sat, 23 Oct 2021 19:44:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 53D5F92009B;
-        Sat, 23 Oct 2021 19:44:07 +0200 (CEST)
-Date:   Sat, 23 Oct 2021 19:44:07 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: Old platforms: bring out your dead
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2110231853170.38243@angie.orcam.me.uk>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S230496AbhJWRxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 13:53:19 -0400
+Received: from gofer.mess.org ([88.97.38.141]:60225 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230051AbhJWRxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 13:53:18 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id DA821C6373; Sat, 23 Oct 2021 18:50:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1635011456; bh=w6/Vb/dHuIEUjgvrPKQDTkK8M/HPQZ80twouA58ZL/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tvoCaA/EMin/2BfycXtwi2CZ/NnpHe0r1nWfxH8pyu1Pqk9uCIUGcLL8t5pOXcsu5
+         E5OuQ2ToeTdY7zjJhOJ+5PVvn2dzmX0ZUpS1ws2ZstqMEpb/IMPlbuL/LZAVP1VphX
+         kqznslSMPQUEX8VGJcUtCPJRvJaj8Sj5M1mZNgduuQDUsiLeJvxDc6lxmt0Cqkt25E
+         thUGdMd25aubi1qd6TRpfK0NIAd0ervR0ZP1GKwFooEHIzRETIUCeqiIVY05tfQt8O
+         kMV9YlDNmSimM3yhcdOU7kuu72xujeU8QIYkCXjzHo99F+9gB7Q+80VJwt75uRK1T7
+         EVyexuRc3PXAw==
+Date:   Sat, 23 Oct 2021 18:50:56 +0100
+From:   Sean Young <sean@mess.org>
+To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+Cc:     mchehab@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211023175056.GA26584@gofer.mess.org>
+References: <YXRE5i9xXpwSjicO@fedora>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXRE5i9xXpwSjicO@fedora>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hi Maíra,
 
- Old discussion, but I lost it in the mid-Jan linux-mips.org crash and 
-only got my unread mailbox from that time restored recently and got at 
-wading through it now.  I think an update on a couple of platforms of 
-interest to me is going to be valuable anyway.
+Your patch looks good, just some very minor nits.
 
-On Fri, 8 Jan 2021, Arnd Bergmann wrote:
-
-> These are the oldest one by architecture, and they may have reached
-> their best-served-by-date:
+On Sat, Oct 23, 2021 at 02:22:46PM -0300, Maíra Canal wrote:
+> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+> replace it for the atomic PWM API.
 > 
-> * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
->   indications that 486 have no users either on recent kernels.
+> Signed-off-by: Maíra Canal <maira.canal@usp.br>
+> ---
+>  drivers/media/rc/pwm-ir-tx.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+> index 4bc28d2c9cc9..dfaa6125991e 100644
+> --- a/drivers/media/rc/pwm-ir-tx.c
+> +++ b/drivers/media/rc/pwm-ir-tx.c
+> @@ -53,6 +53,7 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+>  {
+>  	struct pwm_ir *pwm_ir = dev->priv;
+>  	struct pwm_device *pwm = pwm_ir->pwm;
+> +	struct pwm_state state;
+>  	int i, duty, period;
+>  	ktime_t edge;
+>  	long delta;
+> @@ -60,15 +61,19 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+>  	period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+>  	duty = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
+>  
+> -	pwm_config(pwm, duty, period);
+> +	pwm_init_state(pwm, &state);
+> +
+> +	state.duty_cycle = duty;
+> +	state.period = period;
 
- I continue using my 486DX2 box for defxx driver maintenance, as it's my 
-only EISA machine.  A few years ago it suffered from a PSU failure, but 
-that has been fixed now (I now have a spare PSU too, as it's an unusual 
-industrial unit needed by the box due to its form factor).  Also its 16MiB 
-of RAM it came with has indeed become insufficient recently, but I now 
-have a 128MiB upgrade in the post, and will add another 128MiB to max it 
-out once I get at suitable modules (the system requires 72-pin parity FPM 
-SIMMs with gold fingers, which are uncommon at 64MiB).
+There is no reason to have the period and duty local variables any more;
+the result of DIV_ROUND_CLOSEST(..) can be assigned directly.
 
- In any case I last booted 5.11.0 on it just fine and will get back at it 
-once I have installed the RAM upgrade (scheduled second half of Nov; the 
-box is in my remote lab, so I need to actually get there).
+>  	edge = ktime_get();
+>  
+>  	for (i = 0; i < count; i++) {
+>  		if (i % 2) // space
+> -			pwm_disable(pwm);
+> +			state.enabled = false;
+>  		else
+> -			pwm_enable(pwm);
+> +			state.enabled = true;
 
- FTR I also have a dual Pentium MMX box with 512MiB of RAM now installed 
-and PCIe expansion.  It feels so fast after the RAM upgrade!
+This could be simply:
+		state.enabled = (i % 2) == 0;
 
- There are some corner-case issues with both systems though and I have 
-been posting patches to get them gradually addressed.  Expect more to 
-come.
+> +		pwm_apply_state(pwm, &state);
+>  
+>  		edge = ktime_add_us(edge, txbuf[i]);
+>  		delta = ktime_us_delta(edge, ktime_get());
+> @@ -76,7 +81,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+>  			usleep_range(delta, delta + 10);
+>  	}
+>  
+> -	pwm_disable(pwm);
+> +	state.enabled = false;
+> +	pwm_apply_state(pwm, &state);
+>  
+>  	return count;
+>  }
+> -- 
+> 2.31.1
 
-> * Alpha 2106x: First generation that lacks some of the later features.
->   Since all Alphas are ancient by now, it's hard to tell whether these have
->   any fewer users.
-
- I have a pair of Alpha 21064A (EV45) boxes, one of which is ready to run;
-I just need to schedule some time to get an OS installed on it.  The other 
-box will require some porting to get Linux run on it.  I have both of them 
-locally here, so I can fiddle with them at any time.  Both have reasonable 
-amounts of RAM, but I can't remember how much offhand.  Either or both my 
-end up in my remote lab eventually.
-
-> * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
->   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
->   supports these in DECstation and Toshiba Txx9, but it appears that most
->   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
->   later are rather different and widely used.
-
- I have numerous boxes built around the R3000 and the R2000 CPU even.  All 
-have booted recent Linux kernels just fine.  The R2000 box has its maximum 
-of 24MiB of RAM installed, which has become a bit of a problem.  OTOH the 
-R3000 boxes support up to 480MiB of RAM, and I reckon I have an odd amount 
-of like 352MiB installed in one of them, which makes it work quite nicely 
-even without swap.  There has been some outstanding work in the driver 
-area for these; I know.
-
- NB I have some of these boxes wired in my remote lab and scheduled to run 
-GCC CI for legacy MIPS support once I get the test harness sorted.  Based 
-on my experience they should be fast enough for that purpose.
-
- FAOD I can boot and control, including any software changes, any machine 
-in my remote lab at any time as it's been the whole point of the lab.  Of 
-course any hardware change requires an actual visit.
-
- FWIW,
-
-  Maciej
+Thanks
+Sean
