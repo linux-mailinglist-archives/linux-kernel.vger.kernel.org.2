@@ -2,97 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECDE43829C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DC54382A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhJWJXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35712 "EHLO mail.kernel.org"
+        id S230169AbhJWJda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 05:33:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230104AbhJWJXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 05:23:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F29861057
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 09:20:46 +0000 (UTC)
+        id S229818AbhJWJd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 05:33:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 728C26105A;
+        Sat, 23 Oct 2021 09:31:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634980847;
-        bh=yryamFAhOLhTgMnpeOkGelN+xyO4TP3QX47fzaFStV0=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=JCIaYk9Crgde/lo8ffh+LipkSZ6zJr/74PGJabL8yee9LQlEWrMS/FbzIfDkUY4Ge
-         IjAYxLcjSYR+QhRNZEr6cR1kuy65zECXpfBHVEqrig6yALqZXodhRch0TY2deaH2ng
-         av5PZeqUSp5xjvmokhBxQGQik7ue9WASulYzpv48ZCqDrCGQurMRGmxIz5vtUhN4Ts
-         0eIlFG4k8HsKKZnxhvO5Yn23/NHb0MrF8e8XNqA62aNlJYdt+xm143fy2d4kEIVxpd
-         G5BHB38qP5F0mVoowSG8smVBTlPr3CtG7wHvj36cLxS5bQtLT1AZ8VTlmEdAW5oeL8
-         yj6+zs8bbWWsQ==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] habanalabs/gaudi: recover from CPU WD event
-Date:   Sat, 23 Oct 2021 12:20:41 +0300
-Message-Id: <20211023092041.2364497-2-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211023092041.2364497-1-ogabbay@kernel.org>
-References: <20211023092041.2364497-1-ogabbay@kernel.org>
+        s=k20201202; t=1634981464;
+        bh=+QiwhdJWgBM1NcDkCRuru67R0eaS3X7NMMBJ5F1SkZY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OjqFkHuRE5AD5G7g5ZRRojvYZ6FzO8cHfn0pv14AQad3g/TM1MOGx414QDw1jfKoy
+         DS1lfaxNMWWD62hptSOJBZEnbMrzztOFdEgvkAy2E2DK79Z81w/KZ7Ag5SulR2OGgo
+         2zTbvl2EBM3Mijp3jx6RCKlV7UIU9fSYmXuhud0jaWyU97gTBs3Z53ooeIrsFqgvUc
+         69+doSWCMB5gRV0vw2MpLjmnze/4y0yMmfbsnC+j9rVT9SooBFpOZz5VAsGQ2uKzvu
+         g8ZnJAO4QJHs71zHPJi1MkbYmq1m+Cpmmj58SgI6h2twv++vhCoeszlUzMfkrpMRZj
+         AYB8o24UHwkrw==
+Date:   Sat, 23 Oct 2021 10:30:59 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        Songxiaowei <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset
+ to finish
+Message-ID: <20211023103059.6add00e6@sal.lan>
+In-Reply-To: <20211022151624.mgsgobjsjgyevnyt@pali>
+References: <cover.1634622716.git.mchehab+huawei@kernel.org>
+        <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
+        <20211022151624.mgsgobjsjgyevnyt@pali>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are rare cases where the device CPU's watchdog has expired and as
-a result, the watchdog reset has happened and the CPU will now move to
-running its preboot f/w.
+Hi Pali,
 
-When that happens, the driver will only know that a heartbeat failure
-occurred. As a result, the driver will send a message to the CPU's main
-f/w asking it to reset the device, but because the CPU is now running
-preboot, it won't respond and the re-initialization process will later
-fail when trying to load the f/w.
+Em Fri, 22 Oct 2021 17:16:24 +0200
+Pali Roh=C3=A1r <pali@kernel.org> escreveu:
 
-The solution is to send the request to the preboot as well, only if the
-reset was caused because of HB failure.
+> On Tuesday 19 October 2021 07:06:42 Mauro Carvalho Chehab wrote:
+> > Before code refactor, the PERST# signals were sent at the
+> > end of the power_on logic. Then, the PCI core would probe for
+> > the buses and add them.
+> >=20
+> > The new logic changed it to send PERST# signals during
+> > add_bus operation. That altered the timings.
+> >=20
+> > Also, HiKey 970 require a little more waiting time for
+> > the PCI bridge - which is outside the SoC - to finish
+> > the PERST# reset, and then initialize the eye diagram. =20
+>=20
+> Hello! Which PCIe port do you mean by PCI bridge device? Do you mean
+> PCIe Root Port? Or upstream port on some external PCIe switch connected
+> via PCIe bus to the PCIe Root Port? Because all of these (virtual) PCIe
+> devices are presented as PCI bridge devices, so it is not clear to which
+> device it refers.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/gaudi/gaudi.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+HiKey 970 uses an external PCI bridge chipset (a Broadcom PEX 8606[1]),
+with 3 elements connected to the bus: an Ethernet card, a M.2 slot and
+a mini PCIe slot. It seems HiKey 970 is unique with regards to PERST# signa=
+l,
+as there are 4 independent PERST# signals there:
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 825737dfe381..d2b7ecb45497 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- /*
-- * Copyright 2016-2020 HabanaLabs, Ltd.
-+ * Copyright 2016-2021 HabanaLabs, Ltd.
-  * All Rights Reserved.
-  */
- 
-@@ -4296,6 +4296,24 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset, bool fw_reset
- 
- 		WREG32(irq_handler_offset,
- 			gaudi_irq_map_table[GAUDI_EVENT_HALT_MACHINE].cpu_id);
-+
-+		/* This is a hail-mary attempt to revive the card in the small chance that the
-+		 * f/w has experienced a watchdog event, which caused it to return back to preboot.
-+		 * In that case, triggering reset through GIC won't help. We need to trigger the
-+		 * reset as if Linux wasn't loaded.
-+		 *
-+		 * We do it only if the reset cause was HB, because that would be the indication
-+		 * of such an event.
-+		 *
-+		 * In case watchdog hasn't expired but we still got HB, then this won't do any
-+		 * damage.
-+		 */
-+		if (hdev->curr_reset_cause == HL_RESET_CAUSE_HEARTBEAT) {
-+			if (hdev->asic_prop.hard_reset_done_by_fw)
-+				hl_fw_ask_hard_reset_without_linux(hdev);
-+			else
-+				hl_fw_ask_halt_machine_without_linux(hdev);
-+		}
- 	} else {
- 		if (hdev->asic_prop.hard_reset_done_by_fw)
- 			hl_fw_ask_hard_reset_without_linux(hdev);
--- 
-2.25.1
+	- one for PEX 8606 (the PCIe root port);
+	- one for Ethernet;
+	- one for M.2;
+	- one for mini-PCIe.
 
+After sending the PCIe PERST# signals, the device has to wait for 21 ms
+before adjusting the eye diagram.
+
+[1] https://docs.broadcom.com/docs/PEX_8606_AIC_RDK_HRM_v1.3_06Aug10.pdf
+
+> Normally PERST# signal is used to reset endpoint card, other end of PCIe
+> link and so PERST# signal should not affect PCIe Root Port at all.
+
+That's not the case, as PEX 8606 needs to complete its reset sequence
+for the rest of the devices to be visible. If the wait time is reduced
+or removed, the devices behind it won't be detected.
+
+> > So, increase the waiting time for the PERST# signals to
+> > what's required for it to also work with HiKey 970. =20
+>=20
+> Because PERST# signal resets endpoint card, this reset timeout should
+> not be driver or controller specific.
+
+Not sure if it would be possible to implement it at the core without
+breaking devices like this one where there's a separate chip to actually
+implement the PCIe bus.
+=20
+> Mauro, if you understand this issue more deeply, could you look at my
+> email? https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@=
+pali/
+>=20
+> I think that kernel PCI subsystem does not properly handle PCIe Warm
+> Reset and correct initialization of endpoint cards. Because similar
+> "random PERST# timeout patches" were applied to lot of native controller
+> drivers.
+
+I don't know enough about PCIe documentation in order to help with that.
+Yet, if the PCI/PCIe specs doesn't define a maximum time for PERST# to
+finish, hardware manufacturers will do whatever they please. So, finding
+a common value is impossible.=20
+
+Well, even if specs define it, vendors may still violate that. So, whatever=
+=20
+implementation is done, some quirks may be needed.
+
+Sending PERST# signals to the devices connected to the bridge too early
+will cause the bridge to not detect the devices behind it. That's what
+happens with HiKey 970: lower reset values cause it to miss devices.
+
+Looking from harware perspective, I'd say that the reset time pretty
+much depends on how the PCIe bridges are implemented: if it is FPGA, it is=
+=20
+probably slower than if it is a dedicated hardware. It can be even slower
+if the bridge uses a microcontroller and needs to read the firmware from=20
+some place.
+
+> PS: I'm not opposing this patch, I'm just trying to understand what is
+> happening here and why particular number "21000" was chosen. It is
+> defined in some standard? Or was it just randomly chosen and measures
+> that with this number is initialization working fine?
+
+It is the value used by the HiKey 970 PCIe out-of-tree driver. The patch
+which added support for it at the pcie-kirin increased the time out there.
+
+I tried to preserve the previous value, but that cause some devices to
+be missed during PCI probe time.
+
+Btw, PEX 8606 datasheet says:
+
+	`Reset Circuit
+
+	 The PEX 8606BA-AIC1U1D RDK accepts a PERST# from the host PC via card edg=
+e connector P1. This signal is
+	 OR=E2=80=99d with a manual reset circuit. The manual reset circuit consis=
+ts of a pushbutton (SW7, upper left corner) that
+	 feeds into a reset timer. The reset timer monitors its power rail and res=
+et input. If the reset input is low or the
+	 supply rail is out of range, the reset output is held. Once both conditio=
+ns no longer exist, the reset output will de-
+	 assert after a programmable reset timeout period (capacitor adjustable, d=
+efault value 128 msec). The OR=E2=80=99d reset
+	 signal goes to the PEX 8606 device=E2=80=99s PEX_PERST# input pin, and th=
+e downstream slots=E2=80=99 PERST# connector
+	 pins. PERST# to Slot J1 can be controlled by the PEX 8606 device=E2=80=99=
+s Hot-Plug interface.'
+
+If I understood it well, the PERST# time is hardware-configurable, by
+changing the value of a capacitor.
+
+Regards,
+Mauro
+>=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >=20
+> > See [PATCH v14 00/11] at: https://lore.kernel.org/all/cover.1634622716.=
+git.mchehab+huawei@kernel.org/
+> >=20
+> >  drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/cont=
+roller/dwc/pcie-kirin.c
+> > index de375795a3b8..bc329673632a 100644
+> > --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> > @@ -113,7 +113,7 @@ struct kirin_pcie {
+> >  #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
+> > =20
+> >  /* Time for delay */
+> > -#define REF_2_PERST_MIN		20000
+> > +#define REF_2_PERST_MIN		21000
+> >  #define REF_2_PERST_MAX		25000
+> >  #define PERST_2_ACCESS_MIN	10000
+> >  #define PERST_2_ACCESS_MAX	12000
+> > --=20
+> > 2.31.1
+> >  =20
