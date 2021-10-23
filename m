@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B663C438229
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62003438234
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhJWHOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 03:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhJWHN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 03:13:59 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A00C061764;
-        Sat, 23 Oct 2021 00:11:40 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id z14so948976wrg.6;
-        Sat, 23 Oct 2021 00:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cit7CANo53Mf5nvrRXQ4bn4rZuA1vpmTZTS6Z2yKuT4=;
-        b=gAMg8zjE3CEbfqLZz8rq8rJlOS0Dw7A+O5dbtcHcaHtNqeSCmJ8/aNwP11aCzAdpWq
-         ILQQZBgnQToKFiXK6kHQ1cHYPEwnSZOrNzuPPlfFHvGNxd8wwAxligtTVPWiVb6X7hor
-         IhJlm35++YvIN4L10XfHEQITWoR14VTQ9JUoPljIx0DLRB+ZeH0dXpWIt1rQqmA2RnM3
-         Om+EbBdyXDWzy9zQjT00wlm7OIonv5RdH/CKQM5qtmRKousZ6MiS7esNC5ZY0XAjltSB
-         wgqgsu5op7RmZFE9op2HIDs6EF0iOWWj4ndHNUMwGzeyfObccFxobPg72WWed+0Z6dk5
-         LgqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cit7CANo53Mf5nvrRXQ4bn4rZuA1vpmTZTS6Z2yKuT4=;
-        b=eW5IJInHQikeUWYwDhB3/NPfU5azXBRzZ4e55PlenlXDmembj6hyGyx9B2lZk4ltiV
-         pw8JwuEnpEndvwE3vUWTz1ohLWHFJh4rODwfRcwBRsxC7XMBNN3NChlkYqlNM3vju+Sg
-         Drd4Lek/xn5Eba2RPIFru4eUA+VovXs1nMISUg3TL2nSuLf2xfw4JkoLm/Jw1XE2Obtm
-         b66ou6hYJGqzLxAb/FA6Y/L8qtOtwU9gqwyK0OhGrwtdp7RjwaNeJFOuAsJm6X4ZH/hq
-         PWwH8W2X+gU5uxlYZS87L/lbf89h/rPhJwLc08odBRe7JwdMmb2bdr24jVoO3BQfLZNq
-         JSKA==
-X-Gm-Message-State: AOAM5324yTcjB8fJFIGHdqeFqhL0Xn2r+i2nNz1B8xRWnBnJ/4/yAMp5
-        VvHS93aKNvUJwOmYRy/oMOhwwfsW3Ww=
-X-Google-Smtp-Source: ABdhPJxfJgIwfEaVyjfdtet1JTHgH67fjFQF6txwHkHlVOYul+BwIdiDBykoI+FTVFa0Caph4YK2Dg==
-X-Received: by 2002:adf:a30c:: with SMTP id c12mr5920826wrb.366.1634973099039;
-        Sat, 23 Oct 2021 00:11:39 -0700 (PDT)
-Received: from ?IPv6:2003:c7:8f4e:684:ec38:3d1d:224c:e07d? (p200300c78f4e0684ec383d1d224ce07d.dip0.t-ipconnect.de. [2003:c7:8f4e:684:ec38:3d1d:224c:e07d])
-        by smtp.gmail.com with ESMTPSA id f6sm9245475wmj.28.2021.10.23.00.11.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Oct 2021 00:11:38 -0700 (PDT)
-Subject: Re: [PATCH] usb: usb-skeleton: Add hint to find __init and __exit
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, linux-doc@vger.kernel.org
-References: <20211023052538.GA5141@matrix-ESPRIMO-P710>
- <YXOwA6N2ffVIcA7L@kroah.com>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Message-ID: <7ae5d5c1-4121-65b1-8a91-95513b945823@gmail.com>
-Date:   Sat, 23 Oct 2021 09:11:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230047AbhJWHc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 03:32:58 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:13206 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhJWHc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 03:32:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634974239; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=6prkHAzg/ianVXk7VNqt9m/tBBvysRNdknkhwFj3piw=;
+ b=uNKBukWTW7nQkuiAQCDAgK1PwZWGhhGB/v4EzonFS/17rQF4m5SYLmhpPzo+KvbnpyYdKL2w
+ V7ENvyXll0+8fQq/LVjwaqwOBNoqPr2V21LeveCeQHUqix+2Xf+DUK22FMLj16JmISQPjufi
+ lyLu19zHqQ8qGh1d9zQdOzJFmck=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6173ba0167f107c611dbe0b1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Oct 2021 07:30:09
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7C0D2C43460; Sat, 23 Oct 2021 07:30:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3F41C4338F;
+        Sat, 23 Oct 2021 07:30:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C3F41C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YXOwA6N2ffVIcA7L@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [RFC,v2] mt76: mt7615: mt7622: fix ibss and meshpoint
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211007225725.2615-1-vincent@systemli.org>
+References: <20211007225725.2615-1-vincent@systemli.org>
+To:     Nick Hainke <vincent@systemli.org>
+Cc:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
+        sean.wang@mediatek.com, shayne.chen@mediatek.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robert Foss <robert.foss@linaro.org>,
+        Nick Hainke <vincent@systemli.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163497420151.29616.16838354269777236200.kvalo@codeaurora.org>
+Date:   Sat, 23 Oct 2021 07:30:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/21 8:47 AM, Greg KH wrote:
-> On Sat, Oct 23, 2021 at 07:25:38AM +0200, Philipp Hortmann wrote:
->> Comment to find __init and __exit.
->>
->> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
->> ---
->>   drivers/usb/usb-skeleton.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
->> index 2dc58766273a..80338a50dcde 100644
->> --- a/drivers/usb/usb-skeleton.c
->> +++ b/drivers/usb/usb-skeleton.c
->> @@ -641,6 +641,7 @@ static struct usb_driver skel_driver = {
->>   	.supports_autosuspend = 1,
->>   };
->>   
->> +/* __init and __exit */
->>   module_usb_driver(skel_driver);
-> 
-> This comment makes no sense, sorry.  __init and __exit are things that
-> the linker uses, why would you need to "find" them?
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Nick Hainke <vincent@systemli.org> wrote:
 
-When I want to add something to the __init function (debug comment for 
-example), how to do this without knowing that it is in module_usb_driver?
+> commit 7f4b7920318b ("mt76: mt7615: add ibss support") introduced IBSS
+> and commit f4ec7fdf7f83 ("mt76: mt7615: enable support for mesh")
+> meshpoint support.
+> 
+> Both used in the "get_omac_idx"-function:
+> 
+> 	if (~mask & BIT(HW_BSSID_0))
+> 		return HW_BSSID_0;
+> 
+> With commit d8d59f66d136 ("mt76: mt7615: support 16 interfaces") the
+> ibss and meshpoint mode should "prefer hw bssid slot 1-3". However,
+> with that change the ibss or meshpoint mode will not send any beacon on
+> the mt7622 wifi anymore. Devices were still able to exchange data but
+> only if a bssid already existed. Two mt7622 devices will never be able
+> to communicate.
+> 
+> This commits reverts the preferation of slot 1-3 for ibss and
+> meshpoint. Only NL80211_IFTYPE_STATION will still prefer slot 1-3.
+> 
+> Tested on Banana Pi R64.
+> 
+> Fixes: d8d59f66d136 ("mt76: mt7615: support 16 interfaces")
+> Signed-off-by: Nick Hainke <vincent@systemli.org>
+> Acked-by: Felix Fietkau <nbd@nbd.name>
 
-thanks,
+Patch applied to wireless-drivers-next.git, thanks.
 
-Philipp
+753453afacc0 mt76: mt7615: mt7622: fix ibss and meshpoint
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211007225725.2615-1-vincent@systemli.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
