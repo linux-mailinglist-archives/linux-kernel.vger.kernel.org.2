@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D43438219
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 08:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E5243821D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhJWHBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 03:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
+        id S229978AbhJWHDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 03:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhJWHBj (ORCPT
+        with ESMTP id S229493AbhJWHDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 03:01:39 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9501AC061764;
-        Fri, 22 Oct 2021 23:59:20 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id m42so4995183wms.2;
-        Fri, 22 Oct 2021 23:59:20 -0700 (PDT)
+        Sat, 23 Oct 2021 03:03:50 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E4FC061766
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 00:01:31 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id t4so7925632oie.5
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 00:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=odO9BU6w2dsyXVnjQWKBXDwWqOdNcc7IgTwaejfrngQ=;
-        b=lzhP6TcppNmupz3tHcRJkoanJgpf2+mQTa9YjsV40VKLf0mC4xt8MEmEwivcs3Yrhm
-         5mlqeNslY971QEgvmFmJyxFQwgaRNCHG6gMV4yejdH/VxwG9Gg/BwwTHitbn3xsxiX3q
-         Ax1bUGHQxcHmTeNAw+1X6o43b7ttATzrrlCOBoAHNqyim0blFr/C2QbfybZXfLMY8TbB
-         0LSlF3Vd1VpjRSVJfdL87goZNdJZ6yo+vrXDve4en/WIkkbqA74+Oh7xPGX26HMHDxpI
-         9pVQkQRRyekqdTMKyvG0tjpKEg4MJ2pObVoahvXn1tPS3Gs4Mz7FlQMtXUnFBesNtZ7q
-         ahKQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3XNK8/G5+03RpD0j7S3Gnth3OiCNUfmJqhs9h8ooGSo=;
+        b=OhhKJKYrQv2NReaxw4cm/Scx8uvk7T8c/UtJ4+TgQyHQwehrzn0IEa7aZ3IuOFY5KV
+         htMmxSTP6og8HYaIgwEpCpEAyeLrvZ0yfSEo1YW7Ps25tC3+Ft3FslUZPYZb2Jq8QwcD
+         /x5zpO4OkHKtILpME0y9/K0r8EjZf3s5Uf5zzn7WD7NoYLC1t8ksECAKHvVL/pl43j/i
+         m7B8SxNuvXpSdJ7J0hkGK32jGUCSkgDaYM+ONY4QV5X5mlIHgCogFwGMUKBxaS27W1yX
+         87hicmmVrqENF/YZbp7jiBMJodinxWOqDmDx+sQ9tHz5L827wHilSzAAPAwSaTA9N761
+         0zQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=odO9BU6w2dsyXVnjQWKBXDwWqOdNcc7IgTwaejfrngQ=;
-        b=csorbrPY/dZDQ/Zbm9/Y2nX3gBDZMWWSdupJaqJCEz4W+po8qxXOIvl7/hjAsDlVSM
-         3zVV2ko7dsOosFNjQN7yj7TLXTx+XtFzhBuBb6t2Bxzfh06AjlJkeEVxPjkAW8XUr6yx
-         BXSCfct+SehILuXTDicEHktc9R09BKWlAkKQ7iIWBpDLe48d/Wc/8Gf8TsZ0eok0KB0y
-         iOuUrN3XfOLNiDLZjngd8xXvWJywApy76zz+cwOJ+1vVtPQer0o5YXD20VFY+9ao0rlR
-         Rt8MXdE+BCftk8k1GYvnX8yzDExwW4g25+ei2z1LCBG16vi0Lri3R+Ffz71s+jImBJ21
-         5B9w==
-X-Gm-Message-State: AOAM530bXVeEPnvpppWpzECUl/Ui+/xo55P3I2qnTKU6rw7Vm8o0Tf6E
-        kdiwLKnVPk5HBTTm9Bji8wWneXP+R3s=
-X-Google-Smtp-Source: ABdhPJyNKDPBP+Blum3WToWhdGNARKYfKpMdz/CZSKU4ZC5KPbtlOH3/R3h/LfInB+pq573n7nDT9Q==
-X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr34039106wmq.82.1634972358393;
-        Fri, 22 Oct 2021 23:59:18 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p200300c78f4e0684ec383d1d224ce07d.dip0.t-ipconnect.de. [2003:c7:8f4e:684:ec38:3d1d:224c:e07d])
-        by smtp.gmail.com with ESMTPSA id 126sm4167584wmz.28.2021.10.22.23.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 23:59:18 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 08:59:16 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org
-Subject: [PATCH v3] Docs: usb: update struct usb_driver, __init and __exit
-Message-ID: <20211023065916.GA6268@matrix-ESPRIMO-P710>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3XNK8/G5+03RpD0j7S3Gnth3OiCNUfmJqhs9h8ooGSo=;
+        b=l6j7WRY/94EfGADjxRzqlNK5dOF0FZ2HJJAKAq4SyiOMq26ZhIfVfvIJcjgp5BhgvR
+         TOncHZEHqQ5CUI3L5bTU6QVTrqhyH14YmbPJh/aAbCNJgsuaR8VjdBJpSCs+cjjw6hsZ
+         ugiEH7i+1RXON6CfkIVa/oTdN8S3Ns4Ey4hG5FyGRQ1FBc1eRUrVGqx7wSCd8iBtVOu/
+         WPisKU8kDbxAgpsZhoe4S7QDENqKsB0P/Oz7ikr17CjAbYWTPUzdCZDeW0Dgmwj/OXE2
+         94ENyEi3zdrfcxEyfn44Ddgpu2nEUw3PxJlPp/vkZV+/Wydz9o07ZIggoSh9/P1fGu7+
+         nyDw==
+X-Gm-Message-State: AOAM533vRUptQ9EL4axvJQucHctdXQKd9105FXZeAtt7U1Y2rD5CAayR
+        8hFyRH6nwQczXSZM2EK/vueY3It5BagmkoO1TAEEvQ==
+X-Google-Smtp-Source: ABdhPJwqjlmr9J6papGjZZdJkxgKQ8pcBdronrFAgFi4Gj7VPd8fHvjCUvJ/r3u7L7WJiohVGJLwV8tiuzu5W95dT6E=
+X-Received: by 2002:a05:6808:d50:: with SMTP id w16mr13922075oik.128.1634972490639;
+ Sat, 23 Oct 2021 00:01:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210927173348.265501-1-info@alexander-lochmann.de>
+ <YVQkzCryS9dkvRGB@hirez.programming.kicks-ass.net> <927385c7-0155-22b0-c2f3-7776b6fe374c@alexander-lochmann.de>
+In-Reply-To: <927385c7-0155-22b0-c2f3-7776b6fe374c@alexander-lochmann.de>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 23 Oct 2021 09:01:19 +0200
+Message-ID: <CACT4Y+aH5dZTSw7+59GTDQyikP6CqXCD7AAhjciaS_MQSbrV6A@mail.gmail.com>
+Subject: Re: [PATCHv2] Introduced new tracing mode KCOV_MODE_UNIQUE.
+To:     Alexander Lochmann <info@alexander-lochmann.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        kasan-dev@googlegroups.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update struct usb_driver from usb-skeleton.c.
-remove :c:func: for usb_register and usb_deregister
+On Sat, 23 Oct 2021 at 00:03, Alexander Lochmann
+<info@alexander-lochmann.de> wrote:
+>
+> Maybe Dmitry can shed some light on this. He actually suggested that
+> optimization.
+>
+> - Alex
+>
+> On 29.09.21 10:33, Peter Zijlstra wrote:
+> > On Mon, Sep 27, 2021 at 07:33:40PM +0200, Alexander Lochmann wrote:
+> >> The existing trace mode stores PCs in execution order. This could lead
+> >> to a buffer overflow if sufficient amonut of kernel code is executed.
+> >> Thus, a user might not see all executed PCs. KCOV_MODE_UNIQUE favors
+> >> completeness over execution order. While ignoring the execution order,
+> >> it marks a PC as exectued by setting a bit representing that PC. Each
+> >> bit in the shared buffer represents every fourth byte of the text
+> >> segment.  Since a call instruction on every supported architecture is
+> >> at least four bytes, it is safe to just store every fourth byte of the
+> >> text segment.
+> >
+> > I'm still trying to wake up, but why are call instruction more important
+> > than other instructions? Specifically, I'd think any branch instruction
+> > matters for coverage.,
+> >
+> > More specifically, x86 can do a tail call with just 2 bytes.
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
-V2 -> V3: update struct usb_driver with tabs as in the original
-          taken out all changes for _init and __exit
-          except replacing :c:func:
-V1 -> V2: changed :c:func:`usb_register` to usb_register()
-          changed the :c:func:`usb_deregister` to usb_deregister()
-          used literal blocks for makro module_usb_driver and added one more
-          stage of multi-stage macros.
+Hi Peter, Alex,
 
- Documentation/driver-api/usb/writing_usb_driver.rst | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+The calls are important here because we only use PCs that are return
+PCs from a callback emitted by the compiler. These PCs point to the
+call of the callback.
 
-diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
-index 2176297e5765..d0f7c1b79815 100644
---- a/Documentation/driver-api/usb/writing_usb_driver.rst
-+++ b/Documentation/driver-api/usb/writing_usb_driver.rst
-@@ -57,9 +57,12 @@ structure. The skeleton driver declares a :c:type:`usb_driver` as::
- 	    .name        = "skeleton",
- 	    .probe       = skel_probe,
- 	    .disconnect  = skel_disconnect,
--	    .fops        = &skel_fops,
--	    .minor       = USB_SKEL_MINOR_BASE,
-+	    .suspend     = skel_suspend,
-+	    .resume      = skel_resume,
-+	    .pre_reset   = skel_pre_reset,
-+	    .post_reset  = skel_post_reset,
- 	    .id_table    = skel_table,
-+	    .supports_autosuspend = 1,
-     };
- 
- 
-@@ -81,7 +84,7 @@ this user-space interaction. The skeleton driver needs this kind of
- interface, so it provides a minor starting number and a pointer to its
- :c:type:`file_operations` functions.
- 
--The USB driver is then registered with a call to :c:func:`usb_register`,
-+The USB driver is then registered with a call to usb_register(),
- usually in the driver's init function, as shown here::
- 
-     static int __init usb_skel_init(void)
-@@ -102,7 +105,7 @@ usually in the driver's init function, as shown here::
- 
- 
- When the driver is unloaded from the system, it needs to deregister
--itself with the USB subsystem. This is done with the :c:func:`usb_deregister`
-+itself with the USB subsystem. This is done with the usb_deregister()
- function::
- 
-     static void __exit usb_skel_exit(void)
--- 
-2.25.1
+I don't remember exactly what's the story for tail calls of the
+callback for both compilers, ideally they should not use tail calls
+for this call, and I think at least one of them does not use tail
+calls.
 
+But even with tail calls, the callback is emitted into every basic
+block of code. So it should be (call, some other instructions, call)
+and at least the first call is not a tail call.
