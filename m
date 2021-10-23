@@ -2,102 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787B4438337
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 12:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DA5438338
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 12:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhJWKfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 06:35:08 -0400
-Received: from mout.gmx.net ([212.227.17.21]:44215 "EHLO mout.gmx.net"
+        id S230327AbhJWKkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 06:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhJWKfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 06:35:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634985130;
-        bh=qT3NtbfCTi3AEJuv6B84ArZWhlTcMOfhYfUyEQtSy4g=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=EMhWLveFjW2tOIe8v4GZGcQOv5NMhkOjcastfzyUfFi0LAXrpsV//+xAvgqqVb/xG
-         zRsUVBoQHFCPmPmjet7goK/TsO6XdAbkF6W8RayH7ycgJ8JJo1cschhVRcncQnwtbb
-         b1A0Wu3s2YAuZRaiZ1w4YgIpgCvnI/gywQr2LcXU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzFx-1mMHxg3VOD-00HyIU; Sat, 23
- Oct 2021 12:32:10 +0200
-Date:   Sat, 23 Oct 2021 12:31:58 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: Avoid open coded arithmetic in memory allocator
- functions
-Message-ID: <20211023103158.GA4145@titan>
-References: <20211016152829.9836-1-len.baker@gmx.com>
- <YWr7UN1+RkayVWy2@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWr7UN1+RkayVWy2@casper.infradead.org>
-X-Provags-ID: V03:K1:YY+/NlKd1g8gSzmVe+dTBDJxFGAdShVkdSTX36o363A70qgUa+n
- mv4UuYm/ScEiNgTwBooSc/wAYnZWXo9zjzcoCdLOk23mRZHOPAJjv8SenZMGFhFEh+CHJqA
- rg9c35kHlflCKIEra2HLhP+Q+cU1eq47oF8LsVQ8tEpOHjkYzVwznoiMaaeMY2DMXeF0KY4
- DUZT+1kOIMGNM/89N2w8g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qmta2Mq2klY=:GuB15on80GlDbDftI06/I/
- 4gqkrrmcy2qlk8Kfl2OBcHDtvmfdY8ChEZ5/D9fTqFLH5Sp6WacaSllR3eVg7hKlJtORyWmFz
- +Wy3k+WaJnceK2fJSuXXQ8BV3SZyYDqt5oUe5H4raaD4+76C+fZZ/Or9pypxKYbzEva1ucehJ
- xAxq4knCChNECj6Fa6s95Jh/YJuG7ccH9LbKCp0lQJJ5GW5D9EZjr0OaS/U9db8S7fwUK+CdP
- M4ldQNFV8HlIR7UuYCcOgnkYjHuz+uwm3roT8HmrMtjJf3qRpTgasywofErHwiBcXg9EseN6r
- 6EM9X49KDgz1bHBBwu4dvR29ioU32Ax+0TsNpVsWoELRd+xQn0/t1R/B6xE/C3TH2pNXCm03u
- Q3zxmL3Yi4EThUERjocbmpGW1X8rvFhaZuXShmemriCvZIzdWRNRqVv4J2I1fR4VFvZjgatOI
- bPk9f0XnF5/FSXybhbghTSuToHcXbB1RTMRBLo8FdqGSHL/8/HM0kMzrk0xnDWBwYGcB6p/sW
- /Asoy9nvDVjE3pphRj6WpRPBvz45MLMWOIJgfPzj+sSFDrlMbHKA1R+uSn0YetN72NPzsljKu
- vQj771XsHX2LoDFR7zmuz38/e920kjdowqucmAyn5+hx5w0IHwcKWGnt7d47CdP8/GeGHGvFX
- S1sUy0AbT3EUz5okYF63LBZ5ybAEbG/cQ3v0WWYNgWtaMLrfHBSTkCNY0FjNYuZlcEuj8Cgjj
- YYxTDxb6kNSw+aAv/vvTaltIypjvV9AJifqfRF638In1OQP7Yq9SMVtyqWTg8N7CAeDBTnWm6
- Y5JcUVjhyWKx1qV/fvQuZYoDvdlh8J996XI9rYImJdVo2K4RXolZoS4ESUJom4LVqdUmfMDyu
- GAsiH08AR+DI5UYTvuD966AAwPMegyBGqgT51IBwqkmRCn7+zFVvi8FFaQSn6nZs5s5Tcb60b
- KTArzQxcoRTdV/uROghasMmUIY0xE3l6HsGC8kQM+ggkpmcF/ovGlZi6T+k5FB7hKb9c3feLo
- Hd21deroQbYjJVSFh1yWly/yZLMfeernuUJRinhmfG6h96DtgDRIYCSD8Ehcno+l2GWfF6iFv
- 32GFeOqtTcZpQY=
-Content-Transfer-Encoding: quoted-printable
+        id S229721AbhJWKkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 06:40:08 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52B8460ED5;
+        Sat, 23 Oct 2021 10:37:49 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1meEPL-0014PX-0U; Sat, 23 Oct 2021 11:37:47 +0100
+Date:   Sat, 23 Oct 2021 11:37:46 +0100
+Message-ID: <87o87gt4at.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 3/3] irqchip/gic-v3-its: Limit memreserve cpuhp state lifetime
+In-Reply-To: <20211022103307.1711619-4-valentin.schneider@arm.com>
+References: <20211022103307.1711619-1-valentin.schneider@arm.com>
+        <20211022103307.1711619-4-valentin.schneider@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org, will@kernel.org, mark.rutland@arm.com, tglx@linutronix.de, bigeasy@linutronix.de, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+On Fri, 22 Oct 2021 11:33:07 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
+> 
+> The new memreserve cpuhp callback only needs to survive up until a point
+> where every CPU in the system has booted once. Beyond that, it becomes a
+> no-op and can be put in the bin.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c   | 23 ++++++++++++++++++++---
+>  include/linux/irqchip/arm-gic-v3.h |  1 +
+>  2 files changed, 21 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index a6a4af59205e..4ae9ae6b90fe 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -5206,6 +5206,15 @@ int its_cpu_init(void)
+>  }
+>  
+>  #ifdef CONFIG_EFI
+> +static void rdist_memreserve_cpuhp_cleanup_workfn(struct work_struct *work)
+> +{
+> +	cpuhp_remove_state_nocalls(gic_rdists->cpuhp_memreserve_state);
+> +	gic_rdists->cpuhp_memreserve_state = CPUHP_INVALID;
+> +}
+> +
+> +static DECLARE_WORK(rdist_memreserve_cpuhp_cleanup_work,
+> +		    rdist_memreserve_cpuhp_cleanup_workfn);
+> +
+>  static int its_cpu_memreserve_lpi(unsigned int cpu)
+>  {
+>  	struct page *pend_page = gic_data_rdist()->pend_page;
+> @@ -5226,7 +5235,7 @@ static int its_cpu_memreserve_lpi(unsigned int cpu)
+>  	 * invocation of this callback, or in a previous life before kexec.
+>  	 */
+>  	if (gic_data_rdist()->flags & RDIST_FLAGS_PENDTABLE_RESERVED)
+> -		return 0;
+> +		goto out;
+>  
+>  	gic_data_rdist()->flags |= RDIST_FLAGS_PENDTABLE_RESERVED;
+>  
+> @@ -5234,6 +5243,11 @@ static int its_cpu_memreserve_lpi(unsigned int cpu)
+>  	paddr = page_to_phys(pend_page);
+>  	WARN_ON(gic_reserve_range(paddr, LPI_PENDBASE_SZ));
+>  
+> +out:
+> +	/* This only needs to run once per CPU */
+> +	if (cpumask_equal(&cpus_booted_once_mask, cpu_possible_mask))
+> +		schedule_work(&rdist_memreserve_cpuhp_cleanup_work);
 
-On Sat, Oct 16, 2021 at 05:18:24PM +0100, Matthew Wilcox wrote:
-> On Sat, Oct 16, 2021 at 05:28:28PM +0200, Len Baker wrote:
-> > +static size_t new_dir_size(size_t namelen)
-> > +{
-> > +	size_t bytes;
-> > +
-> > +	if (check_add_overflow(sizeof(struct ctl_dir), sizeof(struct ctl_nod=
-e),
-> > +			       &bytes))
-> > +		return SIZE_MAX;
-> > +	if (check_add_overflow(bytes, array_size(sizeof(struct ctl_table), 2=
-),
-> > +			       &bytes))
-> > +		return SIZE_MAX;
-> > +	if (check_add_overflow(bytes, namelen, &bytes))
-> > +		return SIZE_MAX;
-> > +	if (check_add_overflow(bytes, (size_t)1, &bytes))
-> > +		return SIZE_MAX;
-> > +
-> > +	return bytes;
-> > +}
->
-> I think this is overkill.  All these structs are small and namelen is
-> supplied by the kernel, not specified by userspace.  It really complicat=
-es
-> the code, and I don't see the advantage.
->
-Ok, understood. I will send a v2 without this function.
+Which makes me wonder. Do we actually need any flag at all if all we
+need to check is whether the CPU has been through the callback at
+least once? I have the strong feeling that we are tracking the same
+state multiple times here.
 
-Thanks for the review,
-Len
+Also, could the cpuhp callbacks ever run concurrently? If they could,
+two CPUs could schedule the cleanup work in parallel, with interesting
+results.  You'd need a cmpxchg on the cpuhp state in the workfn.
+
+> +
+>  	return 0;
+>  }
+>  #endif
+> @@ -5421,13 +5435,14 @@ static void __init its_acpi_probe(void)
+>  static void __init its_acpi_probe(void) { }
+>  #endif
+>  
+> -static int __init its_lpi_memreserve_init(void)
+> +static int __init its_lpi_memreserve_init(struct rdists *rdists)
+>  {
+>  	int state;
+>  
+>  	if (!efi_enabled(EFI_CONFIG_TABLES))
+>  		return 0;
+>  
+> +	rdists->cpuhp_memreserve_state = CPUHP_INVALID;
+>  	state = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+>  				"irqchip/arm/gicv3/memreserve:online",
+>  				its_cpu_memreserve_lpi,
+> @@ -5435,6 +5450,8 @@ static int __init its_lpi_memreserve_init(void)
+>  	if (state < 0)
+>  		return state;
+>  
+> +	rdists->cpuhp_memreserve_state = state;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -5465,7 +5482,7 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
+>  	if (err)
+>  		return err;
+>  
+> -	err = its_lpi_memreserve_init();
+> +	err = its_lpi_memreserve_init(rdists);
+>  	if (err)
+>  		return err;
+>  
+> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
+> index 0dc34d7d735a..95479b315918 100644
+> --- a/include/linux/irqchip/arm-gic-v3.h
+> +++ b/include/linux/irqchip/arm-gic-v3.h
+> @@ -624,6 +624,7 @@ struct rdists {
+>  	u64			flags;
+>  	u32			gicd_typer;
+>  	u32			gicd_typer2;
+> +	int                     cpuhp_memreserve_state;
+>  	bool			has_vlpis;
+>  	bool			has_rvpeid;
+>  	bool			has_direct_lpi;
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
