@@ -2,59 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F608438455
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 18:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6163C438469
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 19:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhJWQiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 12:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
+        id S230452AbhJWRHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 13:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhJWQiX (ORCPT
+        with ESMTP id S230037AbhJWRHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 12:38:23 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C1EC061714
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 09:36:03 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id a16so2607493wrh.12
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 09:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
-        b=Auzk3IRpBeFN/bFGDImjZYdD9Z0fJthwkpW/VZBxkocI1vzk8D502r3KNZkyEIwoqy
-         DPnotI92Em3JsBMHUBcfY0UiSmKKHZPnWknMiSCJOrNT5gxlojFv4Px8BZmtSm/dbSOD
-         Dcs4eVwq4neYFc+RAbeJay4MKwBu08Vq8D9xiLdZbYlvCLPDZuNgF1YrQudPTsGKqf1+
-         1RDPK7OZrb0EwRTgsSeD3IDeDKBHx1sCZqYZfiFNar9V4OR87T1V7Ef9YVr2idgp1bKi
-         ljhFUvYsyuV5kIs2j1n2FCFdqLQLkMOYh0IGOxMp5sfzs+1mf6ECE0BprbDgyra8Mqwk
-         VnwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
-        b=WoZLYVgV2mgKZQ3sNrQjmglJtZdICmso4BYh/lpXtzJ/z89D0FQHheRMCcvXi1wV85
-         ZDi5yqjNqaThhHaoj72tpPXzPA5G7u1hKTdPWUgnxGZZE4bkVwWYNebRar0lbzZFdRIp
-         op8MUvaezFVGkajQRQnmZ21HmDel4LPgE9Wz6OWXlkrWm3Firk2UgzKXvg7j3e1J6gxt
-         uCqeiOm5LloZYCsBQdBRx6nSzhwIbvdeUALQbYwVMPS5h0DvNS3PKX4yXztCV0DoN/D8
-         zgE9LK6x1tz/Oem9IHrZmVdEXxluyaahPzCnd3kOT9uQ/ghWh3WVnMsrCHarlFFIeHoc
-         fQzg==
-X-Gm-Message-State: AOAM531uzBy2ujIZuWvq0KveA6JKcBwR9hmXoQzTzhNH79wLYcGG68xp
-        wuQG70GRmSOZ4YHZLflkJgII/azY5PmX+t6BxHNh3Gih
-X-Google-Smtp-Source: ABdhPJw10RgwfkDOq9555KjVfE0Jkv1EwCLuD6LAU5wwgKfNzOyN7c++E2fHAp+aKQWkgE8QjX+aFoYGuH7JcrpskLM=
-X-Received: by 2002:a05:6000:1aca:: with SMTP id i10mr9180730wry.207.1635006962691;
- Sat, 23 Oct 2021 09:36:02 -0700 (PDT)
+        Sat, 23 Oct 2021 13:07:48 -0400
+X-Greylist: delayed 186 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 23 Oct 2021 10:05:29 PDT
+Received: from smtp.outflux.net (mta.outflux.net [IPv6:2001:19d0:2:6:c0de:0:736d:7471])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46120C061714
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 10:05:29 -0700 (PDT)
+Received: from auth (localhost [127.0.0.1]) (authenticated bits=0)
+        by vinyl.outflux.net (8.15.2/8.15.2/Debian-10) with ESMTPSA id 19NH1G5h005724
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Sat, 23 Oct 2021 10:01:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=outflux.net;
+        s=2016010; t=1635008477;
+        bh=HJ2FncMHXdeq3iIGAPXeJDeLV4Lnj+hYTF/49t+Z+9c=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=fNh/nv9ZPjanHdgdCokXr2RwOvIe9RGMJtg8FbshdSd8ihtnQGVCachF1Bu/cbwoj
+         CoJJHLfOZmhwIHAhM42fzFlgzMkA8ykpmftAXAPzUNM76knGW3oQlu1ETgFKvoV481
+         PfA/62brKmME66TtoITSArAZ3v8DrK4swlWsj5cs=
+Date:   Sat, 23 Oct 2021 10:01:16 -0700
+From:   Kees Cook <kees@outflux.net>
+To:     Julia Lawall <julia.lawall@inria.fr>, Joe Perches <joe@perches.com>
+CC:     cocci@inria.fr, linux-kernel@vger.kernel.org
+Subject: Re: [cocci] update Coccinelle entry
+User-Agent: K-9 Mail for Android
+In-Reply-To: <alpine.DEB.2.22.394.2110231758550.2967@hadrien>
+References: <alpine.DEB.2.22.394.2110231758550.2967@hadrien>
+Message-ID: <6A7FEC25-CBC1-434D-BD81-1FDB81DD9B45@outflux.net>
 MIME-Version: 1.0
-Received: by 2002:adf:f2d2:0:0:0:0:0 with HTTP; Sat, 23 Oct 2021 09:36:02
- -0700 (PDT)
-Reply-To: kaylamanthey022@gmail.com
-From:   Kayla Manthey <jesuspapakofim@gmail.com>
-Date:   Sat, 23 Oct 2021 16:36:02 +0000
-Message-ID: <CANEksHtMO6dCTp6Yv7X6t+2EVRsR70maQM+5UoEhrE0cuDbe+Q@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-MIMEDefang-Filter: outflux$Revision: 1.316 $
+X-HELO: [127.0.0.1]
+Envelope-To: linux-kernel@vger.kernel.org
+Envelope-To: cocci@inria.fr
+Envelope-To: joe@perches.com
+Envelope-To: julia.lawall@inria.fr
+X-Scanned-By: MIMEDefang 2.83
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings, My name is Kayla Manthey, please reply me back?
+
+
+On October 23, 2021 9:01:18 AM PDT, Julia Lawall <julia=2Elawall@inria=2Ef=
+r> wrote:
+>Update mailing list and website=2E  Drop Michal Marek as a maintainer, wh=
+o
+>has not participated in a long time=2E
+>
+>Signed-off-by: Julia Lawall <Julia=2ELawall@inria=2Efr>
+>
+>---
+>
+>For information=2E  This will be in my tree=2E
+>
+>diff --git a/MAINTAINERS b/MAINTAINERS
+>index 7d46f03e5037=2E=2E8746149b6623 100644
+>--- a/MAINTAINERS
+>+++ b/MAINTAINERS
+>@@ -4594,10 +4594,9 @@ COCCINELLE/Semantic Patches (SmPL)
+> M:	Julia Lawall <Julia=2ELawall@inria=2Efr>
+> M:	Gilles Muller <Gilles=2EMuller@inria=2Efr>
+> M:	Nicolas Palix <nicolas=2Epalix@imag=2Efr>
+>-M:	Michal Marek <michal=2Elkml@markovi=2Enet>
+>-L:	cocci@systeme=2Elip6=2Efr (moderated for non-subscribers)
+>+L:	cocci@inria=2Efr (moderated for non-subscribers)
+> S:	Supported
+>-W:	http://coccinelle=2Elip6=2Efr/
+>+W:	https://coccinelle=2Egitlabpages=2Einria=2Efr/website/
+> T:	git git://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/mmarek/kbuild=
+=2Egit misc
+
+Perhaps drop this tree and add yours, too?
+
+> F:	Documentation/dev-tools/coccinelle=2Erst
+> F:	scripts/coccicheck
+
+
+
+
+--=20
+Kees Cook
