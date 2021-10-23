@@ -2,98 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A81443853F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 22:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557BF438543
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 22:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhJWUcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 16:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S230516AbhJWUh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 16:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhJWUcX (ORCPT
+        with ESMTP id S230230AbhJWUh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 16:32:23 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC39C061714
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 13:30:03 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id oa4so5308928pjb.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 13:30:03 -0700 (PDT)
+        Sat, 23 Oct 2021 16:37:58 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25123C061714;
+        Sat, 23 Oct 2021 13:35:38 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id n10so632620iod.13;
+        Sat, 23 Oct 2021 13:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=u8fb+wH2NugqB0P0dy0KwRekwdYMOc1cKowuVaNB8zU=;
-        b=BYzi+ijedWYHIbvvonMnqO6xMeE600lzFCc1izpDmST8aT3E+1hLvZ9JPMLhSHjGLm
-         UbrJpn+tPQYlDAj9grHsXlAu1Z+Vbp6rfrW/wVtpJEsvGR3YPi4RJMLIocne1DV0yazD
-         FLtKiJGo1dOj6Dy62rH3HiK+ggp3RMeJP8CqXiS+sketcokQ0KPLvkbT3o4G+2x6Dce2
-         Tlu2nOXva7mQ6H3YlrFuCwwMh8bTclIT/Dk9KZBBwE2uBZqkGzoksVBd2n69sy5wHnu8
-         UtW8VjlIvr+olpt2mBO/fMAyLySuubKrxuZnHYW51pvStOtbbSqGC3kqkfbht11XMpaR
-         zxEQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DRz5WNlfSy+sShjmQTbrU6okPHsh3e5rmhOcPLYt3ew=;
+        b=fih7jeOAVQfqyL0t/DxOEXEUlf4DkadilKBrl72TnKq9XBl/BqiU3hil+k5/BK+F/9
+         bSZjCOganYq/pimgFyKtIGScOAJEU9lRdVc231en/6uTNa3AbfBus4BbpNbn1bft7OeL
+         xm/SEjf4VO2YED08mtIpXghhkjFfTbDL0O4KMN7ZWc4y3MLqSzahJ9NxU2Mz/lPbAmkj
+         MtoTHjI+l4JvTmUbKeApYJJEO5rheqiF3kd1bRrb6sFQHH2OqB1G4aIsRvVs0ETgfYgJ
+         2SCaGipjHiU5rDurXgaSBjcbGuz3GJOKzDhEuPgj2z9CP/ljP6IvvU342+70b2yHkqNG
+         mg0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=u8fb+wH2NugqB0P0dy0KwRekwdYMOc1cKowuVaNB8zU=;
-        b=zKjLjMS0QOC0GFcLZfeJ7ckSdRDrcANIUpPO4GdcvP2OU5y4fu4njN5Jkt/6NAfqSh
-         OLJRVEf6I231zEzoR97N5qlpBKQn/Z5Kpvr+PE+IJhIPvNwFCPqxFA8O0zMATFbZM2GH
-         atR8xatXYhPcN4WpMMnd1Cd29sllb7pJv5cy8HBTZZnE9TM9Z2sIorwdQ/Z5w+i+MY6k
-         tipfFbzDEg82ZzXR7xOc0nxD7nLNi6RI660uPPIxJFUtBx6oP+5NBZRKEtAvNvBHvgaw
-         L75oano2ZNlFfws6Kz3kSrni6j4Hn8H+3obT1ZuhzT5nUE5bkAkxOalHRX3D50CA+ONu
-         y+/w==
-X-Gm-Message-State: AOAM530VoUPMcCwaty4kbwurgQHp9PfUl6ZMwaXJcTQLs+bFggdPjFhc
-        YfLKUR5R2f0CJdg0HlT4igoj44c2OX5R0A==
-X-Google-Smtp-Source: ABdhPJyqTSjW0oaeNA/j9VV5Rk31/sFw4dzBMlR9+7/U0TrUbIhO5h4Hg+7BUC2wxRJ6NBAmLjM2ug==
-X-Received: by 2002:a17:902:6b4a:b0:13f:8e99:2149 with SMTP id g10-20020a1709026b4a00b0013f8e992149mr7692407plt.87.1635021003104;
-        Sat, 23 Oct 2021 13:30:03 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w11sm12276589pge.48.2021.10.23.13.30.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DRz5WNlfSy+sShjmQTbrU6okPHsh3e5rmhOcPLYt3ew=;
+        b=6thqeky1TqUMmbLQBzwrbbzII7KcnN0CDly2HUCaNI4ZtGPe8riFWZB5my5sFYLi0O
+         BxYbobIsxRlcxUYkfAOKVFT+A+CBmrpdL3s/VGKO6KDZEYUtZ3wmFn3XiA9r7NdGqVWu
+         RpOjOR3pwwoMRH4p1k1ptRHsbZUA3d0EQ0VEnLG9WZCg+VgO+QSdPJvLoLnyl6J+5Tn1
+         mbLEk77cRNtcbhgxVOOhCD/K1kDxZpQSJ76dRMY8shH20qNQNEyQtg9KUctQfIc1qZ6I
+         mY13XZW7Qa+ByP5DDwCX8ZmUdU2H5BDSkVO3uOkUH3ZnI37HM9taMVJ1q9n0zEeQJTIb
+         V3Wg==
+X-Gm-Message-State: AOAM532YGbugL1mV3SICxG4Dl+aa1Eg2eW/P3015l7pM/7J6cZ4J+UTE
+        nnudJlahhhv9j9H/3r19ww4=
+X-Google-Smtp-Source: ABdhPJwm3vVRbunRYhaH6vNvk2l+hvDnbNmQcRxs532CQOIH1W2N4gq8GWdNU7jArQcaqbD2EwBCUQ==
+X-Received: by 2002:a05:6602:2c07:: with SMTP id w7mr4886406iov.122.1635021338101;
+        Sat, 23 Oct 2021 13:35:38 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:1534:f270:7127:bc0a])
+        by smtp.gmail.com with ESMTPSA id i5sm6128678ilj.49.2021.10.23.13.35.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 13:30:02 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 13:30:02 -0700 (PDT)
-X-Google-Original-Date: Sat, 23 Oct 2021 13:29:35 PDT (-0700)
-Subject:     Re: [PATCH] riscv: cacheinfo: fix typo of homogenous
-In-Reply-To: <20211008205628.3073014-1-georgedanielmangum@gmail.com>
-Message-ID: <mhng-51275835-4c34-4099-85f5-13c6dbef4e19@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-CC:     georgedanielmangum@gmail.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
-        peterz@infradead.org, wangkefeng.wang@huawei.com, will@kernel.org,
-        tglx@linutronix.de, linux-riscv@lists.infradead.org,
+        Sat, 23 Oct 2021 13:35:37 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-media@vger.kernel.org, laurent.pinchart@ideasonboard.com,
+        cstevens@beaconembedded.com, aford@beaconembedded.com,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     georgedanielmangum@gmail.com
+Subject: [RFC V2 0/5] arm64: dts: imx8mm: Enable CSI and OV5640 Camera
+Date:   Sat, 23 Oct 2021 15:34:51 -0500
+Message-Id: <20211023203457.1217821-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Oct 2021 13:56:25 PDT (-0700), georgedanielmangum@gmail.com wrote:
-> Updates 'homonogenous' to 'homogenous' in comment.
+The imx8mm appears to have both a CSI bridge and mipi-csi-2 drivers.  With
+those enabled, both the imx8mm-evk and imx8mm-beacon boards should be able
+use an OV5640 camera.
 
-I don't really know spelling that well, but checkpatch says
+The mipi-csi2 driver sets the clock frequency to 333MHz, so the clock parent
+of the CSI1 must be reparented to a faster clock.  On the custom NXP kernel,
+they use IMX8MM_SYS_PLL2_1000M, so that is done in the device tree to match.
 
-    WARNING: 'homogenous' may be misspelled - perhaps 'homogeneous'?
+With the CSI and mipi_csi2 drivers pointing to an OV5640 camera, the media
+pipeline can be configured with the following:
 
-when applying this.  It looks like they're both words, but "homogeneous" 
-is the right one?
+    media-ctl --links "'ov5640 1-003c':0->'imx7-mipi-csis.0':0[1]"
 
->
-> Signed-off-by: hasheddan <georgedanielmangum@gmail.com>
-> ---
->  arch/riscv/kernel/cacheinfo.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
-> index 90deabfe63ea..ff98546b1152 100644
-> --- a/arch/riscv/kernel/cacheinfo.c
-> +++ b/arch/riscv/kernel/cacheinfo.c
-> @@ -29,7 +29,7 @@ static struct cacheinfo *get_cacheinfo(u32 level, enum cache_type type)
->  	/*
->  	 * Using raw_smp_processor_id() elides a preemptability check, but this
->  	 * is really indicative of a larger problem: the cacheinfo UABI assumes
-> -	 * that cores have a homonogenous view of the cache hierarchy.  That
-> +	 * that cores have a homogenous view of the cache hierarchy.  That
->  	 * happens to be the case for the current set of RISC-V systems, but
->  	 * likely won't be true in general.  Since there's no way to provide
->  	 * correct information for these systems via the current UABI we're
+The camera and various nodes in the pipeline can be configured for UYVY:
+    media-ctl -v -V "'ov5640 1-003c':0 [fmt:UYVY8_1X16/640x480 field:none]"
+    media-ctl -v -V "'csi':0 [fmt:UYVY8_1X16/640x480 field:none]"
+
+With that, the media pipeline looks like:
+
+
+Media controller API version 5.15.0
+
+Media device information
+------------------------
+driver          imx7-csi
+model           imx-media
+serial          
+bus info        platform:32e20000.csi
+hw revision     0x0
+driver version  5.15.0
+
+Device topology
+- entity 1: csi (2 pads, 2 links)
+            type V4L2 subdev subtype Unknown flags 0
+            device node name /dev/v4l-subdev0
+	pad0: Sink
+		[fmt:UYVY8_1X16/640x480 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:lim-range]
+		<- "imx7-mipi-csis.0":1 [ENABLED,IMMUTABLE]
+	pad1: Source
+		[fmt:UYVY8_1X16/640x480 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:lim-range]
+		-> "csi capture":0 [ENABLED,IMMUTABLE]
+
+- entity 4: csi capture (1 pad, 1 link)
+            type Node subtype V4L flags 0
+            device node name /dev/video0
+	pad0: Sink
+		<- "csi":1 [ENABLED,IMMUTABLE]
+
+- entity 10: imx7-mipi-csis.0 (2 pads, 2 links)
+             type V4L2 subdev subtype Unknown flags 0
+             device node name /dev/v4l-subdev1
+	pad0: Sink
+		[fmt:UYVY8_1X16/640x480 field:none colorspace:smpte170m xfer:709 ycbcr:601 quantization:lim-range]
+		<- "ov5640 1-003c":0 [ENABLED]
+	pad1: Source
+		[fmt:UYVY8_1X16/640x480 field:none colorspace:smpte170m xfer:709 ycbcr:601 quantization:lim-range]
+		-> "csi":0 [ENABLED,IMMUTABLE]
+
+- entity 15: ov5640 1-003c (1 pad, 1 link)
+             type V4L2 subdev subtype Sensor flags 0
+             device node name /dev/v4l-subdev2
+	pad0: Source
+		[fmt:UYVY8_1X16/640x480@1/30 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range]
+		-> "imx7-mipi-csis.0":0 [ENABLED]
+
+When configured, gstreamer can be used to capture 1 frame and store it to a file.
+
+gst-launch-1.0 -v v4l2src num-buffers=1 ! video/x-raw,format=UYVY,width=640,height=480,framerate=60/1 ! filesink location=test
+
+Unfortunately, the video capture never appears to happen.  No errors occur, not
+interrupts are recorded and no errors are recorded.
+
+gst-launch-1.0 -v v4l2src num-buffers=1 ! video/x-raw,format=UYVY,width=640,height=480,framerate=60/1 ! filesink location=test
+Setting pipeline to PAUSED ...
+Pipeline is live and does not need PREROLL ...
+Pipeline is PREROLLED ...
+Setting pipeline to [  114.819632] v4l2_get_link_freq: Link frequency estimated using pixel rate: result might be inaccurate
+PLAYING ...
+New clock: GstSystem[  114.829203] v4l2_get_link_freq: Consider implementing support for V4L2_CID_LINK_FREQ in the transmitter driver
+Clock
+/GstPipeline:pipeline0/GstV4l2Src:v4l2src0.GstPad:src: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
+/GstPipeline:pipeline0/GstCapsFilter:capsfilter0.GstPad:src: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
+/GstPipeline:pipeline0/GstFileSink:filesink0.GstPad:sink: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
+/GstPipeline:pipeline0/GstCapsFilter:capsfilter0.GstPad:sink: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
+
+
+If anyone has any insight as to what might be wrong, I'd like feedback.
+I posted a device tree that I beleive goes with the newer imx8mm-evk, but
+I do not have this hardware, so I cannot test it.
+
+Adam Ford (5):
+  arm64: dts: imx8mm: Add CSI nodes
+  arm64: defconfig: Enable VIDEO_IMX_MEDIA
+  arm64: dts: imx8mm-beacon: Enable OV5640 Camera
+  arm64: defconfig: Enable OV5640
+  arm64: dts: imx8mm-evk: Enable OV5640 Camera
+
+ .../freescale/imx8mm-beacon-baseboard.dtsi    | 55 +++++++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi | 44 +++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi     | 55 +++++++++++++++++++
+ arch/arm64/configs/defconfig                  |  2 +
+ 4 files changed, 156 insertions(+)
+
+-- 
+2.25.1
+
