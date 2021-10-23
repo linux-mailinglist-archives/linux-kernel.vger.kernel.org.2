@@ -2,257 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E731B43833A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 12:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07B1438343
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhJWKme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 06:42:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35296 "EHLO mail.kernel.org"
+        id S230293AbhJWK5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 06:57:09 -0400
+Received: from mout.gmx.net ([212.227.17.22]:44689 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhJWKmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 06:42:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002FD60FE3;
-        Sat, 23 Oct 2021 10:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634985614;
-        bh=3MBPYLWL9O+7m9TCPJ92U2nLKobJyWzIaIxXwvd7Qzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mi7jsVV8qZEOM6YU1gSkUC/miXtGjPCmYqkaEywD8DNghBqYV/oTx+kVrZpsej36p
-         2e1SxbXy+7NkTdEx+Vjwfl8v3f33PlHOoGut5WwabZZNQE45rnpuXe9gpu603hXO1h
-         84zhgG4Fk6yhJ2K+zrt+X3ZBcm1WmVd3UDN97zJbCvE/jeDdgqSZwJsYwgYUTSWc7d
-         XfSoz6qTFW9bpueizE4N5cvsLdBrWctUgiNBhR6Rqk9WuaZI+pKuPqy8xjBduaVt+/
-         gUTxLKQsr7zFsc7hdbWihOh6WgrK65YtYcYIBPc/4radtKKtazbRYESLJwff7PULCq
-         wPhB/ktjLLvRQ==
-Received: by pali.im (Postfix)
-        id 7346D883; Sat, 23 Oct 2021 12:40:11 +0200 (CEST)
-Date:   Sat, 23 Oct 2021 12:40:11 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset to
- finish
-Message-ID: <20211023104011.zmj7y7vtplpnmhwd@pali>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
- <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
- <20211022151624.mgsgobjsjgyevnyt@pali>
- <20211023103059.6add00e6@sal.lan>
+        id S229721AbhJWK5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 06:57:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634986475;
+        bh=COO6dpoiujzVMnoUVgte956/CCfp4GDzWhe8zXEti5Q=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=URRFlir+kXtgwyTlzC/iYsQ+oqYmX1/VZlxKsAdPWkAySHEyrunSrXiEcPfILunuI
+         N/DnLsMXLievdlcKiq/N22mtBrAkyF9NpzbrmFGqnxK7v8LRnu5aiBE9S1S/XZo47C
+         //Z/ziVGe36iBlunaberdxUVwvk8e0sBQocdJHeY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MIwz4-1mOD9V00YE-00KRl8; Sat, 23 Oct 2021 12:54:35 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2][next] sysctl: Avoid open coded arithmetic in memory allocator functions
+Date:   Sat, 23 Oct 2021 12:54:14 +0200
+Message-Id: <20211023105414.7316-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211023103059.6add00e6@sal.lan>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:F+DT2aLDpJrmlZpG2V+TQYlDzxnApio7nZw40lIN2aby5QiyLZU
+ 6WBvxuH6OaOsIK8sityQpXvAl5wFpb7fV8qu402o19i92zEKl0L5Iijmbrd0B59Xln4ylys
+ BzSWuf9WS2GLFAu3GQzihGDzWQxl0opzXLPyYPf1GFWQTG7ecoDgt7V0BNPno4cctLGW9QC
+ TgPJ2S+y6d3de0qLNwWjQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Wnbhp08dKoY=:sjETeixsBVJ0AQ1ykKUq3t
+ 7F727P0Rf6IRsKMGqqD1qZIV1rS3XDDJl1u8VkDc/HU30lon3kO75mAv+xIRHM43Un5/je05k
+ OZt+4dBBb7xXvFkq/qahYfT2tKmCE0N5xwVkS7g9iY55H3Wg9c3rKBy407Uc8ube7I4667IwY
+ jMS8nnfLp/nstIs9tpYPjulSbvXaJJF5VvQNMjEsnGpDXVZdqnozc1cjetQ3gitvrnMEmZFQc
+ tqzgm8FmLTC/qON2cZLt6ytJ3R9+rmshOcND5grxAvEM0v1+OmiIt6pivWQkVU9P8BDDGIRcs
+ pgFzv9vVD7HhKN5nY27MRKhuPIHMa7F0f2DGN34nVa8aBTs/KSVuggyxkKUTEYAeCbxtzIjDE
+ x8y/1EhbjeUKq3nYerEb55IGnWVIfHyt3T4U3ATjL3zU/pg+iYh9VdWiOhCOw+H4YxuBQcbRd
+ AoY3rZVQThQVASXkuNMeP6CVIw8QRMpNqo+ZoQ5khjgab8nj1FVaq/JgsQlQma1RVsk8SqkKr
+ YwyoBJB/N2fGOGfkP87TWPhE0HVA8S8SgQI7bEGxytFzO5nTfgTib5LzK30d4ZUoFh6d4dIFV
+ apdkdTYVTbVGpJTWAZELmvaoDt5PoLw4dL2izXCE/bmCPTyzh9YJVOt+cDpBStq76JTk8xelO
+ 3LOetXm4/j7aFVrv3Rqp5LWNncv4ZiI00pQTaUvIY1PGD7t3Adf70YdRU7HmqKXdC7/owx6Nv
+ oDtrZE5m7jWvNQubKoUvToqKEcghYMeskCa6EyhXLtyHj9txFIDt45GGM8zDamwm72KhQtwJE
+ 484vUVzzkcaC/TbM90SWz2Erc0oTsXqo5sQivnqkV+OCtbdJJqFgZFpnBV9yLUpTnfVOnN95O
+ 6oiEtHfAQglGAcHMfDZhpK9xSrFUCwZMHkzfuuh4B9RZ9+yOLKfRb8pHR4WZbIb4IeWG+RZpo
+ Mx6dEV4jwdAswhNejBAsAkp7MkpPTQ+2W1nKb0l3TZ3gsqxgDNicZP4eJRHA4Tdtkm1ZX9WNL
+ l4hQhdLwk/eyrnT4EajKCwV+corNXeD3FZraqPD3B0Kw6AWccJaNCKWzGFI4TY0qP8ZG6vhOL
+ K6Ws8EAnE6F9Wg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-On Saturday 23 October 2021 10:30:59 Mauro Carvalho Chehab wrote:
-> Hi Pali,
-> 
-> Em Fri, 22 Oct 2021 17:16:24 +0200
-> Pali Rohár <pali@kernel.org> escreveu:
-> 
-> > On Tuesday 19 October 2021 07:06:42 Mauro Carvalho Chehab wrote:
-> > > Before code refactor, the PERST# signals were sent at the
-> > > end of the power_on logic. Then, the PCI core would probe for
-> > > the buses and add them.
-> > > 
-> > > The new logic changed it to send PERST# signals during
-> > > add_bus operation. That altered the timings.
-> > > 
-> > > Also, HiKey 970 require a little more waiting time for
-> > > the PCI bridge - which is outside the SoC - to finish
-> > > the PERST# reset, and then initialize the eye diagram.  
-> > 
-> > Hello! Which PCIe port do you mean by PCI bridge device? Do you mean
-> > PCIe Root Port? Or upstream port on some external PCIe switch connected
-> > via PCIe bus to the PCIe Root Port? Because all of these (virtual) PCIe
-> > devices are presented as PCI bridge devices, so it is not clear to which
-> > device it refers.
-> 
-> HiKey 970 uses an external PCI bridge chipset (a Broadcom PEX 8606[1]),
+So, add some functions to calculate the size used in memory allocator
+function arguments, saturating to SIZE_MAX on overflow. Here it is not
+possible to use the struct_size() helper since the memory layouts used
+when the memory is allocated are not simple ones.
 
-Ok! Now I understood. You have probably one PCIe Root Port on your board
-and to this port you have connected (external) PCIe switch card from
-Broadcom to increase number of PCIe ports for endpoint cards.
-It is classic setup for boards with just one PCIe port.
+However, for the kcalloc() case, don't define a new function and check
+for overflow before its call.
 
-> with 3 elements connected to the bus: an Ethernet card, a M.2 slot and
-> a mini PCIe slot. It seems HiKey 970 is unique with regards to PERST# signal,
-> as there are 4 independent PERST# signals there:
-> 
-> 	- one for PEX 8606 (the PCIe root port);
-> 	- one for Ethernet;
-> 	- one for M.2;
-> 	- one for mini-PCIe.
+This code was detected with the help of Coccinelle and audited and fixed
+manually.
 
-This is not unique setup, its pretty normal. Every PCIe card has (own)
-PERST# pin and obviously you want to control each pin separately via SW.
-And because PCIe switch is also (upstream) PCIe device it has also
-PERST# pin.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-> After sending the PCIe PERST# signals, the device has to wait for 21 ms
-> before adjusting the eye diagram.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Changelog v1 -> v2
+- Remove the new_dir_size function and its use (Matthew Wilcox).
 
-"the device" which has to wait is HiKey970 or PEX8606?
+The previous version can be found here [1]
 
-> [1] https://docs.broadcom.com/docs/PEX_8606_AIC_RDK_HRM_v1.3_06Aug10.pdf
-> 
-> > Normally PERST# signal is used to reset endpoint card, other end of PCIe
-> > link and so PERST# signal should not affect PCIe Root Port at all.
-> 
-> That's not the case, as PEX 8606 needs to complete its reset sequence
-> for the rest of the devices to be visible. If the wait time is reduced
-> or removed, the devices behind it won't be detected.
+[1] https://lore.kernel.org/linux-hardening/20211016152829.9836-1-len.bake=
+r@gmx.com/
 
-Well, "endpoint card" for HiKey970 PCIe link is here PEX8606. And if you
-connect PEX8606 to any other board (which could have totally different
-PCIe controller), it means that same wait timeouts are required for that
-other board.
+ fs/proc/proc_sysctl.c | 84 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 73 insertions(+), 11 deletions(-)
 
-So this wait timeout 21 ms is not HiKey970 specific, but rather PEX8606
-specific, right?
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 5d66faecd4ef..0b3b3f11ca11 100644
+=2D-- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1146,6 +1146,26 @@ static int sysctl_check_table(const char *path, str=
+uct ctl_table *table)
+ 	return err;
+ }
 
-> > > So, increase the waiting time for the PERST# signals to
-> > > what's required for it to also work with HiKey 970.  
-> > 
-> > Because PERST# signal resets endpoint card, this reset timeout should
-> > not be driver or controller specific.
-> 
-> Not sure if it would be possible to implement it at the core without
-> breaking devices like this one where there's a separate chip to actually
-> implement the PCIe bus.
++static size_t new_links_size(size_t nr_entries, size_t name_bytes)
++{
++	size_t bytes;
++
++	if (check_add_overflow(nr_entries, (size_t)1, &bytes))
++		return SIZE_MAX;
++	if (check_add_overflow(sizeof(struct ctl_table_header),
++			       array_size(sizeof(struct ctl_node), nr_entries),
++			       &bytes))
++		return SIZE_MAX;
++	if (check_add_overflow(bytes, array_size(sizeof(struct ctl_table),
++						 nr_entries + 1),
++			       &bytes))
++		return SIZE_MAX;
++	if (check_add_overflow(bytes, name_bytes, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
+ static struct ctl_table_header *new_links(struct ctl_dir *dir, struct ctl=
+_table *table,
+ 	struct ctl_table_root *link_root)
+ {
+@@ -1162,11 +1182,15 @@ static struct ctl_table_header *new_links(struct c=
+tl_dir *dir, struct ctl_table
+ 		name_bytes +=3D strlen(entry->procname) + 1;
+ 	}
 
-I think it should be possible. Probably not so easy, would need more
-testing, etc... But as I wrote above, this setup is not unique, it is
-really normal and kernel is prepared to work PCI and PCIe topologies
-when one or more PCIe switches, PCIe-to-PCI bridges or even more
-PCI-to-PCI bridges are used and connected to system board.
+-	links =3D kzalloc(sizeof(struct ctl_table_header) +
+-			sizeof(struct ctl_node)*nr_entries +
+-			sizeof(struct ctl_table)*(nr_entries + 1) +
+-			name_bytes,
+-			GFP_KERNEL);
++	/*
++	 * Allocation layout in bytes:
++	 *
++	 * sizeof(struct ctl_table_header) +
++	 * sizeof(struct ctl_node) * nr_entries +
++	 * sizeof(struct ctl_table) * (nr_entries + 1) +
++	 * name_bytes
++	 */
++	links =3D kzalloc(new_links_size(nr_entries, name_bytes), GFP_KERNEL);
 
-I send email with proposal / idea how could be PCI subsystem extended to
-handle initialization of native PCIe controller drivers:
-https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pali/
-(if you have some more points, feel free to reply)
+ 	if (!links)
+ 		return NULL;
+@@ -1258,6 +1282,18 @@ static int insert_links(struct ctl_table_header *he=
+ad)
+ 	return err;
+ }
 
-> > Mauro, if you understand this issue more deeply, could you look at my
-> > email? https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
-> > 
-> > I think that kernel PCI subsystem does not properly handle PCIe Warm
-> > Reset and correct initialization of endpoint cards. Because similar
-> > "random PERST# timeout patches" were applied to lot of native controller
-> > drivers.
-> 
-> I don't know enough about PCIe documentation in order to help with that.
-> Yet, if the PCI/PCIe specs doesn't define a maximum time for PERST# to
-> finish, hardware manufacturers will do whatever they please. So, finding
-> a common value is impossible. 
++static inline size_t sysctl_table_size(int nr_entries)
++{
++	size_t bytes;
++
++	if (check_add_overflow(sizeof(struct ctl_table_header),
++			       array_size(sizeof(struct ctl_node), nr_entries),
++			       &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
+ /**
+  * __register_sysctl_table - register a leaf sysctl table
+  * @set: Sysctl tree to register on
+@@ -1315,8 +1351,13 @@ struct ctl_table_header *__register_sysctl_table(
+ 	for (entry =3D table; entry->procname; entry++)
+ 		nr_entries++;
 
-Well, it is possible that just I was not able to "find and decode" this
-timeout from specifications. So I'm just asking if somebody else was
-able to do it :-)
+-	header =3D kzalloc(sizeof(struct ctl_table_header) +
+-			 sizeof(struct ctl_node)*nr_entries, GFP_KERNEL);
++	/*
++	 * Allocation layout in bytes:
++	 *
++	 * sizeof(struct ctl_table_header) +
++	 * sizeof(struct ctl_node) * nr_entries
++	 */
++	header =3D kzalloc(sysctl_table_size(nr_entries), GFP_KERNEL);
+ 	if (!header)
+ 		return NULL;
 
-> Well, even if specs define it, vendors may still violate that. So, whatever 
-> implementation is done, some quirks may be needed.
+@@ -1437,8 +1478,11 @@ static int register_leaf_sysctl_tables(const char *=
+path, char *pos,
+ 	/* If there are mixed files and directories we need a new table */
+ 	if (nr_dirs && nr_files) {
+ 		struct ctl_table *new;
+-		files =3D kcalloc(nr_files + 1, sizeof(struct ctl_table),
+-				GFP_KERNEL);
++		int n;
++
++		if (unlikely(check_add_overflow(nr_files, 1, &n)))
++			goto out;
++		files =3D kcalloc(n, sizeof(struct ctl_table), GFP_KERNEL);
+ 		if (!files)
+ 			goto out;
 
-Of course, we know it and kernel has hooks and corrections for such
-situation. Fixes are in most cases in one place: drivers/pci/quirks.c
+@@ -1490,6 +1534,19 @@ static int register_leaf_sysctl_tables(const char *=
+path, char *pos,
+ 	return err;
+ }
 
-> Sending PERST# signals to the devices connected to the bridge too early
-> will cause the bridge to not detect the devices behind it. That's what
-> happens with HiKey 970: lower reset values cause it to miss devices.
++static inline size_t sysctl_paths_size(int nr_subheaders)
++{
++	size_t bytes;
++
++	if (check_add_overflow(sizeof(struct ctl_table_header),
++			       array_size(sizeof(struct ctl_table_header *),
++					  nr_subheaders),
++			       &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
+ /**
+  * __register_sysctl_paths - register a sysctl table hierarchy
+  * @set: Sysctl tree to register on
+@@ -1532,8 +1589,13 @@ struct ctl_table_header *__register_sysctl_paths(
+ 		if (header)
+ 			header->ctl_table_arg =3D ctl_table_arg;
+ 	} else {
+-		header =3D kzalloc(sizeof(*header) +
+-				 sizeof(*subheaders)*nr_subheaders, GFP_KERNEL);
++		/*
++		 * Allocation layout in bytes:
++		 *
++		 * sizeof(struct ctl_table_header) +
++		 * sizeof(struct ctl_table_header *) * nr_subheaders
++		 */
++		header =3D kzalloc(sysctl_paths_size(nr_subheaders), GFP_KERNEL);
+ 		if (!header)
+ 			goto out;
 
-Just to make sure, that I understand your problem. Is your setup looks
-like this?
+=2D-
+2.25.1
 
-          +-------------------------------------PERST#--+---+
-          |                                             |eth|
-          |                 +------PERST#--+  +--PCIe---+---+
-          |                 |              |  |
-  +-------------+ +-------------+        +-------+      +---+
-  |GPIO-HiKey970| |PCIe-HiKey970|--PCIe--|PEX8606|-PCIe-|m.2|
-  +-------------+ +-------------+        +-------+      +---+
-          |           |          +-----+        |         |
-          |           +--PERST#--|mPCIe|--PCIe--+         |
-          |                      +-----+                  |
-          +---------------------------------------PERST#--+
-
-And if yes, in which order you need to assert individual PERST# signals
-and in which order to de-assert them?
-
-> Looking from harware perspective, I'd say that the reset time pretty
-> much depends on how the PCIe bridges are implemented: if it is FPGA, it is 
-> probably slower than if it is a dedicated hardware. It can be even slower
-> if the bridge uses a microcontroller and needs to read the firmware from 
-> some place.
-> 
-> > PS: I'm not opposing this patch, I'm just trying to understand what is
-> > happening here and why particular number "21000" was chosen. It is
-> > defined in some standard? Or was it just randomly chosen and measures
-> > that with this number is initialization working fine?
-> 
-> It is the value used by the HiKey 970 PCIe out-of-tree driver. The patch
-> which added support for it at the pcie-kirin increased the time out there.
-> 
-> I tried to preserve the previous value, but that cause some devices to
-> be missed during PCI probe time.
-> 
-> Btw, PEX 8606 datasheet says:
-> 
-> 	`Reset Circuit
-> 
-> 	 The PEX 8606BA-AIC1U1D RDK accepts a PERST# from the host PC via card edge connector P1. This signal is
-> 	 OR’d with a manual reset circuit. The manual reset circuit consists of a pushbutton (SW7, upper left corner) that
-> 	 feeds into a reset timer. The reset timer monitors its power rail and reset input. If the reset input is low or the
-> 	 supply rail is out of range, the reset output is held. Once both conditions no longer exist, the reset output will de-
-> 	 assert after a programmable reset timeout period (capacitor adjustable, default value 128 msec). The OR’d reset
-> 	 signal goes to the PEX 8606 device’s PEX_PERST# input pin, and the downstream slots’ PERST# connector
-> 	 pins. PERST# to Slot J1 can be controlled by the PEX 8606 device’s Hot-Plug interface.'
-> 
-> If I understood it well, the PERST# time is hardware-configurable, by
-> changing the value of a capacitor.
-
-Hm... this is something different. It says: "Once both conditions no
-longer exist, the reset output will de-assert after a programmable reset
-timeout period (capacitor adjustable, default value 128 msec)."
-
-I understand this part that if signal is no longer in reset that then
-this capacitor cause that reset is held for another 128 ms. So if host
-stops reset signal then it has to wait 128 ms prior doing something
-(to ensure that reset finished), right?
-
-> Regards,
-> Mauro
-> > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > > 
-> > > See [PATCH v14 00/11] at: https://lore.kernel.org/all/cover.1634622716.git.mchehab+huawei@kernel.org/
-> > > 
-> > >  drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> > > index de375795a3b8..bc329673632a 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> > > @@ -113,7 +113,7 @@ struct kirin_pcie {
-> > >  #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
-> > >  
-> > >  /* Time for delay */
-> > > -#define REF_2_PERST_MIN		20000
-> > > +#define REF_2_PERST_MIN		21000
-> > >  #define REF_2_PERST_MAX		25000
-> > >  #define PERST_2_ACCESS_MIN	10000
-> > >  #define PERST_2_ACCESS_MAX	12000
-> > > -- 
-> > > 2.31.1
-> > >   
