@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D72A4385E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 01:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319214385F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 01:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhJWXCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 19:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
+        id S231294AbhJWXuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 19:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhJWXCl (ORCPT
+        with ESMTP id S230284AbhJWXuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 19:02:41 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9477EC061764;
-        Sat, 23 Oct 2021 16:00:21 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id p16so3239179lfa.2;
-        Sat, 23 Oct 2021 16:00:21 -0700 (PDT)
+        Sat, 23 Oct 2021 19:50:08 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A61CC061764;
+        Sat, 23 Oct 2021 16:47:49 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so9301852otl.11;
+        Sat, 23 Oct 2021 16:47:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AS3izAk+IrTfrd3lFD8lmDpmJ4k7Veg8MZT+Nsu6qBo=;
-        b=gTpxRIsusbPTuHYzph7krRdBv2pUDW+ps6sSb2DS2eoYF2oEIJh41vK6AnU8qJvjuk
-         1EzPGJIGKJrUb+dEvf7A/5vMSD1VCHKmz1ruNqV6Mf1312goKmA6RDZnIaJNuIbLAlVU
-         hDQhf5QfZysXKYFRaxCH4iol3Hyk7Z2XSI5LFkwlU+VBE0rl42Xw0NSHULgawzL7DAxZ
-         dkv3AowDLfTjABLGbZIsd5tepbCzodrT6RPSRGYqvPF8EZHNPepZ8eLW6SAWI8zgVg+D
-         nDiUoJ7JjU5DdGmedBgjM/ca1HL469PIXsLYUVlFu9Na48UD2p/IiO/JXPFaJNTn7oSw
-         EumA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9EhtECxpEHT4/S8i65sw49IoenLttWhucmR7R+ka9Tw=;
+        b=o5jZt61rJg1Bg1+MiK5QwxEdeWklbBG0IGst2aRCzPb1P5O2+CdelnpeR4gwtHiO2B
+         RicJ96SYY2l0BwQ9ndqLuUKFgpIsEjklxUEUNsnPSFuwFwEa7DA9bcEgfsKNl6okpY37
+         dp1XfyyUR4x5OBfAT3gn3Nlq2lTHeqly8lVc/zQ1HZ9C/v8EjNRpkNqAM6GSuTAP2dbv
+         0AXTsh7kLD0iqD2csTRzEQB05+9tUea4tte0IvYV0VkD5mUaEhn4kCPLjxt9ZQRd/n9+
+         mHXtZSFP0upWK0f9QAT4+P9v5rj9ppyBCmH7h5JRQkvD8/vrIriV/KzrQh2sp8ae92x7
+         ihzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AS3izAk+IrTfrd3lFD8lmDpmJ4k7Veg8MZT+Nsu6qBo=;
-        b=T5qii8UqqOnLh0tyeKiLb4fuGy2yDZyJYZFXy55vxFyuR6Y6E3YnNsdx2ABFHsL5tC
-         tl0abtnu0yi0hE2/B+JhYlWJ9EKCt1AL3FIyOGaADQ8z1nOOSzPhJaR8P/RLHCZNpD5U
-         7E1kd9sxnGaMShHQ3T7UErvLLoOtc7+16sQXbDrtZkxsnHpA0R3YeB8WB7OSUa8lAlIJ
-         0hvzcQicOlf2KiRVP4l5lC4V6CUn7wv/6MndyZNRLNxVwUDGnwqTB57HJX9Aq63+eD3I
-         HGzKp9y4nchh4JfJSSj67o1tD/9yi6WOzpmtatzDah49lLh21goI/+XcGsDe0ht0Qh2U
-         fLqQ==
-X-Gm-Message-State: AOAM533VoRZ5dy1sY03jOLqj5uloOSEj4S5eo7ep8c89rCDKZo1remrQ
-        P+/ZE1Q4XVKumzpY/7ZeXEp0wg1gXM0=
-X-Google-Smtp-Source: ABdhPJy/+lW4zTys4icBOp1LUKlLx+Kc/KK5ULoO3OeOwS+77vGnO3+7l5B+CG1MLb1bXgeCDZP31w==
-X-Received: by 2002:ac2:4a9e:: with SMTP id l30mr544773lfp.131.1635030019863;
-        Sat, 23 Oct 2021 16:00:19 -0700 (PDT)
-Received: from localhost.localdomain (46-138-31-183.dynamic.spd-mgts.ru. [46.138.31.183])
-        by smtp.gmail.com with ESMTPSA id z3sm1161020lfh.17.2021.10.23.16.00.19
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9EhtECxpEHT4/S8i65sw49IoenLttWhucmR7R+ka9Tw=;
+        b=Cij11eK4QqcpKB/g1VvATiZaQKKxeks11JqvZJgrD2OoFTAe4uBJbxEIamoxNQg+43
+         SYDJoEpCgI6ZHKZ2eM5Kb4JVw3wZ4dRFi9Az1xDPZuuo/x9cwfeMmLbd0avcEbu6zQW0
+         YDlkTosJXh9h76GrSUzlEuWNnPMSXqwxonvxKrHcrov5hIF7TQUhnXbc7mDEH+2vpaGn
+         ulYdhrbhKGBcclBQcpGIMFEj3ViSN0XT02+D9m3A7jIIiQQ8dM8cR4NMniyf2QwFnlQ2
+         yCrgxBLDnToETrDyr1nIH3SvQ107a+KpT42/xUDyp7Z0dXtERRulVDnROjniaIj5HGhh
+         OYlg==
+X-Gm-Message-State: AOAM533AIi1n0rN+0tXWZK4Z4B3cmz3mInHoAUEGxfeVke2ywV3Uk1ic
+        6bMIrw3JSyuMv6MdV+dm1TE=
+X-Google-Smtp-Source: ABdhPJxdan+q2jqR22n6WqBpuNNuYW4hjQziIGsPymwPST3qn07it/6SqJUfVDzjseZzGGqCMZRgwQ==
+X-Received: by 2002:a05:6830:4c8:: with SMTP id s8mr7120609otd.359.1635032868244;
+        Sat, 23 Oct 2021 16:47:48 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a2sm2608077otf.46.2021.10.23.16.47.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 16:00:19 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1 2/2] spi: tegra210-quad: Put device into suspend on driver removal
-Date:   Sun, 24 Oct 2021 01:59:51 +0300
-Message-Id: <20211023225951.14253-2-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211023225951.14253-1-digetx@gmail.com>
-References: <20211023225951.14253-1-digetx@gmail.com>
+        Sat, 23 Oct 2021 16:47:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 23 Oct 2021 16:47:45 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kai Song <songkai01@inspur.com>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (xgene) fix return value in xgene_hwmon_probe()
+Message-ID: <20211023234745.GA3703155@roeck-us.net>
+References: <20211022084446.16728-1-songkai01@inspur.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022084446.16728-1-songkai01@inspur.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_disable() cancels all pending power requests, while they
-should be completed for the Tegra SPI driver. Otherwise SPI clock won't
-be disabled ever again because clk refcount will become unbalanced.
-Enforce runtime PM suspension to put device into expected state before
-driver is unbound and device's RPM state is reset by driver's core.
+On Fri, Oct 22, 2021 at 04:44:46PM +0800, Kai Song wrote:
+> It uses IS_ERR to judge the return value of mbox_request_channel()
+> and pcc_mbox_request_channel().If it is invalid, maybe we should
+> use PTR_ERR to get the correct return value.
+> 
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/spi/spi-tegra210-quad.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Only if the error reflects something else than -ENODEV, ie than
+a missing device.
 
-diff --git a/drivers/spi/spi-tegra210-quad.c b/drivers/spi/spi-tegra210-quad.c
-index 2354ca1e3858..c0f9a75b44b5 100644
---- a/drivers/spi/spi-tegra210-quad.c
-+++ b/drivers/spi/spi-tegra210-quad.c
-@@ -1318,7 +1318,7 @@ static int tegra_qspi_probe(struct platform_device *pdev)
- exit_free_irq:
- 	free_irq(qspi_irq, tqspi);
- exit_pm_disable:
--	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_force_suspend(&pdev->dev);
- 	tegra_qspi_deinit_dma(tqspi);
- 	return ret;
- }
-@@ -1330,7 +1330,7 @@ static int tegra_qspi_remove(struct platform_device *pdev)
- 
- 	spi_unregister_master(master);
- 	free_irq(tqspi->irq, tqspi);
--	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_force_suspend(&pdev->dev);
- 	tegra_qspi_deinit_dma(tqspi);
- 
- 	return 0;
--- 
-2.32.0
+Guenter
 
+> Signed-off-by: Kai Song <songkai01@inspur.com>
+> ---
+>  drivers/hwmon/xgene-hwmon.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwmon/xgene-hwmon.c b/drivers/hwmon/xgene-hwmon.c
+> index 382ef0395d8e..fd0847f251c0 100644
+> --- a/drivers/hwmon/xgene-hwmon.c
+> +++ b/drivers/hwmon/xgene-hwmon.c
+> @@ -648,7 +648,7 @@ static int xgene_hwmon_probe(struct platform_device *pdev)
+>  		if (IS_ERR(ctx->mbox_chan)) {
+>  			dev_err(&pdev->dev,
+>  				"SLIMpro mailbox channel request failed\n");
+> -			rc = -ENODEV;
+> +			rc = PTR_ERR(ctx->mbox_chan);
+>  			goto out_mbox_free;
+>  		}
+>  	} else {
+> @@ -675,7 +675,7 @@ static int xgene_hwmon_probe(struct platform_device *pdev)
+>  		if (IS_ERR(ctx->mbox_chan)) {
+>  			dev_err(&pdev->dev,
+>  				"PPC channel request failed\n");
+> -			rc = -ENODEV;
+> +			rc = PTR_ERR(ctx->mbox_chan);
+>  			goto out_mbox_free;
+>  		}
+>  
+> -- 
+> 2.27.0
+> 
