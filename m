@@ -2,130 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1760A4383A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 14:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDA34383A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 14:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhJWMIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 08:08:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:33434 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230320AbhJWMIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 08:08:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2B5CD6E;
-        Sat, 23 Oct 2021 05:06:32 -0700 (PDT)
-Received: from [10.57.28.205] (unknown [10.57.28.205])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 266E83F70D;
-        Sat, 23 Oct 2021 05:06:27 -0700 (PDT)
-Subject: Re: [PATCH 09/15] irq: arm: perform irqentry in entry code
-To:     Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
-        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        torvalds@linux-foundation.org, tsbogend@alpha.franken.de,
-        vgupta@kernel.org, will@kernel.org
-References: <20211021180236.37428-1-mark.rutland@arm.com>
- <20211021180236.37428-10-mark.rutland@arm.com>
- <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
- <20211022153602.GE86184@C02TD0UTHF1T.local>
- <1dc39ac9-1a05-cf8d-2aef-633903a6338d@arm.com>
- <20211022175854.GK86184@C02TD0UTHF1T.local> <87tuh8uchn.wl-maz@kernel.org>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <cada0034-7427-f4ae-0f88-7bbb1be2b1a5@arm.com>
-Date:   Sat, 23 Oct 2021 13:06:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S230155AbhJWMV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 08:21:56 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:27030 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhJWMVu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 08:21:50 -0400
+Date:   Sat, 23 Oct 2021 12:19:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1634991566; bh=GG4tUVfOrpHe6Cd9R03tfHXWzUXIPi4QaFA+XbWzydI=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=AfZZAR9wTmzyooI6hInfocai8sWVjg5SuP6fVB2J3d4FGS6gQh0FyI6XmelurR6FC
+         t7mMGjEJiErx33eJyN5/qVWB6QB4JYhcm7eeRccDj0Gkhl6K1nOajiu+yfrM4e7Br+
+         j3kkWCsygrBwf5lhHpQ8voGpnLtzOS4B3j3X/vAYvZIWyHy3+b7cgx2Bu7XelC0bWn
+         34WLuugx08P9HJo+/sydhh6ra1W9gl4NHHuCn9H27KokxFG3DTIWw76w1Xt/omxr2r
+         le5D4MtZm4yOPUxqQoh/K7zDvd4RKmNMGRGfPG6TAHzZASIpv+wkPH8yose6Yrg7hJ
+         gbBPBr2VuUp9g==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     =?utf-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net-next] ax88796c: fix fetching error stats from percpu containers
+Message-ID: <20211023121148.113466-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <87tuh8uchn.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 7:43 PM, Marc Zyngier wrote:
-> On Fri, 22 Oct 2021 18:58:54 +0100,
-> Mark Rutland <mark.rutland@arm.com> wrote:
->>
->> On Fri, Oct 22, 2021 at 05:34:20PM +0100, Vladimir Murzin wrote:
->>> On 10/22/21 4:36 PM, Mark Rutland wrote:
->>>> On Fri, Oct 22, 2021 at 04:18:18PM +0100, Vladimir Murzin wrote:
->>>>> Hi Mark,
->>>>>
->>>>> On 10/21/21 7:02 PM, Mark Rutland wrote:
->>>>>> +/*
->>>>>> + * TODO: restructure the ARMv7M entry logic so that this entry logic can live
->>>>>> + * in arch code.
->>>>>> + */
->>>>>> +asmlinkage void __exception_irq_entry
->>>>>> +static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->>>>>
->>>>> I'm seeing build time failure...
->>>>>
->>>>> drivers/irqchip/irq-nvic.c:50:8: error: two or more data types in declaration specifiers
->>>>>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->>>>>         ^~~~
->>>>> drivers/irqchip/irq-nvic.c:50:13: warning: 'nvic_handle_irq' defined but not used [-Wunused-function]
->>>>>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
->>>>>
->>>>> I've fixed that locally and planing to give it a go...
->>>>
->>>> Ah, whoops. I've removed the extraneous `static void` from
->>>> nvic_handle_irq() and build tested that as part of stm32_defconfig.
->>>>
->>>> The updated version is in my irq/handle-domain-irq branch at:
->>>>
->>>>   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
->>>>
->>>
->>> $ cat /proc/interrupts
->>>            CPU0       
->>>  16:         24  nvic_irq   4 Edge      mps2-clkevt
->>>  17:          0  nvic_irq  32 Edge      mps2-uart-rx
->>>  18:          6  nvic_irq  33 Edge      mps2-uart-tx
->>>  19:          0  nvic_irq  47 Edge      mps2-uart-overrun
->>> Err:          0
->>>
->>> So if it helps feel free to add my 
->>>
->>> Tested-by: Vladimir Murzin <vladimir.murzin@arm.com> # ARMv7M
->>
->> Thanks!
->>
->> I've folded that in and uppdated the branch.
->>
->>> As for TODO, is [1] look something you have been thinking of? IIUC,
->>> the show stopper is that hwirq is being passed from exception entry
->>> which retrieved via xPSR (IPSR to be precise). OTOH hwirq also available
->>> via Interrupt Controller Status Register (ICSR) thus can be used in
->>> driver itself... I gave [1] a go and it runs fine, yet I admit I might
->>> be missing something...
->>
->> I hadn't thought about it in much detail, but that looks good!
->>
->> I was wondering if we needed something like a
->> handle_arch_vectored_irq(), but if we can rely on the ICSR that seems
->> simpler overall. I'm not at all familiar with M-class, so I'm not sure
->> if there are pitfalls in this area.
-> 
-> Why can't we just use IPSR instead from the C code? It has the
-> potential of being of lower latency then a MMIO read (though I have no
-> idea whether it makes a material difference on M-class) and from what
-> I can see in the arch spec, they are strictly equivalent.
+rx_dropped, tx_dropped, rx_frame_errors and rx_crc_errors are being
+wrongly fetched from the target container rather than source percpu
+ones.
+No idea if that goes from the vendor driver or was brainoed during
+the refactoring, but fix it either way.
 
-Hmmm, less arch specific asm(s) in driver code, no?
+Fixes: a97c69ba4f30e ("net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Dr=
+iver")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/net/ethernet/asix/ax88796c_main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Cheers
-Vladimir
+diff --git a/drivers/net/ethernet/asix/ax88796c_main.c b/drivers/net/ethern=
+et/asix/ax88796c_main.c
+index cfc597f72e3d..91fa0499ea6a 100644
+--- a/drivers/net/ethernet/asix/ax88796c_main.c
++++ b/drivers/net/ethernet/asix/ax88796c_main.c
+@@ -672,10 +672,10 @@ static void ax88796c_get_stats64(struct net_device *n=
+dev,
+ =09=09stats->tx_packets +=3D tx_packets;
+ =09=09stats->tx_bytes   +=3D tx_bytes;
 
-> 
-> Thanks,
-> 
-> 	M.
-> 
+-=09=09rx_dropped      +=3D stats->rx_dropped;
+-=09=09tx_dropped      +=3D stats->tx_dropped;
+-=09=09rx_frame_errors +=3D stats->rx_frame_errors;
+-=09=09rx_crc_errors   +=3D stats->rx_crc_errors;
++=09=09rx_dropped      +=3D s->rx_dropped;
++=09=09tx_dropped      +=3D s->tx_dropped;
++=09=09rx_frame_errors +=3D s->rx_frame_errors;
++=09=09rx_crc_errors   +=3D s->rx_crc_errors;
+ =09}
+
+ =09stats->rx_dropped =3D rx_dropped;
+--
+2.33.1
+
 
