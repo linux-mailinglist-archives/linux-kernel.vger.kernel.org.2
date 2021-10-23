@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDE243837A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F7843837B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhJWLpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 07:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44716 "EHLO mail.kernel.org"
+        id S230320AbhJWLpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 07:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229778AbhJWLp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 07:45:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 173E860F46;
-        Sat, 23 Oct 2021 11:43:09 +0000 (UTC)
+        id S229778AbhJWLpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 07:45:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 001226101D;
+        Sat, 23 Oct 2021 11:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634989390;
-        bh=Yvlt04UMZo9r9G03SEhseVvENp7wes7fQwwecv9UEPA=;
+        s=k20201202; t=1634989393;
+        bh=4XWHzvmtR+wyqWJ4k/FFXOcBIOC+UMb5i8hvEybrro0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtqYuzB10yjdrgBHxR1eky3iUFsvQBe5VmO0YSh6VagOql//MHx0LVaal0QdroL92
-         mJ706Sv0mFheW9Kq/mkpbHGbMjdbcuh4rmp8N6XT+I7s4n457sRRYZZ8wA7n5Txovf
-         Yn6rd0E7mW73K/xTDu7IWglpHDG7nMJvKfPizMXA2AbLjuI+X8znvVzsraDSjsAcy7
-         9Ja7noE0ofJPwxpOSbZcT8fQKBinraa66fDhFTE37tmHNu123+H5EfV3N7Lmm0Nd2k
-         K/76y+TG7vsbaashcBELDvx/Jk5mP9SdBaqJvErxlWA8VKTLtkRl6XhTgOwauPIxIS
-         ef6AvYSTnzyBQ==
+        b=uWCGOpFmHw594t9/j++tNZ7cvKVnwFfIjur8Dpcc3JvolLixfuvhgG1g/5Oo1xcXa
+         AZ7p2MhfmHV2WPD+O4Qr7W3+nus7oJfwYzkbflMYWs/tjR/vtvUjqsNL2SBYQC7UGV
+         jmOwmNkEJzZZxfObAQpQAI5lsi8ycht9r4PTQe7e7vGklxvQwwu4d5BGaRN34To6/A
+         HF19/YOvnOwOWJaylnNX2swke+U48ymfnJh9IIrVVZu+OTWGcq7BTTkspM6LGtk1mf
+         8WJdowxh3AeO0X0IxODhQkZ3BWQQMvVjympSsStSHLRMHOGq8foun88Pmk9L8zKajZ
+         EA/LhrRymdTHg==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org, Julian Braha <julianbraha@gmail.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, ajitp@codeaurora.org,
-        tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        bgoswami@codeaurora.org, lgirdwood@gmail.com, perex@perex.cz
-Subject: Re: [PATCH] ASoC: fix unmet dependency on GPIOLIB
-Date:   Sat, 23 Oct 2021 12:43:07 +0100
-Message-Id: <163498938018.2020965.6267176645734620337.b4-ty@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: cs42l42: Remove unused runtime_suspend/runtime_resume callbacks
+Date:   Sat, 23 Oct 2021 12:43:08 +0100
+Message-Id: <163498938018.2020965.16977108609282715073.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211010215627.17869-1-julianbraha@gmail.com>
-References: <20211010215627.17869-1-julianbraha@gmail.com>
+In-Reply-To: <20211018164431.5871-1-rf@opensource.cirrus.com>
+References: <20211018164431.5871-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,16 +40,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Oct 2021 17:56:27 -0400, Julian Braha wrote:
-> When SND_SOC_SC7180 or SND_SOC_STORM is selected,
-> and GPIOLIB is not selected, Kbuild gives the following
-> warning:
+On Mon, 18 Oct 2021 17:44:31 +0100, Richard Fitzgerald wrote:
+> The driver has runtime_suspend and runtime_resume callbacks, but
+> pm_runtime is never enabled so these functions won't be called. They
+> could not be used anyway because the runtime_suspend would cause jack
+> detect to stop working.
 > 
-> WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
->   Selected by [y]:
->   - SND_SOC_STORM [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y]
->   - SND_SOC_SC7180 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && I2C [=y]
+> These functions are unused - delete them.
 > 
 > [...]
 
@@ -61,8 +56,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fix unmet dependency on GPIOLIB
-      commit: 6cace797f1a8d54ecb42a3d327cbc0b231114ed0
+[1/1] ASoC: cs42l42: Remove unused runtime_suspend/runtime_resume callbacks
+      commit: c778c01d3e665045d29d548d946f7cd64aec0ff9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
