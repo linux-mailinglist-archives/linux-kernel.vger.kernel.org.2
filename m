@@ -2,293 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4414643820A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 08:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C3243820C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 08:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhJWGiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 02:38:07 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:5862 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229446AbhJWGiF (ORCPT
+        id S229666AbhJWGoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 02:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhJWGoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 02:38:05 -0400
-X-UUID: febd30177cd84bcdaad3c28cdb4ba5ec-20211023
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=R3aTcF7O0aGUzIL4osqUpcRxNDRTCJBgz3G98SJr1EU=;
-        b=rEtm0Z2Pu9Fng9hUoswoWbxzVRygpGUAAhnxPD2JGJVfQBdlWLBIQhK/kwg9mt2AtsO1FiOVsU4S8xXv7qoTvlY3p4d2U7FgAR7FfqfEbYRLzswde9ODidXtm+z/rBVMBHSXs0pq2WZhTmWGtQVmKBjGbVM2z9PiaBhdfP//7pU=;
-X-UUID: febd30177cd84bcdaad3c28cdb4ba5ec-20211023
-Received: from mtkcas34.mediatek.inc [(172.27.7.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1514210481; Sat, 23 Oct 2021 14:15:37 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 23 Oct
- 2021 14:35:37 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 23 Oct 2021 14:35:37 +0800
-Message-ID: <df145215a21b67b440405736d9628199ccce2a1b.camel@mediatek.com>
-Subject: Re: [PATCH v3 1/2] PM / wakeirq: support enabling wake-up irq after
- runtime_suspend called
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>
-Date:   Sat, 23 Oct 2021 14:35:37 +0800
-In-Reply-To: <CAJZ5v0hTR2mZk7FuUVciX766qq0AwWXFBZoBsV3Sd9ToYuErdQ@mail.gmail.com>
-References: <1628651069-22162-1-git-send-email-chunfeng.yun@mediatek.com>
-         <CAJZ5v0hTR2mZk7FuUVciX766qq0AwWXFBZoBsV3Sd9ToYuErdQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sat, 23 Oct 2021 02:44:07 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAADC061764;
+        Fri, 22 Oct 2021 23:41:49 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d9so5608359pfl.6;
+        Fri, 22 Oct 2021 23:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lqvQc54VfM8/DrixkH7MhvxvzHeF17H+ppwD4DGDz5k=;
+        b=dadpVEqL3MsJoubMxiLSdfpwBWO7xqGKzaXs9XpODZBeGMLqyNq8NA1YyMT6f6xqCZ
+         KXn+H7KYiqEPg+gZRAoxsqUyU+lbeIHd9QxBRnDBSpir++BBaV61n9TRgx+zN6DPoaEx
+         eCsIkVhSXQRAGsjNeA7r1NVyKvkFcyifjsZ/FqIeoc+5iMSbbwBGZW/d4IxLr6kdWa8+
+         Dzh3DttVnQq/QGhPzF4WDAJBW6TSR0RZKQ5+9wuDGlL7O4MmeKjPOz6VsXNfoRPlvZIc
+         OunNvMoqa/Yytiba6OYlQS7NWEPKTEECfT8bEvT4NhZt1s3ySH5W0g784tNPQaTIWeRS
+         TPYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lqvQc54VfM8/DrixkH7MhvxvzHeF17H+ppwD4DGDz5k=;
+        b=hoqfk88OeHtQdqUl6sNiH5q0LO1mtBYPU6+Nl3IZ0aIO25nt2Vw4n1VGFoGdF4iScT
+         bfY43wR9d2qNuMedZPTN5ltUzFuDkHllAUXRHEHuvUO2et40vUp6lHpiQf1uzH6ubWpt
+         dtvLEVUJLx0nHo48OOyZ3xrNMND3n/xluwhSlgP4/g6pprt6Kw9PhAXp1Oobe2vz8UVy
+         qsMvJxfYznWAzykNeNZ0CgopI2VhSrG2vXATzlaeusTMwoqEflkGqZPcKlmbSO+0Pyk1
+         alpNNXGign6Ep7RbTeVxLTgY27ei+ylcQM8WorfDIcWAVVyPulUMFP6SoXLoCzhd3VMn
+         bk9A==
+X-Gm-Message-State: AOAM532NNde3yC+R5iMUkzLJJfxXiviuxJhpmNbIbeXg3BCmGSEC6gOb
+        4D1aWWibEwgL/rg4uTTOSyA=
+X-Google-Smtp-Source: ABdhPJz8naF+O/wUXjPWAMz8I8gXxepEqPf76NyjzTbs3KShqjj3RJaFWoVLDCbQkwUxzaFiEuECdQ==
+X-Received: by 2002:a63:874a:: with SMTP id i71mr816701pge.200.1634971308384;
+        Fri, 22 Oct 2021 23:41:48 -0700 (PDT)
+Received: from nuc10.. (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id i11sm10477024pgp.18.2021.10.22.23.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 23:41:48 -0700 (PDT)
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, corbet@lwn.net
+Cc:     djwong@kernel.org, david@fromorbit.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, gregkh@linuxfoundation.org,
+        viro@zeniv.linux.org.uk, dvyukov@google.com,
+        Rustam Kovhaev <rkovhaev@gmail.com>
+Subject: [PATCH v2] slob: add size header to all allocations
+Date:   Fri, 22 Oct 2021 23:41:14 -0700
+Message-Id: <20211023064114.708532-1-rkovhaev@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
+References: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: F81D45C16EBD5ADB83FF540E1F395C74EFC9FCDEBE5272D370F7D6D128F92EB02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTEwLTE5IGF0IDE3OjI4ICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90
-ZToNCj4gT24gV2VkLCBBdWcgMTEsIDIwMjEgYXQgNTowNSBBTSBDaHVuZmVuZyBZdW4gPA0KPiBj
-aHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiANCj4gPiBXaGVuIHRoZSBkZWRp
-Y2F0ZWQgd2FrZS1pcnEgaXMgbGV2ZWwgdHJpZ2dlciwgYW5kIGl0IHVzZXMgdGhlDQo+ID4gY29u
-c3VtZXIncyBzbGVlcCBzdGF0dXMgYXMgdGhlIHdha2V1cCBzb3VyY2UsIHRoYXQgbWVhbnMgaWYg
-dGhlDQo+ID4gY29uc3VtZXIgaXMgbm90IGluIHNsZWVwIHN0YXRlLCB0aGUgd2FrZS1pcnEgd2ls
-bCBiZSB0cmlnZ2VyZWQNCj4gPiB3aGVuIGVuYWJsZSBpdDsgRm9yIHRoaXMgY2FzZSwgbmVlZCBl
-bmFibGUgdGhlIHdha2UtaXJxIGFmdGVyDQo+ID4gaW52b2tpbmcgdGhlIGNvbnN1bWVyJ3MgcnVu
-dGltZV9zdXNwZW5kKCkgd2hpY2ggbWFrZSB0aGUgY29uc3VtZXINCj4gPiBlbnRlciBzbGVlcCBz
-dGF0ZS4NCj4gDQo+IFRoZSB0ZXJtaW5vbG9neSBhYm92ZSBpcyBjb25mdXNpbmcuDQo+IA0KPiBB
-cyBhIHJ1bGUsIHRoZSB0ZXJtICJzbGVlcCBzdGF0ZSIgYXBwbGllcyB0byB0aGUgd2hvbGUgc3lz
-dGVtLCBub3QgdG8NCj4gYW4gaW5kaXZpZHVhbCBjb21wb25lbnQuICBJdCBpcyBiZXR0ZXIgdG8g
-dXNlIHRoZSB0ZXJtICJsb3ctcG93ZXINCj4gc3RhdGUiIGluc3RlYWQuICBBbHNvLCB0aGVyZSBt
-YXkgYmUgbXVsdGlwbGUgbG93LXBvd2VyIHN0YXRlcyBwZXINCj4gZGV2aWNlIGFuZCBpdCBpcyBu
-b3QgY2xlYXIgd2hpY2ggb2YgdGhlbSBpcyByZWxldmFudCBoZXJlLiANCkZvciBVU0IzIGNvbnRy
-b2xsZXIsIGhlcmUgbWVhbnMgZW50ZXIgVTMgc3RhdGUgKG9yIFBDSSBwbSBzdGF0ZSwNCkQzaG90
-L0QzY29sZCkNCg0KPiAgTXkgZ3Vlc3MNCj4gaXMgdGhhdCB0aGUgSVJRIHdpbGwgdHJpZ2dlciB1
-bmxlc3MgcG93ZXIgaXMgcmVtb3ZlZCBmcm9tIHRoZSBkZXZpY2UNCj4gYW5kIHlvdSB3YW50IHRv
-IHJlbW92ZSBwb3dlciBmcm9tIHRoZSBkZXZpY2UgaW4gLT5ydW50aW1lX3N1c3BlbmQoKS4NClRo
-ZSBwb3dlciBpcyBvZmYgb3Igb24gZGVwZW5kZW50cyBvbiB0aGlzIGRldmljZXMgaGFzIGluZGVw
-ZW5kZW50DQptdGNtb3MsIG5vIG1hdHRlciB3aGljaCBjYXNlLCB3YWtlIElSUSBuZWVkIGJlIGVu
-YWJsZWQgYWZ0ZXINCi0+cnVudGltZV9zdXNwZW5kKCkuDQo+IA0KPiBNb3Jlb3ZlciwgSSdtIGFz
-c3VtaW5nIHRoYXQgInRoZSBjb25zdW1lciIgbWVhbnMgInRoZSBkZXZpY2UgdXNpbmcNCj4gdGhl
-DQo+IHdha2UgSVJRIiwgDQpZZXMsIGl0J3MuDQo+IGJ1dCB0aGlzIGlzIG5vdCBwYXJ0aWN1bGFy
-bHkgY2xlYXIgZWl0aGVyLg0KPiANCj4gTm93LCB0aGUgcHJvYmxlbSBpcyB0aGF0IHlvdSBuZWVk
-IHRoZSBkZXZpY2UgdXNpbmcgdGhlIHdha2UgSVJRIHRvIGJlDQo+IGluIGEgbG93LXBvd2VyIHN0
-YXRlIGluIHdoaWNoIHRoZSBJUlEgZG9lc24ndCB0cmlnZ2VyIGF1dG9tYXRpY2FsbHkNCj4gYmVm
-b3JlIGVuYWJsaW5nIHRoZSBJUlEsIGFuZCBzbyB5b3UgbmVlZCB0byBlbmFibGUgdGhlIElSUSBh
-ZnRlcg0KPiBydW5uaW5nIC0+cnVudGltZV9zdXNwZW5kKCkgZm9yIHRoYXQgZGV2aWNlDQpZZXMN
-Cj4gIGFuZCBJTU8gdGhpcyBpcyBob3cgaXQNCj4gbmVlZHMgdG8gYmUgZGVzY3JpYmVkLg0KT2ss
-IEknbGwgbW9kaWZ5IGNvbW1pdCBtZXNzYWdlLg0KDQo+IA0KPiA+IGUuZy4NCj4gPiBBc3N1bWUg
-dGhlIHdha2UtaXJxIGlzIGEgbG93IGxldmVsIHRyaWdnZXIgdHlwZSwgYW5kIHRoZSB3YWtldXAN
-Cj4gPiBzaWduYWwgY29tZXMgZnJvbSB0aGUgc2xlZXAgc3RhdHVzIG9mIGNvbnN1bWVyLg0KPiA+
-IFRoZSB3YWtldXAgc2lnbmFsIGlzIGxvdyBsZXZlbCBhdCBydW5uaW5nIHRpbWUgKDApLCBhbmQg
-YmVjb21lcw0KPiA+IGhpZ2ggbGV2ZWwgd2hlbiB0aGUgY29uc3VtZXIgZW50ZXJzIHNsZWVwIHN0
-YXRlIChydW50aW1lX3N1c3BlbmQNCj4gPiAoMSkgaXMgY2FsbGVkKSwgYSB3YWtldXAgZXZlbnQg
-YXQgKDIpIG1ha2UgdGhlIGNvbnN1bWVyIGV4aXQgc2xlZXANCj4gPiBzdGF0ZSwgdGhlbiB0aGUg
-d2FrZXVwIHNpZ25hbCBhbHNvIGJlY29tZXMgbG93IGxldmVsLg0KPiA+IA0KPiA+ICAgICAgICAg
-ICAgICAgICAtLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgICAgICAgICAgICAgICB8ICAgICAgICAg
-ICBeICAgICBefA0KPiA+IC0tLS0tLS0tLS0tLS0tLS0gICAgICAgICAgIHwgICAgIHwgLS0tLS0t
-LS0tLS0tLS0NCj4gPiAgfDwtLS0oMCktLS0+fDwtLSgxKS0tfCAgICgzKSAgICgyKSAgICAoNCkN
-Cj4gPiANCj4gPiBpZiBlbmFibGUgdGhlIHdha2UtaXJxIGJlZm9yZSBjYWxsaW5nIHJ1bnRpbWVf
-c3VzcGVuZCBkdXJpbmcgKDApLA0KPiA+IGFuIGludGVycnVwdCB3aWxsIGFyaXNlLCBpdCBjYXVz
-ZXMgcmVzdW1lIGltbWVkaWF0ZWx5Ow0KPiA+IGl0IHdvcmtzIGlmIGVuYWJsZSB3YWtlLWlycSAo
-IGUuZy4gYXQgKDMpIG9yICg0KSkgYWZ0ZXIgY2FsbGluZw0KPiA+IHJ1bnRpbWVfc3VzcGVuZC4N
-Cj4gPiANCj4gPiBUaGlzIHBhdGNoIGludHJvZHVjZXMgYSBuZXcgc3RhdHVzIFdBS0VfSVJRX0RF
-RElDQVRFRF9MQVRFX0VOQUJMRUQNCj4gPiB0byBvcHRpb25hbGx5IHN1cHBvcnQgZW5hYmxpbmcg
-d2FrZS1pcnEgYWZ0ZXIgY2FsbGluZw0KPiA+IHJ1bnRpbWVfc3VzcGVuZCgpLg0KPiA+IA0KPiA+
-IFN1Z2dlc3RlZC1ieTogUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbC5qLnd5c29ja2lAaW50ZWwu
-Y29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlh
-dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiB2MzogYWRkIG5ldyBzdGF0dXMgc3VnZ2VzdGVkIGJ5IFJh
-ZmFlbA0KPiA+IA0KPiA+IHYyOiBhZGQgbW9yZSBjb21taXQgbWVzc2FnZQ0KPiA+IA0KPiA+ICAg
-VXNlIHRoZSBmYWxsaW5nIGVkZ2UgdHJpZ2dlciBpbnRlcnJ1cHQgc3VnZ2VzdGVkIGJ5IElram9v
-biBbMV0sDQo+ID4gaXQNCj4gPiB3b3JrcyB3ZWxsIGF0IGZpcnN0bHkgd2hlbiBvbmx5IHVzZSB0
-aGlzIHJlbGF0ZWQgd2FrZXVwIHNvdXJjZSwgYnV0DQo+ID4gZW5jb3VudGVyIGlzc3VlcyBpZiB1
-c2Ugb3RoZXIgd2FrZXVwIHNvdXJjZXMgdG8gd2FrZXVwIHBsYXRmb3JtIGFzDQo+ID4gYmVsb3cg
-c3RlcHM6DQo+ID4gMS4gdXNlIGFub3RoZXIgd2FrZXVwIHNvdXJjZSB0byB3YWtlIHVwIHRoZSBz
-dXNwZW5kZWQgc3lzdGVtOw0KPiA+IDIuIHRoZSBjb25zdW1lcidzIHJlc3VtZSgpIHdpbGwgYmUg
-Y2FsbGVkLCBhbmQgZXhpdHMgc2xlZXAgc3RhdGU7DQo+ID4gMy4gdGhlIGNvbnN1bWVyJ3Mgd2Fr
-ZXVwIHNpZ25hbCB3aWxsIGZhbGwgaW50byBsb3cgbGV2ZWwsIGR1ZSB0bw0KPiA+ICAgIGN1cnJl
-bnRseSB0aGUgd2FrZXVwIGlycSBpcyBkaXNhYmxlZCwgdGhlIHdha2UtaXJxIGlzIHBlbmRpbmc7
-DQo+ID4gNC4gdGhlIGNvbnN1bWVyIHRyaWVzIHRvIGVudGVyIHJ1bnRpbWUgc3VzcGVuZCwgYnV0
-IHRoZXJlIGlzIGENCj4gPiAgICBwZW5kaW5nIHdha2V1cCBpcnEsIHNvIHdpbGwgcmVzdW1lIGFn
-YWluLCB0aGlzIHdpbGwgcmVwZWF0DQo+ID4gICAgZW5kbGVzc2x5Lg0KPiA+IA0KPiA+ICAgU2Vu
-ZCBvdXQgdGhlIHBhdGNoIGFnYWluIGZvciBmdXJ0aGVyIGRpc2N1c3Npb24uDQo+ID4gDQo+ID4g
-WzFdOiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEyMTkwNDA3DQo+ID4gDQo+
-ID4gLS0tDQo+ID4gIGRyaXZlcnMvYmFzZS9wb3dlci9wb3dlci5oICAgfCAgNyArKysrLS0NCj4g
-PiAgZHJpdmVycy9iYXNlL3Bvd2VyL3J1bnRpbWUuYyB8ICA2ICsrKy0tDQo+ID4gIGRyaXZlcnMv
-YmFzZS9wb3dlci93YWtlaXJxLmMgfCA0OQ0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKy0tLQ0KPiA+ICBpbmNsdWRlL2xpbnV4L3BtX3dha2VpcnEuaCAgIHwgIDUgKysrKw0K
-PiA+ICA0IGZpbGVzIGNoYW5nZWQsIDYwIGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pDQo+
-ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYmFzZS9wb3dlci9wb3dlci5oDQo+ID4gYi9k
-cml2ZXJzL2Jhc2UvcG93ZXIvcG93ZXIuaA0KPiA+IGluZGV4IDU0MjkyY2RkNzgwOC4uMmQ1ZGZj
-ODg2ZjBiIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvYmFzZS9wb3dlci9wb3dlci5oDQo+ID4g
-KysrIGIvZHJpdmVycy9iYXNlL3Bvd2VyL3Bvd2VyLmgNCj4gPiBAQCAtMjUsOCArMjUsMTAgQEAg
-ZXh0ZXJuIHU2NCBwbV9ydW50aW1lX2FjdGl2ZV90aW1lKHN0cnVjdCBkZXZpY2UNCj4gPiAqZGV2
-KTsNCj4gPiANCj4gPiAgI2RlZmluZSBXQUtFX0lSUV9ERURJQ0FURURfQUxMT0NBVEVEICAgQklU
-KDApDQo+ID4gICNkZWZpbmUgV0FLRV9JUlFfREVESUNBVEVEX01BTkFHRUQgICAgIEJJVCgxKQ0K
-PiA+ICsjZGVmaW5lIFdBS0VfSVJRX0RFRElDQVRFRF9MQVRFX0VOQUJMRUQgICAgICAgIEJJVCgy
-KQ0KPiANCj4gVGhpcyBuYW1lIGlzIGEgYml0IGxvbmcgYW5kIGl0IGRvZXNuJ3QgcmVmbGVjdCB0
-aGUgbmF1dHJlIG9mIHRoZQ0KPiBwcm9ibGVtLCB3aGljaCBpcyB0aGF0IHlvdSBuZWVkIGNvZGUg
-b3JkZXJpbmcgdGhhdCBpcyBhIHJldmVyc2Ugb2YNCj4gdGhlDQo+IHVzdWFsIGZsb3cuDQo+IA0K
-PiBXQUtFX0lSUV9ERURJQ0FURURfUkVWRVJTRSBtYXkgYmUgYSBiZXR0ZXIgbmFtZS4NCk9LDQoN
-Cj4gDQo+ID4gICNkZWZpbmUNCj4gPiBXQUtFX0lSUV9ERURJQ0FURURfTUFTSyAgICAgICAgICAg
-ICAgICAoV0FLRV9JUlFfREVESUNBVEVEX0FMTE9DQVRFDQo+ID4gRCB8IFwNCj4gPiAtICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFdBS0VfSVJRX0RFRElDQVRFRF9NQU5B
-R0VEDQo+ID4gKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-V0FLRV9JUlFfREVESUNBVEVEX01BTkFHRUQNCj4gPiB8IFwNCj4gPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIFdBS0VfSVJRX0RFRElDQVRFRF9MQVRFX0VODQo+ID4g
-QUJMRUQpDQo+ID4gDQo+ID4gIHN0cnVjdCB3YWtlX2lycSB7DQo+ID4gICAgICAgICBzdHJ1Y3Qg
-ZGV2aWNlICpkZXY7DQo+ID4gQEAgLTM5LDcgKzQxLDggQEAgZXh0ZXJuIHZvaWQgZGV2X3BtX2Fy
-bV93YWtlX2lycShzdHJ1Y3Qgd2FrZV9pcnENCj4gPiAqd2lycSk7DQo+ID4gIGV4dGVybiB2b2lk
-IGRldl9wbV9kaXNhcm1fd2FrZV9pcnEoc3RydWN0IHdha2VfaXJxICp3aXJxKTsNCj4gPiAgZXh0
-ZXJuIHZvaWQgZGV2X3BtX2VuYWJsZV93YWtlX2lycV9jaGVjayhzdHJ1Y3QgZGV2aWNlICpkZXYs
-DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBib29sIGNhbl9j
-aGFuZ2Vfc3RhdHVzKTsNCj4gPiAtZXh0ZXJuIHZvaWQgZGV2X3BtX2Rpc2FibGVfd2FrZV9pcnFf
-Y2hlY2soc3RydWN0IGRldmljZSAqZGV2KTsNCj4gPiArZXh0ZXJuIHZvaWQgZGV2X3BtX2Rpc2Fi
-bGVfd2FrZV9pcnFfY2hlY2soc3RydWN0IGRldmljZSAqZGV2LCBib29sDQo+ID4gc2tpcF9lbmFi
-bGVfbGF0ZSk7DQo+ID4gK2V4dGVybiB2b2lkIGRldl9wbV9lbmFibGVfd2FrZV9pcnFfY29tcGxl
-dGUoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gPiANCj4gPiAgI2lmZGVmIENPTkZJR19QTV9TTEVF
-UA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Jhc2UvcG93ZXIvcnVudGltZS5jDQo+
-ID4gYi9kcml2ZXJzL2Jhc2UvcG93ZXIvcnVudGltZS5jDQo+ID4gaW5kZXggOGE2NmVhZjczMWU0
-Li45NzY0NmFhMTEzNzYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9iYXNlL3Bvd2VyL3J1bnRp
-bWUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvYmFzZS9wb3dlci9ydW50aW1lLmMNCj4gPiBAQCAtNjQ1
-LDYgKzY0NSw4IEBAIHN0YXRpYyBpbnQgcnBtX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2LCBp
-bnQNCj4gPiBycG1mbGFncykNCj4gPiAgICAgICAgIGlmIChyZXR2YWwpDQo+ID4gICAgICAgICAg
-ICAgICAgIGdvdG8gZmFpbDsNCj4gPiANCj4gPiArICAgICAgIGRldl9wbV9lbmFibGVfd2FrZV9p
-cnFfY29tcGxldGUoZGV2KTsNCj4gPiArDQo+ID4gICBub19jYWxsYmFjazoNCj4gPiAgICAgICAg
-IF9fdXBkYXRlX3J1bnRpbWVfc3RhdHVzKGRldiwgUlBNX1NVU1BFTkRFRCk7DQo+ID4gICAgICAg
-ICBwbV9ydW50aW1lX2RlYWN0aXZhdGVfdGltZXIoZGV2KTsNCj4gPiBAQCAtNjkwLDcgKzY5Miw3
-IEBAIHN0YXRpYyBpbnQgcnBtX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQNCj4gPiBy
-cG1mbGFncykNCj4gPiAgICAgICAgIHJldHVybiByZXR2YWw7DQo+ID4gDQo+ID4gICBmYWlsOg0K
-PiA+IC0gICAgICAgZGV2X3BtX2Rpc2FibGVfd2FrZV9pcnFfY2hlY2soZGV2KTsNCj4gPiArICAg
-ICAgIGRldl9wbV9kaXNhYmxlX3dha2VfaXJxX2NoZWNrKGRldiwgZmFsc2UpOw0KPiA+ICAgICAg
-ICAgX191cGRhdGVfcnVudGltZV9zdGF0dXMoZGV2LCBSUE1fQUNUSVZFKTsNCj4gPiAgICAgICAg
-IGRldi0+cG93ZXIuZGVmZXJyZWRfcmVzdW1lID0gZmFsc2U7DQo+ID4gICAgICAgICB3YWtlX3Vw
-X2FsbCgmZGV2LT5wb3dlci53YWl0X3F1ZXVlKTsNCj4gPiBAQCAtODczLDcgKzg3NSw3IEBAIHN0
-YXRpYyBpbnQgcnBtX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYsIGludA0KPiA+IHJwbWZsYWdz
-KQ0KPiA+IA0KPiA+ICAgICAgICAgY2FsbGJhY2sgPSBSUE1fR0VUX0NBTExCQUNLKGRldiwgcnVu
-dGltZV9yZXN1bWUpOw0KPiA+IA0KPiA+IC0gICAgICAgZGV2X3BtX2Rpc2FibGVfd2FrZV9pcnFf
-Y2hlY2soZGV2KTsNCj4gPiArICAgICAgIGRldl9wbV9kaXNhYmxlX3dha2VfaXJxX2NoZWNrKGRl
-diwgdHJ1ZSk7DQo+ID4gICAgICAgICByZXR2YWwgPSBycG1fY2FsbGJhY2soY2FsbGJhY2ssIGRl
-dik7DQo+ID4gICAgICAgICBpZiAocmV0dmFsKSB7DQo+ID4gICAgICAgICAgICAgICAgIF9fdXBk
-YXRlX3J1bnRpbWVfc3RhdHVzKGRldiwgUlBNX1NVU1BFTkRFRCk7DQo+ID4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvYmFzZS9wb3dlci93YWtlaXJxLmMNCj4gPiBiL2RyaXZlcnMvYmFzZS9wb3dlci93
-YWtlaXJxLmMNCj4gPiBpbmRleCAzYmFkMzI2NmEyYWQuLmE2MTJmNWMyNmM2YyAxMDA2NDQNCj4g
-PiAtLS0gYS9kcml2ZXJzL2Jhc2UvcG93ZXIvd2FrZWlycS5jDQo+ID4gKysrIGIvZHJpdmVycy9i
-YXNlL3Bvd2VyL3dha2VpcnEuYw0KPiA+IEBAIC0yMTUsNiArMjE1LDI0IEBAIGludCBkZXZfcG1f
-c2V0X2RlZGljYXRlZF93YWtlX2lycShzdHJ1Y3QNCj4gPiBkZXZpY2UgKmRldiwgaW50IGlycSkN
-Cj4gPiAgfQ0KPiA+ICBFWFBPUlRfU1lNQk9MX0dQTChkZXZfcG1fc2V0X2RlZGljYXRlZF93YWtl
-X2lycSk7DQo+ID4gDQo+ID4gKy8qKg0KPiA+ICsgKiBkZXZfcG1fd2FrZV9pcnFfc2V0X2xhdGVf
-ZW5hYmxlZF9zdGF0dXMgLSBzZXQgc3RhdHVzDQo+ID4gV0FLRV9JUlFfREVESUNBVEVEX0xBVEVf
-RU5BQkxFRA0KPiA+ICsgKiBAZGV2OiBEZXZpY2UNCj4gPiArICoNCj4gPiArICogU2V0IHRoZSBz
-dGF0dXMgb2YgV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxFRCB0byB0ZWxsDQo+ID4gcnBt
-X3N1c3BlbmQoKQ0KPiA+ICsgKiB0byBlbmFibGUgZGVkaWNhdGVkIHdha2UtdXAgaW50ZXJydXB0
-IGFmdGVyIGludm9raW5nIHRoZQ0KPiA+IHJ1bnRpbWVfc3VzcGVuZCgpLA0KPiA+ICsgKg0KPiA+
-ICsgKiBTaG91bGQgYmUgY2FsbGVkIGFmdGVyIHNldHRpbmcgZGVkaWNhdGVkIHdha2UtdXAgaW50
-ZXJydXB0Lg0KPiA+ICsgKi8NCj4gPiArdm9pZCBkZXZfcG1fd2FrZV9pcnFfc2V0X2xhdGVfZW5h
-YmxlZF9zdGF0dXMoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ICt7DQo+ID4gKyAgICAgICBzdHJ1
-Y3Qgd2FrZV9pcnEgKndpcnEgPSBkZXYtPnBvd2VyLndha2VpcnE7DQo+ID4gKw0KPiA+ICsgICAg
-ICAgaWYgKHdpcnEgJiYgKHdpcnEtPnN0YXR1cyAmIFdBS0VfSVJRX0RFRElDQVRFRF9BTExPQ0FU
-RUQpKQ0KPiA+ICsgICAgICAgICAgICAgICB3aXJxLT5zdGF0dXMgfD0gV0FLRV9JUlFfREVESUNB
-VEVEX0xBVEVfRU5BQkxFRDsNCj4gPiArfQ0KPiA+ICtFWFBPUlRfU1lNQk9MX0dQTChkZXZfcG1f
-d2FrZV9pcnFfc2V0X2xhdGVfZW5hYmxlZF9zdGF0dXMpOw0KPiANCj4gSW5zdGVhZCBvZiBkb2lu
-ZyB0aGlzLCBJIHdvdWxkIHByb3ZpZGUgYSBzcGVjaWFsIHZlcnNpb24gb2YNCj4gZGV2X3BtX3Nl
-dF9kZWRpY2F0ZWRfd2FrZV9pcnEoKSBmb3IgdGhpcyBzcGVjaWFsIHVzZSBjYXNlIHN1Y2ggdGhh
-dA0KPiBpdA0KPiB3aWxsIHNldCBXQUtFX0lSUV9ERURJQ0FURURfTEFURV9FTkFCTEVEIChvciB3
-aGF0ZXZlciB5b3UgY2FsbCBpdCkgYXQNCj4gdGhlIGFsbG9jYXRpb24gdGltZSAoYmVjYXVzZSB0
-aGlzIGlzIGEgcHJvcGVydHkgb2YgdGhlIElSUSBhbmQgbm90DQo+IHNvbWV0aGluZyB0aGF0IGNh
-biBjaGFuZ2UpLg0KPiANCj4gTWF5YmUgY2FsbCBpdCBkZXZfcG1fc2V0X2RlZGljYXRlZF93YWtl
-X2lycV9yZXZlcnNlKCkgYW5kIGltcGxlbWV0DQo+IGJvdGggaXQgYW5kIGRldl9wbV9zZXRfZGVk
-aWNhdGVkX3dha2VfaXJxKCkgYXMgd3JhcHBlcnMgYXJvdW5kDQo+IHNvbWV0aGluZyBsaWtlIF9f
-ZGV2X3BtX3NldF9kZWRpY2F0ZWRfd2FrZV9pcnEoKSB0YWtpbmcgYW4gZXh0cmENCj4gYXJndW1l
-bnQgdGhhdCB3aWxsIGluZGljYXRlIHdoZXRoZXIgb3Igbm90IHRvIHNldCB0aGUgbmV3IGZsYWcg
-Zm9yDQo+IHRoaXMgSVJRLg0KT0ssIGl0J3MgYSBiZXR0ZXIgd2F5Lg0KDQo+IA0KPiA+ICsNCj4g
-PiAgLyoqDQo+ID4gICAqIGRldl9wbV9lbmFibGVfd2FrZV9pcnEgLSBFbmFibGUgZGV2aWNlIHdh
-a2UtdXAgaW50ZXJydXB0DQo+ID4gICAqIEBkZXY6IERldmljZQ0KPiA+IEBAIC0yODUsMjcgKzMw
-Myw1MiBAQCB2b2lkIGRldl9wbV9lbmFibGVfd2FrZV9pcnFfY2hlY2soc3RydWN0DQo+ID4gZGV2
-aWNlICpkZXYsDQo+ID4gICAgICAgICByZXR1cm47DQo+ID4gDQo+ID4gIGVuYWJsZToNCj4gPiAt
-ICAgICAgIGVuYWJsZV9pcnEod2lycS0+aXJxKTsNCj4gPiArICAgICAgIGlmICghY2FuX2NoYW5n
-ZV9zdGF0dXMgfHwgISh3aXJxLT5zdGF0dXMgJg0KPiA+IFdBS0VfSVJRX0RFRElDQVRFRF9MQVRF
-X0VOQUJMRUQpKQ0KPiA+ICsgICAgICAgICAgICAgICBlbmFibGVfaXJxKHdpcnEtPmlycSk7DQo+
-ID4gIH0NCj4gPiANCj4gPiAgLyoqDQo+ID4gICAqIGRldl9wbV9kaXNhYmxlX3dha2VfaXJxX2No
-ZWNrIC0gQ2hlY2tzIGFuZCBkaXNhYmxlcyB3YWtlLXVwDQo+ID4gaW50ZXJydXB0DQo+ID4gICAq
-IEBkZXY6IERldmljZQ0KPiA+ICsgKiBAc2tpcF9sYXRlX2VuYWJsZWRfc3RhdHVzOiBza2lwIGNo
-ZWNraW5nDQo+ID4gV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxFRA0KPiANCj4gSSB3b3Vs
-ZCBjYWxsIHRoaXMgYXJndW1lbnQgImNvbmRfZGlzYWJsZSIgb3Igc2ltaWxhcmx5IHRvIG1lYW4g
-dGhhdA0KPiB0aGUgSVJRIHNob3VsZCBiZSBkaXNhYmxlZCBjb25kaXRpb25hbGx5IGRlcGVuZGlu
-ZyBvbiB0aGUgbmV3IGZsYWcuDQo+IA0KPiBBbmQgdGhlIGRlc2NyaXB0aW9uIG9mIGl0IHdvdWxk
-IGJlICJJZiBzZXQsIGFsc28gY2hlY2sNCj4gV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxF
-RCIuDQpPSw0KPiANCj4gPiAgICoNCj4gPiAgICogRGlzYWJsZXMgd2FrZS11cCBpbnRlcnJ1cHQg
-Y29uZGl0aW9uYWxseSBiYXNlZCBvbiBzdGF0dXMuDQo+ID4gICAqIFNob3VsZCBiZSBvbmx5IGNh
-bGxlZCBmcm9tIHJwbV9zdXNwZW5kKCkgYW5kIHJwbV9yZXN1bWUoKSBwYXRoLg0KPiA+ICAgKi8N
-Cj4gPiAtdm9pZCBkZXZfcG1fZGlzYWJsZV93YWtlX2lycV9jaGVjayhzdHJ1Y3QgZGV2aWNlICpk
-ZXYpDQo+ID4gK3ZvaWQgZGV2X3BtX2Rpc2FibGVfd2FrZV9pcnFfY2hlY2soc3RydWN0IGRldmlj
-ZSAqZGV2LCBib29sDQo+ID4gc2tpcF9sYXRlX2VuYWJsZWRfc3RhdHVzKQ0KPiANCj4gQ2FuJ3Qg
-dGhpcyBmdW5jdGlvbiBiZSBzdGF0aWM/DQpJZiB3YW50IHRvIG1ha2UgaXQgc3RhdGljLCBzaG91
-bGQgbW92ZSBpdCBmcm9tIHdha2VpcnEuYyBpbnRvIHJ1bnRpbWUuYw0KDQo+IA0KPiA+ICB7DQo+
-ID4gICAgICAgICBzdHJ1Y3Qgd2FrZV9pcnEgKndpcnEgPSBkZXYtPnBvd2VyLndha2VpcnE7DQo+
-ID4gDQo+ID4gICAgICAgICBpZiAoIXdpcnEgfHwgISh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9E
-RURJQ0FURURfTUFTSykpDQo+ID4gICAgICAgICAgICAgICAgIHJldHVybjsNCj4gDQo+IEFuZCBJ
-IHdvdWxkIGp1c3QgYWRkIHRoZSBmb2xsb3dpbmcgbGluZSBoZXJlOg0KPiANCj4gaWYgKGNvbmRf
-ZGlzYWJsZSAmJiAod2lycS0+c3RhdHVzICYgV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxF
-RCkpDQo+ICAgICAgICAgcmV0dXJuOw0KVGhpcyBjaGFuZ2UgZG9lc24ndCBjb3ZlciB0aGUgY2Fz
-ZSAoV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxFRCBhbmQNCiBXQUtFX0lSUV9ERURJQ0FU
-RURfTUFOQUdFRCBhcmUgYm90aCBzZXQgMSk6DQoNCi0tPnJwbV9zdXNwZW5kKCk6IHdpcnEtPmly
-cSBpcyBlbmFibGVkDQotLT5ycG1fcmVzdW1lKCk6IGRpc2FibGUgd2lycS0+aXJxOyAoaWYgY2hh
-bmdlIGl0LCBkb2Vzbid0IGRpc2FibGUNCndpcnEtPmlycSkNCg0KPiANCj4gPiANCj4gPiAtICAg
-ICAgIGlmICh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURfTUFOQUdFRCkNCj4gPiAr
-ICAgICAgIGlmICh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURfTUFOQUdFRCAmJg0K
-PiA+ICsgICAgICAgICAgIChza2lwX2xhdGVfZW5hYmxlZF9zdGF0dXMgfHwNCj4gPiArICAgICAg
-ICAgICAgISh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURfTEFURV9FTkFCTEVEKSkp
-DQo+ID4gICAgICAgICAgICAgICAgIGRpc2FibGVfaXJxX25vc3luYyh3aXJxLT5pcnEpOw0KPiA+
-ICB9DQo+ID4gDQo+ID4gKy8qKg0KPiA+ICsgKiBkZXZfcG1fZW5hYmxlX3dha2VfaXJxX2NvbXBs
-ZXRlIC0gZW5hYmxlIHdha2UgaXJxIGJhc2VkIG9uDQo+ID4gc3RhdHVzDQo+IA0KPiAiRW5hYmxl
-IHdha2UgSVJRIG5vdCBlbmFibGVkIGJlZm9yZSINCj4gDQo+ID4gKyAqIEBkZXY6IERldmljZQ0K
-PiANCj4gIkRldmljZSB1c2luZyB0aGUgd2FrZSBJUlEiDQo+IA0KPiA+ICsgKg0KPiA+ICsgKiBF
-bmFibGUgd2FrZS11cCBpbnRlcnJ1cHQgY29uZGl0aW9uYWxseSBiYXNlZCBvbiBzdGF0dXMsIG1h
-aW5seQ0KPiA+IGZvcg0KPiA+ICsgKiBlbmFibGluZyB3YWtlLXVwIGludGVycnVwdCBhZnRlciBy
-dW50aW1lX3N1c3BlbmQoKSBpcyBjYWxsZWQuDQo+ID4gKyAqDQo+ID4gKyAqIFNob3VsZCBiZSBv
-bmx5IGNhbGxlZCBmcm9tIHJwbV9zdXNwZW5kKCkgcGF0aC4NCj4gDQo+IFRoaXMgcGFydCBvZiB0
-aGUga2VybmVsZG9jIGNvbW1lbnQgbmVlZHMgdG8gYmUgcmV3cml0dGVuIHRvbywNCk9LDQo+ICBi
-dXQgaXQNCj4gbG9va3MgbGlrZSB0aGUgZnVuY3Rpb24gY2FuIGJlIHN0YXRpYywgaW4gd2hpY2gg
-Y2FzZSBpdCB3b24ndCBuZWVkDQo+IHRoZQ0KPiBrZXJuZWxkb2MgY29tbWVudCBhdCBhbGwuDQpX
-aWxsIGFsc28gbmVlZCB0byBtb3ZlIGl0IGludG8gcnVudGltZS5jIGlmIG1ha2UgaXQgc3RhdGlj
-DQoNClRoYW5rcyBhIGxvdA0KPiANCj4gPiArICovDQo+ID4gK3ZvaWQgZGV2X3BtX2VuYWJsZV93
-YWtlX2lycV9jb21wbGV0ZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gK3sNCj4gPiArICAgICAg
-IHN0cnVjdCB3YWtlX2lycSAqd2lycSA9IGRldi0+cG93ZXIud2FrZWlycTsNCj4gPiArDQo+ID4g
-KyAgICAgICBpZiAoIXdpcnEgfHwgISh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURf
-TUFTSykpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiArDQo+ID4gKyAgICAgICBp
-ZiAod2lycS0+c3RhdHVzICYgV0FLRV9JUlFfREVESUNBVEVEX01BTkFHRUQgJiYNCj4gPiArICAg
-ICAgICAgICB3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURfTEFURV9FTkFCTEVEKQ0K
-PiA+ICsgICAgICAgICAgICAgICBlbmFibGVfaXJxKHdpcnEtPmlycSk7DQo+ID4gK30NCj4gPiAr
-DQo+ID4gIC8qKg0KPiA+ICAgKiBkZXZfcG1fYXJtX3dha2VfaXJxIC0gQXJtIGRldmljZSB3YWtl
-LXVwDQo+ID4gICAqIEB3aXJxOiBEZXZpY2Ugd2FrZS11cCBpbnRlcnJ1cHQNCj4gPiBkaWZmIC0t
-Z2l0IGEvaW5jbHVkZS9saW51eC9wbV93YWtlaXJxLmgNCj4gPiBiL2luY2x1ZGUvbGludXgvcG1f
-d2FrZWlycS5oDQo+ID4gaW5kZXggY2Q1YjYyZGI5MDg0Li45MmY4MTRkNTgzZjggMTAwNjQ0DQo+
-ID4gLS0tIGEvaW5jbHVkZS9saW51eC9wbV93YWtlaXJxLmgNCj4gPiArKysgYi9pbmNsdWRlL2xp
-bnV4L3BtX3dha2VpcnEuaA0KPiA+IEBAIC0yMiw2ICsyMiw3IEBAIGV4dGVybiBpbnQgZGV2X3Bt
-X3NldF9kZWRpY2F0ZWRfd2FrZV9pcnEoc3RydWN0DQo+ID4gZGV2aWNlICpkZXYsDQo+ID4gIGV4
-dGVybiB2b2lkIGRldl9wbV9jbGVhcl93YWtlX2lycShzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiA+
-ICBleHRlcm4gdm9pZCBkZXZfcG1fZW5hYmxlX3dha2VfaXJxKHN0cnVjdCBkZXZpY2UgKmRldik7
-DQo+ID4gIGV4dGVybiB2b2lkIGRldl9wbV9kaXNhYmxlX3dha2VfaXJxKHN0cnVjdCBkZXZpY2Ug
-KmRldik7DQo+ID4gK2V4dGVybiB2b2lkIGRldl9wbV93YWtlX2lycV9zZXRfbGF0ZV9lbmFibGVk
-X3N0YXR1cyhzdHJ1Y3QgZGV2aWNlDQo+ID4gKmRldik7DQo+ID4gDQo+ID4gICNlbHNlICAvKiAh
-Q09ORklHX1BNICovDQo+ID4gDQo+ID4gQEAgLTQ3LDUgKzQ4LDkgQEAgc3RhdGljIGlubGluZSB2
-b2lkIGRldl9wbV9kaXNhYmxlX3dha2VfaXJxKHN0cnVjdA0KPiA+IGRldmljZSAqZGV2KQ0KPiA+
-ICB7DQo+ID4gIH0NCj4gPiANCj4gPiArc3RhdGljIGlubGluZSB2b2lkIGRldl9wbV93YWtlX2ly
-cV9zZXRfbGF0ZV9lbmFibGVkX3N0YXR1cyhzdHJ1Y3QNCj4gPiBkZXZpY2UgKmRldikNCj4gPiAr
-ew0KPiA+ICt9DQo+ID4gKw0KPiA+ICAjZW5kaWYgLyogQ09ORklHX1BNICovDQo+ID4gICNlbmRp
-ZiAvKiBfTElOVVhfUE1fV0FLRUlSUV9IICovDQo+ID4gLS0NCg==
+Let's prepend both kmalloc() and kmem_cache_alloc() allocations with the
+size header.
+It simplifies the slab API and guarantees that both kmem_cache_alloc()
+and kmalloc() memory could be freed by kfree().
+
+meminfo right after the system boot, without the patch:
+Slab:              35456 kB
+
+the same, with the patch:
+Slab:              36160 kB
+
+Link: https://lore.kernel.org/lkml/20210929212347.1139666-1-rkovhaev@gmail.com
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+---
+v2:
+ - Allocate compound pages in slob_alloc_node()
+ - Use slob_free_pages() in kfree()
+ - Update documentation
+
+ Documentation/core-api/memory-allocation.rst |   4 +-
+ mm/slob.c                                    | 114 +++++++++----------
+ 2 files changed, 55 insertions(+), 63 deletions(-)
+
+diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
+index 5954ddf6ee13..fea0ed11a7c5 100644
+--- a/Documentation/core-api/memory-allocation.rst
++++ b/Documentation/core-api/memory-allocation.rst
+@@ -172,5 +172,5 @@ wrappers can allocate memory from that cache.
+ 
+ When the allocated memory is no longer needed it must be freed. You can
+ use kvfree() for the memory allocated with `kmalloc`, `vmalloc` and
+-`kvmalloc`. The slab caches should be freed with kmem_cache_free(). And
+-don't forget to destroy the cache with kmem_cache_destroy().
++`kvmalloc`. The slab caches can be freed with kmem_cache_free() or kvfree().
++And don't forget to destroy the cache with kmem_cache_destroy().
+diff --git a/mm/slob.c b/mm/slob.c
+index 74d3f6e60666..0cba0b569877 100644
+--- a/mm/slob.c
++++ b/mm/slob.c
+@@ -25,23 +25,18 @@
+  * into the free list in address order, so this is effectively an
+  * address-ordered first fit.
+  *
+- * Above this is an implementation of kmalloc/kfree. Blocks returned
+- * from kmalloc are prepended with a 4-byte header with the kmalloc size.
+- * If kmalloc is asked for objects of PAGE_SIZE or larger, it calls
+- * alloc_pages() directly, allocating compound pages so the page order
+- * does not have to be separately tracked.
+- * These objects are detected in kfree() because PageSlab()
+- * is false for them.
++ * Blocks that are less than (PAGE_SIZE - minalign) are prepended with a
++ * 4-byte header with the size. Larger blocks do not have the header and
++ * SLOB calls alloc_pages() directly, allocating compound pages so the
++ * page order does not have to be separately tracked. These objects are
++ * detected in kfree() because PageSlab() is false for them.
+  *
+  * SLAB is emulated on top of SLOB by simply calling constructors and
+  * destructors for every SLAB allocation. Objects are returned with the
+  * 4-byte alignment unless the SLAB_HWCACHE_ALIGN flag is set, in which
+  * case the low-level allocator will fragment blocks to create the proper
+- * alignment. Again, objects of page-size or greater are allocated by
+- * calling alloc_pages(). As SLAB objects know their size, no separate
+- * size bookkeeping is necessary and there is essentially no allocation
+- * space overhead, and compound pages aren't needed for multi-page
+- * allocations.
++ * alignment. Again, objects of (PAGE_SIZE - minalign) or greater are
++ * allocated by calling alloc_pages().
+  *
+  * NUMA support in SLOB is fairly simplistic, pushing most of the real
+  * logic down to the page allocator, and simply doing the node accounting
+@@ -207,12 +202,14 @@ static void *slob_new_pages(gfp_t gfp, int order, int node)
+ 	return page_address(page);
+ }
+ 
+-static void slob_free_pages(void *b, int order)
++static void slob_free_pages(struct page *sp, int order)
+ {
+-	struct page *sp = virt_to_page(b);
+-
+-	if (current->reclaim_state)
+-		current->reclaim_state->reclaimed_slab += 1 << order;
++	if (PageSlab(sp)) {
++		__ClearPageSlab(sp);
++		page_mapcount_reset(sp);
++		if (current->reclaim_state)
++			current->reclaim_state->reclaimed_slab += 1 << order;
++	}
+ 
+ 	mod_node_page_state(page_pgdat(sp), NR_SLAB_UNRECLAIMABLE_B,
+ 			    -(PAGE_SIZE << order));
+@@ -247,9 +244,7 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align,
+ 		/*
+ 		 * 'aligned' will hold the address of the slob block so that the
+ 		 * address 'aligned'+'align_offset' is aligned according to the
+-		 * 'align' parameter. This is for kmalloc() which prepends the
+-		 * allocated block with its size, so that the block itself is
+-		 * aligned when needed.
++		 * 'align' parameter.
+ 		 */
+ 		if (align) {
+ 			aligned = (slob_t *)
+@@ -373,25 +368,28 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node,
+ 	}
+ 	if (unlikely(gfp & __GFP_ZERO))
+ 		memset(b, 0, size);
++	/* Write size in the header */
++	*(unsigned int *)b = size - align_offset;
++	b = (void *)b + align_offset;
+ 	return b;
+ }
+ 
+ /*
+  * slob_free: entry point into the slob allocator.
+  */
+-static void slob_free(void *block, int size)
++static void slob_free(void *block)
+ {
+ 	struct page *sp;
+-	slob_t *prev, *next, *b = (slob_t *)block;
++	int align_offset = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
++	void *hdr = block - align_offset;
++	unsigned int size = *(unsigned int *)hdr + align_offset;
++	slob_t *prev, *next, *b = hdr;
+ 	slobidx_t units;
+ 	unsigned long flags;
+ 	struct list_head *slob_list;
+ 
+-	if (unlikely(ZERO_OR_NULL_PTR(block)))
+-		return;
+-	BUG_ON(!size);
+-
+-	sp = virt_to_page(block);
++	BUG_ON(!size || size >= PAGE_SIZE);
++	sp = virt_to_page(hdr);
+ 	units = SLOB_UNITS(size);
+ 
+ 	spin_lock_irqsave(&slob_lock, flags);
+@@ -401,9 +399,7 @@ static void slob_free(void *block, int size)
+ 		if (slob_page_free(sp))
+ 			clear_slob_page_free(sp);
+ 		spin_unlock_irqrestore(&slob_lock, flags);
+-		__ClearPageSlab(sp);
+-		page_mapcount_reset(sp);
+-		slob_free_pages(b, 0);
++		slob_free_pages(sp, 0);
+ 		return;
+ 	}
+ 
+@@ -476,7 +472,6 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
+ static __always_inline void *
+ __do_kmalloc_node(size_t size, gfp_t gfp, int node, unsigned long caller)
+ {
+-	unsigned int *m;
+ 	int minalign = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
+ 	void *ret;
+ 
+@@ -497,12 +492,7 @@ __do_kmalloc_node(size_t size, gfp_t gfp, int node, unsigned long caller)
+ 		if (!size)
+ 			return ZERO_SIZE_PTR;
+ 
+-		m = slob_alloc(size + minalign, gfp, align, node, minalign);
+-
+-		if (!m)
+-			return NULL;
+-		*m = size;
+-		ret = (void *)m + minalign;
++		ret = slob_alloc(size + minalign, gfp, align, node, minalign);
+ 
+ 		trace_kmalloc_node(caller, ret,
+ 				   size, size + minalign, gfp, node);
+@@ -553,21 +543,13 @@ void kfree(const void *block)
+ 	kmemleak_free(block);
+ 
+ 	sp = virt_to_page(block);
+-	if (PageSlab(sp)) {
+-		int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
+-		unsigned int *m = (unsigned int *)(block - align);
+-		slob_free(m, *m + align);
+-	} else {
+-		unsigned int order = compound_order(sp);
+-		mod_node_page_state(page_pgdat(sp), NR_SLAB_UNRECLAIMABLE_B,
+-				    -(PAGE_SIZE << order));
+-		__free_pages(sp, order);
+-
+-	}
++	if (PageSlab(sp))
++		slob_free((void *)block);
++	else
++		slob_free_pages(sp, compound_order(sp));
+ }
+ EXPORT_SYMBOL(kfree);
+ 
+-/* can't use ksize for kmem_cache_alloc memory, only kmalloc */
+ size_t __ksize(const void *block)
+ {
+ 	struct page *sp;
+@@ -600,22 +582,26 @@ int __kmem_cache_create(struct kmem_cache *c, slab_flags_t flags)
+ 
+ static void *slob_alloc_node(struct kmem_cache *c, gfp_t flags, int node)
+ {
++	int minalign = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
+ 	void *b;
+ 
+ 	flags &= gfp_allowed_mask;
+ 
+ 	might_alloc(flags);
+ 
+-	if (c->size < PAGE_SIZE) {
+-		b = slob_alloc(c->size, flags, c->align, node, 0);
++	if (c->size < PAGE_SIZE - minalign) {
++		b = slob_alloc(c->size + minalign, flags, c->align, node, minalign);
+ 		trace_kmem_cache_alloc_node(_RET_IP_, b, c->object_size,
+-					    SLOB_UNITS(c->size) * SLOB_UNIT,
++					    SLOB_UNITS(c->size + minalign) * SLOB_UNIT,
+ 					    flags, node);
+ 	} else {
+-		b = slob_new_pages(flags, get_order(c->size), node);
++		unsigned int order = get_order(c->size);
++
++		if (likely(order))
++			flags |= __GFP_COMP;
++		b = slob_new_pages(flags, order, node);
+ 		trace_kmem_cache_alloc_node(_RET_IP_, b, c->object_size,
+-					    PAGE_SIZE << get_order(c->size),
+-					    flags, node);
++					    PAGE_SIZE << order, flags, node);
+ 	}
+ 
+ 	if (b && c->ctor) {
+@@ -647,12 +633,18 @@ void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t gfp, int node)
+ EXPORT_SYMBOL(kmem_cache_alloc_node);
+ #endif
+ 
+-static void __kmem_cache_free(void *b, int size)
++static void __kmem_cache_free(void *b)
+ {
+-	if (size < PAGE_SIZE)
+-		slob_free(b, size);
++	struct page *sp;
++
++	if (unlikely(ZERO_OR_NULL_PTR(b)))
++		return;
++
++	sp = virt_to_page(b);
++	if (PageSlab(sp))
++		slob_free(b);
+ 	else
+-		slob_free_pages(b, get_order(size));
++		slob_free_pages(sp, compound_order(sp));
+ }
+ 
+ static void kmem_rcu_free(struct rcu_head *head)
+@@ -660,7 +652,7 @@ static void kmem_rcu_free(struct rcu_head *head)
+ 	struct slob_rcu *slob_rcu = (struct slob_rcu *)head;
+ 	void *b = (void *)slob_rcu - (slob_rcu->size - sizeof(struct slob_rcu));
+ 
+-	__kmem_cache_free(b, slob_rcu->size);
++	__kmem_cache_free(b);
+ }
+ 
+ void kmem_cache_free(struct kmem_cache *c, void *b)
+@@ -672,7 +664,7 @@ void kmem_cache_free(struct kmem_cache *c, void *b)
+ 		slob_rcu->size = c->size;
+ 		call_rcu(&slob_rcu->head, kmem_rcu_free);
+ 	} else {
+-		__kmem_cache_free(b, c->size);
++		__kmem_cache_free(b);
+ 	}
+ 
+ 	trace_kmem_cache_free(_RET_IP_, b, c->name);
+-- 
+2.30.2
 
