@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F285438518
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF3C438519
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJWUAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 16:00:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34046 "EHLO mail.kernel.org"
+        id S231304AbhJWUAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 16:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhJWUAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 16:00:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 407BF60F4B;
-        Sat, 23 Oct 2021 19:58:13 +0000 (UTC)
+        id S231174AbhJWUAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 16:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2163C61050;
+        Sat, 23 Oct 2021 19:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635019093;
-        bh=UE0nSct8AkiwiOVgXjSj4Xe/BOGvGKgkpKvTHjkG/I4=;
+        s=k20201202; t=1635019096;
+        bh=d5GM8INkmkLbrnWpYDwQZ0MWghsRDuj0ZeutvzDLxKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWpEpinV6kSP5Yw/e+aAyeCvcZjUyNb+u5aEQbNPKdzNOtfJQqPoQ5Za4em5HIOwb
-         V/NuKRpnupioJn3Whl4O7tqI3G2SS58DudTDWKFwHUaBIZGBPnS1Ce0TQ3radZCGM8
-         EQRV1FnNV3Qic9sg1qktA0USPy0GV2TifnUqSgzYj0y3axS5vT9FywzEQrM//ovN07
-         oABbuFS8Of+3/xU3rCkqSsUc+8kVmzho94yg4/G9GeF+vng3eRQ6u7Q2AFrmd8nonH
-         u98vm8VIbxUNkBLJSC4/SjaDfrjE40KSJguillSWax7GXf7ani6BCLy+K238A5VRS4
-         Bx+H52GI5hCsg==
+        b=W69SzhXiOhJctTgMQSB+I68WSsHqZd3C3+PJNWXzOUWTid/FM3m+Z6jEb74aSRQ7N
+         IhlSS+9+nnkzi1G0hzjACZLC52HBGdQfPCf+yL03mQFd5n7MomKZLijV+WZlPyQckG
+         Tx3CQJB3o/JnBgxv2aFIdjKNI+l//4xKSI+0ycaZvPdcicooky6ZG4Kts4PKNclMDt
+         olL2ZioKHk4bDLQkmPNrQWasFAUIBTwJLpKyC0wy9LTkRLtVFTIo0YZysXz0TNeFVo
+         +lCof3ggySnP1rBF764MUK1pg8N4I6C2OXiwYkPcG4Vago8vpaaFzmz45z134vyj+q
+         V1Ewog65D/Q7w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org,
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>
+Cc:     Mark Brown <broonie@kernel.org>, linux-rtc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] regulator: Don't error out fixed regulator in regulator_sync_voltage()
-Date:   Sat, 23 Oct 2021 20:58:02 +0100
-Message-Id: <163501903135.919198.6701017250560518879.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH v1 0/3] Remove TPS80031 driver
+Date:   Sat, 23 Oct 2021 20:58:03 +0100
+Message-Id: <163501903136.919198.2215583761573321430.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211021183308.27786-1-digetx@gmail.com>
-References: <20211021183308.27786-1-digetx@gmail.com>
+In-Reply-To: <20211021192258.21968-1-digetx@gmail.com>
+References: <20211021192258.21968-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,15 +45,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 21:33:08 +0300, Dmitry Osipenko wrote:
-> Fixed regulator can't change voltage and regulator_sync_voltage()
-> returns -EINVAL in this case. Make regulator_sync_voltage() to succeed
-> for regulators that are incapable to change voltage.
+On Thu, 21 Oct 2021 22:22:55 +0300, Dmitry Osipenko wrote:
+> TPS80031 driver was upstreamed back in 2013 and never got a user. I noticed
+> that driver is abandoned while was about to write a patch to switch it to a
+> new power-off API (that I'm working on). Driver requires platform data that
+> nobody provides. Instead of changing the dead code, let's remove it.
 > 
-> On NVIDIA Tegra power management driver needs to sync voltage and we have
-> one device (Trimslice) that uses fixed regulator which is getting synced.
-> The syncing error isn't treated as fatal, but produces a noisy error
-> message. This patch silences that error.
+> Dmitry Osipenko (3):
+>   rtc: tps80031: Remove driver
+>   regulator: tps80031: Remove driver
+>   mfd: tps80031: Remove driver
 > 
 > [...]
 
@@ -60,8 +64,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: Don't error out fixed regulator in regulator_sync_voltage()
-      commit: 400d5a5da43c0e84e5aa75151082ea91f0fae3c9
+[2/3] regulator: tps80031: Remove driver
+      commit: d7477e646291b2dcdd5521cf926cd390ddd6a7c1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
