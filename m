@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055374384A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 20:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0C74384AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 20:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhJWSHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 14:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S231129AbhJWSXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 14:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhJWSHg (ORCPT
+        with ESMTP id S230051AbhJWSXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 14:07:36 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F7FC061714
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 11:05:16 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id bq11so2364731lfb.10
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 11:05:16 -0700 (PDT)
+        Sat, 23 Oct 2021 14:23:07 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA62C061714
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 11:20:48 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a17so13834232uax.12
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 11:20:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=usp.br; s=usp-google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
          :content-transfer-encoding;
-        bh=vppgzpnDmxHajRXRNTQTVMaBkZ0Oav0mmSG1SIlu/rs=;
-        b=LFFV1xXfOncBfDf93gnnvtg6QVMmja8w5m6zOXkecuS5Ip7OPwzvJTI5sjWvnYa1KI
-         uWo+EZjhQrF8Vi4uNlr0/pmGBgom0RTV/2DuYSQ7uch2wpbuVEJw8hsQrwx50DVN4hPB
-         woUcCRS1FM7UAO97fc8aL46NmE7uR0sFzBONLVbALlZeLnwWjHBVIotahmfZsbIu9sST
-         C9kUn5hKl8yIHaklHF4SOYcNLsHTU0nijDkB4kC3tegiQCTTYCG0pYO1xH3l+6TOfqZx
-         oZnTaZi8Drjnk52mUDjZvUYUzetOp5eGv8pKHQ0e5+ogaHdgwLAC/4xnYTNmfJbuqUs1
-         hRNQ==
+        bh=LnwR1uAWKDgHHpgLi+Zphb6m+amdTcCgICOpeRfFVOA=;
+        b=uyBDv6otKN1Ibzsyl86F6F6HrH5fI8ZJRERLa8+a5Z0zqTUTwrm0YOdET776KI8v+6
+         HOns4XzLLC7p176sLhSEHgb5p9A0yalA1aPQlADATDPEtLgWMgTQuUPFknxSBBVSnRcj
+         kH1Lia8SexULXam2JjNnJUkgkEnARVDMJa0yfmphhyZr716R0lQx1YSfpcYry8eRoc7w
+         nvB7dnGbDmscCzxKG/PQEoEG/cNCMHkvvT6YIPmnetoo8xBDkIHtpwo8r2nXbL+Mf040
+         PQIQ8J0sNzLw6bKSPHunZmR73dCj+mRj2eJDTaHPfNEjsczugKJyO3m+Km4LtPQpzwPE
+         gDNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vppgzpnDmxHajRXRNTQTVMaBkZ0Oav0mmSG1SIlu/rs=;
-        b=T8XjVNSrgN19M+1RZnbEGZvDxWiFvrtKu+wxmk5VqsWB/DXNU+Upvqf39G7stZe1MA
-         NcoAS1q3H3FgDG4Ml1RMo+2PLQH4BpmanJzrgfsxPBeeZkTUtOnRX5o6LE52B//OsCyC
-         8JAGijOeeM2fk0EJ2RDT7mltJxp5m1jfOCSuOXUG0zzxOffefiKKBvEPPuNI1VbyJBbf
-         FMPmkfny1Uo44I3GGy8QmSxyAGALrjnpHnwzaxTPmUv6ICBySaJGdMueCDlO0SfLFPzj
-         DWJfuqPOuG7YmQeE4OAwayS4V4wyKjVVPXGtIi0HLveApWpVz1NtNzRmEV4pllndOLbU
-         Cfng==
-X-Gm-Message-State: AOAM533k8Y/fm3JtZ6xYgvryCTclYiCi/0SVY+OV/uu3bTAJgSYdDdKj
-        nMu9b6lW6MCw5dHWJM6lMbc=
-X-Google-Smtp-Source: ABdhPJybZgmpDtZxF+2+LrxJvNK0AmEQVqJ8XbV94GdxyWJtgX8Lva1JRmmXhaCeGR3fU7hWf1fvCw==
-X-Received: by 2002:a05:6512:3f87:: with SMTP id x7mr6832999lfa.5.1635012314785;
-        Sat, 23 Oct 2021 11:05:14 -0700 (PDT)
-Received: from localhost.localdomain ([46.230.137.73])
-        by smtp.googlemail.com with ESMTPSA id m7sm1100095lfo.181.2021.10.23.11.05.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=LnwR1uAWKDgHHpgLi+Zphb6m+amdTcCgICOpeRfFVOA=;
+        b=M5gkRst2ECpRpsohkAz9lVzU/SC8zx1AYcjWhH1xcXtfKVnNEb2eoNhcVaGlg2YM1b
+         eEZkPeMAddBf7yg58p6g9F/sm4IUJe/lv7az3xDeyuTmFj3ssstUWtYE0OlUyLnrcMN3
+         J0hdILTJyrIRaMQB+tnxBjULkz2V9pEIK2xgilTzIF498GInfsEsFhzblOShnZJOZ8eu
+         N7vNkoqCzrzfgCoh2ql9RLW8vybVXvDOdi0hcBvRJDq7AreYD7uv+B8jnRKQCfSJQRYn
+         N9Am01PFqBrnyHrVteaU5Yvoh6lLNSSj4kX4WV+x5Kk0+QV/O7KnhbDq7ed0wb39TsVy
+         NBMQ==
+X-Gm-Message-State: AOAM530Dpn/QdrLoGIBGuNwn9WIwUq2nqWOSXF6xigRbfXdjfD5UUKNH
+        0zfa8UEyBiDvqg78mST+/qQNfw==
+X-Google-Smtp-Source: ABdhPJwMiab9PdGiUEvO6PeSSgiBKATBf4wU9zU+aI5Wka5wj+MyhnAkv5TprLrLulcJZ03KN5r/2w==
+X-Received: by 2002:a05:6102:3589:: with SMTP id h9mr7096058vsu.47.1635013247056;
+        Sat, 23 Oct 2021 11:20:47 -0700 (PDT)
+Received: from fedora ([187.64.134.142])
+        by smtp.gmail.com with ESMTPSA id t7sm6585389vko.7.2021.10.23.11.20.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 11:05:14 -0700 (PDT)
-From:   Jim Christian Haukvik <jchaukvik@gmail.com>
-To:     johan@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jim Christian Haukvik <jchaukvik@gmail.com>
-Subject: [PATCH] kernel/params.c: Refactor dash2underscore
-Date:   Sat, 23 Oct 2021 20:04:51 +0200
-Message-Id: <20211023180451.59033-1-jchaukvik@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Sat, 23 Oct 2021 11:20:46 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 15:20:42 -0300
+From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+To:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: [PATCH v2] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <YXRSaMb2FV78+1tc@fedora>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch refactors the dash2underscore function
-to use the ternary operator.
+Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+replace it for the atomic PWM API.
 
-Signed-off-by: Jim Christian Haukvik <jchaukvik@gmail.com>
+Signed-off-by: Maíra Canal <maira.canal@usp.br>
 ---
- kernel/params.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+V1 -> V2: Assign variables directly and simplify conditional statement
+---
+ drivers/media/rc/pwm-ir-tx.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/params.c b/kernel/params.c
-index 8299bd764e42..865a76fec79a 100644
---- a/kernel/params.c
-+++ b/kernel/params.c
-@@ -76,9 +76,7 @@ static void maybe_kfree_parameter(void *param)
- 
- static char dash2underscore(char c)
+diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+index 4bc28d2c9cc9..ca943f168855 100644
+--- a/drivers/media/rc/pwm-ir-tx.c
++++ b/drivers/media/rc/pwm-ir-tx.c
+@@ -53,22 +53,21 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
  {
--	if (c == '-')
--		return '_';
--	return c;
-+	return (c == '-') ? '_' : c;
- }
+ 	struct pwm_ir *pwm_ir = dev->priv;
+ 	struct pwm_device *pwm = pwm_ir->pwm;
+-	int i, duty, period;
++	struct pwm_state state;
++	int i;
+ 	ktime_t edge;
+ 	long delta;
  
- bool parameqn(const char *a, const char *b, size_t n)
+-	period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+-	duty = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
++	pwm_init_state(pwm, &state);
+ 
+-	pwm_config(pwm, duty, period);
++	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
++	state.duty_cycle = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
+ 
+ 	edge = ktime_get();
+ 
+ 	for (i = 0; i < count; i++) {
+-		if (i % 2) // space
+-			pwm_disable(pwm);
+-		else
+-			pwm_enable(pwm);
++		state.enabled = !(i % 2);
++		pwm_apply_state(pwm, &state);
+ 
+ 		edge = ktime_add_us(edge, txbuf[i]);
+ 		delta = ktime_us_delta(edge, ktime_get());
+@@ -76,7 +75,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+ 			usleep_range(delta, delta + 10);
+ 	}
+ 
+-	pwm_disable(pwm);
++	state.enabled = false;
++	pwm_apply_state(pwm, &state);
+ 
+ 	return count;
+ }
 -- 
-2.33.1
+2.31.1
 
