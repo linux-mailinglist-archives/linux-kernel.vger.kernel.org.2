@@ -2,177 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289464383CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796E44383CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhJWNXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 09:23:36 -0400
-Received: from relay.sw.ru ([185.231.240.75]:57730 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhJWNXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 09:23:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=OWk27WIiCs40xzFXWlHdn6igx3+/uR9iT4XDEeT6sAI=; b=PNCMx2jn0qS6tFTQjj6
-        dqSDj/Rod9KgZgA74jUtr93e4nXd5dbZkBzdkOhYRCgZZ5iQ3z9p0QgtXf8i6KolFr5LggnPibF37
-        LMJixfsRczcUk/+2IqVXHeb3mhZouM2oInhDJLZlTdzYVQI7mYAJtmXk3Nfic7cxJFBw2+yWUfY=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1meGxU-006vRY-W3; Sat, 23 Oct 2021 16:21:13 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg v3 3/3] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
-Message-ID: <8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com>
-Date:   Sat, 23 Oct 2021 16:20:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230155AbhJWNeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 09:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhJWNeT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 09:34:19 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F627C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 06:32:00 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id t21so4688309plr.6
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 06:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yuIaLCMcDEM369IISxPV7zzCb/arzy8V+3dfLhg5fFE=;
+        b=RZyqXddBBH9QsfNlSpiDzlrapdAqMfGvlZVStbzf04n+KRTcygGUnozaFPLIoHN6Xr
+         ojpybP17c1XmTNceTm0k/UbW3p961vAqnNbHrY3JECEeLzq4JJZ0+1o6bxWb1NduWWgw
+         yJr6UP45eQsFklL+JoDhLlT3g0ddQ4i74Ak9DJf+isZG+66qrA1TIseEJi8xkS7WTUx7
+         atwvdnySxzQx/xy4YxnFhBcHTxNREPwqaT+cREIgCW+vHBrnar3rMITTlV3q0vvrOXhm
+         TrfzqK1msenxNbp96oawjijMbNSYMfjhEj4/A38RhLvt+7gs9WINBf5csGWQWwoXyDdJ
+         oxFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yuIaLCMcDEM369IISxPV7zzCb/arzy8V+3dfLhg5fFE=;
+        b=7MZq6o1wqFQh41XsxDYG8nB/GLcPeiDkhRodr4MZR32w0XqP1td3f9pV3WGwoiJvqt
+         lM88mSPFRlaHErazyjIRFw383vHuFk4693tBzUd7STz7I8KClFb8Fz92jtKGUYaNalYb
+         /0yBaxaS+wfcSpY6z9M4v3s5smsp1aWu93pWcoCqnPiFVJ6J4vptMwp54CWkA+EmlAqn
+         2fi2UkQBNein67Y7ifNf2/pxSPkTzgDDqoGxUltv+UYnZBLbQYWb7P7uBQ6taQuC1qy3
+         qVUeJGFkvG+MxfzpzTUiLXf6oSagkCtFLAdBHuN9xFCjurDgB5x2Fm2klvUBTGmzBuJ5
+         o+ww==
+X-Gm-Message-State: AOAM5339I0jz5gfXwF5Q+KpyJRnxa1FEhgrALUR3w4T2SbZCE7iGyIWZ
+        hUmwF9tuqOynuD6OZ2F7fZyKnw==
+X-Google-Smtp-Source: ABdhPJxbQacCtpiovt97B4gZTzo6wbNRQoow0Lb+DW+mMFONZh2kEgkGiUQmNXdcIv0VbQkxF9Z9SQ==
+X-Received: by 2002:a17:90b:4c0f:: with SMTP id na15mr1157355pjb.96.1634995919733;
+        Sat, 23 Oct 2021 06:31:59 -0700 (PDT)
+Received: from integral.. ([182.2.37.49])
+        by smtp.gmail.com with ESMTPSA id h1sm3927542pjf.10.2021.10.23.06.31.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 06:31:59 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Peter Cordes <peter@cordes.ca>,
+        Bedirhan KURT <windowz414@gnuweeb.org>,
+        Louvian Lyndal <louvianlyndal@gmail.com>
+Subject: Re: [PATCH 2/2] tools/nolibc: x86-64: Fix startup code bug
+Date:   Sat, 23 Oct 2021 20:27:15 +0700
+Message-Id: <v9gnbpcz7rxYUfmUijR-ammarfaizi2@intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211023090246.GA4323@1wt.eu>
+References: <20211023090246.GA4323@1wt.eu> <20211018045828.GA15329@1wt.eu> <O2kEogG8Ln8uUQ-ammarfaizi2@gnuweeb.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1634994605.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory cgroup charging allows killed or exiting tasks to exceed the hard
-limit. It is assumed that the amount of the memory charged by those
-tasks is bound and most of the memory will get released while the task
-is exiting. This is resembling a heuristic for the global OOM situation
-when tasks get access to memory reserves. There is no global memory
-shortage at the memcg level so the memcg heuristic is more relieved.
 
-The above assumption is overly optimistic though. E.g. vmalloc can scale
-to really large requests and the heuristic would allow that. We used to
-have an early break in the vmalloc allocator for killed tasks but this
-has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
-the current task is killed""). There are likely other similar code paths
-which do not check for fatal signals in an allocation&charge loop.
-Also there are some kernel objects charged to a memcg which are not
-bound to a process life time.
+On Sat, Oct 23, 2021 at 4:02 PM Willy Tarreau <w@1wt.eu> wrote:
+>
+> Hi Ammar,
+>
+> On Mon, Oct 18, 2021 at 01:53:29PM +0700, Ammar Faizi wrote:
+> > Got it, agree with that. I will address your review and resend this as a
+> > patchset v2 soon.
+>
+> Just checking if you have anything about this or if you're busy. No
+> stress, it's just that I prefer to send batches to Paul since he
+> rebuilds and retests everything each time, so I'm keeping your first
+> patch and another one on hold for now.
+>
+> Do not hesitate to let me know if you don't have time and if you want
+> me to rework your patches myself.
+>
+> Thanks!
+> Willy
 
-It has been observed that it is not really hard to trigger these
-bypasses and cause global OOM situation.
+Hi Willy,
 
-One potential way to address these runaways would be to limit the amount
-of excess (similar to the global OOM with limited oom reserves). This is
-certainly possible but it is not really clear how much of an excess is
-desirable and still protects from global OOMs as that would have to
-consider the overall memcg configuration.
+Sorry for the delay, I got extra activities this week. Sorry for not
+giving any update lately.
 
-This patch is addressing the problem by removing the heuristic
-altogether. Bypass is only allowed for requests which either cannot fail
-or where the failure is not desirable while excess should be still
-limited (e.g. atomic requests). Implementation wise a killed or dying
-task fails to charge if it has passed the OOM killer stage. That should
-give all forms of reclaim chance to restore the limit before the
-failure (ENOMEM) and tell the caller to back off.
+  1) I can send the %rsp alignment fix patch. I will send it today or
+     tomorrow (GMT+07 time).
 
-In addition, this patch renames should_force_charge() helper
-to task_is_dying() because now its use is not associated witch forced
-charging.
+  2) I can't send the syscall change used for exit. Because I only
+     have x86 machine. So I can't apply the changes to other arch(s).
 
-This patch depends on pagefault_out_of_memory() to not trigger
-out_of_memory(), because then a memcg failure can unwind to VM_FAULT_OOM
-and cause a global OOM killer.
+For (2), basically sys_exit doesn't close the entire process. Instead
+it only closes specific thread that calls that syscall. The libc uses
+sys_exit_group to close the process and its threads.
 
-Cc: stable@vger.kernel.org
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/memcontrol.c | 27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+^ It's not really an urgent thing, because the nolibc.h may not be
+used for multithreaded app. Even so, I don't see something dangerous.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6da5020a8656..87e41c3cac10 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -239,7 +239,7 @@ enum res_type {
- 	     iter != NULL;				\
- 	     iter = mem_cgroup_iter(NULL, iter, NULL))
- 
--static inline bool should_force_charge(void)
-+static inline bool task_is_dying(void)
- {
- 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
- 		(current->flags & PF_EXITING);
-@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 * A few threads which were not waiting at mutex_lock_killable() can
- 	 * fail to bail out. Therefore, check again after holding oom_lock.
- 	 */
--	ret = should_force_charge() || out_of_memory(&oc);
-+	ret = task_is_dying() || out_of_memory(&oc);
- 
- unlock:
- 	mutex_unlock(&oom_lock);
-@@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	struct page_counter *counter;
- 	enum oom_status oom_status;
- 	unsigned long nr_reclaimed;
-+	bool passed_oom = false;
- 	bool may_swap = true;
- 	bool drained = false;
- 	unsigned long pflags;
-@@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_ATOMIC)
- 		goto force;
- 
--	/*
--	 * Unlike in global OOM situations, memcg is not in a physical
--	 * memory shortage.  Allow dying and OOM-killed tasks to
--	 * bypass the last charges so that they can exit quickly and
--	 * free their memory.
--	 */
--	if (unlikely(should_force_charge()))
--		goto force;
--
- 	/*
- 	 * Prevent unbounded recursion when reclaim operations need to
- 	 * allocate memory. This might exceed the limits temporarily,
-@@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
- 		goto nomem;
- 
--	if (fatal_signal_pending(current))
--		goto force;
-+	/* Avoid endless loop for tasks bypassed by the oom killer */
-+	if (passed_oom && task_is_dying())
-+		goto nomem;
- 
- 	/*
- 	 * keep retrying as long as the memcg oom killer is able to make
-@@ -2640,14 +2633,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 */
- 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
- 		       get_order(nr_pages * PAGE_SIZE));
--	switch (oom_status) {
--	case OOM_SUCCESS:
-+	if (oom_status == OOM_SUCCESS) {
-+		passed_oom = true;
- 		nr_retries = MAX_RECLAIM_RETRIES;
- 		goto retry;
--	case OOM_FAILED:
--		goto force;
--	default:
--		goto nomem;
- 	}
- nomem:
- 	if (!(gfp_mask & __GFP_NOFAIL))
+For (1), it's urgent, because the alignment violation causes segfault
+if the compiler generates aligned move, often when we compile it
+with -O3, usually that happens with SSE instructions, like `movdqa`,
+`movaps`.
+
+Preparing the patch...
+
 -- 
-2.32.0
-
+Ammar Faizi
