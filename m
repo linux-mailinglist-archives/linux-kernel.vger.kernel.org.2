@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16AC438252
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 10:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B94D438253
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 10:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhJWIVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 04:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
+        id S230060AbhJWIZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 04:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhJWIVq (ORCPT
+        with ESMTP id S229908AbhJWIZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 04:21:46 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B270FC061764;
-        Sat, 23 Oct 2021 01:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JWYazItGGDmxB3tlCZwxquRKPod4Oq86y096NCBmtDA=; b=0BOyAcQ7YXM1XCoGZnUqYY1gQa
-        pr0MuZVpOz5yJUiRHTr/nv52T9U431VthHWOIo6YCmXDm+q4qcrAPKN08ppjYzi8oH/69/rPoHBn+
-        sJIiHvEgttWn0CHaRX30XAiDYAijD33khmEGKvdwp3HmpaTOIFj+PcQYR3qsWTDAnDY9gF4+BnZsT
-        F7u+yUZx+JwKZEh1MmuFkH7iLZ4D4+hzYSlC0oyYkfYWDDbLVIDW0nH8rUtdpNNrRTbhX2LMmIvoZ
-        UjtxI0nK8go0sG2Ga0Wp9ZL2NyTp2ZtKqJtcCgiSw5/Px1XpZ8ljzH47XVTO8GASqUMtzR2mKkh51
-        6oVwVI3g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55250)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1meCFK-0002Uk-Op; Sat, 23 Oct 2021 09:19:18 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1meCFI-0001xk-Ta; Sat, 23 Oct 2021 09:19:16 +0100
-Date:   Sat, 23 Oct 2021 09:19:16 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jie Luo <quic_luoj@quicinc.com>
-Cc:     Luo Jie <luoj@codeaurora.org>, andrew@lunn.ch,
-        hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH v4 01/14] net: phy: at803x: replace AT803X_DEVICE_ADDR
- with MDIO_MMD_PCS
-Message-ID: <YXPFhJHpfPHNbKKd@shell.armlinux.org.uk>
-References: <20211022120624.18069-1-luoj@codeaurora.org>
- <20211022120624.18069-2-luoj@codeaurora.org>
- <YXKq6j/CnQ/i34ZB@shell.armlinux.org.uk>
- <c943c86e-bbd9-746a-cfda-647b31af337f@quicinc.com>
+        Sat, 23 Oct 2021 04:25:25 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889B8C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 01:23:06 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id b9so12230466ybc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 01:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=NLtbZQqeg+QHRHIm4ygS2/6T4vEx1boag/GyH9RJv36xFGIfrGdOsfQ4gPW0OYUTXz
+         uQnW24eWX1cW53Foo3XPLKVhX0E/lVXA655o4UhRIsMXRuVK813NLETgtbtxorHAYXIZ
+         vBKV1AjG1CNUmJfKtgBrhWXuiEZBNWegjLxZ5oAJFijSsSE5ryYKNe+Y3pfNblF8imsg
+         Bm/6grZXsvUBHVvt4IrnUl9KH9sqtRde9elvdxjypbAYUH+zagS3mRN/5EjY5q6EnObj
+         Wo2e2jno6uZxx060Xot5qww1/aLh16Z0Eh2D0pbuYSpaBFC5qIiQmBW5bVVW0qHxdfVm
+         WiAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=FcCdD7OxhhPFMAB74f+XRLUBVWVYaoX6NtXY+wzbhTwO0Zg05SATGbNX0wSrKmlSNB
+         RjWRS5Vv5NwUPbOitS0Ub02nxnwELmcfVZRGHG2M1or2LbrWe/rLnOAeXzI/sw8SADaX
+         fpmwWl6WtRY6r88cgdzGY5SkJfFuuni6GnAPVoi2ZNk2LjIWIV/Hpl2W6QtvqBfMDuaK
+         XBlcq9L4bFCse5dj3hEHK+mNJfe5+v8/7yLP63FUH7Rgpwhl9qeE4GuqDSadR3LNT5uI
+         PPm/dNHIlPDnEKOTpLygTiwDYjzeYIMpAMxDQ8dn3fHreBBSi0RL2pwlYtu18fhx5A2w
+         bcuQ==
+X-Gm-Message-State: AOAM532REM5cUojZZX8DWjaPDzgxjmyCGSJcx6xNXeB6pTXj8M83YCyE
+        aRYP8hit8fjDqdbBIOTKOxoTUH+gXFJOhyIukDY=
+X-Google-Smtp-Source: ABdhPJzP8GJ7uOzatLOlqnwUkAy5unILRztustZPpjlzOsfstLazIbd8tFMs4Yd9FN+WthPG6pDJEDzkRVPNDRAwekM=
+X-Received: by 2002:a25:d58:: with SMTP id 85mr3785729ybn.275.1634977385701;
+ Sat, 23 Oct 2021 01:23:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c943c86e-bbd9-746a-cfda-647b31af337f@quicinc.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Received: by 2002:a05:7110:7195:b0:fb:1681:a1aa with HTTP; Sat, 23 Oct 2021
+ 01:23:05 -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <whitemrshannah@gmail.com>
+Date:   Sat, 23 Oct 2021 01:23:05 -0700
+Message-ID: <CAPOLZiweh84-6MKwoBZ5TY492_eoXy7=469eHPnt53KS32PuYg@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 23, 2021 at 09:53:15AM +0800, Jie Luo wrote:
-> 
-> On 10/22/2021 8:13 PM, Russell King (Oracle) wrote:
-> > On Fri, Oct 22, 2021 at 08:06:11PM +0800, Luo Jie wrote:
-> > > Replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS defined in mdio.h.
-> > > 
-> > > Signed-off-by: Luo Jie <luoj@codeaurora.org>
-> > On v3, Andrew gave you a reviewed-by. You need to carry those forward
-> > especially if the patches have not changed.
-> > 
-> > Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Thanks Russell for this reminder, will follow it.
+Dear Friend,
 
-But, from what I can tell, you still haven't followed it in your v5
-posting either.
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
+
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
+Best Regards
+Mrs Aisha Al-Qaddafi
