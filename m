@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA7E4384B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 20:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8DA4384B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 20:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhJWSev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 14:34:51 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:34350 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhJWSeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 14:34:50 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 94E5592009C; Sat, 23 Oct 2021 20:32:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 85BB192009B;
-        Sat, 23 Oct 2021 20:32:29 +0200 (CEST)
-Date:   Sat, 23 Oct 2021 20:32:29 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Jinyang He <hejinyang@loongson.cn>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Jun-Ru Chang <jrjang@realtek.com>
-Subject: Re: [PATCH 4/4] MIPS: Add is_jr_ra_ins() to end the loop early
-In-Reply-To: <1610454557-25867-5-git-send-email-hejinyang@loongson.cn>
-Message-ID: <alpine.DEB.2.21.2110232023171.38243@angie.orcam.me.uk>
-References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn> <1610454557-25867-5-git-send-email-hejinyang@loongson.cn>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S231186AbhJWSf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 14:35:58 -0400
+Received: from out1.migadu.com ([91.121.223.63]:59687 "EHLO out1.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230051AbhJWSf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 14:35:56 -0400
+Date:   Sat, 23 Oct 2021 14:34:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svmhdvn.name;
+        s=key1; t=1635014015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JXI5zMzn4ZCVC7NxCdK+DQvmhL2s3QnW1bF9OqxDGAw=;
+        b=Omi6a7AQfgZmu9BDEEbRmDEF5SrhszAA4NmExL8zUw52f9vuIrnX1p1Czi/HhvnDLbo9E+
+        ofPP/JO/VchGwBgJGbfv98vDV5ZFuj3uymy8hYuFOXtUCw1nAimxx67T/uK/sSd9nGZXVu
+        pOPu6OIaVSZhCQoNCnUkVcCUcXxoOx8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Siva Mahadevan <me@svmhdvn.name>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        "matthias.bgg@kernel.org" <matthias.bgg@kernel.org>
+Cc:     devicetree@vger.kernel.org, Simon South <simon@simonsouth.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Guillaume Gardet <guillaume.gardet@arm.com>,
+        linux-rockchip@lists.infradead.org,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: Disable CDN DP on Pinebook Pro
+Message-ID: <YXRVrY9LYU9aD3Vp@think.localdomain>
+References: <20210715164101.11486-1-matthias.bgg@kernel.org>
+ <162655869103.853863.17662789602843984386.b4-ty@sntech.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <162655869103.853863.17662789602843984386.b4-ty@sntech.de>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: mbsync-msmtp@svmhdvn.name
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021, Jinyang He wrote:
-
-> For those leaf functions, they are likely to have no stack operations.
-> Add is_jr_ra_ins() to determine whether jr ra has been touched before
-> the frame_size is found. Without this patch, the get frame_size operation
-> may be out of range and get the frame_size from the next nested function.
+Heiko Stuebner wrote:
+> On Thu, 15 Jul 2021 18:41:01 +0200, matthias.bgg@kernel.org wrote:
+> > The CDN DP needs a PHY and a extcon to work correctly. But no extcon is
+> > provided by the device-tree, which leads to an error:
+> > cdn-dp fec00000.dp: [drm:cdn_dp_probe [rockchipdrm]] *ERROR* missing extcon or phy
+> > cdn-dp: probe of fec00000.dp failed with error -22
+> > 
+> > Disable the CDN DP to make graphic work on the Pinebook Pro.
 > 
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> ---
->  arch/mips/kernel/process.c | 34 +++++++++++++++++++++++++++++++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
+> Applied, thanks!
 > 
-> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> index bef8f8d..9e6f194 100644
-> --- a/arch/mips/kernel/process.c
-> +++ b/arch/mips/kernel/process.c
-> @@ -205,6 +205,36 @@ struct mips_frame_info {
->  #define J_TARGET(pc,target)	\
->  		(((unsigned long)(pc) & 0xf0000000) | ((target) << 2))
->  
-> +static inline int is_jr_ra_ins(union mips_instruction *ip)
-> +{
-> +#ifdef CONFIG_CPU_MICROMIPS
-> +	/*
-> +	 * jr16 ra
-> +	 * jr ra
-> +	 */
-> +	if (mm_insn_16bit(ip->word >> 16)) {
-> +		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
-> +		    ip->mm16_r5_format.rt == mm_jr16_op &&
-> +		    ip->mm16_r5_format.imm == 31)
-> +			return 1;
-> +		return 0;
-> +	}
-> +
-> +	if (ip->r_format.opcode == mm_pool32a_op &&
-> +	    ip->r_format.func == mm_pool32axf_op &&
-> +	    ((ip->u_format.uimmediate >> 6) & GENMASK(9,0)) == mm_jalr_op &&
-> +            ip->r_format.rs == 31)
-> +		return 1;
-> +	return 0;
-> +#else
+> [1/1] arm64: dts: rockchip: Disable CDN DP on Pinebook Pro
+>       commit: 714b35da2b6eace13bfe23ae02330e3b6a2ea4e7
+> 
+> Best regards,
+> -- 
+> Heiko Stuebner <heiko@sntech.de>
 
- Without looking into it much, this is likely missing the point, because 
-while technically inteed JR and JR16 can be used with $ra in microMIPS 
-machine code (there's JRS too), in reality either JRC or JRADDIUSP will.
-
- [Wading through e-mail recovered from mid-Jan linux-mips.org crash.]
-
-  Maciej
+Will this patch be submitted to mainline? I can confirm on my pinebook
+pro that this solves the issue.
