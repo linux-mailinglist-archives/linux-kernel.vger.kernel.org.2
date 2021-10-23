@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B8438599
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 23:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1644385A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 23:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhJWVxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 17:53:16 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:59467 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhJWVxN (ORCPT
+        id S231286AbhJWWBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 18:01:17 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:54635 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230101AbhJWWBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 17:53:13 -0400
+        Sat, 23 Oct 2021 18:01:14 -0400
 Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 708BA1BF207;
-        Sat, 23 Oct 2021 21:50:49 +0000 (UTC)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 1703A240002;
+        Sat, 23 Oct 2021 21:58:51 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alessandro Zummo <a.zummo@towertech.it>
 Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 6/9] rtc: sun6i: Allow probing without an early clock provider
-Date:   Sat, 23 Oct 2021 23:50:48 +0200
-Message-Id: <163502583211.396329.16763679649213996205.b4-ty@bootlin.com>
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] rtc: s3c: S3C driver improvements
+Date:   Sat, 23 Oct 2021 23:58:51 +0200
+Message-Id: <163502632457.411308.6365977083733513077.b4-ty@bootlin.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210928080335.36706-7-samuel@sholland.org>
-References: <20210928080335.36706-1-samuel@sholland.org> <20210928080335.36706-7-samuel@sholland.org>
+In-Reply-To: <20211021202256.28517-1-semen.protsenko@linaro.org>
+References: <20211021202256.28517-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,20 +35,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 03:03:32 -0500, Samuel Holland wrote:
-> Some SoCs have an RTC supported by this RTC driver, but do not have an
-> early clock provider declared here. Currently, this prevents the RTC
-> driver from probing, because it expects a global struct to already be
-> allocated. Fix probing the driver by copying the missing pieces from the
-> clock provider setup function, replacing them with the devm variants.
+On Thu, 21 Oct 2021 23:22:53 +0300, Sam Protsenko wrote:
+> While working on Exynos850 support (where this driver works fine in its
+> current state), I've stumbled upon some minor issue. This is the effort
+> to fix those.
 > 
+>   * [PATCH 1/3]: moves S3C RTC driver to newer API usage
+>     (no functional changes)
+>   * [PATCH 2/3]: refactoring/cleanup (no functional changes)
+>   * [PATCH 3/3]: adds time range, as [PATCH 1/3] made it possible
 > 
 > [...]
 
 Applied, thanks!
 
-[6/9] rtc: sun6i: Allow probing without an early clock provider
-      commit: 814691c7f7d1f958ac30c3dca5070a95c1f658dd
+[1/3] rtc: s3c: Remove usage of devm_rtc_device_register()
+      commit: dba28c37f23a09fc32dbc37463ddb2feb3886f98
+[2/3] rtc: s3c: Extract read/write IO into separate functions
+      commit: e4a1444e10cbda2892a4ea7325ef5efa47c75cfb
+[3/3] rtc: s3c: Add time range
+      commit: a5feda3b361e11b291786d5c4ff86d4b9a55498f
 
 Best regards,
 -- 
