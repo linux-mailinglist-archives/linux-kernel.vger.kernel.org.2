@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297524383FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 16:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD474383FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 17:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhJWO6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 10:58:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhJWO6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 10:58:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E253760FD8;
-        Sat, 23 Oct 2021 14:55:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635000955;
-        bh=4XCfTzqibljJFYGtxk5OYG1tv/o6DDhpqQK2LhvRGqg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZDy1fKjgUK81hfKcvI5+pE8WbkN2ggBmkzH6T49Eis1598sfHzP1RdEqRBZKXpRcB
-         6FkuK+BmD6rKMMx2DGeNhCUyxZ7TLJDznU9JcZdI1O7qenAB2JpjGExFq+vhXygC0C
-         kf5SwzG7udFRIB32GjfWvwd0LZ5H7jGiRO1z6Lso1JpXyYpRcKV8ryA05FpjHkF1uS
-         eKsV/bG2wzzJj4ZIKpTS2/VMAW5dRUxsGSnD9r0O+Ym1UUEAU7/ODLhJ87Kgl8ex/p
-         oTB2hM7eP+8lY3LjBo05Eh1z9nmW5QPeICaRJ71hB7BnKzH2nvpXmrR+OKhz0CB2gK
-         gDdNib0+RMH6Q==
-Received: by pali.im (Postfix)
-        id CAD4B883; Sat, 23 Oct 2021 16:55:52 +0200 (CEST)
-Date:   Sat, 23 Oct 2021 16:55:52 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset to
- finish
-Message-ID: <20211023145552.3ly4kukfyrark7c2@pali>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
- <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
- <20211022151624.mgsgobjsjgyevnyt@pali>
- <20211023103059.6add00e6@sal.lan>
- <20211023104011.zmj7y7vtplpnmhwd@pali>
- <20211023144534.55aaecf9@sal.lan>
+        id S230424AbhJWPEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 11:04:07 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:64545 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229901AbhJWPEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 11:04:06 -0400
+Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 19NF18CF008358;
+        Sun, 24 Oct 2021 00:01:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
+ Sun, 24 Oct 2021 00:01:08 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 19NF17p2008355
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 24 Oct 2021 00:01:07 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
+ the #PF
+To:     Vasily Averin <vvs@virtuozzo.com>, Michal Hocko <mhocko@kernel.org>
+Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+ <cover.1634994605.git.vvs@virtuozzo.com>
+ <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
+Date:   Sun, 24 Oct 2021 00:01:07 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211023144534.55aaecf9@sal.lan>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 23 October 2021 14:45:34 Mauro Carvalho Chehab wrote:
-> Em Sat, 23 Oct 2021 12:40:11 +0200
-> Pali Rohár <pali@kernel.org> escreveu:
-> > It is classic setup for boards with just one PCIe port.
-> > 
-> > > with 3 elements connected to the bus: an Ethernet card, a M.2 slot and
-> > > a mini PCIe slot. It seems HiKey 970 is unique with regards to PERST# signal,
-> > > as there are 4 independent PERST# signals there:
-> > > 
-> > > 	- one for PEX 8606 (the PCIe root port);
-> > > 	- one for Ethernet;
-> > > 	- one for M.2;
-> > > 	- one for mini-PCIe.  
-> > 
-> > This is not unique setup, its pretty normal. Every PCIe card has (own)
-> > PERST# pin and obviously you want to control each pin separately via SW.
-> > And because PCIe switch is also (upstream) PCIe device it has also
-> > PERST# pin.
-> 
-> Based on the discussions we had to add per-port DT PERST# gpios, it
-> sounded to me that this is was not a typical setup ;-)
-> 
-> It seems that the typical setup is to have a single PERST# connected
-> to all devices inside the bus.
+On 2021/10/23 22:20, Vasily Averin wrote:
+>  /*
+> - * The pagefault handler calls here because it is out of memory, so kill a
+> - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
+> - * killing is already in progress so do nothing.
+> + * The pagefault handler calls here because some allocation has failed. We have
+> + * to take care of the memcg OOM here because this is the only safe context without
+> + * any locks held but let the oom killer triggered from the allocation context care
+> + * about the global OOM.
+>   */
 
-Hello!
+Excuse me for a stupid question. I consider
 
-I'm sure it is not unique :) Just seems that these boards either do not
-use device tree (x86-based) or do not have specified reset-gpios in DTS
-at all.
+  if (!mutex_trylock(&oom_lock))
+    return;
+  out_of_memory(&oc);
+  mutex_unlock(&oom_lock);
 
-Sometimes there is no need to touch PERST# gpio as either firmware
-during boot handles it (x86 BIOS/UEFI case, or U-Boot for arm case) or
-because board/cpu reset toggle PERST# in a way that is compatible for
-cards init.
+here as the last resort (safeguard) when neither __alloc_pages_may_oom()
+nor mem_cgroup_out_of_memory() can make progress. This patch says
 
-Looks like you have non-x86 board, which does not have PCIe init code in
-firmware, needs special handling of PERST# and you are doing it with
-upstream kernel :-) So maybe all these conditions are unique... But HW
-design not.
+  let the oom killer triggered from the allocation context care
+  about the global OOM.
 
-As this setup with reset-gpios per card in DTS nodes is something which
-I will need too, I sent email to Rob with proposal how to universally
-declare it in DTS, independently of PCIe controller (you are on CC):
-https://lore.kernel.org/linux-pci/20211023144252.z7ou2l2tvm6cvtf7@pali/
-
-Due to how PCIe cards are broken, PERST# signal is sometimes the only
-one option how to reset card at runtime. So requirement for separate
-PERST# per card configurable at runtime by OS will be requirement for
-more and more boards.
+but what if the OOM killer cannot be invoked from the allocation context?
+Is there a guarantee that all memory allocations which might result in
+VM_FAULT_OOM can invoke the OOM killer?
