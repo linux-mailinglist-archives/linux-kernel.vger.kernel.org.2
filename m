@@ -2,111 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0974384E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644BF4384E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhJWTSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 15:18:08 -0400
-Received: from relay.sw.ru ([185.231.240.75]:39782 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhJWTSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 15:18:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=ZuyZvSB+IWaABIIMJw/ofGXgNTuvJPGvRG6ORPX+xCg=; b=b7Oxo3QFYkhUf1+aI
-        vPwuGhnkZ+uxt4WvbR2ObgwJZxJp6oCuOj7RZTnquMghZb9hiJEd6Azb67tU4KnhnbHCdu13JAlWW
-        V4CxHMXB7c6kmU4Y6+2LRBdsC8J1Dt4hpk+dSis16Zs/lGfAdZFoHZ4NqP8QqfBE8tFluHxwv7UMU
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1meMUX-006wTn-2M; Sat, 23 Oct 2021 22:15:41 +0300
-Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
- the #PF
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
- <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
- <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <5038ff2f-7358-80df-8167-3449c1a540fe@virtuozzo.com>
-Date:   Sat, 23 Oct 2021 22:15:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231349AbhJWTUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 15:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhJWTUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 15:20:43 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C80AC061714
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 12:18:24 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id s24so1090765plp.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 12:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iusnW8LyX48emfkYiOdYVBbD1X7DC6XhQSttfD8Gqis=;
+        b=g/g3MV05++LaBbUi9D6865UMJWpw+cEnId7lT6KIRMqo1avnuXfYWNiEYc8efnFxT6
+         wrXeE8g4PE8yGEbR2FuGO6KI9ye0vTnvEYpulGNnXL3sIsl/0b/wpByCG2dBElGl4hQr
+         DSeDpHFRDffE4CVHViz+SwOL7i4V4jY32NhpQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iusnW8LyX48emfkYiOdYVBbD1X7DC6XhQSttfD8Gqis=;
+        b=WLsQuadHbzyRcngdjRNFx38IcWFevMoitf2PRxbZVt7BFbcImtWhbKIAszX23dlOyQ
+         k/NBuubGnz5S4jUkaXxOKopwibrR7soH/EOk9LVkXqU3a4nFCSUUMRdPTrfs+IZKIsds
+         YyN8a1iwAMO4dZ7/15svgcBxYvMda3iFgI7uVqhKzvZwQ+t+WM9TquKJ5NXhBMfGMVwo
+         cNfCiPAiSmcYju8xQSXtovqnhVbot9+9Q/+11mDoVFp6quYwT/7hY4NX1T/0UoRfpEyQ
+         IQXW3414Ve+UhWkw4dOCsOhJZgFehlWabJ1YSLsRd7Fqdaafhw1hCvOVrxr3Wk8Y55bM
+         ayeA==
+X-Gm-Message-State: AOAM530ARccDuX3Px1ZqM5F6rTTQ4xgSzEhQOfHoi5DGqAHaET2l94ie
+        HaxYZFvZB0/+XWNxdooDXzQ+5A==
+X-Google-Smtp-Source: ABdhPJz7cJMv3ORC3LX8UqExQ0osjmHKclF9f3qtqX7yiDSwSYdsQXHHtRqFhooHQi+ugi9LIQIgFQ==
+X-Received: by 2002:a17:903:2304:b0:13f:2457:11dd with SMTP id d4-20020a170903230400b0013f245711ddmr7173973plh.57.1635016703678;
+        Sat, 23 Oct 2021 12:18:23 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h1sm6921309pfh.118.2021.10.23.12.18.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 12:18:23 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 12:18:22 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Joe Perches <joe@perches.com>, cocci@inria.fr,
+        linux-kernel@vger.kernel.org, Kees Cook <kees@outflux.net>
+Subject: Re: [PATCH v2] coccinelle: update Coccinelle entry
+Message-ID: <202110231218.45D0EDB@keescook>
+References: <alpine.DEB.2.22.394.2110231908290.21613@hadrien>
 MIME-Version: 1.0
-In-Reply-To: <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2110231908290.21613@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.10.2021 18:01, Tetsuo Handa wrote:
-> On 2021/10/23 22:20, Vasily Averin wrote:
->>  /*
->> - * The pagefault handler calls here because it is out of memory, so kill a
->> - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
->> - * killing is already in progress so do nothing.
->> + * The pagefault handler calls here because some allocation has failed. We have
->> + * to take care of the memcg OOM here because this is the only safe context without
->> + * any locks held but let the oom killer triggered from the allocation context care
->> + * about the global OOM.
->>   */
+On Sat, Oct 23, 2021 at 07:10:06PM +0200, Julia Lawall wrote:
+> Update mailing list, website, and tree.  Drop Michal Marek as a
+> maintainer, who has not participated in a long time.
 > 
-> Excuse me for a stupid question. I consider
-> 
->   if (!mutex_trylock(&oom_lock))
->     return;
->   out_of_memory(&oc);
->   mutex_unlock(&oom_lock);
-> 
-> here as the last resort (safeguard) when neither __alloc_pages_may_oom()
-> nor mem_cgroup_out_of_memory() can make progress. This patch says
-> 
->   let the oom killer triggered from the allocation context care
->   about the global OOM.
-> 
-> but what if the OOM killer cannot be invoked from the allocation context?
-> Is there a guarantee that all memory allocations which might result in
-> VM_FAULT_OOM can invoke the OOM killer?
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-I don't think this question is stupid, since I asked it myself :)
-You can find this discussion here:
-https://lkml.org/lkml/2021/10/21/900
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Let me quote it here too
-:> 1) VM_FAULT_OOM may be triggered w/o execution of out_of_memory()
-:> for exampel it can be caused by incorrect vm fault operations, 
-:> (a) which can return this error without calling allocator at all.
-:
-:I would argue this to be a bug. How can that particular code tell
-:whether the system is OOM and the oom killer is the a reasonable measure
-:to take?
-:
-:> (b) or which can provide incorrect gfp flags and allocator can fail without execution of out_of_memory.
-:
-: I am not sure I can see any sensible scenario where pagefault oom killer
-: would be an appropriate fix for that.
-:
-:> (c) This may happen on stable/LTS kernels when successful allocation was failed by hit into limit of legacy memcg-kmem contoller.
-:> We'll drop it in upstream kernels, however how to handle it in old kenrels?
-:
-:Triggering the global oom killer for legacy kmem charge failure is
-:clearly wrong. Removing oom killer from #PF would fix that problem.
-
-I would note: (c) is not theoretical but real life problem, in this case allocation was failed without execution of OOM,
-however, it is in this case that execution out_of_memory() from pagefault_out_of_memory() leads to a disaster.
-
-Thank you,
-	Vasily Averin
+-- 
+Kees Cook
