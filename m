@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E1A4385BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 00:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B97D4385CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 00:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhJWWNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 18:13:09 -0400
-Received: from ixit.cz ([94.230.151.217]:43448 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhJWWNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 18:13:08 -0400
-Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 395BA20064;
-        Sun, 24 Oct 2021 00:10:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635027046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MfqblF+1rj3tmjWqu4kRVHLDcxNNvTNU5QQ8iw6qvy0=;
-        b=d46oFwDxH1zjuLwINI/aSrCATiG5mJxl+7Erta2rhJybbpOkiRYbXyo+xefNv6tn1yox4p
-        RnEaQUaQVpcmAmwITtiY+siTf/fA7DW2CbFPi99Kltk8t6Lp5lBUxdLn/P7BFCVSCma8ma
-        UitvzMonrbS309h9z4bCR6+CZALjG3Y=
-Date:   Sun, 24 Oct 2021 00:10:40 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v4] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings
- to yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        ~okias/devicetree@lists.sr.ht, devicetree@vger.kernel.org
-Message-Id: <SXAG1R.XBYYXLESDTAF1@ixit.cz>
-In-Reply-To: <YW2+R4drCwcmzKMK@robh.at.kernel.org>
-References: <20211017160210.85543-1-david@ixit.cz>
-        <1634559233.484644.2074240.nullmailer@robh.at.kernel.org>
-        <RAC61R.YOBPB57076K71@ixit.cz> <YW2+R4drCwcmzKMK@robh.at.kernel.org>
-X-Mailer: geary/40.0
+        id S231290AbhJWW0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 18:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhJWW0B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 18:26:01 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D12EC061714;
+        Sat, 23 Oct 2021 15:23:41 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id h65so8366478qke.0;
+        Sat, 23 Oct 2021 15:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/iY4mkP5CITw30ncTBqe0r7VHjZK/w2eKc4vTccqfLc=;
+        b=gh/3JLk/ek1VRq0um4wQVJYOtNPOizsFL4Nyqh6Tkrr9ppVbg+rMXBdbaS7Dw0xdiJ
+         VAMBHml6WguGG1oA8yCXyzmJRnSy068h356uvWaBmAruMb3a76LOKSI7zSwEqVme2NGP
+         yG7eIDwPrZ1MlCeqltZI1Afp2HT7PNPFpg1Rzr3fZTMchPRMUrTwoqFgXinJ2ugXztgm
+         oeCB+NzT/+snZeJ5CD8+zzFPqoVpArUaNM+JTIwKksWGKJzO6t2uyzHwXEMy11ZB/LmA
+         w8Ls0Qh2lOo6fROGgwvtSCRukVUIsr8K3k/Su7aIRbW69wldtz5mFkfAdz7X6mSck0tu
+         jH6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/iY4mkP5CITw30ncTBqe0r7VHjZK/w2eKc4vTccqfLc=;
+        b=FgtLIlixjf9s39iLjzbp6BTXwX5b3HtUtN2rueU/qnWzCXJ9eE8oFyRXhlZ+vsKvQw
+         OEy1xhMJjPrHNIs4WGP6riEe4M7Y57o63O+RJsFT7FKX+CbQJIQshwxxeCdJfxgjB0Qn
+         Q/bA8OCqWD9bZASun75nAhz+EkR9hO/KuuQMFKRao14CSsHadp7QCKjoibgaA9Y9t4qj
+         M0Zgs/ToR262MtnNQULUglfVEP8h6T79tBlgxoEi0ujWBqFZWu78s+nYpXpm+PpXWrN+
+         BfdL1sYz2iypqBH10YmWbGN0KaXO7b8jehTnrHsmwsU4cUuMobM2VfRskH7TfVMO6WwA
+         hZqA==
+X-Gm-Message-State: AOAM530D7fP7nOfdYOKWDTyHNqZ99kvrUuPbg7gWJ4HtR1spVEAKQkiT
+        2hj/RD/GQ337X3ostpBhvg==
+X-Google-Smtp-Source: ABdhPJy1pkWM2MjtfxwtMIzluJqqKJiRCgDwA5NlxXOF6DHDGY0KNqcRRiBzHRc+/mnxrhyRPbgqHg==
+X-Received: by 2002:a05:620a:6bd:: with SMTP id i29mr6366027qkh.121.1635027820776;
+        Sat, 23 Oct 2021 15:23:40 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id k8sm6263868qkk.37.2021.10.23.15.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 15:23:39 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 18:23:37 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXSLaQKJH+rvleBJ@moria.home.lan>
+References: <YXBUPguecSeSO6UD@moria.home.lan>
+ <YXHdpQTL1Udz48fc@cmpxchg.org>
+ <YXIZX0truEBv2YSz@casper.infradead.org>
+ <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
+ <YXK2ICKi6fjNfr4X@casper.infradead.org>
+ <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
+ <YXNx686gvsJMgS+z@casper.infradead.org>
+ <404bdc05-487f-3d47-6b30-0687b74c2f2f@redhat.com>
+ <YXQxptoPALVHHPCU@moria.home.lan>
+ <YXSBlfLsOi2WzR72@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXSBlfLsOi2WzR72@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well, but the nxp,pn544 won't using `clock-frequency`. So do I have to 
-keep the property there anyway?
-
-David
-
-
-On Mon, Oct 18 2021 at 13:34:47 -0500, Rob Herring <robh@kernel.org> 
-wrote:
-> On Mon, Oct 18, 2021 at 03:04:03PM +0200, David Heidelberg wrote:
->> 
->> 
->> 
->>  On Mon, Oct 18 2021 at 07:13:53 -0500, Rob Herring 
->> <robh@kernel.org> wrote:
->>  > On Sun, 17 Oct 2021 18:02:10 +0200, David Heidelberg wrote:
->>  > >  Convert bindings for NXP PN544 NFC driver to YAML syntax.
->>  > >
->>  > >  Signed-off-by: David Heidelberg <david@ixit.cz>
->>  > >  ---
->>  > >  v2
->>  > >   - Krzysztof is a maintainer
->>  > >   - pintctrl dropped
->>  > >   - 4 space indent for example
->>  > >   - nfc node name
->>  > >  v3
->>  > >   - remove whole pinctrl
->>  > >  v4
->>  > >   - drop clock-frequency, which is inherited by i2c bus
->>  > >
->>  > >   .../bindings/net/nfc/nxp,pn544.yaml           | 56
->>  > > +++++++++++++++++++
->>  > >   .../devicetree/bindings/net/nfc/pn544.txt     | 33 -----------
->>  > >   2 files changed, 56 insertions(+), 33 deletions(-)
->>  > >   create mode 100644
->>  > > Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
->>  > >   delete mode 100644
->>  > > Documentation/devicetree/bindings/net/nfc/pn544.txt
->>  > >
->>  Full log is available here: 
->> https://patchwork.ozlabs.org/patch/1542257
->>  >
->>  > Running 'make dtbs_check' with the schema in this patch gives the
->>  > following warnings. Consider if they are expected or the schema is
->>  > incorrect. These may not be new warnings.
->>  >
->>  > Note that it is not yet a requirement to have 0 warnings for 
->> dtbs_check.
->>  > This will change in the future.
->>  >
->>  >
->>  >
->>  > nfc@28: 'clock-frequency' does not match any of the regexes:
->>  > 'pinctrl-[0-9]+'
->>  > 	arch/arm/boot/dts/tegra30-asus-nexus7-grouper-E1565.dt.yaml
->>  > 	arch/arm/boot/dts/tegra30-asus-nexus7-grouper-PM269.dt.yaml
->>  >
->>  > nfc@2a: 'clock-frequency' does not match any of the regexes:
->>  > 'pinctrl-[0-9]+'
->>  > 	arch/arm/boot/dts/tegra30-asus-nexus7-tilapia-E1565.dt.yaml
->>  >
->> 
->>  Patches for this are already in grate repository and will be sent to
->>  mainline soon! :)
+On Sat, Oct 23, 2021 at 10:41:41PM +0100, Matthew Wilcox wrote:
+> On Sat, Oct 23, 2021 at 12:00:38PM -0400, Kent Overstreet wrote:
+> > I ran into a major roadblock when I tried converting buddy allocator freelists
+> > to radix trees: freeing a page may require allocating a new page for the radix
+> > tree freelist, which is fine normally - we're freeing a page after all - but not
+> > if it's highmem. So right now I'm not sure if getting struct page down to two
+> > words is even possible. Oh well.
 > 
-> Okay. I was under the impression 'clock-frequency' was removed 
-> thinking
-> it is in the i2c bus schema already. It is, but unfortunately you need
-> it here too if used because all properties for a node have to be 
-> listed
-> in the schema for the node. 'unevaluatedProperties' can't evaluate
-> properties in the child nodes of the parent schema with the properties
-> of the child schema.
+> I have a design in mind that I think avoids the problem.  It's somewhat
+> based on Bonwick's vmem paper, but not exactly.  I need to write it up.
+
+I am intruiged... Care to drop some hints?
+
+> Right.  Folios are for unspecialised head pages.  If we decide
+> to specialise further in the future, that's great!  I think David
+> misunderstood me slightly; I don't know that specialising file + anon
+> pages (the aforementioned lru_mem) is the right approach.  It might be!
+> But it needs someone to try it, and find the advantages & disadvantages.
+
+Well, that's where your current patches are basically headed, aren't they? As I
+understand it it's just file and some of the anon code that's converted so far.
+
+Are you thinking more along the lines of converting everything that can be
+mapped to userspace to folios? I think that would make a lot of sense given that
+converting the weird things to file pages isn't likely to happen any time soon,
+and it would us convert gup() to return folios, as Christoph noted.
+
 > 
-> Rob
+> > Also introducing new types to be describing our current using of struct page
+> > isn't the only thing we should be doing - as we do that, that will (is!) uncover
+> > a lot of places where our ontology of struct page uses is just nonsensical (all
+> > the types of pages mapped into userspace!) - and part of our mission should be
+> > to clean those up.
+> > 
+> > That does turn things into a much bigger project than what Matthew signed up
+> > for, but we shouldn't all be sitting on the sidelines here...
+> 
+> I'm happy to help.  Indeed I may take on some of these sub-projects
+> myself.  I just don't want the perfect to be the enemy of the good.
 
-
+Agreed!
