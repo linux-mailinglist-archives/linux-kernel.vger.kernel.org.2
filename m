@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D63B438210
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 08:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960E1438214
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 08:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhJWGqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 02:46:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
+        id S229978AbhJWGt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 02:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhJWGp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 02:45:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 184206108B;
-        Sat, 23 Oct 2021 06:43:40 +0000 (UTC)
+        id S229446AbhJWGty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 02:49:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6284760ED3;
+        Sat, 23 Oct 2021 06:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634971421;
-        bh=gHoao8gzTpde/kTuKW+WnuidInzBHlhdtiTqnneEWSk=;
+        s=korg; t=1634971656;
+        bh=VVJVb6DAVVrifwKr6DnERAf3xG2cPuAA/yaGHeyqtfM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R+61LErIRpavg+8PyPK1q1zjGE+LJkvkYUxw1hgheKU5U6zkGukw59g88Olt0TCzZ
-         dqDsutPMNVv9Xwp0RI/hBI8+gtSSRYl+8agw0XZta/oIKeXQsB7uzXl9hSwU6L36VG
-         Dk+oNUCiYsEUKC1tZc6tkn2MvlpUvQFZ+jXB7Vpo=
-Date:   Sat, 23 Oct 2021 08:43:37 +0200
+        b=VJmmQhw90JR00cTnLLtNwCPsIAjHph+v1vo2Nponk6tU8mUi0IViIjYuLL3XeQeYA
+         aUyr3tbDMGb2T8W85xaGex7HPfeiVNNz5+woX/W72+Nd/Wa3q2qDkx4TXzHf1aakVh
+         kpvA5SGqgP8wOOKr311Zm83YaV5oUmRZOWK3tJIo=
+Date:   Sat, 23 Oct 2021 08:47:31 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
-        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
-        david.brown@linaro.org, bjorn.andersson@linaro.org,
-        linux-wireless@vger.kernel.org, keescook@chromium.org,
-        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
-        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
-        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
-        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
-        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
-        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
-        andresx7@gmail.com, brendanhiggins@google.com, yzaikin@google.com,
-        sfr@canb.auug.org.au, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] firmware_loader: rename EXTRA_FIRMWARE and
- EXTRA_FIRMWARE_DIR
-Message-ID: <YXOvGX1O69s0Qaoe@kroah.com>
-References: <20211022174041.2776969-1-mcgrof@kernel.org>
- <20211022174041.2776969-2-mcgrof@kernel.org>
+To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] usb: usb-skeleton: Add hint to find __init and __exit
+Message-ID: <YXOwA6N2ffVIcA7L@kroah.com>
+References: <20211023052538.GA5141@matrix-ESPRIMO-P710>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022174041.2776969-2-mcgrof@kernel.org>
+In-Reply-To: <20211023052538.GA5141@matrix-ESPRIMO-P710>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:40:38AM -0700, Luis Chamberlain wrote:
-> Now that we've tied loose ends on the built-in firmware API,
-> rename the kconfig symbols for it to reflect more that they are
-> associated to the firmware_loader and to make it easier to
-> understand what they are for.
+On Sat, Oct 23, 2021 at 07:25:38AM +0200, Philipp Hortmann wrote:
+> Comment to find __init and __exit.
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+> ---
+>  drivers/usb/usb-skeleton.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
+> index 2dc58766273a..80338a50dcde 100644
+> --- a/drivers/usb/usb-skeleton.c
+> +++ b/drivers/usb/usb-skeleton.c
+> @@ -641,6 +641,7 @@ static struct usb_driver skel_driver = {
+>  	.supports_autosuspend = 1,
+>  };
+>  
+> +/* __init and __exit */
+>  module_usb_driver(skel_driver);
 
-This patch has the same bug I pointed out the last time I reviewed it :(
+This comment makes no sense, sorry.  __init and __exit are things that
+the linker uses, why would you need to "find" them?
+
+thanks,
+
+greg k-h
