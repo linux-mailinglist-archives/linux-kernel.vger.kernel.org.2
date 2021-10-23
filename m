@@ -2,143 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71EC4382DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2AA4382D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhJWJ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:58:11 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12668 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231724AbhJWJ5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231844AbhJWJ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 23 Oct 2021 05:57:48 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16753 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhJWJ5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 05:57:40 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634982930; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=JiEOJqa3aqS2iNBJDoYuclB4bw9U3vBvyQW5D9XElQE=; b=ncWG9FZqu2JdW4qexVCoEGMexMWyrGhMX8lSyHLzn8WlHASXjetz8fBpGNRdpCz2UM0HHtGA
- LdgDtx5MDHKuaLFiGI5N4+6B5WgPwXKVrknmkYpAEpWo8RQzBXA985K4lAKAwCKr4d6t60se
- 4NsvFZgagwg4r4V6Xb7fMvzBXf0=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ s=smtp; t=1634982921; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6dBk+Q03BPUrC96O2B+cQHaPk3zXtIHPkqOvaYjGsZM=; b=vqVHMBmZYFuWvmrpNGQqKfsHZLGmi2XgIyR1rZoP9AnYCXXdrQt4WFcA7LFMNPiwIm/EmUlF
+ +CQaVbrAnrR4gVWVftOHrIu/lG3uWBOjzSPTKXmmGqFn1eWEfvxZq8jOKHx/uCanmN/LfRV5
+ nTnRNaIQBrjfOzmOPupMmjmPOxs=
+X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6173dc0767f107c6111e6467 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Oct 2021 09:55:19
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6173dbfe59612e01009f1028 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Oct 2021 09:55:10
  GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Sender: luoj=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71D52C43638; Sat, 23 Oct 2021 09:55:19 +0000 (UTC)
+        id 1BA00C4361C; Sat, 23 Oct 2021 09:55:08 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
         autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4D0F7C4361B;
-        Sat, 23 Oct 2021 09:55:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4D0F7C4361B
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 13540C4361B;
+        Sat, 23 Oct 2021 09:55:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 13540C4361B
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH v3 10/10] ASoC: qcom: SC7280: Update config for building codec dma drivers
-Date:   Sat, 23 Oct 2021 15:24:02 +0530
-Message-Id: <1634982842-7477-11-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634982842-7477-1-git-send-email-srivasam@codeaurora.org>
-References: <1634982842-7477-1-git-send-email-srivasam@codeaurora.org>
+From:   Luo Jie <luoj@codeaurora.org>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
+Subject: [PATCH v6 0/14] net: phy: Add qca8081 ethernet phy driver
+Date:   Sat, 23 Oct 2021 17:54:39 +0800
+Message-Id: <20211023095453.22615-1-luoj@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add configuration for building SC7280 audio codec dma drivers.
+This patch series add the qca8081 ethernet phy driver support, which
+improve the wol feature, leverage at803x phy driver and add the fast
+retrain, master/slave seed and CDT feature.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- sound/soc/qcom/Kconfig  | 13 +++++++++++++
- sound/soc/qcom/Makefile |  4 ++++
- 2 files changed, 17 insertions(+)
+Changes in v6:
+	* add Reviewed-by tags on the applicable patches.
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index d9ffcb7..2b98ad9 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -20,6 +20,10 @@ config SND_SOC_LPASS_PLATFORM
- 	tristate
- 	select REGMAP_MMIO
- 
-+config SND_SOC_LPASS_CDC_DMA
-+	tristate
-+	select REGMAP_MMIO
-+
- config SND_SOC_LPASS_IPQ806X
- 	tristate
- 	select SND_SOC_LPASS_CPU
-@@ -36,6 +40,13 @@ config SND_SOC_LPASS_SC7180
- 	select SND_SOC_LPASS_PLATFORM
- 	select SND_SOC_LPASS_HDMI
- 
-+config SND_SOC_LPASS_SC7280
-+	tristate
-+	select SND_SOC_LPASS_CPU
-+	select SND_SOC_LPASS_PLATFORM
-+	select SND_SOC_LPASS_HDMI
-+	select SND_SOC_LPASS_CDC_DMA
-+
- config SND_SOC_STORM
- 	tristate "ASoC I2S support for Storm boards"
- 	select SND_SOC_LPASS_IPQ806X
-@@ -156,7 +167,9 @@ config SND_SOC_SC7280
- 	tristate "SoC Machine driver for SC7280 boards"
- 	depends on I2C && SOUNDWIRE
- 	select SND_SOC_QCOM_COMMON
-+	select SND_SOC_LPASS_SC7280
- 	select SND_SOC_MAX98357A
-+	select SND_SOC_WCD938X
- 	select SND_SOC_LPASS_RX_MACRO
- 	select SND_SOC_LPASS_TX_MACRO
- 	help
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 625aec6..8b7b876 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -1,18 +1,22 @@
- # SPDX-License-Identifier: GPL-2.0
- # Platform
- snd-soc-lpass-cpu-objs := lpass-cpu.o
-+snd-soc-lpass-cdc-dma-objs := lpass-cdc-dma.o
- snd-soc-lpass-hdmi-objs := lpass-hdmi.o
- snd-soc-lpass-platform-objs := lpass-platform.o
- snd-soc-lpass-ipq806x-objs := lpass-ipq806x.o
- snd-soc-lpass-apq8016-objs := lpass-apq8016.o
- snd-soc-lpass-sc7180-objs := lpass-sc7180.o
-+snd-soc-lpass-sc7280-objs := lpass-sc7280.o
- 
- obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
-+obj-$(CONFIG_SND_SOC_LPASS_CDC_DMA) += snd-soc-lpass-cdc-dma.o
- obj-$(CONFIG_SND_SOC_LPASS_HDMI) += snd-soc-lpass-hdmi.o
- obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
- obj-$(CONFIG_SND_SOC_LPASS_IPQ806X) += snd-soc-lpass-ipq806x.o
- obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
- obj-$(CONFIG_SND_SOC_LPASS_SC7180) += snd-soc-lpass-sc7180.o
-+obj-$(CONFIG_SND_SOC_LPASS_SC7280) += snd-soc-lpass-sc7280.o
- 
- # Machine
- snd-soc-storm-objs := storm.o
+Changes in v5:
+	* rebase the patches on net-next/master.
+
+Changes in v4:
+	* handle other interrupts in set_wol.
+	* add genphy_c45_fast_retrain.
+
+Changes in v3:
+	* correct a typo "excpet".
+	* remove the suffix "PHY" from phy name.
+
+Changes in v2:
+	* add definitions of fast retrain related registers in mdio.h.
+	* break up the patch into small patches.
+	* improve the at803x legacy code.
+
+Changes in v1:
+	* merge qca8081 phy driver into at803x.
+	* add cdt feature.
+	* leverage at803x phy driver helpers.
+
+Luo Jie (14):
+  net: phy: at803x: replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS
+  net: phy: at803x: use phy_modify()
+  net: phy: at803x: improve the WOL feature
+  net: phy: at803x: use GENMASK() for speed status
+  net: phy: add qca8081 ethernet phy driver
+  net: phy: add qca8081 read_status
+  net: phy: add qca8081 get_features
+  net: phy: add qca8081 config_aneg
+  net: phy: add constants for fast retrain related register
+  net: phy: add genphy_c45_fast_retrain
+  net: phy: add qca8081 config_init
+  net: phy: add qca8081 soft_reset and enable master/slave seed
+  net: phy: adjust qca8081 master/slave seed value if link down
+  net: phy: add qca8081 cdt feature
+
+ drivers/net/phy/at803x.c  | 580 +++++++++++++++++++++++++++++++++++---
+ drivers/net/phy/phy-c45.c |  34 +++
+ include/linux/phy.h       |   1 +
+ include/uapi/linux/mdio.h |   9 +
+ 4 files changed, 577 insertions(+), 47 deletions(-)
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
