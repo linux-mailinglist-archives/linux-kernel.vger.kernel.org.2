@@ -2,49 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3FB43830E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 12:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A1F438311
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 12:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhJWKM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 06:12:57 -0400
-Received: from aposti.net ([89.234.176.197]:47142 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230140AbhJWKM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 06:12:56 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     list@opendingux.net, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] Bluetooth: hci_bcm: Remove duplicated entry in OF table
-Date:   Sat, 23 Oct 2021 11:10:27 +0100
-Message-Id: <20211023101027.44123-1-paul@crapouillou.net>
+        id S231134AbhJWKNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 06:13:13 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:55860 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230224AbhJWKNM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 06:13:12 -0400
+Received: from pop-os.home ([92.140.161.106])
+        by smtp.orange.fr with ESMTPA
+        id eDzFmzdx8niuxeDzFmn8rc; Sat, 23 Oct 2021 12:10:52 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sat, 23 Oct 2021 12:10:52 +0200
+X-ME-IP: 92.140.161.106
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     a.hajda@samsung.com, mchehab@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: s5p-mfc: Use 'bitmap_zalloc()' when applicable
+Date:   Sat, 23 Oct 2021 12:10:48 +0200
+Message-Id: <065fd81346699cc8fda251d91227381f7e26740d.1634983722.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The entry "brcm,bcm4330-bt" was listed twice in the table.
+'mfc_dev->mem_bitmap' is a bitmap. So use 'bitmap_zalloc()' to simplify
+code and improve the semantic.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+consistency.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/bluetooth/hci_bcm.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
-index ef54afa29357..7852abf15ddf 100644
---- a/drivers/bluetooth/hci_bcm.c
-+++ b/drivers/bluetooth/hci_bcm.c
-@@ -1508,7 +1508,6 @@ static const struct of_device_id bcm_bluetooth_of_match[] = {
- 	{ .compatible = "brcm,bcm4330-bt" },
- 	{ .compatible = "brcm,bcm4334-bt" },
- 	{ .compatible = "brcm,bcm4345c5" },
--	{ .compatible = "brcm,bcm4330-bt" },
- 	{ .compatible = "brcm,bcm43438-bt", .data = &bcm43438_device_data },
- 	{ .compatible = "brcm,bcm43540-bt", .data = &bcm4354_device_data },
- 	{ .compatible = "brcm,bcm4335a0" },
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index fc85e4e2d020..f6732f031e96 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -1185,7 +1185,6 @@ static int s5p_mfc_configure_common_memory(struct s5p_mfc_dev *mfc_dev)
+ {
+ 	struct device *dev = &mfc_dev->plat_dev->dev;
+ 	unsigned long mem_size = SZ_4M;
+-	unsigned int bitmap_size;
+ 
+ 	if (IS_ENABLED(CONFIG_DMA_CMA) || exynos_is_iommu_available(dev))
+ 		mem_size = SZ_8M;
+@@ -1193,16 +1192,14 @@ static int s5p_mfc_configure_common_memory(struct s5p_mfc_dev *mfc_dev)
+ 	if (mfc_mem_size)
+ 		mem_size = memparse(mfc_mem_size, NULL);
+ 
+-	bitmap_size = BITS_TO_LONGS(mem_size >> PAGE_SHIFT) * sizeof(long);
+-
+-	mfc_dev->mem_bitmap = kzalloc(bitmap_size, GFP_KERNEL);
++	mfc_dev->mem_bitmap = bitmap_zalloc(mem_size >> PAGE_SHIFT, GFP_KERNEL);
+ 	if (!mfc_dev->mem_bitmap)
+ 		return -ENOMEM;
+ 
+ 	mfc_dev->mem_virt = dma_alloc_coherent(dev, mem_size,
+ 					       &mfc_dev->mem_base, GFP_KERNEL);
+ 	if (!mfc_dev->mem_virt) {
+-		kfree(mfc_dev->mem_bitmap);
++		bitmap_free(mfc_dev->mem_bitmap);
+ 		dev_err(dev, "failed to preallocate %ld MiB for the firmware and context buffers\n",
+ 			(mem_size / SZ_1M));
+ 		return -ENOMEM;
+@@ -1241,7 +1238,7 @@ static void s5p_mfc_unconfigure_common_memory(struct s5p_mfc_dev *mfc_dev)
+ 
+ 	dma_free_coherent(dev, mfc_dev->mem_size, mfc_dev->mem_virt,
+ 			  mfc_dev->mem_base);
+-	kfree(mfc_dev->mem_bitmap);
++	bitmap_free(mfc_dev->mem_bitmap);
+ 	vb2_dma_contig_clear_max_seg_size(dev);
+ }
+ 
 -- 
-2.33.0
+2.30.2
 
