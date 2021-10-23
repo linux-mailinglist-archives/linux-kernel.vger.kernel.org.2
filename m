@@ -2,77 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC7E43815D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 03:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2674243816A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 04:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhJWB55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 21:57:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27043 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229597AbhJWB54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 21:57:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634954138; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KZV6Gnl4idAD75N9GVn65JILQSvJTQSWBTaysVWdJ4Q=; b=uklFO2HVuofjTM/FgnFd4BYkwWl/LjGzZ/D/ry48a76F8j2O7WYZB56QTHT+lkbc7lkfHuK+
- yTAcs0qHhR+YngkxPujvsTiVSKE+Rzh8qzpVYeGVEvQwFUcG542toxv3Wl0RU94GcRneXPdZ
- iDv2NSafNcpBDbABdx7fJ0WmMEs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 61736b94daa899cf7473c02e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Oct 2021 01:55:32
- GMT
-Sender: quic_luoj=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 95B40C4360D; Sat, 23 Oct 2021 01:55:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.4] (unknown [183.192.232.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1A67BC4338F;
-        Sat, 23 Oct 2021 01:55:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1A67BC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-Subject: Re: [PATCH v4 05/14] net: phy: add qca8081 ethernet phy driver
-To:     Jakub Kicinski <kuba@kernel.org>, Luo Jie <luoj@codeaurora.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-References: <20211022120624.18069-1-luoj@codeaurora.org>
- <20211022120624.18069-6-luoj@codeaurora.org>
- <20211022090315.67e8bf8e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Jie Luo <quic_luoj@quicinc.com>
-Message-ID: <b38b2992-8e77-d105-9be1-b20fd346f331@quicinc.com>
-Date:   Sat, 23 Oct 2021 09:55:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S230379AbhJWC1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 22:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhJWC1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 22:27:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A487DC061764;
+        Fri, 22 Oct 2021 19:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L+Crhvh7UT3jj1pWTw4/ixGXa9S6abJhYuA13R+zb0g=; b=bT9aKWu5z2XwsG1DRMRMUtkCKv
+        fjD6K4wFRPA/EkLmxRu3qnBDOeydDAUus+h2KWpuru2OafzKm5AeL4nU/V4mwreWY2cEjVfZ1UEnc
+        ykaxTErBWk9Qt43xCmiv1iZicheTr/ifVdNJVcqGcaJhKA022ZxLQqYRU9a8CGlcj6Rjz5oLMllLI
+        SofbiXeLtDmXyz6k+qoXogOoPggpmrRNCBJsuOuF4PKVS4XtXH64ED7w1QsyDJawq28PA5n7uisfR
+        VXTLVSi34mjdUVz50yLMwoWEP1nDxyVnl7QrrBSq9H3dHsf/nvOfBFmEJiWXResWqMl7rjJ8G2nAB
+        Kg7BAwhA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1me6g7-00EL7y-4B; Sat, 23 Oct 2021 02:22:47 +0000
+Date:   Sat, 23 Oct 2021 03:22:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXNx686gvsJMgS+z@casper.infradead.org>
+References: <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <YXBUPguecSeSO6UD@moria.home.lan>
+ <YXHdpQTL1Udz48fc@cmpxchg.org>
+ <YXIZX0truEBv2YSz@casper.infradead.org>
+ <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
+ <YXK2ICKi6fjNfr4X@casper.infradead.org>
+ <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211022090315.67e8bf8e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 22, 2021 at 04:40:24PM +0200, David Hildenbrand wrote:
+> On 22.10.21 15:01, Matthew Wilcox wrote:
+> > On Fri, Oct 22, 2021 at 09:59:05AM +0200, David Hildenbrand wrote:
+> >> something like this would roughly express what I've been mumbling about:
+> >>
+> >> anon_mem    file_mem
+> >>    |            |
+> >>    ------|------
+> >>       lru_mem       slab
+> >>          |           |
+> >>          -------------
+> >>                |
+> >> 	      page
+> >>
+> >> I wouldn't include folios in this picture, because IMHO folios as of now
+> >> are actually what we want to be "lru_mem", just which a much clearer
+> >> name+description (again, IMHO).
+> > 
+> > I think folios are a superset of lru_mem.  To enhance your drawing:
+> > 
+> 
+> In the picture below we want "folio" to be the abstraction of "mappable
+> into user space", after reading your link below and reading your graph,
+> correct? Like calling it "user_mem" instead.
 
-On 10/23/2021 12:03 AM, Jakub Kicinski wrote:
-> On Fri, 22 Oct 2021 20:06:15 +0800 Luo Jie wrote:
->> qca8081 is a single port ethernet phy chip that supports
->> 10/100/1000/2500 Mbps mode.
->>
->> Add the basic phy driver features, and reuse the at803x
->> phy driver functions.
->>
->> Signed-off-by: Luo Jie <luoj@codeaurora.org>
-> Does not apply cleanly to net-next/master. Please rebase and repost.
-Thanks Jakub for the comments, will update the tree and repost it.
+Hmm.  Actually, we want a new layer in the ontology:
+
+page
+   folio
+      mappable
+         lru_mem
+            anon_mem
+            ksm
+            file_mem
+         netpool
+         devmem
+         zonedev
+         vmalloc
+      zsmalloc
+      dmapool
+      devmem (*)
+   slab
+   pgtable
+   buddy
+
+(*) yes, devmem appears twice; some is mappable and some is not
+
+The ontology is kind of confusing because *every* page is part of a
+folio.  Sometimes it's a folio of one page (eg vmalloc).  Which means
+that it's legitimate to call page_folio() on a slab page and then call
+folio_test_slab().  It's not the direction we want to go though.
+
+We're also inconsistent about whether we consider an entire compound
+page / folio the thing which is mapped, or whether each individual page
+in the compound page / folio can be mapped.  See how differently file-THP
+and anon-THP are handled in rmap, for example.  I think that was probably
+a mistake.
+
+> Because any of these types would imply that we're looking at the head
+> page (if it's a compound page). And we could (or even already have?)
+> have other types that cannot be mapped to user space that are actually a
+> compound page.
+
+Sure, slabs are compound pages which cannot be mapped to userspace.
+
+> > I have a little list of memory types here:
+> > https://kernelnewbies.org/MemoryTypes
+> > 
+> > Let me know if anything is missing.
+> 
+> hugetlbfs pages might deserve a dedicated type, right?
+
+Not sure.  Aren't they just file pages (albeit sometimes treated
+specially, which is one of the mistakes we need to fix)?
+
+> > And starting with file_mem makes the supposition that it's worth splitting
+> > file_mem from anon_mem.  I believe that's one or two steps further than
+> > it's worth, but I can be convinced otherwise.  For example, do we have
+> > examples of file pages being passed to routines that expect anon pages?
+> 
+> That would be a BUG, so I hope we don't have it ;)
+
+Right.  I'm asking, did we fix any bugs in the last year or two that
+were caused by this kind of mismatch and would be prevented by using
+a different type?  There's about half a dozen bugs we've had in the
+last year that were caused by passing tail pages to functions that
+were expecting head pages.
+
+I can think of one problem we have, which is that (for a few filesystems
+which have opted into this), we can pass an anon page into ->readpage()
+and we've had problems with those filesystems then mishandling the
+anon page.  The solution to this problem is not to pass an lru_mem to
+readpage, but to use a different fs operation to read swap pages.
+
+> Let's consider folio_wait_writeback(struct folio *folio)
+> 
+> Do we actually want to pass in a folio here? Would we actually want to
+> pass in lru_mem here or even something else?
+
+Well, let's look at the callers (for simplicity, look at Linus'
+current tree).  Other than the ones in filesystems which we can assume
+have file pages, mm/migrate.c has __unmap_and_move().  What type should
+migrate_pages() have and pass around?
+
+> Looking at some core MM code, like mm/huge_memory.c, and seeing all the
+> PageAnon() specializations, having a dedicated anon_mem type might be
+> valuable. But at this point it's hard to tell if splitting up these
+> functions would actually be desirable.
+
+Yes.  That's my point; it *might* be desirable.  I have no objections to
+it, but the people doing the work need to show the benefits.  I'm showing
+the benefits to folios -- fewer bugs, smaller code, larger pages in the
+page cache leading to faster systems.  I acknowledge the costs in terms
+of churn.
+
+You can see folios as a first step to disentangling some of the users
+of struct page.  It certainly won't be the last step.  But I'd really
+like to stop having theoretical discussions of memory types and get on
+with writing code.  If that means we modify the fs APIs again in twelve
+months to replace folios with file_mem, well, I'm OK with that.
+
