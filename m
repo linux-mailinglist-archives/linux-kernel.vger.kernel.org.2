@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24754438472
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 19:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AEE438479
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 19:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhJWRZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 13:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhJWRZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 13:25:12 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042A3C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 10:22:52 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id o42so3047429vkf.9
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 10:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=rMMU716GHaoZLnC/TrOOrmJ3Av0qZgKqAsVGe14mcag=;
-        b=bAv3xltdUqbZyU8Kzryk8qKpkotV9oeeMBx+cnvkvN7Cw01yCzYij9vS3OvxGlnd1v
-         fpsfmSjzAUrHs8nxOTCt00PteFGvpUP3gAAR8uf1RA1wgEfT9V8KQUNAQPq3in3iB6b6
-         S334UaGjRmGOZc1jQgnGTXDWYP9RtkdbV7jfs4p/berbo516+3MRPw8CFUp57JJ3OL4Y
-         T6dHhmHXNHlhsKZoWhHvzjZW2vOs8RaVW54+qSSjnoxj8tFPec/8e2BBlGzcsMj8u8Jx
-         oGmPdVGCX8xmr0tTptOWCEc6ZOjViAxOCscvU7Br8SDjbbwCTBGGwhZMxL9wAT2VvQ0n
-         kVaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=rMMU716GHaoZLnC/TrOOrmJ3Av0qZgKqAsVGe14mcag=;
-        b=g+sBHekMP/vPtmSM4aOS73C+jV4ZsZh2uCF80OcrntI9l+7c873AvgYrwsfNbc+NLX
-         iZ++Tt5zPGlKZMEAYMBe1lIt622OdDwmWH9mu6aKdtHiXYnpKJbmnZQ7SNUVcShEk3vl
-         TZ64MjHwZ9mH7kZpuY2+R0G1gCheIzEvfdBE16cIlwtJE4MttCfPGdZNaX7ieigVZGR6
-         HtHpm3OigiUCvKMP2lic79vSQyBWWFWRkgjhwhxhWPrHIG0nPAmdCTlgP8oHAK0tuGaE
-         zrFZ2lxyY4H4xwUEW4HRX1w7bOk9sKM69UtN72wqhPpO6oUVG9NSXluNJi3Yj0G/yRBs
-         11iA==
-X-Gm-Message-State: AOAM530l1vOytAKB+vbZpfA0W7UrJC77jvskO0qNV6NBx1gQwR4s5UeG
-        zrJ71t6Z2ebawbXEv+0eEWM3Eg==
-X-Google-Smtp-Source: ABdhPJw/C1xhXJrEAJ5OWeTNzehQlHscq3WksOAKtmNhk+98p5bbKN7O/PdxChrEdify7qToG4Gsow==
-X-Received: by 2002:a1f:2345:: with SMTP id j66mr7213989vkj.20.1635009771812;
-        Sat, 23 Oct 2021 10:22:51 -0700 (PDT)
-Received: from fedora ([187.64.134.142])
-        by smtp.gmail.com with ESMTPSA id s188sm7130900vkg.9.2021.10.23.10.22.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 10:22:51 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 14:22:46 -0300
-From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-To:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: [PATCH] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <YXRE5i9xXpwSjicO@fedora>
+        id S230379AbhJWRcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 13:32:11 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55486 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230037AbhJWRcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 13:32:07 -0400
+Received: from zn.tnic (p200300ec2f2bf500debdb0fdbaba34b4.dip0.t-ipconnect.de [IPv6:2003:ec:2f2b:f500:debd:b0fd:baba:34b4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9A5E1EC01FC;
+        Sat, 23 Oct 2021 19:29:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635010186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=45GSEYozrA6ceNXIM9Vtl2tPbqIpym/GAi+hphvjLik=;
+        b=eXYNK94H7HLUf6jjICKv1ghrrFt3DJckkQbAhzjHnoRDdocKXs45y5+f8f1K1+DsajwbMZ
+        p2kvrlEmAakg9KLeojR4eXMe3vV9dCEAG0UWgftJDZEkYRjvnHHTUTFnrIsjUJkc6wthGS
+        nbjtselR4hNzTYzec+YWA+ueywUR46U=
+Date:   Sat, 23 Oct 2021 19:29:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Subject: Re: [PATCH V8.1 5/9] x86/sev-es: Expose sev_es_ghcb_hv_call() to
+ call ghcb hv call out of sev code
+Message-ID: <YXRGh0rxtbdFJ31m@zn.tnic>
+References: <20211021154110.3734294-6-ltykernel@gmail.com>
+ <20211022133721.2123-1-ltykernel@gmail.com>
+ <MWHPR21MB1593716CD7DDE1326AC93AD4D7809@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MWHPR21MB1593716CD7DDE1326AC93AD4D7809@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-replace it for the atomic PWM API.
+On Fri, Oct 22, 2021 at 08:58:00PM +0000, Michael Kelley wrote:
+> >  static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+> >  static inline void sev_es_ist_exit(void) { }
+> >  static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { return 0; }
+> >  static inline void sev_es_nmi_complete(void) { }
+> >  static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
+> > +static inline enum
+> > +es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+> > +			      bool set_ghcb_msr, u64 exit_code,
+> 
+> The "struct es_em_ctxt *ctxt" argument is missing from this declaration,
+> which would presumably produce a compile error.
 
-Signed-off-by: Maíra Canal <maira.canal@usp.br>
----
- drivers/media/rc/pwm-ir-tx.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Which raises the more important question: that ivm.c thing which is
+going to be that function's user gets enabled unconditionally in
+HyperV's Makefile so maybe you guys wanna consider perhaps making that
+isolation VM functionality dependent on CONFIG_AMD_MEM_ENCRYPT because
+without it, it would be useless.
 
-diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-index 4bc28d2c9cc9..dfaa6125991e 100644
---- a/drivers/media/rc/pwm-ir-tx.c
-+++ b/drivers/media/rc/pwm-ir-tx.c
-@@ -53,6 +53,7 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- {
- 	struct pwm_ir *pwm_ir = dev->priv;
- 	struct pwm_device *pwm = pwm_ir->pwm;
-+	struct pwm_state state;
- 	int i, duty, period;
- 	ktime_t edge;
- 	long delta;
-@@ -60,15 +61,19 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 	period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
- 	duty = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
- 
--	pwm_config(pwm, duty, period);
-+	pwm_init_state(pwm, &state);
-+
-+	state.duty_cycle = duty;
-+	state.period = period;
- 
- 	edge = ktime_get();
- 
- 	for (i = 0; i < count; i++) {
- 		if (i % 2) // space
--			pwm_disable(pwm);
-+			state.enabled = false;
- 		else
--			pwm_enable(pwm);
-+			state.enabled = true;
-+		pwm_apply_state(pwm, &state);
- 
- 		edge = ktime_add_us(edge, txbuf[i]);
- 		delta = ktime_us_delta(edge, ktime_get());
-@@ -76,7 +81,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 			usleep_range(delta, delta + 10);
- 	}
- 
--	pwm_disable(pwm);
-+	state.enabled = false;
-+	pwm_apply_state(pwm, &state);
- 
- 	return count;
- }
+And if you add that dependency, you probably won't need the stub as
+outside of AMD SEV, nothing else will be using that function.
+
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
