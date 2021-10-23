@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E5243821D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2B6438222
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhJWHDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 03:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhJWHDu (ORCPT
+        id S229831AbhJWHJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 03:09:49 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:41796 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229446AbhJWHJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 03:03:50 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E4FC061766
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 00:01:31 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id t4so7925632oie.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 00:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3XNK8/G5+03RpD0j7S3Gnth3OiCNUfmJqhs9h8ooGSo=;
-        b=OhhKJKYrQv2NReaxw4cm/Scx8uvk7T8c/UtJ4+TgQyHQwehrzn0IEa7aZ3IuOFY5KV
-         htMmxSTP6og8HYaIgwEpCpEAyeLrvZ0yfSEo1YW7Ps25tC3+Ft3FslUZPYZb2Jq8QwcD
-         /x5zpO4OkHKtILpME0y9/K0r8EjZf3s5Uf5zzn7WD7NoYLC1t8ksECAKHvVL/pl43j/i
-         m7B8SxNuvXpSdJ7J0hkGK32jGUCSkgDaYM+ONY4QV5X5mlIHgCogFwGMUKBxaS27W1yX
-         87hicmmVrqENF/YZbp7jiBMJodinxWOqDmDx+sQ9tHz5L827wHilSzAAPAwSaTA9N761
-         0zQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3XNK8/G5+03RpD0j7S3Gnth3OiCNUfmJqhs9h8ooGSo=;
-        b=l6j7WRY/94EfGADjxRzqlNK5dOF0FZ2HJJAKAq4SyiOMq26ZhIfVfvIJcjgp5BhgvR
-         TOncHZEHqQ5CUI3L5bTU6QVTrqhyH14YmbPJh/aAbCNJgsuaR8VjdBJpSCs+cjjw6hsZ
-         ugiEH7i+1RXON6CfkIVa/oTdN8S3Ns4Ey4hG5FyGRQ1FBc1eRUrVGqx7wSCd8iBtVOu/
-         WPisKU8kDbxAgpsZhoe4S7QDENqKsB0P/Oz7ikr17CjAbYWTPUzdCZDeW0Dgmwj/OXE2
-         94ENyEi3zdrfcxEyfn44Ddgpu2nEUw3PxJlPp/vkZV+/Wydz9o07ZIggoSh9/P1fGu7+
-         nyDw==
-X-Gm-Message-State: AOAM533vRUptQ9EL4axvJQucHctdXQKd9105FXZeAtt7U1Y2rD5CAayR
-        8hFyRH6nwQczXSZM2EK/vueY3It5BagmkoO1TAEEvQ==
-X-Google-Smtp-Source: ABdhPJwqjlmr9J6papGjZZdJkxgKQ8pcBdronrFAgFi4Gj7VPd8fHvjCUvJ/r3u7L7WJiohVGJLwV8tiuzu5W95dT6E=
-X-Received: by 2002:a05:6808:d50:: with SMTP id w16mr13922075oik.128.1634972490639;
- Sat, 23 Oct 2021 00:01:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927173348.265501-1-info@alexander-lochmann.de>
- <YVQkzCryS9dkvRGB@hirez.programming.kicks-ass.net> <927385c7-0155-22b0-c2f3-7776b6fe374c@alexander-lochmann.de>
-In-Reply-To: <927385c7-0155-22b0-c2f3-7776b6fe374c@alexander-lochmann.de>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 23 Oct 2021 09:01:19 +0200
-Message-ID: <CACT4Y+aH5dZTSw7+59GTDQyikP6CqXCD7AAhjciaS_MQSbrV6A@mail.gmail.com>
-Subject: Re: [PATCHv2] Introduced new tracing mode KCOV_MODE_UNIQUE.
-To:     Alexander Lochmann <info@alexander-lochmann.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@kernel.org>,
+        Sat, 23 Oct 2021 03:09:47 -0400
+X-UUID: 4844edf552944d72a0486fbd59903cee-20211023
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=PmZWJ9UWN+c3zsZcmYLjxNzeeNw+AKsJe5gbnHhBlIk=;
+        b=cYUMhTHjv7gFy24lwOS8aGGfq1pffBVHRray+G41xsmt62/xSLhyI6gomPwDNs02TFp7GGsmVSgmMk25ouybsGzhaHSVrxdHvxqGR2pdevPjxHlWyo0dBT2YvtVd5jPxE4UAN8wvtz8QQ8VQcWC50YOJ2VcvU73djB5RVMrFYLw=;
+X-UUID: 4844edf552944d72a0486fbd59903cee-20211023
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1273308793; Sat, 23 Oct 2021 15:07:15 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 23 Oct
+ 2021 15:07:13 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 23 Oct 2021 15:07:12 +0800
+Message-ID: <ab177213e7aa808b3803cac46146d96a02724425.camel@mediatek.com>
+Subject: Re: [PATCH v3 1/2] PM / wakeirq: support enabling wake-up irq after
+ runtime_suspend called
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        kasan-dev@googlegroups.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Ikjoon Jang <ikjn@chromium.org>
+Date:   Sat, 23 Oct 2021 15:07:12 +0800
+In-Reply-To: <df145215a21b67b440405736d9628199ccce2a1b.camel@mediatek.com>
+References: <1628651069-22162-1-git-send-email-chunfeng.yun@mediatek.com>
+         <CAJZ5v0hTR2mZk7FuUVciX766qq0AwWXFBZoBsV3Sd9ToYuErdQ@mail.gmail.com>
+         <df145215a21b67b440405736d9628199ccce2a1b.camel@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 69F60639D0B2889D7551EF1742E782FD3C13CD9681A813A705DCFB5C80DDD6F22000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Oct 2021 at 00:03, Alexander Lochmann
-<info@alexander-lochmann.de> wrote:
->
-> Maybe Dmitry can shed some light on this. He actually suggested that
-> optimization.
->
-> - Alex
->
-> On 29.09.21 10:33, Peter Zijlstra wrote:
-> > On Mon, Sep 27, 2021 at 07:33:40PM +0200, Alexander Lochmann wrote:
-> >> The existing trace mode stores PCs in execution order. This could lead
-> >> to a buffer overflow if sufficient amonut of kernel code is executed.
-> >> Thus, a user might not see all executed PCs. KCOV_MODE_UNIQUE favors
-> >> completeness over execution order. While ignoring the execution order,
-> >> it marks a PC as exectued by setting a bit representing that PC. Each
-> >> bit in the shared buffer represents every fourth byte of the text
-> >> segment.  Since a call instruction on every supported architecture is
-> >> at least four bytes, it is safe to just store every fourth byte of the
-> >> text segment.
-> >
-> > I'm still trying to wake up, but why are call instruction more important
-> > than other instructions? Specifically, I'd think any branch instruction
-> > matters for coverage.,
-> >
-> > More specifically, x86 can do a tail call with just 2 bytes.
+T24gU2F0LCAyMDIxLTEwLTIzIGF0IDE0OjM1ICswODAwLCBDaHVuZmVuZyBZdW4gd3JvdGU6DQo+
+IE9uIFR1ZSwgMjAyMS0xMC0xOSBhdCAxNzoyOCArMDIwMCwgUmFmYWVsIEouIFd5c29ja2kgd3Jv
+dGU6DQo+ID4gT24gV2VkLCBBdWcgMTEsIDIwMjEgYXQgNTowNSBBTSBDaHVuZmVuZyBZdW4gPA0K
+PiA+IGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+ID4gDQo+ID4gPiBXaGVu
+IHRoZSBkZWRpY2F0ZWQgd2FrZS1pcnEgaXMgbGV2ZWwgdHJpZ2dlciwgYW5kIGl0IHVzZXMgdGhl
+DQo+ID4gPiBjb25zdW1lcidzIHNsZWVwIHN0YXR1cyBhcyB0aGUgd2FrZXVwIHNvdXJjZSwgdGhh
+dCBtZWFucyBpZiB0aGUNCj4gPiA+IGNvbnN1bWVyIGlzIG5vdCBpbiBzbGVlcCBzdGF0ZSwgdGhl
+IHdha2UtaXJxIHdpbGwgYmUgdHJpZ2dlcmVkDQo+ID4gPiB3aGVuIGVuYWJsZSBpdDsgRm9yIHRo
+aXMgY2FzZSwgbmVlZCBlbmFibGUgdGhlIHdha2UtaXJxIGFmdGVyDQo+ID4gPiBpbnZva2luZyB0
+aGUgY29uc3VtZXIncyBydW50aW1lX3N1c3BlbmQoKSB3aGljaCBtYWtlIHRoZSBjb25zdW1lcg0K
+PiA+ID4gZW50ZXIgc2xlZXAgc3RhdGUuDQo+ID4gWy4uLl0NCj4gDQo+IElmIHdhbnQgdG8gbWFr
+ZSBpdCBzdGF0aWMsIHNob3VsZCBtb3ZlIGl0IGZyb20gd2FrZWlycS5jIGludG8NCj4gcnVudGlt
+ZS5jDQo+IA0KPiA+IA0KPiA+ID4gIHsNCj4gPiA+ICAgICAgICAgc3RydWN0IHdha2VfaXJxICp3
+aXJxID0gZGV2LT5wb3dlci53YWtlaXJxOw0KPiA+ID4gDQo+ID4gPiAgICAgICAgIGlmICghd2ly
+cSB8fCAhKHdpcnEtPnN0YXR1cyAmIFdBS0VfSVJRX0RFRElDQVRFRF9NQVNLKSkNCj4gPiA+ICAg
+ICAgICAgICAgICAgICByZXR1cm47DQo+ID4gDQo+ID4gQW5kIEkgd291bGQganVzdCBhZGQgdGhl
+IGZvbGxvd2luZyBsaW5lIGhlcmU6DQo+ID4gDQo+ID4gaWYgKGNvbmRfZGlzYWJsZSAmJiAod2ly
+cS0+c3RhdHVzICYNCj4gPiBXQUtFX0lSUV9ERURJQ0FURURfTEFURV9FTkFCTEVEKSkNCj4gPiAg
+ICAgICAgIHJldHVybjsNCj4gDQo+IFRoaXMgY2hhbmdlIGRvZXNuJ3QgY292ZXIgdGhlIGNhc2Ug
+KFdBS0VfSVJRX0RFRElDQVRFRF9MQVRFX0VOQUJMRUQNCj4gYW5kDQo+ICBXQUtFX0lSUV9ERURJ
+Q0FURURfTUFOQUdFRCBhcmUgYm90aCBzZXQgMSk6DQo+IA0KPiAtLT5ycG1fc3VzcGVuZCgpOiB3
+aXJxLT5pcnEgaXMgZW5hYmxlZA0KPiAtLT5ycG1fcmVzdW1lKCk6IGRpc2FibGUgd2lycS0+aXJx
+OyAoaWYgY2hhbmdlIGl0LCBkb2Vzbid0IGRpc2FibGUNCj4gd2lycS0+aXJxKQ0KU2VlbXMgSSdt
+IHdyb25nLCBjaGVjayBhZ2Fpbi4NCg0KPiANCj4gPiANCj4gPiA+IA0KPiA+ID4gLSAgICAgICBp
+ZiAod2lycS0+c3RhdHVzICYgV0FLRV9JUlFfREVESUNBVEVEX01BTkFHRUQpDQo+ID4gPiArICAg
+ICAgIGlmICh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURfTUFOQUdFRCAmJg0KPiA+
+ID4gKyAgICAgICAgICAgKHNraXBfbGF0ZV9lbmFibGVkX3N0YXR1cyB8fA0KPiA+ID4gKyAgICAg
+ICAgICAgICEod2lycS0+c3RhdHVzICYgV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxFRCkp
+KQ0KPiA+ID4gICAgICAgICAgICAgICAgIGRpc2FibGVfaXJxX25vc3luYyh3aXJxLT5pcnEpOw0K
+PiA+ID4gIH0NCj4gPiA+IA0KPiA+ID4gKy8qKg0KPiA+ID4gKyAqIGRldl9wbV9lbmFibGVfd2Fr
+ZV9pcnFfY29tcGxldGUgLSBlbmFibGUgd2FrZSBpcnEgYmFzZWQgb24NCj4gPiA+IHN0YXR1cw0K
+PiA+IA0K
 
-Hi Peter, Alex,
-
-The calls are important here because we only use PCs that are return
-PCs from a callback emitted by the compiler. These PCs point to the
-call of the callback.
-
-I don't remember exactly what's the story for tail calls of the
-callback for both compilers, ideally they should not use tail calls
-for this call, and I think at least one of them does not use tail
-calls.
-
-But even with tail calls, the callback is emitted into every basic
-block of code. So it should be (call, some other instructions, call)
-and at least the first call is not a tail call.
