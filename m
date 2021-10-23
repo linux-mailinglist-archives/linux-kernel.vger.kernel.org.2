@@ -2,105 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B254382FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1196D438301
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhJWJ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        id S231616AbhJWKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 06:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhJWJ6k (ORCPT
+        with ESMTP id S230126AbhJWKAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 05:58:40 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D06C0611C2;
-        Sat, 23 Oct 2021 02:56:02 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id i24so2511397lfj.13;
-        Sat, 23 Oct 2021 02:56:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LXv2Bng4C8uj1DNivI+o5gz96luQJc9s1jkjFvg2HPM=;
-        b=FNfLdmxXyGg552hX75/Ju2SLVddrS3u3m2N/LBTcy59HUYPb2JtpHiLmUjAvPlaMxP
-         LY3vbPS5xMLnp+Exyqy2PKaInV8DxfpXtAb8neFrZ/GrdFYis0zKrDV2c/bbr2KHJ+Uw
-         k18Cpp2YvbBDy37GV73VIgFjEGhKpazb2303L04g7tDXzR84f+PN5+DmDxIBI7rEVbSG
-         eVm34SU5GznIsuOJZd+GVJD8bvFdsV2BLg/4HQVNf5z6KPvKR6IcRdyrupj5ZdQjYCtF
-         VVLYsr3uIVPtnQ8rVZiHbZANIPbzubXc6c9p4VQ4l1y5rszXTGY82dr6kC9qNydy3md5
-         0hWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LXv2Bng4C8uj1DNivI+o5gz96luQJc9s1jkjFvg2HPM=;
-        b=5XpH4KAg6GZytwuoV+UjaXMVSxD9hJCA+pblzIiTGBcYBW1mXxaYKFl9NROZaz/Ma+
-         5iMvgxugBONEP7lfkmbVSRXVjp5N/G72Em7dPvUuy6HKrR5qd+DEfu784OG0GsDnYI0o
-         c/7Fh3K4eD4SbIQ8eQb7gq5fBRUDRut4SA3SAx2xD7j4XLjGXLj0Or48xPIIAriBZ1ND
-         Mn1+racqAxu08XWhuAfSZ43kPB1QYG+dwYHCdSU1q8G8XbonR/nXhOwiCWjimwM0cj9Z
-         4kERzftMxbtSSCDlMFWJQamryZ9OGZ2h7DfknLIMwgvggYiJO9Uq4+6K+V0dALZTm3c+
-         hepA==
-X-Gm-Message-State: AOAM532fdafGYQ6Oqr6tpES3J3W00A+esT88Wtt4nwFr6KuLnztVJJNi
-        ooqk2Ey7GtTnkor0MOShuDD9vUunYJA=
-X-Google-Smtp-Source: ABdhPJzh395qQXJTPuGWeDEcS/35igOwFxdh/Pf4A1OMsfPxknPxuIH3cuL+1C6rzTvcjEnKVySFiw==
-X-Received: by 2002:a05:6512:926:: with SMTP id f6mr4904456lft.495.1634982961249;
-        Sat, 23 Oct 2021 02:56:01 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id v62sm980321lfa.23.2021.10.23.02.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 02:56:00 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 12:55:59 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        hgkamath@hotmail.com
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/4] fs/ntfs3: Keep preallocated only if option prealloc
- enabled
-Message-ID: <20211023095559.ythxb2z2ptdrlr5s@kari-VirtualBox>
-References: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
- <aaf41f35-b702-b391-1cff-de4688b3bb65@paragon-software.com>
+        Sat, 23 Oct 2021 06:00:14 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B6BC061234;
+        Sat, 23 Oct 2021 02:57:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dHMTt1k0Cd68+zir1t9TVpYzECWPKdraKiS6FAr1kE0=; b=jFpAGPV8mZxUi3fR8OaQ1yJzGy
+        ozPKJMOd7T7FKHVXLaCnw1rohhVYgbeBn1i4Iy5vBmMqojerpnIxPElHR8Za/zMpZUBQwwsoXaoob
+        adtJAyv9cK9WPNjRHnlvR8W42nGbEDkaRUUrikPMMoh1O1rByRrtgF2cMNkvAkNcOfVrLgucmi5SK
+        ISljpc9GkDNT7La+h+yxSSXDYPxmRDLXz/I4sr9wzcFUCXb3GAfG6dJUjCiL3T0+6XNsTA4/4Uzej
+        xXgvdF4WM3WOL1IwKhb3E+MQ9Gd0ARq9Y63qvxbHU6uVNSetWXSPGanG0yuq8YuFePA1efndAMMZ/
+        xUNm+ObA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55252)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1meDm1-0002Yj-3D; Sat, 23 Oct 2021 10:57:09 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1meDlz-00020f-GC; Sat, 23 Oct 2021 10:57:07 +0100
+Date:   Sat, 23 Oct 2021 10:57:07 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v6 01/14] net: phy: at803x: replace AT803X_DEVICE_ADDR
+ with MDIO_MMD_PCS
+Message-ID: <YXPcczBI2Keg8i8s@shell.armlinux.org.uk>
+References: <20211023095453.22615-1-luoj@codeaurora.org>
+ <20211023095453.22615-2-luoj@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aaf41f35-b702-b391-1cff-de4688b3bb65@paragon-software.com>
+In-Reply-To: <20211023095453.22615-2-luoj@codeaurora.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 06:54:31PM +0300, Konstantin Komarov wrote:
-> If size of file was reduced, we still kept allocated blocks.
-> This commit makes ntfs3 work as other fs like btrfs.
-> https://bugzilla.kernel.org/show_bug.cgi?id=214719
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214719
-> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+On Sat, Oct 23, 2021 at 05:54:40PM +0800, Luo Jie wrote:
+> Replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS defined in mdio.h.
 > 
-> Reported-by: Ganapathi Kamath
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Add <hgkamath@hotmail.com>
+This is still wrong. Andrew reviewed it, and then I did. I gave you a
+reviewed tag as well.
 
-I also added to loop here. Ganapathi can you test if this patch fix your
-problem?
-
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/file.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-> index 43b1451bff53..3ac0482c6880 100644
-> --- a/fs/ntfs3/file.c
-> +++ b/fs/ntfs3/file.c
-> @@ -494,7 +494,7 @@ static int ntfs_truncate(struct inode *inode, loff_t new_size)
->  
->  	down_write(&ni->file.run_lock);
->  	err = attr_set_size(ni, ATTR_DATA, NULL, 0, &ni->file.run, new_size,
-> -			    &new_valid, true, NULL);
-> +			    &new_valid, ni->mi.sbi->options->prealloc, NULL);
->  	up_write(&ni->file.run_lock);
->  
->  	if (new_valid < ni->i_valid)
-> -- 
-> 2.33.0
-> 
-> 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
