@@ -2,92 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FFB43837E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452CB438380
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhJWLrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 07:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhJWLrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 07:47:40 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945FAC061764;
-        Sat, 23 Oct 2021 04:45:20 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id d3so5345678wrh.8;
-        Sat, 23 Oct 2021 04:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8NbVhy/18KdPyyuiO5A3kcqrXSmZbFqQmCBwS7YiJMI=;
-        b=jyBw11KT5wfH8KJ3LtWt0wpRZR5B1weSusDqeMUhL5GR7zWCsFyMhqH1C2lrfEaUNa
-         AWkWO1trhxA6/WbqIKchLudTL5jtDDOaTDaIgdCM0ZXtHBPZYx8ERPMGqbdam1Zw5VpL
-         INrPIYoBq5S6gKLciK+acbNbYlAwB8HnKJtpdBEcZDgP5zakCGHPsmzkQIa+Y/NO/CyJ
-         qMi/84HlJwuwN0SmpH10WI280WBk4Vq1tI/1kG7o5zQlkjcC7jT4Mm2HJKqlMhRbMiCE
-         C4UOkprijN8iZvS2WHI4eoGFASTtSpQ/8TI+XxMf3BynU6zjbrH+VDly2h1r9Q66I8hi
-         p1+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8NbVhy/18KdPyyuiO5A3kcqrXSmZbFqQmCBwS7YiJMI=;
-        b=qNIXsUpf1ZlDoC1T5x9KuNj8A1BPKZcV1KrmOxDp5vqPsB6K8CMikeo3Ky+LfjN8mt
-         clcy/oO728QUeE8zqp00eW4r9PoiX7buMB02WikCT0gB2/FALTUlBa3mScq2X9MP2pcO
-         db6isRsGHWmEFtNAsl0NFDLDd0h66xZ7yWby2t1Z4bcVGCQWk6qDegf3fNuItXvJvkZh
-         /roXCeG3CQjRrJxp+pFfTgO87ke9OT9/eMXVRHurxpUTx1rHEPf/7Zb7iKHoMW/xHY0H
-         f7uR+zNy9KXF5WbqA/0cyTvyAaGSuVCWonIykYDgLwrRgDRrkkcEONRQ6p3z995gXvtq
-         7Leg==
-X-Gm-Message-State: AOAM5334j7tBbh2HL4blYMEO8rZa3ojvDkATxwcKVQWKQ9fEG2/1G6uH
-        F8P7UbOljwFIHA==
-X-Google-Smtp-Source: ABdhPJwu99HGkqbc5xQqT1RXKDkmPFr5MlmJVc2BR0UfWAO7GRDA1X4Rl7Wxknm/AAOGh7Goz9hNmg==
-X-Received: by 2002:a5d:508a:: with SMTP id a10mr7473269wrt.126.1634989519243;
-        Sat, 23 Oct 2021 04:45:19 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id s18sm8257265wrb.95.2021.10.23.04.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 04:45:18 -0700 (PDT)
-From:   Colin King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin King <colin.king@canonical.com>
-To:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        linux-parisc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] parisc: Fix spelling mistake "Plase" -> "Please"
-Date:   Sat, 23 Oct 2021 12:45:18 +0100
-Message-Id: <20211023114518.18600-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S230457AbhJWLtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 07:49:40 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:1117 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229778AbhJWLtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 07:49:39 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4HbzwQ4345z9s2s;
+        Sat, 23 Oct 2021 13:47:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id eIxeC_IHz_vL; Sat, 23 Oct 2021 13:47:18 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.87])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HbzwQ1lr1z9s2m;
+        Sat, 23 Oct 2021 13:47:18 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19NBlIux441158
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sat, 23 Oct 2021 13:47:18 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19NBlFs5441157;
+        Sat, 23 Oct 2021 13:47:15 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2 01/10] powerpc/nohash: Fix __ptep_set_access_flags() and ptep_set_wrprotect()
+Date:   Sat, 23 Oct 2021 13:47:06 +0200
+Message-Id: <33e7fe0f6134c58e044eb63d3925cd34aa120104.1634983809.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634989633; l=4315; s=20211009; h=from:subject:message-id; bh=JVQq2fTr6+mdAATOAWi1xaUsB9+6V9dae2Im/7anK4w=; b=i213A5RrSElKkHiL+AqM+zgrzwIIytxhajoqUgtCOXG5KBkQmmsQXeP3i9g1nDwo1n/QIdpdq7+6 zU0LIqC8CTxBr3LObh+E3xPbIwcY6Hau/GD8GjWaFS2FoGJznFxn
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.i.king@gmail.com>
+Commit 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+changed those two functions to use pte helpers to determine which
+bits to clear and which bits to set.
 
-There is a spelling mistake in a pr_warning message. Fix it.
+This change was based on the assumption that bits to be set/cleared
+are always the same and can be determined by applying the pte
+manipulation helpers on __pte(0).
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+But on platforms like book3e, the bits depend on whether the page
+is a user page or not.
+
+For the time being it more or less works because of _PAGE_EXEC being
+used for user pages only and exec right being set at all time on
+kernel page. But following patch will clean that and output of
+pte_mkexec() will depend on the page being a user or kernel page.
+
+Instead of trying to make an even more complicated helper where bits
+would become dependent on the final pte value, come back to a more
+static situation like before commit 26973fa5ac0e ("powerpc/mm: use
+pte helpers in generic code"), by introducing an 8xx specific
+version of __ptep_set_access_flags() and ptep_set_wrprotect().
+
+Fixes: 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/parisc/kernel/sys_parisc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: New
+---
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 17 +++++++--------
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h | 22 ++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 9 deletions(-)
 
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index d11834377676..2b34294517a1 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -413,7 +413,7 @@ static int FIX_O_NONBLOCK(int flags)
- 			!test_thread_flag(TIF_NONBLOCK_WARNING)) {
- 		set_thread_flag(TIF_NONBLOCK_WARNING);
- 		pr_warn("%s(%d) uses a deprecated O_NONBLOCK value."
--			" Plase recompile with newer glibc.\n",
-+			" Please recompile with newer glibc.\n",
- 			current->comm, current->pid);
- 	}
- 	return flags & ~O_NONBLOCK_MASK_OUT;
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index f06ae00f2a65..ac0a5ff48c3a 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -306,30 +306,29 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
+ }
+ 
+ #define __HAVE_ARCH_PTEP_SET_WRPROTECT
++#ifndef ptep_set_wrprotect
+ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ 				      pte_t *ptep)
+ {
+-	unsigned long clr = ~pte_val(pte_wrprotect(__pte(~0)));
+-	unsigned long set = pte_val(pte_wrprotect(__pte(0)));
+-
+-	pte_update(mm, addr, ptep, clr, set, 0);
++	pte_update(mm, addr, ptep, _PAGE_RW, 0, 0);
+ }
++#endif
+ 
++#ifndef __ptep_set_access_flags
+ static inline void __ptep_set_access_flags(struct vm_area_struct *vma,
+ 					   pte_t *ptep, pte_t entry,
+ 					   unsigned long address,
+ 					   int psize)
+ {
+-	pte_t pte_set = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(0)))));
+-	pte_t pte_clr = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(~0)))));
+-	unsigned long set = pte_val(entry) & pte_val(pte_set);
+-	unsigned long clr = ~pte_val(entry) & ~pte_val(pte_clr);
++	unsigned long set = pte_val(entry) &
++			    (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_RW | _PAGE_EXEC);
+ 	int huge = psize > mmu_virtual_psize ? 1 : 0;
+ 
+-	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
++	pte_update(vma->vm_mm, address, ptep, 0, set, huge);
+ 
+ 	flush_tlb_page(vma, address);
+ }
++#endif
+ 
+ static inline int pte_young(pte_t pte)
+ {
+diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+index fcc48d590d88..1a89ebdc3acc 100644
+--- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+@@ -136,6 +136,28 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ 
+ #define pte_mkhuge pte_mkhuge
+ 
++static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
++				     unsigned long clr, unsigned long set, int huge);
++
++static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
++{
++	pte_update(mm, addr, ptep, 0, _PAGE_RO, 0);
++}
++#define ptep_set_wrprotect ptep_set_wrprotect
++
++static inline void __ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
++					   pte_t entry, unsigned long address, int psize)
++{
++	unsigned long set = pte_val(entry) & (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_EXEC);
++	unsigned long clr = ~pte_val(entry) & _PAGE_RO;
++	int huge = psize > mmu_virtual_psize ? 1 : 0;
++
++	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
++
++	flush_tlb_page(vma, address);
++}
++#define __ptep_set_access_flags __ptep_set_access_flags
++
+ static inline unsigned long pgd_leaf_size(pgd_t pgd)
+ {
+ 	if (pgd_val(pgd) & _PMD_PAGE_8M)
 -- 
-2.32.0
+2.31.1
 
