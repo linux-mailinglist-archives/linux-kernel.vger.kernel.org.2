@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DD74383C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854064383C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhJWNVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 09:21:45 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56328 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhJWNVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231167AbhJWNVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 23 Oct 2021 09:21:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=8UnnDRqw1eQkdViplyQTAIcge1Yu9hofXdZZzzuk4p0=; b=lrFx+iduxqiGySqgByy
-        T0lniizeMHv+jFlBbTcd2TPw3FbwrptbgYNOU6RQPkGI+3qEEgilJNCu2is/MGSSvf2+RFMv71ppi
-        2oPcHrmYKnwRhHJ0ns9KfeowxcMTEUe3AXgBk2zuv+cnZ14iTt4Jy7+VFxIuXnYugopxOyL20Bw=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1meGvf-006vPv-Fv; Sat, 23 Oct 2021 16:19:19 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg v3 0/3] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
-Message-ID: <20e50917-3589-bcb7-0174-b6fccfd15c66@virtuozzo.com>
-Date:   Sat, 23 Oct 2021 16:18:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Received: from mga14.intel.com ([192.55.52.115]:16628 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhJWNVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 09:21:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10145"; a="229721453"
+X-IronPort-AV: E=Sophos;i="5.87,175,1631602800"; 
+   d="scan'208";a="229721453"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2021 06:19:21 -0700
+X-IronPort-AV: E=Sophos;i="5.87,175,1631602800"; 
+   d="scan'208";a="496049093"
+Received: from yli135-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.169.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2021 06:19:18 -0700
+Date:   Sat, 23 Oct 2021 21:19:14 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] tools: Introduce power/acpi/pfru/pfru
+Message-ID: <20211023131914.GB28269@chenyu5-mobl1>
+References: <cover.1634899519.git.yu.c.chen@intel.com>
+ <0159379f2f15c79959fd597874f162ebc3cf711b.1634899519.git.yu.c.chen@intel.com>
+ <YXMbJMifGM2izSZO@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXMbJMifGM2izSZO@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory cgroup charging allows killed or exiting tasks to exceed the hard
-limit. It can be misused and allow to trigger global OOM from inside
-memcg-limited container. On the other hand if memcg fail allocation,
-called from inside #PF handler it trigger global OOM from inside
-pagefault_out_of_memory().
+On Fri, Oct 22, 2021 at 11:12:20PM +0300, Andy Shevchenko wrote:
+> On Sat, Oct 23, 2021 at 01:10:32AM +0800, Chen Yu wrote:
+> > Introduce a user space tool to make use of the interface exposed by
+> > Platform Firmware Runtime Update and Telemetry drivers. The users
+> > can use this tool to do firmware code injection, driver update and
+> > to retrieve the telemetry data.
+> 
+> ...
+> 
+> >  #include <linux/ioctl.h>
+> > +#ifdef __KERNEL__
+> >  #include <linux/uuid.h>
+> > +#else
+> > +#include <uuid/uuid.h>
+> > +#include <linux/types.h>
+> > +#endif
+> 
+> This is exactly my point why you mustn't use uuid.h in uAPI headers.
+>
+Ok, will remove uuid.h. 
+> > +	while (1) {
+> 
+> Why not  while ((c = getopt_long(...)) != -1) ?
+> 
+Ok, changed it to this form.
+> > +		int option_index = 0;
+> > +
+> > +		c = getopt_long(argc, argv, option_string,
+> > +				long_options, &option_index);
+> > +		if (c == -1)
+> > +			break;
+> 
+> > +		}
+> > +	}
+> > +}
+> 
+> ...
+> 
+> > +	char *uuid = malloc(37);
+> 
+> libuuid doesn't have helpers for this?
+> 
+There's no helper for uuid allocation AFAIK.
+> Split assignment so if will be closer to its user.
+> 
+Ok, will do.
 
-To prevent these problems this patch set:
-a) removes execution of out_of_memory() from pagefault_out_of_memory(),
-   becasue nobody can explain why it is necessary.
-b) allow memcg to fail allocation of dying/killed tasks.
-
-v3: resplit, improved patch descriptions
-v2: resplit,
-    use old patch from Michal Hocko removing out_of_memory() from
-      pagefault_out_of_memory()
-
-
-Michal Hocko (1):
-  mm, oom: do not trigger out_of_memory from the #PF
-
-Vasily Averin (2):
-  mm, oom: pagefault_out_of_memory: don't force global OOM for dying
-    tasks
-  memcg: prohibit unconditional exceeding the limit of dying tasks
-
- mm/memcontrol.c | 27 ++++++++-------------------
- mm/oom_kill.c   | 23 ++++++++++-------------
- 2 files changed, 18 insertions(+), 32 deletions(-)
-
--- 
-2.32.0
-
+thanks,
+Chenyu
