@@ -2,85 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8374382A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DEB4382A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhJWJdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        id S230094AbhJWJhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 05:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhJWJdT (ORCPT
+        with ESMTP id S229818AbhJWJhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 05:33:19 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C42C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 02:31:00 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so4747602pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 02:31:00 -0700 (PDT)
+        Sat, 23 Oct 2021 05:37:22 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45D7C061764;
+        Sat, 23 Oct 2021 02:35:01 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x27so386301lfu.5;
+        Sat, 23 Oct 2021 02:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FJS4/5T71szSxuyB4zC+w3VW/dKU2m10Yv1EUUU33j4=;
-        b=qnIMWEBDVGlZLOKkh9y7awCTT9LkYSpEDEbOY1DO8ASbxSEl8zvol76SNW7CbCClB9
-         9iRlgfAyd9a8prHgAdQLQfQKCVgqFQ3tYAJL1MsDMADjBN5tcR3ZSBOU+XoZEVjwWW+1
-         Xu+QQPj2QpEE0/KYUB0tA4wc35/12OnpPjtS5YdmOqiKiDWSiA9qBZEyji8cqO9brtr1
-         q4AL48vspeAU5JDSbdo8RP/QFf0Ooe18EGADUcS54gMk5J4GqfMtNlj7wm79Zt5ndtFO
-         wBPefN2k4ZIkYvPrPB2KpaclZSGD1cwb5Z4+Bf+qj1M4Z0HiJUWXSe9diqdomGJDuucK
-         F71w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6ON3Zyd38dVy3J5eWV++FHn36HNb79c0btCWx3Q2tL8=;
+        b=V7ZIyk67Xdk+NSLH4w8wxFqfN1H/d6AsN9xKYkTQq7Ue8h2b9Mj5UV6LJpgl37roWI
+         fuNfwKv/fxgtTvHBpHphRq3gyXo55ncvmrxtYDhshcU5fsmsYtIBqhZwrvYvRsoI3JZr
+         efzmJyFdkorGP1Aw1Pz2zAtFQBqpSgbF5B/Rney/Dk3wvpR+j8s/nxNKCpkbWcoPOrRc
+         hhpjWcPCafbg2PYC7GHvNIjjEzT0DUivZxrAutf4oDkP29B5gAcAQAg2I9WSVaKL2ASq
+         dWJHLIH/+xYEjJNzRdLNMo7X8z0rV58EmYrmc9e2bUGbPCz/8FQ2k0riwXuSsEIXrIoX
+         Cf3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=FJS4/5T71szSxuyB4zC+w3VW/dKU2m10Yv1EUUU33j4=;
-        b=mKtqMDobsCs7mztyKwFdTAdNLBYs9bsgDfwmDjfTHLm9DBJfxu2U4xmOTPYNfg4Rcs
-         08nnaM1XNsXvGtkFjZJ+8aDe0JLvASJ3nLFMxXgwhhekFrTVl3CRGmLlShCqKbvXVdRv
-         SL24qEzhYSxXJ6OUk8jpQmUPJTk+52doA+DJYEYpqFVq79/Re8+mjD9ncIoztDu34Zvf
-         P1FIbCN7+99UwaUR1+Jw/rUO6kAs3sJ82S7Rtpn3HmJ9hnscmx6XV4B9636nEN6SmQH3
-         QDwFJNoV8QUsCkishLrCfxNuHNs2VD5nVpLGqV4SMuT1juXe/7/+ngGaJFdFbhjALzf4
-         Z3qw==
-X-Gm-Message-State: AOAM531Q0Qrzh0XhhwBGnhsy9bnrDuyLZ7Y4qrtSj2HOHAT239ifpTyk
-        1iyfvM1ycolekWS+pe3Q4tjZoY1Bok803z3J/kQ=
-X-Google-Smtp-Source: ABdhPJwzpTyFY5GjHFI5XxrAE6GQqCr6gGXNSx4EyFtfWsIejbsWsnETr7W/7iic5m90UWZda5JNbqm2dFlQpHfREBo=
-X-Received: by 2002:a17:90a:7893:: with SMTP id x19mr20536850pjk.197.1634981459875;
- Sat, 23 Oct 2021 02:30:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6ON3Zyd38dVy3J5eWV++FHn36HNb79c0btCWx3Q2tL8=;
+        b=E7ryO5Kb8MK/fuMaLco13cbOGAl/RsYcZy4ByyGoXKHUfa/5zBx+chj0SfMKnr5mZv
+         gF6JdyNbCZOHW0TAx3eiA2K0FL67sgIvzR2lvS+4TZTJfd98ydViZEk46rlzeVRuoPEg
+         iZoV0AQrXQDQTQB2mLzKQNc//N0d5FgkF+A8z0rfB3IvbbYmMl4Sx7kfIhNqtkQ+z9St
+         qEKfc+3L/7p6jEJuTt7uKaPMAKKE57tqt3V57dDxtRHfnYsq4NvLvRCntSNyWFCI9EDb
+         /cukMVthIe/UkNZLYn21dWrUwyWe+rIm24vH1dCVqyOQy0k9Ea7vL4wvEzKA7QkjjZZW
+         zdFQ==
+X-Gm-Message-State: AOAM533K+GLYrGeygOjatDUDKfQm584O1+x+zXZ6aexPu3pGYDPEzWjD
+        qjOyhJDYfL0khSjmLUYzp0ZVTsm/BsE=
+X-Google-Smtp-Source: ABdhPJyfpzOgcdrfjEOiA+SknsMCgYBNpxu821BJTfnr5DT/J3prfLJDZKqoU5JQaHReZAK08YaBrA==
+X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr4733255lfb.517.1634981699960;
+        Sat, 23 Oct 2021 02:34:59 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id r30sm975137lfp.298.2021.10.23.02.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 02:34:59 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 12:34:57 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/4] fs/ntfs3: Restore ntfs_xattr_get_acl and
+ ntfs_xattr_set_acl functions
+Message-ID: <20211023093457.lelto5esrjvncah2@kari-VirtualBox>
+References: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
+ <0aad4d9e-983b-6a79-15c1-61743081a1b3@paragon-software.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:2a0b:0:0:0:0 with HTTP; Sat, 23 Oct 2021 02:30:59
- -0700 (PDT)
-Reply-To: mussaomra2017@gmail.com
-From:   omra musa <sulea241@gmail.com>
-Date:   Sat, 23 Oct 2021 09:30:59 +0000
-Message-ID: <CAHm8NdxcL3U4WNY9_RktKpcAUubJzrrVso-OEyFaYmZue0ONcg@mail.gmail.com>
-Subject: I NEED YOUR URGENT RESPOND.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0aad4d9e-983b-6a79-15c1-61743081a1b3@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+On Fri, Oct 22, 2021 at 06:55:09PM +0300, Konstantin Komarov wrote:
+> Apparently we need to maintain these functions with
+> ntfs_get_acl_ex and ntfs_set_acl_ex.
+> This commit fixes xfstest generic/099
+> Fixes: 95dd8b2c1ed0 ("fs/ntfs3: Remove unnecessary functions")
 
+I get build error with patch 1&2 applied.
 
-I know this email might come to you as a surprise as first coming from
-one you haven=E2=80=99t met with before.
+fs/ntfs3/xattr.c: In function ‘ntfs_xattr_get_acl’:
+fs/ntfs3/xattr.c:631:8: error: too many arguments to function ‘ntfs_get_acl’
+  631 |  acl = ntfs_get_acl(inode, type, false);
+      |        ^~~~~~~~~~~~
+fs/ntfs3/xattr.c:533:19: note: declared here
+  533 | struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
 
-I am Mr. Omra Musa, the bank manager with ADB bank of Burkina Faso,and
-a personal banker of Dr.Mohamed Farouk Ibrahim, an Egyptian who
-happened to be a medical contractor attached to the overthrown Afghan
-government by the Taliban government.
-
-Dr.Mohamed Farouk Ibrahim deposits some sum of ($15) million USD with
-our bank but he was died by car accidents with his family while trying
-to leave from Kandahar.
-
-The said sum can be used for an investment if you are interested.
-Details relating to the funds are in my position and will present you
-as the Next-of-Kin because there was none, and I shall furnish you
-with more detail once i hear your response.
-
-Regards,
-Mr. Omra Musa
-
-
-you can reply to my private email address at mussaomra2017@gmail.com
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/xattr.c | 96 +++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 95 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 2143099cffdf..62605781790b 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -112,7 +112,7 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
+>  		return -ENOMEM;
+>  
+>  	if (!size) {
+> -		;
+> +		/* EA info persists, but xattr is empty. Looks like EA problem. */
+>  	} else if (attr_ea->non_res) {
+>  		struct runs_tree run;
+>  
+> @@ -616,6 +616,67 @@ int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  	return ntfs_set_acl_ex(mnt_userns, inode, acl, type);
+>  }
+>  
+> +static int ntfs_xattr_get_acl(struct user_namespace *mnt_userns,
+> +			      struct inode *inode, int type, void *buffer,
+> +			      size_t size)
+> +{
+> +	struct posix_acl *acl;
+> +	int err;
+> +
+> +	if (!(inode->i_sb->s_flags & SB_POSIXACL)) {
+> +		ntfs_inode_warn(inode, "add mount option \"acl\" to use acl");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	acl = ntfs_get_acl(inode, type, false);
+> +	if (IS_ERR(acl))
+> +		return PTR_ERR(acl);
+> +
+> +	if (!acl)
+> +		return -ENODATA;
+> +
+> +	err = posix_acl_to_xattr(mnt_userns, acl, buffer, size);
+> +	posix_acl_release(acl);
+> +
+> +	return err;
+> +}
+> +
+> +static int ntfs_xattr_set_acl(struct user_namespace *mnt_userns,
+> +			      struct inode *inode, int type, const void *value,
+> +			      size_t size)
+> +{
+> +	struct posix_acl *acl;
+> +	int err;
+> +
+> +	if (!(inode->i_sb->s_flags & SB_POSIXACL)) {
+> +		ntfs_inode_warn(inode, "add mount option \"acl\" to use acl");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	if (!inode_owner_or_capable(mnt_userns, inode))
+> +		return -EPERM;
+> +
+> +	if (!value) {
+> +		acl = NULL;
+> +	} else {
+> +		acl = posix_acl_from_xattr(mnt_userns, value, size);
+> +		if (IS_ERR(acl))
+> +			return PTR_ERR(acl);
+> +
+> +		if (acl) {
+> +			err = posix_acl_valid(mnt_userns, acl);
+> +			if (err)
+> +				goto release_and_out;
+> +		}
+> +	}
+> +
+> +	err = ntfs_set_acl(mnt_userns, inode, acl, type);
+> +
+> +release_and_out:
+> +	posix_acl_release(acl);
+> +	return err;
+> +}
+> +
+>  /*
+>   * ntfs_init_acl - Initialize the ACLs of a new inode.
+>   *
+> @@ -782,6 +843,23 @@ static int ntfs_getxattr(const struct xattr_handler *handler, struct dentry *de,
+>  		goto out;
+>  	}
+>  
+> +#ifdef CONFIG_NTFS3_FS_POSIX_ACL
+> +	if ((name_len == sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1 &&
+> +	     !memcmp(name, XATTR_NAME_POSIX_ACL_ACCESS,
+> +		     sizeof(XATTR_NAME_POSIX_ACL_ACCESS))) ||
+> +	    (name_len == sizeof(XATTR_NAME_POSIX_ACL_DEFAULT) - 1 &&
+> +	     !memcmp(name, XATTR_NAME_POSIX_ACL_DEFAULT,
+> +		     sizeof(XATTR_NAME_POSIX_ACL_DEFAULT)))) {
+> +		/* TODO: init_user_ns? */
+> +		err = ntfs_xattr_get_acl(
+> +			&init_user_ns, inode,
+> +			name_len == sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1
+> +				? ACL_TYPE_ACCESS
+> +				: ACL_TYPE_DEFAULT,
+> +			buffer, size);
+> +		goto out;
+> +	}
+> +#endif
+>  	/* Deal with NTFS extended attribute. */
+>  	err = ntfs_get_ea(inode, name, name_len, buffer, size, NULL);
+>  
+> @@ -894,6 +972,22 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
+>  		goto out;
+>  	}
+>  
+> +#ifdef CONFIG_NTFS3_FS_POSIX_ACL
+> +	if ((name_len == sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1 &&
+> +	     !memcmp(name, XATTR_NAME_POSIX_ACL_ACCESS,
+> +		     sizeof(XATTR_NAME_POSIX_ACL_ACCESS))) ||
+> +	    (name_len == sizeof(XATTR_NAME_POSIX_ACL_DEFAULT) - 1 &&
+> +	     !memcmp(name, XATTR_NAME_POSIX_ACL_DEFAULT,
+> +		     sizeof(XATTR_NAME_POSIX_ACL_DEFAULT)))) {
+> +		err = ntfs_xattr_set_acl(
+> +			mnt_userns, inode,
+> +			name_len == sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1
+> +				? ACL_TYPE_ACCESS
+> +				: ACL_TYPE_DEFAULT,
+> +			value, size);
+> +		goto out;
+> +	}
+> +#endif
+>  	/* Deal with NTFS extended attribute. */
+>  	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
+>  
+> -- 
+> 2.33.0
+> 
+> 
