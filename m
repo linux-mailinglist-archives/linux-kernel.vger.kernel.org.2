@@ -2,128 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EE44383BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797DF4383BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhJWNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 09:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhJWNCa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 09:02:30 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C9EC061764;
-        Sat, 23 Oct 2021 06:00:11 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x192so101657lff.12;
-        Sat, 23 Oct 2021 06:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+NSu/QnVZM5jPh0JEYqqX6lEuTLh9VBoJM2wyO5CrKU=;
-        b=EHTkByWoNHwHDODLAzRVnLDC4gmGztzIeq0qMjVl61DeLbdUNNGE3sRv3JJ9Zptzuj
-         i89ljGs8mEeazCkmFKgPf84byIegBDk0rWz93+KQgDf0Z8tz0W2v8Ja+N7yCCf2Cn1F5
-         SFD53Op1TPCszVmEVTv+J42XTvaC2ls15n6e3OlrcjhcNlcOpUB7M/Ch3WqIFqiAHohq
-         Z+nDwzzIRwpHuKfaDNLrecgp/Rvrhh1NnqvMsOBsUGLeQ4DZrxvyGpJgK1sSgrR6WuHI
-         LCeMFPeSTJQaUUkuCt2TTvrd+pwUnFg/2GgIiWVhPdygCcjzl3tMwVw/N/m56kURty6B
-         iDxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+NSu/QnVZM5jPh0JEYqqX6lEuTLh9VBoJM2wyO5CrKU=;
-        b=u1zuFoRyMGxi9FgzNgSoJ2yX0AgVURtcqek1Jh2xTNJ9IQfn1LqoHzjRw8f/fVNxSf
-         d9N8UZANS27gJlVoQGPfxrfPcqlz3oINS7Qxfva5t/Tt8rlIpglT3bOgg267WE7qGXLI
-         8nsaH938ChSyDVO4/wA8WPPe09hrNzENgyESva2s3tZ17d45QIiKU0OKZZ5hU4cfNXSu
-         8PrkcxfQcKYRs23repFmG8U0iCuklux9wgqAvdWtWayzS6kFrOeKV57ckLF+X4cGeyl4
-         du4V7IXEb7+iH2XjNG4CkzL68aO4JjO0tF2FEcyIfrNgjxN3gZWHCfZkYTeTeGtocoix
-         8x4g==
-X-Gm-Message-State: AOAM533gF/648qdGBmuEK7pWKpRdW2LauPPfyJFDbHTeMemt0AppafcI
-        4aYvR4f5FCD9LBEfgRv7pTIwGm8pUKg=
-X-Google-Smtp-Source: ABdhPJxDk2X0DcDvKiyqYs1250+vpJWhroRwznp1dn5v9eaZrSWqf5Mo6GW+eCIi023yuab5s8QxTw==
-X-Received: by 2002:a05:6512:21b1:: with SMTP id c17mr3697636lft.266.1634994009472;
-        Sat, 23 Oct 2021 06:00:09 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-53-128.dynamic.spd-mgts.ru. [94.29.53.128])
-        by smtp.googlemail.com with ESMTPSA id m23sm1032851lfh.129.2021.10.23.06.00.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Oct 2021 06:00:09 -0700 (PDT)
-Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20211019231905.2974-1-digetx@gmail.com>
- <YXAr4OlhucAibMlH@robh.at.kernel.org>
- <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
- <48de7f40-deda-739d-96ca-e61ec5a0b257@gmail.com>
- <20211022065029.x5a5oh7mh2sjofey@vireshk-i7>
- <9798d34b-4886-9d4a-9fb7-634aa323af02@gmail.com>
- <20211022074551.ro22d7xj3idisvzv@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <356febd2-64a2-0451-2c73-9319e5223c57@gmail.com>
-Date:   Sat, 23 Oct 2021 16:00:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230327AbhJWNSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 09:18:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:24063 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhJWNSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 09:18:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10145"; a="216615872"
+X-IronPort-AV: E=Sophos;i="5.87,175,1631602800"; 
+   d="scan'208";a="216615872"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2021 06:16:01 -0700
+X-IronPort-AV: E=Sophos;i="5.87,175,1631602800"; 
+   d="scan'208";a="485037247"
+Received: from yli135-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.169.195])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2021 06:15:58 -0700
+Date:   Sat, 23 Oct 2021 21:15:55 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <20211023131555.GA28269@chenyu5-mobl1>
+References: <cover.1634899519.git.yu.c.chen@intel.com>
+ <545536e714c32c905fd3614bf4fec65d11fb6541.1634899519.git.yu.c.chen@intel.com>
+ <YXMZoz5vfwsawN49@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211022074551.ro22d7xj3idisvzv@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXMZoz5vfwsawN49@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.10.2021 10:45, Viresh Kumar пишет:
-> On 22-10-21, 10:39, Dmitry Osipenko wrote:
->> What we currently have for Tegra is a tegra-opps.dtsi and tegra.dtsi
->> which includes the OPP's dtsi.
->>
->> the tegra-opps.dtsi has this structure:
->>
->> table: devname-opp-table {
->> 	opp: ...
->> };
->>
->> and tegra.dtsi:
->>
->> #include "tegra-opps.dtsi"
->>
->> device@0000 {
->> 	operating-points-v2 = <&table>;
->> };
->>
->> It just occurred to me that there is no need to move all tables to
->> tegra.dtsi, but change structure of tegra-opps.dtsi to:
->>
->> device@0000 {
->> 	operating-points-v2 = <&table>;
->>
->> 	table: opp-table {
->> 		opp: ...
->> 	};
->> };
+Hi Andy,
+On Fri, Oct 22, 2021 at 11:05:55PM +0300, Andy Shevchenko wrote:
+> On Sat, Oct 23, 2021 at 01:09:51AM +0800, Chen Yu wrote:
+> > Introduce the pfru_update driver which can be used for Platform Firmware
+> > Runtime code injection and driver update[1]. The user is expected to
+> > provide the update firmware in the form of capsule file, and pass it to
+> > the driver via ioctl. Then the driver would hand this capsule file to the
+> > Platform Firmware Runtime Update via the ACPI device _DSM method. At last
+> > the low level Management Mode would do the firmware update.
+> > 
+> > The corresponding userspace tool and man page will be introduced at
+> > tools/power/acpi/pfru.
+> > 
+> > [1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
 > 
-> I thought you would have already thought about that and I was surprised when you
-> saw the tables are big enough to be moved. I was wondering what does it really
-> mean :)
+> Instead use Link: tag ?
+>
+Yes, will fix it. 
+> > +enum cap_index {
+> > +	CAP_STATUS_IDX,
+> > +	CAP_UPDATE_IDX,
+> > +	CAP_CODE_TYPE_IDX,
+> > +	CAP_FW_VER_IDX,
+> > +	CAP_CODE_RT_VER_IDX,
+> > +	CAP_DRV_TYPE_IDX,
+> > +	CAP_DRV_RT_VER_IDX,
+> > +	CAP_DRV_SVN_IDX,
+> > +	CAP_PLAT_ID_IDX,
+> > +	CAP_OEM_ID_IDX,
+> > +	CAP_OEM_INFO_IDX,
 > 
->> Then there no need to change current naming scheme. Let me try to
->> implement it and see how it goes.
+> > +	CAP_NR_IDX,
 > 
-> That's good then.
+> Is it terminator entry? Drop comma then. Same for all other similar cases.
 > 
+Ok, will remove the comma.
+> > +};
+> 
+> ...
+> 
+> > +static int get_image_type(efi_manage_capsule_image_header_t *img_hdr,
+> > +			  struct pfru_device *pfru_dev)
+> > +{
+> > +	guid_t *image_type_id = &img_hdr->image_type_id;
+> > +
+> > +	/* check whether this is a code injection or driver update */
+> > +	if (guid_equal(image_type_id, &pfru_dev->code_uuid))
+> > +		return CODE_INJECT_TYPE;
+> 
+> > +	else if (guid_equal(image_type_id, &pfru_dev->drv_uuid))
+> > +		return DRIVER_UPDATE_TYPE;
+> > +	else
+> > +		return -EINVAL;
+> 
+> In both cases redundant 'else'.
+> 
+Ok.
+> > +}
+> 
+> ...
+> 
+> > +static int adjust_efi_size(efi_manage_capsule_image_header_t *img_hdr,
+> > +			   int size)
+> > +{
+> > +	/*
+> > +	 * The (u64 hw_ins) was introduced in UEFI spec version 2,
+> > +	 * and (u64 capsule_support) was introduced in version 3.
+> > +	 * The size needs to be adjusted accordingly. That is to
+> > +	 * say, version 1 should subtract the size of hw_ins+capsule_support,
+> > +	 * and version 2 should sbstract the size of capsule_support.
+> > +	 */
+> > +	size += sizeof(efi_manage_capsule_image_header_t);
+> > +	switch (img_hdr->ver) {
+> > +	case 1:
+> > +		size -= 2 * sizeof(u64);
+> > +		break;
+> > +	case 2:
+> > +		size -= sizeof(u64);
+> > +		break;
+> > +	default:
+> > +		/* only support version 1 and 2 */
+> > +		return -EINVAL;
+> > +	}
+> 
+> > +	return size;
+> 
+> Perhaps directly return this from the cases?
+> 
+Ok, will do.
+> > +}
+> 
+> ...
+> 
+> > +static long pfru_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > +{
+> > +	struct pfru_update_cap_info cap;
+> > +	struct pfru_device *pfru_dev;
+> > +	void __user *p;
+> 
+> > +	int ret = 0, rev;
+> 
+> return 0;  (see below)?
+> 
+> > +	pfru_dev = to_pfru_dev(file);
+> > +	p = (void __user *)arg;
+> > +
+> > +	switch (cmd) {
+> > +	case PFRU_IOC_QUERY_CAP:
+> > +		ret = query_capability(&cap, pfru_dev);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		if (copy_to_user(p, &cap, sizeof(cap)))
+> > +			return -EFAULT;
+> > +
+> > +		break;
+> > +	case PFRU_IOC_SET_REV:
+> > +		if (copy_from_user(&rev, p, sizeof(unsigned int)))
+> > +			return -EFAULT;
+> > +
+> > +		if (!pfru_valid_revid(rev))
+> > +			return -EINVAL;
+> > +
+> > +		pfru_dev->rev_id = rev;
+> > +		break;
+> > +	case PFRU_IOC_STAGE:
+> > +		ret = start_acpi_update(START_STAGE, pfru_dev);
+> > +		break;
+> > +	case PFRU_IOC_ACTIVATE:
+> > +		ret = start_acpi_update(START_ACTIVATE, pfru_dev);
+> > +		break;
+> > +	case PFRU_IOC_STAGE_ACTIVATE:
+> > +		ret = start_acpi_update(START_STAGE_ACTIVATE, pfru_dev);
+> > +		break;
+> > +	default:
+> > +		ret = -ENOTTY;
+> > +		break;
+> > +	}
+> 
+> > +	return ret;
+> 
+> You may return 0 here and directly return from the cases above.
+> 
+I think we can remove the 'return ret' completely, by returning from the cases above.
+> > +}
+> 
+> ...
+> 
+> > +	/* map the communication buffer */
+> 
+> Comment style inconsistency. Compare to...
+> 
+> > +	/* Check if the capsule header has a valid version number. */
+> 
+> ...this one. However, here, since it's one line, no period is needed.
+> 
+>
+Ok, will fix it. 
+> ...
+> 
+> > +out:
+> > +	devm_kfree(&pdev->dev, pfru_dev);
+> 
+> What is this? WHy?!
+> 
+The devm resource is expected to be released during driver de-attach. 
+devm_kfree() is used to free the resource explicitly at the earliest
+time. But it is ok to remove the devm_kfree() and leverage the devm
+to deal with it.
+> > +}
+> 
+> ...
+> 
+> 
+> > +static int __init pfru_init(void)
+> > +{
+> > +	return platform_driver_register(&acpi_pfru_driver);
+> > +}
+> > +
+> > +static void __exit pfru_exit(void)
+> > +{
+> > +	platform_driver_unregister(&acpi_pfru_driver);
+> > +}
+> > +
+> > +module_init(pfru_init);
+> > +module_exit(pfru_exit);
+> 
+> NIH module_platform_driver().
+>
+There would be more than one platform driver to be loaded in this
+file, so module_platform_driver() might not work here. 
+> ...
+> 
+> > +#include <linux/uuid.h>
+> 
+> This is wrong. Please, use raw buffers.
+> 
+Ok, will remove this.
+> ...
+> 
+> Missed types.h.
+> 
+Ok, will add it.
+> ...
+> 
+> > +struct pfru_payload_hdr {
+> > +	__u32	sig;
+> > +	__u32	hdr_version;
+> > +	__u32	hdr_size;
+> > +	__u32	hw_ver;
+> > +	__u32	rt_ver;
+> 
+> > +	uuid_t	platform_id;
+> 
+> No way. Use __u8[16].
+> uuid_t is internal type for kernel.
+> 
+Ok, will change it.
+> > +};
+> 
+> ...
+> 
+> > +struct pfru_update_cap_info {
+> > +	enum pfru_dsm_status status;
+> > +	__u32 update_cap;
+> > +
+> > +	uuid_t code_type;
+> 
+> Ditto.
+> 
+> > +	__u32 fw_version;
+> > +	__u32 code_rt_version;
+> 
+> > +	uuid_t drv_type;
+> 
+> Ditto.
+> 
+> > +	__u32 drv_rt_version;
+> > +	__u32 drv_svn;
+> 
+> > +	uuid_t platform_id;
+> > +	uuid_t oem_id;
+> 
+> Ditto.
+> 
+> > +	char oem_info[];
+> > +};
+> 
+> ...
+> 
+> > +struct pfru_updated_result {
+> 
+> > +	enum pfru_dsm_status status;
+> > +	enum pfru_dsm_status ext_status;
+> 
+> What?! Are you sure enum is the same size on all possible architectures?
+> 
+Ok, changed then to __u32 in next version.
 
-I implemented that approach and it works, but there are two problems:
-
-1. I had to factor out OPP tables from SPI device-tree nodes because DTC doesn't allow to have them within SPI nodes [1] and dtb fails to compile.
-
-[1] https://elixir.bootlin.com/linux/v5.15-rc6/source/scripts/dtc/checks.c#L1141
-
-2. dtbs_check now warns about every opp-table sub-node, like this:
-
-/home/runner/work/linux/linux/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-E1565.dt.yaml: memory-controller@7000f400: 'opp-table' does not match any of the regexes: '^emc-timings-[0-9]+$', 'pinctrl-[0-9]+'
-	From schema: /home/runner/work/linux/linux/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml
+thanks,
+Chenyu
