@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9F3438515
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F285438518
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 21:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhJWUAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 16:00:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34000 "EHLO mail.kernel.org"
+        id S231137AbhJWUAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 16:00:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhJWUAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 16:00:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D80B60F46;
-        Sat, 23 Oct 2021 19:58:10 +0000 (UTC)
+        id S230230AbhJWUAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 16:00:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 407BF60F4B;
+        Sat, 23 Oct 2021 19:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635019090;
-        bh=COjl22/rY2BQ/OgeeXf9s3EB7nrpB6IfxOTmSZf301M=;
+        s=k20201202; t=1635019093;
+        bh=UE0nSct8AkiwiOVgXjSj4Xe/BOGvGKgkpKvTHjkG/I4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QyXTM5RLL/ZvlgR/gvrmchnEeG8NoGFEolfIWQYLMSGR6+qBJPLn4lUM5vv6MvbuH
-         oK/RcoNYnh3aDf/KxcI5dERWgrdoWOlSscPUeInsFFHARpW9he4GFtaLr+1yxWOrit
-         zlayhLnclawo7aVoeZPwsUlnirMWB7imxuYmJLUm76aTEfFQayWa9xCrVkmRlNsXuT
-         qUPnYa0/lk7MaOS77HPy+vxUfuHCUzE1m5vCddxE9hfXSFPNdJFJVcOa5/ZVmce/ds
-         4NBZpL8MYLxjlzNmn3V6/Tg/so/kLDfMCqPkvFZD2kEQvay1Yt/21rTst9FEvU/qMG
-         PINDK2vc12RHQ==
+        b=rWpEpinV6kSP5Yw/e+aAyeCvcZjUyNb+u5aEQbNPKdzNOtfJQqPoQ5Za4em5HIOwb
+         V/NuKRpnupioJn3Whl4O7tqI3G2SS58DudTDWKFwHUaBIZGBPnS1Ce0TQ3radZCGM8
+         EQRV1FnNV3Qic9sg1qktA0USPy0GV2TifnUqSgzYj0y3axS5vT9FywzEQrM//ovN07
+         oABbuFS8Of+3/xU3rCkqSsUc+8kVmzho94yg4/G9GeF+vng3eRQ6u7Q2AFrmd8nonH
+         u98vm8VIbxUNkBLJSC4/SjaDfrjE40KSJguillSWax7GXf7ani6BCLy+K238A5VRS4
+         Bx+H52GI5hCsg==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, kdasu.kdev@gmail.com
-Subject: Re: [PATCH -next] spi: bcm-qspi: Fix missing clk_disable_unprepare() on error in bcm_qspi_probe()
-Date:   Sat, 23 Oct 2021 20:58:01 +0100
-Message-Id: <163501903283.919250.3449151714260187451.b4-ty@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] regulator: Don't error out fixed regulator in regulator_sync_voltage()
+Date:   Sat, 23 Oct 2021 20:58:02 +0100
+Message-Id: <163501903135.919198.6701017250560518879.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211018073413.2029081-1-yangyingliang@huawei.com>
-References: <20211018073413.2029081-1-yangyingliang@huawei.com>
+In-Reply-To: <20211021183308.27786-1-digetx@gmail.com>
+References: <20211021183308.27786-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,20 +42,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 15:34:13 +0800, Yang Yingliang wrote:
-> Fix the missing clk_disable_unprepare() before return
-> from bcm_qspi_probe() in the error handling case.
+On Thu, 21 Oct 2021 21:33:08 +0300, Dmitry Osipenko wrote:
+> Fixed regulator can't change voltage and regulator_sync_voltage()
+> returns -EINVAL in this case. Make regulator_sync_voltage() to succeed
+> for regulators that are incapable to change voltage.
 > 
+> On NVIDIA Tegra power management driver needs to sync voltage and we have
+> one device (Trimslice) that uses fixed regulator which is getting synced.
+> The syncing error isn't treated as fatal, but produces a noisy error
+> message. This patch silences that error.
 > 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: bcm-qspi: Fix missing clk_disable_unprepare() on error in bcm_qspi_probe()
-      commit: 0204bdeb3df79a5c78d9e76119a7f04e3dcb1258
+[1/1] regulator: Don't error out fixed regulator in regulator_sync_voltage()
+      commit: 400d5a5da43c0e84e5aa75151082ea91f0fae3c9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
