@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2B6438222
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B663C438229
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhJWHJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 03:09:49 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:41796 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229446AbhJWHJr (ORCPT
+        id S229983AbhJWHOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 03:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhJWHN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 03:09:47 -0400
-X-UUID: 4844edf552944d72a0486fbd59903cee-20211023
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=PmZWJ9UWN+c3zsZcmYLjxNzeeNw+AKsJe5gbnHhBlIk=;
-        b=cYUMhTHjv7gFy24lwOS8aGGfq1pffBVHRray+G41xsmt62/xSLhyI6gomPwDNs02TFp7GGsmVSgmMk25ouybsGzhaHSVrxdHvxqGR2pdevPjxHlWyo0dBT2YvtVd5jPxE4UAN8wvtz8QQ8VQcWC50YOJ2VcvU73djB5RVMrFYLw=;
-X-UUID: 4844edf552944d72a0486fbd59903cee-20211023
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1273308793; Sat, 23 Oct 2021 15:07:15 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 23 Oct
- 2021 15:07:13 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 23 Oct 2021 15:07:12 +0800
-Message-ID: <ab177213e7aa808b3803cac46146d96a02724425.camel@mediatek.com>
-Subject: Re: [PATCH v3 1/2] PM / wakeirq: support enabling wake-up irq after
- runtime_suspend called
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>
-Date:   Sat, 23 Oct 2021 15:07:12 +0800
-In-Reply-To: <df145215a21b67b440405736d9628199ccce2a1b.camel@mediatek.com>
-References: <1628651069-22162-1-git-send-email-chunfeng.yun@mediatek.com>
-         <CAJZ5v0hTR2mZk7FuUVciX766qq0AwWXFBZoBsV3Sd9ToYuErdQ@mail.gmail.com>
-         <df145215a21b67b440405736d9628199ccce2a1b.camel@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sat, 23 Oct 2021 03:13:59 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A00C061764;
+        Sat, 23 Oct 2021 00:11:40 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id z14so948976wrg.6;
+        Sat, 23 Oct 2021 00:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Cit7CANo53Mf5nvrRXQ4bn4rZuA1vpmTZTS6Z2yKuT4=;
+        b=gAMg8zjE3CEbfqLZz8rq8rJlOS0Dw7A+O5dbtcHcaHtNqeSCmJ8/aNwP11aCzAdpWq
+         ILQQZBgnQToKFiXK6kHQ1cHYPEwnSZOrNzuPPlfFHvGNxd8wwAxligtTVPWiVb6X7hor
+         IhJlm35++YvIN4L10XfHEQITWoR14VTQ9JUoPljIx0DLRB+ZeH0dXpWIt1rQqmA2RnM3
+         Om+EbBdyXDWzy9zQjT00wlm7OIonv5RdH/CKQM5qtmRKousZ6MiS7esNC5ZY0XAjltSB
+         wgqgsu5op7RmZFE9op2HIDs6EF0iOWWj4ndHNUMwGzeyfObccFxobPg72WWed+0Z6dk5
+         LgqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cit7CANo53Mf5nvrRXQ4bn4rZuA1vpmTZTS6Z2yKuT4=;
+        b=eW5IJInHQikeUWYwDhB3/NPfU5azXBRzZ4e55PlenlXDmembj6hyGyx9B2lZk4ltiV
+         pw8JwuEnpEndvwE3vUWTz1ohLWHFJh4rODwfRcwBRsxC7XMBNN3NChlkYqlNM3vju+Sg
+         Drd4Lek/xn5Eba2RPIFru4eUA+VovXs1nMISUg3TL2nSuLf2xfw4JkoLm/Jw1XE2Obtm
+         b66ou6hYJGqzLxAb/FA6Y/L8qtOtwU9gqwyK0OhGrwtdp7RjwaNeJFOuAsJm6X4ZH/hq
+         PWwH8W2X+gU5uxlYZS87L/lbf89h/rPhJwLc08odBRe7JwdMmb2bdr24jVoO3BQfLZNq
+         JSKA==
+X-Gm-Message-State: AOAM5324yTcjB8fJFIGHdqeFqhL0Xn2r+i2nNz1B8xRWnBnJ/4/yAMp5
+        VvHS93aKNvUJwOmYRy/oMOhwwfsW3Ww=
+X-Google-Smtp-Source: ABdhPJxfJgIwfEaVyjfdtet1JTHgH67fjFQF6txwHkHlVOYul+BwIdiDBykoI+FTVFa0Caph4YK2Dg==
+X-Received: by 2002:adf:a30c:: with SMTP id c12mr5920826wrb.366.1634973099039;
+        Sat, 23 Oct 2021 00:11:39 -0700 (PDT)
+Received: from ?IPv6:2003:c7:8f4e:684:ec38:3d1d:224c:e07d? (p200300c78f4e0684ec383d1d224ce07d.dip0.t-ipconnect.de. [2003:c7:8f4e:684:ec38:3d1d:224c:e07d])
+        by smtp.gmail.com with ESMTPSA id f6sm9245475wmj.28.2021.10.23.00.11.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Oct 2021 00:11:38 -0700 (PDT)
+Subject: Re: [PATCH] usb: usb-skeleton: Add hint to find __init and __exit
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, linux-doc@vger.kernel.org
+References: <20211023052538.GA5141@matrix-ESPRIMO-P710>
+ <YXOwA6N2ffVIcA7L@kroah.com>
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Message-ID: <7ae5d5c1-4121-65b1-8a91-95513b945823@gmail.com>
+Date:   Sat, 23 Oct 2021 09:11:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 69F60639D0B2889D7551EF1742E782FD3C13CD9681A813A705DCFB5C80DDD6F22000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <YXOwA6N2ffVIcA7L@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIxLTEwLTIzIGF0IDE0OjM1ICswODAwLCBDaHVuZmVuZyBZdW4gd3JvdGU6DQo+
-IE9uIFR1ZSwgMjAyMS0xMC0xOSBhdCAxNzoyOCArMDIwMCwgUmFmYWVsIEouIFd5c29ja2kgd3Jv
-dGU6DQo+ID4gT24gV2VkLCBBdWcgMTEsIDIwMjEgYXQgNTowNSBBTSBDaHVuZmVuZyBZdW4gPA0K
-PiA+IGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+ID4gDQo+ID4gPiBXaGVu
-IHRoZSBkZWRpY2F0ZWQgd2FrZS1pcnEgaXMgbGV2ZWwgdHJpZ2dlciwgYW5kIGl0IHVzZXMgdGhl
-DQo+ID4gPiBjb25zdW1lcidzIHNsZWVwIHN0YXR1cyBhcyB0aGUgd2FrZXVwIHNvdXJjZSwgdGhh
-dCBtZWFucyBpZiB0aGUNCj4gPiA+IGNvbnN1bWVyIGlzIG5vdCBpbiBzbGVlcCBzdGF0ZSwgdGhl
-IHdha2UtaXJxIHdpbGwgYmUgdHJpZ2dlcmVkDQo+ID4gPiB3aGVuIGVuYWJsZSBpdDsgRm9yIHRo
-aXMgY2FzZSwgbmVlZCBlbmFibGUgdGhlIHdha2UtaXJxIGFmdGVyDQo+ID4gPiBpbnZva2luZyB0
-aGUgY29uc3VtZXIncyBydW50aW1lX3N1c3BlbmQoKSB3aGljaCBtYWtlIHRoZSBjb25zdW1lcg0K
-PiA+ID4gZW50ZXIgc2xlZXAgc3RhdGUuDQo+ID4gWy4uLl0NCj4gDQo+IElmIHdhbnQgdG8gbWFr
-ZSBpdCBzdGF0aWMsIHNob3VsZCBtb3ZlIGl0IGZyb20gd2FrZWlycS5jIGludG8NCj4gcnVudGlt
-ZS5jDQo+IA0KPiA+IA0KPiA+ID4gIHsNCj4gPiA+ICAgICAgICAgc3RydWN0IHdha2VfaXJxICp3
-aXJxID0gZGV2LT5wb3dlci53YWtlaXJxOw0KPiA+ID4gDQo+ID4gPiAgICAgICAgIGlmICghd2ly
-cSB8fCAhKHdpcnEtPnN0YXR1cyAmIFdBS0VfSVJRX0RFRElDQVRFRF9NQVNLKSkNCj4gPiA+ICAg
-ICAgICAgICAgICAgICByZXR1cm47DQo+ID4gDQo+ID4gQW5kIEkgd291bGQganVzdCBhZGQgdGhl
-IGZvbGxvd2luZyBsaW5lIGhlcmU6DQo+ID4gDQo+ID4gaWYgKGNvbmRfZGlzYWJsZSAmJiAod2ly
-cS0+c3RhdHVzICYNCj4gPiBXQUtFX0lSUV9ERURJQ0FURURfTEFURV9FTkFCTEVEKSkNCj4gPiAg
-ICAgICAgIHJldHVybjsNCj4gDQo+IFRoaXMgY2hhbmdlIGRvZXNuJ3QgY292ZXIgdGhlIGNhc2Ug
-KFdBS0VfSVJRX0RFRElDQVRFRF9MQVRFX0VOQUJMRUQNCj4gYW5kDQo+ICBXQUtFX0lSUV9ERURJ
-Q0FURURfTUFOQUdFRCBhcmUgYm90aCBzZXQgMSk6DQo+IA0KPiAtLT5ycG1fc3VzcGVuZCgpOiB3
-aXJxLT5pcnEgaXMgZW5hYmxlZA0KPiAtLT5ycG1fcmVzdW1lKCk6IGRpc2FibGUgd2lycS0+aXJx
-OyAoaWYgY2hhbmdlIGl0LCBkb2Vzbid0IGRpc2FibGUNCj4gd2lycS0+aXJxKQ0KU2VlbXMgSSdt
-IHdyb25nLCBjaGVjayBhZ2Fpbi4NCg0KPiANCj4gPiANCj4gPiA+IA0KPiA+ID4gLSAgICAgICBp
-ZiAod2lycS0+c3RhdHVzICYgV0FLRV9JUlFfREVESUNBVEVEX01BTkFHRUQpDQo+ID4gPiArICAg
-ICAgIGlmICh3aXJxLT5zdGF0dXMgJiBXQUtFX0lSUV9ERURJQ0FURURfTUFOQUdFRCAmJg0KPiA+
-ID4gKyAgICAgICAgICAgKHNraXBfbGF0ZV9lbmFibGVkX3N0YXR1cyB8fA0KPiA+ID4gKyAgICAg
-ICAgICAgICEod2lycS0+c3RhdHVzICYgV0FLRV9JUlFfREVESUNBVEVEX0xBVEVfRU5BQkxFRCkp
-KQ0KPiA+ID4gICAgICAgICAgICAgICAgIGRpc2FibGVfaXJxX25vc3luYyh3aXJxLT5pcnEpOw0K
-PiA+ID4gIH0NCj4gPiA+IA0KPiA+ID4gKy8qKg0KPiA+ID4gKyAqIGRldl9wbV9lbmFibGVfd2Fr
-ZV9pcnFfY29tcGxldGUgLSBlbmFibGUgd2FrZSBpcnEgYmFzZWQgb24NCj4gPiA+IHN0YXR1cw0K
-PiA+IA0K
+On 10/23/21 8:47 AM, Greg KH wrote:
+> On Sat, Oct 23, 2021 at 07:25:38AM +0200, Philipp Hortmann wrote:
+>> Comment to find __init and __exit.
+>>
+>> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+>> ---
+>>   drivers/usb/usb-skeleton.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
+>> index 2dc58766273a..80338a50dcde 100644
+>> --- a/drivers/usb/usb-skeleton.c
+>> +++ b/drivers/usb/usb-skeleton.c
+>> @@ -641,6 +641,7 @@ static struct usb_driver skel_driver = {
+>>   	.supports_autosuspend = 1,
+>>   };
+>>   
+>> +/* __init and __exit */
+>>   module_usb_driver(skel_driver);
+> 
+> This comment makes no sense, sorry.  __init and __exit are things that
+> the linker uses, why would you need to "find" them?
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
+When I want to add something to the __init function (debug comment for 
+example), how to do this without knowing that it is in module_usb_driver?
+
+thanks,
+
+Philipp
