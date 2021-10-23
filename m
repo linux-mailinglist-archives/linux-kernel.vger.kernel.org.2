@@ -2,100 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51834382AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9531C4382B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 11:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhJWJnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 05:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhJWJnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 05:43:20 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F05C061764;
-        Sat, 23 Oct 2021 02:40:50 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id g8so294031ljn.4;
-        Sat, 23 Oct 2021 02:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pT0uTKRS3mJTAOZ8+3JtVuSzB8Uv+VsNHlXjOV4iOi4=;
-        b=KnpYQRwx7RC97GWh9T04A9uTAD8Ow3F99TO9rrM7D40Nq3haq6QCDxQa5U/XVEfkg9
-         1rXO88dcRvaGMcgGsgS8Fbwg6Rmc3rzQlNfIwevF8HfWIieZ/11LzofJ3bWj5aPuNruo
-         r8SDabG4Fk2s3LyMLivyjfTHKoknkhzqaazo8CqN1h9eQXRPRXY45H/Szia1ObIOyS1J
-         0cnkpnznv6ZxhJgiwtU8KLjHE+tF+3JpEz3PTphHxNDYDAMp82C+WFPBOrHGIgude63z
-         engPR8Ja7nCFENYazT2TsI1KG5hxaNltIUBDr+AG1pye4dg6hD+EnkzZE2VbF0QkbVym
-         uZyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pT0uTKRS3mJTAOZ8+3JtVuSzB8Uv+VsNHlXjOV4iOi4=;
-        b=HeX68ICXuZZIUqZdTxc2MPZcVe1oc0IWP4hWOwAy31iAlDjlzvy+wOLn7PwBkcK2X7
-         ZVYR/h0sjVN98Fpd2vV0Y5kL/EaGajJfaLqskBnya6IK2mtze4dgoc1x5FsS5AlKs8uZ
-         RJMvxnFNNWu+/7H26A5Y9I0kMekeHJIaA2d2KqYfX+0vX7denRgHXIpiCcWDPj5jyRfG
-         4lGtRnLtSQGCK0bwQLyPdA4JpWdFduyPxdyrfgksxxDKxxygWKkDBEOrGfm6vkk9nJKO
-         X6x7OWu/anm5iH1zZis65wDoySMMR2uRg/QbI3PmtV0QNj2DQl6B/UiPTJiIjduoHdlX
-         cz2g==
-X-Gm-Message-State: AOAM531/lU3NJz46FJc/swpsp0y7FdSa41Bp4u/toSrc4ESEHd4VGbNs
-        WGMtEnx7faZEet4M0zCLBGs=
-X-Google-Smtp-Source: ABdhPJwlmdgj128rN/MS3Rb97HNTUy9v+WphgRpNC0649RR+Lw9XYCn/OsNljj/9+Ec6wa4sAFZYHQ==
-X-Received: by 2002:a05:651c:324:: with SMTP id b4mr5336419ljp.498.1634982049243;
-        Sat, 23 Oct 2021 02:40:49 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id p28sm980138lfo.71.2021.10.23.02.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 02:40:48 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 12:40:47 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 4/4] fs/ntfs3: Update i_ctime when xattr is added
-Message-ID: <20211023094047.o4mrisdlf3eadxwp@kari-VirtualBox>
-References: <09b42386-3e6d-df23-12c2-23c2718f766b@paragon-software.com>
- <a4ce42f1-19b4-67ac-660d-228ae10f125c@paragon-software.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a4ce42f1-19b4-67ac-660d-228ae10f125c@paragon-software.com>
+        id S230148AbhJWJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 05:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230047AbhJWJuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 05:50:44 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1885D60EB8;
+        Sat, 23 Oct 2021 09:48:26 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1meDdX-0013vT-O6; Sat, 23 Oct 2021 10:48:23 +0100
+Date:   Sat, 23 Oct 2021 10:48:22 +0100
+Message-ID: <87pmrwt6l5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 2/3] irqchip/gic-v3-its: Postpone LPI pending table freeing and memreserve
+In-Reply-To: <20211022103307.1711619-3-valentin.schneider@arm.com>
+References: <20211022103307.1711619-1-valentin.schneider@arm.com>
+        <20211022103307.1711619-3-valentin.schneider@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org, will@kernel.org, mark.rutland@arm.com, tglx@linutronix.de, bigeasy@linutronix.de, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 06:56:07PM +0300, Konstantin Komarov wrote:
-> Ctime wasn't updated after setfacl command.
-> This commit fixes xfstest generic/307
-> Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
-
-Because this is fix I would suggest you make this patch 3/4. Usually
-fixes should be first so it is easier for stable team to pick them with
-confident.
-
+On Fri, 22 Oct 2021 11:33:06 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> Memory used by the LPI tables have to be made persistent for kexec to have
+> a chance to work, as explained in [1]. If they have been made persistent
+> and we are booting into a kexec'd kernel, we also need to free the pages
+> that were preemptively allocated by the new kernel for those tables.
+> 
+> Both of those operations currently happen during its_cpu_init(), which
+> happens in a _STARTING (IOW atomic) cpuhp callback for secondary
+> CPUs. efi_mem_reserve_iomem() issues a GFP_ATOMIC allocation, which
+> unfortunately doesn't work under PREEMPT_RT (this ends up grabbing a
+> non-raw spinlock, which can sleep under PREEMPT_RT). Similarly, freeing the
+> pages ends up grabbing a sleepable spinlock.
+> 
+> Since the memreserve is only required by kexec, it doesn't have to be
+> done so early in the secondary boot process. Issue the reservation in a new
+> CPUHP_AP_ONLINE_DYN cpuhp callback, and piggy-back the page freeing on top
+> of it. As kexec issues a machine_shutdown() prior to machine_kexec(), it
+> will be serialized vs a CPU being plugged to life by the hotplug machinery -
+> either the CPU will have been brought up and have had its redistributor's
+> pending table memreserved, or it never went online and will have its table
+> allocated by the new kernel.
+> 
+> [1]: https://lore.kernel.org/lkml/20180921195954.21574-1-marc.zyngier@arm.com/
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  fs/ntfs3/xattr.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/irqchip/irq-gic-v3-its.c | 65 ++++++++++++++++++++++++++++++--
+>  1 file changed, 61 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> index bc3144608ce1..702775a559f5 100644
-> --- a/fs/ntfs3/xattr.c
-> +++ b/fs/ntfs3/xattr.c
-> @@ -994,6 +994,9 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
->  	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index a688ed5c21e8..a6a4af59205e 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -47,6 +47,8 @@
+>  #define RDISTS_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
 >  
->  out:
-> +	inode->i_ctime = current_time(inode);
-> +	mark_inode_dirty(inode);
-> +
->  	return err;
+>  #define RDIST_FLAGS_LPI_ENABLED                 BIT(0)
+> +#define RDIST_FLAGS_PENDTABLE_RESERVED          BIT(1)
+> +#define RDIST_FLAGS_PENDTABLE_PREALLOCATED      BIT(2)
+>  
+>  static u32 lpi_id_bits;
+>  
+> @@ -3065,15 +3067,15 @@ static void its_cpu_init_lpis(void)
+>  		paddr &= GENMASK_ULL(51, 16);
+>  
+>  		WARN_ON(!gic_check_reserved_range(paddr, LPI_PENDBASE_SZ));
+> -		its_free_pending_table(gic_data_rdist()->pend_page);
+> -		gic_data_rdist()->pend_page = NULL;
+> +		gic_data_rdist()->flags |=
+> +			RDIST_FLAGS_PENDTABLE_RESERVED |
+> +			RDIST_FLAGS_PENDTABLE_PREALLOCATED;
+>  
+>  		goto out;
+>  	}
+>  
+>  	pend_page = gic_data_rdist()->pend_page;
+>  	paddr = page_to_phys(pend_page);
+> -	WARN_ON(gic_reserve_range(paddr, LPI_PENDBASE_SZ));
+>  
+>  	/* set PROPBASE */
+>  	val = (gic_rdists->prop_table_pa |
+> @@ -3163,7 +3165,8 @@ static void its_cpu_init_lpis(void)
+>  	gic_data_rdist()->flags |= RDIST_FLAGS_LPI_ENABLED;
+>  	pr_info("GICv3: CPU%d: using %s LPI pending table @%pa\n",
+>  		smp_processor_id(),
+> -		gic_data_rdist()->pend_page ? "allocated" : "reserved",
+> +		gic_data_rdist()->flags & RDIST_FLAGS_PENDTABLE_PREALLOCATED ?
+> +		"reserved" : "allocated",
+>  		&paddr);
 >  }
 >  
-> -- 
-> 2.33.0
-> 
-> 
-> 
+> @@ -5202,6 +5205,39 @@ int its_cpu_init(void)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_EFI
+
+Why do we need this? I can't see anything that'd be problematic even
+if EFI was disabled.
+
+> +static int its_cpu_memreserve_lpi(unsigned int cpu)
+> +{
+> +	struct page *pend_page = gic_data_rdist()->pend_page;
+> +	phys_addr_t paddr;
+> +
+> +	/*
+> +	 * If the pending table was pre-programmed, free the memory we
+> +	 * preemptively allocated.
+> +	 */
+> +	if (pend_page &&
+> +	    (gic_data_rdist()->flags & RDIST_FLAGS_PENDTABLE_PREALLOCATED)) {
+> +		its_free_pending_table(gic_data_rdist()->pend_page);
+> +		gic_data_rdist()->pend_page = NULL;
+> +	}
+
+So you set it to NULL and carry on, ending up reserving a 64kB block
+at address 0 if the RESERVED flag isn't set. Can this happen at all?
+If, as I suspect, it cannot happen because the two flags are always
+set at the same time, why do we need two flags?
+
+My gut feeling is that if pend_page is non-NULL and that the RESERVED
+flag is set, you should free the memory and leave the building.
+Otherwise, reserve the memory and set the flag. PREALLOCATED doesn't
+seem to make much sense on a per-CPU basis here.
+
+> +
+> +	/*
+> +	 * Did we already issue a memreserve? This could be via a previous
+> +	 * invocation of this callback, or in a previous life before kexec.
+> +	 */
+> +	if (gic_data_rdist()->flags & RDIST_FLAGS_PENDTABLE_RESERVED)
+> +		return 0;
+> +
+> +	gic_data_rdist()->flags |= RDIST_FLAGS_PENDTABLE_RESERVED;
+> +
+> +	pend_page = gic_data_rdist()->pend_page;
+> +	paddr = page_to_phys(pend_page);
+> +	WARN_ON(gic_reserve_range(paddr, LPI_PENDBASE_SZ));
+
+Shouldn't the flag setting be moved here and be conditional on the
+reservation success? Yes, you'll get a warning each time the CPU comes
+back, but at least that'd track the state correctly.
+
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static const struct of_device_id its_device_id[] = {
+>  	{	.compatible	= "arm,gic-v3-its",	},
+>  	{},
+> @@ -5385,6 +5421,23 @@ static void __init its_acpi_probe(void)
+>  static void __init its_acpi_probe(void) { }
+>  #endif
+>  
+> +static int __init its_lpi_memreserve_init(void)
+> +{
+> +	int state;
+> +
+> +	if (!efi_enabled(EFI_CONFIG_TABLES))
+> +		return 0;
+> +
+> +	state = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> +				"irqchip/arm/gicv3/memreserve:online",
+> +				its_cpu_memreserve_lpi,
+> +				NULL);
+> +	if (state < 0)
+> +		return state;
+> +
+> +	return 0;
+> +}
+> +
+>  int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
+>  		    struct irq_domain *parent_domain)
+>  {
+> @@ -5412,6 +5465,10 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
+>  	if (err)
+>  		return err;
+>  
+> +	err = its_lpi_memreserve_init();
+> +	if (err)
+> +		return err;
+> +
+>  	list_for_each_entry(its, &its_nodes, entry) {
+>  		has_v4 |= is_v4(its);
+>  		has_v4_1 |= is_v4_1(its);
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
