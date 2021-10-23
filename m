@@ -2,245 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07B1438343
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C8B438354
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 13:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhJWK5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 06:57:09 -0400
-Received: from mout.gmx.net ([212.227.17.22]:44689 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhJWK5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 06:57:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634986475;
-        bh=COO6dpoiujzVMnoUVgte956/CCfp4GDzWhe8zXEti5Q=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=URRFlir+kXtgwyTlzC/iYsQ+oqYmX1/VZlxKsAdPWkAySHEyrunSrXiEcPfILunuI
-         N/DnLsMXLievdlcKiq/N22mtBrAkyF9NpzbrmFGqnxK7v8LRnu5aiBE9S1S/XZo47C
-         //Z/ziVGe36iBlunaberdxUVwvk8e0sBQocdJHeY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MIwz4-1mOD9V00YE-00KRl8; Sat, 23 Oct 2021 12:54:35 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2][next] sysctl: Avoid open coded arithmetic in memory allocator functions
-Date:   Sat, 23 Oct 2021 12:54:14 +0200
-Message-Id: <20211023105414.7316-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S230358AbhJWLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 07:16:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60968 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230253AbhJWLQo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 07:16:44 -0400
+X-UUID: 3f46e4ee1b6e4078b89e71402ecbb35e-20211023
+X-UUID: 3f46e4ee1b6e4078b89e71402ecbb35e-20211023
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <flora.fu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1529089297; Sat, 23 Oct 2021 19:14:13 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 23 Oct 2021 19:14:12 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 23 Oct 2021 19:14:12 +0800
+From:   Flora Fu <flora.fu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>, Flora Fu <flora.fu@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>
+Subject: [RFC 00/13] MediaTek MT8192 APU
+Date:   Sat, 23 Oct 2021 19:13:56 +0800
+Message-ID: <20211023111409.30463-1-flora.fu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:F+DT2aLDpJrmlZpG2V+TQYlDzxnApio7nZw40lIN2aby5QiyLZU
- 6WBvxuH6OaOsIK8sityQpXvAl5wFpb7fV8qu402o19i92zEKl0L5Iijmbrd0B59Xln4ylys
- BzSWuf9WS2GLFAu3GQzihGDzWQxl0opzXLPyYPf1GFWQTG7ecoDgt7V0BNPno4cctLGW9QC
- TgPJ2S+y6d3de0qLNwWjQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Wnbhp08dKoY=:sjETeixsBVJ0AQ1ykKUq3t
- 7F727P0Rf6IRsKMGqqD1qZIV1rS3XDDJl1u8VkDc/HU30lon3kO75mAv+xIRHM43Un5/je05k
- OZt+4dBBb7xXvFkq/qahYfT2tKmCE0N5xwVkS7g9iY55H3Wg9c3rKBy407Uc8ube7I4667IwY
- jMS8nnfLp/nstIs9tpYPjulSbvXaJJF5VvQNMjEsnGpDXVZdqnozc1cjetQ3gitvrnMEmZFQc
- tqzgm8FmLTC/qON2cZLt6ytJ3R9+rmshOcND5grxAvEM0v1+OmiIt6pivWQkVU9P8BDDGIRcs
- pgFzv9vVD7HhKN5nY27MRKhuPIHMa7F0f2DGN34nVa8aBTs/KSVuggyxkKUTEYAeCbxtzIjDE
- x8y/1EhbjeUKq3nYerEb55IGnWVIfHyt3T4U3ATjL3zU/pg+iYh9VdWiOhCOw+H4YxuBQcbRd
- AoY3rZVQThQVASXkuNMeP6CVIw8QRMpNqo+ZoQ5khjgab8nj1FVaq/JgsQlQma1RVsk8SqkKr
- YwyoBJB/N2fGOGfkP87TWPhE0HVA8S8SgQI7bEGxytFzO5nTfgTib5LzK30d4ZUoFh6d4dIFV
- apdkdTYVTbVGpJTWAZELmvaoDt5PoLw4dL2izXCE/bmCPTyzh9YJVOt+cDpBStq76JTk8xelO
- 3LOetXm4/j7aFVrv3Rqp5LWNncv4ZiI00pQTaUvIY1PGD7t3Adf70YdRU7HmqKXdC7/owx6Nv
- oDtrZE5m7jWvNQubKoUvToqKEcghYMeskCa6EyhXLtyHj9txFIDt45GGM8zDamwm72KhQtwJE
- 484vUVzzkcaC/TbM90SWz2Erc0oTsXqo5sQivnqkV+OCtbdJJqFgZFpnBV9yLUpTnfVOnN95O
- 6oiEtHfAQglGAcHMfDZhpK9xSrFUCwZMHkzfuuh4B9RZ9+yOLKfRb8pHR4WZbIb4IeWG+RZpo
- Mx6dEV4jwdAswhNejBAsAkp7MkpPTQ+2W1nKb0l3TZ3gsqxgDNicZP4eJRHA4Tdtkm1ZX9WNL
- l4hQhdLwk/eyrnT4EajKCwV+corNXeD3FZraqPD3B0Kw6AWccJaNCKWzGFI4TY0qP8ZG6vhOL
- K6Ws8EAnE6F9Wg=
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+Add Support for MediaTek MT8192 APU.
 
-So, add some functions to calculate the size used in memory allocator
-function arguments, saturating to SIZE_MAX on overflow. Here it is not
-possible to use the struct_size() helper since the memory layouts used
-when the memory is allocated are not simple ones.
+The MediaTek AI Processing Unit (APU) is a proprietary hardware
+in the SoC to support AI functions.
+The patches support the MT8192 APU running on internal microprocess.
+Software packages contins power control, tinysys controller and middleware.
 
-However, for the kcalloc() case, don't define a new function and check
-for overflow before its call.
+This series is based on drivers implemented in
+MT8192 apu power domain[1] and IOMMU[2] patches.
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=568927
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=551641
+The device tree depends on [3][4][5] which haven't yet been accepted.
+[3] https://patchwork.kernel.org/project/linux-mediatek/list/?series=521655
+[4] https://patchwork.kernel.org/patch/12134935
+[5] https://patchwork.kernel.org/patch/12140237
 
-This code was detected with the help of Coccinelle and audited and fixed
-manually.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments
+Flora Fu (12):
+  dt-bindings: soc: mediatek: apusys: add mt8192 apu iommu bindings
+  dt-bindings: soc: mediatek: apusys: Add new document for APU power
+  dt-bindings: soc: mediatek: apusys: Add new document for APU tinysys
+  iommu/mediatek: Add APU iommu support
+  soc: mediatek: Add command for APU SMC call
+  soc: mediatek: apu: Add apu core driver
+  soc: mediatek: apu: Add apu power driver
+  soc: mediatek: apu: Add apusys rv driver
+  soc: mediatek: apu: Add middleware driver
+  arm64: dts: mt8192: Add apu power nodes
+  arm64: dts: mt8192: Add apu tinysys
+  arm64: dts: mt8192: Add regulator for APU
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Changelog v1 -> v2
-- Remove the new_dir_size function and its use (Matthew Wilcox).
+Yong Wu (1):
+  arm64: dts: mt8192: Add APU-IOMMU nodes
 
-The previous version can be found here [1]
+ .../bindings/iommu/mediatek,iommu.yaml        |   2 +
+ .../soc/mediatek/mediatek,apu-pwr.yaml        |  88 ++
+ .../soc/mediatek/mediatek,apu-rv.yaml         | 140 +++
+ arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |   5 +
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      | 107 ++
+ drivers/iommu/mtk_iommu.c                     |  57 ++
+ drivers/soc/mediatek/Kconfig                  |  18 +
+ drivers/soc/mediatek/apusys/Makefile          |  22 +
+ drivers/soc/mediatek/apusys/apu-config.h      | 100 ++
+ drivers/soc/mediatek/apusys/apu-core.c        |  97 ++
+ drivers/soc/mediatek/apusys/apu-core.h        |  18 +
+ drivers/soc/mediatek/apusys/apu-device.h      |  39 +
+ drivers/soc/mediatek/apusys/apu-ipi.c         | 486 +++++++++
+ drivers/soc/mediatek/apusys/apu-mbox.c        |  83 ++
+ drivers/soc/mediatek/apusys/apu-mbox.h        |  27 +
+ drivers/soc/mediatek/apusys/apu-pwr-dbg.c     | 167 ++++
+ drivers/soc/mediatek/apusys/apu-pwr-ipi.c     | 377 +++++++
+ drivers/soc/mediatek/apusys/apu-pwr.c         | 599 +++++++++++
+ drivers/soc/mediatek/apusys/apu-pwr.h         | 260 +++++
+ drivers/soc/mediatek/apusys/apu-rproc.c       | 806 +++++++++++++++
+ drivers/soc/mediatek/apusys/apu-sw-logger.c   | 429 ++++++++
+ drivers/soc/mediatek/apusys/apu.h             | 256 +++++
+ drivers/soc/mediatek/apusys/mdw-cmd.c         | 618 ++++++++++++
+ drivers/soc/mediatek/apusys/mdw-drv.c         | 211 ++++
+ drivers/soc/mediatek/apusys/mdw-ioctl.c       | 331 ++++++
+ drivers/soc/mediatek/apusys/mdw-ioctl.h       | 256 +++++
+ drivers/soc/mediatek/apusys/mdw-mem.c         | 938 ++++++++++++++++++
+ drivers/soc/mediatek/apusys/mdw-mem.h         |  23 +
+ drivers/soc/mediatek/apusys/mdw-rv-cmd.c      | 158 +++
+ drivers/soc/mediatek/apusys/mdw-rv-dev.c      | 386 +++++++
+ drivers/soc/mediatek/apusys/mdw-rv-msg.h      |  90 ++
+ drivers/soc/mediatek/apusys/mdw-rv.c          | 131 +++
+ drivers/soc/mediatek/apusys/mdw-rv.h          |  98 ++
+ drivers/soc/mediatek/apusys/mdw-sysfs.c       | 200 ++++
+ drivers/soc/mediatek/apusys/mdw.h             | 208 ++++
+ drivers/soc/mediatek/apusys/mt81xx-plat.c     | 320 ++++++
+ include/dt-bindings/memory/mt8192-larb-port.h |   4 +
+ include/linux/soc/mediatek/mtk_sip_svc.h      |   2 +
+ 38 files changed, 8157 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mediatek,apu-pwr.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mediatek,apu-rv.yaml
+ create mode 100644 drivers/soc/mediatek/apusys/apu-config.h
+ create mode 100644 drivers/soc/mediatek/apusys/apu-core.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-core.h
+ create mode 100644 drivers/soc/mediatek/apusys/apu-device.h
+ create mode 100644 drivers/soc/mediatek/apusys/apu-ipi.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-mbox.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-mbox.h
+ create mode 100644 drivers/soc/mediatek/apusys/apu-pwr-dbg.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-pwr-ipi.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-pwr.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-pwr.h
+ create mode 100644 drivers/soc/mediatek/apusys/apu-rproc.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu-sw-logger.c
+ create mode 100644 drivers/soc/mediatek/apusys/apu.h
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-cmd.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-drv.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-ioctl.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-ioctl.h
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-mem.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-mem.h
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-rv-cmd.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-rv-dev.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-rv-msg.h
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-rv.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-rv.h
+ create mode 100644 drivers/soc/mediatek/apusys/mdw-sysfs.c
+ create mode 100644 drivers/soc/mediatek/apusys/mdw.h
+ create mode 100644 drivers/soc/mediatek/apusys/mt81xx-plat.c
 
-[1] https://lore.kernel.org/linux-hardening/20211016152829.9836-1-len.bake=
-r@gmx.com/
-
- fs/proc/proc_sysctl.c | 84 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 73 insertions(+), 11 deletions(-)
-
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 5d66faecd4ef..0b3b3f11ca11 100644
-=2D-- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1146,6 +1146,26 @@ static int sysctl_check_table(const char *path, str=
-uct ctl_table *table)
- 	return err;
- }
-
-+static size_t new_links_size(size_t nr_entries, size_t name_bytes)
-+{
-+	size_t bytes;
-+
-+	if (check_add_overflow(nr_entries, (size_t)1, &bytes))
-+		return SIZE_MAX;
-+	if (check_add_overflow(sizeof(struct ctl_table_header),
-+			       array_size(sizeof(struct ctl_node), nr_entries),
-+			       &bytes))
-+		return SIZE_MAX;
-+	if (check_add_overflow(bytes, array_size(sizeof(struct ctl_table),
-+						 nr_entries + 1),
-+			       &bytes))
-+		return SIZE_MAX;
-+	if (check_add_overflow(bytes, name_bytes, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
- static struct ctl_table_header *new_links(struct ctl_dir *dir, struct ctl=
-_table *table,
- 	struct ctl_table_root *link_root)
- {
-@@ -1162,11 +1182,15 @@ static struct ctl_table_header *new_links(struct c=
-tl_dir *dir, struct ctl_table
- 		name_bytes +=3D strlen(entry->procname) + 1;
- 	}
-
--	links =3D kzalloc(sizeof(struct ctl_table_header) +
--			sizeof(struct ctl_node)*nr_entries +
--			sizeof(struct ctl_table)*(nr_entries + 1) +
--			name_bytes,
--			GFP_KERNEL);
-+	/*
-+	 * Allocation layout in bytes:
-+	 *
-+	 * sizeof(struct ctl_table_header) +
-+	 * sizeof(struct ctl_node) * nr_entries +
-+	 * sizeof(struct ctl_table) * (nr_entries + 1) +
-+	 * name_bytes
-+	 */
-+	links =3D kzalloc(new_links_size(nr_entries, name_bytes), GFP_KERNEL);
-
- 	if (!links)
- 		return NULL;
-@@ -1258,6 +1282,18 @@ static int insert_links(struct ctl_table_header *he=
-ad)
- 	return err;
- }
-
-+static inline size_t sysctl_table_size(int nr_entries)
-+{
-+	size_t bytes;
-+
-+	if (check_add_overflow(sizeof(struct ctl_table_header),
-+			       array_size(sizeof(struct ctl_node), nr_entries),
-+			       &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
- /**
-  * __register_sysctl_table - register a leaf sysctl table
-  * @set: Sysctl tree to register on
-@@ -1315,8 +1351,13 @@ struct ctl_table_header *__register_sysctl_table(
- 	for (entry =3D table; entry->procname; entry++)
- 		nr_entries++;
-
--	header =3D kzalloc(sizeof(struct ctl_table_header) +
--			 sizeof(struct ctl_node)*nr_entries, GFP_KERNEL);
-+	/*
-+	 * Allocation layout in bytes:
-+	 *
-+	 * sizeof(struct ctl_table_header) +
-+	 * sizeof(struct ctl_node) * nr_entries
-+	 */
-+	header =3D kzalloc(sysctl_table_size(nr_entries), GFP_KERNEL);
- 	if (!header)
- 		return NULL;
-
-@@ -1437,8 +1478,11 @@ static int register_leaf_sysctl_tables(const char *=
-path, char *pos,
- 	/* If there are mixed files and directories we need a new table */
- 	if (nr_dirs && nr_files) {
- 		struct ctl_table *new;
--		files =3D kcalloc(nr_files + 1, sizeof(struct ctl_table),
--				GFP_KERNEL);
-+		int n;
-+
-+		if (unlikely(check_add_overflow(nr_files, 1, &n)))
-+			goto out;
-+		files =3D kcalloc(n, sizeof(struct ctl_table), GFP_KERNEL);
- 		if (!files)
- 			goto out;
-
-@@ -1490,6 +1534,19 @@ static int register_leaf_sysctl_tables(const char *=
-path, char *pos,
- 	return err;
- }
-
-+static inline size_t sysctl_paths_size(int nr_subheaders)
-+{
-+	size_t bytes;
-+
-+	if (check_add_overflow(sizeof(struct ctl_table_header),
-+			       array_size(sizeof(struct ctl_table_header *),
-+					  nr_subheaders),
-+			       &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
- /**
-  * __register_sysctl_paths - register a sysctl table hierarchy
-  * @set: Sysctl tree to register on
-@@ -1532,8 +1589,13 @@ struct ctl_table_header *__register_sysctl_paths(
- 		if (header)
- 			header->ctl_table_arg =3D ctl_table_arg;
- 	} else {
--		header =3D kzalloc(sizeof(*header) +
--				 sizeof(*subheaders)*nr_subheaders, GFP_KERNEL);
-+		/*
-+		 * Allocation layout in bytes:
-+		 *
-+		 * sizeof(struct ctl_table_header) +
-+		 * sizeof(struct ctl_table_header *) * nr_subheaders
-+		 */
-+		header =3D kzalloc(sysctl_paths_size(nr_subheaders), GFP_KERNEL);
- 		if (!header)
- 			goto out;
-
-=2D-
-2.25.1
+-- 
+2.18.0
 
