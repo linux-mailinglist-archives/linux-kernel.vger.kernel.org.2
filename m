@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48EC438135
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 03:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65DC43813F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 03:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhJWBFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 21:05:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229597AbhJWBFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 21:05:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1937560F93;
-        Sat, 23 Oct 2021 01:02:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634950970;
-        bh=I439mF2WZtNAk4kuMgCqrhIAafiyO07udJLJk3VZaWA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=g1my/ogNFxuAsPODSY7LkbF3w64EcxcGFsO9EBkyK1PZn7Zzrwzd+pSrcmCrTr9Gb
-         ScTgnxfICBLuiaLOiCsumr4WB8hFwTfZI3u5c1skFqjRFluIji9qvsYdb341XX33W9
-         7Qr/ysCDNW+R9AsIct78MVGnlKf9HKb6nIIIk0qz7s9lG3gGKHsu8ATTbAV9VHGofs
-         6JOiPGtxzPsByVkHVji6AN7Jsca1n0PTjT4548KQ1zaxiRJcvosLPcf1THo8/Lj5bX
-         vtJ85K2nsy6JlGBrr2V/DXo/pheHurNUDEclSaGt920Pbr4dd57gBLHSbKlAyr3OtT
-         114oAcfrwWzEA==
-Message-ID: <4050b7723f6f205c9afc3bdfa3888a6e8befa12a.camel@kernel.org>
-Subject: Re: [PATCH v8 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Date:   Sat, 23 Oct 2021 04:02:48 +0300
-In-Reply-To: <YW2GLE89WxAeMZH4@kroah.com>
-References: <20211018135744.45527-1-jarkko@kernel.org>
-         <20211018135744.45527-2-jarkko@kernel.org> <YW2GLE89WxAeMZH4@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S230175AbhJWBRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 21:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhJWBRt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 21:17:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AD7C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Oct 2021 18:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0aWo7cdjf8VAjVdLovc3QcMEUO0D9bv9Ns1nWcTyQ4M=; b=lR94lvpYLjehSTpOek+ZG7nYnb
+        13UXuiNnKBggx+mZlLPp4Aj5sQD8549TImK7puBgKxmO+IbfsoLrpLfncA23hd/diiYe6b/Wgbj/J
+        QLgVLpXtV9NEuvMjqqHNmqhpDZq5cNHa4yUUy9Ij2pY+EK1IlwAku9bkce7TxNVNN0K+4NJe+L2ti
+        UYWF6oikPzsey7BYUX0vy23yeGbE2hf06R96O0MrAvvss7YxP6jt4rLb/KF1MWY7ZA4Nn1cjbHzg1
+        O82T1aptVHpKPflA6mHyuehpJXH0hJ5wYlFDqEydbYVyCAr08acZd0idYDEhvkLV6P8wCi5C9Wnkj
+        kO4epW7A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1me5bT-00EIw3-3Y; Sat, 23 Oct 2021 01:13:58 +0000
+Date:   Sat, 23 Oct 2021 02:13:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Anthony Yznaga <anthony.yznaga@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Optimise put_pages_list()
+Message-ID: <YXNhx/IYJGVR1ZOH@casper.infradead.org>
+References: <20211007192138.561673-1-willy@infradead.org>
+ <cb85b8a6-b82f-3054-5d76-57af018d6b2a@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb85b8a6-b82f-3054-5d76-57af018d6b2a@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-18 at 16:35 +0200, Greg Kroah-Hartman wrote:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ret =3D sysfs_create_group(&dev->kobj, &sgx_node_attr_=
-group);
->=20
-> A huge hint, if a driver has to call a sysfs_* call, something is wrong.
->=20
-> Something is wrong here.
->=20
-> Why are you messing around with a kobject?=C2=A0 This is a device, that y=
-ou
-> control, you can just set the default attribute group for it and then
-> the driver core will add and remove the sysfs group at the proper time,
-> in the proper way.=C2=A0 Right now you are racing userspace and loosing.
->=20
-> Use the default group list, that is what it is there for.
+On Fri, Oct 22, 2021 at 04:26:59PM -0700, Anthony Yznaga wrote:
+> 
+> On 10/7/21 12:21 PM, Matthew Wilcox (Oracle) wrote:
+> > Instead of calling put_page() one page at a time, pop pages off
+> > the list if their refcount was too high and pass the remainder to
+> > put_unref_page_list().  This should be a speed improvement, but I have
+> > no measurements to support that.  Current callers do not care about
+> > performance, but I hope to add some which do.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > ---
+> > v2:
+> >   - Handle compound pages (Mel)
+> >   - Comment why we don't need to handle PageLRU
+> >   - Added call to __ClearPageWaiters(), matching that in release_pages()
+> > 
+> >   mm/swap.c | 23 ++++++++++++++++-------
+> >   1 file changed, 16 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/mm/swap.c b/mm/swap.c
+> > index af3cad4e5378..9f334d503fd2 100644
+> > --- a/mm/swap.c
+> > +++ b/mm/swap.c
+> > @@ -134,18 +134,27 @@ EXPORT_SYMBOL(__put_page);
+> >    * put_pages_list() - release a list of pages
+> >    * @pages: list of pages threaded on page->lru
+> >    *
+> > - * Release a list of pages which are strung together on page.lru.  Currently
+> > - * used by read_cache_pages() and related error recovery code.
+> > + * Release a list of pages which are strung together on page.lru.
+> >    */
+> >   void put_pages_list(struct list_head *pages)
+> >   {
+> > -	while (!list_empty(pages)) {
+> > -		struct page *victim;
+> > +	struct page *page, *next;
+> > -		victim = lru_to_page(pages);
+> > -		list_del(&victim->lru);
+> > -		put_page(victim);
+> > +	list_for_each_entry_safe(page, next, pages, lru) {
+> > +		if (!put_page_testzero(page)) {
+> > +			list_del(&page->lru);
+> > +			continue;
+> > +		}
+> 
+> 
+> I know that compound pages are not currently passed to put_pages_list(),
+> but I assume the put_page_testzero() should only be done on the head
+> page similar to release_pages()?
 
-I used sysfs_create_group() because node_devices is not owned by SGX
-code. It is managed in drivers/base/node.c, and also initialized before
-SGX.
+Fun fact about pages: You can't put a tail page on an LRU list.  Why?
 
-/Jarkko
+struct page {
+...
+        union {
+                struct {        /* Page cache and anonymous pages */
+                        struct list_head lru;
+...
+                struct {        /* Tail pages of compound page */
+                        unsigned long compound_head;    /* Bit zero is set */
 
+so if you try to put a tail page on the LRU list, it becomes no longer
+a tail page.
