@@ -2,235 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7700543823B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE7B43823F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 09:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhJWHkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 03:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhJWHkG (ORCPT
+        id S229983AbhJWHng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 03:43:36 -0400
+Received: from dvalin.narfation.org ([213.160.73.56]:44426 "EHLO
+        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhJWHne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 03:40:06 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613A5C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 00:37:47 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id gn3so4499605pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 00:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JBgnyAymbMlZzBjwCM1w0weMiRh/0NNAG6lng/vwJrY=;
-        b=ohmblJTbXi5lxEg9vYHKWeZWZmjf8pnULMSTu6HJ3gyJwn4Q6/ydLLHtKDJI38nqiF
-         eLijtzM/mYDQuIyP40aOIRm6Icaaj4t24j4b5UXMpp/Vvqard7MJaJ9hJtIYwHfFjGRA
-         9Zg7Vy1C8QK9nfjLOP983Uflnf74rBejcil5wjQvvaI4u7eRYk6qGkpgzG25V2LUKOXT
-         cQvia8Ka5+ry+sds87AlsLCZxAhi+aqR0ORUyb1MFkKSZwvyi4WeGDrFS73PaqtQeBO8
-         hzU3xGaPqe8pFLKTveA5MCqqRmR5ntv1LTDvCyTdugbuOMgd24epDsHN5WN3t/pKGgL1
-         Yffw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JBgnyAymbMlZzBjwCM1w0weMiRh/0NNAG6lng/vwJrY=;
-        b=KcbHV/i0CIPp2IkrlEtkBoXSFngr96vr1uzSvLvEp4PPcvALQd7Su8JZCFtIai7IeL
-         EWApWfYwgWKc+6kT9C4fOPHxtiEiP/zHEUTqO4k39gobSBmvJSdXUg+Klo4Y/m0GBg4X
-         XRgZBzFG9b5mA1bQpcRqcoXvBH4cZTdmAg8Otihrh27zCTsf8RICoO/KnaF2ClD2MkKB
-         mSnmDyB9kvyzgI6QsJHqTsSMKHlYkK6vMVlBPe8jCQPyetqbpSRV4EpaAgvyIpcL5Ovz
-         NHtaR31CkIMsqe+2O+FJibTVv9oxnvNvfFwQXLgxpfHm2WIdDzUjoNSKS7/knU72sUGg
-         y6cw==
-X-Gm-Message-State: AOAM533lXQ3w+O4XgHrZAXkbJw+b0buVExIMHbQaoN8IhncxCfM9+QhJ
-        p1YgwtYj3Lw71sBtNhaZ29vrP3wgeoOHgQ==
-X-Google-Smtp-Source: ABdhPJxIkzUW6jsB1/tS5UpW4daYUR7JKtFHq6AD/9pt/KrSCA01djhLUwEBBTVAY+wCqFTsuULVzw==
-X-Received: by 2002:a17:90b:4f4d:: with SMTP id pj13mr16595670pjb.243.1634974666927;
-        Sat, 23 Oct 2021 00:37:46 -0700 (PDT)
-Received: from localhost.localdomain ([2401:4900:5173:67c9:d8e4:2819:8ee8:8de4])
-        by smtp.googlemail.com with ESMTPSA id c4sm13949791pfv.144.2021.10.23.00.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 00:37:46 -0700 (PDT)
-From:   Kushal Kothari <kushalkothari285@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     kushalkothari285@gmail.com, kush19992810@gmail.com,
-        outreachy-kernel@googlegroups.com, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, fmdefrancesco@gmail.com,
-        marcocesati@gmail.com, straube.linux@gmail.com,
-        philippesdixon@gmail.com, manuelpalenzuelamerino@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        mike.rapoport@gmail.com, kushalkotharitest@googlegroups.com
-Subject: [PATCH v4 4/4] staging: rtl8723bs: core: Remove unnecessary blank lines
-Date:   Sat, 23 Oct 2021 13:05:50 +0530
-Message-Id: <78aabc0031d43c21ef06ae8d70f79412142d0784.1634967010.git.kushalkothari285@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1634967010.git.kushalkothari285@gmail.com>
-References: <cover.1634967010.git.kushalkothari285@gmail.com>
+        Sat, 23 Oct 2021 03:43:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1634974870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bp+h9Q3F8cNFhhE6LBcWdJCOqb72uOO1D9u4WGGgbLw=;
+        b=jVkq8h0ICsmmaP4HsZD2zNJZm5SuBexP0sOMKNKTJq7mDDbEWbbx2aqMZX0sRPc5abdUmK
+        81hEq68BztnAp8/lcDcTy3veJzp5xP3q/FKfh7rYh+SidFJ0pxWD214vJHEcXASU8K3zfo
+        B6YkfTu1RQDc3OEkTAFZzaH+4kjQ8qs=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     syzbot <syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com>,
+        a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
+        Pavel Skripkin <paskripkin@gmail.com>, linus.luessing@c0d3.blue
+Subject: Re: [syzbot] WARNING in batadv_nc_mesh_free
+Date:   Sat, 23 Oct 2021 09:41:04 +0200
+Message-ID: <2056331.oJahCzYEoq@sven-desktop>
+In-Reply-To: <5e29e63c-d2b5-ae72-0e33-5a22e727be3c@gmail.com>
+References: <000000000000c87fbd05cef6bcb0@google.com> <1639fcba-e543-e071-f17c-941b8c7a948f@gmail.com> <5e29e63c-d2b5-ae72-0e33-5a22e727be3c@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart6490338.QC3ak14lfZ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove useless blank lines
+--nextPart6490338.QC3ak14lfZ
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+To: syzbot <syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com>, a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch, netdev@vger.kernel.org, sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, Pavel Skripkin <paskripkin@gmail.com>, linus.luessing@c0d3.blue
+Subject: Re: [syzbot] WARNING in batadv_nc_mesh_free
+Date: Sat, 23 Oct 2021 09:41:04 +0200
+Message-ID: <2056331.oJahCzYEoq@sven-desktop>
+In-Reply-To: <5e29e63c-d2b5-ae72-0e33-5a22e727be3c@gmail.com>
+References: <000000000000c87fbd05cef6bcb0@google.com> <1639fcba-e543-e071-f17c-941b8c7a948f@gmail.com> <5e29e63c-d2b5-ae72-0e33-5a22e727be3c@gmail.com>
 
-Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
----
+On Friday, 22 October 2021 22:58:15 CEST Pavel Skripkin wrote:
+[...]
+> > Oh, ok. Next clean up call in batadv_nc_mesh_free() caused GPF, since
+> > fields are not initialized. Let's try to clean up one by one and do not
+> > break dependencies.
+> > 
+> > Quite ugly one, but idea is correct, I guess
+> > 
+> > Also, make each *_init() call clean up all allocated stuff to not call
+> > corresponding *_free() on error handling path, since it introduces
+> > problems, as syzbot reported
 
-Changes in v4: Move the version notes
-Changes in v3: Enclose the version number inside the square bracket.
-Changes in v2: Removed whitespace errors
+Thanks for the patch + syzbot interactions. I just wanted to implement a 
+change - which would most likely have ended up the same way. Can you please 
+send it to netdev and Cc b.a.t.m.a.n@lists.open-mesh.org? We don't have 
+anything else to submit at the moment for netdev and this patch can be applied 
+by netdev directly. I will add my Acked-by in this process.
+
+Not sure about the Fixes. It is definitely wrong in the initial commit.... but 
+it got only really problematic when other features got introduced. I would 
+still say that the initial one should be mentioned.
+
+Fixes: c6c8fea29769 ("net: Add batman-adv meshing protocol")
+
+@Linus, @Marek, @Antonio: Please check whether it is ok to move the 
+batadv_v_mesh_init after batadv_tt_init + batadv_originator_init. 
+batadv_v_mesh_init is basically there to initialize:
+
+* bat_priv->bat_v.ogm_buff(|_len|_mutex)
+* bat_priv->bat_v.ogm_seqno
+* bat_priv->bat_v.ogm_wq
+
+batadv_originator_init is there to initialize the 
+
+* bat_priv->orig_hash
+* bat_priv->orig_work (batadv_purge_orig) + queue it up
+
+batadv_tt_init is a lot more complex but should in theory not interact with 
+ogm specific algo ops.
+
+I wouldn't know why there could be a problem but I would leave it to the 
+experts.
+
+Kind regards,
+	Sven
+--nextPart6490338.QC3ak14lfZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmFzvJAACgkQXYcKB8Em
+e0Zxcw/7BhvGwY42rdxsBw3mezOekP3zB3tq0ScjTg5xypXRDcLiKWvxzcC6CSqV
+xKkN5hK5hfqt1WExhmJN6IZGCUO423QcqElaqvr0dsTkuBfv7LN/mjbQgMj1SZ3F
+i5pfN2oOe0kuV38J70YuntkjpxKQNT1a8ej05Ko6ZGqFRlqE+EP+7ILgV+76HeHB
+OXkyGaVTPnN+xr293qc+15JzxNN2MGKcLJXI9HYPtMiLGY5cPT4Z8SXRfKNhFFi9
+wvTjlNqeTZIzi6uFtdNUqkq/A9Q7AiADICs1AJ+fK4RJ78k4CV07V2UB41bSxjn8
+yCn0tXFQiALIX7oMwUGlBPxU1q3rwXiHIBkNUrRkyIcdu4aK1gyGgfU5bIE/NQto
+KxxPVqhGUv70bjhr9R7/k6pUl3oNUaxPosd4mise0CTapVMgGYO/EL3F2fufxXaI
+/iek4gLrks71hQPjXL9npfWcEoN8dV+d95CXJ6fhvRcxpwenKIIDGG+T1rGsA7BI
+rYLE8dd3mpJeFxO3xu47C2OQR2JHEuGlbtp7L0bBjEifUPGlHoOJtad5MV/7rJXE
+s9PINuPpc1CtA1W+YguwkpnTAbLQF/1YgGH6RkNFFjq99oBmDrTIsvmZZ/lkrpta
+XtGY0rreN2vKwAgGkcQ3T5psUJgjbR37/lNur+IoI80jM/dzT0k=
+=GCx5
+-----END PGP SIGNATURE-----
+
+--nextPart6490338.QC3ak14lfZ--
 
 
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 26 ------------------------
- 1 file changed, 26 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index fce3256cc275..639459d52261 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -316,8 +316,6 @@ int rtw_cmd_filter(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- 	return _SUCCESS;
- }
- 
--
--
- int rtw_enqueue_cmd(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- {
- 	int res = _FAIL;
-@@ -367,7 +365,6 @@ void rtw_free_cmd_obj(struct cmd_obj *pcmd)
- 	kfree(pcmd);
- }
- 
--
- void rtw_stop_cmd_thread(struct adapter *adapter)
- {
- 	if (adapter->cmdThread &&
-@@ -497,11 +494,8 @@ int rtw_cmd_thread(void *context)
- 		} else {
- 			rtw_free_cmd_obj(pcmd);
- 		}
--
- 		flush_signals_thread();
--
- 		goto _next;
--
- 	}
- 
- 	/*  free all cmd_obj resources */
-@@ -591,7 +585,6 @@ u8 rtw_sitesurvey_cmd(struct adapter  *padapter, struct ndis_802_11_ssid *ssid,
- 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
- 
- 	if (res == _SUCCESS) {
--
- 		pmlmepriv->scan_start_time = jiffies;
- 		_set_timer(&pmlmepriv->scan_to_timer, SCANNING_TIMEOUT);
- 	} else {
-@@ -752,7 +745,6 @@ u8 rtw_joinbss_cmd(struct adapter  *padapter, struct wlan_network *pnetwork)
- 		case Ndis802_11AutoUnknown:
- 		case Ndis802_11InfrastructureMax:
- 			break;
--
- 		}
- 	}
- 
-@@ -1010,9 +1002,7 @@ u8 rtw_clearstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 enqueu
- 		psetstakey_para->algorithm = _NO_PRIVACY_;
- 
- 		res = rtw_enqueue_cmd(pcmdpriv, ph2c);
--
- 	}
--
- exit:
- 	return res;
- }
-@@ -1080,7 +1070,6 @@ u8 rtw_reset_securitypriv_cmd(struct adapter *padapter)
- 
- 	/* rtw_enqueue_cmd(pcmdpriv, ph2c); */
- 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
--
- exit:
- 	return res;
- }
-@@ -1112,10 +1101,8 @@ u8 rtw_free_assoc_resources_cmd(struct adapter *padapter)
- 
- 	init_h2fwcmd_w_parm_no_rsp(ph2c, pdrvextra_cmd_parm, GEN_CMD_CODE(_Set_Drv_Extra));
- 
--
- 	/* rtw_enqueue_cmd(pcmdpriv, ph2c); */
- 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
--
- exit:
- 	return res;
- }
-@@ -1150,7 +1137,6 @@ u8 rtw_dynamic_chk_wk_cmd(struct adapter *padapter)
- 
- 	/* rtw_enqueue_cmd(pcmdpriv, ph2c); */
- 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
--
- exit:
- 	return res;
- }
-@@ -1347,14 +1333,11 @@ static void dynamic_chk_wk_hdl(struct adapter *padapter)
- 
- 	/* for debug purpose */
- 	_linked_info_dump(padapter);
--
--
- 	/* if (check_fwstate(pmlmepriv, _FW_UNDER_LINKING|_FW_UNDER_SURVEY) ==false) */
- 	{
- 		linked_status_chk(padapter);
- 		traffic_status_watchdog(padapter, 0);
- 	}
--
- 	rtw_hal_dm_watchdog(padapter);
- 
- 	/* check_hw_pbc(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type); */
-@@ -1500,9 +1483,7 @@ u8 rtw_dm_in_lps_wk_cmd(struct adapter *padapter)
- 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
- 
- exit:
--
- 	return res;
--
- }
- 
- static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
-@@ -1542,7 +1523,6 @@ u8 rtw_dm_ra_mask_wk_cmd(struct adapter *padapter, u8 *psta)
- 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
- 	u8 res = _SUCCESS;
- 
--
- 	ph2c = rtw_zmalloc(sizeof(struct cmd_obj));
- 	if (!ph2c) {
- 		res = _FAIL;
-@@ -1577,7 +1557,6 @@ u8 rtw_ps_cmd(struct adapter *padapter)
- 	struct drvextra_cmd_parm	*pdrvextra_cmd_parm;
- 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
- 	u8 res = _SUCCESS;
--
- 	ppscmd = rtw_zmalloc(sizeof(struct cmd_obj));
- 	if (!ppscmd) {
- 		res = _FAIL;
-@@ -1673,9 +1652,7 @@ u8 rtw_chk_hi_queue_cmd(struct adapter *padapter)
- 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
- 
- exit:
--
- 	return res;
--
- }
- 
- struct btinfo {
-@@ -2021,11 +1998,8 @@ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
- 	rtw_free_cmd_obj(pcmd);
- }
- 
--
--
- void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pcmd)
- {
--
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *)(pcmd->rsp);
- 	struct sta_info *psta = rtw_get_stainfo(pstapriv, psetstakey_rsp->addr);
--- 
-2.25.1
 
