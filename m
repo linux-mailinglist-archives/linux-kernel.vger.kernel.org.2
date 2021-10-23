@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D024381EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 07:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581DD4381F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 07:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhJWFFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 01:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
+        id S229811AbhJWF2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 01:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhJWFFK (ORCPT
+        with ESMTP id S229446AbhJWF2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 01:05:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DECC061764;
-        Fri, 22 Oct 2021 22:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hKfR3/ryyitNRCxx14thpt1Pe6SRC47enbuHQnqPb6s=; b=ecpD4Qwjh5T3agQ5qTTl8GtazS
-        w8HThPRzeXp2YcS37McMWS94pO36xXo9FG7zvEhc06IFsxSbb2Qwlo7FtOje/iP67fHEZg64yh3vi
-        Mm5TaOJFNsqbf3MjFPFmmsp6iFcOcCKyd9Mafs/Z3z1nTJ0coG3N/xzJ/dpYyTfapY1HadzEXakKI
-        bVw8DDn5qKYrD8XMGtYjvwvM13VlF49ex+gPSA2+TzT7cOpsK/u/V2jKSqnSQ8YWLdSDNbi/JUhmW
-        blKvlxteuJ2MNVZatZET1jlnTSEGTVZpI5E4A3w1fCxoV5NNR66RLiS3yXsSdCPoIt5JorLe8TTVa
-        KxFz70TA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1me9Av-00CHxV-Uc; Sat, 23 Oct 2021 05:02:33 +0000
-Date:   Fri, 22 Oct 2021 22:02:33 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YXOXaTNPkln3Blvt@infradead.org>
-References: <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
- <YXBUPguecSeSO6UD@moria.home.lan>
- <YXHdpQTL1Udz48fc@cmpxchg.org>
- <YXIZX0truEBv2YSz@casper.infradead.org>
- <326b5796-6ef9-a08f-a671-4da4b04a2b4f@redhat.com>
- <YXK2ICKi6fjNfr4X@casper.infradead.org>
- <c18923a1-8144-785e-5fb3-5cbce4be1310@redhat.com>
- <YXNx686gvsJMgS+z@casper.infradead.org>
+        Sat, 23 Oct 2021 01:28:01 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807B4C061764;
+        Fri, 22 Oct 2021 22:25:42 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso6003217wmd.3;
+        Fri, 22 Oct 2021 22:25:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=VoXUsfUGCdD62DajcXC9f8MFNVK93WpYf6qTnnAOaN4=;
+        b=Q46XNOIc18yeGmnm2TF48VMCfMM5b/pXedvJTpDxABJnnvrG4qrW4jqnaXbzPfU4nv
+         fYSAQNaFsIzGRZf0oqIwhflvqRHvqnRNoBjAs4OVxOyjADPSt2OiQWgmFWWnz3VBXb1s
+         aJPheXyvszKDJ7Wuplbp/lhp/bC/kckJkIFKwxZnx7cJP8B6LygrIlyeJr39COzHOQRr
+         hJwsKMFOwux4bZcvf9VaaE8Ed2Wi9HVnjm70iZFDN3lcmisZ7Yj9yotBLcYQ2GNzDbr1
+         gOHdcJnKeu/budC8uRchG4Brt9ls75YWdxGFy3FZpVe/p+xvgak2yaWh3gccjQys2Qj/
+         lM1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=VoXUsfUGCdD62DajcXC9f8MFNVK93WpYf6qTnnAOaN4=;
+        b=xEP6Dv2Yr2Vn42V3VHWPRQcpnzpgbSXk6nXklMs3kzgpshZ3Jh4lfkAe6n38B7IFfi
+         ltE8/57nLX2KQzwgEtdv8j04vDoOdQw+17QnJ5reRtQ1KJjjIVWP2n4D3XWlbojCK22C
+         gNbRUnDLU2tVyLSP1un1QT1zAxzX4Xp7Op9R1SRvmxC/UlPsXtJ1187RwH2VBhQLGHBc
+         salxxvtVSYwxyBvwG85DUP4czUAwnzPom34hz8hnTeOtw+d0CpAyPyBXKlWqzFj3Uzyk
+         8mbO1bw4wgDSaqH9srq1BnpHfJ9m3vFJU8I05vyZ98Q66sz+2BNwmKYgFZPGA7dFUE+W
+         xbWQ==
+X-Gm-Message-State: AOAM530X6lCNjJG2KXYOGcWC9JTjdGOpLksaUkU7R4r42RcFWyK7B+8E
+        wVkvGNaOMgWqhZf3bX7C1D+tspibYRw=
+X-Google-Smtp-Source: ABdhPJxD6m3qDi/ax4mGEPWfA3bL6AAPxxcKQbYmLCupu3G47U6G3xBzqVz8QvwNNLKUYlhcm9Qz3w==
+X-Received: by 2002:a05:600c:1c21:: with SMTP id j33mr33891037wms.163.1634966740997;
+        Fri, 22 Oct 2021 22:25:40 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p200300c78f4e0684ec383d1d224ce07d.dip0.t-ipconnect.de. [2003:c7:8f4e:684:ec38:3d1d:224c:e07d])
+        by smtp.gmail.com with ESMTPSA id t6sm4112221wrw.78.2021.10.22.22.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 22:25:40 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 07:25:38 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org
+Subject: [PATCH] usb: usb-skeleton: Add hint to find __init and __exit
+Message-ID: <20211023052538.GA5141@matrix-ESPRIMO-P710>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXNx686gvsJMgS+z@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 23, 2021 at 03:22:35AM +0100, Matthew Wilcox wrote:
-> You can see folios as a first step to disentangling some of the users
-> of struct page.  It certainly won't be the last step.  But I'd really
-> like to stop having theoretical discussions of memory types and get on
-> with writing code.
+Comment to find __init and __exit.
 
-Agreed.  I think folios are really important to sort out the mess
-around compound pages ASAP.
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+ drivers/usb/usb-skeleton.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I'm a lot more lukewarm on the other splits.  Yes, struct page is a
-mess, but I'm not sure creating gazillions of new types solve that
-mess.  Getting rid of a bunch of the crazy optimizations that abuse
-struct page fields might a better first step - or rather after the
-first step of folios which fix real bugs in compount handling and do
-enable sane handling of compound pages in the page cache.
+diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
+index 2dc58766273a..80338a50dcde 100644
+--- a/drivers/usb/usb-skeleton.c
++++ b/drivers/usb/usb-skeleton.c
+@@ -641,6 +641,7 @@ static struct usb_driver skel_driver = {
+ 	.supports_autosuspend = 1,
+ };
+ 
++/* __init and __exit */
+ module_usb_driver(skel_driver);
+ 
+ MODULE_LICENSE("GPL v2");
+-- 
+2.25.1
 
-> If that means we modify the fs APIs again in twelve
-> months to replace folios with file_mem, well, I'm OK with that.
-
-I suspect we won't even need that so quickly if at all, but I'd rather
-have a little more churn rather than blocking this important work
-forever.
