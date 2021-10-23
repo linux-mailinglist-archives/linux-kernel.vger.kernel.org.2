@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91DD4383DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3900F4383DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 15:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhJWNsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 09:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
+        id S231496AbhJWNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 09:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhJWNsY (ORCPT
+        with ESMTP id S231382AbhJWNtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 09:48:24 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F217AC061764;
-        Sat, 23 Oct 2021 06:46:04 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x27so51587lfu.5;
-        Sat, 23 Oct 2021 06:46:04 -0700 (PDT)
+        Sat, 23 Oct 2021 09:49:32 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CBBC061764;
+        Sat, 23 Oct 2021 06:47:13 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id e19so7092040edy.0;
+        Sat, 23 Oct 2021 06:47:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4rKqaG58LsxP7jan+TfTxUtpkcjNd0KJcH+SvoPk9tQ=;
-        b=Mml/w11SDttmlYPFEbEV4BKEePRyF05t7cyq+TZeeD6PPNOcKuqDDpOWKe2+zZZkmF
-         kbuO+BgChVyXx9Ict4A9soGBZdNelHzweN2+trOLPYxxrq+M/IF4De/MLYpx8T/a+Kxc
-         6DwRV65BaB27z3AanI3U3xm1IqVLidy65BIai06Nr+Mzjegu1Z9oWzXfetblbRpxLJgU
-         WkJEv1duPeZTMdUZEx8HzZNLrzn0wPuk2CHKbZdg0Xm1V3hKr6qKMfPYT87435WnJOiA
-         AUre0nnRhIpvgNMiBkcLzFCT6bNZSKcyIhZHS1AFjOG1w/Zh0lrLrnGu2ZJ34vaVfdth
-         ugGA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CHTTiz/vvwyGyiU0edgyMzPDNqvYsXTPAInXA2oaKyQ=;
+        b=a5fKR7cIcb2HP0ioumDIZYSg5xxKlVdv2QMfXMk087u1tXLTPty1SPg+P7cyFVkRJH
+         qhSacNj0aFxa25NlBdl2Qs936C6jzs1CjsUDQ/LpzG1Oo3gfpSyycS3BrGooMjjv8zS+
+         X16UzbmVNWKA7yGvgTouN9KDWiaR98HhALl4T27uRQDrgLxVE2L4YsTGeV2TjccPXVcg
+         BYp77Tv/1+/YfU5sq3cYPAg9AwBr4yzZaZJJcX0PItNHLCSWTiAUNZUpbHjb2u0td81E
+         GUIuTOj3soaqKVioacP+4jCZjphMcFbr4yH7mB5nxBaSNZ6LDl4obkVlXVNzyA95awGJ
+         OnBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4rKqaG58LsxP7jan+TfTxUtpkcjNd0KJcH+SvoPk9tQ=;
-        b=mAvXCBPBgLsIZMqmdOUfnC6/Cix8fAOXrFMfNJo78Cd6jSf+V5aQJlCtFJAbP/Exsz
-         nn6PQ6n4f0mnFLsgXwQToQ+AYDQuDSTjWxBTG18ODaEvN5uIR1DTylnmZ9ri1SC3u7UQ
-         wDk8PJSD4ZGiOH0nFIw4LdSVJ6Q59eMfWExUDTYW3wjzf2ejn/IsxAeeQDsUGaKXijni
-         82NwnmOHKTsknqLu8CpxZbvS2nPGkrCaC9iqNc5/WJxADegcBdq1gAHOG3ciGIi/+wFn
-         X/dCOyJn2OPLwlECd8jXBsETmPcxCjztCMtdDzPORvN3jl6f3B1iSA8/amTK1DzkZlCk
-         Tcvg==
-X-Gm-Message-State: AOAM531Wmn6aIQgQxQnJurSDF4EUi+oyH/P2All4A2rLe7V0fTJYv0J/
-        XJ1MBEhkl7r32XUsQTH9DxjlPtQG0fQ=
-X-Google-Smtp-Source: ABdhPJxK103geiOjZuq7CrRe1vrwPXqNxDK7QjdYAnhGDWcAOo9ga80f4JQwj9CaAjQ5V+9pDZfCNg==
-X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr5732617lfv.121.1634996762212;
-        Sat, 23 Oct 2021 06:46:02 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-53-128.dynamic.spd-mgts.ru. [94.29.53.128])
-        by smtp.googlemail.com with ESMTPSA id d20sm1175519ljg.20.2021.10.23.06.46.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Oct 2021 06:46:01 -0700 (PDT)
-Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20211019231905.2974-1-digetx@gmail.com>
- <YXAr4OlhucAibMlH@robh.at.kernel.org>
- <20211022044334.4yn3i4kwinbrjicd@vireshk-i7>
- <48de7f40-deda-739d-96ca-e61ec5a0b257@gmail.com>
- <20211022065029.x5a5oh7mh2sjofey@vireshk-i7>
- <9798d34b-4886-9d4a-9fb7-634aa323af02@gmail.com>
- <20211022074551.ro22d7xj3idisvzv@vireshk-i7>
- <356febd2-64a2-0451-2c73-9319e5223c57@gmail.com>
-Message-ID: <0d42e370-4c1e-13a1-9a5a-f8ae00d8512d@gmail.com>
-Date:   Sat, 23 Oct 2021 16:46:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CHTTiz/vvwyGyiU0edgyMzPDNqvYsXTPAInXA2oaKyQ=;
+        b=wqr07hVpjeaygQzBrpraj8iRW3rl66+OCiKg/aJMiSQEKQFoY0foLEjb9ELCLjjc70
+         rqMF8vfZ/CsiCkVkhyEaeOy9Q8qPqTZ3jpN7yJoVOHqacUhyqJFab90IbAsesScVZJ5n
+         u6Fz6JX+3UeuOonC1hYAFifWkvqMMDXKoRMV1z1WHFXOgU0pVix1816LTP0+9EjjtIkE
+         sOtyUxsLp3LOKwOYilrjxHu9/u+z/unH3au8DnLkf8bW3F5WCrVEMTd31YPQefusQBIa
+         4iSswMU3azU0sgwqZAz6a/yooytlfcZKjS8DQziVmqdh9l/VZSAWuLoXa/wI85yPZw6m
+         007g==
+X-Gm-Message-State: AOAM531i5LPW0eYBLcpKz2xV/N1OxwttsPX6m9yl4C1rpaEZNR3idAjH
+        u3yjWxSB0MkN7d8oHEp4x1eYYq8xXeU=
+X-Google-Smtp-Source: ABdhPJxhvYIDQbk3B6Fy5Z3B40cv2EqYLLWaTIpgkYgdSor6wbA3dyOz/q6O0iPBPdBJnAap+ALDCg==
+X-Received: by 2002:a05:6402:5ca:: with SMTP id n10mr9087295edx.216.1634996831905;
+        Sat, 23 Oct 2021 06:47:11 -0700 (PDT)
+Received: from localhost.localdomain (host-80-181-148-119.pool80181.interbusiness.it. [80.181.148.119])
+        by smtp.gmail.com with ESMTPSA id ck9sm4954401ejb.56.2021.10.23.06.47.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 06:47:11 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Cc:     syzbot <syzbot+f2725165900304ec97b6@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] INFO: trying to register non-static key in hci_uart_tty_receive (3)
+Date:   Sat, 23 Oct 2021 15:47:10 +0200
+Message-ID: <4202176.J8ZBFPDcmx@localhost.localdomain>
+In-Reply-To: <000000000000162f5005cef9bbf7@google.com>
+References: <000000000000162f5005cef9bbf7@google.com>
 MIME-Version: 1.0
-In-Reply-To: <356febd2-64a2-0451-2c73-9319e5223c57@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="nextPart10165136.KMSVk7YZYO"
+Content-Transfer-Encoding: 7Bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-23.10.2021 16:00, Dmitry Osipenko пишет:
-> 22.10.2021 10:45, Viresh Kumar пишет:
->> On 22-10-21, 10:39, Dmitry Osipenko wrote:
->>> What we currently have for Tegra is a tegra-opps.dtsi and tegra.dtsi
->>> which includes the OPP's dtsi.
->>>
->>> the tegra-opps.dtsi has this structure:
->>>
->>> table: devname-opp-table {
->>> 	opp: ...
->>> };
->>>
->>> and tegra.dtsi:
->>>
->>> #include "tegra-opps.dtsi"
->>>
->>> device@0000 {
->>> 	operating-points-v2 = <&table>;
->>> };
->>>
->>> It just occurred to me that there is no need to move all tables to
->>> tegra.dtsi, but change structure of tegra-opps.dtsi to:
->>>
->>> device@0000 {
->>> 	operating-points-v2 = <&table>;
->>>
->>> 	table: opp-table {
->>> 		opp: ...
->>> 	};
->>> };
->>
->> I thought you would have already thought about that and I was surprised when you
->> saw the tables are big enough to be moved. I was wondering what does it really
->> mean :)
->>
->>> Then there no need to change current naming scheme. Let me try to
->>> implement it and see how it goes.
->>
->> That's good then.
->>
-> 
-> I implemented that approach and it works, but there are two problems:
-> 
-> 1. I had to factor out OPP tables from SPI device-tree nodes because DTC doesn't allow to have them within SPI nodes [1] and dtb fails to compile.
-> 
-> [1] https://elixir.bootlin.com/linux/v5.15-rc6/source/scripts/dtc/checks.c#L1141
-> 
-> 2. dtbs_check now warns about every opp-table sub-node, like this:
-> 
-> /home/runner/work/linux/linux/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-E1565.dt.yaml: memory-controller@7000f400: 'opp-table' does not match any of the regexes: '^emc-timings-[0-9]+$', 'pinctrl-[0-9]+'
-> 	From schema: /home/runner/work/linux/linux/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml
-> 
+This is a multi-part message in MIME format.
 
-Thinking more about this, it's not a good idea to add new sub-node to
-nodes which already have sub-nodes because existing driver code that
-parses sub-nodes may not be ready to face the new opp-table sub-node.
+--nextPart10165136.KMSVk7YZYO
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 
-I'll revert back to the previous variant with distinct opp-table nodes.
+On Saturday, October 23, 2021 1:54:24 AM CEST syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    519d81956ee2 Linux 5.15-rc6
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16787178b00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1f7f46d98a0da80e
+> dashboard link: https://syzkaller.appspot.com/bug?
+extid=f2725165900304ec97b6
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils 
+for Debian) 2.35.2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the 
+commit:
+> Reported-by: syzbot+f2725165900304ec97b6@syzkaller.appspotmail.com
+> 
+> INFO: trying to register non-static key.
+> The code is fine but needs lockdep annotation, or maybe
+> you didn't initialize this object before use?
+> turning off the locking correctness validator.
+
+Let's try the solution attached.
+
+Fabio
+
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+--nextPart10165136.KMSVk7YZYO
+Content-Disposition: attachment; filename="hci_ldisc.c.diff"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="hci_ldisc.c.diff"
+
+diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
+index 5ed2cfa7da1d..18b039c2f3cf 100644
+--- a/drivers/bluetooth/hci_ldisc.c
++++ b/drivers/bluetooth/hci_ldisc.c
+@@ -499,11 +499,11 @@ static int hci_uart_tty_open(struct tty_struct *tty)
+ 	hu->alignment = 1;
+ 	hu->padding = 0;
+ 
++	percpu_init_rwsem(&hu->proto_lock);
++
+ 	INIT_WORK(&hu->init_ready, hci_uart_init_work);
+ 	INIT_WORK(&hu->write_work, hci_uart_write_work);
+ 
+-	percpu_init_rwsem(&hu->proto_lock);
+-
+ 	/* Flush any pending characters in the driver */
+ 	tty_driver_flush_buffer(tty);
+ 
+
+--nextPart10165136.KMSVk7YZYO--
+
+
+
