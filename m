@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274AD43814C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 03:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E328438157
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 03:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhJWBj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Oct 2021 21:39:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36658 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230260AbhJWBjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Oct 2021 21:39:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634953056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VMIfEUdyS7S9YycGnN8abTq0K/b0QBW0FaCGofvAkWQ=;
-        b=UNXBFTHbzZlA/82GUAjSGeFRNRQpMy24hfm0ERQ+hG6wnqKf2UIFxa3NQ5DiihQZ3qdcwa
-        m1pjUTDbaPdlcHKRBGzyNp4/tapwk6nXYmlZmsEf9SE0EWBFP0v5SIFN97bOAuPjdem7Df
-        PaRrCEyoxsXDWx3z2IHVjrC+N2Cjl1o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-dGKLLbnsONGXIqdLVyqF3w-1; Fri, 22 Oct 2021 21:37:31 -0400
-X-MC-Unique: dGKLLbnsONGXIqdLVyqF3w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230357AbhJWBzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Oct 2021 21:55:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27043 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229597AbhJWBzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Oct 2021 21:55:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634954015; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=BWKus6riFmjWLgZFRlxtsgG9no9xXvNiHcpiG4OSZGg=; b=EIeTsbeH1TJBApcVs1VBw/BGFzo4ehoSJoD3oFG89Q2GbF1KFwbP3C7MygBHc6gPoQLGrs9O
+ XgHyDFxmDW6+X/NtV1k0W11/TYCqCaFHSI3ykjEeQoEUF9oyXF751gyVpEwyb0TQQFFNAi0W
+ LeLssejygxIOMciBDvKR6kO0Tls=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 61736b125baa84c77bcfae5f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Oct 2021 01:53:22
+ GMT
+Sender: quic_luoj=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5F49C4360D; Sat, 23 Oct 2021 01:53:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.4] (unknown [183.192.232.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89FC5362F8;
-        Sat, 23 Oct 2021 01:37:27 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.16.242])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E1F817CEE;
-        Sat, 23 Oct 2021 01:37:23 +0000 (UTC)
-Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Boqun Feng <boqun.feng@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
-References: <20211022120058.1031690-1-arnd@kernel.org>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
-Date:   Fri, 22 Oct 2021 21:37:22 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2D92C4338F;
+        Sat, 23 Oct 2021 01:53:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E2D92C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH v4 01/14] net: phy: at803x: replace AT803X_DEVICE_ADDR
+ with MDIO_MMD_PCS
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Luo Jie <luoj@codeaurora.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+References: <20211022120624.18069-1-luoj@codeaurora.org>
+ <20211022120624.18069-2-luoj@codeaurora.org>
+ <YXKq6j/CnQ/i34ZB@shell.armlinux.org.uk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+Message-ID: <c943c86e-bbd9-746a-cfda-647b31af337f@quicinc.com>
+Date:   Sat, 23 Oct 2021 09:53:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211022120058.1031690-1-arnd@kernel.org>
+In-Reply-To: <YXKq6j/CnQ/i34ZB@shell.armlinux.org.uk>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 7:59 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> parisc, ia64 and powerpc32 are the only remaining architectures that
-> provide custom arch_{spin,read,write}_lock_flags() functions, which are
-> meant to re-enable interrupts while waiting for a spinlock.
->
-> However, none of these can actually run into this codepath, because
-> it is only called on architectures without CONFIG_GENERIC_LOCKBREAK,
-> or when CONFIG_DEBUG_LOCK_ALLOC is set without CONFIG_LOCKDEP, and none
-> of those combinations are possible on the three architectures.
->
-> Going back in the git history, it appears that arch/mn10300 may have
-> been able to run into this code path, but there is a good chance that
-> it never worked. On the architectures that still exist, it was
-> already impossible to hit back in 2008 after the introduction of
-> CONFIG_GENERIC_LOCKBREAK, and possibly earlier.
->
-> As this is all dead code, just remove it and the helper functions built
-> around it. For arch/ia64, the inline asm could be cleaned up, but
-> it seems safer to leave it untouched.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Does that mean we can also remove the GENERIC_LOCKBREAK config option 
-from the Kconfig files as well?
-
-Cheers,
-Longman
-
-
+On 10/22/2021 8:13 PM, Russell King (Oracle) wrote:
+> On Fri, Oct 22, 2021 at 08:06:11PM +0800, Luo Jie wrote:
+>> Replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS defined in mdio.h.
+>>
+>> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> On v3, Andrew gave you a reviewed-by. You need to carry those forward
+> especially if the patches have not changed.
+>
+> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Thanks Russell for this reminder, will follow it.
