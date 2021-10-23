@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49AF438399
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 14:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1760A4383A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Oct 2021 14:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhJWMEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 08:04:45 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44569 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhJWMEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 08:04:44 -0400
-Received: by mail-io1-f72.google.com with SMTP id a1-20020a5d9801000000b005de11aa60b8so5180198iol.11
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 05:02:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Y2xC9KlucvmvQkSgxHIj3ttz+G0LYRa6dVH8rX+XzUc=;
-        b=3Uc4pC8mHFTo5zCEDeCaj5gRAJGc/j4DkRkW4vXYnKHeb3p/uhsXjoPIf0VN8DeNAo
-         PajNK/Lttk0OmFWKKYhbyZdftzf0BH6jnXlzOGWXzBRnlBV7matCELqkcEveJYfgACfa
-         0qo0T4OHh62L0VJFSsFV/lT1wr8dxEAilQ5V9ST4HsCOhZ1zHZT50Zw5rS6mQSNq1Zov
-         jNde4QWcGPG2kEyGDbXbLBrINYWGcyZ6pr1pHOWd39qBefHWtz8h3CGkMyU0Wv0OlMfO
-         LKTg3EBfyn2zrJHM731Qvs4pi2/BzIx50fTaHCQe7R/aen7jcd/Zl/5R0aoUDmKezslw
-         25RA==
-X-Gm-Message-State: AOAM5317NR0NVsuWVLsa/fgUUtDS19y0lBdXXRRZoiPkr++iK43jcDnN
-        gL+UA40Mm8DJHrzaY9/orPq6muNq8a7qZOTXgSDIHlD+Q7o6
-X-Google-Smtp-Source: ABdhPJy72EfZXcfTgRqc2R8GDIg4UUKG//MesO7jAOin4uJgmXayeBRMZhm1DC/T5e3gss2PIdvRZKr5MKvdD/mJ8TNrcKwdzRit
+        id S230452AbhJWMIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 08:08:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:33434 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230320AbhJWMIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 08:08:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2B5CD6E;
+        Sat, 23 Oct 2021 05:06:32 -0700 (PDT)
+Received: from [10.57.28.205] (unknown [10.57.28.205])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 266E83F70D;
+        Sat, 23 Oct 2021 05:06:27 -0700 (PDT)
+Subject: Re: [PATCH 09/15] irq: arm: perform irqentry in entry code
+To:     Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
+        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        nickhu@andestech.com, palmer@dabbelt.com, paulmck@kernel.org,
+        paul.walmsley@sifive.com, peterz@infradead.org, shorne@gmail.com,
+        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
+        torvalds@linux-foundation.org, tsbogend@alpha.franken.de,
+        vgupta@kernel.org, will@kernel.org
+References: <20211021180236.37428-1-mark.rutland@arm.com>
+ <20211021180236.37428-10-mark.rutland@arm.com>
+ <0efc4465-12b5-a568-0228-c744ec0509a3@arm.com>
+ <20211022153602.GE86184@C02TD0UTHF1T.local>
+ <1dc39ac9-1a05-cf8d-2aef-633903a6338d@arm.com>
+ <20211022175854.GK86184@C02TD0UTHF1T.local> <87tuh8uchn.wl-maz@kernel.org>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <cada0034-7427-f4ae-0f88-7bbb1be2b1a5@arm.com>
+Date:   Sat, 23 Oct 2021 13:06:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:174e:: with SMTP id y14mr3432063ill.189.1634990545581;
- Sat, 23 Oct 2021 05:02:25 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 05:02:25 -0700
-In-Reply-To: <00000000000062d0fc05cef24c57@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae3a7905cf03e639@google.com>
-Subject: Re: [syzbot] WARNING: refcount bug in sys_memfd_secret
-From:   syzbot <syzbot+b904a1de3ec43711eba5@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, dvyukov@google.com,
-        jordy@pwning.systems, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, rppt@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87tuh8uchn.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 10/22/21 7:43 PM, Marc Zyngier wrote:
+> On Fri, 22 Oct 2021 18:58:54 +0100,
+> Mark Rutland <mark.rutland@arm.com> wrote:
+>>
+>> On Fri, Oct 22, 2021 at 05:34:20PM +0100, Vladimir Murzin wrote:
+>>> On 10/22/21 4:36 PM, Mark Rutland wrote:
+>>>> On Fri, Oct 22, 2021 at 04:18:18PM +0100, Vladimir Murzin wrote:
+>>>>> Hi Mark,
+>>>>>
+>>>>> On 10/21/21 7:02 PM, Mark Rutland wrote:
+>>>>>> +/*
+>>>>>> + * TODO: restructure the ARMv7M entry logic so that this entry logic can live
+>>>>>> + * in arch code.
+>>>>>> + */
+>>>>>> +asmlinkage void __exception_irq_entry
+>>>>>> +static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+>>>>>
+>>>>> I'm seeing build time failure...
+>>>>>
+>>>>> drivers/irqchip/irq-nvic.c:50:8: error: two or more data types in declaration specifiers
+>>>>>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+>>>>>         ^~~~
+>>>>> drivers/irqchip/irq-nvic.c:50:13: warning: 'nvic_handle_irq' defined but not used [-Wunused-function]
+>>>>>  static void nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+>>>>>
+>>>>> I've fixed that locally and planing to give it a go...
+>>>>
+>>>> Ah, whoops. I've removed the extraneous `static void` from
+>>>> nvic_handle_irq() and build tested that as part of stm32_defconfig.
+>>>>
+>>>> The updated version is in my irq/handle-domain-irq branch at:
+>>>>
+>>>>   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
+>>>>
+>>>
+>>> $ cat /proc/interrupts
+>>>            CPU0       
+>>>  16:         24  nvic_irq   4 Edge      mps2-clkevt
+>>>  17:          0  nvic_irq  32 Edge      mps2-uart-rx
+>>>  18:          6  nvic_irq  33 Edge      mps2-uart-tx
+>>>  19:          0  nvic_irq  47 Edge      mps2-uart-overrun
+>>> Err:          0
+>>>
+>>> So if it helps feel free to add my 
+>>>
+>>> Tested-by: Vladimir Murzin <vladimir.murzin@arm.com> # ARMv7M
+>>
+>> Thanks!
+>>
+>> I've folded that in and uppdated the branch.
+>>
+>>> As for TODO, is [1] look something you have been thinking of? IIUC,
+>>> the show stopper is that hwirq is being passed from exception entry
+>>> which retrieved via xPSR (IPSR to be precise). OTOH hwirq also available
+>>> via Interrupt Controller Status Register (ICSR) thus can be used in
+>>> driver itself... I gave [1] a go and it runs fine, yet I admit I might
+>>> be missing something...
+>>
+>> I hadn't thought about it in much detail, but that looks good!
+>>
+>> I was wondering if we needed something like a
+>> handle_arch_vectored_irq(), but if we can rely on the ICSR that seems
+>> simpler overall. I'm not at all familiar with M-class, so I'm not sure
+>> if there are pitfalls in this area.
+> 
+> Why can't we just use IPSR instead from the C code? It has the
+> potential of being of lower latency then a MMIO read (though I have no
+> idea whether it makes a material difference on M-class) and from what
+> I can see in the arch spec, they are strictly equivalent.
 
-HEAD commit:    cf6c9d12750c Add linux-next specific files for 20211022
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10bdd272b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dd1cd3d631599df5
-dashboard link: https://syzkaller.appspot.com/bug?extid=b904a1de3ec43711eba5
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12790a72b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13eb76dcb00000
+Hmmm, less arch specific asm(s) in driver code, no?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b904a1de3ec43711eba5@syzkaller.appspotmail.com
+Cheers
+Vladimir
 
-------------[ cut here ]------------
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 1 PID: 6528 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-Modules linked in:
-CPU: 1 PID: 6528 Comm: syz-executor149 Not tainted 5.15.0-rc6-next-20211022-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-Code: 09 31 ff 89 de e8 27 1f 9f fd 84 db 0f 85 36 ff ff ff e8 3a 1b 9f fd 48 c7 c7 00 2e 04 8a c6 05 c7 25 a3 09 01 e8 92 ce 31 05 <0f> 0b e9 17 ff ff ff e8 1b 1b 9f fd 0f b6 1d ac 25 a3 09 31 ff 89
-RSP: 0018:ffffc90001a4ff10 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801d369d40 RSI: ffffffff815f06f8 RDI: fffff52000349fd4
-RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815ea4ce R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  00005555565e9300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f842b6f56c0 CR3: 000000001bc33000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __refcount_add include/linux/refcount.h:199 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- __do_sys_memfd_secret mm/secretmem.c:221 [inline]
- __se_sys_memfd_secret mm/secretmem.c:194 [inline]
- __x64_sys_memfd_secret+0x182/0x1e0 mm/secretmem.c:194
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fbeb6a4cf89
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffde5076be8 EFLAGS: 00000246 ORIG_RAX: 00000000000001bf
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fbeb6a4cf89
-RDX: 00007fbeb6a0fe93 RSI: 0000000000000012 RDI: 0000000000080000
-RBP: 00007fbeb6a10f70 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fbeb6a11000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+> 
+> Thanks,
+> 
+> 	M.
+> 
 
