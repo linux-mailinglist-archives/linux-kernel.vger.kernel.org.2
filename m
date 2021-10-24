@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72038438C27
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06074438C2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhJXVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
+        id S231771AbhJXVrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 17:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJXVlz (ORCPT
+        with ESMTP id S229519AbhJXVrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:41:55 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EA6C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:39:34 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id e5so11163607uam.11
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:39:33 -0700 (PDT)
+        Sun, 24 Oct 2021 17:47:05 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50494C061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:44:44 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x27so4853716lfu.5
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:44:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QraEw1MMGnwx9JFyFTABlxndaYwZD109U5RjGzZtJZI=;
-        b=iAFPIe9cky/Um+h4fO1+FIa0SurP6snw6pXN1do26C7vDer6KwDZj38nDqJJRPnHS2
-         +tmhcJC5RGtdyHypd4k8WcJHQ6pC4pWY7Tit6Fx347a1tAZlmrcgi+k2f2IjNUraKDv9
-         a1lbho9OwNpqOAXxfqDNHMNsXA3r+C+MLJBvavUkcHxzWETdu/kfrlcCtFPXZPh9wZ5P
-         d8DgS18fIJKqguHXaBYj4J0wEyYpVewHGbbaOorllUq07+6KZiUDtXnVufz3u1U2/dO0
-         WwmzcW6dmr9Js3y61NgrBxD96bBJGyeetPxnmOh2W94I+ALzY94e10KyNkTwE0AqTrGk
-         6jYA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ryZxhawk/h0qs5tZCgKZdBuPuqyJ9WVtt/N+HNRxYbA=;
+        b=PF+HxDOj4jRbUbIGGsXBJZMvVI+QzbTEkrtSOQMPI0iSaDkNYRRxzaRa4FWHkKCyNF
+         rCSHzX0BxdnvWjWd4/u+8txDSnF5F1QFS4qkLxQQalw5oUjDghgF33VXUMIVxqIBNMlC
+         EYOtYfn61QIaTQ5PiEeaacaBh24Zg1OJ4G/4gR2X2mwB/GfOd4LvJEaXkZ654T0kaydL
+         2sc2upn6JN8Hw6zm4l/vnMl/rCXDM1PvVwswL7lK4C5HVmdExpUq1swPKmITRYLDSYcj
+         JyFNuLF//kSYlTHMH4wHRCCltwCDxWrk5rQWIcVKMFP3WJwEftwD18DzxKGIIXPj7smi
+         5tKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QraEw1MMGnwx9JFyFTABlxndaYwZD109U5RjGzZtJZI=;
-        b=PTawUhk8P91qO73fLYKXOpB/N2CZMeIXD5CwpwEYzlXHn3s/jQ/lTSY3ubIHo26d4t
-         7XYhdZBapIar1av9UgAatiB+W+HSOLKdLUrR5+2JIlJf9GNUS7Jq+IsEsS4D3jxRs4Yt
-         I8xq8tdAfyGzpKpKydUEzACD8lqzcG3PnDR/t94l+s6vGW0DQOEJdWqmXL4zj51+lYPb
-         BGfENvlZJ45429+irhfK6cAceUSA7GjBfWmgSkeceVA24lzEOYmpEt9hBs6WnSi5SFS8
-         cvvPWOCMRZa0V0qL6AfjMlhetlBSzAa9aehd6q3rkuP7Sx+m5w59/DEw/P9h0l+r/3Kp
-         Z1cw==
-X-Gm-Message-State: AOAM5332HRrnwGR93fAHoLarFlDNc1JOFGhoATY2/M0HzNI/Rjr9YY/8
-        JG6ytqja+G4Z3dDVrQrW05A=
-X-Google-Smtp-Source: ABdhPJygE+1fz6v4hPFhXo1k0yuQUD2l0NVhQv2MwZnMh51zGuIEcJ0lcMkm+x5zpTXwoQtuRHOQvA==
-X-Received: by 2002:a05:6102:3a56:: with SMTP id c22mr11776109vsu.26.1635111573193;
-        Sun, 24 Oct 2021 14:39:33 -0700 (PDT)
-Received: from localhost.localdomain ([191.83.215.63])
-        by smtp.gmail.com with ESMTPSA id 64sm2046309vsz.15.2021.10.24.14.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 14:39:32 -0700 (PDT)
-From:   Gaston Gonzalez <gascoar@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
-        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH v2 8/8] staging: vchiq_core: fix quoted strings split across lines
-Date:   Sun, 24 Oct 2021 18:38:39 -0300
-Message-Id: <20211024213839.370830-1-gascoar@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211024212844.370379-1-gascoar@gmail.com>
-References: <20211024212844.370379-1-gascoar@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ryZxhawk/h0qs5tZCgKZdBuPuqyJ9WVtt/N+HNRxYbA=;
+        b=N0/PQuVsB70dppIbXr7DhHiq+mfzdlPxbSAVWMUwQkkKhpWVbHdUC8oH1WVdrwGhDH
+         fXR5Q3LLzCvxx12W5v8jfwR2lgLeoDRCOM2AsVRkuucXTRQaNPZLWi6KELn0VYwQUhNy
+         8NUGxtrRtEK2s+HrPQbWF1TT1rTE/gKdUoswQs4z1ehXKRKwhBLQZ6ydOl7lvdOVS9q5
+         PUa/1CSU+su9revzd5uQTcF3Rt8MlN28llgTMCr9nOI29RFdAM1V/e3cDyrtSN50KwjL
+         qfOCVagfbgkOhq/yLV0OLeLq3kEaHR6mD6pvfUldd2Dx/dcuKBFw8PrfumXtCZMyTil7
+         7vfg==
+X-Gm-Message-State: AOAM533L5Tjxg2Y3MpuPBO5EaT6wSbK2Z70gtxFltY66yJhOUdzXDGe6
+        4BjZukBeCdimlme0zpomsJqM7kYe0bx2RjZWGacGp1F525Q=
+X-Google-Smtp-Source: ABdhPJzxS/Jx9/bwtKL8TjRwj8l7pISvcOLBGz+ZDFrS64NPPcx8Vfbl3oixbwjKI0eBCKqnUC8ehozS0FsuUlPdGH4=
+X-Received: by 2002:ac2:430d:: with SMTP id l13mr6615116lfh.656.1635111882492;
+ Sun, 24 Oct 2021 14:44:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211020054942.1608637-1-quanyang.wang@windriver.com>
+In-Reply-To: <20211020054942.1608637-1-quanyang.wang@windriver.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 24 Oct 2021 23:44:31 +0200
+Message-ID: <CACRpkdYxMDp4FRGP=EOt8oTMxs_YuskbvMx5wXBDjUWz6hD=gQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: add BUILD_BUG_ON to check if fixmap range spans
+ multiple pmds
+To:     quanyang.wang@windriver.com
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoted strings should not be split across lines. As put it in [1]:
-"never break user-visible strings such as printk messages because that
-breaks the ability to grep for them."
+On Wed, Oct 20, 2021 at 7:50 AM <quanyang.wang@windriver.com> wrote:
 
-While at it, fix the alignment of the arguments in the sentence.
+> From: Quanyang Wang <quanyang.wang@windriver.com>
+>
+> Not only the early fixmap range, but also the fixmap range should be
+> checked if it spans multiple pmds. When enabling CONFIG_DEBUG_HIGHMEM,
+> some systems which contain up to 16 CPUs will crash.
+>
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 
-Note: this introduce a checkpatch CHECK: line length of 123 exceeds 100
-columns, as the line now is:
+Looks reasonable to me.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
- vchiq_loud_error("%d: service %d (%c%c%c%c) version mismatch - local (%d, min %d) vs. remote (%d, min %d)",
+Please submit this patch into Russell's patch tracker.
 
-But now the string is grep-able and the whole function call more
-clear.
-
-Reported by checkpatch.pl
-
-[1] Documentation/process/coding-style.rst
-
-Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
----
- .../vc04_services/interface/vchiq_arm/vchiq_core.c     | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-index 3af55e78f356..ab97a35e63f9 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-@@ -1499,13 +1499,9 @@ parse_open(struct vchiq_state *state, struct vchiq_header *header)
- 	if ((service->version < version_min) || (version < service->version_min)) {
- 		/* Version mismatch */
- 		vchiq_loud_error_header();
--		vchiq_loud_error("%d: service %d (%c%c%c%c) "
--			"version mismatch - local (%d, min %d)"
--			" vs. remote (%d, min %d)",
--			state->id, service->localport,
--			VCHIQ_FOURCC_AS_4CHARS(fourcc),
--			service->version, service->version_min,
--			version, version_min);
-+		vchiq_loud_error("%d: service %d (%c%c%c%c) version mismatch - local (%d, min %d) vs. remote (%d, min %d)",
-+				 state->id, service->localport, VCHIQ_FOURCC_AS_4CHARS(fourcc),
-+				 service->version, service->version_min, version, version_min);
- 		vchiq_loud_error_footer();
- 		vchiq_service_put(service);
- 		service = NULL;
--- 
-2.33.1
-
+Yours,
+Linus Walleij
