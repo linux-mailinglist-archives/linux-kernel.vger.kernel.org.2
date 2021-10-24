@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13D1438BC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED055438BC6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhJXUPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 16:15:03 -0400
-Received: from mleia.com ([178.79.152.223]:47040 "EHLO mail.mleia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhJXUPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 16:15:02 -0400
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id C00F42E3E5;
-        Sun, 24 Oct 2021 20:12:40 +0000 (UTC)
-Subject: Re: [PATCH] iio: adc: lpc18xx_adc: Reorder clk_get_rate function call
-To:     =?UTF-8?Q?Andr=c3=a9_Gustavo_Nakagomi_Lopez?= <andregnl@usp.br>,
-        jic23@kernel.org, lars@metafoo.de
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <YXW3azIjPzGjvjTX@Andryuu.br>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <bd79117b-91cc-da4b-abdd-2a41db8b330a@mleia.com>
-Date:   Sun, 24 Oct 2021 23:12:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231929AbhJXUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 16:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231868AbhJXUTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 16:19:30 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCF6C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:17:09 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id f16so2988016ljo.12
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=WDtnAJGpU46SQZqjSlsHD7MRfRSPT/f8zfl1iHNdYtI=;
+        b=LjtQPuV6PrpjFGRsCotTV7vqIvnwOj+kopYRsvybW0YkyYU0moLTLdt9o7OwOHWOH3
+         PT6FlyHKxcKExnS+a1XcLVgk/EZPKus3pAJkQDMYwa1kSBne63PaYVyKiDGeyzH2mxOW
+         HLTIXW6SUJUvzPkioZa4BbU6Gl4VllzLwtemv4PDUN/ffZeFmbnVntMG9qhOP0biBOTp
+         LDYvkN3fHQqULZKhEG9GiJwx4/XXoWQ0KVjHckayeu5bmuVA04FBv0Ct+ne+5j8YQlaV
+         teYkSTrNppjLsi8L4isMUFl0xsX3eIA8e6MeUeN4KnUZH69gLq/eue2djVkE/x6q1iP1
+         84BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=WDtnAJGpU46SQZqjSlsHD7MRfRSPT/f8zfl1iHNdYtI=;
+        b=QDHJOdpkB8LtPUFJjU1p9jnFrUmysxyI67BFaheWq6OZXio2zvRIDqspW6S2+cYHrx
+         yDfWHpKzQY2AMSzzslRLQQYZFmYh+BrdPQ/qmoHtUXdTy953ZrWQvDP6A4sD5PcahPEv
+         lgPy78gdblO/blWVNbPv4cU5iwudupfAvnefqd0+9BgAXhLXXoSn+Q0Ip40U9te3n/yU
+         414JPWO0EBAlqEYxZUwuqN5zRrC+6at24jZRaxNqP/AG3KFtsOQVJbiwWqAtejII82CZ
+         bQHmjcx22EZ1Ws4h/ZPqsiVC4xMjAEFWpRUBnEzRNSIDKNb+X15DQZ+EDSVNT+X3CItt
+         AYXw==
+X-Gm-Message-State: AOAM532GmQeoP2sVhYgbrV2GIrG9EfN6InQmo5W6cnUDv2x7sCHElzgq
+        yU/tXJGTEqK0gUTKoUZDlpDpcZVwtYAOIfjZqRsQHA==
+X-Google-Smtp-Source: ABdhPJzPtzdaNPiGyNknTLn+DYWFbWh2q5eKDNmvFWsCNNqGsD5sOlq1as+JMN3fv0/k8vB4MgkcKWQozRyoRkMykKQ=
+X-Received: by 2002:a2e:9c0b:: with SMTP id s11mr14583624lji.259.1635106627762;
+ Sun, 24 Oct 2021 13:17:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YXW3azIjPzGjvjTX@Andryuu.br>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20211024_201240_805681_00140E3F 
-X-CRM114-Status: GOOD (  14.96  )
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 24 Oct 2021 22:16:56 +0200
+Message-ID: <CACRpkdYY43-Dj=ZQ3brn41-3OZm0_vT+qHmcG9=EsMFy6J_Q_g@mail.gmail.com>
+Subject: [GIT PULL] pin control fixes for v5.15
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Sachi King <nakato@nakato.io>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi André,
+Hi Linus,
 
-On 10/24/21 10:43 PM, André Gustavo Nakagomi Lopez wrote:
-> clk_get_rate is not garanteed to work if called before clk_prepare_enable.
+here are some late pin control fixes, the most generally annoying
+will probably be the AMD IRQ storm fix affecting the Microsoft
+surface.
 
-typo, s/garanteed/guaranteed/
+Details in the signed tag.
 
-> 
-> Reorder clk_get_rate, so it's called after clk_prepare_enable and
-> after devm_add_action_or_reset of lpc18xx_clk_disable.
-> 
-> Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
-> ---
->   drivers/iio/adc/lpc18xx_adc.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
-> index ceefa4d793cf..ae9c9384f23e 100644
-> --- a/drivers/iio/adc/lpc18xx_adc.c
-> +++ b/drivers/iio/adc/lpc18xx_adc.c
-> @@ -157,9 +157,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
->   		return dev_err_probe(&pdev->dev, PTR_ERR(adc->clk),
->   				     "error getting clock\n");
->   
-> -	rate = clk_get_rate(adc->clk);
-> -	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
-> -
->   	adc->vref = devm_regulator_get(&pdev->dev, "vref");
->   	if (IS_ERR(adc->vref))
->   		return dev_err_probe(&pdev->dev, PTR_ERR(adc->vref),
-> @@ -192,6 +189,9 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> +	rate = clk_get_rate(adc->clk);
-> +	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
-> +
->   	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
->   			LPC18XX_ADC_CR_PDN;
->   	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
-> 
+Please pull them in!
 
-Thank you for the change, per se this particular change is not needed on
-LPC18xx/43xx platform, however I don't object to it.
+Yours,
+Linus Walleij
 
-Suggested-by: Jonathan Cameron <jic23@kernel.org>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc=
+:
 
---
-Best wishes,
-Vladimir
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.15-3
+
+for you to fetch changes up to 4e5a04be88fe335ad5331f4f8c17f4ebd357e065:
+
+  pinctrl: amd: disable and mask interrupts on probe (2021-10-16 23:56:59 +=
+0200)
+
+----------------------------------------------------------------
+Pin control fixes for the v5.15 series:
+
+- Three fixes pertaining to Broadcom DT bindings. Some stuff
+  didn't work out as inteded, we need to back out.
+
+- A resume bug fix in the STM32 driver.
+
+- Disable and mask the interrupts on probe in the AMD pinctrl
+  driver, affecting Microsoft surface.
+
+----------------------------------------------------------------
+Fabien Dessenne (1):
+      pinctrl: stm32: use valid pin identifier in stm32_pinctrl_resume()
+
+Rafa=C5=82 Mi=C5=82ecki (3):
+      Revert "dt-bindings: pinctrl: bcm4708-pinmux: rework binding to
+use syscon"
+      dt-bindings: pinctrl: brcm,ns-pinmux: drop unneeded CRU from example
+      Revert "pinctrl: bcm: ns: support updated DT binding as syscon subnod=
+e"
+
+Sachi King (1):
+      pinctrl: amd: disable and mask interrupts on probe
+
+ .../devicetree/bindings/mfd/brcm,cru.yaml          | 11 ++++----
+ .../bindings/pinctrl/brcm,ns-pinmux.yaml           | 33 +++++++++---------=
+----
+ drivers/pinctrl/bcm/pinctrl-ns.c                   | 29 +++++++-----------=
+-
+ drivers/pinctrl/pinctrl-amd.c                      | 31 ++++++++++++++++++=
+++
+ drivers/pinctrl/stm32/pinctrl-stm32.c              |  4 +--
+ 5 files changed, 63 insertions(+), 45 deletions(-)
