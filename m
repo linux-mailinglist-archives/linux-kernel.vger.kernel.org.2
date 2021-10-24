@@ -2,180 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C894438970
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E09438971
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhJXOIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 10:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        id S231535AbhJXOKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 10:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhJXOIO (ORCPT
+        with ESMTP id S231172AbhJXOKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 10:08:14 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F25C061348
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 07:05:54 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id y145-20020a4a4597000000b002b7d49905acso2763355ooa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 07:05:54 -0700 (PDT)
+        Sun, 24 Oct 2021 10:10:06 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6114C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 07:07:45 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id q16so4191714ljg.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 07:07:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GMCyWWZB+F6GjYcUII59d8HlYaXQfCLuj1yTlXM312U=;
-        b=kFBYELY/mhygmo1FpH4bAgNd2Q6RwTquDOsCb9ND4E4OvmssrMcVvBfP23gFF/h06U
-         fzVbSHvSGFVUSD7OkSxz/syXxX2EQ+MEMC3rJNJDuNCsvTDuqEUvyhYZRxWe6oOWcMtH
-         0OtuD5nAcNWgfXnCCGqNPiduNNnvfoP9w9ITGY6MnGA/Clm0M4z7CE49ws549p6o25yP
-         N4SGugTF4fgQRR5VgyXJbkhkPp1mQgl8fmH/8qkz5zBoEKQomIZ6FVP1/cmsPeaAnXAA
-         ofE1FpsOWZQuqUjHsa/Vvj+BqtsRNFrBCkFUyzyefm1OUS+41i+qU9gh/kOzU9ZQsc0A
-         8BKQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=2xg8b0PhImUgFD1vlcegBC3Dkb/ADebVx1OoidLwJVg=;
+        b=FExO0P6XGeA99jiK3jYyzGzYwfir+9cK3AbnVKHG0jw8cklwsMepg+lvdP/ng/WkJw
+         Z0Brf2IZGrAmoWOnZCJabD0mAkYYPL7q4pSOmlQfvJBIPRGdcwKHIFAcZEW2IOQ+VBuX
+         4H8rwZ4R/hKgIrHTOx5eXUWV9kr/a0PrlxGWMR/iovA/DX+CB5Ri6CBN7wpLYMzPh19i
+         n15PCbbMYzY42y1vxxOJgZ1QPz8azrgWKoKuOPImlBIzXh8n9LzbaCVRLPt2RSt1mhC4
+         KpsYSbvh/IQhUCTutjn5jLe/dNBW3b9q9bKTL1fKngILL04w/d57mLGvuQ2TNeGqIB5p
+         AhYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GMCyWWZB+F6GjYcUII59d8HlYaXQfCLuj1yTlXM312U=;
-        b=xvNRt7hMSvDs/j3+BFRN53hdfh1E5IIYGjikUxt805CYgLh05ZqdpChXwC4cDAjb47
-         lBiiySvKUqQvZj23OKaNVsZBvnJES+SF8LKS7vLsYZNCOOvxsi1yrEAKeAmanFswhrpa
-         e1/sIWsiT5T2flIVeLgOR1ssffvhYk93wyVw1EF9Zt5XPirlV0UZLbXIAanj+MGmy6e4
-         /W6GzStYwAW43DLMWuo30D573nHrPSqoPNkC7q2n36akcQyxKQojqvNymuhZ9otgRIFY
-         QY6VI5Q/8lhyNSt/wgSmXio6A/1ibVenwhTRx90EzItQ7Axdbl04Zhf9Hz2n95E5Cf6Q
-         MAHQ==
-X-Gm-Message-State: AOAM532Au4PGBAUNaW14cplky74X4VgcXx0XM5HZjOEQMGLRNPtSNTaX
-        ZPUCdhyPM4qfBGh9E64WPDX61GRzmQT1wOY8atgcNw==
-X-Google-Smtp-Source: ABdhPJwA0k9+Vjln5UZOi+lx52eVASOA+ikS1nXATX5P8/EmF5Cc4XvKAECGJMBbP074rle3crDf6UchM5BnaWwKpoI=
-X-Received: by 2002:a4a:ea96:: with SMTP id r22mr8261639ooh.13.1635084353330;
- Sun, 24 Oct 2021 07:05:53 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=2xg8b0PhImUgFD1vlcegBC3Dkb/ADebVx1OoidLwJVg=;
+        b=Hlm/y5eX1bm/eQj7cVaUKaQEmLYrW72kqjKJcQuNr5HnHty/6WVgdDL1ZrXW/6PXS7
+         13SXLVdMvCmW8mDhzzr0kV+r4PeM/uwikzIExv7UXw3EeHyoO148cvvIVElIcoB5P4s8
+         KsC37bHVJOUag6UQGQlUxs0f3dFPi4aFVYLhdwDWltetYdpK27yTJto92AHKOsun2XAe
+         LS9dPcL5P1m0qapzNZJgf2SiYiBG1kkfktxc9bWPYQhJBPboVujq7wIYLiUyn+7i8I0Z
+         p5DQZmBYPHGKyLxbCmSqGbyHV8UBw336OtU2PLYtmHMNcYbv1K2NWyixz3YSAaJMWQ+L
+         4uSA==
+X-Gm-Message-State: AOAM531dTHTOI8uAM8roO6VdPez/X6mdOXyG7nsomMkdwE3zLbVbPXHp
+        oZVc/cyvjUZSWUtsJI9w2WY=
+X-Google-Smtp-Source: ABdhPJxmkRTwgt82Aprhr0dbm9VZy5cvpqlWfDoGR/+Iaj57ZsQhuowrE5c6LYnNo9oAKm8YXTZ55Q==
+X-Received: by 2002:a2e:2e03:: with SMTP id u3mr12779117lju.269.1635084464059;
+        Sun, 24 Oct 2021 07:07:44 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.8])
+        by smtp.gmail.com with ESMTPSA id g18sm813835lfv.25.2021.10.24.07.07.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 07:07:43 -0700 (PDT)
+Message-ID: <b6ec6d46-1eb8-42c1-33ab-0142dd142c84@gmail.com>
+Date:   Sun, 24 Oct 2021 17:07:42 +0300
 MIME-Version: 1.0
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-19-bhupesh.sharma@linaro.org> <c6df4da4-3d50-5592-1036-b9a8cebb79d9@linaro.org>
-In-Reply-To: <c6df4da4-3d50-5592-1036-b9a8cebb79d9@linaro.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Sun, 24 Oct 2021 19:35:42 +0530
-Message-ID: <CAH=2Ntx9KROVNEAR8uuMNqSiMEGf5M==aju=8PmQnKhUy1ccvQ@mail.gmail.com>
-Subject: Re: [PATCH v4 18/20] crypto: qce: Defer probing if BAM dma channel is
- not yet initialized
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] possible deadlock in snd_mixer_oss_ioctl1
+Content-Language: en-US
+To:     syzbot <syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com>,
+        alsa-devel@alsa-project.org, broonie@kernel.org, joe@perches.com,
+        lars@metafoo.de, linux-kernel@vger.kernel.org, perex@perex.cz,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com, tiwai@suse.de
+References: <00000000000067a98805cf0a3a98@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <00000000000067a98805cf0a3a98@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara,
+On 10/23/21 22:35, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    cf6c9d12750c Add linux-next specific files for 20211022
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15d3d4c4b00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e694204255ade3a3
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ace149a75a9a0a399ac7
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c0530cb00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1129c952b00000
+> 
+> The issue was bisected to:
+> 
+> commit 411cef6adfb38a5bb6bd9af3941b28198e7fb680
+> Author: Takashi Iwai <tiwai@suse.de>
+> Date:   Wed Oct 20 16:48:46 2021 +0000
+> 
+>      ALSA: mixer: oss: Fix racy access to slots
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167f6454b00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=157f6454b00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=117f6454b00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
+> Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
+> 
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.15.0-rc6-next-20211022-syzkaller #0 Not tainted
+> --------------------------------------------
+> syz-executor206/6529 is trying to acquire lock:
+> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:316 [inline]
+> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x630/0x19a0 sound/core/oss/mixer_oss.c:375
+> 
+> but task is already holding lock:
+> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:300 [inline]
+> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x4b1/0x19a0 sound/core/oss/mixer_oss.c:375
+> 
+> other info that might help us debug this:
+>   Possible unsafe locking scenario:
+> 
+>         CPU0
+>         ----
+>    lock(&mixer->reg_mutex);
+>    lock(&mixer->reg_mutex);
+> 
+>   *** DEADLOCK ***
+> 
+>   May be due to missing lock nesting notation
+> 
 
-On Wed, 20 Oct 2021 at 19:40, Thara Gopinath <thara.gopinath@linaro.org> wrote:
->
-> On 10/13/21 6:55 AM, Bhupesh Sharma wrote:
-> > Since the Qualcomm qce crypto driver needs the BAM dma driver to be
-> > setup first (to allow crypto operations), it makes sense to defer
-> > the qce crypto driver probing in case the BAM dma driver is not yet
-> > probed.
-> >
-> > Move the code leg requesting dma channels earlier in the
-> > probe() flow. This fixes the qce probe failure issues when both qce
-> > and BMA dma are compiled as static part of the kernel.
->
-> Hi Bhupesh,
->
-> I am quite curious to know the nature of probe failure you are seeing
-> with the current sequence.  I am not against changing the sequence but
-> for me when a driver is enabled, it is clocks first, interconnect next
-> and then dma. Also I have tested the current sequence on sm8150 with
-> both the modules built in as static and I have not seen the failure.
+Looks like typo in previous ALSA patch. [1] should fix it
 
-Sure. The problem I faced was the following. Let's consider the
-scenario where while the qce crypto driver and the interconnect are
-compiled as static parts of the kernel, the bam DMA driver is compiled
-as a module, then the -EPROBE_DEFER return leg from the qce crypto
-driver is very late in the probe() flow, as we first turn on the
-clocks and then the interconnect.
 
-Now the suggested linux deferred probe implementation is to return as
-early from the caling driver in case the called driver (subdev) is not
-yet ready. SInce the qce crypto driver requires the bam DMA to be set
-up first, it makes sense to move 'qce_dma_request' early in the boot
-flow. If it's not yet probed(), it probably doesn't make sense to set
-up the clks and interconnects yet in the qce driver. We can do it
-later when the bam DMA is setup.
+[1] 
+https://lore.kernel.org/alsa-devel/20211024140315.16704-1-paskripkin@gmail.com/T/#u
 
-I have tested the following combinations with the change I made in
-this patchset:
 
-1. qce - static, bam - module, interconnect - module ->
-qce_dma_request returned -EPROBE_DEFER
-2. qce - static, bam - module, interconnect - static ->
-qce_dma_request returned -EPROBE_DEFER
-3. qce - static, bam - static, interconnect - module ->
-qce_dma_request returned -EPROBE_DEFER
-4. qce - static, bam - static, interconnect - static -> no -EPROBE_DEFER
 
-Thanks,
-Bhupesh
 
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >   drivers/crypto/qce/core.c | 20 ++++++++++++--------
-> >   1 file changed, 12 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> > index cb8c77709e1e..c6f686126fc9 100644
-> > --- a/drivers/crypto/qce/core.c
-> > +++ b/drivers/crypto/qce/core.c
-> > @@ -209,9 +209,19 @@ static int qce_crypto_probe(struct platform_device *pdev)
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > +     /* qce driver requires BAM dma driver to be setup first.
-> > +      * In case the dma channel are not set yet, this check
-> > +      * helps use to return -EPROBE_DEFER earlier.
-> > +      */
-> > +     ret = qce_dma_request(qce->dev, &qce->dma);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> >       qce->mem_path = of_icc_get(qce->dev, "memory");
-> > -     if (IS_ERR(qce->mem_path))
-> > +     if (IS_ERR(qce->mem_path)) {
-> > +             qce_dma_release(&qce->dma);
-> >               return PTR_ERR(qce->mem_path);
-> > +     }
-> >
-> >       qce->core = devm_clk_get_optional(qce->dev, "core");
-> >       if (IS_ERR(qce->core)) {
-> > @@ -247,10 +257,6 @@ static int qce_crypto_probe(struct platform_device *pdev)
-> >       if (ret)
-> >               goto err_clks_iface;
-> >
-> > -     ret = qce_dma_request(qce->dev, &qce->dma);
-> > -     if (ret)
-> > -             goto err_clks;
-> > -
-> >       ret = qce_check_version(qce);
-> >       if (ret)
-> >               goto err_clks;
-> > @@ -265,12 +271,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
-> >
-> >       ret = qce_register_algs(qce);
-> >       if (ret)
-> > -             goto err_dma;
-> > +             goto err_clks;
-> >
-> >       return 0;
-> >
-> > -err_dma:
-> > -     qce_dma_release(&qce->dma);
-> >   err_clks:
-> >       clk_disable_unprepare(qce->bus);
-> >   err_clks_iface:
-> >
->
->
+With regards,
+Pavel Skripkin
