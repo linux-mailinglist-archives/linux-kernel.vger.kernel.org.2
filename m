@@ -2,89 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FB9438C72
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4C4438C73
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhJXW6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhJXW6O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:58:14 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7523FC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:55:53 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id bp15so7597137lfb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8iPIAb2h7OaftOIwaaK8T359hTECc45IqlvoZ2xjVUw=;
-        b=YxocF8NKY2oKo00KX4QpzIQQU7PQFOlGAmZZoQSVZidPw1RGIw+HtNfe2Jxg3imu4D
-         d2alc24QJdH3I7Bx8F2jzSawbwfeKtLCktB95LBKGV8k2Xf8PwXGfj2wvkCDR6/rKA9z
-         QJXotHUsQlYVSbsDKhMZReEGbxn5y1hmxODgAQ1IzJwMDAPV0ElrLMJ+Lpyf/QSJ0DKE
-         hsJd+qZ3j4pcLm1NXTllJRzMA9ZpIO9OydhKslME86bOfIq70b1+9cdju8AXGkZMldGH
-         7871uvDlVL9CY19NXZV0YwrBrPoRRbjC3zP5gTS3PrmR0H+mwYmaHeTQPfg2tBEyrcYT
-         08TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8iPIAb2h7OaftOIwaaK8T359hTECc45IqlvoZ2xjVUw=;
-        b=rrGvWwuDTpQV8rxpdYltzmGvQycPCs2BD4PtwFGckriUa+jku4R6nWqpNXMVeS7NCY
-         uUCVdTV7+iM2BxKF3OiVwUMBmBEC3EP5UlIlnsU4tNOK6PFgbguo/+eBDaWsDQoWaaru
-         3AbZJVgwgHnsYjzxkH7HX6BfCj+O6+9o/4TJawymDCh4MQx2xPtyYMM8MGd0zHhmW4ue
-         SkYDV9dfsE56Q1az3AqFwmtTWt6uAHh05k5PWjNXpadk0RQdL6uYocpTGEwqUJQfh/Q0
-         NjWOUd7Hy107XL/YtmfGlOaJ3wkNOgLjp6cZxXHR5zYLOz9wD38pQ2HkrRmmvJ0HbqzT
-         jI7A==
-X-Gm-Message-State: AOAM5336ShS3TrBDi6XRd7MU/JQ9mbf0ruISjMLtLngJv6kyxbXrNxPe
-        WWRbLCqHASm7pPV3A8yKJcMbytp1Th0j5762EyK2MQ==
-X-Google-Smtp-Source: ABdhPJwaI+UIp+fhpIMRcQ6tZotNx9Qpw/8KR5lnXFBnJ2wKLAAcdN+LxnMunGT++KoNcYwqVoujZqi8R2ej/IKm9bg=
-X-Received: by 2002:a19:6717:: with SMTP id b23mr8645155lfc.95.1635116151869;
- Sun, 24 Oct 2021 15:55:51 -0700 (PDT)
+        id S231954AbhJXW7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229625AbhJXW7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 18:59:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9ECB60F70;
+        Sun, 24 Oct 2021 22:56:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635116201;
+        bh=rYMQ5XtMn1HanoUiiZbbivTpo2vmneWSjyU+LSj6QkQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=s/Daia3dR3CsbCcCsscr25qy6+731kQijgRBryxbo9I7wqzeLu8KTT6vr5V8DkFI5
+         s+ro+s6MfEfTSXXYOdK9ZwFH9QGeDA9AEHBwfXnHU2t+n5IP/lH//XXyRB02ebux0x
+         eVfWKn96wGwhBxlfYOX+VqRYkrRbk9bwejPkrJFQrjHYPQXc1m5PsgM2PoVftVXYSo
+         iaVky3uKcJ7qhEsTez/qgn+LUvyPVaBI761e30Xonh4nXkiFP/9zanK3ARGCpeOvHL
+         0b0DaV3ilw56YQkRQ6fiZpl6dgTcigmuTl2avZ9NW2u58QiTj01z/yhHto0JuKdbTp
+         tRTIdmIQjIPPg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 46F865C0BF4; Sun, 24 Oct 2021 15:56:40 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 15:56:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 2/2] refscale: prevent buffer to pr_alert() being too long
+Message-ID: <20211024225640.GL880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
+ <20211022105111.29455-2-lizhijian@cn.fujitsu.com>
+ <20211022231555.GG880162@paulmck-ThinkPad-P17-Gen-1>
+ <e49f00c9-b9c8-a6a9-9595-6cedf5efe3e5@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <20211019221127.1953001-1-f.fainelli@gmail.com>
-In-Reply-To: <20211019221127.1953001-1-f.fainelli@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Oct 2021 00:55:40 +0200
-Message-ID: <CACRpkdbE2nxaXCMb326pYiQwU+E+FphOb3rZV0Y7z_MZXdToEw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: bcm2835: Allow building driver as a module
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e49f00c9-b9c8-a6a9-9595-6cedf5efe3e5@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:14 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+On Sun, Oct 24, 2021 at 10:46:16PM +0800, Li, Zhijian wrote:
+> 
+> on 2021/10/23 7:15, Paul E. McKenney wrote:
+> > On Fri, Oct 22, 2021 at 06:51:11PM +0800, Li Zhijian wrote:
+> > > 0Day/LKP observed that the refscale results become incompleted
+> > > when a larger nruns(such as 300) is specified.
+> > > It seems that printk() can accept < 1024 buffer at once.
+> > > Print the buffer if its length exceeds 800 simply.
+> > > 
+> > > CC: Philip Li <philip.li@intel.com>
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> > Good catch!  A couple of questions below.
+> > 
+> > 						Thanx, Paul
+> > 
+> > > ---
+> > >   kernel/rcu/refscale.c | 23 +++++++++++++----------
+> > >   1 file changed, 13 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+> > > index 2cbe2a2ba387..b1b9052010fd 100644
+> > > --- a/kernel/rcu/refscale.c
+> > > +++ b/kernel/rcu/refscale.c
+> > > @@ -604,7 +604,7 @@ static u64 process_durations(int n)
+> > >   	char *buf;
+> > >   	u64 sum = 0;
+> > > -	buf = kmalloc(128 + nreaders * 32, GFP_KERNEL);
+> > > +	buf = kmalloc(64 * 20, GFP_KERNEL);
+> > This allocation (and the one below) is 1280 bytes rather than
+> > 1024 bytes.  Why the extra couple hundred bytes?
+> 
+> Nothing special, so let's change 1024 or (800 + 64 ),which is sufficent as well ?
 
-> Update the pinctrl-bcm2835 driver to support being built as as a module
-> by converting it to a module_platform_driver() with the appropriate
-> module license, authors and description.
->
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Either works.  No problem having a few extra bytes, but 200 seemed a bit
+excessive.  ;-)
 
-Why not!
-Patch applied.
+> > >   	if (!buf)
+> > >   		return 0;
+> > >   	buf[0] = 0;
+> > > @@ -617,13 +617,15 @@ static u64 process_durations(int n)
+> > >   		if (i % 5 == 0)
+> > >   			strcat(buf, "\n");
+> > > +		if (strlen(buf) > 800) {
+> > > +			pr_alert("%s", buf);
+> > Does the tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
+> > script also require changes to handle the partial lines?
+> 
+> I missed that, i will take a look at it
 
-Yours,
-Linus Walleij
+Looking forward to seeing what you come up with.
+
+							Thanx, Paul
+
+> Thanks
+> 
+> Zhijian
+> 
+> 
+> > 
+> > Same for the later comparison against 800.
+> > 
+> > > +			buf[0] = 0;
+> > > +		}
+> > >   		strcat(buf, buf1);
+> > >   		sum += rt->last_duration_ns;
+> > >   	}
+> > > -	strcat(buf, "\n");
+> > > -
+> > > -	SCALEOUT("%s\n", buf);
+> > > +	pr_alert("%s\n", buf);
+> > >   	kfree(buf);
+> > >   	return sum;
+> > > @@ -648,7 +650,7 @@ static int main_func(void *arg)
+> > >   	VERBOSE_SCALEOUT("main_func task started");
+> > >   	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
+> > > -	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
+> > > +	buf = kzalloc(64 * 20, GFP_KERNEL);
+> > >   	if (!result_avg || !buf) {
+> > >   		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
+> > >   		errexit = true;
+> > > @@ -701,10 +703,7 @@ static int main_func(void *arg)
+> > >   	if (errexit)
+> > >   		goto err;
+> > > -	buf[0] = 0;
+> > > -	strcat(buf, "\n");
+> > > -	strcat(buf, "Runs\tTime(ns)\n");
+> > > -
+> > > +	pr_alert("Runs\tTime(ns)\n");
+> > >   	for (exp = 0; exp < nruns; exp++) {
+> > >   		u64 avg;
+> > >   		u32 rem;
+> > > @@ -712,9 +711,13 @@ static int main_func(void *arg)
+> > >   		avg = div_u64_rem(result_avg[exp], 1000, &rem);
+> > >   		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
+> > >   		strcat(buf, buf1);
+> > > +		if (strlen(buf) > 800) {
+> > > +			pr_alert("%s", buf);
+> > > +			buf[0] = 0;
+> > > +		}
+> > >   	}
+> > > -	SCALEOUT("%s", buf);
+> > > +	pr_alert("%s", buf);
+> > >   err:
+> > >   	// This will shutdown everything including us.
+> > > -- 
+> > > 2.33.0
+> > > 
+> > > 
+> > > 
+> > 
+> 
+> 
