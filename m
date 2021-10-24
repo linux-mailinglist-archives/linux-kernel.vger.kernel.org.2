@@ -2,218 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6384387D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9894387D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhJXJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:19:15 -0400
-Received: from mail-eopbgr140127.outbound.protection.outlook.com ([40.107.14.127]:14414
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231400AbhJXJTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:19:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c6YPtdFNGzojKEaMd7VvK19z0vFQbOqOFeifnwmi/GZjcyFUsGKVYVWLw+NtrRbJqvuCkgl26Ye7Bv2RPlNa85dxFJvjcS3ZvXAgH/9UVRFbg+MWd4Li7cvSFCBg+c10lx+JW3E40EpAC1KjyrWLrHExX2MuE8YVPRPeuCaCVf49s9E+r+dI/gYCoHDSlXM2Xsib4BQ+YRZbrPIHBTdLEX92xQCya0fFTnsxDj+tJYWbVESjk+mn7vd+vKJhM/AzWWqgPh24DWjkbp3oTCc08WyCBB/ebOKMUIvcmG80a8t6UUX3aesq7B+DBtkgWBQSZW005GewsH6MAHEOVx606g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N1y8Z+b7v1MGw69LmxuD5UkfLdaW83/HUpUzn8oB59M=;
- b=NjsH02LQBu8tV9nhAjqZ3IAY46UYdb6ANQTAJfX6jQD8zrAfyFxvy/k7EICjgEnS7GF1vUJMW0UtgSb8pn10lgsQYE3LDsAiqxz0WhXA7xe3KgNMV6uOgZkp0vkG/Y5ffGgtGc1QUHE4KP+fD4KH3vQYqxC3cFosP4sIEgn4cY95aE6jp7eDHjwdPUOUfjLyb95ITLporB5H4CrIca9Ns/nzDu7htGdzKP9tLT+4rihcfmpyS53cB+kOqojbPSVM6QxtqnGvTU2h/y0pVFMP/96ZJIy4fjVseQHioxbEVSYpE9+/aZg8/Ly9lOndZBOg7sl5vhdCzc+k5YG1vIo4sQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=opensynergy.com; dmarc=pass action=none
- header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1y8Z+b7v1MGw69LmxuD5UkfLdaW83/HUpUzn8oB59M=;
- b=UM4lpPLErcGRRtuJxRrStEryKodOJb/EzutPv7pcZMZrGY0XTznEeUsV9VhAKlguSFUDk5ZCdkkdcYvc4uoDXKUoYWl6xE0VaJE9H37TpWNLAY6v7p95zPy4AERXgg7KuFHY5FjqTMHpOCiabYaBX7gMjRueVhC9554fUKOmpM0=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=opensynergy.com;
-From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-To:     jbhayana@google.com, jic23@kernel.org
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
-        andy.shevchenko@gmail.com, andriy.tryshnivskyy@opensynergy.com
-Subject: [PATCH v7 2/2] iio/scmi: Add reading "raw" attribute.
-Date:   Sun, 24 Oct 2021 12:16:27 +0300
-Message-Id: <20211024091627.28031-3-andriy.tryshnivskyy@opensynergy.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
-References: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AS9PR0301CA0035.eurprd03.prod.outlook.com
- (2603:10a6:20b:469::15) To AM6PR04MB6359.eurprd04.prod.outlook.com
- (2603:10a6:20b:fc::16)
+        id S231172AbhJXJVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 05:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhJXJVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 05:21:11 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1394FC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 02:18:51 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 84-20020a1c0457000000b003232b0f78f8so9501572wme.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 02:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZgyiV7a56jcfc4Zgoz6RZ06xgGpfIBQ1EcTEps9MZjg=;
+        b=XKSV0mMdPBwyMtpoB+nMYnoMrQWo7jtJYxcm9fM447tgOmbpzq2q1uBMTJ6OCoqJsa
+         xUaNmOpA6PXlO5DIHHercncaA7oEyh/taIXVaw9rhbaccLMFTbX/Ei+55vl1/xWraSW8
+         iHxKtOzpHQaJIsXtzifgJd67lg3/C7/WbYhGJLUwcoAqEJnp96yfLaRXYOKDYdExgWKj
+         BOa3XPKe+0LaX8JPO8BjVK1KVaQAF+265jypGC5JHayXfgy23HJyUqyrg2p6pU9ssjDz
+         bmygz1sfZtTKR7XjStPG5terbAPdKGJnGJ2nOx1jp3H01BUhYyEpKImZ8hMDC0UWei/U
+         QpYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZgyiV7a56jcfc4Zgoz6RZ06xgGpfIBQ1EcTEps9MZjg=;
+        b=fsZcPuaINKtqp+DtGtmIUPw9AIIJsvGTCM2Ld1ZmBRmPCbyaNsw2KwcBHKhdWcrQUn
+         Ie5970ZBSiSQTL996v8VUnZef8mgulY8unpTtCtciCh8iX6/3zbNhtBF2fkNt2tM/9eu
+         Dmf1pR+dnwkW96FqcFg5RURzffa7BzOiVawpiW59fxUCSn4B6CWYCD2YEoUEP0rj4A3M
+         Y3pOXNMyhlMTlg/DXgpHJxvO0K7It5dFg9E01V3Wqycv2to9QPYvGy1UkUv87g056eaI
+         NXgHSjN5LCHwOrgmmgNZFTDKVUanGWUgfCb+9LWjQSLGl31PEXbsQfckcz7b1IhCCXXA
+         k2Zw==
+X-Gm-Message-State: AOAM530NumJLcBTEy4QCREqWM/mfohJVrCIYG+lv99jhnj3IVqgr+uop
+        pAuKeW3iPf6QxXB5eg3sWEmGNXLJID9Wto4akGkkgA==
+X-Google-Smtp-Source: ABdhPJxdU+4zeuFzfRihPM9WedFMwnx5jYQEiDfGFR2NApNSgsTeKpCU8nbwhdPVkMLvdUDFBZDWn1zlnN+yOpiVVf0=
+X-Received: by 2002:a1c:7918:: with SMTP id l24mr11879021wme.137.1635067129520;
+ Sun, 24 Oct 2021 02:18:49 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 61bbfd94-ce80-4c3f-61e7-08d996cf006d
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3011:
-X-Microsoft-Antispam-PRVS: <AM5PR04MB3011F7DD857EC2F86FE4F381E6829@AM5PR04MB3011.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: soKIiuDWE1tBNFf27ZzwP/ZCpjOsSmVGqt1ndYsL90FHB64o//YgFXE9BkttKN/udSxVwCrvkmXy9AaRc1qhwm5pm84cNUmm13x/bOtZM71pn2nXemsjbwQ+Un6nGapT59Fr7lMi51jB/1aKwGfZslLVieKvRbL1ybSdPRvhvV5epovuDPwK83auMv62QkxdIpFIsdK5wKAwVVkRFLKINd76LYY0MmgX1Ygtfn5i81a3y6T2kpBZkO2p+wHqZn8eolvjqt4GYP2JmNCwDio+leUS058xBlw0TKATetkmnDAnTI9/xI5LYIQBL1wO2Me8wcvMw+Sr++3dfmKRnHydNR/l07M1sBuEpvd5Sd7f478hXREdBTLRnqbnQQ10QIgx2P0FV3l8aBeKB23ANIjXZMNh4HCNU1/drsRB8ELW2ohLdq5qel0TEeWzW9f/pF+yw7Aoxz9MfgHsqCJzTxhwMZa3F/ysyBeLNdVfYPb2a7GgBso9dYnO5zdB9QqQvghImk41h447WtZZ5jew6+1Zk8NkXaPPmy4+0yfowutxW1nCxtzHQu+QbJMOWdg/AQQIAvPUko0FLgSN4w1d8IyaV3K+G0N0uiLnVUKyyEY0FffXHGOkZtybXtCPjLBepihFgSPQMHjhmJHzRfmosOQuCkXGO6vHno/z816oFlhL0Up/2cCnevWDcK0o1SEcVQX01HpEZoM2heGAIVjZl2py8Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(136003)(376002)(39830400003)(38100700002)(26005)(66556008)(5660300002)(2616005)(66476007)(38350700002)(42186006)(66946007)(36756003)(55236004)(86362001)(316002)(83380400001)(44832011)(107886003)(4326008)(508600001)(2906002)(1076003)(186003)(8936002)(8676002)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rQ0r625cE+iM3YBDc6I0/+wqtAowcubg9lXo1iRbCdfgPjktnG4GyvkT9lxW?=
- =?us-ascii?Q?y7t/3I3plTdwTy/oUZu4lxE4DwGgiJ5cP6pDA2RsuRAQ2ntPoyOMwhjvonk0?=
- =?us-ascii?Q?vLEr6ALMy6oOSRDVRA2mDL1a0iLmAaCp62IUFVXEpc19loMRXoSJ/oHDkbW7?=
- =?us-ascii?Q?zt/Zukx4Xzb91XflnLxi8Lv0haDxzTNZsEaegN5iSNyLT9HEhLPScqme0SZf?=
- =?us-ascii?Q?5+t8PEUi0EN+OPzHPHG5ODZ1nzkw/zimyVKXum6maazAhxssGGUlGRoxIqB3?=
- =?us-ascii?Q?rCdC4t4+gqRSKWaC8Gzc1xDp4Ffw432PChaGxpuxnRyeKWBGwtU1p6GLnz70?=
- =?us-ascii?Q?ENw3RF10a6K5oD9jECdgUz9VEkvjyLbgGozkmfBEpf6XS2r1+fSJM1PWi43i?=
- =?us-ascii?Q?Kk2LsAXqE24JktHnTC8RHT9ouuNyRRGmV+u3uHIcUpPwCtgGF1FwvzffYhPV?=
- =?us-ascii?Q?cVX0VmkilxGUGn0zsMDBQNOXUejqnY6SwSqX6tEFkAd4qEsH1WzOQp5nHbtK?=
- =?us-ascii?Q?MRGmyviMh8sojx9O+Qnw/i51H8gcZqc0GZguy0CCg+glV5a6RfPKuhfVvCch?=
- =?us-ascii?Q?qK5o5SAx7tIlE99IkIhzOFmM1uhNWIA8ZZSyS2e3xiAtFCoFXfeYe4Rj0Zza?=
- =?us-ascii?Q?dbAHm1UnoxAyUXgAssiIodRltA7ZjY9OTznkMJLLJ9AYmtWmBuJZ7qS8Yrbz?=
- =?us-ascii?Q?B3tQTYcB8lsZ7uUhWPoQcps+/h2qAOErO5Z6Es+3aee1mMubFoYq4gbvzd6r?=
- =?us-ascii?Q?bBCYvMbt5xZ/DuOwLBI3J36jMN1x6kspoWePDGsOHAO/jOJurkLGI7y6yck+?=
- =?us-ascii?Q?l6OvtlBHN9z+o7jVFVHcxFkw9WDtFte8KIR1+cdUdOTxrtKxtjetVIGVRC+P?=
- =?us-ascii?Q?VDOO9BFUQRAgKY+AbDt+JQun1IVMHO4pV1fPQV6YcC8X5VGOvumwaDUfk8or?=
- =?us-ascii?Q?ItUUUIeKxlFRJ/XDg2ORTzhoK8a2K5qDPlWwcGnBnC8CYw/zjEy3A7l2wakP?=
- =?us-ascii?Q?F9rd4OFroyZPCQ4yG/lQ30OZCKWCflfUIRYRKGqt/DdwYtu8+9iAm0Sze8J3?=
- =?us-ascii?Q?ERdOyrkFoy6qI3HOcwGGP5iYGCEm9TF5Ak8Zj5lp2cnXA7Ab5Csh5lXSnzQW?=
- =?us-ascii?Q?eYnoLbci/b/ug71xO+YN2g1l8MdShwqTvO9qJr8QyNFLTw7RmVK7lBAcpSyi?=
- =?us-ascii?Q?/XIy7MZdkV+nxSPn9P8qBndjuqj43usCnYDrJaAeQlwOv0k66CAMUs9Yd2Cc?=
- =?us-ascii?Q?h9xjdwOM4VSBUMqM1c7eP0Y+wzoT6LJJ1H8OnVjGf2jRwVzgLso8UGRnD58o?=
- =?us-ascii?Q?aPAKRcYNKfO2WyAn+CYLYPdk?=
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61bbfd94-ce80-4c3f-61e7-08d996cf006d
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2021 09:16:46.0650
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gkibR600ULdG0/qxrKjuv04lSDCb9lysIIPbhvL4p9bWF+wf6E3Th1jQnabcOhn1Eg/d6x3Qvpd4xmaxoBW50w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3011
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-3-guoren@kernel.org>
+ <CAAhSdy2a2XgjOpezoq=SvX2XTcAWhceKF9X9v3z7xyO9Z4DMPQ@mail.gmail.com> <CAJF2gTTKJXY6DAq=-ajAiTEY7hpMT1bqnvNndW=5EnD5EEP-cw@mail.gmail.com>
+In-Reply-To: <CAJF2gTTKJXY6DAq=-ajAiTEY7hpMT1bqnvNndW=5EnD5EEP-cw@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Sun, 24 Oct 2021 14:48:38 +0530
+Message-ID: <CAAhSdy1FfMGPWBExEVe9Vdh2s_fNP43Rp7jNdEMNmP1nmPZL_Q@mail.gmail.com>
+Subject: Re: [PATCH V5 2/3] dt-bindings: update riscv plic compatible string
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
-reading "raw" attribute in scmi_iio_read_raw.
+On Sun, Oct 24, 2021 at 2:31 PM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Sun, Oct 24, 2021 at 3:35 PM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Sun, Oct 24, 2021 at 7:03 AM <guoren@kernel.org> wrote:
+> > >
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > Add the compatible string "thead,c900-plic" to the riscv plic
+> > > bindings to support allwinner d1 SOC which contains c906 core.
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > Cc: Heiko Stuebner <heiko@sntech.de>
+> > > Cc: Rob Herring <robh@kernel.org>
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > >
+> > > ---
+> > >
+> > > Changes since V5:
+> > >  - Add DT list
+> > >  - Fixup compatible string
+> > >  - Remove allwinner-d1 compatible
+> > >  - make dt_binding_check
+> > >
+> > > Changes since V4:
+> > >  - Update description in errata style
+> > >  - Update enum suggested by Anup, Heiko, Samuel
+> > >
+> > > Changes since V3:
+> > >  - Rename "c9xx" to "c900"
+> > >  - Add thead,c900-plic in the description section
+> > > ---
+> > >  .../interrupt-controller/sifive,plic-1.0.0.yaml   | 15 ++++++++++++---
+> > >  1 file changed, 12 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > index 08d5a57ce00f..18b97bfd7954 100644
+> > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > @@ -35,6 +35,10 @@ description:
+> > >    contains a specific memory layout, which is documented in chapter 8 of the
+> > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> > >
+> > > +  The thead,c900-plic couldn't complete masked irq source which has been disabled in
+> > > +  enable register. Add thead_plic_chip which fix up c906-plic irq source completion
+> > > +  problem by unmask/mask wrapper.
+> > > +
+> >
+> > This is an incomplete description about how T-HEAD PLIC is different from
+> > RISC-V PLIC.
+> >
+> > I would suggest the following:
+> >
+> > The T-HEAD C9xx SoC implements a modified/custom T-HEAD PLIC specification
+> > which will mask current IRQ upon read to CLAIM register and will unmask the IRQ
+> > upon write to CLAIM register. The thead,c900-plic compatible string
+> > represents the
+> > custom T-HEAD PLIC specification.
+> The patch fixup the problem that when "thead,c900-plic" couldn't
+> complete masked irq source which has been disabled.
+>
+> This patch is different from the last one in that there is no
+> relationship with the auto-mask feature.
 
-Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
----
-Changes comparing v6 -> v7:
-* split into two patches: one for changes in core functionality,
-  another - for changes in the driver
+This patch adds compatible string for T-HEAD PLIC so it
+should describe how T-HEAD PLIC is different from RISC-V
+PLIC. The DT bindings document describes HW and not
+the software work-around implemented using DT bindings.
 
-Changes comparing v5 -> v6:
-* revert v5 changes since with scmi_iio_read_raw() the channel
-  can't be used by in kernel users (iio-hwmon)
-* returned to v3 with direct mode
-* introduce new type IIO_VAL_INT_64 to read 64-bit value
+Your irqchip patch uses T-HEAD PLIC compatible string to
+implement a work-around.
 
-Changes comparing v4 -> v5:
-* call iio_device_release_direct_mode() on error
-* code cleanup, fix typo
+In other words, this patch is different from the irqchip patch.
 
-Changes comparing v3 -> v4:
-* do not use scmi_iio_get_raw() for reading raw attribute due to 32-bit
-  return value limitation (actually I reverted the previous v3)
-* introduce scmi_iio_read_raw to scmi_iio_ext_info[] which can return
-  64-bit value
-* enabling/disabling and reading raw attribute is done in direct mode
+Regards,
+Anup
 
-Changes comparing v2 -> v3:
-* adaptation for changes in structure scmi_iio_priv (no member
-  named 'handle')
-
-Changes comparing v0 -> v2:
-* added an error return when the error happened during config_set
-* removed redundant cast for "readings"
-* added check if raw value fits 32 bits
-
- drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-index 7cf2bf282cef..d538bf3ab1ef 100644
---- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-+++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-@@ -279,6 +279,52 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
- 	return 0;
- }
- 
-+static int scmi_iio_read_channel_data(struct iio_dev *iio_dev,
-+			     struct iio_chan_spec const *ch, int *val, int *val2)
-+{
-+	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-+	u32 sensor_config;
-+	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
-+	int err;
-+
-+	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-+					SCMI_SENS_CFG_SENSOR_ENABLE);
-+	err = sensor->sensor_ops->config_set(
-+		sensor->ph, sensor->sensor_info->id, sensor_config);
-+	if (err) {
-+		dev_err(&iio_dev->dev,
-+			"Error in enabling sensor %s err %d",
-+			sensor->sensor_info->name, err);
-+		return err;
-+	}
-+
-+	err = sensor->sensor_ops->reading_get_timestamped(
-+		sensor->ph, sensor->sensor_info->id,
-+		sensor->sensor_info->num_axis, readings);
-+	if (err) {
-+		dev_err(&iio_dev->dev,
-+			"Error in reading raw attribute for sensor %s err %d",
-+			sensor->sensor_info->name, err);
-+		return err;
-+	}
-+
-+	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-+					SCMI_SENS_CFG_SENSOR_DISABLE);
-+	err = sensor->sensor_ops->config_set(
-+		sensor->ph, sensor->sensor_info->id, sensor_config);
-+	if (err) {
-+		dev_err(&iio_dev->dev,
-+			"Error in disabling sensor %s err %d",
-+			sensor->sensor_info->name, err);
-+		return err;
-+	}
-+
-+	*val = lower_32_bits(readings[ch->scan_index].value);
-+	*val2 = upper_32_bits(readings[ch->scan_index].value);
-+
-+	return IIO_VAL_INT_64;
-+}
-+
- static int scmi_iio_read_raw(struct iio_dev *iio_dev,
- 			     struct iio_chan_spec const *ch, int *val,
- 			     int *val2, long mask)
-@@ -300,6 +346,14 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
- 	case IIO_CHAN_INFO_SAMP_FREQ:
- 		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
- 		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-+	case IIO_CHAN_INFO_RAW:
-+		ret = iio_device_claim_direct_mode(iio_dev);
-+		if (ret)
-+			return ret;
-+
-+		ret = scmi_iio_read_channel_data(iio_dev, ch, val, val2);
-+		iio_device_release_direct_mode(iio_dev);
-+		return ret;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -381,7 +435,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
- 	iio_chan->type = type;
- 	iio_chan->modified = 1;
- 	iio_chan->channel2 = mod;
--	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
-+	iio_chan->info_mask_separate =
-+		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
- 	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
- 	iio_chan->info_mask_shared_by_type_available =
- 		BIT(IIO_CHAN_INFO_SAMP_FREQ);
--- 
-2.17.1
-
+>
+> >
+> > Regards,
+> > Anup
+> >
+> > >  maintainers:
+> > >    - Sagar Kadam <sagar.kadam@sifive.com>
+> > >    - Paul Walmsley  <paul.walmsley@sifive.com>
+> > > @@ -42,11 +46,16 @@ maintainers:
+> > >
+> > >  properties:
+> > >    compatible:
+> > > -    items:
+> > > +   oneOf:
+> > > +    - items:
+> > >        - enum:
+> > > -          - sifive,fu540-c000-plic
+> > > -          - canaan,k210-plic
+> > > +        - sifive,fu540-c000-plic
+> > > +        - canaan,k210-plic
+> > >        - const: sifive,plic-1.0.0
+> > > +    - items:
+> > > +      - enum:
+> > > +        - allwinner,sun20i-d1-plic
+> > > +      - const: thead,c900-plic
+> > >
+> > >    reg:
+> > >      maxItems: 1
+> > > --
+> > > 2.25.1
+> > >
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
