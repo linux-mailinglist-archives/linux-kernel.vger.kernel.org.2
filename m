@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED055438BC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A60C438BCF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhJXUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 16:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        id S232009AbhJXU2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 16:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhJXUTa (ORCPT
+        with ESMTP id S231872AbhJXU2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 16:19:30 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCF6C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:17:09 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id f16so2988016ljo.12
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=WDtnAJGpU46SQZqjSlsHD7MRfRSPT/f8zfl1iHNdYtI=;
-        b=LjtQPuV6PrpjFGRsCotTV7vqIvnwOj+kopYRsvybW0YkyYU0moLTLdt9o7OwOHWOH3
-         PT6FlyHKxcKExnS+a1XcLVgk/EZPKus3pAJkQDMYwa1kSBne63PaYVyKiDGeyzH2mxOW
-         HLTIXW6SUJUvzPkioZa4BbU6Gl4VllzLwtemv4PDUN/ffZeFmbnVntMG9qhOP0biBOTp
-         LDYvkN3fHQqULZKhEG9GiJwx4/XXoWQ0KVjHckayeu5bmuVA04FBv0Ct+ne+5j8YQlaV
-         teYkSTrNppjLsi8L4isMUFl0xsX3eIA8e6MeUeN4KnUZH69gLq/eue2djVkE/x6q1iP1
-         84BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=WDtnAJGpU46SQZqjSlsHD7MRfRSPT/f8zfl1iHNdYtI=;
-        b=QDHJOdpkB8LtPUFJjU1p9jnFrUmysxyI67BFaheWq6OZXio2zvRIDqspW6S2+cYHrx
-         yDfWHpKzQY2AMSzzslRLQQYZFmYh+BrdPQ/qmoHtUXdTy953ZrWQvDP6A4sD5PcahPEv
-         lgPy78gdblO/blWVNbPv4cU5iwudupfAvnefqd0+9BgAXhLXXoSn+Q0Ip40U9te3n/yU
-         414JPWO0EBAlqEYxZUwuqN5zRrC+6at24jZRaxNqP/AG3KFtsOQVJbiwWqAtejII82CZ
-         bQHmjcx22EZ1Ws4h/ZPqsiVC4xMjAEFWpRUBnEzRNSIDKNb+X15DQZ+EDSVNT+X3CItt
-         AYXw==
-X-Gm-Message-State: AOAM532GmQeoP2sVhYgbrV2GIrG9EfN6InQmo5W6cnUDv2x7sCHElzgq
-        yU/tXJGTEqK0gUTKoUZDlpDpcZVwtYAOIfjZqRsQHA==
-X-Google-Smtp-Source: ABdhPJzPtzdaNPiGyNknTLn+DYWFbWh2q5eKDNmvFWsCNNqGsD5sOlq1as+JMN3fv0/k8vB4MgkcKWQozRyoRkMykKQ=
-X-Received: by 2002:a2e:9c0b:: with SMTP id s11mr14583624lji.259.1635106627762;
- Sun, 24 Oct 2021 13:17:07 -0700 (PDT)
+        Sun, 24 Oct 2021 16:28:45 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE26C061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8O9gkYAmFcVK2IsDTWyn2VcW39mplgtD5t4PDmHXu1U=; b=nSaHE3DkXdmeZ1O0lor5XmoZPe
+        AW5ZCFNAxuvaGwR9xicRQr5bwZzNSKltIJlzzKIfb2B41sFIiWKNLHMxaykVDRj1MhManwnqgrj/S
+        x9ZQedtZPEiyRNOygnlTPudecxV3ArZrm3/abUvlXCE5ztjj0qNfwUwjLOdeaytVsz4+BQmuUtfKu
+        IfshdYkYPo3di9x0o2/Dswha1avGXlmWtX9n1EQwYW5XDl8OuvEs3VIR+MXA4vtI6SMeI7B4nhLi/
+        bCUHBXPGkqMQcySiXD1C4DcC1niCP7nlV+Bx4tLMqyIEP53flEsPKfa2yZXIi/Rn42ghwVnMeRJf4
+        FofPugpg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55272)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mek49-0003Y2-8V; Sun, 24 Oct 2021 21:26:01 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mek46-0003JU-0B; Sun, 24 Oct 2021 21:25:58 +0100
+Date:   Sun, 24 Oct 2021 21:25:57 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hsinyi@chromium.org, fshao@chromium.org, nancy.lin@mediatek.com,
+        singo.chang@mediatek.com
+Subject: Re: [PATCH] mailbox: remove the error message when gce clk is defer
+Message-ID: <YXXBVTEbjPiBm1un@shell.armlinux.org.uk>
+References: <20211023164831.25690-1-jason-jh.lin@mediatek.com>
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 24 Oct 2021 22:16:56 +0200
-Message-ID: <CACRpkdYY43-Dj=ZQ3brn41-3OZm0_vT+qHmcG9=EsMFy6J_Q_g@mail.gmail.com>
-Subject: [GIT PULL] pin control fixes for v5.15
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Sachi King <nakato@nakato.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211023164831.25690-1-jason-jh.lin@mediatek.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Oct 24, 2021 at 12:48:31AM +0800, jason-jh.lin wrote:
+> Remove the error message when gce clk is defer.
+> 
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  drivers/mailbox/mtk-cmdq-mailbox.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+> index fd5576a9f8b4..684b8aa1e445 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -577,7 +577,8 @@ static int cmdq_probe(struct platform_device *pdev)
+>  				snprintf(clk_id, sizeof(clk_id), "%s%d", clk_name, alias_id);
+>  				cmdq->clocks[alias_id].id = clk_id;
+>  				cmdq->clocks[alias_id].clk = of_clk_get(node, 0);
+> -				if (IS_ERR(cmdq->clocks[alias_id].clk)) {
+> +				if (IS_ERR(cmdq->clocks[alias_id].clk) &&
+> +				    PTR_ERR(cmdq->clocks[alias_id].clk) != -EPROBE_DEFER) {
+>  					dev_err(dev, "failed to get gce clk: %d\n", alias_id);
+>  					return PTR_ERR(cmdq->clocks[alias_id].clk);
+>  				}
 
-here are some late pin control fixes, the most generally annoying
-will probably be the AMD IRQ storm fix affecting the Microsoft
-surface.
+So when you get -EPROBE_DEFER, you omit the error message _and_ ignore
+the -EPROBE_DEFER. Is that really what you want to do?
 
-Details in the signed tag.
-
-Please pull them in!
-
-Yours,
-Linus Walleij
-
-The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc=
-:
-
-  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v5.15-3
-
-for you to fetch changes up to 4e5a04be88fe335ad5331f4f8c17f4ebd357e065:
-
-  pinctrl: amd: disable and mask interrupts on probe (2021-10-16 23:56:59 +=
-0200)
-
-----------------------------------------------------------------
-Pin control fixes for the v5.15 series:
-
-- Three fixes pertaining to Broadcom DT bindings. Some stuff
-  didn't work out as inteded, we need to back out.
-
-- A resume bug fix in the STM32 driver.
-
-- Disable and mask the interrupts on probe in the AMD pinctrl
-  driver, affecting Microsoft surface.
-
-----------------------------------------------------------------
-Fabien Dessenne (1):
-      pinctrl: stm32: use valid pin identifier in stm32_pinctrl_resume()
-
-Rafa=C5=82 Mi=C5=82ecki (3):
-      Revert "dt-bindings: pinctrl: bcm4708-pinmux: rework binding to
-use syscon"
-      dt-bindings: pinctrl: brcm,ns-pinmux: drop unneeded CRU from example
-      Revert "pinctrl: bcm: ns: support updated DT binding as syscon subnod=
-e"
-
-Sachi King (1):
-      pinctrl: amd: disable and mask interrupts on probe
-
- .../devicetree/bindings/mfd/brcm,cru.yaml          | 11 ++++----
- .../bindings/pinctrl/brcm,ns-pinmux.yaml           | 33 +++++++++---------=
-----
- drivers/pinctrl/bcm/pinctrl-ns.c                   | 29 +++++++-----------=
--
- drivers/pinctrl/pinctrl-amd.c                      | 31 ++++++++++++++++++=
-++
- drivers/pinctrl/stm32/pinctrl-stm32.c              |  4 +--
- 5 files changed, 63 insertions(+), 45 deletions(-)
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
