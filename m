@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5AE438942
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 15:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4A6438946
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 15:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhJXNyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 09:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
+        id S231563AbhJXNzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 09:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhJXNye (ORCPT
+        with ESMTP id S230021AbhJXNzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 09:54:34 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FFC061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:52:13 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id o42so3868239vkf.9
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:52:13 -0700 (PDT)
+        Sun, 24 Oct 2021 09:55:23 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEC7C061767
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:53:02 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id r6so11883045oiw.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=id1p4qGVhAju1dNKS9ewXd/BAGNoNoVxYAeg/MMzZkk=;
-        b=S7J2ND/kmDgFgy4AH1WOhj0CUNoHlN2y+ArUyM1B26rKOQ8Ax8jXgz8ou6NJqRrH5X
-         VQcJJIZ1OJBzSD7cW03ffYhT5wnSiG02IY8lj3QReK9OmkiIgUcVqfnRMlAwAGw5V7xy
-         Sfp0M9wvNWJnH6aO1HhKwXg8uIpani44NbMRtNLbxZBf95TyIpc9Kd1dcYUWJ37R+/jQ
-         7Pm3jQc8CodMCVtUMzgbHxXuEqZh3sgOAlDJNgoSvK/D+wRx4yM1viMwDxHPj6+Jtk8S
-         jEyOe6gFlDpwZ9HrUsiaW2etn7WeNTRQwET3c5kzxi7uaAhWGwYTVIGtFwur6YjO25/6
-         0K7g==
+        bh=x+Jl0hYAJo4q4OVBu8UADJo86vPV7s9MdDgSLack3Ms=;
+        b=KaFhuHL+6HbA4J0fnTUq2UD/GB9EhCiJkFWSj/mkmbIpM8NpSZt8oHwR30syZ9f+Bd
+         X0DMniHP66b8er4+4kRj+DMWnQ7X/W3Vnn9hrQcoa+ZHhm8pnOE/nTYze+hHGsaTOvEH
+         hf9cDH/hhGRctA4Myyl3jn02jSnI8ZkF9owHNSLQI4MnWF5ljtbBMzckVQ1KYIjhYM8+
+         XT91+3d+En3RyxzcYcproCAnvnuMmF2LBmXraYx3lKp88DnMTHRNKqs2atNc15iRDOIf
+         U5BWHrIK2U46kx5aI6qUUfKCpIbG7Eg2VmU42sKlwOtKMIertF1kToHPektcwXJl1NpJ
+         Tz2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=id1p4qGVhAju1dNKS9ewXd/BAGNoNoVxYAeg/MMzZkk=;
-        b=mTpGopt+8UW+lYqwMVwmWMFa4QrI7UlK69cPHvYyHbAZ3kvE2awYywfNFRAQMHRUkZ
-         0Tgzq24ygkITB9EDy0s2ZYKA9RHPVtBP1CS7T1M4g2yxKzZk5i+u4qpNkf/vRY0xNuxY
-         Fi2FVnQ2nLMAFexqq+lRfCvKRjSIZPIT/Tj18xR7jiLxeys/iuYq+nejwerilv46I4kW
-         KZrYCS4CiOLD9beFaMaJsPLa8h95wpzHvwuOC+HktWEL2EJwT/tRfHuqz0NCxLnI4Swg
-         9GUk4gDCTDRts7XjZQztDQibVGpJjd3uG5mqCZYO3Ddt4jke124HI5ptUITLUKgE6N7p
-         aqIg==
-X-Gm-Message-State: AOAM532iOQrYC+W3cb+UHIJeDn/IV7/KXScYsSQAI1IVmscJAlNsg00b
-        Mqr3heAPMcabtFb18uGSugdSqCFzWXA=
-X-Google-Smtp-Source: ABdhPJwD/h8kn75KG4zXyVvvtv3guEsahStyDel6AouTIS6PGxiPa0eGiyGCxy3nAxj9JWgfNelTGw==
-X-Received: by 2002:a05:6122:2029:: with SMTP id l41mr10703566vkd.10.1635083532605;
-        Sun, 24 Oct 2021 06:52:12 -0700 (PDT)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id 10sm7880219vkl.55.2021.10.24.06.52.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Oct 2021 06:52:12 -0700 (PDT)
-Received: by mail-ua1-f49.google.com with SMTP id e2so16883988uax.7
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:52:12 -0700 (PDT)
-X-Received: by 2002:a67:e0d1:: with SMTP id m17mr10843041vsl.22.1635083531874;
- Sun, 24 Oct 2021 06:52:11 -0700 (PDT)
+        bh=x+Jl0hYAJo4q4OVBu8UADJo86vPV7s9MdDgSLack3Ms=;
+        b=yNvHYZ77ALRFpvKjb3xpKq3efOQghHA98Dza/qgXXbFKEFfpcqQTblYq85JO7EOiSw
+         U64qN1UrO+9AuCtNOZ1xictt6Q/EnFuPtC51NOvLLlF+d74y4MuzVQBcRCoIr0fhwC+e
+         GG4x3Zh9GRpHKzhbmtNcbTLCCg07xfb7wzIgOvi7QTz3UHkzn92x0GnpohU2I4mLKbC6
+         cgj28MqcPlhr2d26QIhNzyj/hJtHMAQCnWmV88xYpwVL6ReGj24yBorXksgjiXTI2qLR
+         yjIsenirho1ZaxzyWoFoLPxYGhSlCdTtrGWdQhd71rkGczX7ZLqAV+L8IXiv9DPR6I7C
+         Uf/A==
+X-Gm-Message-State: AOAM531Z2c9CyKWFocbeqh7d99pJTnYTAHT3fEyPAzvLfZUrBKO7Hces
+        hklHh6wSTw9SUJ1LFeODSiv6MX0EIe/5rjk70A8cqQ==
+X-Google-Smtp-Source: ABdhPJxGDYKcwK6TbkAwG6je1mVoZsbdcex9+R6FHaO7vT7dqOKuafRi17KJ3g9iuXiR2XrK894RyPfakJGJYqrrwE0=
+X-Received: by 2002:aca:58d6:: with SMTP id m205mr18843393oib.126.1635083581982;
+ Sun, 24 Oct 2021 06:53:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <fb712f802228ab4319891983164bf45e90d529e7.1635076200.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <fb712f802228ab4319891983164bf45e90d529e7.1635076200.git.christophe.jaillet@wanadoo.fr>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sun, 24 Oct 2021 09:51:35 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSftgpOGxAxRE5u9o6gT_exaLtC2JkBz=iq21qe+tTTomA@mail.gmail.com>
-Message-ID: <CA+FuTSftgpOGxAxRE5u9o6gT_exaLtC2JkBz=iq21qe+tTTomA@mail.gmail.com>
-Subject: Re: [PATCH] gve: Fix a possible invalid memory access
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     jeroendb@google.com, csully@google.com, awogbemila@google.com,
-        davem@davemloft.net, kuba@kernel.org, bcf@google.com,
-        gustavoars@kernel.org, edumazet@google.com, jfraker@google.com,
-        yangchun@google.com, xliutaox@google.com, sagis@google.com,
-        lrizzo@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-16-bhupesh.sharma@linaro.org> <6aecc0aa-6219-d440-0075-39935aec0c7e@linaro.org>
+In-Reply-To: <6aecc0aa-6219-d440-0075-39935aec0c7e@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Sun, 24 Oct 2021 19:22:50 +0530
+Message-ID: <CAH=2NtyCMX-7Jk7kZKVKoQopJ_SQUiG7GRqDoDhm9rsCKigWJw@mail.gmail.com>
+Subject: Re: [PATCH v4 15/20] crypto: qce: Add new compatibles for qce crypto driver
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
+        bhupesh.linux@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 7:52 AM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
+Hi Thara and Vladimir,
+
+On Wed, 20 Oct 2021 at 19:37, Thara Gopinath <thara.gopinath@linaro.org> wrote:
 >
-> It is spurious to allocate a bitmap for 'num_qpls' bits and record the
-> size of this bitmap with another value.
 >
-> 'qpl_map_size' is used in 'drivers/net/ethernet/google/gve/gve.h' with
-> 'find_[first|next]_zero_bit()'.
-> So, it looks that memory after the allocated 'qpl_id_map' could be
-> scanned.
-
-find_first_zero_bit takes a length argument in bits:
-
-    /**
-     * find_first_zero_bit - find the first cleared bit in a memory region
-     * @addr: The address to start the search at
-     * @size: The maximum number of bits to search
-
-qpl_map_size is passed to find_first_zero_bit.
-
-It does seem roundabout to compute first the number of longs needed to
-hold num_qpl bits
-
-    BITS_TO_LONGS(num_qpls)
-
-then again compute the number of bits in this buffer
-
-    * sizeof(unsigned long) * BITS_PER_BYTE
-
-Which will simply be num_qpls again.
-
-But, removing BITS_PER_BYTE does not arrive at the right number.
-
-
 >
-> Remove the '* BITS_PER_BYTE' to have allocation and length be the same.
+> On 10/13/21 6:55 AM, Bhupesh Sharma wrote:
+> > Since we decided to use soc specific compatibles for describing
+> > the qce crypto IP nodes in the device-trees, adapt the driver
+> > now to handle the same.
+> >
+> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >   drivers/crypto/qce/core.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> > index 033c7278aa5d..2ab0b97d718c 100644
+> > --- a/drivers/crypto/qce/core.c
+> > +++ b/drivers/crypto/qce/core.c
+> > @@ -298,8 +298,8 @@ static int qce_crypto_remove(struct platform_device *pdev)
+> >   }
+> >
+> >   static const struct of_device_id qce_crypto_of_match[] = {
+> > -     { .compatible = "qcom,crypto-v5.1", },
+> Hi Bhupesh,
 >
-> Fixes: f5cedc84a30d ("gve: Add transmit and receive support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> This patch is completely speculative and un-tested!
-> You'll be warned.
-> ---
->  drivers/net/ethernet/google/gve/gve_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I think we should keep the qcom,crypto-v5.1 here for backward
+> compatibility. Since v5.4 was added only recently it might be okay to
+> remove it.
+
+Thanks, I will fix this in the v5.
+
+Regards,
+Bhupesh
+
+> > -     { .compatible = "qcom,crypto-v5.4", },
+> > +     { .compatible = "qcom,ipq6018-qce", },
+> > +     { .compatible = "qcom,sdm845-qce", },
+> >       {}
+> >   };
+> >   MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
+> >
 >
-> diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-> index 7647cd05b1d2..19fe9e9b62f5 100644
-> --- a/drivers/net/ethernet/google/gve/gve_main.c
-> +++ b/drivers/net/ethernet/google/gve/gve_main.c
-> @@ -866,7 +866,7 @@ static int gve_alloc_qpls(struct gve_priv *priv)
->         }
->
->         priv->qpl_cfg.qpl_map_size = BITS_TO_LONGS(num_qpls) *
-> -                                    sizeof(unsigned long) * BITS_PER_BYTE;
-> +                                    sizeof(unsigned long);
->         priv->qpl_cfg.qpl_id_map = kvcalloc(BITS_TO_LONGS(num_qpls),
->                                             sizeof(unsigned long), GFP_KERNEL);
->         if (!priv->qpl_cfg.qpl_id_map) {
-> --
-> 2.30.2
 >
