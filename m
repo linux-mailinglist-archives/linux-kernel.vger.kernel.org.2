@@ -2,139 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A697438930
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 15:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D004B438934
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 15:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhJXNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 09:36:40 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:7494 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231524AbhJXNgi (ORCPT
+        id S231684AbhJXNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 09:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhJXNhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 09:36:38 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3A9t1HmaoBqkCDxLY/CATptfhkGxVeBmJJZBIvgKr?=
- =?us-ascii?q?LsJaIsI5as4F+vmNKXz3XMvqJZmqmeIxwYNjl8R8F6pXWz9Y1TgNv/HtnQiMRo?=
- =?us-ascii?q?6IpJ/zDcB6oYHn6wu4v7a5fx5xHLIGGdajYd1eEzvuWGuWn/SYUOZ2gHOKmUbe?=
- =?us-ascii?q?cYHwpHGeIdQ964f5ds79g6mJXqYjha++9kYuaT/z3YDdJ6RYtWo4nw/7rRCdUg?=
- =?us-ascii?q?RjHkGhwUmrSyhx8lAS2e3E9VPrzLEwqRpfyatE88uWSH44vwFwll1418SvBCvv?=
- =?us-ascii?q?9+lr6WkYMBLDPPwmSkWcQUK+n6vRAjnVqlP9la7xHMgEK49mKt4kZJNFlsZ2iS?=
- =?us-ascii?q?QYrP6TKsOoAURhECDw4NqpDkFPCCSHm75fPlxyfLRMAxN0rVinaJ7Yw/+9rAWB?=
- =?us-ascii?q?D6LoUJSsLaQGOnfmezby1S+Jtgd9lJ87uVKsdu3hmwirZBPAiSJHrTKDD5Nse1?=
- =?us-ascii?q?zA17uhUGu3CasYFQTVoaxjFYgYJPU0YYLo8m+qsrnv4fjlWpUiTrKw77nOVyxZ?=
- =?us-ascii?q?+uJDvN8HVUt6NXsVJhEeAom/a4yL+GB5yHMSW1D6A+XGEheLVmy7/HoUIG9WQ+?=
- =?us-ascii?q?vd0jXWI2mMUDBQcTh29rOXRokq/Xc9Pbk8Z4CwjqYAs+0GxCNrwRRu1pDiDpBF?=
- =?us-ascii?q?0c8BbDsUk5wyXjKnZ+QCUAi4DVDEpVTCMnKfaXhRzjhnQwYyvXmcp7dWopbum3?=
- =?us-ascii?q?u/8hVuP1eI9dAfuvRM5cDY=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Av40FR6NFAewFFcBcTv2jsMiBIKoaSvp037BL?=
- =?us-ascii?q?7TEUdfUxSKGlfq+V8sjzqiWftN98YhAdcLO7Scy9qBHnhP1ICOAqVN/MYOCMgh?=
- =?us-ascii?q?rLEGgN1+vf6gylMyj/28oY7q14bpV5YeeaMXFKyer8/ym0euxN/OW6?=
-X-IronPort-AV: E=Sophos;i="5.87,178,1631548800"; 
-   d="scan'208";a="116340916"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 24 Oct 2021 21:34:16 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 4B2074D0D9DC;
-        Sun, 24 Oct 2021 21:34:12 +0800 (CST)
-Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Sun, 24 Oct 2021 21:34:09 +0800
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Sun, 24 Oct 2021 21:34:07 +0800
-Received: from [192.168.122.212] (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Sun, 24 Oct 2021 21:34:07 +0800
-Subject: Re: [PATCH 1/2] refscale: simplify the errexit checkpoint
-To:     <paulmck@kernel.org>
-CC:     <dave@stgolabs.net>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
- <20211022231048.GF880162@paulmck-ThinkPad-P17-Gen-1>
-From:   "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Message-ID: <4be14a8a-113f-fb37-75e0-bffd5bebf45a@cn.fujitsu.com>
-Date:   Sun, 24 Oct 2021 21:34:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 24 Oct 2021 09:37:04 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257BFC061243
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:34:44 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id v77so11836218oie.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 06:34:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZT5fAPNyma5e8WyOr3A/N0atEQZClP4tTp5HN0LYpNU=;
+        b=pus/LjZ4Z8Uirsug0xo7ImF4DBZk6R688dmmvvXAqXfgj1hDPomu/UBKljPuTJAV94
+         X8fiCSxBQziChqPRPDhRvOiB7o/fFUSoZxnbz927sXDnCKV0P3uITNT80A6Lf7yopguU
+         g3kWkCaeGmwenOfQPS+J3W1cYuzCVFTYBbaH70cRvwrCBDuCjFsZnz9Bd5W0PPJEgNQ9
+         deCidFezCiIh89PfAv0Fj/JYXqOHTyJ7oOgWOBXzCE98R3hRsdv4dWD5wxWAphgTFZfU
+         aGRtp7abMFk47nKdNqsSjQ7i1TBzmc4KhIZpej8jgrs/MAwzmdz+aOw7dD+Aezlp/NvO
+         FR7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZT5fAPNyma5e8WyOr3A/N0atEQZClP4tTp5HN0LYpNU=;
+        b=d4wNz6Q2MK43QiQoit2virRKXwCZIiMFbLc1k/z8OHxKcSJ4p3EAsB6OZkcMt4yWNP
+         Ju/pxlmasIVC1D2hW6/bW1scxEv5dgdv6cQuUQ8+sKakyuyND8NCqlRW5kNxDxpPyjNM
+         B9Hupyf8O8QtEgRhyKGdGa2t6tpFuDqQwo0/YvmLThSDATt3oDaxIC48xBRdgG1KjuET
+         wy+v7i67q6fgUs7HUALpwVhn1sRqwtjyGPEV9KHnuUapS2b8pTz8F1XWYMljKFReOcdO
+         IM29CGtvWYTSYCehzn2ZYG8+rj0lkXxV1vMSMlxYOsmdTxmRDRQxEjeGEcodJP2W2znY
+         2oYQ==
+X-Gm-Message-State: AOAM531KjMhQMrBNm3E2rdlT1xWlpbueUZ+4g+hzFlu9wt1f7i/UBz+K
+        SS3n8WpdX2NzaVH15n5n8WwIw11hpuRTIZEMQP/rYg==
+X-Google-Smtp-Source: ABdhPJw6MtPfZNRBtb5CTwISKGRCnQMN0HVMf5dU8udAdvoGUoEQeJDigLYoasCwbfbNEh6DyJ9w8rMN2i9KfCY1QwQ=
+X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr8188043oib.40.1635082483473;
+ Sun, 24 Oct 2021 06:34:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211022231048.GF880162@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: 4B2074D0D9DC.AE990
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-17-bhupesh.sharma@linaro.org> <5f69019a-86c7-fac5-2758-1be9a9092678@linaro.org>
+In-Reply-To: <5f69019a-86c7-fac5-2758-1be9a9092678@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Sun, 24 Oct 2021 19:04:32 +0530
+Message-ID: <CAH=2NtzMvXz6FRCApdxP1FFM9=73yfm07YibWGL-m0+KSkweaQ@mail.gmail.com>
+Subject: Re: [PATCH v4 16/20] crypto: qce: core: Make clocks optional
+To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
+        bhupesh.linux@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vladimir,
 
-on 2021/10/23 7:10, Paul E. McKenney wrote:
-> On Fri, Oct 22, 2021 at 06:51:10PM +0800, Li Zhijian wrote:
->> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> Good catch!
+On Thu, 14 Oct 2021 at 00:53, Vladimir Zapolskiy
+<vladimir.zapolskiy@linaro.org> wrote:
 >
-> But given that errexit is only set once at the beginning, why not
-> eliminate this local variable in favor of a goto at the point that it
-> is currently assigned to?  That would permit further simplification.
-
-It sounds pretty good, i will update it later.
-
-Thanks
-Zhijian
-
-
-> 							Thanx, Paul
+> Hi Bhupesh,
 >
->> ---
->>   kernel/rcu/refscale.c | 17 ++++++++---------
->>   1 file changed, 8 insertions(+), 9 deletions(-)
->>
->> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
->> index 66dc14cf5687..2cbe2a2ba387 100644
->> --- a/kernel/rcu/refscale.c
->> +++ b/kernel/rcu/refscale.c
->> @@ -698,26 +698,25 @@ static int main_func(void *arg)
->>   	// Print the average of all experiments
->>   	SCALEOUT("END OF TEST. Calculating average duration per loop (nanoseconds)...\n");
->>   
->> -	if (!errexit) {
->> -		buf[0] = 0;
->> -		strcat(buf, "\n");
->> -		strcat(buf, "Runs\tTime(ns)\n");
->> -	}
->> +	if (errexit)
->> +		goto err;
->> +
->> +	buf[0] = 0;
->> +	strcat(buf, "\n");
->> +	strcat(buf, "Runs\tTime(ns)\n");
->>   
->>   	for (exp = 0; exp < nruns; exp++) {
->>   		u64 avg;
->>   		u32 rem;
->>   
->> -		if (errexit)
->> -			break;
->>   		avg = div_u64_rem(result_avg[exp], 1000, &rem);
->>   		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
->>   		strcat(buf, buf1);
->>   	}
->>   
->> -	if (!errexit)
->> -		SCALEOUT("%s", buf);
->> +	SCALEOUT("%s", buf);
->>   
->> +err:
->>   	// This will shutdown everything including us.
->>   	if (shutdown) {
->>   		shutdown_start = 1;
->> -- 
->> 2.33.0
->>
->>
->>
+> On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
+> > From: Thara Gopinath <thara.gopinath@linaro.org>
+> >
+> > On certain Snapdragon processors, the crypto engine clocks are enabled by
+> > default by security firmware and the driver need not/ should not handle the
+> > clocks. Make acquiring of all the clocks optional in crypto enginer driver
 >
+> typo, s/enginer/engine/
+>
+> > so that the driver intializes properly even if no clocks are specified in
+>
+> typo, s/intializes/initializes/
 
+Thanks, I will fix these typos in v5.
 
+Regards,
+Bhupesh
+
+> > the dt.
+> >
+> > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> > ---
+> >   drivers/crypto/qce/core.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> > index 2ab0b97d718c..576c416461f9 100644
+> > --- a/drivers/crypto/qce/core.c
+> > +++ b/drivers/crypto/qce/core.c
+> > @@ -213,19 +213,19 @@ static int qce_crypto_probe(struct platform_device *pdev)
+> >       if (IS_ERR(qce->mem_path))
+> >               return PTR_ERR(qce->mem_path);
+> >
+> > -     qce->core = devm_clk_get(qce->dev, "core");
+> > +     qce->core = devm_clk_get_optional(qce->dev, "core");
+> >       if (IS_ERR(qce->core)) {
+> >               ret = PTR_ERR(qce->core);
+> >               goto err_mem_path_put;
+> >       }
+> >
+> > -     qce->iface = devm_clk_get(qce->dev, "iface");
+> > +     qce->iface = devm_clk_get_optional(qce->dev, "iface");
+> >       if (IS_ERR(qce->iface)) {
+> >               ret = PTR_ERR(qce->iface);
+> >               goto err_mem_path_put;
+> >       }
+> >
+> > -     qce->bus = devm_clk_get(qce->dev, "bus");
+> > +     qce->bus = devm_clk_get_optional(qce->dev, "bus");
+> >       if (IS_ERR(qce->bus)) {
+> >               ret = PTR_ERR(qce->bus);
+> >               goto err_mem_path_put;
+> >
+>
+> --
+> Best wishes,
+> Vladimir
