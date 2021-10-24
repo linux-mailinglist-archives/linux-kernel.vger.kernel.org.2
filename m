@@ -2,208 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445B343873D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 09:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F78C438740
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 09:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhJXH06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 03:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJXH05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 03:26:57 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E06C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:24:37 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id n63so11032606oif.7
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x7OYQwoYkeRckzPRsgtpX50uWtmx0YcUa+5Fv90jHdA=;
-        b=k9Fenb2jDACs5xaVA0IoNAvx24b9tGvhpn3m6QA6xV5NDC3ucwjqxgTBPc09jH21BZ
-         W7GGfi71r1ILeZIF34CdsTx1vW1jGY+X3+DPzSZWMR3+Wiwjx3SfkeNAS0t2aWmKuoqB
-         r3HnjE830rKnSuG924s8YYUWGfHRh4U9FwHLfq7zVQEganzbUOc2P7jc2qD8fyU6A5eb
-         p0fvc2JClWzASt++PEGz1K3QvWkI3EdSfbrqzISP62VrmEg2wpMNF0iYApz+6w5DoAen
-         ZriJ3EZAUlyXkbVj3nskfRWICFRnyThSQoNKZOrBN/hxIGoQ4l9ePu3ME7/gEFnnMEhg
-         I7QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x7OYQwoYkeRckzPRsgtpX50uWtmx0YcUa+5Fv90jHdA=;
-        b=0pdMd1h73j+z84uf7+hnv1Dm+xuOR135q2xxnxPaGVjiE60PPEHpmb/zZCILncIz73
-         JB+z0tPT4jziZkWZz3eZyIJXfnS9ZO73AEKUtgGJHbZSnIIIE2nK1z4wqRelgnhkVo1g
-         MYbMi8s/r3L09ygvx88S2YZMHoYFQAKKG7BhVrOOGJFbW0lU6M5+Fz4nHp8XD4EY4fCy
-         5wMw79vuOlAG+a1X0c6AUGtbO5JnDu5BIdzxLfd8fDaDFQy6u5er62EQz+u0a/vNICll
-         BIAXFeerYJl3gCtfF8ax499FmUpP5aLRMuYpXRkSXj/h50stzJLrHw7rg7u8/7V3/9L2
-         qBEw==
-X-Gm-Message-State: AOAM530VnMGP621F6m3rLkA5xAMT7ZnUTDXaCn1cWmZJ1/SMNv4b+HeE
-        tm0szlRMW/GZm+fcaJ4OYYMQFw==
-X-Google-Smtp-Source: ABdhPJzhK2nzbshbsNWGWi5xMnEfyh8jxAj1kHDnZnsvCQHl+PFmzf0ngrZKVmrCva99egMcUbPbNA==
-X-Received: by 2002:a54:4688:: with SMTP id k8mr17755219oic.70.1635060276373;
-        Sun, 24 Oct 2021 00:24:36 -0700 (PDT)
-Received: from [192.168.39.11] ([172.58.97.152])
-        by smtp.gmail.com with ESMTPSA id l2sm2786560otl.61.2021.10.24.00.24.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Oct 2021 00:24:35 -0700 (PDT)
-Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
- obsolete
-To:     Tim.Bird@sony.com, khilman@baylibre.com, geert@linux-m68k.org,
-        laurent.pinchart@ideasonboard.com
-Cc:     dwmw2@infradead.org, tbird20d@gmail.com,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        paul.gortmaker@windriver.com, linux-embedded@vger.kernel.org,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        kernel@pengutronix.de, mporter@konsulko.com, tglx@linutronix.de,
-        thomas.petazzoni@bootlin.com
-References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
- <CA+bK7J741D=DgZMNeEC5xg9kDDSaJu19QsRunVvXkBGx1mKGnQ@mail.gmail.com>
- <YW5r61ZQx+E9xfuH@pendragon.ideasonboard.com>
- <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
- <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
- <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
- <7hlf2oejqv.fsf@baylibre.com>
- <BYAPR13MB250310153BF63EF3ED50F294FDBD9@BYAPR13MB2503.namprd13.prod.outlook.com>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <f7c3aabd-8916-a0d2-7859-7088fab3114e@landley.net>
-Date:   Sun, 24 Oct 2021 02:24:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231397AbhJXH1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 03:27:49 -0400
+Received: from gofer.mess.org ([88.97.38.141]:39213 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhJXH1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 03:27:47 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 89854C6406; Sun, 24 Oct 2021 08:25:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1635060325; bh=aCiaIAzKkAknGp/LcZY2uFjJlXi0blWnmxqTQMNaa1s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iAWar1oWXGBgplgHej85nqzF+Sd3MijcZQQPDyOoOPn8zFKb6tZNTs+JysK2VZOH1
+         w58kvvqB+7U0juDXGsnjqjJESa7OrYZQTCO9qHTPCOXrsveofjq8bAUEFvNxwje9+W
+         +8OwNoZvX1FDQt7A+2B6GPZa8Lp/1w9prEdRq4qWmR3TNuxi1Pk3VcAD6hBtacw3KL
+         exfOQCoLVEgIx46jP6hgZX+Qrcb8PTpctIFkn98/nT0c26yiirUwB/HyiJ1NbtabBE
+         6qO8TLzvRW/r3EitOp2or1VSABJ4Vn9jzCIvlt1TX0yGZj6klYgCBVZR+9gTDWKIky
+         lzfzucmz6Mihw==
+Date:   Sun, 24 Oct 2021 08:25:25 +0100
+From:   Sean Young <sean@mess.org>
+To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+Cc:     mchehab@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v2] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211024072525.GA31903@gofer.mess.org>
+References: <YXRSaMb2FV78+1tc@fedora>
 MIME-Version: 1.0
-In-Reply-To: <BYAPR13MB250310153BF63EF3ED50F294FDBD9@BYAPR13MB2503.namprd13.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXRSaMb2FV78+1tc@fedora>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/21 5:54 PM, Tim.Bird@sony.com wrote:
-> Well... Let me give some history, and then pontificate a little on the entry.
+On Sat, Oct 23, 2021 at 03:20:42PM -0300, Maíra Canal wrote:
+> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+> replace it for the atomic PWM API.
 > 
-> Originally, this entry was created after Andrew Morton gave a talk at
-> an early Embedded Linux Conference, saying that there should be some
-> "ombudsman" for embedded issues in the kernel.  This was in 2008.
-
-I've been doing this sort of thing on and off for a while, but I admit to
-gradually burning out over the years (sometime between
-https://www.spinics.net/lists/linux-embedded/msg00148.html and
-https://lkml.org/lkml/2017/9/13/651) as linux-kernel became actively hostile to
-hobbyists.
-
-> The linux-embedded mailing list was created about the same time.
-> The thinking was that there are issues that transcend any particular
-> sub-system, directory, or file, such as boot time or system size or
-> real-time. Changes to keep these system-wide metrics in check might
-> need the assistance of a respected upstream maintainer, who could
-> guide developers working in these areas, or who could help keep
-> other kernel maintainers apprised of requirements in these areas
-> for embedded products.
-
-Greg KH wouldn't listen to me when I was Documention maintainer. He wouldn't
-listen when I was busybox maintainer. Maintainer-without-portfolio ain't gonna
-get him to start.
-
-Keep in mind Greg and Kay Sievers were joined at the hip until Linus threw Kay
-out of Linux dev and he bogged off to systemd. If you point out things like
-"sysfs should to present a stable API to userspace" or "it's a bad idea to
-depend on magic packages like udev or systemd as things every Linux system must
-not only use verbatim from a single upstream supplier but must replace every
-time they upgrade the kernel", Greg is reliably against them.
-
-> I would say that realtime has been shepherded pretty well by Thomas
-> Gleixner (and it's almost all upstream!), independent of this entry.
-> The other system-wide issues (boot time and system size), people
-> have pretty much given up on,
-
-Nah, I've gotten them trimmed/working acceptably well in my systems. I just
-don't bother trying to poke linux-kernel about it anymore. Not since the Linux
-Foundation chased hobbyists out of Linux to the point where people literally
-started asking if hobbysts had ever really existed (circa
-https://lwn.net/Articles/563578/).
-
-Peter Anvin is actively hostile to the idea of reducing build-time dependencies
-(http://lkml.iu.edu/hypermail/linux/kernel/0802.1/4400.html) to the point that
-when my perl removal patches finally got traction in 2013 (after 5 years of
-follow-through), he switched one of his perl scripts to use bc instead so things
-like Gentoo and Linux From Scratch had to add a new build dependency for him
-(neither was installing bc before). This was after I'd convinced Denys to make
-ash do 64 bit math on 32 bit hosts so my shell translation ran under bash dash
-and ash, and then when that was rejected rewrote it in C, and when Andrew Morton
-went around him to take my patches THEN he piped up with a patch to keep the
-build complex. Circa 2018 or so when they made kconfig turing complete (so make
-oldconfig on a new kernel can "rm -rf ~" if it wants to) they added flex and
-bison as dependencies needed to run kconfig, when previously kconfig had
-.shipped versions of those files so as NOT to require that.
-
-I just bisected the v5.14 regression where building x86-64 breaks trying to
-#include "gelf.h" (from Jim Henson's Dark Crystal package), which I already
-personally fought off in 2018 for my own builds:
-
-  https://twitter.com/landley/status/1064994639487426560
-
-And the commit I just bisected it to
-(http://lkml.iu.edu/hypermail/linux/kernel/2110.3/00009.html) EXPLICITLY broke
-x86-64 (and only x86-64) to have a unique build-time dependency. In a patch that
-did NOTHING ELSE. Because why not?
-
-> although there is the occasional
-> patch to address a micro-symptom of the problem.  But no one
-> is riding herd over the entire kernel to make sure that it doesn't
-> get too big, or boot too slow (or use too much power).
-
-Because the lkml clique is circling the wagons tighter and tighter until they
-achieve a black hole via proctology? There doesn't seem to be any actual malice,
-just a whole lot of territoriality and disdain for outsiders.
-
-It's not a thing that somebody's gonna do for fun, a topic you and I emailed
-about earlier this year if I recall.
-
-> This entry, and the linux-embedded mailing list itself, have not
-> functioned as originally intended in years, and I doubt anyone
-> uses this information. The tools don't use it
-> (e.g. get_maintainers.pl is never going to use this entry to
-> recommend someone be CC'ed on an "embedded" patch).
-
-Because that perl script matches files and the maintainers entry has no files.
-(Not that cc-ing random patches to lists strikes me as particularly useful. It
-usually just drives down the signal to noise ratio of the list in my experience.
-Patch 22/47 applies to arch/sh and thus the whole series is cc'd there...)
-
-> So, I guess I'd vote to get rid of it as well.
+> Signed-off-by: Maíra Canal <maira.canal@usp.br>
+> ---
+> V1 -> V2: Assign variables directly and simplify conditional statement
+> ---
+>  drivers/media/rc/pwm-ir-tx.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 > 
-> But, I'm a little sad to see it go... :-(
-> I'll probably never see Linux on a cereal box.
+> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+> index 4bc28d2c9cc9..ca943f168855 100644
+> --- a/drivers/media/rc/pwm-ir-tx.c
+> +++ b/drivers/media/rc/pwm-ir-tx.c
+> @@ -53,22 +53,21 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+>  {
+>  	struct pwm_ir *pwm_ir = dev->priv;
+>  	struct pwm_device *pwm = pwm_ir->pwm;
+> -	int i, duty, period;
+> +	struct pwm_state state;
+> +	int i;
+>  	ktime_t edge;
+>  	long delta;
+>  
+> -	period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+> -	duty = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
+> +	pwm_init_state(pwm, &state);
+>  
+> -	pwm_config(pwm, duty, period);
+> +	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+> +	state.duty_cycle = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
 
-Oh there's plenty of people doing good work.
+That doesn't compile.
 
-I talk to Jeff Dionne daily, he's working on that sort of thing. I email Elliott
-Hughes (basically the android maintainer) multiple times per week. I talk to
-Rich Felker by voice every week (we're on the same wednesday call), and email or
-irc more often. (I feel guilty about dragging Elliott and Rich into
-https://www.mail-archive.com/austin-group-l@opengroup.org/msg08569.html because
-I underestimated the amount of bikeshedding on a list that's primarily posts
-from the bug tracker and meeting announcements/minutes.)
 
-None of them particularly participate in linux-kernel (despite Rich being
-arch/sh maintainer, and yes I poke him about that every wednesday) because that
-community comes across to us outsiders as a toxic insular clique that does not
-remotely understand any of our needs, and acts threatened if we try to explain
-them. Not because we CAN'T, but because it DOESN'T HELP WHEN WE TRY.
+Sean
 
-I'm the one who's considered weird for still (occasionally) engaging. Mostly as
-bug reports like the above, or patches I post so when somebody sues I can go
-"here it is in the list archives, not my fault they didn't merge it", or
-one-offs I expect to be ignored (ala
-http://lkml.iu.edu/hypermail/linux/kernel/2110.1/03713.html) although sometimes
-there's a discussion that peters out without resolution instead (ala
-http://lkml.iu.edu/hypermail/linux/kernel/2110.1/09327.html).
-
-*shrug* Just stubborn I guess.
-
->  -- Tim
-
-Rob
+>  
+>  	edge = ktime_get();
+>  
+>  	for (i = 0; i < count; i++) {
+> -		if (i % 2) // space
+> -			pwm_disable(pwm);
+> -		else
+> -			pwm_enable(pwm);
+> +		state.enabled = !(i % 2);
+> +		pwm_apply_state(pwm, &state);
+>  
+>  		edge = ktime_add_us(edge, txbuf[i]);
+>  		delta = ktime_us_delta(edge, ktime_get());
+> @@ -76,7 +75,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+>  			usleep_range(delta, delta + 10);
+>  	}
+>  
+> -	pwm_disable(pwm);
+> +	state.enabled = false;
+> +	pwm_apply_state(pwm, &state);
+>  
+>  	return count;
+>  }
+> -- 
+> 2.31.1
