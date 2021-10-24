@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3F3438C1E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD2F438C1F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhJXV2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S232179AbhJXV2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 17:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbhJXV2U (ORCPT
+        with ESMTP id S232238AbhJXV2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:28:20 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D5DC061228
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:58 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id u5so18125478uao.13
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:58 -0700 (PDT)
+        Sun, 24 Oct 2021 17:28:23 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A5CC061348
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:26:01 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id e2so18206567uax.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:26:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BejNJl14O6aHwjAG+IoiEw5ZBNgGlpDEHfmiIDvF9LI=;
-        b=a19DZdYKn6qJjG6mB029RkAM3uANS7xF/XuyYFcsA1nbTX526qilPTwXg4CLoibLoI
-         RJr5B9zgndK33T0bNydWSbiqyFSX6n6JB0rz5r07/puCaXtbJ+ubuyUwoT5YlXL/ioRj
-         7NSG7h3kumh+tqVt9/VP7kSVQcf0ndY3UoSAkkZlhb8+9FwtXwmOAznhT2m4cci4qj6F
-         uQle7LYwTIgsZw5crbY1FPkmJ2kjrrEIna5kJNl21aLkRmE+eRxXOSG6BlcEKv5s7Wtt
-         JgG7NME2H0yOEuG0t9h7HazP5Uw6VnHZpr0Ewmx7EA5CpBpYfaAo2lC5uJBJ1B088GKC
-         ezaA==
+        bh=4S8lvEsQXwujwatrBqROuPbSEc2sWN6dV4j7Eupmi7s=;
+        b=APlWGDUpN59fZPN1yxcsLEKZedLfhApeDuTLNqqG4jrsMplfUbgs77J+1xRi9BM4rp
+         5ZltchltKP1WyIQBmLV7q7fyznzhc6vk2xbZeJ28FrSpXPnsOWn4ESMYZLxy5xgMJIiB
+         K/u1lwcdlX7wJWpkwt1v5YhDaGxKtgdeS/Uhp2tf04Ei6APKq+3zFMsX8Qu/gl2jyi7u
+         cQsjabY4ArN34DqJo/RpMzSzFdNKKfIk1MTQ577vVnK5zoYluxR9PJZJvyMYMtUcqIzX
+         8BWjGTmRv/8YDNVuJeee7c3sC87WNNTMs+qBv1H7XDjT1215rXAqgZHu+5Sq3QT4c/uP
+         UAaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BejNJl14O6aHwjAG+IoiEw5ZBNgGlpDEHfmiIDvF9LI=;
-        b=wBY6gaYdX4KsL74p5N0cbvEFYu7k8H3oOtoRzJcY4pwxbRQh9l3Bh6KbLLYqL8Bb+t
-         ur7y3X2/aXa4ziLJs0r7pT257a3M3v1Db3/2GibYPz6C3fvfJVNZsxPi0uAgfZaF7Ajz
-         nLhudF8TBzNtkeaVLz7q6JXlpnsjF5qJVqVXLJf4yicUqbu468esR+0pmzvi16yRKoZr
-         9ApxFD12DmqKxVNJOrno8PQlQUaTmlgrIUa+u6xho2n91TbaUbr7aqW3c+cbm71PU7Ou
-         Zy3ywLopfL2+d43PsMXNgcZZlrmXUu3javw7NAZQWNrTDxOCgpO34rd3onalMTs76xHc
-         a2lQ==
-X-Gm-Message-State: AOAM530ednAg12pMUgcB1Zc+eYo8xKD6s3bu0f11NT0z0jIqJtyXX5Lr
-        MVytAP+N5/CVFhFW5p9cewI=
-X-Google-Smtp-Source: ABdhPJznOSLyMtcTR/+jLCQ8ioOfyvwxdVB4py1onqrN9cLcCdIrqqmNJcFRrJ9WJThZBvcRUAclrw==
-X-Received: by 2002:a05:6102:5088:: with SMTP id bl8mr11692070vsb.32.1635110757991;
-        Sun, 24 Oct 2021 14:25:57 -0700 (PDT)
+        bh=4S8lvEsQXwujwatrBqROuPbSEc2sWN6dV4j7Eupmi7s=;
+        b=yA66E8hHlPf2OfvA/VizKxaoioPlB7jcPRoilA36nyRtvwPnviktkwcZdmy2zAKBqD
+         n5e1COyvupyfFMKd2nF5+Oi6vXyd/SatGAYz1ib98gXM2s38f+j7uOzu9AT4XWHzcc+I
+         jZj0lSwey6mFPf6eGs1rzMJMwKa8qTLLYfcM05PctefLSjO6mIdzwdR+DlfAe533tEsb
+         DNK6ypYidHpL79Uw+R6pox9QMgVtvlKiHE/1YzVqBwiv8GtdW/T5qdSr05H1juiuhAY0
+         NI5sB95EUMLrrq0RgseA4cqIaRsUxLYXB91qouPv5igp0XIA04d9EbJPZFxCT+0oVJMT
+         J2QQ==
+X-Gm-Message-State: AOAM530LABGJYTPAy00TfdvESkqStMy/dz1H5bcmPOx9exIycVgDsEGk
+        aIAlL0CoUcab6yxfYzLr4Y4=
+X-Google-Smtp-Source: ABdhPJyyaYJDZHmVS1HjJ6xuqswEkGW7P/Gw8WZ9b2YwYh9v4Qgr3gKHkpKcEEJPp94wdL0ZDlx7vw==
+X-Received: by 2002:ab0:30b3:: with SMTP id b19mr11829354uam.123.1635110760848;
+        Sun, 24 Oct 2021 14:26:00 -0700 (PDT)
 Received: from localhost.localdomain ([191.83.215.63])
-        by smtp.gmail.com with ESMTPSA id 45sm8847869uaq.8.2021.10.24.14.25.55
+        by smtp.gmail.com with ESMTPSA id 45sm8847869uaq.8.2021.10.24.14.25.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 14:25:57 -0700 (PDT)
+        Sun, 24 Oct 2021 14:26:00 -0700 (PDT)
 From:   Gaston Gonzalez <gascoar@gmail.com>
 To:     linux-staging@lists.linux.dev
 Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
         linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH v2 6/8] staging: vchiq_core: drop extern prefix in function declarations
-Date:   Sun, 24 Oct 2021 18:25:22 -0300
-Message-Id: <20211024212524.370078-7-gascoar@gmail.com>
+Subject: [PATCH v2 7/8] staging: vchiq_core: cleanup lines that end with '('  or '['
+Date:   Sun, 24 Oct 2021 18:25:23 -0300
+Message-Id: <20211024212524.370078-8-gascoar@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211024212524.370078-1-gascoar@gmail.com>
 References: <20211024212524.370078-1-gascoar@gmail.com>
@@ -69,125 +69,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary extern prefix in function declarations.
+Fix lines that end with '(' or '['.
 
-While at it, remove a now outdated comment and realign the function
-declarations in order to improve readability.
+Reported by checkpatch.pl
 
 Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
 ---
- .../interface/vchiq_arm/vchiq_core.h          | 76 ++++++-------------
- 1 file changed, 25 insertions(+), 51 deletions(-)
+ .../interface/vchiq_arm/vchiq_core.c          | 30 +++++++------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index e54e9d80bd7f..3e50910ecba3 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -559,79 +559,53 @@ vchiq_queue_message(unsigned int handle,
- 		    void *context,
- 		    size_t size);
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+index 22d0e706b2dc..3af55e78f356 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+@@ -699,8 +699,7 @@ reserve_space(struct vchiq_state *state, size_t space, int is_blocking)
+ 			return NULL;
+ 		}
  
--/*
-- * The following functions are called from vchiq_core, and external
-- * implementations must be provided.
-- */
-+int vchiq_prepare_bulk_data(struct vchiq_bulk *bulk, void *offset, void __user *uoffset,
-+			    int size, int dir);
+-		slot_index = local->slot_queue[
+-			SLOT_QUEUE_INDEX_FROM_POS_MASKED(tx_pos)];
++		slot_index = local->slot_queue[SLOT_QUEUE_INDEX_FROM_POS_MASKED(tx_pos)];
+ 		state->tx_data =
+ 			(char *)SLOT_DATA_FROM_INDEX(state, slot_index);
+ 	}
+@@ -854,18 +853,15 @@ process_free_queue(struct vchiq_state *state, BITSET_T *service_found,
+ }
  
--extern int
--vchiq_prepare_bulk_data(struct vchiq_bulk *bulk, void *offset,
--			void __user *uoffset, int size, int dir);
-+void vchiq_complete_bulk(struct vchiq_bulk *bulk);
+ static ssize_t
+-memcpy_copy_callback(
+-	void *context, void *dest,
+-	size_t offset, size_t maxsize)
++memcpy_copy_callback(void *context, void *dest, size_t offset, size_t maxsize)
+ {
+ 	memcpy(dest + offset, context + offset, maxsize);
+ 	return maxsize;
+ }
  
--extern void
--vchiq_complete_bulk(struct vchiq_bulk *bulk);
-+void remote_event_signal(struct remote_event *event);
+ static ssize_t
+-copy_message_data(
+-	ssize_t (*copy_callback)(void *context, void *dest,
+-				 size_t offset, size_t maxsize),
++copy_message_data(ssize_t (*copy_callback)(void *context, void *dest, size_t offset,
++					   size_t maxsize),
+ 	void *context,
+ 	void *dest,
+ 	size_t size)
+@@ -946,8 +942,7 @@ queue_message(struct vchiq_state *state, struct vchiq_service *service,
+ 		 * Ensure this service doesn't use more than its quota of
+ 		 * messages or slots
+ 		 */
+-		tx_end_index = SLOT_QUEUE_INDEX_FROM_POS(
+-			state->local_tx_pos + stride - 1);
++		tx_end_index = SLOT_QUEUE_INDEX_FROM_POS(state->local_tx_pos + stride - 1);
  
--extern void
--remote_event_signal(struct remote_event *event);
-+int vchiq_dump(void *dump_context, const char *str, int len);
+ 		/*
+ 		 * Ensure data messages don't use more than their quota of
+@@ -959,14 +954,12 @@ queue_message(struct vchiq_state *state, struct vchiq_service *service,
+ 			spin_unlock(&quota_spinlock);
+ 			mutex_unlock(&state->slot_mutex);
  
--extern int
--vchiq_dump(void *dump_context, const char *str, int len);
-+int vchiq_dump_platform_state(void *dump_context);
+-			if (wait_for_completion_interruptible(
+-						&state->data_quota_event))
++			if (wait_for_completion_interruptible(&state->data_quota_event))
+ 				return VCHIQ_RETRY;
  
--extern int
--vchiq_dump_platform_state(void *dump_context);
-+int vchiq_dump_platform_instances(void *dump_context);
+ 			mutex_lock(&state->slot_mutex);
+ 			spin_lock(&quota_spinlock);
+-			tx_end_index = SLOT_QUEUE_INDEX_FROM_POS(
+-				state->local_tx_pos + stride - 1);
++			tx_end_index = SLOT_QUEUE_INDEX_FROM_POS(state->local_tx_pos + stride - 1);
+ 			if ((tx_end_index == state->previous_data_index) ||
+ 			    (state->data_use_count < state->data_quota)) {
+ 				/* Pass the signal on to other waiters */
+@@ -985,8 +978,7 @@ queue_message(struct vchiq_state *state, struct vchiq_service *service,
+ 					quota->message_use_count, quota->slot_use_count);
+ 			VCHIQ_SERVICE_STATS_INC(service, quota_stalls);
+ 			mutex_unlock(&state->slot_mutex);
+-			if (wait_for_completion_interruptible(
+-						&quota->quota_event))
++			if (wait_for_completion_interruptible(&quota->quota_event))
+ 				return VCHIQ_RETRY;
+ 			if (service->closing)
+ 				return VCHIQ_ERROR;
+@@ -998,8 +990,7 @@ queue_message(struct vchiq_state *state, struct vchiq_service *service,
+ 				return VCHIQ_ERROR;
+ 			}
+ 			spin_lock(&quota_spinlock);
+-			tx_end_index = SLOT_QUEUE_INDEX_FROM_POS(
+-				state->local_tx_pos + stride - 1);
++			tx_end_index = SLOT_QUEUE_INDEX_FROM_POS(state->local_tx_pos + stride - 1);
+ 		}
  
--extern int
--vchiq_dump_platform_instances(void *dump_context);
-+int vchiq_dump_platform_service_state(void *dump_context, struct vchiq_service *service);
- 
--extern int
--vchiq_dump_platform_service_state(void *dump_context, struct vchiq_service *service);
-+int vchiq_use_service_internal(struct vchiq_service *service);
- 
--extern int
--vchiq_use_service_internal(struct vchiq_service *service);
-+int vchiq_release_service_internal(struct vchiq_service *service);
- 
--extern int
--vchiq_release_service_internal(struct vchiq_service *service);
-+void vchiq_on_remote_use(struct vchiq_state *state);
- 
--extern void
--vchiq_on_remote_use(struct vchiq_state *state);
-+void vchiq_on_remote_release(struct vchiq_state *state);
- 
--extern void
--vchiq_on_remote_release(struct vchiq_state *state);
-+int vchiq_platform_init_state(struct vchiq_state *state);
- 
--extern int
--vchiq_platform_init_state(struct vchiq_state *state);
-+enum vchiq_status vchiq_check_service(struct vchiq_service *service);
- 
--extern enum vchiq_status
--vchiq_check_service(struct vchiq_service *service);
-+void vchiq_on_remote_use_active(struct vchiq_state *state);
- 
--extern void
--vchiq_on_remote_use_active(struct vchiq_state *state);
-+enum vchiq_status vchiq_send_remote_use(struct vchiq_state *state);
- 
--extern enum vchiq_status
--vchiq_send_remote_use(struct vchiq_state *state);
-+enum vchiq_status vchiq_send_remote_use_active(struct vchiq_state *state);
- 
--extern enum vchiq_status
--vchiq_send_remote_use_active(struct vchiq_state *state);
--
--extern void
--vchiq_platform_conn_state_changed(struct vchiq_state *state,
--				  enum vchiq_connstate oldstate,
-+void vchiq_platform_conn_state_changed(struct vchiq_state *state,
-+				       enum vchiq_connstate oldstate,
- 				  enum vchiq_connstate newstate);
- 
--extern void
--vchiq_set_conn_state(struct vchiq_state *state, enum vchiq_connstate newstate);
-+void vchiq_set_conn_state(struct vchiq_state *state, enum vchiq_connstate newstate);
- 
--extern void
--vchiq_log_dump_mem(const char *label, u32 addr, const void *void_mem, size_t num_bytes);
-+void vchiq_log_dump_mem(const char *label, u32 addr, const void *void_mem, size_t num_bytes);
- 
--extern enum vchiq_status vchiq_remove_service(unsigned int service);
-+enum vchiq_status vchiq_remove_service(unsigned int service);
- 
--extern int vchiq_get_client_id(unsigned int service);
-+int vchiq_get_client_id(unsigned int service);
- 
--extern void vchiq_get_config(struct vchiq_config *config);
-+void vchiq_get_config(struct vchiq_config *config);
- 
--extern int
--vchiq_set_service_option(unsigned int service, enum vchiq_service_option option,
--			 int value);
-+int vchiq_set_service_option(unsigned int service, enum vchiq_service_option option, int value);
- 
- #endif
+ 		spin_unlock(&quota_spinlock);
+@@ -3089,8 +3080,7 @@ enum vchiq_status vchiq_bulk_transfer(unsigned int handle, void *offset, void __
+ 		VCHIQ_SERVICE_STATS_INC(service, bulk_stalls);
+ 		do {
+ 			mutex_unlock(&service->bulk_mutex);
+-			if (wait_for_completion_interruptible(
+-						&service->bulk_remove_event)) {
++			if (wait_for_completion_interruptible(&service->bulk_remove_event)) {
+ 				status = VCHIQ_RETRY;
+ 				goto error_exit;
+ 			}
 -- 
 2.33.1
 
