@@ -2,100 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DDA438C6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44A8438C6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhJXWpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:45:53 -0400
-Received: from mga12.intel.com ([192.55.52.136]:46384 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhJXWpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:45:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="209636905"
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="209636905"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 15:43:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="485428225"
-Received: from lkp-server02.sh.intel.com (HELO 74392981b700) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 Oct 2021 15:43:29 -0700
-Received: from kbuild by 74392981b700 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1memDA-00016s-Rq; Sun, 24 Oct 2021 22:43:28 +0000
-Date:   Mon, 25 Oct 2021 06:43:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Russell King <rmk+kernel@armlinux.org.uk>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [rmk-arm:clearfog 2/13]
- drivers/net/dsa/mv88e6xxx/mv88e6xxx_debugfs.c:739:6: warning: %d in format
- string (no. 1) requires 'int *' but the argument type is 'unsigned int *'.
- [invalidScanfArgType_int]
-Message-ID: <202110250619.3cpoavKr-lkp@intel.com>
+        id S231739AbhJXWqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhJXWqg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 18:46:36 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3C1C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:44:14 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id c28so4046830lfv.13
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=51ktLrJvct0ot1+JgSOephKK4b8DM/OzJiyeTI83ARQ=;
+        b=UenXvHNONXZSMSuuyNNb4R194pRYfRIhTqBBsQrRzUTEUetCCaiBoOHIccpGAxBLSI
+         tr5U5Qb/AL5+zxd+T71wwjCidfpswk6MZUdH7hcePfh0gnJ3QDtjfeo4qZ1KKv0TZC0e
+         dzR3FxMLvoEPiGxeBB3m6HOD2RRBqKB1i3XB+9G3dDcBNu2b3Iy0d14XnucSmt42FqUD
+         /HfMhAf/e7DUMWVWTyWKzaUAvP3rs8WCh10iKQUygNr3/tV571jtPT99eFMhAPNOu0g0
+         W68cozCn7TQHvsJqerBpRQ/sFKRoCSqtHEa/XaifvU4SEVVrxryPF9yG+51wmEV4d0Xd
+         OCSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=51ktLrJvct0ot1+JgSOephKK4b8DM/OzJiyeTI83ARQ=;
+        b=mnTBdXkIgqF0hA9XBecAjE0vsaf4qWTdgzahrXrCPu7qj6NN5VQIqt3dJ+Tkz0cEMi
+         Dw4ThmE2GO+YO9hhzGnaha+W9CxeTJfPVbW5IRrHE1TQB+QOIKFVUpZ/ALLvtQUhsr/C
+         UV6HeeK4v7FoOofx5sk7CxBWg3Kx8c9u9Ka9QLPmR2QtsjAE3Ol9euoHHCkux6Xlg2jO
+         aqQ0Yx9qyOgyIIM/Bzhp5AAEv36nnXTMbyKAZ7yph2JDDihCa7C/62LDZTYmjHrgxN0L
+         gxozE9gqe0yqmhMqaOiYzhdltCnmQmE9DsjBEJJWxvwPGRKRHA4HZElmOV1FKyPoJHtf
+         M6gA==
+X-Gm-Message-State: AOAM532vphvJ1ukay2chyumWKjwb+fi/dzI7QGJuqmLoMFR316mFjrkd
+        ipYfHTqu5HDig+oHMz012POWwarp8HvMSpSefXCoBA==
+X-Google-Smtp-Source: ABdhPJyqdgKU5NUoVy996qBcNZrXN43FVzKMrjq+DSYceoIwbTHqzzHyA3WMU3OJ565gUXZ41mYygscsYLZdzGYyr6Y=
+X-Received: by 2002:a05:6512:3407:: with SMTP id i7mr13558069lfr.563.1635115453218;
+ Sun, 24 Oct 2021 15:44:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <alpine.DEB.2.22.394.2110241452460.2997@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2110241452460.2997@hadrien>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Sun, 24 Oct 2021 15:44:03 -0700
+Message-ID: <CAAYoRsXeQravNXKsWAZvacMmE_iBzaQ+mQxNbB5jcD_vkny+Sg@mail.gmail.com>
+Subject: Re: problem in changing from active to passive mode
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+On Sun, Oct 24, 2021 at 6:03 AM Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+> Hello,
 
-First bad commit (maybe != root cause):
+Hi,
 
-tree:   git://git.armlinux.org.uk/~rmk/linux-arm clearfog
-head:   89b5c2c2bea4a97b0c6254f54d3719fe15c9e38e
-commit: ee71c167800c79ed367a6cb8d0efb4e2cfffabf7 [2/13] net: dsa: mv88e6xxx: debugfs hacks to fix the compile
-compiler: sh4-linux-gcc (GCC) 11.2.0
+>
+> I have an Intel 6130 and an Intel 5218.  These machines have HWP.  They
+> are configured to boot with active mode and performance as the power
+> governor.  Since the following commit:
+>
+> commit a365ab6b9dfbaf8fb4fb4cd5d8a4c55dc4fb8b1c (HEAD, refs/bisect/bad)
+> Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Date:   Mon Dec 14 21:09:26 2020 +0100
+>
+>     cpufreq: intel_pstate: Implement the ->adjust_perf() callback
+>
+> If I change te mode from active to passive, I have the impression that the
+> machine is no longer able to raise the core frequencies above the minimum.
+> Changing the mode back to active has no effect.  This persists if I reboot
+> to another kernel.
+>
+> Here are some runs that illustrate the problem.  I have tested the
+> benchmark many times, and apart from this issue its performance is stable.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Could you also list the CPU frequency scaling governor being used in your
+tests. I know you mentioned the performance governor above, but it
+changes between active/passive/active transitions.
 
+Example from my test computer:
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+Note 1: It is only for brevity of this e-mail that I only list for one CPU.
+Obviously, I looked at all CPUs when doing this.
 
->> drivers/net/dsa/mv88e6xxx/mv88e6xxx_debugfs.c:162:8: warning: sscanf() without field width limits can crash with huge input data. [invalidscanf]
-    ret = sscanf(cmd, "%s %x %x", name, &reg, &val);
-          ^
+Note 2: The test example and conditions have been cherry picked
+for dramatic effect.
 
-vim +739 drivers/net/dsa/mv88e6xxx/mv88e6xxx_debugfs.c
+$ cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_driver
+intel_pstate
+$ cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
+performance
+$ cat /sys/devices/system/cpu/intel_pstate/status
+active
+$ ./ping-pong-many 100000 500 10
+1418.0660 usecs/loop. (less is better)
 
-3724260d6f3b5e Vivien Didelot 2015-10-22  725  
-3724260d6f3b5e Vivien Didelot 2015-10-22  726  static ssize_t mv88e6xxx_pvt_write(struct file *file, const char __user *buf,
-3724260d6f3b5e Vivien Didelot 2015-10-22  727  				    size_t count, loff_t *ppos)
-3724260d6f3b5e Vivien Didelot 2015-10-22  728  {
-3724260d6f3b5e Vivien Didelot 2015-10-22  729  	struct seq_file *s = file->private_data;
-3724260d6f3b5e Vivien Didelot 2015-10-22  730  	struct mv88e6xxx_chip *chip = s->private;
-3724260d6f3b5e Vivien Didelot 2015-10-22  731  	const u16 mask = (1 << mv88e6xxx_num_ports(chip)) - 1;
-3724260d6f3b5e Vivien Didelot 2015-10-22  732  	char cmd[32];
-3724260d6f3b5e Vivien Didelot 2015-10-22  733  	unsigned int src_dev, src_port, pvlan;
-3724260d6f3b5e Vivien Didelot 2015-10-22  734  	int ret;
-3724260d6f3b5e Vivien Didelot 2015-10-22  735  
-3724260d6f3b5e Vivien Didelot 2015-10-22  736  	if (copy_from_user(cmd, buf, sizeof(cmd)))
-3724260d6f3b5e Vivien Didelot 2015-10-22  737  		return -EFAULT;
-3724260d6f3b5e Vivien Didelot 2015-10-22  738  
-3724260d6f3b5e Vivien Didelot 2015-10-22 @739  	if (sscanf(cmd, "%d %d %x", &src_dev, &src_port, &pvlan) != 3)
-3724260d6f3b5e Vivien Didelot 2015-10-22  740  		return -EINVAL;
-3724260d6f3b5e Vivien Didelot 2015-10-22  741  
-3724260d6f3b5e Vivien Didelot 2015-10-22  742  	if (src_dev >= 32 || src_port >= 16 || pvlan & ~mask)
-3724260d6f3b5e Vivien Didelot 2015-10-22  743  		return -ERANGE;
-3724260d6f3b5e Vivien Didelot 2015-10-22  744  
-3724260d6f3b5e Vivien Didelot 2015-10-22  745  	mutex_lock(&chip->reg_lock);
-3724260d6f3b5e Vivien Didelot 2015-10-22  746  	ret = _mv88e6xxx_pvt_write(chip, src_dev, src_port, pvlan);
-3724260d6f3b5e Vivien Didelot 2015-10-22  747  	mutex_unlock(&chip->reg_lock);
-3724260d6f3b5e Vivien Didelot 2015-10-22  748  
-3724260d6f3b5e Vivien Didelot 2015-10-22  749  	return ret < 0 ? ret : count;
-3724260d6f3b5e Vivien Didelot 2015-10-22  750  }
-3724260d6f3b5e Vivien Didelot 2015-10-22  751  
+$ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
+passive
+$ cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_driver
+intel_cpufreq
+$ cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
+schedutil
+$ cat /sys/devices/system/cpu/intel_pstate/status
+passive
+$ ./ping-pong-many 100000 500 10
+5053.6355 usecs/loop.
 
-:::::: The code at line 739 was first introduced by commit
-:::::: 3724260d6f3b5e821ce7ead6410416bf02c3fff6 net: dsa: mv88e6xxx: add debugfs interface
+$ echo active | sudo tee /sys/devices/system/cpu/intel_pstate/status
+active
+$ cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_driver
+intel_pstate
+$ cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
+powersave
+$ cat /sys/devices/system/cpu/intel_pstate/status
+active
+$ ./ping-pong-many 100000 500 10
+2253.5833 usecs/loop.
 
-:::::: TO: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
-:::::: CC: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+... Doug
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Intel 6130:
+>
+> root@yeti-2:/tmp# java -jar dacapo-9.12-MR1-bach.jar avrora -n 3
+> ===== DaCapo 9.12-MR1 avrora starting warmup 1 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 1 in 3420 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting warmup 2 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 2 in 2536 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting =====
+> ===== DaCapo 9.12-MR1 avrora PASSED in 2502 msec =====
+> root@yeti-2:/tmp# echo passive | tee /sys/devices/system/cpu/intel_pstate/status
+> passive
+> root@yeti-2:/tmp#
+> root@yeti-2:/tmp# echo active | tee /sys/devices/system/cpu/intel_pstate/status
+> active
+> root@yeti-2:/tmp# java -jar dacapo-9.12-MR1-bach.jar avrora -n 3
+> ===== DaCapo 9.12-MR1 avrora starting warmup 1 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 1 in 7561 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting warmup 2 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 2 in 6528 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting =====
+> ===== DaCapo 9.12-MR1 avrora PASSED in 7796 msec =====
+>
+> -------------------------------------------------------------------------
+>
+> Intel 5218:
+>
+> root@troll-2:/tmp# java -jar dacapo-9.12-MR1-bach.jar avrora -n 3
+> ===== DaCapo 9.12-MR1 avrora starting warmup 1 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 1 in 2265 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting warmup 2 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 2 in 2033 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting =====
+> ===== DaCapo 9.12-MR1 avrora PASSED in 2068 msec =====
+> root@troll-2:/tmp# echo passive | tee /sys/devices/system/cpu/intel_pstate/status
+> passive
+> root@troll-2:/tmp# echo active | tee /sys/devices/system/cpu/intel_pstate/statusactive
+> root@troll-2:/tmp# java -jar dacapo-9.12-MR1-bach.jar avrora -n 3
+> ===== DaCapo 9.12-MR1 avrora starting warmup 1 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 1 in 4363 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting warmup 2 =====
+> ===== DaCapo 9.12-MR1 avrora completed warmup 2 in 4486 msec =====
+> ===== DaCapo 9.12-MR1 avrora starting =====
+> ===== DaCapo 9.12-MR1 avrora PASSED in 3417 msec =====
+>
+> -------------------------------------------------------------------------
+>
+> thanks,
+> julia
