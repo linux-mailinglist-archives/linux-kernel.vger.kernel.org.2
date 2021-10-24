@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAEF438A8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 18:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A6B438A95
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 18:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhJXQFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 12:05:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhJXQFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 12:05:50 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBA7360F9C;
-        Sun, 24 Oct 2021 16:03:27 +0000 (UTC)
-Date:   Sun, 24 Oct 2021 17:07:49 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Olivier MOYSAN <olivier.moysan@foss.st.com>
-Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <alexandre.torgue@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH] iio: adc: stm32: fix a leak by resetting pcsel before
- disabling vdda
-Message-ID: <20211024170749.44c0d81f@jic23-huawei>
-In-Reply-To: <77f3593a-0e94-f5ab-f102-86ba8d0f1a3b@foss.st.com>
-References: <1634905169-23762-1-git-send-email-fabrice.gasnier@foss.st.com>
-        <77f3593a-0e94-f5ab-f102-86ba8d0f1a3b@foss.st.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231635AbhJXQLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 12:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhJXQLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 12:11:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA2FC061745;
+        Sun, 24 Oct 2021 09:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=ZwGeXEhZpgzR04B8ODuZ4tEIJgI7D6I5NhzqitoZvmo=; b=V19EQvVfMEEgwhw/yPNAOWOJnU
+        UteIp4BRUK3iDJQJprBQyPSN3RU2Rc2Ix092MpeoJVvBpuFgkpqNhEmdYemrQR9pwhvesth5rZjvR
+        o4HAVBsgMLKrg0E5eodk2JOzkFd52PpkIpVrbSI7fXt9G0ewEUYWDWYExBNEuaYx6zZR/c1HkD/2q
+        U44XEq9BWOzKQ6aG1vdn1qUlwFyS9CubUaWVccUIFE3QQfRSJkNv+xn38X7dUZEe3ANIOkyXAtdfx
+        F28UVYiYY324GFvnjP75xTx6XJrsPRcyPfHBAyKQXjKxfVhyHTDwbwY68HKxlqvoLDDK+L43CfSVj
+        EEkOuNZQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1meg37-00EKAb-Vh; Sun, 24 Oct 2021 16:08:42 +0000
+Subject: Re: [PATCH 07/13] clk: imx: Add initial support for i.MXRT clock
+ driver
+To:     Jesse Taube <mr.bossman075@gmail.com>, linux-imx@nxp.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, ulf.hansson@linaro.org, aisheng.dong@nxp.com,
+        stefan@agner.ch, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de, olof@lixom.net,
+        soc@kernel.org, linux@armlinux.org.uk, abel.vesa@nxp.com,
+        adrian.hunter@intel.com, jirislaby@kernel.org,
+        giulio.benetti@benettiengineering.com,
+        nobuhiro1.iwamatsu@toshiba.co.jp, leonard.crestez@nxp.com,
+        b20788@freescale.com, fugang.duan@nxp.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
+ <20211024154027.1479261-8-Mr.Bossman075@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <72428614-6ad3-5023-8e03-25ac440e82fd@infradead.org>
+Date:   Sun, 24 Oct 2021 09:08:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211024154027.1479261-8-Mr.Bossman075@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 14:38:52 +0200
-Olivier MOYSAN <olivier.moysan@foss.st.com> wrote:
+On 10/24/21 8:40 AM, Jesse Taube wrote:
+> diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
+> index 47d9ec3abd2f..19adce25167d 100644
+> --- a/drivers/clk/imx/Kconfig
+> +++ b/drivers/clk/imx/Kconfig
+> @@ -98,3 +98,6 @@ config CLK_IMX8QXP
+>   	select MXC_CLK_SCU
+>   	help
+>   	  Build the driver for IMX8QXP SCU based clocks.
+> +config CLK_IMXRT
+> +	def_bool SOC_IMXRT
+> +	select MXC_CLK
 
-I'll probably reword the description here as 'leak' tends to mean memory
-leak rather than current.
+Hi,
+Please keep one blank line between config entries,
+the way that the rest of that file is.
+(and pretty much all other Kconfig files)
 
-> Hi Fabrice,
-> 
-> On 10/22/21 2:19 PM, Fabrice Gasnier wrote:
-> > Some I/Os are connected to ADC input channels, when the corresponding bit
-> > in PCSEL register are set on STM32H7 and STM32MP15. This is done in the
-> > prepare routine of stm32-adc driver.
-> > There are constraints here, as PCSEL shouldn't be set when VDDA supply
-> > is disabled. Enabling/disabling of VDDA supply in done via stm32-adc-core
-> > runtime PM routines (before/after ADC is enabled/disabled).
-> > 
-> > Currently, PCSEL remains set when disabling ADC. Later on, PM runtime
-> > can disable the VDDA supply. This creates some conditions on I/Os that
-> > can start to leak current.
-> > So PCSEL needs to be cleared when disabling the ADC.
-> > 
-> > Fixes: 95e339b6e85d ("iio: adc: stm32: add support for STM32H7")
-> > 
-
-No line break here as Fixes forms part of the tag block.
-
-> > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-
-Given timing wrt to being too near merge window, I'll let this it on
-list a while longer as it'll be post rc1 material now anyway.
-
-I can fix the above whilst applying if nothing else comes up.
-
-Jonathan
-
-> > ---
-> >   drivers/iio/adc/stm32-adc.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> > index 5088de8..e3e7541 100644
-> > --- a/drivers/iio/adc/stm32-adc.c
-> > +++ b/drivers/iio/adc/stm32-adc.c
-> > @@ -975,6 +975,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
-> >   {
-> >   	struct stm32_adc *adc = iio_priv(indio_dev);
-> >   
-> > +	stm32_adc_writel(adc, STM32H7_ADC_PCSEL, 0);
-> >   	stm32h7_adc_disable(indio_dev);
-> >   	stm32h7_adc_enter_pwr_down(adc);
-> >   }
-> >   
-> 
-> Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
-> 
-> Thanks
-> Olivier
-
+thanks.
+-- 
+~Randy
