@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190354389FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB21438A08
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhJXPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 11:42:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49280 "EHLO
+        id S231547AbhJXPmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 11:42:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49296 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhJXPmU (ORCPT
+        with ESMTP id S231712AbhJXPmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 11:42:20 -0400
-Date:   Sun, 24 Oct 2021 15:39:58 -0000
+        Sun, 24 Oct 2021 11:42:22 -0400
+Date:   Sun, 24 Oct 2021 15:39:59 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635089999;
+        s=2020; t=1635090000;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lI0+pYO+2wpUprd/7Q04qf9pA/n+JUwomMW7QIeyL1A=;
-        b=Z68wGDyuajtJqNYVEzEWOoLxqGN8k0tes3+WjpZVLw/mko1oTcd2nsQ6OOpJ6+hXWGPnew
-        8zcuwONWqHP7EkMvziLHwIFAqJ0NM9NSGzGLgF1oFqp30Y33eBn9Az3VFPhz2oB8QiW8eg
-        8QrmFiNOvePvVPvz0uFggQbOySTzp6h4bCcP+9zG/qEcVQwetWP4ewgxQgSN1yFH19rEKY
-        2oST+jFDqKmi/OnxVvJ6WDT3K4bzSGWYjzLOHmK6Qj/IZmKBhG2weDLSwn9gHnBeP7sX5h
-        n1gicsvihozR3jpXKIcsdtlbeFpucnrl3vatWam5NHFvWCvsLbcYDoxFsRzsQQ==
+        bh=kTr1gD/kA+g3tFNw7w7e2cHygMPHH7OvR9pLYFS853s=;
+        b=NkV42+VbqboTlxRPrCfTUl81w/2yOJ8Arqc0K1zBZnowln/k5X6nzsSfVku4YjRMnOiC0Q
+        DcCBXKECLZeutIZSnPlPFfzeI58SYsczAf+uI21i2LuCcUXxlltsgKtFdOo1f8G7BZJD8+
+        PwQ6xDZrTX62lNsQMho/kIFud4MK0Cnp/KpbmT/LgguARQ34JyvHnUdYY1YDDsTQdVV++M
+        VroSvGMtkgnxTa5745QzK5GQnv0Plgq4225x6pqE18e2yxGjcLIO1y6eRzo45HDUD9R4PB
+        FexG+UXWj4cAw5ToYQUGKu4lNVM6lbDhh4mpqmN8sUdf5FrW4iCwbASxjUEoUw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635089999;
+        s=2020e; t=1635090000;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lI0+pYO+2wpUprd/7Q04qf9pA/n+JUwomMW7QIeyL1A=;
-        b=Dh/Q0UllEbfYA8crUjw4DLBvUrxVpOJLcOiyeVrRJImCQ4mwAtTK2rmqNVk/P1VuAQqlHA
-        ab1sQWw/d4hrPuBw==
+        bh=kTr1gD/kA+g3tFNw7w7e2cHygMPHH7OvR9pLYFS853s=;
+        b=n0KlgvHJKRMBDxreCd5s1cKRAgBLqfg1Z9mjcEMxjdp2CR6Jtx3nMED75FxZt6Neh4hta6
+        77rgf2Ic6AJq3rAw==
 From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/arch_arm_timer: Move
- workaround synchronisation around
+Subject: [tip: timers/core] clocksource/drivers/arm_arch_timer: Drop
+ unnecessary ISB on CVAL programming
 Cc:     Marc Zyngier <maz@kernel.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211017124225.3018098-14-maz@kernel.org>
-References: <20211017124225.3018098-14-maz@kernel.org>
+In-Reply-To: <20211017124225.3018098-12-maz@kernel.org>
+References: <20211017124225.3018098-12-maz@kernel.org>
 MIME-Version: 1.0
-Message-ID: <163508999837.626.7470689598244228406.tip-bot2@tip-bot2>
+Message-ID: <163508999973.626.6510756085416837493.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,70 +59,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     db26f8f2da92471e9f7f71ec78d6fa455cd9c821
-Gitweb:        https://git.kernel.org/tip/db26f8f2da92471e9f7f71ec78d6fa455cd9c821
+Commit-ID:     ec8f7f3342c88780d682cc2464daf0fe43259c4f
+Gitweb:        https://git.kernel.org/tip/ec8f7f3342c88780d682cc2464daf0fe43259c4f
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sun, 17 Oct 2021 13:42:21 +01:00
+AuthorDate:    Sun, 17 Oct 2021 13:42:19 +01:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Mon, 18 Oct 2021 09:20:57 +02:00
+CommitterDate: Sun, 17 Oct 2021 21:47:44 +02:00
 
-clocksource/drivers/arch_arm_timer: Move workaround synchronisation around
+clocksource/drivers/arm_arch_timer: Drop unnecessary ISB on CVAL programming
 
-We currently handle synchronisation when workarounds are enabled
-by having an ISB in the __arch_counter_get_cnt?ct_stable() helpers.
+Switching from TVAL to CVAL has a small drawback: we need an ISB
+before reading the counter. We cannot get rid of it, but we can
+instead remove the one that comes just after writing to CVAL.
 
-While this works, this prevents us from relaxing this synchronisation.
-
-Instead, move it closer to the point where the synchronisation is
-actually needed. Further patches will subsequently relax this.
+This reduces the number of ISBs from 3 to 2 when programming
+the timer.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211017124225.3018098-14-maz@kernel.org
+Link: https://lore.kernel.org/r/20211017124225.3018098-12-maz@kernel.org
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- arch/arm64/include/asm/arch_timer.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/include/asm/arch_timer.h   | 4 ++--
+ arch/arm64/include/asm/arch_timer.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/arch/arm/include/asm/arch_timer.h b/arch/arm/include/asm/arch_timer.h
+index 9f4b895..bb129b6 100644
+--- a/arch/arm/include/asm/arch_timer.h
++++ b/arch/arm/include/asm/arch_timer.h
+@@ -31,6 +31,7 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
+ 		switch (reg) {
+ 		case ARCH_TIMER_REG_CTRL:
+ 			asm volatile("mcr p15, 0, %0, c14, c2, 1" : : "r" ((u32)val));
++			isb();
+ 			break;
+ 		case ARCH_TIMER_REG_CVAL:
+ 			asm volatile("mcrr p15, 2, %Q0, %R0, c14" : : "r" (val));
+@@ -42,6 +43,7 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
+ 		switch (reg) {
+ 		case ARCH_TIMER_REG_CTRL:
+ 			asm volatile("mcr p15, 0, %0, c14, c3, 1" : : "r" ((u32)val));
++			isb();
+ 			break;
+ 		case ARCH_TIMER_REG_CVAL:
+ 			asm volatile("mcrr p15, 3, %Q0, %R0, c14" : : "r" (val));
+@@ -52,8 +54,6 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
+ 	} else {
+ 		BUILD_BUG();
+ 	}
+-
+-	isb();
+ }
+ 
+ static __always_inline
 diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
-index b8000ef..519ac1f 100644
+index 4f4aa13..b8000ef 100644
 --- a/arch/arm64/include/asm/arch_timer.h
 +++ b/arch/arm64/include/asm/arch_timer.h
-@@ -32,7 +32,7 @@
- 	({								\
- 		const struct arch_timer_erratum_workaround *__wa;	\
- 		__wa = __this_cpu_read(timer_unstable_counter_workaround); \
--		(__wa && __wa->h) ? __wa->h : arch_timer_##h;		\
-+		(__wa && __wa->h) ? ({ isb(); __wa->h;}) : arch_timer_##h; \
- 	})
- 
- #else
-@@ -64,11 +64,13 @@ DECLARE_PER_CPU(const struct arch_timer_erratum_workaround *,
- 
- static inline notrace u64 arch_timer_read_cntpct_el0(void)
- {
-+	isb();
- 	return read_sysreg(cntpct_el0);
+@@ -95,6 +95,7 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
+ 		switch (reg) {
+ 		case ARCH_TIMER_REG_CTRL:
+ 			write_sysreg(val, cntp_ctl_el0);
++			isb();
+ 			break;
+ 		case ARCH_TIMER_REG_CVAL:
+ 			write_sysreg(val, cntp_cval_el0);
+@@ -106,6 +107,7 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
+ 		switch (reg) {
+ 		case ARCH_TIMER_REG_CTRL:
+ 			write_sysreg(val, cntv_ctl_el0);
++			isb();
+ 			break;
+ 		case ARCH_TIMER_REG_CVAL:
+ 			write_sysreg(val, cntv_cval_el0);
+@@ -116,8 +118,6 @@ void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
+ 	} else {
+ 		BUILD_BUG();
+ 	}
+-
+-	isb();
  }
  
- static inline notrace u64 arch_timer_read_cntvct_el0(void)
- {
-+	isb();
- 	return read_sysreg(cntvct_el0);
- }
- 
-@@ -163,7 +165,6 @@ static __always_inline u64 __arch_counter_get_cntpct_stable(void)
- {
- 	u64 cnt;
- 
--	isb();
- 	cnt = arch_timer_reg_read_stable(cntpct_el0);
- 	arch_counter_enforce_ordering(cnt);
- 	return cnt;
-@@ -183,7 +184,6 @@ static __always_inline u64 __arch_counter_get_cntvct_stable(void)
- {
- 	u64 cnt;
- 
--	isb();
- 	cnt = arch_timer_reg_read_stable(cntvct_el0);
- 	arch_counter_enforce_ordering(cnt);
- 	return cnt;
+ static __always_inline
