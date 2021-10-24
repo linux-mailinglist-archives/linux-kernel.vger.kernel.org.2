@@ -2,137 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F71438AD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 18:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E512438ACF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 18:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJXRBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 13:01:41 -0400
-Received: from mout.gmx.net ([212.227.17.22]:39047 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhJXRBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 13:01:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635094731;
-        bh=yyqnnF1pA1oiTEWv7jqmS1u+g29rW0YaZQRATIp5BBM=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=FWdSpG6JvGfsXFFIqKu/wHhWw2xv7aTzILC2+WJ4GtFMKMBS/I/2tTzPsewAuifoe
-         63ok3Ww90ouUwJdRicdR1nsxYPG8DCcpdjBb7sbT6+qroIi5YRkouH82LlxQAc0/I2
-         ciRfL89rNRTj4yaDwg6mtj3KHGzfdBvtfRELA3jA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuUjC-1mwlsf0FdK-00ra88; Sun, 24
- Oct 2021 18:58:51 +0200
-Date:   Sun, 24 Oct 2021 18:58:38 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2][next] sysctl: Avoid open coded arithmetic in memory
- allocator functions
-Message-ID: <20211024165838.GA2347@titan>
-References: <20211023105414.7316-1-len.baker@gmx.com>
- <YXQbxSSw9qan87cm@casper.infradead.org>
- <20211024091328.GA2912@titan>
+        id S231394AbhJXRBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 13:01:18 -0400
+Received: from mail-eopbgr20092.outbound.protection.outlook.com ([40.107.2.92]:4160
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229755AbhJXRBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 13:01:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NwXi4RrA3BcEaqw9NobISEQr87gmY46V0uie0fOf4uW7irtOr9JgdOmpDwzgQjVHl+MJlTTyzfW5TGXY60sJ3+ixPNYJ9OLdGQYm9P9ZldBCD31WxTBOzkRQhYVyGez2L6ZuZUW4b+zyX1CXxXH0IkJsZIxOzY8g93WSIDe7ROGHDMoVoTMrUtGC8bS00wDpsgaEoriZ/n/kdlqD2zYWKPc0jf5dH2DArAM+VPzXfYfhpgUwhAMuT/oE4jJA6DnZ9GjyCDPxsQHr0z711ow8P61ssYhAVXBdQ2Rexi410YHFuiyye04Gc0dt3KeiRXrT1hAFK/dwwV7WmNGJA1lRgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ajyP5t0BodbQUOtFTyhc7GeH3XezqY82puybX1Kfd9I=;
+ b=J1li4KLLEyr6p+FQRCJtaWKrZYORZvBhLWUXsz/pmvbHrGUNAgVDTFdBoEz96hzPB8L+XijruMMFrWmx0kGjxcodabb/2G5XbOW7jrB75HviEGSsXj94ce3xkHBYvRKcTCEppUFPT1B+kfhsl5wA1D9lMname/sRQM01CDjTHJolubzZ6n4ab5UE702P9hzu4BMdARi9jMWbQ9R1CA2ycGX94jRN4BbPld379FK5F75xttd9N8quoPoEVgHEbMtcc78c209HWxv5RVDqiudPzLFl3iZJgcfvdKmRRS3p+x+OBQqsppIfUTRULJli+QFmCp2egE1n0KWvIlF6o/qLRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=opensynergy.com; dmarc=pass action=none
+ header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ajyP5t0BodbQUOtFTyhc7GeH3XezqY82puybX1Kfd9I=;
+ b=N54bNGpTJSpziB8He1qjBiYLgN9TSF0iqv3S28b1zXPB1tnLPNv4cy/Ng1p3SHPn2jeVb60n7F8btLpA0HSksO33PFI+z1yC6vCFjxC6NAKwEfu9xFFIl+MBK3QCbXJA3buQcwfGe52I5t+yt6lhg0M769wlaRezS7laqXExEK8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=opensynergy.com;
+Message-ID: <20912d4e-8417-73d6-a42f-ceaada6e3cf3@opensynergy.com>
+Date:   Sun, 24 Oct 2021 19:58:52 +0300
+Subject: Re: [PATCH v7 1/2] iio: core: Introduce IIO_VAL_INT_64.
+Content-Language: en-US
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
+        andy.shevchenko@gmail.com
+References: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
+ <20211024091627.28031-2-andriy.tryshnivskyy@opensynergy.com>
+ <20211024171015.3b6b46e5@jic23-huawei>
+From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+In-Reply-To: <20211024171015.3b6b46e5@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS9PR06CA0287.eurprd06.prod.outlook.com
+ (2603:10a6:20b:45a::21) To AM6PR04MB6359.eurprd04.prod.outlook.com
+ (2603:10a6:20b:fc::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211024091328.GA2912@titan>
-X-Provags-ID: V03:K1:+U3sdvB6WXlvapI04bmnM1r0ixdY76yc5bUl1lBzkoomXBfOdiU
- 0uBM+LwV+/b8DsiddmrWcfYHvKUBa6mGbjS0rpXqF9nMFyJ0e4vxxz5CAGLDQG2lvLReQQz
- QajPx8XGzfqFZKtCLphSD0XU6nHBaxs3LCCO+w5URArsWmVlDLHkv7AM9lfIW6sW1Rci+kR
- LaujWFoCdkUE87vSt+xhA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:M/xM1uCOQts=:+3/dlM61TnUBnljTWWtdO1
- M9DcUAb91kJHkcY6AuK0t8Icescrmd423kB9FxPpcpq+EaU5I9Xkf9srNrFH97S0VFcKf/Oau
- WIwbRspeAAeNz8ps5TYUb1ZMwpk8tT7ARcqgg48xLI7KGIDeJzs8F3htzXp9kImDd2dAdswfN
- 9/9uwl07jREODSuZyQY1kI8HmAZHkFc+dz0djV2SZujyc9TvTPAhVgjbK0pHnNm80wh6f3qiU
- m7xKIW5JjIETpV9D7gy0D9JSfgBV8LDBrkAPo8XHvvr0ZH2WC7qRI5s2t0S7kw0kaNLCGkUCj
- pGm9VT6L0huUKdSC6LwHbo93Nuw/ZREY+Beay5HiNjFkMDU1c9JOrKwswFCFRV6l8X/Umdqw6
- QDYakjy7Avr9c6Mur1L8OjTYXKYlSmu7zKjk10po5zoQ/Dxht9kvoglAqPptoKKj6w/Xx7klb
- y+lk3X7qXLdyrqFp1+fJU8GWDIphpgsQjqDe0YXlpLkOQ9BRnLGAD0SLqu4MYCo1mfSf6Rpq6
- xK5QPvYAt6PSXltX7gG3vZlVZkE4C5cF1ZfI8b4rPlKTUB6scnCCBqBLFqiGqsnV0DULwTNxS
- KbNBmwQW57VLdG2/VPOWGTPY5KKQwOiShui+8U+kEL/L8TVf7sZdF0T4qRhLTlDPJ6lTARL1T
- si+O/J5zoCxTuYkghz5aSbgWU88TTq7OHl4sWkRXQy6YT0KEnhak3fEg8jBVZC8JTe4EHj01f
- qRSqkufd1lICel8n2PKwAmX3Ab8RRTZS0BBNw9AJfHckglhj0mqJ4ZBnj4YYcOTJMMz9XPKn+
- Z0U5nIsilFiEIpXThOTebSK/GVEF1JTll3vZSc3eRTJiHAAKBWwBMOYgwsgZOFnPwNgwbWnFk
- 3pqzPIB7+pr4df1ZHZOOu2D1fKJpezys8uExNKAgHykU5r7SOJ3GKp3T7XZrYp0T+c3t64v9J
- 474TIFSUAqP7iP4FPwSfk4QhrUQc1j8WiX76Uwj4FV8XYwZ7vc75FtVk7QxCUebwbIRTJSyM/
- JXvMimibutoppPVSpSmkXmyrlfvdV7Ubt4tJb9WgLix2B5SqKJKmmAyFZOPl/TSWEAzpTO/iy
- Is9iZnSud4BbvQ=
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2847dec4-c6de-4053-f4c5-08d9970f8fc2
+X-MS-TrafficTypeDiagnostic: AM7PR04MB6950:
+X-Microsoft-Antispam-PRVS: <AM7PR04MB6950EE33A116D5B929E31ECFE6829@AM7PR04MB6950.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AEkxlmFSxTWSETSZR9b7+xpJsdGWFee7xcn1AARgkRYz2j1yz1JgErD5Wbr5IDnRIz2DgNkWfXnNXL2XktfccR+4B8RkfiL0r0jMfMAy2wisJ4+p12eo3Y1fHzTSb12mmOwaa1OA+bUbWLwZZc3nroQXfrf0KvI88/LTZEJrE6EboCOeBRJx597iNli1G/mqUGe90Y7YVbPcdL1k9bhhqZhiCxs2qV5mMirHu3e+Ctlo6bccBkGixIFQ4HVormZ8KHr1kv9VYtf2XENvyqWk8ovdVW2gXz8gRScb6EIDVFpQdJfYeZ4aQH6N26c4ihYAhfrj2KcssLZLGoFURzn586GDsBEblu8FnKVgesTgRZ40X8I/qPKYFYhPMgvGG3rEVwDCzXn5tk2iU5q09r7GCjxWn9U3ZZwQHoYJ68WUD0IeE8Amz4DjjAfUzikCy1MsQ7FrYuSMUFEfHCWRrVgkIIyxyhvEMVgI7tnYBgS4o7w8rJwe7431VjA5+keO8onlorYL6aXSmcptazcvH2DAW/6dFJoTNXqrzDXpdrvKHw9FDj1YPrfl2Kqa/naShWVFBYDwoZSIWtJaKgDP21S0qLlNACOxhJtcrEKP6gpfTSGTUuPdK3UZBubJAgSKPNdlTInP98zyi9Il+yAloklrGw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(376002)(346002)(39830400003)(44832011)(86362001)(5660300002)(2616005)(508600001)(4326008)(55236004)(31686004)(53546011)(186003)(42186006)(316002)(26005)(2906002)(36756003)(66556008)(66476007)(38100700002)(66946007)(31696002)(8676002)(6916009)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N2x0ZURGTzdJY3V4OHdwZVl1aUI5cW9rc3oxejIvVHU0cExMWGVHeS9LUDVN?=
+ =?utf-8?B?ZGRrYk9QZmswc2gvUnBlSGRRZW83clhMeGhmeUNWd0tNVlNqU21qdWpJSUtI?=
+ =?utf-8?B?OGlOSTNWVTRqK0hJYUJPcjJDWG5ocHpjN3RMZFFVR2VIVGJEYVBqZ25xcXh2?=
+ =?utf-8?B?VUwvYlNva1RyK2l0TU4vOS82S0RNd3ozekltZjZzcDlIZEZBV3ZvcmJpOFVz?=
+ =?utf-8?B?TUV3Nit0bm1DSzA0OVVBcE1UU3JpZzlMYjZvNUVtWWdoUUNQVFlKR0hxUjB6?=
+ =?utf-8?B?OWZsNE5OMVAxRnFobnhOOHBINWlvdEtJVXVlM2pwQWlRS1lTMm9mYkl6bEtF?=
+ =?utf-8?B?Q2tGWlZ2M3dHQVo2anAxbk1sQ3Y3RHJpZzkrK09HSXJ5S29xUjArNCtuWTdh?=
+ =?utf-8?B?TGh6MGpzcU43MmkzVkw5TGxNUVlKTjZWR3RvTEFwbXhCZHFsK2JsQWkwUysv?=
+ =?utf-8?B?SFYrcUFHeGlTL0psdndkbUl3bTBHUDJZTkxVcHFIa1hsK1k5RTZLVDNJQVk5?=
+ =?utf-8?B?QnpqVlZsRVQ2SllnNFhlQ0g1TFdBcGRaY3BkcEUzTW9LNURhTGxUVXp5elJo?=
+ =?utf-8?B?U1l5U1pYSDBJS1YyZCswaDYrU3Z1bE9KcXllcGt1bk1Ha0hZZ2pSazk5b3Yw?=
+ =?utf-8?B?dGtublJKNklmWEtCMWFET2toZVgrNVlZeXBqZ2FIVGJGdlJlckxPaGwzdEZa?=
+ =?utf-8?B?L0ZSWC9sTkNSQ2haTzVIR3VPM0NVRUxvaG9kUWt2alhubnBUMkZ2bjhXNkhx?=
+ =?utf-8?B?akh2clA1REQxejlieDFXbnlnL1A5c0gwZy85Y1o1dnVPc2Q4MTNCUEcrTGlP?=
+ =?utf-8?B?bFlvdnB0VjN0WWZ3M1c2TmVEZTh5VzlDNUNJck0yR1QvWS9kR3I2eldWdjlC?=
+ =?utf-8?B?cEx4bG9iTTNkbndoUDA2K3laQm9ZdHZKWGxoZnc4Q3ltMW9HWGVkVG4rZURv?=
+ =?utf-8?B?L0h6dVI4MmhHVUw5cURQUWtQRlZodHBSUFZJelQydXl4UittNUpGU2psVUVD?=
+ =?utf-8?B?TWcxNG9EcWZuNGxYeHFWR2lXV21zOGtDSjNQN29mQVA3US83OUhEdytrOGNm?=
+ =?utf-8?B?UHpCZHJuNEY2U2t0U0NZREtuRmM5a2pVSjZvcUdkWnpHdlZZWkR2L1locUtD?=
+ =?utf-8?B?RUx5WU03SDRodW8zd0RWWEJoK3VsMlRZTC9jbXo1MSs4Ulp6OEpjTG4xM1dY?=
+ =?utf-8?B?djVPb3RiNkhocDBydDBzMldhaWVreE1OMUY2TTh6YlJwZzg5SHdOaWdRckRa?=
+ =?utf-8?B?eEdnZGpiVlBxaDVrbExKQkVRd1VOMzR1ZDFlZGdUNjBLeGpON0FWcDNPd0hi?=
+ =?utf-8?B?MDJ5dnhqSmVyRitOMGE4R3dMN3RKUUY1TFFQZnQwZjlqdFFMV0FObEl0YldF?=
+ =?utf-8?B?aHY2MG1hS2Q4M3JyOEl6a2IyamJsZjJQZkY3bDB1UDQ5empNZGNHMGZDVkJS?=
+ =?utf-8?B?NGZRQnJvd1QzOTlkVm5FZHB1SDRjZGc5TjJ3dElFZTYzY3g3VktnNGpLNmlW?=
+ =?utf-8?B?Tmd2YWt4c0xVVEJQcDZTMXdFdklYeFlKUGpWK0ltUHdyWGdzQldvNndNTFVl?=
+ =?utf-8?B?WmtTNDV6OC80ZW9yL0V0MjJwVG1ndzZaYkFqdGNUZ3M4YWEzOHVSSUhDSWN2?=
+ =?utf-8?B?ZndyN1VXNmZaemYyV0dhMktkQkphWm1RbUw0RURTeTVBcG9OT2RXTWNnLzgz?=
+ =?utf-8?B?N3lRM08vdkx5U1JlanBad202dHNKdkFzS2U3M2d2dWdncmVjSjNGTm9sSzYx?=
+ =?utf-8?B?WmRzWU5YakZLVlJRSk55OWh2di9Yam5aSWtFRVdMYnZFU2I2akRIRHh2c3Rv?=
+ =?utf-8?B?NVA0cW5rMmFtQ1RML09kc1I3TlgxTzZjbXVjNkN2MzFzVGk4UVpQTitVcGs3?=
+ =?utf-8?B?cUpFZ0I1YTZoTnF4NlM1dWQ5ZEpZVXNvR2p5MlBEbTdzaDRGOFR1elU0cmFu?=
+ =?utf-8?B?S0xEV1NacCtlVHJhTFpiK3ZMTFpCamNKMktTTGNBWnNEd3F6UFRSM1JMaHAz?=
+ =?utf-8?B?Y1UrUFFoU0lNM3pmRitRUm9BaTYrNVcveEQ3QmEwNGEzQWVFaDVEeElpcGpB?=
+ =?utf-8?B?WU9pQ1FpSEhKcjcxL0FsMnkrN2RvalNvTEVkYXpXc2JFY0hMVGo3Rm5SbTdY?=
+ =?utf-8?B?ek9FcDRMZncxandieTN3eVc3LzJqbGxrdjRod3NURUdWZjBSbkxVWjc2Um5r?=
+ =?utf-8?Q?OYf4KE8ZzJTXEq33ItxTucM=3D?=
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2847dec4-c6de-4053-f4c5-08d9970f8fc2
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2021 16:58:54.2997
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zmRHKGEHf+hFDWB0Y+wQd6euJ3vi14N3YzbhriXO98pZP5BeKO7taZD1wKYmhRuDHGmYU0GF5rPlR0ZqrijzAg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6950
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all, some additions below :)
+On 24.10.21 19:10, Jonathan Cameron wrote:
 
-On Sun, Oct 24, 2021 at 11:13:28AM +0200, Len Baker wrote:
-> Hi Matthew,
+> CAUTION: This email originated from outside of the organization.
+> Do not click links or open attachments unless you recognize the sender and know the content is safe.
 >
-> thanks for looking at this. More below.
 >
-> On Sat, Oct 23, 2021 at 03:27:17PM +0100, Matthew Wilcox wrote:
-> > On Sat, Oct 23, 2021 at 12:54:14PM +0200, Len Baker wrote:
-> > > Changelog v1 -> v2
-> > > - Remove the new_dir_size function and its use (Matthew Wilcox).
-> >
-> > Why do you think the other functions are any different?  Please
-> > provide reasoning.
+> On Sun, 24 Oct 2021 12:16:26 +0300
+> Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
 >
-> I think it is better to be defensive. IMHO I believe that if the
-> struct_size() helper could be used in this patch, it would be more
-> easy to ACK. But it is not possible due to the complex memory
-> layouts. However, there are a lot of code in the kernel that uses the
-> struct_size() helper for memory allocator arguments where we know
-> that it don't overflow. For example:
+>> Introduce IIO_VAL_INT_64 to read 64-bit value for
+>> channel attribute. Val is used as lower 32 bits.
+>>
+>> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+>> ---
+>>   drivers/iio/industrialio-core.c | 3 +++
+>>   include/linux/iio/types.h       | 1 +
+>>   2 files changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+>> index 6d2175eb7af2..49e42d04ea16 100644
+>> --- a/drivers/iio/industrialio-core.c
+>> +++ b/drivers/iio/industrialio-core.c
+>> @@ -702,6 +702,9 @@ static ssize_t __iio_format_value(char *buf, size_t offset, unsigned int type,
+>>        }
+>>        case IIO_VAL_CHAR:
+>>                return sysfs_emit_at(buf, offset, "%c", (char)vals[0]);
+>> +     case IIO_VAL_INT_64:
+>> +             tmp2 = (s64)((((u64)vals[1]) << 32) | (u32)vals[0]);
+>> +             return sysfs_emit_at(buf, offset, "%lld", tmp2);
+>>        default:
+>>                return 0;
+>>        }
+>> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
+>> index 84b3f8175cc6..bb6578a5ee28 100644
+>> --- a/include/linux/iio/types.h
+>> +++ b/include/linux/iio/types.h
+>> @@ -24,6 +24,7 @@ enum iio_event_info {
+>>   #define IIO_VAL_INT_PLUS_NANO 3
+>>   #define IIO_VAL_INT_PLUS_MICRO_DB 4
+>>   #define IIO_VAL_INT_MULTIPLE 5
+>> +#define IIO_VAL_INT_64 6 /* 64-bit data, val is lower 32 bits) */
+> I'm guessing the closing bracket is left over of some editing?
 >
-> 1.- Function imx8mm_tmu_probe()
->     Uses: struct_size(tmu, sensors, data->num_sensors)
->     Where: tmu has a sizeof(struct imx8mm_tmu) -> Not very big
-             sensors is an array of struct tmu_sensor and the
-	     sizeof(struct tmu_sensor) is small enough
->            data->num_sensors -> A little number
+> Otherwise fine and I can tidy that up whilst applying.
+
+Yes, it's a typo. Please remove it while applying. Thanks!
+
+> Note that this is almost certainly too late for this cycle (we are
+> about a week away from merge window subject to whatever Linus says
+> for rc7 and new stuff needs some time to soak in next), but I'll
+> plan to get it queued up early in the next one.
 >
->     So, almost certainly it doesn't overflow.
->
-> 2.- Function igb_alloc_q_vector()
->     Uses: struct_size(q_vector, ring, ring_count)
->     Where: q_vector has a sizeof(struct igb_q_vector) -> Not very big
-             ring is an array of struct igb_ring and the
-	     sizeof(struct igb_ring) is not small but also no very big.
->            ring_count -> At most two.
->
->     So, almost certainly it doesn't overflow.
->
-> 3.- And so on...
->
-> So, I think that these new functions for the size calculation are
-> helpers like struct_size (but specific due to the memory layouts).
-> I don't see any difference here. Also, I think that to be defensive
-> in memory allocation arguments it is better than a possible heap
-> overflow ;)
->
-> Also, under the KSPP [1][2][3] there is an effort to keep out of
-> code all the open-coded arithmetic (To avoid unwanted overflows).
->
-> [1] https://github.com/KSPP/linux/issues/83
-> [2] https://github.com/KSPP/linux/issues/92
-> [3] https://github.com/KSPP/linux/issues/160
->
-> Moreover, after writing these reasons and thinking for a while, I
-> think that the v1 it is correct patch to apply. This is my opinion
-> but I'm open minded. Any other solution that makes the code more
-> secure is welcome.
->
-> As a last point I would like to know the opinion of Kees and
-> Gustavo since they are also working on this task.
->
-> Kees and Gustavo, what do you think?
->
-> Regards,
-> Len
+Noted. Thanks a lot!
+
+>>   #define IIO_VAL_FRACTIONAL 10
+>>   #define IIO_VAL_FRACTIONAL_LOG2 11
+>>   #define IIO_VAL_CHAR 12
+
+Best regards,
+Andriy.
+
+
