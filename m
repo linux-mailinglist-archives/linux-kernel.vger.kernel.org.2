@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E666438997
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD814389A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJXPBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 11:01:08 -0400
-Received: from dvalin.narfation.org ([213.160.73.56]:51976 "EHLO
-        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhJXPBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 11:01:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-        s=20121; t=1635087521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sFbUc8CH71I0jSgZO4ezMiudXcKS9p8Pep/RP8lHGug=;
-        b=onXqedq85vG7HWIpWdR/vkLSFlPlah9x5M5rwGArkgrceQOk95crCPaAomGS8aF3surxTf
-        HVQcDTAo+y2Ev0WDsziT5KFV5XMDQ3XBBnyurfcax0wtYRautxQDVkLt+OVGPMi4X8bO6/
-        2UW+CygPECbMqNC1e0dTYSFvuxgK7Jo=
-From:   Sven Eckelmann <sven@narfation.org>
-To:     mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
-        davem@davemloft.net, kuba@kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Cc:     b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Subject: Re: [PATCH] net: batman-adv: fix error handling
-Date:   Sun, 24 Oct 2021 16:58:30 +0200
-Message-ID: <2526100.mKikVBQdmv@sven-l14>
-In-Reply-To: <20211024131356.10699-1-paskripkin@gmail.com>
-References: <2056331.oJahCzYEoq@sven-desktop> <20211024131356.10699-1-paskripkin@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2606459.3l26UXsCK9"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+        id S231636AbhJXPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 11:10:29 -0400
+Received: from smtp-32-i2.italiaonline.it ([213.209.12.32]:37177 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231372AbhJXPK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 11:10:27 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([213.45.67.127])
+        by smtp-32.iol.local with ESMTPA
+        id eeyWmj6mkdfuoeeyamWXw6; Sun, 24 Oct 2021 16:59:56 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1635087597; bh=UHNp/mjrujGjyEugYBqZOEjeBO4p+fK9OLkSqTnBvO0=;
+        h=From;
+        b=wzvu1ZHaUk+/eR3exg6g1dJetP9q8up9ZI+OFTQmQGcltCtEn6GR5BL1BqA7AmCeD
+         suhVyvU0mRIA9XZE2CBfEzlLz9ZgUuV0aHEx2vvcv3/vpNFudUkK88UfjLLGQHt5kV
+         3nLieTO44J+tPOEYQTORhoQppOHf8FrzPB1TWvyIwGTRmoDv5OhpfNCa0keOTZfkdF
+         x7bfC2fqepPdC8Zg8sTapwUrg+bd5Y/vIBvojgA1Vs0BdgwcIBlxXRtvCTwdJti3hm
+         YBXnGz/f/20h418MW8XwGcvwRQ0vfFKTklH+CJwsNcA0aXOvMIh/+5Rbt8/kPm0krb
+         79+4i9Mi9c1zQ==
+X-CNFS-Analysis: v=2.4 cv=IrzbzJzg c=1 sm=1 tr=0 ts=617574ed cx=a_exe
+ a=Vk63IOK+/LoQucGDvce7tA==:117 a=Vk63IOK+/LoQucGDvce7tA==:17
+ a=eDEbosCrgEDue1CRdZcA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, Rachna Patil <rachna@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        devicetree@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH 0/6] input: touchscreen: am335x: fix and improvements
+Date:   Sun, 24 Oct 2021 16:59:24 +0200
+Message-Id: <20211024145931.1916-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfJVeqVN0AJ9sz/vFjjQaGJ37dfpFQCvJnhuDEu4E4nuGWWR6zPKD47ndH1qfSsrLKgzfV0wY9nDG7jJQuJmyaywDuhc9j+41/KyjXI0rVAYQWCNhrjAK
+ rCh+8NWps6g2wM6od2LNZIB0uI0SVXbOlTZbsxshkIWKH7xKX9qA37PIes+TMz6FUc1SRkgpFG2zIQ0T9CT73FpEnZ9ycHch+MkAkxKPjYWEGRwgTGBCB+76
+ 3sJ+xzn3G9gHs2FnCVHL4Ju/RR0u+AG5BPSRhAAPTIU12WSL3O/nRZ1FTMTBPwdiqJrTRQaj3xhGkkvjoGMKUho1Nu6CQkBMsjWR8JdhlXsC6mngM553qVVU
+ WGrktaLzR9YLuRexrQ/p67up0nK9XMIre3Rn+YzQ5P3lviobM3MKtBTzTjkEkHnkT9KrqEFQsXi8Gy1M4NKhBz7Ct8fC+kAKiUJyuj+FqR1EN29Z2GjxnQZ1
+ 1KIenmjv1OKqov1XoZX6xmuacGr3JPpfcLoz/A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart2606459.3l26UXsCK9
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc, davem@davemloft.net, kuba@kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Cc: b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>, syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-Subject: Re: [PATCH] net: batman-adv: fix error handling
-Date: Sun, 24 Oct 2021 16:58:30 +0200
-Message-ID: <2526100.mKikVBQdmv@sven-l14>
-In-Reply-To: <20211024131356.10699-1-paskripkin@gmail.com>
-References: <2056331.oJahCzYEoq@sven-desktop> <20211024131356.10699-1-paskripkin@gmail.com>
+This series grew out of a touchscreen validation activity on a custom
+board. Oscilloscope measurements and driver source analysis led to these
+patches.
 
-On Sunday, 24 October 2021 15:13:56 CEST Pavel Skripkin wrote:
-> Syzbot reported ODEBUG warning in batadv_nc_mesh_free(). The problem was
-> in wrong error handling in batadv_mesh_init().
-> 
-> Before this patch batadv_mesh_init() was calling batadv_mesh_free() in case
-> of any batadv_*_init() calls failure. This approach may work well, when
-> there is some kind of indicator, which can tell which parts of batadv are
-> initialized; but there isn't any.
-> 
-> All written above lead to cleaning up uninitialized fields. Even if we hide
-> ODEBUG warning by initializing bat_priv->nc.work, syzbot was able to hit
-> GPF in batadv_nc_purge_paths(), because hash pointer in still NULL. [1]
-> 
-> To fix these bugs we can unwind batadv_*_init() calls one by one.
-> It is good approach for 2 reasons: 1) It fixes bugs on error handling
-> path 2) It improves the performance, since we won't call unneeded
-> batadv_*_free() functions.
-> 
-> So, this patch makes all batadv_*_init() clean up all allocated memory
-> before returning with an error to no call correspoing batadv_*_free()
-> and open-codes batadv_mesh_free() with proper order to avoid touching
-> uninitialized fields.
-> 
-> Link: https://lore.kernel.org/netdev/000000000000c87fbd05cef6bcb0@google.com/ [1]
-> Reported-and-tested-by: syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
-> Fixes: c6c8fea29769 ("net: Add batman-adv meshing protocol")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Dario Binacchi (6):
+  input: ti_am335x_tsc: set ADCREFM for X configuration
+  input: ti_am335x_tsc: fix STEPCONFIG setup for Z2
+  input: ti_am335x_tsc: lower the X and Y sampling time
+  dt-bindings: input: ti-tsc-adc: fix tsc node example
+  mfd: ti_am335x_tscadc: fix reading a tsc property from DT
+  mfd: ti_am335x_tscadc: drop the CNTRLREG_8WIRE macro
 
-Acked-by: Sven Eckelmann <sven@narfation.org>
+ .../bindings/input/touchscreen/ti-tsc-adc.txt  |  2 +-
+ drivers/input/touchscreen/ti_am335x_tsc.c      | 18 +++++++++++++-----
+ drivers/mfd/ti_am335x_tscadc.c                 |  7 ++++++-
+ include/linux/mfd/ti_am335x_tscadc.h           |  1 -
+ 4 files changed, 20 insertions(+), 8 deletions(-)
 
-
-Kind regards,
-	Sven
---nextPart2606459.3l26UXsCK9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmF1dJYACgkQXYcKB8Em
-e0bQcQ//Sla8E/Y1+ZjgSouR6oFVDORn2++Z0+TxHuzHzNw1m6/XePtcgybcRHXO
-LSAFMlQjhm6s0Rb4oJx3v4RUraWQgb87EZSXReFl85xWByHHZ61at3na6e/cmgdG
-BzYXkTynIb0BI4j2MVV7xE0bBDGzcdm2drlEGE/BOpughyUISpFqhv/S4Y6fPHl8
-x9HyGlWZU/Iud2tIN6hkYAJFWCkFYryqh9eKQ2kE8rWugKyLiwuc71JDcFgALx1f
-GjSEyBIok+m4nMOkXhx8VA9aJCVd8yzxml0Cs9Tnge+AwAA9xpR8Xl9wvfHHflM3
-cKwjv8rOl4KbXuhs++I0Qsqb6IciUUCMIFzLhw89daEKVEkzTnHIWBQPaGq+87Pi
-YM8LnVkUx0Bepsig5DArFIxBjVQS7tP9agvza8Skcgw46q+gcaC3QqJBfpoi1NAy
-aiAWCJDMr3q6ui/R4fmMCJh7lGHveKwF91yuSOl5V1RCao7L/Ltix4+GapUYiDky
-0Vg5XDy97jMJp+hcVhT1Lmd5ZbAzzbl1nQLyTeg/+aTwraLQFKOM9QfEfsR4ce4h
-IgkOKVTekBJ6b7NUcgZP2CnJ2fncNm3B9AA//8mUjzFgUQV+ST5jwpue44c/y25d
-sUVpC2h7rh9uH3Stc9IlECudAihLrkQLxr+L2hvMqUu+F/86yjA=
-=OD+V
------END PGP SIGNATURE-----
-
---nextPart2606459.3l26UXsCK9--
-
-
+-- 
+2.17.1
 
