@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A60C438BCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EE8438BD1
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhJXU2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 16:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbhJXU2p (ORCPT
+        id S231856AbhJXUfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 16:35:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231394AbhJXUfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 16:28:45 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE26C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=8O9gkYAmFcVK2IsDTWyn2VcW39mplgtD5t4PDmHXu1U=; b=nSaHE3DkXdmeZ1O0lor5XmoZPe
-        AW5ZCFNAxuvaGwR9xicRQr5bwZzNSKltIJlzzKIfb2B41sFIiWKNLHMxaykVDRj1MhManwnqgrj/S
-        x9ZQedtZPEiyRNOygnlTPudecxV3ArZrm3/abUvlXCE5ztjj0qNfwUwjLOdeaytVsz4+BQmuUtfKu
-        IfshdYkYPo3di9x0o2/Dswha1avGXlmWtX9n1EQwYW5XDl8OuvEs3VIR+MXA4vtI6SMeI7B4nhLi/
-        bCUHBXPGkqMQcySiXD1C4DcC1niCP7nlV+Bx4tLMqyIEP53flEsPKfa2yZXIi/Rn42ghwVnMeRJf4
-        FofPugpg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55272)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mek49-0003Y2-8V; Sun, 24 Oct 2021 21:26:01 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mek46-0003JU-0B; Sun, 24 Oct 2021 21:25:58 +0100
-Date:   Sun, 24 Oct 2021 21:25:57 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hsinyi@chromium.org, fshao@chromium.org, nancy.lin@mediatek.com,
-        singo.chang@mediatek.com
-Subject: Re: [PATCH] mailbox: remove the error message when gce clk is defer
-Message-ID: <YXXBVTEbjPiBm1un@shell.armlinux.org.uk>
-References: <20211023164831.25690-1-jason-jh.lin@mediatek.com>
+        Sun, 24 Oct 2021 16:35:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635107560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=foPZLVboh7onbXg8RJt10aqr10vmq7ONgcIyRXku74s=;
+        b=UobQe2sqgQJSRKt+33qT03PenqRaHFCx/uCIeqON1y1spZfL5p6zZtf8baTqbvrqa/WhBU
+        RIBIijqaeEzZQv5NnPNsopBR55x32ShGp7WRvW4n3sH/nlX8u6acuh/lSN+pupuvEd1sIZ
+        x9bGAW3UuLIDH5tirnr/UYN0mDnjg/U=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-hmEPZYRgNeK8ALP5ajQVxA-1; Sun, 24 Oct 2021 16:32:38 -0400
+X-MC-Unique: hmEPZYRgNeK8ALP5ajQVxA-1
+Received: by mail-wr1-f69.google.com with SMTP id f1-20020a5d64c1000000b001611832aefeso2418908wri.17
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:32:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=foPZLVboh7onbXg8RJt10aqr10vmq7ONgcIyRXku74s=;
+        b=rIVt9HNyeVVn0i9LpLwnUX5s+GN8o/CxAwlKYQqncUdqM7Xbk0WFMk72dYkHgUh5QK
+         PhiKm8xYwE4GWxj+5BrYF35RGvouTN3m4YA/SBCphGen1jWRiBoKpT04FcyQCw/I4D7Z
+         dCOrkHe6pdpl5JQVDec5e4uH2bu5rO7pEnDE99qzd9DhsyhJR4iN9iYbFmGXWcqg5TgO
+         NZ0Ln7s4MancV0I6FgEMRcHD94mrfTwhiKvyrompooDeUCWfMFQ5VqzsVO+b0rqqNFwg
+         GNAH9FlDWSpCW+5gH95L76Bz83nEAueyR+xFZszdDl0NX0P2jo1OlmrVhiQhJOkp2/7u
+         qBEQ==
+X-Gm-Message-State: AOAM533t70XmL+jCdXsmWe14o4XaY1Atc0j9LEXya6TM8KG7GQqOzHU6
+        d+TdXR+D4sZUjjX2vPzj8jW6glSSLFL3JGSj40sEcxEpXNLVcg2PEfg75+vdf5PEetXGlAkdQxe
+        hxHNDJFGO/YOYcUcIdW26nBOu
+X-Received: by 2002:a05:600c:a43:: with SMTP id c3mr43191917wmq.193.1635107557478;
+        Sun, 24 Oct 2021 13:32:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzTb7WRG4PUnpVolCGCFaAjk037qGckuhGFDnVdfuykBRH4F+Vw25gbwIjHO7F2pE4LEgFYBA==
+X-Received: by 2002:a05:600c:a43:: with SMTP id c3mr43191886wmq.193.1635107557159;
+        Sun, 24 Oct 2021 13:32:37 -0700 (PDT)
+Received: from [192.168.1.128] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id r39sm8142731wmp.2.2021.10.24.13.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 13:32:36 -0700 (PDT)
+Message-ID: <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com>
+Date:   Sun, 24 Oct 2021 22:32:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211023164831.25690-1-jason-jh.lin@mediatek.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
+ framebuffers removal
+Content-Language: en-US
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20211022144040.3418284-1-javierm@redhat.com>
+ <YXMNOfBS5iFenmx8@intel.com>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <YXMNOfBS5iFenmx8@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 12:48:31AM +0800, jason-jh.lin wrote:
-> Remove the error message when gce clk is defer.
-> 
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-> index fd5576a9f8b4..684b8aa1e445 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -577,7 +577,8 @@ static int cmdq_probe(struct platform_device *pdev)
->  				snprintf(clk_id, sizeof(clk_id), "%s%d", clk_name, alias_id);
->  				cmdq->clocks[alias_id].id = clk_id;
->  				cmdq->clocks[alias_id].clk = of_clk_get(node, 0);
-> -				if (IS_ERR(cmdq->clocks[alias_id].clk)) {
-> +				if (IS_ERR(cmdq->clocks[alias_id].clk) &&
-> +				    PTR_ERR(cmdq->clocks[alias_id].clk) != -EPROBE_DEFER) {
->  					dev_err(dev, "failed to get gce clk: %d\n", alias_id);
->  					return PTR_ERR(cmdq->clocks[alias_id].clk);
->  				}
+Hello Ville,
 
-So when you get -EPROBE_DEFER, you omit the error message _and_ ignore
-the -EPROBE_DEFER. Is that really what you want to do?
+On 10/22/21 21:12, Ville Syrjälä wrote:
+> On Fri, Oct 22, 2021 at 04:40:40PM +0200, Javier Martinez Canillas wrote:
+>> The simpledrm driver allows to use the frame buffer that was set-up by the
+>> firmware. This gives early video output before the platform DRM driver is
+>> probed and takes over.
+>>
+>> But it would be useful to have a way to disable this take over by the real
+>> DRM drivers. For example, there may be bugs in the DRM drivers that could
+>> cause the display output to not work correctly.
+>>
+>> For those cases, it would be good to keep the simpledrm driver instead and
+>> at least get a working display as set-up by the firmware.
+>>
+>> Let's add a drm.remove_fb boolean kernel command line parameter, that when
+>> set to false will prevent the conflicting framebuffers to being removed.
+>>
+>> Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
+>> early in their probe callback, this will cause the drivers' probe to fail.
+> 
+> Why is that better than just modprobe.blacklisting those drivers?
+> 
 
+Because would allow to deny list all native (as Thomas called it) DRM drivers
+and only allow the simpledrm driver to be probed. This is useful for distros,
+since could add a "Basic graphics mode" to the boot menu entries, that could
+boot the kernel passing a "drm.disable_native_drivers=1" cmdline option.
+
+That way, if there's any problem with a given DRM driver, the distro may be
+installed and booted using the simpledrm driver and troubleshoot why a native
+DRM driver is not working. Or try updating the kernel package, etc.
+
+Currently what most distros do is to pass "nomodeset" in this mode. But now
+that we have the simpledrm driver, would be nice to just use the frame buffer
+set by the system firmware in those cases.
+
+Best regards,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
+
