@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663F9438B32
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ABC438B33
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhJXSGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 14:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
+        id S231731AbhJXSHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 14:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJXSGi (ORCPT
+        with ESMTP id S231290AbhJXSHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 14:06:38 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E55BC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:04:17 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id b4so5494745uaq.9
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=OjBdauvmHVn7SbXReqk1S3tkood0uafuRw2XIo1uZRc=;
-        b=MmO0plrIv5OnYPo7oVMkWk0yPgJyEmOZsrgJtbvhBzgxVT0fITbIfslJXvzRCQqrkL
-         gPtVO7p3MRAHKvBrfskzYFh5cbiMEenVAp7HKGyyJFun4Nw/u6Pa25kxF68u20AWSYOB
-         5GU/gZ1L6yONTcGgTdXuwCyX82+ukuqGFJUtTg6cskfEirpCAibfoF4pYsLpTNtGncxi
-         tLVsYHzU9AiZm3yjVpUeE8wvyFw2ZAFKApgrqObw6GLrGz1jHA62TlSisf0+N9ns1Mi6
-         PDxCIMeunkBCdozK9QF9CVfOQvFPSN9MJOMN3njgYOKgZ/rRzg6g1K3oHLiF+mzVt/8x
-         N6AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=OjBdauvmHVn7SbXReqk1S3tkood0uafuRw2XIo1uZRc=;
-        b=mc6Ce1338Q+eHkF6HvhFLWEY4KlEIjELlOyW8zu9K7WV/i3a/ri+Trsu6HfgnbtVZC
-         6pUPT09x7JOTZL6lXJSJ/WNbIBZY78wX4loAgdn7a18XE1yc70wMWHkSDBqYlv0dc2rX
-         ORNA4GmIl1mZjrtgQdBbBmqZDy5KgsRmAWeXDQ2d7DqZwMkgcUYeguOgX8SBF+mflZmR
-         7ib3KXeH29xAF1rOPEaE36EQLJyYFFskhsh0twVZUZ/VGLH9EjFmjKw8976Ci9TW+bmR
-         zSW7hlBG2Q22HP9e0fAxNgITV+v7er2ddquUgCFqs2VCYw9qIrLNlrFLib92Cxu3zSGf
-         pbsg==
-X-Gm-Message-State: AOAM532MQ6bHWKcRRlAmCkdDm82JDKSENRQgGcOfsxUk4LMgvwKJ4IjB
-        hqcINrqEWT1BczMC7MZ+YwKV5Qjfw925VujaRdM=
-X-Google-Smtp-Source: ABdhPJx9bUgB1xAOHX+9Auv8b387NBMi8/IigznG0+TaEtQswEjjeIRszteT2SmpX4+9h9HTH8XGVfl6ycyYS2asb10=
-X-Received: by 2002:ab0:1613:: with SMTP id k19mr1661396uae.135.1635098656286;
- Sun, 24 Oct 2021 11:04:16 -0700 (PDT)
+        Sun, 24 Oct 2021 14:07:23 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A484DC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:05:02 -0700 (PDT)
+Received: from dslb-178-004-201-201.178.004.pools.vodafone-ip.de ([178.4.201.201] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mehrd-00049p-Gw; Sun, 24 Oct 2021 20:04:57 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 0/5] staging: r8188eu: remove struct sreset_priv
+Date:   Sun, 24 Oct 2021 20:04:43 +0200
+Message-Id: <20211024180448.20624-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Received: by 2002:ab0:4a9d:0:0:0:0:0 with HTTP; Sun, 24 Oct 2021 11:04:15
- -0700 (PDT)
-Reply-To: mrsaishagaddafi85@gmail.com
-From:   "Mrs.Aisha Muaammar Gaddafi" <mrs.sophealj66@gmail.com>
-Date:   Sun, 24 Oct 2021 11:04:15 -0700
-Message-ID: <CA+ft-JKf6G_7x1+2hxGm1vA31tc=-RpuKAYnhVv6zJCEDsVHNQ@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Beloved One,
+The sreset_priv structure is not used by the r8188eu driver. This patchset
+removes sreset_priv step by step.
 
-I need Your Assistance please Bear with me I am writing this mail to you with
-Tears And Sorrow From My Heart.
+Martin Kaiser (5):
+  staging: r8188eu: silent_reset_inprogress is never read
+  staging: r8188eu: wifi_error_status is write-only
+  staging: r8188eu: silentreset_mutex is unused
+  staging: r8188eu: remove last_tx_complete_time
+  staging: r8188eu: remove the sreset_priv structure
 
-I, am Mrs Aisha Muaammar Gaddafi The only Daughter of Late President
-Of Libya I know my mail might Come
-to you as a surprise Because you don,t Know me but Due to Unsolicited
-Nature Of My Situation Here IN the
-Refugee Camp Here In Ouagadougou Burkina Faso I was in Oman Just
-because of the Bad people that kill my
-Father they are still Looking for me that is why I Run down to Burkina
-Faso with Children i decided to contact
-you for help i have passed through Pains and sorrowful moments since
-the Death of my father At the meantime my
+ drivers/staging/r8188eu/Makefile              |  1 -
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   |  2 ++
+ drivers/staging/r8188eu/core/rtw_sreset.c     | 32 -------------------
+ drivers/staging/r8188eu/hal/rtl8188e_sreset.c | 15 ---------
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   | 10 ------
+ .../staging/r8188eu/include/rtl8188e_hal.h    |  1 -
+ .../staging/r8188eu/include/rtl8188e_sreset.h |  1 -
+ drivers/staging/r8188eu/include/rtw_sreset.h  | 29 -----------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c     |  4 ---
+ .../staging/r8188eu/os_dep/usb_ops_linux.c    | 18 +++--------
+ 10 files changed, 6 insertions(+), 107 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/core/rtw_sreset.c
+ delete mode 100644 drivers/staging/r8188eu/include/rtw_sreset.h
 
-my family is the Target of a western Nation led by Nato who wants to
-destroy my father at all costs. our Investment
-and bank account in Several Countries are their Targets to Freeze the Account
+-- 
+2.20.1
 
-My Father of blessed Memory Deposited the Sum Of 18.5 Million Dollars
-at the bank Of Spain which he used my
-names as the next of Kin I have been commissioned by the bank to
-present an international foreign investor, partner
-who can stand as my trustee and to receive the fund in his account
-without any problem from the Government
-Of Spain,
-
-Please I want you to help me with this I will be loyal to you all the
-days of my Life Please I will pay you back
-
-Please I need your Urgent Respond
-From Mrs Aisha Gaddafi
