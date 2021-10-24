@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06074438C2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23E6438C2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhJXVrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
+        id S231928AbhJXVwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 17:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJXVrF (ORCPT
+        with ESMTP id S229519AbhJXVwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:47:05 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50494C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:44:44 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x27so4853716lfu.5
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:44:44 -0700 (PDT)
+        Sun, 24 Oct 2021 17:52:18 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22A2C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:49:56 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g36so7430330lfv.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ryZxhawk/h0qs5tZCgKZdBuPuqyJ9WVtt/N+HNRxYbA=;
-        b=PF+HxDOj4jRbUbIGGsXBJZMvVI+QzbTEkrtSOQMPI0iSaDkNYRRxzaRa4FWHkKCyNF
-         rCSHzX0BxdnvWjWd4/u+8txDSnF5F1QFS4qkLxQQalw5oUjDghgF33VXUMIVxqIBNMlC
-         EYOtYfn61QIaTQ5PiEeaacaBh24Zg1OJ4G/4gR2X2mwB/GfOd4LvJEaXkZ654T0kaydL
-         2sc2upn6JN8Hw6zm4l/vnMl/rCXDM1PvVwswL7lK4C5HVmdExpUq1swPKmITRYLDSYcj
-         JyFNuLF//kSYlTHMH4wHRCCltwCDxWrk5rQWIcVKMFP3WJwEftwD18DzxKGIIXPj7smi
-         5tKA==
+        bh=zqFQsFklz0z9fcfedYbprvhik13AFhIEkeGZ0J9HMVs=;
+        b=vtdzNJXe7QO5brg0f8xsAF2K449Mc5q9vcJq0Qcq8K5HWgXm4fq6s2MKROR+wgugHh
+         /7nPILVTts16rDHuo9n7Ix+IjkFiSOXKB1sHPByCN6zeoVpIAH8X8bakNSHYS8jS3DFJ
+         qFYsBbZgfQ4Hl2cgMyBdeTsfNXF+Lgemm1NCR0+oLdvmTrr1+Y0DW5+nxCQZNxcHBjKd
+         dNokp3lRaRxMNp0zsDdWXdyLEbdU6V82Sb2apqaRcu13h3cWCdlhEA0HjsU9/WSdGZ0p
+         TIQ+zHPhHbesIkOXlzu7OuydUKuJ+6PM5Xx/tWhULpvKDZCWGlWYSCwJDMdzBlwny86K
+         mMOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ryZxhawk/h0qs5tZCgKZdBuPuqyJ9WVtt/N+HNRxYbA=;
-        b=N0/PQuVsB70dppIbXr7DhHiq+mfzdlPxbSAVWMUwQkkKhpWVbHdUC8oH1WVdrwGhDH
-         fXR5Q3LLzCvxx12W5v8jfwR2lgLeoDRCOM2AsVRkuucXTRQaNPZLWi6KELn0VYwQUhNy
-         8NUGxtrRtEK2s+HrPQbWF1TT1rTE/gKdUoswQs4z1ehXKRKwhBLQZ6ydOl7lvdOVS9q5
-         PUa/1CSU+su9revzd5uQTcF3Rt8MlN28llgTMCr9nOI29RFdAM1V/e3cDyrtSN50KwjL
-         qfOCVagfbgkOhq/yLV0OLeLq3kEaHR6mD6pvfUldd2Dx/dcuKBFw8PrfumXtCZMyTil7
-         7vfg==
-X-Gm-Message-State: AOAM533L5Tjxg2Y3MpuPBO5EaT6wSbK2Z70gtxFltY66yJhOUdzXDGe6
-        4BjZukBeCdimlme0zpomsJqM7kYe0bx2RjZWGacGp1F525Q=
-X-Google-Smtp-Source: ABdhPJzxS/Jx9/bwtKL8TjRwj8l7pISvcOLBGz+ZDFrS64NPPcx8Vfbl3oixbwjKI0eBCKqnUC8ehozS0FsuUlPdGH4=
-X-Received: by 2002:ac2:430d:: with SMTP id l13mr6615116lfh.656.1635111882492;
- Sun, 24 Oct 2021 14:44:42 -0700 (PDT)
+        bh=zqFQsFklz0z9fcfedYbprvhik13AFhIEkeGZ0J9HMVs=;
+        b=7Q+SsBaUMgJmLvHZZsOQjAyStE0j3FUJFAxnm6t2lvuujRZgmaNHrtxFuZeF7F1m9q
+         yvgXDRFehmtufWmRcKgo9qDfvA1/zPllX9/+K64QVeGE8KCntwL10WkCkjvCiywg8Iyx
+         PRAEyWz1bi3lOU27j4LyOe5k02b/2pm4euStJusNoMdO+7+hxN62YD4bhtUvgDG7rDKC
+         X2VdueNfSSa2dt6tcmqMDz6ecmHgphVOe86jlqOeErTX+DHcWXQpaRwm2qFSQWqqKZJJ
+         ucqlLSsbTVCg2R1oeo/32+pFDeUnjfzk60UElVjNqTau1KKRss30UwfTx9DMuMUa/1KR
+         FLlQ==
+X-Gm-Message-State: AOAM532Ke1rMHu6a1oD+KHX3ZJueUqMHbW/ZPqMiE6Znk/SyHXbF1val
+        OXGXyz/JCaoccm+aYpkV8WAHgtYxa6h+QDTIJCKM/A==
+X-Google-Smtp-Source: ABdhPJygz737sWYq7dytPNvnnlwtCG1vOKQaYk14JY11BQkN5FIGmxvZXnjTvu/d8bwlzjISeavbtKh2rIcQEhfyUR0=
+X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr13208074lfd.584.1635112195140;
+ Sun, 24 Oct 2021 14:49:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020054942.1608637-1-quanyang.wang@windriver.com>
-In-Reply-To: <20211020054942.1608637-1-quanyang.wang@windriver.com>
+References: <20211018220504.8301-1-shreeya.patel@collabora.com>
+In-Reply-To: <20211018220504.8301-1-shreeya.patel@collabora.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 24 Oct 2021 23:44:31 +0200
-Message-ID: <CACRpkdYxMDp4FRGP=EOt8oTMxs_YuskbvMx5wXBDjUWz6hD=gQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: add BUILD_BUG_ON to check if fixmap range spans
- multiple pmds
-To:     quanyang.wang@windriver.com
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 24 Oct 2021 23:49:44 +0200
+Message-ID: <CACRpkdZCMH5OBwfiPwMT1CifDV28H4aTxy_N_4dHs0Qg0ENOAw@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: Return EPROBE_DEFER if gc->to_irq is NULL
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>, krisman@collabora.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 7:50 AM <quanyang.wang@windriver.com> wrote:
+On Tue, Oct 19, 2021 at 12:05 AM Shreeya Patel
+<shreeya.patel@collabora.com> wrote:
 
-> From: Quanyang Wang <quanyang.wang@windriver.com>
+> We are racing the registering of .to_irq when probing the
+> i2c driver. This results in random failure of touchscreen
+> devices.
 >
-> Not only the early fixmap range, but also the fixmap range should be
-> checked if it spans multiple pmds. When enabling CONFIG_DEBUG_HIGHMEM,
-> some systems which contain up to 16 CPUs will crash.
+> Following errors could be seen in dmesg logs when gc->to_irq is NULL
 >
-> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> [2.101857] i2c_hid i2c-FTS3528:00: HID over i2c has not been provided an Int IRQ
+> [2.101953] i2c_hid: probe of i2c-FTS3528:00 failed with error -22
+>
+> To avoid this situation, defer probing until to_irq is registered.
+>
+> This issue has been reported many times in past and people have been
+> using workarounds like changing the pinctrl_amd to built-in instead
+> of loading it as a module or by adding a softdep for pinctrl_amd into
+> the config file.
+>
+> References :-
+> https://bugzilla.kernel.org/show_bug.cgi?id=209413
+> https://github.com/Syniurge/i2c-amd-mp2/issues/3
+>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+>
+> ---
+> Changes in v2
+>   - Add a condition to check for irq chip to avoid bogus error.
 
-Looks reasonable to me.
+This v2 looks acceptable to me.
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Please submit this patch into Russell's patch tracker.
 
 Yours,
 Linus Walleij
