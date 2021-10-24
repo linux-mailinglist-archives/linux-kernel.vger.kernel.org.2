@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553AC438BAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAB5438BAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhJXTfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 15:35:30 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:46019 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhJXTf3 (ORCPT
+        id S231928AbhJXTqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 15:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhJXTqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 15:35:29 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M2fDl-1mg6xB2L3H-004DXt; Sun, 24 Oct 2021 21:33:06 +0200
-Received: by mail-wm1-f44.google.com with SMTP id b133-20020a1c808b000000b0032ca4d18aebso6898085wmd.2;
-        Sun, 24 Oct 2021 12:33:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533HTIBq3hCwwGKazh6pnxCKMId/bIP3UF9zEsThuL/ne2PSMtw3
-        SMk6azf+fGYpUUAX7yA8s9WmTDoGGzjnbJPgCI8=
-X-Google-Smtp-Source: ABdhPJw4hH7C/a2zk240txDvHL7tN8+k+dIxhQayqZg6YZyRuMpfgd65spSGiNjZlg56v83/yxP5Ni8w6w2+98dAEhQ=
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr15117795wmg.35.1635103986146;
- Sun, 24 Oct 2021 12:33:06 -0700 (PDT)
+        Sun, 24 Oct 2021 15:46:06 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6319BC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 12:43:45 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id r17so8452211qtx.10
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 12:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=4T1h/6MdNJIw0PPm4TEcxKFEMqXNYmxYZcwSKomTJoU=;
+        b=ePhq4DD4vYJwbaIb2ECaxBpkPV3hzJPWQgjoe7AdGOK3R4UGX8PSPO3cv2JFLhDOiv
+         w0qhRX0w1yx+rZZIvnzMzcwt7DrgPafaVbOFK5klrrt7G6r87ZwbQauhYcmKPRJXZld5
+         fY9qQIxW2x+kqN0VfxP5OtYplUJJgdnvmhiSsRw/8+Owju8F+gkcHZwX74EwazMBKWda
+         N2Vp/UENJxPzlHYnDi5X7dzbEq986OQyPekwx+/0XQLrJGJ7disE5iq5ce8TyjIZUdRW
+         dXZjWwynf6Z3OEjm1jIHox8dtAAR9IdaqZ61VZElFQLT4RvVq8TLfKE+OehmVotgadpB
+         cc8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=4T1h/6MdNJIw0PPm4TEcxKFEMqXNYmxYZcwSKomTJoU=;
+        b=I5881pREWqt8DoYGvGxd4Wa4Omn6pytvvLIZcA8LtrpvsOzQiHqR1ynPT+wLNZEKzi
+         DasUPJ2CB2WmFhjxuGNjqTrOiF03R3MTtRNKdiLdCgfuUtVmplUgWoI1v0mVI6Mbzbq8
+         M3urAYhqWtpgZzZcNlANSIV7aBJTWO/fatDoGOCY0l7ale7mhwQ+fyuivvO5rnjGW42O
+         3Czc5Pl4oaOvlEC8V2+9stwvYl8huWhiknQG4Q9qqCjYD/jEvKS+hmlCWMrrAVJzxqxn
+         dBGGFKkrp+eBLjnt+r4kghRysPL5yaBdoefOcaEInpdyaNuX49aJTLtT4U2s8cieV7ub
+         K5ug==
+X-Gm-Message-State: AOAM530doTVJgyAv77urQMS75H2gSRR15DHyoYfexQs2uVuhDl1punLU
+        XnZHRSGODWXexjBFXri9NHLo3A==
+X-Google-Smtp-Source: ABdhPJyj4j7EzR6DsNeSrBj8n/XeKi48Tc9FcFD/6edaoTvrtJRsPP7TBfb4OJGLA68gn5La79/o3Q==
+X-Received: by 2002:ac8:58d3:: with SMTP id u19mr13440124qta.29.1635104624242;
+        Sun, 24 Oct 2021 12:43:44 -0700 (PDT)
+Received: from Andryuu.br ([2804:431:c7fd:423:9dac:f639:6086:598])
+        by smtp.gmail.com with ESMTPSA id m66sm7521178qkb.87.2021.10.24.12.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 12:43:43 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 16:43:39 -0300
+From:   =?iso-8859-1?Q?Andr=E9?= Gustavo Nakagomi Lopez <andregnl@usp.br>
+To:     jic23@kernel.org, lars@metafoo.de, vz@mleia.com
+Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, andregnl@usp.br
+Subject: [PATCH] iio: adc: lpc18xx_adc: Reorder clk_get_rate function call
+Message-ID: <YXW3azIjPzGjvjTX@Andryuu.br>
 MIME-Version: 1.0
-References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
-In-Reply-To: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 24 Oct 2021 21:32:50 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3ccWgpQF8-Ej7Di_=eCs+cibDgiY5962iPKsMgzD_qSg@mail.gmail.com>
-Message-ID: <CAK8P3a3ccWgpQF8-Ej7Di_=eCs+cibDgiY5962iPKsMgzD_qSg@mail.gmail.com>
-Subject: Re: [PATCH 00/13] This patchset aims to add initial support for the
- i.MXRT10xx family
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        giulio.benetti@benettiengineering.com,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        b20788@freescale.com, Andy Duan <fugang.duan@nxp.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ijSh8KXz9yGLScq0wxSXSqtezBqpCDdhnwiuDPpD9kH75RQnRE0
- ZK/afQsy0B4yZ7y1N0VpJ/G9U9EeXQ0Re73DMdXLLT8x0IhLZQ99krcnis7WbHBWavIn6lU
- d9D4O0kgZowaTVUN+gzAIM4OYi5NCI67u5r/vV1+pAyHARaNN2y8gZeKuzhJRkViH/cKrBi
- AojeRN/GxKuaWQfF5S8RA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dhGgQdPx4oQ=:UHVrONz9YTHa3Lk9O6zc5u
- OSVCwKR4calueVJjuvmN9YpKDezKl8EXtP7NQFF1BWLLZEivMPyVzz5FQgnX7+gPxpqiNN2+5
- G4cqI1J9oI1OkgojGhBL7O/xtt+buZcIiQVJMIXwX79GJh2P8UgrGjYbGGxNwbGWfQw3NRU3m
- kWBLD4ltGzMQqH9HomM1d9zlIsnrJ0eSC7zEjDx8LlEyXTvlsGuFH6MskIIlaMg0oxiqKST9V
- 8OUx2I+AXsH+iT4uxFkunq0x+a+lUfXuudFR6sDbdPOSydYwSY9EGVIMJZEjWD3KjIXPMaCou
- GfWIp/sLG5DVoPKGYwYZiYv4V4xaDwmkJVMVEJa/6RqkiOos6PwCWyCcpWL8D1P5LDFgtQ2VH
- kKnIafyQCY1g4Mop5H2GSX5OjeX2x3WrgOVmK97/EU/4gDfY5soZNI6hGo5r/ZdwKVrWIqI6K
- PZCT6GwfJNS2HEUM1A7Lz1DMWvQTT0jQk6ekcp9k3RR5/xPBerd9hh0STGW+D9ykEK+M2l/9Z
- w2UACRbFZzVHj6FbwibFOCkeuKVC/hWPxFB+4p+XNflWhFR/lLfBYCPQvDYtEi6C+ZN3/Q4kY
- f0aE2BZM+Ki56j/rsI4KiWC054YLlzb0iTCilri0kww8q9dqvEZQrN/DKxp4vzxS6291CVXmn
- oBUIYvNKNFNPioL6/Mq0Vp6KhAlWrzyJ/TCGIjlbOZr431OiEAGI2+AAc2i5/+Rt8bImuioAv
- CQXSraJG7uK0niWXxi3i/7j22mbT84Lo5+6T07J1S8nuKaXrKIvUXOUis2M0OieN2iYeR/P/W
- ic2iIGmZVQ9Hn3VzAZ4WFgeQthqLMF2jvk0/fcQO3gVu0ZmtWY=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 5:40 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
->
-> Add initial support for the i.MXRT10xx SoC family
-> starting with the i.IMXRT1050 SoC.
-> This patchset contains:
-> - i.MXRT10xx family infrastructure
-> - i.MXRT1050 pinctrl driver adaption
-> - i.MXRT1050 clock driver adaption
-> - i.MXRT1050 sd-card driver adaption
-> - i.MXRT1050 uart driver adaption
-> - i.MXRT1050-evk basic support
+clk_get_rate is not garanteed to work if called before clk_prepare_enable.
 
-Can you expand the description a bit more so it makes sense as a changelog
-text for the merge commit? It's fairly rare these days that we add support for a
-MMU-less platform, so it would be good if the introductory text answers
-questions like:
+Reorder clk_get_rate, so it's called after clk_prepare_enable and
+after devm_add_action_or_reset of lpc18xx_clk_disable.
 
-- what is this platform used for, and what is the purpose of running Linux on it
-  in place of the usual RTOS variants?
+Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
+---
+ drivers/iio/adc/lpc18xx_adc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-- are you doing this just for fun, or are there any commercial use cases?
+diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
+index ceefa4d793cf..ae9c9384f23e 100644
+--- a/drivers/iio/adc/lpc18xx_adc.c
++++ b/drivers/iio/adc/lpc18xx_adc.c
+@@ -157,9 +157,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(adc->clk),
+ 				     "error getting clock\n");
+ 
+-	rate = clk_get_rate(adc->clk);
+-	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
+-
+ 	adc->vref = devm_regulator_get(&pdev->dev, "vref");
+ 	if (IS_ERR(adc->vref))
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(adc->vref),
+@@ -192,6 +189,9 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	rate = clk_get_rate(adc->clk);
++	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
++
+ 	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
+ 			LPC18XX_ADC_CR_PDN;
+ 	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
+-- 
+2.33.0
 
-- what are the minimum and maximum memory configurations this has
-  been tested with?
-
-- what user space are you testing with: any particular distro that supports
-  this platform, and do you run elf-fdpic or flat binaries.
-
-- are you planning to also support the newer i.MXRT11xx or
-  Cortex-R based designs like the S32S?
-
-       Arnd
