@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F77438CAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06E8438CAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhJXX7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 19:59:21 -0400
-Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:51144 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229821AbhJXX7U (ORCPT
+        id S230222AbhJYABy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 20:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhJYABw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 19:59:20 -0400
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 43DB8182CED2A;
-        Sun, 24 Oct 2021 23:56:58 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 2016CC417C;
-        Sun, 24 Oct 2021 23:56:56 +0000 (UTC)
-Message-ID: <a7d1136e22bdb37170a0fe9a9443ba0cdf5dcd32.camel@perches.com>
-Subject: Re: [PATCH v2 8/8] staging: vchiq_core: fix quoted strings split
- across lines
-From:   Joe Perches <joe@perches.com>
-To:     Gaston Gonzalez <gascoar@gmail.com>, linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
-        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Date:   Sun, 24 Oct 2021 16:56:55 -0700
-In-Reply-To: <20211024213839.370830-1-gascoar@gmail.com>
-References: <20211024212844.370379-1-gascoar@gmail.com>
-         <20211024213839.370830-1-gascoar@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Sun, 24 Oct 2021 20:01:52 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42661C061745;
+        Sun, 24 Oct 2021 16:59:31 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id om14so6912302pjb.5;
+        Sun, 24 Oct 2021 16:59:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UdgLpBv9vUiEAI9nTW/FcpPBhUsrQ/P7VYlSz31nv50=;
+        b=Gms+8I7iaJEgEXiIv/FGzWD9TR0ORSFGUhDym/fmuiDnyjg4Nt7R5pH4dS+AuS/uK0
+         LucW5KThyrVQgzMbntBLB0rljHjolwOGcDA4OF4yeZIAf/LnxyColxJ6Yhotj+TVLkCZ
+         dBZ6UA4nPGDVYQAqILTQxevfu3VuZ47sPPRtp6RlOTpyHABB5iqhcJCoKlPM6+xbeTOH
+         gUZDpyVykiWrV3mfYLJUlmYrflwLVs823wQ/CzQoMLb+2R7wpT6COOt4C0TVyE0siLD4
+         ksqG9ZHMhWzcMRPlDNNkdGTvay02HvnJdJJUcuc9Xok1GRXWIDCU73/DsiiziWLTQAHK
+         NUGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UdgLpBv9vUiEAI9nTW/FcpPBhUsrQ/P7VYlSz31nv50=;
+        b=LUeYU7WdC2HuLg9sXXzQ15M4YUMf0N8mr9X4kSEQ8hw6Zgk06f7REZYzA4iKMFiQzz
+         emsuXmnWj45vMDA9L3Yi/yf6MVHe+EtT2V3vugj8jz2ZRZOl0RCmZi27AJrrf042HVNC
+         J5YFt9tJX+5DL+kxU8uKtefL4apLUfqTjdmKne4Sb3iyrufDon82Nl6JF+r0JyOqVYKw
+         d6cA1g4Q/8qNS8oCovWVLs2Et+DCwId7WHqvBcZcfmGPoIURq2KmstYY0MQYNVB3EKNr
+         HlRJdD+scH30ST1heF9TxQ4xk7n/yyBNM7V9p5BxDtYHPIFR1FZWYiOsJMX0SJ61ABIc
+         J+MQ==
+X-Gm-Message-State: AOAM533GWP9kj6mBUNqp/XWGFNNheJvbrc8IRSxNXXvm5ZY7jG6Igoxq
+        jMTg3LNe2HB+LEhdO97qn5U=
+X-Google-Smtp-Source: ABdhPJyqH14nH/Dlyi7vBdkZc8TyTinpzmNMw6iyZIloODpmX5/zNdd5vQRMlLSCiVxKpZc8PlBasg==
+X-Received: by 2002:a17:90a:1485:: with SMTP id k5mr18901264pja.74.1635119970599;
+        Sun, 24 Oct 2021 16:59:30 -0700 (PDT)
+Received: from 192-168-1-105.tpgi.com.com (115-64-195-55.static.tpgi.com.au. [115.64.195.55])
+        by smtp.gmail.com with ESMTPSA id d19sm17104677pfl.129.2021.10.24.16.59.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 16:59:29 -0700 (PDT)
+From:   Jon Maxwell <jmaxwell37@gmail.com>
+To:     edumazet@google.com
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jmaxwell37@gmail.com
+Subject: [net-next v1] tcp: don't free a FIN sk_buff in tcp_remove_empty_skb()
+Date:   Mon, 25 Oct 2021 10:59:03 +1100
+Message-Id: <20211024235903.371430-1-jmaxwell37@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 2016CC417C
-X-Spam-Status: No, score=-2.25
-X-Stat-Signature: yr4qrywder1hotmtejquq6bkcb6snz94
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+ByG/C+1voGOqhYuSK4/VprHDSFEyHuBk=
-X-HE-Tag: 1635119816-195226
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-10-24 at 18:38 -0300, Gaston Gonzalez wrote:
-> Quoted strings should not be split across lines. As put it in [1]:
-> "never break user-visible strings such as printk messages because that
-> breaks the ability to grep for them."
-> 
-> While at it, fix the alignment of the arguments in the sentence.
-> 
-> Note: this introduce a checkpatch CHECK: line length of 123 exceeds 100
-> columns, as the line now is:
-> 
->  vchiq_loud_error("%d: service %d (%c%c%c%c) version mismatch - local (%d, min %d) vs. remote (%d, min %d)",
-> 
-> But now the string is grep-able and the whole function call more
-> clear.
+v1: Implement a more general statement as recommended by Eric Dumazet. The 
+sequence number will be advanced, so this check will fix the FIN case and 
+other cases. 
 
-IMO: All of these should be changed
+A customer reported sockets stuck in the CLOSING state. A Vmcore revealed that 
+the write_queue was not empty as determined by tcp_write_queue_empty() but the 
+sk_buff containing the FIN flag had been freed and the socket was zombied in 
+that state. Corresponding pcaps show no FIN from the Linux kernel on the wire.
 
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h:#define VCHIQ_LOG_PREFIX   KERN_INFO "vchiq: "
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#ifndef vchiq_log_error
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#define vchiq_log_error(cat, fmt, ...) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h- do { if (cat >= VCHIQ_LOG_ERROR) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h:         printk(VCHIQ_LOG_PREFIX fmt "\n", ##__VA_ARGS__); } while (0)
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#endif
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#ifndef vchiq_log_warning
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#define vchiq_log_warning(cat, fmt, ...) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h- do { if (cat >= VCHIQ_LOG_WARNING) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h:          printk(VCHIQ_LOG_PREFIX fmt "\n", ##__VA_ARGS__); } while (0)
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#endif
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#ifndef vchiq_log_info
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#define vchiq_log_info(cat, fmt, ...) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h- do { if (cat >= VCHIQ_LOG_INFO) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h:         printk(VCHIQ_LOG_PREFIX fmt "\n", ##__VA_ARGS__); } while (0)
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#endif
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#ifndef vchiq_log_trace
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#define vchiq_log_trace(cat, fmt, ...) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h- do { if (cat >= VCHIQ_LOG_TRACE) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h:         printk(VCHIQ_LOG_PREFIX fmt "\n", ##__VA_ARGS__); } while (0)
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#endif
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-#define vchiq_loud_error(...) \
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h- vchiq_log_error(vchiq_core_log_level, "===== " __VA_ARGS__)
-drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h-
+Some instrumentation was added to the kernel and it was found that there is a 
+timing window where tcp_sendmsg() can run after tcp_send_fin().
 
-I suggest using the rather more common vchiq_err, vchiq_warn, vchiq_info
-and if necessary vchiq_trace.  Also the cat >= test is unnecessary and
-this should just use the more common standard logging facilities.
+tcp_sendmsg() will hit an error, for example:
 
-vchiq_loud_error is IMO unnecessary.
+1269 ▹       if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))↩
+1270 ▹       ▹       goto do_error;↩
 
-Also several of the uses of these macros already have '\n' terminations
-so that just adds unnecessary blank lines in the logging.
+tcp_remove_empty_skb() will then free the FIN sk_buff as "skb->len == 0". The
+TCP socket is now wedged in the FIN-WAIT-1 state because the FIN is never sent.
 
+If the other side sends a FIN packet the socket will transition to CLOSING and
+remain that way until the system is rebooted.
+
+Fix this by checking for the FIN flag in the sk_buff and don't free it if that 
+is the case. Testing confirmed that fixed the issue.
+
+Fixes: fdfc5c8594c2 ("tcp: remove empty skb from write queue in error cases")
+Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+Reported-by: Monir Zouaoui <Monir.Zouaoui@mail.schwarz>
+Reported-by: Simon Stier <simon.stier@mail.schwarz>
+---
+ net/ipv4/tcp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index c2d9830136d2..56ff7c746f88 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -938,7 +938,7 @@ int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
+  */
+ void tcp_remove_empty_skb(struct sock *sk, struct sk_buff *skb)
+ {
+-	if (skb && !skb->len) {
++	if (skb && TCP_SKB_CB(skb)->seq == TCP_SKB_CB(skb)->end_seq) {
+ 		tcp_unlink_write_queue(skb, sk);
+ 		if (tcp_write_queue_empty(sk))
+ 			tcp_chrono_stop(sk, TCP_CHRONO_BUSY);
+-- 
+2.27.0
 
