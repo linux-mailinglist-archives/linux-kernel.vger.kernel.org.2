@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BE3438B19
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 19:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757CC438B21
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 19:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhJXRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 13:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbhJXRwc (ORCPT
+        id S231744AbhJXRzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 13:55:55 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:42463 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhJXRzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 13:52:32 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A14C061745;
-        Sun, 24 Oct 2021 10:50:11 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id c28so8290736qtv.11;
-        Sun, 24 Oct 2021 10:50:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jl13HdyL7EYvNKB/qp3Rbfr+ATdErdZL265BgLiXYwE=;
-        b=Ip5yqZJ4Y24kUoTO74/nN6kuoFiidtJzEfjORZYPxZ40jxmUd7wzQNY81JeJdwUbxD
-         tH+4pX73zKP9H9ft/dc/rstETsHkzaA56pKvqQBNrgfY8u2Xcv8FAnoIiEl6jokoAh6v
-         H7x9wqDNYPe2Ofd+pTzvGeKNgbTFa0/YPppni+AaLZ0NVoa3opBzIlNgduKEvWUTPQIj
-         DJeil5TfisJ/YjWohROiQYdowTOdyWWBdaYXjQoq/N/FEuln7jbkHADYtiUIHgi3r8Ob
-         Yq0DKJIw4l5gqF8JjI3BIKXmlwwARO6fCmFOPoJWIQa+nGuGqOTwUvoDREqgF6jw11C6
-         b5yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jl13HdyL7EYvNKB/qp3Rbfr+ATdErdZL265BgLiXYwE=;
-        b=mhKa/Y/NLDvBeDI4AEx3xhxEHEEFtCR1AiZxXBYpc0vC1eFFUdYwC4XJntblBk3XiE
-         cPG0sdJtz0eZxX2O44XY/gTeBQ/KQGx8pdGOAumzUa28YJuIrG1pXeo5XRA4jShuvfe3
-         4v9MPi7t/DR0r+uBxwoAT3h2sTzNJRUhM3qMV65wMuEKYuuwDhMjm77yV3igRnJf95md
-         aoTvmCzxWxAsJT0gZiDh2BS6op90Ku4CmX3ua/dXSC6Mpkf3OUdkhqBDgSZRsro/C59T
-         j9P6VHtxXBhgJFZ95ZGWWWpunour8c/8G0Qi1mh31/2Kt38//KwSkmGtUpkqoysukSUm
-         0Shw==
-X-Gm-Message-State: AOAM530FAkW/9cL6xkXiLkbnSpYk1++aNV606d/DchhjcxnVKNHWaEqr
-        BLWyMECHgpAyKKP55CBDvTiij4xHgQI=
-X-Google-Smtp-Source: ABdhPJyTHlgcHa+z6WWlTNRFVRHcREu5A8m9m6+OJFNVkh0Hwqduk/5TXL4uIeUIeQnXek/ymbzZmQ==
-X-Received: by 2002:ac8:58cf:: with SMTP id u15mr13034190qta.334.1635097809891;
-        Sun, 24 Oct 2021 10:50:09 -0700 (PDT)
-Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id e13sm7327335qka.117.2021.10.24.10.50.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 10:50:08 -0700 (PDT)
-From:   Trevor Woerner <twoerner@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/LPC32XX SOC
-        SUPPORT), netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: [PATCH] net: nxp: lpc_eth.c: avoid hang when bringing interface down
-Date:   Sun, 24 Oct 2021 13:50:02 -0400
-Message-Id: <20211024175003.7879-1-twoerner@gmail.com>
-X-Mailer: git-send-email 2.30.0.rc0
+        Sun, 24 Oct 2021 13:55:53 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M9FX5-1mZSUI3jEN-006SRL; Sun, 24 Oct 2021 19:53:29 +0200
+Received: by mail-wm1-f42.google.com with SMTP id v127so8366758wme.5;
+        Sun, 24 Oct 2021 10:53:29 -0700 (PDT)
+X-Gm-Message-State: AOAM532reHIze5043lAPKsvwG8Glp9MECmWcabbqK1pbegkMX7V+ueZZ
+        zSl2X9/iB5feVmx/n3ZXCkKvNXHGu1FBVZ4zlhU=
+X-Google-Smtp-Source: ABdhPJxAhKvKxvRV90kejl8FnT17ZZByidqHhrwYyLntatIyXa6+UFeOuZK/953n6F+p+BmGC4bLZFSksrkP/BWw3Es=
+X-Received: by 2002:a7b:ce93:: with SMTP id q19mr1275704wmj.98.1635098009501;
+ Sun, 24 Oct 2021 10:53:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com> <20211024154027.1479261-2-Mr.Bossman075@gmail.com>
+In-Reply-To: <20211024154027.1479261-2-Mr.Bossman075@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 24 Oct 2021 19:53:13 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a20inw-CoMGda1Hpa77xEa3U1ciVaehCG0SB92-9C8STQ@mail.gmail.com>
+Message-ID: <CAK8P3a20inw-CoMGda1Hpa77xEa3U1ciVaehCG0SB92-9C8STQ@mail.gmail.com>
+Subject: Re: [PATCH 01/13] ARM: imx: add initial support for i.MXRT10xx family
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        giulio.benetti@benettiengineering.com,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        b20788@freescale.com, Andy Duan <fugang.duan@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:jpAIGFAXZeo2vCLhQFf500yuB1TNv3spR30XUq+7IGS7QbvVIwB
+ fAwWPUoU+AQ13qAYv/1ryFOSgu7L+hHejwg3R7aUA2dQIr2r4GKMa1cz2SwvHtKe8Kq5Tfm
+ sKuHJTyua+CSDeYPX8bQPh1Mvg1s40TZ/HSVUK2e2Jx6JRSlPTf7ilSZp0v3UCX9JoGquM8
+ Z/TJjmn/pU7/xZ2Gvsg+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3zM0WTt5LN8=:eJBY9y89Nl5xRgWe68teFJ
+ f01IYMgTK6IOGN5VWDlxea76NqodFk/yoYJYDy2CUFvG/IJm90a9oX9OtROfCTNUmhE01Vl0D
+ n+FfUd/WYy815rMBNUXt5CJbqOQOE6TRCq5DffzpuHjwEkDdTZ/8QPvecgnm06FR4dqGRC+QK
+ FiLIgsnMrTlybWMAqChsDdAG3K8Ii+zlJbVzMa8/7Af7rq46sp+5esvDRi0rYTRFJqQV7jqnN
+ uAJluKkbVC2TsdlPwTle3leKETx14Str/dToLHLoM/JK8tHQXFSZKiSgUXt/JO1PI/DK0QIOa
+ aoMSgLpP5V0Iku4vWRB9VTeIL4RyvdUhWWV1YzzI+SlygzIJWCQ2ZHO89PRrYV41LEiqJCF6l
+ TAWQFI4ewTgbJSivE0uFdJRUTzwzXUDdLEPxKJ2OxTQb5tky3+A3bw0DSpYaWYtHX1F48NLDq
+ T4CrGm/FJbnR5lSruStIvQG9tptpVXFfL2A6C9QsRKDxwRvKyDLubop3TdEfXdJ/EkIvWfsNP
+ FgtOD50kXCT69LDXVdnRERGgxotPkEZvJdHc4o35jH76NvQ5jbnS5fP9ZC3hQhU4A2MW5bHMG
+ +699uYh6EBc86tMwAIx9FDWHW1+CZfn54fYA1p0XBTAqKs3wActpeJVzl/R0/YVnnJ8Fco1H3
+ 78c9ggrUDau7e6vY/R8HyB/2h2ZJymt0BqpWFiNyq1GVJQTn2+erageh9bJoy4p6usu293ZNo
+ at/ZkEY7YxmpoV0rIPVKxD8xRoqFjBMmkCThCP0LekzCW5TY5Hjqu8tZp5xafydmqwN8szCER
+ eIRIlcltBbY0GzR708bKjNA88X6BMH24TeLDM3tHyxCYuW6Ol8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A hard hang is observed whenever the ethernet interface is brought
-down. If the PHY is stopped before the LPC core block is reset,
-the SoC will hang. Comparing lpc_eth_close() and lpc_eth_open() I
-re-arranged the ordering of the functions calls in lpc_eth_close() to
-reset the hardware before stopping the PHY.
+On Sun, Oct 24, 2021 at 5:40 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+>
+> From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+>
+> The i.MXRT10xx family of processors features NXP's implementation of the
+> Arm Cortex-M7 core and in some case the Arm Cortex-M4 core too.
+>
+> This patch aims to add an initial support for imxrt.
 
-Signed-off-by: Trevor Woerner <twoerner@gmail.com>
----
- drivers/net/ethernet/nxp/lpc_eth.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> +config SOC_IMXRT
+> +       bool "i.MXRT support"
+> +       depends on ARM_SINGLE_ARMV7M || ARCH_MULTI_V7
+> +       select ARMV7M_SYSTICK if ARM_SINGLE_ARMV7M
+> +       select ARM_GIC if ARCH_MULTI_V7
 
-diff --git a/drivers/net/ethernet/nxp/lpc_eth.c b/drivers/net/ethernet/nxp/lpc_eth.c
-index d29fe562b3de..c910fa2f40a4 100644
---- a/drivers/net/ethernet/nxp/lpc_eth.c
-+++ b/drivers/net/ethernet/nxp/lpc_eth.c
-@@ -1015,9 +1015,6 @@ static int lpc_eth_close(struct net_device *ndev)
- 	napi_disable(&pldat->napi);
- 	netif_stop_queue(ndev);
- 
--	if (ndev->phydev)
--		phy_stop(ndev->phydev);
--
- 	spin_lock_irqsave(&pldat->lock, flags);
- 	__lpc_eth_reset(pldat);
- 	netif_carrier_off(ndev);
-@@ -1025,6 +1022,8 @@ static int lpc_eth_close(struct net_device *ndev)
- 	writel(0, LPC_ENET_MAC2(pldat->net_base));
- 	spin_unlock_irqrestore(&pldat->lock, flags);
- 
-+	if (ndev->phydev)
-+		phy_stop(ndev->phydev);
- 	clk_disable_unprepare(pldat->clk);
- 
- 	return 0;
--- 
-2.30.0.rc0
+The Kconfig entry appears to contradict the description. Is this platform
+only for Armv7-M, or are there also variants with Armv7-A cores?
 
+         Arnd
