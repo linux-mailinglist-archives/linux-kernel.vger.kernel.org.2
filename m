@@ -2,228 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B2D438B9D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C94438B9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhJXTUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 15:20:16 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:53491 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhJXTUP (ORCPT
+        id S231852AbhJXTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 15:30:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53557 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231382AbhJXTaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 15:20:15 -0400
-Received: from pop-os.home ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id ej0CmbUB5dmYbej0CmLk0M; Sun, 24 Oct 2021 21:17:53 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 24 Oct 2021 21:17:53 +0200
-X-ME-IP: 92.140.161.106
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mlxsw: spectrum: Use 'bitmap_zalloc()' when applicable
-Date:   Sun, 24 Oct 2021 21:17:51 +0200
-Message-Id: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 24 Oct 2021 15:30:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635103668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pMzKKPAhr0lndZvzBEXrG2TXEiOnSLC+lm/RYubs1ww=;
+        b=id/0uPNwhUN0GeMSymDPB2RNmYhR8se1/ySOZ2AnD28iBYImbtAbvIeWm1vEOgncVeRNTZ
+        nHLgZ/LRDYIp2tgIQZVwylLKZDeRyg2xM9QE5ngB+qmBhtN8l7w+xgdeM5EZLrEuwBUNrZ
+        nMfgWjJ2riIV4LoPsXdtLZ2jOhZde4A=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-ruhbRP8ENEWa2qJdw40Lew-1; Sun, 24 Oct 2021 15:27:46 -0400
+X-MC-Unique: ruhbRP8ENEWa2qJdw40Lew-1
+Received: by mail-oi1-f198.google.com with SMTP id w69-20020acac648000000b00298a3aee9a6so5993238oif.4
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 12:27:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pMzKKPAhr0lndZvzBEXrG2TXEiOnSLC+lm/RYubs1ww=;
+        b=YEcjzJppuP6UJFwAlBtwyxSVTuUtPMYA1JgrCkDzeQvbpO3beCQOnj5QPYR/Ag7PDG
+         iWMjHHlWGHmMs6khZOOzrm1dyQg+yFIDAcUfLcLixmBlcS7liwlB+jZ0cG9x2g+ieQ05
+         rsVURHthNruTJmt5DNuFet6oIAIZZkvQMg6Rc574Z42LQVXpmxR08eRIPyq9aPLwBuh1
+         JwHryuBsvxqARO3cDnAW6yKZjCoEAMEj2Yj7C0tAtbh0bbxc41f+y/QsJSwyXZchjpNX
+         zq/86MRIzOvkpIwEzajowL19iBThF9yW6+zR+/gA+LmJEtAVqDAS1YV8zVHfINGTfu08
+         jCeg==
+X-Gm-Message-State: AOAM531EszYp2Yk8yh3z3R3hd1DeBmPXDvgaPOx+9fQarNJ9hf2EtFtm
+        +hOnM8HzDOe5wCYWNdJFSWhfPB1xWWmbGnSAGlxJnD56OE6lRg0BxzkxskZ9Da0qpLof+fV6L26
+        o4/l/VMD5WCSi+UG8+OgQip8D
+X-Received: by 2002:a9d:4696:: with SMTP id z22mr10671664ote.218.1635103666074;
+        Sun, 24 Oct 2021 12:27:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0rUBoTQy+2A6kOvDn+net8tKgY2mfkvAbsUD1jUg1HYrLh64YmzSnRSIxPx1b+SaX4mXUWA==
+X-Received: by 2002:a9d:4696:: with SMTP id z22mr10671649ote.218.1635103665824;
+        Sun, 24 Oct 2021 12:27:45 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id i18sm2594364oot.27.2021.10.24.12.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 12:27:45 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 12:27:42 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Rob Landley <rob@landley.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
+Message-ID: <20211024192742.uo62mbqb6hmhafjs@treble>
+References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
+ <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid
-some open-coded arithmetic in allocator arguments.
+On Mon, Oct 25, 2021 at 03:13:40AM +0900, Masahiro Yamada wrote:
+> On Sun, Oct 24, 2021 at 3:36 PM Rob Landley <rob@landley.net> wrote:
+> >
+> > The attached config built fine before the above commit, doesn't build after. The
+> > commit in question did nothing except remove support for building x86-64 without
+> > libelf.
+> 
+> You enable CONFIG_STACK_VALIDATION in your .config file.
+> At least, you observed
+> "warning: Cannot use CONFIG_STACK_VALIDATION=y, please install
+> libelf-dev, libelf-devel or elfutils-libelf-devel"
+> in the previous builds.
 
-Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-consistency.
+Unfortunately I think CONFIG_STACK_VALIDATION is no longer optional on
+x86-64 these days, because of static calls and retpolines.  But it
+should be possible to extricate them if that's a problem.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- .../ethernet/mellanox/mlxsw/spectrum_acl_atcam.c  |  8 +++-----
- .../ethernet/mellanox/mlxsw/spectrum_acl_tcam.c   | 15 ++++++---------
- .../net/ethernet/mellanox/mlxsw/spectrum_cnt.c    |  9 +++------
- .../ethernet/mellanox/mlxsw/spectrum_switchdev.c  | 11 ++++-------
- 4 files changed, 16 insertions(+), 27 deletions(-)
+> > It took me a while to notice because the commit ONLY broke x86-64. I can still
+> > build arm (32 and 64 bit), i686, m68k, mips/mipsel, powerpc, s390x, and sh4
+> > without libelf in my cross compiler. Heck, I can still build i686. The change
+> > seems to have added a unique build dependency to just x86-64.
+> 
+> The other architectures are not affected because you cannot enable
+> CONFIG_STACK_VALIDATION.
+> 
+> Please note only x86_64 selects HAVE_STACK_VALIDATION.
+> 
+> 
+> > Rob
+> >
+> > P.S. Why do you need a special library to parse elf anyway? It's a fairly simple
+> > file format, linux has include/linux.elf.h, the toolchain already has an objtool
+> > prefixed for the appropriate cross compiler...
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_atcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_atcam.c
-index ded4cf658680..4b713832fdd5 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_atcam.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_atcam.c
-@@ -119,7 +119,6 @@ mlxsw_sp_acl_atcam_region_12kb_init(struct mlxsw_sp_acl_atcam_region *aregion)
- {
- 	struct mlxsw_sp *mlxsw_sp = aregion->region->mlxsw_sp;
- 	struct mlxsw_sp_acl_atcam_region_12kb *region_12kb;
--	size_t alloc_size;
- 	u64 max_lkey_id;
- 	int err;
- 
-@@ -131,8 +130,7 @@ mlxsw_sp_acl_atcam_region_12kb_init(struct mlxsw_sp_acl_atcam_region *aregion)
- 	if (!region_12kb)
- 		return -ENOMEM;
- 
--	alloc_size = BITS_TO_LONGS(max_lkey_id) * sizeof(unsigned long);
--	region_12kb->used_lkey_id = kzalloc(alloc_size, GFP_KERNEL);
-+	region_12kb->used_lkey_id = bitmap_zalloc(max_lkey_id, GFP_KERNEL);
- 	if (!region_12kb->used_lkey_id) {
- 		err = -ENOMEM;
- 		goto err_used_lkey_id_alloc;
-@@ -149,7 +147,7 @@ mlxsw_sp_acl_atcam_region_12kb_init(struct mlxsw_sp_acl_atcam_region *aregion)
- 	return 0;
- 
- err_rhashtable_init:
--	kfree(region_12kb->used_lkey_id);
-+	bitmap_free(region_12kb->used_lkey_id);
- err_used_lkey_id_alloc:
- 	kfree(region_12kb);
- 	return err;
-@@ -161,7 +159,7 @@ mlxsw_sp_acl_atcam_region_12kb_fini(struct mlxsw_sp_acl_atcam_region *aregion)
- 	struct mlxsw_sp_acl_atcam_region_12kb *region_12kb = aregion->priv;
- 
- 	rhashtable_destroy(&region_12kb->lkey_ht);
--	kfree(region_12kb->used_lkey_id);
-+	bitmap_free(region_12kb->used_lkey_id);
- 	kfree(region_12kb);
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-index 7cccc41dd69c..31f7f4c3acc3 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-@@ -36,7 +36,6 @@ int mlxsw_sp_acl_tcam_init(struct mlxsw_sp *mlxsw_sp,
- 	u64 max_tcam_regions;
- 	u64 max_regions;
- 	u64 max_groups;
--	size_t alloc_size;
- 	int err;
- 
- 	mutex_init(&tcam->lock);
-@@ -52,15 +51,13 @@ int mlxsw_sp_acl_tcam_init(struct mlxsw_sp *mlxsw_sp,
- 	if (max_tcam_regions < max_regions)
- 		max_regions = max_tcam_regions;
- 
--	alloc_size = sizeof(tcam->used_regions[0]) * BITS_TO_LONGS(max_regions);
--	tcam->used_regions = kzalloc(alloc_size, GFP_KERNEL);
-+	tcam->used_regions = bitmap_zalloc(max_regions, GFP_KERNEL);
- 	if (!tcam->used_regions)
- 		return -ENOMEM;
- 	tcam->max_regions = max_regions;
- 
- 	max_groups = MLXSW_CORE_RES_GET(mlxsw_sp->core, ACL_MAX_GROUPS);
--	alloc_size = sizeof(tcam->used_groups[0]) * BITS_TO_LONGS(max_groups);
--	tcam->used_groups = kzalloc(alloc_size, GFP_KERNEL);
-+	tcam->used_groups = bitmap_zalloc(max_groups, GFP_KERNEL);
- 	if (!tcam->used_groups) {
- 		err = -ENOMEM;
- 		goto err_alloc_used_groups;
-@@ -76,9 +73,9 @@ int mlxsw_sp_acl_tcam_init(struct mlxsw_sp *mlxsw_sp,
- 	return 0;
- 
- err_tcam_init:
--	kfree(tcam->used_groups);
-+	bitmap_free(tcam->used_groups);
- err_alloc_used_groups:
--	kfree(tcam->used_regions);
-+	bitmap_free(tcam->used_regions);
- 	return err;
- }
- 
-@@ -89,8 +86,8 @@ void mlxsw_sp_acl_tcam_fini(struct mlxsw_sp *mlxsw_sp,
- 
- 	mutex_destroy(&tcam->lock);
- 	ops->fini(mlxsw_sp, tcam->priv);
--	kfree(tcam->used_groups);
--	kfree(tcam->used_regions);
-+	bitmap_free(tcam->used_groups);
-+	bitmap_free(tcam->used_regions);
- }
- 
- int mlxsw_sp_acl_tcam_priority_get(struct mlxsw_sp *mlxsw_sp,
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_cnt.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_cnt.c
-index b65b93a2b9bc..fc2257753b9b 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_cnt.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_cnt.c
-@@ -122,7 +122,6 @@ int mlxsw_sp_counter_pool_init(struct mlxsw_sp *mlxsw_sp)
- 	unsigned int sub_pools_count = ARRAY_SIZE(mlxsw_sp_counter_sub_pools);
- 	struct devlink *devlink = priv_to_devlink(mlxsw_sp->core);
- 	struct mlxsw_sp_counter_pool *pool;
--	unsigned int map_size;
- 	int err;
- 
- 	pool = kzalloc(struct_size(pool, sub_pools, sub_pools_count),
-@@ -143,9 +142,7 @@ int mlxsw_sp_counter_pool_init(struct mlxsw_sp *mlxsw_sp)
- 	devlink_resource_occ_get_register(devlink, MLXSW_SP_RESOURCE_COUNTERS,
- 					  mlxsw_sp_counter_pool_occ_get, pool);
- 
--	map_size = BITS_TO_LONGS(pool->pool_size) * sizeof(unsigned long);
--
--	pool->usage = kzalloc(map_size, GFP_KERNEL);
-+	pool->usage = bitmap_zalloc(pool->pool_size, GFP_KERNEL);
- 	if (!pool->usage) {
- 		err = -ENOMEM;
- 		goto err_usage_alloc;
-@@ -158,7 +155,7 @@ int mlxsw_sp_counter_pool_init(struct mlxsw_sp *mlxsw_sp)
- 	return 0;
- 
- err_sub_pools_init:
--	kfree(pool->usage);
-+	bitmap_free(pool->usage);
- err_usage_alloc:
- 	devlink_resource_occ_get_unregister(devlink,
- 					    MLXSW_SP_RESOURCE_COUNTERS);
-@@ -176,7 +173,7 @@ void mlxsw_sp_counter_pool_fini(struct mlxsw_sp *mlxsw_sp)
- 	WARN_ON(find_first_bit(pool->usage, pool->pool_size) !=
- 			       pool->pool_size);
- 	WARN_ON(atomic_read(&pool->active_entries_count));
--	kfree(pool->usage);
-+	bitmap_free(pool->usage);
- 	devlink_resource_occ_get_unregister(devlink,
- 					    MLXSW_SP_RESOURCE_COUNTERS);
- 	kfree(pool);
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
-index 22fede5cb32c..81c7e8a7fcf5 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
-@@ -1635,16 +1635,13 @@ mlxsw_sp_mid *__mlxsw_sp_mc_alloc(struct mlxsw_sp *mlxsw_sp,
- 				  u16 fid)
- {
- 	struct mlxsw_sp_mid *mid;
--	size_t alloc_size;
- 
- 	mid = kzalloc(sizeof(*mid), GFP_KERNEL);
- 	if (!mid)
- 		return NULL;
- 
--	alloc_size = sizeof(unsigned long) *
--		     BITS_TO_LONGS(mlxsw_core_max_ports(mlxsw_sp->core));
--
--	mid->ports_in_mid = kzalloc(alloc_size, GFP_KERNEL);
-+	mid->ports_in_mid = bitmap_zalloc(mlxsw_core_max_ports(mlxsw_sp->core),
-+					  GFP_KERNEL);
- 	if (!mid->ports_in_mid)
- 		goto err_ports_in_mid_alloc;
- 
-@@ -1663,7 +1660,7 @@ mlxsw_sp_mid *__mlxsw_sp_mc_alloc(struct mlxsw_sp *mlxsw_sp,
- 	return mid;
- 
- err_write_mdb_entry:
--	kfree(mid->ports_in_mid);
-+	bitmap_free(mid->ports_in_mid);
- err_ports_in_mid_alloc:
- 	kfree(mid);
- 	return NULL;
-@@ -1680,7 +1677,7 @@ static int mlxsw_sp_port_remove_from_mid(struct mlxsw_sp_port *mlxsw_sp_port,
- 			 mlxsw_core_max_ports(mlxsw_sp->core))) {
- 		err = mlxsw_sp_mc_remove_mdb_entry(mlxsw_sp, mid);
- 		list_del(&mid->list);
--		kfree(mid->ports_in_mid);
-+		bitmap_free(mid->ports_in_mid);
- 		kfree(mid);
- 	}
- 	return err;
+We didn't see the need to reinvent the wheel, and some of the ELF corner
+cases are tricky.
+
+Objtool heavily relies on libelf for both reading and writing.  The
+kernel needs objtool to be robust.  Libelf has been solid.
+
 -- 
-2.30.2
+Josh
 
