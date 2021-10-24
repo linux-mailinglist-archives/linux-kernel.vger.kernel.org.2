@@ -2,184 +2,564 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4764388CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 14:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983474388D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 14:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhJXMS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 08:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbhJXMS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 08:18:28 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC00C061764;
-        Sun, 24 Oct 2021 05:16:07 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id o26so2713223uab.5;
-        Sun, 24 Oct 2021 05:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FofuzBqLkd+T2rtEHLFNj2gffZMOmW0ei7V/aClPYto=;
-        b=bT/fmGgzF7gCQYUPGrIXzPx6RVnnJTYOUTe1x/Q/sUVw6bUjD3IipzvcgCo9+Yka05
-         l7/wqIF/aJkK/NRRFSqvIq5XfbaMRkDhbN1ChkHuif6vuHN1Ul+dre3bMaBpDqOQ5kNu
-         WblR469cmG3OrtCzuhBQ5ApbfjpvNOFxGqc/D03Tcojg9njvp3dGIOouNFjO00Jv+sWp
-         Bfg0dtNm/DD8k7D5OeyGgE4vQMQNa6cHzveNZngEFypcqY6/CxeUV4h/rvGzefYoAznz
-         BofMWD0SaS07tYi+NFKHHHXUnUGEglyPO8RrShm9OtgSfOr8PhvYsbyzcCc0Shbu4eEO
-         Su9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FofuzBqLkd+T2rtEHLFNj2gffZMOmW0ei7V/aClPYto=;
-        b=Ywy80NSWgsavnIMFS9vAlY8Y4sbHoRFIWKGinHh6xpSpOCt4IBvotpTi3iMfvADOCJ
-         Y0atcNAoKz9MzsJ7/Bam4+hH3eMAgVMiMGzhSQlWDsuzqEmFrM2cvtEv/JgXGRTdtwog
-         BrL7TVRgFWLG6PXqImRg+BsTh/QZQ9C3l61rgZaguQsFb/VKkc+OoXrMirKLUln2FuWM
-         hnfkmDAvoPhQGrHiZSzvasxhS7FjIWU8WbRzuJww/QRmZiD9z+Z37AKoP+JDG8+tjy15
-         0ThSa/VeO48ezB4YeHC0ZeKEEISMl92srlqEVrczfDAucwhXuE4uYmnVcSRu+S2Bg265
-         aEsQ==
-X-Gm-Message-State: AOAM531edcMbqtGs1iDE8iH933gwg7+Ca0Bsk/nbC0pXmSnzunHwbv6L
-        kQFASwkzYpAKdYXM0N3SV/9Eds/nDzkaQrr/woM=
-X-Google-Smtp-Source: ABdhPJwUKJCH/L2H4gU/gJAcL3L40AVxczebvSVd9hfAB9YXnSnSIYwzs1SpFOqHxNzXLJKiQcxOf1jEx9WaIo31olw=
-X-Received: by 2002:a05:6102:374e:: with SMTP id u14mr10331762vst.47.1635077766411;
- Sun, 24 Oct 2021 05:16:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211023203457.1217821-1-aford173@gmail.com>
-In-Reply-To: <20211023203457.1217821-1-aford173@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sun, 24 Oct 2021 09:15:55 -0300
-Message-ID: <CAOMZO5BwPTWBhqzHgbzbC_UyzOX7LMGxX83H0FaJ-05ddOpqYQ@mail.gmail.com>
-Subject: Re: [RFC V2 0/5] arm64: dts: imx8mm: Enable CSI and OV5640 Camera
-To:     Adam Ford <aford173@gmail.com>
-Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        cstevens@beaconembedded.com,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S231519AbhJXMTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 08:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229867AbhJXMTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 08:19:21 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D81A60174;
+        Sun, 24 Oct 2021 12:17:00 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mecQs-001Bn6-7B; Sun, 24 Oct 2021 13:16:58 +0100
+Date:   Sun, 24 Oct 2021 13:16:57 +0100
+Message-ID: <87mtmyty6e.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sunil Muthuswamy <sunilmut@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, arnd@arndb.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Subject: Re: [PATCH v3 1/2] PCI: hv: Make the code arch neutral by adding arch specific interfaces
+In-Reply-To: <1634226794-9540-2-git-send-email-sunilmut@linux.microsoft.com>
+References: <1634226794-9540-1-git-send-email-sunilmut@linux.microsoft.com>
+        <1634226794-9540-2-git-send-email-sunilmut@linux.microsoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sunilmut@linux.microsoft.com, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, bhelgaas@google.com, arnd@arndb.de, x86@kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org, linux-arch@vger.kernel.org, sunilmut@microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+On Thu, 14 Oct 2021 16:53:13 +0100,
+Sunil Muthuswamy <sunilmut@linux.microsoft.com> wrote:
+> 
+> From: Sunil Muthuswamy <sunilmut@microsoft.com>
+> 
+> Encapsulate arch dependencies in Hyper-V vPCI through a set of interfaces,
+> listed below. Adding these arch specific interfaces will allow for an
+> implementation for other arch, such as ARM64.
+> 
+> Implement the interfaces for X64, which is essentially just moving over the
+> current implementation.
 
-[Adding Frieder on Cc]
+Nit: use architecture names and capitalisation that match their use in
+the kernel (arm64, x86) instead of the MS-specific lingo.
 
-On Sat, Oct 23, 2021 at 5:35 PM Adam Ford <aford173@gmail.com> wrote:
->
-> The imx8mm appears to have both a CSI bridge and mipi-csi-2 drivers.  With
-> those enabled, both the imx8mm-evk and imx8mm-beacon boards should be able
-> use an OV5640 camera.
->
-> The mipi-csi2 driver sets the clock frequency to 333MHz, so the clock parent
-> of the CSI1 must be reparented to a faster clock.  On the custom NXP kernel,
-> they use IMX8MM_SYS_PLL2_1000M, so that is done in the device tree to match.
->
-> With the CSI and mipi_csi2 drivers pointing to an OV5640 camera, the media
-> pipeline can be configured with the following:
->
->     media-ctl --links "'ov5640 1-003c':0->'imx7-mipi-csis.0':0[1]"
->
-> The camera and various nodes in the pipeline can be configured for UYVY:
->     media-ctl -v -V "'ov5640 1-003c':0 [fmt:UYVY8_1X16/640x480 field:none]"
->     media-ctl -v -V "'csi':0 [fmt:UYVY8_1X16/640x480 field:none]"
->
-> With that, the media pipeline looks like:
->
->
-> Media controller API version 5.15.0
->
-> Media device information
-> ------------------------
-> driver          imx7-csi
-> model           imx-media
-> serial
-> bus info        platform:32e20000.csi
-> hw revision     0x0
-> driver version  5.15.0
->
-> Device topology
-> - entity 1: csi (2 pads, 2 links)
->             type V4L2 subdev subtype Unknown flags 0
->             device node name /dev/v4l-subdev0
->         pad0: Sink
->                 [fmt:UYVY8_1X16/640x480 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:lim-range]
->                 <- "imx7-mipi-csis.0":1 [ENABLED,IMMUTABLE]
->         pad1: Source
->                 [fmt:UYVY8_1X16/640x480 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:lim-range]
->                 -> "csi capture":0 [ENABLED,IMMUTABLE]
->
-> - entity 4: csi capture (1 pad, 1 link)
->             type Node subtype V4L flags 0
->             device node name /dev/video0
->         pad0: Sink
->                 <- "csi":1 [ENABLED,IMMUTABLE]
->
-> - entity 10: imx7-mipi-csis.0 (2 pads, 2 links)
->              type V4L2 subdev subtype Unknown flags 0
->              device node name /dev/v4l-subdev1
->         pad0: Sink
->                 [fmt:UYVY8_1X16/640x480 field:none colorspace:smpte170m xfer:709 ycbcr:601 quantization:lim-range]
->                 <- "ov5640 1-003c":0 [ENABLED]
->         pad1: Source
->                 [fmt:UYVY8_1X16/640x480 field:none colorspace:smpte170m xfer:709 ycbcr:601 quantization:lim-range]
->                 -> "csi":0 [ENABLED,IMMUTABLE]
->
-> - entity 15: ov5640 1-003c (1 pad, 1 link)
->              type V4L2 subdev subtype Sensor flags 0
->              device node name /dev/v4l-subdev2
->         pad0: Source
->                 [fmt:UYVY8_1X16/640x480@1/30 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range]
->                 -> "imx7-mipi-csis.0":0 [ENABLED]
->
-> When configured, gstreamer can be used to capture 1 frame and store it to a file.
->
-> gst-launch-1.0 -v v4l2src num-buffers=1 ! video/x-raw,format=UYVY,width=640,height=480,framerate=60/1 ! filesink location=test
->
-> Unfortunately, the video capture never appears to happen.  No errors occur, not
-> interrupts are recorded and no errors are recorded.
->
-> gst-launch-1.0 -v v4l2src num-buffers=1 ! video/x-raw,format=UYVY,width=640,height=480,framerate=60/1 ! filesink location=test
-> Setting pipeline to PAUSED ...
-> Pipeline is live and does not need PREROLL ...
-> Pipeline is PREROLLED ...
-> Setting pipeline to [  114.819632] v4l2_get_link_freq: Link frequency estimated using pixel rate: result might be inaccurate
-> PLAYING ...
-> New clock: GstSystem[  114.829203] v4l2_get_link_freq: Consider implementing support for V4L2_CID_LINK_FREQ in the transmitter driver
-> Clock
-> /GstPipeline:pipeline0/GstV4l2Src:v4l2src0.GstPad:src: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
-> /GstPipeline:pipeline0/GstCapsFilter:capsfilter0.GstPad:src: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
-> /GstPipeline:pipeline0/GstFileSink:filesink0.GstPad:sink: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
-> /GstPipeline:pipeline0/GstCapsFilter:capsfilter0.GstPad:sink: caps = video/x-raw, format=(string)UYVY, width=(int)640, height=(int)480, framerate=(fraction)60/1, interlace-mode=(string)progressive, colorimetry=(string)bt709
->
->
-> If anyone has any insight as to what might be wrong, I'd like feedback.
-> I posted a device tree that I beleive goes with the newer imx8mm-evk, but
-> I do not have this hardware, so I cannot test it.
+> 
+> List of added interfaces:
+>  - hv_pci_irqchip_init()
+>  - hv_pci_irqchip_free()
+>  - hv_msi_get_int_vector()
+>  - hv_set_msi_entry_from_desc()
+>  - hv_msi_prepare()
+> 
+> There are no functional changes expected from this patch.
+> 
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> ---
+> In v2 & v3:
+>  Changes are described in the cover letter.
+> 
+>  MAINTAINERS                                 |  2 +
+>  arch/x86/include/asm/hyperv-tlfs.h          | 33 ++++++++++++
+>  arch/x86/include/asm/mshyperv.h             |  7 ---
+>  drivers/pci/controller/Makefile             |  2 +-
+>  drivers/pci/controller/pci-hyperv-irqchip.c | 57 +++++++++++++++++++++
+>  drivers/pci/controller/pci-hyperv-irqchip.h | 20 ++++++++
+>  drivers/pci/controller/pci-hyperv.c         | 52 ++++++++++++-------
+>  include/asm-generic/hyperv-tlfs.h           | 33 ------------
+>  8 files changed, 146 insertions(+), 60 deletions(-)
+>  create mode 100644 drivers/pci/controller/pci-hyperv-irqchip.c
+>  create mode 100644 drivers/pci/controller/pci-hyperv-irqchip.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ca6d6fde85cf..ba8c979c17b2 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8688,6 +8688,8 @@ F:	drivers/iommu/hyperv-iommu.c
+>  F:	drivers/net/ethernet/microsoft/
+>  F:	drivers/net/hyperv/
+>  F:	drivers/pci/controller/pci-hyperv-intf.c
+> +F:	drivers/pci/controller/pci-hyperv-irqchip.c
+> +F:	drivers/pci/controller/pci-hyperv-irqchip.h
+>  F:	drivers/pci/controller/pci-hyperv.c
+>  F:	drivers/scsi/storvsc_drv.c
+>  F:	drivers/uio/uio_hv_generic.c
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> index 2322d6bd5883..fdf3d28fbdd5 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -585,6 +585,39 @@ enum hv_interrupt_type {
+>  	HV_X64_INTERRUPT_TYPE_MAXIMUM           = 0x000A,
+>  };
+>  
+> +union hv_msi_address_register {
+> +	u32 as_uint32;
+> +	struct {
+> +		u32 reserved1:2;
+> +		u32 destination_mode:1;
+> +		u32 redirection_hint:1;
+> +		u32 reserved2:8;
+> +		u32 destination_id:8;
+> +		u32 msi_base:12;
+> +	};
+> +} __packed;
+> +
+> +union hv_msi_data_register {
+> +	u32 as_uint32;
+> +	struct {
+> +		u32 vector:8;
+> +		u32 delivery_mode:3;
+> +		u32 reserved1:3;
+> +		u32 level_assert:1;
+> +		u32 trigger_mode:1;
+> +		u32 reserved2:16;
+> +	};
+> +} __packed;
+> +
+> +/* HvRetargetDeviceInterrupt hypercall */
+> +union hv_msi_entry {
+> +	u64 as_uint64;
+> +	struct {
+> +		union hv_msi_address_register address;
+> +		union hv_msi_data_register data;
+> +	} __packed;
+> +};
+> +
+>  #include <asm-generic/hyperv-tlfs.h>
+>  
+>  #endif
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index adccbc209169..c2b9ab94408e 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -176,13 +176,6 @@ bool hv_vcpu_is_preempted(int vcpu);
+>  static inline void hv_apic_init(void) {}
+>  #endif
+>  
+> -static inline void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
+> -					      struct msi_desc *msi_desc)
+> -{
+> -	msi_entry->address.as_uint32 = msi_desc->msg.address_lo;
+> -	msi_entry->data.as_uint32 = msi_desc->msg.data;
+> -}
+> -
+>  struct irq_domain *hv_create_pci_msi_domain(void);
+>  
+>  int hv_map_ioapic_interrupt(int ioapic_id, bool level, int vcpu, int vector,
+> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+> index aaf30b3dcc14..2c301d0fc23b 100644
+> --- a/drivers/pci/controller/Makefile
+> +++ b/drivers/pci/controller/Makefile
+> @@ -2,7 +2,7 @@
+>  obj-$(CONFIG_PCIE_CADENCE) += cadence/
+>  obj-$(CONFIG_PCI_FTPCI100) += pci-ftpci100.o
+>  obj-$(CONFIG_PCI_IXP4XX) += pci-ixp4xx.o
+> -obj-$(CONFIG_PCI_HYPERV) += pci-hyperv.o
+> +obj-$(CONFIG_PCI_HYPERV) += pci-hyperv.o pci-hyperv-irqchip.o
+>  obj-$(CONFIG_PCI_HYPERV_INTERFACE) += pci-hyperv-intf.o
+>  obj-$(CONFIG_PCI_MVEBU) += pci-mvebu.o
+>  obj-$(CONFIG_PCI_AARDVARK) += pci-aardvark.o
+> diff --git a/drivers/pci/controller/pci-hyperv-irqchip.c b/drivers/pci/controller/pci-hyperv-irqchip.c
+> new file mode 100644
+> index 000000000000..36fa862f8bc5
+> --- /dev/null
+> +++ b/drivers/pci/controller/pci-hyperv-irqchip.c
+> @@ -0,0 +1,57 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Hyper-V vPCI irqchip.
+> + *
+> + * Copyright (C) 2021, Microsoft, Inc.
+> + *
+> + * Author : Sunil Muthuswamy <sunilmut@microsoft.com>
+> + */
+> +
+> +#include <asm/mshyperv.h>
+> +#include <linux/acpi.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/irq.h>
+> +#include <linux/msi.h>
+> +
+> +#ifdef CONFIG_X86_64
+> +int hv_pci_irqchip_init(struct irq_domain **parent_domain,
+> +			bool *fasteoi_handler,
+> +			u8 *delivery_mode)
+> +{
+> +	*parent_domain = x86_vector_domain;
+> +	*fasteoi_handler = false;
+> +	*delivery_mode = APIC_DELIVERY_MODE_FIXED;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(hv_pci_irqchip_init);
 
-It seems that Frieder on Cc managed to get camera capture to work on
-i.MX8MM here:
-https://git.kontron-electronics.de/sw/misc/linux/-/commits/v5.10-mx8mm-csi
+Why do you need to export any of these symbols? Even if the two
+objects are compiled separately, there is absolutely no need to make
+them two separate modules.
 
-Hopefully, this can help to figure out what is missing in mainline to
-get camera capture to work on i.MX8M.
+Also, returning 3 values like this makes little sense. Pass a pointer
+to the structure that requires them and populate it as required. Or
+simply #define those that are constants.
 
-I don't have access to an OV5640 camera to connect to the imx8mm-evk
-board to try your series.
+> +
+> +void hv_pci_irqchip_free(void) {}
+> +EXPORT_SYMBOL(hv_pci_irqchip_free);
+> +
+> +unsigned int hv_msi_get_int_vector(struct irq_data *data)
+> +{
+> +	struct irq_cfg *cfg = irqd_cfg(data);
+> +
+> +	return cfg->vector;
+> +}
+> +EXPORT_SYMBOL(hv_msi_get_int_vector);
+> +
+> +void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
+> +				struct msi_desc *msi_desc)
+> +{
+> +	msi_entry->address.as_uint32 = msi_desc->msg.address_lo;
+> +	msi_entry->data.as_uint32 = msi_desc->msg.data;
+> +}
+> +EXPORT_SYMBOL(hv_set_msi_entry_from_desc);
+> +
+> +int hv_msi_prepare(struct irq_domain *domain, struct device *dev,
+> +		   int nvec, msi_alloc_info_t *info)
+> +{
+> +	return pci_msi_prepare(domain, dev, nvec, info);
+> +}
+> +EXPORT_SYMBOL(hv_msi_prepare);
 
-Regards,
+This looks like a very unnecessary level of indirection, given that
+you end-up with an empty callback in the arm64 code. The following
+works just as well and avoids useless callbacks:
 
-Fabio Estevam
+#ifdef CONFIG_ARM64
+#define pci_msi_prepare	NULL
+#endif
+
+I also wish that pci_msi_prepare was called x86_pci_msi_prepare, but
+that's another debate...
+
+> +
+> +#endif
+> +
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/pci/controller/pci-hyperv-irqchip.h b/drivers/pci/controller/pci-hyperv-irqchip.h
+> new file mode 100644
+> index 000000000000..00549809e6c4
+> --- /dev/null
+> +++ b/drivers/pci/controller/pci-hyperv-irqchip.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Architecture specific vector management for the Hyper-V vPCI.
+> + *
+> + * Copyright (C) 2021, Microsoft, Inc.
+> + *
+> + * Author : Sunil Muthuswamy <sunilmut@microsoft.com>
+> + */
+> +
+> +int hv_pci_irqchip_init(struct irq_domain **parent_domain,
+> +			bool *fasteoi_handler,
+> +			u8 *delivery_mode);
+> +
+> +void hv_pci_irqchip_free(void);
+> +unsigned int hv_msi_get_int_vector(struct irq_data *data);
+> +void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
+> +				struct msi_desc *msi_desc);
+> +
+> +int hv_msi_prepare(struct irq_domain *domain, struct device *dev,
+> +		   int nvec, msi_alloc_info_t *info);
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index eaec915ffe62..2d3916206986 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -43,14 +43,12 @@
+>  #include <linux/pci-ecam.h>
+>  #include <linux/delay.h>
+>  #include <linux/semaphore.h>
+> -#include <linux/irqdomain.h>
+> -#include <asm/irqdomain.h>
+> -#include <asm/apic.h>
+>  #include <linux/irq.h>
+>  #include <linux/msi.h>
+>  #include <linux/hyperv.h>
+>  #include <linux/refcount.h>
+>  #include <asm/mshyperv.h>
+> +#include "pci-hyperv-irqchip.h"
+>  
+>  /*
+>   * Protocol versions. The low word is the minor version, the high word the
+> @@ -81,6 +79,10 @@ static enum pci_protocol_version_t pci_protocol_versions[] = {
+>  	PCI_PROTOCOL_VERSION_1_1,
+>  };
+>  
+> +static struct irq_domain *parent_domain;
+> +static bool fasteoi;
+> +static u8 delivery_mode;
+
+See my earlier comment about how clumsy this is.
+
+> +
+>  #define PCI_CONFIG_MMIO_LENGTH	0x2000
+>  #define CFG_PAGE_OFFSET 0x1000
+>  #define CFG_PAGE_SIZE (PCI_CONFIG_MMIO_LENGTH - CFG_PAGE_OFFSET)
+> @@ -1217,7 +1219,6 @@ static void hv_irq_mask(struct irq_data *data)
+>  static void hv_irq_unmask(struct irq_data *data)
+>  {
+>  	struct msi_desc *msi_desc = irq_data_get_msi_desc(data);
+> -	struct irq_cfg *cfg = irqd_cfg(data);
+>  	struct hv_retarget_device_interrupt *params;
+>  	struct hv_pcibus_device *hbus;
+>  	struct cpumask *dest;
+> @@ -1246,11 +1247,12 @@ static void hv_irq_unmask(struct irq_data *data)
+>  			   (hbus->hdev->dev_instance.b[7] << 8) |
+>  			   (hbus->hdev->dev_instance.b[6] & 0xf8) |
+>  			   PCI_FUNC(pdev->devfn);
+> -	params->int_target.vector = cfg->vector;
+> +	params->int_target.vector = hv_msi_get_int_vector(data);
+>  
+>  	/*
+> -	 * Honoring apic->delivery_mode set to APIC_DELIVERY_MODE_FIXED by
+> -	 * setting the HV_DEVICE_INTERRUPT_TARGET_MULTICAST flag results in a
+> +	 * For x64, honoring apic->delivery_mode set to
+> +	 * APIC_DELIVERY_MODE_FIXED by setting the
+> +	 * HV_DEVICE_INTERRUPT_TARGET_MULTICAST flag results in a
+>  	 * spurious interrupt storm. Not doing so does not seem to have a
+>  	 * negative effect (yet?).
+
+And what does it mean on other architectures?
+
+>  	 */
+> @@ -1347,7 +1349,7 @@ static u32 hv_compose_msi_req_v1(
+>  	int_pkt->wslot.slot = slot;
+>  	int_pkt->int_desc.vector = vector;
+>  	int_pkt->int_desc.vector_count = 1;
+> -	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
+> +	int_pkt->int_desc.delivery_mode = delivery_mode;
+>  
+>  	/*
+>  	 * Create MSI w/ dummy vCPU set, overwritten by subsequent retarget in
+> @@ -1377,7 +1379,7 @@ static u32 hv_compose_msi_req_v2(
+>  	int_pkt->wslot.slot = slot;
+>  	int_pkt->int_desc.vector = vector;
+>  	int_pkt->int_desc.vector_count = 1;
+> -	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
+> +	int_pkt->int_desc.delivery_mode = delivery_mode;
+>  	cpu = hv_compose_msi_req_get_cpu(affinity);
+>  	int_pkt->int_desc.processor_array[0] =
+>  		hv_cpu_number_to_vp_number(cpu);
+> @@ -1397,7 +1399,7 @@ static u32 hv_compose_msi_req_v3(
+>  	int_pkt->int_desc.vector = vector;
+>  	int_pkt->int_desc.reserved = 0;
+>  	int_pkt->int_desc.vector_count = 1;
+> -	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
+> +	int_pkt->int_desc.delivery_mode = delivery_mode;
+>  	cpu = hv_compose_msi_req_get_cpu(affinity);
+>  	int_pkt->int_desc.processor_array[0] =
+>  		hv_cpu_number_to_vp_number(cpu);
+> @@ -1419,7 +1421,6 @@ static u32 hv_compose_msi_req_v3(
+>   */
+>  static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+>  {
+> -	struct irq_cfg *cfg = irqd_cfg(data);
+>  	struct hv_pcibus_device *hbus;
+>  	struct vmbus_channel *channel;
+>  	struct hv_pci_dev *hpdev;
+> @@ -1470,7 +1471,7 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+>  		size = hv_compose_msi_req_v1(&ctxt.int_pkts.v1,
+>  					dest,
+>  					hpdev->desc.win_slot.slot,
+> -					cfg->vector);
+> +					hv_msi_get_int_vector(data));
+>  		break;
+>  
+>  	case PCI_PROTOCOL_VERSION_1_2:
+> @@ -1478,14 +1479,14 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+>  		size = hv_compose_msi_req_v2(&ctxt.int_pkts.v2,
+>  					dest,
+>  					hpdev->desc.win_slot.slot,
+> -					cfg->vector);
+> +					hv_msi_get_int_vector(data));
+>  		break;
+>  
+>  	case PCI_PROTOCOL_VERSION_1_4:
+>  		size = hv_compose_msi_req_v3(&ctxt.int_pkts.v3,
+>  					dest,
+>  					hpdev->desc.win_slot.slot,
+> -					cfg->vector);
+> +					hv_msi_get_int_vector(data));
+>  		break;
+>  
+>  	default:
+> @@ -1601,7 +1602,7 @@ static struct irq_chip hv_msi_irq_chip = {
+>  };
+>  
+>  static struct msi_domain_ops hv_msi_ops = {
+> -	.msi_prepare	= pci_msi_prepare,
+> +	.msi_prepare	= hv_msi_prepare,
+>  	.msi_free	= hv_msi_free,
+>  };
+>  
+> @@ -1625,12 +1626,13 @@ static int hv_pcie_init_irq_domain(struct hv_pcibus_device *hbus)
+>  	hbus->msi_info.flags = (MSI_FLAG_USE_DEF_DOM_OPS |
+>  		MSI_FLAG_USE_DEF_CHIP_OPS | MSI_FLAG_MULTI_PCI_MSI |
+>  		MSI_FLAG_PCI_MSIX);
+> -	hbus->msi_info.handler = handle_edge_irq;
+> -	hbus->msi_info.handler_name = "edge";
+> +	hbus->msi_info.handler =
+> +		fasteoi ? handle_fasteoi_irq : handle_edge_irq;
+> +	hbus->msi_info.handler_name = fasteoi ? "fasteoi" : "edge";
+
+The fact that you somehow need to know what the GIC is using as a flow
+handler is a sure sign that you are doing something wrong. In a
+hierarchical setup, only the root of the hierarchy should ever know
+about that. Having anything there is actively wrong.
+
+>  	hbus->msi_info.data = hbus;
+>  	hbus->irq_domain = pci_msi_create_irq_domain(hbus->fwnode,
+>  						     &hbus->msi_info,
+> -						     x86_vector_domain);
+> +						     parent_domain);
+>  	if (!hbus->irq_domain) {
+>  		dev_err(&hbus->hdev->device,
+>  			"Failed to build an MSI IRQ domain\n");
+> @@ -3531,13 +3533,21 @@ static void __exit exit_hv_pci_drv(void)
+>  	hvpci_block_ops.read_block = NULL;
+>  	hvpci_block_ops.write_block = NULL;
+>  	hvpci_block_ops.reg_blk_invalidate = NULL;
+> +
+> +	hv_pci_irqchip_free();
+>  }
+>  
+>  static int __init init_hv_pci_drv(void)
+>  {
+> +	int ret;
+> +
+>  	if (!hv_is_hyperv_initialized())
+>  		return -ENODEV;
+>  
+> +	ret = hv_pci_irqchip_init(&parent_domain, &fasteoi, &delivery_mode);
+> +	if (ret)
+> +		return ret;
+
+Having established that the fasteoi thing is nothing but a bug, that
+the delivery_mode is a constant, and that all that matters is actually
+the parent domain which is a global pointer on x86, and something that
+gets allocated on arm64, you can greatly simplify the whole thing:
+
+#ifdef CONFIG_X86
+#define DELIVERY_MODE	APIC_DELIVERY_MODE_FIXED
+#define FLOW_HANDLER	handle_edge_irq
+#define FLOW_NAME	"edge"
+
+static struct irq_domain *hv_pci_get_root_domain(void)
+{
+	return x86_vector_domain;
+}
+#endif
+
+#ifdef CONFIG_ARM64
+#define DELIVERY_MODE	0
+#define FLOW_HANDLER	NULL
+#define FLOW_NAME	NULL
+#define pci_msi_prepare	NULL
+
+static struct irq_domain *hv_pci_get_root_domain(void)
+{
+	[...]
+}
+#endif
+
+as once you look at it seriously, the whole "separate file for the IRQ
+code" is totally unnecessary (as Michael pointed out earlier), because
+the abstractions you are adding are for most of them unnecessary.
+
+> +
+>  	/* Set the invalid domain number's bit, so it will not be used */
+>  	set_bit(HVPCI_DOM_INVALID, hvpci_dom_map);
+>  
+> @@ -3546,7 +3556,11 @@ static int __init init_hv_pci_drv(void)
+>  	hvpci_block_ops.write_block = hv_write_config_block;
+>  	hvpci_block_ops.reg_blk_invalidate = hv_register_block_invalidate;
+>  
+> -	return vmbus_driver_register(&hv_pci_drv);
+> +	ret = vmbus_driver_register(&hv_pci_drv);
+> +	if (ret)
+> +		hv_pci_irqchip_free();
+> +
+> +	return ret;
+>  }
+>  
+>  module_init(init_hv_pci_drv);
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index 56348a541c50..45cc0c3b8ed7 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -539,39 +539,6 @@ enum hv_interrupt_source {
+>  	HV_INTERRUPT_SOURCE_IOAPIC,
+>  };
+>  
+> -union hv_msi_address_register {
+> -	u32 as_uint32;
+> -	struct {
+> -		u32 reserved1:2;
+> -		u32 destination_mode:1;
+> -		u32 redirection_hint:1;
+> -		u32 reserved2:8;
+> -		u32 destination_id:8;
+> -		u32 msi_base:12;
+> -	};
+> -} __packed;
+> -
+> -union hv_msi_data_register {
+> -	u32 as_uint32;
+> -	struct {
+> -		u32 vector:8;
+> -		u32 delivery_mode:3;
+> -		u32 reserved1:3;
+> -		u32 level_assert:1;
+> -		u32 trigger_mode:1;
+> -		u32 reserved2:16;
+> -	};
+> -} __packed;
+> -
+> -/* HvRetargetDeviceInterrupt hypercall */
+> -union hv_msi_entry {
+> -	u64 as_uint64;
+> -	struct {
+> -		union hv_msi_address_register address;
+> -		union hv_msi_data_register data;
+> -	} __packed;
+> -};
+> -
+>  union hv_ioapic_rte {
+>  	u64 as_uint64;
+>  
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
