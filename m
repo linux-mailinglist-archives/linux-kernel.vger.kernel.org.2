@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66A5438B4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF26B438B51
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhJXSQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 14:16:55 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:38311 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhJXSQy (ORCPT
+        id S231863AbhJXSRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 14:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhJXSRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 14:16:54 -0400
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 19OIEHZh010785
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:14:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 19OIEHZh010785
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1635099258;
-        bh=kHtJLapBKvIj9iQkHyruElX5mMdvn2N3gxSrFaMdF7o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z1WpbCSzg9n56nhwK2gTP4gWzrDQ32G/XuNa6UWHXJhh38IZMVt+TauZSLFnoNwyk
-         oMeCYYbd9dr2MBmgimwPd8RwPadEUl3hDfdIb/h1TLlJ4f1yCf+1T6TbpSfqfcMNwk
-         CUCI9axsyhoz3a6mz0KbtaUaV0HcFForMfS/ph0b0bSLvCdkyeDI58uF8NZWWKvS+h
-         DxmA/3i2pWJmq/zj6pNR5uTYia++E1CRoAFshJB5xbkIxkXV5BYu8fb9HTqakUe/OP
-         DIFv8Qo89NMnFfI2WXVAJ+YjJSLqrEnVDy1Xqdae5X1HPz2rEaiqNhuSdbGipDS2XJ
-         ZCqXjfTJHNjPQ==
-X-Nifty-SrcIP: [209.85.214.174]
-Received: by mail-pl1-f174.google.com with SMTP id r5so1776816pls.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:14:18 -0700 (PDT)
-X-Gm-Message-State: AOAM530E2QbrFiAiJRSUyNMXUMPD08LJPq5NZl7xLSCGRMFJq6dojr+q
-        nmYKidfHv9k6jZ2dyQ8Y9SoRU7OO/kZuhUa4kdE=
-X-Google-Smtp-Source: ABdhPJwak0mPVnTwbpijmOOOfyX87n+NAEV7TBWHob/zaajpaZcyUjhQwTEaEd2YWrQuMsB8pxYEfjY+VSowfK9Lagc=
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr14876550pjb.144.1635099257239;
- Sun, 24 Oct 2021 11:14:17 -0700 (PDT)
+        Sun, 24 Oct 2021 14:17:44 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA63C061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:15:23 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so9634104pji.5
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=I7eG9YgWQVexc+YXvLHitjJ51d3Rsn+e+WB+t4VOqc0=;
+        b=FpBbaV4eGFcF9KjoH9BFkrXCr3gchM15aTk3LoTlpZ76Aid5VVN9CAAPXslSQ8j092
+         2Pp7YF5HHH+XUthdmPWubdUiQpVl1QNWfg45ft2owTqzSVWVEScw+eqVud5Fsklt7iXi
+         eDPHIdZ+u5khwjaVsPe7f3KthfMtG21CrAWyaaECen9rfhzBvy8sJaQi79Hou4CbhtwT
+         pDP5UdXdjGBTebhRWmxG2mI6b3C33nlz73VbcEvfbKbvp8HM0glgShB4CbYB4oTD1aFk
+         cgx/J52N69+PhSI5cuWLfg9mjQydu1cmSEXEY0BnWRD6ervtGBTk6xAyIehKMvN4b/6h
+         9GrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=I7eG9YgWQVexc+YXvLHitjJ51d3Rsn+e+WB+t4VOqc0=;
+        b=s2Kp9/N3eGYsFB58wPr/rt4Ggs+/60qjV85ZPXtjseAgn17VgoOVNZMGZjcWt8qUJi
+         1MSNuQrqzVAak8enQ2Ow1ZJZH0xc+A84AIgfvkzv6YMoSv9AHy6/atArkztvbd+A3Xjv
+         uECsRFkk11m+EM4ypogTDrdbRYO/ktbRGoyoNNFHrSx94vzsBI6gxT6UQlFGoUsvc9iA
+         MtcP6QL/iWWm698aKikvScKgUoYoxADZvBYqChHJh0hT1MCzIsvtDzWhQuPPo88nSW3b
+         3TCFf7PGqyudO+XhZaf0DUvYtLjxKHhZTHWaudXanxsTIv1NFzZdpZ/8y+3VIcCiSNah
+         hGng==
+X-Gm-Message-State: AOAM532L3oQ8VnCEp0IGXJZxqwZmK/2vgX+U2xwrjowRlK/eaPQOxtM9
+        bIOtHTF1Bb0WtUT/xeLXZNe1JOuy5QdUa4Qbo4U=
+X-Google-Smtp-Source: ABdhPJxRg+iCg7tH3Ij+xXtDZEXQgEzNc2BzPSY6ilZ3eMR6sNdtBs+lgrywjno3ZczJ38/ngKnxbu7L1Dlx5MGQbnA=
+X-Received: by 2002:a17:902:ac97:b0:140:31c5:cbe3 with SMTP id
+ h23-20020a170902ac9700b0014031c5cbe3mr9017788plr.47.1635099322666; Sun, 24
+ Oct 2021 11:15:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
-In-Reply-To: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 25 Oct 2021 03:13:40 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
-Message-ID: <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
-Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
-To:     Rob Landley <rob@landley.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
+Received: by 2002:a05:6a10:f3d1:0:0:0:0 with HTTP; Sun, 24 Oct 2021 11:15:22
+ -0700 (PDT)
+Reply-To: samuelakin244@gmail.com
+From:   Mr Samuel Akin <melwassila@gmail.com>
+Date:   Sun, 24 Oct 2021 18:15:22 +0000
+Message-ID: <CACR8u7X4Dsw9BRFvb-i9EM3SScehiGBHsroEAH9a2YjwRKfz4A@mail.gmail.com>
+Subject: Dear friend, Greetings!
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 3:36 PM Rob Landley <rob@landley.net> wrote:
->
-> The attached config built fine before the above commit, doesn't build after. The
-> commit in question did nothing except remove support for building x86-64 without
-> libelf.
+Good Day,
 
-You enable CONFIG_STACK_VALIDATION in your .config file.
-At least, you observed
-"warning: Cannot use CONFIG_STACK_VALIDATION=y, please install
-libelf-dev, libelf-devel or elfutils-libelf-devel"
-in the previous builds.
+I apologize if this email comes as a surprise to you. as first coming
+from one you haven=E2=80=99t met with before.I have a business proposal tha=
+t
+will be of great benefit to both of us. If you are willing to discuss
+further on this matter, I expect you response. promptly so that I will
+give you further details.
 
-
->
-> It took me a while to notice because the commit ONLY broke x86-64. I can still
-> build arm (32 and 64 bit), i686, m68k, mips/mipsel, powerpc, s390x, and sh4
-> without libelf in my cross compiler. Heck, I can still build i686. The change
-> seems to have added a unique build dependency to just x86-64.
-
-The other architectures are not affected because you cannot enable
-CONFIG_STACK_VALIDATION.
-
-Please note only x86_64 selects HAVE_STACK_VALIDATION.
-
-
-> Rob
->
-> P.S. Why do you need a special library to parse elf anyway? It's a fairly simple
-> file format, linux has include/linux.elf.h, the toolchain already has an objtool
-> prefixed for the appropriate cross compiler...
-
-You are asking a question about the objtool implementation.
-CCed Josh Poimboeuf.
-
-
--- 
-Best Regards
-Masahiro Yamada
+Best Regards,
+Mr.Samuel Akin
