@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0E6438C14
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDA8438C18
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhJXV1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        id S232055AbhJXV2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 17:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhJXV1t (ORCPT
+        with ESMTP id S231922AbhJXV2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:27:49 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EE4C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:27 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id bi35so332154lfb.9
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:27 -0700 (PDT)
+        Sun, 24 Oct 2021 17:28:02 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87C2C061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:41 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id p23so5449532uaa.6
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oJzHF/Z5fjP27mQA1nxiLi/yTI4xtj61op5B1TuJ3fM=;
-        b=JUH7zF8hHI+MToSfVcMh/cTdGxkOximv7meXju66VAwbJSkiZLFr16B736nOIVlCpa
-         c1HSZBPsypTgwn4o6WPBFkkPZjyNvt7grmfFmm2opWqCQv0TXW7Myq0F8QJxz+yHz8mI
-         R5VhK2W/NU2dmp15mTmO6rPh9qgPhBz7Ezjrv5/b7SrO3R11PJAtR+IlNHuQIs5mTodn
-         a40cOvriUHccOc19z4iLZoodLBPILC1qxTiW5yWaJa7KwgqI9zruLo6QNoT32JahzGLK
-         Gb45S0Jew+xgl5GGVp5ri8fODC2YvxxGr76eb5aZG6uwg3Osntie2arMB0DoSDtY2kxn
-         jgMw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DqiOv1p3LOB7EKypi/0mOrwTqn1iriyu35ZKspNjngg=;
+        b=DKvSVO+p/SFxE0r75HKW9OuNa3MhS2EvqtN+4jkFUbBPoib8QfYDoroxok9N3so9Hn
+         exhiDYfvK2JpmUiZ3PfYfOGMAhDkvjZa+gZMlmPsZy+IucG2AQO8nhm5Vwvz0TTVCyAH
+         /e8tl2ROV1EWMF1aVd5piqcoYTirX2dcwcX4hvabIBWQ7XoUnJD+mJntHWL/hYKCgBpw
+         F+u7+KJaujnOFFeebEBtc58FDEY8TqARz9MRaPik32iYwtL4Y/icdw2c71jJ3ol/zpcM
+         1Y1Fjl/u3r2/IydIaNAEyfSBll6J25biOQJwKRpwizoVoK6yv6PRZEiFqz+WcdD78tvG
+         4s9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oJzHF/Z5fjP27mQA1nxiLi/yTI4xtj61op5B1TuJ3fM=;
-        b=zdJuLyUussckD2BjIFlW/Bmc8fsgE6A6yzgHo5YQj1gxC7natItgir8ykNf9hO9X8U
-         fGpudMY29FwTcbkJBZufVd2BYtybeOSnBOEFkNUFgLUnyTPXyXMgVmsljA1RyxU2z0/9
-         jxV1WAgLfqHE9cU15ag3kCO67gGvTspGXztdUkXNqjn74ACjhdvGI/Yn/02L5BclVHk+
-         iYXQF9ISCKIqCJtn3b59iqaNNXoQdnB/2ebjpYhELuI8GzM3mXu240AeJUMRBcbGX7K5
-         DsBzZo7NUnzl8+KWqCq6Z/Ur0Y6gWZKDNX3V/evEOXiu+rM91dKwGeSl2BAPTVleBkr8
-         qqng==
-X-Gm-Message-State: AOAM530cFtL4XvVjzv8M+cA5k0udaMPl3cQ/dvNGO3RpuOCrEOFKW5tX
-        /fnmgidY+X7KMt9it/xd4LXeaWlqenUEFTmhl8F4sQ==
-X-Google-Smtp-Source: ABdhPJwt8o9K1DIszxN50TffhxTaQ1oO3M2G1LgnK0x2wMJGhMOsGef7TeP/cw6Sisz5Ih7aFrtZZE9PxXNMs3rMAek=
-X-Received: by 2002:a19:c10d:: with SMTP id r13mr13151970lff.339.1635110726022;
- Sun, 24 Oct 2021 14:25:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DqiOv1p3LOB7EKypi/0mOrwTqn1iriyu35ZKspNjngg=;
+        b=OZOeAgb0j/1xWu2PItIM5EGkl/vyrcLe2wVHFLq7UleDT/h+NuSTOAdIfKzvWf+V2g
+         jYnVQWkY+IuCwSrr/CUvhHc6QTgL13zeaMcIpkAuqcLDUs9qW8hOSTPp4TAgZfWI20lY
+         5hurcA2yUD/It7A+JASKjXRrCWkukqfwyFAS+rREFA9CCnV+56c8Qy0lGtIoPVgy7wVD
+         wO8JWvrYpr0aVVKpIuxcO04uPvZt80tfp8THsga4EHqTI026vFVe+xdE5ZjvaoE4wpvZ
+         nbjQQg2OIUX0I0vpLo+p4RDl+Q8LaicKsSmePNVCOjPOJjRnx2VUfmtZ5b/azzAwElme
+         QiCA==
+X-Gm-Message-State: AOAM5312rkfE4vYEsGkoqKdshEgM/QRpoXo3RiKnqR1NTRrgIw68WaR+
+        tMKfnZRCgfPIyd8hfgaHmfI=
+X-Google-Smtp-Source: ABdhPJx5a3/eziA4Af2q1yZwIzzKVvrciYGyHTKBotRo8MHzV2NoNC5PYHiWoxrmggMICmrqgmm2pQ==
+X-Received: by 2002:a67:d81a:: with SMTP id e26mr11952472vsj.23.1635110740894;
+        Sun, 24 Oct 2021 14:25:40 -0700 (PDT)
+Received: from localhost.localdomain ([191.83.215.63])
+        by smtp.gmail.com with ESMTPSA id 45sm8847869uaq.8.2021.10.24.14.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 14:25:40 -0700 (PDT)
+From:   Gaston Gonzalez <gascoar@gmail.com>
+To:     linux-staging@lists.linux.dev
+Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, gascoar@gmail.com
+Subject: [PATCH v2 0/8] vchiq_core: various style cleanups
+Date:   Sun, 24 Oct 2021 18:25:16 -0300
+Message-Id: <20211024212524.370078-1-gascoar@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211018121815.3017-1-pshete@nvidia.com> <20211018121815.3017-2-pshete@nvidia.com>
-In-Reply-To: <20211018121815.3017-2-pshete@nvidia.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 24 Oct 2021 23:25:14 +0200
-Message-ID: <CACRpkdYQMOAPdQaOb9TXtQmr5ez-xhwDguYusiGxK4DCHHX92A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: tegra: Add pinmux support for Tegra194
-To:     Prathamesh Shete <pshete@nvidia.com>
-Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Suresh Mangipudi <smangipudi@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prathamesh,
+This set of patches consists in some code style fixes.
 
-I don't have a maintainer for the Tegra pin control driver
-in MAINTAINERS, and I have seen different people contribute
-to it over the years. Definitely Tegra 194 should be fixed up
-now as it's been around for a while and it's great that you're
-dealing with it.
+v1 -> v2:
 
-Anyways I applied these two patches for now and let's see
-what happens.
+- Drop change wrongly attributed as a checkpatch fix.
+- Unify patches that fix unnecessary blank lines.
 
-If you're working with this extensively maybe you should
-simply list yourself (and Suresh?) as maintainer(s) in
-MAINTAINERS for this driver? You can add Thierry or
-Jonathan as comaintainer maybe since they made some
-patches the last year or two.
+Gaston Gonzalez (8):
+  staging: vchiq_core: cleanup blank lines
+  staging: vchiq_core: cleanup code alignment issues
+  staging: vchiq_core.h: fix CamelCase in function declaration
+  staging: vchiq_core.h: use preferred kernel types
+  staging: vchiq: drop trailing semicolon in macro definition
+  staging: vchiq_core: drop extern prefix in function declarations
+  staging: vchiq_core: cleanup lines that end with '(' or '['
+  staging: vchiq_core: fix quoted strings split across lines
 
-Yours,
-Linus Walleij
+ .../interface/vchiq_arm/vchiq_arm.c           |   4 +-
+ .../interface/vchiq_arm/vchiq_core.c          | 763 +++++++-----------
+ .../interface/vchiq_arm/vchiq_core.h          |  99 +--
+ .../interface/vchiq_arm/vchiq_dev.c           |   4 +-
+ 4 files changed, 335 insertions(+), 535 deletions(-)
+
+-- 
+2.33.1
+
