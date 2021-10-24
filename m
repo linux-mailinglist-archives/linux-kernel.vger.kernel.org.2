@@ -2,83 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B35438C51
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DB3438C5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhJXWVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        id S231760AbhJXWYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhJXWVR (ORCPT
+        with ESMTP id S229533AbhJXWY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:21:17 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEF9C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:18:55 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id c28so3964810lfv.13
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:18:55 -0700 (PDT)
+        Sun, 24 Oct 2021 18:24:29 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C726BC061745;
+        Sun, 24 Oct 2021 15:21:59 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id y10so10061144qkp.9;
+        Sun, 24 Oct 2021 15:21:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rT5yPPhtsf2H9kbaBzLopKs7NqQW6eFfjhGcFaAkilI=;
-        b=mBhb5XqfyzJJeLZBSo2AOD8ZqoyMHQQ/Ogm8FCUCJjVhsEtfPFvTbtSe/p24Yj7KMr
-         HIvjhNzkKbDknCsbEtXoNtHdKDVf7boh3po/KztOCrJg4+n84wUcIdqHFdBJw/mswNin
-         3K6/qhMqnhzBuNlktG75MyStamynDPnF8EYOqKEOuwy1OjAPH3Xw/QryeheTTrvY4Vey
-         kWgyjY8dVnJf+u1ag39pISzSWVUdBWd8XsR09B8OsqllkSyIjW7e8zSvISv332vAot0G
-         P6DALJz69msGBpx3N3jcx3NnXji/M33QJef4GuvzM5ohTTsnn9vK0GKQCu7EQQ50KTUN
-         wrVg==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9ncurX3TaX2r+KRIahQhViZWdSQLGqym5eYqOGdMFmY=;
+        b=dy/qQaSfalOC797IGCHjeiHIGgOIKYRtzs+71nz8jiWATJK/JtNHcnKC2GszBndsRz
+         DxCJWVUAEE/Jeu0XM2ZWTFjWCb6fBbhGsUrxqnR6vtUhzQ5oOOXYdR8Ryy9zpYxVlrr/
+         GLVRyy6V1NMR6FkqjlbZqJnPHRrYkiiW6K+3m3vKkw+58uBQKQN7i2Y3+lT3pRYWNkGG
+         t+NphDwcGy9h2FcTf+uuN8s64sn00pVbe4dopWeSwQy7gHRYLZifrc+kDzH1rJMIbrEu
+         f+cd0BQpCmBOCzqk8GRUlLzVCj83HbHK+dA6hqJzZi/XjeaOw6jT2WSUxKjwrVzIe0z3
+         pGqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rT5yPPhtsf2H9kbaBzLopKs7NqQW6eFfjhGcFaAkilI=;
-        b=riNkecaGSfcxIY/OE1ZMCBei/UO/spweyqv7uK/EVRaGEX6TnM5rPs2GiENjfCg9U9
-         A7P3lgD7f0EqzvdGPBL+TOWHM1xFLDeoBhBhKALGWr1MuIeCeplyBGJ4kXVp/j6Zt4Np
-         hzz7f4gyV1cuoO0ByKvaE+hSqoWbZrR/RGK1W7VH4RDUvZhQMbATI7r1mga16ii9+MtW
-         NyK/1RxaHqXC2Yi2oCED+cNcdL5f84Y2vBJJ7uQHOjLHbt3uMHfJaEzNWkZzuaCRJSVN
-         BmFmh6p3qscsJC98G2VBLNBVaeCOi2UA+vIn7UChwa053S3lCoHua4XnL/nwot1sXhnd
-         JnPg==
-X-Gm-Message-State: AOAM532PiSLg3PY2cnTNyNoWv1sFhzuX3JagDsMVrhNXbl5GtFOzN1Ne
-        9ov5xI9fEqB6olrS+fRUUD9wCn4jrngxFKd7bcQ7kA==
-X-Google-Smtp-Source: ABdhPJyN9surB4BZXaAyD7DjPnt147mbw4CGPXtFR9WxL1+InQUqdKJlAQI8DKcLR8B/rT5XjsDs5wDvcuRHBUHHZcQ=
-X-Received: by 2002:a19:f106:: with SMTP id p6mr3461469lfh.72.1635113933615;
- Sun, 24 Oct 2021 15:18:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20211019200831.3817-1-maukka@ext.kapsi.fi> <20211019200831.3817-2-maukka@ext.kapsi.fi>
-In-Reply-To: <20211019200831.3817-2-maukka@ext.kapsi.fi>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Oct 2021 00:18:42 +0200
-Message-ID: <CACRpkdZf74=DJHEVp9RhX-m0RKpuqU8hhDu5j3vLAoj5WAZJFQ@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] dt-bindings: gpio-cascade: add documentation
-To:     Mauri Sandberg <maukka@ext.kapsi.fi>
-Cc:     Mauri Sandberg <sandberg@mailfence.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9ncurX3TaX2r+KRIahQhViZWdSQLGqym5eYqOGdMFmY=;
+        b=B/Ub8itLV2ngdGWeIp9ZktLFXHUz5aIGM3kGzcUnYRjh5C+OTiNNsrM4Kj7Rjm+Pky
+         gUYGW8jiAi6t+NayMvDn/8tBG9WWrA8Ao78OTJprnNvWm1ZAvjkafMqFtANGTLip/q/l
+         yBIvegyY9+fGPRVUxhvkIj25BcHgnJusQhsrJf4zUcaGt0Amp7SLWRKvlI385p0tx0gf
+         ImJFqFaPpAI+oyP6ee6p/nHYNFE+jX/0vSmNFisSapEF8x8z5DFmYhdIHHSaSdhs+gBj
+         4Tr2O0LzUQQX7Ni0YBNwc0JOXFGJk6IRgR6Wpxl1nD02IPRDH9KRhX/AbKg3qo2Bk6+s
+         W2+A==
+X-Gm-Message-State: AOAM533T0fR4OoW0EThNAd0DPGuoDSVZi3Y+B5wiQpb7WjlyC6hj1bKp
+        6pJRXXupQQcj0CoPWRZXgzsRFyy6E4IJBUKJ
+X-Google-Smtp-Source: ABdhPJxH3dXajawJmgGedUFt/0s9RkSQOpUZRanfORVnF05b6MtQzzbf90iWYh6sgaNjBabsAL6DrA==
+X-Received: by 2002:a37:9c57:: with SMTP id f84mr10900583qke.16.1635114118201;
+        Sun, 24 Oct 2021 15:21:58 -0700 (PDT)
+Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id i2sm6030226qti.92.2021.10.24.15.21.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 15:21:57 -0700 (PDT)
+Subject: Re: [PATCH 00/13] This patchset aims to add initial support for the
+ i.MXRT10xx family
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        giulio.benetti@benettiengineering.com,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        b20788@freescale.com, Andy Duan <fugang.duan@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
+ <CAK8P3a3ccWgpQF8-Ej7Di_=eCs+cibDgiY5962iPKsMgzD_qSg@mail.gmail.com>
+From:   Jesse Taube <mr.bossman075@gmail.com>
+Message-ID: <b7132b95-4a9f-db7c-6010-3f9df99a3087@gmail.com>
+Date:   Sun, 24 Oct 2021 18:21:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a3ccWgpQF8-Ej7Di_=eCs+cibDgiY5962iPKsMgzD_qSg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:10 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
+Hello Arnd,
 
-> Add documentation for a general GPIO cascade. It allows building
-> one-to-many cascades of GPIO lines using multiplexer to choose
-> the cascaded line.
+Giulio is in CC
+
+On 10/24/21 3:32 PM, Arnd Bergmann wrote:
+> On Sun, Oct 24, 2021 at 5:40 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+>>
+>> Add initial support for the i.MXRT10xx SoC family
+>> starting with the i.IMXRT1050 SoC.
+>> This patchset contains:
+>> - i.MXRT10xx family infrastructure
+>> - i.MXRT1050 pinctrl driver adaption
+>> - i.MXRT1050 clock driver adaption
+>> - i.MXRT1050 sd-card driver adaption
+>> - i.MXRT1050 uart driver adaption
+>> - i.MXRT1050-evk basic support
+> 
+> Can you expand the description a bit more so it makes sense as a changelog
+> text for the merge commit? It's fairly rare these days that we add support for a
+> MMU-less platform, so it would be good if the introductory text answers
+> questions like:
+> 
+> - what is this platform used for, and what is the purpose of running Linux on it
+>   in place of the usual RTOS variants?
+> 
+> - are you doing this just for fun, or are there any commercial use cases?
+
+The purpose of this is for learning and fun, as far as we know there are no
+commercial use cases, but we hope there will be.
+
+> - what are the minimum and maximum memory configurations this has
+>   been tested with?
+
+We both have only tested with 32MB of ram on i.MXRT1050/60-evk.
+
+> - what user space are you testing with: any particular distro that supports
+>   this platform, and do you run elf-fdpic or flat binaries.
+
+We are using Buildroot[1] and that only uses flat binaries.
+i.MXRT1050/20 have already been up-streamed to U-Boot[2].
+
+> - are you planning to also support the newer i.MXRT11xx or
+>   Cortex-R based designs like the S32S?
+
+We plan to support the i.MXRT11xx, but unsure about the S32x, it depends 
+on the interest. 
+
+> 
+>        Arnd
 >
-> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+[1]: https://github.com/Mr-Bossman/imxrt-linux-buildroot.git
+[2]: https://source.denx.de/u-boot/u-boot/-/blob/master/configs/imxrt1050-evk_defconfig
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Thank you, 
+Jesse Taube.
