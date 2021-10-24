@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C614B43872F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 09:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC88438734
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 09:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhJXHKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 03:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        id S230247AbhJXHSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 03:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhJXHKO (ORCPT
+        with ESMTP id S229692AbhJXHSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 03:10:14 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F73AC061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:07:54 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso10299356otl.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:07:54 -0700 (PDT)
+        Sun, 24 Oct 2021 03:18:03 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24967C061348
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:15:43 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id w10so9137747ilc.13
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fYsl9CYVa0vbeqaio429pJ7nWHE90zcqRVhgSRIdIYE=;
-        b=Bk3oVRiinhyfUlUcu+RlImWiIPCpoTZ7ciEl/1OCvFY0dRkxxH18hHVnZpsoaIWFdy
-         0iewLMOx/Pju7GJoyBoZS7tVK/q3k2yFnk7gBPGxa1bofWh5ApetiKpfjOeudXwYKIXL
-         pSpSNWjKpvv0cH4AmnEIW+AiLFio7FO8t2fLFvwqna2BwBp19c2CQnYj0Xh4b54Z0FPG
-         lT9afotWcfmVubaytI7b3r9ujl4Ag0LcG1GWEqyIyMkcRBaGdX/QHzUMMAKBQNqTYYnx
-         OYMAG3AzVjOIn1JRxQ5hjhGbMQ/ssqJNVa+pHen+InDyatmILE6A1aUGQ2kR8aUo7hxo
-         +rrg==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
+        b=kIPp4zZWUSIq+Nv0hs7wnk1WJRs4qko6rm1USGRf9wyFU31jsVlbt68R014C9zJnft
+         eMaos50MikM4297W6K94EPPXLOE7PeRVBVsDc2IVzcfZZjGDxKJf/pWg6AIzduZJIPIB
+         puH6IUqrOGsG3etO0WHVbFNx1fAgU8H4C6nd8fVjSnfoyAGHyKhi8YNdR4JaWSZw+P3Y
+         9QRFeGYoc3b5ZkJZg2Y7DxGm0+20MHwCH3RF6obcNtmAzPT3xH4QHH2SWJAQtQIVJgKt
+         ptNdLjr/2aMMty0YbXGZBs29A+EcJohazj2sqyS1zw3uXH4xb+/EZcTcrVIuVTmOQ4H1
+         WXhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fYsl9CYVa0vbeqaio429pJ7nWHE90zcqRVhgSRIdIYE=;
-        b=odgdSns+/jbpNg8RDC0TGNml3W1fQkOz7zkgvucBqE/QnA2uywDFRE34P77tF2YFMv
-         W4JRNd5gbquudwru2mSBk/OEkdkeKb2gZ0P0BX3ibrFJVWpP+CacyDIS3j3TguG5T/Gd
-         Ql6d64DIHt1XSx4mm+/ofHk3FY9ViLIE1zw0NqpEK8Se8h8H/R0Zan8y1aS/3/fILjDR
-         V8lyaqaGW6rzP2QgnbC8r3Dp6VjVciPYSR9cW6hYodTQwVymqINqP9I0tzo5yyVp9YEU
-         d0jRDEDeXuVNwBPvt+FdhNppudITjtneCSOohCwrznFcYKx5/n04iLdyT2PcM3gyoKA2
-         MEEA==
-X-Gm-Message-State: AOAM531DxU8DPPr1ZBgLuph8VBoQSCjFi7XgIoDkZjqWAVmMefgaqoqe
-        +NoyLiQhk/nf+VWBq+y0of8qN2X+VvibTTvhjAKnnA==
-X-Google-Smtp-Source: ABdhPJw1q5FXEGcSxeesKVoApYXL/oP86UXBU5bSp4qRUqAmI2LDoXKbuD0fL0nytKiZqzt44b+8WKu3IpswsmzEiNI=
-X-Received: by 2002:a05:6830:402c:: with SMTP id i12mr8016921ots.319.1635059273605;
- Sun, 24 Oct 2021 00:07:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
+        b=ppw8GHeE6ZcSzZCgHbfd/dxGwyK3sf9LJ81NcVxb49q9vf99yzL+n/gB8eY/sYUl9Z
+         cagM+5jovFvnOGUwn8HOd+k4CKqQFx0Lb17p5/8KnBQj2k3LKpz0p9UtjJJzJpvMHaKF
+         SSuW7BwV2rCmmnJRqkaW3jodIX3zCw+aP1pbDq3ZLAxJW4zokbxvAKI9lOWwD3KxAMKC
+         xmJnan+voSUP+OBDfnN/UZ0qK8DxmHNXuzvZANuFDl1o+G8HkrF3XLbaICDV5RDVCixS
+         DsAV6EYUbZRKp2yyr1EYdfhasCntBVEz6+q5SZJmQGFtMYydpkl+gtoRibTu+fM+tmPg
+         J28A==
+X-Gm-Message-State: AOAM532leVBJ7W9AeYCtET0rZo3rcmFt1aEM9L+UYguU9I6JXsrSZar3
+        5CJX6PDW3uIgDBUH1eGsyrNdIzRyTev7Dkcdiw==
+X-Google-Smtp-Source: ABdhPJzWyy0FhZ5zgHpcSiiCHlUW357bn7DFbvOCxlydhDJnRvnQAzd+7Pteo61uSqUWfrXXJJZjOa4wO+tMe7BZGYo=
+X-Received: by 2002:a05:6e02:1a61:: with SMTP id w1mr6324918ilv.48.1635059742018;
+ Sun, 24 Oct 2021 00:15:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000062d0fc05cef24c57@google.com> <CACT4Y+aFvuvBew3c6gV9VwE5Fi_4tbPX9Am1xf628ynzKFFLeg@mail.gmail.com>
- <YXQp4MsT0EEKqMl/@kernel.org> <088FF23B-CD8E-4E53-B702-53E2C2382062@chromium.org>
- <YXSQuiahbU7YyYrk@casper.infradead.org> <YXTxN5skPPFPvScP@kernel.org>
-In-Reply-To: <YXTxN5skPPFPvScP@kernel.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 24 Oct 2021 09:07:42 +0200
-Message-ID: <CACT4Y+aqEOfSY+R1EkdNhCbnSCjWrLO4f0T9QxWG6-UV7z7+Fg@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: refcount bug in sys_memfd_secret
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        syzbot <syzbot+b904a1de3ec43711eba5@syzkaller.appspotmail.com>,
-        Jordy Zomer <jordy@pwning.systems>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
+Received: by 2002:a5e:c647:0:0:0:0:0 with HTTP; Sun, 24 Oct 2021 00:15:41
+ -0700 (PDT)
+Reply-To: ahmadmustafa.7800@gmail.com
+From:   Ahmad Mustafa <rubenherbert001@gmail.com>
+Date:   Sun, 24 Oct 2021 08:15:41 +0100
+Message-ID: <CALZMrYx_C78paGycWLz_SaGhix94eMNQaBarOz1U2EXirfC1UA@mail.gmail.com>
+Subject: LOANS AND INVESTMENT
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Oct 2021 at 07:38, Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Sat, Oct 23, 2021 at 11:46:18PM +0100, Matthew Wilcox wrote:
-> > On Sat, Oct 23, 2021 at 10:03:11AM -0700, Kees Cook wrote:
-> > > On October 23, 2021 8:27:28 AM PDT, Mike Rapoport <rppt@kernel.org> wrote:
-> > > >and my first reaction was to send a revert the untested commit 110860541f44
-> > > >("mm/secretmem: use refcount_t instead of atomic_t").
-> >
-> > I think you should.  This isn't a real problem.
->
-> Do you mean that creation of 4 billion of file descriptors is not feasible?
+Dear Sir,
 
-FWIW I think refcount is at least capable of catching the issue I
-described with the counter temporarily going below its true value.
-With refcount it can be caught during fuzzing as refcount reaching 0
-and then being incremented again. Basically this warning, but a true
-positive.
+Aseel Islamic finance PJSC is private joint stock company that was
+established in 2006 and has built a leading market position for itself
+in the UAE's Islamic finance market which specializes in loan finance
+and investment activities in real estate, hospitality, industrial &
+sustainable technologies, strategic financial investments, specialized
+education, healthcare services, agriculture, manufacturing,
+mining,energy and additional environmentally sustainable projects.
+
+My name is Mr. Ibn Ahmad Mustafa . Do you have projects that require
+funding? We have finance available for your projects with over 2
+trillion private and corporate investment portfolios.  Aseel Islamic
+finance PJSC is looking for equity partners, entrepreneur, fund
+raisers and portfolio managers who will pay up to 4.5% interest and/or
+part equity position with a 5 to 10 year hold. In 2030, we plan on
+acquiring up to 2 trillion in high-quality, low risk assets and
+investments to capitalize on the current market cycle.
+
+Aseel Islamic finance PJSC is acting as a lender and the fund will be
+disbursed on a clear interest rate of 3.5% annually to the equity
+partners and entrepreneurs for their investment projects. We also give
+a 2% commission to brokers, who bring project owners for finance or
+other opportunities.
+
+For further details, kindly send us your business plans or project summary.
+
+Regards,
+
+
+Mr. Ibn Ahmad Mustafa
+International Business Coordinator
+Aseel Islamic Finance PJSC
+Al Mankhool, Dubai C2 Tower,
+Ground floor,P.O 94669 Dubai, UAE
+Abu Dhabi - United Arab Emirates
+Email : ahmadmustafa.7800@gmail.com
