@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67094438B8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10DC438B8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhJXSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 14:53:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55888 "EHLO vps0.lunn.ch"
+        id S231912AbhJXSwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 14:52:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232099AbhJXSxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 14:53:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=WgYCSgQH0fqNh/JtYYcfd2rKvQYA3UM+wgdq1vzdV18=; b=G0d/9v3k7mqVkfmZrjBvOVzjX0
-        zqYxyo529r9npd+tYEEwl53tZ47ZCPLT9F2pZHIfpchm/OEIkgrdRXhLxy1q2yHp1O01xGXT95qg+
-        oTEAs9o14WVkPQRmqGzvJFGzBd+jo3MPEdX1UeSXXxxV7U4YFFwPPeXwrTDx3Peoc4Ng=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1meiZx-00Ba7Q-F0; Sun, 24 Oct 2021 20:50:45 +0200
-Date:   Sun, 24 Oct 2021 20:50:45 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [net-next PATCH] net: convert users of bitmap_foo() to
- linkmode_foo()
-Message-ID: <YXWrBZJGof6uIQnq@lunn.ch>
-References: <20211022224104.3541725-1-sean.anderson@seco.com>
+        id S229638AbhJXSwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 14:52:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BABF60E74;
+        Sun, 24 Oct 2021 18:49:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635101379;
+        bh=1kqycnVC8fukz0uELJHiRc1ElEC5mtlD4Z21MQOaCco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DkdIJtZqofdqkgfp44isp63Hs/p6GmYy/OVlz2jYbdX9DtNnpEhQ84pk0kfliUfXh
+         3lGMnSbuxWiuGr06uhbplT8vnuQpRKpDx8aVYWWr2oghba7ctjVtc4L1g1OPkSJWIP
+         teS7nOSmsFLHrz/bLZGySaCh4SkwyytVTiYFJJWhqh1/pIoF4Ma0OY+7ViAUogvUH4
+         6qZ12pqSCctLUmEp0uJEOKJg8LwJdTpPgR9av092gP8vfOGnr5GGKVfFrbFRxTKNrh
+         PWdqF35Ai6bEufKD2mqjJ6TnJz2XDYfyCOiJaeQJb2WBZAp4zwR/RrkBtleQe/iikN
+         4yVfSrJbFQZ/A==
+Date:   Sun, 24 Oct 2021 13:54:27 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2][next] sysctl: Avoid open coded arithmetic in memory
+ allocator functions
+Message-ID: <20211024185427.GA1420234@embeddedor>
+References: <20211023105414.7316-1-len.baker@gmx.com>
+ <YXQbxSSw9qan87cm@casper.infradead.org>
+ <20211024091328.GA2912@titan>
+ <YXWeAdsMRcR5tInN@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211022224104.3541725-1-sean.anderson@seco.com>
+In-Reply-To: <YXWeAdsMRcR5tInN@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 06:41:04PM -0400, Sean Anderson wrote:
-> This converts instances of
-> 	bitmap_foo(args..., __ETHTOOL_LINK_MODE_MASK_NBITS)
-> to
-> 	linkmode_foo(args...)
+On Sun, Oct 24, 2021 at 06:55:13PM +0100, Matthew Wilcox wrote:
+> On Sun, Oct 24, 2021 at 11:13:28AM +0200, Len Baker wrote:
+> 
+> I think it's better for code to be understandable.  Your patch makes
+> the code less readable in the name of "security", which is a poor
+> justification.
 
-It does touch a lot of files, but it does help keep the API uniform.
+I agree with Matthew. Those functions seem to be a bit too much, for
+now.
 
-> I manually fixed up some lines to prevent them from being excessively
-> long. Otherwise, this change was generated with the following semantic
-> patch:
+Let's keep it simple and start by replacing the open-coded instances
+when possible, first. Then we can dig much deeper depending on each
+particular case, taking into consideration readability, which is
+certainly important.
 
-How many did you fix?
-
-> Because this touches so many files in the net tree, you may want to
-> generate a new diff using the semantic patch above when you apply this.
-
-If it still applies cleanly, i would just apply it. Otherwise maybe
-Jakub could recreate it?
-
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+Thanks
+--
+Gustavo
