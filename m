@@ -2,338 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356BE4387A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 10:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B954387AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 10:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhJXIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 04:35:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232038AbhJXIey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 04:34:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635064353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N7MaMsbEgtkFeoR9dXKCa0jkxzPb/XZnIjnZEfonQdU=;
-        b=V4uDz4Aek1rrkd0ffXwdNjInpLQ1VcXcvVl6NTKjlFcix9vCWGwqsk0VYFTALoYXDTxj83
-        /Li9Tb6IXeK9Be5y0sc6ZDFjSV+HB4la4NkeCBEvY3eMUNe5/GQzvxJqtzaTGe/BrROmcf
-        FaUdXUcbnt5z9zCOtq0Ug3ogq9sBAG0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-jLm4gOv5NYuRJOwfPaqUWw-1; Sun, 24 Oct 2021 04:32:31 -0400
-X-MC-Unique: jLm4gOv5NYuRJOwfPaqUWw-1
-Received: by mail-ed1-f70.google.com with SMTP id c25-20020a056402143900b003dc19782ea8so7315316edx.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 01:32:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=N7MaMsbEgtkFeoR9dXKCa0jkxzPb/XZnIjnZEfonQdU=;
-        b=wtW+Uqt+nXWzgTW2QJQxcbQpLYgCCFSfTQh4oq3O3TIWi9vGVngGscKQ0JEXP3y2/k
-         vj4lUZAMkHcg+NCqET1Ll5wPmHIDMYIMG2lV6fStFNeYh1w1E57HrjezefTupBxtr/mR
-         5YjkZPe946mL4AjgMrGZjEvJwM1wV5DT+7jOX8Dtbu4Gky6RsuiH5KUuGcn4tpnVHepK
-         1iyMl0nvM9Q77Z8gddGpJZsNJlT3mfpXhvf/0M7GHmG9+ZKyDztfUHywgZ4/vL/5yZFi
-         qnpLFppf0JEX8hGWpchYE7E4fo3Uef0Xb6aMVTqUVSw/ADJEcz7a9KWcYb56ze5KYx6o
-         uhDA==
-X-Gm-Message-State: AOAM531V1yRivo1UYvC+3np7hkJ0NX6vq9YpAjW9wxx9LpuNIOXlQzd1
-        y2zXFzxS3tGWjT5F2BqFKel7I3C25DtIOdXAxbXZs9ktK/MCwuuX+gUbAx3tt9fZkF8dH7GHEhA
-        CbXxzeciGw3a8CAonWk36oiZX
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr13419143ejc.484.1635064349791;
-        Sun, 24 Oct 2021 01:32:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0i+S6uulwjEVYlO3w6mp2NMyQm2ZwTjdNM32sBC/BeQmWEspIjPmjl3nyGehZTWYhjGe8HA==
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr13419113ejc.484.1635064349512;
-        Sun, 24 Oct 2021 01:32:29 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gs15sm1616366ejc.53.2021.10.24.01.32.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Oct 2021 01:32:26 -0700 (PDT)
-Message-ID: <552baf68-8fed-9a6f-d18c-5634f93a58f8@redhat.com>
-Date:   Sun, 24 Oct 2021 10:32:25 +0200
+        id S231372AbhJXIoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 04:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhJXIoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 04:44:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1427B600CD;
+        Sun, 24 Oct 2021 08:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635064936;
+        bh=8taORk5LytaqbLQ2C+yb36ZXgofUfKDPX6aHuXy44ZU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aFlfz2dTwIbpGxOJkZRnPwlZe8mZOHitqgZBB3xC3DXcFeVGFyWIOgykq1Pxbnlo8
+         +bQQhQ65/9wQtXKJNZ+MR7JiSqEYTG3/ArkcwcB2LtmDXLzo875+ryTZp8O6YuFlRd
+         6sxZhG60MjfYQeazdxNc6eRkv4bjzX6vmQ3SonfIfP8GG4GNopg8V/wrFYTOHk4HjJ
+         WAK/qOgeVAse8EW26YSrwqvXxn6qP4W6jEdPNDjBDS9tSOj0NSgRsON2rFCmQr9vWG
+         /dNXfXi8u/YH/p2+ruYhPhorSo0SohKJjCQ/OSBOTMEs8mFEclk6e34uUdVKIvzWK4
+         2qcE2UWSLQciw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Subject: [PATCH net-next] netdevsim: Register and unregister devlink traps on probe/remove device
+Date:   Sun, 24 Oct 2021 11:42:11 +0300
+Message-Id: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
- stop working on Microsoft Surface 3
-Content-Language: en-US
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211017162337.44860-1-kitakar@gmail.com>
- <20211017162337.44860-6-kitakar@gmail.com>
- <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
- <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Leon Romanovsky <leonro@nvidia.com>
 
-On 10/21/21 11:52, Tsuchiya Yuto wrote:
-> Thank you for your comment :-)
-> 
-> First, I need to correct what I said in the previous mail. I later found
-> that loading only "atomisp" (as well as its dependency,
-> atomisp_gmin_platform) does not cause this issue.
-> 
-> What causes this issue is rather, loading sensor drivers (as well as its
-> dependency, atomisp_gmin_platform).
-> 
-> These sensor drivers for surface3 are both not upstream, but I made them
-> as similar as possible to the upstreamed ones. So, I guess this issue
-> can still be reproducible on some other devices.
-> 
-> I can't (easily) try touchscreen on mipad2 because it won't boot without
-> nomodeset and somehow GNOME won't start if it's using nomodeset (on Arch
-> Linux).
+Align netdevsim to be like all other physical devices that register and
+unregister devlink traps during their probe and removal respectively.
 
-<note going a bit offtopic from atomisp here>
+netdevsim netdevsim0 netdevsim2 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim1 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6553 at net/core/devlink.c:11162 devlink_trap_groups_unregister+0xe8/0x110 net/core/devlink.c:11162
+Modules linked in:
+CPU: 0 PID: 6553 Comm: syz-executor166 Not tainted 5.15.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:devlink_trap_groups_unregister+0xe8/0x110 net/core/devlink.c:11162
+Code: ff ff 31 ff 89 de e8 97 e3 41 fa 83 fb ff 75 cc e8 4d dc 41 fa 4c 89 f7 5b 5d 41 5c 41 5d 41 5e e9 6d 79 05 02 e8 38 dc 41 fa <0f> 0b e9 71 ff ff ff 4c 89 ef e8 19 4f 89 fa e9 3b ff ff ff 48 89
+RSP: 0018:ffffc90002d8f3b0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000000000
+RDX: ffff888024a00000 RSI: ffffffff87350e68 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff87350dd7 R11: 0000000000000000 R12: ffffffff8a263c20
+R13: ffff888077d36000 R14: dffffc0000000000 R15: ffff888077d36388
+FS:  000055555711e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200004c0 CR3: 0000000070465000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ nsim_dev_traps_exit+0x67/0x170 drivers/net/netdevsim/dev.c:849
+ nsim_dev_reload_destroy+0x20c/0x2f0 drivers/net/netdevsim/dev.c:1559
+ nsim_dev_reload_down+0xdf/0x180 drivers/net/netdevsim/dev.c:883
+ devlink_reload+0x53b/0x6b0 net/core/devlink.c:4040
+ devlink_nl_cmd_reload+0x6ed/0x11d0 net/core/devlink.c:4161
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
+ genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f02abf45409
+Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffeed83e458 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007ffeed83e468 RCX: 00007f02abf45409
+RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffeed83e470
+R13: 00007ffeed83e490 R14: 0000000000000000 R15: 0000000000000000
 
-Friday I've resized the Android data partition on my Mi Pad 2 Android,
-16G eMMC model and installed Fedora 35 in the free space.
+Fixes: da58f90f11f5 ("netdevsim: Add devlink-trap support")
+Reported-by: syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/net/netdevsim/dev.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-And yesterday I've been poking at the Mi Pad 2 the entire day,
-both under Fedora and under the original Android install to figure
-out which chips there are and how they are used, etc. This has
-diverted me from looking into atomisp2 stuff, but it was fun :)
-
-I've also managed to make the i915 driver work. It still gives one
-warning during boot which I need to look into. But it works now.
-ATM my i915 fix is just a hack. I plan to turn it into something
-which I hope I can get upstream, I'll Cc you (Tsuchiya) on the
-upstream submission of the i915 submission.
-
-I've also figured out all the other chips used in the Mi Pad 2
-and I believe I should be able to get things battery monitoring
-and switching the USB plug between host <-> device mode to work
-without too much issues (but it will take some time). This is
-all pretty similar to all the special handling which I've already
-added to the kernel for the GPD win / pocket devices which also
-use the CHT Whiskey Cove PMIC.
-
-Here are my notes about all the non standard chips used in the
-Mi Pad 2:
-
-PMIC/charger/fuel-gauge:
--The Type-C connector is used as / wired up as a regular micro-USB connector
-
--There is a Cherry Trail Whiskey Cove PMIC on the I2C7 i2c_designware ctrl
- -This is used for ID pin detection
- -Charger-type detection does not work though, because the USB-2 data-lines are
-  not connected to it
- -The 2 GPIOs which are used to enable an external V5 boost converter for
-  Vbus resp Vconn on other designs are both configured as inputs (register value 0x18)
- -The extcon-intel-cht-wc driver should control the USB mux according to the
-  ID pin, identically to how the extcon-axp288 code does this
- -The extcon-intel-cht-wc driver should control the Vboost converter in the
-  bq25890 charger IC based on the ID pin 
-
--There is a bq25890 charger hanging from the CHT-WC PMIC charger I2C-bus at addr 0x6a
- -At boot the BIOS clears bit 4 of register 3, disabling charging so the device
-  will still be powered from an external supply, but it will not charge!
-  Linux needs to fix this up
- -This charger is connected to the USB-2 data-lines and automatically sets its
-  input-current-limit based on the detected charger
- -Bit 5 of register 3 controls the Vboost converter for sending 5V to attached
-  USB-devices this bit needs to be controller by Linux based on the ID pin
-  detection from the PMIC. The BIOS does leave this enabled when booting with
-  a USB-device plugged in.
-
--There is a BQ27520 fuel-gauge at address 0x55 of the I2C1 i2c_designware ctrl
-
-I2C1: addr 0x55 BQ27520 fuel-gauge
-
-I2C2: addr 0x0e unknown
-I2C2: addr 0x1b Realtek 5659 codec ? (not detected by i2cdetect)
-I2C2: addr 0x2c TI lp855x backlight controller:
- https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/video/backlight/lp855x_bl.c
-I2C2: addr 0x34 NXP9890 audio amplifier
-I2C2: addr 0x37 NXP9890 audio amplifier
-I2C2: addr 0x3e unknown
-
-I2C3: addr 0x30 KTD2026 RGB LED driver, controlling the status LED
- https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/leds/leds-ktd2026.c
-
-I2C4: addr 0x36? OVTI5693 camera sensor
-I2C4: addr 0x37 t3ka3 camera sensor
-
-I2C5: addr 0x5a Motor DRV2604 Driver ? the tablet has no haptic feedback motor!
-      Also nothing seen here by i2c-detect, probably bogus
-
-I2C6: addr 0x38 FTSC touchscreen
-
-I2C7: PMIC bus
-
--TPS61158: LED controller for menu keys LEDS, driven by PWM controller, max brightness
- 80/255 !!!!
- https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/leds/leds-tps61158.c
- Android behavior: light up menu keys for 5 seconds on any human input:
- -Write a special HID driver for mainline linux to fix the key-events send by the
-  touchscreen and to light up the keys for 5 seconds on any HID input reports
-
--Sensors (accel, als) through hid-ishtp
-
--Panel 1536x2048 on card0-DSI-1
- https://bugs.freedesktop.org/show_bug.cgi?id=108714
-
--DSDT: Android: OSID == 0x04, Windows OSID == 0x01
-
-Regards,
-
-Hans
-
-
-
-
-> 
-> On Mon, 2021-10-18 at 10:30 +0200, Hans de Goede wrote:
->> Hi,
->>
->> On 10/17/21 18:23, Tsuchiya Yuto wrote:
->>> Touchscreen input works fine before loading atomisp driver on Surface 3.
->>>
->>> However, after loading atomisp driver, touchscreen works only when
->>> capturing images. This sounds like atomisp turns off something needed
->>> for touchscreen when atomisp is idle.
->>>
->>> There is no useful kernel log. Just the touchscreen stops working
->>> with no log.
->>>
->>> I'll update if I find something further. First of all, can someone
->>> reproduce this issue on the other devices?
->>
->> My first bet would be some regulator getting turned off.
->>
->> What you can do is:
->>
->> 1. ls -l /dev/bus/i2c/devices
->>
->> And then write down the number of the i2c-bus to which the
->> CRC PMIC is connected, lets say it is number "4". Then:
->>
->> 2. Before loading the atomisp drivers run:
->>    "sudo i2cdump -y -f 4 0x6e > crc-regs-good"
->>
->> 3. After loading the atomisp drivers run:
->>    "sudo i2cdump -y -f 4 0x6e > crc-regs-bad
->>
->> 4. "diff -u crc-regs-good crc-regs-bad"
->>
->> And see what changed.
-> 
-> Here is the diff. The "good" one is before loading sensor driver, the
-> "bad" one is from after loading sensor driver:
-> 
->         $ diff -u crc-regs-good crc-regs-bad
->         --- crc-regs-good	2021-10-21 18:04:57.853396866 +0900
->         +++ crc-regs-bad	2021-10-21 18:06:13.755738054 +0900
->         @@ -4,14 +4,14 @@
->          20: 00 00 01 c8 68 07 0a 10 10 01 1f 10 10 10 10 10    ..??h???????????
->          30: 10 10 00 20 21 20 20 20 20 20 00 2a 1c 1c 14 10    ??. !     .*????
->          40: 10 10 10 28 20 20 28 2e 2f 20 20 83 00 00 4c 00    ???(  (./  ?..L.
->         -50: 00 01 01 01 00 00 60 00 60 00 00 02 02 03 60 60    .???..`.`..???``
->         +50: 00 01 01 01 00 00 60 02 60 00 00 02 02 62 60 60    .???..`?`..??b``
->          60: 60 01 03 00 00 00 00 00 00 00 30 04 00 00 00 00    `??.......0?....
->         -70: 00 03 00 00 02 7b 02 6c 02 71 02 55 02 7c 02 9d    .?..?{?l?q?U?|??
->         +70: 00 03 00 00 02 7b 02 6d 02 73 02 58 02 7f 02 9e    .?..?{?m?s?X????
->          80: 00 00 00 00 00 00 00 00 00 00 00 02 08 00 0b 02    ...........??.??
->          90: 3f 07 00 00 00 00 4c 00 4e 00 00 4c 00 23 01 b4    ??....L.N..L.#??
->          a0: 4c 00 4e 00 00 3d ca 6a f0 00 00 3d ca 6a f0 00    L.N..=?j?..=?j?.
->          b0: 00 7e 2a ff 02 04 06 00 00 00 00 00 00 20 00 00    .~*.???...... ..
->          c0: 00 00 00 cd 08 00 00 4c 00 00 00 4c 00 00 00 3d    ...??..L...L...=
->         -d0: 97 00 00 3d 97 00 00 fe 17 00 ff 02 01 07 94 03    ?..=?..??..?????
->         -e0: 9a 00 27 00 00 00 00 00 00 00 00 00 00 00 00 00    ?.'.............
->         +d0: 97 00 00 3d 97 00 00 fe 17 00 ff 02 01 07 ec 03    ?..=?..??..?????
->         +e0: 96 00 21 00 00 00 00 00 00 00 00 00 00 00 00 00    ?.!.............
->          f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-> 
-> Note that lines "70:" and "d0:"/"e0:" change over time. So, the actual
-> change caused by loading sensor driver is line "50:"
-> 
->         -50: 00 01 01 01 00 00 60 00 60 00 00 02 02 03 60 60    .???..`.`..???``
->         +50: 00 01 01 01 00 00 60 02 60 00 00 02 02 62 60 60    .???..`?`..??b``
-> 
-> and in atomisp_gmin_platform.c file,
-> 
->         /* CRYSTAL COVE PMIC register set */
->         #define CRYSTAL_1P8V_REG	0x57
->         #define CRYSTAL_2P8V_REG	0x5d
->         #define CRYSTAL_ON		0x63
->         #define CRYSTAL_OFF		0x62
-> 
-> indeed we're poking at 0x57 and 0x5d. So, maybe this issue is caused by
-> regulators? I tried what would happen if I kept sensor power on before
-> in sensor drivers, but there was no effect. But I feel I need to look
-> into it again further.
-> 
->> There are 2 possible root causes here:
->>
->> 1. Some regulator is shared between the cameras and
->> touchscreen
->>
->> 2. The crc code in atomisp which you are using is
->> poking registers assuming the Bay Trail version of
->> the Crystal Cove PMIC (aka CRC PMIC) but your
->> Surface 3 has the Cherry Trail version and we know
->> that the regulators are add different register
->> addresses there, see the comment in:
->> drivers/acpi/pmic/intel_pmic_chtcrc.c
->> so it is possible that the atomisp code is simply
->> poking the wrong register for one of the regulators
-> 
-> According to this Android kernel commit [1], the address for 1P8V and
-> 2P8V are updated to the CRC+ ones (the upstreamed atomisp already has
-> this change)
-> 
-> [1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/commit/2f8221ba9a3770aed1ecfad2d04db61b95f30394
->     ("update PMIC v1p8/v2p8 address")
-> 
->> I also wonder if this goes away if you do the
->>
->> 	hrv = 0x03;
->>
->> Hack inside drivers/mfd/intel_soc_pmic_core.c ?
->>
->> Without that we end up using the wrong PMIC
->> OpRegion driver which also uses the wrong
->> regulator addresses.
-> 
-> I'm now using cht one with your patch, but the situation is the same
-> as before.
-> 
-> Regards,
-> Tsuchiya Yuto
-> 
->> Regards,
->>
->> Hans
->>
->>
->> p.s.
->>
->> Here are the 2 different regulator drivers the
->> comment in drivers/acpi/pmic/intel_pmic_chtcrc.c
->> refers to:
->>
->> https://github.com/Zenfone2-Dev/android_kernel_asus_moorefield-1/blob/stock/drivers/regulator/pmic_crystal_cove.c
->> https://github.com/Zenfone2-Dev/android_kernel_asus_moorefield-1/blob/stock/drivers/regulator/pmic_crystal_cove_plus.c
->>
-> 
-> 
+diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+index 9661aca35703..2698241bb886 100644
+--- a/drivers/net/netdevsim/dev.c
++++ b/drivers/net/netdevsim/dev.c
+@@ -1400,14 +1400,10 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
+ 	if (err)
+ 		return err;
+ 
+-	err = nsim_dev_traps_init(devlink);
+-	if (err)
+-		goto err_dummy_region_exit;
+-
+ 	nsim_dev->fib_data = nsim_fib_create(devlink, extack);
+ 	if (IS_ERR(nsim_dev->fib_data)) {
+ 		err = PTR_ERR(nsim_dev->fib_data);
+-		goto err_traps_exit;
++		goto err_dummy_region_exit;
+ 	}
+ 
+ 	err = nsim_dev_health_init(nsim_dev, devlink);
+@@ -1435,8 +1431,6 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
+ 	nsim_dev_health_exit(nsim_dev);
+ err_fib_destroy:
+ 	nsim_fib_destroy(devlink, nsim_dev->fib_data);
+-err_traps_exit:
+-	nsim_dev_traps_exit(devlink);
+ err_dummy_region_exit:
+ 	nsim_dev_dummy_region_exit(nsim_dev);
+ 	return err;
+@@ -1556,7 +1550,6 @@ static void nsim_dev_reload_destroy(struct nsim_dev *nsim_dev)
+ 	nsim_dev_psample_exit(nsim_dev);
+ 	nsim_dev_health_exit(nsim_dev);
+ 	nsim_fib_destroy(devlink, nsim_dev->fib_data);
+-	nsim_dev_traps_exit(devlink);
+ 	nsim_dev_dummy_region_exit(nsim_dev);
+ 	mutex_destroy(&nsim_dev->port_list_lock);
+ }
+@@ -1567,6 +1560,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
+ 	struct devlink *devlink = priv_to_devlink(nsim_dev);
+ 
+ 	devlink_unregister(devlink);
++	nsim_dev_traps_exit(devlink);
+ 	nsim_dev_reload_destroy(nsim_dev);
+ 
+ 	nsim_bpf_dev_exit(nsim_dev);
+-- 
+2.31.1
 
