@@ -2,113 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C94438B9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC06D438BA0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhJXTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 15:30:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231382AbhJXTaJ (ORCPT
+        id S231944AbhJXTcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 15:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231382AbhJXTcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 15:30:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635103668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pMzKKPAhr0lndZvzBEXrG2TXEiOnSLC+lm/RYubs1ww=;
-        b=id/0uPNwhUN0GeMSymDPB2RNmYhR8se1/ySOZ2AnD28iBYImbtAbvIeWm1vEOgncVeRNTZ
-        nHLgZ/LRDYIp2tgIQZVwylLKZDeRyg2xM9QE5ngB+qmBhtN8l7w+xgdeM5EZLrEuwBUNrZ
-        nMfgWjJ2riIV4LoPsXdtLZ2jOhZde4A=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-ruhbRP8ENEWa2qJdw40Lew-1; Sun, 24 Oct 2021 15:27:46 -0400
-X-MC-Unique: ruhbRP8ENEWa2qJdw40Lew-1
-Received: by mail-oi1-f198.google.com with SMTP id w69-20020acac648000000b00298a3aee9a6so5993238oif.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 12:27:46 -0700 (PDT)
+        Sun, 24 Oct 2021 15:32:17 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB2FC061745;
+        Sun, 24 Oct 2021 12:29:56 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i6so12968124lfv.9;
+        Sun, 24 Oct 2021 12:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KuWfVJmwiYFrjBYD5I8hPFxxzsgnJfeoN2PJ/5VwVFo=;
+        b=DV+dcYL3tCQ7pZQBBoGyJIzfKEiIOS4K/M2JDQH0hHHWhOXQmpoLKrkVY0d7carPZH
+         4b5yIMH5NmePlmnJnMpuXGXOHD6Q+Q15j5rFgci0sL7loM/ti27NnufY2rNcGIRNKXIx
+         XBclvZ6LjxuTxSM2vphWK6g6HSzHv6WwFmvU7PdxlQGEtN6georbm/6cNAuQxF3Vnnwc
+         /iasdD1mJ1fjrHhHdGfzmzAffccAEGksHgAt2EfEg/ckwiFtAjEAHCeIK3pedSk4LRBz
+         HRCsdIF6Vif0uRf1Oyo4GANHGlrKDknOgD5xctbM+eW0XFQyQGj8c58GkpyOP881qNVU
+         7+CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pMzKKPAhr0lndZvzBEXrG2TXEiOnSLC+lm/RYubs1ww=;
-        b=YEcjzJppuP6UJFwAlBtwyxSVTuUtPMYA1JgrCkDzeQvbpO3beCQOnj5QPYR/Ag7PDG
-         iWMjHHlWGHmMs6khZOOzrm1dyQg+yFIDAcUfLcLixmBlcS7liwlB+jZ0cG9x2g+ieQ05
-         rsVURHthNruTJmt5DNuFet6oIAIZZkvQMg6Rc574Z42LQVXpmxR08eRIPyq9aPLwBuh1
-         JwHryuBsvxqARO3cDnAW6yKZjCoEAMEj2Yj7C0tAtbh0bbxc41f+y/QsJSwyXZchjpNX
-         zq/86MRIzOvkpIwEzajowL19iBThF9yW6+zR+/gA+LmJEtAVqDAS1YV8zVHfINGTfu08
-         jCeg==
-X-Gm-Message-State: AOAM531EszYp2Yk8yh3z3R3hd1DeBmPXDvgaPOx+9fQarNJ9hf2EtFtm
-        +hOnM8HzDOe5wCYWNdJFSWhfPB1xWWmbGnSAGlxJnD56OE6lRg0BxzkxskZ9Da0qpLof+fV6L26
-        o4/l/VMD5WCSi+UG8+OgQip8D
-X-Received: by 2002:a9d:4696:: with SMTP id z22mr10671664ote.218.1635103666074;
-        Sun, 24 Oct 2021 12:27:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0rUBoTQy+2A6kOvDn+net8tKgY2mfkvAbsUD1jUg1HYrLh64YmzSnRSIxPx1b+SaX4mXUWA==
-X-Received: by 2002:a9d:4696:: with SMTP id z22mr10671649ote.218.1635103665824;
-        Sun, 24 Oct 2021 12:27:45 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id i18sm2594364oot.27.2021.10.24.12.27.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KuWfVJmwiYFrjBYD5I8hPFxxzsgnJfeoN2PJ/5VwVFo=;
+        b=FBlqzJhgA2QtIn3pMwEmC83uiES6RqbxYj1V4cqYx00bpdRnzBggeu1BEXhSus5ghL
+         Wz9eNF11GyBeb+K+FaX0XULduUMXG01qPd+29qOwLpNyAdFtD7NpqxzcgGQB56oQ9X23
+         rGvpgoFhEEtxIu1TZByOW/eq1xWrAS9q2T2dmzZP9coCnI7cOOTzXhSXZdyoYvy7yWsR
+         FxAxQZ/tKsK4oU5e9X/tR/RbAdodRDaltav58cmoyme7avTl+WS4ecpw7Ek/C9M17cPp
+         dFzAGGyqTDahsGGDlUjOmNJeBpphDpae0MTk0VOp5tTBV6X8w3fF3jVvkTBQh9eZuOTn
+         UjNw==
+X-Gm-Message-State: AOAM531u4K2vsdfYGALUjU7VENwkSKlSlbc1KXZEAUPH8Bb2sS0Xroy1
+        Mdg7j81wiOQzpPLjInpi9h8=
+X-Google-Smtp-Source: ABdhPJywrkYKDO2m53ZlDClFzmqKQW/4vr28mkI+ML3NJZ3QDwXCAqQ2Z9CEZuZSTgVzihSr7GrzyQ==
+X-Received: by 2002:ac2:561c:: with SMTP id v28mr2325912lfd.604.1635103794358;
+        Sun, 24 Oct 2021 12:29:54 -0700 (PDT)
+Received: from localhost.localdomain (46-138-50-159.dynamic.spd-mgts.ru. [46.138.50.159])
+        by smtp.gmail.com with ESMTPSA id t20sm1616902lft.240.2021.10.24.12.29.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 12:27:45 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 12:27:42 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Rob Landley <rob@landley.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
-Message-ID: <20211024192742.uo62mbqb6hmhafjs@treble>
-References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
- <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
+        Sun, 24 Oct 2021 12:29:53 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] ASoC: tegra: Restore AC97 support
+Date:   Sun, 24 Oct 2021 22:28:52 +0300
+Message-Id: <20211024192853.21957-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 03:13:40AM +0900, Masahiro Yamada wrote:
-> On Sun, Oct 24, 2021 at 3:36 PM Rob Landley <rob@landley.net> wrote:
-> >
-> > The attached config built fine before the above commit, doesn't build after. The
-> > commit in question did nothing except remove support for building x86-64 without
-> > libelf.
-> 
-> You enable CONFIG_STACK_VALIDATION in your .config file.
-> At least, you observed
-> "warning: Cannot use CONFIG_STACK_VALIDATION=y, please install
-> libelf-dev, libelf-devel or elfutils-libelf-devel"
-> in the previous builds.
+The device-tree of AC97 codecs need to be parsed differently from I2S
+codecs, plus codec device may need to be created. This was missed by the
+patch that unified machine drivers into a single driver, fix it. It should
+restore audio on Toradex Colibri board.
 
-Unfortunately I think CONFIG_STACK_VALIDATION is no longer optional on
-x86-64 these days, because of static calls and retpolines.  But it
-should be possible to extricate them if that's a problem.
+Cc: <stable@vger.kernel.org>
+Fixes: cc8f70f56039 ("ASoC: tegra: Unify ASoC machine drivers")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/soc/tegra/tegra_asoc_machine.c | 59 +++++++++++++++++++++++-----
+ sound/soc/tegra/tegra_asoc_machine.h |  1 +
+ 2 files changed, 50 insertions(+), 10 deletions(-)
 
-> > It took me a while to notice because the commit ONLY broke x86-64. I can still
-> > build arm (32 and 64 bit), i686, m68k, mips/mipsel, powerpc, s390x, and sh4
-> > without libelf in my cross compiler. Heck, I can still build i686. The change
-> > seems to have added a unique build dependency to just x86-64.
-> 
-> The other architectures are not affected because you cannot enable
-> CONFIG_STACK_VALIDATION.
-> 
-> Please note only x86_64 selects HAVE_STACK_VALIDATION.
-> 
-> 
-> > Rob
-> >
-> > P.S. Why do you need a special library to parse elf anyway? It's a fairly simple
-> > file format, linux has include/linux.elf.h, the toolchain already has an objtool
-> > prefixed for the appropriate cross compiler...
-
-We didn't see the need to reinvent the wheel, and some of the ELF corner
-cases are tricky.
-
-Objtool heavily relies on libelf for both reading and writing.  The
-kernel needs objtool to be robust.  Libelf has been solid.
-
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 3cbe6ef1cf9f..d92fabff08bc 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -341,9 +341,34 @@ tegra_machine_parse_phandle(struct device *dev, const char *name)
+ 	return np;
+ }
+ 
++static void tegra_machine_unregister_codec(void *pdev)
++{
++	platform_device_unregister(pdev);
++}
++
++static int tegra_machine_register_codec(struct device *dev, const char *name)
++{
++	struct platform_device *pdev;
++	int err;
++
++	if (!name)
++		return 0;
++
++	pdev = platform_device_register_simple(name, -1, NULL, 0);
++	if (IS_ERR(pdev))
++		return PTR_ERR(pdev);
++
++	err = devm_add_action_or_reset(dev, tegra_machine_unregister_codec,
++				       pdev);
++	if (err)
++		return err;
++
++	return 0;
++}
++
+ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ {
+-	struct device_node *np_codec, *np_i2s;
++	struct device_node *np_codec, *np_i2s, *np_ac97;
+ 	const struct tegra_asoc_data *asoc;
+ 	struct device *dev = &pdev->dev;
+ 	struct tegra_machine *machine;
+@@ -404,17 +429,30 @@ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ 			return err;
+ 	}
+ 
+-	np_codec = tegra_machine_parse_phandle(dev, "nvidia,audio-codec");
+-	if (IS_ERR(np_codec))
+-		return PTR_ERR(np_codec);
++	if (asoc->set_ac97) {
++		err = tegra_machine_register_codec(dev, asoc->codec_dev_name);
++		if (err)
++			return err;
++
++		np_ac97 = tegra_machine_parse_phandle(dev, "nvidia,ac97-controller");
++		if (IS_ERR(np_ac97))
++			return PTR_ERR(np_ac97);
+ 
+-	np_i2s = tegra_machine_parse_phandle(dev, "nvidia,i2s-controller");
+-	if (IS_ERR(np_i2s))
+-		return PTR_ERR(np_i2s);
++		card->dai_link->cpus->of_node = np_ac97;
++		card->dai_link->platforms->of_node = np_ac97;
++	} else {
++		np_codec = tegra_machine_parse_phandle(dev, "nvidia,audio-codec");
++		if (IS_ERR(np_codec))
++			return PTR_ERR(np_codec);
+ 
+-	card->dai_link->cpus->of_node = np_i2s;
+-	card->dai_link->codecs->of_node = np_codec;
+-	card->dai_link->platforms->of_node = np_i2s;
++		np_i2s = tegra_machine_parse_phandle(dev, "nvidia,i2s-controller");
++		if (IS_ERR(np_i2s))
++			return PTR_ERR(np_i2s);
++
++		card->dai_link->cpus->of_node = np_i2s;
++		card->dai_link->codecs->of_node = np_codec;
++		card->dai_link->platforms->of_node = np_i2s;
++	}
+ 
+ 	if (asoc->add_common_controls) {
+ 		card->controls = tegra_machine_controls;
+@@ -589,6 +627,7 @@ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ static const struct tegra_asoc_data tegra_wm9712_data = {
+ 	.card = &snd_soc_tegra_wm9712,
+ 	.add_common_dapm_widgets = true,
++	.codec_dev_name = "wm9712-codec",
+ 	.set_ac97 = true,
+ };
+ 
+diff --git a/sound/soc/tegra/tegra_asoc_machine.h b/sound/soc/tegra/tegra_asoc_machine.h
+index 8ee0ec814f67..d6a8d1320551 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.h
++++ b/sound/soc/tegra/tegra_asoc_machine.h
+@@ -13,6 +13,7 @@ struct snd_soc_pcm_runtime;
+ 
+ struct tegra_asoc_data {
+ 	unsigned int (*mclk_rate)(unsigned int srate);
++	const char *codec_dev_name;
+ 	struct snd_soc_card *card;
+ 	unsigned int mclk_id;
+ 	bool hp_jack_gpio_active_low;
 -- 
-Josh
+2.33.1
 
