@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE1F4387FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF984438807
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhJXJlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:41:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59698 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhJXJlv (ORCPT
+        id S231285AbhJXJr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 05:47:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:29928 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhJXJr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:41:51 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A53D5212C7;
-        Sun, 24 Oct 2021 09:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635068369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vuTD4zIpXIIolvi1mvcxXKYMjEbUsTLc1K8pY5kmzJY=;
-        b=w1pjHNmigA/zY3vnO+sjADo2HIZYS6YD+nihmmDp82N/vKhFxj6s+eeE/v1IY7QXPnLZML
-        e4x4Ub7O+QDyphsPQmv4vpz/xz83vtwsQLHO/qemfj8Lw7W1Z4mFTxHQcOoGuWh7CHCguE
-        8owR0Ug96eWrBqyv1UEB97Aoa1n9yk4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635068369;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vuTD4zIpXIIolvi1mvcxXKYMjEbUsTLc1K8pY5kmzJY=;
-        b=cxVbIMeOWGxqiCKdIeLcNeSvelTk1PyRr8mnwBfZmcsJY7tGEDjFpwAjm4wNnCtz+VjRoF
-        JUETGo/AStr6FtBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EFB313310;
-        Sun, 24 Oct 2021 09:39:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id T6uMItEpdWHqOwAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 24 Oct 2021 09:39:29 +0000
-Date:   Sun, 24 Oct 2021 11:39:23 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v5.15-rc7
-Message-ID: <YXUpy05ML9v1enXe@zn.tnic>
+        Sun, 24 Oct 2021 05:47:57 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HcY495P3Vzbmyx;
+        Sun, 24 Oct 2021 17:40:57 +0800 (CST)
+Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sun, 24 Oct 2021 17:45:34 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sun, 24 Oct 2021 17:45:33 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
+        <chenhao288@hisilicon.com>
+Subject: [PATCH V2 net-next 0/8] net: hns3: updates for -next
+Date:   Sun, 24 Oct 2021 17:41:07 +0800
+Message-ID: <20211024094115.42158-1-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This series includes some updates for the HNS3 ethernet driver.
 
-please pull a single change adding Dave Hansen to our maintainers team.
+#1 debugfs support for dumping interrupt coalesce.
+#2~#3 improve compatibility of mac statistic and add pause/pfc durations
+      for it.
+#5~#6 add update ethtool advertised link modes for FIBRE port when autoneg
+      off.
+#7~#8 add some error types for ras.
 
-Thx.
 
----
+Guangbin Huang (5):
+  net: hns3: modify mac statistics update process for compatibility
+  net: hns3: device specifications add number of mac statistics
+  net: hns3: add support pause/pfc durations for mac statistics
+  net: hns3: modify functions of converting speed ability to ethtool
+    link mode
+  net: hns3: add update ethtool advertised link modes for FIBRE port
+    when autoneg off
 
-The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
+Huazhong Tan (1):
+  net: hns3: add debugfs support for interrupt coalesce
 
-  Linux 5.15-rc6 (2021-10-17 20:00:13 -1000)
+Jiaran Zhang (1):
+  net: hns3: add error recovery module and type for himac
 
-are available in the Git repository at:
+Weihang Li (1):
+  net: hns3: add new ras error type for roce
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc7
-
-for you to fetch changes up to 0a30896fc5025e71c350449760b240fba5581b42:
-
-  MAINTAINERS: Add Dave Hansen to the x86 maintainer team (2021-10-21 13:55:42 +0200)
-
-----------------------------------------------------------------
-- Add Dave Hansen to the x86 maintainers team
-
-----------------------------------------------------------------
-Thomas Gleixner (1):
-      MAINTAINERS: Add Dave Hansen to the x86 maintainer team
-
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |   2 +
+ .../ethernet/hisilicon/hns3/hns3_debugfs.c    | 121 +++++
+ .../net/ethernet/hisilicon/hns3/hns3_enet.h   |   3 +-
+ .../hisilicon/hns3/hns3pf/hclge_cmd.c         |   1 +
+ .../hisilicon/hns3/hns3pf/hclge_cmd.h         |   1 +
+ .../hisilicon/hns3/hns3pf/hclge_err.c         |  14 +-
+ .../hisilicon/hns3/hns3pf/hclge_err.h         |   4 +
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 507 ++++++++++++------
+ .../hisilicon/hns3/hns3pf/hclge_main.h        |  32 +-
+ 9 files changed, 504 insertions(+), 181 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.33.0
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
