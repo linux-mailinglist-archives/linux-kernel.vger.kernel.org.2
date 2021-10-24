@@ -2,83 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974AA438A24
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CD3438A26
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhJXPnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 11:43:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49384 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbhJXPma (ORCPT
+        id S232371AbhJXPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 11:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232135AbhJXPmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 11:42:30 -0400
-Date:   Sun, 24 Oct 2021 15:40:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635090009;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKvy48OEWIyGRe2I65MWCqJxFfDh/RL3SLKzktls+co=;
-        b=YDiHcVi0r2952t4sCMdDbfhVLKZTE+1Is97DSg0SAHRqq+g6mHBjYnjepAv35+nM+fpfvO
-        aIrpBPtPbhUwb+12n9w1jKPGS3jofLneuAAsvS7qVrgXfuc/3Y4z/NzyDlkFBifHCOXqYa
-        PliQeopDtXUXWEVdlSKY+tjhHOv8ZMOsjb1z3TIhhkzLKNYYhy1JLHBqPZ0aRcKFtKVRCH
-        NycxhiqX0soz41QNiBPZepzZ6C3SN1GNFcQCa6U9gQ4PfvZRNlrif5cG6sBKuReoS2bjNA
-        vjh6hLvEOBGw4Hwx5fg2fz+lkpkaL0w81ZKaIAc0tqnLQcgFzf4TU9D3UZC7rg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635090009;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKvy48OEWIyGRe2I65MWCqJxFfDh/RL3SLKzktls+co=;
-        b=ru4nAkjQaKJvCEQbwPmci6oH0JPKPR2rE0haxXS4dUigUUy1Cj+25mOZZEXqJ1tD9kcWVc
-        ncE651JTSysYjgBg==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] Merge tag 'timers-v5.16-rc1' into timers/core
-Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <65693aaf-ab94-c9bb-a97b-a2bb77033a54@linaro.org>
-References: <65693aaf-ab94-c9bb-a97b-a2bb77033a54@linaro.org>
+        Sun, 24 Oct 2021 11:42:51 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C48C061745;
+        Sun, 24 Oct 2021 08:40:30 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id o20so5672949qvk.7;
+        Sun, 24 Oct 2021 08:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LV+Kgtvh7+La2ITtz0O2xUdXeTpFbYkBF1tkOGmeqvo=;
+        b=W8sl0oty4LeSR/wD4twzLfVyyTY9S3Ml1JSOgTX1o8FBFMPDEzNMEbBGerE9WlXQ/+
+         Vjw6h+ZFPZn8ivalJy7pppYq7YWG5czHuAsuVi76+baVObp20qqawXV6NR6YxZRCGE0r
+         1NIzvWlXWaze7PK+kDq9J3yJfqC4H19jda0oKMKDauhnR2gBJ0txw9brYJg3PMuYpiB5
+         sQ9j7b+mr2FKFCp8wDODpJ8ibvy0acsuanHLDqD7zVKYknWbM06zb5xeBft7o+/Gjj2S
+         6fHMxbyR/dF1CYC9znrHTeE7rBr7ykQyUc32B4bHtn99qzj2bIXXFUW1lDoab8vAbPaB
+         VU7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LV+Kgtvh7+La2ITtz0O2xUdXeTpFbYkBF1tkOGmeqvo=;
+        b=flOrpzRzB6iAbnL9T95hpY/VseAhc19GyxNdrHktkEWZICpSe96cpyj9EVvhmZxAGP
+         XUPvjY+TYw6N1wUTEbrsgda2oZ558g2fwDiCu2AFHM2e14j7XRaWTfnurz9t/o6s902V
+         KZl7UER5zhu/vwA4dnbsZIx86/QsOrP894a+bRSxfnqA/70NpmAwNvcs24DsC5Nt+g0Z
+         jRXivi3vVR0bhtAbWWkzWA1ddWRj7dVOwWLYsQ+8F/yrCWb9hz9WTcyzH0rFNeparLH8
+         y5sbEIqayqisEq/g3hlBTP1gjMsQqtmoL4TO0BoaO/djTgUY7ywIiePfRTomOSLl+05J
+         K+vw==
+X-Gm-Message-State: AOAM5300NwPa5EnGTMVrDVdkQAMhKzoLaLywkNSrPmXMSeM5pWnKmOyS
+        FOZgSvZUnn8TGQDAOlg5cgg=
+X-Google-Smtp-Source: ABdhPJxrfcYCPfz68n11err6efPvJC+z85O2b06D7iuXsggzwGZIZGXiSuLoNWvtuBAH76Yljnt2Ww==
+X-Received: by 2002:a0c:cdd0:: with SMTP id a16mr11304302qvn.40.1635090029708;
+        Sun, 24 Oct 2021 08:40:29 -0700 (PDT)
+Received: from jesse-desktop.jtp-bos.lab (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id x9sm7291731qtw.84.2021.10.24.08.40.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 08:40:29 -0700 (PDT)
+From:   Jesse Taube <mr.bossman075@gmail.com>
+X-Google-Original-From: Jesse Taube <Mr.Bossman075@gmail.com>
+To:     linux-imx@nxp.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, ulf.hansson@linaro.org, aisheng.dong@nxp.com,
+        stefan@agner.ch, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de, olof@lixom.net,
+        soc@kernel.org, linux@armlinux.org.uk, abel.vesa@nxp.com,
+        adrian.hunter@intel.com, jirislaby@kernel.org,
+        giulio.benetti@benettiengineering.com,
+        nobuhiro1.iwamatsu@toshiba.co.jp, leonard.crestez@nxp.com,
+        b20788@freescale.com, Mr.Bossman075@gmail.com, fugang.duan@nxp.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH 00/13] This patchset aims to add initial support for the i.MXRT10xx family
+Date:   Sun, 24 Oct 2021 11:40:14 -0400
+Message-Id: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Message-ID: <163509000813.626.2979020151942704160.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+Add initial support for the i.MXRT10xx SoC family
+starting with the i.IMXRT1050 SoC.
+This patchset contains:
+- i.MXRT10xx family infrastructure
+- i.MXRT1050 pinctrl driver adaption
+- i.MXRT1050 clock driver adaption
+- i.MXRT1050 sd-card driver adaption
+- i.MXRT1050 uart driver adaption
+- i.MXRT1050-evk basic support
 
-Commit-ID:     a8da61cee95e627ed3d4274861428013aa9604ea
-Gitweb:        https://git.kernel.org/tip/a8da61cee95e627ed3d4274861428013aa9604ea
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Sun, 24 Oct 2021 17:14:23 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sun, 24 Oct 2021 17:14:23 +02:00
+Giulio Benetti (6):
+  ARM: imx: add initial support for i.MXRT10xx family
+  dt-bindings: imx: Add pinctrl binding doc for i.MXRT1050
+  pinctrl: freescale: Add i.MXRT1050 pinctrl driver support
+  dt-bindings: imx: Add clock binding for i.MXRT1050
+  ARM: dts: imx: add i.MXRT1050-EVK support
+  ARM: imxrt_defconfig: add i.MXRT family defconfig
 
-Merge tag 'timers-v5.16-rc1' into timers/core
+Jesse Taube (7):
+  dt-bindings: pinctrl: add i.MXRT1050 pinctrl binding doc
+  dt-bindings: clock: imx: Add documentation for i.MXRT clock
+  clk: imx: Add initial support for i.MXRT clock driver
+  dt-bindings: serial: fsl-lpuart: add i.MXRT compatible
+  tty: serial: fsl_lpuart: add i.MXRT support
+  dt-bindings: mmc: fsl-imx-esdhc: add i.MXRT compatible string
+  mmc: sdhci-esdhc-imx: Add sdhc support for i.MXRT series
 
-Pull timers update for v5.16 from Daniel Lezcano:
+ .../bindings/clock/imxrt-clock.yaml           |  57 +
+ .../bindings/mmc/fsl-imx-esdhc.yaml           |   1 +
+ .../bindings/pinctrl/fsl,imxrt1050.yaml       |  85 ++
+ .../bindings/serial/fsl-lpuart.yaml           |   1 +
+ arch/arm/boot/dts/Makefile                    |   2 +
+ arch/arm/boot/dts/imxrt1050-evk.dts           | 164 +++
+ arch/arm/boot/dts/imxrt1050.dtsi              | 179 ++++
+ arch/arm/configs/imxrt_defconfig              | 157 +++
+ arch/arm/mach-imx/Kconfig                     |   9 +
+ arch/arm/mach-imx/Makefile                    |   2 +
+ arch/arm/mach-imx/mach-imxrt.c                |  19 +
+ drivers/clk/imx/Kconfig                       |   3 +
+ drivers/clk/imx/Makefile                      |   1 +
+ drivers/clk/imx/clk-imxrt.c                   | 156 +++
+ drivers/mmc/host/sdhci-esdhc-imx.c            |   7 +
+ drivers/pinctrl/freescale/Kconfig             |   7 +
+ drivers/pinctrl/freescale/Makefile            |   1 +
+ drivers/pinctrl/freescale/pinctrl-imxrt1050.c | 349 ++++++
+ drivers/tty/serial/fsl_lpuart.c               |   8 +
+ include/dt-bindings/clock/imxrt1050-clock.h   |  72 ++
+ include/dt-bindings/pinctrl/pins-imxrt1050.h  | 993 ++++++++++++++++++
+ 21 files changed, 2273 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/imxrt-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imxrt1050.yaml
+ create mode 100644 arch/arm/boot/dts/imxrt1050-evk.dts
+ create mode 100644 arch/arm/boot/dts/imxrt1050.dtsi
+ create mode 100644 arch/arm/configs/imxrt_defconfig
+ create mode 100644 arch/arm/mach-imx/mach-imxrt.c
+ create mode 100644 drivers/clk/imx/clk-imxrt.c
+ create mode 100644 drivers/pinctrl/freescale/pinctrl-imxrt1050.c
+ create mode 100644 include/dt-bindings/clock/imxrt1050-clock.h
+ create mode 100644 include/dt-bindings/pinctrl/pins-imxrt1050.h
 
-- Fix redefined macro in the arc timer ()
+-- 
+2.33.0
 
-- Big cleanup for ARM arch timer clocksource in order to set the scene
-  for ARMv8.6 and provide support for higher frequencies with longer
-  roll up (Marc Zyngier)
-
-- Make arch dependant the Exynos MCT and Samsung PWM timers (Krzysztof
-  Kozlowski)
-
-- Select the TIMER_OF option for the timer TI DM (Kees Cook)
-
-Link: https://lore.kernel.org/r/65693aaf-ab94-c9bb-a97b-a2bb77033a54@linaro.org
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
