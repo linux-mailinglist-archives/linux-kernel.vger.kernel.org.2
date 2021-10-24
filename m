@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A4B43864A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 04:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF47438652
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 04:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhJXBzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 21:55:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhJXBzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 21:55:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A1860FC4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 01:53:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635040412;
-        bh=dgtGbUaKyJhkeN8FVxfsoKQ31HtE58GU7i+rzNa2uwA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YV7/MLnQmjz0thsDbFFObufT2E2VpjBqjq7wPMpBcQjA1HrRjfyJdXL2kMPkmzMt2
-         YQbzRtjQd3TMZpCZwhyDNQjmK1nNgA3XxZyv8lEIgSeSucEh7i5SbPscoj1x7eemAt
-         RFf51MhiFv3ImLRkRGVdyfjRMA76q+DnlInDUdUaHwrZuqOnBh6sqr7F4VkuEW1NFC
-         ALKM6byos2V1IBn/zA+A9PGptqJddiuFBWranOWCpFP3xI2oQPeLBX48gNZRYj6HIW
-         FUwQfXT+2+puAOnnBLJlczxu3PAqp+eqv6OE3DzV6JSFGXVw7eiY0ZSNYzSift7l5c
-         DgOG5Xv+vKvpA==
-Received: by mail-ua1-f51.google.com with SMTP id o26so1220866uab.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 18:53:32 -0700 (PDT)
-X-Gm-Message-State: AOAM530g7zAnwI20PHZzM1i3RnWe5il9My3YXuP+c0mlhXL5+d7TBLYM
-        L4g6Cl7MVJfovwxWWiOsc1d3c99h9KgARUWfJSo=
-X-Google-Smtp-Source: ABdhPJw/2IoaPbYltWLtIlaqsveHkS2v+bQld2gBSCJjaSQmhga/a4IadupdkKlOSWhgf4sOZyQw14i59iBzB9aUpFc=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr9245548vsk.11.1635040411387;
- Sat, 23 Oct 2021 18:53:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211021180236.37428-1-mark.rutland@arm.com> <20211021180236.37428-6-mark.rutland@arm.com>
- <CAJF2gTShTh5be3SxaVwAzbXTb=LZi-qfweXBvyLeg9TyKgfLNg@mail.gmail.com> <YXJ7YzZoJ1ZkLl4X@FVFF77S0Q05N>
-In-Reply-To: <YXJ7YzZoJ1ZkLl4X@FVFF77S0Q05N>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 24 Oct 2021 09:53:20 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTn+vg-zT2HRMGxBU0iOhr-mVHNZb4e9saD-Tw7Mt3LYQ@mail.gmail.com>
-Message-ID: <CAJF2gTTn+vg-zT2HRMGxBU0iOhr-mVHNZb4e9saD-Tw7Mt3LYQ@mail.gmail.com>
-Subject: Re: [PATCH 05/15] irq: add generic_handle_arch_irq()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>, kernelfans@gmail.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul McKenney <paulmck@kernel.org>,
+        id S231469AbhJXCPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 22:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhJXCPk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Oct 2021 22:15:40 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB1CC061764
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 19:13:19 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so8629199pji.5
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 19:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=X589BqCXKNPB70WA3h+uA/HSHzhkvFxOpxaltJvaxRY=;
+        b=Tfz6w1A1rjrKQIkjtu8DsXYMMo0Oqf0kOZaUqRkWXYwuc9+1a1qMu6SK20IrLami16
+         OzngtF+jBde/EBdUDCB5dKkmPPWaHnHfiM3vyyIec67H6o8zer5b+WmUQRmb4zcV53Cv
+         J9FhPLtakNuaj93NRmHsrZWbXssF8dbpAZ7uv0TPzR4aIfb0sbuupF5h/14iLIe5Kxj+
+         XdDNWqhJIVySr/eQOtSoOsoa3XsMv4lOBBFvOG4jt8Afkugq/WDDpFD0CxSNzPBXObmR
+         A9vSjXbpHEaQfUH11ISKl+H1FhgFvGWkisPBj3ZENOvNCxcTV/UI3MQvLPp6cmORIHAK
+         eDEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=X589BqCXKNPB70WA3h+uA/HSHzhkvFxOpxaltJvaxRY=;
+        b=pz2HzWGOtO5FkQScp51MT9fEJVrEqatgBn4K/0CHF+wspq+WtQJeTAoowBBpXG9wQo
+         pYbd9rNpWbfvrV5llv4QaYY0Pi4j0be0qPBfVwFxj7JqBUk+qSIEI9vyBdmahzUUUFaC
+         V2SWLDF2AOxJIsFcv4zyASO2UwxG+MZXcnbM14VrgUSRySEUzbspLORLjS0XUo8TmBFi
+         H+dxrfNhDpoqMWNbDqvuClFZvxjTAqRZFPzf9CZxYQ756hvo2Pt266Q4lhZhTTDUB4JK
+         Ep0+gExamez1iufUpSUbery7f82TTMSXLcnIIYsCaclS4f66XnQBZ6043qmpC3CKimXs
+         x2jw==
+X-Gm-Message-State: AOAM531YWuTAGYkqbwGhF8g2/oT5yFFLPOSp6Yd+snl6GSDiUVAjrX75
+        D/gGzNkGnXPwgP0ysS3RKkslEg==
+X-Google-Smtp-Source: ABdhPJxSiAzgCMdtIEVJ2ib+eiQzTskYXJ2BOHAFqSwrhR3ytjn4szslRIByBN/rM84ZNVoUR1Pe+g==
+X-Received: by 2002:a17:90a:514f:: with SMTP id k15mr1999887pjm.71.1635041598362;
+        Sat, 23 Oct 2021 19:13:18 -0700 (PDT)
+Received: from integral.. ([182.2.37.49])
+        by smtp.gmail.com with ESMTPSA id d15sm16293137pfu.12.2021.10.23.19.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Oct 2021 19:13:17 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        vgupta@kernel.org, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, x86-ml <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Peter Cordes <peter@cordes.ca>,
+        Bedirhan KURT <windowz414@gnuweeb.org>,
+        Louvian Lyndal <louvianlyndal@gmail.com>
+Subject: Re: [PATCHSET v2 0/2] tools/nolibc: Fix startup code bug and small improvement
+Date:   Sun, 24 Oct 2021 09:11:30 +0700
+Message-Id: <20211024020616.395038-1-ammarfaizi2@intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211023134323.GA5881@1wt.eu>
+References: <20211023134323.GA5881@1wt.eu>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 4:52 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Fri, Oct 22, 2021 at 10:33:53AM +0800, Guo Ren wrote:
-> > On Fri, Oct 22, 2021 at 2:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > >
-> > > Several architectures select GENERIC_IRQ_MULTI_HANDLER and branch to
-> > > handle_arch_irq() without performing any entry accounting.
-> > >
-> > > Add a generic wrapper to handle the commoon irqentry work when invoking
->
-> Ah, I'd typo'd 'common' there; I'll go fix that...
->
-> > > handle_arch_irq(). Where an architecture needs to perform some entry
-> > > accounting itself, it will need to invoke handle_arch_irq() itself.
-> > >
-> > > In subsequent patches it will become the responsibilty of the entry code
-> > > to set the irq regs when entering an IRQ (rather than deferring this to
-> > > an irqchip handler), so generic_handle_arch_irq() is made to set the irq
-> > > regs now. This can be redundant in some cases, but is never harmful as
-> > > saving/restoring the old regs nests safely.
-> > Shall we remove old_regs save/restore in handle_domain_irq? It's duplicated.
->
-> We do, in patch 15 when handle_domain_irq() is removed entirely. :)
-I miss that patch. Yes, in generic_handle_domain_nmi.
+Hi Willy,
+This is a patchset v2, there are 2 patches in this series.
 
->
-> Removing it immediately in this patch would require more ifdeffery and/or
-> another copy of handle_domain_irq(), and since the duplication doesn't cause a
-> functional problem, I think it's better to live with the temporary duplication
-> for the next few patches than to try to optimize the intermediate steps at the
-> cost of legibility.
-Thx for explaining.
+[PATCH 1/2] is a bug fix. Thanks to Peter who reported the bug, fixed
+in [PATCH 1/2] by me.
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+[PATCH 2/2] is just a small improvement to minimize code size, no
+functional changes.
 
->
-> Thanks,
-> Mark.
->
-> > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > > Cc: Marc Zyngier <maz@kernel.org>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > ---
-> > >  kernel/irq/handle.c | 18 ++++++++++++++++++
-> > >  1 file changed, 18 insertions(+)
-> > >
-> > > diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
-> > > index 221d80c31e94..27182003b879 100644
-> > > --- a/kernel/irq/handle.c
-> > > +++ b/kernel/irq/handle.c
-> > > @@ -14,6 +14,8 @@
-> > >  #include <linux/interrupt.h>
-> > >  #include <linux/kernel_stat.h>
-> > >
-> > > +#include <asm/irq_regs.h>
-> > > +
-> > >  #include <trace/events/irq.h>
-> > >
-> > >  #include "internals.h"
-> > > @@ -226,4 +228,20 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
-> > >         handle_arch_irq = handle_irq;
-> > >         return 0;
-> > >  }
-> > > +
-> > > +/**
-> > > + * generic_handle_arch_irq - root irq handler for architectures which do no
-> > > + *                           entry accounting themselves
-> > > + * @regs:      Register file coming from the low-level handling code
-> > > + */
-> > > +asmlinkage void noinstr generic_handle_arch_irq(struct pt_regs *regs)
-> > > +{
-> > > +       struct pt_regs *old_regs;
-> > > +
-> > > +       irq_enter();
-> > > +       old_regs = set_irq_regs(regs);
-> > > +       handle_arch_irq(regs);
-> > > +       set_irq_regs(old_regs);
-> > > +       irq_exit();
-> > > +}
-> > >  #endif
-> > > --
-> > > 2.11.0
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
-> >
-> > ML: https://lore.kernel.org/linux-csky/
+Detailed explanation in the commit message.
+Please review!
 
+Link v1: https://lore.kernel.org/lkml/dRLArKzRMqajy1jA86k0vg-ammarfaizi2@gnuweeb.org/
+----------------------------------------------------------------
+Ammar Faizi (2):
+      tools/nolibc: x86-64: Fix startup code bug
+      tools/nolibc: x86-64: Use `mov $60,%eax` instead of `mov $60,%rax`
 
+ tools/include/nolibc/nolibc.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
+Thanks!
 -- 
-Best Regards
- Guo Ren
+Ammar Faizi
 
-ML: https://lore.kernel.org/linux-csky/
+
