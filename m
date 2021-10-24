@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43967438C41
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A7B438C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhJXWKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S229835AbhJXWUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJXWKt (ORCPT
+        with ESMTP id S229706AbhJXWUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:10:49 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FBBC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:08:27 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id l5so9863968lja.13
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:08:27 -0700 (PDT)
+        Sun, 24 Oct 2021 18:20:18 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5243AC061767
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:17:57 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 65so4289923ljf.9
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 15:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8kIvvEhKum1ywgv+3tY8SIChEwJdC5TWn28Ac2GrFuk=;
-        b=pNpAUHWwRO6+G6C0zrKOSUrJJJGo51qvYJ4g6w73CDOpvDbxbn8NjdrCSk7QkXDNei
-         Fzua9e/+HoESqEDzQKrOaPFOZOe2OfUs7QgYAbKleqxvTm2vhSvReTCue3MXiwtwXwIB
-         F5Rvj2ZgPVW/OlQuqt7B0cLIWu9OoLgybVLjDN6ldiAl1xlVWlcWSRlkoqxBPiqjkH8D
-         B3Mq8dHMMd0KdI60DFFt4JSYitiZn75KySwbL/55y73Db9CMZemcgXsK167imyWi7jk6
-         UPCYdXklrQ1tG6ItQIMeLh/zed9k5jHFfv+X1iiaBU6GeVnG3Dop1lHWzUkY4j5WE0cW
-         wB6A==
+        bh=JJaQllcwUzGd4qxnMR+A86sauTQSNS36fTnnI/uULQM=;
+        b=GQ+zacEvuIRSW8rKG/z7bNab0DMU6w/J4LIs6RCDHju9nVo1ufu9qJ9aDN0QJNxejY
+         0FL926egcpBAegVGFn999GDpXrzXuR0g4jSjEjkqinSx9UutX/P7KOiiUeMk2It6MaEo
+         rRHzucaXtlYVjA3ligXrHAhCQn+VAnngnZworLl41Rcs1XgMfoUs0XE9+ywYpBqjif0Y
+         145L74F8X6SKmrGpzzZ0a0SX87Stx23qWWYI1iu7U2e4F91knBiglw4EpyuTZiSSocg3
+         7WqpX796Rj1dGzcnbqfcuMw01bWvOI4Fx9g4xGw+3ubQMZKk1c22FSXIVbj+xJg2o29T
+         UZpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8kIvvEhKum1ywgv+3tY8SIChEwJdC5TWn28Ac2GrFuk=;
-        b=G6O5ZDbmotwFHUbYTMd9W30u9/+xQjDhp9z3mI3tSfvE2slGgcwi3iz0FoOQh07pEr
-         +m8ShdY9/lqFhztlyirzETRdpxw/FyDtCOmTQJ71k8/rao2XRhGCWuZqps9rC6uhlWJg
-         fUq2kmSQJFASV5Zvf+GX0hN5+TEFviTnzVGaVz3AHeiN8jILsaFz9krzype4fI28KhnK
-         /KqC8INOPKkrFuUfl4n5mHmgZeJ0FuB7uTFdSBDtx8D5Ipg1Yn5yR1mBzF84t56gzXEp
-         aiNUhYaLyjCtItd5+RwOFd2Xcf/Dc5nnpJo/BoaSMpU2HoBbkYv4coUQ9BrlYoWIQIOM
-         3jeA==
-X-Gm-Message-State: AOAM531byfeTuhJmWJQjGBwuBEVdpbii+E8kp0k1Fw8PmSptAV/bREyD
-        m7ulf4KnWIffRU7+0lSekTU4+WhD9KJ3UUTGhLCEfRnWw//Chw==
-X-Google-Smtp-Source: ABdhPJyfkCusDTMQwPI0B6mAHJxEV7u5zpWtXUN4E9KRw0d7rZdlpy2GooLTeUqHzrtswf841yqhK/E33Qe9Gq8V0n0=
-X-Received: by 2002:a05:651c:a05:: with SMTP id k5mr14932298ljq.288.1635113306156;
- Sun, 24 Oct 2021 15:08:26 -0700 (PDT)
+        bh=JJaQllcwUzGd4qxnMR+A86sauTQSNS36fTnnI/uULQM=;
+        b=W37Uq3HJTx5fxksgDLWHy08ayvvq8272WZFLc6D81NRT2kgOFNtHW/mfeyETzmg5RF
+         cye1OXa9Of1xHCE0o36Fpo37RtBCR/3+LJ97nN/CpuBwP+6ONmeVNbRdkRYy41jP9aB6
+         pcWtqRhJRJ60jgrkrATd/nJJ2pvARoRIcoIsfXvqY8LqwQnKJmSXEoZj46So2602LJ3m
+         A1F7n3SDvIppIhVadlTr9n7aI4+RlSuvOXFOGQkOscO7lJzeWYrSaVYTKjwzeOsjm3MS
+         ZuHZW91SZUBmuOmgB6b01xmhjZdfR1ZgAHU+hcUG9AHdDiGxO769cDjKydQDtfk7hQ67
+         TwKg==
+X-Gm-Message-State: AOAM531q6YIkzk3yt248P/bo69TujsPeha2yr0EB3M3ZGWXSy7MK6966
+        NMOXkLSRfcEFV/muV5WkamBHfXjVr94gd04kASbq2A==
+X-Google-Smtp-Source: ABdhPJzoqTpYQ5TpW5Izs9igH8k5pOJrErUUiisSDzyj8MrLgy4z8bzWFA9jSxPgHlJRRbjcka6RCXHo8VBMTWnTrq4=
+X-Received: by 2002:a2e:b748:: with SMTP id k8mr15148284ljo.358.1635113875297;
+ Sun, 24 Oct 2021 15:17:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1634630485.git.mchehab+huawei@kernel.org> <ec54d0aa65a3b98ae425721663f196b499a59513.1634630485.git.mchehab+huawei@kernel.org>
-In-Reply-To: <ec54d0aa65a3b98ae425721663f196b499a59513.1634630485.git.mchehab+huawei@kernel.org>
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20211019200831.3817-1-maukka@ext.kapsi.fi> <20211019200831.3817-3-maukka@ext.kapsi.fi>
+In-Reply-To: <20211019200831.3817-3-maukka@ext.kapsi.fi>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Oct 2021 00:08:15 +0200
-Message-ID: <CACRpkdZMSsCmJhsNsP_aTvT7xanOQQkDRk6gK9PAEAnTgTU3qw@mail.gmail.com>
-Subject: Re: [PATCH v3 04/23] MAINTAINERS: update arm,vic.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 25 Oct 2021 00:17:44 +0200
+Message-ID: <CACRpkdYvhM53GVLpDp6mHmy+U0kTz2t-yDz5afeXeWTgp=bsXw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] gpio: gpio-cascade: add generic GPIO cascade
+To:     Mauri Sandberg <maukka@ext.kapsi.fi>
+Cc:     Mauri Sandberg <sandberg@mailfence.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:04 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Tue, Oct 19, 2021 at 10:10 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
 
-> Changeset b7705ba6d0c4 ("dt-bindings: interrupt-controller: Convert ARM VIC to json-schema")
-> renamed: Documentation/devicetree/bindings/interrupt-controller/arm,vic.txt
-> to: Documentation/devicetree/bindings/interrupt-controller/arm,vic.yaml.
+> Adds support for building cascades of GPIO lines. That is, it allows
+> setups when there is one upstream line and multiple cascaded lines, out
+> of which one can be chosen at a time. The status of the upstream line
+> can be conveyed to the selected cascaded line or, vice versa, the status
+> of the cascaded line can be conveyed to the upstream line.
 >
-> Update its cross-reference accordingly.
+> A multiplexer is being used to select, which cascaded GPIO line is being
+> used at any given time.
 >
-> Fixes: b7705ba6d0c4 ("dt-bindings: interrupt-controller: Convert ARM VIC to json-schema")
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> At the moment only input direction is supported. In future it should be
+> possible to add support for output direction, too.
+>
+> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
+> ---
+> v6 -> v7:
 
-I suppose Marc Z could merge this into the irqchips tree?
+This v7 looks like clean and nice merge material to me,
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
