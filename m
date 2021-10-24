@@ -2,255 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB7E438A6E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691CE438A73
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhJXPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 11:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJXPoK (ORCPT
+        id S231177AbhJXPv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 11:51:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49096 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229755AbhJXPv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 11:44:10 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70E6C0432CC;
-        Sun, 24 Oct 2021 08:41:02 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id d10so1269282qvl.13;
-        Sun, 24 Oct 2021 08:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YheDEmlPH+D5Q0VJO3zBAo6GIkCPsU4mrGDZL+63++E=;
-        b=kTlE+Wd2GxRGpG7UsR8CHxgw8NRtDJp5ySY5R2Oe2XYp52ukbTvzZar8DsUxWTPtxb
-         lYIewVPSuN/8wa8KNTb3IKMwCznm4VWxUC+h6TBxh2d3ZsNaV4lkfKTjXQoyXBF2Igd+
-         q2A5/23dxdvKo5O8zVZq9BwaWjE7d6G6c70vaoDlKsl6uEbdpmhAI+FdXnuQrO9MnRgm
-         99t+Y9UA1G01CUpAcC5tBvHhAy9HBEmZdRqYufHkCXsZneRWMBmwHOgADXjXJh3Cj1CD
-         BaBdxECygYz/vUziahpyTc/vQ5LfTSC7S6Mk73O5ZdjdGdECfQcQGbDFOVPggNRaM4l6
-         z14A==
+        Sun, 24 Oct 2021 11:51:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635090547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iIwcOgxDydqUDrVTMb3PzkTwW1PIvsFo+sr+SoGyWp4=;
+        b=Lezx+wcDzENcBlLvsQ0Zckk1dkY2EAnT/lH85Jq2/g0Z06FnwOv0I5SKYGi34FGYqPGMhG
+        A2UNpzUG4v7ps6WZiRKlcmEcn3veiSf2XXGtbxGPDfiFSr/5hMwk3TnNUuSX+a1YSHcWjR
+        99B9aRdoCb4FeYaHhV/1QGXc9wjSY+w=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-X6ydXRaBOFeUg6VGLhlrCw-1; Sun, 24 Oct 2021 11:49:06 -0400
+X-MC-Unique: X6ydXRaBOFeUg6VGLhlrCw-1
+Received: by mail-ed1-f69.google.com with SMTP id y3-20020a056402358300b003dd490c775cso1551396edc.22
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 08:49:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YheDEmlPH+D5Q0VJO3zBAo6GIkCPsU4mrGDZL+63++E=;
-        b=IewROBPL9ViV0umybkMp/mLsdPqCiy0MdsAZ1LFEZ8aBv+npYPeQZ2cliYljEPBwRk
-         ICywRz4klEnR9k7xaomySjGVJXU73V6vefkIvROT4OJnR1eWggqE8x3oT+W95eS9BIGq
-         HLymSor/9bD0NiFhEh7tyMQ+OQD4/AMSCG1Sl8TczCaA3kosIs1uLyDS/9dcg+oGa6hl
-         D0cwUKS71fADD82BUew1Ruji3Az5I2V5OGhp48l0XI2Q0mBjy6vLUgDCqZfTKnzN0PLY
-         gXNLe3N56XrXYfHHIcWU3anzUDasCthEcRekxGIO8dR3WzH5xqiPLJ52r0cxX/ckNOYg
-         PIsA==
-X-Gm-Message-State: AOAM5329Gzdo3JarpMEWQzXd1xZuau4phMYAgxb7q6im8ecgZLdTKvM0
-        p+WirMxaHslpMz2HHm4iNEU=
-X-Google-Smtp-Source: ABdhPJzCOJmNTYJHsHMc3AeIO6KwGSOv1lFICvlapqP877MBe01dvFoT1s6Ct0DDaskqWyV/qM0F/g==
-X-Received: by 2002:a0c:eb11:: with SMTP id j17mr11048839qvp.51.1635090062036;
-        Sun, 24 Oct 2021 08:41:02 -0700 (PDT)
-Received: from jesse-desktop.jtp-bos.lab (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
-        by smtp.gmail.com with ESMTPSA id x9sm7291731qtw.84.2021.10.24.08.41.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iIwcOgxDydqUDrVTMb3PzkTwW1PIvsFo+sr+SoGyWp4=;
+        b=LyKIVn38HwwxdDZiG8Z5mAo/7HIQ+KGlRmp+pBLoMNW0BD9Twn/8YufVJfQ+2wLsmw
+         mY8oEhs3dxw1FSUhjefBgNEQxRKLbouhuDbjS5P5mixS7eEx8TI1iC+pB2fdmRtnx3Zn
+         3dc6LrHRJ7LHo9Vi4Tfu2L0ip3CH419XKDP/zPkfxlTeh33hifMkuPFaREz+9Ckv/Ao9
+         GC7MVBgqcxMfaHIVorp25tsfgIcwISbV+os4kcY8h3ihBXLFQhDnkR1EDKmsC2vsjLEY
+         FwCYpkKnYJlyiADa/mGDzkqRjTyzTKn9byEd3el0gbXcCNkkENSpMh3XGlmEcCOPJ8fE
+         4q9A==
+X-Gm-Message-State: AOAM533S1DlEZpyvKSExet5xj12QlriI7wcSF4TGPH9bhkccyVxWXYMG
+        2KY7kykhhxU2q5OWU04Mjv5v+PFuLtJC2ch/PyiEO8oP2+LLb8hWPqmE+rDhbtqPjGC8m4bmmhq
+        M5YZ5D9Mw7p1sdmWntafTC6su
+X-Received: by 2002:a05:6402:27cd:: with SMTP id c13mr18732579ede.377.1635090545011;
+        Sun, 24 Oct 2021 08:49:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwceJaD3mgfUfOcL3JmT6ez6YIJACUuR4rgEbsYq8YD1WUQPLwHGdhd5PCLO6vxePnaWXJKGQ==
+X-Received: by 2002:a05:6402:27cd:: with SMTP id c13mr18732560ede.377.1635090544850;
+        Sun, 24 Oct 2021 08:49:04 -0700 (PDT)
+Received: from redhat.com ([2.55.151.113])
+        by smtp.gmail.com with ESMTPSA id j1sm7558360edk.53.2021.10.24.08.49.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 08:41:01 -0700 (PDT)
-From:   Jesse Taube <mr.bossman075@gmail.com>
-X-Google-Original-From: Jesse Taube <Mr.Bossman075@gmail.com>
-To:     linux-imx@nxp.com
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, ulf.hansson@linaro.org, aisheng.dong@nxp.com,
-        stefan@agner.ch, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, olof@lixom.net,
-        soc@kernel.org, linux@armlinux.org.uk, abel.vesa@nxp.com,
-        adrian.hunter@intel.com, jirislaby@kernel.org,
-        giulio.benetti@benettiengineering.com,
-        nobuhiro1.iwamatsu@toshiba.co.jp, leonard.crestez@nxp.com,
-        b20788@freescale.com, Mr.Bossman075@gmail.com, fugang.duan@nxp.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: [PATCH 13/13] ARM: imxrt_defconfig: add i.MXRT family defconfig
-Date:   Sun, 24 Oct 2021 11:40:27 -0400
-Message-Id: <20211024154027.1479261-14-Mr.Bossman075@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
-References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
+        Sun, 24 Oct 2021 08:49:04 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 11:49:00 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH] virtio_blk: allow 0 as num_request_queues
+Message-ID: <20211024114746-mutt-send-email-mst@kernel.org>
+References: <20211024135412.1516393-1-mst@redhat.com>
+ <855eb993-074b-24b9-a184-d479bd0b342b@nvidia.com>
+ <20211024105841-mutt-send-email-mst@kernel.org>
+ <a2060fc7-cc4d-c4d4-e7fe-e4a1e544104f@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2060fc7-cc4d-c4d4-e7fe-e4a1e544104f@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+On Sun, Oct 24, 2021 at 06:29:59PM +0300, Max Gurtovoy wrote:
+> 
+> On 10/24/2021 6:11 PM, Michael S. Tsirkin wrote:
+> > On Sun, Oct 24, 2021 at 05:19:33PM +0300, Max Gurtovoy wrote:
+> > > On 10/24/2021 4:54 PM, Michael S. Tsirkin wrote:
+> > > > The default value is 0 meaning "no limit". However if 0
+> > > > is specified on the command line it is instead silently
+> > > > converted to 1. Further, the value is already validated
+> > > > at point of use, there's no point in duplicating code
+> > > > validating the value when it is set.
+> > > > 
+> > > > Simplify the code while making the behaviour more consistent
+> > > > by using plain module_param.
+> > > > 
+> > > > Fixes: 1a662cf6cb9a ("virtio-blk: add num_request_queues module parameter")
+> > > > Cc: Max Gurtovoy <mgurtovoy@nvidia.com>
+> > > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > > > ---
+> > > >    drivers/block/virtio_blk.c | 14 +-------------
+> > > >    1 file changed, 1 insertion(+), 13 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> > > > index 6318134aab76..c336d9bb9105 100644
+> > > > --- a/drivers/block/virtio_blk.c
+> > > > +++ b/drivers/block/virtio_blk.c
+> > > > @@ -30,20 +30,8 @@
+> > > >    #define VIRTIO_BLK_INLINE_SG_CNT	2
+> > > >    #endif
+> > > > -static int virtblk_queue_count_set(const char *val,
+> > > > -		const struct kernel_param *kp)
+> > > > -{
+> > > > -	return param_set_uint_minmax(val, kp, 1, nr_cpu_ids);
+> > > > -}
+> > > > -
+> > > > -static const struct kernel_param_ops queue_count_ops = {
+> > > > -	.set = virtblk_queue_count_set,
+> > > > -	.get = param_get_uint,
+> > > > -};
+> > > > -
+> > > >    static unsigned int num_request_queues;
+> > > > -module_param_cb(num_request_queues, &queue_count_ops, &num_request_queues,
+> > > > -		0644);
+> > > > +module_param(num_request_queues, uint, 0644);
+> > > Not the best solution.
+> > > 
+> > > You can set the param to 1024 but in practice nr_cpu_ids can be 32 for
+> > > example.
+> > Well your patch does make it possible to know what nr_cpu_ids is.
+> > But does it matter? The actual number of queues is still capped
+> > by the num_queues of the device. And I'm concerned that some
+> > userspace comes to depend on reading back nr_cpu_ids
+> > from there, which will cement this as part of ABI instead of
+> > being an implementation detail.
+> > Exposing the actual number of queues in sysfs might make more sense ...
+> > 
+> > Generally you suggested embedded as a use-case, and I don't really
+> > see lots of embedded userspace poking at this parameter in sysfs.
+> > 
+> > What I'd like to see, and attempted to achieve here:
+> > - avoid code duplication
+> > - consistency: some way to specify the parameter but still make it have the default value
+> > 
+> > Better suggestions are welcome.
+> 
+> Just change return param_set_uint_minmax(val, kp, 1, nr_cpu_ids);
+> 
+> to
+> 
+> return param_set_uint_minmax(val, kp, *0*, nr_cpu_ids);
+> 
+> The real amount can be exposed by common sysfs.
+> 
+> We'll extend virtio_driver to have a new callback to return this value. If
+> callback doesn't exist - return -1 (unknown value).
 
-Add generic i.MXRT family defconfig.
+That doesn't avoid code duplication - the limit of nr_cpu_ids
+is applied twice.
 
-Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
----
- arch/arm/configs/imxrt_defconfig | 157 +++++++++++++++++++++++++++++++
- 1 file changed, 157 insertions(+)
- create mode 100644 arch/arm/configs/imxrt_defconfig
-
-diff --git a/arch/arm/configs/imxrt_defconfig b/arch/arm/configs/imxrt_defconfig
-new file mode 100644
-index 000000000000..d673745a5462
---- /dev/null
-+++ b/arch/arm/configs/imxrt_defconfig
-@@ -0,0 +1,157 @@
-+# CONFIG_LOCALVERSION_AUTO is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_USELIB=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BPF_SYSCALL=y
-+CONFIG_PREEMPT_VOLUNTARY=y
-+CONFIG_BSD_PROCESS_ACCT=y
-+CONFIG_BSD_PROCESS_ACCT_V3=y
-+CONFIG_PSI=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=18
-+CONFIG_MEMCG=y
-+CONFIG_BLK_CGROUP=y
-+CONFIG_CFS_BANDWIDTH=y
-+CONFIG_CGROUP_PIDS=y
-+CONFIG_CGROUP_RDMA=y
-+CONFIG_CGROUP_FREEZER=y
-+CONFIG_CGROUP_DEVICE=y
-+CONFIG_CGROUP_CPUACCT=y
-+CONFIG_CGROUP_PERF=y
-+CONFIG_CGROUP_BPF=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
-+CONFIG_CHECKPOINT_RESTORE=y
-+CONFIG_SCHED_AUTOGROUP=y
-+CONFIG_RELAY=y
-+CONFIG_BLK_DEV_INITRD=y
-+CONFIG_EXPERT=y
-+CONFIG_SGETMASK_SYSCALL=y
-+# CONFIG_FUTEX is not set
-+CONFIG_KALLSYMS_ALL=y
-+CONFIG_PC104=y
-+# CONFIG_SLUB_DEBUG is not set
-+# CONFIG_COMPAT_BRK is not set
-+CONFIG_SLAB_FREELIST_RANDOM=y
-+CONFIG_SLAB_FREELIST_HARDENED=y
-+CONFIG_PROFILING=y
-+# CONFIG_MMU is not set
-+CONFIG_ARCH_MXC=y
-+CONFIG_SOC_IMXRT=y
-+# CONFIG_ARM_DMA_MEM_BUFFERABLE is not set
-+CONFIG_SET_MEM_PARAM=y
-+CONFIG_DRAM_BASE=0x80000000
-+CONFIG_DRAM_SIZE=0x02000000
-+CONFIG_HZ_250=y
-+CONFIG_FORCE_MAX_ZONEORDER=14
-+CONFIG_PARAVIRT=y
-+# CONFIG_ATAGS is not set
-+CONFIG_CMDLINE="console=ttyS0 root=/dev/mmcblk0p2 rw earlycon rootwait"
-+CONFIG_BLK_DEV_BSGLIB=y
-+CONFIG_BLK_DEV_INTEGRITY=y
-+CONFIG_BLK_DEV_ZONED=y
-+CONFIG_BLK_DEV_THROTTLING=y
-+CONFIG_BLK_WBT=y
-+CONFIG_BLK_SED_OPAL=y
-+CONFIG_PARTITION_ADVANCED=y
-+CONFIG_BSD_DISKLABEL=y
-+CONFIG_MINIX_SUBPARTITION=y
-+CONFIG_SOLARIS_X86_PARTITION=y
-+CONFIG_UNIXWARE_DISKLABEL=y
-+CONFIG_LDM_PARTITION=y
-+CONFIG_CMDLINE_PARTITION=y
-+# CONFIG_MQ_IOSCHED_KYBER is not set
-+CONFIG_BINFMT_FLAT=y
-+CONFIG_CLEANCACHE=y
-+CONFIG_ZPOOL=y
-+CONFIG_ZBUD=y
-+CONFIG_Z3FOLD=y
-+CONFIG_UEVENT_HELPER=y
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+# CONFIG_STANDALONE is not set
-+CONFIG_FW_LOADER_USER_HELPER=y
-+CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
-+CONFIG_IMX_WEIM=y
-+CONFIG_BLK_DEV_LOOP=y
-+CONFIG_BLK_DEV_RAM=y
-+CONFIG_BLK_DEV_RAM_COUNT=1
-+CONFIG_BLK_DEV_RAM_SIZE=65536
-+# CONFIG_INPUT_KEYBOARD is not set
-+# CONFIG_INPUT_MOUSE is not set
-+# CONFIG_SERIO is not set
-+CONFIG_LEGACY_PTY_COUNT=2
-+CONFIG_SERIAL_FSL_LPUART=y
-+CONFIG_SERIAL_FSL_LPUART_CONSOLE=y
-+CONFIG_SERIAL_NONSTANDARD=y
-+CONFIG_SERIAL_DEV_BUS=y
-+CONFIG_TTY_PRINTK=y
-+CONFIG_TTY_PRINTK_LEVEL=7
-+CONFIG_PINCTRL_IMXRT1050=y
-+CONFIG_GPIO_SYSFS=y
-+CONFIG_GPIO_MXC=y
-+# CONFIG_HWMON is not set
-+# CONFIG_HID is not set
-+# CONFIG_USB_SUPPORT is not set
-+CONFIG_MMC=y
-+CONFIG_MMC_SDHCI=y
-+CONFIG_MMC_SDHCI_PLTFM=y
-+CONFIG_MMC_SDHCI_ESDHC_IMX=y
-+CONFIG_DMADEVICES=y
-+CONFIG_FSL_EDMA=y
-+# CONFIG_MX3_IPU is not set
-+# CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
-+CONFIG_MEMORY=y
-+CONFIG_EXT2_FS=y
-+CONFIG_EXT2_FS_XATTR=y
-+CONFIG_EXT2_FS_POSIX_ACL=y
-+CONFIG_EXT2_FS_SECURITY=y
-+CONFIG_EXT3_FS=y
-+CONFIG_EXT3_FS_POSIX_ACL=y
-+CONFIG_EXT3_FS_SECURITY=y
-+# CONFIG_FILE_LOCKING is not set
-+# CONFIG_DNOTIFY is not set
-+CONFIG_QUOTA=y
-+# CONFIG_PRINT_QUOTA_WARNING is not set
-+CONFIG_AUTOFS4_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_FAT_DEFAULT_UTF8=y
-+CONFIG_EXFAT_FS=y
-+CONFIG_CONFIGFS_FS=y
-+# CONFIG_MISC_FILESYSTEMS is not set
-+CONFIG_NLS_DEFAULT="cp437"
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_ASCII=y
-+CONFIG_NLS_ISO8859_1=y
-+CONFIG_NLS_UTF8=y
-+CONFIG_LSM="yama,loadpin,integrity,apparmor"
-+# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
-+# CONFIG_CRYPTO_HW is not set
-+CONFIG_PRINTK_TIME=y
-+CONFIG_CONSOLE_LOGLEVEL_DEFAULT=15
-+CONFIG_CONSOLE_LOGLEVEL_QUIET=15
-+CONFIG_MESSAGE_LOGLEVEL_DEFAULT=7
-+CONFIG_DYNAMIC_DEBUG=y
-+# CONFIG_DEBUG_BUGVERBOSE is not set
-+CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF4=y
-+CONFIG_GDB_SCRIPTS=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x01b6
-+CONFIG_DEBUG_FS=y
-+CONFIG_PAGE_POISONING=y
-+CONFIG_SCHED_STACK_END_CHECK=y
-+CONFIG_SOFTLOCKUP_DETECTOR=y
-+CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=1
-+# CONFIG_SCHED_DEBUG is not set
-+CONFIG_SCHEDSTATS=y
-+CONFIG_STACKTRACE=y
-+CONFIG_DEBUG_USER=y
-+CONFIG_DEBUG_LL=y
-+CONFIG_DEBUG_UNCOMPRESS=y
-+CONFIG_EARLY_PRINTK=y
-+# CONFIG_RUNTIME_TESTING_MENU is not set
-+CONFIG_MEMTEST=y
--- 
-2.33.0
+> > 
+> > > >    MODULE_PARM_DESC(num_request_queues,
+> > > >    		 "Limit the number of request queues to use for blk device. "
+> > > >    		 "0 for no limit. "
 
