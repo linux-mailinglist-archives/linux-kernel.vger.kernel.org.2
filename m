@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A6E438B2E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663F9438B32
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbhJXSCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 14:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        id S231633AbhJXSGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 14:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbhJXSCJ (ORCPT
+        with ESMTP id S229527AbhJXSGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 14:02:09 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0637CC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 10:59:49 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id o83so12443518oif.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 10:59:48 -0700 (PDT)
+        Sun, 24 Oct 2021 14:06:38 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E55BC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:04:17 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id b4so5494745uaq.9
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:04:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BfU5q/0MkozQjzfxR6fQ4i7r2iqV9JZtLKp+vQfhRpU=;
-        b=pdYCn35jLstYtIncYgyEJh8mDax2MR4xaFC6pD6fwx1gH+hsNgg5lgS3W+Vr3WgsuX
-         TpymYrvpFIg4hKFY08fkxXkP6Or/UK0jSmWYPhEVAaQmfbNq2muoyOF7Kos9er8FNYJb
-         UAidjHEc3ImWIz/D2KyeOOCxTzAbJVJKT4oPHp00xlKnx8eH9BSgD5DrnLnLiQ5SOwUa
-         p2fgwzwDkpGCwKASvOX4+YChtoDwu+fvof++7Vo+Huugu67jNH/aud7x4pFGKxL3KkZl
-         ulwGRu/l5hUOEB4m7fKoJdI3jQdMlJPFYsFDwRS4N/JdZO0/iXfHJE78xBSjib//15ju
-         e0iA==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OjBdauvmHVn7SbXReqk1S3tkood0uafuRw2XIo1uZRc=;
+        b=MmO0plrIv5OnYPo7oVMkWk0yPgJyEmOZsrgJtbvhBzgxVT0fITbIfslJXvzRCQqrkL
+         gPtVO7p3MRAHKvBrfskzYFh5cbiMEenVAp7HKGyyJFun4Nw/u6Pa25kxF68u20AWSYOB
+         5GU/gZ1L6yONTcGgTdXuwCyX82+ukuqGFJUtTg6cskfEirpCAibfoF4pYsLpTNtGncxi
+         tLVsYHzU9AiZm3yjVpUeE8wvyFw2ZAFKApgrqObw6GLrGz1jHA62TlSisf0+N9ns1Mi6
+         PDxCIMeunkBCdozK9QF9CVfOQvFPSN9MJOMN3njgYOKgZ/rRzg6g1K3oHLiF+mzVt/8x
+         N6AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BfU5q/0MkozQjzfxR6fQ4i7r2iqV9JZtLKp+vQfhRpU=;
-        b=uStbbX+LtkbBYruuxiupKevL84awouX1Wr1odA+aGqDecf0zEqsZRLeoesjb30Znhv
-         1uBGfAniT+lr0CVV9lajW5lzPMqH1YhPzS4IwGqvf8jRz2JFhQRBEg/NF2rpC/KuKtnk
-         sk2lKsnqeX8008M5+lsTVgUcMltCjMR8RR4m01qO4JWld7qp8Q67FTLK3aQhQol0jO5u
-         sNFo/IGdq+UmVEUFvG9yaVXULTz5qBJZrLu0FT3kO51ia6dMqSDZegVPdaz2KCgdv5ng
-         Uo7N6KJyByBA7xvF0TDrFZUAujnt8QBaP7cRNrJepXQ365RYQFqtNQuLvMinpI45736l
-         NenA==
-X-Gm-Message-State: AOAM532vN5Fa/WiWYKGSfFV+51WyAKoPP8Q8H4EwLLp6G+u6wZjxEc69
-        6FkbDjfXoACv0qaO3bOtpdkINSxtRPD2AYBBuaxP3g==
-X-Google-Smtp-Source: ABdhPJwrXc5XiQNk9mpeiT9wp9gl8G131w1XhrRufMF0fBvxI0VI61qn0pT1Tj8boCstPSgIVF1w1F5swuRlqjbRdKI=
-X-Received: by 2002:a05:6808:181c:: with SMTP id bh28mr19520914oib.12.1635098387495;
- Sun, 24 Oct 2021 10:59:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OjBdauvmHVn7SbXReqk1S3tkood0uafuRw2XIo1uZRc=;
+        b=mc6Ce1338Q+eHkF6HvhFLWEY4KlEIjELlOyW8zu9K7WV/i3a/ri+Trsu6HfgnbtVZC
+         6pUPT09x7JOTZL6lXJSJ/WNbIBZY78wX4loAgdn7a18XE1yc70wMWHkSDBqYlv0dc2rX
+         ORNA4GmIl1mZjrtgQdBbBmqZDy5KgsRmAWeXDQ2d7DqZwMkgcUYeguOgX8SBF+mflZmR
+         7ib3KXeH29xAF1rOPEaE36EQLJyYFFskhsh0twVZUZ/VGLH9EjFmjKw8976Ci9TW+bmR
+         zSW7hlBG2Q22HP9e0fAxNgITV+v7er2ddquUgCFqs2VCYw9qIrLNlrFLib92Cxu3zSGf
+         pbsg==
+X-Gm-Message-State: AOAM532MQ6bHWKcRRlAmCkdDm82JDKSENRQgGcOfsxUk4LMgvwKJ4IjB
+        hqcINrqEWT1BczMC7MZ+YwKV5Qjfw925VujaRdM=
+X-Google-Smtp-Source: ABdhPJx9bUgB1xAOHX+9Auv8b387NBMi8/IigznG0+TaEtQswEjjeIRszteT2SmpX4+9h9HTH8XGVfl6ycyYS2asb10=
+X-Received: by 2002:ab0:1613:: with SMTP id k19mr1661396uae.135.1635098656286;
+ Sun, 24 Oct 2021 11:04:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211013165823.88123-1-bhupesh.sharma@linaro.org>
- <20211013165823.88123-2-bhupesh.sharma@linaro.org> <YXWVYZlCpkSRb7xv@builder.lan>
-In-Reply-To: <YXWVYZlCpkSRb7xv@builder.lan>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Sun, 24 Oct 2021 23:29:36 +0530
-Message-ID: <CAH=2NtyHpZa0KV5TRDuvciC+uV6mdO03RmEJSKMXES4HZOg-HA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] crypto: qce: Add 'sm8150-qce' compatible string check
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thara Gopinath <thara.gopinath@linaro.org>
+Received: by 2002:ab0:4a9d:0:0:0:0:0 with HTTP; Sun, 24 Oct 2021 11:04:15
+ -0700 (PDT)
+Reply-To: mrsaishagaddafi85@gmail.com
+From:   "Mrs.Aisha Muaammar Gaddafi" <mrs.sophealj66@gmail.com>
+Date:   Sun, 24 Oct 2021 11:04:15 -0700
+Message-ID: <CA+ft-JKf6G_7x1+2hxGm1vA31tc=-RpuKAYnhVv6zJCEDsVHNQ@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Hello My Beloved One,
 
-On Sun, 24 Oct 2021 at 22:48, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 13 Oct 11:58 CDT 2021, Bhupesh Sharma wrote:
->
-> > Add 'sm8150-qce' compatible string check in qce crypto
-> > driver as we add support for sm8150 crypto device in the
-> > device-tree in the subsequent patch.
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  drivers/crypto/qce/core.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> > index 4c55eceb4e7f..ecbe9f7c6c0a 100644
-> > --- a/drivers/crypto/qce/core.c
-> > +++ b/drivers/crypto/qce/core.c
-> > @@ -306,6 +306,7 @@ static int qce_crypto_remove(struct platform_device *pdev)
-> >  static const struct of_device_id qce_crypto_of_match[] = {
-> >       { .compatible = "qcom,ipq6018-qce", },
-> >       { .compatible = "qcom,sdm845-qce", },
-> > +     { .compatible = "qcom,sm8150-qce", },
-> >       { .compatible = "qcom,sm8250-qce", },
->
-> When I look at linux-next I see qce_crypto_of_match defined as:
->
-> static const struct of_device_id qce_crypto_of_match[] = {
->         { .compatible = "qcom,crypto-v5.1", },
->         { .compatible = "qcom,crypto-v5.4", },
->         {}
-> };
->
-> Can you please help me understand what I'm doing wrong?
+I need Your Assistance please Bear with me I am writing this mail to you with
+Tears And Sorrow From My Heart.
 
-Oh, you have missed [PATCH 15/20] from the sm8250 qce crypto addition
-series (see [1])
+I, am Mrs Aisha Muaammar Gaddafi The only Daughter of Late President
+Of Libya I know my mail might Come
+to you as a surprise Because you don,t Know me but Due to Unsolicited
+Nature Of My Situation Here IN the
+Refugee Camp Here In Ouagadougou Burkina Faso I was in Oman Just
+because of the Bad people that kill my
+Father they are still Looking for me that is why I Run down to Burkina
+Faso with Children i decided to contact
+you for help i have passed through Pains and sorrowful moments since
+the Death of my father At the meantime my
 
-This series is dependent on the sm8250 qce enablement series, as I
-noted in the cover letter (see [2]).
+my family is the Target of a western Nation led by Nato who wants to
+destroy my father at all costs. our Investment
+and bank account in Several Countries are their Targets to Freeze the Account
 
-However, Thara and Vladimir pointed out backward compatibility issues
-with PATCH 15/20 of the first series. So I will send a v5 to fix the
-same along with other issues pointed in the v4.
+My Father of blessed Memory Deposited the Sum Of 18.5 Million Dollars
+at the bank Of Spain which he used my
+names as the next of Kin I have been commissioned by the bank to
+present an international foreign investor, partner
+who can stand as my trustee and to receive the fund in his account
+without any problem from the Government
+Of Spain,
 
-Sorry for any confusion caused.
+Please I want you to help me with this I will be loyal to you all the
+days of my Life Please I will pay you back
 
-[1]. https://lore.kernel.org/linux-arm-msm/20211013105541.68045-1-bhupesh.sharma@linaro.org/T/#m566546d32d8da7ee94822dfba625e98fd3496d17
-[2]. https://www.spinics.net/lists/linux-arm-msm/msg96053.html
-
-Regards,
-Bhupesh
+Please I need your Urgent Respond
+From Mrs Aisha Gaddafi
