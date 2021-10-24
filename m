@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3C8438C69
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DDA438C6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbhJXWkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:40:39 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:48153 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJXWkh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:40:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HctK264Prz4xbq;
-        Mon, 25 Oct 2021 09:38:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635115095;
-        bh=5iZRxm9m7KKCNHMgdbd+SSNHi4HFhNBkGWU4Bz/Oiaw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=K/VT6KCbHRJE3czFELyRJoTRXcMmG1u7LF3FhJ1bLAnSsCl0cYaa5JMM5rvTbbO5y
-         I8PZoovtJK+mXOHllEiGai3rZ2lpK7tzAs3cZ4rpq/bGPhaScc9TDuyfKy6frQHJiH
-         UflkH1dGdFmJyKPQagfTIFI3rjOz4EhTIe2IAiULRZfkt5Sb4wRD7oJjO+9cNHYcAq
-         1s10mAatYQhzP0Lh6bVr3gU6GHHEmNSnN5VGPYqJeM59YrNnxMdBj7ESZVTWP1WhQd
-         gcM9Jg4f/Xy38H1u98jy4lLZiFAJUAy5nz1IcTnfNqO8B3lzLI7iCPD5UUiwIcPTEG
-         TZp4s8Y87N+8A==
-Date:   Mon, 25 Oct 2021 09:38:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greentime Hu <green.hu@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the nds32 tree with the kbuild tree
-Message-ID: <20211025093813.2ebe9212@canb.auug.org.au>
+        id S229835AbhJXWpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:45:53 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46384 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhJXWpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 18:45:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="209636905"
+X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
+   d="scan'208";a="209636905"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 15:43:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
+   d="scan'208";a="485428225"
+Received: from lkp-server02.sh.intel.com (HELO 74392981b700) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 24 Oct 2021 15:43:29 -0700
+Received: from kbuild by 74392981b700 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1memDA-00016s-Rq; Sun, 24 Oct 2021 22:43:28 +0000
+Date:   Mon, 25 Oct 2021 06:43:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [rmk-arm:clearfog 2/13]
+ drivers/net/dsa/mv88e6xxx/mv88e6xxx_debugfs.c:739:6: warning: %d in format
+ string (no. 1) requires 'int *' but the argument type is 'unsigned int *'.
+ [invalidScanfArgType_int]
+Message-ID: <202110250619.3cpoavKr-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Vzx/FKXUIe6PRUhvJznJGyJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Vzx/FKXUIe6PRUhvJznJGyJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Russell,
 
-Hi all,
+First bad commit (maybe != root cause):
 
-Today's linux-next merge of the nds32 tree got a conflict in:
+tree:   git://git.armlinux.org.uk/~rmk/linux-arm clearfog
+head:   89b5c2c2bea4a97b0c6254f54d3719fe15c9e38e
+commit: ee71c167800c79ed367a6cb8d0efb4e2cfffabf7 [2/13] net: dsa: mv88e6xxx: debugfs hacks to fix the compile
+compiler: sh4-linux-gcc (GCC) 11.2.0
 
-  arch/nds32/Kbuild
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-between commit:
 
-  8212f8986d31 ("kbuild: use more subdir- for visiting subdirectories while=
- cleaning")
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-from the kbuild tree and commit:
+>> drivers/net/dsa/mv88e6xxx/mv88e6xxx_debugfs.c:162:8: warning: sscanf() without field width limits can crash with huge input data. [invalidscanf]
+    ret = sscanf(cmd, "%s %x %x", name, &reg, &val);
+          ^
 
-  37160f01e8ea ("nds32: move core-y in arch/nds32/Makefile to arch/nds32/Kb=
-uild")
+vim +739 drivers/net/dsa/mv88e6xxx/mv88e6xxx_debugfs.c
 
-from the nds32 tree.
+3724260d6f3b5e Vivien Didelot 2015-10-22  725  
+3724260d6f3b5e Vivien Didelot 2015-10-22  726  static ssize_t mv88e6xxx_pvt_write(struct file *file, const char __user *buf,
+3724260d6f3b5e Vivien Didelot 2015-10-22  727  				    size_t count, loff_t *ppos)
+3724260d6f3b5e Vivien Didelot 2015-10-22  728  {
+3724260d6f3b5e Vivien Didelot 2015-10-22  729  	struct seq_file *s = file->private_data;
+3724260d6f3b5e Vivien Didelot 2015-10-22  730  	struct mv88e6xxx_chip *chip = s->private;
+3724260d6f3b5e Vivien Didelot 2015-10-22  731  	const u16 mask = (1 << mv88e6xxx_num_ports(chip)) - 1;
+3724260d6f3b5e Vivien Didelot 2015-10-22  732  	char cmd[32];
+3724260d6f3b5e Vivien Didelot 2015-10-22  733  	unsigned int src_dev, src_port, pvlan;
+3724260d6f3b5e Vivien Didelot 2015-10-22  734  	int ret;
+3724260d6f3b5e Vivien Didelot 2015-10-22  735  
+3724260d6f3b5e Vivien Didelot 2015-10-22  736  	if (copy_from_user(cmd, buf, sizeof(cmd)))
+3724260d6f3b5e Vivien Didelot 2015-10-22  737  		return -EFAULT;
+3724260d6f3b5e Vivien Didelot 2015-10-22  738  
+3724260d6f3b5e Vivien Didelot 2015-10-22 @739  	if (sscanf(cmd, "%d %d %x", &src_dev, &src_port, &pvlan) != 3)
+3724260d6f3b5e Vivien Didelot 2015-10-22  740  		return -EINVAL;
+3724260d6f3b5e Vivien Didelot 2015-10-22  741  
+3724260d6f3b5e Vivien Didelot 2015-10-22  742  	if (src_dev >= 32 || src_port >= 16 || pvlan & ~mask)
+3724260d6f3b5e Vivien Didelot 2015-10-22  743  		return -ERANGE;
+3724260d6f3b5e Vivien Didelot 2015-10-22  744  
+3724260d6f3b5e Vivien Didelot 2015-10-22  745  	mutex_lock(&chip->reg_lock);
+3724260d6f3b5e Vivien Didelot 2015-10-22  746  	ret = _mv88e6xxx_pvt_write(chip, src_dev, src_port, pvlan);
+3724260d6f3b5e Vivien Didelot 2015-10-22  747  	mutex_unlock(&chip->reg_lock);
+3724260d6f3b5e Vivien Didelot 2015-10-22  748  
+3724260d6f3b5e Vivien Didelot 2015-10-22  749  	return ret < 0 ? ret : count;
+3724260d6f3b5e Vivien Didelot 2015-10-22  750  }
+3724260d6f3b5e Vivien Didelot 2015-10-22  751  
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+:::::: The code at line 739 was first introduced by commit
+:::::: 3724260d6f3b5e821ce7ead6410416bf02c3fff6 net: dsa: mv88e6xxx: add debugfs interface
 
---=20
-Cheers,
-Stephen Rothwell
+:::::: TO: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+:::::: CC: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-diff --cc arch/nds32/Kbuild
-index 4e39f7abdeb6,565b9bc3c9db..000000000000
---- a/arch/nds32/Kbuild
-+++ b/arch/nds32/Kbuild
-@@@ -1,4 -1,4 +1,7 @@@
-  # SPDX-License-Identifier: GPL-2.0-only
-+ obj-y			+=3D kernel/ mm/
-+ obj-$(CONFIG_FPU)	+=3D math-emu/
-+ obj-y			+=3D boot/dts/
- +
- +# for cleaning
- +subdir- +=3D boot
-
---Sig_/Vzx/FKXUIe6PRUhvJznJGyJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF14FYACgkQAVBC80lX
-0Gwb3ggAoydPISnxwJTSLvh6g+BseXmuHVJhX530073sS+XqIGMvVTcN4lJ1vvbL
-VH2Gb3bom/HdJqWBhZQfum2TsJLozQliQJHr8OVZG6o6DSVLEQIZlhP+uvGsQOii
-JNavKG8b/UVbb6k07JR8kL1Pa/+OfdE8aTmKH8enLvMWduaoXHfeP16/ykTJmr2H
-1+BoPK0TZX6t5G8AK50xm4uSCZewMLPw0vQR1eMlvWaujxFWAocvoJ1zDi9jF9ln
-qB38StT/8nsnKBMZhB5SO35r3xK5/L6XqmDMxsmXI/38fUGuyJa08FiB4+2fMxOp
-b9yR0oTZZpSjBe3MNNOOeO5sDQCWgg==
-=JaUe
------END PGP SIGNATURE-----
-
---Sig_/Vzx/FKXUIe6PRUhvJznJGyJ--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
