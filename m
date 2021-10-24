@@ -2,72 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF26B438B51
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8E2438B59
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhJXSRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 14:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhJXSRo (ORCPT
+        id S231939AbhJXSTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 14:19:52 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:41731 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhJXSTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 14:17:44 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA63C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:15:23 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so9634104pji.5
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:15:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=I7eG9YgWQVexc+YXvLHitjJ51d3Rsn+e+WB+t4VOqc0=;
-        b=FpBbaV4eGFcF9KjoH9BFkrXCr3gchM15aTk3LoTlpZ76Aid5VVN9CAAPXslSQ8j092
-         2Pp7YF5HHH+XUthdmPWubdUiQpVl1QNWfg45ft2owTqzSVWVEScw+eqVud5Fsklt7iXi
-         eDPHIdZ+u5khwjaVsPe7f3KthfMtG21CrAWyaaECen9rfhzBvy8sJaQi79Hou4CbhtwT
-         pDP5UdXdjGBTebhRWmxG2mI6b3C33nlz73VbcEvfbKbvp8HM0glgShB4CbYB4oTD1aFk
-         cgx/J52N69+PhSI5cuWLfg9mjQydu1cmSEXEY0BnWRD6ervtGBTk6xAyIehKMvN4b/6h
-         9GrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=I7eG9YgWQVexc+YXvLHitjJ51d3Rsn+e+WB+t4VOqc0=;
-        b=s2Kp9/N3eGYsFB58wPr/rt4Ggs+/60qjV85ZPXtjseAgn17VgoOVNZMGZjcWt8qUJi
-         1MSNuQrqzVAak8enQ2Ow1ZJZH0xc+A84AIgfvkzv6YMoSv9AHy6/atArkztvbd+A3Xjv
-         uECsRFkk11m+EM4ypogTDrdbRYO/ktbRGoyoNNFHrSx94vzsBI6gxT6UQlFGoUsvc9iA
-         MtcP6QL/iWWm698aKikvScKgUoYoxADZvBYqChHJh0hT1MCzIsvtDzWhQuPPo88nSW3b
-         3TCFf7PGqyudO+XhZaf0DUvYtLjxKHhZTHWaudXanxsTIv1NFzZdpZ/8y+3VIcCiSNah
-         hGng==
-X-Gm-Message-State: AOAM532L3oQ8VnCEp0IGXJZxqwZmK/2vgX+U2xwrjowRlK/eaPQOxtM9
-        bIOtHTF1Bb0WtUT/xeLXZNe1JOuy5QdUa4Qbo4U=
-X-Google-Smtp-Source: ABdhPJxRg+iCg7tH3Ij+xXtDZEXQgEzNc2BzPSY6ilZ3eMR6sNdtBs+lgrywjno3ZczJ38/ngKnxbu7L1Dlx5MGQbnA=
-X-Received: by 2002:a17:902:ac97:b0:140:31c5:cbe3 with SMTP id
- h23-20020a170902ac9700b0014031c5cbe3mr9017788plr.47.1635099322666; Sun, 24
- Oct 2021 11:15:22 -0700 (PDT)
+        Sun, 24 Oct 2021 14:19:51 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MEFnR-1mUVJN2Smb-00AGJf; Sun, 24 Oct 2021 20:17:28 +0200
+Received: by mail-wr1-f46.google.com with SMTP id d3so4293198wrh.8;
+        Sun, 24 Oct 2021 11:17:28 -0700 (PDT)
+X-Gm-Message-State: AOAM531GPGGgVsvId6o3tNXWVuDMJY/klEFxlCZFFcFV8U30XvOXE2ZK
+        9Zs/41seGiJMT0azw68wMxYI5OsjOm65H7itICo=
+X-Google-Smtp-Source: ABdhPJwA4yx55xXPjGdoweMWLIzjsgLLmIyhDfO5RJ81PIjOMOGnfiDjEbR4fO6wCEdBYAYuSOM2cYFl2DdATduylko=
+X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr16559015wrq.411.1635099448118;
+ Sun, 24 Oct 2021 11:17:28 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:f3d1:0:0:0:0 with HTTP; Sun, 24 Oct 2021 11:15:22
- -0700 (PDT)
-Reply-To: samuelakin244@gmail.com
-From:   Mr Samuel Akin <melwassila@gmail.com>
-Date:   Sun, 24 Oct 2021 18:15:22 +0000
-Message-ID: <CACR8u7X4Dsw9BRFvb-i9EM3SScehiGBHsroEAH9a2YjwRKfz4A@mail.gmail.com>
-Subject: Dear friend, Greetings!
-To:     undisclosed-recipients:;
+References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com> <20211024154027.1479261-13-Mr.Bossman075@gmail.com>
+In-Reply-To: <20211024154027.1479261-13-Mr.Bossman075@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 24 Oct 2021 20:17:12 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1aZ-LMANnvcr4XX=uTbut78yL=48E8iLHr3AFgVqpi+g@mail.gmail.com>
+Message-ID: <CAK8P3a1aZ-LMANnvcr4XX=uTbut78yL=48E8iLHr3AFgVqpi+g@mail.gmail.com>
+Subject: Re: [PATCH 12/13] ARM: dts: imx: add i.MXRT1050-EVK support
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        giulio.benetti@benettiengineering.com,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        b20788@freescale.com, Andy Duan <fugang.duan@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vp3kZKeUmESK+1XWJrXM8FvK63w1mlDQk+fQX6bD9XAxOeRYYD5
+ 7qc2Fi0ruvuVrm6uHmgeuroh2/Qaq+JZ77Kn7jXWPw5V/PcOska9ScrRsNHkN8a2q3LsecH
+ 2wkzvDNiWVutyKkHlw08xCHL1uknETekmU2eRryi3DLgPd3zrkJIJcLy9nxN+V5Gx4ekQik
+ wm/3ij7dHNXL1DQRnW4Ew==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bHIj7tZfXGE=:aAKiZe9ob+1NvGxt9Ug04K
+ dT11Up/i6Se539tgsw9yTgKzt54eqJfV9mWj14qCsACuL6S6IL7VjYU7O2PFJ57q1uRbDgpkq
+ f6DmhyeB3jmq1mq8j2PzVY2d0lc9Q8bIAfIxF8MbngcU63+zDMWXMZdKWRzh51OJ8pCwyal22
+ QgbD2Euu/9P+wmYnY60fdxBuYguUg9F+zfcMujmufLjV7pM0rky0elbXV1DsmVcxqYonX3jrz
+ Jrf9sgpg2qI9/+nethUg0lkTJ3x1+l6yc+C+glXPUyTFSUuHmLvpCJA9iPIEOyyIdtYBi7npu
+ Vp2P8AJwb65ZepdvREPWlGEiqO2L9fNs2Mdo3qrbHXlWJkoYIYyHXPY8NjsW/FcZnGaLOVtC+
+ 7vdwfeWxjyFbHTk3usqCnNeABpNzvyD8jKwd6dBA/9bKSNhicnvS6tF5DwrHZaWp85fqHIX08
+ D0+mw8ZarbXAIyysaXZCjdhqWJtxOV6Q3eHe1nOwpEGlzW36reAee4nBtJ+R0HHVvxDeMshFX
+ Tg4E9XwtswH0uPRiU48z/nSBU56HpkXTwF5fkvXnXWuub/2ct7imdCrOdYzdZX8MsDzan8P9B
+ s7FiskBIzzSNqARn/rpHdEwGhy9C80jN4DcImwbuCKB5pTFmmupiKgPBnF1GSZO/kWrEg8ag0
+ c4vZCviAM15t7Hj1dwy/0i72Q1oxLUXaelqIbfOXdQsM1CvqBC0/na/Il0/JBuyd4zjM7P61x
+ J3jxqqg+mwyVIOgEzxI0fLjwJ6Q0O75gWBobuOGS+65ZVKrktRtUYNyMWsoX3vKrqmWTERMRz
+ zY7ID/ilJnaqqVh/C/FzWJZyj1R0fWRAu/hz/2VNCFjvJP2arI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+On Sun, Oct 24, 2021 at 5:40 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
 
-I apologize if this email comes as a surprise to you. as first coming
-from one you haven=E2=80=99t met with before.I have a business proposal tha=
-t
-will be of great benefit to both of us. If you are willing to discuss
-further on this matter, I expect you response. promptly so that I will
-give you further details.
+> +               pinctrl_semc: semcgrp {
+> +                       fsl,pins = <
 
-Best Regards,
-Mr.Samuel Akin
+This node doesn't appear to be referenced from anywhere. Is it actually needed?
+
+> +
+> +/ {
+> +       #address-cells = <1>;
+> +       #size-cells = <1>;
+> +
+> +       aliases {
+> +               gpio0 = &gpio1;
+> +               gpio1 = &gpio2;
+> +               gpio2 = &gpio3;
+> +               gpio3 = &gpio4;
+> +               gpio4 = &gpio5;
+> +               mmc0 = &usdhc1;
+> +               serial0 = &lpuart1;
+> +       };
+
+The aliases should go into the .dts file.
+
+> +               edma1: dma-controller@400E8000 {
+> +                       #dma-cells = <2>;
+> +                       compatible = "fsl,imx7ulp-edma";
+> +                       reg = <0x400E8000 0x4000>,
+> +                               <0x400EC000 0x4000>;
+
+Use lowercase letters in hex numbers here.
+
+        Arnd
