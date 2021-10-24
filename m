@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF302438AD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 19:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B01438AD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 19:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhJXROw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 13:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54988 "EHLO mail.kernel.org"
+        id S231796AbhJXRPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 13:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230301AbhJXROt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 13:14:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AD35B60F57;
-        Sun, 24 Oct 2021 17:12:28 +0000 (UTC)
+        id S231665AbhJXROx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 13:14:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 422F560FE7;
+        Sun, 24 Oct 2021 17:12:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635095548;
-        bh=/lx79IiPRRgzaUDtpG2BBuaeJql6qkCdMzPGjm6VBgs=;
+        s=k20201202; t=1635095552;
+        bh=kPsS7giPAQgBS0FN0v5UNufqJtO3S4oF3kk5OWrtpM0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ho2VfM2HI9FuBGPYkN6UJuGNWuDe+8bXqcalcJXQpKerHrNlz/f4PsfOjI1ocgP8z
-         SfuzwG+ahQ1YpeAX9v/WN3GjZncFMbDrNuTO4nx2QycgXXH2k7gveSRlkjcT9ZehmK
-         dbDsQNiRjSytQbcKQG9I0/0fpYCPX2ftdkJ39c2tCLb8/gb2BKs9NhkmK6Fz/mNzuG
-         JyRXPAP7xeT5TjauP9wy5hrdxMS02OVw4zdNY4DHDa1xVM1H7i85mtcNUuVG5HJ8hF
-         V28HRM9JkndlnR2HjFyCSpeSqSx1TpY4j3w25A43ANXsTHwJc+ZgR5evfdG/0O8PpC
-         Uh8LkLGa2YpMA==
+        b=TRLOsUIRKZ/SIiNLB5/AJ4d/GBtnW93KvY72SSRxe2hUKcg/EDfGsRdoYHEG4LVqX
+         bzUCeuAhvf1wjJcGepFXxQrv8OgUc7g3vkse7vXqRE5p9a/0fjUsmUOyMgboqjegLr
+         Rc4bLC7v/m/6XeV0A2gmcRlG5xkgJmdsWFU41qQRcMLTXU0cwrEXsGNwMgXdw0/XTr
+         NeScbxwvIXRL7rlLLx0BmxDv/JRXkFFEPiYtKMbzVHk230Q3cxmR2dpVN2hHdB/e58
+         /XeH99K7GdOdVwyicz0h9+jjgdn1P9Qrh0lWRbG/qH4RfNo6wELu97qlEpYBigkhLh
+         TarnqBZtxg8rw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A784B60A1B;
-        Sun, 24 Oct 2021 17:12:28 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.15-rc6
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3172F60A47;
+        Sun, 24 Oct 2021 17:12:32 +0000 (UTC)
+Subject: Re: [GIT PULL] sched/urgent for v5.15-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <14c6e40fec98dbd042c37ea6f65cbd0617b79d78.camel@HansenPartnership.com>
-References: <14c6e40fec98dbd042c37ea6f65cbd0617b79d78.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <14c6e40fec98dbd042c37ea6f65cbd0617b79d78.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 4e5483b8440d01f6851a1388801088a6e0da0b56
+In-Reply-To: <YXUr3ouAhEJ2Ppi0@zn.tnic>
+References: <YXUr3ouAhEJ2Ppi0@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YXUr3ouAhEJ2Ppi0@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v5.15_rc7
+X-PR-Tracked-Commit-Id: 63acd42c0d4942f74710b11c38602fb14dea7320
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0f386a604ce5074724909a8927d6d97ef998b5a9
-Message-Id: <163509554867.13231.3363722534556274032.pr-tracker-bot@kernel.org>
-Date:   Sun, 24 Oct 2021 17:12:28 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 6c62666d8879238578b727f8e0a821e90c88f87e
+Message-Id: <163509555219.13231.13911022452081185538.pr-tracker-bot@kernel.org>
+Date:   Sun, 24 Oct 2021 17:12:32 +0000
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 23 Oct 2021 12:10:42 -0400:
+The pull request you sent on Sun, 24 Oct 2021 11:48:14 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v5.15_rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0f386a604ce5074724909a8927d6d97ef998b5a9
+https://git.kernel.org/torvalds/c/6c62666d8879238578b727f8e0a821e90c88f87e
 
 Thank you!
 
