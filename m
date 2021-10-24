@@ -2,93 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D812438B82
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67094438B8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 20:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhJXSqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 14:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbhJXSqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 14:46:10 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520F9C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:43:49 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id u13so9099754edy.10
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 11:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PLo2wPZ3sr8u/YMmfsE81ITzb2gWI/ZlBw1GMaku9Tc=;
-        b=CFKJXauMo5jd0vAv6qp4CeyWsOcWCS8QQp71I5fmYmWbzCK45jxRLlYq1Xf6evAl/c
-         pHwQgGhuHqf6BR9Jtn2EvGxnb7IyZULt3r417XlD/3NSCZofHfHy0RQRlR41sr/QXCxf
-         xNeb0vtjaAaWkgID5qa8K0Gr14IQr3KZV1GfmBgRYoDlCTsssuFgwLKtM56SHHTa2eHo
-         GD67keayVQDfnsCGmLwGJ9s0hDQcE/gS4SN6bbPL4CiHUC++9lTJhZxHOFUtZH8eWVrI
-         uSrMOF3niuSlsPszGKIURwqH9W7UERmSC0XHreHo2SdDDsIN9VtfS7BL0Lo+/sy8DEqO
-         I9eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PLo2wPZ3sr8u/YMmfsE81ITzb2gWI/ZlBw1GMaku9Tc=;
-        b=XtkJpti+L6+O7bKJBqlBZNgPzNsVzRfI8RZ1tT3cE2M0ue8atYxctAZUxA/8zVPSXa
-         cpRU47MRKSwKhWCiBDAFFfTZJYq2qozB+PoTzqh/xWizs3ZSBEThVWsB3gF1xkcxR40I
-         NpxMO2522DUk4lqhQaKwZ5loYSVIHllKOPY6reL4b/A5je/h9TnM3aS9+j9pU40ky56o
-         xHuZBIetu4DBooIpIfe2UqvoW/9TWQPhMOmrLt4So+Z8w4vR37c7i9j6xdnm5xrYWB9M
-         tQxyI7B3JXTGtTOZ8bidZVhI3XaVdR7z9hrhxoHaXoBDZfgKs8HaHUhNRdV7yL6k2/1Z
-         8+yA==
-X-Gm-Message-State: AOAM532HfXTaeGtbuS1AwmHLXtaUrDQYOz3u26AwNCadQTwJwaeAthYy
-        ycuVbQ3rxtDCJZkaFEsjTsU=
-X-Google-Smtp-Source: ABdhPJxMh0UwooY8Fhupl3FToFhxvOqdRLyjq0rnk44fZPEnTi9jNe8YhI0+AvhF9L6MdQDPZWrEdA==
-X-Received: by 2002:a05:6402:1436:: with SMTP id c22mr19770675edx.153.1635101027553;
-        Sun, 24 Oct 2021 11:43:47 -0700 (PDT)
-Received: from tom-desktop (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
-        by smtp.gmail.com with ESMTPSA id qb15sm2106800ejc.108.2021.10.24.11.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 11:43:46 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 20:43:45 +0200
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: vt6655: fix camelcase byData in card.c
-Message-ID: <20211024184345.GA7946@tom-desktop>
-References: <20211018192124.8738-1-tomm.merciai@gmail.com>
- <YW5ceCLSIRl5zJIm@kroah.com>
+        id S232111AbhJXSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 14:53:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55888 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232099AbhJXSxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 14:53:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=WgYCSgQH0fqNh/JtYYcfd2rKvQYA3UM+wgdq1vzdV18=; b=G0d/9v3k7mqVkfmZrjBvOVzjX0
+        zqYxyo529r9npd+tYEEwl53tZ47ZCPLT9F2pZHIfpchm/OEIkgrdRXhLxy1q2yHp1O01xGXT95qg+
+        oTEAs9o14WVkPQRmqGzvJFGzBd+jo3MPEdX1UeSXXxxV7U4YFFwPPeXwrTDx3Peoc4Ng=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1meiZx-00Ba7Q-F0; Sun, 24 Oct 2021 20:50:45 +0200
+Date:   Sun, 24 Oct 2021 20:50:45 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [net-next PATCH] net: convert users of bitmap_foo() to
+ linkmode_foo()
+Message-ID: <YXWrBZJGof6uIQnq@lunn.ch>
+References: <20211022224104.3541725-1-sean.anderson@seco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YW5ceCLSIRl5zJIm@kroah.com>
+In-Reply-To: <20211022224104.3541725-1-sean.anderson@seco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 07:49:44AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 18, 2021 at 09:21:22PM +0200, Tommaso Merciai wrote:
-> > Replace camelcase variable "byData" into linux kernel coding style
-> > equivalent variable "data" in card.c.
-> > "by" prefix in hungarian notation stands for byte or unsigned char
-> > 
-> > References:
-> >  - https://www.cse.iitk.ac.in/users/dsrkg/cs245/html/Guide.htm
-> 
-> Don't provide web links in a changelog text, they might not endure.
-> 
-> >  - https://www.kernel.org/doc/html/v4.10/process/coding-style.html
-> 
-> Why the old and obsolete 4.10 kernel document?
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Oct 22, 2021 at 06:41:04PM -0400, Sean Anderson wrote:
+> This converts instances of
+> 	bitmap_foo(args..., __ETHTOOL_LINK_MODE_MASK_NBITS)
+> to
+> 	linkmode_foo(args...)
 
-  Hi Greg,
-  I'll update and resend.
-  
-  Thanks,
-  Tommaso
+It does touch a lot of files, but it does help keep the API uniform.
+
+> I manually fixed up some lines to prevent them from being excessively
+> long. Otherwise, this change was generated with the following semantic
+> patch:
+
+How many did you fix?
+
+> Because this touches so many files in the net tree, you may want to
+> generate a new diff using the semantic patch above when you apply this.
+
+If it still applies cleanly, i would just apply it. Otherwise maybe
+Jakub could recreate it?
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
