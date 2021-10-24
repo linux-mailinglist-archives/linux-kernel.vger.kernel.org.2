@@ -2,333 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88C643866A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 05:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43944438671
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 05:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhJXDGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 23:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbhJXDGj (ORCPT
+        id S231540AbhJXDjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 23:39:45 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:36977 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229794AbhJXDjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 23:06:39 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24F4C061767
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 20:04:19 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so9790650ote.6
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Oct 2021 20:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=09khimdAjQRi8HKATJj9Yiw14F//GZIJY/3Fe7+1+Ew=;
-        b=lHDyo+4Dao/LPjRiG1bPgSM38hRwp9NmMy+FE4x4UHptLKk5sQX82TX7R+yqo/Sx1k
-         vpmwoKDWHfskPP7m3dpCjBSwcLHkZ3OZ+0rZ/xNTX+qi/cB3O2MvU2BGYzrCOPP73+Ko
-         Nz8xruVnyHemho7jFWSjyfS7glTYTx1jInbqcttKImabSlDLIUzh/yHzieGAVxO6OGyl
-         ZFY2B2eYCP466an727i+vHIuOWDzkDSQJnH0Z9tl0KsQDXQEeGSoYySzgw8cQZooqebY
-         XvKTE6zrAC2cCr3Btcl0mS/SOtSmfMNTy8SaWiLYgK3mK3YtlUMpbnLXL9AkO36Vni/Z
-         1WVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=09khimdAjQRi8HKATJj9Yiw14F//GZIJY/3Fe7+1+Ew=;
-        b=neriIKIxoGNG7qxVZvNAiNSemuSkvMTPUb31wQ1rYfEMJIF01JcFJVA3G3z3BqalxY
-         qpOWg06+sdpAlCTsJ7fy8gw55pG3eblgGTTn7LTCYH5mRCGGLjK1yGbwo53s6mG93y1L
-         OhzBPabLqcL9KxLA1SLAEU9OR4DXo7BY++wVUEyY1ZnSfMgVqq2d8/4nPo0gGYc3nZQP
-         pr2rUuK4B0Sw1vQZE8ZMnmbc0nV40QW41H0eiXZykw3LNOcnWXpdZU7OmZWk/FsZ+SuR
-         aiDFf3s+uXnlLntfuioP9NCAXXLuTfpRsprCbSKAWTn1uifP4vMgtE8nmuCwWsV7dMi8
-         WRYg==
-X-Gm-Message-State: AOAM531vIsWd2pg+fU4Qom5uyttEYuygRfLUcGM+3YNu89CATFxnbUGf
-        uxwg/YnfDITTcD8Y9WCplZ5Rjw==
-X-Google-Smtp-Source: ABdhPJxXIK+1OUczhalebYJ7/W4p3n75GDzIHUTDynp8eQPC+UOq1fcxo3/zmNL2HgmGyBdZhEfL9A==
-X-Received: by 2002:a9d:20a3:: with SMTP id x32mr6982286ota.91.1635044658537;
-        Sat, 23 Oct 2021 20:04:18 -0700 (PDT)
-Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id h2sm2679287otr.37.2021.10.23.20.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 20:04:17 -0700 (PDT)
-Date:   Sat, 23 Oct 2021 22:04:15 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] arm64: dts: qcom: msm8996: Revamp reserved memory
-Message-ID: <YXTNL7boyiRFKQiV@builder.lan>
-References: <20210926190555.278589-1-y.oudjana@protonmail.com>
- <20210926190555.278589-2-y.oudjana@protonmail.com>
+        Sat, 23 Oct 2021 23:39:43 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 4E12732009E5;
+        Sat, 23 Oct 2021 23:37:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 23 Oct 2021 23:37:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=UpZ6hFmf2yp0T+a37
+        6qj6iS3wIRm4Sq94hQJk/2ew1g=; b=kWkV12gk/3SVigzk7APYjhJlrnbbRqBRm
+        ocw9LFuhFS3RQ2hvrpRf56dhHZ5tyMOjncJ3f0q14fvg8WiAa2iN1rTJuVrAPY96
+        LTsxuDME5mvoM0m0VDhniw2DWlXdBHudvh4ibcK97tXggQgjslyWazuzCnUCiTee
+        SwxAZFhgjg0Udlb8bsmn4jyZEY+JH8VNtESM5r0KOU5V+t2mKTkm49cwogvbdnQX
+        UFQuSrG0PrW7K+XMG8vUVfo6t3wuqyayb51zRbu5JefZgFT+PDb/8HPl9bS8SHvb
+        axtH6DOZCXovMLRBCobcdctN00AcsihmsKXOxkostek9ulVSCNgVg==
+X-ME-Sender: <xms:79R0Yascge93xEzZ4UvZJt-InORM64rPHmIHgk9IYoP2Rsf1JxgDrw>
+    <xme:79R0YffyVPmUy0aasZd0Nay8uE0_xzjS5EABYevc-kQehrXPjqFPlcTAtIuhBqpWx
+    XC62KucsLGdxRHwMWM>
+X-ME-Received: <xmr:79R0YVy1iaBTTmhmmJov-d9mMQoHiU7ik5svfQ5fiBCeuXoL7qULs97HqJzs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefuddgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpeelffelhfeltdfhtdevuefgveeuueekge
+    etiefgiefhgfejvdetvdeuvedthfdvkeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:79R0YVNMRlHRKcslCkwDalytiB1UAxqd4jhaH12QS1G16-G-Id1MvA>
+    <xmx:79R0Ya_VSFaX3UNFcWOCKULqv7fVSUEu8T0gSdauxel8l-yTebASlA>
+    <xmx:79R0YdXROG3FwqU88dpErOXCM_UVZgP3_qyKNjWhc9QYlaH7-QuhjQ>
+    <xmx:8tR0Yebl2EFdDsHfB33bk1QkAug_Ng22xsxWquBUPXMDwKRZloZ8kA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 23 Oct 2021 23:37:15 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
+        hadess@hadess.net, pobrn@protonmail.com, linux@roeck-us.net,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v15 0/1] asus-wmi: Add support for custom fan curves
+Date:   Sun, 24 Oct 2021 16:37:04 +1300
+Message-Id: <20211024033705.5595-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926190555.278589-2-y.oudjana@protonmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 26 Sep 14:06 CDT 2021, Yassine Oudjana wrote:
+Add support for custom fan curves found on some ASUS ROG laptops.
 
-> Fix a total overlap between zap_shader_region and slpi_region, and rename
-> all regions to match the naming convention in other Qualcomm SoC device trees.
-> 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+This has been fairly widely tested by the asus-rog community now and
+should be in a good state for merging now.
 
-FYI, I like this series, but I held off applying it because I wanted to
-verify that the shuffling of the memory regions works on the existing
-8996 boards.
+- V1
+  + Initial patch work
+- V2
+  + Don't fail and remove wmi driver if error from
+    asus_wmi_evaluate_method_buf() if error is -ENODEV
+- V3
+  + Store the "default" fan curves
+  + Call throttle_thermal_policy_write() if a curve is erased to ensure
+    that the factory default for a profile is applied again
+- V4
+  + Do not apply default curves by default. Testers have found that the
+    default curves don't quite match actual no-curve behaviours
+  + Add method to enable/disable curves for each profile
+- V5
+  + Remove an unrequired function left over from previous iterations
+  + Ensure default curves are applied if user writes " " to a curve path
+  + Rename "active_fan_curve_profiles" to "enabled_fan_curve_profiles" to
+    better reflect the behavious of this setting
+  + Move throttle_thermal_policy_write_*pu_curves() and rename to
+    fan_curve_*pu_write()
+  + Merge fan_curve_check_valid() and fan_curve_write()
+  + Remove some leftover debug statements
+- V6
+  + Refactor data structs to store  array or u8 instead of strings.
+    This affects the entire patch except the enabled_fan_curves block
+  + Use sysfs_match_string in enabled_fan_curve block
+  + Add some extra comments to describe things
+  + Allow some variation in how fan curve input can be formatted
+  + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
+    fan+profile combo drastically
+- V7
+  + Further refactor to use pwm1_auto_point1_temp + pwm1_auto_point1_pwm
+    format, creating two blocks of attributes for CPU and GPU fans
+  + Remove storing of defualt curves and method to reset them. The
+    factory defaults are still populated in to structs on module load
+    so users have a starting point
+- V8
+  + Make asus_wmi_evaluate_method_buf() safe
+  + Take in to account machines that do not have throttle_thermal_policy
+    but do have a single custom fan curve. These machines can't use a
+    throttle_thermal mode change to reset the fans to factory default if
+    fan curve is disabled so we need to write their stored default back.
+    In some cases this is also needed due to mistakes in ASUS ACPI tables.
+  + Formatting tidy and dev_err() use
+  + Extra comments to make certain things (such as above) more clear
+  + Give generated hwmon a more descriptive `name asus_custom_fan_curve`
+- V9
+  + Cleanup and remove per-profile setting
+  + Call `asus_fan_set_auto()` if method supported to ensure fan state is
+    reset on these models
+  + Add extra case (3) to related `pwm<N>_enable`s for fan curves to reset
+    the used curve to factory default
+  + Related to the above is that if throttle_thermal_policy is supported
+    then the fetched factory default curve is correct for the current
+    throttle_thermal_policy_mode
+  + Ensure that if throttle_thermal_policy_mode is changed then fan_curve
+    is set to disabled.
+  + Ensure the same for pwm1_enable_store()
+- V10
+  - Better handling of conditions in asus_wmi_evaluate_method_buf()
+  - Correct a mistaken conversion to percentage for temperature
+  - Remove unused function
+  - Formating corrections
+  - Update or remove various comments
+  - Update commit message to better reflect purpose of patch
+- V11
+  - Remove fan_curve_verify() as this prevented easily adjusting a fan curve
+    and there is no good way to give user feedback on fan-curve validity
+    unless checked in userspace
+- V12
+  - Remove unused old_value as caught by CI
+    + Reported-by: kernel test robot <lkp@intel.com>
+  - Rebase on upstream master 78e709522d2c012cb0daad2e668506637bffb7c2
+- V13
+  - Fix the errors related to old_value where I didn't remove the old code
+    + Reported-by: kernel test robot <lkp@intel.com>
+- V14
+  - Fix incorrect logic in fan_curve_get_factory_default()
+  - Ensure fan_curve_enable_show() displays correct status for state
+- V15
+  - Remove unused "default" fan curve store as these are read from the hardware
+    when required
+  - Use correct `to_sensor_dev_attr` for pwm<N>_enable instead of
+    to_sensor_dev_attr_2
+  - Don't call fan_curve_attr_2_select 3 times in fan_curve_show()
+  - General code quality cleanup
+- V16
+  - Remove two unrelated changes
+  - Refactor the fan_curve_enable_store block
+  - Perform match on attribute for fan curves in asus_fan_curve_is_visible
+  - Return 0 in asus_wmi_custom_fan_curve_init if no fan curves supported
+  - Store fan device ID in fan curve struct, enabling fan_curve_write_data() and
+    fan_curve_set_default() to be removed
+  - The above fixes an issue where fan curves (user and defaults) were being
+    written to each fan when only one was enabled
 
-Unfortunately it didn't work, either with or without the shuffling on
-the db820c - and I've not found the time to figure out why that is. I
-hope to get back to this shortly (or that someone else will figure it
-out and provide a tested-by)
+Luke D. Jones (1):
+  asus-wmi: Add support for custom fan curves
 
-Regards,
-Bjorn
+ drivers/platform/x86/asus-wmi.c            | 600 ++++++++++++++++++++-
+ include/linux/platform_data/x86/asus-wmi.h |   2 +
+ 2 files changed, 597 insertions(+), 5 deletions(-)
 
-> ---
->  .../dts/qcom/msm8996-sony-xperia-tone.dtsi    | 18 ++++--
->  .../boot/dts/qcom/msm8996-xiaomi-common.dtsi  | 18 +++---
->  arch/arm64/boot/dts/qcom/msm8996.dtsi         | 63 ++++++++++---------
->  3 files changed, 55 insertions(+), 44 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
-> index 507396c4d23b..4c26e66f0610 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
-> @@ -13,9 +13,10 @@
->  #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->  #include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
->  
-> -/delete-node/ &slpi_region;
-> -/delete-node/ &venus_region;
-> -/delete-node/ &zap_shader_region;
-> +/delete-node/ &adsp_mem;
-> +/delete-node/ &slpi_mem;
-> +/delete-node/ &venus_mem;
-> +/delete-node/ &gpu_mem;
->  
->  / {
->  	qcom,msm-id = <246 0x30001>; /* MSM8996 V3.1 (Final) */
-> @@ -46,18 +47,23 @@ cont_splash_mem: memory@83401000 {
->  			no-map;
->  		};
->  
-> -		zap_shader_region: gpu@90400000 {
-> +		adsp_mem: adsp@8ea00000 {
-> +			reg = <0x0 0x8ea00000 0x0 0x1a00000>;
-> +			no-map;
-> +		};
-> +
-> +		gpu_mem: gpu@90400000 {
->  			compatible = "shared-dma-pool";
->  			reg = <0x0 0x90400000 0x0 0x2000>;
->  			no-map;
->  		};
->  
-> -		slpi_region: memory@90500000 {
-> +		slpi_mem: memory@90500000 {
->  			reg = <0 0x90500000 0 0xa00000>;
->  			no-map;
->  		};
->  
-> -		venus_region: memory@90f00000 {
-> +		venus_mem: memory@90f00000 {
->  			reg = <0 0x90f00000 0 0x500000>;
->  			no-map;
->  		};
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-> index d239b01b8505..a5e7bccadba2 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-> @@ -66,32 +66,32 @@ memory@88800000 {
->  
->  		/* This platform has all PIL regions offset by 0x1400000 */
->  		/delete-node/ mpss@88800000;
-> -		mpss_region: mpss@89c00000 {
-> +		mpss_mem: mpss@89c00000 {
->  			reg = <0x0 0x89c00000 0x0 0x6200000>;
->  			no-map;
->  		};
->  
->  		/delete-node/ adsp@8ea00000;
-> -		adsp_region: adsp@8ea00000 {
-> +		adsp_mem: adsp@8fe00000 {
->  			reg = <0x0 0x8fe00000 0x0 0x1b00000>;
->  			no-map;
->  		};
->  
-> -		/delete-node/ slpi@90b00000;
-> -		slpi_region: slpi@91900000 {
-> +		/delete-node/ slpi@90500000;
-> +		slpi_mem: slpi@91900000 {
->  			reg = <0x0 0x91900000 0x0 0xa00000>;
->  			no-map;
->  		};
->  
-> -		/delete-node/ gpu@8f200000;
-> -		zap_shader_region: gpu@92300000 {
-> +		/delete-node/ gpu@90f00000;
-> +		gpu_mem: gpu@92300000 {
->  			compatible = "shared-dma-pool";
->  			reg = <0x0 0x92300000 0x0 0x2000>;
->  			no-map;
->  		};
->  
->  		/delete-node/ venus@91000000;
-> -		venus_region: venus@90400000 {
-> +		venus_mem: venus@92400000 {
->  			reg = <0x0 0x92400000 0x0 0x500000>;
->  			no-map;
->  		};
-> @@ -107,7 +107,7 @@ ramoops@92900000 {
->  			pmsg-size = <0x40000>;
->  		};
->  
-> -		/delete-node/ rmtfs@86700000;
-> +		/delete-node/ rmtfs;
->  		rmtfs@f6c00000 {
->  			compatible = "qcom,rmtfs-mem";
->  			reg = <0 0xf6c00000 0 0x200000>;
-> @@ -118,7 +118,7 @@ rmtfs@f6c00000 {
->  		};
->  
->  		/delete-node/ mba@91500000;
-> -		mba_region: mba@f6f00000 {
-> +		mba_mem: mba@f6f00000 {
->  			reg = <0x0 0xf6f00000 0x0 0x100000>;
->  			no-map;
->  		};
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index eb3ec5ff46eb..1495fff6ffc9 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -384,60 +384,65 @@ reserved-memory {
->  		#size-cells = <2>;
->  		ranges;
->  
-> -		mba_region: mba@91500000 {
-> -			reg = <0x0 0x91500000 0x0 0x200000>;
-> +		hyp_mem: memory@85800000 {
-> +			reg = <0x0 0x85800000 0x0 0x600000>;
->  			no-map;
->  		};
->  
-> -		slpi_region: slpi@90b00000 {
-> -			reg = <0x0 0x90b00000 0x0 0xa00000>;
-> +		xbl_mem: memory@85e00000 {
-> +			reg = <0x0 0x85e00000 0x0 0x200000>;
->  			no-map;
->  		};
->  
-> -		venus_region: venus@90400000 {
-> -			reg = <0x0 0x90400000 0x0 0x700000>;
-> +		smem_mem: smem-mem@86000000 {
-> +			reg = <0x0 0x86000000 0x0 0x200000>;
->  			no-map;
->  		};
->  
-> -		adsp_region: adsp@8ea00000 {
-> -			reg = <0x0 0x8ea00000 0x0 0x1a00000>;
-> +		tz_mem: memory@86200000 {
-> +			reg = <0x0 0x86200000 0x0 0x2600000>;
->  			no-map;
->  		};
->  
-> -		mpss_region: mpss@88800000 {
-> -			reg = <0x0 0x88800000 0x0 0x6200000>;
-> +		rmtfs_mem: rmtfs {
-> +			compatible = "qcom,rmtfs-mem";
-> +
-> +			size = <0x0 0x200000>;
-> +			alloc-ranges = <0x0 0xa0000000 0x0 0x2000000>;
->  			no-map;
-> +
-> +			qcom,client-id = <1>;
-> +			qcom,vmid = <15>;
->  		};
->  
-> -		smem_mem: smem-mem@86000000 {
-> -			reg = <0x0 0x86000000 0x0 0x200000>;
-> +		mpss_mem: mpss@88800000 {
-> +			reg = <0x0 0x88800000 0x0 0x6200000>;
->  			no-map;
->  		};
->  
-> -		memory@85800000 {
-> -			reg = <0x0 0x85800000 0x0 0x800000>;
-> +		adsp_mem: adsp@8ea00000 {
-> +			reg = <0x0 0x8ea00000 0x0 0x1b00000>;
->  			no-map;
->  		};
->  
-> -		memory@86200000 {
-> -			reg = <0x0 0x86200000 0x0 0x2600000>;
-> +		slpi_mem: slpi@90500000 {
-> +			reg = <0x0 0x90500000 0x0 0xa00000>;
->  			no-map;
->  		};
->  
-> -		rmtfs@86700000 {
-> -			compatible = "qcom,rmtfs-mem";
-> -
-> -			size = <0x0 0x200000>;
-> -			alloc-ranges = <0x0 0xa0000000 0x0 0x2000000>;
-> +		gpu_mem: gpu@90f00000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0x0 0x90f00000 0x0 0x100000>;
->  			no-map;
-> +		};
->  
-> -			qcom,client-id = <1>;
-> -			qcom,vmid = <15>;
-> +		venus_mem: venus@91000000 {
-> +			reg = <0x0 0x91000000 0x0 0x500000>;
-> +			no-map;
->  		};
->  
-> -		zap_shader_region: gpu@8f200000 {
-> -			compatible = "shared-dma-pool";
-> -			reg = <0x0 0x90b00000 0x0 0xa00000>;
-> +		mba_mem: mba@91500000 {
-> +			reg = <0x0 0x91500000 0x0 0x200000>;
->  			no-map;
->  		};
->  	};
-> @@ -1013,7 +1018,7 @@ opp-133000000 {
->  			};
->  
->  			zap-shader {
-> -				memory-region = <&zap_shader_region>;
-> +				memory-region = <&gpu_mem>;
->  			};
->  		};
->  
-> @@ -2001,7 +2006,7 @@ venus: video-codec@c00000 {
->  				 <&venus_smmu 0x2c>,
->  				 <&venus_smmu 0x2d>,
->  				 <&venus_smmu 0x31>;
-> -			memory-region = <&venus_region>;
-> +			memory-region = <&venus_mem>;
->  			status = "disabled";
->  
->  			video-decoder {
-> @@ -3008,7 +3013,7 @@ adsp_pil: remoteproc@9300000 {
->  			clocks = <&xo_board>;
->  			clock-names = "xo";
->  
-> -			memory-region = <&adsp_region>;
-> +			memory-region = <&adsp_mem>;
->  
->  			qcom,smem-states = <&smp2p_adsp_out 0>;
->  			qcom,smem-state-names = "stop";
-> -- 
-> 2.33.0
-> 
-> 
+-- 
+2.33.0
+
