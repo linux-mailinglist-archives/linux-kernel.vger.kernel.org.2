@@ -2,190 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF66A438992
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC25438996
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhJXOsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 10:48:45 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:35521 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229674AbhJXOso (ORCPT
+        id S231534AbhJXPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 11:00:14 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:52863 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhJXPAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 10:48:44 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3AijwePqCMaYvKhRVW/1Tiw5YqxClBgxIJ4g17XOL?=
- =?us-ascii?q?fAgLrhmgnhTdTxmYdXjiOaPeJYTb3etx/O96zpk8F7ZWAx9UxeLYW3SszFioV8?=
- =?us-ascii?q?6IpJjg4wn/YZnrUdouaJK5ex512huLocYZkERcwmj/3auK49CEmifnRLlbBILW?=
- =?us-ascii?q?s1h5ZFFYMpBgJ2UoLd94R2uaEsPDha++/kYqaT/73ZDdJ7wVJ3lc8sMpvnv/AU?=
- =?us-ascii?q?MPa41v0tnRmDRxCUcS3e3M9VPrzLonpR5f0rxU9IwK0ewrD5OnREmLx9BFrBM6?=
- =?us-ascii?q?nk6rgbwsBRbu60Qqm0yIQAvb9xEMZ4HFaPqUTbZLwbW9TiieJntJwwdNlu4GyS?=
- =?us-ascii?q?BsyI+vHn+F1vxxwSnggZvEcpOKaSZS4mYnJp6HcSFPpyuluDUwre4EV4eBwEGx?=
- =?us-ascii?q?U7tQVJj4MZRGEnKS9x7fTYuttj8IsN8niOocWu1lvyDjYCbAtRpWra7/N/sNV0?=
- =?us-ascii?q?CsYicdJEfPffIweczUHRBDDezVOPEsaDNQ1m+LArmH/cjlZsBSRpII25XTeyEp?=
- =?us-ascii?q?6172FGNjSd9iiR8JYmkiVvGTP+Wj0GVcdLtP34TiC6XKEhOjUnT/hWZoWGaGks?=
- =?us-ascii?q?PlwjzW73mUODBgdVnO4rOO/h0r4XMhQQ2QY8zQjhbMu+0uvR9PmGRu1vBasuh8?=
- =?us-ascii?q?aRsoVEOAg7gyJ4rTb7hzfBWUeSDNFLts8u6ceXzc3/kGGksmvBjF1trCRD3WH+?=
- =?us-ascii?q?d+pQZmaUcQOBTZaI3ZaEk1euJ++yLzfRynnFr5LeJNZRPWscd0o/w23kQ=3D?=
- =?us-ascii?q?=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A92gykKjVkWzu96c9cMLqRfgU7XBQXuYji2hC?=
- =?us-ascii?q?6mlwRA09TyX4rbHLoB1/73LJYVkqNk3I5urrBEDtexLhHP1OkOws1NWZLWrbUQ?=
- =?us-ascii?q?KTRekM0WKI+UyDJ8SRzI5g/JYlW61/Jfm1NlJikPv9iTPSL/8QhPWB74Ck7N2z?=
- =?us-ascii?q?80tQ?=
-X-IronPort-AV: E=Sophos;i="5.87,178,1631548800"; 
-   d="scan'208";a="116342455"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 24 Oct 2021 22:46:20 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 1E6BA4D0D9DC;
-        Sun, 24 Oct 2021 22:46:19 +0800 (CST)
-Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Sun, 24 Oct 2021 22:46:20 +0800
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Sun, 24 Oct 2021 22:46:20 +0800
-Received: from [192.168.122.212] (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Sun, 24 Oct 2021 22:46:19 +0800
-Subject: Re: [PATCH 2/2] refscale: prevent buffer to pr_alert() being too long
-To:     <paulmck@kernel.org>
-CC:     <dave@stgolabs.net>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Philip Li <philip.li@intel.com>,
-        "kernel test robot" <lkp@intel.com>
-References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
- <20211022105111.29455-2-lizhijian@cn.fujitsu.com>
- <20211022231555.GG880162@paulmck-ThinkPad-P17-Gen-1>
-From:   "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Message-ID: <e49f00c9-b9c8-a6a9-9595-6cedf5efe3e5@cn.fujitsu.com>
-Date:   Sun, 24 Oct 2021 22:46:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 24 Oct 2021 11:00:13 -0400
+Received: from [192.168.1.18] ([92.140.161.106])
+        by smtp.orange.fr with ESMTPA
+        id eewXmJYg7TdRTeewXmLjC3; Sun, 24 Oct 2021 16:57:51 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 24 Oct 2021 16:57:51 +0200
+X-ME-IP: 92.140.161.106
+Subject: Re: [PATCH] gve: Fix a possible invalid memory access
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     jeroendb@google.com, csully@google.com, awogbemila@google.com,
+        davem@davemloft.net, kuba@kernel.org, bcf@google.com,
+        gustavoars@kernel.org, edumazet@google.com, jfraker@google.com,
+        yangchun@google.com, xliutaox@google.com, sagis@google.com,
+        lrizzo@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <fb712f802228ab4319891983164bf45e90d529e7.1635076200.git.christophe.jaillet@wanadoo.fr>
+ <CA+FuTSftgpOGxAxRE5u9o6gT_exaLtC2JkBz=iq21qe+tTTomA@mail.gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f14bbf8a-2070-650f-3f26-bd45aad48b88@wanadoo.fr>
+Date:   Sun, 24 Oct 2021 16:57:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211022231555.GG880162@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: 1E6BA4D0D9DC.A260C
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <CA+FuTSftgpOGxAxRE5u9o6gT_exaLtC2JkBz=iq21qe+tTTomA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-on 2021/10/23 7:15, Paul E. McKenney wrote:
-> On Fri, Oct 22, 2021 at 06:51:11PM +0800, Li Zhijian wrote:
->> 0Day/LKP observed that the refscale results become incompleted
->> when a larger nruns(such as 300) is specified.
->> It seems that printk() can accept < 1024 buffer at once.
->> Print the buffer if its length exceeds 800 simply.
+Le 24/10/2021 à 15:51, Willem de Bruijn a écrit :
+> On Sun, Oct 24, 2021 at 7:52 AM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
 >>
->> CC: Philip Li <philip.li@intel.com>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> Good catch!  A couple of questions below.
->
-> 						Thanx, Paul
->
+>> It is spurious to allocate a bitmap for 'num_qpls' bits and record the
+>> size of this bitmap with another value.
+>>
+>> 'qpl_map_size' is used in 'drivers/net/ethernet/google/gve/gve.h' with
+>> 'find_[first|next]_zero_bit()'.
+>> So, it looks that memory after the allocated 'qpl_id_map' could be
+>> scanned.
+> 
+> find_first_zero_bit takes a length argument in bits:
+> 
+>      /**
+>       * find_first_zero_bit - find the first cleared bit in a memory region
+>       * @addr: The address to start the search at
+>       * @size: The maximum number of bits to search
+> 
+> qpl_map_size is passed to find_first_zero_bit.
+> 
+> It does seem roundabout to compute first the number of longs needed to
+> hold num_qpl bits
+> 
+>      BITS_TO_LONGS(num_qpls)
+> 
+> then again compute the number of bits in this buffer
+> 
+>      * sizeof(unsigned long) * BITS_PER_BYTE
+> 
+> Which will simply be num_qpls again.
+> 
+> But, removing BITS_PER_BYTE does not arrive at the right number.
+
+(* embarrassed *)
+
+So obvious.
+Thank you for taking time for the explanation on a so badly broken patch.
+
+I apologize for the noise and the waste of time :(
+
+
+BTW, why not just have 'priv->qpl_cfg.qpl_map_size = num_qpls;'?
+
+CJ
+
+> 
+> 
+>>
+>> Remove the '* BITS_PER_BYTE' to have allocation and length be the same.
+>>
+>> Fixes: f5cedc84a30d ("gve: Add transmit and receive support")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 >> ---
->>   kernel/rcu/refscale.c | 23 +++++++++++++----------
->>   1 file changed, 13 insertions(+), 10 deletions(-)
+>> This patch is completely speculative and un-tested!
+>> You'll be warned.
+>> ---
+>>   drivers/net/ethernet/google/gve/gve_main.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
->> index 2cbe2a2ba387..b1b9052010fd 100644
->> --- a/kernel/rcu/refscale.c
->> +++ b/kernel/rcu/refscale.c
->> @@ -604,7 +604,7 @@ static u64 process_durations(int n)
->>   	char *buf;
->>   	u64 sum = 0;
->>   
->> -	buf = kmalloc(128 + nreaders * 32, GFP_KERNEL);
->> +	buf = kmalloc(64 * 20, GFP_KERNEL);
-> This allocation (and the one below) is 1280 bytes rather than
-> 1024 bytes.  Why the extra couple hundred bytes?
-
-Nothing special, so let's change 1024 or (800 + 64 ),which is sufficent as well ?
-
-
->
->>   	if (!buf)
->>   		return 0;
->>   	buf[0] = 0;
->> @@ -617,13 +617,15 @@ static u64 process_durations(int n)
->>   
->>   		if (i % 5 == 0)
->>   			strcat(buf, "\n");
->> +		if (strlen(buf) > 800) {
->> +			pr_alert("%s", buf);
-> Does the tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
-> script also require changes to handle the partial lines?
-
-I missed that, i will take a look at it
-
-Thanks
-
-Zhijian
-
-
->
-> Same for the later comparison against 800.
->
->> +			buf[0] = 0;
->> +		}
->>   		strcat(buf, buf1);
->>   
->>   		sum += rt->last_duration_ns;
->>   	}
->> -	strcat(buf, "\n");
->> -
->> -	SCALEOUT("%s\n", buf);
->> +	pr_alert("%s\n", buf);
->>   
->>   	kfree(buf);
->>   	return sum;
->> @@ -648,7 +650,7 @@ static int main_func(void *arg)
->>   
->>   	VERBOSE_SCALEOUT("main_func task started");
->>   	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
->> -	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
->> +	buf = kzalloc(64 * 20, GFP_KERNEL);
->>   	if (!result_avg || !buf) {
->>   		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
->>   		errexit = true;
->> @@ -701,10 +703,7 @@ static int main_func(void *arg)
->>   	if (errexit)
->>   		goto err;
->>   
->> -	buf[0] = 0;
->> -	strcat(buf, "\n");
->> -	strcat(buf, "Runs\tTime(ns)\n");
->> -
->> +	pr_alert("Runs\tTime(ns)\n");
->>   	for (exp = 0; exp < nruns; exp++) {
->>   		u64 avg;
->>   		u32 rem;
->> @@ -712,9 +711,13 @@ static int main_func(void *arg)
->>   		avg = div_u64_rem(result_avg[exp], 1000, &rem);
->>   		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
->>   		strcat(buf, buf1);
->> +		if (strlen(buf) > 800) {
->> +			pr_alert("%s", buf);
->> +			buf[0] = 0;
->> +		}
->>   	}
->>   
->> -	SCALEOUT("%s", buf);
->> +	pr_alert("%s", buf);
->>   
->>   err:
->>   	// This will shutdown everything including us.
->> -- 
->> 2.33.0
+>> diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+>> index 7647cd05b1d2..19fe9e9b62f5 100644
+>> --- a/drivers/net/ethernet/google/gve/gve_main.c
+>> +++ b/drivers/net/ethernet/google/gve/gve_main.c
+>> @@ -866,7 +866,7 @@ static int gve_alloc_qpls(struct gve_priv *priv)
+>>          }
 >>
+>>          priv->qpl_cfg.qpl_map_size = BITS_TO_LONGS(num_qpls) *
+>> -                                    sizeof(unsigned long) * BITS_PER_BYTE;
+>> +                                    sizeof(unsigned long);
+>>          priv->qpl_cfg.qpl_id_map = kvcalloc(BITS_TO_LONGS(num_qpls),
+>>                                              sizeof(unsigned long), GFP_KERNEL);
+>>          if (!priv->qpl_cfg.qpl_id_map) {
+>> --
+>> 2.30.2
 >>
->>
->
-
+> 
 
