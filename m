@@ -2,59 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D73438BBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 21:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A8C438BCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 22:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhJXT6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 15:58:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231579AbhJXT6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 15:58:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9AF1960EE3;
-        Sun, 24 Oct 2021 19:56:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635105384;
-        bh=Mz1bpOH0QkW1mB3K9a7McP/BDR8k0n+RKRx7GTXsO8w=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=uioiZvaYA96iiFv5IA1LkQPt9CF6S3LF+jzZe5D9o+EkWJH4icNvqA6YXtLmF/1a9
-         JGVtNvv7t+DhVR0mZ5kZ6VuLWErzljrQi55IlPrZSS2j+HUJaEf924zgUcIZ0nGLhq
-         YVqKcrUkQXGLl5OI9PzI7Wz7Iu/tMYBSucVawa1D6vkXfV+iHzmAYH4ILN8T+cMHau
-         JcOeHMNi1vfSB5X8WS+CXJ0TjHISIZZpHJv76/q116sYSAR2SBMMiV2bw+aEHczhCp
-         g+qsJ3l5Xa6ZdaZ5tzWbvb/yqX58SmMWpAtMPfd+r9GBu4cMFsztqcGOWZcukYCytN
-         qobt9OFHkXFDA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 89657609D5;
-        Sun, 24 Oct 2021 19:56:24 +0000 (UTC)
-Subject: Re: [git pull] autofs braino fix
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YXWhxthSSQgLryOk@zeniv-ca.linux.org.uk>
-References: <YXWhxthSSQgLryOk@zeniv-ca.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YXWhxthSSQgLryOk@zeniv-ca.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
-X-PR-Tracked-Commit-Id: 25f54d08f12feb593e62cc2193fedefaf7825301
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b20078fd69a3da08d85c79b95101cf25c4afcc97
-Message-Id: <163510538450.17585.6845971569874636621.pr-tracker-bot@kernel.org>
-Date:   Sun, 24 Oct 2021 19:56:24 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        id S231937AbhJXU1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 16:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231733AbhJXU1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 16:27:49 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8079C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 13:25:27 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mek3Z-0004WZ-8J; Sun, 24 Oct 2021 22:25:25 +0200
+Received: from pengutronix.de (unknown [195.138.59.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id B674869C4BD;
+        Sun, 24 Oct 2021 18:30:38 +0000 (UTC)
+Date:   Sun, 24 Oct 2021 20:30:07 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] can: dev: replace can_priv::ctrlmode_static by
+ can_get_static_ctrlmode()
+Message-ID: <20211024183007.u5pvfnlawhf36lfn@pengutronix.de>
+References: <20211009131304.19729-1-mailhol.vincent@wanadoo.fr>
+ <20211009131304.19729-2-mailhol.vincent@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="j2t56hliosb7bl7z"
+Content-Disposition: inline
+In-Reply-To: <20211009131304.19729-2-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 24 Oct 2021 18:11:18 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+--j2t56hliosb7bl7z
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b20078fd69a3da08d85c79b95101cf25c4afcc97
+On 09.10.2021 22:13:02, Vincent Mailhol wrote:
+> The statically enabled features of a CAN controller can be retrieved
+> using below formula:
+>=20
+> | u32 ctrlmode_static =3D priv->ctrlmode & ~priv->ctrlmode_supported;
+>=20
+> As such, there is no need to store this information. This patch remove
+> the field ctrlmode_static of struct can_priv and provides, in
+> replacement, the inline function can_get_static_ctrlmode() which
+> returns the same value.
+>=20
+> A condition sine qua non for this to work is that the controller
+> static modes should never be set in can_priv::ctrlmode_supported. This
+> is already the case for existing drivers, however, we added a warning
+> message in can_set_static_ctrlmode() to check that.
 
-Thank you!
+Please make the can_set_static_ctrlmode to return an error in case of a
+problem. Adjust the drivers using the function is this patch, too.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--j2t56hliosb7bl7z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmF1piwACgkQqclaivrt
+76kLnggAoub6uxZSjw+RAuu+7oCV8QIq8RMmqNioSlIxS+ioE8a8cA/UOwuIE9Er
+wYCqsiSeF45Hdw+UHM7Vo97STc4P+SiKNcvvEUfcrXK0bdt2rcHeG9TvcargTm4a
+RJ99/EdATlozz5r0uHElYu3jpOX9retnf8OIAVfYgqpLKhmMDE+hnI0p30TWPxqy
+g65v2IZjWtkWZwuhBUbcSVn+YfgMrorzPkKCTzt01twrV4x/9o0BiqDIjK+WXzP+
+5T89refE08e1sclogONO5hUaVN1aQSYm6Kni2NAJciuYhzqyLG4nJVBBBZHZxH7W
+fWwvIKN4BMwvNYE5rq89gcMmFDjeDQ==
+=K7iG
+-----END PGP SIGNATURE-----
+
+--j2t56hliosb7bl7z--
