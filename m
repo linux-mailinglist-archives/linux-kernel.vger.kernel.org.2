@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7954388EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 14:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14E24388EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 14:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJXMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 08:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
+        id S231535AbhJXMw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 08:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229867AbhJXMw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230021AbhJXMw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 24 Oct 2021 08:52:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0DB5160F45;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1A02860F46;
         Sun, 24 Oct 2021 12:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635079808;
-        bh=uiOmLM3b53ai3GE8eZ4wkG3yUbrDJt691bFzcbfWnt8=;
+        bh=mOZuS3QGIBzES8Dx0Aql2CDfswqqCPHIMbhVG7GgPA4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=L5Vgm8O7T6fZtPhv+0lQjH5kwTywSyjzAhREHHYzU1WW1AUJzxGJzTGT0ZyXcxpYC
-         2BFIjl3vVMHdPGDlQfgjAzyjPEZ77qzSPcUaPLkUAasHkC2mXWmOE9w5ANvtfLxzwv
-         UVokdbltfb1fnjvYT/qPsuhX5yXwGlsIJAXcvKPNLgCzqVJZ7Ozpsco5FB++TnO8pB
-         uY6fYqQevn9lR0SA0hLSRc+FJo8gn3b2ENyC/FAsEjvtNY02oy+esvc3dYl+BGX7lm
-         QObvRlrV2ovsxukEoTnkTKgsLWXpV5RKyTGjGbbPEagZEbAgshv2EFRTa4WKPfWBRU
-         Yv/g5f201PPWQ==
+        b=i8u8qshYQz34d7RaO0XKEE+HMDySYhJypF5pW6W1dMHJAZRkEbjZaS6SLil7wJWUL
+         INL0gL5fkCnLg6/MHj5dovf9TB5/HP/EfusxDyA5FeERnXpy2YJ7tC1WI8JT8Nw5KF
+         V00QSe800qV9Kr3nYJEt1/eN35Ze2OfVvjwTqAR4QfhB64lJGnR53qdPlI8b+PB107
+         tWq6UXzZqty3tGvv8l4l6n+2FM55q+I7yiK7J0wnSrkym4mzA61SNSm6q3l7ne1isy
+         wezwLa4n1m49bjgoGEzliYcKXYJrFiuKXprEPtcSh4H5hpyHCRqLN/RPX6qKgm0nm3
+         oPGaC6yuqjz0w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F371360A90;
-        Sun, 24 Oct 2021 12:50:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 09E5660A21;
+        Sun, 24 Oct 2021 12:50:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH v2 1/3] net: mdio: Add helper functions for accessing
- MDIO devices
+Subject: Re: [PATCH net-next 0/3] Support for 16nm EPHY in GENET
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163507980799.1741.3571164239572057045.git-patchwork-notify@kernel.org>
-Date:   Sun, 24 Oct 2021 12:50:07 +0000
-References: <20211022155914.3347672-1-sean.anderson@seco.com>
-In-Reply-To: <20211022155914.3347672-1-sean.anderson@seco.com>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net
+Message-Id: <163507980803.1741.9331261518618602516.git-patchwork-notify@kernel.org>
+Date:   Sun, 24 Oct 2021 12:50:08 +0000
+References: <20211022161703.3360330-1-f.fainelli@gmail.com>
+In-Reply-To: <20211022161703.3360330-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, opendmb@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,24 +48,24 @@ Hello:
 This series was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Fri, 22 Oct 2021 11:59:12 -0400 you wrote:
-> This adds some helpers for accessing non-phy MDIO devices. They are
-> analogous to phy_(read|write|modify), except that they take an mdio_device
-> and not a phy_device.
+On Fri, 22 Oct 2021 09:17:00 -0700 you wrote:
+> Hi David, Jakub,
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> This patch was originally submitted as [1].
+> Recent Broadcom STB devices using GENET are taped out in a 16nm process
+> and utilize an internal 10/100 EPHY which requires a small set of
+> changes to the GENET driver for power up/down. The first patch adds an
+> EPHY driver entry for 7712, the second patch updates the DT binding and
+> the last patch modifies GENET accordingly.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v2,1/3] net: mdio: Add helper functions for accessing MDIO devices
-    https://git.kernel.org/netdev/net-next/c/0ebecb2644c8
-  - [net-next,v2,2/3] net: phylink: Convert some users of mdiobus_* to mdiodev_*
-    https://git.kernel.org/netdev/net-next/c/c8fb89a7a7d1
-  - [net-next,v2,3/3] net: Convert more users of mdiobus_* to mdiodev_*
-    https://git.kernel.org/netdev/net-next/c/65aa371ea52a
+  - [net-next,1/3] net: phy: bcm7xxx: Add EPHY entry for 7712
+    https://git.kernel.org/netdev/net-next/c/218f23e8a96f
+  - [net-next,2/3] dt-bindings: net: bcmgenet: Document 7712 binding
+    https://git.kernel.org/netdev/net-next/c/f4b054d9bb2b
+  - [net-next,3/3] net: bcmgenet: Add support for 7712 16nm internal EPHY
+    https://git.kernel.org/netdev/net-next/c/3cd92eae9104
 
 You are awesome, thank you!
 -- 
