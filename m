@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06E8438CAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67149438CB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhJYABy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 20:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhJYABw (ORCPT
+        id S231726AbhJYACS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 20:02:18 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:48719 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhJYACQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 20:01:52 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42661C061745;
-        Sun, 24 Oct 2021 16:59:31 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id om14so6912302pjb.5;
-        Sun, 24 Oct 2021 16:59:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UdgLpBv9vUiEAI9nTW/FcpPBhUsrQ/P7VYlSz31nv50=;
-        b=Gms+8I7iaJEgEXiIv/FGzWD9TR0ORSFGUhDym/fmuiDnyjg4Nt7R5pH4dS+AuS/uK0
-         LucW5KThyrVQgzMbntBLB0rljHjolwOGcDA4OF4yeZIAf/LnxyColxJ6Yhotj+TVLkCZ
-         dBZ6UA4nPGDVYQAqILTQxevfu3VuZ47sPPRtp6RlOTpyHABB5iqhcJCoKlPM6+xbeTOH
-         gUZDpyVykiWrV3mfYLJUlmYrflwLVs823wQ/CzQoMLb+2R7wpT6COOt4C0TVyE0siLD4
-         ksqG9ZHMhWzcMRPlDNNkdGTvay02HvnJdJJUcuc9Xok1GRXWIDCU73/DsiiziWLTQAHK
-         NUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UdgLpBv9vUiEAI9nTW/FcpPBhUsrQ/P7VYlSz31nv50=;
-        b=LUeYU7WdC2HuLg9sXXzQ15M4YUMf0N8mr9X4kSEQ8hw6Zgk06f7REZYzA4iKMFiQzz
-         emsuXmnWj45vMDA9L3Yi/yf6MVHe+EtT2V3vugj8jz2ZRZOl0RCmZi27AJrrf042HVNC
-         J5YFt9tJX+5DL+kxU8uKtefL4apLUfqTjdmKne4Sb3iyrufDon82Nl6JF+r0JyOqVYKw
-         d6cA1g4Q/8qNS8oCovWVLs2Et+DCwId7WHqvBcZcfmGPoIURq2KmstYY0MQYNVB3EKNr
-         HlRJdD+scH30ST1heF9TxQ4xk7n/yyBNM7V9p5BxDtYHPIFR1FZWYiOsJMX0SJ61ABIc
-         J+MQ==
-X-Gm-Message-State: AOAM533GWP9kj6mBUNqp/XWGFNNheJvbrc8IRSxNXXvm5ZY7jG6Igoxq
-        jMTg3LNe2HB+LEhdO97qn5U=
-X-Google-Smtp-Source: ABdhPJyqH14nH/Dlyi7vBdkZc8TyTinpzmNMw6iyZIloODpmX5/zNdd5vQRMlLSCiVxKpZc8PlBasg==
-X-Received: by 2002:a17:90a:1485:: with SMTP id k5mr18901264pja.74.1635119970599;
-        Sun, 24 Oct 2021 16:59:30 -0700 (PDT)
-Received: from 192-168-1-105.tpgi.com.com (115-64-195-55.static.tpgi.com.au. [115.64.195.55])
-        by smtp.gmail.com with ESMTPSA id d19sm17104677pfl.129.2021.10.24.16.59.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 16:59:29 -0700 (PDT)
-From:   Jon Maxwell <jmaxwell37@gmail.com>
-To:     edumazet@google.com
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jmaxwell37@gmail.com
-Subject: [net-next v1] tcp: don't free a FIN sk_buff in tcp_remove_empty_skb()
-Date:   Mon, 25 Oct 2021 10:59:03 +1100
-Message-Id: <20211024235903.371430-1-jmaxwell37@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 24 Oct 2021 20:02:16 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hcw7D41P4z4xZ1;
+        Mon, 25 Oct 2021 10:59:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635119993;
+        bh=b1BB3lk/zSF22AWGbmc5Yu5uEYzv+zvmf1GPRHBOd7w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EVTTy5h+BdZPGvoeE47QACbxFj1uolOKbyGKvMBsPbA4PDBP7FzX85oLpTn/bYfBK
+         tD8O0r1nFot2iwowuF0UFK5W8kYd4yhRSuWwT/WbufSAXZE7bRYgpAkuvD8SWesxUE
+         3IYPRYqzuyLQxOxiDZeewn4OlLMA53sV+7TYjQAk+AB43WoDiyqn6gc6UTJR/iGdNB
+         bqBmIEs1P3cUka2KbN/pad37qfLIW/1/otFalk/DuZ2vJeZX3iYmRwjBnGDpeScOwy
+         Eq+7Bz29+9NbRLj7fBV9+uBynrzToK7jVkW8evHldPWzY1tt4s3hqAxDemmo9sR5Uf
+         km1gXTkE2SWxQ==
+Date:   Mon, 25 Oct 2021 10:59:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trondmy@gmail.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: linux-next: manual merge of the nfsd tree with the nfs tree
+Message-ID: <20211025105951.109598aa@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/TmR2xR5LSKXnsBSvc/TH8Kh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1: Implement a more general statement as recommended by Eric Dumazet. The 
-sequence number will be advanced, so this check will fix the FIN case and 
-other cases. 
+--Sig_/TmR2xR5LSKXnsBSvc/TH8Kh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-A customer reported sockets stuck in the CLOSING state. A Vmcore revealed that 
-the write_queue was not empty as determined by tcp_write_queue_empty() but the 
-sk_buff containing the FIN flag had been freed and the socket was zombied in 
-that state. Corresponding pcaps show no FIN from the Linux kernel on the wire.
+Hi all,
 
-Some instrumentation was added to the kernel and it was found that there is a 
-timing window where tcp_sendmsg() can run after tcp_send_fin().
+Today's linux-next merge of the nfsd tree got a conflict in:
 
-tcp_sendmsg() will hit an error, for example:
+  include/trace/events/sunrpc.h
 
-1269 ▹       if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))↩
-1270 ▹       ▹       goto do_error;↩
+between commit:
 
-tcp_remove_empty_skb() will then free the FIN sk_buff as "skb->len == 0". The
-TCP socket is now wedged in the FIN-WAIT-1 state because the FIN is never sent.
+  b4776a341ec0 ("SUNRPC: Tracepoints should display tk_pid and cl_clid as a=
+ fixed-size field")
 
-If the other side sends a FIN packet the socket will transition to CLOSING and
-remain that way until the system is rebooted.
+from the nfs tree and commit:
 
-Fix this by checking for the FIN flag in the sk_buff and don't free it if that 
-is the case. Testing confirmed that fixed the issue.
+  35940a58f9f1 ("SUNRPC: Capture value of xdr_buf::page_base")
 
-Fixes: fdfc5c8594c2 ("tcp: remove empty skb from write queue in error cases")
-Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
-Reported-by: Monir Zouaoui <Monir.Zouaoui@mail.schwarz>
-Reported-by: Simon Stier <simon.stier@mail.schwarz>
----
- net/ipv4/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+from the nfsd tree.
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index c2d9830136d2..56ff7c746f88 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -938,7 +938,7 @@ int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
-  */
- void tcp_remove_empty_skb(struct sock *sk, struct sk_buff *skb)
- {
--	if (skb && !skb->len) {
-+	if (skb && TCP_SKB_CB(skb)->seq == TCP_SKB_CB(skb)->end_seq) {
- 		tcp_unlink_write_queue(skb, sk);
- 		if (tcp_write_queue_empty(sk))
- 			tcp_chrono_stop(sk, TCP_CHRONO_BUSY);
--- 
-2.27.0
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/trace/events/sunrpc.h
+index dc922e664820,9ea59959a2fe..000000000000
+--- a/include/trace/events/sunrpc.h
++++ b/include/trace/events/sunrpc.h
+@@@ -80,11 -80,12 +82,14 @@@ DECLARE_EVENT_CLASS(rpc_xdr_buf_class
+  		__entry->msg_len =3D xdr->len;
+  	),
+ =20
+ -	TP_printk("task:%u@%u head=3D[%p,%zu] page=3D%u(%u) tail=3D[%p,%zu] len=
+=3D%u",
+ +	TP_printk(SUNRPC_TRACE_TASK_SPECIFIER
+ +		  " head=3D[%p,%zu] page=3D%u tail=3D[%p,%zu] len=3D%u",
+++		  " head=3D[%p,%zu] page=3D%u(%u) tail=3D[%p,%zu] len=3D%u",
+  		__entry->task_id, __entry->client_id,
+- 		__entry->head_base, __entry->head_len, __entry->page_len,
+- 		__entry->tail_base, __entry->tail_len, __entry->msg_len
++ 		__entry->head_base, __entry->head_len,
++ 		__entry->page_len, __entry->page_base,
++ 		__entry->tail_base, __entry->tail_len,
++ 		__entry->msg_len
+  	)
+  );
+ =20
+
+--Sig_/TmR2xR5LSKXnsBSvc/TH8Kh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF183cACgkQAVBC80lX
+0GyWbAf/bxcK6/Iuf3mRcmqjdnrk1ooZD9OdKAh3OPToG4H5GYjuqN9MbQvnOtDc
+3eUxkRTXu3qoaL7pUn2wOSBxVy3FpUYd88yYAfvSK82s51Y/EX5iU+nxJUudaZmr
+t2c8EmcnDGZMDA1QslqupqkmsdPWtiOvkLaQh6YXf1PFhuGzxcjBLE+eTqgCwQ1m
+gwEknILtktCWkcRY29M522jz4EQ/pdmAuyUc1TOQvSGd1LaLUHa/5q/9eg+6ToZo
+45FU1ByX5nCX8lWofmgWWLCIW2HkyVvUFjCaG3HDI7V/ccDhk6VQI33beIvaWAfG
+2lPJAJL7j1tfp0niz3p5F3MMOyij8A==
+=HbuO
+-----END PGP SIGNATURE-----
+
+--Sig_/TmR2xR5LSKXnsBSvc/TH8Kh--
