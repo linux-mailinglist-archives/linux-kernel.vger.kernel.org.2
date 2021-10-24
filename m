@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DB3438C36
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812EF438C3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhJXV4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        id S231827AbhJXWAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJXV4E (ORCPT
+        with ESMTP id S229641AbhJXWAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:56:04 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0FEC061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:53:43 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id o26so9642236ljj.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:53:43 -0700 (PDT)
+        Sun, 24 Oct 2021 18:00:05 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C783EC061745;
+        Sun, 24 Oct 2021 14:57:43 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j21so6906349lfe.0;
+        Sun, 24 Oct 2021 14:57:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XTUIqto/oxCHUKEctW3fxwyrTpyEEyiqeWbHydY//aY=;
-        b=rPomx7SGz7pofYeRDGLqDkcQRSZlQbdpBhMMrKQWf5IrCOVLV6wGd9MMUK5rxk8H65
-         eMJbMl098dYYF5dFimnOC9XGelOmpfE9WkoNyIHOCVmFoVag72GWBlr5cFHneYY9HLSu
-         ckdKi5JSuavVPV5MQI2GMijZdnB1JgOgMgZSCwTpycbXJnxiQ402WcOU3OSSCGBBg4qW
-         mc2LzkOvduj85x5KxYrCoY6PE3J1XhEmEi5JKHAv/0uwMqIAKO9G7pYn1vfZYecRUY3X
-         DHpDG5PFFL4iEQzShwAeffP3Epz7vD38JhLDw+jSI372kFcEVZrxJnaKndHbi7OGPk8j
-         yZ2Q==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OPNFjQ0wVzkY1u6XnIDimYIJnCs2bgrAf6ProT42W0=;
+        b=IrnQq0Ym/QnKoKVI7edsx4cAuDrzOkiqVEgNPjETSF4ydD9jJn6qC8iQNp5gwwrzUg
+         dNNnNXC+8Io5c01EKUT5xLEY87PYxvuchZqE2tLsjro2P/0ruUOs3QTK8oEcQaEDVS8a
+         4K15OGXLosRivPeDIFB/d2alg4MIMSBFtz4X5NWWhzs+mUO0so5S5Nuzw9pJHuRVLxMH
+         xQLdySugfdoXNV+eiO9zi8952p6k246DuFaD5BW1qS+wPWMc1pxPjcXJB16cVvdakNRm
+         8oUP3kaydN4Pb3m5EGwErpjIaqkZC3xiNDJtOPqVkosue4F+r2hJBaA1Luz/Z6L2xKKN
+         eDfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XTUIqto/oxCHUKEctW3fxwyrTpyEEyiqeWbHydY//aY=;
-        b=ot2IQypmsMu3pLOLi3Jh55NXXpS8sVE5XR/SR0Z+fNhvi4AR4oS4v3u8CyFgPw7z99
-         UNlYJYUD8bZPwMtEOzbSaqkpPhrL0j4vNYH591R9rYU7Co0AooHWxJezRSdcR4FU3Av7
-         spTwiEjDFC/lVEZCQAenIiiFF0gWNGj6TzKyQDkwCXhJgsETqAvFXYj+7My/nijmXLeX
-         9bB4kEanAKLsfEhJIKtkcIKZl4hZXarm4DRf5HLb3C8dBCGe1urgwiJ+kWCh0Ay4waxt
-         Nr5WIQnlEDUFgpCikm3t+8uMIOt5WxLj9OWT+4y8hczBNr8uFXxbJNP44afXcNr6INMk
-         662w==
-X-Gm-Message-State: AOAM531izz4hbJ4vPGG1TFA+zBENHIPUfK4nF4pQ+CkVgxWBqPlO65M8
-        9dbKR7Vrlpv7xX1adjfh3E5pr5AWe+rgd2hU5+OqjRFhxeTeJg==
-X-Google-Smtp-Source: ABdhPJzEiyGNQYYwxf6GSF8eoY/NkxKZS5lTOKOd6kRvE1b3p3ngJbGT3Kl1pCfiIERJpHBFhh9yeI8E2RrphqMSBuw=
-X-Received: by 2002:a05:651c:a05:: with SMTP id k5mr14869914ljq.288.1635112421650;
- Sun, 24 Oct 2021 14:53:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OPNFjQ0wVzkY1u6XnIDimYIJnCs2bgrAf6ProT42W0=;
+        b=PMNUdAKsvhAszevU8M/jhrDNlz3jnB/c7OMs2S9Q0aEEUTIUkGw4VIYx5omnFmVXAi
+         dFkqYP2INo11NFm6M/nHcyGtAAyftVDChzgsMCnUBw9i2UJOW37U35zbiLtpNc4XiP1Y
+         DZ6zCjesWuUc/cxNuWbTXZhKibUU6Yt7vGkvSV6doDskqEq1ZEogBPzgowJtK5H7mpF1
+         uGCdCVflqVB6HnRRrApQEh8FBj1xnrGx7zAoj1vWiP+7xL6E+Gjx9sP9GAj3ILIvAq7V
+         tlOCVaNrO9WLgL6qU06SPB4iEnsm92os9R1ce8Ms0NsUGH52wbFMrUr5PPtK8wbFYZgT
+         GbLw==
+X-Gm-Message-State: AOAM530C4U4eNF7fRJnGuXyyzxmHfkAzEdQBoZsb+A/AaP3eNXEmxMV9
+        4SWxg8Mifp6BGbm1Z/NIWfo=
+X-Google-Smtp-Source: ABdhPJwzKtqJ08WOIh+DpB8KaTx7RH+I+2hakfvKl8cIVp2e+hPQrUdsJaAcL3p90wdPlomH4G2dEw==
+X-Received: by 2002:a05:6512:33c8:: with SMTP id d8mr12823570lfg.621.1635112662112;
+        Sun, 24 Oct 2021 14:57:42 -0700 (PDT)
+Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
+        by smtp.gmail.com with ESMTPSA id d27sm1577364ljo.15.2021.10.24.14.57.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 14:57:41 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        David Heidelberg <david@ixit.cz>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v3] dt-bindings: opp: Allow multi-worded OPP entry names
+Date:   Mon, 25 Oct 2021 00:57:18 +0300
+Message-Id: <20211024215718.28969-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <cover.1634630485.git.mchehab+huawei@kernel.org> <56737d183299294c840c8308c1427c3385d88a1e.1634630486.git.mchehab+huawei@kernel.org>
-In-Reply-To: <56737d183299294c840c8308c1427c3385d88a1e.1634630486.git.mchehab+huawei@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 24 Oct 2021 23:53:30 +0200
-Message-ID: <CACRpkdb3Qz4KUrniinYSgQYKH-ueMB60o9KWChmbPOg-5gk+JA@mail.gmail.com>
-Subject: Re: [PATCH v3 06/23] MAINTAINERS: update faraday,ftrtc010.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:04 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+Not all OPP entries fit into a single word. In particular NVIDIA Tegra OPP
+tables use multi-word names where first part is freq and second voltage
+because different hardware versions use different voltages for the same
+freqs. Allow OPP entry to have multi-worded name separated by hyphen.
+This silences DT checker warnings about wrong naming scheme.
 
-> Changeset 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
-> renamed: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
-> to: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml.
->
-> Update its cross-reference accordingly.
->
-> Fixes: 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Changelog:
 
-Yours,
-Linus Walleij
+v3: - Viresh Kumar suggested that we shouldn't support postfix variant.
+      I dropped variant with postfix naming scheme and multi-wording
+      support of table names.
+
+v2: - In addition to a multi-wording support, support of the postfix
+      *-opp-table naming scheme is added to the updated pattern.
+
+ Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+index ae3ae4d39843..f79343960539 100644
+--- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
++++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+@@ -33,7 +33,7 @@ properties:
+     type: boolean
+ 
+ patternProperties:
+-  '^opp-?[0-9]+$':
++  '^opp(-[0-9]+)*$':
+     type: object
+     description:
+       One or more OPP nodes describing voltage-current-frequency combinations.
+-- 
+2.33.1
+
