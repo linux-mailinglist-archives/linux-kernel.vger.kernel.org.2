@@ -2,183 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E072F438C95
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D7D438C9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhJXXnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 19:43:08 -0400
-Received: from ixit.cz ([94.230.151.217]:49378 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhJXXnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 19:43:07 -0400
-Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 23C1C20064;
-        Mon, 25 Oct 2021 01:40:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635118839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DAlw6wwx3lldVUIEV1VB0bYzPUp3Y6e2+JbyZgJZOcs=;
-        b=AUWYlYX7Ut2YM3p3LoXTUrHQOhaIxqB5tz+GK34Qxgb/YH1z0urZzd0VaCS2yH2v/RMwIb
-        JthgrwQ/6LjYefD9Oq9d6vngMnXpqBf0jFBR4+0gOam45BZYnh1+bTO7gCj5zkzNFH/4sz
-        noSACFk6YEbCUPdsK8X85ANaQhGBM2I=
-Date:   Mon, 25 Oct 2021 01:40:33 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: linux-next: build warning after merge of the qcom tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Message-Id: <LR9I1R.IR2MHJE8MRKZ1@ixit.cz>
-In-Reply-To: <20211025102802.11a92147@canb.auug.org.au>
-References: <20211025102802.11a92147@canb.auug.org.au>
-X-Mailer: geary/40.0
+        id S231867AbhJXXqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 19:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhJXXqH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 19:46:07 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A23EC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:43:46 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id w23so4909117lje.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MYURh8RyNr1ckN0vFdaCCBvNFLm+aoJl9EOOW5L0bjo=;
+        b=Dub+HLKftT8qLgrVIy5NVEmLS8CfCo7rREnppHnZ5zdkjXpOcGo47y6pwcCDWrVKLO
+         Q8xh60qhUlDB/QvRFGrYQoB9VqyErt/kcaXTfW+gH/tgWmN+9mfqiClGYEL15Y1Ue2wL
+         8C/TFfrnRwftNAvzcmslqGkvHT72IflKyUcZKxzApkJZtI1KGArCXckIJ9JuaO2tSNrN
+         /h8cojO1Nnprls0S38qNlzsSf6dovWQwjnx1czgyKu5NeL9egcALRKXf+S5P8oPEcpSw
+         H8hmHIEPTSw5d15ChljfFNhwOe8PWULuIKQn32eyHTTmPnaqOFSuU0pHE7At5ykFStSQ
+         TY9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MYURh8RyNr1ckN0vFdaCCBvNFLm+aoJl9EOOW5L0bjo=;
+        b=UG6f6Xf6Ih6Fh6PqogvKgO7IW1bLziIHHRQ08Sy/RVrRYwQ9sl9r9yllJJ2BzbLVXl
+         zL/eBO7nCMkOUsONKVWG/HzVhFF6VblXGqUvP1ETQMi2zPUz4accskM9iOt+fpZ4OLE/
+         BC1eLCCPPpt338BRn/XYieI8Qa4oj/+kPhdSBBxXcPN3Nr1LrvzesT4Ezg3PZZMsOxcu
+         /ic1Lto5enE+bi+Vu6hQLAw9i9mULx7V+NUfxUbyYPXNJnKpwAkSSaUfPvoUJWK0fcv9
+         QHleG6mKJUZ2Vt9l49htIj3JgnWkqyxZ83tGrGELOVz5vscDHW/d548hU6u4PpG0WlP6
+         EwkA==
+X-Gm-Message-State: AOAM53307k9hQX+L9WkjgJIxt1tf2iTrEcl+0W8vAMViR14bka/AWIe2
+        ctixS9+/EF9M5MmhPFEIXrQpu3XMgFXT+fWxVjSXbw==
+X-Google-Smtp-Source: ABdhPJztsLhfPlIDXOWbtCLEN2eSmWIpJybl/IJoG/laFGPQUMT5dyD7xL28cKG/c8UTZ2WmLn4HesOiz1QICojDPys=
+X-Received: by 2002:a2e:9d48:: with SMTP id y8mr15608833ljj.19.1635119024432;
+ Sun, 24 Oct 2021 16:43:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <20211022014323.1156924-1-yangyingliang@huawei.com>
+In-Reply-To: <20211022014323.1156924-1-yangyingliang@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 Oct 2021 01:43:33 +0200
+Message-ID: <CACRpkdY07ciT_0FCOuWGV3dbfcsyDpAqy4Aon_WN1gA8QS6a-A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: core: fix possible memory leak in pinctrl_enable()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 22, 2021 at 3:36 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-I believe patch "ARM: dts: qcom: fix typo in IPQ8064 thermal-sensor 
-node" should solve it [1] (sent 4 days ago, not merged yet thou).
+> I got memory leak as follows when doing fault injection test:
+>
+> unreferenced object 0xffff888020a7a680 (size 64):
+>   comm "i2c-mcp23018-41", pid 23090, jiffies 4295160544 (age 8.680s)
+>   hex dump (first 32 bytes):
+>     00 48 d3 1e 80 88 ff ff 00 1a 56 c1 ff ff ff ff  .H........V.....
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<0000000083c79b35>] kmem_cache_alloc_trace+0x16d/0x360
+>     [<0000000051803c95>] pinctrl_init_controller+0x6ed/0xb70
+>     [<0000000064346707>] pinctrl_register+0x27/0x80
+>     [<0000000029b0e186>] devm_pinctrl_register+0x5b/0xe0
+>     [<00000000391f5a3e>] mcp23s08_probe_one+0x968/0x118a [pinctrl_mcp23s08]
+>     [<000000006112c039>] mcp230xx_probe+0x266/0x560 [pinctrl_mcp23s08_i2c]
+>
+> If pinctrl_claim_hogs() fails, the 'pindesc' allocated in pinctrl_register_one_pin()
+> need be freed.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: 950b0d91dc10 ("pinctrl: core: Fix regression caused by delayed work for hogs")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-David
-[1] https://lists.sr.ht/~okias/devicetree/patches/25837
+Excellent find and fix!
 
-Best regards
-David Heidelberg
+Thanks so much Yang!
 
-On Mon, Oct 25 2021 at 10:28:02 +1100, Stephen Rothwell 
-<sfr@canb.auug.org.au> wrote:
-> Hi all,
-> 
-> After merging the qcom tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
-> 
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:52.19-70.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor0-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:72.19-90.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor1-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:92.19-110.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor2-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:112.19-130.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor3-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:132.19-150.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor4-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:152.19-170.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor5-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:172.19-190.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor6-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:192.19-210.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor7-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:212.19-230.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor8-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:232.19-250.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor9-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:252.20-270.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor10-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:52.19-70.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor0-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:72.19-90.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor1-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:92.19-110.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor2-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:112.19-130.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor3-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:132.19-150.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor4-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:152.19-170.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor5-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:172.19-190.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor6-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:192.19-210.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor7-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:212.19-230.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor8-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:232.19-250.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor9-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> arch/arm/boot/dts/qcom-ipq8064.dtsi:252.20-270.5: Warning 
-> (thermal_sensors_property): /thermal-zones/sensor10-thermal: Missing 
-> property '#thermal-sensor-cells' in node 
-> /soc/clock-controller@900000/thermal-sensor@900000 or bad phandle 
-> (referred from thermal-sensors[0])
-> 
-> Presumably introduced by commit
-> 
->   88542b1d37dc ("ARM: dts: qcom: fix thermal zones naming")
-> 
-> --
-> Cheers,
-> Stephen Rothwell
+Patch applied and tagged for stable.
 
-
+Yours,
+Linus Walleij
