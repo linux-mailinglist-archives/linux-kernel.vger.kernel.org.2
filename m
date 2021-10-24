@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDA8438C18
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49BF438C1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbhJXV2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
+        id S232100AbhJXV2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 17:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231922AbhJXV2C (ORCPT
+        with ESMTP id S232067AbhJXV2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:28:02 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87C2C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:41 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id p23so5449532uaa.6
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:41 -0700 (PDT)
+        Sun, 24 Oct 2021 17:28:05 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8170BC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:44 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id k28so13963279uaa.10
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DqiOv1p3LOB7EKypi/0mOrwTqn1iriyu35ZKspNjngg=;
-        b=DKvSVO+p/SFxE0r75HKW9OuNa3MhS2EvqtN+4jkFUbBPoib8QfYDoroxok9N3so9Hn
-         exhiDYfvK2JpmUiZ3PfYfOGMAhDkvjZa+gZMlmPsZy+IucG2AQO8nhm5Vwvz0TTVCyAH
-         /e8tl2ROV1EWMF1aVd5piqcoYTirX2dcwcX4hvabIBWQ7XoUnJD+mJntHWL/hYKCgBpw
-         F+u7+KJaujnOFFeebEBtc58FDEY8TqARz9MRaPik32iYwtL4Y/icdw2c71jJ3ol/zpcM
-         1Y1Fjl/u3r2/IydIaNAEyfSBll6J25biOQJwKRpwizoVoK6yv6PRZEiFqz+WcdD78tvG
-         4s9Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BUZrb/8Tu+o0w2Zrk3jfeV2yAEX/FiW+ydM/SILOmDc=;
+        b=mNmxG7ptRvHDkHl0zzqXCFzL6bfLkvmlWIcj44A07+YEnbRIvvLldDFyOem6ncngFo
+         VlfxdgBK9P7g5R6QLQBMhTQNPC4JMMuHAbt06IMjzl7QK7p/gOxuiCf8TDf4gR8RlBza
+         omp1hPLcSnp2nIrcoBowS0hpdvPl0pmEJ0R5bsRknNCrQSS9B2Ysa2deTBp7HhDgqqrc
+         v1o/F28cz/D+4rzAoC6uQa0uWSAihg9CYP5rJviR7zF3OlZwKweEdtnR1vFzmGn6zkUx
+         DKeSXDvrulPX8ZN4KFydTeLfMKmSs3A2PsxlsaRgpw9aE8XM+lY+EoV+/Y8WgrKGY/Y8
+         1m2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DqiOv1p3LOB7EKypi/0mOrwTqn1iriyu35ZKspNjngg=;
-        b=OZOeAgb0j/1xWu2PItIM5EGkl/vyrcLe2wVHFLq7UleDT/h+NuSTOAdIfKzvWf+V2g
-         jYnVQWkY+IuCwSrr/CUvhHc6QTgL13zeaMcIpkAuqcLDUs9qW8hOSTPp4TAgZfWI20lY
-         5hurcA2yUD/It7A+JASKjXRrCWkukqfwyFAS+rREFA9CCnV+56c8Qy0lGtIoPVgy7wVD
-         wO8JWvrYpr0aVVKpIuxcO04uPvZt80tfp8THsga4EHqTI026vFVe+xdE5ZjvaoE4wpvZ
-         nbjQQg2OIUX0I0vpLo+p4RDl+Q8LaicKsSmePNVCOjPOJjRnx2VUfmtZ5b/azzAwElme
-         QiCA==
-X-Gm-Message-State: AOAM5312rkfE4vYEsGkoqKdshEgM/QRpoXo3RiKnqR1NTRrgIw68WaR+
-        tMKfnZRCgfPIyd8hfgaHmfI=
-X-Google-Smtp-Source: ABdhPJx5a3/eziA4Af2q1yZwIzzKVvrciYGyHTKBotRo8MHzV2NoNC5PYHiWoxrmggMICmrqgmm2pQ==
-X-Received: by 2002:a67:d81a:: with SMTP id e26mr11952472vsj.23.1635110740894;
-        Sun, 24 Oct 2021 14:25:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BUZrb/8Tu+o0w2Zrk3jfeV2yAEX/FiW+ydM/SILOmDc=;
+        b=y+Bt0zYTOv5wAnSZJu9v/Oj/SI+DcIwOQb2dm2b+iJ3wtbAK71gvDnmLimZJIOCJcd
+         afT1qaoVh/yaLEOFOOzTgU9Xrmdsflg1kOzobvS14cokbOR0gRnf/X0IwHwQKOriMUdv
+         FeXOWQwI0buEG6Dzt0J+mOylntPQdwu51Eiy7uuZixRIijm5bxEGmqw0KybW49+h9uIl
+         iC6uRKCJ1P2AqXYYKhwCEQ49XBlCcmklDX6Ek6uFYJy1n15kvcMBsm5amZmELUlHThZk
+         Jz/yJKOtrFaGG6BFKA8gnNyTcxOXTBMTCEv06vUvQJ/Jb8G+aayQY/la41XMmucI17hy
+         aWmg==
+X-Gm-Message-State: AOAM5322fCt8t6LHbV6k46Ny8BH8QbuZg5MW4OXOz89p+ASTbX6JQ2eo
+        JUDMfLG2mPHOGq73PlvusXQ=
+X-Google-Smtp-Source: ABdhPJxk/CNcqk31LoGeoNiFDolG+3j9ZXhJhPee+dhU51Z5ZSzZQwiWi1XR4dHLuCTCO5l7gt0V8g==
+X-Received: by 2002:a67:c217:: with SMTP id i23mr12323615vsj.52.1635110743707;
+        Sun, 24 Oct 2021 14:25:43 -0700 (PDT)
 Received: from localhost.localdomain ([191.83.215.63])
-        by smtp.gmail.com with ESMTPSA id 45sm8847869uaq.8.2021.10.24.14.25.38
+        by smtp.gmail.com with ESMTPSA id 45sm8847869uaq.8.2021.10.24.14.25.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 14:25:40 -0700 (PDT)
+        Sun, 24 Oct 2021 14:25:43 -0700 (PDT)
 From:   Gaston Gonzalez <gascoar@gmail.com>
 To:     linux-staging@lists.linux.dev
 Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
@@ -57,39 +57,76 @@ Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
         linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH v2 0/8] vchiq_core: various style cleanups
-Date:   Sun, 24 Oct 2021 18:25:16 -0300
-Message-Id: <20211024212524.370078-1-gascoar@gmail.com>
+Subject: [PATCH v2 1/8] staging: vchiq_core: cleanup blank lines
+Date:   Sun, 24 Oct 2021 18:25:17 -0300
+Message-Id: <20211024212524.370078-2-gascoar@gmail.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211024212524.370078-1-gascoar@gmail.com>
+References: <20211024212524.370078-1-gascoar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set of patches consists in some code style fixes.
+Remove unnecessary blank lines.
 
-v1 -> v2:
+Reported by checkpatch.pl
 
-- Drop change wrongly attributed as a checkpatch fix.
-- Unify patches that fix unnecessary blank lines.
+Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
+---
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c | 2 --
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h | 3 ---
+ 2 files changed, 5 deletions(-)
 
-Gaston Gonzalez (8):
-  staging: vchiq_core: cleanup blank lines
-  staging: vchiq_core: cleanup code alignment issues
-  staging: vchiq_core.h: fix CamelCase in function declaration
-  staging: vchiq_core.h: use preferred kernel types
-  staging: vchiq: drop trailing semicolon in macro definition
-  staging: vchiq_core: drop extern prefix in function declarations
-  staging: vchiq_core: cleanup lines that end with '(' or '['
-  staging: vchiq_core: fix quoted strings split across lines
-
- .../interface/vchiq_arm/vchiq_arm.c           |   4 +-
- .../interface/vchiq_arm/vchiq_core.c          | 763 +++++++-----------
- .../interface/vchiq_arm/vchiq_core.h          |  99 +--
- .../interface/vchiq_arm/vchiq_dev.c           |   4 +-
- 4 files changed, 335 insertions(+), 535 deletions(-)
-
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+index 083abfd8e212..a205f769d5d3 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+@@ -257,7 +257,6 @@ find_service_by_handle(unsigned int handle)
+ struct vchiq_service *
+ find_service_by_port(struct vchiq_state *state, int localport)
+ {
+-
+ 	if ((unsigned int)localport <= VCHIQ_PORT_MAX) {
+ 		struct vchiq_service *service;
+ 
+@@ -3338,7 +3337,6 @@ vchiq_queue_message(unsigned int handle,
+ 	if (!size) {
+ 		VCHIQ_SERVICE_STATS_INC(service, error_count);
+ 		goto error_exit;
+-
+ 	}
+ 
+ 	if (size > VCHIQ_MAX_MSG_SIZE) {
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+index 3ef4cbe1053c..de1e861c4ed3 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+@@ -14,7 +14,6 @@
+ 
+ #include "vchiq_cfg.h"
+ 
+-
+ /* Do this so that we can test-build the code on non-rpi systems */
+ #if IS_ENABLED(CONFIG_RASPBERRYPI_FIRMWARE)
+ 
+@@ -260,7 +259,6 @@ struct vchiq_service_quota {
+ };
+ 
+ struct vchiq_shared_state {
+-
+ 	/* A non-zero value here indicates that the content is valid. */
+ 	int initialised;
+ 
+@@ -449,7 +447,6 @@ struct vchiq_config {
+ 	short version_min;  /* The minimum compatible version of VCHIQ */
+ };
+ 
+-
+ extern spinlock_t bulk_waiter_spinlock;
+ 
+ extern int vchiq_core_log_level;
 -- 
 2.33.1
 
