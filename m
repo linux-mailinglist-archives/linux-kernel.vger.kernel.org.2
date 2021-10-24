@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2B14387F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE1F4387FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhJXJkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhJXJko (ORCPT
+        id S231285AbhJXJlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 05:41:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59698 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhJXJlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:40:44 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E53C061764;
-        Sun, 24 Oct 2021 02:38:23 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 11:38:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
-        t=1635068301; bh=jjiMz4s+JGUKKGZyYM9FJJ4O/T2nnh2DazSM6/l44Aw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EDbfTU8QzWVk8K4ZJNHDRU3HlixRoKfsAxgakH+mhIM40hZ3fcQIKaujVuB06c08H
-         lQaxuWqEwXgaW3HM6bwz5ihNaxjvnHMkrwDUHGb1Nxam3jYY3BHFNljt5iQOe58Jsc
-         JAlckLcSmwPObtLVp9hyMqtoJCqxh5QleMkMazoU=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [RFC] Expose request_module via syscall
-Message-ID: <97e88a06-4dfc-485c-b562-bed2a8e4b1b8@t-8ch.de>
-References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
- <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
- <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
- <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
- <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
+        Sun, 24 Oct 2021 05:41:51 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A53D5212C7;
+        Sun, 24 Oct 2021 09:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635068369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vuTD4zIpXIIolvi1mvcxXKYMjEbUsTLc1K8pY5kmzJY=;
+        b=w1pjHNmigA/zY3vnO+sjADo2HIZYS6YD+nihmmDp82N/vKhFxj6s+eeE/v1IY7QXPnLZML
+        e4x4Ub7O+QDyphsPQmv4vpz/xz83vtwsQLHO/qemfj8Lw7W1Z4mFTxHQcOoGuWh7CHCguE
+        8owR0Ug96eWrBqyv1UEB97Aoa1n9yk4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635068369;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vuTD4zIpXIIolvi1mvcxXKYMjEbUsTLc1K8pY5kmzJY=;
+        b=cxVbIMeOWGxqiCKdIeLcNeSvelTk1PyRr8mnwBfZmcsJY7tGEDjFpwAjm4wNnCtz+VjRoF
+        JUETGo/AStr6FtBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EFB313310;
+        Sun, 24 Oct 2021 09:39:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id T6uMItEpdWHqOwAAMHmgww
+        (envelope-from <bp@suse.de>); Sun, 24 Oct 2021 09:39:29 +0000
+Date:   Sun, 24 Oct 2021 11:39:23 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v5.15-rc7
+Message-ID: <YXUpy05ML9v1enXe@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-19 09:56+0200, Thomas Weißschuh wrote:
-> On 2021-09-18T11:47-0700, Andy Lutomirski wrote:
-> > But I admit I’m a bit confused.  What exactly is the container doing that causes the container’s copy of modprobe to be called?
-> 
-> The container is running an instance of the docker daemon in swarm mode.
-> That needs the "ip_vs" module (amongst others) and explicitly tries to load it
-> via modprobe.
+Hi Linus,
 
-If somebody stumbles upon this specific issue:
-The "ip_vs" module will be autoloaded in future kernel versions with
-https://lore.kernel.org/lkml/20211021130255.4177-1-linux@weissschuh.net/
-applied.
+please pull a single change adding Dave Hansen to our maintainers team.
 
-> > > If so the seccomp notifier can be used to intercept this system call for
-> > > the container and verify the module against an allowlist similar to how
-> > > we currently handle mount.
-> > > 
-> > > Christian
+Thx.
+
+---
+
+The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
+
+  Linux 5.15-rc6 (2021-10-17 20:00:13 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc7
+
+for you to fetch changes up to 0a30896fc5025e71c350449760b240fba5581b42:
+
+  MAINTAINERS: Add Dave Hansen to the x86 maintainer team (2021-10-21 13:55:42 +0200)
+
+----------------------------------------------------------------
+- Add Dave Hansen to the x86 maintainers team
+
+----------------------------------------------------------------
+Thomas Gleixner (1):
+      MAINTAINERS: Add Dave Hansen to the x86 maintainer team
+
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
