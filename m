@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE14A4387C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D6B4387CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhJXJQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:16:19 -0400
-Received: from mout.gmx.net ([212.227.17.21]:35965 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhJXJQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:16:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635066819;
-        bh=u4BDV842s250WtD/zqx91qjKHjMx0jeT2lBCtVYkKFQ=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=GHr13pDoKDmRCCNwpDSuBRGnFtZsu5hy5iDFBSguvtOFAQHgOgwDFnoJU/fAp9fEe
-         J6NLqE2FJJGscE6oUdB+pQCvdKs3/fY0nUEoysPRUzKVTxZfhhzhfZwLP8wYYsgTW5
-         PIOaiDpYY36+J2atn6N8BRC2MhTLtBm/tlLS4SYY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7iCg-1mji0838C2-014ooa; Sun, 24
- Oct 2021 11:13:38 +0200
-Date:   Sun, 24 Oct 2021 11:13:28 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2][next] sysctl: Avoid open coded arithmetic in memory
- allocator functions
-Message-ID: <20211024091328.GA2912@titan>
-References: <20211023105414.7316-1-len.baker@gmx.com>
- <YXQbxSSw9qan87cm@casper.infradead.org>
+        id S231290AbhJXJTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 05:19:08 -0400
+Received: from mail-eopbgr140127.outbound.protection.outlook.com ([40.107.14.127]:14414
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229638AbhJXJTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 05:19:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rh47TM0tSALRwZxWhfDxrUu5zMyagqGaxTjq5GvCxajBh0zpdtf0ErJXSHMnmhIonyCshUGCNMrQ8d0MFs5Gm7JcsN9sXS8uZvjRgwR4pDhx96em2oVwr+JoFujThJ/wdUtdcTxctPmUS9I1hVaeqc53DAzYbWRWOfBIN1LQxzpKqX+oE/ywSfSVwexXftNVBt4N3coG5fO8hOa42iTb1tFgVaz8Z+9/fnuHhiosiwta1p0moTRaBIukvB8Cw8Zedn3CwNI7nYGsDIXR/fm0fxPQEvtvxxcJmi1ux9YPEcdukAd2oZ7wz17sNdgu0Lh8a/kpNdEbbVMRyoN4DQToyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hu2T80M/EaknlX9p0bLRRQKbYVdrUFofE2g3b1uypws=;
+ b=Naq7tuYqiUh3LhbDdgUJVj+sl6HFHjP2TRed8lw6x83nMF28j56f3dt1IAjWoXigNerYx08237UEYUTqtZwY7Lm1fUZuhXwteTjWRDgQLDYAdLuXkQK0RdY4TTs4j7i+9COLvGNTjtz6Z2n/nMSU4bXDR+qgrTH5LDe7bVIBU/hUXOhZV8OVomby5N6k9ZNUMPEthowyOefh5MFvzrG8ArJTiVVJ3gMJ7wgla0mjnNHSDYr8ivaTOYUHi6mp88w6gXDWH3l9NDFFw7ZbeUWyLEDoo/l43bLsBro231qyGJHbRSujUrflnEsO8aK6bTn07PbVGcXpUoIuKAtceeJryQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=opensynergy.com; dmarc=pass action=none
+ header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hu2T80M/EaknlX9p0bLRRQKbYVdrUFofE2g3b1uypws=;
+ b=QLutZQkZ0XE/9CeKFNm9jvbybguy5zBUD4QEgdsiIAlJW+RDSdpd1zfMlglWN8QD1O2vIeXLT6DzuKC4QGB+RcuIyAU8+O0OSfMb5XPa3BBgLhy9ba0fblDWKXZPp6dfTHdpG/CEG00Ej8ILvdkMnoSm5024bbzarQtcoDY7TfQ=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=opensynergy.com;
+From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+To:     jbhayana@google.com, jic23@kernel.org
+Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
+        andy.shevchenko@gmail.com, andriy.tryshnivskyy@opensynergy.com
+Subject: [PATCH v7 0/2] iio/scmi: Add reading "raw" attribute.
+Date:   Sun, 24 Oct 2021 12:16:25 +0300
+Message-Id: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AS9PR0301CA0035.eurprd03.prod.outlook.com
+ (2603:10a6:20b:469::15) To AM6PR04MB6359.eurprd04.prod.outlook.com
+ (2603:10a6:20b:fc::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXQbxSSw9qan87cm@casper.infradead.org>
-X-Provags-ID: V03:K1:0wC+Ys0wsn04QEXB/dcut5eKpX4NL21c+/eYDbpuoFecMyvTA/t
- hBDYpHVn/f9unZCu1QOu0CwdHO7JxDDvwoUn+N+PVIRvz1CLNAftsq70oiWVHO1G0ppkx4+
- eZ+DxkTQDuNvd/1whCK5t+PYdK5tqbrMoIijP9e8TxcQqqA21xyeTPvf7+54a7BpVFJzrqD
- dak/+ybJHBGHsECsVf27A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FDtNjSFQpoY=:8PbrYln+szkKRqFNAdfLBq
- 5AQ6KgEn1JwrOMCIkMVtC7T16zH4cVOHhgseAwX+VW3ozbJICpF1D0LoRpIrQUL5rypzrfn+p
- sfLUrqw838EXTI/k/UUbk4XvLbAkBMKFl8MDI84270oRqed5J92qsPGM69dA++xQjYhNvt7pH
- 7r6uf1eJTWi24k4JP18FvwjmWv/G5t7WHUt+g7VNuk7lzgIfy4C53DXyDCPhXq6/9yKFJg23U
- zMyf91esS35kNsYbbYgq/0MhQBRFFCFBIkiG0nuzmFKaHyo6IE1pgPAp9jGZcldcKXVeX5lm4
- Ys/1vMTpRgRlv/OnZW3uxYMmjZORJnOSCwaKj1GL5sdnLOpsDZay1FqufA4XPwy+PtDFzusfr
- WNJapVLZ2TuHaMKlnmHo2oiyTRVM9aXAAc+ebI35FK2gbXeWT/FUK4Ztu43QLRhalf7l649Qw
- i7/fWaujWmZitCCeOSwRBlPKZY+j3WkflbaK3de0MtPkLRfA/wcmhrRDYtrZfdyL0cHIeQ8Pw
- gTuWNGKyx0OVkbsqPXoIHG/YjLCBqQom22fmsDADo47LOIYIGjZArdXDMBcQym7ezkhinMikR
- l14d7YYenVf7gqm9fnZTBRJwY+IJnwen8syS/axmty6gfvc/414+d7tVdNJ7UQMoxsWiEDkGn
- vWMWUbXIYDpnGI78a2OLYv7X5VU3vWng7+MTmIw1U3hMj3SiO9T7kSVwy8kDTUbZr+4oPzesq
- IL5/bZbCu7TarCYnpjaCEVLsVkHhIzIqNlG9eiMsaAGPVGyMZOeXnITZBFmXFg9By3CBSwDPY
- cD0q0a2iAqwPOJ74WSzbx/6AQayrWAQFRiH1dCZE81WpU8UiVP4UcB12DVCbPg1zywB/8jfYx
- rtTaOmivnqg0vo/g4EXngOVxs1OnNmBPrsm8YeMgED9xBz9fSwgUNowtNQYNIg36eW4bI+9KT
- lVuxa574SAlCG32/iRvc6tE6cbK+kGZhihSCUN6WygYrjHGblgjrRlRlH9Y+92uOtEm/rjSo7
- 7QYojATFHSO42X/cCpqhcK/bfKwyGr+Vj5FcgtqNerePFi3oNHFSmRUFhQKTFA1YgtimwzlhL
- wKbP/vw8SP5ks8=
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 63ea2a81-8f24-4c72-4d93-08d996ceff68
+X-MS-TrafficTypeDiagnostic: AM5PR04MB3011:
+X-Microsoft-Antispam-PRVS: <AM5PR04MB3011031E11E22EFA93190205E6829@AM5PR04MB3011.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JJsyABD2yAcN/ehrMAUBAGkLDj1qG9mvSnp33846lwd8zys8+WYYVrUPtz+ccRSnMdIE+L1hjQU2Q6D/JQJ0kP4v/hqsxrPNcWQjS2JxMw759ygoLCDPTFaD8e9EvlOaNBFw7Igcn8VZC+tbAtUDejmQkD2bZknRbP8xCzEP06NYLEl+fXZc1NvKD141anlZBLVXrkCwoH91JnNM+csGY6psuykx+05PDg3228bRWD1vdnzAsTb3TeUrR66JYcTBEFVtbNqUDYj5I8KoVNCL2Kbc3f+UnN8QaY10FZyNlUJaW9KLpE8IpEyG4EsNgJsBXZzoh8lzyusycab26Ok7HlgPsIqtlX7vCAyIclvlJXBX1hT+0prg1c98QJZ/o9on60lmcv+NoqLwb1gWn9Clml6FjZdkPBchYdTMIj1L5yDdgPNCxulMkZnnM293hHi9w/nFB9PmI2HQEbfV65D52iJjmSLIKKxYxwH19yBnWvrt1xMBWf1e3+TIPdHQ736V/dCnPKg77Dge3S/nX/EpIBKjKa+NtqRhOrxTQ9VX7Cts3+30rLr7zg05iB6/jsM0+m/Rb4Fp1e/niTj6XAr5ARN+Jv6rPbeorfGRTKckmZC2pMqgFBPxRptG/IQvomc+fErORT1CpisJEIo4K7HBkBFUprlktE9jtTDOqr7mSG0P4AttarIH7ielaDbDDob9BgxsfVpNic+f8BI98Zd4pQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(136003)(376002)(39830400003)(38100700002)(26005)(66556008)(5660300002)(2616005)(66476007)(38350700002)(42186006)(66946007)(36756003)(55236004)(86362001)(316002)(83380400001)(44832011)(107886003)(4326008)(508600001)(2906002)(1076003)(186003)(8936002)(4744005)(8676002)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6YttaIsl96i2DFLMyYeb10KQEN54ZNhEd1lcy4wvJbGgZ2NN/ydOTCwZsy/s?=
+ =?us-ascii?Q?eftDsgvPxEXaFqWkEZbVTaZM2MCDD48nb3iS2dhN3WOrCXlSeKDjvxU9GueE?=
+ =?us-ascii?Q?BLwaJuAIFu6XE+jyv4HkjWvV24AMBcvgiRU7dCYNKTtd8fMfSKGYYApHBIxQ?=
+ =?us-ascii?Q?EgvvPTHDeMED5wh1rIlfYnOiGV/kEOvN+TdOxHUtk6otbHM4nXRqrXbGu8S4?=
+ =?us-ascii?Q?bl3iyjICNt86NMHUjp+30gVZjPPazNyIWWipQ0D3N31bYpF17fF6m3cUvl//?=
+ =?us-ascii?Q?PMrBbfD4OQA7POb/3fICwo4jPL3YpH1xBt5mMOb/41oxIh1u2lvq5I89cH2U?=
+ =?us-ascii?Q?QPiku1OTjVJ0GWa6+CnboZeigzV0CITSF5ItW/TgYecGa4h/g3OFbhOHPe+N?=
+ =?us-ascii?Q?IoAFuyi8Ip4vHq73hgJhA/hGjESgd2J2u6v9VHgSITcLfbbb/GLT2vCfZbhZ?=
+ =?us-ascii?Q?c60I7L9avA/aF3l6iJrGbTpgSzhOXw8+BkrtInb8w/BZ1mtHGmSU0jYABbPW?=
+ =?us-ascii?Q?AlAn249QYMquiyErmM6+9G4FaCOGQmjKmWtH4+BoGKcMkONjsfYtd9rBLwmQ?=
+ =?us-ascii?Q?NygQcL7hs8sWUPf+QGCZ0R/z4NwmdIYWQiHYxvlcC8C6eOcFt9gMgHvPKQQt?=
+ =?us-ascii?Q?hfIWFktvrLojNQ58vSaFojNiPkdnvmH4PQeO9CU1M3HOnt+IKsZkkDWFhzF0?=
+ =?us-ascii?Q?SlPTP+Z//Db7xqxGWq9ieUBOswQukkj7QfeatLszvmEnWW1oz9F9iRYnRc8C?=
+ =?us-ascii?Q?DOOus8tVN0FhQdeXphufLI6xRpndg+m9KKmIIeBXM6d1SvVWhrzOgxvH7zB1?=
+ =?us-ascii?Q?cYCS5X5BDAf3dZO97IsD8tKo0Nqg03729eSQKLJcB4G1/DYdhbr7u1WcllP7?=
+ =?us-ascii?Q?BOKcmpuHiHxkHTSZ8GCZONLnKTfrrUaPKRq13p10r+D0CDDXe7k/I2OhpMif?=
+ =?us-ascii?Q?znvXP3Wf0KwZJNOzWwStMyxp6PA17wjVD99HRF2E0XJq/gF38s7JPBLR5qaT?=
+ =?us-ascii?Q?Kjh5IBcXgPpjmP+BVJIDG9W3GfXLjAXQVff859J58JkQRcZMurIH4s+kuZ/b?=
+ =?us-ascii?Q?DEnHl0HMk29nT3/bV0uFRMd/QIyyKIBN5J8io82HchCQv9+RJtweHh72078L?=
+ =?us-ascii?Q?br9Lt7aP/4xQ+D2NV1viwRWHtzNzODsCFPKvyjAVi1ToeLiaItHP60njgQLs?=
+ =?us-ascii?Q?oenXRCCgP0z38wuJh4qhb/NEhkLtY0odrJKuyzz5KleqBFcT8tdFuqGOGaOO?=
+ =?us-ascii?Q?x8iX4Q9BDcakXgJRoyjlz51CUb/DA9C3RlZ/Ye0+tUSXde59uhXJcI4IjviV?=
+ =?us-ascii?Q?jJSRMvghg/lnIuBJ4y3dFt1k?=
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63ea2a81-8f24-4c72-4d93-08d996ceff68
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2021 09:16:44.3699
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eby5KMjVDLaV4o90GXQ5LRgO9KsSx0wRLBjRSOsgzbO8wtprmqCTL/FKRtHiovoisDG0c4j3j2uY5C1ZVuYKPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+Introduce IIO_VAL_INT_64 to read 64-bit value for
+channel attribute. Val is used as lower 32 bits.
+Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+reading "raw" attribute in scmi_iio_read_raw.
 
-thanks for looking at this. More below.
+Patches are based on v5.14.
 
-On Sat, Oct 23, 2021 at 03:27:17PM +0100, Matthew Wilcox wrote:
-> On Sat, Oct 23, 2021 at 12:54:14PM +0200, Len Baker wrote:
-> > Changelog v1 -> v2
-> > - Remove the new_dir_size function and its use (Matthew Wilcox).
->
-> Why do you think the other functions are any different?  Please
-> provide reasoning.
+Any comments are very welcome.
 
-I think it is better to be defensive. IMHO I believe that if the
-struct_size() helper could be used in this patch, it would be more
-easy to ACK. But it is not possible due to the complex memory
-layouts. However, there are a lot of code in the kernel that uses the
-struct_size() helper for memory allocator arguments where we know
-that it don't overflow. For example:
+Thanks,
+Andriy.
 
-1.- Function imx8mm_tmu_probe()
-    Uses: struct_size(tmu, sensors, data->num_sensors)
-    Where: tmu has a sizeof(struct imx8mm_tmu) -> Not very big
-           data->num_sensors -> A little number
+Andriy Tryshnivskyy (2):
+  iio: core: Introduce IIO_VAL_INT_64.
+  iio/scmi: Add reading "raw" attribute.
 
-    So, almost certainly it doesn't overflow.
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
+ drivers/iio/industrialio-core.c            |  3 ++
+ include/linux/iio/types.h                  |  1 +
+ 3 files changed, 60 insertions(+), 1 deletion(-)
 
-2.- Function igb_alloc_q_vector()
-    Uses: struct_size(q_vector, ring, ring_count)
-    Where: q_vector has a sizeof(struct igb_q_vector) -> Not very big
-           ring_count -> At most two.
 
-    So, almost certainly it doesn't overflow.
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+-- 
+2.17.1
 
-3.- And so on...
-
-So, I think that these new functions for the size calculation are
-helpers like struct_size (but specific due to the memory layouts).
-I don't see any difference here. Also, I think that to be defensive
-in memory allocation arguments it is better than a possible heap
-overflow ;)
-
-Also, under the KSPP [1][2][3] there is an effort to keep out of
-code all the open-coded arithmetic (To avoid unwanted overflows).
-
-[1] https://github.com/KSPP/linux/issues/83
-[2] https://github.com/KSPP/linux/issues/92
-[3] https://github.com/KSPP/linux/issues/160
-
-Moreover, after writing these reasons and thinking for a while, I
-think that the v1 it is correct patch to apply. This is my opinion
-but I'm open minded. Any other solution that makes the code more
-secure is welcome.
-
-As a last point I would like to know the opinion of Kees and
-Gustavo since they are also working on this task.
-
-Kees and Gustavo, what do you think?
-
-Regards,
-Len
