@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B30438C61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4A438C3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhJXWhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:37:31 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:46611 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229801AbhJXWh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:37:29 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5244A5C0877;
-        Sun, 24 Oct 2021 06:48:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 24 Oct 2021 06:48:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=RO55Ba
-        /oTFdyyoQvL2yZtyKP9gtl/QEKpvDu9LwgTfQ=; b=hm2/ZzcyDYVloZ6TmnPZqp
-        efKDQbcTzrwBIEpoVjQV7RLQX6G8+LiGpR2kDx8+B37imUMGeRGiVp0+R07Sr52r
-        M8iYoR4amf3UtaS7m4UmCVz0oswF9y/NuZV5isqwpznEeGQ8S3HrgmWQ6u68bATa
-        aAaeI3jwqTkmWxO7IqIgceJNRrPeacW57ERjY7V+vPXxaSGXOgPuGK5lKQRsT0yp
-        Cw3bVGj3BiZSUToA0zDYWCAH6SdRsKqrGpvZ2r+jdZka66ZB3OL1bV0ihnf+tGct
-        6PgcE4I0YNc9q/ykASkCqaOX4RudT9l2Bd7Sx70UOMTUvyiyVPUAF2knWlhPXPYw
-        ==
-X-ME-Sender: <xms:_Tl1YRCgWQVoa05tqdzH0sYzZ-RAF6u4g0cvFB5PCPFQjFgz5XIjdw>
-    <xme:_Tl1YfiirYPRYP7TvK-EF8zGuuga6ZehYP_HSqAqpGxc2gWsTLKUyB9hgmUgAOuIy
-    ZXggSa8mALM7Lc>
-X-ME-Received: <xmr:_Tl1YcmLWVUs104P8vpAYyUHuWZJTwPfHLkN_NZBLdiiFRZjlND8UnTDHHfiiNnyhA0Bb0R1HL_zUsBj2sqMOZ1nw1Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeffedgtdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:_Tl1YbyG5jpOIXGd94ZpH45JlSd-v5lBxcvYNSMEVn7vNieu0iL7dQ>
-    <xmx:_Tl1YWQKyKqP6Bz6T29103UjnNM-uMAjml1KeAGaix0YyQ9nu4mW8g>
-    <xmx:_Tl1YebgmD0zPL3rNLcgkoG_RpqlZLueiFn9z4v_4peKR_-DVct9RQ>
-    <xmx:_jl1YTL7TybVDQ147Ma2ciLOZrkKh7B3W8SJpGjy9hPBrz9acv7AKA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 24 Oct 2021 06:48:29 -0400 (EDT)
-Date:   Sun, 24 Oct 2021 13:48:25 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
-Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
- traps on probe/remove device
-Message-ID: <YXU5+XLhQ9zkBGNY@shredder>
-References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
- <YXUhyLXsc2egWNKx@shredder>
- <YXUtbOpjmmWr71dU@unreal>
+        id S231627AbhJXWJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 18:09:33 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37775 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229641AbhJXWJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 18:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635113217;
+        bh=Pgk5sI5E8F8/qyIS9GAXaMmz0H9l22npuvWEwucuoy4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=PXMU89W0doz1RelCv3iRiJ82p5HI0H9/sJ9UeCNZ+RggrAIA+4tLguKeYMYBy7Wg7
+         2UZFgh5/UOgyye96tOMBOZ6oEUGjnBza4tBj+BiMYz2VZvb3eA9EIxYjfXFAH3oeXd
+         s5uuvZywQuLwIksNsDN8ZHmv66h6UlFXGY5YDan8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from corona.crabdance.com ([173.228.106.131]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MAwbz-1mXuxc0K3V-00BL8d; Mon, 25 Oct 2021 00:06:57 +0200
+Received: by corona.crabdance.com (Postfix, from userid 1000)
+        id DF88427F489; Sun, 24 Oct 2021 15:06:46 -0700 (PDT)
+From:   Stefan Schaeckeler <schaecsn@gmx.net>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stefan Schaeckeler <schaecsn@gmx.net>
+Subject: [PATCH] ACPI: AC: Quirk GK45 to skip reading _PSR
+Date:   Sun, 24 Oct 2021 15:04:45 -0700
+Message-Id: <20211024220446.2873-1-schaecsn@gmx.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXUtbOpjmmWr71dU@unreal>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hAX5y4v0PR2hBCCFKwVrPaCSmQOBlhIv82YFUXfPdDFUiET06na
+ sqbhQWn2tPlZ6AOsAfkb+zLl6Uyxpi3ov+Q85yOacum+6Ahe7Qd8fqMqAHLD3LMfvpLEzd+
+ zPXrLWZAaDdk2bZ055eWLQ5qRddOykzOSdk66YMESN2hf5XCh6EBz5JpC1bi1TmSZdXYNCH
+ TkYMloifs/xgR8h9ewPow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WGvBVfFvGRI=:rTGq0xMNngw5sl/hGSA38V
+ aOMPDacPkh8DSGlcKT/wnqKHQY6ssHvEog3hYhecWo8ZtYCcPgmSbXF7l0Fyz55dpZo9pwCjj
+ 8cg7qzy4iwkdfdU63TsDxfrMc+e70bZ/ZczGsMTW4EudAZ80ewzJIRjOqi6yfNvV3ubHRzKfn
+ k6Zam5WExBkjuD2rySjpP1TgsqVZQsigI/Vlhexgj7St/lAFZRtDpRuH9uf+dO58IEvEBLI45
+ 8I2qzRIZ0nLDErTYGLI5adY2wn2hcD1CQh8v+bkxg1vrypjVdscMWDVGNckbU5D1xDpO63oRX
+ xh+pSwr+Iu7hvRT95Ncz/sOwv46GVL/jt5ZVQdZGsXmn7f9KvPH6J2Q+LjYVYPHiYTLnt78eG
+ iwLYaVMldiFYx65dLjK/5l750r3bYO7Hjr8cKVqfGUh1ccLIWAj74TJrHCC0Aq+8KjbRU+guG
+ 0YmGHVWRZ3RlMNBbAXOLEogFeSnHC384aIDaOg+f4lxExA2psyOi7cf2+3ZSUWh5Tu5f8Ggqb
+ T35o7W7vc2rszQ6vu9fQd5fRP4EWutvbnHFzMhQcoAOCvkkIN60cid/zZh67TKmfVTCChZS6w
+ Ri9pJn1m67w4DAqvxYy7irNc/UAg8rHn3kQok7ty8fhiqNQZBqhWcGxlGT8Ig6z0u5XrWwTfV
+ dgJklXr/PEaYbsmLcE6K8btqlispfFAAXib81F6hd7+cLSqGLvQJM3eZ7dNCWEg9q4wQCasnb
+ XQcflkcHg3hAJDEWKB11xTu2gcMhy4KmFNp+BkVdV8F33v5xUCH3gOmYNTSfemBf0OOQA6AEc
+ FRMtT6bQyl44ssopqjtPgG66SeblVm9js/SMepVa+KrOhQ4b9NOf/SNofLMP32FBYExuAuNoS
+ Ac1dsgWlhaLtLwxys5QqeoMvso0W3nYB7K9RsvMMJ9cF7V/+iJcczcWHbZJ2dyn4QZIhKldku
+ AWl+fR3A3QehDWLpIdSsVQh1CEhnV0yfkOCrG55BgyTv101Zk0LuXBt/WvjapOirsS83rWVjp
+ nKfKMai6qTSgrPNRjSKNu4DxX7DkhW7BEktMz1lJF4rQanTNZ/aNsVVOKpsEhkzHutE0dVViI
+ 14FTEy55YXHPsQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 12:54:52PM +0300, Leon Romanovsky wrote:
-> On Sun, Oct 24, 2021 at 12:05:12PM +0300, Ido Schimmel wrote:
-> > On Sun, Oct 24, 2021 at 11:42:11AM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > Align netdevsim to be like all other physical devices that register and
-> > > unregister devlink traps during their probe and removal respectively.
-> > 
-> > No, this is incorrect. Out of the three drivers that support both reload
-> > and traps, both netdevsim and mlxsw unregister the traps during reload.
-> > Here is another report from syzkaller about mlxsw [1].
-> 
-> Sorry, I overlooked it.
-> 
-> > 
-> > Please revert both 22849b5ea595 ("devlink: Remove not-executed trap
-> > policer notifications") and 8bbeed485823 ("devlink: Remove not-executed
-> > trap group notifications").
-> 
-> However, before we rush and revert commit, can you please explain why
-> current behavior to reregister traps on reload is correct?
-> 
-> I think that you are not changing traps during reload, so traps before
-> reload will be the same as after reload, am I right?
+Let GK45 not go into BIOS for determining the AC power state. BIOS wrongly
+returns 0. Hardcode the power state to 1.
 
-During reload we tear down the entire driver and load it again. As part
-of the reload_down() operation we tear down the various objects from
-both devlink and the device (e.g., shared buffer, ports, traps, etc.).
-As part of the reload_up() operation we issue a device reset and
-register everything back.
+The mini PC GK45 by Besstar Tech Lld. (aka Kodlix) just runs off AC. It
+does not include any batteries. Nevertheless BIOS reports AC off:
 
-While the list of objects doesn't change, their properties (e.g., shared
-buffer size, trap action, policer rate) do change back to the default
-after reload and we cannot go back on that as it's a user-visible
-change.
+root@kodlix:/usr/src/linux# cat /sys/class/power_supply/ADP1/online
+0
+
+root@kodlix:/usr/src/linux# modprobe acpi_dbg
+root@kodlix:/usr/src/linux# tools/power/acpi/acpidbg
+
+- find _PSR
+   \_SB.PCI0.SBRG.H_EC.ADP1._PSR Method       000000009283cee8 001 Args 0 =
+Len 001C Aml 00000000f54e5f67
+
+- execute \_SB.PCI0.SBRG.H_EC.ADP1._PSR
+Evaluating \_SB.PCI0.SBRG.H_EC.ADP1._PSR
+Evaluation of \_SB.PCI0.SBRG.H_EC.ADP1._PSR returned object 00000000dc08c1=
+87, external buffer length 18
+ [Integer] =3D 0000000000000000
+
+that should be
+
+ [Integer] =3D 0000000000000001
+
+Signed-off-by: Stefan Schaeckeler <schaecsn@gmx.net>
+=2D--
+ drivers/acpi/ac.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
+index b0cb662233f1..81aff651a0d4 100644
+=2D-- a/drivers/acpi/ac.c
++++ b/drivers/acpi/ac.c
+@@ -61,6 +61,7 @@ static SIMPLE_DEV_PM_OPS(acpi_ac_pm, NULL, acpi_ac_resum=
+e);
+
+ static int ac_sleep_before_get_state_ms;
+ static int ac_check_pmic =3D 1;
++static int ac_only;
+
+ static struct acpi_driver acpi_ac_driver =3D {
+ 	.name =3D "ac",
+@@ -93,6 +94,11 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
+ 	if (!ac)
+ 		return -EINVAL;
+
++	if (ac_only) {
++		ac->state =3D 1;
++		return 0;
++	}
++
+ 	status =3D acpi_evaluate_integer(ac->device->handle, "_PSR", NULL,
+ 				       &ac->state);
+ 	if (ACPI_FAILURE(status)) {
+@@ -200,6 +206,12 @@ static int __init ac_do_not_check_pmic_quirk(const st=
+ruct dmi_system_id *d)
+ 	return 0;
+ }
+
++static int __init ac_only_quirk(const struct dmi_system_id *d)
++{
++	ac_only =3D 1;
++	return 0;
++}
++
+ /* Please keep this list alphabetically sorted */
+ static const struct dmi_system_id ac_dmi_table[]  __initconst =3D {
+ 	{
+@@ -209,6 +221,13 @@ static const struct dmi_system_id ac_dmi_table[]  __i=
+nitconst =3D {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "EF20EA"),
+ 		},
+ 	},
++	{
++		/* Kodlix GK45 returning incorrect state */
++		.callback =3D ac_only_quirk,
++		.matches =3D {
++			DMI_MATCH(DMI_PRODUCT_NAME, "GK45"),
++		},
++	},
+ 	{
+ 		/* Lenovo Ideapad Miix 320, AXP288 PMIC, separate fuel-gauge */
+ 		.callback =3D ac_do_not_check_pmic_quirk,
+=2D-
+2.30.2
+
