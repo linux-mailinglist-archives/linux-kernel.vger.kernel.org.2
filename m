@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02549438AFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 19:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CBB438AFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 19:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhJXRbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 13:31:40 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:44526 "EHLO 1wt.eu"
+        id S231822AbhJXRc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 13:32:28 -0400
+Received: from mout.gmx.net ([212.227.15.18]:38393 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhJXRbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 13:31:35 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 19OHSZC0018040;
-        Sun, 24 Oct 2021 19:28:35 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Bedirhan KURT <windowz414@gnuweeb.org>,
-        Louvian Lyndal <louvianlyndal@gmail.com>,
-        Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
-        Peter Cordes <peter@cordes.ca>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH 3/3] tools/nolibc: fix incorrect truncation of exit code
-Date:   Sun, 24 Oct 2021 19:28:16 +0200
-Message-Id: <20211024172816.17993-4-w@1wt.eu>
-X-Mailer: git-send-email 2.17.5
-In-Reply-To: <20211024172816.17993-1-w@1wt.eu>
-References: <20211024172816.17993-1-w@1wt.eu>
+        id S231290AbhJXRc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 13:32:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635096586;
+        bh=eJf292/lZFzvszJXQLPbd7P/v4bSpcZvX7PKS7XhsKs=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=ReDfyYeo49apVvB0odLLK/7xdF6Vcb/lxo8dsBEA7LGY8iQ2E28Dt8nodhXG9b/bu
+         uQ63tAT8mf2St+ZvdWp3XXPmhCrv/Lp6ONk0Mw92ohYZ2ETOevVBrOtBlV6qNzhR7/
+         2Isf8OwdSXP0kO2lS4bKy2Z3+CZ4M43ZMxetZOww=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MLiCo-1mNASn3W7c-00HcSB; Sun, 24 Oct 2021 19:29:46 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nvmet: prefer flex_array_size and struct_size over open coded arithmetic
+Date:   Sun, 24 Oct 2021 19:29:21 +0200
+Message-Id: <20211024172921.4110-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nXvwuaFef6387OyRsR8ktRo9t1nVZlLvmGBWTQ0LCcys0NB7oV2
+ qnV0JRZ0zDT9ZS1nL1szZ7q7Dp5lL4+sLpwFvqzVbc8OSxH9MYTlFLgcahgxkbEkAdLOVCA
+ sWDRal7DUONvR0VCtwYsrFyLwxR62POK59fPUFFhlewU7yUypeps05E0uBtaY1H5eiv0zuy
+ bZw5EgrNujNCCitXsqhbA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6AN4P+IrtkM=:klp7il6T9/RgIJo2pQzhDA
+ Mgsqnwf6pFMkXXq/+OwTSBeMu3TLa1ts+7cPFySclV6wz6S2qJcrhiUqrhiYiclkcOBoJKyaS
+ YGLGm5jE5fnkIOWk9p2NQiB6xXHjSdP3UElHyKgTWJBHmYJh4GUeqnJEE3FavfJ5SLykWJHQm
+ p8JgLexZZ1A5V29n7L0nC3JogfKw7A7OdpsMtzhu3ApZICS+6RxcVwMjkLSbLVjofK3j/g/xg
+ /ZdBwkAjFaWHdXtw6B0+MzBRheYUPntEuTHXPdq2+WVLefp9HQklAGHDwwezcXRtcXzxY6Z98
+ JhgNc8k2ECFviYpOKdBbfAcDXuHFjN6dFRKNlIFfoo2bwxOVaWdW4DVIZzY4l6d/59byxn0P7
+ YlEDewFj4ZoRenpGC594bWZw+PlwhkchN9gdtbuyL6WoDhpItTM31IdbuH995dFFKuALnGHIu
+ m0ha4eGaH1jsXuH5zlQW1touUPHgw9UKUN8c6nKVI9YlBZAuycHkZE7RvEUKgxPSfGY2r+uFZ
+ cMEqXfG6vNnyDNWOAWeWkZ/l4YnZ1O/cQMHi2pJ0Eo6XzlL8Zvb0fFOhSX1YCbGV+j0WbdAoq
+ sNCNCYkag4s/Vnu/glsUAQuvjviIaLv2i+Y+9nx7CukS404PJRIPnOHbz6DoK0xaDiiXuId0+
+ g6pgq4vkxb783A7zM4ya3KT8JYt82vMh16eAib/9Wr2rqzaFg3txTjdfv7OJLejEx28rpYKJM
+ /RByiebfAs0u+T3Di+K6gzGnputTx5VIXD3dGPXiTsZACqXHqgxhtThnhZt1Ek4iJFIoA3Yha
+ VmRvDKw/PtM8bTDoo55rajW1w6vGHBViV5HKpecRlldYLFAHKJg2RbDIWXWeQGv1dXj427sPa
+ D6oh1+8zaC7NHJu4E1guWow+6ZZ+kjUE+RntjzZMZBdS2skQa4ZKrnUOPdtB07//oZ8PWap/j
+ tdENU/dCMV+8u7loj0+CVX9WHZvwJonhn79FHiLR/yvYwkjtw+vEg+RxS5A0g8GAaoOJK7585
+ 9EyNztWi0VTEyzdgmGLaIyXTWQeHiWJoxql4TJB1Ob5LlGXKHm8yCTg1sS5UQ0uvalBXrMYYH
+ 3U19DJxPaIkXMw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ammar Faizi reported that our exit code handling is wrong. We truncate
-it to the lowest 8 bits but the syscall itself is expected to take a
-regular 32-bit signed integer, not an unsigned char. It's the kernel
-that later truncates it to the lowest 8 bits. The difference is visible
-in strace, where the program below used to show exit(255) instead of
-exit(-1):
+In an effort to avoid open-coded arithmetic in the kernel [1], use the
+flex_array_size() and struct_size() helpers instead of an open-coded
+calculation.
 
-  int main(void)
-  {
-        return -1;
-  }
+[1] https://github.com/KSPP/linux/issues/160
 
-This patch applies the fix to all archs. x86_64, i386, arm64, armv7 and
-mips were all tested and confirmed to work fine now. Risc-v was not
-tested but the change is trivial and exactly the same as for other archs.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/nvme/host/multipath.c   | 2 +-
+ drivers/nvme/target/admin-cmd.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Reported-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-Cc: stable@vger.kernel.org
-Signed-off-by: Willy Tarreau <w@1wt.eu>
----
- tools/include/nolibc/nolibc.h | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 954e84df6eb7..7f2071f2460c 100644
+=2D-- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -562,7 +562,7 @@ static int nvme_parse_ana_log(struct nvme_ctrl *ctrl, =
+void *data,
+ 			return -EINVAL;
 
-diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index 7f300dc379e7..3e2c6f2ed587 100644
---- a/tools/include/nolibc/nolibc.h
-+++ b/tools/include/nolibc/nolibc.h
-@@ -414,7 +414,7 @@ asm(".section .text\n"
-     "xor %ebp, %ebp\n"          // zero the stack frame
-     "and $-16, %rsp\n"          // x86 ABI : esp must be 16-byte aligned before call
-     "call main\n"               // main() returns the status code, we'll exit with it.
--    "movzb %al, %rdi\n"         // retrieve exit code from 8 lower bits
-+    "mov %eax, %edi\n"          // retrieve exit code (32 bit)
-     "mov $60, %rax\n"           // NR_exit == 60
-     "syscall\n"                 // really exit
-     "hlt\n"                     // ensure it does not return
-@@ -602,9 +602,9 @@ asm(".section .text\n"
-     "push %ebx\n"               // support both regparm and plain stack modes
-     "push %eax\n"
-     "call main\n"               // main() returns the status code in %eax
--    "movzbl %al, %ebx\n"        // retrieve exit code from lower 8 bits
--    "movl   $1, %eax\n"         // NR_exit == 1
--    "int    $0x80\n"            // exit now
-+    "mov %eax, %ebx\n"          // retrieve exit code (32-bit int)
-+    "movl $1, %eax\n"           // NR_exit == 1
-+    "int $0x80\n"               // exit now
-     "hlt\n"                     // ensure it does not
-     "");
- 
-@@ -788,7 +788,6 @@ asm(".section .text\n"
-     "and %r3, %r1, $-8\n"         // AAPCS : sp must be 8-byte aligned in the
-     "mov %sp, %r3\n"              //         callee, an bl doesn't push (lr=pc)
-     "bl main\n"                   // main() returns the status code, we'll exit with it.
--    "and %r0, %r0, $0xff\n"       // limit exit code to 8 bits
-     "movs r7, $1\n"               // NR_exit == 1
-     "svc $0x00\n"
-     "");
-@@ -985,7 +984,6 @@ asm(".section .text\n"
-     "add x2, x2, x1\n"            //           + argv
-     "and sp, x1, -16\n"           // sp must be 16-byte aligned in the callee
-     "bl main\n"                   // main() returns the status code, we'll exit with it.
--    "and x0, x0, 0xff\n"          // limit exit code to 8 bits
-     "mov x8, 93\n"                // NR_exit == 93
-     "svc #0\n"
-     "");
-@@ -1190,7 +1188,7 @@ asm(".section .text\n"
-     "addiu $sp,$sp,-16\n"         // the callee expects to save a0..a3 there!
-     "jal main\n"                  // main() returns the status code, we'll exit with it.
-     "nop\n"                       // delayed slot
--    "and $a0, $v0, 0xff\n"        // limit exit code to 8 bits
-+    "move $a0, $v0\n"             // retrieve 32-bit exit code from v0
-     "li $v0, 4001\n"              // NR_exit == 4001
-     "syscall\n"
-     ".end __start\n"
-@@ -1388,7 +1386,6 @@ asm(".section .text\n"
-     "add   a2,a2,a1\n"           //             + argv
-     "andi  sp,a1,-16\n"          // sp must be 16-byte aligned
-     "call  main\n"               // main() returns the status code, we'll exit with it.
--    "andi  a0, a0, 0xff\n"       // limit exit code to 8 bits
-     "li a7, 93\n"                // NR_exit == 93
-     "ecall\n"
-     "");
--- 
-2.17.5
+ 		nr_nsids =3D le32_to_cpu(desc->nnsids);
+-		nsid_buf_size =3D nr_nsids * sizeof(__le32);
++		nsid_buf_size =3D flex_array_size(desc, nsids, nr_nsids);
+
+ 		if (WARN_ON_ONCE(desc->grpid =3D=3D 0))
+ 			return -EINVAL;
+diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-c=
+md.c
+index 403de678fd06..6fb24746de06 100644
+=2D-- a/drivers/nvme/target/admin-cmd.c
++++ b/drivers/nvme/target/admin-cmd.c
+@@ -264,7 +264,7 @@ static u32 nvmet_format_ana_group(struct nvmet_req *re=
+q, u32 grpid,
+ 	desc->chgcnt =3D cpu_to_le64(nvmet_ana_chgcnt);
+ 	desc->state =3D req->port->ana_state[grpid];
+ 	memset(desc->rsvd17, 0, sizeof(desc->rsvd17));
+-	return sizeof(struct nvme_ana_group_desc) + count * sizeof(__le32);
++	return struct_size(desc, nsids, count);
+ }
+
+ static void nvmet_execute_get_log_page_ana(struct nvmet_req *req)
+=2D-
+2.25.1
 
