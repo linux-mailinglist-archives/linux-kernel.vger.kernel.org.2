@@ -2,162 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D859443884F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 12:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F00438855
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 12:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhJXK2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 06:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S231519AbhJXKgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 06:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhJXK2D (ORCPT
+        with ESMTP id S229868AbhJXKgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 06:28:03 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C21C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 03:25:43 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id fv3so49804pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 03:25:42 -0700 (PDT)
+        Sun, 24 Oct 2021 06:36:13 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3494FC061348
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 03:33:53 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id s136so2312027vks.5
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 03:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iGbgQOCj+oOFbXt9SNh5T326Ohx0VeTB83ysW3crHq4=;
-        b=ZpaNlTJVE9SqNuE3roG2fOTn1h1LCC6cadV/n51nWUQf/ij4fyBn3zbbZ6DVJqC3eF
-         q1zwIcA6BgLRPe+Monfd+MZuneGdETiXG0TwomI717i2yaTrpQ5k7Z+E50k/hrEp9V/m
-         68Ej0tlsblvLPj0GlzgtZxitFLE44catnBca1/y331ahbGzf0rPbzXGHmy73hbMdKiMG
-         yjYu1kgDY9z6ptZdaoj4Nc8C0imm5eq9qUuDkORi1nbiSDsZjr+cgsCQ6tOppVRRBxbI
-         NDrVivpYePU7na8ORZa4smSSSB6xfoO9xR3nzgB3NUTbhxvtGB4l2yOL2ybW9F9puyHi
-         EhMA==
+        d=usp.br; s=usp-google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=/aYNmBhOsLowuk15bZQ2XtTVmZBS0SEagXWIBEMDC7M=;
+        b=x6+ZqtTKK7odxsvzlhnmqf+rwhYwtvry3aGMDJJ1YuoVa+qsplCT+uWOeLa732U8Y+
+         mhX5HF61cUUYwxz8BdwZEvLCRq/LSlNYApYeC2c2ZQQ7ShMj2uGD5Kj0NdksS7DnAJCz
+         4SwJsuMjP86EtoigMSIxPhFBE/Us67eSYHi71mpLQQz78yZK9y4CTQ3PGa0WmeSI4rsA
+         9pyL1svkfjhIUdNLs34TT4YeNs8TARrMuN9EXjgAoqpP4nSogpcQuDIo8zkdI06waU6f
+         rhPLEeXqxMT39NP6nzoIDisz5BAqg6TIy3RaFev/y/0U5+K2pktuelgGJR1rQQ55HXod
+         fWzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iGbgQOCj+oOFbXt9SNh5T326Ohx0VeTB83ysW3crHq4=;
-        b=Wv6IVF6OvJlgWPK/ChqjYrvJQ/Iq6D+08Qoch157xqG9QZkDM1xLf8LLbpnMEQNg68
-         a82bhpc7Zop8ZHII511B5IQnU+7QtNgUy+T9zKM9pv98+w6lKlhfXj5NZvG10Dcf6dTO
-         aMSbrm6FcpLEOUupiIljpWGUJi4YjKfKH3zQGRR9OqujhAde2U8jPX0CDvPX2nlcNdIO
-         A8w3DannbZ8G1+tstO1djyzICO968BXOGKNdXKlwAkhxYpO6kPp4EuUaAv0EgZOvk292
-         8tqDBisli1UZB/RnvXdB6SPemTpAtEdYG3n38ZHQkMNuf1SULb8PYblYfJz70oBv1ukV
-         tldw==
-X-Gm-Message-State: AOAM531ft4eU0w71dSt/SiaYmjO4vvNKNgc3aziCZMLlJFLEBiFwfCvm
-        GcrYYs0B1GLcQ8Hll59cM61jfA==
-X-Google-Smtp-Source: ABdhPJx7xGCImrwIIU5NtCCRc0JJd5vvNjByWn2LVwUmGWeXBpQYu8NjDbna0Iet2lZZ47hjTx5xdg==
-X-Received: by 2002:a17:902:aa02:b0:13a:6c8f:407f with SMTP id be2-20020a170902aa0200b0013a6c8f407fmr9745675plb.59.1635071142161;
-        Sun, 24 Oct 2021 03:25:42 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id q8sm16587197pfu.167.2021.10.24.03.25.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=/aYNmBhOsLowuk15bZQ2XtTVmZBS0SEagXWIBEMDC7M=;
+        b=T8pMfNWT3JtDpoqGeUgVY10E0B0P978lxLpCSl7fpe2zfo1mUhz0lFIjhwAfBh9FHx
+         5rWaCCxIG00JWJQZYcOpGxMhKE37aug40TIfe3VhvdEdFt1EJ+By0R0iAH103C4isIY8
+         /NuvUjlF6wEITEf0/Krcu0tKmH3nZF0JVsIbhZih+lBw2GuVzJ7isqYthAG/dDWfBHvy
+         mJsLn6f1S10L/f9f1INKeNOhluPXB1bn594kEnGf5XNj8btYTUJKSdfbEBrJGe/3hIvO
+         vRtjIa6Rri6d9UTggGJXHOTU7kLvUnWC1HqvXId6u6ltkPE82ecr8Loi5TDp8pyiAIc5
+         pNeg==
+X-Gm-Message-State: AOAM532dZv0jv38mYUebbbd4WIjz0YQpNlAaJllP4HhzMqFF78oXkokw
+        cV6SZ3yvRZ+PWzwhQ0pMWzl+KQ==
+X-Google-Smtp-Source: ABdhPJyER3HeBarSA6Waz3h6Yrn+767lHJpaZZISJJLgo+xlDPElIq+/KAN4N2HcOJYIH0aCsL+X8A==
+X-Received: by 2002:a05:6122:788:: with SMTP id k8mr10207633vkr.8.1635071632144;
+        Sun, 24 Oct 2021 03:33:52 -0700 (PDT)
+Received: from fedora ([187.64.134.142])
+        by smtp.gmail.com with ESMTPSA id p6sm8139712vko.16.2021.10.24.03.33.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 03:25:41 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 18:25:30 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFCv1 4/4] perf: arm_spe: Dynamically switch PID tracing to
- contextidr
-Message-ID: <20211024102530.GI213960@leoy-ThinkPad-X240s>
-References: <20211021134530.206216-1-leo.yan@linaro.org>
- <20211021134530.206216-5-leo.yan@linaro.org>
- <854fb1a2-e5f1-f237-685f-8ddb0557c98b@arm.com>
- <0a53529a-576c-05b0-4fe5-906195faf243@arm.com>
+        Sun, 24 Oct 2021 03:33:51 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 07:33:47 -0300
+From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+To:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: [PATCH v3] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <YXU2i0FtAGDRCMSu@fedora>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <0a53529a-576c-05b0-4fe5-906195faf243@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+replace it for the atomic PWM API.
 
-On Fri, Oct 22, 2021 at 05:23:23PM +0100, James Clark wrote:
-> On 22/10/2021 16:36, James Clark wrote:
-> > 
-> > 
-> > On 21/10/2021 14:45, Leo Yan wrote:
-> >> Now Arm64 provides API for enabling and disable PID tracing, Arm SPE
-> >> driver invokes these functions to dynamically enable it during
-> >> profiling when the program runs in root PID name space, and disable PID
-> >> tracing when the perf event is stopped.
-> >>
-> >> Device drivers should not depend on CONFIG_PID_IN_CONTEXTIDR for PID
-> >> tracing, so this patch uses the consistent condition for setting bit
-> >> EL1_CX for PMSCR.
-> > 
-> > Hi Leo,
-> > 
-> > I've been testing this change, but I'm seeing something strange. Not sure
-> > if it's a problem on my side or not yet. With this command:
-> > 
-> >  sudo ./perf record -vvv -e arm_spe//u -- taskset --cpu-list 1 bash -c ls
-> > 
-> > I'm only seeing 0 values for context:
-> > 
-> >  sudo ./perf report -D | grep CONTEXT
-> > 
-> > .  00038dce:  65 00 00 00 00                                  CONTEXT 0x0 el2
-> > .  00038e0e:  65 00 00 00 00                                  CONTEXT 0x0 el2
+Signed-off-by: Maíra Canal <maira.canal@usp.br>
+---
+V1 -> V2: Assign variables directly and simplify conditional statement
+V2 -> V3: Fix declaration of undeclared variable
+---
+ drivers/media/rc/pwm-ir-tx.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Good catch!  I reproduced this issue at my side and looked into the
-flow, the root cause is relevant with timing.
-
-When perf launches the program 'taskset --cpu-list 1 bash -c ls', it
-forks a new process and 'ls' program is scheduled in, then function
-arm_spe_pmu_start() invokes contextidr_enable() to enable the PID
-tracing in contextidr.  Since 'ls' program executes very short and it
-simply runs to the end (so in the middle of 'ls' there have no any
-context switching on the CPU), there have no any new PID is written
-into contextidr and CPU's contextidr keeps zero.  This is the reason
-we see the context packets contain zeros for PID.
-
-To fix this issue, we should enable PID tracing when setup AUX ring
-buffer, at this phase, the profiled program has not been started yet.
-So when the profiled program is scheduled in at the first time, PID
-traing is getting ready and we can see the expected context packet in
-Arm SPE trace data.   So this patch should be updated as below, I will
-apply it in next spin if no objection.
-
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index c21cf1385cc0..85aa2eab0c2e 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -876,6 +867,13 @@ static void *arm_spe_pmu_setup_aux(struct perf_event *event, void **pages,
-        buf->nr_pages   = nr_pages;
-        buf->snapshot   = snapshot;
-
-+       /*
-+        * Enable tracing PID to contextidr if profiling program runs in
-+        * root PID namespace.
-+        */
-+       if (perfmon_capable() && (task_active_pid_ns(current) == &init_pid_ns))
-+               contextidr_enable();
-+
-        kfree(pglist);
-        return buf;
-
-@@ -890,6 +888,9 @@ static void arm_spe_pmu_free_aux(void *aux)
+diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+index 4bc28d2c9cc9..e1f348a962e8 100644
+--- a/drivers/media/rc/pwm-ir-tx.c
++++ b/drivers/media/rc/pwm-ir-tx.c
+@@ -53,22 +53,21 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
  {
-        struct arm_spe_pmu_buf *buf = aux;
-
-+       if (perfmon_capable() && (task_active_pid_ns(current) == &init_pid_ns))
-+               contextidr_disable();
-+
-        vunmap(buf->base);
-        kfree(buf);
+ 	struct pwm_ir *pwm_ir = dev->priv;
+ 	struct pwm_device *pwm = pwm_ir->pwm;
+-	int i, duty, period;
++	struct pwm_state state;
++	int i;
+ 	ktime_t edge;
+ 	long delta;
+ 
+-	period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+-	duty = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
++	pwm_init_state(pwm, &state);
+ 
+-	pwm_config(pwm, duty, period);
++	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
++	state.duty_cycle = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * state.period, 100);
+ 
+ 	edge = ktime_get();
+ 
+ 	for (i = 0; i < count; i++) {
+-		if (i % 2) // space
+-			pwm_disable(pwm);
+-		else
+-			pwm_enable(pwm);
++		state.enabled = !(i % 2);
++		pwm_apply_state(pwm, &state);
+ 
+ 		edge = ktime_add_us(edge, txbuf[i]);
+ 		delta = ktime_us_delta(edge, ktime_get());
+@@ -76,7 +75,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+ 			usleep_range(delta, delta + 10);
+ 	}
+ 
+-	pwm_disable(pwm);
++	state.enabled = false;
++	pwm_apply_state(pwm, &state);
+ 
+ 	return count;
  }
+-- 
+2.31.1
 
-Thanks a lot for detailed testing!
-
-Leo
