@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025DF4387DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE46C4387DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhJXJXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:23:00 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:60982 "EHLO msg-1.mailo.com"
+        id S231528AbhJXJWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 05:22:06 -0400
+Received: from ip-15.mailobj.net ([213.182.54.15]:45534 "EHLO msg-4.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229927AbhJXJW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:22:57 -0400
+        id S229463AbhJXJWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 05:22:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1635065950; bh=E2tcnfIOs4VQxTRgaEgAcHrVxoiBA+I6A+FeEJVzwcQ=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-         MIME-Version:Content-Transfer-Encoding;
-        b=AVtE24uPtzlIwFUp3B7qFlpQvPIIzTlrknFWENxEYHNN/JCcaKLIoM/nxxB1FlwLo
-         saKevNPC4z32AIyIzNgAAakXDUhjSCq8lW9MDVRVH7fbaTvfKHsEPl1vYsCiUFhtjj
-         LEhBe+9WcVnQFpXGFVkXcU8ZbdojDD1FJ5Yc6ODQ=
+        t=1635065951; bh=/ypa2kU25/kKnTZCdL90F0H4ic02JIr43Lis4n0Ge7M=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+         References:MIME-Version:Content-Transfer-Encoding;
+        b=cqEFyluHUoJwbAefGCQvBcutpZbw13F6Bkou7FK3qGiTgoOEKN4M118GqEl8MOg0h
+         NSFjmzVYsyFP0KonaTwCAEUMDj5oPz9qHwbiKgHk9BorpNdvyeoWqA05Zfz8c5V9TD
+         SjONuUZERgmgaY3Jd693xRM6AJ7sXToaCLQiSZXg=
 Received: by b-2.in.mailobj.net [192.168.90.12] with ESMTP
         via proxy.mailoo.org [213.182.55.207]
-        Sun, 24 Oct 2021 10:59:10 +0200 (CEST)
-X-EA-Auth: 8dMeRQZuRzWHMWnIWSQMrkQQCwFfk1khZN6P/8qvFfeIh/IogdqMwni4BAHv1wHPLmvkWcH5Lhavg8uBp9xvKKBy30UmMVV6llDJjpQmqnQ=
+        Sun, 24 Oct 2021 10:59:11 +0200 (CEST)
+X-EA-Auth: 3Wq8fnNOPO+2BI21khWtdZJk+3txfy7SD9qhVZ/8UPzQ2r8hT4j0csvyxAngR7k1uM46XR0phM3Ozi6LXVmtNjTWeznwf2Qj0usfYgvXOyQ=
 From:   Vincent Knecht <vincent.knecht@mailoo.org>
 To:     stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
         robh+dt@kernel.org, perex@perex.cz, tiwai@suse.com
@@ -29,37 +29,68 @@ Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
         Vincent Knecht <vincent.knecht@mailoo.org>
-Subject: [PATCH v1 0/4] Add tfa9897 speaker/receiver modes switching
-Date:   Sun, 24 Oct 2021 10:58:36 +0200
-Message-Id: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
+Subject: [PATCH v1 1/4] ASoC: codecs: tfa989x: Add switch to allow disabling amplifier
+Date:   Sun, 24 Oct 2021 10:58:37 +0200
+Message-Id: <20211024085840.1536438-2-vincent.knecht@mailoo.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
+References: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two tfa9897 are used in tandem on some devices (eg. alcatel-idol347)
-to drive two speakers, for both receiver (earpiece) and speaker modes.
+From: Stephan Gerhold <stephan@gerhold.net>
 
-This series:
-1. adds a control to allow enabling only one tfa9897/speaker
-   (for the typical phone-call usecase)
-2. adds a control to switch between speaker and receiver modes
-3. adds support for an optional gpio also used to switch modes
+In some configurations it may be necessary to explicitly disable
+the amplifier with an ALSA mixer. An example for this is a stereo
+setup with two TFA989X. If only one of them should be used (e.g.
+to use it as an earpiece) the other one must be explicitly disabled.
 
-Stephan Gerhold (1):
-  ASoC: codecs: tfa989x: Add switch to allow disabling amplifier
+Add a virtual "Amp Switch" to implement that. There is no register
+for this (SND_SOC_NOPM) so it only prevents DAPM from activating
+the amplifier. Also it is inverted (= enabled by default) for
+compatibility with devices that do not need this functionality.
 
-Vincent Knecht (3):
-  ASoC: codecs: tfa989x: Add support for tfa9897 RCV bit
-  ASoC: dt-bindings: nxp, tfa989x: Add rcv-gpios property for tfa9897
-  ASoC: codecs: tfa989x: Add support for tfa9897 optional rcv-gpios
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+ sound/soc/codecs/tfa989x.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
- .../bindings/sound/nxp,tfa989x.yaml           | 10 ++++
- sound/soc/codecs/tfa989x.c                    | 47 ++++++++++++++++++-
- 2 files changed, 55 insertions(+), 2 deletions(-)
-
+diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
+index 643b45188b6f..1ae47d4f1ca7 100644
+--- a/sound/soc/codecs/tfa989x.c
++++ b/sound/soc/codecs/tfa989x.c
+@@ -77,13 +77,16 @@ static const struct regmap_config tfa989x_regmap = {
+ 
+ static const char * const chsa_text[] = { "Left", "Right", /* "DSP" */ };
+ static SOC_ENUM_SINGLE_DECL(chsa_enum, TFA989X_I2SREG, TFA989X_I2SREG_CHSA, chsa_text);
+-static const struct snd_kcontrol_new chsa_mux = SOC_DAPM_ENUM("Amp Input", chsa_enum);
++static const struct snd_kcontrol_new
++	chsa_mux = SOC_DAPM_ENUM("Amp Input", chsa_enum),
++	amp_switch = SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 1);
+ 
+ static const struct snd_soc_dapm_widget tfa989x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("OUT"),
+ 	SND_SOC_DAPM_SUPPLY("POWER", TFA989X_SYS_CTRL, TFA989X_SYS_CTRL_PWDN, 1, NULL, 0),
+ 	SND_SOC_DAPM_OUT_DRV("AMPE", TFA989X_SYS_CTRL, TFA989X_SYS_CTRL_AMPE, 0, NULL, 0),
+ 
++	SND_SOC_DAPM_SWITCH("Amp", SND_SOC_NOPM, 0, 0, &amp_switch),
+ 	SND_SOC_DAPM_MUX("Amp Input", SND_SOC_NOPM, 0, 0, &chsa_mux),
+ 	SND_SOC_DAPM_AIF_IN("AIFINL", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("AIFINR", "HiFi Playback", 1, SND_SOC_NOPM, 0, 0),
+@@ -92,7 +95,8 @@ static const struct snd_soc_dapm_widget tfa989x_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route tfa989x_dapm_routes[] = {
+ 	{"OUT", NULL, "AMPE"},
+ 	{"AMPE", NULL, "POWER"},
+-	{"AMPE", NULL, "Amp Input"},
++	{"AMPE", NULL, "Amp"},
++	{"Amp", "Switch", "Amp Input"},
+ 	{"Amp Input", "Left", "AIFINL"},
+ 	{"Amp Input", "Right", "AIFINR"},
+ };
 -- 
 2.31.1
 
