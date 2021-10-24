@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82E943887D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 13:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C04243888C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 13:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhJXLRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 07:17:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229867AbhJXLRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 07:17:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 957246101C;
-        Sun, 24 Oct 2021 11:15:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635074117;
-        bh=LawrTZjKX8RHjwzakLGkqtpEnHHyyNhHyCEsGZokAJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Iz36/38TUM8O+nW4U6+1KTSfGZ0BHY/gqPAWU638wiseGo4DHqnB0Xifs4AI6y+YZ
-         9711tyWCRipO8Xuz85qWXaqqK4TYdeKEAYIBchi47nsAqTgyhc8+Phgx0JFaMtAts/
-         1LRE9uLnqwBPZ/gw0PcWtngBmHrQLi6xL9Viicac=
-Date:   Sun, 24 Oct 2021 13:14:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] iio: frequency: adrf6780: Fix adrf6780_spi_{read,write}()
-Message-ID: <YXVAK9ffYSpY1m/N@kroah.com>
-References: <20211022195656.1513147-1-nathan@kernel.org>
- <20211023164333.36b2ea2c@jic23-huawei>
+        id S231256AbhJXLUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 07:20:12 -0400
+Received: from mail-eopbgr1410128.outbound.protection.outlook.com ([40.107.141.128]:28800
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229867AbhJXLUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 07:20:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BL+HRngFUemjOJeEiuilTQgiwpjcP9AyjWq9Kw7+mhEbboHt2VjZHVC8vPBlxhB5bmeXt/M2IyfK3LNNAnbAPkQmUvOXL/MCFsRA6f1ciSWIgV4bfht1Da8CB2PXmeN47iHvfQi4ZU/TGj+kg6adNNFLYhO6IwHjhHd2be6scFKDl5mCjOpmhP2jar4qesTrhfaWKOxo+QU1jE4EZZArZJdSjHC4einZqMFNfrCMVk/rwcSSxUl62V8NV1ZPC6zaMHliiii4Kb7UjaSWqJwyVKFW8PdhZVwF6IJTtZBrybBVE8HiSKrh6T9Qt1i3+1nYtB9zgvYgcvUq9UgPip8pUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EPmspgTCkXiBBz3G9sJUzRNW+PnUJg18F/3czbx+yHc=;
+ b=CIyCZ/n5C4kmWFx0jlZyPDaO0XiJiYc8eE7AjF2ufQxfGMr7t6AQGqxH0ntedB8mfhQADSeYA5Kzc9uFT9kx0FUmEUv325Dm2sg1B7Frm/2qarhGpevzRPXProGBpAV4jr1c2+wPX3mT8myY/HRicOdmMoHV5OHCjS8vZEdW1s3FRlGphLiNw7Yq3gk5PX2k+rqSoRd6eEEsjt7Cw4N9Ns1u3Y1UjPwnErpT2tWM3tyMyEiBDmtUW9PXmZXaFXSER60E+9DaJH31BkwF2VwglMIKwaJjajUaa739Xe2JFlptkFVFNf8Ehf97QgRNs5QA7wCJz2Ov26scCmF/Mn/9sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EPmspgTCkXiBBz3G9sJUzRNW+PnUJg18F/3czbx+yHc=;
+ b=HzNSnw2o6Ip2D6Ay1gaYh/YmqS6m6OzkmywVFJDJtHfiIfAFPuSGgvtXi5CEW5QOZJTmW9ezRCUNVeXdJ20QXj9wVal8lV0tXX7JWUdilha9WMC4CUPxxOvpE38WKujdrv9tdwn/+6kiop9Z6A9tFIbibnqyOsRkQDxQB1qO94w=
+Authentication-Results: perex.cz; dkim=none (message not signed)
+ header.d=none;perex.cz; dmarc=none action=none header.from=connect.ust.hk;
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYYP286MB1099.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:ce::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.18; Sun, 24 Oct 2021 11:17:47 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Sun, 24 Oct 2021
+ 11:17:47 +0000
+From:   Chengfeng Ye <cyeaa@connect.ust.hk>
+To:     perex@perex.cz, tiwai@suse.com, chihhao.chen@mediatek.com,
+        damien@zamaudio.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <cyeaa@connect.ust.hk>
+Subject: [PATCH] sound/usb: fix null pointer dereference on pointer cs_desc
+Date:   Sun, 24 Oct 2021 04:17:36 -0700
+Message-Id: <20211024111736.11342-1-cyeaa@connect.ust.hk>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR03CA0046.apcprd03.prod.outlook.com
+ (2603:1096:202:17::16) To TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:b7::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211023164333.36b2ea2c@jic23-huawei>
+Received: from ubuntu.localdomain (175.159.121.169) by HK2PR03CA0046.apcprd03.prod.outlook.com (2603:1096:202:17::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend Transport; Sun, 24 Oct 2021 11:17:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6b8b3645-d0df-400c-e56c-08d996dfe8c6
+X-MS-TrafficTypeDiagnostic: TYYP286MB1099:
+X-Microsoft-Antispam-PRVS: <TYYP286MB10991AE55863A6C8C27A61B68A829@TYYP286MB1099.JPNP286.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OipoEwmnSd8XX5XB3qPsvUQijd2oOHdQfJVCGwKJfqRl3mBHcC9mWYj34QeMGl5TDnJbpEI8IVj2sfcclFqNADiwTjqT3GIpMG+hH+RTCS40WGAGL0aX8kq8sqJ/hEyRh2MfUlN5N9oA6R/ssYqM3OSlZ85KsLRYQpsi1AnAFx/VkM2vRI3YqBRQ4Lnc5sDofc10TgSsy4pg414RgkCqDUoZrqGZCgQGQZizxvZd+TsluchEQUy4Ed3T4O5JArapSrtEmfdxJORTrCr1slcLyNQYi1cdx6tBeg0pbhJATz3V3yvNdA+9IJVEOpkwgywvYWtnWYCUr5hnMlf6OdhL1jY5sU0il1boEp1QgOL5rBtBkswfOsoEWlJzAaZ9JGpnUhtIp58FP5+zgsNHFAqrGdK0K1zpAe5FUoO6L96nJy4iDIAHsnFNjG9fG3axk9PPx5+FZO1+ChlZyrxAafkg/GkkRZES0hGugezYLhRDcPU6rprERF1hru16uNG833H/2f3W1hgA6puzgbykRR8FyT31k5RsgF9ynkiC5hMyYW9zy8TuuUU8Z1v4c5bRwFzo8W7OTT6jyK/eUyn5l8OBoW2nKRswAVcG4w3DhMWwnHZIjx55Y+UmIaXwQYbChBgb5EsZwl1idvAZ4eQKG9unw+qT5NwfTfBsELjmNOghu/UQxAZVHIQeSSj3M/A7cBT9HjAOHX82u0L0PtP2hsr0VA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(52116002)(4326008)(6512007)(186003)(956004)(786003)(2906002)(26005)(508600001)(6666004)(316002)(83380400001)(2616005)(4744005)(1076003)(38350700002)(38100700002)(66476007)(66556008)(36756003)(5660300002)(8936002)(6506007)(107886003)(86362001)(8676002)(66946007)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sd0LS/nRirHgoz5dWOoGtD2gVQGlpytbRG2mOrIRfVda7qiSFES4nK+CrKDP?=
+ =?us-ascii?Q?nMiXmpbEFDLgcnvYmrpGl9a0RZoKa83OybaRzw4/Sx9SQ0SIngZqQdfPx+MF?=
+ =?us-ascii?Q?KEcgjk3Z4M5LUZOFwocG/2IiUXwJXcXznt5XIeA6QZ/rnfIyacBN7GuI6VIO?=
+ =?us-ascii?Q?xR7fmA1JLGM2k2PMm/j+8h9QmXwNXpPb1nq9BPDGqneHJPfiRK3rqKu7dBJt?=
+ =?us-ascii?Q?KcNT4lI1DXqjcMk+ybo4I9oe3X6BmyyoaXGEAUbaG34ggCu/GUMJq289ZkdZ?=
+ =?us-ascii?Q?UVKJs2H6XIFZv4YXoX4K/80ArBp7cl7NZc/Qv/QQYKl+3FJWMODc91arJExd?=
+ =?us-ascii?Q?7+ljfvZlpNkJJNduiq38qMTL6e5uFzdTo3K+EzqxleHGnHG/wlFGTDNYBEZr?=
+ =?us-ascii?Q?LRqE+0643lvWWdl+VtgLjxDYBFb093G2bEKImitFccqcNUqVZPgUSTO99Iaq?=
+ =?us-ascii?Q?7Zk+cI9QFNKmlHsbzuHqUpFTNwZLky7ZzIust7x9L27Rit+j8sagQ/w68lc/?=
+ =?us-ascii?Q?UcjPWODroMyOrpEsuagx2CmRfn5N/+JJBkJXKW/sWSui7sLK+fIW/IiYoKFU?=
+ =?us-ascii?Q?NhyXXtGdhkGBCL/ELhFrUIpv4i+I2O50KeIHwb+3PxQAqZ56v39EHW+7JtxQ?=
+ =?us-ascii?Q?eot868gjdhYrBkuccAP4BVLWsF4oOe6FcWMVhjezwaBmwvYxIP2xhHR8rF2A?=
+ =?us-ascii?Q?03CV4XH0kIf7ioMzMiwXkOH8k7ojW4DeCBFqjjz/fjiXLWn6A/A4Ldnda+VJ?=
+ =?us-ascii?Q?9NMbYhQB7oCSQMrTNLrlLQIWsQX06DCVTW39RbvrtYfEHUeZHbB98hiLWDXg?=
+ =?us-ascii?Q?mw00ERlXk4IsmtcTc7SZBwBsPVHzsRfs3mDFzoLetdwX2xlNDD1e9qYjR2Ul?=
+ =?us-ascii?Q?ILkXD7assMlmf4mb+umMmOTCxKLsH1yBpXK7O8wz2Um9S3JPPgjOcDPzVM+k?=
+ =?us-ascii?Q?7kIAxb2EaSSm8+hPZJkOV5zoNzf6txJQULRRnmDw684g6Ppa/nA0p3V7hq6X?=
+ =?us-ascii?Q?0uBLalQBLBtHGLVi09/whjybI/8QzJ/xvBTaLK1wpyw/TOBZE/qCyYN9giKy?=
+ =?us-ascii?Q?9t5pMuaeQqtPe/8JILaatgAr4noipYMxBOb+AKp+yuVTDnIyYArTauvDXUKL?=
+ =?us-ascii?Q?p0xrmtNzN5SHJBEdNJDR9hbF4/LIheUNFPVKf8cWAT28ZKBw+s3806jkfIGm?=
+ =?us-ascii?Q?WApFdfvFq4X8ghlqCttuhSrN6XJbZC1XiwN8/1iQf+ayOLqqjjrCUFrSsT9Y?=
+ =?us-ascii?Q?7Z2NRxsWbwhJI8XXp7hEQTgGgwmSJlUfumBVHyYlHx5q26/HqeL5jjhnuJWI?=
+ =?us-ascii?Q?L3TXutNBjExyYA5s14FXEW17D28Q4yvUlPGJj9MEFYYPW009uKdUy5l1WR9u?=
+ =?us-ascii?Q?xVjeWHMkVr1GvyqSj9Ik0aOf0HaFanOAmTGJZMm5oV+XwtbUAMp6DR3Tg0GK?=
+ =?us-ascii?Q?C1D2JpOXX8J6NRqbPF4cLYFVByF9K+PsSLmQCsHDTQapql4Tt1DUXRilDNO3?=
+ =?us-ascii?Q?oZiBeZnrkkmh/RAJKunAtuNd7wpi2jOgfDaRWHY/ZRiOuRgsuSp83Ug6PtR2?=
+ =?us-ascii?Q?h1GFHaUoBGKmqObA9GocW1EVdy6K/Lpbz+O5/SDSijK/sUzYrULENqn+wy9c?=
+ =?us-ascii?Q?XgVnLVvtU1gVCP6x6qafNow=3D?=
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b8b3645-d0df-400c-e56c-08d996dfe8c6
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2021 11:17:47.8580
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BtGDMmDGhcmOTxZrP7PTpspMhDwLh8g14YFI42c9cXXDY6L8k1djZVRYMPXxmSqd+FdCGNKGBLnts7o0Cgh0KQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYP286MB1099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 23, 2021 at 04:43:33PM +0100, Jonathan Cameron wrote:
-> On Fri, 22 Oct 2021 12:56:56 -0700
-> Nathan Chancellor <nathan@kernel.org> wrote:
-> 
-> > Clang warns:
-> > 
-> > drivers/iio/frequency/adrf6780.c:117:1: error: all paths through this
-> > function will call itself [-Werror,-Winfinite-recursion]
-> > {
-> > ^
-> > drivers/iio/frequency/adrf6780.c:138:1: error: all paths through this
-> > function will call itself [-Werror,-Winfinite-recursion]
-> > {
-> > ^
-> > 2 errors generated.
-> > 
-> > The underscore variants should be used here.
-> > 
-> > Fixes: 63aaf6d06d87 ("iio: frequency: adrf6780: add support for ADRF6780")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1490
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> Thanks Nathan, (bit embarrassed I missed this in review :(
-> As you probably guessed I didn't run an llvm test this time - guess I should
-> start doing that on a regular basis.
-> 
-> We obviously have plenty of time to get this fix in place but
-> seeing as I just sent a pull request for the driver a few hours before this
-> patch:
-> 
-> Greg, would you mind picking this one up directly on top of
-> [PULL] 2nd set of IIO new device support, features, cleanup for 5.16 
-> if you take that pull request?
-> 
-> Message ID for this one is:
-> 
-> 20211022195656.1513147-1-nathan@kernel.org
-> 
-> No problem if you'd rather I just queue this fix up for post merge
-> window.
-> 
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+The pointer cs_desc return from snd_usb_find_clock_source could
+be null, so there is a potential null pointer dereference issue.
+Fix this by adding a null check before dereference.
 
-Picked it up now, thanks!
+Fixes: 9ec73005 ("ALSA: usb-audio: Refactoring UAC2/3 clock setup code")
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+---
+ sound/usb/clock.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-greg k-h
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 81d5ce07d548..98345a695dcc 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -496,6 +496,10 @@ int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio *chip,
+ 	union uac23_clock_source_desc *cs_desc;
+ 
+ 	cs_desc = snd_usb_find_clock_source(chip, clock, fmt->protocol);
++
++	if (!cs_desc)
++		return 0;
++
+ 	if (fmt->protocol == UAC_VERSION_3)
+ 		bmControls = le32_to_cpu(cs_desc->v3.bmControls);
+ 	else
+-- 
+2.17.1
+
