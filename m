@@ -2,107 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319214385F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 01:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2FB4385F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 02:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhJWXuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Oct 2021 19:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S231416AbhJXAFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Oct 2021 20:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhJWXuI (ORCPT
+        with ESMTP id S230284AbhJXAFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Oct 2021 19:50:08 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A61CC061764;
-        Sat, 23 Oct 2021 16:47:49 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so9301852otl.11;
-        Sat, 23 Oct 2021 16:47:48 -0700 (PDT)
+        Sat, 23 Oct 2021 20:05:39 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DD3C061764;
+        Sat, 23 Oct 2021 17:03:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso6383022pjf.3;
+        Sat, 23 Oct 2021 17:03:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9EhtECxpEHT4/S8i65sw49IoenLttWhucmR7R+ka9Tw=;
-        b=o5jZt61rJg1Bg1+MiK5QwxEdeWklbBG0IGst2aRCzPb1P5O2+CdelnpeR4gwtHiO2B
-         RicJ96SYY2l0BwQ9ndqLuUKFgpIsEjklxUEUNsnPSFuwFwEa7DA9bcEgfsKNl6okpY37
-         dp1XfyyUR4x5OBfAT3gn3Nlq2lTHeqly8lVc/zQ1HZ9C/v8EjNRpkNqAM6GSuTAP2dbv
-         0AXTsh7kLD0iqD2csTRzEQB05+9tUea4tte0IvYV0VkD5mUaEhn4kCPLjxt9ZQRd/n9+
-         mHXtZSFP0upWK0f9QAT4+P9v5rj9ppyBCmH7h5JRQkvD8/vrIriV/KzrQh2sp8ae92x7
-         ihzQ==
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=PxwtS641WYFpHkOEkJn+avDYn2BdLBo4DP4nO7ftXvU=;
+        b=SL+DviOgCpxPI+EbDKx7sGamzqbXdpRsT5d2ofbPZ+yYodnja4MW8Lad1M/CNZPT64
+         I+U2gmuBI0efwEGbGCqjMvnrDsJTrvKHAfycXNj9L39TUIHasPMQZ1x+J1jXtBoskT12
+         jd6ViLyPLlic6RofzOWCIzMiRJpw5/SGTV+5676o48mQ3AJly+W83rNvwls+6m5Zj0SD
+         r7BOd58BuvuMBpBQeMQjIg0qAsw7QELlYvKOZQI8Ik5V/wK3tHAwKCY1oz/4bvvAh0S9
+         9A0DafTMwU1OJATeuQO/3rE81wt8XY4twDyn8neJ3+TdR9+V1+mAHPSkRhQOdZK2l97v
+         XNjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9EhtECxpEHT4/S8i65sw49IoenLttWhucmR7R+ka9Tw=;
-        b=Cij11eK4QqcpKB/g1VvATiZaQKKxeks11JqvZJgrD2OoFTAe4uBJbxEIamoxNQg+43
-         SYDJoEpCgI6ZHKZ2eM5Kb4JVw3wZ4dRFi9Az1xDPZuuo/x9cwfeMmLbd0avcEbu6zQW0
-         YDlkTosJXh9h76GrSUzlEuWNnPMSXqwxonvxKrHcrov5hIF7TQUhnXbc7mDEH+2vpaGn
-         ulYdhrbhKGBcclBQcpGIMFEj3ViSN0XT02+D9m3A7jIIiQQ8dM8cR4NMniyf2QwFnlQ2
-         yCrgxBLDnToETrDyr1nIH3SvQ107a+KpT42/xUDyp7Z0dXtERRulVDnROjniaIj5HGhh
-         OYlg==
-X-Gm-Message-State: AOAM533AIi1n0rN+0tXWZK4Z4B3cmz3mInHoAUEGxfeVke2ywV3Uk1ic
-        6bMIrw3JSyuMv6MdV+dm1TE=
-X-Google-Smtp-Source: ABdhPJxdan+q2jqR22n6WqBpuNNuYW4hjQziIGsPymwPST3qn07it/6SqJUfVDzjseZzGGqCMZRgwQ==
-X-Received: by 2002:a05:6830:4c8:: with SMTP id s8mr7120609otd.359.1635032868244;
-        Sat, 23 Oct 2021 16:47:48 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a2sm2608077otf.46.2021.10.23.16.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Oct 2021 16:47:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 23 Oct 2021 16:47:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Kai Song <songkai01@inspur.com>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (xgene) fix return value in xgene_hwmon_probe()
-Message-ID: <20211023234745.GA3703155@roeck-us.net>
-References: <20211022084446.16728-1-songkai01@inspur.com>
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=PxwtS641WYFpHkOEkJn+avDYn2BdLBo4DP4nO7ftXvU=;
+        b=BUiZZUr/xKRyxbzAExQ6IfzlDpv4E17G6ID5gDNb7omarwLPC65qQvioCE7Wjf6Ely
+         YOCg7CCZaMOy+g9nPYt/9PEJ+fo6ifWFMUZvASagO2Am0oNT1xf3lQojssSySYvTKk/e
+         kV7ah74Z54u61n8fUyVbwsNj3GgaemkqUQjSy1ODV948/HRk+X4uDb7LgXXTBtBbdvyP
+         hdoWvu4mojjLJXpEWhAgOKFbax0Fer7MudLjWZeyllmXL6oxVos5wCVlDq8IlqH0R47l
+         cc2Bpu6n+Wm5cdG3nmI5OWzDCgWZ6hCDNAy75Ffj6Pp1Ozl2D8qnqEU0qnThzJchqZOM
+         CFRA==
+X-Gm-Message-State: AOAM530cL/Bh86SiPWs5MJ0rGvhcJiZ+yjLsAXhuhXOzGDDCy5v66BHN
+        2vXYN64Z+bpMaZLnrokWC4o=
+X-Google-Smtp-Source: ABdhPJyXCyLbpKo7n5tJ9eyNZbqsG3IqcrSFvApjQOyYw/gbVWMlhSJkUplRCpSeujKHRZk9IXEDUg==
+X-Received: by 2002:a17:90b:388a:: with SMTP id mu10mr10384183pjb.0.1635033798833;
+        Sat, 23 Oct 2021 17:03:18 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id h1sm15243550pfi.168.2021.10.23.17.03.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Oct 2021 17:03:18 -0700 (PDT)
+Subject: Re: [PATCH v3 0/3] last batch of add_disk() error handling
+ conversions
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Luis Chamberlain <mcgrof@kernel.org>
+References: <20211021163856.2000993-1-mcgrof@kernel.org>
+ <66655777-6f9b-adbc-03ff-125aecd3f509@i-love.sakura.ne.jp>
+Cc:     linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, hch@lst.de,
+        efremov@linux.com, song@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, hare@suse.de,
+        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <ad1546c4-cfb7-3dd2-9592-9916c23ae164@gmail.com>
+Date:   Sun, 24 Oct 2021 13:03:02 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022084446.16728-1-songkai01@inspur.com>
+In-Reply-To: <66655777-6f9b-adbc-03ff-125aecd3f509@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 04:44:46PM +0800, Kai Song wrote:
-> It uses IS_ERR to judge the return value of mbox_request_channel()
-> and pcc_mbox_request_channel().If it is invalid, maybe we should
-> use PTR_ERR to get the correct return value.
-> 
+Hi Tetsuo,
 
-Only if the error reflects something else than -ENODEV, ie than
-a missing device.
+On 22/10/21 14:06, Tetsuo Handa wrote:
+> On 2021/10/22 1:38, Luis Chamberlain wrote:
+>> I rebased Tetsuo Handa's patch onto the latest linux-next as this
+>> series depends on it, and so I am sending it part of this series as
+>> without it, this won't apply. Tetsuo, does the rebase of your patch
+>> look OK?
+>
+> OK, though I wanted my fix to be sent to upstream and stable before this series.
+>
+>>
+>> If it is not too much trouble, I'd like to ask for testing for the
+>> ataflop changes from Michael Schmitz, if possible, that is he'd just
+>> have to merge Tetsuo's rebased patch and the 2nd patch in this series.
+>> This is all rebased on linux-next tag 20211020.
+>
+> Yes, please.
 
-Guenter
+Took a little convincing (patch 2 didn't apply cleanly by 'git am' on 
+yesterday's top of linux-next), but works just fine, thanks.
 
-> Signed-off-by: Kai Song <songkai01@inspur.com>
-> ---
->  drivers/hwmon/xgene-hwmon.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwmon/xgene-hwmon.c b/drivers/hwmon/xgene-hwmon.c
-> index 382ef0395d8e..fd0847f251c0 100644
-> --- a/drivers/hwmon/xgene-hwmon.c
-> +++ b/drivers/hwmon/xgene-hwmon.c
-> @@ -648,7 +648,7 @@ static int xgene_hwmon_probe(struct platform_device *pdev)
->  		if (IS_ERR(ctx->mbox_chan)) {
->  			dev_err(&pdev->dev,
->  				"SLIMpro mailbox channel request failed\n");
-> -			rc = -ENODEV;
-> +			rc = PTR_ERR(ctx->mbox_chan);
->  			goto out_mbox_free;
+I'll submit another patch with ataflop fixes that were used in my tests, 
+but nothing in that interacts with your patches at all.
+
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+
+
+> After this series, I guess we can remove "bool registered[NUM_DISK_MINORS];" like below
+> due to (unit[drive].disk[type] != NULL) == (unit[drive].registered[type] == true).
+> Regarding this series, setting unit[drive].registered[type] = true in ataflop_probe() is
+> pointless because atari_floppy_cleanup() checks unit[i].disk[type] != NULL for calling
+> del_gendisk(). And we need to fix __register_blkdev() in driver/block/floppy.c because
+> floppy_probe_lock is pointless.
+>
+>  drivers/block/ataflop.c | 75 +++++++++++++++--------------------------
+>  1 file changed, 28 insertions(+), 47 deletions(-)
+>
+> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+> index c58750dcc685..7fedf8506335 100644
+> --- a/drivers/block/ataflop.c
+> +++ b/drivers/block/ataflop.c
+> @@ -299,7 +299,6 @@ static struct atari_floppy_struct {
+>  				   disk change detection) */
+>  	int flags;		/* flags */
+>  	struct gendisk *disk[NUM_DISK_MINORS];
+> -	bool registered[NUM_DISK_MINORS];
+>  	int ref;
+>  	int type;
+>  	struct blk_mq_tag_set tag_set;
+> @@ -1988,41 +1987,20 @@ static int ataflop_probe(dev_t dev)
+>  	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
+>  		return -EINVAL;
+>
+> -	if (!unit[drive].disk[type]) {
+> -		err = ataflop_alloc_disk(drive, type);
+> -		if (err == 0) {
+> -			err = add_disk(unit[drive].disk[type]);
+> -			if (err) {
+> -				blk_cleanup_disk(unit[drive].disk[type]);
+> -				unit[drive].disk[type] = NULL;
+> -			} else
+> -				unit[drive].registered[type] = true;
+> +	if (unit[drive].disk[type])
+> +		return 0;
+> +	err = ataflop_alloc_disk(drive, type);
+> +	if (err == 0) {
+> +		err = add_disk(unit[drive].disk[type]);
+> +		if (err) {
+> +			blk_cleanup_disk(unit[drive].disk[type]);
+> +			unit[drive].disk[type] = NULL;
 >  		}
->  	} else {
-> @@ -675,7 +675,7 @@ static int xgene_hwmon_probe(struct platform_device *pdev)
->  		if (IS_ERR(ctx->mbox_chan)) {
->  			dev_err(&pdev->dev,
->  				"PPC channel request failed\n");
-> -			rc = -ENODEV;
-> +			rc = PTR_ERR(ctx->mbox_chan);
->  			goto out_mbox_free;
+>  	}
+>
+>  	return err;
+>  }
+>
+> -static void atari_floppy_cleanup(void)
+> -{
+> -	int i;
+> -	int type;
+> -
+> -	for (i = 0; i < FD_MAX_UNITS; i++) {
+> -		for (type = 0; type < NUM_DISK_MINORS; type++) {
+> -			if (!unit[i].disk[type])
+> -				continue;
+> -			del_gendisk(unit[i].disk[type]);
+> -			blk_cleanup_queue(unit[i].disk[type]->queue);
+> -			put_disk(unit[i].disk[type]);
+> -		}
+> -		blk_mq_free_tag_set(&unit[i].tag_set);
+> -	}
+> -
+> -	del_timer_sync(&fd_timer);
+> -	atari_stram_free(DMABuffer);
+> -}
+> -
+>  static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
+>  {
+>  	int type;
+> @@ -2030,13 +2008,24 @@ static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
+>  	for (type = 0; type < NUM_DISK_MINORS; type++) {
+>  		if (!fs->disk[type])
+>  			continue;
+> -		if (fs->registered[type])
+> -			del_gendisk(fs->disk[type]);
+> +		del_gendisk(fs->disk[type]);
+>  		blk_cleanup_disk(fs->disk[type]);
+>  	}
+>  	blk_mq_free_tag_set(&fs->tag_set);
+>  }
+>
+> +static void atari_floppy_cleanup(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < FD_MAX_UNITS; i++)
+> +		atari_cleanup_floppy_disk(&unit[i]);
+> +
+> +	del_timer_sync(&fd_timer);
+> +	if (DMABuffer)
+> +		atari_stram_free(DMABuffer);
+> +}
+> +
+>  static int __init atari_floppy_init (void)
+>  {
+>  	int i;
+> @@ -2055,13 +2044,10 @@ static int __init atari_floppy_init (void)
+>  		unit[i].tag_set.numa_node = NUMA_NO_NODE;
+>  		unit[i].tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+>  		ret = blk_mq_alloc_tag_set(&unit[i].tag_set);
+> -		if (ret)
+> -			goto err;
+> -
+> -		ret = ataflop_alloc_disk(i, 0);
+>  		if (ret) {
+> -			blk_mq_free_tag_set(&unit[i].tag_set);
+> -			goto err;
+> +			while (--i >= 0)
+> +				blk_mq_free_tag_set(&unit[i].tag_set);
+> +			return ret;
 >  		}
->  
-> -- 
-> 2.27.0
-> 
+>  	}
+>
+> @@ -2090,10 +2076,9 @@ static int __init atari_floppy_init (void)
+>  	for (i = 0; i < FD_MAX_UNITS; i++) {
+>  		unit[i].track = -1;
+>  		unit[i].flags = 0;
+> -		ret = add_disk(unit[i].disk[0]);
+> -		if (ret)
+> -			goto err_out_dma;
+> -		unit[i].registered[0] = true;
+> +		ret = ataflop_probe(MKDEV(0, 1 << 2));
+> +		if (err)
+> +			goto err;
+>  	}
+>
+>  	printk(KERN_INFO "Atari floppy driver: max. %cD, %strack buffering\n",
+> @@ -2108,12 +2093,8 @@ static int __init atari_floppy_init (void)
+>  	}
+>  	return ret;
+>
+> -err_out_dma:
+> -	atari_stram_free(DMABuffer);
+>  err:
+> -	while (--i >= 0)
+> -		atari_cleanup_floppy_disk(&unit[i]);
+> -
+> +	atari_floppy_cleanup();
+>  	return ret;
+>  }
+>
+>
