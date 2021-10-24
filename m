@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D8E43885C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 12:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E3F43885E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 12:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJXKqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 06:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhJXKqF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 06:46:05 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C498C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 03:43:45 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so9121212pji.5
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 03:43:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sVuIY4mcHQg8bRsDb3qKWmU0qyXXyyXmkLA+IGN0NwI=;
-        b=HEjJqVTIQNzw08DhBqCfv+tW3y6hCDtv1GvmKg3QOHTIfhe1FL9g/e1ZjnLddvJjN4
-         cwQtsosJFODLfGm7u+V7ej5df/zRxGXg/wxHL8IMMHtwtVj/gphJcL68Lo7nWmILcvi3
-         d1ruUsyRY9aly2b9b2o3F3OVOf8vC7KUcmRzmf5ociYzHE24aGYI/slBxkFl3Lrb7u0N
-         MtPnGMvWA9jwqxoPC+WiczNT2ttB2eLe46AWNMjqhcTJ1Uz3Te+qvzKu4FDZI9Ey2LuH
-         wYAJ1iQbrCJ7W62k/mECx43Z75DWdTS3nhYJ99xO3nzyXN6ryHS2U92T+5D25wB17j8n
-         uh6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sVuIY4mcHQg8bRsDb3qKWmU0qyXXyyXmkLA+IGN0NwI=;
-        b=ioSUJu4AbwnoAx0Og7E6FtiDQgZreglkh/Y2HhN1hHGRmhBm3/XSvXa7OfBfBxQSgf
-         up1fPFVP3I0QITiGytMXMc4CBLty8x8bc+Ha+pmu0TW6PI9QjUkokszgmpHRdgC37HZE
-         7Vz+6rhRZVDMJrMZtO1Jq6Qh1B0j77QOPt/ppb2uexMG5eEL8hUXrALVJ2EJDuC3N1gB
-         QvjwrJTVK4f1QpYmwHGNnF0pwYbKPvSk/FWmoVSmotj5fCgnIiT74S/dub36AIdhePYA
-         CFAvYJuRqNPpN29vOG/+U6urO8M9derzEbMDwZTNtDUkFnZF502yKE+oByOY4HwigTfv
-         OPdQ==
-X-Gm-Message-State: AOAM531lNlSTFhvI7kqtst29lQDVJOrW/8VYu31/iqEdDSePCTiieB3q
-        daXvwaOFVN2AltzmfqZ8itw=
-X-Google-Smtp-Source: ABdhPJyOIMQKGc3n2+20uwpIqtCRlI0hZrSZ9mGL8vhus4eKnJL8qGsXCf/9i9We2/E3xf13XaWXqQ==
-X-Received: by 2002:a17:90a:c088:: with SMTP id o8mr8215040pjs.1.1635072225230;
-        Sun, 24 Oct 2021 03:43:45 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (220.195.64.34.bc.googleusercontent.com. [34.64.195.220])
-        by smtp.gmail.com with ESMTPSA id w5sm13043690pgp.79.2021.10.24.03.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 03:43:44 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 10:43:40 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Rustam Kovhaev <rkovhaev@gmail.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, djwong@kernel.org, david@fromorbit.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
-        dvyukov@google.com
-Subject: Re: [PATCH] slob: add size header to all allocations
-Message-ID: <20211024104340.GA4370@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20211015005729.GD24333@magnolia>
- <20211018033841.3027515-1-rkovhaev@gmail.com>
- <20211020114638.GA378758@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
- <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
+        id S231400AbhJXKs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 06:48:59 -0400
+Received: from mail-eopbgr1410137.outbound.protection.outlook.com ([40.107.141.137]:59456
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229861AbhJXKs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 06:48:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dcuxsX1Pp+2c1m8UZAYI+ecEiG+Gjl/5BoBjuiXlNeF6kg/TCzzB/sg9eLsH2Co9ZUiESVa5HbizzMiptOy2RRHBILfi+atDqMMWvQudWIZdzn9sqXBS+KHOpTakccyqhpG/QOngjaaCUj83scyUNdZ4cUTGGkTQx+DTrkKppysJeCqaFrsEDYXEz6DLjK1rZEMLbgtBMhFHeOVc8tXwMdF7OHH1u7X50iXLuuiDxdtdAR+Kl6GlEKnqDdFrbqgLQhWg9jfZTsgUmqAyHXA2fX0QZCgXQ6uUHI1WbezLqAPQYQ+hFTO8ngP0piqE1VxDzt7cFvM64/e9VthNhwJ29g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Dewy3dgB78l2PF/aeF/8sLTjjGMgHWyudSzx4NB4nc=;
+ b=GU3Cy5GdP+AO22WPy0CLwRkF6TzP8NNICp7tOay+VKYUWeFMe3YiCo6ZaNxQk5hhasiVXTPHA94Pb5beHjLXfaWNRxsCwz67fvm1K7xoLFvjUYa6TCHU0dLrk1qNLiLTDQFAg2Nlk4SvGRcw60BhcP4Z0skOeM5uFiNnmoaVMT6Htudv9TD3YY524KvOtgBOq54+Rf0XLYQaLnh+oBQrYcP9H7nemVkMfgvoCtikdf7Jc8Js3hfnsD6/weYFLx6MGMcs0bwZBH+WyA8aFXm96bsF7SRUBgQmRM2YnvfL+vOnAEqSkVivr/XIeJug5FCAFZczgXyYPcm7nXa51jv7Ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9Dewy3dgB78l2PF/aeF/8sLTjjGMgHWyudSzx4NB4nc=;
+ b=aEdsYw5dyTl/sMooEHKgud9agnWZiX+pAAFHMsbSGs6QvaRgfRKExY9GSiWLaRYF8HrcuPiuntyXKMZWscljprq6s8r5JKhi9PevaesiJBpOBFESyQlYLaiDSDnL9fOjqeR+M5neTZIqPKlfNomXImOWu8vQw0/1MBOl9pveO7Y=
+Authentication-Results: perex.cz; dkim=none (message not signed)
+ header.d=none;perex.cz; dmarc=none action=none header.from=connect.ust.hk;
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYAP286MB0121.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:803a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Sun, 24 Oct
+ 2021 10:46:36 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Sun, 24 Oct 2021
+ 10:46:36 +0000
+From:   Chengfeng Ye <cyeaa@connect.ust.hk>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <cyeaa@connect.ust.hk>
+Subject: [PATCH] sound/isa/gus: fix null pointer dereference on pointer block
+Date:   Sun, 24 Oct 2021 03:46:11 -0700
+Message-Id: <20211024104611.9919-1-cyeaa@connect.ust.hk>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0193.apcprd02.prod.outlook.com
+ (2603:1096:201:21::29) To TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:b7::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
+Received: from ubuntu.localdomain (175.159.121.169) by HK2PR02CA0193.apcprd02.prod.outlook.com (2603:1096:201:21::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Sun, 24 Oct 2021 10:46:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5954bbb8-661b-4488-d946-08d996db8d06
+X-MS-TrafficTypeDiagnostic: TYAP286MB0121:
+X-Microsoft-Antispam-PRVS: <TYAP286MB01211B49DEDC95FEDBD573E48A829@TYAP286MB0121.JPNP286.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:826;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bl9f+MpZE2JpRXxQGWqppaDI1oI82UTOJuIsNfDH2waRVzsnuPUUG9azj++7IC0lG59ewH1Z3Nd7j7cH51MnYtTAaM1Mx/lbaur0cLnfOnHvZmWkTW2WmZJOZOOTdBa20FL+tgyxEf02DIHPzr+kqi/HB6GzVqrPBRB9iMjLbkH9vztt4yoYoiSFoZxtn1NJZFPslDqUMH9kFIpHTVjg4k/AKdKvEiD78vX1BI2lh1YptJq+fnj6uh0uqf1nNp4lEjIwdHZ+fOqpnCodytj/gRdt5ErJYqeEhi3RWWTJbHPYWmePrKSIMQ9rpPvVPKuVIalQBcMy3Yjq8EAN/hHyQXoftzS+ajQ0xqpqbz1C2W4Z+L52HgUH3A1JTRbICtpxUy1qiQtjY9LVy2P7lNRWvbrWvbSYdbz5D+bzF4rBSUwWTFuVZtkJuqckbRuMnLWjNPzBov4NXaqyw9mvvRhZnCTIymGnbXLv89Oyq/Z+vxKh58cOpUdjdHKzyAglApWHGpEi8xWwWIzICpmATeoGEZD8+jjBNPO6shbJMDnhZxCPobT0EkgbtlfLByoXWUWHa52kPJAbw+RNl5EPVBLY2fEw/jpA3cdZ/yWyYoeTIA813VLK0dVu9LDyQuNxmdZbUoZ4s4ub8mjfdjS8hxDUJ9V/PTZ2qRGVr1ckTz7kaU8b3UrWV87864x53VKSfs08aM6PmGOB82Z/MEniwemvSw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(52116002)(38350700002)(86362001)(26005)(6486002)(508600001)(4326008)(786003)(66556008)(186003)(6512007)(4744005)(36756003)(316002)(2906002)(6506007)(5660300002)(8936002)(66946007)(107886003)(66476007)(2616005)(1076003)(6666004)(956004)(83380400001)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WwLpxYRfGCkOceagcLi6xw+1Des1NGal02Qo+AweNfxmeGekojHVGPM8LfYG?=
+ =?us-ascii?Q?t4/Otvyd6XO7wIBfDyVpVgmPULWnX0MXYAM98JYRNCXDtxPtgTs68h76m1u2?=
+ =?us-ascii?Q?vifUv8N79AUJalOKz1/AUulCkjB99yCjBXiqVHbGyabFgwCdfNbO9lpaAMNi?=
+ =?us-ascii?Q?beGNLBC2EMmqwtAoTBsxCwBjpmMoH+gi/G1plUzpr7BnNlqKfe5I7yDSPXix?=
+ =?us-ascii?Q?vnv3zb8tdwEU0b2nkNjI7kjP2XjNbvsibOXkoYxPXb+aklC6/kB4CEfBfAMn?=
+ =?us-ascii?Q?XAmOVdENwGc0KJCBTkNM/ciI2+FUfJiH85iV3P935Ws6N19vVOpLf9stJgCw?=
+ =?us-ascii?Q?B0wXQtE+H7VJFuMRm/HsJI4HdcyVnJLnK3ZoCScTILx3EIFcXxOoo+2rz+ET?=
+ =?us-ascii?Q?w3ZdhYlXZ/GTTtSas7Qaq13hkjTK654TL8b6QMdXwBhpcUDNp4UpNTlvtNzR?=
+ =?us-ascii?Q?q0/8u8QyJ6ZzgJk5FS+Nd6alRuJtUAasD8mXpwzWv3VYzNHEzL13dZ3eECQy?=
+ =?us-ascii?Q?3sZgAJ+Ii4JZ9Jr76Xk2dgF4wI+AJ6fjPmlkcA4m35l09Nux+VP5tDYCYslB?=
+ =?us-ascii?Q?FzsvIqrCP1XFqTrTyl2g7/f6GBL+vTD/Tq4OGg2PN2bb6btdDFhYs6xWPirN?=
+ =?us-ascii?Q?tUJ/NXKQbJG5DXRpbUD6f1YUpsc4xFwHgjmfoww1r34E895+J7vqHgHyWRLG?=
+ =?us-ascii?Q?zQWv2SAyPvLSGak2IXs10CYi3xb9JcJno1jY5/z6LhWonp9j4G1C+gtu/eM8?=
+ =?us-ascii?Q?K9JyfobPMlYG/6AbtBmW/A5DFPaEH5K2R4TwUjfZ2OrrOoQ6Gy967rGRFnqN?=
+ =?us-ascii?Q?c1szqIVNjlXmQA2FHHykx6UfkFr1uQxxxIWlYPmOkkQ/Sj8OA7GQZtVbCi+W?=
+ =?us-ascii?Q?oMD7UFkw9IoNs3Mum2yF+gPd+jGDgEoDUn8PBaXVau0oogWIFvpJA6suFI7m?=
+ =?us-ascii?Q?c/s4lXNun1LTeWVxgmxL+tYT0Ogg3MKTokORJGsNWEkR36bp9Er7qA3bBcgn?=
+ =?us-ascii?Q?L+R+O/PZ1VUD6JVau6h8vUoBCe6Db2OqbIRVZFLtAJnYUHunVEOg5Qjd3m6A?=
+ =?us-ascii?Q?Lz3PUk9qfEzWHz8Dhu0dY12jxtl74R9MMZHkj9idySwqL38gENcLW75DaDhU?=
+ =?us-ascii?Q?+91r75AdEdwu6SrMvttZv4mveyEM6evIiAOwA7Bz+honoIUk0hd2ycbdyJMw?=
+ =?us-ascii?Q?odCU4gILaLl/g3NEyCdW9v2qJjGVPz+1hrVa2n9PKFSRVftIiSzXw5amNbrn?=
+ =?us-ascii?Q?SilgCtWYrxtqfuuyptpUKPUoMvrOKqEPm2DSBJpSSPKKNW4WKIIctIDoH8W4?=
+ =?us-ascii?Q?j7auB7eLpKiuPd+3ArICMFQJYDHoDmSfG/XfVqQiQev71IG4oUag5PjvWJE2?=
+ =?us-ascii?Q?pudeKaregwRgh1yTVZG+cav8hmKzpc43ISJ2EupGrtULumQfVQzbkAHG7Zc6?=
+ =?us-ascii?Q?vmyiBj9+EEZQfJzLCS2MTyMbb6MzdDcugRXBGRlOt6YTfz8yw3QEGT/Nx1UM?=
+ =?us-ascii?Q?q9wvNxAhTxrQ/PfDrc2j4lyxLHNlNraMI9/96vzYP+PmWi31NfnPliXw+Cb3?=
+ =?us-ascii?Q?faoZmh+RcPxpnSm6MojR0AGSl8SfJvHU3SfDOI1t2fSKtY8bxfiVU/q3d7fn?=
+ =?us-ascii?Q?ptrRJ7zuFr/PDf1p8auGMiM=3D?=
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5954bbb8-661b-4488-d946-08d996db8d06
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2021 10:46:36.0314
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wdg7IOCTq+Gl6FkeXDiPfgEe2mpXF2tnWtTndboCL0WYK5ptuE9e0DDwlqwJ2dEwznKTfDsWnFB4VoKARihDmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAP286MB0121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:36:26PM +0200, Vlastimil Babka wrote:
-> On 10/20/21 13:46, Hyeonggon Yoo wrote:
-> > On Sun, Oct 17, 2021 at 08:38:41PM -0700, Rustam Kovhaev wrote:
-> >> Let's prepend all  allocations of (PAGE_SIZE - align_offset) and less
-> >> with the size header. This way kmem_cache_alloc() memory can be freed
-> >> with kfree() and the other way around, as long as they are less than
-> >> (PAGE_SIZE - align_offset).
-> > 
-> > Hello Rustam, I measured its impact on memory usage on
-> > tiny kernel configuration as SLOB is used in very small machine.
-> > 
-> > on x86 32 bit + tinyconfig:
-> >     Before:
-> >     Slab:                668 kB
-> > 
-> >     After:
-> >     Slab:                688~692 kB
-> > 
-> > it adds 20~24kB.
-> 
-> Thanks for the measurement. That's 3.5% increase.
-> 
+The pointer block return from snd_gf1_dma_next_block could be
+null, so there is a potential null pointer dereference issue.
+Fix this by adding a null check before dereference.
 
-You're welcome.
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+---
+ sound/isa/gus/gus_dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> > 
-> >> 
-> >> The main reason for this change is to simplify SLOB a little bit, make
-> >> it a bit easier to debug whenever something goes wrong.
-> >>
-> > 
-> > It seems acceptable But I wonder it is worth to increase memory usage
-> > to allow freeing kmem_cache_alloc-ed objects by kfree()?
-> 
-> Not for the reason above, but for providing a useful API guarantee
-> regardless of selected slab allocator IMHO yes.
-> 
+diff --git a/sound/isa/gus/gus_dma.c b/sound/isa/gus/gus_dma.c
+index a1c770d826dd..6d664dd8dde0 100644
+--- a/sound/isa/gus/gus_dma.c
++++ b/sound/isa/gus/gus_dma.c
+@@ -126,6 +126,8 @@ static void snd_gf1_dma_interrupt(struct snd_gus_card * gus)
+ 	}
+ 	block = snd_gf1_dma_next_block(gus);
+ 	spin_unlock(&gus->dma_lock);
++	if (!block)
++		return;
+ 	snd_gf1_dma_program(gus, block->addr, block->buf_addr, block->count, (unsigned short) block->cmd);
+ 	kfree(block);
+ #if 0
+-- 
+2.17.1
 
-Mm.. that means some callers free kmem_cache_alloc-ed object using
-kfree, and SLAB/SLUB already support that, and SLOB doesn't.
-
-In what situations is freeing using kfree needed?
-Wouldn't this make code confusing?
-
-> > Thanks,
-> > Hyeonggon
-> > 
-> >> meminfo right after the system boot, without the patch:
-> >> Slab:              35500 kB
-> >> 
-> >> the same, with the patch:
-> >> Slab:              36396 kB
-> >> 
-> > 
-> 
