@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17297438C11
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0E6438C14
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 23:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhJXV0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 17:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S232009AbhJXV1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 17:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhJXV0M (ORCPT
+        with ESMTP id S231300AbhJXV1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 17:26:12 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29620C061745;
-        Sun, 24 Oct 2021 14:23:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hcrg32FWmz4xZ1;
-        Mon, 25 Oct 2021 08:23:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635110624;
-        bh=ySMup7slLgs9GKvo6mz6M6b9wQSL0hppBSxsAMDXV3w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W5UzRrW5E5mL4M5CUKrRuL68wj6ihlSQKaRsY+VzZaGs5Q8FAjKK6OPeW/DrHW9pD
-         MfwVy1SyKDLk5a1frC46fY+XwdIRYXS8hWOx7aRt7QdFZFagLSlhc0flJyOQQddSW8
-         Fu5pf5wmL3D2Rv4lU6Ep3iOg23tfyCGQUNZ0FvIfcCHuytRM+5NafJGMCtR8BtBpbI
-         1XyYIWY0vx0yHCBKpY2PG35wfFKtmwbza/43HwnM6KWDdDSHebzTH9JhqvvcfyxFuD
-         mulYxVszivJHrMmMsxLjH+us45+utnz7LhV/iIUByP2EcFMmwvAqFoh+ewOMrQaVzx
-         Z9JuH48BVGrwQ==
-Date:   Mon, 25 Oct 2021 08:23:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the vhost tree
-Message-ID: <20211025082329.4bc6a609@canb.auug.org.au>
+        Sun, 24 Oct 2021 17:27:49 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EE4C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:27 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id bi35so332154lfb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 14:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oJzHF/Z5fjP27mQA1nxiLi/yTI4xtj61op5B1TuJ3fM=;
+        b=JUH7zF8hHI+MToSfVcMh/cTdGxkOximv7meXju66VAwbJSkiZLFr16B736nOIVlCpa
+         c1HSZBPsypTgwn4o6WPBFkkPZjyNvt7grmfFmm2opWqCQv0TXW7Myq0F8QJxz+yHz8mI
+         R5VhK2W/NU2dmp15mTmO6rPh9qgPhBz7Ezjrv5/b7SrO3R11PJAtR+IlNHuQIs5mTodn
+         a40cOvriUHccOc19z4iLZoodLBPILC1qxTiW5yWaJa7KwgqI9zruLo6QNoT32JahzGLK
+         Gb45S0Jew+xgl5GGVp5ri8fODC2YvxxGr76eb5aZG6uwg3Osntie2arMB0DoSDtY2kxn
+         jgMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oJzHF/Z5fjP27mQA1nxiLi/yTI4xtj61op5B1TuJ3fM=;
+        b=zdJuLyUussckD2BjIFlW/Bmc8fsgE6A6yzgHo5YQj1gxC7natItgir8ykNf9hO9X8U
+         fGpudMY29FwTcbkJBZufVd2BYtybeOSnBOEFkNUFgLUnyTPXyXMgVmsljA1RyxU2z0/9
+         jxV1WAgLfqHE9cU15ag3kCO67gGvTspGXztdUkXNqjn74ACjhdvGI/Yn/02L5BclVHk+
+         iYXQF9ISCKIqCJtn3b59iqaNNXoQdnB/2ebjpYhELuI8GzM3mXu240AeJUMRBcbGX7K5
+         DsBzZo7NUnzl8+KWqCq6Z/Ur0Y6gWZKDNX3V/evEOXiu+rM91dKwGeSl2BAPTVleBkr8
+         qqng==
+X-Gm-Message-State: AOAM530cFtL4XvVjzv8M+cA5k0udaMPl3cQ/dvNGO3RpuOCrEOFKW5tX
+        /fnmgidY+X7KMt9it/xd4LXeaWlqenUEFTmhl8F4sQ==
+X-Google-Smtp-Source: ABdhPJwt8o9K1DIszxN50TffhxTaQ1oO3M2G1LgnK0x2wMJGhMOsGef7TeP/cw6Sisz5Ih7aFrtZZE9PxXNMs3rMAek=
+X-Received: by 2002:a19:c10d:: with SMTP id r13mr13151970lff.339.1635110726022;
+ Sun, 24 Oct 2021 14:25:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dSQbQUsk9q54wDBAegvbm0j";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211018121815.3017-1-pshete@nvidia.com> <20211018121815.3017-2-pshete@nvidia.com>
+In-Reply-To: <20211018121815.3017-2-pshete@nvidia.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 24 Oct 2021 23:25:14 +0200
+Message-ID: <CACRpkdYQMOAPdQaOb9TXtQmr5ez-xhwDguYusiGxK4DCHHX92A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: tegra: Add pinmux support for Tegra194
+To:     Prathamesh Shete <pshete@nvidia.com>
+Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Suresh Mangipudi <smangipudi@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dSQbQUsk9q54wDBAegvbm0j
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Prathamesh,
 
-Hi all,
+I don't have a maintainer for the Tegra pin control driver
+in MAINTAINERS, and I have seen different people contribute
+to it over the years. Definitely Tegra 194 should be fixed up
+now as it's been around for a while and it's great that you're
+dealing with it.
 
-In commit
+Anyways I applied these two patches for now and let's see
+what happens.
 
-  f89ef240d5d0 ("virtio_ring: check desc =3D=3D NULL when using indirect wi=
-th packed")
+If you're working with this extensively maybe you should
+simply list yourself (and Suresh?) as maintainer(s) in
+MAINTAINERS for this driver? You can add Thierry or
+Jonathan as comaintainer maybe since they made some
+patches the last year or two.
 
-Fixes tag
-
-  Fixes: 1ce9e6055fa ("virtio_ring: introduce packed ring support")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dSQbQUsk9q54wDBAegvbm0j
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF1ztEACgkQAVBC80lX
-0GyGhAf+J0PCy/o08odZ5wuMYpF0PgE4Sd4RuJU/aTM8J23p45NL7lESBFd1W7dO
-TbxWYsMtBj77Jzbmer9b6cartScG/MkKCwkliFLA3ohBTomaaFRI8uj5Q3tYDhxz
-rHr3NNz5yOoc+RSvJSYsDNTVNA7uqRdQJntCclgH59qHkRcIdFTsOxN+giKw3bUR
-hfiBQ9Bcidh2wHHX5/r/h6MSUNU8SM3MHuXx5arl59OeyEQhmKUIbiLrbdnGTOL+
-VFPveBn7QjCEpXjOlxBGwTH+vEXP/4YVk2SqMOWJfC4neOreDdHLD0k+Eua/FHzH
-ylrsUNWxqDbwKu3kqrtEe8Sx2+L3rg==
-=mvme
------END PGP SIGNATURE-----
-
---Sig_/dSQbQUsk9q54wDBAegvbm0j--
+Yours,
+Linus Walleij
