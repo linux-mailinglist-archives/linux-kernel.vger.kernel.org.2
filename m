@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC4B438822
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43C8438825
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhJXJ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59250 "EHLO mail.kernel.org"
+        id S231231AbhJXKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 06:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229868AbhJXJ5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:57:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CAB60F11;
-        Sun, 24 Oct 2021 09:54:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635069296;
-        bh=KEefYJzo54+0puQuDIA1mfGE4sldBanUctO+6L2/obA=;
+        id S229463AbhJXKAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 06:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55D0460F4F;
+        Sun, 24 Oct 2021 09:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635069478;
+        bh=4xCqj5G9GvzDzcYFIrwq9UPV3NhMM5vSXRX1UJk/qGI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m5Traf/32Bmtn+aI+hPH0F9ZInG26qb0z6ZPGoizIjb91eQldPy3INZQFBXEvUqxb
-         0oCFls/rIxPdBTZ1ozH9VcVef5y9mUK1rpC5iimNeyx8eZ5S7moh3KwxKVy4uf4yVe
-         Tjz3jN3Cs9HbEmXY8zW8WeC30iGwtx5mjwjBqFGaf1vk0lQyGbti/PYCUYV4JVVBKn
-         dDzLH7wGTafbL9jTct7XCFJTHrVc7BVrog1jN96Ecly3xB0Z2G0ZisaqmuHfyCndxk
-         ZGj1uOL4m1VDDqS1Ktxzd9Zq1g4VKQhpSKtTg80gNlorzIRRSMHdrstAOHP6LZWZfi
-         qIARU9PlYf97g==
-Date:   Sun, 24 Oct 2021 12:54:52 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
-Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
- traps on probe/remove device
-Message-ID: <YXUtbOpjmmWr71dU@unreal>
-References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
- <YXUhyLXsc2egWNKx@shredder>
+        b=sYwrI0qdBb6IRc3rucYOfHtRGyXXGgtRgpGSw686bw4ylbZB2VRrWRrP7r09Cuy3J
+         No+5wVMkUfybPsdEHRCFhX4izvYAXnURfvuh+j1tm8DnPCuszh66YQFzh2UStKwF+f
+         WXniifhRMYn3p/gsBoxQnS2iWhEOsqD4/bfMhZPw=
+Date:   Sun, 24 Oct 2021 11:57:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rob Landley <rob@landley.net>
+Cc:     Tim.Bird@sony.com, khilman@baylibre.com, geert@linux-m68k.org,
+        laurent.pinchart@ideasonboard.com, dwmw2@infradead.org,
+        tbird20d@gmail.com, u.kleine-koenig@pengutronix.de,
+        linux-kernel@vger.kernel.org, paul.gortmaker@windriver.com,
+        linux-embedded@vger.kernel.org, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        mporter@konsulko.com, tglx@linutronix.de,
+        thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
+ obsolete
+Message-ID: <YXUuIIiL6EX8pWhQ@kroah.com>
+References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+ <CA+bK7J741D=DgZMNeEC5xg9kDDSaJu19QsRunVvXkBGx1mKGnQ@mail.gmail.com>
+ <YW5r61ZQx+E9xfuH@pendragon.ideasonboard.com>
+ <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
+ <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
+ <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
+ <7hlf2oejqv.fsf@baylibre.com>
+ <BYAPR13MB250310153BF63EF3ED50F294FDBD9@BYAPR13MB2503.namprd13.prod.outlook.com>
+ <f7c3aabd-8916-a0d2-7859-7088fab3114e@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXUhyLXsc2egWNKx@shredder>
+In-Reply-To: <f7c3aabd-8916-a0d2-7859-7088fab3114e@landley.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 12:05:12PM +0300, Ido Schimmel wrote:
-> On Sun, Oct 24, 2021 at 11:42:11AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Align netdevsim to be like all other physical devices that register and
-> > unregister devlink traps during their probe and removal respectively.
+On Sun, Oct 24, 2021 at 02:24:48AM -0500, Rob Landley wrote:
+> > The linux-embedded mailing list was created about the same time.
+> > The thinking was that there are issues that transcend any particular
+> > sub-system, directory, or file, such as boot time or system size or
+> > real-time. Changes to keep these system-wide metrics in check might
+> > need the assistance of a respected upstream maintainer, who could
+> > guide developers working in these areas, or who could help keep
+> > other kernel maintainers apprised of requirements in these areas
+> > for embedded products.
 > 
-> No, this is incorrect. Out of the three drivers that support both reload
-> and traps, both netdevsim and mlxsw unregister the traps during reload.
-> Here is another report from syzkaller about mlxsw [1].
-
-Sorry, I overlooked it.
-
+> Greg KH wouldn't listen to me when I was Documention maintainer. He wouldn't
+> listen when I was busybox maintainer. Maintainer-without-portfolio ain't gonna
+> get him to start.
 > 
-> Please revert both 22849b5ea595 ("devlink: Remove not-executed trap
-> policer notifications") and 8bbeed485823 ("devlink: Remove not-executed
-> trap group notifications").
+> Keep in mind Greg and Kay Sievers were joined at the hip until Linus threw Kay
+> out of Linux dev and he bogged off to systemd. If you point out things like
+> "sysfs should to present a stable API to userspace" or "it's a bad idea to
+> depend on magic packages like udev or systemd as things every Linux system must
+> not only use verbatim from a single upstream supplier but must replace every
+> time they upgrade the kernel", Greg is reliably against them.
 
-However, before we rush and revert commit, can you please explain why
-current behavior to reregister traps on reload is correct?
+I love you Rob, but I have no idea how the creation of mdev has anything
+to do with the topic at hand.
 
-I think that you are not changing traps during reload, so traps before
-reload will be the same as after reload, am I right?
+Best of luck!
 
-Thanks
+greg k-h
