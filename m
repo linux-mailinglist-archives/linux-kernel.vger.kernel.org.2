@@ -2,168 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9DB438C8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A852438C92
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhJXXa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 19:30:28 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:33685 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbhJXXa1 (ORCPT
+        id S229848AbhJXXiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 19:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhJXXiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 19:30:27 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HcvQW5kvGz4xZ1;
-        Mon, 25 Oct 2021 10:28:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635118085;
-        bh=86P5yjVYjQNnPiQ3BlQbigI/vBY+MAT6lQAdQ8JOTeY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=u3f0QbOSlfcJSspkhjRJ45+VSp0BSxs9KD0mtH8H8h5HY4UW17KlUwtknmSD6Kcwh
-         qeLA0VXbCGT7OgWfexRyPknv8MM5dOw3TCdlGiAMN9+Sna2NKt0jr8AN0Fb4fopIOX
-         0cpZiIhtzDFsx6vwVPXUyWJsiFmSZRFomk1WlBCprKzpLL47xPJVzYF/9yl+ozpaW3
-         r3hiy6OhM8KIuBDjaAWts7AGKDrQpGb0Mmw81pPoUc+SF5S5uuxCGcu+luLkAhChJI
-         /c6r60I74NheuP4ApmlrGR9SaD6F1H5QniuIPaspboujJKPnBZYGNnR0PTneipsjdi
-         Zgp5l/ypBdLsQ==
-Date:   Mon, 25 Oct 2021 10:28:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Heidelberg <david@ixit.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the qcom tree
-Message-ID: <20211025102802.11a92147@canb.auug.org.au>
+        Sun, 24 Oct 2021 19:38:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF4CC061745;
+        Sun, 24 Oct 2021 16:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=vojAuA0zWMRXeMKM5FxwLkBGAJx4XzX1DoS3E/l+TR0=; b=WUs8HXwAmUMisHaiHQeTYLKozq
+        JaBHeB0Uim6oNL+9a5VryUfm88jMIX9SjpcfFY1+ld58tTr1jij2ZzC1sPaXwZZ255f24aF6+I7bQ
+        MrcQhLisdadLzgot9iIuVD38gaYv9nV1zTphcBALgsPjRvaTsN9FH++eKsC5k4xG8I9/KRTBRxoM1
+        VVrs1SPcL+C01ALzKz8/3ydimYBAduzy0SVyHEF9Lk2M+Bn7zFcSJqcYoBYc58tkmj0f9CCk9Foxa
+        qzeN5+zK8TL0SjT6VDHEf57aeNts5fpg9tC0TUcZy+fudlpNsSjb6XR3nLi4AwQ3k8h15uDfD6RaV
+        wWigPwYg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1men1j-00Emhv-Ta; Sun, 24 Oct 2021 23:35:43 +0000
+Subject: Re: [PATCH] scsi: ufs: clean up the Kconfig file
+To:     Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <20211024064332.16360-1-rdunlap@infradead.org>
+ <8578e393-2a25-bc52-65ea-599d071387e9@acm.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5b13f32c-0cdb-26de-2bb7-af56a099b0b2@infradead.org>
+Date:   Sun, 24 Oct 2021 16:35:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ptewabXvebv++qFXSo5WEGI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <8578e393-2a25-bc52-65ea-599d071387e9@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ptewabXvebv++qFXSo5WEGI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/24/21 2:29 PM, Bart Van Assche wrote:
+> On 10/23/21 23:43, Randy Dunlap wrote:
+>> @@ -39,7 +38,7 @@ config SCSI_UFSHCD
+>>       select DEVFREQ_GOV_SIMPLE_ONDEMAND
+>>       select NLS
+>>       help
+>> -      This selects the support for UFS devices in Linux, say Y and make
+>> +      This selects the support for UFS devices in Linux. Say Y and make
+> 
+> How about changing "This selects the support for UFS devices in Linux"
+> into "Enables support for UFS devices"? "the" should be left out from a
+> grammatical point of view and "in Linux" is redundant.
 
-Hi all,
+OK, done (locally).
 
-After merging the qcom tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+>>         sure that you know the name of your UFS host adapter (the card
+>>         inside your computer that "speaks" the UFS protocol, also
+>>         called UFS Host Controller), because you will be asked for it.
+>> @@ -51,7 +50,7 @@ config SCSI_UFSHCD
+>>         (the one containing the directory /) is located on a UFS device.
+>>   config SCSI_UFSHCD_PCI
+>> -    tristate "PCI bus based UFS Controller support"
+>> +    tristate "PCI bus-based UFS Controller support"
+> 
+> Even with this change applied capitalization is inconsistent.
 
-arch/arm/boot/dts/qcom-ipq8064.dtsi:52.19-70.5: Warning (thermal_sensors_pr=
-operty): /thermal-zones/sensor0-thermal: Missing property '#thermal-sensor-=
-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad ph=
-andle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:72.19-90.5: Warning (thermal_sensors_pr=
-operty): /thermal-zones/sensor1-thermal: Missing property '#thermal-sensor-=
-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad ph=
-andle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:92.19-110.5: Warning (thermal_sensors_p=
-roperty): /thermal-zones/sensor2-thermal: Missing property '#thermal-sensor=
--cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad p=
-handle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:112.19-130.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor3-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:132.19-150.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor4-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:152.19-170.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor5-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:172.19-190.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor6-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:192.19-210.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor7-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:212.19-230.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor8-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:232.19-250.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor9-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:252.20-270.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor10-thermal: Missing property '#thermal-sens=
-or-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad=
- phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:52.19-70.5: Warning (thermal_sensors_pr=
-operty): /thermal-zones/sensor0-thermal: Missing property '#thermal-sensor-=
-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad ph=
-andle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:72.19-90.5: Warning (thermal_sensors_pr=
-operty): /thermal-zones/sensor1-thermal: Missing property '#thermal-sensor-=
-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad ph=
-andle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:92.19-110.5: Warning (thermal_sensors_p=
-roperty): /thermal-zones/sensor2-thermal: Missing property '#thermal-sensor=
--cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad p=
-handle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:112.19-130.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor3-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:132.19-150.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor4-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:152.19-170.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor5-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:172.19-190.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor6-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:192.19-210.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor7-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:212.19-230.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor8-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:232.19-250.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor9-thermal: Missing property '#thermal-senso=
-r-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad =
-phandle (referred from thermal-sensors[0])
-arch/arm/boot/dts/qcom-ipq8064.dtsi:252.20-270.5: Warning (thermal_sensors_=
-property): /thermal-zones/sensor10-thermal: Missing property '#thermal-sens=
-or-cells' in node /soc/clock-controller@900000/thermal-sensor@900000 or bad=
- phandle (referred from thermal-sensors[0])
+I don't doubt it, but could you be more explicit about
+which word(s) you mean, please?
 
-Presumably introduced by commit
+I see one "pci" in the Kconfig file.
+I see several "Controller" vs. "controller."
+I see a few of "Support" vs. "support."
 
-  88542b1d37dc ("ARM: dts: qcom: fix thermal zones naming")
+Which are you referring to? (or something else)
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ptewabXvebv++qFXSo5WEGI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF17AIACgkQAVBC80lX
-0GxoEwf/fn/n1scMNoeWIs05v3eN++jpoPOzqcnzSBh63aoy7Q2N9spoacvpemDs
-kzdvpxDcOT4ZZOnziCBlgW6Hn09+IqGXQqwBNe5qm1379CRMkdj7/r802dN5TqJ2
-OitVj+vKKUTMIAHPqxuoZzOw5JJjLDdxuQPqxIM3WuV2ZfAa4HP6TSm/DwNfW5TM
-0PRTyDn5r9UGirBwNq1EcN4RkAlSCZG5eYGViWbIuhVGiuBZZLjONKSI21t9Tp4+
-cYdlN2ejWdECkwARvKclhQZ/uVNxzNsUakSSZXHX0ZyOJpIyWtUH1+DER29+Kv0R
-Mb1jAWkKXMpQsjXpDJm3kmob/X+hRg==
-=ThRZ
------END PGP SIGNATURE-----
-
---Sig_/ptewabXvebv++qFXSo5WEGI--
+thanks.
+-- 
+~Randy
