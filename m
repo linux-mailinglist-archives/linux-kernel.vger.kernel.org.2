@@ -2,162 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4C4438C73
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 00:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA97F438C79
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhJXW7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 18:59:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229625AbhJXW7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 18:59:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9ECB60F70;
-        Sun, 24 Oct 2021 22:56:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635116201;
-        bh=rYMQ5XtMn1HanoUiiZbbivTpo2vmneWSjyU+LSj6QkQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=s/Daia3dR3CsbCcCsscr25qy6+731kQijgRBryxbo9I7wqzeLu8KTT6vr5V8DkFI5
-         s+ro+s6MfEfTSXXYOdK9ZwFH9QGeDA9AEHBwfXnHU2t+n5IP/lH//XXyRB02ebux0x
-         eVfWKn96wGwhBxlfYOX+VqRYkrRbk9bwejPkrJFQrjHYPQXc1m5PsgM2PoVftVXYSo
-         iaVky3uKcJ7qhEsTez/qgn+LUvyPVaBI761e30Xonh4nXkiFP/9zanK3ARGCpeOvHL
-         0b0DaV3ilw56YQkRQ6fiZpl6dgTcigmuTl2avZ9NW2u58QiTj01z/yhHto0JuKdbTp
-         tRTIdmIQjIPPg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 46F865C0BF4; Sun, 24 Oct 2021 15:56:40 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 15:56:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 2/2] refscale: prevent buffer to pr_alert() being too long
-Message-ID: <20211024225640.GL880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
- <20211022105111.29455-2-lizhijian@cn.fujitsu.com>
- <20211022231555.GG880162@paulmck-ThinkPad-P17-Gen-1>
- <e49f00c9-b9c8-a6a9-9595-6cedf5efe3e5@cn.fujitsu.com>
+        id S231969AbhJXXNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 19:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhJXXNl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 19:13:41 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D21DC061243
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:11:20 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id g8so6871906ljn.4
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1vsRSHd5ol8s+6s2RmI1HSUriW3Srp1b0zXswHBU7Sk=;
+        b=Fbe4EIds06j7G15aUzedORb13lKIjQ6UiPypMt2r3Za3UkwMy3eZjMeqrH72ZYFrTs
+         r8q7Xz0FkqCRKj57sd4OSEzXDwuhh3wq32AKWpty61ch5UA/SFwkpc+7dDPJEdkrrbAE
+         mVDrQsy3h3IongKhzglUoxh8y3AIsZA27Fq6xk2oaDprAjT9vW1Xox4IaQisRGixQYr5
+         OqySCDG5ZsJMLA8aSr6+JqAwIRDuHGCbAlt4SA3g6LphVfONBIDlGoYC7VW/MfBllOq+
+         yZt55HEO30faBn4r38/QxRyweFJ9NRLRmVtzqWNka692YwBWW15nQAEUQ8dEWs9C18+9
+         FtPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1vsRSHd5ol8s+6s2RmI1HSUriW3Srp1b0zXswHBU7Sk=;
+        b=u+tTkdsHG/wmzsnFmB6xiqKbAJno5wZxB/2sbOyFF67nM6jBal3x1jljHSmLXjrz4A
+         B84mmVsR/slAA6e7Mg3N4vTcEd90cRNLjz9JfCjNjFWRmP+ZDpSNdF2oiUGrEyjahpBD
+         71RtpmCBpXDzm1q5IFQP4/ShtmQ5+aiwVP3jDAMQhJY1wD5Vwp4wjpdDJqXWTQwCDy0Y
+         qq1IESFevG0/JEXySEnEd9B4yRB548H5NAbRwmRZ7MIXkTgUwFFiNOyg/fkYPVOd3vOG
+         i3WgTlPbZ50nPPFAAethZc+S5isKPkPEI/b96UWjF/8nSQ41hCgHcGlffQ0kVAYS6KmD
+         Ax1Q==
+X-Gm-Message-State: AOAM532YgU9Ni3uKBbHhRbIhdvAqgS4gu7QN/yxTBVQ891CP/Kath3V1
+        rT8YC7DAl/SG04QhtTSW+Rxh+rvEO8c74b6cz7ZL9A==
+X-Google-Smtp-Source: ABdhPJxpFfDTust0osAQmfxwkSpS6S7VhiwJS8EWyFLBIURethZXfMtoI8uRXG2acFxprQg+kqMuagHZV9BMfu8ocAA=
+X-Received: by 2002:a05:651c:111:: with SMTP id a17mr14808602ljb.145.1635117078094;
+ Sun, 24 Oct 2021 16:11:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e49f00c9-b9c8-a6a9-9595-6cedf5efe3e5@cn.fujitsu.com>
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-12-kernel@esmil.dk>
+In-Reply-To: <20211021174223.43310-12-kernel@esmil.dk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 Oct 2021 01:11:06 +0200
+Message-ID: <CACRpkdYZzKtFcBUM8sV4uze2T_EbfOGG=QkO9miDKKq=1mws_A@mail.gmail.com>
+Subject: Re: [PATCH v2 11/16] dt-bindings: pinctrl: Add StarFive JH7100 bindings
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 10:46:16PM +0800, Li, Zhijian wrote:
-> 
-> on 2021/10/23 7:15, Paul E. McKenney wrote:
-> > On Fri, Oct 22, 2021 at 06:51:11PM +0800, Li Zhijian wrote:
-> > > 0Day/LKP observed that the refscale results become incompleted
-> > > when a larger nruns(such as 300) is specified.
-> > > It seems that printk() can accept < 1024 buffer at once.
-> > > Print the buffer if its length exceeds 800 simply.
-> > > 
-> > > CC: Philip Li <philip.li@intel.com>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> > Good catch!  A couple of questions below.
-> > 
-> > 						Thanx, Paul
-> > 
-> > > ---
-> > >   kernel/rcu/refscale.c | 23 +++++++++++++----------
-> > >   1 file changed, 13 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> > > index 2cbe2a2ba387..b1b9052010fd 100644
-> > > --- a/kernel/rcu/refscale.c
-> > > +++ b/kernel/rcu/refscale.c
-> > > @@ -604,7 +604,7 @@ static u64 process_durations(int n)
-> > >   	char *buf;
-> > >   	u64 sum = 0;
-> > > -	buf = kmalloc(128 + nreaders * 32, GFP_KERNEL);
-> > > +	buf = kmalloc(64 * 20, GFP_KERNEL);
-> > This allocation (and the one below) is 1280 bytes rather than
-> > 1024 bytes.  Why the extra couple hundred bytes?
-> 
-> Nothing special, so let's change 1024 or (800 + 64 ),which is sufficent as well ?
+On Thu, Oct 21, 2021 at 7:42 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-Either works.  No problem having a few extra bytes, but 200 seemed a bit
-excessive.  ;-)
+> Add bindings for the StarFive JH7100 GPIO/pin controller.
+>
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-> > >   	if (!buf)
-> > >   		return 0;
-> > >   	buf[0] = 0;
-> > > @@ -617,13 +617,15 @@ static u64 process_durations(int n)
-> > >   		if (i % 5 == 0)
-> > >   			strcat(buf, "\n");
-> > > +		if (strlen(buf) > 800) {
-> > > +			pr_alert("%s", buf);
-> > Does the tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
-> > script also require changes to handle the partial lines?
-> 
-> I missed that, i will take a look at it
+That is a very terse commit message for an entirely new
+SoC, please put a little blurb about this silicon there.
+Like mention that it is RISC-V at least.
 
-Looking forward to seeing what you come up with.
+Overall quite interesting!
 
-							Thanx, Paul
+> +$id: http://devicetree.org/schemas/pinctrl/starfive,jh7100-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive JH7100 Pin Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Emil Renner Berthing <kernel@esmil.dk>
+> +  - Drew Fustini <drew@beagleboard.org>
 
-> Thanks
-> 
-> Zhijian
-> 
-> 
-> > 
-> > Same for the later comparison against 800.
-> > 
-> > > +			buf[0] = 0;
-> > > +		}
-> > >   		strcat(buf, buf1);
-> > >   		sum += rt->last_duration_ns;
-> > >   	}
-> > > -	strcat(buf, "\n");
-> > > -
-> > > -	SCALEOUT("%s\n", buf);
-> > > +	pr_alert("%s\n", buf);
-> > >   	kfree(buf);
-> > >   	return sum;
-> > > @@ -648,7 +650,7 @@ static int main_func(void *arg)
-> > >   	VERBOSE_SCALEOUT("main_func task started");
-> > >   	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
-> > > -	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
-> > > +	buf = kzalloc(64 * 20, GFP_KERNEL);
-> > >   	if (!result_avg || !buf) {
-> > >   		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> > >   		errexit = true;
-> > > @@ -701,10 +703,7 @@ static int main_func(void *arg)
-> > >   	if (errexit)
-> > >   		goto err;
-> > > -	buf[0] = 0;
-> > > -	strcat(buf, "\n");
-> > > -	strcat(buf, "Runs\tTime(ns)\n");
-> > > -
-> > > +	pr_alert("Runs\tTime(ns)\n");
-> > >   	for (exp = 0; exp < nruns; exp++) {
-> > >   		u64 avg;
-> > >   		u32 rem;
-> > > @@ -712,9 +711,13 @@ static int main_func(void *arg)
-> > >   		avg = div_u64_rem(result_avg[exp], 1000, &rem);
-> > >   		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
-> > >   		strcat(buf, buf1);
-> > > +		if (strlen(buf) > 800) {
-> > > +			pr_alert("%s", buf);
-> > > +			buf[0] = 0;
-> > > +		}
-> > >   	}
-> > > -	SCALEOUT("%s", buf);
-> > > +	pr_alert("%s", buf);
-> > >   err:
-> > >   	// This will shutdown everything including us.
-> > > -- 
-> > > 2.33.0
-> > > 
-> > > 
-> > > 
-> > 
-> 
-> 
+Add description: talking about that this is a RISC-V SoC
+and other implicit things that are really good to know.
+
+> +  starfive,signal-group:
+> +    description: |
+> +      The SoC has a global setting selecting one of 7 different pinmux
+> +      configurations of the pads named GPIO[0:63] and FUNC_SHARE[0:141]. After
+> +      this global setting is chosen only the 64 "GPIO" pins can be further
+> +      muxed by configuring them to be controlled by certain peripherals rather
+> +      than software.
+> +      Note that in configuration 0 none of GPIOs are routed to pads, and only
+> +      in configuration 1 are the GPIOs routed to the pads named GPIO[0:63].
+> +      If this property is not set it defaults to the configuration already
+> +      chosen by the earlier boot stages.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3, 4, 5, 6]
+
+This still is hard for me to understand. Does it mean that 0..6 define
+how the direct-to-peripheral-pins are set up?
+
+Then it would make sense to describe what happens for 0, 1, 2 ...6
+i.e. what the different set-ups are.
+
+Actually this is what we call group-based pin multiplexing in Linux,
+this property seems to avoid using that concept.
+See for example:
+Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
+
+> +    patternProperties:
+> +      '-pins*$':
+> +        type: object
+> +        description: |
+> +          A pinctrl node should contain at least one subnode representing the
+> +          pinctrl groups available on the machine. Each subnode will list the
+> +          pins it needs, and how they should be configured, with regard to
+> +          muxer configuration, bias, input enable/disable, input schmitt
+> +          trigger enable/disable, slew-rate and drive strength.
+> +        $ref: "/schemas/pinctrl/pincfg-node.yaml"
+
+Nice that you use pincfg-node.yaml
+
+> +        properties:
+> +          pins:
+> +            description: |
+> +              The list of pin identifiers that properties in the node apply to.
+> +              This should be set using either the PAD_GPIO or PAD_FUNC_SHARE
+> +              macro. Either this or "pinmux" has to be specified.
+> +
+> +          pinmux:
+> +            description: |
+> +              The list of GPIO identifiers and their mux settings that
+> +              properties in the node apply to. This should be set using the
+> +              GPIOMUX macro. Either this or "pins" has to be specified.
+
+What about referencing
+Documentation/devicetree/bindings/pinctrl/pinmux-node.yaml
+for this?
+
+Yours,
+Linus Walleij
