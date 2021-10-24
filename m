@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324E2438A10
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2409A438A12
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 17:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhJXPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 11:42:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49318 "EHLO
+        id S232123AbhJXPmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 11:42:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49298 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbhJXPmZ (ORCPT
+        with ESMTP id S231823AbhJXPm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 11:42:25 -0400
-Date:   Sun, 24 Oct 2021 15:40:02 -0000
+        Sun, 24 Oct 2021 11:42:26 -0400
+Date:   Sun, 24 Oct 2021 15:40:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635090003;
+        s=2020; t=1635090004;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9eJO3SkzJoXedi7ZJIj/Q9MrwXOxsQSvUdXtfubanlI=;
-        b=rHHjdpxO9J7S0U3NYqZiTOjKfYT5xZZObmLmWYwWSx1F1HnRb9l/fOthJYklMbBgLkxIvn
-        5ZD3abFCU1mA5nqzk6WMM65l8HTJjwGXvaVJsqKZAOIMv3DjWegx/81yFYp9Jr/GEQFJ2e
-        ruhFyjOk9rp+jVYSFwvvIeAy+g+AxWO+QisWvcNHh1O6MCNz4c5t7EG6CBmZgw/qNch+l/
-        Pu86WINR7cUcrp3ahXDisgQjzU0O8Raaf+dDxBAzycfLqDVnzA/Wo28jDr1YQqI4i9C08U
-        LvntyeSuxUPhe1Wbd0JzI2wNl9j9RnWBgnE4nexj4Q6BCMTHBFqef6QtKYF59Q==
+        bh=9TI/WEfBMvUahWrYOHjOd02URe64LLG1KPiSvk+BvIA=;
+        b=v/SX3DG0E3nxPCMEXvxn6uWgYI1kP/RDihDvJVaalcwlO1kTLCWyKRhc9xPcseZ/IdllR2
+        6FH1H6wwiiOzYo2NSdyxpnRHhZGCuEi+uOoMQQyXDqsR8G9WFHekf8Wh3P/Fjc/Ed5riLv
+        VIYTf3wiPuMDU9bUPlau2xi2ubRtDkReNGt4TMDrAx9S6zQpYZiaWNMXcdpSyaur6WzKVc
+        1Ukeqk4oQXsudXjs56+LAFv/JLwhyaaf5T9yzYfyM515IAQ1BaTr2qQVDZ9YZ0RH7l/b87
+        yHX1DOUN43sL/qQRoHn7DxCYRUXgaf2yWyPZrg9aElRexmpkEhmliBUDxmSXaA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635090003;
+        s=2020e; t=1635090004;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9eJO3SkzJoXedi7ZJIj/Q9MrwXOxsQSvUdXtfubanlI=;
-        b=FKZ0wxsrfcFEPOi9QnlvJ5TATvh6MpHPaqCDdf1gbfd5/eyTxu5a0M5Ek+rcQvEpFr7eJE
-        gY1r1rUmosAQDoBA==
+        bh=9TI/WEfBMvUahWrYOHjOd02URe64LLG1KPiSvk+BvIA=;
+        b=r9n1rF9qvUd71pOus5TtAX28hmJcIlYf+DJIk2njg3hEpsIIxjuWxbbVRtEn4gI4jxD4Ob
+        djN+an9X1yyK74AQ==
 From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/arm_arch_timer: Move MMIO
- timer programming over to CVAL
-Cc:     Marc Zyngier <maz@kernel.org>,
+Subject: [tip: timers/core] clocksource/drivers/arm_arch_timer: Move drop
+ _tval from erratum function names
+Cc:     Oliver Upton <oupton@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211017124225.3018098-8-maz@kernel.org>
-References: <20211017124225.3018098-8-maz@kernel.org>
+In-Reply-To: <20211017124225.3018098-6-maz@kernel.org>
+References: <20211017124225.3018098-6-maz@kernel.org>
 MIME-Version: 1.0
-Message-ID: <163509000248.626.5257507099113316820.tip-bot2@tip-bot2>
+Message-ID: <163509000392.626.4065759630604774487.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,137 +61,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     8b82c4f883a7b22660464c0232fbdb7a6deb3061
-Gitweb:        https://git.kernel.org/tip/8b82c4f883a7b22660464c0232fbdb7a6deb3061
+Commit-ID:     ac9ef4f24cb2313fb047f2097396204b033799b8
+Gitweb:        https://git.kernel.org/tip/ac9ef4f24cb2313fb047f2097396204b033799b8
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sun, 17 Oct 2021 13:42:15 +01:00
+AuthorDate:    Sun, 17 Oct 2021 13:42:13 +01:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Sun, 17 Oct 2021 21:47:21 +02:00
+CommitterDate: Sun, 17 Oct 2021 21:47:10 +02:00
 
-clocksource/drivers/arm_arch_timer: Move MMIO timer programming over to CVAL
+clocksource/drivers/arm_arch_timer: Move drop _tval from erratum function names
 
-Similarily to the sysreg-based timer, move the MMIO over to using
-the CVAL registers instead of TVAL. Note that there is no warranty
-that the 64bit MMIO access will be atomic, but the timer is always
-disabled at the point where we program CVAL.
+The '_tval' name in the erratum handling function names doesn't
+make much sense anymore (and they were using CVAL the first place).
 
+Drop the _tval tag.
+
+Reviewed-by: Oliver Upton <oupton@google.com>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211017124225.3018098-8-maz@kernel.org
+Link: https://lore.kernel.org/r/20211017124225.3018098-6-maz@kernel.org
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- arch/arm/include/asm/arch_timer.h    |  1 +-
- drivers/clocksource/arm_arch_timer.c | 50 ++++++++++++++++++++-------
- 2 files changed, 39 insertions(+), 12 deletions(-)
+ drivers/clocksource/arm_arch_timer.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm/include/asm/arch_timer.h b/arch/arm/include/asm/arch_timer.h
-index a9b2b72..9f4b895 100644
---- a/arch/arm/include/asm/arch_timer.h
-+++ b/arch/arm/include/asm/arch_timer.h
-@@ -7,6 +7,7 @@
- #include <asm/hwcap.h>
- #include <linux/clocksource.h>
- #include <linux/init.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/types.h>
- 
- #include <clocksource/arm_arch_timer.h>
 diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index bede10f..f4db3a6 100644
+index 3221654..8afe8c8 100644
 --- a/drivers/clocksource/arm_arch_timer.c
 +++ b/drivers/clocksource/arm_arch_timer.c
-@@ -44,11 +44,13 @@
- #define CNTACR_RWVT	BIT(4)
- #define CNTACR_RWPT	BIT(5)
+@@ -369,7 +369,7 @@ EXPORT_SYMBOL_GPL(timer_unstable_counter_workaround);
  
--#define CNTVCT_LO	0x08
--#define CNTVCT_HI	0x0c
-+#define CNTVCT_LO	0x00
-+#define CNTPCT_LO	0x08
- #define CNTFRQ		0x10
-+#define CNTP_CVAL_LO	0x20
- #define CNTP_TVAL	0x28
- #define CNTP_CTL	0x2c
-+#define CNTV_CVAL_LO	0x30
- #define CNTV_TVAL	0x38
- #define CNTV_CTL	0x3c
+ static atomic_t timer_unstable_counter_workaround_in_use = ATOMIC_INIT(0);
  
-@@ -112,6 +114,13 @@ void arch_timer_reg_write(int access, enum arch_timer_reg reg, u64 val,
- 		case ARCH_TIMER_REG_TVAL:
- 			writel_relaxed((u32)val, timer->base + CNTP_TVAL);
- 			break;
-+		case ARCH_TIMER_REG_CVAL:
-+			/*
-+			 * Not guaranteed to be atomic, so the timer
-+			 * must be disabled at this point.
-+			 */
-+			writeq_relaxed(val, timer->base + CNTP_CVAL_LO);
-+			break;
- 		default:
- 			BUILD_BUG();
- 		}
-@@ -124,6 +133,10 @@ void arch_timer_reg_write(int access, enum arch_timer_reg reg, u64 val,
- 		case ARCH_TIMER_REG_TVAL:
- 			writel_relaxed((u32)val, timer->base + CNTV_TVAL);
- 			break;
-+		case ARCH_TIMER_REG_CVAL:
-+			/* Same restriction as above */
-+			writeq_relaxed(val, timer->base + CNTV_CVAL_LO);
-+			break;
- 		default:
- 			BUILD_BUG();
- 		}
-@@ -720,15 +733,36 @@ static int arch_timer_set_next_event_phys(unsigned long evt,
- 	return 0;
- }
- 
-+static u64 arch_counter_get_cnt_mem(struct arch_timer *t, int offset_lo)
-+{
-+	u32 cnt_lo, cnt_hi, tmp_hi;
-+
-+	do {
-+		cnt_hi = readl_relaxed(t->base + offset_lo + 4);
-+		cnt_lo = readl_relaxed(t->base + offset_lo);
-+		tmp_hi = readl_relaxed(t->base + offset_lo + 4);
-+	} while (cnt_hi != tmp_hi);
-+
-+	return ((u64) cnt_hi << 32) | cnt_lo;
-+}
-+
- static __always_inline void set_next_event_mem(const int access, unsigned long evt,
- 					   struct clock_event_device *clk)
+-static void erratum_set_next_event_tval_generic(const int access, unsigned long evt,
++static void erratum_set_next_event_generic(const int access, unsigned long evt,
+ 						struct clock_event_device *clk)
  {
-+	struct arch_timer *timer = to_arch_timer(clk);
  	unsigned long ctrl;
-+	u64 cnt;
-+
- 	ctrl = arch_timer_reg_read(access, ARCH_TIMER_REG_CTRL, clk);
- 	ctrl |= ARCH_TIMER_CTRL_ENABLE;
- 	ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
- 
--	arch_timer_reg_write(access, ARCH_TIMER_REG_TVAL, evt, clk);
-+	if (access ==  ARCH_TIMER_MEM_VIRT_ACCESS)
-+		cnt = arch_counter_get_cnt_mem(timer, CNTVCT_LO);
-+	else
-+		cnt = arch_counter_get_cnt_mem(timer, CNTPCT_LO);
-+
-+	arch_timer_reg_write(access, ARCH_TIMER_REG_CVAL, evt + cnt, clk);
+@@ -390,17 +390,17 @@ static void erratum_set_next_event_tval_generic(const int access, unsigned long 
  	arch_timer_reg_write(access, ARCH_TIMER_REG_CTRL, ctrl, clk);
  }
  
-@@ -970,15 +1004,7 @@ bool arch_timer_evtstrm_available(void)
- 
- static u64 arch_counter_get_cntvct_mem(void)
+-static __maybe_unused int erratum_set_next_event_tval_virt(unsigned long evt,
++static __maybe_unused int erratum_set_next_event_virt(unsigned long evt,
+ 					    struct clock_event_device *clk)
  {
--	u32 vct_lo, vct_hi, tmp_hi;
--
--	do {
--		vct_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
--		vct_lo = readl_relaxed(arch_timer_mem->base + CNTVCT_LO);
--		tmp_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
--	} while (vct_hi != tmp_hi);
--
--	return ((u64) vct_hi << 32) | vct_lo;
-+	return arch_counter_get_cnt_mem(arch_timer_mem, CNTVCT_LO);
+-	erratum_set_next_event_tval_generic(ARCH_TIMER_VIRT_ACCESS, evt, clk);
++	erratum_set_next_event_generic(ARCH_TIMER_VIRT_ACCESS, evt, clk);
+ 	return 0;
  }
  
- static struct arch_timer_kvm_info arch_timer_kvm_info;
+-static __maybe_unused int erratum_set_next_event_tval_phys(unsigned long evt,
++static __maybe_unused int erratum_set_next_event_phys(unsigned long evt,
+ 					    struct clock_event_device *clk)
+ {
+-	erratum_set_next_event_tval_generic(ARCH_TIMER_PHYS_ACCESS, evt, clk);
++	erratum_set_next_event_generic(ARCH_TIMER_PHYS_ACCESS, evt, clk);
+ 	return 0;
+ }
+ 
+@@ -412,8 +412,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
+ 		.desc = "Freescale erratum a005858",
+ 		.read_cntpct_el0 = fsl_a008585_read_cntpct_el0,
+ 		.read_cntvct_el0 = fsl_a008585_read_cntvct_el0,
+-		.set_next_event_phys = erratum_set_next_event_tval_phys,
+-		.set_next_event_virt = erratum_set_next_event_tval_virt,
++		.set_next_event_phys = erratum_set_next_event_phys,
++		.set_next_event_virt = erratum_set_next_event_virt,
+ 	},
+ #endif
+ #ifdef CONFIG_HISILICON_ERRATUM_161010101
+@@ -423,8 +423,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
+ 		.desc = "HiSilicon erratum 161010101",
+ 		.read_cntpct_el0 = hisi_161010101_read_cntpct_el0,
+ 		.read_cntvct_el0 = hisi_161010101_read_cntvct_el0,
+-		.set_next_event_phys = erratum_set_next_event_tval_phys,
+-		.set_next_event_virt = erratum_set_next_event_tval_virt,
++		.set_next_event_phys = erratum_set_next_event_phys,
++		.set_next_event_virt = erratum_set_next_event_virt,
+ 	},
+ 	{
+ 		.match_type = ate_match_acpi_oem_info,
+@@ -432,8 +432,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
+ 		.desc = "HiSilicon erratum 161010101",
+ 		.read_cntpct_el0 = hisi_161010101_read_cntpct_el0,
+ 		.read_cntvct_el0 = hisi_161010101_read_cntvct_el0,
+-		.set_next_event_phys = erratum_set_next_event_tval_phys,
+-		.set_next_event_virt = erratum_set_next_event_tval_virt,
++		.set_next_event_phys = erratum_set_next_event_phys,
++		.set_next_event_virt = erratum_set_next_event_virt,
+ 	},
+ #endif
+ #ifdef CONFIG_ARM64_ERRATUM_858921
+@@ -452,8 +452,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
+ 		.desc = "Allwinner erratum UNKNOWN1",
+ 		.read_cntpct_el0 = sun50i_a64_read_cntpct_el0,
+ 		.read_cntvct_el0 = sun50i_a64_read_cntvct_el0,
+-		.set_next_event_phys = erratum_set_next_event_tval_phys,
+-		.set_next_event_virt = erratum_set_next_event_tval_virt,
++		.set_next_event_phys = erratum_set_next_event_phys,
++		.set_next_event_virt = erratum_set_next_event_virt,
+ 	},
+ #endif
+ #ifdef CONFIG_ARM64_ERRATUM_1418040
