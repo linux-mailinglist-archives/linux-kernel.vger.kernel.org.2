@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AAE438C80
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D2C438C8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 01:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhJXXVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 19:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        id S232123AbhJXXXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 19:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJXXVl (ORCPT
+        with ESMTP id S229981AbhJXXXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 19:21:41 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269E8C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:19:20 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id bk18so13098039oib.8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:19:20 -0700 (PDT)
+        Sun, 24 Oct 2021 19:23:43 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599BBC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:21:22 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id p16so8329972lfa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 16:21:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pv3yKrebsG4+UvHFA+gEH7kLCAky4RcnNh+s60n1ECg=;
-        b=DRxQ/fjnTpPb4MC72a1IZMfz9ncUBy+xnhuEsFNFoAN+EA5O9dGCsmbZunJx800wLQ
-         exY3higOsh5+ledswU+RuEi/T2mYz1a0ClJLtde2XScVA3eX2rGGZ14HpYrCTsmfiNcq
-         tYRvD0zPaaD2S/An+nWFbP242YCELYg/ZrXJ240iqty7h7NmI5CEaBHVED7w3x4A05NY
-         ihNYA9xxhUbl2ZJfv3Knok5o5lmsI+oQ+0hM8tBSm2ae3UgM6zlg8QH4hSKrvXsaNRo3
-         Yc2STjrtZTz74ptZB4aeI2Hg1l4NeUZkI2dGYTksnHAa9JkWk2qyKwZE+GC6Uei3eHui
-         dXow==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=37EfsXc0CKwE4ZomaFAm5bDGDVpfUse9rWaVkk06N8E=;
+        b=Px9mnr8zu/GzkthMts8NBbM+JmIYRKGyGjWgEap1za4p7rEDWi6W/DG3UrzrCTJFKV
+         WqmW/3GFDsa/3iU950oJlL8CTgo0EG/MrAzum/4+z4tZx/tdqjv6kRLmNz9nDLNSXhMR
+         /nessPAQsKXBUkI0XcT9jXDGqZ+MU/6tBB22oo5HzVdYqfZTvl4rDS4gw/IIoHX3gQZa
+         55+L7DDFyLQkp1CLe6cR3Ej2GdDpAIYZxQ2glhT1Zlf8D/9rAU+MhAnxgNqGnBXD6VMZ
+         ebibQ4JXFr+X0vg1aG/mTYEj11l3kRs5EaWR+o5QfKuV03Of8td6eRncs9IHIen//ec1
+         TBMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pv3yKrebsG4+UvHFA+gEH7kLCAky4RcnNh+s60n1ECg=;
-        b=caHWFj05NhlHDbMeyhgwg5jxc/OmBPE8VpViaUNXxUQJ2kt1JUTC3v3VxPF8MpOgI5
-         7H/Y5ivI05NNhRmnjSLtKpkP93nebF1sGE6bQSBWly7RETjrVZVb7YcQ9rKc1ZD4DpXG
-         FlxLTvW7jIsz7e16ubYO6PL9y+GUctV0coCDpD6+b/PexBRqN5EtnxVt/5E70pHsmBYh
-         Ix8xaklSk4Dim9QsfmORW7VwqwxfoH3/r9WEaQMY89glrUu2IZ4ghk24VynKkOADCd7P
-         fNeqSRWrhthEtlTqYUip0AbXg1Y1LOap7Mst77B9TknlZyMoBCoD/YOggCIKLaHnHNaM
-         tvDg==
-X-Gm-Message-State: AOAM532G93bOn+mI7S4IYczRpbuuSRzR9n8tZNktUSJ1aO+59v41rpqE
-        lpxANTD6le8OsnZR3+Mr1DkaGw==
-X-Google-Smtp-Source: ABdhPJy3j3tGjtYGKybCdCNCsXxJC2IRee2Yfy5EcWU7XgHjAUm63VmFrLBW+5NYKewmuEZnl5tv4A==
-X-Received: by 2002:a05:6808:1246:: with SMTP id o6mr9674571oiv.38.1635117557816;
-        Sun, 24 Oct 2021 16:19:17 -0700 (PDT)
-Received: from yoga ([2600:1700:a0:3dc8:40c7:d4ff:fe65:a72c])
-        by smtp.gmail.com with ESMTPSA id a6sm2316967oid.18.2021.10.24.16.19.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 16:19:17 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 18:19:15 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH 1/2] crypto: qce: Add 'sm8150-qce' compatible string check
-Message-ID: <YXXp80d19dDhYXzA@yoga>
-References: <20211013165823.88123-1-bhupesh.sharma@linaro.org>
- <20211013165823.88123-2-bhupesh.sharma@linaro.org>
- <YXWVYZlCpkSRb7xv@builder.lan>
- <CAH=2NtyHpZa0KV5TRDuvciC+uV6mdO03RmEJSKMXES4HZOg-HA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=37EfsXc0CKwE4ZomaFAm5bDGDVpfUse9rWaVkk06N8E=;
+        b=AyYOCOihMXWrSVK9R0oSlTfmUSF+X3CEM6AaQ2venstR1SviUWiUIOceezckz2sDUX
+         Tf7jwGguST7ezv8tP/rvT6KYZ9kYeGFA0o5PMo7eFfHcUKKQ/sDseMUb0Mue0LEZ3sOL
+         vVTW72rEv++w+mi/zi3TplnEgGUV06cR5oPlYpTMNGYG83nshFCVRsz3uOPxw8Rz+9gF
+         NfN7ZsDTzeLKiYeQXAD840joFvEjW9Xji0yR7v2uw3FPWAdG4aCCh2qu3PzH40lRMWjc
+         UvhvUfVBpFW7RiTJGinAGmrNr4p1ME2KVHeYKKOYJhE9bLz3aTZ+M2SH38IHSbtdGrpE
+         1c6Q==
+X-Gm-Message-State: AOAM5302sX1eoV2VTTywgnk1FDVgo+Oe/AgBxBjHKP73nt7QnUjyhSzl
+        pobFHf/qbSDxUqVRRyA1ox9gc8eg/8Mc3IK5KSgv8g==
+X-Google-Smtp-Source: ABdhPJzKZDyPRJjamiuqfOr8TePEjwRVAwoQEtUyaDMeYRh/KoV/hvptFO78qhdTpPRG1/6yoDMPCROqvbnR4g0v8Ls=
+X-Received: by 2002:a19:6717:: with SMTP id b23mr8743261lfc.95.1635117680743;
+ Sun, 24 Oct 2021 16:21:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH=2NtyHpZa0KV5TRDuvciC+uV6mdO03RmEJSKMXES4HZOg-HA@mail.gmail.com>
+References: <20210913192816.1225025-1-robh@kernel.org> <20210913192816.1225025-7-robh@kernel.org>
+ <CAL_JsqJiH5ZDpFEC+A+S=EQ5Tp4T_YhFK4A44YEGUY_NW+88qw@mail.gmail.com>
+In-Reply-To: <CAL_JsqJiH5ZDpFEC+A+S=EQ5Tp4T_YhFK4A44YEGUY_NW+88qw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 Oct 2021 01:21:09 +0200
+Message-ID: <CACRpkdaYGKv7cPUgQn8VmiMb9ftWygU187NoRACDP3VnMio+HA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] ARM: dts: arm: Update register-bit-led nodes 'reg'
+ and node names
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 24 Oct 12:59 CDT 2021, Bhupesh Sharma wrote:
-
-> Hi Bjorn,
-> 
-> On Sun, 24 Oct 2021 at 22:48, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+On Thu, Oct 21, 2021 at 11:16 PM Rob Herring <robh@kernel.org> wrote:
+> On Mon, Sep 13, 2021 at 2:28 PM Rob Herring <robh@kernel.org> wrote:
 > >
-> > On Wed 13 Oct 11:58 CDT 2021, Bhupesh Sharma wrote:
+> > Add a 'reg' entry for register-bit-led nodes on the Arm Ltd platforms.
+> > The 'reg' entry is the LED control register address. With this, the node
+> > name can be updated to use a generic node name, 'led', and a
+> > unit-address.
 > >
-> > > Add 'sm8150-qce' compatible string check in qce crypto
-> > > driver as we add support for sm8150 crypto device in the
-> > > device-tree in the subsequent patch.
-> > >
-> > > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > > ---
-> > >  drivers/crypto/qce/core.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> > > index 4c55eceb4e7f..ecbe9f7c6c0a 100644
-> > > --- a/drivers/crypto/qce/core.c
-> > > +++ b/drivers/crypto/qce/core.c
-> > > @@ -306,6 +306,7 @@ static int qce_crypto_remove(struct platform_device *pdev)
-> > >  static const struct of_device_id qce_crypto_of_match[] = {
-> > >       { .compatible = "qcom,ipq6018-qce", },
-> > >       { .compatible = "qcom,sdm845-qce", },
-> > > +     { .compatible = "qcom,sm8150-qce", },
-> > >       { .compatible = "qcom,sm8250-qce", },
-> >
-> > When I look at linux-next I see qce_crypto_of_match defined as:
-> >
-> > static const struct of_device_id qce_crypto_of_match[] = {
-> >         { .compatible = "qcom,crypto-v5.1", },
-> >         { .compatible = "qcom,crypto-v5.4", },
-> >         {}
-> > };
-> >
-> > Can you please help me understand what I'm doing wrong?
-> 
-> Oh, you have missed [PATCH 15/20] from the sm8250 qce crypto addition
-> series (see [1])
-> 
-> This series is dependent on the sm8250 qce enablement series, as I
-> noted in the cover letter (see [2]).
-> 
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Liviu Dudau <liviu.dudau@arm.com>
+> > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  arch/arm/boot/dts/arm-realview-eb.dtsi        | 27 +++++++++++++------
+> >  arch/arm/boot/dts/arm-realview-pb1176.dts     | 27 +++++++++++++------
+> >  arch/arm/boot/dts/arm-realview-pb11mp.dts     | 27 +++++++++++++------
+> >  arch/arm/boot/dts/arm-realview-pbx.dtsi       | 27 +++++++++++++------
+> >  arch/arm/boot/dts/integrator.dtsi             | 23 +++++++++++-----
+> >  arch/arm/boot/dts/mps2.dtsi                   | 10 +++++--
+> >  arch/arm/boot/dts/versatile-ab-ib2.dts        |  6 ++++-
+> >  arch/arm/boot/dts/versatile-ab.dts            | 27 +++++++++++++------
+> >  arch/arm64/boot/dts/arm/juno-motherboard.dtsi | 27 +++++++++++++------
+> >  9 files changed, 144 insertions(+), 57 deletions(-)
+>
+> Linus, Can you apply this and patch 7?
 
-Ah, now I see. Thanks for the pointer!
+I signed them off and sent directly to the SoC tree mailalias.
 
-> However, Thara and Vladimir pointed out backward compatibility issues
-> with PATCH 15/20 of the first series. So I will send a v5 to fix the
-> same along with other issues pointed in the v4.
-> 
-> Sorry for any confusion caused.
-> 
-
-No worries. Could you include these two patches in v5 of the other
-series, to clarify the dependency?
-
-Thanks,
-Bjorn
-
-> [1]. https://lore.kernel.org/linux-arm-msm/20211013105541.68045-1-bhupesh.sharma@linaro.org/T/#m566546d32d8da7ee94822dfba625e98fd3496d17
-> [2]. https://www.spinics.net/lists/linux-arm-msm/msg96053.html
-> 
-> Regards,
-> Bhupesh
+Yours,
+Linus Walleij
