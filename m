@@ -2,335 +2,628 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BA3438AB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 18:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5077F438AB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 18:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJXQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 12:47:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhJXQr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 12:47:28 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FAE76101D;
-        Sun, 24 Oct 2021 16:45:05 +0000 (UTC)
-Date:   Sun, 24 Oct 2021 17:49:27 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mihail Chindris <mihail.chindris@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH v4 2/2] drivers:iio:dac: Add AD3552R driver support
-Message-ID: <20211024174927.6ac6c4e1@jic23-huawei>
-In-Reply-To: <20211022120427.99516-3-mihail.chindris@analog.com>
-References: <20211022120427.99516-1-mihail.chindris@analog.com>
-        <20211022120427.99516-3-mihail.chindris@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230419AbhJXQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 12:53:20 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:40164 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230284AbhJXQxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 12:53:19 -0400
+Date:   Sun, 24 Oct 2021 16:50:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1635094251;
+        bh=Bqy8QtekRH8aXxWWyX2Ua3j6/uIH5Afx6g5TBfkWnn0=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=BRVts1WihotsgpDa8A2NPviXBKYMx/idlwf5uRu2pvTqIjzPv2uhhes7pWwpjUqY2
+         mzeUER2JItdeDiVm+lGzhDOZ3D6AO9tzlhVAcxO9IC+44Zp732yQFabpHcKJ29zG1D
+         eoPVLx3U707E1hJel9UHze6eY4QgOtaQ24WLFv+c=
+To:     Enver Balalic <balalic.enver@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com, pavel@ucw.cz,
+        platform-driver-x86@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH] platform/x86: hp-wmi: add support for hp fourzone lighting
+Message-ID: <-beJEK1G1H0OjntnmAkk16TlRylvhrHnS5CoJ3QVsPUDLlPuObskKTCR5eE5O-OqylRxXET5hA1f1WVaOJXNgdOCY3eEUHdhg5jempoWQdQ=@protonmail.com>
+In-Reply-To: <20211024155817.5kvosvx5u5ok453p@omen.localdomain>
+References: <20211024155817.5kvosvx5u5ok453p@omen.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 12:04:27 +0000
-Mihail Chindris <mihail.chindris@analog.com> wrote:
-
-> The AD3552R-16 is a low drift ultrafast, 16-bit accuracy,
-> current output digital-to-analog converter (DAC) designed
-> to generate multiple output voltage span ranges.
-> The AD3552R-16 operates with a fixed 2.5V reference.
-> 
-> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad3552r.pdf
-
-We got an oddly delayed 0-day response: 
-
-All errors (new ones prefixed by >>):
-
-   drivers/iio/dac/ad3552r.c: In function 'ad3552r_configure_device':
->> drivers/iio/dac/ad3552r.c:978:14: error: variable 'is_custom' set but not used [-Werror=unused-but-set-variable]  
-     978 |         bool is_custom;
-         |              ^~~~~~~~~
-   cc1: all warnings being treated as errors
-
-Needs fixing.
-
-Otherwise one trivial request for an improved comment.
-
-On process front, you seem to have forgotten to update the cover letter with the
-changes since v2. 
-
-This is looking very nice now.  Unfortunately timing is against us so this won't
-go into mainline until next cycle now as IIO is effectively closed for the coming
-merge window.
-
-Thanks,
-
-Jonathan
+Hi
 
 
-> 
-> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
+2021. okt=C3=B3ber 24., vas=C3=A1rnap 17:58 keltez=C3=A9ssel, Enver Balalic=
+ =C3=ADrta:
+
+> This patch adds support for HP Fourzone lighting.
+> It exposes 2 things:
+>  - General keyboard backlight On/Off control
+>  - 4 RGB keyboard backlight zones as multicolor LED's
+>
+> This patch has been tested on a 2020 HP Omen 15 (AMD) 15-en0023dx.
+>
+> Signed-off-by: Enver Balalic <balalic.enver@gmail.com>
 > ---
->  drivers/iio/dac/Kconfig   |   10 +
->  drivers/iio/dac/Makefile  |    1 +
->  drivers/iio/dac/ad3552r.c | 1199 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 1210 insertions(+)
->  create mode 100644 drivers/iio/dac/ad3552r.c
-
-...
-
+> There are a couple of things I'm unsure about with this patch:
+>  - I exposed the 4 RGB keyboard backlight zones with names
+>   "platform::kbd_backlight-1" up to 4, and the one general toggle
+>   is "platform::kbd_backlight" is this the proper naming
+>   scheme ?
+>
+>  - If the general keyboard backlight toggle is set to off, then
+>   no matter what values are written into any of the zones, the
+>   lights will be off, should we override the general backlight
+>   toggle to On if you write a value into one of the zones ?
+>
+>  - If the general keyboard backlight toggle is set to On,
+>   i set the zones brightness to 255, since it doesn't make sense
+>   for that to be 0 while the backlight is on. I didn't find
+>   an example of a multicolor led device having a brightness_get
+>   function registered, so I don't know if this is the proper way
+>   or if I should register a brightness_get function for each
+>   of the zones and somehow figure out the brightness based on
+>   the rgb value that the firmware reports ?
+>
+>  - The windows omen command center detects if you write zeros
+>   to all 4 of the zones (black) but you set the general keyboard
+>   backlight to On (as that might confuse someone into thinking
+>   that their backlight is not working when in fact it's just
+>   set to black) and overrides the black values to default values
+>   where each of the zones is set to a different color. Should we
+>   do the same in the kernel or leave that to some userspace tool ?
+>
+>
+>  drivers/platform/x86/Kconfig  |   3 +
+>  drivers/platform/x86/hp-wmi.c | 342 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 345 insertions(+)
+>
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 1ebce7b775f2..07411fcd0d4b 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -427,6 +427,9 @@ config HP_WMI
+>  =09select INPUT_SPARSEKMAP
+>  =09select ACPI_PLATFORM_PROFILE
+>  =09select HWMON
+> +=09select LEDS_CLASS
+> +=09select NEW_LEDS
+> +=09select LEDS_CLASS_MULTICOLOR
+>  =09help
+>  =09 Say Y here if you want to support WMI-based hotkeys on HP laptops an=
+d
+>  =09 to read data from WMI such as docking or ambient light sensor state.
+> diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.=
+c
+> index 9c4c9f5095ae..87b4724d6b9f 100644
+> --- a/drivers/platform/x86/hp-wmi.c
+> +++ b/drivers/platform/x86/hp-wmi.c
+> @@ -27,6 +27,8 @@
+>  #include <linux/rfkill.h>
+>  #include <linux/string.h>
+>  #include <linux/dmi.h>
+> +#include <linux/leds.h>
+> +#include <linux/led-class-multicolor.h>
+>
+>  MODULE_AUTHOR("Matthew Garrett <mjg59@srcf.ucam.org>");
+>  MODULE_DESCRIPTION("HP laptop WMI hotkeys driver");
+> @@ -43,6 +45,14 @@ MODULE_PARM_DESC(enable_tablet_mode_sw, "Enable SW_TAB=
+LET_MODE reporting (-1=3Daut
+>  #define HPWMI_BIOS_GUID "5FB7F034-2C63-45e9-BE91-3D44E2C707E4"
+>  #define HP_OMEN_EC_THERMAL_PROFILE_OFFSET 0x95
+>
+> +#define HP_FOURZONE_N_ZONES 4
+> +#define HP_FOURZONE_LED_NUM_CHANNELS 3
+> +#define HP_FOURZONE_OFFSET_COLORS 25
+> +#define HP_FOURZONE_BUF_LEN 37
+> +#define HP_FOURZONE_OFFSET_BRIGHTNESS 0
+> +#define HP_FOURZONE_KBD_BL_ON 128
+> +#define HP_FOURZONE_KBD_BL_OFF 0
 > +
-> +struct ad3552r_desc {
-> +	/* Used to look the spi bus for atomic operations where needed */
-
-This comment should be slightly expanded upon. It's also protecting accesses
-to buf_data below.
-
-> +	struct mutex		lock;
-> +	struct gpio_desc	*gpio_reset;
-> +	struct gpio_desc	*gpio_ldac;
-> +	struct spi_device	*spi;
-> +	struct ad3552r_ch_data	ch_data[AD3552R_NUM_CH];
-> +	struct iio_chan_spec	channels[AD3552R_NUM_CH + 1];
-> +	unsigned long		enabled_ch;
-> +	unsigned int		num_ch;
-> +	enum ad3542r_id		chip_id;
-> +	/*
-> +	 * The maximum spi transfer size consist 1 bytes (reg address)
-> +	 * + 2 registers of 3 bytes + 1 reg of 1 byte (SW LDAC)
-> +	 */
-> +	u8 buf_data[8] ____cacheline_aligned;
+>  /* DMI board names of devices that should use the omen specific path for
+>   * thermal profiles.
+>   * This was obtained by taking a look in the windows omen command center
+> @@ -61,6 +71,19 @@ static const char * const omen_thermal_profile_boards[=
+] =3D {
+>  =09"8917", "8918", "8949", "894A", "89EB"
+>  };
+>
+> +/* DMI Board names of devices that have fourzone support.
+> + * A device supports fourzone if the "Feature" array in the json file
+> + * in windows omen command center contains "FourZone".
+> + */
+> +static const char * const fourzone_boards[] =3D {
+> +=09"8466", "8467", "8468", "8469", "846A", "846B", "84DA", "84DB", "84DC=
+",
+> +=09"8574", "8575", "860A", "87B5", "8600", "8601", "8602", "8605", "8606=
+",
+> +=09"8607", "8746", "8747", "8749", "874A", "8603", "8604", "8748", "878A=
+",
+> +=09"878B", "878C", "88C8", "88CB", "8786", "8787", "8788", "88D1", "88D2=
+",
+> +=09"88F4", "88FD", "88F5", "88F6", "88F7", "88FE", "88FF", "8900", "8901=
+",
+> +=09"8902", "8912"
 > +};
 > +
-
-...
-
+>  enum hp_wmi_radio {
+>  =09HPWMI_WIFI=09=3D 0x0,
+>  =09HPWMI_BLUETOOTH=09=3D 0x1,
+> @@ -117,11 +140,19 @@ enum hp_wmi_gm_commandtype {
+>  =09HPWMI_FAN_SPEED_MAX_SET_QUERY =3D 0x27,
+>  };
+>
+> +enum hp_wmi_lm_commandtype {
+> +=09HPWMI_FOURZONE_ZONES_GET=09=3D 0x02,
+> +=09HPWMI_FOURZONE_ZONES_SET=09=3D 0x03,
+> +=09HPWMI_FOURZONE_KB_BACKLIGHT_GET=09=3D 0x04,
+> +=09HPWMI_FOURZONE_KB_BACKLIGHT_SET=09=3D 0x05,
+> +};
 > +
-> +static int ad3552r_configure_custom_gain(struct ad3552r_desc *dac,
-> +					 struct fwnode_handle *child,
-> +					 u32 ch)
+>  enum hp_wmi_command {
+>  =09HPWMI_READ=09=3D 0x01,
+>  =09HPWMI_WRITE=09=3D 0x02,
+>  =09HPWMI_ODM=09=3D 0x03,
+>  =09HPWMI_GM=09=3D 0x20008,
+> +=09HPWMI_LM=09=3D 0x20009,
+>  };
+>
+>  enum hp_wmi_hardware_mask {
+> @@ -200,6 +231,32 @@ static const struct key_entry hp_wmi_keymap[] =3D {
+>  =09{ KE_END, 0 }
+>  };
+>
+> +struct hp_wmi_fourzone_data {
+> +=09struct {
+> +=09=09unsigned int r;
+> +=09=09unsigned int g;
+> +=09=09unsigned int b;
+> +=09} zone[HP_FOURZONE_N_ZONES];
+> +};
+> +
+> +struct hp_fourzone_zone {
+> +=09bool initialized;
+> +=09struct led_classdev_mc mc_cdev;
+> +=09struct mc_subled subled_info[HP_FOURZONE_LED_NUM_CHANNELS];
+> +};
+> +
+> +struct hp_wmi_leds {
+> +=09struct {
+> +=09=09bool initialized;
+> +=09=09struct led_classdev led;
+> +=09=09unsigned int last_brightness;
+> +=09} fourzone_kbd_bl;
+> +
+> +=09struct {
+> +=09=09struct hp_fourzone_zone zones[HP_FOURZONE_N_ZONES];
+> +=09} fourzone;
+> +};
+> +
+>  static struct input_dev *hp_wmi_input_dev;
+>  static struct platform_device *hp_wmi_platform_dev;
+>  static struct platform_profile_handler platform_profile_handler;
+> @@ -208,6 +265,7 @@ static bool platform_profile_support;
+>  static struct rfkill *wifi_rfkill;
+>  static struct rfkill *bluetooth_rfkill;
+>  static struct rfkill *wwan_rfkill;
+> +static struct hp_wmi_leds *hp_leds;
+>
+>  struct rfkill2_device {
+>  =09u8 id;
+> @@ -373,6 +431,18 @@ static int omen_thermal_profile_set(int mode)
+>  =09return mode;
+>  }
+>
+> +static bool is_fourzone_supported(void)
 > +{
-> +	struct device *dev = &dac->spi->dev;
-> +	struct fwnode_handle *gain_child;
-> +	u32 val;
-> +	int err;
-> +	u8 addr;
-> +	u16 mask = 0, reg = 0, offset;
+> +=09const char *board_name =3D dmi_get_system_info(DMI_BOARD_NAME);
 > +
-> +	gain_child = fwnode_get_named_child_node(child,
-> +						 "custom-output-range-config");
-> +	if (IS_ERR(gain_child)) {
-> +		dev_err(dev,
-> +			"mandatory custom-output-range-config property missing\n");
-> +		return PTR_ERR(gain_child);
-> +	}
+> +=09if (!board_name)
+> +=09=09return false;
 > +
-> +	dac->ch_data[ch].range_override = 1;
-> +	reg |= ad3552r_field_prep(1, AD3552R_MASK_CH_RANGE_OVERRIDE);
-> +	mask |= AD3552R_MASK_CH_RANGE_OVERRIDE;
-> +
-> +	err = fwnode_property_read_u32(gain_child, "adi,gain-scaling-p", &val);
-> +	if (err) {
-> +		dev_err(dev, "mandatory adi,gain-scaling-p property missing\n");
-> +		goto put_child;
-> +	}
-> +	reg |= ad3552r_field_prep(val, AD3552R_MASK_CH_GAIN_SCALING_P);
-> +	mask |= AD3552R_MASK_CH_GAIN_SCALING_P;
-> +	dac->ch_data[ch].p = val;
-> +
-> +	err = fwnode_property_read_u32(gain_child, "adi,gain-scaling-n", &val);
-> +	if (err) {
-> +		dev_err(dev, "mandatory adi,gain-scaling-n property missing\n");
-> +		goto put_child;
-> +	}
-> +	reg |= ad3552r_field_prep(val, AD3552R_MASK_CH_GAIN_SCALING_N);
-> +	mask |= AD3552R_MASK_CH_GAIN_SCALING_N;
-> +	dac->ch_data[ch].n = val;
-> +
-> +	err = fwnode_property_read_u32(gain_child, "adi,rfb-ohms", &val);
-> +	if (err) {
-> +		dev_err(dev, "mandatory adi,rfb-ohms property missing\n");
-> +		goto put_child;
-> +	}
-> +	dac->ch_data[ch].rfb = val;
-> +
-> +	err = fwnode_property_read_u32(gain_child, "adi,gain-offset", &val);
-> +	if (err) {
-> +		dev_err(dev, "mandatory adi,gain-offset property missing\n");
-> +		goto put_child;
-> +	}
-> +	dac->ch_data[ch].gain_offset = val;
-> +
-> +	offset = abs((s32)val);
-> +	reg |= ad3552r_field_prep((offset >> 8), AD3552R_MASK_CH_OFFSET_BIT_8);
-> +	mask |= AD3552R_MASK_CH_OFFSET_BIT_8;
-> +
-> +	reg |= ad3552r_field_prep((s32)val < 0, AD3552R_MASK_CH_OFFSET_POLARITY);
-> +	mask |= AD3552R_MASK_CH_OFFSET_POLARITY;
-> +	addr = AD3552R_REG_ADDR_CH_GAIN(ch);
-> +	err = ad3552r_write_reg(dac, addr,
-> +				offset & AD3552R_MASK_CH_OFFSET_BITS_0_7);
-> +	if (err) {
-> +		dev_err(dev, "Error writing register\n");
-> +		goto put_child;
-> +	}
-> +
-> +	err = ad3552r_write_reg(dac, addr, reg);
-> +	if (err) {
-> +		dev_err(dev, "Error writing register\n");
-> +		goto put_child;
-> +	}
-> +
-> +put_child:
-> +	fwnode_handle_put(gain_child);
-> +
-> +	return err;
+> +=09return match_string(fourzone_boards,
+> +=09=09=09    ARRAY_SIZE(fourzone_boards),
+> +=09=09=09    board_name) >=3D 0;
 > +}
 > +
-> +static int ad3552r_configure_device(struct ad3552r_desc *dac)
+>  static bool is_omen_thermal_profile(void)
+>  {
+>  =09const char *board_name =3D dmi_get_system_info(DMI_BOARD_NAME);
+> @@ -653,6 +723,8 @@ static struct attribute *hp_wmi_attrs[] =3D {
+>  };
+>  ATTRIBUTE_GROUPS(hp_wmi);
+>
+> +static void hp_wmi_fourzone_kbd_bl_notify(void);
+> +
+>  static void hp_wmi_notify(u32 value, void *context)
+>  {
+>  =09struct acpi_buffer response =3D { ACPI_ALLOCATE_BUFFER, NULL };
+> @@ -754,6 +826,7 @@ static void hp_wmi_notify(u32 value, void *context)
+>  =09case HPWMI_PROXIMITY_SENSOR:
+>  =09=09break;
+>  =09case HPWMI_BACKLIT_KB_BRIGHTNESS:
+> +=09=09hp_wmi_fourzone_kbd_bl_notify();
+>  =09=09break;
+>  =09case HPWMI_PEAKSHIFT_PERIOD:
+>  =09=09break;
+> @@ -1114,6 +1187,269 @@ static int platform_profile_set(struct platform_p=
+rofile_handler *pprof,
+>  =09return 0;
+>  }
+>
+> +static int hp_wmi_fourzone_get_zones_data(struct hp_wmi_fourzone_data *d=
+ata)
 > +{
-> +	struct device *dev = &dac->spi->dev;
-> +	struct fwnode_handle *child;
-> +	struct regulator *vref;
-> +	int err, cnt = 0, voltage, delta = 100000;
-> +	u32 vals[2], val, ch;
-> +	bool is_custom;
+> +=09int ret, i, zone;
+> +=09unsigned char buf[HP_FOURZONE_BUF_LEN];
+> +
+> +=09ret =3D hp_wmi_perform_query(HPWMI_FOURZONE_ZONES_GET, HPWMI_LM,
+> +=09=09=09=09   &buf, sizeof(buf),
+> +=09=09=09=09   sizeof(buf));
+> +
+> +=09if (ret < 0)
+> +=09=09return ret;
 
-Set but not used as per the 0-day warning that came in for v3 (after
-you had already sent v4)
+Only a return value of 0 means success. See the comment above `hp_wmi_perfo=
+rm_query()`.
+
 
 > +
-> +	dac->gpio_ldac = devm_gpiod_get_optional(dev, "ldac", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(dac->gpio_ldac))
-> +		return dev_err_probe(dev, PTR_ERR(dac->gpio_ldac),
-> +				     "Error getting gpio ldac");
+> +=09for (i =3D 0; i < HP_FOURZONE_N_ZONES; i++) {
+> +=09=09zone =3D HP_FOURZONE_OFFSET_COLORS + (i * 3);
 > +
-> +	vref = devm_regulator_get_optional(dev, "vref");
-> +	if (IS_ERR(vref)) {
-> +		if (PTR_ERR(vref) != -ENODEV)
-> +			return dev_err_probe(dev, PTR_ERR(vref),
-> +					     "Error getting vref");
-> +		vref = NULL;
-> +	}
-> +	if (vref) {
-> +		voltage = regulator_get_voltage(vref);
-> +		if (voltage > 2500000 + delta || voltage < 2500000 - delta) {
-> +			dev_warn(dev, "vref-supply must be 2.5V");
-> +			return -EINVAL;
-> +		}
-> +		val = AD3552R_EXTERNAL_VREF_PIN_INPUT;
-> +	} else {
-> +		if (device_property_read_bool(dev, "adi,vref-out-en"))
-> +			val = AD3552R_INTERNAL_VREF_PIN_2P5V;
-> +		else
-> +			val = AD3552R_INTERNAL_VREF_PIN_FLOATING;
-> +	}
-> +	err = ad3552r_update_reg_field(dac,
-> +				       addr_mask_map[AD3552R_VREF_SELECT][0],
-> +				       addr_mask_map[AD3552R_VREF_SELECT][1],
-> +				       val);
-> +	if (err)
-> +		return err;
+> +=09=09data->zone[i].r =3D buf[zone];
+> +=09=09data->zone[i].g =3D buf[zone + 1];
+> +=09=09data->zone[i].b =3D buf[zone + 2];
+> +=09}
 > +
-> +	err = device_property_read_u32(dev, "adi,sdo-drive-strength", &val);
-> +	if (!err) {
-> +		if (val > 3) {
-> +			dev_err(dev, "adi,sdo-drive-strength must be less than 4\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		err = ad3552r_update_reg_field(dac,
-> +					       addr_mask_map[AD3552R_SDO_DRIVE_STRENGTH][0],
-> +					       addr_mask_map[AD3552R_SDO_DRIVE_STRENGTH][1],
-> +					       val);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	dac->num_ch = device_get_child_node_count(dev);
-> +	if (!dac->num_ch) {
-> +		dev_err(dev, "No channels defined\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	device_for_each_child_node(dev, child) {
-> +		err = fwnode_property_read_u32(child, "reg", &ch);
-> +		if (err) {
-> +			dev_err(dev, "mandatory reg property missing\n");
-> +			goto put_child;
-> +		}
-> +		if (ch >= AD3552R_NUM_CH) {
-> +			dev_err(dev, "reg must be less than %d\n",
-> +				AD3552R_NUM_CH);
-> +			err = -EINVAL;
-> +			goto put_child;
-> +		}
-> +
-> +		if (fwnode_property_present(child, "adi,output-range-microvolt")) {
-> +			is_custom = false;
-> +			err = fwnode_property_read_u32_array(child,
-> +							     "adi,output-range-microvolt",
-> +							     vals,
-> +							     2);
-> +			if (err) {
-> +				dev_err(dev,
-> +					"mandatory adi,output-range-microvolt property missing\n");
-> +				goto put_child;
-> +			}
-> +
-> +			err = ad3552r_find_range(dac->chip_id, vals);
-> +			if (err < 0) {
-> +				dev_err(dev,
-> +					"Invalid adi,output-range-microvolt value\n");
-> +				goto put_child;
-> +			}
-> +			val = err;
-> +			err = ad3552r_set_ch_value(dac,
-> +						   AD3552R_CH_OUTPUT_RANGE_SEL,
-> +						   ch, val);
-> +			if (err)
-> +				goto put_child;
-> +
-> +			dac->ch_data[ch].range = val;
-> +		} else {
-> +			is_custom = true;
-> +			err = ad3552r_configure_custom_gain(dac, child, ch);
-> +			if (err)
-> +				goto put_child;
-> +		}
-> +
-> +		ad3552r_calc_gain_and_offset(dac, ch);
-> +		dac->enabled_ch |= BIT(ch);
-> +
-> +		err = ad3552r_set_ch_value(dac, AD3552R_CH_SELECT, ch, 1);
-> +		if (err < 0)
-> +			goto put_child;
-> +
-> +		dac->channels[cnt] = AD3552R_CH_DAC(ch);
-> +		++cnt;
-> +
-> +	}
-> +
-> +	/* Disable unused channels */
-> +	for_each_clear_bit(ch, &dac->enabled_ch, AD3552R_NUM_CH) {
-> +		err = ad3552r_set_ch_value(dac, AD3552R_CH_AMPLIFIER_POWERDOWN,
-> +					   ch, 0);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	dac->num_ch = cnt;
-> +
-> +	return 0;
-> +put_child:
-> +	fwnode_handle_put(child);
-> +
-> +	return err;
+> +=09return 0;
 > +}
 > +
+> +static int hp_wmi_fourzone_set_zones_data(struct hp_wmi_fourzone_data *d=
+ata)
+> +{
+> +=09int i, zone;
+> +=09unsigned char buf[HP_FOURZONE_BUF_LEN];
+> +
+> +=09for (i =3D 0; i < HP_FOURZONE_N_ZONES; i++) {
+> +=09=09zone =3D HP_FOURZONE_OFFSET_COLORS + (i * 3);
 
-...
+Isn't it a problem that the first 25 bytes potentially contain random value=
+s?
+I think it would be better to explicitly clear them:
+
+  unsigned char buf[HP_FOURZONE_BUF_LEN] =3D {0};
+
+Maybe even in `hp_wmi_fourzone_get_zones_data()` as well.
+
+
+> +
+> +=09=09buf[zone] =3D data->zone[i].r;
+> +=09=09buf[zone + 1] =3D data->zone[i].g;
+> +=09=09buf[zone + 2] =3D data->zone[i].b;
+> +=09}
+> +
+> +=09return hp_wmi_perform_query(HPWMI_FOURZONE_ZONES_SET, HPWMI_LM,
+> +=09=09=09=09       &buf, sizeof(buf),
+> +=09=09=09=09       sizeof(buf));
+> +}
+> +
+> +static int hp_wmi_fourzone_set_zone_rgb(int zone, unsigned int r,
+> +=09=09=09=09=09unsigned int g, unsigned int b)
+> +{
+> +=09int err;
+> +=09struct hp_wmi_fourzone_data data;
+> +
+> +=09err =3D hp_wmi_fourzone_get_zones_data(&data);
+> +=09if (err < 0)
+> +=09=09return err;
+> +
+> +=09data.zone[zone].r =3D r;
+> +=09data.zone[zone].g =3D g;
+> +=09data.zone[zone].b =3D b;
+> +
+> +=09return hp_wmi_fourzone_set_zones_data(&data);
+> +}
+> +
+> +static int hp_wmi_fourzone_cdev_set_zone(int zone, struct led_classdev *=
+cdev,
+> +=09=09=09=09=09 enum led_brightness brightness)
+> +{
+> +=09struct led_classdev_mc *mc_cdev =3D lcdev_to_mccdev(cdev);
+> +
+> +=09led_mc_calc_color_components(mc_cdev, brightness);
+> +
+> +=09return hp_wmi_fourzone_set_zone_rgb(zone,
+> +=09=09mc_cdev->subled_info[0].brightness,
+> +=09=09mc_cdev->subled_info[1].brightness,
+> +=09=09mc_cdev->subled_info[2].brightness);
+> +}
+> +
+> +static int hp_wmi_cdev_fourzone_led_set_brightness_zone0(struct led_clas=
+sdev *cdev,
+> +=09=09=09=09=09=09=09 enum led_brightness brightness)
+> +{
+> +=09return hp_wmi_fourzone_cdev_set_zone(0, cdev, brightness);
+> +}
+> +
+> +static int hp_wmi_cdev_fourzone_led_set_brightness_zone1(struct led_clas=
+sdev *cdev,
+> +=09=09=09=09=09=09=09 enum led_brightness brightness)
+> +{
+> +=09return hp_wmi_fourzone_cdev_set_zone(1, cdev, brightness);
+> +}
+> +
+> +static int hp_wmi_cdev_fourzone_led_set_brightness_zone2(struct led_clas=
+sdev *cdev,
+> +=09=09=09=09=09=09=09 enum led_brightness brightness)
+> +{
+> +=09return hp_wmi_fourzone_cdev_set_zone(2, cdev, brightness);
+> +}
+> +
+> +static int hp_wmi_cdev_fourzone_led_set_brightness_zone3(struct led_clas=
+sdev *cdev,
+> +=09=09=09=09=09=09=09 enum led_brightness brightness)
+> +{
+> +=09return hp_wmi_fourzone_cdev_set_zone(3, cdev, brightness);
+> +}
+> +
+> +static int hp_wmi_fourzone_kbd_bl_get(void)
+> +{
+> +=09int val =3D 0, ret;
+> +
+> +=09ret =3D hp_wmi_perform_query(HPWMI_FOURZONE_KB_BACKLIGHT_GET, HPWMI_L=
+M,
+> +=09=09=09=09   &val, sizeof(val), sizeof(val));
+> +
+> +=09if (ret)
+> +=09=09return ret < 0 ? ret : -EINVAL;
+> +
+> +=09return val =3D=3D HP_FOURZONE_KBD_BL_ON ? 1 : 0;
+> +}
+> +
+> +static int hp_wmi_fourzone_kbd_bl_set(unsigned int brightness)
+> +{
+> +=09char kbd_bl_data[1] =3D { brightness ? HP_FOURZONE_KBD_BL_ON : HP_FOU=
+RZONE_KBD_BL_OFF };
+> +
+> +=09int ret =3D hp_wmi_perform_query(HPWMI_FOURZONE_KB_BACKLIGHT_SET, HPW=
+MI_LM,
+> +=09=09=09=09       &kbd_bl_data, sizeof(kbd_bl_data),
+> +=09=09=09=09       sizeof(kbd_bl_data));
+> +
+> +=09if (ret !=3D 0)
+> +=09=09return -EINVAL;
+
+The comment above `hp_wmi_perform_query()` says
+
+   * returns zero on success
+   *         an HP WMI query specific error code (which is positive)
+   *         -EINVAL if the query was not successful at all
+   *         -EINVAL if the output buffer size exceeds buffersize
+
+So I think you should return `ret` as is if it's negative, and return e.g. =
+-EIO
+if it's positive. I am not sure `-EINVAL` is the best error code here.
+
+
+> +
+> +=09hp_leds->fourzone_kbd_bl.last_brightness =3D brightness;
+> +
+> +=09return brightness;
+> +}
+> +
+> +static enum led_brightness hp_wmi_cdev_fourzone_kbd_bl_get(struct led_cl=
+assdev *led_cdev)
+> +{
+> +=09return hp_wmi_fourzone_kbd_bl_get();
+> +}
+> +
+> +static int hp_wmi_cdev_fourzone_kbd_bl_set(struct led_classdev *led_cdev=
+,
+> +=09=09=09=09=09   enum led_brightness brightness)
+> +{
+> +=09return hp_wmi_fourzone_kbd_bl_set(brightness);
+> +}
+> +
+> +static int (*fourzone_cdev_zone_set[HP_FOURZONE_N_ZONES])(struct led_cla=
+ssdev*,
+> +=09=09=09=09=09=09  enum led_brightness) =3D {
+> +=09&hp_wmi_cdev_fourzone_led_set_brightness_zone0,
+> +=09&hp_wmi_cdev_fourzone_led_set_brightness_zone1,
+> +=09&hp_wmi_cdev_fourzone_led_set_brightness_zone2,
+> +=09&hp_wmi_cdev_fourzone_led_set_brightness_zone3,
+> +};
+
+I think you can use `mc_led =3D lcdev_to_mccdev(...)` to get the multicolor=
+ LED,
+then use `zone =3D container_of(mc_led, struct hp_fourzone_zone, mc_cdev)`
+to get the `hp_fourzone_zone` struct, then `zone - hp_leds->fourzone.zones`
+to get the index. There is no need for these four functions as far as I can=
+ see.
+
+
+> +
+> +static void hp_wmi_fourzone_kbd_bl_notify(void)
+> +{
+> +=09int brightness;
+> +
+
+If the keyboard backlight is not supported, then `hp_leds` remains NULL, ri=
+ght?
+Can this function be called in that case?
+
+
+> +=09if (!hp_leds->fourzone_kbd_bl.initialized)
+> +=09=09return;
+> +
+> +=09brightness =3D hp_wmi_fourzone_kbd_bl_get();
+> +=09if (brightness < 0)
+> +=09=09return;
+> +
+> +=09if (brightness =3D=3D hp_leds->fourzone_kbd_bl.last_brightness)
+> +=09=09return;
+> +
+> +=09hp_leds->fourzone_kbd_bl.last_brightness =3D brightness;
+> +
+> +=09led_classdev_notify_brightness_hw_changed(&hp_leds->fourzone_kbd_bl.l=
+ed, brightness);
+> +}
+> +
+> +static void fourzone_leds_exit(struct platform_device *device)
+> +{
+> +=09int i;
+> +=09struct hp_fourzone_zone *zone;
+> +
+> +=09if (hp_leds->fourzone_kbd_bl.initialized) {
+> +=09=09hp_leds->fourzone_kbd_bl.initialized =3D false;
+> +=09=09led_classdev_unregister(&hp_leds->fourzone_kbd_bl.led);
+> +=09}
+> +
+> +=09for (i =3D 0; i < HP_FOURZONE_N_ZONES; i++) {
+> +=09=09zone =3D &hp_leds->fourzone.zones[i];
+> +=09=09if (zone->initialized)
+> +=09=09=09devm_led_classdev_multicolor_unregister(&device->dev,
+> +=09=09=09=09=09=09=09=09&zone->mc_cdev);
+> +=09}
+> +}
+> +
+> +static int fourzone_leds_setup(struct platform_device *device)
+> +{
+> +=09int err, brightness, i, zones_brightness;
+> +=09struct led_classdev *cdev;
+> +=09struct hp_wmi_fourzone_data data;
+> +=09struct hp_fourzone_zone *zone;
+> +=09char name[64];
+> +
+> +=09hp_leds =3D devm_kzalloc(&device->dev, sizeof(*hp_leds), GFP_KERNEL);
+> +=09if (!hp_leds)
+> +=09=09return -ENOMEM;
+
+Have you considered not dynamically allocating this struct?
+
+
+> +
+> +=09brightness =3D hp_wmi_fourzone_kbd_bl_get();
+> +=09if (brightness < 0)
+> +=09=09return brightness;
+> +
+> +=09hp_leds->fourzone_kbd_bl.last_brightness =3D brightness;
+> +
+> +=09hp_leds->fourzone_kbd_bl.led.name =3D "platform::" LED_FUNCTION_KBD_B=
+ACKLIGHT;
+> +=09hp_leds->fourzone_kbd_bl.led.brightness =3D brightness;
+> +=09hp_leds->fourzone_kbd_bl.led.max_brightness =3D 1;
+> +=09hp_leds->fourzone_kbd_bl.led.brightness_get =3D hp_wmi_cdev_fourzone_=
+kbd_bl_get;
+> +=09hp_leds->fourzone_kbd_bl.led.brightness_set_blocking =3D hp_wmi_cdev_=
+fourzone_kbd_bl_set;
+> +=09hp_leds->fourzone_kbd_bl.led.flags =3D LED_BRIGHT_HW_CHANGED | LED_RE=
+TAIN_AT_SHUTDOWN;
+> +
+> +=09err =3D led_classdev_register(&device->dev, &hp_leds->fourzone_kbd_bl=
+.led);
+> +=09if (err)
+> +=09=09return err;
+> +
+> +=09hp_leds->fourzone_kbd_bl.initialized =3D true;
+> +
+> +=09err =3D hp_wmi_fourzone_get_zones_data(&data);
+> +=09if (err)
+> +=09=09goto fail_fourzone;
+> +
+> +=09zones_brightness =3D brightness =3D=3D 1 ? 255 : 0;
+> +
+> +=09for (i =3D 0; i < HP_FOURZONE_N_ZONES; i++) {
+> +=09=09zone =3D &hp_leds->fourzone.zones[i];
+> +
+> +=09=09zone->subled_info[0].color_index =3D LED_COLOR_ID_RED;
+> +=09=09zone->subled_info[0].channel =3D 0;
+> +=09=09zone->subled_info[0].intensity =3D data.zone[i].r;
+> +
+> +=09=09zone->subled_info[1].color_index =3D LED_COLOR_ID_GREEN;
+> +=09=09zone->subled_info[1].channel =3D 1;
+> +=09=09zone->subled_info[1].intensity =3D data.zone[i].g;
+> +
+> +=09=09zone->subled_info[2].color_index =3D LED_COLOR_ID_BLUE;
+> +=09=09zone->subled_info[2].channel =3D 2;
+> +=09=09zone->subled_info[2].intensity =3D data.zone[i].b;
+> +
+> +=09=09zone->mc_cdev.subled_info =3D zone->subled_info;
+> +=09=09zone->mc_cdev.num_colors =3D HP_FOURZONE_LED_NUM_CHANNELS;
+> +
+> +=09=09cdev =3D &zone->mc_cdev.led_cdev;
+> +=09=09cdev->flags =3D LED_RETAIN_AT_SHUTDOWN;
+> +=09=09cdev->brightness =3D zones_brightness;
+> +=09=09cdev->max_brightness =3D 255;
+> +=09=09zone->mc_cdev.led_cdev.brightness_set_blocking =3D fourzone_cdev_z=
+one_set[i];
+> +=09=09snprintf(name, sizeof(name), "platform::%s-%i", LED_FUNCTION_KBD_B=
+ACKLIGHT, i + 1);
+> +=09=09cdev->name =3D name;
+> +
+> +=09=09err =3D devm_led_classdev_multicolor_register_ext(&device->dev,
+> +=09=09=09=09=09=09=09=09&zone->mc_cdev,
+> +=09=09=09=09=09=09=09=09NULL);
+> +
+> +=09=09if (err) {
+> +=09=09=09dev_err(&device->dev, "Cannot register fourzone zone %i LED: %i=
+\n", i, err);
+> +=09=09=09goto fail_fourzone;
+> +=09=09}
+> +
+> +=09=09zone->initialized =3D true;
+> +=09}
+> +
+> +=09return 0;
+> +
+> +fail_fourzone:
+> +=09fourzone_leds_exit(device);
+> +
+> +=09return err;
+> +}
+> +
+>  static int thermal_profile_setup(void)
+>  {
+>  =09int err, tp;
+> @@ -1186,6 +1522,9 @@ static int __init hp_wmi_bios_setup(struct platform=
+_device *device)
+>
+>  =09thermal_profile_setup();
+>
+> +=09if (is_fourzone_supported())
+> +=09=09fourzone_leds_setup(device);
+> +
+>  =09return 0;
+>  }
+>
+> @@ -1211,6 +1550,9 @@ static int __exit hp_wmi_bios_remove(struct platfor=
+m_device *device)
+>  =09=09rfkill_destroy(wwan_rfkill);
+>  =09}
+>
+> +=09if (hp_leds)
+> +=09=09fourzone_leds_exit(device);
+> +
+>  =09if (platform_profile_support)
+>  =09=09platform_profile_remove();
+>
+> --
+> 2.33.1
+>
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
