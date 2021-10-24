@@ -2,113 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE0A4387D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D652E4387BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 11:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhJXJV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 05:21:58 -0400
-Received: from ip-16.mailobj.net ([213.182.54.16]:34006 "EHLO msg-6.mailo.com"
+        id S230055AbhJXJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 05:04:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhJXJV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 05:21:57 -0400
-X-Greylist: delayed 1212 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 Oct 2021 05:21:56 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1635065952; bh=RCjUkYSOBTufvcH0St7d5HLKiAc0Qjgx0NrurafTU/M=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding;
-        b=HpurRtmpx8k5qXH3uOUmgGqWu7m3E3Cq6eytcb0A+UZWFcxyopidxy82R5pQFJPjt
-         +8iTTJzKZCxza8J6931bsoOgZ2gVjAKv8d1fpQdmlwyL0Mv8U2dz1tDLRN8CVjUgQv
-         dMrEJ7devCSd08qJXRbYY98eLHfdEtjg9+zuLhBY=
-Received: by b-2.in.mailobj.net [192.168.90.12] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Sun, 24 Oct 2021 10:59:12 +0200 (CEST)
-X-EA-Auth: mlm6BBRsf4vU4Lnwuapyvw1aw8ZLxZ3ofzUyhG4kMGIdtbiYSfsZl1/aVQTPta1zWQnOD25CZWOsUTQuvCqk9WBhmHksIv8AVkUfEmri+oc=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Vincent Knecht <vincent.knecht@mailoo.org>
-Subject: [PATCH v1 4/4] ASoC: codecs: tfa989x: Add support for tfa9897 optional rcv-gpios
-Date:   Sun, 24 Oct 2021 10:58:40 +0200
-Message-Id: <20211024085840.1536438-5-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
-References: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
+        id S229463AbhJXJEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 05:04:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83D8C60F57
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 09:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635066100;
+        bh=Q0VYQA2JvqZt+JhQWrv84zpC9usCOBda9SPMR0yD3sM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kthwDYUzOYXbfcLswBUxZUYLLbflQ6Bto4C3zpEKkQiLsfukoK0UAOEyC79dwrL2h
+         vKa5m5RYFkFZe/slMwEzuksuCFMYJqu2K93ZYMeoYIhdroynkC5sHjJYMnrbGD1jR5
+         3AWg/Nzx6JoHlWToUjz3fXLstCGBnnXt0S2PcuEG+W4uD1SRpquRc3Nx1QSGVkUOdL
+         BUE1ErnQpyIQLfzVWdnicDz03HjzBYb7T1q2ut1oVXNOIvpewi2WtjGEfVJHSbHwvD
+         lACjJiNC+RSrK0WdHHXQPeXnSqaePNgfJ5EBvbv1Hx32Xo9rXnmlAYWExG8W+X24+b
+         63lNOlqSw2BCg==
+Received: by mail-ua1-f48.google.com with SMTP id a17so16052986uax.12
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 02:01:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532heKJ6eEd6Ubast+yBp3wIpXKsLQP4VSCpyJwyipSyZ5LC1vp+
+        XKMnT+1m16GWVta4B53eEquVn0eaMYl9r/ozBH4=
+X-Google-Smtp-Source: ABdhPJwNFi8ldbIWIfgnw9DyrcJJh9mCHghrGexwLOyoqkF6ln85i546lFSABhn2q511h7JwOjKduhcm1QbCuQ78kR4=
+X-Received: by 2002:a05:6102:c4d:: with SMTP id y13mr9744916vss.33.1635066099683;
+ Sun, 24 Oct 2021 02:01:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-3-guoren@kernel.org>
+ <CAAhSdy2a2XgjOpezoq=SvX2XTcAWhceKF9X9v3z7xyO9Z4DMPQ@mail.gmail.com>
+In-Reply-To: <CAAhSdy2a2XgjOpezoq=SvX2XTcAWhceKF9X9v3z7xyO9Z4DMPQ@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 24 Oct 2021 17:01:28 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTKJXY6DAq=-ajAiTEY7hpMT1bqnvNndW=5EnD5EEP-cw@mail.gmail.com>
+Message-ID: <CAJF2gTTKJXY6DAq=-ajAiTEY7hpMT1bqnvNndW=5EnD5EEP-cw@mail.gmail.com>
+Subject: Re: [PATCH V5 2/3] dt-bindings: update riscv plic compatible string
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some OEM use a GPIO in addition to the tfa9897 RCV bit to
-switch between loudspeaker and earpiece/receiver mode.
+On Sun, Oct 24, 2021 at 3:35 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Sun, Oct 24, 2021 at 7:03 AM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > Add the compatible string "thead,c900-plic" to the riscv plic
+> > bindings to support allwinner d1 SOC which contains c906 core.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Atish Patra <atish.patra@wdc.com>
+> > Cc: Heiko Stuebner <heiko@sntech.de>
+> > Cc: Rob Herring <robh@kernel.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> >
+> > ---
+> >
+> > Changes since V5:
+> >  - Add DT list
+> >  - Fixup compatible string
+> >  - Remove allwinner-d1 compatible
+> >  - make dt_binding_check
+> >
+> > Changes since V4:
+> >  - Update description in errata style
+> >  - Update enum suggested by Anup, Heiko, Samuel
+> >
+> > Changes since V3:
+> >  - Rename "c9xx" to "c900"
+> >  - Add thead,c900-plic in the description section
+> > ---
+> >  .../interrupt-controller/sifive,plic-1.0.0.yaml   | 15 ++++++++++++---
+> >  1 file changed, 12 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > index 08d5a57ce00f..18b97bfd7954 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > @@ -35,6 +35,10 @@ description:
+> >    contains a specific memory layout, which is documented in chapter 8 of the
+> >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> >
+> > +  The thead,c900-plic couldn't complete masked irq source which has been disabled in
+> > +  enable register. Add thead_plic_chip which fix up c906-plic irq source completion
+> > +  problem by unmask/mask wrapper.
+> > +
+>
+> This is an incomplete description about how T-HEAD PLIC is different from
+> RISC-V PLIC.
+>
+> I would suggest the following:
+>
+> The T-HEAD C9xx SoC implements a modified/custom T-HEAD PLIC specification
+> which will mask current IRQ upon read to CLAIM register and will unmask the IRQ
+> upon write to CLAIM register. The thead,c900-plic compatible string
+> represents the
+> custom T-HEAD PLIC specification.
+The patch fixup the problem that when "thead,c900-plic" couldn't
+complete masked irq source which has been disabled.
 
-Add support for the GPIO switching by specifying rcv-gpios in DT.
+This patch is different from the last one in that there is no
+relationship with the auto-mask feature.
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
- sound/soc/codecs/tfa989x.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+>
+> Regards,
+> Anup
+>
+> >  maintainers:
+> >    - Sagar Kadam <sagar.kadam@sifive.com>
+> >    - Paul Walmsley  <paul.walmsley@sifive.com>
+> > @@ -42,11 +46,16 @@ maintainers:
+> >
+> >  properties:
+> >    compatible:
+> > -    items:
+> > +   oneOf:
+> > +    - items:
+> >        - enum:
+> > -          - sifive,fu540-c000-plic
+> > -          - canaan,k210-plic
+> > +        - sifive,fu540-c000-plic
+> > +        - canaan,k210-plic
+> >        - const: sifive,plic-1.0.0
+> > +    - items:
+> > +      - enum:
+> > +        - allwinner,sun20i-d1-plic
+> > +      - const: thead,c900-plic
+> >
+> >    reg:
+> >      maxItems: 1
+> > --
+> > 2.25.1
+> >
 
-diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
-index ada516acefc0..c96e941da1a9 100644
---- a/sound/soc/codecs/tfa989x.c
-+++ b/sound/soc/codecs/tfa989x.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2013 Sony Mobile Communications Inc.
-  */
- 
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
-@@ -56,6 +57,7 @@ struct tfa989x_rev {
- struct tfa989x {
- 	const struct tfa989x_rev *rev;
- 	struct regulator *vddd_supply;
-+	struct gpio_desc *rcv_gpiod;
- };
- 
- static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
-@@ -103,10 +105,20 @@ static const struct snd_soc_dapm_route tfa989x_dapm_routes[] = {
- 	{"Amp Input", "Right", "AIFINR"},
- };
- 
-+static int tfa989x_put_mode(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tfa989x *tfa989x = snd_soc_component_get_drvdata(component);
-+
-+	gpiod_set_value_cansleep(tfa989x->rcv_gpiod, ucontrol->value.enumerated.item[0]);
-+
-+	return snd_soc_put_enum_double(kcontrol, ucontrol);
-+}
-+
- static const char * const mode_text[] = { "Speaker", "Receiver" };
- static SOC_ENUM_SINGLE_DECL(mode_enum, TFA989X_I2SREG, TFA989X_I2SREG_RCV, mode_text);
- static const struct snd_kcontrol_new tfa989x_mode_controls[] = {
--	SOC_ENUM("Mode", mode_enum),
-+	SOC_ENUM_EXT("Mode", mode_enum, snd_soc_get_enum_double, tfa989x_put_mode),
- };
- 
- static int tfa989x_probe(struct snd_soc_component *component)
-@@ -305,6 +317,12 @@ static int tfa989x_i2c_probe(struct i2c_client *i2c)
- 		return dev_err_probe(dev, PTR_ERR(tfa989x->vddd_supply),
- 				     "Failed to get vddd regulator\n");
- 
-+	if (tfa989x->rev->rev == TFA9897_REVISION) {
-+		tfa989x->rcv_gpiod = devm_gpiod_get_optional(dev, "rcv", GPIOD_OUT_LOW);
-+		if (IS_ERR(tfa989x->rcv_gpiod))
-+			return PTR_ERR(tfa989x->rcv_gpiod);
-+	}
-+
- 	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
+
+
 -- 
-2.31.1
+Best Regards
+ Guo Ren
 
-
-
+ML: https://lore.kernel.org/linux-csky/
