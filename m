@@ -2,147 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63B143873A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 09:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445B343873D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 09:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhJXH0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 03:26:05 -0400
-Received: from mail-eopbgr140135.outbound.protection.outlook.com ([40.107.14.135]:1926
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229638AbhJXH0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 03:26:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FjpiSW7it9iIx1fspw+YS3pxwJ8ZjfplGUt8B9hRNG4Tn8UvJECDniWK5ZtV2LqXAXn6PVyn20CU0Dt/5kdI0zdZtlEhheSRBNE851OE1TIEWpV84XGA7GWBlwxlrk6yydZvklh7L+4bUSNejUWvAKnDg4YoO56AQgDEQ9dbA2XDd95Qns5BQHdn30XhJj54ndWJf492dym/s60+/oXoPo5XPC5snpLjmnseUX/dPWyLR3Jf7MVaDjoaE6lG8zYrGXuscH3PqT/GQ/DvnEypNWecA0Ip23jQMr4Tb6vnlA2ArEekWWlLtnaa0ByVSu3xBakY4Ezze8KH6XqPBpNJlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K0GHGT1iUXj7Ermq+mmR6AdDJjyNNsqh7zL98ubXL7k=;
- b=bz+69RUHEMVWg8rE5Ngj/ul4PSBrz8F+1iTMJWUDtzqTxwZd3C6vOBOXwpuubMlQd+8VyVJ+iNlLfZFtqBh5QVt7AC6UKFhplDWDbbKESUxwg5zhg6a33HYApC5qzZDhyuKLK7BMIBxCQFZf6XajM1CiAuiehCyCJ1LbIUUgavOePRXSWQMNn79J1PIxxoxkiML9f2Vy7uTfjWi5XSS+Mu4Xi8Kn9dXSU27pk2kejAxb201/11za4/NvSIdNMK3G9YG+aPwi3y+t54lCjW6x/16Bxio4aouSLnNF6qTH3myObHNVx7x7nbmSMNEYjpH7sAXf9HrBdgG/wCLExncOzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=opensynergy.com; dmarc=pass action=none
- header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K0GHGT1iUXj7Ermq+mmR6AdDJjyNNsqh7zL98ubXL7k=;
- b=pjbLMDdawVJNru7AJr55F/f7XNoocdxGeKBn8aBCQC+7QrH283j6MZzp1AGVb9iW9RUHXmoZPy2Dfg5GL7XDiGpwit43RSAVJOe4vONCnWWdHH3eKfnot5tSShLRjZuwkduJz9HPcxIuOaKqm4DyBb5SNS7HNtvQL48uNJe4+kc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=opensynergy.com;
-Message-ID: <d0050bf2-e8d0-c2e7-66cb-f3099dfe8d53@opensynergy.com>
-Date:   Sun, 24 Oct 2021 10:23:38 +0300
-Subject: Re: [PATCH v6 1/1] iio/scmi: Add reading "raw" attribute.
-Content-Language: en-US
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
-References: <20211019075949.17644-1-andriy.tryshnivskyy@opensynergy.com>
- <20211019075949.17644-2-andriy.tryshnivskyy@opensynergy.com>
- <20211020185118.7a02cbf8@jic23-huawei>
- <4e73398f-126a-0e1a-6eed-88d2d37778c2@opensynergy.com>
- <20211021103607.38c85766@jic23-huawei>
-From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-In-Reply-To: <20211021103607.38c85766@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM5PR04CA0011.eurprd04.prod.outlook.com
- (2603:10a6:206:1::24) To AM6PR04MB6359.eurprd04.prod.outlook.com
- (2603:10a6:20b:fc::16)
+        id S230520AbhJXH06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 03:26:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhJXH05 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 03:26:57 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E06C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:24:37 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id n63so11032606oif.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 00:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=x7OYQwoYkeRckzPRsgtpX50uWtmx0YcUa+5Fv90jHdA=;
+        b=k9Fenb2jDACs5xaVA0IoNAvx24b9tGvhpn3m6QA6xV5NDC3ucwjqxgTBPc09jH21BZ
+         W7GGfi71r1ILeZIF34CdsTx1vW1jGY+X3+DPzSZWMR3+Wiwjx3SfkeNAS0t2aWmKuoqB
+         r3HnjE830rKnSuG924s8YYUWGfHRh4U9FwHLfq7zVQEganzbUOc2P7jc2qD8fyU6A5eb
+         p0fvc2JClWzASt++PEGz1K3QvWkI3EdSfbrqzISP62VrmEg2wpMNF0iYApz+6w5DoAen
+         ZriJ3EZAUlyXkbVj3nskfRWICFRnyThSQoNKZOrBN/hxIGoQ4l9ePu3ME7/gEFnnMEhg
+         I7QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x7OYQwoYkeRckzPRsgtpX50uWtmx0YcUa+5Fv90jHdA=;
+        b=0pdMd1h73j+z84uf7+hnv1Dm+xuOR135q2xxnxPaGVjiE60PPEHpmb/zZCILncIz73
+         JB+z0tPT4jziZkWZz3eZyIJXfnS9ZO73AEKUtgGJHbZSnIIIE2nK1z4wqRelgnhkVo1g
+         MYbMi8s/r3L09ygvx88S2YZMHoYFQAKKG7BhVrOOGJFbW0lU6M5+Fz4nHp8XD4EY4fCy
+         5wMw79vuOlAG+a1X0c6AUGtbO5JnDu5BIdzxLfd8fDaDFQy6u5er62EQz+u0a/vNICll
+         BIAXFeerYJl3gCtfF8ax499FmUpP5aLRMuYpXRkSXj/h50stzJLrHw7rg7u8/7V3/9L2
+         qBEw==
+X-Gm-Message-State: AOAM530VnMGP621F6m3rLkA5xAMT7ZnUTDXaCn1cWmZJ1/SMNv4b+HeE
+        tm0szlRMW/GZm+fcaJ4OYYMQFw==
+X-Google-Smtp-Source: ABdhPJzhK2nzbshbsNWGWi5xMnEfyh8jxAj1kHDnZnsvCQHl+PFmzf0ngrZKVmrCva99egMcUbPbNA==
+X-Received: by 2002:a54:4688:: with SMTP id k8mr17755219oic.70.1635060276373;
+        Sun, 24 Oct 2021 00:24:36 -0700 (PDT)
+Received: from [192.168.39.11] ([172.58.97.152])
+        by smtp.gmail.com with ESMTPSA id l2sm2786560otl.61.2021.10.24.00.24.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 00:24:35 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
+ obsolete
+To:     Tim.Bird@sony.com, khilman@baylibre.com, geert@linux-m68k.org,
+        laurent.pinchart@ideasonboard.com
+Cc:     dwmw2@infradead.org, tbird20d@gmail.com,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        paul.gortmaker@windriver.com, linux-embedded@vger.kernel.org,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        kernel@pengutronix.de, mporter@konsulko.com, tglx@linutronix.de,
+        thomas.petazzoni@bootlin.com
+References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+ <CA+bK7J741D=DgZMNeEC5xg9kDDSaJu19QsRunVvXkBGx1mKGnQ@mail.gmail.com>
+ <YW5r61ZQx+E9xfuH@pendragon.ideasonboard.com>
+ <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
+ <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
+ <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
+ <7hlf2oejqv.fsf@baylibre.com>
+ <BYAPR13MB250310153BF63EF3ED50F294FDBD9@BYAPR13MB2503.namprd13.prod.outlook.com>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <f7c3aabd-8916-a0d2-7859-7088fab3114e@landley.net>
+Date:   Sun, 24 Oct 2021 02:24:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c4345ff4-7d78-468a-d39c-08d996bf33a9
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4103:
-X-Microsoft-Antispam-PRVS: <AM6PR04MB4103D378B7289AC812A1A537E6829@AM6PR04MB4103.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 96PuChBMu5uM68CCho4hI7hHXWPwhEugRlWMLUzVWSCoqidnvpuc2bPj69s66VSakRKNjCl+AfYLzXNJD58eK2lcSgRPLe09ZjFVKaFW614hiGvsfH8km6BPdOf+SKIriRJIeKVlpvDMn0yGxP+cZeRu+shLpcpaAE8Is4HZTUlNL3X2zPbrh96OSN+z9DATO4HDrW3dHLH3p12DBVbt/Sg2BoGvd8kn1wYAiYw4TTCSI68PMx458G1fvKeFLT9xhFNNODfBeJNssfOKYnWaOLPWErva21qq4YTteC34xOpIGMLSqqMcrE1JZwcQDXdnXQAiImu5Q1gHHbUszNvbIio9Jgb1XhUvN7DKIvdZdvTNjWeLSj76swkwGZTLx+HwytS6vNfvghanqYlKg2ovMRHgYxlR34Il3zN1k+0zfFSurL2NyWhpEhh90bBdQLyI3USIiixoDcXGl1EZ1wHm09x5ZSI7ABjqht4nZCeBPw27PRuxF2aHzwbYwjzni61+1a54RavFBrZHtxxpb7A4WqADTrAzOz0IlAlrFlgy0Gbh3jmql8IDBoyPLrjtBZo+/ADdJEnN1FzSS4uvGjawI0A8bdJqOkH/X0qs8yJxhidFjYvSvifE8ERUyw+xYIq/qEejHt2lWV8g1DfhCBuTbw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(39830400003)(396003)(366004)(2616005)(5660300002)(8676002)(31696002)(42186006)(6916009)(316002)(107886003)(86362001)(55236004)(66946007)(8936002)(508600001)(36756003)(186003)(26005)(4326008)(66476007)(38100700002)(31686004)(2906002)(44832011)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2Faem1ZUDFjMHZYckMxVkkwSUw1ZDhBWVpCVzNkZlVzalYxZ2JCMjg5RUUy?=
- =?utf-8?B?V3ZobnJpUVBSNzVxZXFXdzFsUUVLLzJkUTdDNGVMUk1KZzBLQk9XbFYwanVU?=
- =?utf-8?B?enRGWW1RbjZVam92akxsRG00WmpUYkJSckcxMUVHT1JCREw2a0xFVXVldEZX?=
- =?utf-8?B?RnVSdytzalVJU2NqZVRZRkZ4a3ZJYjloSlBqRW1weU9qbTNyVFQwWE10SDhE?=
- =?utf-8?B?ejRWV1R3NGY4azlrSHhoZ0lHSGgwZllpNUlsbjBYNHVTelZUWDhsS0diTGs1?=
- =?utf-8?B?NVY4NWtwcWFyczFodTNwa2VCeE9aKzRuS2VPb2l3d1gvSkpJdVByY2Zad3VT?=
- =?utf-8?B?MHVDYlByNHg3ZWVpT1B1Z1lVRGsyNXIzbTRhQ21ndDNMUlUvLzhnZERCWmtX?=
- =?utf-8?B?eFpObkRlSVphQ0tRelFpY2RJN0dla2NmN2lvcW5wdHIrQ05ReEZYenhMeWgy?=
- =?utf-8?B?NzNZOEM0Ulh6K3dtdmQrMjFrZWYrRm1HM1FQUkdYcDVCZm90ZjhVSmJIWFg5?=
- =?utf-8?B?b3NzZG85TXBhS0pGSWtDSkErY0d3Ky9JdFdHUjUyVWhjanVxZHFDQWlmSUxx?=
- =?utf-8?B?cW9yVlBQdWhtT0dEME9xbitwTjhLL1Q4c29mclNEeDB2czFuVTcrTU9vM2xs?=
- =?utf-8?B?THh3b2gxOTFhMGZOdkN0V0sxTXFqMWtjSXhFMFpod2ZGSlNyZnlnaDA1YkFB?=
- =?utf-8?B?QU95QVZvSndrYzlWeEhXZHd5Nlh1UWRXZVRMbjRzMFA2d2xUZzczOEdBZDJW?=
- =?utf-8?B?dlM0c3RXSWU1V2cyTTNFTEk0UDRkTFBWamdPdnB4bnQ2K3dOQ2s4Nm9NVzh1?=
- =?utf-8?B?S3QxUXpBdUs0N1lvUk5PVENlSVpndlBXVXNya2pNMUZGVXUyOGVtUTg4TEpR?=
- =?utf-8?B?UDJYOTNzZFgyejdJVE94SVRIVlB2dExxTTgvM0RPSk02eHJyYTJ2UmxrN3lT?=
- =?utf-8?B?TkFwQVRGWFVIdVY0TkZtRWJVQStaVXhQRGNuQzdnL1dBV2phYTlXSisyci85?=
- =?utf-8?B?cFhmYVAyTzVqUldFbGtqQUk0R3MzK1docTRSN000NHhoZ1hnSDRGK0UzRjhX?=
- =?utf-8?B?TEdNL3Z2WHl4eklFbDAzOHZ3bSt5MVRwcW5KdFJlYkdoZkY3OEJFcHJHVCty?=
- =?utf-8?B?K1E1U1RpZjc4S0dBUDNjMFF4VElYOUpoSzVyUWRXOE9KcHBxWm9kUWNHWS8v?=
- =?utf-8?B?QXZtY1I1SWJRdmFFZ2lHKzM5aWJTbWpaR2lWYUMyeWRyUy9DNUN5VVdvOGRx?=
- =?utf-8?B?RWZkRlRCV2RFdWxXQzFBa21vWnpxS0diTnNsblloSU1UcW5paFhjK0ZKYk5M?=
- =?utf-8?B?VGxHcFFzMmJYQmcxekNzRTB5Si9KNE9OYW5zcTVPUEdOd3dqRGRxVkRocysv?=
- =?utf-8?B?OU1sMTlsZDBiSXRxbWlrc0Uwd2t0VUVMcXNpb01sQ294Zm03Z1ZEYmZJU1Fj?=
- =?utf-8?B?dHg3TXZKWlp2TXkybTUyKzVtT0NRdFppeVd3aG1jVlNLZ0FJOEk0cGZwb2Z5?=
- =?utf-8?B?blluVyswUTBSSHVkamY2dkFWTm5hSjZUOFErRVVzMU5laGZJajhjYy84TnpD?=
- =?utf-8?B?aVNQRmZEbVllUDBqd2ZZT0NyaFFtV0tiQkgycnR6ZGYwd04xWDVpaDF4UDRE?=
- =?utf-8?B?ZUg5SWZjTmpUWlZCKzBxNGlFREhKVEtyT0Y3a1FGNVJkc0hMSFMrM0hOMWhk?=
- =?utf-8?B?aHowUHJrVisya2xhQXNKWXE1MEtWSmkxeGdWa0o5RW1jdDdXd014dFRCQS9B?=
- =?utf-8?B?M3RObjlTL3Qrbmd5cVpROTJ3UERIeHpQb2hLUlNpODZ1U3VEQ2Z0VlhLSlpM?=
- =?utf-8?B?YThCRm5mcitrRUpYWlNZTmEvN0NkTXYvbDF3ZkF2a0RQNHpyby9oWHFPdXBX?=
- =?utf-8?B?M0pqTU1JbGxFT2huU05IRmFoQW9ZaWY4WmR0WTl6amdjK21Db2JTa251RGkx?=
- =?utf-8?B?VjZ2M2NBMVRkMGVvajVGcDdSWkRwNUJKY0hkK2d5dkZSNE9iZmx2OVlaTm5l?=
- =?utf-8?B?cENLZFhpWnZWcG0yMWZPMkUrQVF1RE5FODRSeUlBMHdGekdoTHNPUHkrVnA5?=
- =?utf-8?B?Y25NSVJoSXA5NWdpaXBvV1RZTFBKaFJDVlRUTkRlaERRSWhPMVJjZ2dRdWJR?=
- =?utf-8?B?MjFhNVBXbW1kN1dpOFhCSUZlWTBseUJlTENoWkpCNndFRTBkZWxlWGpMY2g3?=
- =?utf-8?Q?ZupW+W7+X6xsLJU4QsZk1Xk=3D?=
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4345ff4-7d78-468a-d39c-08d996bf33a9
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2021 07:23:40.1072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H+K+c20AUn5S0Poh1+Nw1yyVXtmIbMEF+yCbJ50psuf6qQa3oI+AmiyrDgoyHkghMM3PH/2PZ4KrIMS3uzcWBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4103
+In-Reply-To: <BYAPR13MB250310153BF63EF3ED50F294FDBD9@BYAPR13MB2503.namprd13.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/19/21 5:54 PM, Tim.Bird@sony.com wrote:
+> Well... Let me give some history, and then pontificate a little on the entry.
+> 
+> Originally, this entry was created after Andrew Morton gave a talk at
+> an early Embedded Linux Conference, saying that there should be some
+> "ombudsman" for embedded issues in the kernel.  This was in 2008.
 
->>> On Tue, 19 Oct 2021 10:59:49 +0300
->>> Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
->>>
->>>> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
->>>> reading "raw" attribute in scmi_iio_read_raw.
->>>> Introduce new type IIO_VAL_INT_64 to read 64-bit value
->>>> for "raw" attribute.
->>>>
->>> Change log needs to be below the --- otherwise we'll store it forever
->>> in git.  A linked tag (which will be generated when I apply)
->>> is sufficient for this sort of historical info.
->>>
->> Sorry, this is my first patch, I was not aware of that.
->> Thanks for the explanation.
->> Quick question: since next version will include 2 patches,
->> I guess a change log should be moved back to the cover letter, right?
-> It's a trade off for which there are no firm rules.
-> Sometimes changes are well isolated in individual patches, in which case
-> the best bet is to put the change logs in each patch, sometimes they are
-> more global things that affect the whole series in which case the change
-> log is best in the cover letter.
->
-> However, for a given series pick one or other style (don't mix!) as
-> otherwise it would get really confusing.  Mostly no one really minds
-> where the log is as long as we can find it easily.
->
-> Jonathan
+I've been doing this sort of thing on and off for a while, but I admit to
+gradually burning out over the years (sometime between
+https://www.spinics.net/lists/linux-embedded/msg00148.html and
+https://lkml.org/lkml/2017/9/13/651) as linux-kernel became actively hostile to
+hobbyists.
 
-thank you for the clarification!
+> The linux-embedded mailing list was created about the same time.
+> The thinking was that there are issues that transcend any particular
+> sub-system, directory, or file, such as boot time or system size or
+> real-time. Changes to keep these system-wide metrics in check might
+> need the assistance of a respected upstream maintainer, who could
+> guide developers working in these areas, or who could help keep
+> other kernel maintainers apprised of requirements in these areas
+> for embedded products.
 
-best regards,
-Andriy.
+Greg KH wouldn't listen to me when I was Documention maintainer. He wouldn't
+listen when I was busybox maintainer. Maintainer-without-portfolio ain't gonna
+get him to start.
 
+Keep in mind Greg and Kay Sievers were joined at the hip until Linus threw Kay
+out of Linux dev and he bogged off to systemd. If you point out things like
+"sysfs should to present a stable API to userspace" or "it's a bad idea to
+depend on magic packages like udev or systemd as things every Linux system must
+not only use verbatim from a single upstream supplier but must replace every
+time they upgrade the kernel", Greg is reliably against them.
+
+> I would say that realtime has been shepherded pretty well by Thomas
+> Gleixner (and it's almost all upstream!), independent of this entry.
+> The other system-wide issues (boot time and system size), people
+> have pretty much given up on,
+
+Nah, I've gotten them trimmed/working acceptably well in my systems. I just
+don't bother trying to poke linux-kernel about it anymore. Not since the Linux
+Foundation chased hobbyists out of Linux to the point where people literally
+started asking if hobbysts had ever really existed (circa
+https://lwn.net/Articles/563578/).
+
+Peter Anvin is actively hostile to the idea of reducing build-time dependencies
+(http://lkml.iu.edu/hypermail/linux/kernel/0802.1/4400.html) to the point that
+when my perl removal patches finally got traction in 2013 (after 5 years of
+follow-through), he switched one of his perl scripts to use bc instead so things
+like Gentoo and Linux From Scratch had to add a new build dependency for him
+(neither was installing bc before). This was after I'd convinced Denys to make
+ash do 64 bit math on 32 bit hosts so my shell translation ran under bash dash
+and ash, and then when that was rejected rewrote it in C, and when Andrew Morton
+went around him to take my patches THEN he piped up with a patch to keep the
+build complex. Circa 2018 or so when they made kconfig turing complete (so make
+oldconfig on a new kernel can "rm -rf ~" if it wants to) they added flex and
+bison as dependencies needed to run kconfig, when previously kconfig had
+.shipped versions of those files so as NOT to require that.
+
+I just bisected the v5.14 regression where building x86-64 breaks trying to
+#include "gelf.h" (from Jim Henson's Dark Crystal package), which I already
+personally fought off in 2018 for my own builds:
+
+  https://twitter.com/landley/status/1064994639487426560
+
+And the commit I just bisected it to
+(http://lkml.iu.edu/hypermail/linux/kernel/2110.3/00009.html) EXPLICITLY broke
+x86-64 (and only x86-64) to have a unique build-time dependency. In a patch that
+did NOTHING ELSE. Because why not?
+
+> although there is the occasional
+> patch to address a micro-symptom of the problem.  But no one
+> is riding herd over the entire kernel to make sure that it doesn't
+> get too big, or boot too slow (or use too much power).
+
+Because the lkml clique is circling the wagons tighter and tighter until they
+achieve a black hole via proctology? There doesn't seem to be any actual malice,
+just a whole lot of territoriality and disdain for outsiders.
+
+It's not a thing that somebody's gonna do for fun, a topic you and I emailed
+about earlier this year if I recall.
+
+> This entry, and the linux-embedded mailing list itself, have not
+> functioned as originally intended in years, and I doubt anyone
+> uses this information. The tools don't use it
+> (e.g. get_maintainers.pl is never going to use this entry to
+> recommend someone be CC'ed on an "embedded" patch).
+
+Because that perl script matches files and the maintainers entry has no files.
+(Not that cc-ing random patches to lists strikes me as particularly useful. It
+usually just drives down the signal to noise ratio of the list in my experience.
+Patch 22/47 applies to arch/sh and thus the whole series is cc'd there...)
+
+> So, I guess I'd vote to get rid of it as well.
+> 
+> But, I'm a little sad to see it go... :-(
+> I'll probably never see Linux on a cereal box.
+
+Oh there's plenty of people doing good work.
+
+I talk to Jeff Dionne daily, he's working on that sort of thing. I email Elliott
+Hughes (basically the android maintainer) multiple times per week. I talk to
+Rich Felker by voice every week (we're on the same wednesday call), and email or
+irc more often. (I feel guilty about dragging Elliott and Rich into
+https://www.mail-archive.com/austin-group-l@opengroup.org/msg08569.html because
+I underestimated the amount of bikeshedding on a list that's primarily posts
+from the bug tracker and meeting announcements/minutes.)
+
+None of them particularly participate in linux-kernel (despite Rich being
+arch/sh maintainer, and yes I poke him about that every wednesday) because that
+community comes across to us outsiders as a toxic insular clique that does not
+remotely understand any of our needs, and acts threatened if we try to explain
+them. Not because we CAN'T, but because it DOESN'T HELP WHEN WE TRY.
+
+I'm the one who's considered weird for still (occasionally) engaging. Mostly as
+bug reports like the above, or patches I post so when somebody sues I can go
+"here it is in the list archives, not my fault they didn't merge it", or
+one-offs I expect to be ignored (ala
+http://lkml.iu.edu/hypermail/linux/kernel/2110.1/03713.html) although sometimes
+there's a discussion that peters out without resolution instead (ala
+http://lkml.iu.edu/hypermail/linux/kernel/2110.1/09327.html).
+
+*shrug* Just stubborn I guess.
+
+>  -- Tim
+
+Rob
