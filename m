@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6B843896A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6141943896B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Oct 2021 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJXOFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 10:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhJXOFk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 10:05:40 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF5FC061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 07:03:19 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w23so3171537lje.7
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 07:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/W/OsBp6xJzh/cYmtq7Inyjl9AOVVVrF3nxtQ0n7lDc=;
-        b=PImFOx9H9ccHDD0utj/Y0sUbcV0Kq1Bi2LAbSgpZN2uCw6tTT7GhJnt3jArN7AXgMQ
-         RUZfpZ8NEYm1xp49QexBcK4tpCJdoBiIV6r7Ktsm8fX37vbIGATWQSE9wcD/Y8GqBQIv
-         piFiBfByjImqUg2o5XcX48Y5EqmJsUBTxWtB4Z17qZNTOucGlgAKKEz7sRw/cU97mmgE
-         0hEqNifESwfmDlYwV0HHBLXkK0KPtkONLbG0Vm73VJRpKR+5EyE2zGkbgNrwcx9WRur/
-         tFCLwD6iOaXiQSGD93sHT9oh+y52TFWn95Ce9JBu3zgCCpvRSfGBP6owi1VtIFlQ5esj
-         sR7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/W/OsBp6xJzh/cYmtq7Inyjl9AOVVVrF3nxtQ0n7lDc=;
-        b=as7A8P6ZiM22bzxznBLCCUftDbMXARU1a9R2JAEzTjkRLiqaUB8TYvd4PReZKnhGUS
-         INGDqf/yMlZvqBJqQT+z1iLlWvQQbJyhhAIKnU/f3r+th+PezCYLVK3nYJs1qWgaSZQg
-         W69MPhEsiSLRmTcSv6AIVEGFtuu/62QBlQVvtM7OMmReYcgjdMxjZwnEpVroorhCaX+g
-         gG8TOAgobU+UpnWtVlXRVStpvq4Q9kYlxTVdLHMJ757SJDAQomvgLXY8Bt0/wf5u3nwl
-         YmtdNt84DvZUvZFyiKbZ/+XepYs4I9zpBLBefM+wRDRmDfQ2qbOlOhwpg90q0syEDfj1
-         jXhQ==
-X-Gm-Message-State: AOAM5326U9OYRwdorFZfMGoBJx9L/RtWSL/he22lwwdwuPtyQSV8v6ZY
-        c7hX64gNb5R5SzI3+NQPfza2eS+W40g=
-X-Google-Smtp-Source: ABdhPJxREqSAbVHKWxe7swgOwUQYV6FCh+IUORKGWGaHUrHdgywmAglXIA1GDeH6RvvyrkgoV8N6SA==
-X-Received: by 2002:a2e:9d89:: with SMTP id c9mr12713826ljj.125.1635084197876;
-        Sun, 24 Oct 2021 07:03:17 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.235.8])
-        by smtp.gmail.com with ESMTPSA id i28sm1452285ljn.122.2021.10.24.07.03.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 07:03:17 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
-        joe@perches.com, lars@metafoo.de
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
-Subject: [PATCH next] ALSA: mixer: fix deadlock in snd_mixer_oss_set_volume
-Date:   Sun, 24 Oct 2021 17:03:15 +0300
-Message-Id: <20211024140315.16704-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        id S231597AbhJXOGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 10:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231256AbhJXOGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 10:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AD6860EDF;
+        Sun, 24 Oct 2021 14:04:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635084260;
+        bh=Ups2H/GReLMCIGgYYqgKpnTOPkkyAW9q1NZM6vOxoRs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j9nH2SyMUAjysiqOw9/We63XjP8njzQbIEgy1BtMq/qBaxEP125hFgWWX9a78yacL
+         C2p8KsjekazaArpflNqLU6SNA/muMUQBViUUVzQmY3dJfF3Gll5wc6+ip4X+vhWpZN
+         y4ucwxjpo8GzpB5cAUWLNbxuCPjPnn5sY95xUXFSFnPJ3Ujv5PQSB1mFpL63zNjWAb
+         DD5gLnwlEZnggJhWEGfkkSD9JhL4IJHp9QtUq2TNmDGQqeJvbnOYU6w44JjodmfNhC
+         aJ4n4F0Bq4mnY7LPsCf4j12QW+F56RHHA4K/zEuyt477c35iMTl7VETqnpujC/fiXY
+         2/x+dD2ksCHPw==
+Date:   Sun, 24 Oct 2021 19:34:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: soundwire updates for v5.16-rc1
+Message-ID: <YXVn3w1vRvPp0xY4@matsya>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LGaEO8Ein83qS2eD"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-added mutex protection in snd_mixer_oss_set_volume(). Second
-mutex_lock() in same function looks like typo, fix it.
 
-Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
-Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- sound/core/oss/mixer_oss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--LGaEO8Ein83qS2eD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index d5ddc154a735..9620115cfdc0 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -313,7 +313,7 @@ static int snd_mixer_oss_set_volume(struct snd_mixer_oss_file *fmixer,
- 	pslot->volume[1] = right;
- 	result = (left & 0xff) | ((right & 0xff) << 8);
-  unlock:
--	mutex_lock(&mixer->reg_mutex);
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
- 
--- 
-2.33.1
+Hello Greg,
 
+Please pull to receive updates for SoundWire subsystem. Things seems
+settling down now, odd updates for core and qcom driver.
+
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.16-rc1
+
+for you to fetch changes up to abd9a6049bb59a9bab8cc8b42ccbe4a46c307f92:
+
+  soundwire: qcom: add debugfs entry for soundwire register dump (2021-10-2=
+0 20:54:59 +0530)
+
+----------------------------------------------------------------
+soundwire updates for 5.16-rc1
+
+ - Update on sysfs wildcard documentation
+ - debugfs update for core and qcom driver
+ - invalid slave pointer fix for bus
+
+----------------------------------------------------------------
+Mauro Carvalho Chehab (2):
+      ABI: sysfs-bus-soundwire-master: use wildcards on What definitions
+      ABI: sysfs-bus-soundwire-slave: use wildcards on What definitions
+
+Srinivas Kandagatla (3):
+      soundwire: debugfs: use controller id and link_id for debugfs
+      soundwire: bus: stop dereferencing invalid slave pointer
+      soundwire: qcom: add debugfs entry for soundwire register dump
+
+ .../ABI/testing/sysfs-bus-soundwire-master         | 20 +++----
+ .../ABI/testing/sysfs-bus-soundwire-slave          | 62 +++++++++++-------=
+----
+ drivers/soundwire/bus.c                            |  2 +-
+ drivers/soundwire/debugfs.c                        |  2 +-
+ drivers/soundwire/qcom.c                           | 27 ++++++++++
+ 5 files changed, 70 insertions(+), 43 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--LGaEO8Ein83qS2eD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmF1Z98ACgkQfBQHDyUj
+g0e4Vg/9Ga2XO4fcFwbv6A2HgoKziSx/F3tV7Ap+9/Jf6649o+QyyBvfFKqp07oz
+P6TBcoqihRqxLTpPngdNw6sTA0uraSPyiODSWBTyTmbBc9QUCsvQY+hdI3QpMyb6
+Qi4zfO6aU799DpaYCfnYsPPUmx8MGlkzfIrcdQdyQ+Lp29AgR8WiiKNk7YXkiKtm
+QuEcqVPWuToJiDQd4RxqhqyYVSVLzN997qdSh9Jjy6D/Wmm+s5T4TMHZUxJgUUEO
+TMmuE+AMVrILVcsnO3NR3JxaPkyGwxa3gMvv7jx2sSHljwkDlTr29WJ7u4aBYgGr
+zo270WILXqk2F259CFDLjfwZCtM5kpigLZ5yah4mO7aKjYMHaCm/taxJQYAS3IbV
+ka5gZOm0aABNOldoBZnAf+Z9/NMaWW7ZakSkGDlBEgMArdiP5rkKTfPvxUTV503t
+aUehiujLtLlQsoPFeBk7BTy4EIIqOs2w9ROpcTkJw9e7QYxaCGXoCCh+zk37X022
+TTmBlu5E0H5DvSKd+Ko3rnw6rMqcKt5nRBkhikntO1HtmMllblKZY6qTlM5UggYm
+EWtvubdm8H0lI/8DIEt1PZTTkeKCvcUihu5zumbQQ491Cacpv9qheCOKaEVfm1UI
+eQsxAnga5cj9xqCAoLyw3Djr7Vhn1qRCdYmHk4o8TcWJW7Asso0=
+=E6Nc
+-----END PGP SIGNATURE-----
+
+--LGaEO8Ein83qS2eD--
