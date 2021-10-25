@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF56D438F27
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149AC438F29
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhJYGMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:12:07 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41103 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhJYGMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:12:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd4Ky4tSNz4xbr;
-        Mon, 25 Oct 2021 17:09:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635142182;
-        bh=lARUbalfcU75V5nPICqhWN/XA1PYjayw6a7ig82sc4U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QaSxyvH4J1bYRo7QWV1ijOC01xTLv7Jh/qK9TqHO8j+OofGK8zTqJh1ZhvEaWZKS6
-         0tDb3a9T2t16fwpntNLUIZaf55NBts4s4m8j8uWSHfjUuEjKRASFgn88+uJrtvWRS6
-         ZOHOwjMQ8D3vAnZ6uRCo3wqApc/FZPh3NX1/qvMWwf+0kF65NgNKgJDXjsEsYbI74m
-         /zcNury+wUUhM+RQXRVnSeIu0mX5BlVyFmkYQOHa/tlisMVlL9h4AS+2CzsSLdHjss
-         +XyjUbgzatjWh90DPrBPw/e/GRFZmFN9xFZO7YyGLmSQKOYnB3vVuPGRdItVI8W58S
-         o2eH3oi997O1g==
-Date:   Mon, 25 Oct 2021 17:09:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Eddie James <eajames@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20211025170941.7eb30042@canb.auug.org.au>
-In-Reply-To: <CACPK8XcWyJYj94q+Jp+KgTnM_f4vyY_gSyjUXN8ZPOtnbpJjfg@mail.gmail.com>
-References: <20211022193853.296c4ee9@canb.auug.org.au>
-        <CACPK8XcWyJYj94q+Jp+KgTnM_f4vyY_gSyjUXN8ZPOtnbpJjfg@mail.gmail.com>
+        id S230195AbhJYGNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229850AbhJYGM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:12:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C06936023D;
+        Mon, 25 Oct 2021 06:10:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635142237;
+        bh=htjBfDAv/fbf9E0uZNabYl3KsNaiUTRrvgCjUk0Ec04=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E3HGJ0X8Z47zZOrQl2+GK+0V+9R/+ONSk8UadSPQPRsIsmBG9tOD5J3OpeEQLQjJ9
+         V7TdkbUSu3FunLXNCpguIwBT32gNlXNzzD/ITEH+rZM7ny79nLeZVQ6QdH1U1xzyg5
+         mOGgAAnwcZcZsW+Fc8uNgjGG0e5CALTsHz+DToeI4If+z7O+ZbeHyDiTASlldfH3Bq
+         u675CeNJSwy8sUtgrTVh0s+a2Q9w0zL0eJBlbesH0YInqz/8VUAeW2amStkvP2rKQV
+         f4ji8KJo3V8+jle0AmnxCQ8CcGZ1fnq78Zk6tonne7PLOcHw/yig3Q97nP26Zk8VOU
+         R2UlzFJbr0Wdw==
+Date:   Mon, 25 Oct 2021 11:40:33 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Harini Katakam <harini.katakam@xilinx.com>
+Cc:     romain.perier@gmail.com, allen.lkml@gmail.com, yukuai3@huawei.com,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, harinikatakamlinux@gmail.com,
+        michal.simek@xilinx.com, radhey.shyam.pandey@xilinx.com,
+        shravya.kumbham@xilinx.com
+Subject: Re: [PATCH 1/4] dmaengine: zynqmp_dma: Typecast the variable to
+ handle overflow
+Message-ID: <YXZKWVsDU+067GCz@matsya>
+References: <20210914082817.22311-1-harini.katakam@xilinx.com>
+ <20210914082817.22311-2-harini.katakam@xilinx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wfzeW/Q3XN1d2s72avONvOM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914082817.22311-2-harini.katakam@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wfzeW/Q3XN1d2s72avONvOM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 14-09-21, 13:58, Harini Katakam wrote:
+> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> 
+> In zynqmp_dma_alloc/free_chan_resources functions there is a
+> potential overflow in the below expressions.
+> 
+> dma_alloc_coherent(chan->dev, (2 * chan->desc_size *
+> 		   ZYNQMP_DMA_NUM_DESCS),
+> 		   &chan->desc_pool_p, GFP_KERNEL);
+> 
+> dma_free_coherent(chan->dev,(2 * ZYNQMP_DMA_DESC_SIZE(chan) *
+>                  ZYNQMP_DMA_NUM_DESCS),
+>                 chan->desc_pool_v, chan->desc_pool_p);
+> 
+> The arguments desc_size and ZYNQMP_DMA_NUM_DESCS are 32 bit. Though
+> this overflow condition is not observed but it is a potential problem
+> in the case of 32-bit multiplication. Hence fix it by using typecast.
+> 
+> Addresses-Coverity: Event overflow_before_widen.
+> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-Hi Joel,
+Patch was sent by Harini Katakam <harini.katakam@xilinx.com> and SOB not
+available for person sending this patch, sorry cant accept it with
+s-o-b...
 
-On Mon, 25 Oct 2021 05:58:37 +0000 Joel Stanley <joel@jms.id.au> wrote:
->
-> If I apply this patch then the build fails in a tree that doesn't have
-> Willy's patch.
->=20
-> Unless someone has a better suggestion I'll send a patch that includes
-> both headers for now, and make a note to remove the mm.h include down
-> the track.
+> Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+> ---
+>  drivers/dma/xilinx/zynqmp_dma.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
+> index 5fecf5aa6e85..2d0eba25739d 100644
+> --- a/drivers/dma/xilinx/zynqmp_dma.c
+> +++ b/drivers/dma/xilinx/zynqmp_dma.c
+> @@ -490,7 +490,8 @@ static int zynqmp_dma_alloc_chan_resources(struct dma_chan *dchan)
+>  	}
+>  
+>  	chan->desc_pool_v = dma_alloc_coherent(chan->dev,
+> -					       (2 * chan->desc_size * ZYNQMP_DMA_NUM_DESCS),
+> +					       ((size_t)(2 * chan->desc_size) *
+> +						ZYNQMP_DMA_NUM_DESCS),
+>  					       &chan->desc_pool_p, GFP_KERNEL);
+>  	if (!chan->desc_pool_v)
+>  		return -ENOMEM;
+> @@ -677,7 +678,8 @@ static void zynqmp_dma_free_chan_resources(struct dma_chan *dchan)
+>  	zynqmp_dma_free_descriptors(chan);
+>  	spin_unlock_irqrestore(&chan->lock, irqflags);
+>  	dma_free_coherent(chan->dev,
+> -		(2 * ZYNQMP_DMA_DESC_SIZE(chan) * ZYNQMP_DMA_NUM_DESCS),
+> +		((size_t)(2 * ZYNQMP_DMA_DESC_SIZE(chan)) *
+> +		 ZYNQMP_DMA_NUM_DESCS),
+>  		chan->desc_pool_v, chan->desc_pool_p);
+>  	kfree(chan->sw_desc_pool);
+>  	pm_runtime_mark_last_busy(chan->dev);
+> -- 
+> 2.17.1
 
-Don't apply anything.  Just remember to tell Linus (or whoever you
-merge this tree via) about this conflict and the resolution when you
-send the pull request.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wfzeW/Q3XN1d2s72avONvOM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2SiUACgkQAVBC80lX
-0GyDqwf/dmqvaiG0RGqHJ/W7F7KtYPPb4Ig4JKQswP8zpd+JPbUE62StUEzrDoDv
-EHZ6rAPHBhEA/wT47cHKbfUcfARYQ64QNyFOARms9iz6OgPi18+iG3KwvH8CrJR2
-jMjG6BSAuyHrzpK9s7IcB4veuKCUTcgV9fw5hMI61/aUh8c7y6c07XonGyI5agn+
-DnY2DsbflF8eQQeCNjKap/OTs4ONZOV4oG6f+RXcAecp7hSZuOk8NpteJh7Oh6hn
-WIOsyDNaAOAMTSsWvvLi7pzFd5PHEdzefz3efCxQ/0nObRwDD6pr2OgsxEajNjcv
-iyEB8SbtDKOhGoLIUaNZ/6/r3L7W6Q==
-=9oEj
------END PGP SIGNATURE-----
-
---Sig_/wfzeW/Q3XN1d2s72avONvOM--
+-- 
+~Vinod
