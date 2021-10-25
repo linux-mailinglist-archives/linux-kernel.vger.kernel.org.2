@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E38438DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CD5438DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhJYD11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 23:27:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25311 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbhJYD1Z (ORCPT
+        id S232156AbhJYDqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 23:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhJYDqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:27:25 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd0Zb6RcRzbhFj;
-        Mon, 25 Oct 2021 11:20:23 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:25:00 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <mbloch@nvidia.com>, <jinpu.wang@ionos.com>,
-        <lee.jones@linaro.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event process
-Date:   Mon, 25 Oct 2021 11:42:58 +0800
-Message-ID: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 24 Oct 2021 23:46:46 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD907C061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 20:44:24 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id g20so10670768qka.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 20:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x16gXWpzNHpOLXxSWON9xi6tEmmvUPoYcp94QB3jkPM=;
+        b=bx8eThpUK8zmEWsN8nmUkMwDmOLKZVuVKQYqVlA9Ggp2Fl07+Pctr43l+aUybocKZB
+         o18h4wMUGsSmCPk+wx28pp0ynssm2H5o7Yz/GRpbbIgML9kQ1sb3fg4r0SGYhInsnmWn
+         g4uNahRCtssYPnaUK6mWhgQ5I0A1Xq5jAWx4ljltjDyAhdG1Z8MmthWaPffXgeD260ih
+         60UGKSFJp9REP8oPCIZ7BZRnPL9EFjwvZgKyq6+OXGHPUzA246shmRsv2TtTk7lILyB9
+         rL6qjJCU6Bm+kNXGT+ytEIwrZDMXpeb6rJbpNs66GeUotSymvCKcvvjnXHXLbFIYokoH
+         h0Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=x16gXWpzNHpOLXxSWON9xi6tEmmvUPoYcp94QB3jkPM=;
+        b=QxFC9DFwcLtiRchQMO1YivVIJNMxBF20AL2MB3I8Wh1UQnp07khcYTQZVmF4qxksGl
+         1MYo0ATEXuHGinCO6cidkOlfUJxc5PQ0+HH2xXA5q/vX/agdAmWKvTobml/RBId0bLAw
+         C6Sm5xam/88Iy8PIq5j9fDAsqgzCfZ8FRLyY3F0DgLQLc+cLhzL99QD1t+R8AN3vZh1f
+         ZvlscBs01wqGBkibJg49wacJ/5D4V3ReoAkEMReRI7fzLSSFqiLfyuer6NhPNos7tlV5
+         9QeX01oFECa6BGziHYornfXFx+N6NRE9PUKtDrVreI0MVvagJvIf3oetB4IdXlCuWMr/
+         xYTQ==
+X-Gm-Message-State: AOAM532gaaWhXA0V2UMm/dyKBbkjYAFQozdvWF+c3NovWY9/9v8Lpqvg
+        nqdzla4wJx21PSpIS/IkWnM=
+X-Google-Smtp-Source: ABdhPJz0LfMxCfvl7U0olYslDsDxnM3i+4BngW+nFvaHXxGffDk/Jb7B8cW/QyxzH7NwguFCkMTQiQ==
+X-Received: by 2002:a37:6856:: with SMTP id d83mr11723484qkc.8.1635133463866;
+        Sun, 24 Oct 2021 20:44:23 -0700 (PDT)
+Received: from ubuntu-mate-laptop.. ([2607:fb90:1bd1:606f:7cf3:da67:cb9f:91b7])
+        by smtp.gmail.com with ESMTPSA id s3sm7999991qkj.118.2021.10.24.20.44.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 20:44:23 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     robert.foss@linaro.org, a.hajda@samsung.com,
+        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     jagan@amarulasolutions.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
+Date:   Sun, 24 Oct 2021 23:44:20 -0400
+Message-Id: <20211025034420.28996-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a vlan netdev enter netdevice_event process although it is not a
-roce netdev, it will be passed to netdevice_event_work_handler() to
-process. In order to hold the netdev of netdevice_event after
-netdevice_event() return, call dev_hold() to hold the netdev in
-netdevice_queue_work(). But that did not consider the real_dev of a vlan
-netdev, the real_dev can be freed within netdevice_event_work_handler()
-be scheduled. It would trigger the UAF problem for the real_dev like
-following:
+When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
+Kbuild gives the following warning:
 
-==================================================================
-BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
-Read of size 4 at addr ffff88801648a0c4 by task kworker/u8:0/8
-Workqueue: gid-cache-wq netdevice_event_work_handler
-Call Trace:
- dump_stack_lvl+0xcd/0x134
- print_address_description.constprop.0.cold+0x93/0x334
- kasan_report.cold+0x83/0xdf
- vlan_dev_real_dev+0xf9/0x120
- is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
- is_eth_port_of_netdev_filter+0x28/0x40
- ib_enum_roce_netdev+0x1a3/0x300
- ib_enum_all_roce_netdevs+0xc7/0x140
- netdevice_event_work_handler+0x9d/0x210
-...
+WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
+  Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
+  Selected by [y]:
+  - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
 
-Allocated by task 9289:
- kasan_save_stack+0x1b/0x40
- __kasan_kmalloc+0x9b/0xd0
- __kmalloc_node+0x20a/0x330
- kvmalloc_node+0x61/0xf0
- alloc_netdev_mqs+0x9d/0x1140
- rtnl_create_link+0x955/0xb70
- __rtnl_newlink+0xe10/0x15b0
- rtnl_newlink+0x64/0xa0
-...
+This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
+without depending on or selecting DRM_KMS_HELPER,
+despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
 
-Freed by task 9288:
- kasan_save_stack+0x1b/0x40
- kasan_set_track+0x1c/0x30
- kasan_set_free_info+0x20/0x30
- __kasan_slab_free+0xfc/0x130
- slab_free_freelist_hook+0xdd/0x240
- kfree+0xe4/0x690
- kvfree+0x42/0x50
- device_release+0x9f/0x240
- kobject_put+0x1c8/0x530
- put_device+0x1b/0x30
- free_netdev+0x370/0x540
- ppp_destroy_interface+0x313/0x3d0
- ppp_release+0x1bf/0x240
-...
+This unmet dependency bug was detected by Kismet,
+a static analysis tool for Kconfig.
+Please advise if this is not the appropriate solution.
 
-Hold the real_dev for a vlan netdev in netdevice_event_work_handler()
-to fix the UAF problem.
-
-Fixes: 238fdf48f2b5 ("IB/core: Add RoCE table bonding support")
-Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
 ---
- drivers/infiniband/core/roce_gid_mgmt.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/bridge/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-index 68197e576433..063dbe72b7c2 100644
---- a/drivers/infiniband/core/roce_gid_mgmt.c
-+++ b/drivers/infiniband/core/roce_gid_mgmt.c
-@@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
- {
- 	struct netdev_event_work *work =
- 		container_of(_work, struct netdev_event_work, work);
-+	struct net_device *real_dev;
- 	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
-@@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
- 					 work->cmds[i].filter_ndev,
- 					 work->cmds[i].cb,
- 					 work->cmds[i].ndev);
-+		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
-+		if (real_dev)
-+			dev_put(real_dev);
-+		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
-+		if (real_dev)
-+			dev_put(real_dev);
- 		dev_put(work->cmds[i].ndev);
- 		dev_put(work->cmds[i].filter_ndev);
- 	}
-@@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
- static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
- 				struct net_device *ndev)
- {
--	unsigned int i;
- 	struct netdev_event_work *ndev_work =
- 		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
-+	struct net_device *real_dev;
-+	unsigned int i;
- 
- 	if (!ndev_work)
- 		return NOTIFY_DONE;
-@@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
- 			ndev_work->cmds[i].filter_ndev = ndev;
- 		dev_hold(ndev_work->cmds[i].ndev);
- 		dev_hold(ndev_work->cmds[i].filter_ndev);
-+		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
-+		if (real_dev)
-+			dev_hold(real_dev);
-+		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
-+		if (real_dev)
-+			dev_hold(real_dev);
- 	}
- 	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
- 
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 431b6e12a81f..a630cb8fd1c8 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -30,6 +30,7 @@ config DRM_CDNS_DSI
+ config DRM_CHIPONE_ICN6211
+ 	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
+ 	depends on OF
++  select DRM_KMS_HELPER
+ 	select DRM_MIPI_DSI
+ 	select DRM_PANEL_BRIDGE
+ 	help
 -- 
-2.25.1
+2.30.2
 
