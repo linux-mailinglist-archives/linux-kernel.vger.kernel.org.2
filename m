@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626444395BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917FB4395C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhJYMOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53120 "EHLO mail.kernel.org"
+        id S233070AbhJYMOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:14:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232679AbhJYMOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232662AbhJYMOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 08:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5F4060FE8;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9612F60EBC;
         Mon, 25 Oct 2021 12:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635163935;
-        bh=/7AhjSeqSanvWP2tDzbI1wBAh38yZx6pj7kvM8uB4Ws=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Bocb6vQcv1rJ/p1ekv21CSPRT/wmro22cUdAvF04+WClbe/1F+/NapNgrk/xWej1K
-         3Q1QJYr2ajuuX7LycpTaYR/7CZcOWCivc3RlmDq9R8yxdI5TawAEwouwRpz6P6/9Uk
-         GhxReO0lHJb4pwW7PWmyvn9J4N71g82+doz0BTlEx9r52VoI+y0NtHn5tAaiF9gevS
-         f2vWFeKb6jNhsUYdi6Jc4qc1dCMHcs7LEcnjjetZ33AH/G3RFkOVs8fhUVqnkfKUQk
-         o0EkECpYnxKcaGeFgE0DTiqV6hnEPeQIQrFiYnMqsdcwYYWIDZJvOEpFiOi3I3DRyz
-         RJ79gOQDTdnDg==
+        bh=AIRpCXor1U3q6Kur0f/NIMUI4ChvteaRnPofgExILTU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iaKp0d2wbZft43JNyI03st7htu3joHqUI07uYXGUBF+J93Ptg1A9m1HLQAFEOTkpq
+         FXDl5A3uUwwX0ke103BDG/1EeMujLlz+2WkDTzMdkdNIHrTCw0ktngfI70QRXAXDyg
+         5zmIkQD1PxrE6AOb1drDQDt8B0blqisHJb5duNUTrRKuf1gPs2qjaHoCci/nJfDVD7
+         Xv6VlLIRAVc+eQP1aPJmxs8pi72I3pGiI6LcbMscT3lzHhOX9D2aTZ4qLKymEYTS7d
+         v5lXRxb2OlDSyWPDSu/XmaB3e0+ppn6gjACmZQw7oo71nnCZ2zR19H6iNRnxMuC/hq
+         feF2MpoxelV1w==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan@kernel.org>)
-        id 1meypa-0001iF-8u; Mon, 25 Oct 2021 14:11:58 +0200
+        id 1meypa-0001iH-DA; Mon, 25 Oct 2021 14:11:58 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Takashi Iwai <tiwai@suse.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 0/2] sound: fix USB message timeouts
-Date:   Mon, 25 Oct 2021 14:11:40 +0200
-Message-Id: <20211025121142.6531-1-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH 1/2] sound: 6fire: fix control and bulk message timeouts
+Date:   Mon, 25 Oct 2021 14:11:41 +0200
+Message-Id: <20211025121142.6531-2-johan@kernel.org>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211025121142.6531-1-johan@kernel.org>
+References: <20211025121142.6531-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A number of drivers throughout the tree were incorrectly specifying USB
-message timeout values in jiffies instead of milliseconds.
+USB control and bulk message timeouts are specified in milliseconds and
+should specifically not vary with CONFIG_HZ.
 
-This series fixes the two sound drivers that got it wrong.
+Fixes: c6d43ba816d1 ("ALSA: usb/6fire - Driver for TerraTec DMX 6Fire USB")
+Cc: stable@vger.kernel.org      # 2.6.39
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ sound/usb/6fire/comm.c     | 2 +-
+ sound/usb/6fire/firmware.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Johan
-
-
-Johan Hovold (2):
-  sound: 6fire: fix control and bulk message timeouts
-  sound: line6: fix control and interrupt message timeouts
-
- sound/usb/6fire/comm.c     |  2 +-
- sound/usb/6fire/firmware.c |  6 +++---
- sound/usb/line6/driver.c   | 14 +++++++-------
- sound/usb/line6/driver.h   |  2 +-
- sound/usb/line6/podhd.c    |  6 +++---
- sound/usb/line6/toneport.c |  2 +-
- 6 files changed, 16 insertions(+), 16 deletions(-)
-
+diff --git a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
+index 43a2a62d66f7..49629d4bb327 100644
+--- a/sound/usb/6fire/comm.c
++++ b/sound/usb/6fire/comm.c
+@@ -95,7 +95,7 @@ static int usb6fire_comm_send_buffer(u8 *buffer, struct usb_device *dev)
+ 	int actual_len;
+ 
+ 	ret = usb_interrupt_msg(dev, usb_sndintpipe(dev, COMM_EP),
+-			buffer, buffer[1] + 2, &actual_len, HZ);
++			buffer, buffer[1] + 2, &actual_len, 1000);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (actual_len != buffer[1] + 2)
+diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+index 8981e61f2da4..c51abc54d2f8 100644
+--- a/sound/usb/6fire/firmware.c
++++ b/sound/usb/6fire/firmware.c
+@@ -160,7 +160,7 @@ static int usb6fire_fw_ezusb_write(struct usb_device *device,
+ {
+ 	return usb_control_msg_send(device, 0, type,
+ 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				    value, 0, data, len, HZ, GFP_KERNEL);
++				    value, 0, data, len, 1000, GFP_KERNEL);
+ }
+ 
+ static int usb6fire_fw_ezusb_read(struct usb_device *device,
+@@ -168,7 +168,7 @@ static int usb6fire_fw_ezusb_read(struct usb_device *device,
+ {
+ 	return usb_control_msg_recv(device, 0, type,
+ 				    USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				    value, 0, data, len, HZ, GFP_KERNEL);
++				    value, 0, data, len, 1000, GFP_KERNEL);
+ }
+ 
+ static int usb6fire_fw_fpga_write(struct usb_device *device,
+@@ -178,7 +178,7 @@ static int usb6fire_fw_fpga_write(struct usb_device *device,
+ 	int ret;
+ 
+ 	ret = usb_bulk_msg(device, usb_sndbulkpipe(device, FPGA_EP), data, len,
+-			&actual_len, HZ);
++			&actual_len, 1000);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (actual_len != len)
 -- 
 2.32.0
 
