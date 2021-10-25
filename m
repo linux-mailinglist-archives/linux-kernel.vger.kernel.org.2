@@ -2,160 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A73A4397F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4704397F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhJYN7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60894 "EHLO
+        id S233083AbhJYOAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhJYN7a (ORCPT
+        with ESMTP id S230225AbhJYOAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:59:30 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AE6C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ef8hkZsa4H89XkZHxMxY82mpR5AmSwHB7IihVr9CwYA=; b=ajOzZ25lvF2c81Z8/YIRkhHs4/
-        QICwxDhWj+DXkMLCiHZcdZ2avCd2m65CFrGdTQCyLSUv80qWdtW7KeXIO59YbBqaBtb8m7Pg++O4t
-        yFCYsyvrod6gJz2+qqssX4eTNF/0zCVpKvLAaVO+fKIM1Ld2dpdjHzbTPHtDoCwEwE1HyPC5ItWx8
-        2n1pFQqoKbYUemFaRSQWFVZmI6pct+az732AfcK++J3fp32/SZioQh9sa6r/twe//IjF15UNi8YRe
-        4btIIFINmTvt7WVbw5vUEJ95Y2Q1/cirwILjCk60XYF9SVfO/PeIkiewVaJ7JRPI9fFOGHfapdhDz
-        tjxyCpZw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mf0TF-00C9hj-68; Mon, 25 Oct 2021 13:57:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DBD5B3002AE;
-        Mon, 25 Oct 2021 15:56:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B3B1A2C3E69E1; Mon, 25 Oct 2021 15:56:59 +0200 (CEST)
-Date:   Mon, 25 Oct 2021 15:56:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        James Morse <james.morse@arm.com>,
-        David Laight <David.Laight@aculab.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
-Message-ID: <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
-References: <20211025122102.46089-1-frederic@kernel.org>
- <20211025122102.46089-3-frederic@kernel.org>
+        Mon, 25 Oct 2021 10:00:13 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128BEC061745;
+        Mon, 25 Oct 2021 06:57:51 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id bp7so11664946qkb.12;
+        Mon, 25 Oct 2021 06:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7rxdYqIO+JK237h1leH+bsExljsO5Y3Ycz3/IBgPYvU=;
+        b=eZ7BFSwkN97rU+KuOwXK41Ezbmjb1zO1EQQfTqES8rc4l6I6gaf2NlET/tJkMoA1+N
+         Bxnr1CkIIGs5iKbE6Xo5MZlCChvaZUESb1vwhUZ7YGmF/yxJBPkWOlIG8rXpa4V9wyYb
+         9GWUvUtdPIRl9QDTIS+dHoa16SiuRkDAbO+N/NbK3FRHTXIs53iAYMd4ZPqMxVD8m/hf
+         Md/5XiEMe6x4fFsDnaMquFen7nxsvv5Yrwe7FLlovDKY1K4CIsaAODZGZYEZ2cIo2Ml8
+         VFgVMgMTZCK53gS4zuWrq66TGd1qsxc4BUrErUft7zlzoqyFS5T+Mg01bH7IhS/4GkKP
+         0Mew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7rxdYqIO+JK237h1leH+bsExljsO5Y3Ycz3/IBgPYvU=;
+        b=naIqTkYj+bPIXXUaTjCz71BD+Wklk/TsW3jEmfdbIS+xl8pC1JiWafjfSb5Fh4Kuc+
+         SJ38wx9E1Y34rQQGBt3gbLBsUS32Ls+uumXD+cop7QL1RD64UNPmJycczWjZkh6w52kR
+         uRcpIGEWHknsUysD21vKAkDNwmXIXC+vzGo68kqGfjBQbY2pfAUyl8wAsoN4a8QdHBll
+         Raaq/SbUlcc19C04u1gkyJoFtY/ZMsWzZCeJfez1GmxtRgg9hasupcLpaRlz1bCei8CB
+         rn7TNSVKztVb0ZgG6ERxbEGts0t8ppi+VZVuHnlA5szUJOnUp+JOxCIh25AVwiZ2ftJc
+         4k9A==
+X-Gm-Message-State: AOAM532/i1xzlIBqAgbFcohN7fONVPvDv5zg1EW1WoLxa57nNBgXR3iO
+        XV+WLfb6oHAY26gEPjUKszg=
+X-Google-Smtp-Source: ABdhPJx7RB7JYMETqkdl2lDe/tLc/PmA59WParAYFcWHyJw9NE116RVhX5z3h21h20znsAvGdfjeDg==
+X-Received: by 2002:a05:620a:31a2:: with SMTP id bi34mr13385245qkb.331.1635170270173;
+        Mon, 25 Oct 2021 06:57:50 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id r23sm8453413qtm.80.2021.10.25.06.57.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 06:57:49 -0700 (PDT)
+Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
+From:   Frank Rowand <frowand.list@gmail.com>
+To:     Zev Weiss <zev@bewilderbeest.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Oliver O'Halloran <oohall@gmail.com>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <YXJfHwzIdksUKPIe@kroah.com> <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
+ <3a5e271d-d977-7eca-21c5-fd75a2366920@gmail.com>
+Message-ID: <ad2b0169-a8c1-f94b-9bf5-11bc1e17f843@gmail.com>
+Date:   Mon, 25 Oct 2021 08:57:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025122102.46089-3-frederic@kernel.org>
+In-Reply-To: <3a5e271d-d977-7eca-21c5-fd75a2366920@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 02:21:00PM +0200, Frederic Weisbecker wrote:
+On 10/25/21 12:53 AM, Frank Rowand wrote:
+> On 10/22/21 4:00 AM, Zev Weiss wrote:
+>> On Thu, Oct 21, 2021 at 11:50:07PM PDT, Greg Kroah-Hartman wrote:
+>>> On Thu, Oct 21, 2021 at 07:00:27PM -0700, Zev Weiss wrote:
+>>>> Hello all,
+>>>>
+>>>> This series is another incarnation of a couple other patchsets I've
+>>>> posted recently [0, 1], but again different enough in overall
+>>>> structure that I'm not sure it's exactly a v2 (or v3).
+>>>>
+>>>> As compared to [1], it abandons the writable binary sysfs files and at
+>>>> Frank's suggestion returns to an approach more akin to [0], though
+>>>> without any driver-specific (aspeed-smc) changes, which I figure might
+>>>> as well be done later in a separate series once appropriate
+>>>> infrastructure is in place.
+>>>>
+>>>> The basic idea is to implement support for a status property value
+>>>> that's documented in the DT spec [2], but thus far not used at all in
+>>>> the kernel (or anywhere else I'm aware of): "reserved".  According to
+>>>> the spec (section 2.3.4, Table 2.4), this status:
+>>>>
+>>>>   Indicates that the device is operational, but should not be used.
+>>>>   Typically this is used for devices that are controlled by another
+>>>>   software component, such as platform firmware.
+>>>>
+>>>> With these changes, devices marked as reserved are (at least in some
+>>>> cases, more on this later) instantiated, but will not have drivers
+>>>> bound to them unless and until userspace explicitly requests it by
+>>>> writing the device's name to the driver's sysfs 'bind' file.  This
+>>>> enables appropriate handling of hardware arrangements that can arise
+>>>> in contexts like OpenBMC, where a device may be shared with another
+>>>> external controller not under the kernel's control (for example, the
+>>>> flash chip storing the host CPU's firmware, shared by the BMC and the
+>>>> host CPU and exclusively under the control of the latter by default).
+>>>> Such a device can be marked as reserved so that the kernel refrains
+>>>> from touching it until appropriate preparatory steps have been taken
+>>>> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
+>>>> processor has control of the firmware flash).
+>>>>
+>>>> Patches 1-3 provide some basic plumbing for checking the "reserved"
+>>>> status of a device, patch 4 is the main driver-core change, and patch
+>>>> 5 tweaks the OF platform code to not skip reserved devices so that
+>>>> they can actually be instantiated.
+>>>
+>>> Again, the driver core should not care about this, that is up to the bus
+>>> that wants to read these "reserved" values and do something with them or
+>>> not (remember the bus is the thing that does the binding, not the driver
+>>> core).
+>>>
+>>> But are you sure you are using the "reserved" field properly?
+>>
+>> Well, thus far both Rob Herring and Oliver O'Halloran (originator of the "reserved" status in the DT spec, whom I probably should have CCed earlier, sorry) have seemed receptive to this interpretation of it, which I'd hope would lend it some credence.
+> 
+> I am not on board with this interpretation.  To me, if the value of
+> status is "reserved", then the Linux kernel should _never_ use the
+> device described by the node.
+> 
+> If a "reserved" node is usable by the Linux kernel, then the specification
+> should be updated to allow this.  And the specification should probably
+> be expanded to either discuss how to describe the coordination between
+> multiple entities or state that the coordination is outside of the
+> specification and will be implemention dependent.
 
-> +#define __ARCH_DEFINE_STATIC_CALL_TRAMP(name, insn)			    \
-> +	asm("	.pushsection	.static_call.text, \"ax\"		\n" \
-> +	    "	.align		4					\n" \
-> +	    "	.globl		" STATIC_CALL_TRAMP_STR(name) "		\n" \
-> +	    "0:	.quad	0x0						\n" \
-> +	    STATIC_CALL_TRAMP_STR(name) ":				\n" \
-> +	    "	hint 	34	/* BTI C */				\n" \
-> +		insn "							\n" \
-> +	    "	ldr	x16, 0b						\n" \
-> +	    "	cbz	x16, 1f						\n" \
-> +	    "	br	x16						\n" \
-> +	    "1:	ret							\n" \
-> +	    "	.popsection						\n")
+Maybe a value of "reserved-sharable" should be added to the standard.
+This would indicate that the node is operational and controlled by
+another software component, but is available to the operating system
+after requesting permission or being granted permission from the other
+software component.
 
-> +void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
-> +{
-> +	/*
-> +	 * -0x8	<literal>
-> +	 *  0x0	bti c		<--- trampoline entry point
-> +	 *  0x4	<branch or nop>
-> +	 *  0x8	ldr x16, <literal>
-> +	 *  0xc	cbz x16, 20
-> +	 * 0x10	br x16
-> +	 * 0x14	ret
-> +	 */
-> +	struct {
-> +		u64	literal;
-> +		__le32	insn[2];
-> +	} insns;
-> +	u32 insn;
-> +	int ret;
-> +
-> +	insn = aarch64_insn_gen_hint(AARCH64_INSN_HINT_BTIC);
-> +	insns.literal = (u64)func;
-> +	insns.insn[0] = cpu_to_le32(insn);
-> +
-> +	if (!func) {
-> +		insn = aarch64_insn_gen_branch_reg(AARCH64_INSN_REG_LR,
-> +						   AARCH64_INSN_BRANCH_RETURN);
-> +	} else {
-> +		insn = aarch64_insn_gen_branch_imm((u64)tramp + 4, (u64)func,
-> +						   AARCH64_INSN_BRANCH_NOLINK);
-> +
-> +		/*
-> +		 * Use a NOP if the branch target is out of range, and rely on
-> +		 * the indirect call instead.
-> +		 */
-> +		if (insn == AARCH64_BREAK_FAULT)
-> +			insn = aarch64_insn_gen_hint(AARCH64_INSN_HINT_NOP);
-> +	}
-> +	insns.insn[1] = cpu_to_le32(insn);
-> +
-> +	ret = __aarch64_insn_write(tramp - 8, &insns, sizeof(insns));
+The exact method of requesting permission or being granted permission
+could either be driver specific, or the driver binding could
+include one or more additional properties to describe the method.
 
-OK, that's pretty magical...
+One thing that I am wary of is the possibility of a proliferation of
+status checks changing from "okay" to "okay" || ("reserved" and the
+state of the driver is that permission has been granted).
 
-So you're writing the literal and the two instructions with 2 u64
-stores. Relying on alignment to guarantee both are in a single page and
-that copy_to_kernel_nofault() selects u64 writes.
+From a simplicity of coding view, it is really tempting to dynamically
+change the value of the status property from "reserved-sharable"
+to "okay" when the other software component grants permission to
+use the device, so that status checks will magically allow use
+instead of blocking use.  I do not like changing the value of the
+status property dynamically because the devicetree is supposed to
+describe hardware (and communicate information from the firmware
+to the operating system), not to actively maintain state.
 
-By unconditionally writing the literal, you avoid there ever being an
-stale value, which in turn avoids there being a race where you switch
-from 'J @func' relative addressing to 'NOP; do-literal-thing' and cross
-CPU execution gets the ordering inverted.
+-Frank
 
-Ooohh, but what if you go from !func to NOP.
+> 
+> I am wary of the complexity of the operating system treating a node as
+> reserved at initial boot, then at some point via coordination with
+> some other entity starting to use the node.  It is not too complex if
+> the node is a leaf node with no links (phandles) to or from any other node,
+> but as soon as links to or from other nodes exist, then other drivers or
+> subsystems may need to be aware of when the node is available to the
+> operating system or given back to the other entity then any part of the
+> operating system has to coordinate in that state transition.  This is
+> driving a lot of my caution that we be careful to create architecture
+> and not an ad hoc hack.
+> 
+> -Frank
+> 
+>>
+>>> You are
+>>> wanting to do "something" to the device to later on be able to then have
+>>> the kernel touch the device, while it seems that the reason for this
+>>> field is for the kernel to NEVER touch the device at all.  What will
+>>> break if you change this logic?
+>>
+>> Given that there's no existing usage of or support for this status value anywhere I can see in the kernel, and that Oliver has indicated that it should be compatible with usage in OpenPower platform firmware, my expectation would certainly be that nothing would break, but if there are examples of things that could I'd be interested to see them.
+>>
+>>
+>> Thanks,
+>> Zev
+>>
+> 
 
-assuming:
-
-	.literal = 0
-	BTI C
-	RET
-
-Then
-
-	CPU0			CPU1
-
-	[S] literal = func	[I] NOP
-	[S] insn[1] = NOP	[L] x16 = literal (NULL)
-				b x16
-				*BANG*
-
-Is that possible? (total lack of memory ordering etc..)
-
-On IRC you just alluded to the fact that this relies on it all being in
-a single cacheline (i-fetch windows don't need to be cacheline sized,
-but provided they're at least 16 bytes, this should still work given the
-alignment).
-
-But is I$ and D$ coherent? One load is through I-fetch, the other is a
-regular D-fetch.
-
-However, Will has previously expressed reluctance to rely on such
-things.
-
-> +	if (!WARN_ON(ret))
-> +		caches_clean_inval_pou((u64)tramp - 8, sizeof(insns));
->  }
