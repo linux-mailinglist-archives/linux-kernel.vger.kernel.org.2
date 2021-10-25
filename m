@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FC743A012
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D4B43A070
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235308AbhJYT1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
+        id S234988AbhJYTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235203AbhJYTZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:25:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25DBA61076;
-        Mon, 25 Oct 2021 19:22:21 +0000 (UTC)
+        id S234725AbhJYT1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:27:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C561061152;
+        Mon, 25 Oct 2021 19:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189743;
-        bh=6KaK6RnVPDbO2lV/+9Ca3txKPwMLULQk7yN2RcOQQK0=;
+        s=korg; t=1635189858;
+        bh=zTglR+b7FxF17ziIzHYBD3U3RzZu7fN7JHvevCvfZ+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kMgV9R3A7R925GExFHjOg1HPg9baQVHUkG/6oQdi2E0W2+WhrEQk6xnRAxlPTX7pK
-         NdlARzKSSSAQSfv5m+JUy14Pa8QFMD7dc0YmHAhVDWbrNGmnEFslZIwvQgaMh88Zwl
-         /gmkucoBQHh1RiKbkV3CFymzDwp2m9qOnntT2ToM=
+        b=F44YN0CC6a72JAnXTxebmSPyzn5VyfkGbmUbS4ExlP0lDeORNZpXWyQWe/Yex2WL8
+         fZSko93X9lgj0MxZ8rFe/X2xNNO9c1oyCD6P8fGUoEMoNql/KS5EafaHWoYfMPSgXN
+         ExdCm1oxphnjgYH6JJ0vGwGWOcbdPP2+I+xtKrdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brendan Grieve <brendan@grieve.com.au>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 15/30] ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
+        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 10/37] net: hns3: add limit ets dwrr bandwidth cannot be 0
 Date:   Mon, 25 Oct 2021 21:14:35 +0200
-Message-Id: <20211025190926.702216628@linuxfoundation.org>
+Message-Id: <20211025190930.255723800@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,67 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brendan Grieve <brendan@grieve.com.au>
+From: Guangbin Huang <huangguangbin2@huawei.com>
 
-commit 3c414eb65c294719a91a746260085363413f91c1 upstream.
+[ Upstream commit 731797fdffa3d083db536e2fdd07ceb050bb40b1 ]
 
-As per discussion at: https://github.com/szszoke/sennheiser-gsp670-pulseaudio-profile/issues/13
+If ets dwrr bandwidth of tc is set to 0, the hardware will switch to SP
+mode. In this case, this tc may occupy all the tx bandwidth if it has
+huge traffic, so it violates the purpose of the user setting.
 
-The GSP670 has 2 playback and 1 recording device that by default are
-detected in an incompatible order for alsa. This may have been done to make
-it compatible for the console by the manufacturer and only affects the
-latest firmware which uses its own ID.
+To fix this problem, limit the ets dwrr bandwidth must greater than 0.
 
-This quirk will resolve this by reordering the channels.
-
-Signed-off-by: Brendan Grieve <brendan@grieve.com.au>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211015025335.196592-1-brendan@grieve.com.au
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks-table.h |   32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3446,5 +3446,37 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge
- 		}
- 	}
- },
-+{
-+	/*
-+	 * Sennheiser GSP670
-+	 * Change order of interfaces loaded
-+	 */
-+	USB_DEVICE(0x1395, 0x0300),
-+	.bInterfaceClass = USB_CLASS_PER_INTERFACE,
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = &(const struct snd_usb_audio_quirk[]) {
-+			// Communication
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			// Recording
-+			{
-+				.ifnum = 4,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			// Main
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = -1
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
+index dd935cd1fb44..865d27aea7d7 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
+@@ -96,6 +96,15 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
+ 				*changed = true;
+ 			break;
+ 		case IEEE_8021QAZ_TSA_ETS:
++			/* The hardware will switch to sp mode if bandwidth is
++			 * 0, so limit ets bandwidth must be greater than 0.
++			 */
++			if (!ets->tc_tx_bw[i]) {
++				dev_err(&hdev->pdev->dev,
++					"tc%u ets bw cannot be 0\n", i);
++				return -EINVAL;
 +			}
-+		}
-+	}
-+},
- 
- #undef USB_DEVICE_VENDOR_SPEC
++
+ 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
+ 				HCLGE_SCH_MODE_DWRR)
+ 				*changed = true;
+-- 
+2.33.0
+
 
 
