@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6954439C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6612439C36
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhJYRBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:01:24 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:49452 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231171AbhJYRBX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:01:23 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 510311D18;
-        Mon, 25 Oct 2021 19:58:58 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1635181138;
-        bh=jnW3fikU6EVWEd3OzbjOZKH3DPUoCU9GhULna6KOPoU=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=iF3XqL1V6LY9qjku8E4icQB9diWSj4nAwon3Knb3fIB/WRCb4YKrWOdPZKhL+KSnP
-         xuNzq2SqtoU5T6rSHWRAUCjPjSouLa52cLCjbS7eVjIkkrPkloGoegFyV63M/1ME/a
-         Ye1+lG3GsXm8LltelpG9TpCqlvE4nuinDtZgoems=
-Received: from [192.168.211.155] (192.168.211.155) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 25 Oct 2021 19:58:57 +0300
-Message-ID: <e206b37a-9d71-67d5-5144-58033036a744@paragon-software.com>
-Date:   Mon, 25 Oct 2021 19:58:57 +0300
+        id S234155AbhJYRCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:02:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234151AbhJYRCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:02:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA52603E7;
+        Mon, 25 Oct 2021 16:59:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635181182;
+        bh=6H8hFO/A50Azi8V/YTYPHUkKtU198WHr2HkH2FB4dJ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=at0I9LQPIRsFknc8V8zeTsmdJgyDOGhJDI9zNar1FvwaeGdqCj3IqO/YDIJSSC/vl
+         0gRmaWNKMYrpPBJZNoYPa2Ax5Do6k05X9JBlF8piOEh5GU+JPU5jYBzSk0iRBLIz4Q
+         geG2t5wAKTVLaiKb5/BTuXg9V3tKJQczI0FwisCKC5r7z9Pd+qvfU4Nv9QzOrI/XGe
+         BXm8YsDSPy697A/8E5PqnzH69iREzBXDBZBWJFpcemcU2rEtqhxWvO5awMapr86K/O
+         NJOo4eRQN2uwsuU+vLWNQ9R9x7ZCrJRayjFWeK9UbH7iPdBxfRY2BDqOJYb5SpWxfX
+         Tl+w+BaRTkxYQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Quentin Perret <qperret@google.com>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu
+Subject: [PATCH AUTOSEL 5.14 01/18] KVM: arm64: Report corrupted refcount at EL2
+Date:   Mon, 25 Oct 2021 12:59:14 -0400
+Message-Id: <20211025165939.1393655-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: [PATCH 2/4] fs/ntfs3: Fix fiemap + fix shrink file size (to remove
- preallocated space)
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-In-Reply-To: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.155]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two problems:
-1. ntfs3_setattr can't truncate preallocated space;
-2. if allocated fragment "cross" valid size, then fragment splits into two parts:
-- normal part;
-- unwritten part (here we must return FIEMAP_EXTENT_LAST).
-Before this commit we returned FIEMAP_EXTENT_LAST for whole fragment.
-Fixes xfstest generic/092
-Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+From: Quentin Perret <qperret@google.com>
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+[ Upstream commit 7615c2a514788559c6684234b8fc27f3a843c2c6 ]
+
+Some of the refcount manipulation helpers used at EL2 are instrumented
+to catch a corrupted state, but not all of them are treated equally. Let's
+make things more consistent by instrumenting hyp_page_ref_dec_and_test()
+as well.
+
+Acked-by: Will Deacon <will@kernel.org>
+Suggested-by: Will Deacon <will@kernel.org>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20211005090155.734578-6-qperret@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/file.c    |  2 +-
- fs/ntfs3/frecord.c | 10 +++++++---
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 43b1451bff53..5418e5ba64b3 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -761,7 +761,7 @@ int ntfs3_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		}
- 		inode_dio_wait(inode);
+diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+index 41fc25bdfb34..da2d3c0bfb7f 100644
+--- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
++++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+@@ -152,6 +152,7 @@ static inline void hyp_page_ref_inc(struct hyp_page *p)
  
--		if (attr->ia_size < oldsize)
-+		if (attr->ia_size <= oldsize)
- 			err = ntfs_truncate(inode, attr->ia_size);
- 		else if (attr->ia_size > oldsize)
- 			err = ntfs_extend(inode, attr->ia_size, 0, NULL);
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 6f47a9c17f89..18842998c8fa 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -1964,10 +1964,8 @@ int ni_fiemap(struct ntfs_inode *ni, struct fiemap_extent_info *fieinfo,
- 
- 		vcn += clen;
- 
--		if (vbo + bytes >= end) {
-+		if (vbo + bytes >= end)
- 			bytes = end - vbo;
--			flags |= FIEMAP_EXTENT_LAST;
--		}
- 
- 		if (vbo + bytes <= valid) {
- 			;
-@@ -1977,6 +1975,9 @@ int ni_fiemap(struct ntfs_inode *ni, struct fiemap_extent_info *fieinfo,
- 			/* vbo < valid && valid < vbo + bytes */
- 			u64 dlen = valid - vbo;
- 
-+			if (vbo + dlen >= end)
-+				flags |= FIEMAP_EXTENT_LAST;
-+
- 			err = fiemap_fill_next_extent(fieinfo, vbo, lbo, dlen,
- 						      flags);
- 			if (err < 0)
-@@ -1995,6 +1996,9 @@ int ni_fiemap(struct ntfs_inode *ni, struct fiemap_extent_info *fieinfo,
- 			flags |= FIEMAP_EXTENT_UNWRITTEN;
- 		}
- 
-+		if (vbo + bytes >= end)
-+			flags |= FIEMAP_EXTENT_LAST;
-+
- 		err = fiemap_fill_next_extent(fieinfo, vbo, lbo, bytes, flags);
- 		if (err < 0)
- 			break;
+ static inline int hyp_page_ref_dec_and_test(struct hyp_page *p)
+ {
++	BUG_ON(!p->refcount);
+ 	p->refcount--;
+ 	return (p->refcount == 0);
+ }
 -- 
 2.33.0
-
 
