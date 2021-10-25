@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4024243A21B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A1C43A1F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236684AbhJYTpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
+        id S237416AbhJYTnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236164AbhJYThu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:37:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEA15603E5;
-        Mon, 25 Oct 2021 19:34:28 +0000 (UTC)
+        id S235309AbhJYTbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:31:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B31F61139;
+        Mon, 25 Oct 2021 19:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190469;
-        bh=JzAe8crW01rzHWg9TFoqmT9ua9HGs/dKKEYPC8vrt9Y=;
+        s=korg; t=1635190084;
+        bh=NPNYp8OuvMiUMTw3xADCPe+MPBgemo9Lz4wNpgaXrQ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JjpidruPsr4gSubBOHLTwpjJ3mMgNEwNAfAztIzZwxeBVKYuxzyEn742gE8z0hlk6
-         ik9Z9QfGRlP/XalASXPluyzCCo+o+rd/baOLE6o6TOR21Vy5RmjHQoAhITuLAmcoGr
-         dN52NFjy4atEf73aoPJMeyhmgD5eXYnCf/aKgg9o=
+        b=Rzm/EGbcnsp/vhAakKowpxfRiOEF2Q0Fnaoo78WHtgWOi2OYWrOR8QKbzwVtB574M
+         WvTA9vBmnAVd29WI76r+o6migLubHZez3YZnYtv9CDI/Wsr9rC1va7CeNIGmpYCeNE
+         WBYkBwjSSLsTEV19M7gqlWOmCOEljKd9wYO4jrRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.10 66/95] selftests: netfilter: remove stray bash debug line
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 46/58] btrfs: deal with errors when checking if a dir entry exists during log replay
 Date:   Mon, 25 Oct 2021 21:15:03 +0200
-Message-Id: <20211025191006.496661097@linuxfoundation.org>
+Message-Id: <20211025190945.326788692@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,29 +40,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 3e6ed7703dae6838c104d73d3e76e9b79f5c0528 upstream.
+[ Upstream commit 77a5b9e3d14cbce49ceed2766b2003c034c066dc ]
 
-This should not be there.
+Currently inode_in_dir() ignores errors returned from
+btrfs_lookup_dir_index_item() and from btrfs_lookup_dir_item(), treating
+any errors as if the directory entry does not exists in the fs/subvolume
+tree, which is obviously not correct, as we can get errors such as -EIO
+when reading extent buffers while searching the fs/subvolume's tree.
 
-Fixes: 2de03b45236f ("selftests: netfilter: add flowtable test script")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix that by making inode_in_dir() return the errors and making its only
+caller, add_inode_ref(), deal with returned errors as well.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/netfilter/nft_flowtable.sh |    1 -
- 1 file changed, 1 deletion(-)
+ fs/btrfs/tree-log.c | 47 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
---- a/tools/testing/selftests/netfilter/nft_flowtable.sh
-+++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
-@@ -199,7 +199,6 @@ fi
- # test basic connectivity
- if ! ip netns exec ns1 ping -c 1 -q 10.0.2.99 > /dev/null; then
-   echo "ERROR: ns1 cannot reach ns2" 1>&2
--  bash
-   exit 1
- fi
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 9d358dafef36..f34205569987 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -900,9 +900,11 @@ out:
+ }
  
+ /*
+- * helper function to see if a given name and sequence number found
+- * in an inode back reference are already in a directory and correctly
+- * point to this inode
++ * See if a given name and sequence number found in an inode back reference are
++ * already in a directory and correctly point to this inode.
++ *
++ * Returns: < 0 on error, 0 if the directory entry does not exists and 1 if it
++ * exists.
+  */
+ static noinline int inode_in_dir(struct btrfs_root *root,
+ 				 struct btrfs_path *path,
+@@ -911,29 +913,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
+ {
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_key location;
+-	int match = 0;
++	int ret = 0;
+ 
+ 	di = btrfs_lookup_dir_index_item(NULL, root, path, dirid,
+ 					 index, name, name_len, 0);
+-	if (di && !IS_ERR(di)) {
++	if (IS_ERR(di)) {
++		if (PTR_ERR(di) != -ENOENT)
++			ret = PTR_ERR(di);
++		goto out;
++	} else if (di) {
+ 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+ 		if (location.objectid != objectid)
+ 			goto out;
+-	} else
++	} else {
+ 		goto out;
+-	btrfs_release_path(path);
++	}
+ 
++	btrfs_release_path(path);
+ 	di = btrfs_lookup_dir_item(NULL, root, path, dirid, name, name_len, 0);
+-	if (di && !IS_ERR(di)) {
+-		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+-		if (location.objectid != objectid)
+-			goto out;
+-	} else
++	if (IS_ERR(di)) {
++		ret = PTR_ERR(di);
+ 		goto out;
+-	match = 1;
++	} else if (di) {
++		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
++		if (location.objectid == objectid)
++			ret = 1;
++	}
+ out:
+ 	btrfs_release_path(path);
+-	return match;
++	return ret;
+ }
+ 
+ /*
+@@ -1500,10 +1508,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 		if (ret)
+ 			goto out;
+ 
+-		/* if we already have a perfect match, we're done */
+-		if (!inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
+-					btrfs_ino(BTRFS_I(inode)), ref_index,
+-					name, namelen)) {
++		ret = inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
++				   btrfs_ino(BTRFS_I(inode)), ref_index,
++				   name, namelen);
++		if (ret < 0) {
++			goto out;
++		} else if (ret == 0) {
+ 			/*
+ 			 * look for a conflicting back reference in the
+ 			 * metadata. if we find one we have to unlink that name
+@@ -1561,6 +1571,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 
+ 			btrfs_update_inode(trans, root, inode);
+ 		}
++		/* Else, ret == 1, we already have a perfect match, we're done. */
+ 
+ 		ref_ptr = (unsigned long)(ref_ptr + ref_struct_size) + namelen;
+ 		kfree(name);
+-- 
+2.33.0
+
 
 
