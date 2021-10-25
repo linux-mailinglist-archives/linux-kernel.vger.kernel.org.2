@@ -2,182 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD3F439671
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8466F439673
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhJYMjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbhJYMjn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:39:43 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65884C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:37:21 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id y80so7574700ybe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yGLH8uVWLuSA9dEMz+vdTlondXf9cNFOoA29oShWxuk=;
-        b=LLAlEGDyXJ9oBcFgx0FstENWhGJGBw+MU2MvjOOwhNSoyGBn4ejeIinmAAK55k4hq2
-         KXk7ljrhCFdHOUww6DfXEGS9kB0Wkqod1QzKlWuicZ7qPMWXkDgPor1Ee6i9eMZ0rtKB
-         6CHzw1dZw230g8B5f5Wg6tsFmh/WpvmvhWa68mYuXNWaoIrIdv5qAjsNsC+GFHKGX41a
-         AkmRCV/JW8WolA7BbatEZDO2k/IekKGGDhMb/vmFmevlA3IzUU8UoJ7U80ncliawRcXK
-         NLj2bXZkAlEvA76p15d5dobM8IeQSp61Tl52Nc1WfwKai15ustGcCpXhP0ZZ9BHGQLNy
-         1Kuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yGLH8uVWLuSA9dEMz+vdTlondXf9cNFOoA29oShWxuk=;
-        b=vyuDpkJ8SprBYM5nVjHjUrKDpXLtUR3P8f6XsY8Hc1BOlecIcvq2ralqYY54dPMn+l
-         ZqfqGBI/pWn9fpA8i8QXXTo5KLmL89zjUFF6EWN6E+7yz4vDl/hRzmtY3EVsKwD8SBqO
-         I1du1TxeuvRjH6Wkx/E5dEEENNvU2mso8I+lcvjAS5a6WdVtddhz/VvQhWfEel5eu0fu
-         /XBR1izCyAdQY00fB9vgG7437eI3BFUsPnVz4H4+FatKPC5+EPtbNWr5Lvej1nj1dgUU
-         cinx2ApwX08j7TRWmKxH3zkQZo3t4M6RBQyGuyfhZJstSFFkv0G3uw5WraIpmy1FvXTM
-         gzgQ==
-X-Gm-Message-State: AOAM533450IXpB/TvOLypSSzvATo3JGWkdpyIsKOV/F6uezf/EGU7/S9
-        VgctIyh7VrbwtAHGWYO68BIDSgEZC9OWnVuQkSs=
-X-Google-Smtp-Source: ABdhPJzrX6/3pdNNpZCHVmN3Cai6+BdMK++mTulUcyrUj+T2Nt3Z/48raEwuV7L/ucU0MipxZGbUo+LXnkZYgYATSJ0=
-X-Received: by 2002:a25:bdce:: with SMTP id g14mr17426198ybk.352.1635165440516;
- Mon, 25 Oct 2021 05:37:20 -0700 (PDT)
+        id S233234AbhJYMkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:40:09 -0400
+Received: from mail-eopbgr1400103.outbound.protection.outlook.com ([40.107.140.103]:9102
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233117AbhJYMkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:40:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JZUXpYPieXorXmvJ3QDrJSUjm7xUDvCfD2nEP2+s5EHj0QMNFBhjPbifHYg5LT+pNS+XKZl71K3/h5bqw5Iv7oQG4A9dNdwKwAVZz4HOKXtabnN/F6YXxViqcpKnFLS2kYQiURJPZ/BA/Lu6C1lrZpKDxJvAMmYFHfMG0VAQ/YqWZFSlbZ8SEMLGPGQNkXrIua/jMHS6JsF1velk0WGrl8AU4ey5xJyXGpdcb06g68tZQFZQRUGYSRU3FDRvoA0frYvX5twEgrl20VM2HDZHneMxUCifaXx5v54nRZr3bh4AUBgLBUHPQM2Y/qoAEmM/xhFES5ntzinkwUm/Kspl3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PX9Efxp2ERkrN51f8YiA0m9ScWyb1ho0bTN85YF7fGY=;
+ b=gFsz08l0v4naNoTynWRSBcMFd2VZHBdw2/NK96+bCXNjyHDrsdTW5rcy6S7tje+fDrqgbxGAptgJEQ4t+5i+KLcPPVRrhp7jx2DjUfT0DSl0uW28ywpXhWApPGwgzox5TL07TY7jnXH4iVdnWlc4Q4ji4ISrwYIIf4tKkpr4a8NUYV88LkoebzZSgl4nORQF4r9xrSpKvQWXZCXGidJCkF1d6prCTlNwyY5ziYSqt/LGg+Cj+1ILaLRYTUuKxlnuIGRIO18gm+yl1UVQYw5PADhyKhvJqEq6q3RvXLnNdL/a+yvoEB2wxSgaHpZwIjgv2cTk4pPgHIggiJNkFI16Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PX9Efxp2ERkrN51f8YiA0m9ScWyb1ho0bTN85YF7fGY=;
+ b=3T+nVgZifkZlVtpXvRcOhosoO9ve5pDFCjPU1z4aeyZBeFnQ3bfIiLK3edWgS3FjcxQSr2CW5KPlrubMtttlMJUF5yL/UEhypTb6WcRZ1+AfcNG9ZvIjL4NT0zzEsFAFhoONNhGgyE+5sJe3inoCXLMa30G9LCsIy1HObWtknS4=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYBP286MB0287.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8026::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Mon, 25 Oct
+ 2021 12:37:44 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 12:37:44 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: 
+Thread-Index: AQHXyZz+BAm8cC2cnkuRu4tQ1YSHZg==
+Date:   Mon, 25 Oct 2021 12:37:44 +0000
+Message-ID: <TYCP286MB118894A0130C114FB995F95C8A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 6a9e9603-6326-6142-e0ff-6e450c52c0e9
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: abd92418-cc35-4e47-1557-08d997b43e86
+x-ms-traffictypediagnostic: TYBP286MB0287:
+x-microsoft-antispam-prvs: <TYBP286MB0287258687E306C9356526C58A839@TYBP286MB0287.JPNP286.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZPk3x8Yx7E94Mg5SFyR+q2J0M3D7MeVTMoPqRXKJH6iwPyI7alUn501ICD46/n234DH2h+p8bAktr0ZRhpqXkVR4JCfLyJBae7ks2UKj/zv4ThRkIFwyCghWBv7wA/g18DajAG72test7bUWsJ7197sUhwcePEv19R5sjDAXvsLvre9qEzjnL5TdJaVY3oAjt9sH59YCkZD56x78jUbCUXqU9u8SY4lHzjh19S00ZT830Z9j1zOX0tO/dwfiFY8YZraxKOxRvVWR2euhqriK5ig+XqpVHxURBj/z2xDA0eOmdQJMbdUNo1eambWZJsZhswzEMzgv8bxN2U+T/fgaErrp8kMSzJF0ZKhU746oiFTOdCNqKJyTH+aI2pAEk3xLz7Am7N8XfFBUI4V05nMecz7rJxyg3HKFuFUDzG7lwf0q/o8Qs/OpL2qE2zKm1eCl6psOXilt1thcmqBeDx2BmRDHfBLHzyQ/T8x/5GaVgQg6thM/T9YKSFvun6luahUjy7gtj00gFVxWZ6gGfOxg+qTQs/JUxqepes5Kcz/fxk010UOTKcEIlLtE6mvjotC2MrtTuxj9Y/brffp1UKCP2j1O8jOp5D7XbFwQ2NeDBAiunWWrovk6yA16rQaxAWDpQ1N92nKztdqNjJEgaiHjOB8jzr9MAD/8mYpEleJ7whsAShPLSD0gbBX/oGhaIIFiajbTncitFgBf+IUksGk9HeoD6tJgAAeFjYYqiTxhTWM0z1zbN23v5AV2S+UPUaqT
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(66946007)(66476007)(66556008)(122000001)(38100700002)(508600001)(76116006)(64756008)(5406001)(26005)(38070700005)(186003)(33656002)(86362001)(52536014)(786003)(316002)(55016002)(9686003)(8936002)(7696005)(6506007)(5660300002)(2906002)(66446008)(558084003)(91956017)(71200400001)(15477505002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?ZEs1ZDhnQ2xGWVlPR1FOL0FIeTZRdHg3NktCNG1lQWVrWlpFZkhlYVdncXkz?=
+ =?gb2312?B?TmxkREtHdzdkc0lQMFRsTGozanlOOS94Rk43a2tWQmVLRkxocXdJUDRBbTBT?=
+ =?gb2312?B?b05rREZhSHRkVzNtUXBsZFB6WXhOTEdjUXUvVmFZdjRiUUl4QzdqWXA4MUR3?=
+ =?gb2312?B?UWVieHdtVHpRYklXZ000OWwwSlZwdVhNRzIycDI0RlNXK2ViSXg2TzRYc2xR?=
+ =?gb2312?B?aHprMnZzYTVLWVFUeDBUSEdxNStURWFXcE5KU3RiRzBnaG50TlBmNTFoYnBF?=
+ =?gb2312?B?MlBXSEV2cU9lOXhCdDFldnJGMSt5N3NjaXFJRDZuM0cwa0pLNEZjN1U0SEhh?=
+ =?gb2312?B?bytVd2h1Z3ZubzF0cEZhMTY5akJkOXJDY2RVMFFXalMvYlpIc0ZqWEJBQVVp?=
+ =?gb2312?B?dGEzYmZOWmtXWFhOZVo3b0QzaXpSY0F5QkZBNjB3aFRGMndrdFpMK0hyZ080?=
+ =?gb2312?B?dG9YMGZwcHdLMVFRVUYyS1VOVi82QjQvYm9IV2QvZTloR3psdHA1c1pIYjdz?=
+ =?gb2312?B?YkdsMTltZk1wb1U3akU1eDNaUWZDTDNEZVh6MXl2elZ1UXZGVVNmSFkxQ2JK?=
+ =?gb2312?B?cHVlZlZsR3NMdzdJZE5xVk0rQ1pyTUw0VkZ2bTJkSUlQVVBZbjJxdVRlenYx?=
+ =?gb2312?B?WDRPdnVzRGJqdWhGV1NiTzlyQmppMTVvN3VKdEhQOWlnWTdvN3l0c1Z4a0Zy?=
+ =?gb2312?B?UkExeUNDSVpac3Z6OEVQOGdRRDFjVlJnRXVUeENybGlsL2Vsem16Zm85Y1k4?=
+ =?gb2312?B?SXMyVlgyS0xDWndWUlBuVFNFNi8wRVpKNnVyaStaR3hBdHFGOGxTT21jZkpQ?=
+ =?gb2312?B?MHNuek9VbXgyOXB0M2lvdy9rQmd0NGNJUXlUZ2dYTkc3SmFPSCs5UGJqZ0Jt?=
+ =?gb2312?B?ZFU5dmlRRVhHd1dKQXloc3hjNDZiU1QrZk1GdEd0N1F3d3gxc3NSSmtkeDNp?=
+ =?gb2312?B?TU1HVHhMNTNCaEk2VkgyZFZjL1FGUGNyTGEyVmxrMU9DZzRxWmRtNHYxcWtz?=
+ =?gb2312?B?QzBEWG5YS25kdVZ2TTdCNjlLbHBYWnQrVys4MEdJeXFza1B1dUFJYUJ1MkVD?=
+ =?gb2312?B?bGU1MlZzdjVESEk5VWcyajJvUFJlSzVVWGt2M0VXZnFqZVBCMk11QWNMQkNv?=
+ =?gb2312?B?S0RjMTYvMDZGR1dpb2Z2cGRNNTNOU3J4Uk9VM0E0dmdCQ0Y5dUJWLzBZR3JX?=
+ =?gb2312?B?RmJqVGRxdlNTTDcwdmpvSThQTHpYUkdEUWxxaXhFZGpWZ1lYQ01pT0szK0lh?=
+ =?gb2312?B?akFMOGpCY0xrWXJnVlNtVkZVYnpzc3JPMW1kN1lxbXFjajJsVmhrRnhkNUc3?=
+ =?gb2312?B?NmJrWDc2OWJQVUtNci9EV0YwMzN1Zlk4TGppeEtrWEdpTGdETlUzanR0UEdL?=
+ =?gb2312?B?NlI0RWFQK0F1OGF3K0ZnemVNOW4vWVVrSWE1WGdwQmhvYlFWcU40UW8rK1Rv?=
+ =?gb2312?B?WWk3QVgwb08zQUwrdU5NL1lJYkVMYnRjK1JHVWFkUWh5Z09DNTBjT25pa0p2?=
+ =?gb2312?B?M2JDYlp2V0lzWVBvbVJEYjlmUThFN216NjFET2lFQ2QzOTFWTk44WWsyNThQ?=
+ =?gb2312?B?bWxDMDdQNDVXeVRWWTdLR1ZXeWFWQVN5QXY3SnlKVzJodzNJZkgxYUVDb3FO?=
+ =?gb2312?B?WkVPQW1nN1ZuSXY1ZUl5Q2pIeFdBQS9oZnhSak5qSkplMDBRVVYwWHdLZ3g0?=
+ =?gb2312?B?TVJ3TS95OXlEMWJwREtuaXZIRkdKR0d4d2RIdWhRbWQrV3B5VUNWb2dBdXlP?=
+ =?gb2312?B?cHpoK2Qvay95dkZqYjArYkZ0T3lWbkNYa3B1TjhZc2JrbzFYaHp1OTFtajQ5?=
+ =?gb2312?B?QzR4SkU3Qkt5MzhzZUZFMitHQTdMUW5YVWpNOHh5NGdaU3BDZDlTUEx2YVZX?=
+ =?gb2312?B?RkJHK2hkQzRrbnd4eHRaSFZyblZFUEh3b255bEIrZVppMitNZ1d2TG9teG9M?=
+ =?gb2312?B?R3BybEx0d2RTU3dIM2IrNXVBMkRXOWVsMXVUck1YVFBnQmFnNDBNZjUwTnll?=
+ =?gb2312?B?UDAvMnJIdUovTUZES0tuY3pnZ1lwek5Td3lTNnFadnJiME5mc1ZibWozQjdG?=
+ =?gb2312?B?dnJSVlZ2V2NJQTYvR3ZRakNJa0I5cHpHTUhUMWtzeXEydm5XcGc2bGRPQ1FU?=
+ =?gb2312?B?RXZHa0NnbUFDNi90UTJOTUVvdWxka3NqRmVvb0xoOGdQeTVjMS9kU1FPak9T?=
+ =?gb2312?Q?U/+qGoPluCqorkbVkN4zxqo=3D?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211022144040.3418284-1-javierm@redhat.com> <YXMNOfBS5iFenmx8@intel.com>
- <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com> <931230b4-1e73-948d-abaf-f1d62ea58239@daenzer.net>
- <f3c9f2e5-73f7-e7c9-dc97-8bfa7b294b0b@redhat.com>
-In-Reply-To: <f3c9f2e5-73f7-e7c9-dc97-8bfa7b294b0b@redhat.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Mon, 25 Oct 2021 08:36:44 -0400
-Message-ID: <CAEg-Je8C03KwXf0F3t+ZABDabQq-rp7ZE68v7=k7OusSBTEvog@mail.gmail.com>
-Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
- framebuffers removal
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: abd92418-cc35-4e47-1557-08d997b43e86
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 12:37:44.6188
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9KS1Q/fdh/nC1QvJKZ6TZFpoXwJ4k+ndczGTagp5/qYGBn9fNT+idXhWg7seHexkr2h9Qc38KW9GULZ9fbOhYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBP286MB0287
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 8:28 AM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
->
-> Hello Michel,
->
-> On 10/25/21 12:45, Michel D=C3=A4nzer wrote:
-> > On 2021-10-24 22:32, Javier Martinez Canillas wrote:
-> >> Hello Ville,
-> >>
-> >> On 10/22/21 21:12, Ville Syrj=C3=A4l=C3=A4 wrote:
-> >>> On Fri, Oct 22, 2021 at 04:40:40PM +0200, Javier Martinez Canillas wr=
-ote:
-> >>>> The simpledrm driver allows to use the frame buffer that was set-up =
-by the
-> >>>> firmware. This gives early video output before the platform DRM driv=
-er is
-> >>>> probed and takes over.
-> >>>>
-> >>>> But it would be useful to have a way to disable this take over by th=
-e real
-> >>>> DRM drivers. For example, there may be bugs in the DRM drivers that =
-could
-> >>>> cause the display output to not work correctly.
-> >>>>
-> >>>> For those cases, it would be good to keep the simpledrm driver inste=
-ad and
-> >>>> at least get a working display as set-up by the firmware.
-> >>>>
-> >>>> Let's add a drm.remove_fb boolean kernel command line parameter, tha=
-t when
-> >>>> set to false will prevent the conflicting framebuffers to being remo=
-ved.
-> >>>>
-> >>>> Since the drivers call drm_aperture_remove_conflicting_framebuffers(=
-) very
-> >>>> early in their probe callback, this will cause the drivers' probe to=
- fail.
-> >>>
-> >>> Why is that better than just modprobe.blacklisting those drivers?
-> >>
-> >> Because would allow to deny list all native (as Thomas called it) DRM =
-drivers
-> >> and only allow the simpledrm driver to be probed. This is useful for d=
-istros,
-> >> since could add a "Basic graphics mode" to the boot menu entries, that=
- could
-> >> boot the kernel passing a "drm.disable_native_drivers=3D1" cmdline opt=
-ion.
-> >>
-> >> That way, if there's any problem with a given DRM driver, the distro m=
-ay be
-> >> installed and booted using the simpledrm driver and troubleshoot why a=
- native
-> >> DRM driver is not working. Or try updating the kernel package, etc.
-> >
-> > For troubleshooting, it'll be helpful if this new parameter can be enab=
-led for the boot via the kernel command line, then disabled again after boo=
-t-up. One simple possibility for this would be allowing the parameter to be=
- changed via /sys/module
->
-> That's already the case with the current patch, i.e:
->
-> $ grep -o drm.* /proc/cmdline
-> drm.disable_native_drivers=3D1
->
-> $ cat /proc/fb
-> 0 simpledrm
->
-> $ modprobe virtio_gpu
->
-> $ dmesg
-> [  125.731549] [drm] pci: virtio-vga detected at 0000:00:01.0
-> [  125.732410] virtio_gpu: probe of virtio0 failed with error -16
->
-> $ echo 0 > /sys/module/drm/parameters/disable_native_drivers
->
-> $ modprobe virtio_gpu
->
-> $ dmesg
-> [  187.889136] [drm] pci: virtio-vga detected at 0000:00:01.0
-> [  187.894578] Console: switching to colour dummy device 80x25
-> [  187.897090] virtio-pci 0000:00:01.0: vgaarb: deactivate vga console
-> [  187.899983] [drm] features: -virgl +edid -resource_blob -host_visible
-> [  187.907176] [drm] number of scanouts: 1
-> [  187.907714] [drm] number of cap sets: 0
-> [  187.914108] [drm] Initialized virtio_gpu 0.1.0 0 for virtio0 on minor =
-1
-> [  187.930807] Console: switching to colour frame buffer device 128x48
-> [  187.938737] virtio_gpu virtio0: [drm] fb0: virtio_gpu frame buffer dev=
-ice
->
-> $ cat /proc/fb
-> 0 virtio_gpu
->
-> /drm/parameters/<name>, which I suspect doesn't work with the patch as is=
- (due to the 0600 permissions).
-> >
-> >
->
-> I followed the convention used by other drm module parameters, hence the
-> 0600. Do you mean that for this parameter we should be less restrictive ?
->
-
-I would think that the 600 permissions would still permit it, since
-the root user can still access and manipulate it.
-
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+YXV0aCBlZjdhZjdmNCBzdWJzY3JpYmUgbGludXgta2VybmVsIGN5ZWFhQGNvbm5lY3QudXN0Lmhr
