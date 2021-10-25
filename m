@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2340439F2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF57F43A2A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhJYTR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:17:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35110 "EHLO mail.kernel.org"
+        id S237180AbhJYTu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234233AbhJYTRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DC1360F70;
-        Mon, 25 Oct 2021 19:15:12 +0000 (UTC)
+        id S236852AbhJYTpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:45:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B069861163;
+        Mon, 25 Oct 2021 19:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189313;
-        bh=C5FP8kKROJgbrrJ2hju5tkxPdk9lu+Bz/41Cb4lW+sA=;
+        s=korg; t=1635190739;
+        bh=7/FwZ3S+RKMWqfp5HY0FBjrrd1kvnZAtu3ogX/RSwbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wn/QU8YaanVkrtaYi8wsUyvOYoQ4H3uhYKtyHYCdbGYPbFUGOQSEvWPvuqs05BmeG
-         FUpCz0yMMP1Ld0twQG6Z/yPJCBIEaNWqRk9KUW7g7GJpBp/wV/N4fkUbELT22sNiWA
-         aob8kDhEDgb1eLuWBgvgi1L2MhjwMGilG//7vgwM=
+        b=EdBnkmnXLYrruOWlKQoZwaFBWB3yH33X8Qr9xGiVm/yLO+uaOmaUAx/Z5mqcFKJsC
+         t9PVT41wzwhd7PVurNHfNiFeawOsBmyhLD3xQs0wruXdHusrMiBxpaK0iPKiiCn4d9
+         T4sdfe6O4OOxCjSSm0YBR/FtOlVOe2e/gGJKbAxo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 18/44] NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 058/169] drm/kmb: Work around for higher system clock
 Date:   Mon, 25 Oct 2021 21:13:59 +0200
-Message-Id: <20211025190932.448696255@linuxfoundation.org>
+Message-Id: <20211025191024.905543787@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
 
-commit 58e7dcc9ca29c14e44267a4d0ea61e3229124907 upstream.
+[ Upstream commit 3e4c31e8f70251732529a10934355084c7fab0ac ]
 
-'params' is allocated in digital_tg_listen_mdaa(), but not free when
-digital_send_cmd() failed, which will cause memory leak. Fix it by
-freeing 'params' if digital_send_cmd() return failed.
+Use a different value for system clock offset in the
+ppl/llp ratio calculations for clocks higher than 500 Mhz.
 
-Fixes: 1c7a4c24fbfd ("NFC Digital: Add target NFC-DEP support")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 98521f4d4b4c ("drm/kmb: Mipi DSI part of the display driver")
+Signed-off-by: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211013233632.471892-1-anitha.chrisanthus@intel.com
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/digital_core.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/kmb/kmb_dsi.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/net/nfc/digital_core.c
-+++ b/net/nfc/digital_core.c
-@@ -280,6 +280,7 @@ int digital_tg_configure_hw(struct nfc_d
- static int digital_tg_listen_mdaa(struct nfc_digital_dev *ddev, u8 rf_tech)
- {
- 	struct digital_tg_mdaa_params *params;
-+	int rc;
- 
- 	params = kzalloc(sizeof(struct digital_tg_mdaa_params), GFP_KERNEL);
- 	if (!params)
-@@ -294,8 +295,12 @@ static int digital_tg_listen_mdaa(struct
- 	get_random_bytes(params->nfcid2 + 2, NFC_NFCID2_MAXSIZE - 2);
- 	params->sc = DIGITAL_SENSF_FELICA_SC;
- 
--	return digital_send_cmd(ddev, DIGITAL_CMD_TG_LISTEN_MDAA, NULL, params,
--				500, digital_tg_recv_atr_req, NULL);
-+	rc = digital_send_cmd(ddev, DIGITAL_CMD_TG_LISTEN_MDAA, NULL, params,
-+			      500, digital_tg_recv_atr_req, NULL);
-+	if (rc)
-+		kfree(params);
-+
-+	return rc;
+diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c b/drivers/gpu/drm/kmb/kmb_dsi.c
+index 231041b269f5..7e2371ffcb18 100644
+--- a/drivers/gpu/drm/kmb/kmb_dsi.c
++++ b/drivers/gpu/drm/kmb/kmb_dsi.c
+@@ -482,6 +482,10 @@ static u32 mipi_tx_fg_section_cfg(struct kmb_dsi *kmb_dsi,
+ 	return 0;
  }
  
- static int digital_tg_listen_md(struct nfc_digital_dev *ddev, u8 rf_tech)
++#define CLK_DIFF_LOW 50
++#define CLK_DIFF_HI 60
++#define SYSCLK_500  500
++
+ static void mipi_tx_fg_cfg_regs(struct kmb_dsi *kmb_dsi, u8 frame_gen,
+ 				struct mipi_tx_frame_timing_cfg *fg_cfg)
+ {
+@@ -492,7 +496,12 @@ static void mipi_tx_fg_cfg_regs(struct kmb_dsi *kmb_dsi, u8 frame_gen,
+ 	/* 500 Mhz system clock minus 50 to account for the difference in
+ 	 * MIPI clock speed in RTL tests
+ 	 */
+-	sysclk = kmb_dsi->sys_clk_mhz - 50;
++	if (kmb_dsi->sys_clk_mhz == SYSCLK_500) {
++		sysclk = kmb_dsi->sys_clk_mhz - CLK_DIFF_LOW;
++	} else {
++		/* 700 Mhz clk*/
++		sysclk = kmb_dsi->sys_clk_mhz - CLK_DIFF_HI;
++	}
+ 
+ 	/* PPL-Pixel Packing Layer, LLP-Low Level Protocol
+ 	 * Frame genartor timing parameters are clocked on the system clock,
+-- 
+2.33.0
+
 
 
