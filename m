@@ -2,212 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68414396AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E0F4396AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbhJYMw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:52:57 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46222 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbhJYMwz (ORCPT
+        id S233320AbhJYMyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233071AbhJYMx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:52:55 -0400
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 223353F0;
-        Mon, 25 Oct 2021 14:50:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1635166231;
-        bh=JT5dBRuciz8zn5xustXG4zmo0JoJ0EcYyoNnEu6vgiM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=MW1GzZyadLln+MANjZHZ9bhgSjSEEh4heWQtRjOjn5kiBRCkc2HAN297Y3Eu+Pz0D
-         hNEUywUSc5e/jxVe7Y5ec27/hVh2KPaGgUFVcd2XUTwf3FZrr/ojhcaY0n3P13ci4i
-         6vHzcLUH+J6MV+Zge7ptcuhhl0hrrG5GNQvWBz8I=
-Content-Type: text/plain; charset="utf-8"
+        Mon, 25 Oct 2021 08:53:58 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE52C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so11322867pji.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l0gxeYb7CuPuOEYUzEz6CBsyCpJ15hKcmaTNWBN6Ra0=;
+        b=fbyV+ZZ1F6ASV4drvbf1fIgx3k1wRSJ/h4+kf2Yjc6N3kQdd+XApOqXH8rv8psJM82
+         BC/gmPQON6chy+iMDeA6/JcwfeUG83H/jVNXZBU2FPtadW6t2370uvj7XS4vcpV52Fki
+         VJ2y2LNeAUIGFxirOnH3WP/lKCkwi4HWwr/NeohR0PjpCZXMuQmgaymZI/lNS59wNngI
+         W/qOkMWkf68hRl1xUlyaQvgLL9H46M/+eW5BNoe977YqZRnzLpprefAlr/qU7IxSp2Zx
+         Ne3NbBsD7JSV4mtrAdKA2HpcJQ1kQoomeRIGlcHBNzJePGVfQmayv5/YL/ioyYY+81ia
+         pBYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l0gxeYb7CuPuOEYUzEz6CBsyCpJ15hKcmaTNWBN6Ra0=;
+        b=WoxRgB2Ho9cSbeGTBEa8S6FA8tfbBsZg6LU5ZTMSt36DFQ9YHaEVsWo2F4oXTJHvnX
+         tnge0UGp06ZpXeyUO9KCcmWCKiAvmXuvgREjBvImOshzRafhlySjv4wfbDTG3cK6fd36
+         oapwTiqoP86bI7WcirDJktytb8vmSgA9fldcDHOcxClObUp/rkzDQzagRf24rdXpfH3d
+         9663toBh0+qygMCCiLr1wuYBx7kSWRWofsdML00Kw/2kU+hQBSSV8Y9wlRqeDFwhs/AY
+         Sn63r4l52hzcdOxCWw5G/1fSLjYw+G/eu9RKHkBQKhNUm9Q/+yuwUt70+nFEesHzLrxt
+         UI0Q==
+X-Gm-Message-State: AOAM531C0xDcX8nfBuMRpKpTy2zrPE2E9iVnWs1bK+7y8E453iTOIk0k
+        tVC379khL3eb4fHV+gi2iB7vcw==
+X-Google-Smtp-Source: ABdhPJzspTiZhhAOdxhF/PoEWNdFL59WC9kQRhjlVlbfM4tk1xVTlSDLJuGpuRoB7Rc/Nx4OolFCRA==
+X-Received: by 2002:a17:902:728b:b0:13f:c086:bdfe with SMTP id d11-20020a170902728b00b0013fc086bdfemr16422107pll.6.1635166296351;
+        Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
+Received: from localhost.localdomain ([61.120.150.70])
+        by smtp.gmail.com with ESMTPSA id y6sm15692823pfi.154.2021.10.25.05.51.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, mhocko@kernel.org, shakeelb@google.com,
+        willy@infradead.org, guro@fb.com, hannes@cmpxchg.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: memcontrol: remove kmemcg_id reparenting
+Date:   Mon, 25 Oct 2021 20:51:02 +0800
+Message-Id: <20211025125102.56533-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <eda13f7c-b353-dcf4-c4ea-c2aa65858e7a@ideasonboard.com>
-References: <20210922203027.3229474-1-kieran.bingham@ideasonboard.com> <CAMuHMdULHnztv=7i1b1x9BEsO8pu=J3Af_Qx7=CzD3qJhYRNBA@mail.gmail.com> <eda13f7c-b353-dcf4-c4ea-c2aa65858e7a@ideasonboard.com>
-Subject: Re: [PATCH] arm64: dts: renesas: r8a779a0: falcon-cpu: Add SW46 switch support
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, open list:
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-input <linux-input@vger.kernel.org>
-Date:   Mon, 25 Oct 2021 13:50:28 +0100
-Message-ID: <163516622846.905629.2499825068313249631@Monstersaurus>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Is there anyone from linux-input that can help with the feedback
-requested below please?
+Since slab objects and kmem pages are charged to object cgroup instead
+of memory cgroup, memcg_reparent_objcgs() will reparent this cgroup and
+all its descendants to its parent cgroup. This already makes further
+list_lru_add()'s add elements to the parent's list. So it is unnecessary
+to change kmemcg_id of an offline cgroup to its parent's id. It just
+wastes CPU cycles. Just to remove those redundant code.
 
-I've held off sending my v2 of this patch awaiting to see if anyone has
-further comments on the use of 'generic' test switches.
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/memcontrol.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-...
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6538595994d2..e26f87cd7e4c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3645,8 +3645,7 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
+ 
+ static void memcg_offline_kmem(struct mem_cgroup *memcg)
+ {
+-	struct cgroup_subsys_state *css;
+-	struct mem_cgroup *parent, *child;
++	struct mem_cgroup *parent;
+ 	int kmemcg_id;
+ 
+ 	if (memcg->kmem_state != KMEM_ONLINE)
+@@ -3664,21 +3663,11 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
+ 	BUG_ON(kmemcg_id < 0);
+ 
+ 	/*
+-	 * Change kmemcg_id of this cgroup and all its descendants to the
+-	 * parent's id, and then move all entries from this cgroup's list_lrus
+-	 * to ones of the parent. After we have finished, all list_lrus
+-	 * corresponding to this cgroup are guaranteed to remain empty. The
+-	 * ordering is imposed by list_lru_node->lock taken by
++	 * After we have finished memcg_reparent_objcgs(), all list_lrus
++	 * corresponding to this cgroup are guaranteed to remain empty.
++	 * The ordering is imposed by list_lru_node->lock taken by
+ 	 * memcg_drain_all_list_lrus().
+ 	 */
+-	rcu_read_lock(); /* can be called from css_free w/o cgroup_mutex */
+-	css_for_each_descendant_pre(css, &memcg->css) {
+-		child = mem_cgroup_from_css(css);
+-		BUG_ON(child->kmemcg_id != kmemcg_id);
+-		child->kmemcg_id = parent->kmemcg_id;
+-	}
+-	rcu_read_unlock();
+-
+ 	memcg_drain_all_list_lrus(kmemcg_id, parent);
+ 
+ 	memcg_free_cache_id(kmemcg_id);
+-- 
+2.11.0
 
-Quoting Kieran Bingham (2021-09-23 13:17:09)
-> On 23/09/2021 08:32, Geert Uytterhoeven wrote:
-> > Hi Kieran,
-> >=20
-> > CC input
-> >=20
-> > On Wed, Sep 22, 2021 at 10:30 PM Kieran Bingham
-> > <kieran.bingham@ideasonboard.com> wrote:
-> >> Add support for SW46-1 and SW46-2 as switches using the gpio-keys
-> >> framework.
-> >>
-> >> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> >=20
-> > Thanks for your patch!
-> >=20
-> >> ---
-> >>
-> >> SW_LID and SW_DOCK are selected as low-impact switch events for the
-> >> default configuration. Would SW_RFKILL_ALL, and SW_MUTE_DEVICE be
-> >> preferred as more 'functional' defaults? (I have otherwise avoided the=
-se
-> >> to hopefully prevent unwanted / undocumented effects occuring on
-> >> development hardware running a full interface which may parse these)
-> >>
-> >> I'd expect them to be overridden by any platform using them anyway.
-> >=20
-> > That's a good question
-> >=20
-> > BTW, I'm happy you brought this up.  I discovered EV_SW only
->=20
-> I hoped it would start a discussion ;-) I noticed no one else was using
-> EV_SW ... and ... well the slide switches just aren't buttons ;-)
->=20
-> > recently, and had just started wondering whether we should use it
-> > for the various slide switches on Renesas R-Car Gen2 and Gen3 boards,
-> > which are modelled using the default EV_KEY and KEY_[1-4].
->=20
-> Indeed, that was my dilemma - there isn't really a 'generic' zero-impact
-> choice for the slide switches. They all imply that they are likely to be
-> interpreted by a window manager / gui to make some adjustment to the syst=
-em.
->=20
-> Which is of course desired in a product/device - but on a test board
-> like the evaluation modules - I can imagine someone saying they can't
-> understand why the screen isn't working / is in powersave ... because
-> ... of the undocumented feature that the SW46-1 position indicating that
-> the 'lid' is closed ...
->=20
-
-We have evaluation boards, with switches and buttons. Buttons are not so
-painful for an impact, as they default to 'not-pressed' ... however a
-switch ... always has a position.
-
-From my understanding of the available switch codes, they all imply some
-sort of system configuration, meaning that the position of the switch
-may be likely to cause an effect in a graphical user interface when
-running on these boards if the switches are configured to be one of
-those keys.
-
-Is there an accepted default/test key already that should be used? or
-should I propose a new code which is not expected to have any effects
-other than report its position?
-
---
-Kieran
-
-> > I see several DTS files using EV_SW (or hardcoded 5) with KEY_*
-> > codes instead of EV_* codes, so perhaps KEY_A or KEY_B would be
-> > suited better, to avoid strange effects? But SW_LID (and KEY_RESERVED)
-> > seem to be quite popular, too.
->=20
-> It feels 'horrible' reporting Key events on switch events ... but if
-> it's an approved solution - I'm fine with that.
->=20
-> As long as there is no further side impact of suddenly 'KEY_B' is
-> constantly pressed, and so the WM is going to act as though a key
-> modifier is active ...
->=20
->=20
-> > Any input^Wgood advice from the input people? TIA!
->=20
-> Yes please ;-)
->=20
-> Maybe we need some 'test' keys / events that can be hooked up that allow
-> testing/validation but represent that these keys/switches/buttons have
-> no current definition for their operation...
->=20
-> They're just generic buttons and switches ..
->=20
-> >=20
-> >> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-> >> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-> >> @@ -52,6 +52,24 @@ keys {
-> >>                 pinctrl-0 =3D <&keys_pins>;
-> >>                 pinctrl-names =3D "default";
-> >>
-> >> +               sw-1 {
-> >> +                       gpios =3D <&gpio1 28 GPIO_ACTIVE_LOW>;
-> >> +                       linux,code =3D <SW_LID>;
-> >> +                       linux,input-type =3D <EV_SW>;
-> >> +                       label =3D "SW46-1";
-> >> +                       wakeup-source;
-> >> +                       debounce-interval =3D <20>;
-> >> +               };
-> >> +
-> >> +               sw-2 {
-> >> +                       gpios =3D <&gpio1 29 GPIO_ACTIVE_LOW>;
-> >> +                       linux,code =3D <SW_DOCK>;
-> >> +                       linux,input-type =3D <EV_SW>;
-> >> +                       label =3D "SW46-2";
-> >> +                       wakeup-source;
-> >> +                       debounce-interval =3D <20>;
-> >> +               };
-> >> +
-> >>                 key-1 {
-> >>                         gpios =3D <&gpio6 18 GPIO_ACTIVE_LOW>;
-> >>                         linux,code =3D <KEY_1>;
-> >=20
-> > Looks good to me.
-> >=20
-> >> @@ -193,7 +211,8 @@ i2c6_pins: i2c6 {
-> >>         };
-> >>
-> >>         keys_pins: keys {
-> >> -               pins =3D "GP_6_18", "GP_6_19", "GP_6_20";
-> >> +               pins =3D "GP_1_28", "GP_1_29",
-> >> +                      "GP_6_18", "GP_6_19", "GP_6_20";
-> >>                 bias-pull-up;
-> >>         };
-> >=20
-> > This part is not needed, as the GPIOs connected to the slide switches
-> > have external pull-up resistors (unlike the GPIOs connected to the
-> > push switches, which are driven low by open-drain buffers, without
-> > external pull-up resistors).
-> >=20
->=20
-> Ah - for some reason I thought it was required to configure the PFC
-> regardless, and show that these pins are acquired by the gpio function -
-> but of course I'd expect 'getting' the gpio would do that..
->=20
-> I'll await some feedback on the best key codes to use before reposting.
->=20
->=20
-> Out of interest, is the OD buffer there to act as a hardware debounce or
-> such? or is there another likely reason?
->=20
-> --
-> Kieran
->=20
->=20
->=20
-> > Gr{oetje,eeting}s,
-> >=20
-> >                         Geert
-> >
