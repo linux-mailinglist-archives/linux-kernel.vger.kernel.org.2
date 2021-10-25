@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5E343A84D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D321843A850
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235366AbhJYXls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        id S235454AbhJYXmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhJYXlo (ORCPT
+        with ESMTP id S235322AbhJYXmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:41:44 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E3BC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:39:21 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so14678821ote.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+x1+mpL5p2fvvx0kOxI6O1ZDpS1ftyIoRUZRoClEdJ4=;
-        b=GhNmBU5MJmUgXqpEcP355XeBo53QAlB7tSh6NrbCYZVKOxyQA1Y0AHLcVjKvehfb4E
-         scadGDf5YIhI0dkQhCYzZKqqMGmfUHk595eBxUvSHk1iFfgL/aE5jD98DDLApkchxKUh
-         5VzxioDiCEzm+/bNU3tzkToCALzIAPMzafmJHIMGLQwwvcHOtJRaAuaWcK20EFbK5v+l
-         99EEYZ6XrhbGEWk6TUcElZQ8bsNFxJqbPDYf3/qXmEZp1LYO0euFbnIWmKdil9JTTaqf
-         tn1jA/w78S1DtSEO+ezUb7S0TgiNv/lp0lIsTNIPchrtE3cXQkRhTNzx4gPZOJBy4cxp
-         WI1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+x1+mpL5p2fvvx0kOxI6O1ZDpS1ftyIoRUZRoClEdJ4=;
-        b=E/Pbc+Z5KFjFDe8HjWlJK8vX3hIcrkmWEm/TvCO0JONXBYNLvoD6PT0crEZ9IvZDs5
-         nSxC1GL3fKKHbb3Nik6x7Ik8IEj70vLrY6GqOQwNGVYifmVgdk52gGntU3tQe+ZfgOpR
-         x5nySTWhif+QTRrQuI9fohg/79niE78rl36zahAfkJx5C70w0kDLzxn4gYKk7unMoVuM
-         KMbFXC7TA1GXwq0zkUtxZ3HHG9rpPaOCFhh4HZoP99mRcHz4Zr6wY5JooQq4v6jv3Ixs
-         iMBRCru3bmqrpos3tO2uvvVmngOPqtNOsdebKjK7L0tlN5ukV6TybRz4vcq5uxRJCObS
-         SW7g==
-X-Gm-Message-State: AOAM530UEdmBU8C3ogZsYA9Gi3H/BulbZhnJb10CLKGR2cxNIK/sU3bs
-        Smu/KUxrYshL2ZhOQ/iPBUbLXCcEkY8=
-X-Google-Smtp-Source: ABdhPJzDbFvihlZf3r5TwBQDEDlQEo+sZhrFu19dLpjJ21bUXrxQPSAk5Kb1ySWzoG8y22oe6f+8tA==
-X-Received: by 2002:a9d:2f61:: with SMTP id h88mr3899639otb.36.1635205161094;
-        Mon, 25 Oct 2021 16:39:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x62sm4119645oig.24.2021.10.25.16.39.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 16:39:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 25 Oct 2021 16:39:19 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.15-rc7
-Message-ID: <20211025233919.GA2394574@roeck-us.net>
-References: <CAHk-=wi1+boAQyckdiYXuBkybN4H_7OT569MwgyetWAfTExeEA@mail.gmail.com>
+        Mon, 25 Oct 2021 19:42:10 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0F0C061745;
+        Mon, 25 Oct 2021 16:39:47 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdWdS6DLYz4xbt;
+        Tue, 26 Oct 2021 10:39:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635205185;
+        bh=DIn6Lwu0JtS4xjt9Q8VXcNJRWKHerw5Ic37kWMHbh8g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gBF2/2mSgDt0JasH4+I4vAm/tMDPCEkZpBoUwSv2mxIMJCLOsChckBo1xbHUkgJLU
+         QH7TpEUESlDD9ExxxCyUTmghpGyONybAfVWAqTH2O4GXSSeSbaXvBL5yozo4OAd61p
+         fcM6pqwvF6EX9HXM1UJ6F7unBdCW/dvR8IusMlRRoaaekSfZriwIjzjsD4lpFL9N7O
+         V2mdfWcWg6Q+cNooFZLlDy3PIq5oY7fbPTmrq5yQK7ft3obZiXXurutdzyuTZ/JKQ8
+         I2R3Fj96HCN423E2IGRPR8EOPn5W9hdDL7RqSJ0dRlsHLy5oSFOQgOqTlGq0xzHsGv
+         MT0iYNyytNNvg==
+Date:   Tue, 26 Oct 2021 10:39:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>, Oskar Senft <osk@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the arm-soc tree
+Message-ID: <20211026103939.136dc73b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi1+boAQyckdiYXuBkybN4H_7OT569MwgyetWAfTExeEA@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/ZnDGE4V1LcKmJct+oU3eltL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:51:43AM -0700, Linus Torvalds wrote:
-> So the normal Sunday release was spoiled by me spending more time in
-> airplanes without wifi, and I didn't feel like doing an evening
-> release while tired, so here we are, midday Monday, and with tc7 a day
-> later than usual.
-> 
-> But the delay isn't because of any kernel trouble. In fact, the worry
-> I had last week about a big rc6 turned out to be just a false alarm
-> due to timing of pulls, and rc7 looks nice and small, right in the
-> range of normal. Both the number of commits and the diffstat looks
-> fine. It's all pretty small and flat (meaning mostly small trivial
-> changes) with just a couple of  peaks for some x86 kvm code, and some
-> ksmbd changes.
-> 
-> Nothing particularly interesting or scary stands out, and it's a
-> fairly eclectic mix with networking, kvm, selftests, and some core mm
-> stuff. With all the usual random small fixes. The appended shortlog
-> isn't too long to scan to get a feel for the details, but I think the
-> take-way here is that it all looks pretty normal, and if nothing
-> special happens this week, this is likely the last rc before final
-> 5.15.
-> 
-> But please do give it a good testing to make sure we've shaken out any
-> issues. I have yet more travel coming up next week, so it would be
-> very convenient for me to delay the merge window if I get the excuse
-> to do so, but right now that looks unlikely.
-> 
+--Sig_/ZnDGE4V1LcKmJct+oU3eltL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+Hi all,
 
-Guenter
+After merging the arm-soc tree, today's linux-next build (htmldocs)
+produced this warning:
+
+Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing:2: WARNING: Inli=
+ne emphasis start-string without end-string.
+
+Introduced by commit
+
+  c6807970c3bc ("soc: aspeed: Add UART routing support")
+
+The problem is (probably) the '*'s on the previous line.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZnDGE4V1LcKmJct+oU3eltL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3QDsACgkQAVBC80lX
+0GzWUQgAj1w0j6Zg/wBSLJwUWz/rbSLqhpwP4vlKJTLxRJeCX1N4d82nJrSVjf86
+isPTRhavekdynZ05yZAJzchV9oqLVmf6xezxK8K1DK7ZErI0nciCbFQfMlg3leTW
+/P1VOR+nxrLcWWpoKhbvhzeEMSthmVDqt5zNPMPlONmpl91W1EPHtH/W/TleKAgP
+fpfW9d7zvva3EDF55BOyeT8WPjd/4RO1MxDe78BWNqxVhNECtO0eZYesKfFUBjTh
+J03flcelPX5yWYToFHkFIdKhfBwhOut+ShVw1KXYVAImWmjvemxQnDz5ri28uEnM
+aSmFhbPVIRMauPBNjTmbLb2Le/pREw==
+=Ximn
+-----END PGP SIGNATURE-----
+
+--Sig_/ZnDGE4V1LcKmJct+oU3eltL--
