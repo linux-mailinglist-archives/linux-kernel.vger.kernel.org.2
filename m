@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6550943A872
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2497243A874
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbhJYXsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbhJYXsl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:48:41 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AFAC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:46:18 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id o26so16443179ljj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VPDfwDoASh6gAt3dTueRf0PEqHtCNlU8x3H2SBa8PO4=;
-        b=VfI8DkON3Tp1Fy/ofZHy+9jJbXoEWslhCEpoyPUBV0DwrRu9leXOH8yO3qbMa8LdhO
-         eiUBtfuN+svqTIJpFzlFvTHE08JfxYnG5ajgah9TKaME07JJqGYzwD5d+WrXn3J/9Qbk
-         aJK7XBlwJWrID+d8Uo2ITEIDrOP5ddtY/6OVU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VPDfwDoASh6gAt3dTueRf0PEqHtCNlU8x3H2SBa8PO4=;
-        b=qxwLi/RfKU7hn+vCvskLJnnWOa9L1MtvI8bhTZmc9oOA1dB/gRq8PTLciuwfnsdDpX
-         affoBbvjo5AN3jIT/pSKkwzCnFJr4nordL5Mr3Fxq5DGxgemoPkQXcXVqxCBwKwUaEOl
-         iQ9/sKMN9Vjvh1kdC0UWx2V7z46moj3/ZllEeYPRoImt+42FC0Brpismm/kFRxam5PfO
-         S8CZxTMSpHF4CAj6oOIqfrWAzD50Kkpr/bdD4a1reQ2kSYjCMTbrJtovxID2c/ytYB4w
-         d7RMTTjuheD0bxdJSBTGqc/ioEQD3GM0C0KcURaFbP9+q+EIMmH4VxOUORBrObYMZLxS
-         1mpg==
-X-Gm-Message-State: AOAM531R4psOS/uBXURLrJmJjL1zaXvQupz97OErS4/osfHSdzUTp9dY
-        W0IntANScjSTpb6eQNoSweOq3baip+9hPg==
-X-Google-Smtp-Source: ABdhPJwoz2Wih2UYE8o73DNsPIRHGg3jEsoJplkhp/apWFVtAtEULcVKmmN9Vy8jef2PS1cE8+bmkQ==
-X-Received: by 2002:a2e:6c0c:: with SMTP id h12mr22418112ljc.361.1635205576060;
-        Mon, 25 Oct 2021 16:46:16 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id c1sm1840955ljf.12.2021.10.25.16.46.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 16:46:15 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id j2so129501lfg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:46:15 -0700 (PDT)
-X-Received: by 2002:a05:6512:10d0:: with SMTP id k16mr20142390lfg.150.1635205574900;
- Mon, 25 Oct 2021 16:46:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <87y26nmwkb.fsf@disp2133> <20211020174406.17889-10-ebiederm@xmission.com>
- <875ytkygfj.fsf_-_@disp2133> <4b203254-a333-77b1-0fa9-75c11fabac36@kernel.org>
-In-Reply-To: <4b203254-a333-77b1-0fa9-75c11fabac36@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 25 Oct 2021 16:45:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wioHUhqXU3_PR82VbfS8G=+zH+z8igeG-QAuCaWm5Cgqg@mail.gmail.com>
-Message-ID: <CAHk-=wioHUhqXU3_PR82VbfS8G=+zH+z8igeG-QAuCaWm5Cgqg@mail.gmail.com>
-Subject: Re: [PATCH v2 10/32] signal/vm86_32: Properly send SIGSEGV when the
- vm86 state cannot be saved.
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
+        id S235160AbhJYXst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:48:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235103AbhJYXsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 19:48:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9D2060ED4;
+        Mon, 25 Oct 2021 23:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635205583;
+        bh=ahCkc+jA79431ID76cNsskmw8zuDPNgoJc2YUCJq7+0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=qZtEPPAwKgKMNyUUZWFJUZYMzozqwmvmwIcatqDcYwX66N7f55ZKLluhCwk8LIt1F
+         RH5Ac7JhJbH2xCISrtM2Y9prVV2SEKnMHTKzND/mix6hDAoJHK+Zx4fYQRyC5HN2eH
+         ys325r72bA/VvBNO5Ifo2X7mYr1Yq31pjsoJwLPfv9opD9lJuS7CB6lj+Xem+el0fh
+         ZZienyCXeurS6dFybtv29oAdnY7NXvhUxublPxhv8cC0LH7J0/GZ04HAWMqoIKPTg4
+         3oQOAxSnHDbg3tnUpBYC2hR1tQbNk9rnK0DVUsb2YgaOxoZ+TRaNjJ6xWNIIrbjzM9
+         gsAJm1qUtq4VQ==
+Message-ID: <4c3e7a41c545d10ed4aabcfa08118b1e2f80e3fd.camel@kernel.org>
+Subject: Re: [PATCH v8 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        H Peter Anvin <hpa@zytor.com>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Date:   Tue, 26 Oct 2021 02:46:20 +0300
+In-Reply-To: <YXY9gsIn+VhmPhHU@kroah.com>
+References: <20211018135744.45527-1-jarkko@kernel.org>
+         <20211018135744.45527-2-jarkko@kernel.org> <YW2GLE89WxAeMZH4@kroah.com>
+         <4050b7723f6f205c9afc3bdfa3888a6e8befa12a.camel@kernel.org>
+         <YXOsx8SvFJV5R7lU@kroah.com>
+         <2b30027eb017216986e88008fdc925d0e6c61ce0.camel@kernel.org>
+         <YXY9gsIn+VhmPhHU@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 3:25 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> I think the result would be nicer if, instead of adding an extra goto,
-> you just literally moved all the cleanup under the unsafe_put_user()s
-> above them.  Unless I missed something, none of the put_user stuff reads
-> any state that is written by the cleanup code.
+On Mon, 2021-10-25 at 07:15 +0200, Greg Kroah-Hartman wrote:
+> On Sun, Oct 24, 2021 at 05:24:43PM +0300, Jarkko Sakkinen wrote:
+> > On Sat, 2021-10-23 at 08:33 +0200, Greg Kroah-Hartman wrote:
+> > > On Sat, Oct 23, 2021 at 04:02:48AM +0300, Jarkko Sakkinen wrote:
+> > > > On Mon, 2021-10-18 at 16:35 +0200, Greg Kroah-Hartman wrote:
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D sysfs_create_group(&dev->kobj, &sgx_n=
+ode_attr_group);
+> > > > >=20
+> > > > > A huge hint, if a driver has to call a sysfs_* call, something is=
+ wrong.
+> > > > >=20
+> > > > > Something is wrong here.
+> > > > >=20
+> > > > > Why are you messing around with a kobject?=C2=A0 This is a device=
+, that you
+> > > > > control, you can just set the default attribute group for it and =
+then
+> > > > > the driver core will add and remove the sysfs group at the proper=
+ time,
+> > > > > in the proper way.=C2=A0 Right now you are racing userspace and l=
+oosing.
+> > > > >=20
+> > > > > Use the default group list, that is what it is there for.
+> > > >=20
+> > > > I used sysfs_create_group() because node_devices is not owned by SG=
+X
+> > > > code. It is managed in drivers/base/node.c, and also initialized be=
+fore
+> > > > SGX.
+> > >=20
+> > > Then that is broken, please do not use that device as your code does =
+not
+> > > "own" it.=C2=A0 Or fix the logic to be initialized earlier.
+> >=20
+> > To get a synchronous initialization, I'd need to add the attributes as
+> > part of this declaration:
+> >=20
+> > static struct attribute *node_dev_attrs[] =3D {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_cpumap.attr,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_cpulist.attr,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_meminfo.attr,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_numastat.attr=
+,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_distance.attr=
+,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_vmstat.attr,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0NULL
+> > };
+> > ATTRIBUTE_GROUPS(node_dev);
+> >=20
+> > That guarantees that the attribute exists at the time when the
+> > node is created, e.g. in that sense this will fix the race with
+> > uevent code.
+> >=20
+> > However, up until sgx_init() has been completed, the attribute
+> > will emit '0'.
+>=20
+> Is that a problem?=C2=A0 Who would be wanting to use sgx until that happe=
+ns?
+> You have this issue today anyway, right?
 
-Sure it does:
+Yeah, I guess I can just document this (as part of sysfs abi documentation)=
+.
 
-        memcpy(&regs->pt, &vm86->regs32, sizeof(struct pt_regs));
+Thank you for the feedback.
 
-is very much part of the cleanup code, and overwrites that regs->pt thing.
-
-Which is exactly what we're writing back to user space in that
-unsafe_put_user() thing.
-
-That said, thinking more about this, and looking at it again, I take
-back my statement that we could just make it a catchable SIGSEGV
-instead.
-
-If we can't write the vm86 state to user space, we will have
-fundamentally lost it, and while it's not fatal to the kernel, and
-while we've recovered the original 32-bit state, it's not something
-that user space can sanely recover from because the register state at
-the end of the vm86 work has now been irrecoverably thrown away.
-
-So I think Eric's patch is fine.
-
-Except, as mentioned as part of the other patch, the "force_sigsegv()"
-conversion to use "force_fatal_sig()" was broken, because that
-function wasn't actually fatal at all.
-
-             Linus
+/Jarkko
