@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA0D43907C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978CC439081
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhJYHmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:42:36 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:45947 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhJYHmf (ORCPT
+        id S231851AbhJYHoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:44:30 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36506 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhJYHo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:42:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635147613; x=1666683613;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NSqowQVDiJxwRL5modbxvpdelUWTtieJAuCRc83AKN0=;
-  b=aD0WWi/d0LTTt+wB1F3lMw8t4xtx8CVp0lroqg182PE61E10ap8jnfft
-   mXKsM01RrAUvz2re/KeHA5Yb0m4BMCnxUtvsU46NjqxtoMyTp9OVXKzG6
-   id2GlJ8MXXoCditEIycs1osB6bNiy9ybCD84gnHZRE9tEuMBPEVt/Cfvd
-   0ENM9M8CBJqBFmELF+DBJbr9mxQuVhNNjU9Hn2g1cgLjPID09R5c8k/yL
-   CV8l0bg9Vra78udGx6Fg+dE5hI/7IZNTKCquFFufYA/MJDTn9/PGpeLSI
-   DKD4imYhSRtaQmSIJ/4Y9WUEikQcdxf6Srs6bmHahQrEKRdPs3DzD0A12
-   g==;
-IronPort-SDR: ggKVEtS4xyXw+nVxEw7loM1xOMfa9edDv6YCUl5Wj5hiEHKHiNSVOP419/DJHc+PNl5gjDyWat
- RJREPzbjMTDvmlMbkY7TT4UiwFSfyg4kKJ4mq934dANgsAva5sXwu4jXaUUjX8/uJxlvC2MWdg
- Y4rzXeeIH/7+wlHLezpXtgy6Y2NPOvoQQk02a+F9txSwqaa+u7gwWPJ77YEsqa1MHXBRANm8WW
- cAiYsG+harWyBZPQIMOeOUgWBsqke2mRv9QD2DhfU69Afut9icil4qrXCgejTeeODQXJfL/3jX
- 6mQD5v94V0Fi2B137DyHSygo
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="74141363"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Oct 2021 00:40:13 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 25 Oct 2021 00:40:12 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 25 Oct 2021 00:40:10 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <ludovic.desroches@microchip.com>, <tudor.ambarus@microchip.com>,
-        <vkoul@kernel.org>
-CC:     <claudiu.beznea@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "kernel test robot" <lkp@intel.com>
-Subject: [PATCH] dmaengine: at_xdmac: fix compilation warning
-Date:   Mon, 25 Oct 2021 10:40:02 +0300
-Message-ID: <20211025074002.722504-1-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 25 Oct 2021 03:44:29 -0400
+Received: by mail-il1-f198.google.com with SMTP id c17-20020a92c791000000b0025929f440f0so6121755ilk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 00:42:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=FRp5DFjNkB5DYili8ZiV7kEXz8tHdesF7it/j+y3PY0=;
+        b=GHESFR7tpvWAAH0nbuQOSd3NlTa/+dwoD2jzBm7fTIYfjBRVjERLOOEXhxo16aFn2F
+         wg5/83s3wkUNxxvxjriruVpb0hvFtwEL1AXa7wLMY/zQJOoa1gDpwmo4LN6R+wJP9toO
+         E+qtGovZZ3X64GyLfqbXZhgmnz4mOtWUJkv1DliTWIynA+AFWuzJE+n9hySBxnzYfPPx
+         X33TXlGPzxVB0/yIlz0PLsYFKu3mrwbMTfgpIDQkEf8E6oNaSTP5/PY5Zr3z1VRILeSo
+         6jB1hZihrKDrxo3OBwLadAZy+oEJHLbeclLhPUh52+R+doz7YgD2C5AccDZSqPFga5NO
+         1eWQ==
+X-Gm-Message-State: AOAM5300n4WBtEvDwvz2rpq/AM+rSw26E+iZDyJ8n4uz4iGiR2IUuccO
+        vkz/jITJQWV5T2gLehNElgSzYseHftiQlDeckLdLOSzb8kvv
+X-Google-Smtp-Source: ABdhPJyY3BE6Hexn4GAHUITeNQNHgSQLr4zZ1XijU4QpLsYOvdQlTqckWVWab9qr7zgTSAsIBnAEP48S7JkF97KWJ3GsV36XpeUH
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:1607:: with SMTP id t7mr9303589ilu.296.1635147727196;
+ Mon, 25 Oct 2021 00:42:07 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 00:42:07 -0700
+In-Reply-To: <000000000000d5efd605ccc6a5df@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006f55c405cf287f25@google.com>
+Subject: Re: [syzbot] general protection fault in nf_tables_dump_tables
+From:   syzbot <syzbot+0e3358e5ebb1956c271d@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed "unused variable 'atmel_xdmac_dev_pm_ops'" compilation warning
-when CONFIG_PM is not defined.
+syzbot suspects this issue was fixed by commit:
 
-Fixes: 8e0c7e486014 ("dmaengine: at_xdmac: use pm_ptr()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/dma/at_xdmac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit a499b03bf36b0c2e3b958a381d828678ab0ffc5e
+Author: Florian Westphal <fw@strlen.de>
+Date:   Mon Sep 13 12:42:33 2021 +0000
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index 7fb19bd18ac3..f5d053df66a5 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -2207,7 +2207,7 @@ static int at_xdmac_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct dev_pm_ops atmel_xdmac_dev_pm_ops = {
-+static const struct dev_pm_ops __maybe_unused atmel_xdmac_dev_pm_ops = {
- 	.prepare	= atmel_xdmac_prepare,
- 	SET_LATE_SYSTEM_SLEEP_PM_OPS(atmel_xdmac_suspend, atmel_xdmac_resume)
- };
--- 
-2.33.0
+    netfilter: nf_tables: unlink table before deleting it
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13efcb0cb00000
+start commit:   9bc62afe03af Merge tag 'net-5.15-rc3' of git://git.kernel...
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e917f3dfc452c977
+dashboard link: https://syzkaller.appspot.com/bug?extid=0e3358e5ebb1956c271d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14374e5f300000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: netfilter: nf_tables: unlink table before deleting it
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
