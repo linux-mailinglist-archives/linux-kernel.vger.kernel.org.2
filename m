@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BB343A5DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD87E43A5DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhJYVbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232689AbhJYVbn (ORCPT
+        id S233673AbhJYVbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:31:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30559 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233650AbhJYVbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:31:43 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7AAC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:29:20 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so465871pjl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c2CDSyP0BPE42EK8zWKX+zWHNEpFqbF5USxlRD9PCWs=;
-        b=aE8sHvgAznCPxZiRrxaiqLdB4a8mvafjpp55X8LuRzIeS89UeiMfZIVT9vuStJEfza
-         aWqg1qG0hpFTbkQW0GPVbcjftvGzc5Olc/kH43YzK64y2+WHLo6KRtneJ5PjlwRzDwCG
-         aSzm1HRNLjVA6FcODu5GlEStHGjw9xFzJOJnGqv062z2K/zrSaymrbtx0kCRbPsQzcqy
-         Y1+m2yljBCtnkfUYgiK6octTr4hZf2kb92X1DBjBPkeab0HqrQwfgEL0Y5AXi5jM1lMM
-         TReApvgwMomYHiggIkctX9idMMuSMy8YZyc/aW71hphRfPqid21d0eJTqGnYbrAzTpcj
-         XlTA==
+        Mon, 25 Oct 2021 17:31:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635197369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UIAILnvmh2/9j33N6oAfYSNJRTmxRzsLhCUoA4trZck=;
+        b=bawaqQcXyOmee01AU3+g0l2vVGB8ev1pBzv70N/t8dMxyxfdEC9WquK+7htWgmDl9hyumd
+        4tCqBbde8ZwryIhPweFrOwj7HlZLQKR2GAVizNq+F0e+xaKQGdMaMGhIUyhFwWuNxT1yZb
+        9nCWy29xqmi8ptFrBbvu6iLJQi3pyns=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-OJlpAbD5PLuyCLfnSe9Wrg-1; Mon, 25 Oct 2021 17:29:27 -0400
+X-MC-Unique: OJlpAbD5PLuyCLfnSe9Wrg-1
+Received: by mail-ed1-f72.google.com with SMTP id k28-20020a508adc000000b003dd5e21da4bso3515234edk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:29:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c2CDSyP0BPE42EK8zWKX+zWHNEpFqbF5USxlRD9PCWs=;
-        b=O1StW5kZPGOaJYTaUHXhtus94LUDRksTAXg8yAOG2irsaQ3YT8kFvBWNWO2S3fWI11
-         ipTH2awFthAq6SS0sDFrETQmhlnr+HdgaaEfwlLDHWqc5C9Iuiep9dPD4gquEpSmdy1X
-         5hawYn/jHLRVperHkuClF+aOKMz72/wkt279TgFcV9WYWRRSdQVYMVciX6kWhF2g3KZZ
-         K/DBiYSlrHoDlbEM6rFHIZN+pO6hGrqgFozECM1jf55fa3drJEFEefyDEiyglPpyVNU4
-         YvC1bYuOonSHHLx8DCSyJznLI1qcudOyZDbEtzOV5K1FF74RgMyJUtmd2TQd2r880eBZ
-         968Q==
-X-Gm-Message-State: AOAM530Ckxnx/WkKLcxxT5+5T4uCFaO5gHAWlnEYaA26quGm2rfBss1s
-        XXQr7ocmjekJK9P4AVxGechK2T71TyBMc0UWrCsmbA==
-X-Google-Smtp-Source: ABdhPJxY/JwuuwlfHnGSLCt8/PlKay+KkChBd7lWfE2Ogp57a9gyRVWVGU1478vUoVq22ufqE4lfLL4AAkLGfMbt8dc=
-X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr9053244pju.95.1635197359711;
- Mon, 25 Oct 2021 14:29:19 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=UIAILnvmh2/9j33N6oAfYSNJRTmxRzsLhCUoA4trZck=;
+        b=5o8yEvIz9MudrPQdKN45e/+Nc/qyBEFNUPlaC/3H8B626wmPNrF0hxjfFFpE6l3x0z
+         mDqcKyM7J5n3v96mJFljUv9umpAHCtBAEp5v0sxzal/8U+xNkm7YQ6wCgHz5cmSUbcDF
+         LVkIN7RvtVNFwhFGw4C8/kya3lkEkCrIedT12X3ETYWRw2cyspgCHKtaRstselfvr7qA
+         lrp6DIcYOwYM65M/K35QN9o1nfiT5ZfRGlqAX1mdECWZboOKYnQJ6zaixjIWBOW65r9I
+         wuaUtooZDyFH602d5gfrWelsXRYgN+uZc2a6lzfBtZDLZmDcfL634YO1Aqf1VkaBXHle
+         +c/g==
+X-Gm-Message-State: AOAM531oe9PQ1SW4qpvaNqSsT0jrbXn7BtXWwByhk6/I83zzVXesEcJl
+        SjSLk1t5rXAcJzeMWi3jKB3biz7VrZFnAOnHsjFReIa7nJiKNTppQlrd7K5CG4pQuZPqZY5OTNf
+        cmOZPpKw4Ah6ZGAFWpVBuXP8I
+X-Received: by 2002:aa7:d597:: with SMTP id r23mr20892319edq.173.1635197366527;
+        Mon, 25 Oct 2021 14:29:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBXicjEvqfzjQGmMrGMrVfZ0t6sWdigCRR5A3wK4GkKr68KFXxwwGJi7WxzddZAAO7jdFklQ==
+X-Received: by 2002:aa7:d597:: with SMTP id r23mr20892299edq.173.1635197366371;
+        Mon, 25 Oct 2021 14:29:26 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id b9sm9733063edk.62.2021.10.25.14.29.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 14:29:26 -0700 (PDT)
+Message-ID: <92c26aee-d3eb-258c-a0dd-e09783db6a20@redhat.com>
+Date:   Mon, 25 Oct 2021 23:29:25 +0200
 MIME-Version: 1.0
-References: <20211008210752.1109785-1-dlatypov@google.com> <CAGS_qxp0iF+7FLbgVyBHXONN8kKjcAr7B+q=kgF1c71pbgybPQ@mail.gmail.com>
- <CAGS_qxq21Zce-y_DSP2t4Ws98OFLYmbSmrn0O3G5jZ-=DJv0Kg@mail.gmail.com>
-In-Reply-To: <CAGS_qxq21Zce-y_DSP2t4Ws98OFLYmbSmrn0O3G5jZ-=DJv0Kg@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Mon, 25 Oct 2021 14:29:08 -0700
-Message-ID: <CAFd5g454HgQduWLP_xUhVJW+UCgY+vCREG0PnD_ufFQmAG1Usw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: continue past invalid utf-8 output
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: linux-next: Tree for Oct 25 (drivers/platform/x86/amd-pmc.c)
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+References: <20211025204921.73cb3011@canb.auug.org.au>
+ <af7d7b8f-45fd-53c5-a8c4-1f594a16111e@infradead.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <af7d7b8f-45fd-53c5-a8c4-1f594a16111e@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 9:52 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Fri, Oct 8, 2021 at 4:51 PM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > On Fri, Oct 8, 2021 at 2:08 PM Daniel Latypov <dlatypov@google.com> wrote:
-> > >
-> > > kunit.py currently crashes and fails to parse kernel output if it's not
-> > > fully valid utf-8.
-> > >
-> > > This can come from memory corruption or or just inadvertently printing
-> > > out binary data as strings.
-> > >
-> > > E.g. adding this line into a kunit test
-> > >   pr_info("\x80")
-> > > will cause this exception
-> > >   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
-> > >
-> > > We can tell Python how to handle errors, see
-> > > https://docs.python.org/3/library/codecs.html#error-handlers
-> > >
-> > > Unfortunately, it doesn't seem like there's a way to specify this in
-> > > just one location, so we need to repeat ourselves quite a bit.
-> > >
-> > > Specify `errors='backslashreplace'` so we instead:
-> > > * print out the offending byte as '\x80'
-> > > * try and continue parsing the output.
-> > >   * as long as the TAP lines themselves are valid, we're fine.
-> > >
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > ---
-> > >  tools/testing/kunit/kunit.py        | 3 ++-
-> > >  tools/testing/kunit/kunit_kernel.py | 4 ++--
-> > >  2 files changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > > index 9c9ed4071e9e..28ae096d4b53 100755
-> > > --- a/tools/testing/kunit/kunit.py
-> > > +++ b/tools/testing/kunit/kunit.py
-> > > @@ -457,9 +457,10 @@ def main(argv, linux=None):
-> > >                         sys.exit(1)
-> > >         elif cli_args.subcommand == 'parse':
-> > >                 if cli_args.file == None:
-> > > +                       sys.stdin.reconfigure(errors='backslashreplace')
-> >
-> > Ugh, pytype doesn't like this even though it's valid.
-> > I can squash the error with
-> >   sys.stdin.reconfigure(errors='backslashreplace')  # pytype:
-> > disable=attribute-error
-> >
-> > I had wanted us to avoid having anything specific to pytype in the code.
-> > But mypy (the more common typechecker iirc) hasn't been smart enough
-> > to typecheck our code since the QEMU support landed.
-> >
-> > If we don't add this directive, both typecheckers will report at least
-> > one spurious warning.
-> > Should I go ahead and add it, Brendan/David?
->
-> Friendly ping.
-> Should we go ahead and add "# pytype: disable=attribute-error" here?
+Hi,
 
-Sorry, missed this.
+On 10/25/21 22:50, Randy Dunlap wrote:
+> On 10/25/21 2:49 AM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> There seems to be something amiss with cnosole output in today's release
+>> (at least on my ppc qemu boot tests).
+>>
+>> Changes since 20211022:
+>>
+> 
+> on x86_64:
+> 
+> ../drivers/platform/x86/amd-pmc.c: In function ‘amd_pmc_verify_czn_rtc’:
+> ../drivers/platform/x86/amd-pmc.c:428:30: error: ‘CONFIG_RTC_SYSTOHC_DEVICE’ undeclared (first use in this function); did you mean ‘CONFIG_RTC_HCTOSYS_DEVICE’?
+>   rtc_device = rtc_class_open(CONFIG_RTC_SYSTOHC_DEVICE);
+>                               ^~~~~~~~~~~~~~~~~~~~~~~~~
+>                               CONFIG_RTC_HCTOSYS_DEVICE
 
-Yeah, I am fine with disabling the type checkers if they fail to
-understand valid code.
+Hmm, yes using either CONFIG setting is a problem since it is not always
+defined. Both simply default to "rtc0" though and this is also which
+standard distro configs use.
 
-> > >                         kunit_output = sys.stdin
-> > >                 else:
-> > > -                       with open(cli_args.file, 'r') as f:
-> > > +                       with open(cli_args.file, 'r', errors='backslashreplace') as f:
-> > >                                 kunit_output = f.read().splitlines()
-> > >                 request = KunitParseRequest(cli_args.raw_output,
-> > >                                             None,
-> > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > > index faa6320e900e..f08c6c36a947 100644
-> > > --- a/tools/testing/kunit/kunit_kernel.py
-> > > +++ b/tools/testing/kunit/kunit_kernel.py
-> > > @@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
-> > >                                            stdin=subprocess.PIPE,
-> > >                                            stdout=subprocess.PIPE,
-> > >                                            stderr=subprocess.STDOUT,
-> > > -                                          text=True, shell=True)
-> > > +                                          text=True, shell=True, errors='backslashreplace')
-> > >
-> > >  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
-> > >         """An abstraction over command line operations performed on a source tree."""
-> > > @@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
-> > >                                            stdin=subprocess.PIPE,
-> > >                                            stdout=subprocess.PIPE,
-> > >                                            stderr=subprocess.STDOUT,
-> > > -                                          text=True)
-> > > +                                          text=True, errors='backslashreplace')
-> > >
-> > >  def get_kconfig_path(build_dir) -> str:
-> > >         return get_file_path(build_dir, KCONFIG_PATH)
-> > >
-> > > base-commit: a032094fc1ed17070df01de4a7883da7bb8d5741
-> > > --
-> > > 2.33.0.882.g93a45727a2-goog
-> > >
+Mario, can we just replace CONFIG_RTC_SYSTOHC_DEVICE with "rtc0"
+here to fix this ?
+
+Regards,
+
+Hans
+
