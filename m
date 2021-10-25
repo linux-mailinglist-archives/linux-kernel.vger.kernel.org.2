@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAC443A3F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799E043A414
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236649AbhJYULt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
+        id S237156AbhJYUMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236109AbhJYULk (ORCPT
+        with ESMTP id S233389AbhJYULq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:11:40 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB5EC04A400
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:29:59 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id l203so6978098pfd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:29:59 -0700 (PDT)
+        Mon, 25 Oct 2021 16:11:46 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335F6C04A40F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:30:11 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id y12so4228222eda.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:30:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CJiasAWjpoN1bOCkWk9RL6DVjlUXQV+BQQ0HuB5WrXA=;
-        b=LL/FMPprNtV88++Wudo+pFadJq0f6H5RmMxWs3l1E1iJNXWcowIokPgCgd0HLhInjF
-         nCIOsVCS7hsmvGxilh+sdZhj+iir5zv5Ny8NB5sz225exGIjmwXFZ14CSBzOlxr3wKju
-         94aZrdaRhKvw+RYXAl1qQbq5xE4Q0WX6sMXr0=
+        d=kryo-se.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WpgMH3xxaoecpeOJaRPaLgLJl4EJJvdRqRH9yCLdUuA=;
+        b=lSY+KrUe51PreKwfNsCUG5hB6Fg/pLD9K5auf3Y5p4qrG3/aeUyP004kV4dC+qzqtm
+         dH+Ns/Il1Z/qL/N8b8kSHqRhkcsQRWKGQkJYKTLtxdL0uksoUjif1JfXxv9XVUnJ1kBe
+         9lnzmHg71fmYpm9iH6vqXCZOvVZ9qRFKLM/h9MecRaA4tvLV0wFp18RY4Y3bj5jUDnDe
+         apOD7afUEGD9QRUPMrVXN0Wj7Vr7GPZ6ROeeREJAmiyWryzv8Ye5fPGlCGgsmAnuS0F0
+         Q2MTTzbAImBCY4fmCwR6m5BinlQSkKIyNZxE53+yddRiZcEoCKn3/srxf5MVp4zWaKwx
+         Gifg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CJiasAWjpoN1bOCkWk9RL6DVjlUXQV+BQQ0HuB5WrXA=;
-        b=i4L+69WDpOseyYLDKIE9jRafJalkoVv7Qn3ZFFlHwUdLgGIwTnqEw4erkkGzuNllmn
-         e+OCZYI2LaloJX4tE/3Xoz7e8f9vrQDq9RSW+EAVuY7PN+VseWMsinzGdUlYN+XnrBwZ
-         GlxN4E+iCM2FhukthKnHcjlg7o33bhI5Tb9th41rLqmmJVTKFQDPgnhBqoFZUQmJacad
-         mpgJqANE9ww/gaVjz/KfmABtisgwbWnJqv5JU0gH+o4APQqzg9MXyfI2xRXueN7vVDBX
-         VL/g9xZXalKyYJNePEj7Rjbd5ugwkFEGWU0vUIznamXCKA16aqJLBi2tWToXCws6acZ7
-         hQ+A==
-X-Gm-Message-State: AOAM531RKV5PqIiPufrYHFfMQUypbOIYgHUL9pnonMy8aJifwQI2phxs
-        dPhIJ+CqLVqQANGAr74JOeLnUA==
-X-Google-Smtp-Source: ABdhPJxS79fizC3hkJ53knMOyPrU9iw8czM0SHXOfrQymGZvEAEK2sfxwqA6TPCg2w7k2s7AoLs7gQ==
-X-Received: by 2002:a62:8496:0:b0:47b:d189:5ce9 with SMTP id k144-20020a628496000000b0047bd1895ce9mr18055408pfd.19.1635190187884;
-        Mon, 25 Oct 2021 12:29:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q6sm16648707pgc.1.2021.10.25.12.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 12:29:47 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 12:29:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Jordy Zomer <jordy@pwning.systems>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] secretmem: Prevent secretmem_users from wrapping to zero
-Message-ID: <202110251225.D01841AE67@keescook>
-References: <20211025181634.3889666-1-willy@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WpgMH3xxaoecpeOJaRPaLgLJl4EJJvdRqRH9yCLdUuA=;
+        b=vj0pE94NbmcwWTU9IIYnGgMeeosj/fCv8KQOrnmkzPsLqAVsxbQQTAFLqayctKAp2K
+         NP7pKHzQmJaSXnkleVoiKQB8z88lrIRb6qN+mRZeYYb2jekILVo02jNym7tJYV7AXP5g
+         gteb0RLUmoTesdDFfell0sYCKXxJgu2UoEoPWZL58Fq91eoZ3nN5XlPYkCk6Fs7VfBvR
+         nFlBLSFhG+kM9Sz8lwyFpLioYuUs6QiCKhIwslixDQK6yDp3jaqEEimmMg3kOe57Ynyx
+         Wj/HdOFKpus6ctyWerN5zN484ARyqfPUQX1mGeWZuIVPjz349Ygu+TmcpTLGjdzEOtLz
+         J9RA==
+X-Gm-Message-State: AOAM531bC4OTwy98f1/vD1NCfF45lwl2+EKyxvryeI02PnxWTVNMy0UY
+        suMbjKH8qZVUIr2OtvEf075Ja6kQEtTeICJ78APciQ==
+X-Google-Smtp-Source: ABdhPJwR4qhv23sVCCOh5hluM+Cw3u1d10jot+dP7ZIHC/1faNML/JDFhTeMoD/uBPEO+vb2wDOD1XPRVUHuIkThJ90=
+X-Received: by 2002:aa7:de12:: with SMTP id h18mr17165835edv.109.1635190209558;
+ Mon, 25 Oct 2021 12:30:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025181634.3889666-1-willy@infradead.org>
+References: <20211017171657.85724-1-erik@kryo.se> <YW7idC0/+zq6dDNv@lunn.ch>
+ <CAGgu=sCBUU29tkjqOP9j7EZJL-T4O6NoTDNB+-PFNhUkOTdWuw@mail.gmail.com>
+ <YW8OiIpcncIaANzN@lunn.ch> <CAGgu=sD=cuqTEK3760wGFELLBgy3S6QgY_776KeDDDZV8GvZNQ@mail.gmail.com>
+In-Reply-To: <CAGgu=sD=cuqTEK3760wGFELLBgy3S6QgY_776KeDDDZV8GvZNQ@mail.gmail.com>
+From:   Erik Ekman <erik@kryo.se>
+Date:   Mon, 25 Oct 2021 21:29:58 +0200
+Message-ID: <CAGgu=sBPv6qSfy-+g__UjcMWf6TcYT0KDoxcz7RFXZ59RdjZTw@mail.gmail.com>
+Subject: Re: [PATCH] sfc: Fix reading non-legacy supported link modes
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 07:16:34PM +0100, Matthew Wilcox (Oracle) wrote:
-> Commit 110860541f44 ("mm/secretmem: use refcount_t instead of atomic_t")
-> attempted to fix the problem of secretmem_users wrapping to zero and
-> allowing suspend once again.  Prevent secretmem_users from wrapping to
-> zero by forbidding new users if the number of users has wrapped from
-> positive to negative.  This stops a long way short of reaching the
-> necessary 4 billion users, so there's no need to be clever with special
-> anti-wrap types or checking the return value from atomic_inc().
+On Mon, 25 Oct 2021 at 20:58, Erik Ekman <erik@kryo.se> wrote:
+>
+> On Tue, 19 Oct 2021 at 20:29, Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > On Tue, Oct 19, 2021 at 07:41:46PM +0200, Erik Ekman wrote:
+> > > On Tue, 19 Oct 2021 at 17:21, Andrew Lunn <andrew@lunn.ch> wrote:
+> > > >
+> > > > On Sun, Oct 17, 2021 at 07:16:57PM +0200, Erik Ekman wrote:
+> > > > > Everything except the first 32 bits was lost when the pause flags were
+> > > > > added. This makes the 50000baseCR2 mode flag (bit 34) not appear.
+> > > > >
+> > > > > I have tested this with a 10G card (SFN5122F-R7) by modifying it to
+> > > > > return a non-legacy link mode (10000baseCR).
+> > > >
+> > > > Does this need a Fixes: tag? Should it be added to stable?
+> > > >
+> > >
+> > > The speed flags in use that can be lost are for 50G and 100G.
+> > > The affected devices are ones based on the Solarflare EF100 networking
+> > > IP in Xilinx FPGAs supporting 10/25/40/100-gigabit.
+> > > I don't know how widespread these are, and if there might be enough
+> > > users for adding this to stable.
+> > >
+> > > The gsettings api code for sfc was added in 7cafe8f82438ced6d ("net:
+> > > sfc: use new api ethtool_{get|set}_link_ksettings")
+> > > and the bug was introduced then, but bits would only be lost after
+> > > support for 25/50/100G was added in
+> > > 5abb5e7f916ee8d2d ("sfc: add bits for 25/50/100G supported/advertised speeds").
+> > > Not sure which of these should be used for a Fixes tag.
+> >
+> > I would you this second one, since that is when it becomes visible to
+> > users.
+> >
+> Thanks
+>
+> I found that the SFC9250 is also affected (it supports 10/25/40/50/100G)
+>
+> Fixes: 5abb5e7f916ee8 ("sfc: add bits for 25/50/100G
+> supported/advertised speeds")
+>
+> /Erik
 
-I still prefer refcount_t here because it provides deterministic
-saturation, but the risk right now is so narrow ("don't hibernate"),
-I'm not going to fight for it. I think it'd be fine to use it initialized
-to 1, and have the removal check for == 0 as a failure state, which would
-deterministically cover the underflow case too.
+I see that the other patch adding new modes (c62041c5baa9d, "sfc:
+Export fibre-specific supported link mode") has been merged to net
+(and upstream), so this is needed there as well.
 
--Kees
-
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Jordy Zomer <jordy@pwning.systems>
-> Cc: Kees Cook <keescook@chromium.org>,
-> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
->  mm/secretmem.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 030f02ddc7c1..c2dda408bb36 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -203,6 +203,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
->  
->  	if (flags & ~(SECRETMEM_FLAGS_MASK | O_CLOEXEC))
->  		return -EINVAL;
-> +	if (atomic_read(&secretmem_users) < 0)
-> +		return -ENFILE;
->  
->  	fd = get_unused_fd_flags(flags & O_CLOEXEC);
->  	if (fd < 0)
-> -- 
-> 2.33.0
-> 
-
--- 
-Kees Cook
+/Erik
