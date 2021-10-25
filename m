@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10282438F31
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11712438F32
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhJYGPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41138 "EHLO mail.kernel.org"
+        id S230198AbhJYGQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:16:55 -0400
+Received: from mga02.intel.com ([134.134.136.20]:30470 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhJYGPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8049A60F4F;
-        Mon, 25 Oct 2021 06:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635142410;
-        bh=1qZis4mxeb27C2mr+5w0WJb5S4lHXhhL17bxKjZqLOE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G8fBIrKjA3WGAEm+Vkvrz5BSEzWllT36IGSyKnhhWWdrw1/i0DTakPiJKNi7fsV5K
-         pLKsY0axHufOT8r0Bx/oEuswZPTkviy8yW/zQLV1WrK7pxJTVohTqePYrcDcpe47UB
-         NQI7C7HrT1vfQwDSL28VVBirmJc37cVUQz4MKZqVhYjzw65sCjLly4rUI5WgupxDyi
-         5GWzBTMl71XadY8gX5A0J+Q/BPGeQXy2csyc9qGq4yRPd4r8rAy9Cssa0UX20RKDlR
-         Ali1pJ07YjIhWsxA9HHNnzUjE0k4Nnq4x0PCvZNM35oV0fRqOGD6U8zxKCJOuPa80e
-         i382VUu9eNAxQ==
-Date:   Mon, 25 Oct 2021 15:13:27 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the ftrace tree
-Message-Id: <20211025151327.00af129d9f876e252b042d01@kernel.org>
-In-Reply-To: <20211025153942.0c31bd06@canb.auug.org.au>
-References: <20211025153942.0c31bd06@canb.auug.org.au>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229841AbhJYGQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:16:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216743074"
+X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
+   d="scan'208";a="216743074"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 23:14:32 -0700
+X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
+   d="scan'208";a="496637810"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.71]) ([10.238.2.71])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 23:14:30 -0700
+Message-ID: <4a757c43-dfc8-6da4-944e-9bf687d7e3bc@intel.com>
+Date:   Mon, 25 Oct 2021 14:14:28 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.2.0
+Subject: Re: [PATCH] x86/bus_lock: Don't assume the init value of
+ DEBUGCTLMSR.BUS_LOCK_DETECT to be zero
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210901084004.5393-1-chenyi.qiang@intel.com>
+ <YW766qk0W6K5rhrU@google.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+In-Reply-To: <YW766qk0W6K5rhrU@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 15:39:42 +1100
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-> Hi all,
+
+On 10/20/2021 1:05 AM, Sean Christopherson wrote:
+> On Wed, Sep 01, 2021, Chenyi Qiang wrote:
+>> It's possible that BIOS/firmware has set DEBUGCTLMSR_BUS_LOCK_DETECT, or
+>> this kernel has been kexec'd from a kernel that enabled bus lock
+>> detection.
 > 
-> After merging the ftrace tree, today's linux-next build (x86_64
-> allmodconfig) produced this warning:
+> This feels like the kernel should explicitly zero out the entire MSR somewhere
+> in the generic boot flow.  E.g. something like this somewhere.
 > 
-> WARNING: modpost: vmlinux.o(.text.unlikely+0x90082): Section mismatch in reference from the function xbc_alloc_mem() to the function .init.text:memblock_alloc_try_nid()
-> The function xbc_alloc_mem() references
-> the function __init memblock_alloc_try_nid().
-> This is often because xbc_alloc_mem lacks a __init 
-> annotation or the annotation of memblock_alloc_try_nid is wrong.
+
+Yes. Meanwhile, I think kernel code prefers to explicitly set/clear the 
+control bit according to the parameter. Maybe both changes should be 
+applied.
+
+> #ifndef CONFIG_X86_DEBUGCTLMSR
+> 	if (boot_cpu_data.x86 < 6)
+> 		return;
+> #endifa
 > 
-> Introduced by commit
+> 	wrmsrl(MSR_IA32_DEBUGCTLMSR, 0);
 > 
->   4ee1b4cac236 ("bootconfig: Cleanup dummy headers in tools/bootconfig")
-
-Thanks for reporting!
-Let me fix that.
-
-
-
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
