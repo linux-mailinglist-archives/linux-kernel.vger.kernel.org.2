@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A8843A616
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A811843A621
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhJYVqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhJYVqj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:46:39 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D492C061745;
-        Mon, 25 Oct 2021 14:44:17 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f8so2044179plo.12;
-        Mon, 25 Oct 2021 14:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BH7A55640DKrzB5hvumGyqffc9nxKnZV26J7qLVkD3k=;
-        b=QXPKzgmjzH4uqeQRuqDvLOjXJqAl1meT6/tPH3y2G1nOtceQqXXusmlnkqZm5tmuv4
-         iYYUQXBrDhg+NB8nUlpx4MRk3enm5phRXaF4ApJbCWOEojN4g2WN0JESgJ5gKw2cEKgs
-         XI5YNXJoXxc4pAzkd+PMJ0FrpN3Bld0ynT+1dk46h2V1QVARXfehL1Z6ehJk4BgRgyz4
-         ivf/5DugYt2GiXUYJ2z1ITmChz8TaSpN3ahsy65viHVzS6RaZX+T+wpyKrPJ0n4RXCtd
-         HgxNw0s1YkDyUTkRiXryaB8i1HX4AIHHF8T9RSUZK28Yr0gODWYlAI7UheG1KLYblt3m
-         M/Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BH7A55640DKrzB5hvumGyqffc9nxKnZV26J7qLVkD3k=;
-        b=CT/G+RBT1QcQeLg3HALrWLWC/ghvLgMFXppwK+/YTw6KP3m6sL5Iw1hENUir1gA3Mt
-         1kZDqvuImm3MrEPmI/dK9ptVqdwBIG8G0t1EJouc2gCHcm/CEMMA2vQp7h4Cgz00dc3D
-         ZjHdUQpnKYKYr/60HJYkvWM6TenYnx5KnridXsM0lpQx22f8D3ch7AFXx5ZtJZfrevNV
-         hegFQWjilUicCdUgyPLx4NLjUN87YD34Tge9/l6enJLntrlWOL8hl7FPcvqubjl/rox7
-         LGdcYGBmWlF335QcQ4FI/LZ/L5HOLAlFmOibjxjrfU1cAMCukhU3qFZ0tSHjTN1O8Mle
-         vEnw==
-X-Gm-Message-State: AOAM530pRHf7wdwiQZQIu1zCYw5ofNU5D2WZuAnI1QH+/vTNqFz0frcW
-        Nga8J5jXOtnWjexi3wwqb2eN6PvwD20=
-X-Google-Smtp-Source: ABdhPJwJ4Dl2vr3K70GnZxARvUI2/czHgZWu+jTttZ7I73IwDpx9QSxKLMPubsyrwjKvUJQKzaLd1A==
-X-Received: by 2002:a17:90b:4d88:: with SMTP id oj8mr35163750pjb.175.1635198256085;
-        Mon, 25 Oct 2021 14:44:16 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id bg15sm8088787pjb.15.2021.10.25.14.44.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 14:44:15 -0700 (PDT)
-Subject: Re: [PATCH 5.14 000/169] 5.14.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211025191017.756020307@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cf7c766c-047a-ea13-cddc-ec47dc36136c@gmail.com>
-Date:   Mon, 25 Oct 2021 14:44:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233933AbhJYVwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:52:18 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:42243 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233780AbhJYVwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:52:12 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4HdTBY3KY2z9s2Z;
+        Mon, 25 Oct 2021 23:49:41 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LvPZnOewwgnP; Mon, 25 Oct 2021 23:49:41 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.117])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HdTBW3Jcvz9s2S;
+        Mon, 25 Oct 2021 23:49:38 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19PLnAIx007255
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 23:49:12 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19PLiV8E007027;
+        Mon, 25 Oct 2021 23:44:31 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3 03/10] powerpc/booke: Disable STRICT_KERNEL_RWX, DEBUG_PAGEALLOC and KFENCE
+Date:   Mon, 25 Oct 2021 23:44:15 +0200
+Message-Id: <f92b68ffe04b216731b5fcc8a5d4bb95a02a270a.1635198209.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <f34898e2edb21db1bcb1c9a96ac7433a141d50c2.1635198209.git.christophe.leroy@csgroup.eu>
+References: <f34898e2edb21db1bcb1c9a96ac7433a141d50c2.1635198209.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1635198260; l=2152; s=20211009; h=from:subject:message-id; bh=0Lvgm2rlepsFYOErQiCKZ7v7FIrjsIjXj3mKi74wsfo=; b=61Hrp6nDavwakuPbWkq/ceQZvE3dGklvKdEbb6kF/5CZMopzrrn4f3J6ixYIpkIYE5c78Wb54/1T FhQxdMpCCTVwMUFG9Ak6u93jlTXmoorH+BQPAlN7BfcTZofMMLrT
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 12:13 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.15 release.
-> There are 169 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 27 Oct 2021 19:08:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.15-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+fsl_booke and 44x are not able to map kernel linear memory with
+pages, so they can't support DEBUG_PAGEALLOC and KFENCE, and
+STRICT_KERNEL_RWX is also a problem for now.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Enable those only on book3s (both 32 and 64 except KFENCE), 8xx and 40x.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 88df6e90fa97 ("[POWERPC] DEBUG_PAGEALLOC for 32-bit")
+Fixes: 95902e6c8864 ("powerpc/mm: Implement STRICT_KERNEL_RWX on PPC32")
+Fixes: 90cbac0e995d ("powerpc: Enable KFENCE for PPC32")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v3: No change
+v2: No change
+---
+ arch/powerpc/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index ba5b66189358..6b9f523882c5 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -138,7 +138,7 @@ config PPC
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
+ 	select ARCH_HAS_SET_MEMORY
+-	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
++	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx || 40x) && !HIBERNATION
+ 	select ARCH_HAS_STRICT_MODULE_RWX	if ARCH_HAS_STRICT_KERNEL_RWX && !PPC_BOOK3S_32
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE
+@@ -150,7 +150,7 @@ config PPC
+ 	select ARCH_OPTIONAL_KERNEL_RWX		if ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_STACKWALK
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+-	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
++	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC_BOOK3S || PPC_8xx || 40x
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
+ 	select ARCH_USE_MEMTEST
+@@ -190,7 +190,7 @@ config PPC
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+ 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+-	select HAVE_ARCH_KFENCE			if PPC32
++	select HAVE_ARCH_KFENCE			if PPC_BOOK3S_32 || PPC_8xx || 40x
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
 -- 
-Florian
+2.31.1
+
