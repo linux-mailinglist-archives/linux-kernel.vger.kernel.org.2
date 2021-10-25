@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F95438F8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDF8438F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhJYGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:33:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
+        id S231273AbhJYGfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230369AbhJYGdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:33:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E180E60E09;
-        Mon, 25 Oct 2021 06:31:26 +0000 (UTC)
+        id S231156AbhJYGfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:35:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCF6460EE3;
+        Mon, 25 Oct 2021 06:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635143487;
-        bh=w0wt2RzbUmzFsn9gjSb7RtbSu2VKVQcA+1obxbpkBtw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YAHIL+vC76firAy7T3DBeUnbIXP6C25M/4Qp/Ww5/kmcMBkZwIaAcnXabdBplwpRH
-         yJKRih7lqyB9PBIuVoBT5I2msrSby7ZHPv7t7MuqL5uMqfZ0htjq408f8Y7z5Aa+t/
-         V4sTAWX6ssNkWjDi3EnQ76Ns7WBS/wC51Sl5bGAuZdvtO2VWzu3clNJEvYw9Ctq2P1
-         0Gf55/NtGlaD9x8jFqZU7XdyUvL30Kn8hlp6YrUwIPL8wyzkCQMIGbo7vDx9nsWx24
-         QqJgZp92R5NYdayJ7QIw1mHk0OMl5hBQ0+WbnBee4U/suRE1nlC8z+BYQpdW6ahzud
-         w72Vz/20YBfkg==
-Date:   Mon, 25 Oct 2021 12:01:23 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hyun Kwon <hyun.kwon@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jianqiang Chen <jianqiang.chen@xilinx.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        s=k20201202; t=1635143612;
+        bh=ka9tOWHk8CyVaySt26h5prsTz0KJokyT7FnqKCGkgwE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RCwgJ0IowLgsPGF7Rvw2Bycuz9T/I6uILDTzj0Ay8ripbt7SmbE8I0kcqkM7mcnKd
+         InkBbhzmPVF2FC8KhwAZEV3H6CaosWNAvHVw/ep7JM6h09Bws1oWJ8KCA7u2a4qRRD
+         MNyNPefojm6t+VrHw0HRuXVu9TH6y/l1TDkluHSoLQ7yOGLzy8mCWlfR63YBCJ74vQ
+         gkbAZBwFy18fLB8NfYeR5c6omRL1z/wpPk37oYDhisE2f/dTWbbtOjekcCxr/WexnN
+         lgywSiV2JMN/whiL45RHaQvFLZQWSK3TokFTe2sB68lbjBER8Ncse8szoKBr5JJ3XD
+         6cGA1GlHFnjrQ==
+Date:   Mon, 25 Oct 2021 15:33:28 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, corbet@lwn.net, ananth@in.ibm.com,
+        akpm@linux-foundation.org, randy.dunlap@oracle.com,
+        mathieu.desnoyers@polymtl.ca, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: remove debugfs #ifdef
-Message-ID: <YXZPO6z2emwXe5DA@matsya>
-References: <20210920122017.205975-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920122017.205975-1-arnd@kernel.org>
+Subject: Re: [PATCH 3/4] test_kprobes: Move it from kernel/ to lib/
+Message-Id: <20211025153328.daad69af917db6647dcd8b9b@kernel.org>
+In-Reply-To: <1635132660-5038-4-git-send-email-yangtiezhu@loongson.cn>
+References: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
+        <1635132660-5038-4-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-09-21, 14:20, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The ptdma driver has added debugfs support, but this fails to build
-> when debugfs is disabled:
-> 
-> drivers/dma/ptdma/ptdma-debugfs.c: In function 'ptdma_debugfs_setup':
-> drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: 'struct dma_device' has no member named 'dbg_dev_root'
->    93 |         debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
->       |                                                      ^
-> drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: 'struct dma_device' has no member named 'dbg_dev_root'
->    96 |         debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
->       |                                                       ^
-> drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: 'struct dma_device' has no member named 'dbg_dev_root'
->   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
->       |                                                    ^
-> 
-> Remove the #ifdef in the header, as this only saves a few bytes,
-> but would require ugly #ifdefs in each driver using it.
-> Simplify the other user while we're at it.
+On Mon, 25 Oct 2021 11:30:59 +0800
+Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 
-Applied, thanks
+> Since config KPROBES_SANITY_TEST is in lib/Kconfig.debug, it is better to
+> let test_kprobes.c in lib/, just like other similar tests found in lib/.
+
+This is also good to me. It may be a good timing to move this under the
+lib/ because there is KUnit too.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  kernel/Makefile                | 1 -
+>  lib/Makefile                   | 1 +
+>  {kernel => lib}/test_kprobes.c | 0
+>  3 files changed, 1 insertion(+), 1 deletion(-)
+>  rename {kernel => lib}/test_kprobes.c (100%)
+> 
+> diff --git a/kernel/Makefile b/kernel/Makefile
+> index 4df609b..9e4d33d 100644
+> --- a/kernel/Makefile
+> +++ b/kernel/Makefile
+> @@ -85,7 +85,6 @@ obj-$(CONFIG_PID_NS) += pid_namespace.o
+>  obj-$(CONFIG_IKCONFIG) += configs.o
+>  obj-$(CONFIG_IKHEADERS) += kheaders.o
+>  obj-$(CONFIG_SMP) += stop_machine.o
+> -obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
+>  obj-$(CONFIG_AUDIT) += audit.o auditfilter.o
+>  obj-$(CONFIG_AUDITSYSCALL) += auditsc.o audit_watch.o audit_fsnotify.o audit_tree.o
+>  obj-$(CONFIG_GCOV_KERNEL) += gcov/
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 2cfd339..2c70452 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -100,6 +100,7 @@ obj-$(CONFIG_TEST_MEMINIT) += test_meminit.o
+>  obj-$(CONFIG_TEST_LOCKUP) += test_lockup.o
+>  obj-$(CONFIG_TEST_HMM) += test_hmm.o
+>  obj-$(CONFIG_TEST_FREE_PAGES) += test_free_pages.o
+> +obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
+>  
+>  #
+>  # CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
+> diff --git a/kernel/test_kprobes.c b/lib/test_kprobes.c
+> similarity index 100%
+> rename from kernel/test_kprobes.c
+> rename to lib/test_kprobes.c
+> -- 
+> 2.1.0
+> 
+
 
 -- 
-~Vinod
+Masami Hiramatsu <mhiramat@kernel.org>
