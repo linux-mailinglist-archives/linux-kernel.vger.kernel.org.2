@@ -2,232 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B5A43A5A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB2243A5A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233922AbhJYVRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S235124AbhJYVRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbhJYVRA (ORCPT
+        with ESMTP id S234960AbhJYVRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:17:00 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56140C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:14:35 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso1042123pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:14:35 -0700 (PDT)
+        Mon, 25 Oct 2021 17:17:07 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DCAC061226
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:14:37 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id g184so11938788pgc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:14:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=znBx27FBpzWvOmEpf8hPCY51x2n53pRBWUgp7QGSYx0=;
-        b=kdpMquJmZf4V/g0Bww28TPq5DRV6ScleTMRp2gZ5kVK0eOSRG4iSu7RxVKTgxmL0LW
-         zX39YqnKB3pdEgaT0IZQM/TUSqZBZ90UCEcEe+Xp5vlC5nG6XcE/LTxTZS4sLrrFFWxF
-         uLUBSVGL8jc/qb0y7Pqo7wBAYhmkEms5WOScvyWSIe09ieeQ9Tw7D6OLzen22fQyHxhR
-         HRItdYCgOERW1BZuaP3UTj7P2KyV0b/Q0Yw4CzRnDbEf0880HpgT/BRq8UKmO2DlalAm
-         Eb9qiBRdpIG4MCQ+i/LMchEn6M+CR6xVTSPo2nlPb4lnAN7hpidnBagJyMkgIce8A3dM
-         KV7g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z00lUsatKc2imgSiGWIDZF0uIcC3k7FGBboNiOBf+rE=;
+        b=eId9LLzyLrwvA9SohTjGnv3oVmE6ccHoQVKehocpPnrGwwPgiFRy84ppKNC+f37VpV
+         mRt73YFIU/x33pg3q5YAAetghE/xrqlePxhK0vjYN35FOjfLpjl+tvmFfeY2XYDAeKh6
+         sn/dyNA2Nqsw61mI5VTCzsVgIk1CFPaNCLrGQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=znBx27FBpzWvOmEpf8hPCY51x2n53pRBWUgp7QGSYx0=;
-        b=MquiglPrchgW58BsDAF79mGlFUzerQIutFPaD9LxKrXU4nciF6uTbee4/6XseR4X3U
-         voXErIpz2S3bLlRutHRFCi65XcFatCXKufI9bkNjBKd2M11mGUUr/SFaFQNWd/H12m71
-         YLb5D9tEjM7bz/jGgErnJkoGhOuWBmAcipe4DCr2nqodLCTVoyqGUblFjXAYT/Ag+oL0
-         fk2kaJxlJf8qpvQMSupe6euHwuuWx4aBLigdtHrB5w4kwjBUYN+7sVVpNhQJArkTsLTX
-         d8LV+wSycvmO8CMChaMFVYxO7h2Mod3PVP0U1QULlT7vc9CpiGFQ9a6gR6p7HezGwoCz
-         WBDQ==
-X-Gm-Message-State: AOAM532/PEa3XpFdOtQ6O3lUV17rUOJSrpe2UYOpUL/YFlahpPF/KtZz
-        3++h1L1PfAk0N8r6+NCOXJFQAx/0rrJAoeIenZXmgQ==
-X-Google-Smtp-Source: ABdhPJzeUN6jZx1F6JURznEH4YsO492as+3qatZ5WL1NHk5/MNgwuo3umCo2yqDZdLf6rmmLal+CFotZyD2tG7NWiVA=
-X-Received: by 2002:a17:90b:694:: with SMTP id m20mr19103784pjz.198.1635196474490;
- Mon, 25 Oct 2021 14:14:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z00lUsatKc2imgSiGWIDZF0uIcC3k7FGBboNiOBf+rE=;
+        b=lwLqbWPNrdAWGVt1TQXVM4p6HRVG8iQPEZKg/A8VeTBKowHxFK9T+SsBrJ1XbPRyFA
+         R5igUUHT5zXa24lOcJJ+pzAQgQypeKo/Zxd/W7b2JczSXLlHq/2Rj1walgPPkAQN85tk
+         yOg9QLzcIX+eRzDjiKU4gSK6mM9sReDzAfUgqU0ApFamkhwHHPoeYDmcA0Pumgg/gR04
+         1WbdnxUgM4kgDbNLMiENXFLdDiWkrOA9VCBvK3jw4nR3XZsvkoAu1tfBuySR/Kc9EQwG
+         E7fy2g3eaLnjSnYHccACsuo37ocpnVu4wGJVw1nZYecARySZXa+ok0MPepdM3yj/0hLf
+         BCCA==
+X-Gm-Message-State: AOAM5337D94DzkV6H8Cwkn4yYDefJfpcsGXj5PIcdiFeSyOGOsP+A+/6
+        VK6CuSEXqvaiwkfuDf1vNF9Zkg==
+X-Google-Smtp-Source: ABdhPJxC8V4in0W+okVM7nD41XtGYGFz6iLA1Rdh91iNuWdlW5+5qNUga5c7e3xlWKMxb0NrgoI4Ww==
+X-Received: by 2002:a05:6a00:2388:b0:44d:4b5d:d5e with SMTP id f8-20020a056a00238800b0044d4b5d0d5emr20949254pfc.80.1635196477239;
+        Mon, 25 Oct 2021 14:14:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t3sm16694772pgu.87.2021.10.25.14.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:14:36 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:14:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        valentin.schneider@arm.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Vladimir Zapolskiy <vzapolskiy@gmail.com>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v6 03/12] drivers/connector: make connector comm always
+ nul ternimated
+Message-ID: <202110251411.93B477676B@keescook>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <20211025083315.4752-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <20211021062819.1313964-1-davidgow@google.com> <CAGS_qxoBhfaE7NLzKWrsxwwz9BFeLRzb9Ycc-6U29pmtceqCTQ@mail.gmail.com>
- <CABVgOS=vbqNnc_uW9czL6+vD55+XVa0X+=VPH+Tz0nGg0EF2gA@mail.gmail.com>
- <CAGS_qxqVWSTPdNs4AedPdHwj_QqUTi5JML4284FQDgD4CRoXHw@mail.gmail.com> <CABVgOSk23AYyFk06rHnZpBDYoLV7UwMwj66wmM268hmvUcdBqw@mail.gmail.com>
-In-Reply-To: <CABVgOSk23AYyFk06rHnZpBDYoLV7UwMwj66wmM268hmvUcdBqw@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Mon, 25 Oct 2021 14:14:23 -0700
-Message-ID: <CAFd5g45Xz=UtbiaUnbVd0qLJovXQTu8Ux1LAJozwwaoq_Pi70w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: tool: Do not error on tests without test plans
-To:     David Gow <davidgow@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>, Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025083315.4752-4-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 5:25 PM David Gow <davidgow@google.com> wrote:
->
-> On Sat, Oct 23, 2021 at 6:42 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > On Thu, Oct 21, 2021 at 11:10 PM David Gow <davidgow@google.com> wrote:
-> > >
-> > > On Fri, Oct 22, 2021 at 9:29 AM Daniel Latypov <dlatypov@google.com> wrote:
-> > > >
-> > > > On Wed, Oct 20, 2021 at 11:28 PM David Gow <davidgow@google.com> wrote:
-> > > > >
-> > > > > The (K)TAP spec encourages test output to begin with a 'test plan': a
-> > > > > count of the number of tests being run of the form:
-> > > > > 1..n
-> > > > >
-> > > > > However, some test suites might not know the number of subtests in
-> > > > > advance (for example, KUnit's parameterised tests use a generator
-> > > > > function). In this case, it's not possible to print the test plan in
-> > > > > advance.
-> > > > >
-> > > > > kunit_tool already parses test output which doesn't contain a plan, but
-> > > > > reports an error. Since we want to use nested subtests with KUnit
-> > > > > paramterised tests, remove this error.
-> > > > >
-> > > > > Signed-off-by: David Gow <davidgow@google.com>
-> > > > > ---
-> > > > >  tools/testing/kunit/kunit_parser.py    | 5 ++---
-> > > > >  tools/testing/kunit/kunit_tool_test.py | 5 ++++-
-> > > > >  2 files changed, 6 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> > > > > index 3355196d0515..50ded55c168c 100644
-> > > > > --- a/tools/testing/kunit/kunit_parser.py
-> > > > > +++ b/tools/testing/kunit/kunit_parser.py
-> > > > > @@ -340,8 +340,8 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
-> > > > >         """
-> > > > >         Parses test plan line and stores the expected number of subtests in
-> > > > >         test object. Reports an error if expected count is 0.
-> > > > > -       Returns False and reports missing test plan error if fails to parse
-> > > > > -       test plan.
-> > > > > +       Returns False and sets expected_count to None if there is no valid test
-> > > > > +       plan.
-> > > > >
-> > > > >         Accepted format:
-> > > > >         - '1..[number of subtests]'
-> > > > > @@ -356,7 +356,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
-> > > > >         match = TEST_PLAN.match(lines.peek())
-> > > > >         if not match:
-> > > > >                 test.expected_count = None
-> > > > > -               test.add_error('missing plan line!')
-> > > >
-> > > > This works well, but there's an edge case.
-> > > >
-> > > > This patch means we no longer print an error when there are no test
-> > > > cases in a subtest.
-> > > > We relied on a check just a bit lower in this function.
-> > > >
-> > > > Consider
-> > > >
-> > > > $ ./tools/testing/kunit/kunit.py parse <<EOF
-> > > > TAP version 14
-> > > > 1..1
-> > > >   # Subtest: suite
-> > > >   1..1
-> > > >     # Subtest: case
-> > > >   ok 1 - case
-> > > > ok 1 - suite
-> > > > EOF
-> > > >
-> > > > This produces the following output (timestamps removed)
-> > > >
-> > > > ============================================================
-> > > > ==================== suite (1 subtest) =====================
-> > > > =========================== case ===========================
-> > > > ====================== [PASSED] case =======================
-> > > > ====================== [PASSED] suite ======================
-> > > > ============================================================
-> > > >
-> > > > Should we surface some sort of error here?
-> > >
-> > > I thought about this a bit (and started prototyping it), and think the
-> > > answer is probably "no" (or, perhaps, "optionally"). Largely because I
-> > > think it'd be technically valid to have, e.g., a parameterised test
-> > > whose generator function can legitimately provide zero subtests. And
-> >
-> > That's the question. Should we report PASSED in that case as we do now?
-> >
-> > Let's consider parameterised tests, our only current example in KUnit.
-> >
-> > I think in most cases, it's a bug that if we got 0 cases and we should
-> > let the user know somehow.
-> > Should it be an error/warning? Maybe not, but wouldn't it be better to
-> > report SKIPPED?
-> > (This would require a change in KUnit on the kernel side, I'm not
-> > suggesting we do this in the parser)
-> >
->
-> Yeah: there are two sorf-of separable decisions here:
-> 1) What result should a test with no subtests return?
-> 2) Do we want to trigger any other errors/warnings.
->
-> I think the answer to 1 is that kunit_tool should report the result
-> printed in the KTAP output. I agree that, for parameterised tests,
-> though, that SKIPPED makes more sense than PASSED. (kunit_tool has a
-> separate NO_TESTS result, which we could maybe try to generate and
-> handle explicitly. I think we might as well leave that for the "no
-> tests run at all" case for now.)
->
-> For 2, I feel that this definitely should count as a "warning", but
-> all we have at the moment are "errors", which I feel is probably a bit
-> too strong a term for this. Given errors don't actually halt parsing,
-> I'm okay with generating them in kunit_tool in this case, but I'd
-> probably slightly prefer to leave it with SKIPPED, and maybe add a
-> warning later.
+On Mon, Oct 25, 2021 at 08:33:06AM +0000, Yafang Shao wrote:
+> connector comm was introduced in commit
+> f786ecba4158 ("connector: add comm change event report to proc connector").
+> struct comm_proc_event was defined in include/linux/cn_proc.h first and
+> then been moved into file include/uapi/linux/cn_proc.h in commit
+> 607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux").
+> 
+> As this is the UAPI code, we can't change it without potentially breaking
+> things (i.e. userspace binaries have this size built in, so we can't just
+> change the size). To prepare for the followup change - extending task
+> comm, we have to use __get_task_comm() to avoid the BUILD_BUG_ON() in
+> proc_comm_connector().
 
-I am OK marking it as SKIPPED, but I like the idea of promoting it to
-a warning in a future change.
+I wonder, looking at this again, if it might make more sense to avoid
+this cn_proc.c change, and instead, adjust get_task_comm() like so:
 
-Completely ignoring an empty test suite seems wrong, especially when
-we *do* complain when there *is* a test plan, and not all test cases
-are accounted for.
+#define get_task_comm(buf, tsk)
+        __get_task_comm(buf, __must_be_array(buf) + sizeof(buf), tsk)
 
-My 2c.
+This would still enforce the original goal of making sure
+get_task_comm() is being used on a char array, and now that
+__get_task_comm() will truncate & pad, it's safe to use on both
+too-small and too-big arrays.
 
-> > > while that's probably worth warning about if it's the only test
-> > > running, if you're trying to run all tests, and one random subtest of
-> > > a test of a suite has no subtests, that seems like it'd be more
-> > > annoying to error on than anything else.
-> > >
-> > > That being said, I'm not opposed to implementing it as an option, or
-> > > at least having the test status set to NO_ERROR. The implementation
-> > > I've experimented with basically moves the check to "parse_test", and
-> > > errors if the number of subtests is 0 after parsing, if parent_test is
-> > > true (or main, but my rough plan was to make main imply parent_test,
-> > > and adjust the various conditions to match). I haven't looked into
-> > > exactly how this is bubbled up yet, but I'd be okay with having an
-> > > error if there are no tests run at all.
-> > >
-> > > I'll keep playing with this anyway: it's definitely a bit more of a
-> > > minefield than I'd originally thought. :-)
-> > >
-> > > -- David
-> > >
-> > > >
-> > > >
-> > > > >                 return False
-> > > > >         test.log.append(lines.pop())
-> > > > >         expected_count = int(match.group(1))
-> > > > > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > > > > index 9c4126731457..bc8793145713 100755
-> > > > > --- a/tools/testing/kunit/kunit_tool_test.py
-> > > > > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > > > > @@ -191,7 +191,10 @@ class KUnitParserTest(unittest.TestCase):
-> > > > >                         result = kunit_parser.parse_run_tests(
-> > > > >                                 kunit_parser.extract_tap_lines(
-> > > > >                                 file.readlines()))
-> > > > > -               self.assertEqual(2, result.test.counts.errors)
-> > > > > +               # A missing test plan is not an error.
-> > > > > +               self.assertEqual(0, result.test.counts.errors)
-> > > > > +               # All tests should be accounted for.
-> > > > > +               self.assertEqual(10, result.test.counts.total())
-> > > > >                 self.assertEqual(
-> > > > >                         kunit_parser.TestStatus.SUCCESS,
-> > > > >                         result.status)
-> > > > > --
-> > > > > 2.33.0.1079.g6e70778dc9-goog
-> > > > >
+-- 
+Kees Cook
