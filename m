@@ -2,192 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4704397F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC3B439802
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhJYOAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhJYOAN (ORCPT
+        id S233186AbhJYOEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:04:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46000 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233083AbhJYOEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:00:13 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128BEC061745;
-        Mon, 25 Oct 2021 06:57:51 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id bp7so11664946qkb.12;
-        Mon, 25 Oct 2021 06:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7rxdYqIO+JK237h1leH+bsExljsO5Y3Ycz3/IBgPYvU=;
-        b=eZ7BFSwkN97rU+KuOwXK41Ezbmjb1zO1EQQfTqES8rc4l6I6gaf2NlET/tJkMoA1+N
-         Bxnr1CkIIGs5iKbE6Xo5MZlCChvaZUESb1vwhUZ7YGmF/yxJBPkWOlIG8rXpa4V9wyYb
-         9GWUvUtdPIRl9QDTIS+dHoa16SiuRkDAbO+N/NbK3FRHTXIs53iAYMd4ZPqMxVD8m/hf
-         Md/5XiEMe6x4fFsDnaMquFen7nxsvv5Yrwe7FLlovDKY1K4CIsaAODZGZYEZ2cIo2Ml8
-         VFgVMgMTZCK53gS4zuWrq66TGd1qsxc4BUrErUft7zlzoqyFS5T+Mg01bH7IhS/4GkKP
-         0Mew==
+        Mon, 25 Oct 2021 10:04:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635170508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5GxuWusEjMHZ4JQn5qLWUyg1MyGQPS66ltUGy4HnHFU=;
+        b=LTAJJXA6gfcvH8FfYagOIEjcLjtfU1pf6A1jqzc9+E74Nzq4xvgT/emRiNrwGpl7EeuaZG
+        rxMUo8rjBjFRlw1ujqmRYrN8yaly/emG/PCs4jUIsivvieTF3mvRkJFgXU3CWw2VIHMg+V
+        IBTgj3rYwZXMbdSyiBwwtz/OPhEVtfA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-555-YAQ6iQXcOQmu_4oCsl9cEQ-1; Mon, 25 Oct 2021 10:01:46 -0400
+X-MC-Unique: YAQ6iQXcOQmu_4oCsl9cEQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 128-20020a1c0486000000b0030dcd45476aso3731604wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:01:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=7rxdYqIO+JK237h1leH+bsExljsO5Y3Ycz3/IBgPYvU=;
-        b=naIqTkYj+bPIXXUaTjCz71BD+Wklk/TsW3jEmfdbIS+xl8pC1JiWafjfSb5Fh4Kuc+
-         SJ38wx9E1Y34rQQGBt3gbLBsUS32Ls+uumXD+cop7QL1RD64UNPmJycczWjZkh6w52kR
-         uRcpIGEWHknsUysD21vKAkDNwmXIXC+vzGo68kqGfjBQbY2pfAUyl8wAsoN4a8QdHBll
-         Raaq/SbUlcc19C04u1gkyJoFtY/ZMsWzZCeJfez1GmxtRgg9hasupcLpaRlz1bCei8CB
-         rn7TNSVKztVb0ZgG6ERxbEGts0t8ppi+VZVuHnlA5szUJOnUp+JOxCIh25AVwiZ2ftJc
-         4k9A==
-X-Gm-Message-State: AOAM532/i1xzlIBqAgbFcohN7fONVPvDv5zg1EW1WoLxa57nNBgXR3iO
-        XV+WLfb6oHAY26gEPjUKszg=
-X-Google-Smtp-Source: ABdhPJx7RB7JYMETqkdl2lDe/tLc/PmA59WParAYFcWHyJw9NE116RVhX5z3h21h20znsAvGdfjeDg==
-X-Received: by 2002:a05:620a:31a2:: with SMTP id bi34mr13385245qkb.331.1635170270173;
-        Mon, 25 Oct 2021 06:57:50 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id r23sm8453413qtm.80.2021.10.25.06.57.49
+        bh=5GxuWusEjMHZ4JQn5qLWUyg1MyGQPS66ltUGy4HnHFU=;
+        b=hnEYZwIbcMv0B+pA+8vp4HZN82ZKIOaKdWNjMh4LXGOqFuoD0Ov/K6J5+/Oay6pGgQ
+         zB0akNPIjlsN6UrCTdEaBbSwaY+m2PKOtbdgangmDne9tYoryXQVaHrVU8y4oq2Ljm2q
+         ExZN25Yg9zsEsS7hyz+ySuVYAtqtPF788GO9NhZUPGU6VFoc80flZKq2acmT/nLrqJ+A
+         fyPNYzo6/+jrTdjKvkivjTZesHmh6S04aWK77l5GUhDT2kq48LXXA7Z5hnHMjMjk1ebe
+         3uQ5zl3TFrfAN0kbxVaK+btMmj7JCKRjCC0bOAJZT1qxazpU420LNGa/6WB69OXwve/M
+         Hilg==
+X-Gm-Message-State: AOAM533bR3DpJznHgnaNwe9ZR/pIOPZjbG7GguvyuJSl3FgoF1NWD02p
+        0+6X29Npy1OPchqLn7RnF2y1amgxmTr3oR42jGtZrU7P+Ka2koOLgMLdk4y5uWBok3PlZSzlKOY
+        McZIa2sAgUmZWCVpsz7sua1Hn
+X-Received: by 2002:a5d:59ae:: with SMTP id p14mr23589898wrr.76.1635170505455;
+        Mon, 25 Oct 2021 07:01:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiqFlcSYWH7tg/r7nyk/acEU7XFm6PKMcaIfNQ0d2l1GPzyRzlNJCdOi1PnQIqdfTr2oUQaw==
+X-Received: by 2002:a5d:59ae:: with SMTP id p14mr23589820wrr.76.1635170505123;
+        Mon, 25 Oct 2021 07:01:45 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x2sm5765371wmj.3.2021.10.25.07.01.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 06:57:49 -0700 (PDT)
-Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
-From:   Frank Rowand <frowand.list@gmail.com>
-To:     Zev Weiss <zev@bewilderbeest.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Oliver O'Halloran <oohall@gmail.com>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <YXJfHwzIdksUKPIe@kroah.com> <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
- <3a5e271d-d977-7eca-21c5-fd75a2366920@gmail.com>
-Message-ID: <ad2b0169-a8c1-f94b-9bf5-11bc1e17f843@gmail.com>
-Date:   Mon, 25 Oct 2021 08:57:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 25 Oct 2021 07:01:44 -0700 (PDT)
+Message-ID: <18e6a656-f583-0ad4-6770-9678be3f5cf4@redhat.com>
+Date:   Mon, 25 Oct 2021 16:01:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <3a5e271d-d977-7eca-21c5-fd75a2366920@gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 24/43] KVM: VMX: Drop pointless PI.NDST update when
+ blocking
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-25-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-25-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 12:53 AM, Frank Rowand wrote:
-> On 10/22/21 4:00 AM, Zev Weiss wrote:
->> On Thu, Oct 21, 2021 at 11:50:07PM PDT, Greg Kroah-Hartman wrote:
->>> On Thu, Oct 21, 2021 at 07:00:27PM -0700, Zev Weiss wrote:
->>>> Hello all,
->>>>
->>>> This series is another incarnation of a couple other patchsets I've
->>>> posted recently [0, 1], but again different enough in overall
->>>> structure that I'm not sure it's exactly a v2 (or v3).
->>>>
->>>> As compared to [1], it abandons the writable binary sysfs files and at
->>>> Frank's suggestion returns to an approach more akin to [0], though
->>>> without any driver-specific (aspeed-smc) changes, which I figure might
->>>> as well be done later in a separate series once appropriate
->>>> infrastructure is in place.
->>>>
->>>> The basic idea is to implement support for a status property value
->>>> that's documented in the DT spec [2], but thus far not used at all in
->>>> the kernel (or anywhere else I'm aware of): "reserved".  According to
->>>> the spec (section 2.3.4, Table 2.4), this status:
->>>>
->>>>   Indicates that the device is operational, but should not be used.
->>>>   Typically this is used for devices that are controlled by another
->>>>   software component, such as platform firmware.
->>>>
->>>> With these changes, devices marked as reserved are (at least in some
->>>> cases, more on this later) instantiated, but will not have drivers
->>>> bound to them unless and until userspace explicitly requests it by
->>>> writing the device's name to the driver's sysfs 'bind' file.  This
->>>> enables appropriate handling of hardware arrangements that can arise
->>>> in contexts like OpenBMC, where a device may be shared with another
->>>> external controller not under the kernel's control (for example, the
->>>> flash chip storing the host CPU's firmware, shared by the BMC and the
->>>> host CPU and exclusively under the control of the latter by default).
->>>> Such a device can be marked as reserved so that the kernel refrains
->>>> from touching it until appropriate preparatory steps have been taken
->>>> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
->>>> processor has control of the firmware flash).
->>>>
->>>> Patches 1-3 provide some basic plumbing for checking the "reserved"
->>>> status of a device, patch 4 is the main driver-core change, and patch
->>>> 5 tweaks the OF platform code to not skip reserved devices so that
->>>> they can actually be instantiated.
->>>
->>> Again, the driver core should not care about this, that is up to the bus
->>> that wants to read these "reserved" values and do something with them or
->>> not (remember the bus is the thing that does the binding, not the driver
->>> core).
->>>
->>> But are you sure you are using the "reserved" field properly?
->>
->> Well, thus far both Rob Herring and Oliver O'Halloran (originator of the "reserved" status in the DT spec, whom I probably should have CCed earlier, sorry) have seemed receptive to this interpretation of it, which I'd hope would lend it some credence.
-> 
-> I am not on board with this interpretation.  To me, if the value of
-> status is "reserved", then the Linux kernel should _never_ use the
-> device described by the node.
-> 
-> If a "reserved" node is usable by the Linux kernel, then the specification
-> should be updated to allow this.  And the specification should probably
-> be expanded to either discuss how to describe the coordination between
-> multiple entities or state that the coordination is outside of the
-> specification and will be implemention dependent.
+On 09/10/21 04:12, Sean Christopherson wrote:
+> Don't update Posted Interrupt's NDST, a.k.a. the target pCPU, in the
+> pre-block path, as NDST is guaranteed to be up-to-date.  The comment
+> about the vCPU being preempted during the update is simply wrong, as the
+> update path runs with IRQs disabled (from before snapshotting vcpu->cpu,
+> until after the update completes).
 
-Maybe a value of "reserved-sharable" should be added to the standard.
-This would indicate that the node is operational and controlled by
-another software component, but is available to the operating system
-after requesting permission or being granted permission from the other
-software component.
+Right, it didn't as of commit bf9f6ac8d74969690df1485b33b7c238ca9f2269 
+(when VT-d posted interrupts were introduced).
 
-The exact method of requesting permission or being granted permission
-could either be driver specific, or the driver binding could
-include one or more additional properties to describe the method.
+The interrupt disable/enable pair was added in the same commit that 
+motivated the introduction of the sanity checks:
 
-One thing that I am wary of is the possibility of a proliferation of
-status checks changing from "okay" to "okay" || ("reserved" and the
-state of the driver is that permission has been granted).
+     commit 8b306e2f3c41939ea528e6174c88cfbfff893ce1
+     Author: Paolo Bonzini <pbonzini@redhat.com>
+     Date:   Tue Jun 6 12:57:05 2017 +0200
 
-From a simplicity of coding view, it is really tempting to dynamically
-change the value of the status property from "reserved-sharable"
-to "okay" when the other software component grants permission to
-use the device, so that status checks will magically allow use
-instead of blocking use.  I do not like changing the value of the
-status property dynamically because the devicetree is supposed to
-describe hardware (and communicate information from the firmware
-to the operating system), not to actively maintain state.
+     KVM: VMX: avoid double list add with VT-d posted interrupts
 
--Frank
+     In some cases, for example involving hot-unplug of assigned
+     devices, pi_post_block can forget to remove the vCPU from the
+     blocked_vcpu_list.  When this happens, the next call to
+     pi_pre_block corrupts the list.
 
+     Fix this in two ways.  First, check vcpu->pre_pcpu in pi_pre_block
+     and WARN instead of adding the element twice in the list.  Second,
+     always do the list removal in pi_post_block if vcpu->pre_pcpu is
+     set (not -1).
+
+     The new code keeps interrupts disabled for the whole duration of
+     pi_pre_block/pi_post_block.  This is not strictly necessary, but
+     easier to follow.  For the same reason, PI.ON is checked only
+     after the cmpxchg, and to handle it we just call the post-block
+     code.  This removes duplication of the list removal code.
+
+At the time, I didn't notice the now useless NDST update.
+
+Paolo
+
+> The vCPU can get preempted_before_  the update starts, but not during.
+> And if the vCPU is preempted before, vmx_vcpu_pi_load() is responsible
+> for updating NDST when the vCPU is scheduled back in.  In that case, the
+> check against the wakeup vector in vmx_vcpu_pi_load() cannot be true as
+> that would require the notification vector to have been set to the wakeup
+> vector_before_  blocking.
 > 
-> I am wary of the complexity of the operating system treating a node as
-> reserved at initial boot, then at some point via coordination with
-> some other entity starting to use the node.  It is not too complex if
-> the node is a leaf node with no links (phandles) to or from any other node,
-> but as soon as links to or from other nodes exist, then other drivers or
-> subsystems may need to be aware of when the node is available to the
-> operating system or given back to the other entity then any part of the
-> operating system has to coordinate in that state transition.  This is
-> driving a lot of my caution that we be careful to create architecture
-> and not an ad hoc hack.
-> 
-> -Frank
-> 
->>
->>> You are
->>> wanting to do "something" to the device to later on be able to then have
->>> the kernel touch the device, while it seems that the reason for this
->>> field is for the kernel to NEVER touch the device at all.  What will
->>> break if you change this logic?
->>
->> Given that there's no existing usage of or support for this status value anywhere I can see in the kernel, and that Oliver has indicated that it should be compatible with usage in OpenPower platform firmware, my expectation would certainly be that nothing would break, but if there are examples of things that could I'd be interested to see them.
->>
->>
->> Thanks,
->> Zev
->>
-> 
+> Opportunistically switch to using vcpu->cpu for the list/lock lookups,
+> which presumably used pre_pcpu only for some phantom preemption logic.
 
