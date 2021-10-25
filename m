@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A11439C70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24300439C34
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbhJYRDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:03:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234266AbhJYRCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:02:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D23D60F6F;
-        Mon, 25 Oct 2021 17:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635181213;
-        bh=vvG536PuQUxV1m0gedO+Dn40TcRnR3gq2Q4ZLdq1GPo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gOTme8KKfInnYcOFppVBFgpsT4duCtoEggRwyKyRchVBbT3z1zquCz7/yC71hoAW6
-         618bVIaHBgkgawj2+GsTYhg8Wj/gq5RDp9ayaF9w9BbTT28xHz9qBI9pppWfU3+xzi
-         I8+yR91DTkIuvcQm74M+JoDAMWBfjl7jGN8y3r4qcDsy+WvMfrwKk2570/Iz9Z4Bog
-         tQiydKE9J4s0K56e1gY/40Xt4IkbLDhGuueM3ZGm7eMNCCrq1LxXYFuXkWubcZuD6b
-         OBRdok/QrxZNXQBXkhT4M8OyBJaRn/A4EqKAQfTtbLTFsLNH+1OqqbHnTyDtydjEoG
-         z9HdEIu1LBTZw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zheyu Ma <zheyuma97@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, isdn@linux-pingi.de,
-        zou_wei@huawei.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 12/18] mISDN: Fix return values of the probe function
-Date:   Mon, 25 Oct 2021 12:59:25 -0400
-Message-Id: <20211025165939.1393655-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211025165939.1393655-1-sashal@kernel.org>
-References: <20211025165939.1393655-1-sashal@kernel.org>
+        id S234146AbhJYRB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:01:58 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:57009 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232050AbhJYRBy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:01:54 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 1D297808C5;
+        Mon, 25 Oct 2021 19:59:27 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1635181167;
+        bh=gUy+qk4k+tYm1QGWsx1o8F44iIlg+MWlY8HDA1Uw+To=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=ZRcbrsUDNmlsbAuLS2pSiiw2Zi2c+Pma15Ol9StNZGVKYSgDMyrD1LJuSBFUiob9l
+         8o4hOS0jkL36BXUY18hM/hh0MykZsrbnkYM4xuUK4893pblDONaDSSHiwoGbdwMwXb
+         N4h9hblLR6GWt0Q90B7lf2J/tGZsVI2E0I57hWLA=
+Received: from [192.168.211.155] (192.168.211.155) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 25 Oct 2021 19:59:26 +0300
+Message-ID: <512a989d-c15f-d73f-09c1-74ba25eeec27@paragon-software.com>
+Date:   Mon, 25 Oct 2021 19:59:26 +0300
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: [PATCH 3/4] fs/ntfs3: Check new size for limits
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
+In-Reply-To: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.155]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+We must check size before trying to allocate.
+Size can be set for example by "ulimit -f".
+Fixes xfstest generic/228
+Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
 
-[ Upstream commit e211210098cb7490db2183d725f5c0f10463a704 ]
-
-During the process of driver probing, the probe function should return < 0
-for failure, otherwise, the kernel will treat value > 0 as success.
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 ---
- drivers/isdn/hardware/mISDN/hfcpci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/ntfs3/file.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/hfcpci.c b/drivers/isdn/hardware/mISDN/hfcpci.c
-index e501cb03f211..bd087cca1c1d 100644
---- a/drivers/isdn/hardware/mISDN/hfcpci.c
-+++ b/drivers/isdn/hardware/mISDN/hfcpci.c
-@@ -1994,14 +1994,14 @@ setup_hw(struct hfc_pci *hc)
- 	pci_set_master(hc->pdev);
- 	if (!hc->irq) {
- 		printk(KERN_WARNING "HFC-PCI: No IRQ for PCI card found\n");
--		return 1;
-+		return -EINVAL;
- 	}
- 	hc->hw.pci_io =
- 		(char __iomem *)(unsigned long)hc->pdev->resource[1].start;
+diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+index 5418e5ba64b3..efb3110e1790 100644
+--- a/fs/ntfs3/file.c
++++ b/fs/ntfs3/file.c
+@@ -661,7 +661,13 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+ 		/*
+ 		 * Normal file: Allocate clusters, do not change 'valid' size.
+ 		 */
+-		err = ntfs_set_size(inode, max(end, i_size));
++		loff_t new_size = max(end, i_size);
++
++		err = inode_newsize_ok(inode, new_size);
++		if (err)
++			goto out;
++
++		err = ntfs_set_size(inode, new_size);
+ 		if (err)
+ 			goto out;
  
- 	if (!hc->hw.pci_io) {
- 		printk(KERN_WARNING "HFC-PCI: No IO-Mem for PCI card found\n");
--		return 1;
-+		return -ENOMEM;
- 	}
- 	/* Allocate memory for FIFOS */
- 	/* the memory needs to be on a 32k boundary within the first 4G */
-@@ -2012,7 +2012,7 @@ setup_hw(struct hfc_pci *hc)
- 	if (!buffer) {
- 		printk(KERN_WARNING
- 		       "HFC-PCI: Error allocating memory for FIFO!\n");
--		return 1;
-+		return -ENOMEM;
- 	}
- 	hc->hw.fifos = buffer;
- 	pci_write_config_dword(hc->pdev, 0x80, hc->hw.dmahandle);
-@@ -2022,7 +2022,7 @@ setup_hw(struct hfc_pci *hc)
- 		       "HFC-PCI: Error in ioremap for PCI!\n");
- 		dma_free_coherent(&hc->pdev->dev, 0x8000, hc->hw.fifos,
- 				  hc->hw.dmahandle);
--		return 1;
-+		return -ENOMEM;
- 	}
- 
- 	printk(KERN_INFO
 -- 
 2.33.0
 
