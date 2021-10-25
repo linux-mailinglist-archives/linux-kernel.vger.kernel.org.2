@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ABE4391D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50CA4391DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhJYJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbhJYJAx (ORCPT
+        id S232405AbhJYJBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:01:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232386AbhJYJBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:00:53 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EA2C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:58:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mevoA-0002sk-Ad; Mon, 25 Oct 2021 10:58:18 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mevo7-00029q-84; Mon, 25 Oct 2021 10:58:15 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mevo7-0007eQ-6e; Mon, 25 Oct 2021 10:58:15 +0200
-Date:   Mon, 25 Oct 2021 10:58:15 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@google.com>
-Subject: Re: [PATCH v6 1/3] pwm: Introduce single-PWM of_xlate function
-Message-ID: <20211025085815.wrvifi3kmviw7jpw@pengutronix.de>
-References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
+        Mon, 25 Oct 2021 05:01:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635152351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OzTYvmR+Baxf4vvutXG9y4UJh2DkglRXKqKaxVfskag=;
+        b=ChAQLm/QTahcyCd9pMyogd/XCnnW02OEUCpFSturPpV8Z2ONLmrgMOXBxPpaim/mCPa1hh
+        USZOq13fbRDiDEysENiI96ugP0hrq0wR+Q3ldpjxThV5VIVeLBcbN+EvlrsKt7Nfux7alg
+        koVYGugOcq0X0vvNt0LwN39JBDnBZ7c=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-YAOaTqMeOOSVcHKV-QtW8A-1; Mon, 25 Oct 2021 04:59:09 -0400
+X-MC-Unique: YAOaTqMeOOSVcHKV-QtW8A-1
+Received: by mail-ed1-f72.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso3272622edd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:59:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=OzTYvmR+Baxf4vvutXG9y4UJh2DkglRXKqKaxVfskag=;
+        b=Z5FJrK1KXNZSAzn9RlCro49dl8ZxKUiIindkOtKPOR9p1ZRNRbcPq+upO+RDH+VxNE
+         RLBVzeeYyIwaqKDBTj4FVLX5b7D4dog7FTvnjW8MY0eSYxICb2SX1ilxnfPjHKjm/mXy
+         HqKuZ6UUS6zhPlkBXj74uEUB4xxhzGUgVCMIau+uvzsFXuao2QfUJBX6klSCMDuPlpW8
+         D9nxzK4NvJ5tJzNUd0a6uF0t8FGJAqN4mZ416fP+kxqy7bV9ux390FfcciXUk92cRniC
+         IHnvQDOP2fd5IbOw0NBohhsxzF6lOt7teK7pQcI32/QvXZeCIDEXUfMqgeyOB5gMOfxm
+         ymEw==
+X-Gm-Message-State: AOAM531lwuylz5heJw1lf9/EPr/xWnz60tnVIrNh/0qnN/oYUVZjLp1l
+        dfJwc6Z7y5Y2Xrclezl/Q+MFR0MyIkT+lKRml7u9j4QUp3qDqdeQed/CuTtrCcsUekMzFoevVYM
+        2IazAIx1KSQp6D+lGnrXbNvhY
+X-Received: by 2002:a17:907:7f11:: with SMTP id qf17mr10287102ejc.437.1635152348473;
+        Mon, 25 Oct 2021 01:59:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkmP22ASf0et7zE/OEQYMrGgdxDWBcd2eTY+zIf1qIM2FQEJlIVcKFfdA+RQYOcmccNWPBtw==
+X-Received: by 2002:a17:907:7f11:: with SMTP id qf17mr10287084ejc.437.1635152348257;
+        Mon, 25 Oct 2021 01:59:08 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id he14sm3901907ejc.34.2021.10.25.01.59.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 01:59:07 -0700 (PDT)
+Message-ID: <707a0a5d-413e-b80d-89be-17bfca8fc44c@redhat.com>
+Date:   Mon, 25 Oct 2021 10:59:04 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="muvk4bp3iyxkfh5l"
-Content-Disposition: inline
-In-Reply-To: <20210930030557.1426-1-bjorn.andersson@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 1/8] KVM: SEV-ES: fix length of string I/O
+Content-Language: en-US
+To:     Marc Orr <marcorr@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        fwilhelm@google.com, seanjc@google.com, oupton@google.com,
+        stable@vger.kernel.org
+References: <20211013165616.19846-1-pbonzini@redhat.com>
+ <20211013165616.19846-2-pbonzini@redhat.com>
+ <CAA03e5F8qvkbnPNvDHjrnM1hLs2fu5L_Mxtuhi3T5Y7u+_ydrw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CAA03e5F8qvkbnPNvDHjrnM1hLs2fu5L_Mxtuhi3T5Y7u+_ydrw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/10/21 03:31, Marc Orr wrote:
+> I could be missing something, but I'm pretty sure that this is wrong.
+> The GHCB spec says that `exit_info_2` is the `rep` count. Not the
+> string length.
+> 
+> For example, given a `rep outsw` instruction, with `ECX` set to `8`,
+> the rep count written into `SW_EXITINFO2` should be eight x86 words
+> (i.e., 16 bytes) and the IO size should be one x86 word (i.e., 2
+> bytes). In other words, the code was correct before this patch. This
+> patch is incorrectly dividing the rep count by the IO size, causing
+> the string IO to be truncated.
 
---muvk4bp3iyxkfh5l
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then what's wrong is _also_ the call to setup_vmgexit_scratch, because 
+that one definitely expects bytes:
 
-On Wed, Sep 29, 2021 at 10:05:55PM -0500, Bjorn Andersson wrote:
-> The existing pxa driver and the upcoming addition of PWM support in the
-> TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> thereby a need for a of_xlate function with the period as its single
-> argument.
->=20
-> Introduce a common helper function in the core that can be used as
-> of_xlate by such drivers and migrate the pxa driver to use this.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+                 scratch_va = kzalloc(len, GFP_KERNEL_ACCOUNT);
 
-I'm OK with this patch, in the long run I'd like to share more code with
-of_pwm_xlate_with_flags, but this shouldn't be a stopper here.
+Paolo
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---muvk4bp3iyxkfh5l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF2caQACgkQwfwUeK3K
-7Alt7Af/a8nhxh/xMENHkzBDVn57d2C7qsBdAEnOKYmtoLJheJpFRCDPP1lNm54d
-6qlewUjuQAAwqO93kCcufhzwIHrgl73SVvr4iqgw8P8fmwM/xrkovALRkeL771xD
-veid1BSxIOJtJDjbYNf0rEBSXMkhN4I5LUDahJzezG1be5ULwexNiBpibDnPnR2L
-jseYVX2ipv6L4FVf2TceJAP5TuLRRVCGzRGxAfKvIG3WA71Z+EhsjurvKEbKvBSi
-qW68/MIFahttoB5VF3PQZ8mYUF+lbOOnnO4uT+i+fLF4unm9rLu+6pmnp69V95QV
-Sd1y58/frTRWk7Vo38MBuwav2HXo3g==
-=BOeX
------END PGP SIGNATURE-----
-
---muvk4bp3iyxkfh5l--
