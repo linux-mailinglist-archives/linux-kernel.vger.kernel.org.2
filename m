@@ -2,180 +2,521 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AFC438DBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4AB438DBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhJYDY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 23:24:57 -0400
-Received: from esa11.fujitsucc.c3s2.iphmx.com ([216.71.156.121]:21911 "EHLO
-        esa11.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231954AbhJYDY4 (ORCPT
+        id S232170AbhJYDZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 23:25:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32306 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232008AbhJYDZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:24:56 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 Oct 2021 23:24:55 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1635132154; x=1666668154;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=3l2xYzO9juJuLdaOySnMaou0h2ULDS3PyaTg4L+U+iM=;
-  b=yLrIlV4WvmKz3w4xR0ffUIVndD0V4ABVJS+YT7MYvLxrbwxlPlfeY0pz
-   RL4wairIiXHfygVOWcez8eLJ759cXPpyLqXTPunaOU9Rwk/PNT/K9/t+Z
-   GTsqR6Mgt5V215j7qVEKZ+5EZZdQK7eSdGci7rnyo2uEjZz70e6WB+bg1
-   m0RiYybmBl8WoABwunsgpC9zatSmKgbpzdtMQQdqf6ajtzm8M6+jfQiOh
-   jPxOtYD8bCs/I+FbDBfRJBv3pcdIqJk9g2gYRlaN3gxU9PneTp3XSBipT
-   LLy79qiZkKG5RVcosOGLyFeGCyASA7a4e3bNXZ7fXOFAOUOLhwNr0EHCq
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="42352886"
-X-IronPort-AV: E=Sophos;i="5.87,179,1631545200"; 
-   d="scan'208";a="42352886"
-Received: from mail-os2jpn01lp2054.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.54])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 12:15:21 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aqnFY/sAQ6Hkc7lzmR3LHIDwd+L58zrczokWYAGzkz5AGYuhbW9sGW9N+ZxNCHnXFVXkTOBmJXcSRwFlvtwzXcZ9EL4NXo9eoj5YkJcRW8Wx4jlwD7ORSkTX8Qt9hTXmYeK8+ikG+n46zO9VoporYg1LClOqWR7LxaQiiWAl94XhVbD4JKlOR2/rvEUxd2GwfFqEyPSNpxeyt0sw//xIl/Hgyz8vbmPHWCOfcuzmW863KY8aR/MmYiTp7akqi83T1tpbV0FgOsf2soD68mu0u2kNqGYSdvUVb8HayTmikP01zyIrD/zemi9FtlLAB6JF5vI9LNh4tj2bp9bduJ2GiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3l2xYzO9juJuLdaOySnMaou0h2ULDS3PyaTg4L+U+iM=;
- b=gAMPEpNNoqqRHkF11fwL3LYIEdniEen0P/HCmEB2oF4xCjDvZFTadm+BAK0RBUm40L61phDVMfoVLAs76jezYVVzlY7YuIKV13gwTFVhGy0CFjOs9FVGzFJ/LIMM4i80AAAKZevBeLfjhQIMAaXZZ1/3Mbo48Kjm9u6zY9ehB8HTl30l+QrmKrcB+R6x9beJCj5XJdp2SRE7lMkz3Zy84jmwe8sM1T7tjLuxIgAxekB4zubF7cREDitscRw+frnATsCiybpc7Ik9aFbVU1pAwFLIJOUWOcsjAQlg1odwEIak4QUTSj7z4H+EfdWq6Re6Q4xo8mUm3oRUmHYK8jrV7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3l2xYzO9juJuLdaOySnMaou0h2ULDS3PyaTg4L+U+iM=;
- b=pA4disVZm/qzPPisyNGebQ+f9669wENuf8PT4HBxsyH8RszxEvWX1gwBDduUs0dwgxT7xB5kgakh3/v2z0J53QiYPCTNt1X7SlnRjOmDRsZ8BAIeP5O11yiDIBUG+ZkZ2u1KGhmvqeSEDwdFkY2Fb1Po7MBwThk18HxVtHSgVZs=
-Received: from OS3PR01MB7706.jpnprd01.prod.outlook.com (2603:1096:604:17b::10)
- by OS3PR01MB8907.jpnprd01.prod.outlook.com (2603:1096:604:156::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Mon, 25 Oct
- 2021 03:15:19 +0000
-Received: from OS3PR01MB7706.jpnprd01.prod.outlook.com
- ([fe80::9401:db52:496:51]) by OS3PR01MB7706.jpnprd01.prod.outlook.com
- ([fe80::9401:db52:496:51%8]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 03:15:19 +0000
-From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-CC:     "dave@stgolabs.net" <dave@stgolabs.net>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 2/2] refscale: prevent buffer to pr_alert() being too long
-Thread-Topic: [PATCH 2/2] refscale: prevent buffer to pr_alert() being too
- long
-Thread-Index: AQHXxzLjMoWUyomwTEWh1VB8MQULWKvfpyGAgAKWRACAAIkFAIAAR/+A
-Date:   Mon, 25 Oct 2021 03:15:19 +0000
-Message-ID: <236085f4-1787-2449-f7ca-cc762da4eca0@fujitsu.com>
-References: <20211022105111.29455-1-lizhijian@cn.fujitsu.com>
- <20211022105111.29455-2-lizhijian@cn.fujitsu.com>
- <20211022231555.GG880162@paulmck-ThinkPad-P17-Gen-1>
- <e49f00c9-b9c8-a6a9-9595-6cedf5efe3e5@cn.fujitsu.com>
- <20211024225640.GL880162@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20211024225640.GL880162@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 940abb7d-02b0-4777-c083-08d99765ac98
-x-ms-traffictypediagnostic: OS3PR01MB8907:
-x-microsoft-antispam-prvs: <OS3PR01MB89079E259B0FE03195155D12A5839@OS3PR01MB8907.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:478;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LfSLZv3QSt8uTvKZO+e0YTUFD1vpciSEybCH+G/ymnKIi4kv/GEMIJ7g8WUQYBcOIv4ee2SFMa2qgLtOxxdPJIL4qOPAmnXOqFtF2S5rz31OOkANss8BaUsY2ABuhwuMb7uTsiJljWUskhncAJREWBBN9BrHhyAQ/jVEWzuDSv0Z1Oa+jO8tfxTibXS2GdL47GLAe5/1vzeGn3MDxpfAc7blg9gzwAT2ukNrEKuascgtH3ClD5Uszlw26qoRbJCiDrPVhqWlj8ezEbfsJgs739CSySVh2q077h/rDjONXZJOAAkZckBR6PJ2FQKDn29CgSZGekuanjepUrNya3tbrk+lS+Jiwdo7WuKzI70vxWDIRRuIgyagOVXgjMfKVwO1kKVIfPeu9tn+19O6Ta1n+2ZkKVw1mcCFTmu3bjwXoD4DMsJg8NUV20CCM3HJ1nhyY2cOAkU0zvxmGCaDYVOpRIn2RvjR6TFGnJmvI4JWrwKh83asMI2kqQCSpPmTUqwTS9XiIVSIWBmgJEC3QuycrQHHC9xEyfYGGzjiHRerAKAoUJy9RNM0KNr5xYR9QW0Wd+zQwGgK/ZbdVswVVhGu8qKzJZ+/FVxqsKW1UR4B25e03cRs+ZMCJqwNz70E55/nZlGGKuaHbLV4F1GzroUXwRUzba+c7rJa+TbIeAWHuXwLXP55oN6XPPw6u1PtwFt4LhwAv60IdShVCoriQz/BtA2/mzbpt/lmIiFgORsWo3o9i5IvkJr/j6u282+IqAAZKZAyd/piJxi1UTVcy1m8uw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB7706.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(85182001)(53546011)(8936002)(71200400001)(186003)(6512007)(91956017)(38070700005)(110136005)(7416002)(5660300002)(83380400001)(66446008)(6506007)(2906002)(82960400001)(2616005)(316002)(8676002)(31696002)(76116006)(36756003)(66556008)(66946007)(64756008)(4326008)(66476007)(31686004)(38100700002)(122000001)(54906003)(26005)(508600001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RHdjVFE4Wnl3a1ZxcnZVOTdPWlA5R0s5TWhMMWthSU01UlhrQmNieFd6eGJW?=
- =?utf-8?B?aTMzYUIrdFZaS1JCUXNxOGpFRkRLYUZPVTFxdkZiM3plNGJ5MStWUXhpc0t4?=
- =?utf-8?B?eGdLODBLcHFrRmlJRldpUXZ3MVI1VElpdVhrRWpmbHpNd0s2ZzdCVm1OMlVI?=
- =?utf-8?B?NXdWRzdyajVkT040U2JlSWJxVEhsVUtzajVLWGhjZ1p5a0RwNS9jTkcvbTNE?=
- =?utf-8?B?M2dWakxrTE1NU0liN1JBdytwbk8rVTI1SGhiRkpYQllBK3JEL2NsRzR5cno1?=
- =?utf-8?B?QklPSE5NYjJqTWFDVjJ4SCtBbHNKd3U1dkJWWk0vZHMxNkh0UVQ4VEY0amww?=
- =?utf-8?B?dE1ERmREbEwxZGRTZWNXMlNzU280c1ZqTURjZ1MwcnNFamIwNTJkYk5KZE94?=
- =?utf-8?B?cGMxLytWOVUxTWlVK2lIeXN3TzlDVkhSZ28xWFlTd2dlNEE3ZjBmdm5IYnVq?=
- =?utf-8?B?azh3WW90aDBIbmlIejFvU3RvcGVzN0x4dDNnUWNYaWlvOGpXVGxrRExHbmNI?=
- =?utf-8?B?VUQ5SXlXcW84SGFCV3Y2M1QzenZMOEVRWHZxRDJRQk5xUWUzRklDYUpjS3hC?=
- =?utf-8?B?NjBXdU42aXNta3QvWk9rZlVZWFVGVnZndERaeXNLR3J2SCtnQy9zMFZ3dXAw?=
- =?utf-8?B?TThTbExrYnZDNkV0Q0hTS0UrTzgzL3JkS3RQcyt3VmVoRmh0cjczWm5hYXA4?=
- =?utf-8?B?Uzdqc2g0cm40SjdhaGxSd3B4MlZlN0hncEVIT2plTHBDa3dYSjIyMXNjNjZs?=
- =?utf-8?B?UlZmMkRHSHRjRGg0eVBqK21JSGlPcUUvVk50VWFZRGpCL2tZT2pmWGFMa3Fa?=
- =?utf-8?B?RTU5QXQ0YVBPUUpVRWp2M0xidVJuNWNCc2RwcVdaZko5VE4rb3U4SG5uaDlQ?=
- =?utf-8?B?c0JtbzRrUTRxMnhzUGdZQUhqd3N5aDNVRXRqUkZtL1dWeCtRb2d2c04zRDUr?=
- =?utf-8?B?WlJFamRsNEJqWXNMQmlWekpnQzZrVHdCd1pTUGQzMk1JeDdDbWRQaGN5NGE3?=
- =?utf-8?B?ZzRNT0lPeUgzYzQ4MjFBc1g2dUIwTGZGV3A2VmZYSlN2RjB3WHVIY0JtTmdB?=
- =?utf-8?B?R3F6anE4NHdWN1N0SUMvKzV0cm4rMCtHT0VFK0ZSWWc2Nmo0K3huNlYwMDEz?=
- =?utf-8?B?dmFyQ3h5MGhuRUluVGhYbno5WFBHVUFoQzZvdXBXaDBMOVluY1hySG52aFZr?=
- =?utf-8?B?RTVJeVhRd3VFMklURWptbE9qNGJ5Y0xBcU50TVhPNzJSVUxrRHovbnFlTi9M?=
- =?utf-8?B?MUR3ZVRjZXZaZlBOOVJpVm9GQmxFQmdZUU5DcjNQSlJaOFROcS9VdlNIVkpL?=
- =?utf-8?B?amVvVW95eVQvWHREbHJ4aWM3MW1iOVpPRkd3aEZ6dE91YTJnWVRGaHBtdk16?=
- =?utf-8?B?Rks0RDczcWJoaHVlY2JWeTZHOXpGN282OWZkMDlVbFB5UHNmdmJVN1k1YW94?=
- =?utf-8?B?L3ZDSmZuTmxwbC92b053ZlVOR1dabGpGSy80NC8wNzFROWFEOUozM0xsWlZr?=
- =?utf-8?B?MXZjUDZ1YnB4Z24xa0tKcWxhVEhkYXdqQmRMbzhXMzc1VThwMzRhdE02V0tJ?=
- =?utf-8?B?cEVPQnhMejJNbUVMVHJnbmNSK1VWQlBIOTRpQ0FWckVhZnJ4MkhNRnora21y?=
- =?utf-8?B?WkV0THBqZG1JSWtWN25xTWZpazlrYi9wNlJxSjRoUXJPd2V0dmJsRUJBSzFD?=
- =?utf-8?B?U2NJS2VXMmJmVVNwcWpWK0MzV29pV3JQaldpQ2YxaHJnUWVhRVEwQkdLTERF?=
- =?utf-8?B?dzhtZlU0UU10M3F1bHVhL1cwcWFXdUFvTGpIdFYxMWpOaEhBdWtvTUtnOXF0?=
- =?utf-8?B?TEtzQWIzbjRQTG5qS1FzT1U2VXdQblkxSUZScWQ4RkxKcmkwWGp5dzgvN0Jo?=
- =?utf-8?B?RnpENWZITTBnaDJTNnJWNzFlaW0rcWcwWXA0WlRLUG5CR1NoVnVBa2tjcENo?=
- =?utf-8?B?bWR4M3grU0JMaC96WHJmZnFzaVI1dW4yWWZmejNtWWxWa2U1VWpaenNkZnBI?=
- =?utf-8?B?VzFuQ3diaXVJYUo3cU9HTFk2Ull2ZlFJcEJ1YVczN1RSM1J3b2tTTzdySURK?=
- =?utf-8?B?TnVHdHlpajg4aVY5TkNoSG12MEI1TXFsNWg5MFQyMXJ6bWl4aTh1NzdXbGZR?=
- =?utf-8?B?RXJqY0UveUNNaGUzRGxad200NnFNOEx5WTlZOUl3VXY2VGNhTTRGbHBJVlZl?=
- =?utf-8?Q?KlTLCccVGSp9hncjmfLFSag=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C29F6A79799DFA4E8E58A160573B524E@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Sun, 24 Oct 2021 23:25:55 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19ONmxBf022124;
+        Sun, 24 Oct 2021 23:23:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=pp1; bh=xdTKzE5hKjGfbm7Yv4KPBnSFUd4ZwCzWWIp2z0Y9Ai0=;
+ b=Gc+SGal3hLb8w74OGeWJLN3sHkAxd7pJGKYtOPask+9gz98lEtedWHgFiWQaWG4w445p
+ I/UkMTrMRqxACMGR7EShizDvXbdG9yoZqKEFMwadFCDVK1EldkEGUa0J0+rczAvmHGif
+ gmc/lEypRR+/pa67cdPEA3SwRrcJihqjnRi1wwV6fHl3ORJiY7SZypDlJN203KOpRHrY
+ zv9nkOBGohDLPl89omcllAFejPATEtCkCKTRLapHrRPWwYEwyMXrhdEsoLliY2giB8Rq
+ axaVEni2By9LmG8bnmtJsWTs6SfzD5t1+T7DayFu7YZCTfsNJP/12BvTuwibJDzqtuUD aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bvygr7fck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Oct 2021 23:23:26 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19P3NQsH010135;
+        Sun, 24 Oct 2021 23:23:26 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bvygr7fc7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Oct 2021 23:23:25 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19P3Cev5028523;
+        Mon, 25 Oct 2021 03:23:23 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bv9nj99f5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 03:23:23 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19P3HGSs64356620
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Oct 2021 03:17:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D1A6CAE057;
+        Mon, 25 Oct 2021 03:23:20 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26467AE051;
+        Mon, 25 Oct 2021 03:23:20 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 25 Oct 2021 03:23:20 +0000 (GMT)
+Received: from localhost (unknown [9.81.195.69])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 97D6B6023F;
+        Mon, 25 Oct 2021 14:23:18 +1100 (AEDT)
+From:   Michael Ellerman <michaele@au1.ibm.com>
+To:     "Paul A. Clarke" <pc@us.ibm.com>, Kajol Jain <kjain@linux.ibm.com>
+Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, atrajeev@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2] perf vendor events power10: Add metric events json
+ file for power10 platform
+In-Reply-To: <20211022144910.GC104437@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20211022062505.78767-1-kjain@linux.ibm.com>
+ <20211022144910.GC104437@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+Date:   Mon, 25 Oct 2021 14:23:15 +1100
+Message-ID: <87wnm1bxek.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GqZ0IucobX69kzSVHu3sPHv8EXvSrr8l
+X-Proofpoint-ORIG-GUID: GaA7mFTouG50tus64Xo2tqDsc52UM6ad
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB7706.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 940abb7d-02b0-4777-c083-08d99765ac98
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 03:15:19.2131
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HM0VtYHcPyEeE8HB6iRD7Nz/sC8RFwhOTs1JdJ2ONq5MO1pOl5si6c9U7AWO425AofTVWCEBlFOcY2EYzrupiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8907
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_01,2021-10-25_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 lowpriorityscore=0 mlxscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1011 spamscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110250018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDI1LzEwLzIwMjEgMDY6NTYsIFBhdWwgRS4gTWNLZW5uZXkgd3JvdGU6DQo+DQo+Pj4+
-ICAgIAlpZiAoIWJ1ZikNCj4+Pj4gICAgCQlyZXR1cm4gMDsNCj4+Pj4gICAgCWJ1ZlswXSA9IDA7
-DQo+Pj4+IEBAIC02MTcsMTMgKzYxNywxNSBAQCBzdGF0aWMgdTY0IHByb2Nlc3NfZHVyYXRpb25z
-KGludCBuKQ0KPj4+PiAgICAJCWlmIChpICUgNSA9PSAwKQ0KPj4+PiAgICAJCQlzdHJjYXQoYnVm
-LCAiXG4iKTsNCj4+Pj4gKwkJaWYgKHN0cmxlbihidWYpID4gODAwKSB7DQo+Pj4+ICsJCQlwcl9h
-bGVydCgiJXMiLCBidWYpOw0KPj4+IERvZXMgdGhlIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3Jj
-dXRvcnR1cmUvYmluL2t2bS1yZWNoZWNrLXJlZnNjYWxlLnNoDQo+Pj4gc2NyaXB0IGFsc28gcmVx
-dWlyZSBjaGFuZ2VzIHRvIGhhbmRsZSB0aGUgcGFydGlhbCBsaW5lcz8NCkxvb2tzIGl0IGRvZXNu
-J3QgbWF0dGVyIGZvciBrdm0tcmVjaGVjay1yZWZzY2FsZS5zaCB3aGVyZSBpdCB3aWxsIG5vdCBj
-aGVjayB0aGVzZSBvdXRwdXQuDQoNCg0KPj4+PiAgICAJCXUzMiByZW07DQo+Pj4+IEBAIC03MTIs
-OSArNzExLDEzIEBAIHN0YXRpYyBpbnQgbWFpbl9mdW5jKHZvaWQgKmFyZykNCj4+Pj4gICAgCQlh
-dmcgPSBkaXZfdTY0X3JlbShyZXN1bHRfYXZnW2V4cF0sIDEwMDAsICZyZW0pOw0KPj4+PiAgICAJ
-CXNwcmludGYoYnVmMSwgIiVkXHQlbGx1LiUwM3VcbiIsIGV4cCArIDEsIGF2ZywgcmVtKTsNCj4+
-Pj4gICAgCQlzdHJjYXQoYnVmLCBidWYxKTsNCj4+Pj4gKwkJaWYgKHN0cmxlbihidWYpID4gODAw
-KSB7DQo+Pj4+ICsJCQlwcl9hbGVydCgiJXMiLCBidWYpOw0KPj4+PiArCQkJYnVmWzBdID0gMDsN
-Cj4+Pj4gKwkJfQ0KPj4+PiAgICAJfQ0KPj4+PiAtCVNDQUxFT1VUKCIlcyIsIGJ1Zik7DQo+Pj4+
-ICsJcHJfYWxlcnQoIiVzIiwgYnVmKTsNCml0IHdpbGwgbm90IGludHJvZHVjZSBwYXJ0aWFsIGxp
-bmVzIGhlcmUsIGJ1ZsKgIGlzIGFsd2F5cyBlbmRlZCB3aXRoICdcbicNCg0KSSBoYXZlIGNoZWNr
-ZWQgdGhlIHJlZ2V4cCBpbiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9yY3V0b3J0dXJlL2Jpbi9r
-dm0tcmVjaGVjay1yZWZzY2FsZS5zaA0KYW5kIHZlcmlmeSBpdCB3aXRoIHRoZSBuZXcgcmVzdWx0
-LCBpdCBhbHdheXMgd29ya3MuDQoNCg0KVGhhbmtzDQpaaGlqaWFuDQoNCg0KDQo+Pj4+ICAgIGVy
-cjoNCj4+Pj4gICAgCS8vIFRoaXMgd2lsbCBzaHV0ZG93biBldmVyeXRoaW5nIGluY2x1ZGluZyB1
-cy4NCj4+Pj4gLS0gDQo+Pj4+IDIuMzMuMA0KPj4+Pg0KPj4+Pg0KPj4+Pg0KPj4NCj4NCg==
+"Paul A. Clarke" <pc@us.ibm.com> writes:
+> Thanks for the changes!
+> More nits below (many left over from prior review)...
+>
+> On Fri, Oct 22, 2021 at 11:55:05AM +0530, Kajol Jain wrote:
+>> Add pmu metric json file for power10 platform.
+>> 
+>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>> ---
+>> Changelog v1 -> v2:
+>> - Did some nit changes in BriefDescription field
+>>   as suggested by Paul A. Clarke
+>> 
+>> - Link to the v1 patch: https://lkml.org/lkml/2021/10/6/131
+>> 
+>>  .../arch/powerpc/power10/metrics.json         | 676 ++++++++++++++++++
+>>  1 file changed, 676 insertions(+)
+>>  create mode 100644 tools/perf/pmu-events/arch/powerpc/power10/metrics.json
+>> 
+>> diff --git a/tools/perf/pmu-events/arch/powerpc/power10/metrics.json b/tools/perf/pmu-events/arch/powerpc/power10/metrics.json
+>> new file mode 100644
+>> index 000000000000..8adab5cd9934
+>> --- /dev/null
+>> +++ b/tools/perf/pmu-events/arch/powerpc/power10/metrics.json
+>> @@ -0,0 +1,676 @@
+>> +[
+>> +    {
+>> +        "BriefDescription": "Percentage of cycles that are run cycles",
+>> +        "MetricExpr": "PM_RUN_CYC / PM_CYC * 100",
+>> +        "MetricGroup": "General",
+>> +        "MetricName": "RUN_CYCLES_RATE",
+>> +        "ScaleUnit": "1%"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per completed instruction",
+>> +        "MetricExpr": "PM_CYC / PM_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "CYCLES_PER_INSTRUCTION"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled for any reason",
+>> +        "MetricExpr": "PM_DISP_STALL_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled because there was a flush",
+>> +        "MetricExpr": "PM_DISP_STALL_FLUSH / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_FLUSH_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled because the MMU was handling a translation miss",
+>> +        "MetricExpr": "PM_DISP_STALL_TRANSLATION / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_TRANSLATION_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled waiting to resolve an instruction ERAT miss",
+>> +        "MetricExpr": "PM_DISP_STALL_IERAT_ONLY_MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_IERAT_ONLY_MISS_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled waiting to resolve an instruction TLB miss",
+>> +        "MetricExpr": "PM_DISP_STALL_ITLB_MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_ITLB_MISS_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled due to an icache miss",
+>> +        "MetricExpr": "PM_DISP_STALL_IC_MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_IC_MISS_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while the instruction was fetched from the local L2",
+>> +        "MetricExpr": "PM_DISP_STALL_IC_L2 / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_IC_L2_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while the instruction was fetched from the local L3",
+>> +        "MetricExpr": "PM_DISP_STALL_IC_L3 / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_IC_L3_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while the instruction was fetched from any source beyond the local L3",
+>> +        "MetricExpr": "PM_DISP_STALL_IC_L3MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_IC_L3MISS_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled due to an icache miss after a branch mispredict",
+>> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_ICMISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_BR_MPRED_ICMISS_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while instruction was fetched from the local L2 after suffering a branch mispredict",
+>> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_IC_L2 / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_BR_MPRED_IC_L2_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while instruction was fetched from the local L3 after suffering a branch mispredict",
+>> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_IC_L3 / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_BR_MPRED_IC_L3_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while instruction was fetched from any source beyond the local L3 after suffering a branch mispredict",
+>> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_IC_L3MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_BR_MPRED_IC_L3MISS_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled due to a branch mispredict",
+>> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_BR_MPRED_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch for any reason",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_HELD_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because of a synchronizing instruction that requires the ICT to be empty before dispatch",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_SYNC_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISP_HELD_STALL_SYNC_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch while waiting on the scoreboard",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_SCOREBOARD_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISP_HELD_STALL_SCOREBOARD_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch due to issue queue full",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_ISSQ_FULL_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISP_HELD_STALL_ISSQ_FULL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because the mapper/SRB was full",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_RENAME_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_HELD_RENAME_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because the STF mapper/SRB was full",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_STF_MAPPER_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_HELD_STF_MAPPER_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because the XVFC mapper/SRB was full",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_XVFC_MAPPER_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_HELD_XVFC_MAPPER_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch for any other reason",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_OTHER_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_HELD_OTHER_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction has been dispatched but not issued for any reason",
+>> +        "MetricExpr": "PM_ISSUE_STALL / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "ISSUE_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting to be finished in one of the execution units",
+>> +        "MetricExpr": "PM_EXEC_STALL / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "EXECUTION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction spent executing an NTC instruction that gets flushed some time after dispatch",
+>> +        "MetricExpr": "PM_EXEC_STALL_NTC_FLUSH / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "NTC_FLUSH_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTF instruction finishes at dispatch",
+>> +        "MetricExpr": "PM_EXEC_STALL_FIN_AT_DISP / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "FIN_AT_DISP_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing in the branch unit",
+>> +        "MetricExpr": "PM_EXEC_STALL_BRU / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "BRU_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a simple fixed point instruction that is executing in the LSU",
+>> +        "MetricExpr": "PM_EXEC_STALL_SIMPLE_FX / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "SIMPLE_FX_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing in the VSU",
+>> +        "MetricExpr": "PM_EXEC_STALL_VSU / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "VSU_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting to be finished in one of the execution units",
+>> +        "MetricExpr": "PM_EXEC_STALL_TRANSLATION / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "TRANSLATION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a load or store that suffered a translation miss",
+>> +        "MetricExpr": "PM_EXEC_STALL_DERAT_ONLY_MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DERAT_ONLY_MISS_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is recovering from a TLB miss",
+>> +        "MetricExpr": "PM_EXEC_STALL_DERAT_DTLB_MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DERAT_DTLB_MISS_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing in the LSU",
+>> +        "MetricExpr": "PM_EXEC_STALL_LSU / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "LSU_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a load that is executing in the LSU",
+>> +        "MetricExpr": "PM_EXEC_STALL_LOAD / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "LOAD_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from either the local L2 or local L3",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L2L3 / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_L2L3_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from either the local L2 or local L3, with an RC dispatch conflict",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L2L3_CONFLICT / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_L2L3_CONFLICT_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from either the local L2 or local L3, without an RC dispatch conflict",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L2L3_NOCONFLICT / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_L2L3_NOCONFLICT_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a source beyond the local L2 and local L3",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L3MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_L3MISS_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a neighbor chiplet's L2 or L3 in the same chip",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L21_L31 / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_L21_L31_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from L4, local memory or OpenCapp chip",
+>
+> What is "OpenCapp"?  Is is different from OpenCAPI?
+>
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_LMEM / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_LMEM_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a remote chip (cache, L4, memory or OpenCapp) in the same group",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_OFF_CHIP / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_OFF_CHIP_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a distant chip (cache, L4, memory or OpenCapp chip)",
+>> +        "MetricExpr": "PM_EXEC_STALL_DMISS_OFF_NODE / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DMISS_OFF_NODE_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing a TLBIEL instruction",
+>> +        "MetricExpr": "PM_EXEC_STALL_TLBIEL / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "TLBIEL_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is finishing a load after its data has been reloaded from a data source beyond the local L1, OR when the LSU is processing an L1-hit, OR when the NTF instruction merged with another load in the LMQ",
+>> +        "MetricExpr": "PM_EXEC_STALL_LOAD_FINISH / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "LOAD_FINISH_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a store that is executing in the LSU",
+>> +        "MetricExpr": "PM_EXEC_STALL_STORE / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "STORE_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is in the store unit outside of handling store misses or other special store operations",
+>
+> Is "store unit" not the same as "LSU" ?  Use "LSU" uniformly if appropriate:
+> s/store unit/LSU/
+>
+>> +        "MetricExpr": "PM_EXEC_STALL_STORE_PIPE / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "STORE_PIPE_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a store whose cache line was not resident in the L1 and had to wait for allocation of the missing line into the L1",
+>> +        "MetricExpr": "PM_EXEC_STALL_STORE_MISS / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "STORE_MISS_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a TLBIE instruction waiting for a response from the L2",
+>> +        "MetricExpr": "PM_EXEC_STALL_TLBIE / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "TLBIE_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing a PTESYNC instruction",
+>> +        "MetricExpr": "PM_EXEC_STALL_PTESYNC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "PTESYNC_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction cannot complete because the thread was blocked",
+>> +        "MetricExpr": "PM_CMPL_STALL / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction cannot complete because it was interrupted by ANY exception",
+>> +        "MetricExpr": "PM_CMPL_STALL_EXCEPTION / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "EXCEPTION_COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is stuck at finish waiting for the non-speculative finish of either a STCX instruction waiting for its result or a load waiting for non-critical sectors of data and ECC",
+>> +        "MetricExpr": "PM_CMPL_STALL_MEM_ECC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "MEM_ECC_COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction cannot complete the instruction is a STCX instruction waiting for resolution from the nest",
+>
+> Need to reword this, I think.  I propose "Average cycles per instruction
+> when the NTC instruction is a STCX instruction waiting for resolution
+> from the nest", which follows the form used by HWSYNC_COMPLETION_STALL_CPI,
+> below.
+>
+>> +        "MetricExpr": "PM_CMPL_STALL_STCX / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "STCX_COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a LWSYNC instruction waiting to complete",
+>> +        "MetricExpr": "PM_CMPL_STALL_LWSYNC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "LWSYNC_COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a HWSYNC instruction stuck at finish waiting for a response from the L2",
+>> +        "MetricExpr": "PM_CMPL_STALL_HWSYNC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "HWSYNC_COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction required special handling before completion",
+>> +        "MetricExpr": "PM_CMPL_STALL_SPECIAL / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "SPECIAL_COMPLETION_STALL_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled because fetch was being held, so there was nothing in the pipeline for this thread",
+>> +        "MetricExpr": "PM_DISP_STALL_FETCH / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_FETCH_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because of power management",
+>> +        "MetricExpr": "PM_DISP_STALL_HELD_HALT_CYC / PM_RUN_INST_CMPL",
+>> +        "MetricGroup": "CPI",
+>> +        "MetricName": "DISPATCHED_HELD_HALT_CPI"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Percentage of flushes per completed run instruction",
+>
+> s/per completed run instruction/per instruction/
+
+I'm not sure we want to drop "completed" from this and all the following
+descriptions.
+
+There is a meaningful distinction between completed and dispatched
+instructions, I think it's useful to be explicit about which the event
+is counting.
+
+I agree dropping "run" is a good idea, most people won't understand that
+"run" means "non-idle", and I think don't expect idle instructions to be
+counted anyway.
+
+...
+>
+>> +        "MetricExpr": "PM_RUN_INST_CMPL / PM_RUN_CYC",
+>> +        "MetricGroup": "General",
+>> +        "MetricName": "RUN_IPC"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "Average number of instructions completed per instruction group",
+>
+> s/completed//
+
+And here the meaning is different if you drop "completed".
+
+cheers
