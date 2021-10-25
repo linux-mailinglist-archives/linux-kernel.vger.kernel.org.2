@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3538D43A81E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3744F43A820
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234747AbhJYX1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        id S235095AbhJYX1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhJYX1h (ORCPT
+        with ESMTP id S234643AbhJYX1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:27:37 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADC2C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:25:14 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so650703pji.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:25:14 -0700 (PDT)
+        Mon, 25 Oct 2021 19:27:38 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5529C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f8so2185934plo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oTG8QvPNWzFgpKy7CqYXTp73RNb8SI/uyXnU4fGa3S8=;
-        b=fTWBELNVu9D1RTOFOigK/cvOBFjDksmRbwT77WHyIQiqX0o6wq9X5lrZVVuKiGNh2j
-         Astj3ci5BkgQ2TSXR+6+MG2OqurA+1TULr/5VzSVfwLad4xOMViFzQ2b5lUwySj4YKLR
-         e11qgu7zqr3q+4FNLAW77cHXvr9LlFIMWqIcU=
+        bh=F+2km2Ms41Ov0dS1z/A4rzJgD2Yh00Ba8bMPWR6hat0=;
+        b=kTQtPmmOOzD87pssCi7DNb0cDtnb/JN0oFnGUiY+UEwc67S/D/2KuE+mBYUabmMWIO
+         MPtnc1gbQKZMGALHzWk9Pfl0Z/66WUi1O3YpUxgPwakncSQpg/OedJXKbHi5fVjoHuyM
+         mBBtCgwkH02DH0CsvIiHx3tgCogxypPdnsjaQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oTG8QvPNWzFgpKy7CqYXTp73RNb8SI/uyXnU4fGa3S8=;
-        b=UkS+HUP1EK/Dqxvh4YOBVvu3M2HKV1gW72ZR7xq+PyQ/m66o6aVkvxnSg3VDipGen2
-         Xbld+OagHOSwUdxw/l6qMTIIWr7xFQOyOJ2YFpuuQXY/GOjfp7grJW1CESQNFCVu/HRD
-         i80SPjNP+aigOgLpRNF7XfbTO4fjxS34pvtduw7I1fJJCIyH29qXM5WFEzNdE/pPISf3
-         Fyx+7rKgHvUGDaZdtNnZTbfcW32pm2wldo995+Ue3ZHDogC5krLH557XlcFxgs5+qdXs
-         VuPG5WQIc1i1klgeLHZvbMAaP82hTGOmTkudXriqlgjQWchoX58gb6t/feJDvIzjPbh9
-         up1g==
-X-Gm-Message-State: AOAM532SlS1wPICKQ1I1C7RWwawHcZ17bSPJ+HCvrd6lEEGuHmNoiFax
-        /yatO27Nqdi9yidPO/MlOZ+Dsg==
-X-Google-Smtp-Source: ABdhPJxhiLnaU2FxzdZRMbo5t3eqX5j9UbbaVda6lptnK0ywpOAMdzqVvoau8aVgr0KaiBtNGm6qnA==
-X-Received: by 2002:a17:90b:3a81:: with SMTP id om1mr39312152pjb.184.1635204314186;
-        Mon, 25 Oct 2021 16:25:14 -0700 (PDT)
+        bh=F+2km2Ms41Ov0dS1z/A4rzJgD2Yh00Ba8bMPWR6hat0=;
+        b=6Ctx6ABTM25eaJe6G3DkVnAPrXxIb0sV7u3UnY6WuDrzQ9DZAeVgWZCQcOQgO8XHzU
+         9/S+voHBbwyd/U/5hbC8uTLDCiSKMskkvoTd3IEZgYKPntHEb6B1HX+TYCRkji4eP5Fk
+         n5LnWiyrRjN4B+K4mdgErQ5kMTxUuNHDmL6YocsRSryqfMcEzGDEbE1Z3bK05SElLLYc
+         VUNdyOJjDTgj32TUbIGdWUZyiJS/IFGxMfhLiPImBW5ktzV0xEmc9E/9gwLS3Ch7GV2H
+         RECduVUwjR+6cgLdDobEnHWntxe9qdqU9o8fpVczl19kIiLJkz8zoHdCHZp5/qgHy7XV
+         Z5qA==
+X-Gm-Message-State: AOAM530+5lDgztZywgEMrnAOlVcrJFbJb4WWzHHjQB/7DR93qUIG/hXA
+        tCLpgOuqCO0s7nQbzusB2Y2wng==
+X-Google-Smtp-Source: ABdhPJzixDA3xdtSIj2DXOgZ8A9jy/aeErGASKZUzBhRyIuRTPFjAvfw5LcEibiNnj02WzRsHKFZ3A==
+X-Received: by 2002:a17:902:aa82:b0:140:4655:b211 with SMTP id d2-20020a170902aa8200b001404655b211mr11419249plr.38.1635204315466;
+        Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
 Received: from sujitka-glaptop.hsd1.ca.comcast.net ([2601:646:8e00:b2f0:eac2:13a5:2214:747b])
-        by smtp.gmail.com with ESMTPSA id ob5sm20891535pjb.30.2021.10.25.16.25.13
+        by smtp.gmail.com with ESMTPSA id ob5sm20891535pjb.30.2021.10.25.16.25.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 16:25:13 -0700 (PDT)
+        Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
 From:   Sujit Kautkar <sujitka@chromium.org>
 To:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>
 Cc:     Sibi Sankar <sibis@codeaurora.org>,
@@ -52,11 +52,10 @@ Cc:     Sibi Sankar <sibis@codeaurora.org>,
         Stephen Boyd <swboyd@chromium.org>,
         Sujit Kautkar <sujitka@google.com>,
         Sujit Kautkar <sujitka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org
-Subject: [PATCH 1/2] rpmsg: glink: Fix use-after-free in qcom_glink_rpdev_release()
-Date:   Mon, 25 Oct 2021 16:24:59 -0700
-Message-Id: <20211025162452.1.Id19324ea36b4cf89faf98bf520bc6b6f01240433@changeid>
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Subject: [PATCH 2/2] rpmsg: glink: Update cdev add/del API in rpmsg_ctrldev_release_device()
+Date:   Mon, 25 Oct 2021 16:25:00 -0700
+Message-Id: <20211025162452.2.I507c5cea0cf97db4cedfa0e47029e711e7edd0df@changeid>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20211025232500.1775231-1-sujitka@chromium.org>
 References: <20211025232500.1775231-1-sujitka@chromium.org>
@@ -68,64 +67,98 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sujit Kautkar <sujitka@google.com>
 
-qcom_glink_rpdev_release() sets channel->rpdev to NULL. However, with
-debug enabled kernel, qcom_glink_rpdev_release() gets delayed due to
-delayed kobject release and channel gets released by that time and
-triggers below kernel warning. To avoid this use-after-free, add a
-condition to checks if channel was already released.
+Replace cdev add/del APIs with cdev_device_add/cdev_device_del to avoid
+below kernel warning. This correctly takes a reference to the parent
+device so the parent will not get released until all references to the
+cdev are released.
 
-| BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
-| Write of size 8 at addr ffffffaba438e8d0 by task kworker/6:1/54
-|
-| CPU: 6 PID: 54 Comm: kworker/6:1 Not tainted 5.4.109-lockdep #16
-| Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+| ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x7c
+| WARNING: CPU: 7 PID: 19892 at lib/debugobjects.c:488 debug_print_object+0x13c/0x1b0
+| CPU: 7 PID: 19892 Comm: kworker/7:4 Tainted: G        W         5.4.147-lockdep #1
+| ==================================================================
+| Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
 | Workqueue: events kobject_delayed_cleanup
+| pstate: 60c00009 (nZCv daif +PAN +UAO)
+| pc : debug_print_object+0x13c/0x1b0
+| lr : debug_print_object+0x13c/0x1b0
+| sp : ffffff83b2ec7970
+| x29: ffffff83b2ec7970 x28: dfffffd000000000
+| x27: ffffff83d674f000 x26: dfffffd000000000
+| x25: ffffffd06b8fa660 x24: dfffffd000000000
+| x23: 0000000000000000 x22: ffffffd06b7c5108
+| x21: ffffffd06d597860 x20: ffffffd06e2c21c0
+| x19: ffffffd06d5974c0 x18: 000000000001dad8
+| x17: 0000000000000000 x16: dfffffd000000000
+| BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
+| x15: ffffffffffffffff x14: 79616c6564203a74
+| x13: 0000000000000000 x12: 0000000000000080
+| Write of size 8 at addr ffffff83d95768d0 by task kworker/3:1/150
+| x11: 0000000000000001 x10: 0000000000000000
+| x9 : fc9e8edec0ad0300 x8 : fc9e8edec0ad0300
+|
+| x7 : 0000000000000000 x6 : 0000000000000000
+| x5 : 0000000000000080 x4 : 0000000000000000
+| CPU: 3 PID: 150 Comm: kworker/3:1 Tainted: G        W         5.4.147-lockdep #1
+| x3 : ffffffd06c149574 x2 : ffffff83f77f7498
+| x1 : ffffffd06d596f60 x0 : 0000000000000061
+| Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
 | Call trace:
-|  dump_backtrace+0x0/0x284
-|  show_stack+0x20/0x2c
-|  dump_stack+0xd4/0x170
-|  print_address_description+0x3c/0x4a8
-|  __kasan_report+0x144/0x168
-|  kasan_report+0x10/0x18
-|  __asan_report_store8_noabort+0x1c/0x24
-|  qcom_glink_rpdev_release+0x54/0x70
+|  debug_print_object+0x13c/0x1b0
+| Workqueue: events kobject_delayed_cleanup
+|  __debug_check_no_obj_freed+0x25c/0x3c0
+|  debug_check_no_obj_freed+0x18/0x20
+| Call trace:
+|  slab_free_freelist_hook+0xb4/0x1bc
+|  kfree+0xe8/0x2d8
+|  dump_backtrace+0x0/0x27c
+|  rpmsg_ctrldev_release_device+0x78/0xb8
 |  device_release+0x68/0x14c
-|  kobject_delayed_cleanup+0x158/0x2cc
-|  process_one_work+0x7cc/0x10a4
-|  worker_thread+0x80c/0xcec
+|  show_stack+0x20/0x2c
+|  kobject_cleanup+0x12c/0x298
+|  kobject_delayed_cleanup+0x10/0x18
+|  dump_stack+0xe0/0x19c
+|  process_one_work+0x578/0x92c
+|  worker_thread+0x804/0xcf8
+|  print_address_description+0x3c/0x4a8
 |  kthread+0x2a8/0x314
 |  ret_from_fork+0x10/0x18
+|  __kasan_report+0x100/0x124
 
 Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
 ---
 
- drivers/rpmsg/qcom_glink_native.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/rpmsg/rpmsg_char.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-index e1444fefdd1c0..cc3556a9385a9 100644
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -270,6 +270,7 @@ static void qcom_glink_channel_release(struct kref *ref)
- 	spin_unlock_irqrestore(&channel->intent_lock, flags);
+diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+index 876ce43df732b..b63a5c396da57 100644
+--- a/drivers/rpmsg/rpmsg_char.c
++++ b/drivers/rpmsg/rpmsg_char.c
+@@ -458,7 +458,7 @@ static void rpmsg_ctrldev_release_device(struct device *dev)
  
- 	kfree(channel->name);
-+	channel = NULL;
- 	kfree(channel);
+ 	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
+ 	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
+-	cdev_del(&ctrldev->cdev);
++	cdev_device_del(&ctrldev->cdev, &ctrldev->dev);
+ 	kfree(ctrldev);
  }
  
-@@ -1372,8 +1373,10 @@ static void qcom_glink_rpdev_release(struct device *dev)
- {
- 	struct rpmsg_device *rpdev = to_rpmsg_device(dev);
- 	struct glink_channel *channel = to_glink_channel(rpdev->ept);
-+	if (channel) {
-+		channel->rpdev = NULL;
-+	}
+@@ -493,14 +493,13 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+ 	dev->id = ret;
+ 	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
  
--	channel->rpdev = NULL;
- 	kfree(rpdev);
- }
+-	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
++	ret = cdev_device_add(&ctrldev->cdev, &ctrldev->dev);
+ 	if (ret)
+ 		goto free_ctrl_ida;
  
+ 	/* We can now rely on the release function for cleanup */
+ 	dev->release = rpmsg_ctrldev_release_device;
+ 
+-	ret = device_add(dev);
+ 	if (ret) {
+ 		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
+ 		put_device(dev);
 -- 
 2.31.0
 
