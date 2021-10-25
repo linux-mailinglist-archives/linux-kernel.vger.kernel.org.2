@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6088843A3BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E70643A23A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238920AbhJYUCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:02:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
+        id S237916AbhJYTqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239591AbhJYT5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:57:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C825611C4;
-        Mon, 25 Oct 2021 19:47:00 +0000 (UTC)
+        id S236668AbhJYTjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EBA16105A;
+        Mon, 25 Oct 2021 19:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191222;
-        bh=m3sAFKsl04frEcNvAT8NnlptnPwULFmfs6QJVsGkHvo=;
+        s=korg; t=1635190527;
+        bh=HmphS5QgLMHqQ9BFXsyVlzVfFMujSPXdpQMgwyXSjGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0lQ+4P3AfdihqJRJnFncfuVyOkLwkGLItAAv9ZFLd0+Co2WOlFaKx3/PFC54g2Bb
-         I1xYjcHWAZ8GnKzkFAEUJSwMx3HvMdZ3dlf4SAppzJ5chLB/xBqCdkHHL886dHUj8d
-         ecyKyE37ncgMOVeCWaA7NLaH5bs6fjcnFBUvWQsw=
+        b=DlkW3/zNhBLn3uFACbYEdhAywLDPzosMi8bAGAqw8k4UOVaKEG77X9lFDPu1kJreG
+         99BK7Fps/DUyrdaZ7uAhIM5lbvzlucy6LAhObrs3txktFoBcEA8nRlmom3AZro3dlx
+         pXNKGhtvBhX3/y4WCZx/Ytgg/rfkEMvKuoX8QXxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 145/169] libperf tests: Fix test_stat_cpu
-Date:   Mon, 25 Oct 2021 21:15:26 +0200
-Message-Id: <20211025191035.935347739@linuxfoundation.org>
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 90/95] net: mdiobus: Fix memory leak in __mdiobus_register
+Date:   Mon, 25 Oct 2021 21:15:27 +0200
+Message-Id: <20211025191009.788587119@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,105 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-[ Upstream commit 3ff6d64e68abc231955d216236615918797614ae ]
+commit ab609f25d19858513919369ff3d9a63c02cd9e2e upstream.
 
-The `cpu` argument of perf_evsel__read() must specify the cpu index.
+Once device_register() failed, we should call put_device() to
+decrement reference count for cleanup. Or it will cause memory
+leak.
 
-perf_cpu_map__for_each_cpu() is for iterating the cpu number (not index)
-and is thus not appropriate for use with perf_evsel__read().
+BUG: memory leak
+unreferenced object 0xffff888114032e00 (size 256):
+  comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
+    08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
+  backtrace:
+    [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
+    [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
+    [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+    [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
+    [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
+    [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
+    [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
 
-So, if there is an offline CPU, the cpu number specified in the argument
-may point out of range because the cpu number and the cpu index are
-different.
+BUG: memory leak
+unreferenced object 0xffff888116f06900 (size 32):
+  comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
+  hex dump (first 32 bytes):
+    75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
+    [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
+    [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+    [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
+    [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
 
-Fix test_stat_cpu().
-
-Testing it:
-
-  # make tests -C tools/lib/perf/
-  make: Entering directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
-  running static:
-  - running tests/test-cpumap.c...OK
-  - running tests/test-threadmap.c...OK
-  - running tests/test-evlist.c...OK
-  - running tests/test-evsel.c...OK
-  running dynamic:
-  - running tests/test-cpumap.c...OK
-  - running tests/test-threadmap.c...OK
-  - running tests/test-evlist.c...OK
-  - running tests/test-evsel.c...OK
-  make: Leaving directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
-
-Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20211011083704.4108720-1-nakamura.shun@fujitsu.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/lib/perf/tests/test-evlist.c | 6 +++---
- tools/lib/perf/tests/test-evsel.c  | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/phy/mdio_bus.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index c67c83399170..ce91a582f0e4 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -40,7 +40,7 @@ static int test_stat_cpu(void)
- 		.type	= PERF_TYPE_SOFTWARE,
- 		.config	= PERF_COUNT_SW_TASK_CLOCK,
- 	};
--	int err, cpu, tmp;
-+	int err, idx;
- 
- 	cpus = perf_cpu_map__new(NULL);
- 	__T("failed to create cpus", cpus);
-@@ -70,10 +70,10 @@ static int test_stat_cpu(void)
- 	perf_evlist__for_each_evsel(evlist, evsel) {
- 		cpus = perf_evsel__cpus(evsel);
- 
--		perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
-+		for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
- 			struct perf_counts_values counts = { .val = 0 };
- 
--			perf_evsel__read(evsel, cpu, 0, &counts);
-+			perf_evsel__read(evsel, idx, 0, &counts);
- 			__T("failed to read value for evsel", counts.val != 0);
- 		}
- 	}
-diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
-index 9abd4c0bf6db..33ae9334861a 100644
---- a/tools/lib/perf/tests/test-evsel.c
-+++ b/tools/lib/perf/tests/test-evsel.c
-@@ -22,7 +22,7 @@ static int test_stat_cpu(void)
- 		.type	= PERF_TYPE_SOFTWARE,
- 		.config	= PERF_COUNT_SW_CPU_CLOCK,
- 	};
--	int err, cpu, tmp;
-+	int err, idx;
- 
- 	cpus = perf_cpu_map__new(NULL);
- 	__T("failed to create cpus", cpus);
-@@ -33,10 +33,10 @@ static int test_stat_cpu(void)
- 	err = perf_evsel__open(evsel, cpus, NULL);
- 	__T("failed to open evsel", err == 0);
- 
--	perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
-+	for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
- 		struct perf_counts_values counts = { .val = 0 };
- 
--		perf_evsel__read(evsel, cpu, 0, &counts);
-+		perf_evsel__read(evsel, idx, 0, &counts);
- 		__T("failed to read value for evsel", counts.val != 0);
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -544,6 +544,7 @@ int __mdiobus_register(struct mii_bus *b
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
++		put_device(&bus->dev);
+ 		return -EINVAL;
  	}
  
--- 
-2.33.0
-
 
 
