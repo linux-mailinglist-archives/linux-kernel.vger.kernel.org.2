@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FAE43A83B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F7643A83D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbhJYXiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:38:00 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:11307 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235020AbhJYXhs (ORCPT
+        id S231161AbhJYXi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:38:27 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:52677 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235117AbhJYXiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:37:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635204926; x=1666740926;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=sCHp0cFXQiqQ+Mjl8y2cZ/GODXHWgVMPKsSlaf7whdE=;
-  b=Asynbqw4t8eqPLbIaUJ+ki7F5vgfPXpkaVtR0PhlaNyqwZ5t+/iYrlac
-   GhFLAy40XbHy5wQqZN6K5MMtGQb2VsQJgss4KHX/gVdK5g1glnZWa02wh
-   3fY//DZ1a2SfWFt/rsvsSRi1ikrjxZUDsWiJ5luPfwWOQSjlXXNDlnvmJ
-   k=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 25 Oct 2021 16:35:24 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 16:35:24 -0700
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 25 Oct 2021 16:35:23 -0700
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        <freedreno@lists.freedesktop.org>, <gregkh@linuxfoundation.org>,
-        <robdclark@gmail.com>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <nganji@codeaurora.org>,
-        <aravindh@codeaurora.org>, <dmitry.baryshkov@linaro.org>
-Subject: MAINTAINERS: update designated reviewer entry for MSM DRM driver
-Date:   Mon, 25 Oct 2021 16:35:07 -0700
-Message-ID: <1635204907-412-1-git-send-email-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 25 Oct 2021 19:38:21 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdWY83ZKJz4xbt;
+        Tue, 26 Oct 2021 10:35:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635204957;
+        bh=TUi/jkB4W0VoV7xMHRCwj98lzlLaUGaZ3Lr58LdDwyE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=r/YSzgZA1dfLGlC7YflGUBis9Erojx1Nm8PBGQB5DvP8P0qL54NfgGP1Je4mngUfD
+         daOYmvUU2kqaduJL6Df016eD18HhxfWc49quqbd7bpGk6Glwm1IIJXU7HO887rv7wM
+         b/qVH4stPBye56m1JssKB/UzW9lyABo33WRTVbJCbuU6OgF6uZoddtaTD1vxw5X4cN
+         BfRnXSSQb1HqktCgb/gn8rr9lYeUp+2tIfyh/pGkeEEQPMiM+wNMwRr5wHKmiMALp/
+         KT2P+QtulO8iPAfsXCBGXrzFw4RwB4W8DaiNeBcNHHCGe57W8fwDCtvMjuWj1Dyf+z
+         sVA/DqD2VhSag==
+Date:   Tue, 26 Oct 2021 10:35:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the ftrace tree
+Message-ID: <20211026103553.46c956db@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: multipart/signed; boundary="Sig_/unZtDqPbK5H8PAz7adpW+mh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as a designated reviewer to assist with the
-code reviews for the changes coming into MSM DRM.
+--Sig_/unZtDqPbK5H8PAz7adpW+mh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Hi all,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b33791..503112d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5938,6 +5938,7 @@ M:	Sean Paul <sean@poorly.run>
- L:	linux-arm-msm@vger.kernel.org
- L:	dri-devel@lists.freedesktop.org
- L:	freedreno@lists.freedesktop.org
-+R:	Abhinav Kumar <quic_abhinavk@quicinc.com>
- S:	Maintained
- T:	git https://gitlab.freedesktop.org/drm/msm.git
- F:	Documentation/devicetree/bindings/display/msm/
--- 
-2.7.4
+After merging the ftrace tree, today's linux-next build (htmldocs)
+produced this warning:
 
+lib/bootconfig.c:78: warning: Function parameter or member 'node_size' not =
+described in 'xbc_get_info'
+lib/bootconfig.c:78: warning: Function parameter or member 'data_size' not =
+described in 'xbc_get_info'
+
+Introduced by commit
+
+  e306220cb7b7 ("bootconfig: Add xbc_get_info() for the node information")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/unZtDqPbK5H8PAz7adpW+mh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3P1kACgkQAVBC80lX
+0Gx+eQgAhmEickIm9E/Wh/Z3ChJUNyVhJ6cbCmk2kzFMSg6QNT9qIMZMR9KUEibs
+v/7XA11Qs/ckV1Xn42fl/p3DKu83LStnOh4LGqcEd84UHR9Yx/QtdKPugYW73fHR
+TrtratBWFtqVCtcB5RGticDLtriP+uGxO7BgMVkCg2JO3l6MAzcQl9v86FHmdK2p
+cUblYkXBOi3z6IBXiFvxewLWjZQpTudqe05SKTL8VYYzaA3xXjlH6UST/ol+jw1E
+g5Vl68BCnq2cuKQ4ggX0wPWO6CnfPsd1TUNN4JwZJFrRmCM7Bbv/Oxsp2A7pfbt2
+nVtbil3JryLQdCux5fuPsyYRMlpl3A==
+=IiPL
+-----END PGP SIGNATURE-----
+
+--Sig_/unZtDqPbK5H8PAz7adpW+mh--
