@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC5243A331
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C7943A0EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239443AbhJYT4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42076 "EHLO mail.kernel.org"
+        id S235481AbhJYTgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237875AbhJYTv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:51:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 817556112F;
-        Mon, 25 Oct 2021 19:43:36 +0000 (UTC)
+        id S235304AbhJYT3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:29:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27918604AC;
+        Mon, 25 Oct 2021 19:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191017;
-        bh=gPWUYlS9fee5QYFOoeLxtRQ9wXVi8zSc0CwmW131fvA=;
+        s=korg; t=1635190026;
+        bh=WxIuxR2Z/+GvLVsZ6o4RyaWRbutRv8LxMHw1NwzbEuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ijuhJHrUCFUExA1Ar0fGrYmqL4db5EPRTlbBVR58VqBTpq0SbkQYN3xKT9If+ZMdG
-         Qv9Rw2AHTbwD/HFV/QaFgU4GAGFqKzXMA9B+CRnQ3WFFWCwULU9p3vKIWQ3rSrYKHd
-         JlHc5SzfdbYA6IaLdxd/1EvcelsfUVM+ptwvM4g8=
+        b=thLLzvdnDTzuSbJ/ZSMlUtTRKjGtfS/fc5v0TtPQ4uQOwtqgiVnvomCd6szhbFyG1
+         IPPLFXOFEva8flq92kcRwuRmutKJEcAAZarkXo0jGNoB4JKouVnwDOwq7NOOp+pr+u
+         my7XcXSHNSxohMB0QHE9PrABWDnO33TjBZKuX2QU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 106/169] KVM: SEV-ES: rename guest_ins_data to sev_pio_data
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 30/58] vfs: check fd has read access in kernel_read_file_from_fd()
 Date:   Mon, 25 Oct 2021 21:14:47 +0200
-Message-Id: <20211025191031.550186419@linuxfoundation.org>
+Message-Id: <20211025190942.521448980@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit b5998402e3de429b5e5f9bdea08ddf77c5fd661e upstream.
+commit 032146cda85566abcd1c4884d9d23e4e30a07e9a upstream.
 
-We will be using this field for OUTS emulation as well, in case the
-data that is pushed via OUTS spans more than one page.  In that case,
-there will be a need to save the data pointer across exits to userspace.
+If we open a file without read access and then pass the fd to a syscall
+whose implementation calls kernel_read_file_from_fd(), we get a warning
+from __kernel_read():
 
-So, change the name to something that refers to any kind of PIO.
-Also spell out what it is used for, namely SEV-ES.
+        if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
 
-No functional change intended.
+This currently affects both finit_module() and kexec_file_load(), but it
+could affect other syscalls in the future.
 
-Cc: stable@vger.kernel.org
-Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://lkml.kernel.org/r/20211007220110.600005-1-willy@infradead.org
+Fixes: b844f0ecbc56 ("vfs: define kernel_copy_file_from_fd()")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/kvm_host.h |    2 +-
- arch/x86/kvm/x86.c              |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ fs/exec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -695,7 +695,7 @@ struct kvm_vcpu_arch {
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -988,7 +988,7 @@ int kernel_read_file_from_fd(int fd, voi
+ 	struct fd f = fdget(fd);
+ 	int ret = -EBADF;
  
- 	struct kvm_pio_request pio;
- 	void *pio_data;
--	void *guest_ins_data;
-+	void *sev_pio_data;
+-	if (!f.file)
++	if (!f.file || !(f.file->f_mode & FMODE_READ))
+ 		goto out;
  
- 	u8 event_exit_inst_len;
- 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12322,7 +12322,7 @@ EXPORT_SYMBOL_GPL(kvm_sev_es_mmio_read);
- 
- static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
- {
--	memcpy(vcpu->arch.guest_ins_data, vcpu->arch.pio_data,
-+	memcpy(vcpu->arch.sev_pio_data, vcpu->arch.pio_data,
- 	       vcpu->arch.pio.count * vcpu->arch.pio.size);
- 	vcpu->arch.pio.count = 0;
- 
-@@ -12354,7 +12354,7 @@ static int kvm_sev_es_ins(struct kvm_vcp
- 	if (ret) {
- 		vcpu->arch.pio.count = 0;
- 	} else {
--		vcpu->arch.guest_ins_data = data;
-+		vcpu->arch.sev_pio_data = data;
- 		vcpu->arch.complete_userspace_io = complete_sev_es_emulated_ins;
- 	}
- 
+ 	ret = kernel_read_file(f.file, buf, size, max_size, id);
 
 
