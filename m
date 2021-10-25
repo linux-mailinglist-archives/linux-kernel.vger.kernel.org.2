@@ -2,326 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5B1439A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6617D439A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbhJYPcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:32:14 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41913 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233966AbhJYPbv (ORCPT
+        id S233928AbhJYPcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233930AbhJYPcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:31:51 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6B0F75806D9;
-        Mon, 25 Oct 2021 11:29:28 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 25 Oct 2021 11:29:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=mp6cz8UQwSXIu
-        9XzMAUzRz14RPXoQ+fUCMUWKoQ0dEE=; b=FvGulLlKF/p1j/ffhSoyilciPsdFz
-        3vtPYWe9hBIXStZCVkOqEyJxjZCi5GAcbaNZY4TdpUvuSCUurEmELqdAV1XsX2aW
-        etlLMB+bU9ss9JGzDvEbwdONyhlMQLQ3kmFVnUM6ANMzQvrf1pXyKRgRHAbeQipX
-        TS7xeLb1OqLbVtgWWR82MGBDx2KDjd2Z6QUdzONE7VYVChw5zbWkdLdT1mstgEZ0
-        FbBHM5E661+Hb1L/3hnHyEbYIcteDz7T8MUIQXfl/ja+zOUdiXuQ+xjn7jX55Ku6
-        QFapUQbBpEbpwjezZujRZ3D4PKPwHTjgsq5W/I4zRFE7rFkgyaXgxb2cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=mp6cz8UQwSXIu9XzMAUzRz14RPXoQ+fUCMUWKoQ0dEE=; b=ZlZYaGhH
-        8BfOPmB171iJg6nSFWjKuKsZ08Uhht62py+11uwWsEfhAEt2u4IY5rYo5vpaXV4x
-        y0WglrWII8eJaGe3f+LsGsVIKf9RDwkzKOa0h1yGffbr/QIc0bfWxxCAGgfu3RIM
-        yFxGf8aFyWXTlkXa4Y+F3KVctvnv1kvbUGMOfv3TXN59sWk6rqpOammkq/XABCD3
-        L4uNCoVPx98ZOY0GMMMPfPZbqgUJj/2kRLCviOvNotw3rSmF84zQmuLjZVwXwYG2
-        Bk1/+tKyh1OnpaCnsc8ORJpAPKY89+n7Bdcnkb8qi2hMP3zIGSmdpeZVCqr0tucY
-        tAJk+dx7xQ0dPw==
-X-ME-Sender: <xms:WM12Yeo2itTRJOd94pQXVPVT0bQHtVUrLO8wEfTihjg1T66kSJWztQ>
-    <xme:WM12Ycq53X9OInMrPMY-th7OD2bcZavn_C5NJcu84RBia5CUvH8EaCGtPY7ixYDnu
-    ptIACoL2sYYbpF3MZE>
-X-ME-Received: <xmr:WM12YTPv6w8sr6GVXTIRMzqXRz8VyrDhYwnQXS6w64QtFYLHOKF_CWQeV26O2fIdNxzDe9vtQInYGig0Pmar_YHhdDjNHAv7D1lG_Uoi>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedgheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:WM12Yd4WRMLccbl40e6AcwWn7lNvIoq7O6mQOqL-E4ca1I4QFHhdzA>
-    <xmx:WM12Yd70dLiXt5L0I67CusYcZ_xVkDiYRJn_EpAXOvHrSGbDRj-e_w>
-    <xmx:WM12YdhSWl8M00vBZzKbSewZ7wL9oBt0eU3jEmoCjzGj-CtXvTZbCQ>
-    <xmx:WM12YcScigXw6nmNvRgvpODfW5FVrxYt0LkxFbnYXij7F4uT6uquFw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Oct 2021 11:29:27 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Emma Anholt <emma@anholt.net>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Subject: [PATCH v8 10/10] drm/vc4: Increase the core clock based on HVS load
-Date:   Mon, 25 Oct 2021 17:29:03 +0200
-Message-Id: <20211025152903.1088803-11-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211025152903.1088803-1-maxime@cerno.tech>
-References: <20211025152903.1088803-1-maxime@cerno.tech>
+        Mon, 25 Oct 2021 11:32:31 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2098EC061746
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:30:09 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v20so8184323plo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to;
+        bh=/oQC3c6kHPBnBYaCXyk3XQoSwBx0MJsbDNrgRDHiTYM=;
+        b=pCc4tEnlzbOlYCNDcTOgyL6If8XqWi1Q0zLmpkNfUyKh+BuBP45aijAy/kmyp2nLNf
+         V1/R8D9ZjsNp3qBZL1RzcaN8S0dA2xpJ90H7pBofgOw6tjafiMQpgYw0xldsCjUREs4b
+         MyFKVQ7G/z+jsNIuc5zGadm7e4gwuvTfLUolr5GbrUysEgS3k/cHI8eu2oHj1EmN9W0T
+         2cvHFje7oBkU0KuaJSg5NeSDd/p4EEYYrbQMeojtYp+f5rY3xuzpNw3iboNjD63A67kj
+         lBn3zuPvmiOxNMXnPLe7K2ZTnZSxoE8emqs6GhPQmVGRASAsp2y4FeenmWxXBRqGxh1X
+         zozQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to;
+        bh=/oQC3c6kHPBnBYaCXyk3XQoSwBx0MJsbDNrgRDHiTYM=;
+        b=pJgVZOWiWilsuSrLUvVmR/MueFlcbYDHztvbWuyQujUK78a3UrOMvqeuHM8anTpEK5
+         RObShKz2YYPJaGtm5Gd49GoqgyOMY2V7HrAhvUCm2dNDAVNiKB3U0T6CG+r/ikG61Jd9
+         ZnhCwJwio+0MmDexpEVU+LouPMEIlw1THZKvbtAo36vCSbq1XHcRlnN5WI/hqTZg9vbv
+         TIg/Y5Ie9r7djH2XpBGpTtyvanaht9MPG8uOw0eYZo5EuAaPy2yz119N0qV6q0WUEOjG
+         PIGbAEXstbeVvg8kD/bUiNnLp1keRRi3AcKgvRzNfXDQt9QBNCAsHkwUoc3sGRZVoOfK
+         Jvyg==
+X-Gm-Message-State: AOAM530V2ny/TOkYzfp3rJVNVqoWiL0bcgvnNQkjE38qtuMxcqELiyPa
+        k5unvauPkT0xi67SGyX30v0lfQ==
+X-Google-Smtp-Source: ABdhPJyr4pfh618Fcc7JKCHq2J8ZamOvVnZCEbt++k4esy3a34dSZzGuq3W3UVid31/WtHehz2eymA==
+X-Received: by 2002:a17:90b:1c02:: with SMTP id oc2mr21614855pjb.128.1635175808339;
+        Mon, 25 Oct 2021 08:30:08 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id ng5sm19150359pjb.51.2021.10.25.08.30.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 08:30:07 -0700 (PDT)
+Message-ID: <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
+Date:   Mon, 25 Oct 2021 08:30:06 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
+ enc/dec
+Content-Language: en-US
+To:     Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
+ <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------mAhZPgdr3mdsZ2DcUcEr18WS"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on a given HVS output (HVS to PixelValves) and input (planes
-attached to a channel) load, the HVS needs for the core clock to be
-raised above its boot time default.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------mAhZPgdr3mdsZ2DcUcEr18WS
+Content-Type: multipart/mixed; boundary="------------YsFxvfcQkaI2CagWnGszgzcf";
+ protected-headers="v1"
+From: Tadeusz Struk <tadeusz.struk@linaro.org>
+To: Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Lee Jones
+ <lee.jones@linaro.org>, Amit Pundir <amit.pundir@linaro.org>,
+ John Stultz <john.stultz@linaro.org>, linux-media@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
+Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
+ enc/dec
+References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
+ <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
+In-Reply-To: <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
 
-Failing to do so will result in a vblank timeout and a stalled display
-pipeline.
+--------------YsFxvfcQkaI2CagWnGszgzcf
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_crtc.c |  15 +++++
- drivers/gpu/drm/vc4/vc4_drv.h  |   2 +
- drivers/gpu/drm/vc4/vc4_kms.c  | 110 ++++++++++++++++++++++++++++++---
- 3 files changed, 118 insertions(+), 9 deletions(-)
+SGkgQnJ5YW4sDQpPbiAxMC8yNS8yMSAwODoyNCwgQnJ5YW4gTydEb25vZ2h1ZSB3cm90ZToN
+Cj4gDQo+PiArwqDCoMKgIHN0cnVjdCBtdXRleCBzeW5jX2xvY2s7DQo+IA0KPiBXaHkgaGF2
+ZSBhbiBhZGRpdGlvbmFsIG11dGV4LCB3aWxsIHRoZSBleGlzdGluZyBjb3JlOjpsb2NrIG5v
+dCBkbyA/DQoNCkkgd2FudGVkIHRvIHJldXNlIGl0LCBidXQgdGhlIGNvcmU6OmxvY2sgaW4g
+dXNlZCBpbnRlcm5hbGx5IGluIGhmaSBhbmQNCml0IHdpbGwgZGVhZGxvY2sgdGhlcmUgaWYg
+d2UgdXNlIHRoYXQgb25lIGhlcmUuDQoNCj4gc2hvdWxkbid0IHRoaXMgYmUgYW4gLUVQUk9C
+RV9ERUZFUiBpLmUuIENPUkVfSU5JVCBoYXNuJ3QgY29tcGxldGVkL3J1biB5ZXQgc28gZGVm
+ZXIgdW50aWwgDQo+IGl0IGRvZXMuDQo+IA0KPiBUaGlzIGZyYWdtZW50IGhlcmUgbG9va3Mg
+cmFjeSB0byBtZSB3aXRob3V0IGEgREVGRVIgYWJvdmUgPw0KPiANCj4gZHJpdmVycy9tZWRp
+YS9wbGF0Zm9ybS9xY29tL3ZlbnVzL2NvcmUuYzo6dmVudXNfcHJvYmUoKQ0KDQpObywgd2Ug
+d2FudCBhIGhhcmQgc3RvcCBoZXJlLiBBdCB0aGlzIHBvaW50IHRoZSB2ZW51c19jb3JlIHBy
+b2JlKCkNCmhhcyBmaW5pc2hlZCBhbmQgaXQgZmFpbGVkLiBSZXR1cm5pbmcgLUVQUk9CRV9E
+RUZFUiBoZXJlIHdpbGwganVzdA0KY2F1c2UgaXQgdG8gbG9vcCBpbmZpbml0ZWx5Lg0KDQot
+LSANClRoYW5rcywNClRhZGV1c3oNCg==
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 6decaa12a078..287dbc89ad64 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -659,12 +659,27 @@ static int vc4_crtc_atomic_check(struct drm_crtc *crtc,
- 	struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc_state);
- 	struct drm_connector *conn;
- 	struct drm_connector_state *conn_state;
-+	struct drm_encoder *encoder;
- 	int ret, i;
- 
- 	ret = vc4_hvs_atomic_check(crtc, state);
- 	if (ret)
- 		return ret;
- 
-+	encoder = vc4_get_crtc_encoder(crtc, crtc_state);
-+	if (encoder) {
-+		const struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-+		struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
-+
-+		mode = &crtc_state->adjusted_mode;
-+		if (vc4_encoder->type == VC4_ENCODER_TYPE_HDMI0) {
-+			vc4_state->hvs_load = max(mode->clock * mode->hdisplay / mode->htotal + 1000,
-+						  mode->clock * 9 / 10) * 1000;
-+		} else {
-+			vc4_state->hvs_load = mode->clock * 1000;
-+		}
-+	}
-+
- 	for_each_new_connector_in_state(state, conn, conn_state,
- 					i) {
- 		if (conn_state->crtc != crtc)
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-index 813c5d0ea98e..4329e09d357c 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.h
-+++ b/drivers/gpu/drm/vc4/vc4_drv.h
-@@ -558,6 +558,8 @@ struct vc4_crtc_state {
- 		unsigned int bottom;
- 	} margins;
- 
-+	unsigned long hvs_load;
-+
- 	/* Transitional state below, only valid during atomic commits */
- 	bool update_muxing;
- };
-diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
-index 41cb4869da50..79d4d9dd1394 100644
---- a/drivers/gpu/drm/vc4/vc4_kms.c
-+++ b/drivers/gpu/drm/vc4/vc4_kms.c
-@@ -39,9 +39,11 @@ static struct vc4_ctm_state *to_vc4_ctm_state(struct drm_private_state *priv)
- 
- struct vc4_hvs_state {
- 	struct drm_private_state base;
-+	unsigned long core_clock_rate;
- 
- 	struct {
- 		unsigned in_use: 1;
-+		unsigned long fifo_load;
- 		struct drm_crtc_commit *pending_commit;
- 	} fifo_state[HVS_NUM_CHANNELS];
- };
-@@ -340,10 +342,19 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 	struct vc4_hvs *hvs = vc4->hvs;
- 	struct drm_crtc_state *old_crtc_state;
- 	struct drm_crtc_state *new_crtc_state;
-+	struct vc4_hvs_state *new_hvs_state;
- 	struct drm_crtc *crtc;
- 	struct vc4_hvs_state *old_hvs_state;
- 	int i;
- 
-+	old_hvs_state = vc4_hvs_get_old_global_state(state);
-+	if (WARN_ON(!old_hvs_state))
-+		return;
-+
-+	new_hvs_state = vc4_hvs_get_new_global_state(state);
-+	if (WARN_ON(!new_hvs_state))
-+		return;
-+
- 	for_each_new_crtc_in_state(state, crtc, new_crtc_state, i) {
- 		struct vc4_crtc_state *vc4_crtc_state;
- 
-@@ -354,12 +365,13 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 		vc4_hvs_mask_underrun(dev, vc4_crtc_state->assigned_channel);
- 	}
- 
--	if (vc4->hvs->hvs5)
--		clk_set_min_rate(hvs->core_clk, 500000000);
-+	if (vc4->hvs->hvs5) {
-+		unsigned long core_rate = max_t(unsigned long,
-+						500000000,
-+						new_hvs_state->core_clock_rate);
- 
--	old_hvs_state = vc4_hvs_get_old_global_state(state);
--	if (!old_hvs_state)
--		return;
-+		clk_set_min_rate(hvs->core_clk, core_rate);
-+	}
- 
- 	for_each_old_crtc_in_state(state, crtc, old_crtc_state, i) {
- 		struct vc4_crtc_state *vc4_crtc_state =
-@@ -399,8 +411,12 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 
- 	drm_atomic_helper_cleanup_planes(dev, state);
- 
--	if (vc4->hvs->hvs5)
--		clk_set_min_rate(hvs->core_clk, 0);
-+	if (vc4->hvs->hvs5) {
-+		drm_dbg(dev, "Running the core clock at %lu Hz\n",
-+			new_hvs_state->core_clock_rate);
-+
-+		clk_set_min_rate(hvs->core_clk, new_hvs_state->core_clock_rate);
-+	}
- }
- 
- static int vc4_atomic_commit_setup(struct drm_atomic_state *state)
-@@ -657,9 +673,9 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
- 
- 	__drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
- 
--
- 	for (i = 0; i < HVS_NUM_CHANNELS; i++) {
- 		state->fifo_state[i].in_use = old_state->fifo_state[i].in_use;
-+		state->fifo_state[i].fifo_load = old_state->fifo_state[i].fifo_load;
- 
- 		if (!old_state->fifo_state[i].pending_commit)
- 			continue;
-@@ -668,6 +684,8 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
- 			drm_crtc_commit_get(old_state->fifo_state[i].pending_commit);
- 	}
- 
-+	state->core_clock_rate = old_state->core_clock_rate;
-+
- 	return &state->base;
- }
- 
-@@ -822,6 +840,76 @@ static int vc4_pv_muxing_atomic_check(struct drm_device *dev,
- 	return 0;
- }
- 
-+static int
-+vc4_core_clock_atomic_check(struct drm_atomic_state *state)
-+{
-+	struct vc4_dev *vc4 = to_vc4_dev(state->dev);
-+	struct drm_private_state *priv_state;
-+	struct vc4_hvs_state *hvs_new_state;
-+	struct vc4_load_tracker_state *load_state;
-+	struct drm_crtc_state *old_crtc_state, *new_crtc_state;
-+	struct drm_crtc *crtc;
-+	unsigned int num_outputs;
-+	unsigned long pixel_rate;
-+	unsigned long cob_rate;
-+	unsigned int i;
-+
-+	priv_state = drm_atomic_get_private_obj_state(state,
-+						      &vc4->load_tracker);
-+	if (IS_ERR(priv_state))
-+		return PTR_ERR(priv_state);
-+
-+	load_state = to_vc4_load_tracker_state(priv_state);
-+
-+	hvs_new_state = vc4_hvs_get_global_state(state);
-+	if (!hvs_new_state)
-+		return -EINVAL;
-+
-+	for_each_oldnew_crtc_in_state(state, crtc,
-+				      old_crtc_state,
-+				      new_crtc_state,
-+				      i) {
-+		if (old_crtc_state->active) {
-+			struct vc4_crtc_state *old_vc4_state =
-+				to_vc4_crtc_state(old_crtc_state);
-+			unsigned int channel = old_vc4_state->assigned_channel;
-+
-+			hvs_new_state->fifo_state[channel].fifo_load = 0;
-+		}
-+
-+		if (new_crtc_state->active) {
-+			struct vc4_crtc_state *new_vc4_state =
-+				to_vc4_crtc_state(new_crtc_state);
-+			unsigned int channel = new_vc4_state->assigned_channel;
-+
-+			hvs_new_state->fifo_state[channel].fifo_load =
-+				new_vc4_state->hvs_load;
-+		}
-+	}
-+
-+	cob_rate = 0;
-+	num_outputs = 0;
-+	for (i = 0; i < HVS_NUM_CHANNELS; i++) {
-+		if (!hvs_new_state->fifo_state[i].in_use)
-+			continue;
-+
-+		num_outputs++;
-+		cob_rate += hvs_new_state->fifo_state[i].fifo_load;
-+	}
-+
-+	pixel_rate = load_state->hvs_load;
-+	if (num_outputs > 1) {
-+		pixel_rate = (pixel_rate * 40) / 100;
-+	} else {
-+		pixel_rate = (pixel_rate * 60) / 100;
-+	}
-+
-+	hvs_new_state->core_clock_rate = max(cob_rate, pixel_rate);
-+
-+	return 0;
-+}
-+
-+
- static int
- vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
- {
-@@ -839,7 +927,11 @@ vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
- 	if (ret)
- 		return ret;
- 
--	return vc4_load_tracker_atomic_check(state);
-+	ret = vc4_load_tracker_atomic_check(state);
-+	if (ret)
-+		return ret;
-+
-+	return vc4_core_clock_atomic_check(state);
- }
- 
- static struct drm_mode_config_helper_funcs vc4_mode_config_helpers = {
--- 
-2.31.1
+--------------YsFxvfcQkaI2CagWnGszgzcf--
 
+--------------mAhZPgdr3mdsZ2DcUcEr18WS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEb3ghm5bfkfSeegvwo0472xuDAo4FAmF2zX4FAwAAAAAACgkQo0472xuDAo6l
+dw/+LhN7/VzFJraQeSIJGUhEKX9NetR2fYto6nKpoGEvuDNqoQJXhR8mTSjP1DtQtMVJB56Ssk+8
+GFkvTw4ewas2WIMCgJ6JNmkCLUvgFeY+tEAQl/wKCt1Bh/2cDz1f5LhCwRsP+QAfTRT0fBjSKr3F
+F2dXCUA45fEqntT7qJoTGe11ovdQgA+6MLFPDNPPJHFxAFGEeEsYLwwUiQ5tdTxeEeyLtyYYf1ic
+0Iog6xG079IOYYFljIkZTlWJGJyHpZqLOtbNIy/qPjFLXNVc7OuQq/U9yFJcb9jj/tMkEcLFstJX
+2tEK0MIvZi8eKAc5tg+RSxBUFNs5Qspq/XjvR6PWQ1RM0JryUThL1jIiVjWhJzrzxadFXnwofQ7z
+ozuDiHNgJbvKik6R6NzRQ6NkI1NhslSr4OticLiJpJgqP00n8M+mEryhxG6vY19lQ0+7Ze0DAVlQ
+AurSvVISPiHr20zkQrJAv5epizTcxhUxP9dfsPUgV6hO/a9Do1bW5r22Wt22YzuxQzlEpXqDVrSf
+V0MQyj5BBzgyymzmkZGu5XtXZGZd1EdDHHk52JwAei/ZxmkOPcij/lv/plN2GHS7bKG3tjaYzcNB
+jZLzheDx1Kl935zOo3Rdbziy0QT952iIB53CpsL2lIrJvpk2hdU9H20AnRqacjfPule8LRH9F+3v
+5zc=
+=5XHO
+-----END PGP SIGNATURE-----
+
+--------------mAhZPgdr3mdsZ2DcUcEr18WS--
