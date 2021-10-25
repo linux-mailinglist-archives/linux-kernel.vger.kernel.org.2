@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C403439A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CDC439A5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhJYPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:24:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57662 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233701AbhJYPYY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:24:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635175321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4XvEiZf2+PlOP4jQfZDuL7k1/1lBVAKJKfCdxPMRvMw=;
-        b=CnwpXNQe/idtrRgtPQgeSRgqoDOBe+e6awH1nrHPpZE+vRcI2aJhFcZrfB/an1dFRb0mOL
-        rdxgmMgQFLnMBFutvX6Ms83LM5UmASbkocsgew181xyJys24SUCOvdsOHN6muPA+PAjSmE
-        dqWdz4tlSvx+jqVCCtyvS+10Kt8d2Zc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-qDQjy8hJPxqGOVfROb_nyg-1; Mon, 25 Oct 2021 11:21:58 -0400
-X-MC-Unique: qDQjy8hJPxqGOVfROb_nyg-1
-Received: by mail-ed1-f69.google.com with SMTP id w7-20020a056402268700b003dd46823a18so4372672edd.18
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:21:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=4XvEiZf2+PlOP4jQfZDuL7k1/1lBVAKJKfCdxPMRvMw=;
-        b=ZBkqkmc26uskW5Y9L/2y88y6uz4z/A0vM2IzIfErxsGbsw9u2EzAXRPIB95WT/CLXz
-         c/TO+rDhlGdjULfLIQiKqYn/DECu+MqcWqyWDH6id60p2KCAiSL4xJHmvBmgwv46L5dd
-         RmL5TN7dOGrZUZAqxNRDMtLuvD/L2XaOFj9C1rGYvLgpqNPn25NLM9ri3tVrEMmq5qvg
-         1x11dQ5J6LxE9X0gpBp+XS7XbSr+hZZO9YvxYoK0WTttxaiplycbwnT/t214ZMos//SJ
-         MENhBWeb9DGM/gc+EHWxaT1v+klrriuBfKn5E6swDVQqdKcpTqsIW42RQnq4BhNk/cSI
-         AU+w==
-X-Gm-Message-State: AOAM531kJ6bOWWsQNcRF1DKzFYZ9AwLevN5MyBKhsz4d60+ZMtIPjkVI
-        eHxzXdSiWz62OrAbpQN3mOSXF4ityeU7AzzqIgGJda2LG6N2w3JJ6BrkEj3K3IBbHKWw49L2x54
-        lNl7D/T0mwe8zWf0yufOdVuJr
-X-Received: by 2002:a17:906:15d0:: with SMTP id l16mr23395539ejd.462.1635175317467;
-        Mon, 25 Oct 2021 08:21:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzF6LPnRTghCLifJUp2dbPdHn31IcztASGLIuIqGJjD3b3HXwvY7pD47zsSUkWHV1930VgzTA==
-X-Received: by 2002:a17:906:15d0:: with SMTP id l16mr23395507ejd.462.1635175317210;
-        Mon, 25 Oct 2021 08:21:57 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id cn2sm2671320edb.83.2021.10.25.08.21.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 08:21:56 -0700 (PDT)
-Message-ID: <674bc620-f013-d826-a4d4-00a142755a9e@redhat.com>
-Date:   Mon, 25 Oct 2021 17:21:55 +0200
+        id S233617AbhJYPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:24:38 -0400
+Received: from mail-eopbgr1410090.outbound.protection.outlook.com ([40.107.141.90]:27520
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233724AbhJYPYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:24:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iu3E4OsPvZMJ0GwZPLpvAX+e6uC8Pszg+lh776oyfSReolnZ7PxzxmDukAxGcdrRZbvRyrJc2WdCoysXDDt06OiN8N9gIeRLM7Z6TBTI4oug7l79kNNxP8808l0KpB8BqlEiAPx0KCcKC/UB9wqN+MbZdYEVUlHly5mse6N6Dmj5FhbJXc/jEHxUdyg4qJtbcSgCoalLvc36MCfco6Ixg43GnaEuNTaOwi4/pMsYfEm+NWS78wyIA/0yJ8URn03qc2gPOvgal7TBrCpmQd+DcjKbKEcj3jKMuPTNZV7useDuHQKdQwRbY2e4azMqBvwCagxEyLGwlLLq96sC2GUiXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bRrLq1Je6AGq8qesvcmNlnr2/i8eRijVnDGTAuTI/ZY=;
+ b=Axmnq2V79vwHVXiAfo4JshpcgFalbzUWV53Wwq1tLOpalrNUp6cQmmqe5+ZU4NlxhB0YU/ZwoJVcNTcczmmGd0GpykrfhYju8Y5C9vqMY4g8lof9LGThgf18RtX+F1r34KiY4RA9caqh34Gs1XdEZFGiPlrFTXnZeN6erYdzWrfH32XoF888iTcrDv0x5eYMYO0A+8hutwi6E+j9yYyGV/rzizLy32VNPuBzDKhJWeesoUmWCBFKqz3ny4C0nEefhKDLtG5YwIL6S2ePKZ3bQlDeo6zjy1/Rh5cVkVMJwKNhTEZP2NaowIA7v9RqX5loFcLVP0nuVM03HUWQx6lPOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRrLq1Je6AGq8qesvcmNlnr2/i8eRijVnDGTAuTI/ZY=;
+ b=ynp6FJ/3E2NzDffvJTdinzXx2DpQoeQTzYChS+4RQ7b73ebvgabbcS0VmsCHNwC7X8G6+gMVW3yATcq+ul/vOshOI8qrRjPpMddGhV37i3AQl6i+KFl/vEkgD+4u+CtVusPS5vVvrhMWK9+BNyIqtcCM8OfdHByq7xpoaGHIqPY=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYYP286MB1374.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:da::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.18; Mon, 25 Oct 2021 15:22:11 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 15:22:11 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "john.garry@huawei.com" <john.garry@huawei.com>
+Subject: driver/bug: suspected missing null check in hisi_lpc.c
+Thread-Topic: driver/bug: suspected missing null check in hisi_lpc.c
+Thread-Index: AdfJtAX2fMFFx03OTqmNb23By5R1KQ==
+Date:   Mon, 25 Oct 2021 15:22:11 +0000
+Message-ID: <TYCP286MB118803910D5797B4B1B1938D8A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f8aa9ebf-aa04-44f5-0227-08d997cb3786
+x-ms-traffictypediagnostic: TYYP286MB1374:
+x-microsoft-antispam-prvs: <TYYP286MB13745E69957EA7CFD3D279A38A839@TYYP286MB1374.JPNP286.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KAgFikk4ZoW35xD5iIAZ61TJc/eUW1qmXZFvo7H0laQ6r9y5iOwo42w+3BX29Q8FIKK6Bycff9qwyBwCnHDSDFWzIIsAJP4pBvOuf5rUdzB75oKEG01Fe+/W5liYJFu/vNWrjqpc7hH9JjzUbdnhzF+/6EHiaSc4Zp+0aLkElH/S8/VVKm3uM7tMW61ZUtIdhVYciTYvZXsXPAPy7u3wBdEyTyBLQ7W1aR+ik3Y58YWhOp1mtkm+546Hn9xrMZhtYdgD9Bl8NZlG5XCMqghsZXKlDFJafYOCN5Z9dVqbHTmAL7ZrKOlzPxaVu2/VJ2N76xYZIq8qFDNzQ5Mcr5qGFm8CaHe0p/0s8vuFqyruvh7fClMgn1z5QUa/gSwkvPn9vd/hT8R5FFU2tN+g0KdETZ8kzO3sI2OUQkCssaOOkYbF2CsBIqWCjKdpm9XnAph1+zoagSABRrAALFRr/HN24GK0vTWBsHZ4IX39H9i3GL7RUagKodmH9l4xmGTgrpQpGdwHmoFYlpewOm85gBp/ZcxmoaDSqYQM2to1WFlb50aSKa5qj4xzlx9VQAR0Hd4v7YzGLMASwhWdJxKfNkxM8AXR52+nb7yfqY0mGiv4MMbf2UPA7u89/7J8ADm95tDA2UHFMnp/3C/Vn3tIofQFnyn6vMDNh/z2Li0qc4ljfUYS+NrZgNyYJchlBAPHp8JK3Q3OiPhuYHEiNP7Sfb8pOybdpRFpkL3pJFQVd2NeFdRTH3ik+H/N6NZH2ULxBWfq61+Glyqm+thT6uk8BCVqr/c7Ho7AZDCAM/bL0y/sLQg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(66446008)(8676002)(8936002)(4744005)(83380400001)(76116006)(5660300002)(122000001)(110136005)(786003)(6506007)(86362001)(508600001)(66946007)(66556008)(66476007)(9686003)(38070700005)(966005)(55016002)(7696005)(33656002)(2906002)(71200400001)(52536014)(186003)(64756008)(26005)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vnCiYsdV3M6CLDoHosWIHFpBheXYwrHSm6CivmGXhvdLhR735+M5NlyYotgm?=
+ =?us-ascii?Q?dcblshpIKLJ5wieVR8LyUpXmx0dZPbtNd6cwjNl0m/cb+IZQznxD7yDH/YIR?=
+ =?us-ascii?Q?RLUHCw0d9fBfB+lSBkHZ5PCL8+yb+DIuu3GtD0IYScXleH85c6BWoMI6LFBf?=
+ =?us-ascii?Q?ElyMINFvHWnoBO3c81nKl3LPFXd2v1quEF325u6PNxWF20xV7NKUwtNY+gyw?=
+ =?us-ascii?Q?rxlf0GejNSOcd7MjF6/s6uTal3IyigwUcTJA+Tq2vobSwjkTrzQ3hMYfgFrN?=
+ =?us-ascii?Q?D//2HXr/am/VgU9178AtRmcBk7S87EosucYP5l6Gs0j+cp8bjh/7+KX/Z5Um?=
+ =?us-ascii?Q?oaz8dsUGxifUu7EcZc4VDql4snNG5kqd8therRJr0jAslSFoAlDl9i2G1Zej?=
+ =?us-ascii?Q?lw+LxYs998w8KAsKfGAadclXYpSHIWVkZFtz+uw+7Nz2z+0SBbdHfH/lkiqY?=
+ =?us-ascii?Q?rRTFEBbxL2qHiDcHQ8GyWNF3HlBgbrsvMw8GCe2pNocnuAQgvq686JyUFeQc?=
+ =?us-ascii?Q?VG6RQrx3h/9xaFudRHiMbZ4Cb4Pz/IS5yj1C1+NpE0Wq3py3ePafecuhJuIr?=
+ =?us-ascii?Q?mx3RK0eUt53HtjdZlZ9zZgPwppE4/QFR1DVQ/PXFi5fADWrgEfdedUUT9+5V?=
+ =?us-ascii?Q?5CFG0ugJwt835q1kV1yhel9BJg1nq5/xoDJGwXXq6Ndjq8+IVcw2zY647lmN?=
+ =?us-ascii?Q?bsd/TtmEgz1P8XY/3cftIZIRDeOO/6xH2JzDARh4ypmco0I/zViwFCCehE8E?=
+ =?us-ascii?Q?hfbq3lZ56NkW60UgOkzXE9ZsAi768wzAdmqU3rJwRDiU0LrgMpEzoyja4/l/?=
+ =?us-ascii?Q?5oAMrDXbPIoduDGKQi8B7d2TAe3SjK/J1Ua1N0m6A08w0pDDH2n4AvxqlKhl?=
+ =?us-ascii?Q?OB2WwhdntBkw/GsDaccmU6keRQRIDLa0JuUsByp3YZovVN3Dr7zcXhGKlRdJ?=
+ =?us-ascii?Q?iQuesuwq0XXMjdf1LmJKwg0fXalBC0McOGCbDNRleaOu3MDhKGVmcR3Lbtoc?=
+ =?us-ascii?Q?gNGg7d65+DZ0Q/lUL41fhHb3BwqCSBALExwfj66jrPSw7wSdn6nh60ss0CeD?=
+ =?us-ascii?Q?2E8tM+bGcQM7X8g3CHzKp0Nkz7xR0HG0z1cp0pMJSCYUM7OLi+IOBhJVyd3B?=
+ =?us-ascii?Q?9yv9HPd9vkIFQsU6/WwC00gXHwugzhAKwFQ4SPxCsvZtUE8IjMIfkS51AKpT?=
+ =?us-ascii?Q?tIph5KXYkjV45Vs0neIgD1IULXlgJnUXmf92/iUX7wThtDaEL1EoYT8dnNEn?=
+ =?us-ascii?Q?aLtX/pK4pvWK81DS4J29rmX34W+ksZitCIboa2PcTUVOawNeMDXpTWEqH/LK?=
+ =?us-ascii?Q?z8QZBSzksjO8cDdml2020tQPmidFIxf68ddgADen6HuqqMHW2r8eppm5jm88?=
+ =?us-ascii?Q?ArfAaHjM58WOmCmvnw6VTP7Cg3ye+hiPYVIg2qyhEL5X9DbfaRJqJVVNyA15?=
+ =?us-ascii?Q?0jqZhzMgCsTcxbdBk6/BLP68D51i5hnKwMnymYtMC24feRMK3ufkptcnhVsE?=
+ =?us-ascii?Q?NMKvxde44jdkogL3Qf69At3js/qOjFB+qF5tqsWaKnpuGIuwQ5Ow4vOwk6Ng?=
+ =?us-ascii?Q?ceQP9nbyGPKI1x7eVJl5+3dV+hD7uocFMV7udkfr321xNlCqB1Xfjq04dVDy?=
+ =?us-ascii?Q?dkoid9ZV67NOUf8P/AytplI=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211022004927.1448382-1-seanjc@google.com>
- <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
- <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
- <b931906f-b38e-1cb5-c797-65ef82c8b262@redhat.com>
- <YXbAxkf1W37m9eZp@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YXbAxkf1W37m9eZp@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8aa9ebf-aa04-44f5-0227-08d997cb3786
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 15:22:11.2801
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T60fn9kZVmkiAJVYmAcsA3+TlJoL2t+R4CXRU1X18i287aTEn2VjjXGVKxqAo+L6nDPM7fzYiTw4zIRMyN6Stg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYP286MB1374
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/21 16:35, Sean Christopherson wrote:
->> So yeah, I think you're right.
-> Yep.  The alternative would be to explicitly check for a pending APICv update.
-> I don't have a strong opinion, I dislike both options equally:-)
+Hi,
 
-No, checking for the update is worse and with this example, I can now 
-point my finger on why I preferred the VM check even before: because 
-even though the page fault path runs in vCPU context and uses a 
-vCPU-specific role, overall the page tables are still per-VM.
+https://github.com/torvalds/linux/blob/master/drivers/bus/hisi_lpc.c#L483
 
-Therefore it makes sense for the page fault path to synchronize with 
-whoever updates the flag and zaps the page, and not with the KVM_REQ_* 
-handler of the same vCPU.
+Our experimental static analysis tool detects a null-ptr-reference problem.=
+ It could be false positive, we report this to you just in case.
 
-(Here goes the usual shameless plug of my lockless programming articles 
-on LWN---I think you're old enough to vaguely remember Jerry 
-Pournelle---and in particular the first one at 
-https://lwn.net/Articles/844224/).
+Null check is missing for the return pointer of ACPI_COMPANION at line 483 =
+and line 504. It seems that there could be potential null-ptr-dereference p=
+roblem at line 488 and line 509. Could you spare some time to have a look a=
+t it?
 
-> Want me to type up a v3 comment?
-
-Yes, please do.
-
-Paolo
-
+Thanks so much,
+Chengfeng
