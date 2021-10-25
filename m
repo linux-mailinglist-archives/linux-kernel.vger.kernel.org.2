@@ -2,163 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3744F43A820
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D086943A822
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhJYX1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        id S234506AbhJYX2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234643AbhJYX1i (ORCPT
+        with ESMTP id S231445AbhJYX2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:27:38 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5529C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id f8so2185934plo.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=F+2km2Ms41Ov0dS1z/A4rzJgD2Yh00Ba8bMPWR6hat0=;
-        b=kTQtPmmOOzD87pssCi7DNb0cDtnb/JN0oFnGUiY+UEwc67S/D/2KuE+mBYUabmMWIO
-         MPtnc1gbQKZMGALHzWk9Pfl0Z/66WUi1O3YpUxgPwakncSQpg/OedJXKbHi5fVjoHuyM
-         mBBtCgwkH02DH0CsvIiHx3tgCogxypPdnsjaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F+2km2Ms41Ov0dS1z/A4rzJgD2Yh00Ba8bMPWR6hat0=;
-        b=6Ctx6ABTM25eaJe6G3DkVnAPrXxIb0sV7u3UnY6WuDrzQ9DZAeVgWZCQcOQgO8XHzU
-         9/S+voHBbwyd/U/5hbC8uTLDCiSKMskkvoTd3IEZgYKPntHEb6B1HX+TYCRkji4eP5Fk
-         n5LnWiyrRjN4B+K4mdgErQ5kMTxUuNHDmL6YocsRSryqfMcEzGDEbE1Z3bK05SElLLYc
-         VUNdyOJjDTgj32TUbIGdWUZyiJS/IFGxMfhLiPImBW5ktzV0xEmc9E/9gwLS3Ch7GV2H
-         RECduVUwjR+6cgLdDobEnHWntxe9qdqU9o8fpVczl19kIiLJkz8zoHdCHZp5/qgHy7XV
-         Z5qA==
-X-Gm-Message-State: AOAM530+5lDgztZywgEMrnAOlVcrJFbJb4WWzHHjQB/7DR93qUIG/hXA
-        tCLpgOuqCO0s7nQbzusB2Y2wng==
-X-Google-Smtp-Source: ABdhPJzixDA3xdtSIj2DXOgZ8A9jy/aeErGASKZUzBhRyIuRTPFjAvfw5LcEibiNnj02WzRsHKFZ3A==
-X-Received: by 2002:a17:902:aa82:b0:140:4655:b211 with SMTP id d2-20020a170902aa8200b001404655b211mr11419249plr.38.1635204315466;
-        Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
-Received: from sujitka-glaptop.hsd1.ca.comcast.net ([2601:646:8e00:b2f0:eac2:13a5:2214:747b])
-        by smtp.gmail.com with ESMTPSA id ob5sm20891535pjb.30.2021.10.25.16.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 16:25:15 -0700 (PDT)
-From:   Sujit Kautkar <sujitka@chromium.org>
-To:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sujit Kautkar <sujitka@google.com>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
-Subject: [PATCH 2/2] rpmsg: glink: Update cdev add/del API in rpmsg_ctrldev_release_device()
-Date:   Mon, 25 Oct 2021 16:25:00 -0700
-Message-Id: <20211025162452.2.I507c5cea0cf97db4cedfa0e47029e711e7edd0df@changeid>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20211025232500.1775231-1-sujitka@chromium.org>
-References: <20211025232500.1775231-1-sujitka@chromium.org>
+        Mon, 25 Oct 2021 19:28:13 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0184C061745;
+        Mon, 25 Oct 2021 16:25:50 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdWKK5VRgz4xbv;
+        Tue, 26 Oct 2021 10:25:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635204343;
+        bh=VHvXu8jidtv3kTWLWdoRRYKIL2ZuO+4h9NpaXGog0U8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=muMFNQJnTIJhOXMdbrjt5X9NQkxD2wDY9JvnyKbyKzWORHyD7cYNCP2nw3yRRdxgd
+         svGSt2I8DvqWwtNcpAcx5Zs2AEhkLsvg/1iSaP4MVFfehSMkB2QeGUubLx92Q19/RE
+         38bRwvAjDX4iDL/tHkG5fH+y9pkXYVMkJ3oqjMSpfCDd7SJFPy4l937lYGxVT3QDfH
+         geXVbaTH1Aoinv5noeYOK3EdWjcb/QD8HhCmy0LU34Cgmknh6GJOQpUGa9lsJkksd/
+         zh4Bo2J5Wq/OKwmF9taV+WFhkazk3WxBs6DUo448baGI9CC2V23mHHaZacDy/Wm5+G
+         DH2NzHnXAldQA==
+Date:   Tue, 26 Oct 2021 10:25:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the arm tree
+Message-ID: <20211026102536.31e5ab62@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/fHb+4l+.nzvqRJ2xV5hqb5Y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sujit Kautkar <sujitka@google.com>
+--Sig_/fHb+4l+.nzvqRJ2xV5hqb5Y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Replace cdev add/del APIs with cdev_device_add/cdev_device_del to avoid
-below kernel warning. This correctly takes a reference to the parent
-device so the parent will not get released until all references to the
-cdev are released.
+Hi all,
 
-| ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x7c
-| WARNING: CPU: 7 PID: 19892 at lib/debugobjects.c:488 debug_print_object+0x13c/0x1b0
-| CPU: 7 PID: 19892 Comm: kworker/7:4 Tainted: G        W         5.4.147-lockdep #1
-| ==================================================================
-| Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
-| Workqueue: events kobject_delayed_cleanup
-| pstate: 60c00009 (nZCv daif +PAN +UAO)
-| pc : debug_print_object+0x13c/0x1b0
-| lr : debug_print_object+0x13c/0x1b0
-| sp : ffffff83b2ec7970
-| x29: ffffff83b2ec7970 x28: dfffffd000000000
-| x27: ffffff83d674f000 x26: dfffffd000000000
-| x25: ffffffd06b8fa660 x24: dfffffd000000000
-| x23: 0000000000000000 x22: ffffffd06b7c5108
-| x21: ffffffd06d597860 x20: ffffffd06e2c21c0
-| x19: ffffffd06d5974c0 x18: 000000000001dad8
-| x17: 0000000000000000 x16: dfffffd000000000
-| BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
-| x15: ffffffffffffffff x14: 79616c6564203a74
-| x13: 0000000000000000 x12: 0000000000000080
-| Write of size 8 at addr ffffff83d95768d0 by task kworker/3:1/150
-| x11: 0000000000000001 x10: 0000000000000000
-| x9 : fc9e8edec0ad0300 x8 : fc9e8edec0ad0300
-|
-| x7 : 0000000000000000 x6 : 0000000000000000
-| x5 : 0000000000000080 x4 : 0000000000000000
-| CPU: 3 PID: 150 Comm: kworker/3:1 Tainted: G        W         5.4.147-lockdep #1
-| x3 : ffffffd06c149574 x2 : ffffff83f77f7498
-| x1 : ffffffd06d596f60 x0 : 0000000000000061
-| Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
-| Call trace:
-|  debug_print_object+0x13c/0x1b0
-| Workqueue: events kobject_delayed_cleanup
-|  __debug_check_no_obj_freed+0x25c/0x3c0
-|  debug_check_no_obj_freed+0x18/0x20
-| Call trace:
-|  slab_free_freelist_hook+0xb4/0x1bc
-|  kfree+0xe8/0x2d8
-|  dump_backtrace+0x0/0x27c
-|  rpmsg_ctrldev_release_device+0x78/0xb8
-|  device_release+0x68/0x14c
-|  show_stack+0x20/0x2c
-|  kobject_cleanup+0x12c/0x298
-|  kobject_delayed_cleanup+0x10/0x18
-|  dump_stack+0xe0/0x19c
-|  process_one_work+0x578/0x92c
-|  worker_thread+0x804/0xcf8
-|  print_address_description+0x3c/0x4a8
-|  kthread+0x2a8/0x314
-|  ret_from_fork+0x10/0x18
-|  __kasan_report+0x100/0x124
+After merging the arm tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
----
+In file included from <command-line>:
+arch/arm/mm/mmu.c: In function 'early_fixmap_init':
+include/linux/compiler_types.h:328:38: error: call to '__compiletime_assert=
+_295' declared with attribute error: BUILD_BUG_ON failed: (__fix_to_virt(__=
+end_of_fixmap_region) >> PMD_SHIFT) !=3D FIXADDR_TOP >> PMD_SHIFT
+  328 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
+ER__)
+      |                                      ^
+include/linux/compiler_types.h:309:4: note: in definition of macro '__compi=
+letime_assert'
+  309 |    prefix ## suffix();    \
+      |    ^~~~~~
+include/linux/compiler_types.h:328:2: note: in expansion of macro '_compile=
+time_assert'
+  328 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
+ER__)
+      |  ^~~~~~~~~~~~~~~~~~~
+include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_a=
+ssert'
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_M=
+SG'
+   50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+      |  ^~~~~~~~~~~~~~~~
+arch/arm/mm/mmu.c:372:2: note: in expansion of macro 'BUILD_BUG_ON'
+  372 |  BUILD_BUG_ON((__fix_to_virt(__end_of_fixmap_region) >> PMD_SHIFT)
+      |  ^~~~~~~~~~~~
 
- drivers/rpmsg/rpmsg_char.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Exposed by commit
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 876ce43df732b..b63a5c396da57 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -458,7 +458,7 @@ static void rpmsg_ctrldev_release_device(struct device *dev)
- 
- 	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
- 	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
--	cdev_del(&ctrldev->cdev);
-+	cdev_device_del(&ctrldev->cdev, &ctrldev->dev);
- 	kfree(ctrldev);
- }
- 
-@@ -493,14 +493,13 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
- 	dev->id = ret;
- 	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
- 
--	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
-+	ret = cdev_device_add(&ctrldev->cdev, &ctrldev->dev);
- 	if (ret)
- 		goto free_ctrl_ida;
- 
- 	/* We can now rely on the release function for cleanup */
- 	dev->release = rpmsg_ctrldev_release_device;
- 
--	ret = device_add(dev);
- 	if (ret) {
- 		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
- 		put_device(dev);
--- 
-2.31.0
+  9b89a073e1ca ("ARM: 9149/1: add BUILD_BUG_ON to check if fixmap range spa=
+ns multiple pmds")
 
+I have no idea why that BUILD_BUG_ON hits, so I have just reverted that
+commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fHb+4l+.nzvqRJ2xV5hqb5Y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3PPAACgkQAVBC80lX
+0GxG5gf/WRriTec3EAi7HqhDBJ4xokKIl0eXZUkyw4MWNEsEndyy4Yk0mIn2MygK
+5fCCtYN/+I9Lc4nlSAY25ahPll7cYQHZUi+RWQDk00vPHGoWbFKLw/m9wUP7qX2o
+jXry2znGq12xQa/MCu6xrMJ38Er4eosqS55ieVS0Bkd78WDZ463KEaBzVT3h0fBH
+o9DQ7QS2CvCg+dx9GALox7B6nPlnS+VBnNb+cjEQn8G4viuAR2seQhhOuv3rDnvx
+PEpdqdLbtKwvxBcOz0EKnFyJmBHiZybzhpJDbZ4wTaux+crV5dMBPDDkyu/xZlZc
+Rg10CrdQJnwse6yPcNOypG0fZj+fNQ==
+=y1qr
+-----END PGP SIGNATURE-----
+
+--Sig_/fHb+4l+.nzvqRJ2xV5hqb5Y--
