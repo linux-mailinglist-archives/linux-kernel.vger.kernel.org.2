@@ -2,152 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DCD438D77
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DE3438D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhJYC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 22:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbhJYC3M (ORCPT
+        id S232124AbhJYCaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 22:30:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26513 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229706AbhJYCaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 22:29:12 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5C9C061745;
-        Sun, 24 Oct 2021 19:26:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HczNm6lKhz4xbM;
-        Mon, 25 Oct 2021 13:26:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635128809;
-        bh=TrM9APB2AGvQ5WsCyA/bZkd87C42PO0byLCrTUGQqE4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DnseFRv1HurZ3VZnGL3jDe2qzuCa7MDPtZNfY7KmfQ2I4IEr9kJSZqmmwuLSHVA2j
-         se4KCUXtNINCnFq+zpU87O0DXSSVcxxqa0zn8K+UmXf7SrDOMlNXupjB2RMJqH66hw
-         a4p0RYNpw+y/CKCoDd6aSKp1W/orkzdM/vs5jWQDLr2r8bWeqpdpiNLHkM/+F334df
-         gQWP0gXBXtFNiU3AKL9dZvfIqpWsyC0QpMS9GPKjl5mGIrhCCb9XclRWLYG+q+fD5Y
-         eCwRtwy4K8qf1RyQd7LuRFoAtAA5A3ocVZx7KX8N3575qCt0krSzg6Dgj8sw0yJH9E
-         sKXjVcxAcwsFA==
-Date:   Mon, 25 Oct 2021 13:26:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <20211025132647.5e1c57b9@canb.auug.org.au>
+        Sun, 24 Oct 2021 22:30:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635128865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S8uyGOiIGZbLFaG8vZJP6/O6+Uxymzsqc0XA6VlvcyM=;
+        b=INBDuo5kAaln+W1NJ39ZveeSFkLfWRaR2of+/iCPJ3pAObF89JLW2I0Ii1h20zDQV4Z+2D
+        T4TFNDb4OrE29at2FmWwy4DH+VJ2lBolYoppmOChGt9BujfeRlN8FoS8FBF3yP/uTSfuyq
+        zVXztAo0R/2gRDqSI43dCripiUvKp/w=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-KzrucL5ePmWJ2ZrXlqMRxA-1; Sun, 24 Oct 2021 22:27:44 -0400
+X-MC-Unique: KzrucL5ePmWJ2ZrXlqMRxA-1
+Received: by mail-lf1-f69.google.com with SMTP id j22-20020a05651231d600b003ffacdb8311so390334lfe.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 19:27:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S8uyGOiIGZbLFaG8vZJP6/O6+Uxymzsqc0XA6VlvcyM=;
+        b=QcQP0PIXxdoICo5DvZ2nmUQoudZlx7rhcw57NVtQ3TWJJzBTGM80UMh+pQq4s9P4Qh
+         m0iEpIgSKn3yFeqPnWCFx8GFD2s2Tt9ZDdP2d7Gvpb/vovbE+J6NOyCks6Gw8B5rHOh1
+         LzU6Ax8r2vEuDIW0jAboBIKbp4F2pEJya/BBxB/ILXCOth/oG2eYYBL7JAcPtlNq2zMr
+         itc5FmvMkW6WwUuS9Ok/pvikRuz16+sySMjzfmp1G7+cLaLLs6H9ZOexZB/YgO6Kp9zu
+         ZRkxQivgygedNowNm0o91DPQXuv3cbfPrLi4QqAAKpPrkmGyVqRyvL0P145ZNOh/v4GS
+         i7Yw==
+X-Gm-Message-State: AOAM533/FxbI629b06P8aE20IoHXa4mCfQeHFBrzR713MTYOY6n8VvF4
+        OpVyleykFmffQj9QxkQZcb8+RBYGE21np+m0+lhwsKT33I5T9ydqIb1TdjQ9m+xlvHzSIXjbnsU
+        h3OfYlPITY6vabOS9n7fFznR8ZxrijqTalpq7512M
+X-Received: by 2002:a05:6512:128a:: with SMTP id u10mr14648197lfs.84.1635128862923;
+        Sun, 24 Oct 2021 19:27:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2gyBtC/WMAeyGq5kx7faKSbkeCJpKNkqxtJrv3rWm498mSd1NSPUJrekmZvNcnHRl7jEyBvrgp8ZfLoCVhdo=
+X-Received: by 2002:a05:6512:128a:: with SMTP id u10mr14648182lfs.84.1635128862722;
+ Sun, 24 Oct 2021 19:27:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/eN8zNdIHN1yb78UuNu75moN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <cover.1634870456.git.wuzongyong@linux.alibaba.com> <6496b76a64303a3e23ea19e3e279644608de36fb.1634870456.git.wuzongyong@linux.alibaba.com>
+In-Reply-To: <6496b76a64303a3e23ea19e3e279644608de36fb.1634870456.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 25 Oct 2021 10:27:31 +0800
+Message-ID: <CACGkMEvi7505ZOSLP6gMMvhC=Zfdt=nPK4WEYe7=VVbq3GmxCQ@mail.gmail.com>
+Subject: Re: [PATCH v6 8/8] eni_vdpa: add vDPA driver for Alibaba ENI
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/eN8zNdIHN1yb78UuNu75moN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 22, 2021 at 10:44 AM Wu Zongyong
+<wuzongyong@linux.alibaba.com> wrote:
+>
+> This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
+> Interface) which is build upon virtio 0.9.5 specification.
+> And this driver doesn't support to run on BE host.
+>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> ---
+>  drivers/vdpa/Kconfig            |   8 +
+>  drivers/vdpa/Makefile           |   1 +
+>  drivers/vdpa/alibaba/Makefile   |   3 +
+>  drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
+>  4 files changed, 565 insertions(+)
+>  create mode 100644 drivers/vdpa/alibaba/Makefile
+>  create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
+>
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 3d91982d8371..c0232a2148a7 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -78,4 +78,12 @@ config VP_VDPA
+>         help
+>           This kernel module bridges virtio PCI device to vDPA bus.
+>
+> +config ALIBABA_ENI_VDPA
+> +       tristate "vDPA driver for Alibaba ENI"
+> +       select VIRTIO_PCI_LEGACY_LIB
+> +       depends on PCI_MSI && !CPU_BIG_ENDIAN
+> +       help
+> +         VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
+> +         virtio 0.9.5 specification.
+> +
+>  endif # VDPA
+> diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> index f02ebed33f19..15665563a7f4 100644
+> --- a/drivers/vdpa/Makefile
+> +++ b/drivers/vdpa/Makefile
+> @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
+>  obj-$(CONFIG_IFCVF)    += ifcvf/
+>  obj-$(CONFIG_MLX5_VDPA) += mlx5/
+>  obj-$(CONFIG_VP_VDPA)    += virtio_pci/
+> +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
+> diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
+> new file mode 100644
+> index 000000000000..ef4aae69f87a
+> --- /dev/null
+> +++ b/drivers/vdpa/alibaba/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
+> +
+> diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
+> new file mode 100644
+> index 000000000000..6a09f157d810
+> --- /dev/null
+> +++ b/drivers/vdpa/alibaba/eni_vdpa.c
+> @@ -0,0 +1,553 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
+> + *
+> + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
+> + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> + *
+> + */
+> +
+> +#include "linux/bits.h"
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/vdpa.h>
+> +#include <linux/virtio.h>
+> +#include <linux/virtio_config.h>
+> +#include <linux/virtio_ring.h>
+> +#include <linux/virtio_pci.h>
+> +#include <linux/virtio_pci_legacy.h>
+> +#include <uapi/linux/virtio_net.h>
+> +
+> +#define ENI_MSIX_NAME_SIZE 256
+> +
+> +#define ENI_ERR(pdev, fmt, ...)        \
+> +       dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> +#define ENI_DBG(pdev, fmt, ...)        \
+> +       dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> +#define ENI_INFO(pdev, fmt, ...) \
+> +       dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> +
+> +struct eni_vring {
+> +       void __iomem *notify;
+> +       char msix_name[ENI_MSIX_NAME_SIZE];
+> +       struct vdpa_callback cb;
+> +       int irq;
+> +};
+> +
+> +struct eni_vdpa {
+> +       struct vdpa_device vdpa;
+> +       struct virtio_pci_legacy_device ldev;
+> +       struct eni_vring *vring;
+> +       struct vdpa_callback config_cb;
+> +       char msix_name[ENI_MSIX_NAME_SIZE];
+> +       int config_irq;
+> +       int queues;
+> +       int vectors;
+> +};
+> +
+> +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
+> +{
+> +       return container_of(vdpa, struct eni_vdpa, vdpa);
+> +}
+> +
+> +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
+> +{
+> +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +
+> +       return &eni_vdpa->ldev;
+> +}
+> +
+> +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
+> +{
+> +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +       u64 features = vp_legacy_get_features(ldev);
+> +
+> +       features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> +       features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
+> +
+> +       return features;
+> +}
+> +
+> +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> +{
+> +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +       if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> +               ENI_ERR(ldev->pci_dev,
+> +                       "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       vp_legacy_set_features(ldev, (u32)features);
+> +
+> +       return 0;
+> +}
+> +
 
-Hi all,
+So my comments have not been addressed since v4. Please address or
+answer the questions before posting a new version.
 
-Today's linux-next merge of the block tree got a conflict in:
+Thanks
 
-  fs/io_uring.c
+> +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
+> +{
+> +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +     u64 features = vp_legacy_get_features(ldev);
+> +
+> +     features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> +     features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
 
-between commits:
+VERSION_1 is also needed?
 
-  4ea672ab694c ("io_uring: fix ltimeout unprep")
-  b22fa62a35d7 ("io_uring: apply worker limits to previous users")
 
-from Linus' tree and commit:
+> +
+> +     return features;
+> +}
+> +
+> +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> +{
+> +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +     if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> +             ENI_ERR(ldev->pci_dev,
+> +                     "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> +             return -EINVAL;
 
-  d475a9a6226c ("io_uring: inline hot path of __io_queue_sqe()")
-  c072481ded14 ("io_uring: mark cold functions")
+Do we need to make sure FEATURE_OK is not set in this case or the ENI can do
+this for us?
 
-from the block tree.
+Other looks good.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Thanks
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/io_uring.c
-index bc18af5e0a93,c2176bf339e0..000000000000
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@@ -6947,7 -6906,33 +6903,33 @@@ static void io_queue_linked_timeout(str
-  	io_put_req(req);
-  }
- =20
-- static void __io_queue_sqe(struct io_kiocb *req)
-+ static void io_queue_sqe_arm_apoll(struct io_kiocb *req)
-+ 	__must_hold(&req->ctx->uring_lock)
-+ {
-+ 	struct io_kiocb *linked_timeout =3D io_prep_linked_timeout(req);
-+=20
-+ 	switch (io_arm_poll_handler(req)) {
-+ 	case IO_APOLL_READY:
-+ 		if (linked_timeout) {
- -			io_unprep_linked_timeout(req);
-++			io_queue_linked_timeout(linked_timeout);
-+ 			linked_timeout =3D NULL;
-+ 		}
-+ 		io_req_task_queue(req);
-+ 		break;
-+ 	case IO_APOLL_ABORTED:
-+ 		/*
-+ 		 * Queued up for async execution, worker will release
-+ 		 * submit reference when the iocb is actually submitted.
-+ 		 */
-+ 		io_queue_async_work(req, NULL);
-+ 		break;
-+ 	}
-+=20
-+ 	if (linked_timeout)
-+ 		io_queue_linked_timeout(linked_timeout);
-+ }
-+=20
-+ static inline void __io_queue_sqe(struct io_kiocb *req)
-  	__must_hold(&req->ctx->uring_lock)
-  {
-  	struct io_kiocb *linked_timeout;
-@@@ -10647,11 -10690,9 +10696,11 @@@ static __cold int io_unregister_iowq_af
-  	return io_wq_cpu_affinity(tctx->io_wq, NULL);
-  }
- =20
-- static int io_register_iowq_max_workers(struct io_ring_ctx *ctx,
-- 					void __user *arg)
-+ static __cold int io_register_iowq_max_workers(struct io_ring_ctx *ctx,
-+ 					       void __user *arg)
- +	__must_hold(&ctx->uring_lock)
-  {
- +	struct io_tctx_node *node;
-  	struct io_uring_task *tctx =3D NULL;
-  	struct io_sq_data *sqd =3D NULL;
-  	__u32 new_count[2];
-
---Sig_/eN8zNdIHN1yb78UuNu75moN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2FecACgkQAVBC80lX
-0Gwokwf/eTQ5En0HQoD/+lAad0rlypwAsws2zpgfb3KxzAzkmfI8BK03QjmGAoX7
-wd5XFIlgjxHQSGC8xXgZdWSkeKIBRtXu5FDzTK90/EsvfZWehJVKEjGpEbVLbYoq
-pZQCvn3pKhnMp6XbRkhlXCdOx4dTnQRyyOScDTxAMkjJcR2lHXLOACLNKBbN+GLR
-XtPV2/WYbr7RXmZ/dt0McAWZfLHxVaKPkiAk9ylbbFkUE5NjFs6f/Qe7I/PMfPbI
-Vphtvz4wj/9xw6uecqjAl1J+TXByGxqKX8khkzX/D/BAAeNjhslCRdJq7DPsPWK6
-h61UvyXLB0bkCd5AdMZa1JfUvDgJlw==
-=jVZ1
------END PGP SIGNATURE-----
-
---Sig_/eN8zNdIHN1yb78UuNu75moN--
