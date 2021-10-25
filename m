@@ -2,521 +2,597 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4AB438DBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BEC438DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhJYDZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 23:25:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32306 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232008AbhJYDZz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:25:55 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19ONmxBf022124;
-        Sun, 24 Oct 2021 23:23:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=xdTKzE5hKjGfbm7Yv4KPBnSFUd4ZwCzWWIp2z0Y9Ai0=;
- b=Gc+SGal3hLb8w74OGeWJLN3sHkAxd7pJGKYtOPask+9gz98lEtedWHgFiWQaWG4w445p
- I/UkMTrMRqxACMGR7EShizDvXbdG9yoZqKEFMwadFCDVK1EldkEGUa0J0+rczAvmHGif
- gmc/lEypRR+/pa67cdPEA3SwRrcJihqjnRi1wwV6fHl3ORJiY7SZypDlJN203KOpRHrY
- zv9nkOBGohDLPl89omcllAFejPATEtCkCKTRLapHrRPWwYEwyMXrhdEsoLliY2giB8Rq
- axaVEni2By9LmG8bnmtJsWTs6SfzD5t1+T7DayFu7YZCTfsNJP/12BvTuwibJDzqtuUD aA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bvygr7fck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Oct 2021 23:23:26 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19P3NQsH010135;
-        Sun, 24 Oct 2021 23:23:26 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bvygr7fc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Oct 2021 23:23:25 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19P3Cev5028523;
-        Mon, 25 Oct 2021 03:23:23 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bv9nj99f5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 03:23:23 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19P3HGSs64356620
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Oct 2021 03:17:16 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D1A6CAE057;
-        Mon, 25 Oct 2021 03:23:20 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 26467AE051;
-        Mon, 25 Oct 2021 03:23:20 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 25 Oct 2021 03:23:20 +0000 (GMT)
-Received: from localhost (unknown [9.81.195.69])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 97D6B6023F;
-        Mon, 25 Oct 2021 14:23:18 +1100 (AEDT)
-From:   Michael Ellerman <michaele@au1.ibm.com>
-To:     "Paul A. Clarke" <pc@us.ibm.com>, Kajol Jain <kjain@linux.ibm.com>
-Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, atrajeev@linux.vnet.ibm.com,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] perf vendor events power10: Add metric events json
- file for power10 platform
-In-Reply-To: <20211022144910.GC104437@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20211022062505.78767-1-kjain@linux.ibm.com>
- <20211022144910.GC104437@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-Date:   Mon, 25 Oct 2021 14:23:15 +1100
-Message-ID: <87wnm1bxek.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: GqZ0IucobX69kzSVHu3sPHv8EXvSrr8l
-X-Proofpoint-ORIG-GUID: GaA7mFTouG50tus64Xo2tqDsc52UM6ad
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S232250AbhJYD2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 23:28:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232072AbhJYD2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 23:28:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D648960EBB;
+        Mon, 25 Oct 2021 03:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635132374;
+        bh=OMhvzmQBTrTqn9WBzV77Z9crUKhnjsbyDaFFo27L26E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=J+iFCSNI/7cwOaK6/6UKtnXs/3SVpQLCEI//zrEWSFL4U1zxkZWIVBAMGojWvUB9I
+         8OpjsdMMWQzNCydZ6u2uObuVx2SgtnCFLN1wIR9CJ4Kh1xTSZjwuoHtC4X1eFa4Bjr
+         1vWYGNnYmvLhv1vTSbqv1Xmbn73eL+c7Juwe/vR/Tz34CCJfMl3vO+LohHnbQ2sqM/
+         PbXhyvUbx4jz/W8VdGzsVjlAfy+Q4I317H5Ktc60KanVEpHEeeRQvFdiX745NA6t5v
+         jwfp5o3xSW+pFrvJVQ3AjjT8az2vFBgM9b+USA7UE+4EljlnicvZQJMeNwZOijMrky
+         rWomH15M2omYw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 21AE25C0BF4; Sun, 24 Oct 2021 20:26:14 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 20:26:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 04/19] trace/osnoise: Support a list of trace_array *tr
+Message-ID: <20211025032614.GN880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <cover.1634820694.git.bristot@kernel.org>
+ <d54f5bfa2b2fbd11393c2a69a8b5cbdd808a506d.1634820694.git.bristot@kernel.org>
+ <20211022223839.476905ed@rorschach.local.home>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_01,2021-10-25_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 mlxscore=0 bulkscore=0 phishscore=0
- malwarescore=0 priorityscore=1501 clxscore=1011 spamscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110250018
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022223839.476905ed@rorschach.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Paul A. Clarke" <pc@us.ibm.com> writes:
-> Thanks for the changes!
-> More nits below (many left over from prior review)...
->
-> On Fri, Oct 22, 2021 at 11:55:05AM +0530, Kajol Jain wrote:
->> Add pmu metric json file for power10 platform.
->> 
->> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
->> ---
->> Changelog v1 -> v2:
->> - Did some nit changes in BriefDescription field
->>   as suggested by Paul A. Clarke
->> 
->> - Link to the v1 patch: https://lkml.org/lkml/2021/10/6/131
->> 
->>  .../arch/powerpc/power10/metrics.json         | 676 ++++++++++++++++++
->>  1 file changed, 676 insertions(+)
->>  create mode 100644 tools/perf/pmu-events/arch/powerpc/power10/metrics.json
->> 
->> diff --git a/tools/perf/pmu-events/arch/powerpc/power10/metrics.json b/tools/perf/pmu-events/arch/powerpc/power10/metrics.json
->> new file mode 100644
->> index 000000000000..8adab5cd9934
->> --- /dev/null
->> +++ b/tools/perf/pmu-events/arch/powerpc/power10/metrics.json
->> @@ -0,0 +1,676 @@
->> +[
->> +    {
->> +        "BriefDescription": "Percentage of cycles that are run cycles",
->> +        "MetricExpr": "PM_RUN_CYC / PM_CYC * 100",
->> +        "MetricGroup": "General",
->> +        "MetricName": "RUN_CYCLES_RATE",
->> +        "ScaleUnit": "1%"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per completed instruction",
->> +        "MetricExpr": "PM_CYC / PM_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "CYCLES_PER_INSTRUCTION"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled for any reason",
->> +        "MetricExpr": "PM_DISP_STALL_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled because there was a flush",
->> +        "MetricExpr": "PM_DISP_STALL_FLUSH / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_FLUSH_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled because the MMU was handling a translation miss",
->> +        "MetricExpr": "PM_DISP_STALL_TRANSLATION / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_TRANSLATION_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled waiting to resolve an instruction ERAT miss",
->> +        "MetricExpr": "PM_DISP_STALL_IERAT_ONLY_MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_IERAT_ONLY_MISS_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled waiting to resolve an instruction TLB miss",
->> +        "MetricExpr": "PM_DISP_STALL_ITLB_MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_ITLB_MISS_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled due to an icache miss",
->> +        "MetricExpr": "PM_DISP_STALL_IC_MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_IC_MISS_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while the instruction was fetched from the local L2",
->> +        "MetricExpr": "PM_DISP_STALL_IC_L2 / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_IC_L2_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while the instruction was fetched from the local L3",
->> +        "MetricExpr": "PM_DISP_STALL_IC_L3 / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_IC_L3_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while the instruction was fetched from any source beyond the local L3",
->> +        "MetricExpr": "PM_DISP_STALL_IC_L3MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_IC_L3MISS_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled due to an icache miss after a branch mispredict",
->> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_ICMISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_BR_MPRED_ICMISS_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while instruction was fetched from the local L2 after suffering a branch mispredict",
->> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_IC_L2 / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_BR_MPRED_IC_L2_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while instruction was fetched from the local L3 after suffering a branch mispredict",
->> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_IC_L3 / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_BR_MPRED_IC_L3_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled while instruction was fetched from any source beyond the local L3 after suffering a branch mispredict",
->> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED_IC_L3MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_BR_MPRED_IC_L3MISS_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled due to a branch mispredict",
->> +        "MetricExpr": "PM_DISP_STALL_BR_MPRED / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_BR_MPRED_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch for any reason",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_HELD_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because of a synchronizing instruction that requires the ICT to be empty before dispatch",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_SYNC_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISP_HELD_STALL_SYNC_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch while waiting on the scoreboard",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_SCOREBOARD_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISP_HELD_STALL_SCOREBOARD_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch due to issue queue full",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_ISSQ_FULL_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISP_HELD_STALL_ISSQ_FULL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because the mapper/SRB was full",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_RENAME_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_HELD_RENAME_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because the STF mapper/SRB was full",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_STF_MAPPER_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_HELD_STF_MAPPER_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because the XVFC mapper/SRB was full",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_XVFC_MAPPER_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_HELD_XVFC_MAPPER_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch for any other reason",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_OTHER_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_HELD_OTHER_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction has been dispatched but not issued for any reason",
->> +        "MetricExpr": "PM_ISSUE_STALL / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "ISSUE_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting to be finished in one of the execution units",
->> +        "MetricExpr": "PM_EXEC_STALL / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "EXECUTION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction spent executing an NTC instruction that gets flushed some time after dispatch",
->> +        "MetricExpr": "PM_EXEC_STALL_NTC_FLUSH / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "NTC_FLUSH_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTF instruction finishes at dispatch",
->> +        "MetricExpr": "PM_EXEC_STALL_FIN_AT_DISP / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "FIN_AT_DISP_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing in the branch unit",
->> +        "MetricExpr": "PM_EXEC_STALL_BRU / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "BRU_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a simple fixed point instruction that is executing in the LSU",
->> +        "MetricExpr": "PM_EXEC_STALL_SIMPLE_FX / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "SIMPLE_FX_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing in the VSU",
->> +        "MetricExpr": "PM_EXEC_STALL_VSU / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "VSU_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting to be finished in one of the execution units",
->> +        "MetricExpr": "PM_EXEC_STALL_TRANSLATION / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "TRANSLATION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a load or store that suffered a translation miss",
->> +        "MetricExpr": "PM_EXEC_STALL_DERAT_ONLY_MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DERAT_ONLY_MISS_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is recovering from a TLB miss",
->> +        "MetricExpr": "PM_EXEC_STALL_DERAT_DTLB_MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DERAT_DTLB_MISS_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing in the LSU",
->> +        "MetricExpr": "PM_EXEC_STALL_LSU / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "LSU_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a load that is executing in the LSU",
->> +        "MetricExpr": "PM_EXEC_STALL_LOAD / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "LOAD_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from either the local L2 or local L3",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L2L3 / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_L2L3_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from either the local L2 or local L3, with an RC dispatch conflict",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L2L3_CONFLICT / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_L2L3_CONFLICT_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from either the local L2 or local L3, without an RC dispatch conflict",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L2L3_NOCONFLICT / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_L2L3_NOCONFLICT_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a source beyond the local L2 and local L3",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L3MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_L3MISS_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a neighbor chiplet's L2 or L3 in the same chip",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_L21_L31 / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_L21_L31_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from L4, local memory or OpenCapp chip",
->
-> What is "OpenCapp"?  Is is different from OpenCAPI?
->
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_LMEM / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_LMEM_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a remote chip (cache, L4, memory or OpenCapp) in the same group",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_OFF_CHIP / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_OFF_CHIP_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is waiting for a load miss to resolve from a distant chip (cache, L4, memory or OpenCapp chip)",
->> +        "MetricExpr": "PM_EXEC_STALL_DMISS_OFF_NODE / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DMISS_OFF_NODE_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing a TLBIEL instruction",
->> +        "MetricExpr": "PM_EXEC_STALL_TLBIEL / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "TLBIEL_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is finishing a load after its data has been reloaded from a data source beyond the local L1, OR when the LSU is processing an L1-hit, OR when the NTF instruction merged with another load in the LMQ",
->> +        "MetricExpr": "PM_EXEC_STALL_LOAD_FINISH / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "LOAD_FINISH_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a store that is executing in the LSU",
->> +        "MetricExpr": "PM_EXEC_STALL_STORE / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "STORE_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is in the store unit outside of handling store misses or other special store operations",
->
-> Is "store unit" not the same as "LSU" ?  Use "LSU" uniformly if appropriate:
-> s/store unit/LSU/
->
->> +        "MetricExpr": "PM_EXEC_STALL_STORE_PIPE / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "STORE_PIPE_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a store whose cache line was not resident in the L1 and had to wait for allocation of the missing line into the L1",
->> +        "MetricExpr": "PM_EXEC_STALL_STORE_MISS / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "STORE_MISS_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a TLBIE instruction waiting for a response from the L2",
->> +        "MetricExpr": "PM_EXEC_STALL_TLBIE / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "TLBIE_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is executing a PTESYNC instruction",
->> +        "MetricExpr": "PM_EXEC_STALL_PTESYNC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "PTESYNC_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction cannot complete because the thread was blocked",
->> +        "MetricExpr": "PM_CMPL_STALL / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction cannot complete because it was interrupted by ANY exception",
->> +        "MetricExpr": "PM_CMPL_STALL_EXCEPTION / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "EXCEPTION_COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is stuck at finish waiting for the non-speculative finish of either a STCX instruction waiting for its result or a load waiting for non-critical sectors of data and ECC",
->> +        "MetricExpr": "PM_CMPL_STALL_MEM_ECC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "MEM_ECC_COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction cannot complete the instruction is a STCX instruction waiting for resolution from the nest",
->
-> Need to reword this, I think.  I propose "Average cycles per instruction
-> when the NTC instruction is a STCX instruction waiting for resolution
-> from the nest", which follows the form used by HWSYNC_COMPLETION_STALL_CPI,
-> below.
->
->> +        "MetricExpr": "PM_CMPL_STALL_STCX / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "STCX_COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a LWSYNC instruction waiting to complete",
->> +        "MetricExpr": "PM_CMPL_STALL_LWSYNC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "LWSYNC_COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction is a HWSYNC instruction stuck at finish waiting for a response from the L2",
->> +        "MetricExpr": "PM_CMPL_STALL_HWSYNC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "HWSYNC_COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction required special handling before completion",
->> +        "MetricExpr": "PM_CMPL_STALL_SPECIAL / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "SPECIAL_COMPLETION_STALL_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when dispatch was stalled because fetch was being held, so there was nothing in the pipeline for this thread",
->> +        "MetricExpr": "PM_DISP_STALL_FETCH / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_FETCH_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average cycles per instruction when the NTC instruction was held at dispatch because of power management",
->> +        "MetricExpr": "PM_DISP_STALL_HELD_HALT_CYC / PM_RUN_INST_CMPL",
->> +        "MetricGroup": "CPI",
->> +        "MetricName": "DISPATCHED_HELD_HALT_CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Percentage of flushes per completed run instruction",
->
-> s/per completed run instruction/per instruction/
+On Fri, Oct 22, 2021 at 10:38:39PM -0400, Steven Rostedt wrote:
+> On Thu, 21 Oct 2021 14:56:42 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+> 
+> > osnoise/timerlat were built to run a single instance, and for this,
+> > a single variable is enough to store the current struct trace_array
+> > *tr with information about the tracing instance. This is done via
+> > the *osnoise_trace variable. A trace_array represents a trace instance.
+> > 
+> > In preparation to support multiple instances, replace the
+> > *osnoise_trace variable with an RCU protected list of instances.
+> > 
+> > The operations that refer to an instance now propagate to all
+> > elements of the list (all instances).
+> > 
+> > Also, replace the osnoise_busy variable with a check if the list
+> > has elements (busy).
+> > 
+> > No functional change is expected with this patch, i.e., only one
+> > instance is allowed yet.
+> > 
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Tom Zanussi <zanussi@kernel.org>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Clark Williams <williams@redhat.com>
+> > Cc: John Kacur <jkacur@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > Cc: linux-rt-users@vger.kernel.org
+> > Cc: linux-trace-devel@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > ---
+> >  kernel/trace/trace_osnoise.c | 253 +++++++++++++++++++++++++----------
+> >  1 file changed, 184 insertions(+), 69 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> > index 9b9e6bc889e9..a6d8f514bd7c 100644
+> > --- a/kernel/trace/trace_osnoise.c
+> > +++ b/kernel/trace/trace_osnoise.c
+> > @@ -38,8 +38,6 @@
+> >  #define CREATE_TRACE_POINTS
+> >  #include <trace/events/osnoise.h>
+> >  
+> > -static struct trace_array	*osnoise_trace;
+> > -
+> >  /*
+> >   * Default values.
+> >   */
+> > @@ -50,6 +48,73 @@ static struct trace_array	*osnoise_trace;
+> >  #define DEFAULT_TIMERLAT_PERIOD	1000			/* 1ms */
+> >  #define DEFAULT_TIMERLAT_PRIO	95			/* FIFO 95 */
+> >  
+> > +/*
+> > + * trace_array of the enabled osnoise/timerlat instances.
+> > + */
+> > +struct osnoise_instance {
+> > +	struct list_head	list;
+> > +	struct trace_array	*tr;
+> > +};
+> > +struct list_head osnoise_instances;
+> > +
+> > +static bool osnoise_has_registered_instances(void)
+> > +{
+> > +	return !!list_first_or_null_rcu(&osnoise_instances,
+> > +					struct osnoise_instance,
+> > +					list);
+> > +}
+> > +
+> > +/*
+> > + * osnoise_register_instance - register a new trace instance
+> > + *
+> > + * Register a trace_array *tr in the list of instances running
+> > + * osnoise/timerlat tracers.
+> > + */
+> > +static int osnoise_register_instance(struct trace_array *tr)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +
+> > +	inst = kmalloc(sizeof(*inst), GFP_KERNEL);
+> > +	if (!inst)
+> > +		return -ENOMEM;
+> > +
+> > +	INIT_LIST_HEAD_RCU(&inst->list);
+> > +	inst->tr = tr;
+> > +	list_add_tail_rcu(&inst->list, &osnoise_instances);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/*
+> > + *  osnoise_unregister_instance - unregister a registered trace instance
+> > + *
+> > + * Remove the trace_array *tr from the list of instances running
+> > + * osnoise/timerlat tracers.
+> > + */
+> > +static void osnoise_unregister_instance(struct trace_array *tr)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	int found = 0;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		if (inst->tr == tr) {
+> > +			list_del_rcu(&inst->list);
+> 
+> Adding to the list requires more than RCU protection, and if this has
+> that protection there's no reason for using rcu to protect here.
+> 
+> [ Added Paul to comment about this too ]
 
-I'm not sure we want to drop "completed" from this and all the following
-descriptions.
+Steve has it right.  To see this, suppose that there are two concurrent
+calls to osnoise_unregister_instance() on elements that are adjacent in
+the list.  The result will of course be a corrupted list.  All RCU does
+is coordinate between readers on the one hand and updaters on the other.
+There must be some non-RCU synchronization between updaters, be this a
+lock, some lockless synchronization, there being only one task permitted
+to carry out updates, or whatever.
 
-There is a meaningful distinction between completed and dispatched
-instructions, I think it's useful to be explicit about which the event
-is counting.
+So what prevents concurrent calls to osnoise_unregister_instance()?  I am
+not seeing anything preventing this is osnoise_tracer_stop().  Is there
+some appropriate serialization in the callers of the osnoise_tracer_stop()
+function?
 
-I agree dropping "run" is a good idea, most people won't understand that
-"run" means "non-idle", and I think don't expect idle instructions to be
-counted anyway.
+							Thanx, Paul
 
-...
->
->> +        "MetricExpr": "PM_RUN_INST_CMPL / PM_RUN_CYC",
->> +        "MetricGroup": "General",
->> +        "MetricName": "RUN_IPC"
->> +    },
->> +    {
->> +        "BriefDescription": "Average number of instructions completed per instruction group",
->
-> s/completed//
-
-And here the meaning is different if you drop "completed".
-
-cheers
+> > +			found = 1;
+> > +			break;
+> > +		}
+> > +	}
+> > +	rcu_read_unlock();
+> > +
+> > +	if (!found) {
+> > +		WARN("osnoise unregister did not find tr %s\n", tr->name);
+> > +		return;
+> > +	}
+> > +
+> > +	synchronize_rcu();
+> > +	kfree(inst);
+> > +}
+> > +
+> >  /*
+> >   * NMI runtime info.
+> >   */
+> > @@ -248,11 +313,6 @@ static struct osnoise_data {
+> >  #endif
+> >  };
+> >  
+> > -/*
+> > - * Boolean variable used to inform that the tracer is currently sampling.
+> > - */
+> > -static bool osnoise_busy;
+> > -
+> >  #ifdef CONFIG_PREEMPT_RT
+> >  /*
+> >   * Print the osnoise header info.
+> > @@ -315,19 +375,24 @@ static void print_osnoise_headers(struct seq_file *s)
+> >   * osnoise_taint - report an osnoise error.
+> >   */
+> >  #define osnoise_taint(msg) ({							\
+> > -	struct trace_array *tr = osnoise_trace;					\
+> > +	struct osnoise_instance *inst;						\
+> > +	struct trace_buffer *buffer;						\
+> >  										\
+> > -	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_, msg);	\
+> > +	rcu_read_lock();							\
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {		\
+> > +		buffer = inst->tr->array_buffer.buffer;				\
+> > +		trace_array_printk_buf(buffer, _THIS_IP_, msg);			\
+> > +	}									\
+> > +	rcu_read_unlock();							\
+> >  	osnoise_data.tainted = true;						\
+> >  })
+> >  
+> >  /*
+> >   * Record an osnoise_sample into the tracer buffer.
+> >   */
+> > -static void trace_osnoise_sample(struct osnoise_sample *sample)
+> > +static void
+> > +__trace_osnoise_sample(struct osnoise_sample *sample, struct trace_buffer *buffer)
+> >  {
+> > -	struct trace_array *tr = osnoise_trace;
+> > -	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> >  	struct trace_event_call *call = &event_osnoise;
+> >  	struct ring_buffer_event *event;
+> >  	struct osnoise_entry *entry;
+> > @@ -350,6 +415,22 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
+> >  		trace_buffer_unlock_commit_nostack(buffer, event);
+> >  }
+> >  
+> > +/*
+> > + * Record an osnoise_sample on all osnoise instances.
+> > + */
+> > +static void trace_osnoise_sample(struct osnoise_sample *sample)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_buffer *buffer;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		buffer = inst->tr->array_buffer.buffer;
+> > +		__trace_osnoise_sample(sample, buffer);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}
+> > +
+> >  #ifdef CONFIG_TIMERLAT_TRACER
+> >  /*
+> >   * Print the timerlat header info.
+> > @@ -387,14 +468,10 @@ static void print_timerlat_headers(struct seq_file *s)
+> >  }
+> >  #endif /* CONFIG_PREEMPT_RT */
+> >  
+> > -/*
+> > - * Record an timerlat_sample into the tracer buffer.
+> > - */
+> > -static void trace_timerlat_sample(struct timerlat_sample *sample)
+> > +static void
+> > +__trace_timerlat_sample(struct timerlat_sample *sample, struct trace_buffer *buffer)
+> >  {
+> > -	struct trace_array *tr = osnoise_trace;
+> >  	struct trace_event_call *call = &event_osnoise;
+> > -	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> >  	struct ring_buffer_event *event;
+> >  	struct timerlat_entry *entry;
+> >  
+> > @@ -411,6 +488,22 @@ static void trace_timerlat_sample(struct timerlat_sample *sample)
+> >  		trace_buffer_unlock_commit_nostack(buffer, event);
+> >  }
+> >  
+> > +/*
+> > + * Record an timerlat_sample into the tracer buffer.
+> > + */
+> > +static void trace_timerlat_sample(struct timerlat_sample *sample)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_buffer *buffer;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		buffer = inst->tr->array_buffer.buffer;
+> > +		__trace_timerlat_sample(sample, buffer);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}
+> > +
+> >  #ifdef CONFIG_STACKTRACE
+> >  
+> >  #define	MAX_CALLS	256
+> > @@ -450,29 +543,18 @@ static void timerlat_save_stack(int skip)
+> >  	return;
+> >  
+> >  }
+> > -/*
+> > - * timerlat_dump_stack - dump a stack trace previously saved
+> > - *
+> > - * Dump a saved stack trace into the trace buffer.
+> > - */
+> > -static void timerlat_dump_stack(void)
+> > +
+> > +static void
+> > +__timerlat_dump_stack(struct trace_buffer *buffer, struct trace_stack *fstack, unsigned int size)
+> >  {
+> >  	struct trace_event_call *call = &event_osnoise;
+> > -	struct trace_array *tr = osnoise_trace;
+> > -	struct trace_buffer *buffer = tr->array_buffer.buffer;
+> >  	struct ring_buffer_event *event;
+> > -	struct trace_stack *fstack;
+> >  	struct stack_entry *entry;
+> > -	unsigned int size;
+> > -
+> > -	preempt_disable_notrace();
+> > -	fstack = this_cpu_ptr(&trace_stack);
+> > -	size = fstack->stack_size;
+> >  
+> >  	event = trace_buffer_lock_reserve(buffer, TRACE_STACK, sizeof(*entry) + size,
+> >  					  tracing_gen_ctx());
+> >  	if (!event)
+> > -		goto out;
+> > +		return;
+> >  
+> >  	entry = ring_buffer_event_data(event);
+> >  
+> > @@ -481,8 +563,29 @@ static void timerlat_dump_stack(void)
+> >  
+> >  	if (!call_filter_check_discard(call, entry, buffer, event))
+> >  		trace_buffer_unlock_commit_nostack(buffer, event);
+> > +}
+> >  
+> > -out:
+> > +/*
+> > + * timerlat_dump_stack - dump a stack trace previously saved
+> > + */
+> > +static void timerlat_dump_stack(void)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_buffer *buffer;
+> > +	struct trace_stack *fstack;
+> > +	unsigned int size;
+> > +
+> > +	preempt_disable_notrace();
+> > +	fstack = this_cpu_ptr(&trace_stack);
+> > +	size = fstack->stack_size;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		buffer = inst->tr->array_buffer.buffer;
+> > +		__timerlat_dump_stack(buffer, fstack, size);
+> > +
+> > +	}
+> > +	rcu_read_unlock();
+> >  	preempt_enable_notrace();
+> >  }
+> >  #else
+> > @@ -1077,12 +1180,37 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
+> >   */
+> >  static __always_inline void osnoise_stop_tracing(void)
+> >  {
+> > -	struct trace_array *tr = osnoise_trace;
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_array *tr;
+> > +
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		tr = inst->tr;
+> > +		trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
+> > +				"stop tracing hit on cpu %d\n", smp_processor_id());
+> > +
+> > +		tracer_tracing_off(tr);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}
+> >  
+> > -	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
+> > -			"stop tracing hit on cpu %d\n", smp_processor_id());
+> > +/*
+> > + * notify_new_max_latency - Notify a new max latency via fsnotify interface.
+> > + */
+> > +void notify_new_max_latency(u64 latency)
+> > +{
+> > +	struct osnoise_instance *inst;
+> > +	struct trace_array *tr;
+> >  
+> > -	tracer_tracing_off(tr);
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> > +		tr = inst->tr;
+> > +		if (tr->max_latency < latency) {
+> > +			tr->max_latency = latency;
+> > +			latency_fsnotify(tr);
+> > +		}
+> > +	}
+> > +	rcu_read_unlock();
+> >  }
+> >  
+> >  /*
+> > @@ -1096,7 +1224,6 @@ static __always_inline void osnoise_stop_tracing(void)
+> >  static int run_osnoise(void)
+> >  {
+> >  	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> > -	struct trace_array *tr = osnoise_trace;
+> >  	u64 start, sample, last_sample;
+> >  	u64 last_int_count, int_count;
+> >  	s64 noise = 0, max_noise = 0;
+> > @@ -1231,11 +1358,7 @@ static int run_osnoise(void)
+> >  
+> >  	trace_osnoise_sample(&s);
+> >  
+> > -	/* Keep a running maximum ever recorded osnoise "latency" */
+> > -	if (max_noise > tr->max_latency) {
+> > -		tr->max_latency = max_noise;
+> > -		latency_fsnotify(tr);
+> > -	}
+> > +	notify_new_max_latency(max_noise);
+> >  
+> >  	if (osnoise_data.stop_tracing_total)
+> >  		if (s.noise > osnoise_data.stop_tracing_total)
+> > @@ -1293,7 +1416,6 @@ static int osnoise_main(void *data)
+> >  static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
+> >  {
+> >  	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> > -	struct trace_array *tr = osnoise_trace;
+> >  	struct timerlat_variables *tlat;
+> >  	struct timerlat_sample s;
+> >  	u64 now;
+> > @@ -1364,11 +1486,7 @@ static enum hrtimer_restart timerlat_irq(struct hrtimer *timer)
+> >  
+> >  	trace_timerlat_sample(&s);
+> >  
+> > -	/* Keep a running maximum ever recorded os noise "latency" */
+> > -	if (diff > tr->max_latency) {
+> > -		tr->max_latency = diff;
+> > -		latency_fsnotify(tr);
+> > -	}
+> > +	notify_new_max_latency(diff);
+> >  
+> >  	if (osnoise_data.stop_tracing)
+> >  		if (time_to_us(diff) >= osnoise_data.stop_tracing)
+> > @@ -1581,7 +1699,7 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+> >  
+> >  	mutex_lock(&trace_types_lock);
+> >  
+> > -	if (!osnoise_busy)
+> > +	if (!osnoise_has_registered_instances())
+> >  		goto out_unlock_trace;
+> >  
+> >  	mutex_lock(&interface_lock);
+> > @@ -1716,11 +1834,10 @@ osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+> >  		goto err_free;
+> >  
+> >  	/*
+> > -	 * trace_types_lock is taken to avoid concurrency on start/stop
+> > -	 * and osnoise_busy.
+> > +	 * trace_types_lock is taken to avoid concurrency on start/stop.
+> >  	 */
+> >  	mutex_lock(&trace_types_lock);
+> > -	running = osnoise_busy;
+> > +	running = osnoise_has_registered_instances();
+> >  	if (running)
+> >  		stop_per_cpu_kthreads();
+> >  
+> > @@ -1941,8 +2058,6 @@ static int osnoise_workload_start(void)
+> >  		return retval;
+> >  	}
+> >  
+> > -	osnoise_busy = true;
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > @@ -1951,7 +2066,7 @@ static int osnoise_workload_start(void)
+> >   */
+> >  static void osnoise_workload_stop(void)
+> >  {
+> > -	if (!osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	trace_osnoise_callback_enabled = false;
+> > @@ -1962,28 +2077,28 @@ static void osnoise_workload_stop(void)
+> >  	unhook_irq_events();
+> >  	unhook_softirq_events();
+> >  	unhook_thread_events();
+> > -
+> > -	osnoise_busy = false;
+> >  }
+> >  
+> >  static void osnoise_tracer_start(struct trace_array *tr)
+> >  {
+> >  	int retval;
+> >  
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	retval = osnoise_workload_start();
+> >  	if (retval)
+> >  		pr_err(BANNER "Error starting osnoise tracer\n");
+> >  
+> > +	osnoise_register_instance(tr);
+> >  }
+> >  
+> >  static void osnoise_tracer_stop(struct trace_array *tr)
+> >  {
+> > -	if (!osnoise_busy)
+> > +	if (!osnoise_has_registered_instances())
+> >  		return;
+> >  
+> > +	osnoise_unregister_instance(tr);
+> >  	osnoise_workload_stop();
+> >  }
+> >  
+> > @@ -1991,14 +2106,12 @@ static int osnoise_tracer_init(struct trace_array *tr)
+> >  {
+> >  
+> >  	/* Only allow one instance to enable this */
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return -EBUSY;
+> >  
+> > -	osnoise_trace = tr;
+> >  	tr->max_latency = 0;
+> >  
+> >  	osnoise_tracer_start(tr);
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > @@ -2022,7 +2135,7 @@ static void timerlat_tracer_start(struct trace_array *tr)
+> >  {
+> >  	int retval;
+> >  
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	osnoise_data.timerlat_tracer = 1;
+> > @@ -2031,6 +2144,8 @@ static void timerlat_tracer_start(struct trace_array *tr)
+> >  	if (retval)
+> >  		goto out_err;
+> >  
+> > +	osnoise_register_instance(tr);
+> > +
+> >  	return;
+> >  out_err:
+> >  	pr_err(BANNER "Error starting timerlat tracer\n");
+> > @@ -2040,7 +2155,7 @@ static void timerlat_tracer_stop(struct trace_array *tr)
+> >  {
+> >  	int cpu;
+> >  
+> > -	if (!osnoise_busy)
+> > +	if (!osnoise_has_registered_instances())
+> >  		return;
+> >  
+> >  	for_each_online_cpu(cpu)
+> > @@ -2054,11 +2169,9 @@ static void timerlat_tracer_stop(struct trace_array *tr)
+> >  static int timerlat_tracer_init(struct trace_array *tr)
+> >  {
+> >  	/* Only allow one instance to enable this */
+> > -	if (osnoise_busy)
+> > +	if (osnoise_has_registered_instances())
+> >  		return -EBUSY;
+> >  
+> > -	osnoise_trace = tr;
+> > -
+> >  	tr->max_latency = 0;
+> >  
+> >  	timerlat_tracer_start(tr);
+> > @@ -2105,6 +2218,8 @@ __init static int init_osnoise_tracer(void)
+> >  #endif
+> >  	osnoise_init_hotplug_support();
+> >  
+> > +	INIT_LIST_HEAD_RCU(&osnoise_instances);
+> > +
+> >  	init_tracefs();
+> >  
+> >  	return 0;
+> 
