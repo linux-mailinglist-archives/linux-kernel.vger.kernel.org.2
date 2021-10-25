@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CD5438DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBC3438DEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhJYDqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 23:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhJYDqq (ORCPT
+        id S232285AbhJYD5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 23:57:24 -0400
+Received: from prt-mail.chinatelecom.cn ([42.123.76.228]:50821 "EHLO
+        chinatelecom.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232169AbhJYD5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:46:46 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD907C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 20:44:24 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id g20so10670768qka.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 20:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x16gXWpzNHpOLXxSWON9xi6tEmmvUPoYcp94QB3jkPM=;
-        b=bx8eThpUK8zmEWsN8nmUkMwDmOLKZVuVKQYqVlA9Ggp2Fl07+Pctr43l+aUybocKZB
-         o18h4wMUGsSmCPk+wx28pp0ynssm2H5o7Yz/GRpbbIgML9kQ1sb3fg4r0SGYhInsnmWn
-         g4uNahRCtssYPnaUK6mWhgQ5I0A1Xq5jAWx4ljltjDyAhdG1Z8MmthWaPffXgeD260ih
-         60UGKSFJp9REP8oPCIZ7BZRnPL9EFjwvZgKyq6+OXGHPUzA246shmRsv2TtTk7lILyB9
-         rL6qjJCU6Bm+kNXGT+ytEIwrZDMXpeb6rJbpNs66GeUotSymvCKcvvjnXHXLbFIYokoH
-         h0Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=x16gXWpzNHpOLXxSWON9xi6tEmmvUPoYcp94QB3jkPM=;
-        b=QxFC9DFwcLtiRchQMO1YivVIJNMxBF20AL2MB3I8Wh1UQnp07khcYTQZVmF4qxksGl
-         1MYo0ATEXuHGinCO6cidkOlfUJxc5PQ0+HH2xXA5q/vX/agdAmWKvTobml/RBId0bLAw
-         C6Sm5xam/88Iy8PIq5j9fDAsqgzCfZ8FRLyY3F0DgLQLc+cLhzL99QD1t+R8AN3vZh1f
-         ZvlscBs01wqGBkibJg49wacJ/5D4V3ReoAkEMReRI7fzLSSFqiLfyuer6NhPNos7tlV5
-         9QeX01oFECa6BGziHYornfXFx+N6NRE9PUKtDrVreI0MVvagJvIf3oetB4IdXlCuWMr/
-         xYTQ==
-X-Gm-Message-State: AOAM532gaaWhXA0V2UMm/dyKBbkjYAFQozdvWF+c3NovWY9/9v8Lpqvg
-        nqdzla4wJx21PSpIS/IkWnM=
-X-Google-Smtp-Source: ABdhPJz0LfMxCfvl7U0olYslDsDxnM3i+4BngW+nFvaHXxGffDk/Jb7B8cW/QyxzH7NwguFCkMTQiQ==
-X-Received: by 2002:a37:6856:: with SMTP id d83mr11723484qkc.8.1635133463866;
-        Sun, 24 Oct 2021 20:44:23 -0700 (PDT)
-Received: from ubuntu-mate-laptop.. ([2607:fb90:1bd1:606f:7cf3:da67:cb9f:91b7])
-        by smtp.gmail.com with ESMTPSA id s3sm7999991qkj.118.2021.10.24.20.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 20:44:23 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     robert.foss@linaro.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     jagan@amarulasolutions.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-Date:   Sun, 24 Oct 2021 23:44:20 -0400
-Message-Id: <20211025034420.28996-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 24 Oct 2021 23:57:22 -0400
+HMM_SOURCE_IP: 172.18.0.48:38176.619599683
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-10.133.11.244 (unknown [172.18.0.48])
+        by chinatelecom.cn (HERMES) with SMTP id 5D8D42800DA;
+        Mon, 25 Oct 2021 11:46:33 +0800 (CST)
+X-189-SAVE-TO-SEND: +liuxp11@chinatelecom.cn
+Received: from  ([172.18.0.48])
+        by app0024 with ESMTP id 2644b3ac7a5f4906bc4966b328380019 for linux-kernel@vger.kernel.org;
+        Mon, 25 Oct 2021 11:46:39 CST
+X-Transaction-ID: 2644b3ac7a5f4906bc4966b328380019
+X-Real-From: liuxp11@chinatelecom.cn
+X-Receive-IP: 172.18.0.48
+Sender: liuxp11@chinatelecom.cn
+From:   Liu Xinpeng <liuxp11@chinatelecom.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com,
+        zhouchengming@bytedance.com, Liu Xinpeng <liuxp11@chinatelecom.cn>
+Subject: [PATCH 1/2] psi: Remove repeated verbose comment
+Date:   Mon, 25 Oct 2021 11:46:25 +0800
+Message-Id: <1635133586-84611-1-git-send-email-liuxp11@chinatelecom.cn>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
-Kbuild gives the following warning:
+Comment in function psi_task_switch,there are two same lines.
+...
+* runtime state, the cgroup that contains both tasks
+* runtime state, the cgroup that contains both tasks
+...
 
-WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
-  Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
-  Selected by [y]:
-  - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
-
-This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
-without depending on or selecting DRM_KMS_HELPER,
-despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
-
-This unmet dependency bug was detected by Kismet,
-a static analysis tool for Kconfig.
-Please advise if this is not the appropriate solution.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Signed-off-by: Liu Xinpeng <liuxp11@chinatelecom.cn>
 ---
- drivers/gpu/drm/bridge/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sched/psi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 431b6e12a81f..a630cb8fd1c8 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -30,6 +30,7 @@ config DRM_CDNS_DSI
- config DRM_CHIPONE_ICN6211
- 	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
- 	depends on OF
-+  select DRM_KMS_HELPER
- 	select DRM_MIPI_DSI
- 	select DRM_PANEL_BRIDGE
- 	help
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 1652f2b..526af84 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -833,7 +833,6 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		/*
+ 		 * When switching between tasks that have an identical
+ 		 * runtime state, the cgroup that contains both tasks
+-		 * runtime state, the cgroup that contains both tasks
+ 		 * we reach the first common ancestor. Iterate @next's
+ 		 * ancestors only until we encounter @prev's ONCPU.
+ 		 */
 -- 
-2.30.2
+1.8.3.1
 
