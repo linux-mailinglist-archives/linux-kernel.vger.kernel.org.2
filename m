@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7F8439FF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A703043A2E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhJYT0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
+        id S239184AbhJYTyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:54:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234573AbhJYTXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:23:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8682E610CB;
-        Mon, 25 Oct 2021 19:21:24 +0000 (UTC)
+        id S236056AbhJYTt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:49:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64AD060551;
+        Mon, 25 Oct 2021 19:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189685;
-        bh=qhaCZx6BNWG/ZqHFqRlhrhaajLRK8kzMCv9bBm2DLD8=;
+        s=korg; t=1635190929;
+        bh=gfUraPH3jSTYcrc8yohiE4fCL+/9xdnfvmYa7aln9Gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B35Ul9nUoOrQT6uRqA7fwrPofZolulBX65dVhZPJp9ktfbVDSk/89wvMQks7cP5MI
-         Y8iT41NJQwxpCddHPqILYasJihYABjQSDjJ9v20ObGqNCGUnt9RoOqnWObyn42p1Ql
-         y0Y5T943XimEyKW50LHjNhYLHVjL42RFc/Sxlk+0=
+        b=FERWrVz1OFzp7ebjJgoiecl2reP7tM3+Vs1qPvAL/f7DqpKT4uXgXrzfc+pjcCVMB
+         QoluWa6BOkdx2z9CHz3vl5i7dVhbRgDqGrQmpkCq6uy3Ud3Xn67bywMZiW8fn22bI7
+         Yoxvo+k459QHoDpAgaSjZ347qlLHhe5/p79nKHQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 06/30] netfilter: ipvs: make global sysctl readonly in non-init netns
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Stephen <stephenackerman16@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.14 085/169] mm/secretmem: fix NULL page->mapping dereference in page_is_secretmem()
 Date:   Mon, 25 Oct 2021 21:14:26 +0200
-Message-Id: <20211025190924.469356731@linuxfoundation.org>
+Message-Id: <20211025191028.025367440@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 174c376278949c44aad89c514a6b5db6cee8db59 ]
+commit 79f9bc5843142b649575f887dccdf1c07ad75c20 upstream.
 
-Because the data pointer of net/ipv4/vs/debug_level is not updated per
-netns, it must be marked as read-only in non-init netns.
+Check for a NULL page->mapping before dereferencing the mapping in
+page_is_secretmem(), as the page's mapping can be nullified while gup()
+is running, e.g.  by reclaim or truncation.
 
-Fixes: c6d2d445d8de ("IPVS: netns, final patch enabling network name space.")
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Acked-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  BUG: kernel NULL pointer dereference, address: 0000000000000068
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] PREEMPT SMP NOPTI
+  CPU: 6 PID: 4173897 Comm: CPU 3/KVM Tainted: G        W
+  RIP: 0010:internal_get_user_pages_fast+0x621/0x9d0
+  Code: <48> 81 7a 68 80 08 04 bc 0f 85 21 ff ff 8 89 c7 be
+  RSP: 0018:ffffaa90087679b0 EFLAGS: 00010046
+  RAX: ffffe3f37905b900 RBX: 00007f2dd561e000 RCX: ffffe3f37905b934
+  RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffe3f37905b900
+  ...
+  CR2: 0000000000000068 CR3: 00000004c5898003 CR4: 00000000001726e0
+  Call Trace:
+   get_user_pages_fast_only+0x13/0x20
+   hva_to_pfn+0xa9/0x3e0
+   try_async_pf+0xa1/0x270
+   direct_page_fault+0x113/0xad0
+   kvm_mmu_page_fault+0x69/0x680
+   vmx_handle_exit+0xe1/0x5d0
+   kvm_arch_vcpu_ioctl_run+0xd81/0x1c70
+   kvm_vcpu_ioctl+0x267/0x670
+   __x64_sys_ioctl+0x83/0xa0
+   do_syscall_64+0x56/0x80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Link: https://lkml.kernel.org/r/20211007231502.3552715-1-seanjc@google.com
+Fixes: 1507f51255c9 ("mm: introduce memfd_secret system call to create "secret" memory areas")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reported-by: Darrick J. Wong <djwong@kernel.org>
+Reported-by: Stephen <stephenackerman16@gmail.com>
+Tested-by: Darrick J. Wong <djwong@kernel.org>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/secretmem.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index eea0144aada7..ecc16d8c1cc3 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -3987,6 +3987,11 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	tbl[idx++].data = &ipvs->sysctl_conn_reuse_mode;
- 	tbl[idx++].data = &ipvs->sysctl_schedule_icmp;
- 	tbl[idx++].data = &ipvs->sysctl_ignore_tunneled;
-+#ifdef CONFIG_IP_VS_DEBUG
-+	/* Global sysctls must be ro in non-init netns */
-+	if (!net_eq(net, &init_net))
-+		tbl[idx++].mode = 0444;
-+#endif
+--- a/include/linux/secretmem.h
++++ b/include/linux/secretmem.h
+@@ -23,7 +23,7 @@ static inline bool page_is_secretmem(str
+ 	mapping = (struct address_space *)
+ 		((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
  
- 	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
- 	if (ipvs->sysctl_hdr == NULL) {
--- 
-2.33.0
-
+-	if (mapping != page->mapping)
++	if (!mapping || mapping != page->mapping)
+ 		return false;
+ 
+ 	return mapping->a_ops == &secretmem_aops;
 
 
