@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531AA43A1CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41349439FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhJYTmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:42:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53620 "EHLO mail.kernel.org"
+        id S234525AbhJYTYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236647AbhJYTfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E00A7604DA;
-        Mon, 25 Oct 2021 19:32:04 +0000 (UTC)
+        id S233693AbhJYTWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:22:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3B4861078;
+        Mon, 25 Oct 2021 19:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190325;
-        bh=4s8x3QIwL0X0dMs+ax1CtcTi+h0wytlsX3jvRk0xS4Q=;
+        s=korg; t=1635189582;
+        bh=yPnI18qngDXNZlB95vqBC3qE+n8BE0dzrAezjQCXLM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sPX7P2YTaEkOhMfQTVT4N98/4IVLVAVQ1RYMAOYNAqtGo/hfBOGfcRXgCDrkXtZeC
-         ZNt09ljrqqH7sq5F02gjCPwW7iVu4JRy+Nmu/i/a6BltNQNxVnoqD4u38w5nh/hzjJ
-         f8/pf4zzIZ29kIQqOr6MCgJITsdGyjLtKuiPLv+s=
+        b=gdWpd39xGOW8+dwc08QzritIcUADqYLGzMT3eSwzxKezx3R0KhDtoULhn5qsOLSup
+         xoVGGtxPyCfYk1kAAmxOFlkgHphA3NEmYb6nRPzsuf1tcs4kFUCO2f55Oi4xYtg8Hw
+         tqhGZgvl2RWMDdzS6AL1iaZ4XANbY8Liapaq5ifE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 29/95] net: stmmac: Fix E2E delay mechanism
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 4.9 39/50] ASoC: DAPM: Fix missing kctl change notifications
 Date:   Mon, 25 Oct 2021 21:14:26 +0200
-Message-Id: <20211025191001.120487468@linuxfoundation.org>
+Message-Id: <20211025190939.880322576@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kurt Kanzenbach <kurt@linutronix.de>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 3cb958027cb8b78d3ee639ce9af54c2ef1bf964f ]
+commit 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842 upstream.
 
-When utilizing End to End delay mechanism, the following error messages show up:
+The put callback of a kcontrol is supposed to return 1 when the value
+is changed, and this will be notified to user-space.  However, some
+DAPM kcontrols always return 0 (except for errors), hence the
+user-space misses the update of a control value.
 
-|root@ehl1:~# ptp4l --tx_timestamp_timeout=50 -H -i eno2 -E -m
-|ptp4l[950.573]: selected /dev/ptp3 as PTP clock
-|ptp4l[950.586]: port 1: INITIALIZING to LISTENING on INIT_COMPLETE
-|ptp4l[950.586]: port 0: INITIALIZING to LISTENING on INIT_COMPLETE
-|ptp4l[952.879]: port 1: new foreign master 001395.fffe.4897b4-1
-|ptp4l[956.879]: selected best master clock 001395.fffe.4897b4
-|ptp4l[956.879]: port 1: assuming the grand master role
-|ptp4l[956.879]: port 1: LISTENING to GRAND_MASTER on RS_GRAND_MASTER
-|ptp4l[962.017]: port 1: received DELAY_REQ without timestamp
-|ptp4l[962.273]: port 1: received DELAY_REQ without timestamp
-|ptp4l[963.090]: port 1: received DELAY_REQ without timestamp
+This patch corrects the behavior by properly returning 1 when the
+value gets updated.
 
-Commit f2fb6b6275eb ("net: stmmac: enable timestamp snapshot for required PTP
-packets in dwmac v5.10a") already addresses this problem for the dwmac
-v5.10. However, same holds true for all dwmacs above version v4.10. Correct the
-check accordingly. Afterwards everything works as expected.
-
-Tested on Intel Atom(R) x6414RE Processor.
-
-Fixes: 14f347334bf2 ("net: stmmac: Correctly take timestamp for PTPv2")
-Fixes: f2fb6b6275eb ("net: stmmac: enable timestamp snapshot for required PTP packets in dwmac v5.10a")
-Suggested-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20211006141712.2439-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 6133b2fe8a78..0ac61e7ab43c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -605,7 +605,7 @@ static int stmmac_hwtstamp_set(struct net_device *dev, struct ifreq *ifr)
- 			config.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
- 			ptp_v2 = PTP_TCR_TSVER2ENA;
- 			snap_type_sel = PTP_TCR_SNAPTYPSEL_1;
--			if (priv->synopsys_id != DWMAC_CORE_5_10)
-+			if (priv->synopsys_id < DWMAC_CORE_4_10)
- 				ts_event_en = PTP_TCR_TSEVNTENA;
- 			ptp_over_ipv4_udp = PTP_TCR_TSIPV4ENA;
- 			ptp_over_ipv6_udp = PTP_TCR_TSIPV6ENA;
--- 
-2.33.0
-
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2410,6 +2410,7 @@ static int snd_soc_dapm_set_pin(struct s
+ 				const char *pin, int status)
+ {
+ 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
++	int ret = 0;
+ 
+ 	dapm_assert_locked(dapm);
+ 
+@@ -2422,13 +2423,14 @@ static int snd_soc_dapm_set_pin(struct s
+ 		dapm_mark_dirty(w, "pin configuration");
+ 		dapm_widget_invalidate_input_paths(w);
+ 		dapm_widget_invalidate_output_paths(w);
++		ret = 1;
+ 	}
+ 
+ 	w->connected = status;
+ 	if (status == 0)
+ 		w->force = 0;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /**
+@@ -3323,14 +3325,15 @@ int snd_soc_dapm_put_pin_switch(struct s
+ {
+ 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+ 	const char *pin = (const char *)kcontrol->private_value;
++	int ret;
+ 
+ 	if (ucontrol->value.integer.value[0])
+-		snd_soc_dapm_enable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
+ 	else
+-		snd_soc_dapm_disable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
+ 
+ 	snd_soc_dapm_sync(&card->dapm);
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
+ 
+@@ -3706,7 +3709,7 @@ static int snd_soc_dapm_dai_link_put(str
+ 
+ 	w->params_select = ucontrol->value.enumerated.item[0];
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
 
 
