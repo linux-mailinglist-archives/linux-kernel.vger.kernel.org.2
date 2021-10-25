@@ -2,123 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68327439505
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF744394FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhJYLoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhJYLn5 (ORCPT
+        id S233071AbhJYLnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:43:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233110AbhJYLnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:43:57 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5DFC061745;
-        Mon, 25 Oct 2021 04:41:35 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g8so10320150edb.2;
-        Mon, 25 Oct 2021 04:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Af+qmYvV3PY7oY9iMHf1WDLN+yTC/dfVl6LmNB2Ru+M=;
-        b=iLTzGHKq62wcRXJw/NQeb8QVl0SSGxd0VOXTRXyEMYtWDF16J/H4D9o1cX+9caqz8h
-         pXrPyzBaUiZ0wa/rRI5QqSYx28CxRd1p5Ys03yoYaNBgm3qYTV80XOmaEFCOc8WN3eI+
-         /Zwrh18K9RiH6f4EmIOxd9zjwFUeuIeq/GdpkLulr84hMeotFMMfUuWWmc1F0lnxsvey
-         1wozSc9mRa+aSgqBIsqi3KeUU16h2VN8zp5sptzJqmma4Ljkt5BOEK3yDYNWT89byf7X
-         cX9CfI4culRu/NEpETmT2OCUXcdXtWlLT82RGyimdnOIp4g0iEyt3U8uwefzVYNDGf9/
-         VyeQ==
+        Mon, 25 Oct 2021 07:43:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635162049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pvF4+nz9sV0ujtBgy5+lWhHsiQG7rLOYAJX/nU6mgaE=;
+        b=bRWlAkFRe3hw6PfKTb7mAMoDPHWjHtS3oB1w7yL9+Hr4IoJhPZxQCWSMHAVNj5iB+U5nSR
+        3hXwt8lBXePxc/eu4Bitp7SSf8KikCIf7s0uyqVYR/sOxQLfRKN9jaGWw7KAhe2MrtlkAO
+        kxwhAoqgW7IajTAsE0k1TxONC9jOBgg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-hECt0S6DOa-eQIP73_dcXw-1; Mon, 25 Oct 2021 07:40:48 -0400
+X-MC-Unique: hECt0S6DOa-eQIP73_dcXw-1
+Received: by mail-wm1-f72.google.com with SMTP id b197-20020a1c1bce000000b0032ca040eb40so3075614wmb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:40:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Af+qmYvV3PY7oY9iMHf1WDLN+yTC/dfVl6LmNB2Ru+M=;
-        b=UUfPSHY/5GTlh7vNnngmfbwcsOt1bbIg3kAuA7pAdr+5yiWD+5apss0uaJI76lIM0B
-         PZNlk+dFc68optixYEHjIqKAyILm+RYyPEpMXWQ1Tb13icpyy9tzLG042Y/VZ/JtZLBj
-         AZzJhiDwiefr//OvgpmAuy96rWNR++eWXf6MBy2DbhgqhgN3M8z84jozTE3JHJwIKaXi
-         f6ONyxx/qZpx8+Uwm0kOIn9Go5HjvbCVJjFg0HJW93gFp6sWMbRjCW4fYssGvWltrRmy
-         8UdxH94gs4NyNN4pffRPyXicaJwVUI7+ocgYLLVt14J9AeCQKDVP+8RLV4bG+8DcQafQ
-         aadw==
-X-Gm-Message-State: AOAM532wd7W+KrnWTlLjEnCsLZLCJmsW7oqOtBK8pUNvMRulJG3xTnhE
-        yHSacVq8seR56o2Xe1L4jRZLNbzZQxllRv5/bb0=
-X-Google-Smtp-Source: ABdhPJzjBN4K07mgHexd4fWyTF3MfP5LCSNqxjtFEIj1rgPmmarKsiTdhxurgICUQfmRRjgJ3XTV28Ui7aDLiZxfOA8=
-X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr14340955ejc.128.1635162093757;
- Mon, 25 Oct 2021 04:41:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pvF4+nz9sV0ujtBgy5+lWhHsiQG7rLOYAJX/nU6mgaE=;
+        b=M3IMhYfNtbaJ4p48YMmcm+aikGfAxtCT0PN8hZ6058ogCe0bZSBWyClQMmLutktjyO
+         iplVLlOyP/dBydOVTpQxpJa/V0U2+yV+jOgqbN/lMhsDcz+M9QQ6/aKc412IqjsKScYh
+         c8b4Gbr9kyzqom7T6+M/E+5zdusOr0uvXMBxVm8sOfZcxAymfI5B8Eb8NA0xLEz3dmI5
+         qGJyaP5CU/w13vd9xwXldZ8rY2l+Ioyvsu4Tef1+QFV8T2v4Z6KEO9WAyuFoD1IVEbuu
+         zEP7MFpY+u/33/TPB/1rtSYWKfjiuBPg4rZaiCFyPArFxWD2fa7ss48P0pFK2Yp2wpUh
+         4+cA==
+X-Gm-Message-State: AOAM530oc3xb+FXEHmuEPwU6O0+C5Mx6W24/l+f+6tD1RXpkni4XTWZC
+        ia5M3a+AzM44sJxgjAOX3hrAbLOaHZn5m556baZ+fcxmDxDWMnPTwFdDgQdBPziBLgwncbVCrDw
+        UI0lHttRbQF7Be67KqDvlkUmm
+X-Received: by 2002:a5d:528b:: with SMTP id c11mr22465499wrv.35.1635162047030;
+        Mon, 25 Oct 2021 04:40:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwhydRGvqbhPwZ1zzJqWcYrqwEZKk7t7seRXfentVvtIFtmJid7cH7YApOVonPRk8Bwtdbnuw==
+X-Received: by 2002:a5d:528b:: with SMTP id c11mr22465470wrv.35.1635162046831;
+        Mon, 25 Oct 2021 04:40:46 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id u10sm12776698wrm.34.2021.10.25.04.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 04:40:46 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 13:40:44 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        mingo@redhat.com, irogers@google.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjain@linux.ibm.com, james.clark@arm.com
+Subject: Re: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
+Message-ID: <YXaXvGgvs4gr8Cgi@krava>
+References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
+ <1634807805-40093-3-git-send-email-john.garry@huawei.com>
+ <YXFhr2YoVp9GPsDM@krava>
+ <86aee893-0b6b-bce3-d1aa-3b66365592d1@huawei.com>
 MIME-Version: 1.0
-References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-12-hdegoede@redhat.com>
-In-Reply-To: <20211025094119.82967-12-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 25 Oct 2021 14:40:39 +0300
-Message-ID: <CAHp75VdJav6L03oVNd0DNA8jUXHPaqNzHU+q=+2-eEbh087bOQ@mail.gmail.com>
-Subject: Re: [PATCH v4 11/11] platform/x86: int3472: Deal with probe ordering issues
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86aee893-0b6b-bce3-d1aa-3b66365592d1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:42 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> The clk and regulator frameworks expect clk/regulator consumer-devices
-> to have info about the consumed clks/regulators described in the device's
-> fw_node.
->
-> To work around this info missing from the ACPI tables on devices where
-> the int3472 driver is used, the int3472 MFD-cell drivers attach info about
-> consumers to the clks/regulators when registering these.
->
-> This causes problems with the probe ordering wrt drivers for consumers
-> of these clks/regulators. Since the lookups are only registered when the
-> provider-driver binds, trying to get these clks/regulators before then
-> results in a -ENOENT error for clks and a dummy regulator for regulators.
->
-> All the sensor ACPI fw-nodes have a _DEP dependency on the INT3472 ACPI
-> fw-node, so to work around these probe ordering issues the ACPI core /
-> i2c-code does not instantiate the I2C-clients for any ACPI devices
-> which have a _DEP dependency on an INT3472 ACPI device until all
-> _DEP-s are met.
->
-> This relies on acpi_dev_clear_dependencies() getting called by the driver
-> for the _DEP-s when they are ready, add a acpi_dev_clear_dependencies()
-> call to the discrete.c probe code.
->
-> In the tps68470 case calling acpi_dev_clear_dependencies() is already done
-> by the acpi_gpiochip_add() call done by the driver for the GPIO MFD cell
-> (The GPIO cell is deliberately the last cell created to make sure the
-> clk + regulator cells are already instantiated when this happens).
->
-> However for proper probe ordering, the clk/regulator cells must not just
-> be instantiated the must be fully ready (the clks + regulators must be
-> registered with their subsystems).
->
-> Add MODULE_SOFTDEP dependencies for the clk and regulator drivers for
-> the instantiated MFD-cells so that these are loaded before us and so
-> that they bind immediately when the platform-devs are instantiated.
+On Fri, Oct 22, 2021 at 10:42:11AM +0100, John Garry wrote:
+> On 21/10/2021 13:48, Jiri Olsa wrote:
+> > > +HOSTCFLAGS += -Wall
+> > > +HOSTCFLAGS += -Wextra
+> > > +
+> > >   # Enforce a non-executable stack, as we may regress (again) in the future by
+> > >   # adding assembler files missing the .GNU-stack linker note.
+> > >   LDFLAGS += -Wl,-z,noexecstack
+> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > > index 7df13e74450c..118bcdc70bb4 100644
+> > > --- a/tools/perf/Makefile.perf
+> > > +++ b/tools/perf/Makefile.perf
+> > > @@ -226,7 +226,7 @@ else
+> > >   endif
+> > >   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+> > > -export HOSTCC HOSTLD HOSTAR
+> > > +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+> > >   include $(srctree)/tools/build/Makefile.include
+> > > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+> > > index a055dee6a46a..d5c287f069a2 100644
+> > > --- a/tools/perf/pmu-events/Build
+> > > +++ b/tools/perf/pmu-events/Build
+> > > @@ -1,7 +1,7 @@
+> > >   hostprogs := jevents
+> > >   jevents-y	+= json.o jsmn.o jevents.o
+> > > -HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+> > > +HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
+> > so the the host cflags are made of:
+> > 
+> > host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+> > 
+> 
+> ok, so IIRC, then the rule for building .o from .c in
+> tools/build/Makefile.build will pick up HOSTCFLAGS through this variable, so
+> we then don't need to explicitly mention it in the per-target rule, so can
+> have this as before in pmu-events/Build
+> 
+> HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+> 
+> right?
+> 
+> (Indeed I guess that we can get rid of -I$(srctree)/tools/include as well)
 
-Just a side note: MODULE_SOFTDEP() won't work in some (special?) cases
-when module tools are limited in functionality (e.g. busybox
-implementation as of today).
+hm, the -I.. should stay no? I don't see that
+it's being added soem other way
 
--- 
-With Best Regards,
-Andy Shevchenko
+jirka
+
+
+---
+diff --git a/tools/build/Build.include b/tools/build/Build.include
+index 2cf3b1bde86e..c2a95ab47379 100644
+--- a/tools/build/Build.include
++++ b/tools/build/Build.include
+@@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
+ ###
+ ## HOSTCC C flags
+ 
+-host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
++host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+ 
+ # output directory for tests below
+ TMPOUT = .tmp_$$$$
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0ae2e3d8b832..374f65b52157 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
+ detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+ 
+ CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
++HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+ 
+ include $(srctree)/tools/scripts/Makefile.arch
+ 
+@@ -211,6 +212,7 @@ endif
+ ifneq ($(WERROR),0)
+   CORE_CFLAGS += -Werror
+   CXXFLAGS += -Werror
++  HOSTCFLAGS += -Werror
+ endif
+ 
+ ifndef DEBUG
+@@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
+ CXXFLAGS += -funwind-tables
+ CXXFLAGS += -Wno-strict-aliasing
+ 
++HOSTCFLAGS += -Wall
++HOSTCFLAGS += -Wextra
++
+ # Enforce a non-executable stack, as we may regress (again) in the future by
+ # adding assembler files missing the .GNU-stack linker note.
+ LDFLAGS += -Wl,-z,noexecstack
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 7df13e74450c..118bcdc70bb4 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -226,7 +226,7 @@ else
+ endif
+ 
+ export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+-export HOSTCC HOSTLD HOSTAR
++export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+ 
+ include $(srctree)/tools/build/Makefile.include
+ 
+
