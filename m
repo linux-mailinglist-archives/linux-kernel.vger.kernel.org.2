@@ -2,261 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9008E439372
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8D2439388
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhJYKSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:18:35 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:35901 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229895AbhJYKSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:18:34 -0400
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7361461EA191C;
-        Mon, 25 Oct 2021 12:16:11 +0200 (CEST)
-Message-ID: <16ccd042-cddd-3a2d-589b-8091aef0b405@molgen.mpg.de>
-Date:   Mon, 25 Oct 2021 12:16:11 +0200
+        id S232789AbhJYKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232720AbhJYKXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:23:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F1A60EB9;
+        Mon, 25 Oct 2021 10:20:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635157242;
+        bh=vLIB1StnAB/zbNHABDgAdbBZXqyK5QARCCOpr2ElA5E=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=p8+en/salrcBZHXG4LLGnPGcgrH/L/e9+VC7IR7UJ9LBW6vBKsGAOaD4n0lnD4gt2
+         +1/XPMcAeobUNYGgaPc92QObSXK0Xl3DLFHneLT4/gaxd/m6XkneiozRso9tO4kn0D
+         wX7/wqj8Syacc93Aei9JYGOS9x3+iZLlhuY8VZoU8F0xDHx+ijUDE/QYWsg+xQvVLa
+         r4n9anNYnBqveLVwVgsFJGC2Ir0iAwr0qlCj1L4ED+FE1UK8JZqcQva1WNI/GOE4y9
+         6UulzRgXgEVszfVMjWF/VCjGedeYtKGIaYJRUGZWox+EYBna3//ZbZaethUG5SaZuL
+         igFR/agy9My3w==
+Message-ID: <ee5d8674c5b80668c2de8575ff2b0afcbb463200.camel@kernel.org>
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+From:   Jeff Layton <jlayton@kernel.org>
+To:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Patrick Donnelly <pdonnell@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 25 Oct 2021 06:20:40 -0400
+In-Reply-To: <YXaDBFvar4TS+EB8@suse.de>
+References: <20211020143708.14728-1-lhenriques@suse.de>
+         <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+         <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+         <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+         <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+         <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+         <YXaDBFvar4TS+EB8@suse.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v4] media: aspeed: add debugfs
-Content-Language: en-US
-To:     Jammy Huang <jammy_huang@aspeedtech.com>
-References: <20211025101036.4262-1-jammy_huang@aspeedtech.com>
-Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, linux-media@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20211025101036.4262-1-jammy_huang@aspeedtech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jammy,
-
-
-On 25.10.21 12:10, Jammy Huang wrote:
-> A debugfs file, /sys/kernel/debug/aspeed-video, will be created. You can
-> read it to get video real-time information as below:
+On Mon, 2021-10-25 at 11:12 +0100, Luís Henriques wrote:
+> On Thu, Oct 21, 2021 at 12:35:18PM -0400, Jeff Layton wrote:
+> > On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+> > > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > 
+> > > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+> > > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > > 
+> > > > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+> > > > > > > This counter will keep track of the number of remote object copies done on
+> > > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
+> > > > > > > can be accessed from the client debugfs directory.
+> > > > > > > 
+> > > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > > > > > > ---
+> > > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+> > > > > > > 100% sure about the usefulness of this patch, or if this is the best way
+> > > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
+> > > > > > > get some feedback, hence the RFC.
+> > > > > > > 
+> > > > > > > Cheers,
+> > > > > > > --
+> > > > > > > Luís
+> > > > > > > 
+> > > > > > > [0] https://github.com/ceph/ceph/pull/42720
+> > > > > > > 
+> > > > > > 
+> > > > > > I think this would be better integrated into the stats infrastructure.
+> > > > > > 
+> > > > > > Maybe you could add a new set of "copy" stats to struct
+> > > > > > ceph_client_metric that tracks the total copy operations done, their
+> > > > > > size and latency (similar to read and write ops)?
+> > > > > 
+> > > > > I think it's a good idea to integrate this into "stats" but I think a
+> > > > > local debugfs file for some counters is still useful. The "stats"
+> > > > > module is immature at this time and I'd rather not build any qa tests
+> > > > > (yet) that rely on it.
+> > > > > 
+> > > > > Can we generalize this patch-set to a file named "op_counters" or
+> > > > > similar and additionally add other OSD ops performed by the kclient?
+> > > > > 
+> > > > 
+> > > > 
+> > > > Tracking this sort of thing is the main purpose of the stats code. I'm
+> > > > really not keen on adding a whole separate set of files for reporting
+> > > > this.
+> > > 
+> > > Maybe I'm confused. Is there some "file" which is already used for
+> > > this type of debugging information? Or do you mean the code for
+> > > sending stats to the MDS to support cephfs-top?
+> > > 
+> > > > What's the specific problem with relying on the data in debugfs
+> > > > "metrics" file?
+> > > 
+> > > Maybe no problem? I wasn't aware of a "metrics" file.
+> > > 
+> > 
+> > Yes. For instance:
+> > 
+> > # cat /sys/kernel/debug/ceph/*/metrics
+> > item                               total
+> > ------------------------------------------
+> > opened files  / total inodes       0 / 4
+> > pinned i_caps / total inodes       5 / 4
+> > opened inodes / total inodes       0 / 4
+> > 
+> > item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+> > -----------------------------------------------------------------------------------
+> > read          0           0               0               0               0
+> > write         5           914013          824797          1092343         103476
+> > metadata      79          12856           1572            114572          13262
+> > 
+> > item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+> > ----------------------------------------------------------------------------------------
+> > read          0           0               0               0               0
+> > write         5           4194304         4194304         4194304         20971520
+> > 
+> > item          total           miss            hit
+> > -------------------------------------------------
+> > d_lease       11              0               29
+> > caps          5               68              10702
+> > 
+> > 
+> > I'm proposing that Luis add new lines for "copy" to go along with the
+> > "read" and "write" ones. The "total" counter should give you a count of
+> > the number of operations.
 > 
-> Caputre:
-
-The typo in Capture is still there. I couldnâ€™t find it in the code below 
-either. Is it missing?
-
->    Signal              : Lock
->    Width               : 1920
->    Height              : 1080
->    FRC                 : 60
+> The problem with this is that it will require quite some work on the
+> MDS-side because, AFAIU, the MDS will need to handle different versions of
+> the CEPH_MSG_CLIENT_METRICS message (with and without the new copy-from
+> metrics).
 > 
-> Performance:
->    Frame#              : 3804
->    Frame Duration(ms)  :
->      Now               : 22
->      Min               : 22
->      Max               : 22
->    FPS                 : 45
+> Will this extra metric ever be useful on the MDS side?  From what I
+> understood Patrick's initial request was to have a way to find out, on the
+> client, if remote copies are really happening.  (*sigh* for not having
+> tracepoints.)
 > 
-> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-
-
-Kind regards,
-
-Paul
-
-
-> ---
-> v4:
->   - use void as aspeed_video_debugfs_create()'s return type
->   - update commit message
-> v3:
->   - let struct, aspeed_video_debugfs_ops, be const
-> v2:
->   - Change the style of debugfs information
->   - Use Min/Max to remove test and branch cases
-> ---
->   drivers/media/platform/aspeed-video.c | 93 +++++++++++++++++++++++++++
->   1 file changed, 93 insertions(+)
+> Anyway, I can look into adding this to the metrics infrastructure, but
+> it'll likely take me some more time to get to it and to figure out (once
+> again) how the messages versioning work.
 > 
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index 8b3939b8052d..de84e30372eb 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -21,6 +21,8 @@
->   #include <linux/videodev2.h>
->   #include <linux/wait.h>
->   #include <linux/workqueue.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/ktime.h>
->   #include <media/v4l2-ctrls.h>
->   #include <media/v4l2-dev.h>
->   #include <media/v4l2-device.h>
-> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
->   	struct list_head link;
->   };
->   
-> +struct aspeed_video_perf {
-> +	ktime_t last_sample;
-> +	u32 totaltime;
-> +	u32 duration;
-> +	u32 duration_min;
-> +	u32 duration_max;
-> +};
-> +
->   #define to_aspeed_video_buffer(x) \
->   	container_of((x), struct aspeed_video_buffer, vb)
->   
-> @@ -241,6 +251,8 @@ struct aspeed_video {
->   	unsigned int frame_left;
->   	unsigned int frame_right;
->   	unsigned int frame_top;
-> +
-> +	struct aspeed_video_perf perf;
->   };
->   
->   #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
-> @@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->   		readl(video->base + reg));
->   }
->   
-> +static void update_perf(struct aspeed_video_perf *p)
-> +{
-> +	p->duration =
-> +		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
-> +	p->totaltime += p->duration;
-> +
-> +	p->duration_max = max(p->duration, p->duration_max);
-> +	p->duration_min = min(p->duration, p->duration_min);
-> +}
-> +
->   static int aspeed_video_start_frame(struct aspeed_video *video)
->   {
->   	dma_addr_t addr;
-> @@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
->   	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
->   			    VE_INTERRUPT_COMP_COMPLETE);
->   
-> +	video->perf.last_sample = ktime_get();
-> +
->   	aspeed_video_update(video, VE_SEQ_CTRL, 0,
->   			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
->   
-> @@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->   		u32 frame_size = aspeed_video_read(video,
->   						   VE_JPEG_COMP_SIZE_READ_BACK);
->   
-> +		update_perf(&video->perf);
-> +
->   		spin_lock(&video->lock);
->   		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->   		buf = list_first_entry_or_null(&video->buffers,
-> @@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->   	det->width = MIN_WIDTH;
->   	det->height = MIN_HEIGHT;
->   	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
-> +	memset(&video->perf, 0, sizeof(video->perf));
->   
->   	do {
->   		if (tries) {
-> @@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
->   	struct aspeed_video *video = vb2_get_drv_priv(q);
->   
->   	video->sequence = 0;
-> +	video->perf.duration_max = 0;
-> +	video->perf.duration_min = 0xffffffff;
->   
->   	rc = aspeed_video_start_frame(video);
->   	if (rc) {
-> @@ -1517,6 +1546,66 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
->   	.buf_queue =  aspeed_video_buf_queue,
->   };
->   
-> +#ifdef CONFIG_DEBUG_FS
-> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
-> +{
-> +	struct aspeed_video *v = s->private;
-> +
-> +	seq_puts(s, "\n");
-> +
-> +	seq_printf(s, "  %-20s:\t%s\n", "Signal",
-> +		   v->v4l2_input_status ? "Unlock" : "Lock");
-> +	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-> +	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
-> +	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
-> +
-> +	seq_puts(s, "\n");
-> +
-> +	seq_puts(s, "Performance:\n");
-> +	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
-> +	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
-> +	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
-> +	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
-> +	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
-> +	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
-> +
-> +
-> +	return 0;
-> +}
-> +
-> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
-> +{
-> +	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
-> +}
-> +
-> +static struct file_operations aspeed_video_debugfs_ops = {
-> +	.owner   = THIS_MODULE,
-> +	.open    = aspeed_video_proc_open,
-> +	.read    = seq_read,
-> +	.llseek  = seq_lseek,
-> +	.release = single_release,
-> +};
-> +
-> +static struct dentry *debugfs_entry;
-> +
-> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
-> +{
-> +	debugfs_remove_recursive(debugfs_entry);
-> +}
-> +
-> +static void aspeed_video_debugfs_create(struct aspeed_video *video)
-> +{
-> +	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL, video,
-> +					    &aspeed_video_debugfs_ops);
-> +}
-> +#else
-> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
-> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->   static int aspeed_video_setup_video(struct aspeed_video *video)
->   {
->   	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
-> @@ -1708,6 +1797,8 @@ static int aspeed_video_probe(struct platform_device *pdev)
->   		return rc;
->   	}
->   
-> +	aspeed_video_debugfs_create(video);
-> +
->   	return 0;
->   }
->   
-> @@ -1719,6 +1810,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
->   
->   	aspeed_video_off(video);
->   
-> +	aspeed_video_debugfs_remove(video);
-> +
->   	clk_unprepare(video->vclk);
->   	clk_unprepare(video->eclk);
->   
-> 
+
+I think it is useful info to report to the MDS, but it's not required to
+send these to the MDS to solve the current problem. My suggestion would
+be to add what's needed to track these stats in the kclient and report
+them via debugfs, but don't send the info to the MDS just yet.
+
+Later, we could extend the protocol with COPY stats, and add the
+necessary infrastructure to the MDS to deal with it. Once that's in
+place, we can then extend the kclient to start sending this info along
+when it reports the stats.
+-- 
+Jeff Layton <jlayton@kernel.org>
+
