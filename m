@@ -2,134 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6704843A624
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D1443A61C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhJYVw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:52:26 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:42243 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233625AbhJYVwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:52:24 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4HdTBb1vpjz9s2d;
-        Mon, 25 Oct 2021 23:49:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 40D27kRvuqsY; Mon, 25 Oct 2021 23:49:43 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.117])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HdTBZ4Xqgz9s2N;
-        Mon, 25 Oct 2021 23:49:42 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19PLnAJ3007255
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 23:49:12 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19PLiZcF007034;
-        Mon, 25 Oct 2021 23:44:35 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v3 10/10] powerpc/fsl_booke: Enable STRICT_KERNEL_RWX
-Date:   Mon, 25 Oct 2021 23:44:22 +0200
-Message-Id: <636c4c53f6765529a85e9c7d5c0bab321d411f51.1635198209.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <f34898e2edb21db1bcb1c9a96ac7433a141d50c2.1635198209.git.christophe.leroy@csgroup.eu>
-References: <f34898e2edb21db1bcb1c9a96ac7433a141d50c2.1635198209.git.christophe.leroy@csgroup.eu>
+        id S233361AbhJYVv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhJYVvx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:51:53 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36144C061745;
+        Mon, 25 Oct 2021 14:49:31 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d9so12243239pfl.6;
+        Mon, 25 Oct 2021 14:49:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=baPV4wjWZkGX1/OiILxvL9eAGAhGEPzvMBmxxzMUQ18=;
+        b=QXLi5LxfSEiZQavsYMecHFC1Ryzi+j4JIobg4vPw2H51u+3Qpgk/qgk/ux/t1ReruM
+         KiQESzV0bS9HJD+QdTRhClZDtSVjlkkab5WA6j2w3dZRfoFbPsPL0gBa/k/89DiD2kgv
+         ttzh3g7mvljlgu6xKH6VRjJ0an+TfrtWlQDe32vWWSqYRY5m5AyHBToW+6c6WMkFtCDb
+         iNUj6XPu9CN333mq03+/gZIkzsqEJPtKnvWpKB6z90AQW91h8WhfhO6x7hjbK00/sd+o
+         RDj99muUDZ3+JeYLZUVzdbnIejOlLaajjMCi+a6XlYTnljUNCUtzUxpa89nTOiISnYCU
+         eI+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=baPV4wjWZkGX1/OiILxvL9eAGAhGEPzvMBmxxzMUQ18=;
+        b=cXf2CxySb/XjS8U3nDd8yyHY8OrzvQ2eAgpfg4hW1eMV0ktsyKwQdWpcomIcwjDFU0
+         ybzSeBGRg0d0/XQU4jOGEuteiTFXVOijU6qVoE4t27eEKyCCNzW4bvHgrDHgAytvcm2c
+         DDGQf8zGu9mwsHW2Ay8gWR5SuVkRXOP6yVzIrCtRDKv8zSZAttvpqgqtwQfDroqcjLE3
+         iDLWsRLdqtNna6sVgKsxy1WXVtWTcS7EwCSZrMnCyu3FYqKkY6/8/2xp6S8WadAgGuaz
+         W8uUrQ9EDv8BooU4RBGPKl5UffrfyDcJSb4BAvOAhr92InOCRCR9bsvZR1AJ9Do9ghx+
+         Ft3A==
+X-Gm-Message-State: AOAM530YlNmUmRk66TWnky4dFWZTUuX2sBAi1PGqqTJu1aL6FAqR0htw
+        t6NJDiXMInHRNjWZCgiqm5E=
+X-Google-Smtp-Source: ABdhPJw1xycS/uWoVr3qeOLq5p9ffEYMa8CRtNzgPJKpeoMGS3IBSCUUq5cibp2J+FKWyHMhlzcgRQ==
+X-Received: by 2002:a62:9282:0:b0:47b:d0e9:a3c4 with SMTP id o124-20020a629282000000b0047bd0e9a3c4mr18809568pfd.12.1635198570571;
+        Mon, 25 Oct 2021 14:49:30 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id p23sm9676409pfw.61.2021.10.25.14.49.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:49:30 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:49:28 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, corbet@lwn.net,
+        djwong@kernel.org, david@fromorbit.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, gregkh@linuxfoundation.org,
+        viro@zeniv.linux.org.uk, dvyukov@google.com
+Subject: Re: [PATCH v2] slob: add size header to all allocations
+Message-ID: <YXcmaNb4NXk7AcCd@nuc10>
+References: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
+ <20211023064114.708532-1-rkovhaev@gmail.com>
+ <be7ee3a6-9b3c-b436-f042-82bd3c416acc@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1635198260; l=3275; s=20211009; h=from:subject:message-id; bh=Hd8pSGoOsdPbnq2bI6BjZRdlpx5PDVC3dx2eC/M8354=; b=DEPhatZjRBfX3a3eLzVg/VPgCnAYSX8nxxoXzm0MkB82lr3f2YWi1WNE09+EJr++y17DSuCSlVC7 F1BQpRAuA4MPiIHTHabbKTXaagF6unwC+RwAoDUe9unYQlZb5NpU
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be7ee3a6-9b3c-b436-f042-82bd3c416acc@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable STRICT_KERNEL_RWX on fsl_booke.
+On Mon, Oct 25, 2021 at 11:36:53AM +0200, Vlastimil Babka wrote:
+> On 10/23/21 08:41, Rustam Kovhaev wrote:
+> > Let's prepend both kmalloc() and kmem_cache_alloc() allocations with the
+> > size header.
+> > It simplifies the slab API and guarantees that both kmem_cache_alloc()
+> > and kmalloc() memory could be freed by kfree().
+> > 
+> > meminfo right after the system boot, without the patch:
+> > Slab:              35456 kB
+> > 
+> > the same, with the patch:
+> > Slab:              36160 kB
+> > 
+> > Link: https://lore.kernel.org/lkml/20210929212347.1139666-1-rkovhaev@gmail.com
+> > Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> 
+> Seems overal correct to me, thanks! I'll just suggest some improvements:
 
-For that, we need additional TLBCAMs dedicated to linear mapping,
-based on the alignment of _sinittext.
-
-By default, up to 768 Mbytes of memory are mapped.
-It uses 3 TLBCAMs of size 256 Mbytes.
-
-With a data alignment of 16, we need up to 9 TLBCAMs:
-  16/16/16/16/64/64/64/256/256
-
-With a data alignment of 4, we need up to 12 TLBCAMs:
-  4/4/4/4/16/16/16/64/64/64/256/256
-
-With a data alignment of 1, we need up to 15 TLBCAMs:
-  1/1/1/1/4/4/4/16/16/16/64/64/64/256/256
-
-By default, set a 16 Mbytes alignment as a compromise between memory
-usage and number of TLBCAMs. This can be adjusted manually when needed.
-
-For the time being, it doens't work when the base is randomised.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v3: No change
-v2: No change
----
- arch/powerpc/Kconfig | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 6b9f523882c5..939a47642a9c 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -139,6 +139,7 @@ config PPC
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx || 40x) && !HIBERNATION
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if FSL_BOOKE && !HIBERNATION && !RANDOMIZE_BASE
- 	select ARCH_HAS_STRICT_MODULE_RWX	if ARCH_HAS_STRICT_KERNEL_RWX && !PPC_BOOK3S_32
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
-@@ -778,7 +779,8 @@ config DATA_SHIFT_BOOL
- 	bool "Set custom data alignment"
- 	depends on ADVANCED_OPTIONS
- 	depends on STRICT_KERNEL_RWX || DEBUG_PAGEALLOC || KFENCE
--	depends on PPC_BOOK3S_32 || (PPC_8xx && !PIN_TLB_DATA && !STRICT_KERNEL_RWX)
-+	depends on PPC_BOOK3S_32 || (PPC_8xx && !PIN_TLB_DATA && !STRICT_KERNEL_RWX) || \
-+		   FSL_BOOKE
- 	help
- 	  This option allows you to set the kernel data alignment. When
- 	  RAM is mapped by blocks, the alignment needs to fit the size and
-@@ -791,11 +793,13 @@ config DATA_SHIFT
- 	default 24 if STRICT_KERNEL_RWX && PPC64
- 	range 17 28 if (STRICT_KERNEL_RWX || DEBUG_PAGEALLOC || KFENCE) && PPC_BOOK3S_32
- 	range 19 23 if (STRICT_KERNEL_RWX || DEBUG_PAGEALLOC || KFENCE) && PPC_8xx
-+	range 20 24 if (STRICT_KERNEL_RWX || DEBUG_PAGEALLOC || KFENCE) && PPC_FSL_BOOKE
- 	default 22 if STRICT_KERNEL_RWX && PPC_BOOK3S_32
- 	default 18 if (DEBUG_PAGEALLOC || KFENCE) && PPC_BOOK3S_32
- 	default 23 if STRICT_KERNEL_RWX && PPC_8xx
- 	default 23 if (DEBUG_PAGEALLOC || KFENCE) && PPC_8xx && PIN_TLB_DATA
- 	default 19 if (DEBUG_PAGEALLOC || KFENCE) && PPC_8xx
-+	default 24 if STRICT_KERNEL_RWX && FSL_BOOKE
- 	default PPC_PAGE_SHIFT
- 	help
- 	  On Book3S 32 (603+), DBATs are used to map kernel text and rodata RO.
-@@ -1123,7 +1127,10 @@ config LOWMEM_CAM_NUM_BOOL
- config LOWMEM_CAM_NUM
- 	depends on FSL_BOOKE
- 	int "Number of CAMs to use to map low memory" if LOWMEM_CAM_NUM_BOOL
--	default 3
-+	default 3 if !STRICT_KERNEL_RWX
-+	default 9 if DATA_SHIFT >= 24
-+	default 12 if DATA_SHIFT >= 22
-+	default 15
- 
- config DYNAMIC_MEMSTART
- 	bool "Enable page aligned dynamic load address for kernel"
--- 
-2.31.1
+Thank you, I'll send a v3.
 
