@@ -2,96 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9C2439B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68205439B88
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbhJYQeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
+        id S233983AbhJYQeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbhJYQeG (ORCPT
+        with ESMTP id S233443AbhJYQeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:34:06 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE038C061745;
-        Mon, 25 Oct 2021 09:31:43 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j9so10780745lfu.7;
-        Mon, 25 Oct 2021 09:31:43 -0700 (PDT)
+        Mon, 25 Oct 2021 12:34:01 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30891C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:31:39 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so11890987pjl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:31:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K2/lOC6/LqWyTGvmfoO3NeC8xnrcp4rPFFaNpGVoIdo=;
-        b=cH3DdrvsyZVv2dZHErJ0g7HkPbYb77gzKzKaMSjXi7ay38j4U8toZsm8hEaOuJSx8I
-         8ViqVYxpj7sdvSIYUdteZ7JYldD4gn3PhN2j5UyQa8Hy6hzTDkjRsm+fsQolKzdWy/y7
-         HdU5q9/3r/oHuhBVUvkhw673povlzXAezIyrfAcUkL9pXxhi/Qqa74SQykbvl9ImuX9J
-         eWXXopwq2KtWkxs84BrawlRTCrZNpv0C/UbR/QGt/WmmnRXHu+w7tTm06qbD2jhI/7PA
-         ZMyULMDHij1OzhITmKHcQ5Kus7SXVU9vn5BvBwCafGW1RyYagzhpS4JK6WZotyuxhu/q
-         d/XQ==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uBXcTZ7zwU5lKtdrjfFr6VEtdDs7btpoA1mR533tDtQ=;
+        b=kKo6CdI73gJDaa3pbfuZOQyqK9n4e9ubBAyEfFCi9B8AfXB/Kx6p6Jrsp4LRfOeiXG
+         viwF8uvVa7cdHcvHcFB6jWiosIhbrM1FPcERnAXnRT8JvMF/Xaptqqnx7FZrA9F1aiI0
+         f4AcVm/sMel2d8+iMm1PnLBJkEenL9YSXT0a98QcVrsGRcUHJzUSAFI8F0IPCA6I1Ex1
+         Dd2INBZj3pIzxvj5Q7hjHQ379OipXVCntrrdsMdtAcizghqrfZRoYKVlxsFWJYlluvB9
+         N1ER9Mxg0051xF8QgLCjxjiddJg92LiKABB1ZCoZMuJkxraoLncaSQqyzEcvaA3czxNX
+         sTFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K2/lOC6/LqWyTGvmfoO3NeC8xnrcp4rPFFaNpGVoIdo=;
-        b=WmDZQg/xQAIVt8hFPVsyisAikOWmC4eIxj1rk3jpzJtV4HHZXgH5ej3G8mNwY+GK5U
-         U4fqQvN8wzqeqoMxp9qSqtoT842+WRjcYu5YHG285rSCxEM8CJIPmaoe4ZClfKEUCuJq
-         FnBHJZ8o4H7jjGD/etM6pHTmlfbBzKsN7MTmsudIZfaBFxE1I33/wVWlYFV35dqZPbcN
-         IC8d8PX9FYyEyFzkxmCC+mklCa0mzxTjaqr8UkEyddzgJbNibiQQ6sR56XCfu57/mrSM
-         NQCbjCziYZvGh9bjZ9sZ8IvWbRezO2iIoFcselt4PlLcSfsNX8dqzDjCbNNS1Ba/xm8m
-         JMrA==
-X-Gm-Message-State: AOAM532iqJfP3lPRd6uc7F3dMUMMfjR039Zi0IeAX9k6rljxNv/y1aYa
-        RfRmNH9+bB6eIxxhwtHsJE8xUYpZSN2zeQ==
-X-Google-Smtp-Source: ABdhPJzBbWzlPhzHVIUrlsGQ4PsY6PiSgSrG/pibm9ADaZ5UvxOEW0T4ZYyX39C+/UZoQIRIttIdyg==
-X-Received: by 2002:a05:6512:2291:: with SMTP id f17mr18108567lfu.253.1635179502034;
-        Mon, 25 Oct 2021 09:31:42 -0700 (PDT)
-Received: from localhost.localdomain (public-gprs234586.centertel.pl. [31.60.63.155])
-        by smtp.gmail.com with ESMTPSA id i18sm656576lfu.269.2021.10.25.09.31.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uBXcTZ7zwU5lKtdrjfFr6VEtdDs7btpoA1mR533tDtQ=;
+        b=SALf0JY/tbOMakrfMbPs6j2F806WGmFOXCIA6kei6iHFaFrv1GVbozQ7WcrmLt7aOo
+         MiEjaR+HsaPewJlNs3n1oVK3+sN9GkEiwaMyqXBlUFLnkLwrHV96zenR0vRS72/dcRlY
+         UHGkNAqtQmOH1DbA5Kqj1KKQ9wYSXuosfo6z3Yq+qaRWPYr409w8hz2e68rSHnRH8ebb
+         e457TncmzzDylkSjoMY1hno8bJg0jRCcBLxwcD07atYXSIxlvI3zfx1pnPWMLnJW0kz9
+         D/Rt1Fm/lJGNq1R3XdebJEtJDGSNArI28FJSujJ8mrTv9ECHgzMhnpB/e2mr6pMNtz+w
+         Z37g==
+X-Gm-Message-State: AOAM530XAD+sguymwAnS62lDJAf+EUyqtqjDrlXrhYXJaA5RJbs1OOxn
+        0xt8mzKgSgobL3TBrEzSNy4/Zw==
+X-Google-Smtp-Source: ABdhPJxfUuubFCqRX3vvBUd5Wa66fp9aCyJj/2PTog5VN7ymxHpMTwq0YKTdwrnfSnc1XylBANug9A==
+X-Received: by 2002:a17:90b:1649:: with SMTP id il9mr22190422pjb.167.1635179498379;
+        Mon, 25 Oct 2021 09:31:38 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d19sm1543762pgk.81.2021.10.25.09.31.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 09:31:41 -0700 (PDT)
-From:   Janusz Dziedzic <janusz.dziedzic@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-soc@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Janusz Dziedzic <janusz.dziedzic@gmail.com>
-Subject: [PATCH] soc: qcom: qmi: add a prompt to QCOM_QMI_HELPERS
-Date:   Mon, 25 Oct 2021 18:31:21 +0200
-Message-Id: <20211025163121.2189630-1-janusz.dziedzic@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Oct 2021 09:31:37 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 16:31:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH] KVM: vPMU: Don't program counter for interrupt-based
+ event sampling w/o lapic_in_kernel
+Message-ID: <YXbb5ePpVWKxBsbh@google.com>
+References: <1634894233-84041-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634894233-84041-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+On Fri, Oct 22, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
+> 
+> vPMU depends on in-kernel lapic to deliver pmi interrupt, there is a
+> lot of overhead when creating/maintaining perf_event object, 
+> locking/unlocking perf_event_ctx etc for vPMU. It silently fails to 
+> deliver pmi interrupt if w/o in-kernel lapic currently. Let's not 
+> program counter for interrupt-based event sampling w/o in-kernel 
+> lapic support to avoid the whole bothering. 
 
-Add a prompt to the "tristate" attribute in the Kconfig file in
-which QCOM_QMI_HELPERS is defined; I find it doesn't get selected
-without it.
+This feels all kinds of wrong.  AFAIK, there's no way for KVM to enumerate to
+the guest that the vPMU isn't capable of generating interrupts.  I.e. any setup
+that exposes a vPMU to the guest without an in-kernel local APIC is either
+inherently broken or requires a paravirtualized guest.  I don't think KVM's bugs
+should be optimized.
 
-We need it in OpenWRT project, when using WiFi backports
-and build ath11k driver. While ath11k driver depends on
-QCOM_QMI_HELPERS we need way to enable this option in
-our kernel.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@gmail.com>
----
- drivers/soc/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index fe3c486ae32d..16fb8e286015 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -92,7 +92,7 @@ config QCOM_PDR_HELPERS
- 	select QCOM_QMI_HELPERS
- 
- config QCOM_QMI_HELPERS
--	tristate
-+	tristate "Qualcomm QMI Helpers"
- 	depends on NET
- 
- config QCOM_RMTFS_MEM
--- 
-2.25.1
-
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/x86/kvm/pmu.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 0772bad9165c..fa5cd33af10d 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -179,6 +179,7 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
+>  	struct kvm_pmu_event_filter *filter;
+>  	int i;
+>  	bool allow_event = true;
+> +	bool intr = eventsel & ARCH_PERFMON_EVENTSEL_INT;
+>  
+>  	if (eventsel & ARCH_PERFMON_EVENTSEL_PIN_CONTROL)
+>  		printk_once("kvm pmu: pin control bit is ignored\n");
+> @@ -187,7 +188,8 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
+>  
+>  	pmc_pause_counter(pmc);
+>  
+> -	if (!(eventsel & ARCH_PERFMON_EVENTSEL_ENABLE) || !pmc_is_enabled(pmc))
+> +	if (!(eventsel & ARCH_PERFMON_EVENTSEL_ENABLE) || !pmc_is_enabled(pmc)
+> +	    || (intr && !lapic_in_kernel(pmc->vcpu)))
+>  		return;
+>  
+>  	filter = srcu_dereference(kvm->arch.pmu_event_filter, &kvm->srcu);
+> @@ -233,7 +235,7 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
+>  	pmc_reprogram_counter(pmc, type, config,
+>  			      !(eventsel & ARCH_PERFMON_EVENTSEL_USR),
+>  			      !(eventsel & ARCH_PERFMON_EVENTSEL_OS),
+> -			      eventsel & ARCH_PERFMON_EVENTSEL_INT,
+> +			      intr,
+>  			      (eventsel & HSW_IN_TX),
+>  			      (eventsel & HSW_IN_TX_CHECKPOINTED));
+>  }
+> @@ -248,7 +250,7 @@ void reprogram_fixed_counter(struct kvm_pmc *pmc, u8 ctrl, int idx)
+>  
+>  	pmc_pause_counter(pmc);
+>  
+> -	if (!en_field || !pmc_is_enabled(pmc))
+> +	if (!en_field || !pmc_is_enabled(pmc) || (pmi && !lapic_in_kernel(pmc->vcpu)))
+>  		return;
+>  
+>  	filter = srcu_dereference(kvm->arch.pmu_event_filter, &kvm->srcu);
+> -- 
+> 2.25.1
+> 
