@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F3143A116
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FC743A012
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235440AbhJYThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:37:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48338 "EHLO mail.kernel.org"
+        id S235308AbhJYT1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:27:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235223AbhJYTaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:30:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35A2A6108B;
-        Mon, 25 Oct 2021 19:27:18 +0000 (UTC)
+        id S235203AbhJYTZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:25:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25DBA61076;
+        Mon, 25 Oct 2021 19:22:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190040;
-        bh=nvJcc3P3uM0fNu2wqZ9hRqRxEQkhq/4CfGb/292UTH8=;
+        s=korg; t=1635189743;
+        bh=6KaK6RnVPDbO2lV/+9Ca3txKPwMLULQk7yN2RcOQQK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GtJzsAYsrz8O9/+emurq5xXMC+dUSX9Rrq/asIfL5mjK8j7LZzR219a/dqh+Q358u
-         9SOER7yta6R+wOqD0gPh02GNZTqb8J+jwAm0ML0+JVDtErxk3zs/fMBQF+uZs2GF6W
-         LM5OT2mkN/cAJTyim9KGjmoQO6orwZzE2CtpyLU0=
+        b=kMgV9R3A7R925GExFHjOg1HPg9baQVHUkG/6oQdi2E0W2+WhrEQk6xnRAxlPTX7pK
+         NdlARzKSSSAQSfv5m+JUy14Pa8QFMD7dc0YmHAhVDWbrNGmnEFslZIwvQgaMh88Zwl
+         /gmkucoBQHh1RiKbkV3CFymzDwp2m9qOnntT2ToM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        ClaudiuManoilclaudiu.manoil@nxp.com
-Subject: [PATCH 5.4 18/58] net: enetc: fix ethtool counter name for PM0_TERR
+        stable@vger.kernel.org, Brendan Grieve <brendan@grieve.com.au>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 15/30] ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
 Date:   Mon, 25 Oct 2021 21:14:35 +0200
-Message-Id: <20211025190940.421435774@linuxfoundation.org>
+Message-Id: <20211025190926.702216628@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Brendan Grieve <brendan@grieve.com.au>
 
-[ Upstream commit fb8dc5fc8cbdfd62ecd16493848aee2f42ed84d9 ]
+commit 3c414eb65c294719a91a746260085363413f91c1 upstream.
 
-There are two counters named "MAC tx frames", one of them is actually
-incorrect. The correct name for that counter should be "MAC tx error
-frames", which is symmetric to the existing "MAC rx error frames".
+As per discussion at: https://github.com/szszoke/sennheiser-gsp670-pulseaudio-profile/issues/13
 
-Fixes: 16eb4c85c964 ("enetc: Add ethtool statistics")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: <Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20211020165206.1069889-1-vladimir.oltean@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The GSP670 has 2 playback and 1 recording device that by default are
+detected in an incompatible order for alsa. This may have been done to make
+it compatible for the console by the manufacturer and only affects the
+latest firmware which uses its own ID.
+
+This quirk will resolve this by reordering the channels.
+
+Signed-off-by: Brendan Grieve <brendan@grieve.com.au>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211015025335.196592-1-brendan@grieve.com.au
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks-table.h |   32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c b/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c
-index 89121d7ce3e6..636aa6d81d8f 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c
-@@ -155,7 +155,7 @@ static const struct {
- 	{ ENETC_PM0_TFRM,   "MAC tx frames" },
- 	{ ENETC_PM0_TFCS,   "MAC tx fcs errors" },
- 	{ ENETC_PM0_TVLAN,  "MAC tx VLAN frames" },
--	{ ENETC_PM0_TERR,   "MAC tx frames" },
-+	{ ENETC_PM0_TERR,   "MAC tx frame errors" },
- 	{ ENETC_PM0_TUCA,   "MAC tx unicast frames" },
- 	{ ENETC_PM0_TMCA,   "MAC tx multicast frames" },
- 	{ ENETC_PM0_TBCA,   "MAC tx broadcast frames" },
--- 
-2.33.0
-
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3446,5 +3446,37 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Sennheiser GSP670
++	 * Change order of interfaces loaded
++	 */
++	USB_DEVICE(0x1395, 0x0300),
++	.bInterfaceClass = USB_CLASS_PER_INTERFACE,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			// Communication
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Recording
++			{
++				.ifnum = 4,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Main
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
 
 
