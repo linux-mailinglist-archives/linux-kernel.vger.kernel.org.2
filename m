@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D870A43A69D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615B043A6A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234040AbhJYWfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233933AbhJYWfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:35:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8765A6103C;
-        Mon, 25 Oct 2021 22:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635201174;
-        bh=0BzdB5d92X2i7ldftw0ekDl6iGfPoKqmLtnwLssAJDo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sbbiUXaPkbJ0VPl0NqHf8kSkjvjCer1JuUSIX/rs7xOUT6WXkCx5El+AmNuaM2Mg2
-         QqcfNv8hRFxEVlbVWVciWEtweYRiFgPoieo0FUBFvLZDx/5StICNIX6AR42H/J8ats
-         exXSpcVRAwVES+NeZM5SCLOKbAwCyAdgbHi84Z2vThJLXnhcETxhmYVYPpKzzHbo+w
-         bbsV8jm1VUB0kLl/kXa/pWYSFMAja2KY7skXEM4BZP35OLkaig3DOq+F/+hdGFu5M9
-         uzxXmJxAk4vlg3TU+99Z5qfcp2/BLKC2/a8xNKV7pmPZxglyI748qgNehJCqmR+Owb
-         vJGucCE3BaMhQ==
-Message-ID: <baf77664-596d-d679-261a-6a2a3b9b948a@kernel.org>
-Date:   Mon, 25 Oct 2021 15:32:52 -0700
+        id S234071AbhJYWfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:35:47 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33708 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233933AbhJYWfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 18:35:46 -0400
+Received: by mail-il1-f197.google.com with SMTP id m7-20020a056e021c2700b00259bf1e38b1so7819741ilh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:33:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=vyhnJoZIovOdZyzH8Y8MrbUmNDPLYUWR/YD6MJ+0O5M=;
+        b=2FGpiUwW1LVZrVHzw7Jxgr1ByNgNQAj5127U9bV9fQe75RtdXB5QrIZ0UBKTbt66a+
+         DG7sE0OoEMZieYjwrAl842F1Eev7Seybv6ilGhQNx9+fXJujDLkfFD2g2g0H9vli/9t0
+         /hk7rKVRUqPVedMwPGH9+BEf1EXtS7MRUCYmPsaRfbLSaT1mzs8T/aMzkRRBkAfwm+OF
+         ndGMIgk/HiRsaJZ76jI05jNcrThvbxTeFgiILFzmmT5FjYXGecLCrsXUxc12MqwQwS5q
+         9j7jXKBiYAD06yfE0e3qEoQJXLALUUcnWvpiyCL8cFQT4v0pdRoqZC9UmHKmOg2TAruK
+         83Eg==
+X-Gm-Message-State: AOAM530WWiifbB2OzevJYPxbalWqSWbQ8u0pxlboAZoHDjRbudUij0t7
+        1CNF/4ReeYfYBWCPEDl28h56K1QN3KC0JGfWHvYZezheZcx3
+X-Google-Smtp-Source: ABdhPJxcekNuFURt+wY3TpojJBaYMtxjZZ9itMECXazo2bnY4iJCYwLHHeehCVLVTlUNB9ifOjIXhJzrR84h5WPzQ2a186BleC8D
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 14/20] exit/syscall_user_dispatch: Send ordinary signals
- on failure
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <87y26nmwkb.fsf@disp2133>
- <20211020174406.17889-14-ebiederm@xmission.com>
- <202110210925.9DEAF27CA@keescook>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <202110210925.9DEAF27CA@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:8d8a:: with SMTP id p132mr12406022iod.96.1635201203634;
+ Mon, 25 Oct 2021 15:33:23 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 15:33:23 -0700
+In-Reply-To: <000000000000f632ba05c3cb12c2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e1063f05cf34f2a8@google.com>
+Subject: Re: [syzbot] memory leak in cfg80211_inform_single_bss_frame_data
+From:   syzbot <syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        mudongliangabcd@gmail.com, netdev@vger.kernel.org,
+        phind.uet@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 09:25, Kees Cook wrote:
-> On Wed, Oct 20, 2021 at 12:44:00PM -0500, Eric W. Biederman wrote:
->> Use force_fatal_sig instead of calling do_exit directly.  This ensures
->> the ordinary signal handling path gets invoked, core dumps as
->> appropriate get created, and for multi-threaded processes all of the
->> threads are terminated not just a single thread.
->>
->> When asked Gabriel Krisman Bertazi <krisman@collabora.com> said [1]:
->>> ebiederm@xmission.com (Eric W. Biederman) asked:
->>>
->>>> Why does do_syscal_user_dispatch call do_exit(SIGSEGV) and
->>>> do_exit(SIGSYS) instead of force_sig(SIGSEGV) and force_sig(SIGSYS)?
->>>>
->>>> Looking at the code these cases are not expected to happen, so I would
->>>> be surprised if userspace depends on any particular behaviour on the
->>>> failure path so I think we can change this.
->>>
->>> Hi Eric,
->>>
->>> There is not really a good reason, and the use case that originated the
->>> feature doesn't rely on it.
->>>
->>> Unless I'm missing yet another problem and others correct me, I think
->>> it makes sense to change it as you described.
->>>
->>>> Is using do_exit in this way something you copied from seccomp?
->>>
->>> I'm not sure, its been a while, but I think it might be just that.  The
->>> first prototype of SUD was implemented as a seccomp mode.
->>
->> If at some point it becomes interesting we could relax
->> "force_fatal_sig(SIGSEGV)" to instead say
->> "force_sig_fault(SIGSEGV, SEGV_MAPERR, sd->selector)".
->>
->> I avoid doing that in this patch to avoid making it possible
->> to catch currently uncatchable signals.
->>
->> Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Andy Lutomirski <luto@kernel.org>
->> [1] https://lkml.kernel.org/r/87mtr6gdvi.fsf@collabora.com
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> Yeah, looks good. Should be no visible behavior change.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
+syzbot has found a reproducer for the following issue on:
 
-I'm confused.  Before this series, this error path would unconditionally 
-kill the task (other than the race condition in force_sigsegv(), but at 
-least a well-behaved task would get killed).  Now a signal handler might 
-be invoked, and it would be invoked after the syscall that triggered the 
-fault got processed as a no-op.  If the signal handler never returns, 
-that's fine, but if the signal handler *does* return, the process might 
-be in an odd state.  For SIGSYS, this behavior is probably fine, but 
-having SIGSEGV swallow a syscall seems like a mistake.
+HEAD commit:    87066fdd2e30 Revert "mm/secretmem: use refcount_t instead ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b55554b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d25eeb482b0f99b
+dashboard link: https://syzkaller.appspot.com/bug?extid=7a942657a255a9d9b18a
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171cf464b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1396b19f300000
 
-Maybe rewind (approximately!) the syscall?  Or actually send SIGSYS?  Or 
-actually make the signal uncatchable?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com
 
---Andy
+BUG: memory leak
+unreferenced object 0xffff88810f3c7980 (size 96):
+  comm "kworker/u4:0", pid 8, jiffies 4294948721 (age 17.180s)
+  hex dump (first 32 bytes):
+    e5 90 aa e8 34 cf 05 00 00 00 00 00 00 00 00 00  ....4...........
+    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
+  backtrace:
+    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
+    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
+    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
+    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
+    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
+    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
+    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
+    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+BUG: memory leak
+unreferenced object 0xffff88810f3c7b00 (size 96):
+  comm "kworker/u4:0", pid 8, jiffies 4294948721 (age 17.180s)
+  hex dump (first 32 bytes):
+    f5 90 aa e8 34 cf 05 00 00 00 00 00 00 00 00 00  ....4...........
+    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
+  backtrace:
+    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
+    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
+    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
+    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
+    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
+    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
+    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
+    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+BUG: memory leak
+unreferenced object 0xffff88810f3c7680 (size 96):
+  comm "kworker/u4:1", pid 146, jiffies 4294948731 (age 17.080s)
+  hex dump (first 32 bytes):
+    e9 20 ac e8 34 cf 05 00 00 00 00 00 00 00 00 00  . ..4...........
+    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
+  backtrace:
+    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
+    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
+    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
+    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
+    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
+    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
+    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
+    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+BUG: memory leak
+unreferenced object 0xffff888111520f80 (size 96):
+  comm "kworker/u4:1", pid 146, jiffies 4294948731 (age 17.080s)
+  hex dump (first 32 bytes):
+    fb 20 ac e8 34 cf 05 00 00 00 00 00 00 00 00 00  . ..4...........
+    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
+  backtrace:
+    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
+    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
+    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
+    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
+    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
+    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
+    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
+    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
