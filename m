@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3B643A007
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD9243A2DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhJYT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40432 "EHLO mail.kernel.org"
+        id S238921AbhJYTxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:53:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234992AbhJYTYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:24:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 088126113E;
-        Mon, 25 Oct 2021 19:22:06 +0000 (UTC)
+        id S238421AbhJYTsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:48:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE5FC610C8;
+        Mon, 25 Oct 2021 19:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189726;
-        bh=odDtNmFM160GU3N+1syaFfjSYp9Ik2a02nflTDqdKXU=;
+        s=korg; t=1635190865;
+        bh=5XFnG306azwqx4MbsIVUGXhO5EWPbqCPcdWNB2mf9GE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Unj6AVmnr1MDjPSL8STw6yvoxVMeVjS+R/8Bf0L9v5JjsWLDHZFL1ofMP8dLaJ+eK
-         dfdhDT6/d6KR6n5c4gdGXafoVU+9M90ivqNmx6LcztVMHtZbe7SkGyUBnUC0VKuZmc
-         8qjkzlhikxt20657wehEi+JSIqGAvEFOEMlquiK0=
+        b=u0I64mY6PvpaSG7zMKqbkYYK1iuFdIHVIgjVpjiV8lqIgoeYHjwrE4QEY5Cm5WIwB
+         4f/HFtBETyJ+b/6l4SyR4fSLj2M0chzirWqB3SfUNZpoJ37FpaxPApBhSL9dherJqV
+         fGdtn6RmbbIBs9EJQsHwW0ET1gJX6dRWweZGHcvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gang He <ghe@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>,
-        Jun Piao <piaojun@huawei.com>,
-        "Markov, Andrey" <Markov.Andrey@Dell.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 11/30] ocfs2: fix data corruption after conversion from inline format
+        stable@vger.kernel.org,
+        syzbot+9738c8815b375ce482a1@syzkaller.appspotmail.com,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.14 090/169] blk-cgroup: blk_cgroup_bio_start() should use irq-safe operations on blkg->iostat_cpu
 Date:   Mon, 25 Oct 2021 21:14:31 +0200
-Message-Id: <20211025190925.651873574@linuxfoundation.org>
+Message-Id: <20211025191028.594066010@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,179 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Tejun Heo <tj@kernel.org>
 
-commit 5314454ea3ff6fc746eaf71b9a7ceebed52888fa upstream.
+commit 5370b0f49078203acf3c064b634a09707167a864 upstream.
 
-Commit 6dbf7bb55598 ("fs: Don't invalidate page buffers in
-block_write_full_page()") uncovered a latent bug in ocfs2 conversion
-from inline inode format to a normal inode format.
+c3df5fb57fe8 ("cgroup: rstat: fix A-A deadlock on 32bit around
+u64_stats_sync") made u64_stats updates irq-safe to avoid A-A deadlocks.
+Unfortunately, the conversion missed one in blk_cgroup_bio_start(). Fix it.
 
-The code in ocfs2_convert_inline_data_to_extents() attempts to zero out
-the whole cluster allocated for file data by grabbing, zeroing, and
-dirtying all pages covering this cluster.  However these pages are
-beyond i_size, thus writeback code generally ignores these dirty pages
-and no blocks were ever actually zeroed on the disk.
-
-This oversight was fixed by commit 693c241a5f6a ("ocfs2: No need to zero
-pages past i_size.") for standard ocfs2 write path, inline conversion
-path was apparently forgotten; the commit log also has a reasoning why
-the zeroing actually is not needed.
-
-After commit 6dbf7bb55598, things became worse as writeback code stopped
-invalidating buffers on pages beyond i_size and thus these pages end up
-with clean PageDirty bit but with buffers attached to these pages being
-still dirty.  So when a file is converted from inline format, then
-writeback triggers, and then the file is grown so that these pages
-become valid, the invalid dirtiness state is preserved,
-mark_buffer_dirty() does nothing on these pages (buffers are already
-dirty) but page is never written back because it is clean.  So data
-written to these pages is lost once pages are reclaimed.
-
-Simple reproducer for the problem is:
-
-  xfs_io -f -c "pwrite 0 2000" -c "pwrite 2000 2000" -c "fsync" \
-    -c "pwrite 4000 2000" ocfs2_file
-
-After unmounting and mounting the fs again, you can observe that end of
-'ocfs2_file' has lost its contents.
-
-Fix the problem by not doing the pointless zeroing during conversion
-from inline format similarly as in the standard write path.
-
-[akpm@linux-foundation.org: fix whitespace, per Joseph]
-
-Link: https://lkml.kernel.org/r/20210930095405.21433-1-jack@suse.cz
-Fixes: 6dbf7bb55598 ("fs: Don't invalidate page buffers in block_write_full_page()")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Tested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Acked-by: Gang He <ghe@suse.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: "Markov, Andrey" <Markov.Andrey@Dell.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
+Cc: stable@vger.kernel.org # v5.13+
+Reported-by: syzbot+9738c8815b375ce482a1@syzkaller.appspotmail.com
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/YWi7NrQdVlxD6J9W@slm.duckdns.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ocfs2/alloc.c |   46 ++++++++++++----------------------------------
- 1 file changed, 12 insertions(+), 34 deletions(-)
+ block/blk-cgroup.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/ocfs2/alloc.c
-+++ b/fs/ocfs2/alloc.c
-@@ -6885,7 +6885,7 @@ void ocfs2_set_inode_data_inline(struct
- int ocfs2_convert_inline_data_to_extents(struct inode *inode,
- 					 struct buffer_head *di_bh)
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1916,10 +1916,11 @@ void blk_cgroup_bio_start(struct bio *bi
  {
--	int ret, i, has_data, num_pages = 0;
-+	int ret, has_data, num_pages = 0;
- 	int need_free = 0;
- 	u32 bit_off, num;
- 	handle_t *handle;
-@@ -6894,26 +6894,17 @@ int ocfs2_convert_inline_data_to_extents
- 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
- 	struct ocfs2_dinode *di = (struct ocfs2_dinode *)di_bh->b_data;
- 	struct ocfs2_alloc_context *data_ac = NULL;
--	struct page **pages = NULL;
--	loff_t end = osb->s_clustersize;
-+	struct page *page = NULL;
- 	struct ocfs2_extent_tree et;
- 	int did_quota = 0;
+ 	int rwd = blk_cgroup_io_type(bio), cpu;
+ 	struct blkg_iostat_set *bis;
++	unsigned long flags;
  
- 	has_data = i_size_read(inode) ? 1 : 0;
+ 	cpu = get_cpu();
+ 	bis = per_cpu_ptr(bio->bi_blkg->iostat_cpu, cpu);
+-	u64_stats_update_begin(&bis->sync);
++	flags = u64_stats_update_begin_irqsave(&bis->sync);
  
- 	if (has_data) {
--		pages = kcalloc(ocfs2_pages_per_cluster(osb->sb),
--				sizeof(struct page *), GFP_NOFS);
--		if (pages == NULL) {
--			ret = -ENOMEM;
--			mlog_errno(ret);
--			return ret;
--		}
--
- 		ret = ocfs2_reserve_clusters(osb, 1, &data_ac);
- 		if (ret) {
- 			mlog_errno(ret);
--			goto free_pages;
-+			goto out;
- 		}
+ 	/*
+ 	 * If the bio is flagged with BIO_CGROUP_ACCT it means this is a split
+@@ -1931,7 +1932,7 @@ void blk_cgroup_bio_start(struct bio *bi
  	}
+ 	bis->cur.ios[rwd]++;
  
-@@ -6933,7 +6924,8 @@ int ocfs2_convert_inline_data_to_extents
- 	}
- 
- 	if (has_data) {
--		unsigned int page_end;
-+		unsigned int page_end = min_t(unsigned, PAGE_SIZE,
-+							osb->s_clustersize);
- 		u64 phys;
- 
- 		ret = dquot_alloc_space_nodirty(inode,
-@@ -6957,15 +6949,8 @@ int ocfs2_convert_inline_data_to_extents
- 		 */
- 		block = phys = ocfs2_clusters_to_blocks(inode->i_sb, bit_off);
- 
--		/*
--		 * Non sparse file systems zero on extend, so no need
--		 * to do that now.
--		 */
--		if (!ocfs2_sparse_alloc(osb) &&
--		    PAGE_SIZE < osb->s_clustersize)
--			end = PAGE_SIZE;
--
--		ret = ocfs2_grab_eof_pages(inode, 0, end, pages, &num_pages);
-+		ret = ocfs2_grab_eof_pages(inode, 0, page_end, &page,
-+					   &num_pages);
- 		if (ret) {
- 			mlog_errno(ret);
- 			need_free = 1;
-@@ -6976,20 +6961,15 @@ int ocfs2_convert_inline_data_to_extents
- 		 * This should populate the 1st page for us and mark
- 		 * it up to date.
- 		 */
--		ret = ocfs2_read_inline_data(inode, pages[0], di_bh);
-+		ret = ocfs2_read_inline_data(inode, page, di_bh);
- 		if (ret) {
- 			mlog_errno(ret);
- 			need_free = 1;
- 			goto out_unlock;
- 		}
- 
--		page_end = PAGE_SIZE;
--		if (PAGE_SIZE > osb->s_clustersize)
--			page_end = osb->s_clustersize;
--
--		for (i = 0; i < num_pages; i++)
--			ocfs2_map_and_dirty_page(inode, handle, 0, page_end,
--						 pages[i], i > 0, &phys);
-+		ocfs2_map_and_dirty_page(inode, handle, 0, page_end, page, 0,
-+					 &phys);
- 	}
- 
- 	spin_lock(&oi->ip_lock);
-@@ -7020,8 +7000,8 @@ int ocfs2_convert_inline_data_to_extents
- 	}
- 
- out_unlock:
--	if (pages)
--		ocfs2_unlock_and_free_pages(pages, num_pages);
-+	if (page)
-+		ocfs2_unlock_and_free_pages(&page, num_pages);
- 
- out_commit:
- 	if (ret < 0 && did_quota)
-@@ -7045,8 +7025,6 @@ out_commit:
- out:
- 	if (data_ac)
- 		ocfs2_free_alloc_context(data_ac);
--free_pages:
--	kfree(pages);
- 	return ret;
- }
- 
+-	u64_stats_update_end(&bis->sync);
++	u64_stats_update_end_irqrestore(&bis->sync, flags);
+ 	if (cgroup_subsys_on_dfl(io_cgrp_subsys))
+ 		cgroup_rstat_updated(bio->bi_blkg->blkcg->css.cgroup, cpu);
+ 	put_cpu();
 
 
