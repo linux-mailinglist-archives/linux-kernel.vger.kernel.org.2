@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1404398FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6DB439903
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhJYOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:49:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27963 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230128AbhJYOtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:49:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635173221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a04ZZ47w9GDaq75LG4zCPiOumcv3w3XC0Cv2Llat4co=;
-        b=CSso1VUN8jxdaSkZzcBAnaCfFj+JhRKlrxjdOFzVev1qLtc1odu1jwmhalwY5GvIjorz7Z
-        VLbmUvciT3Nsg9O+t3xY0FEpOoGx2nO9u2WySwibqT8CLl7M/ekZSsZuOBd54G9+dO6HwS
-        ACd6oSsKS8Zkh5xa0NsbiXwU2N1qN7E=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-DsfbvXawO-iIKmnPZsN8DQ-1; Mon, 25 Oct 2021 10:47:00 -0400
-X-MC-Unique: DsfbvXawO-iIKmnPZsN8DQ-1
-Received: by mail-oo1-f72.google.com with SMTP id e3-20020a4ada03000000b002b85240388dso2662552oou.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:46:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a04ZZ47w9GDaq75LG4zCPiOumcv3w3XC0Cv2Llat4co=;
-        b=IYx7mE75v9/3p+NZnn+61mqEF5n7C92NTSqGbj0Nx4SekkkPHehtU4TIT3+OlWw2h8
-         4m0zjCBIaytJThLmGp0MI33qETTlTW/wrkso3ATDJ+AEbKLfyDhF8Dny64ras+wnWYe9
-         ltN9ttzkZaPvDZs8uCYRGFmD6EKi98vAWzw3+gJn4hoh6dn3drG4WtMbL21S3pOPizkk
-         /pXRwtPMoTpql/7NxG3TVJ6PIoI9Qu6GzxBynM8SAlNHqkU8TWbyVdN7zTD9CfCC0omg
-         pACeDHV0QzWrdXSJaGx5/NU6uscqxl4AMX50HhPXLdgLr3yVnV8NV9P/chaD0o+bjqMV
-         KSuw==
-X-Gm-Message-State: AOAM530SJRxsSEHbg1iCm9g6uz5pLK9EpwykdSJHYsB5DX9t7EUw15/3
-        B+LVX/rNVfjJU8xDxy8n+izsHgj9hv+LxEt26QB8n3LOQzVpFvU2rO5MUM6G5gylXMY1K3MthGN
-        pjVmgBq97RaoQ+VWJWBvIC9/I
-X-Received: by 2002:aca:1712:: with SMTP id j18mr12613178oii.33.1635173219036;
-        Mon, 25 Oct 2021 07:46:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymyzDJ1i9wuWhjI3nQJ4fvlw4EXWqCBZOSAt7ogRl6LfyMXYwLYXDsFoMD6v5Gfami9VQnvg==
-X-Received: by 2002:aca:1712:: with SMTP id j18mr12613158oii.33.1635173218761;
-        Mon, 25 Oct 2021 07:46:58 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id h91sm3542420otb.38.2021.10.25.07.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 07:46:58 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 07:46:56 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Rob Landley <rob@landley.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
-Message-ID: <20211025144656.fqqneysf72wwxp3m@treble>
-References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
- <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
- <20211024192742.uo62mbqb6hmhafjs@treble>
- <66ed460c-ac48-2b5a-e8e4-07613cf69ab0@landley.net>
- <YXZzIUqdWW9wwlpr@hirez.programming.kicks-ass.net>
+        id S233313AbhJYOuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:50:04 -0400
+Received: from marcansoft.com ([212.63.210.85]:38402 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232916AbhJYOty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:49:54 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 73AD6419B4;
+        Mon, 25 Oct 2021 14:47:23 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Johan Hovold <johan@kernel.org>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH v2 0/8] Apple SoC PMGR device power states driver
+Date:   Mon, 25 Oct 2021 23:47:10 +0900
+Message-Id: <20211025144718.157794-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YXZzIUqdWW9wwlpr@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:04:33AM +0200, Peter Zijlstra wrote:
-> On Sun, Oct 24, 2021 at 09:51:45PM -0500, Rob Landley wrote:
-> > > Unfortunately I think CONFIG_STACK_VALIDATION is no longer optional on
-> > > x86-64 these days, because of static calls and retpolines.
-> > 
-> > Does it need stack validation, or just a frame unwinder?
-> 
-> static_calls rely on objtool to find all "call __SCT*" instructions and
-> write their location in a .static_call_sites section.
-> 
-> The having of static calls is not optional on x86_64, and I have zero
-> interest in trying to work out what not having static_call() does, or to
-> maintain that option.
+This series adds the driver for the Apple PMGR device power state
+registers. These registers can clockgate and (in some cases) powergate
+specific SoC blocks. They also control the reset line, and can have
+additional features such as automatic power management.
 
-What I meant was, make STATIC_CALL_INLINE optional.  Then it would use
-out-of-line static calls which should just work, no?
+The current driver supports only the lowest/highest power states,
+provided via the genpd framework, plus reset support provided via
+the reset subsystem.
+
+Apple's PMGRs (there are two in the T8103) have a uniform register
+bit layout (sometimes with varying features). To be able to support
+multiple SoC generations as well as express pd relationships
+dynamically, this binding describes each PMGR power state control
+as a single devicetree node. Future SoC generations are expected to
+retain backwards compatibility, allowing this driver to work on them
+with only DT changes.
+
+#1: MAINTAINERS updates, to go via the SoC tree to avert merge hell
+#2-#3: Adds the required device tree bindings
+#4: The driver itself.
+#5: Somewhat unrelated DT change, but I wanted to get it out of the way
+    for #7
+#6: Instantiates the driver in t8103.dtsi.
+#7: Adds runtime-pm support to the Samsung UART driver, as a first
+    consumer.
+#8: Instantiates a second UART, to more easily test this.
+
+There are currently no consumers for the reset functionality, so
+it is untested, but we will be testing it soon with the NVMe driver
+(as it is required to allow driver re-binding to work properly).
+
+== Changes since v1 ==
+
+Mostly addressing review comments.
+
+- DT schema fixes
+- Reference one DT schema from the other
+- Full example in MFD schema
+- s/apple,domain-name/label/
+- Split out MAINTAINERS patch
+- Handle failed regmap reads more sanely
+- Do not bind to apple,t8103-pmgr-pwrstate"
+
+Hector Martin (8):
+  MAINTAINERS: Add PMGR power state files to ARM/APPLE MACHINE
+  dt-bindings: arm: apple: Add apple,pmgr binding
+  dt-bindings: power: Add apple,pmgr-pwrstate binding
+  soc: apple: Add driver for Apple PMGR power state controls
+  arm64: dts: apple: t8103: Rename clk24 to clkref
+  arm64: dts: apple: t8103: Add the UART PMGR tree
+  tty: serial: samsung_tty: Support runtime PM
+  arm64: dts: apple: t8103: Add UART2
+
+ .../bindings/arm/apple/apple,pmgr.yaml        | 149 +++++++++
+ .../bindings/power/apple,pmgr-pwrstate.yaml   |  69 +++++
+ MAINTAINERS                                   |   3 +
+ arch/arm64/boot/dts/apple/t8103-j274.dts      |   5 +
+ arch/arm64/boot/dts/apple/t8103.dtsi          | 134 ++++++++-
+ drivers/soc/Kconfig                           |   1 +
+ drivers/soc/Makefile                          |   1 +
+ drivers/soc/apple/Kconfig                     |  21 ++
+ drivers/soc/apple/Makefile                    |   2 +
+ drivers/soc/apple/apple-pmgr-pwrstate.c       | 282 ++++++++++++++++++
+ drivers/tty/serial/samsung_tty.c              |  93 +++---
+ 11 files changed, 723 insertions(+), 37 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
+ create mode 100644 drivers/soc/apple/Kconfig
+ create mode 100644 drivers/soc/apple/Makefile
+ create mode 100644 drivers/soc/apple/apple-pmgr-pwrstate.c
 
 -- 
-Josh
+2.33.0
 
