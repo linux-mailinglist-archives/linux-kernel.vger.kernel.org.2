@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441F543A437
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F54F43A4A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237658AbhJYUSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:18:04 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5233 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237202AbhJYURx (ORCPT
+        id S236909AbhJYU2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236865AbhJYU2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:17:53 -0400
+        Mon, 25 Oct 2021 16:28:06 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6821C04CCA2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:17:01 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t4so17226379oie.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635192931; x=1666728931;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=3Ozvhjgx1+2cTp5cMK3r1EyeG0koD1SSBIpSFhmPJGY=;
-  b=evu/T4NJsJGPQuvZHSmxuiTvzJthvKHIqgx5GVHZGvmqC3yAKYNaRanF
-   eKy1Pmayaqi6bJyzg/u3AGZtdJfaQIT87HNoOIDdRhX0GnLaWR+YYDqA6
-   +G6qMZJJEc7KjowpA8HFXA//hjbSBaGUdteiL47PeUPm/1pnZoVNgWd7Y
-   8=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 25 Oct 2021 13:15:31 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 13:15:30 -0700
-Received: from [10.110.4.237] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Mon, 25 Oct 2021
- 13:15:29 -0700
-Subject: Re: [PATCH] fortify: Avoid shadowing previous locals
-To:     Kees Cook <keescook@chromium.org>
-CC:     <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211025183728.181399-1-quic_qiancai@quicinc.com>
- <202110251232.652ACB6@keescook>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <cd68c514-544d-c29f-d435-78e31f6a173c@quicinc.com>
-Date:   Mon, 25 Oct 2021 16:15:28 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=sFv6oulnfVWm3KV24cqy4zkMNUKjR06XXY8InDqsw00=;
+        b=QDiai+q8Lqf5LMBLx2DhWGQnvq0RMrH2tHpBEgbx3rXXJU1etaPCLUki3NvMOiiWf8
+         t/1GJIn2IejrRZjvkeRoV8LAE3d9Ps01FqQmrkk6U7FEf8+OVU2HXp50V9ve+WZ9Tyf1
+         1JunLoHzZAAYHRpEGHajeJ3/3EhrykIaRZuIs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=sFv6oulnfVWm3KV24cqy4zkMNUKjR06XXY8InDqsw00=;
+        b=DmQgbpHsBjV5+OaLNijVBCDvAyx+V5ijC0+vkW01tA8M9YHnz9U1S/hMXLZiOGG+jV
+         45GJF300qxlCJ3UWcvyd0hBx14J0P8WbpxhVSxrnmjjlzHX56C2HL+IXSWwDbQGHL3YY
+         aEIbTlyrBoznGWJebVAWsVJppKn7AKRn4nfI9amCE2piwW5khwp0ChLTKtqWfJBateID
+         W2WKNUKH4GsUmgf1W5qOWmczq83oTqNVA8+1c0sbUYHQu0UOiX/g9XDlCy+JCgWInEeh
+         GXqFzuh5Vo3zx/h6DiGui6WZNAOHNr4k28EVDtpA8X+ALMJAy3DRMVVJOk2f5s8ng4ri
+         /wMg==
+X-Gm-Message-State: AOAM530Gyr5M454oR/Wv5tlwq9LJeATW87XkccCPciBgHtkikOexaB+r
+        hjH8Vv8g3g0RHVbkHVI8JCULu5N9ITpbWjj+8kmYtA==
+X-Google-Smtp-Source: ABdhPJwhdypNNNtSLateKcvC+lx++2bCS+2MH4BP5EkkJROEF59u9EHq9c5I6//07zar4ce5AtumC4etyH/4t4KQ/Xc=
+X-Received: by 2002:a05:6808:1d9:: with SMTP id x25mr12912230oic.64.1635193021348;
+ Mon, 25 Oct 2021 13:17:01 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 25 Oct 2021 13:17:00 -0700
 MIME-Version: 1.0
-In-Reply-To: <202110251232.652ACB6@keescook>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+In-Reply-To: <YXcBK7zqny0s4gd4@ripper>
+References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com> <YXcBK7zqny0s4gd4@ripper>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 25 Oct 2021 13:17:00 -0700
+Message-ID: <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Bjorn Andersson (2021-10-25 12:10:35)
+> On Mon 25 Oct 02:07 PDT 2021, Sandeep Maheswaram wrote:
+>
+> > Add multi pd bindings to set performance state for cx domain
+> > to maintain minimum corner voltage for USB clocks.
+> >
+> > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+> > ---
+> > v2:
+> > Make cx domain mandatory.
+> >
+> >  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > index 2bdaba0..fd595a8 100644
+> > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > @@ -42,7 +42,13 @@ properties:
+> >
+> >    power-domains:
+> >      description: specifies a phandle to PM domain provider node
+> > -    maxItems: 1
+> > +    minItems: 2
+> > +    items:
+> > +      - description: cx power domain
+> > +      - description: USB gdsc power domain
+> > +
+> > +  required-opps:
+> > +    description: specifies the performance state to power domain
+>
+> I'm still worried about the fact that we can't just rely on the USB GDSC
+> being a subdomin of CX in order to just "turn on" CX.
+>
+> Afaict accepting this path forward means that for any device that sits
+> in a GDSC power domain we will have to replicate this series for the
+> related driver.
+>
 
-
-On 10/25/21 3:34 PM, Kees Cook wrote:
-> On Mon, Oct 25, 2021 at 02:37:28PM -0400, Qian Cai wrote:
->> __compiletime_strlen macro expansion will shadow p_size and p_len local
->> variables. Just rename those in __compiletime_strlen.
-> 
-> They don't escape their local context, though, right? i.e. I don't see a
-> problem with the existing macro. Did you encounter a specific issue that
-> this patch fixes?
-
-Yes, this is pretty minor. There are also some extra compiling warnings (W=2)
-from it.
-
-./include/linux/fortify-string.h: In function 'strnlen':
-
-./include/linux/fortify-string.h:17:9: warning: declaration of 'p_size' shadows a previous local [-Wshadow]
-
-   17 |  size_t p_size = __builtin_object_size(p, 1); \
-
-      |         ^~~~~~
-
-./include/linux/fortify-string.h:77:17: note: in expansion of macro '__compiletime_strlen'
-   77 |  size_t p_len = __compiletime_strlen(p);
-
-      |                 ^~~~~~~~~~~~~~~~~~~~
-
-./include/linux/fortify-string.h:76:9: note: shadowed declaration is here
-
-   76 |  size_t p_size = __builtin_object_size(p, 1);
-
-      |         ^~~~~~
-
-./include/linux/fortify-string.h:19:10: warning: declaration of 'p_len' shadows a previous local [-Wshadow]
-
-   19 |   size_t p_len = p_size - 1;  \
-
-      |          ^~~~~
-
-./include/linux/fortify-string.h:77:17: note: in expansion of macro '__compiletime_strlen'
-   77 |  size_t p_len = __compiletime_strlen(p);
-
-      |                 ^~~~~~~~~~~~~~~~~~~~
-
-./include/linux/fortify-string.h:77:9: note: shadowed declaration is here
-
-   77 |  size_t p_len = __compiletime_strlen(p);
-
-      |         ^~~~~
+I suspect the problem is that it's not just "turn on" but wanting to
+turn it on and then set the performance state to some value based on the
+clk frequency. Maybe the simplest version of that could be supported
+somehow by having dev_pm_opp_set_rate() figure out that the 'level'
+applies to the parent power domain instead of the child one? Or we may
+need to make another part of the OPP binding to indicate the
+relationship between the power domain and the OPP and the parent of the
+power domain.
