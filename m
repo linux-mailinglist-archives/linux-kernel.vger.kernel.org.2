@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBEE438F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF56D438F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJYGLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:11:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhJYGLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:11:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C85A61073
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635142172;
-        bh=ZPPzxfjbR+mfJDK5TtOWY4ucM9+GEi+ARIcc/M7V0uw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fOk8LNlo6H77I3KYJDz7nOeVRLxus5wch0xE6Lu1VIOdULr0rlGqO5HGinpl243KT
-         dRbedKHzilgT+hb21cwEixG2ndrOO+QqVlkKgK+sm1Xxd0fdElfmXy0c/4GhegJPiU
-         q2TOcypGJu1hbKOvlRuNAJtl0rX3OEtCM8a8vjDMIqLQ2jlRQyO++61lC4XcK0C3WV
-         voLKFCK1bztZtzsqDmCwCNpBTyQAN3Fw9+pFdccoViLT3mVOQKgGGjvI4s2GfaFnDb
-         R+aDeCHhJLMvViDJysxd98Js9PLjSWIoZwuWAa/6/YcZrCX11XB+qviY4O+SgKSY+t
-         qnnareQGYAB3w==
-Received: by mail-ua1-f42.google.com with SMTP id b4so7677012uaq.9
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:09:32 -0700 (PDT)
-X-Gm-Message-State: AOAM533tsCgBBJiiNA+SdWe2sK/MrW0NkWMfsZKo9z/4qS8jKI9wqjSF
-        Lb3wssgYAOFUc7NonNY0BI4Z3h3o0PEvFLSbuQg=
-X-Google-Smtp-Source: ABdhPJxK0iXo2bm0rsM4SbUtDFJlB+Z2ri93um5z6gjaYl4w+hpAQeIaaSZ2BpRAyrb0jhGiAodHX5oWzTUoWMNdTOI=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr12857215vsk.11.1635142171258;
- Sun, 24 Oct 2021 23:09:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025040607.92786-1-wefu@redhat.com> <20211025040607.92786-2-wefu@redhat.com>
-In-Reply-To: <20211025040607.92786-2-wefu@redhat.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 25 Oct 2021 14:09:20 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRn2USuN+jdVjC-8Ug2hXZWCbzVues5_B8-P1wM9KvYhA@mail.gmail.com>
-Message-ID: <CAJF2gTRn2USuN+jdVjC-8Ug2hXZWCbzVues5_B8-P1wM9KvYhA@mail.gmail.com>
-Subject: Re: [RESEND PATCH V3 1/2] dt-bindings: riscv: add mmu-supports-svpbmt
- for Svpbmt
-To:     Wei Fu <wefu@redhat.com>
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        id S230199AbhJYGMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:12:07 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:41103 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229873AbhJYGMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:12:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd4Ky4tSNz4xbr;
+        Mon, 25 Oct 2021 17:09:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635142182;
+        bh=lARUbalfcU75V5nPICqhWN/XA1PYjayw6a7ig82sc4U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QaSxyvH4J1bYRo7QWV1ijOC01xTLv7Jh/qK9TqHO8j+OofGK8zTqJh1ZhvEaWZKS6
+         0tDb3a9T2t16fwpntNLUIZaf55NBts4s4m8j8uWSHfjUuEjKRASFgn88+uJrtvWRS6
+         ZOHOwjMQ8D3vAnZ6uRCo3wqApc/FZPh3NX1/qvMWwf+0kF65NgNKgJDXjsEsYbI74m
+         /zcNury+wUUhM+RQXRVnSeIu0mX5BlVyFmkYQOHa/tlisMVlL9h4AS+2CzsSLdHjss
+         +XyjUbgzatjWh90DPrBPw/e/GRFZmFN9xFZO7YyGLmSQKOYnB3vVuPGRdItVI8W58S
+         o2eH3oi997O1g==
+Date:   Mon, 25 Oct 2021 17:09:41 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Eddie James <eajames@linux.ibm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com,
-        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Gordan Markus <gordan.markus@canonical.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        "Xinhaoqu (Freddie)" <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20211025170941.7eb30042@canb.auug.org.au>
+In-Reply-To: <CACPK8XcWyJYj94q+Jp+KgTnM_f4vyY_gSyjUXN8ZPOtnbpJjfg@mail.gmail.com>
+References: <20211022193853.296c4ee9@canb.auug.org.au>
+        <CACPK8XcWyJYj94q+Jp+KgTnM_f4vyY_gSyjUXN8ZPOtnbpJjfg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/wfzeW/Q3XN1d2s72avONvOM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:06 PM <wefu@redhat.com> wrote:
->
-> From: Wei Fu <wefu@redhat.com>
->
-> Previous patch has added svpbmt in arch/riscv and changed the
-> DT mmu-type. Update dt-bindings related property here.
->
-> Signed-off-by: Wei Fu <wefu@redhat.com>
-> Co-developed-by: Guo Ren <guoren@kernel.org>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> ---
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> index e534f6a7cfa1..76f324d85e12 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -59,6 +59,11 @@ properties:
->        - riscv,sv48
->        - riscv,none
->
-> +  mmu-supports-svpbmt:
-We need a "type: boolean" here.
+--Sig_/wfzeW/Q3XN1d2s72avONvOM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ref: Documentation/devicetree/bindings/serial/8250.yaml
-  used-by-rtas:
-    type: boolean
-    description: |
-      Set to indicate that the port is in use by the OpenFirmware RTAS and
-      should not be registered.
+Hi Joel,
 
-> +    description:
-> +      Describes the CPU's mmu-supports-svpbmt support
-> +    $ref: '/schemas/types.yaml#/definitions/phandle'
-> +
+On Mon, 25 Oct 2021 05:58:37 +0000 Joel Stanley <joel@jms.id.au> wrote:
+>
+> If I apply this patch then the build fails in a tree that doesn't have
+> Willy's patch.
+>=20
+> Unless someone has a better suggestion I'll send a patch that includes
+> both headers for now, and make a note to remove the mm.h include down
+> the track.
 
--- 
-Best Regards
- Guo Ren
+Don't apply anything.  Just remember to tell Linus (or whoever you
+merge this tree via) about this conflict and the resolution when you
+send the pull request.
 
-ML: https://lore.kernel.org/linux-csky/
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wfzeW/Q3XN1d2s72avONvOM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2SiUACgkQAVBC80lX
+0GyDqwf/dmqvaiG0RGqHJ/W7F7KtYPPb4Ig4JKQswP8zpd+JPbUE62StUEzrDoDv
+EHZ6rAPHBhEA/wT47cHKbfUcfARYQ64QNyFOARms9iz6OgPi18+iG3KwvH8CrJR2
+jMjG6BSAuyHrzpK9s7IcB4veuKCUTcgV9fw5hMI61/aUh8c7y6c07XonGyI5agn+
+DnY2DsbflF8eQQeCNjKap/OTs4ONZOV4oG6f+RXcAecp7hSZuOk8NpteJh7Oh6hn
+WIOsyDNaAOAMTSsWvvLi7pzFd5PHEdzefz3efCxQ/0nObRwDD6pr2OgsxEajNjcv
+iyEB8SbtDKOhGoLIUaNZ/6/r3L7W6Q==
+=9oEj
+-----END PGP SIGNATURE-----
+
+--Sig_/wfzeW/Q3XN1d2s72avONvOM--
