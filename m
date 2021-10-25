@@ -2,260 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0F3439270
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2D443928F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhJYJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:36:51 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:60957 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229499AbhJYJgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:36:50 -0400
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        id S232676AbhJYJjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:39:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34522 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232615AbhJYJjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 05:39:05 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1C295218ED;
+        Mon, 25 Oct 2021 09:36:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635154602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2yh1aPbBEgmsdiCaRPtj8WUBQDnHjn4se86O/c7XP04=;
+        b=rfexHc8fLyz11QO8h/HS7HW23V8dvtW+GFtOPv9Zqmnq759lHqiVr6/ixckPx8A+d8MwAA
+        xfHWutRZ8ee9IP8g5bIrp1hQaUEmKOXraW5pgobnqMFHSc5Wpn18cqAX0XUCo/vTski6Wq
+        bK10kT90wH1G+wi6v4ISz/1S10y8EJQ=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 5B80D61EA1BD2;
-        Mon, 25 Oct 2021 11:34:26 +0200 (CEST)
-Message-ID: <d8f70dfc-e064-d34c-98a0-cfde2e2f726c@molgen.mpg.de>
-Date:   Mon, 25 Oct 2021 11:34:26 +0200
+        by relay2.suse.de (Postfix) with ESMTPS id E0876A3B81;
+        Mon, 25 Oct 2021 09:36:41 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 11:36:41 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg v3 3/3] memcg: prohibit unconditional exceeding the
+ limit of dying tasks
+Message-ID: <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
+References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+ <cover.1634994605.git.vvs@virtuozzo.com>
+ <8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2] media: aspeed: add debugfs
-Content-Language: en-US
-To:     Jammy Huang <jammy_huang@aspeedtech.com>
-Cc:     BMC-SW@aspeedtech.com, eajames@linux.ibm.com, mchehab@kernel.org,
-        joel@jms.id.au, andrew@aj.id.au, linux-media@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210929090024.8499-1-jammy_huang@aspeedtech.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20210929090024.8499-1-jammy_huang@aspeedtech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jammy,
-
-
-On 29.09.21 11:00, Jammy Huang wrote:
-> To show video real-time information as below:
-
-Please list the path for that file containing the information below.
-
-> Caputre:
-
-Capture
-
->    Signal              : Unlock
->    Width               : 1920
->    Height              : 1080
->    FRC                 : 30
+On Sat 23-10-21 16:20:51, Vasily Averin wrote:
+> Memory cgroup charging allows killed or exiting tasks to exceed the hard
+> limit. It is assumed that the amount of the memory charged by those
+> tasks is bound and most of the memory will get released while the task
+> is exiting. This is resembling a heuristic for the global OOM situation
+> when tasks get access to memory reserves. There is no global memory
+> shortage at the memcg level so the memcg heuristic is more relieved.
 > 
-> Performance:
->    Frame#              : 0
->    Frame Duration      :
->      Now               : 0
->      Min               : 0
->      Max               : 0
->    FPS(ms)             : 0
+> The above assumption is overly optimistic though. E.g. vmalloc can scale
+> to really large requests and the heuristic would allow that. We used to
+> have an early break in the vmalloc allocator for killed tasks but this
+> has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+> the current task is killed""). There are likely other similar code paths
+> which do not check for fatal signals in an allocation&charge loop.
+> Also there are some kernel objects charged to a memcg which are not
+> bound to a process life time.
+> 
+> It has been observed that it is not really hard to trigger these
+> bypasses and cause global OOM situation.
+> 
+> One potential way to address these runaways would be to limit the amount
+> of excess (similar to the global OOM with limited oom reserves). This is
+> certainly possible but it is not really clear how much of an excess is
+> desirable and still protects from global OOMs as that would have to
+> consider the overall memcg configuration.
+> 
+> This patch is addressing the problem by removing the heuristic
+> altogether. Bypass is only allowed for requests which either cannot fail
+> or where the failure is not desirable while excess should be still
+> limited (e.g. atomic requests). Implementation wise a killed or dying
+> task fails to charge if it has passed the OOM killer stage. That should
+> give all forms of reclaim chance to restore the limit before the
+> failure (ENOMEM) and tell the caller to back off.
+> 
+> In addition, this patch renames should_force_charge() helper
+> to task_is_dying() because now its use is not associated witch forced
+> charging.
+> 
+> This patch depends on pagefault_out_of_memory() to not trigger
+> out_of_memory(), because then a memcg failure can unwind to VM_FAULT_OOM
+> and cause a global OOM killer.
+> 
+> Cc: stable@vger.kernel.org
 
+My view on stable backport is similar to the previous patch. If we want
+to have it there then let's wait for some time to see whether there are
+any fallouts as this patch depends on the PF_OOM change.
 
-Kind regards,
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Paul
+Thanks!
 
-
-> Change-Id: I483740c4df6db07a9261c18440472a0356512bb7
-> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
 > ---
->   drivers/media/platform/aspeed-video.c | 101 ++++++++++++++++++++++++++
->   1 file changed, 101 insertions(+)
+>  mm/memcontrol.c | 27 ++++++++-------------------
+>  1 file changed, 8 insertions(+), 19 deletions(-)
 > 
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index 8b3939b8052d..c5c413844441 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -21,6 +21,8 @@
->   #include <linux/videodev2.h>
->   #include <linux/wait.h>
->   #include <linux/workqueue.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/ktime.h>
->   #include <media/v4l2-ctrls.h>
->   #include <media/v4l2-dev.h>
->   #include <media/v4l2-device.h>
-> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
->   	struct list_head link;
->   };
->   
-> +struct aspeed_video_perf {
-> +	ktime_t last_sample;
-> +	u32 totaltime;
-> +	u32 duration;
-> +	u32 duration_min;
-> +	u32 duration_max;
-> +};
-> +
->   #define to_aspeed_video_buffer(x) \
->   	container_of((x), struct aspeed_video_buffer, vb)
->   
-> @@ -241,6 +251,8 @@ struct aspeed_video {
->   	unsigned int frame_left;
->   	unsigned int frame_right;
->   	unsigned int frame_top;
-> +
-> +	struct aspeed_video_perf perf;
->   };
->   
->   #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
-> @@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->   		readl(video->base + reg));
->   }
->   
-> +static void update_perf(struct aspeed_video_perf *p)
-> +{
-> +	p->duration =
-> +		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
-> +	p->totaltime += p->duration;
-> +
-> +	p->duration_max = max(p->duration, p->duration_max);
-> +	p->duration_min = min(p->duration, p->duration_min);
-> +}
-> +
->   static int aspeed_video_start_frame(struct aspeed_video *video)
->   {
->   	dma_addr_t addr;
-> @@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
->   	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
->   			    VE_INTERRUPT_COMP_COMPLETE);
->   
-> +	video->perf.last_sample = ktime_get();
-> +
->   	aspeed_video_update(video, VE_SEQ_CTRL, 0,
->   			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
->   
-> @@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->   		u32 frame_size = aspeed_video_read(video,
->   						   VE_JPEG_COMP_SIZE_READ_BACK);
->   
-> +		update_perf(&video->perf);
-> +
->   		spin_lock(&video->lock);
->   		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->   		buf = list_first_entry_or_null(&video->buffers,
-> @@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->   	det->width = MIN_WIDTH;
->   	det->height = MIN_HEIGHT;
->   	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
-> +	memset(&video->perf, 0, sizeof(video->perf));
->   
->   	do {
->   		if (tries) {
-> @@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
->   	struct aspeed_video *video = vb2_get_drv_priv(q);
->   
->   	video->sequence = 0;
-> +	video->perf.duration_max = 0;
-> +	video->perf.duration_min = 0xffffffff;
->   
->   	rc = aspeed_video_start_frame(video);
->   	if (rc) {
-> @@ -1517,6 +1546,72 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
->   	.buf_queue =  aspeed_video_buf_queue,
->   };
->   
-> +#ifdef CONFIG_DEBUG_FS
-> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
-> +{
-> +	struct aspeed_video *v = s->private;
-> +
-> +	seq_puts(s, "\n");
-> +
-> +	seq_printf(s, "  %-20s:\t%s\n", "Signal",
-> +		   v->v4l2_input_status ? "Unlock" : "Lock");
-> +	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-> +	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
-> +	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
-> +
-> +	seq_puts(s, "\n");
-> +
-> +	seq_puts(s, "Performance:\n");
-> +	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
-> +	seq_printf(s, "  %-20s:\n", "Frame Duration");
-> +	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
-> +	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
-> +	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
-> +	seq_printf(s, "  %-20s:\t%d\n", "FPS(ms)", 1000/(v->perf.totaltime/v->sequence));
-> +
-> +
-> +	return 0;
-> +}
-> +
-> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
-> +{
-> +	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
-> +}
-> +
-> +static struct file_operations aspeed_video_debugfs_ops = {
-> +	.owner   = THIS_MODULE,
-> +	.open    = aspeed_video_proc_open,
-> +	.read    = seq_read,
-> +	.llseek  = seq_lseek,
-> +	.release = single_release,
-> +};
-> +
-> +static struct dentry *debugfs_entry;
-> +
-> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
-> +{
-> +	debugfs_remove_recursive(debugfs_entry);
-> +	debugfs_entry = NULL;
-> +}
-> +
-> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
-> +{
-> +	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
-> +						   video,
-> +						   &aspeed_video_debugfs_ops);
-> +	if (!debugfs_entry)
-> +		aspeed_video_debugfs_remove(video);
-> +
-> +	return debugfs_entry == NULL ? -EIO : 0;
-> +}
-> +#else
-> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
-> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->   static int aspeed_video_setup_video(struct aspeed_video *video)
->   {
->   	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
-> @@ -1708,6 +1803,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
->   		return rc;
->   	}
->   
-> +	rc = aspeed_video_debugfs_create(video);
-> +	if (rc)
-> +		dev_err(video->dev, "debugfs create failed\n");
-> +
->   	return 0;
->   }
->   
-> @@ -1719,6 +1818,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
->   
->   	aspeed_video_off(video);
->   
-> +	aspeed_video_debugfs_remove(video);
-> +
->   	clk_unprepare(video->vclk);
->   	clk_unprepare(video->eclk);
->   
-> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6da5020a8656..87e41c3cac10 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -239,7 +239,7 @@ enum res_type {
+>  	     iter != NULL;				\
+>  	     iter = mem_cgroup_iter(NULL, iter, NULL))
+>  
+> -static inline bool should_force_charge(void)
+> +static inline bool task_is_dying(void)
+>  {
+>  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+>  		(current->flags & PF_EXITING);
+> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 * A few threads which were not waiting at mutex_lock_killable() can
+>  	 * fail to bail out. Therefore, check again after holding oom_lock.
+>  	 */
+> -	ret = should_force_charge() || out_of_memory(&oc);
+> +	ret = task_is_dying() || out_of_memory(&oc);
+>  
+>  unlock:
+>  	mutex_unlock(&oom_lock);
+> @@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	struct page_counter *counter;
+>  	enum oom_status oom_status;
+>  	unsigned long nr_reclaimed;
+> +	bool passed_oom = false;
+>  	bool may_swap = true;
+>  	bool drained = false;
+>  	unsigned long pflags;
+> @@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (gfp_mask & __GFP_ATOMIC)
+>  		goto force;
+>  
+> -	/*
+> -	 * Unlike in global OOM situations, memcg is not in a physical
+> -	 * memory shortage.  Allow dying and OOM-killed tasks to
+> -	 * bypass the last charges so that they can exit quickly and
+> -	 * free their memory.
+> -	 */
+> -	if (unlikely(should_force_charge()))
+> -		goto force;
+> -
+>  	/*
+>  	 * Prevent unbounded recursion when reclaim operations need to
+>  	 * allocate memory. This might exceed the limits temporarily,
+> @@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+>  		goto nomem;
+>  
+> -	if (fatal_signal_pending(current))
+> -		goto force;
+> +	/* Avoid endless loop for tasks bypassed by the oom killer */
+> +	if (passed_oom && task_is_dying())
+> +		goto nomem;
+>  
+>  	/*
+>  	 * keep retrying as long as the memcg oom killer is able to make
+> @@ -2640,14 +2633,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 */
+>  	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+>  		       get_order(nr_pages * PAGE_SIZE));
+> -	switch (oom_status) {
+> -	case OOM_SUCCESS:
+> +	if (oom_status == OOM_SUCCESS) {
+> +		passed_oom = true;
+>  		nr_retries = MAX_RECLAIM_RETRIES;
+>  		goto retry;
+> -	case OOM_FAILED:
+> -		goto force;
+> -	default:
+> -		goto nomem;
+>  	}
+>  nomem:
+>  	if (!(gfp_mask & __GFP_NOFAIL))
+> -- 
+> 2.32.0
+
+-- 
+Michal Hocko
+SUSE Labs
