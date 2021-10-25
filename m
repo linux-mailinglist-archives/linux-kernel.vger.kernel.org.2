@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E78A4390E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032144390E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhJYILh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:11:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46616 "EHLO mail.kernel.org"
+        id S231315AbhJYINp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:13:45 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43080 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230106AbhJYILg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:11:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AFA360EE9;
-        Mon, 25 Oct 2021 08:09:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635149355;
-        bh=T1brRpvpLw2+XlgRvOtkbicK2toDWlCS9WW224wzFM4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=orxQ6mBy40d8vY1DbNZPCmd0g4wo4qhvO3pcnrFN99U3sOUY80AqARt7d4+rv7d/A
-         16vMTuOhK52r39NtflnmomzWxZD3AazGD31Zss87vmUhNPvSwuxeJHoz8hUUHjbXdH
-         3cdt42L+gPeK6BakfmUUoYJYGhT7R3TrjD/aOcts5Na1HZDRzQEcq3gmaXP44mqqd/
-         M/I+vIfMqWB2IxjIoU+NmVc+IVfSJkqmQTaQ/fTL/a0+CSXJr30eGemSc+UyaebbTU
-         0EuAvI1O+vtHzAo7/Yxp+fpA2nc7KAaoSLhDh+um1pXMNyAbK/LwiGKpY/QJH9xYTR
-         9MgW97jLuQnjQ==
-Date:   Mon, 25 Oct 2021 13:39:10 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
-Message-ID: <YXZmJvebL4RuFxiQ@matsya>
-References: <20210902185543.18875-1-p.yadav@ti.com>
- <20210902185543.18875-3-p.yadav@ti.com>
- <YUMa/ocoQ9l3JDe6@aptenodytes>
- <20210917172809.rjtf7ww7vjcfvey5@ti.com>
- <YVapVLnGfSBZCDTY@matsya>
- <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
- <20211007121436.jkck2cue5zd3rys4@ti.com>
- <YWAdKTvYzF58oyU/@pendragon.ideasonboard.com>
- <YWA/2o/Df34VDcpp@aptenodytes>
+        id S229893AbhJYINo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 04:13:44 -0400
+Received: from zn.tnic (p200300ec2f0f4e000a452ba2b8b488bc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4e00:a45:2ba2:b8b4:88bc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ACEF81EC0531;
+        Mon, 25 Oct 2021 10:11:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635149481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=XerDelKnQnqFUpKBVbfntjCEOx/QIs8AQ8RjCfFUIz0=;
+        b=WeiZjF65sQFmHWqSIHTvI+30LWday5ReA9mLZHnn94LWEQKkMQXQ7UI5wkAXeC0qCc9QQZ
+        7Vq1CuFlUiKA+b3O4Y2mIEDPYV3niRu8lkVJpwGTWW9DcUUG/o66EabCv6q+ZvjCe+7UXx
+        bOuCx3GKfg+geYl2hMixcBPHXaF5y7g=
+Date:   Mon, 25 Oct 2021 10:11:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, arjan@linux.intel.com,
+        ravi.v.shankar@intel.com
+Subject: Re: [PATCH 15/23] x86/fpu: Add sanity checks for XFD
+Message-ID: <YXZmqF3KlHZBrdgn@zn.tnic>
+References: <20211021225527.10184-1-chang.seok.bae@intel.com>
+ <20211021225527.10184-16-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YWA/2o/Df34VDcpp@aptenodytes>
+In-Reply-To: <20211021225527.10184-16-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-10-21, 14:55, Paul Kocialkowski wrote:
-> Hi,
-> 
-> On Fri 08 Oct 21, 13:27, Laurent Pinchart wrote:
-> > Hi Pratyush,
-> > 
-> > On Thu, Oct 07, 2021 at 05:44:38PM +0530, Pratyush Yadav wrote:
-> > > On 07/10/21 03:10AM, Laurent Pinchart wrote:
-> > > > On Fri, Oct 01, 2021 at 11:53:16AM +0530, Vinod Koul wrote:
-> > > > > On 17-09-21, 22:58, Pratyush Yadav wrote:
-> > > > > > On 16/09/21 12:22PM, Paul Kocialkowski wrote:
-> > > > > > > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
-> > > > > > > > The Cadence DPHY can be used to receive image data over the CSI-2
-> > > > > > > > protocol. Add support for Rx mode. The programming sequence differs from
-> > > > > > > > the Tx mode so it is added as a separate set of hooks to isolate the two
-> > > > > > > > paths. The mode in which the DPHY has to be used is selected based on
-> > > > > > > > the compatible.
-> > > > > > > 
-> > > > > > > I just realized that I didn't follow-up on a previous revision on the debate
-> > > > > > > about using the phy sub-mode to distinguish between rx/tx.
-> > > > > > > 
-> > > > > > > I see that you've been using a dedicated compatible, but I'm not sure this is a
-> > > > > > > good fit either. My understanding is that the compatible should describe a group
-> > > > > > > of register-compatible revisions of a hardware component, not how the hardware
-> > > > > > > is used specifically. I guess the distinction between rx/tx falls under
-> > > > > > > the latter rather than the former.
-> > > > > > 
-> > > > > > I am not sure if that is the case. For example, we use "ti,am654-ospi" 
-> > > > > > for Cadence Quadspi controller. The default compatible, "cdns,qspi-nor", 
-> > > > > > only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible also 
-> > > > > > supports Octal SPI (8 lines).
-> > > > > 
-> > > > > Those are hardware defaults right?
-> > > > > 
-> > > > > > In addition, I feel like the Rx DPHY is almost a different type of 
-> > > > > > device from a Tx DPHY. The programming sequence is completely different, 
-> > > > > 
-> > > > > Is that due to direction or something else..?
-> > > > > 
-> > > > > > the clocks required are different, etc. So I think using a different 
-> > > > > > compatible for Rx mode makes sense.
-> > > > > 
-> > > > > Is the underlaying IP not capable of both TX and RX and in the specific
-> > > > > situations you are using it as TX and RX.
-> > > > > 
-> > > > > I am okay that default being TX but you can use Paul's approach of
-> > > > > direction with this to make it better proposal
-> > > > 
-> > > > 
-> > > > Given that the RX and TX implementations are very different (it's not a
-> > > > matter of selecting a mode at runtime), I'm actually tempted to
-> > > > recommend having two drivers, one for the RX PHY and one for the TX PHY.
-> > > > This can only be done with two different compatible strings, which I
-> > > > think would be a better approach.
-> > > 
-> > > FWIW, I think having different drivers would certainly make things 
-> > > easier to maintain.
-> > 
-> > I'm sorry for not having recommended this in the first place.
-> > 
-> > Any objection from anyone against going in this direction ?
-> 
-> So apparently there is not a single register that is shared between rx and tx
-> and clocks are not the same either so it feels to me like a separate driver
-> would be legit. This looks like two distinct IPs sharing the same base address.
+On Thu, Oct 21, 2021 at 03:55:19PM -0700, Chang S. Bae wrote:
+> @@ -217,12 +240,15 @@ static inline int xrstor_from_user_sigframe(struct xregs_state __user *buf, u64
+>   * Restore xstate from kernel space xsave area, return an error code instead of
+>   * an exception.
+>   */
+> -static inline int os_xrstor_safe(struct xregs_state *xstate, u64 mask)
+> +static inline int os_xrstor_safe(struct fpstate *fpstate, u64 mask)
+>  {
+> +	struct xregs_state *xstate = &fpstate->regs.xsave;
+>  	u32 lmask = mask;
+>  	u32 hmask = mask >> 32;
+>  	int err;
+>  
+> +	/* Must enforce XFD update here */
+> +
 
-Sorry for delay in getting back..
+<--- something's missing here?
 
-Okay lets have a different compatible and driver for this
+>  	if (cpu_feature_enabled(X86_FEATURE_XSAVES))
+>  		XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
+>  	else
+> -- 
+> 2.17.1
+> 
 
 -- 
-~Vinod
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
