@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FE6439190
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF404439193
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhJYIkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:40:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47502 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhJYIkR (ORCPT
+        id S232179AbhJYImC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:42:02 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4026 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231940AbhJYImB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:40:17 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 266EB1FCA3;
-        Mon, 25 Oct 2021 08:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635151075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4dls5uRlACSvDq7656bxhDPR0TaCu5wrq7ETsKfcGPU=;
-        b=V7DG4CspT03IBg1h9W6/tafyAbj/eSoP7elTl9QrKU1cFm+Ee3IWAsJl4+DTqWSK+PTYBs
-        2BXoPmDpp+nIYtJR8NC8KW5j6yS3E+TZ0jpV18sc6w8K6vIS3M1ZkO7pa7stkbLw25ts9X
-        umQe9R7HsxNuajaWLd9Xtlwts0gjpUA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635151075;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4dls5uRlACSvDq7656bxhDPR0TaCu5wrq7ETsKfcGPU=;
-        b=ipnqveiOS1vnSsDlT8qjiVTXxEGxBWQ95igsGbq/Wx8gVjUPKG5JptliomCts1osWiTm/4
-        Llayibztvj3iK+DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 13F5D13216;
-        Mon, 25 Oct 2021 08:37:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dexBBONsdmG7LgAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 25 Oct 2021 08:37:55 +0000
-Date:   Mon, 25 Oct 2021 10:37:52 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <YXZs4IXzixtmvTYA@zn.tnic>
-References: <20211025151144.552c60ca@canb.auug.org.au>
- <YXZf1KAgWobGNO5a@zn.tnic>
- <20211025185836.0df72e58@canb.auug.org.au>
+        Mon, 25 Oct 2021 04:42:01 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hd7ZF3mlVz67xMZ;
+        Mon, 25 Oct 2021 16:35:33 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 25 Oct 2021 10:39:36 +0200
+Received: from [10.47.95.85] (10.47.95.85) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 25 Oct
+ 2021 09:39:36 +0100
+Subject: Re: [syzbot] KASAN: use-after-free Read in blk_mq_sched_tags_teardown
+To:     syzbot <syzbot+412ca156285f619b8b62@syzkaller.appspotmail.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "hare@suse.de" <hare@suse.de>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+References: <000000000000d4e1e105cf235f15@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a189d065-fb64-b76f-9f45-f866f9d5638c@huawei.com>
+Date:   Mon, 25 Oct 2021 09:39:31 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211025185836.0df72e58@canb.auug.org.au>
+In-Reply-To: <000000000000d4e1e105cf235f15@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.85]
+X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 06:58:36PM +1100, Stephen Rothwell wrote:
-> That will certainly make it more robust against people cleaning up
-> include files.
+On 25/10/2021 02:35, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    51dba6e335ff Add linux-next specific files for 20211020
+> git tree:       linux-next
+> console output:https://syzkaller.appspot.com/x/log.txt?x=10171dc8b00000
+> kernel config:https://syzkaller.appspot.com/x/.config?x=1adca843ed814d57
+> dashboard link:https://syzkaller.appspot.com/bug?extid=412ca156285f619b8b62
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:https://syzkaller.appspot.com/x/repro.syz?x=14f768b4b00000
+> C reproducer:https://syzkaller.appspot.com/x/repro.c?x=1295a8c7300000
+> 
+> The issue was bisected to:
+> 
+> commit 645db34e50501aac141713fb47a315e5202ff890
 
-Ok, rebased and pushed out. You could try it now.
+I think that it should be e155b0c238b2 ("blk-mq: Use shared tags for 
+shared sbitmap support")
 
-Thx.
+> Author: John Garry<john.garry@huawei.com>
+> Date:   Tue Oct 5 10:23:36 2021 +0000
+> 
+>      blk-mq: Refactor and rename blk_mq_free_map_and_{requests->rqs}()
+> 
+> bisection log:https://syzkaller.appspot.com/x/bisect.txt?x=1597e130b00000
+> final oops:https://syzkaller.appspot.com/x/report.txt?x=1797e130b00000
+> console output:https://syzkaller.appspot.com/x/log.txt?x=1397e130b00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by:syzbot+412ca156285f619b8b62@syzkaller.appspotmail.com
+> Fixes: 645db34e5050 ("blk-mq: Refactor and rename blk_mq_free_map_and_{requests->rqs}()")
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in blk_mq_sched_tags_teardown+0x2a1/0x2d0 block/blk-mq-sched.c:544
+> Read of size 4 at addr ffff8880760b81e0 by task systemd-udevd/6750
 
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+#syz fix: blk-mq-sched: Don't reference queue tagset in 
+blk_mq_sched_tags_teardown()
