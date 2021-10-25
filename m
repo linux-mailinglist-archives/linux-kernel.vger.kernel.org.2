@@ -2,125 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45B3439EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9C6439EC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhJYS5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbhJYS5h (ORCPT
+        id S233601AbhJYS47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:56:59 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36429 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232609AbhJYS4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:57:37 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78001C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:55:15 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id bp7so12627072qkb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HDteQAJp2aIROEGGp0KcnNgAZwd/BE0UnUAaYmDuyDM=;
-        b=ltHB326iGW0+5JSm9vx48aVLM+zcn0/RuG2SV+o9FQTIEPZ7/yAzNSh8CKXBDfCBTl
-         xqGKUWMDNSUovREO+v8gmoi3CxVajwIst6ajszLY53pXLfIsHAfjyTgjmfxSUmPUm2PY
-         V09wsOCc/Q0pIkPdOwZUCMY/fjJeheci/TUYFe9cEajsfLQV5tpME93uxLYh/NUdx5rl
-         2Dnq7nMCTxhMfhbvN0qK2xBS0JlNfdCGsQRd3gNSz0jL0GQF9YFWbfaOX7/4kr/uWmW9
-         5s6q9GP7eRhEjec6ld6S/UsCUgobZyq/qdQaw7QycVa+uUnDmwQbfsz091E/G+B4OuLT
-         zadg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=HDteQAJp2aIROEGGp0KcnNgAZwd/BE0UnUAaYmDuyDM=;
-        b=m836bVh9wdcueI+mJvhH+aIT6Q+k/JuwIBipeqIlsiTMy5NrIFeK5egQoVs0lX6juP
-         eKhx7XFc/E1iKZuZIJzOLis4z7Yx/kE/zRWoDyfl4FRY970tClPDCj1wKOjMpHszZwcT
-         jNceC/U2eE7SNaFMGRfCXMDP8GSIhsPlYjh+RYE77SoKKczpWyj4n9fiRw3gMn6tHhVV
-         r39ilDwSf/jIOGxQjWdmTh1mdrtDqwYp/qyRBgPUWLPkFagB8TVTvySV5e0+iKh9o7sc
-         LVzPObMMA7mYZxxF4GyrSFnsg9gJvc+sUkGrAECwxciHx3W+BFReEsqKqJ2N/+Ibrtjh
-         la1A==
-X-Gm-Message-State: AOAM530u8XOd2sWi0dmPCxiGF46dol5h0s4vOPFvdrWQbMJPg83rxvke
-        8L+jpl2zjEaj75EyVleDQgI=
-X-Google-Smtp-Source: ABdhPJylh95SolmSbWZAYOGsLMsebWtcBCa5XKF2BX1/CRE/aPmZCyqTcJ9cM8a1LJ/VMljKaSLb3w==
-X-Received: by 2002:ae9:ea19:: with SMTP id f25mr14864525qkg.341.1635188114579;
-        Mon, 25 Oct 2021 11:55:14 -0700 (PDT)
-Received: from ubuntu-mate-laptop.localnet ([67.8.38.84])
-        by smtp.gmail.com with ESMTPSA id c6sm8998904qkg.85.2021.10.25.11.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 11:55:14 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     robert.foss@linaro.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, jonas@kwiboo.se, jernej.skrabec@gmail.com,
-        airlied@linux.ie, daniel@ffwll.ch, jagan@amarulasolutions.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-Date:   Mon, 25 Oct 2021 14:51:47 -0400
-Message-ID: <2172694.EMfidFSxsr@ubuntu-mate-laptop>
-In-Reply-To: <YXbtt2M+I41qH2ME@pendragon.ideasonboard.com>
-References: <20211025174202.32396-1-julianbraha@gmail.com> <YXbtt2M+I41qH2ME@pendragon.ideasonboard.com>
+        Mon, 25 Oct 2021 14:56:52 -0400
+Received: (qmail 1268304 invoked by uid 1000); 25 Oct 2021 14:54:26 -0400
+Date:   Mon, 25 Oct 2021 14:54:26 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzbot <syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Thierry Escande <thierry.escande@collabora.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+Subject: Re: [syzbot] INFO: task hung in port100_probe
+Message-ID: <20211025185426.GF1258186@rowland.harvard.edu>
+References: <000000000000c644cd05c55ca652@google.com>
+ <9e06e977-9a06-f411-ab76-7a44116e883b@canonical.com>
+ <20210722144721.GA6592@rowland.harvard.edu>
+ <b9695fc8-51b5-c61e-0a2f-fec9c2f0bae0@canonical.com>
+ <20211020220503.GB1140001@rowland.harvard.edu>
+ <7d26fa0f-3a45-cefc-fd83-e8979ba6107c@canonical.com>
+ <20211025162200.GC1258186@rowland.harvard.edu>
+ <1927ec9b-d1d0-9c70-992b-925ddfbba79a@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1927ec9b-d1d0-9c70-992b-925ddfbba79a@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, October 25, 2021 1:47:35 PM EDT you wrote:
-> Hi Julian,
-> 
-> Thank you for the patch.
-> 
-> On Mon, Oct 25, 2021 at 01:42:02PM -0400, Julian Braha wrote:
-> > When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
-> > Kbuild gives the following warning:
+On Mon, Oct 25, 2021 at 07:13:59PM +0200, Krzysztof Kozlowski wrote:
+> On 25/10/2021 18:22, Alan Stern wrote:
+> > On Mon, Oct 25, 2021 at 04:57:23PM +0200, Krzysztof Kozlowski wrote:
+> >> The URB which causes crazy loop is the port100 driver second URB, the
+> >> one called ack or in_urb.
+> >>
+> >> The flow is:
+> >> 1. probe()
+> >> 2. port100_get_command_type_mask()
+> >> 3. port100_send_cmd_async()
+> >> 4. port100_send_frame_async()
+> >> 5. usb_submit_urb(dev->out_urb)
+> >>    The call succeeds, the dummy_hcd picks it up and immediately ends the
+> >> timer-loop with -EPROTO
 > > 
-> > WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
-> >   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
-> >   Selected by [y]:
-> >   - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
+> > So that URB completes immediately.
 > > 
-> > This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
-> > without depending on or selecting DRM_KMS_HELPER,
-> > despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
+> >> The completion here does not resubmit another/same URB. I checked this
+> >> carefully and I hope I did not miss anything.
 > > 
-> > This unmet dependency bug was detected by Kismet,
-> > a static analysis tool for Kconfig.
-> > Please advise if this is not the appropriate solution.
-> 
-> Shouldn't DRM_PANEL_BRIDGE select DRM_KMS_HELPER instead of depending on
-> it ?
-> 
-> > Fixes: ce517f18944e ("drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge")
-> > Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> > Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> > ---
-> >  drivers/gpu/drm/bridge/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
+> > Yeah, I see the same thing.
 > > 
-> > diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> > index 431b6e12a81f..a630cb8fd1c8 100644
-> > --- a/drivers/gpu/drm/bridge/Kconfig
-> > +++ b/drivers/gpu/drm/bridge/Kconfig
-> > @@ -30,6 +30,7 @@ config DRM_CDNS_DSI
-> >  config DRM_CHIPONE_ICN6211
-> >  	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
-> >  	depends on OF
-> > +  select DRM_KMS_HELPER
-> >  	select DRM_MIPI_DSI
-> >  	select DRM_PANEL_BRIDGE
-> >  	help
+> >> 6. port100_submit_urb_for_ack() which sends the in_urb:
+> >>    usb_submit_urb(dev->in_urb)
+> >> ... wait for completion
+> >> ... dummy_hcd loops on this URB around line 2000:
+> >> if (status == -EINPROGRESS)
+> >>   continue
+> > 
+> > Do I understand this correctly?  You're saying that dummy-hcd executes 
+> > the following jump at line 1975:
+> > 
+> > 		/* incomplete transfer? */
+> > 		if (status == -EINPROGRESS)
+> > 			continue;
+> > 
+> > which goes back up to the loop head on line 1831:
+> > 
+> > 	list_for_each_entry_safe(urbp, tmp, &dum_hcd->urbp_list, urbp_list) {
+> > 
+> > Is that right?
 > 
+> Yes, exactly. The loop continues, iterating over list finishes thus the
+> loops and dummy timer function exits. Then immediately it is being
+> rescheduled by something (I don't know by what yet).
+
+There's a timer (dum_hcd->timer) which fires every millisecond.  If 
+syzbot creates a lot of dummy-hcd instances then each instance will have 
+its own timer, which could use up a large part of the available CPU 
+time.  But you say this isn't the real problem...
+
+> To remind - the syzbot reproducer must run at least two threads
+> (spawning USB gadgets so creating separate dummy devices) at the same
+> time. However only one of dummy HCD devices seems to timer-loop
+> endlessly... but this might not be important, e.g. maybe it's how syzbot
+> reproducer works.
 > 
+> >  I don't see why this should cause any problem.  It won't 
+> > loop back to the same URB; it will make its way through the list.  
+> > (Unless the list has somehow gotten corrupted...)  dum_hcd->urbp_list 
+> > should be short (perhaps 32 entries at most), so the loop should reach 
+> > the end of the list fairly quickly.
+> 
+> The list has actually only one element - only this one URB coming from
+> port100 device (which I was always calling second URB/ack, in_urb).
 
-Hi Laurent,
+Okay, good.
 
-Either a "select" or a "depends" will resolve this issue, but
-most similar devices in this Kconfig file select DRM_KMS_HELPER.
-Is there something different about DRM_CHIPONE_ICN6211 that I have missed?
+> > Now, doing all this 1000 times per second could use up a significant 
+> > portion of the available time.  Do you think that's the reason for the 
+> > problem?  It seems pretty unlikely.
+> 
+> No, this timer-looping itself is not a problem. Problem is that this URB
+> never reaches some final state, e.g. -EPROTO.
 
-- Julian Braha
+The -EPROTO completion should happen very quickly once the gadget driver 
+unregisters or disconnects itself.  This is because the call to 
+find_endpoint at line 1856 should return NULL:
 
+		ep = find_endpoint(dum, address);
+		if (!ep) {
+			/* set_configuration() disagreement */
+			dev_dbg(dummy_dev(dum_hcd),
+				"no ep configured for urb %p\n",
+				urb);
+			status = -EPROTO;
+			goto return_urb;
+		}
 
+The NULL return should be caused by the !is_active test at the 
+beginning of find_endpoint:
 
+static struct dummy_ep *find_endpoint(struct dummy *dum, u8 address)
+{
+	int		i;
+
+	if (!is_active((dum->gadget.speed == USB_SPEED_SUPER ?
+			dum->ss_hcd : dum->hs_hcd)))
+		return NULL;
+
+is_active is defined as a macro:
+
+#define is_active(dum_hcd)	((dum_hcd->port_status & \
+		(USB_PORT_STAT_CONNECTION | USB_PORT_STAT_ENABLE | \
+			USB_PORT_STAT_SUSPEND)) \
+		== (USB_PORT_STAT_CONNECTION | USB_PORT_STAT_ENABLE))
+
+and a disconnection should turn off the USB_PORT_STAT_CONNECTION bit, as 
+follows:
+
+	usb_gadget_unregister_driver calls usb_gadget_remove_driver
+		(in drivers/usb/gadget/udc/core.c),
+
+	which calls usb_gadget_disconnect,
+
+	which calls dummy_pullup with value = 0,
+
+	which sets dum->pullup to 0 and calls set_link_state,
+
+	which calls set_link_state_by_speed,
+
+	which turns off the USB_PORT_STATE_CONNECTION bit in 
+		dum_hcd->port_status because dum->pullup is 0.
+
+You can try tracing through this sequence of events to see if they're 
+not taking place as intended.
+
+> In normal operation, e.g. when reproducer did not hit the issue, both
+> URBs from port100 (the first out_urb and second in_urb) complete with
+> -EPROTO. In the case leading to hang ("task kworker/0:0:5 blocked for
+> more than 143 seconds"), the in_urb does not complete therefore the
+> port100 driver waits.
+
+Those "... blocked for more than 143 seconds" errors occur when some 
+task or interrupt loop is using up all the CPU time, preventing normal 
+processes from running.  In this case the culprit has got to be the 
+timer routine and loop in dummy_hcd.  However, the loop should terminate 
+once the gadget driver unregisters itself, as described above.
+
+> Whether this intensive timer-loop is important (processing the same URB
+> and continuing), I don't know.
+
+Yes, that's how dummy_hcd gets its work done.
+
+Alan Stern
