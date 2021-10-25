@@ -2,439 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7016438DDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6156B438DED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhJYDlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 23:41:01 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14857 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhJYDlA (ORCPT
+        id S230004AbhJYEAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:00:08 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:56082 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229379AbhJYEAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:41:00 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd0zX2rg8z90CJ;
-        Mon, 25 Oct 2021 11:38:32 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:38:33 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:38:32 +0800
-From:   Tong Tiangen <tongtiangen@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Tong Tiangen <tongtiangen@huawei.com>
-Subject: [PATCH bpf-next,v2] riscv, bpf: Add BPF exception tables
-Date:   Mon, 25 Oct 2021 03:53:24 +0000
-Message-ID: <20211025035324.517263-1-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Oct 2021 00:00:06 -0400
+X-UUID: 6cf5dab4038e407b895180c1d1649248-20211025
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=cV6dg7PsYHB6+UKop/Sg0rROLJ+oreSSfppKhlC8xGE=;
+        b=nBkGbQeC+Sa3c4WFbs6Ky01mc0hcpUC1VdMIVgp0Ci+nREwXGSXct8xkBhX2s3ToXb8z7bOAWuCxF6sm2/w1ZbvpyLWXSZSkGdcufbA7YrxHi4qeoC1Ri9RoqAAxoOpOmRoxjwmLJ+sjifSy3adpDDGLiZMJznJ7HwbTckMDANs=;
+X-UUID: 6cf5dab4038e407b895180c1d1649248-20211025
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 77251011; Mon, 25 Oct 2021 11:57:42 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Mon, 25 Oct 2021 11:57:40 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Oct 2021 11:57:39 +0800
+Message-ID: <15d4ccb984f9e3919d6d7535d05aec0332dbe301.camel@mediatek.com>
+Subject: Re: [PATCH v8 04/12] iommu/mediatek: Add device_link between the
+ consumer and the larb devices
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>
+CC:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
+        <yi.kuo@mediatek.com>, <acourbot@chromium.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        <anthony.huang@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Date:   Mon, 25 Oct 2021 11:57:39 +0800
+In-Reply-To: <da5934de-65ad-4bac-c510-eb0d40d96d70@collabora.com>
+References: <20210929013719.25120-1-yong.wu@mediatek.com>
+         <20210929013719.25120-5-yong.wu@mediatek.com>
+         <e00b92db-0562-27ca-2f96-1f03ff824988@collabora.com>
+         <e4c98036dd73b91b8352a162f80240171e2b3f0f.camel@mediatek.com>
+         <da5934de-65ad-4bac-c510-eb0d40d96d70@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="y"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a tracing BPF program attempts to read memory without using the
-bpf_probe_read() helper, the verifier marks the load instruction with
-the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
-this flag it falls back to the interpreter.
-
-Add support for BPF_PROBE_MEM, by appending an exception table to the
-BPF program. If the load instruction causes a data abort, the fixup
-infrastructure finds the exception table and fixes up the fault, by
-clearing the destination register and jumping over the faulting
-instruction.
-
-A more generic solution would add a "handler" field to the table entry,
-like on x86 and s390.
-
-The same issue in ARM64 is fixed in:
-commit 800834285361 ("bpf, arm64: Add BPF exception tables")
-
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
-Tested-by: Pu Lehui <pulehui@huawei.com>
----
-v2:
-Modify according to Björn's comments, mainly removes redundant head files
-extable.h and some code style issues.
-
- arch/riscv/mm/extable.c         |  27 ++++-
- arch/riscv/net/bpf_jit.h        |   1 +
- arch/riscv/net/bpf_jit_comp64.c | 185 +++++++++++++++++++++++++-------
- arch/riscv/net/bpf_jit_core.c   |  18 +++-
- 4 files changed, 185 insertions(+), 46 deletions(-)
-
-diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-index 2fc729422151..442695393131 100644
---- a/arch/riscv/mm/extable.c
-+++ b/arch/riscv/mm/extable.c
-@@ -11,14 +11,31 @@
- #include <linux/module.h>
- #include <linux/uaccess.h>
- 
-+#ifdef CONFIG_BPF_JIT
-+static inline bool in_bpf_jit(struct pt_regs *regs)
-+{
-+	if (!IS_ENABLED(CONFIG_BPF_JIT))
-+		return false;
-+
-+	return regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END;
-+}
-+
-+int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
-+#endif
-+
- int fixup_exception(struct pt_regs *regs)
- {
- 	const struct exception_table_entry *fixup;
- 
- 	fixup = search_exception_tables(regs->epc);
--	if (fixup) {
--		regs->epc = fixup->fixup;
--		return 1;
--	}
--	return 0;
-+	if (!fixup)
-+		return 0;
-+
-+#ifdef CONFIG_BPF_JIT
-+	if (in_bpf_jit(regs))
-+		return rv_bpf_fixup_exception(fixup, regs);
-+#endif
-+
-+	regs->epc = fixup->fixup;
-+	return 1;
- }
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 75c1e9996867..8f2e5670c1aa 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -71,6 +71,7 @@ struct rv_jit_context {
- 	int ninsns;
- 	int epilogue_offset;
- 	int *offset;		/* BPF to RV */
-+	int nexentrys;
- 	unsigned long flags;
- 	int stack_size;
- };
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 3af4131c22c7..a1b9fe14ead3 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -5,6 +5,7 @@
-  *
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
- #include "bpf_jit.h"
-@@ -27,6 +28,21 @@ static const int regmap[] = {
- 	[BPF_REG_AX] =	RV_REG_T0,
- };
- 
-+static const int pt_regmap[] = {
-+	[RV_REG_A5] = offsetof(struct pt_regs, a5),
-+	[RV_REG_A0] = offsetof(struct pt_regs, a0),
-+	[RV_REG_A1] = offsetof(struct pt_regs, a1),
-+	[RV_REG_A2] = offsetof(struct pt_regs, a2),
-+	[RV_REG_A3] = offsetof(struct pt_regs, a3),
-+	[RV_REG_A4] = offsetof(struct pt_regs, a4),
-+	[RV_REG_S1] = offsetof(struct pt_regs, s1),
-+	[RV_REG_S2] = offsetof(struct pt_regs, s2),
-+	[RV_REG_S3] = offsetof(struct pt_regs, s3),
-+	[RV_REG_S4] = offsetof(struct pt_regs, s4),
-+	[RV_REG_S5] = offsetof(struct pt_regs, s5),
-+	[RV_REG_T0] = offsetof(struct pt_regs, t0),
-+};
-+
- enum {
- 	RV_CTX_F_SEEN_TAIL_CALL =	0,
- 	RV_CTX_F_SEEN_CALL =		RV_REG_RA,
-@@ -440,6 +456,69 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
- 	return 0;
- }
- 
-+#define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
-+#define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
-+
-+int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
-+				struct pt_regs *regs)
-+{
-+	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
-+	int regs_offset = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
-+
-+	*(unsigned long *)((unsigned char *)regs + pt_regmap[regs_offset]) = 0;
-+	regs->epc = (unsigned long)&ex->fixup - offset;
-+
-+	return 1;
-+}
-+
-+/* For accesses to BTF pointers, add an entry to the exception table */
-+static int add_exception_handler(const struct bpf_insn *insn,
-+				 struct rv_jit_context *ctx,
-+				 int dst_reg, int insn_len)
-+{
-+	struct exception_table_entry *ex;
-+	unsigned long pc;
-+	off_t offset;
-+
-+	if (!ctx->insns || !ctx->prog->aux->extable || BPF_MODE(insn->code) != BPF_PROBE_MEM)
-+		return 0;
-+
-+	if (WARN_ON_ONCE(ctx->nexentrys >= ctx->prog->aux->num_exentries))
-+		return -EINVAL;
-+
-+	if (WARN_ON_ONCE(insn_len > ctx->ninsns))
-+		return -EINVAL;
-+
-+	if (WARN_ON_ONCE(!rvc_enabled() && insn_len == 1))
-+		return -EINVAL;
-+
-+	ex = &ctx->prog->aux->extable[ctx->nexentrys];
-+	pc = (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
-+
-+	offset = pc - (long)&ex->insn;
-+	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-+		return -ERANGE;
-+	ex->insn = pc;
-+
-+	/*
-+	 * Since the extable follows the program, the fixup offset is always
-+	 * negative and limited to BPF_JIT_REGION_SIZE. Store a positive value
-+	 * to keep things simple, and put the destination register in the upper
-+	 * bits. We don't need to worry about buildtime or runtime sort
-+	 * modifying the upper bits because the table is already sorted, and
-+	 * isn't part of the main exception table.
-+	 */
-+	offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-+	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-+		return -ERANGE;
-+
-+	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-+		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
-+
-+	ctx->nexentrys++;
-+	return 0;
-+}
-+
- int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		      bool extra_pass)
- {
-@@ -893,52 +972,86 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 
- 	/* LDX: dst = *(size *)(src + off) */
- 	case BPF_LDX | BPF_MEM | BPF_B:
--		if (is_12b_int(off)) {
--			emit(rv_lbu(rd, off, rs), ctx);
-+	case BPF_LDX | BPF_MEM | BPF_H:
-+	case BPF_LDX | BPF_MEM | BPF_W:
-+	case BPF_LDX | BPF_MEM | BPF_DW:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_H:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_W:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-+	{
-+		int insn_len, insns_start;
-+
-+		switch (BPF_SIZE(code)) {
-+		case BPF_B:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit(rv_lbu(rd, off, rs), ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
-+
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
-+			insn_len = ctx->ninsns - insns_start;
-+			if (insn_is_zext(&insn[1]))
-+				return 1;
- 			break;
--		}
-+		case BPF_H:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit(rv_lhu(rd, off, rs), ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
--		if (insn_is_zext(&insn[1]))
--			return 1;
--		break;
--	case BPF_LDX | BPF_MEM | BPF_H:
--		if (is_12b_int(off)) {
--			emit(rv_lhu(rd, off, rs), ctx);
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
-+			insn_len = ctx->ninsns - insns_start;
-+			if (insn_is_zext(&insn[1]))
-+				return 1;
- 			break;
--		}
-+		case BPF_W:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit(rv_lwu(rd, off, rs), ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
--		if (insn_is_zext(&insn[1]))
--			return 1;
--		break;
--	case BPF_LDX | BPF_MEM | BPF_W:
--		if (is_12b_int(off)) {
--			emit(rv_lwu(rd, off, rs), ctx);
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
-+			insn_len = ctx->ninsns - insns_start;
-+			if (insn_is_zext(&insn[1]))
-+				return 1;
- 			break;
--		}
-+		case BPF_DW:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit_ld(rd, off, rs, ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
--		if (insn_is_zext(&insn[1]))
--			return 1;
--		break;
--	case BPF_LDX | BPF_MEM | BPF_DW:
--		if (is_12b_int(off)) {
--			emit_ld(rd, off, rs, ctx);
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit_ld(rd, 0, RV_REG_T1, ctx);
-+			insn_len = ctx->ninsns - insns_start;
- 			break;
- 		}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit_ld(rd, 0, RV_REG_T1, ctx);
-+		ret = add_exception_handler(insn, ctx, rd, insn_len);
-+		if (ret)
-+			return ret;
- 		break;
--
-+	}
- 	/* speculation barrier */
- 	case BPF_ST | BPF_NOSPEC:
- 		break;
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index fed86f42dfbe..5f2a842ec6f3 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -41,12 +41,12 @@ bool bpf_jit_needs_zext(void)
- 
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- {
-+	unsigned int image_size, prog_size, extable_size;
- 	bool tmp_blinded = false, extra_pass = false;
- 	struct bpf_prog *tmp, *orig_prog = prog;
- 	int pass = 0, prev_ninsns = 0, i;
- 	struct rv_jit_data *jit_data;
- 	struct rv_jit_context *ctx;
--	unsigned int image_size = 0;
- 
- 	if (!prog->jit_requested)
- 		return orig_prog;
-@@ -73,7 +73,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	if (ctx->offset) {
- 		extra_pass = true;
--		image_size = sizeof(*ctx->insns) * ctx->ninsns;
-+		prog_size = sizeof(*ctx->insns) * ctx->ninsns;
- 		goto skip_init_ctx;
- 	}
- 
-@@ -102,8 +102,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		if (ctx->ninsns == prev_ninsns) {
- 			if (jit_data->header)
- 				break;
-+			/* obtain the actual image size */
-+			extable_size = prog->aux->num_exentries *
-+				sizeof(struct exception_table_entry);
-+			prog_size = sizeof(*ctx->insns) * ctx->ninsns;
-+			image_size = prog_size + extable_size;
- 
--			image_size = sizeof(*ctx->insns) * ctx->ninsns;
- 			jit_data->header =
- 				bpf_jit_binary_alloc(image_size,
- 						     &jit_data->image,
-@@ -130,9 +134,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		goto out_offset;
- 	}
- 
-+	if (extable_size)
-+		prog->aux->extable = (void *)ctx->insns + prog_size;
-+
- skip_init_ctx:
- 	pass++;
- 	ctx->ninsns = 0;
-+	ctx->nexentrys = 0;
- 
- 	bpf_jit_build_prologue(ctx);
- 	if (build_body(ctx, extra_pass, NULL)) {
-@@ -143,11 +151,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	bpf_jit_build_epilogue(ctx);
- 
- 	if (bpf_jit_enable > 1)
--		bpf_jit_dump(prog->len, image_size, pass, ctx->insns);
-+		bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
- 
- 	prog->bpf_func = (void *)ctx->insns;
- 	prog->jited = 1;
--	prog->jited_len = image_size;
-+	prog->jited_len = prog_size;
- 
- 	bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
- 
--- 
-2.25.1
+T24gTW9uLCAyMDIxLTEwLTE4IGF0IDA5OjEzICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
+Og0KPiANCj4gT24gMTYuMTAuMjEgMDQ6MjMsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gT24gTW9uLCAy
+MDIxLTEwLTExIGF0IDE0OjM2ICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3RlOg0KPiA+ID4g
+DQo+ID4gPiBPbiAyOS4wOS4yMSAwMzozNywgWW9uZyBXdSB3cm90ZToNCj4gPiA+ID4gTWVkaWFU
+ZWsgSU9NTVUtU01JIGRpYWdyYW0gaXMgbGlrZSBiZWxvdy4gYWxsIHRoZSBjb25zdW1lcg0KPiA+
+ID4gPiBjb25uZWN0DQo+ID4gPiA+IHdpdGgNCj4gPiA+ID4gc21pLWxhcmIsIHRoZW4gY29ubmVj
+dCB3aXRoIHNtaS1jb21tb24uDQo+ID4gPiA+IA0KPiA+ID4gPiAgICAgICAgICAgTTRVDQo+ID4g
+PiA+ICAgICAgICAgICAgfA0KPiA+ID4gPiAgICAgICBzbWktY29tbW9uDQo+ID4gPiA+ICAgICAg
+ICAgICAgfA0KPiA+ID4gPiAgICAgLS0tLS0tLS0tLS0tLQ0KPiA+ID4gPiAgICAgfCAgICAgICAg
+IHwgICAgLi4uDQo+ID4gPiA+ICAgICB8ICAgICAgICAgfA0KPiA+ID4gPiBsYXJiMSAgICAgbGFy
+YjINCj4gPiA+ID4gICAgIHwgICAgICAgICB8DQo+ID4gPiA+IHZkZWMgICAgICAgdmVuYw0KPiA+
+ID4gPiANCj4gPiA+ID4gV2hlbiB0aGUgY29uc3VtZXIgd29ya3MsIGl0IHNob3VsZCBlbmFibGUg
+dGhlIHNtaS1sYXJiJ3MgcG93ZXINCj4gPiA+ID4gd2hpY2gNCj4gPiA+ID4gYWxzbyBuZWVkIGVu
+YWJsZSB0aGUgc21pLWNvbW1vbidzIHBvd2VyIGZpcnN0bHkuDQo+ID4gPiA+IA0KPiA+ID4gPiBU
+aHVzLCBGaXJzdCBvZiBhbGwsIHVzZSB0aGUgZGV2aWNlIGxpbmsgY29ubmVjdCB0aGUgY29uc3Vt
+ZXINCj4gPiA+ID4gYW5kDQo+ID4gPiA+IHRoZQ0KPiA+ID4gPiBzbWktbGFyYnMuIHRoZW4gYWRk
+IGRldmljZSBsaW5rIGJldHdlZW4gdGhlIHNtaS1sYXJiIGFuZCBzbWktDQo+ID4gPiA+IGNvbW1v
+bi4NCj4gPiA+ID4gDQo+ID4gPiA+IFRoaXMgcGF0Y2ggYWRkcyBkZXZpY2VfbGluayBiZXR3ZWVu
+IHRoZSBjb25zdW1lciBhbmQgdGhlIGxhcmJzLg0KPiA+ID4gPiANCj4gPiA+ID4gV2hlbiBkZXZp
+Y2VfbGlua19hZGQsIEkgYWRkIHRoZSBmbGFnIERMX0ZMQUdfU1RBVEVMRVNTIHRvIGF2b2lkDQo+
+ID4gPiA+IGNhbGxpbmcNCj4gPiA+ID4gcG1fcnVudGltZV94eCB0byBrZWVwIHRoZSBvcmlnaW5h
+bCBzdGF0dXMgb2YgY2xvY2tzLiBJdCBjYW4NCj4gPiA+ID4gYXZvaWQNCj4gPiA+ID4gdHdvDQo+
+ID4gPiA+IGlzc3VlczoNCj4gPiA+ID4gMSkgRGlzcGxheSBIVyBzaG93IGZhc3Rsb2dvIGFibm9y
+bWFsbHkgcmVwb3J0ZWQgaW4gWzFdLiBBdCB0aGUNCj4gPiA+ID4gYmVnZ2luaW5nLA0KPiA+ID4g
+PiBhbGwgdGhlIGNsb2NrcyBhcmUgZW5hYmxlZCBiZWZvcmUgZW50ZXJpbmcga2VybmVsLCBidXQg
+dGhlDQo+ID4gPiA+IGNsb2Nrcw0KPiA+ID4gPiBmb3INCj4gPiA+ID4gZGlzcGxheSBIVyhhbHdh
+eXMgaW4gbGFyYjApIHdpbGwgYmUgZ2F0ZWQgYWZ0ZXIgY2xrX2VuYWJsZSBhbmQNCj4gPiA+ID4g
+Y2xrX2Rpc2FibGUNCj4gPiA+ID4gY2FsbGVkIGZyb20gZGV2aWNlX2xpbmtfYWRkKC0+cG1fcnVu
+dGltZV9yZXN1bWUpIGFuZCBycG1faWRsZS4NCj4gPiA+ID4gVGhlDQo+ID4gPiA+IGNsb2NrDQo+
+ID4gPiA+IG9wZXJhdGlvbiBoYXBwZW5lZCBiZWZvcmUgZGlzcGxheSBkcml2ZXIgcHJvYmUuIEF0
+IHRoYXQgdGltZSwNCj4gPiA+ID4gdGhlDQo+ID4gPiA+IGRpc3BsYXkNCj4gPiA+ID4gSFcgd2ls
+bCBiZSBhYm5vcm1hbC4NCj4gPiA+ID4gDQo+ID4gPiA+IDIpIEEgZGVhZGxvY2sgaXNzdWUgcmVw
+b3J0ZWQgaW4gWzJdLiBVc2UgRExfRkxBR19TVEFURUxFU1MgdG8NCj4gPiA+ID4gc2tpcA0KPiA+
+ID4gPiBwbV9ydW50aW1lX3h4IHRvIGF2b2lkIHRoZSBkZWFkbG9jay4NCj4gPiA+ID4gDQo+ID4g
+PiA+IENvcnJlc3BvbmRpbmcsIERMX0ZMQUdfQVVUT1JFTU9WRV9DT05TVU1FUiBjYW4ndCBiZSBh
+ZGRlZCwgdGhlbg0KPiA+ID4gPiBkZXZpY2VfbGlua19yZW1vdmVkIHNob3VsZCBiZSBhZGRlZCBl
+eHBsaWNpdGx5Lg0KPiA+ID4gPiANCj4gPiA+ID4gWzFdDQo+ID4gPiA+IA0KaHR0cHM6Ly9sb3Jl
+Lmtlcm5lbC5vcmcvbGludXgtbWVkaWF0ZWsvMTU2NDIxMzg4OC4yMjkwOC40LmNhbWVsQG1oZnNk
+Y2FwMDMvDQo+ID4gPiA+IFsyXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0
+Y2gvMTA4NjU2OS8NCj4gPiA+ID4gDQo+ID4gPiA+IFN1Z2dlc3RlZC1ieTogVG9tYXN6IEZpZ2Eg
+PHRmaWdhQGNocm9taXVtLm9yZz4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9u
+Zy53dUBtZWRpYXRlay5jb20+DQo+ID4gPiA+IFRlc3RlZC1ieTogRnJhbmsgV3VuZGVybGljaCA8
+ZnJhbmstd0BwdWJsaWMtZmlsZXMuZGU+ICMgQlBJLQ0KPiA+ID4gPiBSMi9NVDc2MjMNCj4gPiA+
+ID4gLS0tDQo+ID4gPiA+ICAgIGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMgICAgfCAyMiArKysr
+KysrKysrKysrKysrKysrKysrDQo+ID4gPiA+ICAgIGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11X3Yx
+LmMgfCAyMCArKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gPiAgICAyIGZpbGVzIGNoYW5nZWQs
+IDQxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiA+ID4gDQo+ID4gPiA+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+ID4gPiA+IGIvZHJpdmVycy9pb21t
+dS9tdGtfaW9tbXUuYw0KPiA+ID4gPiBpbmRleCBkNTg0OGY3OGE2NzcuLmEyZmE1NTg5OTQzNCAx
+MDA2NDQNCj4gPiA+ID4gLS0tIGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiA+ID4gPiAr
+KysgYi9kcml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+ID4gPiA+IEBAIC01NjAsMjIgKzU2MCw0
+NCBAQCBzdGF0aWMgc3RydWN0IGlvbW11X2RldmljZQ0KPiA+ID4gPiAqbXRrX2lvbW11X3Byb2Jl
+X2RldmljZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gPiA+ICAgIHsNCj4gPiA+ID4gICAgCXN0
+cnVjdCBpb21tdV9md3NwZWMgKmZ3c3BlYyA9DQo+ID4gPiA+IGRldl9pb21tdV9md3NwZWNfZ2V0
+KGRldik7DQo+ID4gPiA+ICAgIAlzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGE7DQo+ID4gPiA+
+ICsJc3RydWN0IGRldmljZV9saW5rICpsaW5rOw0KPiA+ID4gPiArCXN0cnVjdCBkZXZpY2UgKmxh
+cmJkZXY7DQo+ID4gPiA+ICsJdW5zaWduZWQgaW50IGxhcmJpZDsNCj4gPiA+ID4gICAgDQo+ID4g
+PiA+ICAgIAlpZiAoIWZ3c3BlYyB8fCBmd3NwZWMtPm9wcyAhPSAmbXRrX2lvbW11X29wcykNCj4g
+PiA+ID4gICAgCQlyZXR1cm4gRVJSX1BUUigtRU5PREVWKTsgLyogTm90IGEgaW9tbXUgY2xpZW50
+DQo+ID4gPiA+IGRldmljZQ0KPiA+ID4gPiAqLw0KPiA+ID4gPiAgICANCj4gPiA+ID4gICAgCWRh
+dGEgPSBkZXZfaW9tbXVfcHJpdl9nZXQoZGV2KTsNCj4gPiA+ID4gICAgDQo+ID4gPiA+ICsJLyoN
+Cj4gPiA+ID4gKwkgKiBMaW5rIHRoZSBjb25zdW1lciBkZXZpY2Ugd2l0aCB0aGUgc21pLWxhcmIN
+Cj4gPiA+ID4gZGV2aWNlKHN1cHBsaWVyKQ0KPiA+ID4gPiArCSAqIFRoZSBkZXZpY2UgaW4gZWFj
+aCBhIGxhcmIgaXMgYSBpbmRlcGVuZGVudCBIVy4gdGh1cw0KPiA+ID4gPiBvbmx5DQo+ID4gPiA+
+IGxpbmsNCj4gPiA+ID4gKwkgKiBvbmUgbGFyYiBoZXJlLg0KPiA+ID4gPiArCSAqLw0KPiA+ID4g
+PiArCWxhcmJpZCA9IE1US19NNFVfVE9fTEFSQihmd3NwZWMtPmlkc1swXSk7DQo+ID4gPiANCj4g
+PiA+IHNvIGxhcmJpZCBpcyBhbHdheXMgdGhlIHNhbWUgZm9yIGFsbCB0aGUgaWRzIG9mIGEgZGV2
+aWNlPw0KPiA+IA0KPiA+IFllcy4gRm9yIG1lLCBlYWNoIGEgZHRzaSBub2RlIHNob3VsZCByZXBy
+ZXNlbnQgYSBIVyB1bml0IHdoaWNoIGNhbg0KPiA+IG9ubHkNCj4gPiBjb25uZWN0IG9uZSBsYXJi
+Lg0KPiA+IA0KPiA+ID4gSWYgc28gbWF5YmUgaXQgd29ydGggdGVzdGluZyBpdCBhbmQgcmV0dXJu
+IGVycm9yIGlmIHRoaXMgaXMgbm90DQo+ID4gPiB0aGUNCj4gPiA+IGNhc2UuDQo+ID4gDQo+ID4g
+VGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbi4gVGhpcyBpcyB2ZXJ5IGhlbHBmdWwuIEkgZGlkIHNl
+ZSBzb21lb25lDQo+ID4gcHV0DQo+ID4gdGhlIGRpZmZlcmVudCBsYXJicyBpbiBvbmUgbm9kZS4g
+SSB3aWxsIGNoZWNrIHRoaXMsIGFuZCBhZGQgcmV0dXJuDQo+IA0KPiBJIGFtIHdvcmtpbmcgb24g
+YnVncyBmb3VuZCBvbiBtZWRpYSBkcml2ZXJzLCBjb3VsZCB5b3UgcGxlYXNlIHBvaW50DQo+IG1l
+IHRvDQo+IHRoYXQgd3Jvbmcgbm9kZT8NCj4gV2lsbCB5b3Ugc2VuZCBhIGZpeCB0byB0aGF0IG5v
+ZGUgaW4gdGhlIGR0c2k/DQoNCnNvcnJ5LiBJIG1lYW4gaXQgaGFwcGVuZWQgaW4gdGhlIGludGVy
+bmFsIGJyYW5jaCBhbmQgaXQgaGFzIGFscmVhZHkNCmJlZW4gZml4ZWQgaW50ZXJuYWxseSwgIGFs
+bCB0aGUgdXBzdHJlYW0gbm9kZXMgYXJlIG9rIGZvciB0aGlzLg0KDQpUaGFua3MNCj4gDQo+IA0K
+PiBUaGFua3MsDQo+IERhZm5hDQo+IA0KPiA+IEVJTlZBTCBmb3IgdGhpcyBjYXNlLg0KPiANCj4g
+DQo+IA0KPiA+IA0KPiA+ID4gDQo+ID4gPiBUaGFua3MsDQo+ID4gPiBEYWZuYQ0KPiA+IA0KPiA+
+ICAgDQo+ID4gPiA+IA0K
 
