@@ -2,143 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DF843A3A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC71743A34F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhJYUBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238555AbhJYT5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:57:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB05C6117A;
-        Mon, 25 Oct 2021 19:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635191310;
-        bh=pjFBSZY6UwFbUcF2u0MrCUQ/DcBKBFRby4HT/sbIwt8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ftgnZU3qLArx0CraeAcz+xxVAhsUhRpC00hUD0P53t9KhJm7NHpD3AppF4xxoet3m
-         ztPTxuo6S4TCswzyzMmIbLJfvtZUaT9f/VKgQc6FpQubr1UYBV8rx46EAJTgaS8eri
-         P5/1mr9EH+/yvs+JrBZO3+UwO7gBrvTu1mqRErEbf6hU+pqL3p8sQJ2nAQhJJYoRRq
-         oM/xNedBsckx88SZTQsGeddr5ggxJjrehpqnpzduDdQaUx8mrQp0gGk/RyU0t7tWz1
-         dmT2nuSTnwOYn3E2EdCfSs1h3huLITZDC4NDWfetlC1cxCCf8gncpNGbUY/rlc8hSN
-         KpG1QhyZ5G/9w==
-Date:   Mon, 25 Oct 2021 12:48:28 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Seth Forshee <seth@forshee.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sch: eliminate unnecessary RCU waits in
- mini_qdisc_pair_swap()
-Message-ID: <20211025124828.1e4900e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211022161747.81609-1-seth@forshee.me>
-References: <20211022161747.81609-1-seth@forshee.me>
+        id S240067AbhJYT6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:58:35 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:36406 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239143AbhJYTyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:54:13 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19PJpSBO094824;
+        Mon, 25 Oct 2021 14:51:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635191488;
+        bh=4qqpuu5TH11S5Lbcf+PjEnJZQXBA5hBnF7GwMHAdzhA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=g2WQ7chJQmRdYqwvMvhe4L757Yu6shTkvYnKAgJqPtNwyG//ruvo0P07dLmfmsTbp
+         GSkVpJDo8WA7ZYgmGluE2h/DyPvNlk8RjCdPABabJMAjCIdWV1gfqmXju81fPot/yw
+         AuxK39hmm24+fqUobj7Wwa4f5HQ9HSyyon97tXpw=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19PJpSG0080611
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Oct 2021 14:51:28 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 25
+ Oct 2021 14:51:27 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 25 Oct 2021 14:51:27 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19PJpQmx107940;
+        Mon, 25 Oct 2021 14:51:27 -0500
+Date:   Tue, 26 Oct 2021 01:21:26 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Mark Brown <broonie@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        <linux-spi@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v1] dt-bindings: mtd: spi-nor: use unevaluatedProperties:
+ false
+Message-ID: <20211025195124.nx2whsynpokyg7ot@ti.com>
+References: <20210924180705.14021-1-p.yadav@ti.com>
+ <YVs1XZmeIdix1m1V@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YVs1XZmeIdix1m1V@robh.at.kernel.org>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 11:17:46 -0500 Seth Forshee wrote:
-> From: Seth Forshee <sforshee@digitalocean.com>
+On 04/10/21 12:09PM, Rob Herring wrote:
+> On Fri, Sep 24, 2021 at 11:37:05PM +0530, Pratyush Yadav wrote:
+> > Many SPI controllers need to add properties to slave devices. This could
+> > be the delay in clock or data lines, etc. These properties are
+> > controller specific but need to be defined in the slave node because
+> > they are per-slave and there can be multiple slaves attached to a
+> > controller.
+> > 
+> > If these properties are not added to the slave binding, then the dtbs
+> > check emits a warning. But these properties do not make much sense in
+> > the slave binding because they are controller-specific and they will
+> > just pollute every slave binding.
+> > 
+> > One option is to add a separate schema that collects all such properties
+> > from all such controllers. Slave bindings can simply refer to this
+> > binding and they should be rid of the warnings.
+> > 
+> > There are some limitations with this approach:
+> > 
+> > 1. There is no way to specify required properties. The schema would
+> > contain properties for all controllers and there would be no way to know
+> > which controller is being used.
+> > 
+> > 2. There would be no way to restrict additional properties. Since this
+> > schema will be used with an allOf operator, additionalProperties would
+> > need to be true. In addition, the slave schema will have to set
+> > unevaluatedProperties: false.
 > 
-> Currently rcu_barrier() is used to ensure that no readers of the
-> inactive mini_Qdisc buffer remain before it is reused. This waits for
-> any pending RCU callbacks to complete, when all that is actually
-> required is to wait for one RCU grace period to elapse after the buffer
-> was made inactive. This means that using rcu_barrier() may result in
-> unnecessary waits.
+> I don't see what is the problem. If there's a $ref, then 
+> unevaluatedProperties is what should be used.
 > 
-> To improve this, store the current RCU state when a buffer is made
-> inactive and use poll_state_synchronize_rcu() to check whether a full
-> grace period has elapsed before reusing it. If a full grace period has
-> not elapsed, wait for a grace period to elapse, and in the non-RT case
-> use synchronize_rcu_expedited() to hasten it.
+> > 
+> > A much simpler option would be to make controller schemas specify those
+> > properties in patternProperties and set unevaluatedProperties to false
+> > on slave schemas, which is done in the previous approach anyway. This
+> > approach would have the same limitations as the 2nd limitation in the
+> > previous approach. But it does not have the 1st limitation since the
+> > properties of all controllers are not collected in a single schema, but
+> > instead reside in the same schema as the controller. It also has the
+> > added benefit of being much simpler.
+> > 
+> > The SPI NOR binding is taken as the first one to follow this. Other
+> > bindings like SPI NAND can follow in later patches.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > 
+> > ---
+> > I sent the first approach mentioned in the commit message some time ago
+> > [0]. When re-rolling this series I realized that if we are going to use
+> > unevaluatedProperties: false, then it would be much simpler to just keep
+> > everything else as-is. This has clear positives with no negatives
+> > relative to [0], as explained in the commit message.
+> > 
+> > [0] https://lore.kernel.org/all/20210609111707.9555-1-p.yadav@ti.com/T/#u
+> > 
+> >  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > index ed590d7c6e37..81be0620b264 100644
+> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > @@ -88,7 +88,7 @@ patternProperties:
+> >    "^otp(-[0-9]+)?$":
+> >      type: object
+> > 
+> > -additionalProperties: false
+> > +unevaluatedProperties: false
 > 
-> Since this approach eliminates the RCU callback it is no longer
-> necessary to synchronize_rcu() in the tp_head==NULL case. However, the
-> RCU state should still be saved for the previously active buffer.
+> This only works until unevaluatedProperties support is actually 
+> implemented. Then it's back to the same warnings. In the mean time, we'd 
+> be allowing any extra random properties to be added for everyone.
+
+Ok, I didn't know that. I don't understand the validation frameworks all 
+that well. I will go back to the method you suggested. Thanks.
+
 > 
-> Before this change I would typically see mini_qdisc_pair_swap() take
-> tens of milliseconds to complete. After this change it typcially
-> finishes in less than 1 ms, and often it takes just a few microseconds.
-> 
-> Thanks to Paul for walking me through the options for improving this.
-> 
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Signed-off-by: Seth Forshee <sforshee@digitalocean.com>
+> Rob
 
-LGTM, but please rebase and retest on top of latest net-next.
-
->  void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
->  			  struct tcf_proto *tp_head)
->  {
-> @@ -1423,28 +1419,30 @@ void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
->  
->  	if (!tp_head) {
->  		RCU_INIT_POINTER(*miniqp->p_miniq, NULL);
-> -		/* Wait for flying RCU callback before it is freed. */
-> -		rcu_barrier();
-> -		return;
-> -	}
-> +	} else {
-> +		miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
-> +			&miniqp->miniq1 : &miniqp->miniq2;
->  
-> -	miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
-> -		&miniqp->miniq1 : &miniqp->miniq2;
-
-nit: any reason this doesn't read:
-
-	miniq = miniq_old != &miniqp->miniq1 ? 
-		&miniqp->miniq1 : &miniqp->miniq2;
-
-Surely it's not equal to miniq1 or miniq2 if it's NULL.
-
-> +		/* We need to make sure that readers won't see the miniq
-> +		 * we are about to modify. So ensure that at least one RCU
-> +		 * grace period has elapsed since the miniq was made
-> +		 * inactive.
-> +		 */
-> +		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> +			cond_synchronize_rcu(miniq->rcu_state);
-> +		else if (!poll_state_synchronize_rcu(miniq->rcu_state))
-> +			synchronize_rcu_expedited();
->  
-> -	/* We need to make sure that readers won't see the miniq
-> -	 * we are about to modify. So wait until previous call_rcu callback
-> -	 * is done.
-> -	 */
-> -	rcu_barrier();
-> -	miniq->filter_list = tp_head;
-> -	rcu_assign_pointer(*miniqp->p_miniq, miniq);
-> +		miniq->filter_list = tp_head;
-> +		rcu_assign_pointer(*miniqp->p_miniq, miniq);
-> +	}
->  
->  	if (miniq_old)
-> -		/* This is counterpart of the rcu barriers above. We need to
-> +		/* This is counterpart of the rcu sync above. We need to
->  		 * block potential new user of miniq_old until all readers
->  		 * are not seeing it.
->  		 */
-> -		call_rcu(&miniq_old->rcu, mini_qdisc_rcu_func);
-> +		miniq_old->rcu_state = start_poll_synchronize_rcu();
->  }
->  EXPORT_SYMBOL(mini_qdisc_pair_swap);
->  
-> @@ -1463,6 +1461,8 @@ void mini_qdisc_pair_init(struct mini_Qdisc_pair *miniqp, struct Qdisc *qdisc,
->  	miniqp->miniq1.cpu_qstats = qdisc->cpu_qstats;
->  	miniqp->miniq2.cpu_bstats = qdisc->cpu_bstats;
->  	miniqp->miniq2.cpu_qstats = qdisc->cpu_qstats;
-> +	miniqp->miniq1.rcu_state = get_state_synchronize_rcu();
-> +	miniqp->miniq2.rcu_state = miniqp->miniq1.rcu_state;
->  	miniqp->p_miniq = p_miniq;
->  }
->  EXPORT_SYMBOL(mini_qdisc_pair_init);
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
