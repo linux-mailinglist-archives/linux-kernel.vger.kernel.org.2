@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E3143A18C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7712A43A0C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236621AbhJYTjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:39:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
+        id S236405AbhJYTef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:34:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236400AbhJYTee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:34:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 833DC604AC;
-        Mon, 25 Oct 2021 19:30:23 +0000 (UTC)
+        id S235814AbhJYT3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:29:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 551A161165;
+        Mon, 25 Oct 2021 19:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190224;
-        bh=xeZfBoYUUj8wuwf6ngr4Dp5HMAeqVdy8+8l0XBq+WTI=;
+        s=korg; t=1635189964;
+        bh=mW+CiayvMKYVbiYRfydmk3xas+6IQdHZy8snMM5xuVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xYl2Wz8eK3cvL/Ul1C15s/Z9CZgjOQkh7fxRDrOZV5anLHlfTaT3+aPGMM6BD9CvK
-         HK+Te6JypEmGxuOWD5ec2nGjSR4/ChuOFP2E+1MSSdTP+Qf03E69tIDqjjXwax2dc3
-         fMpprJEOA9qFGabOR3QRo4Xr7weJp7AXXyIV8gT0=
+        b=t//4FnWGLCWr7DSwD1rXWZ+RmhnpsiKEbf6eM5jJL0tddM4cWLC8iBJOnzVI/7jR2
+         BKeIQcNysDXWTaupeNqNU92EAKwS2i5f4byV+bIqlpJRMZxK166vYnF5U+qHnEj8PZ
+         m6KzCMobFHU4jM7jcDd+/3EliYDHW93NtrVJzPXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 22/95] NIOS2: irqflags: rename a redefined register name
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Fabian=20Bl=C3=A4se?= <fabian@blaese.de>
+Subject: [PATCH 5.4 02/58] net: switchdev: do not propagate bridge updates across bridges
 Date:   Mon, 25 Oct 2021 21:14:19 +0200
-Message-Id: <20211025191000.129836229@linuxfoundation.org>
+Message-Id: <20211025190937.999537264@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit 4cce60f15c04d69eff6ffc539ab09137dbe15070 ]
+commit 07c6f9805f12f1bb538ef165a092b300350384aa upstream.
 
-Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
-with the name "CTL_STATUS". Change the one in arch/nios2/ to be
-"CTL_FSTATUS" (flags status) to eliminate the build warning.
+When configuring a tree of independent bridges, propagating changes
+from the upper bridge across a bridge master to the lower bridge
+ports brings surprises.
 
-In file included from ../drivers/mmc/host/tmio_mmc.c:22:
-drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
-   31 | #define CTL_STATUS 0x1c
-arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
-   14 | #define CTL_STATUS      0
+For example, a lower bridge may have vlan filtering enabled.  It
+may have a vlan interface attached to the bridge master, which may
+then be incorporated into another bridge.  As soon as the lower
+bridge vlan interface is attached to the upper bridge, the lower
+bridge has vlan filtering disabled.
 
-Fixes: b31ebd8055ea ("nios2: Nios2 registers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This occurs because switchdev recursively applies its changes to
+all lower devices no matter what.
+
+Reviewed-by: Ido Schimmel <idosch@mellanox.com>
+Tested-by: Ido Schimmel <idosch@mellanox.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Fabian Bläse <fabian@blaese.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nios2/include/asm/irqflags.h  | 4 ++--
- arch/nios2/include/asm/registers.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ net/switchdev/switchdev.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/nios2/include/asm/irqflags.h b/arch/nios2/include/asm/irqflags.h
-index b3ec3e510706..25acf27862f9 100644
---- a/arch/nios2/include/asm/irqflags.h
-+++ b/arch/nios2/include/asm/irqflags.h
-@@ -9,7 +9,7 @@
- 
- static inline unsigned long arch_local_save_flags(void)
- {
--	return RDCTL(CTL_STATUS);
-+	return RDCTL(CTL_FSTATUS);
- }
- 
- /*
-@@ -18,7 +18,7 @@ static inline unsigned long arch_local_save_flags(void)
-  */
- static inline void arch_local_irq_restore(unsigned long flags)
- {
--	WRCTL(CTL_STATUS, flags);
-+	WRCTL(CTL_FSTATUS, flags);
- }
- 
- static inline void arch_local_irq_disable(void)
-diff --git a/arch/nios2/include/asm/registers.h b/arch/nios2/include/asm/registers.h
-index 183c720e454d..95b67dd16f81 100644
---- a/arch/nios2/include/asm/registers.h
-+++ b/arch/nios2/include/asm/registers.h
-@@ -11,7 +11,7 @@
- #endif
- 
- /* control register numbers */
--#define CTL_STATUS	0
-+#define CTL_FSTATUS	0
- #define CTL_ESTATUS	1
- #define CTL_BSTATUS	2
- #define CTL_IENABLE	3
--- 
-2.33.0
-
+--- a/net/switchdev/switchdev.c
++++ b/net/switchdev/switchdev.c
+@@ -476,6 +476,9 @@ static int __switchdev_handle_port_obj_a
+ 	 * necessary to go through this helper.
+ 	 */
+ 	netdev_for_each_lower_dev(dev, lower_dev, iter) {
++		if (netif_is_bridge_master(lower_dev))
++			continue;
++
+ 		err = __switchdev_handle_port_obj_add(lower_dev, port_obj_info,
+ 						      check_cb, add_cb);
+ 		if (err && err != -EOPNOTSUPP)
+@@ -528,6 +531,9 @@ static int __switchdev_handle_port_obj_d
+ 	 * necessary to go through this helper.
+ 	 */
+ 	netdev_for_each_lower_dev(dev, lower_dev, iter) {
++		if (netif_is_bridge_master(lower_dev))
++			continue;
++
+ 		err = __switchdev_handle_port_obj_del(lower_dev, port_obj_info,
+ 						      check_cb, del_cb);
+ 		if (err && err != -EOPNOTSUPP)
+@@ -579,6 +585,9 @@ static int __switchdev_handle_port_attr_
+ 	 * necessary to go through this helper.
+ 	 */
+ 	netdev_for_each_lower_dev(dev, lower_dev, iter) {
++		if (netif_is_bridge_master(lower_dev))
++			continue;
++
+ 		err = __switchdev_handle_port_attr_set(lower_dev, port_attr_info,
+ 						       check_cb, set_cb);
+ 		if (err && err != -EOPNOTSUPP)
 
 
