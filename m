@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DC24396DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7C84396E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbhJYNAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:00:48 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:35486 "EHLO mail1.perex.cz"
+        id S233427AbhJYNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:01:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:27939 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233315AbhJYNAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:00:46 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 5B1D5A003F;
-        Mon, 25 Oct 2021 14:58:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 5B1D5A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1635166702; bh=2eZ26/VaEzftwu3ZmYsfOCPTwZ9yZoE3hgkj1VEFB+I=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BHt3MaR/tnH1YLlX0CxYPQLb0TApnFbI0kfh54oCDK9UYHer4A5PCYcG7fNDlI9Wl
-         l/rAVmzVS+aGmJ4bJnEpVBj4S8+Ub5Xqkq1fW4Tar5TF0/zuRCsbSOMsJdgCWNlEhi
-         hZMMBpuIDsoRSFlTW5nddFWLYAwb1aOChP6N3TgM=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Mon, 25 Oct 2021 14:58:13 +0200 (CEST)
-Message-ID: <79541c76-2c2b-fd4b-60c8-67ee6b8ea3fa@perex.cz>
-Date:   Mon, 25 Oct 2021 14:58:13 +0200
+        id S233392AbhJYNBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:01:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="229913159"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="229913159"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:58:52 -0700
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="571607199"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:58:47 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mezYX-000cfz-I6;
+        Mon, 25 Oct 2021 15:58:25 +0300
+Date:   Mon, 25 Oct 2021 15:58:25 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Patrick Williams <patrick@stwcx.xyz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Zev Weiss <zev@bewilderbeest.net>, kvm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Rajat Jain <rajatja@google.com>,
+        Jianxiong Gao <jxgao@google.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
+ reserved devices
+Message-ID: <YXap8V/jMM3Ksj7x@smile.fi.intel.com>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <20211022020032.26980-5-zev@bewilderbeest.net>
+ <YXJeYCFJ5DnBB63R@kroah.com>
+ <YXJ3IPPkoLxqXiD3@hatter.bewilderbeest.net>
+ <YXJ88eARBE3vU1aA@kroah.com>
+ <YXLWMyleiTFDDZgm@heinlein>
+ <YXPOSZPA41f+EUvM@kroah.com>
+ <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
+ <YXZLjTvGevAXcidW@kroah.com>
+ <YXaYmie/CUHnixtX@heinlein>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ASoC: tegra: Add master volume/mute control support
-Content-Language: en-US
-To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, tiwai@suse.com
-Cc:     jonathanh@nvidia.com, thierry.reding@gmail.com,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXaYmie/CUHnixtX@heinlein>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25. 10. 21 13:06, Sameer Pujar wrote:
+On Mon, Oct 25, 2021 at 06:44:26AM -0500, Patrick Williams wrote:
+> On Mon, Oct 25, 2021 at 08:15:41AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 25, 2021 at 12:38:08AM -0500, Frank Rowand wrote:
+> > > On 10/23/21 3:56 AM, Greg Kroah-Hartman wrote:
+>  
+> > We have the bind/unbind ability today, from userspace, that can control
+> > this.  Why not just have Linux grab the device when it boots, and then
+> > when userspace wants to "give the device up", it writes to "unbind" in
+> > sysfs, and then when all is done, it writes to the "bind" file and then
+> > Linux takes back over.
+> > 
+> > Unless for some reason Linux should _not_ grab the device when booting,
+> > then things get messier, as we have seen in this thread.
+> 
+> This is probably more typical on a BMC than atypical.  The systems often require
+> the BMC (running Linux) to be able to reboot independently from the managed host
+> (running anything).  In the example Zev gave, the BMC rebooting would rip away
+> the BIOS chip from the running host.
+> 
+> The BMC almost always needs to come up in a "I don't know what could possibly be
+> going on in the system" state and re-discover where the system was left off.
 
-> @@ -150,11 +186,22 @@ static int tegra210_mvc_put_mute(struct snd_kcontrol *kcontrol,
-
-...
->   
->   	return 1;
-
-It's a bit unrelated comment to this change, but it may be worth to verify all 
-kcontrol put callbacks in the tegra code. Ensure that value 1 is returned only 
-when something was really changed in hardware.
-
-The tegra210_i2s_put_control() has opposite problem for example - returns 
-always 0 which means that the change notifications are not send to subscribed 
-applications.
-
-						Jaroslav
+Isn't it an architectural issue then?
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+With Best Regards,
+Andy Shevchenko
+
+
