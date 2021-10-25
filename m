@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6F0439E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEB3439E5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhJYSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
+        id S232774AbhJYSVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhJYSPh (ORCPT
+        with ESMTP id S232658AbhJYSVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:15:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0958BC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:13:14 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635185592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d5BfnmRBE1dbADgjyqjL7W1xnI7QDmOS8P/wOGhlMhQ=;
-        b=Rs9sNID0/NSL4cpr8FfIZ7WC+/m8UbPT6v0JX7lNYWw7uKYHJy7RWULGuNfUYi9/iDGymL
-        n2zOkekUkALnUM80/QJMUs6ixaN6xjZKdO9YzBRa2TDOVi/tGXVkC87WoY5uEU65h9Zy79
-        DaO9H8Pr8UIkeYVLNo6+s0tmXr4VtdBR45e4jazO4FrWNwQNEmQf/5xxDIWjGVKW22RdR7
-        4DLaHEoH2a9bjJTemMJ/xQQFAzWzcpwAWYiiaRtsMUcBrynmDu5vt6QIDxLG9vpS8veTgF
-        Vc7WXf401Yz4gOM+iLfVfg/WoMJ5q2fVJRZYXJGBWY6bqFYSL9zUpv9VSFBUBQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635185592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d5BfnmRBE1dbADgjyqjL7W1xnI7QDmOS8P/wOGhlMhQ=;
-        b=Mig/Mx9G2Avw35R7QS3GIl9m/vQyMd7p8Y4GVYT2K6yQE5G37UGLkElfn43PCNk6zqy41I
-        uWtIH+3ihEml6ZBQ==
-To:     Mika =?utf-8?Q?Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@linux.intel.com, arjan@linux.intel.com,
-        ravi.v.shankar@intel.com
-Subject: Re: [PATCH 15/23] x86/fpu: Add sanity checks for XFD
-In-Reply-To: <20d31ed9-be3d-dca6-ceef-ced35f80d131@nextfour.com>
-References: <20211021225527.10184-1-chang.seok.bae@intel.com>
- <20211021225527.10184-16-chang.seok.bae@intel.com>
- <20d31ed9-be3d-dca6-ceef-ced35f80d131@nextfour.com>
-Date:   Mon, 25 Oct 2021 20:13:11 +0200
-Message-ID: <87o87dezwo.ffs@tglx>
+        Mon, 25 Oct 2021 14:21:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCB0C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ZUjha4DhPn98bTvVPY+JcUANbAx2g59wrv6gM1+ix+I=; b=LEaDBOiD45JaEtaEe0dVnWgwSS
+        TL7+hD3Kt7dR7Ls6PWNwGh2qjoF5RgC6IPN3s7YSeMvovoNk2IZEUiDBTdYXi8CFsdj+HsdCI7HrN
+        1al0pykeF4gXsc17uJuuWA/hg6rKcV/vSZnIz+xqH7E9NFOVy0dNNwgHw+V+2TL8Zmi144K5AaXOm
+        88aw5XlSk8pPwq6gO8LjP+qKn+bd9MvOwfkOe0dsh62dQIJLZB/7LDP7TSPsPXhVl3fH2tsWrfqXw
+        qA38PQ6vwCjBA6wrF3UUgisgEb42NYrgbvvSLSDiqNTsnT0/c0vbsevl99kUjjYM6QoeZKH9+l4J1
+        ySCxoYIw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mf4WY-00GJuC-EZ; Mon, 25 Oct 2021 18:16:51 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Kees Cook <keescook@chromium.org>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] secretmem: Prevent secretmem_users from wrapping to zero
+Date:   Mon, 25 Oct 2021 19:16:34 +0100
+Message-Id: <20211025181634.3889666-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25 2021 at 11:33, Mika Penttil=C3=A4 wrote:
-> On 22.10.2021 1.55, Chang S. Bae wrote:
->> +#ifdef CONFIG_X86_DEBUG_FPU
->> +/*
->> + * Ensure that a subsequent XSAVE* or XRSTOR* instruction with RFBM=3D@=
-mask
->> + * can safely operate on the @fpstate buffer.
->> + */
->> +static bool xstate_op_valid(struct fpstate *fpstate, u64 mask, bool rst=
-or)
->> +{
->> +	u64 xfd =3D __this_cpu_read(xfd_state);
->> +
->> +	if (fpstate->xfd =3D=3D xfd)
->> +		return true;
->> +
->> +	/* For current's fpstate the XFD state must be correct. */
->> +	if (fpstate->xfd =3D=3D current->thread.fpu.fpstate->xfd)
->> +		return false;
->> +
-> Should this return true or is the comment confusing?
+Commit 110860541f44 ("mm/secretmem: use refcount_t instead of atomic_t")
+attempted to fix the problem of secretmem_users wrapping to zero and
+allowing suspend once again.  Prevent secretmem_users from wrapping to
+zero by forbidding new users if the number of users has wrapped from
+positive to negative.  This stops a long way short of reaching the
+necessary 4 billion users, so there's no need to be clever with special
+anti-wrap types or checking the return value from atomic_inc().
 
-Comment might be confusing. The logic here is:
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Jordy Zomer <jordy@pwning.systems>
+Cc: Kees Cook <keescook@chromium.org>,
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/secretmem.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-If fpstate->xfd equal xfd then it's valid.
+diff --git a/mm/secretmem.c b/mm/secretmem.c
+index 030f02ddc7c1..c2dda408bb36 100644
+--- a/mm/secretmem.c
++++ b/mm/secretmem.c
+@@ -203,6 +203,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
+ 
+ 	if (flags & ~(SECRETMEM_FLAGS_MASK | O_CLOEXEC))
+ 		return -EINVAL;
++	if (atomic_read(&secretmem_users) < 0)
++		return -ENFILE;
+ 
+ 	fd = get_unused_fd_flags(flags & O_CLOEXEC);
+ 	if (fd < 0)
+-- 
+2.33.0
 
-So the next check is whether fpstate is the same as current's
-fpstate. If that's the case then the result is invalid because for
-current's fpstate the first condition should be true. But if it is not
-true then the state is not valid.
-
-Thanks,
-
-        tglx
