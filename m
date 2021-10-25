@@ -2,136 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94BD439E90
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A55439E94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhJYSgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        id S233344AbhJYSg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbhJYSgE (ORCPT
+        with ESMTP id S232887AbhJYSgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:36:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB2AC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:33:41 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id p16so14532601lfa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:33:41 -0700 (PDT)
+        Mon, 25 Oct 2021 14:36:55 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36397C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:34:33 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id i5so8534346pla.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z8dBYZTcodW1RIYY1CuZg5+AR74dovOpvsO6NBf+lLc=;
-        b=ZryNl7LCusVTz1ohIfF0UDBP1HQe32e/17uZVKDo26y8lXSi69cyY/O2zW0EaidLAF
-         yqPai5WEnpFTpa9hKWtic57snky53zK8VVouzHZ79u4xnxXurzXQcnuUgD2KiO4tpb8h
-         6Q6Oo/ZbVgwgFHWP7XELlyzO5NpgMDSfg7a9hu1LVV1DESPwUS2EbUuq+WvAuGgPnEZW
-         103YlT4Jjnr4fBuc0Go8Yp0kReiert0vN4kQ/LgvwHMbTcyMTtbesgsrVpM6Tu5Hjyov
-         jiQh1JZ4DsOuMqekLyFoNN63AnSO9lkgXfAcs+bNbAppCG00vFLEUgTG05RYZkXpyzcx
-         xRKQ==
+        d=pensando.io; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=mIcdTGZ3rsUpwCZEML9x2jvGcR+XEeriRfVZJXhhAZA=;
+        b=nW/KzMI2E8QqufpO9gPgMPqYJTJ+YVwGLgwzJAMibewhinPVSWxRDqVFpDHJuQxk3F
+         DHgt+QsV746HzclLELOw4LFpr6SC1r6PrrVgSdoP1BJM/PrTLKglmhKcC5B31olWzUU8
+         z4ruOiRLxMffksOunh8l7e23BuBVLeH2LVScn4nfL76s2iz2bTuAVBKwn2gtSHA/dEun
+         CmXQJfb2rSpIHjZmGucO1yQl7J8ys+0MKPYw4yAiPCC5+ZYlJR8R5kgXjHzqSN72gqmL
+         flyqMlO1jU/TNjet7oQlejbYO7kDhX2dt0p7tZ9oQRNRkcwi8sBEEl5P2xEfuCZ/uSQg
+         MNdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=z8dBYZTcodW1RIYY1CuZg5+AR74dovOpvsO6NBf+lLc=;
-        b=tt5oNdBphDBnJ8067zeSZmafj8EUAkaF6f4zvPea0SALk8k3oxdXC7gzgmq4OKeE6d
-         wL44mS4Lf9QUsnqQYlgHsuK340FBudvNX4c8yaz3PdxU8XFNLPfuGLjhOkSzz1QccJlP
-         ONnX56WMvvHHVXC6pYQL9govt1UB4EbOx0sFwEC8eoBYCAUrByV5q6C4cQYo09xzHq9J
-         x9U6OpWP9ARPMkpBnYHcJVPSEopi9NzqkpANucp8UgIRUlTpVq79kZM5p8kyM6VFlC0f
-         pqUL9DkAPQyH1OMb5vVAgWXMOWz92icbmj6k3jli4I7d3ktURs/nyvaWUMHvun3SVtTJ
-         xoOg==
-X-Gm-Message-State: AOAM532/nPy461hgF9XYWcJ+jslRlYnhb9vkaCtceNk7vE9qbWVd0GFc
-        2B75y0+wvBgkHEgTxRIFm032Yg==
-X-Google-Smtp-Source: ABdhPJx10i3nwleH7dxXSovt1g/kWHZ8liOWRHVHDlkIVeA5FV8xIRs9Pj7CSmFadXRB/KENK3CmtQ==
-X-Received: by 2002:a05:6512:3f86:: with SMTP id x6mr18959945lfa.389.1635186819446;
-        Mon, 25 Oct 2021 11:33:39 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id h1sm1717600lfu.277.2021.10.25.11.33.38
+        bh=mIcdTGZ3rsUpwCZEML9x2jvGcR+XEeriRfVZJXhhAZA=;
+        b=RoC2KcFZGmf0HqP1fhx6D7cg/41EOJGzc2tMVPVgFIKyyzJCokSub+1355Q94vhI3C
+         S9M3NmpoZlTeCE0GfZYps1y3jDyrpAndEtphwKMd7gPQA64yLXU7vEojE444kICJ92lV
+         SSmkLaCTkj2U7X+6wJ1LoeyQULCKA37/hkzjhZ37MBMoROtcnn2vzDqx6eZmkSqrLYZ3
+         mvlSkwDxqwsZZB4Enlbfnbx2voRDdfXe7SyIRk8h8hFiCDBIxGcU1t5RmWqHxuGiyAW4
+         3wOUbxHrnylRX7TtWFEGrgGU2cKcKldI8D1RRLD1AxqpeKFGOpBYjoJyTf6BiefiKXnl
+         wIBg==
+X-Gm-Message-State: AOAM532xtn4uf7dLdnbOs8bT1gF+jltm2MBB+COx+HLMaDOq1GYMP1xP
+        fZxp2Bv40C+Gv1sFRWvZiWYk1I4dWakSwQ==
+X-Google-Smtp-Source: ABdhPJxpeC0Y/A0jR6aWhQGeZ2F9EtTzdtyD9y7y3skZRpvvFwG7BaaToBWnDlXGMWKTWhegTGI7vA==
+X-Received: by 2002:a17:902:8a90:b0:13f:ee6e:cc59 with SMTP id p16-20020a1709028a9000b0013fee6ecc59mr17987183plo.75.1635186870579;
+        Mon, 25 Oct 2021 11:34:30 -0700 (PDT)
+Received: from [192.168.0.14] ([50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id i5sm17141664pgo.36.2021.10.25.11.34.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 11:33:39 -0700 (PDT)
-Subject: Re: [PATCH v2 06/11] drm/msm/disp/dpu1: Don't use DSC with mode_3d
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-7-vkoul@kernel.org>
- <11becace-7b44-6141-5a8b-1bd6d0673243@linaro.org>
- <35eb95c5-1c42-94d1-3f33-df029f753ab3@linaro.org> <YW+957ZKnbf1g/89@matsya>
- <e96d1368-fe7b-cf24-82c9-99783df44b0d@linaro.org> <YXbXBTlgDRa564Ic@matsya>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <d1cb8a37-b749-4098-a248-f0a9997e05a9@linaro.org>
-Date:   Mon, 25 Oct 2021 21:33:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 25 Oct 2021 11:34:30 -0700 (PDT)
+Message-ID: <61f29617-1334-ea71-bc35-0541b0104607@pensando.io>
+Date:   Mon, 25 Oct 2021 11:34:28 -0700
 MIME-Version: 1.0
-In-Reply-To: <YXbXBTlgDRa564Ic@matsya>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: Unsubscription Incident
+Content-Language: en-US
+To:     Slade Watkins <slade@sladewatkins.com>,
+        Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
+ <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com>
+ <YXY15jCBCAgB88uT@d3>
+ <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
+From:   Shannon Nelson <snelson@pensando.io>
+In-Reply-To: <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 19:10, Vinod Koul wrote:
-> On 25-10-21, 17:40, Dmitry Baryshkov wrote:
->> On 20/10/2021 09:57, Vinod Koul wrote:
->>> On 14-10-21, 16:50, Dmitry Baryshkov wrote:
->>>> On 14/10/2021 16:41, Dmitry Baryshkov wrote:
->>>>> On 07/10/2021 10:08, Vinod Koul wrote:
-> 
->>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->>>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->>>>>> index 806c171e5df2..5dfac5994bd4 100644
->>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->>>>>> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
->>>>>>      * @mode_3d:               3d mux configuration
->>>>>>      * @merge_3d:              3d merge block used
->>>>>>      * @intf_mode_sel:         Interface mode, cmd / vid
->>>>>> + * @dsc:                   DSC BIT masks
->>>>>>      * @stream_sel:            Stream selection for multi-stream interfaces
->>>>>>      */
->>>>>>     struct dpu_hw_intf_cfg {
->>>>>> @@ -46,6 +47,7 @@ struct dpu_hw_intf_cfg {
->>>>>>         enum dpu_3d_blend_mode mode_3d;
->>>>>>         enum dpu_merge_3d merge_3d;
->>>>>>         enum dpu_ctl_mode_sel intf_mode_sel;
->>>>>> +    unsigned int dsc;
+On 10/25/21 10:04 AM, Slade Watkins wrote:
+> On Mon, Oct 25, 2021 at 12:43 AM Benjamin Poirier
+> <benjamin.poirier@gmail.com> wrote:
+>> On 2021-10-22 18:54 +0300, Vladimir Oltean wrote:
+>>> On Fri, 22 Oct 2021 at 18:53, Lijun Pan <lijunp213@gmail.com> wrote:
+>>>> Hi,
 >>>>
->>>> I think this should be:
->>>> enum dpu_dsc dsc[MAX_DSCS];
->>>> unsigned int num_dsc;
->>>
->>> hmmm, how do we go about getting the num_dsc value here.
->>> dpu_encoder_phys does not know about that..
->>
->> dpu_encoder_get_topology() can decide whether to use DSC or not and then set
->> num_dsc. For now it will always set 2 if we are using DSC at all, but let's
->> keep the decision in a single place rather than having it scattered all over
->> the driver.
-> 
-> Yes agree, but dpu_encoder_get_topology() is private to encoder. Am not
-> sure how best to propagate the info into the hw_intf_cfg?
+>>>>  From Oct 11, I did not receive any emails from both linux-kernel and
+>>>> netdev mailing list. Did anyone encounter the same issue? I subscribed
+>>>> again and I can receive incoming emails now. However, I figured out
+>>>> that anyone can unsubscribe your email without authentication. Maybe
+>>>> it is just a one-time issue that someone accidentally unsubscribed my
+>>>> email. But I would recommend that our admin can add one more
+>>>> authentication step before unsubscription to make the process more
+>>>> secure.
+>>>>
+>>>> Thanks,
+>>>> Lijun
+>>> Yes, the exact same thing happened to me. I got unsubscribed from all
+>>> vger mailing lists.
+>> It happened to a bunch of people on gmail:
+>> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
+> I can at least confirm that this didn't happen to me on my hosted
+> Gmail through Google Workspace. Could be wrong, but it seems isolated
+> to normal @gmail.com accounts.
+>
+> Best,
+>               -slade
 
-Let dpu_encoder_get_topology() set num_dscs to 2 and merge_3d to 0 if 
-the encoder has DSC information and to 0 otherwise. This will cover all 
-topologies that we care about for now.
+Alternatively, I can confirm that my pensando.io address through gmail 
+was affected until I re-subscribed.
+sln
 
-Regarding getting the DSC config. Currently you use single priv->dsc 
-pointer, which works for the simple case of single DSI output, but will 
-break as soon as somebody has DSC DSI + DP config. Either we can 
-introduce the array of DSC configs, or we can add a DSI-specific 
-msm_dsi_get_dsc_config(), which will be later paired with the 
-corresponding displayport function.
 
--- 
-With best wishes
-Dmitry
+
