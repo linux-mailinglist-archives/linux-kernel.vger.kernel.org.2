@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA29C43A1C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8041543A159
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbhJYTlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53558 "EHLO mail.kernel.org"
+        id S236395AbhJYTiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:38:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236618AbhJYTe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:34:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54652610A6;
-        Mon, 25 Oct 2021 19:31:36 +0000 (UTC)
+        id S235908AbhJYTa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:30:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9536109D;
+        Mon, 25 Oct 2021 19:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190297;
-        bh=Ps6lIDaXjSpwSIMUsGNCTVWdQiy/a2kNcif61VQEJsI=;
+        s=korg; t=1635190051;
+        bh=uTRQSyIVsOPkZfHX30yAAc/QjRvJAaeNE9hH9IsUlY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=acm6vJM9COGAXxBRo63J4i2WwdA7nAVs9AQfL1+8FvnbMH2KACECx312HRckL2ece
-         4JGfZ2wfmZAuqm03nGm1P9mko7luCbk13KTjpJ2eHeNRoWyv15AzU0OX8fdVIlCKCV
-         l3lkC/FYYZro+orBpywAQafI8EOEoe9Idqui/0/g=
+        b=vSo1qLHN5Awst56BsClXOZL+lscEUfd9u8NwrUBAe15m/3tdQw3alu2brntZnAmnl
+         WCZVIWcl87QPWZW/c8GvFCLn8JCxde+oP071OQj9bfmazteTyOa58+9H+luK7kNC6Q
+         TKlGuEcWN1LktCRpAHK6Rf2/A0e8mkEbyYihbF6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 40/95] can: j1939: j1939_netdev_start(): fix UAF for rx_kref of j1939_priv
-Date:   Mon, 25 Oct 2021 21:14:37 +0200
-Message-Id: <20211025191002.609165845@linuxfoundation.org>
+Subject: [PATCH 5.4 21/58] can: peak_pci: peak_pci_remove(): fix UAF
+Date:   Mon, 25 Oct 2021 21:14:38 +0200
+Message-Id: <20211025190940.982921546@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,79 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit d9d52a3ebd284882f5562c88e55991add5d01586 upstream.
+commit 949fe9b35570361bc6ee2652f89a0561b26eec98 upstream.
 
-It will trigger UAF for rx_kref of j1939_priv as following.
+When remove the module peek_pci, referencing 'chan' again after
+releasing 'dev' will cause UAF.
 
-        cpu0                                    cpu1
-j1939_sk_bind(socket0, ndev0, ...)
-j1939_netdev_start
-                                        j1939_sk_bind(socket1, ndev0, ...)
-                                        j1939_netdev_start
-j1939_priv_set
-                                        j1939_priv_get_by_ndev_locked
-j1939_jsk_add
-.....
-j1939_netdev_stop
-kref_put_lock(&priv->rx_kref, ...)
-                                        kref_get(&priv->rx_kref, ...)
-                                        REFCOUNT_WARN("addition on 0;...")
+Fix this by releasing 'dev' later.
 
-====================================================
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 1 PID: 20874 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0
-RIP: 0010:refcount_warn_saturate+0x169/0x1e0
-Call Trace:
- j1939_netdev_start+0x68b/0x920
- j1939_sk_bind+0x426/0xeb0
- ? security_socket_bind+0x83/0xb0
+The following log reveals it:
 
-The rx_kref's kref_get() and kref_put() should use j1939_netdev_lock to
-protect.
+[   35.961814 ] BUG: KASAN: use-after-free in peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.963414 ] Read of size 8 at addr ffff888136998ee8 by task modprobe/5537
+[   35.965513 ] Call Trace:
+[   35.965718 ]  dump_stack_lvl+0xa8/0xd1
+[   35.966028 ]  print_address_description+0x87/0x3b0
+[   35.966420 ]  kasan_report+0x172/0x1c0
+[   35.966725 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967137 ]  ? trace_irq_enable_rcuidle+0x10/0x170
+[   35.967529 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967945 ]  __asan_report_load8_noabort+0x14/0x20
+[   35.968346 ]  peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.968752 ]  pci_device_remove+0xa9/0x250
 
-Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-Link: https://lore.kernel.org/all/20210926104757.2021540-1-william.xuanziyang@huawei.com
+Fixes: e6d9c80b7ca1 ("can: peak_pci: add support of some new PEAK-System PCI cards")
+Link: https://lore.kernel.org/all/1634192913-15639-1-git-send-email-zheyuma97@gmail.com
 Cc: stable@vger.kernel.org
-Reported-by: syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/j1939/main.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/can/sja1000/peak_pci.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -249,11 +249,14 @@ struct j1939_priv *j1939_netdev_start(st
- 	struct j1939_priv *priv, *priv_new;
- 	int ret;
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -731,16 +731,15 @@ static void peak_pci_remove(struct pci_d
+ 		struct net_device *prev_dev = chan->prev_dev;
  
--	priv = j1939_priv_get_by_ndev(ndev);
-+	spin_lock(&j1939_netdev_lock);
-+	priv = j1939_priv_get_by_ndev_locked(ndev);
- 	if (priv) {
- 		kref_get(&priv->rx_kref);
-+		spin_unlock(&j1939_netdev_lock);
- 		return priv;
- 	}
-+	spin_unlock(&j1939_netdev_lock);
+ 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
++		/* do that only for first channel */
++		if (!prev_dev && chan->pciec_card)
++			peak_pciec_remove(chan->pciec_card);
+ 		unregister_sja1000dev(dev);
+ 		free_sja1000dev(dev);
+ 		dev = prev_dev;
  
- 	priv = j1939_priv_create(ndev);
- 	if (!priv)
-@@ -269,10 +272,10 @@ struct j1939_priv *j1939_netdev_start(st
- 		/* Someone was faster than us, use their priv and roll
- 		 * back our's.
- 		 */
-+		kref_get(&priv_new->rx_kref);
- 		spin_unlock(&j1939_netdev_lock);
- 		dev_put(ndev);
- 		kfree(priv);
--		kref_get(&priv_new->rx_kref);
- 		return priv_new;
+-		if (!dev) {
+-			/* do that only for first channel */
+-			if (chan->pciec_card)
+-				peak_pciec_remove(chan->pciec_card);
++		if (!dev)
+ 			break;
+-		}
+ 		priv = netdev_priv(dev);
+ 		chan = priv->priv;
  	}
- 	j1939_priv_set(ndev, priv);
 
 
