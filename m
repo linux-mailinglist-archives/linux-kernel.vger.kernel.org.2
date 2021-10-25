@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E36439F6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5449A43A347
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhJYTUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:20:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37694 "EHLO mail.kernel.org"
+        id S235758AbhJYT5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:57:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234697AbhJYTTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:19:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF5ED610A5;
-        Mon, 25 Oct 2021 19:17:17 +0000 (UTC)
+        id S236789AbhJYTtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:49:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E9BC61247;
+        Mon, 25 Oct 2021 19:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189438;
-        bh=5+O5luxEq+ZJHTsBpfKr8ocub3IP1PsSW3FLEVO+9B8=;
+        s=korg; t=1635190903;
+        bh=t1Gycd020CfYNxPxWwT1r/i5yG/k7GbSWh4GVBNXRWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mlnQXSVCMY8x0eaD8T5MKeAMBgnU8oc3k4dTbO/wQoEAIWJOqMwtMWTgPI0ZK2Gvp
-         Veip8jBvcFx9XPIx/2iuwPsUWDZAIPAD/g9uwy+R6nRzBN77eq1N+QD8eMhUJK2Ih8
-         qwF57Wj/ISZyLRIh2kh/eLeiPXoICN27hneQlHv4=
+        b=UHon48HZLHX4dGaQO0e6EJSJyA3S2AJxdV8r8JX/83e+yE+qsDxz1s4nOb0cQwDbE
+         yTa28DQ6F+qAwoePMJQXALPwzE7q5uTEmW3oMe6ScvTlOdGAeJFsCDQ7JyqHtWhf3K
+         xr0Yl5nplC2girbm0N4UFMO+zneoJ4Phk3YnX/Tc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
-        Johan Hovold <johan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 41/44] usbnet: sanity check for maxpacket
+        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Li Wang <liwang@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.14 081/169] userfaultfd: fix a race between writeprotect and exit_mmap()
 Date:   Mon, 25 Oct 2021 21:14:22 +0200
-Message-Id: <20211025190936.928156150@linuxfoundation.org>
+Message-Id: <20211025191027.587825008@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Nadav Amit <namit@vmware.com>
 
-commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
+commit cb185d5f1ebf900f4ae3bf84cee212e6dd035aca upstream.
 
-maxpacket of 0 makes no sense and oopses as we need to divide
-by it. Give up.
+A race is possible when a process exits, its VMAs are removed by
+exit_mmap() and at the same time userfaultfd_writeprotect() is called.
 
-V2: fixed typo in log and stylistic issues
+The race was detected by KASAN on a development kernel, but it appears
+to be possible on vanilla kernels as well.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Use mmget_not_zero() to prevent the race as done in other userfaultfd
+operations.
+
+Link: https://lkml.kernel.org/r/20210921200247.25749-1-namit@vmware.com
+Fixes: 63b2d4174c4ad ("userfaultfd: wp: add the writeprotect API to userfaultfd ioctl")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Tested-by: Li  Wang <liwang@redhat.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/usbnet.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/userfaultfd.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1730,6 +1730,10 @@ usbnet_probe (struct usb_interface *udev
- 	if (!dev->rx_urb_size)
- 		dev->rx_urb_size = dev->hard_mtu;
- 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
-+	if (dev->maxpacket == 0) {
-+		/* that is a broken device */
-+		goto out4;
-+	}
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -1826,9 +1826,15 @@ static int userfaultfd_writeprotect(stru
+ 	if (mode_wp && mode_dontwake)
+ 		return -EINVAL;
  
- 	/* let userspace know we have a random address */
- 	if (ether_addr_equal(net->dev_addr, node_id))
+-	ret = mwriteprotect_range(ctx->mm, uffdio_wp.range.start,
+-				  uffdio_wp.range.len, mode_wp,
+-				  &ctx->mmap_changing);
++	if (mmget_not_zero(ctx->mm)) {
++		ret = mwriteprotect_range(ctx->mm, uffdio_wp.range.start,
++					  uffdio_wp.range.len, mode_wp,
++					  &ctx->mmap_changing);
++		mmput(ctx->mm);
++	} else {
++		return -ESRCH;
++	}
++
+ 	if (ret)
+ 		return ret;
+ 
 
 
