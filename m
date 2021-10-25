@@ -2,129 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0D143A5CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DFC43A5CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhJYV1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhJYV05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:26:57 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687A6C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:24:35 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so1049730pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cVVSf4gV+VHKaMcPkqXKR+j1Pi643cPAlkbYEqi72eA=;
-        b=KaZ4GqG+L5BbOZwNRz+ZFzGoL6DWdRGwHmkuHMpBhtnIoIFP7poSXqXdiC9eBIyduE
-         6sSiiJ6O5yk+WTD2QWicyc0FTSHsKOmopPGxh0MCwFc1j6PJnh91QVp8PhupQgoFO3oT
-         Q3TjaKiDTb/FYgwk7I8NiHqVtaa3U7K42dudE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cVVSf4gV+VHKaMcPkqXKR+j1Pi643cPAlkbYEqi72eA=;
-        b=e/EbudlFpFwA7xOqqItiNrxLsflVoqPI58Y5vEtXkgJiF89VLFeyA71h1MFNGYyIj7
-         AbixooKGRruFz9YgdwPfBVNyUKUPV0MLDZgMu0N66htP9Ss7htAN5CgWKQaBcCLrwvLw
-         butD5pm0zUQbDrvl0aBNj9fuR/xfkeB9hUT9s0lSD8JN1/KKyKD4RUrHbUHIB+viKMw9
-         +PklVCdMlGHRNT0GPEkVxJjg9TwdkhE1AWDwsev95yHRjvsAeceLAUUGSQxrXl3VmZFW
-         RSUv3Z89M3KkTmFufjI8XcXOzW4pGxun+vuzEwF6Emu0xVSFWaC3Wx122jfMXcJnlxeu
-         YywQ==
-X-Gm-Message-State: AOAM533dOpy1C4g3Al3Kf6Vbqp9cWPwhaDGwSW1VYF6N+HeoE29hUfu0
-        Y52RHeMTBAw1cfUVxR/hYL2LlQ==
-X-Google-Smtp-Source: ABdhPJxJj5ssF3jbgx6poVT90eIK8mxh0IHB+tSEXpyDuQrCC/LZvCXj6OL26lmlGf8XqbtQ3X6+/A==
-X-Received: by 2002:a17:90a:514f:: with SMTP id k15mr15033244pjm.71.1635197075028;
-        Mon, 25 Oct 2021 14:24:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t11sm21841162pfj.173.2021.10.25.14.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:24:34 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:24:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
- task comm size change
-Message-ID: <202110251421.7056ACF84@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-9-laoar.shao@gmail.com>
+        id S232626AbhJYV2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:28:01 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64591 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231276AbhJYV2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:28:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635197138; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/n7Afg/qFLw5fN0zCsoQaRdymI6ejx5XZCvCB+/h3VE=;
+ b=ESmq/T82BUFxf5iGIfgceqU8qXMV2T51HgkM+ttpHYoBtSnQFq15BkT0xJyu5EGA1wQR73E6
+ IazwFzs8CykeFiI+Iyd3IAniVymINV1gV3ahiHjL/r1sjWkULAEW+WZiMeVJhhcF3aTDz9xV
+ 4xoDTvrlgCarnHWGfPboZ6b1e4M=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 617720c3c75c436a30c0c3ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Oct 2021 21:25:23
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 357AFC43616; Mon, 25 Oct 2021 21:25:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EBE9C43460;
+        Mon, 25 Oct 2021 21:25:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-9-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 25 Oct 2021 14:25:21 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
+        kalyan_t@codeaurora.org, sbillaka@codeaurora.org,
+        abhinavk@codeaurora.org, robdclark@gmail.com,
+        bjorn.andersson@linaro.org, rajeevny@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sc7280: add edp display dt nodes
+In-Reply-To: <CAE-0n53NtSwin8RavHqF44d2adv9-_HMwDC+RzyzgQq8Z4t_yA@mail.gmail.com>
+References: <1634738333-3916-1-git-send-email-quic_mkrishn@quicinc.com>
+ <1634738333-3916-4-git-send-email-quic_mkrishn@quicinc.com>
+ <CAE-0n53NtSwin8RavHqF44d2adv9-_HMwDC+RzyzgQq8Z4t_yA@mail.gmail.com>
+Message-ID: <f8364fd67770659f99e067827afb99af@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:11AM +0000, Yafang Shao wrote:
-> bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
-> we don't care about if the dst size is big enough.
+On 2021-10-21 11:44, Stephen Boyd wrote:
+> Quoting Krishna Manikandan (2021-10-20 06:58:53)
+>> From: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
+>> 
+>> Add edp controller and phy DT nodes for sc7280.
+>> 
+>> Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
+>> Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
+>> 
 > 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-
-So, if we're ever going to copying these buffers out of the kernel (I
-don't know what the object lifetime here in bpf is for "e", etc), we
-should be zero-padding (as get_task_comm() does).
-
-Should this, instead, be using a bounce buffer?
-
-get_task_comm(comm, task->group_leader);
-bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
-
--Kees
-
-> ---
->  tools/bpf/bpftool/skeleton/pid_iter.bpf.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Some comments below
 > 
-> diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-> index d9b420972934..f70702fcb224 100644
-> --- a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-> +++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-> @@ -71,8 +71,8 @@ int iter(struct bpf_iter__task_file *ctx)
->  
->  	e.pid = task->tgid;
->  	e.id = get_obj_id(file->private_data, obj_type);
-> -	bpf_probe_read_kernel(&e.comm, sizeof(e.comm),
-> -			      task->group_leader->comm);
-> +	bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm),
-> +				  task->group_leader->comm);
->  	bpf_seq_write(ctx->meta->seq, &e, sizeof(e));
->  
->  	return 0;
-> -- 
-> 2.17.1
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > 
+> 
+>> Changes in v2:
+>>     - Move regulator definitions to board file (Matthias Kaehlcke)
+>>     - Move the gpio definitions to board file (Matthias Kaehlcke)
+>>     - Move the pinconf to board file (Matthias Kaehlcke)
+>>     - Move status property (Stephen Boyd)
+>>     - Drop flags from interrupts (Stephen Boyd)
+>>     - Add clock names one per line for readability (Stephen Boyd)
+>>     - Rename edp-opp-table (Stephen Boyd)
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 107 
+>> ++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 106 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index dd35882..4450277 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -2575,7 +2575,7 @@
+>>                         reg = <0 0xaf00000 0 0x20000>;
+>>                         clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>                                  <&gcc GCC_DISP_GPLL0_CLK_SRC>,
+>> -                                <0>, <0>, <0>, <0>, <0>, <0>;
+>> +                                <0>, <0>, <0>, <0>, <&edp_phy 0>, 
+>> <&edp_phy 1>;
+> 
+> I can already tell this is going to be a merge mess! Can this also be
+> one cell per line?
+> 
+  where are dsi phy? (<&dsi_phy 0>, <&dsi_phy 1>)
 
--- 
-Kees Cook
+>>                         clock-names = "bi_tcxo", "gcc_disp_gpll0_clk",
+>>                                       "dsi0_phy_pll_out_byteclk",
+>>                                       "dsi0_phy_pll_out_dsiclk",
+>> @@ -2777,6 +2784,103 @@
+>> 
+>>                                 status = "disabled";
+>>                         };
+>> +
+>> +                       msm_edp: edp@aea0000 {
+>> +                               compatible = "qcom,sc7280-edp";
+>> +
+>> +                               reg = <0 0xaea0000 0 0x200>,
+>> +                                     <0 0xaea0200 0 0x200>,
+>> +                                     <0 0xaea0400 0 0xc00>,
+>> +                                     <0 0xaea1000 0 0x400>;
+>> +
+>> +                               interrupt-parent = <&mdss>;
+>> +                               interrupts = <14>;
+>> +
+>> +                               clocks = <&rpmhcc RPMH_CXO_CLK>,
+>> +                                        <&gcc GCC_EDP_CLKREF_EN>,
+>> +                                        <&dispcc 
+>> DISP_CC_MDSS_AHB_CLK>,
+>> +                                        <&dispcc 
+>> DISP_CC_MDSS_EDP_AUX_CLK>,
+>> +                                        <&dispcc 
+>> DISP_CC_MDSS_EDP_LINK_CLK>,
+>> +                                        <&dispcc 
+>> DISP_CC_MDSS_EDP_LINK_INTF_CLK>,
+>> +                                        <&dispcc 
+>> DISP_CC_MDSS_EDP_PIXEL_CLK>;
+>> +                               clock-names = "core_xo",
+>> +                                             "core_ref",
+>> +                                             "core_iface",
+>> +                                             "core_aux",
+>> +                                             "ctrl_link",
+>> +                                             "ctrl_link_iface",
+>> +                                             "stream_pixel";
+>> +                               #clock-cells = <1>;
+>> +                               assigned-clocks = <&dispcc 
+>> DISP_CC_MDSS_EDP_LINK_CLK_SRC>,
+>> +                                                 <&dispcc 
+>> DISP_CC_MDSS_EDP_PIXEL_CLK_SRC>;
+>> +                               assigned-clock-parents = <&edp_phy 0>, 
+>> <&edp_phy 1>;
+>> +
+>> +                               phys = <&edp_phy>;
+>> +                               phy-names = "dp";
+>> +
+>> +                               operating-points-v2 = 
+>> <&edp_opp_table>;
+>> +                               power-domains = <&rpmhpd SC7280_CX>;
+>> +
+>> +
+>> +                               #address-cells = <1>;
+>> +                               #size-cells = <0>;
+>> +
+>> +                               status = "disabled";
+>> +
+>> +                               ports {
+>> +                                       #address-cells = <1>;
+>> +                                       #size-cells = <0>;
+>> +                                       port@0 {
+>> +                                               reg = <0>;
+>> +                                               edp_in: endpoint {
+>> +                                                       
+>> remote-endpoint = <&dpu_intf5_out>;
+>> +                                               };
+>> +                                       };
+>> +                               };
+>> +
+>> +                               edp_opp_table: opp-table {
+>> +                                       compatible = 
+>> "operating-points-v2";
+>> +
+>> +                                       opp-160000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <160000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_low_svs>;
+>> +                                       };
+>> +
+>> +                                       opp-270000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <270000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_svs>;
+>> +                                       };
+>> +
+>> +                                       opp-540000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <540000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_nom>;
+>> +                                       };
+>> +
+>> +                                       opp-810000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <810000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_nom>;
+>> +                                       };
+>> +                               };
+>> +                       };
+>> +
+>> +                       edp_phy: phy@aec2000 {
+> 
+> unit address needs to match first reg property. This should be
+> 
+> 			edp_phy: phy@aec2a00
+> 
+>> +                               compatible = "qcom,sc7280-edp-phy";
+>> +
+>> +                               reg = <0 0xaec2a00 0 0x19c>,
+>> +                                     <0 0xaec2200 0 0xa0>,
+>> +                                     <0 0xaec2600 0 0xa0>,
+>> +                                     <0 0xaec2000 0 0x1c0>;
+>> +
+>> +                               clocks = <&rpmhcc RPMH_CXO_CLK>,
+>> +                                        <&gcc GCC_EDP_CLKREF_EN>;
+>> +                               clock-names = "aux",
+>> +                                             "cfg_ahb";
+>> +
+>> +                               #clock-cells = <1>;
+>> +                               #phy-cells = <0>;
+>> +
+>> +                               status = "disabled";
+>> +                       };
+>>                 };
+>> 
+>>                 pdc: interrupt-controller@b220000 {
+>> @@ -3932,6 +4036,7 @@
+>>                                                          <&CPU3 
+>> THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+>>                                 };
+>>                         };
+>> +
+> 
+> Drop this?
