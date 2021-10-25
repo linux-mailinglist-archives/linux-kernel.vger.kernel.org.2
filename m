@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022BD43A352
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522E243A351
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240124AbhJYT6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42728 "EHLO mail.kernel.org"
+        id S240108AbhJYT6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238007AbhJYTxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:53:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B898460720;
-        Mon, 25 Oct 2021 19:44:22 +0000 (UTC)
+        id S238194AbhJYTxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:53:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE16460C4B;
+        Mon, 25 Oct 2021 19:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191063;
-        bh=6Y0tJ6cc8bEUBC54nIDEfOYP1i+Ft9MdeJwhrSpxnOQ=;
+        s=korg; t=1635191067;
+        bh=1PWDdXOYgPQxFcs9sYBfKiqlEMzfxUNWi0HZXt5Al5Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GByLggaaROjKAfbzpUHWINwjl2hYt7rknAwej9TCL8xj0Y3mRnepe0RuoFATc3qB/
-         xVPRQi+UkqMg+iDKD6oBe/p8SGi1lt9RCvf2BU/Lk2TvDQNPetNjj3XTVnPNVUQzvW
-         CmTC2uBMaf9YdrouCfyY5WBWYLLhpT4Qg6sRniJ0=
+        b=BOWDTT3xptZocMb315CGvm94bvfXerAnx7FuaFu1AxIb7qrWIq4TXWiehJZUkJNVL
+         sQVKEUlFsLqx1QkK2jY78gSYrziV8gSKJp4BBLDfi1rGwP0Fz0RJPNyMySEn+zapKV
+         eCN/NPCdc6UsgfD3j1JsSSK75UtN87v75XYjreKk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 136/169] net: stmmac: add support for dwmac 3.40a
-Date:   Mon, 25 Oct 2021 21:15:17 +0200
-Message-Id: <20211025191034.883458874@linuxfoundation.org>
+Subject: [PATCH 5.14 137/169] ARM: dts: spear3xx: Fix gmac node
+Date:   Mon, 25 Oct 2021 21:15:18 +0200
+Message-Id: <20211025191034.983740833@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
 References: <20211025191017.756020307@linuxfoundation.org>
@@ -42,49 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Herve Codina <herve.codina@bootlin.com>
 
-[ Upstream commit 9cb1d19f47fafad7dcf7c8564e633440c946cfd7 ]
+[ Upstream commit 6636fec29cdf6665bd219564609e8651f6ddc142 ]
 
-dwmac 3.40a is an old ip version that can be found on SPEAr3xx soc.
+On SPEAr3xx, ethernet driver is not compatible with the SPEAr600
+one.
+Indeed, SPEAr3xx uses an earlier version of this IP (v3.40) and
+needs some driver tuning compare to SPEAr600.
+
+The v3.40 IP support was added to stmmac driver and this patch
+fixes this issue and use the correct compatible string for
+SPEAr3xx
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c   | 1 +
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 8 ++++++++
- 2 files changed, 9 insertions(+)
+ arch/arm/boot/dts/spear3xx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c
-index fbfda55b4c52..5e731a72cce8 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c
-@@ -71,6 +71,7 @@ err_remove_config_dt:
+diff --git a/arch/arm/boot/dts/spear3xx.dtsi b/arch/arm/boot/dts/spear3xx.dtsi
+index f266b7b03482..cc88ebe7a60c 100644
+--- a/arch/arm/boot/dts/spear3xx.dtsi
++++ b/arch/arm/boot/dts/spear3xx.dtsi
+@@ -47,7 +47,7 @@
+ 		};
  
- static const struct of_device_id dwmac_generic_match[] = {
- 	{ .compatible = "st,spear600-gmac"},
-+	{ .compatible = "snps,dwmac-3.40a"},
- 	{ .compatible = "snps,dwmac-3.50a"},
- 	{ .compatible = "snps,dwmac-3.610"},
- 	{ .compatible = "snps,dwmac-3.70a"},
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 62cec9bfcd33..232ac98943cd 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -508,6 +508,14 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
- 		plat->pmt = 1;
- 	}
- 
-+	if (of_device_is_compatible(np, "snps,dwmac-3.40a")) {
-+		plat->has_gmac = 1;
-+		plat->enh_desc = 1;
-+		plat->tx_coe = 1;
-+		plat->bugged_jumbo = 1;
-+		plat->pmt = 1;
-+	}
-+
- 	if (of_device_is_compatible(np, "snps,dwmac-4.00") ||
- 	    of_device_is_compatible(np, "snps,dwmac-4.10a") ||
- 	    of_device_is_compatible(np, "snps,dwmac-4.20a") ||
+ 		gmac: eth@e0800000 {
+-			compatible = "st,spear600-gmac";
++			compatible = "snps,dwmac-3.40a";
+ 			reg = <0xe0800000 0x8000>;
+ 			interrupts = <23 22>;
+ 			interrupt-names = "macirq", "eth_wake_irq";
 -- 
 2.33.0
 
