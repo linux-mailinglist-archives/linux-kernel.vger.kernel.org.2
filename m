@@ -2,180 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211CE4399A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3314399A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhJYPJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:09:08 -0400
-Received: from mail-eopbgr80042.outbound.protection.outlook.com ([40.107.8.42]:28609
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229822AbhJYPJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:09:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PuZEE69GiMfuZtDEFABALx9VcXwK9POfjVNLOjT9Xb9akaWJbqUrdxZNIf8MVoUTSsAZqc+b0b36j6C1LQNNRlWzoPzxP+mfE4OXpqCa0T5Q9qn3mMtPJh6anUFEzCpoNVbH+o3E4g2+V4um5JNHMvjnIFswpjxlx21n269J1J7EJjtOZwtSyq0PN56iFb1ULTNVrtGoAmNuOnTUT93MVPabvEP54OOXI1+XZq342u5w0FGhXhBJRWUcW7JW1zBh+yzOu+y8fJpVxJospS2RE8DZ5EJE+eefne36JqMyRq9OjMoJ2ahTT3ce6KMK2v0NFinE9TchlUd0SOWK5gBz7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J5OHgDEq+Dy7RdSAebNIPdw+2b0IghFaWMTg34KSvYU=;
- b=eg5UuEDhe3scUpA2rls4qdtI+mii4RQh3KqMZZ/1sKGT6RycdXn+DTuS5qoQhOXv0slKRZfUiSi1CrjKZi8E7cDB4v52rFa69lG+O2MAr6PHnV6cplebb4rs5EWA0cuJYCLcucX1YVz99ZBkNdoB2ohX5GsRQSpRJm3ZrTBYdCj0h8mFss8t4isjHMY2HD+VfHixqhRSaFBjC1kevtxlmyYU5KZb/FZ5f7mFFIJQo12+rdyi2TCqAb3NQK9uCxCOz5rL5ut08ZYcNycgFNNzZZCNjASigY5CvhfLLRKFxIcHVrbqTyHarJsKhnfBM1ytE7mV0OQSrd+fp4A+Gu9z6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
+        id S233775AbhJYPJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233672AbhJYPJV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:09:21 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01840C061745;
+        Mon, 25 Oct 2021 08:06:59 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id s9so15973882oiw.6;
+        Mon, 25 Oct 2021 08:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J5OHgDEq+Dy7RdSAebNIPdw+2b0IghFaWMTg34KSvYU=;
- b=eGRMWZDSgUD/NUQ63mc8YIzCI8BnwS3nvRceOd/xEvknykv6wwd8/k9L78kGxmRTUJC6uEJ2ubphmEzHda6T++Q/88KEVND3zMoD/l1XdB20lZzkQIiiGUt27qXeeEhm4HqieWOVZ7ToCKb9qdNvyIWPWlN48QNSnRusrq+gNsI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=seco.com;
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
- by DB8PR03MB5577.eurprd03.prod.outlook.com (2603:10a6:10:10a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
- 2021 15:06:41 +0000
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::a9aa:f363:66e:fadf]) by DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::a9aa:f363:66e:fadf%6]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 15:06:41 +0000
-Subject: Re: [net-next PATCH] net: convert users of bitmap_foo() to
- linkmode_foo()
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-rdma@vger.kernel.org
-References: <20211022224104.3541725-1-sean.anderson@seco.com>
- <YXWrBZJGof6uIQnq@lunn.ch>
-From:   Sean Anderson <sean.anderson@seco.com>
-Message-ID: <741c9985-f9a5-6c25-70e4-4d174312585d@seco.com>
-Date:   Mon, 25 Oct 2021 11:06:35 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <YXWrBZJGof6uIQnq@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0110.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::25) To DB7PR03MB4523.eurprd03.prod.outlook.com
- (2603:10a6:10:19::27)
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oM8yA7a5dVE7JX8EcdvOiaf5ULOdCzfUf0V8tBfwui4=;
+        b=ER0GMacpTnOTj7tzZfbyTloQJCQVh+rQsBqHcRfmmYdWOumvJXTe2HsV5ap6NC5GvJ
+         aeMQktuglIYN7hDPxydn1Iq0XD8omM7TtYKFZTOB10t3OnlX5P+aPxMUthsIyTFSB4Cp
+         GRX/YsZkRm3799hkSHKK7TsH338+CWVDoHp4rDR9/nDz6CYKygOMy5HPrXmrU8UlCfPZ
+         ++1UzUoUGZ6tVgfI98SoCmh1srXoqE8q0xYkPx6z8ZweOgZuS5l4XQAoS5LqbfwALSpq
+         +e6RhL7ppbzVGken8xBQ6Z6jmBIbUYNLgPqTIu57s/Pl/QtrX4eW34x2GMz+XSNwkC+F
+         YqtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oM8yA7a5dVE7JX8EcdvOiaf5ULOdCzfUf0V8tBfwui4=;
+        b=qsACwUOcDAMfOeW0ym2FVoXOvh9D1bEAnDV2JbgHtcZNBZdB8IWqOyQE/VsdeJru8w
+         BpiiPPX9PEElV/aNuf0u6gNFbjyi1NfxQf1j6SRR3rdpGO835uIVNVa5Wk0ngDNYp54x
+         amnZ/V9hJgh4wyJ3ugptpNZvPkAVSJE77+2un/XHz5Mq2MJb+dOOp8sq4x9lYJO9P7m5
+         TltnIPnCHeIhA1lDiC4GErIl1e0eIuVHG9Ay0GvtMXhfefLop0pkPf7yFWWbHbAartgE
+         vCjO5YsGcVS/tR+pzdBTwNBOWnBuKs0juWD8aBq2w4MIFNfLV35n5UM7Rj7LBEkGL11N
+         txaw==
+X-Gm-Message-State: AOAM530rF54s3uw5ns+h+Lv149N1PfVhKSvUqXUSJqWGntPHdXxbz4pl
+        46EaNVGO5pixaAdH+/xWGIY=
+X-Google-Smtp-Source: ABdhPJx7eHOV/Rj1dfcQbb+E4YkvGmIM8cWShmj+USs3dQQxpyMHv1C8wOTSbiYJDcuOPvRBc8Cdzw==
+X-Received: by 2002:aca:ac82:: with SMTP id v124mr23639856oie.0.1635174418293;
+        Mon, 25 Oct 2021 08:06:58 -0700 (PDT)
+Received: from ?IPV6:2603:8090:2005:39b3::101e? (2603-8090-2005-39b3-0000-0000-0000-101e.res6.spectrum.com. [2603:8090:2005:39b3::101e])
+        by smtp.gmail.com with ESMTPSA id bk8sm3803285oib.57.2021.10.25.08.06.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 08:06:57 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <fdb677be-6e06-fef9-811d-bb2c71246197@lwfinger.net>
+Date:   Mon, 25 Oct 2021 10:06:56 -0500
 MIME-Version: 1.0
-Received: from [172.27.1.65] (50.195.82.171) by BL1PR13CA0110.namprd13.prod.outlook.com (2603:10b6:208:2b9::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.12 via Frontend Transport; Mon, 25 Oct 2021 15:06:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f9ac9e54-914c-4569-1d2c-08d997c90ced
-X-MS-TrafficTypeDiagnostic: DB8PR03MB5577:
-X-Microsoft-Antispam-PRVS: <DB8PR03MB5577AC7070A1AC410F78C1DA96839@DB8PR03MB5577.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pqBLbUTfWCLOdNw7jWQ0yC6zd4bW1PdK5N30Qw9LyTkcu+oyRSKo7AXsdM5+fIypLvvvDDj6m/iHGJXKnPcVZ4jXyeAlwbvTXyLbPbxL9d/yc44Dmjri8qFBAxAG7xKW7BeOCLw8UKIPC2N73RyrKR7V9WRKY+Vb5m5FTxZ2w3mWNuiihlZZ0zDPwxakdiLfJfyhwwJxR8G4fcOozaq1Un68ZC77P41EwLtAknj0NoOQzqNfAr7viiTbZcKpQj1mFXgbBRtPqXADoESato1lXo5IDuuwiE2kmGtGrJ8BIylDQLngC6+lJ2xVxjLe2Qe0+LDxlIRRGbthBbuIiMfqEGrDm8nsR8fvicB65jH/87/iagPyap/0VZ3/lRGgT/wfplQyx906UVLu5cyGknJIidouqwAv/X0cLB18lv4NG4aLQ/kO1M8dUQlJhucJz2f/epA1Ms/m8DmIaBFAG8lVsZ7cSInfPpbiaYn02O17gZ3OKj6U17jZCP91pbuUNZuSrwR6dNOK3VtIWYq8Xyv19PCxag7Q05kWcmCIDyy9ni1zt8MM6tNzllV43ACXoDEBR1VFV9uedeDsHM2nDvximUGKt17ORvoqE/2aC+3ox2g6/uDj78+NvaTF/3qWERYlEybTRKgEyLiDAw0fblUP7Ssk1Ev3q7XrgwdMTvQwG68JyxuWyCil9jXF5o2mVlvSR6rZeR2OUR+feF55W9Ic9+AYk7jGRYcu96E4dpRijO284TUrw29RNRkxZS2BdJGnfgeyqZawurRD3bR4AxVoOA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(26005)(4326008)(53546011)(52116002)(8676002)(44832011)(6486002)(956004)(38100700002)(2616005)(31686004)(38350700002)(2906002)(31696002)(316002)(186003)(16576012)(86362001)(36756003)(66476007)(66556008)(66946007)(508600001)(6916009)(5660300002)(8936002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T2ZKQkpMTlhKdDhUT1BMRU9KMXp3TGFtYlU5UHg5UHQyM2xTR0lYREU3MEJx?=
- =?utf-8?B?MmdJamlCWlpSVUI3NXJqZUpJMU5rdFQvN1ZsVGFMaCtiTG1iUGlHOGlOeUxv?=
- =?utf-8?B?ZldhTzJxWkcrck4yVG9yQ2RCQkRtTmRyKzEvMG80dDNzQVlaZUE4bnppOVpp?=
- =?utf-8?B?V1UvZDNQTXVSUGtOaDRZSktsWURWUHdHLy94VERxU2xWYmpjRWZZbHlhY0sr?=
- =?utf-8?B?WjBWdkhScEsyK0MzcWFrRDR5dGptMjZtN2x1WVhXalJmWXVNOXA5cnVPRjdG?=
- =?utf-8?B?QUhUMFBuWWRkOHBRVzIzWEJJbkliTHlxbSsram1yd3dRclhtTmxieXhVcnhI?=
- =?utf-8?B?YXFyZDRaRFd3c0VjbmNBZlQyWkV3SEtWSWx6SzBheVRBcEVrNDFON0pOR3Nv?=
- =?utf-8?B?Vmp4T0MxVEZWSDJJY2c5OFNQb0RMeHBaai9MT0pBVFkyZDdDK1ZrWHYyU2xD?=
- =?utf-8?B?alY0cVJVQ2RLTFFBSktmREU1WTg3OGN0ckFDWm1qWTA3aDZSblRqUHNmL05i?=
- =?utf-8?B?T2lzLytqczRKS25HYmM3ZHFpdGFsNHV3bm16UHZicUJWbGVON09mWDEzeFhD?=
- =?utf-8?B?Y1hMTk13dEJ1MWphWVk2eGtVOUNMOE5PWGR4UmF0ZkdYWC94RXF4dGFJbDM5?=
- =?utf-8?B?QTIvZHJpSUNXNFNXUGh6TmR2S1lVYjZJTnMyODkvRVg1SU03Q1VSaGVkUnA0?=
- =?utf-8?B?UUkrYUJvT3lmejlTSExUSHpzUm04dW50cU5TMVBvTk9vdkw0MDlmb2J5WmFL?=
- =?utf-8?B?SXVGc1dXTWwva0hEUWM1T0c4VjZIWVpSSTZlU0NEUDZnUWxoeE9ZQnNRMEJj?=
- =?utf-8?B?bS9MeWpnOUpJWU14QjdlZGxIVjJtSm9zUGxrb2RQb1BTM1ZyZzJ3dVJiaWFD?=
- =?utf-8?B?cVFCRFNVV2lZY2ZobmRkWHZlRGQzbmdnQnpuSXFjcWdJSk5YRkJ1UUY0aWZp?=
- =?utf-8?B?RlQzVksySUkyVkJCRUR0RW16amxkZGdEKytoRHRqc3d0bkJYYlhiT3JJemp0?=
- =?utf-8?B?b1FNQzJuK01VenIvWUZMamNlQVlSclFtbGdrYjZXc29Hby9SeHNWWklVeWU2?=
- =?utf-8?B?cW8ySTNMQno2S1VKY3FEWU1mOEkzeG85UWZyU3VJNHlKcWhJWWhYY3EwR1g2?=
- =?utf-8?B?SGY4dWRzT1Q0L21kSHpSNk55TjlmcUludlQ2L1dUVmtxcWhkUTVBSU9Xandi?=
- =?utf-8?B?ZG5aN1I2M09GUDQ3dHFCZ3U1ZmdWeFo4b1cxRUVBWjhiVStRekpYcjZTai9I?=
- =?utf-8?B?d28xMll5RFB3ZWNBR0dWSklTTWNTSDhqdkVNeFk2RXFDdFZhd0hqRDcyQUJs?=
- =?utf-8?B?dXVwMFpHV0crSkpYOXBLeDFkamVxOEpseVo0NWVxS3BYMWpRcCtyekJzUzU2?=
- =?utf-8?B?L0hpTmFEUFRSemFyZzRMTVMzU1czMUduMmZ4dlRyMmpoS3FDQkZFMHY1RUlT?=
- =?utf-8?B?bXY1SGRhNmI2VEtWYk5ERjUrTEtZa2FjR2cwYmdMdWdyc0srZUIwZWxIK3k2?=
- =?utf-8?B?Qk0rcjh0cWFva0RSQ3RteXp1TzFBbW9aWFk2Si91Z01lYnVlU3hJZEFlNkNo?=
- =?utf-8?B?UCtpMTI3NFVUdjNtb0VCdkRNTlFCemk0NG5sL1BNNldTMGNMZk9Oc0lnckhh?=
- =?utf-8?B?bE03VUJ4Q016TmNWYTliRzJHdHpmWWJWUThmL2NSclluTnMrRkh0RTBXbTNU?=
- =?utf-8?B?MFNJWnR4SlR1Y29SZ1lQTDUrU092bWZXN2trbDNFQmhUQ2pWYWNEKzNCNG5Y?=
- =?utf-8?B?Nm1adHBOMnVpcW1ad1BqajhUZExqcEFSbnVFN1QrYVF0R3NXaW8vMldTSEZ6?=
- =?utf-8?B?cmxqNU81MEt3VDk1Zm4zVXdFRGQ3RkJZaXF4TVVYQ0ZFdThjdlFkb2lUUXpF?=
- =?utf-8?B?eE5lMUsreEkvRjZ1d0IyUTlqMG1sVms5Q0tqZEt1ZjZKdFRHM29GbjYyTHhx?=
- =?utf-8?B?MG0wNndHTG9UNFk0OCtoSHhvREJsOURPcVRRRnFuZGQ2YWs5L0VZL2l2Yjh5?=
- =?utf-8?B?UGk4Y0JnOEZuTnlNWS9HNG51TFRwekwrN08zVHQrQk00Qmg4Q09kcElsUTdV?=
- =?utf-8?B?UjVlSmpOK3RGRW1BdzRSQkNTTDFCNWNyUnhGYkd6VCthM1R5d1A5ejErdDlT?=
- =?utf-8?B?emI2ajl0YThiZEZKMWZCZ2hPeXdFZmcwUFJXR3RJaEJHbngrV0Y5NjBTK1Vr?=
- =?utf-8?Q?WMuTvyJj4g2005G65aXtVEM=3D?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9ac9e54-914c-4569-1d2c-08d997c90ced
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 15:06:41.2761
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O+GX8s225LcUfVul3ufm8DdwRbrXiENJfDUHw4MJ8FiLkxabbc/hJfLvWT0BJetHSWfkdMZl1zjavxU7KIOnCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR03MB5577
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] staging: rtl8192u: fix control-message timeouts
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        linux-staging@lists.linux.dev, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20211025120910.6339-1-johan@kernel.org>
+ <20211025120910.6339-2-johan@kernel.org>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <20211025120910.6339-2-johan@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/25/21 07:09, Johan Hovold wrote:
+> USB control-message timeouts are specified in milliseconds and should
+> specifically not vary with CONFIG_HZ.
+> 
+> Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
+> Cc: stable@vger.kernel.org      # 2.6.33
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>   drivers/staging/rtl8192u/r8192U_core.c | 18 +++++++++---------
+>   1 file changed, 9 insertions(+), 9 deletions(-)
 
+I would have preferred that you not use the magic number "500", but the patch is OK.
 
-On 10/24/21 2:50 PM, Andrew Lunn wrote:
- > On Fri, Oct 22, 2021 at 06:41:04PM -0400, Sean Anderson wrote:
- >> This converts instances of
- >> 	bitmap_foo(args..., __ETHTOOL_LINK_MODE_MASK_NBITS)
- >> to
- >> 	linkmode_foo(args...)
- >
- > It does touch a lot of files, but it does help keep the API uniform.
- >
- >> I manually fixed up some lines to prevent them from being excessively
- >> long. Otherwise, this change was generated with the following semantic
- >> patch:
- >
- > How many did you fix?
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 
-Around 3 hunks. For example, in mlx4 the original is
+Larry
 
-		if (bitmap_intersects(
-			ptys2ethtool_link_mode(&ptys2ethtool_map[i],
-					       report),
-		    link_modes,
-		    __ETHTOOL_LINK_MODE_MASK_NBITS))
+> 
+> diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+> index b6698656fc01..cf5cfee2936f 100644
+> --- a/drivers/staging/rtl8192u/r8192U_core.c
+> +++ b/drivers/staging/rtl8192u/r8192U_core.c
+> @@ -229,7 +229,7 @@ int write_nic_byte_E(struct net_device *dev, int indx, u8 data)
+>   
+>   	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+>   				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+> -				 indx | 0xfe00, 0, usbdata, 1, HZ / 2);
+> +				 indx | 0xfe00, 0, usbdata, 1, 500);
+>   	kfree(usbdata);
+>   
+>   	if (status < 0) {
+> @@ -251,7 +251,7 @@ int read_nic_byte_E(struct net_device *dev, int indx, u8 *data)
+>   
+>   	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>   				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+> -				 indx | 0xfe00, 0, usbdata, 1, HZ / 2);
+> +				 indx | 0xfe00, 0, usbdata, 1, 500);
+>   	*data = *usbdata;
+>   	kfree(usbdata);
+>   
+> @@ -279,7 +279,7 @@ int write_nic_byte(struct net_device *dev, int indx, u8 data)
+>   	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+>   				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+>   				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+> -				 usbdata, 1, HZ / 2);
+> +				 usbdata, 1, 500);
+>   	kfree(usbdata);
+>   
+>   	if (status < 0) {
+> @@ -305,7 +305,7 @@ int write_nic_word(struct net_device *dev, int indx, u16 data)
+>   	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+>   				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+>   				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+> -				 usbdata, 2, HZ / 2);
+> +				 usbdata, 2, 500);
+>   	kfree(usbdata);
+>   
+>   	if (status < 0) {
+> @@ -331,7 +331,7 @@ int write_nic_dword(struct net_device *dev, int indx, u32 data)
+>   	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+>   				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+>   				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+> -				 usbdata, 4, HZ / 2);
+> +				 usbdata, 4, 500);
+>   	kfree(usbdata);
+>   
+>   	if (status < 0) {
+> @@ -355,7 +355,7 @@ int read_nic_byte(struct net_device *dev, int indx, u8 *data)
+>   	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>   				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+>   				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+> -				 usbdata, 1, HZ / 2);
+> +				 usbdata, 1, 500);
+>   	*data = *usbdata;
+>   	kfree(usbdata);
+>   
+> @@ -380,7 +380,7 @@ int read_nic_word(struct net_device *dev, int indx, u16 *data)
+>   	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>   				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+>   				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+> -				 usbdata, 2, HZ / 2);
+> +				 usbdata, 2, 500);
+>   	*data = *usbdata;
+>   	kfree(usbdata);
+>   
+> @@ -404,7 +404,7 @@ static int read_nic_word_E(struct net_device *dev, int indx, u16 *data)
+>   
+>   	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>   				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+> -				 indx | 0xfe00, 0, usbdata, 2, HZ / 2);
+> +				 indx | 0xfe00, 0, usbdata, 2, 500);
+>   	*data = *usbdata;
+>   	kfree(usbdata);
+>   
+> @@ -430,7 +430,7 @@ int read_nic_dword(struct net_device *dev, int indx, u32 *data)
+>   	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+>   				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+>   				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+> -				 usbdata, 4, HZ / 2);
+> +				 usbdata, 4, 500);
+>   	*data = *usbdata;
+>   	kfree(usbdata);
+>   
+> 
 
-which was originally converted as
-
-		if (linkmode_intersects(ptys2ethtool_link_mode(&ptys2ethtool_map[i],
-							       report),
-					link_modes))
-
-and which I rewrote as
-
-		ulong *map_mode = ptys2ethtool_link_mode(&ptys2ethtool_map[i],
-							 report);
-		if (linkmode_intersects(map_mode, link_modes))
-
-(although upon further review it seems like there should be an
-additional blank line there)
-
-Everything I changed should be caught by checkpatch.
-
---Sean
-
- >
- >> Because this touches so many files in the net tree, you may want to
- >> generate a new diff using the semantic patch above when you apply this.
- >
- > If it still applies cleanly, i would just apply it. Otherwise maybe
- > Jakub could recreate it?
- >
- > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
- >
- >      Andrew
- >
