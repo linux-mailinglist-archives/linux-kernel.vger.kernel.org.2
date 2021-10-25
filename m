@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC30D43A65F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483F643A66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhJYWTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:19:00 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:36594 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbhJYWS7 (ORCPT
+        id S233692AbhJYWXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233618AbhJYWXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:18:59 -0400
-Received: by mail-ot1-f45.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so16993063otk.3;
-        Mon, 25 Oct 2021 15:16:36 -0700 (PDT)
+        Mon, 25 Oct 2021 18:23:13 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602D5C061745;
+        Mon, 25 Oct 2021 15:20:50 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so542801pji.5;
+        Mon, 25 Oct 2021 15:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gY/CrtG64wJSVZcLWOWpwa2R2QUK2S+0RFYWuG+wKCg=;
+        b=JxfRcOOJUvz9MShRfjx7QNut1TTO5K+WAAp4bSEMJ6T8COF6VlwVe0PC33KxV1V+xj
+         QY/HTJIs6xceUgVDsGOIhqdtna0lZpn+vh22OeND20l0ZAUfVFduyYS8OZ6Hdn3U1oQh
+         W48S3zBie5el1etzqinYCyCisJ+OAloUABm5vGy6jySIBocYpaxyqVnXq0gwRVL/D15T
+         v2H4DeDdnbSd5BLF6pp0L53ebm63zvaJPX+3Yla9BTUtYPgK+3SB9xfqynf2YdLsEI3z
+         L8hUqG6fvrhRNWoq5K1PLNJv5P1dAKubAYVAX719F/JKiidSkdMAKeMB1GJe7GLC60b4
+         ZG0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=08LHlZWok2cQ+wKG6iqHm59kti7V0FbDXHEgXCU1sN0=;
-        b=NHxgZMieGAUKxpclh6E+QQ3hO0rvlUxf4hX7uqqN23tmH/bDpokzwFoG7sU9eRiu35
-         h8mhD+8zJQZ7R9JTQa3jnBRJwSCxJTRLtozhCwqcmv1/WFfTtKVjN4kXPZC45tmI7LCF
-         BwFvnCvMY5xG1m78Ex5YiRWwQAlPPuRSw3B+Ql65maBlXHCd6sdg2C+/TrNKvZaBgIMf
-         TATvHDMFrj7af5H034A9ktg82lycFwwGMnsXIRjSURenK/ybUOdENMeJJbshguakXTd9
-         WVNOvwdgEgghy4i+IwIWoe5zxwTfeShi44rTCwgRuMz4rZ9mDx1PMRtTYTV+pBRyx5yl
-         +b4A==
-X-Gm-Message-State: AOAM533w12EJ5VhyoFekDgPc+Ycgp9UO80sMtxUl9QLq7+ZLSA1zk951
-        bSM4YP0zIo8bPQP658fxiQ==
-X-Google-Smtp-Source: ABdhPJwuWM0273S1Z+z63K2KqAhOFpRuOY9ecdszfdaTEl33r7hEZmIj1AusOBFj9m5MZ2a40Gh+AQ==
-X-Received: by 2002:a9d:1b4f:: with SMTP id l73mr16215619otl.200.1635200196169;
-        Mon, 25 Oct 2021 15:16:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bf3sm4380920oib.34.2021.10.25.15.16.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gY/CrtG64wJSVZcLWOWpwa2R2QUK2S+0RFYWuG+wKCg=;
+        b=3iTfEGQ+drZAax7ojkwnOwMqgzu8PDscF/u2pZEJ5Na1ruyfDfpzHWKDhzASBiciKT
+         dN0slF5PZ5a1F7ZUyZ/1cNV3fSZcTAEOTPKlddmTEi/b0nDZQ5PXPExRv0ZqWfK8LFNA
+         kfeZiIVvOB+vwIQwxsRlZsgPK8LOQnzgR47IogfVDzos0f7kpChJQ+SPwXxPmcZIMtl2
+         8qDEZMk1J9u/IyXTPQ+Sop9/xcfDTTxhEO8Sp0pU8Ht18RTdiySKran1JZ22LR3e5scH
+         LlIgKlIQIILJpsGwHZEBzMnEldrrqF1iRl5rp2cRsCOKhMm0y9zRrjVSflFRrvp4u45J
+         UxgQ==
+X-Gm-Message-State: AOAM533rHli/s50OseGXopm42bYYlImwWjo1ZFRmV40IgBTOR/f7XAGP
+        d93GTxTxnIjfCl9OR5Fc2VE=
+X-Google-Smtp-Source: ABdhPJw1M+GSNXjH3WTbbujpz1f0+KQg7PDYTju1ODa6ZJ+SOgud71PYDVpiJXuy6a6LbJDeHwImcg==
+X-Received: by 2002:a17:90b:3148:: with SMTP id ip8mr23586012pjb.62.1635200449724;
+        Mon, 25 Oct 2021 15:20:49 -0700 (PDT)
+Received: from localhost.localdomain ([171.224.177.148])
+        by smtp.gmail.com with ESMTPSA id v19sm17500636pfu.179.2021.10.25.15.20.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 15:16:35 -0700 (PDT)
-Received: (nullmailer pid 1182134 invoked by uid 1000);
-        Mon, 25 Oct 2021 22:16:34 -0000
-Date:   Mon, 25 Oct 2021 17:16:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 4/6] PCI: brcmstb: Add control of subdevice voltage
- regulators
-Message-ID: <YXcswoP6fLiMs7G5@robh.at.kernel.org>
-References: <20211022140714.28767-1-jim2101024@gmail.com>
- <20211022140714.28767-5-jim2101024@gmail.com>
- <YXLLRLwMG7nEwQoi@sirena.org.uk>
- <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
+        Mon, 25 Oct 2021 15:20:49 -0700 (PDT)
+From:   Nghia Le <nghialm78@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     Nghia Le <nghialm78@gmail.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] ext4: remove useless resetting io_end_size in mpage_process_page()
+Date:   Tue, 26 Oct 2021 05:18:03 +0700
+Message-Id: <20211025221803.3326-1-nghialm78@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 03:15:59PM -0400, Jim Quinlan wrote:
-> On Fri, Oct 22, 2021 at 10:31 AM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Fri, Oct 22, 2021 at 10:06:57AM -0400, Jim Quinlan wrote:
-> >
-> > > +static const char * const supplies[] = {
-> > > +     "vpcie3v3-supply",
-> > > +     "vpcie3v3aux-supply",
-> > > +     "brcm-ep-a-supply",
-> > > +     "brcm-ep-b-supply",
-> > > +};
-> >
-> > Why are you including "-supply" in the names here?  That will lead to
-> > a double -supply when we look in the DT which probably isn't what you're
-> > looking for.
-> I'm not sure how this got past testing; will fix.
-> 
-> >
-> > Also are you *sure* that the device has supplies with names like
-> > "brcm-ep-a"?  That seems rather unidiomatic for electrical engineering,
-> > the names here are supposed to correspond to the names used in the
-> > datasheet for the part.
-> I try to explain this in the commit message of"PCI: allow for callback
-> to prepare nascent subdev".  Wrt to the names,
-> 
->        "These regulators typically govern the actual power supply to the
->         endpoint chip.  Sometimes they may be a the official PCIe socket
->         power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
->         the regulator(s) that supply power to the EP chip."
-> 
-> Each different SOC./board we deal with may present different ways of
-> making the EP device power on.  We are using
-> an abstraction name "brcm-ep-a"  to represent some required regulator
-> to make the EP  work for a specific board.  The RC
-> driver cannot hard code a descriptive name as it must work for all
-> boards designed by us, others, and third parties.
-> The EP driver also doesn't know  or care about the regulator name, and
-> this driver is often closed source and often immutable.  The EP
-> device itself may come from Brcm, a third party,  or sometimes a competitor.
-> 
-> Basically, we find using a generic name such as "brcm-ep-a-supply"
-> quite handy and many of our customers embrace this feature.
-> I know that Rob was initially against such a generic name, but I
-> vaguely remember him seeing some merit to this, perhaps a tiny bit :-)
-> Or my memory is shot, which could very well be the case.
+The command "make clang-analyzer" detects dead stores in
+mpage_process_page() function.
 
-I don't recall being in favor of this. If you've got standard rails 
-(3.3V and 12V), then I'm fine with standard properties for them with or 
-without a slot.
+Do not reset io_end_size to 0 in the current paths, as the function
+exits on those paths without further using io_end_size.
 
-Rob
+Signed-off-by: Nghia Le <nghialm78@gmail.com>
+---
+ fs/ext4/inode.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 0f06305167d5..03efed2ed1ea 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2260,7 +2260,6 @@ static int mpage_process_page(struct mpage_da_data *mpd, struct page *page,
+ 			mpd->map.m_len = 0;
+ 			mpd->map.m_flags = 0;
+ 			io_end_vec->size += io_end_size;
+-			io_end_size = 0;
+ 
+ 			err = mpage_process_page_bufs(mpd, head, bh, lblk);
+ 			if (err > 0)
+@@ -2285,7 +2284,6 @@ static int mpage_process_page(struct mpage_da_data *mpd, struct page *page,
+ 	} while (lblk++, (bh = bh->b_this_page) != head);
+ 
+ 	io_end_vec->size += io_end_size;
+-	io_end_size = 0;
+ 	*map_bh = false;
+ out:
+ 	*m_lblk = lblk;
+-- 
+2.25.1
+
