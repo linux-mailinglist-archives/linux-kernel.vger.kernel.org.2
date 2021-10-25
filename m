@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E1143901A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2045D43901B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhJYHNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59876 "EHLO mail.kernel.org"
+        id S231467AbhJYHNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229727AbhJYHNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:13:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12B6860F9C;
-        Mon, 25 Oct 2021 07:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635145858;
-        bh=wHlKRt1QrjCcx+YMoChVXSYiCfVO9OSjhXh60NOXWK8=;
+        id S229727AbhJYHNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 03:13:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0093C60F9C;
+        Mon, 25 Oct 2021 07:11:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635145882;
+        bh=zv7F1LA7Fms6yxvpguqNfdWuHpNohuOAsRTrq30c1d0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ETX5aTw5UkAaQv5un4FxUBu/HcCp/zrkxsNdvOPFNy0lueoBk1foSCXRqsW5+ny64
-         3UfHmFBZCPVqX99RHxQzRZ0gvweVig7NnkR9pSh5uZaFOykb9S5Nm+1nUN5mSEU4SO
-         9ZqqEqhcWYEz29jeUqQUwkcXTUE97h0Kv7l/yU7DAgXjBo7FMqJ1HrT5nW0pGV9W4J
-         QrvT1M3rNlgSXlDBeRNJ7XrsaWh8bQzTLgGyDBc3y1xXmGjtkSvdRjZQjAsE0xQQe8
-         ESOTCsQbChee3GQtzlGFzKE0Z2zIZDdMboPld6SZ8Q8M7ULBfm4SQGmNpjE+FeSatm
-         aFJjnvBIdD5lw==
-Date:   Mon, 25 Oct 2021 12:40:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abhinavk@codeaurora.org, Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v3 2/2] phy: qcom: Introduce new eDP PHY driver
-Message-ID: <YXZYfh+yfNFkqY0a@matsya>
-References: <20211016232128.2341395-1-bjorn.andersson@linaro.org>
- <20211016232128.2341395-2-bjorn.andersson@linaro.org>
- <YXGmJFoeXwtTvl7p@matsya>
- <YXLx7EV7ZiMIxauO@ripper>
+        b=s3VgcqACqayBTTxp3SV44sWxkLQ2KlbSaMNY3Ol3aKHGfGuiMETYur7yLcphVBhZ6
+         GeT/eXKzAh94+3g5kgq2JGsUu2hloQxyiZ4p5xWA12sVlXR3lqQ1AU//IVfHFyrnQd
+         /cUjQIKzcuUjQO+qOujyS4HNmlf4UL8yV3WCFtsk=
+Date:   Mon, 25 Oct 2021 09:11:20 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gaston Gonzalez <gascoar@gmail.com>
+Cc:     linux-staging@lists.linux.dev, nsaenz@kernel.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/8] staging: vchiq_core.h: use preferred kernel types
+Message-ID: <YXZYmP0lCae+iDdE@kroah.com>
+References: <20211024212524.370078-1-gascoar@gmail.com>
+ <20211024212524.370078-5-gascoar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXLx7EV7ZiMIxauO@ripper>
+In-Reply-To: <20211024212524.370078-5-gascoar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-10-21, 10:16, Bjorn Andersson wrote:
-> On Thu 21 Oct 10:40 PDT 2021, Vinod Koul wrote:
+On Sun, Oct 24, 2021 at 06:25:20PM -0300, Gaston Gonzalez wrote:
+> Change types from uint32_t and uint64_t to the preferred ones u32 and
+> u64.
 > 
-> > On 16-10-21, 16:21, Bjorn Andersson wrote:
-> > > Many recent Qualcomm platforms comes with native DP and eDP support.
-> > > This consists of a controller in the MDSS and a QMP-like PHY.
-> > > 
-> > > While similar to the well known QMP block, the eDP PHY only has TX lanes
-> > > and the programming sequences are slightly different. Rather than
-> > > continuing the trend of parameterize the QMP driver to pieces, this
-> > > introduces the support as a new driver.
-> > > 
-> > > The registration of link and pixel clocks are borrowed from the QMP
-> > > driver. The non-DP link frequencies are omitted for now.
-> > > 
-> > > The eDP PHY is very similar to the dedicated (non-USB) DP PHY, but only
-> > > the prior is supported for now.
-> > 
-> > since this is QMP phy, pls add an explanation why common QMP driver
-> > is not used here?
+> Reported by checkpatch.pl, with the exception of the one in function
+> vchiq_log_dump_mem().
 > 
-> Looked at this again, doesn't the second paragraph answer that?
+> Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
+> ---
+>  .../vc04_services/interface/vchiq_arm/vchiq_core.h   | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+> index 383c3bcf787e..a107c72ce3a6 100644
+> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+> @@ -74,7 +74,7 @@
+>  	((fourcc) >>  8) & 0xff, \
+>  	(fourcc) & 0xff
+>  
+> -typedef uint32_t BITSET_T;
+> +typedef u32 BITSET_T;
 
-Hmmm, somehow this got missed by me! Yes sounds okay
+This is fine for now, but you should also work to get rid of this
+unneeded typedef entirely.
 
-> > > +static int qcom_edp_phy_init(struct phy *phy)
-> > > +{
-> [..]
-> > > +	writel(0x00, edp->edp + DP_PHY_AUX_CFG0);
-> > > +	writel(0x13, edp->edp + DP_PHY_AUX_CFG1);
-> > > +	writel(0x24, edp->edp + DP_PHY_AUX_CFG2);
-> > > +	writel(0x00, edp->edp + DP_PHY_AUX_CFG3);
-> > > +	writel(0x0a, edp->edp + DP_PHY_AUX_CFG4);
-> > > +	writel(0x26, edp->edp + DP_PHY_AUX_CFG5);
-> > > +	writel(0x0a, edp->edp + DP_PHY_AUX_CFG6);
-> > > +	writel(0x03, edp->edp + DP_PHY_AUX_CFG7);
-> > > +	writel(0x37, edp->edp + DP_PHY_AUX_CFG8);
-> > > +	writel(0x03, edp->edp + DP_PHY_AUX_CFG9);
-> > 
-> > In qmp phy we use a table for this, that looks very elegant and I am
-> > sure next rev will have different magic numbers, so should we go the
-> > table approach here on as well..?
-> > 
-> 
-> Comparing the v3 and v4 USB/DP combo phy and this, the only number that
-> differs is CFG_AUX2 and CFG_AUX8.
-> 
-> CFG_AUX8 is 0x37 for eDP and 0xb7 for DP and AUX_CFG2 seems better to
-> mask together, but I don't fully understand the content yet.
-> 
-> I did check two other platforms and they have the same sequence, except
-> one additional bit in AUX_CFG2. There also seem to be a few additional
-> permutations of this value, so I don't think tables are the solution.
-> 
-> 
-> So I think it's better if we leave this as proposed and then
-> parameterize the two individual entries as needed when we go forward -
-> or determine that I missed something.
+thanks,
 
-okay sounds good to me
-
--- 
-~Vinod
+greg k-h
