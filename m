@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B75E43A5FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4E943A601
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhJYViK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
+        id S235037AbhJYViP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbhJYViF (ORCPT
+        with ESMTP id S233940AbhJYViG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:38:05 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E31C061225
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:35:42 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id f84-20020a623857000000b0047be77505c2so2831014pfa.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:35:42 -0700 (PDT)
+        Mon, 25 Oct 2021 17:38:06 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1312EC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:35:44 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so457566pji.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:35:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=MZF5VEKMYWbB/Dv8KErRk2fZA5ZJJGAkLiY8ScjRBG4=;
-        b=qUonqI8VkIEIoLRHJKaKhq8KLWGGNxSUVTwOxm56x0OQTmIBsG7yKviyP3spqedJ10
-         ahH53ZJP2AxEcJP8GPMIV0ogmkx6grO1n2x2jj+vLWDmd3XvAJ3vJN0FzauiSxU8lfsM
-         DhHWacNRnjI0rRvWk63n/XvcE1HScTPNrCTSAC1mx8oNZ7v7qg86WyF2gguA18RqekM2
-         J01pNe2hEZ3O3uPPqjPRhoYteLtLF9MluKAofQ8k2Lc9/sZWg4tqB0CKcesX2slwSL5m
-         omHXC4rzRNEdJF0qXy8Qg9HzLCGQzcJXF1ofBylBo+h2JseqtrUC11J1uNPR8BN/ntJ9
-         aZnQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iHfgSZESuBtNRWpoQ0O3+KS410Lf4cM3SnOfKO347UQ=;
+        b=Reu7Zfhwb2ow26i8wER7gTUYsj+/+vm3SHpVkiU5o03ZeeoZzyL2Vgkqxh4inOpYnO
+         sIv6S7DVrUX4hxLj1wywwk4ilQARf94QkoGSKt86yRTCISAioxSgdb+DyznYDGjhuSoo
+         ZelV/oR2YAMluKuDU0FY/KCCbUgaliM74RtVk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=MZF5VEKMYWbB/Dv8KErRk2fZA5ZJJGAkLiY8ScjRBG4=;
-        b=WCc80IKLZtLtDKSN+hD8IFMMe7m+ABmcgw02AsnVTTIVt42Y9ZhtG+WZdndjKzl6JQ
-         +0e9z9kbiZsY9ggjoYXsTMVjY8fN/R0cD2gAEhcW7juztMxvW0HDASqP5OlQ17C0S1+4
-         wq6ytcEkZGh7slipXnbUFHaY6IiLpX+tzYfo4kSExPcsSeBZrHagP46VKrgRVq3tTAEh
-         rX6FzHmHdmobbwm6SyjdMYp8L/zNO/ajSBOBUSHrumlorf4xBbTM7AWZyiO9xF2vJ4ie
-         NbvNa7V7E7XLBV1G+Bo1gsMmef5UNAniCDjfrd3SA3rAxKuqQkalJJ/Z1KIvDtD3VBNq
-         dl3w==
-X-Gm-Message-State: AOAM530Y7NqECQv1Gutlae3gOuLi3DMy9srfGXOYAd9El9wtI7a3yy1T
-        8nQzE6Xkl+9fCNpTD7MYwLPhRNgQr2l1
-X-Google-Smtp-Source: ABdhPJzkfDZRrjaYWKYgmFVfnQaT5jQQ4wlclsz+xzDo5mAEHNEVhQiN2cDHkhnNVcX+7MJsyJ14Vo+5S6Yk
-X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:5478:3d15:6893:1074])
- (user=rajatja job=sendgmr) by 2002:a17:902:b616:b0:13f:7983:21b6 with SMTP id
- b22-20020a170902b61600b0013f798321b6mr19108199pls.42.1635197741760; Mon, 25
- Oct 2021 14:35:41 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:35:31 -0700
-In-Reply-To: <20211025213532.2349161-1-rajatja@google.com>
-Message-Id: <20211025213532.2349161-4-rajatja@google.com>
-Mime-Version: 1.0
-References: <20211025213532.2349161-1-rajatja@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 3/3] i2c: enable async suspend/resume on i2c client devices
-From:   Rajat Jain <rajatja@google.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dtor@google.com
-Cc:     Derek Basehore <dbasehore@chromium.org>, rajatxjain@gmail.com,
-        Rajat Jain <rajatja@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iHfgSZESuBtNRWpoQ0O3+KS410Lf4cM3SnOfKO347UQ=;
+        b=j1j0CgmQnaMU1Qx/6ehNSeRctVI4eWQr8xJGNnbVC0q5uTMuGh402ZJMuRL3TPYYlm
+         6Wi0bSDgXBx4yzfuOtE+kqwkPCxygTepz4GJHMm4IqSZUcBBSUYRj7lf3bdenL681GhC
+         i2DQFxDSm8XoR4zblBcEE9r5yhiMz+dZEd/C6Z1/74KfrgV2hzxEJR62i9r8jvu+B2aP
+         k90SHHtwksIZZ2d95u45opSi4BweIO5mf6AzDtaUNC83rCLrwNKYZqTwtdBpBBWM6qwe
+         Izh3Pm/Y9SF4E10BsB65LEQYX0sa8nX0KMD+K+JTZgjrtfIlHn9oaGovMpSJm1yFfDlh
+         Z+2Q==
+X-Gm-Message-State: AOAM530wlszwIxV4Kr45ekXo1zdQshmxAnnNC/8ZDTrgZQ2Mru+8YiZH
+        KJOybFUPhtueIRhv9RtbFSsFJw==
+X-Google-Smtp-Source: ABdhPJwx8sYf8AzkITaCuxfOfNpuYr9vEkvn+zKf5942IhmP91Qr049qj3smEeLELnoSGilSTESh2g==
+X-Received: by 2002:a17:902:e5cb:b0:13f:25b7:4d50 with SMTP id u11-20020a170902e5cb00b0013f25b74d50mr18287509plf.38.1635197743615;
+        Mon, 25 Oct 2021 14:35:43 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a20sm19562774pfn.136.2021.10.25.14.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:35:43 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:35:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        valentin.schneider@arm.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's
+ comm is truncated
+Message-ID: <202110251431.F594652F@keescook>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <20211025083315.4752-13-laoar.shao@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025083315.4752-13-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Derek Basehore <dbasehore@chromium.org>
+On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
+> Show a warning if task comm is truncated. Below is the result
+> of my test case:
+> 
+> truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
+> 
+> Suggested-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> ---
+>  kernel/kthread.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 5b37a8567168..46b924c92078 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+>  	if (!IS_ERR(task)) {
+>  		static const struct sched_param param = { .sched_priority = 0 };
+>  		char name[TASK_COMM_LEN];
+> +		int len;
+>  
+>  		/*
+>  		 * task is already visible to other tasks, so updating
+>  		 * COMM must be protected.
+>  		 */
+> -		vsnprintf(name, sizeof(name), namefmt, args);
+> +		len = vsnprintf(name, sizeof(name), namefmt, args);
+> +		if (len >= TASK_COMM_LEN) {
 
-This enables the async suspend for i2c client devices. This reduces
-the suspend/resume time considerably on platforms where i2c devices
-can take a lot of time (hundreds of ms) to resume.
+And since this failure case is slow-path, we could improve the warning
+as other had kind of suggested earlier with something like this instead:
 
-Signed-off-by: Derek Basehore <dbasehore@chromium.org>
-Signed-off-by: Rajat Jain <rajatja@google.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
-v2: Add Jarkko's tested by
+			char *full_comm;
 
- drivers/i2c/i2c-core-base.c | 1 +
- 1 file changed, 1 insertion(+)
+			full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
+			pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
+				full_comm, name);
 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index 8d4f2be54e17..70d32efb68ef 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -1047,6 +1047,7 @@ i2c_new_client_device(struct i2c_adapter *adap, struct i2c_board_info const *inf
- 	client->dev.of_node = of_node_get(info->of_node);
- 	client->dev.fwnode = info->fwnode;
- 
-+	device_enable_async_suspend(&client->dev);
- 	i2c_dev_set_name(adap, client, info);
- 
- 	if (info->swnode) {
+			kfree(full_comm);
+		}
+>  		set_task_comm(task, name);
+>  		/*
+>  		 * root may have changed our (kthreadd's) priority or CPU mask.
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.33.0.1079.g6e70778dc9-goog
-
+Kees Cook
