@@ -2,94 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD087439F21
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0495443A328
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234254AbhJYTRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbhJYTR2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:28 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E61C061226
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:15:05 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mf5Qy-0002TC-A6; Mon, 25 Oct 2021 21:15:00 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mf5Qx-0003UP-7b; Mon, 25 Oct 2021 21:14:59 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mf5Qx-0002b5-6B; Mon, 25 Oct 2021 21:14:59 +0200
-Date:   Mon, 25 Oct 2021 21:14:59 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v7 3/3] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <20211025191459.flhyrjgql3z2bwqo@pengutronix.de>
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org>
- <20211025170925.3096444-3-bjorn.andersson@linaro.org>
+        id S239394AbhJYT4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:56:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238750AbhJYTve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DE00610CF;
+        Mon, 25 Oct 2021 19:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635190991;
+        bh=JzAe8crW01rzHWg9TFoqmT9ua9HGs/dKKEYPC8vrt9Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ofJ2OGKS0emA5AbWe2FxKIei4o8Mmwgaee8lNpZ9i8r6wUrRaPYSiA2Muzct0en2O
+         8vQDBdD6g1dpEaagB8Lf3MEkzEnZnu6Vk/AGCU3mkmkIvTCAWLjYe3ekzuTKb5YQRd
+         7KaePS9H8PtDzo61VVyYPyU7r0YfMau2rDcZv1DI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.14 119/169] selftests: netfilter: remove stray bash debug line
+Date:   Mon, 25 Oct 2021 21:15:00 +0200
+Message-Id: <20211025191033.008360955@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4slazjvqhfh4scsn"
-Content-Disposition: inline
-In-Reply-To: <20211025170925.3096444-3-bjorn.andersson@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Florian Westphal <fw@strlen.de>
 
---4slazjvqhfh4scsn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 3e6ed7703dae6838c104d73d3e76e9b79f5c0528 upstream.
 
-Hello,
+This should not be there.
 
-On Mon, Oct 25, 2021 at 10:09:25AM -0700, Bjorn Andersson wrote:
-> The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
-> with the primary purpose of controlling the backlight of the attached
-> panel. Add an implementation that exposes this using the standard PWM
-> framework, to allow e.g. pwm-backlight to expose this to the user.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 2de03b45236f ("selftests: netfilter: add flowtable test script")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ tools/testing/selftests/netfilter/nft_flowtable.sh |    1 -
+ 1 file changed, 1 deletion(-)
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+--- a/tools/testing/selftests/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
+@@ -199,7 +199,6 @@ fi
+ # test basic connectivity
+ if ! ip netns exec ns1 ping -c 1 -q 10.0.2.99 > /dev/null; then
+   echo "ERROR: ns1 cannot reach ns2" 1>&2
+-  bash
+   exit 1
+ fi
+ 
 
-Thanks
-Uwe
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---4slazjvqhfh4scsn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF3Ai8ACgkQwfwUeK3K
-7AkkDgf8C0WLBUS6WV9nMw6e3yWDIqZWXJg9UOhhEP+8ZzVDLSGSp6C0a83QbL8P
-ePPUMTIX44rsdkDZaTk+7TPAucGi+RahrFHRh+kzesg9I7N8pdX7VpL06PaK7ha5
-ufckLAAIv875cJa2YlmqGCesN3ydqISoYUNuSqgqZB8ApHBq2VyDkTeHVLXS44Mb
-6ByGOnuoNy5U6tunqHuNTASKaGHbT31JLJYdLmODCaHpy0CHwPeMMPO0K5mxDHUM
-mHHP/Teh95dOWSnH/GHdROO22aiPTw8FnXpoQn2ORm8kdfYv/xDXbQVqsUHKjnbl
-9KavbJEMVsJnXZb6FoNCYAfZ4EXPuQ==
-=YQqA
------END PGP SIGNATURE-----
-
---4slazjvqhfh4scsn--
