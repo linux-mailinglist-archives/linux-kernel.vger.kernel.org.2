@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB4A438CED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3783438CF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhJYBPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 21:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhJYBO6 (ORCPT
+        id S231992AbhJYBUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 21:20:22 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:40560 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhJYBUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 21:14:58 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5390BC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:12:36 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id g8so4223009edb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C+ecm+t2PsReTz6De6QOhCuZZsxdJqQBgK7vEegwMuM=;
-        b=WEqLmWzDOX6QrqtFA5QIgOR5wjRm+JCAf99IwnVz5q2Wi+41Ep2VDqUZX/KLOB2Wq5
-         duRgfXwHFkQ3EdHrgl9P4A1pIitqtYIdlX9BCisBEgKhTnugGnERhixIDUGF40Qi1L17
-         hr7LagynymmsJkgY4UIT6uN7GalDTyFrpJCQm7h0Xf8U+KwpSjBYLU419fOiKUDJmk32
-         d6cgk6E4U8vNmQW/y5Vz/CB6T+qMbVYJT0bMrQ2ovyBH2CtyhWK3wQ8/IxTK2xUM6CAX
-         xunNLmibV2ixTcr9gt3/Jt3XbsLl3t44N+avlEgUKW0qV9YBK2UKB8Is/1D2tdbFSu+R
-         QPng==
+        Sun, 24 Oct 2021 21:20:21 -0400
+Received: by mail-pl1-f172.google.com with SMTP id v20so6791729plo.7;
+        Sun, 24 Oct 2021 18:18:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C+ecm+t2PsReTz6De6QOhCuZZsxdJqQBgK7vEegwMuM=;
-        b=ZRoxJd1+Oy5NhHZK/UPfPT3g+uWqYqNq5Cup1G8042xMmyNvdH8k1tlEQ1M/wY/YVD
-         RElnM+vMuqujcoxy1/WVMxXQLrwzHnUwCxx+OoK0BGgSjZ8HWisNt/ZBPcvNU7/6zKCB
-         J+Z4QNH5bZdMZ52zyzxAmYmnm/H2+4H4AESCVsVSbQIFko3f3ARjww7z2TZ8V3k41GqG
-         IrqMK2AZuRSDcOe+x/nPh45o5/cCjFOfds0A+6Cv8b8gjQxd1mqJLpMJsxyOe+dKlsRm
-         Hv7vBAKWI+VK+rjaGQWXTkHGoC2YsJC4Uy26o24SZfgBZvxjnPzN+5dvkcJT5vTXpapd
-         SwZw==
-X-Gm-Message-State: AOAM53334ljyfMBHpkxTRYHXvVZNpdxH3YFOiRAL/ilZqF/revXY/jjl
-        ZCzJIKqEs1PNel+s3XYsQPxxylfJBEsLwMGJqNw=
-X-Google-Smtp-Source: ABdhPJy97jYbxK5dor/maO8rTF/AfWltfXK/H+KUbkMlti5Bg3qbCSqAqT1WuqNvLeMXEnWRcFB7cRFKWXk3lRNbLy0=
-X-Received: by 2002:a17:907:3da7:: with SMTP id he39mr18612364ejc.554.1635124355353;
- Sun, 24 Oct 2021 18:12:35 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=q5O4UBSKbAyhKsuzmZP4VB7n8u3QEGlpbp2iyZiAqqw=;
+        b=yIF/T8DkWDnLNSlBoGqMolkl1hNA4F/QTC+COaxH6rxwZG6SM2KnkI8N53POe5pN+6
+         s3qaRTvhL2qGX0ZIAx3IR8bN0Xr3+wyAJxsJjCYbOMu1HIr1O7MmsP4/6ZOF8B1v9SWW
+         HXbrDdNdMwqVcd7tZDgO58IwTD2YBN4CaFA2Q4o5eizuCjxSM7bnxs+NsXF+iGiCEVq3
+         lReNZPNqtpRlH1uqpES6ZNPN0oRHqnjomBloLecwJeaNqXlDxHcAvSrnZFlrL8wBVi2O
+         HcaT2JF1bTxZ81kTkoy5uIa5yHDdP+O2aszU/nj7Ye+Bgy1PhDhiiXG2rqoeFkX0hwYb
+         qkXw==
+X-Gm-Message-State: AOAM532xnp3HOJslCmfrs1ZgdIXxl4kZyU3kZtHO16+miR5FPw/zr1yp
+        3A8zF3PRML0B4RZwt+zBERs=
+X-Google-Smtp-Source: ABdhPJzUd1g7LQesE692U+SJJhHOV3woPCI/hMm1zSuEzf+KYORHfg9HyJyHverPXkihxkZ6/oX8pQ==
+X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr2476735pju.95.1635124679565;
+        Sun, 24 Oct 2021 18:17:59 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:1d23:4f1f:253d:c1e1? ([2601:647:4000:d7:1d23:4f1f:253d:c1e1])
+        by smtp.gmail.com with ESMTPSA id z5sm14328623pge.2.2021.10.24.18.17.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 18:17:58 -0700 (PDT)
+Message-ID: <b3344662-03a7-43ca-21ea-7e2c4f0f658a@acm.org>
+Date:   Sun, 24 Oct 2021 18:17:57 -0700
 MIME-Version: 1.0
-References: <mhng-51275835-4c34-4099-85f5-13c6dbef4e19@palmerdabbelt-glaptop> <750f6239-154d-9190-24ff-ece033add638@infradead.org>
-In-Reply-To: <750f6239-154d-9190-24ff-ece033add638@infradead.org>
-From:   Daniel Mangum <georgedanielmangum@gmail.com>
-Date:   Sun, 24 Oct 2021 21:12:24 -0400
-Message-ID: <CAA=qMX65_rV8DndydsvT3y9ZMkQ37PNjDFuKcmdbB1mRNdVMNg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: cacheinfo: fix typo of homogenous
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] scsi: ufs: clean up the Kconfig file
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <20211024064332.16360-1-rdunlap@infradead.org>
+ <8578e393-2a25-bc52-65ea-599d071387e9@acm.org>
+ <5b13f32c-0cdb-26de-2bb7-af56a099b0b2@infradead.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <5b13f32c-0cdb-26de-2bb7-af56a099b0b2@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the feedback folks! I have sent a v2 patch.
+On 10/24/21 16:35, Randy Dunlap wrote:
+> On 10/24/21 2:29 PM, Bart Van Assche wrote:
+>> On 10/23/21 23:43, Randy Dunlap wrote:
+>>>         sure that you know the name of your UFS host adapter (the card
+>>>         inside your computer that "speaks" the UFS protocol, also
+>>>         called UFS Host Controller), because you will be asked for it.
+>>> @@ -51,7 +50,7 @@ config SCSI_UFSHCD
+>>>         (the one containing the directory /) is located on a UFS device.
+>>>   config SCSI_UFSHCD_PCI
+>>> -    tristate "PCI bus based UFS Controller support"
+>>> +    tristate "PCI bus-based UFS Controller support"
+>>
+>> Even with this change applied capitalization is inconsistent.
+> 
+> I don't doubt it, but could you be more explicit about
+> which word(s) you mean, please?
+> 
+> I see one "pci" in the Kconfig file.
+> I see several "Controller" vs. "controller."
+> I see a few of "Support" vs. "support."
+> 
+> Which are you referring to? (or something else)
 
-Dan
+I was referring to the word "Controller". Although English is not my native
+language, shouldn't "UFS Controller" be changed into "UFS controller" since
+neither "bus-based" nor "support" are capitalized?
 
+Thanks,
 
-On Sat, Oct 23, 2021 at 4:36 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 10/23/21 1:30 PM, Palmer Dabbelt wrote:
-> > On Fri, 08 Oct 2021 13:56:25 PDT (-0700), georgedanielmangum@gmail.com =
-wrote:
-> >> Updates 'homonogenous' to 'homogenous' in comment.
-> >
-> > I don't really know spelling that well, but checkpatch says
-> >
-> >     WARNING: 'homogenous' may be misspelled - perhaps 'homogeneous'?
-> >
-> > when applying this.  It looks like they're both words, but "homogeneous=
-" is the right one?
-> >
->
-> Internet search to grammar.com says:
->
-> To summarise, Earlier, homogenous was used as a scientific term, mainly i=
-n biology, but now it is almost obsolete, being replaced by homologous. Whe=
-reas, homogeneous is a common word, very much in use and means having simil=
-ar or comparable characteristics.
->
-> Several web sites agree that homogeneous is currently preferable.
->
-> >>
-> >> Signed-off-by: hasheddan <georgedanielmangum@gmail.com>
-> >> ---
-> >>  arch/riscv/kernel/cacheinfo.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cachein=
-fo.c
-> >> index 90deabfe63ea..ff98546b1152 100644
-> >> --- a/arch/riscv/kernel/cacheinfo.c
-> >> +++ b/arch/riscv/kernel/cacheinfo.c
-> >> @@ -29,7 +29,7 @@ static struct cacheinfo *get_cacheinfo(u32 level, en=
-um cache_type type)
-> >>      /*
-> >>       * Using raw_smp_processor_id() elides a preemptability check, bu=
-t this
-> >>       * is really indicative of a larger problem: the cacheinfo UABI a=
-ssumes
-> >> -     * that cores have a homonogenous view of the cache hierarchy.  T=
-hat
-> >> +     * that cores have a homogenous view of the cache hierarchy.  Tha=
-t
-> >>       * happens to be the case for the current set of RISC-V systems, =
-but
-> >>       * likely won't be true in general.  Since there's no way to prov=
-ide
-> >>       * correct information for these systems via the current UABI we'=
-re
->
->
-> --
-> ~Randy
+Bart.
