@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B904395C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFF04395C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhJYMQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
+        id S233009AbhJYMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhJYMQZ (ORCPT
+        with ESMTP id S231295AbhJYMQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:16:25 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272D4C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:14:03 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id q16so8926855ljg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:14:03 -0700 (PDT)
+        Mon, 25 Oct 2021 08:16:28 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D45AC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:14:06 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id y12so19092434eda.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9EdUhOEz6LCHy9Q4PpzvVDj9adp0XAbP/V+787pVMF0=;
-        b=o+dWeZI/z6lqMSLsbil6YIyE1jqJSEN4+lcUSDasiWYLtPgepVuV9yRFGul/S+IZjd
-         gDbGpaNe3bqNbRWJhQ8uzBY4CiicZs1uR5BS3+MoUCDorm+8eG2KGfZD1N4QFQhEcKYw
-         xy7gxDmYOZRBm6yhyTEiLwdcWRAlH9ewRtC0Drmg6f6HGWdLbLyhETNKBPdWq8uo1CSV
-         cbAWIYtOWs8A+jmLxHgpOUrmw4sE93EPz2L+YLH6FIq17e7sB4yGDacegypyYqkVZsfc
-         +nFJF2hSn2fSDbNW7rTDUeK7o2Z6gvK87WT6kkz+wB0G7qLv3XjLyhikq5itsQnyPrpo
-         L0lg==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=6e5dClZNqugBonIUDa3xy+s+zikUwDcuCRtJDo7dWDc=;
+        b=UI1SGw3rj6zDGc3ho5bxfEYVRrJF9huO+iOj4Qie1YJH0hJSitseo7xPTw1jcRfSPi
+         WoJjDjaRVTb02lCF+m6/pvSs934gD4eLWpn/lgZds7N4DhkkFvoyP1uUHZqHmA7cn/ce
+         0V/fpkuLITE14ueEoy6pnK/07x4z0HHmubYikqlqdRzWL9rh0PSyIiW5ffhSRreX1Mnv
+         6ntxhX/GjxCokmfjfjxWPgkRTQDnkPShsqPmt1DMpYTy+8ioo50/8rPiCCsztdftd0Ip
+         S6PvOuNIj5aBMw91TC00gKRGLlAbXQ+RTBnv/EwhnTfEnhqauHOYLJUpO62ZK/+PoiIS
+         Pt/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9EdUhOEz6LCHy9Q4PpzvVDj9adp0XAbP/V+787pVMF0=;
-        b=PSYMKIwUr3scPO7Y9FPtx36wknhyGRvhZSJnRy5WtxZhmKZY5zG7F65nu0Jk5F38sD
-         9eTV755vWmTswq5T68FpGL6aW3Hw0FYWxvmVIWtjl0ioLwSFvjcL8encUkVJ/GO8W3KJ
-         aLqU1JJQZftUnMkmxhoxFAZOWvOJEm1j4EMAQ57Rf7E38ejAXFpY0MJC79eEAq2swcNh
-         YxUmRmcghrMYY4Yhx/NxhX9p9SlWlVXY9KbGnziZAdmHWV7Nwqfj1s5FH1rYOlZFBXFS
-         7CssS1w7F+CYpDWK9j/SBKCbJJyTSqWFt+HNs8keIcAzlmRRAzpcWL9ungqJ2/zp8z/m
-         Rz+g==
-X-Gm-Message-State: AOAM532u21MgyeH51gt1jjZ0hcinEC3M5RXji7YQrk5fHYArM0Lu/jJ8
-        lpKq1ALmRBSW9TK1blsAT2n328u3TJesWPBHzVwUgA==
-X-Google-Smtp-Source: ABdhPJxMcBXf08mQujD6/q+CS6va26l4F0UMxyQLEYHppTQUj1YDoHEdo/Gg27zgpNe8o6sYV7ePnDmBYzD5E0mpwE8=
-X-Received: by 2002:a05:651c:2328:: with SMTP id bi40mr18700746ljb.121.1635164041366;
- Mon, 25 Oct 2021 05:14:01 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6e5dClZNqugBonIUDa3xy+s+zikUwDcuCRtJDo7dWDc=;
+        b=GpdpRVP3wI7YFqKKZtxRfWkEPfuleH8v8fuH5XVG+6idBmIw4pubItQewFvuhguk0d
+         WnzutMPw/6FO6WJ7j9I3m1eTgW5th+IW+8Pg4sH3yLy/BFLOFcXyHuT4Uy5obKr9nNX4
+         ntOe8m8DQaRtaVIcePRToAXUZOgAByrsEoD7MGF2xw4CrHPFukXGWjKDzS911vW1NM1i
+         NI7nAybfypt10H4g85K/Xr5OjyEv+od9dOpShyY2bwSz3P3+rzVtm17UYrGWi3OuI4D5
+         47/RfLH+f4BWKvvBPvg0NXTM9AGKo/+5mSIFPGG+6/3491AMRR+Z9wOpmbD7iedWWHho
+         DR5g==
+X-Gm-Message-State: AOAM532va9g/kpsfr/omqZUL0jmWoFQpE3z6WJJLp/VtO+PHIk+gRaNG
+        Yf39Uv+2q1dIEkK5qoteqsanjUlrlLQJSNDUC7NlAA==
+X-Google-Smtp-Source: ABdhPJwYIDzIsHOM44KEDTo1eeUMhc2q7IlHYTePt1GAveyFCSaLen+h5x5KtB67vFlUAnVpGwuzqiQ8tylPZDcOU4g=
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr25938248edc.182.1635164044795;
+ Mon, 25 Oct 2021 05:14:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211010124628.17691-1-gregkh@linuxfoundation.org>
- <YXaIx0g/kHEnq8ZN@kroah.com> <7328189c-0567-847e-17e9-e2ed4f3a78f4@amd.com>
-In-Reply-To: <7328189c-0567-847e-17e9-e2ed4f3a78f4@amd.com>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Mon, 25 Oct 2021 17:43:49 +0530
-Message-ID: <CAO_48GE9C_eOK84iYwvNjkGQRcFQQ8Hn-z70ndOhmF1gbmd5BQ@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-buf: move dma-buf symbols into the DMA_BUF module namespace
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 25 Oct 2021 17:43:53 +0530
+Message-ID: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
+Subject: gpu: drm_fb_cma_helper.c:46: undefined reference to `drm_gem_fb_get_obj'
+To:     dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Arnd Bergmann <arnd@arndb.de>
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Regression found on arm gcc-11 built with multi_v5_defconfig
+Following build warnings / errors reported on linux next 20211025.
 
-On Mon, 25 Oct 2021 at 16:29, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
->
-> Am 25.10.21 um 12:36 schrieb Greg Kroah-Hartman:
-> > On Sun, Oct 10, 2021 at 02:46:28PM +0200, Greg Kroah-Hartman wrote:
-> >> In order to better track where in the kernel the dma-buf code is used,
-> >> put the symbols in the namespace DMA_BUF and modify all users of the
-> >> symbols to properly import the namespace to not break the build at the
-> >> same time.
-> >>
-> >> Now the output of modinfo shows the use of these symbols, making it
-> >> easier to watch for users over time:
-> >>
-> >> $ modinfo drivers/misc/fastrpc.ko | grep import
-> >> import_ns:      DMA_BUF
-> >>
-> >> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> >> Cc: David Airlie <airlied@linux.ie>
-> >> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> >> Cc: Maxime Ripard <mripard@kernel.org>
-> >> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> >> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> >> Cc: dri-devel@lists.freedesktop.org
-> >> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> >> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> >> Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
-> >> Acked-by: Alex Deucher <alexander.deucher@amd.com>
-> >> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >> ---
-> >> v2: added lots of acks
-> >>      added 2 more drivers that needed the change, as found by Arnd
-> > Ping?  Any ideas on what needs to happen to get this into the tree?
-> >
-> > Or can I take it through my char-misc tree?  I seem to have a bunch of
-> > acks on it by the respective maintainers...
->
-> I could push that upstream through the drm-misc-next tree if you like,
-> but honestly char-misc sounds like the better approach since this
-> touches a lot of drivers outside of drm as well.
+metadata:
+    git_describe: next-20211025
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_short_log: 9ae1fbdeabd3 (\"Add linux-next specific files for 20211025\")
+    target_arch: arm
+    toolchain: gcc-11
+    config: multi_v5_defconfig
 
-I agree with Christian here - char-misc might be a better way for this.
+build error :
+--------------
+arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.o: in
+function `drm_fb_cma_get_gem_obj':
+drivers/gpu/drm/drm_fb_cma_helper.c:46: undefined reference to
+`drm_gem_fb_get_obj'
+arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:46:
+undefined reference to `drm_gem_fb_get_obj'
+arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:46:
+undefined reference to `drm_gem_fb_get_obj'
+arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.o: in
+function `drm_fb_cma_sync_non_coherent':
+drivers/gpu/drm/drm_fb_cma_helper.c:133: undefined reference to
+`drm_atomic_helper_damage_iter_init'
+arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:135:
+undefined reference to `drm_atomic_helper_damage_iter_next'
+make[1]: *** [Makefile:1252: vmlinux] Error 1
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:226: __sub-make] Error 2
 
->
->
-> Thanks,
-> Christian.
->
-> >
-> > thanks,
-> >
-> > greg k-h
->
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Best,
-Sumit.
+
+build link:
+-----------
+https://builds.tuxbuild.com/1zzgFZBGjpQ5R0lawQFW9iJ39Hp/build.log
+
+build config:
+-------------
+https://builds.tuxbuild.com/1zzgFZBGjpQ5R0lawQFW9iJ39Hp/config
+
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+tuxmake --runtime podman --target-arch arm --toolchain gcc-11
+--kconfig multi_v5_defconfig
+
+--
+Linaro LKFT
+https://lkft.linaro.org
