@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9106A43A21F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C40143A348
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhJYTpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:45:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53862 "EHLO mail.kernel.org"
+        id S239842AbhJYT6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236992AbhJYTic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:38:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D29C160200;
-        Mon, 25 Oct 2021 19:34:31 +0000 (UTC)
+        id S238842AbhJYTxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:53:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 416AE60E97;
+        Mon, 25 Oct 2021 19:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190472;
-        bh=WXQ7kJB7CaUzclXDdKnK/iKKQKb3gnadMMfA2wO534U=;
+        s=korg; t=1635191083;
+        bh=idzmCTmScLE7SpFvK5YW4508KB+pnHmJiBrp0tWnMB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H1/r+B13l3aDR2/9+ftKjvW9EfvJEaGjR45JM/9WdALT/Pv16Nrt2GWhEvV3QL+v/
-         uVq3rLOLv1lHG7+RENePjiVPwTO9uRNNllNmWdd8ck30L13X7GhGA4r8qeJ/Jr8K56
-         0GR+oD4DA5T7sV5cPO+8JGz6UBaduLIKPJ91LTPs=
+        b=JwFm+NU1Riar0gUB8/B6+Lt2aqZ+EwRJKf5dub+g8P8BVZgGzcp/MvDwb7ZH+yWXq
+         A/eTeVZzKFvesLWhIQOWjIcsgwZau0H+o7+Suk4lHmTGW5Gx061lwSwNc3xdxZwHoA
+         X4Nkehh9+lRO5MKfDLni3ypmJn5Q71+LmPpZJdpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 84/95] net: hns3: fix for miscalculation of rx unused desc
-Date:   Mon, 25 Oct 2021 21:15:21 +0200
-Message-Id: <20211025191008.999506899@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 141/169] ALSA: hda: avoid write to STATESTS if controller is in reset
+Date:   Mon, 25 Oct 2021 21:15:22 +0200
+Message-Id: <20211025191035.472273015@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,97 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit 9f9f0f19994b42b3e5e8735d41b9c5136828a76c ]
+[ Upstream commit b37a15188eae9d4c49c5bb035e0c8d4058e4d9b3 ]
 
-rx unused desc is the desc that need attatching new buffer
-before refilling to hw to receive new packet, the number of
-desc need attatching new buffer is calculated using next_to_use
-and next_to_clean. when next_to_use == next_to_clean, currently
-hns3 driver assumes that all the desc has the buffer attatched,
-but 'next_to_use == next_to_clean' also means all the desc need
-attatching new buffer if hw has comsumed all the desc and the
-driver has not attatched any buffer to the desc yet.
+The snd_hdac_bus_reset_link() contains logic to clear STATESTS register
+before performing controller reset. This code dates back to an old
+bugfix in commit e8a7f136f5ed ("[ALSA] hda-intel - Improve HD-audio
+codec probing robustness"). Originally the code was added to
+azx_reset().
 
-This patch adds 'refill' in desc_cb to indicate whether a new
-buffer has been refilled to a desc.
+The code was moved around in commit a41d122449be ("ALSA: hda - Embed bus
+into controller object") and ended up to snd_hdac_bus_reset_link() and
+called primarily via snd_hdac_bus_init_chip().
 
-Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The logic to clear STATESTS is correct when snd_hdac_bus_init_chip() is
+called when controller is not in reset. In this case, STATESTS can be
+cleared. This can be useful e.g. when forcing a controller reset to retry
+codec probe. A normal non-power-on reset will not clear the bits.
+
+However, this old logic is problematic when controller is already in
+reset. The HDA specification states that controller must be taken out of
+reset before writing to registers other than GCTL.CRST (1.0a spec,
+3.3.7). The write to STATESTS in snd_hdac_bus_reset_link() will be lost
+if the controller is already in reset per the HDA specification mentioned.
+
+This has been harmless on older hardware. On newer generation of Intel
+PCIe based HDA controllers, if configured to report issues, this write
+will emit an unsupported request error. If ACPI Platform Error Interface
+(APEI) is enabled in kernel, this will end up to kernel log.
+
+Fix the code in snd_hdac_bus_reset_link() to only clear the STATESTS if
+the function is called when controller is not in reset. Otherwise
+clearing the bits is not possible and should be skipped.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20211012142935.3731820-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 8 ++++++++
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h | 1 +
- 2 files changed, 9 insertions(+)
+ sound/hda/hdac_controller.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 568ac6b321fa..ae7cd73c823b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -2421,6 +2421,7 @@ static void hns3_buffer_detach(struct hns3_enet_ring *ring, int i)
- {
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc[i].addr = 0;
-+	ring->desc_cb[i].refill = 0;
- }
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 062da7a7a586..f7bd6e2db085 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -421,8 +421,9 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
+ 	if (!full_reset)
+ 		goto skip_reset;
  
- static void hns3_free_buffer_detach(struct hns3_enet_ring *ring, int i,
-@@ -2498,6 +2499,7 @@ static int hns3_alloc_and_attach_buffer(struct hns3_enet_ring *ring, int i)
- 		return ret;
+-	/* clear STATESTS */
+-	snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
++	/* clear STATESTS if not in reset */
++	if (snd_hdac_chip_readb(bus, GCTL) & AZX_GCTL_RESET)
++		snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
  
- 	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc_cb[i].refill = 1;
- 
- 	return 0;
- }
-@@ -2528,12 +2530,14 @@ static void hns3_replace_buffer(struct hns3_enet_ring *ring, int i,
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc_cb[i] = *res_cb;
- 	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc_cb[i].refill = 1;
- 	ring->desc[i].rx.bd_base_info = 0;
- }
- 
- static void hns3_reuse_buffer(struct hns3_enet_ring *ring, int i)
- {
- 	ring->desc_cb[i].reuse_flag = 0;
-+	ring->desc_cb[i].refill = 1;
- 	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
- 					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
-@@ -2631,6 +2635,9 @@ static int hns3_desc_unused(struct hns3_enet_ring *ring)
- 	int ntc = ring->next_to_clean;
- 	int ntu = ring->next_to_use;
- 
-+	if (unlikely(ntc == ntu && !ring->desc_cb[ntc].refill))
-+		return ring->desc_num;
-+
- 	return ((ntc >= ntu) ? 0 : ring->desc_num) + ntc - ntu;
- }
- 
-@@ -2907,6 +2914,7 @@ static void hns3_rx_ring_move_fw(struct hns3_enet_ring *ring)
- {
- 	ring->desc[ring->next_to_clean].rx.bd_base_info &=
- 		cpu_to_le32(~BIT(HNS3_RXD_VLD_B));
-+	ring->desc_cb[ring->next_to_clean].refill = 0;
- 	ring->next_to_clean += 1;
- 
- 	if (unlikely(ring->next_to_clean == ring->desc_num))
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index a8ad7ccae20e..54d02ea4aaa7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -283,6 +283,7 @@ struct hns3_desc_cb {
- 	u32 length;     /* length of the buffer */
- 
- 	u16 reuse_flag;
-+	u16 refill;
- 
- 	/* desc type, used by the ring user to mark the type of the priv data */
- 	u16 type;
+ 	/* reset controller */
+ 	snd_hdac_bus_enter_link_reset(bus);
 -- 
 2.33.0
 
