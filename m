@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C685D4393E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CB24393ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhJYKml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232789AbhJYKmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:42:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C60BC61073;
-        Mon, 25 Oct 2021 10:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635158417;
-        bh=eZ2XNmT09rFhiWmQ0zWif0Szi6EwrOdHI9MgNtiUYRY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FvFXk30bqNLc2fltvKxUQTap0ZgcAtmufunOMTF8sGK1uRHz+skCTq3a4d0OzEmv0
-         pKUO53f1tOuE/adu4kWUgLiHYlAtAtjSR+kYbUv8aR+Xey2Qroqqf476Gu83zbUB2X
-         9pXWRBCQ7qGlJHVXmhpDSRkXMqareDcbVcjKvSk0Z4nKf0uN9oh16iZ3dl5t4rAxxC
-         opVbh5jZCKjhofz3mZqbTD/oKnJl/pJBnZkux6Iw2Jf2TfFm4Z50PINmjVRVIZpthA
-         UeYboNird/Wj6JvgbrKytOww+mopJQcIo6+SeQuwLr4977e+87ZvLdnd2qMX07ZKrT
-         RBDxj+4lvLskA==
-Date:   Mon, 25 Oct 2021 11:40:11 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset
- to finish
-Message-ID: <20211025114011.0eca7ccc@sal.lan>
-In-Reply-To: <20211025102511.GA10529@lpieralisi>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
-        <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
-        <20211022151624.mgsgobjsjgyevnyt@pali>
-        <20211023103059.6add00e6@sal.lan>
-        <20211025102511.GA10529@lpieralisi>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232832AbhJYKro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:47:44 -0400
+Received: from mail.netline.ch ([148.251.143.180]:54250 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhJYKrm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:47:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 3D29420201D;
+        Mon, 25 Oct 2021 12:45:18 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 8Zice53EdW5K; Mon, 25 Oct 2021 12:45:17 +0200 (CEST)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id 8775120201A;
+        Mon, 25 Oct 2021 12:45:17 +0200 (CEST)
+Received: from [127.0.0.1]
+        by thor with esmtp (Exim 4.95)
+        (envelope-from <michel@daenzer.net>)
+        id 1mexTg-000W6M-Nj;
+        Mon, 25 Oct 2021 12:45:16 +0200
+Message-ID: <931230b4-1e73-948d-abaf-f1d62ea58239@daenzer.net>
+Date:   Mon, 25 Oct 2021 12:45:16 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-CA
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20211022144040.3418284-1-javierm@redhat.com>
+ <YXMNOfBS5iFenmx8@intel.com>
+ <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
+ framebuffers removal
+In-Reply-To: <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 25 Oct 2021 11:25:11 +0100
-Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
+On 2021-10-24 22:32, Javier Martinez Canillas wrote:
+> Hello Ville,
+> 
+> On 10/22/21 21:12, Ville Syrjälä wrote:
+>> On Fri, Oct 22, 2021 at 04:40:40PM +0200, Javier Martinez Canillas wrote:
+>>> The simpledrm driver allows to use the frame buffer that was set-up by the
+>>> firmware. This gives early video output before the platform DRM driver is
+>>> probed and takes over.
+>>>
+>>> But it would be useful to have a way to disable this take over by the real
+>>> DRM drivers. For example, there may be bugs in the DRM drivers that could
+>>> cause the display output to not work correctly.
+>>>
+>>> For those cases, it would be good to keep the simpledrm driver instead and
+>>> at least get a working display as set-up by the firmware.
+>>>
+>>> Let's add a drm.remove_fb boolean kernel command line parameter, that when
+>>> set to false will prevent the conflicting framebuffers to being removed.
+>>>
+>>> Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
+>>> early in their probe callback, this will cause the drivers' probe to fail.
+>>
+>> Why is that better than just modprobe.blacklisting those drivers?
+> 
+> Because would allow to deny list all native (as Thomas called it) DRM drivers
+> and only allow the simpledrm driver to be probed. This is useful for distros,
+> since could add a "Basic graphics mode" to the boot menu entries, that could
+> boot the kernel passing a "drm.disable_native_drivers=1" cmdline option.
+> 
+> That way, if there's any problem with a given DRM driver, the distro may be
+> installed and booted using the simpledrm driver and troubleshoot why a native
+> DRM driver is not working. Or try updating the kernel package, etc.
 
-> On Sat, Oct 23, 2021 at 10:30:59AM +0100, Mauro Carvalho Chehab wrote:
-> > Hi Pali,
-> >=20
-> > Em Fri, 22 Oct 2021 17:16:24 +0200
-> > Pali Roh=C3=A1r <pali@kernel.org> escreveu:
-> >  =20
-> > > On Tuesday 19 October 2021 07:06:42 Mauro Carvalho Chehab wrote: =20
-> > > > Before code refactor, the PERST# signals were sent at the
-> > > > end of the power_on logic. Then, the PCI core would probe for
-> > > > the buses and add them.
-> > > >=20
-> > > > The new logic changed it to send PERST# signals during
-> > > > add_bus operation. That altered the timings.
-> > > >=20
-> > > > Also, HiKey 970 require a little more waiting time for
-> > > > the PCI bridge - which is outside the SoC - to finish
-> > > > the PERST# reset, and then initialize the eye diagram.   =20
-> > >=20
-> > > Hello! Which PCIe port do you mean by PCI bridge device? Do you mean
-> > > PCIe Root Port? Or upstream port on some external PCIe switch connect=
-ed
-> > > via PCIe bus to the PCIe Root Port? Because all of these (virtual) PC=
-Ie
-> > > devices are presented as PCI bridge devices, so it is not clear to wh=
-ich
-> > > device it refers. =20
-> >=20
-> > HiKey 970 uses an external PCI bridge chipset (a Broadcom PEX 8606[1]),
-> > with 3 elements connected to the bus: an Ethernet card, a M.2 slot and
-> > a mini PCIe slot. It seems HiKey 970 is unique with regards to PERST# s=
-ignal,
-> > as there are 4 independent PERST# signals there:
-> >=20
-> > 	- one for PEX 8606 (the PCIe root port);
-> > 	- one for Ethernet;
-> > 	- one for M.2;
-> > 	- one for mini-PCIe.
-> >=20
-> > After sending the PCIe PERST# signals, the device has to wait for 21 ms
-> > before adjusting the eye diagram.
-> >=20
-> > [1] https://docs.broadcom.com/docs/PEX_8606_AIC_RDK_HRM_v1.3_06Aug10.pdf
-> >  =20
-> > > Normally PERST# signal is used to reset endpoint card, other end of P=
-CIe
-> > > link and so PERST# signal should not affect PCIe Root Port at all. =20
-> >=20
-> > That's not the case, as PEX 8606 needs to complete its reset sequence
-> > for the rest of the devices to be visible. If the wait time is reduced
-> > or removed, the devices behind it won't be detected. =20
->=20
-> These pieces of information should go into the commit log (or I can add
-> a Link: tag to this discussion) - it is fundamental to understand these
-> changes.
->=20
-> I believe we can merge this series but we have to document this
-> discussion appropriately.
+For troubleshooting, it'll be helpful if this new parameter can be enabled for the boot via the kernel command line, then disabled again after boot-up. One simple possibility for this would be allowing the parameter to be changed via /sys/module/drm/parameters/<name>, which I suspect doesn't work with the patch as is (due to the 0600 permissions).
 
-IMO, the best is to add a Link: to the discussion:
 
-Link: https://lore.kernel.org/all/9a365cffe5af9ec5a1f79638968c3a2efa979b65.=
-1634622716.git.mchehab+huawei@kernel.org/
-
-But if you prefer otherwise and want me to re-submit the series, please
-let me know.
-
-Regards,
-Mauro
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
