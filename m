@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB15E43A2A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDF3439F10
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238643AbhJYTuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:50:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
+        id S233806AbhJYTRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:17:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236857AbhJYTpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:45:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F2C560F4F;
-        Mon, 25 Oct 2021 19:39:03 +0000 (UTC)
+        id S233754AbhJYTQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:16:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8990560EFE;
+        Mon, 25 Oct 2021 19:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190744;
-        bh=xeZfBoYUUj8wuwf6ngr4Dp5HMAeqVdy8+8l0XBq+WTI=;
+        s=korg; t=1635189277;
+        bh=5pHCfnAcUKJFUGqE+TMe4QX3BpuIx6Kf9xjGpidmRKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ocM1G/+XjBmALY96/dReVI2haAQcpmG8gmpeDbjSHn8hHBLnZKEzSDKW2b+069Buq
-         SEO5Vst+2NL6EdUlYPY+eQlDbJ8SaU/QWxhTJBaamQvuNmJLSnHPBGQYCoMB+Y2JHG
-         Eyp7celOuzBjRsprjpUfZ2GvpB6LuN8tPrCb7RC8=
+        b=qZlAwvZ1mfid2uj9pL9xsNc3LtHlavghSZsNVEfW9SwLrU3TtZaIeDFWe6v7mTSGi
+         fNlEc6T0LoAz8B4BqsbCGMXKo+Rl1D/1epJAWJYXgS4VmkjJ2xz+fYPZePYoXBq27O
+         vH4IOgNS4dpKBizzFCIHaGT2qmuiLpKo/rPixbEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 041/169] NIOS2: irqflags: rename a redefined register name
-Date:   Mon, 25 Oct 2021 21:13:42 +0200
-Message-Id: <20211025191023.023574522@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.4 02/44] s390: fix strrchr() implementation
+Date:   Mon, 25 Oct 2021 21:13:43 +0200
+Message-Id: <20211025190929.107136716@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-[ Upstream commit 4cce60f15c04d69eff6ffc539ab09137dbe15070 ]
+commit 8e0ab8e26b72a80e991c66a8abc16e6c856abe3d upstream.
 
-Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
-with the name "CTL_STATUS". Change the one in arch/nios2/ to be
-"CTL_FSTATUS" (flags status) to eliminate the build warning.
+Fix two problems found in the strrchr() implementation for s390
+architectures: evaluate empty strings (return the string address instead of
+NULL, if '\0' is passed as second argument); evaluate the first character
+of non-empty strings (the current implementation stops at the second).
 
-In file included from ../drivers/mmc/host/tmio_mmc.c:22:
-drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
-   31 | #define CTL_STATUS 0x1c
-arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
-   14 | #define CTL_STATUS      0
-
-Fixes: b31ebd8055ea ("nios2: Nios2 registers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Reported-by: Heiko Carstens <hca@linux.ibm.com> (incorrect behavior with empty strings)
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Link: https://lore.kernel.org/r/20211005120836.60630-1-roberto.sassu@huawei.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nios2/include/asm/irqflags.h  | 4 ++--
- arch/nios2/include/asm/registers.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/s390/lib/string.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/arch/nios2/include/asm/irqflags.h b/arch/nios2/include/asm/irqflags.h
-index b3ec3e510706..25acf27862f9 100644
---- a/arch/nios2/include/asm/irqflags.h
-+++ b/arch/nios2/include/asm/irqflags.h
-@@ -9,7 +9,7 @@
- 
- static inline unsigned long arch_local_save_flags(void)
- {
--	return RDCTL(CTL_STATUS);
-+	return RDCTL(CTL_FSTATUS);
- }
- 
- /*
-@@ -18,7 +18,7 @@ static inline unsigned long arch_local_save_flags(void)
+--- a/arch/s390/lib/string.c
++++ b/arch/s390/lib/string.c
+@@ -225,14 +225,13 @@ EXPORT_SYMBOL(strcmp);
   */
- static inline void arch_local_irq_restore(unsigned long flags)
+ char * strrchr(const char * s, int c)
  {
--	WRCTL(CTL_STATUS, flags);
-+	WRCTL(CTL_FSTATUS, flags);
+-       size_t len = __strend(s) - s;
++	ssize_t len = __strend(s) - s;
+ 
+-       if (len)
+-	       do {
+-		       if (s[len] == (char) c)
+-			       return (char *) s + len;
+-	       } while (--len > 0);
+-       return NULL;
++	do {
++		if (s[len] == (char)c)
++			return (char *)s + len;
++	} while (--len >= 0);
++	return NULL;
  }
+ EXPORT_SYMBOL(strrchr);
  
- static inline void arch_local_irq_disable(void)
-diff --git a/arch/nios2/include/asm/registers.h b/arch/nios2/include/asm/registers.h
-index 183c720e454d..95b67dd16f81 100644
---- a/arch/nios2/include/asm/registers.h
-+++ b/arch/nios2/include/asm/registers.h
-@@ -11,7 +11,7 @@
- #endif
- 
- /* control register numbers */
--#define CTL_STATUS	0
-+#define CTL_FSTATUS	0
- #define CTL_ESTATUS	1
- #define CTL_BSTATUS	2
- #define CTL_IENABLE	3
--- 
-2.33.0
-
 
 
