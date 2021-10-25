@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B587743A03C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B697443A0BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhJYT3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:29:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40188 "EHLO mail.kernel.org"
+        id S236329AbhJYTeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:34:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235292AbhJYT0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:26:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 590766108C;
-        Mon, 25 Oct 2021 19:23:20 +0000 (UTC)
+        id S235802AbhJYT3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:29:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CF6E610C8;
+        Mon, 25 Oct 2021 19:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189801;
-        bh=Kw7lkG9kOuWj0W+L7dSn2mt0ZsB27lwqqvz5rScPANU=;
+        s=korg; t=1635189957;
+        bh=AJHvRsZfg3DKD7dTJ2YP1IZPcUKT9wDdx9SBMhxRlCA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A93SDyFJ8Yi/F6b2pyar8xToSd68RR8bXoo5omhWSXVR0lbaNO900jzghoTK3oSs/
-         wZlIp1nEEpe0U7mMuwxYfNqGNPv+Uo3f/yyb5odDpF9KsD3GIU2Kkw9tgND5HyFPco
-         akY2OMy8S2n28umhNWPFzDhttjHupKTDdnIWyLPQ=
+        b=gHvP+nu3arIN8vpD0QlQpmMsvvJiPN+k+tea9IBxWTZ5ub5JEH8HSREizvf9RlhWL
+         kA5ZGQgIFHjMvtX+Uf5dMZYh9Q/SSy/Hil0liOw2LMOHiuRThMHiBk2Qrujd9sT6Ow
+         ahbeKgC9k/bhHWXIRS3PISwInERAi3DCiRCePW9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
+        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/37] xtensa: xtfpga: Try software restart before simulating CPU reset
-Date:   Mon, 25 Oct 2021 21:14:28 +0200
-Message-Id: <20211025190928.971632271@linuxfoundation.org>
+Subject: [PATCH 5.4 12/58] net: dsa: lantiq_gswip: fix register definition
+Date:   Mon, 25 Oct 2021 21:14:29 +0200
+Message-Id: <20211025190939.485130115@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-[ Upstream commit 012e974501a270d8dfd4ee2039e1fdf7579c907e ]
+[ Upstream commit 66d262804a2276721eac86cf18fcd61046149193 ]
 
-Rebooting xtensa images loaded with the '-kernel' option in qemu does
-not work. When executing a reboot command, the qemu session either hangs
-or experiences an endless sequence of error messages.
+I compared the register definitions with the D-Link DWR-966
+GPL sources and found that the PUAFD field definition was
+incorrect. This definition is unused and causes no issues.
 
-  Kernel panic - not syncing: Unrecoverable error in exception handler
-
-Reset code jumps to the CPU restart address, but Linux can not recover
-from there because code and data in the kernel init sections have been
-discarded and overwritten at this point.
-
-XTFPGA platforms have a means to reset the CPU by writing 0xdead into a
-specific FPGA IO address. When used in QEMU the kernel image loaded with
-the '-kernel' option gets restored to its original state allowing the
-machine to boot successfully.
-
-Use that mechanism to attempt a platform reset. If it does not work,
-fall back to the existing mechanism.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Fixes: 14fceff4771e ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/platforms/xtfpga/setup.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/dsa/lantiq_gswip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
-index 982e7c22e7ca..db5122765f16 100644
---- a/arch/xtensa/platforms/xtfpga/setup.c
-+++ b/arch/xtensa/platforms/xtfpga/setup.c
-@@ -54,8 +54,12 @@ void platform_power_off(void)
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index 3225de0f655f..60e36f46f8ab 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -229,7 +229,7 @@
+ #define GSWIP_SDMA_PCTRLp(p)		(0xBC0 + ((p) * 0x6))
+ #define  GSWIP_SDMA_PCTRL_EN		BIT(0)	/* SDMA Port Enable */
+ #define  GSWIP_SDMA_PCTRL_FCEN		BIT(1)	/* Flow Control Enable */
+-#define  GSWIP_SDMA_PCTRL_PAUFWD	BIT(1)	/* Pause Frame Forwarding */
++#define  GSWIP_SDMA_PCTRL_PAUFWD	BIT(3)	/* Pause Frame Forwarding */
  
- void platform_restart(void)
- {
--	/* Flush and reset the mmu, simulate a processor reset, and
--	 * jump to the reset vector. */
-+	/* Try software reset first. */
-+	WRITE_ONCE(*(u32 *)XTFPGA_SWRST_VADDR, 0xdead);
-+
-+	/* If software reset did not work, flush and reset the mmu,
-+	 * simulate a processor reset, and jump to the reset vector.
-+	 */
- 	cpu_reset();
- 	/* control never gets here */
- }
+ #define GSWIP_TABLE_ACTIVE_VLAN		0x01
+ #define GSWIP_TABLE_VLAN_MAPPING	0x02
 -- 
 2.33.0
 
