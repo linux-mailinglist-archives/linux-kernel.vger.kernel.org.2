@@ -2,134 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085F14393CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254AC4393D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhJYKgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhJYKf7 (ORCPT
+        id S232875AbhJYKge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:36:34 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38818
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232926AbhJYKga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:35:59 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254E2C061243
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:33:37 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id u13so17178682edy.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:33:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=uOI455EZK+xQ6LZy+Qgtz7hZ9+hlabcft7bqsTfsnwk=;
-        b=cCBifTqp5lTGiiPTru5INp+kuxdIhhO+7iBanmzoNCcXsDYqhexIozh7ZJv2ObkaT7
-         iQD8tGoTwk9Ah7ZzYSG6LOq9Oqi6pJHeLlOpuT4kmHPywSmT6X4haChoPun5uczNeuo9
-         ppd4TGksPNcFIWND4+I6GduIy7Sfu0O7MxxN6/7KxoSZInnHGcl1AC6UpE4kvMPyLx5A
-         sFD+zeZpotsV17S76X6HwWxrBrl1VhjhsY4wof4hIKLRo+3fyPze1dXUEapSF2kyjn92
-         iozUtCfLCUntocrXvxy1KGf6u0G0Ne//5s/TCrJd76bGT1u0QB59vxKWW6D+sumqcRWq
-         Bbeg==
+        Mon, 25 Oct 2021 06:36:30 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1DA5F3FFF9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635158044;
+        bh=NWa8u1xqA+kXknAshTbkluDR3q/LaPNaEJOIEVhvOvY=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=A8c2lOMTJjUrU04UoFE+O7DxH9kKBJApEE6eT0sTVRmNLXdDFXwfqjYdWU4cL7DPb
+         DMxK2MZx7ObgNCMq7rTF2LvzPEP7Sk5kBPbPZcsgE49o7e8CguH5UnTFBVhk+Vk7o5
+         9jfVzjAALUZdpRPlUrcR7bYx77D2iAg9EDkTigvjZcZ7rlUKpHuTsQ30H5i0le6QKm
+         MYiZYo+fDJqw0t8jbQVyzVws4L+vR2C5cICJsDwuX42rXbiwMTdijXeWdRj2f+ph+X
+         6w9wY6KcpoqTueyUzk3tMzRA3S8gR4iivQDD5aTx7CgBCOAFYM5pENfwteeURuZB/n
+         kIxFsX0uglCqA==
+Received: by mail-oi1-f200.google.com with SMTP id y188-20020aca32c5000000b00299bc4aeba1so5260927oiy.18
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:34:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uOI455EZK+xQ6LZy+Qgtz7hZ9+hlabcft7bqsTfsnwk=;
-        b=8GY2PJWzgdOmunWx+KoPXIpPtRwGWwGeodCWBY0YZawEmt2CjYXNjoQSIGfyB6kwda
-         YGc2S+NFCzVMIwlSqLMVxcUvSx+jvNIgde1xkYMDnoG064eFyyWrDp19xjVISXJWEBjb
-         ztDb5LVYqYJGd2zZiP0z5xMFqm9UYQOmED4GT/wjKVWmAIojkCImHm4bMPhmSVWjYvr3
-         QG7DUqM8PkFJOH8t+62fJTyZDtXD6vQCSL5/S8ZJKsUD7kFBB+Du042tRlM2Fv/SFM/q
-         pB3fL9qEpZEYKygY2PY0zX3ReRQ2upFHQ9FdFTjzCiig5YW68x/gf453hYsFtogS5Jbd
-         FI+A==
-X-Gm-Message-State: AOAM533Ymu1gVN9sAYEqvKrMF97tYovycA+6MUACUgN73Irkd+TP8XKR
-        gmQp+RE/eA9gWwoJGDYsy4OCCw==
-X-Google-Smtp-Source: ABdhPJzNUmre0eMFNlhEzkvE4eyV03gxzJEOFPUJNWRuPm+Xs6hWK0P9fQUQjgeQXsLQOqdeP21aag==
-X-Received: by 2002:a50:d4cd:: with SMTP id e13mr25234696edj.29.1635158014975;
-        Mon, 25 Oct 2021 03:33:34 -0700 (PDT)
-Received: from localhost.localdomain (freifunk-gw.bsa1-cpe1.syseleven.net. [176.74.57.43])
-        by smtp.gmail.com with ESMTPSA id k23sm8562822edv.22.2021.10.25.03.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 03:33:34 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     robert.foss@linaro.org, todor.too@gmail.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, mchehab@kernel.org, robh+dt@kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v1 2/2] media: dt-bindings: media: camss: Document clock-lanes property
-Date:   Mon, 25 Oct 2021 12:33:22 +0200
-Message-Id: <20211025103322.160913-2-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211025103322.160913-1-robert.foss@linaro.org>
-References: <20211025103322.160913-1-robert.foss@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NWa8u1xqA+kXknAshTbkluDR3q/LaPNaEJOIEVhvOvY=;
+        b=f0lWGvsWyyR7O5O3Rs4wgCrRv9FzQ6C04iZdYTz8a8+xcc8yma4aXdY40thGKvepZn
+         /w4QpT3WdXRWWQH8wR9xIxaLXpTdzW4vMPGcm/BTDDSf1dEkFBqQBBwxr9ta6jwUp7+J
+         T3IVRosNawiIW6nOXKAxp2fqDNUosvA7P+EkcoVx2Y0rQswJNM1gN4fMIWZhVN7M5IAn
+         d5H4+iActclZw/bhHCmmnTluJEJjWDtz/zde9p2y8Wr00Q5+8/iT+wqYoDl2zn4sJhZ1
+         B0BPv0lkB8zKRxGQzaYmWZr1nDEcph7YRucZZNxYp9ZxRST3LDSwv6w6DHYXWEkahVZr
+         VNtg==
+X-Gm-Message-State: AOAM531rVfzIhS3kK3H/Wo4AZ+CYEaF4wnxJf4RgmFe8fXXZNTUZVaTc
+        lSRgsJk4IVfGnxe7fpTsYSmRpsiHN/ub/x9c4qmnEIKT6/jN1iEOpiQpLfQ4nl/SuhcAxZAetIB
+        U/I42PVisljfJc+e8bS9rRuVGECA6ka8+df/OGG7sVDvMGh0VMpb24mfbaw==
+X-Received: by 2002:aca:3ad6:: with SMTP id h205mr22065170oia.146.1635158042928;
+        Mon, 25 Oct 2021 03:34:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzuKzBbKGpJhZzcbfNyVyDC6ItnLcanDHxEbpsXf1pAp+cVQrLNUOvkRoxy0+hpaxacKhLjpf9glLMBx31vXyU=
+X-Received: by 2002:aca:3ad6:: with SMTP id h205mr22065145oia.146.1635158042599;
+ Mon, 25 Oct 2021 03:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211021035159.1117456-4-kai.heng.feng@canonical.com> <20211021150920.GA2680911@bhelgaas>
+In-Reply-To: <20211021150920.GA2680911@bhelgaas>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Mon, 25 Oct 2021 18:33:50 +0800
+Message-ID: <CAAd53p4L+NGQE_Z8u5MBN4X3-3Jmj+FdWp+hGo8mumqsQNoxNg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] PCI/ASPM: Add LTR sysfs attributes
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clock-lanes property corresponds to a hardware register field
-that is required to be set, in order to enable the CSI clock signal.
+On Thu, Oct 21, 2021 at 11:09 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Oct 21, 2021 at 11:51:59AM +0800, Kai-Heng Feng wrote:
+> > Sometimes BIOS may not be able to program ASPM and LTR settings, for
+> > instance, the NVMe devices behind Intel VMD bridges. For this case, both
+> > ASPM and LTR have to be enabled to have significant power saving.
+> >
+> > Since we still want POLICY_DEFAULT honor the default BIOS ASPM settings,
+> > introduce LTR sysfs knobs so users can set max snoop and max nosnoop
+> > latency manually or via udev rules.
+>
+> How is the user supposed to figure out what "max snoop" and "max
+> nosnoop" values to program?
 
-The physical lane of the clock signal is not programmable, but only
-togglable On or Off, which what BIT(7) of the
-CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(5) register controls.
+Actually, the only way I know is to get the value from other OS.
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
- .../devicetree/bindings/media/qcom,msm8996-camss.yaml        | 5 +++++
- .../devicetree/bindings/media/qcom,sdm660-camss.yaml         | 5 +++++
- .../devicetree/bindings/media/qcom,sdm845-camss.yaml         | 5 +++++
- 3 files changed, 15 insertions(+)
+>
+> If we add this, I'm afraid we'll have people programming random things
+> that seem to work but are not actually reliable.
 
-diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-index 38be41e932f0..d4da1fad12cf 100644
---- a/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-+++ b/Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-@@ -106,6 +106,11 @@ properties:
- 
-             properties:
-               clock-lanes:
-+                description:
-+                  The index of the clock-lane is not programmable by
-+                  the hardware, but is required to define a CSI port.
-+                  Lane 7 reflects the hardware register field that enables
-+                  the clock lane.
-                 items:
-                   - const: 7
- 
-diff --git a/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
-index 841a1aafdd13..f110152909b9 100644
---- a/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
-+++ b/Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
-@@ -112,6 +112,11 @@ properties:
- 
-             properties:
-               clock-lanes:
-+                description:
-+                  The index of the clock-lane is not programmable by
-+                  the hardware, but is required to define a CSI port.
-+                  Lane 7 reflects the hardware register field that enables
-+                  the clock lane.
-                 items:
-                   - const: 7
- 
-diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml
-index d8fb6ce1d7f9..087d5606f2be 100644
---- a/Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml
-+++ b/Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml
-@@ -106,6 +106,11 @@ properties:
- 
-             properties:
-               clock-lanes:
-+                description:
-+                  The index of the clock-lane is not programmable by
-+                  the hardware, but is required to define a CSI port.
-+                  Lane 7 reflects the hardware register field that enables
-+                  the clock lane.
-                 items:
-                   - const: 7
- 
--- 
-2.30.2
+IMO users need to take full responsibility for own doings.
+Also, it's already doable by using setpci...
 
+If we don't want to add LTR sysfs, what other options do we have to
+enable VMD ASPM and LTR by default since BIOS doesn't do it for us?
+1) Enable it in the PCI or VMD driver, however this approach violates
+POLICY_DEFAULT.
+2) Use `setpci` directly in udev rules to enable VMD ASPM and LTR.
+
+I think 2) is bad, and since 1) isn't so good either, the approach in
+this patch may be the best compromise.
+
+Kai-Heng
+
+>
+> > [1] https://github.com/systemd/systemd/pull/17899/
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209789
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v2:
+> >  - New patch.
+> >
+> >  drivers/pci/pcie/aspm.c | 59 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 59 insertions(+)
+> >
+> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > index 1560859ab056..f7dc62936445 100644
+> > --- a/drivers/pci/pcie/aspm.c
+> > +++ b/drivers/pci/pcie/aspm.c
+> > @@ -1299,6 +1299,59 @@ static ssize_t clkpm_store(struct device *dev,
+> >       return len;
+> >  }
+> >
+> > +static ssize_t ltr_attr_show_common(struct device *dev,
+> > +                       struct device_attribute *attr, char *buf, u8 state)
+> > +{
+> > +     struct pci_dev *pdev = to_pci_dev(dev);
+> > +     int ltr;
+> > +     u16 val;
+> > +
+> > +     ltr = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
+> > +     if (!ltr)
+> > +             return -EINVAL;
+> > +
+> > +     pci_read_config_word(pdev, ltr + state, &val);
+> > +
+> > +     return sysfs_emit(buf, "0x%0x\n", val);
+> > +}
+> > +
+> > +static ssize_t ltr_attr_store_common(struct device *dev,
+> > +                        struct device_attribute *attr,
+> > +                        const char *buf, size_t len, u8 state)
+> > +{
+> > +     struct pci_dev *pdev = to_pci_dev(dev);
+> > +     int ltr;
+> > +     u16 val;
+> > +
+> > +     ltr = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
+> > +     if (!ltr)
+> > +             return -EINVAL;
+> > +
+> > +     if (kstrtou16(buf, 16, &val) < 0)
+> > +             return -EINVAL;
+> > +
+> > +     /* LatencyScale is not permitted to be 110 or 111 */
+> > +     if ((val >> 10) > 5)
+> > +             return -EINVAL;
+> > +
+> > +     pci_write_config_word(pdev, ltr + state, val);
+> > +
+> > +     return len;
+> > +}
+> > +
+> > +#define LTR_ATTR(_f, _s)                                             \
+> > +static ssize_t _f##_show(struct device *dev,                         \
+> > +                      struct device_attribute *attr, char *buf)      \
+> > +{ return ltr_attr_show_common(dev, attr, buf, PCI_LTR_##_s); }               \
+> > +                                                                     \
+> > +static ssize_t _f##_store(struct device *dev,                                \
+> > +                       struct device_attribute *attr,                \
+> > +                       const char *buf, size_t len)                  \
+> > +{ return ltr_attr_store_common(dev, attr, buf, len, PCI_LTR_##_s); }
+> > +
+> > +LTR_ATTR(ltr_max_snoop_lat, MAX_SNOOP_LAT);
+> > +LTR_ATTR(ltr_max_nosnoop_lat, MAX_NOSNOOP_LAT);
+> > +
+> >  static DEVICE_ATTR_RW(clkpm);
+> >  static DEVICE_ATTR_RW(l0s_aspm);
+> >  static DEVICE_ATTR_RW(l1_aspm);
+> > @@ -1306,6 +1359,8 @@ static DEVICE_ATTR_RW(l1_1_aspm);
+> >  static DEVICE_ATTR_RW(l1_2_aspm);
+> >  static DEVICE_ATTR_RW(l1_1_pcipm);
+> >  static DEVICE_ATTR_RW(l1_2_pcipm);
+> > +static DEVICE_ATTR_RW(ltr_max_snoop_lat);
+> > +static DEVICE_ATTR_RW(ltr_max_nosnoop_lat);
+> >
+> >  static struct attribute *aspm_ctrl_attrs[] = {
+> >       &dev_attr_clkpm.attr,
+> > @@ -1315,6 +1370,8 @@ static struct attribute *aspm_ctrl_attrs[] = {
+> >       &dev_attr_l1_2_aspm.attr,
+> >       &dev_attr_l1_1_pcipm.attr,
+> >       &dev_attr_l1_2_pcipm.attr,
+> > +     &dev_attr_ltr_max_snoop_lat.attr,
+> > +     &dev_attr_ltr_max_nosnoop_lat.attr,
+> >       NULL
+> >  };
+> >
+> > @@ -1338,6 +1395,8 @@ static umode_t aspm_ctrl_attrs_are_visible(struct kobject *kobj,
+> >
+> >       if (n == 0)
+> >               return link->clkpm_capable ? a->mode : 0;
+> > +     else if (n == 7 || n == 8)
+> > +             return pdev->ltr_path ? a->mode : 0;
+> >
+> >       return link->aspm_capable & aspm_state_map[n - 1] ? a->mode : 0;
+> >  }
+> > --
+> > 2.32.0
+> >
