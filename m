@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A8D439F95
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05CE439F47
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhJYTWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:22:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38138 "EHLO mail.kernel.org"
+        id S230183AbhJYTTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234550AbhJYTVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:21:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D900610CF;
-        Mon, 25 Oct 2021 19:18:38 +0000 (UTC)
+        id S234066AbhJYTSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:18:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9A361078;
+        Mon, 25 Oct 2021 19:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189519;
-        bh=mHL1+/sGFYkWBjJdyj/s4p2sjcui4IVOvEEToKqYAoA=;
+        s=korg; t=1635189373;
+        bh=6KaK6RnVPDbO2lV/+9Ca3txKPwMLULQk7yN2RcOQQK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xDjj/hNqkZraxTv1hu5jgfLLU+5kMHkKNjDa5xS88CpRrGZrauJ4KEcaI+AqGo4RY
-         ZYZ5gGegKhXiuz8HYGJQf1/oeqlkrWb+n+EBwEeZDZiN4T33YlfTKd/quU8OqV1vqR
-         +an86IIKp03X6WN5AnjAR8OcnUKr0pJMAHap4uPQ=
+        b=17l7y4awQQyW/8F7uecAGQf0PjL5AiQbKhQv7wPUyr/YgZ+ZmXKwsdZJS3y7oFcBA
+         PQMyJ/p2YMwc8grl3EwmR0KB5P9PgYGyGSBN2J4y7vEaBDA5xMA5iTWRuD3uK9Rg6a
+         7CwHOZ3r8sI5dCXrSYqKqUe3t+5i9xoMFVymtedk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 4.9 24/50] drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
-Date:   Mon, 25 Oct 2021 21:14:11 +0200
-Message-Id: <20211025190937.555999473@linuxfoundation.org>
+        stable@vger.kernel.org, Brendan Grieve <brendan@grieve.com.au>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 31/44] ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
+Date:   Mon, 25 Oct 2021 21:14:12 +0200
+Message-Id: <20211025190935.037325330@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Brendan Grieve <brendan@grieve.com.au>
 
-commit c8f01ffc83923a91e8087aaa077de13354a7aa59 upstream.
+commit 3c414eb65c294719a91a746260085363413f91c1 upstream.
 
-This disables a lock which wasn't enabled and it does not disable
-the first lock in the array.
+As per discussion at: https://github.com/szszoke/sennheiser-gsp670-pulseaudio-profile/issues/13
 
-Fixes: 6e0eb52eba9e ("drm/msm/dsi: Parse bus clocks from a list")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20211001123409.GG2283@kili
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+The GSP670 has 2 playback and 1 recording device that by default are
+detected in an incompatible order for alsa. This may have been done to make
+it compatible for the console by the manufacturer and only affects the
+latest firmware which uses its own ID.
+
+This quirk will resolve this by reordering the channels.
+
+Signed-off-by: Brendan Grieve <brendan@grieve.com.au>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211015025335.196592-1-brendan@grieve.com.au
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/dsi/dsi_host.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks-table.h |   32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -439,7 +439,7 @@ static int dsi_bus_clk_enable(struct msm
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3446,5 +3446,37 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Sennheiser GSP670
++	 * Change order of interfaces loaded
++	 */
++	USB_DEVICE(0x1395, 0x0300),
++	.bInterfaceClass = USB_CLASS_PER_INTERFACE,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			// Communication
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Recording
++			{
++				.ifnum = 4,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Main
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
  
- 	return 0;
- err:
--	for (; i > 0; i--)
-+	while (--i >= 0)
- 		clk_disable_unprepare(msm_host->bus_clks[i]);
- 
- 	return ret;
+ #undef USB_DEVICE_VENDOR_SPEC
 
 
