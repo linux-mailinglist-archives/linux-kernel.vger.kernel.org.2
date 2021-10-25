@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C4C43985F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C5A439862
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhJYOW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:22:56 -0400
-Received: from mga12.intel.com ([192.55.52.136]:43872 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhJYOWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:22:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="209760241"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="209760241"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:20:30 -0700
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="634756109"
-Received: from cdsmith3-mobl.amr.corp.intel.com (HELO [10.212.229.230]) ([10.212.229.230])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:20:29 -0700
-Subject: Re: [PATCH v2 3/5] x86/mm: check exec permissions on fault
-To:     Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-References: <20211021122112.592634-1-namit@vmware.com>
- <20211021122112.592634-4-namit@vmware.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <e55875fa-1264-7e08-3bb8-ed984f6ea5b3@intel.com>
-Date:   Mon, 25 Oct 2021 07:20:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233484AbhJYOXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231302AbhJYOXi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:23:38 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69788C061746
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:21:16 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 62-20020a1c0241000000b0032ca21cffeeso145750wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=M2t/ljyMrSuXJkPKEqRg6rIEcIkhDvv9y02qHL6/vSA=;
+        b=HnJfizDONe/3Ah4LArAtk4rNpri4e/nd+R022uQwk6uOK/euQFILctLpRi0WoJC+Rv
+         akNDcgmWu3b0WFc814xw9EFbPyGunTCw34CqooWBboOE2KGXGPEkaPE3dgHFnBQ37h9K
+         CsB0DyUz4zdOv96Ah7h7TdpDr0RlVkMhLsXgPFVjeVsGIxEZ6qi8TcIDyp9lAIGdkoxQ
+         ZpX9LrM5qHGPjLVL+U5nssVoJ24QfpGMJvvwp6UTAdyJwdAk/+cJ6hCLb9OR4SuoBIn4
+         uBCjWggLsLNpLi/5rpTRH+vNBuE+Pl5d9gdVEo/RzOaxcjJLb8c80XcUofkTIQ6kjwwV
+         BuLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=M2t/ljyMrSuXJkPKEqRg6rIEcIkhDvv9y02qHL6/vSA=;
+        b=ISfXgMrLtRXFq/fE4nuU5EBP+CBmvLwbjxUu2XlrJz9WFDaZHvkU0qG9exPEfsmbcK
+         lrDX0iFyHe/OGJbISXR5OQ2S3hd+B8icX3i4/ZgINkKcScc2yDkm+ecc58+2peaGba7/
+         4waOnyxUjWTZcmdRqG6dXQEzofzo+jqqQdzIolhYRYGEN279fBooqUIS1ZF4t4jEq9GL
+         nyiw2XmX86c8sMHm11DNogyxegMfBFsK7cGJnHspXxojUcE6pTWoxQllN1TXZ6rssaox
+         D4BSGs37mIGveNtOTe6neMq1K8bxKHW3oIZ3SMHCyvsnD5l8uNd7GpuCUPikDFOrenVU
+         Qgjg==
+X-Gm-Message-State: AOAM533P+4R9IWzz2bwMyI3bnXQiKE73E3kMkDfCllzBkT8QPsf0g4et
+        MgVjYlFRCV9qf0tN9pBI2Em6UhgIEW2VtA==
+X-Google-Smtp-Source: ABdhPJxZdvPCuvpV6tREqY0nQE+UB8Cnxc1p8PDS1uJcZgD/pQ7VS7MzXqg1nnKjYeohcPySiJe9iw==
+X-Received: by 2002:a1c:4d08:: with SMTP id o8mr17787192wmh.35.1635171674960;
+        Mon, 25 Oct 2021 07:21:14 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id u2sm15907155wrr.35.2021.10.25.07.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 07:21:14 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 16:21:12 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH v2 00/10] staging: media: zoran: fusion in one module
+Message-ID: <YXa9WGs7ewyaHmI9@Red>
+References: <20211013185812.590931-1-clabbe@baylibre.com>
+ <da925d73-fdf0-3962-3841-a1dd53b5c5dd@xs4all.nl>
 MIME-Version: 1.0
-In-Reply-To: <20211021122112.592634-4-namit@vmware.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <da925d73-fdf0-3962-3841-a1dd53b5c5dd@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 5:21 AM, Nadav Amit wrote:
-> access_error() currently does not check for execution permission
-> violation. 
-Ye
+Le Mon, Oct 25, 2021 at 02:45:02PM +0200, Hans Verkuil a écrit :
+> Hi Corentin,
+> 
+> On 13/10/2021 20:58, Corentin Labbe wrote:
+> > Hello
+> > 
+> > The main change of this serie is to fusion all zoran related modules in
+> > one.
+> > This fixes the load order problem when everything is built-in.
+> > 
+> > Regards
+> > 
+> > Changes since v1:
+> > - add missing debugfs cleaning
+> > - clean some remaining module_get/put functions which made impossible to
+> >   remove the zoran module
+> > - added the two latest patchs
+> 
+> Something weird is wrong with this series. I have a DC30, but loading this with:
+> 
+> modprobe zr36067 card=3
+> 
+> results in this error message in the kernel log:
+> 
+> [   58.645557] zr36067: module is from the staging directory, the quality is unknown, you have been warned.
+> [   58.646658] zr36067 0000:03:00.0: Zoran MJPEG board driver version 0.10.1
+> [   58.646793] zr36067 0000:03:00.0: Zoran ZR36057 (rev 1), irq: 18, memory: 0xf4000000
+> [   58.648821] zr36067 0000:03:00.0: Initializing i2c bus...
+> [   58.662420] vpx3220 22-0047: vpx3216b found @ 0x8e (DC30[0])
+> [   58.737445] zr36067 0000:03:00.0: Fail to get encoder
+> 
+> This works before, so why this is now failing is not clear to me.
+> 
+> It does work with 'card=0', but I really have a DC30.
+> 
+> If I test with 'card=0' then the rmmod issue is now solved.
 
-> As a result, spurious page-faults due to execution permission
-> violation cause SIGSEGV.
+Everything normal, since card 0 does not have encoder.
+Could you check that adv7175 is compiled ?
 
-While I could totally believe that something is goofy when VMAs are
-being changed underneath a page fault, I'm having trouble figuring out
-why the "if (error_code & X86_PF_WRITE)" code is being modified.
+I got the same problem with my DC10+ where saa7110 was not compiled.
+This issue was reproduced randomly and I have no explanation. (kconfig problem ?)
 
-> It appears not to be an issue so far, but the next patches avoid TLB
-> flushes on permission promotion, which can lead to this scenario. nodejs
-> for instance crashes when TLB flush is avoided on permission promotion.
-
-Just to be clear, "promotion" is going from something like:
-
-	W=0->W=1
-or
-	NX=1->NX=0
-
-right?  I tend to call that "relaxing" permissions.
-
-Currently, X86_PF_WRITE faults are considered an access error unless the
-VMA to which the write occurred allows writes.  Returning "no access
-error" permits continuing and handling the copy-on-write.
-
-It sounds like you want to expand that.  You want to add a whole class
-of new faults that can be ignored: not just that some COW handling might
-be necessary, but that the PTE itself might be out of date.    Just like
-a "COW fault" may just result in setting the PTE.W=1 and moving on with
-our day, an instruction fault might now just end up with setting
-PTE.NX=0 and also moving on with our day.
-
-I'm really confused why the "error_code & X86_PF_WRITE" case is getting
-modified.  I would have expected it to be something like just adding:
-
-	/* read, instruction fetch */
-	if (error_code & X86_PF_INSN) {
-                /* Avoid enforcing access error if spurious: */
-                if (unlikely(!(vma->vm_flags & VM_EXEC)))
-                        return 1;
-                return 0;
-        }
-
-I'm really confused what X86_PF_WRITE and X86_PF_INSN have in common
-other than both being able to (now) be generated spuriously.
+Regards
