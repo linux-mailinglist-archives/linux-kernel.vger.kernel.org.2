@@ -2,85 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACD6439D30
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4589439D32
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234080AbhJYRPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:15:34 -0400
-Received: from smtprelay0123.hostedemail.com ([216.40.44.123]:58056 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234018AbhJYRP3 (ORCPT
+        id S230495AbhJYRQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:16:32 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44380
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230169AbhJYRQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:15:29 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 1EFBB100E8940;
-        Mon, 25 Oct 2021 17:13:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 531121124F7;
-        Mon, 25 Oct 2021 17:13:04 +0000 (UTC)
-Message-ID: <adcb168fc78f62583f8d925bcadbbcda9ba7da20.camel@perches.com>
-Subject: Re: [PATCH 1/4] fs/ntfs3: In function ntfs_set_acl_ex do not change
- inode->i_mode if called from function ntfs_init_acl
-From:   Joe Perches <joe@perches.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date:   Mon, 25 Oct 2021 10:13:03 -0700
-In-Reply-To: <67d0c9ca-2531-8a8a-ea0b-270dc921e271@paragon-software.com>
-References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-         <67d0c9ca-2531-8a8a-ea0b-270dc921e271@paragon-software.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Mon, 25 Oct 2021 13:16:27 -0400
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A07784029B
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635182041;
+        bh=Hk4lOwz4f7wTCRGYtvRC48wy0ThJFDVetY4MJ8P3wC4=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=IZRYw9DkLzHS20dcu21cxwzIfOpoWENoeMXfGToADOcMukF1gTFbR05i1wqMATOPs
+         On9G4Q4ZeqmQ1N1x/nFhVpFgJs0EkaJS6jN4UYvq5m3RGQzX6tLO2EMFKgSUZQBIFV
+         evzKAkLOD1Yz7eGMACxS2yE3a3KMIq9ysacOo7uveftBvMpPRpriGiS3ckGzmvngl+
+         pGQzG4PvuYkPtmLAaQsVy+wxkbUxuX9KaQDnUgDpBm1JC1dW+1wxpFAspw5hS9I/pb
+         ZJ3Dlvvdljvy2flj6LTJgXbhK3s71ZWYCLv2w1XJBsCeSb8yizBYPVCWD9Oc5+52vP
+         zqBuhjnZjg63w==
+Received: by mail-lj1-f200.google.com with SMTP id z20-20020a05651c023400b0021162ead40fso2132210ljn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:14:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hk4lOwz4f7wTCRGYtvRC48wy0ThJFDVetY4MJ8P3wC4=;
+        b=taowLaExhXYh5nrShHgnLTAbkS8VIQaDpa9AyeRkihTUM01EYYVstPkJJ5Syd0YDWr
+         ai3zrvOYWrO8DisUhoO2D1YtPOmDKmvgwWjLxWSwr+AQDSX5WYsUOemTughbKYpdCqjI
+         3EQd+6DPn9uRQ12xhmy5pz6ztIQoaBYmZtfwFp5t4a/J+OEQUHm4N5tZ1mj5IKlOYECw
+         yuiMNe1tgwPYnEUdGI5pEVY4ujTxDjtoPdNNTPp5iApkBHN287n7D8y+W4/J6BiPdiZR
+         DNkWkgUUoC1+jC56WJEqrhNijUeADA4ECeA1xmEnMo5c9/MG8EbZMDi6mOpOSVYmc7IG
+         iN5A==
+X-Gm-Message-State: AOAM531FyK/CgFmvnRdumrYeVdnUfWbk0SpcVyJZcKsTaeDj2YYRv2HA
+        R5Solyhf0XbZZx5MrfCTjt0EohfYAjP5uFGnmMo8cHTfTEa5N1a59M/5JY0n6LjWiHYUtK5gf09
+        PPqy57BvBEifpVriSU6SAadQqRXgrWSXxaN58VE5uLw==
+X-Received: by 2002:a05:6512:a8b:: with SMTP id m11mr18243183lfu.220.1635182040968;
+        Mon, 25 Oct 2021 10:14:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYoERLcQJ9Xo3eL7nVeEMLZOJkMn00zTSr1p+6RuUJ4YRUUT+0bdoruptwB7i2KGokoxuQpA==
+X-Received: by 2002:a05:6512:a8b:: with SMTP id m11mr18243162lfu.220.1635182040719;
+        Mon, 25 Oct 2021 10:14:00 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id m13sm77929lji.132.2021.10.25.10.13.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 10:14:00 -0700 (PDT)
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzbot <syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Thierry Escande <thierry.escande@collabora.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+References: <000000000000c644cd05c55ca652@google.com>
+ <9e06e977-9a06-f411-ab76-7a44116e883b@canonical.com>
+ <20210722144721.GA6592@rowland.harvard.edu>
+ <b9695fc8-51b5-c61e-0a2f-fec9c2f0bae0@canonical.com>
+ <20211020220503.GB1140001@rowland.harvard.edu>
+ <7d26fa0f-3a45-cefc-fd83-e8979ba6107c@canonical.com>
+ <20211025162200.GC1258186@rowland.harvard.edu>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [syzbot] INFO: task hung in port100_probe
+Message-ID: <1927ec9b-d1d0-9c70-992b-925ddfbba79a@canonical.com>
+Date:   Mon, 25 Oct 2021 19:13:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 531121124F7
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: 364jh3s7h6dtmh9kiaz4585thf8ipgad
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+xHwzyPg1NsBxY0J6qT6BDg9ijgjanve8=
-X-HE-Tag: 1635181984-117484
+In-Reply-To: <20211025162200.GC1258186@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-25 at 19:58 +0300, Konstantin Komarov wrote:
-> ntfs_init_acl sets mode. ntfs_init_acl calls ntfs_set_acl_ex.
-> ntfs_set_acl_ex must not change this mode.
-> Fixes xfstest generic/444
-> Fixes: 83e8f5032e2d ("fs/ntfs3: Add attrib operations")
+On 25/10/2021 18:22, Alan Stern wrote:
+> On Mon, Oct 25, 2021 at 04:57:23PM +0200, Krzysztof Kozlowski wrote:
+>> On 21/10/2021 00:05, Alan Stern wrote:
+>>>>
+>>>> The syzkaller reproducer fails if >1 of threads are running these usb
+>>>> gadgets.  When this happens, no "in_urb" completion happens. No this
+>>>> "ack" port100_recv_ack().
+>>>>
+>>>> I added some debugs and simply dummy_hcd dummy_timer() is woken up on
+>>>> enqueuing in_urb and then is looping crazy on a previous URB (some older
+>>>> URB, coming from before port100 driver probe started). The dummy_timer()
+>>>> loop never reaches the second "in_urb" to process it, I think.
+>>>
+>>> Is there any way you can track down what's happening in that crazy loop?  
+>>> That is, what driver was responsible for the previous URB?
+>>>
+>>> We have seen this sort of thing before, where a driver submits an URB 
+>>> for a gadget which has disconnected.  The URB fails with -EPROTO status 
+>>> but the URB's completion handler does an automatic resubmit.  That can 
+>>> lead to a very tight loop with dummy-hcd, and it could easily prevent 
+>>> some other important processing from occurring.  The simple solution is 
+>>> to prevent the driver from resubmitting when the completion status is 
+>>> -EPROTO.
+>>
+>> Hi Alan,
+>>
+>> Thanks for the reply.
+>>
+>> The URB which causes crazy loop is the port100 driver second URB, the
+>> one called ack or in_urb.
+>>
+>> The flow is:
+>> 1. probe()
+>> 2. port100_get_command_type_mask()
+>> 3. port100_send_cmd_async()
+>> 4. port100_send_frame_async()
+>> 5. usb_submit_urb(dev->out_urb)
+>>    The call succeeds, the dummy_hcd picks it up and immediately ends the
+>> timer-loop with -EPROTO
+> 
+> So that URB completes immediately.
+> 
+>> The completion here does not resubmit another/same URB. I checked this
+>> carefully and I hope I did not miss anything.
+> 
+> Yeah, I see the same thing.
+> 
+>> 6. port100_submit_urb_for_ack() which sends the in_urb:
+>>    usb_submit_urb(dev->in_urb)
+>> ... wait for completion
+>> ... dummy_hcd loops on this URB around line 2000:
+>> if (status == -EINPROGRESS)
+>>   continue
+> 
+> Do I understand this correctly?  You're saying that dummy-hcd executes 
+> the following jump at line 1975:
+> 
+> 		/* incomplete transfer? */
+> 		if (status == -EINPROGRESS)
+> 			continue;
+> 
+> which goes back up to the loop head on line 1831:
+> 
+> 	list_for_each_entry_safe(urbp, tmp, &dum_hcd->urbp_list, urbp_list) {
+> 
+> Is that right?
 
-trivia:
+Yes, exactly. The loop continues, iterating over list finishes thus the
+loops and dummy timer function exits. Then immediately it is being
+rescheduled by something (I don't know by what yet).
 
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-[]
-> @@ -538,7 +538,7 @@ struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
->  
->  static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
->  				    struct inode *inode, struct posix_acl *acl,
-> -				    int type)
-> +				    int type, int init_acl)
+To remind - the syzbot reproducer must run at least two threads
+(spawning USB gadgets so creating separate dummy devices) at the same
+time. However only one of dummy HCD devices seems to timer-loop
+endlessly... but this might not be important, e.g. maybe it's how syzbot
+reproducer works.
 
-bool init_acl?
+>  I don't see why this should cause any problem.  It won't 
+> loop back to the same URB; it will make its way through the list.  
+> (Unless the list has somehow gotten corrupted...)  dum_hcd->urbp_list 
+> should be short (perhaps 32 entries at most), so the loop should reach 
+> the end of the list fairly quickly.
 
-> @@ -613,7 +614,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
->  int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  		 struct posix_acl *acl, int type)
->  {
-> -	return ntfs_set_acl_ex(mnt_userns, inode, acl, type);
-> +	return ntfs_set_acl_ex(mnt_userns, inode, acl, type, 0);
+The list has actually only one element - only this one URB coming from
+port100 device (which I was always calling second URB/ack, in_urb).
 
-false
+> Now, doing all this 1000 times per second could use up a significant 
+> portion of the available time.  Do you think that's the reason for the 
+> problem?  It seems pretty unlikely.
 
->  }
->  
->  /*
-> @@ -633,7 +634,7 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  
->  	if (default_acl) {
->  		err = ntfs_set_acl_ex(mnt_userns, inode, default_acl,
-> -				      ACL_TYPE_DEFAULT);
-> +				      ACL_TYPE_DEFAULT, 1);
+No, this timer-looping itself is not a problem. Problem is that this URB
+never reaches some final state, e.g. -EPROTO.
 
-true, etc...
+In normal operation, e.g. when reproducer did not hit the issue, both
+URBs from port100 (the first out_urb and second in_urb) complete with
+-EPROTO. In the case leading to hang ("task kworker/0:0:5 blocked for
+more than 143 seconds"), the in_urb does not complete therefore the
+port100 driver waits.
 
+Whether this intensive timer-loop is important (processing the same URB
+and continuing), I don't know.
 
+Best regards,
+Krzysztof
