@@ -2,112 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2361439538
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42351439550
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbhJYLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:49:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39168 "EHLO mail.kernel.org"
+        id S231894AbhJYLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233243AbhJYLsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 703AA61002;
-        Mon, 25 Oct 2021 11:46:21 +0000 (UTC)
+        id S230168AbhJYLyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:54:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 037B860F9D;
+        Mon, 25 Oct 2021 11:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635162381;
-        bh=EYRg6Kk1mOFdtTobWnLjNW8brE5BqDoSMG07X32ZNmc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OfzqmfEuaTAZi5ldwr++kvuDXSTMf8ZaIGfKw5/ZbRvIARpI7w8JodPhynhi3W8bh
-         PT24iFl2RdjIVoWoLURbnVG/5wFlNqrFdFIbWG3zjm6kdLZpIjEQHlYNEkxTtwR4nf
-         PfYN6rlR+ALjCHxIn4JmgQjGAiUtjaajgmP1eePG9dffPmOz84IyVnoguLXUHPy9vx
-         alpI3GAijwWfj9m/Onlmq/u52toYRyavqiEqMQDlLjaXaW2BBLf9dChXJ1w2hPcbv/
-         /SQaWMnwpkxv7hAzceyUF1OGPlsq3hPooxbDS/3JPZbx1KswUlqLoVxwTli/ZUkZNl
-         DPIC26KZMnI3A==
+        s=k20201202; t=1635162745;
+        bh=BbRoaahLOM0ZqWpMw3lcnu/Lch2p4ofSfI1jLBp3uOg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f5kL+YvBvxP3e+oGifJv/Ip5eL6rdwgLjzIsw5xGW/6+frqqlKfNiJiYcAHvrXRRc
+         +aMbygkQ5JEeq6cj5klREh4jFe6mHPYllKIeaYW+JBCrGY9DmNhVQngFZXebt0Yb+X
+         Zu5SqnLEzCrf88mDPuUoH3cTySPJngKLxbtoUA+DVWhVQVdtpiFh8AA+o7aoTb6U9n
+         GH1EjB5ecFXkc0Xx1rW6gPP+NT4ukp1vy1io+nagG55Bh+csLkL6p/1wmkYflNiiBo
+         tDvBWcUe6O1hRtj/DdGaZxIIAzmIJSJBwIBuUKn40sSCmSYlCrRd0I3ErNXs4HoxQz
+         eCUA1I7nL0ICQ==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan@kernel.org>)
-        id 1meyQW-0001DP-Gi; Mon, 25 Oct 2021 13:46:04 +0200
+        id 1meyWN-0001Ik-Kr; Mon, 25 Oct 2021 13:52:07 +0200
 From:   Johan Hovold <johan@kernel.org>
-To:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 5/5] comedi: vmk80xx: fix bulk and interrupt message timeouts
-Date:   Mon, 25 Oct 2021 13:45:32 +0200
-Message-Id: <20211025114532.4599-6-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 0/2] USB: fix control-message timeouts
+Date:   Mon, 25 Oct 2021 13:51:57 +0200
+Message-Id: <20211025115159.4954-1-johan@kernel.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211025114532.4599-1-johan@kernel.org>
-References: <20211025114532.4599-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB bulk and interrupt message timeouts are specified in milliseconds
-and should specifically not vary with CONFIG_HZ.
+A number of drivers throughout the tree were using timeout values in
+jiffies instead of milliseconds.
 
-Note that the bulk-out transfer timeout was set to the endpoint
-bInterval value, which should be ignored for bulk endpoints and is
-typically set to zero. This meant that a failing bulk-out transfer
-would never time out.
+This series fixes a broken USB documentation example and the single
+driver in the USB subtree that got it wrong.
 
-Assume that the 10 second timeout used for all other transfers is more
-than enough also for the bulk-out endpoint.
+Johan
 
-Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
-Fixes: 951348b37738 ("staging: comedi: vmk80xx: wait for URBs to complete")
-Cc: stable@vger.kernel.org      # 2.6.31
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/comedi/drivers/vmk80xx.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-index 9c56918e3b76..4b00a9ea611a 100644
---- a/drivers/comedi/drivers/vmk80xx.c
-+++ b/drivers/comedi/drivers/vmk80xx.c
-@@ -91,6 +91,7 @@ enum {
- #define IC6_VERSION		BIT(1)
- 
- #define MIN_BUF_SIZE		64
-+#define PACKET_TIMEOUT		10000	/* ms */
- 
- enum vmk80xx_model {
- 	VMK8055_MODEL,
-@@ -169,10 +170,11 @@ static void vmk80xx_do_bulk_msg(struct comedi_device *dev)
- 	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
- 	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
- 
--	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
--		     tx_size, NULL, devpriv->ep_tx->bInterval);
-+	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
-+		     PACKET_TIMEOUT);
- 
--	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
-+	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
-+		     PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_read_packet(struct comedi_device *dev)
-@@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct comedi_device *dev)
- 	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
- 				 usb_endpoint_maxp(ep), NULL,
--				 HZ * 10);
-+				 PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
-@@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
- 	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
- 				 usb_endpoint_maxp(ep), NULL,
--				 HZ * 10);
-+				 PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_reset_device(struct comedi_device *dev)
+Johan Hovold (2):
+  Documentation: USB: fix example bulk-message timeout
+  USB: iowarrior: fix control-message timeouts
+
+ Documentation/driver-api/usb/writing_usb_driver.rst | 2 +-
+ drivers/usb/misc/iowarrior.c                        | 8 ++------
+ 2 files changed, 3 insertions(+), 7 deletions(-)
+
 -- 
 2.32.0
 
