@@ -2,117 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D574399C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CE54399D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhJYPPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbhJYPPb (ORCPT
+        id S233861AbhJYPSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:18:09 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:50339 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233777AbhJYPSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:15:31 -0400
-Received: from lb2-smtp-cloud8.xs4all.net (lb2-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E54C061745;
-        Mon, 25 Oct 2021 08:13:08 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id f1eqmGoUiFfMif1ermUucr; Mon, 25 Oct 2021 17:13:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1635174785; bh=fIY1GIaSVdj5U3XrMAxDyWv4KHAUORx2wUkdkjhqXC8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=aQWf8mKI/N+PtAuoDrZ04aYbmjcG+AVRujs+lv+EPoaW0Jd4kZ7nxAWRIehWqjPym
-         IjRZZKVeZ6jNUY/gnKntbtfxPxzwz5IrEaAzcbba35fQ6SVLdPElqYITmJKxahxgHF
-         1mFqwIhxTVvpr0LQHa+s+CHQzaCUZAiyiewyG5b5aY/P1bDBhZp6aqlW/utymYoYQY
-         /BbWK5u8sE9Ub5UCs8V9x/niNdwSWr1RWHayQpz9BO/Y8plwQoNboM44E2uxelpEWW
-         cUrZW0T3y9+x/6PUT74qw9s7fk3YMwOz2waNgvvnryid60AV2EuhYNDLd+n6oMaL3k
-         iOWMOKf//suMQ==
-Subject: Re: [PATCH v2 00/10] staging: media: zoran: fusion in one module
-To:     LABBE Corentin <clabbe@baylibre.com>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-References: <20211013185812.590931-1-clabbe@baylibre.com>
- <da925d73-fdf0-3962-3841-a1dd53b5c5dd@xs4all.nl> <YXa9WGs7ewyaHmI9@Red>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <71b72175-538e-87e4-d662-e59fd4131a43@xs4all.nl>
-Date:   Mon, 25 Oct 2021 17:13:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 25 Oct 2021 11:18:08 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C51E7580684;
+        Mon, 25 Oct 2021 11:15:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 25 Oct 2021 11:15:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm1; bh=diT2fj6PkuD69IpbJXNRqYXYKn
+        P5NvILTd/s9bJ0OlY=; b=VhHgFlMBiex3XRoKMVkP+MWPTu1mTWrGp4HgjCJft+
+        fHkLIUpdJGrXpdk0BZKDh0N1sigiQA3bm27LeWhFLC21sLCnDLFgfcb+Cv0SNR8U
+        tohUaqhOuqwc+1KuOXWtoe8CC/v1ugkxODW6w3gp/79FhR07P028s58b15qWqQuo
+        TW53Ucj3d+S0vfYZzHXDE/ObvS1xxnk9mYY0+qizTiINFyHnotoAgDrV3C9CbEeD
+        PLyfe9kLAShmsTe9vben4QH/GmZ2TQVQZH6rqeK++soiCr1YRvWTSASxvhfdi77s
+        TJnOsLV7v6sfOHsu1UCbobC/s2wa2tjRdFXAiAumU+OA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=diT2fj
+        6PkuD69IpbJXNRqYXYKnP5NvILTd/s9bJ0OlY=; b=gaB3S8V7nuXn3MJq7kzo6d
+        d4Fp06+GtLqaQ5KXkUBaE5WWL//ewQTFZkT7eGQabm1x7ipCRO7mAj1S++bwpKx7
+        WlPX3MZh2+FJC0osKUtI23L5JD2A27pCnl8LQP8rZrIB+1NUNhHM34zBs4pvCVfW
+        5WwLYEkL2QzJZ4AlPdtBapgmwZlmJV9JQ31U7+lVzxIjowrW8h7O1TbSr4lVV5Ix
+        EY03X8IbPZIdmkIjems9awfdTKIoKGxBWHzJl5bTpwd/PcjA/1pjQPqZJ5EOByBO
+        Xq9pQ5WdiAYvNGKtfe2uUf3kpyHt56Q6Vt6IuMBqB2MfF1ko0PmM0Fk1qERGAUFQ
+        ==
+X-ME-Sender: <xms:G8p2YbjduyIs9HNx7cBAEAtontiOHY_jS-jmkObeZ94vetZX9eqg6w>
+    <xme:G8p2YYDTxtDtJpxDM63v_DyoGxxuDZW426cibcC6bQSOnDTLUgGd3p_JMSnScrPAP
+    P1BaCp7V2agX6reYAg>
+X-ME-Received: <xmr:G8p2YbFlDXgXfKfgO7g5j2-kTCFAp2v_8FrI3mbI1bXoVwMFnlvolDBPhz8oR_tl2upxI_ht9fmxL4co22guE-t6cz_fWHqABc4U51Qt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:G8p2YYS-IKlGhVYjArQExuUKR87BklDnDhRBhhW0Wt7MdKK7geic9g>
+    <xmx:G8p2YYx6D8REvZ37THes66PRhnkNn4ws_YLk_AFPewIYJ42sz0DgJA>
+    <xmx:G8p2Ye6Rp0Sli7-vbb2yAR6hc2D382XbLOQRatF-PTTlMX7HbXZFWw>
+    <xmx:IMp2YbRN72csKs5h_Y3VhNJjZqJpThnblLDm2WRMg0A90KxxMn549Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 11:15:39 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-arm-msm@vger.kernel.org,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Sean Paul <sean@poorly.run>
+Subject: [PATCH v6 00/21] drm/bridge: Make panel and bridge probe order consistent
+Date:   Mon, 25 Oct 2021 17:15:15 +0200
+Message-Id: <20211025151536.1048186-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YXa9WGs7ewyaHmI9@Red>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfKXsBZKZjWokjLzBUxVr/rlum1dMNHkXzuENEFfg6JbvVbzYGvw51c/XiE9qdH7QayonRkvslocJlN2TO65u3IEbETfbPC5AAscqAB7vmwlKUZOCQkrj
- NVyvRNnzcgzX6ZidqYF2R7xlTzbOL/I7c1uon5WmiiCiJ1uDJ3UEYTqWrE7AMkhycfqBECWYc9xWHiUOdEF0TWvXOe62sDWn1kpczQDyWyh8RpJ9OGSjS7qj
- zBz80kwslj7Z4Mh8z9Kjq7AMfyp2GJ+2tt709rTB2m1XVvTFGVB1agtjRLB6ZFZLDeTShk0nTxrHCvL5NUCpJTe0mi4ANgCVA1W5QMfDglEq0eRQZcDBb2Qk
- bdJE+sLv9HQfIy/4lL+Tgv6nqQcgUtpIQevsf0QPV6Q/imzqDUUiB4tMvX52/qd9MTJWhnGopfvZl28d1WSArALQtA0Nn4Cz5Xx2MbehNFPSdP7pcE8d9rGc
- jsbZ0Pyu1CFnbL1X4R2lrhUvD26XC1Yxb/EnzJrfwXJkpNXq7mf5WW1+M4E=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 16:21, LABBE Corentin wrote:
-> Le Mon, Oct 25, 2021 at 02:45:02PM +0200, Hans Verkuil a écrit :
->> Hi Corentin,
->>
->> On 13/10/2021 20:58, Corentin Labbe wrote:
->>> Hello
->>>
->>> The main change of this serie is to fusion all zoran related modules in
->>> one.
->>> This fixes the load order problem when everything is built-in.
->>>
->>> Regards
->>>
->>> Changes since v1:
->>> - add missing debugfs cleaning
->>> - clean some remaining module_get/put functions which made impossible to
->>>   remove the zoran module
->>> - added the two latest patchs
->>
->> Something weird is wrong with this series. I have a DC30, but loading this with:
->>
->> modprobe zr36067 card=3
->>
->> results in this error message in the kernel log:
->>
->> [   58.645557] zr36067: module is from the staging directory, the quality is unknown, you have been warned.
->> [   58.646658] zr36067 0000:03:00.0: Zoran MJPEG board driver version 0.10.1
->> [   58.646793] zr36067 0000:03:00.0: Zoran ZR36057 (rev 1), irq: 18, memory: 0xf4000000
->> [   58.648821] zr36067 0000:03:00.0: Initializing i2c bus...
->> [   58.662420] vpx3220 22-0047: vpx3216b found @ 0x8e (DC30[0])
->> [   58.737445] zr36067 0000:03:00.0: Fail to get encoder
->>
->> This works before, so why this is now failing is not clear to me.
->>
->> It does work with 'card=0', but I really have a DC30.
->>
->> If I test with 'card=0' then the rmmod issue is now solved.
-> 
-> Everything normal, since card 0 does not have encoder.
-> Could you check that adv7175 is compiled ?
-
-Yes, and it loaded as well (I see it with lsmod).
-
-However, there is no adv7175 on my board, instead it appears to have an ITT MSE3000.
-There is no driver for this one (and I don't even think it is an i2c device), so
-I suspect that before the driver just continued without encoder support, whereas now
-it fails when it can't load the encoder.
-
-Could that be the reason? In the absence of an encoder, I think it should just
-continue, esp. since the driver doesn't use the encoder anyway.
-
-Regards,
-
-	Hans
-
-> 
-> I got the same problem with my DC10+ where saa7110 was not compiled.
-> This issue was reproduced randomly and I have no explanation. (kconfig problem ?)
-> 
-> Regards
-> 
-
+Hi,=0D
+=0D
+We've encountered an issue with the RaspberryPi DSI panel that prevented th=
+e=0D
+whole display driver from probing.=0D
+=0D
+The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:=
+=0D
+Only register our component once a DSI device is attached"), but the basic =
+idea=0D
+is that since the panel is probed through i2c, there's no synchronization=0D
+between its probe and the registration of the MIPI-DSI host it's attached t=
+o.=0D
+=0D
+We initially moved the component framework registration to the MIPI-DSI Hos=
+t=0D
+attach hook to make sure we register our component only when we have a DSI=
+=0D
+device attached to our MIPI-DSI host, and then use lookup our DSI device in=
+ our=0D
+bind hook.=0D
+=0D
+However, all the DSI bridges controlled through i2c are only registering th=
+eir=0D
+associated DSI device in their bridge attach hook, meaning with our change=
+=0D
+above, we never got that far, and therefore ended up in the same situation =
+than=0D
+the one we were trying to fix for panels.=0D
+=0D
+The best practice to avoid those issues is to register its functions only a=
+fter=0D
+all its dependencies are live. We also shouldn't wait any longer than we sh=
+ould=0D
+to play nice with the other components that are waiting for us, so in our c=
+ase=0D
+that would mean moving the DSI device registration to the bridge probe.=0D
+=0D
+This has been tested on vc4 (with sn65dsi83 and ps8640), msm (sn65dsi86,=0D
+lt9611), kirin (adv7511) and exynos.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+---=0D
+=0D
+Changes from v5:=0D
+  - Collected more tags=0D
+  - Fixed a compilation error for ps8640=0D
+=0D
+Changes from v4:=0D
+  - Rebased on current drm-misc-next=0D
+  - Collected the various tags=0D
+  - Fix for Kirin=0D
+  - Added conversion patch for msm=0D
+=0D
+Changes from v3:=0D
+  - Converted exynos and kirin=0D
+  - Converted all the affected bridge drivers=0D
+  - Reworded the documentation a bit=0D
+=0D
+Changes from v2:=0D
+  - Changed the approach as suggested by Andrzej, and aligned the bridge on=
+ the=0D
+    panel this time.=0D
+  - Fixed some typos=0D
+=0D
+Changes from v1:=0D
+  - Change the name of drm_of_get_next function to drm_of_get_bridge=0D
+  - Mention the revert of 87154ff86bf6 and squash the two patches that were=
+=0D
+    reverting that commit=0D
+  - Add some documentation=0D
+  - Make drm_panel_attach and _detach succeed when no callback is there=0D
+=0D
+Maxime Ripard (20):=0D
+  drm/bridge: adv7533: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: adv7511: Register and attach our DSI device at probe=0D
+  drm/bridge: anx7625: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: anx7625: Register and attach our DSI device at probe=0D
+  drm/bridge: lt8912b: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: lt8912b: Register and attach our DSI device at probe=0D
+  drm/bridge: lt9611: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: lt9611: Register and attach our DSI device at probe=0D
+  drm/bridge: lt9611uxc: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: lt9611uxc: Register and attach our DSI device at probe=0D
+  drm/bridge: ps8640: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: ps8640: Register and attach our DSI device at probe=0D
+  drm/bridge: sn65dsi83: Fix bridge removal=0D
+  drm/bridge: sn65dsi83: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: sn65dsi83: Register and attach our DSI device at probe=0D
+  drm/bridge: sn65dsi86: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: sn65dsi86: Register and attach our DSI device at probe=0D
+  drm/bridge: tc358775: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: tc358775: Register and attach our DSI device at probe=0D
+  drm/kirin: dsi: Adjust probe order=0D
+=0D
+Rob Clark (1):=0D
+  drm/msm/dsi: Adjust probe order=0D
+=0D
+ drivers/gpu/drm/bridge/adv7511/adv7511.h     |   1 -=0D
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c |  15 ++-=0D
+ drivers/gpu/drm/bridge/adv7511/adv7533.c     |  20 +---=0D
+ drivers/gpu/drm/bridge/analogix/anx7625.c    |  40 ++++---=0D
+ drivers/gpu/drm/bridge/lontium-lt8912b.c     |  31 ++----=0D
+ drivers/gpu/drm/bridge/lontium-lt9611.c      |  62 ++++-------=0D
+ drivers/gpu/drm/bridge/lontium-lt9611uxc.c   |  65 +++++-------=0D
+ drivers/gpu/drm/bridge/parade-ps8640.c       | 105 ++++++++++---------=0D
+ drivers/gpu/drm/bridge/tc358775.c            |  50 +++++----=0D
+ drivers/gpu/drm/bridge/ti-sn65dsi83.c        |  88 ++++++++--------=0D
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c        | 101 +++++++++---------=0D
+ drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c |  52 +++++----=0D
+ drivers/gpu/drm/msm/dsi/dsi.c                |  50 +++++----=0D
+ drivers/gpu/drm/msm/dsi/dsi.h                |   2 +-=0D
+ drivers/gpu/drm/msm/dsi/dsi_host.c           |  22 ++--=0D
+ drivers/gpu/drm/msm/dsi/dsi_manager.c        |   6 +-=0D
+ drivers/gpu/drm/msm/msm_drv.h                |   2 +=0D
+ 17 files changed, 348 insertions(+), 364 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
