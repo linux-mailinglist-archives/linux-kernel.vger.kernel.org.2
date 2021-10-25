@@ -2,143 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615B043A6A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B977143A6A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhJYWfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:35:47 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:33708 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbhJYWfq (ORCPT
+        id S234081AbhJYWh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233400AbhJYWh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:35:46 -0400
-Received: by mail-il1-f197.google.com with SMTP id m7-20020a056e021c2700b00259bf1e38b1so7819741ilh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:33:24 -0700 (PDT)
+        Mon, 25 Oct 2021 18:37:56 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E49C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:35:33 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id q6so13572104iod.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=klXlN0zJqmk1eWnEu+/hXLI1dokmsVhjoAFEcoHuwqQ=;
+        b=aGRYtffqOi9dXZ21RrjBjD+l82dN+ifp8T+Q11C1BXTSKNp87NEYH/sGros9Un1tIV
+         ISYmYeKll86s2JbJqasIxVigulSD/WoVDZU2vCptei1vtpaT7i7H4Y/PYOK7A00JhWZ4
+         MFAZUlb/5ouNzs4+yNq35EminP3BzcGrnzFlCM8iRQP1DJgeebqvSk+4bVf5LmyXEC7J
+         aS3nNwSL3X7nz48mF+9h3tASo9lBbNBMQHQIeSOLuWQfjkTISoac3sGqlJRWyuKZDuIx
+         rhoUJ6YjOR7k6eibf6iBxDvOr82MVzlt6NPHX/yOqY8kE195MR+TEVQGuBEwDogVpGgA
+         CRlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=vyhnJoZIovOdZyzH8Y8MrbUmNDPLYUWR/YD6MJ+0O5M=;
-        b=2FGpiUwW1LVZrVHzw7Jxgr1ByNgNQAj5127U9bV9fQe75RtdXB5QrIZ0UBKTbt66a+
-         DG7sE0OoEMZieYjwrAl842F1Eev7Seybv6ilGhQNx9+fXJujDLkfFD2g2g0H9vli/9t0
-         /hk7rKVRUqPVedMwPGH9+BEf1EXtS7MRUCYmPsaRfbLSaT1mzs8T/aMzkRRBkAfwm+OF
-         ndGMIgk/HiRsaJZ76jI05jNcrThvbxTeFgiILFzmmT5FjYXGecLCrsXUxc12MqwQwS5q
-         9j7jXKBiYAD06yfE0e3qEoQJXLALUUcnWvpiyCL8cFQT4v0pdRoqZC9UmHKmOg2TAruK
-         83Eg==
-X-Gm-Message-State: AOAM530WWiifbB2OzevJYPxbalWqSWbQ8u0pxlboAZoHDjRbudUij0t7
-        1CNF/4ReeYfYBWCPEDl28h56K1QN3KC0JGfWHvYZezheZcx3
-X-Google-Smtp-Source: ABdhPJxcekNuFURt+wY3TpojJBaYMtxjZZ9itMECXazo2bnY4iJCYwLHHeehCVLVTlUNB9ifOjIXhJzrR84h5WPzQ2a186BleC8D
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=klXlN0zJqmk1eWnEu+/hXLI1dokmsVhjoAFEcoHuwqQ=;
+        b=uxG2BPm4jH3ZSJLt8yztdsfht6OL0OVkwCeOetVU2djNj4eDOp7TDOBoNrcH1GD1Id
+         yDWYL8u50SY6CLmP1IV9NlgC4czTijz21s9IlWbIxR/wQF8A5p49JI3gFFobAg2vIfBb
+         EbTev04Icy6pZa2Fy2RwaQJJCGupKNoKOHkkvzAFVpxcEU91PsRAxVvuYYP5c2MROkCN
+         EOYpFYdPgQrULvaETs9ZE6Q/2Up7N/kVWGPJMSMk4b72yO0MiQPM/j3+Bi6ADId7gadl
+         LHan+BiRQSRPUl7eMWry2LDG032ualAg7tniLYtsPcNunQZzgSTuHyU1K/70ONCTPCZd
+         tg/A==
+X-Gm-Message-State: AOAM532Ui/Sceij5qXIwyeaLNa+aSKWfcw1M1jB5JiOMtGDryXW08SY7
+        o6tsjyAVC6FwqEVOzKVXwJg11ALWELeookUQArT2mQ==
+X-Google-Smtp-Source: ABdhPJzIG3rsyIADjAI5BsAKx0xhIqdqDYgIZSpry+dx35b7xS9gb0tArEZTTa6JKifPXfk8dksRCGCx+aG8KilXe58=
+X-Received: by 2002:a05:6638:4115:: with SMTP id ay21mr12897670jab.90.1635201332884;
+ Mon, 25 Oct 2021 15:35:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8d8a:: with SMTP id p132mr12406022iod.96.1635201203634;
- Mon, 25 Oct 2021 15:33:23 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 15:33:23 -0700
-In-Reply-To: <000000000000f632ba05c3cb12c2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e1063f05cf34f2a8@google.com>
-Subject: Re: [syzbot] memory leak in cfg80211_inform_single_bss_frame_data
-From:   syzbot <syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        mudongliangabcd@gmail.com, netdev@vger.kernel.org,
-        phind.uet@gmail.com, syzkaller-bugs@googlegroups.com
+References: <20211013174604.747276-1-irogers@google.com> <20211013174604.747276-7-irogers@google.com>
+ <YXAM31HKzS4/qJw/@krava>
+In-Reply-To: <YXAM31HKzS4/qJw/@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 25 Oct 2021 15:35:20 -0700
+Message-ID: <CAP-5=fWJyUi7M9rQyafYKNeCdUKru33sO3Ld5c8RxDT60+FBTw@mail.gmail.com>
+Subject: Re: [PATCH v2 06/22] perf test: Add helper functions for abstraction.
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Oct 20, 2021 at 5:34 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Oct 13, 2021 at 10:45:48AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> >       else
+> >               pr_debug("%s subtest %d:", t->desc, subtest + 1);
+> > @@ -218,11 +257,10 @@ static int test_and_print(struct test_suite *t, bool force_skip, int subtest)
+> >               pr_info(" Ok\n");
+> >               break;
+> >       case TEST_SKIP: {
+> > -             const char *skip_reason = NULL;
+> > -             if (t->subtest.skip_reason)
+> > -                     skip_reason = t->subtest.skip_reason(subtest);
+> > -             if (skip_reason)
+> > -                     color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", skip_reason);
+> > +             const char *reason = skip_reason(t, subtest);
+> > +
+> > +             if (reason)
+> > +                     color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", reason);
+> >               else
+> >                       color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip\n");
+> >       }
+> > @@ -397,7 +435,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+> >       int width = shell_tests__max_desc_width();
+> >
+> >       for_each_test(j, k, t) {
+> > -             int len = strlen(t->desc);
+> > +             int len = strlen(test_description(t, -1));
+> >
+> >               if (width < len)
+> >                       width = len;
+> > @@ -407,17 +445,15 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+> >               int curr = i++, err;
+> >               int subi;
+> >
+> > -             if (!perf_test__matches(t->desc, curr, argc, argv)) {
+> > +             if (!perf_test__matches(test_description(t, -1), curr, argc, argv)) {
+> >                       bool skip = true;
+> >                       int subn;
+> >
+> > -                     if (!t->subtest.get_nr)
+> > -                             continue;
+> > -
+> > -                     subn = t->subtest.get_nr();
+> > +                     subn = num_subtests(t);
+>
+> should you call continue on !subn ?
 
-HEAD commit:    87066fdd2e30 Revert "mm/secretmem: use refcount_t instead ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b55554b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d25eeb482b0f99b
-dashboard link: https://syzkaller.appspot.com/bug?extid=7a942657a255a9d9b18a
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171cf464b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1396b19f300000
+It's not necessary. When subn == 0 then the loop won't be taken and
+skip == true, so the immediately after "if (skip) continue;" will
+happen.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com
+Thanks,
+Ian
 
-BUG: memory leak
-unreferenced object 0xffff88810f3c7980 (size 96):
-  comm "kworker/u4:0", pid 8, jiffies 4294948721 (age 17.180s)
-  hex dump (first 32 bytes):
-    e5 90 aa e8 34 cf 05 00 00 00 00 00 00 00 00 00  ....4...........
-    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
-  backtrace:
-    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
-    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
-    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
-    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
-    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
-    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
-    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
-    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
-    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
-    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
-    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-BUG: memory leak
-unreferenced object 0xffff88810f3c7b00 (size 96):
-  comm "kworker/u4:0", pid 8, jiffies 4294948721 (age 17.180s)
-  hex dump (first 32 bytes):
-    f5 90 aa e8 34 cf 05 00 00 00 00 00 00 00 00 00  ....4...........
-    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
-  backtrace:
-    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
-    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
-    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
-    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
-    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
-    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
-    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
-    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
-    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
-    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
-    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-BUG: memory leak
-unreferenced object 0xffff88810f3c7680 (size 96):
-  comm "kworker/u4:1", pid 146, jiffies 4294948731 (age 17.080s)
-  hex dump (first 32 bytes):
-    e9 20 ac e8 34 cf 05 00 00 00 00 00 00 00 00 00  . ..4...........
-    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
-  backtrace:
-    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
-    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
-    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
-    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
-    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
-    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
-    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
-    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
-    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
-    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
-    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-BUG: memory leak
-unreferenced object 0xffff888111520f80 (size 96):
-  comm "kworker/u4:1", pid 146, jiffies 4294948731 (age 17.080s)
-  hex dump (first 32 bytes):
-    fb 20 ac e8 34 cf 05 00 00 00 00 00 00 00 00 00  . ..4...........
-    00 00 00 00 00 00 00 00 28 00 00 00 01 00 06 10  ........(.......
-  backtrace:
-    [<ffffffff83ee74a9>] cfg80211_inform_single_bss_frame_data+0x139/0x640 net/wireless/scan.c:2383
-    [<ffffffff83ee79fb>] cfg80211_inform_bss_frame_data+0x4b/0x470 net/wireless/scan.c:2444
-    [<ffffffff83f8865e>] ieee80211_bss_info_update+0x16e/0x460 net/mac80211/scan.c:190
-    [<ffffffff83f9687a>] ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
-    [<ffffffff83f9687a>] ieee80211_rx_mgmt_probe_beacon+0x61a/0x970 net/mac80211/ibss.c:1608
-    [<ffffffff83f972dc>] ieee80211_ibss_rx_queued_mgmt+0x23c/0x6e0 net/mac80211/ibss.c:1635
-    [<ffffffff83f99347>] ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
-    [<ffffffff83f99347>] ieee80211_iface_work+0x5f7/0x770 net/mac80211/iface.c:1493
-    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
-    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
-    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
+> jirka
+>
+> >
+> >                       for (subi = 0; subi < subn; subi++) {
+> > -                             if (perf_test__matches(t->subtest.get_desc(subi), curr, argc, argv))
+> > +                             if (perf_test__matches(test_description(t, subi),
+> > +                                                     curr, argc, argv))
+> >                                       skip = false;
+> >                       }
+> >
+> > @@ -425,22 +461,23 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+> >                               continue;
+> >               }
+> >
+>
+> SNIP
+>
