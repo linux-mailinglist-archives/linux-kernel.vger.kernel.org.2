@@ -2,181 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B16B4397EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A73A4397F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhJYN7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:59:09 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39238 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230225AbhJYN7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:59:08 -0400
-Received: from zn.tnic (p200300ec2f0f4e00a9aecab73d80ddb1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4e00:a9ae:cab7:3d80:ddb1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C85941EC04F2;
-        Mon, 25 Oct 2021 15:56:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635170204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9vcw/G3G8TQiJIk2OJLutgGZViY71B8IEbfeewsQb/U=;
-        b=rgfokybylLH9QkNR9EtK6heI0+s1mfTbk62b6DqtZyIjWUNyejE/sj31AiYx7rE1t6KP1K
-        e1m5ymVhAe6pF+23oSydWnReCRtIVQXrMGKGa8h53Yf2FtX1Rgfh7g1r5YnVj/xOHOIk6W
-        OIA8uJY3zO4jhBFCZMTrEs11Db5vV5Y=
-Date:   Mon, 25 Oct 2021 15:56:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH v2 1/5] x86/mce/inject: Check if a bank is unpopulated
- before error injection
-Message-ID: <YXa3m7SWAhRcFi35@zn.tnic>
-References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
- <20211019233641.140275-2-Smita.KoralahalliChannabasappa@amd.com>
+        id S233054AbhJYN7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhJYN7a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:59:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AE6C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ef8hkZsa4H89XkZHxMxY82mpR5AmSwHB7IihVr9CwYA=; b=ajOzZ25lvF2c81Z8/YIRkhHs4/
+        QICwxDhWj+DXkMLCiHZcdZ2avCd2m65CFrGdTQCyLSUv80qWdtW7KeXIO59YbBqaBtb8m7Pg++O4t
+        yFCYsyvrod6gJz2+qqssX4eTNF/0zCVpKvLAaVO+fKIM1Ld2dpdjHzbTPHtDoCwEwE1HyPC5ItWx8
+        2n1pFQqoKbYUemFaRSQWFVZmI6pct+az732AfcK++J3fp32/SZioQh9sa6r/twe//IjF15UNi8YRe
+        4btIIFINmTvt7WVbw5vUEJ95Y2Q1/cirwILjCk60XYF9SVfO/PeIkiewVaJ7JRPI9fFOGHfapdhDz
+        tjxyCpZw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mf0TF-00C9hj-68; Mon, 25 Oct 2021 13:57:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DBD5B3002AE;
+        Mon, 25 Oct 2021 15:56:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B3B1A2C3E69E1; Mon, 25 Oct 2021 15:56:59 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 15:56:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        James Morse <james.morse@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
+References: <20211025122102.46089-1-frederic@kernel.org>
+ <20211025122102.46089-3-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019233641.140275-2-Smita.KoralahalliChannabasappa@amd.com>
+In-Reply-To: <20211025122102.46089-3-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:36:37PM -0500, Smita Koralahalli wrote:
-> The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
-> (SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
-> will read as zero and writes to it will be ignored.
-> 
-> On a "hw" error injection check the value of this register before trying
-> to inject the error.
-> 
-> Do not impose any limitation on a "sw" injection and allow the user to
-> test out all the decoding paths without relying on the available hardware,
-> as its purpose is to just test the code.
-> 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
-> v2:
-> 	simulate -> inject.
-> 	Corrected according to kernel commenting style.
-> 	boot_cpu_has() -> cpu_feature_enabled().
-> 	Error simulation not possible: Bank %llu unpopulated ->
-> 	Cannot set IPID - bank %llu unpopulated.
-> 	Used user provided IPID value on sw injection without checking
-> 	underlying hardware and defined it under inj_ipid_set().
-> ---
->  arch/x86/kernel/cpu/mce/inject.c | 39 +++++++++++++++++++++++++++++---
->  1 file changed, 36 insertions(+), 3 deletions(-)
+On Mon, Oct 25, 2021 at 02:21:00PM +0200, Frederic Weisbecker wrote:
 
-So I gave it a critical look and did some modifications, see below.
-Looking at those IPID MSRs - they're all read-only, which means for !sw
-injection, all the module can do is check whether they're 0 - and fail
-injection in that case - and do the injection otherwise.
+> +#define __ARCH_DEFINE_STATIC_CALL_TRAMP(name, insn)			    \
+> +	asm("	.pushsection	.static_call.text, \"ax\"		\n" \
+> +	    "	.align		4					\n" \
+> +	    "	.globl		" STATIC_CALL_TRAMP_STR(name) "		\n" \
+> +	    "0:	.quad	0x0						\n" \
+> +	    STATIC_CALL_TRAMP_STR(name) ":				\n" \
+> +	    "	hint 	34	/* BTI C */				\n" \
+> +		insn "							\n" \
+> +	    "	ldr	x16, 0b						\n" \
+> +	    "	cbz	x16, 1f						\n" \
+> +	    "	br	x16						\n" \
+> +	    "1:	ret							\n" \
+> +	    "	.popsection						\n")
 
-Ok?
+> +void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+> +{
+> +	/*
+> +	 * -0x8	<literal>
+> +	 *  0x0	bti c		<--- trampoline entry point
+> +	 *  0x4	<branch or nop>
+> +	 *  0x8	ldr x16, <literal>
+> +	 *  0xc	cbz x16, 20
+> +	 * 0x10	br x16
+> +	 * 0x14	ret
+> +	 */
+> +	struct {
+> +		u64	literal;
+> +		__le32	insn[2];
+> +	} insns;
+> +	u32 insn;
+> +	int ret;
+> +
+> +	insn = aarch64_insn_gen_hint(AARCH64_INSN_HINT_BTIC);
+> +	insns.literal = (u64)func;
+> +	insns.insn[0] = cpu_to_le32(insn);
+> +
+> +	if (!func) {
+> +		insn = aarch64_insn_gen_branch_reg(AARCH64_INSN_REG_LR,
+> +						   AARCH64_INSN_BRANCH_RETURN);
+> +	} else {
+> +		insn = aarch64_insn_gen_branch_imm((u64)tramp + 4, (u64)func,
+> +						   AARCH64_INSN_BRANCH_NOLINK);
+> +
+> +		/*
+> +		 * Use a NOP if the branch target is out of range, and rely on
+> +		 * the indirect call instead.
+> +		 */
+> +		if (insn == AARCH64_BREAK_FAULT)
+> +			insn = aarch64_insn_gen_hint(AARCH64_INSN_HINT_NOP);
+> +	}
+> +	insns.insn[1] = cpu_to_le32(insn);
+> +
+> +	ret = __aarch64_insn_write(tramp - 8, &insns, sizeof(insns));
 
----
-From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Date: Tue, 19 Oct 2021 18:36:37 -0500
-Subject: [PATCH] x86/mce/inject: Check if a bank is populated before error
- injection
+OK, that's pretty magical...
 
-The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
-(SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
-will read as zero and writes to it will be ignored.
+So you're writing the literal and the two instructions with 2 u64
+stores. Relying on alignment to guarantee both are in a single page and
+that copy_to_kernel_nofault() selects u64 writes.
 
-On a hw-type error injection (injection which writes the actual MCA
-registers in an attempt to cause a real MCE) check the value of this
-register before trying to inject the error.
+By unconditionally writing the literal, you avoid there ever being an
+stale value, which in turn avoids there being a race where you switch
+from 'J @func' relative addressing to 'NOP; do-literal-thing' and cross
+CPU execution gets the ordering inverted.
 
-Do not impose any limitation on a sw-type injection (software-only
-injection) and allow the user to test out all the decoding paths without
-relying on the available hardware, as its purpose is to just test the
-code.
+Ooohh, but what if you go from !func to NOP.
 
- [ bp: Heavily massage. ]
+assuming:
 
-Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211019233641.140275-2-Smita.KoralahalliChannabasappa@amd.com
----
- arch/x86/kernel/cpu/mce/inject.c | 42 +++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+	.literal = 0
+	BTI C
+	RET
 
-diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-index 0bfc14041bbb..3333ae7886bd 100644
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -74,7 +74,6 @@ MCE_INJECT_SET(status);
- MCE_INJECT_SET(misc);
- MCE_INJECT_SET(addr);
- MCE_INJECT_SET(synd);
--MCE_INJECT_SET(ipid);
- 
- #define MCE_INJECT_GET(reg)						\
- static int inj_##reg##_get(void *data, u64 *val)			\
-@@ -95,6 +94,20 @@ DEFINE_SIMPLE_ATTRIBUTE(status_fops, inj_status_get, inj_status_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(misc_fops, inj_misc_get, inj_misc_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(addr_fops, inj_addr_get, inj_addr_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(synd_fops, inj_synd_get, inj_synd_set, "%llx\n");
-+
-+/* Use the user provided IPID value on a sw injection. */
-+static int inj_ipid_set(void *data, u64 val)
-+{
-+	struct mce *m = (struct mce *)data;
-+
-+	if (cpu_feature_enabled(X86_FEATURE_SMCA)) {
-+		if (inj_type == SW_INJ)
-+			m->ipid = val;
-+	}
-+
-+	return 0;
-+}
-+
- DEFINE_SIMPLE_ATTRIBUTE(ipid_fops, inj_ipid_get, inj_ipid_set, "%llx\n");
- 
- static void setup_inj_struct(struct mce *m)
-@@ -577,6 +590,33 @@ static int inj_bank_set(void *data, u64 val)
- 	}
- 
- 	m->bank = val;
-+
-+	/*
-+	 * sw-only injection allows to write arbitrary values into the MCA registers
-+	 * because it tests only the decoding paths.
-+	 */
-+	if (inj_type == SW_INJ)
-+		goto inject;
-+
-+	/*
-+	 * Read IPID value to determine if a bank is populated on the target
-+	 * CPU.
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_SMCA)) {
-+		u64 ipid;
-+
-+		if (rdmsrl_on_cpu(m->extcpu, MSR_AMD64_SMCA_MCx_IPID(val), &ipid)) {
-+			pr_err("Error reading IPID on CPU%d\n", m->extcpu);
-+			return -EINVAL;
-+		}
-+
-+		if (!ipid) {
-+			pr_err("Cannot inject into bank %llu - it is unpopulated\n", val);
-+			return -ENODEV;
-+		}
-+	}
-+
-+inject:
- 	do_inject();
- 
- 	/* Reset injection struct */
--- 
-2.29.2
+Then
 
--- 
-Regards/Gruss,
-    Boris.
+	CPU0			CPU1
 
-https://people.kernel.org/tglx/notes-about-netiquette
+	[S] literal = func	[I] NOP
+	[S] insn[1] = NOP	[L] x16 = literal (NULL)
+				b x16
+				*BANG*
+
+Is that possible? (total lack of memory ordering etc..)
+
+On IRC you just alluded to the fact that this relies on it all being in
+a single cacheline (i-fetch windows don't need to be cacheline sized,
+but provided they're at least 16 bytes, this should still work given the
+alignment).
+
+But is I$ and D$ coherent? One load is through I-fetch, the other is a
+regular D-fetch.
+
+However, Will has previously expressed reluctance to rely on such
+things.
+
+> +	if (!WARN_ON(ret))
+> +		caches_clean_inval_pou((u64)tramp - 8, sizeof(insns));
+>  }
