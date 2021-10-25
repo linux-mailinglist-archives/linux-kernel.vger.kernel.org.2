@@ -2,71 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974924398C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDE84398CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhJYOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:41:05 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:57365 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229727AbhJYOlD (ORCPT
+        id S232555AbhJYOm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232260AbhJYOmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:41:03 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-84-c45TSIbeOTKq5pLxwqcVGw-1; Mon, 25 Oct 2021 15:38:39 +0100
-X-MC-Unique: c45TSIbeOTKq5pLxwqcVGw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Mon, 25 Oct 2021 15:38:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Mon, 25 Oct 2021 15:38:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Ard Biesheuvel' <ardb@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: RE: [PATCH 2/4] arm64: implement support for static call trampolines
-Thread-Topic: [PATCH 2/4] arm64: implement support for static call trampolines
-Thread-Index: AQHXyZrPgIVfu8vswkCI9TVLTUwuCavjxAog///yAQCAABGOUA==
-Date:   Mon, 25 Oct 2021 14:38:38 +0000
-Message-ID: <9247968df0fa4ab8a617b24195f178b4@AcuMS.aculab.com>
-References: <20211025122102.46089-1-frederic@kernel.org>
- <20211025122102.46089-3-frederic@kernel.org>
- <1b19fbeccf3d4a75a5ed3a507d29f7dd@AcuMS.aculab.com>
- <CAMj1kXGuVdSVe29WoensbxC5fqp4HFQeBK2-oLxHA_BQLp2jww@mail.gmail.com>
-In-Reply-To: <CAMj1kXGuVdSVe29WoensbxC5fqp4HFQeBK2-oLxHA_BQLp2jww@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 25 Oct 2021 10:42:24 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3C8C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:40:02 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 75so11143882pga.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=iGNob6sTb6S2amKiUvAi/+pjHea/cA815c+QZDOlSkk=;
+        b=SRja/ig4qID04QNrtzOjXzHx68AuZ/JPjGRN0FSNg1iR2DONyR08nTjffkI0ZQf1Hj
+         rBU5DvjoQpB33IAEWPyTY4RgcvR9UjXxEGjzBWRy9NjU/LA9reBg+agUxHM1hpAB1ePs
+         q4m9XMDlTxtngfMuMCuzJDhe50MeEQfEjnXnkoSwWsYljVk3s/G9cunMS9KA71nOUIjU
+         J+BNm9SygUzwaZKFALZ/OX+H/UBn9HEQg4qI6/G3fo4++lJNX2fv3vtSFZnxqKaWofza
+         +fkGhq9nj/pGTRdlcoPaftB6Z3nexedio+kYnZEmzZzNljYNXrjs3sLtq3Vq/BKXcdWR
+         XXdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=iGNob6sTb6S2amKiUvAi/+pjHea/cA815c+QZDOlSkk=;
+        b=kxOd4WkypJn3PaQsUHSds5ln8aDYDH7cFwCuY54MW8hNczf4tIvhoT6iaxFUNeCBc1
+         ODwmpxpuoB+NXf0ZYIooEr2N/YBZdHgc+at3Sr2oRjLgkauZ0USLZU7hBVtDqI9eg90S
+         xBKHBOlJJ+jzPAUZWu5s+Htc1ReYZ83w+GBf3JY+0GlDN4hjmM2+ztdGjK5F1g+iRMdD
+         4v8s2qX8/BgAXls0ZD1NM/slT+XXJdlsbEn2lWXuSt48mET8zuHJ8Z2uuNrVo/KKIxY3
+         NA+1Pd800+fpV3PF7U7+81uA89n2+N7pFdJVOWWJAEWRSM/Qm1EPCcmB0ImnDMsnFimN
+         UDHA==
+X-Gm-Message-State: AOAM531AvuBVovUagShyUB9OfUJIY8ciSJmVKr6bxdFjvor+YOw6phOW
+        qmCBkhOBNDn1b5PzevivK0A=
+X-Google-Smtp-Source: ABdhPJyZqBQsSw8EwvP3aF9kmS1Y+v5FEtKrCTF7pKjlFvN1AKLq3DXTqBs8jU/U242PPj8qvF7EiA==
+X-Received: by 2002:a63:e510:: with SMTP id r16mr13954005pgh.34.1635172801462;
+        Mon, 25 Oct 2021 07:40:01 -0700 (PDT)
+Received: from [192.168.1.4] ([59.95.95.35])
+        by smtp.gmail.com with ESMTPSA id z12sm21357381pjh.51.2021.10.25.07.39.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 07:40:01 -0700 (PDT)
+Message-ID: <79254f8c-1d11-320a-6fdb-3ca066a8862a@gmail.com>
+Date:   Mon, 25 Oct 2021 20:09:56 +0530
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] staging: r8188eu: avoid use of goto statement
+Content-Language: en-GB
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
+References: <YXY5jtR6neQ+ad+C@Sauravs-MacBook-Air.local>
+ <YXZVV9j2DMA22MUS@kroah.com>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <YXZVV9j2DMA22MUS@kroah.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJkIEJpZXNoZXV2ZWwNCj4gU2VudDogMjUgT2N0b2JlciAyMDIxIDE1OjMyDQouLi4N
-Cj4gT24gYXJtNjQsIHdlIGNhbiBvbmx5IHBhdGNoIE5PUHMgaW50byBicmFuY2ggaW5zdHJ1Y3Rp
-b25zIG9yIHZpY2UNCj4gdmVyc2EsIG9yIHdlJ2QgaGF2ZSB0byBydW4gdGhlIHdob2xlIHRoaW5n
-IHVuZGVyIHN0b3BfbWFjaGluZSgpIHRvDQo+IGVuc3VyZSB0aGF0IG90aGVyIGNvcmVzIGRvbid0
-IGZldGNoIGdhcmJhZ2UuDQoNCk9rLCBJIHdhcyB0aGlua2luZyBpdCB3b3VsZCBiZSBzYWZlIHRv
-IHBhdGNoIGEgc2luZ2xlIGluc3RydWN0aW9uLg0KQ2xlYXJseSB5b3UgY2FuJ3QgcGF0Y2ggbW9y
-ZSB0aGFuIG9uZSB3aXRob3V0IGRhbmdlciBvZiAnZ2FyYmFnZScuDQoNCglEYXZpZA0KDQotDQpS
-ZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWls
-dG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMp
-DQo=
 
+
+On 25/10/21 12:27 pm, Greg KH wrote:
+> On Mon, Oct 25, 2021 at 10:28:54AM +0530, Saurav Girepunje wrote:
+>> Remove the goto statement from _rtw_init_cmd_priv(). In this function
+>> goto statement can be replace by return statement. By replacing the
+>> goto statement with return statement local variable "res" is also
+>> not required.As on goto label exit, function only return it is not
+> 
+> You need a ' ' after the '.' here please.
+> 
+>> performing any cleanup.Avoiding goto will simplify the function.
+> 
+> Same here.
+> 
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>  drivers/staging/r8188eu/core/rtw_cmd.c | 16 +++++-----------
+>>  1 file changed, 5 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+>> index e17332677daa..22046bd5cf82 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_cmd.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+>> @@ -19,7 +19,6 @@ No irqsave is necessary.
+>>
+>>  static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
+>>  {
+>> -	int res = _SUCCESS;
+>>
+> 
+> Please also remove the extra blank line.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Thanks greg for review. I have updated the patch and sent v2.
+
+Regards,
+Saurav Girepunje 
