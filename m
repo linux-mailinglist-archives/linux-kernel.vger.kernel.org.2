@@ -2,76 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F49439694
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53048439697
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhJYMsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:48:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:31245 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233070AbhJYMsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:48:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="253164185"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="253164185"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:45:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="528743947"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 25 Oct 2021 05:45:36 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 2E970E7; Mon, 25 Oct 2021 15:45:34 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v2 2/2] serial: 8250_pci: Remove empty stub pci_quatech_exit()
-Date:   Mon, 25 Oct 2021 15:45:33 +0300
-Message-Id: <20211025124533.29977-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211025124533.29977-1-andriy.shevchenko@linux.intel.com>
-References: <20211025124533.29977-1-andriy.shevchenko@linux.intel.com>
+        id S233344AbhJYMsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233070AbhJYMsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:48:10 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F704C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:45:48 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id o133so10628226pfg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qVU4cYq6gzQiQmKsTxCHNQ+nSpf6GAnmjdUQN6QjAew=;
+        b=vzztuKVTgZoX81QIwkLGvlv1WgsYk0QmRVnH5mLc/5u2Kr1spSR5z9I27xdVDIiXG3
+         fNT6vfvu38X3YdXuZxrfJIy/UgvgnGAx4vyVvHX6FzJYWxMRKuWPNgW7wDjJM+IB5EY7
+         amkbmS55Z/th6v36lrRwWBP7437jUEAjxdRvO/d6qxli9SqrkYlmUyr+GPkvP7Ov55k2
+         DRePjp3kTJSpPbSF5eQ7RhbotrLXJj1FLQ2Ewukqg56LFX2vobFYokGqmdXLm+sPTmg9
+         SI6pgcdVauAgoRMocl3vJjcuasuH0v3UckttIpTlIQY7s6pDqNiHPEN6vn8byRLf191m
+         tPLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qVU4cYq6gzQiQmKsTxCHNQ+nSpf6GAnmjdUQN6QjAew=;
+        b=6j7GKGendJzNLDvgabeJW19b5lO/XhXwFHr6TTKTa5lobH7N9LjQA58OjPq8JzVQ3h
+         UC8HPfjVA1JWRsA/fE6XADlSQy++zt01LAqYtDjG62UvTG+H+fiK0G1Xy1oW9KQ2cQZj
+         bXDlX4bAaF32aa8nI5BeC4aNVjsZHORntjrYxp3bg3IH9CCijtPl51u+Z6g7Hi7azMTz
+         j4jfxOo36jpOE291rzIUDzMaiYJJCtPycB+1ZkGxCXXRULlI1ygbI0Qwf8n86GtRKfLz
+         2TRi4w8D5uaQWBCjqgHgeWdM3L2fOvIOZ/PjeGsmq/eCxI1YXiN2koT8ZIZnf6QrSTmB
+         DIbA==
+X-Gm-Message-State: AOAM530FXQOvorpHVCN15ilY3w+QLZWfaLo5BbaJI3OkXRnNZcjJFZvi
+        S9flUWRWt49Kk8bj9krbs7iGWw==
+X-Google-Smtp-Source: ABdhPJyvC+6RSQyWZedPqX9VfAvhYfgRoJTLWPSeHwugj/drfD5CHD3XgoZIM3/t9zh9inDlGRWvvg==
+X-Received: by 2002:a62:e315:0:b0:47b:f629:6b48 with SMTP id g21-20020a62e315000000b0047bf6296b48mr3910093pfh.72.1635165948112;
+        Mon, 25 Oct 2021 05:45:48 -0700 (PDT)
+Received: from localhost.localdomain ([61.120.150.70])
+        by smtp.gmail.com with ESMTPSA id w1sm6268989pjd.1.2021.10.25.05.45.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Oct 2021 05:45:47 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, mhocko@kernel.org, shakeelb@google.com,
+        willy@infradead.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: list_lru: remove holding lru lock
+Date:   Mon, 25 Oct 2021 20:45:34 +0800
+Message-Id: <20211025124534.56345-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ->exit() callback is checked for presence anyway,
-no need to have an empty stub.
+Since commit e5bc3af7734f ("rcu: Consolidate PREEMPT and !PREEMPT
+synchronize_rcu()"), the critical section of spin lock can serve
+as an RCU read-side critical section which already allows readers
+that hold nlru->lock avoid taking rcu lock. So just to remove
+holding lock.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
-v2: corrected set of the patches, so this become patch 2 in the series
- drivers/tty/serial/8250/8250_pci.c | 5 -----
- 1 file changed, 5 deletions(-)
+ mm/list_lru.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 1d5579143fc8..80ac3235ec35 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -1298,10 +1298,6 @@ static int pci_quatech_setup(struct serial_private *priv,
- 	return pci_default_setup(priv, board, port, idx);
- }
+diff --git a/mm/list_lru.c b/mm/list_lru.c
+index 2bba1cd68bb3..7572f8e70b86 100644
+--- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -401,18 +401,7 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
+ 	}
  
--static void pci_quatech_exit(struct pci_dev *dev)
--{
--}
+ 	memcpy(&new->lru, &old->lru, flex_array_size(new, lru, old_size));
 -
- static int pci_default_setup(struct serial_private *priv,
- 		  const struct pciserial_board *board,
- 		  struct uart_8250_port *port, int idx)
-@@ -2176,7 +2172,6 @@ static struct pci_serial_quirk pci_serial_quirks[] = {
- 		.subdevice	= PCI_ANY_ID,
- 		.init		= pci_quatech_init,
- 		.setup		= pci_quatech_setup,
--		.exit		= pci_quatech_exit,
- 	},
- 	/*
- 	 * Panacom
+-	/*
+-	 * The locking below allows readers that hold nlru->lock avoid taking
+-	 * rcu_read_lock (see list_lru_from_memcg_idx).
+-	 *
+-	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+-	 * we have to use IRQ-safe primitives here to avoid deadlock.
+-	 */
+-	spin_lock_irq(&nlru->lock);
+ 	rcu_assign_pointer(nlru->memcg_lrus, new);
+-	spin_unlock_irq(&nlru->lock);
+-
+ 	kvfree_rcu(old, rcu);
+ 	return 0;
+ }
 -- 
-2.33.0
+2.11.0
 
