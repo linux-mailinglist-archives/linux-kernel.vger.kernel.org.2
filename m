@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC45439E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6F0439E39
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhJYSPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:15:05 -0400
-Received: from ink.ssi.bg ([178.16.128.7]:60177 "EHLO ink.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230085AbhJYSPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:15:04 -0400
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id DAE5F3C09C0;
-        Mon, 25 Oct 2021 21:12:36 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 19PICXia016733;
-        Mon, 25 Oct 2021 21:12:35 +0300
-Date:   Mon, 25 Oct 2021 21:12:33 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     yangxingwu <xingwu.yang@gmail.com>
-cc:     Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
-        kadlec@netfilter.org, fw@strlen.de,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, corbet@lwn.net
-Subject: Re: [PATCH] ipvs: Fix reuse connection if RS weight is 0
-In-Reply-To: <20211025115910.2595-1-xingwu.yang@gmail.com>
-Message-ID: <707b5fb3-6b61-c53-e983-bc1373aa2bf@ssi.bg>
-References: <20211025115910.2595-1-xingwu.yang@gmail.com>
+        id S231502AbhJYSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230085AbhJYSPh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 14:15:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0958BC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:13:14 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635185592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d5BfnmRBE1dbADgjyqjL7W1xnI7QDmOS8P/wOGhlMhQ=;
+        b=Rs9sNID0/NSL4cpr8FfIZ7WC+/m8UbPT6v0JX7lNYWw7uKYHJy7RWULGuNfUYi9/iDGymL
+        n2zOkekUkALnUM80/QJMUs6ixaN6xjZKdO9YzBRa2TDOVi/tGXVkC87WoY5uEU65h9Zy79
+        DaO9H8Pr8UIkeYVLNo6+s0tmXr4VtdBR45e4jazO4FrWNwQNEmQf/5xxDIWjGVKW22RdR7
+        4DLaHEoH2a9bjJTemMJ/xQQFAzWzcpwAWYiiaRtsMUcBrynmDu5vt6QIDxLG9vpS8veTgF
+        Vc7WXf401Yz4gOM+iLfVfg/WoMJ5q2fVJRZYXJGBWY6bqFYSL9zUpv9VSFBUBQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635185592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d5BfnmRBE1dbADgjyqjL7W1xnI7QDmOS8P/wOGhlMhQ=;
+        b=Mig/Mx9G2Avw35R7QS3GIl9m/vQyMd7p8Y4GVYT2K6yQE5G37UGLkElfn43PCNk6zqy41I
+        uWtIH+3ihEml6ZBQ==
+To:     Mika =?utf-8?Q?Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, dave.hansen@linux.intel.com, arjan@linux.intel.com,
+        ravi.v.shankar@intel.com
+Subject: Re: [PATCH 15/23] x86/fpu: Add sanity checks for XFD
+In-Reply-To: <20d31ed9-be3d-dca6-ceef-ced35f80d131@nextfour.com>
+References: <20211021225527.10184-1-chang.seok.bae@intel.com>
+ <20211021225527.10184-16-chang.seok.bae@intel.com>
+ <20d31ed9-be3d-dca6-ceef-ced35f80d131@nextfour.com>
+Date:   Mon, 25 Oct 2021 20:13:11 +0200
+Message-ID: <87o87dezwo.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 25 2021 at 11:33, Mika Penttil=C3=A4 wrote:
+> On 22.10.2021 1.55, Chang S. Bae wrote:
+>> +#ifdef CONFIG_X86_DEBUG_FPU
+>> +/*
+>> + * Ensure that a subsequent XSAVE* or XRSTOR* instruction with RFBM=3D@=
+mask
+>> + * can safely operate on the @fpstate buffer.
+>> + */
+>> +static bool xstate_op_valid(struct fpstate *fpstate, u64 mask, bool rst=
+or)
+>> +{
+>> +	u64 xfd =3D __this_cpu_read(xfd_state);
+>> +
+>> +	if (fpstate->xfd =3D=3D xfd)
+>> +		return true;
+>> +
+>> +	/* For current's fpstate the XFD state must be correct. */
+>> +	if (fpstate->xfd =3D=3D current->thread.fpu.fpstate->xfd)
+>> +		return false;
+>> +
+> Should this return true or is the comment confusing?
 
-	Hello,
+Comment might be confusing. The logic here is:
 
-On Mon, 25 Oct 2021, yangxingwu wrote:
+If fpstate->xfd equal xfd then it's valid.
 
-> Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
-> dead"), new connections to dead servers are redistributed immediately to
-> new servers.
-> 
-> Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
-> port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
-> 0. And new connection may be distributed to a real server with weight 0.
+So the next check is whether fpstate is the same as current's
+fpstate. If that's the case then the result is invalid because for
+current's fpstate the first condition should be true. But if it is not
+true then the state is not valid.
 
-	Your change does not look correct to me. At the time
-expire_nodest_conn was created, it was not checked when
-weight is 0. At different places different terms are used
-but in short, we have two independent states for real server:
+Thanks,
 
-- inhibited: weight=0 and no new connections should be served,
-	packets for existing connections can be routed to server
-	if it is still available and packets are not dropped
-	by expire_nodest_conn.
-	The new feature is that port reuse detection can
-	redirect the new TCP connection into a new IPVS conn and
-	to expire the existing cp/ct.
-
-- unavailable (!IP_VS_DEST_F_AVAILABLE): server is removed,
-	can be temporary, drop traffic for existing connections
-	but on expire_nodest_conn we can select different server
-
-	The new conn_reuse_mode flag allows port reuse to
-be detected. Only then expire_nodest_conn has the
-opportunity with commit dc7b3eb900aa to check weight=0
-and to consider the old traffic as finished. If a new
-server is selected, any retrans from previous connection
-would be considered as part from the new connection. It
-is a rapid way to switch server without checking with
-is_new_conn_expected() because we can not have many
-conns/conntracks to different servers.
-
-> Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
-> ---
->  Documentation/networking/ipvs-sysctl.rst | 3 +--
->  net/netfilter/ipvs/ip_vs_core.c          | 5 +++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-> index 2afccc63856e..1cfbf1add2fc 100644
-> --- a/Documentation/networking/ipvs-sysctl.rst
-> +++ b/Documentation/networking/ipvs-sysctl.rst
-> @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
->  
->  	0: disable any special handling on port reuse. The new
->  	connection will be delivered to the same real server that was
-> -	servicing the previous connection. This will effectively
-> -	disable expire_nodest_conn.
-> +	servicing the previous connection.
->  
->  	bit 1: enable rescheduling of new connections when it is safe.
->  	That is, whenever expire_nodest_conn and for TCP sockets, when
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index 128690c512df..9279aed69e23 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -2042,14 +2042,15 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  			     ipvs, af, skb, &iph);
->  
->  	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> -	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> +	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
->  		bool old_ct = false, resched = false;
->  
->  		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
->  		    unlikely(!atomic_read(&cp->dest->weight))) {
->  			resched = true;
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> -		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-> +		} else if (conn_reuse_mode &&
-> +			   is_new_conn_expected(cp, conn_reuse_mode)) {
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
->  			if (!atomic_read(&cp->n_control)) {
->  				resched = true;
-> -- 
-> 2.30.2
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+        tglx
