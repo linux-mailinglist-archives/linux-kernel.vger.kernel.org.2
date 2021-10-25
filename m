@@ -2,187 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DD1438F11
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB1D438F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhJYGDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:03:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229678AbhJYGDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:03:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D886660F4F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:00:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635141657;
-        bh=CuzeI+0Q9Euya1CQX3pyZPAzzTOCsyTDTkaMPkoJqGo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WrSz3/ifZ7d1DGrKK1WtVRR5rvnOUBWmMlIiuLYv9vhe2ph5eVTbGNOUV3NnGlwqK
-         I4sahrPfh3i9fWUdZ9iqMnHVcNLOIqrBePBRqzdpNkQ41raIAAYxdORgt0temM4Rca
-         mNH9nuuGPyWFAvxaIQRCcdEMRzoLl2OAlKpaMV+p4rNL92aRPV8uFk/AVhQf5Scrtf
-         SC8V7oKAOM+rGFFVSg3EOvgiCtUfl32zpvwBqsB/HobMgy24idQrlNVFIxE0060HQ8
-         lAkqHII3zAUjps+RVVb4K/lB290LF2bABjl4IISVMKidkPiJlI++iNKqh+k/K5fz9L
-         Vgp4yASDVGJlw==
-Received: by mail-ua1-f54.google.com with SMTP id q13so19860789uaq.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:00:57 -0700 (PDT)
-X-Gm-Message-State: AOAM533DWb1l1nT41Cacl4R05pjJTxt102g1Ke0UIKe6jisTqJFrTqEi
-        zaE8VdI/DgH4o2hQHtw4oTx+z+310iDPCkn/8Y4=
-X-Google-Smtp-Source: ABdhPJxBht3G4IWScUXK+IaOfdkjsis4dL/gBa1CnvEp5RIYyns3bsUObddpMGH50GRFWCGiAevIL/WMph7+cIwhQVQ=
-X-Received: by 2002:a67:fa93:: with SMTP id f19mr12463846vsq.43.1635141657031;
- Sun, 24 Oct 2021 23:00:57 -0700 (PDT)
+        id S230126AbhJYGDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhJYGDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:03:52 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E85C061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:01:30 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id s9so14096366oiw.6
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BHDHCA2tdEWpGSchMhf7ru08fjMx1410uewWoCJjgb8=;
+        b=U57c8msbVFW1pdo7Wt+RxHaOa9+S2A8WBhJVIQvNimZ/avAETH2yXPeasAPqYAj4hn
+         4BS+qfXA75PC8NEmYwQ7trmKHqz5HX5XekpF/cHjSC9XYkjDDE4QoegbfCaGr+gCXYKW
+         XKyEkA8iU1KUd4bmMbuk7yeKU8zG5pyLbJL8O4MuSnxCrP1G4Ugcdi7/v2CnVCmWkdRK
+         6QubTlJCbc+r4F9cQxft9P7RdzZNtBatskDGdHFQGMUccUJM5VQmJvTKpISN4YjvEKLV
+         MgamsQApMOLIjPrPfz/qBmHoRL1TlwHHbLok6/Cub6BYZODoagL1I97vBkMW6WZmoL4L
+         Qrcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BHDHCA2tdEWpGSchMhf7ru08fjMx1410uewWoCJjgb8=;
+        b=Ah00Xn7EJHjCC/X3w/y8FlFJwMH2EODSike4qINI6xyuZBJyjbMF8+cd/gStZ+pYTu
+         0bD8Wy22kIs2FPJbHYu9Rbg8h+cqx9xfwF1O7hiL5sYi0QKyLz0SaJrQt+RC+HfHO+o7
+         4nZiecAbJ2o7Afnz5g//y+frjJTVIl4PiwJziv1zUKQ3WlyDq1/bRqNSNyhDqFGvikY7
+         1iZwjVnkelLXphAgCpZkel9RlO0/b+UY8jl8EhGqwFioVjTIqywlwlxccH7ycrhOBhld
+         rHHOjvZKHjvmL4jNBjhd8hQbmTDqZdAQ4Z9aa77dEWTfiSQ1PkCK8WTfgNgUlYyl2K2l
+         x9wg==
+X-Gm-Message-State: AOAM532rIaf+P+fwaBzse7EKa4da1Q4DzlldDHZ5fxUcu9B6VfR0MyL/
+        fqDSiSvm/WAm6iFCPU1w63lk10YeIrJNJQPcXBTB1m9kuzs=
+X-Google-Smtp-Source: ABdhPJyOtGRa46Y1SOqS2myG7Z14PZ1hG6KK9U2T+syRBGvynCbsCkh6QCijM8IzyX0BL2KDkBSm/4syiYs7YcipQMo=
+X-Received: by 2002:a05:6808:6ce:: with SMTP id m14mr10715106oih.134.1635141689795;
+ Sun, 24 Oct 2021 23:01:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025040607.92786-1-wefu@redhat.com> <20211025040607.92786-2-wefu@redhat.com>
- <CAAhSdy1N-UQFnbFc7PSwf62y=gbvX7pK=vwUaG8m_KzdWx3AgQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy1N-UQFnbFc7PSwf62y=gbvX7pK=vwUaG8m_KzdWx3AgQ@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 25 Oct 2021 14:00:46 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT9T-TwTmGsfDH0Y05LO6dF6nGUUSGZW=RSackM0fUUyg@mail.gmail.com>
-Message-ID: <CAJF2gTT9T-TwTmGsfDH0Y05LO6dF6nGUUSGZW=RSackM0fUUyg@mail.gmail.com>
-Subject: Re: [RESEND PATCH V3 1/2] dt-bindings: riscv: add mmu-supports-svpbmt
- for Svpbmt
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Wei Fu <wefu@redhat.com>, Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com,
-        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Gordan Markus <gordan.markus@canonical.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>
+References: <20211023171802.4693-1-cyeaa@connect.ust.hk> <CANpmjNP8uAexEZ3Qa-GfBfX6V8tAd7NK0vt3T3Xjh4CkzxfS-g@mail.gmail.com>
+ <TYCP286MB1188F7FAA423CFA03225B3BE8A819@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+In-Reply-To: <TYCP286MB1188F7FAA423CFA03225B3BE8A819@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 25 Oct 2021 08:00:00 +0200
+Message-ID: <CANpmjNO5-o1B9r2eYS_482RBVJSyPoHSnV2t+M8fJdFzBf6d2A@mail.gmail.com>
+Subject: Re: [PATCH] mm/kfence: fix null pointer dereference on pointer meta
+To:     YE Chengfeng <cyeaa@connect.ust.hk>
+Cc:     kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:17 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Oct 25, 2021 at 9:36 AM <wefu@redhat.com> wrote:
-> >
-> > From: Wei Fu <wefu@redhat.com>
-> >
-> > Previous patch has added svpbmt in arch/riscv and changed the
-> > DT mmu-type. Update dt-bindings related property here.
-> >
-> > Signed-off-by: Wei Fu <wefu@redhat.com>
-> > Co-developed-by: Guo Ren <guoren@kernel.org>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > Cc: Anup Patel <anup@brainfault.org>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > ---
-> >  Documentation/devicetree/bindings/riscv/cpus.yaml | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > index e534f6a7cfa1..76f324d85e12 100644
-> > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > @@ -59,6 +59,11 @@ properties:
-> >        - riscv,sv48
-> >        - riscv,none
-> >
-> > +  mmu-supports-svpbmt:
-> > +    description:
-> > +      Describes the CPU's mmu-supports-svpbmt support
-> > +    $ref: '/schemas/types.yaml#/definitions/phandle'
->
-> There were various proposals from different folks in the previous
-> email threads.
->
-> I think most of us were converging on:
-> 1) Don't modify "mmu-type" DT property for backward
-> compatibility
-I agree. FuWei has followed that in the patch.
+On Sat, 23 Oct 2021 at 21:22, YE Chengfeng <cyeaa@connect.ust.hk> wrote:
+[...]
+> Thanks for your reply, this is reported by a static analysis tool develop=
+ed by us. It just checks dataflow and doesn't know other complex semantics.=
+ I didn't know whether it is a real bug, so I send the patch just in case. =
+It seems that if the index is incorrect, the function addr_to_metadata will=
+ also return null-ptr, I don't know whether this is checked by other upper-=
+level functions.
+[...]
+> And you are right, if it is a null-ptr, the root cause of it should be in=
+ the upper-level function. I think you can add some null-ptr check like ass=
+ert(meta !=3D null) if you want, this will suppress this kind of false posi=
+tive report. Anyway, I think it is not a very good thing to just let this n=
+ull-ptr dereference happen, even though it is not a big deal. Adding some c=
+hecking to handle this case may be better, for example, print some error lo=
+gging.
 
-> 2) Add boolean DT property "riscv,svpmbt" under
-> "mmu" child DT node of each CPU DT node. Same will apply
-> to boolean DT property "riscv,svnapot" as well.
-We have various proposals here:
-@Philipp suggests firstly, but break the backward compatibility:
- cpu@0 {
-    ...
-    mmu {
-       type = "riscv,sv39";
-       supports-svpbmt;
-       supports-svnapot;
-    };
+It's a little more complicated than this: the negative index may
+happen when called with an object in range R =3D [__kfence_pool,
+__kfence_pool+(PAGE_SIZE*2)-1]. The first thing to note is that this
+address range is never returned by KFENCE as a valid object because
+both pages are "guard pages".
 
-@guoren suggests reusing the mmu-type, but seems not clean.
-cpu@0 {
-   ...
-   mmu-type = "riscv,sv39,svpbmt,svnapot";
+Secondly, while calling kfence_free(R) will result in the NULL-deref,
+however, such a call is either buggy or malicious because it's only
+meant to be called from the allocators' kfree slow-path (slub.c and
+slab.c). Calling kfree(R) _does not_ lead to the kfree slow-path which
+calls kfence_free(), because the first 2 pages in KFENCE's pool do not
+have PageSlab nor page->slab_cache set.
 
+You can try it yourself by randomly doing a kfree(__kfence_pool)
+somewhere, and observing that nothing happens.
 
-@fuwei suggests simple name property in CPU section:
-cpu@0 {
-   ...
-   mmu-type = "riscv,sv39";
-   mmu-supports-svpbmt;
-   mmu-supports-svnapot;
+As you can see, encountering the NULL-deref in __kfence_free() really
+should be impossible, unless something really bad is happening (e.g.
+malicious invocation, corrupt memory, bad CPU, etc.).
 
-@Anup suggests:
-cpu@0 {
-   ...
-    mmu-type = "riscv,sv39";
-    mmu {
-       supports-svpbmt;
-       supports-svnapot;
-    };
+And regarding assert(meta !=3D null) you mentioned: the kernel does not
+have asserts, and the closest we have to asserts are WARN_ON() and
+BUG_ON(). That latter of which is closest to an assert() you may be
+familiar with from user space. However, its use is heavily
+discouraged: unlike user space, the kernel crashing takes the whole
+machine down. Therefore, the kernel wants to handle errors as
+gracefully as possible, i.e. recover where possible.
 
-Any other suggestions? Thx.
+However, something like BUG_ON(!ptr) is quite redundant, because a
+NULL-deref always crashes the kernel and also prints a helpful call
+trace.
 
->
-> We also have bitmanip and vector broken down into smaller
-> extensions so grouping related extensions as separate DT node
-> under each CPU node will be more readable and easy to parse.
-Do you mean combine mmu extensions with them together?
-cpu@0 {
-    ...
-    extensions {
-        supports-svpbmt;
-        supports-svnapot;
-        supports-bitmanip;
-        supports-vector-v0p7;
-    };
+But as reasoned above, really shouldn't happen in our case. And if it
+does, we'd _really_ want to know about it (just crash) -- we either
+have a serious bug somewhere, or something more malicious is
+happening. Therefore, handling this case more gracefully, be it with a
+WARN_ON() or otherwise, does not seem appropriate as I couldn't say if
+it's safe to recover and continue execution in such a state.
 
->
-> Regards,
-> Anup
->
-> > +
-> >    riscv,isa:
-> >      description:
-> >        Identifies the specific RISC-V instruction set architecture
-> > --
-> > 2.25.4
-> >
+The same is true for any other place in the kernel handling pointers:
+if a NULL-deref really isn't expected, often it makes more sense to
+crash rather than continue in an unknown bad state potentially
+corrupting more data.
 
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Thanks,
+-- Marco
