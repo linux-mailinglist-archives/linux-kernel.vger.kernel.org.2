@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BB043A365
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCC643A399
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbhJYT7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:59:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42706 "EHLO mail.kernel.org"
+        id S236750AbhJYUA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235648AbhJYTzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:55:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0566F610A5;
-        Mon, 25 Oct 2021 19:45:34 +0000 (UTC)
+        id S238063AbhJYT4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:56:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DCF9611C1;
+        Mon, 25 Oct 2021 19:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191135;
-        bh=NWmRiRW19PYgY4OfgDh+IoW5qa7oawkG0RlypOH1hM0=;
+        s=korg; t=1635191182;
+        bh=zLzP8MrJRYIhDm6FAqz1hOTnK6Rub1ZHl8XPTbOKq6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2AA2cRsTvjIltMLki3/p1InJFD0zXhdTRJX7jzK/TyNMMsrL2kXC3rmqwyyby9/mC
-         Ws9tZmnE1Q1OoK8oodx7dCOG2QvsqJprjRZ1ThKAxs3oDZGlURjZqZRVC94zupEEpa
-         k3OBnfnopaH8msXdmW6rbpg+fPvhTKSL5NCO3sEM=
+        b=Hd56uzVzC4UiVkhqPQze8RUf10scvbH2GZhmfU6Rep8DYWM83257+C3vPSjilx6ND
+         v0IQtPzVfOriEwZ4YDuUBtrtxxNc7v33/5QCYOjBL4elHUGzfE+6o3WbhgPxR7rdhX
+         wak8LefqsVC6v+4TSelvNJxEsRroY4RP/PXl1QW8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 146/169] perf/x86/msr: Add Sapphire Rapids CPU support
-Date:   Mon, 25 Oct 2021 21:15:27 +0200
-Message-Id: <20211025191036.051265358@linuxfoundation.org>
+Subject: [PATCH 5.14 147/169] Input: snvs_pwrkey - add clk handling
+Date:   Mon, 25 Oct 2021 21:15:28 +0200
+Message-Id: <20211025191036.173237293@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
 References: <20211025191017.756020307@linuxfoundation.org>
@@ -40,32 +42,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 71920ea97d6d1d800ee8b51951dc3fda3f5dc698 ]
+[ Upstream commit d997cc1715df7b6c3df798881fb9941acf0079f8 ]
 
-SMI_COUNT MSR is supported on Sapphire Rapids CPU.
+On i.MX7S and i.MX8M* (but not i.MX6*) the pwrkey device has an
+associated clock. Accessing the registers requires that this clock is
+enabled. Binding the driver on at least i.MX7S and i.MX8MP while not
+having the clock enabled results in a complete hang of the machine.
+(This usually only happens if snvs_pwrkey is built as a module and the
+rtc-snvs driver isn't already bound because at bootup the required clk
+is on and only gets disabled when the clk framework disables unused clks
+late during boot.)
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1633551137-192083-1-git-send-email-kan.liang@linux.intel.com
+This completes the fix in commit 135be16d3505 ("ARM: dts: imx7s: add
+snvs clock to pwrkey").
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Link: https://lore.kernel.org/r/20211013062848.2667192-1-u.kleine-koenig@pengutronix.de
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/msr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/input/keyboard/snvs_pwrkey.c | 29 ++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
-index c853b28efa33..96c775abe31f 100644
---- a/arch/x86/events/msr.c
-+++ b/arch/x86/events/msr.c
-@@ -68,6 +68,7 @@ static bool test_intel(int idx, void *data)
- 	case INTEL_FAM6_BROADWELL_D:
- 	case INTEL_FAM6_BROADWELL_G:
- 	case INTEL_FAM6_BROADWELL_X:
-+	case INTEL_FAM6_SAPPHIRERAPIDS_X:
+diff --git a/drivers/input/keyboard/snvs_pwrkey.c b/drivers/input/keyboard/snvs_pwrkey.c
+index 2f5e3ab5ed63..65286762b02a 100644
+--- a/drivers/input/keyboard/snvs_pwrkey.c
++++ b/drivers/input/keyboard/snvs_pwrkey.c
+@@ -3,6 +3,7 @@
+ // Driver for the IMX SNVS ON/OFF Power Key
+ // Copyright (C) 2015 Freescale Semiconductor, Inc. All Rights Reserved.
  
- 	case INTEL_FAM6_ATOM_SILVERMONT:
- 	case INTEL_FAM6_ATOM_SILVERMONT_D:
++#include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+@@ -99,6 +100,11 @@ static irqreturn_t imx_snvs_pwrkey_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++static void imx_snvs_pwrkey_disable_clk(void *data)
++{
++	clk_disable_unprepare(data);
++}
++
+ static void imx_snvs_pwrkey_act(void *pdata)
+ {
+ 	struct pwrkey_drv_data *pd = pdata;
+@@ -111,6 +117,7 @@ static int imx_snvs_pwrkey_probe(struct platform_device *pdev)
+ 	struct pwrkey_drv_data *pdata;
+ 	struct input_dev *input;
+ 	struct device_node *np;
++	struct clk *clk;
+ 	int error;
+ 	u32 vid;
+ 
+@@ -134,6 +141,28 @@ static int imx_snvs_pwrkey_probe(struct platform_device *pdev)
+ 		dev_warn(&pdev->dev, "KEY_POWER without setting in dts\n");
+ 	}
+ 
++	clk = devm_clk_get_optional(&pdev->dev, NULL);
++	if (IS_ERR(clk)) {
++		dev_err(&pdev->dev, "Failed to get snvs clock (%pe)\n", clk);
++		return PTR_ERR(clk);
++	}
++
++	error = clk_prepare_enable(clk);
++	if (error) {
++		dev_err(&pdev->dev, "Failed to enable snvs clock (%pe)\n",
++			ERR_PTR(error));
++		return error;
++	}
++
++	error = devm_add_action_or_reset(&pdev->dev,
++					 imx_snvs_pwrkey_disable_clk, clk);
++	if (error) {
++		dev_err(&pdev->dev,
++			"Failed to register clock cleanup handler (%pe)\n",
++			ERR_PTR(error));
++		return error;
++	}
++
+ 	pdata->wakeup = of_property_read_bool(np, "wakeup-source");
+ 
+ 	pdata->irq = platform_get_irq(pdev, 0);
 -- 
 2.33.0
 
