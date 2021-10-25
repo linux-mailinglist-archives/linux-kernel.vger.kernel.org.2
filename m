@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF4D43956F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB88439576
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhJYMBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:01:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230058AbhJYMA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:00:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B74606103B;
-        Mon, 25 Oct 2021 11:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635163116;
-        bh=NdQrCHEld9O16JXzrTFvX3WSjxD0Akvj+AI7iLRc4Bw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hceyHO2thvwzSGrq8FVgDrcs2Xlv5I2b4GJ+59arV5F1pNVGqTZF/JjMCcTqLNevm
-         tHMyumqp0yBOAbCzHlZxxejPPr9HfuQD1CMqS/txB4K0VM6I3QXwepfDIyj8nXewZM
-         jt1pYNEFezQgeYVEaRoeGnkSWsvO9zaox+exql457pHYG0au+ntFf+gaVMat6s2pmE
-         3hKlfxnrirmcSg3V7uUWVi/Hc5jsK/1BH2TAQTMN82gbYmuNTziD6foFV06JyYXVZt
-         CQJgUwMTjFDlbFI5NS5Rj6p2qnmZui1roHULGri/RROHhbhOkyZQwNIzo4rwza7mWD
-         XKYWSRMIb1Beg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1meycN-0001Q2-F5; Mon, 25 Oct 2021 13:58:19 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] most: fix control-message timeouts
-Date:   Mon, 25 Oct 2021 13:58:11 +0200
-Message-Id: <20211025115811.5410-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S231358AbhJYMBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231166AbhJYMBn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:01:43 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AB7C061745;
+        Mon, 25 Oct 2021 04:59:21 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so8232516pjb.3;
+        Mon, 25 Oct 2021 04:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7EfxP+NNNDqzXZbApTvLoWyoKYpAMnYA8qlrdpBRI48=;
+        b=bq2XHOiAgE0+68ggQGvbgW1f1CCDuX617uhA+20w+r2E0eyNvNPw2swqehGCk1jBSC
+         tefyDUWchsfEWkG63Z9PUujW/0WnPSjBhFr72XXmB9CTkufKPMuVPpIYfZIn467bnEeV
+         lMlcSejWxGs7Uw2mw9y/WaQGCKyJOcu3+G7mWYbB8fabHScCu/Ubjj0Vo402K9rIaM2v
+         wIlEEky2LrMyAPqxumyoxJ3bfZBjbgicYtB+6IiMeE1o5FhV3wdFsV4lZ7aAeZP9Hroz
+         AzoMjgqF8c7V3VyZkG/Ju3g19rSA3NlMRCMqqPAdbxKZo3kN+PnMtofZh6WbpKwLVWPW
+         EpLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7EfxP+NNNDqzXZbApTvLoWyoKYpAMnYA8qlrdpBRI48=;
+        b=YfLaqjsnK5r4T+CyIQm7PJD+kEaqWbe2D/W8WZ2n9zR0+paNvUEREibCG/2BfxQuK9
+         Oof8gzOOtPf150e0YAHrTT2kHGAKqGCj3m03pjM1YrP60a5n3+W2/rFmKoVOa3Eg+s98
+         IvXsCl/ON6wWy2n6opNylQfvsRkiCsxFNj/wDQ59+Cufv2hFi5rFS5+isCodWrdKa9uD
+         l2muEH0luI49qvHh95141ykUqsLu4IxnNlE0B/Zv2Uz1EktaQPSQqQz/j+RHw40XYStT
+         3IRHo2ElQ0X8tRpmUjb+RFMSr7qCI+Xt1toDIl2Ymu87XU5nYbcMi01h097KCgH1QLfT
+         EvPw==
+X-Gm-Message-State: AOAM530K+iwLJvWMdAAt8Gk4pb8AbgUB9gndlNg0l8MVv2OtQobQrRFI
+        WPh9N2V3h2BotmmDumE2AHU=
+X-Google-Smtp-Source: ABdhPJxMuslf8J3sqJtUWlL/rKPGmGcdRJ/N091CQE0aJ7TVEq1RNpzWbjvkZxIGz3vc7qlrsVZXgg==
+X-Received: by 2002:a17:90a:bd0f:: with SMTP id y15mr12070038pjr.186.1635163161172;
+        Mon, 25 Oct 2021 04:59:21 -0700 (PDT)
+Received: from ubuntu-hirsute.. ([154.86.159.246])
+        by smtp.gmail.com with ESMTPSA id u4sm19362300pfh.147.2021.10.25.04.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 04:59:20 -0700 (PDT)
+From:   yangxingwu <xingwu.yang@gmail.com>
+To:     horms@verge.net.au
+Cc:     ja@ssi.bg, pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, corbet@lwn.net, xingwu.yang@gmail.com
+Subject: [PATCH] ipvs: Fix reuse connection if RS weight is 0
+Date:   Mon, 25 Oct 2021 19:59:10 +0800
+Message-Id: <20211025115910.2595-1-xingwu.yang@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
+dead"), new connections to dead servers are redistributed immediately to
+new servers.
 
-Use the common control-message timeout defines for the five-second
-timeouts.
+Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
+port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
+0. And new connection may be distributed to a real server with weight 0.
 
-Fixes: 97a6f772f36b ("drivers: most: add USB adapter driver")
-Cc: stable@vger.kernel.org      # 5.9
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
 ---
- drivers/most/most_usb.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ Documentation/networking/ipvs-sysctl.rst | 3 +--
+ net/netfilter/ipvs/ip_vs_core.c          | 5 +++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/most/most_usb.c b/drivers/most/most_usb.c
-index 2640c5b326a4..acabb7715b42 100644
---- a/drivers/most/most_usb.c
-+++ b/drivers/most/most_usb.c
-@@ -149,7 +149,8 @@ static inline int drci_rd_reg(struct usb_device *dev, u16 reg, u16 *buf)
- 	retval = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
- 				 DRCI_READ_REQ, req_type,
- 				 0x0000,
--				 reg, dma_buf, sizeof(*dma_buf), 5 * HZ);
-+				 reg, dma_buf, sizeof(*dma_buf),
-+				 USB_CTRL_GET_TIMEOUT);
- 	*buf = le16_to_cpu(*dma_buf);
- 	kfree(dma_buf);
+diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
+index 2afccc63856e..1cfbf1add2fc 100644
+--- a/Documentation/networking/ipvs-sysctl.rst
++++ b/Documentation/networking/ipvs-sysctl.rst
+@@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
  
-@@ -176,7 +177,7 @@ static inline int drci_wr_reg(struct usb_device *dev, u16 reg, u16 data)
- 			       reg,
- 			       NULL,
- 			       0,
--			       5 * HZ);
-+			       USB_CTRL_SET_TIMEOUT);
- }
+ 	0: disable any special handling on port reuse. The new
+ 	connection will be delivered to the same real server that was
+-	servicing the previous connection. This will effectively
+-	disable expire_nodest_conn.
++	servicing the previous connection.
  
- static inline int start_sync_ep(struct usb_device *usb_dev, u16 ep)
+ 	bit 1: enable rescheduling of new connections when it is safe.
+ 	That is, whenever expire_nodest_conn and for TCP sockets, when
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index 128690c512df..9279aed69e23 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -2042,14 +2042,15 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+ 			     ipvs, af, skb, &iph);
+ 
+ 	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+-	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
++	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+ 		bool old_ct = false, resched = false;
+ 
+ 		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
+ 		    unlikely(!atomic_read(&cp->dest->weight))) {
+ 			resched = true;
+ 			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+-		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
++		} else if (conn_reuse_mode &&
++			   is_new_conn_expected(cp, conn_reuse_mode)) {
+ 			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+ 			if (!atomic_read(&cp->n_control)) {
+ 				resched = true;
 -- 
-2.32.0
+2.30.2
 
