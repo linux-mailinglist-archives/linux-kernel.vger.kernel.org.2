@@ -2,253 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC04438EDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879CC438EE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhJYFfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:35:30 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40060 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229499AbhJYFf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:35:29 -0400
-X-UUID: 662247fad7024c07b84259580f507b19-20211025
-X-UUID: 662247fad7024c07b84259580f507b19-20211025
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 252174150; Mon, 25 Oct 2021 13:33:03 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 25 Oct 2021 13:33:02 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Oct 2021 13:33:02 +0800
-Message-ID: <d49971c13224bc0fc67ef579347beced2301bee4.camel@mediatek.com>
-Subject: Re: [PATCH v11 09/16] soc: mediatek: add mtk-mmsys support for
- mt8195 vdosys0
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     Fei Shao <fshao@chromium.org>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <hsinyi@chromium.org>, <moudy.ho@mediatek.com>,
-        <roy-cw.yeh@mediatek.com>, Fabien Parent <fparent@baylibre.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        <nancy.lin@mediatek.com>, <singo.chang@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-Date:   Mon, 25 Oct 2021 13:33:01 +0800
-In-Reply-To: <CAC=S1niq+b4ue6nPLNT5JEiugh5UFDDL3hEYrUua0AzQ_+YeXA@mail.gmail.com>
-References: <20210921155218.10387-1-jason-jh.lin@mediatek.com>
-         <20210921155218.10387-10-jason-jh.lin@mediatek.com>
-         <8b509551-7cfa-f55c-fc0f-db7d0a3886eb@collabora.com>
-         <29992126d39a7f381a516fdb9cd6e39f1e51afdb.camel@mediatek.com>
-         <CAC=S1niq+b4ue6nPLNT5JEiugh5UFDDL3hEYrUua0AzQ_+YeXA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S229888AbhJYFg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:36:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229499AbhJYFgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 01:36:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ADE960E0B;
+        Mon, 25 Oct 2021 05:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635140044;
+        bh=MBWKkbW1+ESRwn+T7RNQg/OWoFBlupiUTUDxyWaN+RQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pAapQdvIG2/E7DIic8Yh1zD7PyUGNuXbMcYnZyoou6HfSFJ+hNwyYftkZPSzintSC
+         InUJrizteFw/8Xd1Paj33MOquMfHtC3Iy6GgJQ2GLN70A26QcGmRkrTbyBlqcQjtwy
+         Mmde+43VV6OF4mx9qfC22i9QNuk9Kd5f6sxu1AeyOhata8LDlsYvWJRsZplQUx2wnJ
+         KFk+SZfp12itsJMPEe2HQRqtjVU/wJPfyc+v8l2G5XSjTm8SKgDYBQD9TS0mjZI7AI
+         D+VoJ8aWKRTuq+Ye9Z8+6Ppb7fkvFv5+oMM6W6ZZz3pvJr7UCbIfuGnTPNkOZ9H0rw
+         +NwoTJ9O4dIpA==
+Date:   Mon, 25 Oct 2021 11:03:59 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Tim Gardner <tim.gardner@canonical.com>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][linux-next] dmaengine: dw-axi-dmac: Fix uninitialized
+ variable in axi_chan_block_xfer_start()
+Message-ID: <YXZBxx8NObaf3x70@matsya>
+References: <20211019190701.15525-1-tim.gardner@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019190701.15525-1-tim.gardner@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fei,
+On 19-10-21, 13:07, Tim Gardner wrote:
+> Coverity complains of an uninitialized variable:
+> 
+> 5. uninit_use_in_call: Using uninitialized value config.dst_per when calling axi_chan_config_write. [show details]
+> 6. uninit_use_in_call: Using uninitialized value config.hs_sel_src when calling axi_chan_config_write. [show details]
+> CID 121164 (#1-3 of 3): Uninitialized scalar variable (UNINIT)
+> 7. uninit_use_in_call: Using uninitialized value config.src_per when calling axi_chan_config_write. [show details]
+> 418        axi_chan_config_write(chan, &config);
+> 
+> Fix this by clearing the structure which should at least be benign in axi_chan_config_write(). Also fix
+> what looks like a cut-n-paste error when initializing config.hs_sel_dst.
 
-Thanks for the reviews.
+Eugeniy?
 
-On Mon, 2021-10-25 at 13:05 +0800, Fei Shao wrote:
-> On Fri, Oct 22, 2021 at 6:13 PM Jason-JH Lin <
-> jason-jh.lin@mediatek.com> wrote:
-> > 
-> > Hi Angelo,
-> > 
-> > Thanks for the reviews.
-> > 
-> > 
-> > On Thu, 2021-10-14 at 16:05 +0200, AngeloGioacchino Del Regno
-> > wrote:
-> > > > Add mt8195 vdosys0 clock driver name and routing table to
-> > > > the driver data of mtk-mmsys.
-> > > > 
-> > 
-> > [snip]
-> > 
-> > > > 
-> > > > ---
-> > > 
-> > > Hello Jason,
-> > > thanks for the patch! However, there are a few things to improve:
-> > > 
-> > 
-> > [snip]
-> > 
-> > > > +#define
-> > > > MT8195_VDO0_SEL_IN                                 0xf34
-> > > > +#define MT8195_SEL_IN_VPP_MERGE_FROM_DSC_WRAP0_OUT         (0
-> > > > <<
-> > > > 0)
-> > > 
-> > > Bitshifting 0 by 0 bits == 0, so this is simply 0.
-> > > 
-> > > > +#define MT8195_SEL_IN_VPP_MERGE_FROM_DISP_DITHER1          (1
-> > > > <<
-> > > > 0)
-> > > 
-> > > I would write 0x1 here
-> > > 
-> > > > +#define MT8195_SEL_IN_VPP_MERGE_FROM_VDO1_VIRTUAL0         (2
-> > > > <<
-> > > > 0)
-> > > 
-> > > ....and 0x2 here: bitshifting of 0 bits makes little sense.
-> > > 
-> > > > +#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0
-> > > > (0 << 4)
-> > > 
-> > > Bitshifting 0 by 4 bits is still 0, so this is again 0.
-> > > This is repeated too many times, so I will not list it for all of
-> > > the
-> > > occurrences.
-> > > 
-> > > > +#define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE          (1
-> > > > <<
-> > > > 4)
-> > > 
-> > > This is BIT(4).
-> > > 
-> > > > +#define MT8195_SEL_IN_DSC_WRAP1_IN_FROM_DISP_DITHER1
-> > > > (0 << 5) > +#define MT8195_SEL_IN_DSC_WRAP1_IN_FROM_VPP_MERGE
-> > > >     (1 << 5)
-> > > 
-> > > ...and this is BIT(5)
-> > > 
-> > > > +#define MT8195_SEL_IN_SINA_VIRTUAL0_FROM_VPP_MERGE         (0
-> > > > <<
-> > > > 8)
-> > > > +#define MT8195_SEL_IN_SINA_VIRTUAL0_FROM_DSC_WRAP1_OUT
-> > > > (1 << 8)
-> > > 
-> > > BIT(8)
-> > > 
-> > > > +#define MT8195_SEL_IN_SINB_VIRTUAL0_FROM_DSC_WRAP0_OUT
-> > > > (0 << 9)
-> > > > +#define MT8195_SEL_IN_DP_INTF0_FROM_DSC_WRAP1_OUT          (0
-> > > > <<
-> > > > 12)
-> > > > +#define MT8195_SEL_IN_DP_INTF0_FROM_VPP_MERGE
-> > > > (1 << 12)
-> > > 
-> > > BIT(12)
-> > > 
-> > > > +#define MT8195_SEL_IN_DP_INTF0_FROM_VDO1_VIRTUAL0          (2
-> > > > <<
-> > > > 12)
-> > > 
-> > > BIT(13)
-> > > 
-> > > ... and please, use the BIT(nr) macro for all these bit
-> > > definitions,
-> > > it's way more
-> > > readable like that.
-> > > 
-> > > Regards,
-> > > - Angelo
-> > 
-> > Because the HW register design of MT8195_VDO0_SEL_IN 0xf34 is like
-> > this:
-> > 
-> > bit[1:0] as MT8195_SEL_IN_VPP_MERGE and
-> >   value: 0 as MT8195_SEL_IN_VPP_MERGE_FROM_DSC_WRAP0_OUT
-> >   value: 1 as MT8195_SEL_IN_VPP_MERGE_FROM_DISP_DITHER1
-> >   value: 2 as MT8195_SEL_IN_VPP_MERGE_FROM_VDO1_VIRTUAL0
-> > bit[4:4] as MT8195_SEL_IN_DSC_WRAP0_IN and
-> >   value 0 as MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0
-> >   value 1 as MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE
-> > bit[5:5] as MT8195_SEL_IN_DSC_WRAP1_IN and
-> >   value 0 as
-> > MT8195_SEL_IN_DSC_WRAP1_IN_FROM_DISP_DITHER1
-> >   value 1 as
-> > MT8195_SEL_IN_DSC_WRAP1_IN_FROM_VPP_MERGE
-> > and so on...
-> > 
-> > I think using BIT(nr) macro directly is not easy to debug.
-> > 
-> > 
-> > Is it better to define another MACRO like this?
-> > 
-> > #define BIT_VAL(val, bit)  ((val) << (bit))
-> > #define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0  BIT_VAL(0, 4)
-> > #define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE  BIT_VAL(1, 4)
-> > ...
-> > 
-> > or
-> > 
-> > #define MT8195_SEL_IN_DSC_WRAP0_IN (4)
-> > #define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0  (0
-> > << MT8195_SEL_IN_DSC_WRAP0_IN)
-> > #define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE  (1 <<
-> > MT8195_SEL_IN_DSC_WRAP0_IN)
-> > ...
-> > 
-> > What do you think?
 > 
-> Hi Jason,
+> Fixes: 824351668a413 ("dmaengine: dw-axi-dmac: support DMAX_NUM_CHANNELS > 8")
+> Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> ---
+>  drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> If that's the case you can still use BIT(nr) for the definitions and
-> describe their usage in the comment, so both code readability and the
-> ease of maintenance are preserved, and people can easily tell if
-> there
-> are duplicated/missing definitions while reading through the code.
-> Adding informative comments is never a bad thing.
-> 
-> I would do something like this (and further split the definitions
-> into
-> sections by their functionalities with blank lines for visual
-> comfort):
-> 
-> /*
->  * MT8195_VDO0_SEL_IN[1:0]: VPP_MERGE
->  *   0x0 : DSC_WRAP0_OUT
->  *   0x1 : DISP_DITHER1
->  *   0x10: VDO1_VIRTUAL0
->  */
-> #define MT8195_SEL_IN_VPP_MERGE_FROM_DSC_WRAP0_OUT           0
-> #define MT8195_SEL_IN_VPP_MERGE_FROM_DISP_DITHER1            BIT(0)
-> #define MT8195_SEL_IN_VPP_MERGE_FROM_VDO1_VIRTUAL0           BIT(1)
-> 
-> /*
->  * MT8195_VDO0_SEL_IN[4:4]: DSC_WRAP0_IN
->  *   0x0: DISP_DITHER0
->  *   0x1: VPP_MERGE
->  */
-> #define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_DISP_DITHER0         0
-> #define MT8195_SEL_IN_DSC_WRAP0_IN_FROM_VPP_MERGE            BIT(4)
-> ... and so on.
-> 
-> Regards,
-> Fei
-> 
+> diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> index 79572ec532ef..f47116e77ea1 100644
+> --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> @@ -386,12 +386,13 @@ static void axi_chan_block_xfer_start(struct axi_dma_chan *chan,
+>  
+>  	axi_dma_enable(chan->chip);
+>  
+> +	memset(&config, 0, sizeof(config));
 
-OK, I'll fix it.
+pls init config while defining instead
 
-> > 
-> > 
-> > Regards,
-> > Jason-JH Lin <jason-jh.lin@mediatek.com>
-> > 
+        struct axi_dma_chan_config config = {};
+
+>  	config.dst_multblk_type = DWAXIDMAC_MBLK_TYPE_LL;
+>  	config.src_multblk_type = DWAXIDMAC_MBLK_TYPE_LL;
+>  	config.tt_fc = DWAXIDMAC_TT_FC_MEM_TO_MEM_DMAC;
+>  	config.prior = priority;
+>  	config.hs_sel_dst = DWAXIDMAC_HS_SEL_HW;
+> -	config.hs_sel_dst = DWAXIDMAC_HS_SEL_HW;
+> +	config.hs_sel_src = DWAXIDMAC_HS_SEL_HW;
+>  	switch (chan->direction) {
+>  	case DMA_MEM_TO_DEV:
+>  		dw_axi_dma_set_byte_halfword(chan, true);
+> -- 
+> 2.33.1
+
 -- 
-Jason-JH Lin <jason-jh.lin@mediatek.com>
-
+~Vinod
