@@ -2,254 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0773543979E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8643C4397A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhJYNeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:34:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231241AbhJYNeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:34:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635168719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jwuvCkOHo62fGDRtX62BpdTPwCRqLZcCn5V8ASXdLIA=;
-        b=SpvM56gOQxdR2GkQfeSmO+O/QwaoLWm5eUlFc95EtEJ6WV0po9Bi8WS7HsQjdn9GzFG1ju
-        6YKz+JxvVOqnjNuFN8z8yiBL9ghxfN0/sLTk35vM0QqSCbgTJy8hGKf+8NwwM5AEaR0tBQ
-        mfUC1q4uy7Ay1Dfyv00r0snJP9ma5nY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-UDcFOy5AOI2jj3_Ry0CJDg-1; Mon, 25 Oct 2021 09:31:58 -0400
-X-MC-Unique: UDcFOy5AOI2jj3_Ry0CJDg-1
-Received: by mail-ed1-f71.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso253138edb.19
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:31:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=jwuvCkOHo62fGDRtX62BpdTPwCRqLZcCn5V8ASXdLIA=;
-        b=Ufr8+CNeexKs9je4jgh45rqgcLhNyrTeOPa5WdQG56FmHl1IuB+L5XDkHXKZ9ezhaI
-         CHbN4zxwk217uM46gxyYjjSOi8T3nsnzprFXiOOQKqykl1jOIARRpwVH7zXkhRYMRkQZ
-         hnJ95LnbXra0GszLKw3kb1x7XRyEcjV7qJUQ4lRkB+aBq/to6k2bm1VB79wFDTUcE/pu
-         RkNAK7ZqIS1pnXG5F0/DnOVSTTCSO95w6EpB3bZ79uJBT0xsdc/4mFaOFtxacP+RiLXe
-         a08uOyVlNjdw+GL7Df6W4TFm1jPRU1t5MowShIkyu78DuRzMh10Jq/1Hw80MNXhlRRUx
-         PrCg==
-X-Gm-Message-State: AOAM530Z5N/FxWdjp01lf1DiagjtKfxMJvJAcjrK6c4BT1Ga0TERIZGS
-        xVLhKKcXSiJXl0XX6Ju5zS01rcg+1axcnxTn2XdTRM8Ue9nJNdbhIb+SZhl/jjMbAvWc7kMSJco
-        Kr4X7CBq97W1Z1bOaonG8UzUR
-X-Received: by 2002:a17:906:2606:: with SMTP id h6mr22238657ejc.301.1635168717197;
-        Mon, 25 Oct 2021 06:31:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzqwGQb/OPNb2TrcrVpQ2kfMVsFqyH8YAEneTvl+Ho2w1Ti+MJiG6IAW7s9nE4hJCbcjwxz7g==
-X-Received: by 2002:a17:906:2606:: with SMTP id h6mr22238632ejc.301.1635168716958;
-        Mon, 25 Oct 2021 06:31:56 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id kw10sm7463469ejc.71.2021.10.25.06.31.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 06:31:56 -0700 (PDT)
-Message-ID: <9236e715-c471-e1c8-6117-6f37b908a6bd@redhat.com>
-Date:   Mon, 25 Oct 2021 15:31:48 +0200
+        id S232467AbhJYNgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231241AbhJYNgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:36:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94EB860FBF
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635168819;
+        bh=EJ45t84sWIEH4MsSQhX2PuBQrfefoAybdOzP/rNZ+W0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OombQE/tLFdXcoqTbOKCFBEoPkjNSZACFBrDM2ZUyFWNwvqMk5D9UcGaRRacva9y2
+         JEkF5mg0tyglX17CJpImlDl71pFmOoDhemZlk35I4pLE3UhWOvGoUfp4RQU/q3zEGf
+         88BHvNtZCfKIA5r7/3qm5FQg63dxvzRQTU4f/Ry9f2o9BP0535VjbcAvT1AfRKp2EP
+         0qgiakvfCle5yZB2Lq3hIKKAw+GK3uDKotmIcRxy//YjAghnBu2aEJFCLdRmTMNPHZ
+         7mgOU1C+q/2KuTGKSed2+/wCipyItHdlnXzsTpqIR7cNa1VyVYKvgZCSu+pT7U17q6
+         WXdiCVfJJTxBg==
+Received: by mail-vk1-f174.google.com with SMTP id f126so5177495vke.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:33:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531sSZaer88DYWusrKGEAJ4D7dBj3zgQZWkQVYcEVuSaXnuZgdOD
+        Z7HMV7cbpnKXopuwrJzOrKmwAuEgEAfTnRvpCMc=
+X-Google-Smtp-Source: ABdhPJwdtSXSO9me5cbpVx8umGxqAOBbaLGaFF8sdWMN1yxlQDvJkj80Gy8e7N7zebHiShNk+776CXMa7XvtZT+wyo8=
+X-Received: by 2002:a05:6122:788:: with SMTP id k8mr14826563vkr.8.1635168818708;
+ Mon, 25 Oct 2021 06:33:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 10/43] KVM: arm64: Move vGIC v4 handling for WFI out
- arch callback hook
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-4-guoren@kernel.org>
+ <87a6ixbcse.wl-maz@kernel.org>
+In-Reply-To: <87a6ixbcse.wl-maz@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 25 Oct 2021 21:33:27 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTw136y8tzwOJQcNymGGWA2Zz127ozFEnGrRXwQUU7o8Q@mail.gmail.com>
+Message-ID: <CAJF2gTTw136y8tzwOJQcNymGGWA2Zz127ozFEnGrRXwQUU7o8Q@mail.gmail.com>
+Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead,c900-plic
+ request_threaded_irq with ONESHOT
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Anup Patel <anup@brainfault.org>,
         Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <20211009021236.4122790-11-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211009021236.4122790-11-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/21 04:12, Sean Christopherson wrote:
-> Move the put and reload of the vGIC out of the block/unblock callbacks
-> and into a dedicated WFI helper.  Functionally, this is nearly a nop as
-> the block hook is called at the very beginning of kvm_vcpu_block(), and
-> the only code in kvm_vcpu_block() after the unblock hook is to update the
-> halt-polling controls, i.e. can only affect the next WFI.
-> 
-> Back when the arch (un)blocking hooks were added by commits 3217f7c25bca
-> ("KVM: Add kvm_arch_vcpu_{un}blocking callbacks) and d35268da6687
-> ("arm/arm64: KVM: arch_timer: Only schedule soft timer on vcpu_block"),
-> the hooks were invoked only when KVM was about to "block", i.e. schedule
-> out the vCPU.  The use case at the time was to schedule a timer in the
-> host based on the earliest timer in the guest in order to wake the
-> blocking vCPU when the emulated guest timer fired.  Commit accb99bcd0ca
-> ("KVM: arm/arm64: Simplify bg_timer programming") reworked the timer
-> logic to be even more precise, by waiting until the vCPU was actually
-> scheduled out, and so move the timer logic from the (un)blocking hooks to
-> vcpu_load/put.
-> 
-> In the meantime, the hooks gained usage for enabling vGIC v4 doorbells in
-> commit df9ba95993b9 ("KVM: arm/arm64: GICv4: Use the doorbell interrupt
-> as an unblocking source"), and added related logic for the VMCR in commit
-> 5eeaf10eec39 ("KVM: arm/arm64: Sync ICH_VMCR_EL2 back when about to block").
-> 
-> Finally, commit 07ab0f8d9a12 ("KVM: Call kvm_arch_vcpu_blocking early
-> into the blocking sequence") hoisted the (un)blocking hooks so that they
-> wrapped KVM's halt-polling logic in addition to the core "block" logic.
-> 
-> In other words, the original need for arch hooks to take action _only_
-> in the block path is long since gone.
-> 
-> Cc: Oliver Upton <oupton@google.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Mon, Oct 25, 2021 at 6:48 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Sun, 24 Oct 2021 02:33:03 +0100,
+> guoren@kernel.org wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the driver,
+> > only the first interrupt could be handled, and continue irq is blocked by
+> > hw. Because the thead,c900-plic couldn't complete masked irq source which
+> > has been disabled in enable register. Add thead_plic_chip which fix up
+> > c906-plic irq source completion problem by unmask/mask wrapper.
+> >
+> > Here is the description of Interrupt Completion in PLIC spec [1]:
+> >
+> > The PLIC signals it has completed executing an interrupt handler by
+> > writing the interrupt ID it received from the claim to the claim/complete
+> > register. The PLIC does not check whether the completion ID is the same
+> > as the last claim ID for that target. If the completion ID does not match
+> > an interrupt source that is currently enabled for the target, the
+> >                          ^^ ^^^^^^^^^ ^^^^^^^
+> > completion is silently ignored.
+>
+> Given this bit of the spec...
+>
+> > +static void plic_thead_irq_eoi(struct irq_data *d)
+> > +{
+> > +     struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+> > +
+> > +     if (irqd_irq_masked(d)) {
+> > +             plic_irq_unmask(d);
+> > +             writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +             plic_irq_mask(d);
+> > +     } else {
+> > +             writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +     }
+> > +}
+> > +
+>
+> ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
+I'm not sure about SiFive PLIC. Maybe they didn't follow that to implement.
 
-This needs a word on why kvm_psci_vcpu_suspend does not need the hooks. 
-  Or it needs to be changed to also use kvm_vcpu_wfi in the PSCI code, I 
-don't know.
+>
+> And it isn't only for threaded interrupts in oneshot mode. Any driver
+> can mask an interrupt from its handler after having set the
+> IRQ_DISABLE_UNLAZY flag, and the interrupt would need the exact same
+> treatment.
+Thx for mentioned here, and I'll add it in the comment of next version patch.
 
-Marc, can you review and/or advise?
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
 
-Thanks,
 
-Paolo
 
-> ---
->   arch/arm64/include/asm/kvm_emulate.h |  2 ++
->   arch/arm64/kvm/arm.c                 | 52 +++++++++++++++++++---------
->   arch/arm64/kvm/handle_exit.c         |  3 +-
->   3 files changed, 38 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-> index fd418955e31e..de8b4f5922b7 100644
-> --- a/arch/arm64/include/asm/kvm_emulate.h
-> +++ b/arch/arm64/include/asm/kvm_emulate.h
-> @@ -41,6 +41,8 @@ void kvm_inject_vabt(struct kvm_vcpu *vcpu);
->   void kvm_inject_dabt(struct kvm_vcpu *vcpu, unsigned long addr);
->   void kvm_inject_pabt(struct kvm_vcpu *vcpu, unsigned long addr);
->   
-> +void kvm_vcpu_wfi(struct kvm_vcpu *vcpu);
-> +
->   static __always_inline bool vcpu_el1_is_32bit(struct kvm_vcpu *vcpu)
->   {
->   	return !(vcpu->arch.hcr_el2 & HCR_RW);
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 7838e9fb693e..1346f81b34df 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -359,27 +359,12 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
->   
->   void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
->   {
-> -	/*
-> -	 * If we're about to block (most likely because we've just hit a
-> -	 * WFI), we need to sync back the state of the GIC CPU interface
-> -	 * so that we have the latest PMR and group enables. This ensures
-> -	 * that kvm_arch_vcpu_runnable has up-to-date data to decide
-> -	 * whether we have pending interrupts.
-> -	 *
-> -	 * For the same reason, we want to tell GICv4 that we need
-> -	 * doorbells to be signalled, should an interrupt become pending.
-> -	 */
-> -	preempt_disable();
-> -	kvm_vgic_vmcr_sync(vcpu);
-> -	vgic_v4_put(vcpu, true);
-> -	preempt_enable();
-> +
->   }
->   
->   void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
->   {
-> -	preempt_disable();
-> -	vgic_v4_load(vcpu);
-> -	preempt_enable();
-> +
->   }
->   
->   void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
-> @@ -662,6 +647,39 @@ static void vcpu_req_sleep(struct kvm_vcpu *vcpu)
->   	smp_rmb();
->   }
->   
-> +/**
-> + * kvm_vcpu_wfi - emulate Wait-For-Interrupt behavior
-> + * @vcpu:	The VCPU pointer
-> + *
-> + * Suspend execution of a vCPU until a valid wake event is detected, i.e. until
-> + * the vCPU is runnable.  The vCPU may or may not be scheduled out, depending
-> + * on when a wake event arrives, e.g. there may already be a pending wake event.
-> + */
-> +void kvm_vcpu_wfi(struct kvm_vcpu *vcpu)
-> +{
-> +	/*
-> +	 * Sync back the state of the GIC CPU interface so that we have
-> +	 * the latest PMR and group enables. This ensures that
-> +	 * kvm_arch_vcpu_runnable has up-to-date data to decide whether
-> +	 * we have pending interrupts, e.g. when determining if the
-> +	 * vCPU should block.
-> +	 *
-> +	 * For the same reason, we want to tell GICv4 that we need
-> +	 * doorbells to be signalled, should an interrupt become pending.
-> +	 */
-> +	preempt_disable();
-> +	kvm_vgic_vmcr_sync(vcpu);
-> +	vgic_v4_put(vcpu, true);
-> +	preempt_enable();
-> +
-> +	kvm_vcpu_block(vcpu);
-> +	kvm_clear_request(KVM_REQ_UNHALT, vcpu);
-> +
-> +	preempt_disable();
-> +	vgic_v4_load(vcpu);
-> +	preempt_enable();
-> +}
-> +
->   static int kvm_vcpu_initialized(struct kvm_vcpu *vcpu)
->   {
->   	return vcpu->arch.target >= 0;
-> diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
-> index 275a27368a04..4794563a506b 100644
-> --- a/arch/arm64/kvm/handle_exit.c
-> +++ b/arch/arm64/kvm/handle_exit.c
-> @@ -95,8 +95,7 @@ static int kvm_handle_wfx(struct kvm_vcpu *vcpu)
->   	} else {
->   		trace_kvm_wfx_arm64(*vcpu_pc(vcpu), false);
->   		vcpu->stat.wfi_exit_stat++;
-> -		kvm_vcpu_block(vcpu);
-> -		kvm_clear_request(KVM_REQ_UNHALT, vcpu);
-> +		kvm_vcpu_wfi(vcpu);
->   	}
->   
->   	kvm_incr_pc(vcpu);
-> 
+-- 
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
