@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088A143A677
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B15143A683
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhJYW1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:27:15 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:37642 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhJYW1E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:27:04 -0400
-Received: by mail-ot1-f41.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso17027883otl.4;
-        Mon, 25 Oct 2021 15:24:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L/hlTtZupHzj4/jWdWv9ULYOvkBrN5PlWdyav0V4CCU=;
-        b=iEAQrY/4yILkKuZMGsF8UU8JkZoANHyoD6clDsukJjeKrGPV6YSZ7LtuRFFQAuJ7jg
-         SamzHxzuZwPX8PGYhBSkMCdUFPo6MObuNhhR0X8ahnNeyBWi1OJFACAqJZ/TOiZZUwwU
-         Hevtp/kLvcKHBFmt6dyqIlXtm70E/l6bHT05kKSuQvy2+v78RLv5n8WyXAo0mqNAX/Vr
-         gAY1obKzthWwsXzu1Ni5MYHgt4vlVp80oildW8IyYrm4PiqfAf62AXZwfvLH07iPVbaI
-         b+MuM3FJrVvp1OvouSDdLa+8xtNB+hXOyEFnHbTpa6YM7xMmbY3dYMsxFwGPikEUA4xY
-         55gw==
-X-Gm-Message-State: AOAM5303qeQrIsV3ltnBz7eZht6cKgXxvl1QK1O46h04b1qgSq+HK5tB
-        9iMN09S1sUVzQJjYMNSoYg==
-X-Google-Smtp-Source: ABdhPJy6PWKHQYzOWadWPt0ynalGKvun/QJa8ePrjt0bfrFipgAtZNmeZZGxpq1/mujmp7vzBtfbmg==
-X-Received: by 2002:a9d:6d99:: with SMTP id x25mr7187510otp.168.1635200681358;
-        Mon, 25 Oct 2021 15:24:41 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 3sm3996343oif.12.2021.10.25.15.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 15:24:40 -0700 (PDT)
-Received: (nullmailer pid 1194223 invoked by uid 1000);
-        Mon, 25 Oct 2021 22:24:39 -0000
-Date:   Mon, 25 Oct 2021 17:24:39 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-Message-ID: <YXcup7d6ROmmPCuD@robh.at.kernel.org>
-References: <20211022140714.28767-1-jim2101024@gmail.com>
- <20211022140714.28767-2-jim2101024@gmail.com>
+        id S233809AbhJYW2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233780AbhJYW1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 18:27:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC5DD61039;
+        Mon, 25 Oct 2021 22:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635200728;
+        bh=P5tlFsGtCPtUOWR1BRMJeM7BfDDHkMcNJV0LpkK2SbE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AsTyAg2M09vff6Gj3gBQf5TF2l1dygeTp0Yy626Wt1k8ZOb8bAxXW+/GLdFsBnuPS
+         Uj2FluXu+PtFicvWB36W+GW+kW/W/Pdb2hkEFZRHGCKwwA6ib7dnC7OIVSkuKwOb6D
+         /V2C1790g4GX8VsA/H2MWNrQcbWPNc5LC8UV2x/MpAJxnjFKPn/BWKSy/sx+NdLEk6
+         HEBZDeNCAUZuyQ8o8g1UiQwEn+FS5avdYvHlptFcGTr+mhY0sM0aOYgBsig1M53swJ
+         X3v3zzyUWkiJHofoe7vejy7weMqD8UmANf2d/uxphiLkrtcWi/hEUuJgOvTkLuO96L
+         71i50wkf2b6mw==
+Message-ID: <4b203254-a333-77b1-0fa9-75c11fabac36@kernel.org>
+Date:   Mon, 25 Oct 2021 15:25:26 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022140714.28767-2-jim2101024@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 10/32] signal/vm86_32: Properly send SIGSEGV when the
+ vm86 state cannot be saved.
+Content-Language: en-US
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, H Peter Anvin <hpa@zytor.com>
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-10-ebiederm@xmission.com> <875ytkygfj.fsf_-_@disp2133>
+From:   Andy Lutomirski <luto@kernel.org>
+In-Reply-To: <875ytkygfj.fsf_-_@disp2133>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:06:54AM -0400, Jim Quinlan wrote:
-> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> allows optional regulators to be attached and controlled by the PCIe RC
-> driver.  That being said, this driver searches in the DT subnode (the EP
-> node, eg pci@0,0) for the regulator property.
+On 10/25/21 13:53, Eric W. Biederman wrote:
 > 
-> The use of a regulator property in the pcie EP subnode such as
-> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> file at
+> Update save_v86_state to always complete all of it's work except
+> possibly some of the copies to userspace even if save_v86_state takes
+> a fault.  This ensures that the kernel is always in a sane state, even
+> if userspace has done something silly.
 > 
-> https://github.com/devicetree-org/dt-schema/pull/54
+> When save_v86_state takes a fault update it to force userspace to take
+> a SIGSEGV and terminate the userspace application.
 > 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> As Andy pointed out in review of the first version of this change
+> there are races between sigaction and the application terinating.  Now
+> that the code has been modified to always perform all save_v86_state's
+> work (except possibly copying to userspace) those races do not matter
+> from a kernel perspective.
+> 
+> Forcing the userspace application to terminate (by resetting it's
+> handler to SIGDFL) is there to keep everything as close to the current
+> behavior as possible while removing the unique (and difficult to
+> maintain) use of do_exit.
+> 
+> If this new SIGSEGV happens during handle_signal the next time around
+> the exit_to_user_mode_loop, SIGSEGV will be delivered to userspace.
+> 
+> All of the callers of handle_vm86_trap and handle_vm86_fault run the
+> exit_to_user_mode_loop before they return to userspace any signal sent
+> to the current task during their execution will be delivered to the
+> current task before that tasks exits to usermode.
+> 
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: H Peter Anvin <hpa@zytor.com>
+> v1: https://lkml.kernel.org/r/20211020174406.17889-10-ebiederm@xmission.com
+> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 > ---
->  .../bindings/pci/brcm,stb-pcie.yaml           | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
+>   arch/x86/kernel/vm86_32.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index b9589a0daa5c..fec13e4f6eda 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -154,5 +154,28 @@ examples:
->                                   <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
->                      brcm,enable-ssc;
->                      brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
-> +
-> +                    /* PCIe bridge */
+> Any does this look better?
 
-More specifically, the root port.
+Conceptually yes, but:
 
-> +                    pci@0,0 {
-> +                            #address-cells = <3>;
-> +                            #size-cells = <2>;
-> +                            reg = <0x0 0x0 0x0 0x0 0x0>;
-> +                            device_type = "pci";
-> +                            ranges;
-> +
-> +                            /* PCIe endpoint */
-> +                            pci@0,0 {
-> +                                    device_type = "pci";
-
-This means this device is a PCI bridge which wouldn't typically be the 
-endpoint. Is that intended? 
-
-> +                                    assigned-addresses = <0x82010000 0x0 0xf8000000 0x6 0x00000000 0x0 0x2000>;
-> +                                    reg = <0x0 0x0 0x0 0x0 0x0>;
-> +                                    compatible = "pci14e4,1688";
-> +                                    vpcie3v3-supply = <&vreg7>;
-> +
-> +                                    #address-cells = <3>;
-> +                                    #size-cells = <2>;
-> +
-> +                                    ranges;
-> +                            };
-> +                    };
->              };
->      };
-> -- 
-> 2.17.1
 > 
+> I think by just completing all of the work that isn't copying to
+> userspace this makes save_v86_state much more robust.
 > 
+> diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
+> index 63486da77272..933cafab7832 100644
+> --- a/arch/x86/kernel/vm86_32.c
+> +++ b/arch/x86/kernel/vm86_32.c
+> @@ -140,6 +140,7 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+>   
+>   	user_access_end();
+>   
+> +exit_vm86:
+>   	preempt_disable();
+>   	tsk->thread.sp0 = vm86->saved_sp0;
+>   	tsk->thread.sysenter_cs = __KERNEL_CS;
+> @@ -159,7 +160,8 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+>   	user_access_end();
+>   Efault:
+>   	pr_alert("could not access userspace vm86 info\n");
+> -	do_exit(SIGSEGV);
+> +	force_sigsegv(SIGSEGV);
+> +	goto exit_vm86;
+>   }
+>   
+>   static int do_vm86_irq_handling(int subfunction, int irqnumber);
+> 
+
+I think the result would be nicer if, instead of adding an extra goto, 
+you just literally moved all the cleanup under the unsafe_put_user()s 
+above them.  Unless I missed something, none of the put_user stuff reads 
+any state that is written by the cleanup code.
+
+--Andy
