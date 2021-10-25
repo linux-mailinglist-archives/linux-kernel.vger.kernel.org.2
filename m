@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A477743A32F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D5A43A0E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235628AbhJYT4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42070 "EHLO mail.kernel.org"
+        id S235840AbhJYTgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:36:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237831AbhJYTv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:51:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81FE761139;
-        Mon, 25 Oct 2021 19:43:32 +0000 (UTC)
+        id S235875AbhJYT3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:29:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9999760F70;
+        Mon, 25 Oct 2021 19:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191013;
-        bh=R4p8QemGWSKXojyvC/b7XHLWRuHhwn+w1iERzAZ1Xv0=;
+        s=korg; t=1635190023;
+        bh=0wFitQqf99HsEpCzMQH91BM2topCFOK6sfiIcLLqbFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TCXc8+MbM6h5NEnlw51vkP44jjcYPQbwHBKfdsBsMQij27RsHjbpsLEeCdRcbVE8p
-         BaQbEYeuUURgtK9QYVoJ1n4W+FPpKlE0UOSg31WV+QLUPr5CcMKKEPf0GadLw+TfrG
-         T7afakRX01QJ2vIq7f7+5SutPQ2WhwO5H8pPyG4A=
+        b=fEynakIBtRw2HtP8lhcFjnlcg8tk7ZLi1pAymR0APCyaVDkiFyk2k6B0Rbws9pIyq
+         NnF3AcCaDjdseTyy+du6OMYzz0Jh1VJ/U6x5ortW2KhE6N2+X3170afPkcni4mA+5v
+         5dT/1575473IppzwlauqyQHg+r1f4Z6TSVmGFis8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Masahiro Kozuka <masa.koz@kozuka.jp>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 105/169] KVM: SEV: Flush cache on non-coherent systems before RECEIVE_UPDATE_DATA
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Barret Rhoden <brho@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 29/58] elfcore: correct reference to CONFIG_UML
 Date:   Mon, 25 Oct 2021 21:14:46 +0200
-Message-Id: <20211025191031.442798367@linuxfoundation.org>
+Message-Id: <20211025190942.352111643@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Kozuka <masa.koz@kozuka.jp>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-commit c8c340a9b4149fe5caa433f3b62463a1c8e07a46 upstream.
+commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
 
-Flush the destination page before invoking RECEIVE_UPDATE_DATA, as the
-PSP encrypts the data with the guest's key when writing to guest memory.
-If the target memory was not previously encrypted, the cache may contain
-dirty, unecrypted data that will persist on non-coherent systems.
+Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
+special handling for two architectures, ia64 and User Mode Linux.
+However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
+symbol for User-Mode Linux was used.
 
-Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
-Cc: stable@vger.kernel.org
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Masahiro Kozuka <masa.koz@kozuka.jp>
-[sean: converted bug report to changelog]
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <20210914210951.2994260-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Although the directory for User Mode Linux is ./arch/um; the Kconfig
+symbol for this architecture is called CONFIG_UML.
+
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+
+  UM
+  Referencing files: include/linux/elfcore.h
+  Similar symbols: UML, NUMA
+
+Correct the name of the config to the intended one.
+
+[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
+  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
+  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
+
+Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
+Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Barret Rhoden <brho@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/sev.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ include/linux/elfcore.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1480,6 +1480,13 @@ static int sev_receive_update_data(struc
- 		goto e_free_trans;
- 	}
+--- a/include/linux/elfcore.h
++++ b/include/linux/elfcore.h
+@@ -58,7 +58,7 @@ static inline int elf_core_copy_task_xfp
+ }
+ #endif
  
-+	/*
-+	 * Flush (on non-coherent CPUs) before RECEIVE_UPDATE_DATA, the PSP
-+	 * encrypts the written data with the guest's key, and the cache may
-+	 * contain dirty, unencrypted data.
-+	 */
-+	sev_clflush_pages(guest_page, n);
-+
- 	/* The RECEIVE_UPDATE_DATA command requires C-bit to be always set. */
- 	data.guest_address = (page_to_pfn(guest_page[0]) << PAGE_SHIFT) + offset;
- 	data.guest_address |= sev_me_mask;
+-#if defined(CONFIG_UM) || defined(CONFIG_IA64)
++#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
+ /*
+  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
+  * extra segments containing the gate DSO contents.  Dumping its
 
 
