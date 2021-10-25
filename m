@@ -2,79 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FA04398BE
+	by mail.lfdr.de (Postfix) with ESMTP id C36504398BF
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhJYOjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        id S232548AbhJYOjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbhJYOiS (ORCPT
+        with ESMTP id S232900AbhJYOia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:38:18 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39687C061746
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:35:56 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id m26so10959738pff.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:35:56 -0700 (PDT)
+        Mon, 25 Oct 2021 10:38:30 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E99C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:36:08 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d5so10983999pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=unr/hPV1LRtaLFGvElzu8J0G2Us0ndUhxKDwst/EiBY=;
-        b=LAlUCiUiThQLZqtR7k3VnyoObMeALAS0ZF9AaHeUoiJS1guNshz6Ho9BFs5fGeESUF
-         q2uQw8bg3OcuTvEaIKGTbCG74e1HYpHPSEZChn9Fui/OXyFCbVB6QffuLlZuyQC4/uQf
-         dGmSKBnuqEZd0HOd9FWNHYt0CKXWl00V4xD0baZyEsJC9VPu3MlxhGJT2M9rNeXhmm5W
-         UWGLfI/FJZIrNea7hGz9eDiHhGcAJZad6ccR6CGhZCEbW+61HPcmiywR2MfrWgoOFoet
-         tTXPL9wIOxueZy8L6p1PVSiKxbew7wnvCvbqwTi/QRy9OUhSavq7f0H9GFeEPT+vkdJT
-         8pbg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=t4OQ66ZvBHAyhJ9uVXpAWQYYGEql5QgeKqi/VqWJk5A=;
+        b=ns7WA1FnYweLTagGyjWNWbcw/2lrTx9JxiO/LTCLl5ud8GGsBGFhNc1covjTQoCyhc
+         fMRzqFPA9+9qjWToypMCQU1oxCmhueld5xoARON/OTXMpfkFNtw/pEoWvzazch4EQlYW
+         q5Mvad7YuoLqaUy9C7PaQxpR24y/NSOh28hDh19t3B8PzdpTcgPN7RpO15j0mi/KuHsR
+         eAhnzyP4zN/DazCZFxnP0CHMPhHtvLjLvMfULrM9Zl07eb5EocL7y+HLzR8eJIxHs0mV
+         Qh8NaDK2tJdL0qVpcn55LY1mV9yrUXgnpN54NxRIh+JkW0Os1K/jn2j6qPa47085cwej
+         b1Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=unr/hPV1LRtaLFGvElzu8J0G2Us0ndUhxKDwst/EiBY=;
-        b=KLCEl4AH+gfjx2WrG9WHHQt1eMybSheYV2qFBiwC4/xMKzdvoIgZyR0zTD84Gjh0vv
-         TZRlqh7lVjpCzN8uxf1Bpi+x7f2LxZ5akYUewXTtAr+rsVdzKoYXGZKmdsCH+lp0xBTn
-         4UuzYI1bx4UoIkXEq4ffw1rTGKN/vZ58W7PBo99AFCqvNfw8LhCYk4uAuPLjrXMdvX6u
-         /tXfUfZ7T1rUsKKqLavSMhfXNt7V1HhqTxRh3vVx4HYcIXQ+ZtYKMK10h+cStIcHC4cx
-         klWlBLBJAOl9qB4yoxXD7HHLDF9pfe+3dbkd83PyXuLdr8F5fbT62ss99afMAQHjAvO8
-         7fdg==
-X-Gm-Message-State: AOAM533RZVN+0HN4LKQXGy8hq4Pk1x4+fzCfhz+FxLwKNUq95pQEtjre
-        7fm/Owh4aKhT3zQZcKcXTA7Szw==
-X-Google-Smtp-Source: ABdhPJyb/BEP9mJoL1RpL20RH+Q8i1MKzoGl1tSo55m13uMQcZrHOrIVQIJiC/lW0QvegrL/3HqJkw==
-X-Received: by 2002:a65:6a4b:: with SMTP id o11mr13582903pgu.278.1635172555538;
-        Mon, 25 Oct 2021 07:35:55 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id cm16sm984666pjb.56.2021.10.25.07.35.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=t4OQ66ZvBHAyhJ9uVXpAWQYYGEql5QgeKqi/VqWJk5A=;
+        b=31rFIKqxvW2Sq5k7BbQ0v0NZ61elIvUohVx4/7vfmHo6j9IgPx7YCEvW+EhS+MqfTy
+         JXH3nCXHe5ZkVEB1PXGaoFJbNHkN3tWRYOeYMwxhfLwQ48ZlMr6ERRQnmAiL8uJDoDT0
+         joMJQNcFEX5ydIrb9BP1AbYfwTbQ9K1Kf/I7HKvQXy+eGSgn71Ul2bRJDL6VzNV+Smzt
+         F1Zy7d2i5e4ZoGq+HBR+PAoPt5+tNLVxcLnwQR1rBEieG0lSWX2WNKvcmclD2HicsRX+
+         Vt3iAdxPqypy29S2u5eEaggRAEdPf62xvdqUNFOKHgw11TsClV/PqTqWff9+10qwpPgN
+         wqug==
+X-Gm-Message-State: AOAM533z8HhLZ3/ZBcWx/L2LfnLgaLGguROh/iya8eszOOGqnO9VO6lA
+        figALAGZqUFMOo7NAtmSRBl1FWHkXmU=
+X-Google-Smtp-Source: ABdhPJxCyITT8b6HYMi39pH3t62DjoZV7i4NB5MGXRnJ8apjStyMCwhEVmSOglqnd2Jp2IWLbrnAxA==
+X-Received: by 2002:a63:9212:: with SMTP id o18mr14147341pgd.392.1635172567564;
+        Mon, 25 Oct 2021 07:36:07 -0700 (PDT)
+Received: from Sauravs-MacBook-Air.local ([59.95.95.35])
+        by smtp.gmail.com with ESMTPSA id d19sm1320789pgk.81.2021.10.25.07.36.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 07:35:54 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:35:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Mon, 25 Oct 2021 07:36:07 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 20:06:00 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
-Message-ID: <YXbAxkf1W37m9eZp@google.com>
-References: <20211022004927.1448382-1-seanjc@google.com>
- <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
- <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
- <b931906f-b38e-1cb5-c797-65ef82c8b262@redhat.com>
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH v2] staging: r8188eu: avoid use of goto statement
+Message-ID: <YXbA0BgvKZKXApaW@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b931906f-b38e-1cb5-c797-65ef82c8b262@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021, Paolo Bonzini wrote:
-> So yeah, I think you're right.
+Remove the goto statement from _rtw_init_cmd_priv(). In this function
+goto statement can be replace by return statement. By replacing the
+goto statement with return statement local variable "res" is also not
+required. As on goto label exit, function only return it is not
+performing any cleanup. Avoiding goto statement will simplify the function.
 
-Yep.  The alternative would be to explicitly check for a pending APICv update.
-I don't have a strong opinion, I dislike both options equally :-)
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
 
-Want me to type up a v3 comment?
+ChangeLog V2:
+
+	-Add space after line end on changelog.
+	-Remove addition blank link after the local variable res
+	 as per the coding guidelines for linux kernel.
+
+ChangeLog V1:
+
+	-Remove the goto statement from _rtw_init_cmd_priv(). In this
+	 function goto statement can be replace by return statement.
+	 By replacing the goto statement with return statement local
+	 variable "res" is also not required. As on goto label exit,
+	 function only return it is not performing any cleanup.
+	 Avoiding goto statement will simplify the function.
+
+ drivers/staging/r8188eu/core/rtw_cmd.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+index e17332677daa..c94b9559b5e4 100644
+--- a/drivers/staging/r8188eu/core/rtw_cmd.c
++++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+@@ -19,8 +19,6 @@ No irqsave is necessary.
+
+ static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
+ {
+-	int res = _SUCCESS;
+-
+ 	sema_init(&pcmdpriv->cmd_queue_sema, 0);
+ 	/* sema_init(&(pcmdpriv->cmd_done_sema), 0); */
+ 	sema_init(&pcmdpriv->terminate_cmdthread_sema, 0);
+@@ -34,28 +32,23 @@ static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
+ 	pcmdpriv->cmd_allocated_buf = kzalloc(MAX_CMDSZ + CMDBUFF_ALIGN_SZ,
+ 					      GFP_KERNEL);
+
+-	if (!pcmdpriv->cmd_allocated_buf) {
+-		res = _FAIL;
+-		goto exit;
+-	}
++	if (!pcmdpriv->cmd_allocated_buf)
++		return _FAIL;
+
+ 	pcmdpriv->cmd_buf = pcmdpriv->cmd_allocated_buf  +  CMDBUFF_ALIGN_SZ - ((size_t)(pcmdpriv->cmd_allocated_buf) & (CMDBUFF_ALIGN_SZ - 1));
+
+ 	pcmdpriv->rsp_allocated_buf = kzalloc(MAX_RSPSZ + 4, GFP_KERNEL);
+
+-	if (!pcmdpriv->rsp_allocated_buf) {
+-		res = _FAIL;
+-		goto exit;
+-	}
++	if (!pcmdpriv->rsp_allocated_buf)
++		return _FAIL;
+
+ 	pcmdpriv->rsp_buf = pcmdpriv->rsp_allocated_buf  +  4 - ((size_t)(pcmdpriv->rsp_allocated_buf) & 3);
+
+ 	pcmdpriv->cmd_issued_cnt = 0;
+ 	pcmdpriv->cmd_done_cnt = 0;
+ 	pcmdpriv->rsp_cnt = 0;
+-exit:
+
+-	return res;
++	return _SUCCESS;
+ }
+
+ static void c2h_wk_callback(struct work_struct *work);
+--
+2.33.0
+
