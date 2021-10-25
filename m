@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593C443A19E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFBA43A2CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhJYTkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53560 "EHLO mail.kernel.org"
+        id S237962AbhJYTwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236386AbhJYTeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:34:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D45BD61076;
-        Mon, 25 Oct 2021 19:30:11 +0000 (UTC)
+        id S237965AbhJYTq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:46:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F26786120E;
+        Mon, 25 Oct 2021 19:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190212;
-        bh=QJWbsBUjiiYg2wkcVaQlEPkz8CYbjwERtgzCpyZLfSQ=;
+        s=korg; t=1635190806;
+        bh=/YRoqzAEjhqmH41n4WgUHDjAzeCTyP7Vgj9LLACY508=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I8jajgO6c3B7BeGUiThPxdqyJm4oU7oEISFTNUY4gAdz94H1tg5bnzrVU2hDHKRSj
-         Da1vo2plUcaYvBuc/8xu2+bKp0dPbCNjB5su8Y5U5tbvRVw596lxAFuEGZbgxug3fQ
-         dUGQazDooQJYIz+zIKsa9+jLjCsg/eHE06twnhtg=
+        b=n5lZ+R7hDC8+e8SOQiTX4cq9M2UrtkauMzXLN+z7e8MXsl4yXzz4VkONvrZpcdrny
+         hWv6QGDkK/W+9GxNOJ/ukHG859ecWF40ZxoDE/0ndCj5EPxHl+1lrhFcg1uM1IrBtV
+         k/7tmh2mpMWtCZcHFDO2JiCLUzsULVLiPl29BRUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 19/95] tcp: md5: Fix overlap between vrf and non-vrf keys
+        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.14 075/169] ceph: skip existing superblocks that are blocklisted or shut down when mounting
 Date:   Mon, 25 Oct 2021 21:14:16 +0200
-Message-Id: <20211025190959.710730154@linuxfoundation.org>
+Message-Id: <20211025191026.897533379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +39,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonard Crestez <cdleonard@gmail.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 86f1e3a8489f6a0232c1f3bc2bdb379f5ccdecec ]
+commit 98d0a6fb7303a6f4a120b8b8ed05b86ff5db53e8 upstream.
 
-With net.ipv4.tcp_l3mdev_accept=1 it is possible for a listen socket to
-accept connection from the same client address in different VRFs. It is
-also possible to set different MD5 keys for these clients which differ
-only in the tcpm_l3index field.
+Currently when mounting, we may end up finding an existing superblock
+that corresponds to a blocklisted MDS client. This means that the new
+mount ends up being unusable.
 
-This appears to work when distinguishing between different VRFs but not
-between non-VRF and VRF connections. In particular:
+If we've found an existing superblock with a client that is already
+blocklisted, and the client is not configured to recover on its own,
+fail the match. Ditto if the superblock has been forcibly unmounted.
 
- * tcp_md5_do_lookup_exact will match a non-vrf key against a vrf key.
-This means that adding a key with l3index != 0 after a key with l3index
-== 0 will cause the earlier key to be deleted. Both keys can be present
-if the non-vrf key is added later.
- * _tcp_md5_do_lookup can match a non-vrf key before a vrf key. This
-casues failures if the passwords differ.
+While we're in here, also rename "other" to the more conventional "fsc".
 
-Fix this by making tcp_md5_do_lookup_exact perform an actual exact
-comparison on l3index and by making  __tcp_md5_do_lookup perfer
-vrf-bound keys above other considerations like prefixlen.
-
-Fixes: dea53bb80e07 ("tcp: Add l3index to tcp_md5sig_key and md5 functions")
-Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1901499
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_ipv4.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ fs/ceph/super.c |   17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 71395e745bc5..017cd666387f 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1022,6 +1022,20 @@ static void tcp_v4_reqsk_destructor(struct request_sock *req)
- DEFINE_STATIC_KEY_FALSE(tcp_md5_needed);
- EXPORT_SYMBOL(tcp_md5_needed);
+--- a/fs/ceph/super.c
++++ b/fs/ceph/super.c
+@@ -1002,16 +1002,16 @@ static int ceph_compare_super(struct sup
+ 	struct ceph_fs_client *new = fc->s_fs_info;
+ 	struct ceph_mount_options *fsopt = new->mount_options;
+ 	struct ceph_options *opt = new->client->options;
+-	struct ceph_fs_client *other = ceph_sb_to_client(sb);
++	struct ceph_fs_client *fsc = ceph_sb_to_client(sb);
  
-+static bool better_md5_match(struct tcp_md5sig_key *old, struct tcp_md5sig_key *new)
-+{
-+	if (!old)
-+		return true;
-+
-+	/* l3index always overrides non-l3index */
-+	if (old->l3index && new->l3index == 0)
-+		return false;
-+	if (old->l3index == 0 && new->l3index)
-+		return true;
-+
-+	return old->prefixlen < new->prefixlen;
-+}
-+
- /* Find the Key structure for an address.  */
- struct tcp_md5sig_key *__tcp_md5_do_lookup(const struct sock *sk, int l3index,
- 					   const union tcp_md5_addr *addr,
-@@ -1059,8 +1073,7 @@ struct tcp_md5sig_key *__tcp_md5_do_lookup(const struct sock *sk, int l3index,
- 			match = false;
- 		}
+ 	dout("ceph_compare_super %p\n", sb);
  
--		if (match && (!best_match ||
--			      key->prefixlen > best_match->prefixlen))
-+		if (match && better_md5_match(best_match, key))
- 			best_match = key;
+-	if (compare_mount_options(fsopt, opt, other)) {
++	if (compare_mount_options(fsopt, opt, fsc)) {
+ 		dout("monitor(s)/mount options don't match\n");
+ 		return 0;
  	}
- 	return best_match;
-@@ -1090,7 +1103,7 @@ static struct tcp_md5sig_key *tcp_md5_do_lookup_exact(const struct sock *sk,
- 				 lockdep_sock_is_held(sk)) {
- 		if (key->family != family)
- 			continue;
--		if (key->l3index && key->l3index != l3index)
-+		if (key->l3index != l3index)
- 			continue;
- 		if (!memcmp(&key->addr, addr, size) &&
- 		    key->prefixlen == prefixlen)
--- 
-2.33.0
-
+ 	if ((opt->flags & CEPH_OPT_FSID) &&
+-	    ceph_fsid_compare(&opt->fsid, &other->client->fsid)) {
++	    ceph_fsid_compare(&opt->fsid, &fsc->client->fsid)) {
+ 		dout("fsid doesn't match\n");
+ 		return 0;
+ 	}
+@@ -1019,6 +1019,17 @@ static int ceph_compare_super(struct sup
+ 		dout("flags differ\n");
+ 		return 0;
+ 	}
++
++	if (fsc->blocklisted && !ceph_test_mount_opt(fsc, CLEANRECOVER)) {
++		dout("client is blocklisted (and CLEANRECOVER is not set)\n");
++		return 0;
++	}
++
++	if (fsc->mount_state == CEPH_MOUNT_SHUTDOWN) {
++		dout("client has been forcibly unmounted\n");
++		return 0;
++	}
++
+ 	return 1;
+ }
+ 
 
 
