@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6218439A4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1198A439A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhJYPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:20:56 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:55508 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234047AbhJYPUj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:20:39 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PC9Btr012722;
-        Mon, 25 Oct 2021 17:18:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=jr66hLIEX+TD8fAGSR2/TZktoKUA/Ywg65PBDRR0/Y8=;
- b=WvRYac9/H+BgDLoe4ld97c/KQiravT0iXUAtBs+cDaMiuesETPUrCMLP5hDL+xAKF9u6
- 3Qje1RfenLD4U1ZgYhJ9iAzmD2mp09kemB6P7anxiOspb2xUzbG67ukWXjxXP9Lok6cX
- dYokp41ypyWTKwlpIlA6pNwmBM/KO12345JnvUiNMW1NXxZptry7J1JL1rkboXAJ9vjz
- dpbCto2tvQW66/An83XkcRNhtfw86ESOtr0Mkbm2v0RYrzN9ZPjyMQxb68OJNjpyWPWM
- 6OLhmOxtAnsMycEjDyeLAaOChFgC4Npc32qN1vsZhIq3HfTpt7ArFQMm/y2Am/O6Dy5/ Bg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bwqpsjtva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 17:18:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D5B18100038;
-        Mon, 25 Oct 2021 17:18:06 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CF21F24187B;
-        Mon, 25 Oct 2021 17:18:06 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct 2021 17:18:06
- +0200
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     <alexandre.torgue@foss.st.com>
-CC:     <robh+dt@kernel.org>, <amelie.delaunay@foss.st.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <fabrice.gasnier@foss.st.com>
-Subject: [PATCH 2/2] ARM: dts: stm32: tune the HS USB PHYs on stm32mp157c-ev1
-Date:   Mon, 25 Oct 2021 17:17:50 +0200
-Message-ID: <1635175070-28722-3-git-send-email-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635175070-28722-1-git-send-email-fabrice.gasnier@foss.st.com>
-References: <1635175070-28722-1-git-send-email-fabrice.gasnier@foss.st.com>
+        id S233482AbhJYPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232732AbhJYPW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:22:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 81D8761002;
+        Mon, 25 Oct 2021 15:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635175207;
+        bh=WM+L1dS+a4rW8Lt5WrZtY3DV1C0j4eZjE+YNZPl+PNI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IqqsIqOa4sNpaOm+nmiqIDTXTqOIcwQRyX6AoasoGwdTB/EYB/aVKAJVqBh7hTciC
+         DEPsBSkUEtor3OUpoDATqciplVT+q73mtvBgaCOY7VGFnuHEJHlJ+azlfLwisgluad
+         oQLWgARcvNABFwOoSdYMV8HGXIPh/AequFhAen1LVTGq0sUAvS1c/Z19ZDHzx7uDIT
+         fyzSrC2UYdRdEfMshKq9Tw508iZXEsb4Sc5ka5nv7PvVgFNisw5h8QoRB9sU6e0DQE
+         Wok7kpEb2GQsPncTyIndQ3Fhqdj2+EKJlMUj6CrSyz6vXQFZaTecq5upNvaJ+E3I1c
+         VBfK3kHDYcesA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 75A5160A90;
+        Mon, 25 Oct 2021 15:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_05,2021-10-25_02,2020-04-07_01
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/1] xen/netfront: stop tx queues during live migration
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163517520747.28215.3424375634925343412.git-patchwork-notify@kernel.org>
+Date:   Mon, 25 Oct 2021 15:20:07 +0000
+References: <20211022233139.31775-1-dongli.zhang@oracle.com>
+In-Reply-To: <20211022233139.31775-1-dongli.zhang@oracle.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, joe.jin@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds phy tuning parameters for usbphyc port0 (USBH controller)
-and usbphyc port1 (OTG controller).
-Phy tuning parameters are used to adjust the phy settings to compensate
-parasitics, which can be due to USB receptacle, routing, and ESD protection
-component.
+Hello:
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
- arch/arm/boot/dts/stm32mp157c-ev1.dts | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-index 5c5b1dd..e222d2d 100644
---- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-@@ -375,3 +375,25 @@
- &usbphyc {
- 	status = "okay";
- };
-+
-+&usbphyc_port0 {
-+	st,tune-hs-dc-level = <2>;
-+	st,enable-fs-rftime-tuning;
-+	st,enable-hs-rftime-reduction;
-+	st,trim-hs-current = <15>;
-+	st,trim-hs-impedance = <1>;
-+	st,tune-squelch-level = <3>;
-+	st,tune-hs-rx-offset = <2>;
-+	st,no-lsfs-sc;
-+};
-+
-+&usbphyc_port1 {
-+	st,tune-hs-dc-level = <2>;
-+	st,enable-fs-rftime-tuning;
-+	st,enable-hs-rftime-reduction;
-+	st,trim-hs-current = <15>;
-+	st,trim-hs-impedance = <1>;
-+	st,tune-squelch-level = <3>;
-+	st,tune-hs-rx-offset = <2>;
-+	st,no-lsfs-sc;
-+};
+On Fri, 22 Oct 2021 16:31:39 -0700 you wrote:
+> The tx queues are not stopped during the live migration. As a result, the
+> ndo_start_xmit() may access netfront_info->queues which is freed by
+> talk_to_netback()->xennet_destroy_queues().
+> 
+> This patch is to netif_device_detach() at the beginning of xen-netfront
+> resuming, and netif_device_attach() at the end of resuming.
+> 
+> [...]
+
+Here is the summary with links:
+  - [1/1] xen/netfront: stop tx queues during live migration
+    https://git.kernel.org/netdev/net/c/042b2046d0f0
+
+You are awesome, thank you!
 -- 
-2.7.4
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
