@@ -2,108 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD87E43A5DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDBB43A5E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhJYVbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:31:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30559 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233650AbhJYVbw (ORCPT
+        id S233791AbhJYVcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233744AbhJYVcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:31:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635197369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIAILnvmh2/9j33N6oAfYSNJRTmxRzsLhCUoA4trZck=;
-        b=bawaqQcXyOmee01AU3+g0l2vVGB8ev1pBzv70N/t8dMxyxfdEC9WquK+7htWgmDl9hyumd
-        4tCqBbde8ZwryIhPweFrOwj7HlZLQKR2GAVizNq+F0e+xaKQGdMaMGhIUyhFwWuNxT1yZb
-        9nCWy29xqmi8ptFrBbvu6iLJQi3pyns=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-OJlpAbD5PLuyCLfnSe9Wrg-1; Mon, 25 Oct 2021 17:29:27 -0400
-X-MC-Unique: OJlpAbD5PLuyCLfnSe9Wrg-1
-Received: by mail-ed1-f72.google.com with SMTP id k28-20020a508adc000000b003dd5e21da4bso3515234edk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:29:27 -0700 (PDT)
+        Mon, 25 Oct 2021 17:32:07 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CBAC061224
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:29:44 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 75so11985758pga.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nOMQKpZZuSWv5pYnk/aTwt2ZQSi3AA5V7IIeovAWdmo=;
+        b=N/e+rJPgnPh6hCdB5QpblvsKgRB8F9m6xHRfbB+zBumWlQAeIAJ+MUK6vKcsYfvO6a
+         BWeC06041L5efzCzGqTyh1VFtW745Bw8uGfEyzGEcikJD7ZAwiwMsDwouRDBu61Rir6m
+         15Q0nVvJ2Te8Psh674RLvvscD06V1NdjhYk5s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=UIAILnvmh2/9j33N6oAfYSNJRTmxRzsLhCUoA4trZck=;
-        b=5o8yEvIz9MudrPQdKN45e/+Nc/qyBEFNUPlaC/3H8B626wmPNrF0hxjfFFpE6l3x0z
-         mDqcKyM7J5n3v96mJFljUv9umpAHCtBAEp5v0sxzal/8U+xNkm7YQ6wCgHz5cmSUbcDF
-         LVkIN7RvtVNFwhFGw4C8/kya3lkEkCrIedT12X3ETYWRw2cyspgCHKtaRstselfvr7qA
-         lrp6DIcYOwYM65M/K35QN9o1nfiT5ZfRGlqAX1mdECWZboOKYnQJ6zaixjIWBOW65r9I
-         wuaUtooZDyFH602d5gfrWelsXRYgN+uZc2a6lzfBtZDLZmDcfL634YO1Aqf1VkaBXHle
-         +c/g==
-X-Gm-Message-State: AOAM531oe9PQ1SW4qpvaNqSsT0jrbXn7BtXWwByhk6/I83zzVXesEcJl
-        SjSLk1t5rXAcJzeMWi3jKB3biz7VrZFnAOnHsjFReIa7nJiKNTppQlrd7K5CG4pQuZPqZY5OTNf
-        cmOZPpKw4Ah6ZGAFWpVBuXP8I
-X-Received: by 2002:aa7:d597:: with SMTP id r23mr20892319edq.173.1635197366527;
-        Mon, 25 Oct 2021 14:29:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBXicjEvqfzjQGmMrGMrVfZ0t6sWdigCRR5A3wK4GkKr68KFXxwwGJi7WxzddZAAO7jdFklQ==
-X-Received: by 2002:aa7:d597:: with SMTP id r23mr20892299edq.173.1635197366371;
-        Mon, 25 Oct 2021 14:29:26 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b9sm9733063edk.62.2021.10.25.14.29.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 14:29:26 -0700 (PDT)
-Message-ID: <92c26aee-d3eb-258c-a0dd-e09783db6a20@redhat.com>
-Date:   Mon, 25 Oct 2021 23:29:25 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nOMQKpZZuSWv5pYnk/aTwt2ZQSi3AA5V7IIeovAWdmo=;
+        b=UodgZO8x68MyIxJ9yp6uFmyCvyZvayhyboDIfXftgEZaM+SovA8h327xO4qNndQ7rS
+         e2T+4EByfi4GlNNDLM/SbNf/f58ObfH3idYjtWs7vu0GXuSQCeWy7Z3Ku2fWQLj3jl2c
+         lWU1Nl+NAc6e1zLJaHO0015GOiESI/1QC9i7wR9ZehiohgzyTI69DWFWjCD23tD7k7DH
+         geUDFPvoG4lvC7QyW7Vxk4QX1jkRI7tIgislp+efL1FItN0DvsYAk2FMQzx7W1oy4Nz9
+         m14mqBbXmaOduSAikYNO2+zID3s2NE5yNLCA4xeLeaOpk1xP+h1eKo0rqk0b0864JXT/
+         Zr6Q==
+X-Gm-Message-State: AOAM531FGoVJcvLza6blFf63vISZmyuqcSmi2n0kfgyReMP+Nv+Pgasr
+        YonBvtMdxZHRR0QpqRP4O7m23w==
+X-Google-Smtp-Source: ABdhPJylCINuEW5HMAomQ2Sb8A/Mzy7iRmjXW2wPZwzIwDqx3aznemiayZaeelO4ogFK9kyPg6rTAw==
+X-Received: by 2002:a63:131c:: with SMTP id i28mr15578346pgl.396.1635197384325;
+        Mon, 25 Oct 2021 14:29:44 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r25sm16507932pge.61.2021.10.25.14.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:29:43 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:29:43 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        valentin.schneider@arm.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH v6 10/12] tools/testing/selftests/bpf: make it adopt to
+ task comm size change
+Message-ID: <202110251428.B891AD6ACB@keescook>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <20211025083315.4752-11-laoar.shao@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: linux-next: Tree for Oct 25 (drivers/platform/x86/amd-pmc.c)
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-References: <20211025204921.73cb3011@canb.auug.org.au>
- <af7d7b8f-45fd-53c5-a8c4-1f594a16111e@infradead.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <af7d7b8f-45fd-53c5-a8c4-1f594a16111e@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025083315.4752-11-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/25/21 22:50, Randy Dunlap wrote:
-> On 10/25/21 2:49 AM, Stephen Rothwell wrote:
->> Hi all,
->>
->> There seems to be something amiss with cnosole output in today's release
->> (at least on my ppc qemu boot tests).
->>
->> Changes since 20211022:
->>
+On Mon, Oct 25, 2021 at 08:33:13AM +0000, Yafang Shao wrote:
+> The hard-coded 16 is used in various bpf progs. These progs get task
+> comm either via bpf_get_current_comm() or prctl() or
+> bpf_core_read_str(), all of which can work well even if the task comm size
+> is changed.
 > 
-> on x86_64:
+> In these BPF programs, one thing to be improved is the
+> sched:sched_switch tracepoint args. As the tracepoint args are derived
+> from the kernel, we'd better make it same with the kernel. So the macro
+> TASK_COMM_LEN is converted to type enum, then all the BPF programs can
+> get it through BTF.
 > 
-> ../drivers/platform/x86/amd-pmc.c: In function ‘amd_pmc_verify_czn_rtc’:
-> ../drivers/platform/x86/amd-pmc.c:428:30: error: ‘CONFIG_RTC_SYSTOHC_DEVICE’ undeclared (first use in this function); did you mean ‘CONFIG_RTC_HCTOSYS_DEVICE’?
->   rtc_device = rtc_class_open(CONFIG_RTC_SYSTOHC_DEVICE);
->                               ^~~~~~~~~~~~~~~~~~~~~~~~~
->                               CONFIG_RTC_HCTOSYS_DEVICE
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> ---
+>  include/linux/sched.h                                   | 9 +++++++--
+>  tools/testing/selftests/bpf/progs/test_stacktrace_map.c | 6 +++---
+>  tools/testing/selftests/bpf/progs/test_tracepoint.c     | 6 +++---
+>  3 files changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index c1a927ddec64..124538db792c 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -274,8 +274,13 @@ struct task_group;
+>  
+>  #define get_current_state()	READ_ONCE(current->__state)
+>  
+> -/* Task command name length: */
+> -#define TASK_COMM_LEN			16
+> +/*
+> + * Define the task command name length as enum, then it can be visible to
+> + * BPF programs.
+> + */
+> +enum {
+> +	TASK_COMM_LEN = 16,
+> +};
+>  
+>  extern void scheduler_tick(void);
+>  
+> diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+> index 00ed48672620..e9b602a6dc1b 100644
+> --- a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+> +++ b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (c) 2018 Facebook
+>  
+> -#include <linux/bpf.h>
+> +#include <vmlinux.h>
 
-Hmm, yes using either CONFIG setting is a problem since it is not always
-defined. Both simply default to "rtc0" though and this is also which
-standard distro configs use.
+Why is this change needed here and below?
 
-Mario, can we just replace CONFIG_RTC_SYSTOHC_DEVICE with "rtc0"
-here to fix this ?
+>  #include <bpf/bpf_helpers.h>
+>  
+>  #ifndef PERF_MAX_STACK_DEPTH
+> @@ -41,11 +41,11 @@ struct {
+>  /* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
+>  struct sched_switch_args {
+>  	unsigned long long pad;
+> -	char prev_comm[16];
+> +	char prev_comm[TASK_COMM_LEN];
+>  	int prev_pid;
+>  	int prev_prio;
+>  	long long prev_state;
+> -	char next_comm[16];
+> +	char next_comm[TASK_COMM_LEN];
+>  	int next_pid;
+>  	int next_prio;
+>  };
+> diff --git a/tools/testing/selftests/bpf/progs/test_tracepoint.c b/tools/testing/selftests/bpf/progs/test_tracepoint.c
+> index 4b825ee122cf..f21982681e28 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tracepoint.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tracepoint.c
+> @@ -1,17 +1,17 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (c) 2017 Facebook
+>  
+> -#include <linux/bpf.h>
+> +#include <vmlinux.h>
+>  #include <bpf/bpf_helpers.h>
+>  
+>  /* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
+>  struct sched_switch_args {
+>  	unsigned long long pad;
+> -	char prev_comm[16];
+> +	char prev_comm[TASK_COMM_LEN];
+>  	int prev_pid;
+>  	int prev_prio;
+>  	long long prev_state;
+> -	char next_comm[16];
+> +	char next_comm[TASK_COMM_LEN];
+>  	int next_pid;
+>  	int next_prio;
+>  };
+> -- 
+> 2.17.1
+> 
 
-Regards,
-
-Hans
-
+-- 
+Kees Cook
