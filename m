@@ -2,86 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4FC439B4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF821439B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhJYQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        id S233942AbhJYQWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233889AbhJYQRv (ORCPT
+        with ESMTP id S233931AbhJYQWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:17:51 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E42C061348
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:15:29 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id v127so11197765wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:15:29 -0700 (PDT)
+        Mon, 25 Oct 2021 12:22:04 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E208C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:19:42 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id l13so1471453edi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:19:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=YfXAT9J3zg9nM6acPCxL/mbo5sK8qaM6YnGKL8Z4sis=;
-        b=AWg0kI+n5Qz+KOgHdnePtR9QI0EJQNR9ymM4xxpxLH32V+OqnFfNhVebESKNeZkMYs
-         VrnzWaL64M8zVq/kSYn8yHy2AwighyaraIEd8JQBeNurOQNyYhqRFkHyMKvBxqMv4mpU
-         lVxc4EX6HDNyx+c4oEEimSV3HwbcpYI6kvDtbEtXCetVw6+NqzwbQ2R2185qp9zXOYNW
-         3QI6OAMh38Gcp+rF3uk7rxT+qB7dpAGPz2VOYDKx6V+XMgUIjcSXe+IXLfgchGLx9GFP
-         G3N/U4ls6loXtPdrcRLgJRwc/PHT68HUxy18wgfOwYTC0reFgzj3edLLMFxAyrLCW7iS
-         tz5Q==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+H/261NTcHUIiIs/82JQ+rk8bQ+b3jgtV07Datn0uLs=;
+        b=hhf7ZFN6O9JT0DEG+sVe7A+18sAeTxnfKmytFfSZv5q9d/cBLwk3xmBvKn2LM+o9jy
+         z9DRPF4GajKOWejurAwazO+9Kf338oGNqleoYBDTPUjL+KD/y2+g/lj4nRwJL0s9IJOL
+         iSnVUJGgjN+yO5+iDn93+vvJfPrlgOeypgSOt4ld5l8WdE17AEr/QY6Hto8CixKThVuU
+         1oJva7W/x797f0AA5XCr9Lw+p9xnpshqZWrgBqBAs5Nn82r80zwYrSPiQ+WvJM3juwMR
+         QqwuLQ9fwesRKvezOiowoIDJSc6v5p3Y5b576ugkj9+BUEQZo59WLuSt3sbOLzOOWIGH
+         wYTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=YfXAT9J3zg9nM6acPCxL/mbo5sK8qaM6YnGKL8Z4sis=;
-        b=23MnygkOqGGFaHlY9cxhJAk089ltijVsQ4vSRIKyT0Ctd0K1EqFn/5Ze0eggyteGsU
-         XeWepx/zlQa8JTgJDzsW3Qz996hZzhrFpKUP0Fe7EPyACjF/2YRmTayBBDHS51SrT2ed
-         IWbHiHafccTo4eT6aVrAOU2cL9K8V9F7s7SOIV/cTIlNTtr8L53WPz5+1I9FEkjrJ8mg
-         UASFSFUDNixNRsLkA8yAHws3PlsxUv0Y4p1EVT7xsHj3gz9fmyVeVIXFH/1KXeQeD55q
-         q+eKy/wfh0a67/vjaHbUXX1pQr1SB++03iJLGLbuUt54X9RaHqfeLvi+ytklPwA2r3U0
-         3eaQ==
-X-Gm-Message-State: AOAM533uthrWn4CzTJTMaYtCkgBEgSeXpp+0w42Zh06tQqAnlqC6BhSv
-        NVldiJfrzNdw5irgDaUWK1eTOw==
-X-Google-Smtp-Source: ABdhPJzlJEUM4JECSJtllaaEViuXR3XCiEmdLs27IiVm2DR7HM3U0zuqDIaPaAvBcGPKwoplfCwp8g==
-X-Received: by 2002:a7b:c5d9:: with SMTP id n25mr10315342wmk.139.1635178527938;
-        Mon, 25 Oct 2021 09:15:27 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id k6sm17037479wri.83.2021.10.25.09.15.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 09:15:26 -0700 (PDT)
-Message-ID: <9ea50569-1d4d-5413-5c77-241f2a589f09@linaro.org>
-Date:   Mon, 25 Oct 2021 17:17:28 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+H/261NTcHUIiIs/82JQ+rk8bQ+b3jgtV07Datn0uLs=;
+        b=fptA2ktR9Lf5OhklLlEtLsIQQs//9K0KBDuovVCxbWGuTlKEwVJCqjz7wg2lH7tuar
+         jpXUophVPv4hzCqFY9ifVxSkW0VFyN5p+aT0RIrQxB6i5jsxBbAq+3UUJYSgIJkMAdTE
+         xJK0u1jifRoaqtC75Ri0xupVQ0qyf2wI/tThIwJFMi2LdpGlDDDqw5bWXzar4zPlUp6I
+         c6rVZ1sNqysHd21Qn5v8lAKiHwaN8rcj6DNS4jVAq/FfygHvDXA+YR3513OLZqmUejiw
+         0t+D718oLmDIgQ7kF1pI9I5SbodQzV4hMEmANMQ0dihyOVm68bFWhw34M3O6SXznj+af
+         nnaA==
+X-Gm-Message-State: AOAM5338c2/+21fz8359Yz1Tgk7/yb/HSBjjw++V2F6+7t3bZDpUOea2
+        p4Kqz4T+l0hIzMTMk8VRM7HZFDObjY4jlVC0fjAmhg==
+X-Google-Smtp-Source: ABdhPJxKB6cYfM75zJs+Szonrsni4S0SmPFbc1BwvWaw7elr2OuqBEt/Ng5zrJfXTPb/49sf7vObjJ/elqIIj9iTqE8=
+X-Received: by 2002:a17:906:5805:: with SMTP id m5mr23931964ejq.221.1635178780451;
+ Mon, 25 Oct 2021 09:19:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
- enc/dec
-Content-Language: en-US
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
- <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
- <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
- <00b817a4-f1ac-6a94-5f1e-836d8d313406@linaro.org>
-In-Reply-To: <00b817a4-f1ac-6a94-5f1e-836d8d313406@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211015190515.3760577-1-willmcvicker@google.com>
+In-Reply-To: <20211015190515.3760577-1-willmcvicker@google.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Mon, 25 Oct 2021 09:19:23 -0700
+Message-ID: <CABYd82aQUQ_8anTLbo7SkYaWHpaPAFA2W-oiRW+yxqfptx+L_A@mail.gmail.com>
+Subject: Re: [PATCH v1] clk: samsung: update CPU clk registration
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     "Cc: Android Kernel" <kernel-team@android.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 17:03, Bryan O'Donoghue wrote:
-> child devices drivers/usb/dwc3/dwc3-qcom.c
+On Fri, Oct 15, 2021 at 12:05 PM Will McVicker <willmcvicker@google.com> wrote:
+>
+> Convert the remaining exynos clock drivers to use
+> samsung_clk_register_cpu() or if possible use
+> samsung_cmu_register_one(). With this we can now make
+> exynos_register_cpu_clock() a static function so that future CPU clock
+> registration changes will use the samsung common clock driver.
+>
+> The main benefit of this change is that it standardizes the CPU clock
+> registration for the samsung clock drivers.
+>
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> ---
+>  drivers/clk/samsung/clk-cpu.c        |  2 +-
+>  drivers/clk/samsung/clk-cpu.h        |  7 ----
+>  drivers/clk/samsung/clk-exynos3250.c | 54 ++++++++++++++--------------
+>  drivers/clk/samsung/clk-exynos4.c    | 25 +++++++------
+>  drivers/clk/samsung/clk-exynos5250.c | 13 +++----
+>  drivers/clk/samsung/clk-exynos5420.c | 27 +++++++++-----
+>  6 files changed, 67 insertions(+), 61 deletions(-)
+>
+> diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cpu.c
+> index 7f20d9aedaa9..3e62ade120c5 100644
+> --- a/drivers/clk/samsung/clk-cpu.c
+> +++ b/drivers/clk/samsung/clk-cpu.c
+> @@ -400,7 +400,7 @@ static int exynos5433_cpuclk_notifier_cb(struct notifier_block *nb,
+>  }
+>
+>  /* helper function to register a CPU clock */
+> -int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
+> +static int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
+>                 unsigned int lookup_id, const char *name,
+>                 const struct clk_hw *parent, const struct clk_hw *alt_parent,
+>                 unsigned long offset, const struct exynos_cpuclk_cfg_data *cfg,
+> diff --git a/drivers/clk/samsung/clk-cpu.h b/drivers/clk/samsung/clk-cpu.h
+> index af74686db9ef..fc9f67a3b22e 100644
+> --- a/drivers/clk/samsung/clk-cpu.h
+> +++ b/drivers/clk/samsung/clk-cpu.h
+> @@ -62,11 +62,4 @@ struct exynos_cpuclk {
+>  #define CLK_CPU_HAS_E5433_REGS_LAYOUT  (1 << 2)
+>  };
+>
+> -int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
+> -                       unsigned int lookup_id, const char *name,
+> -                       const struct clk_hw *parent, const struct clk_hw *alt_parent,
+> -                       unsigned long offset,
+> -                       const struct exynos_cpuclk_cfg_data *cfg,
+> -                       unsigned long num_cfgs, unsigned long flags);
+> -
+>  #endif /* __SAMSUNG_CLK_CPU_H */
+> diff --git a/drivers/clk/samsung/clk-exynos3250.c b/drivers/clk/samsung/clk-exynos3250.c
+> index 17df7f9755aa..6cc65ccf867c 100644
+> --- a/drivers/clk/samsung/clk-exynos3250.c
+> +++ b/drivers/clk/samsung/clk-exynos3250.c
+> @@ -748,6 +748,31 @@ static const struct samsung_pll_clock exynos3250_plls[] __initconst = {
+>                         UPLL_LOCK, UPLL_CON0, exynos3250_pll_rates),
+>  };
+>
+> +#define E3250_CPU_DIV0(apll, pclk_dbg, atb, corem)                     \
+> +               (((apll) << 24) | ((pclk_dbg) << 20) | ((atb) << 16) |  \
+> +               ((corem) << 4))
+> +#define E3250_CPU_DIV1(hpm, copy)                                      \
+> +               (((hpm) << 4) | ((copy) << 0))
+> +
+> +static const struct exynos_cpuclk_cfg_data e3250_armclk_d[] __initconst = {
+> +       { 1000000, E3250_CPU_DIV0(1, 7, 4, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  900000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  800000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  700000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  600000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  500000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  400000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  300000, E3250_CPU_DIV0(1, 5, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  200000, E3250_CPU_DIV0(1, 3, 3, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  100000, E3250_CPU_DIV0(1, 1, 1, 1), E3250_CPU_DIV1(7, 7), },
+> +       {  0 },
+> +};
+> +
+> +static const struct samsung_cpu_clock exynos3250_cpu_clks[] __initconst = {
+> +       CPU_CLK(CLK_ARM_CLK, "armclk", CLK_MOUT_APLL, CLK_MOUT_MPLL_USER_C,
+> +                       CLK_CPU_HAS_DIV1, 0x14200, e3250_armclk_d),
+> +};
+> +
+>  static void __init exynos3_core_down_clock(void __iomem *reg_base)
+>  {
+>         unsigned int tmp;
+> @@ -780,46 +805,21 @@ static const struct samsung_cmu_info cmu_info __initconst = {
+>         .nr_gate_clks           = ARRAY_SIZE(gate_clks),
+>         .fixed_factor_clks      = fixed_factor_clks,
+>         .nr_fixed_factor_clks   = ARRAY_SIZE(fixed_factor_clks),
+> +       .cpu_clks               = exynos3250_cpu_clks,
+> +       .nr_cpu_clks            = ARRAY_SIZE(exynos3250_cpu_clks),
+>         .nr_clk_ids             = CLK_NR_CLKS,
+>         .clk_regs               = exynos3250_cmu_clk_regs,
+>         .nr_clk_regs            = ARRAY_SIZE(exynos3250_cmu_clk_regs),
+>  };
+>
+> -#define E3250_CPU_DIV0(apll, pclk_dbg, atb, corem)                     \
+> -               (((apll) << 24) | ((pclk_dbg) << 20) | ((atb) << 16) |  \
+> -               ((corem) << 4))
+> -#define E3250_CPU_DIV1(hpm, copy)                                      \
+> -               (((hpm) << 4) | ((copy) << 0))
+> -
+> -static const struct exynos_cpuclk_cfg_data e3250_armclk_d[] __initconst = {
+> -       { 1000000, E3250_CPU_DIV0(1, 7, 4, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  900000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  800000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  700000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  600000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  500000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  400000, E3250_CPU_DIV0(1, 7, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  300000, E3250_CPU_DIV0(1, 5, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  200000, E3250_CPU_DIV0(1, 3, 3, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  100000, E3250_CPU_DIV0(1, 1, 1, 1), E3250_CPU_DIV1(7, 7), },
+> -       {  0 },
+> -};
+> -
+>  static void __init exynos3250_cmu_init(struct device_node *np)
+>  {
+>         struct samsung_clk_provider *ctx;
+> -       struct clk_hw **hws;
+>
+>         ctx = samsung_cmu_register_one(np, &cmu_info);
+>         if (!ctx)
+>                 return;
+>
+> -       hws = ctx->clk_data.hws;
+> -       exynos_register_cpu_clock(ctx, CLK_ARM_CLK, "armclk",
+> -                       hws[CLK_MOUT_APLL], hws[CLK_MOUT_MPLL_USER_C],
+> -                       0x14200, e3250_armclk_d, ARRAY_SIZE(e3250_armclk_d),
+> -                       CLK_CPU_HAS_DIV1);
+> -
+>         exynos3_core_down_clock(ctx->reg_base);
+>  }
+>  CLK_OF_DECLARE(exynos3250_cmu, "samsung,exynos3250-cmu", exynos3250_cmu_init);
+> diff --git a/drivers/clk/samsung/clk-exynos4.c b/drivers/clk/samsung/clk-exynos4.c
+> index bf13e29a655c..9e98d59eb716 100644
+> --- a/drivers/clk/samsung/clk-exynos4.c
+> +++ b/drivers/clk/samsung/clk-exynos4.c
+> @@ -1228,12 +1228,21 @@ static const struct exynos_cpuclk_cfg_data e4412_armclk_d[] __initconst = {
+>         {  0 },
+>  };
+>
+> +static const struct samsung_cpu_clock exynos4210_cpu_clks[] __initconst = {
+> +       CPU_CLK(CLK_ARM_CLK, "armclk", CLK_MOUT_APLL, CLK_SCLK_MPLL,
+> +                       CLK_CPU_NEEDS_DEBUG_ALT_DIV | CLK_CPU_HAS_DIV1, 0x14200, e4210_armclk_d),
+> +};
+> +
+> +static const struct samsung_cpu_clock exynos4412_cpu_clks[] __initconst = {
+> +       CPU_CLK(CLK_ARM_CLK, "armclk", CLK_MOUT_APLL, CLK_MOUT_MPLL_USER_C,
+> +                       CLK_CPU_NEEDS_DEBUG_ALT_DIV | CLK_CPU_HAS_DIV1, 0x14200, e4412_armclk_d),
+> +};
+> +
+>  /* register exynos4 clocks */
+>  static void __init exynos4_clk_init(struct device_node *np,
+>                                     enum exynos4_soc soc)
+>  {
+>         struct samsung_clk_provider *ctx;
+> -       struct clk_hw **hws;
+>
+>         exynos4_soc = soc;
+>
+> @@ -1242,7 +1251,6 @@ static void __init exynos4_clk_init(struct device_node *np,
+>                 panic("%s: failed to map registers\n", __func__);
+>
+>         ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
+> -       hws = ctx->clk_data.hws;
+>
+>         samsung_clk_of_register_fixed_ext(ctx, exynos4_fixed_rate_ext_clks,
+>                         ARRAY_SIZE(exynos4_fixed_rate_ext_clks),
+> @@ -1304,10 +1312,8 @@ static void __init exynos4_clk_init(struct device_node *np,
+>                 samsung_clk_register_fixed_factor(ctx,
+>                         exynos4210_fixed_factor_clks,
+>                         ARRAY_SIZE(exynos4210_fixed_factor_clks));
+> -               exynos_register_cpu_clock(ctx, CLK_ARM_CLK, "armclk",
+> -                       hws[CLK_MOUT_APLL], hws[CLK_SCLK_MPLL], 0x14200,
+> -                       e4210_armclk_d, ARRAY_SIZE(e4210_armclk_d),
+> -                       CLK_CPU_NEEDS_DEBUG_ALT_DIV | CLK_CPU_HAS_DIV1);
+> +               samsung_clk_register_cpu(ctx, exynos4210_cpu_clks,
+> +                               ARRAY_SIZE(exynos4210_cpu_clks));
+>         } else {
+>                 samsung_clk_register_mux(ctx, exynos4x12_mux_clks,
+>                         ARRAY_SIZE(exynos4x12_mux_clks));
+> @@ -1318,11 +1324,8 @@ static void __init exynos4_clk_init(struct device_node *np,
+>                 samsung_clk_register_fixed_factor(ctx,
+>                         exynos4x12_fixed_factor_clks,
+>                         ARRAY_SIZE(exynos4x12_fixed_factor_clks));
+> -
+> -               exynos_register_cpu_clock(ctx, CLK_ARM_CLK, "armclk",
+> -                       hws[CLK_MOUT_APLL], hws[CLK_MOUT_MPLL_USER_C], 0x14200,
+> -                       e4412_armclk_d, ARRAY_SIZE(e4412_armclk_d),
+> -                       CLK_CPU_NEEDS_DEBUG_ALT_DIV | CLK_CPU_HAS_DIV1);
+> +               samsung_clk_register_cpu(ctx, exynos4412_cpu_clks,
+> +                               ARRAY_SIZE(exynos4412_cpu_clks));
+>         }
+>
+>         if (soc == EXYNOS4X12)
+> diff --git a/drivers/clk/samsung/clk-exynos5250.c b/drivers/clk/samsung/clk-exynos5250.c
+> index 06588fab408a..0baf28312231 100644
+> --- a/drivers/clk/samsung/clk-exynos5250.c
+> +++ b/drivers/clk/samsung/clk-exynos5250.c
+> @@ -772,6 +772,11 @@ static const struct exynos_cpuclk_cfg_data exynos5250_armclk_d[] __initconst = {
+>         {  0 },
+>  };
+>
+> +static const struct samsung_cpu_clock exynos5250_cpu_clks[] __initconst = {
+> +       CPU_CLK(CLK_ARM_CLK, "armclk", CLK_MOUT_APLL, CLK_MOUT_MPLL, CLK_CPU_HAS_DIV1, 0x200,
+> +                       exynos5250_armclk_d),
+> +};
+> +
+>  static const struct of_device_id ext_clk_match[] __initconst = {
+>         { .compatible = "samsung,clock-xxti", .data = (void *)0, },
+>         { },
+> @@ -782,7 +787,6 @@ static void __init exynos5250_clk_init(struct device_node *np)
+>  {
+>         struct samsung_clk_provider *ctx;
+>         unsigned int tmp;
+> -       struct clk_hw **hws;
+>
+>         if (np) {
+>                 reg_base = of_iomap(np, 0);
+> @@ -793,7 +797,6 @@ static void __init exynos5250_clk_init(struct device_node *np)
+>         }
+>
+>         ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
+> -       hws = ctx->clk_data.hws;
+>
+>         samsung_clk_of_register_fixed_ext(ctx, exynos5250_fixed_rate_ext_clks,
+>                         ARRAY_SIZE(exynos5250_fixed_rate_ext_clks),
+> @@ -822,10 +825,8 @@ static void __init exynos5250_clk_init(struct device_node *np)
+>                         ARRAY_SIZE(exynos5250_div_clks));
+>         samsung_clk_register_gate(ctx, exynos5250_gate_clks,
+>                         ARRAY_SIZE(exynos5250_gate_clks));
+> -       exynos_register_cpu_clock(ctx, CLK_ARM_CLK, "armclk",
+> -                       hws[CLK_MOUT_APLL], hws[CLK_MOUT_MPLL], 0x200,
+> -                       exynos5250_armclk_d, ARRAY_SIZE(exynos5250_armclk_d),
+> -                       CLK_CPU_HAS_DIV1);
+> +       samsung_clk_register_cpu(ctx, exynos5250_cpu_clks,
+> +                       ARRAY_SIZE(exynos5250_cpu_clks));
+>
+>         /*
+>          * Enable arm clock down (in idle) and set arm divider
+> diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
+> index 3ccd4eabd2a6..83607b384665 100644
+> --- a/drivers/clk/samsung/clk-exynos5420.c
+> +++ b/drivers/clk/samsung/clk-exynos5420.c
+> @@ -1551,6 +1551,20 @@ static const struct exynos_cpuclk_cfg_data exynos5420_kfcclk_d[] __initconst = {
+>         {  0 },
+>  };
+>
+> +static const struct samsung_cpu_clock exynos5420_cpu_clks[] __initconst = {
+> +       CPU_CLK(CLK_ARM_CLK, "armclk", CLK_MOUT_APLL, CLK_MOUT_MSPLL_CPU, 0, 0x200,
+> +                       exynos5420_eglclk_d),
+> +       CPU_CLK(CLK_KFC_CLK, "kfcclk", CLK_MOUT_KPLL, CLK_MOUT_MSPLL_KFC, 0, 0x28200,
+> +                       exynos5420_kfcclk_d),
+> +};
+> +
+> +static const struct samsung_cpu_clock exynos5800_cpu_clks[] __initconst = {
+> +       CPU_CLK(CLK_ARM_CLK, "armclk", CLK_MOUT_APLL, CLK_MOUT_MSPLL_CPU, 0, 0x200,
+> +                       exynos5800_eglclk_d),
+> +       CPU_CLK(CLK_KFC_CLK, "kfcclk", CLK_MOUT_KPLL, CLK_MOUT_MSPLL_KFC, 0, 0x28200,
+> +                       exynos5420_kfcclk_d),
+> +};
+> +
+>  static const struct of_device_id ext_clk_match[] __initconst = {
+>         { .compatible = "samsung,exynos5420-oscclk", .data = (void *)0, },
+>         { },
+> @@ -1625,17 +1639,12 @@ static void __init exynos5x_clk_init(struct device_node *np,
+>         }
+>
+>         if (soc == EXYNOS5420) {
+> -               exynos_register_cpu_clock(ctx, CLK_ARM_CLK, "armclk",
+> -                       hws[CLK_MOUT_APLL], hws[CLK_MOUT_MSPLL_CPU], 0x200,
+> -                       exynos5420_eglclk_d, ARRAY_SIZE(exynos5420_eglclk_d), 0);
+> +               samsung_clk_register_cpu(ctx, exynos5420_cpu_clks,
+> +                               ARRAY_SIZE(exynos5420_cpu_clks));
+>         } else {
+> -               exynos_register_cpu_clock(ctx, CLK_ARM_CLK, "armclk",
+> -                       hws[CLK_MOUT_APLL], hws[CLK_MOUT_MSPLL_CPU], 0x200,
+> -                       exynos5800_eglclk_d, ARRAY_SIZE(exynos5800_eglclk_d), 0);
+> +               samsung_clk_register_cpu(ctx, exynos5800_cpu_clks,
+> +                               ARRAY_SIZE(exynos5800_cpu_clks));
+>         }
+> -       exynos_register_cpu_clock(ctx, CLK_KFC_CLK, "kfcclk",
+> -               hws[CLK_MOUT_KPLL], hws[CLK_MOUT_MSPLL_KFC],  0x28200,
+> -               exynos5420_kfcclk_d, ARRAY_SIZE(exynos5420_kfcclk_d), 0);
+>
+>         samsung_clk_extended_sleep_init(reg_base,
+>                 exynos5x_clk_regs, ARRAY_SIZE(exynos5x_clk_regs),
+> --
+> 2.33.0.1079.g6e70778dc9-goog
+>
 
-doh - learn to type
+Gentle reminder for review on this patch please.
 
-*child devices drivers/usb/dwc3/core.c
+Thanks,
+Will
