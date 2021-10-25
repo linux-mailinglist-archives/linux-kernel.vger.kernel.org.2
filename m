@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6516439FFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A962439FC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234932AbhJYT0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
+        id S234801AbhJYTYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234743AbhJYTX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:23:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A37F9610A1;
-        Mon, 25 Oct 2021 19:21:32 +0000 (UTC)
+        id S234859AbhJYTWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:22:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE9B8610A5;
+        Mon, 25 Oct 2021 19:19:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189693;
-        bh=iXn6Jih01pc9c2ujcf4Dm/YwYxbow9CFLEPGx1h3crU=;
+        s=korg; t=1635189590;
+        bh=nHpmElIgjm6PRFonSP4b8cwbFdME/BCl8zsf809HFVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rfam4SSOmIUacQgH/DFOy60CojS2M13leaqSB1A4D3jMoVVNehX+oknd0QboBrSdy
-         gU5FYkWB16hSzYguNjaTlPIHRWt07q4bxsqBmyeSKMHheG1GFJ/TP1V8HZ4WM3FHnp
-         vk3Fs/oWR0gDIrnBU04dZ7ZkeCCETvUbnYH6lhII=
+        b=lAp1JuOIYyX4K93KLBfQCsWMsgjD1nCeQmbXy3csUdgxxCIO2tmXmTXuAg70DseLr
+         lYGdDgNyDebGgXOIVSXSnlrlQw/yxl8dzKD5nOqAzsvfX6K5Hm5/vUdEkwWht7lxeU
+         beDyCncEbxShq+GRqc7QFi2g7Qv6ZhPDsvx2RzLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Ayumi Nakamichi <ayumi.nakamichi.kf@renesas.com>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.14 08/30] can: rcar_can: fix suspend/resume
+        Xiaolong Huang <butterflyhuangxx@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 41/50] isdn: cpai: check ctr->cnr to avoid array index out of bound
 Date:   Mon, 25 Oct 2021 21:14:28 +0200
-Message-Id: <20211025190925.096335295@linuxfoundation.org>
+Message-Id: <20211025190940.200201900@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Xiaolong Huang <butterflyhuangxx@gmail.com>
 
-commit f7c05c3987dcfde9a4e8c2d533db013fabebca0d upstream.
+commit 1f3e2e97c003f80c4b087092b225c8787ff91e4d upstream.
 
-If the driver was not opened, rcar_can_suspend() should not call
-clk_disable() because the clock was not enabled.
+The cmtp_add_connection() would add a cmtp session to a controller
+and run a kernel thread to process cmtp.
 
-Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
-Link: https://lore.kernel.org/all/20210924075556.223685-1-yoshihiro.shimoda.uh@renesas.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Tested-by: Ayumi Nakamichi <ayumi.nakamichi.kf@renesas.com>
-Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Tested-by: Biju Das <biju.das.jz@bp.renesas.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+	__module_get(THIS_MODULE);
+	session->task = kthread_run(cmtp_session, session, "kcmtpd_ctr_%d",
+								session->num);
+
+During this process, the kernel thread would call detach_capi_ctr()
+to detach a register controller. if the controller
+was not attached yet, detach_capi_ctr() would
+trigger an array-index-out-bounds bug.
+
+[   46.866069][ T6479] UBSAN: array-index-out-of-bounds in
+drivers/isdn/capi/kcapi.c:483:21
+[   46.867196][ T6479] index -1 is out of range for type 'capi_ctr *[32]'
+[   46.867982][ T6479] CPU: 1 PID: 6479 Comm: kcmtpd_ctr_0 Not tainted
+5.15.0-rc2+ #8
+[   46.869002][ T6479] Hardware name: QEMU Standard PC (i440FX + PIIX,
+1996), BIOS 1.14.0-2 04/01/2014
+[   46.870107][ T6479] Call Trace:
+[   46.870473][ T6479]  dump_stack_lvl+0x57/0x7d
+[   46.870974][ T6479]  ubsan_epilogue+0x5/0x40
+[   46.871458][ T6479]  __ubsan_handle_out_of_bounds.cold+0x43/0x48
+[   46.872135][ T6479]  detach_capi_ctr+0x64/0xc0
+[   46.872639][ T6479]  cmtp_session+0x5c8/0x5d0
+[   46.873131][ T6479]  ? __init_waitqueue_head+0x60/0x60
+[   46.873712][ T6479]  ? cmtp_add_msgpart+0x120/0x120
+[   46.874256][ T6479]  kthread+0x147/0x170
+[   46.874709][ T6479]  ? set_kthread_struct+0x40/0x40
+[   46.875248][ T6479]  ret_from_fork+0x1f/0x30
+[   46.875773][ T6479]
+
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211008065830.305057-1-butterflyhuangxx@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/rcar/rcar_can.c |   20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/isdn/capi/kcapi.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -857,10 +857,12 @@ static int __maybe_unused rcar_can_suspe
- 	struct rcar_can_priv *priv = netdev_priv(ndev);
- 	u16 ctlr;
+--- a/drivers/isdn/capi/kcapi.c
++++ b/drivers/isdn/capi/kcapi.c
+@@ -564,6 +564,11 @@ int detach_capi_ctr(struct capi_ctr *ctr
  
--	if (netif_running(ndev)) {
--		netif_stop_queue(ndev);
--		netif_device_detach(ndev);
--	}
-+	if (!netif_running(ndev))
-+		return 0;
-+
-+	netif_stop_queue(ndev);
-+	netif_device_detach(ndev);
-+
- 	ctlr = readw(&priv->regs->ctlr);
- 	ctlr |= RCAR_CAN_CTLR_CANM_HALT;
- 	writew(ctlr, &priv->regs->ctlr);
-@@ -879,6 +881,9 @@ static int __maybe_unused rcar_can_resum
- 	u16 ctlr;
- 	int err;
+ 	ctr_down(ctr, CAPI_CTR_DETACHED);
  
-+	if (!netif_running(ndev))
-+		return 0;
++	if (ctr->cnr < 1 || ctr->cnr - 1 >= CAPI_MAXCONTR) {
++		err = -EINVAL;
++		goto unlock_out;
++	}
 +
- 	err = clk_enable(priv->clk);
- 	if (err) {
- 		netdev_err(ndev, "clk_enable() failed, error %d\n", err);
-@@ -892,10 +897,9 @@ static int __maybe_unused rcar_can_resum
- 	writew(ctlr, &priv->regs->ctlr);
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
--	if (netif_running(ndev)) {
--		netif_device_attach(ndev);
--		netif_start_queue(ndev);
--	}
-+	netif_device_attach(ndev);
-+	netif_start_queue(ndev);
-+
- 	return 0;
- }
- 
+ 	if (capi_controller[ctr->cnr - 1] != ctr) {
+ 		err = -EINVAL;
+ 		goto unlock_out;
 
 
