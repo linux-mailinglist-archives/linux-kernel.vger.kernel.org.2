@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D27D43A324
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EAC43A360
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238913AbhJYT4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:56:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41886 "EHLO mail.kernel.org"
+        id S239261AbhJYT7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:59:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236214AbhJYTvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:51:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0267C603E7;
-        Mon, 25 Oct 2021 19:43:22 +0000 (UTC)
+        id S235497AbhJYTzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:55:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08F2F610A6;
+        Mon, 25 Oct 2021 19:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191004;
-        bh=Ls5iMNiiy8ccdGmX5ptaYcXXNtG9DkJmgA/GqTQMU6k=;
+        s=korg; t=1635191132;
+        bh=IIrpcUVTztwdklgZWMopXjqbhWQ1Nlwy6rmpCXx5ZZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PywdLXAxx7AEAqvffRbTeC6bLMwg62DxCQ2AkdAY1f4p+sEF9xEqlUtweW9daGs+6
-         kq19FU/ikevrJqO6fv/dHGkyfCxqMbTwqWG1Ha0aupTOF73SUv9bXpnUDIIz5Ig9xz
-         ahopGAh/YScVtb65m4Iopuf/2/eEzjJjwG/fRpyo=
+        b=iEI5zUtpi4zMjUMyiDF/2vg7yUgyS/frFPjFqJx7+IjLJfbPvIU05ZwT5MPwTpTpX
+         33TR2Hzus+Oaus/6CWNQDt221amW/S4/y7nATRk8kK4/8x0o9lk3RY/6GNvGWsev6y
+         NCTtFKier2IPf3tdXPXvEyUvNOfH8wSW6PSd8+jA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 121/169] KVM: SEV-ES: Set guest_state_protected after VMSA update
-Date:   Mon, 25 Oct 2021 21:15:02 +0200
-Message-Id: <20211025191033.206758084@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Daniel Abrecht <public@danielabrecht.ch>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH 5.14 122/169] drm: mxsfb: Fix NULL pointer dereference crash on unload
+Date:   Mon, 25 Oct 2021 21:15:03 +0200
+Message-Id: <20211025191033.309049783@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
 References: <20211025191017.756020307@linuxfoundation.org>
@@ -39,39 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Gonda <pgonda@google.com>
+From: Marek Vasut <marex@denx.de>
 
-commit baa1e5ca172ce7bf9554070139482dd7ea919528 upstream.
+commit 3cfc183052c3dbf8eae57b6c1685dab00ed3db4a upstream.
 
-The refactoring in commit bb18a6777465 ("KVM: SEV: Acquire
-vcpu mutex when updating VMSA") left behind the assignment to
-svm->vcpu.arch.guest_state_protected; add it back.
+The mxsfb->crtc.funcs may already be NULL when unloading the driver,
+in which case calling mxsfb_irq_disable() via drm_irq_uninstall() from
+mxsfb_unload() leads to NULL pointer dereference.
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-[Delta between v2 and v3 of Peter's patch, which had already been
- committed; the commit message is my own. - Paolo]
-Fixes: bb18a6777465 ("KVM: SEV: Acquire vcpu mutex when updating VMSA")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Since all we care about is masking the IRQ and mxsfb->base is still
+valid, just use that to clear and mask the IRQ.
+
+Fixes: ae1ed00932819 ("drm: mxsfb: Stop using DRM simple display pipeline helper")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Daniel Abrecht <public@danielabrecht.ch>
+Cc: Emil Velikov <emil.l.velikov@gmail.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211016210446.171616-1-marex@denx.de
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/sev.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/mxsfb/mxsfb_drv.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -619,7 +619,12 @@ static int __sev_launch_update_vmsa(stru
- 	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
- 	vmsa.address = __sme_pa(svm->vmsa);
- 	vmsa.len = PAGE_SIZE;
--	return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-+	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-+	if (ret)
-+	  return ret;
+--- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
++++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
+@@ -268,7 +268,11 @@ static void mxsfb_irq_disable(struct drm
+ 	struct mxsfb_drm_private *mxsfb = drm->dev_private;
+ 
+ 	mxsfb_enable_axi_clk(mxsfb);
+-	mxsfb->crtc.funcs->disable_vblank(&mxsfb->crtc);
 +
-+	vcpu->arch.guest_state_protected = true;
-+	return 0;
++	/* Disable and clear VBLANK IRQ */
++	writel(CTRL1_CUR_FRAME_DONE_IRQ_EN, mxsfb->base + LCDC_CTRL1 + REG_CLR);
++	writel(CTRL1_CUR_FRAME_DONE_IRQ, mxsfb->base + LCDC_CTRL1 + REG_CLR);
++
+ 	mxsfb_disable_axi_clk(mxsfb);
  }
  
- static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
 
 
