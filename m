@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1A943A583
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6863843A586
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhJYVLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        id S234938AbhJYVLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhJYVLV (ORCPT
+        with ESMTP id S234907AbhJYVLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:11:21 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CE9C061348
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:08:58 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id n11so8793947plf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:08:58 -0700 (PDT)
+        Mon, 25 Oct 2021 17:11:34 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8B8C061745;
+        Mon, 25 Oct 2021 14:09:11 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id l203so7427831pfd.2;
+        Mon, 25 Oct 2021 14:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=poLGG9S+mf5XQ/yz4q57CrTw5wKhA6/+9va9QkjuAvg=;
-        b=a0ZVOQhPb030zLbcmC9f4zSVxc0zTc6ElOubuzQwisrkF6vA7Zzgg2w+5d1eHi5oz5
-         DhF3soqW3IPQwH0ga0vF9zPp4eJ6Xhg8luXinN7ypGwUAA/emUHJoyb+lMwZQDfAMFuh
-         IYoCojDm1v82gvLyOdRsOd0z96c5DPkHcgYIw=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+T9sZO3wMX0fSxI4P/Aep0YGSBlmwjihZUi5Fu81DoM=;
+        b=FcFrEM5TIaHgiY2m5YeUeBNs1wmvPwWgbzd8PXbRGgHM8ohxY3wNi5ht+F3oipugAf
+         AhW/jOYkhy/VnH7GeU6QV9HLQfLVol1xdKVEYogdujYbPcYZ011D1UBedFombdl8T1MS
+         qR7hxlyvhDZSbKlMe3lCZmRjR16dlJM0tU9MYSTLf3Fphz6K45iOc+wKU1WmJuNbvexW
+         SSBvQOMHEqTMFyO8W5KkZx1Hb2nffUvXmfeMDgG9A5p01HSSo12E3swIj//SGBhnLlMI
+         kIVaDOia1KObBHa/6/eGqP7W7nH7JHIPnPeov4pZyhhSA+hf/456sI4xQ1D2y2S43cEO
+         fgrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=poLGG9S+mf5XQ/yz4q57CrTw5wKhA6/+9va9QkjuAvg=;
-        b=0Aq4Xkjp0tHenpg0CSOEkq4J/R0dfk8TjOHpclEnkS7pghF5PuI/lKAzjGtjchb+Mz
-         5ApfcvyrlRPAq9J2yC5QNIXs8Sl60BtHsQAnlfns4W5t13DWgUHX3wKWazK0o4PrzvOt
-         aAosSh2S+++f8y4EYu9JDpeuEGMMACzxT5OeJVNOOMfA+72XO8JCDxOr09trps2pngus
-         zo3epbukRjJCGeMn5VHH2NeUxZzZHC86R4aagWB+G5VngXX+sv4H2QZxPSq5n+sOJFLM
-         FRSOhivagIqfOAOye5ZuwtxfEJdCkbzGU69wmSSpPdLvds4GkoyTM4AIDYTYFDwWPuAt
-         TT3w==
-X-Gm-Message-State: AOAM5313K9PObGJG2plQInTfFQwR9t/lMDJY9GlZ4x2Ske8iqKJFhnQ9
-        ntVNphE3GL+Bc3Z2BWO6qkcgTA==
-X-Google-Smtp-Source: ABdhPJxIbyBEZZU8qon/3sXF/Ha0M7vmc/NXiFfHSLsaGzp0MdqqweQ+YxlPpa2ydt+gluSp4zi30w==
-X-Received: by 2002:a17:90a:af93:: with SMTP id w19mr39184637pjq.10.1635196138400;
-        Mon, 25 Oct 2021 14:08:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h19sm22908045pfv.81.2021.10.25.14.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:08:58 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:08:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 02/12] fs/exec: make __get_task_comm always get a nul
- terminated string
-Message-ID: <202110251408.2E661E70BC@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-3-laoar.shao@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+T9sZO3wMX0fSxI4P/Aep0YGSBlmwjihZUi5Fu81DoM=;
+        b=uMSQly+2MSM69OryEHTpdXiOUqUGK4V+lfAjuvCglS3ca1//geFYwvDWBE5dLDrd/V
+         /8b1h/NncZ7DEQqHrJdApeHTzXgQNijMU4nQ5LLHU5xyXXe8mnSNGYbCmD+WSfZpMP7A
+         Rnwe5zC5UgIfOn4fS2SPUa2gTcmNk25OAW6WwbrOntZ178q/+hdZUz9HzgQbE8xGIXaf
+         Z3eGku+VJDzL4KoBgQiUJ/xx7TWum8kY4yzK/gbm+CHpWsoCeMdqlSqHbWSFOt9LfDZL
+         IYbKiwt+dYlh1BAYqxlC5y8N2UxnVoUM5RbPdDxodUis7P6JtlxGLOPRUJ8IH13pt6fM
+         Oqcw==
+X-Gm-Message-State: AOAM532iij8eEJuMVduHVEyuqj2ix2HNaVHjYTDiLt8XlReRgdcO9p9Z
+        nZxk1MCE20BWn8nT3FubhPM/tMRTops=
+X-Google-Smtp-Source: ABdhPJz5jMycFT7ZMdDoFIfk3CffOoR7L0wKIZYqnwK0pm2V4u5U2Fw/9xxBAUSJe8qas2D1lP+f7w==
+X-Received: by 2002:a65:6643:: with SMTP id z3mr15723044pgv.16.1635196150553;
+        Mon, 25 Oct 2021 14:09:10 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id p7sm17063026pgn.52.2021.10.25.14.09.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 14:09:10 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/95] 5.10.76-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211025190956.374447057@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <75a4fc7c-bb4e-dd61-f72a-82f717a55471@gmail.com>
+Date:   Mon, 25 Oct 2021 14:09:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-3-laoar.shao@gmail.com>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:05AM +0000, Yafang Shao wrote:
-> If the dest buffer size is smaller than sizeof(tsk->comm), the buffer
-> will be without null ternimator, that may cause problem. We can make sure
-> the buffer size not smaller than comm at the callsite to avoid that
-> problem, but there may be callsite that we can't easily change.
+On 10/25/21 12:13 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.76 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Using strscpy_pad() instead of strncpy() in __get_task_comm() can make
-> the string always nul ternimated.
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
 > 
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  fs/exec.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.76-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 404156b5b314..bf2a7a91eeea 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1209,7 +1209,8 @@ static int unshare_sighand(struct task_struct *me)
->  char *__get_task_comm(char *buf, size_t buf_size, struct task_struct *tsk)
->  {
->  	task_lock(tsk);
-> -	strncpy(buf, tsk->comm, buf_size);
-> +	/* The copied value is always null terminated */
-
-This may could say "always NUL terminated and zero-padded"
-
-> +	strscpy_pad(buf, tsk->comm, buf_size);
->  	task_unlock(tsk);
->  	return buf;
->  }
-> -- 
-> 2.17.1
+> thanks,
 > 
+> greg k-h
 
-But for the replacement with strscpy_pad(), yes please:
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Kees Cook
+Florian
