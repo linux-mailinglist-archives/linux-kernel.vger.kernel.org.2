@@ -2,118 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95337439280
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0F3439270
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhJYJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbhJYJhl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:37:41 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36685C061745;
-        Mon, 25 Oct 2021 02:35:19 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id l13so19877667edi.8;
-        Mon, 25 Oct 2021 02:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RSWOPzNpv+gqobr9oD44cMNl/gjPokC+2ZSGAR+LGvc=;
-        b=a+5dD8ItWz4O5QFIzUEtGJoJsR951RDBjl81/f3t4cVyOqcgWrgIuY2AP49/K8n6Rd
-         /stIXbufTsTrDU495bT0dnLGUXJrdvk7ZKyyH6Zz1Aj1wpHXP378Aj9RCraqP9mTpmbH
-         icbT9i4jg/b4/D2yZEL+CWA+P1GecqsnekYdtxPX891Erk5Yn/eoaURCq2EqoISGvEXN
-         eSGui04a9h4g/RQgUrqrvK5QLHPw9r7c1inttYrSJ8M2kPLuPSqmZUCSqSVhow53Oazb
-         HI7YT04u3ZN+wAY5umc1PrwSY41CFxBRN04uTy6eRoZjbzWP4o+I+b11SILZWht/2ezm
-         w2Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RSWOPzNpv+gqobr9oD44cMNl/gjPokC+2ZSGAR+LGvc=;
-        b=hsrhv8vuZqVHSjHT18IWA377hzbpU84D3eZRJwoNWFws728YhQkzLNXLe7yNg1CVsX
-         kTXwv6K99afq1Jqte+kJI1uUnX7wWDAGJm1X+ZauRhhBdro/3kGsS8BL/03xk1eqrQ5B
-         ocJ9kOtguKeW1L5HIztZt95n4TdnH8ZpP2OcxsXnnKd7rc2BUtN63D1hej08oea4p8u3
-         3PGjJv4SzPc7Qqom6iMMCFV4AnaUMc7UVksB2ILzKSh4elzr+W28/28M7lFUwI3q399P
-         WX7G6pGVemw5LhDfTH2gQeGzC/2B9XDoZOvlgn7w00+vBYvhRQWtsrYol2h6fgrKdpll
-         WY8w==
-X-Gm-Message-State: AOAM531QPyWfqG1Xj6czZc8TVkOrHDLalGBujVX1/3fcRgUoy1zePadp
-        MTr2F84OT5jxKns/r0UfxkZJujPZ1Nt45uIZHBjgfAE6pQFN2A==
-X-Google-Smtp-Source: ABdhPJx3+UgXIEBRlA9nUZuUcAiapUMwd/T0Yw/6DynvNGWRM7W9yjJVyzjCBVv6iOwqWGLngTX5Bl78AuEdwya0ox0=
-X-Received: by 2002:a05:6402:2031:: with SMTP id ay17mr25638264edb.240.1635154517795;
- Mon, 25 Oct 2021 02:35:17 -0700 (PDT)
+        id S232566AbhJYJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:36:51 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:60957 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229499AbhJYJgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 05:36:50 -0400
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 5B80D61EA1BD2;
+        Mon, 25 Oct 2021 11:34:26 +0200 (CEST)
+Message-ID: <d8f70dfc-e064-d34c-98a0-cfde2e2f726c@molgen.mpg.de>
+Date:   Mon, 25 Oct 2021 11:34:26 +0200
 MIME-Version: 1.0
-References: <20211022200032.23267-1-pauk.denis@gmail.com>
-In-Reply-To: <20211022200032.23267-1-pauk.denis@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 25 Oct 2021 12:34:23 +0300
-Message-ID: <CAHp75VcvzBoY_avM2r-vQei+UCULU8oEYBdgM6dD7Yr3N69hvA@mail.gmail.com>
-Subject: Re: [PATCH v8 0/3] Update ASUS WMI supported boards
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2] media: aspeed: add debugfs
+Content-Language: en-US
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     BMC-SW@aspeedtech.com, eajames@linux.ibm.com, mchehab@kernel.org,
+        joel@jms.id.au, andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210929090024.8499-1-jammy_huang@aspeedtech.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20210929090024.8499-1-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 11:01 PM Denis Pauk <pauk.denis@gmail.com> wrote:
->
-> Update ASUS WMI supported boards
->
-> Add support by WMI interface privided by Asus for B550/X570 boards:
+Dear Jammy,
 
-provided
 
-> * PRIME X570-PRO,
-> * ROG CROSSHAIR VIII HERO
-> * ROG CROSSHAIR VIII DARK HERO
-> * ROG CROSSHAIR VIII FORMULA
-> * ROG STRIX X570-E GAMING
-> * ROG STRIX B550-E GAMING
->
-> Add support by WMI interface privided by Asus for X370/X470/
+On 29.09.21 11:00, Jammy Huang wrote:
+> To show video real-time information as below:
 
-provided
+Please list the path for that file containing the information below.
 
-> B450/X399 boards:
-> * ROG CROSSHAIR VI HERO,
-> * PRIME X399-A,
-> * PRIME X470-PRO,
-> * ROG CROSSHAIR VI EXTREME,
-> * ROG CROSSHAIR VI HERO (WI-FI AC),
-> * ROG CROSSHAIR VII HERO,
-> * ROG CROSSHAIR VII HERO (WI-FI),
-> * ROG STRIX B450-E GAMING,
-> * ROG STRIX B450-F GAMING,
-> * ROG STRIX B450-I GAMING,
-> * ROG STRIX X399-E GAMING,
-> * ROG STRIX X470-F GAMING,
-> * ROG STRIX X470-I GAMING,
-> * ROG ZENITH EXTREME,
-> * ROG ZENITH EXTREME ALPHA.
->
-> Add support to nct6775:
-> * ProArt X570-CREATOR WIFI.
->
-> Could you please review?
+> Caputre:
 
-> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-> Signed-off-by: Ed Brindley <kernel@maidavale.org>
-> Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+Capture
 
-No need to have this in cover letter. But it's harmless, so up to you.
+>    Signal              : Unlock
+>    Width               : 1920
+>    Height              : 1080
+>    FRC                 : 30
+> 
+> Performance:
+>    Frame#              : 0
+>    Frame Duration      :
+>      Now               : 0
+>      Min               : 0
+>      Max               : 0
+>    FPS(ms)             : 0
 
-I will look at it this week, I think we can still improve utf conversion code.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Kind regards,
+
+Paul
+
+
+> Change-Id: I483740c4df6db07a9261c18440472a0356512bb7
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> ---
+>   drivers/media/platform/aspeed-video.c | 101 ++++++++++++++++++++++++++
+>   1 file changed, 101 insertions(+)
+> 
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 8b3939b8052d..c5c413844441 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -21,6 +21,8 @@
+>   #include <linux/videodev2.h>
+>   #include <linux/wait.h>
+>   #include <linux/workqueue.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/ktime.h>
+>   #include <media/v4l2-ctrls.h>
+>   #include <media/v4l2-dev.h>
+>   #include <media/v4l2-device.h>
+> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
+>   	struct list_head link;
+>   };
+>   
+> +struct aspeed_video_perf {
+> +	ktime_t last_sample;
+> +	u32 totaltime;
+> +	u32 duration;
+> +	u32 duration_min;
+> +	u32 duration_max;
+> +};
+> +
+>   #define to_aspeed_video_buffer(x) \
+>   	container_of((x), struct aspeed_video_buffer, vb)
+>   
+> @@ -241,6 +251,8 @@ struct aspeed_video {
+>   	unsigned int frame_left;
+>   	unsigned int frame_right;
+>   	unsigned int frame_top;
+> +
+> +	struct aspeed_video_perf perf;
+>   };
+>   
+>   #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
+> @@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>   		readl(video->base + reg));
+>   }
+>   
+> +static void update_perf(struct aspeed_video_perf *p)
+> +{
+> +	p->duration =
+> +		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
+> +	p->totaltime += p->duration;
+> +
+> +	p->duration_max = max(p->duration, p->duration_max);
+> +	p->duration_min = min(p->duration, p->duration_min);
+> +}
+> +
+>   static int aspeed_video_start_frame(struct aspeed_video *video)
+>   {
+>   	dma_addr_t addr;
+> @@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>   	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+>   			    VE_INTERRUPT_COMP_COMPLETE);
+>   
+> +	video->perf.last_sample = ktime_get();
+> +
+>   	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+>   			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
+>   
+> @@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>   		u32 frame_size = aspeed_video_read(video,
+>   						   VE_JPEG_COMP_SIZE_READ_BACK);
+>   
+> +		update_perf(&video->perf);
+> +
+>   		spin_lock(&video->lock);
+>   		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+>   		buf = list_first_entry_or_null(&video->buffers,
+> @@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   	det->width = MIN_WIDTH;
+>   	det->height = MIN_HEIGHT;
+>   	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
+> +	memset(&video->perf, 0, sizeof(video->perf));
+>   
+>   	do {
+>   		if (tries) {
+> @@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
+>   	struct aspeed_video *video = vb2_get_drv_priv(q);
+>   
+>   	video->sequence = 0;
+> +	video->perf.duration_max = 0;
+> +	video->perf.duration_min = 0xffffffff;
+>   
+>   	rc = aspeed_video_start_frame(video);
+>   	if (rc) {
+> @@ -1517,6 +1546,72 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
+>   	.buf_queue =  aspeed_video_buf_queue,
+>   };
+>   
+> +#ifdef CONFIG_DEBUG_FS
+> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+> +{
+> +	struct aspeed_video *v = s->private;
+> +
+> +	seq_puts(s, "\n");
+> +
+> +	seq_printf(s, "  %-20s:\t%s\n", "Signal",
+> +		   v->v4l2_input_status ? "Unlock" : "Lock");
+> +	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
+> +	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
+> +	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
+> +
+> +	seq_puts(s, "\n");
+> +
+> +	seq_puts(s, "Performance:\n");
+> +	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
+> +	seq_printf(s, "  %-20s:\n", "Frame Duration");
+> +	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
+> +	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
+> +	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
+> +	seq_printf(s, "  %-20s:\t%d\n", "FPS(ms)", 1000/(v->perf.totaltime/v->sequence));
+> +
+> +
+> +	return 0;
+> +}
+> +
+> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
+> +{
+> +	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
+> +}
+> +
+> +static struct file_operations aspeed_video_debugfs_ops = {
+> +	.owner   = THIS_MODULE,
+> +	.open    = aspeed_video_proc_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = single_release,
+> +};
+> +
+> +static struct dentry *debugfs_entry;
+> +
+> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
+> +{
+> +	debugfs_remove_recursive(debugfs_entry);
+> +	debugfs_entry = NULL;
+> +}
+> +
+> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
+> +{
+> +	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
+> +						   video,
+> +						   &aspeed_video_debugfs_ops);
+> +	if (!debugfs_entry)
+> +		aspeed_video_debugfs_remove(video);
+> +
+> +	return debugfs_entry == NULL ? -EIO : 0;
+> +}
+> +#else
+> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
+> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_DEBUG_FS */
+> +
+>   static int aspeed_video_setup_video(struct aspeed_video *video)
+>   {
+>   	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
+> @@ -1708,6 +1803,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
+>   		return rc;
+>   	}
+>   
+> +	rc = aspeed_video_debugfs_create(video);
+> +	if (rc)
+> +		dev_err(video->dev, "debugfs create failed\n");
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1719,6 +1818,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
+>   
+>   	aspeed_video_off(video);
+>   
+> +	aspeed_video_debugfs_remove(video);
+> +
+>   	clk_unprepare(video->vclk);
+>   	clk_unprepare(video->eclk);
+>   
+> 
