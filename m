@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE94B4390E8
+	by mail.lfdr.de (Postfix) with ESMTP id 73AF34390E7
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhJYIOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhJYIOO (ORCPT
+        id S231463AbhJYIOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:14:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53258 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231467AbhJYIOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 04:14:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA357C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:11:52 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 08:11:49 -0000
+Date:   Mon, 25 Oct 2021 08:11:50 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635149510;
+        s=2020; t=1635149511;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=keZuxF5Wp9vaw+tvwEpRIqDthQf1RE4r+zeSft14Xus=;
-        b=tzVUDGRXQi95lmRTc52cbHVlLM4E3xZIi7JKtTM/yUhbHMmA85kLVzVYki7tkwIM8oTB3F
-        I+2OHKuXQ73ce61zR2GU14tAyoKn7srfuGFtAbbxkTe7g2a85XSTrCzjEE7vTH5VortGfU
-        q0WGnzIWd6oK305N2YUbq3SxWRDHOk61ok2hsy6Zp1DIRjsig8yhapU/AjK3XW6unHuK1P
-        VOpGzK+21U7hPcaUj4Imhfv78LPOXAHa6SaVqNjjiaLEixSmD2lBrZtgmiaZcglBJ2aH8G
-        SOdyIQPqBknnp//DFnFZMSSv8rh+EtHpMsZkQ1kSznDkpsBKYECtfyFqvPBB0w==
+        bh=yZjqLOaREUpFP0Tbs9fP5VnqLWu0K2V7kZM7cKufCdE=;
+        b=peQ955SzCl81MTmntgUOOP+bKNHmn8K4pGirBHalzQmX9EHbRLJMbKrETxVZdVIIqf1X6O
+        qSM1FQXcLkbaHq2ayg+DfE/14LvC2KdknYKWgutM6qWpjdDtneDkQ5MdSTit6+YB9NEoM9
+        ivqw4o7fYi39NdoNBb79jZpIWj9sJ+Wn5DCXhOhEq8VyTpX4Lz7VwuZK+FCb+TTBxf8e//
+        KAgq+TxWt9CpFUB0+6c7L4RILEIfkq3CC4r36IqZbX2oZEaPa8JShfg0+H6xkxtaIsL3da
+        NMWtIDcoXZGZkUuvQAVcfzxAh8bR2Y+ICtv5Dk8Bp0OmfNwvTKPwzijSq1wFHg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635149510;
+        s=2020e; t=1635149511;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=keZuxF5Wp9vaw+tvwEpRIqDthQf1RE4r+zeSft14Xus=;
-        b=PuwEXYzoIHqP7WLdo/KMZG4U9L0V/aPmuTDonLON/M69CZxfMRO3UTjI742MO3Z64WhuHA
-        BzoztDcmBwzZDXAA==
-From:   "irqchip-bot for Yang Yingliang" <tip-bot2@linutronix.de>
+        bh=yZjqLOaREUpFP0Tbs9fP5VnqLWu0K2V7kZM7cKufCdE=;
+        b=OVmgAp/i1YerAfqRzIhPwb2IdR4j5WXryjGDYfirwvcwzB32A30AOx+cQ+9TCs04SX9qCa
+        BYCV0/7FHBAHyiDw==
+From:   "irqchip-bot for Arnd Bergmann" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/mchp-eic: Fix return value check
- in mchp_eic_init()
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
+Subject: [irqchip: irq/irqchip-next] irqchip: Fix compile-testing without CONFIG_OF
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20211025050055.1129845-1-yangyingliang@huawei.com>
-References: <20211025050055.1129845-1-yangyingliang@huawei.com>
+In-Reply-To: <20211022154927.920491-1-arnd@kernel.org>
+References: <20211022154927.920491-1-arnd@kernel.org>
 MIME-Version: 1.0
-Message-ID: <163514950929.626.13647389495537279603.tip-bot2@tip-bot2>
+Message-ID: <163514951015.626.4566172897212223672.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,38 +58,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     68a6e0c63c76128d403e8ca016c0bcb732ff1b05
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/68a6e0c63c76128d403e8ca016c0bcb732ff1b05
-Author:        Yang Yingliang <yangyingliang@huawei.com>
-AuthorDate:    Mon, 25 Oct 2021 13:00:55 +08:00
+Commit-ID:     1ba5478270a5c3a02b08052a3c003c282f2db94a
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/1ba5478270a5c3a02b08052a3c003c282f2db94a
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Fri, 22 Oct 2021 17:49:21 +02:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Mon, 25 Oct 2021 09:02:18 +01:00
+CommitterDate: Mon, 25 Oct 2021 08:55:42 +01:00
 
-irqchip/mchp-eic: Fix return value check in mchp_eic_init()
+irqchip: Fix compile-testing without CONFIG_OF
 
-In case of error, the function of_iomap() returns NULL pointer
-not ERR_PTR(). The IS_ERR() test in the return value check
-should be replaced with NULL test.
+Drivers using the new IRQCHIP_PLATFORM_DRIVER_BEGIN helper
+fail to link when compile-testing without CONFIG_OF,
+as that means CONFIG_IRQCHIP is disabled as well:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+ld.lld: error: undefined symbol: platform_irqchip_probe
+>>> referenced by irq-meson-gpio.c
+>>>               irqchip/irq-meson-gpio.o:(meson_gpio_intc_driver) in archive drivers/built-in.a
+>>> referenced by irq-mchp-eic.c
+>>>               irqchip/irq-mchp-eic.o:(mchp_eic_driver) in archive drivers/built-in.a
+
+As the drivers are not actually used in this case, just
+making the reference to this symbol conditional helps
+avoid the link failure.
+
+Fixes: f8410e626569 ("irqchip: Add IRQCHIP_PLATFORM_DRIVER_BEGIN/END and IRQCHIP_MATCH helper macros")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211025050055.1129845-1-yangyingliang@huawei.com
+Link: https://lore.kernel.org/r/20211022154927.920491-1-arnd@kernel.org
 ---
- drivers/irqchip/irq-mchp-eic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/irqchip.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mchp-eic.c b/drivers/irqchip/irq-mchp-eic.c
-index 09b7a8c..c726a19 100644
---- a/drivers/irqchip/irq-mchp-eic.c
-+++ b/drivers/irqchip/irq-mchp-eic.c
-@@ -209,7 +209,7 @@ static int mchp_eic_init(struct device_node *node, struct device_node *parent)
- 		return -ENOMEM;
- 
- 	eic->base = of_iomap(node, 0);
--	if (IS_ERR(eic->base)) {
-+	if (!eic->base) {
- 		ret = -ENOMEM;
- 		goto free;
- 	}
+diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+index 67351aa..29dbe67 100644
+--- a/include/linux/irqchip.h
++++ b/include/linux/irqchip.h
+@@ -39,8 +39,9 @@ static const struct of_device_id drv_name##_irqchip_match_table[] = {
+ 	{},								\
+ };									\
+ MODULE_DEVICE_TABLE(of, drv_name##_irqchip_match_table);		\
+-static struct platform_driver drv_name##_driver = {		\
+-	.probe  = platform_irqchip_probe,				\
++static struct platform_driver drv_name##_driver = {			\
++	.probe  = IS_ENABLED(CONFIG_IRQCHIP) ? 				\
++			platform_irqchip_probe : NULL,			\
+ 	.driver = {							\
+ 		.name = #drv_name,					\
+ 		.owner = THIS_MODULE,					\
