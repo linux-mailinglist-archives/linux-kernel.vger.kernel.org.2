@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AD74393A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F39A4393B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbhJYK2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:28:10 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:34561 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232829AbhJYK2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:28:08 -0400
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id CC99861EA191C;
-        Mon, 25 Oct 2021 12:25:45 +0200 (CEST)
-Message-ID: <7a5123b0-6370-59dc-f0c2-8be5b370d9ba@molgen.mpg.de>
-Date:   Mon, 25 Oct 2021 12:25:45 +0200
+        id S232815AbhJYKbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:31:50 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:54048 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231617AbhJYKbt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:31:49 -0400
+Received: by mail-il1-f197.google.com with SMTP id x4-20020a923004000000b00258f6abf8feso6334103ile.20
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:29:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=JAbTUB7wd0n4ed22nk2D+7uZypebDRexq0Nqq9dO8zk=;
+        b=cFcryoCbUja+Ow047vx/NzEkdj/rb60SibYwZNQz9uXgNcgJlyRpwmtZ1DgDvH4JIJ
+         zfqgTdTVkbUoGds2RWWN5j+kMt5zFhuoE0abLM6tkjPbdLBnCahbKIH5PPFjt+B+63Vm
+         Hu37lbVH4gNAa0R1UilziuH7fKvOEGOyq+cvzOMPyOC7fhqpF8VQR7hjlkUojtVJkimJ
+         BP2A6ScMEo9KMOASdxp0gg+4Y+21bkyD0AYh+xmVuXyP2qSuPoz7iHJskQP3z/2hs5Xv
+         nFGg7gd6DWJQNpcj9OgAslxSe7M8+En8Mqioz0UK7p7rY2UqgToBJBTnOMgRIduO7Nlh
+         DZQg==
+X-Gm-Message-State: AOAM530jKStd812XlpZFkio/m6KUJhQNDTLdIrRzdtLME2g4BgDqFv97
+        BKSde5Emlt/3fAnWmVJ2bCQ/pQjhUz6eUFhWUF72+HXdcoDS
+X-Google-Smtp-Source: ABdhPJwWCF6T9C/GTEoj1lxOQ5h/45kApoO8I+lcqj3iHmbzRdLdaidvzMK9GaMnT76mxQgLjvSuTnTNmL5Fugt0JGWgm8welM4u
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: I got an IOMMU IO page fault. What to do now?
-To:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     iommu@lists.linux-foundation.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Xinhui Pan <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        it+linux-iommu@molgen.mpg.de
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:20e7:: with SMTP id q7mr9941507ilv.254.1635157767204;
+ Mon, 25 Oct 2021 03:29:27 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 03:29:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ddb95c05cf2ad54a@google.com>
+Subject: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
+From:   syzbot <syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=159c4954b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6339b6ea86d89fd7
+dashboard link: https://syzkaller.appspot.com/bug?extid=4dfb96a94317a78f44d9
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
+
+write to 0xffffffff837342e0 of 8 bytes by task 11 on cpu 1:
+ rcu_gp_fqs kernel/rcu/tree.c:1910 [inline]
+ rcu_gp_fqs_loop+0x348/0x470 kernel/rcu/tree.c:1971
+ rcu_gp_kthread+0x25/0x1a0 kernel/rcu/tree.c:2130
+ kthread+0x262/0x280 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+
+read to 0xffffffff837342e0 of 8 bytes by task 379 on cpu 0:
+ __call_rcu_core kernel/rcu/tree.c:2904 [inline]
+ __call_rcu kernel/rcu/tree.c:3020 [inline]
+ call_rcu+0x4c0/0x6d0 kernel/rcu/tree.c:3067
+ __dentry_kill+0x3ec/0x4e0 fs/dcache.c:596
+ dput+0xc6/0x360 fs/dcache.c:888
+ do_unlinkat+0x2a8/0x540 fs/namei.c:4172
+ __do_sys_unlink fs/namei.c:4217 [inline]
+ __se_sys_unlink fs/namei.c:4215 [inline]
+ __x64_sys_unlink+0x2c/0x30 fs/namei.c:4215
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0x0000000000005c0d -> 0x0000000000005c0e
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 379 Comm: udevd Tainted: G        W         5.15.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+==================================================================
 
 
-On a Dell OptiPlex 5055, Linux 5.10.24 logged the IOMMU messages below. 
-(GPU hang in amdgpu issue #1762 [1] might be related.)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-     $ lspci -nn -s 05:00.0
-     05:00.0 VGA compatible controller [0300]: Advanced Micro Devices, 
-Inc. [AMD/ATI] Oland [Radeon HD 8570 / R7 240/340 OEM] [1002:6611] (rev 87)
-     $ dmesg
-     […]
-     [6318399.745242] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xfffffff0c0 flags=0x0020]
-     [6318399.757283] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xfffffff7c0 flags=0x0020]
-     [6318399.769154] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffe0c0 flags=0x0020]
-     [6318399.780913] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xfffffffec0 flags=0x0020]
-     [6318399.792734] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffe5c0 flags=0x0020]
-     [6318399.804309] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffd0c0 flags=0x0020]
-     [6318399.816091] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffecc0 flags=0x0020]
-     [6318399.827407] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffd3c0 flags=0x0020]
-     [6318399.838708] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffc0c0 flags=0x0020]
-     [6318399.850029] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
-[IO_PAGE_FAULT domain=0x000c address=0xffffffdac0 flags=0x0020]
-     [6318399.861311] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffc1c0 flags=0x0020]
-     [6318399.872044] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffc8c0 flags=0x0020]
-     [6318399.882797] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffb0c0 flags=0x0020]
-     [6318399.893655] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffcfc0 flags=0x0020]
-     [6318399.904445] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffb6c0 flags=0x0020]
-     [6318399.915222] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffa0c0 flags=0x0020]
-     [6318399.925931] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffbdc0 flags=0x0020]
-     [6318399.936691] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffa4c0 flags=0x0020]
-     [6318399.947479] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffff90c0 flags=0x0020]
-     [6318399.958270] AMD-Vi: Event logged [IO_PAGE_FAULT device=05:00.0 
-domain=0x000c address=0xffffffabc0 flags=0x0020]
-
-As this is not reproducible, how would debugging go? (The system was 
-rebooted in the meantime.) What options should be enabled, that next 
-time the required information is logged, or what commands should I 
-execute when the system is still in that state, so the bug (driver, 
-userspace, …) can be pinpointed and fixed?
-
-
-Kind regards,
-
-Paul
-
-
-[1]: https://gitlab.freedesktop.org/drm/amd/-/issues/1762
-      "Oland [Radeon HD 8570 / R7 240/340 OEM]: GPU hang"
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
