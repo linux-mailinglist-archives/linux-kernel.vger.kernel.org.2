@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA4F439D1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2165439D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234708AbhJYRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        id S235001AbhJYRMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235729AbhJYRKK (ORCPT
+        with ESMTP id S235038AbhJYRL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:10:10 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618FEC028BBA
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:04:46 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id q6so12381952iod.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:04:46 -0700 (PDT)
+        Mon, 25 Oct 2021 13:11:27 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B75C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:06:18 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id k29so7641384qve.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sladewatkins.com; s=google;
+        d=do-not-panic-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lgdXiqDvxgu+xZfGtPCHM8GTcNnXqfqcjwou73pLEj0=;
-        b=WqCS8EOKVKaAXCsDsVRNwvOzKc2IisLjY0EvIIedu5Sm2CVuSfh/O5qja3aRLJ5Np7
-         faKQPPkbIYr2ELZR1G9zPSoy95gqqaZqjwsO63gBJWmcgW0xCUbCL4RSTIL3HmY77e6A
-         UsDd5xqa5m+QUKH+H7z/O65X14AchAZWsW7BBM+D/jEpcyMZLiBPyOXy0dAJqjAd0bPM
-         HH/lZd8Gpiy19ImLvC8uDi6Ye+NlPNpdliao8SudX/38Y1NxdLEn93vFjdB9uC0bRLOx
-         Qv0PGhqOtkMzqqKIgilSalRkChnG/qmG/5H5sSKkHwFPsrrJJgHgDGe7bf/RXmrWe0sE
-         Mvqg==
+        bh=GEb6OCV/meZ3qzeNt+5KNW40f1lAyUtMsMWRhcGrcOs=;
+        b=ROCND4Rrq3ERDpMlxkDUvJYbkghYlm/tr8lRGB44vQ9uYCsCqTj0N+i+BotqxD8vFb
+         m7Vg45HDeZs+dYG6X6F4LOEbEiRRr8G6hxaP4gNzPkIAyhGTD8ehy/Wkoc2WJgM9S28d
+         AXJkRM8XpVhEPhq8/PuIDrd41k1MuT4W3D/pnKsTFCJ2Pz8soXWebjw0OjSNpjp7qQxq
+         CeeOw+9AEvwnz8xIQ5vHk1UhouhdYlnmvWhymvy7uVUd0A0OsnJ8mv7dayEeD/lVIHXb
+         LsMdDXb4hFPb5gVpbrsGv1N9miXS59xZClwGVYhkDOlRpMMtOpMU7+78b9SuPJe58KQy
+         47ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lgdXiqDvxgu+xZfGtPCHM8GTcNnXqfqcjwou73pLEj0=;
-        b=1OocVQ41GAGN+FPKr7Zif9+ixQOgSX3fnZsSklvBZbt9iO6rSoFlTPAn8rBczMhP8z
-         SKEAiV1OP5pQSQWHUPLiRVUMoZiIvtay9yYvVGDeXAVTwBUg7TNktP4mOvCJtEhsViR+
-         OJYQeR5EtdBLhrswYgf/JeHR8WKHgGE2QvyjIT0tRR+O+qeaQ0P0VW6i+Szep5qWOTm1
-         uQV3l5+G2MtHKO8YWokXqnNHJDucWekQvsItBJZGZJ1oqXZJUxzdQXOI8MhYKgm7Y8JG
-         BpIvQQXOCP4JGZBv196Bt0C3G9e8xTTvGY8Q2g1xC7hTkLcmee23QZFMS7Kah/8rt5eh
-         9hAQ==
-X-Gm-Message-State: AOAM530jBpnxP6+fqrEKYlXt0phEJ3yfArJ/NIyYvu7BjwHqP1RPUPWi
-        Xf5xZjaMSmikH5Nw0x3wHc4sIWr+YVEQoP+VAyfg8H6lqpo5eNY7q4w=
-X-Google-Smtp-Source: ABdhPJwMvNRNZFOYHIVw8UjsFK1rCkFF2HiOPsWBwZObCa0+GbWkXZsoj7iKLoRz+YUrhiXfcOyMJPkfghpEzNF0vAw=
-X-Received: by 2002:a05:6602:148b:: with SMTP id a11mr11745957iow.85.1635181485832;
- Mon, 25 Oct 2021 10:04:45 -0700 (PDT)
+        bh=GEb6OCV/meZ3qzeNt+5KNW40f1lAyUtMsMWRhcGrcOs=;
+        b=OVDTR+9KjsjdI/4lEahnxbcKunqC9VIyFbCWauHrkifRAieWrC6ImfYpAFeAACZE2s
+         fRdwUT4AFiQ80Jca7nX7M5GrGz1e1VeG5pSKrrQpKHJ7PTUh/Fz8G9viZMgCjoX4QC+d
+         3dVVaGjhf2VqqTCibgU4jz/rajlfICCQbWxkfEqyqeKgJzuFDUwaEjscQ7qr76ql4k8a
+         kEpf/sei5eAemtnWekPiWayqz0ZxM5+0xaZZqF+LiAMfaUC9Sx9MUH7jFK3BSwlXt8cm
+         4Pmhs3X7/ndvkVN4hB6mgIS03XaffWg+jZwTZkwu9cn0myjFE//jnuPWisH/tRRhlVzu
+         HeRQ==
+X-Gm-Message-State: AOAM533rQ61j/hmfQqmRHHALuFlqORKzuLS3mTesU5cYiVrbrRJmlZVg
+        ik4MR8gSf5bhtjGdMM/gqr3cr2AZJjO1zQ==
+X-Google-Smtp-Source: ABdhPJwHabANTbD8aE666pR5q2QUELEX4aGCGEEGyiPBc1NXIPF87+ha2Oat0v0M+pn1CX/n1ets8A==
+X-Received: by 2002:a0c:eb11:: with SMTP id j17mr17217217qvp.51.1635181577756;
+        Mon, 25 Oct 2021 10:06:17 -0700 (PDT)
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com. [209.85.219.44])
+        by smtp.gmail.com with ESMTPSA id m2sm9736813qkp.124.2021.10.25.10.06.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 10:06:17 -0700 (PDT)
+Received: by mail-qv1-f44.google.com with SMTP id y6so5734402qvk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:06:17 -0700 (PDT)
+X-Received: by 2002:a05:6214:5085:: with SMTP id kk5mr17550416qvb.12.1635181577058;
+ Mon, 25 Oct 2021 10:06:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
- <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com> <YXY15jCBCAgB88uT@d3>
-In-Reply-To: <YXY15jCBCAgB88uT@d3>
-From:   Slade Watkins <slade@sladewatkins.com>
-Date:   Mon, 25 Oct 2021 13:04:34 -0400
-Message-ID: <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
-Subject: Re: Unsubscription Incident
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Lijun Pan <lijunp213@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+References: <alpine.DEB.2.22.394.2110231908290.21613@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2110231908290.21613@hadrien>
+From:   Luis Chamberlain <mcgrof@do-not-panic.com>
+Date:   Mon, 25 Oct 2021 10:06:05 -0700
+X-Gmail-Original-Message-ID: <CAB=NE6Wk3=iRrR_U7PBpkF6=JzUtcPHf4wZ4jkArQ59GzhWhpg@mail.gmail.com>
+Message-ID: <CAB=NE6Wk3=iRrR_U7PBpkF6=JzUtcPHf4wZ4jkArQ59GzhWhpg@mail.gmail.com>
+Subject: Re: [cocci] [PATCH v2] coccinelle: update Coccinelle entry
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Joe Perches <joe@perches.com>, cocci@inria.fr,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kees Cook <kees@outflux.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:43 AM Benjamin Poirier
-<benjamin.poirier@gmail.com> wrote:
->
-> On 2021-10-22 18:54 +0300, Vladimir Oltean wrote:
-> > On Fri, 22 Oct 2021 at 18:53, Lijun Pan <lijunp213@gmail.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > From Oct 11, I did not receive any emails from both linux-kernel and
-> > > netdev mailing list. Did anyone encounter the same issue? I subscribed
-> > > again and I can receive incoming emails now. However, I figured out
-> > > that anyone can unsubscribe your email without authentication. Maybe
-> > > it is just a one-time issue that someone accidentally unsubscribed my
-> > > email. But I would recommend that our admin can add one more
-> > > authentication step before unsubscription to make the process more
-> > > secure.
-> > >
-> > > Thanks,
-> > > Lijun
-> >
-> > Yes, the exact same thing happened to me. I got unsubscribed from all
-> > vger mailing lists.
->
-> It happened to a bunch of people on gmail:
-> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
+On Sat, Oct 23, 2021 at 10:10 AM Julia Lawall <julia.lawall@inria.fr> wrote:
 
-I can at least confirm that this didn't happen to me on my hosted
-Gmail through Google Workspace. Could be wrong, but it seems isolated
-to normal @gmail.com accounts.
+> -L:     cocci@systeme.lip6.fr (moderated for non-subscribers)
+> +L:     cocci@inria.fr (moderated for non-subscribers)
 
-Best,
-             -slade
+BTW if one was subscribed to the old list, does the subscription move
+over to the new one? And do posts to the old list go to the new one?
+
+  Luis
