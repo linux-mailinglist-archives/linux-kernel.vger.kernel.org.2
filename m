@@ -2,36 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C5443A000
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011F443A07B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhJYT0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
+        id S235391AbhJYTbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234824AbhJYTYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:24:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44FE961106;
-        Mon, 25 Oct 2021 19:21:48 +0000 (UTC)
+        id S235347AbhJYT2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E25C60FE8;
+        Mon, 25 Oct 2021 19:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189710;
-        bh=X0b7bApjH+6xUBKRzfuhxtRm8g7Jemtwsgkhyi6Y7cM=;
+        s=korg; t=1635189880;
+        bh=SaBFZLhzJ/iBCfoHhVHYZLj56Nj4Rwcz/JC8rNlTGQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SbOvh6B/sXtushYHd1/OEhWxfzf6Y/JV+uUyXZbWqheXtJ91+OhJL4P9o4rTNzJ27
-         9FS0vREOgp4Q8mmpKIgkwhZN9lgyPD9azHmzdHoj3cwM87toaPVumLqYI+SvQueNtT
-         WevWkbBIC8JiEiTSbVCoUr9k5WInN0/0i4iU10IA=
+        b=cI6xza1ToHfKIQHC2JLzSdDGqNDS/ORYTd2AMCyXKcPxITEajUI8staJiQxb8IhBI
+         H+8O6zuzD7CtGTprlQFXVoZisXEe82Fyp0a/OCu6rMm39cGj5SvBtU4aemI+MxrNZD
+         GgazAINi8VYO7HKc4KiPpKkgXT6z8OptAbayZcVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 20/30] btrfs: deal with errors when checking if a dir entry exists during log replay
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gang He <ghe@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>,
+        Jun Piao <piaojun@huawei.com>,
+        "Markov, Andrey" <Markov.Andrey@Dell.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 15/37] ocfs2: fix data corruption after conversion from inline format
 Date:   Mon, 25 Oct 2021 21:14:40 +0200
-Message-Id: <20211025190927.701832804@linuxfoundation.org>
+Message-Id: <20211025190931.269729378@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,120 +47,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 77a5b9e3d14cbce49ceed2766b2003c034c066dc ]
+commit 5314454ea3ff6fc746eaf71b9a7ceebed52888fa upstream.
 
-Currently inode_in_dir() ignores errors returned from
-btrfs_lookup_dir_index_item() and from btrfs_lookup_dir_item(), treating
-any errors as if the directory entry does not exists in the fs/subvolume
-tree, which is obviously not correct, as we can get errors such as -EIO
-when reading extent buffers while searching the fs/subvolume's tree.
+Commit 6dbf7bb55598 ("fs: Don't invalidate page buffers in
+block_write_full_page()") uncovered a latent bug in ocfs2 conversion
+from inline inode format to a normal inode format.
 
-Fix that by making inode_in_dir() return the errors and making its only
-caller, add_inode_ref(), deal with returned errors as well.
+The code in ocfs2_convert_inline_data_to_extents() attempts to zero out
+the whole cluster allocated for file data by grabbing, zeroing, and
+dirtying all pages covering this cluster.  However these pages are
+beyond i_size, thus writeback code generally ignores these dirty pages
+and no blocks were ever actually zeroed on the disk.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This oversight was fixed by commit 693c241a5f6a ("ocfs2: No need to zero
+pages past i_size.") for standard ocfs2 write path, inline conversion
+path was apparently forgotten; the commit log also has a reasoning why
+the zeroing actually is not needed.
+
+After commit 6dbf7bb55598, things became worse as writeback code stopped
+invalidating buffers on pages beyond i_size and thus these pages end up
+with clean PageDirty bit but with buffers attached to these pages being
+still dirty.  So when a file is converted from inline format, then
+writeback triggers, and then the file is grown so that these pages
+become valid, the invalid dirtiness state is preserved,
+mark_buffer_dirty() does nothing on these pages (buffers are already
+dirty) but page is never written back because it is clean.  So data
+written to these pages is lost once pages are reclaimed.
+
+Simple reproducer for the problem is:
+
+  xfs_io -f -c "pwrite 0 2000" -c "pwrite 2000 2000" -c "fsync" \
+    -c "pwrite 4000 2000" ocfs2_file
+
+After unmounting and mounting the fs again, you can observe that end of
+'ocfs2_file' has lost its contents.
+
+Fix the problem by not doing the pointless zeroing during conversion
+from inline format similarly as in the standard write path.
+
+[akpm@linux-foundation.org: fix whitespace, per Joseph]
+
+Link: https://lkml.kernel.org/r/20210930095405.21433-1-jack@suse.cz
+Fixes: 6dbf7bb55598 ("fs: Don't invalidate page buffers in block_write_full_page()")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Tested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Acked-by: Gang He <ghe@suse.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: "Markov, Andrey" <Markov.Andrey@Dell.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c | 47 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ fs/ocfs2/alloc.c |   46 ++++++++++++----------------------------------
+ 1 file changed, 12 insertions(+), 34 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 08ab7ab909a8..372a10130ced 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -901,9 +901,11 @@ out:
- }
- 
- /*
-- * helper function to see if a given name and sequence number found
-- * in an inode back reference are already in a directory and correctly
-- * point to this inode
-+ * See if a given name and sequence number found in an inode back reference are
-+ * already in a directory and correctly point to this inode.
-+ *
-+ * Returns: < 0 on error, 0 if the directory entry does not exists and 1 if it
-+ * exists.
-  */
- static noinline int inode_in_dir(struct btrfs_root *root,
- 				 struct btrfs_path *path,
-@@ -912,29 +914,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
+--- a/fs/ocfs2/alloc.c
++++ b/fs/ocfs2/alloc.c
+@@ -7048,7 +7048,7 @@ void ocfs2_set_inode_data_inline(struct
+ int ocfs2_convert_inline_data_to_extents(struct inode *inode,
+ 					 struct buffer_head *di_bh)
  {
- 	struct btrfs_dir_item *di;
- 	struct btrfs_key location;
--	int match = 0;
-+	int ret = 0;
+-	int ret, i, has_data, num_pages = 0;
++	int ret, has_data, num_pages = 0;
+ 	int need_free = 0;
+ 	u32 bit_off, num;
+ 	handle_t *handle;
+@@ -7057,26 +7057,17 @@ int ocfs2_convert_inline_data_to_extents
+ 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+ 	struct ocfs2_dinode *di = (struct ocfs2_dinode *)di_bh->b_data;
+ 	struct ocfs2_alloc_context *data_ac = NULL;
+-	struct page **pages = NULL;
+-	loff_t end = osb->s_clustersize;
++	struct page *page = NULL;
+ 	struct ocfs2_extent_tree et;
+ 	int did_quota = 0;
  
- 	di = btrfs_lookup_dir_index_item(NULL, root, path, dirid,
- 					 index, name, name_len, 0);
--	if (di && !IS_ERR(di)) {
-+	if (IS_ERR(di)) {
-+		if (PTR_ERR(di) != -ENOENT)
-+			ret = PTR_ERR(di);
-+		goto out;
-+	} else if (di) {
- 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
- 		if (location.objectid != objectid)
- 			goto out;
--	} else
-+	} else {
- 		goto out;
--	btrfs_release_path(path);
-+	}
+ 	has_data = i_size_read(inode) ? 1 : 0;
  
-+	btrfs_release_path(path);
- 	di = btrfs_lookup_dir_item(NULL, root, path, dirid, name, name_len, 0);
--	if (di && !IS_ERR(di)) {
--		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
--		if (location.objectid != objectid)
--			goto out;
--	} else
-+	if (IS_ERR(di)) {
-+		ret = PTR_ERR(di);
- 		goto out;
--	match = 1;
-+	} else if (di) {
-+		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
-+		if (location.objectid == objectid)
-+			ret = 1;
-+	}
+ 	if (has_data) {
+-		pages = kcalloc(ocfs2_pages_per_cluster(osb->sb),
+-				sizeof(struct page *), GFP_NOFS);
+-		if (pages == NULL) {
+-			ret = -ENOMEM;
+-			mlog_errno(ret);
+-			return ret;
+-		}
+-
+ 		ret = ocfs2_reserve_clusters(osb, 1, &data_ac);
+ 		if (ret) {
+ 			mlog_errno(ret);
+-			goto free_pages;
++			goto out;
+ 		}
+ 	}
+ 
+@@ -7096,7 +7087,8 @@ int ocfs2_convert_inline_data_to_extents
+ 	}
+ 
+ 	if (has_data) {
+-		unsigned int page_end;
++		unsigned int page_end = min_t(unsigned, PAGE_SIZE,
++							osb->s_clustersize);
+ 		u64 phys;
+ 
+ 		ret = dquot_alloc_space_nodirty(inode,
+@@ -7120,15 +7112,8 @@ int ocfs2_convert_inline_data_to_extents
+ 		 */
+ 		block = phys = ocfs2_clusters_to_blocks(inode->i_sb, bit_off);
+ 
+-		/*
+-		 * Non sparse file systems zero on extend, so no need
+-		 * to do that now.
+-		 */
+-		if (!ocfs2_sparse_alloc(osb) &&
+-		    PAGE_SIZE < osb->s_clustersize)
+-			end = PAGE_SIZE;
+-
+-		ret = ocfs2_grab_eof_pages(inode, 0, end, pages, &num_pages);
++		ret = ocfs2_grab_eof_pages(inode, 0, page_end, &page,
++					   &num_pages);
+ 		if (ret) {
+ 			mlog_errno(ret);
+ 			need_free = 1;
+@@ -7139,20 +7124,15 @@ int ocfs2_convert_inline_data_to_extents
+ 		 * This should populate the 1st page for us and mark
+ 		 * it up to date.
+ 		 */
+-		ret = ocfs2_read_inline_data(inode, pages[0], di_bh);
++		ret = ocfs2_read_inline_data(inode, page, di_bh);
+ 		if (ret) {
+ 			mlog_errno(ret);
+ 			need_free = 1;
+ 			goto out_unlock;
+ 		}
+ 
+-		page_end = PAGE_SIZE;
+-		if (PAGE_SIZE > osb->s_clustersize)
+-			page_end = osb->s_clustersize;
+-
+-		for (i = 0; i < num_pages; i++)
+-			ocfs2_map_and_dirty_page(inode, handle, 0, page_end,
+-						 pages[i], i > 0, &phys);
++		ocfs2_map_and_dirty_page(inode, handle, 0, page_end, page, 0,
++					 &phys);
+ 	}
+ 
+ 	spin_lock(&oi->ip_lock);
+@@ -7183,8 +7163,8 @@ int ocfs2_convert_inline_data_to_extents
+ 	}
+ 
+ out_unlock:
+-	if (pages)
+-		ocfs2_unlock_and_free_pages(pages, num_pages);
++	if (page)
++		ocfs2_unlock_and_free_pages(&page, num_pages);
+ 
+ out_commit:
+ 	if (ret < 0 && did_quota)
+@@ -7208,8 +7188,6 @@ out_commit:
  out:
- 	btrfs_release_path(path);
--	return match;
-+	return ret;
+ 	if (data_ac)
+ 		ocfs2_free_alloc_context(data_ac);
+-free_pages:
+-	kfree(pages);
+ 	return ret;
  }
  
- /*
-@@ -1319,10 +1327,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
- 		if (ret)
- 			goto out;
- 
--		/* if we already have a perfect match, we're done */
--		if (!inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
--					btrfs_ino(BTRFS_I(inode)), ref_index,
--					name, namelen)) {
-+		ret = inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
-+				   btrfs_ino(BTRFS_I(inode)), ref_index,
-+				   name, namelen);
-+		if (ret < 0) {
-+			goto out;
-+		} else if (ret == 0) {
- 			/*
- 			 * look for a conflicting back reference in the
- 			 * metadata. if we find one we have to unlink that name
-@@ -1355,6 +1365,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
- 
- 			btrfs_update_inode(trans, root, inode);
- 		}
-+		/* Else, ret == 1, we already have a perfect match, we're done. */
- 
- 		ref_ptr = (unsigned long)(ref_ptr + ref_struct_size) + namelen;
- 		kfree(name);
--- 
-2.33.0
-
 
 
