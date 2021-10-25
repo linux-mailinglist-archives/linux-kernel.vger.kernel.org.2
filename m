@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7737B439C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2F9439C6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbhJYRC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:02:28 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:49504 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234223AbhJYRCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:02:21 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 8FA941D0D;
-        Mon, 25 Oct 2021 19:59:57 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1635181197;
-        bh=MYUlt7o4yRFISIcaO8HcKahOikdAwW2jwE0135lqIck=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=fyji/GhNjVvTFpjF8h9s8F5Na7JPgr03RPn5+Y4S1CtyBBczaH1n/GyaINEmypZpk
-         71/ZDC2aBMNnl6vXp+VtvRGhP22qk/MWPj0QHA2l9z+3CCPl7jCZbgnBbi1vRWna5e
-         fEUVevV7GnpUj3ggSA19xrZNJvkWsJ8UHulVLQXE=
-Received: from [192.168.211.155] (192.168.211.155) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 25 Oct 2021 19:59:57 +0300
-Message-ID: <600c92df-35e9-2686-52f3-5129ccf30e5e@paragon-software.com>
-Date:   Mon, 25 Oct 2021 19:59:56 +0300
+        id S234468AbhJYRDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:03:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234346AbhJYRCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:02:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDB1260FE8;
+        Mon, 25 Oct 2021 17:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635181225;
+        bh=3ZBUCgv8vwftNjRmDQRSK/5b+G6e6GPnvXqg+8+Ek0I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gvAwim3ERrHtLsrG8eN4QeVlPtsAE44rYZFR/s1RyjS0TFH4rktCcWcrmFTaxGwk8
+         b9wxtJAi8wn0dKuPJBXx4BKxsNc20XTNebddvC32hqxYf5HHg3NI4Z9tuxAs/yd1bg
+         2jX/JbP8ywsKjA9qMJalVPCV5VHlh8uwO2p+DZLjocqxkJ0hu6aLZ2Mr+vahDjTU+m
+         O8m1eN/U+tRFvzLYXhW3VJrRfzni9J3D8N+3KUSv/c1cUc4fvl9+F9Sr730/8l1FW4
+         Dxr7p1Hq3whuZThI/1DGWBQvP2Tx+QLuYcDAEFLMSr8OGG4z17Z+oxNokw+WUgW3AA
+         ZLgOcd6EXeJ9A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 01/13] ASoC: soc-core: fix null-ptr-deref in snd_soc_del_component_unlocked()
+Date:   Mon, 25 Oct 2021 13:00:10 -0400
+Message-Id: <20211025170023.1394358-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: [PATCH 4/4] fs/ntfs3: Update valid size if -EIOCBQUEUED
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-In-Reply-To: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.155]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update valid size if write is still in I/O queue.
-Fixes xfstest generic/240
-Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+[ Upstream commit c448b7aa3e66042fc0f849d9a0fb90d1af82e948 ]
+
+'component' is allocated in snd_soc_register_component(), but component->list
+is not initalized, this may cause snd_soc_del_component_unlocked() deref null
+ptr in the error handing case.
+
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+RIP: 0010:__list_del_entry_valid+0x81/0xf0
+Call Trace:
+ snd_soc_del_component_unlocked+0x69/0x1b0 [snd_soc_core]
+ snd_soc_add_component.cold+0x54/0x6c [snd_soc_core]
+ snd_soc_register_component+0x70/0x90 [snd_soc_core]
+ devm_snd_soc_register_component+0x5e/0xd0 [snd_soc_core]
+ tas2552_probe+0x265/0x320 [snd_soc_tas2552]
+ ? tas2552_component_probe+0x1e0/0x1e0 [snd_soc_tas2552]
+ i2c_device_probe+0xa31/0xbe0
+
+Fix by adding INIT_LIST_HEAD() to snd_soc_component_initialize().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211009065840.3196239-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/inode.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index 859951d785cb..c211c64e6b17 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -757,6 +757,7 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	loff_t vbo = iocb->ki_pos;
- 	loff_t end;
- 	int wr = iov_iter_rw(iter) & WRITE;
-+	size_t iter_count = iov_iter_count(iter);
- 	loff_t valid;
- 	ssize_t ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e677422c1058..133296596864 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2454,6 +2454,7 @@ int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	INIT_LIST_HEAD(&component->dai_list);
+ 	INIT_LIST_HEAD(&component->dobj_list);
+ 	INIT_LIST_HEAD(&component->card_list);
++	INIT_LIST_HEAD(&component->list);
+ 	mutex_init(&component->io_mutex);
  
-@@ -770,10 +771,14 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 				 wr ? ntfs_get_block_direct_IO_W
- 				    : ntfs_get_block_direct_IO_R);
- 
--	if (ret <= 0)
-+	if (ret > 0)
-+		end = vbo + ret;
-+	else if (wr && -EIOCBQUEUED == ret)
-+		end = vbo + iter_count;
-+	else {
- 		goto out;
-+	}
- 
--	end = vbo + ret;
- 	valid = ni->i_valid;
- 	if (wr) {
- 		if (end > valid && !S_ISBLK(inode->i_mode)) {
+ 	component->name = fmt_single_name(dev, &component->id);
 -- 
 2.33.0
-
 
