@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B61143918C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64AD43918B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhJYIjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        id S232324AbhJYIj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbhJYIjU (ORCPT
+        with ESMTP id S232458AbhJYIjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 04:39:20 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7E2C061230;
-        Mon, 25 Oct 2021 01:36:36 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 08:36:33 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDA9C061232;
+        Mon, 25 Oct 2021 01:36:37 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 08:36:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635150994;
+        s=2020; t=1635150995;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HUE+S9rdSLIPaqr1W+1AKQKpvYiJgDCj2CF5fl1vHNs=;
-        b=IKpIgiOeRqV9wuq2heSeBAg5hZvZyYL7Ep1d1Tv+heTRHEzC2Lv6n6HFUukpo01dAuvVW1
-        7CmCC5mzGtnGWKdWyxA6KvjuyiMbv0ONq7zv2XEGwhMRoBTFZQlx3c9npZPf3c8M4ZY6yv
-        Y3l+kaV0b4VtWgKq3MOUcBTUXhxxy8kwl+z5e+Flq3E4TnA1emlqy8VZLKx4dc5hYlflhw
-        grDfxKG2V9L6bTWPh7MApSzyakyKYqmEk2eSv2i+wQglTaD5r+WAz7ogWF4XMNemwZhlLF
-        qqAl78V/bmdO+6kC5J3jYwlqmgZBtOWqMV6nXgVuuGgawJuOcTX6oE55OD/R2w==
+        bh=dAUS7NTV2o3+sFQ/jLHYjUDBGUyYYhF1lkpl3CpbYfk=;
+        b=iYgYqdyFHU4/6lf6lsu1MaGbm7x6GJqSMg4s0j5nTrXdXBB8yR6Zidl7ONAazUYGonOfNQ
+        p3272p+FGISlY7PK2iSy2foCYntsoAQ6XmYvJViB8ZR9u1X3I3beTXcdC1QN24rNEi+gW9
+        jLu/kdy1T+sVrwRAblxc5as80mFj3+DjKAGzWkR4uQWwXIKzFr9zx6mJr5pr863je5qqJa
+        AL+pl8JciZVMy5v43tS7a0EAzJhRovfSk0/yebdnef5sf1srFcHp6IXLZJ9MtcRRk1OkrM
+        q7328kTkuFcqZzwWXipZeDeC4mHgSVy0om07sVdB67OGohY3AcmOfeARXBtqjQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635150994;
+        s=2020e; t=1635150995;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HUE+S9rdSLIPaqr1W+1AKQKpvYiJgDCj2CF5fl1vHNs=;
-        b=v+nzOIswh67xDwXp2a2rORcBh1qnoHnnimCaLNRnsRHSK1trMKO5fFUpVVq3kuEIauJjY3
-        Qco04mViKPZzGvCw==
+        bh=dAUS7NTV2o3+sFQ/jLHYjUDBGUyYYhF1lkpl3CpbYfk=;
+        b=bBbnvWKzYQDGAKEKsYfg+XeYrtKvdZwcuR+q/1SDl+vqdQGaTElTtU6qrSahuGpiVSVkGT
+        uaYAr3WNcNpIkSBw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Remove old KVM FPU interface
+Subject: [tip: x86/fpu] x86/fpu: Provide infrastructure for KVM FPU cleanup
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211022185313.074853631@linutronix.de>
-References: <20211022185313.074853631@linutronix.de>
+In-Reply-To: <20211022185312.954684740@linutronix.de>
+References: <20211022185312.954684740@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163515099334.626.9671958390453110224.tip-bot2@tip-bot2>
+Message-ID: <163515099487.626.4497497790299786860.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,91 +60,189 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     c341f1fe1543dfaf94916cef298aa60be545235f
-Gitweb:        https://git.kernel.org/tip/c341f1fe1543dfaf94916cef298aa60be545235f
+Commit-ID:     b35633854ccb5cb0129e1cd160d55112f94cbdce
+Gitweb:        https://git.kernel.org/tip/b35633854ccb5cb0129e1cd160d55112f94cbdce
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 22 Oct 2021 20:55:54 +02:00
+AuthorDate:    Fri, 22 Oct 2021 20:55:51 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 25 Oct 2021 10:24:16 +02:00
+CommitterDate: Mon, 25 Oct 2021 10:22:07 +02:00
 
-x86/fpu: Remove old KVM FPU interface
+x86/fpu: Provide infrastructure for KVM FPU cleanup
 
-No more users.
+For the upcoming AMX support it's necessary to do a proper integration with
+KVM. Currently KVM allocates two FPU structs which are used for saving the user
+state of the vCPU thread and restoring the guest state when entering
+vcpu_run() and doing the reverse operation before leaving vcpu_run().
+
+With the new fpstate mechanism this can be reduced to one extra buffer by
+swapping the fpstate pointer in current::thread::fpu. This makes the
+upcoming support for AMX and XFD simpler because then fpstate information
+(features, sizes, xfd) are always consistent and it does not require any
+nasty workarounds.
+
+Provide:
+
+  - An allocator which initializes the state properly
+
+  - A replacement for the existing FPU swap mechanim
+
+Aside of the reduced memory footprint, this also makes state switching
+more efficient when TIF_FPU_NEED_LOAD is set. It does not require a
+memcpy as the state is already correct in the to be swapped out fpstate.
+
+The existing interfaces will be removed once KVM is converted over.
+
+ [ bp: Include vmalloc.h explicitly to prevent build failures due to
+   include files cleanups, courtesy of Stephen Rothwell:
+   https://lore.kernel.org/r/20211025151144.552c60ca@canb.auug.org.au ]
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211022185313.074853631@linutronix.de
+Link: https://lkml.kernel.org/r/20211022185312.954684740@linutronix.de
 ---
- arch/x86/include/asm/fpu/api.h |  2 --
- arch/x86/kernel/fpu/core.c     | 32 --------------------------------
- 2 files changed, 34 deletions(-)
+ arch/x86/include/asm/fpu/api.h | 13 +++++-
+ arch/x86/kernel/fpu/core.c     | 86 ++++++++++++++++++++++++++++++---
+ 2 files changed, 93 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 5e5f172..e9379d7 100644
+index 9ce8314..de85bca 100644
 --- a/arch/x86/include/asm/fpu/api.h
 +++ b/arch/x86/include/asm/fpu/api.h
-@@ -131,14 +131,12 @@ static inline void fpstate_init_soft(struct swregs_state *soft) {}
- DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
- 
- /* fpstate-related functions which are exported to KVM */
--extern void fpu_init_fpstate_user(struct fpu *fpu);
+@@ -135,9 +135,22 @@ extern void fpu_init_fpstate_user(struct fpu *fpu);
  extern void fpstate_clear_xstate_component(struct fpstate *fps, unsigned int xfeature);
  
  /* KVM specific functions */
- extern bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu);
- extern void fpu_free_guest_fpstate(struct fpu_guest *gfpu);
- extern int fpu_swap_kvm_fpstate(struct fpu_guest *gfpu, bool enter_guest);
--extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
++extern bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu);
++extern void fpu_free_guest_fpstate(struct fpu_guest *gfpu);
++extern int fpu_swap_kvm_fpstate(struct fpu_guest *gfpu, bool enter_guest);
+ extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
  
- extern void fpu_copy_guest_fpstate_to_uabi(struct fpu_guest *gfpu, void *buf, unsigned int size, u32 pkru);
- extern int fpu_copy_uabi_to_guest_fpstate(struct fpu_guest *gfpu, const void *buf, u64 xcr0, u32 *vpkru);
+ extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
+ extern void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf, unsigned int size, u32 pkru);
+ 
++static inline void fpstate_set_confidential(struct fpu_guest *gfpu)
++{
++	gfpu->fpstate->is_confidential = true;
++}
++
++static inline bool fpstate_is_confidential(struct fpu_guest *gfpu)
++{
++	return gfpu->fpstate->is_confidential;
++}
++
+ #endif /* _ASM_X86_FPU_API_H */
 diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 64c98a4..c55013f 100644
+index 0fb9def..3c6b177 100644
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -246,29 +246,6 @@ int fpu_swap_kvm_fpstate(struct fpu_guest *guest_fpu, bool enter_guest)
- }
- EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpstate);
+@@ -16,6 +16,7 @@
  
--void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
--{
--	fpregs_lock();
--
--	if (save) {
--		struct fpstate *fpcur = current->thread.fpu.fpstate;
--
--		if (test_thread_flag(TIF_NEED_FPU_LOAD))
--			memcpy(&save->fpstate->regs, &fpcur->regs, fpcur->size);
--		else
--			save_fpregs_to_fpstate(save);
--	}
--
--	if (rstor) {
--		restore_mask &= XFEATURE_MASK_FPSTATE;
--		restore_fpregs_from_fpstate(rstor->fpstate, restore_mask);
--	}
--
--	fpregs_mark_activate();
--	fpregs_unlock();
--}
--EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
--
- void fpu_copy_guest_fpstate_to_uabi(struct fpu_guest *gfpu, void *buf,
- 				    unsigned int size, u32 pkru)
- {
-@@ -438,15 +415,6 @@ void fpstate_reset(struct fpu *fpu)
- 	__fpstate_reset(fpu->fpstate);
+ #include <linux/hardirq.h>
+ #include <linux/pkeys.h>
++#include <linux/vmalloc.h>
+ 
+ #include "context.h"
+ #include "internal.h"
+@@ -176,6 +177,75 @@ void fpu_reset_from_exception_fixup(void)
  }
  
--#if IS_ENABLED(CONFIG_KVM)
--void fpu_init_fpstate_user(struct fpu *fpu)
--{
--	fpstate_reset(fpu);
--	fpstate_init_user(fpu->fpstate);
--}
--EXPORT_SYMBOL_GPL(fpu_init_fpstate_user);
--#endif
--
- /* Clone current's FPU state on fork */
- int fpu_clone(struct task_struct *dst)
+ #if IS_ENABLED(CONFIG_KVM)
++static void __fpstate_reset(struct fpstate *fpstate);
++
++bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu)
++{
++	struct fpstate *fpstate;
++	unsigned int size;
++
++	size = fpu_user_cfg.default_size + ALIGN(offsetof(struct fpstate, regs), 64);
++	fpstate = vzalloc(size);
++	if (!fpstate)
++		return false;
++
++	__fpstate_reset(fpstate);
++	fpstate_init_user(fpstate);
++	fpstate->is_valloc	= true;
++	fpstate->is_guest	= true;
++
++	gfpu->fpstate = fpstate;
++	return true;
++}
++EXPORT_SYMBOL_GPL(fpu_alloc_guest_fpstate);
++
++void fpu_free_guest_fpstate(struct fpu_guest *gfpu)
++{
++	struct fpstate *fps = gfpu->fpstate;
++
++	if (!fps)
++		return;
++
++	if (WARN_ON_ONCE(!fps->is_valloc || !fps->is_guest || fps->in_use))
++		return;
++
++	gfpu->fpstate = NULL;
++	vfree(fps);
++}
++EXPORT_SYMBOL_GPL(fpu_free_guest_fpstate);
++
++int fpu_swap_kvm_fpstate(struct fpu_guest *guest_fpu, bool enter_guest)
++{
++	struct fpstate *guest_fps = guest_fpu->fpstate;
++	struct fpu *fpu = &current->thread.fpu;
++	struct fpstate *cur_fps = fpu->fpstate;
++
++	fpregs_lock();
++	if (!cur_fps->is_confidential && !test_thread_flag(TIF_NEED_FPU_LOAD))
++		save_fpregs_to_fpstate(fpu);
++
++	/* Swap fpstate */
++	if (enter_guest) {
++		fpu->__task_fpstate = cur_fps;
++		fpu->fpstate = guest_fps;
++		guest_fps->in_use = true;
++	} else {
++		guest_fps->in_use = false;
++		fpu->fpstate = fpu->__task_fpstate;
++		fpu->__task_fpstate = NULL;
++	}
++
++	cur_fps = fpu->fpstate;
++
++	if (!cur_fps->is_confidential)
++		restore_fpregs_from_fpstate(cur_fps, XFEATURE_MASK_FPSTATE);
++
++	fpregs_mark_activate();
++	fpregs_unlock();
++	return 0;
++}
++EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpstate);
++
+ void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
  {
+ 	fpregs_lock();
+@@ -352,16 +422,20 @@ void fpstate_init_user(struct fpstate *fpstate)
+ 		fpstate_init_fstate(fpstate);
+ }
+ 
++static void __fpstate_reset(struct fpstate *fpstate)
++{
++	/* Initialize sizes and feature masks */
++	fpstate->size		= fpu_kernel_cfg.default_size;
++	fpstate->user_size	= fpu_user_cfg.default_size;
++	fpstate->xfeatures	= fpu_kernel_cfg.default_features;
++	fpstate->user_xfeatures	= fpu_user_cfg.default_features;
++}
++
+ void fpstate_reset(struct fpu *fpu)
+ {
+ 	/* Set the fpstate pointer to the default fpstate */
+ 	fpu->fpstate = &fpu->__fpstate;
+-
+-	/* Initialize sizes and feature masks */
+-	fpu->fpstate->size		= fpu_kernel_cfg.default_size;
+-	fpu->fpstate->user_size		= fpu_user_cfg.default_size;
+-	fpu->fpstate->xfeatures		= fpu_kernel_cfg.default_features;
+-	fpu->fpstate->user_xfeatures	= fpu_user_cfg.default_features;
++	__fpstate_reset(fpu->fpstate);
+ }
+ 
+ #if IS_ENABLED(CONFIG_KVM)
