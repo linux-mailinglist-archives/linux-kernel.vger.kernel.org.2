@@ -2,154 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D8C43A842
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1296343A845
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhJYXjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbhJYXjn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:39:43 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D544FC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:37:20 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j2so95070lfg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G9jEnj3xyHv4ymCBAOlICtoiP3KvPiyAqU8Gic5xaL0=;
-        b=h6oyWndBCuvT0dDkXPKAeLffQ50rysGpHNLz6ER8UKsSnXUuy0FS/9DEHHTw6R+sEj
-         T57FkLvDjPoMNyRxu3/Hi2TLe0RxtYJ0J1jRmL50PMUD7w3pBaJ/LJwaxWex+SGT/pcR
-         V8bBZ7QNvS6SSKsfTZ/2L59xwpCwOsHmBySu4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G9jEnj3xyHv4ymCBAOlICtoiP3KvPiyAqU8Gic5xaL0=;
-        b=59SA1VEkAn3MvV79cTCZNG+QEbdZsw7luJJobvQEiB/3zwtlhtDjS/u6JQcy0GLsdo
-         ipTX4LBJY1/TaFvhtPxetFNeeC3BXHgiD3HcWy+THcP+pGWom21hUqrJLUP3BlsGkWH1
-         36F64DTiMbeQP5bt9Qi/+76pcxRaRtpffvmdmpK9nZF5RyJ1zj+R1twmM6GkGMQh97Hh
-         M5RLGvgaRvySPLnzQHLT/y1t16eoacbEM71awMfS13i8lKy1hneEMgQlme9jamnNY+BP
-         0OHnvZfJvf0SJ/YJ3uJfyHNkkmzpB0y7t5IhkiE9eryES5elzHxNYPNFx4XHt0DVRIsq
-         8rbQ==
-X-Gm-Message-State: AOAM533H9/ifxokDOZDGOyCRcisPrEk9euN3ieYWPSKFHfXLYjJAeKC5
-        Ulgm/JYKIhfY6b1vz4wTQMY6M0W/o/KDpYhC
-X-Google-Smtp-Source: ABdhPJwekx8IR5PrOJyqTcIyuDFnfdA48lpIy84SltWF7HEl16c+1AZf1uZ02b2jdHSezKK8CIXz6g==
-X-Received: by 2002:ac2:46ec:: with SMTP id q12mr19157971lfo.543.1635205038791;
-        Mon, 25 Oct 2021 16:37:18 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id g18sm627899lfr.286.2021.10.25.16.37.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 16:37:18 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id 188so2430257ljj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:37:18 -0700 (PDT)
-X-Received: by 2002:a2e:a407:: with SMTP id p7mr22948041ljn.68.1635205037628;
- Mon, 25 Oct 2021 16:37:17 -0700 (PDT)
+        id S235190AbhJYXkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:40:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234889AbhJYXkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 19:40:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89FF260187;
+        Mon, 25 Oct 2021 23:37:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635205058;
+        bh=xZuKP0UCTTapRVjN9lDtmo7bL5KlII2WBEwLuNEyNp4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=X294QY26/tHF2bGr/FF+NcS7TQJWsGxCzYVHQHrYygTawrmUqlGO8mmtHYRyZkJef
+         5rnJCBX6j98l1Pj6gLN7t4ZlAqaEuJuSMLReKkwwt3oBWVzxM8vV0CvZ8Me9FdZsz/
+         oI7Rq3zbHHq+cqm/MJZwYXmWyn5wgONJM7Ohj9F7K397SSizkhje71uKksH621ImbQ
+         VOTPcvtIJThOgQyZwImt7kqJWE8UKbsXgQJAGLDt/fks6MrxPO1ogL2exfuub4i2ew
+         lH90U9ROt1HL/Su36R6vAeuEP3C02XdEZ5+jnFcMvu/3n77+mBmIwvUB6/WGiW6rEm
+         TkpJMnC5VmgQA==
+Date:   Mon, 25 Oct 2021 18:37:37 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>
+Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
+ arch-agnostic method
+Message-ID: <20211025233737.GA50860@bhelgaas>
 MIME-Version: 1.0
-References: <20211025181634.3889666-1-willy@infradead.org> <202110251225.D01841AE67@keescook>
- <YXcKzKVX7NTAtvPh@casper.infradead.org> <202110251402.ADFA4D41BF@keescook>
- <CAHk-=wgvb72urgEM5q_SpXFv1OXnDGY8VFs8QmZPt9_n1bH0CQ@mail.gmail.com> <202110251438.1762406A5@keescook>
-In-Reply-To: <202110251438.1762406A5@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 25 Oct 2021 16:37:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj9j8KnWzTTFCXi_xWyytFbtZ71hu32eB=nHR++X+UY=A@mail.gmail.com>
-Message-ID: <CAHk-=wj9j8KnWzTTFCXi_xWyytFbtZ71hu32eB=nHR++X+UY=A@mail.gmail.com>
-Subject: Re: [PATCH] secretmem: Prevent secretmem_users from wrapping to zero
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36685ccd-f1d6-5db4-f282-878d29515f8b@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 3:30 PM Kees Cook <keescook@chromium.org> wrote:
+On Fri, Oct 22, 2021 at 05:52:15PM +0800, Xuesong Chen wrote:
+> On 22/10/2021 00:57, Bjorn Helgaas wrote:
+> > On Thu, Oct 21, 2021 at 11:46:40PM +0800, Xuesong Chen wrote:
+> >> On 21/10/2021 02:50, Bjorn Helgaas wrote:
+> >>> On Wed, Oct 20, 2021 at 11:16:38AM +0800, Xuesong Chen wrote:
+> >>>> On 20/10/2021 03:23, Bjorn Helgaas wrote:
+> >>>>> On Tue, Oct 19, 2021 at 12:50:33PM +0800, Xuesong Chen wrote:
+> > 
+> >>>>>> This patch will try to handle this case in a more common way
+> >>>>>> instead of the original 'arch' specific solution, which will be
+> >>>>>> beneficial to all the APEI-dependent platforms after that.
+> >>>>>
+> >>>>> This actually doesn't say anything about what the patch does or
+> >>>>> how it works.  It says "handles this case in a more common way"
+> >>>>> but with no details.
+> >>>>
+> >>>> Good suggestion, I'll give more details about that...
+> >>>>
+> >>>>> The EINJ table contains "injection instructions" that can read
+> >>>>> or write "register regions" described by generic address
+> >>>>> structures (see ACPI v6.3, sec 18.6.2 and 18.6.3), and
+> >>>>> __einj_error_trigger() requests those register regions with
+> >>>>> request_mem_region() or request_region() before executing the
+> >>>>> injections instructions.
+> >>>>>
+> >>>>> IIUC, this patch basically says "if this region is part of the
+> >>>>> MCFG area, we don't need to reserve it." That leads to the
+> >>>>> questions of why we need to reserve *any* of the areas
+> >>>>
+> >>>> AFAIK, the MCFG area is reserved since the ECAM module will
+> >>>> provide a generic Kernel Programming Interfaces(KPI), e.g,
+> >>>> pci_generic_config_read(...), so all the drivers are allowed to
+> >>>> access the pci config space only by those KPIs in a consistent
+> >>>> and safe way, direct raw access will break the rule.  Correct me
+> >>>> if I am missing sth.
+> >>>>
+> >>>>> and why it's safe to simply skip reserving regions that are part
+> >>>>> of the MCFG area.
+> >>>>
+> >>>> Actual there is a commit d91525eb8ee6("ACPI, EINJ: Enhance error
+> >>>> injection tolerance level") before to address this issue, the
+> >>>> entire commit log as below:
+> >>>>
+> >>>>     Some BIOSes utilize PCI MMCFG space read/write opertion to trigger
+> >>>>     specific errors. EINJ will report errors as below when hitting such
+> >>>>     cases:
+> >>>>     
+> >>>>     APEI: Can not request [mem 0x83f990a0-0x83f990a3] for APEI EINJ Trigger registers
+> >>>>     
+> >>>>     It is because on x86 platform ACPI based PCI MMCFG logic has
+> >>>>     reserved all MMCFG spaces so that EINJ can't reserve it again.
+> >>>>     We already trust the ACPI/APEI code when using the EINJ interface
+> >>>>     so it is not a big leap to also trust it to access the right
+> >>>>     MMCFG addresses. Skip address checking to allow the access.
+> >>>
+> >>> I'm not really convinced by that justification because I don't
+> >>> think the issue here is *trust*.  If all we care about is trust,
+> >>> and we trust the ACPI/APEI code, why do we need to reserve
+> >>> anything at all when executing EINJ actions?
+> >>>
+> >>> I think the resource reservation issue is about coordinating
+> >>> multiple users of the address space.  A driver reserves the MMIO
+> >>> address space of a device it controls so no other driver can
+> >>> reserve it at the same time and cause conflicts.
+> >>>
+> >>> I'm not really convinced by this mutual exclusion argument either,
+> >>> because I haven't yet seen a situation where we say "EINJ needs a
+> >>> resource that's already in use by somebody else, so we can't use
+> >>> EINJ."  When conflicts arise, the response is always "we'll just
+> >>> stop reserving this conflicting resource but use it anyway."
+> >>>
+> >>> I think the only real value in apei_resources_request() is a
+> >>> little bit of documentation in /proc/iomem.  For ERST and EINJ,
+> >>> even that only lasts for the tiny period when we're actually
+> >>> executing an action.
+> >>>
+> >>> So convince me there's a reason why we shouldn't just remove
+> >>> apei_resources_request() completely :)
+> >>
+> >> I have to confess that currently I have no strong evidence/reason to
+> >> convince you that it's absolute safe to remove
+> >> apei_resources_request(),  probably in some conditions it *does*
+> >> require to follow the mutual exclusion usage model.  The ECAM/MCFG
+> >> maybe a special case not like other normal device driver, since all
+> >> its MCFG space has been reserved during the initialization. Anyway,
+> >> it's another topic and good point well worth discussing in the
+> >> future.
+> > 
+> > This is missing the point.  It's not the MCFG reservation during
+> > initialization that would make this safe.  What would make it safe is
+> > the fact that ECAM does not require mutual exclusion.
+> > 
+> > When the hardware implements ECAM correctly, PCI config accesses do
+> > not require locking because a config access requires a single MMIO
+> > load or store.
 >
-> > A refcount being zero means that the data it referenced no longer exists.
->
-> I don't disagree with this definition, but I would like to understand how
-> some other use-cases fit into this.
+> I don't quite understand here, we're talking about
+> apei_resources_request() which is a mechanism to void resource
+> conflict,"request_mem_region() tells the kernel that your driver is
+> going to use this range of I/O addresses, which will prevent other
+> drivers to make any overlapping call to the same region through
+> request_mem_region()", but according to the context of 'a single
+> MMIO load or store', are you talking about something like the mutex
+> lock primitive?
 
-I certainly hope that there are no other use-cases for 'recount_t',
-because that "zero is invalid" is very much part of the semantics.
+My point was that when ECAM is implemented correctly, a CPU does a
+single MMIO load to do a PCI config read and a single MMIO store to do
+a PCI config write.  In that case there no need for any locking, so
+there's no need for APEI to reserve those resources.
 
-If we want other semantics, it should be a new type.
+This is what d91525eb8ee6 ("ACPI, EINJ: Enhance error injection
+tolerance level") does.  That code change makes sense, but the commit
+log does not -- it has nothing to do with trusting the ACPI/APEI code;
+it's just that no matter what the EINJ actions do with the MCFG
+regions, they cannot interfere with other drivers.
 
->      What about the case of what
-> I see that is more like a "shared resource usage count" where the shared
-> resource doesn't necessarily disappear when we reach "no users"?
+> > Many non-ECAM config accessors *do* require locking because they use
+> > several register accesses, e.g., the 0xCF8/0xCFC address/data pairs
+> > used by pci_conf1_read().  If EINJ actions used these, we would have
+> > to enforce mutual exclusion between EINJ config accesses and those
+> > done by other drivers.
+> 
+> I take a look at the pci_conf1_read() function, there's only a pair of
+> raw_spin_lock_irqsave() and raw_spin_unlock_irqrestore(), if that's the
+> mutual exclusion you mentioned, seems it's not related to the
+> apei_resources_request() we're talking about... 
 
-So I think that's really "atomic_t".
+This was an example of a case where EINJ mutual exclusion *would* be
+required.  I do not expect EINJ actions to use the 0xCF8/0xCFC
+registers because there is no mechanism to coordinate that with the OS
+use of the same registers.
 
-And instead of saturating, people should always check such shared
-resources for limits.
+> > Some ARM64 platforms do not implement ECAM correctly, e.g.,
+> > tegra194_map_bus() programs an outbound ATU and xgene_pcie_map_bus()
+> > sets an RTDID register before the MMIO load/store.  Platforms like
+> > this *do* require mutual exclusion between an EINJ config access and
+> > other config accesses.
+> 
+> What's the mutual exclusion for those quirk functions (tegra194 and
+> xgene)?  *mutual* is not applied for single side. I can see neither
+> locking nor request_mem_region() in those bus map functions. 
 
-> i.e. there is some resource, and it starts its life with no one using it
-> (count = 1).
+These currently depend on the pci_lock.  See PCI_OP_READ() in
+drivers/pci/access.c.
 
-You are already going off into the weeds.
+EINJ actions cannot acquire the pci_lock, so EINJ actions cannot
+safely use ECAM space on those platforms.
 
-That's not a natural thing to do. It's already confusing. Really. Read
-that sentence yourself, and read it like an outsider.
+> > These platforms are supported via quirks in pci_mcfg.c, so they will
+> > have resources in the pci_mcfg_list, and if we just ignore all the
+> > MCFG resources in apei_resources_request(), there will be nothing to
+> > prevent ordinary driver config accesses from being corrupted by EINJ
+> > accesses.
+> > 
+> > I think in general, is probably *is* safe to remove MCFG resources
+> > from the APEI reservations, but it would be better if we had some way
+> > to prevent EINJ from using MCFG on platforms like tegra194 and xgene.
+> 
+> Just as I mentioned, since there's no mutual exclusion applied for
+> the tegra194 and xgene (correct me if I am wrong), putting their MCFG
+> resources into the APEI reservation (so the apei_resources_request()
+> applied) does nothing 
 
-"No one is using it, so count == 1" is a nonsensican statement on the
-face of it.
+I think apei_resources_request() should continue to reserve MCFG areas
+on tegra194 and xgene, but it does not need to reserve them on other
+ARM64 platforms.
 
-You are thinking of a refcount_t trick, not some sane semantics.
-
-Yes, we have played off-by-one games in the kernel before. We've done
-it for various subtle reasons.
-
-For example, traditionally, on x86, with atomic counting there are
-three special situations: negative, 0 and positive. So if you use the
-traditional x86 counting atomics (just add/sub/inc/dec, no xadd) then
-there are situations where you can get more information about the
-result in %eflags if you don't use zero as the initial value, but -1.
-
-Because then you can do "inc", and if ZF is set, you know you were the
-_first_ person to increment it. And when you use "dec", and SF is set
-afterwards, you know you are the _last_ person to decrement it.
-
-That was useful when things like "xadd" weren't available, and cmpxchg
-loops are expensive. So we used to have counters where -1 was that
-"zero point". Very similar to your "1 is the zero point".
-
-But was it _logical_? No. It was an implementation trick. I think
-we've removed all those cases because it was so subtle and confusing
-(but maybe we still have it somewhere - I did not check).
-
-So we've certainly played those kinds of games. But it had better be
-for a really good reason.
-
-> I don't see as clear a distinction between secretmem and the above
-> examples.
-
-I really don't see what's wrong with 'atomic_t', and just checking for limits.
-
-Saturating counters are EVIL AND BAD. They are a DoS waiting to
-happen. Once you saturate, the machine is basically dead. You may have
-"protected" against some attack, but you did so by killing the machine
-and making the resource accounting no longer work.
-
-So if a user can ever trigger a saturating counter, that's a big big
-problem in itself.
-
-In contrast, an 'atomic_t' with a simple limit? It just works.
-
-And it doesn't need illogical tricks to work.
-
-Stop thinking that refcount_t is a good type. Start realizing the
-downsides. Start understanding that saturation is a HORRENDOUSLY BAD
-solution, and horrible QoI.
-
-              Linus
+Bjorn
