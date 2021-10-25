@@ -2,208 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE9743924E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA356439253
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbhJYJ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:29:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51794 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbhJYJ2S (ORCPT
+        id S232488AbhJYJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:30:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33686 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhJYJ3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:28:18 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 337F21FD3A;
-        Mon, 25 Oct 2021 09:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635153956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 25 Oct 2021 05:29:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A9534218ED;
+        Mon, 25 Oct 2021 09:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635154051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PfzG/YhHZ46bUJ3sQk66DfwUYllgrdsVoZ2lNBIfPMo=;
-        b=TeYFQYHsmPdv1Mu9YgSBUJPmGFFpPpv1bTOp+I9eugbPvXk5zt1tMuOvLWyrinw4ZW1VTe
-        PGlk9YOVSniVfeaOXFa6WUU+KHaHjoUcXTUcMDMxt7eXwxyMZBQojbLPXxO6uui82PWj/V
-        EQsBwK25iohxHIzJOeVtwe1rfAwavgs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635153956;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PfzG/YhHZ46bUJ3sQk66DfwUYllgrdsVoZ2lNBIfPMo=;
-        b=b245ypgT+4xHjb2/k98zdcu5TSb5XS8I9XWJQILu+ddpFWShAHtLdDc6hLVH6/aqCBViq+
-        bswOmIjyF3jn2FDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=Uc2tQ+I68yRAtsGtLKbNQYmcC3g72eF4Y8qXrabBvYo=;
+        b=eL5EqEnM+gAD4smvMpKMOiv+9odl76GXnxfkil69LbP7b1QC9qpwTW6FHm/g1HnWBxGlXP
+        +aq9ws7dNQAdoxjXGbA2bhTwZgo4fsRHxZeaS6iWMTFi7DgOJRdHUzwUbVQFldcMyVLE+o
+        GmwN4oeHMlbbFtANsg21Juo3XmHpVL4=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FDC41377E;
-        Mon, 25 Oct 2021 09:25:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TzbFBiR4dmH5SQAAMHmgww
-        (envelope-from <nstange@suse.de>); Mon, 25 Oct 2021 09:25:56 +0000
-From:   Nicolai Stange <nstange@suse.de>
-To:     =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
-Subject: [PATCH 6/6] crypto: DRBG - reseed 'nopr' drbgs periodically from get_random_bytes()
-Date:   Mon, 25 Oct 2021 11:25:25 +0200
-Message-Id: <20211025092525.12805-7-nstange@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211025092525.12805-1-nstange@suse.de>
-References: <20211025092525.12805-1-nstange@suse.de>
+        by relay2.suse.de (Postfix) with ESMTPS id 7546EA3B83;
+        Mon, 25 Oct 2021 09:27:30 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 11:27:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg v3 1/3] mm, oom: pagefault_out_of_memory: don't
+ force global OOM for dying tasks
+Message-ID: <YXZ4gV0ks3H9DWxo@dhcp22.suse.cz>
+References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+ <cover.1634994605.git.vvs@virtuozzo.com>
+ <0828a149-786e-7c06-b70a-52d086818ea3@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0828a149-786e-7c06-b70a-52d086818ea3@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In contrast to the fully prediction resistant 'pr' DRBGs, the 'nopr'
-variants get seeded once at boot and reseeded only rarely thereafter,
-namely only after 2^20 requests have been served each. AFAICT, this
-reseeding based on the number of requests served is primarily motivated
-by information theoretic considerations, c.f. NIST SP800-90Ar1,
-sec. 8.6.8 ("Reseeding").
+On Sat 23-10-21 16:19:28, Vasily Averin wrote:
+> Any allocation failure during the #PF path will return with VM_FAULT_OOM
+> which in turn results in pagefault_out_of_memory which in own turn
+> executes out_out_memory() and can kill a random task.
+> 
+> An allocation might fail when the current task is the oom victim
+> and there are no memory reserves left. The OOM killer is already
+> handled at the page allocator level for the global OOM and at the
+> charging level for the memcg one. Both have much more information
+> about the scope of allocation/charge request. This means that
+> either the OOM killer has been invoked properly and didn't lead
+> to the allocation success or it has been skipped because it couldn't
+> have been invoked. In both cases triggering it from here is pointless
+> and even harmful.
+> 
+> It makes much more sense to let the killed task die rather than to
+> wake up an eternally hungry oom-killer and send him to choose a fatter
+> victim for breakfast.
+> 
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-However, given the relatively large seed lifetime of 2^20 requests, the
-'nopr' DRBGs can hardly be considered to provide any prediction resistance
-whatsoever, i.e. to protect against threats like side channel leaks of the
-internal DRBG state (think e.g. leaked VM snapshots). This is expected and
-completely in line with the 'nopr' naming, but as e.g. the
-"drbg_nopr_hmac_sha512" implementation is potentially being used for
-providing the "stdrng" and thus, the crypto_default_rng serving the
-in-kernel crypto, it would certainly be desirable to achieve at least the
-same level of prediction resistance as get_random_bytes() does.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Note that the chacha20 rngs underlying get_random_bytes() get reseeded
-every CRNG_RESEED_INTERVAL == 5min: the secondary, per-NUMA node rngs from
-the primary one and the primary rng in turn from the entropy pool, provided
-sufficient entropy is available.
+Thanks!
 
-The 'nopr' DRBGs do draw randomness from get_random_bytes() for their
-initial seed already, so making them to reseed themselves periodically from
-get_random_bytes() in order to let them benefit from the latter's
-prediction resistance is not such a big change conceptually.
+> ---
+>  mm/oom_kill.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 831340e7ad8b..1deef8c7a71b 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
+>  	if (mem_cgroup_oom_synchronize(true))
+>  		return;
+>  
+> +	if (fatal_signal_pending(current))
+> +		return;
+> +
+>  	if (!mutex_trylock(&oom_lock))
+>  		return;
+>  	out_of_memory(&oc);
+> -- 
+> 2.32.0
 
-In principle, it would have been also possible to make the 'nopr' DRBGs to
-periodically invoke a full reseeding operation, i.e. to also consider the
-jitterentropy source (if enabled) in addition to get_random_bytes() for the
-seed value. However, get_random_bytes() is relatively lightweight as
-compared to the jitterentropy generation process and thus, even though the
-'nopr' reseeding is supposed to get invoked infrequently, it's IMO still
-worthwhile to avoid occasional latency spikes for drbg_generate() and
-stick to get_random_bytes() only. As an additional remark, note that
-drawing randomness from the non-SP800-90B-conforming get_random_bytes()
-only won't adversely affect SP800-90A conformance either: the very same is
-being done during boot via drbg_seed_from_random() already once
-rng_is_initialized() flips to true and it follows that if the DRBG
-implementation does conform to SP800-90A now, it will continue to do so.
-
-Make the 'nopr' DRBGs to reseed themselves periodically from
-get_random_bytes() every CRNG_RESEED_INTERVAL == 5min.
-
-More specifically, introduce a new member ->last_seed_time to struct
-drbg_state for recording in units of jiffies when the last seeding
-operation had taken place. Make __drbg_seed() maintain it and let
-drbg_generate() invoke a reseed from get_random_bytes() via
-drbg_seed_from_random() if more than 5min have passed by since the last
-seeding operation. Be careful to not to reseed if in testing mode though,
-or otherwise the drbg related tests in crypto/testmgr.c would fail to
-reproduce the expected output.
-
-In order to keep the formatting clean in drbg_generate() wrap the logic
-for deciding whether or not a reseed is due in a new helper,
-drbg_nopr_reseed_interval_elapsed().
-
-Signed-off-by: Nicolai Stange <nstange@suse.de>
----
- crypto/drbg.c         | 26 +++++++++++++++++++++++++-
- include/crypto/drbg.h |  1 +
- 2 files changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/crypto/drbg.c b/crypto/drbg.c
-index f5947211e0bf..65e5cd2335c1 100644
---- a/crypto/drbg.c
-+++ b/crypto/drbg.c
-@@ -100,6 +100,7 @@
- #include <crypto/drbg.h>
- #include <crypto/internal/cipher.h>
- #include <linux/kernel.h>
-+#include <linux/jiffies.h>
- 
- /***************************************************************
-  * Backend cipher definitions available to DRBG
-@@ -1044,6 +1045,7 @@ static inline int __drbg_seed(struct drbg_state *drbg, struct list_head *seed,
- 		return ret;
- 
- 	drbg->seeded = new_seed_state;
-+	drbg->last_seed_time = jiffies;
- 	/* 10.1.1.2 / 10.1.1.3 step 5 */
- 	drbg->reseed_ctr = 1;
- 
-@@ -1114,6 +1116,26 @@ static int drbg_seed_from_random(struct drbg_state *drbg)
- 	return ret;
- }
- 
-+static bool drbg_nopr_reseed_interval_elapsed(struct drbg_state *drbg)
-+{
-+	unsigned long next_reseed;
-+
-+	/* Don't ever reseed from get_random_bytes() in test mode. */
-+	if (list_empty(&drbg->test_data.list))
-+		return false;
-+
-+	/*
-+	 * Obtain fresh entropy for the nopr DRBGs after 300s have
-+	 * elapsed in order to still achieve sort of partial
-+	 * prediction resistance over the time domain at least. Note
-+	 * that the period of 300s has been chosen to match the
-+	 * CRNG_RESEED_INTERVAL of the get_random_bytes()' chacha
-+	 * rngs.
-+	 */
-+	next_reseed = drbg->last_seed_time + 300 * HZ;
-+	return time_after(jiffies, next_reseed);
-+}
-+
- /*
-  * Seeding or reseeding of the DRBG
-  *
-@@ -1415,7 +1437,8 @@ static int drbg_generate(struct drbg_state *drbg,
- 		/* 9.3.1 step 7.4 */
- 		addtl = NULL;
- 	} else if (rng_is_initialized() &&
--		   drbg->seeded == DRBG_SEED_STATE_PARTIAL) {
-+		   (drbg->seeded == DRBG_SEED_STATE_PARTIAL ||
-+		    drbg_nopr_reseed_interval_elapsed(drbg))) {
- 		len = drbg_seed_from_random(drbg);
- 		if (len)
- 			goto err;
-@@ -1571,6 +1594,7 @@ static int drbg_instantiate(struct drbg_state *drbg, struct drbg_string *pers,
- 		drbg->core = &drbg_cores[coreref];
- 		drbg->pr = pr;
- 		drbg->seeded = DRBG_SEED_STATE_UNSEEDED;
-+		drbg->last_seed_time = 0;
- 		drbg->reseed_threshold = drbg_max_requests(drbg);
- 
- 		ret = drbg_alloc_state(drbg);
-diff --git a/include/crypto/drbg.h b/include/crypto/drbg.h
-index a6c3b8e7deb6..af5ad51d3eef 100644
---- a/include/crypto/drbg.h
-+++ b/include/crypto/drbg.h
-@@ -134,6 +134,7 @@ struct drbg_state {
- 	struct scatterlist sg_in, sg_out;	/* CTR mode SGLs */
- 
- 	enum drbg_seed_state seeded;		/* DRBG fully seeded? */
-+	unsigned long last_seed_time;
- 	bool pr;		/* Prediction resistance enabled? */
- 	bool fips_primed;	/* Continuous test primed? */
- 	unsigned char *prev;	/* FIPS 140-2 continuous test value */
 -- 
-2.26.2
-
+Michal Hocko
+SUSE Labs
