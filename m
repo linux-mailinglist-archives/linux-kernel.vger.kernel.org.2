@@ -2,71 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D554643955A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8FC43955D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhJYL4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:56:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231835AbhJYL4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:56:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FD3061027;
-        Mon, 25 Oct 2021 11:54:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635162857;
-        bh=YDaGvnW29RXV7XM/rAbNb6WCpfjPhf7k8y9aqrr8FiM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RVsl9hLtMhXwTB5Mw48Oz5jmVRapGBXa4svqWsgHdhLc5qAkqTNPa/rgL8FoDzyPq
-         Hzy03LLoGSJgrZqTavKUSDKMEdZI+p20FjPdncI3N7NGTDcvzpMf8azCwxSxEZ71XX
-         3Qtc4Ibj0XQ8XBifTBXdZllXNLCMzw2Sooe07jMilpDu3tvh58wlDt6s8Xg5ijrcHO
-         95vXeqZzvICffg1vP6gltPzbKJteIbgt1k7FCwMsnzrsZZxh6N3uOE4/voKrE53ipy
-         O6BMe1Tdhdx6aHr7Bhj1tFa7llt9TyUUgY0VAD1TdWTKFqU+AYvd28QMuO5hMihxYl
-         Fq2KfmMtZ3K/g==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1meyYB-0001Kr-Qz; Mon, 25 Oct 2021 13:53:59 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Dave Airlie <airlied@redhat.com>
-Cc:     Sean Paul <sean@poorly.run>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] drm/udl: fix control-message timeout
-Date:   Mon, 25 Oct 2021 13:53:53 +0200
-Message-Id: <20211025115353.5089-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S231699AbhJYL5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230231AbhJYL5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:57:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1FBC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:54:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1meyZ3-0007VY-NM; Mon, 25 Oct 2021 13:54:53 +0200
+Subject: Re: [PATCH V2] clk: imx: gate off peripheral clock slice
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, sboyd@kernel.org,
+        mturquette@baylibre.com, abel.vesa@nxp.com, s.hauer@pengutronix.de
+Cc:     Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, festevam@gmail.com,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211025122902.1151-1-peng.fan@oss.nxp.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <fc1ac63d-30c3-f309-7631-212ffa3f9de0@pengutronix.de>
+Date:   Mon, 25 Oct 2021 13:54:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211025122902.1151-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+On 25.10.21 14:29, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The Peripheral clocks are default enabled when SoC power on, and
+> bootloader not gate off the clocks when booting Linux Kernel.
+> 
+> So Linux Kernel is not aware the peripheral clocks are enabled and
+> still take them as disabled because of enable count is zero.
+> 
+> Then Peripheral clock's source without clock gated off could be
+> changed when have assigned-parents in device tree
+> 
+> However, per i.MX8M* reference mannual, "Peripheral clock slices must
+> be stopped to change the clock source", so need to gate off the
+> the peripheral clock when registering the clocks to avoid glitch.
+> 
+> Tested boot on i.MX8MM/P-EVK board
+> 
+> Fixes: d3ff9728134e ("clk: imx: Add imx composite clock")
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-Fixes: 5320918b9a87 ("drm/udl: initial UDL driver (v4)")
-Cc: stable@vger.kernel.org      # 3.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/gpu/drm/udl/udl_connector.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've been running an i.MX8MM-based system with this patch for a few days
+so far and no apparent issues:
 
-diff --git a/drivers/gpu/drm/udl/udl_connector.c b/drivers/gpu/drm/udl/udl_connector.c
-index 3750fd216131..930574ad2bca 100644
---- a/drivers/gpu/drm/udl/udl_connector.c
-+++ b/drivers/gpu/drm/udl/udl_connector.c
-@@ -30,7 +30,7 @@ static int udl_get_edid_block(void *data, u8 *buf, unsigned int block,
- 		int bval = (i + block * EDID_LENGTH) << 8;
- 		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 				      0x02, (0x80 | (0x02 << 5)), bval,
--				      0xA1, read_buff, 2, HZ);
-+				      0xA1, read_buff, 2, 1000);
- 		if (ret < 1) {
- 			DRM_ERROR("Read EDID byte %d failed err %x\n", i, ret);
- 			kfree(read_buff);
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+
+> ---
+> 
+> V2:
+>  Add Fixes tag
+> 
+>  drivers/clk/imx/clk-composite-8m.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
+> index 2dfd6149e528..ee41fbf90589 100644
+> --- a/drivers/clk/imx/clk-composite-8m.c
+> +++ b/drivers/clk/imx/clk-composite-8m.c
+> @@ -184,6 +184,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+>  	struct clk_mux *mux = NULL;
+>  	const struct clk_ops *divider_ops;
+>  	const struct clk_ops *mux_ops;
+> +	u32 val;
+>  
+>  	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
+>  	if (!mux)
+> @@ -216,8 +217,14 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+>  		div->width = PCG_PREDIV_WIDTH;
+>  		divider_ops = &imx8m_clk_composite_divider_ops;
+>  		mux_ops = &clk_mux_ops;
+> -		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED))
+> +		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED)) {
+>  			flags |= CLK_SET_PARENT_GATE;
+> +			if (!(flags & CLK_IS_CRITICAL)) {
+> +				val = readl(reg);
+> +				val &= ~BIT(PCG_CGC_SHIFT);
+> +				writel(val, reg);
+> +			}
+> +		}
+>  	}
+>  
+>  	div->lock = &imx_ccm_lock;
+> 
+
+
 -- 
-2.32.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
