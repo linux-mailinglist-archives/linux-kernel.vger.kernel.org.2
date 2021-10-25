@@ -2,127 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80376439DA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD47439DAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhJYRfb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Oct 2021 13:35:31 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:53783 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhJYRf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:35:29 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MumVX-1mwB5V0IIV-00rmc4; Mon, 25 Oct 2021 19:33:06 +0200
-Received: by mail-wr1-f47.google.com with SMTP id e12so14194023wra.4;
-        Mon, 25 Oct 2021 10:33:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531ytlD5jgAf4fH4znDkmqS/bOdtrqMntI/UkwITdvBjsQrikKjJ
-        xOG5ppsegrIVQB06jebJdI51FvUAPeAFW/wRYy4=
-X-Google-Smtp-Source: ABdhPJyQ4oJStzXEElhoVVEe5cI928P6BC7+29Y4pK2PWMSfQFK+AUKrujYqzSHNQD+evR9vG2uLNBBz40j/XPxyrmI=
-X-Received: by 2002:a5d:47a3:: with SMTP id 3mr12558143wrb.336.1635183185670;
- Mon, 25 Oct 2021 10:33:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211021055408.4006408-1-alistair.francis@opensource.wdc.com> <1e24268a-fd6a-10cd-cb1d-c479bb2f930f@collabora.com>
-In-Reply-To: <1e24268a-fd6a-10cd-cb1d-c479bb2f930f@collabora.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 25 Oct 2021 19:32:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2R=e7we11Gi2zTVwFYrEt9Di6Bgzi9xtjMAX9BZex7Cw@mail.gmail.com>
-Message-ID: <CAK8P3a2R=e7we11Gi2zTVwFYrEt9Di6Bgzi9xtjMAX9BZex7Cw@mail.gmail.com>
-Subject: Re: [PATCH v2] uapi: futex: Add a futex syscall
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
-        Alistair Francis <alistair23@gmail.com>,
+        id S233264AbhJYRiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:38:16 -0400
+Received: from mail-co1nam11on2048.outbound.protection.outlook.com ([40.107.220.48]:54177
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231760AbhJYRiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:38:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=enkwa/YDiGOIg7DIm7q+haNVUY3zVibM8v0L6NYlAKv4/JUKj4cA8TW5wJDCJRQkuQ0oQcao1jxF0sjXwbZRDbD77m9Mn9GEQTkqGQSTdgUVlPbEhR2A5yytd4qbxvymFeOJtPg1lwURmA5wYt4foke8qChT8UaRnfCG25JmCkQfkqR56khl3JXM0+NJ+rN525HSmoYvXIZcx73XQJQXnmeerHSHjKbC3uh9ix6YfFWkXsor4gTtOj4oPjonmEc734+MOA9jW3nzVAlc5MaGWKc50vh5NpajSX8bSSrCbJjXbC/mXRygFG6Q7ceaJJ4MdG6lcc5m80jMMHQjQHGY0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vna5ZrGY66FNgXsIiifcCjaN8Ebs1hLAo0UvPfo/Ufs=;
+ b=mAry7oig5Jeytbv+b9g5MwpPZw15fUSbIZ0D3jUHqRCT3aiTVIIrXfCPmjkYu7QgaboUJ6V2jb5YBLitJrf1vLGTUykGOjVnD5E6mrsdJzCHI4qpIg3kjT9N+20s43s/R53oatfmeYMXl4CBgNszI/F1ZlLmdVmi+fE+Uqbvvbi8xfnFA19SfBcZuYSSNVikKOAC5SaduDVNfVEJyzEu+XqG1wvHyzswGsJlaUddwhlrC0TB4mHaxJqiRt9b6C2oOWpsQwJNGACAnhFQzrkpts3O9igN8rdInPKTsdw79v/ZuNvBPrU5W1+RZ6RXGFCOkEQJ3QYLMZfYiq5lEEmnZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vna5ZrGY66FNgXsIiifcCjaN8Ebs1hLAo0UvPfo/Ufs=;
+ b=drND/l2gAYvv6R+eFuQBjodQl9NNK3cASuS1DSJLOEgkgoBlVOvRv6NFKLVuDtB91UJ4lFA/qLMNnZ2/38Aaupewn9yZ56jzfHBnubVA3HdiZddSyAmfDWzUNOfkHpYBeNVXG5Oh5fiCmykb7qBu3Dm9lUQlG2dsOt1aUUsO0PcD9CeQP7B4fzfAeYSHUe6ROT3EbmbBVKSuZ8bqk+e9V7JVmrvfOHycbvTiRcSSiIEqmj+MUTBgt8eT2D/fDNjqsX0DWPCInt8jL8HU/goIVRnGY3odIwt5FjqaZeNE0OGnu0mWInNYWA1b0Jll7uZ5hQRi+eSuopQFJ0EL4F5eyA==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5336.namprd12.prod.outlook.com (2603:10b6:208:314::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
+ 2021 17:35:51 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 17:35:51 +0000
+Date:   Mon, 25 Oct 2021 14:35:49 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Aharon Landau <aharonl@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:UUko3k5LbLqO7C6a9OaVdstsVC4XNKJtuyAuYGEUETAAcPdSSBP
- mwDeZdWdvbHrbleccsvPBZLXa+U7nYSOMvaPG+tnL4yz/bP51zw2jYVPI3SC/gY3w57fJDX
- YBsf0YGSCndvl3xlC7a+c/Q/YAyzBZIqFxYKDnwR3dT6H7uSkEayS6vVdoCh6PKz23ibtPa
- oakr5DAkWQ0QYEsu2WQ/g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u6RUVbwlsnU=:g26SIWBCRfJ705MhBiyO2L
- bE8KEXauNlCjKsGpaxyd1wa2q7w4D5Hmbc4mE+hyyaLa/kZUt2dKHlBQtJ9KpaE4hzNYszGB/
- RosOnY6oDkyWHR/g8SCnvL0r5zaXEVN094YfKj/uv3EKXtBtYJbL0IPvteDBUxuUlq1DOmuf8
- Tzs61KPejbqHjwNc48/G6UZklX5QTORxgld1XqfOcBOupj9NDOko4ei55E2P6zDWel8EwUnry
- HntL/c9eFuKNFvjlTTfSZ/KaMUwKjuzTRp6P5/Qw8jDdr4WrmE4jM+3gB4vKwvIc0JAgWcnxM
- QhLzqM8hai06H6hqhxygUYb3xgmLRvgWtX7ith0LMkSJ1l+Ldh4Jqo5/6/fJEp+PM81YXK3jY
- zoZ4yLfVYvFX28Ud6k0NX97/osaUJOVkPaFcvp5+5U3Ltzfl3PIHvIq3qL42/u5/NsJsZ/eeq
- vZdtIA+BOPKeX3uhSL7lsIekCqh+6FbMrn1TizcoIWCumxzRey/ey68et5relFBpX6qBNKiqr
- YxbnEyBhev+G2lTH2m+Ynih6os4oycU2axjyG/2W7pgefEVyFvW4m9zxw3MhetclizNznLZIi
- DTImbqRX39mTd1h/+unfPcb0X3C399Xe2W/0Cg/X6CGtTtfiaqiR4+Sv3js64t6t3Ob3lGdXn
- SL744unCl+QXHlcU8F+5ofo2GrMbW3KGtaAsaaP1yu92A7TdiRtWFrhCjGYe8ai8I+nk=
+        Doug Ledford <dledford@redhat.com>,
+        Mark Bloch <mbloch@nvidia.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] RDMA/mlx5: fix build error with
+ INFINIBAND_USER_ACCESS=n
+Message-ID: <20211025173549.GA427940@nvidia.com>
+References: <20211019061602.3062196-1-arnd@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019061602.3062196-1-arnd@kernel.org>
+X-ClientProxiedBy: YT2PR01CA0005.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:38::10) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (206.223.160.26) by YT2PR01CA0005.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Mon, 25 Oct 2021 17:35:51 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mf3sz-001nL1-4S; Mon, 25 Oct 2021 14:35:49 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c67cb33c-980c-489c-0b62-08d997dde3c5
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5336:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB53367CCAACBCE8463CEA6640C2839@BL1PR12MB5336.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LionPNE1RUYjs5lfK4IrqkF7UqMnGhSCJzNnTv3oat8OUcc4Mloa51S06o7yZjnZQBBIE3UzBwGL3LN6vA0ZHHAQwUwwpk1oWny3cWOHMJQ+JYYuZER4+fYCgBfpImY8DB3omCn0stF20gc3jDtt26h8PMEn+w1XreqbHvyFHZdrg2H0mP8WOVH0deNvVWJDcD9Kwr1s+gMqJXkR/h2nudVwQL5bXo6rExLy5E3/rpgGvtjmcNU7L3tIDclsrC7HUpm/sMHPWXamZRHwDhOiU8ORdVZbfvFLMoZyIIX8z83pcJo7/ghedE0TdyOBr/w8IE00KOIDTA3g4d6kaAscvn5mr6gA8/lhgsGaLq+C9dmuJrPQlmgh6lmg9Hc4ZfCTbsLk1CAka5dwHDhKpLOzr31xFLMbevuzUsH/CXUOgyVN4eYv5x3BAeA6B5k7QaY/G/OWUMBF2P25dx1dBan3se1it1wP6U0fiqcBMSAYE/DJbbMuRhkzkUPpPu3k4toi8iXmCqHGnxqa/4lyGhvmY+1zb+gfdVGpQ8zYR9al3iYrx1scxTYpU1aGZm+5JAqChdnQom7PdaZA92DjQUO11hoW7Fy1jKBHU9bm8AzpEzaZXU6UXKVY614WyGIFGCjHsYZM0iXDCXDQ4SwXt17Pfxd/pRN1LxBUjcUZ5Qfsmbbam+r1zx/XT0t7MO7mNcGw2HeOJ4q2nWrZPoToLRO3SA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(36756003)(83380400001)(66946007)(66476007)(2616005)(8936002)(86362001)(66556008)(4326008)(4744005)(426003)(6916009)(26005)(38100700002)(33656002)(9746002)(8676002)(5660300002)(54906003)(1076003)(2906002)(9786002)(508600001)(316002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WVZ31BS4W6+2muJJpA9oWkcAwXfg2cviL0DmtLsFvN3DAVt1Zf4xXxAgmbmV?=
+ =?us-ascii?Q?4QHLkQbFpWIKtBszEKhTcvJKk8XLxcJDqg9jq1VDu28HQZWli/GrdAMjgMRs?=
+ =?us-ascii?Q?50jmRC84OlXJNeMbdAIZqDEHfkdEg4Xpuho7cLJLBoGTe1cXzQSETqB0jc3n?=
+ =?us-ascii?Q?/ILr8eya9R/WUCffbgj8TLgkt95ydtVZCM98NqwnolX36O9GVg5qrc8JcCOp?=
+ =?us-ascii?Q?DS6X6JPBxWO6WKhMcljF01OEcE4OK7EMCKK6Ic1L9NFXC1sKGvu+hxiPlvyF?=
+ =?us-ascii?Q?TWX335i2Qt6ZOCgxbwK4n74Sc8HOMxmhEoaHrXL5PyV8DJcYAMmiclocdW+T?=
+ =?us-ascii?Q?27AfFoWAz4ZLbrPN4iLEbm5gQwgeqzcdKrsiv+SxMAdHZZU/2RYzTiyW9SXN?=
+ =?us-ascii?Q?3ahSbRFPaQUwMe8nksEx1+X8uSR7IqwQVNpF3EjyCclk66E+P66+/sBuW1Mh?=
+ =?us-ascii?Q?Z5F91TNENORpBtGRXtPRD/ptwIX+SL0jTgBVk9td5vRR2keu/KEJSBQlqvGQ?=
+ =?us-ascii?Q?Y8O30Ox27NW+olcKRTJ90N4tp+5gAb30lbjX0kP/4cFD1BKTMz4UvBFAx2J6?=
+ =?us-ascii?Q?tkOEUh6MJoD6ymZjyRB3l4CTRuqVhRv4VfNu1NDN+zmi/FOwynoR/pFFL413?=
+ =?us-ascii?Q?wut5iUWL9X649Kp4j6X0FEv4tu3VfZA4Y0Ssb9Pjy1XuXlAw3btmBH2jJBth?=
+ =?us-ascii?Q?V1vHYiijqXpXeSs278dtdyLBdIydv+CN86lPjWOsstfpGSMkZfWhvcHeD5n5?=
+ =?us-ascii?Q?nS9YL8eUgRHvf+yxbIR02zcOYnnIXIAOOsG0BvnaX7wx3Ao7FMUhges4c37P?=
+ =?us-ascii?Q?mWdOIENRmbqOZD3dEs6p/74Uawn3xs2EWdfFUFLY/eXKIxm1Oh67C1B20edW?=
+ =?us-ascii?Q?zNEVcEhEaRPPO+cBAM7bPJU6fcbR6os/CZAriToC391IW1Rt4g7jPx7Ax30D?=
+ =?us-ascii?Q?hvtVTQur+hWt97CQMo2WxjDf2hWJ1uM92+oH8Q2ZDbgMGJbT3vfV7RLeweDi?=
+ =?us-ascii?Q?VJz+ApH/NE+w6IlcaHYLGqhXF9cz3NOHVkhsX/OAF6+D5q7p5oCigaSf9Oue?=
+ =?us-ascii?Q?NMwNzztGwD5+QxNztqUYg7U7zHQeMdge0Jwu2QIw2djswzzGs+R45SHDm95R?=
+ =?us-ascii?Q?zFzgjFmDKMV6sHS4d8GluQRg2RYklfloyhXo4aluOnW9NO6iYBOk15p2M5M3?=
+ =?us-ascii?Q?E0ITTiAc1pNXAP1WlUhC4BAabyB9BegAknFj2bmmsM0UjiXQOhfxz2Zb7aMf?=
+ =?us-ascii?Q?pibT/rUBzwccQifMmS5tayDUNsL9Hg+18af9ipukkP8cEcM/3vCC/Mn46NAy?=
+ =?us-ascii?Q?kpd2I4gEWgm0x3voLcjsu2uOQRM0JCAqD8SqvKwQ1lsLoN8NEKPRezmZG/UK?=
+ =?us-ascii?Q?PPfPCZQXULsUUV4bIsxrZTxq1ZaYoRiC3lGJM9PjDnmDjJ8Xoo5m+6FHu9fv?=
+ =?us-ascii?Q?ItaPiaXbdS24Taj5opyaUHi4oExCLBVWYLWUODqqs27Et/G2ZvODB46hwSe8?=
+ =?us-ascii?Q?+ht7KDrhSA4zVEtwI19aQcLgW44rhG4m77LtrC7OGSq47CaFvU/D/IsVheOq?=
+ =?us-ascii?Q?6zSvk/mRSEWMxG4ewR0=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c67cb33c-980c-489c-0b62-08d997dde3c5
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 17:35:51.6943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EhSOPARlP90+MxXmHlmvLR0WUjopXnfkb+X7HE0JvTrp9900XbkFfpC5LrwTB8cv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5336
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 6:33 PM André Almeida <andrealmeid@collabora.com> wrote:
-> Às 02:54 de 21/10/21, Alistair Francis escreveu:
-> > From: Alistair Francis <alistair.francis@wdc.com>
+On Tue, Oct 19, 2021 at 08:15:45AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The mlx5_ib_fs_add_op_fc/mlx5_ib_fs_remove_op_fc functions are
+> only available when user access is enabled, without that we
+> run into a link error:
+> 
+> ERROR: modpost: "mlx5_ib_fs_add_op_fc" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> ERROR: modpost: "mlx5_ib_fs_remove_op_fc" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> 
+> Conditionally compiling the newly added code section makes
+> it build, though this is probably not a correct fix.
+> 
+> Fixes: a29b934ceb4c ("RDMA/mlx5: Add modify_op_stat() support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/hw/mlx5/counters.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 
-> > +#if defined(__NR_futex)
-> > +     if (sizeof(*timeout) == sizeof(struct __kernel_old_timespec))
-> > +             return syscall(__NR_futex, uaddr, op, val, timeout, uaddr2, val3);
-> > +
-> > +     if (timeout && timeout->tv_sec == (long)timeout->tv_sec) {
-> > +             struct __kernel_old_timespec ts32;
-> > +
-> > +             ts32.tv_sec = (__kernel_long_t) timeout->tv_sec;> +             ts32.tv_nsec = (__kernel_long_t) timeout->tv_nsec;
-> > +
-> > +             return syscall(__NR_futex, uaddr, op, val, &ts32, uaddr2, val3);
-> > +     } else if (!timeout) {
-> > +             return syscall(__NR_futex, uaddr, op, val, NULL, uaddr2, val3);
-> > +     }
-> > +#endif
->
-> If I read this part right, you will always use ts32 for __NR_futex. I
-> know that it can be misleading, but __NR_futex uses ts64 in 64-bit
-> archs, so they shouldn't be converted to ts32 in those cases.
+Applied to for-next, thanks
 
-__kernel_old_timespec is the correct type for sys_futex() on all
-architectures.
-
-Maybe name the local variable 'ts' or 'ts_old' instead of 'ts32' then?
-
-> > +{
-> > +#if defined(__NR_futex_time64)
-> > +     int ret =  syscall(__NR_futex_time64, uaddr, op, val, nr_requeue, uaddr2, val3);
-> > +
-> > +     if (ret == 0 || errno != ENOSYS)
-> > +             return ret;
-> > +#endif
-> > +
-> > +#if defined(__NR_futex)
-> > +     return syscall(__NR_futex, uaddr, op, val, nr_requeue, uaddr2, val3);
-> > +#endif
-> > +
-> > +     errno = ENOSYS;
-> > +     return -1;
-> > +}
-> > +
-> > +#endif /* _UAPI_LINUX_FUTEX_SYSCALL_H */
-> >
->
-> Sorry if this question was already asked but I didn't find it in the
-> thread: Should we go with wrappers for the most common op? Like:
->
-> __kernel_futex_wait(volatile uint32_t *uaddr, uint32_t val, struct
-> timespec *timeout)
->
-> __kernel_futex_wake(volatile uint32_t *uaddr, uint32_t nr_wake)
-
-I had suggested having just a single function definition here, but having one
-per argument type seems reasonable as well. Having one definition
-per futex_op value would also be possible, but in that case I suppose
-we need all 13 of them, not just two.
-
-        Arnd
+Jason
