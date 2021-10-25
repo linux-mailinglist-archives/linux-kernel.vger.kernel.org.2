@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0FB43A22B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F5943A16E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbhJYTpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53278 "EHLO mail.kernel.org"
+        id S237146AbhJYTiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:38:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237118AbhJYTiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:38:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AE626101C;
-        Mon, 25 Oct 2021 19:35:00 +0000 (UTC)
+        id S236118AbhJYTdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:33:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 916396115C;
+        Mon, 25 Oct 2021 19:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190501;
-        bh=5etRH8WdF+ca6XSaVL+Noiyg5jXUufxviHAxkpzm4RY=;
+        s=korg; t=1635190141;
+        bh=SgvhMwZghiCoWosATR5g4UbalC8JPRm1Ib4us1+hn+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MrCwGVzM/4PzgAgPk587mx4MP+/eckqNiZoD33rlMLXsK+OycKIzUwDTCc/F8a2lF
-         p/ssmonaGpMG/BZI7s+X4NIABQedMV5VmTtMsuCXXob4psHOHuMcov3u9PfvdT1aV9
-         e3awF78Rja7pYF1JUGIe2dUpExkrgbzPj6M+5VCo=
+        b=P0FTaSOP4Zkip8ZPyc3ctREHn3B7xoq2Xg8nOspB3qt9fyvvZ01MSXzqiswSRRnpq
+         VjTWr7aUfpJPe8OmQhlJ11dalCJ8MVa3GRQsWR5WQ3mrVQonXsp9Ss0A952YbBFFjq
+         j2Y/rwJ8gSmqpWsfPW35IzEi0+Zc+3tGDT61PXNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 73/95] net: stmmac: add support for dwmac 3.40a
+        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 53/58] scsi: core: Fix shost->cmd_per_lun calculation in scsi_add_host_with_dma()
 Date:   Mon, 25 Oct 2021 21:15:10 +0200
-Message-Id: <20211025191007.506029133@linuxfoundation.org>
+Message-Id: <20211025190946.506156059@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herve Codina <herve.codina@bootlin.com>
+From: Dexuan Cui <decui@microsoft.com>
 
-[ Upstream commit 9cb1d19f47fafad7dcf7c8564e633440c946cfd7 ]
+commit 50b6cb3516365cb69753b006be2b61c966b70588 upstream.
 
-dwmac 3.40a is an old ip version that can be found on SPEAr3xx soc.
+After commit ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at
+can_queue"), a 416-CPU VM running on Hyper-V hangs during boot because the
+hv_storvsc driver sets scsi_driver.can_queue to an integer value that
+exceeds SHRT_MAX, and hence scsi_add_host_with_dma() sets
+shost->cmd_per_lun to a negative "short" value.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Use min_t(int, ...) to work around the issue.
+
+Link: https://lore.kernel.org/r/20211008043546.6006-1-decui@microsoft.com
+Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
+Cc: stable@vger.kernel.org
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c   | 1 +
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 8 ++++++++
- 2 files changed, 9 insertions(+)
+ drivers/scsi/hosts.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c
-index fad503820e04..b3365b34cac7 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c
-@@ -71,6 +71,7 @@ err_remove_config_dt:
- 
- static const struct of_device_id dwmac_generic_match[] = {
- 	{ .compatible = "st,spear600-gmac"},
-+	{ .compatible = "snps,dwmac-3.40a"},
- 	{ .compatible = "snps,dwmac-3.50a"},
- 	{ .compatible = "snps,dwmac-3.610"},
- 	{ .compatible = "snps,dwmac-3.70a"},
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 53be8fc1d125..48186cd32ce1 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -508,6 +508,14 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 		plat->pmt = 1;
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -219,7 +219,8 @@ int scsi_add_host_with_dma(struct Scsi_H
+ 		goto fail;
  	}
  
-+	if (of_device_is_compatible(np, "snps,dwmac-3.40a")) {
-+		plat->has_gmac = 1;
-+		plat->enh_desc = 1;
-+		plat->tx_coe = 1;
-+		plat->bugged_jumbo = 1;
-+		plat->pmt = 1;
-+	}
-+
- 	if (of_device_is_compatible(np, "snps,dwmac-4.00") ||
- 	    of_device_is_compatible(np, "snps,dwmac-4.10a") ||
- 	    of_device_is_compatible(np, "snps,dwmac-4.20a") ||
--- 
-2.33.0
-
+-	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
++	/* Use min_t(int, ...) in case shost->can_queue exceeds SHRT_MAX */
++	shost->cmd_per_lun = min_t(int, shost->cmd_per_lun,
+ 				   shost->can_queue);
+ 
+ 	error = scsi_init_sense_cache(shost);
 
 
