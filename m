@@ -2,198 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234C643A439
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944E543A43B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237963AbhJYUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S234390AbhJYUSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237122AbhJYUSA (ORCPT
+        with ESMTP id S238164AbhJYUSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:18:00 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99BBC09155F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:47:18 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id s3so14382672ild.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:47:18 -0700 (PDT)
+        Mon, 25 Oct 2021 16:18:21 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07684C09801A;
+        Mon, 25 Oct 2021 12:48:17 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id f13so3182743ljo.12;
+        Mon, 25 Oct 2021 12:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sladewatkins.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/wcdlkpultptyteCFR+azF3+dEscqOT8YqwdivQDRJ4=;
-        b=WOg3hWet6YZkVq6GSv3z63fZDFBEptrPL+UpCIh63sh6kUI/HAddduoMIKnVE/p17T
-         O8ibikaFJ7OOukwbRPeE7BTtZ6OCtYolMDHsI99qEd1OYxowCOi1uZGKKQ/rOChiWtOr
-         6/5JC6mR4W4uvOtL6fTQcJC3lHa9iuWEXDVaeyfczNwMzxl8wNvBZQtMYa1GIiGX6+Dn
-         CUdPaAP1XrqKM0eYhGq4KDLZE1wa+1CXHXXmwZJeWAYjOHxJIREU2Zb9qL2YdBTqMCgZ
-         RBaucdxT2M9JLLHUREEhH7lx0/VYQn4Vq6xSGLH/7XV1vpsSIegANnTk7lAKUxcFgrj7
-         zgTA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J6/UNYNIHjm7t4tiP18pgCTz3xAVqEfYke7Na0k8ljo=;
+        b=kU7W54tUtzut/9cvFKbgJ9BdM6GcufuRgvwAP6bDxT5oA8YMGVdiUqImf91dgIFwMd
+         dbCsu3aVz1HndDxCJ3WTgABdUh2IKDjosBWcsvxFXp8VOiqb/GbPKpBGcw9sT2RSIKVW
+         eJRpQYJLZJr0Q7eUuOyYxb76ayLcMQipB1pHJbAkF7SRx47rwcm19VYYR8YalimrdtZ/
+         zbeFcHDE1hDWck1a++hAmW/vmIU/fWTgDbUfMwp6e3r/0LElmCpFYRHVZUf2qSz7Wx4r
+         h4/l9GT6KjOaUYfgCsCBOAsbsOnbSWVnL/dr+ivzk9QfHng89Xjlsmm+TCaoPIvxKdPY
+         Ppow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/wcdlkpultptyteCFR+azF3+dEscqOT8YqwdivQDRJ4=;
-        b=6xfKAJwXrpK9ImsQHpF2fv2nU/E208bGJ4lgHfpMwWXr2IA2nn6BERQCtLUveP0+LR
-         FWbbTh39ntM6NJewg/hoC79EMO7v2tbzquf8JIBAlakvc+cVHp50P7t5BBwy7c2xPJOg
-         4n2kooQW+rDAZL3L+FNdAQjtQHlbeAqRKZWGn5VI4j3KV7DsLnuQOqpEBYylfmFQFEgS
-         SlxcWpPkK1jxYtLJWvk95vdyJp1S8c6R6ZX4PrklxWttDKHXYShY/0xwFw2o7Q23i7gd
-         qnILa5sDTuyKY1nysPROg6kZme0hjxC1wbivQM7dn8kZqyVynkfbQ34IvKc0pyg/KPEt
-         Eh/A==
-X-Gm-Message-State: AOAM5316eX4amsefwhXmp4mMfEghPB+GM0HA2W4MY1+80Z/2ObS4ODne
-        mdIVhW1wKFgiu2LHL641L7iI0lvw89Q3f3q9DKulZA==
-X-Google-Smtp-Source: ABdhPJwPAJVnmXZDstwZo2ShSBU0ebPXCkCVv1c/tqy6HxTfgfzgONu2j/E/xaZKALsi6mQOFMvpLETyCKIxD+pNjm0=
-X-Received: by 2002:a05:6e02:1112:: with SMTP id u18mr10457911ilk.206.1635191238217;
- Mon, 25 Oct 2021 12:47:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J6/UNYNIHjm7t4tiP18pgCTz3xAVqEfYke7Na0k8ljo=;
+        b=GMhfRr3kn+vKvFP3mFvLrT29hozYRWOm3v/xGOaYNEnQ/FPLOmHxDgBFfWPwif9nY4
+         eUbqCiBSy/Z+Zm/Ax7apCo4fI6ZJomyz5dyHlEkTKKJ5Ldw2BoSEdXZFbJqfqsiXPNKQ
+         Bk9Ige23mpDibk3MIFLhQ2JsHdxUzCNTYYPSz/fWUbJ0GHw/vQjlCKl7vqzdIlrcB2HF
+         +glyREled/CGgkXz3O506EKIpCUqtCUqE/YHOhSNDTDGS4KDLbQy393FZa7/ou4cp6CZ
+         I9luMIwcJrKx5ROnamF7dflzHJ93uVv1ezum4dbxvYspPeaPCU34xFHMF0waXQ+AuRog
+         IMtQ==
+X-Gm-Message-State: AOAM530hi351ubzRNlI8TmCUJim0UATnQg8RLPq9M0vGadrNQ7DEtak8
+        fCQ9/3jYTUgVrYvqeu/dP+Y=
+X-Google-Smtp-Source: ABdhPJz1ZC/rh2zacUm33hvGfdZlR0eYAbCe3pTGvZv7wZ+besiYVBpQ5MZ3HyI97y+024snBhMqfg==
+X-Received: by 2002:a05:651c:a06:: with SMTP id k6mr21214239ljq.237.1635191295281;
+        Mon, 25 Oct 2021 12:48:15 -0700 (PDT)
+Received: from localhost.localdomain (46-13-179-94.pool.ukrtel.net. [94.179.13.46])
+        by smtp.gmail.com with ESMTPSA id f23sm968984ljn.4.2021.10.25.12.48.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 12:48:14 -0700 (PDT)
+From:   Denis Pauk <pauk.denis@gmail.com>
+Cc:     pauk.denis@gmail.com,
+        =?UTF-8?q?Joel=20Wir=C4=81mu=20Pauling?= <jwp@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] hwmon: (nct6775) add ProArt X570-CREATOR WIFI.
+Date:   Mon, 25 Oct 2021 22:47:48 +0300
+Message-Id: <20211025194748.6784-1-pauk.denis@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
- <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com>
- <YXY15jCBCAgB88uT@d3> <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
- <c00f22d2-6566-8911-b56b-142f6fe42b8c@metztli.com>
-In-Reply-To: <c00f22d2-6566-8911-b56b-142f6fe42b8c@metztli.com>
-From:   Slade Watkins <slade@sladewatkins.com>
-Date:   Mon, 25 Oct 2021 15:47:07 -0400
-Message-ID: <CA+pv=HOT71a5d=LJM7VLSTSKBYRVNdT-r1ZtZSdRgNK6aMF-4w@mail.gmail.com>
-Subject: Re: Unsubscription Incident
-To:     Metztli Information Technology <jose.r.r@metztli.com>
-Cc:     Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Lijun Pan <lijunp213@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alan Coopersmith <alan.coopersmith@oracle.com>,
-        Shannon Nelson <snelson@pensando.io>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
+ASUS ProArt X570-CREATOR WIFI board has got an nct6775 chip, but by default
+there's no use of it because of resource conflict with WMI method.
 
-On Mon, Oct 25, 2021 at 2:08 PM Metztli Information Technology
-<jose.r.r@metztli.com> wrote:
->
->
-> On 10/25/21 10:04 AM, Slade Watkins wrote:
-> > On Mon, Oct 25, 2021 at 12:43 AM Benjamin Poirier
-> > <benjamin.poirier@gmail.com> wrote:
-> >> On 2021-10-22 18:54 +0300, Vladimir Oltean wrote:
-> >>> On Fri, 22 Oct 2021 at 18:53, Lijun Pan <lijunp213@gmail.com> wrote:
-> >>>> Hi,
-> >>>>
-> >>>>  From Oct 11, I did not receive any emails from both linux-kernel and
-> >>>> netdev mailing list. Did anyone encounter the same issue? I subscribed
-> >>>> again and I can receive incoming emails now. However, I figured out
-> >>>> that anyone can unsubscribe your email without authentication. Maybe
-> >>>> it is just a one-time issue that someone accidentally unsubscribed my
-> >>>> email. But I would recommend that our admin can add one more
-> >>>> authentication step before unsubscription to make the process more
-> >>>> secure.
-> >>>>
-> >>>> Thanks,
-> >>>> Lijun
-> >>> Yes, the exact same thing happened to me. I got unsubscribed from all
-> >>> vger mailing lists.
-> >> It happened to a bunch of people on gmail:
-> >> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
-> > I can at least confirm that this didn't happen to me on my hosted
-> > Gmail through Google Workspace. Could be wrong, but it seems isolated
-> > to normal @gmail.com accounts.
-> >
-> > Best,
-> >               -slade
->
-> Niltze [Hello], all-
->
-> Could it have something to do with the following?
->
-> ---------- Forwarded message ---------
->
-> From: Alan Coopersmith <alan.coopersmith@oracle.com>
-> Date: Thu, Oct 21, 2021 at 12:06 PM
-> Subject: [oss-security] Mailman 2.1.35 security release
-> To: <oss-security@lists.openwall.com>
->
->
-> Quoting from Mark Sapiro's emails at:
-> https://mail.python.org/archives/list/mailman-announce@python.org/thread/IKCO6JU755AP5G5TKMBJL6IEZQTTNPDQ/
->
->  > A couple of vulnerabilities have recently been reported. Thanks to Andre
->  > Protas, Richard Cloke and Andy Nuttall of Apple for reporting these and
->  > helping with the development of a fix.
->  >
->  > CVE-2021-42096 could allow a list member to discover the list admin
->  > password.
->  >
->  > CVE-2021-42097 could allow a list member to create a successful CSRF
->  > attack against another list member enabling takeover of the members
-> account.
->  >
->  > These attacks can't be carried out by non-members so may not be of
->  > concern for sites with only trusted list members.
+This commit adds ProArt X570-CREATOR WIFI to the list of boards that can be
+monitored using ASUS WMI.
 
-Maybe? Are the kernel lists hosted through mailman or something based
-on it that would be affected by these CVEs? It has been so long since
-I last looked into it that I genuinely do not remember.
+Tested on:
 
->
->
->  > I am pleased to announce the release of Mailman 2.1.35.
->  >
->  > This is a security and minor bug fix release. See the attached
->  > README.txt for details. For those who just want a patch for the security
->  > issues, see
->  > https://bazaar.launchpad.net/~mailman-coders/mailman/2.1/revision/1873.
->  > The patch is also attached to the bug reports at
->  > https://bugs.launchpad.net/mailman/+bug/1947639 and
->  > https://bugs.launchpad.net/mailman/+bug/1947640. The patch is the same
->  > on both and fixes both issues.
->  >
->  > As noted Mailman 2.1.30 was the last feature release of the Mailman 2.1
->  > branch from the GNU Mailman project. There has been some discussion as
->  > to what this means. It means there will be no more releases from the GNU
->  > Mailman project containing any new features. There may be future patch
->  > releases to address the following:
->  >
->  > i18n updates.
->  > security issues.
->  > bugs affecting operation for which no satisfactory workaround exists.
->  >
->  > Mailman 2.1.35 is the fifth such patch release.
->  >
->  > Mailman is free software for managing email mailing lists and
->  > e-newsletters. Mailman is used for all the python.org and
->  > SourceForge.net mailing lists, as well as at hundreds of other sites.
->  >
->  > For more information, please see our web site at one of:
->  >
->  > http://www.list.org
->  > https://www.gnu.org/software/mailman
->  > http://mailman.sourceforge.net/
->  >
->  > Mailman 2.1.35 can be downloaded from
->  >
->  > https://launchpad.net/mailman/2.1/
->  > https://ftp.gnu.org/gnu/mailman/
->  > https://sourceforge.net/projects/mailman/
->
->  > --
->  >        -Alan Coopersmith- alan.coopersmith@oracle.com
->  >         Oracle Solaris Engineering - https://blogs.oracle.com/alanc
->
->
-> Best Professional Regards.
->
-> --
-> Jose R R
-> http://metztli.it
-> ---------------------------------------------------------------------------------------------
-> Download Metztli Reiser4: Debian Bullseye w/ Linux 5.13.14 AMD64
-> ---------------------------------------------------------------------------------------------
-> feats ZSTD compression https://sf.net/projects/metztli-reiser4/
-> ---------------------------------------------------------------------------------------------
-> or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
-> -------------------------------------------------------------------------------------------
-> Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
+```
+Base Board Information
+    Manufacturer: ASUSTeK COMPUTER INC.
+    Product Name: ProArt X570-CREATOR WIFI
+    Version: Rev X.0x
 
-Thanks,
-             -slade
+BIOS Information
+    Vendor: American Megatrends Inc.
+    Version: 0402
+    Release Date: 08/04/2021
+
+```
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
+Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+Tested-by: Joel Wirāmu Pauling <jwp@redhat.com>
+---
+ drivers/hwmon/nct6775.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
+index f345e1902ad9..93dca471972e 100644
+--- a/drivers/hwmon/nct6775.c
++++ b/drivers/hwmon/nct6775.c
+@@ -4986,6 +4986,7 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
+ static struct platform_device *pdev[2];
+ 
+ static const char * const asus_wmi_boards[] = {
++	"ProArt X570-CREATOR WIFI",
+ 	"Pro WS X570-ACE",
+ 	"PRIME B360-PLUS",
+ 	"PRIME B460-PLUS",
+
+base-commit: c0d79987a0d82671bff374c07f2201f9bdf4aaa2
+prerequisite-patch-id: e807e002a40988118b5a99c3a5d7362578e3ed54
+prerequisite-patch-id: 9a221a9db6d74526910c26c9b41e34c480105ca3
+-- 
+2.33.0
+
