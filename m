@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797D743A812
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A9F43A814
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbhJYXVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S234506AbhJYXWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhJYXVA (ORCPT
+        with ESMTP id S234193AbhJYXWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:21:00 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87843C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:18:37 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id r6so12099593ljg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:18:37 -0700 (PDT)
+        Mon, 25 Oct 2021 19:22:07 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF37C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:19:44 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id d204so14631880ybb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:19:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EozrZDVpg+ZP0Rw1M0YUESRPsOtGxy7zLet1izxV1R4=;
-        b=smkFL/O/gJcaZSKKqa4eEGJTIQNWC5hvL6WmIzzicEXAnd6xy5Zj1Pn4gZaBtTGxDw
-         ux6wm++UIxOiahhFFUcXJK84qOB/X80RwdCJJduBFS+Vi/Zay0u4r0+5gU4k6GzLU87J
-         zayKzszoHgtdPUmlLWgL45Tl023sggUKeYuozYTFBtkpyR5/UMAA4jEMycgQXS6Tbum5
-         68IjxW7GW/s3KA7fSAhG3hB9yiRJRJgRUXeY8iPwVajxWy+shY0KR5W1huKhK8UgR9Ly
-         VkGXEEt1NoqULgv/HGRdr/FOzSxR6Zba5pFCMuZgRGUVmvFci5RUecpuQyhE95x6JXv7
-         J7DQ==
+         :cc;
+        bh=h/m+rGDyPgmkHNSDFPzk2eBpp1e1IMILcUX8qA35d4c=;
+        b=ZQ2OHZJWoDMsFYhDGZXV/ORisGPqxd+Bine/TFp7oPJtkJQ7DtE0bbuZ0BO8fNc/sF
+         fdXcgyvqS23e/mOtOMb+VNFBwU9qEgoLlqID5zfZgidGUhTYQIQk0Mf1RZzTiTQO+HqU
+         Ye6ZJ4j4Vwg/WsyREgDOqShiYwfifOfxhhb+Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EozrZDVpg+ZP0Rw1M0YUESRPsOtGxy7zLet1izxV1R4=;
-        b=o+U2cP48CWrUFrF/Z7+viQ4ani+sV5Fwnr8q7H7xDJTEJvAJsmvUPDWlUDgtBejNjN
-         ss9SOGDJVTfFPlv93+Xa2O+Ajd9bnoE1sNRZTpXs2irkB8l6USIJYZNw1N/Qb0BH2Q9x
-         MvRBlAbNyEi+baD/BChvh3X8+zZ61/x55SnJRghlK57iSqElYkeCiV6CjDyGitughAlb
-         vDN6s7O3QDdLCsALKlXr78ZEJBulUz+BKHFeCSKPRCi6mCxRoZ9Lwv26TEkL7/4gXIbe
-         KWdBW7ProAxeFPvk2OnVAcdPruyc0vwgvngzpTbUSU2ByfNf1P6dajoQKRi+rmdNm4ou
-         rcnA==
-X-Gm-Message-State: AOAM531bCYoTEghePgjcBb+ZjVCpwhtX8n6Im+rC5NJWi6S8kELmbkN8
-        qk6tO7w5Es3gFB83dMPe3DxxS9/3CR8ddvPpyA55Ug==
-X-Google-Smtp-Source: ABdhPJz3oG+y2cwWCVoReGxh5LmFxBmvF15RmgJ5849Z41JjU1u1e8u5seAn+rX9J+/v6BBeGp3emvd7euqFBNzqq7M=
-X-Received: by 2002:a2e:9e4e:: with SMTP id g14mr14444810ljk.261.1635203915755;
- Mon, 25 Oct 2021 16:18:35 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=h/m+rGDyPgmkHNSDFPzk2eBpp1e1IMILcUX8qA35d4c=;
+        b=hbhd4yXBjRANguIYgOa2/UPOzBzigRetU68mA45CDjhnXC6uyXQeFAYylKJaeDSdwY
+         sew0Whu0Y+/+zX6f6cf1zjPu2691HUzZeqXysXBk9+M3IiNSOZCFAMT0LcM9Qu9Zyw6L
+         yEzOp1PvSW8jfKLVV0IMVehMNyNOcGi70Auu00GrrfLJLnz+ffdVFGPE/LUvXtr34sVa
+         g0/GqKqakRbWig0S3TjNGXAGLFjZ3seijWma+uQzcSslh0VlIgA/swG1VfiENF34DQVj
+         ahf/xfMDNnC1JaLJLrLb/B/cZRlnn6pGMiXvhhLyEt8M/CwzS+IPDjMHD3rk7rQDWN9i
+         4Now==
+X-Gm-Message-State: AOAM5314grBuPmfIKJd04zs9PVJsOSuQCt2+4Fv4pXZpyw7eO8JDcUyz
+        HfWbnGDYrboGd7LbG0EMg0XQR7l3zSqO1JAy6GqMKg==
+X-Google-Smtp-Source: ABdhPJwQSDBIopxs6IO5I0vryH6ivhJw6gNvrARjSQOfppAImQtW0pAnwoQptiqF2lvTM5ezwXXHIG/POjMYu8hRwpw=
+X-Received: by 2002:a25:4054:: with SMTP id n81mr21034759yba.85.1635203983180;
+ Mon, 25 Oct 2021 16:19:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025114214.44617-1-alistair@alistair23.me> <20211025114214.44617-3-alistair@alistair23.me>
-In-Reply-To: <20211025114214.44617-3-alistair@alistair23.me>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 26 Oct 2021 01:18:24 +0200
-Message-ID: <CACRpkdYjBM9Pu=rO8SqfGvpP_fGeD=2YCqh+Rh-bOVq_k2S6CQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] Documentation: DT: bindings: input: Add documentation
- for cyttsp5
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Input <linux-input@vger.kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>, alistair23@gmail.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Mylene Josserand <mylene.josserand@free-electrons.com>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+In-Reply-To: <YXUhyLXsc2egWNKx@shredder>
+From:   Edwin Peer <edwin.peer@broadcom.com>
+Date:   Mon, 25 Oct 2021 16:19:07 -0700
+Message-ID: <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink traps
+ on probe/remove device
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alistair,
+On Sun, Oct 24, 2021 at 3:35 PM Ido Schimmel <idosch@idosch.org> wrote:
 
-On Mon, Oct 25, 2021 at 1:42 PM Alistair Francis <alistair@alistair23.me> w=
-rote:
-
-> From: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons.com>
+> On Sun, Oct 24, 2021 at 11:42:11AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Align netdevsim to be like all other physical devices that register and
+> > unregister devlink traps during their probe and removal respectively.
 >
-> Add the Cypress TrueTouch Generation 5 touchscreen device tree bindings
-> documentation. It can use I2C or SPI bus.
-> This touchscreen can handle some defined zone that are designed and
-> sent as button. To be able to customize the keycode sent, the
-> "linux,code" property in a "button" sub-node can be used.
+> No, this is incorrect. Out of the three drivers that support both reload
+> and traps, both netdevsim and mlxsw unregister the traps during reload.
+> Here is another report from syzkaller about mlxsw [1].
 >
-> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons.com=
->
-> Message-Id: <20170529144538.29187-3-mylene.josserand@free-electrons.com>
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> Please revert both 22849b5ea595 ("devlink: Remove not-executed trap
+> policer notifications") and 8bbeed485823 ("devlink: Remove not-executed
+> trap group notifications").
 
-> +title: Cypress cyttsp touchscreen controller, generation 5
-(...)
-> +  compatible:
-> +    const: cypress,cyttsp5
+Could we also revert 82465bec3e97 ("devlink: Delete reload
+enable/disable interface")? This interface is needed because bnxt_en
+cannot reorder devlink last. If Leon had fully carried out the
+re-ordering in our driver he would have introduced a udev
+phys_port_name regression because of:
 
-Is this the real product name? When I rewrote the bindings for
-the original "CYTTSP", actually "Cypress TrueTouch Standard Product"
-it came out that the actual product names were CY8CTMA340
-and CY8CTMA341. "CYTTSP" was a marketing name for the
-whole family.
+cda2cab0771 ("bnxt_en: Move devlink_register before registering netdev")
 
-See
-Documentation/devicetree/bindings/input/touchscreen/cypress,cy8ctma340.yaml
+and:
 
-If the actual products have some product names such as
-CY8* then use these as compatibles instead and just write in the
-decription that it is Cypress TrueTouch Standard Product series 5.
+ab178b058c4 ("bnxt: remove ndo_get_phys_port_name implementation")
 
-Yours,
-Linus Walleij
+I think this went unnoticed for bnxt_en, because Michael had not yet
+posted our devlink reload patches, which presently rely on the reload
+enable/disable API. Absent horrible kludges in reload down/up which
+currently depends on the netdev, there doesn't appear to be a clean
+way to resolve the circular dependency without the interlocks this API
+provides.
+
+I imagine other subtle regressions are lying in wait.
+
+Regards,
+Edwin Peer
