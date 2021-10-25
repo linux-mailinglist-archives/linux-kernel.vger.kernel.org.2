@@ -2,267 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09984439043
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F38B439045
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhJYH0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:26:13 -0400
-Received: from mail-am6eur05on2080.outbound.protection.outlook.com ([40.107.22.80]:13954
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230015AbhJYH0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:26:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j/CGhYrcZ08hQiugSdVl41EPzWH/lZtrvtmPKKranh/KxT8YvQeIyi4ygbvQrabp1a3OvnTOcEIpuPHSRVelDlHBxLHD2yS5OTNa6GCUf3jM68iL3NFA0NLid9Llr4yg23S1aSuKB0aoOHhD73JWkprr23yfRlTht3Jg9npUL3LTIjBvG7ADKJPKiwRscoOqxDZnn3y4LpKAo/hP98PMXpNOz1Z+eXCUvtbwbk/infGc4mKVjMWpC0jxqGrSQkOjHC7rXplQ/Dcr8RWHLlXZQLGdnA5ZWOBpZASlLDfHMeZM5YesAbEsZtVjGjH/KcMIgfOrCjPThLWYiiMJp634VQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1O6huxb050myhED3tyLZl7FCFYq1NkzQS41Dh78b5Po=;
- b=kBSo+ret2m3x+7TnfINuvrysKai463g9QUmNvCpHRzwOBgrijaHaCXVfU8cS8O4ni4RsioVEQtMx2Ycbq8HKAwyiUJk49ucJpVYbk7wwLUUVI9QRM3mTRAdu8b7Sx54Ecws7puM8CJMDip3SKQi0gaJUAz07IYNdFsxrpCY4KyNTcbhQpRnwaFm5dBAjr3P4C4X1eHUT4MUoNBb1Nf1y5yzAnY/c5FtiFFOEb3pUSbXLXzaM0oYX/qSBX2UkZFk5K/488v/797TJeyD8PRZRgxyR6ybWIv9xJExJ5ADsX3/0s+Z3C2JaEbViGb0mWFY2a20tUWFQt2h8Bhz4Cc0/oA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1O6huxb050myhED3tyLZl7FCFYq1NkzQS41Dh78b5Po=;
- b=qIhp0rVVmUOuKGjhN43DwpZmGgpQ/WXRli0tHNZDakuUMcUmVt2HNGngri3wT3Oq+3HqwU8RL4OScufyhXC/Rg1l8JxJgAmFO5aLVKKwS/D+AzuYZhqDssq3jIV255jy6uaWbwNHVpp86M+nLywrEveoQDPanK+owO5+4Wpwbp8=
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
- by AS8PR04MB8945.eurprd04.prod.outlook.com (2603:10a6:20b:42c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
- 2021 07:23:47 +0000
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc%4]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 07:23:47 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     "tharvey@gateworks.com" <tharvey@gateworks.com>
-CC:     Lucas Stach <l.stach@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
- support
-Thread-Topic: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
- support
-Thread-Index: AQHXwf8T9WRZIWT4CUunBVSnJ63L4qvZhp6ggAD4IYCAAKk/cIABRTmAgABCoVCAAPyvgIAAhMLwgAEGQACAAA+SAIADuD4QgABZ2ZA=
-Date:   Mon, 25 Oct 2021 07:23:47 +0000
-Message-ID: <AS8PR04MB867620E1A1E940275CD38B528C839@AS8PR04MB8676.eurprd04.prod.outlook.com>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
- <CAJ+vNU2b-=T_gTsRBvdF7SRUZopEFOU_Np8mEJn8bOpn5b5FaA@mail.gmail.com>
- <AS8PR04MB8676B2AC24E2769D47A1ED478CBD9@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU2AitmxCyam5FArmxAD41QUU=5CF_0JZhm+uzdkRbr7kw@mail.gmail.com>
- <AS8PR04MB8676840D7EDD56D10F9471288CBE9@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU2GU5=mM5+2Yg9gAuU0RSdJHWEU_+ykmz-qUWfsOnRJ8g@mail.gmail.com>
- <AS8PR04MB867624A8A5B6AE27D6A9160F8CBF9@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU1Si_bv0_2j5AU-v_1QtUGqwU_4u=NksAVFFXXkkNC1Sw@mail.gmail.com>
- <AS8PR04MB8676D9FFB6506A09D104E32A8C809@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU0cLd7oex5uUyJenqs229gsgZe_Vpu3uyKGw1=B+Uu5YQ@mail.gmail.com>
- <CAJ+vNU0wcQtrKh5W7UZknEiV2o7MKLV90CCrJqGGw=x_VYwMGg@mail.gmail.com>
- <AS8PR04MB867697878533A37B72D7E4AA8C839@AS8PR04MB8676.eurprd04.prod.outlook.com>
-In-Reply-To: <AS8PR04MB867697878533A37B72D7E4AA8C839@AS8PR04MB8676.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7f76db8f-2d27-448b-6635-08d9978862cd
-x-ms-traffictypediagnostic: AS8PR04MB8945:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-microsoft-antispam-prvs: <AS8PR04MB8945AD17F9DD516B483790578C839@AS8PR04MB8945.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IRdP/2otnl1zKnF+p4EniA1H+tXoyYaoxbE5fNI1k0Sk0k70CwMcXQeXpMCHYHT/vMVKNpfTt1iCqJp6wnE7uCHuKHHIfSQLWZSq5USadNYPqBraEHIdHaf5JoHH4H6RYWIKqGf3Qyi2I15P1Uh97G9nP3xVOoFOuMd6ivKk9svXw5iJEDKiClxoYwEEULEm/JCnd/ATaE1uNql+b2+tT79FQPDJ/qEbGA3+mRTw98Rohmd+MHWKxbjNtHL5YIfuLvhItYBlxEFOJ0/95zAkVtlKLGf5oLXFqjKlNlL9cxaUzal8mI9cUg8cOsWBEcsRsnAFSxSghOz8bs4ZT9PxA6vqpJ0mtX+byrSzM581Nqxdqw+CaPjl6vlccffGTQD8lqnSxUrJCohZH9X9/10tbtP2HCVQYkJpuPR5wddHqod4Cfw2HJ/gnzpBqiiPB2MlZcwagq1EAm2zPx7n1YPsipnmEqVhM0xhMtHaYAb+nQPgSKD04z78W5VwPCSzXwpmS9ERiIBqGbIUCleS7gm2QBYtC1SbJMEgo/1rLjxSO0PjXDNMYp26QO/4XO5B2TBEZDXAMT+2+mz1K9TmEh8cBYKs8YMRvLBRXppK92q7V2l8w6eFznttcmCku4D+CJ33VSwY+yEJ/beZ/E12CZ2oA+nwb48rnMn4Oedx57yc8ErzVCjeDudI+y1iUGGENn4fSiUfnlcE2CgPbnMX7l302JCS/tqykU+XX9FDJ3TroxE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(122000001)(54906003)(5660300002)(52536014)(66446008)(66946007)(64756008)(66556008)(8936002)(66476007)(38070700005)(86362001)(186003)(55016002)(7696005)(9686003)(508600001)(8676002)(71200400001)(2940100002)(83380400001)(38100700002)(6506007)(33656002)(26005)(7416002)(76116006)(6916009)(4326008)(316002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MVhleTFxQ1l4a1VpeUtka2kzTE9YNUh0U3FhTXpwbWY2SUpBWXJBdnozQ0FZ?=
- =?utf-8?B?aFdmUzJOT2NmWGVlOU5FTmxpM1h4eGdMRXdaZzRPUjMxU3VySDJ0NGNFWVh1?=
- =?utf-8?B?MHdqaWh3aVgvNzNaTW1BZ0NtNUkrYTlheHV4VmJ6N1AzWU51dElEd0FndnNU?=
- =?utf-8?B?ZUFFd2U5SEdraGpVR3lUY3ZCak1Tc0RMakRCZFhQM1M4UjY3aENueFJqMTFZ?=
- =?utf-8?B?UFFld3lnMjlTeHBHUmtnakJrR2Q4d3ByK2l5TGE2RStKaW84MldidkhxenlH?=
- =?utf-8?B?VExFK3FQZDBUMVAvNjRKbjQwMFpzVTlRcnNKWmJhOFpjQTMydkZUc0lZYWxB?=
- =?utf-8?B?dUtDbnB0ZnZNOWRKeFZ0OFFuUGRBdjNJY2J3VHVIM0VieEk1VklTYTcxenJm?=
- =?utf-8?B?RHFMcDJaY3ZialdmMkRNSlFiS0tZTHhHZDg0WktWRGVydGRENy9qdUZQY1hx?=
- =?utf-8?B?dENleDVXbnpHclhqc05SZFFqeE00TVNzOE9NS2tRdjEwMUJIeGZxQk9WSnVa?=
- =?utf-8?B?TmwzU0FIY1VMYk1OTTFoSGc2ekYxUVk0K1BndVE5WFdSL0E3cExyR2NTdU1H?=
- =?utf-8?B?UWhiWDNEeHlZbzM3cUVicWIrQmo1b1QwY0pLWWhRRy9QcjdYWGpzcXdZOTJW?=
- =?utf-8?B?U3lNajV1VmNIbkE4dEx4MXM2VGd1b0FSb0p1QkNTNFdYMGVyc1VFYXhqdE92?=
- =?utf-8?B?alRsaUlxUHVRenU3UzBKRWRiY01OKzV3ckNDVDVwbEU4ajF6NE44ZXVJejNh?=
- =?utf-8?B?YkRaSUVUVVp0aEpXYTh5emRCeXY5SHBvblVwbERPYTlLVnprUXYvNnMrcEJT?=
- =?utf-8?B?SWxLM3hDdnFlN1NWL1dTcFdydXFaNGFxRlFHNmx2eXd1aWpIRnZJeFFjNjhW?=
- =?utf-8?B?bW9oMlZCMXBkajRrNzEwa0Q3MDZOQ0Q3K0VBckQ0UnUwRWFvWEExT2N0cVV6?=
- =?utf-8?B?T2lrL0JnZW5pTllWOFA2eWIzd3lWR1RaWHJuN1VER1NlMGt2NWloVVJER2Nq?=
- =?utf-8?B?MUxsTDlFbks1aHZQZTlIMjBqNUVtWmRGYTJ1ZExXdlF3bnF1c3NuUXpjVE9E?=
- =?utf-8?B?SEdjeFJsWUhGVG85M280YmlZdURsbkozVU9hSWtYMHlCSThVbG52T1NuT3Zs?=
- =?utf-8?B?VXI0UUJvNlk2MkNnenRMVlg4SytnQWdLd1RScDZPZmhNU3ZTTzFhNFBYOEVV?=
- =?utf-8?B?STVFRHVDYS9BN052dGYycDRHZ3J6eHgvTEs4MUNmL2FiMGF6dlRxRXRVRWNX?=
- =?utf-8?B?N3V4WDJGYkVEY1FWNGxXY2hrdkJYbTZLZWVEcmN3Rm9rZCt2NGlUeXo1UWM2?=
- =?utf-8?B?Z1hMQlcvL2NJUmtQK3BhZ2xwdDBvOUNVQUg1TGgzYW5pQnJML1Z5TTNrYTcy?=
- =?utf-8?B?ZklpSUl4ckY5YW9wQkZzYlBNRDk1Z3QwdVI1SkNGVWltV09ROFVFQjYxeitn?=
- =?utf-8?B?V1JNcXFpcUczK3JDQWZCZ2VaQktPdER4U2dGZE9mTjExSmlPcG9tZ2tkM0Mx?=
- =?utf-8?B?cithNWY2RlJuMnJHaUJJcjBkUkRrcXVUclJobTFiNlVGWmw2RWU2NTVUVkhy?=
- =?utf-8?B?MXJoUUlSbXh2YklMR0dqamgzTDhOZ0l0NmdpaTViSVY4OGY3SVVYV3kxV09W?=
- =?utf-8?B?Q3BXN3ozZG9ncG5aandlNWNnSGxTaDIvdnVoNjgzeXN2cVBzdWFoclFmUGd0?=
- =?utf-8?B?bnRsdTYvTnkzTlBQbGpkU2MwaE9qRDZTT0d0RFZhaE00dlJFQmJLZjZMTEZH?=
- =?utf-8?B?S3NkRTZTRkNmcCtxaXRwdU9MMmxnWFAzdjZDRmNVN1IxUlhrY3BheVZDVmRy?=
- =?utf-8?B?TGJ0bWQwRjI1YWtkWGdER3c0dVYxVGJsQW9HTlNuK2FhdjU4NmZXbkNzVkxp?=
- =?utf-8?B?VHNnTW9ncGhuSUZtOWRkZFFJa2NYdzdJZHZKcU5xOFBYUFB4cnhwRC9aR2Nj?=
- =?utf-8?B?S2lMdTF5SE0xMDQ1YTBEOW90bjJpelkxUmQzemhoek93MU43KzJvRS93Q2Nn?=
- =?utf-8?B?bmlscUV3eG5Sd0VjVWZ6MXkrUDFHeUhkMmdlYzdCQU1MK3pIZTlFc1dtTDA2?=
- =?utf-8?B?dHZBcS9pRjRwSG1pRFZOZVhhQyt5K0JHS25tb3p1NzR3N3dETStjR3BuUFBy?=
- =?utf-8?B?VThIRlc4NEtlT0lVRkZPT2hVRkc1bGtJdGV1MHBYMTZUNjVlMTdPRWxrUVZO?=
- =?utf-8?B?UkE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231596AbhJYH0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:26:48 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52776 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhJYH0r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 03:26:47 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 85D2E21709;
+        Mon, 25 Oct 2021 07:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635146664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PLIElNgWls0m10MMnxTbJ7+jlz26AIDr6YPYX4k5c9k=;
+        b=fEXGKlkVBpaYKisUwoF3zfejibRCigYixOXzlyRQznC3mEedTlquKSxOkSm5VSxYFySeod
+        OEMftDc+XFucVXkv/YJDkGZx9524EF0QyDkAu9UsLST07cL5uJ1ZdDgs+nwxHLG3ptNusy
+        kmUUJV7JEa9Q4bnzCqmBHoFxipCaAJM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635146664;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PLIElNgWls0m10MMnxTbJ7+jlz26AIDr6YPYX4k5c9k=;
+        b=2YoaYmLZFjw2y508RUgR4cT5SDxeObt+gisR1KW33W6Hm3GOi2SxVwjVkxQ+gk0UiTWTRP
+        pv3wuldWwJvWa/Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5E131342A;
+        Mon, 25 Oct 2021 07:24:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LcV/MadbdmGFCAAAMHmgww
+        (envelope-from <osalvador@suse.de>); Mon, 25 Oct 2021 07:24:23 +0000
+Date:   Mon, 25 Oct 2021 09:24:22 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Nghia Le <nghialm78@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 1/5] hugetlb: add demote hugetlb page sysfs interfaces
+Message-ID: <20211025072421.GB6338@linux>
+References: <20211007181918.136982-1-mike.kravetz@oracle.com>
+ <20211007181918.136982-2-mike.kravetz@oracle.com>
+ <YV/4ZFCvoGRn2rtr@localhost.localdomain>
+ <47e53389-638a-1af1-e94f-b3c7e5e7459e@oracle.com>
+ <20211018073552.GA11960@linux>
+ <0530e4ef-2492-5186-f919-5db68edea654@oracle.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f76db8f-2d27-448b-6635-08d9978862cd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 07:23:47.7903
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: K9P1sujez+Zf9rDlGSusMkNm7NuZTAf9MHOIWvxx4d0/9ikuFJTyKSqFu2K0noSOKfHvJ5ZFhWN6KjOGM4tlww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8945
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0530e4ef-2492-5186-f919-5db68edea654@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U25pcHBlZC4uLg0KDQo+ID4gPiA+ID4gPiA+IE15IGJvYXJkcyBkbyBub3QgdXNlIENMS1JFUSMg
-c28gSSBkbyBub3QgaGF2ZSB0aGF0IGRlZmluZWQNCj4gPiA+ID4gPiA+ID4gaW4gcGlubXV4IGFu
-ZCBJIGZvdW5kIHRoYXQgaWYgSSBhZGQNCj4gPiA+ID4gPiA+ID4gTVg4TU1fSU9NVVhDX0kyQzRf
-U0NMX1BDSUUxX0NMS1JFUV9CDQo+ID4gPiA+ID4gUENJZQ0KPiA+ID4gPiA+ID4gPiB3b3JrcyBv
-biBteSBib2FyZCBidXQgdGhpcyBpc24ndCBhIHNvbHV0aW9uIGp1c3QgYQ0KPiA+ID4gPiA+ID4g
-PiB3b3JrLWFyb3VuZCAoSSBoYXZlIGJvYXJkcyB0aGF0IHVzZSB0aGUgb25seSB0d28gcG9zc2li
-bGUNCj4gPiA+ID4gPiA+ID4gcGlucyBmb3IgQ0xLUkVRIGFzIG90aGVyDQo+ID4gPiA+ID4gZmVh
-dHVyZXMpLg0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBTaW1pbGFybHkgeW91IHdpbGwg
-ZmluZCBvbiB0aGUgaW14OG1tLWV2ayBpZiB5b3UgY29tbWVudCBvdXQNCj4gPiA+ID4gPiA+ID4g
-dGhlIENMS1JFUSAod2hpY2ggaXNuJ3QgcmVxdWlyZWQpIHRoZSBpbXg4bW1ldmsgd2lsbCBlbmQg
-dXANCj4gPiA+ID4gPiA+ID4gaGFuZ2luZyBsaWtlIG15DQo+ID4gPiA+ID4gYm9hcmRzOg0KPiA+
-ID4gPiA+ID4gW1JpY2hhcmQgWmh1XSBIaSBUaW06DQo+ID4gPiA+ID4gPiBSZWdhcmRpbmcgdGhl
-IFNQRUMsIHRoZSBDTEtSRVEjIGlzIG1hbmRhdG9yeSByZXF1aXJlZCwgYW5kDQo+ID4gPiA+ID4g
-PiBzaG91bGQgYmUNCj4gPiA+ID4gPiBjb25maWd1cmVkIGFzIGFuIG9wZW4gZHJhaW4sIGFjdGl2
-ZSBsb3cgc2lnbmFsLg0KPiA+ID4gPiA+ID4gQW5kIHRoaXMgc2lnbmFsIHNob3VsZCBiZSBkcml2
-ZW4gbG93IGJ5IHRoZSBQQ0llIE0uMiBkZXZpY2UgdG8NCj4gPiA+ID4gPiA+IHJlcXVlc3QgdGhl
-DQo+ID4gPiA+ID4gUkVGIGNsb2NrIGJlIGF2YWlsYWJsZShhY3RpdmUgbG93KS4NCj4gPiA+ID4g
-PiA+IFNvLCB0aGVyZSBpcyBzdWNoIGtpbmQgb2YgQ0xLUkVRIyBwaW4gZGVmaW5pdGlvbiBvbiBp
-Lk1YOE1NDQo+ID4gPiA+ID4gPiBFVksNCj4gPiBib2FyZC4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+
-ID4gPiBBbnl3YXksIEkgdGhpbmsgdGhlIGV4dGVybmFsIE9TQyBjaXJjdWl0IHNob3VsZCBiZSBh
-bHdheXMNCj4gPiA+ID4gPiA+IHJ1bm5pbmcgaWYgdGhlcmUgaXMNCj4gPiA+ID4gPiBubyBDTEtS
-RVEjIG9uIHlvdXIgSFcgYm9hcmQgZGVzaWduLg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+
-ID4gPiA+IFRoZSB3YXkgSSB1bmRlcnN0YW5kIGl0IGlzIENMS1JFUSMgYWxsb3dzIHRoZSBob3N0
-IHRvIGRpc2FibGUNCj4gPiA+ID4gPiB0aGUgUkVGQ0xLIHdoZW4gbm90IG5lZWRlZCBmb3IgcG93
-ZXIgc2F2aW5ncyBzbyBpdCB3b3VsZCBzZWVtDQo+ID4gPiA+ID4gb3B0aW9uYWwgdG8gaW1wbGVt
-ZW50IHRoYXQgYW5kIGlmIG5vdCBpbXBsZW1lbnRlZCBzaG91bGQgYmUgbGVmdA0KPiA+ID4gPiA+
-IHVuY29ubmVjdGVkIG9uDQo+ID4gdGhlIGNhcmQuDQo+ID4gPiA+ID4NCj4gPiA+ID4gW1JpY2hh
-cmQgWmh1XSBObywgbm90IHRoYXQgd2F5LiBSZWdhcmRpbmcgdGhlIFNQRUMsIHRoaXMgc2lnbmFs
-IGlzDQo+ID4gbWFuZGF0b3J5IHJlcXVpcmVkLg0KPiA+ID4gPiBFc3BlY2lhbGx5IGZvciB0aGUg
-TDFzcyB1c2FnZXMuIFRoaXMgc2lnbmFsIHdvdWxkIGJlIE9EKG9wZW4NCj4gPiA+ID4gZHJhaW4p
-LCBiaS1kaXJlY3Rpb25hbCwgYW5kIG1pZ2h0IGJlIGRyaXZlbiBsb3cvaGlnaCBieSBSQyBvciBF
-UA0KPiA+ID4gPiBhdXRvbWF0aWNhbGx5IGlmDQo+ID4gTDFzcyBtb2RlcyBhcmUgZW5hYmxlZC4N
-Cj4gPiA+ID4gWW91IGNhbiBtYWtlIHJlZmVyZW5jZSB0byB0aGUNCj4gPiA+ID4gIkVDTl9MMV9Q
-TV9TdWJzdGF0ZXNfd2l0aF9DTEtSRVFfMzFfTWF5XzIwMTNfUmV2MTBhIiwgb3IgdGhlDQo+ID4g
-Y2hhcHRlciA1LjUgTDEgUE0gU3Vic3RhdGVzIG9mICJQQ0kgRXhwcmVzcyBCYXNlIFNwZWNpZmlj
-YXRpb24sIFJldi4NCj4gPiA0LjAgVmVyc2lvbiAxLjAiLg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+
-IENMS1JFUSBpcyBvbmx5IG1hbmRhdG9yeSBpZiB5b3Ugd2lzaCB0byBzdXBwb3J0IGNsb2NrIHBv
-d2VyDQo+ID4gPiBtYW5hZ2VtZW50LiBNYW55IGJvYXJkcyB3aXRoIGEgUENJIGhvc3QgY29udHJv
-bGxlciBkbyBub3Qgc3VwcG9ydA0KPiA+ID4gdGhpcy4NCj4gW1JpY2hhcmQgWmh1XSBPa2F5LCB1
-bmRlcnN0b29kLg0KPiANCj4gPiA+DQo+ID4gPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9hcmNoL2Fy
-bTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW0tZXZrLmR0c2kNCj4gPiA+ID4gPiA+ID4gYi9h
-cmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW0tZXZrLmR0c2kNCj4gPiA+ID4gPiA+
-ID4gaW5kZXggNWNlNDNkYWEwYzhiLi5mMDAyM2I0OGY0NzUgMTAwNjQ0DQo+ID4gPiA+ID4gPiA+
-IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2lteDhtbS1ldmsuZHRzaQ0KPiA+
-ID4gPiA+ID4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW0tZXZr
-LmR0c2kNCj4gPiA+ID4gPiA+ID4gQEAgLTQ0OCw3ICs0NDgsOSBAQA0KPiA+ID4gPiA+ID4gPg0K
-PiA+ID4gPiA+ID4gPiAgICAgICAgIHBpbmN0cmxfcGNpZTA6IHBjaWUwZ3JwIHsNCj4gPiA+ID4g
-PiA+ID4gICAgICAgICAgICAgICAgIGZzbCxwaW5zID0gPA0KPiA+ID4gPiA+ID4gPiArLyoNCj4g
-PiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gTVg4TU1fSU9NVVhDX0kyQzRfU0NMX1BDSUUxX0NM
-S1JFUV9CICAgIDB4NjENCj4gPiA+ID4gPiA+ID4gKyovDQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+
-ID4gTVg4TU1fSU9NVVhDX1NBSTJfUlhGU19HUElPNF9JTzIxDQo+ID4gPiA+ID4gPiA+IDB4NDEN
-Cj4gPiA+ID4gPiA+ID4gICAgICAgICAgICAgICAgID47DQo+ID4gPiA+ID4gPiA+ICAgICAgICAg
-fTsNCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gSSBoYXZlIFBDSWUgd29ya2luZyB3aXRo
-IGEgZHJpdmVyIHRoYXQgSSBwb3J0ZWQgZnJvbSBOWFAncw0KPiA+ID4gPiA+ID4gPiBrZXJuZWwg
-d2hpY2ggZGlmZmVycyBmcm9tIHlvdXIgZHJpdmVyIGluIHRoYXQgdGhlIFBDSWUgUEhZDQo+ID4g
-PiA+ID4gPiA+IGlzIG5vdCBhYnN0cmFjdGVkIHRvIGl0cyBvd24gZHJpdmVyIHNvIEkgdGhpbmsg
-dGhpcyBoYXMNCj4gPiA+ID4gPiA+ID4gc29tZXRoaW5nIHRvIGRvIHdpdGggdGhlIG9yZGVyIGlu
-IHdoaWNoIHRoZSBwaHkgaXMgcmVzZXQgb3INCj4gaW5pdGlhbGl6ZWQ/DQo+ID4gPiA+ID4gPiA+
-IFRoZSBjb25maWd1cmF0aW9uIG9mDQo+ID4gPiA+ID4gZ3ByMTQgYml0cyBsb29rcyBjb3JyZWN0
-IHRvIG1lLg0KPiA+ID4gPiA+ID4gW1JpY2hhcmQgWmh1XSBUaGUgQ0xLUkVRIyBQSU4gZGVmaW5p
-dGlvbiBzaG91bGRuJ3QgYmUgbWFza2VkLg0KPiA+ID4gPiA+ID4gSW4gdGhlIE5YUCdzIGxvY2Fs
-IEJTUCBrZXJuZWwsIEkganVzdCBmb3JjZSBDTEtSRVEjIGxvdyB0bw0KPiA+ID4gPiA+ID4gbGV2
-ZWwgdXAgdGhlIEhXDQo+ID4gPiA+ID4gY29tcGF0aWJpbGl0eS4NCj4gPiA+ID4gPiA+IFRoYXQn
-cyBtaWdodCB0aGUgcmVhc29uIHdoeSB0aGUgUENJZSB3b3JrcyBvbiB5b3VyIEhXIGJvYXJkDQo+
-ID4gPiA+ID4gPiBhbHRob3VnaCB0aGUNCj4gPiA+ID4gPiBDTEtSRVEjIFBJTiBpcyBub3QgZGVm
-aW5lZC4NCj4gPiA+ID4gPiA+IFRoaXMgbWV0aG9kIGlzIGEgbGl0dGxlIHJ1ZGUgYW5kIHZpb2xh
-dGUgdGhlIFNQRUMsIGFuZCBub3QNCj4gPiA+ID4gPiA+IHJlY29tbWVuZGVkDQo+ID4gPiA+ID4g
-YWx0aG91Z2ggaXQgbGV2ZWxzIHVwIHRoZSBIVyBjb21wYXRpYmlsaXR5Lg0KPiA+ID4gPiA+ID4g
-U28gSSBkcm9wIHRoaXMgbWV0aG9kIGluIHRoaXMgc2VyaWVzLg0KPiA+ID4gPiA+ID4NCj4gPiA+
-ID4gPg0KPiA+ID4gPiA+IFNvcnJ5LCBJIGRvbid0IHVuZGVyc3RhbmQgd2hhdCB5b3UgYXJlIHNh
-eWluZyBoZXJlLiBJcyB0aGVyZSBhDQo+ID4gPiA+ID4gY2hhbmdlIHlvdSBhcmUgZ29pbmcgdG8g
-bWFrZSB0byB2NCB0aGF0IHdpbGwgbWFrZSB0aGlzIHdvcmsgZm9yDQo+ID4gPiA+ID4gdGhlIGV2
-ayBhbmQgbXkgYm9hcmRzPyBXaGF0IGlzIHRoYXQgY2hhbmdlIGV4YWN0bHk/DQo+ID4gPiA+IFtS
-aWNoYXJkIFpodV0gTm8uIFdoYXQgSSBzYWlkIGFib3ZlIGlzIHRoYXQgdGhlIENMS1JFUSMgaXMg
-Zm9yY2VkDQo+ID4gPiA+IHRvIGJlIGxvdyBpbiBOWFAgbG9jYWwgQlNQIGtlcm5lbC4gSSBndWVz
-cyB0aGlzIG1pZ2h0IGJlIHRoZQ0KPiA+ID4gPiByZWFzb24gd2h5IHlvdXINCj4gPiBib2FyZCB3
-b3Jrcy4NCj4gPiA+ID4NCj4gPiA+ID4gQklUMTEgYW5kIEJJVDEwIG9mIElPTVVYQ19HUFIxNCBj
-YW4gYmUgdXNlZCB0byBmb3JjZSB0aGUgQ0xLUkVRIw0KPiA+ID4gPiB0bw0KPiA+IGJlIGxvdy4N
-Cj4gPiA+ID4gU2V0IENMS1JFUV9PVkVSUklERV9FTihiaXQxMCkgMWIxLCB0aGVuIHdyaXRlIG9u
-ZSB6ZXJvIHRvDQo+ID4gQ0xLUkVRX09WRVJSSURFKGJpdDExKS4NCj4gPiA+ID4NCj4gPiA+DQo+
-ID4gPiBPaywgdGhhdCBtYWtlcyBzZW5zZS4gVGhvc2UgYml0cyBhcmUgbm90IGV4cGxhaW5lZCB3
-ZWxsIGluIHRoZQ0KPiA+ID4gSU1YOE1NUk0uIEFzIG15IGJvYXJkJ3MgZXh0ZXJuYWwgUkVGQ0xL
-IGlzIGFsd2F5cyBlbmFibGVkIHRoYXQgbXVzdA0KPiA+ID4gZ2F0ZSB0aGUgY2xvY2sgaW50ZXJu
-YWxseSB0byB0aGUgaG9zdCBjb250cm9sbGVyIGJsb2NrLg0KPiA+ID4NCj4gPiA+IEkgY2FuIGNv
-bmZpcm0gdGhhdCBhc3NlcnRpbmcgdGhvc2UgR1BSMTQgYml0cyBkb2VzIHJlc29sdmUgbXkgaXNz
-dWU6DQo+ID4gPg0KPiA+ID4gI2RlZmluZSBJTVg4TU1fR1BSX1BDSUVfQ0xLUkVRX09WRVJSSURF
-X1ZBTCAgICBCSVQoMTEpDQo+ID4gPiAjZGVmaW5lIElNWDhNTV9HUFJfUENJRV9DTEtSRVFfT1ZF
-UlJJREVfRU4gICAgIEJJVCgxMCkNCj4gPiA+DQo+ID4gPiAgICAgICAgLyoNCj4gPiA+ICAgICAg
-ICAgKiBmb3IgYm9hcmRzIHRoYXQgZG8gbm90IGNvbm5lY3QgQ0xLUkVRIywNCj4gPiA+ICAgICAg
-ICAgKiBvdmVycmlkZSBDTEtSRVEjIGFuZCBkcml2ZSBpdCBsb3cgaW50ZXJuYWxseQ0KPiA+ID4g
-ICAgICAgICAqLw0KPiA+ID4gICAgICAgIHJlZ21hcF91cGRhdGVfYml0cyhpbXg4X3BoeS0+aW9t
-dXhjX2dwciwgSU9NVVhDX0dQUjE0LA0KPiA+ID4NCj4gPiBJTVg4TU1fR1BSX1BDSUVfQ0xLUkVR
-X09WRVJSSURFX1ZBTCwgMCk7DQo+ID4gPiAgICAgICAgcmVnbWFwX3VwZGF0ZV9iaXRzKGlteDhf
-cGh5LT5pb211eGNfZ3ByLCBJT01VWENfR1BSMTQsDQo+ID4gPg0KPiA+IElNWDhNTV9HUFJfUENJ
-RV9DTEtSRVFfT1ZFUlJJREVfRU4sIDEpOw0KPiBbUmljaGFyZCBaaHVdIHJlZ21hcCBiaXRzIG9w
-ZXJhdGlvbnMgc2hvdWxkIG1hbmlwdWxhdGUgYWNjb3JkaW5nIGJpdHMuDQo+IFRoZSBCSVQoMTAp
-IGFuZCBCSVQoMTEpIHNob3VsZCBiZSB0b3VjaGVkIGFjdHVhbGx5Lg0KPiANCj4gPiA+DQo+ID4g
-PiBTaG91bGQgdGhpcyBiZSBhZGRlZCBhcyBhICdmc2wsY2xrcmVxLXVuc3VwcG9ydGVkJyBmbGFn
-IHRoYXQgbmVlZHMNCj4gPiA+IHRvIGJlIHNldCB0cnVlIHRvIGltcGxlbWVudCB0aGUgYWJvdmUg
-Y29kZT8NCj4gPiA+DQo+ID4NCj4gPiBSaWNoYXJkLA0KPiA+DQo+ID4gU29ycnkgLSBzcG9rZSB0
-b28gc29vbi4gTXkgdGVzdCB3YXMgZmxhd2VkIGFzIEkgc3RpbGwgd2FzIHBpbm11eGluZw0KPiA+
-IENMS1JFUSBpbiBteSBkdCB0byB3b3JrIGFyb3VuZCB0aGUgaXNzdWUgYW5kIGFmdGVyIHJlbW92
-ZWQgdGhlIGFib3ZlDQo+ID4gZGlkIG5vdCByZXNvbHZlIG15IGlzc3VlLiBUaGUgc2V0dGluZyBv
-ZiBPVkVSUklERV9FTiB3YXMgd3JvbmcgYWJvdmUNCj4gPiAoc2hvdWxkIG5vdCBiZSBzZXQgdG8g
-JzEnIGJ1dCBCSVQoMTApIGluc3RlYWQpIGJ1dCB0aGlzIGNvZGUgYWxyZWFkeQ0KPiA+IGV4aXN0
-cyBpbiBpbXg2X3BjaWVfZW5hYmxlX3JlZl9jbGsgYW5kIGlzIHVzZWQgZm9yIElNWDhNTSBwZXIg
-eW91cg0KPiA+IHBhdGNoIHNvIHRoaXMgaXMgbm90IHRoZSBpc3N1ZS4NCj4gPg0KPiA+IFdoYXQg
-bWFrZXMgbXkgYm9hcmQgd29yayBpcyB0byBjbGVhciBHUFIxNCBiaXQ5IChsaWtlIHRoZSBOWFAg
-a2VybmVsDQo+ID4gZG9lcykgc28gSSBkb24ndCB0aGluayB0aGlzIGJpdCBkb2VzIHdoYXQgd2Ug
-dGhpbmsgaXQgZG9lcyAoc2VsZWN0DQo+ID4gYmV0d2VlbiBpbnRlcm5hbCBhbmQgZXh0IGNsayku
-IEkgdGhpbmsgc2V0dGluZyBpdCBlbmFibGVzIGNsb2NrIGdhdGluZyB2aWENCj4gQ0xLUkVRIy4N
-Cj4gPg0KPiA+IFRoaXMgYWxzbyBwb2ludHMgb3V0IHRoYXQgcGVyaGFwcyB0aGUgQ0xLUkVRX09W
-RVJSSURFIGxvZ2ljIHNob3VsZCBiZQ0KPiA+IG1vdmVkIHRvIHRoZSBuZXcgcGh5IGRyaXZlciBm
-b3IgSU1YOE1NLg0KPiBbUmljaGFyZCBaaHVdIEl0IHNvdW5kcyByZWFzb25hYmxlIHRvIGNvbnNp
-ZGVyIHRvIGZvcmNlIHRoZSBDTEtSRVEjIHRvIGJlDQo+IGxvdy4NCj4gSSB3aWxsIHRoaW5rIGFi
-b3V0IHRoYXQgYW5kIGFkZCB0aGlzIGluIGxhdGVyIHY1IHBhdGNoLXNldCBpZiBub2JvZHkgaGFz
-IGRpZmZlcmVudA0KPiBjb25jZXJucy4NCj4gVGhhbmtzLg0KW1JpY2hhcmQgWmh1XSBIaSBUaW06
-DQpBcyB5b3UgbWVudGlvbmVkIGFib3ZlLCB0aGUgQ0xLUkVRIyBHUElPIFBJTiBpcyBub3QgdXNl
-ZCBmb3IgUENJZSBvbiB5b3VyIGJvYXJkLCByaWdodD8NCiIgKEkgaGF2ZSBib2FyZHMgdGhhdCB1
-c2UgdGhlIG9ubHkgdHdvIHBvc3NpYmxlIHBpbnMgZm9yIENMS1JFUSBhcyBvdGhlciBmZWF0dXJl
-cykiDQoNCkRpZCB0aGUgb3ZlcnJpZGUgY29uZmlndXJhdGlvbiBvZiB0aGUgY2xrcmVxIyB3aWxs
-IGJyaW5nIHVuZXhwZWN0ZWQgcmVzdWx0cyBmb3Igb3RoZXIgZmVhdHVyZXMgb24geW91ciBib2Fy
-ZD8NCg0KQlINClJpY2hhcmQgDQoNCj4gDQo+IEJSDQo+IFJpY2hhcmQNCj4gDQo+ID4NCj4gPiBC
-ZXN0IHJlZ2FyZHMsDQo+ID4NCj4gPiBUaW0NCg==
+On Fri, Oct 22, 2021 at 11:58:42AM -0700, Mike Kravetz wrote:
+> From f9c401323fee234667787a118c74d93aa185fcf6 Mon Sep 17 00:00:00 2001
+> From: Mike Kravetz <mike.kravetz@oracle.com>
+> Date: Fri, 22 Oct 2021 11:40:57 -0700
+> Subject: [PATCH v4 1/5] hugetlb: add demote hugetlb page sysfs interfaces
+> 
+> Two new sysfs files are added to demote hugtlb pages.  These files are
+> both per-hugetlb page size and per node.  Files are:
+>   demote_size - The size in Kb that pages are demoted to. (read-write)
+>   demote - The number of huge pages to demote. (write-only)
+> 
+> By default, demote_size is the next smallest huge page size.  Valid huge
+> page sizes less than huge page size may be written to this file.  When
+> huge pages are demoted, they are demoted to this size.
+> 
+> Writing a value to demote will result in an attempt to demote that
+> number of hugetlb pages to an appropriate number of demote_size pages.
+> 
+> NOTE: Demote interfaces are only provided for huge page sizes if there
+> is a smaller target demote huge page size.  For example, on x86 1GB huge
+> pages will have demote interfaces.  2MB huge pages will not have demote
+> interfaces.
+> 
+> This patch does not provide full demote functionality.  It only provides
+> the sysfs interfaces.
+> 
+> It also provides documentation for the new interfaces.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+ 
+> ---
+>  Documentation/admin-guide/mm/hugetlbpage.rst |  30 +++-
+>  include/linux/hugetlb.h                      |   1 +
+>  mm/hugetlb.c                                 | 155 ++++++++++++++++++-
+>  3 files changed, 183 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> index 8abaeb144e44..bb90de3885d1 100644
+> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> @@ -234,8 +234,12 @@ will exist, of the form::
+>  
+>  	hugepages-${size}kB
+>  
+> -Inside each of these directories, the same set of files will exist::
+> +Inside each of these directories, the set of files contained in ``/proc``
+> +will exist.  In addition, two additional interfaces for demoting huge
+> +pages may exist::
+>  
+> +        demote
+> +        demote_size
+>  	nr_hugepages
+>  	nr_hugepages_mempolicy
+>  	nr_overcommit_hugepages
+> @@ -243,7 +247,29 @@ Inside each of these directories, the same set of files will exist::
+>  	resv_hugepages
+>  	surplus_hugepages
+>  
+> -which function as described above for the default huge page-sized case.
+> +The demote interfaces provide the ability to split a huge page into
+> +smaller huge pages.  For example, the x86 architecture supports both
+> +1GB and 2MB huge pages sizes.  A 1GB huge page can be split into 512
+> +2MB huge pages.  Demote interfaces are not available for the smallest
+> +huge page size.  The demote interfaces are:
+> +
+> +demote_size
+> +        is the size of demoted pages.  When a page is demoted a corresponding
+> +        number of huge pages of demote_size will be created.  By default,
+> +        demote_size is set to the next smaller huge page size.  If there are
+> +        multiple smaller huge page sizes, demote_size can be set to any of
+> +        these smaller sizes.  Only huge page sizes less than the current huge
+> +        pages size are allowed.
+> +
+> +demote
+> +        is used to demote a number of huge pages.  A user with root privileges
+> +        can write to this file.  It may not be possible to demote the
+> +        requested number of huge pages.  To determine how many pages were
+> +        actually demoted, compare the value of nr_hugepages before and after
+> +        writing to the demote interface.  demote is a write only interface.
+> +
+> +The interfaces which are the same as in ``/proc`` (all except demote and
+> +demote_size) function as described above for the default huge page-sized case.
+>  
+>  .. _mem_policy_and_hp_alloc:
+>  
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 1faebe1cd0ed..f2c3979efd69 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -596,6 +596,7 @@ struct hstate {
+>  	int next_nid_to_alloc;
+>  	int next_nid_to_free;
+>  	unsigned int order;
+> +	unsigned int demote_order;
+>  	unsigned long mask;
+>  	unsigned long max_huge_pages;
+>  	unsigned long nr_huge_pages;
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 95dc7b83381f..d2262ad4b3ed 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2986,7 +2986,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+>  
+>  static void __init hugetlb_init_hstates(void)
+>  {
+> -	struct hstate *h;
+> +	struct hstate *h, *h2;
+>  
+>  	for_each_hstate(h) {
+>  		if (minimum_order > huge_page_order(h))
+> @@ -2995,6 +2995,22 @@ static void __init hugetlb_init_hstates(void)
+>  		/* oversize hugepages were init'ed in early boot */
+>  		if (!hstate_is_gigantic(h))
+>  			hugetlb_hstate_alloc_pages(h);
+> +
+> +		/*
+> +		 * Set demote order for each hstate.  Note that
+> +		 * h->demote_order is initially 0.
+> +		 * - We can not demote gigantic pages if runtime freeing
+> +		 *   is not supported, so skip this.
+> +		 */
+> +		if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> +			continue;
+> +		for_each_hstate(h2) {
+> +			if (h2 == h)
+> +				continue;
+> +			if (h2->order < h->order &&
+> +			    h2->order > h->demote_order)
+> +				h->demote_order = h2->order;
+> +		}
+>  	}
+>  	VM_BUG_ON(minimum_order == UINT_MAX);
+>  }
+> @@ -3235,9 +3251,31 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	return 0;
+>  }
+>  
+> +static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
+> +	__must_hold(&hugetlb_lock)
+> +{
+> +	int rc = 0;
+> +
+> +	lockdep_assert_held(&hugetlb_lock);
+> +
+> +	/* We should never get here if no demote order */
+> +	if (!h->demote_order) {
+> +		pr_warn("HugeTLB: NULL demote order passed to demote_pool_huge_page.\n");
+> +		return -EINVAL;		/* internal error */
+> +	}
+> +
+> +	/*
+> +	 * TODO - demote fucntionality will be added in subsequent patch
+> +	 */
+> +	return rc;
+> +}
+> +
+>  #define HSTATE_ATTR_RO(_name) \
+>  	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+>  
+> +#define HSTATE_ATTR_WO(_name) \
+> +	static struct kobj_attribute _name##_attr = __ATTR_WO(_name)
+> +
+>  #define HSTATE_ATTR(_name) \
+>  	static struct kobj_attribute _name##_attr = \
+>  		__ATTR(_name, 0644, _name##_show, _name##_store)
+> @@ -3433,6 +3471,105 @@ static ssize_t surplus_hugepages_show(struct kobject *kobj,
+>  }
+>  HSTATE_ATTR_RO(surplus_hugepages);
+>  
+> +static ssize_t demote_store(struct kobject *kobj,
+> +	       struct kobj_attribute *attr, const char *buf, size_t len)
+> +{
+> +	unsigned long nr_demote;
+> +	unsigned long nr_available;
+> +	nodemask_t nodes_allowed, *n_mask;
+> +	struct hstate *h;
+> +	int err = 0;
+> +	int nid;
+> +
+> +	err = kstrtoul(buf, 10, &nr_demote);
+> +	if (err)
+> +		return err;
+> +	h = kobj_to_hstate(kobj, &nid);
+> +
+> +	if (nid != NUMA_NO_NODE) {
+> +		init_nodemask_of_node(&nodes_allowed, nid);
+> +		n_mask = &nodes_allowed;
+> +	} else {
+> +		n_mask = &node_states[N_MEMORY];
+> +	}
+> +
+> +	/* Synchronize with other sysfs operations modifying huge pages */
+> +	mutex_lock(&h->resize_lock);
+> +	spin_lock_irq(&hugetlb_lock);
+> +
+> +	while (nr_demote) {
+> +		/*
+> +		 * Check for available pages to demote each time thorough the
+> +		 * loop as demote_pool_huge_page will drop hugetlb_lock.
+> +		 *
+> +		 * NOTE: demote_pool_huge_page does not yet drop hugetlb_lock
+> +		 * but will when full demote functionality is added in a later
+> +		 * patch.
+> +		 */
+> +		if (nid != NUMA_NO_NODE)
+> +			nr_available = h->free_huge_pages_node[nid];
+> +		else
+> +			nr_available = h->free_huge_pages;
+> +		nr_available -= h->resv_huge_pages;
+> +		if (!nr_available)
+> +			break;
+> +
+> +		err = demote_pool_huge_page(h, n_mask);
+> +		if (err)
+> +			break;
+> +
+> +		nr_demote--;
+> +	}
+> +
+> +	spin_unlock_irq(&hugetlb_lock);
+> +	mutex_unlock(&h->resize_lock);
+> +
+> +	if (err)
+> +		return err;
+> +	return len;
+> +}
+> +HSTATE_ATTR_WO(demote);
+> +
+> +static ssize_t demote_size_show(struct kobject *kobj,
+> +					struct kobj_attribute *attr, char *buf)
+> +{
+> +	int nid;
+> +	struct hstate *h = kobj_to_hstate(kobj, &nid);
+> +	unsigned long demote_size = (PAGE_SIZE << h->demote_order) / SZ_1K;
+> +
+> +	return sysfs_emit(buf, "%lukB\n", demote_size);
+> +}
+> +
+> +static ssize_t demote_size_store(struct kobject *kobj,
+> +					struct kobj_attribute *attr,
+> +					const char *buf, size_t count)
+> +{
+> +	struct hstate *h, *demote_hstate;
+> +	unsigned long demote_size;
+> +	unsigned int demote_order;
+> +	int nid;
+> +
+> +	demote_size = (unsigned long)memparse(buf, NULL);
+> +
+> +	demote_hstate = size_to_hstate(demote_size);
+> +	if (!demote_hstate)
+> +		return -EINVAL;
+> +	demote_order = demote_hstate->order;
+> +
+> +	/* demote order must be smaller than hstate order */
+> +	h = kobj_to_hstate(kobj, &nid);
+> +	if (demote_order >= h->order)
+> +		return -EINVAL;
+> +
+> +	/* resize_lock synchronizes access to demote size and writes */
+> +	mutex_lock(&h->resize_lock);
+> +	h->demote_order = demote_order;
+> +	mutex_unlock(&h->resize_lock);
+> +
+> +	return count;
+> +}
+> +HSTATE_ATTR(demote_size);
+> +
+>  static struct attribute *hstate_attrs[] = {
+>  	&nr_hugepages_attr.attr,
+>  	&nr_overcommit_hugepages_attr.attr,
+> @@ -3449,6 +3586,16 @@ static const struct attribute_group hstate_attr_group = {
+>  	.attrs = hstate_attrs,
+>  };
+>  
+> +static struct attribute *hstate_demote_attrs[] = {
+> +	&demote_size_attr.attr,
+> +	&demote_attr.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group hstate_demote_attr_group = {
+> +	.attrs = hstate_demote_attrs,
+> +};
+> +
+>  static int hugetlb_sysfs_add_hstate(struct hstate *h, struct kobject *parent,
+>  				    struct kobject **hstate_kobjs,
+>  				    const struct attribute_group *hstate_attr_group)
+> @@ -3466,6 +3613,12 @@ static int hugetlb_sysfs_add_hstate(struct hstate *h, struct kobject *parent,
+>  		hstate_kobjs[hi] = NULL;
+>  	}
+>  
+> +	if (h->demote_order) {
+> +		if (sysfs_create_group(hstate_kobjs[hi],
+> +					&hstate_demote_attr_group))
+> +			pr_warn("HugeTLB unable to create demote interfaces for %s\n", h->name);
+> +	}
+> +
+>  	return retval;
+>  }
+>  
+> -- 
+> 2.31.1
+> 
+
+-- 
+Oscar Salvador
+SUSE Labs
