@@ -2,146 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A64438F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7A3438F23
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhJYGKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S230194AbhJYGLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhJYGKo (ORCPT
+        with ESMTP id S229987AbhJYGLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:10:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C30C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:08:22 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1met9d-0000sy-BV; Mon, 25 Oct 2021 08:08:17 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1met9a-0001tE-Og; Mon, 25 Oct 2021 08:08:14 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1met9a-0006St-Ng; Mon, 25 Oct 2021 08:08:14 +0200
-Date:   Mon, 25 Oct 2021 08:08:12 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
-Cc:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
-        lee.jones@linaro.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v3] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211025060812.pqwapyqni4vx75tc@pengutronix.de>
-References: <YXU2i0FtAGDRCMSu@fedora>
+        Mon, 25 Oct 2021 02:11:02 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274BBC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:08:41 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d13so8178910wrf.11
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LGkRycj0d3BgvWsn3mqfLGnFcKdGcdIEmfaEWsojsoA=;
+        b=RutRlINtDvCq2A2xg1lqlbsaVbTYFWtCjSCs91oJFS7J5ijaZ0/KKXPdEnEMmXdOp9
+         ra8YOmlmjCYB+l3ELTTby0zgtclDNXgjstjLPujDO16qXR3uW0pQCzQxQ6Brfj9vHd+S
+         r1q4tqd7x9kXx6yqtBIZxxEg+rfxC37SN0S9jrr8QbMtOssruTYELFGadeQXVKcvD6WP
+         cf/F3dx92bKkxFrn7KgYlp1vWO+M/XmvBZ4ejnwuJ7a2Qc2jNqpG4YErx77GaRqHnXv5
+         iyBcEluhcn0Cu+vW1DvKO6fdpwbFoAXYnIzFJcj5RPdFhD/1RbcT2fwHhqT6pm8X9aGI
+         GKHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LGkRycj0d3BgvWsn3mqfLGnFcKdGcdIEmfaEWsojsoA=;
+        b=q7AraPLrbWIt5sQTVsMDDKqiHkpIHUCrKSIZG/CGhwrygfMc+60uuQbhK8tU5wpznJ
+         sdeBPtjlsbUTK6k/eB8r/d+pFMqoL30WJT4tpaUvtby9SVi1Fg7EY1cWgCHOU7PEBTSw
+         gOG3RuGhpdVPDneJCcqbPRfEThnBZBHB31aV8WSErbkDSbEZmeRoAPTqqNibpPeuVNWV
+         sdrNredElFXdgViaEn9iIB2y4q4uAfmwCox5Eo2yLgJawM8QU0n/U2BVxYbxkmUlLIxY
+         QUYGS2SpP7BT2DisOvwYTjTORdce6hEDT2NcMKtxxOdUsJ7XCsWsC/IPK5BJkbsPx38/
+         /omQ==
+X-Gm-Message-State: AOAM532N5BgU0R/JR6g7+Tj6UmFhvzXQjbrfpSJgsKOAhyF0AA2rLtEH
+        t5raLNvx2xxi+iH9hp3K7AgcQ61xblqEH7U8OqlHyQ==
+X-Google-Smtp-Source: ABdhPJxo61B3UhJ1Hqmx+YwhbQWISYFBHmDSQ2UBVE+fx6sumH0Qh2AtVNl9yTqySp7SN0F9ztWiKNp4F8iXtmXvoIM=
+X-Received: by 2002:a5d:5849:: with SMTP id i9mr21493562wrf.331.1635142119602;
+ Sun, 24 Oct 2021 23:08:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="c5jbsx2ilnzxwhem"
-Content-Disposition: inline
-In-Reply-To: <YXU2i0FtAGDRCMSu@fedora>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211025040607.92786-1-wefu@redhat.com> <20211025040607.92786-2-wefu@redhat.com>
+ <CAAhSdy1N-UQFnbFc7PSwf62y=gbvX7pK=vwUaG8m_KzdWx3AgQ@mail.gmail.com> <CAJF2gTT9T-TwTmGsfDH0Y05LO6dF6nGUUSGZW=RSackM0fUUyg@mail.gmail.com>
+In-Reply-To: <CAJF2gTT9T-TwTmGsfDH0Y05LO6dF6nGUUSGZW=RSackM0fUUyg@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 25 Oct 2021 11:38:27 +0530
+Message-ID: <CAAhSdy1ZuQyWdVY5dmrnNVHe3oOYxhieW1upAhbnDvuxNL=YyA@mail.gmail.com>
+Subject: Re: [RESEND PATCH V3 1/2] dt-bindings: riscv: add mmu-supports-svpbmt
+ for Svpbmt
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Wei Fu <wefu@redhat.com>, Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com,
+        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Gordan Markus <gordan.markus@canonical.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Greg Favor <gfavor@ventanamicro.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        Xinhaoqu <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 25, 2021 at 11:30 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Mon, Oct 25, 2021 at 12:17 PM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Mon, Oct 25, 2021 at 9:36 AM <wefu@redhat.com> wrote:
+> > >
+> > > From: Wei Fu <wefu@redhat.com>
+> > >
+> > > Previous patch has added svpbmt in arch/riscv and changed the
+> > > DT mmu-type. Update dt-bindings related property here.
+> > >
+> > > Signed-off-by: Wei Fu <wefu@redhat.com>
+> > > Co-developed-by: Guo Ren <guoren@kernel.org>
+> > > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/riscv/cpus.yaml | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > index e534f6a7cfa1..76f324d85e12 100644
+> > > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > @@ -59,6 +59,11 @@ properties:
+> > >        - riscv,sv48
+> > >        - riscv,none
+> > >
+> > > +  mmu-supports-svpbmt:
+> > > +    description:
+> > > +      Describes the CPU's mmu-supports-svpbmt support
+> > > +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> >
+> > There were various proposals from different folks in the previous
+> > email threads.
+> >
+> > I think most of us were converging on:
+> > 1) Don't modify "mmu-type" DT property for backward
+> > compatibility
+> I agree. FuWei has followed that in the patch.
+>
+> > 2) Add boolean DT property "riscv,svpmbt" under
+> > "mmu" child DT node of each CPU DT node. Same will apply
+> > to boolean DT property "riscv,svnapot" as well.
+> We have various proposals here:
+> @Philipp suggests firstly, but break the backward compatibility:
+>  cpu@0 {
+>     ...
+>     mmu {
+>        type = "riscv,sv39";
+>        supports-svpbmt;
+>        supports-svnapot;
+>     };
+>
+> @guoren suggests reusing the mmu-type, but seems not clean.
+> cpu@0 {
+>    ...
+>    mmu-type = "riscv,sv39,svpbmt,svnapot";
+>
+>
+> @fuwei suggests simple name property in CPU section:
+> cpu@0 {
+>    ...
+>    mmu-type = "riscv,sv39";
+>    mmu-supports-svpbmt;
+>    mmu-supports-svnapot;
+>
+> @Anup suggests:
+> cpu@0 {
+>    ...
+>     mmu-type = "riscv,sv39";
+>     mmu {
+>        supports-svpbmt;
+>        supports-svnapot;
+>     };
+>
+> Any other suggestions? Thx.
+>
+> >
+> > We also have bitmanip and vector broken down into smaller
+> > extensions so grouping related extensions as separate DT node
+> > under each CPU node will be more readable and easy to parse.
+> Do you mean combine mmu extensions with them together?
+> cpu@0 {
+>     ...
+>     extensions {
+>         supports-svpbmt;
+>         supports-svnapot;
+>         supports-bitmanip;
+>         supports-vector-v0p7;
+>     };
 
---c5jbsx2ilnzxwhem
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I meant separate group nodes like this:
 
-Hello,
+cpu@0 {
+    ...
+    mmu-type = "riscv,sv39";
+    mmu { /* Only considered when mmu-type is present and mmu-type !=
+"riscv,sv32" */
+        riscv,svpmbt;
+        riscv,svnapot;
+    };
 
-On Sun, Oct 24, 2021 at 07:33:47AM -0300, Ma=EDra Canal wrote:
-> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-> replace it for the atomic PWM API.
->=20
-> Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
-> ---
-> V1 -> V2: Assign variables directly and simplify conditional statement
-> V2 -> V3: Fix declaration of undeclared variable
-> ---
->  drivers/media/rc/pwm-ir-tx.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-> index 4bc28d2c9cc9..e1f348a962e8 100644
-> --- a/drivers/media/rc/pwm-ir-tx.c
-> +++ b/drivers/media/rc/pwm-ir-tx.c
-> @@ -53,22 +53,21 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int=
- *txbuf,
->  {
->  	struct pwm_ir *pwm_ir =3D dev->priv;
->  	struct pwm_device *pwm =3D pwm_ir->pwm;
-> -	int i, duty, period;
-> +	struct pwm_state state;
-> +	int i;
->  	ktime_t edge;
->  	long delta;
-> =20
-> -	period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-> -	duty =3D DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
-> +	pwm_init_state(pwm, &state);
-> =20
-> -	pwm_config(pwm, duty, period);
-> +	state.period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-> +	state.duty_cycle =3D DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * state.perio=
-d, 100);
-> =20
->  	edge =3D ktime_get();
-> =20
->  	for (i =3D 0; i < count; i++) {
-> -		if (i % 2) // space
-> -			pwm_disable(pwm);
-> -		else
-> -			pwm_enable(pwm);
-> +		state.enabled =3D !(i % 2);
-> +		pwm_apply_state(pwm, &state);
-> =20
->  		edge =3D ktime_add_us(edge, txbuf[i]);
->  		delta =3D ktime_us_delta(edge, ktime_get());
-> @@ -76,7 +75,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *=
-txbuf,
->  			usleep_range(delta, delta + 10);
->  	}
-> =20
-> -	pwm_disable(pwm);
-> +	state.enabled =3D false;
-> +	pwm_apply_state(pwm, &state);
+    bitmanip { /* Only considered when "B" is present in the ISA string */
+        ...
+    };
 
-I would have added a struct pwm_state to struct pwm_ir and then would
-call pwm_init_state() only once in .probe(). But that's subjective if
-you like it better or not, so do what you prefer.
+   vector { /* Only considered when "V" is present in the ISA string */
+       ...
+   };
+    ...
+};
 
-The other changes look fine, so:
+Regards,
+Anup
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-=20
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---c5jbsx2ilnzxwhem
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF2ScgACgkQwfwUeK3K
-7Anhawf/dhik4GZyFmS1CHn7YL/6mtOQfOCHwMhaLigyUAqmjtuC7ZM9WqWhzfE2
-sdAvJxh8KkP+K8M9vx6CHWtwipMBytT6biJOXS9xi0w6fGzv0Ax+CNEL8FVL/eQ/
-DbJI46T4EDgKWD5rkZ5Xd9wdOukQ0pQg5AJnpxiF8qhZagmc9OsYPU85o+WqW+d0
-E3z81hFe5g93RoFzsb094+u0iS+1nnuI5nh1/F7LsHkLlD7kvVZLtPvHrslJV3dJ
-b0DBL3B3ZLTIu/l1EfZYD645fzL5OySWG2wy63XhUVSHKDNXSSE368P2TJBLusp1
-Nptf94WxSIubEYTG8+Ol+PiqTo7u+w==
-=9aJw
------END PGP SIGNATURE-----
-
---c5jbsx2ilnzxwhem--
+>
+> >
+> > Regards,
+> > Anup
+> >
+> > > +
+> > >    riscv,isa:
+> > >      description:
+> > >        Identifies the specific RISC-V instruction set architecture
+> > > --
+> > > 2.25.4
+> > >
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
