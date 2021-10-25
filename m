@@ -2,98 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29DE438EA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F91438EAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhJYFMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232413AbhJYFMU (ORCPT
+        id S232445AbhJYFN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:13:59 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:33803 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhJYFN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:12:20 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5DCC061764;
-        Sun, 24 Oct 2021 22:09:58 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id e4so10470585wrc.7;
-        Sun, 24 Oct 2021 22:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e33cFBOzoJJnu+QuhW9z/Ktfqeqk4oyAu7uMrGtMqZY=;
-        b=TgUa0vL9aNRUteLxgIr0I4C/MZLmDNW58yWC/lNuvNTQEI0xsYsFCC4aNh/UjdH7Y2
-         uLp7HSvmuZPjXxHBV7WNCitmIEun4xLEMECob/7zuv7720aDGT9sPNwhdyxP26p/YtFk
-         g/a05A10M0a0psfwBygHGP2NcPjivzH6/S9eehB66fyLnJlTD0IM2zCYH/rZs5mQUvl9
-         cmSuiC1wccMYwDAXJ9hrivuipVlNbChSGIfh8FabII+b+SQvixDRoigc7zbMyF+p4lea
-         lVxTVtAdvCy69QPj0/HDz7PRLkoiGfqRMrPaLLci6eeXYPjHCvg2gexAAvzBoFQjv0Yt
-         wq+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e33cFBOzoJJnu+QuhW9z/Ktfqeqk4oyAu7uMrGtMqZY=;
-        b=keR+d37aqWcxXDpz9HZ8zycRQVaE8wnAnJwIMghwnx2YsCckEQUtrsYv5a0eW1meRB
-         YrfpPC6AJ/Qt7cx1/Dqs4KyJmpE4c8sboSnSrRu7j2rz6PdAiVkDwoUZADh1/rJvHxtF
-         J71EoXqbl+1s8292qKH7MF1ImtigzI9me/nUCzMeoSPtQYjmus+qFCQr7KHHfGROiTB6
-         Enlzd97QKxvXQEMx/TTXyL5MC1iclYAy3SyvoRXxGZkbKW4/8qFRvSTvM3cyLZRVQes5
-         8Uk83Ntner4f8K3SdlKiDYP1SMBVx8YOVxN5zg8tXOrSV+mm0wB1mT+ZK2pixvYVkpTp
-         GziA==
-X-Gm-Message-State: AOAM530jRNB1q3BNrvuX1RsX8ILmmgH/jJMwg5SKoLzo/eX0eydh/6/S
-        KipdTUhW67c55khfKn5k9SrUEXiMgtU=
-X-Google-Smtp-Source: ABdhPJy2XwvxxbsM/WsD+PFFAlvFMpLU1VSoZ2+r1KcO8Rw5FKWBoRKTw4SSojyFj7r8cesJcg817Q==
-X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr7190814wri.41.1635138597222;
-        Sun, 24 Oct 2021 22:09:57 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p200300c78f4e06658ca10b404d232775.dip0.t-ipconnect.de. [2003:c7:8f4e:665:8ca1:b40:4d23:2775])
-        by smtp.gmail.com with ESMTPSA id j7sm19076095wmq.32.2021.10.24.22.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 22:09:56 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 07:09:55 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org
-Subject: [PATCH 2/2] Docs: usb: remove :c:func: for usb_register and
- usb_deregister
-Message-ID: <0ace789dfbe2d4562c27d374afa5ff078efe2261.1635138058.git.philipp.g.hortmann@gmail.com>
-References: <cover.1635138058.git.philipp.g.hortmann@gmail.com>
+        Mon, 25 Oct 2021 01:13:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd32r3QQQz4xZ0;
+        Mon, 25 Oct 2021 16:11:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635138694;
+        bh=dqey1eA2UwdztCXkBRMrK2SIQ19yGv/mM6F7haswWG0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uCG2vzS1gYLtqrvXZ1jIjfNXuFvgSWXtwFLRk/AnRQrlvhxU2gSCS1U075gNmAxBu
+         4LthcWUIPfXGU1d27zXmg5Rt0lHFA93I64wgxfDaDhUPxvzud3z3T9XLl2frhMn8ID
+         VO8CCCHsZo1EQt+j0n06b5BZ+igq4uj7Jsk9Z+Czm0emLH1nXP6F/x87ddKWmHbShC
+         Q3J59coD4AFvVnm4rsbAMd9YLnZwWOhDN0qu9R3ZtJ6D0B84SV/FlYElFqBvsSPsA6
+         eZ3zGgIG7PR0nsBGzlgQ4GZMkNryQa1397D52ADkK5Uzn+l3/vbgDxy3K16qiM+/Kb
+         JxgrGdF5f4O7A==
+Date:   Mon, 25 Oct 2021 16:11:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Subject: linux-next: manual merge of the kvm tree with the tip tree
+Message-ID: <20211025161131.5f2a2459@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1635138058.git.philipp.g.hortmann@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/JzVuLz4fIkxGYvP21YSHyzC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove :c:func: for usb_register and usb_deregister
+--Sig_/JzVuLz4fIkxGYvP21YSHyzC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
- Documentation/driver-api/usb/writing_usb_driver.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi all,
 
-diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
-index a511c6fecf96..e09dac9e2cb6 100644
---- a/Documentation/driver-api/usb/writing_usb_driver.rst
-+++ b/Documentation/driver-api/usb/writing_usb_driver.rst
-@@ -84,7 +84,7 @@ this user-space interaction. The skeleton driver needs this kind of
- interface, so it provides a minor starting number and a pointer to its
- :c:type:`file_operations` functions.
- 
--The USB driver is then registered with a call to :c:func:`usb_register`,
-+The USB driver is then registered with a call to usb_register(),
- usually in the driver's init function, as shown here::
- 
-     static int __init usb_skel_init(void)
-@@ -105,7 +105,7 @@ usually in the driver's init function, as shown here::
- 
- 
- When the driver is unloaded from the system, it needs to deregister
--itself with the USB subsystem. This is done with the :c:func:`usb_deregister`
-+itself with the USB subsystem. This is done with usb_deregister()
- function::
- 
-     static void __exit usb_skel_exit(void)
--- 
-2.25.1
+Today's linux-next merge of the kvm tree got a conflict in:
 
+  arch/x86/kvm/x86.c
+
+between commits:
+
+  d69c1382e1b7 ("x86/kvm: Convert FPU handling to a single swap buffer")
+  126fe0401883 ("x86/fpu: Cleanup xstate xcomp_bv initialization")
+
+from the tip tree and commits:
+
+  e8f65b9bb483 ("KVM: x86: Remove defunct setting of XCR0 for guest during =
+vCPU create")
+  583d369b36a9 ("KVM: x86: Fold fx_init() into kvm_arch_vcpu_create()")
+
+from the kvm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kvm/x86.c
+index 5f1fc8224414,ac83d873d65b..000000000000
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@@ -10477,16 -10869,15 +10722,6 @@@ static int sync_regs(struct kvm_vcpu *v
+  	return 0;
+  }
+ =20
+- static void fx_init(struct kvm_vcpu *vcpu)
+ -void kvm_free_guest_fpu(struct kvm_vcpu *vcpu)
+--{
+- 	/*
+- 	 * Ensure guest xcr0 is valid for loading
+- 	 */
+- 	vcpu->arch.xcr0 =3D XFEATURE_MASK_FP;
+-=20
+- 	vcpu->arch.cr0 |=3D X86_CR0_ET;
+ -	if (vcpu->arch.guest_fpu) {
+ -		kmem_cache_free(x86_fpu_cache, vcpu->arch.guest_fpu);
+ -		vcpu->arch.guest_fpu =3D NULL;
+ -	}
+--}
+ -EXPORT_SYMBOL_GPL(kvm_free_guest_fpu);
+--
+  int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
+  {
+  	if (kvm_check_tsc_unstable() && atomic_read(&kvm->online_vcpus) !=3D 0)
+@@@ -10543,13 -10934,24 +10778,11 @@@ int kvm_arch_vcpu_create(struct kvm_v=
+cp
+  	if (!alloc_emulate_ctxt(vcpu))
+  		goto free_wbinvd_dirty_mask;
+ =20
+ -	vcpu->arch.user_fpu =3D kmem_cache_zalloc(x86_fpu_cache,
+ -						GFP_KERNEL_ACCOUNT);
+ -	if (!vcpu->arch.user_fpu) {
+ -		pr_err("kvm: failed to allocate userspace's fpu\n");
+ -		goto free_emulate_ctxt;
+ -	}
+ -
+ -	vcpu->arch.guest_fpu =3D kmem_cache_zalloc(x86_fpu_cache,
+ -						 GFP_KERNEL_ACCOUNT);
+ -	if (!vcpu->arch.guest_fpu) {
+ +	if (!fpu_alloc_guest_fpstate(&vcpu->arch.guest_fpu)) {
+  		pr_err("kvm: failed to allocate vcpu's fpu\n");
+ -		goto free_user_fpu;
+ +		goto free_emulate_ctxt;
+  	}
+ -	fpstate_init(&vcpu->arch.guest_fpu->state);
+ -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+ -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =3D
+ -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+ =20
+- 	fx_init(vcpu);
+-=20
+  	vcpu->arch.maxphyaddr =3D cpuid_query_maxphyaddr(vcpu);
+  	vcpu->arch.reserved_gpa_bits =3D kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ =20
+
+--Sig_/JzVuLz4fIkxGYvP21YSHyzC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2PIMACgkQAVBC80lX
+0GxIXwgAhFRBBXN8TicCFlnXDTCCTcqH/BKGU6+GtJwpit1FKb3e9uRtqdBAEZ3T
+0xV57z2pG+PTEpsEHzkT2SHcm+EJUWHqyqNOiMD+ujwCDXJa6BmfopGhP4NmxLj0
+/V22naNz/KKf77bOMmaAcqhf1AFCf15cVjpjIjPtZnjai8XrB+IU3bpi4kRsF09p
+nc1uWEglXCDzfRJYYjsNrSZLs0LbzirFc2nqAS7sk+5pTVmK4pJXRKqI8G4AFz7n
+qulKjxAZwuWTzBR5C5HyhWaVU+lAQSqCZP2yjKUw2KKrrAoXSDbiQtLDQLSd0bmp
+MHJT0cbd8U9+vEXcu3ZtwzagJh5mJQ==
+=/qAC
+-----END PGP SIGNATURE-----
+
+--Sig_/JzVuLz4fIkxGYvP21YSHyzC--
