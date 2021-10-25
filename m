@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBB043A200
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436BC43A061
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbhJYToM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:44:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
+        id S235483AbhJYTaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:30:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235781AbhJYTgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:36:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DA2761078;
-        Mon, 25 Oct 2021 19:33:18 +0000 (UTC)
+        id S235088AbhJYT1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:27:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C616610C9;
+        Mon, 25 Oct 2021 19:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190399;
-        bh=f/Zqf6JSeBrp8aNGUB4trnXhk/MJFc292l3Lcv48/tQ=;
+        s=korg; t=1635189841;
+        bh=3/r+ujkpTZtg1blR7k75uP93Ya2nm5SNy4vWjmjfS7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OB4cBuRpH/Dk5SAyI+2LAyaC7+Uomh8+GHVI5kgxJwFCCm9RGgbJO/uzRjEPy3qMJ
-         vtzPwW90M0HQXlZyBOYakbgoxEvWj6FoX1C7RRrN7bGEeDYolfxcnA5s07P9265aLk
-         VlSkxXzgCXswW5TwfsbpKsf2HtBQK29yWV6E6lW8=
+        b=EraSHGu7QczDhknBxbZSrC+978PumPwSzdEvjJsQ1LSqcDCcKfD/TXwJsP3PAikHy
+         ardEdMJM9GpL1IAtIiBoCtRFCU/W+E3JX8FqR6IOauxPrfu7eFNN0qm+YF1t4OON8h
+         UTsxTftFRic3P/6buoAH02iKqirdpaysSQNnROCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Barret Rhoden <brho@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 48/95] elfcore: correct reference to CONFIG_UML
+        stable@vger.kernel.org, Steven Clarkson <sc@lambdal.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 20/37] ALSA: hda/realtek: Add quirk for Clevo PC50HS
 Date:   Mon, 25 Oct 2021 21:14:45 +0200
-Message-Id: <20211025191003.585362249@linuxfoundation.org>
+Message-Id: <20211025190932.413966468@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Steven Clarkson <sc@lambdal.com>
 
-commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
+commit aef454b40288158b850aab13e3d2a8c406779401 upstream.
 
-Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
-special handling for two architectures, ia64 and User Mode Linux.
-However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
-symbol for User-Mode Linux was used.
+Apply existing PCI quirk to the Clevo PC50HS and related models to fix
+audio output on the built in speakers.
 
-Although the directory for User Mode Linux is ./arch/um; the Kconfig
-symbol for this architecture is called CONFIG_UML.
-
-Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
-
-  UM
-  Referencing files: include/linux/elfcore.h
-  Similar symbols: UML, NUMA
-
-Correct the name of the config to the intended one.
-
-[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
-  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
-  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
-
-Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
-Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Barret Rhoden <brho@google.com>
+Signed-off-by: Steven Clarkson <sc@lambdal.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20211014133554.1326741-1-sc@lambdal.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/elfcore.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -104,7 +104,7 @@ static inline int elf_core_copy_task_fpr
- #endif
- }
- 
--#if defined(CONFIG_UM) || defined(CONFIG_IA64)
-+#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2521,6 +2521,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x65d2, "Clevo PB51R[CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e1, "Clevo PB51[ED][DF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e5, "Clevo PC50D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x65f1, "Clevo PC50HS", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
 
 
