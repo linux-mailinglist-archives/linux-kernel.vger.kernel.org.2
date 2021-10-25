@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146B443A579
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4139443A57D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbhJYVKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
+        id S234883AbhJYVK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbhJYVKF (ORCPT
+        with ESMTP id S234815AbhJYVK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:10:05 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDF7C061243
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:07:42 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id t184so12179849pfd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:07:42 -0700 (PDT)
+        Mon, 25 Oct 2021 17:10:26 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D54C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:08:04 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id c4so4892357plg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:08:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TQztyN+OyqV2EYalpv3OnHEA+p7UGY3ffgQzpyFstrQ=;
-        b=jPJwfXXczwHre/rQIPjK/VoVvO0IuwfH8WIMj2xxEOvALb2VPbYxNoqprq0OQR5nPC
-         o5DyFtXCsBA94PwIkmXaD6fOOn6uzE1vuL8iTIZvpeFHN0NIs19av/f8DymXuOBARNDi
-         6wKlBs2WwIj2FcUduika3D+VnZO1ueK9qaM2o=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YER+UsEJQB2rlb2mYD8bWyv9AdQVIu6QvEjQhyaqN1c=;
+        b=TttYKHsfa91uCLGTprzA0kyqWoaWhfLwimpQgDIgZe1N/IJA2kXpsgkac8ouk+BYs4
+         EKnsezQQ+UsOXYL/V9lpN47tgk2Wjot9tCw44Atq+3RizDrWzPvO29vQGVXnPYSXXvKn
+         peDcRZXtMGKUkk6Pd/0anNLGezp+NIGXVjuMPo8R/qyQzghV+XXu+SSXUnsgyHOZ169P
+         XLaMjHuzySBJ2N5tOw3z4v3lRN4RUiu6qnB24S5ISxhb8dqKgSPydKXVK+Akjh0PkJrB
+         obeb2Zj+YCJW5/XT39oSYwZUbYm32m+4jLiEI4Ylu7iHfyNJSKLsBU9G/r5c+AzQ+PN5
+         oqBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TQztyN+OyqV2EYalpv3OnHEA+p7UGY3ffgQzpyFstrQ=;
-        b=z/nQqjv6vSUd3/rF6GDNicjMND6ExRIVqhIFPNYq0nZ0U6/AIGQdGAnb6rxk2Ar1C0
-         prIKWOt+yRy3XfkPNd76qJYPlBtZRRhkpapOcN1SrT8rQZYamcJysz5ud343KZg1//fE
-         b9D6yZ3PcYgJxNj5WEpiqcj8DQJHthkY+UxqDGUBaQAmkMwblHbKht9M/w7rjQ2aulkG
-         vpm6+OJZCMkaMWYIhFqKOmhrfd37eDlJ8vHYHtglpBT5PFHwU5BdTmGIRhJe/CF3WkxR
-         klShsW8bPa1yEWcRf3OTnfUlXQROWd74qVXvru0Iez6+jseq+wR0tpVtCZe5pg/xeEPh
-         YFWw==
-X-Gm-Message-State: AOAM530JqQaUm1cLSQmKp5xhIvH0KDeUKgWLoRXM8sNHUbDqLCNSimKH
-        cLMl+0mTcnNNJTKJKlYCuAXTrg==
-X-Google-Smtp-Source: ABdhPJz7CAVtw2oosUMB+o1UYU5LoroOh/r74Itpx8yjnMxuz2AoHAAIFbT9kzmQ6NZ1Nt3CdMAZTQ==
-X-Received: by 2002:a05:6a00:bc1:b0:47b:f093:eb4e with SMTP id x1-20020a056a000bc100b0047bf093eb4emr8462611pfu.55.1635196062554;
-        Mon, 25 Oct 2021 14:07:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id oj5sm8917184pjb.45.2021.10.25.14.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:07:42 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:07:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 01/12] fs/exec: make __set_task_comm always set a nul
- ternimated string
-Message-ID: <202110251407.6FD1411ECB@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-2-laoar.shao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YER+UsEJQB2rlb2mYD8bWyv9AdQVIu6QvEjQhyaqN1c=;
+        b=vKpe4lfXJ8qIxVek28jbW1p53UELngtnm7OXpsyzECUigti0OPeuACUXRuCHmbu8VE
+         bSLSEqLkJhgThw947kZZPLuGzz13hqWjxuTTza7pqCMuD/DW+Zal4zy40Gfag5jQLs/0
+         xyWG9zEWS+PE2WsS7n9dgi09JhsMxfzXlaxjFLOFhpasa51teO4GzROoY2kEuojL/ATP
+         URLSG9pbsGKh8Bi+nO408oHHCaalBBS/GA1FQO2bMQMWyxfIgubmdbUCQcniwSxi3Wyp
+         RP1/5OCyEppvL+87wkg4/9k7fSTeW7SSjPqqSTJCHzc77W+JN33Bm3TTJER1DJ/rcNUP
+         JxvQ==
+X-Gm-Message-State: AOAM533QVlIJT6gcfkLZy7xksBBicSY9v4OuC42YKMJvHLN78d0bmxeE
+        DUvcLpS7Oi2SO9VSZzprMnjiMMOdg7448Ju3ySpcag==
+X-Google-Smtp-Source: ABdhPJxqShdDqAKKy1SbM3yhraSEvDAjSHV1/6TvvzeTVYwp4GmmZel+OWlDhAeabm2/QOkqPxDuALY05TfcVKfrP0w=
+X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr8951391pju.95.1635196083541;
+ Mon, 25 Oct 2021 14:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-2-laoar.shao@gmail.com>
+References: <20211025190956.374447057@linuxfoundation.org> <20211025191007.069144838@linuxfoundation.org>
+ <20211025205652.GA2807@duo.ucw.cz>
+In-Reply-To: <20211025205652.GA2807@duo.ucw.cz>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 25 Oct 2021 14:07:52 -0700
+Message-ID: <CAFd5g47z64vhphWC4Arne4AsxH9roNMuGdfT193wUtrDGAgOsg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 70/95] gcc-plugins/structleak: add makefile var for
+ disabling structleak
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:04AM +0000, Yafang Shao wrote:
-> Make sure the string set to task comm is always nul ternimated.
+On Mon, Oct 25, 2021 at 1:56 PM Pavel Machek <pavel@denx.de> wrote:
+>
+> Hi!
+>
+> > [ Upstream commit 554afc3b9797511e3245864e32aebeb6abbab1e3 ]
+> >
+> > KUnit and structleak don't play nice, so add a makefile variable for
+> > enabling structleak when it complains.
+>
+> AFAICT, this patch does nothing useful in 5.10. Unlike mainline,
+> DISABLE_STRUCTLEAK_PLUGIN is not used elsewhere in the tree.
 
-typo nit: "terminated"
+The related patches that Greg picked up use this makefile variable.
 
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cheers
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+> Best regards,
+>                                                         Pavel
+>
+> > +++ b/scripts/Makefile.gcc-plugins
+> > @@ -19,6 +19,10 @@ gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF)            \
+> >               += -fplugin-arg-structleak_plugin-byref
+> >  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL)  \
+> >               += -fplugin-arg-structleak_plugin-byref-all
+> > +ifdef CONFIG_GCC_PLUGIN_STRUCTLEAK
+> > +    DISABLE_STRUCTLEAK_PLUGIN += -fplugin-arg-structleak_plugin-disable
+> > +endif
+> > +export DISABLE_STRUCTLEAK_PLUGIN
+> >  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK)            \
+> >               += -DSTRUCTLEAK_PLUGIN
+> >
+> --
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
