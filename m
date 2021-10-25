@@ -2,149 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDCC4392E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480F04392EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhJYJpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:45:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58816 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232948AbhJYJo6 (ORCPT
+        id S232743AbhJYJq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232546AbhJYJq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:44:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635154954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SKwKQKkno83iWdPQp68+jL3tuL2dNVk2AHtccPfXn80=;
-        b=U7IvCLnR4Hlky8FSv3f08I9JrWdAYGaL6r1yirKKZA17K9oDjEnVXex0FnzyXl7PYx/6Iw
-        BCpk5VLw/C+ZRRa+s7gxHV1wgxNjWbzWe8pEG+VDTyPymXN6D+M9kfrHS2vYgsbZKvHGtf
-        TlSA/nO0q0UnO2AyPEPFkMzBWotJvn8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-mMaRfN7JOiOBDnDm30BBxg-1; Mon, 25 Oct 2021 05:42:31 -0400
-X-MC-Unique: mMaRfN7JOiOBDnDm30BBxg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E3968066F5;
-        Mon, 25 Oct 2021 09:42:28 +0000 (UTC)
-Received: from x1.localdomain (unknown [10.39.195.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 91B5760BF4;
-        Mon, 25 Oct 2021 09:42:23 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v4 11/11] platform/x86: int3472: Deal with probe ordering issues
-Date:   Mon, 25 Oct 2021 11:41:19 +0200
-Message-Id: <20211025094119.82967-12-hdegoede@redhat.com>
-In-Reply-To: <20211025094119.82967-1-hdegoede@redhat.com>
-References: <20211025094119.82967-1-hdegoede@redhat.com>
+        Mon, 25 Oct 2021 05:46:27 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B2DC061745;
+        Mon, 25 Oct 2021 02:44:05 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id j21so10060257lfe.0;
+        Mon, 25 Oct 2021 02:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=rCGuC9ewYiAfYgiMkd1Yzii2AFCTuDrZolTjPAQg3+c=;
+        b=iU7RJCmXcYEuggBefGylFwYi5nT3nQEIBL9C3howVlfj1yqS/mQxUnMSTQRyeTkPyu
+         LPqeRdAZpTiHUTZq3VCCFdm9ecIXsl51GH1QXpT3b0sVWW6uERkxUj7b53jb8vcVsjp8
+         uA7KiMOOMkYV3j9e4LL0ztkrNMqsO9njfkq9fLbEP7AUzGLt9slLGDhBlArgJ0FgFiKC
+         Dq8ganCs1B4D5lrcUi7Su1DUyd9Xn+/EGaW30TqB1uAVoTQHC3MMPXs0EYbMWPMR4fWu
+         2WJ11Auf+7c5M12yKVuJ50sOsju9Up3tZbQnfKCQSkqNd6XVfQPlJno/VojUAsJoU8HS
+         fTkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=rCGuC9ewYiAfYgiMkd1Yzii2AFCTuDrZolTjPAQg3+c=;
+        b=o0kJAWJcTtlsSrnK2Fmg7n9akJTA5A37m0kQ6pDZg20w8vcvSBpho52kKqyRnO1oiF
+         6sfCWUxlwzPG8sDCLOIAZSzZssLK3eBbGMsgmV8rDUNqccNGATD5R9x28vHGz2ORSrKa
+         ZJ8YEcLIZXAAmPZWoa7/GjnvjQRy++eTRFFlBDKdU+Fqnaoj3mCd+D/M/34AfdOX9ixm
+         3nfyyDQ97mmTicS6kqwmQmvqPJWqLlLZHKLXrsT+p8Z7vSujZVoeGgex5QQaO1xWD7ya
+         +XiQmEFDh7ieZbLJRJLQh7eiIs03BQZ2UXagMG4lk3qP+8yUIXARd++oByoXHI0c9olp
+         1nfQ==
+X-Gm-Message-State: AOAM531bsSmZ1tjM3h79FYsWDTTUixZCsgKS6NTIUBePUVU0LAufa5Ui
+        fHNtwMFYq652koFUPKH8YkeO33Y04nX4odKf3shbojcvxAkpcc4f
+X-Google-Smtp-Source: ABdhPJxiSulMEdaSn86bJ2DVKn1Z22IQaRk/25SbQTk1vo51j+dq64XPUf6rN9M1Tul89e3XIL8alSQPdkOtXn73rEA=
+X-Received: by 2002:a05:6512:b29:: with SMTP id w41mr16174240lfu.240.1635155043576;
+ Mon, 25 Oct 2021 02:44:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+From:   Ronny Meeus <ronny.meeus@gmail.com>
+Date:   Mon, 25 Oct 2021 11:43:52 +0200
+Message-ID: <CAMJ=MEd9WuGA0MN+n0rGD6T+sgd=yciTmeEW9TjRjNXt+cF=qQ@mail.gmail.com>
+Subject: Unbounded priority inversion while assigning tasks into cgroups.
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-rt-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clk and regulator frameworks expect clk/regulator consumer-devices
-to have info about the consumed clks/regulators described in the device's
-fw_node.
+Hello
 
-To work around this info missing from the ACPI tables on devices where
-the int3472 driver is used, the int3472 MFD-cell drivers attach info about
-consumers to the clks/regulators when registering these.
+an unbounded priority inversion is observed when moving tasks into cgroups.
+In my case I'm using the cpu and cpuacct cgroups but the issue is
+independent of this.
 
-This causes problems with the probe ordering wrt drivers for consumers
-of these clks/regulators. Since the lookups are only registered when the
-provider-driver binds, trying to get these clks/regulators before then
-results in a -ENOENT error for clks and a dummy regulator for regulators.
+Kernel version: 4.9.79
+CPU: Dual core Cavium Octeon (MIPS)
+Kernel configured with CONFIG_PREEMPT=y
 
-All the sensor ACPI fw-nodes have a _DEP dependency on the INT3472 ACPI
-fw-node, so to work around these probe ordering issues the ACPI core /
-i2c-code does not instantiate the I2C-clients for any ACPI devices
-which have a _DEP dependency on an INT3472 ACPI device until all
-_DEP-s are met.
+I have a small application running at RT priority 92.
+Its job is to move high CPU consuming applications into a cgroup when
+the system is under high load.
+Under extreme load conditions (meaning a lot of script processing
+(process clone / exec / exit) and high application load), sometimes
+the application hangs for a long time (can be a couple of seconds but
+also hangs of 2 minutes are observed already).
 
-This relies on acpi_dev_clear_dependencies() getting called by the driver
-for the _DEP-s when they are ready, add a acpi_dev_clear_dependencies()
-call to the discrete.c probe code.
+Extending the kernel with traces (see below) showed that the
+root-cause of the blocking is the global rwsem
+"cgroup_threadgroup_rwsem".
+While adding a task into the cgroup (__cgroup_procs_write), the write
+lock is taken which will have to wait until all writers and readers
+have completed their critical section which can take very long.
+Especially since there are many of them running at a much lower
+priority and we have also applications running at medium priority
+running with a very high load.
 
-In the tps68470 case calling acpi_dev_clear_dependencies() is already done
-by the acpi_gpiochip_add() call done by the driver for the GPIO MFD cell
-(The GPIO cell is deliberately the last cell created to make sure the
-clk + regulator cells are already instantiated when this happens).
+As an initial attempt I tried applying the RT patch but this does not
+resolve the issue.
 
-However for proper probe ordering, the clk/regulator cells must not just
-be instantiated the must be fully ready (the clks + regulators must be
-registered with their subsystems).
+The second attempt was to replace the cgroup_threadgroup_rwsem by a
+rt_mutex (which offers priority inheritance).
+After this change the issue seems to be resolved.
+A disadvantage of this approach is that all accesses to the critical
+section are serialized on all cores (writes to assign tasks to cgroups
+and reads to create/exec/exit processes).
 
-Add MODULE_SOFTDEP dependencies for the clk and regulator drivers for
-the instantiated MFD-cells so that these are loaded before us and so
-that they bind immediately when the platform-devs are instantiated.
+For the moment I do not see any other alternative to resolve this problem.
+Any advice on the right way forward would be appreciated.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v2:
-- Only call acpi_dev_clear_dependencies() in the discrete.c case, for the
-  tps68470 case this is already done by the acpi_gpiochip_add() for the
-  GPIO MFD cell.
----
- drivers/platform/x86/intel/int3472/discrete.c | 1 +
- drivers/platform/x86/intel/int3472/tps68470.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+Best regards,
+Ronny
 
-diff --git a/drivers/platform/x86/intel/int3472/discrete.c b/drivers/platform/x86/intel/int3472/discrete.c
-index ff2bdbb8722c..5b514fa01a97 100644
---- a/drivers/platform/x86/intel/int3472/discrete.c
-+++ b/drivers/platform/x86/intel/int3472/discrete.c
-@@ -380,6 +380,7 @@ static int skl_int3472_discrete_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	acpi_dev_clear_dependencies(adev);
- 	return 0;
- }
- 
-diff --git a/drivers/platform/x86/intel/int3472/tps68470.c b/drivers/platform/x86/intel/int3472/tps68470.c
-index 5b881d6f5943..fcd872804101 100644
---- a/drivers/platform/x86/intel/int3472/tps68470.c
-+++ b/drivers/platform/x86/intel/int3472/tps68470.c
-@@ -174,6 +174,11 @@ static int skl_int3472_tps68470_probe(struct i2c_client *client)
- 		return device_type;
- 	}
- 
-+	/*
-+	 * No acpi_dev_clear_dependencies() here, since the acpi_gpiochip_add()
-+	 * for the GPIO cell already does this.
-+	 */
-+
- 	return ret;
- }
- 
-@@ -207,3 +212,4 @@ module_i2c_driver(int3472_tps68470);
- MODULE_DESCRIPTION("Intel SkyLake INT3472 ACPI TPS68470 Device Driver");
- MODULE_AUTHOR("Daniel Scally <djrscally@gmail.com>");
- MODULE_LICENSE("GPL v2");
-+MODULE_SOFTDEP("pre: clk-tps68470 tps68470-regulator");
--- 
-2.31.1
 
+Relevant part of the instrumented code of function: __cgroup_procs_write:
+
+trace_cgroup_lock(1000);
+percpu_down_write(&cgroup_threadgroup_rwsem);
+trace_cgroup_lock(2000);
+rcu_read_lock();
+
+A normal trace looks like:
+resource_monito-18855 [001] ....  2685.097016: cgroup_lock: idx=2
+resource_monito-18855 [001] ....  2685.097017: cgroup_lock: idx=1000
+resource_monito-18855 [001] ....  2685.097018: cgroup_lock: idx=2000
+resource_monito-18855 [001] ....  2685.097018: cgroup_lock: idx=101
+
+A trace of a blocked application looks like:
+resource_monito-18855 [001] ....  2689.736364: cgroup_lock: idx=2
+resource_monito-18855 [001] ....  2689.736365: cgroup_lock: idx=1000
+resource_monito-18855 [001] ....  2693.780339: cgroup_lock: idx=2000
+resource_monito-18855 [001] ....  2693.780339: cgroup_lock: idx=101
+
+In the problematic case above, the resource_monitor application was
+blocked for 4s waiting for the write lock on the cgroup.
