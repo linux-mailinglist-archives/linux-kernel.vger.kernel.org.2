@@ -2,187 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEF64394B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC504394B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhJYLZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:25:38 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:29558 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232400AbhJYLZf (ORCPT
+        id S233053AbhJYL0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232400AbhJYL0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:25:35 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19P5jNM9005112;
-        Mon, 25 Oct 2021 06:23:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=VPcBbAqi2DbB27wZnmeP2IfVFq+8fG1M95X3zZOgA+c=;
- b=oFo4CXz/hhrrVTRnLL1VkDhU117ES+EF4wfEBQfrpp97+q3VSrtd9fRXSRViPH1GWBBq
- YCozk+NQbi+4K/N3FsLD5u/mprWExzIXP/OmHEgkQ59kPyN73KcJznFPkBPATHwMRMwX
- 0o+fZCPkWlKALJnXGO8JMpbv9KbcNi545pUc2JqGOcVcWJlc3oay6EOXpRNz9EF/W7IC
- KEjgsJXgN0obW3aUljIVdsZ3HcY6xkB9wnrEoCozZSRfi59Y5dZ5poY0xaCr3AE1TZEQ
- ExNIVB0LIX909b73bJyIqXh1eweyHxSYW8sVsEx562m3pfzplKWRWD+U3vBe/DqRvLL/ Jw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3bw93g0xk5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 25 Oct 2021 06:23:02 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Mon, 25 Oct
- 2021 12:23:01 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Mon, 25 Oct 2021 12:23:01 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.32])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 347C0B0E;
-        Mon, 25 Oct 2021 11:23:00 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs42l42: Prevent NULL pointer deref in interrupt handler
-Date:   Mon, 25 Oct 2021 12:22:58 +0100
-Message-ID: <20211025112258.9282-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 25 Oct 2021 07:26:02 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872A2C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:23:40 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id m22so8888687wrb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=pnAOfuMn5EWMJj8YVjvNcYDnPGOu1OrWcdPGU69i9WU=;
+        b=dcLz/4fMoOzmVl2D+aaGjBKG2ULuC3/o64EkVkImWK67kW3V4mwvpKWoMWuTA7VaYw
+         Bg+hj+NxCwOr87qPewiOOkZ0VT4MMcDzpEBDNYRGPXT0GRgINVje/dOiUaQlZSIhXbtE
+         FbflKlBYNaekSlStrbDOZJil1+qZvf4BsNbTIaLOJXTgsf0yoON4Mh0U3MOOphN53OpI
+         3PAPBIlNXzNcF6AV6XmkshR4Hd36eQrglS4qF+PCBDRZ+w2QwVNm/F5NFro4zyolq+hQ
+         8bgafTrKHxRz3FLrauXnlc+TgF4X/GNFaj6lfg7d3xqm4y1l7VFGBukPzqk2a+gFEDEU
+         NuRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=pnAOfuMn5EWMJj8YVjvNcYDnPGOu1OrWcdPGU69i9WU=;
+        b=hOsqY3l5Xj313NsntWu5SlUkOIeeh3abVtrQxJf9tzaBFmN966bPyem3Q+2tRy+ZSB
+         kj/JKotohOET73IjT1Dl3uIQeK/LMlpE0b8uy+IrXftPTpF/kicKwGCPqeQSQqanr/GY
+         PtxKmsVVD6vh3fXElxvQM6WkF1Wl/DzpoI7HuJo7TuYwgAnlC28v8BssZQSK2Mdw1Mbb
+         XeyeIavXdgT+SSrQLmTeOVC8FglLJQ0WsLqReBhRyE+6V+h6hqjK566nwocQqwvxz2Fp
+         aueblKZl7tJ5eHOpDUGfXmGyjAyyhw1FfVmagRSYQZCKYBoVdqLdLlVAfo75HfSRxz3z
+         dWyg==
+X-Gm-Message-State: AOAM532RMZof+kojlyRh/5Sm8+Js7RgowN8ubvGz2Xz2JWOa7Pyu6JVY
+        Z2g+X7Q1FIkObb8PAlw17Lk=
+X-Google-Smtp-Source: ABdhPJx0t3+Pcy8GZqhqvya20QCKopu7PsZvwn6w0Fdd4q31S3HmDFYbbvzQoRHLvC2Af/Pma2lIXA==
+X-Received: by 2002:a5d:62d0:: with SMTP id o16mr22842373wrv.206.1635161019070;
+        Mon, 25 Oct 2021 04:23:39 -0700 (PDT)
+Received: from [192.168.178.21] (p5b0ea1b5.dip0.t-ipconnect.de. [91.14.161.181])
+        by smtp.gmail.com with ESMTPSA id j7sm20229073wmq.32.2021.10.25.04.23.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 04:23:38 -0700 (PDT)
+Subject: Re: I got an IOMMU IO page fault. What to do now?
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc:     iommu@lists.linux-foundation.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Xinhui Pan <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        it+linux-iommu@molgen.mpg.de
+References: <7a5123b0-6370-59dc-f0c2-8be5b370d9ba@molgen.mpg.de>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <0cfccc44-6cc6-98f5-ecd6-2f376839ec18@gmail.com>
+Date:   Mon, 25 Oct 2021 13:23:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <7a5123b0-6370-59dc-f0c2-8be5b370d9ba@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: -H10n29Z69bf9x30lcrcu8m6FCZai6Zx
-X-Proofpoint-ORIG-GUID: -H10n29Z69bf9x30lcrcu8m6FCZai6Zx
-X-Proofpoint-Spam-Reason: safe
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interrupt handling code was getting the struct device* from a
-struct snd_soc_component* stored in struct cs42l42_private. If the
-interrupt was asserted before ASoC calls component_probe() the
-snd_soc_component* will be NULL.
+Hi Paul,
 
-The stored snd_soc_component* is not actually used for anything other
-than indirectly getting the struct device*. Remove it, and store the
-struct device* in struct cs42l42_private.
+not sure how the IOMMU gives out addresses, but the printed ones look 
+suspicious to me. Something like we are using an invalid address like -1 
+or similar.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 28 +++++++++-------------------
- sound/soc/codecs/cs42l42.h |  2 +-
- 2 files changed, 10 insertions(+), 20 deletions(-)
+Can you try that on an up to date kernel as well? E.g. ideally bleeding 
+edge amd-staging-drm-next from Alex repository.
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 0dbe4e23194b..a8fff274ec63 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -526,17 +526,7 @@ static int cs42l42_set_jack(struct snd_soc_component *component, struct snd_soc_
- 	return 0;
- }
- 
--static int cs42l42_component_probe(struct snd_soc_component *component)
--{
--	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
--
--	cs42l42->component = component;
--
--	return 0;
--}
--
- static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
--	.probe			= cs42l42_component_probe,
- 	.set_jack		= cs42l42_set_jack,
- 	.dapm_widgets		= cs42l42_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(cs42l42_dapm_widgets),
-@@ -1207,7 +1197,7 @@ static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
- 	 */
- 	if (cs42l42->hs_type == CS42L42_PLUG_INVALID ||
- 		cs42l42->hs_type == CS42L42_PLUG_HEADPHONE) {
--		dev_dbg(cs42l42->component->dev, "Running Manual Detection Fallback\n");
-+		dev_dbg(cs42l42->dev, "Running Manual Detection Fallback\n");
- 		cs42l42_manual_hs_type_detect(cs42l42);
- 	}
- 
-@@ -1506,19 +1496,19 @@ static int cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
- 	switch (bias_level) {
- 	case 1: /* Function C button press */
- 		bias_level = SND_JACK_BTN_2;
--		dev_dbg(cs42l42->component->dev, "Function C button press\n");
-+		dev_dbg(cs42l42->dev, "Function C button press\n");
- 		break;
- 	case 2: /* Function B button press */
- 		bias_level = SND_JACK_BTN_1;
--		dev_dbg(cs42l42->component->dev, "Function B button press\n");
-+		dev_dbg(cs42l42->dev, "Function B button press\n");
- 		break;
- 	case 3: /* Function D button press */
- 		bias_level = SND_JACK_BTN_3;
--		dev_dbg(cs42l42->component->dev, "Function D button press\n");
-+		dev_dbg(cs42l42->dev, "Function D button press\n");
- 		break;
- 	case 4: /* Function A button press */
- 		bias_level = SND_JACK_BTN_0;
--		dev_dbg(cs42l42->component->dev, "Function A button press\n");
-+		dev_dbg(cs42l42->dev, "Function A button press\n");
- 		break;
- 	default:
- 		bias_level = 0;
-@@ -1592,7 +1582,6 @@ static const struct cs42l42_irq_params irq_params_table[] = {
- static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- {
- 	struct cs42l42_private *cs42l42 = (struct cs42l42_private *)data;
--	struct snd_soc_component *component = cs42l42->component;
- 	unsigned int stickies[12];
- 	unsigned int masks[12];
- 	unsigned int current_plug_status;
-@@ -1639,7 +1628,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 			default:
- 				break;
- 			}
--			dev_dbg(component->dev, "Auto detect done (%d)\n", cs42l42->hs_type);
-+			dev_dbg(cs42l42->dev, "Auto detect done (%d)\n", cs42l42->hs_type);
- 		}
- 	}
- 
-@@ -1673,7 +1662,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 
--				dev_dbg(component->dev, "Unplug event\n");
-+				dev_dbg(cs42l42->dev, "Unplug event\n");
- 			}
- 			break;
- 
-@@ -1689,7 +1678,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 			CS42L42_M_HSBIAS_HIZ_MASK)) {
- 
- 			if (current_button_status & CS42L42_M_DETECT_TF_MASK) {
--				dev_dbg(component->dev, "Button released\n");
-+				dev_dbg(cs42l42->dev, "Button released\n");
- 				report = 0;
- 			} else if (current_button_status & CS42L42_M_DETECT_FT_MASK) {
- 				report = cs42l42_handle_button_press(cs42l42);
-@@ -2043,6 +2032,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 	if (!cs42l42)
- 		return -ENOMEM;
- 
-+	cs42l42->dev = &i2c_client->dev;
- 	i2c_set_clientdata(i2c_client, cs42l42);
- 
- 	cs42l42->regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index dd4744de9e0a..f45bcc9a3a62 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -833,7 +833,7 @@ static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 
- struct  cs42l42_private {
- 	struct regmap *regmap;
--	struct snd_soc_component *component;
-+	struct device *dev;
- 	struct regulator_bulk_data supplies[CS42L42_NUM_SUPPLIES];
- 	struct gpio_desc *reset_gpio;
- 	struct completion pdn_done;
--- 
-2.11.0
+Regards,
+Christian.
+
+Am 25.10.21 um 12:25 schrieb Paul Menzel:
+> Dear Linux folks,
+>
+>
+> On a Dell OptiPlex 5055, Linux 5.10.24 logged the IOMMU messages 
+> below. (GPU hang in amdgpu issue #1762 [1] might be related.)
+>
+>     $ lspci -nn -s 05:00.0
+>     05:00.0 VGA compatible controller [0300]: Advanced Micro Devices, 
+> Inc. [AMD/ATI] Oland [Radeon HD 8570 / R7 240/340 OEM] [1002:6611] 
+> (rev 87)
+>     $ dmesg
+>     […]
+>     [6318399.745242] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xfffffff0c0 flags=0x0020]
+>     [6318399.757283] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xfffffff7c0 flags=0x0020]
+>     [6318399.769154] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffe0c0 flags=0x0020]
+>     [6318399.780913] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xfffffffec0 flags=0x0020]
+>     [6318399.792734] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffe5c0 flags=0x0020]
+>     [6318399.804309] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffd0c0 flags=0x0020]
+>     [6318399.816091] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffecc0 flags=0x0020]
+>     [6318399.827407] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffd3c0 flags=0x0020]
+>     [6318399.838708] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffc0c0 flags=0x0020]
+>     [6318399.850029] amdgpu 0000:05:00.0: AMD-Vi: Event logged 
+> [IO_PAGE_FAULT domain=0x000c address=0xffffffdac0 flags=0x0020]
+>     [6318399.861311] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffc1c0 flags=0x0020]
+>     [6318399.872044] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffc8c0 flags=0x0020]
+>     [6318399.882797] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffb0c0 flags=0x0020]
+>     [6318399.893655] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffcfc0 flags=0x0020]
+>     [6318399.904445] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffb6c0 flags=0x0020]
+>     [6318399.915222] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffa0c0 flags=0x0020]
+>     [6318399.925931] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffbdc0 flags=0x0020]
+>     [6318399.936691] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffa4c0 flags=0x0020]
+>     [6318399.947479] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffff90c0 flags=0x0020]
+>     [6318399.958270] AMD-Vi: Event logged [IO_PAGE_FAULT 
+> device=05:00.0 domain=0x000c address=0xffffffabc0 flags=0x0020]
+>
+> As this is not reproducible, how would debugging go? (The system was 
+> rebooted in the meantime.) What options should be enabled, that next 
+> time the required information is logged, or what commands should I 
+> execute when the system is still in that state, so the bug (driver, 
+> userspace, …) can be pinpointed and fixed?
+>
+>
+> Kind regards,
+>
+> Paul
+>
+>
+> [1]: https://gitlab.freedesktop.org/drm/amd/-/issues/1762
+>      "Oland [Radeon HD 8570 / R7 240/340 OEM]: GPU hang"
 
