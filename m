@@ -2,36 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4194343A0E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5725B43A304
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhJYTgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:36:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48472 "EHLO mail.kernel.org"
+        id S236585AbhJYTzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:55:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235355AbhJYT3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 424F060FE8;
-        Mon, 25 Oct 2021 19:26:50 +0000 (UTC)
+        id S238630AbhJYTuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:50:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4ABD60C41;
+        Mon, 25 Oct 2021 19:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190011;
-        bh=dZL0HkKLfPiYFXAEZO8A5y1YUcudAsryqSfPfFfRvXE=;
+        s=korg; t=1635190953;
+        bh=IT8ffS5OJEbVtpDypgVbI4Wto6k5Waur6DCpttyT1js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QkHU4OCz24JbJnihZ4pheGo1JGwUPK9+bGXxhQWLS49l2d/QJ2bs+C00Je/lYylTk
-         rWQ5WCfrzHq+MAwGh32O8X+Wkd2aHZzY6IzsD0M6BUHWFPxS61ERlATLUpTCna09R0
-         dTOrVgY/BZtjknNsjhY+RoyVNe7H2me2PPcus9ok=
+        b=1pehf+s/KWMx+uAhLcCBr48Evbx0v7pKTTCQKDJS45zPF7WzLPJUVXsx59WUAcC15
+         Gl0bRmO3prbP1uVKclfcx4W85MK3s4XFDJEnqEOjXehdxYolWTipwq/lDcJwSkTxzY
+         YsRGQU8hdrNYDD82uNG18DTbFygcyX3Xau5DMwLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Patrick Donnelly <pdonnell@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 5.4 26/58] ceph: fix handling of "meta" errors
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.14 102/169] mm, slub: fix potential use-after-free in slab_debugfs_fops
 Date:   Mon, 25 Oct 2021 21:14:43 +0200
-Message-Id: <20211025190941.839507576@linuxfoundation.org>
+Message-Id: <20211025191030.845152523@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,150 +51,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-commit 1bd85aa65d0e7b5e4d09240f492f37c569fdd431 upstream.
+commit 67823a544414def2a36c212abadb55b23bcda00c upstream.
 
-Currently, we check the wb_err too early for directories, before all of
-the unsafe child requests have been waited on. In order to fix that we
-need to check the mapping->wb_err later nearer to the end of ceph_fsync.
+When sysfs_slab_add failed, we shouldn't call debugfs_slab_add() for s
+because s will be freed soon.  And slab_debugfs_fops will use s later
+leading to a use-after-free.
 
-We also have an overly-complex method for tracking errors after
-blocklisting. The errors recorded in cleanup_session_requests go to a
-completely separate field in the inode, but we end up reporting them the
-same way we would for any other error (in fsync).
-
-There's no real benefit to tracking these errors in two different
-places, since the only reporting mechanism for them is in fsync, and
-we'd need to advance them both every time.
-
-Given that, we can just remove i_meta_err, and convert the places that
-used it to instead just use mapping->wb_err instead. That also fixes
-the original problem by ensuring that we do a check_and_advance of the
-wb_err at the end of the fsync op.
-
-Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/52864
-Reported-by: Patrick Donnelly <pdonnell@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Link: https://lkml.kernel.org/r/20210916123920.48704-5-linmiaohe@huawei.com
+Fixes: 64dd68497be7 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Bharata B Rao <bharata@linux.ibm.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ceph/caps.c       |   12 +++---------
- fs/ceph/file.c       |    1 -
- fs/ceph/inode.c      |    2 --
- fs/ceph/mds_client.c |   17 +++++------------
- fs/ceph/super.h      |    3 ---
- 5 files changed, 8 insertions(+), 27 deletions(-)
+ mm/slub.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -2249,7 +2249,6 @@ static int unsafe_request_wait(struct in
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4604,13 +4604,15 @@ int __kmem_cache_create(struct kmem_cach
+ 		return 0;
  
- int ceph_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- {
--	struct ceph_file_info *fi = file->private_data;
- 	struct inode *inode = file->f_mapping->host;
- 	struct ceph_inode_info *ci = ceph_inode(inode);
- 	u64 flush_tid;
-@@ -2280,14 +2279,9 @@ int ceph_fsync(struct file *file, loff_t
- 	if (err < 0)
- 		ret = err;
+ 	err = sysfs_slab_add(s);
+-	if (err)
++	if (err) {
+ 		__kmem_cache_release(s);
++		return err;
++	}
  
--	if (errseq_check(&ci->i_meta_err, READ_ONCE(fi->meta_err))) {
--		spin_lock(&file->f_lock);
--		err = errseq_check_and_advance(&ci->i_meta_err,
--					       &fi->meta_err);
--		spin_unlock(&file->f_lock);
--		if (err < 0)
--			ret = err;
--	}
-+	err = file_check_and_advance_wb_err(file);
-+	if (err < 0)
-+		ret = err;
- out:
- 	dout("fsync %p%s result=%d\n", inode, datasync ? " datasync" : "", ret);
- 	return ret;
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -234,7 +234,6 @@ static int ceph_init_file_info(struct in
- 	fi->fmode = fmode;
- 	spin_lock_init(&fi->rw_contexts_lock);
- 	INIT_LIST_HEAD(&fi->rw_contexts);
--	fi->meta_err = errseq_sample(&ci->i_meta_err);
- 	fi->filp_gen = READ_ONCE(ceph_inode_to_client(inode)->filp_gen);
+ 	if (s->flags & SLAB_STORE_USER)
+ 		debugfs_slab_add(s);
  
- 	return 0;
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -515,8 +515,6 @@ struct inode *ceph_alloc_inode(struct su
- 
- 	ceph_fscache_inode_init(ci);
- 
--	ci->i_meta_err = 0;
--
- 	return &ci->vfs_inode;
+-	return err;
++	return 0;
  }
  
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -1272,7 +1272,6 @@ static void cleanup_session_requests(str
- {
- 	struct ceph_mds_request *req;
- 	struct rb_node *p;
--	struct ceph_inode_info *ci;
- 
- 	dout("cleanup_session_requests mds%d\n", session->s_mds);
- 	mutex_lock(&mdsc->mutex);
-@@ -1281,16 +1280,10 @@ static void cleanup_session_requests(str
- 				       struct ceph_mds_request, r_unsafe_item);
- 		pr_warn_ratelimited(" dropping unsafe request %llu\n",
- 				    req->r_tid);
--		if (req->r_target_inode) {
--			/* dropping unsafe change of inode's attributes */
--			ci = ceph_inode(req->r_target_inode);
--			errseq_set(&ci->i_meta_err, -EIO);
--		}
--		if (req->r_unsafe_dir) {
--			/* dropping unsafe directory operation */
--			ci = ceph_inode(req->r_unsafe_dir);
--			errseq_set(&ci->i_meta_err, -EIO);
--		}
-+		if (req->r_target_inode)
-+			mapping_set_error(req->r_target_inode->i_mapping, -EIO);
-+		if (req->r_unsafe_dir)
-+			mapping_set_error(req->r_unsafe_dir->i_mapping, -EIO);
- 		__unregister_request(mdsc, req);
- 	}
- 	/* zero r_attempts, so kick_requests() will re-send requests */
-@@ -1436,7 +1429,7 @@ static int remove_session_caps_cb(struct
- 		spin_unlock(&mdsc->cap_dirty_lock);
- 
- 		if (dirty_dropped) {
--			errseq_set(&ci->i_meta_err, -EIO);
-+			mapping_set_error(inode->i_mapping, -EIO);
- 
- 			if (ci->i_wrbuffer_ref_head == 0 &&
- 			    ci->i_wr_ref == 0 &&
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -402,8 +402,6 @@ struct ceph_inode_info {
- 	struct fscache_cookie *fscache;
- 	u32 i_fscache_gen;
- #endif
--	errseq_t i_meta_err;
--
- 	struct inode vfs_inode; /* at end */
- };
- 
-@@ -712,7 +710,6 @@ struct ceph_file_info {
- 	spinlock_t rw_contexts_lock;
- 	struct list_head rw_contexts;
- 
--	errseq_t meta_err;
- 	u32 filp_gen;
- 	atomic_t num_locks;
- };
+ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
 
 
