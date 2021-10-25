@@ -2,61 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A642D43906B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3599D4390A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhJYHfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:35:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231653AbhJYHfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:35:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3455760FD7;
-        Mon, 25 Oct 2021 07:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635147199;
-        bh=39U7zNLEwA87RE5PJQOdIUZwBwhHR+JBeEhHxTPhiSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uSBRbavOezeV7w6FoDRU62rgJc2KqLOlljzPjhnAhs/F9WcfpE+DUfnsIicJUMLsi
-         +DkWPDypg9/LKAgM3xYO4qiEpauO9xykHVs5yZuBdJtgvoJpRT8od76cJq3a4lM1GV
-         q8y0CxursNFEaqI5S2V2CzDON3RlTdNZRe3PgBZk=
-Date:   Mon, 25 Oct 2021 09:33:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kushal Kothari <kushalkothari285@gmail.com>
-Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        hdegoede@redhat.com, marcocesati@gmail.com,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mike.rapoport@gmail.com, kushalkothari2850@gmail.com
-Subject: Re: [PATCH] staging: rtl8723bs: core: Refactor nested if-else
-Message-ID: <YXZdvdj6EQsrfhqt@kroah.com>
-References: <20211025072528.152028-1-kushalkothari285@gmail.com>
+        id S232050AbhJYH7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:59:00 -0400
+Received: from gateway20.websitewelcome.com ([192.185.66.3]:28336 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhJYH67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 03:58:59 -0400
+X-Greylist: delayed 1357 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Oct 2021 03:58:59 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 7E415400D0072
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:33:59 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id euUZmJ9r0gm2UeuUZmCkLj; Mon, 25 Oct 2021 02:33:59 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60730 helo=[10.0.0.35])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1meuUY-003rzQ-Aj; Mon, 25 Oct 2021 02:33:58 -0500
+Message-ID: <be7cbe08-9657-f5ac-4053-0cf2b9c26a78@kernel.org>
+Date:   Mon, 25 Oct 2021 09:33:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025072528.152028-1-kushalkothari285@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH V4 02/19] trace/osnoise: Split workload start from the
+ tracer start
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1634820694.git.bristot@kernel.org>
+ <90bfad2bdd348f85b1ff473077de676f75ab445c.1634820694.git.bristot@kernel.org>
+ <20211022222517.744bbca1@rorschach.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20211022222517.744bbca1@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.18.63.114
+X-Source-L: No
+X-Exim-ID: 1meuUY-003rzQ-Aj
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60730
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 14
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:55:28PM +0530, Kushal Kothari wrote:
-> Refactor nested if else by combining nested if into a single if condition and removing unnecessary else conditionals which leads to removing unnecessary tabs .There is no change in logic of new code.
-
-Very long line, please break it up at 72 columns.
-
-And your space around the '.' is odd :(
-
-> checkpatch warning : Too many leading tabs - consider code refactoring
-
-What does this mean?
-
+On 10/23/21 04:25, Steven Rostedt wrote:
+> On Thu, 21 Oct 2021 14:56:40 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
-> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 65 ++++++++-----------
->  1 file changed, 26 insertions(+), 39 deletions(-)
+>> +/*
+>> + * osnoise_workload_stop - stop the workload and unhook the events
+>> + */
+>> +static void osnoise_workload_stop(void)
+>> +{
+>> +	if (!osnoise_busy)
+>> +		return;
+>> +
+>> +	trace_osnoise_callback_enabled = false;
 > 
+> I know this is just moving this code, but the original code had this
+> issue too, but there should be a comment here to why we need the
+> compiler barrier.
 
-thanks,
+I will add a comment, like we have on hwlat.
 
-greg k-h
+-- Daniel
+
+> -- Steve
+> 
+> 
+>> +	barrier();
+>> +
+>> +	stop_per_cpu_kthreads();
+>> +
+>> +	unhook_irq_events();
+>> +	unhook_softirq_events();
+>> +	unhook_thread_events();
+>> +
+>> +	osnoise_busy = false;
+>> +}
+>> +
+
