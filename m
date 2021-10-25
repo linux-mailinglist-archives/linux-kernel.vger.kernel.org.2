@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0937439FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0A5439F3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhJYTWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:22:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
+        id S234441AbhJYTSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:18:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234505AbhJYTVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:21:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C742601FF;
-        Mon, 25 Oct 2021 19:19:02 +0000 (UTC)
+        id S234533AbhJYTS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:18:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A62266105A;
+        Mon, 25 Oct 2021 19:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189543;
-        bh=yv4RZWeAP8xaERlvArIBsNSnH4pyc2GV012z6VHt/4s=;
+        s=korg; t=1635189365;
+        bh=U4qntxkvWd5UPLdqeNTxlBA81R0AcF/+PTru+ZuK9dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A5CVPLFyQZmVORoyEP1gRv21kZpURGxYnIePuPboG9wkequYi8XkqMBYGLM+W55OH
-         3ovmiv8y2sKFos5lNimc6ZR7s1qNnMsGNzNIbc6+AlmTM4klH5AP7onFPUwKv5sGO1
-         Vt7mm211AeXf+uvddD/23UNdy6y7NK7fJ6q1F3KU=
+        b=zc1PgmfZi/+febjvwDjfwHAkjEzkTgTqTd3p8LeBhFhF2NhewqPtawwIaRsKuc3/x
+         6lTmC15V763NvkloeO1WHoxosiGM4FEvl9JOEsDNPWYilB/in5SYhc7/+zPektgMxz
+         XSV5taE1EVlUngZEN8b+Ry8dWVMXChmEcveuWvx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 15/50] net: arc: select CRC32
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 4.4 21/44] drm/msm: Fix null pointer dereference on pointer edp
 Date:   Mon, 25 Oct 2021 21:14:02 +0200
-Message-Id: <20211025190935.891157942@linuxfoundation.org>
+Message-Id: <20211025190932.986053398@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit e599ee234ad4fdfe241d937bbabd96e0d8f9d868 upstream.
+commit 2133c4fc8e1348dcb752f267a143fe2254613b34 upstream.
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+The initialization of pointer dev dereferences pointer edp before
+edp is null checked, so there is a potential null pointer deference
+issue. Fix this by only dereferencing edp after edp has been null
+checked.
 
-  ld: drivers/net/ethernet/arc/emac_main.o: in function `arc_emac_set_rx_mode':
-  emac_main.c:(.text+0xb11): undefined reference to `crc32_le'
-
-The crc32_le() call comes through the ether_crc_le() call in
-arc_emac_set_rx_mode().
-
-[v2: moved the select to ARC_EMAC_CORE; the Makefile is a bit confusing,
-but the error comes from emac_main.o, which is part of the arc_emac module,
-which in turn is enabled by CONFIG_ARC_EMAC_CORE. Note that arc_emac is
-different from emac_arc...]
-
-Fixes: 775dd682e2b0ec ("arc_emac: implement promiscuous mode and multicast filtering")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Link: https://lore.kernel.org/r/20211012093446.1575-1-vegard.nossum@oracle.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Addresses-Coverity: ("Dereference before null check")
+Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210929121857.213922-1-colin.king@canonical.com
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/arc/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/edp/edp_ctrl.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/arc/Kconfig
-+++ b/drivers/net/ethernet/arc/Kconfig
-@@ -19,6 +19,7 @@ config ARC_EMAC_CORE
- 	tristate
- 	select MII
- 	select PHYLIB
-+	select CRC32
+--- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
++++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+@@ -1095,7 +1095,7 @@ void msm_edp_ctrl_power(struct edp_ctrl
+ int msm_edp_ctrl_init(struct msm_edp *edp)
+ {
+ 	struct edp_ctrl *ctrl = NULL;
+-	struct device *dev = &edp->pdev->dev;
++	struct device *dev;
+ 	int ret;
  
- config ARC_EMAC
- 	tristate "ARC EMAC support"
+ 	if (!edp) {
+@@ -1103,6 +1103,7 @@ int msm_edp_ctrl_init(struct msm_edp *ed
+ 		return -EINVAL;
+ 	}
+ 
++	dev = &edp->pdev->dev;
+ 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ 	if (!ctrl)
+ 		return -ENOMEM;
 
 
