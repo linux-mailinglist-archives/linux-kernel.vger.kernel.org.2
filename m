@@ -2,100 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7C84396E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89E3439702
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbhJYNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:01:15 -0400
-Received: from mga14.intel.com ([192.55.52.115]:27939 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233392AbhJYNBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:01:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="229913159"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="229913159"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:58:52 -0700
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="571607199"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:58:47 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mezYX-000cfz-I6;
-        Mon, 25 Oct 2021 15:58:25 +0300
-Date:   Mon, 25 Oct 2021 15:58:25 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Patrick Williams <patrick@stwcx.xyz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Zev Weiss <zev@bewilderbeest.net>, kvm@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Rajat Jain <rajatja@google.com>,
-        Jianxiong Gao <jxgao@google.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
- reserved devices
-Message-ID: <YXap8V/jMM3Ksj7x@smile.fi.intel.com>
-References: <20211022020032.26980-1-zev@bewilderbeest.net>
- <20211022020032.26980-5-zev@bewilderbeest.net>
- <YXJeYCFJ5DnBB63R@kroah.com>
- <YXJ3IPPkoLxqXiD3@hatter.bewilderbeest.net>
- <YXJ88eARBE3vU1aA@kroah.com>
- <YXLWMyleiTFDDZgm@heinlein>
- <YXPOSZPA41f+EUvM@kroah.com>
- <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
- <YXZLjTvGevAXcidW@kroah.com>
- <YXaYmie/CUHnixtX@heinlein>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXaYmie/CUHnixtX@heinlein>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S233280AbhJYNF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:05:28 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:59972 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233119AbhJYNF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:05:27 -0400
+Received: from smtpclient.apple (p4ff9f2d2.dip0.t-ipconnect.de [79.249.242.210])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 12726CED17;
+        Mon, 25 Oct 2021 15:03:03 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v2] Bluetooth: cmtp: fix possible panic when
+ cmtp_init_sockets() fails
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211025131012.2771062-1-wanghai38@huawei.com>
+Date:   Mon, 25 Oct 2021 15:03:02 +0200
+Cc:     Karsten Keil <isdn@linux-pingi.de>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        cascardo@canonical.com, netdev@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <0A1C459E-C477-431B-8338-3F281BBED207@holtmann.org>
+References: <20211025131012.2771062-1-wanghai38@huawei.com>
+To:     Wang Hai <wanghai38@huawei.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 06:44:26AM -0500, Patrick Williams wrote:
-> On Mon, Oct 25, 2021 at 08:15:41AM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 25, 2021 at 12:38:08AM -0500, Frank Rowand wrote:
-> > > On 10/23/21 3:56 AM, Greg Kroah-Hartman wrote:
->  
-> > We have the bind/unbind ability today, from userspace, that can control
-> > this.  Why not just have Linux grab the device when it boots, and then
-> > when userspace wants to "give the device up", it writes to "unbind" in
-> > sysfs, and then when all is done, it writes to the "bind" file and then
-> > Linux takes back over.
-> > 
-> > Unless for some reason Linux should _not_ grab the device when booting,
-> > then things get messier, as we have seen in this thread.
+Hi Wang,
+
+> I got a kernel BUG report when doing fault injection test:
 > 
-> This is probably more typical on a BMC than atypical.  The systems often require
-> the BMC (running Linux) to be able to reboot independently from the managed host
-> (running anything).  In the example Zev gave, the BMC rebooting would rip away
-> the BIOS chip from the running host.
+> ------------[ cut here ]------------
+> kernel BUG at lib/list_debug.c:45!
+> ...
+> RIP: 0010:__list_del_entry_valid.cold+0x12/0x4d
+> ...
+> Call Trace:
+> proto_unregister+0x83/0x220
+> cmtp_cleanup_sockets+0x37/0x40 [cmtp]
+> cmtp_exit+0xe/0x1f [cmtp]
+> do_syscall_64+0x35/0xb0
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> The BMC almost always needs to come up in a "I don't know what could possibly be
-> going on in the system" state and re-discover where the system was left off.
+> If cmtp_init_sockets() in cmtp_init() fails, cmtp_init() still returns
+> success. This will cause a kernel bug when accessing uncreated ctmp
+> related data when the module exits.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+> v1->v2: remove the temporary variable "err"
+> net/bluetooth/cmtp/core.c | 4 +---
+> 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Isn't it an architectural issue then?
+patch has been applied to bluetooth-next tree.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Regards
 
+Marcel
 
