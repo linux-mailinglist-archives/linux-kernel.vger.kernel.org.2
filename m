@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1CE43997F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DB8439980
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhJYPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233741AbhJYPC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233735AbhJYPC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 11:02:26 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55612 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233727AbhJYPCZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:02:25 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7B2BE1F41E71;
-        Mon, 25 Oct 2021 16:00:02 +0100 (BST)
-Date:   Mon, 25 Oct 2021 16:59:57 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] mtd: mtdconcat: add suspend lock handling
-Message-ID: <20211025165957.349a6580@collabora.com>
-In-Reply-To: <20211025092752.2824678-3-sean@geanix.com>
-References: <20211025092752.2824678-1-sean@geanix.com>
-        <20211025092752.2824678-3-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2851360E05;
+        Mon, 25 Oct 2021 15:00:04 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 11:00:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yinan Liu <yinan@linux.alibaba.com>
+Cc:     mark-pk.tsai@mediatek.com, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] scripts: ftrace - move the sort-processing in
+ ftrace_init to compile time
+Message-ID: <20211025110002.1f109a9f@gandalf.local.home>
+In-Reply-To: <d0d5d491-41f5-09a4-ac3d-ebefa37a741b@linux.alibaba.com>
+References: <20210911135043.16014-1-yinan@linux.alibaba.com>
+        <20210911135043.16014-2-yinan@linux.alibaba.com>
+        <20210911095937.5a298619@rorschach.local.home>
+        <0b783c9e-c129-6907-0637-5c7638158a65@linux.alibaba.com>
+        <20211008194821.3b6a18a4@oasis.local.home>
+        <1d069626-1aed-6244-b932-7853e832eb70@linux.alibaba.com>
+        <d0d5d491-41f5-09a4-ac3d-ebefa37a741b@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -40,84 +40,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sean,
+On Mon, 25 Oct 2021 21:20:47 +0800
+Yinan Liu <yinan@linux.alibaba.com> wrote:
 
-On Mon, 25 Oct 2021 11:27:50 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+> At present, it seems that the processing of compile-time sorting is only 
+> suitable for vmlinux but not suitable for modules. Please review the 
+> code of mcount sorting in vmlinux, thank you.
 
-The subject is misleading, how about 'mtd: mtdconcat: Don't use
-mtd_{suspend,resume}()'
+Agreed that only the vmlinux compile time sorting makes sense, and leave
+the sorting of modules to the module load time.
 
-> Use MTD hooks to control suspend/resume of MTD devices.
-> concat_{suspend,resume} will be called from mtd_{suspend,resume},
-> which already have taken the suspend/resume lock.
-> It's safe to proceed with calling MTD device hooks directly from here.
+I'll see if I can review your patches this week.
 
-"
-The MTD suspend logic will soon be adjusted to automatically wait for
-device wake-up before issuing IOs. In order to do that a new read-write
-lock will be added and taken in write-mode in the
-mtd_{suspend,resume}() path. Since mtdconcat.c itself is an MTD device,
-calling mtd_suspend/resume() on subdevices from the mtdconcat
-->_{suspend,resume}() hook will lead to a nested lock, which lockdep
-will complain about if we don't add a proper annotation. Let's keep
-things simple and replace those mtd_{suspend,resume}(subdev) calls by
-subdev->_{suspend,resume}() ones to avoid this situation.
-"
-
-> 
-> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-
-Again, this commit doesn't fix anything.
-
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> ---
->  drivers/mtd/mtdconcat.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> index f685a581df48..37532f529820 100644
-> --- a/drivers/mtd/mtdconcat.c
-> +++ b/drivers/mtd/mtdconcat.c
-> @@ -566,9 +566,15 @@ static int concat_suspend(struct mtd_info *mtd)
->  
->  	for (i = 0; i < concat->num_subdev; i++) {
->  		struct mtd_info *subdev = concat->subdev[i];
-> -		if ((rc = mtd_suspend(subdev)) < 0)
-> +		/*
-> +		 * Call MTD hook directly from here,
-> +		 * mtd_suspend() have the suspend/resume lock.
-
-		/*
-		 * Call the MTD hook directly to avoid a nested lock
-		 * on ->suspend_lock.
-		 */
-
-> +		 */
-> +		rc = subdev->_suspend ? subdev->_suspend(subdev) : 0;
-> +		if (rc < 0)
->  			return rc;
->  	}
-> +
->  	return rc;
->  }
->  
-> @@ -579,7 +585,12 @@ static void concat_resume(struct mtd_info *mtd)
->  
->  	for (i = 0; i < concat->num_subdev; i++) {
->  		struct mtd_info *subdev = concat->subdev[i];
-> -		mtd_resume(subdev);
-> +		/*
-> +		 * Call MTD hook directly from here,
-> +		 * mtd_resume() have the suspend/resume lock.
-> +		 */
-
-Ditto.
-
-> +		if (subdev->_resume)
-> +			subdev->_resume(subdev);
->  	}
->  }
->  
-
+-- Steve
