@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A2C439B19
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C06439BA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233851AbhJYQER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233689AbhJYQEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:04:15 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D6BC061348
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:01:53 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id u18so10335787wrg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zMkg/0xA2M5G/rhCUOwOXIDgsrNS6y7y/a+diRyWYzc=;
-        b=x6efCHXNxaYrirQVpspZroKoKRD7/1SgHGFiUxfs4LIlHXrgby1/xhprQ9XHEfRHiO
-         KgIje9no8GY375bClUsmuMiAqJHd1zqphUCi9ZcLISCqrgsWVNP4DYdb9qptXCqJpLfu
-         xdCl4qAbJDSZVP+dYrxcAESmtkX1tSCtWP6nGmyxCZntSCgUBDsqXvAuTTUJ2+cg2f4g
-         tYStffmQyW/K1uH/ftQtJv9zoDHPyNr5Rz6hIuMVOlWsKUdOSfHmTz1yGRgPDDDpkYHf
-         rNvT14S1GkDZ1UKW3qww3WE6NIstZTmuwqU13idA4sJmAOgyy0UJA0U6Z1eMH3Ea4/6U
-         9MLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zMkg/0xA2M5G/rhCUOwOXIDgsrNS6y7y/a+diRyWYzc=;
-        b=AP3hxX+5Zp+etxQ1yleogcQCjhcFtaHaAPZvAhvUXEmVwA+z6pBJa+Mn6Ek0lL5U5m
-         SMikqgu1q8j2HCv+MtlCP58fIJ8OwA2wpuPTN1j0l0vHRtulYHcI2xvMypi0vdR89kp6
-         ochAcn2+Dor0gCbhAlNeLuAYAjCkLsTTtf7GGjSm9D8UhxpRuZC+ApDT/favYEXDg9C2
-         esy9ycgDAz1XhGO5OP/YBYylJNT0FA8ij5BQwsinkQG1RKdmLNyTfkhQ8UreFPHZyKlG
-         38VTunX7vEE2ttFO5UdnpLOd7MsE3GdSgJ50eyVlaJnJVQD1wfS0xSk+2VSSw3V7BVzk
-         UO6g==
-X-Gm-Message-State: AOAM530SjSOoNVSyyax0/8kNz7KsoAWYX9EpJPO/IviM8GovFtBw1wlu
-        wMuqhHVOurViL2IFHFnjV2EiMQ==
-X-Google-Smtp-Source: ABdhPJzhIfub+4l1wiD7yr36/+orUeB6LL3rR5ftkCBdo6TCfFkDiInNpCKTsodqMrJ3eu2Sixr3Sg==
-X-Received: by 2002:a05:6000:1241:: with SMTP id j1mr24785718wrx.419.1635177711769;
-        Mon, 25 Oct 2021 09:01:51 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id r11sm2165904wrx.79.2021.10.25.09.01.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 09:01:51 -0700 (PDT)
-Message-ID: <00b817a4-f1ac-6a94-5f1e-836d8d313406@linaro.org>
-Date:   Mon, 25 Oct 2021 17:03:52 +0100
+        id S233930AbhJYQiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:38:03 -0400
+Received: from mail-mw2nam10on2045.outbound.protection.outlook.com ([40.107.94.45]:24161
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233257AbhJYQiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:38:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZlCKdONOAuobQa3gH5AJaS7KpLg5u5MKeSAFX7gnJc9QpBaDB0wsZ4PtzPmtQLndrdzaCUnsi6adsjKyx0vIpj4Oimqbyg/Wt+kg2rPuchYSnxF5LUsNLHDp77jv6UsoxVJEd2sGkaUSnb9ZJE7+SN733PVrv3y5xx1UUbM9Ur+TeMShsNMbIvoxwFTEQtnwiWGpXp1EnFNcNmWb3Y6R0yhCSAPYlRKB+sXExrBaec2cIsN71suGhDQUs/K4W132kB39v+OHfSIyQfj3lUct8tgG1IpX7gidwIhtzoPzwNJ3pphLKf/hnFsNjlc8tnSgykh7ROsuFL16Y0Twlqd1Uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eXBs+uCQU5dRKV1r5LoCgbi/NTMnDSA4JMqtk/FNA6E=;
+ b=OoNbAQ78AXHdssEmy3YZ8rgsEvAjIFhNM+RndaJa6hURl2SLa1Du8FtFFaGlWfNx6jZ4RcqLePI5D1fHCxaVQjkS8foB5Cp3dIsyxJDMrURceL3U1GDDlNDEJTUOaSS7goAJk23OghyTXiPkGKVxt1QiI0SNjiH8CiTzh2aU8XsBH/1rgb/RJ0E4j4YO2jWona+DGjKEo/67wES/F8wIv5i2RShRVAt90dZkIR6Nkrx1hyQiPmdcZGOGnuCtq3tYBttDdqiUofk5madUbsUearkjA7WUUz84Y36Z7+AT0LJm+J8HZ0/nqRCFt3cspmC4YmEH6x1ZmG+z2VUolXSzwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eXBs+uCQU5dRKV1r5LoCgbi/NTMnDSA4JMqtk/FNA6E=;
+ b=4gu4LL0ZNaSBQwFtePuY6Y3nysl8V/B+q8dSXgHVhZxdc9IwxL2hpO7k36X7vdTnje0q/SAc6YuLr8z07holFLDIWeUtXiWurIjp5ABej0QkxZOb8bSlN8X6lXvMeZvUoOAyqRtdGD5HW0MJA2qi7KcrlCiixphxT6MCgbTt6DI=
+Received: from MW4PR04CA0352.namprd04.prod.outlook.com (2603:10b6:303:8a::27)
+ by BN6PR1201MB0018.namprd12.prod.outlook.com (2603:10b6:405:54::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
+ 2021 16:35:35 +0000
+Received: from CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8a:cafe::51) by MW4PR04CA0352.outlook.office365.com
+ (2603:10b6:303:8a::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend
+ Transport; Mon, 25 Oct 2021 16:35:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT059.mail.protection.outlook.com (10.13.174.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4628.16 via Frontend Transport; Mon, 25 Oct 2021 16:35:35 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 25 Oct
+ 2021 11:35:34 -0500
+Date:   Mon, 25 Oct 2021 09:14:27 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+CC:     <linux-kselftest@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Nathan Tempelman <natet@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Mingwei Zhang" <mizhang@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "David Woodhouse" <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC 03/16] KVM: selftests: handle encryption bits in page tables
+Message-ID: <20211025141427.u2dstri5ehgegryk@amd.com>
+References: <20211005234459.430873-1-michael.roth@amd.com>
+ <20211005234459.430873-4-michael.roth@amd.com>
+ <31db4c63-218a-5b26-f6ed-d30113f95e29@redhat.com>
+ <20211024164945.mt62qjrld3dwssv4@amd.com>
+ <9de44944-57c1-047c-8c66-94eee6369a67@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
- enc/dec
-Content-Language: en-US
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
- <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
- <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9de44944-57c1-047c-8c66-94eee6369a67@redhat.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fb5e2cb0-1c92-44e6-a458-08d997d5784a
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0018:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB00188BAD8CE96095C5743D5195839@BN6PR1201MB0018.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nbXRfgP2dHq5wtMeDWaNWNWhyVbWMADNh8m6M7PgmZ10PGCjugpz4sv5SEIfMzOoOwV6iSBqN32ugeL7AJgzMcgOJ2ZI9CRTdljCHIz8GH57ZEWHkC/72Ct7p5SGiwR7+LkwkFrU7Lbq5II7rQjAhpTFRINoZzHRp8ktpPHwE/ydYYPpQPuWd/1p66OkGHky/cSeXUUlnbaBU+/sfau/bU7zrkkLXdHOI7kVW20wYB8XLjKxG6XruYXkw9A2ra/WWoswkZV3YohENEKj34XzBUNpTivivVMTA3L/26OOcbcflqI9VoQXOA6E+NMUG/GDJpdj/AiE1Dj1Kp+iJSnchRSCYpGko/7EO/IKJ/ttu5CU+4jMnHX5VynNp1BUkfPAw5vFtjWBw+dmh4wOxEaTRP7PHZxkSrCbM0LYIVUOEB4j0NHjv14ejR5BPw7NS7PHoKJfJJBFvAHMmkQisTJfZbVVp7Du/yAnk0oNzV82iNuncCJW0vixIGK1M8189ToyNyrvupMvOL1Yqz6wwnqK7rC2YGrbKTxrmcN02hgOcSr1ALxr/er5j49Ke70hASOr5DYhhqFC+ZcHUsjZPfmjf6J3oNFfXxrinX0Jmi3w9nQmPUKZ4Cusx/HayOgVOw9/D2smwjhUQxWm1ps4DMhcRu0xZZckR1ufnHacCzkU22yiDD6wGasg7qUU8eqNWkmxWRvO0pFjUhrCJrC0qvCPebXfjFKPts5QM+kwHtNokMM=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(81166007)(47076005)(2906002)(7416002)(508600001)(54906003)(36860700001)(356005)(8676002)(4326008)(6916009)(426003)(44832011)(186003)(336012)(8936002)(53546011)(36756003)(16526019)(70586007)(5660300002)(2616005)(4744005)(6666004)(1076003)(70206006)(82310400003)(86362001)(26005)(316002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 16:35:35.0152
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb5e2cb0-1c92-44e6-a458-08d997d5784a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 16:30, Tadeusz Struk wrote:
-> No, we want a hard stop here. At this point the venus_core probe()
-> has finished and it failed. Returning -EPROBE_DEFER here will just
-> cause it to loop infinitely.
+On Mon, Oct 25, 2021 at 09:34:10AM +0200, Paolo Bonzini wrote:
+> On 24/10/21 18:49, Michael Roth wrote:
+> > So test code would need to consider cases where addr_gpa2raw() needs to be
+> > used to set the C-bit (which is basically only when they want to mix usage
+> > of the vm_phy_page[s]_alloc with their own mapping of the guest page tables,
+> > which doesn't seem to be done in any existing tests anyway).
+> 
+> Yes, and it seems like a more rare case in general.
+> 
+> > The library code would need these addr_gpa2raw() hooks in places where
+> > it calls virt_*map() internally. Probably just a handful of places
+> > though.
+> 
+> Either that, or you can have virt_*map that consults the encryption bitmap,
+> and virt_*map_enc (or _raw, doesn't matter) that takes the encryption state
+> explicitly as a bool.
 
-I don't think there's any guarantee at all, that core probe() has 
-completed at that point.
-
-of_platform_populate() doesn't guarantee ordering of the probe() 
-completing before or after the probe() of the platform drivers that are 
-associated with the devices in of_platform_populate().
-
-When you think it about it can't do that and you wouldn't want it to do 
-that since a device might have a legitimate reason to EPROBE_DEFER
-
-As an example core could call of_platform_populate() and then as a 
-ridiculous example go to sleep for five seconds - in which case it is 
-perfectly possible the encoder and decoder probe() functions will bug 
-out illegitimately waiting because of core->state != CORE_INIT
-
-This is a problem we have and still haven't solved in 
-drivers/usb/dwc3/dwc3-qcom.c::probe() and child devices 
-drivers/usb/dwc3/dwc3-qcom.c
-
-Here:
-https://patches.linaro.org/cover/470387/
-
-There's no serialisation guarantee between parent and child on 
-of_platform_populate() - at least none I'm aware of.
-
----
-bod
+That sounds promising. Will give that a shot. Thanks!
