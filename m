@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19EB439FF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4300343A1BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234698AbhJYTZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42630 "EHLO mail.kernel.org"
+        id S236449AbhJYTle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233034AbhJYTXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:23:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DC5E6109E;
-        Mon, 25 Oct 2021 19:21:12 +0000 (UTC)
+        id S236630AbhJYTfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:35:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 404E3610EA;
+        Mon, 25 Oct 2021 19:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189673;
-        bh=BBTq1XMHgxZOIYSLL3kcvMpjtwUESCOr80d3awmgXKA=;
+        s=korg; t=1635190313;
+        bh=H8dMllj0cbm2DcvL07k3/fwDc7kDWzdKNj+qJLTz8EQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AqLtEAbmBjHetrbcZL+3vHC7SH0feKFS6FyhX/44RC9wIL4Iy2Diq2/xPQ6yQjPlM
-         i+rB73ZYw4QVpxZM5hzK8wyfLSo2tFrOT3trYV4vCoyaXHFnlJkQmfJM/EXLOPakYr
-         fwRbfQKRsWT8KZtViDqf0QVHZq5bHRCMx14aoAWc=
+        b=Wx6eXyRXrM8TfE+R29h/nnxn7cBQsKkEUoKNYEM8aYgUmBxnF9P5lTZOJCo3y4lJh
+         rMYXVVXjdkkX7Kld1+Av7K9u2k96MB1U/YkYgcIEL94W8riNnOlP0BPTCkCb3mTxxr
+         iBqjmIJFYj52QJ7iOxAqCJ0uC0mliH1Gtv0A9Rj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
+        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 03/30] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+Subject: [PATCH 5.10 26/95] net: hns3: schedule the polling again when allocation fails
 Date:   Mon, 25 Oct 2021 21:14:23 +0200
-Message-Id: <20211025190923.706311003@linuxfoundation.org>
+Message-Id: <20211025191000.677595774@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit f3d7c2cdf6dc0d5402ec29c3673893b3542c5ad1 ]
+[ Upstream commit 68752b24f51a71d4f350a764d890b670f59062c5 ]
 
-Use platform data to initialize xtfpga device drivers when CONFIG_USE_OF
-is not selected. This fixes xtfpga networking when CONFIG_USE_OF is not
-selected but CONFIG_OF is.
+Currently when there is a rx page allocation failure, it is
+possible that polling may be stopped if there is no more packet
+to be reveiced, which may cause queue stall problem under memory
+pressure.
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+This patch makes sure polling is scheduled again when there is
+any rx page allocation failure, and polling will try to allocate
+receive buffers until it succeeds.
+
+Now the allocation retry is added, it is unnecessary to do the rx
+page allocation at the end of rx cleaning, so remove it. And reset
+the unused_count to zero after calling hns3_nic_alloc_rx_buffers()
+to avoid calling hns3_nic_alloc_rx_buffers() repeatedly under
+memory pressure.
+
+Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/platforms/xtfpga/setup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 22 ++++++++++---------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
-index 42285f35d313..982e7c22e7ca 100644
---- a/arch/xtensa/platforms/xtfpga/setup.c
-+++ b/arch/xtensa/platforms/xtfpga/setup.c
-@@ -85,7 +85,7 @@ void __init platform_calibrate_ccount(void)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 4777db2623cf..e2790deb6dab 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -2637,7 +2637,8 @@ static int hns3_desc_unused(struct hns3_enet_ring *ring)
+ 	return ((ntc >= ntu) ? 0 : ring->desc_num) + ntc - ntu;
+ }
  
- #endif
- 
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- 
- static void __init xtfpga_clk_setup(struct device_node *np)
+-static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
++/* Return true if there is any allocation failure */
++static bool hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
+ 				      int cleand_count)
  {
-@@ -303,4 +303,4 @@ static int __init xtavnet_init(void)
-  */
- arch_initcall(xtavnet_init);
+ 	struct hns3_desc_cb *desc_cb;
+@@ -2662,7 +2663,10 @@ static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
+ 				hns3_rl_err(ring_to_netdev(ring),
+ 					    "alloc rx buffer failed: %d\n",
+ 					    ret);
+-				break;
++
++				writel(i, ring->tqp->io_base +
++				       HNS3_RING_RX_RING_HEAD_REG);
++				return true;
+ 			}
+ 			hns3_replace_buffer(ring, ring->next_to_use, &res_cbs);
  
--#endif /* CONFIG_OF */
-+#endif /* CONFIG_USE_OF */
+@@ -2675,6 +2679,7 @@ static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
+ 	}
+ 
+ 	writel(i, ring->tqp->io_base + HNS3_RING_RX_RING_HEAD_REG);
++	return false;
+ }
+ 
+ static bool hns3_page_is_reusable(struct page *page)
+@@ -3218,6 +3223,7 @@ int hns3_clean_rx_ring(struct hns3_enet_ring *ring, int budget,
+ {
+ #define RCB_NOF_ALLOC_RX_BUFF_ONCE 16
+ 	int unused_count = hns3_desc_unused(ring);
++	bool failure = false;
+ 	int recv_pkts = 0;
+ 	int err;
+ 
+@@ -3226,9 +3232,9 @@ int hns3_clean_rx_ring(struct hns3_enet_ring *ring, int budget,
+ 	while (recv_pkts < budget) {
+ 		/* Reuse or realloc buffers */
+ 		if (unused_count >= RCB_NOF_ALLOC_RX_BUFF_ONCE) {
+-			hns3_nic_alloc_rx_buffers(ring, unused_count);
+-			unused_count = hns3_desc_unused(ring) -
+-					ring->pending_buf;
++			failure = failure ||
++				hns3_nic_alloc_rx_buffers(ring, unused_count);
++			unused_count = 0;
+ 		}
+ 
+ 		/* Poll one pkt */
+@@ -3247,11 +3253,7 @@ int hns3_clean_rx_ring(struct hns3_enet_ring *ring, int budget,
+ 	}
+ 
+ out:
+-	/* Make all data has been write before submit */
+-	if (unused_count > 0)
+-		hns3_nic_alloc_rx_buffers(ring, unused_count);
+-
+-	return recv_pkts;
++	return failure ? budget : recv_pkts;
+ }
+ 
+ static bool hns3_get_new_flow_lvl(struct hns3_enet_ring_group *ring_group)
 -- 
 2.33.0
 
