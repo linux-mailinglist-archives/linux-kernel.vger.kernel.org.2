@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1540A4391D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA504391D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhJYI7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:59:30 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:42664 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbhJYI73 (ORCPT
+        id S232302AbhJYJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232168AbhJYJAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:59:29 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19P8ukbE109334;
-        Mon, 25 Oct 2021 03:56:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635152206;
-        bh=r4fDR2q9W8VbL9No75Rv5RRZ+ZkwNCxRKt2G5ngXxHY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=i87sLChGv1QEnJbSDjSltLMJQ7xwbebZmFgNoWk683NWWcGIPZTRJ1X3Wzy2fA2f9
-         tpLWys4iDFO4jgFLrwo/90d1ZlOixgkQ7IBKFiGtUPpZ20Y7iqM1XVjIYGxoUEGQ/9
-         5Lk6q/3wvyeAri95cvcDJ7dAbZb2rNvdUisBwTDo=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19P8uk7E084125
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Oct 2021 03:56:46 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 25
- Oct 2021 03:56:45 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 25 Oct 2021 03:56:45 -0500
-Received: from [10.250.233.112] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19P8uf45085408;
-        Mon, 25 Oct 2021 03:56:42 -0500
-Subject: Re: [PATCH v15 02/13] PCI: kirin: Add support for a PHY layer
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
-References: <cover.1634812676.git.mchehab+huawei@kernel.org>
- <f38361df2e9d0dc5a38ff942b631f7fef64cdc12.1634812676.git.mchehab+huawei@kernel.org>
- <3919b668-cf6a-ffda-0115-c2a94750e56a@ti.com>
- <20211025095254.522c1da6@sal.lan>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <7c3848c4-afd7-8a97-d782-68dc38b81f28@ti.com>
-Date:   Mon, 25 Oct 2021 14:26:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 25 Oct 2021 05:00:23 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6765C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=80xr9ygw2WJEE4XFb2EF56NTU+iC2pwy4SKHZowUeqY=; b=liUXSCEMtdJNkd1F6pFhRRiUda
+        FgMbrNpElFgab9sDhKUr0SXGPsD2yLDaIUkYE+BUjO7GhdWxIKwiYBG2TBO3HSSx13LT5aDNuefNP
+        Hx5pHluuJpL2KCzjpb6rmW5/h8pZtV3uv0Ak3JD+bu/wvlQf7BaGp8lZf7ic5VZ4y5yDszQHAgfbr
+        OGg1FrF5JX/TxU/m079qsu9lwRGQcHLczuKjWPH0iA3pW1Xvl93akeDuWhAMKz1fpvcDkz8GTzx+M
+        916eI+74HV+CF5SKeGGok2cjrGGwpXkh7T6gDI5AA6a2q0xDzSSJNUy45x/iMD2nQSx+N3OgjN7Zi
+        HnOxn1cQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mevnR-00C6pU-9o; Mon, 25 Oct 2021 08:57:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC10D300288;
+        Mon, 25 Oct 2021 10:57:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5EDE220C6C14F; Mon, 25 Oct 2021 10:57:31 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 10:57:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched: Fix implicit type conversion
+Message-ID: <YXZxe/bQS397KX/W@hirez.programming.kicks-ass.net>
+References: <1635149847-2426546-1-git-send-email-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-In-Reply-To: <20211025095254.522c1da6@sal.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635149847-2426546-1-git-send-email-jiasheng@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Mon, Oct 25, 2021 at 08:17:27AM +0000, Jiasheng Jiang wrote:
+> The variable 'n' is defined as ULONG. However in the cpumask_next(),
+> it is used as INT.
+> That is vulnerable and may cause overflow.
+> Therefore, it might be better to define 'n' as INT.
 
-On 25/10/21 2:22 pm, Mauro Carvalho Chehab wrote:
-> Hi Kishon,
-> 
-> Em Mon, 25 Oct 2021 13:44:57 +0530
-> Kishon Vijay Abraham I <kishon@ti.com> escreveu:
-> 
->> Hi Mauro,
-> 
->>> +
->>> +static const struct of_device_id kirin_pcie_match[] = {
->>> +	{
->>> +		.compatible = "hisilicon,kirin960-pcie",
->>> +		.data = (void *)PCIE_KIRIN_INTERNAL_PHY
->>> +	},  
->>
->> Where is PCIE_KIRIN_EXTERNAL_PHY used?
-> 
-> See:
-> 	[PATCH v15 06/13] PCI: kirin: Add Kirin 970 compatible
-> 
-> 	https://lore.kernel.org/all/ac8c730c0300b90d96bdaaf387d458d8949241a9.1634812676.git.mchehab+huawei@kernel.org/
-> 
-> Basically, Kirin 970 (and any other devices that would use the same
-> driver) should also use PCIE_KIRIN_EXTERNAL_PHY and place the PHY 
-> driver inside drivers/phy, instead of hardcoding it at the driver.
-> 
-> The Kirin 970 PHY driver was already merged at linux-next:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/phy/hisilicon/phy-hi3670-pcie.c
+-ENOPARSE
 
-Thanks for clarifying.
-
-
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-
-
-Regards,
-Kishon
