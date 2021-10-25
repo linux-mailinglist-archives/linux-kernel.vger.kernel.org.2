@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DDF43957B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CF843957D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhJYMEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        id S231835AbhJYMFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:05:55 -0400
+Received: from mga14.intel.com ([192.55.52.115]:24240 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhJYMEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:04:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2DA6023D;
-        Mon, 25 Oct 2021 12:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635163347;
-        bh=wMKiKZCk5y0VW7CmgDhDNIGGaD8ZtLRLvp2Xs5Pt2hs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eQO9upRO2yLVvQ8KXTVRsSpe111EolPA+99BpmkyjkrNXbvrrN2rCYQUDiu0DGC5R
-         Z/ZGqvWyhwy+ifNI8+rmplOlZ29ZCH7ThtSOCdpLL6N4gGfh/cOA+rg4863zhaSAXe
-         LHvkZT2TG80JweNa+mQTn8HbPG3Sd9oR0UDLx2ZM=
-Date:   Mon, 25 Oct 2021 14:02:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/4] efi: Introduce
- EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Message-ID: <YXac0IYICzIOmeRh@kroah.com>
-References: <cover.1635140590.git.yu.c.chen@intel.com>
- <1cd3161bf51de99990fd5ee2dc896b4defef4f38.1635140590.git.yu.c.chen@intel.com>
- <YXZSMCaODRPw0Zlj@kroah.com>
- <20211025114519.GA7559@chenyu5-mobl1>
+        id S231133AbhJYMFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:05:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="229903341"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="229903341"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:03:28 -0700
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="446201127"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:03:27 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1meyh0-000c18-2u;
+        Mon, 25 Oct 2021 15:03:06 +0300
+Date:   Mon, 25 Oct 2021 15:03:05 +0300
+From:   "andriy.shevchenko" <andriy.shevchenko@linux.intel.com>
+To:     "changlianzhi@uniontech.com" <changlianzhi@uniontech.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        jirislaby <jirislaby@kernel.org>, 282827961 <282827961@qq.com>
+Subject: Re: [PATCH v6] tty: Fix the keyboard led light display problem
+Message-ID: <YXac+bpVemXEp9XR@smile.fi.intel.com>
+References: <20211021020511.18016-1-changlianzhi@uniontech.com>
+ <YXLVAOh6AcB34kW8@smile.fi.intel.com>
+ <202110250129181502896@uniontech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211025114519.GA7559@chenyu5-mobl1>
+In-Reply-To: <202110250129181502896@uniontech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 07:45:19PM +0800, Chen Yu wrote:
-> On Mon, Oct 25, 2021 at 08:44:00AM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 25, 2021 at 02:25:04PM +0800, Chen Yu wrote:
-> > > Platform Firmware Runtime Update image starts with UEFI headers, and the
-> > > headers are defined in UEFI specification, but some of them have not been
-> > > defined in the kernel yet.
-> > > 
-> > > For example, the header layout of a capsule file looks like this:
-> > > 
-> > > EFI_CAPSULE_HEADER
-> > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
-> > > 
-> > > These structures would be used by the Platform Firmware Runtime Update
-> > > driver to parse the format of capsule file to verify if the corresponding
-> > > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-> > > kernel, however the rest are not, thus introduce corresponding UEFI
-> > > structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
-> > > so the corresponding data types should be packed.
-> > > 
-> > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > > ---
-> > > v6: No change since v5.
-> > > v5: No change since v4.
-> > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki) 
-> > > ---
-> > >  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 50 insertions(+)
-> > > 
-> > > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > > index 6b5d36babfcc..19ff834e1388 100644
-> > > --- a/include/linux/efi.h
-> > > +++ b/include/linux/efi.h
-> > > @@ -148,6 +148,56 @@ typedef struct {
-> > >  	u32 imagesize;
-> > >  } efi_capsule_header_t;
-> > >  
-> > > +#pragma pack(1)
-> > 
-> > Why is this pragma suddenly needed now in this file?
-> > 
-> > If you really need this for a specific structure, use the "__packed"
-> > attribute please.
-> >
-> These two structures are required to be packed in the uefi spec, I'll change
-> them to "__packed".
+On Mon, Oct 25, 2021 at 01:29:18AM +0800, changlianzhi@uniontech.com wrote:
+> >>On Thu, Oct 21, 2021 at 10:05:11AM +0800, lianzhi chang wrote:
+> >> Switching from the desktop environment to the tty environment,
+> >> the state of the keyboard led lights and the state of the keyboard
+> >> lock are inconsistent. This is because the attribute kb->kbdmode
+> >> of the tty bound in the desktop environment (xorg) is set to
+> >> VC_OFF, which causes the ledstate and kb->ledflagstate
+> >> values of the bound tty to always be 0, which causes the switch
+> >> from the desktop When to the tty environment, the LED light
+> >> status is inconsistent with the keyboard lock status.
+> 
+> >...
+> 
+> >> +	unsigned long leds;
+> >> +
+> >> +	leds = (unsigned long)ledstate;
+> 
+> >Can be one line.
+> 
+> >But most important question you are ignoring to answer / address is why do you
+> >use casting?
 
-And they are the _only_ ones in this .h file that require this?  I would
-think that they all require this.
+> >>But most important question you are ignoring to answer / address is why do you
+> >>use casting?
+> Casting is used here because:
+> The second parameter of test_bit is "volatile unsigned long *addr" (see constant_test_bit() in /arch/x86/include/asm/bitops.h), but ledstate is an "unsigned int" type. If casting is not used,
+> compile Will report an error.
 
-thanks,
+Wait, you are casting pointer to an integer?!
+This is completely wrong in this case!
 
-greg k-h
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
