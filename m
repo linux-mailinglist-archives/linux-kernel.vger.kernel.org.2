@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD68043A16A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4495643A357
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237061AbhJYTik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:38:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49322 "EHLO mail.kernel.org"
+        id S240188AbhJYT64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:58:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236178AbhJYTdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:33:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D98260200;
-        Mon, 25 Oct 2021 19:29:20 +0000 (UTC)
+        id S238108AbhJYTxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:53:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96363604AC;
+        Mon, 25 Oct 2021 19:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190162;
-        bh=0xsAHHJHjUVBcW/QgHeKPiQYyWZE+XY7c89wOQiUFeA=;
+        s=korg; t=1635191059;
+        bh=DJnyG1nebXHSgR0JTvDhQ6tut1qvlMZhy4JTAWvw68w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H1jRCxYAqBM5oxoxOq5X1vCRrHfqh/O72+7oW78yUdlArFUAlIszZ9A+PKZVFjKeK
-         DmLjvI3nOVxWjpIcMN8lVZaRDf6GvOOw+CBmmxYrqiAGmJ6PR4HDUsXRWgw25Vs0R0
-         zQxmmITzssTH7w7xJHgug+jM7OaW7b+hu0GP4Tcs=
+        b=YaGLxrfCR6cnT15Ag27ckDhyJRNoJ4UDlxkGB+cQy1L2gcec10435TZ3eqcejfeRJ
+         eZfczBadfgLkPTyfv5PTVFvJHe3Bu/6CreVG55AwlSF8rp5Vy6o3SEjt0AwGvw8hrH
+         K5pp0O3CL/C5VwK/OIgYIvcPKHbRwVKIGvyZnz9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabien Dessenne <fabien.dessenne@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.4 58/58] pinctrl: stm32: use valid pin identifier in stm32_pinctrl_resume()
-Date:   Mon, 25 Oct 2021 21:15:15 +0200
-Message-Id: <20211025190947.321499484@linuxfoundation.org>
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 135/169] btrfs: deal with errors when checking if a dir entry exists during log replay
+Date:   Mon, 25 Oct 2021 21:15:16 +0200
+Message-Id: <20211025191034.770342291@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit c370bb474016ab9edfdabd7c08a88dd13a71ddbd upstream.
+[ Upstream commit 77a5b9e3d14cbce49ceed2766b2003c034c066dc ]
 
-When resuming from low power, the driver attempts to restore the
-configuration of some pins. This is done by a call to:
-  stm32_pinctrl_restore_gpio_regs(struct stm32_pinctrl *pctl, u32 pin)
-where 'pin' must be a valid pin value (i.e. matching some 'groups->pin').
-Fix the current implementation which uses some wrong 'pin' value.
+Currently inode_in_dir() ignores errors returned from
+btrfs_lookup_dir_index_item() and from btrfs_lookup_dir_item(), treating
+any errors as if the directory entry does not exists in the fs/subvolume
+tree, which is obviously not correct, as we can get errors such as -EIO
+when reading extent buffers while searching the fs/subvolume's tree.
 
-Fixes: e2f3cf18c3e2 ("pinctrl: stm32: add suspend/resume management")
-Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
-Link: https://lore.kernel.org/r/20211008122517.617633-1-fabien.dessenne@foss.st.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix that by making inode_in_dir() return the errors and making its only
+caller, add_inode_ref(), deal with returned errors as well.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/stm32/pinctrl-stm32.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/tree-log.c | 47 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
---- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-+++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -1554,8 +1554,8 @@ int __maybe_unused stm32_pinctrl_resume(
- 	struct stm32_pinctrl_group *g = pctl->groups;
- 	int i;
- 
--	for (i = g->pin; i < g->pin + pctl->ngroups; i++)
--		stm32_pinctrl_restore_gpio_regs(pctl, i);
-+	for (i = 0; i < pctl->ngroups; i++, g++)
-+		stm32_pinctrl_restore_gpio_regs(pctl, g->pin);
- 
- 	return 0;
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 17f0de5bb873..539c5db2b22b 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -939,9 +939,11 @@ out:
  }
+ 
+ /*
+- * helper function to see if a given name and sequence number found
+- * in an inode back reference are already in a directory and correctly
+- * point to this inode
++ * See if a given name and sequence number found in an inode back reference are
++ * already in a directory and correctly point to this inode.
++ *
++ * Returns: < 0 on error, 0 if the directory entry does not exists and 1 if it
++ * exists.
+  */
+ static noinline int inode_in_dir(struct btrfs_root *root,
+ 				 struct btrfs_path *path,
+@@ -950,29 +952,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
+ {
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_key location;
+-	int match = 0;
++	int ret = 0;
+ 
+ 	di = btrfs_lookup_dir_index_item(NULL, root, path, dirid,
+ 					 index, name, name_len, 0);
+-	if (di && !IS_ERR(di)) {
++	if (IS_ERR(di)) {
++		if (PTR_ERR(di) != -ENOENT)
++			ret = PTR_ERR(di);
++		goto out;
++	} else if (di) {
+ 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+ 		if (location.objectid != objectid)
+ 			goto out;
+-	} else
++	} else {
+ 		goto out;
+-	btrfs_release_path(path);
++	}
+ 
++	btrfs_release_path(path);
+ 	di = btrfs_lookup_dir_item(NULL, root, path, dirid, name, name_len, 0);
+-	if (di && !IS_ERR(di)) {
+-		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+-		if (location.objectid != objectid)
+-			goto out;
+-	} else
++	if (IS_ERR(di)) {
++		ret = PTR_ERR(di);
+ 		goto out;
+-	match = 1;
++	} else if (di) {
++		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
++		if (location.objectid == objectid)
++			ret = 1;
++	}
+ out:
+ 	btrfs_release_path(path);
+-	return match;
++	return ret;
+ }
+ 
+ /*
+@@ -1522,10 +1530,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 		if (ret)
+ 			goto out;
+ 
+-		/* if we already have a perfect match, we're done */
+-		if (!inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
+-					btrfs_ino(BTRFS_I(inode)), ref_index,
+-					name, namelen)) {
++		ret = inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
++				   btrfs_ino(BTRFS_I(inode)), ref_index,
++				   name, namelen);
++		if (ret < 0) {
++			goto out;
++		} else if (ret == 0) {
+ 			/*
+ 			 * look for a conflicting back reference in the
+ 			 * metadata. if we find one we have to unlink that name
+@@ -1585,6 +1595,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 			if (ret)
+ 				goto out;
+ 		}
++		/* Else, ret == 1, we already have a perfect match, we're done. */
+ 
+ 		ref_ptr = (unsigned long)(ref_ptr + ref_struct_size) + namelen;
+ 		kfree(name);
+-- 
+2.33.0
+
 
 
