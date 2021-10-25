@@ -2,254 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DFC43A5CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6089243A5D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhJYV2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:28:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:64591 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231276AbhJYV2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:28:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635197138; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/n7Afg/qFLw5fN0zCsoQaRdymI6ejx5XZCvCB+/h3VE=;
- b=ESmq/T82BUFxf5iGIfgceqU8qXMV2T51HgkM+ttpHYoBtSnQFq15BkT0xJyu5EGA1wQR73E6
- IazwFzs8CykeFiI+Iyd3IAniVymINV1gV3ahiHjL/r1sjWkULAEW+WZiMeVJhhcF3aTDz9xV
- 4xoDTvrlgCarnHWGfPboZ6b1e4M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 617720c3c75c436a30c0c3ce (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Oct 2021 21:25:23
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 357AFC43616; Mon, 25 Oct 2021 21:25:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EBE9C43460;
-        Mon, 25 Oct 2021 21:25:21 +0000 (UTC)
+        id S233312AbhJYV3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233629AbhJYV26 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:28:58 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E709C061233
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:26:26 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id v193so5514424pfc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2fNJb298Duxoc3HaUlc7Nf67pHRtdIDXApm1+Pxj1CY=;
+        b=TRqNlEXzHsdKTmPnnwk8ZuzVAreo87ING3F8W9WSUyNo4p77FsHs+6hAFCTFjYtSxQ
+         T5FA6kieCvJOBGjblwVzlSD0BBLfceotvpOTPjKgajGY0lOcLq9nAdK0v4y9JmxZ9pEY
+         5P6Vede0VGDZnBZ3bin+D6Nttc084+XGmRXho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2fNJb298Duxoc3HaUlc7Nf67pHRtdIDXApm1+Pxj1CY=;
+        b=H7NgAdFap0lf3bHxhSmdUWRPviwjC9OT/CTnOi5UDCTzqZxXRNXEJ6caDqep5AiGEZ
+         G/u5aoxZKBSQaY5SlVDr3yx7Ex+8L276/g9P52eN9AUUZhz5RTKMJBR0sZT+ZkXOLzSw
+         Mz/XFf9Y+plQd/ANMmRaT5IW1qKECoT45Wm/f6cL1vrsyguzdhKZ3ncZ6cTNykUeaBUQ
+         D6jz7fEkxZRPrTpuQMa88VE1zTiFgTEZZg+xfPZMzGUO8BFsfQIfkH7Ew2VdP26ver0W
+         ty9HgRYiiG/dQWqPPKHesi24JFDzBVLqefNOzlLrklk14A8OGvmS9/grjp6IsoiZ+M8v
+         Ez1g==
+X-Gm-Message-State: AOAM532i+9195E/nCO4Zif3uZjA11l0Hz6wHdTEKS/rweHe0FzOsBvGx
+        DYjff6btwu1yYIlac4AgW/VjDQ==
+X-Google-Smtp-Source: ABdhPJyZvuEMI5RNT65jhw/Gxgqo6oZ5d4AtEJIdaWdwCgtF89fexmlMVa3x/LPVtV6kewwQYslSEA==
+X-Received: by 2002:a62:5ec2:0:b0:44d:47e2:4b3b with SMTP id s185-20020a625ec2000000b0044d47e24b3bmr21508392pfb.38.1635197185593;
+        Mon, 25 Oct 2021 14:26:25 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s2sm25055172pjs.56.2021.10.25.14.26.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:26:25 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:26:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        valentin.schneider@arm.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH v6 09/12] tools/perf/test: make perf test adopt to task
+ comm size change
+Message-ID: <202110251426.2921B7BDD7@keescook>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <20211025083315.4752-10-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 25 Oct 2021 14:25:21 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
-        kalyan_t@codeaurora.org, sbillaka@codeaurora.org,
-        abhinavk@codeaurora.org, robdclark@gmail.com,
-        bjorn.andersson@linaro.org, rajeevny@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sc7280: add edp display dt nodes
-In-Reply-To: <CAE-0n53NtSwin8RavHqF44d2adv9-_HMwDC+RzyzgQq8Z4t_yA@mail.gmail.com>
-References: <1634738333-3916-1-git-send-email-quic_mkrishn@quicinc.com>
- <1634738333-3916-4-git-send-email-quic_mkrishn@quicinc.com>
- <CAE-0n53NtSwin8RavHqF44d2adv9-_HMwDC+RzyzgQq8Z4t_yA@mail.gmail.com>
-Message-ID: <f8364fd67770659f99e067827afb99af@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025083315.4752-10-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-21 11:44, Stephen Boyd wrote:
-> Quoting Krishna Manikandan (2021-10-20 06:58:53)
->> From: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
->> 
->> Add edp controller and phy DT nodes for sc7280.
->> 
->> Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
->> Signed-off-by: Krishna Manikandan <quic_mkrishn@quicinc.com>
->> 
+On Mon, Oct 25, 2021 at 08:33:12AM +0000, Yafang Shao wrote:
+> kernel test robot reported a perf-test failure after I extended task comm
+> size from 16 to 24. The failure as follows,
 > 
-> Some comments below
+> 2021-10-13 18:00:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf test 15
+> 15: Parse sched tracepoints fields                                  : FAILED!
 > 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> The reason is perf-test requires a fixed-size task comm. If we extend
+> task comm size to 24, it will not equil with the required size 16 in perf
+> test.
 > 
+> After some analyzation, I found perf itself can adopt to the size
+> change, for example, below is the output of perf-sched after I extend
+> comm size to 24 -
 > 
->> Changes in v2:
->>     - Move regulator definitions to board file (Matthias Kaehlcke)
->>     - Move the gpio definitions to board file (Matthias Kaehlcke)
->>     - Move the pinconf to board file (Matthias Kaehlcke)
->>     - Move status property (Stephen Boyd)
->>     - Drop flags from interrupts (Stephen Boyd)
->>     - Add clock names one per line for readability (Stephen Boyd)
->>     - Rename edp-opp-table (Stephen Boyd)
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 107 
->> ++++++++++++++++++++++++++++++++++-
->>  1 file changed, 106 insertions(+), 1 deletion(-)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index dd35882..4450277 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -2575,7 +2575,7 @@
->>                         reg = <0 0xaf00000 0 0x20000>;
->>                         clocks = <&rpmhcc RPMH_CXO_CLK>,
->>                                  <&gcc GCC_DISP_GPLL0_CLK_SRC>,
->> -                                <0>, <0>, <0>, <0>, <0>, <0>;
->> +                                <0>, <0>, <0>, <0>, <&edp_phy 0>, 
->> <&edp_phy 1>;
+> task    614 (            kthreadd:        84), nr_events: 1
+> task    615 (             systemd:       843), nr_events: 1
+> task    616 (     networkd-dispat:      1026), nr_events: 1
+> task    617 (             systemd:       846), nr_events: 1
 > 
-> I can already tell this is going to be a merge mess! Can this also be
-> one cell per line?
+> $ cat /proc/843/comm
+> networkd-dispatcher
 > 
-  where are dsi phy? (<&dsi_phy 0>, <&dsi_phy 1>)
+> The task comm can be displayed correctly as expected.
+> 
+> Replace old hard-coded 16 with the new one can fix the warning, but we'd
+> better make the test accept both old and new sizes, then it can be
+> backward compatibility.
+> 
+> After this patch, the perf-test succeeds no matter task comm is 16 or
+> 24 -
+> 
+> 15: Parse sched tracepoints fields                                  : Ok
+> 
+> This patch is a preparation for the followup patch.
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
 
->>                         clock-names = "bi_tcxo", "gcc_disp_gpll0_clk",
->>                                       "dsi0_phy_pll_out_byteclk",
->>                                       "dsi0_phy_pll_out_dsiclk",
->> @@ -2777,6 +2784,103 @@
->> 
->>                                 status = "disabled";
->>                         };
->> +
->> +                       msm_edp: edp@aea0000 {
->> +                               compatible = "qcom,sc7280-edp";
->> +
->> +                               reg = <0 0xaea0000 0 0x200>,
->> +                                     <0 0xaea0200 0 0x200>,
->> +                                     <0 0xaea0400 0 0xc00>,
->> +                                     <0 0xaea1000 0 0x400>;
->> +
->> +                               interrupt-parent = <&mdss>;
->> +                               interrupts = <14>;
->> +
->> +                               clocks = <&rpmhcc RPMH_CXO_CLK>,
->> +                                        <&gcc GCC_EDP_CLKREF_EN>,
->> +                                        <&dispcc 
->> DISP_CC_MDSS_AHB_CLK>,
->> +                                        <&dispcc 
->> DISP_CC_MDSS_EDP_AUX_CLK>,
->> +                                        <&dispcc 
->> DISP_CC_MDSS_EDP_LINK_CLK>,
->> +                                        <&dispcc 
->> DISP_CC_MDSS_EDP_LINK_INTF_CLK>,
->> +                                        <&dispcc 
->> DISP_CC_MDSS_EDP_PIXEL_CLK>;
->> +                               clock-names = "core_xo",
->> +                                             "core_ref",
->> +                                             "core_iface",
->> +                                             "core_aux",
->> +                                             "ctrl_link",
->> +                                             "ctrl_link_iface",
->> +                                             "stream_pixel";
->> +                               #clock-cells = <1>;
->> +                               assigned-clocks = <&dispcc 
->> DISP_CC_MDSS_EDP_LINK_CLK_SRC>,
->> +                                                 <&dispcc 
->> DISP_CC_MDSS_EDP_PIXEL_CLK_SRC>;
->> +                               assigned-clock-parents = <&edp_phy 0>, 
->> <&edp_phy 1>;
->> +
->> +                               phys = <&edp_phy>;
->> +                               phy-names = "dp";
->> +
->> +                               operating-points-v2 = 
->> <&edp_opp_table>;
->> +                               power-domains = <&rpmhpd SC7280_CX>;
->> +
->> +
->> +                               #address-cells = <1>;
->> +                               #size-cells = <0>;
->> +
->> +                               status = "disabled";
->> +
->> +                               ports {
->> +                                       #address-cells = <1>;
->> +                                       #size-cells = <0>;
->> +                                       port@0 {
->> +                                               reg = <0>;
->> +                                               edp_in: endpoint {
->> +                                                       
->> remote-endpoint = <&dpu_intf5_out>;
->> +                                               };
->> +                                       };
->> +                               };
->> +
->> +                               edp_opp_table: opp-table {
->> +                                       compatible = 
->> "operating-points-v2";
->> +
->> +                                       opp-160000000 {
->> +                                               opp-hz = /bits/ 64 
->> <160000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_low_svs>;
->> +                                       };
->> +
->> +                                       opp-270000000 {
->> +                                               opp-hz = /bits/ 64 
->> <270000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_svs>;
->> +                                       };
->> +
->> +                                       opp-540000000 {
->> +                                               opp-hz = /bits/ 64 
->> <540000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_nom>;
->> +                                       };
->> +
->> +                                       opp-810000000 {
->> +                                               opp-hz = /bits/ 64 
->> <810000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_nom>;
->> +                                       };
->> +                               };
->> +                       };
->> +
->> +                       edp_phy: phy@aec2000 {
+I'll let the perf folks comment on this one. :)
+
+-Kees
+
+> ---
+>  tools/include/linux/sched.h       | 11 +++++++++++
+>  tools/perf/tests/evsel-tp-sched.c | 26 ++++++++++++++++++++------
+>  2 files changed, 31 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/include/linux/sched.h
 > 
-> unit address needs to match first reg property. This should be
+> diff --git a/tools/include/linux/sched.h b/tools/include/linux/sched.h
+> new file mode 100644
+> index 000000000000..0d575afd7f43
+> --- /dev/null
+> +++ b/tools/include/linux/sched.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _TOOLS_LINUX_SCHED_H
+> +#define _TOOLS_LINUX_SCHED_H
+> +
+> +/* Keep both length for backward compatibility */
+> +enum {
+> +	TASK_COMM_LEN_16 = 16,
+> +	TASK_COMM_LEN = 24,
+> +};
+> +
+> +#endif  /* _TOOLS_LINUX_SCHED_H */
+> diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
+> index f9e34bd26cf3..029f2a8c8e51 100644
+> --- a/tools/perf/tests/evsel-tp-sched.c
+> +++ b/tools/perf/tests/evsel-tp-sched.c
+> @@ -1,11 +1,13 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <linux/err.h>
+> +#include <linux/sched.h>
+>  #include <traceevent/event-parse.h>
+>  #include "evsel.h"
+>  #include "tests.h"
+>  #include "debug.h"
+>  
+> -static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
+> +static int evsel__test_field_alt(struct evsel *evsel, const char *name,
+> +				 int size, int alternate_size, bool should_be_signed)
+>  {
+>  	struct tep_format_field *field = evsel__field(evsel, name);
+>  	int is_signed;
+> @@ -23,15 +25,24 @@ static int evsel__test_field(struct evsel *evsel, const char *name, int size, bo
+>  		ret = -1;
+>  	}
+>  
+> -	if (field->size != size) {
+> -		pr_debug("%s: \"%s\" size (%d) should be %d!\n",
+> +	if (field->size != size && field->size != alternate_size) {
+> +		pr_debug("%s: \"%s\" size (%d) should be %d",
+>  			 evsel->name, name, field->size, size);
+> +		if (alternate_size > 0)
+> +			pr_debug(" or %d", alternate_size);
+> +		pr_debug("!\n");
+>  		ret = -1;
+>  	}
+>  
+>  	return ret;
+>  }
+>  
+> +static int evsel__test_field(struct evsel *evsel, const char *name,
+> +			     int size, bool should_be_signed)
+> +{
+> +	return evsel__test_field_alt(evsel, name, size, -1, should_be_signed);
+> +}
+> +
+>  int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtest __maybe_unused)
+>  {
+>  	struct evsel *evsel = evsel__newtp("sched", "sched_switch");
+> @@ -42,7 +53,8 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+>  		return -1;
+>  	}
+>  
+> -	if (evsel__test_field(evsel, "prev_comm", 16, false))
+> +	if (evsel__test_field_alt(evsel, "prev_comm", TASK_COMM_LEN_16,
+> +				  TASK_COMM_LEN, false))
+>  		ret = -1;
+>  
+>  	if (evsel__test_field(evsel, "prev_pid", 4, true))
+> @@ -54,7 +66,8 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+>  	if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
+>  		ret = -1;
+>  
+> -	if (evsel__test_field(evsel, "next_comm", 16, false))
+> +	if (evsel__test_field_alt(evsel, "next_comm", TASK_COMM_LEN_16,
+> +				  TASK_COMM_LEN, false))
+>  		ret = -1;
+>  
+>  	if (evsel__test_field(evsel, "next_pid", 4, true))
+> @@ -72,7 +85,8 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+>  		return -1;
+>  	}
+>  
+> -	if (evsel__test_field(evsel, "comm", 16, false))
+> +	if (evsel__test_field_alt(evsel, "comm", TASK_COMM_LEN_16,
+> +				  TASK_COMM_LEN, false))
+>  		ret = -1;
+>  
+>  	if (evsel__test_field(evsel, "pid", 4, true))
+> -- 
+> 2.17.1
 > 
-> 			edp_phy: phy@aec2a00
-> 
->> +                               compatible = "qcom,sc7280-edp-phy";
->> +
->> +                               reg = <0 0xaec2a00 0 0x19c>,
->> +                                     <0 0xaec2200 0 0xa0>,
->> +                                     <0 0xaec2600 0 0xa0>,
->> +                                     <0 0xaec2000 0 0x1c0>;
->> +
->> +                               clocks = <&rpmhcc RPMH_CXO_CLK>,
->> +                                        <&gcc GCC_EDP_CLKREF_EN>;
->> +                               clock-names = "aux",
->> +                                             "cfg_ahb";
->> +
->> +                               #clock-cells = <1>;
->> +                               #phy-cells = <0>;
->> +
->> +                               status = "disabled";
->> +                       };
->>                 };
->> 
->>                 pdc: interrupt-controller@b220000 {
->> @@ -3932,6 +4036,7 @@
->>                                                          <&CPU3 
->> THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->>                                 };
->>                         };
->> +
-> 
-> Drop this?
+
+-- 
+Kees Cook
