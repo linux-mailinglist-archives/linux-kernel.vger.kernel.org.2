@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59D6439F76
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7AD43A02E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbhJYTU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
+        id S234715AbhJYT3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234547AbhJYTTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:19:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13E3A61078;
-        Mon, 25 Oct 2021 19:17:28 +0000 (UTC)
+        id S234954AbhJYT0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:26:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9548B610A6;
+        Mon, 25 Oct 2021 19:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189450;
-        bh=ZRVUPx2uGfFZEyzf7HVtEtVAo2ZffGGhO+E00unNCwM=;
+        s=korg; t=1635189792;
+        bh=t0D97tyNHfJ/dkvA9wcXR6/ikyKglEVqBfbjrKMlvK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vc1p1yX3ifXcOlmw9zGxV9SptE0Jr7A2mUdamCWRMOh38EGF7LyieZV/Bgs8btTNV
-         K7pMfFItfbMs8gIkTkjtfBUD58zsmvw9eyUcVQXpGhGRMohSMOdpBGfPClvV6BfOe+
-         yhExdP7UOs9p7hWqLENqZatlGSCwauzSuuiCD+Rc=
+        b=SIsJgRTtx2U8RdySuUSBW3fkFr5S9XAjEBcoKHRvR73NYPpFvs+YCXJCq88VpUOcv
+         mOVuuJZCKneWZ4Y+h7nPBS4H1qswA47lUk4ZewbpRejQcSnSaSFIvhcMRcDG1w6ClX
+         yZPQA+KuuuuU+SQ9G0oh3f1ItyqolUemxmNh8lEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.4 44/44] ARM: 9122/1: select HAVE_FUTEX_CMPXCHG
-Date:   Mon, 25 Oct 2021 21:14:25 +0200
-Message-Id: <20211025190937.446321165@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 01/37] ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default
+Date:   Mon, 25 Oct 2021 21:14:26 +0200
+Message-Id: <20211025190928.536289840@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,51 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Eugen Hristev <eugen.hristev@microchip.com>
 
-commit 9d417cbe36eee7afdd85c2e871685f8dab7c2dba upstream.
+[ Upstream commit 4348cc10da6377a86940beb20ad357933b8f91bb ]
 
-tglx notes:
-  This function [futex_detect_cmpxchg] is only needed when an
-  architecture has to runtime discover whether the CPU supports it or
-  not.  ARM has unconditional support for this, so the obvious thing to
-  do is the below.
+Without a sensor node, the ISC will simply fail to probe, as the
+corresponding port node is missing.
+It is then logical to disable the node in the devicetree.
+If we add a port with a connection to a sensor endpoint, ISC can be enabled.
 
-Fixes linkage failure from Clang randconfigs:
-kernel/futex.o:(.text.fixup+0x5c): relocation truncated to fit: R_ARM_JUMP24 against `.init.text'
-and boot failures for CONFIG_THUMB2_KERNEL.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/325
-
-Comments from Nick Desaulniers:
-
- See-also: 03b8c7b623c8 ("futex: Allow architectures to skip
- futex_atomic_cmpxchg_inatomic() test")
-
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: stable@vger.kernel.org # v3.14+
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/20210902121358.503589-1-eugen.hristev@microchip.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/at91-sama5d27_som1_ek.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -51,6 +51,7 @@ config ARM
- 	select HAVE_FTRACE_MCOUNT_RECORD if (!XIP_KERNEL)
- 	select HAVE_FUNCTION_GRAPH_TRACER if (!THUMB2_KERNEL)
- 	select HAVE_FUNCTION_TRACER if (!XIP_KERNEL)
-+	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_HW_BREAKPOINT if (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7))
- 	select HAVE_IDE if PCI || ISA || PCMCIA
+diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+index e86e0c00eb6b..f37af915a37e 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+@@ -106,7 +106,6 @@
+ 			isc: isc@f0008000 {
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&pinctrl_isc_base &pinctrl_isc_data_8bit &pinctrl_isc_data_9_10 &pinctrl_isc_data_11_12>;
+-				status = "okay";
+ 			};
+ 
+ 			spi0: spi@f8000000 {
+-- 
+2.33.0
+
 
 
