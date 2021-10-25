@@ -2,169 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C264F439474
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7AA43946E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhJYLH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:07:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:51333 "EHLO mga02.intel.com"
+        id S232845AbhJYLGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:06:37 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:40432 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232525AbhJYLHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:07:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216793262"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="216793262"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 04:05:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="664019365"
-Received: from ipu5-build.bj.intel.com (HELO [10.238.232.188]) ([10.238.232.188])
-  by orsmga005.jf.intel.com with ESMTP; 25 Oct 2021 04:05:27 -0700
-Subject: Re: [PATCH 3/6] Documentation: ACPI: Document _DSC object usage for
- enum power state
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-References: <20211018121729.6357-1-sakari.ailus@linux.intel.com>
- <20211018121729.6357-4-sakari.ailus@linux.intel.com>
-From:   Bingbu Cao <bingbu.cao@linux.intel.com>
-Message-ID: <4da84e63-0e3d-155f-f3db-5d3a9efe3aa7@linux.intel.com>
-Date:   Mon, 25 Oct 2021 19:01:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232394AbhJYLGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:06:35 -0400
+Received: from zn.tnic (p200300ec2f0f4e0014f3333d144d8f4c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4e00:14f3:333d:144d:8f4c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 16F671EC01A2;
+        Mon, 25 Oct 2021 13:04:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635159852;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7cmuTPU0DzQTCxQyPVEejLbQuN+VwiqGyI2YEU3p7AA=;
+        b=bsEi5PDRu9B//F2k3sBqf+iWQBeBiCnanLpmDuwuXJqZLC7yaGVSsuu9lgqvYe+bEmhhKl
+        23nleFXGRaeNDIG9j9g2r+JuV0yV/Ja9wO/CkPt1uczRzIiQf8sqHepd0ZEDL0DmsdIgj2
+        4Vzt5se9siIhk1/riS5dAv7DWDHpqdg=
+Date:   Mon, 25 Oct 2021 13:04:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXaPKsicNYFZe84I@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXF+WjMHW/dd0Wb6@zn.tnic>
+ <20211021204149.pof2exhwkzy2zqrg@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20211018121729.6357-4-sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211021204149.pof2exhwkzy2zqrg@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sakari,
+On Thu, Oct 21, 2021 at 03:41:49PM -0500, Michael Roth wrote:
+> On Thu, Oct 21, 2021 at 04:51:06PM +0200, Borislav Petkov wrote:
+> > On Wed, Oct 20, 2021 at 11:10:23AM -0500, Michael Roth wrote:
+> > > The CPUID calls in snp_cpuid_init() weren't added specifically to induce
+> > > the #VC-based SEV MSR read, they were added only because I thought the
+> > > gist of your earlier suggestions were to do more validation against the
+> > > CPUID table advertised by EFI
+> > 
+> > Well, if EFI is providing us with the CPUID table, who verified it? The
+> > attestation process? Is it signed with the AMD platform key?
+> 
+> For CPUID table pages, the only thing that's assured/attested to by firmware
+> is that:
+> 
+>  1) it is present at the expected guest physical address (that address
+>     is generally baked into the EFI firmware, which *is* attested to)
+>  2) its contents have been validated by the PSP against the current host
+>     CPUID capabilities as defined by the AMD PPR (Publication #55898),
+>     Section 2.1.5.3, "CPUID Policy Enforcement"
+>  3) it is encrypted with the guest key
+>  4) it is in a validated state at launch
+> 
+> The actual contents of the CPUID table are *not* attested to,
 
-On 10/18/21 8:17 PM, Sakari Ailus wrote:
-> Document the use of the _DSC object for setting desirable power state
-> during probe.
-> 
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-> ---
->  Documentation/firmware-guide/acpi/index.rst   |  1 +
->  .../firmware-guide/acpi/non-d0-probe.rst      | 78 +++++++++++++++++++
->  2 files changed, 79 insertions(+)
->  create mode 100644 Documentation/firmware-guide/acpi/non-d0-probe.rst
-> 
-> diff --git a/Documentation/firmware-guide/acpi/index.rst b/Documentation/firmware-guide/acpi/index.rst
-> index a99ee402b212b..b053b0c3d6969 100644
-> --- a/Documentation/firmware-guide/acpi/index.rst
-> +++ b/Documentation/firmware-guide/acpi/index.rst
-> @@ -26,5 +26,6 @@ ACPI Support
->     acpi-lid
->     lpit
->     video_extension
-> +   non-d0-probe
->     extcon-intel-int3496
->     intel-pmc-mux
-> diff --git a/Documentation/firmware-guide/acpi/non-d0-probe.rst b/Documentation/firmware-guide/acpi/non-d0-probe.rst
-> new file mode 100644
-> index 0000000000000..78781e1ab6a3d
-> --- /dev/null
-> +++ b/Documentation/firmware-guide/acpi/non-d0-probe.rst
-> @@ -0,0 +1,78 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +========================================
-> +Probing devices in other D states than 0
-> +========================================
-> +
-> +Introduction
-> +============
-> +
-> +In some cases it may be preferred to leave certain devices powered off for the
-> +entire system bootup if powering on these devices has adverse side effects,
-> +beyond just powering on the said device.
-> +
-> +How it works
-> +============
-> +
-> +The _DSC (Device State for Configuration) object that evaluates to an integer
-> +may be used to tell Linux the highest allowed D state for a device during
-> +probe. The support for _DSC requires support from the kernel bus type if the
-> +bus driver normally sets the device in D0 state for probe.
-> +
-> +The downside of using _DSC is that as the device is not powered on, even if
-> +there's a problem with the device, the driver likely probes just fine but the
-> +first user will find out the device doesn't work, instead of a failure at probe
-> +time. This feature should thus be used sparingly.
-> +
-> +I²C
-> +---
-> +
-> +If an I²C driver indicates its support for this by setting the
-> +I2C_DRV_ACPI_WAIVE_D0_PROBE flag in struct i2c_driver.flags field and the
-> +_DSC object evaluates to integer higher than the D state of the device,
-> +the device will not be powered on (put in D0 state) for probe.
-> +
-> +D states
-> +--------
-> +
-> +The D states and thus also the allowed values for _DSC are listed below. Refer
-> +to [1] for more information on device power states.
-> +
-> +.. code-block:: text
-> +
-> +	Number	State	Description
-> +	0	D0	Device fully powered on
-> +	1	D1
-> +	2	D2
-> +	3	D3hot
-> +	4	D3cold	Off
-> +
-> +References
-> +==========
-> +
-> +[1] https://uefi.org/specifications/ACPI/6.4/02_Definition_of_Terms/Definition_of_Terms.html#device-power-state-definitions
-> +
-> +Example
-> +=======
-> +
-> +An ASL example describing an ACPI device using _DSC object to tell Operating
-> +System the device should remain powered off during probe looks like this. Some
-> +objects not relevant from the example point of view have been omitted.
-> +
-> +.. code-block:: text
-> +
-> +	Device (CAM0)
-> +        {
-> +		Name (_HID, "SONY319A")
-> +		Name (_UID, Zero)
-> +		Name (_CRS, ResourceTemplate ()
-> +		{
-> +			I2cSerialBus(0x0020, ControllerInitiated, 0x00061A80,
-> +				     AddressingMode7Bit, "\\_SB.PCI0.I2C0",
-> +				     0x00, ResourceConsumer)
-> +		})
-> +		Name (_DSC, 0, NotSerialized)
-> +		{
-> +			Return (0x4)
-> +                }
-One question here:
-Is the value of _DSC object evaluated from 'Method' or 'Name' ?
+Why?
 
-> +	}
+> so in theory it can still be manipulated by a malicious hypervisor as
+> part of the initial SNP_LAUNCH_UPDATE firmware commands that provides
+> the initial plain-text encoding of the CPUID table that is provided
+> to the PSP via SNP_LAUNCH_UPDATE. It's also not signed in any way
+> (apparently there were some security reasons for that decision, though
+> I don't know the full details).
+
+So this sounds like an unnecessary complication. I'm sure there are
+reasons to do it this way but my simple thinking would simply want the
+CPUID page to be read-only and signed so that the guest can trust it
+unconditionally.
+
+> [A guest owner can still validate their CPUID values against known good
+> ones as part of their attestation flow, but that is not part of the
+> attestation report as reported by SNP firmware. (So long as there is some
+> care taken to ensure the source of the CPUID values visible to
+> userspace/guest attestion process are the same as what was used by the boot
+> stack: i.e. EFI/bootloader/kernel all use the CPUID page at that same
+> initial address, or in cases where a copy is used, that copy is placed in
+> encrypted/private/validated guest memory so it can't be tampered with during
+> boot.]
+
+This sounds like the good practices advice to guest owners would be,
+"Hey, I just booted your SNP guest but for full trust, you should go and
+verify the CPUID page's contents."
+
+"And if I were you, I wouldn't want to run any verification of CPUID
+pages' contents on the same guest because it itself hasn't been verified
+yet."
+
+It all sounds weird.
+
+> So, while it's more difficult to do, and the scope of influence is reduced,
+> there are still some games that can be played to mess with boot via
+> manipulation of the initial CPUID table values, so long as they are within
+> the constraints set by the CPUID enforcement policy defined in the PPR.
 > 
+> Unfortunately, the presence of the SEV/SEV-ES/SEV-SNP bits in 0x8000001F,
+> EAX, are not enforced by PSP. The only thing enforced there is that the
+> hypervisor cannot advertise bits that aren't supported by hardware. So
+> no matter how much the boot stack is trusted, the CPUID table does not
+> inherit that trust, and even values that we *know* should be true should be
+> verified rather than assumed.
+> 
+> But I think there are a couple approaches for verifying this is an SNP
+> guest that are robust against this sort of scenario. You've touched on
+> some of them in your other replies, so I'll respond there.
+
+Yah, I guess the kernel can do good enough verification and then the
+full thing needs to be done by the guest owner and in *some* userspace
+- not necessarily on the currently booted, unverified guest - but
+somewhere, where you have maximal flexibility.
+
+IMHO.
 
 -- 
-Best regards,
-Bingbu Cao
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
