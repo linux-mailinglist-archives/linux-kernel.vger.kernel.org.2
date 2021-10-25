@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D39743A5AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B8843A5B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234855AbhJYVS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S235070AbhJYVUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234697AbhJYVSy (ORCPT
+        with ESMTP id S233372AbhJYVUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:18:54 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53790C061220
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:16:31 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id c4so11926762pgv.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:16:31 -0700 (PDT)
+        Mon, 25 Oct 2021 17:20:40 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4F6C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:18:17 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id o11so19140949ljg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WykFcEu3gun2Q4Ung304wd/4WeKNK4r+geKtd+xDG0A=;
-        b=hWzvmP79GbX+2eowlYcyfK+E8HA2QNjpW0MJuY8fPca5jpPKczyuxL99sDKZ2l+n/X
-         SxAyl0TSq3Ea0DALPnln0NZpNxMYwlTDA5PUU+7iHnGLqD0pZGV4hk9D1ME0tSJXqtXk
-         ZUpoQQOloYhp8IUHhi9LljGkNAk/40P4+klD0=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C3OGKy4Xs7bfwbjubDC7Rewtx/I9W+4XjVnd2m5nUvo=;
+        b=RBroiKM+cF4sG5ufDstwwgyYCJopLMqq5IPCRsdgLR2FoeiFVmpZc5CWYKQNn68vef
+         +H6k6FrJz50Naugpja9jVkQQeqLNgp1G6ux8V21fyH7U2J8XyAV03wD8Ku2kugNqDtOf
+         CnaE2KjBYmkGcvD75GYgG2ByTVJiCi14Xk+uI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WykFcEu3gun2Q4Ung304wd/4WeKNK4r+geKtd+xDG0A=;
-        b=2m80HEgCmkYNPrCNF//HcNQlXjeJgTFvafI4FEv6kHPKpqBNzqf43KtNvfmE9BGzVH
-         L/L3WO/1UMf5Ka3Wx1+0K6QyFbfc50n9REb3kmFpnAIPaytFoQKbWISaurvuSX9ju+XC
-         STrqcvFIk8hyZBvdyhaLeyK+X9+4X8+5WoCNsa3dYQkGzR6p0ZLdEkSlosIJoZ8UlyGk
-         n91ukQH3ZqtQ51DawAi3B3i9xl3Jy4MA3ttknVqEi+IV0q7kA4lsc8EP+56CeH0QJX9J
-         BIZG4pObyGzIOXsJMwplqzN9UyTL9vs1yUEaFK7Cdj+R1bjSMWfdIULbVjm2FHojNiY7
-         xdWg==
-X-Gm-Message-State: AOAM530Yx7d23qyxN/FixW50T5Fg0KxHCoIrnCvIgAZ4bsVcD+HKWwfY
-        mtGJOf8MBDOyXJGfty6AEBGEww==
-X-Google-Smtp-Source: ABdhPJxmKiP4mIzK9EfWIWfSZIlru2lTN121HsO8gbDbxDQk4Vut9f2sGsYffv4goiE6GSJh6quc/g==
-X-Received: by 2002:a62:445:0:b0:44c:3b5b:f680 with SMTP id 66-20020a620445000000b0044c3b5bf680mr21808807pfe.30.1635196590644;
-        Mon, 25 Oct 2021 14:16:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d15sm22785970pfu.12.2021.10.25.14.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:16:30 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:16:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 04/12] drivers/infiniband: make setup_ctxt always get
- a nul terminated task comm
-Message-ID: <202110251415.9AD37837@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-5-laoar.shao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C3OGKy4Xs7bfwbjubDC7Rewtx/I9W+4XjVnd2m5nUvo=;
+        b=sD4EvZ/OcvVPERppQbJOtJpgBc6NVSDPk3K3ZI1WIhQmrh0ub1J9VtlZWhZLTexSHP
+         kMMuySA3Fl2mYVIx7/fLdD4bmXrWgb1vO1coWXBLTAM7nLNWur00KGPYfqEWLBBolGDF
+         VBYax/8UWFc3bLnNIv3D2tePabpU0PLQd/g0KEIFOEsEXvh6egCG/i/Ko1FJBC56nuEg
+         rqhtXml0VupD0oYUXlZwQy3AJB6ikQnwBPZVCSCOLDIlW9PK/64pBck65Y9c9wzXQtuC
+         9qyco5ADQ3fH6IFIxLBxws195p9qvjijwWrUwpAEFhNK1HE9XqYm/eXzyI5nVxha0jmu
+         yOEQ==
+X-Gm-Message-State: AOAM532QTAYd8siU2mgFz5KKt1xCY/O6eBqpNJYMBcb9+CTYxKI9r93j
+        5E2W4ccG8C1+ZMhzx/QLL4pdF5zK2FO1olef
+X-Google-Smtp-Source: ABdhPJwhiyqnIa13TSJJ/IGKKZ2MzpJaFZZ9oENXLM442QDlE/qMH2hmZH69KcIx3M+TqZWAE5AeCw==
+X-Received: by 2002:a05:651c:1181:: with SMTP id w1mr21380412ljo.424.1635196695876;
+        Mon, 25 Oct 2021 14:18:15 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id s14sm2032730lfg.230.2021.10.25.14.18.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 14:18:14 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id r6so11636314ljg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:18:14 -0700 (PDT)
+X-Received: by 2002:a2e:a4b6:: with SMTP id g22mr22073215ljm.191.1635196694559;
+ Mon, 25 Oct 2021 14:18:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-5-laoar.shao@gmail.com>
+References: <20211025181634.3889666-1-willy@infradead.org> <202110251225.D01841AE67@keescook>
+ <YXcKzKVX7NTAtvPh@casper.infradead.org> <202110251402.ADFA4D41BF@keescook>
+In-Reply-To: <202110251402.ADFA4D41BF@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Oct 2021 14:17:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgvb72urgEM5q_SpXFv1OXnDGY8VFs8QmZPt9_n1bH0CQ@mail.gmail.com>
+Message-ID: <CAHk-=wgvb72urgEM5q_SpXFv1OXnDGY8VFs8QmZPt9_n1bH0CQ@mail.gmail.com>
+Subject: Re: [PATCH] secretmem: Prevent secretmem_users from wrapping to zero
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:07AM +0000, Yafang Shao wrote:
-> Use strscpy_pad() instead of strlcpy() to make the comm always nul
-> terminated. As the comment above the hard-coded 16, we can replace it
-> with TASK_COMM_LEN, then it will adopt to the comm size change.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  drivers/infiniband/hw/qib/qib.h          | 2 +-
->  drivers/infiniband/hw/qib/qib_file_ops.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/qib/qib.h b/drivers/infiniband/hw/qib/qib.h
-> index 9363bccfc6e7..a8e1c30c370f 100644
-> --- a/drivers/infiniband/hw/qib/qib.h
-> +++ b/drivers/infiniband/hw/qib/qib.h
-> @@ -196,7 +196,7 @@ struct qib_ctxtdata {
->  	pid_t pid;
->  	pid_t subpid[QLOGIC_IB_MAX_SUBCTXT];
->  	/* same size as task_struct .comm[], command that opened context */
-> -	char comm[16];
-> +	char comm[TASK_COMM_LEN];
->  	/* pkeys set by this use of this ctxt */
->  	u16 pkeys[4];
->  	/* so file ops can get at unit */
-> diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
-> index 63854f4b6524..7ab2b448c183 100644
-> --- a/drivers/infiniband/hw/qib/qib_file_ops.c
-> +++ b/drivers/infiniband/hw/qib/qib_file_ops.c
-> @@ -1321,7 +1321,7 @@ static int setup_ctxt(struct qib_pportdata *ppd, int ctxt,
->  	rcd->tid_pg_list = ptmp;
->  	rcd->pid = current->pid;
->  	init_waitqueue_head(&dd->rcd[ctxt]->wait);
-> -	strlcpy(rcd->comm, current->comm, sizeof(rcd->comm));
-> +	strscpy_pad(rcd->comm, current->comm, sizeof(rcd->comm));
+On Mon, Oct 25, 2021 at 2:04 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Is secretmem different? We're trying to count how many of these we have,
+> this is a common pattern in, for example, the network code which does
+> this kind of thing a lot.
 
-This should use (the adjusted) get_task_comm() instead of leaving this
-open-coded.
+Yes, secretmem is different.
 
->  	ctxt_fp(fp) = rcd;
->  	qib_stats.sps_ctxts++;
->  	dd->freectxts--;
-> -- 
-> 2.17.1
-> 
+A refcount being zero means that the data it referenced no longer exists.
 
--- 
-Kees Cook
+That's not what the secretmem counter meant at all.
+
+Making it a refcount was simply WRONG. It's not a refcount, it's a
+usage count, and the fact that syzbot caught the warning just shows
+how wrong it was.
+
+Stop arguing for garbage. It was wrong, just admit it. The semantics
+for "refcount" is something else than what that code had. As a result,
+it got reverted. I've applied Willy's patch that actually makes sense.
+
+Arguing for garbage in the name of "security" is still garbage. In
+fact, it only causes confusion, and as such is likely to result in
+problems - including security problems - later.
+
+Because confusion about semantics is bad. And that was what that patch was.
+
+And I want to state - again - how dangerous this "refcounts are always
+prefereable to atomics" mental model is. Refcounts are _not_
+fundamentally preferable to atomics. They are slower, bigger, and have
+completely different semantics.
+
+So if something isn't a refcount, it damn well shouldn't use "refcount_t".
+
+             Linus
