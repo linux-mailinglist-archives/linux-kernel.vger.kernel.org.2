@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A3B43A422
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43BC43A424
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237628AbhJYUNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
+        id S235412AbhJYUOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237232AbhJYUNg (ORCPT
+        with ESMTP id S237670AbhJYUN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:13:36 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16F9C04CC88
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:34:04 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id f11so11685106pfc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:34:04 -0700 (PDT)
+        Mon, 25 Oct 2021 16:13:59 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26400C02547E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:34:56 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id x66so11689791pfx.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:34:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=bYhrHXHR80eY0SdY9PUIFGGXOjjfNyiUnBpm6exbdn4=;
-        b=L8NKVE6oAl+yzLhAi8lJobqZETTz5f3yATk4PSp2lAB3cuh7W9ROy4Ub3Fs0p8rN4J
-         OtPudyKAVLpu4Goq97XPPLY/TihCLbfXHvYm+jGircynQcIWuBfYrsy5HjE0+tNlCoGT
-         zJcmzqnJH5vqWIqUa1jB6lAnCyHAMTnrfxsPc=
+        bh=l8WxBeCFZH+Iuh9HDEMAn37CAK7cN9j7UfAo07bKu44=;
+        b=jqPZCT5CvMMGK6LDj1Fyb7dJMzzqPfpTXJuT9UrndtHzLKEg6y6JuXA2eBcSCYJ1zN
+         Zi/Je+RDmbtgL7r0t6mPmOzCxUpzfnPizmiL8Nt+B1K1zEPbjqRZMf/P1phLat0OtDe4
+         /ldHfHfXbJWxG4aA/3aZ8l9LQfkFYfIA+vhwI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bYhrHXHR80eY0SdY9PUIFGGXOjjfNyiUnBpm6exbdn4=;
-        b=0Ffp0ANyj8Lj0wLJcrTw7BCC98N6it0jmeugWQ2JTC+nIU6d6oqoj8Eu5NNgEif8VP
-         AXdhtsUo5+jXfVQghTRX69QMhP7tibdHDAxbAQaXSsHB0DvFu7b9OPXOlEW9pDMg9vEs
-         hKL0qMF0cY+OpvGzzx6EcA19Ayz7D2wWikqMPPUFO2IAh2P7bLRNsj9y6s9yvWUbWkDQ
-         OFjW0y0hrk2PnSQEcl78o52RwEax1JEsmgbeUsqbaD5yieHXA0PEj4P2xqlCbPgArUoR
-         XlFvEYSW9VXahuu5uEzLAUFm3aZZkKAnP7ppfq57/wonppDZAZuDELcGyZdqQRDgjq3+
-         aVhw==
-X-Gm-Message-State: AOAM531XeJ62auHkH8JIWfmwIcnr4JnbPduHF4pKBgXKz1bdOqPdCPeH
-        zSOsamE+V8iJahMz+jerSTsJKA==
-X-Google-Smtp-Source: ABdhPJy0Tl/Ws3py1xu4ik/n7nuEYsVGnJv01KcsJAMFzXesiVHPqXN3/4Ys4P+pNwBAdAbhdEzAsw==
-X-Received: by 2002:a62:8496:0:b0:47b:d189:5ce9 with SMTP id k144-20020a628496000000b0047bd1895ce9mr18078276pfd.19.1635190444222;
-        Mon, 25 Oct 2021 12:34:04 -0700 (PDT)
+        bh=l8WxBeCFZH+Iuh9HDEMAn37CAK7cN9j7UfAo07bKu44=;
+        b=WW4omr+AQYONN7ZCTPI3oJ10xloLbJ8MoE3wzkb7UIWLGswX8oSe223Mr9Y1a4TApe
+         6v5MdMdjSQGNmms564S79XeiH0v/mEdSN2DgTgmLygJ3AK9+baneaTiTkYq5sW4kYIx1
+         pugMBapPWHBd0LIH+z6pgmDGjtNYCXOhN8DfYHXibkQabOgZEKP3TfbApkBKdVmruGdd
+         fGVBLpGHKpaXf4uBypN2qi0UhGmqFKoLh7UnVFz2P6CIFvBlJnMKFiCUEk3AJj1e7ng4
+         Wit0XL9uOZglpbiXDA4KHGjqOlxXW4Z6jSMpb1loNu0+ycxKjH0nSngHPzbQK3vLr3I3
+         LGXA==
+X-Gm-Message-State: AOAM530XH2z8NRXDBtQzrGDs3Vr+cz8z+Yu7mT/O3VswJkcbncPjsuuc
+        NZf24TxKDXcF0b3fXaABTeesx+Q1ldKLpQ==
+X-Google-Smtp-Source: ABdhPJzF5BYIbx1+bxGMKku0BRAxWgvUsywqYxj2gG3QBFB15hqiC7/jsWrrLF/xsWLKUGUzeSyuEQ==
+X-Received: by 2002:a63:e00b:: with SMTP id e11mr15284714pgh.190.1635190495719;
+        Mon, 25 Oct 2021 12:34:55 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gn1sm5711388pjb.34.2021.10.25.12.34.03
+        by smtp.gmail.com with ESMTPSA id w17sm13784510pfu.166.2021.10.25.12.34.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 12:34:03 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 12:34:03 -0700
+        Mon, 25 Oct 2021 12:34:55 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 12:34:54 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fortify: Avoid shadowing previous locals
-Message-ID: <202110251232.652ACB6@keescook>
-References: <20211025183728.181399-1-quic_qiancai@quicinc.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kspp-gustavo tree
+Message-ID: <202110251234.0242EDDDC@keescook>
+References: <20211018193048.14517460@canb.auug.org.au>
+ <20211025125534.4681416a@canb.auug.org.au>
+ <202110251218.EAB410DC22@keescook>
+ <20211025193102.GA1436536@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211025183728.181399-1-quic_qiancai@quicinc.com>
+In-Reply-To: <20211025193102.GA1436536@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 02:37:28PM -0400, Qian Cai wrote:
-> __compiletime_strlen macro expansion will shadow p_size and p_len local
-> variables. Just rename those in __compiletime_strlen.
+On Mon, Oct 25, 2021 at 02:31:02PM -0500, Gustavo A. R. Silva wrote:
+> On Mon, Oct 25, 2021 at 12:19:15PM -0700, Kees Cook wrote:
+> > On Mon, Oct 25, 2021 at 12:55:34PM +1100, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > On Mon, 18 Oct 2021 19:30:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > Hi all,
+> > > > 
+> > > > After merging the kspp-gustavo tree, today's linux-next build (sparc64
+> > > > defconfig) failed like this:
+> > > > 
+> > > > sparc64-linux-gcc: error: unrecognized command line option '-Wcast-function-type'; did you mean '-Wbad-function-cast'?
+> > > > 
+> > > > $ sparc64-linux-gcc --version
+> > > > sparc64-linux-gcc (Custom f51944395b6aa154) 7.3.1 20180130
+> > > > 
+> > > > Caused by commit
+> > > > 
+> > > >   21078041965e ("Makefile: Enable -Wcast-function-type")
+> > > > 
+> > > > I have reverted that commit for today.
+> > > 
+> > > I am still reverting that commit ...
+> > 
+> > Gustavo, can you please switch this to using cc-option?
+> 
+> Yeah; I actually removed all the patches related to -Wcast-function-type
+> from my -next branch a few minutes ago:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+> 
+> I'm currently working on resolving all these conflicts in a separate branch
+> before merging them again in my -next tree.
 
-They don't escape their local context, though, right? i.e. I don't see a
-problem with the existing macro. Did you encounter a specific issue that
-this patch fixes?
+Great; that sounds ideal. :) Thank you!
 
 -Kees
-
-> 
-> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> ---
->  include/linux/fortify-string.h | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
-> index fdb0a74c9ca2..155c622e4f24 100644
-> --- a/include/linux/fortify-string.h
-> +++ b/include/linux/fortify-string.h
-> @@ -10,18 +10,18 @@ void __read_overflow(void) __compiletime_error("detected read beyond size of obj
->  void __read_overflow2(void) __compiletime_error("detected read beyond size of object (2nd parameter)");
->  void __write_overflow(void) __compiletime_error("detected write beyond size of object (1st parameter)");
->  
-> -#define __compiletime_strlen(p)				\
-> -({							\
-> -	unsigned char *__p = (unsigned char *)(p);      \
-> -	size_t ret = (size_t)-1;			\
-> -	size_t p_size = __builtin_object_size(p, 1);	\
-> -	if (p_size != (size_t)-1) {			\
-> -		size_t p_len = p_size - 1;		\
-> -		if (__builtin_constant_p(__p[p_len]) &&	\
-> -		    __p[p_len] == '\0')			\
-> -			ret = __builtin_strlen(__p);	\
-> -	}						\
-> -	ret;						\
-> +#define __compiletime_strlen(ptr)				\
-> +({								\
-> +	unsigned char *__ptr = (unsigned char *)(ptr);		\
-> +	size_t ret = (size_t)-1;				\
-> +	size_t ptr_size = __builtin_object_size(ptr, 1);	\
-> +	if (ptr_size != (size_t)-1) {				\
-> +		size_t ptr_len = ptr_size - 1;			\
-> +		if (__builtin_constant_p(__ptr[ptr_len]) &&	\
-> +		    __ptr[ptr_len] == '\0')			\
-> +			ret = __builtin_strlen(__ptr);		\
-> +	}							\
-> +	ret;							\
->  })
->  
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-> -- 
-> 2.30.2
-> 
 
 -- 
 Kees Cook
