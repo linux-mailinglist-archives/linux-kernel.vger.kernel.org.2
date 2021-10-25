@@ -2,138 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA583438E5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E850438DF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbhJYEcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 00:32:19 -0400
-Received: from mail-sn1anam02on2075.outbound.protection.outlook.com ([40.107.96.75]:6080
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229678AbhJYEcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 00:32:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PjCiK0SQuCaIMO2Inr04sdOBuhfFppe2Pu3wRiweUgSfK484zoQ/szNQKfDDgW+Kpq1Hp8C8myqv16mbitIMci/GlnQpf3UdkaU1tqiI7H7+e6PRA0B/PDyZKRQRWSjW96z370URaXthv1/J5v8G7mG17B6yaNmeVkhY1KhZCR/SJaTW/Dt4OLzxwpByRMOibCjrLRQ4yGygo9ZoO/LsVxlUbYrdWpFvyYoj1Yo+3F9eoW/tRtp7cedyHIzkEn/fvQ6owj6hjsgM1EeN3aAhJ773V47Bii1PWZ2bdPNASdAPVcOU9hdqDHrl7t6trMX6MlVdDKCMYPIIutFC33SaxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xVwu6j+g94krMFOJwr7T5nJEGbasWqpoNUORJOJ3iBc=;
- b=f95/+l7KIQBeEyEX+SmIR2JiyU1gqxXs3vF1ueQlcB7ZUCKgeCk+4hqwwNFqdglJ9KrrEopTtP7W7mxp7aUx+BYRdOqCANx54dvgW6SXRVAJPu3eMAPMBxJFRQglHZykbkNyUTJqqIJkTu7ge6Ljk5rCKzLqoXy2MbhzIE9lvlKbRC7nctAfP2rxBMFKEchdWVS4nYjANTh6fuDgpb+/qo5iDQvqyi81beFfjEhgWi1snplVfxJq24aUos+rU/Eg136XpfgRT1toCtc2OYAI0wrKG80xWXKVXGuSHvWyVYxcj0XGdP2uXJB5UCemI1Mil566pFvTkiuVW9MiPaVUrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xVwu6j+g94krMFOJwr7T5nJEGbasWqpoNUORJOJ3iBc=;
- b=sLRkt2h9ybyw+CzmWY2xtgwx2WMiVjnZEjZ5sNWGIK8RKDChEluCeFAwunC+dTns+2YvKYBH4MqbQgeLrgOMQWBHAVeVqaiue7BgsflF2Vgy+vus/jEG5Rfadz5rJuYz4dqnP7gARmBDZVZQ5s0aq+c26vzLmFINWvQx3olaHsY=
-Received: from MWHPR18CA0058.namprd18.prod.outlook.com (2603:10b6:300:39::20)
- by CH2PR12MB3830.namprd12.prod.outlook.com (2603:10b6:610:2f::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.20; Mon, 25 Oct
- 2021 04:29:52 +0000
-Received: from CO1NAM11FT028.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:39:cafe::fd) by MWHPR18CA0058.outlook.office365.com
- (2603:10b6:300:39::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend
- Transport; Mon, 25 Oct 2021 04:29:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT028.mail.protection.outlook.com (10.13.175.214) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4628.16 via Frontend Transport; Mon, 25 Oct 2021 04:29:51 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sun, 24 Oct
- 2021 23:29:50 -0500
-Date:   Sun, 24 Oct 2021 22:59:01 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     <linux-kselftest@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Nathan Tempelman <natet@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Mingwei Zhang" <mizhang@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        "Jim Mattson" <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC 08/16] KVM: SVM: include CR3 in initial VMSA state for
- SEV-ES guests
-Message-ID: <20211025035901.r3yxumcygvj22skp@amd.com>
-References: <20211005234459.430873-1-michael.roth@amd.com>
- <20211006203747.13479-1-michael.roth@amd.com>
- <1661def3-45d1-9aab-aeb4-5b934179d3ab@redhat.com>
+        id S231366AbhJYEGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:06:22 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55208 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229379AbhJYEGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 00:06:22 -0400
+X-UUID: 6658fb226bc848409323020410b70184-20211025
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ccPzK7FNitJAyHQG9gzX9D65Nz6meMuwCPEHC4/A0GA=;
+        b=r5seQ1fGfzsuTK8P0fgBSzHG20y0QJCY6I3lVZpilypgZhQW7W/sJ56QAib/aRno9IthBvuzl8Aym7bKLG7kXC4YrnHSiei8y3P+8Fdqt6iolRRP/ECQKKcmVAAxIZhAPUK5fDgfPuti4Q8DPOdq71dS/GOKfAu93IXb7q1jvss=;
+X-UUID: 6658fb226bc848409323020410b70184-20211025
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1449531537; Mon, 25 Oct 2021 12:03:54 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Mon, 25 Oct 2021 12:03:54 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Oct 2021 12:03:53 +0800
+Message-ID: <f0e2ebf98481ee2ae8b88565a337e773532ddffd.camel@mediatek.com>
+Subject: Re: [PATCH v3 13/33] iommu/mediatek: Remove the power status
+ checking in tlb flush all
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, <youlin.pei@mediatek.com>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
+        <yen-chang.chen@mediatek.com>,
+        Collabora Kernel ML <kernel@collabora.com>
+Date:   Mon, 25 Oct 2021 12:03:53 +0800
+In-Reply-To: <6cff0b97-b861-e02d-e76f-2510c962c452@collabora.com>
+References: <20210923115840.17813-1-yong.wu@mediatek.com>
+         <20210923115840.17813-14-yong.wu@mediatek.com>
+         <6cff0b97-b861-e02d-e76f-2510c962c452@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1661def3-45d1-9aab-aeb4-5b934179d3ab@redhat.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e5f7a3c-5df5-43b4-d659-08d99770168f
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3830:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB3830C09266B3F2787B82C9C695839@CH2PR12MB3830.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1PaX8+55Bk49tHwvUvIPap3OSjUdv57XcXBg1BSi8jMrpIms8d8n17cGy7yGU5/fIonEYjDv8ZVK9HOtdztkqzhnb4MsCQ3gr/4BhzvThS3NmyuHCrMM2hECw2xBEDhJwQSBUWn4xExf1f633o2i7sotoeflPhYuYinkmWJDPd4qxKstjS1giA9AXuQOP8h3Cb9B2DPhkuoxitvrva8gEJ6jqKnMBE1P6hrLtyZbZzSy1QF/TsoGmcR/OxgcIB/9lKKVrbu9acWTcxwZ96Ri3v+uuEHvCEpRhXzRJVU2hKlxR+Ro3PW/HcbspOPWEIUEpEu2u/FLVP+j/vCoXTBegE5ob3s2s1lUOFkPoCZW72tmQUeVWfBjIGR6b6o/xMKCbFsnOUyppx3wCPtKE1tHmHyaHSiTYh6uwx/R/pQzFBkCFujOrRD9UUixSaYWk1iNClVW9Qd95K5Bcz4uzdubCqTun5pWVoprJAyVjsSSFEu49oPyr1QSLOmZKpFJ0ruZyq9HJ0FxQlsskFPbPa3KMSvzM2HH+CfTe8B6yVV/FMi0oeSblYtsf493ZH3IGJEiDkRFQJlqe6jRR+mcLRUL2xAjmFZaqWxx7agfd7hnvw5ZAcMqv9ncF5an7uKgt1PEy2EfdYDZ65fkilfJ6c9FTQ01j+UweeHy62iZ+tGHv06zRi3jB4FRF8YhaxOq60CN1D4+5d6Z0/gqmeDkx12FQMZLsdJ4l2v2dKEcxcB6qhA=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(5660300002)(1076003)(426003)(2616005)(508600001)(356005)(36860700001)(6916009)(16526019)(86362001)(316002)(47076005)(4744005)(7416002)(8676002)(6666004)(186003)(336012)(26005)(8936002)(44832011)(36756003)(4326008)(81166007)(54906003)(70206006)(82310400003)(70586007)(2906002)(53546011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 04:29:51.8833
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e5f7a3c-5df5-43b4-d659-08d99770168f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT028.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3830
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 06:43:34PM +0200, Paolo Bonzini wrote:
-> On 06/10/21 22:37, Michael Roth wrote:
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index c1a2dd0024b2..d724fa185bef 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -10400,8 +10400,7 @@ static int __set_sregs_common(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs,
-> >   	vcpu->arch.cr2 = sregs->cr2;
-> >   	*mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
-> > -	vcpu->arch.cr3 = sregs->cr3;
-> > -	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
-> > +	static_call(kvm_x86_set_cr3)(vcpu, sregs->cr3);
-> >   	kvm_set_cr8(vcpu, sregs->cr8);
-> > 
-> 
-> Can you instead make the hook "post_set_sregs", and keep these two lines in
-> __set_sregs_common?
+T24gRnJpLCAyMDIxLTEwLTIyIGF0IDE2OjAzICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
+Og0KPiBIaQ0KPiANCj4gDQo+IE9uIDIzLjA5LjIxIDEzOjU4LCBZb25nIFd1IHdyb3RlOg0KPiA+
+IFRvIHNpbXBsaWZ5IHRoZSBjb2RlLCBSZW1vdmUgdGhlIHBvd2VyIHN0YXR1cyBjaGVja2luZyBp
+biB0aGUNCj4gPiB0bGJfZmx1c2hfYWxsLCByZW1vdmUgdGhpczoNCj4gPiAgICAgaWYgKHBtX3J1
+bnRpbWVfZ2V0X2lmX2luX3VzZShkYXRhLT5kZXYpIDw9IDApDQo+ID4gCSAgICBjb250aW51ZTsN
+Cj4gPiANCj4gPiBBZnRlciB0aGlzIHBhdGNoLCB0aGUgbXRrX2lvbW11X3RsYl9mbHVzaF9hbGwg
+d2lsbCBiZSBjYWxsZWQgZnJvbQ0KPiA+IGEpIGlzcg0KPiA+IGIpIHBtIHJ1bnRpbWUgcmVzdW1l
+IGNhbGxiYWNrDQo+ID4gYykgdGxiIGZsdXNoIHJhbmdlIGZhaWwgY2FzZQ0KPiA+IGQpIGlvbW11
+X2NyZWF0ZV9kZXZpY2VfZGlyZWN0X21hcHBpbmdzDQo+ID4gICAgIC0+IGlvbW11X2ZsdXNoX2lv
+dGxiX2FsbA0KPiA+IEluIGZpcnN0IHRocmVlIGNhc2VzLCB0aGUgcG93ZXIgYW5kIGNsb2NrIGFs
+d2F5cyBhcmUgZW5hYmxlZDsgZCkgaXMNCj4gPiBkaXJlY3QNCj4gDQo+IFJlZ2FyZGluZyBjYXNl
+ICJjKSB0bGIgZmx1c2ggcmFuZ2UgZmFpbCBjYXNlIiwgSSBmb3VuZCBvdXQgdGhhdCB0aGlzDQo+
+IG9mdGVuIGhhcHBlbnMgd2hlbiB0aGUgaW9tbXUgaXMgdXNlZCB3aGlsZSBpdCBpcyBydW50aW1l
+IHN1c3BlbmRlZC4gDQoNCldoaWNoIFNvQyBhbmQgYnJhbmNoIGFyZSB5b3UgdGVzdGluZyBvbj8N
+Cg0KPiBGb3IgZXhhbXBsZSB0aGUgbXRrLXZjb2RlYyBlbmNvZGVyIGRyaXZlciBjYWxscw0KPiAi
+cG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCIgb25seSB3aGVuIGl0IHN0YXJ0cw0KPiBzdHJlYW1p
+bmcgYnV0DQo+IGJ1ZmZlcnMgYWxsb2NhdGlvbiBpcyBkb25lIGluICd2NGwyX3JlcWJ1ZnMnIGJl
+Zm9yZQ0KPiAicG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCIgaXMgY2FsbGVkDQoNClRoaXMgaXMg
+dGhlIGNhc2UgSSB0cmllZCB0byBmaXggaW4gWzE0LzMzXS4NCnBtX3J1bnRpbWVfZ2V0X2lmX2lu
+X3VzZSBzaG91bGQgcmV0dXJuIHdoZW4gdGhlIGlvbW11IGRldmljZSdzIHBtIGlzDQpub3QgYWN0
+aXZlIHdoZW4gdmNvZGVjIGFsbG9jYXRlIGJ1ZmZlciBiZWZvcmUgcG1fcnVudGltZV9yZXN1bWVf
+YW5kDQpnZXQuDQoNCkRvIHlvdSBoYXZlIHRoZSBkZXZpY2VsaW5rIHBhdGNoc2V0IGluIHlvdXIg
+YnJhbmNoPyBpZiBub3QsIHRoZSB2Y29kZWMNCnNob3VsZCBjYWxsIG10a19zbWlfbGFyYl9nZXQg
+dG8gZW5hYmxlIHRoZSBwb3dlci9jbG9jayBmb3IgbGFyYnMsIHRoZW4NCnRoZSBpb21tdSdzIGRl
+dmljZSBpcyBhY3RpdmUgdmlhIGRldmljZWxpbmsgYmV0d2VlbiBzbWkgYW5kIGlvbW11DQpkZXZp
+Y2UuDQoNCj4gYW5kIHRoZW4gSSBzZWUgdGhlIHdhcm5pbmcgIlBhcnRpYWwgVExCIGZsdXNoIHRp
+bWVkIG91dCwgZmFsbGluZyBiYWNrDQo+IHRvIGZ1bGwgZmx1c2giDQo+IEkgYW0gbm90IHN1cmUg
+aG93IHRvIGZpeCB0aGF0IGlzc3VlLCBidXQgaXQgc2VlbXMgdGhhdCBjYXNlICdjKScNCj4gbWln
+aHQgaW5kaWNhdGUgdGhhdA0KPiBwb3dlciBhbmQgY2xvY2sgYXJlIGFjdHVhbGx5IG5vdCBlbmFi
+bGVkLg0KPiANCj4gPiBtYXBwaW5nLCB0aGUgdGxiIGZsdXNoIGlzIHVubmVjZXNzYXkgc2luY2Ug
+d2UgYWxyZWFkeSBoYXZlDQo+ID4gdGxiX2ZsdXNoX2FsbA0KPiA+IGluIHRoZSBwbV9ydW50aW1l
+X3Jlc3VtZSBjYWxsYmFjay4gV2hlbiB0aGUgaW9tbXUncyBwb3dlciBzdGF0dXMgaXMNCj4gPiBj
+aGFuZ2VkIHRvIGFjdGl2ZSwgdGhlIHRsYiBhbHdheXMgaXMgY2xlYW4uDQo+ID4gDQo+ID4gSW4g
+YWRkaXRpb24sIHRoZXJlIHN0aWxsIGFyZSAyIHJlYXNvbnMgdGhhdCBkb24ndCBhZGQgUE0gc3Rh
+dHVzDQo+ID4gY2hlY2tpbmcNCj4gPiBpbiB0aGUgdGxiIGZsdXNoIGFsbDoNCj4gPiBhKSBXcml0
+ZSB0bGIgZmx1c2ggYWxsIHJlZ2lzdGVyIGFsc28gaXMgb2sgZXZlbiB0aG91Z2ggdGhlIEhXIGhh
+cw0KPiA+IG5vDQo+ID4gcG93ZXIgYW5kIGNsb2Nrcy4gV3JpdGUgaWdub3JlLg0KPiA+IGIpIHBt
+X3J1bnRpbWVfZ2V0X2lmX2luX3VzZShtNHVkZXYpIGlzIDAgd2hlbiB0aGUgdGxiX2ZsdXNoX2Fs
+bA0KPiA+IGlzIGNhbGxlZCBmcm0gcG1fcnVudGltZV9yZXN1bWUgY2IuIEZyb20gdGhpcyBwb2lu
+dCwgd2UgY2FuIG5vdCBhZGQNCj4gPiB0aGlzIGNvZGUgYWJvdmUgaW4gdGhpcyB0bGJfZmx1c2hf
+YWxsLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsu
+Y29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyB8IDIwICsrKysr
+KystLS0tLS0tLS0tLS0tDQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAx
+MyBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtf
+aW9tbXUuYyBiL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMNCj4gPiBpbmRleCBlOWU5NDk0NGVk
+OTEuLjRhMzNiNmM2YjFkYiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lvbW11L210a19pb21t
+dS5jDQo+ID4gKysrIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiA+IEBAIC0yMDQsMTAg
+KzIwNCwxNCBAQCBzdGF0aWMgc3RydWN0IG10a19pb21tdV9kb21haW4NCj4gPiAqdG9fbXRrX2Rv
+bWFpbihzdHJ1Y3QgaW9tbXVfZG9tYWluICpkb20pDQo+ID4gICAJcmV0dXJuIGNvbnRhaW5lcl9v
+Zihkb20sIHN0cnVjdCBtdGtfaW9tbXVfZG9tYWluLCBkb21haW4pOw0KPiA+ICAgfQ0KPiA+ICAg
+DQo+ID4gLXN0YXRpYyB2b2lkIG10a19pb21tdV90bGJfZG9fZmx1c2hfYWxsKHN0cnVjdCBtdGtf
+aW9tbXVfZGF0YQ0KPiA+ICpkYXRhKQ0KPiA+ICtzdGF0aWMgdm9pZCBtdGtfaW9tbXVfdGxiX2Zs
+dXNoX2FsbChzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGEpDQo+ID4gICB7DQo+ID4gICAJdW5z
+aWduZWQgbG9uZyBmbGFnczsNCj4gPiAgIA0KPiA+ICsJLyoNCj4gPiArCSAqIE5vIG5lZWQgZ2V0
+IHBvd2VyIHN0YXR1cyBzaW5jZSB0aGUgSFcgUE0gc3RhdHVzIG5lYXJseSBpcw0KPiA+IGFjdGl2
+ZQ0KPiA+ICsJICogd2hlbiBlbnRlcmluZyBoZXJlLg0KPiA+ICsJICovDQo+ID4gICAJc3Bpbl9s
+b2NrX2lycXNhdmUoJmRhdGEtPnRsYl9sb2NrLCBmbGFncyk7DQo+ID4gICAJd3JpdGVsX3JlbGF4
+ZWQoRl9JTlZMRF9FTjEgfCBGX0lOVkxEX0VOMCwNCj4gPiAgIAkJICAgICAgIGRhdGEtPmJhc2Ug
+KyBkYXRhLT5wbGF0X2RhdGEtPmludl9zZWxfcmVnKTsNCj4gPiBAQCAtMjE2LDE2ICsyMjAsNiBA
+QCBzdGF0aWMgdm9pZCBtdGtfaW9tbXVfdGxiX2RvX2ZsdXNoX2FsbChzdHJ1Y3QNCj4gPiBtdGtf
+aW9tbXVfZGF0YSAqZGF0YSkNCj4gPiAgIAlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZkYXRhLT50
+bGJfbG9jaywgZmxhZ3MpOw0KPiA+ICAgfQ0KPiA+ICAgDQo+ID4gLXN0YXRpYyB2b2lkIG10a19p
+b21tdV90bGJfZmx1c2hfYWxsKHN0cnVjdCBtdGtfaW9tbXVfZGF0YSAqZGF0YSkNCj4gPiAtew0K
+PiA+IC0JaWYgKHBtX3J1bnRpbWVfZ2V0X2lmX2luX3VzZShkYXRhLT5kZXYpIDw9IDApDQo+ID4g
+LQkJcmV0dXJuOw0KPiA+IC0NCj4gPiAtCW10a19pb21tdV90bGJfZG9fZmx1c2hfYWxsKGRhdGEp
+Ow0KPiA+IC0NCj4gPiAtCXBtX3J1bnRpbWVfcHV0KGRhdGEtPmRldik7DQo+ID4gLX0NCj4gPiAt
+DQo+ID4gICBzdGF0aWMgdm9pZCBtdGtfaW9tbXVfdGxiX2ZsdXNoX3JhbmdlX3N5bmModW5zaWdu
+ZWQgbG9uZyBpb3ZhLA0KPiA+IHNpemVfdCBzaXplLA0KPiA+ICAgCQkJCQkgICBzdHJ1Y3QgbXRr
+X2lvbW11X2RhdGEgKmRhdGEpDQo+ID4gICB7DQo+ID4gQEAgLTI2Myw3ICsyNTcsNyBAQCBzdGF0
+aWMgdm9pZA0KPiA+IG10a19pb21tdV90bGJfZmx1c2hfcmFuZ2Vfc3luYyh1bnNpZ25lZCBsb25n
+IGlvdmEsIHNpemVfdCBzaXplLA0KPiA+ICAgCQlpZiAocmV0KSB7DQo+ID4gICAJCQlkZXZfd2Fy
+bihkYXRhLT5kZXYsDQo+ID4gICAJCQkJICJQYXJ0aWFsIFRMQiBmbHVzaCB0aW1lZCBvdXQsIGZh
+bGxpbmcNCj4gPiBiYWNrIHRvIGZ1bGwgZmx1c2hcbiIpOw0KPiA+IC0JCQltdGtfaW9tbXVfdGxi
+X2RvX2ZsdXNoX2FsbChkYXRhKTsNCj4gPiArCQkJbXRrX2lvbW11X3RsYl9mbHVzaF9hbGwoZGF0
+YSk7DQo+ID4gICAJCX0NCj4gPiAgIA0KPiA+ICAgCQlpZiAoaGFzX3BtKQ0KPiA+IEBAIC05OTMs
+NyArOTg3LDcgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZA0KPiA+IG10a19pb21tdV9ydW50
+aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gICAJICoNCj4gPiAgIAkgKiBUaHVz
+LCBNYWtlIHN1cmUgdGhlIHRsYiBhbHdheXMgaXMgY2xlYW4gYWZ0ZXIgZWFjaCBQTQ0KPiA+IHJl
+c3VtZS4NCj4gPiAgIAkgKi8NCj4gPiAtCW10a19pb21tdV90bGJfZG9fZmx1c2hfYWxsKGRhdGEp
+Ow0KPiA+ICsJbXRrX2lvbW11X3RsYl9mbHVzaF9hbGwoZGF0YSk7DQo+ID4gICANCj4gPiAgIAkv
+Kg0KPiA+ICAgCSAqIFVwcG9uIGZpcnN0IHJlc3VtZSwgb25seSBlbmFibGUgdGhlIGNsayBhbmQg
+cmV0dXJuLCBzaW5jZQ0KPiA+IHRoZSB2YWx1ZXMgb2YgdGhlDQo+ID4gDQo=
 
-Makes sense. Will do.
-
-> 
-> Thanks,
-> 
-> Paolo
-> 
