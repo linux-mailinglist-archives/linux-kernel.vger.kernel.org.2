@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB46C438F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DBF438F55
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhJYGYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:24:35 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56069 "EHLO
+        id S230481AbhJYGYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:24:38 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:39999 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230342AbhJYGYe (ORCPT
+        by vger.kernel.org with ESMTP id S230342AbhJYGYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:24:34 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 79FC55806AD;
-        Mon, 25 Oct 2021 02:22:10 -0400 (EDT)
+        Mon, 25 Oct 2021 02:24:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 45A6C5806AF;
+        Mon, 25 Oct 2021 02:22:14 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 25 Oct 2021 02:22:10 -0400
+  by compute3.internal (MEProxy); Mon, 25 Oct 2021 02:22:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=9RV4sajVRAaiAxkMiEO963Z9/Y
-        vQEWTOabZurBq9fI8=; b=kGnE+jYGDXymV4Xiq/7FGXrq+67VDY0XxdLHWYuMtH
-        1cKQ1cpf0U8X+B3KInfwu++Mm7WJUBMUSiDBMrE8Jo5ysrfmS7UMrE6SfyqyNLuA
-        5Y3xxQU7t07OE2d7cZ7TiSfs33vb5NgTDPxZccpA7VA4/8L5kG4JUpZ/fPNdxIWc
-        RKum05p8hqtblBp0BBEwL8zbYIHX/quGV9mthxf9kOe0+S/ZVJhXKmwyMzheuzI2
-        eDXPGY2Ky5IP6WIA2dOrTcyjnaI/xMbE8eONIkGFoNuH2yJ0AjHLIRFUKkrn3wTl
-        APEYiNf+WKyu54z/0JGFHCKlTqdaXYd0l3bZcEGOqWcg==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=JywPCBZYzdtAw
+        axfdlfIJvAK7AMRix2BJvcwxpfDjfY=; b=g8qjJv4Iz6wHPsNPu3cjDgtn5rx8f
+        5sMWSkU6udQRGIfO4AJzCX5ZScmlQmZhJeWqtCWj0+1/p1RIMwTTsNICB7csz9bC
+        pFzUPXZW7v/85yZuBonrJRm8ApVEC4QskAgZCcvpC5ykD0ObHoVaJyDeJMdZbEEd
+        gTR0HMp3eMWNKoNq3XAIP3gIPILIMBbYBqKy/nJbstEQ8tSrycx5KAOAaizQe/6J
+        n9LSIH7FyUWXW/RtjsbXjdqyL4fS0gA7umcLz7YhaWzPzwCuGEk/gF4LXnBFlSSD
+        aNzwsc6Ct8/P0o5YAFpwBKE5DVpRh6D85p+ESIja0ta973DZv2d9rEJNw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9RV4sajVRAaiAxkMi
-        EO963Z9/YvQEWTOabZurBq9fI8=; b=MGLFb95lUZQ4zLy3lEE6UiV+ce1c1OVLf
-        gmW6IucM6BQbnAC5HhqKxKI+k94l45jrJvFhqbQ0BpYqfNcCmiTAmeIigzLSlrG+
-        0RIPVSh+D2WCAIFflT2Gn4fEfvV3DXuL8Cq2SKqhaXtT6/pXF+xbH1NUz7lsKGSS
-        6ERNQDMOL+W6dUdTrBR0lszjsu7GM4UgffpHWlY9d7rf4EShcxiA5jpjMyZ7k8U1
-        1jtRYMphBjzacLBAjr35gRFgrnWYDdoosTpbOdyCaqWxlX9wTwplgooBljtOBuMi
-        9h2asNz7FXkT4FoGSKlgigIlOLrUihIJItwCM1dI4T3qiQSYqGUPA==
-X-ME-Sender: <xms:EE12YXSA5uhtArjfmMfSHkU3ubPJ1EgWIppZoXGAQdKhVrZ-2Noq2g>
-    <xme:EE12YYwFc4xx8aNNXE_iZ2jMpghRIZFi3NYXiKl2QIlSGilbCPt1t7WltrvNEFTVR
-    4To_WMSpdNJnT2wN2o>
-X-ME-Received: <xmr:EE12Yc18ZaBx6l5oD9mImBmJXqw8Y2Fk3VoNQhxUNCFOok26K2MUTdvs_6kI5aeKNx6YYTrYiKBNFb6Afxm4k3E1ZY2ZudVAFhuuL8FoenvMMfvXo2HwuxM>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=JywPCBZYzdtAwaxfdlfIJvAK7AMRix2BJvcwxpfDjfY=; b=C/a4Q4XB
+        7YiHgKRRO86mmm2VQ3z705ch0xA5OYA6H1uKfMg1o/X6fnlpCRBMB1K3JUPSXudY
+        kEMhDLtJJrgqHpSsr5lRRJiaiWm1Cz2hMhQEnSiWEglZv28XssZvYjfI6CbThsdq
+        jOtPIzqQzerYGV2kSj9j/h0Cf1U3pvtpRkpiJDcdFKPxc9LeSkjKKzMQU+y9XuBP
+        OfWkJZSFNhoGM1iv+n2IRBpal7cvoNNDK276Un9XtjHOZPf8Xx8S078gd/FkWd+N
+        JidF1DkzthObZLkJUsoJj4hspoH1pdBLJsEC8ZLHDZMBtr7p5KF2bb1SUDoRpXBP
+        qVWAFkexf+HUQg==
+X-ME-Sender: <xms:FE12YWmSCcEqQkCDfH_UI3_uJVtFlvwyeZFX1tl9pfLROXQkjdk1tw>
+    <xme:FE12Yd3IXxmSB8yLTHvFJVwCjC-1TN-R_i6UY3Bk01xQGBoUKNNdBkzolvo1ECv0z
+    eGnG9sMqxz1dTqysLA>
+X-ME-Received: <xmr:FE12YUpsW6WFbSwW3yH4O9wkczwgAH9owlRfiWX-jFjpHkL2q3wDGuDw2RE13vXDn6IJpJrdLYj8N2H2fUKfGZaPlxLF62-jEMdTCcRFcgM1-YOrMmOAvLA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgedguddtgecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
-    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
-    hnpeefhedufedtvdfhhedvudehtdejjeehueduffdtgfdvkedvleelueevlefgfeelgfen
-    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:EU12YXC9NZGR27-MpzgH6PnUgQGFG5J_YtpaJLwnajVh7olnnbpIow>
-    <xmx:EU12YQgNmBvo4yDgFT9g2IWRAQuIejR6OzPw1M65JmjI6FsHQF3aRw>
-    <xmx:EU12YbpYuc9xX2jhuLHGX144eFMgQL8DxPZB2Cwt4AhorqKc78SHcg>
-    <xmx:Ek12YTMa9T0GFJF2IJRGPLUwGm6ZPBjz0sIEQrJyBtSJSVAtpvHlcQ>
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufhvvghn
+    ucfrvghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtth
+    gvrhhnpeeggeegteekveduueeglefhieefkedvueetgffgkeekgeehhfegtdfgieehheeg
+    keenucffohhmrghinhepohhfthgtrdhnvghtpdhgihhthhhusgdrtghomhenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhvvghn
+    phgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:FE12YakDU9AnKMT_3fQ098_67zHWr-_yA2iow37FQKW4w8iWjeqqpw>
+    <xmx:FE12YU0psnLitovFnQiJYX1ZdUvS_OtrasLMRLv3az50r8nzLVXgpQ>
+    <xmx:FE12YRtg2UAEON_XFKlMEqpSUpbhgcMiW2sjjnUukk7khqcIR9123g>
+    <xmx:Fk12YaxgxLCX2dW4DigT6N8oxguYMQDI2CTTE21MU6l1speInWvffA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Oct 2021 02:22:07 -0400 (EDT)
+ 25 Oct 2021 02:22:10 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     Jassi Brar <jassisinghbrar@gmail.com>
 Cc:     Sven Peter <sven@svenpeter.dev>, Rob Herring <robh+dt@kernel.org>,
@@ -64,66 +66,48 @@ Cc:     Sven Peter <sven@svenpeter.dev>, Rob Herring <robh+dt@kernel.org>,
         Stan Skowronek <stan@corellium.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/3] Apple Mailbox Controller support
-Date:   Mon, 25 Oct 2021 08:22:01 +0200
-Message-Id: <20211025062204.1517-1-sven@svenpeter.dev>
+Subject: [PATCH v4 1/3] MAINTAINERS: Add Apple mailbox files
+Date:   Mon, 25 Oct 2021 08:22:02 +0200
+Message-Id: <20211025062204.1517-2-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20211025062204.1517-1-sven@svenpeter.dev>
+References: <20211025062204.1517-1-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add Apple mailbox files under the ARM/APPLE MACHINE SUPPORT entry.
 
-This is the fourth version of my series which adds support for the mailbox
-controllers found on the Apple M1.
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+As mentioned in the cover letter, there are very likely going to be
+conflicts in MAINTAINERS when the various patches that are in-flight
+in different subsystems will be merged.
 
-v1: https://lore.kernel.org/lkml/20210907145501.69161-1-sven@svenpeter.dev/
-v2: https://lore.kernel.org/lkml/20210916154911.3168-1-sven@svenpeter.dev/
-v3: https://lore.kernel.org/lkml/20211017114054.67737-1-sven@svenpeter.dev/
+ MAINTAINERS | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes from v3 to v4:
- - dropped minItems: 4 from the bindings
- - added back of_xlate since the mailbox core only supports #mbox-cells = <1>
-   but this mailbox uses #mbox-cells = <0>
- - Split of the MAINTAINERS changes to a separate file since we have quite a few
-   changes in flight and there will likely be conflicts once the pull requests
-   from various subsystems are sent to Linus
-
-Changes from v2 to v3:
- - removed dma barriers since the mbox client will take care of these
- - moved the of_device_id table and related code to the bottom of the file
- - removed of_xlate
- - dropped clock handling from the code and the binding since we now understand
-   that these are actually power domains
-
-Changes from v1 to v2:
- - switched to txdone_irq instead of introducing a new mode
- - switched to a threaded interrupt handler for receiving messages
- - added co-processor examples to the device tree binding
- - reformatted the register defines and clarified multiple comments
-
-Best,
-
-Sven
-
-Sven Peter (3):
-  MAINTAINERS: Add Apple mailbox files
-  dt-bindings: mailbox: Add Apple mailbox bindings
-  mailbox: apple: Add driver for Apple mailboxes
-
- .../bindings/mailbox/apple,mailbox.yaml       |  77 ++++
- MAINTAINERS                                   |   3 +
- drivers/mailbox/Kconfig                       |  12 +
- drivers/mailbox/Makefile                      |   2 +
- drivers/mailbox/apple-mailbox.c               | 384 ++++++++++++++++++
- include/linux/apple-mailbox.h                 |  19 +
- 6 files changed, 497 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
- create mode 100644 drivers/mailbox/apple-mailbox.c
- create mode 100644 include/linux/apple-mailbox.h
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a4a0c2baaf27..e149f7d7258a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1723,11 +1723,14 @@ C:	irc://irc.oftc.net/asahi-dev
+ T:	git https://github.com/AsahiLinux/linux.git
+ F:	Documentation/devicetree/bindings/arm/apple.yaml
+ F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
++F:	Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+ F:	arch/arm64/boot/dts/apple/
+ F:	drivers/irqchip/irq-apple-aic.c
++F:	drivers/mailbox/apple-mailbox.c
+ F:	include/dt-bindings/interrupt-controller/apple-aic.h
+ F:	include/dt-bindings/pinctrl/apple.h
++F:	include/linux/apple-mailbox.h
+ 
+ ARM/ARTPEC MACHINE SUPPORT
+ M:	Jesper Nilsson <jesper.nilsson@axis.com>
 -- 
 2.25.1
 
