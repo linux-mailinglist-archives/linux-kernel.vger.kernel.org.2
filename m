@@ -2,83 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB054398B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC544398BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhJYOg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:36:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhJYOgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:36:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6595A60720;
-        Mon, 25 Oct 2021 14:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635172472;
-        bh=BWCI0zBBdH4Ik+znRZ7aJYJUjSobDgePF66QuPV4y90=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iSUqk+0YiY3c1g212989NV4QAIxMDM+tPLHJPt+SLcyBHL+o6+9sVm4v7zSac7xjJ
-         J/+MlDFwIW8osmbHYphW6pgggplcV05cpzLouG2KgS6CPPFySbkemjoLoac8TtQZag
-         l4EMJ6YhRG4bxnzT3SrX9YbH86hyWd/DJbDBFGhOWjx4dSuDVFIfh6Wk+2snKT+FyI
-         d22Fn8YtiUzeseiWU/0bGSl5LuSTMNESCAmnFXkTYRsqELKHpZza1OLB6rJ/eglTbj
-         7Gul2+Hx3gTna8TZL7CNIAqltTzJi40sMvjEaR4fdeSkjOoD0GAoOVBus1/OmVng3q
-         AjqzLtYFQOo9A==
-Date:   Mon, 25 Oct 2021 07:34:28 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] soc/tegra: fuse: Fix bitwise vs. logical OR warning
-Message-ID: <YXbAdIc1IEDXa7vg@archlinux-ax161>
-References: <20211021214500.2388146-1-nathan@kernel.org>
- <YXHh1lVCzVnyTiZv@qmqm.qmqm.pl>
+        id S232785AbhJYOhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:37:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231970AbhJYOhT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:37:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635172497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gyRr+oxbdq+D1XVZyshzBJhdWV6eJMpRCL2oDxsSBbM=;
+        b=SQBkGLBaOxog2hLaf6YXCS+UY/ndEWjokIqxk8Ws8KqvyTEE0Co3Z7LtBTIp697U1HlcgV
+        DbTijGyr0ZSgkptCt4zGUrPXkUOcf8Ijn+i1BCLw8Bp7+I2iJW+Lhv0qI9q2PEV85OkVUT
+        aMLTaFhNymZBkzU0xhx83l44CfHd3SE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-ok9sdCwdNvuhTZv0VwuFRQ-1; Mon, 25 Oct 2021 10:34:56 -0400
+X-MC-Unique: ok9sdCwdNvuhTZv0VwuFRQ-1
+Received: by mail-ed1-f69.google.com with SMTP id k28-20020a508adc000000b003dd5e21da4bso2480445edk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:34:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=gyRr+oxbdq+D1XVZyshzBJhdWV6eJMpRCL2oDxsSBbM=;
+        b=yMpRwl3d8dgigHUArVjytcYgPU22ufM86mI9yDuasDT6DDDHNkijj2Ork/Lgzp0HP0
+         EZdVb0zDXeX4tu+NoEx2CE8MizO0ki62b+bT+IP2uyZ1LpCPg5yuZYr/o7lTG1ue17bp
+         KOYSz2ek70mCZ0bi1tHCm1/VhYT83C1wjBtyDPqqurR5etu9zQ4QQnAat4MT7rpwG6Qv
+         UE5G4Ln0sZIhy7E4xv24AI+t71Xyxy+LNLykbeBn53YIzbMMxGNI0kc4cPAr3ybcqrM+
+         Zke63NZLgVd157QfB8+1dKlr0o1Xm5QjqEBaxzkY+qkpYQS2VWGq1A+GEHvkJ1EiuaMx
+         VwoA==
+X-Gm-Message-State: AOAM531eNJXN3stNfdpL1IkisRoNeIMWQsc0FYuY44cnx4yog3YLVyRh
+        HrIPGphr+jbD8v7V85Nau9dbpIyL0U4w0tWPn0C26ivs3R0YAHxd1XjtMMjSszktviXhKeTLER+
+        +1CTN83mEM59NIY0KmRsqtCvI
+X-Received: by 2002:a05:6402:5112:: with SMTP id m18mr26543456edd.101.1635172494807;
+        Mon, 25 Oct 2021 07:34:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1PVpqtFTaT+fZx+ngmF47w1xHlBRHe6pB6EMZ006WM53WXRFnHCfF7AOxx4PQB6o6e4saOQ==
+X-Received: by 2002:a05:6402:5112:: with SMTP id m18mr26543421edd.101.1635172494578;
+        Mon, 25 Oct 2021 07:34:54 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id m15sm10124432edd.5.2021.10.25.07.34.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 07:34:53 -0700 (PDT)
+Message-ID: <335822ac-b98b-1eec-4911-34e4d0e99907@redhat.com>
+Date:   Mon, 25 Oct 2021 16:34:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YXHh1lVCzVnyTiZv@qmqm.qmqm.pl>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 39/43] KVM: VMX: Don't do full kick when triggering
+ posted interrupt "fails"
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-40-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-40-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michał,
+On 09/10/21 04:12, Sean Christopherson wrote:
+> +		/*
+> +		 * The smp_wmb() in kvm_make_request() pairs with the smp_mb_*()
+> +		 * after setting vcpu->mode in vcpu_enter_guest(), thus the vCPU
+> +		 * is guaranteed to see the event request if triggering a posted
+> +		 * interrupt "fails" because vcpu->mode != IN_GUEST_MODE.
 
-On Thu, Oct 21, 2021 at 11:55:34PM +0200, Michał Mirosław wrote:
-> On Thu, Oct 21, 2021 at 02:45:00PM -0700, Nathan Chancellor wrote:
-> [...]
-> > --- a/drivers/soc/tegra/fuse/speedo-tegra20.c
-> > +++ b/drivers/soc/tegra/fuse/speedo-tegra20.c
-> > @@ -69,7 +69,7 @@ void __init tegra20_init_speedo_data(struct tegra_sku_info *sku_info)
-> >  
-> >  	val = 0;
-> >  	for (i = CPU_SPEEDO_MSBIT; i >= CPU_SPEEDO_LSBIT; i--) {
-> > -		reg = tegra_fuse_read_spare(i) |
-> > +		reg = tegra_fuse_read_spare(i) ||
-> >  			tegra_fuse_read_spare(i + CPU_SPEEDO_REDUND_OFFS);
-> >  		val = (val << 1) | (reg & 0x1);
-> >  	}
-> > @@ -84,7 +84,7 @@ void __init tegra20_init_speedo_data(struct tegra_sku_info *sku_info)
-> >  
-> >  	val = 0;
-> >  	for (i = SOC_SPEEDO_MSBIT; i >= SOC_SPEEDO_LSBIT; i--) {
-> > -		reg = tegra_fuse_read_spare(i) |
-> > +		reg = tegra_fuse_read_spare(i) ||
-> >  			tegra_fuse_read_spare(i + SOC_SPEEDO_REDUND_OFFS);
-> >  		val = (val << 1) | (reg & 0x1);
-> >  	}
-> 
-> It does seem correct, but nevertheless the code looks suspicious. reg is
-> already masked with 0x1 as far as I can tell, and there are other places
-> which depend on this (like speedo-tegra210.c). Guessing from the use of
-> tegra_fuse_read_spare() I would recommend changing its return type as it
-> is returing a bit value, not necessarily semantically a boolean.
+This explanation doesn't make much sense to me.  This is just the usual 
+request/kick pattern explained in 
+Documentation/virt/kvm/vcpu-requests.rst; except that we don't bother 
+with a "kick" out of guest mode because the entry always goes through 
+kvm_check_request (in the nVMX case) or sync_pir_to_irr (if non-nested) 
+and completes the delivery itself.
 
-Yes, I did notice that, as well as the use of tegra_fuse_read_spare()
-with boolean operators in tegra-apbmisc.c. I could change it to int if
-that is what the maintainers prefer, which would also solve the warning.
+In other word, it is a similar idea as patch 43/43.
 
-Cheers,
-Nathan
+What this smp_wmb() pair with, is the smp_mb__after_atomic in 
+kvm_check_request(KVM_REQ_EVENT, vcpu).  Setting the interrupt in the 
+PIR orders before kvm_make_request in this thread, and orders after 
+kvm_make_request in the vCPU thread.
+
+Here, instead:
+
+> +	/*
+> +	 * The implied barrier in pi_test_and_set_on() pairs with the smp_mb_*()
+> +	 * after setting vcpu->mode in vcpu_enter_guest(), thus the vCPU is
+> +	 * guaranteed to see PID.ON=1 and sync the PIR to IRR if triggering a
+> +	 * posted interrupt "fails" because vcpu->mode != IN_GUEST_MODE.
+> +	 */
+>  	if (vcpu != kvm_get_running_vcpu() &&
+>  	    !kvm_vcpu_trigger_posted_interrupt(vcpu, false))
+> -		kvm_vcpu_kick(vcpu);
+> +		kvm_vcpu_wake_up(vcpu);
+>  
+
+it pairs with the smp_mb__after_atomic in vmx_sync_pir_to_irr().  As 
+explained again in vcpu-requests.rst, the ON bit has the same function 
+as vcpu->request in the previous case.
+
+Paolo
+
+> +		 */
+>   		kvm_make_request(KVM_REQ_EVENT, vcpu);
+
