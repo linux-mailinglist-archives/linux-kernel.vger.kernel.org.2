@@ -2,95 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D79438F36
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF5A438F3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhJYGRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:17:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41498 "EHLO mail.kernel.org"
+        id S230285AbhJYGSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:18:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhJYGRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:17:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF11660F02;
-        Mon, 25 Oct 2021 06:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635142520;
-        bh=qyOhpd50WpRpY/Lo5509L0KMMjOyAIQWbMcSHHc+igQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=e4t8tGCGTJ7UJisB6RNO3CRmsan5gSsSJeLeN1+T4zvabWObcBaJLAcoPEtvkrVWV
-         s8qUaXRpZ27CjWUl+eI/d+adjpIXj7cNwqsx/RLEyUDB2fPELSM22Opt20KX2qkJHI
-         W8CpdOlQ0eGwRUtQFdoYFeZVwCSR2I/P7+1GGWMyuH0m4CLjYSBprqURpBoE8FWr6h
-         atdp+n7LTeCWhNR0tS7jaRzN0z4xqaaQdTOMUtYCj2aAi43GkpCrXuVmvzPNO4VAN5
-         WagR70vKIYoY1I7+XdmCiQfpXhMHY6hcKjoyOa7wF2O2Ui47M8KTiOxZ2RfXylZl3u
-         uaNBzoMQw70CA==
-Date:   Mon, 25 Oct 2021 15:15:17 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, corbet@lwn.net, ananth@in.ibm.com,
-        akpm@linux-foundation.org, randy.dunlap@oracle.com,
-        mathieu.desnoyers@polymtl.ca, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] samples/kretprobes: Fix return value if
- register_kretprobe() failed
-Message-Id: <20211025151517.f295f7804993e55997f0258f@kernel.org>
-In-Reply-To: <1635132660-5038-2-git-send-email-yangtiezhu@loongson.cn>
-References: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
-        <1635132660-5038-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229841AbhJYGSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:18:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C87160C4B;
+        Mon, 25 Oct 2021 06:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635142552;
+        bh=u9RFlgxwvggAHpp7I4+HRdZrg6XEuwYHqHQWNGfxSN0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QcD21YYGVBBXK0h72/zv5Qxuw9Yl0WUj3Wnm092zX6gBExTHPK8PxzzU9Yu00Ln09
+         epbz6ZBrDNhM4Wk82l6Vd7RDb59BnHIYiaGAcz/Ijwa0t5okU981n6iDmwMCyVJeur
+         W855A2NWAW9yAO4gGBSoAz8A6OMUMPoRDK3igEww=
+Date:   Mon, 25 Oct 2021 08:15:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Patrick Williams <patrick@stwcx.xyz>,
+        Zev Weiss <zev@bewilderbeest.net>, kvm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Rajat Jain <rajatja@google.com>,
+        Jianxiong Gao <jxgao@google.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
+ reserved devices
+Message-ID: <YXZLjTvGevAXcidW@kroah.com>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <20211022020032.26980-5-zev@bewilderbeest.net>
+ <YXJeYCFJ5DnBB63R@kroah.com>
+ <YXJ3IPPkoLxqXiD3@hatter.bewilderbeest.net>
+ <YXJ88eARBE3vU1aA@kroah.com>
+ <YXLWMyleiTFDDZgm@heinlein>
+ <YXPOSZPA41f+EUvM@kroah.com>
+ <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 11:30:57 +0800
-Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-
-> Use the actual return value instead of always -1 if register_kretprobe()
-> failed.
+On Mon, Oct 25, 2021 at 12:38:08AM -0500, Frank Rowand wrote:
+> On 10/23/21 3:56 AM, Greg Kroah-Hartman wrote:
+> > On Fri, Oct 22, 2021 at 10:18:11AM -0500, Patrick Williams wrote:
+> >> Hi Greg,
+> >>
+> >> On Fri, Oct 22, 2021 at 10:57:21AM +0200, Greg Kroah-Hartman wrote:
+> >>> On Fri, Oct 22, 2021 at 01:32:32AM -0700, Zev Weiss wrote:
+> >>>> On Thu, Oct 21, 2021 at 11:46:56PM PDT, Greg Kroah-Hartman wrote:
+> >>>>> On Thu, Oct 21, 2021 at 07:00:31PM -0700, Zev Weiss wrote:
+> >>
+> >>>> So we want the kernel to be aware of the device's existence (so that we
+> >>>> *can* bind a driver to it when needed), but we don't want it touching the
+> >>>> device unless we really ask for it.
+> >>>>
+> >>>> Does that help clarify the motivation for wanting this functionality?
+> >>>
+> >>> Sure, then just do this type of thing in the driver itself.  Do not have
+> >>> any matching "ids" for this hardware it so that the bus will never call
+> >>> the probe function for this hardware _until_ a manual write happens to
+> >>> the driver's "bind" sysfs file.
+> >>
+> >> It sounds like you're suggesting a change to one particular driver to satisfy
+> >> this one particular case (and maybe I'm just not understanding your suggestion).
+> >> For a BMC, this is a pretty regular situation and not just as one-off as Zev's
+> >> example.
+> >>
+> >> Another good example is where a system can have optional riser cards with a
+> >> whole tree of devices that might be on that riser card (and there might be
+> >> different variants of a riser card that could go in the same slot).  Usually
+> >> there is an EEPROM of some sort at a well-known address that can be parsed to
+> >> identify which kind of riser card it is and then the appropriate sub-devices can
+> >> be enumerated.  That EEPROM parsing is something that is currently done in
+> >> userspace due to the complexity and often vendor-specific nature of it.
+> >>
+> >> Many of these devices require quite a bit more configuration information than
+> >> can be passed along a `bind` call.  I believe it has been suggested previously
+> >> that this riser-card scenario could also be solved with dynamic loading of DT
+> >> snippets, but that support seems simple pretty far from being merged.
+> > 
+> > Then work to get the DT code merged!  Do not try to create
+> > yet-another-way of doing things here if DT overlays is the correct
+> > solution here (and it seems like it is.)
 > 
-> E.g. without this patch:
+> I don't think this is a case that fits the overlay model.
 > 
->  # insmod samples/kprobes/kretprobe_example.ko func=no_such_func
->  insmod: ERROR: could not insert module samples/kprobes/kretprobe_example.ko: Operation not permitted
+> We know what the description of the device is (which is what devicetree
+> is all about), but the device is to be shared between the Linux kernel
+> and some other entity, such as the firmware or another OS.  The issue
+> to be resolved is how to describe that the device is to be shared (in
+> this case exclusively by the kernel _or_ by the other entity at any
+> given moment), and how to move ownership of the device between the
+> Linux kernel and the other entity.
 > 
-> With this patch:
-> 
->  # insmod samples/kprobes/kretprobe_example.ko func=no_such_func
->  insmod: ERROR: could not insert module samples/kprobes/kretprobe_example.ko: Unknown symbol in module
-> 
-> Fixes: 804defea1c02 ("Kprobes: move kprobe examples to samples/")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> In the scenario presented by Zev, it is suggested that a user space
+> agent will be involved in deciding which entity owns the device and
+> to tell the Linux kernel when to take ownership of the device (and
+> presumably when to relinquish ownership, although we haven't seen
+> the implementation of relinquishing ownership yet).  One could
+> imagine direct communication between the driver and the other
+> entity to mediate ownership.  That seems like a driver specific
+> defined choice to me, though if there are enough different drivers
+> facing this situation then eventually a shared framework would
+> make sense.
 
-This looks good to me.
+We have the bind/unbind ability today, from userspace, that can control
+this.  Why not just have Linux grab the device when it boots, and then
+when userspace wants to "give the device up", it writes to "unbind" in
+sysfs, and then when all is done, it writes to the "bind" file and then
+Linux takes back over.
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Unless for some reason Linux should _not_ grab the device when booting,
+then things get messier, as we have seen in this thread.
 
-Thanks!
+thanks,
 
-> ---
->  samples/kprobes/kretprobe_example.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/samples/kprobes/kretprobe_example.c b/samples/kprobes/kretprobe_example.c
-> index 5dc1bf3..228321e 100644
-> --- a/samples/kprobes/kretprobe_example.c
-> +++ b/samples/kprobes/kretprobe_example.c
-> @@ -86,7 +86,7 @@ static int __init kretprobe_init(void)
->  	ret = register_kretprobe(&my_kretprobe);
->  	if (ret < 0) {
->  		pr_err("register_kretprobe failed, returned %d\n", ret);
-> -		return -1;
-> +		return ret;
->  	}
->  	pr_info("Planted return probe at %s: %p\n",
->  			my_kretprobe.kp.symbol_name, my_kretprobe.kp.addr);
-> -- 
-> 2.1.0
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+greg k-h
