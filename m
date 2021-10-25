@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5126E438D56
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08E3438D52
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhJYB57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 21:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJYB55 (ORCPT
+        id S232163AbhJYB43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 21:56:29 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26189 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhJYB41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 21:57:57 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F4EC061745;
-        Sun, 24 Oct 2021 18:55:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hcyhk5Wppz4xYy;
-        Mon, 25 Oct 2021 12:55:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635126935;
-        bh=P0XjyRWWXAVb0oPOKlvBVANsP8TDCXeKludKZnXf0lM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Bq+iQwFjQMNG/HlLN7F/a0Aej4PqVg85vEv99/PsW58YKF3y457F3nWv4uWK6v1KC
-         dJUL/TaMRU5kvqa1hBL+JXzznv0g8lHvXN7d0PFw1nPOAWyl1dz6w+wXmY8TgBFZZP
-         lo9aKHnAyBow1PShsPc1rlIRPZfHwpF8i89T5UZDSGrYwqYglRpripGq0Bd/aNaRga
-         fRy5Nm741LOuq9pntHsXkoOZDJXNh6SyVvdEyx9nngnQOpXiNjK4Cw0iHc1fWCp1/2
-         QeZXhRNvTmFGk4vTuuResqz962jl+cbVFgaMJG8zWliIg2zNApxl6dfZob7PVCXfe1
-         vDDs7r/Wju5BA==
-Date:   Mon, 25 Oct 2021 12:55:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the kspp-gustavo tree
-Message-ID: <20211025125534.4681416a@canb.auug.org.au>
-In-Reply-To: <20211018193048.14517460@canb.auug.org.au>
-References: <20211018193048.14517460@canb.auug.org.au>
+        Sun, 24 Oct 2021 21:56:27 -0400
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HcydP53Rfz8tt5;
+        Mon, 25 Oct 2021 09:52:41 +0800 (CST)
+Received: from huawei.com (10.67.174.47) by dggeme755-chm.china.huawei.com
+ (10.3.19.101) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 25
+ Oct 2021 09:54:00 +0800
+From:   He Ying <heying24@huawei.com>
+To:     <hjc@rock-chips.com>, <heiko@sntech.de>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <seanpaul@chromium.org>,
+        <gustavo.padovan@collabora.com>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm: Fix wrong use of connector in vop_get_edp_connector
+Date:   Sun, 24 Oct 2021 21:55:50 -0400
+Message-ID: <20211025015550.66500-1-heying24@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PfL.q=7mAcyWsc9_=nliIj/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.47]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PfL.q=7mAcyWsc9_=nliIj/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From the comments of drm_for_each_connector_iter(), we know
+that "connector is only valid within the list body, if you
+want to use connector after calling drm_connector_list_iter_end()
+then you need to grab your own reference first using
+drm_connector_get()". So fix the wrong use of connector
+according to the comments and then call drm_connector_put()
+after using connector finishes.
 
-Hi all,
+Signed-off-by: He Ying <heying24@huawei.com>
+Fixes: 2cbeb64f6c70 ("drm/rockchip: use drm_for_each_connector_iter()")
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-On Mon, 18 Oct 2021 19:30:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Hi all,
->=20
-> After merging the kspp-gustavo tree, today's linux-next build (sparc64
-> defconfig) failed like this:
->=20
-> sparc64-linux-gcc: error: unrecognized command line option '-Wcast-functi=
-on-type'; did you mean '-Wbad-function-cast'?
->=20
-> $ sparc64-linux-gcc --version
-> sparc64-linux-gcc (Custom f51944395b6aa154) 7.3.1 20180130
->=20
-> Caused by commit
->=20
->   21078041965e ("Makefile: Enable -Wcast-function-type")
->=20
-> I have reverted that commit for today.
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index a25b98b7f5bd..469922ad29fa 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -1581,19 +1581,19 @@ static void vop_crtc_reset(struct drm_crtc *crtc)
+ #ifdef CONFIG_DRM_ANALOGIX_DP
+ static struct drm_connector *vop_get_edp_connector(struct vop *vop)
+ {
+-	struct drm_connector *connector;
++	struct drm_connector *connector = NULL;
+ 	struct drm_connector_list_iter conn_iter;
+ 
+ 	drm_connector_list_iter_begin(vop->drm_dev, &conn_iter);
+ 	drm_for_each_connector_iter(connector, &conn_iter) {
+ 		if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
+-			drm_connector_list_iter_end(&conn_iter);
+-			return connector;
++			drm_connector_get(connector);
++			break;
+ 		}
+ 	}
+ 	drm_connector_list_iter_end(&conn_iter);
+ 
+-	return NULL;
++	return connector;
+ }
+ 
+ static int vop_crtc_set_crc_source(struct drm_crtc *crtc,
+@@ -1614,6 +1614,7 @@ static int vop_crtc_set_crc_source(struct drm_crtc *crtc,
+ 	else
+ 		ret = -EINVAL;
+ 
++	drm_connector_put(connector);
+ 	return ret;
+ }
+ 
+-- 
+2.17.1
 
-I am still reverting that commit ...
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/PfL.q=7mAcyWsc9_=nliIj/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2DpYACgkQAVBC80lX
-0GyXEAf+MkFDGwEjyrGOJ4JhCeKwTHwNLzU6Wf9OnJ29J49dv+tNkS35kUUyM1Uv
-NS20F4arh0KHQ8ARC5DyMNKzbA0fCYRiSc+SIhiBenk3ubZ2anF1OEk6eM0eY4QW
-gVmUfUBGjRg67T/9WRM/TNzYIDVKR4iRWPSwLTkPd/XDFvrq4BLn1zqp2BdIWTSX
-sOgTaiY5EXpH33dkCUwtE+6kl7nKTotWOY8eIcy9h3JNtRQif6amvHlZRZfoUXbd
-e9TtPuXCNjr/iyfnivtFLlLKQj62XWkUDRsdGFECWDoE39DXxeAwXb2dSmCQG9C5
-3MBiZmsaVQ7HFASS0YOP+aXLzpxEpQ==
-=2bt8
------END PGP SIGNATURE-----
-
---Sig_/PfL.q=7mAcyWsc9_=nliIj/--
