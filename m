@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B977143A6A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB37643A6AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhJYWh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233400AbhJYWh4 (ORCPT
+        id S234118AbhJYWlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:41:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233400AbhJYWlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:37:56 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E49C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:35:33 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id q6so13572104iod.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=klXlN0zJqmk1eWnEu+/hXLI1dokmsVhjoAFEcoHuwqQ=;
-        b=aGRYtffqOi9dXZ21RrjBjD+l82dN+ifp8T+Q11C1BXTSKNp87NEYH/sGros9Un1tIV
-         ISYmYeKll86s2JbJqasIxVigulSD/WoVDZU2vCptei1vtpaT7i7H4Y/PYOK7A00JhWZ4
-         MFAZUlb/5ouNzs4+yNq35EminP3BzcGrnzFlCM8iRQP1DJgeebqvSk+4bVf5LmyXEC7J
-         aS3nNwSL3X7nz48mF+9h3tASo9lBbNBMQHQIeSOLuWQfjkTISoac3sGqlJRWyuKZDuIx
-         rhoUJ6YjOR7k6eibf6iBxDvOr82MVzlt6NPHX/yOqY8kE195MR+TEVQGuBEwDogVpGgA
-         CRlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=klXlN0zJqmk1eWnEu+/hXLI1dokmsVhjoAFEcoHuwqQ=;
-        b=uxG2BPm4jH3ZSJLt8yztdsfht6OL0OVkwCeOetVU2djNj4eDOp7TDOBoNrcH1GD1Id
-         yDWYL8u50SY6CLmP1IV9NlgC4czTijz21s9IlWbIxR/wQF8A5p49JI3gFFobAg2vIfBb
-         EbTev04Icy6pZa2Fy2RwaQJJCGupKNoKOHkkvzAFVpxcEU91PsRAxVvuYYP5c2MROkCN
-         EOYpFYdPgQrULvaETs9ZE6Q/2Up7N/kVWGPJMSMk4b72yO0MiQPM/j3+Bi6ADId7gadl
-         LHan+BiRQSRPUl7eMWry2LDG032ualAg7tniLYtsPcNunQZzgSTuHyU1K/70ONCTPCZd
-         tg/A==
-X-Gm-Message-State: AOAM532Ui/Sceij5qXIwyeaLNa+aSKWfcw1M1jB5JiOMtGDryXW08SY7
-        o6tsjyAVC6FwqEVOzKVXwJg11ALWELeookUQArT2mQ==
-X-Google-Smtp-Source: ABdhPJzIG3rsyIADjAI5BsAKx0xhIqdqDYgIZSpry+dx35b7xS9gb0tArEZTTa6JKifPXfk8dksRCGCx+aG8KilXe58=
-X-Received: by 2002:a05:6638:4115:: with SMTP id ay21mr12897670jab.90.1635201332884;
- Mon, 25 Oct 2021 15:35:32 -0700 (PDT)
+        Mon, 25 Oct 2021 18:41:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635201519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E5v1Na7JVt3wuBUYr9NpLnaa0AfB+WKs9SYn9cUM/6Y=;
+        b=huPNgBVV1JwYX7PfydAgcbyKKEcDXYSQo+/cDh8KDUeZqtIXM8BcQRLktqo4a3Fn+4YOdJ
+        4/URTZlha7Hzk/0NdMVtQSdJ3BBaCJURE4UTiMRLd7kVtWyErWEzg+KC7BChO1MCbDPwBi
+        T3e81dhrCeFaIMzLG2TTBWwewawr4P4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-lwRaFAw_M6yBDXp0uGa7JQ-1; Mon, 25 Oct 2021 18:38:36 -0400
+X-MC-Unique: lwRaFAw_M6yBDXp0uGa7JQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B34E5100C612;
+        Mon, 25 Oct 2021 22:38:34 +0000 (UTC)
+Received: from emerald.lyude.net (unknown [10.22.9.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C266160BF1;
+        Mon, 25 Oct 2021 22:38:33 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH RESEND v5 1/4] drm: Remove slot checks in dp mst topology during commit
+Date:   Mon, 25 Oct 2021 18:38:21 -0400
+Message-Id: <20211025223825.301703-2-lyude@redhat.com>
+In-Reply-To: <20211025223825.301703-1-lyude@redhat.com>
+References: <20211025223825.301703-1-lyude@redhat.com>
 MIME-Version: 1.0
-References: <20211013174604.747276-1-irogers@google.com> <20211013174604.747276-7-irogers@google.com>
- <YXAM31HKzS4/qJw/@krava>
-In-Reply-To: <YXAM31HKzS4/qJw/@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 25 Oct 2021 15:35:20 -0700
-Message-ID: <CAP-5=fWJyUi7M9rQyafYKNeCdUKru33sO3Ld5c8RxDT60+FBTw@mail.gmail.com>
-Subject: Re: [PATCH v2 06/22] perf test: Add helper functions for abstraction.
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>, eranian@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 5:34 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Oct 13, 2021 at 10:45:48AM -0700, Ian Rogers wrote:
->
-> SNIP
->
-> >       else
-> >               pr_debug("%s subtest %d:", t->desc, subtest + 1);
-> > @@ -218,11 +257,10 @@ static int test_and_print(struct test_suite *t, bool force_skip, int subtest)
-> >               pr_info(" Ok\n");
-> >               break;
-> >       case TEST_SKIP: {
-> > -             const char *skip_reason = NULL;
-> > -             if (t->subtest.skip_reason)
-> > -                     skip_reason = t->subtest.skip_reason(subtest);
-> > -             if (skip_reason)
-> > -                     color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", skip_reason);
-> > +             const char *reason = skip_reason(t, subtest);
-> > +
-> > +             if (reason)
-> > +                     color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", reason);
-> >               else
-> >                       color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip\n");
-> >       }
-> > @@ -397,7 +435,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
-> >       int width = shell_tests__max_desc_width();
-> >
-> >       for_each_test(j, k, t) {
-> > -             int len = strlen(t->desc);
-> > +             int len = strlen(test_description(t, -1));
-> >
-> >               if (width < len)
-> >                       width = len;
-> > @@ -407,17 +445,15 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
-> >               int curr = i++, err;
-> >               int subi;
-> >
-> > -             if (!perf_test__matches(t->desc, curr, argc, argv)) {
-> > +             if (!perf_test__matches(test_description(t, -1), curr, argc, argv)) {
-> >                       bool skip = true;
-> >                       int subn;
-> >
-> > -                     if (!t->subtest.get_nr)
-> > -                             continue;
-> > -
-> > -                     subn = t->subtest.get_nr();
-> > +                     subn = num_subtests(t);
->
-> should you call continue on !subn ?
+From: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
 
-It's not necessary. When subn == 0 then the loop won't be taken and
-skip == true, so the immediately after "if (skip) continue;" will
-happen.
+This code path is used during commit, and we dont expect things to fail
+during the commit stage, so remove this.
 
-Thanks,
-Ian
+Signed-off-by: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/drm_dp_mst_topology.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-> jirka
->
-> >
-> >                       for (subi = 0; subi < subn; subi++) {
-> > -                             if (perf_test__matches(t->subtest.get_desc(subi), curr, argc, argv))
-> > +                             if (perf_test__matches(test_description(t, subi),
-> > +                                                     curr, argc, argv))
-> >                                       skip = false;
-> >                       }
-> >
-> > @@ -425,22 +461,23 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
-> >                               continue;
-> >               }
-> >
->
-> SNIP
->
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 86d13d6bc463..04ed34a7f71c 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -4334,10 +4334,6 @@ static int drm_dp_init_vcpi(struct drm_dp_mst_topology_mgr *mgr,
+ {
+ 	int ret;
+ 
+-	/* max. time slots - one slot for MTP header */
+-	if (slots > 63)
+-		return -ENOSPC;
+-
+ 	vcpi->pbn = pbn;
+ 	vcpi->aligned_pbn = slots * mgr->pbn_div;
+ 	vcpi->num_slots = slots;
+@@ -4540,7 +4536,7 @@ bool drm_dp_mst_allocate_vcpi(struct drm_dp_mst_topology_mgr *mgr,
+ 
+ 	ret = drm_dp_init_vcpi(mgr, &port->vcpi, pbn, slots);
+ 	if (ret) {
+-		drm_dbg_kms(mgr->dev, "failed to init vcpi slots=%d max=63 ret=%d\n",
++		drm_dbg_kms(mgr->dev, "failed to init vcpi slots=%d ret=%d\n",
+ 			    DIV_ROUND_UP(pbn, mgr->pbn_div), ret);
+ 		drm_dp_mst_topology_put_port(port);
+ 		goto out;
+-- 
+2.31.1
+
