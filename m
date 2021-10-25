@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521F743A237
+	by mail.lfdr.de (Postfix) with ESMTP id 99E6243A238
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236760AbhJYTqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:46:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58964 "EHLO mail.kernel.org"
+        id S236937AbhJYTqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:46:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236402AbhJYTjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236429AbhJYTjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 15:39:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAF4460F4F;
-        Mon, 25 Oct 2021 19:35:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20EF96109D;
+        Mon, 25 Oct 2021 19:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190516;
-        bh=jjPhpuHUAotgOOslBDWPqGVeTG5Lq5x05VBjB2A/OSU=;
+        s=korg; t=1635190519;
+        bh=/K5XDfW1ew+0puRi9FhlVY0jb+ciGrb2Sh4ZJFYmQjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCnafDMSNXGIZ1iu9hbLFOy7mPQw2mTyf96xiW8z/pzBZ1YOnr8gz6mNbMKiX1CkK
-         0Js6FwJjEwxAiR2tVSH8bhM8IaLBESuskPbM7pRJW5w9Sx32YgtXZ8nzlc8jWUXpQX
-         e0nvy9EUXHbPI87h/JWzBOCgB3Q9Lo22LNdJawUY=
+        b=SOeAWj+mIx/uczJ0ktiENmt+0jM1W/6W1b/y4XVS3w3jHMzazfdefUZMg7Hi3J0Ju
+         cEfujIUizl9jqCHG/J4dJwE+hx8WECPA2DbjE9cbA8nk3sKUfgyIoV4a9BJFmMtRvw
+         Xzzs0OGmT9A7NIXjTX+ElPmFP963FdEtrvjC4S2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.10 87/95] s390/pci: fix zpci_zdev_put() on reserve
-Date:   Mon, 25 Oct 2021 21:15:24 +0200
-Message-Id: <20211025191009.402634017@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+664b58e9a40fbb2cec71@syzkaller.appspotmail.com,
+        syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 5.10 88/95] bpf, test, cgroup: Use sk_{alloc,free} for test cases
+Date:   Mon, 25 Oct 2021 21:15:25 +0200
+Message-Id: <20211025191009.530350596@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
 References: <20211025190956.374447057@linuxfoundation.org>
@@ -39,170 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <schnelle@linux.ibm.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit a46044a92add6a400f4dada7b943b30221f7cc80 upstream.
+commit 435b08ec0094ac1e128afe6cfd0d9311a8c617a7 upstream.
 
-Since commit 2a671f77ee49 ("s390/pci: fix use after free of zpci_dev")
-the reference count of a zpci_dev is incremented between
-pcibios_add_device() and pcibios_release_device() which was supposed to
-prevent the zpci_dev from being freed while the common PCI code has
-access to it. It was missed however that the handling of zPCI
-availability events assumed that once zpci_zdev_put() was called no
-later availability event would still see the device. With the previously
-mentioned commit however this assumption no longer holds and we must
-make sure that we only drop the initial long-lived reference the zPCI
-subsystem holds exactly once.
+BPF test infra has some hacks in place which kzalloc() a socket and perform
+minimum init via sock_net_set() and sock_init_data(). As a result, the sk's
+skcd->cgroup is NULL since it didn't go through proper initialization as it
+would have been the case from sk_alloc(). Rather than re-adding a NULL test
+in sock_cgroup_ptr() just for this, use sk_{alloc,free}() pair for the test
+socket. The latter also allows to get rid of the bpf_sk_storage_free() special
+case.
 
-Do so by introducing a zpci_device_reserved() function that handles when
-a device is reserved. Here we make sure the zpci_dev will not be
-considered for further events by removing it from the zpci_list.
-
-This also means that the device actually stays in the
-ZPCI_FN_STATE_RESERVED state between the time we know it has been
-reserved and the final reference going away. We thus need to consider it
-a real state instead of just a conceptual state after the removal. The
-final cleanup of PCI resources, removal from zbus, and destruction of
-the IOMMU stays in zpci_release_device() to make sure holders of the
-reference do see valid data until the release.
-
-Fixes: 2a671f77ee49 ("s390/pci: fix use after free of zpci_dev")
-Cc: stable@vger.kernel.org
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Fixes: 8520e224f547 ("bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode")
+Fixes: b7a1848e8398 ("bpf: add BPF_PROG_TEST_RUN support for flow dissector")
+Fixes: 2cb494a36c98 ("bpf: add tests for direct packet access from CGROUP_SKB")
+Reported-by: syzbot+664b58e9a40fbb2cec71@syzkaller.appspotmail.com
+Reported-by: syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Tested-by: syzbot+664b58e9a40fbb2cec71@syzkaller.appspotmail.com
+Tested-by: syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/bpf/20210927123921.21535-2-daniel@iogearbox.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/s390/include/asm/pci.h        |    3 ++
- arch/s390/pci/pci.c                |   45 ++++++++++++++++++++++++++++++++-----
- arch/s390/pci/pci_event.c          |    4 +--
- drivers/pci/hotplug/s390_pci_hpc.c |    9 -------
- 4 files changed, 46 insertions(+), 15 deletions(-)
+ net/bpf/test_run.c |   14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
---- a/arch/s390/include/asm/pci.h
-+++ b/arch/s390/include/asm/pci.h
-@@ -205,6 +205,9 @@ int zpci_create_device(u32 fid, u32 fh,
- void zpci_remove_device(struct zpci_dev *zdev, bool set_error);
- int zpci_enable_device(struct zpci_dev *);
- int zpci_disable_device(struct zpci_dev *);
-+void zpci_device_reserved(struct zpci_dev *zdev);
-+bool zpci_is_device_configured(struct zpci_dev *zdev);
-+
- int zpci_register_ioat(struct zpci_dev *, u8, u64, u64, u64);
- int zpci_unregister_ioat(struct zpci_dev *, u8);
- void zpci_remove_reserved_devices(void);
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -92,7 +92,7 @@ void zpci_remove_reserved_devices(void)
- 	spin_unlock(&zpci_list_lock);
- 
- 	list_for_each_entry_safe(zdev, tmp, &remove, entry)
--		zpci_zdev_put(zdev);
-+		zpci_device_reserved(zdev);
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -481,6 +481,12 @@ static void convert_skb_to___skb(struct
+ 	__skb->gso_segs = skb_shinfo(skb)->gso_segs;
  }
  
- int pci_domain_nr(struct pci_bus *bus)
-@@ -787,6 +787,39 @@ error:
- 	return rc;
- }
- 
-+bool zpci_is_device_configured(struct zpci_dev *zdev)
-+{
-+	enum zpci_state state = zdev->state;
++static struct proto bpf_dummy_proto = {
++	.name   = "bpf_dummy",
++	.owner  = THIS_MODULE,
++	.obj_size = sizeof(struct sock),
++};
 +
-+	return state != ZPCI_FN_STATE_RESERVED &&
-+		state != ZPCI_FN_STATE_STANDBY;
-+}
-+
-+/**
-+ * zpci_device_reserved() - Mark device as resverved
-+ * @zdev: the zpci_dev that was reserved
-+ *
-+ * Handle the case that a given zPCI function was reserved by another system.
-+ * After a call to this function the zpci_dev can not be found via
-+ * get_zdev_by_fid() anymore but may still be accessible via existing
-+ * references though it will not be functional anymore.
-+ */
-+void zpci_device_reserved(struct zpci_dev *zdev)
-+{
-+	if (zdev->has_hp_slot)
-+		zpci_exit_slot(zdev);
-+	/*
-+	 * Remove device from zpci_list as it is going away. This also
-+	 * makes sure we ignore subsequent zPCI events for this device.
-+	 */
-+	spin_lock(&zpci_list_lock);
-+	list_del(&zdev->entry);
-+	spin_unlock(&zpci_list_lock);
-+	zdev->state = ZPCI_FN_STATE_RESERVED;
-+	zpci_dbg(3, "rsv fid:%x\n", zdev->fid);
-+	zpci_zdev_put(zdev);
-+}
-+
- void zpci_release_device(struct kref *kref)
+ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 			  union bpf_attr __user *uattr)
  {
- 	struct zpci_dev *zdev = container_of(kref, struct zpci_dev, kref);
-@@ -802,6 +835,12 @@ void zpci_release_device(struct kref *kr
- 	case ZPCI_FN_STATE_STANDBY:
- 		if (zdev->has_hp_slot)
- 			zpci_exit_slot(zdev);
-+		spin_lock(&zpci_list_lock);
-+		list_del(&zdev->entry);
-+		spin_unlock(&zpci_list_lock);
-+		zpci_dbg(3, "rsv fid:%x\n", zdev->fid);
-+		fallthrough;
-+	case ZPCI_FN_STATE_RESERVED:
- 		zpci_cleanup_bus_resources(zdev);
- 		zpci_bus_device_unregister(zdev);
- 		zpci_destroy_iommu(zdev);
-@@ -809,10 +848,6 @@ void zpci_release_device(struct kref *kr
- 	default:
+@@ -525,20 +531,19 @@ int bpf_prog_test_run_skb(struct bpf_pro
  		break;
  	}
--
--	spin_lock(&zpci_list_lock);
--	list_del(&zdev->entry);
--	spin_unlock(&zpci_list_lock);
- 	zpci_dbg(3, "rem fid:%x\n", zdev->fid);
- 	kfree(zdev);
- }
---- a/arch/s390/pci/pci_event.c
-+++ b/arch/s390/pci/pci_event.c
-@@ -146,7 +146,7 @@ static void __zpci_event_availability(st
- 		zdev->state = ZPCI_FN_STATE_STANDBY;
- 		if (!clp_get_state(ccdf->fid, &state) &&
- 		    state == ZPCI_FN_STATE_RESERVED) {
--			zpci_zdev_put(zdev);
-+			zpci_device_reserved(zdev);
- 		}
- 		break;
- 	case 0x0306: /* 0x308 or 0x302 for multiple devices */
-@@ -156,7 +156,7 @@ static void __zpci_event_availability(st
- 	case 0x0308: /* Standby -> Reserved */
- 		if (!zdev)
- 			break;
--		zpci_zdev_put(zdev);
-+		zpci_device_reserved(zdev);
- 		break;
- 	default:
- 		break;
---- a/drivers/pci/hotplug/s390_pci_hpc.c
-+++ b/drivers/pci/hotplug/s390_pci_hpc.c
-@@ -109,14 +109,7 @@ static int get_power_status(struct hotpl
- 	struct zpci_dev *zdev = container_of(hotplug_slot, struct zpci_dev,
- 					     hotplug_slot);
  
--	switch (zdev->state) {
--	case ZPCI_FN_STATE_STANDBY:
--		*value = 0;
--		break;
--	default:
--		*value = 1;
--		break;
--	}
-+	*value = zpci_is_device_configured(zdev) ? 1 : 0;
- 	return 0;
- }
+-	sk = kzalloc(sizeof(struct sock), GFP_USER);
++	sk = sk_alloc(net, AF_UNSPEC, GFP_USER, &bpf_dummy_proto, 1);
+ 	if (!sk) {
+ 		kfree(data);
+ 		kfree(ctx);
+ 		return -ENOMEM;
+ 	}
+-	sock_net_set(sk, net);
+ 	sock_init_data(NULL, sk);
  
+ 	skb = build_skb(data, 0);
+ 	if (!skb) {
+ 		kfree(data);
+ 		kfree(ctx);
+-		kfree(sk);
++		sk_free(sk);
+ 		return -ENOMEM;
+ 	}
+ 	skb->sk = sk;
+@@ -611,8 +616,7 @@ out:
+ 	if (dev && dev != net->loopback_dev)
+ 		dev_put(dev);
+ 	kfree_skb(skb);
+-	bpf_sk_storage_free(sk);
+-	kfree(sk);
++	sk_free(sk);
+ 	kfree(ctx);
+ 	return ret;
+ }
 
 
