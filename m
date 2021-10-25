@@ -2,182 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EE94390EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE934390DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhJYIQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:16:27 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:43402 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJYIQZ (ORCPT
+        id S231251AbhJYIK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:10:29 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33943 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230106AbhJYIK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:16:25 -0400
-Received: from localhost (unknown [192.168.167.70])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C0B60D70C6;
-        Mon, 25 Oct 2021 16:06:39 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P17687T140584201217792S1635149192925589_;
-        Mon, 25 Oct 2021 16:06:38 +0800 (CST)
-X-IP-DOMAINF: 1
-X-RL-SENDER: yifeng.zhao@rock-chips.com
-X-SENDER: zyf@rock-chips.com
-X-LOGIN-NAME: yifeng.zhao@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 13
-X-LOCAL-RCPT-COUNT: 2
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-UNIQUE-TAG: <fbefa1c002cae2b903d86d6e21652e4b>
-X-System-Flag: 0
-From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
-To:     heiko@sntech.de, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, vkoul@kernel.org,
-        michael.riesch@wolfvision.net, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kishon@ti.com,
-        p.zabel@pengutronix.de, cl@rock-chips.com,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Subject: [PATCH v3 3/3] arm64: dts: rockchip: add naneng combo phy nodes for rk3568
-Date:   Mon, 25 Oct 2021 16:06:32 +0800
-Message-Id: <20211025080632.32063-4-yifeng.zhao@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211025080632.32063-1-yifeng.zhao@rock-chips.com>
-References: <20211025080632.32063-1-yifeng.zhao@rock-chips.com>
+        Mon, 25 Oct 2021 04:10:27 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id A0EB85C01B1;
+        Mon, 25 Oct 2021 04:08:05 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 25 Oct 2021 04:08:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=/EGMzK
+        IqVEykGMMra2oqezoDiZcJLEYHn1cr/vpfo88=; b=dfyYZeh8EvjZ3TOML+jqQA
+        1ouYRlY0XO7VJXuwV8zLlhrD8qiabmXNdxi6tjxm6BKkeNKyF8J3l12maWleh/SM
+        zcfzaMjuOmqnjcW2bwYbsA8IJOOaiVoNBQlGnIa8Y29wkllHiU3AuwWIIZoZIHkA
+        E6G77grMxnQPU47yGqwr7ncvvWVn4MWPrem4qjdtjVX3i+Ga7jMa6HX1Pn2zQqiv
+        id18xG183xTXkI3KOJCeiyDsVJJLUtPzXDGZuS119Yuq6AbPHAmLa5qKeVQB69Bx
+        Gc2s7VK22X7KGBb+ZWrgqZpL/Tt5ZL/a1caHmiwgnre4MNnJQrmP+GmFAhF3yFbg
+        ==
+X-ME-Sender: <xms:5WV2Yf0mCAEtmzltYVSqKW8ucZx4t6OPWcDAkeFE_h1n9iqHYqXn3Q>
+    <xme:5WV2YeEDsmIJrS-E6E79kxRzmLlfHK27XC4Y2lx5qw6VYLYutXshGQpLGsxpdjzgM
+    SfsrAA8Yrndweg>
+X-ME-Received: <xmr:5WV2Yf4kFJ7dkohTiMJ4nZvPhZBqKGkB5_Hd9lO3BSsFjldtIVgIrFjn53i-dHw3uBpamvm1hX9ldfwhAeY-tzcrGn0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
+    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    guohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:5WV2YU1g2wobWaV3m2B2DyjshIP7M9LgXafUiOFpdb8TViy8gEgonw>
+    <xmx:5WV2YSHzLIEloMOy-j14a1IyU9Nf2NavHGazYcdl6saRYT5_Hfw4zg>
+    <xmx:5WV2YV_H5aMu2EDTm6eFFeuMu6M7NSLYtCbhdh_zvAPuSesLGTfV6w>
+    <xmx:5WV2YfNvqzQcVqiPxY5r7zB_VVZHYx6kfYVXxLxZF6DxDJua6grWFg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 04:08:04 -0400 (EDT)
+Date:   Mon, 25 Oct 2021 11:08:00 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXZl4Gmq6DYSdDM3@shredder>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <YXUtbOpjmmWr71dU@unreal>
+ <YXU5+XLhQ9zkBGNY@shredder>
+ <YXZB/3+IR6I0b2xE@unreal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXZB/3+IR6I0b2xE@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the core dt-node for the rk3568's naneng combo phys.
+On Mon, Oct 25, 2021 at 08:34:55AM +0300, Leon Romanovsky wrote:
+> On Sun, Oct 24, 2021 at 01:48:25PM +0300, Ido Schimmel wrote:
+> > On Sun, Oct 24, 2021 at 12:54:52PM +0300, Leon Romanovsky wrote:
+> > > On Sun, Oct 24, 2021 at 12:05:12PM +0300, Ido Schimmel wrote:
+> > > > On Sun, Oct 24, 2021 at 11:42:11AM +0300, Leon Romanovsky wrote:
+> > > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > > 
+> > > > > Align netdevsim to be like all other physical devices that register and
+> > > > > unregister devlink traps during their probe and removal respectively.
+> > > > 
+> > > > No, this is incorrect. Out of the three drivers that support both reload
+> > > > and traps, both netdevsim and mlxsw unregister the traps during reload.
+> > > > Here is another report from syzkaller about mlxsw [1].
+> > > 
+> > > Sorry, I overlooked it.
+> > > 
+> > > > 
+> > > > Please revert both 22849b5ea595 ("devlink: Remove not-executed trap
+> > > > policer notifications") and 8bbeed485823 ("devlink: Remove not-executed
+> > > > trap group notifications").
+> > > 
+> > > However, before we rush and revert commit, can you please explain why
+> > > current behavior to reregister traps on reload is correct?
+> > > 
+> > > I think that you are not changing traps during reload, so traps before
+> > > reload will be the same as after reload, am I right?
+> > 
+> > During reload we tear down the entire driver and load it again. As part
+> > of the reload_down() operation we tear down the various objects from
+> > both devlink and the device (e.g., shared buffer, ports, traps, etc.).
+> > As part of the reload_up() operation we issue a device reset and
+> > register everything back.
+> 
+> This is an implementation which is arguably questionable and pinpoints
+> problem with devlink reload. It mixes different SW layers into one big
+> mess which I tried to untangle.
+> 
+> The devlink "feature" that driver reregisters itself again during execution
+> of other user-visible devlink command can't be right design.
+> 
+> > 
+> > While the list of objects doesn't change, their properties (e.g., shared
+> > buffer size, trap action, policer rate) do change back to the default
+> > after reload and we cannot go back on that as it's a user-visible
+> > change.
+> 
+> I don't propose to go back, just prefer to see fixed mlxsw that
+> shouldn't touch already created and registered objects from net/core/devlink.c.
+> 
+> All reset-to-default should be performed internally to the driver
+> without any need to devlink_*_register() again, so we will be able to
+> clean rest devlink notifications.
+> 
+> So at least for the netdevsim, this change looks like the correct one,
+> while mlxsw should be fixed next.
 
-Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
----
+No, it's not correct. After your patch, trap properties like action are
+not set back to the default. Regardless of what you think is the "right
+design", you cannot introduce such regressions.
 
-Changes in v3:
-- Move pipe_phy_grf0 to rk3568.dtsi
+Calling devlink_*_unregister() in reload_down() and devlink_*_register()
+in reload_up() is not new. It is done for multiple objects (e.g., ports,
+regions, shared buffer, etc). After your patch, netdevsim is still doing
+it.
 
-Changes in v2:
-- Move phy0 to rk3568.dtsi
+Again, please revert the two commits I mentioned. If you think they are
+necessary, you can re-submit them in the future, after proper review and
+testing of the affected code paths.
 
- arch/arm64/boot/dts/rockchip/rk3568.dtsi | 21 +++++++++++
- arch/arm64/boot/dts/rockchip/rk356x.dtsi | 47 ++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-index 2fd313a295f8..4db5d3c2a04e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-@@ -8,6 +8,11 @@
- / {
- 	compatible = "rockchip,rk3568";
- 
-+	pipe_phy_grf0: syscon@fdc70000 {
-+		compatible = "rockchip,pipe-phy-grf", "syscon";
-+		reg = <0x0 0xfdc70000 0x0 0x1000>;
-+	};
-+
- 	qos_pcie3x1: qos@fe190080 {
- 		compatible = "rockchip,rk3568-qos", "syscon";
- 		reg = <0x0 0xfe190080 0x0 0x20>;
-@@ -71,6 +76,22 @@
- 			queue0 {};
- 		};
- 	};
-+
-+	combphy0_us: phy@fe820000 {
-+		compatible = "rockchip,rk3568-naneng-combphy";
-+		reg = <0x0 0xfe820000 0x0 0x100>;
-+		#phy-cells = <1>;
-+		clocks = <&pmucru CLK_PCIEPHY0_REF>, <&cru PCLK_PIPEPHY0>,
-+			 <&cru PCLK_PIPE>;
-+		clock-names = "ref", "apb", "pipe";
-+		assigned-clocks = <&pmucru CLK_PCIEPHY0_REF>;
-+		assigned-clock-rates = <100000000>;
-+		resets = <&cru SRST_P_PIPEPHY0>, <&cru SRST_PIPEPHY0>;
-+		reset-names = "combphy-apb", "combphy";
-+		rockchip,pipe-grf = <&pipegrf>;
-+		rockchip,pipe-phy-grf = <&pipe_phy_grf0>;
-+		status = "disabled";
-+	};
- };
- 
- &cpu0_opp_table {
-diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-index 46d9552f6028..4380580d061b 100644
---- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-@@ -214,11 +214,26 @@
- 		};
- 	};
- 
-+	pipegrf: syscon@fdc50000 {
-+		compatible = "rockchip,rk3568-pipegrf", "syscon";
-+		reg = <0x0 0xfdc50000 0x0 0x1000>;
-+	};
-+
- 	grf: syscon@fdc60000 {
- 		compatible = "rockchip,rk3568-grf", "syscon", "simple-mfd";
- 		reg = <0x0 0xfdc60000 0x0 0x10000>;
- 	};
- 
-+	pipe_phy_grf1: syscon@fdc80000 {
-+		compatible = "rockchip,pipe-phy-grf", "syscon";
-+		reg = <0x0 0xfdc80000 0x0 0x1000>;
-+	};
-+
-+	pipe_phy_grf2: syscon@fdc90000 {
-+		compatible = "rockchip,pipe-phy-grf", "syscon";
-+		reg = <0x0 0xfdc90000 0x0 0x1000>;
-+	};
-+
- 	pmucru: clock-controller@fdd00000 {
- 		compatible = "rockchip,rk3568-pmucru";
- 		reg = <0x0 0xfdd00000 0x0 0x1000>;
-@@ -1077,6 +1092,38 @@
- 		status = "disabled";
- 	};
- 
-+	combphy1_usq: phy@fe830000 {
-+		compatible = "rockchip,rk3568-naneng-combphy";
-+		reg = <0x0 0xfe830000 0x0 0x100>;
-+		#phy-cells = <1>;
-+		clocks = <&pmucru CLK_PCIEPHY1_REF>, <&cru PCLK_PIPEPHY1>,
-+			 <&cru PCLK_PIPE>;
-+		clock-names = "ref", "apb", "pipe";
-+		assigned-clocks = <&pmucru CLK_PCIEPHY1_REF>;
-+		assigned-clock-rates = <100000000>;
-+		resets = <&cru SRST_P_PIPEPHY1>, <&cru SRST_PIPEPHY1>;
-+		reset-names = "combphy-apb", "combphy";
-+		rockchip,pipe-grf = <&pipegrf>;
-+		rockchip,pipe-phy-grf = <&pipe_phy_grf1>;
-+		status = "disabled";
-+	};
-+
-+	combphy2_psq: phy@fe840000 {
-+		compatible = "rockchip,rk3568-naneng-combphy";
-+		reg = <0x0 0xfe840000 0x0 0x100>;
-+		#phy-cells = <1>;
-+		clocks = <&pmucru CLK_PCIEPHY2_REF>, <&cru PCLK_PIPEPHY2>,
-+			 <&cru PCLK_PIPE>;
-+		clock-names = "ref", "apb", "pipe";
-+		assigned-clocks = <&pmucru CLK_PCIEPHY2_REF>;
-+		assigned-clock-rates = <100000000>;
-+		resets = <&cru SRST_P_PIPEPHY2>, <&cru SRST_PIPEPHY2>;
-+		reset-names = "combphy-apb", "combphy";
-+		rockchip,pipe-grf = <&pipegrf>;
-+		rockchip,pipe-phy-grf = <&pipe_phy_grf2>;
-+		status = "disabled";
-+	};
-+
- 	pinctrl: pinctrl {
- 		compatible = "rockchip,rk3568-pinctrl";
- 		rockchip,grf = <&grf>;
--- 
-2.17.1
-
-
-
+Thanks
