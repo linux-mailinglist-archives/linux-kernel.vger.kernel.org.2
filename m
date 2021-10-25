@@ -2,101 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B1D439ACA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1528439ACF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhJYPu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbhJYPuv (ORCPT
+        id S233083AbhJYPwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:52:13 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:51853 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230070AbhJYPwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:50:51 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D28C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:48:29 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id q2-20020a17090a2e0200b001a0fd4efd49so214233pjd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0lZC/4YVNiq6m54gciVPWUG9HJx9IWHvMOAiOdASGoo=;
-        b=QyfrOXYXYzIEyrLD44pl5e5qrBHvKskln3PRReuWzpAgV2++kLJzI050rqe2oVwX2v
-         /YSSz3klIowpfUugVLMls4E5ALzM885A+JjaGYEd8dI6xPFGzSKWWGCwhTUoU1wJJ2+4
-         q6QXjhMZdsCR4vmwSFpvR/7/SOjlriEKOoj6W/QPj/mWp9yfleITVSt3gv9SSl80X7Ip
-         BvJTrYEOJKTHV3pbSlO8IHWn3hT4T3KR9LJVANxEXG1UOo91F4D+Bcp+BL0MB5OCLaKP
-         Mo/ai6V2iZC0VqjsN2MnwKzxW/qxPY5ehn5rtVsOHSmvZ7PywSIV88EiySKFBzouQ+tc
-         9/iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0lZC/4YVNiq6m54gciVPWUG9HJx9IWHvMOAiOdASGoo=;
-        b=N0xtWbYh6annShsBoJhRmBWo7DKdYLsOE9Ndotgac1VWzKwFh+WQ3BPzNKMiz0jTNw
-         YiBiHYC3fxEQ7y74Mk8redMGvqx03Ou4z/Si7GJ60kFF+36R9o/DT1iUqzq+sIGHxNkD
-         HkZfY+SBInODqy+7VY7U8LamnpYwyfkIrvfDfu0YR/CzbTWs3SbVgdV49BmS5sDKua1U
-         Gv8MNOuEFfA670mgnBHp2hj4xKhAAnnqSgW8A3GMw0Dc8CJA4RkSNj4maHA9fbjajpW8
-         +PTlFMafO/eWyqqdj/GkaN1+UAr1fqlYt2UEWpFiDVq7PlOCEic6XkEdB72Wz8vSNWdw
-         uJPQ==
-X-Gm-Message-State: AOAM533dXKYFs0wgTqeEqkE1NQnYRvVDT99kfdQCUUYbpnulD/tvdd+F
-        bi9aSZuKCMbzs2xO2Mvc6S5Zyg==
-X-Google-Smtp-Source: ABdhPJxrKJ5kv/isPaW6TJ/VoEghKiV6FVNK9Q5PXIGPB6cKE19gMMU7U+s4ZFt4KBH5EHg4mjv+Qw==
-X-Received: by 2002:a17:90a:bf0e:: with SMTP id c14mr5921807pjs.180.1635176908950;
-        Mon, 25 Oct 2021 08:48:28 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g5sm11457677pfc.65.2021.10.25.08.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 08:48:28 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 15:48:24 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v2 37/43] KVM: SVM: Unconditionally mark AVIC as running
- on vCPU load (with APICv)
-Message-ID: <YXbRyMQgMpHVQa3G@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <20211009021236.4122790-38-seanjc@google.com>
- <acea3c6d-49f4-ab5e-d9fe-6c6a8a665a46@redhat.com>
+        Mon, 25 Oct 2021 11:52:12 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7D7305806E4;
+        Mon, 25 Oct 2021 11:49:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 25 Oct 2021 11:49:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=0aER1SAbuXA9nYwjSnrNi66UhKk
+        Mzhn0/WJpn0hsF2I=; b=a3HDdU3oG6CY8b3GHjdKaB5w08HQNnLO0b7ow8rgCHn
+        QLSDmr7wbfQ4qqchyk1XklS7i7CHr7a+TPUc78e/ENH92Vpf/hxKiupMcz/IMoEa
+        10niQvw+bRbEV3/D0U3WZtfh+8vDRQP2LZildMs6pCLPLVq67cbRlsvN8GdFA7CW
+        lRSf0n3F6ve4HfrTO9phOjTY0T5zCb/Freyemcoi0FJwqtUuYWjgbMc5cZvE1xOa
+        STI1g2ghRVSkgH0B+NxlbzXbnczza5lC36zWLOSDW53IgRwwpwf9oBUqJoC4+Fgq
+        yQQm3NMTnid30Vdu7kGgX9Qpd7j2cgIKPZJfFrM4UFg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=0aER1S
+        AbuXA9nYwjSnrNi66UhKkMzhn0/WJpn0hsF2I=; b=TXvfYLmNlJzAj25uXHxj4U
+        LuabYELPTeKHnKUUiEpQO7IjyTsogqzj5tRA1x7tQ4qOKhbiKtvXx3+sGrBnqsbP
+        0qqP68eYmhjTSpAla1lnYqmQy74jbT37FbI3qv/3wigC5HTak9Osj2vwAjGxw5S+
+        BkRAfVMdDKO7Sj9jkhSc+J3uyOzsUnM3PongiXKJdU/QkKoRotVf7/kPB3NXoziI
+        AMVTg137o+CLTocZF63d6R6/kyPGYXdf6qDpWpJBu7ozrr/VZvA8lsOjap+RhICn
+        uA22i7sUe1Gm4aIFAc186HH2krU+sMxMyWXl6Isy+svRkSWaIEoX3AQT7+0TkEoQ
+        ==
+X-ME-Sender: <xms:G9J2YbRC7-45o-m3FHYhpcL2lOnWgy5K5VRkr_EfqEpSulCjSuuliA>
+    <xme:G9J2Ycw6s4-L6skN-EpVViAD832PVYxXCKe8Mq7PkLj4geky9aIue271XLN-hWFFS
+    W1JBAZR60h8uaXDSwY>
+X-ME-Received: <xmr:G9J2YQ2pk0m8Xv5M6GNjxLns07AJ7mSLjCrYjRUEKlG-3PQ0M7p0YRZyhCks44_xNpMrWCSNLMK3QZ66AfMCculhMFdqIOorgoJEUvtU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedgkeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:G9J2YbAUoGC6Lnl7bYGuDw-PZul04KodCu1RQJQeVD76R4yllfo8cg>
+    <xmx:G9J2YUizQuWwZW6VVZ6sSqA6UCnBb_DUthdj0utT_suUCEEvqsZCkA>
+    <xmx:G9J2Yfqhv8Gc4XofYEgGk2N7O3cEAVKLrY8P2I7x7rGLbFE2Cqqosw>
+    <xmx:HdJ2YVZTk9djiSN8X49jHj9yP-qB9C--K9FHyMX5F3e8ZzExgMmxNw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 11:49:47 -0400 (EDT)
+Date:   Mon, 25 Oct 2021 17:49:45 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/9] dt-bindings: rtc: sun6i: Add H616, R329, and D1
+ support
+Message-ID: <20211025154945.6vbp7ru5qvvpe34r@gilmour>
+References: <20210928080335.36706-1-samuel@sholland.org>
+ <20210928080335.36706-3-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ihzrd562brfvvncn"
 Content-Disposition: inline
-In-Reply-To: <acea3c6d-49f4-ab5e-d9fe-6c6a8a665a46@redhat.com>
+In-Reply-To: <20210928080335.36706-3-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021, Paolo Bonzini wrote:
-> On 09/10/21 04:12, Sean Christopherson wrote:
-> > +	/* TODO: Document why the unblocking path checks for updates. */
-> 
-> Is that a riddle or what? :)
 
-Yes?  I haven't been able to figure out why the unblocking path explicitly
-checks and handles an APICv update.
+--ihzrd562brfvvncn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Tue, Sep 28, 2021 at 03:03:28AM -0500, Samuel Holland wrote:
+> These new RTC variants all have a single alarm, like the R40 variant.
+>=20
+> For the new SoCs, start requiring a complete list of input clocks. The
+> H616 has three required clocks. The R329 also has three required clocks
+> (but one is different), plus an optional crystal oscillator input. The
+> D1 RTC is identical to the one in the R329.
+>=20
+> And since these new SoCs will have a well-defined output clock order as
+> well, they do not need the clock-output-names property.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+> Changes since v1:
+>   - Properly update the DT binding clocks and clock-names properties.
+>=20
+>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 72 ++++++++++++++++++-
+>  include/dt-bindings/clock/sun6i-rtc.h         | 10 +++
+>  2 files changed, 79 insertions(+), 3 deletions(-)
+>  create mode 100644 include/dt-bindings/clock/sun6i-rtc.h
+>=20
+> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rt=
+c.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> index a88d46ffb457..b971510a5ae7 100644
+> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> @@ -24,9 +24,14 @@ properties:
+>            - allwinner,sun8i-v3-rtc
+>            - allwinner,sun50i-h5-rtc
+>            - allwinner,sun50i-h6-rtc
+> +          - allwinner,sun50i-h616-rtc
+> +          - allwinner,sun50i-r329-rtc
+>        - items:
+>            - const: allwinner,sun50i-a64-rtc
+>            - const: allwinner,sun8i-h3-rtc
+> +      - items:
+> +          - const: allwinner,sun20i-d1-rtc
+> +          - const: allwinner,sun50i-r329-rtc
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -38,7 +43,10 @@ properties:
+>        - description: RTC Alarm 1
+> =20
+>    clocks:
+> -    maxItems: 1
+> +    minItems: 1
+> +
+> +  clock-names:
+> +    minItems: 1
+> =20
+>    clock-output-names:
+>      minItems: 1
+> @@ -98,7 +106,66 @@ allOf:
+>        properties:
+>          compatible:
+>            contains:
+> -            const: allwinner,sun8i-r40-rtc
+> +            const: allwinner,sun50i-h616-rtc
+> +
+> +    then:
+> +      clocks:
+> +        minItems: 3
+> +        maxItems: 3
+
+If clocks is set to minItems: 1, you'll still get a failure.
+
+The way the schemas are checked is a bit weird, but it's not checked
+once with the sum of all the schemas, they are all checked separately.
+
+So the schema under the then here will be valid, but the global check
+property will fail because it expects 1 item.
+
+You'll need minItems: 1, maxItems: 4 for the global clocks and
+clock-names.
+
+Maxime
+
+--ihzrd562brfvvncn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYXbSGQAKCRDj7w1vZxhR
+xUS7AP9dNLk6cWYN+vxStPWF4+biVpg60Zru5IdULikRqQBmlQD/dCBOoGYPDuE0
+TtN7hEAVpGbjJcDGTznhWfsYr5rTJQM=
+=b+4w
+-----END PGP SIGNATURE-----
+
+--ihzrd562brfvvncn--
