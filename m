@@ -2,35 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585BC43A0C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8122439FD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236575AbhJYTe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:34:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48384 "EHLO mail.kernel.org"
+        id S234977AbhJYTYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234917AbhJYT3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02DBF61179;
-        Mon, 25 Oct 2021 19:26:14 +0000 (UTC)
+        id S234972AbhJYTXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:23:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7430F61107;
+        Mon, 25 Oct 2021 19:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189976;
-        bh=2i/SmkelTVJDN4ukHIRESkLDHoefkzHPPIw9v0mXuDk=;
+        s=korg; t=1635189635;
+        bh=+L3OMPZIkSTO6/yQbiuQW0mhmOYt84TM3+fXn2dpuQ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dT4OtmwqNSndP9LCJy/COFVCQOabMulD1N/J8fBrC4DcZA80Mk/Eh2Tnf4Wz3SY8F
-         g19p+M5jm3TqQs5szWfZ0IJYrxRDbnCOIgeJKwI6/d6JytS0NBE/F7tWj60LX1OE3d
-         HDoPLYVk+XX4QlMinC6+9J4Ke+3T3aU3VtHEwgws=
+        b=A3Xrt7olr0Yi4MOzhDyjgqZI5Hq49DVpqTPrLLwnm7GauV+963uNAS7EYXaHfFaj4
+         4Eh39pBYnyFVPa/d8oM1fGWubYNBpIZ+YT+do2loJU2SIyBFjng/Rk6I5lc3LgX/yh
+         bkN6oQZpNSaoR9Rl91Dcb2aM/IohBadIvnPbrO3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/58] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+        stable@vger.kernel.org,
+        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 35/50] ocfs2: mount fails with buffer overflow in strlen
 Date:   Mon, 25 Oct 2021 21:14:22 +0200
-Message-Id: <20211025190938.488785599@linuxfoundation.org>
+Message-Id: <20211025190939.301309028@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +47,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+From: Valentin Vidic <vvidic@valentin-vidic.from.hr>
 
-[ Upstream commit f3d7c2cdf6dc0d5402ec29c3673893b3542c5ad1 ]
+commit b15fa9224e6e1239414525d8d556d824701849fc upstream.
 
-Use platform data to initialize xtfpga device drivers when CONFIG_USE_OF
-is not selected. This fixes xtfpga networking when CONFIG_USE_OF is not
-selected but CONFIG_OF is.
+Starting with kernel 5.11 built with CONFIG_FORTIFY_SOURCE mouting an
+ocfs2 filesystem with either o2cb or pcmk cluster stack fails with the
+trace below.  Problem seems to be that strings for cluster stack and
+cluster name are not guaranteed to be null terminated in the disk
+representation, while strlcpy assumes that the source string is always
+null terminated.  This causes a read outside of the source string
+triggering the buffer overflow detection.
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  detected buffer overflow in strlen
+  ------------[ cut here ]------------
+  kernel BUG at lib/string.c:1149!
+  invalid opcode: 0000 [#1] SMP PTI
+  CPU: 1 PID: 910 Comm: mount.ocfs2 Not tainted 5.14.0-1-amd64 #1
+    Debian 5.14.6-2
+  RIP: 0010:fortify_panic+0xf/0x11
+  ...
+  Call Trace:
+   ocfs2_initialize_super.isra.0.cold+0xc/0x18 [ocfs2]
+   ocfs2_fill_super+0x359/0x19b0 [ocfs2]
+   mount_bdev+0x185/0x1b0
+   legacy_get_tree+0x27/0x40
+   vfs_get_tree+0x25/0xb0
+   path_mount+0x454/0xa20
+   __x64_sys_mount+0x103/0x140
+   do_syscall_64+0x3b/0xc0
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Link: https://lkml.kernel.org/r/20210929180654.32460-1-vvidic@valentin-vidic.from.hr
+Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/xtensa/platforms/xtfpga/setup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ocfs2/super.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
-index 829115bb381f..61c5e2c45439 100644
---- a/arch/xtensa/platforms/xtfpga/setup.c
-+++ b/arch/xtensa/platforms/xtfpga/setup.c
-@@ -81,7 +81,7 @@ void __init platform_calibrate_ccount(void)
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -2189,11 +2189,17 @@ static int ocfs2_initialize_super(struct
+ 	}
  
- #endif
- 
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- 
- static void __init xtfpga_clk_setup(struct device_node *np)
- {
-@@ -299,4 +299,4 @@ static int __init xtavnet_init(void)
-  */
- arch_initcall(xtavnet_init);
- 
--#endif /* CONFIG_OF */
-+#endif /* CONFIG_USE_OF */
--- 
-2.33.0
-
+ 	if (ocfs2_clusterinfo_valid(osb)) {
++		/*
++		 * ci_stack and ci_cluster in ocfs2_cluster_info may not be null
++		 * terminated, so make sure no overflow happens here by using
++		 * memcpy. Destination strings will always be null terminated
++		 * because osb is allocated using kzalloc.
++		 */
+ 		osb->osb_stackflags =
+ 			OCFS2_RAW_SB(di)->s_cluster_info.ci_stackflags;
+-		strlcpy(osb->osb_cluster_stack,
++		memcpy(osb->osb_cluster_stack,
+ 		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
+-		       OCFS2_STACK_LABEL_LEN + 1);
++		       OCFS2_STACK_LABEL_LEN);
+ 		if (strlen(osb->osb_cluster_stack) != OCFS2_STACK_LABEL_LEN) {
+ 			mlog(ML_ERROR,
+ 			     "couldn't mount because of an invalid "
+@@ -2202,9 +2208,9 @@ static int ocfs2_initialize_super(struct
+ 			status = -EINVAL;
+ 			goto bail;
+ 		}
+-		strlcpy(osb->osb_cluster_name,
++		memcpy(osb->osb_cluster_name,
+ 			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
+-			OCFS2_CLUSTER_NAME_LEN + 1);
++			OCFS2_CLUSTER_NAME_LEN);
+ 	} else {
+ 		/* The empty string is identical with classic tools that
+ 		 * don't know about s_cluster_info. */
 
 
