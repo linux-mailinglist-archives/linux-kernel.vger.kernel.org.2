@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ED6439AA1
+	by mail.lfdr.de (Postfix) with ESMTP id 3174C439AA0
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhJYPmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58280 "EHLO mail.kernel.org"
+        id S232400AbhJYPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231686AbhJYPma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231859AbhJYPma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 11:42:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DA9B860F02;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E611960E97;
         Mon, 25 Oct 2021 15:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635176407;
-        bh=hKVVw4yw1imWqG8Vq/yJOZAzUmP0gUXp/yz/oTMPibc=;
+        bh=ivjh99f3sqGlLnX11lyTPWapHMC1Nka/Qt2ZsoVzk/o=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qr4WOR1BQ5AG12YZZ6Evj9r0UyimWgcsxB2FLX+FfwyrQ0udNL9wquwcTmQcQWYuG
-         Vm1JHfbSbChC+ZRUmLp4VcGrpgfcQAHUC8xR2ftmUG5KXIjxsHEo9w4NzdNhiOM9k6
-         wIQd3rskOjgXsMEuaGLJsP51CnLcoqVM7Gtl+osQEo3pIOiRPonc/g4I5VdFUaO8bL
-         liJ2Q5Kb+rmz17XI0Zzs41BWpgO/gr0SpcR9OUC+vkldnQ7vCitMkWwgB3+Uxm46Tt
-         sc7LdcNLYigyilcKVKbmD47nbYfDZy48h0GhwiScL+GIhApg7LbLRn4aiaS2t6yLhB
-         gnmMxJnNduc1Q==
+        b=ay6vBTasmVOK0M3lhjzpwYmBLCNMznZrZHA8enBoREbtgYEYy5vZ4/Q4XyLYm+09t
+         QspaGAlByGSqQZSASOdvb+kkdtFRvJNmppUmRhNnocI7wro6hw1B/cXQNzX6+R4ebR
+         DSJ46pz6R6qt8QGRF9Aclh2suBlFh4GeSuzna+IyxkNtEvlKICxww01ZlpFyHqSTP3
+         3f0WABGh1N9NOEMgQX+ywKgmVwoTJ7h+CYwjrZpW3OtZ5SXsrxvXtAcy4RY4//DG7w
+         io6K2Xo3uAMSFtAOO2TzyO58X2Phrx7eS7e4nKVhBcMDBYJ3kBClKbp/puDQ6/LJT+
+         xTMBbokxBfc0w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CCC8C60A90;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D8B6B60A21;
         Mon, 25 Oct 2021 15:40:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/tls: getsockopt supports complete algorithm list
+Subject: Re: [PATCH] net/tls: tls_crypto_context add supported algorithms context
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163517640783.4268.1674653318729555434.git-patchwork-notify@kernel.org>
+Message-Id: <163517640788.4268.815624619292262773.git-patchwork-notify@kernel.org>
 Date:   Mon, 25 Oct 2021 15:40:07 +0000
-References: <20211025130500.93077-1-tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <20211025130500.93077-1-tianjia.zhang@linux.alibaba.com>
+References: <20211025130439.92746-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20211025130439.92746-1-tianjia.zhang@linux.alibaba.com>
 To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 Cc:     davem@davemloft.net, kuba@kernel.org, borisp@nvidia.com,
         john.fastabend@gmail.com, daniel@iogearbox.net,
@@ -48,19 +48,19 @@ Hello:
 This patch was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Mon, 25 Oct 2021 21:05:00 +0800 you wrote:
-> AES_CCM_128 and CHACHA20_POLY1305 are already supported by tls,
-> similar to setsockopt, getsockopt also needs to support these
-> two algorithms.
+On Mon, 25 Oct 2021 21:04:39 +0800 you wrote:
+> tls already supports the SM4 GCM/CCM algorithms. It is also necessary
+> to add support for these two algorithms in tls_crypto_context to avoid
+> potential issues caused by forced type conversion.
 > 
 > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  net/tls/tls_main.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
+>  include/net/tls.h | 2 ++
+>  1 file changed, 2 insertions(+)
 
 Here is the summary with links:
-  - net/tls: getsockopt supports complete algorithm list
-    https://git.kernel.org/netdev/net-next/c/3fb59a5de5cb
+  - net/tls: tls_crypto_context add supported algorithms context
+    https://git.kernel.org/netdev/net-next/c/39d8fb96e3d7
 
 You are awesome, thank you!
 -- 
