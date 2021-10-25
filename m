@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B80439F87
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7468043A29F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhJYTVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:21:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37628 "EHLO mail.kernel.org"
+        id S236872AbhJYTui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234767AbhJYTUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:20:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17573610EA;
-        Mon, 25 Oct 2021 19:18:07 +0000 (UTC)
+        id S236612AbhJYTo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:44:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69F4360187;
+        Mon, 25 Oct 2021 19:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189489;
-        bh=NsnvHBtfrB7JTvTJxoyc14T4KqvhNTSri0+FiRhQ19k=;
+        s=korg; t=1635190723;
+        bh=Kw2pnTLaMolyqnbKdYQUDurXX5IzbfZt67LnOkHyEz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s+WX+Od73L6/VrH2pIZLYfaBWs9nSbCHDg0iuQAhVushWIocfQ8g85Vvxa+tlgVBG
-         ZfZeWyhcxd3nnYV/a8TxkRjq0uEaUNNLwP6uj/jDHSBBMPPF8YDdZMv1vLPYlZ2Lvx
-         LRBOW58wXI///tcgjTxmuOLtgNLYHoqSkwVBlRX8=
+        b=RsuSxG/xf8wk3eKsgwwo+3c2h6Brc4ivL+zYeBBORy9K2RifmKBifSb+bMwMvPGOp
+         F+o/8ooG/z9LPDyusSMtQIOgP7ktL95x/GzJSZ9YfLd5sl/Z3v+lAaOXZY+p4YOaa7
+         mIuNJBK+KL2HT0wg0492/dumBxhxb1S7e7oXBS7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 08/50] USB: serial: qcserial: add EM9191 QDL support
-Date:   Mon, 25 Oct 2021 21:13:55 +0200
-Message-Id: <20211025190934.476230148@linuxfoundation.org>
+        stable@vger.kernel.org, Emeel Hakim <ehakim@nvidia.com>,
+        Raed Salem <raeds@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 055/169] net/mlx5e: IPsec: Fix a misuse of the software parsers fields
+Date:   Mon, 25 Oct 2021 21:13:56 +0200
+Message-Id: <20211025191024.592815653@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Morgado <aleksander@aleksander.es>
+From: Emeel Hakim <ehakim@nvidia.com>
 
-commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
+[ Upstream commit d10457f85d4ae4d32c0df0cd65358a78c577fbe6 ]
 
-When the module boots into QDL download mode it exposes the 1199:90d2
-ids, which can be mapped to the qcserial driver, and used to run
-firmware upgrades (e.g. with the qmi-firmware-update program).
+IPsec crypto offload current Software Parser (SWP) fields settings in
+the ethernet segment (eseg) are not aligned with PRM/HW expectations.
+Among others in case of IP|ESP|TCP packet, current driver sets the
+offsets for inner_l3 and inner_l4 although there is no inner l3/l4
+headers relative to ESP header in such packets.
 
-  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
-  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-  P:  Vendor=1199 ProdID=90d2 Rev=00.00
-  S:  Manufacturer=Sierra Wireless, Incorporated
-  S:  Product=Sierra Wireless EM9191
-  S:  SerialNumber=8W0382004102A109
-  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
-  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
+SWP provides the offsets for HW ,so it can be used to find csum fields
+to offload the checksum, however these are not necessarily used by HW
+and are used as fallback in case HW fails to parse the packet, e.g
+when performing IPSec Transport Aware (IP | ESP | TCP) there is no
+need to add SW parse on inner packet. So in some cases packets csum
+was calculated correctly , whereas in other cases it failed. The later
+faced csum errors (caused by wrong packet length calculations) which
+led to lots of packet drops hence the low throughput.
 
-Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix by setting the SWP fields as expected in a IP|ESP|TCP packet.
+
+the following describe the expected SWP offsets:
+* Tunnel Mode:
+* SWP:      OutL3       InL3  InL4
+* Pkt: MAC  IP     ESP  IP    L4
+*
+* Transport Mode:
+* SWP:      OutL3       OutL4
+* Pkt: MAC  IP     ESP  L4
+*
+* Tunnel(VXLAN TCP/UDP) over Transport Mode
+* SWP:      OutL3                   InL3  InL4
+* Pkt: MAC  IP     ESP  UDP  VXLAN  IP    L4
+
+Fixes: f1267798c980 ("net/mlx5: Fix checksum issue of VXLAN and IPsec crypto offload")
+Signed-off-by: Emeel Hakim <ehakim@nvidia.com>
+Reviewed-by: Raed Salem <raeds@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/qcserial.c |    1 +
- 1 file changed, 1 insertion(+)
+ .../mellanox/mlx5/core/en_accel/ipsec_rxtx.c  | 51 ++++++++++---------
+ 1 file changed, 27 insertions(+), 24 deletions(-)
 
---- a/drivers/usb/serial/qcserial.c
-+++ b/drivers/usb/serial/qcserial.c
-@@ -169,6 +169,7 @@ static const struct usb_device_id id_tab
- 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
- 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
- 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
-+	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
- 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_rxtx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_rxtx.c
+index 33de8f0092a6..fb5397324aa4 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_rxtx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_rxtx.c
+@@ -141,8 +141,7 @@ static void mlx5e_ipsec_set_swp(struct sk_buff *skb,
+ 	 * Pkt: MAC  IP     ESP  IP    L4
+ 	 *
+ 	 * Transport Mode:
+-	 * SWP:      OutL3       InL4
+-	 *           InL3
++	 * SWP:      OutL3       OutL4
+ 	 * Pkt: MAC  IP     ESP  L4
+ 	 *
+ 	 * Tunnel(VXLAN TCP/UDP) over Transport Mode
+@@ -171,31 +170,35 @@ static void mlx5e_ipsec_set_swp(struct sk_buff *skb,
+ 		return;
+ 
+ 	if (!xo->inner_ipproto) {
+-		eseg->swp_inner_l3_offset = skb_network_offset(skb) / 2;
+-		eseg->swp_inner_l4_offset = skb_inner_transport_offset(skb) / 2;
+-		if (skb->protocol == htons(ETH_P_IPV6))
+-			eseg->swp_flags |= MLX5_ETH_WQE_SWP_INNER_L3_IPV6;
+-		if (xo->proto == IPPROTO_UDP)
++		switch (xo->proto) {
++		case IPPROTO_UDP:
++			eseg->swp_flags |= MLX5_ETH_WQE_SWP_OUTER_L4_UDP;
++			fallthrough;
++		case IPPROTO_TCP:
++			/* IP | ESP | TCP */
++			eseg->swp_outer_l4_offset = skb_inner_transport_offset(skb) / 2;
++			break;
++		default:
++			break;
++		}
++	} else {
++		/* Tunnel(VXLAN TCP/UDP) over Transport Mode */
++		switch (xo->inner_ipproto) {
++		case IPPROTO_UDP:
+ 			eseg->swp_flags |= MLX5_ETH_WQE_SWP_INNER_L4_UDP;
+-		return;
+-	}
+-
+-	/* Tunnel(VXLAN TCP/UDP) over Transport Mode */
+-	switch (xo->inner_ipproto) {
+-	case IPPROTO_UDP:
+-		eseg->swp_flags |= MLX5_ETH_WQE_SWP_INNER_L4_UDP;
+-		fallthrough;
+-	case IPPROTO_TCP:
+-		eseg->swp_inner_l3_offset = skb_inner_network_offset(skb) / 2;
+-		eseg->swp_inner_l4_offset = (skb->csum_start + skb->head - skb->data) / 2;
+-		if (skb->protocol == htons(ETH_P_IPV6))
+-			eseg->swp_flags |= MLX5_ETH_WQE_SWP_INNER_L3_IPV6;
+-		break;
+-	default:
+-		break;
++			fallthrough;
++		case IPPROTO_TCP:
++			eseg->swp_inner_l3_offset = skb_inner_network_offset(skb) / 2;
++			eseg->swp_inner_l4_offset =
++				(skb->csum_start + skb->head - skb->data) / 2;
++			if (skb->protocol == htons(ETH_P_IPV6))
++				eseg->swp_flags |= MLX5_ETH_WQE_SWP_INNER_L3_IPV6;
++			break;
++		default:
++			break;
++		}
+ 	}
+ 
+-	return;
+ }
+ 
+ void mlx5e_ipsec_set_iv_esn(struct sk_buff *skb, struct xfrm_state *x,
+-- 
+2.33.0
+
 
 
