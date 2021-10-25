@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2E1439F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BC443A298
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhJYTRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:17:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35020 "EHLO mail.kernel.org"
+        id S236633AbhJYTuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234015AbhJYTRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1290460FE8;
-        Mon, 25 Oct 2021 19:15:07 +0000 (UTC)
+        id S236190AbhJYTo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:44:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 085C86101C;
+        Mon, 25 Oct 2021 19:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189308;
-        bh=mIfWHTo6F5vNmIUpGiI4Mgv2twSJ0V9JjEE+iJXG1q8=;
+        s=korg; t=1635190731;
+        bh=k4h7mDm1FTIA015LOnE2ug/myEehyELWNNItntL85ko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MIW5lp43lMW3BKbPvLbr31OOkhntfATfabyKqByLsRpnY1iL4KQ4ZuLKl4tFpkcfa
-         nc3WHbQQO7nOddk0Vgdm9oNBR+ZtQodwYYkdkpeeJ4+RWrgFLsD+8WnWCOcww4w93E
-         WLtHtAZdWV7KRqPZ//01imzpLY6GkI6sKjaOd9ds=
+        b=skLFjv9liBwjSsVdw1O7vSxgwry+mIBfT1Ssc42YI1o1cTiVQHibvtWCGEwsk/Sgc
+         vhXdma/ZzZ6GeyXlj6pJ31YvnA95jr6OhdiCvjWvgS19uXQmQZMkjhUslAAejT8jxz
+         jBhtUQDKWSUrTnPDsws2/h/VQAtFDj+oSOHEpR+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 17/44] nfc: fix error handling of nfc_proto_register()
+        stable@vger.kernel.org, Dan Johansen <strit@manjaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Marius Gripsgard <marius@ubports.com>
+Subject: [PATCH 5.14 057/169] drm/panel: ilitek-ili9881c: Fix sync for Feixin K101-IM2BYL02 panel
 Date:   Mon, 25 Oct 2021 21:13:58 +0200
-Message-Id: <20211025190932.273315119@linuxfoundation.org>
+Message-Id: <20211025191024.802020032@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Dan Johansen <strit@manjaro.org>
 
-commit 0911ab31896f0e908540746414a77dd63912748d upstream.
+[ Upstream commit 772970620a839141835eaf2bc507d957b10adcca ]
 
-When nfc proto id is using, nfc_proto_register() return -EBUSY error
-code, but forgot to unregister proto. Fix it by adding proto_unregister()
-in the error handling case.
+This adjusts sync values according to the datasheet
 
-Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1c243751c095 ("drm/panel: ilitek-ili9881c: add support for Feixin K101-IM2BYL02 panel")
+Co-developed-by: Marius Gripsgard <marius@ubports.com>
+Signed-off-by: Dan Johansen <strit@manjaro.org>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210818214818.298089-1-strit@manjaro.org
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/af_nfc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/net/nfc/af_nfc.c
-+++ b/net/nfc/af_nfc.c
-@@ -72,6 +72,9 @@ int nfc_proto_register(const struct nfc_
- 		proto_tab[nfc_proto->id] = nfc_proto;
- 	write_unlock(&proto_tab_lock);
+diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+index 0145129d7c66..534dd7414d42 100644
+--- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
++++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+@@ -590,14 +590,14 @@ static const struct drm_display_mode k101_im2byl02_default_mode = {
+ 	.clock		= 69700,
  
-+	if (rc)
-+		proto_unregister(nfc_proto->proto);
-+
- 	return rc;
- }
- EXPORT_SYMBOL(nfc_proto_register);
+ 	.hdisplay	= 800,
+-	.hsync_start	= 800 + 6,
+-	.hsync_end	= 800 + 6 + 15,
+-	.htotal		= 800 + 6 + 15 + 16,
++	.hsync_start	= 800 + 52,
++	.hsync_end	= 800 + 52 + 8,
++	.htotal		= 800 + 52 + 8 + 48,
+ 
+ 	.vdisplay	= 1280,
+-	.vsync_start	= 1280 + 8,
+-	.vsync_end	= 1280 + 8 + 48,
+-	.vtotal		= 1280 + 8 + 48 + 52,
++	.vsync_start	= 1280 + 16,
++	.vsync_end	= 1280 + 16 + 6,
++	.vtotal		= 1280 + 16 + 6 + 15,
+ 
+ 	.width_mm	= 135,
+ 	.height_mm	= 217,
+-- 
+2.33.0
+
 
 
