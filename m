@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3688C43A31D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7408C43A1EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235338AbhJYT4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:56:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
+        id S237386AbhJYTnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:43:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238364AbhJYTvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:51:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD4F61353;
-        Mon, 25 Oct 2021 19:43:14 +0000 (UTC)
+        id S235202AbhJYTbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:31:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0230C610F8;
+        Mon, 25 Oct 2021 19:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190996;
-        bh=IS50ZmFiMsstxhAr/FSAgMkxnwWZG2CxnA2Tvw53mhc=;
+        s=korg; t=1635190076;
+        bh=bY6dMY975nx14Op7osXGDPWBnuIqKYBnpuewDahXsXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ozbTUqEzO2Tni39U0v84oYOLa084/P3cMAPPxKty2C5jW/AMrdDNL5nYr+hIaIeJV
-         ygpQCtVsjMNcO/zZGhqbxQCKfWtMXZEVQLpTECSK7uSMQU4abODMnEbsfpEUvXnmgX
-         P0YUk9vIF5kpK4o6A6aCoR+sj+nh+acyGz9KEiGA=
+        b=Bqma55N+V9H/30v+ylJZuidUxsSLb4PCHRiG0nMixg56lyyO07SqavNtXTfsfCict
+         ZkVsEz13YTs6mdtPoX/zEBjePUFHfxwyCZ7Hb+BAyGhoWzUOHWJ1KpL8aNbFKbIx1O
+         /Msf28hh3XPZFZzdAxDjBXBZCzuchCtlFi3kpvuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 120/169] net: bridge: mcast: use multicast_membership_interval for IGMPv3
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 44/58] selftests: netfilter: remove stray bash debug line
 Date:   Mon, 25 Oct 2021 21:15:01 +0200
-Message-Id: <20211025191033.107813706@linuxfoundation.org>
+Message-Id: <20211025190944.541183298@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +39,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Aleksandrov <nikolay@nvidia.com>
+From: Florian Westphal <fw@strlen.de>
 
-commit fac3cb82a54a4b7c49c932f96ef196cf5774344c upstream.
+commit 3e6ed7703dae6838c104d73d3e76e9b79f5c0528 upstream.
 
-When I added IGMPv3 support I decided to follow the RFC for computing
-the GMI dynamically:
-" 8.4. Group Membership Interval
+This should not be there.
 
-   The Group Membership Interval is the amount of time that must pass
-   before a multicast router decides there are no more members of a
-   group or a particular source on a network.
-
-   This value MUST be ((the Robustness Variable) times (the Query
-   Interval)) plus (one Query Response Interval)."
-
-But that actually is inconsistent with how the bridge used to compute it
-for IGMPv2, where it was user-configurable that has a correct default value
-but it is up to user-space to maintain it. This would make it consistent
-with the other timer values which are also maintained correct by the user
-instead of being dynamically computed. It also changes back to the previous
-user-expected GMI behaviour for IGMPv3 queries which were supported before
-IGMPv3 was added. Note that to properly compute it dynamically we would
-need to add support for "Robustness Variable" which is currently missing.
-
-Reported-by: Hangbin Liu <liuhangbin@gmail.com>
-Fixes: 0436862e417e ("net: bridge: mcast: support for IGMPv3/MLDv2 ALLOW_NEW_SOURCES report")
-Signed-off-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2de03b45236f ("selftests: netfilter: add flowtable test script")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bridge/br_private.h |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/testing/selftests/netfilter/nft_flowtable.sh |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -1002,9 +1002,7 @@ static inline unsigned long br_multicast
+--- a/tools/testing/selftests/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
+@@ -174,7 +174,6 @@ fi
+ ip netns exec ns1 ping -c 1 -q 10.0.2.99 > /dev/null
+ if [ $? -ne 0 ];then
+   echo "ERROR: ns1 cannot reach ns2" 1>&2
+-  bash
+   exit 1
+ fi
  
- static inline unsigned long br_multicast_gmi(const struct net_bridge *br)
- {
--	/* use the RFC default of 2 for QRV */
--	return 2 * br->multicast_query_interval +
--	       br->multicast_query_response_interval;
-+	return br->multicast_membership_interval;
- }
- #else
- static inline int br_multicast_rcv(struct net_bridge *br,
 
 
