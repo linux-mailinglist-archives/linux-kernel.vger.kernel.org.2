@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B15143A683
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F1043A687
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbhJYW2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233780AbhJYW1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:27:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC5DD61039;
-        Mon, 25 Oct 2021 22:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635200728;
-        bh=P5tlFsGtCPtUOWR1BRMJeM7BfDDHkMcNJV0LpkK2SbE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=AsTyAg2M09vff6Gj3gBQf5TF2l1dygeTp0Yy626Wt1k8ZOb8bAxXW+/GLdFsBnuPS
-         Uj2FluXu+PtFicvWB36W+GW+kW/W/Pdb2hkEFZRHGCKwwA6ib7dnC7OIVSkuKwOb6D
-         /V2C1790g4GX8VsA/H2MWNrQcbWPNc5LC8UV2x/MpAJxnjFKPn/BWKSy/sx+NdLEk6
-         HEBZDeNCAUZuyQ8o8g1UiQwEn+FS5avdYvHlptFcGTr+mhY0sM0aOYgBsig1M53swJ
-         X3v3zzyUWkiJHofoe7vejy7weMqD8UmANf2d/uxphiLkrtcWi/hEUuJgOvTkLuO96L
-         71i50wkf2b6mw==
-Message-ID: <4b203254-a333-77b1-0fa9-75c11fabac36@kernel.org>
-Date:   Mon, 25 Oct 2021 15:25:26 -0700
+        id S233986AbhJYW20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233813AbhJYW2V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 18:28:21 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFCAC061243
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:25:58 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id v77so17691885oie.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=WFDwbjLin57JuF/SW9mFY64wQd0e/2AHNQmaqQ+zAzw=;
+        b=hfK9d+6sqAbG17oSuDhj5y6u9w8qLXtsFL/VMBOaea0q7mFEKscsmbf4qSERmi7GPR
+         nMrTraKNOrwWzb5iGo8HeR1xfI4PGbHSlebDkK03yLardVyeDEeCKG/cccpWNIOK95Gm
+         BCQW10Ucl0LWO1HxYgXe/Us9WYWmIbv83bHuI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=WFDwbjLin57JuF/SW9mFY64wQd0e/2AHNQmaqQ+zAzw=;
+        b=TKxtgmeMSLMd5o8ve6aLxpOnloUwUmBoz9l+8XyewMukRk4829/3imZjkbXvlaK7iH
+         p3SuN83yT3kILNt1MeDnGvBPagfRy8r6wHGigyKu5t25rHG4n0eru0GOsYLmijkFOpsM
+         dGNCYzh30Hl2zMzUC/4HemQ77AakeHWGucNptZU9x7RJrTd8hBuN+jWFb2IxVUp21htk
+         K27dubMk8yN4o1Th+zV8Yr2JnjRC6TElrVRxm8fGwzPM16TSVWtp7BSTKtTOLlS4HwvR
+         dvcbsRf2sYjEGTlbq/cm/WzGBGCS5yKyXGj6Y+B2NbtKG2MSD94vmZbS4hSwtn+LzYpN
+         Fwag==
+X-Gm-Message-State: AOAM531s6KS3pPPpUo+PUXzrcIz4muQjIQFPx0lTtzy/OP9v/iMsZ6YG
+        XnspQyX/ZqxZGHV+veJhyPTTjPqwy/TwPvY4QZej5Q==
+X-Google-Smtp-Source: ABdhPJzzpQ1i3ICHPwTO0aUU1Fwdimfo83m8s5VOlm3vJvVJnxPlnRUx6c+3XcLyUvD8Ng94h5nwNZISc3dIfkOouv8=
+X-Received: by 2002:a05:6808:23c2:: with SMTP id bq2mr25563747oib.32.1635200757700;
+ Mon, 25 Oct 2021 15:25:57 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 25 Oct 2021 15:25:57 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 10/32] signal/vm86_32: Properly send SIGSEGV when the
- vm86 state cannot be saved.
-Content-Language: en-US
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, H Peter Anvin <hpa@zytor.com>
-References: <87y26nmwkb.fsf@disp2133>
- <20211020174406.17889-10-ebiederm@xmission.com> <875ytkygfj.fsf_-_@disp2133>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <875ytkygfj.fsf_-_@disp2133>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1635152851-23660-4-git-send-email-quic_c_sanm@quicinc.com>
+References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com> <1635152851-23660-4-git-send-email-quic_c_sanm@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 25 Oct 2021 15:25:57 -0700
+Message-ID: <CAE-0n52wGtyd7pUTHL4XtFGz1_41OETi3t8CVVL-yG06RYvsVA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: sc7280: Add cx power domain support
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 13:53, Eric W. Biederman wrote:
-> 
-> Update save_v86_state to always complete all of it's work except
-> possibly some of the copies to userspace even if save_v86_state takes
-> a fault.  This ensures that the kernel is always in a sane state, even
-> if userspace has done something silly.
-> 
-> When save_v86_state takes a fault update it to force userspace to take
-> a SIGSEGV and terminate the userspace application.
-> 
-> As Andy pointed out in review of the first version of this change
-> there are races between sigaction and the application terinating.  Now
-> that the code has been modified to always perform all save_v86_state's
-> work (except possibly copying to userspace) those races do not matter
-> from a kernel perspective.
-> 
-> Forcing the userspace application to terminate (by resetting it's
-> handler to SIGDFL) is there to keep everything as close to the current
-> behavior as possible while removing the unique (and difficult to
-> maintain) use of do_exit.
-> 
-> If this new SIGSEGV happens during handle_signal the next time around
-> the exit_to_user_mode_loop, SIGSEGV will be delivered to userspace.
-> 
-> All of the callers of handle_vm86_trap and handle_vm86_fault run the
-> exit_to_user_mode_loop before they return to userspace any signal sent
-> to the current task during their execution will be delivered to the
-> current task before that tasks exits to usermode.
-> 
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: H Peter Anvin <hpa@zytor.com>
-> v1: https://lkml.kernel.org/r/20211020174406.17889-10-ebiederm@xmission.com
-> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Quoting Sandeep Maheswaram (2021-10-25 02:07:31)
+> Add multi pd support to set performance state for cx domain
+> to maintain minimum corner voltage for USB clocks.
+>
+> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
 > ---
->   arch/x86/kernel/vm86_32.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> Any does this look better?
+> v2:
+> Changed rpmhd_opp_svs to rmphd_opp_nom for cx domain.
+>
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index d74a4c8..9e3b6ad 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2538,7 +2538,8 @@
+>                         interrupt-names = "hs_phy_irq", "dp_hs_phy_irq",
+>                                           "dm_hs_phy_irq", "ss_phy_irq";
+>
+> -                       power-domains = <&gcc GCC_USB30_PRIM_GDSC>;
+> +                       power-domains = <&rpmhpd SC7280_CX>, <&gcc GCC_USB30_PRIM_GDSC>;
 
-Conceptually yes, but:
+Order matters and thus the order here can't be flipped.
 
-> 
-> I think by just completing all of the work that isn't copying to
-> userspace this makes save_v86_state much more robust.
-> 
-> diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
-> index 63486da77272..933cafab7832 100644
-> --- a/arch/x86/kernel/vm86_32.c
-> +++ b/arch/x86/kernel/vm86_32.c
-> @@ -140,6 +140,7 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
->   
->   	user_access_end();
->   
-> +exit_vm86:
->   	preempt_disable();
->   	tsk->thread.sp0 = vm86->saved_sp0;
->   	tsk->thread.sysenter_cs = __KERNEL_CS;
-> @@ -159,7 +160,8 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
->   	user_access_end();
->   Efault:
->   	pr_alert("could not access userspace vm86 info\n");
-> -	do_exit(SIGSEGV);
-> +	force_sigsegv(SIGSEGV);
-> +	goto exit_vm86;
->   }
->   
->   static int do_vm86_irq_handling(int subfunction, int irqnumber);
-> 
-
-I think the result would be nicer if, instead of adding an extra goto, 
-you just literally moved all the cleanup under the unsafe_put_user()s 
-above them.  Unless I missed something, none of the put_user stuff reads 
-any state that is written by the cleanup code.
-
---Andy
+> +                       required-opps = <&rpmhpd_opp_svs>, <>;
