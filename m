@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A00A439895
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F000439897
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhJYOcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
+        id S233530AbhJYOdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbhJYOce (ORCPT
+        with ESMTP id S232865AbhJYOdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:32:34 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B32C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:30:12 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t4so15795814oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:30:12 -0700 (PDT)
+        Mon, 25 Oct 2021 10:33:04 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8D7C061746;
+        Mon, 25 Oct 2021 07:30:42 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id u13so237719edy.10;
+        Mon, 25 Oct 2021 07:30:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ecXjdeuJlerx+ehZLpdS9uH72mGz1gRkt8PH2iIoiyc=;
-        b=fgTudzKro276crsTGJpTyeoaB6sAoJ8XDuI+R0PiyVw/UZkgembqtSpXJruu/I3WdJ
-         GqP3gQPgvpBVg73g5TN4GHQW6RvBpLIMl8SCGRQ0xgarpr39VSGNsobtfOCvJW0TEdiZ
-         dXPMKznjHlCVrLFQr1TLGcn5RTBmRqjCxc0F6P3A7GeTzSiTLApvozJFv4WM7InQVJFv
-         qZrKjSsVMvHiN0s58JzCECwX+Akow+FOWh3ZUUI63jtUhB8QRMNhBO8LTo3HE2XFNmXr
-         oMVywlcPGl3VnRyd+KB9xWKre3utI99r0QMuJxPnk9Kcp23UzZYBMJb5BXPbFkv2sYLM
-         99yQ==
+        bh=FmXQJiEvyexYZAONYS1YO/YN6HE7AsF0Zix0o2xmTTs=;
+        b=YmjZEhwNJ2zDDKg7PLfT6QNaOw4P3QVEVGpEa2VRRtXHHIKks3DTI2BvjyglKfUxuk
+         0mlJ9CyhXZL91zeGmZlYEy1v7KcEouS/uUKkvHWzW4/xttXtoHXvS+yztHbugX+PQz20
+         zYaKRLql3hMtyMt0/Jq1/kvC2my1hyAcMvIUXfgOwhxsTd7grf5UXfZKshUxHrcF/xel
+         wG82/s7mKbbUlGYrZvde4MyDDb5LN12zm8HHYgwRSEiFy50sBapcBt+quOjvtr8DO9tP
+         ez2wHieQ+AefXVUT9mBA9y2UHnhM3zaeoHusYa/ZqPwFRkOj/4Vb34dGPgLTNqG3y8Ja
+         aUVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ecXjdeuJlerx+ehZLpdS9uH72mGz1gRkt8PH2iIoiyc=;
-        b=kHxYOf2/wNnYBnxf+r7pMUYlQ7yUAhT4e4y2XoIeLBlR05GU9w7RsEugjMO7A2A8H5
-         Ip9vVdA6RT/CB90Ku79CGo64IiAOFGPCyFIc1GNWIXYb6BhdXVEoeucO5TTpVD93qIwk
-         YuR4MT+c3wotTyGo8HICOyekUmvkVEI22S6BIEE942WWSWhlv9oxl9lDV05mtSFS2HWS
-         sfYBY9fxPjIjOpMf3QTZjZxFlRqHKe6mFggA8K6vYL0mBIQ+6fo6FQlMTdtul0KeXtiz
-         Ckrs1DWq7xOm1MDtZps5mBPZsy2MsWy8NCyfU7Gf/DC+bFI+2RdKdqcUCLn6CT+23Smq
-         RLtQ==
-X-Gm-Message-State: AOAM531QSaayZ3p1ufsoHq4psh4mdo7s3H4WKq5Z3MAdjgsa3dHyIOX8
-        MwdNu01WZt4y6dfrHObuDJh1l1ChsEwVl+38qUe1b/c3R250QQ==
-X-Google-Smtp-Source: ABdhPJxiMfXQeHoEbqfro5PPSN/sZ5fupF/PtRxrPbin+qhcUk7QSAU+7CiaIHIXYL9S4/Xy09CVmTg7RA3En0WJmMI=
-X-Received: by 2002:a05:6808:118c:: with SMTP id j12mr12234154oil.65.1635172209605;
- Mon, 25 Oct 2021 07:30:09 -0700 (PDT)
+        bh=FmXQJiEvyexYZAONYS1YO/YN6HE7AsF0Zix0o2xmTTs=;
+        b=2vvklblGBCez9UPMwCuVDcr60Oz8Nu470ut3ylccdaRPhyt8zN8QTx46vCqPRqzBCv
+         u06/nv614kaBSLsPD52HFwdZn3kHFswnAoC6v363nXp61y/cOIxnTXASIY5q56/5OG9P
+         9M7ys7VuxSi/BwHwz2k4//CYirvXZk1BxDuFPKDNemcxtEbOEM1Y22SRbcdcn70+JJw4
+         zxufi3JSw99Sjqku1gd7+YMck+eGc7uMOfn7whgtycgGH3t3m14TmPHTFu+vsBY+h5XR
+         85tCyTdtgZhi5UKgP1GjfHmfD1gjw9qWm9fRtmsOJ+HbvaN0LhhrcBsGEyn1mSLxVD5j
+         nuTQ==
+X-Gm-Message-State: AOAM5311PUIVLzL6IUiT7PEYHJ7eTJRiXtI492gy3tcbPg408+WmTizq
+        A/YK7QuI8a8RSCEkh8jw7ENv20f4YkquO0knoW4=
+X-Google-Smtp-Source: ABdhPJzmdRna3K6azm05c9x9j7TXfHuxwBtu0a80+n+XCgX3jLVIB8JKvIGWBLQfKYgJJaRmcJPVmLRTVJTqIQ5YRhk=
+X-Received: by 2002:a05:6402:22d6:: with SMTP id dm22mr27220376edb.209.1635172235120;
+ Mon, 25 Oct 2021 07:30:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000089871905cf2b7d09@google.com> <f37aa186-8820-451f-6fa2-eee45799a428@kernel.dk>
-In-Reply-To: <f37aa186-8820-451f-6fa2-eee45799a428@kernel.dk>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 25 Oct 2021 16:29:57 +0200
-Message-ID: <CANpmjNO1kTswzGp03o_=wMiFekXoq-kvDCy+zKSP3r5+EeOvMg@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in sbitmap_queue_clear /
- sbitmap_queue_clear (3)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     syzbot <syzbot+4f8bfd804b4a1f95b8f6@syzkaller.appspotmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <YXAiZdvk8CGvZCIM@dhcp22.suse.cz> <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
+ <YXAtYGLv/k+j6etV@dhcp22.suse.cz> <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
+ <20211020192430.GA1861@pc638.lan> <163481121586.17149.4002493290882319236@noble.neil.brown.name>
+ <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz> <20211021104038.GA1932@pc638.lan>
+ <163485654850.17149.3604437537345538737@noble.neil.brown.name>
+ <20211025094841.GA1945@pc638.lan> <YXaTBrhEqTZhTJYX@dhcp22.suse.cz>
+In-Reply-To: <YXaTBrhEqTZhTJYX@dhcp22.suse.cz>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Mon, 25 Oct 2021 16:30:23 +0200
+Message-ID: <CA+KHdyWeQ77uWg5GxJGYiNeG_2ZuKu62-i=L7kqhw__g--XGYg@mail.gmail.com>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     NeilBrown <neilb@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 15:36, Jens Axboe <axboe@kernel.dk> wrote:
-[...]
-> > write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 1:
-> >  sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
-> >  blk_mq_put_tag+0x82/0x90
-> >  __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
-> >  blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
-> >  __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
-> >  blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
-> >  lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
-> >  blk_complete_reqs block/blk-mq.c:584 [inline]
-> >  blk_done_softirq+0x69/0x90 block/blk-mq.c:589
-> >  __do_softirq+0x12c/0x26e kernel/softirq.c:558
-> >  run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
-> >  smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
-> >  kthread+0x262/0x280 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30
-> >
-> > write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 0:
-> >  sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
-> >  blk_mq_put_tag+0x82/0x90
-> >  __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
-> >  blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
-> >  __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
-> >  blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
-> >  lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
-> >  blk_complete_reqs block/blk-mq.c:584 [inline]
-> >  blk_done_softirq+0x69/0x90 block/blk-mq.c:589
-> >  __do_softirq+0x12c/0x26e kernel/softirq.c:558
-> >  run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
-> >  smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
-> >  kthread+0x262/0x280 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30
 >
-> This is just a per-cpu alloc hint, it's racy by nature. What's the
-> preferred way to silence these?
+> I would really prefer if this was not the main point of arguing here.
+> Unless you feel strongly about msleep I would go with schedule_timeout
+> here because this is a more widely used interface in the mm code and
+> also because I feel like that relying on the rounding behavior is just
+> subtle. Here is what I have staged now.
+>
+I have a preference but do not have a strong opinion here. You can go
+either way you want.
 
-That was my guess, but couldn't quite say. We started looking at
-write/write races as more likely to be harmful (vs. just read/write),
-and are inclined to let syzbot send out more of such reports. Marking
-intentional ones would be ideal so we'll be left with the
-unintentional ones.
+>
+> Are there any other concerns you see with this or other patches in the
+> series?
+>
+it is better if you could send a new vX version because it is hard to
+combine every "folded"
+into one solid commit. One comment below:
 
-I would probably use WRITE_ONCE(), just to make sure the compiler
-doesn't play games here; or if the code is entirely tolerant to even
-the compiler miscompiling things, wrap the thing in data_race().
+> ---
+> commit c1a7e40e6b56fed5b9e716de7055b77ea29d89d0
+> Author: Michal Hocko <mhocko@suse.com>
+> Date:   Wed Oct 20 10:12:45 2021 +0200
+>
+>     fold me "mm/vmalloc: add support for __GFP_NOFAIL"
+>
+>     Add a short sleep before retrying. 1 jiffy is a completely random
+>     timeout. Ideally the retry would wait for an explicit event - e.g.
+>     a change to the vmalloc space change if the failure was caused by
+>     the space fragmentation or depletion. But there are multiple different
+>     reasons to retry and this could become much more complex. Keep the retry
+>     simple for now and just sleep to prevent from hogging CPUs.
+>
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 0fb5413d9239..a866db0c9c31 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2944,6 +2944,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>         do {
+>                 ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+>                         page_shift);
+> +               schedule_timeout_uninterruptible(1);
+>
+We do not want to schedule_timeout_uninterruptible(1); every time.
+Only when an error is detected.
 
-[ A summary of a bunch of recommendations currently lives here:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
-]
-
-Thanks,
--- Marco
+-- 
+Uladzislau Rezki
