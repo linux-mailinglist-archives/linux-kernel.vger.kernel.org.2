@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53F643949F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCA14394AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhJYLSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:18:43 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44920 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJYLSm (ORCPT
+        id S233022AbhJYLYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:24:04 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:35623 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230126AbhJYLW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:18:42 -0400
-Received: by mail-io1-f71.google.com with SMTP id a1-20020a5d9801000000b005de11aa60b8so8598371iol.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:16:20 -0700 (PDT)
+        Mon, 25 Oct 2021 07:22:59 -0400
+Received: by mail-wm1-f47.google.com with SMTP id 84-20020a1c0457000000b003232b0f78f8so12778652wme.0;
+        Mon, 25 Oct 2021 04:20:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=e5NZpnxNaJyqowu2CwdQsqPF7xPZW737SvpJi76W8ug=;
-        b=55F+4jpXD7pTi5ANHflHamLyxk8hE09Dc2spKZ8+kYMsYl662qp8smvRWmitnTTVIf
-         R1zfkSUBmXwz0qyAUfb4Xq4MeJNz4o4vTJqCSYNhh3oiGx6Cg77AKqg6DQlfT+r/eGrP
-         TVCBRtDnRvUZcblXdVRvG3ElS4Ghv42loO0BYg+dZCpM/OYzU91b5eVBdabAGe6xcSIF
-         S7MHPISXr2mc2W9+vGuaEBC3k2+oVI3f8csE+Kt6qcGkHjQW3EM2dpuFrDzGyf8Rp3gR
-         YaB4wq84hPx0VQnY01rwDIBHhwhBbkweYz8AA1fkAFJMjTo8HyN0/IkYf0p25AlZ7aQo
-         vZ1g==
-X-Gm-Message-State: AOAM533LAaZLG72tKwJqJ68jRUZOlYpJWGNtAAA6gV7vpSU/kmmuFd90
-        TpXVXFIc4XMCT80VAKRtiM/Wexf3x2+Q3krOtfPokBJOTjMg
-X-Google-Smtp-Source: ABdhPJzo+aUH+MCnAiTyEKu9F1hOnOjluvS1f1YeBNl20elMwblC8Pwoj2lnN2D+PF7gkxeop3KeAPEK/Bec1UkyTKVRAIuRQmsj
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jlGpSAspkabd1CBRf3wOMeuw9ekgHDwWbfgDd4L4Pmo=;
+        b=cJFGCF6wChm1PKA9EqaVvm62HO9Fg3zkPHTg43sLaqZ2FxKDLrSZkQyHZQa6TMX5mF
+         TXmhbB3POOqCdW8w4JBPSuQAelkDTfKqG5H5eQc6XSklPC7u3xYzWRk+/mxs6XexsxAM
+         HsY/T2hexvsjyFRUm4CWg0qelWrLh1XviqekPShWp97iF3yKNNK/OKmMaFlFJiBCbHa2
+         gJcYF3AeAlDCHN700iUlig2Ag+qx4ypW4gD0RmF/kPxlGKgVwCZYBRVGBN9SFwvfw4fv
+         p9o3Z8tHepf9UKm7PEAKD1WA5t01kC62yVkeEEBhw8+qcoLfGXJqI3iGuP88e//swxrG
+         lmsA==
+X-Gm-Message-State: AOAM530ZsWeR4rsSMIf5v7L1ByhFTO99lmhbX3QiDCGwSFwGfuATmVk+
+        hulbWBS8+SAmUEXXajGQ/eI=
+X-Google-Smtp-Source: ABdhPJxOD8l7t1pxirZMFfL27LzJZ/aVBiiSMiOCWM0OpPk22nL9FXAMtDtAGlRR7nqZiUAy7ovAzQ==
+X-Received: by 2002:a05:600c:3b82:: with SMTP id n2mr14465885wms.50.1635160835970;
+        Mon, 25 Oct 2021 04:20:35 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o40sm10381489wms.10.2021.10.25.04.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 04:20:35 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 11:20:33 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, davem@davemloft.net,
+        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        brijesh.singh@amd.com, jroedel@suse.de, Tianyu.Lan@microsoft.com,
+        thomas.lendacky@amd.com, rientjes@google.com, pgonda@google.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, saravanand@fb.com, aneesh.kumar@linux.ibm.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
+        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
+        dave.hansen@intel.com
+Subject: Re: [PATCH V8 5/9] x86/sev-es: Expose sev_es_ghcb_hv_call() to call
+ ghcb hv call out of sev code
+Message-ID: <20211025112033.eqelx54p2dmlhykw@liuwe-devbox-debian-v2>
+References: <20211021154110.3734294-1-ltykernel@gmail.com>
+ <20211021154110.3734294-6-ltykernel@gmail.com>
+ <YXGTwppQ8syUyJ72@zn.tnic>
+ <00946764-7fe0-675f-7b3e-9fb3b8e3eb89@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:ccfb:: with SMTP id l27mr4492245jaq.98.1635160580260;
- Mon, 25 Oct 2021 04:16:20 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 04:16:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000089871905cf2b7d09@google.com>
-Subject: [syzbot] KCSAN: data-race in sbitmap_queue_clear /
- sbitmap_queue_clear (3)
-From:   syzbot <syzbot+4f8bfd804b4a1f95b8f6@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00946764-7fe0-675f-7b3e-9fb3b8e3eb89@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 22, 2021 at 09:39:48PM +0800, Tianyu Lan wrote:
+> On 10/22/2021 12:22 AM, Borislav Petkov wrote:
+> > On Thu, Oct 21, 2021 at 11:41:05AM -0400, Tianyu Lan wrote:
+> > > diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> > > index ea9abd69237e..368ed36971e3 100644
+> > > --- a/arch/x86/kernel/sev-shared.c
+> > > +++ b/arch/x86/kernel/sev-shared.c
+> > > @@ -124,10 +124,9 @@ static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt
+> > >   	return ES_VMM_ERROR;
+> > >   }
+> > > -static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+> > > -					  struct es_em_ctxt *ctxt,
+> > > -					  u64 exit_code, u64 exit_info_1,
+> > > -					  u64 exit_info_2)
+> > > +enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb, bool set_ghcb_msr,
+> > > +				   struct es_em_ctxt *ctxt, u64 exit_code,
+> > > +				   u64 exit_info_1, u64 exit_info_2)
+> > >   {
+> > >   	/* Fill in protocol and format specifiers */
+> > >   	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
+> > > @@ -137,7 +136,15 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+> > >   	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
+> > >   	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
+> > > -	sev_es_wr_ghcb_msr(__pa(ghcb));
+> > > +	/*
+> > > +	 * Hyper-V unenlightened guests use a paravisor for communicating and
+> > > +	 * GHCB pages are being allocated and set up by that paravisor. Linux
+> > > +	 * should not change ghcb page pa in such case and so add set_ghcb_msr
+> > 
+> > "... not change the GHCB page's physical address."
+> > 
+> > Remove the "so add... " rest.
+> > 
+> > Otherwise, LGTM.
+> > 
+> > Do you want me to take it through the tip tree?
+> 
+> Yes, please and this patch is based on the your clean up patch which is
+> already in the tip sev branch.
 
-syzbot found the following issue on:
+Borislav, please take the whole series via the tip tree if possible.
+That's perhaps the easiest thing for both of us because the rest of the
+series depends on this patch. Or else I will have to base hyperv-next on
+the tip tree once you merge this patch.
 
-HEAD commit:    2f111a6fd5b5 Merge tag 'ceph-for-5.15-rc7' of git://github..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10dae330b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b2868748300e5cf6
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f8bfd804b4a1f95b8f6
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+Let me know what you think.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4f8bfd804b4a1f95b8f6@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in sbitmap_queue_clear / sbitmap_queue_clear
-
-write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 1:
- sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
- blk_mq_put_tag+0x82/0x90
- __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
- blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
- __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
- blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
- lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
- blk_complete_reqs block/blk-mq.c:584 [inline]
- blk_done_softirq+0x69/0x90 block/blk-mq.c:589
- __do_softirq+0x12c/0x26e kernel/softirq.c:558
- run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
- smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
- kthread+0x262/0x280 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 0:
- sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
- blk_mq_put_tag+0x82/0x90
- __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
- blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
- __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
- blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
- lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
- blk_complete_reqs block/blk-mq.c:584 [inline]
- blk_done_softirq+0x69/0x90 block/blk-mq.c:589
- __do_softirq+0x12c/0x26e kernel/softirq.c:558
- run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
- smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
- kthread+0x262/0x280 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-value changed: 0x00000035 -> 0x00000044
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Wei.
