@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD405439D7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835A8439D90
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhJYR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        id S233084AbhJYR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbhJYRZr (ORCPT
+        with ESMTP id S232342AbhJYR3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:25:47 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B315C061745;
-        Mon, 25 Oct 2021 10:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=D47mqACLa3AcQRc6qgSnNXuHVEOjdx5l+P+SHXbONJ4=; b=Yt
-        U9/G6y6Pv19erawptmCBvu2WNHLmsaVlCJ/BNKfkO9YLPEGNaaDGEPiZm7C3h/4iiwe8x5enmfjqJ
-        ZL75/he+V0ANlMxfdM9Z9SR76rM5UmcwDyQJvnzSGij7U1+V9OCz7eYUzsR0XEvIFgRr8vN97ARKN
-        5/jxu4ceUGijP075VQxJ01A/WDtTFIbZZo9i+kE9IImmGXPOYuMXnbHnePgkSphzU8QqrZHjX2zj3
-        bqApDst0WY2Aa6CwMTxZJ9OwOxJlFhUGOqvyGspXeAMJky76CmgRwS9mI06/NJdI+IPitheL3cEZ3
-        wT6bqfDCZXdWsfrs0fm7ThnV50x8erHA==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mf3gu-0007p4-5P; Mon, 25 Oct 2021 18:23:20 +0100
-From:   John Keeping <john@metanate.com>
-To:     linux-perf-users@vger.kernel.org
-Cc:     John Keeping <john@metanate.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] tools/build: drop slang include path in test-all
-Date:   Mon, 25 Oct 2021 18:23:13 +0100
-Message-Id: <20211025172314.3766032-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.1
+        Mon, 25 Oct 2021 13:29:13 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BE5C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:26:50 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so3897209oof.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=KfOb2eIS89lcVTT7KSpBk1AQTOhqvqByR0j8ZKXzoqo=;
+        b=kvcVxrf0BOB2XZcKCjY48WnrlH3sGi42UzdM+sc3NB9bVex7b+HInK22322KTpujlh
+         r5iXN5JbJeN3YgCmlHv3jXAWR19BzyQ+5xw89flz+P5n8KeQw+SopsW8lybUEC498GUm
+         kBWzV2EZaifpAuExsg2GaC2PlgnJe/M+7S3rn/elEkuFgC8VMLk5MfGtADaRXojtXsub
+         fh6HaI6wdxobmljQR3EWGUph0+keT4cqZWYZYZd9S3TYTAdybmVAQYwyUTCfd408EweI
+         6Tya4Lp4z8PISOAFgSQmd3awglmJ3q7eITtQtTGWYXmhpqAao+WEF+AwbEZNb4EgsyDe
+         Cy5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=KfOb2eIS89lcVTT7KSpBk1AQTOhqvqByR0j8ZKXzoqo=;
+        b=kEQo2ExDZZmZd5UpNPOF339u3FLNG4v2QDbP4P5p5liR0RrccWbDnYsBSZvxq9/Ebk
+         Rt45F0R8WrEXDOoWc1zLFYjjiD3qrCK+WVkLGPrCsYfpe05Q33r5/gq5AiriSs1xLH4s
+         8quo0KeiXfUgu+zbmRAxfuFuGiLph2VqpD0ZoI5uShAUI4E184ugv7oztyobU363jHPA
+         kcpeEIvABq2itHQ+Qr31GN0JykANozVzbQftfB/El72la14rkVE4hcof0Y43JZo1bmrJ
+         AObtjHcOyt0H7XgCtnC7uhhA2eh8NUTM8uk1PH3BfHUgFYtxVQAL8wC69+BUxKN967YB
+         NdRA==
+X-Gm-Message-State: AOAM531urKtyQpZakJkYNlIc/XMBCQ4SZ3OwDNN8DX4vMwIKsnNttqye
+        BuButMahwpb+8w4hqfPBidA=
+X-Google-Smtp-Source: ABdhPJxCl1xJWf5SgF1E/pTDaZemn7gw0LebbJtsuyGJLvBhludb5qCw2npv9ohI/jRqwJ2i4lwxvA==
+X-Received: by 2002:a4a:be0a:: with SMTP id l10mr12941343oop.64.1635182810337;
+        Mon, 25 Oct 2021 10:26:50 -0700 (PDT)
+Received: from ?IPV6:2603:8090:2005:39b3::101e? (2603-8090-2005-39b3-0000-0000-0000-101e.res6.spectrum.com. [2603:8090:2005:39b3::101e])
+        by smtp.gmail.com with ESMTPSA id bi20sm3986570oib.5.2021.10.25.10.26.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 10:26:49 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <de1bddd8-8e09-4b8f-1fd8-ae9047e60269@lwfinger.net>
+Date:   Mon, 25 Oct 2021 12:26:48 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] staging: r8188eu: core: remove goto statement
+Content-Language: en-US
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YXafzp5F8T7/+tk2@Sauravs-MacBook-Air.local>
+ <7dc4eba4-c009-b8b7-bc08-5b608bdf86a0@lwfinger.net>
+ <e2020caf-1b0c-ce0e-3d94-d105be85ed38@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <e2020caf-1b0c-ce0e-3d94-d105be85ed38@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cbefd24f0aee3 ("tools build: Add test to check if slang.h is in
-/usr/include/slang/") added a proper test to check whether slang.h is in
-a subdirectory, and commit 1955c8cf5e26b ("perf tools: Don't hardcode
-host include path for libslang") removed the include path for
-test-libslang.bin but missed test-all.bin.  Apply the same change to
-test-all.bin.
+On 10/25/21 12:00, Saurav Girepunje wrote:
+> 
+> 
+> On 25/10/21 8:45 pm, Larry Finger wrote:
+>> On 10/25/21 07:15, Saurav Girepunje wrote:
+>>> Remove the goto statement from rtw_do_join(). In this function goto
+>>> can be replace by return statement. As on goto label exit, function only
+>>> return it is not performing any cleanup. Avoiding goto will improve
+>>> the function readability.
+>>>
+>>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>>> ---
+>>
+> Hi Larry,
+>   
+>> You need to read section 14 of Documentation/process/submitting-patches.rst to learn how to submit a revised patch.
+> Resubmitting such a revision using the same subject line is likely to confuse reviewers and maintainers alike, if not patchworks.
+>>
+> This is original patch (v1). I haven't get any review comment for this patch.
 
-Fixes: 1955c8cf5e26 ("perf tools: Don't hardcode host include path for libslang")
-Signed-off-by: John Keeping <john@metanate.com>
----
-Resending as linux-perf-users wasn't included last time.
-MAINTAINERS doesn't include any entries covering this file.
+Why did I get it twice? At least I got two messages with that subject line.
 
- tools/build/feature/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index d024b5204ba0..71390309f4d7 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -91,7 +91,7 @@ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(
- ###############################
- 
- $(OUTPUT)test-all.bin:
--	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -I/usr/include/slang -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
-+	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
- 
- $(OUTPUT)test-hello.bin:
- 	$(BUILD)
--- 
-2.33.1
-
+Larry
