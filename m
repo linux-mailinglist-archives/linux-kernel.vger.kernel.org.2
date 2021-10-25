@@ -2,284 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F04A439991
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B500D43999E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233780AbhJYPGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:06:11 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:45969 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbhJYPGF (ORCPT
+        id S233761AbhJYPIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233816AbhJYPIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:06:05 -0400
-Received: by mail-ed1-f45.google.com with SMTP id j10so731332eds.12;
-        Mon, 25 Oct 2021 08:03:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GQ9vGBplovxkjkXfQYlY3shu8H3p0LkLkA5L8hbsn4g=;
-        b=nFLEswqVzfkTLDo4WKttnLLvyWGJ4WphNY6JEbVvi0ulEVHQuhRqv6uWxtumaGNbwA
-         fcFDiiANFR8eABL7Mu0rv9hbBXUZ4UB4TQZyzo5mH+Bo295jjV8le9lq+u1W3LEYpEOJ
-         iu1qQfofLEyfdvGjhNd/pZasN6BCA8l2B+jdO+Jyzs8pPhlOTe/p1OAVVHWceOhT8cK/
-         5f3g+tpqhUV4FK7XsLahJI/qYWnD+53oVHBeezTzCg/52wN+5OBUy0MZkUgQkap4cyVY
-         2ONNBY5OxnhutzupIIyMZ6Pssu5M0Ylx1nB4UJPGas8vFoYKl8t6jgb1xwh0e7OEu/Os
-         dIUQ==
-X-Gm-Message-State: AOAM530Ec5h/oIrm4F+gbtJ8SY16CXFFsXbcIIZdcrqYWedQHAwWRgVG
-        PlV3O7Y3wbzyTbyDhNkBZQMfgMjfyUs=
-X-Google-Smtp-Source: ABdhPJxaNIALzBHC3Y0GOkTHOcN+KpFKMswPg5/L9iGrO41lUJNeoygnLUvJccONBjnDtWZ2KCZIMg==
-X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr25960998edd.129.1635174164079;
-        Mon, 25 Oct 2021 08:02:44 -0700 (PDT)
-Received: from localhost.localdomain (ip-85-160-34-175.eurotel.cz. [85.160.34.175])
-        by smtp.gmail.com with ESMTPSA id u23sm9098221edr.97.2021.10.25.08.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 08:02:43 -0700 (PDT)
-From:   Michal Hocko <mhocko@kernel.org>
-To:     <linux-mm@kvack.org>
-Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        <linux-fsdevel@vger.kernel.org>,
+        Mon, 25 Oct 2021 11:08:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C909EC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7JEK7+9XyR/LYEB+jCRSfqzJeyFXsGmCq275MlF6qHY=; b=Z3h+TDRZci3jvRNL81hvKKd4ym
+        Ucy3uISgZ3tbccPbsSc+Bv7dYzY3wjvJxkEl9blnrS1P1TT0F3toFnFN9q6yhUj0aeoFqMOjJODjl
+        50VY9VGU60rTICMyAgRfGG20m1g76Z1yniP204ZH952ZqMER97tml/qc6UYEwuDudfuaOX2FcWekY
+        1RKcO77iO0df/XSXpqtV5cb0idFw7FIxn45zEDkiN5ULzr4oEAg4vW+E0pbbvV5bPGALGj9o6i6M9
+        Mw+F2gErKEKU8FKbHz4QDl9emqPQaiXSfBy0g3X7MrtyYgRkyv0WQHpHJBhDQ9biygergu+IGJj3f
+        g/+nfQoQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mf1V8-00GCjZ-4N; Mon, 25 Oct 2021 15:03:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D8B263002AE;
+        Mon, 25 Oct 2021 17:03:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C1D462B7E450C; Mon, 25 Oct 2021 17:03:00 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 17:03:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH 4/4] mm: allow !GFP_KERNEL allocations for kvmalloc
-Date:   Mon, 25 Oct 2021 17:02:23 +0200
-Message-Id: <20211025150223.13621-5-mhocko@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211025150223.13621-1-mhocko@kernel.org>
-References: <20211025150223.13621-1-mhocko@kernel.org>
+        James Morse <james.morse@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <YXbHJCtkBdMP/bF6@hirez.programming.kicks-ass.net>
+References: <20211025122102.46089-1-frederic@kernel.org>
+ <20211025122102.46089-3-frederic@kernel.org>
+ <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
+ <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
+ <YXa85OTw7i3Bg9yj@hirez.programming.kicks-ass.net>
+ <YXbC3NRWDDfsW6DG@hirez.programming.kicks-ass.net>
+ <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+On Mon, Oct 25, 2021 at 04:55:17PM +0200, Ard Biesheuvel wrote:
+> On Mon, 25 Oct 2021 at 16:47, Peter Zijlstra <peterz@infradead.org> wrote:
 
-A support for GFP_NO{FS,IO} and __GFP_NOFAIL has been implemented
-by previous patches so we can allow the support for kvmalloc. This
-will allow some external users to simplify or completely remove
-their helpers.
+> > Perhaps a little something like so.. Shaves 2 instructions off each
+> > trampoline.
+> >
+> > --- a/arch/arm64/include/asm/static_call.h
+> > +++ b/arch/arm64/include/asm/static_call.h
+> > @@ -11,9 +11,7 @@
+> >             "   hint    34      /* BTI C */                             \n" \
+> >                 insn "                                                  \n" \
+> >             "   ldr     x16, 0b                                         \n" \
+> > -           "   cbz     x16, 1f                                         \n" \
+> >             "   br      x16                                             \n" \
+> > -           "1: ret                                                     \n" \
+> >             "   .popsection                                             \n")
+> >
+> >  #define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)                      \
+> > --- a/arch/arm64/kernel/patching.c
+> > +++ b/arch/arm64/kernel/patching.c
+> > @@ -90,6 +90,11 @@ int __kprobes aarch64_insn_write(void *a
+> >         return __aarch64_insn_write(addr, &i, AARCH64_INSN_SIZE);
+> >  }
+> >
+> > +asm("__static_call_ret:                \n"
+> > +    "  ret                     \n")
+> > +
+> 
+> This breaks BTI as it lacks the landing pad, and it will be called indirectly.
 
-GFP_NOWAIT semantic hasn't been supported so far but it hasn't been
-explicitly documented so let's add a note about that.
+Argh!
 
-ceph_kvmalloc is the first helper to be dropped and changed to
-kvmalloc.
+> > +extern void __static_call_ret(void);
+> > +
+> 
+> Better to have an ordinary C function here (with consistent linkage),
+> but we need to take the address in a way that works with Clang CFI.
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- include/linux/ceph/libceph.h |  1 -
- mm/util.c                    | 15 ++++-----------
- net/ceph/buffer.c            |  4 ++--
- net/ceph/ceph_common.c       | 27 ---------------------------
- net/ceph/crypto.c            |  2 +-
- net/ceph/messenger.c         |  2 +-
- net/ceph/messenger_v2.c      |  2 +-
- net/ceph/osdmap.c            | 12 ++++++------
- 8 files changed, 15 insertions(+), 50 deletions(-)
+There is that.
 
-diff --git a/include/linux/ceph/libceph.h b/include/linux/ceph/libceph.h
-index 409d8c29bc4f..309acbcb5a8a 100644
---- a/include/linux/ceph/libceph.h
-+++ b/include/linux/ceph/libceph.h
-@@ -295,7 +295,6 @@ extern bool libceph_compatible(void *data);
- 
- extern const char *ceph_msg_type_name(int type);
- extern int ceph_check_fsid(struct ceph_client *client, struct ceph_fsid *fsid);
--extern void *ceph_kvmalloc(size_t size, gfp_t flags);
- 
- struct fs_parameter;
- struct fc_log;
-diff --git a/mm/util.c b/mm/util.c
-index bacabe446906..fdec6b4b1267 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -549,13 +549,10 @@ EXPORT_SYMBOL(vm_mmap);
-  * Uses kmalloc to get the memory but if the allocation fails then falls back
-  * to the vmalloc allocator. Use kvfree for freeing the memory.
-  *
-- * Reclaim modifiers - __GFP_NORETRY and __GFP_NOFAIL are not supported.
-+ * Reclaim modifiers - __GFP_NORETRY and GFP_NOWAIT are not supported.
-  * __GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-  * preferable to the vmalloc fallback, due to visible performance drawbacks.
-  *
-- * Please note that any use of gfp flags outside of GFP_KERNEL is careful to not
-- * fall back to vmalloc.
-- *
-  * Return: pointer to the allocated memory of %NULL in case of failure
-  */
- void *kvmalloc_node(size_t size, gfp_t flags, int node)
-@@ -563,13 +560,6 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
- 	gfp_t kmalloc_flags = flags;
- 	void *ret;
- 
--	/*
--	 * vmalloc uses GFP_KERNEL for some internal allocations (e.g page tables)
--	 * so the given set of flags has to be compatible.
--	 */
--	if ((flags & GFP_KERNEL) != GFP_KERNEL)
--		return kmalloc_node(size, flags, node);
--
- 	/*
- 	 * We want to attempt a large physically contiguous block first because
- 	 * it is less likely to fragment multiple larger blocks and therefore
-@@ -582,6 +572,9 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
- 
- 		if (!(kmalloc_flags & __GFP_RETRY_MAYFAIL))
- 			kmalloc_flags |= __GFP_NORETRY;
-+
-+		/* nofail semantic is implemented by the vmalloc fallback */
-+		kmalloc_flags &= ~__GFP_NOFAIL;
- 	}
- 
- 	ret = kmalloc_node(size, kmalloc_flags, node);
-diff --git a/net/ceph/buffer.c b/net/ceph/buffer.c
-index 5622763ad402..7e51f128045d 100644
---- a/net/ceph/buffer.c
-+++ b/net/ceph/buffer.c
-@@ -7,7 +7,7 @@
- 
- #include <linux/ceph/buffer.h>
- #include <linux/ceph/decode.h>
--#include <linux/ceph/libceph.h> /* for ceph_kvmalloc */
-+#include <linux/ceph/libceph.h> /* for kvmalloc */
- 
- struct ceph_buffer *ceph_buffer_new(size_t len, gfp_t gfp)
- {
-@@ -17,7 +17,7 @@ struct ceph_buffer *ceph_buffer_new(size_t len, gfp_t gfp)
- 	if (!b)
- 		return NULL;
- 
--	b->vec.iov_base = ceph_kvmalloc(len, gfp);
-+	b->vec.iov_base = kvmalloc(len, gfp);
- 	if (!b->vec.iov_base) {
- 		kfree(b);
- 		return NULL;
-diff --git a/net/ceph/ceph_common.c b/net/ceph/ceph_common.c
-index 97d6ea763e32..9441b4a4912b 100644
---- a/net/ceph/ceph_common.c
-+++ b/net/ceph/ceph_common.c
-@@ -190,33 +190,6 @@ int ceph_compare_options(struct ceph_options *new_opt,
- }
- EXPORT_SYMBOL(ceph_compare_options);
- 
--/*
-- * kvmalloc() doesn't fall back to the vmalloc allocator unless flags are
-- * compatible with (a superset of) GFP_KERNEL.  This is because while the
-- * actual pages are allocated with the specified flags, the page table pages
-- * are always allocated with GFP_KERNEL.
-- *
-- * ceph_kvmalloc() may be called with GFP_KERNEL, GFP_NOFS or GFP_NOIO.
-- */
--void *ceph_kvmalloc(size_t size, gfp_t flags)
--{
--	void *p;
--
--	if ((flags & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS)) {
--		p = kvmalloc(size, flags);
--	} else if ((flags & (__GFP_IO | __GFP_FS)) == __GFP_IO) {
--		unsigned int nofs_flag = memalloc_nofs_save();
--		p = kvmalloc(size, GFP_KERNEL);
--		memalloc_nofs_restore(nofs_flag);
--	} else {
--		unsigned int noio_flag = memalloc_noio_save();
--		p = kvmalloc(size, GFP_KERNEL);
--		memalloc_noio_restore(noio_flag);
--	}
--
--	return p;
--}
--
- static int parse_fsid(const char *str, struct ceph_fsid *fsid)
- {
- 	int i = 0;
-diff --git a/net/ceph/crypto.c b/net/ceph/crypto.c
-index 92d89b331645..051d22c0e4ad 100644
---- a/net/ceph/crypto.c
-+++ b/net/ceph/crypto.c
-@@ -147,7 +147,7 @@ void ceph_crypto_key_destroy(struct ceph_crypto_key *key)
- static const u8 *aes_iv = (u8 *)CEPH_AES_IV;
- 
- /*
-- * Should be used for buffers allocated with ceph_kvmalloc().
-+ * Should be used for buffers allocated with kvmalloc().
-  * Currently these are encrypt out-buffer (ceph_buffer) and decrypt
-  * in-buffer (msg front).
-  *
-diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
-index 57d043b382ed..7b891be799d2 100644
---- a/net/ceph/messenger.c
-+++ b/net/ceph/messenger.c
-@@ -1920,7 +1920,7 @@ struct ceph_msg *ceph_msg_new2(int type, int front_len, int max_data_items,
- 
- 	/* front */
- 	if (front_len) {
--		m->front.iov_base = ceph_kvmalloc(front_len, flags);
-+		m->front.iov_base = kvmalloc(front_len, flags);
- 		if (m->front.iov_base == NULL) {
- 			dout("ceph_msg_new can't allocate %d bytes\n",
- 			     front_len);
-diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
-index cc40ce4e02fb..c4099b641b38 100644
---- a/net/ceph/messenger_v2.c
-+++ b/net/ceph/messenger_v2.c
-@@ -308,7 +308,7 @@ static void *alloc_conn_buf(struct ceph_connection *con, int len)
- 	if (WARN_ON(con->v2.conn_buf_cnt >= ARRAY_SIZE(con->v2.conn_bufs)))
- 		return NULL;
- 
--	buf = ceph_kvmalloc(len, GFP_NOIO);
-+	buf = kvmalloc(len, GFP_NOIO);
- 	if (!buf)
- 		return NULL;
- 
-diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
-index 75b738083523..2823bb3cff55 100644
---- a/net/ceph/osdmap.c
-+++ b/net/ceph/osdmap.c
-@@ -980,7 +980,7 @@ static struct crush_work *alloc_workspace(const struct crush_map *c)
- 	work_size = crush_work_size(c, CEPH_PG_MAX_SIZE);
- 	dout("%s work_size %zu bytes\n", __func__, work_size);
- 
--	work = ceph_kvmalloc(work_size, GFP_NOIO);
-+	work = kvmalloc(work_size, GFP_NOIO);
- 	if (!work)
- 		return NULL;
- 
-@@ -1190,9 +1190,9 @@ static int osdmap_set_max_osd(struct ceph_osdmap *map, u32 max)
- 	if (max == map->max_osd)
- 		return 0;
- 
--	state = ceph_kvmalloc(array_size(max, sizeof(*state)), GFP_NOFS);
--	weight = ceph_kvmalloc(array_size(max, sizeof(*weight)), GFP_NOFS);
--	addr = ceph_kvmalloc(array_size(max, sizeof(*addr)), GFP_NOFS);
-+	state = kvmalloc(array_size(max, sizeof(*state)), GFP_NOFS);
-+	weight = kvmalloc(array_size(max, sizeof(*weight)), GFP_NOFS);
-+	addr = kvmalloc(array_size(max, sizeof(*addr)), GFP_NOFS);
- 	if (!state || !weight || !addr) {
- 		kvfree(state);
- 		kvfree(weight);
-@@ -1222,7 +1222,7 @@ static int osdmap_set_max_osd(struct ceph_osdmap *map, u32 max)
- 	if (map->osd_primary_affinity) {
- 		u32 *affinity;
- 
--		affinity = ceph_kvmalloc(array_size(max, sizeof(*affinity)),
-+		affinity = kvmalloc(array_size(max, sizeof(*affinity)),
- 					 GFP_NOFS);
- 		if (!affinity)
- 			return -ENOMEM;
-@@ -1503,7 +1503,7 @@ static int set_primary_affinity(struct ceph_osdmap *map, int osd, u32 aff)
- 	if (!map->osd_primary_affinity) {
- 		int i;
- 
--		map->osd_primary_affinity = ceph_kvmalloc(
-+		map->osd_primary_affinity = kvmalloc(
- 		    array_size(map->max_osd, sizeof(*map->osd_primary_affinity)),
- 		    GFP_NOFS);
- 		if (!map->osd_primary_affinity)
--- 
-2.30.2
+> As the two additional instructions are on an ice cold path anyway, I'm
+> not sure this is an obvious improvement tbh.
 
+For me it's both simpler -- by virtue of being more consistent, and
+smaller. So double win :-)
+
+That is; you're already relying on the literal being unconditionally
+updated for the normal B foo -> NOP path, and having the RET -> NOP path
+be handled differently is just confusing.
+
+At least, that's how I'm seeing it today...
