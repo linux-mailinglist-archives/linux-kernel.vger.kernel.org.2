@@ -2,91 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D1443A61C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A299843A63C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhJYVv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhJYVvx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:51:53 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36144C061745;
-        Mon, 25 Oct 2021 14:49:31 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d9so12243239pfl.6;
-        Mon, 25 Oct 2021 14:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=baPV4wjWZkGX1/OiILxvL9eAGAhGEPzvMBmxxzMUQ18=;
-        b=QXLi5LxfSEiZQavsYMecHFC1Ryzi+j4JIobg4vPw2H51u+3Qpgk/qgk/ux/t1ReruM
-         KiQESzV0bS9HJD+QdTRhClZDtSVjlkkab5WA6j2w3dZRfoFbPsPL0gBa/k/89DiD2kgv
-         ttzh3g7mvljlgu6xKH6VRjJ0an+TfrtWlQDe32vWWSqYRY5m5AyHBToW+6c6WMkFtCDb
-         iNUj6XPu9CN333mq03+/gZIkzsqEJPtKnvWpKB6z90AQW91h8WhfhO6x7hjbK00/sd+o
-         RDj99muUDZ3+JeYLZUVzdbnIejOlLaajjMCi+a6XlYTnljUNCUtzUxpa89nTOiISnYCU
-         eI+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=baPV4wjWZkGX1/OiILxvL9eAGAhGEPzvMBmxxzMUQ18=;
-        b=cXf2CxySb/XjS8U3nDd8yyHY8OrzvQ2eAgpfg4hW1eMV0ktsyKwQdWpcomIcwjDFU0
-         ybzSeBGRg0d0/XQU4jOGEuteiTFXVOijU6qVoE4t27eEKyCCNzW4bvHgrDHgAytvcm2c
-         DDGQf8zGu9mwsHW2Ay8gWR5SuVkRXOP6yVzIrCtRDKv8zSZAttvpqgqtwQfDroqcjLE3
-         iDLWsRLdqtNna6sVgKsxy1WXVtWTcS7EwCSZrMnCyu3FYqKkY6/8/2xp6S8WadAgGuaz
-         W8uUrQ9EDv8BooU4RBGPKl5UffrfyDcJSb4BAvOAhr92InOCRCR9bsvZR1AJ9Do9ghx+
-         Ft3A==
-X-Gm-Message-State: AOAM530YlNmUmRk66TWnky4dFWZTUuX2sBAi1PGqqTJu1aL6FAqR0htw
-        t6NJDiXMInHRNjWZCgiqm5E=
-X-Google-Smtp-Source: ABdhPJw1xycS/uWoVr3qeOLq5p9ffEYMa8CRtNzgPJKpeoMGS3IBSCUUq5cibp2J+FKWyHMhlzcgRQ==
-X-Received: by 2002:a62:9282:0:b0:47b:d0e9:a3c4 with SMTP id o124-20020a629282000000b0047bd0e9a3c4mr18809568pfd.12.1635198570571;
-        Mon, 25 Oct 2021 14:49:30 -0700 (PDT)
-Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
-        by smtp.gmail.com with ESMTPSA id p23sm9676409pfw.61.2021.10.25.14.49.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:49:30 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:49:28 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, corbet@lwn.net,
-        djwong@kernel.org, david@fromorbit.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, gregkh@linuxfoundation.org,
-        viro@zeniv.linux.org.uk, dvyukov@google.com
-Subject: Re: [PATCH v2] slob: add size header to all allocations
-Message-ID: <YXcmaNb4NXk7AcCd@nuc10>
-References: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
- <20211023064114.708532-1-rkovhaev@gmail.com>
- <be7ee3a6-9b3c-b436-f042-82bd3c416acc@suse.cz>
+        id S231289AbhJYV4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:56:09 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:45421 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229635AbhJYV4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:56:08 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HdTHD4m47z9sTQ;
+        Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CE44DdC69V01; Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HdTHD3Mfbz9sTK;
+        Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 44B108B76D;
+        Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id pHcE_ofUi_WZ; Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
+Received: from [192.168.203.118] (unknown [192.168.203.118])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 765018B763;
+        Mon, 25 Oct 2021 23:53:43 +0200 (CEST)
+Message-ID: <5794f254-0523-7f2f-f9e7-ff64a7fe400d@csgroup.eu>
+Date:   Mon, 25 Oct 2021 23:53:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be7ee3a6-9b3c-b436-f042-82bd3c416acc@suse.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 02/10] powerpc/book3e: Fix set_memory_x() and
+ set_memory_nx()
+Content-Language: fr-FR
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <33e7fe0f6134c58e044eb63d3925cd34aa120104.1634983809.git.christophe.leroy@csgroup.eu>
+ <7e7b0688c907e54f3b11ddfb9a8f44511d475fd7.1634983809.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <7e7b0688c907e54f3b11ddfb9a8f44511d475fd7.1634983809.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:36:53AM +0200, Vlastimil Babka wrote:
-> On 10/23/21 08:41, Rustam Kovhaev wrote:
-> > Let's prepend both kmalloc() and kmem_cache_alloc() allocations with the
-> > size header.
-> > It simplifies the slab API and guarantees that both kmem_cache_alloc()
-> > and kmalloc() memory could be freed by kfree().
-> > 
-> > meminfo right after the system boot, without the patch:
-> > Slab:              35456 kB
-> > 
-> > the same, with the patch:
-> > Slab:              36160 kB
-> > 
-> > Link: https://lore.kernel.org/lkml/20210929212347.1139666-1-rkovhaev@gmail.com
-> > Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+
+
+On 23/10/2021 13:47, Christophe Leroy wrote:
+> set_memory_x() calls pte_mkexec() which sets _PAGE_EXEC.
+> set_memory_nx() calls pte_exprotec() which clears _PAGE_EXEC.
 > 
-> Seems overal correct to me, thanks! I'll just suggest some improvements:
+> Book3e has 2 bits, UX and SX, which defines the exec rights
+> resp. for user (PR=1) and for kernel (PR=0).
+> 
+> _PAGE_EXEC is defined as UX only.
+> 
+> An executable kernel page is set with either _PAGE_KERNEL_RWX
+> or _PAGE_KERNEL_ROX, which both have SX set and UX cleared.
+> 
+> So set_memory_nx() call for an executable kernel page does
+> nothing because UX is already cleared.
+> 
+> And set_memory_x() on a non-executable kernel page makes it
+> executable for the user and keeps it non-executable for kernel.
+> 
+> Also, pte_exec() always returns 'false' on kernel pages, because
+> it checks _PAGE_EXEC which doesn't include SX, so for instance
+> the W+X check doesn't work.
+> 
+> To fix this:
+> - change tlb_low_64e.S to use _PAGE_BAP_UX instead of _PAGE_USER
+> - sets both UX and SX in _PAGE_EXEC so that pte_user() returns
+> true whenever one of the two bits is set and pte_exprotect()
+> clears both bits.
+> - Define a book3e specific version of pte_mkexec() which sets
+> either SX or UX based on UR.
+> 
+> Fixes: 1f9ad21c3b38 ("powerpc/mm: Implement set_memory() routines")
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> v2: New
 
-Thank you, I'll send a v3.
+pte_mkexec() in nohash/64/pgtable.h conflicts with the one in 
+nohash/pte_book3e.h
 
+Should guard it with  #ifndef pte_mkexec(), but as pte_book3e is the 
+only user in 64 bits, then just remove it from there.
+
+Send v3 with only that change compared to v2.
+
+Christophe
+
+> ---
+>   arch/powerpc/include/asm/nohash/32/pgtable.h |  2 ++
+>   arch/powerpc/include/asm/nohash/pte-book3e.h | 18 ++++++++++++++----
+>   arch/powerpc/mm/nohash/tlb_low_64e.S         |  8 ++++----
+>   3 files changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+> index ac0a5ff48c3a..d6ba821a56ce 100644
+> --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
+> +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+> @@ -193,10 +193,12 @@ static inline pte_t pte_wrprotect(pte_t pte)
+>   }
+>   #endif
+>   
+> +#ifndef pte_mkexec
+>   static inline pte_t pte_mkexec(pte_t pte)
+>   {
+>   	return __pte(pte_val(pte) | _PAGE_EXEC);
+>   }
+> +#endif
+>   
+>   #define pmd_none(pmd)		(!pmd_val(pmd))
+>   #define	pmd_bad(pmd)		(pmd_val(pmd) & _PMD_BAD)
+> diff --git a/arch/powerpc/include/asm/nohash/pte-book3e.h b/arch/powerpc/include/asm/nohash/pte-book3e.h
+> index 813918f40765..f798640422c2 100644
+> --- a/arch/powerpc/include/asm/nohash/pte-book3e.h
+> +++ b/arch/powerpc/include/asm/nohash/pte-book3e.h
+> @@ -48,7 +48,7 @@
+>   #define _PAGE_WRITETHRU	0x800000 /* W: cache write-through */
+>   
+>   /* "Higher level" linux bit combinations */
+> -#define _PAGE_EXEC		_PAGE_BAP_UX /* .. and was cache cleaned */
+> +#define _PAGE_EXEC		(_PAGE_BAP_SX | _PAGE_BAP_UX) /* .. and was cache cleaned */
+>   #define _PAGE_RW		(_PAGE_BAP_SW | _PAGE_BAP_UW) /* User write permission */
+>   #define _PAGE_KERNEL_RW		(_PAGE_BAP_SW | _PAGE_BAP_SR | _PAGE_DIRTY)
+>   #define _PAGE_KERNEL_RO		(_PAGE_BAP_SR)
+> @@ -93,11 +93,11 @@
+>   /* Permission masks used to generate the __P and __S table */
+>   #define PAGE_NONE	__pgprot(_PAGE_BASE)
+>   #define PAGE_SHARED	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW)
+> -#define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW | _PAGE_EXEC)
+> +#define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW | _PAGE_BAP_UX)
+>   #define PAGE_COPY	__pgprot(_PAGE_BASE | _PAGE_USER)
+> -#define PAGE_COPY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_EXEC)
+> +#define PAGE_COPY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_BAP_UX)
+>   #define PAGE_READONLY	__pgprot(_PAGE_BASE | _PAGE_USER)
+> -#define PAGE_READONLY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_EXEC)
+> +#define PAGE_READONLY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_BAP_UX)
+>   
+>   #ifndef __ASSEMBLY__
+>   static inline pte_t pte_mkprivileged(pte_t pte)
+> @@ -113,6 +113,16 @@ static inline pte_t pte_mkuser(pte_t pte)
+>   }
+>   
+>   #define pte_mkuser pte_mkuser
+> +
+> +static inline pte_t pte_mkexec(pte_t pte)
+> +{
+> +	if (pte_val(pte) & _PAGE_BAP_UR)
+> +		return __pte((pte_val(pte) & ~_PAGE_BAP_SX) | _PAGE_BAP_UX);
+> +	else
+> +		return __pte((pte_val(pte) & ~_PAGE_BAP_UX) | _PAGE_BAP_SX);
+> +}
+> +#define pte_mkexec pte_mkexec
+> +
+>   #endif /* __ASSEMBLY__ */
+>   
+>   #endif /* __KERNEL__ */
+> diff --git a/arch/powerpc/mm/nohash/tlb_low_64e.S b/arch/powerpc/mm/nohash/tlb_low_64e.S
+> index bf24451f3e71..9235e720e357 100644
+> --- a/arch/powerpc/mm/nohash/tlb_low_64e.S
+> +++ b/arch/powerpc/mm/nohash/tlb_low_64e.S
+> @@ -222,7 +222,7 @@ tlb_miss_kernel_bolted:
+>   
+>   tlb_miss_fault_bolted:
+>   	/* We need to check if it was an instruction miss */
+> -	andi.	r10,r11,_PAGE_EXEC|_PAGE_BAP_SX
+> +	andi.	r10,r11,_PAGE_BAP_UX|_PAGE_BAP_SX
+>   	bne	itlb_miss_fault_bolted
+>   dtlb_miss_fault_bolted:
+>   	tlb_epilog_bolted
+> @@ -239,7 +239,7 @@ itlb_miss_fault_bolted:
+>   	srdi	r15,r16,60		/* get region */
+>   	bne-	itlb_miss_fault_bolted
+>   
+> -	li	r11,_PAGE_PRESENT|_PAGE_EXEC	/* Base perm */
+> +	li	r11,_PAGE_PRESENT|_PAGE_BAP_UX	/* Base perm */
+>   
+>   	/* We do the user/kernel test for the PID here along with the RW test
+>   	 */
+> @@ -614,7 +614,7 @@ itlb_miss_fault_e6500:
+>   
+>   	/* We do the user/kernel test for the PID here along with the RW test
+>   	 */
+> -	li	r11,_PAGE_PRESENT|_PAGE_EXEC	/* Base perm */
+> +	li	r11,_PAGE_PRESENT|_PAGE_BAP_UX	/* Base perm */
+>   	oris	r11,r11,_PAGE_ACCESSED@h
+>   
+>   	cmpldi	cr0,r15,0			/* Check for user region */
+> @@ -734,7 +734,7 @@ normal_tlb_miss_done:
+>   
+>   normal_tlb_miss_access_fault:
+>   	/* We need to check if it was an instruction miss */
+> -	andi.	r10,r11,_PAGE_EXEC
+> +	andi.	r10,r11,_PAGE_BAP_UX
+>   	bne	1f
+>   	ld	r14,EX_TLB_DEAR(r12)
+>   	ld	r15,EX_TLB_ESR(r12)
+> 
