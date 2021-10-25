@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D76143A1FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B9843A147
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbhJYToD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:44:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        id S235897AbhJYTiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236315AbhJYTgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:36:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4372610EA;
-        Mon, 25 Oct 2021 19:33:32 +0000 (UTC)
+        id S234135AbhJYTbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:31:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DF1B61078;
+        Mon, 25 Oct 2021 19:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190413;
-        bh=w2PhTnIJowuc/5uT2FASWMCzZB/rMpvr9xTG8zY8wiU=;
+        s=korg; t=1635190062;
+        bh=chkeI5+l3AWIQnPnqsxFvIGigvEj86Tj0LtA4ovEAC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ME5qItmWmuTjpmbQt/683kpG0zFvJbiX6khiRQ3cMHOWiMfwlEN4dno3Ca4zzPE0C
-         W1l8WH0b5/Zagw/G0vDz4F4z19G+RJCHUEodHTiNTODiFeEx22vTEI8vtIw1BBJqyB
-         Ui468IQUYq0wU0dfd+3C+hJMSAk/6wVrNKLqFP0E=
+        b=BIxiSgq83yeBBmYBwurcRt314Xt947f88V4s+GlviGWYKRuftji1ueI04CapjA5D+
+         85cS9eJJKGVGQs08PKPcM89yvvEDf45RGXR7Udxu0nMvYr64CjYs3PL/ruK2jUcqva
+         GS98vZphJbhG9a+6YafGiQDO9BoAer7wSsY7ll/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.10 52/95] ASoC: DAPM: Fix missing kctl change notifications
+        stable@vger.kernel.org, Steven Clarkson <sc@lambdal.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 32/58] ALSA: hda/realtek: Add quirk for Clevo PC50HS
 Date:   Mon, 25 Oct 2021 21:14:49 +0200
-Message-Id: <20211025191004.128373651@linuxfoundation.org>
+Message-Id: <20211025190942.872835427@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Steven Clarkson <sc@lambdal.com>
 
-commit 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842 upstream.
+commit aef454b40288158b850aab13e3d2a8c406779401 upstream.
 
-The put callback of a kcontrol is supposed to return 1 when the value
-is changed, and this will be notified to user-space.  However, some
-DAPM kcontrols always return 0 (except for errors), hence the
-user-space misses the update of a control value.
+Apply existing PCI quirk to the Clevo PC50HS and related models to fix
+audio output on the built in speakers.
 
-This patch corrects the behavior by properly returning 1 when the
-value gets updated.
-
-Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Steven Clarkson <sc@lambdal.com>
 Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211014133554.1326741-1-sc@lambdal.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20211006141712.2439-1-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/soc-dapm.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2559,6 +2559,7 @@ static int snd_soc_dapm_set_pin(struct s
- 				const char *pin, int status)
- {
- 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
-+	int ret = 0;
- 
- 	dapm_assert_locked(dapm);
- 
-@@ -2571,13 +2572,14 @@ static int snd_soc_dapm_set_pin(struct s
- 		dapm_mark_dirty(w, "pin configuration");
- 		dapm_widget_invalidate_input_paths(w);
- 		dapm_widget_invalidate_output_paths(w);
-+		ret = 1;
- 	}
- 
- 	w->connected = status;
- 	if (status == 0)
- 		w->force = 0;
- 
--	return 0;
-+	return ret;
- }
- 
- /**
-@@ -3582,14 +3584,15 @@ int snd_soc_dapm_put_pin_switch(struct s
- {
- 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
-+	int ret;
- 
- 	if (ucontrol->value.integer.value[0])
--		snd_soc_dapm_enable_pin(&card->dapm, pin);
-+		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
- 	else
--		snd_soc_dapm_disable_pin(&card->dapm, pin);
-+		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
- 
- 	snd_soc_dapm_sync(&card->dapm);
--	return 0;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
- 
-@@ -4035,7 +4038,7 @@ static int snd_soc_dapm_dai_link_put(str
- 
- 	rtd->params_select = ucontrol->value.enumerated.item[0];
- 
--	return 0;
-+	return 1;
- }
- 
- static void
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2537,6 +2537,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x65d2, "Clevo PB51R[CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e1, "Clevo PB51[ED][DF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e5, "Clevo PC50D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x65f1, "Clevo PC50HS", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
 
 
