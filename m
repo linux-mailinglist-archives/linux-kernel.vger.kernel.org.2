@@ -2,151 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4155439865
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C4C43985F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhJYOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbhJYOYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:24:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E86DC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5QjZHsLCWfclt/gshLXd4DimV0kevV4P/FZvwj5ddGQ=; b=U23lyUv3vqw5brD4hb6ZhLqOi4
-        3YXQVi5pbFM+3udRnZzfpeWN47JoPzXTkDIqsIIF80FaUhhar0Wbvsz1jI28mUkDPQaxfxO6ceOHL
-        M6aNI0gM5OTG3EwhfG5jMB3UmRHEHGhUnArCHnsbIwGD+ccsOCLraVoyihUafjX8urrKtgye+lAKs
-        mIG5o0NmGmhYkkAnso0z9KSqkCMHs4sEHoyDneYLWOnkDsuXFynDUNSwxx5M2qj/fAztHNznHi2El
-        cib9xn/xW34pMpC0doPNKWG/W628EuAEJ8qi8BUn4Eh/IpXI7DzkyVfAkdX7bHe75hUG0YpgH/W/w
-        4K3BRhSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mf0oo-00GAxF-0M; Mon, 25 Oct 2021 14:19:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C97E3002AE;
-        Mon, 25 Oct 2021 16:19:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 43DF720C6C147; Mon, 25 Oct 2021 16:19:16 +0200 (CEST)
-Date:   Mon, 25 Oct 2021 16:19:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        James Morse <james.morse@arm.com>,
-        David Laight <David.Laight@aculab.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
-Message-ID: <YXa85OTw7i3Bg9yj@hirez.programming.kicks-ass.net>
-References: <20211025122102.46089-1-frederic@kernel.org>
- <20211025122102.46089-3-frederic@kernel.org>
- <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
- <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
+        id S232502AbhJYOW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:22:56 -0400
+Received: from mga12.intel.com ([192.55.52.136]:43872 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230510AbhJYOWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:22:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="209760241"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="209760241"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:20:30 -0700
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="634756109"
+Received: from cdsmith3-mobl.amr.corp.intel.com (HELO [10.212.229.230]) ([10.212.229.230])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:20:29 -0700
+Subject: Re: [PATCH v2 3/5] x86/mm: check exec permissions on fault
+To:     Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+References: <20211021122112.592634-1-namit@vmware.com>
+ <20211021122112.592634-4-namit@vmware.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <e55875fa-1264-7e08-3bb8-ed984f6ea5b3@intel.com>
+Date:   Mon, 25 Oct 2021 07:20:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
+In-Reply-To: <20211021122112.592634-4-namit@vmware.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 04:08:37PM +0200, Ard Biesheuvel wrote:
-> On Mon, 25 Oct 2021 at 15:57, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Oct 25, 2021 at 02:21:00PM +0200, Frederic Weisbecker wrote:
-> >
-> > > +#define __ARCH_DEFINE_STATIC_CALL_TRAMP(name, insn)                      \
-> > > +     asm("   .pushsection    .static_call.text, \"ax\"               \n" \
-> > > +         "   .align          4                                       \n" \
-> > > +         "   .globl          " STATIC_CALL_TRAMP_STR(name) "         \n" \
-> > > +         "0: .quad   0x0                                             \n" \
-> > > +         STATIC_CALL_TRAMP_STR(name) ":                              \n" \
-> > > +         "   hint    34      /* BTI C */                             \n" \
-> > > +             insn "                                                  \n" \
-> > > +         "   ldr     x16, 0b                                         \n" \
-> > > +         "   cbz     x16, 1f                                         \n" \
-> > > +         "   br      x16                                             \n" \
-> > > +         "1: ret                                                     \n" \
-> > > +         "   .popsection                                             \n")
-> >
+On 10/21/21 5:21 AM, Nadav Amit wrote:
+> access_error() currently does not check for execution permission
+> violation. 
+Ye
 
-> > OK, that's pretty magical...
-> >
-> > So you're writing the literal and the two instructions with 2 u64
-> > stores. Relying on alignment to guarantee both are in a single page and
-> > that copy_to_kernel_nofault() selects u64 writes.
-> >
-> 
-> To be honest, it just seemed tidier and less likely to produce weird
-> corner cases to put the literal and the patched insn in the smallest
-> possible power-of-2 aligned window, as it ensures that the D-side view
-> is always consistent.
-> 
-> However, the actual fetch of the instruction could still produce a
-> stale value before the cache maintenance completes.
-> 
-> > By unconditionally writing the literal, you avoid there ever being an
-> > stale value, which in turn avoids there being a race where you switch
-> > from 'J @func' relative addressing to 'NOP; do-literal-thing' and cross
-> > CPU execution gets the ordering inverted.
-> >
-> 
-> Indeed.
-> 
-> > Ooohh, but what if you go from !func to NOP.
-> >
-> > assuming:
-> >
-> >         .literal = 0
-> >         BTI C
-> >         RET
-> >
-> > Then
-> >
-> >         CPU0                    CPU1
-> >
-> >         [S] literal = func      [I] NOP
-> >         [S] insn[1] = NOP       [L] x16 = literal (NULL)
-> >                                 b x16
-> >                                 *BANG*
-> >
-> > Is that possible? (total lack of memory ordering etc..)
-> >
-> 
-> The CBZ will branch to the RET instruction if x16 == 0x0, so this
-> should not happen.
+> As a result, spurious page-faults due to execution permission
+> violation cause SIGSEGV.
 
-Oooh, I missed that :/ I was about to suggest writing the address of a
-bare 'ret' trampoline instead of NULL into the literal.
+While I could totally believe that something is goofy when VMAs are
+being changed underneath a page fault, I'm having trouble figuring out
+why the "if (error_code & X86_PF_WRITE)" code is being modified.
 
-> > On IRC you just alluded to the fact that this relies on it all being in
-> > a single cacheline (i-fetch windows don't need to be cacheline sized,
-> > but provided they're at least 16 bytes, this should still work given the
-> > alignment).
-> >
-> > But is I$ and D$ coherent? One load is through I-fetch, the other is a
-> > regular D-fetch.
-> >
-> > However, Will has previously expressed reluctance to rely on such
-> > things.
-> >
-> 
-> No they are not. That is why the CBZ is there. So the only issue we
-> might see is where the branch instruction is out of sync with the
-> literal, and so we may call the old function while switching to the
-> new one and the I-cache maintenance hasn't completed yet.
+> It appears not to be an issue so far, but the next patches avoid TLB
+> flushes on permission promotion, which can lead to this scenario. nodejs
+> for instance crashes when TLB flush is avoided on permission promotion.
 
-OK, agreed. Perhaps put in a comment to explain some of this though. The
-next poor sod trying to untangle this code is sure to have a question or
-two :-)
+Just to be clear, "promotion" is going from something like:
+
+	W=0->W=1
+or
+	NX=1->NX=0
+
+right?  I tend to call that "relaxing" permissions.
+
+Currently, X86_PF_WRITE faults are considered an access error unless the
+VMA to which the write occurred allows writes.  Returning "no access
+error" permits continuing and handling the copy-on-write.
+
+It sounds like you want to expand that.  You want to add a whole class
+of new faults that can be ignored: not just that some COW handling might
+be necessary, but that the PTE itself might be out of date.    Just like
+a "COW fault" may just result in setting the PTE.W=1 and moving on with
+our day, an instruction fault might now just end up with setting
+PTE.NX=0 and also moving on with our day.
+
+I'm really confused why the "error_code & X86_PF_WRITE" case is getting
+modified.  I would have expected it to be something like just adding:
+
+	/* read, instruction fetch */
+	if (error_code & X86_PF_INSN) {
+                /* Avoid enforcing access error if spurious: */
+                if (unlikely(!(vma->vm_flags & VM_EXEC)))
+                        return 1;
+                return 0;
+        }
+
+I'm really confused what X86_PF_WRITE and X86_PF_INSN have in common
+other than both being able to (now) be generated spuriously.
