@@ -2,683 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1077C43A64A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790C943A64E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhJYWFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S232845AbhJYWHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhJYWFY (ORCPT
+        with ESMTP id S229910AbhJYWG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:05:24 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B83C061745;
-        Mon, 25 Oct 2021 15:03:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 046B21F42D9E
-Received: by earth.universe (Postfix, from userid 1000)
-        id 0AD4A3C0CA8; Tue, 26 Oct 2021 00:02:56 +0200 (CEST)
-Date:   Tue, 26 Oct 2021 00:02:56 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] power: supply: max77976: add Maxim MAX77976 charger
- driver
-Message-ID: <20211025220256.tlsfosmuclbioj5m@earth.universe>
-References: <20211004130732.950512-1-luca@lucaceresoli.net>
- <20211004130732.950512-2-luca@lucaceresoli.net>
+        Mon, 25 Oct 2021 18:06:59 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3025FC061745;
+        Mon, 25 Oct 2021 15:04:37 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id v193so5592102pfc.4;
+        Mon, 25 Oct 2021 15:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/zO5xhn2/Z+kiwacnB4osflfdSzmNXjSex1D/P98VGU=;
+        b=Xh3k41dOMbxMuiMFRkKT1v3P6AUQjHYwWVULvwKZXLWBBzbd0F5I6q7PNaR4pwexYB
+         jxgojj0g2Cf5oytXbwKvh559C72FrF3EEI5yozwBraVDx00h6tPR4yxq7ym7qpcGAL59
+         xBZVw1/nVI1pkGlZjuTwuwOw84aTaMABVmZaMwBRkW00gpvFl3PVBqhnzNDut9vNtWIT
+         GI8sV8zjoyXHSheESp4KYG4B3gnKd3Z7fde12933GMv5Qcwik7goYz5wgKTsK7Qlp5/H
+         YcivUuL/V0D1Vy2IMO+rmptdMTFuIemOa8Tqb9lnrLrBs77Anvt9DDTSAaOkVnlx3xWk
+         aHvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/zO5xhn2/Z+kiwacnB4osflfdSzmNXjSex1D/P98VGU=;
+        b=m9WoWapgwROp9R2rBMpsctS6I9UeNn8ZmJeAGGimwuqhtCsp6GkdgVyeV1mL2CR5u0
+         ZJETEl764Tmss8I8KG2z4x0RF82DCOMyJQvmtgal6Ab4yE+XZcJs7EF7JkLSNnW1gy68
+         hGcfnStAKsRu9NJFqvAwzbVLv6voznvsdXYqLx4/YQvpuLk0sSxpijVn0zqzwI996Jkb
+         cYZwwiBm0QmF99ZYVYJtwccjpgEJ4R6SamwSKUT6EYwESNVYRTLlYS7g1rPi0H1vIpFd
+         2QBBCObUvQfipM034n+qqbW7U+ofTuuHtBmW84ASrNalHjw++FTMxfMGwnc6K14JWsQr
+         V4lA==
+X-Gm-Message-State: AOAM533G3XTAzVS2PWR6QkzDydy7fU3qJB8FgUnaS8WOfaOAIsLkrnfx
+        TIVgalH7NtgTRNykzIrnYC0ZGBuJeO4=
+X-Google-Smtp-Source: ABdhPJxl978yCxMCohsUqDoykPYlfMm5FNpKY+/hXzQx0jIy436CHBYwdxXghao8VJ7upqQlBUQx8g==
+X-Received: by 2002:a63:ab02:: with SMTP id p2mr15692560pgf.209.1635199476219;
+        Mon, 25 Oct 2021 15:04:36 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id 17sm18290535pgr.10.2021.10.25.15.04.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 15:04:35 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v5 4/6] PCI: brcmstb: Add control of subdevice voltage
+ regulators
+To:     Mark Brown <broonie@kernel.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211022140714.28767-1-jim2101024@gmail.com>
+ <20211022140714.28767-5-jim2101024@gmail.com>
+ <YXLLRLwMG7nEwQoi@sirena.org.uk>
+ <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
+ <YXMVSVpeC1Kqsg5x@sirena.org.uk>
+ <CA+-6iNxQAekCQTJKE5L7LO6QF+UC6xnyE=XVq_7z3=4hp8ASXQ@mail.gmail.com>
+ <YXbF+VxZKkiHEu9c@sirena.org.uk>
+Message-ID: <2eec973e-e9f0-1ef7-a090-734dab5db815@gmail.com>
+Date:   Mon, 25 Oct 2021 15:04:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6qxm5qhnwcys2rgz"
-Content-Disposition: inline
-In-Reply-To: <20211004130732.950512-2-luca@lucaceresoli.net>
+In-Reply-To: <YXbF+VxZKkiHEu9c@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/25/21 7:58 AM, Mark Brown wrote:
+> On Mon, Oct 25, 2021 at 09:50:09AM -0400, Jim Quinlan wrote:
+>> On Fri, Oct 22, 2021 at 3:47 PM Mark Brown <broonie@kernel.org> wrote:
+>>> On Fri, Oct 22, 2021 at 03:15:59PM -0400, Jim Quinlan wrote:
+> 
+>>> That sounds like it just shouldn't be a regulator at all, perhaps the
+>>> board happens to need a regulator there but perhaps it needs a clock,
+>>> GPIO or some specific sequence of actions.  It sounds like you need some
+>>> sort of quirking mechanism to cope with individual boards with board
+>>> specific bindings.
+> 
+>> The boards involved may have no PCIe sockets, or run the gamut of the different
+>> PCIe sockets.  They all offer gpio(s) to turn off/on their power supply(s) to
+>> make their PCIe device endpoint functional.  It is not viable to add
+>> new Linux quirk or DT
+>> code for each board.  First is the volume and variety of the boards
+>> that use our SOCs.. Second, is
+>> our lack of information/control:  often, the board is designed by one
+>> company (not us), and
+>> given to another company as the middleman, and then they want the
+>> features outlined
+>> in my aforementioned commit message.
+> 
+> Other vendors have plenty of variation in board design yet we still have
+> device trees that describe the hardware, I can't see why these systems
+> should be so different.  It is entirely normal for system integrators to
+> collaborate on this and even upstream their own code, this happens all
+> the time, there is no need for everything to be implemented directly the
+> SoC vendor.
 
---6qxm5qhnwcys2rgz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is all well and good and there is no disagreement here that it
+should just be that way but it does not reflect what Jim and I are
+confronted with on a daily basis. We work in a tightly controlled
+environment using a waterfall approach, whatever we come up with as a
+SoC vendor gets used usually without further modification by the OEMs,
+when OEMs do change things we have no visibility into anyway.
 
-Hi,
+We have a boot loader that goes into great lengths to tailor the FDT
+blob passed to the kernel to account for board-specific variations, PCIe
+voltage regulators being just one of those variations. This is usually
+how we quirk and deal with any board specific details, so I fail to
+understand what you mean by "quirks that match a common pattern".
 
-On Mon, Oct 04, 2021 at 03:07:32PM +0200, Luca Ceresoli wrote:
-> Add support for the MAX77976 3.5/5.5A 1-Cell Li+ Battery Charger.
->=20
-> This is a simple implementation enough to be used as a simple battery
-> charger without OTG and boost.
->=20
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> ---
->  MAINTAINERS                             |   1 +
->  drivers/power/supply/Kconfig            |  11 +
->  drivers/power/supply/Makefile           |   1 +
->  drivers/power/supply/max77976_charger.c | 508 ++++++++++++++++++++++++
->  4 files changed, 521 insertions(+)
->  create mode 100644 drivers/power/supply/max77976_charger.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b3a3667cef46..064c0560b810 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11392,6 +11392,7 @@ MAXIM MAX77976 BATTERY CHARGER
->  M:	Luca Ceresoli <luca@lucaceresoli.net>
->  S:	Supported
->  F:	Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml
-> +F:	drivers/power/supply/max77976_charger.c
-> =20
->  MAXIM MUIC CHARGER DRIVERS FOR EXYNOS BASED BOARDS
->  M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-> index ad93b3550d6d..622d690c883a 100644
-> --- a/drivers/power/supply/Kconfig
-> +++ b/drivers/power/supply/Kconfig
-> @@ -557,6 +557,17 @@ config CHARGER_MAX77693
->  	help
->  	  Say Y to enable support for the Maxim MAX77693 battery charger.
-> =20
-> +config CHARGER_MAX77976
-> +	tristate "Maxim MAX77976 battery charger driver"
-> +	depends on REGMAP_I2C
+Also, I don't believe other vendors are quite as concerned with
+conserving power as we are, it could be that they are just better at it
+through different ways, or we have a particular sensitivity to the subject.
 
-needs to be selected as pointed out by Randy.
+> 
+> If there are generic quirks that match a common pattern seen in a lot of
+> board then properties can be defined for those, this is in fact the
+> common case.  This is no reason to just shove in some random thing that
+> doesn't describe the hardware, that's a great way to end up stuck with
+> an ABI that is fragile and difficult to understand or improve.
 
-> +	help
-> +	  The Maxim MAX77976 is a 19 Vin, 5.5A 1-Cell Li+ Battery Charger
-> +	  USB OTG support. It has an I2C interface for configuration.
-> +
-> +	  Say Y to enable support for the Maxim MAX77976 battery charger.
-> +	  This driver can also be built as a module. If so, the module will be
-> +	  called max77976_charger.
-> +
->  config CHARGER_MAX8997
->  	tristate "Maxim MAX8997/MAX8966 PMIC battery charger driver"
->  	depends on MFD_MAX8997 && REGULATOR_MAX8997
-> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-> index 4e55a11aab79..2c1b264b2046 100644
-> --- a/drivers/power/supply/Makefile
-> +++ b/drivers/power/supply/Makefile
-> @@ -75,6 +75,7 @@ obj-$(CONFIG_CHARGER_MAX14577)	+=3D max14577_charger.o
->  obj-$(CONFIG_CHARGER_DETECTOR_MAX14656)	+=3D max14656_charger_detector.o
->  obj-$(CONFIG_CHARGER_MAX77650)	+=3D max77650-charger.o
->  obj-$(CONFIG_CHARGER_MAX77693)	+=3D max77693_charger.o
-> +obj-$(CONFIG_CHARGER_MAX77976)	+=3D max77976_charger.o
->  obj-$(CONFIG_CHARGER_MAX8997)	+=3D max8997_charger.o
->  obj-$(CONFIG_CHARGER_MAX8998)	+=3D max8998_charger.o
->  obj-$(CONFIG_CHARGER_MP2629)	+=3D mp2629_charger.o
-> diff --git a/drivers/power/supply/max77976_charger.c b/drivers/power/supp=
-ly/max77976_charger.c
-> new file mode 100644
-> index 000000000000..2ff900b1843a
-> --- /dev/null
-> +++ b/drivers/power/supply/max77976_charger.c
-> @@ -0,0 +1,508 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * max77976_charger.c - Driver for the Maxim MAX77976 battery charger
-> + *
-> + * Copyright (C) 2021 Luca Ceresoli
-> + * Author: Luca Ceresoli <luca@lucaceresoli.net>
-> + */
-> +
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/power_supply.h>
-> +#include <linux/regmap.h>
-> +
-> +#define MAX77976_DRIVER_NAME	"max77976-charger"
-> +#define MAX77976_CHIP_ID	0x76
-> +
-> +static const char *max77976_manufacturer	=3D "Maxim Integrated";
-> +static const char *max77976_model		=3D "MAX77976";
-> +
-> +/* ---------------------------------------------------------------------=
------
-> + * Register map
-> + */
-> +
-> +#define MAX77976_REG_CHIP_ID		0x00
-> +#define MAX77976_REG_CHIP_REVISION	0x01
-> +#define MAX77976_REG_CHG_INT_OK		0x12
-> +#define MAX77976_REG_CHG_DETAILS_01	0x14
-> +#define MAX77976_REG_CHG_CNFG_00	0x16
-> +#define MAX77976_REG_CHG_CNFG_02	0x18
-> +#define MAX77976_REG_CHG_CNFG_06	0x1c
-> +#define MAX77976_REG_CHG_CNFG_09	0x1f
-> +
-> +/* CHG_DETAILS_01.CHG_DTLS values */
-> +enum max77976_charging_state {
-> +	MAX77976_CHARGING_PREQUALIFICATION =3D 0x0,
-> +	MAX77976_CHARGING_FAST_CONST_CURRENT,
-> +	MAX77976_CHARGING_FAST_CONST_VOLTAGE,
-> +	MAX77976_CHARGING_TOP_OFF,
-> +	MAX77976_CHARGING_DONE,
-> +	MAX77976_CHARGING_RESERVED_05,
-> +	MAX77976_CHARGING_TIMER_FAULT,
-> +	MAX77976_CHARGING_SUSPENDED_QBATT_OFF,
-> +	MAX77976_CHARGING_OFF,
-> +	MAX77976_CHARGING_RESERVED_09,
-> +	MAX77976_CHARGING_THERMAL_SHUTDOWN,
-> +	MAX77976_CHARGING_WATCHDOG_EXPIRED,
-> +	MAX77976_CHARGING_SUSPENDED_JEITA,
-> +	MAX77976_CHARGING_SUSPENDED_THM_REMOVAL,
-> +	MAX77976_CHARGING_SUSPENDED_PIN,
-> +	MAX77976_CHARGING_RESERVED_0F,
-> +};
-> +
-> +/* CHG_DETAILS_01.BAT_DTLS values */
-> +enum max77976_battery_state {
-> +	MAX77976_BATTERY_BATTERY_REMOVAL =3D 0x0,
-> +	MAX77976_BATTERY_PREQUALIFICATION,
-> +	MAX77976_BATTERY_TIMER_FAULT,
-> +	MAX77976_BATTERY_REGULAR_VOLTAGE,
-> +	MAX77976_BATTERY_LOW_VOLTAGE,
-> +	MAX77976_BATTERY_OVERVOLTAGE,
-> +	MAX77976_BATTERY_RESERVED,
-> +	MAX77976_BATTERY_BATTERY_ONLY, // No valid adapter is present
-> +};
-> +
-> +/* CHG_CNFG_00.MODE values */
-> +enum max77976_mode {
-> +	MAX77976_MODE_CHARGER_BUCK		=3D 0x5,
-> +	MAX77976_MODE_BOOST			=3D 0x9,
-> +};
-> +
-> +/* CHG_CNFG_02.CHG_CC: charge current limit, 100..5500 mA, 50 mA steps */
-> +#define MAX77976_CHG_CC_STEP			  50000U
-> +#define MAX77976_CHG_CC_MIN			 100000U
-> +#define MAX77976_CHG_CC_MAX			5500000U
-> +
-> +/* CHG_CNFG_09.CHGIN_ILIM: input current limit, 100..3200 mA, 100 mA ste=
-ps */
-> +#define MAX77976_CHGIN_ILIM_STEP		 100000U
-> +#define MAX77976_CHGIN_ILIM_MIN			 100000U
-> +#define MAX77976_CHGIN_ILIM_MAX			3200000U
-> +
-> +enum max77976_field_idx {
-> +	VERSION, REVISION,                      /* CHIP_REVISION */
-> +	CHGIN_OK,                               /* CHG_INT_OK */
-> +	BAT_DTLS, CHG_DTLS,                     /* CHG_DETAILS_01 */
-> +	MODE,                                   /* CHG_CNFG_00 */
-> +	CHG_CC,                                 /* CHG_CNFG_02 */
-> +	CHGPROT,                                /* CHG_CNFG_06 */
-> +	CHGIN_ILIM,                             /* CHG_CNFG_09 */
-> +	MAX77976_N_REGMAP_FIELDS
-> +};
-> +
-> +static const struct reg_field max77976_reg_field[MAX77976_N_REGMAP_FIELD=
-S] =3D {
-> +	[VERSION]        =3D REG_FIELD(MAX77976_REG_CHIP_REVISION,   4, 7),
-> +	[REVISION]       =3D REG_FIELD(MAX77976_REG_CHIP_REVISION,   0, 3),
-> +	[CHGIN_OK]       =3D REG_FIELD(MAX77976_REG_CHG_INT_OK,      6, 6),
-> +	[CHG_DTLS]       =3D REG_FIELD(MAX77976_REG_CHG_DETAILS_01,  0, 3),
-> +	[BAT_DTLS]       =3D REG_FIELD(MAX77976_REG_CHG_DETAILS_01,  4, 6),
-> +	[MODE]           =3D REG_FIELD(MAX77976_REG_CHG_CNFG_00,     0, 3),
-> +	[CHG_CC]         =3D REG_FIELD(MAX77976_REG_CHG_CNFG_02,     0, 6),
-> +	[CHGPROT]        =3D REG_FIELD(MAX77976_REG_CHG_CNFG_06,     2, 3),
-> +	[CHGIN_ILIM]     =3D REG_FIELD(MAX77976_REG_CHG_CNFG_09,     0, 5),
-> +};
-> +
-> +static const struct regmap_config max77976_regmap_config =3D {
-> +	.reg_bits =3D 8,
-> +	.val_bits =3D 8,
-> +	.max_register =3D 0x24,
-> +};
-> +
-> +/* ---------------------------------------------------------------------=
------
-> + * Data structures
-> + */
-> +
-> +struct max77976 {
-> +	struct i2c_client	*client;
-> +	struct regmap		*regmap;
-> +	struct regmap_field	*rfield[MAX77976_N_REGMAP_FIELDS];
-> +};
-> +
-> +/* ---------------------------------------------------------------------=
------
-> + * power_supply properties
-> + */
-> +
-> +static int max77976_get_status(struct max77976 *chg, int *val)
-> +{
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err =3D regmap_field_read(chg->rfield[CHG_DTLS], &regval);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	switch (regval) {
-> +	case MAX77976_CHARGING_PREQUALIFICATION:
-> +	case MAX77976_CHARGING_FAST_CONST_CURRENT:
-> +	case MAX77976_CHARGING_FAST_CONST_VOLTAGE:
-> +	case MAX77976_CHARGING_TOP_OFF:
-> +		*val =3D POWER_SUPPLY_STATUS_CHARGING;
-> +		break;
-> +	case MAX77976_CHARGING_DONE:
-> +		*val =3D POWER_SUPPLY_STATUS_FULL;
-> +		break;
-> +	case MAX77976_CHARGING_TIMER_FAULT:
-> +	case MAX77976_CHARGING_SUSPENDED_QBATT_OFF:
-> +	case MAX77976_CHARGING_SUSPENDED_JEITA:
-> +	case MAX77976_CHARGING_SUSPENDED_THM_REMOVAL:
-> +	case MAX77976_CHARGING_SUSPENDED_PIN:
-> +		*val =3D POWER_SUPPLY_STATUS_NOT_CHARGING;
-> +		break;
-> +	case MAX77976_CHARGING_OFF:
-> +	case MAX77976_CHARGING_THERMAL_SHUTDOWN:
-> +	case MAX77976_CHARGING_WATCHDOG_EXPIRED:
-> +		*val =3D POWER_SUPPLY_STATUS_DISCHARGING;
-> +		break;
-> +	default:
-> +		*val =3D POWER_SUPPLY_STATUS_UNKNOWN;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int max77976_get_charge_type(struct max77976 *chg, int *val)
-> +{
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err =3D regmap_field_read(chg->rfield[CHG_DTLS], &regval);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	switch (regval) {
-> +	case MAX77976_CHARGING_PREQUALIFICATION:
-> +		*val =3D POWER_SUPPLY_CHARGE_TYPE_TRICKLE;
-> +		break;
-> +	case MAX77976_CHARGING_FAST_CONST_CURRENT:
-> +	case MAX77976_CHARGING_FAST_CONST_VOLTAGE:
-> +		*val =3D POWER_SUPPLY_CHARGE_TYPE_FAST;
-> +		break;
-> +	case MAX77976_CHARGING_TOP_OFF:
-> +		*val =3D POWER_SUPPLY_CHARGE_TYPE_STANDARD;
-> +		break;
-> +	case MAX77976_CHARGING_DONE:
-> +	case MAX77976_CHARGING_TIMER_FAULT:
-> +	case MAX77976_CHARGING_SUSPENDED_QBATT_OFF:
-> +	case MAX77976_CHARGING_OFF:
-> +	case MAX77976_CHARGING_THERMAL_SHUTDOWN:
-> +	case MAX77976_CHARGING_WATCHDOG_EXPIRED:
-> +	case MAX77976_CHARGING_SUSPENDED_JEITA:
-> +	case MAX77976_CHARGING_SUSPENDED_THM_REMOVAL:
-> +	case MAX77976_CHARGING_SUSPENDED_PIN:
-> +		*val =3D POWER_SUPPLY_CHARGE_TYPE_NONE;
-> +		break;
-> +	default:
-> +		*val =3D POWER_SUPPLY_CHARGE_TYPE_UNKNOWN;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int max77976_get_health(struct max77976 *chg, int *val)
-> +{
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err =3D regmap_field_read(chg->rfield[BAT_DTLS], &regval);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	switch (regval) {
-> +	case MAX77976_BATTERY_BATTERY_REMOVAL:
-> +		*val =3D POWER_SUPPLY_HEALTH_DEAD;
-> +		break;
+I would argue that at least 2 out of the 4 supplies proposed do describe
+hardware signals. The latter two are more abstract to say the least,
+however I believe it is done that way because they are composite
+supplies controlling both the 12V and 3.3V supplies coming into a PCIe
+device (Jim is that right?). So how do we call the latter supply then?
+vpcie12v3v...-supply?
 
-I suppose the charger is still able to power the system when
-there is no battery, so it's not dead. I think this should
-either report POWER_SUPPLY_HEALTH_GOOD or introduce a new
-POWER_SUPPLY_HEALTH_NO_BATTERY.
+> Potentially some of these things should be being handled in the bindings
+> and drivers drivers for the relevant PCI devices rather than in the PCI
+> controller.
 
-> +	case MAX77976_BATTERY_PREQUALIFICATION:
-> +	case MAX77976_BATTERY_LOW_VOLTAGE:
+The description and device tree binding can be and should be in a PCI
+device binding rather than pci-bus.yaml.
 
-Not sure what prequalification is, but at least low voltage seems
-like a candidate to either introduce a new health property, or
-report an unspecified failure instead of HEALTH_GOOD.
+The handling however goes back to the chicken and egg situation that we
+talked about multiple times before: no supply -> no link UP -> no
+enumeration -> no PCI device, therefore no driver can have a chance to
+control the regulator. These are not hotplug capable systems by the way,
+but even if they were, we would still run into the same problem. Given
+that most reference boards do have mechanical connectors that people can
+plug random devices into, we cannot provide a compatible string
+containing the PCI vendor/device ID ahead of time because we don't know
+what will be plugged in. In the case of a MCM, we would, but then we
+only solved about 15% of the boards we need to support, so we have not
+really progressed much.
 
-> +	case MAX77976_BATTERY_REGULAR_VOLTAGE:
-> +		*val =3D POWER_SUPPLY_HEALTH_GOOD;
-> +		break;
-> +	case MAX77976_BATTERY_TIMER_FAULT:
-> +		*val =3D POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE;
-> +		break;
-> +	case MAX77976_BATTERY_OVERVOLTAGE:
-> +		*val =3D POWER_SUPPLY_HEALTH_OVERVOLTAGE;
-> +		break;
-> +	case MAX77976_BATTERY_BATTERY_ONLY:
-> +		*val =3D POWER_SUPPLY_HEALTH_UNKNOWN;
-> +		break;
-> +	default:
-> +		*val =3D POWER_SUPPLY_HEALTH_UNKNOWN;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int max77976_get_online(struct max77976 *chg, int *val)
-> +{
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err =3D regmap_field_read(chg->rfield[CHGIN_OK], &regval);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	*val =3D (regval ? 1 : 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int max77976_get_integer(struct max77976 *chg, enum max77976_fiel=
-d_idx fidx,
-> +				unsigned int clamp_min, unsigned int clamp_max,
-> +				unsigned int mult, int *val)
-> +{
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err =3D regmap_field_read(chg->rfield[fidx], &regval);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	*val =3D clamp_val(regval * mult, clamp_min, clamp_max);
-> +
-> +	return 0;
-> +}
-> +
-> +static int max77976_set_integer(struct max77976 *chg, enum max77976_fiel=
-d_idx fidx,
-> +				unsigned int clamp_min, unsigned int clamp_max,
-> +				unsigned int div, int val)
-> +{
-> +	unsigned int regval;
-> +
-> +	regval =3D clamp_val(val, clamp_min, clamp_max) / div;
-> +
-> +	return regmap_field_write(chg->rfield[fidx], regval);
-> +}
-> +
-> +static int max77976_get_property(struct power_supply *psy,
-> +				 enum power_supply_property psp,
-> +				 union power_supply_propval *val)
-> +{
-> +	struct max77976 *chg =3D power_supply_get_drvdata(psy);
-> +	int err =3D 0;
-> +
-> +	switch (psp) {
-> +	case POWER_SUPPLY_PROP_STATUS:
-> +		err =3D max77976_get_status(chg, &val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_CHARGE_TYPE:
-> +		err =3D max77976_get_charge_type(chg, &val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_HEALTH:
-> +		err =3D max77976_get_health(chg, &val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_ONLINE:
-> +		err =3D max77976_get_online(chg, &val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX:
-> +		val->intval =3D MAX77976_CHG_CC_MAX;
-> +		break;
-> +	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT:
-> +		err =3D max77976_get_integer(chg, CHG_CC,
-> +					   MAX77976_CHG_CC_MIN,
-> +					   MAX77976_CHG_CC_MAX,
-> +					   MAX77976_CHG_CC_STEP,
-> +					   &val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-> +		err =3D max77976_get_integer(chg, CHGIN_ILIM,
-> +					   MAX77976_CHGIN_ILIM_MIN,
-> +					   MAX77976_CHGIN_ILIM_MAX,
-> +					   MAX77976_CHGIN_ILIM_STEP,
-> +					   &val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_MODEL_NAME:
-> +		val->strval =3D max77976_model;
-> +		break;
-> +	case POWER_SUPPLY_PROP_MANUFACTURER:
-> +		val->strval =3D max77976_manufacturer;
-> +		break;
-> +	default:
-> +		err =3D -EINVAL;
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int max77976_set_property(struct power_supply *psy,
-> +				 enum power_supply_property psp,
-> +				 const union power_supply_propval *val)
-> +{
-> +	struct max77976 *chg =3D power_supply_get_drvdata(psy);
-> +	int err =3D 0;
-> +
-> +	switch (psp) {
-> +	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT:
-> +		err =3D max77976_set_integer(chg, CHG_CC,
-> +					   MAX77976_CHG_CC_MIN,
-> +					   MAX77976_CHG_CC_MAX,
-> +					   MAX77976_CHG_CC_STEP,
-> +					   val->intval);
-> +		break;
-> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-> +		err =3D max77976_set_integer(chg, CHGIN_ILIM,
-> +					   MAX77976_CHGIN_ILIM_MIN,
-> +					   MAX77976_CHGIN_ILIM_MAX,
-> +					   MAX77976_CHGIN_ILIM_STEP,
-> +					   val->intval);
-> +		break;
-> +	default:
-> +		err =3D -EINVAL;
-> +	}
-> +
-> +	return err;
-> +};
-> +
-> +static int max77976_property_is_writeable(struct power_supply *psy,
-> +					  enum power_supply_property psp)
-> +{
-> +	switch (psp) {
-> +	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT:
-> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
-> +static enum power_supply_property max77976_psy_props[] =3D {
-> +	POWER_SUPPLY_PROP_STATUS,
-> +	POWER_SUPPLY_PROP_CHARGE_TYPE,
-> +	POWER_SUPPLY_PROP_HEALTH,
-> +	POWER_SUPPLY_PROP_ONLINE,
-> +	POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT,
-> +	POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX,
-> +	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
-> +	POWER_SUPPLY_PROP_MODEL_NAME,
-> +	POWER_SUPPLY_PROP_MANUFACTURER,
-> +};
-> +
-> +static const struct power_supply_desc max77976_psy_desc =3D {
-> +	.name			=3D MAX77976_DRIVER_NAME,
-> +	.type			=3D POWER_SUPPLY_TYPE_BATTERY,
+> 
+>>> I'd suggest as a first pass omitting this and then looking at some
+>>> actual systems later when working out how to support them, no sense in
+>>> getting the main thing held up by difficult edge cases.
+> 
+>> These are not edge cases -- some of these are major customers.
+> 
+> I'm trying to help you progress the driver by decoupling things which
+> are causing difficulty from the simple parts so that we don't need to
+> keep looking at the simple bits over and over again.  If these systems
+> are very common or familiar then it should be fairly easy to describe
+> the common patterns in what they're doing.
 
-Incorrect type. TYPE_BATTERY is for fuel gauges. Looks like max77976
-is supposed to be used with USB, so:
+We are appreciative of your feedback, and Rob's, and everyone else
+looking at the patches really.
 
-=2Etype =3D POWER_SUPPLY_TYPE_USB,
+> 
+> In any case whatever gets done needs to be documented in the bindings
+> documents.
 
-> +	.properties		=3D max77976_psy_props,
-> +	.num_properties		=3D ARRAY_SIZE(max77976_psy_props),
-> +	.get_property		=3D max77976_get_property,
-> +	.set_property		=3D max77976_set_property,
-> +	.property_is_writeable	=3D max77976_property_is_writeable,
-> +};
-> +
-> +/* ---------------------------------------------------------------------=
------
-> + * Entry point
-> + */
-> +
-> +static int max77976_detect(struct max77976 *chg)
-> +{
-> +	struct device *dev =3D &chg->client->dev;
-> +	unsigned int id, ver, rev;
-> +	int err;
-> +
-> +	err =3D regmap_read(chg->regmap, MAX77976_REG_CHIP_ID, &id);
-> +	if (err)
-> +		return dev_err_probe(dev, err, "cannot read chip ID\n");
-> +
-> +	if (id !=3D MAX77976_CHIP_ID)
-> +		return dev_err_probe(dev, -ENXIO, "unknown model ID 0x%02x\n", id);
-> +
-> +	err =3D regmap_field_read(chg->rfield[VERSION], &ver);
-> +	if (!err)
-> +		err =3D regmap_field_read(chg->rfield[REVISION], &rev);
-> +	if (err)
-> +		return dev_err_probe(dev, -ENXIO, "cannot read version/revision\n");
-> +
-> +	dev_info(dev, "detected model MAX779%02x ver %u rev %u", id, ver, rev);
-> +
-> +	return 0;
-> +}
-
-missing newline
-
-> +static int max77976_configure(struct max77976 *chg)
-> +{
-> +	struct device *dev =3D &chg->client->dev;
-> +	int err;
-> +
-> +	/* Magic value to unlock writing to some registers */
-> +	err =3D regmap_field_write(chg->rfield[CHGPROT], 0x3);
-> +	if (err)
-> +		goto err;
-> +
-> +	/*
-> +	 * Mode 5 =3D Charger ON, OTG OFF, buck ON, boost OFF.
-> +	 * Other modes are not implemented by this driver.
-> +	 */
-> +	err =3D regmap_field_write(chg->rfield[MODE], MAX77976_MODE_CHARGER_BUC=
-K);
-> +	if (err)
-> +		goto err;
-> +
-> +	return 0;
-> +
-> +err:
-> +	return dev_err_probe(dev, err, "error while configuring");
-> +}
-> +
-> +static int max77976_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev =3D &client->dev;
-> +	struct power_supply_config psy_cfg =3D {};
-> +	struct power_supply *psy;
-> +	struct max77976 *chg;
-> +	int err;
-> +	int i;
-> +
-> +	chg =3D devm_kzalloc(dev, sizeof(*chg), GFP_KERNEL);
-> +	if (!chg)
-> +		return -ENOMEM;
-> +
-> +	i2c_set_clientdata(client, chg);
-> +	psy_cfg.drv_data =3D chg;
-> +	chg->client =3D client;
-> +
-> +	chg->regmap =3D devm_regmap_init_i2c(client, &max77976_regmap_config);
-> +	if (IS_ERR(chg->regmap))
-> +		return dev_err_probe(dev, PTR_ERR(chg->regmap),
-> +				     "cannot allocate regmap\n");
-> +
-> +	for (i =3D 0; i < MAX77976_N_REGMAP_FIELDS; i++) {
-> +		chg->rfield[i] =3D devm_regmap_field_alloc(dev, chg->regmap,
-> +							 max77976_reg_field[i]);
-> +		if (IS_ERR(chg->rfield[i]))
-> +			return dev_err_probe(dev, PTR_ERR(chg->rfield[i]),
-> +					     "cannot allocate regmap field\n");
-> +	}
-> +
-> +	err =3D max77976_detect(chg);
-> +	if (err)
-> +		return err;
-> +
-> +	err =3D max77976_configure(chg);
-> +	if (err)
-> +		return err;
-> +
-> +	psy =3D devm_power_supply_register_no_ws(dev, &max77976_psy_desc, &psy_=
-cfg);
-> +	if (IS_ERR(psy))
-> +		return dev_err_probe(dev, PTR_ERR(psy), "cannot register\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id max77976_i2c_id[] =3D {
-> +	{ MAX77976_DRIVER_NAME, 0 },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(i2c, max77976_i2c_id);
-> +
-> +static const struct of_device_id max77976_of_id[] =3D {
-> +	{ .compatible =3D "maxim,max77976" },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, max77976_of_id);
-> +
-> +static struct i2c_driver max77976_driver =3D {
-> +	.driver =3D {
-> +		.name		=3D MAX77976_DRIVER_NAME,
-> +		.of_match_table	=3D of_match_ptr(max77976_of_id),
-> +	},
-> +	.probe_new	=3D max77976_probe,
-> +	.id_table	=3D max77976_i2c_id,
-> +};
-> +module_i2c_driver(max77976_driver);
-> +
-> +MODULE_AUTHOR("Luca Ceresoli <luca@lucaceresoli.net>");
-> +MODULE_DESCRIPTION("Maxim MAX77976 charger driver");
-> +MODULE_LICENSE("GPL v2");
-
-Otherwise looks good!
-
--- Sebastian
-
---6qxm5qhnwcys2rgz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmF3KYwACgkQ2O7X88g7
-+ppHDRAAjotGBSsiU3ozQaWo+3D3JBopkaimqFVLqGWichMd/+0Sffaa7bwuN85i
-GhrzjnEORGbmiReP/K/y19g0CuqzVWppLVBcuEhLC48VoSm8K8NbxFcHyf3SvhK9
-ZTwNNujONMWd6msXBqRnGrAjbCB6NskpX6I9qfzzLh7aYIMZeIPyVEXLE4kcZnJr
-687VlbOPth4IHRdPLX/X4eraPBZPWokYqQ1Za/pDMvNzDI/mbmfq4KjwZKkdI/PI
-at3BX5lK1CkF2sHh/QnY/uJMfNILSFVqThpDMKqvTGg5ujc0rnZ8PuZKiRKZfSQ5
-BweuRQw7FTsFR2/qytGJg7GV6XmiMzQBJ0xHDVVvgSMTYcGHA4V+w3y0jB6kvkWC
-uuG4vTwoE4Sld6z8yVOtSt7F/sKgsKDUdrZGM78952q2gKOsGjzvR9ESk12iDcOq
-2vDFMDt9I4XJOSFr82pR6cN2rXa2wJkvleEqJIq2BT0RApYDlKyTP79kKDbZniK0
-sRazg6XHFKOJPAsgpVfQty5Vgheuy5w+tsOiLLzgjoSYtE/abPBYTOJWKBnokbEX
-JbGoLabbEJRUHHC3cASYPh5JggOkOJypliJZM14MJEv6pSJkmAVSuWXY0S0g2Ne4
-dcuQuDCxyv51u0mfvyX8zfU2y+oUgRjqacZIkexZtxPqaJVp0P8=
-=h7tG
------END PGP SIGNATURE-----
-
---6qxm5qhnwcys2rgz--
+Is not that what patch #1 does?
+-- 
+Florian
