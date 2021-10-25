@@ -2,95 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08E3438D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77E2438D5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbhJYB43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 21:56:29 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26189 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhJYB41 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 21:56:27 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HcydP53Rfz8tt5;
-        Mon, 25 Oct 2021 09:52:41 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by dggeme755-chm.china.huawei.com
- (10.3.19.101) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 25
- Oct 2021 09:54:00 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <hjc@rock-chips.com>, <heiko@sntech.de>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <seanpaul@chromium.org>,
-        <gustavo.padovan@collabora.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm: Fix wrong use of connector in vop_get_edp_connector
-Date:   Sun, 24 Oct 2021 21:55:50 -0400
-Message-ID: <20211025015550.66500-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S230129AbhJYCIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 22:08:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhJYCIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 22:08:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D47A86058D;
+        Mon, 25 Oct 2021 02:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635127590;
+        bh=YLvtyghFWkryQ5bHJawA9T7NAt/Pcu5HeIsDk4wyB00=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ow57WrD+ZE5mZdy1r5H9GtjytVl2NgLJG9HxlOBc5hZvTw6o4lEv40Wu+GmoDB/S/
+         sJ2MqncWkpNb95K1XrpoF8DgXAUco8Zt2JNUMLUFKJRmPIB4t0obZH3TG7a9nQRE9f
+         xnwU7VqBhKkBoGZkIOAukGGqV88/XRgyOhyDMhdwy1ZcwIZYWTsfRixeetgzr3moZm
+         ZqTkV34simYtGto9DAPgF3SeP4cVuQQ/Ik3Q3ZTW2R3tWyLFjSCAhc27w2yZ+Y+n0T
+         YNlGu9VFI1YuIErDn/N5nSHTFpZyCaJNdHP1ijJArkl5rL42zxWxCOpvMQ+PJggePi
+         SMtNq4aoDzSnw==
+Date:   Sun, 24 Oct 2021 21:11:19 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kspp-gustavo tree
+Message-ID: <20211025021119.GA1424114@embeddedor>
+References: <20211018181559.5d3bcf7e@canb.auug.org.au>
+ <20211025125446.51bed661@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.47]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025125446.51bed661@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the comments of drm_for_each_connector_iter(), we know
-that "connector is only valid within the list body, if you
-want to use connector after calling drm_connector_list_iter_end()
-then you need to grab your own reference first using
-drm_connector_get()". So fix the wrong use of connector
-according to the comments and then call drm_connector_put()
-after using connector finishes.
+On Mon, Oct 25, 2021 at 12:54:46PM +1100, Stephen Rothwell wrote:
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -45,6 +45,7 @@ struct ftrace_ops;
+> >  void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip);
+> >  #else
+> >  # define FTRACE_FORCE_LIST_FUNC 0
+> > +struct ftrace_regs;
+> >  void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
+> >  			       struct ftrace_ops *op, struct ftrace_regs *fregs);
+> >  #endif
+> > -- 
+> > 2.33.0
+> 
+> I am still applying this fix ...
 
-Signed-off-by: He Ying <heying24@huawei.com>
-Fixes: 2cbeb64f6c70 ("drm/rockchip: use drm_for_each_connector_iter()")
----
- drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+I will add this fix to the original patch for my tomorrow's -next tree.
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-index a25b98b7f5bd..469922ad29fa 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-@@ -1581,19 +1581,19 @@ static void vop_crtc_reset(struct drm_crtc *crtc)
- #ifdef CONFIG_DRM_ANALOGIX_DP
- static struct drm_connector *vop_get_edp_connector(struct vop *vop)
- {
--	struct drm_connector *connector;
-+	struct drm_connector *connector = NULL;
- 	struct drm_connector_list_iter conn_iter;
- 
- 	drm_connector_list_iter_begin(vop->drm_dev, &conn_iter);
- 	drm_for_each_connector_iter(connector, &conn_iter) {
- 		if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
--			drm_connector_list_iter_end(&conn_iter);
--			return connector;
-+			drm_connector_get(connector);
-+			break;
- 		}
- 	}
- 	drm_connector_list_iter_end(&conn_iter);
- 
--	return NULL;
-+	return connector;
- }
- 
- static int vop_crtc_set_crc_source(struct drm_crtc *crtc,
-@@ -1614,6 +1614,7 @@ static int vop_crtc_set_crc_source(struct drm_crtc *crtc,
- 	else
- 		ret = -EINVAL;
- 
-+	drm_connector_put(connector);
- 	return ret;
- }
- 
--- 
-2.17.1
+Thanks, Stephen.
+--
+Gustavo
 
