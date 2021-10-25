@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47CD4391C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2E44391C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhJYIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
+        id S232362AbhJYIxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232374AbhJYIxi (ORCPT
+        with ESMTP id S232160AbhJYIxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:53:38 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE47C061764;
-        Mon, 25 Oct 2021 01:51:16 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id m21so10218331pgu.13;
-        Mon, 25 Oct 2021 01:51:16 -0700 (PDT)
+        Mon, 25 Oct 2021 04:53:36 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940CCC061745;
+        Mon, 25 Oct 2021 01:51:14 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 83so4009361pgc.8;
+        Mon, 25 Oct 2021 01:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dPsWpmmt02MG+1s9uq2nw2TFlAnrdyGcJip4pFTiTbA=;
-        b=gOQItMuVS6x3uVc0DHUXF9CPlM/PeiB+QgNfwefytQCzbvCEZjYiy+6goXqgL5p8uQ
-         fnTzapBuSy0xq2ylpv7FfQlkyeHcrTus5nApj+UH60Xbhifu3tvCAKhOU9+0VOiikeon
-         A6wCGnqbUg6MpMOEr7Q9bN3B17lDvRWd3QPS94WSePrQQATXWmkjm/8QnnMIwgWw5wcO
-         L4yPfyMYQdSW3GHqcq/CusaqYZ7VpBzQogNMg+js9YdhcSlvbzRQkQbTG38zFqcYTkVz
-         LsJkNgmi8WRyPmPbpMk7jfsNvIMrYM7qXqi53Y+zPw2/tNHhKn4YMCaqBsiLoO1OnBbF
-         pUBw==
+        bh=Nv98mPif22qA+oqqbcCmi2QFJkv72OA0pxbhj9BmcG8=;
+        b=mhuFylsTXHZgzx4e4a0JGhhb46FxbJlPpYZxio+kJKr4fMVWONWAQpDgOpD54m6c2Q
+         +6rVhsxlxScfk6ZAJl393CVGgs3Kmrg2HP460ULEnWxWkzJLPtHlP+Xgd/g1R57Tpqfj
+         zyUipa4oA/VusO0cohQO1j4Wwj6wGJndUPxhMXrXehdg6lJjSPEsCcpBj0wdUTO7glCa
+         LpZcSVenktUbTZeVO/f/t4OO5wDbgpbSvdFqwNzuzJISMmPQU7H3Z3hzLauDMFoHkqKy
+         AI7mrPcyXaqdS4OmrS30Q0SInT7O3aF8l4DogbbogUui2yZUhoja8Gz8F+Q0AE+Y7rYx
+         eFoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=dPsWpmmt02MG+1s9uq2nw2TFlAnrdyGcJip4pFTiTbA=;
-        b=O9pn2TbmatuAvSEpAqketfGsUrZbg3JudbIC5ONoPoETxFo5deXciIauCzhwMhhxd0
-         AVcleGR3qd/ti7nvLLuK2tBXFIkJAotjYu+OpJSRN0RJh2NO0I9iDISOPTYL4bq8Mm4j
-         LNbiLs4f7r2a96cF7clbuMLyS3cxpxyJrJOUtqeBPs4VXKOFNcddUF10WVcVsCTzI+p0
-         uVFFhKDWZqm3fnBfSyN3mBztUbSfEV9vl3ONHIrqc+6h+Jcf5mwOs18+GDA1GSS9aIDd
-         ME3o55nLARqf+IQeD26de0V2/h8KbzgLiBfi8je3XqseVKIpivy16GJeVv7nei6j6QnI
-         O3MQ==
-X-Gm-Message-State: AOAM530meg+WABM+DHJMcoAWEapUAQtcini1uylZT7ZkYNENWssCJlVO
-        9wrAL6PNn+8+jvTaqeKF+gA=
-X-Google-Smtp-Source: ABdhPJzaRQkG5ZmJCAt8t9pjtZf4lA0hfi9tp9bxXzOWUhtyl7+6/GgSSVZTrpOjGzevTIFJ4Zx0Rg==
-X-Received: by 2002:a63:7010:: with SMTP id l16mr12735487pgc.32.1635151870270;
-        Mon, 25 Oct 2021 01:51:10 -0700 (PDT)
+        bh=Nv98mPif22qA+oqqbcCmi2QFJkv72OA0pxbhj9BmcG8=;
+        b=aGX+Tt3ilwYdsn2SX4r3lOFf8rIJxfp8RP1eyKOzNxq80hQqhMF4/UplemjxBxpQiT
+         r5udfDRXDt5rrwaLCUDOKQayW+TZ7i9eNL3/aPCSLHYPP2GcJokmNaPT+Qw3YsvMJhVW
+         ygktDr1yUsDyzIU4lWLzj/i2WHb8LRbHxec42bsJSI0Xf6oosYeMW08fYM97YVMXfn3r
+         W1ziJytW7DSrFO2IRA0GQO3H6H7Sb3c6gtrLlBFwOdhbQ2T610k32INTZHHTw9P37bhv
+         +ebEhIHg+/wT6QBYMpBSk3w3vrn0hGzFrnYZehZYGSY5Bu3L7Cgks6IogWUQwO+iPTzL
+         m9Iw==
+X-Gm-Message-State: AOAM530+9jYUo3dBJS4d6Xz9K1KdAh9Xv78787v9LVD+sMy98yi5ZzBE
+        jWPjtHTPP15RAs0zsgIZMxZGdvLA+6Q=
+X-Google-Smtp-Source: ABdhPJw9aPPGbK4GQjhQSEgulHYKx/uZTlPxqJ6dq4n67qjbcEcoLIYuecvaTwQda8YA9rljM3xMVA==
+X-Received: by 2002:aa7:8149:0:b0:44c:916c:1fdb with SMTP id d9-20020aa78149000000b0044c916c1fdbmr17643963pfn.34.1635151873780;
+        Mon, 25 Oct 2021 01:51:13 -0700 (PDT)
 Received: from carrot.localdomain (i220-108-45-205.s42.a014.ap.plala.or.jp. [220.108.45.205])
-        by smtp.gmail.com with ESMTPSA id j126sm18667378pfd.113.2021.10.25.01.51.07
+        by smtp.gmail.com with ESMTPSA id j126sm18667378pfd.113.2021.10.25.01.51.11
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Oct 2021 01:51:08 -0700 (PDT)
+        Mon, 25 Oct 2021 01:51:12 -0700 (PDT)
 From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] nilfs2: replace snprintf in show functions with sysfs_emit
-Date:   Mon, 25 Oct 2021 17:51:01 +0900
-Message-Id: <1635151862-11547-2-git-send-email-konishi.ryusuke@gmail.com>
+Subject: [PATCH 2/2] nilfs2: remove filenames from file comments
+Date:   Mon, 25 Oct 2021 17:51:02 +0900
+Message-Id: <1635151862-11547-3-git-send-email-konishi.ryusuke@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1635151862-11547-1-git-send-email-konishi.ryusuke@gmail.com>
 References: <1635151862-11547-1-git-send-email-konishi.ryusuke@gmail.com>
@@ -61,368 +61,521 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qing Wang <wangqing@vivo.com>
+Remove filenames that are not particularly useful in file comments,
+and suppress checkpatch warnings "WARNING: It's generally not useful
+to have the filename in the file".
 
-coccicheck complains about the use of snprintf() in sysfs show functions.
-
-Fix the coccicheck warning:
-WARNING: use scnprintf or sprintf.
-
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-
-Link: https://lkml.kernel.org/r/1634095759-4625-1-git-send-email-wangqing@vivo.com
-Signed-off-by: Qing Wang <wangqing@vivo.com>
 Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/nilfs2/sysfs.c | 76 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 38 insertions(+), 38 deletions(-)
+ fs/nilfs2/alloc.c     | 2 +-
+ fs/nilfs2/alloc.h     | 2 +-
+ fs/nilfs2/bmap.c      | 2 +-
+ fs/nilfs2/bmap.h      | 2 +-
+ fs/nilfs2/btnode.c    | 2 +-
+ fs/nilfs2/btnode.h    | 2 +-
+ fs/nilfs2/btree.c     | 2 +-
+ fs/nilfs2/btree.h     | 2 +-
+ fs/nilfs2/cpfile.c    | 2 +-
+ fs/nilfs2/cpfile.h    | 2 +-
+ fs/nilfs2/dat.c       | 2 +-
+ fs/nilfs2/dat.h       | 2 +-
+ fs/nilfs2/dir.c       | 2 +-
+ fs/nilfs2/direct.c    | 2 +-
+ fs/nilfs2/direct.h    | 2 +-
+ fs/nilfs2/file.c      | 2 +-
+ fs/nilfs2/gcinode.c   | 2 +-
+ fs/nilfs2/ifile.c     | 2 +-
+ fs/nilfs2/ifile.h     | 2 +-
+ fs/nilfs2/inode.c     | 2 +-
+ fs/nilfs2/ioctl.c     | 2 +-
+ fs/nilfs2/mdt.c       | 2 +-
+ fs/nilfs2/mdt.h       | 2 +-
+ fs/nilfs2/namei.c     | 2 +-
+ fs/nilfs2/nilfs.h     | 2 +-
+ fs/nilfs2/page.c      | 2 +-
+ fs/nilfs2/page.h      | 2 +-
+ fs/nilfs2/recovery.c  | 2 +-
+ fs/nilfs2/segbuf.c    | 2 +-
+ fs/nilfs2/segbuf.h    | 2 +-
+ fs/nilfs2/segment.c   | 2 +-
+ fs/nilfs2/segment.h   | 2 +-
+ fs/nilfs2/sufile.c    | 2 +-
+ fs/nilfs2/sufile.h    | 2 +-
+ fs/nilfs2/super.c     | 2 +-
+ fs/nilfs2/sysfs.c     | 2 +-
+ fs/nilfs2/sysfs.h     | 2 +-
+ fs/nilfs2/the_nilfs.c | 2 +-
+ fs/nilfs2/the_nilfs.h | 2 +-
+ 39 files changed, 39 insertions(+), 39 deletions(-)
 
+diff --git a/fs/nilfs2/alloc.c b/fs/nilfs2/alloc.c
+index adf3bb0a8048..6ce8617b562d 100644
+--- a/fs/nilfs2/alloc.c
++++ b/fs/nilfs2/alloc.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * alloc.c - NILFS dat/inode allocator
++ * NILFS dat/inode allocator
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/alloc.h b/fs/nilfs2/alloc.h
+index 0303c3968cee..b667e869ac07 100644
+--- a/fs/nilfs2/alloc.h
++++ b/fs/nilfs2/alloc.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * alloc.h - persistent object (dat entry/disk inode) allocator/deallocator
++ * Persistent object (dat entry/disk inode) allocator/deallocator
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
+index 5900879d5693..798a2c1b38c6 100644
+--- a/fs/nilfs2/bmap.c
++++ b/fs/nilfs2/bmap.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * bmap.c - NILFS block mapping.
++ * NILFS block mapping.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/bmap.h b/fs/nilfs2/bmap.h
+index 2c63858e81c9..608168a5cb88 100644
+--- a/fs/nilfs2/bmap.h
++++ b/fs/nilfs2/bmap.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * bmap.h - NILFS block mapping.
++ * NILFS block mapping.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/btnode.c b/fs/nilfs2/btnode.c
+index 4391fd3abd8f..66bdaa2cf496 100644
+--- a/fs/nilfs2/btnode.c
++++ b/fs/nilfs2/btnode.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * btnode.c - NILFS B-tree node cache
++ * NILFS B-tree node cache
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/btnode.h b/fs/nilfs2/btnode.h
+index 0f88dbc9bcb3..11663650add7 100644
+--- a/fs/nilfs2/btnode.h
++++ b/fs/nilfs2/btnode.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * btnode.h - NILFS B-tree node cache
++ * NILFS B-tree node cache
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/btree.c b/fs/nilfs2/btree.c
+index ab9ec073330f..3594eabe1419 100644
+--- a/fs/nilfs2/btree.c
++++ b/fs/nilfs2/btree.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * btree.c - NILFS B-tree.
++ * NILFS B-tree.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/btree.h b/fs/nilfs2/btree.h
+index d1421b646ce4..92868e1a48ca 100644
+--- a/fs/nilfs2/btree.h
++++ b/fs/nilfs2/btree.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * btree.h - NILFS B-tree.
++ * NILFS B-tree.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/cpfile.c b/fs/nilfs2/cpfile.c
+index ce144776b4ef..9ebefb3acb0e 100644
+--- a/fs/nilfs2/cpfile.c
++++ b/fs/nilfs2/cpfile.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * cpfile.c - NILFS checkpoint file.
++ * NILFS checkpoint file.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/cpfile.h b/fs/nilfs2/cpfile.h
+index 6336222df24a..edabb2dc5756 100644
+--- a/fs/nilfs2/cpfile.h
++++ b/fs/nilfs2/cpfile.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * cpfile.h - NILFS checkpoint file.
++ * NILFS checkpoint file.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/dat.c b/fs/nilfs2/dat.c
+index 8bccdf1158fc..dc51d3b7a7bf 100644
+--- a/fs/nilfs2/dat.c
++++ b/fs/nilfs2/dat.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * dat.c - NILFS disk address translation.
++ * NILFS disk address translation.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/dat.h b/fs/nilfs2/dat.h
+index b17ee34580ae..468c82d26183 100644
+--- a/fs/nilfs2/dat.h
++++ b/fs/nilfs2/dat.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * dat.h - NILFS disk address translation.
++ * NILFS disk address translation.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
+index 81394e22d0a0..f8f4c2ff52f4 100644
+--- a/fs/nilfs2/dir.c
++++ b/fs/nilfs2/dir.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * dir.c - NILFS directory entry operations
++ * NILFS directory entry operations
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/direct.c b/fs/nilfs2/direct.c
+index f353101955e3..a35f2795b242 100644
+--- a/fs/nilfs2/direct.c
++++ b/fs/nilfs2/direct.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * direct.c - NILFS direct block pointer.
++ * NILFS direct block pointer.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/direct.h b/fs/nilfs2/direct.h
+index ec9a23c77994..b7ca896269af 100644
+--- a/fs/nilfs2/direct.h
++++ b/fs/nilfs2/direct.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * direct.h - NILFS direct block pointer.
++ * NILFS direct block pointer.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
+index 7cf765258fda..a265d391ffe9 100644
+--- a/fs/nilfs2/file.c
++++ b/fs/nilfs2/file.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * file.c - NILFS regular file handling primitives including fsync().
++ * NILFS regular file handling primitives including fsync().
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/gcinode.c b/fs/nilfs2/gcinode.c
+index 448320496856..a8f5315f01e3 100644
+--- a/fs/nilfs2/gcinode.c
++++ b/fs/nilfs2/gcinode.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * gcinode.c - dummy inodes to buffer blocks for garbage collection
++ * Dummy inodes to buffer blocks for garbage collection
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/ifile.c b/fs/nilfs2/ifile.c
+index 02727ed3a7c6..a8a4bc8490b4 100644
+--- a/fs/nilfs2/ifile.c
++++ b/fs/nilfs2/ifile.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * ifile.c - NILFS inode file
++ * NILFS inode file
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/ifile.h b/fs/nilfs2/ifile.h
+index a1e1e5711a05..35c5273f4821 100644
+--- a/fs/nilfs2/ifile.h
++++ b/fs/nilfs2/ifile.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * ifile.h - NILFS inode file
++ * NILFS inode file
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
+index 2e8eb263cf0f..e3d807d5b83a 100644
+--- a/fs/nilfs2/inode.c
++++ b/fs/nilfs2/inode.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * inode.c - NILFS inode operations.
++ * NILFS inode operations.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
+index 640ac8fe891e..efa76a80ee25 100644
+--- a/fs/nilfs2/ioctl.c
++++ b/fs/nilfs2/ioctl.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * ioctl.c - NILFS ioctl operations.
++ * NILFS ioctl operations.
+  *
+  * Copyright (C) 2007, 2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
+index 97769fe4d588..4b3d33cf0041 100644
+--- a/fs/nilfs2/mdt.c
++++ b/fs/nilfs2/mdt.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * mdt.c - meta data file for NILFS
++ * Meta data file for NILFS
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/mdt.h b/fs/nilfs2/mdt.h
+index e77aea4bb921..8f86080a436d 100644
+--- a/fs/nilfs2/mdt.h
++++ b/fs/nilfs2/mdt.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * mdt.h - NILFS meta data file prototype and definitions
++ * NILFS meta data file prototype and definitions
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/namei.c b/fs/nilfs2/namei.c
+index 91eebeb0c48b..23899e0ae850 100644
+--- a/fs/nilfs2/namei.c
++++ b/fs/nilfs2/namei.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * namei.c - NILFS pathname lookup operations.
++ * NILFS pathname lookup operations.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/nilfs.h b/fs/nilfs2/nilfs.h
+index 60b21b6eeac0..a7b81755c350 100644
+--- a/fs/nilfs2/nilfs.h
++++ b/fs/nilfs2/nilfs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * nilfs.h - NILFS local header file.
++ * NILFS local header file.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/page.c b/fs/nilfs2/page.c
+index 171fb5cd427f..bc3e2cd4117f 100644
+--- a/fs/nilfs2/page.c
++++ b/fs/nilfs2/page.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * page.c - buffer/page management specific to NILFS
++ * Buffer/page management specific to NILFS
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/page.h b/fs/nilfs2/page.h
+index 62b9bb469e92..569263b23c0c 100644
+--- a/fs/nilfs2/page.h
++++ b/fs/nilfs2/page.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * page.h - buffer/page management specific to NILFS
++ * Buffer/page management specific to NILFS
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/recovery.c b/fs/nilfs2/recovery.c
+index 2217f904a7cf..9e2ed76c0f25 100644
+--- a/fs/nilfs2/recovery.c
++++ b/fs/nilfs2/recovery.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * recovery.c - NILFS recovery logic
++ * NILFS recovery logic
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/segbuf.c b/fs/nilfs2/segbuf.c
+index 56872e93823d..43287b0d3e9b 100644
+--- a/fs/nilfs2/segbuf.c
++++ b/fs/nilfs2/segbuf.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * segbuf.c - NILFS segment buffer
++ * NILFS segment buffer
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/segbuf.h b/fs/nilfs2/segbuf.h
+index 9bea1bd59041..e20091ededba 100644
+--- a/fs/nilfs2/segbuf.h
++++ b/fs/nilfs2/segbuf.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * segbuf.h - NILFS Segment buffer prototypes and definitions
++ * NILFS Segment buffer prototypes and definitions
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 686c8ee7b29c..85a853334771 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * segment.c - NILFS segment constructor.
++ * NILFS segment constructor.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/segment.h b/fs/nilfs2/segment.h
+index f5cf5308f3fc..1060f72ebf5a 100644
+--- a/fs/nilfs2/segment.h
++++ b/fs/nilfs2/segment.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * segment.h - NILFS Segment constructor prototypes and definitions
++ * NILFS Segment constructor prototypes and definitions
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/sufile.c b/fs/nilfs2/sufile.c
+index 63722475e17e..e385cca2004a 100644
+--- a/fs/nilfs2/sufile.c
++++ b/fs/nilfs2/sufile.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * sufile.c - NILFS segment usage file.
++ * NILFS segment usage file.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/sufile.h b/fs/nilfs2/sufile.h
+index c4e2c7a7add1..8e8a1a5a0402 100644
+--- a/fs/nilfs2/sufile.h
++++ b/fs/nilfs2/sufile.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * sufile.h - NILFS segment usage file.
++ * NILFS segment usage file.
+  *
+  * Copyright (C) 2006-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
+index f6b2d280aab5..63cffe010c6e 100644
+--- a/fs/nilfs2/super.c
++++ b/fs/nilfs2/super.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * super.c - NILFS module and super block management.
++ * NILFS module and super block management.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
 diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index 62f8a7ac19c8..be407072def7 100644
+index be407072def7..81f35c5b5a40 100644
 --- a/fs/nilfs2/sysfs.c
 +++ b/fs/nilfs2/sysfs.c
-@@ -95,7 +95,7 @@
- nilfs_snapshot_inodes_count_show(struct nilfs_snapshot_attr *attr,
- 				 struct nilfs_root *root, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
-+	return sysfs_emit(buf, "%llu\n",
- 			(unsigned long long)atomic64_read(&root->inodes_count));
- }
- 
-@@ -103,7 +103,7 @@
- nilfs_snapshot_blocks_count_show(struct nilfs_snapshot_attr *attr,
- 				 struct nilfs_root *root, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
-+	return sysfs_emit(buf, "%llu\n",
- 			(unsigned long long)atomic64_read(&root->blocks_count));
- }
- 
-@@ -116,7 +116,7 @@
- nilfs_snapshot_README_show(struct nilfs_snapshot_attr *attr,
- 			    struct nilfs_root *root, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, snapshot_readme_str);
-+	return sysfs_emit(buf, snapshot_readme_str);
- }
- 
- NILFS_SNAPSHOT_RO_ATTR(inodes_count);
-@@ -217,7 +217,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- nilfs_mounted_snapshots_README_show(struct nilfs_mounted_snapshots_attr *attr,
- 				    struct the_nilfs *nilfs, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, mounted_snapshots_readme_str);
-+	return sysfs_emit(buf, mounted_snapshots_readme_str);
- }
- 
- NILFS_MOUNTED_SNAPSHOTS_RO_ATTR(README);
-@@ -255,7 +255,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 
- 	ncheckpoints = cpstat.cs_ncps;
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", ncheckpoints);
-+	return sysfs_emit(buf, "%llu\n", ncheckpoints);
- }
- 
- static ssize_t
-@@ -278,7 +278,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 
- 	nsnapshots = cpstat.cs_nsss;
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", nsnapshots);
-+	return sysfs_emit(buf, "%llu\n", nsnapshots);
- }
- 
- static ssize_t
-@@ -292,7 +292,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	last_cno = nilfs->ns_last_cno;
- 	spin_unlock(&nilfs->ns_last_segment_lock);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", last_cno);
-+	return sysfs_emit(buf, "%llu\n", last_cno);
- }
- 
- static ssize_t
-@@ -306,7 +306,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	cno = nilfs->ns_cno;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", cno);
-+	return sysfs_emit(buf, "%llu\n", cno);
- }
- 
- static const char checkpoints_readme_str[] =
-@@ -322,7 +322,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- nilfs_checkpoints_README_show(struct nilfs_checkpoints_attr *attr,
- 				struct the_nilfs *nilfs, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, checkpoints_readme_str);
-+	return sysfs_emit(buf, checkpoints_readme_str);
- }
- 
- NILFS_CHECKPOINTS_RO_ATTR(checkpoints_number);
-@@ -353,7 +353,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 				     struct the_nilfs *nilfs,
- 				     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%lu\n", nilfs->ns_nsegments);
-+	return sysfs_emit(buf, "%lu\n", nilfs->ns_nsegments);
- }
- 
- static ssize_t
-@@ -361,7 +361,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 					struct the_nilfs *nilfs,
- 					char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%lu\n", nilfs->ns_blocks_per_segment);
-+	return sysfs_emit(buf, "%lu\n", nilfs->ns_blocks_per_segment);
- }
- 
- static ssize_t
-@@ -375,7 +375,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	ncleansegs = nilfs_sufile_get_ncleansegs(nilfs->ns_sufile);
- 	up_read(&NILFS_MDT(nilfs->ns_dat)->mi_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", ncleansegs);
-+	return sysfs_emit(buf, "%lu\n", ncleansegs);
- }
- 
- static ssize_t
-@@ -395,7 +395,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 		return err;
- 	}
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", sustat.ss_ndirtysegs);
-+	return sysfs_emit(buf, "%llu\n", sustat.ss_ndirtysegs);
- }
- 
- static const char segments_readme_str[] =
-@@ -411,7 +411,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 			    struct the_nilfs *nilfs,
- 			    char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, segments_readme_str);
-+	return sysfs_emit(buf, segments_readme_str);
- }
- 
- NILFS_SEGMENTS_RO_ATTR(segments_number);
-@@ -448,7 +448,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	last_pseg = nilfs->ns_last_pseg;
- 	spin_unlock(&nilfs->ns_last_segment_lock);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
-+	return sysfs_emit(buf, "%llu\n",
- 			(unsigned long long)last_pseg);
- }
- 
-@@ -463,7 +463,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	last_seq = nilfs->ns_last_seq;
- 	spin_unlock(&nilfs->ns_last_segment_lock);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", last_seq);
-+	return sysfs_emit(buf, "%llu\n", last_seq);
- }
- 
- static ssize_t
-@@ -477,7 +477,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	last_cno = nilfs->ns_last_cno;
- 	spin_unlock(&nilfs->ns_last_segment_lock);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", last_cno);
-+	return sysfs_emit(buf, "%llu\n", last_cno);
- }
- 
- static ssize_t
-@@ -491,7 +491,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	seg_seq = nilfs->ns_seg_seq;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", seg_seq);
-+	return sysfs_emit(buf, "%llu\n", seg_seq);
- }
- 
- static ssize_t
-@@ -505,7 +505,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	segnum = nilfs->ns_segnum;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", segnum);
-+	return sysfs_emit(buf, "%llu\n", segnum);
- }
- 
- static ssize_t
-@@ -519,7 +519,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	nextnum = nilfs->ns_nextnum;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", nextnum);
-+	return sysfs_emit(buf, "%llu\n", nextnum);
- }
- 
- static ssize_t
-@@ -533,7 +533,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	pseg_offset = nilfs->ns_pseg_offset;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", pseg_offset);
-+	return sysfs_emit(buf, "%lu\n", pseg_offset);
- }
- 
- static ssize_t
-@@ -547,7 +547,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	cno = nilfs->ns_cno;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", cno);
-+	return sysfs_emit(buf, "%llu\n", cno);
- }
- 
- static ssize_t
-@@ -575,7 +575,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	ctime = nilfs->ns_ctime;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", ctime);
-+	return sysfs_emit(buf, "%llu\n", ctime);
- }
- 
- static ssize_t
-@@ -603,7 +603,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	nongc_ctime = nilfs->ns_nongc_ctime;
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", nongc_ctime);
-+	return sysfs_emit(buf, "%llu\n", nongc_ctime);
- }
- 
- static ssize_t
-@@ -617,7 +617,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	ndirtyblks = atomic_read(&nilfs->ns_ndirtyblks);
- 	up_read(&nilfs->ns_segctor_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ndirtyblks);
-+	return sysfs_emit(buf, "%u\n", ndirtyblks);
- }
- 
- static const char segctor_readme_str[] =
-@@ -654,7 +654,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- nilfs_segctor_README_show(struct nilfs_segctor_attr *attr,
- 			  struct the_nilfs *nilfs, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, segctor_readme_str);
-+	return sysfs_emit(buf, segctor_readme_str);
- }
- 
- NILFS_SEGCTOR_RO_ATTR(last_pseg_block);
-@@ -723,7 +723,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	sbwtime = nilfs->ns_sbwtime;
- 	up_read(&nilfs->ns_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", sbwtime);
-+	return sysfs_emit(buf, "%llu\n", sbwtime);
- }
- 
- static ssize_t
-@@ -737,7 +737,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	sbwcount = nilfs->ns_sbwcount;
- 	up_read(&nilfs->ns_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", sbwcount);
-+	return sysfs_emit(buf, "%u\n", sbwcount);
- }
- 
- static ssize_t
-@@ -751,7 +751,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- 	sb_update_freq = nilfs->ns_sb_update_freq;
- 	up_read(&nilfs->ns_sem);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", sb_update_freq);
-+	return sysfs_emit(buf, "%u\n", sb_update_freq);
- }
- 
- static ssize_t
-@@ -799,7 +799,7 @@ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- nilfs_superblock_README_show(struct nilfs_superblock_attr *attr,
- 				struct the_nilfs *nilfs, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, sb_readme_str);
-+	return sysfs_emit(buf, sb_readme_str);
- }
- 
- NILFS_SUPERBLOCK_RO_ATTR(sb_write_time);
-@@ -834,7 +834,7 @@ ssize_t nilfs_dev_revision_show(struct nilfs_dev_attr *attr,
- 	u32 major = le32_to_cpu(sbp[0]->s_rev_level);
- 	u16 minor = le16_to_cpu(sbp[0]->s_minor_rev_level);
- 
--	return snprintf(buf, PAGE_SIZE, "%d.%d\n", major, minor);
-+	return sysfs_emit(buf, "%d.%d\n", major, minor);
- }
- 
- static
-@@ -842,7 +842,7 @@ ssize_t nilfs_dev_blocksize_show(struct nilfs_dev_attr *attr,
- 				 struct the_nilfs *nilfs,
- 				 char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%u\n", nilfs->ns_blocksize);
-+	return sysfs_emit(buf, "%u\n", nilfs->ns_blocksize);
- }
- 
- static
-@@ -853,7 +853,7 @@ ssize_t nilfs_dev_device_size_show(struct nilfs_dev_attr *attr,
- 	struct nilfs_super_block **sbp = nilfs->ns_sbp;
- 	u64 dev_size = le64_to_cpu(sbp[0]->s_dev_size);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n", dev_size);
-+	return sysfs_emit(buf, "%llu\n", dev_size);
- }
- 
- static
-@@ -864,7 +864,7 @@ ssize_t nilfs_dev_free_blocks_show(struct nilfs_dev_attr *attr,
- 	sector_t free_blocks = 0;
- 
- 	nilfs_count_free_blocks(nilfs, &free_blocks);
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
-+	return sysfs_emit(buf, "%llu\n",
- 			(unsigned long long)free_blocks);
- }
- 
-@@ -875,7 +875,7 @@ ssize_t nilfs_dev_uuid_show(struct nilfs_dev_attr *attr,
- {
- 	struct nilfs_super_block **sbp = nilfs->ns_sbp;
- 
--	return snprintf(buf, PAGE_SIZE, "%pUb\n", sbp[0]->s_uuid);
-+	return sysfs_emit(buf, "%pUb\n", sbp[0]->s_uuid);
- }
- 
- static
-@@ -903,7 +903,7 @@ static ssize_t nilfs_dev_README_show(struct nilfs_dev_attr *attr,
- 				     struct the_nilfs *nilfs,
- 				     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, dev_readme_str);
-+	return sysfs_emit(buf, dev_readme_str);
- }
- 
- NILFS_DEV_RO_ATTR(revision);
-@@ -1047,7 +1047,7 @@ void nilfs_sysfs_delete_device_group(struct the_nilfs *nilfs)
- static ssize_t nilfs_feature_revision_show(struct kobject *kobj,
- 					    struct attribute *attr, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d.%d\n",
-+	return sysfs_emit(buf, "%d.%d\n",
- 			NILFS_CURRENT_REV, NILFS_MINOR_REV);
- }
- 
-@@ -1060,7 +1060,7 @@ static ssize_t nilfs_feature_README_show(struct kobject *kobj,
- 					 struct attribute *attr,
- 					 char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, features_readme_str);
-+	return sysfs_emit(buf, features_readme_str);
- }
- 
- NILFS_FEATURE_RO_ATTR(revision);
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * sysfs.c - sysfs support implementation.
++ * Sysfs support implementation.
+  *
+  * Copyright (C) 2005-2014 Nippon Telegraph and Telephone Corporation.
+  * Copyright (C) 2014 HGST, Inc., a Western Digital Company.
+diff --git a/fs/nilfs2/sysfs.h b/fs/nilfs2/sysfs.h
+index d001eb862dae..78a87a016928 100644
+--- a/fs/nilfs2/sysfs.h
++++ b/fs/nilfs2/sysfs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * sysfs.h - sysfs support declarations.
++ * Sysfs support declarations.
+  *
+  * Copyright (C) 2005-2014 Nippon Telegraph and Telephone Corporation.
+  * Copyright (C) 2014 HGST, Inc., a Western Digital Company.
+diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
+index c8bfc01da5d7..2044a2058be7 100644
+--- a/fs/nilfs2/the_nilfs.c
++++ b/fs/nilfs2/the_nilfs.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * the_nilfs.c - the_nilfs shared structure.
++ * the_nilfs shared structure.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
+diff --git a/fs/nilfs2/the_nilfs.h b/fs/nilfs2/the_nilfs.h
+index 987c8ab02aee..47c7dfbb7ea5 100644
+--- a/fs/nilfs2/the_nilfs.h
++++ b/fs/nilfs2/the_nilfs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * the_nilfs.h - the_nilfs shared structure.
++ * the_nilfs shared structure.
+  *
+  * Copyright (C) 2005-2008 Nippon Telegraph and Telephone Corporation.
+  *
 -- 
 1.8.3.1
 
