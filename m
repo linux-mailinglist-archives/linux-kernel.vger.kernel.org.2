@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BACA439FD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344C3439F51
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhJYTZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:25:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38954 "EHLO mail.kernel.org"
+        id S234528AbhJYTTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:19:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235020AbhJYTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:23:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9021B61090;
-        Mon, 25 Oct 2021 19:20:46 +0000 (UTC)
+        id S234575AbhJYTSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:18:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5385B6103C;
+        Mon, 25 Oct 2021 19:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189647;
-        bh=pyocyy54/NGLyXEIFdjU4zUuvGkPatfqXtJF3ap9ZWQ=;
+        s=korg; t=1635189384;
+        bh=m+5Od1O081bXk5ZOV75o8smtKYbnFFv72Qso7Q+OXeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HDd/6REEc2FY4fPZMibtOLjWmnh5jIxYFwMT67c5sn4uDv0erDbCdHbwqlhyQJDZ0
-         tMBVSrna0Xho7uXAVzAAdZJHNGCu6Lr0j9F0ywD7YKguMkpjQXLbDzx48qG/MJVFiV
-         Zmi8d/FVClcK9AHkg5EYELxLNJ/kYVqE7TfdDOqw=
+        b=WfJWQ9qrZi9fHkHumVKKuW8PW88WP59Sb7ELGQC2M+nuRuCb/+ersZZEJjXNf6sdZ
+         d/44HCnL4ixhrQ4PkI2Nfg7FBha5yZEHlnTFkKGq4korIxwZfhxJfFtBwQKpvkpKif
+         p+KXNVm5kc05LCxiMtm5zX4mAb+kh3S47E3MPLrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 28/50] NFSD: Keep existing listeners on portlist error
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lin Ma <linma@zju.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 34/44] nfc: nci: fix the UAF of rf_conn_info object
 Date:   Mon, 25 Oct 2021 21:14:15 +0200
-Message-Id: <20211025190938.227783010@linuxfoundation.org>
+Message-Id: <20211025190935.650118860@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Coddington <bcodding@redhat.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-[ Upstream commit c20106944eb679fa3ab7e686fe5f6ba30fbc51e5 ]
+commit 1b1499a817c90fd1ce9453a2c98d2a01cca0e775 upstream.
 
-If nfsd has existing listening sockets without any processes, then an error
-returned from svc_create_xprt() for an additional transport will remove
-those existing listeners.  We're seeing this in practice when userspace
-attempts to create rpcrdma transports without having the rpcrdma modules
-present before creating nfsd kernel processes.  Fix this by checking for
-existing sockets before calling nfsd_destroy().
+The nci_core_conn_close_rsp_packet() function will release the conn_info
+with given conn_id. However, it needs to set the rf_conn_info to NULL to
+prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
+the UAF.
 
-Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfsctl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/nfc/nci/rsp.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index f704f90db36c..2418b9d829ae 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -765,7 +765,10 @@ out_close:
- 		svc_xprt_put(xprt);
+--- a/net/nfc/nci/rsp.c
++++ b/net/nfc/nci/rsp.c
+@@ -274,6 +274,8 @@ static void nci_core_conn_close_rsp_pack
+ 		conn_info = nci_get_conn_info_by_conn_id(ndev, ndev->cur_id);
+ 		if (conn_info) {
+ 			list_del(&conn_info->list);
++			if (conn_info == ndev->rf_conn_info)
++				ndev->rf_conn_info = NULL;
+ 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
+ 		}
  	}
- out_err:
--	nfsd_destroy(net);
-+	if (!list_empty(&nn->nfsd_serv->sv_permsocks))
-+		nn->nfsd_serv->sv_nrthreads--;
-+	 else
-+		nfsd_destroy(net);
- 	return err;
- }
- 
--- 
-2.33.0
-
 
 
