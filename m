@@ -2,97 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CB24393ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D484393F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhJYKro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:47:44 -0400
-Received: from mail.netline.ch ([148.251.143.180]:54250 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhJYKrm (ORCPT
+        id S232830AbhJYKsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:48:38 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:41615 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230342AbhJYKsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:47:42 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id 3D29420201D;
-        Mon, 25 Oct 2021 12:45:18 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 8Zice53EdW5K; Mon, 25 Oct 2021 12:45:17 +0200 (CEST)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPA id 8775120201A;
-        Mon, 25 Oct 2021 12:45:17 +0200 (CEST)
-Received: from [127.0.0.1]
-        by thor with esmtp (Exim 4.95)
-        (envelope-from <michel@daenzer.net>)
-        id 1mexTg-000W6M-Nj;
-        Mon, 25 Oct 2021 12:45:16 +0200
-Message-ID: <931230b4-1e73-948d-abaf-f1d62ea58239@daenzer.net>
-Date:   Mon, 25 Oct 2021 12:45:16 +0200
+        Mon, 25 Oct 2021 06:48:37 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4F59858054C;
+        Mon, 25 Oct 2021 06:46:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 25 Oct 2021 06:46:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=tVeVTD/n1RNuci2s4vL/2pyEqm
+        YGY1CKKlCMxISrbSc=; b=SMRKL39Ml96zqcGCn1DFiTCfB9cbXRVo7c3q9J1NVy
+        +TgiCZb+oqueOV54YvGuGdZm7SWsxU9nIzyZ+89mzxw2ShzGxhaqKqnTFYBoDZh8
+        LnkkPBiuCUlMt5VzL5fzgLWPCUdwvoe16XN7SyA2AY5GGadG4SFnpfrcwRK3oQZi
+        AWRlP3OZpF8/nNZKjWpAfLMtyx6rN5xekySNCqX2dFb1DWT67Xp5TGvhF3FsaaOV
+        u9M5lbT9uMwIIbDPe32vb+ZtCCbFJuNUCnXw9cgUMMH4nWByLROyLO982/W9R0mm
+        oOWfJl3Qdlc9/Z0QUPgJqNvfnHJ2eqBpHiqFlQ8VhkUQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tVeVTD/n1RNuci2s4
+        vL/2pyEqmYGY1CKKlCMxISrbSc=; b=VmueU+s7C2JLOPGRuPslq8y/Qo1B5ubXI
+        qpV84SspJ6prSbJ0zGUzEWiMx9bUbUKH6xVRxbLRNor+rDrFdvP5oJuoq+4kbCOT
+        QnJHMIUzLv+vqa513C43gBt45H5itZ/Yq7Q56O6g6vsEDod1veLOhkm4wCqRzAoO
+        mskaR/tfn6z10Csuf+mHVgqfWpk8enigjIiI4MaTk/sy/Fy5Ku87k1XqiQycb0Uv
+        47ZgYAoCejqtasol2ARpg/XB0SNtSZ5C+TszfQxhCPhGtN6uQHsmJhoA1aywnrIP
+        5rrQ6G0yLu82R8okuX/UycTYn+pr9LZDZ7F3ERBhjkcle1JtfxIVQ==
+X-ME-Sender: <xms:9Yp2YY1HgA9LAua0Mzj1pQ31c3j3EBK7RD--dMfal9RRURaI0vClIQ>
+    <xme:9Yp2YTFB2V1uhadSx-mU8v5pN5wLzqHefxQWyDBU16jnXJgxjvK24Q31agDZr9JIq
+    0UYgk4j43Pk7zvaNLc>
+X-ME-Received: <xmr:9Yp2YQ4gn7Redee08Bbjx3QUdqZs8wq6NMa7Wh8fD26aciZbHF31bSaJ1FU-75XRPiVdomvYL4Ay>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeejleeihfdvtefgtd
+    ethfdtgefftdeiffefjeeiffefveeuleejheejvefhffeukeenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsth
+    grihhrvdefrdhmvg
+X-ME-Proxy: <xmx:9Yp2YR2mWNQNXVv0UrX026Rg7r2w4QXl98q5eJ5PrNL-6xolAhqzcA>
+    <xmx:9Yp2YbGM_JMpxluNG4t5RaHKhBhqnf2vw8JWjnZB-dfLu4lgXQDtqQ>
+    <xmx:9Yp2Ya-JAZtIPG9yHDJzD1uOVxHpENyvU33yq0kSMDTyB7yf4MbWaA>
+    <xmx:9op2YT-t0zxEtF2Sb--KrElp_b6NBEMSYXdIrHnrw45eSrAWfyqckA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 06:46:08 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     s.hauer@pengutronix.de, benjamin.tissoires@redhat.com,
+        dmitry.torokhov@gmail.com, shawnguo@kernel.org
+Cc:     alistair23@gmail.com, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        jikos@kernel.org, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v13 1/3] HID: quirks: Allow inverting the absolute X/Y values
+Date:   Mon, 25 Oct 2021 20:46:03 +1000
+Message-Id: <20211025104605.36364-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-CA
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20211022144040.3418284-1-javierm@redhat.com>
- <YXMNOfBS5iFenmx8@intel.com>
- <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
- framebuffers removal
-In-Reply-To: <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-24 22:32, Javier Martinez Canillas wrote:
-> Hello Ville,
-> 
-> On 10/22/21 21:12, Ville Syrjälä wrote:
->> On Fri, Oct 22, 2021 at 04:40:40PM +0200, Javier Martinez Canillas wrote:
->>> The simpledrm driver allows to use the frame buffer that was set-up by the
->>> firmware. This gives early video output before the platform DRM driver is
->>> probed and takes over.
->>>
->>> But it would be useful to have a way to disable this take over by the real
->>> DRM drivers. For example, there may be bugs in the DRM drivers that could
->>> cause the display output to not work correctly.
->>>
->>> For those cases, it would be good to keep the simpledrm driver instead and
->>> at least get a working display as set-up by the firmware.
->>>
->>> Let's add a drm.remove_fb boolean kernel command line parameter, that when
->>> set to false will prevent the conflicting framebuffers to being removed.
->>>
->>> Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
->>> early in their probe callback, this will cause the drivers' probe to fail.
->>
->> Why is that better than just modprobe.blacklisting those drivers?
-> 
-> Because would allow to deny list all native (as Thomas called it) DRM drivers
-> and only allow the simpledrm driver to be probed. This is useful for distros,
-> since could add a "Basic graphics mode" to the boot menu entries, that could
-> boot the kernel passing a "drm.disable_native_drivers=1" cmdline option.
-> 
-> That way, if there's any problem with a given DRM driver, the distro may be
-> installed and booted using the simpledrm driver and troubleshoot why a native
-> DRM driver is not working. Or try updating the kernel package, etc.
+Add a HID_QUIRK_X_INVERT/HID_QUIRK_Y_INVERT quirk that can be used
+to invert the X/Y values.
 
-For troubleshooting, it'll be helpful if this new parameter can be enabled for the boot via the kernel command line, then disabled again after boot-up. One simple possibility for this would be allowing the parameter to be changed via /sys/module/drm/parameters/<name>, which I suspect doesn't work with the patch as is (due to the 0600 permissions).
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
+---
+ drivers/hid/hid-input.c | 6 ++++++
+ include/linux/hid.h     | 2 ++
+ 2 files changed, 8 insertions(+)
 
-
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 4b5ebeacd283..4babf369184f 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1328,6 +1328,12 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+ 
+ 	input = field->hidinput->input;
+ 
++	if (usage->type == EV_ABS &&
++		((*quirks & HID_QUIRK_X_INVERT) && usage->code == ABS_X ||
++		 (*quirks & HID_QUIRK_Y_INVERT) && usage->code == ABS_Y)) {
++			value = field->logical_maximum - value;
++	}
++
+ 	if (usage->hat_min < usage->hat_max || usage->hat_dir) {
+ 		int hat_dir = usage->hat_dir;
+ 		if (!hat_dir)
+diff --git a/include/linux/hid.h b/include/linux/hid.h
+index 9e067f937dbc..4959385ca588 100644
+--- a/include/linux/hid.h
++++ b/include/linux/hid.h
+@@ -349,6 +349,8 @@ struct hid_item {
+ /* BIT(9) reserved for backward compatibility, was NO_INIT_INPUT_REPORTS */
+ #define HID_QUIRK_ALWAYS_POLL			BIT(10)
+ #define HID_QUIRK_INPUT_PER_APP			BIT(11)
++#define HID_QUIRK_X_INVERT			BIT(12)
++#define HID_QUIRK_Y_INVERT			BIT(13)
+ #define HID_QUIRK_SKIP_OUTPUT_REPORTS		BIT(16)
+ #define HID_QUIRK_SKIP_OUTPUT_REPORT_ID		BIT(17)
+ #define HID_QUIRK_NO_OUTPUT_REPORTS_ON_INTR_EP	BIT(18)
 -- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+2.31.1
+
