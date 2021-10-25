@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A901F43A30B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F6543A1CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236703AbhJYTzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38046 "EHLO mail.kernel.org"
+        id S235732AbhJYTmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237208AbhJYTu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:50:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9969360F46;
-        Mon, 25 Oct 2021 19:42:35 +0000 (UTC)
+        id S235314AbhJYTcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:32:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0791C611BD;
+        Mon, 25 Oct 2021 19:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190956;
-        bh=AQVgWzJuv2QeHhwBAzg32g9tGzl8LLTWIRGnB7s5nCI=;
+        s=korg; t=1635190106;
+        bh=3KAaVflUzHq2MNaSlzL9XMoFFPSco4C9eLInPYqAdVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d0O/3uYbUz+vlQQWoh+qDbDCSFpCD4LgggLc2vn1Lp7XV62n2v/1TIg+EVkJ5zhnB
-         Ckr8CUlGetTPN4YwS6O2gsWsuYIFgoyjQKgYyo0HdCJi9IMJHt0qz2lyLaZ1RxMyjH
-         kuna+sf/FQxZT3pBIfSyuhsk94QoI/ZBFY+ev2gc=
+        b=phTjwv0ojjFIdTlDqQi/7kaAdXZwUhRt90EFZEQ8SVkY1S0ZT3fD9R630S6f32ztT
+         D6S6avuyzMpTrBuiPtbbaHA0RCJJwgkOwAdn1fveUpsfat+U4La2uspTi9+Fdi0Sy8
+         u/ALF0nftQ+xhPT0geDqgPl7JX3DPCKoacMivjcQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 111/169] KVM: SEV-ES: reduce ghcb_sa_len to 32 bits
+        stable@vger.kernel.org, "Christopher M. Riedl" <cmr@codefail.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 35/58] powerpc64/idle: Fix SP offsets when saving GPRs
 Date:   Mon, 25 Oct 2021 21:14:52 +0200
-Message-Id: <20211025191032.097266232@linuxfoundation.org>
+Message-Id: <20211025190943.310240815@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +39,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Christopher M. Riedl <cmr@codefail.de>
 
-commit 9f1ee7b169afbd10c3ad254220d1b37beb5798aa upstream.
+commit 73287caa9210ded6066833195f4335f7f688a46b upstream.
 
-The size of the GHCB scratch area is limited to 16 KiB (GHCB_SCRATCH_AREA_LIMIT),
-so there is no need for it to be a u64.  This fixes a build error on 32-bit
-systems:
+The idle entry/exit code saves/restores GPRs in the stack "red zone"
+(Protected Zone according to PowerPC64 ELF ABI v2). However, the offset
+used for the first GPR is incorrect and overwrites the back chain - the
+Protected Zone actually starts below the current SP. In practice this is
+probably not an issue, but it's still incorrect so fix it.
 
-i686-linux-gnu-ld: arch/x86/kvm/svm/sev.o: in function `sev_es_string_io:
-sev.c:(.text+0x110f): undefined reference to `__udivdi3'
+Also expand the comments to explain why using the stack "red zone"
+instead of creating a new stackframe is appropriate here.
 
-Cc: stable@vger.kernel.org
-Fixes: 019057bd73d1 ("KVM: SEV-ES: fix length of string I/O")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Christopher M. Riedl <cmr@codefail.de>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210206072342.5067-1-cmr@codefail.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/svm.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/idle_book3s.S |  138 ++++++++++++++++++++------------------
+ 1 file changed, 73 insertions(+), 65 deletions(-)
 
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -191,7 +191,7 @@ struct vcpu_svm {
+--- a/arch/powerpc/kernel/idle_book3s.S
++++ b/arch/powerpc/kernel/idle_book3s.S
+@@ -50,28 +50,32 @@ _GLOBAL(isa300_idle_stop_mayloss)
+ 	std	r1,PACAR1(r13)
+ 	mflr	r4
+ 	mfcr	r5
+-	/* use stack red zone rather than a new frame for saving regs */
+-	std	r2,-8*0(r1)
+-	std	r14,-8*1(r1)
+-	std	r15,-8*2(r1)
+-	std	r16,-8*3(r1)
+-	std	r17,-8*4(r1)
+-	std	r18,-8*5(r1)
+-	std	r19,-8*6(r1)
+-	std	r20,-8*7(r1)
+-	std	r21,-8*8(r1)
+-	std	r22,-8*9(r1)
+-	std	r23,-8*10(r1)
+-	std	r24,-8*11(r1)
+-	std	r25,-8*12(r1)
+-	std	r26,-8*13(r1)
+-	std	r27,-8*14(r1)
+-	std	r28,-8*15(r1)
+-	std	r29,-8*16(r1)
+-	std	r30,-8*17(r1)
+-	std	r31,-8*18(r1)
+-	std	r4,-8*19(r1)
+-	std	r5,-8*20(r1)
++	/*
++	 * Use the stack red zone rather than a new frame for saving regs since
++	 * in the case of no GPR loss the wakeup code branches directly back to
++	 * the caller without deallocating the stack frame first.
++	 */
++	std	r2,-8*1(r1)
++	std	r14,-8*2(r1)
++	std	r15,-8*3(r1)
++	std	r16,-8*4(r1)
++	std	r17,-8*5(r1)
++	std	r18,-8*6(r1)
++	std	r19,-8*7(r1)
++	std	r20,-8*8(r1)
++	std	r21,-8*9(r1)
++	std	r22,-8*10(r1)
++	std	r23,-8*11(r1)
++	std	r24,-8*12(r1)
++	std	r25,-8*13(r1)
++	std	r26,-8*14(r1)
++	std	r27,-8*15(r1)
++	std	r28,-8*16(r1)
++	std	r29,-8*17(r1)
++	std	r30,-8*18(r1)
++	std	r31,-8*19(r1)
++	std	r4,-8*20(r1)
++	std	r5,-8*21(r1)
+ 	/* 168 bytes */
+ 	PPC_STOP
+ 	b	.	/* catch bugs */
+@@ -87,8 +91,8 @@ _GLOBAL(isa300_idle_stop_mayloss)
+  */
+ _GLOBAL(idle_return_gpr_loss)
+ 	ld	r1,PACAR1(r13)
+-	ld	r4,-8*19(r1)
+-	ld	r5,-8*20(r1)
++	ld	r4,-8*20(r1)
++	ld	r5,-8*21(r1)
+ 	mtlr	r4
+ 	mtcr	r5
+ 	/*
+@@ -96,25 +100,25 @@ _GLOBAL(idle_return_gpr_loss)
+ 	 * from PACATOC. This could be avoided for that less common case
+ 	 * if KVM saved its r2.
+ 	 */
+-	ld	r2,-8*0(r1)
+-	ld	r14,-8*1(r1)
+-	ld	r15,-8*2(r1)
+-	ld	r16,-8*3(r1)
+-	ld	r17,-8*4(r1)
+-	ld	r18,-8*5(r1)
+-	ld	r19,-8*6(r1)
+-	ld	r20,-8*7(r1)
+-	ld	r21,-8*8(r1)
+-	ld	r22,-8*9(r1)
+-	ld	r23,-8*10(r1)
+-	ld	r24,-8*11(r1)
+-	ld	r25,-8*12(r1)
+-	ld	r26,-8*13(r1)
+-	ld	r27,-8*14(r1)
+-	ld	r28,-8*15(r1)
+-	ld	r29,-8*16(r1)
+-	ld	r30,-8*17(r1)
+-	ld	r31,-8*18(r1)
++	ld	r2,-8*1(r1)
++	ld	r14,-8*2(r1)
++	ld	r15,-8*3(r1)
++	ld	r16,-8*4(r1)
++	ld	r17,-8*5(r1)
++	ld	r18,-8*6(r1)
++	ld	r19,-8*7(r1)
++	ld	r20,-8*8(r1)
++	ld	r21,-8*9(r1)
++	ld	r22,-8*10(r1)
++	ld	r23,-8*11(r1)
++	ld	r24,-8*12(r1)
++	ld	r25,-8*13(r1)
++	ld	r26,-8*14(r1)
++	ld	r27,-8*15(r1)
++	ld	r28,-8*16(r1)
++	ld	r29,-8*17(r1)
++	ld	r30,-8*18(r1)
++	ld	r31,-8*19(r1)
+ 	blr
  
- 	/* SEV-ES scratch area support */
- 	void *ghcb_sa;
--	u64 ghcb_sa_len;
-+	u32 ghcb_sa_len;
- 	bool ghcb_sa_sync;
- 	bool ghcb_sa_free;
- 
+ /*
+@@ -152,28 +156,32 @@ _GLOBAL(isa206_idle_insn_mayloss)
+ 	std	r1,PACAR1(r13)
+ 	mflr	r4
+ 	mfcr	r5
+-	/* use stack red zone rather than a new frame for saving regs */
+-	std	r2,-8*0(r1)
+-	std	r14,-8*1(r1)
+-	std	r15,-8*2(r1)
+-	std	r16,-8*3(r1)
+-	std	r17,-8*4(r1)
+-	std	r18,-8*5(r1)
+-	std	r19,-8*6(r1)
+-	std	r20,-8*7(r1)
+-	std	r21,-8*8(r1)
+-	std	r22,-8*9(r1)
+-	std	r23,-8*10(r1)
+-	std	r24,-8*11(r1)
+-	std	r25,-8*12(r1)
+-	std	r26,-8*13(r1)
+-	std	r27,-8*14(r1)
+-	std	r28,-8*15(r1)
+-	std	r29,-8*16(r1)
+-	std	r30,-8*17(r1)
+-	std	r31,-8*18(r1)
+-	std	r4,-8*19(r1)
+-	std	r5,-8*20(r1)
++	/*
++	 * Use the stack red zone rather than a new frame for saving regs since
++	 * in the case of no GPR loss the wakeup code branches directly back to
++	 * the caller without deallocating the stack frame first.
++	 */
++	std	r2,-8*1(r1)
++	std	r14,-8*2(r1)
++	std	r15,-8*3(r1)
++	std	r16,-8*4(r1)
++	std	r17,-8*5(r1)
++	std	r18,-8*6(r1)
++	std	r19,-8*7(r1)
++	std	r20,-8*8(r1)
++	std	r21,-8*9(r1)
++	std	r22,-8*10(r1)
++	std	r23,-8*11(r1)
++	std	r24,-8*12(r1)
++	std	r25,-8*13(r1)
++	std	r26,-8*14(r1)
++	std	r27,-8*15(r1)
++	std	r28,-8*16(r1)
++	std	r29,-8*17(r1)
++	std	r30,-8*18(r1)
++	std	r31,-8*19(r1)
++	std	r4,-8*20(r1)
++	std	r5,-8*21(r1)
+ 	cmpwi	r3,PNV_THREAD_NAP
+ 	bne	1f
+ 	IDLE_STATE_ENTER_SEQ_NORET(PPC_NAP)
 
 
