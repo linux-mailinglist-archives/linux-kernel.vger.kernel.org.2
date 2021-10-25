@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E91C439F89
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A631E43A29A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhJYTVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:21:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37694 "EHLO mail.kernel.org"
+        id S236181AbhJYTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:50:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234634AbhJYTUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16B6360EBC;
-        Mon, 25 Oct 2021 19:18:11 +0000 (UTC)
+        id S236106AbhJYTo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:44:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B87A060E97;
+        Mon, 25 Oct 2021 19:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189492;
-        bh=UPV6SijOhIBsx5RkosXNn2LuMKAv7+0P01x+4i6Y2wE=;
+        s=korg; t=1635190727;
+        bh=7tBYm1ODoqwlUagp5EX5UQQrBDcqT4sUxILv3p7tMP4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0PLG+NJfCb5eqfhUVPTmHDXSvAfDKjAIEmwrhguNKQ1dVNsprTJFxL+wCPsjZzcmc
-         ukC3rerG1W6+6vGG2TvzGNWCodMlUe0JVVlj87mubEYYf+8z1bnfqwD9pEwOW2V+kR
-         iZPvJ5hqsk8PXMar5u/J2+GPAWO6y/8D7YijxBck=
+        b=urNd7K7up0xNNeB95D/AeMLrxxhAnMqvCEd62y36jEaMCcFERIYUPJo+m+3HEIOCn
+         6yCCsoimM3nWsWqe2bPMQWeK+fJRYScpIG9z9ZD5e5jilLFAkiagMW3kdnP4lQBbBz
+         iQvUGhQAQ0Z24+mdsVmkynCUeQFnwah+X5IV1aBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 09/50] USB: serial: option: add Telit LE910Cx composition 0x1204
-Date:   Mon, 25 Oct 2021 21:13:56 +0200
-Message-Id: <20211025190934.691471682@linuxfoundation.org>
+        stable@vger.kernel.org, Emeel Hakim <ehakim@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 056/169] net/mlx5e: IPsec: Fix work queue entry ethernet segment checksum flags
+Date:   Mon, 25 Oct 2021 21:13:57 +0200
+Message-Id: <20211025191024.700291644@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Emeel Hakim <ehakim@nvidia.com>
 
-commit f5a8a07edafed8bede17a95ef8940fe3a57a77d5 upstream.
+[ Upstream commit 1d000323940137332d4d62c6332b6daf5f07aba7 ]
 
-Add the following Telit LE910Cx composition:
+Current Work Queue Entry (WQE) checksum (csum) flags in the ethernet
+segment (eseg) in case of IPsec crypto offload datapath are not aligned
+with PRM/HW expectations.
 
-0x1204: tty, adb, mbim, tty, tty, tty, tty
+Currently the driver always sets the l3_inner_csum flag in case of IPsec
+because of the wrong usage of skb->encapsulation as indicator for inner
+IPsec header since skb->encapsulation is always ON for IPsec packets
+since IPsec itself is an encapsulation protocol. The above forced a
+failing attempts of calculating csum of non-existing segments (like in
+the IP|ESP|TCP packet case which does not have an l3_inner) which led
+to lots of packet drops hence the low throughput.
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20211004105655.8515-1-dnlplm@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix by using xo->inner_ipproto as indicator for inner IPsec header
+instead of skb->encapsulation in addition to setting the csum flags
+as following:
+* Tunnel Mode:
+* Pkt: MAC  IP     ESP  IP    L4
+* CSUM: l3_cs | l3_inner_cs | l4_inner_cs
+*
+* Transport Mode:
+* Pkt: MAC  IP     ESP  L4
+* CSUM: l3_cs [ | l4_cs (checksum partial case)]
+*
+* Tunnel(VXLAN TCP/UDP) over Transport Mode
+* Pkt: MAC  IP     ESP  UDP  VXLAN  IP    L4
+* CSUM: l3_cs | l3_inner_cs | l4_inner_cs
+
+Fixes: f1267798c980 ("net/mlx5: Fix checksum issue of VXLAN and IPsec crypto offload")
+Signed-off-by: Emeel Hakim <ehakim@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ .../net/ethernet/mellanox/mlx5/core/en_tx.c   | 20 ++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1209,6 +1209,8 @@ static const struct usb_device_id option
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
- 	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1204, 0xff),	/* Telit LE910Cx (MBIM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+index c63d78eda606..188994d091c5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -213,19 +213,18 @@ static inline void mlx5e_insert_vlan(void *start, struct sk_buff *skb, u16 ihs)
+ 	memcpy(&vhdr->h_vlan_encapsulated_proto, skb->data + cpy1_sz, cpy2_sz);
+ }
+ 
+-/* If packet is not IP's CHECKSUM_PARTIAL (e.g. icmd packet),
+- * need to set L3 checksum flag for IPsec
+- */
+ static void
+ ipsec_txwqe_build_eseg_csum(struct mlx5e_txqsq *sq, struct sk_buff *skb,
+ 			    struct mlx5_wqe_eth_seg *eseg)
+ {
++	struct xfrm_offload *xo = xfrm_offload(skb);
++
+ 	eseg->cs_flags = MLX5_ETH_WQE_L3_CSUM;
+-	if (skb->encapsulation) {
+-		eseg->cs_flags |= MLX5_ETH_WQE_L3_INNER_CSUM;
++	if (xo->inner_ipproto) {
++		eseg->cs_flags |= MLX5_ETH_WQE_L4_INNER_CSUM | MLX5_ETH_WQE_L3_INNER_CSUM;
++	} else if (likely(skb->ip_summed == CHECKSUM_PARTIAL)) {
++		eseg->cs_flags |= MLX5_ETH_WQE_L4_CSUM;
+ 		sq->stats->csum_partial_inner++;
+-	} else {
+-		sq->stats->csum_partial++;
+ 	}
+ }
+ 
+@@ -234,6 +233,11 @@ mlx5e_txwqe_build_eseg_csum(struct mlx5e_txqsq *sq, struct sk_buff *skb,
+ 			    struct mlx5e_accel_tx_state *accel,
+ 			    struct mlx5_wqe_eth_seg *eseg)
+ {
++	if (unlikely(mlx5e_ipsec_eseg_meta(eseg))) {
++		ipsec_txwqe_build_eseg_csum(sq, skb, eseg);
++		return;
++	}
++
+ 	if (likely(skb->ip_summed == CHECKSUM_PARTIAL)) {
+ 		eseg->cs_flags = MLX5_ETH_WQE_L3_CSUM;
+ 		if (skb->encapsulation) {
+@@ -249,8 +253,6 @@ mlx5e_txwqe_build_eseg_csum(struct mlx5e_txqsq *sq, struct sk_buff *skb,
+ 		eseg->cs_flags = MLX5_ETH_WQE_L3_CSUM | MLX5_ETH_WQE_L4_CSUM;
+ 		sq->stats->csum_partial++;
+ #endif
+-	} else if (unlikely(mlx5e_ipsec_eseg_meta(eseg))) {
+-		ipsec_txwqe_build_eseg_csum(sq, skb, eseg);
+ 	} else
+ 		sq->stats->csum_none++;
+ }
+-- 
+2.33.0
+
 
 
