@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C98439DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F122E439DD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbhJYRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
+        id S232977AbhJYRtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233960AbhJYRrm (ORCPT
+        with ESMTP id S230495AbhJYRtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:47:42 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698C1C061767;
-        Mon, 25 Oct 2021 10:45:20 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id r2so11647040pgl.10;
-        Mon, 25 Oct 2021 10:45:20 -0700 (PDT)
+        Mon, 25 Oct 2021 13:49:17 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719F6C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:46:55 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id l203so6720206pfd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:46:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hQuOb33lvCgB0Mk7LRNu5ggVy0l0tYq9eTUqKY/rWgk=;
-        b=IpXzDwYYujGdrMjTHxSzlvL+uXoxmUO4GJmMzqRfoTQWkNUTiNpyDQJZEHGWdfHQ5L
-         raIpJntj2TMCj43d9KQgOomWKZLyx5JnKr4GB56orihqsXB2disApfT0+MyJCFDKmVWW
-         Wud9+BFglfdAJK8gEiy+JyzPw6KBcRPnHK+EC2HqCUEM6DkQHXHNXZ0QfNFuD1TfJ7ao
-         O4DZ2mmWhBtlIBm4YcckLjo+Mlx97GcWobZHglIoy+XzUukL0VVpV+X+LQAj5+CmEUm0
-         fe6vpf1F/Hlj+lVdQFx6SvPjSTucW7WypxjuiOJQgH19SUlmqS22Venj+LIY7Wwa8aKh
-         aw8g==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=lRCLonp2m0ZX/kiQpm22eJ4VdDoH6ZXlTAQKw42QYHM=;
+        b=BkvodgijNEcYV6LipVkdNO7Uk4Gx5XoOY1SvowNsr2pVsYsfL8JLEnIE0jMiw407lz
+         4m4sCoHuxvK/rByGutr3rZokoqC60KIr11xvgf1chF8oP286qMReKqjJ7mdLwfEltm86
+         nwxmTqxC5KIM+lEVFg76qtEUn4pyVk9V2pj8LU6iJ1zXIgXoy/DqoBUsIE3V6M/sOYSF
+         uspWDNr5qUJJr2wLPtdOcsr7VUmEhwEzPIYMqPzrjXCb6af5oN+gVW9GXY159fmy7kul
+         Jqwkl0zQtkklB7JCtKH+ZQjH5piDGedizoE6FirWiAedgse2zc+Ds3CO2eCqz/Dr0eGc
+         v3fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=hQuOb33lvCgB0Mk7LRNu5ggVy0l0tYq9eTUqKY/rWgk=;
-        b=n0DKh2X00paY3Wm4Z10PfFY7bQxFyF5fAat0jyjUBOFuxjnf5GRnx2+h6Bv62IhgEA
-         wgkq1gJUCVd+UzLD8OXcYIe8cpxjJawOF85wFLUUo841qQAqvBgroWEGhRMdu7ZoyozR
-         w4x7Fac2OHYK/gVzn4aK0alhyIYdOfEMXeAJ22yOQYKKzkgN9jkXLewkrn4/a6+G7yAP
-         18Im2EdoXQWUBMgaK0Pbu7WMeBC4NnVlSORlXPfpnZ3T79ltCkbMbiQfvprJCVqs9XSc
-         Az4kEZBzKcPHu8NfbhmdtKen5wTPzwh2gX4AGuKBdZA8dk8ukTXMS9xCRuKiN+nElzC6
-         YTXQ==
-X-Gm-Message-State: AOAM531VDolEbxSC2GwrTqrK4ujkNApPKvEz22l93sAq0NlGXI8B6d3b
-        TmJrcE55RYIGS+9MUlDloJCgAwBDa/Q=
-X-Google-Smtp-Source: ABdhPJwiSeoxDpb+VsiHvVieWFXiy6CeGAdXK4XV9J+dZA8Cx/4g6DNojXxi1De2XZI7N9HfMSsmuQ==
-X-Received: by 2002:a63:d2:: with SMTP id 201mr14812533pga.400.1635183919568;
-        Mon, 25 Oct 2021 10:45:19 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id g10sm6174536pfc.3.2021.10.25.10.45.18
+        bh=lRCLonp2m0ZX/kiQpm22eJ4VdDoH6ZXlTAQKw42QYHM=;
+        b=Av+xJOOTXSuV3y5MkYsrIcqRvywIQ3vUQP1noKQolhEjQaZNV8BtXRrk9orXoA0o4u
+         eyu0r80xTAklNSyMaAAqmIuOnLuDaJTRwfhxlqbO6znxzqYVyBUsTSvUtZWTcVsMPLjO
+         4H3JAsRZLWOCSmb+WRn9J+vNPIveb30PKgJnsrfVUk2BOkvScH0g5hZDZ+2ysHfhI0uM
+         k5TkefIfKoHIxln0glRsVd9pQgvfqW1S3JRPRQThoPh2acajdrVc3WrskZYdQ54Qt/6T
+         slc20PduSeBbKrJ1SdzgGfHWHaSGaCWDcfERXzkXy9oJKUDTLN+S08790uLNsA+uf54A
+         AEzg==
+X-Gm-Message-State: AOAM531zl8/qUhLzd79Gf8uN3zY2ofWsQfxC0a5DRyCYblcgzE51nl7c
+        eMniCjB/no17+fJcV6AtGGu2n2a6CJ4=
+X-Google-Smtp-Source: ABdhPJzQWu/Q2DLK/fUyYZu+CvIe9LlEWeg7Z5LQxaYwtsg8Ymyq1d9sYVLhL3DGgCunbixrc1IkKQ==
+X-Received: by 2002:a05:6a00:198b:b0:47b:ac2d:68f4 with SMTP id d11-20020a056a00198b00b0047bac2d68f4mr19545483pfl.1.1635184014896;
+        Mon, 25 Oct 2021 10:46:54 -0700 (PDT)
+Received: from [192.168.1.4] ([59.95.95.35])
+        by smtp.gmail.com with ESMTPSA id b10sm20770695pfl.200.2021.10.25.10.46.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 10:45:19 -0700 (PDT)
-Subject: Re: [PATCH RESEND] tools/build: drop slang include path in test-all
-To:     John Keeping <john@metanate.com>, linux-perf-users@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, linux-kernel@vger.kernel.org
-References: <20211025172314.3766032-1-john@metanate.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9acd33bf-a11b-2c2e-569f-0de4c971404f@gmail.com>
-Date:   Mon, 25 Oct 2021 10:45:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 25 Oct 2021 10:46:54 -0700 (PDT)
+Message-ID: <896901f9-7659-7e05-ab61-2a76b76e999e@gmail.com>
+Date:   Mon, 25 Oct 2021 23:16:50 +0530
 MIME-Version: 1.0
-In-Reply-To: <20211025172314.3766032-1-john@metanate.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] staging: r8188eu: core: remove goto statement
+Content-Language: en-GB
+To:     Larry Finger <Larry.Finger@lwfinger.net>, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YXafzp5F8T7/+tk2@Sauravs-MacBook-Air.local>
+ <7dc4eba4-c009-b8b7-bc08-5b608bdf86a0@lwfinger.net>
+ <e2020caf-1b0c-ce0e-3d94-d105be85ed38@gmail.com>
+ <de1bddd8-8e09-4b8f-1fd8-ae9047e60269@lwfinger.net>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <de1bddd8-8e09-4b8f-1fd8-ae9047e60269@lwfinger.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 10:23 AM, John Keeping wrote:
-> Commit cbefd24f0aee3 ("tools build: Add test to check if slang.h is in
-> /usr/include/slang/") added a proper test to check whether slang.h is in
-> a subdirectory, and commit 1955c8cf5e26b ("perf tools: Don't hardcode
-> host include path for libslang") removed the include path for
-> test-libslang.bin but missed test-all.bin.  Apply the same change to
-> test-all.bin.
-> 
-> Fixes: 1955c8cf5e26 ("perf tools: Don't hardcode host include path for libslang")
-> Signed-off-by: John Keeping <john@metanate.com>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+
+On 25/10/21 10:56 pm, Larry Finger wrote:
+> On 10/25/21 12:00, Saurav Girepunje wrote:
+>>
+>>
+>> On 25/10/21 8:45 pm, Larry Finger wrote:
+>>> On 10/25/21 07:15, Saurav Girepunje wrote:
+>>>> Remove the goto statement from rtw_do_join(). In this function goto
+>>>> can be replace by return statement. As on goto label exit, function only
+>>>> return it is not performing any cleanup. Avoiding goto will improve
+>>>> the function readability.
+>>>>
+>>>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>>>> ---
+>>>
+>> Hi Larry,
+>>  
+>>> You need to read section 14 of Documentation/process/submitting-patches.rst to learn how to submit a revised patch.
+>> Resubmitting such a revision using the same subject line is likely to confuse reviewers and maintainers alike, if not patchworks.
+>>>
+>> This is original patch (v1). I haven't get any review comment for this patch.
+> 
+> Why did I get it twice? At least I got two messages with that subject line.
+> 
+> Larry
+
+I checked on lore.kernel.org . It is one patch with subject "[PATCH] staging: r8188eu: core: remove goto statement"
+
+https://lore.kernel.org/all/?q=Saurav+Girepunje
+
+Regards,
+Saurav
+
