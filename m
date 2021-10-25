@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12D543948C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4FD43948F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhJYLOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
+        id S233022AbhJYLPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhJYLOm (ORCPT
+        with ESMTP id S233016AbhJYLO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:14:42 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CF4C061745;
-        Mon, 25 Oct 2021 04:12:20 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id l13so20991631edi.8;
-        Mon, 25 Oct 2021 04:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DE414Csss+ESJUsxIVSV3LbjKKBbROgWqQe4HOBfb1o=;
-        b=ZyabSViE6U7Oogdi/LL9eL0DoZU1mlE5KHkHL4kMn5iqw3evyYKxGSA/W6q38331bM
-         BwzH90IAxQMTWxLdXZBFrIRih2fY27usQYqwoOop1toa+3X5qgVXvc1SSSkIaifjMG/0
-         Nn8EUcL1MOUPCUYeDWwvaJGdDkKdIcBzOFHDrsGFP3UAEYKqqwC8UKGzt1d+d+AKgN9Z
-         wQdFk8V/VcpXrC3ZY98ZamMK/2y/sU589/tsO1FFMEwmDqZ4W+Mc5UKF79NVgKWRrklC
-         2W8tcKHBVZsh2pv3l2f4fM+1M5sUdZLbU57j6ep4wR4Azrw+8nf2Fz26huOrOA/Hpd9W
-         MrRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DE414Csss+ESJUsxIVSV3LbjKKBbROgWqQe4HOBfb1o=;
-        b=TNSjPm7ipHVX8sD52eHcIyniuUWiAO9y3LfdaFSHP5xDYXF0ES/68BjuMWaF0Jdj6u
-         e2aCkRdRFxqOogJ228nA/ELufSXSHnNJUPl42jUMZK7xiuC7GrjI817R548sAIaLpWi9
-         sEyvZrRSqtvNSi/52wntKyThAWLfbdxL3k6qzw7jVx9//YOli1PoTcczo0tF2KBFaZdi
-         RckDP5le2i9YIHoID4aR6aUl/zYxTNrRgwh8cqGst+gZ9HX4MQJH9A/xq0zxtEwQr73k
-         DTtTPAREiIwfHUhY5emszO+WknbhxtAnms4Eyy7OWP6qabbH/re+rZAcRCXD6hb6vn48
-         Rw5g==
-X-Gm-Message-State: AOAM531wyNtFJQoV3TuE2TKpxyeJeHA0b+2C5NJGLFvjzHzCp/WxmQJj
-        t7YFQe5MLydqwOzSd9O7p0D6uVn/4LtCI//rc6o=
-X-Google-Smtp-Source: ABdhPJxsHqCxc9rcuWSI/uo1379vMzZ34fwIDA/WvIMYTprTuHb5Azjp9WOPaOClk9+sjtE6UnOhGd4VS5+dBo7YQhQ=
-X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr14174870ejc.128.1635160338586;
- Mon, 25 Oct 2021 04:12:18 -0700 (PDT)
+        Mon, 25 Oct 2021 07:14:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0450AC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fWNxGT5LtHzA26MweR5leugLZdnvfvBUGjVtTUT0oqA=; b=JmO3/plrRLhiuyjpPJ1R/qg2up
+        RAavhob5okv+8vNs79EfBR0iAkR8EvUaNfaeRXPMKijRHV2/FxTL4HhIInWqsYv61GD6Bw3lb4t5o
+        1NAbqU6iwRLcFREv//JAZPYsZ3CisfvORjZ2ryKk/kCPvnhyrFE54mnh+yPdGun7UkKYyWcsF/F+R
+        5Z1Q4FXp50qyVsCnAHovDJYi0l4/bN2BKnfHk20kMbSlAf3N5VtSJ23/X0xLGohQeG+EqQ+41R5Xn
+        g9xKhO3H1PaxXVkEb8CnROrnKODaxo8EkfC9ELXZkRwvQcOE4Q/pronaCVZoFx5nztcloXylWZxmU
+        kSVT7ZfA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mexu1-00C8IH-A3; Mon, 25 Oct 2021 11:12:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CC66D300230;
+        Mon, 25 Oct 2021 13:12:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AE47320C6C147; Mon, 25 Oct 2021 13:12:28 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 13:12:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+Subject: Re: [PATCH v2 5/5] mm/mprotect: do not flush on permission promotion
+Message-ID: <YXaRHE0IrJD2lXeg@hirez.programming.kicks-ass.net>
+References: <20211021122112.592634-1-namit@vmware.com>
+ <20211021122112.592634-6-namit@vmware.com>
 MIME-Version: 1.0
-References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-5-hdegoede@redhat.com>
-In-Reply-To: <20211025094119.82967-5-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 25 Oct 2021 14:11:24 +0300
-Message-ID: <CAHp75Ve4nu1WDURaSvUto6+aLoEDM2OfTCVi2Th6x-oagO6a-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 04/11] regulator: Introduce tps68470-regulator driver
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021122112.592634-6-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> The TPS68470 PMIC provides Clocks, GPIOs and Regulators. At present in
-> the kernel the Regulators and Clocks are controlled by an OpRegion
-> driver designed to work with power control methods defined in ACPI, but
-> some platforms lack those methods, meaning drivers need to be able to
-> consume the resources of these chips through the usual frameworks.
->
-> This commit adds a driver for the regulators provided by the tps68470,
-> and is designed to bind to the platform_device registered by the
-> intel_skl_int3472 module.
->
-> This is based on this out of tree driver written by Intel:
-> https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/regulator/tps68470-regulator.c
-> with various cleanups added.
-
-> +struct tps68470_regulator_data {
-> +       struct clk *clk;
-> +};
-
-...
-
+On Thu, Oct 21, 2021 at 05:21:12AM -0700, Nadav Amit wrote:
 > +/*
-> + * (1) This register must have same setting as VIOVAL if S_IO LDO is used to
-> + *     power daisy chained IOs in the receive side.
-> + * (2) If there is no I2C daisy chain it can be set freely.
-
-> + *
-
-Redundant empty line.
-
+> + * pte_may_need_flush() checks whether permissions were demoted and require a
+> + * flush. It should only be used for userspace PTEs.
 > + */
+> +static inline bool pte_may_need_flush(pte_t oldpte, pte_t newpte)
+> +{
+> +	/* new is non-present: need only if old is present */
+> +	if (!pte_present(newpte))
+> +		return pte_present(oldpte);
+> +
+> +	/* old is not present: no need for flush */
+> +	if (!pte_present(oldpte))
+> +		return false;
 
-...
+Would it not be clearer to write the above like:
 
-> +       struct tps68470_regulator_platform_data *pdata = pdev->dev.platform_data;
+	/* !PRESENT -> * ; no need for flush */
+	if (!pte_present(oldpte))
+		return false;
 
-dev_get_platdata() ?
+	/* PRESENT -> !PRESENT ; needs flush */
+	if (!pte_present(newpte))
+		return true;
 
-...
+?
 
-> +       data->clk = devm_clk_get(&pdev->dev, "tps68470-clk");
-> +       if (IS_ERR(data->clk)) {
-> +               dev_err(&pdev->dev, "Error getting tps68470-clk\n");
-> +               return PTR_ERR(data->clk);
-> +       }
 
-return dev_err_probe(...);
+> diff --git a/mm/mprotect.c b/mm/mprotect.c
+> index 0f5c87af5c60..6179c82ea72d 100644
+> --- a/mm/mprotect.c
+> +++ b/mm/mprotect.c
+> @@ -141,7 +141,8 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
+>  				ptent = pte_mkwrite(ptent);
+>  			}
+>  			ptep_modify_prot_commit(vma, addr, pte, oldpte, ptent);
+> -			tlb_flush_pte_range(tlb, addr, PAGE_SIZE);
+> +			if (pte_may_need_flush(oldpte, ptent))
+> +				tlb_flush_pte_range(tlb, addr, PAGE_SIZE);
+>  			pages++;
+>  		} else if (is_swap_pte(oldpte)) {
+>  			swp_entry_t entry = pte_to_swp_entry(oldpte);
 
-...
+One question on naming, "may_need" sounds a bit washy to me, either it
+does or it does not. I suppose you're trying to convey the fact that we
+ought to err towards too many TLBi rather than too few, but that's
+always true.
 
-> +               rdev = devm_regulator_register(&pdev->dev, &regulators[i], &config);
-> +               if (IS_ERR(rdev)) {
-> +                       dev_err(&pdev->dev, "failed to register %s regulator\n",
-> +                               regulators[i].name);
-> +                       return PTR_ERR(rdev);
-> +               }
-
-Ditto.
-
--- 
-With Best Regards,
-Andy Shevchenko
+That is, would "needs" not be a better name?
