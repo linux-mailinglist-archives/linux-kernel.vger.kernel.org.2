@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D52443A2B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D59439F7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235059AbhJYTvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:51:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37362 "EHLO mail.kernel.org"
+        id S234544AbhJYTVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:21:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237482AbhJYTpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:45:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A29610A6;
-        Mon, 25 Oct 2021 19:39:24 +0000 (UTC)
+        id S234078AbhJYTUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 000D96109E;
+        Mon, 25 Oct 2021 19:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190766;
-        bh=FnqM45JuIb+yznojqWwEuDpjDc9Nr2odAkZAX/+GiJU=;
+        s=korg; t=1635189457;
+        bh=HEILqjhA195KOm743w6KJSXk62kpXF/4FXJ8kcTGj1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ebMLdFwOLgzGZa+nASxWteP28d8XsP74Bc5uo34UjUyQev4RcLoF7ahQcvRHCePPY
-         OIPA7lq+aas5O3xij0MZymmRZfiJwEP7KobQV96JJMf4VL65QFTES+xEKRCMTJwGmS
-         9RiMFbvSJLb64i+eL/EIPV5syyLLLRIzX/+njnxo=
+        b=F5wXG+KVY3jyDGi6lsViohzxZM+9hI4D50MlTMekt95oFzY82bX90bWZMLwWNb14x
+         BBsW8wwlTpYjpsjCvlb4SRsdiscWAODzD3NYqW4Zoy4GDUha52kX2pQX3di5WYTotc
+         jj+feLvhyjWcDUsQ9/WZYf4t+iBL0qq0seO/KQSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 046/169] net: hns3: add limit ets dwrr bandwidth cannot be 0
-Date:   Mon, 25 Oct 2021 21:13:47 +0200
-Message-Id: <20211025191023.619761507@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        John Keeping <john@metanate.com>
+Subject: [PATCH 4.9 01/50] ALSA: seq: Fix a potential UAF by wrong private_free call order
+Date:   Mon, 25 Oct 2021 21:13:48 +0200
+Message-Id: <20211025190933.031333717@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,46 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 731797fdffa3d083db536e2fdd07ceb050bb40b1 ]
+commit 1f8763c59c4ec6254d629fe77c0a52220bd907aa upstream.
 
-If ets dwrr bandwidth of tc is set to 0, the hardware will switch to SP
-mode. In this case, this tc may occupy all the tx bandwidth if it has
-huge traffic, so it violates the purpose of the user setting.
+John Keeping reported and posted a patch for a potential UAF in
+rawmidi sequencer destruction: the snd_rawmidi_dev_seq_free() may be
+called after the associated rawmidi object got already freed.
+After a deeper look, it turned out that the bug is rather the
+incorrect private_free call order for a snd_seq_device.  The
+snd_seq_device private_free gets called at the release callback of the
+sequencer device object, while this was rather expected to be executed
+at the snd_device call chains that runs at the beginning of the whole
+card-free procedure.  It's been broken since the rewrite of
+sequencer-device binding (although it hasn't surfaced because the
+sequencer device release happens usually right along with the card
+device release).
 
-To fix this problem, limit the ets dwrr bandwidth must greater than 0.
+This patch corrects the private_free call to be done in the right
+place, at snd_seq_device_dev_free().
 
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 7c37ae5c625a ("ALSA: seq: Rewrite sequencer device binding with standard bus")
+Reported-and-tested-by: John Keeping <john@metanate.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210930114114.8645-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/core/seq/seq_device.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index c90bfde2aecf..c60d0626062c 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -133,6 +133,15 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
- 				*changed = true;
- 			break;
- 		case IEEE_8021QAZ_TSA_ETS:
-+			/* The hardware will switch to sp mode if bandwidth is
-+			 * 0, so limit ets bandwidth must be greater than 0.
-+			 */
-+			if (!ets->tc_tx_bw[i]) {
-+				dev_err(&hdev->pdev->dev,
-+					"tc%u ets bw cannot be 0\n", i);
-+				return -EINVAL;
-+			}
-+
- 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
- 				HCLGE_SCH_MODE_DWRR)
- 				*changed = true;
--- 
-2.33.0
-
+--- a/sound/core/seq/seq_device.c
++++ b/sound/core/seq/seq_device.c
+@@ -162,6 +162,8 @@ static int snd_seq_device_dev_free(struc
+ 	struct snd_seq_device *dev = device->device_data;
+ 
+ 	cancel_autoload_drivers();
++	if (dev->private_free)
++		dev->private_free(dev);
+ 	put_device(&dev->dev);
+ 	return 0;
+ }
+@@ -189,11 +191,7 @@ static int snd_seq_device_dev_disconnect
+ 
+ static void snd_seq_dev_release(struct device *dev)
+ {
+-	struct snd_seq_device *sdev = to_seq_dev(dev);
+-
+-	if (sdev->private_free)
+-		sdev->private_free(sdev);
+-	kfree(sdev);
++	kfree(to_seq_dev(dev));
+ }
+ 
+ /*
 
 
