@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E0F4396AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511084396B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhJYMyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbhJYMx6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:53:58 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE52C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so11322867pji.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l0gxeYb7CuPuOEYUzEz6CBsyCpJ15hKcmaTNWBN6Ra0=;
-        b=fbyV+ZZ1F6ASV4drvbf1fIgx3k1wRSJ/h4+kf2Yjc6N3kQdd+XApOqXH8rv8psJM82
-         BC/gmPQON6chy+iMDeA6/JcwfeUG83H/jVNXZBU2FPtadW6t2370uvj7XS4vcpV52Fki
-         VJ2y2LNeAUIGFxirOnH3WP/lKCkwi4HWwr/NeohR0PjpCZXMuQmgaymZI/lNS59wNngI
-         W/qOkMWkf68hRl1xUlyaQvgLL9H46M/+eW5BNoe977YqZRnzLpprefAlr/qU7IxSp2Zx
-         Ne3NbBsD7JSV4mtrAdKA2HpcJQ1kQoomeRIGlcHBNzJePGVfQmayv5/YL/ioyYY+81ia
-         pBYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l0gxeYb7CuPuOEYUzEz6CBsyCpJ15hKcmaTNWBN6Ra0=;
-        b=WoxRgB2Ho9cSbeGTBEa8S6FA8tfbBsZg6LU5ZTMSt36DFQ9YHaEVsWo2F4oXTJHvnX
-         tnge0UGp06ZpXeyUO9KCcmWCKiAvmXuvgREjBvImOshzRafhlySjv4wfbDTG3cK6fd36
-         oapwTiqoP86bI7WcirDJktytb8vmSgA9fldcDHOcxClObUp/rkzDQzagRf24rdXpfH3d
-         9663toBh0+qygMCCiLr1wuYBx7kSWRWofsdML00Kw/2kU+hQBSSV8Y9wlRqeDFwhs/AY
-         Sn63r4l52hzcdOxCWw5G/1fSLjYw+G/eu9RKHkBQKhNUm9Q/+yuwUt70+nFEesHzLrxt
-         UI0Q==
-X-Gm-Message-State: AOAM531C0xDcX8nfBuMRpKpTy2zrPE2E9iVnWs1bK+7y8E453iTOIk0k
-        tVC379khL3eb4fHV+gi2iB7vcw==
-X-Google-Smtp-Source: ABdhPJzspTiZhhAOdxhF/PoEWNdFL59WC9kQRhjlVlbfM4tk1xVTlSDLJuGpuRoB7Rc/Nx4OolFCRA==
-X-Received: by 2002:a17:902:728b:b0:13f:c086:bdfe with SMTP id d11-20020a170902728b00b0013fc086bdfemr16422107pll.6.1635166296351;
-        Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
-Received: from localhost.localdomain ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id y6sm15692823pfi.154.2021.10.25.05.51.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Oct 2021 05:51:36 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, mhocko@kernel.org, shakeelb@google.com,
-        willy@infradead.org, guro@fb.com, hannes@cmpxchg.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: remove kmemcg_id reparenting
-Date:   Mon, 25 Oct 2021 20:51:02 +0800
-Message-Id: <20211025125102.56533-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S233371AbhJYMy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:54:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233294AbhJYMy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:54:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF14860F22;
+        Mon, 25 Oct 2021 12:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635166354;
+        bh=hzcwhkDL3CBQc33Ym3Rph81drL4E7gP6JSF8mSD53Ek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ujg9laVlPovWEsNLmo+33wfgDma3MzjiPOcthwAAH8hjWCn3dZrT/LiVkOg9yfmcg
+         N627/jaQZYzx6La2p5PpGMMpsZ8mFcW1e2TvhEqTPIcNwNkU/nM0jYTiCPQqL8nWDJ
+         WA1Yk+EOMmq7PuehYNSihg5vaBQkN0Jqea4rQzK4=
+Date:   Mon, 25 Oct 2021 14:52:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] dma-buf: move dma-buf symbols into the DMA_BUF module
+ namespace
+Message-ID: <YXaokMh09Xdh9KjZ@kroah.com>
+References: <20211010124628.17691-1-gregkh@linuxfoundation.org>
+ <YXaIx0g/kHEnq8ZN@kroah.com>
+ <7328189c-0567-847e-17e9-e2ed4f3a78f4@amd.com>
+ <CAO_48GE9C_eOK84iYwvNjkGQRcFQQ8Hn-z70ndOhmF1gbmd5BQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAO_48GE9C_eOK84iYwvNjkGQRcFQQ8Hn-z70ndOhmF1gbmd5BQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since slab objects and kmem pages are charged to object cgroup instead
-of memory cgroup, memcg_reparent_objcgs() will reparent this cgroup and
-all its descendants to its parent cgroup. This already makes further
-list_lru_add()'s add elements to the parent's list. So it is unnecessary
-to change kmemcg_id of an offline cgroup to its parent's id. It just
-wastes CPU cycles. Just to remove those redundant code.
+On Mon, Oct 25, 2021 at 05:43:49PM +0530, Sumit Semwal wrote:
+> Hi Greg,
+> 
+> On Mon, 25 Oct 2021 at 16:29, Christian König <christian.koenig@amd.com> wrote:
+> >
+> > Am 25.10.21 um 12:36 schrieb Greg Kroah-Hartman:
+> > > On Sun, Oct 10, 2021 at 02:46:28PM +0200, Greg Kroah-Hartman wrote:
+> > >> In order to better track where in the kernel the dma-buf code is used,
+> > >> put the symbols in the namespace DMA_BUF and modify all users of the
+> > >> symbols to properly import the namespace to not break the build at the
+> > >> same time.
+> > >>
+> > >> Now the output of modinfo shows the use of these symbols, making it
+> > >> easier to watch for users over time:
+> > >>
+> > >> $ modinfo drivers/misc/fastrpc.ko | grep import
+> > >> import_ns:      DMA_BUF
+> > >>
+> > >> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> > >> Cc: David Airlie <airlied@linux.ie>
+> > >> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > >> Cc: Maxime Ripard <mripard@kernel.org>
+> > >> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > >> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > >> Cc: dri-devel@lists.freedesktop.org
+> > >> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > >> Acked-by: Christian König <christian.koenig@amd.com>
+> > >> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > >> Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
+> > >> Acked-by: Alex Deucher <alexander.deucher@amd.com>
+> > >> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > >> ---
+> > >> v2: added lots of acks
+> > >>      added 2 more drivers that needed the change, as found by Arnd
+> > > Ping?  Any ideas on what needs to happen to get this into the tree?
+> > >
+> > > Or can I take it through my char-misc tree?  I seem to have a bunch of
+> > > acks on it by the respective maintainers...
+> >
+> > I could push that upstream through the drm-misc-next tree if you like,
+> > but honestly char-misc sounds like the better approach since this
+> > touches a lot of drivers outside of drm as well.
+> 
+> I agree with Christian here - char-misc might be a better way for this.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+Good idea, I'll take it through this tree as it will need to add the
+symbol to the habanalabs driver at the same time as it has picked up
+support for these symbols in my tree.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6538595994d2..e26f87cd7e4c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3645,8 +3645,7 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- 
- static void memcg_offline_kmem(struct mem_cgroup *memcg)
- {
--	struct cgroup_subsys_state *css;
--	struct mem_cgroup *parent, *child;
-+	struct mem_cgroup *parent;
- 	int kmemcg_id;
- 
- 	if (memcg->kmem_state != KMEM_ONLINE)
-@@ -3664,21 +3663,11 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 	BUG_ON(kmemcg_id < 0);
- 
- 	/*
--	 * Change kmemcg_id of this cgroup and all its descendants to the
--	 * parent's id, and then move all entries from this cgroup's list_lrus
--	 * to ones of the parent. After we have finished, all list_lrus
--	 * corresponding to this cgroup are guaranteed to remain empty. The
--	 * ordering is imposed by list_lru_node->lock taken by
-+	 * After we have finished memcg_reparent_objcgs(), all list_lrus
-+	 * corresponding to this cgroup are guaranteed to remain empty.
-+	 * The ordering is imposed by list_lru_node->lock taken by
- 	 * memcg_drain_all_list_lrus().
- 	 */
--	rcu_read_lock(); /* can be called from css_free w/o cgroup_mutex */
--	css_for_each_descendant_pre(css, &memcg->css) {
--		child = mem_cgroup_from_css(css);
--		BUG_ON(child->kmemcg_id != kmemcg_id);
--		child->kmemcg_id = parent->kmemcg_id;
--	}
--	rcu_read_unlock();
--
- 	memcg_drain_all_list_lrus(kmemcg_id, parent);
- 
- 	memcg_free_cache_id(kmemcg_id);
--- 
-2.11.0
+thanks,
 
+greg k-h
