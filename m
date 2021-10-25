@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A1C43A1F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEFE43A35F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237416AbhJYTnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:43:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48472 "EHLO mail.kernel.org"
+        id S238108AbhJYT7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235309AbhJYTbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:31:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B31F61139;
-        Mon, 25 Oct 2021 19:28:03 +0000 (UTC)
+        id S237952AbhJYTxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:53:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04C73611AF;
+        Mon, 25 Oct 2021 19:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190084;
-        bh=NPNYp8OuvMiUMTw3xADCPe+MPBgemo9Lz4wNpgaXrQ4=;
+        s=korg; t=1635191042;
+        bh=G23Nqwrx7i6SnVXY5vCcbIdbDoKMBTZ/MVDmtylSRcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rzm/EGbcnsp/vhAakKowpxfRiOEF2Q0Fnaoo78WHtgWOi2OYWrOR8QKbzwVtB574M
-         WvTA9vBmnAVd29WI76r+o6migLubHZez3YZnYtv9CDI/Wsr9rC1va7CeNIGmpYCeNE
-         WBYkBwjSSLsTEV19M7gqlWOmCOEljKd9wYO4jrRY=
+        b=Fuk7YbA3HFwOwehsYqRYtaNwMAlgCRTiU8P1Rw8wOtiWLFb5skUKja1NZUnTZNdm5
+         b6CkiogYxgQt+TCsaqoVtrKaBq6GibI8pJ69sLwaIyJK/XbnLPhgHNn7cjFc28PsU1
+         clnn8NlnAPNylV0UnXv0oxCvr0j6E1CuoSRhPK3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 46/58] btrfs: deal with errors when checking if a dir entry exists during log replay
-Date:   Mon, 25 Oct 2021 21:15:03 +0200
-Message-Id: <20211025190945.326788692@linuxfoundation.org>
+        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 123/169] net: hns3: fix the max tx size according to user manual
+Date:   Mon, 25 Oct 2021 21:15:04 +0200
+Message-Id: <20211025191033.413361268@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,120 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit 77a5b9e3d14cbce49ceed2766b2003c034c066dc ]
+commit adfb7b4966c0c4c63a791f202b8b3837b07a9ece upstream.
 
-Currently inode_in_dir() ignores errors returned from
-btrfs_lookup_dir_index_item() and from btrfs_lookup_dir_item(), treating
-any errors as if the directory entry does not exists in the fs/subvolume
-tree, which is obviously not correct, as we can get errors such as -EIO
-when reading extent buffers while searching the fs/subvolume's tree.
+Currently the max tx size supported by the hw is calculated by
+using the max BD num supported by the hw. According to the hw
+user manual, the max tx size is fixed value for both non-TSO and
+TSO skb.
 
-Fix that by making inode_in_dir() return the errors and making its only
-caller, add_inode_ref(), deal with returned errors as well.
+This patch updates the max tx size according to the manual.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8ae10cfb5089("net: hns3: support tx-scatter-gather-fraglist feature")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c | 47 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |    7 ++-----
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |    6 ++----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 9d358dafef36..f34205569987 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -900,9 +900,11 @@ out:
- }
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -1845,7 +1845,6 @@ void hns3_shinfo_pack(struct skb_shared_
  
- /*
-- * helper function to see if a given name and sequence number found
-- * in an inode back reference are already in a directory and correctly
-- * point to this inode
-+ * See if a given name and sequence number found in an inode back reference are
-+ * already in a directory and correctly point to this inode.
-+ *
-+ * Returns: < 0 on error, 0 if the directory entry does not exists and 1 if it
-+ * exists.
-  */
- static noinline int inode_in_dir(struct btrfs_root *root,
- 				 struct btrfs_path *path,
-@@ -911,29 +913,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
+ static int hns3_skb_linearize(struct hns3_enet_ring *ring,
+ 			      struct sk_buff *skb,
+-			      u8 max_non_tso_bd_num,
+ 			      unsigned int bd_num)
  {
- 	struct btrfs_dir_item *di;
- 	struct btrfs_key location;
--	int match = 0;
-+	int ret = 0;
- 
- 	di = btrfs_lookup_dir_index_item(NULL, root, path, dirid,
- 					 index, name, name_len, 0);
--	if (di && !IS_ERR(di)) {
-+	if (IS_ERR(di)) {
-+		if (PTR_ERR(di) != -ENOENT)
-+			ret = PTR_ERR(di);
-+		goto out;
-+	} else if (di) {
- 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
- 		if (location.objectid != objectid)
+ 	/* 'bd_num == UINT_MAX' means the skb' fraglist has a
+@@ -1862,8 +1861,7 @@ static int hns3_skb_linearize(struct hns
+ 	 * will not help.
+ 	 */
+ 	if (skb->len > HNS3_MAX_TSO_SIZE ||
+-	    (!skb_is_gso(skb) && skb->len >
+-	     HNS3_MAX_NON_TSO_SIZE(max_non_tso_bd_num))) {
++	    (!skb_is_gso(skb) && skb->len > HNS3_MAX_NON_TSO_SIZE)) {
+ 		u64_stats_update_begin(&ring->syncp);
+ 		ring->stats.hw_limitation++;
+ 		u64_stats_update_end(&ring->syncp);
+@@ -1898,8 +1896,7 @@ static int hns3_nic_maybe_stop_tx(struct
  			goto out;
--	} else
-+	} else {
- 		goto out;
--	btrfs_release_path(path);
-+	}
- 
-+	btrfs_release_path(path);
- 	di = btrfs_lookup_dir_item(NULL, root, path, dirid, name, name_len, 0);
--	if (di && !IS_ERR(di)) {
--		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
--		if (location.objectid != objectid)
--			goto out;
--	} else
-+	if (IS_ERR(di)) {
-+		ret = PTR_ERR(di);
- 		goto out;
--	match = 1;
-+	} else if (di) {
-+		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
-+		if (location.objectid == objectid)
-+			ret = 1;
-+	}
- out:
- 	btrfs_release_path(path);
--	return match;
-+	return ret;
- }
- 
- /*
-@@ -1500,10 +1508,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
- 		if (ret)
- 			goto out;
- 
--		/* if we already have a perfect match, we're done */
--		if (!inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
--					btrfs_ino(BTRFS_I(inode)), ref_index,
--					name, namelen)) {
-+		ret = inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
-+				   btrfs_ino(BTRFS_I(inode)), ref_index,
-+				   name, namelen);
-+		if (ret < 0) {
-+			goto out;
-+		} else if (ret == 0) {
- 			/*
- 			 * look for a conflicting back reference in the
- 			 * metadata. if we find one we have to unlink that name
-@@ -1561,6 +1571,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
- 
- 			btrfs_update_inode(trans, root, inode);
  		}
-+		/* Else, ret == 1, we already have a perfect match, we're done. */
  
- 		ref_ptr = (unsigned long)(ref_ptr + ref_struct_size) + namelen;
- 		kfree(name);
--- 
-2.33.0
-
+-		if (hns3_skb_linearize(ring, skb, max_non_tso_bd_num,
+-				       bd_num))
++		if (hns3_skb_linearize(ring, skb, bd_num))
+ 			return -ENOMEM;
+ 
+ 		bd_num = hns3_tx_bd_count(skb->len);
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+@@ -185,11 +185,9 @@ enum hns3_nic_state {
+ 
+ #define HNS3_MAX_BD_SIZE			65535
+ #define HNS3_MAX_TSO_BD_NUM			63U
+-#define HNS3_MAX_TSO_SIZE \
+-	(HNS3_MAX_BD_SIZE * HNS3_MAX_TSO_BD_NUM)
++#define HNS3_MAX_TSO_SIZE			1048576U
++#define HNS3_MAX_NON_TSO_SIZE			9728U
+ 
+-#define HNS3_MAX_NON_TSO_SIZE(max_non_tso_bd_num) \
+-	(HNS3_MAX_BD_SIZE * (max_non_tso_bd_num))
+ 
+ #define HNS3_VECTOR_GL0_OFFSET			0x100
+ #define HNS3_VECTOR_GL1_OFFSET			0x200
 
 
