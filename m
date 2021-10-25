@@ -2,172 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FB243A806
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71FD43A80B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234065AbhJYXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
+        id S234445AbhJYXS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbhJYXQl (ORCPT
+        with ESMTP id S232664AbhJYXS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:16:41 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B14CC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:14:18 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso159745pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:14:18 -0700 (PDT)
+        Mon, 25 Oct 2021 19:18:26 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7928FC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:16:03 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id n7so12575919ljp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=Lh3py47gA8jg6Gb0rOjwQD82lb53Sm8VrPET+7wqweU=;
-        b=oC7s9lfcXvHb8GRvOWEgcGhIyRfEicCKCTCuu+2KC7c3BABC0NHhIBow7E6xLZIUyC
-         0xsSBuSoyShsveED9PlDgizbLrEAyiULB3490fdPvkS3iDgv1aEHxsl25nxTCwvBbpPA
-         jMjqJo93kja70FwMf6zXL663O2Lh3CdcM70xFd4xNpBxDLVt41lVBxdRU0BEB6LkwD6/
-         Ll5Bjm1ZtwoD3lpGAcur5UaX9jaAKjAwuJgrE3rcEBd8dAIlY6q28kBLFagPNN6UTO5w
-         w4ruzR2/Afvvyva2nkbLvm3B6gTOojkma9/APlNGsmvOlgZa86E6fzq6Uyg/Ipb9kXx5
-         i7tQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N57vRJe+Hp19ptzSp75ybyre1XzyfFA16SmQOsxj3tA=;
+        b=UgKxLMhT870ySRwwioSjbGbqOTOBYQ47GNWCxDiXZMwTTJf9VDBTR8W+864dN8KcsO
+         Z6fdPCVuLRfJK898kYlNziu6kubhhOKZSFSL88QzpLnCMRPDxMXRPb5TuftXYw1AbTu/
+         dNmRTderTGCnZEoMbOtKWZ1IZbBj7mM1zoEus=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=Lh3py47gA8jg6Gb0rOjwQD82lb53Sm8VrPET+7wqweU=;
-        b=3G+hgn4wL3jLcQgGDQ4vWQHVQcyfFNs7hlwyw1jpcdyPk4gmewXYC6Uh45A/Wat7bx
-         9FG6yUiva2OUsCoVk0+56KsJ23cUeEwn8otwZmxvW4PHv+itBfDu2kURu04pI1ovcwjw
-         uQS4u4aLqwkbOxdW8Jju9c0hMAOQnxvyIr+K15O1UrCYYdAzY6EZbllUW0vdipXNJEKV
-         hJgsAydnD05ilQby5WfMppXLjLENg1NPabGIARm++EK1hgHWNSg53ij2A8xz5E/lrdhE
-         QeQIKALI5kaIBNKP1NCA5//8Uz8pL5+kMUqQdYHWhikjXwUKBV3UX11EXwK7S+qXeIEr
-         /WhQ==
-X-Gm-Message-State: AOAM5318hEfZyst/9690qotlFunHtq0CoT4vbue0HnjTVZiJWmb/VCKa
-        tQoSRGJyY2SMFrpbqpMi7A==
-X-Google-Smtp-Source: ABdhPJwQNFIGfOE2VPjqLATShIXQYysjolvs2G1MnC0uCysSRth3EfS/RS0y3Jzr9s2LlVT31xGGyw==
-X-Received: by 2002:a17:90b:4a07:: with SMTP id kk7mr24128073pjb.37.1635203657849;
-        Mon, 25 Oct 2021 16:14:17 -0700 (PDT)
-Received: from u2004 ([2407:c800:3f11:740:8ea1:3c5:6c2d:e5c9])
-        by smtp.gmail.com with ESMTPSA id g5sm12041028pfc.65.2021.10.25.16.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 16:14:17 -0700 (PDT)
-From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
-X-Google-Original-From: Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Date:   Tue, 26 Oct 2021 08:14:13 +0900
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Ding Hui <dinghui@sangfor.com.cn>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] mm/hwpoison: remove MF_MSG_BUDDY_2ND and
- MF_MSG_POISONED_HUGE
-Message-ID: <20211025231120.GA2651146@u2004>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N57vRJe+Hp19ptzSp75ybyre1XzyfFA16SmQOsxj3tA=;
+        b=EltY2WgBoc7CgS+phSLtjZW8uKzu/mDVxiM1Ld4q4ROw2TDmQNw8LAHQpM6xyYy/TP
+         3vCBW8bZQaBt5L1ZhL1NT32OFb+2VTuUtUDX63HP9bKRLsY2c5e2TGyRDKBDyFHP9oiP
+         E5CAlwTp8mMsnelb81cEQYDSz2tCBK5Xs4R/fg0H9grpVadoRiSSDgkLHVpEqouAMV2x
+         z8R9DCYXrSASZLS8z3PTQhTG4XlNusNlulIu22urKRCBUqOqKxwrPsjuspkxbfcqorOF
+         XlzzczvLJvsP/WDbgfUZCSKVVSVBWksh3y0VCyjDIPljglE0OY1tlxJw2IW1Tbwp0tNQ
+         kIvw==
+X-Gm-Message-State: AOAM533T0NYXKYOHcVdDBJ5wuGPZkF7TXZ38HA1kvpb3muh07l1bJ0rs
+        OVmw68T44Wmydp9BioM0GJmh1V3tGonSmR8G
+X-Google-Smtp-Source: ABdhPJxdGgKjD+rFwcHycn0h6jXZxEtkCLcoSKEMDf2rRl8yTEnL9k5pTsZ74rHUvjOZAps1WVhL/Q==
+X-Received: by 2002:a2e:5cc7:: with SMTP id q190mr22404442ljb.494.1635203761550;
+        Mon, 25 Oct 2021 16:16:01 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id d5sm64969lfi.96.2021.10.25.16.16.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 16:16:00 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 188so2355190ljj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:16:00 -0700 (PDT)
+X-Received: by 2002:a2e:bc24:: with SMTP id b36mr21991313ljf.95.1635203760541;
+ Mon, 25 Oct 2021 16:16:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
-X-Mutt-References: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
-X-Mutt-Fcc: =Sent
+References: <87y26nmwkb.fsf@disp2133> <20211020174406.17889-13-ebiederm@xmission.com>
+ <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com> <9416e8d7-5545-4fc4-8ab0-68fddd35520b@kernel.org>
+In-Reply-To: <9416e8d7-5545-4fc4-8ab0-68fddd35520b@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Oct 2021 16:15:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whJETM0MHqWQKCVALBkJX-Th5471z5FW3gFJO5c73L6QA@mail.gmail.com>
+Message-ID: <CAHk-=whJETM0MHqWQKCVALBkJX-Th5471z5FW3gFJO5c73L6QA@mail.gmail.com>
+Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(I failed to send patch 3/4 and 4/4 due to the ratelimit of linux.dev,
-so I switched mail server...)
+On Mon, Oct 25, 2021 at 3:41 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> I'm rather nervous about all this, and I'm also nervous about the
+> existing code.  A quick skim is finding plenty of code paths that assume
+> force_sigsegv (or a do_exit that this series touches) are genuinely
+> unrecoverable.
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+I was going to say "what are you talking about", because clearly Eric
+kept it all fatal.
 
-These action_page_types are no longer used, so remove them.
+But then looked at that patch a bit more before I claimed you were wrong.
 
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- include/linux/mm.h      | 2 --
- include/ras/ras_event.h | 2 --
- mm/memory-failure.c     | 2 --
- 3 files changed, 6 deletions(-)
+And yeah, Eric's force_fatal_sig() is completely broken.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index a3229f609856..71d886470d71 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3246,7 +3246,6 @@ enum mf_action_page_type {
- 	MF_MSG_KERNEL_HIGH_ORDER,
- 	MF_MSG_SLAB,
- 	MF_MSG_DIFFERENT_COMPOUND,
--	MF_MSG_POISONED_HUGE,
- 	MF_MSG_HUGE,
- 	MF_MSG_FREE_HUGE,
- 	MF_MSG_NON_PMD_HUGE,
-@@ -3261,7 +3260,6 @@ enum mf_action_page_type {
- 	MF_MSG_CLEAN_LRU,
- 	MF_MSG_TRUNCATED_LRU,
- 	MF_MSG_BUDDY,
--	MF_MSG_BUDDY_2ND,
- 	MF_MSG_DAX,
- 	MF_MSG_UNSPLIT_THP,
- 	MF_MSG_UNKNOWN,
-diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-index 0bdbc0d17d2f..d0337a41141c 100644
---- a/include/ras/ras_event.h
-+++ b/include/ras/ras_event.h
-@@ -358,7 +358,6 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_KERNEL_HIGH_ORDER, "high-order kernel page" )	\
- 	EM ( MF_MSG_SLAB, "kernel slab page" )				\
- 	EM ( MF_MSG_DIFFERENT_COMPOUND, "different compound page after locking" ) \
--	EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )	\
- 	EM ( MF_MSG_HUGE, "huge page" )					\
- 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
- 	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
-@@ -373,7 +372,6 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_CLEAN_LRU, "clean LRU page" )			\
- 	EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )	\
- 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
--	EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )		\
- 	EM ( MF_MSG_DAX, "dax page" )					\
- 	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
- 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index a47b741ca04b..09f079987928 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -723,7 +723,6 @@ static const char * const action_page_types[] = {
- 	[MF_MSG_KERNEL_HIGH_ORDER]	= "high-order kernel page",
- 	[MF_MSG_SLAB]			= "kernel slab page",
- 	[MF_MSG_DIFFERENT_COMPOUND]	= "different compound page after locking",
--	[MF_MSG_POISONED_HUGE]		= "huge page already hardware poisoned",
- 	[MF_MSG_HUGE]			= "huge page",
- 	[MF_MSG_FREE_HUGE]		= "free huge page",
- 	[MF_MSG_NON_PMD_HUGE]		= "non-pmd-sized huge page",
-@@ -738,7 +737,6 @@ static const char * const action_page_types[] = {
- 	[MF_MSG_CLEAN_LRU]		= "clean LRU page",
- 	[MF_MSG_TRUNCATED_LRU]		= "already truncated LRU page",
- 	[MF_MSG_BUDDY]			= "free buddy page",
--	[MF_MSG_BUDDY_2ND]		= "free buddy page (2nd try)",
- 	[MF_MSG_DAX]			= "dax page",
- 	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
- 	[MF_MSG_UNKNOWN]		= "unknown page",
--- 
-2.25.1
+It claims to force a fatal signal, but doesn't actually do that at
+all, and is completely misnamed.
 
+It just uses "force_sig_info_to_task()", which still allows user space
+to catch signals - so it's not "fatal" in the least. It only punches
+through SIG_IGN and blocked signals.
 
+So yeah, that's broken.
 
+I do still think that that could the behavior we possibly want for
+that "can't write updated vm86 state back" situation, but for
+something that is called "fatal", it really needs to be fatal.
 
-
-
-
-
-
-
-
-
-From: Naoya Horiguchi <nao.horiguchi@gmail.com>
-To: 
-Cc: 
-Bcc: nao.horiguchi@gmail.com
-Subject: 
-Reply-To: 
-
+            Linus
