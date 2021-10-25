@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DA343A0B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2193843A312
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236137AbhJYTdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
+        id S238021AbhJYT4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:56:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235638AbhJYT2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:28:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE9706105A;
-        Mon, 25 Oct 2021 19:25:33 +0000 (UTC)
+        id S237176AbhJYTvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59A8F610D2;
+        Mon, 25 Oct 2021 19:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189935;
-        bh=lyOwcLhwhVwmAYtjBQyZZI002ToHdIlfZyj4oPigm/0=;
+        s=korg; t=1635190970;
+        bh=dMm0c36jhVP2kmnmO/Kv1dL2mOS6lCfp27SNnoJrt7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lgd7jGGRhVapdxbGhj6Z2CeVZTXYIuc0H6GBG0FcUxG310WuWKMT9KueuxpAuaEtk
-         aKaPxFgSR1uIBJ1xGOXfzE6/DT47JDaxIMfUs0SCWIRbjE1jhrTcXAMgYcIBLRjqpG
-         fJauC+nVzu21JuAOjGUMnLIuKydSqZOKy/YukIDE=
+        b=PghqIdX15IxjZLDHITYbAouDJn9s8vyxLYh3OEoTiWl4wO0cd0nNcsvNJTMvuVT9g
+         LIOt2DQ6A6uGlhroe8yyK4/o6osG5jebjm0RIb0Vh6McGRxo8p3lGyB+NTzytNnyrc
+         b2+yqrW9Qb4zGiFdg+1Urh/ML602PzMCfyUsZDp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/37] isdn: mISDN: Fix sleeping function called from invalid context
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.14 114/169] KVM: x86: split the two parts of emulator_pio_in
 Date:   Mon, 25 Oct 2021 21:14:55 +0200
-Message-Id: <20211025190934.262858521@linuxfoundation.org>
+Message-Id: <20211025191032.421237349@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +38,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 6510e80a0b81b5d814e3aea6297ba42f5e76f73c ]
+commit 3b27de27183911d461afedf50c6fa30c59740c07 upstream.
 
-The driver can call card->isac.release() function from an atomic
-context.
+emulator_pio_in handles both the case where the data is pending in
+vcpu->arch.pio.count, and the case where I/O has to be done via either
+an in-kernel device or a userspace exit.  For SEV-ES we would like
+to split these, to identify clearly the moment at which the
+sev_pio_data is consumed.  To this end, create two different
+functions: __emulator_pio_in fills in vcpu->arch.pio.count, while
+complete_emulator_pio_in clears it and releases vcpu->arch.pio.data.
 
-Fix this by calling this function after releasing the lock.
+Because this patch has to be backported, things are left a bit messy.
+kernel_pio() operates on vcpu->arch.pio, which leads to emulator_pio_in()
+having with two calls to complete_emulator_pio_in().  It will be fixed
+in the next release.
 
-The following log reveals it:
+While at it, remove the unused void* val argument of emulator_pio_in_out.
+The function currently hardcodes vcpu->arch.pio_data as the
+source/destination buffer, which sucks but will be fixed after the more
+severe SEV-ES buffer overflow.
 
-[   44.168226 ] BUG: sleeping function called from invalid context at kernel/workqueue.c:3018
-[   44.168941 ] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 5475, name: modprobe
-[   44.169574 ] INFO: lockdep is turned off.
-[   44.169899 ] irq event stamp: 0
-[   44.170160 ] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[   44.170627 ] hardirqs last disabled at (0): [<ffffffff814209ed>] copy_process+0x132d/0x3e00
-[   44.171240 ] softirqs last  enabled at (0): [<ffffffff81420a1a>] copy_process+0x135a/0x3e00
-[   44.171852 ] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[   44.172318 ] Preemption disabled at:
-[   44.172320 ] [<ffffffffa009b0a9>] nj_release+0x69/0x500 [netjet]
-[   44.174441 ] Call Trace:
-[   44.174630 ]  dump_stack_lvl+0xa8/0xd1
-[   44.174912 ]  dump_stack+0x15/0x17
-[   44.175166 ]  ___might_sleep+0x3a2/0x510
-[   44.175459 ]  ? nj_release+0x69/0x500 [netjet]
-[   44.175791 ]  __might_sleep+0x82/0xe0
-[   44.176063 ]  ? start_flush_work+0x20/0x7b0
-[   44.176375 ]  start_flush_work+0x33/0x7b0
-[   44.176672 ]  ? trace_irq_enable_rcuidle+0x85/0x170
-[   44.177034 ]  ? kasan_quarantine_put+0xaa/0x1f0
-[   44.177372 ]  ? kasan_quarantine_put+0xaa/0x1f0
-[   44.177711 ]  __flush_work+0x11a/0x1a0
-[   44.177991 ]  ? flush_work+0x20/0x20
-[   44.178257 ]  ? lock_release+0x13c/0x8f0
-[   44.178550 ]  ? __kasan_check_write+0x14/0x20
-[   44.178872 ]  ? do_raw_spin_lock+0x148/0x360
-[   44.179187 ]  ? read_lock_is_recursive+0x20/0x20
-[   44.179530 ]  ? __kasan_check_read+0x11/0x20
-[   44.179846 ]  ? do_raw_spin_unlock+0x55/0x900
-[   44.180168 ]  ? ____kasan_slab_free+0x116/0x140
-[   44.180505 ]  ? _raw_spin_unlock_irqrestore+0x41/0x60
-[   44.180878 ]  ? skb_queue_purge+0x1a3/0x1c0
-[   44.181189 ]  ? kfree+0x13e/0x290
-[   44.181438 ]  flush_work+0x17/0x20
-[   44.181695 ]  mISDN_freedchannel+0xe8/0x100
-[   44.182006 ]  isac_release+0x210/0x260 [mISDNipac]
-[   44.182366 ]  nj_release+0xf6/0x500 [netjet]
-[   44.182685 ]  nj_remove+0x48/0x70 [netjet]
-[   44.182989 ]  pci_device_remove+0xa9/0x250
+No functional change intended.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/isdn/hardware/mISDN/netjet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/x86.c |   45 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/netjet.c b/drivers/isdn/hardware/mISDN/netjet.c
-index 448370da2c3f..4a342daac98d 100644
---- a/drivers/isdn/hardware/mISDN/netjet.c
-+++ b/drivers/isdn/hardware/mISDN/netjet.c
-@@ -963,8 +963,8 @@ nj_release(struct tiger_hw *card)
- 		nj_disable_hwirq(card);
- 		mode_tiger(&card->bc[0], ISDN_P_NONE);
- 		mode_tiger(&card->bc[1], ISDN_P_NONE);
--		card->isac.release(&card->isac);
- 		spin_unlock_irqrestore(&card->lock, flags);
-+		card->isac.release(&card->isac);
- 		release_region(card->base, card->base_s);
- 		card->base_s = 0;
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6907,7 +6907,7 @@ static int kernel_pio(struct kvm_vcpu *v
+ }
+ 
+ static int emulator_pio_in_out(struct kvm_vcpu *vcpu, int size,
+-			       unsigned short port, void *val,
++			       unsigned short port,
+ 			       unsigned int count, bool in)
+ {
+ 	vcpu->arch.pio.port = port;
+@@ -6928,26 +6928,38 @@ static int emulator_pio_in_out(struct kv
+ 	return 0;
+ }
+ 
+-static int emulator_pio_in(struct kvm_vcpu *vcpu, int size,
+-			   unsigned short port, void *val, unsigned int count)
++static int __emulator_pio_in(struct kvm_vcpu *vcpu, int size,
++			     unsigned short port, unsigned int count)
+ {
+-	int ret;
++	WARN_ON(vcpu->arch.pio.count);
++	memset(vcpu->arch.pio_data, 0, size * count);
++	return emulator_pio_in_out(vcpu, size, port, count, true);
++}
+ 
+-	if (vcpu->arch.pio.count)
+-		goto data_avail;
++static void complete_emulator_pio_in(struct kvm_vcpu *vcpu, int size,
++				    unsigned short port, void *val)
++{
++	memcpy(val, vcpu->arch.pio_data, size * vcpu->arch.pio.count);
++	trace_kvm_pio(KVM_PIO_IN, port, size, vcpu->arch.pio.count, vcpu->arch.pio_data);
++	vcpu->arch.pio.count = 0;
++}
+ 
+-	memset(vcpu->arch.pio_data, 0, size * count);
++static int emulator_pio_in(struct kvm_vcpu *vcpu, int size,
++			   unsigned short port, void *val, unsigned int count)
++{
++	if (vcpu->arch.pio.count) {
++		/* Complete previous iteration.  */
++	} else {
++		int r = __emulator_pio_in(vcpu, size, port, count);
++		if (!r)
++			return r;
+ 
+-	ret = emulator_pio_in_out(vcpu, size, port, val, count, true);
+-	if (ret) {
+-data_avail:
+-		memcpy(val, vcpu->arch.pio_data, size * count);
+-		trace_kvm_pio(KVM_PIO_IN, port, size, count, vcpu->arch.pio_data);
+-		vcpu->arch.pio.count = 0;
+-		return 1;
++		/* Results already available, fall through.  */
  	}
--- 
-2.33.0
-
+ 
+-	return 0;
++	WARN_ON(count != vcpu->arch.pio.count);
++	complete_emulator_pio_in(vcpu, size, port, val);
++	return 1;
+ }
+ 
+ static int emulator_pio_in_emulated(struct x86_emulate_ctxt *ctxt,
+@@ -6966,12 +6978,11 @@ static int emulator_pio_out(struct kvm_v
+ 
+ 	memcpy(vcpu->arch.pio_data, val, size * count);
+ 	trace_kvm_pio(KVM_PIO_OUT, port, size, count, vcpu->arch.pio_data);
+-	ret = emulator_pio_in_out(vcpu, size, port, (void *)val, count, false);
++	ret = emulator_pio_in_out(vcpu, size, port, count, false);
+ 	if (ret)
+                 vcpu->arch.pio.count = 0;
+ 
+         return ret;
+-
+ }
+ 
+ static int emulator_pio_out_emulated(struct x86_emulate_ctxt *ctxt,
 
 
