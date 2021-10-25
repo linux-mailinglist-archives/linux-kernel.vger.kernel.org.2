@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0A5439F3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6D643A2DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbhJYTSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:18:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36118 "EHLO mail.kernel.org"
+        id S238835AbhJYTxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234533AbhJYTS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:18:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A62266105A;
-        Mon, 25 Oct 2021 19:16:03 +0000 (UTC)
+        id S237459AbhJYTrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:47:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1ED611CB;
+        Mon, 25 Oct 2021 19:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189365;
-        bh=U4qntxkvWd5UPLdqeNTxlBA81R0AcF/+PTru+ZuK9dw=;
+        s=korg; t=1635190821;
+        bh=Z7a3wzQB/hssMjpN8UOeL/XqmTnt9B6oAdAifSdnf+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zc1PgmfZi/+febjvwDjfwHAkjEzkTgTqTd3p8LeBhFhF2NhewqPtawwIaRsKuc3/x
-         6lTmC15V763NvkloeO1WHoxosiGM4FEvl9JOEsDNPWYilB/in5SYhc7/+zPektgMxz
-         XSV5taE1EVlUngZEN8b+Ry8dWVMXChmEcveuWvx0=
+        b=zYP5ndwUVxblvUjziBT87S3bWEF/FXIUUTmj5f5AVy9xWMD+e4vHXZUfXxBZSKcgd
+         C4PLKgcBWjJt1undV0tD0S88S2rEcQzGRmPSOk2qzBigMLCcN0fahjn8niV8IYjINV
+         1WMzRNFCabYlXE8dIuVh7kIX+XZTJhIn9B6y9H/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 4.4 21/44] drm/msm: Fix null pointer dereference on pointer edp
+        stable@vger.kernel.org,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 061/169] drm/kmb: Corrected typo in handle_lcd_irq
 Date:   Mon, 25 Oct 2021 21:14:02 +0200
-Message-Id: <20211025190932.986053398@linuxfoundation.org>
+Message-Id: <20211025191025.220333170@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
 
-commit 2133c4fc8e1348dcb752f267a143fe2254613b34 upstream.
+[ Upstream commit 004d2719806fb8e355c1bccd538e82c04319d391 ]
 
-The initialization of pointer dev dereferences pointer edp before
-edp is null checked, so there is a potential null pointer deference
-issue. Fix this by only dereferencing edp after edp has been null
-checked.
+Check for Overflow bits for layer3 in the irq handler.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210929121857.213922-1-colin.king@canonical.com
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+Signed-off-by: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211013233632.471892-5-anitha.chrisanthus@intel.com
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/edp/edp_ctrl.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/kmb/kmb_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-+++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-@@ -1095,7 +1095,7 @@ void msm_edp_ctrl_power(struct edp_ctrl
- int msm_edp_ctrl_init(struct msm_edp *edp)
- {
- 	struct edp_ctrl *ctrl = NULL;
--	struct device *dev = &edp->pdev->dev;
-+	struct device *dev;
- 	int ret;
- 
- 	if (!edp) {
-@@ -1103,6 +1103,7 @@ int msm_edp_ctrl_init(struct msm_edp *ed
- 		return -EINVAL;
+diff --git a/drivers/gpu/drm/kmb/kmb_drv.c b/drivers/gpu/drm/kmb/kmb_drv.c
+index f54392ec4fab..bb7eca9e13ae 100644
+--- a/drivers/gpu/drm/kmb/kmb_drv.c
++++ b/drivers/gpu/drm/kmb/kmb_drv.c
+@@ -381,7 +381,7 @@ static irqreturn_t handle_lcd_irq(struct drm_device *dev)
+ 		if (val & LAYER3_DMA_FIFO_UNDERFLOW)
+ 			drm_dbg(&kmb->drm,
+ 				"LAYER3:GL1 DMA UNDERFLOW val = 0x%lx", val);
+-		if (val & LAYER3_DMA_FIFO_UNDERFLOW)
++		if (val & LAYER3_DMA_FIFO_OVERFLOW)
+ 			drm_dbg(&kmb->drm,
+ 				"LAYER3:GL1 DMA OVERFLOW val = 0x%lx", val);
  	}
- 
-+	dev = &edp->pdev->dev;
- 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
- 		return -ENOMEM;
+-- 
+2.33.0
+
 
 
