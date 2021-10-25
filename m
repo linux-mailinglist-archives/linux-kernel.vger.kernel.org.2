@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F000439897
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4727043989A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhJYOdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbhJYOdE (ORCPT
+        id S233103AbhJYOdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:33:54 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:48718 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231602AbhJYOdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:33:04 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8D7C061746;
-        Mon, 25 Oct 2021 07:30:42 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id u13so237719edy.10;
-        Mon, 25 Oct 2021 07:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FmXQJiEvyexYZAONYS1YO/YN6HE7AsF0Zix0o2xmTTs=;
-        b=YmjZEhwNJ2zDDKg7PLfT6QNaOw4P3QVEVGpEa2VRRtXHHIKks3DTI2BvjyglKfUxuk
-         0mlJ9CyhXZL91zeGmZlYEy1v7KcEouS/uUKkvHWzW4/xttXtoHXvS+yztHbugX+PQz20
-         zYaKRLql3hMtyMt0/Jq1/kvC2my1hyAcMvIUXfgOwhxsTd7grf5UXfZKshUxHrcF/xel
-         wG82/s7mKbbUlGYrZvde4MyDDb5LN12zm8HHYgwRSEiFy50sBapcBt+quOjvtr8DO9tP
-         ez2wHieQ+AefXVUT9mBA9y2UHnhM3zaeoHusYa/ZqPwFRkOj/4Vb34dGPgLTNqG3y8Ja
-         aUVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FmXQJiEvyexYZAONYS1YO/YN6HE7AsF0Zix0o2xmTTs=;
-        b=2vvklblGBCez9UPMwCuVDcr60Oz8Nu470ut3ylccdaRPhyt8zN8QTx46vCqPRqzBCv
-         u06/nv614kaBSLsPD52HFwdZn3kHFswnAoC6v363nXp61y/cOIxnTXASIY5q56/5OG9P
-         9M7ys7VuxSi/BwHwz2k4//CYirvXZk1BxDuFPKDNemcxtEbOEM1Y22SRbcdcn70+JJw4
-         zxufi3JSw99Sjqku1gd7+YMck+eGc7uMOfn7whgtycgGH3t3m14TmPHTFu+vsBY+h5XR
-         85tCyTdtgZhi5UKgP1GjfHmfD1gjw9qWm9fRtmsOJ+HbvaN0LhhrcBsGEyn1mSLxVD5j
-         nuTQ==
-X-Gm-Message-State: AOAM5311PUIVLzL6IUiT7PEYHJ7eTJRiXtI492gy3tcbPg408+WmTizq
-        A/YK7QuI8a8RSCEkh8jw7ENv20f4YkquO0knoW4=
-X-Google-Smtp-Source: ABdhPJzmdRna3K6azm05c9x9j7TXfHuxwBtu0a80+n+XCgX3jLVIB8JKvIGWBLQfKYgJJaRmcJPVmLRTVJTqIQ5YRhk=
-X-Received: by 2002:a05:6402:22d6:: with SMTP id dm22mr27220376edb.209.1635172235120;
- Mon, 25 Oct 2021 07:30:35 -0700 (PDT)
+        Mon, 25 Oct 2021 10:33:53 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PC00Pe012721;
+        Mon, 25 Oct 2021 16:31:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=heLJ4yGEfIp904h0KY7xGdKsvRSbeHaJmHrvhlHM+aQ=;
+ b=Umesn97DGsSZUS9e3DX+7OyT6OCTEM9aUpyy1PMkI6rYdGWvtbW+5ZKwKfFArdF7tBMY
+ cBNe7zV4RtYWoUovQY7mUWtZHcZ5ycwUL+60IYqf3QVnit692kNYDwb+MyzCWo46j17Y
+ s7kL6qjCNrq+cY0EdI7DLn0Ium5sm4xwst0FC1EAhceoQRQBhdP9yzGx42hgZb4lLaUD
+ Mbx3hizUirY+Vbt707qdG9gfe55FG82PrrO/BNjWtwuj8KX3hP86IspgiivOcep0xiej
+ JuqmeCcGrBblSqo8swezWRui7X3bU8LZaDdsP9GS2UTLvyoHl6o7rgGRAKOljQOXLl9Y 5w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bwqpsjjg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 16:31:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F1305100034;
+        Mon, 25 Oct 2021 16:31:20 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E58DF233C77;
+        Mon, 25 Oct 2021 16:31:20 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct 2021 16:31:20
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <vkoul@kernel.org>, <kishon@ti.com>
+CC:     <amelie.delaunay@foss.st.com>, <alexandre.torgue@foss.st.com>,
+        <linux-phy@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] phy: stm32: adopt dev_err_probe for regulators
+Date:   Mon, 25 Oct 2021 16:31:05 +0200
+Message-ID: <1635172265-26219-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <YXAiZdvk8CGvZCIM@dhcp22.suse.cz> <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz> <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
- <20211020192430.GA1861@pc638.lan> <163481121586.17149.4002493290882319236@noble.neil.brown.name>
- <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz> <20211021104038.GA1932@pc638.lan>
- <163485654850.17149.3604437537345538737@noble.neil.brown.name>
- <20211025094841.GA1945@pc638.lan> <YXaTBrhEqTZhTJYX@dhcp22.suse.cz>
-In-Reply-To: <YXaTBrhEqTZhTJYX@dhcp22.suse.cz>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Mon, 25 Oct 2021 16:30:23 +0200
-Message-ID: <CA+KHdyWeQ77uWg5GxJGYiNeG_2ZuKu62-i=L7kqhw__g--XGYg@mail.gmail.com>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     NeilBrown <neilb@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_05,2021-10-25_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> I would really prefer if this was not the main point of arguing here.
-> Unless you feel strongly about msleep I would go with schedule_timeout
-> here because this is a more widely used interface in the mm code and
-> also because I feel like that relying on the rounding behavior is just
-> subtle. Here is what I have staged now.
->
-I have a preference but do not have a strong opinion here. You can go
-either way you want.
+Change stm32-usbphyc driver to use dev_err_probe(), to benefit of
+devices_deferred debugfs in case of probe deferral.
 
->
-> Are there any other concerns you see with this or other patches in the
-> series?
->
-it is better if you could send a new vX version because it is hard to
-combine every "folded"
-into one solid commit. One comment below:
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+ drivers/phy/st/phy-stm32-usbphyc.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-> ---
-> commit c1a7e40e6b56fed5b9e716de7055b77ea29d89d0
-> Author: Michal Hocko <mhocko@suse.com>
-> Date:   Wed Oct 20 10:12:45 2021 +0200
->
->     fold me "mm/vmalloc: add support for __GFP_NOFAIL"
->
->     Add a short sleep before retrying. 1 jiffy is a completely random
->     timeout. Ideally the retry would wait for an explicit event - e.g.
->     a change to the vmalloc space change if the failure was caused by
->     the space fragmentation or depletion. But there are multiple different
->     reasons to retry and this could become much more complex. Keep the retry
->     simple for now and just sleep to prevent from hogging CPUs.
->
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 0fb5413d9239..a866db0c9c31 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2944,6 +2944,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
->         do {
->                 ret = vmap_pages_range(addr, addr + size, prot, area->pages,
->                         page_shift);
-> +               schedule_timeout_uninterruptible(1);
->
-We do not want to schedule_timeout_uninterruptible(1); every time.
-Only when an error is detected.
-
+diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
+index 7df6a63..115be0e 100644
+--- a/drivers/phy/st/phy-stm32-usbphyc.c
++++ b/drivers/phy/st/phy-stm32-usbphyc.c
+@@ -672,17 +672,15 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
+ 
+ 	usbphyc->vdda1v1 = devm_regulator_get(dev, "vdda1v1");
+ 	if (IS_ERR(usbphyc->vdda1v1)) {
+-		ret = PTR_ERR(usbphyc->vdda1v1);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "failed to get vdda1v1 supply: %d\n", ret);
++		ret = dev_err_probe(dev, PTR_ERR(usbphyc->vdda1v1),
++				    "failed to get vdda1v1 supply\n");
+ 		goto clk_disable;
+ 	}
+ 
+ 	usbphyc->vdda1v8 = devm_regulator_get(dev, "vdda1v8");
+ 	if (IS_ERR(usbphyc->vdda1v8)) {
+-		ret = PTR_ERR(usbphyc->vdda1v8);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "failed to get vdda1v8 supply: %d\n", ret);
++		ret = dev_err_probe(dev, PTR_ERR(usbphyc->vdda1v8),
++				    "failed to get vdda1v8 supply\n");
+ 		goto clk_disable;
+ 	}
+ 
 -- 
-Uladzislau Rezki
+2.7.4
+
