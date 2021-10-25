@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F41543A1C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ADA43A2E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbhJYTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:41:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
+        id S239027AbhJYTx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:53:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236538AbhJYTey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:34:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CEFE6103C;
-        Mon, 25 Oct 2021 19:31:23 +0000 (UTC)
+        id S238490AbhJYTs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:48:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9923610FD;
+        Mon, 25 Oct 2021 19:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190284;
-        bh=YtplX7ENlKSo0YXZkDaEXzwPNtKcowSANbe0onNv4PM=;
+        s=korg; t=1635190877;
+        bh=H2o8Q1nEAydlrH9P21o8OMrE5YHfgY6l6ep9qgXcRXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h12wF4SztfzKFmyKj9+KdHxfSWB21mpDDOg2PfZrXa+7cOXdbm+/0rJOn4csGB18q
-         xsoL9vXukfCiyADi2Yq9IiwRYfJbn/5y7+1o5tVlze5dEimfjD0NgqBO3dQIsWqzx0
-         16ahoL+737qQEMAFKXDqNTX8RNWx7O1bm4i+9KHY=
+        b=gPlUvNYDtPshP9nKCoHp4DQmSSMRVuDSwVbKIZeBh2XVvPQW2PM0WfJRAG7/7+q3H
+         UPtnIHzn8g4JLlE7N/MESz7l8xENe5F+Nf7SPKsXpAXJuTqq/xm0r8Pla+LHl9K0O9
+         OYHJ6/2miavJfteqC4FE3Y592Wr76RqfB88CMBHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Sottas Guillaume (LMB)" <Guillaume.Sottas@liebherr.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 37/95] can: isotp: isotp_sendmsg(): fix return error on FC timeout on TX path
+        stable@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 5.14 093/169] ucounts: Move get_ucounts from cred_alloc_blank to key_change_session_keyring
 Date:   Mon, 25 Oct 2021 21:14:34 +0200
-Message-Id: <20211025191002.183693059@linuxfoundation.org>
+Message-Id: <20211025191029.202567156@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit d674a8f123b4096d85955c7eaabec688f29724c9 upstream.
+commit 5ebcbe342b1c12fae44b4f83cbeae1520e09857e upstream.
 
-When the a large chunk of data send and the receiver does not send a
-Flow Control frame back in time, the sendmsg() does not return a error
-code, but the number of bytes sent corresponding to the size of the
-packet.
+Setting cred->ucounts in cred_alloc_blank does not make sense.  The
+uid and user_ns are deliberately not set in cred_alloc_blank but
+instead the setting is delayed until key_change_session_keyring.
 
-If a timeout occurs the isotp_tx_timer_handler() is fired, sets
-sk->sk_err and calls the sk->sk_error_report() function. It was
-wrongly expected that the error would be propagated to user space in
-every case. For isotp_sendmsg() blocking on wait_event_interruptible()
-this is not the case.
+So move dealing with ucounts into key_change_session_keyring as well.
 
-This patch fixes the problem by checking if sk->sk_err is set and
-returning the error to user space.
+Unfortunately that movement of get_ucounts adds a new failure mode to
+key_change_session_keyring.  I do not see anything stopping the parent
+process from calling setuid and changing the relevant part of it's
+cred while keyctl_session_to_parent is running making it fundamentally
+necessary to call get_ucounts in key_change_session_keyring.  Which
+means that the new failure mode cannot be avoided.
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://github.com/hartkopp/can-isotp/issues/42
-Link: https://github.com/hartkopp/can-isotp/pull/43
-Link: https://lore.kernel.org/all/20210507091839.1366379-1-mkl@pengutronix.de
+A failure of key_change_session_keyring results in a single threaded
+parent keeping it's existing credentials.  Which results in the parent
+process not being able to access the session keyring and whichever
+keys are in the new keyring.
+
+Further get_ucounts is only expected to fail if the number of bits in
+the refernece count for the structure is too few.
+
+Since the code has no other way to report the failure of get_ucounts
+and because such failures are not expected to be common add a WARN_ONCE
+to report this problem to userspace.
+
+Between the WARN_ONCE and the parent process not having access to
+the keys in the new session keyring I expect any failure of get_ucounts
+will be noticed and reported and we can find another way to handle this
+condition.  (Possibly by just making ucounts->count an atomic_long_t).
+
 Cc: stable@vger.kernel.org
-Reported-by: Sottas Guillaume (LMB) <Guillaume.Sottas@liebherr.com>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 905ae01c4ae2 ("Add a reference to ucounts for each cred")
+Link: https://lkml.kernel.org/r/7k0ias0uf.fsf_-_@disp2133
+Tested-by: Yu Zhao <yuzhao@google.com>
+Reviewed-by: Alexey Gladkov <legion@kernel.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/isotp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ kernel/cred.c                |    2 --
+ security/keys/process_keys.c |    8 ++++++++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -953,6 +953,9 @@ static int isotp_sendmsg(struct socket *
- 	if (wait_tx_done) {
- 		/* wait for complete transmission of current pdu */
- 		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-+
-+		if (sk->sk_err)
-+			return -sk->sk_err;
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -225,8 +225,6 @@ struct cred *cred_alloc_blank(void)
+ #ifdef CONFIG_DEBUG_CREDENTIALS
+ 	new->magic = CRED_MAGIC;
+ #endif
+-	new->ucounts = get_ucounts(&init_ucounts);
+-
+ 	if (security_cred_alloc_blank(new, GFP_KERNEL_ACCOUNT) < 0)
+ 		goto error;
+ 
+--- a/security/keys/process_keys.c
++++ b/security/keys/process_keys.c
+@@ -918,6 +918,13 @@ void key_change_session_keyring(struct c
+ 		return;
  	}
  
- 	return size;
++	/* If get_ucounts fails more bits are needed in the refcount */
++	if (unlikely(!get_ucounts(old->ucounts))) {
++		WARN_ONCE(1, "In %s get_ucounts failed\n", __func__);
++		put_cred(new);
++		return;
++	}
++
+ 	new->  uid	= old->  uid;
+ 	new-> euid	= old-> euid;
+ 	new-> suid	= old-> suid;
+@@ -927,6 +934,7 @@ void key_change_session_keyring(struct c
+ 	new-> sgid	= old-> sgid;
+ 	new->fsgid	= old->fsgid;
+ 	new->user	= get_uid(old->user);
++	new->ucounts	= old->ucounts;
+ 	new->user_ns	= get_user_ns(old->user_ns);
+ 	new->group_info	= get_group_info(old->group_info);
+ 
 
 
