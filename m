@@ -2,132 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C06439BA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDCB439B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233930AbhJYQiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:38:03 -0400
-Received: from mail-mw2nam10on2045.outbound.protection.outlook.com ([40.107.94.45]:24161
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233257AbhJYQiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:38:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZlCKdONOAuobQa3gH5AJaS7KpLg5u5MKeSAFX7gnJc9QpBaDB0wsZ4PtzPmtQLndrdzaCUnsi6adsjKyx0vIpj4Oimqbyg/Wt+kg2rPuchYSnxF5LUsNLHDp77jv6UsoxVJEd2sGkaUSnb9ZJE7+SN733PVrv3y5xx1UUbM9Ur+TeMShsNMbIvoxwFTEQtnwiWGpXp1EnFNcNmWb3Y6R0yhCSAPYlRKB+sXExrBaec2cIsN71suGhDQUs/K4W132kB39v+OHfSIyQfj3lUct8tgG1IpX7gidwIhtzoPzwNJ3pphLKf/hnFsNjlc8tnSgykh7ROsuFL16Y0Twlqd1Uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eXBs+uCQU5dRKV1r5LoCgbi/NTMnDSA4JMqtk/FNA6E=;
- b=OoNbAQ78AXHdssEmy3YZ8rgsEvAjIFhNM+RndaJa6hURl2SLa1Du8FtFFaGlWfNx6jZ4RcqLePI5D1fHCxaVQjkS8foB5Cp3dIsyxJDMrURceL3U1GDDlNDEJTUOaSS7goAJk23OghyTXiPkGKVxt1QiI0SNjiH8CiTzh2aU8XsBH/1rgb/RJ0E4j4YO2jWona+DGjKEo/67wES/F8wIv5i2RShRVAt90dZkIR6Nkrx1hyQiPmdcZGOGnuCtq3tYBttDdqiUofk5madUbsUearkjA7WUUz84Y36Z7+AT0LJm+J8HZ0/nqRCFt3cspmC4YmEH6x1ZmG+z2VUolXSzwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eXBs+uCQU5dRKV1r5LoCgbi/NTMnDSA4JMqtk/FNA6E=;
- b=4gu4LL0ZNaSBQwFtePuY6Y3nysl8V/B+q8dSXgHVhZxdc9IwxL2hpO7k36X7vdTnje0q/SAc6YuLr8z07holFLDIWeUtXiWurIjp5ABej0QkxZOb8bSlN8X6lXvMeZvUoOAyqRtdGD5HW0MJA2qi7KcrlCiixphxT6MCgbTt6DI=
-Received: from MW4PR04CA0352.namprd04.prod.outlook.com (2603:10b6:303:8a::27)
- by BN6PR1201MB0018.namprd12.prod.outlook.com (2603:10b6:405:54::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
- 2021 16:35:35 +0000
-Received: from CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:8a:cafe::51) by MW4PR04CA0352.outlook.office365.com
- (2603:10b6:303:8a::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend
- Transport; Mon, 25 Oct 2021 16:35:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT059.mail.protection.outlook.com (10.13.174.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4628.16 via Frontend Transport; Mon, 25 Oct 2021 16:35:35 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 25 Oct
- 2021 11:35:34 -0500
-Date:   Mon, 25 Oct 2021 09:14:27 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     <linux-kselftest@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Nathan Tempelman <natet@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Mingwei Zhang" <mizhang@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        "Jim Mattson" <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC 03/16] KVM: selftests: handle encryption bits in page tables
-Message-ID: <20211025141427.u2dstri5ehgegryk@amd.com>
-References: <20211005234459.430873-1-michael.roth@amd.com>
- <20211005234459.430873-4-michael.roth@amd.com>
- <31db4c63-218a-5b26-f6ed-d30113f95e29@redhat.com>
- <20211024164945.mt62qjrld3dwssv4@amd.com>
- <9de44944-57c1-047c-8c66-94eee6369a67@redhat.com>
+        id S233836AbhJYQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230511AbhJYQGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:06:10 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0702C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:03:47 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so15632355ote.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DbCxhkAJVaNO1dQNE2uJt3FO0RzSKF+3IACvnUzKPVY=;
+        b=JzYQwbjmOn2TXlPx53cYt3yh2Hy+3qTTGKRdQDMqfmSUFUHRUqU0LhI9saO43sep6u
+         iiW0Rzno8Rh70KcFPuoDEAk5NwpHoc3f3sncS96FGOJpR2etGwKmOaVl+47I8uHH78LA
+         /f8Y/BZCHwgGlOkOVmtPV94cx65+CXEvE3OIssLtiEIsT/7NVFQIJn53MjK3DlC3uH1o
+         QFRr8Fk/OCnG+uFuB8rVsseuJv3kQ2K2FhAwW+mARUpio0K2QsD11PAovGWcNzaJfTd9
+         Z2KE4dDLI/dQDOZDFTWjt7DgV4N5JSfKmS33QSfATgkHHqjhQL8mHyaDFmXr5Fzb9orD
+         yUfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DbCxhkAJVaNO1dQNE2uJt3FO0RzSKF+3IACvnUzKPVY=;
+        b=CNhKsq5yNiY4D683Ovl8d70s7CppUaUVG49Bhk7/0s0403ShpJUlk6gm8fh23CS6nm
+         wH2qSdGhaKl8M+EX8XRotNAKzEo4zcarTftxAEv1GhWH/jZwHCsMxZRic8bO0Nyz+0aL
+         UtPEo8tocRrX1EvZjN+J2LNUEIWWKJdL9j+3mUCdMdNK8QWuI0Ytv5jkHscLmVRQZGiH
+         bt3Ev8YXpoFre2CSLQKPvR+1LR6hJZN/O5vFSWq6m7lesa2QwAUzNy1MFwZaPRmjTIRV
+         n16fUOONzlpNmbnfLPwA54DR/3iBY8KrweL9gvHskymDzw3sMuxfhPPnOm5b+l0SOGwM
+         h65w==
+X-Gm-Message-State: AOAM5311Kp3uYZZqlKmjV7bhAzweSjkLvg6oFD7oy73a4rRgUlsNyPPP
+        zoSnp50lpqdWExf78LEwxgjhEEMwpgTPH+hUB73DCA==
+X-Google-Smtp-Source: ABdhPJyQJgxGdAYLo/5PxG/pFX+ODAk9ay2jei/14PjdYP+ULPo6jpMiPcgLX5LIgcVihvuWEgH7d/utg/BcpBsL7PY=
+X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr14054877otb.92.1635177827057;
+ Mon, 25 Oct 2021 09:03:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9de44944-57c1-047c-8c66-94eee6369a67@redhat.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fb5e2cb0-1c92-44e6-a458-08d997d5784a
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0018:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB00188BAD8CE96095C5743D5195839@BN6PR1201MB0018.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nbXRfgP2dHq5wtMeDWaNWNWhyVbWMADNh8m6M7PgmZ10PGCjugpz4sv5SEIfMzOoOwV6iSBqN32ugeL7AJgzMcgOJ2ZI9CRTdljCHIz8GH57ZEWHkC/72Ct7p5SGiwR7+LkwkFrU7Lbq5II7rQjAhpTFRINoZzHRp8ktpPHwE/ydYYPpQPuWd/1p66OkGHky/cSeXUUlnbaBU+/sfau/bU7zrkkLXdHOI7kVW20wYB8XLjKxG6XruYXkw9A2ra/WWoswkZV3YohENEKj34XzBUNpTivivVMTA3L/26OOcbcflqI9VoQXOA6E+NMUG/GDJpdj/AiE1Dj1Kp+iJSnchRSCYpGko/7EO/IKJ/ttu5CU+4jMnHX5VynNp1BUkfPAw5vFtjWBw+dmh4wOxEaTRP7PHZxkSrCbM0LYIVUOEB4j0NHjv14ejR5BPw7NS7PHoKJfJJBFvAHMmkQisTJfZbVVp7Du/yAnk0oNzV82iNuncCJW0vixIGK1M8189ToyNyrvupMvOL1Yqz6wwnqK7rC2YGrbKTxrmcN02hgOcSr1ALxr/er5j49Ke70hASOr5DYhhqFC+ZcHUsjZPfmjf6J3oNFfXxrinX0Jmi3w9nQmPUKZ4Cusx/HayOgVOw9/D2smwjhUQxWm1ps4DMhcRu0xZZckR1ufnHacCzkU22yiDD6wGasg7qUU8eqNWkmxWRvO0pFjUhrCJrC0qvCPebXfjFKPts5QM+kwHtNokMM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(81166007)(47076005)(2906002)(7416002)(508600001)(54906003)(36860700001)(356005)(8676002)(4326008)(6916009)(426003)(44832011)(186003)(336012)(8936002)(53546011)(36756003)(16526019)(70586007)(5660300002)(2616005)(4744005)(6666004)(1076003)(70206006)(82310400003)(86362001)(26005)(316002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 16:35:35.0152
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb5e2cb0-1c92-44e6-a458-08d997d5784a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0018
+References: <00000000000089871905cf2b7d09@google.com> <f37aa186-8820-451f-6fa2-eee45799a428@kernel.dk>
+ <CANpmjNO1kTswzGp03o_=wMiFekXoq-kvDCy+zKSP3r5+EeOvMg@mail.gmail.com> <b5dd012d-531e-a2ae-18b0-dc2300246298@kernel.dk>
+In-Reply-To: <b5dd012d-531e-a2ae-18b0-dc2300246298@kernel.dk>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 25 Oct 2021 18:03:35 +0200
+Message-ID: <CANpmjNNVh65W00BBRFWwUDp0F4+8RXnU7azqxbpiLuvuev6xEQ@mail.gmail.com>
+Subject: Re: [syzbot] KCSAN: data-race in sbitmap_queue_clear /
+ sbitmap_queue_clear (3)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     syzbot <syzbot+4f8bfd804b4a1f95b8f6@syzkaller.appspotmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 09:34:10AM +0200, Paolo Bonzini wrote:
-> On 24/10/21 18:49, Michael Roth wrote:
-> > So test code would need to consider cases where addr_gpa2raw() needs to be
-> > used to set the C-bit (which is basically only when they want to mix usage
-> > of the vm_phy_page[s]_alloc with their own mapping of the guest page tables,
-> > which doesn't seem to be done in any existing tests anyway).
-> 
-> Yes, and it seems like a more rare case in general.
-> 
-> > The library code would need these addr_gpa2raw() hooks in places where
-> > it calls virt_*map() internally. Probably just a handful of places
-> > though.
-> 
-> Either that, or you can have virt_*map that consults the encryption bitmap,
-> and virt_*map_enc (or _raw, doesn't matter) that takes the encryption state
-> explicitly as a bool.
+On Mon, 25 Oct 2021 at 17:40, Jens Axboe <axboe@kernel.dk> wrote:
+> On 10/25/21 8:29 AM, Marco Elver wrote:
+> > On Mon, 25 Oct 2021 at 15:36, Jens Axboe <axboe@kernel.dk> wrote:
+> > [...]
+> >>> write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 1:
+> >>>  sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
+> >>>  blk_mq_put_tag+0x82/0x90
+> >>>  __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
+> >>>  blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
+> >>>  __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
+> >>>  blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
+> >>>  lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
+> >>>  blk_complete_reqs block/blk-mq.c:584 [inline]
+> >>>  blk_done_softirq+0x69/0x90 block/blk-mq.c:589
+> >>>  __do_softirq+0x12c/0x26e kernel/softirq.c:558
+> >>>  run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
+> >>>  smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
+> >>>  kthread+0x262/0x280 kernel/kthread.c:319
+> >>>  ret_from_fork+0x1f/0x30
+> >>>
+> >>> write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 0:
+> >>>  sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
+> >>>  blk_mq_put_tag+0x82/0x90
+> >>>  __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
+> >>>  blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
+> >>>  __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
+> >>>  blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
+> >>>  lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
+> >>>  blk_complete_reqs block/blk-mq.c:584 [inline]
+> >>>  blk_done_softirq+0x69/0x90 block/blk-mq.c:589
+> >>>  __do_softirq+0x12c/0x26e kernel/softirq.c:558
+> >>>  run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
+> >>>  smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
+> >>>  kthread+0x262/0x280 kernel/kthread.c:319
+> >>>  ret_from_fork+0x1f/0x30
+> >>
+> >> This is just a per-cpu alloc hint, it's racy by nature. What's the
+> >> preferred way to silence these?
+> >
+> > That was my guess, but couldn't quite say. We started looking at
+> > write/write races as more likely to be harmful (vs. just read/write),
+> > and are inclined to let syzbot send out more of such reports. Marking
+> > intentional ones would be ideal so we'll be left with the
+> > unintentional ones.
+> >
+> > I would probably use WRITE_ONCE(), just to make sure the compiler
+> > doesn't play games here; or if the code is entirely tolerant to even
+> > the compiler miscompiling things, wrap the thing in data_race().
+>
+> It's entirely tolerant, so something like this would do it?
 
-That sounds promising. Will give that a shot. Thanks!
+Yup, looks reasonable,
+
+Acked-by: Marco Elver <elver@google.com>
+
+> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+> index c6e2f1f2c4d2..2709ab825499 100644
+> --- a/lib/sbitmap.c
+> +++ b/lib/sbitmap.c
+> @@ -631,7 +631,7 @@ EXPORT_SYMBOL_GPL(sbitmap_queue_wake_up);
+>  static inline void sbitmap_update_cpu_hint(struct sbitmap *sb, int cpu, int tag)
+>  {
+>         if (likely(!sb->round_robin && tag < sb->depth))
+> -               *per_cpu_ptr(sb->alloc_hint, cpu) = tag;
+> +               data_race(*per_cpu_ptr(sb->alloc_hint, cpu) = tag);
+>  }
+>
+>  void sbitmap_queue_clear_batch(struct sbitmap_queue *sbq, int offset,
+>
+> --
+> Jens Axboe
+>
