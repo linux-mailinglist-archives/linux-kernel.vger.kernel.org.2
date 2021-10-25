@@ -2,365 +2,689 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D01F438ED1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BBB438E9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhJYFbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:31:50 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54953 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhJYFbt (ORCPT
+        id S232362AbhJYFJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhJYFJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:31:49 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4Hd3RV3mgpz4xbr; Mon, 25 Oct 2021 16:29:26 +1100 (AEDT)
+        Mon, 25 Oct 2021 01:09:16 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBD1C061745;
+        Sun, 24 Oct 2021 22:06:54 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id v77so13962726oie.1;
+        Sun, 24 Oct 2021 22:06:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1635139766;
-        bh=8GLjpdm/8ye0RKRzmnVp1jfeMhW5LzdQvUNRWFyupK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QARK0KWd0/yDtz/Q+dPsrIC+G3Ju7R4sP3wEMtLTDmnao4xojbn/BcZt/W6vfTMsM
-         1R+tT0c9jW3mR/ENawyDnCxMC43NQVioZz27ZvVpMq9dD0Rh567smbb58hWopRJH+C
-         F9POfYMornHlfJsMBlVZ1TJG1FpxajayLmqCH/2M=
-Date:   Mon, 25 Oct 2021 16:05:07 +1100
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <YXY7A+UQWC4gbIJc@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <YVamgnMzuv3TCQiX@yekko>
- <BN9PR11MB5433E3BE7550BBF176636F8A8CB79@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YWe5U0fL3t+ldXC2@yekko>
- <BN9PR11MB54331C7936675EEE27C209948CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8/GePxbu6G6WF2Z3Sh8VNqgu5feK/3pEFQFhwfRLe+E=;
+        b=cIfCfQ80EWURam6P96aAlmKRRgvltO3GnJUPHPcuHIPMbwdDAFcBvZMikcVFTuUNRV
+         RLTg+hOXW1vA2+6PGJS3zdeh51G1TL4R5SPFsAjI7hZorPZElN7rjQmVueBxrTyr8Hul
+         s5+d6Csr6HsnJ3pKiEjU0HFVtV9ZFtyGrdrIV1avfIyWEYfpIibqqIlOHWXoSDWyok1R
+         xmbw+0TtoEH3izQecXp7vzK1azneyZgBSMeHE7lm5M3CPqG2vZhLfeeOBMoypey671zR
+         KhFcrr6j8SinRGBrUQn9ACdpXMFPzsPClLrYguIKSuaZZcQc2nQz6QqoGh9idRuvE37S
+         vrwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8/GePxbu6G6WF2Z3Sh8VNqgu5feK/3pEFQFhwfRLe+E=;
+        b=GtEVVarAxijyh94CBSKWYxEPeFvTYZIy+RKXWtIdxHutHjSeu8Ae2m3DLKl+CZvjls
+         cdGL+0+4aIyGxKYmXQarwwDj6TkVu0ohNID8omCIUmIj+RMI4lGxlfk4yubcw9BUilK7
+         0RabOuin9Jp430+RhbDRm99lFy0aXZrkAoG1u2odaqa144wj1ATmrPwfWluC0x7gfUgz
+         jaIPvjyX/6O4o0HxgFYf0GnTBE+/HcUuUYpna2ZIb2YnqJ34w2VskXVQvw0Wl1ZdBrLz
+         LsB2PEp8zFoQFrc5rGIZ4dLUZx+LfXLxOW6gyEXzAth2ByTnU5EsnfgjkzpBMMchJ8lZ
+         DpwA==
+X-Gm-Message-State: AOAM532HiYm1cHahqMGbzBqwu0nT+gFKBBSfwzjN/H8I65IJJ5PGF5IF
+        cB0DgvTPuDUg7r3DPWf3JbHkx82OAyQ=
+X-Google-Smtp-Source: ABdhPJyDcr2sBORBarKHIcAB4+1oX2u9wzqE/9ZjBXtaDxrt9FanbGqZAPolJXHBO+QXziQXT35rOg==
+X-Received: by 2002:aca:603:: with SMTP id 3mr21046271oig.117.1635138414103;
+        Sun, 24 Oct 2021 22:06:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bf3sm3755094oib.34.2021.10.24.22.06.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 22:06:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Nathan Rossi <nathan@nathanrossi.com>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Nathan Rossi <nathan.rossi@digi.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20211025025805.618566-0-nathan@nathanrossi.com>
+ <20211025025805.618566-2-nathan@nathanrossi.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 2/2] hwmon: Driver for Texas Instruments INA238
+Message-ID: <7297bf4c-2f8e-f217-0153-c2224a1c56b3@roeck-us.net>
+Date:   Sun, 24 Oct 2021 22:06:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lbICLZVDhL9/L42y"
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB54331C7936675EEE27C209948CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
+In-Reply-To: <20211025025805.618566-2-nathan@nathanrossi.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/24/21 7:58 PM, Nathan Rossi wrote:
+> From: Nathan Rossi <nathan.rossi@digi.com>
+> 
+> The INA238 is a I2C power monitor similar to other INA2xx devices,
+> providing shunt voltage, bus voltage, current, power and temperature
+> measurements.
+> 
+> Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
+> ---
+>   Documentation/hwmon/ina238.rst |  57 ++++++
 
---lbICLZVDhL9/L42y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Needs to be added to index.rst.
 
-On Thu, Oct 14, 2021 at 06:53:01AM +0000, Tian, Kevin wrote:
-> > From: David Gibson <david@gibson.dropbear.id.au>
-> > Sent: Thursday, October 14, 2021 1:00 PM
-> >=20
-> > On Wed, Oct 13, 2021 at 07:00:58AM +0000, Tian, Kevin wrote:
-> > > > From: David Gibson
-> > > > Sent: Friday, October 1, 2021 2:11 PM
-> > > >
-> > > > On Sun, Sep 19, 2021 at 02:38:39PM +0800, Liu Yi L wrote:
-> > > > > This patch adds IOASID allocation/free interface per iommufd. When
-> > > > > allocating an IOASID, userspace is expected to specify the type a=
-nd
-> > > > > format information for the target I/O page table.
-> > > > >
-> > > > > This RFC supports only one type
-> > (IOMMU_IOASID_TYPE_KERNEL_TYPE1V2),
-> > > > > implying a kernel-managed I/O page table with vfio type1v2 mapping
-> > > > > semantics. For this type the user should specify the addr_width of
-> > > > > the I/O address space and whether the I/O page table is created in
-> > > > > an iommu enfore_snoop format. enforce_snoop must be true at this
-> > point,
-> > > > > as the false setting requires additional contract with KVM on han=
-dling
-> > > > > WBINVD emulation, which can be added later.
-> > > > >
-> > > > > Userspace is expected to call IOMMU_CHECK_EXTENSION (see next
-> > patch)
-> > > > > for what formats can be specified when allocating an IOASID.
-> > > > >
-> > > > > Open:
-> > > > > - Devices on PPC platform currently use a different iommu driver =
-in vfio.
-> > > > >   Per previous discussion they can also use vfio type1v2 as long =
-as there
-> > > > >   is a way to claim a specific iova range from a system-wide addr=
-ess
-> > space.
-> > > > >   This requirement doesn't sound PPC specific, as addr_width for =
-pci
-> > > > devices
-> > > > >   can be also represented by a range [0, 2^addr_width-1]. This RFC
-> > hasn't
-> > > > >   adopted this design yet. We hope to have formal alignment in v1
-> > > > discussion
-> > > > >   and then decide how to incorporate it in v2.
-> > > >
-> > > > Ok, there are several things we need for ppc.  None of which are
-> > > > inherently ppc specific and some of which will I think be useful for
-> > > > most platforms.  So, starting from most general to most specific
-> > > > here's basically what's needed:
-> > > >
-> > > > 1. We need to represent the fact that the IOMMU can only translate
-> > > >    *some* IOVAs, not a full 64-bit range.  You have the addr_width
-> > > >    already, but I'm entirely sure if the translatable range on ppc
-> > > >    (or other platforms) is always a power-of-2 size.  It usually wi=
-ll
-> > > >    be, of course, but I'm not sure that's a hard requirement.  So
-> > > >    using a size/max rather than just a number of bits might be safe=
-r.
-> > > >
-> > > >    I think basically every platform will need this.  Most platforms
-> > > >    don't actually implement full 64-bit translation in any case, but
-> > > >    rather some smaller number of bits that fits their page table
-> > > >    format.
-> > > >
-> > > > 2. The translatable range of IOVAs may not begin at 0.  So we need =
-to
-> > > >    advertise to userspace what the base address is, as well as the
-> > > >    size.  POWER's main IOVA range begins at 2^59 (at least on the
-> > > >    models I know about).
-> > > >
-> > > >    I think a number of platforms are likely to want this, though I
-> > > >    couldn't name them apart from POWER.  Putting the translated IOVA
-> > > >    window at some huge address is a pretty obvious approach to maki=
-ng
-> > > >    an IOMMU which can translate a wide address range without collid=
-ing
-> > > >    with any legacy PCI addresses down low (the IOMMU can check if t=
-his
-> > > >    transaction is for it by just looking at some high bits in the
-> > > >    address).
-> > > >
-> > > > 3. There might be multiple translatable ranges.  So, on POWER the
-> > > >    IOMMU can typically translate IOVAs from 0..2GiB, and also from
-> > > >    2^59..2^59+<RAM size>.  The two ranges have completely separate =
-IO
-> > > >    page tables, with (usually) different layouts.  (The low range w=
-ill
-> > > >    nearly always be a single-level page table with 4kiB or 64kiB
-> > > >    entries, the high one will be multiple levels depending on the s=
-ize
-> > > >    of the range and pagesize).
-> > > >
-> > > >    This may be less common, but I suspect POWER won't be the only
-> > > >    platform to do something like this.  As above, using a high range
-> > > >    is a pretty obvious approach, but clearly won't handle older
-> > > >    devices which can't do 64-bit DMA.  So adding a smaller range for
-> > > >    those devices is again a pretty obvious solution.  Any platform
-> > > >    with an "IO hole" can be treated as having two ranges, one below
-> > > >    the hole and one above it (although in that case they may well n=
-ot
-> > > >    have separate page tables
-> > >
-> > > 1-3 are common on all platforms with fixed reserved ranges. Current
-> > > vfio already reports permitted iova ranges to user via VFIO_IOMMU_
-> > > TYPE1_INFO_CAP_IOVA_RANGE and the user is expected to construct
-> > > maps only in those ranges. iommufd can follow the same logic for the
-> > > baseline uAPI.
-> > >
-> > > For above cases a [base, max] hint can be provided by the user per
-> > > Jason's recommendation.
-> >=20
-> > Provided at which stage?
->=20
-> IOMMU_IOASID_ALLOC
+>   drivers/hwmon/Kconfig          |  12 ++
+>   drivers/hwmon/Makefile         |   1 +
+>   drivers/hwmon/ina238.c         | 453 +++++++++++++++++++++++++++++++++++++++++
+>   4 files changed, 523 insertions(+)
+>   create mode 100644 Documentation/hwmon/ina238.rst
+>   create mode 100644 drivers/hwmon/ina238.c
+> 
+> diff --git a/Documentation/hwmon/ina238.rst b/Documentation/hwmon/ina238.rst
+> new file mode 100644
+> index 0000000000..612fab185d
+> --- /dev/null
+> +++ b/Documentation/hwmon/ina238.rst
+> @@ -0,0 +1,57 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +
+> +Kernel driver ina238
+> +====================
+> +
+> +Supported chips:
+> +
+> +  * Texas Instruments INA238
+> +
+> +    Prefix: 'ina238'
+> +
+> +    Addresses: I2C 0x40 - 0x4f
+> +
+> +    Datasheet:
+> +	https://www.ti.com/lit/gpn/ina238
+> +
+> +Author: Nathan Rossi <nathan.rossi@digi.com>
+> +
+> +Description
+> +-----------
+> +
+> +The INA238 is a current shunt, power and temperature monitor with an I2C
+> +interface. It includes a number of programmable functions including alerts,
+> +conversion rate, sample averaging and selectable shunt voltage accuracy.
+> +
+> +The shunt value in micro-ohms can be set via platform data or device tree at
+> +compile-time or via the shunt_resistor attribute in sysfs at run-time. Please
+> +refer to the Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml for bindings
+> +if the device tree is used.
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +======================= =======================================================
+> +in0_input		Shunt voltage (mV)
+> +in0_lcrit		Critical low shunt voltage
+> +in0_crit		Critical high shunt voltage
+> +
+> +in1_input		Bus voltage (mV)
+> +in1_lcrit		Critical low bus voltage (mV)
+> +in1_crit		Critical high bus voltage (mV)
+> +
+> +power1_input		Power measurement (uW)
+> +power1_crit		Critical power limit (uW)
+> +
+> +curr1_input		Current measurement (mA)
+> +
+> +temp1_input		Die temperature measurement (mC)
+> +temp1_crit		Critical die temperature limit (mC)
+> +
+> +shunt_resistor		Shunt resistance (uOhm)
+> +======================= =======================================================
+> +
+> +.. note::
+> +
+> +   - Configure `shunt_resistor` before configure `power1_crit`, because power
+> +     value is calculated based on `shunt_resistor` set.
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 7fde4c6e1e..cae8e62734 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1872,6 +1872,18 @@ config SENSORS_INA2XX
+>   	  This driver can also be built as a module. If so, the module
+>   	  will be called ina2xx.
+>   
+> +config SENSORS_INA238
+> +	tristate "Texas Instruments INA238"
+> +	depends on I2C
+> +	select REGMAP_I2C
+> +	help
+> +	  If you say yes here you get support for the INA238 power monitor
+> +	  chip. This driver supports voltage, current, power and temperature
+> +	  measurements as well as alert configuration.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called ina238.
+> +
+>   config SENSORS_INA3221
+>   	tristate "Texas Instruments INA3221 Triple Power Monitor"
+>   	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index baee6a8d4d..1ddb26f57a 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -90,6 +90,7 @@ obj-$(CONFIG_SENSORS_IBMPOWERNV)+= ibmpowernv.o
+>   obj-$(CONFIG_SENSORS_IIO_HWMON) += iio_hwmon.o
+>   obj-$(CONFIG_SENSORS_INA209)	+= ina209.o
+>   obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
+> +obj-$(CONFIG_SENSORS_INA238)	+= ina238.o
+>   obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
+>   obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
+>   obj-$(CONFIG_SENSORS_IT87)	+= it87.o
+> diff --git a/drivers/hwmon/ina238.c b/drivers/hwmon/ina238.c
+> new file mode 100644
+> index 0000000000..001b490b79
+> --- /dev/null
+> +++ b/drivers/hwmon/ina238.c
+> @@ -0,0 +1,453 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Driver for Texas Instruments INA238 power monitor chip
+> + * Datasheet: https://www.ti.com/product/ina238
+> + *
+> + * Copyright (C) 2021 Nathan Rossi <nathan.rossi@digi.com>
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/err.h>
+> +#include <linux/slab.h>
+> +#include <linux/i2c.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of.h>
+> +#include <linux/delay.h>
+> +#include <linux/util_macros.h>
+> +#include <linux/regmap.h>
+> +
 
-Ok.  I have mixed thoughts on this.  Doing this at ALLOC time was my
-first instict as well.  However with Jason's suggestion that any of a
-number of things could disambiguate multiple IOAS attached to a
-device, I wonder if it makes more sense for consistency to put base
-address at attach time, as with PASID.
+Alphabetic include file order please. Also, please make sure that there are no
+unecessary include files. I don't immediately see where jiffies.h and delay.h
+are needed.
 
-I do think putting the size of the IOVA range makes sense to add at
-IOASID_ALLOC time - for basically every type of window.  They'll
-nearly always have some limit, which is relevant pretty early.
+> +#include <linux/platform_data/ina2xx.h>
+> +
+> +/* INA238 register definitions */
+> +#define INA238_CONFIG			0x0
+> +#define INA238_ADC_CONFIG		0x1
+> +#define INA238_SHUNT_CALIBRATION	0x2
+> +#define INA238_SHUNT_VOLTAGE		0x4
+> +#define INA238_BUS_VOLTAGE		0x5
+> +#define INA238_DIE_TEMP			0x6
+> +#define INA238_CURRENT			0x7
+> +#define INA238_POWER			0x8
+> +#define INA238_DIAG_ALERT		0xb
+> +#define INA238_SHUNT_OVER_VOLTAGE	0xc
+> +#define INA238_SHUNT_UNDER_VOLTAGE	0xd
+> +#define INA238_BUS_OVER_VOLTAGE		0xe
+> +#define INA238_BUS_UNDER_VOLTAGE	0xf
+> +#define INA238_TEMP_LIMIT		0x10
+> +#define INA238_POWER_LIMIT		0x11
+> +#define INA238_DEVICE_ID		0x3f
+> +
+> +#define INA238_REGISTERS		0x11
+> +
+> +#define INA238_RSHUNT_DEFAULT		10000 /* uOhm */
+> +
+> +/* Default configuration of device on reset. */
+> +#define INA238_CONFIG_DEFAULT		0
+> +/* 16 sample averaging, 1052us conversion time, continuous mode */
+> +#define INA238_ADC_CONFIG_DEFAULT	0xfb6a
+> +/*
+> + * This driver uses a fixed calibration value in order to scale current/power
+> + * based on a fixed shunt resistor value. This allows for conversion within the
+> + * device to avoid integer limits whilst current/power accuracy is scaled
+> + * relative to the shunt resistor value within the driver. This is similar to
+> + * how the ina2xx driver handles current/power scaling.
+> + *
+> + * The end result of this is that increasing shunt values (from a fixed 20 mOhm
+> + * shunt) increase the effective current/power accuracy whilst limiting the
+> + * range and decreasing shunt values decrease the effective accuracy but
+> + * increase the range.
+> + *
+> + * The value of the Current register is calculated given the following:
+> + *   Current (A) = (shunt voltage register * 5) * calibration / 81920
+> + *
+> + * The maximum shunt voltage is 163.835 mV (0x7fff, ADC_RANGE = 0). With the
+> + * maximum current value of 0x7fff and a fixed shunt value results in a
+> + * calibration value of 16384 (0x4000).
+> + *
+> + *   0x7fff = (0x7fff * 5) * calibration / 81920
+> + *   calibration = 0x4000
+> + *
+> + * Equivalent calibration is applied for the Power register (maximum value for
+> + * bus voltage is 102396.875 mV, 0x7fff), where the maximum power that can
+> + * occur is ~16776192 uW (register value 0x147a8):
+> + *
+> + * This scaling means the resulting values for Current and Power registers need
+> + * to be scaled by the difference between the fixed shunt resistor and the
+> + * actual shunt resistor:
+> + *
+> + *  shunt = 0x4000 / (819.2 * 10^6) / 0.001 = 20000 uOhms (with 1mA/lsb)
+> + *
+> + *  Current (mA) = register value * 20000 / rshunt
+> + *  Power (W) = 0.2 * register value * 20000 / rshunt
+> + */
+> +#define INA238_CALIBRATION_VALUE	16384
+> +#define INA238_FIXED_SHUNT		20000
+> +
+> +#define INA238_SHUNT_VOLTAGE_LSB	5 /* 5 uV/lsb */
+> +#define INA238_BUS_VOLTAGE_LSB		3125 /* 3.125 mV/lsb */
+> +#define INA238_DIE_TEMP_LSB		125 /* 125 mC/lsb */
+> +
+> +static struct regmap_config ina238_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 16,
+> +};
+> +
+> +struct ina238_data {
+> +	struct i2c_client *client;
+> +	struct mutex config_lock;
+> +	struct regmap *regmap;
+> +	long rshunt;
+> +};
+> +
+> +static ssize_t ina238_value_show(struct device *dev,
+> +				 struct device_attribute *da, char *buf)
+> +{
+> +	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+> +	struct ina238_data *data = dev_get_drvdata(dev);
+> +	unsigned int regval;
+> +	long long val = 0;
+> +	u8 regdata[3];
+> +	int err;
+> +
+> +	if (attr->index == INA238_POWER) {
+> +		/* Handle reading the POWER register as 24-bit */
+> +		err = i2c_smbus_read_i2c_block_data(data->client, attr->index, 3,
+> +						    regdata);
+> +		if (err != 3)
+> +			return err;
+> +		regval = (regdata[0] << 16) | (regdata[1] << 8) | regdata[2];
+> +	} else {
+> +		err = regmap_read(data->regmap, attr->index, &regval);
+> +		if (err < 0)
+> +			return err;
+> +	}
+> +
+> +	switch (attr->index) {
+> +	case INA238_SHUNT_VOLTAGE:
+> +		/* Signed register, result in mV */
+> +		val = div_s64((s16)regval * INA238_SHUNT_VOLTAGE_LSB,
+> +					1000);
+> +		break;
+> +	case INA238_BUS_VOLTAGE:
+> +		/* Result in mV */
+> +		val = div_s64((s16)regval * INA238_BUS_VOLTAGE_LSB, 1000);
+> +		break;
+> +	case INA238_CURRENT:
+> +		/* Signed register, fixed 1mA current lsb. result in mA */
+> +		val = div_s64((s16)regval * INA238_FIXED_SHUNT, data->rshunt);
+> +		break;
+> +	case INA238_POWER:
+> +		/* Fixed 1mA lsb, scaled by 1000000 to have result in uW */
+> +		val = div_u64(regval * 1000LL * INA238_FIXED_SHUNT, 5 * data->rshunt);
+> +		break;
+> +	case INA238_DIE_TEMP:
+> +		/* Bits 15-4 of register, result in mC */
+> +		val = ((s16)regval >> 4) * INA238_DIE_TEMP_LSB;
+> +		break;
+> +	case INA238_SHUNT_CALIBRATION:
+> +		val = regval;
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		break;
+> +	}
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%lld\n", val);
+> +}
+> +
+> +static int ina238_set_shunt(struct device *dev, struct ina238_data *data,
+> +			    long val)
+> +{
+> +	if (val == 0)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&data->config_lock);
+> +	data->rshunt = val;
+> +	mutex_unlock(&data->config_lock);
 
-> > > It is a hint as no additional restriction is
-> > > imposed,
-> >=20
-> > For the qemu type use case, that's not true.  In that case we
-> > *require* the available mapping ranges to match what the guest
-> > platform expects.
->=20
-> I didn't get the 'match' part. Here we are talking about your case 3
-> where the available ranges are fixed. There is nothing that the
-> guest can change in this case, as long as it allocates iova always in
-> the reported ranges.
+rshunt is used outside the lock for calculations.
+The lock here does therefore not add any value.
 
-Sorry, I don't understand the question.
+> +
+> +	return 0;
+> +}
+> +
+> +static ssize_t ina238_shunt_show(struct device *dev,
+> +				 struct device_attribute *da, char *buf)
+> +{
+> +	struct ina238_data *data = dev_get_drvdata(dev);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%li\n", data->rshunt);
+> +}
+> +
+> +static ssize_t ina238_shunt_store(struct device *dev,
+> +				  struct device_attribute *da,
+> +				  const char *buf, size_t count)
+> +{
+> +	struct ina238_data *data = dev_get_drvdata(dev);
+> +	unsigned long val;
+> +	int status;
+> +
+> +	status = kstrtoul(buf, 10, &val);
+> +	if (status < 0)
+> +		return status;
+> +
+> +	status = ina238_set_shunt(dev, data, val);
+> +	if (status < 0)
+> +		return status;
+> +	return count;
+> +}
+> +
 
-> > > since the kernel only cares about no violation on permitted
-> > > ranges that it reports to the user. Underlying iommu driver may use
-> > > this hint to optimize e.g. deciding how many levels are used for
-> > > the kernel-managed page table according to max addr.
-> > >
-> > > >
-> > > > 4. The translatable ranges might not be fixed.  On ppc that 0..2GiB
-> > > >    and 2^59..whatever ranges are kernel conventions, not specified =
-by
-> > > >    the hardware or firmware.  When running as a guest (which is the
-> > > >    normal case on POWER), there are explicit hypercalls for
-> > > >    configuring the allowed IOVA windows (along with pagesize, number
-> > > >    of levels etc.).  At the moment it is fixed in hardware that the=
-re
-> > > >    are only 2 windows, one starting at 0 and one at 2^59 but there's
-> > > >    no inherent reason those couldn't also be configurable.
-> > >
-> > > If ppc iommu driver needs to configure hardware according to the
-> > > specified ranges, then it requires more than a hint thus better be
-> > > conveyed via ppc specific cmd as Jason suggested.
-> >=20
-> > Again, a hint at what stage of the setup process are you thinking?
-> >=20
-> > > >    This will probably be rarer, but I wouldn't be surprised if it
-> > > >    appears on another platform.  If you were designing an IOMMU ASIC
-> > > >    for use in a variety of platforms, making the base address and s=
-ize
-> > > >    of the translatable range(s) configurable in registers would make
-> > > >    sense.
-> > > >
-> > > >
-> > > > Now, for (3) and (4), representing lists of windows explicitly in
-> > > > ioctl()s is likely to be pretty ugly.  We might be able to avoid th=
-at,
-> > > > for at least some of the interfaces, by using the nested IOAS stuff.
-> > > > One way or another, though, the IOASes which are actually attached =
-to
-> > > > devices need to represent both windows.
-> > > >
-> > > > e.g.
-> > > > Create a "top-level" IOAS <A> representing the device's view.  This
-> > > > would be either TYPE_KERNEL or maybe a special type.  Into that you=
-'d
-> > > > make just two iomappings one for each of the translation windows,
-> > > > pointing to IOASes <B> and <C>.  IOAS <B> and <C> would have a sing=
-le
-> > > > window, and would represent the IO page tables for each of the
-> > > > translation windows.  These could be either TYPE_KERNEL or (say)
-> > > > TYPE_POWER_TCE for a user managed table.  Well.. in theory, anyway.
-> > > > The way paravirtualization on POWER is done might mean user managed
-> > > > tables aren't really possible for other reasons, but that's not
-> > > > relevant here.
-> > > >
-> > > > The next problem here is that we don't want userspace to have to do
-> > > > different things for POWER, at least not for the easy case of a
-> > > > userspace driver that just wants a chunk of IOVA space and doesn't
-> > > > really care where it is.
-> > > >
-> > > > In general I think the right approach to handle that is to
-> > > > de-emphasize "info" or "query" interfaces.  We'll probably still ne=
-ed
-> > > > some for debugging and edge cases, but in the normal case userspace
-> > > > should just specify what it *needs* and (ideally) no more with
-> > > > optional hints, and the kernel will either supply that or fail.
-> > > >
-> > > > e.g. A simple userspace driver would simply say "I need an IOAS with
-> > > > at least 1GiB of IOVA space" and the kernel says "Ok, you can use
-> > > > 2^59..2^59+2GiB".  qemu, emulating the POWER vIOMMU might say "I
-> > need
-> > > > an IOAS with translatable addresses from 0..2GiB with 4kiB page size
-> > > > and from 2^59..2^59+1TiB with 64kiB page size" and the kernel would
-> > > > either say "ok", or "I can't do that".
-> > > >
-> > >
-> > > This doesn't work for other platforms, which don't have vIOMMU
-> > > mandatory as on ppc. For those platforms, the initial address space
-> > > is GPA (for vm case) and Qemu needs to mark those GPA holes as
-> > > reserved in firmware structure. I don't think anyone wants a tedious
-> > > try-and-fail process to figure out how many holes exists in a 64bit
-> > > address space...
-> >=20
-> > Ok, I'm not quite sure how this works.  The holes are guest visible,
-> > which generally means they have to be fixed by the guest *platform*
-> > and can't depend on host information.  Otherwise, migration is totally
-> > broken.  I'm wondering if this only works by accident now, because the
-> > holes are usually in the same place on all x86 machines.
->=20
-> I haven't checked how qemu handle it today after vfio introduces the
-> capability of reporting valid iova ranges (Alex, can you help confirm?).=
-=20
-> But there is no elegant answer. if qemu doesn't put the holes in=20
-> GPA space it means guest driver might be broken if dma buffer happens=20
-> to sit in the hole. this is even more severe than missing live migration.
-> for x86 the situation is simpler as the only hole is 0xfeexxxxx on all
-> platforms (with gpu as an exception).
+Is there reason to believe that the shunt register value needs to be visible
+and writeable with sysfs attributes ? This is quite unusual nowadays.
+If so, please provide a use case.
 
-Right.. I suspect this is the only reason it's working now on x86.
+> +static ssize_t ina238_alert_show(struct device *dev,
+> +				 struct device_attribute *da, char *buf)
+> +{
+"Alert" is normally used for alarms and provides boolean values (0/1).
+It is used for limits here, making the code quite confusing (I was
+trying to understand how the code relates to alarms). Please use a more
+appropriate function name.
 
-> other arch may have more holes
-> though.
->=20
-> regarding live migration with vfio devices, it's still in early stage. th=
-ere
-> are tons of compatibility check opens to be addressed before it can
-> be widely deployed. this might just add another annoying open to that
-> long list...
+> +	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+> +	struct ina238_data *data = dev_get_drvdata(dev);
+> +	long long val = 0;
+> +	int regval;
+> +	int ret;
+> +
+> +	ret = regmap_read(data->regmap, attr->index, &regval);
+> +	if (ret)
+> +		return ret;
+> +
+> +	switch (attr->index) {
+> +	case INA238_SHUNT_OVER_VOLTAGE:
+> +	case INA238_SHUNT_UNDER_VOLTAGE:
+> +		val = div_s64((s16)regval * INA238_SHUNT_VOLTAGE_LSB, 1000);
+> +		break;
+> +	case INA238_BUS_OVER_VOLTAGE:
+> +	case INA238_BUS_UNDER_VOLTAGE:
+> +		val = div_u64(regval * INA238_BUS_VOLTAGE_LSB, 1000);
+> +		break;
+> +	case INA238_POWER_LIMIT:
+> +		/*
+> +		 * Truncated 24-bit compare register, lower 8-bits are
+> +		 * truncated. Same conversion to/from uW as POWER register.
+> +		 */
+> +		val = div_u64((regval << 8) * 1000ULL * INA238_FIXED_SHUNT,
+> +			      5 * data->rshunt);
+> +		break;
+> +	case INA238_TEMP_LIMIT:
+> +		/* Signed, bits 15-4 of register */
+> +		val = ((s16)regval >> 4) * INA238_DIE_TEMP_LSB;
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		break;
+> +	}
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%lld\n", val);
+> +}
+> +
+> +static ssize_t ina238_alert_store(struct device *dev,
+> +				  struct device_attribute *da,
+> +				  const char *buf, size_t count)
+> +{
+> +	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+> +	struct ina238_data *data = dev_get_drvdata(dev);
+> +	long long val;
+> +	int regval;
+> +	int ret;
+> +
+> +	ret = kstrtoll(buf, 10, &val);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* convert decimal to register value */
+> +	switch (attr->index) {
+> +	case INA238_SHUNT_OVER_VOLTAGE:
+> +	case INA238_SHUNT_UNDER_VOLTAGE:
+> +		/* signed */
+> +		regval = div_s64((val * 1000), INA238_SHUNT_VOLTAGE_LSB);
+> +		if (regval > S16_MAX || regval < S16_MIN) {
+> +			ret = -EINVAL;
+> +			goto abort;
+> +		}
+> +		break;
+> +	case INA238_BUS_OVER_VOLTAGE:
+> +	case INA238_BUS_UNDER_VOLTAGE:
+> +		regval = div_u64((val * 1000), INA238_BUS_VOLTAGE_LSB);
+> +		if (regval > U16_MAX || regval < 0) {
+> +			ret = -EINVAL;
+> +			goto abort;
+> +		}
+> +		break;
+> +	case INA238_POWER_LIMIT:
+> +		/*
+> +		 * Compared against the 24-bit power register, lower 8-bits are
+> +		 * truncated. Same conversion to/from uW as POWER register.
+> +		 */
+> +		regval = div_u64(val * 5 * data->rshunt,
+> +				 1000 * INA238_FIXED_SHUNT) >> 8; > +		if (regval > U16_MAX || regval < 0) {
+> +			ret = -EINVAL;
+> +			goto abort;
+> +		}
+> +		break;
+> +	case INA238_TEMP_LIMIT:
+> +		/* Bits 15-4 of register */
+> +		regval = (div_s64(val, INA238_DIE_TEMP_LSB) << 4);
+> +		if (regval > S16_MAX || regval < S16_MIN) {
+> +			ret = -EINVAL;
+> +			goto abort;
+> +		}
+> +		regval = regval & 0xfff0;
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		break;
+> +	}
+> +
+> +	mutex_lock(&data->config_lock);
+> +
+> +	ret = regmap_write(data->regmap, attr->index, regval);
+> +	if (ret < 0)
+> +		goto abort;
+> +
+> +	ret = count;
+> +abort:
+> +	mutex_unlock(&data->config_lock);
+> +	return ret;
+> +}
+> +
+> +/* shunt voltage */
+> +static SENSOR_DEVICE_ATTR_RO(in0_input, ina238_value, INA238_SHUNT_VOLTAGE);
+> +/* shunt voltage over/under alert */
+> +static SENSOR_DEVICE_ATTR_RW(in0_crit, ina238_alert, INA238_SHUNT_OVER_VOLTAGE);
+> +static SENSOR_DEVICE_ATTR_RW(in0_lcrit, ina238_alert,
+> +			     INA238_SHUNT_UNDER_VOLTAGE);
+> +
+> +/* bus voltage */
+> +static SENSOR_DEVICE_ATTR_RO(in1_input, ina238_value, INA238_BUS_VOLTAGE);
+> +/* bus voltage over/under alert */
+> +static SENSOR_DEVICE_ATTR_RW(in1_crit, ina238_alert, INA238_BUS_OVER_VOLTAGE);
+> +static SENSOR_DEVICE_ATTR_RW(in1_lcrit, ina238_alert, INA238_BUS_UNDER_VOLTAGE);
+> +
+> +/* calculated current */
+> +static SENSOR_DEVICE_ATTR_RO(curr1_input, ina238_value, INA238_CURRENT);
+> +
+> +/* calculated power */
+> +static SENSOR_DEVICE_ATTR_RO(power1_input, ina238_value, INA238_POWER);
+> +static SENSOR_DEVICE_ATTR_RW(power1_crit, ina238_alert, INA238_POWER_LIMIT);
+> +
+> +/* die temperature */
+> +static SENSOR_DEVICE_ATTR_RO(temp1_input, ina238_value, INA238_DIE_TEMP);
+> +static SENSOR_DEVICE_ATTR_RW(temp1_crit, ina238_alert, INA238_TEMP_LIMIT);
+> +
+> +/* shunt resistance */
+> +static SENSOR_DEVICE_ATTR_RW(shunt_resistor, ina238_shunt,
+> +			     INA238_SHUNT_CALIBRATION);
+> +
+> +static struct attribute *ina238_attrs[] = {
+> +	&sensor_dev_attr_in0_input.dev_attr.attr,
+> +	&sensor_dev_attr_in0_crit.dev_attr.attr,
+> +	&sensor_dev_attr_in0_lcrit.dev_attr.attr,
 
-So, yes, live migration with VFIO is limited, unfortunately this
-still affects us even if we don't (currently) have VFIO devices.  The
-problem arises from the combination of two limitations:
+Any special reason for using crit / lcrit instead of max/min ?
 
-1) Live migration means that we can't dynamically select guest visible
-IOVA parameters at qemu start up time.  We need to get consistent
-guest visible behaviour for a given set of qemu options, so that we
-can migrate between them.
+> +	&sensor_dev_attr_in1_input.dev_attr.attr,
+> +	&sensor_dev_attr_in1_crit.dev_attr.attr,
+> +	&sensor_dev_attr_in1_lcrit.dev_attr.attr,
+> +	&sensor_dev_attr_curr1_input.dev_attr.attr,
+> +	&sensor_dev_attr_power1_input.dev_attr.attr,
+> +	&sensor_dev_attr_power1_crit.dev_attr.attr,
+> +	&sensor_dev_attr_temp1_input.dev_attr.attr,
+> +	&sensor_dev_attr_temp1_crit.dev_attr.attr,
+> +	&sensor_dev_attr_shunt_resistor.dev_attr.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(ina238);
+> +
 
-2) Device hotplug means that we don't know if a PCI domain will have
-VFIO devices on it when we start qemu.  So, we don't know if host
-limitations on IOVA ranges will affect the guest or not.
+Any reason for not supporting alarm attributes ?
 
-Together these mean that the best we can do is to define a *fixed*
-(per machine type) configuration based on qemu options only.  That is,
-defined by the guest platform we're trying to present, only, never
-host capabilities.  We can then see if that configuration is possible
-on the host and pass or fail.  It's never safe to go the other
-direction and take host capabilities and present those to the guest.
+> +static int ina238_probe(struct i2c_client *client)
+> +{
+> +	struct ina2xx_platform_data *pdata = dev_get_platdata(&client->dev);
+> +	struct device *dev = &client->dev;
+> +	struct device *hwmon_dev;
+> +	struct ina238_data *data;
+> +	u32 val;
+> +	int ret;
+> +
+> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->client = client;
+> +	/* set the device type */
+> +	mutex_init(&data->config_lock);
+> +
+> +	ina238_regmap_config.max_register = INA238_REGISTERS;
 
-Obviously, we then try to define the default platform configuration in
-qemu to be usable on the greatest number of hosts we can.
+Why is this done here instead of preinitializing it ?
+ina238_regmap_config should really be const if possible.
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+> +	data->regmap = devm_regmap_init_i2c(client, &ina238_regmap_config);
+> +	if (IS_ERR(data->regmap)) {
+> +		dev_err(dev, "failed to allocate register map\n");
+> +		return PTR_ERR(data->regmap);
+> +	}
+> +
+> +	/* load shunt value */
+> +	val = INA238_RSHUNT_DEFAULT;
+> +	if (device_property_read_u32(dev, "shunt-resistor", &val) < 0 && pdata)
+> +		val = pdata->shunt_uohms;
+> +	ret = ina238_set_shunt(dev, data, val);
+> +	if (ret) {
+> +		dev_err(dev, "error configuring the device: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* Setup CONFIG register */
+> +	ret = regmap_write(data->regmap, INA238_CONFIG, INA238_CONFIG_DEFAULT);
+> +	if (ret < 0) {
+> +		dev_err(dev, "error configuring the device: %d\n", ret);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Setup ADC_CONFIG register */
+> +	ret = regmap_write(data->regmap, INA238_ADC_CONFIG,
+> +			   INA238_ADC_CONFIG_DEFAULT);
+> +	if (ret < 0) {
+> +		dev_err(dev, "error configuring the device: %d\n", ret);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Setup SHUNT_CALIBRATION register with fixed value */
+> +	ret = regmap_write(data->regmap, INA238_SHUNT_CALIBRATION,
+> +			   INA238_CALIBRATION_VALUE);
 
---lbICLZVDhL9/L42y
-Content-Type: application/pgp-signature; name="signature.asc"
+Those preinitializations make me wonder if there should be devicetree
+properties for at least some of the data.
 
------BEGIN PGP SIGNATURE-----
+> +	if (ret < 0) {
+> +		dev_err(dev, "error configuring the device: %d\n", ret);
+> +		return -ENODEV;
+> +	}
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
+> +							   data, ina238_groups);
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmF2Ov4ACgkQbDjKyiDZ
-s5LvIg//fD/n6kcZ9IX2ZSzTu5uIW1rlfzjnvrZYZHVCn9cFkiSMcF4p9w1AJdwS
-98wKNsaQKEo18D/pdlJOQAM49F3wBCUTgufJiARAX8un9lttiYG7gxcclmxHQ35q
-yrtshQ7PboRd+M4Pw6ILN5Bxy6rQJUiWrSTRxMpMiIZf8gs4QM/C4XQf1MDOrHVb
-ubJRuHzCXE4KE0UyxFBgF4avseeo+HKq6lryTzMwzwe94ZNtrUd0CzpMrWpJIFoR
-PkosjFbMSov9/StdYJgjPJHdpfVZSRG5trM5W1uhb/2N3M6Kkws5tSYuHtroe161
-5TieBfK+J31QEJJiVMyCDT4oRU+PlZXZQFDYOCbLRgv5xlK6Mkz1Vuut1//N9ReT
-vdYgPq/ZZvtrxpx7FoVNgJTmOaw7vLe/7hhAYVusGmat7Kd9n5K3/qNblYoSm4ZR
-gn6+Ve57gSQfQaqHCAY1htS4ODy2DUwT6snqhIZda5a+QLfHSSOrK8LLICL97vB+
-Ul08wm4gSVKe9Hb5ktlsxu5NIXkzzhyBz6BQVN34Jo3JGvQiqlukQZYoRTce7ahB
-HZl1kCdm516ZgaAaki18fMvRwrQtV3WICREo2PJPjvzom0uizLg/baTWkFFQEO5g
-gNcK2uHGHg79+5drEM6DEJhOPp1VbAGwYBM2i63YxJ5AjYQDxGk=
-=cBWl
------END PGP SIGNATURE-----
+Please rework the driver to use devm_hwmon_device_register_with_info().
 
---lbICLZVDhL9/L42y--
+> +	if (IS_ERR(hwmon_dev))
+> +		return PTR_ERR(hwmon_dev);
+> +
+> +	dev_info(dev, "power monitor %s (Rshunt = %li uOhm)\n",
+> +		 client->name, data->rshunt);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct i2c_device_id ina238_id[] = {
+> +	{ "ina238", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, ina238_id);
+> +
+> +static const struct of_device_id __maybe_unused ina238_of_match[] = {
+> +	{ .compatible = "ti,ina238" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, ina238_of_match);
+> +
+> +static struct i2c_driver ina238_driver = {
+> +	.class		= I2C_CLASS_HWMON,
+> +	.driver = {
+> +		.name	= "ina238",
+> +		.of_match_table = of_match_ptr(ina238_of_match),
+> +	},
+> +	.probe_new	= ina238_probe,
+> +	.id_table	= ina238_id,
+> +};
+> +
+> +module_i2c_driver(ina238_driver);
+> +
+> +MODULE_AUTHOR("Nathan Rossi <nathan.rossi@digi.com>");
+> +MODULE_DESCRIPTION("ina238 driver");
+> +MODULE_LICENSE("GPL");
+> ---
+> 2.33.0
+> 
+
