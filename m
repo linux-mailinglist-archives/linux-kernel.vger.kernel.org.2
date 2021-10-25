@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2D943A477
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141CF43A478
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238183AbhJYUZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
+        id S237987AbhJYUZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236970AbhJYUZc (ORCPT
+        with ESMTP id S237524AbhJYUZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:25:32 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C218EC04A412
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:10:07 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id nv1-20020a17090b1b4100b001a04861d474so604973pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:10:07 -0700 (PDT)
+        Mon, 25 Oct 2021 16:25:34 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D8C04A417
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:10:24 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id x194-20020a627ccb000000b0047c01bf74a4so1189693pfc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=+/27iLcVwsoRtZBbebC5PI/8sCrYV9o5nqqwoDvFwLQ=;
-        b=JOtZFdoO+mQ/0k/uB+I/6TEKe/WTlXcWqeaRbPbw/SEYw+rdJRFMzl7/KpGcBfaMNa
-         6ySASfiBInMTzXb5+cvAcqUQA/aotl9IWl1W6kqoTU654K2C6p4num5nY2n0LsAbTjwU
-         zPVwn+Zo2dMaO2117CzE2hFJyiWjNlIhTEvvQxe9YQTPNHT8Zbr+HxIO7HIbhNum+YOl
-         nRxyfA2/aTxth9biy+qAEXlgUN/gGY9au25feTgdGdDp1GWGWqqmC8FkFpK8Pru+cAcF
-         StnnbMpF+TNLIg4+5DFjZWVRJ87W9zQo6FSiIwVx3V3XKSlNkxn7ChQpjplxfwicbFj3
-         t/Cg==
+        bh=iRuPYXoXcrU+gBqRAGhoDpe/K+LXE+9n+7UkO6cV9+w=;
+        b=GAVlFRWpquxQgXr3aSxg1OFGvTrVNx4qVnVFZoG/+2lawxOOt1ZiH7BiEY0qicDK7h
+         3N7Suc0Ka1S88TwBDlH27drOlWOt0ZSr7PhSvYnAJ96IF+RPkSB679FS7Wns56A/nmMW
+         wu5oB8dU8N46CE18RJKJAjf5AXIcJ7j0DYqeGtINeMH2PgXZe1wgkqnl0hLzIxrwU1M9
+         o24QoGCWhgRNsFDgzEoD5nmvS+bhe6IxLhnaEDEBUgUTmEGPT5KJpm56W1E8hmP0aZWp
+         wNV91F3YJw9PeanrFsztHBVsBgJxy4b+wsETLfC7ZbszldRemjb1INNyUCmQNO7Ef1+k
+         eViw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:cc;
-        bh=+/27iLcVwsoRtZBbebC5PI/8sCrYV9o5nqqwoDvFwLQ=;
-        b=h7LruAiuSrDYjx+AGsctRk2zloQ3G8Smtt/visF+aP7mgxo8WYi3xk9tGyqy9DksdP
-         Btw/vbQS5FPVX/kDBNKkbKYbzVPPsADxL3U8HJ7E7ncGoP0uIRqt+OXsBHdszkHXSc/K
-         Hqrr0m2vfOKH0HVEkfSU+NyYY1Y+aDdzvhF4mgUmL+ALJ7c+J55IEySHoyAy2+ic2d4o
-         2x4NPNwGtTNqoSVVkHV97xjeRUNBWEeuQDAiw02dgXOit2WrnRcMpTGnFVq9SHEHuiGo
-         xGhXqlZDWmhtnnFTGVz3L2KAZbtGleXGoYLciYnPWb+0tnvmL5H9UFqOyvXGstM5QqWe
-         zI4Q==
-X-Gm-Message-State: AOAM5327/Kx1mngZMLzTZLeKo83Yvxw1OhDJfoZAIcHWCT8/DKKhNPmU
-        qcpzAgJBsXTriG7qEbbOpEl07Ef2ampbHcSfMA==
-X-Google-Smtp-Source: ABdhPJzkBLtClwx2VcWf/leMtZ/jaMFE+YFih9XQQYoQEY9CXn/SM7ReenZtrU64gtgqJHTypDnKVRQqtf+KaQam5Q==
+        bh=iRuPYXoXcrU+gBqRAGhoDpe/K+LXE+9n+7UkO6cV9+w=;
+        b=GdjowHzD4YgA1905TTo45mM1W1KGB/rarDYUEWkEXi/TlksddVShMxcFwOP3UuXE2n
+         wn65CH1NIy9vcZ+AGTfeVWF0YEbWLBh+DmPlMc4UX7kHSw8KhR6wESvOzN6cxd/nryQx
+         0CDXLn8u8tVgV1HGHUpJbxolFRl5/8iCCuFDWVjEOOV3BD8hFRIDuu09MhUqEKAqAiB/
+         7nd45GQELPG0iLQ6O1lLqV0VVQDT8IDHKntVFqJSgVGje0i48NbEbhNBP8Iys5ABcq9B
+         VhSVsNTEcMOI+RbLydHiP6RBbiCRRx9DI3eG6GwhERtlZUv2P21Bhc0qFcBnKz5ZXVUm
+         GsOg==
+X-Gm-Message-State: AOAM532JTnejtpcLN0mCSQjGlZZOw/yEtuAZzMI86ethZ+XAghdqR5Fo
+        pHOP1M4kKSrbvbDClBNG/+PK7MnPjljjcQLNrQ==
+X-Google-Smtp-Source: ABdhPJy3RMLEye7zYyYojyILl3vD84PxOkz34BxaVkTlBJfr2GFO3/7X6V+6P5CDojCfKvW7aoiEmIvL+Pm6POHnzw==
 X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:b783:5702:523e:d435])
- (user=kaleshsingh job=sendgmr) by 2002:a17:90a:5285:: with SMTP id
- w5mr157982pjh.1.1635192606982; Mon, 25 Oct 2021 13:10:06 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 13:08:34 -0700
+ (user=kaleshsingh job=sendgmr) by 2002:a17:902:bf02:b0:13f:cfdd:804e with
+ SMTP id bi2-20020a170902bf0200b0013fcfdd804emr18447486plb.1.1635192623573;
+ Mon, 25 Oct 2021 13:10:23 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 13:08:35 -0700
 In-Reply-To: <20211025200852.3002369-1-kaleshsingh@google.com>
-Message-Id: <20211025200852.3002369-3-kaleshsingh@google.com>
+Message-Id: <20211025200852.3002369-4-kaleshsingh@google.com>
 Mime-Version: 1.0
 References: <20211025200852.3002369-1-kaleshsingh@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v4 2/8] tracing: Add division and multiplication support for
- hist triggers
+Subject: [PATCH v4 3/8] tracing: Fix operator precedence for hist triggers expression
 From:   Kalesh Singh <kaleshsingh@google.com>
 Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
         kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
@@ -67,174 +67,375 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds basic support for division and multiplication operations for
-hist trigger variable expressions.
+The current histogram expression evaluation logic evaluates the
+expression from right to left. This can lead to incorrect results
+if the operations are not associative (as is the case for subtraction
+and, the now added, division operators).
+	e.g. 16-8-4-2 should be 2 not 10 --> 16-8-4-2 = ((16-8)-4)-2
+	     64/8/4/2 should be 1 not 16 --> 64/8/4/2 = ((64/8)/4)/2
 
-For simplicity this patch only supports, division and multiplication
-for a single operation expression (e.g. x=$a/$b), as currently
-expressions are always evaluated right to left. This can lead to some
-incorrect results:
+Division and multiplication are currently limited to single operation
+expression due to operator precedence support not yet implemented.
 
-	e.g. echo 'hist:keys=common_pid:x=8-4-2' >> event/trigger
-
-	     8-4-2 should evaluate to 2 i.e. (8-4)-2
-	     but currently x evaluate to  6 i.e. 8-(4-2)
-
-Multiplication and division in sub-expressions will work correctly, once
-correct operator precedence support is added (See next patch in this
-series).
-
-For the undefined case of division by 0, the histogram expression
-evaluates to (u64)(-1). Since this cannot be detected when the
-expression is created, it is the responsibility of the user to be
-aware and account for this possibility.
+Rework the expression parsing to support the correct evaluation of
+expressions containing operators of different precedences; and fix
+the associativity error by evaluating expressions with operators of
+the same precedence from left to right.
 
 Examples:
-	echo 'hist:keys=common_pid:a=8,b=4,x=$a/$b' \
-                   >> event/trigger
-
-	echo 'hist:keys=common_pid:y=5*$b' \
-                   >> event/trigger
+        (1) echo 'hist:keys=common_pid:a=8,b=4,c=2,d=1,w=$a-$b-$c-$d' \
+                  >> event/trigger
+        (2) echo 'hist:keys=common_pid:x=$a/$b/3/2' >> event/trigger
+        (3) echo 'hist:keys=common_pid:y=$a+10/$c*1024' >> event/trigger
+        (4) echo 'hist:keys=common_pid:z=$a/$b+$c*$d' >> event/trigger
 
 Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Reviewed-by: Namhyung Kim <namhyung@kernel.org>
 ---
 
-Changes in v2:
-  - Use div64 helper in hist_field_div() to avoid faults on
-    x86 32-bit machines, per Steven Rostedt
+Changed in v2:
+  - Add Namhyung's Reviewed-by
 
- kernel/trace/trace_events_hist.c | 72 +++++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_hist.c | 210 ++++++++++++++++++++-----------
+ 1 file changed, 140 insertions(+), 70 deletions(-)
 
 diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 28f711224944..522355a06f58 100644
+index 522355a06f58..e10c7d9611e5 100644
 --- a/kernel/trace/trace_events_hist.c
 +++ b/kernel/trace/trace_events_hist.c
-@@ -97,6 +97,8 @@ enum field_op_id {
- 	FIELD_OP_PLUS,
- 	FIELD_OP_MINUS,
- 	FIELD_OP_UNARY_MINUS,
-+	FIELD_OP_DIV,
-+	FIELD_OP_MULT,
- };
+@@ -67,7 +67,9 @@
+ 	C(TOO_MANY_SORT_FIELDS,	"Too many sort fields (Max = 2)"),	\
+ 	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),	\
+ 	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"), \
+-	C(EXPECT_NUMBER,	"Expecting numeric literal"),
++	C(EXPECT_NUMBER,	"Expecting numeric literal"),		\
++	C(UNARY_MINUS_SUBEXPR,	"Unary minus not supported in sub-expressions"), \
++	C(SYM_OFFSET_SUBEXPR,	".sym-offset not supported in sub-expressions"),
  
- /*
-@@ -285,6 +287,40 @@ static u64 hist_field_minus(struct hist_field *hist_field,
- 	return val1 - val2;
+ #undef C
+ #define C(a, b)		HIST_ERR_##a
+@@ -1644,40 +1646,96 @@ static char *expr_str(struct hist_field *field, unsigned int level)
+ 	return expr;
  }
  
-+static u64 hist_field_div(struct hist_field *hist_field,
-+			   struct tracing_map_elt *elt,
-+			   struct trace_buffer *buffer,
-+			   struct ring_buffer_event *rbe,
-+			   void *event)
-+{
-+	struct hist_field *operand1 = hist_field->operands[0];
-+	struct hist_field *operand2 = hist_field->operands[1];
-+
-+	u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-+	u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-+
-+	/* Return -1 for the undefined case */
-+	if (!val2)
-+		return -1;
-+
-+	return div64_u64(val1, val2);
-+}
-+
-+static u64 hist_field_mult(struct hist_field *hist_field,
-+			   struct tracing_map_elt *elt,
-+			   struct trace_buffer *buffer,
-+			   struct ring_buffer_event *rbe,
-+			   void *event)
-+{
-+	struct hist_field *operand1 = hist_field->operands[0];
-+	struct hist_field *operand2 = hist_field->operands[1];
-+
-+	u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-+	u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-+
-+	return val1 * val2;
-+}
-+
- static u64 hist_field_unary_minus(struct hist_field *hist_field,
- 				  struct tracing_map_elt *elt,
- 				  struct trace_buffer *buffer,
-@@ -1592,6 +1628,12 @@ static char *expr_str(struct hist_field *field, unsigned int level)
- 	case FIELD_OP_PLUS:
- 		strcat(expr, "+");
- 		break;
-+	case FIELD_OP_DIV:
-+		strcat(expr, "/");
-+		break;
-+	case FIELD_OP_MULT:
-+		strcat(expr, "*");
-+		break;
- 	default:
- 		kfree(expr);
- 		return NULL;
-@@ -1607,7 +1649,7 @@ static int contains_operator(char *str)
+-static int contains_operator(char *str)
++/*
++ * If field_op != FIELD_OP_NONE, *sep points to the root operator
++ * of the expression tree to be evaluated.
++ */
++static int contains_operator(char *str, char **sep)
+ {
  	enum field_op_id field_op = FIELD_OP_NONE;
- 	char *op;
- 
--	op = strpbrk(str, "+-");
-+	op = strpbrk(str, "+-/*");
- 	if (!op)
- 		return FIELD_OP_NONE;
- 
-@@ -1628,6 +1670,12 @@ static int contains_operator(char *str)
- 	case '+':
- 		field_op = FIELD_OP_PLUS;
- 		break;
-+	case '/':
-+		field_op = FIELD_OP_DIV;
-+		break;
-+	case '*':
-+		field_op = FIELD_OP_MULT;
-+		break;
- 	default:
- 		break;
- 	}
-@@ -2361,10 +2409,26 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
- 	case FIELD_OP_PLUS:
- 		sep = "+";
- 		break;
-+	case FIELD_OP_DIV:
-+		sep = "/";
-+		break;
-+	case FIELD_OP_MULT:
-+		sep = "*";
-+		break;
- 	default:
- 		goto free;
- 	}
- 
+-	char *op;
++	char *minus_op, *plus_op, *div_op, *mult_op;
++
++
 +	/*
-+	 * Multiplication and division are only supported in single operator
-+	 * expressions, since the expression is always evaluated from right
-+	 * to left.
++	 * Report the last occurrence of the operators first, so that the
++	 * expression is evaluated left to right. This is important since
++	 * subtraction and division are not associative.
++	 *
++	 *	e.g
++	 *		64/8/4/2 is 1, i.e 64/8/4/2 = ((64/8)/4)/2
++	 *		14-7-5-2 is 0, i.e 14-7-5-2 = ((14-7)-5)-2
 +	 */
-+	if ((field_op == FIELD_OP_DIV || field_op == FIELD_OP_MULT) && level > 0) {
-+		hist_err(file->tr, HIST_ERR_TOO_MANY_SUBEXPR, errpos(str));
-+		return ERR_PTR(-EINVAL);
+ 
+-	op = strpbrk(str, "+-/*");
+-	if (!op)
+-		return FIELD_OP_NONE;
++	/*
++	 * First, find lower precedence addition and subtraction
++	 * since the expression will be evaluated recursively.
++	 */
++	minus_op = strrchr(str, '-');
++	if (minus_op) {
++		/* Unfortunately, the modifier ".sym-offset" can confuse things. */
++		if (minus_op - str >= 4 && !strncmp(minus_op - 4, ".sym-offset", 11))
++			goto out;
+ 
+-	switch (*op) {
+-	case '-':
+ 		/*
+-		 * Unfortunately, the modifier ".sym-offset"
+-		 * can confuse things.
++		 * Unary minus is not supported in sub-expressions. If
++		 * present, it is always the next root operator.
+ 		 */
+-		if (op - str >= 4 && !strncmp(op - 4, ".sym-offset", 11))
+-			return FIELD_OP_NONE;
+-
+-		if (*str == '-')
++		if (minus_op == str) {
+ 			field_op = FIELD_OP_UNARY_MINUS;
+-		else
+-			field_op = FIELD_OP_MINUS;
+-		break;
+-	case '+':
+-		field_op = FIELD_OP_PLUS;
+-		break;
+-	case '/':
++			goto out;
++		}
++
++		field_op = FIELD_OP_MINUS;
 +	}
 +
- 	operand1_str = strsep(&str, sep);
- 	if (!operand1_str || !str)
- 		goto free;
-@@ -2436,6 +2500,12 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
- 	case FIELD_OP_PLUS:
- 		expr->fn = hist_field_plus;
- 		break;
-+	case FIELD_OP_DIV:
-+		expr->fn = hist_field_div;
-+		break;
-+	case FIELD_OP_MULT:
-+		expr->fn = hist_field_mult;
-+		break;
- 	default:
++	plus_op = strrchr(str, '+');
++	if (plus_op || minus_op) {
++		/*
++		 * For operators of the same precedence use to rightmost as the
++		 * root, so that the expression is evaluated left to right.
++		 */
++		if (plus_op > minus_op)
++			field_op = FIELD_OP_PLUS;
++		goto out;
++	}
++
++	/*
++	 * Multiplication and division have higher precedence than addition and
++	 * subtraction.
++	 */
++	div_op = strrchr(str, '/');
++	if (div_op)
+ 		field_op = FIELD_OP_DIV;
+-		break;
+-	case '*':
++
++	mult_op = strrchr(str, '*');
++	/*
++	 * For operators of the same precedence use to rightmost as the
++	 * root, so that the expression is evaluated left to right.
++	 */
++	if (mult_op > div_op)
+ 		field_op = FIELD_OP_MULT;
+-		break;
+-	default:
+-		break;
++
++out:
++	if (sep) {
++		switch (field_op) {
++		case FIELD_OP_UNARY_MINUS:
++		case FIELD_OP_MINUS:
++			*sep = minus_op;
++			break;
++		case FIELD_OP_PLUS:
++			*sep = plus_op;
++			break;
++		case FIELD_OP_DIV:
++			*sep = div_op;
++			break;
++		case FIELD_OP_MULT:
++			*sep = mult_op;
++			break;
++		case FIELD_OP_NONE:
++		default:
++			*sep = NULL;
++			break;
++		}
+ 	}
+ 
+ 	return field_op;
+@@ -2003,7 +2061,7 @@ static char *field_name_from_var(struct hist_trigger_data *hist_data,
+ 
+ 		if (strcmp(var_name, name) == 0) {
+ 			field = hist_data->attrs->var_defs.expr[i];
+-			if (contains_operator(field) || is_var_ref(field))
++			if (contains_operator(field, NULL) || is_var_ref(field))
+ 				continue;
+ 			return field;
+ 		}
+@@ -2266,21 +2324,24 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
+ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 				     struct trace_event_file *file,
+ 				     char *str, unsigned long flags,
+-				     char *var_name, unsigned int level);
++				     char *var_name, unsigned int *n_subexprs);
+ 
+ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+ 				      struct trace_event_file *file,
+ 				      char *str, unsigned long flags,
+-				      char *var_name, unsigned int level)
++				      char *var_name, unsigned int *n_subexprs)
+ {
+ 	struct hist_field *operand1, *expr = NULL;
+ 	unsigned long operand_flags;
+ 	int ret = 0;
+ 	char *s;
+ 
++	/* Unary minus operator, increment n_subexprs */
++	++*n_subexprs;
++
+ 	/* we support only -(xxx) i.e. explicit parens required */
+ 
+-	if (level > 3) {
++	if (*n_subexprs > 3) {
+ 		hist_err(file->tr, HIST_ERR_TOO_MANY_SUBEXPR, errpos(str));
  		ret = -EINVAL;
  		goto free;
+@@ -2297,8 +2358,16 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+ 	}
+ 
+ 	s = strrchr(str, ')');
+-	if (s)
++	if (s) {
++		 /* unary minus not supported in sub-expressions */
++		if (*(s+1) != '\0') {
++			hist_err(file->tr, HIST_ERR_UNARY_MINUS_SUBEXPR,
++				 errpos(str));
++			ret = -EINVAL;
++			goto free;
++		}
+ 		*s = '\0';
++	}
+ 	else {
+ 		ret = -EINVAL; /* no closing ')' */
+ 		goto free;
+@@ -2312,7 +2381,7 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+ 	}
+ 
+ 	operand_flags = 0;
+-	operand1 = parse_expr(hist_data, file, str, operand_flags, NULL, ++level);
++	operand1 = parse_expr(hist_data, file, str, operand_flags, NULL, n_subexprs);
+ 	if (IS_ERR(operand1)) {
+ 		ret = PTR_ERR(operand1);
+ 		goto free;
+@@ -2382,60 +2451,61 @@ static int check_expr_operands(struct trace_array *tr,
+ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 				     struct trace_event_file *file,
+ 				     char *str, unsigned long flags,
+-				     char *var_name, unsigned int level)
++				     char *var_name, unsigned int *n_subexprs)
+ {
+ 	struct hist_field *operand1 = NULL, *operand2 = NULL, *expr = NULL;
+ 	unsigned long operand_flags;
+ 	int field_op, ret = -EINVAL;
+ 	char *sep, *operand1_str;
+ 
+-	if (level > 3) {
++	if (*n_subexprs > 3) {
+ 		hist_err(file->tr, HIST_ERR_TOO_MANY_SUBEXPR, errpos(str));
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	field_op = contains_operator(str);
++	/*
++	 * ".sym-offset" in expressions has no effect on their evaluation,
++	 * but can confuse operator parsing.
++	 */
++	if (*n_subexprs == 0) {
++		sep = strstr(str, ".sym-offset");
++		if (sep) {
++			*sep = '\0';
++			if (strpbrk(str, "+-/*") || strpbrk(sep + 11, "+-/*")) {
++				*sep = '.';
++				hist_err(file->tr, HIST_ERR_SYM_OFFSET_SUBEXPR,
++					 errpos(sep));
++				return ERR_PTR(-EINVAL);
++			}
++			*sep = '.';
++		}
++	}
++
++	field_op = contains_operator(str, &sep);
+ 
+ 	if (field_op == FIELD_OP_NONE)
+ 		return parse_atom(hist_data, file, str, &flags, var_name);
+ 
+ 	if (field_op == FIELD_OP_UNARY_MINUS)
+-		return parse_unary(hist_data, file, str, flags, var_name, ++level);
++		return parse_unary(hist_data, file, str, flags, var_name, n_subexprs);
+ 
+-	switch (field_op) {
+-	case FIELD_OP_MINUS:
+-		sep = "-";
+-		break;
+-	case FIELD_OP_PLUS:
+-		sep = "+";
+-		break;
+-	case FIELD_OP_DIV:
+-		sep = "/";
+-		break;
+-	case FIELD_OP_MULT:
+-		sep = "*";
+-		break;
+-	default:
+-		goto free;
+-	}
++	/* Binary operator found, increment n_subexprs */
++	++*n_subexprs;
+ 
+-	/*
+-	 * Multiplication and division are only supported in single operator
+-	 * expressions, since the expression is always evaluated from right
+-	 * to left.
+-	 */
+-	if ((field_op == FIELD_OP_DIV || field_op == FIELD_OP_MULT) && level > 0) {
+-		hist_err(file->tr, HIST_ERR_TOO_MANY_SUBEXPR, errpos(str));
+-		return ERR_PTR(-EINVAL);
+-	}
++	/* Split the expression string at the root operator */
++	if (!sep)
++		goto free;
++	*sep = '\0';
++	operand1_str = str;
++	str = sep+1;
+ 
+-	operand1_str = strsep(&str, sep);
+ 	if (!operand1_str || !str)
+ 		goto free;
+ 
+ 	operand_flags = 0;
+-	operand1 = parse_atom(hist_data, file, operand1_str,
+-			      &operand_flags, NULL);
++
++	/* LHS of string is an expression e.g. a+b in a+b+c */
++	operand1 = parse_expr(hist_data, file, operand1_str, operand_flags, NULL, n_subexprs);
+ 	if (IS_ERR(operand1)) {
+ 		ret = PTR_ERR(operand1);
+ 		operand1 = NULL;
+@@ -2447,9 +2517,9 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 		goto free;
+ 	}
+ 
+-	/* rest of string could be another expression e.g. b+c in a+b+c */
++	/* RHS of string is another expression e.g. c in a+b+c */
+ 	operand_flags = 0;
+-	operand2 = parse_expr(hist_data, file, str, operand_flags, NULL, ++level);
++	operand2 = parse_expr(hist_data, file, str, operand_flags, NULL, n_subexprs);
+ 	if (IS_ERR(operand2)) {
+ 		ret = PTR_ERR(operand2);
+ 		operand2 = NULL;
+@@ -3883,9 +3953,9 @@ static int __create_val_field(struct hist_trigger_data *hist_data,
+ 			      unsigned long flags)
+ {
+ 	struct hist_field *hist_field;
+-	int ret = 0;
++	int ret = 0, n_subexprs = 0;
+ 
+-	hist_field = parse_expr(hist_data, file, field_str, flags, var_name, 0);
++	hist_field = parse_expr(hist_data, file, field_str, flags, var_name, &n_subexprs);
+ 	if (IS_ERR(hist_field)) {
+ 		ret = PTR_ERR(hist_field);
+ 		goto out;
+@@ -4026,7 +4096,7 @@ static int create_key_field(struct hist_trigger_data *hist_data,
+ 	struct hist_field *hist_field = NULL;
+ 	unsigned long flags = 0;
+ 	unsigned int key_size;
+-	int ret = 0;
++	int ret = 0, n_subexprs = 0;
+ 
+ 	if (WARN_ON(key_idx >= HIST_FIELDS_MAX))
+ 		return -EINVAL;
+@@ -4039,7 +4109,7 @@ static int create_key_field(struct hist_trigger_data *hist_data,
+ 		hist_field = create_hist_field(hist_data, NULL, flags, NULL);
+ 	} else {
+ 		hist_field = parse_expr(hist_data, file, field_str, flags,
+-					NULL, 0);
++					NULL, &n_subexprs);
+ 		if (IS_ERR(hist_field)) {
+ 			ret = PTR_ERR(hist_field);
+ 			goto out;
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
