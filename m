@@ -2,112 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0C643993B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A70439940
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbhJYOwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:52:40 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37766
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233625AbhJYOwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:52:13 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7E83F3F4A4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635173390;
-        bh=KricW4D7VolKL3JPfDUExtQxStN8Nau+m8lKmFDnDuQ=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=f8KTU5sgHG/SgF5CRj6zA5LjHshGBwrZM3hY3wUp6wuK76W67OpsV82HUbW8UZ2Xa
-         H7lqO2odLSOcjEw4F/bFT/eE1WYLR5pArXz46UxoyI9EmIEOi5mS7F0woS0qSzsOgB
-         hoAWspch+Sl62NaSv+DuARGSpSrG3q651WZI759Y6dn64SGq4SJ6L2sbbJf1cSO62G
-         NAOGHNfIvd5LwLPaIsdF6bPCd9C8Xx32LcR6EhRvFmpwikec6OUchk9+rSLYHHwSiN
-         dUGPYsF4Hq8Df4k8wft0Z3BoUDI9XUgHwv3UHEYO7DveIUOz7JkFMZwJ173nuioI02
-         svBfQjkLKl8xg==
-Received: by mail-lj1-f198.google.com with SMTP id 136-20020a2e098e000000b002110b902242so2822476ljj.20
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:49:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KricW4D7VolKL3JPfDUExtQxStN8Nau+m8lKmFDnDuQ=;
-        b=azdJ5HIHO0OgenLsJ2Mr/R5W441lMZo8zAoxdVn4N9SjCdExlCmpZOKyt/BIauxyax
-         bcQFcsctMTH08GAVoI+jhOm6LJ9Xp5zq6GlbdjMUWoxYgnLYm6IuhMYJe+OiZpPiwOiY
-         sbbntldtsf733jj5sLtJekGRKjO4hpAYQvCMNZZQ2pYqmsp1gVtTtn/bzGFv8TVk306m
-         O0JDEXpmgPbibXfLpa4040fPTQNE22O1EukNC8zw+jEkj5sq5/v2uVwfzsmRX3EYm3Va
-         UvEjt9fhN+/HmTnVOrR/5BaVnsKQpa9wbxe4VJN9fdxTIkI+G8ltfEDt3Wh72CFrDdYx
-         CTKw==
-X-Gm-Message-State: AOAM531okM8A5iIyFxAGo0uGd7T2pSDdhkLnvXuFm4NHSX4ZNLm9dX1T
-        gQQ4T8o3M9aQtf3nVyayMjn4t6B3Ys3FCHQSjgbndMNWrzf7hrbtdjpW7KMIu5w6uOIB4ZxHltY
-        K0mwVTigCllbsAdmeRELaeRpa5T7Lg7JzxpBCUj7/QA==
-X-Received: by 2002:ac2:5d71:: with SMTP id h17mr14204463lft.642.1635173389990;
-        Mon, 25 Oct 2021 07:49:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxRQErlF/R1paw1cLXY13RG/G2M/k1Cz7GJkjb23Wq22EpZlnXHsMIgnnBJ+035rSdh+yV5w==
-X-Received: by 2002:ac2:5d71:: with SMTP id h17mr14204445lft.642.1635173389830;
-        Mon, 25 Oct 2021 07:49:49 -0700 (PDT)
-Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id j15sm1660922lfe.252.2021.10.25.07.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 07:49:49 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Escande <thierry.escande@linux.intel.com>,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH v2] nfc: port100: fix using -ERRNO as command type mask
-Date:   Mon, 25 Oct 2021 16:49:36 +0200
-Message-Id: <20211025144936.556495-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S233637AbhJYOw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233696AbhJYOwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:52:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 904C061039;
+        Mon, 25 Oct 2021 14:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635173407;
+        bh=jYOtjHPCtlfoXpNUGdU/aP/8EDMtH7R8Xiek4vi1dyw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CkJmjD57ca0DJl8Lj8eJSv4HJyR0V/5ourT87XirDfo6gcB23QrWgZ83O/HwjETMj
+         7pfppAFEx094lGzLntGInX6pt4MqVwgILWRyH8iU/LZoYEZECz29efzIoi6M/AfB9C
+         Swy6ixqAwBbKDUM/v1Bb5HKCsnCuPxfsEhYPDj1uSfoKqVPxZkBOekxo3A9FSjnXsZ
+         cQAkvD2/ZDTG/mjgTSy7MqBp//iRy6zOtVixFBt/S1aZvsV9lohoeSXmMpLimtvIma
+         Yk4V7ad2e8r5GLj6N5KjECDo5dF7gVMx3WmmcmskmMz8zICqbUIl8f6leQKjVjeF8t
+         +ddL/8iTYv1ug==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 89A4660A17;
+        Mon, 25 Oct 2021 14:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mlxsw: spectrum: Use 'bitmap_zalloc()' when applicable
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163517340755.13749.8331433462524363080.git-patchwork-notify@kernel.org>
+Date:   Mon, 25 Oct 2021 14:50:07 +0000
+References: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During probing, the driver tries to get a list (mask) of supported
-command types in port100_get_command_type_mask() function.  The value
-is u64 and 0 is treated as invalid mask (no commands supported).  The
-function however returns also -ERRNO as u64 which will be interpret as
-valid command mask.
+Hello:
 
-Return 0 on every error case of port100_get_command_type_mask(), so the
-probing will stop.
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Cc: <stable@vger.kernel.org>
-Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Sun, 24 Oct 2021 21:17:51 +0200 you wrote:
+> Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid
+> some open-coded arithmetic in allocator arguments.
+> 
+> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+> consistency.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> 
+> [...]
 
----
+Here is the summary with links:
+  - mlxsw: spectrum: Use 'bitmap_zalloc()' when applicable
+    https://git.kernel.org/netdev/net-next/c/2c087dfcc9d5
 
-Changes since v1:
-1. Drop debug code.
----
- drivers/nfc/port100.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
-index 517376c43b86..16ceb763594f 100644
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -1006,11 +1006,11 @@ static u64 port100_get_command_type_mask(struct port100 *dev)
- 
- 	skb = port100_alloc_skb(dev, 0);
- 	if (!skb)
--		return -ENOMEM;
-+		return 0;
- 
- 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
- 	if (IS_ERR(resp))
--		return PTR_ERR(resp);
-+		return 0;
- 
- 	if (resp->len < 8)
- 		mask = 0;
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
