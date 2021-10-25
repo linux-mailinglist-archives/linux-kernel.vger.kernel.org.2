@@ -2,161 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145D74397D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3514397DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhJYNvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:51:35 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39340 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJYNvb (ORCPT
+        id S232829AbhJYNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231586AbhJYNwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:51:31 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 384531FD3A;
-        Mon, 25 Oct 2021 13:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635169748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+x+7fcw/+YytMUhFAnt+FKGGNMBk+QUr2gwfDdTJ7Q=;
-        b=LndAzJXJfTth62Dc+rcWv8dmONm65/jechL4fZsahPBHLAwFzaZdaJWkpCH7WJElLxEo/L
-        GYbfYDbLPOZxtr/iCEh7gEhPEwk5ICwQX4P5O3JB2CMT2va8qF+Gm35uzG4v18ygiD72Pd
-        TfC75gYaM0AsE7YSsKPmBVpYunXWtTo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635169748;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+x+7fcw/+YytMUhFAnt+FKGGNMBk+QUr2gwfDdTJ7Q=;
-        b=sLATxKaezlxIHcFmGZSSU/gMd2CT82OENGn+fJ2LZcuAuZ6zjjud/WdD4839lZv1FAeO/Y
-        qNpTg+bAqTbAo1Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 14A6313BB8;
-        Mon, 25 Oct 2021 13:49:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YHVVBNS1dmFtZgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 25 Oct 2021 13:49:08 +0000
-Message-ID: <91d4688e-db6e-0ba3-e747-e995f255634b@suse.cz>
-Date:   Mon, 25 Oct 2021 15:49:07 +0200
+        Mon, 25 Oct 2021 09:52:44 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDEFC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:50:22 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id m22so9667877wrb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zO//Njv5YS97vppMMVlVgZZUjNA2rAR2HbiLnMq5guY=;
+        b=WAJHDBQ9M9IsmiDeUxxWHPYr+sCVbX/bI2CcVAuFyyhDOTB2poQayGA0ZinLaHiK9y
+         z8cSONPK2YzrZZk6ypTUZDOu0KGjHbgqLFQDpCEtdMxXzFE0/TEjs1XeGc79+Ors7i1o
+         +IzpvsLL/wXEfoqgwUVj6L1+8+4k5FfGIlkDs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zO//Njv5YS97vppMMVlVgZZUjNA2rAR2HbiLnMq5guY=;
+        b=hfeZ0wla4w9umOToiRT9Dxd7mi/txWpMRiKgBfXIuuRjZPgmS/0UVxKpmHn8UXYMDt
+         v8AHT3Pk2UjEfcHX6fYYfVWuXBh1MSBNaLlKXQN7FbcJYaCqIWlfc9v1ZDaMzJN6lbGI
+         le9FPBbeUIN16fGAzM0s2uscWpbGoP5eMYh0hs2+sebIbE0rTIQdVHeiIJUaF5o0stYz
+         DbO8m6QbGHabsNpalCqPEQWCBTgWXmSXWQvXlVVPQzEEfJ2VyehJI+pDhbIgOZzQsmhZ
+         1NdEuZt1NHt9PHXK2cPPluHw3/9ACfYoSpcvPxWiCcnkH7LuSxT1oHzv8WcrHhTLsJeP
+         0Mxg==
+X-Gm-Message-State: AOAM532IHmBo+t9ZJX+u8Q6LnMviSdZ59xWtXdMUsOeeQy0Xy+xD9e59
+        LDYcuQeC/3zVSFF6SCWdvtj1l8VeAuHlwzmgsJosXA==
+X-Google-Smtp-Source: ABdhPJz5aj5JNuMgfqZUwaXY/cwE1jkvjSaX9jTe8FLYMARW9hORElaPxrAsk3O1APxlNE9m9YAEL0HbosNKjgNmgu4=
+X-Received: by 2002:a05:6000:1283:: with SMTP id f3mr24072888wrx.128.1635169820558;
+ Mon, 25 Oct 2021 06:50:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <20211012180148.1669685-1-hannes@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
- calls
-In-Reply-To: <20211012180148.1669685-1-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211022140714.28767-1-jim2101024@gmail.com> <20211022140714.28767-5-jim2101024@gmail.com>
+ <YXLLRLwMG7nEwQoi@sirena.org.uk> <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
+ <YXMVSVpeC1Kqsg5x@sirena.org.uk>
+In-Reply-To: <YXMVSVpeC1Kqsg5x@sirena.org.uk>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 25 Oct 2021 09:50:09 -0400
+Message-ID: <CA+-6iNxQAekCQTJKE5L7LO6QF+UC6xnyE=XVq_7z3=4hp8ASXQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] PCI: brcmstb: Add control of subdevice voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 20:01, Johannes Weiner wrote:
-> PageSlab() currently imposes a compound_head() call on all callsites
-> even though only very few situations encounter tailpages. This short
-> series bubbles tailpage resolution up to the few sites that need it,
-> and eliminates it everywhere else.
-> 
-> This is a stand-alone improvement. However, it's inspired by Willy's
-> patches to split struct slab from struct page. Those patches currently
-> resolve a slab object pointer to its struct slab as follows:
-> 
-> 	slab = virt_to_slab(p);		/* tailpage resolution */
-> 	if (slab_test_cache(slab)) {	/* slab or page alloc bypass? */
-> 		do_slab_stuff(slab);
-> 	} else {
-> 		page = (struct page *)slab;
-> 		do_page_stuff(page);
-> 	}
-> 
-> which makes struct slab an ambiguous type that needs to self-identify
-> with the slab_test_cache() test (which in turn relies on PG_slab in
-> the flags field shared between page and slab).
-> 
-> It would be preferable to do:
-> 
-> 	page = virt_to_head_page(p);	/* tailpage resolution */
-> 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
-> 		slab = page_slab(page);
-> 		do_slab_stuff(slab);
-> 	} else {
-> 		do_page_stuff(page);
-> 	}
+On Fri, Oct 22, 2021 at 3:47 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Oct 22, 2021 at 03:15:59PM -0400, Jim Quinlan wrote:
+>
+> > Each different SOC./board we deal with may present different ways of
+> > making the EP device power on.  We are using
+> > an abstraction name "brcm-ep-a"  to represent some required regulator
+> > to make the EP  work for a specific board.  The RC
+> > driver cannot hard code a descriptive name as it must work for all
+> > boards designed by us, others, and third parties.
+> > The EP driver also doesn't know  or care about the regulator name, and
+> > this driver is often closed source and often immutable.  The EP
+> > device itself may come from Brcm, a third party,  or sometimes a competitor.
+>
+> > Basically, we find using a generic name such as "brcm-ep-a-supply"
+> > quite handy and many of our customers embrace this feature.
+> > I know that Rob was initially against such a generic name, but I
+> > vaguely remember him seeing some merit to this, perhaps a tiny bit :-)
+> > Or my memory is shot, which could very well be the case.
+>
+> That sounds like it just shouldn't be a regulator at all, perhaps the
+> board happens to need a regulator there but perhaps it needs a clock,
+> GPIO or some specific sequence of actions.  It sounds like you need some
+> sort of quirking mechanism to cope with individual boards with board
+> specific bindings.
+The boards involved may have no PCIe sockets, or run the gamut of the different
+PCIe sockets.  They all offer gpio(s) to turn off/on their power supply(s) to
+make their PCIe device endpoint functional.  It is not viable to add
+new Linux quirk or DT
+code for each board.  First is the volume and variety of the boards
+that use our SOCs.. Second, is
+our lack of information/control:  often, the board is designed by one
+company (not us), and
+given to another company as the middleman, and then they want the
+features outlined
+in my aforementioned commit message.
 
-I agree with this. Also not fond of introducing setting PG_slab on all tail
-pages as willy proposed. But also would like to avoid the tree-wide changes
-to PageSlab tailpage resolution that this series is doing.
+>
+> I'd suggest as a first pass omitting this and then looking at some
+> actual systems later when working out how to support them, no sense in
+> getting the main thing held up by difficult edge cases.
 
-What we could do is what you suggest above, but the few hotpaths in slab
-itself would use a __PageSlab() variant that just doesn't do tailpage
-resolution. The rest of tree could keep doing PageSlab with tailpage
-resolution for now, and then we can improve on that later. Would that be
-acceptable?
+These are not edge cases -- some of these are major customers.
 
-With that I'm proposing to take over willy's series (as he asked for that in
-the cover letter) which would be modified in the above sense. And maybe in
-other ways I can't immediately predict.
+Regards,
+Jim
 
-But I do want to at least try an approach where we would deal with the
-"boundary" functions first (that need to deal with struct page) and then
-convert the bulk of "struct page" to "struct slab" at once with help of a
-coccinelle semantic patch. I'm hoping that this wouldn't thus be a
-"slapdash" conversion, while avoiding a large series of incremental patches
-- because the result of such automation wouldn't need such close manual
-review as human-written patches do.
-
-> and leave the ambiguity and the need to self-identify with struct
-> page, so that struct slab is a strong and unambiguous type, and a
-> non-NULL struct slab encountered in the wild is always a valid object
-> without the need to check another dedicated flag for validity first.
-> 
-> However, because PageSlab() currently implies tailpage resolution,
-> writing the virt->slab lookup in the preferred way would add yet more
-> unnecessary compound_head() call to the hottest MM paths.
-> 
-> The page flag helpers should eventually all be weaned off of those
-> compound_head() calls for their unnecessary overhead alone. But this
-> one in particular is now getting in the way of writing code in the
-> preferred manner, and bleeding page ambiguity into the new types that
-> are supposed to eliminate specifically that. It's ripe for a cleanup.
-> 
-> Based on v5.15-rc4.
-> 
->  arch/ia64/kernel/mca_drv.c |  2 +-
->  drivers/ata/libata-sff.c   |  2 +-
->  fs/proc/page.c             | 12 +++++++-----
->  include/linux/net.h        |  2 +-
->  include/linux/page-flags.h | 10 +++++-----
->  mm/kasan/generic.c         |  2 +-
->  mm/kasan/kasan.h           |  2 +-
->  mm/kasan/report.c          |  4 ++--
->  mm/kasan/report_tags.c     |  2 +-
->  mm/memory-failure.c        |  6 +++---
->  mm/memory.c                |  3 ++-
->  mm/slab.h                  |  2 +-
->  mm/slob.c                  |  4 ++--
->  mm/slub.c                  |  6 +++---
->  mm/util.c                  |  2 +-
->  15 files changed, 32 insertions(+), 29 deletions(-)
-> 
-> 
-> 
-
+>
+> > > > +     /* This is for Broadcom STB/CM chips only */
+> > > > +     if (pcie->type == BCM2711)
+> > > > +             return 0;
+>
+> > > It is a relief that other chips have managed to work out how to avoid
+> > > requiring power.
+>
+> > I'm not sure that the other Broadcom groups have our customers, our
+> > customers' requirements, and the amount and variation of boards that
+> > run our PCIe driver on the SOC.
+>
+> Sure, but equally they might (even if they didn't spot it yet) and in
+> general it's safer to err on the side of describing the hardware so we
+> can use that information later.
