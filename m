@@ -2,47 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F2A43A166
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945BB43A319
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhJYTi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48384 "EHLO mail.kernel.org"
+        id S237538AbhJYT4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:56:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235905AbhJYTcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:32:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B36661163;
-        Mon, 25 Oct 2021 19:28:44 +0000 (UTC)
+        id S238668AbhJYTvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 680EF6124D;
+        Mon, 25 Oct 2021 19:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190125;
-        bh=M7rXbJcmXm7/mYr1xFFv/WvVbqRK4BgrJ9RlUhIcZy8=;
+        s=korg; t=1635190978;
+        bh=Qi5GzFGSHJpkH7OqsLp/XmZjUkleK8cwQASk11ec03s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AmUTYjrtL4pj5PRP1CqPMHafu8eJuaYnRWLSWCD0XsJj5mFAPV8xQSraKJfuSF6Bj
-         NpCoRei5GFpgrgn4AKGIRwfIMnhsfP9Wj/UdsRzvuO511WivkIA32swAqhnqr6NEoN
-         0POxQ9SHkMpdlv0gkWHGpjcZGxg+/cwu07vyG58s=
+        b=sb7tH0QspEipTiLHwUll13BaKEmoSRTpO2x9l3nzX/4XaoTrZGRKaJJKwTTNuxMjz
+         uBG+kYheOu3uhcFc3I0YJWHv3rkPmlK687vStYdKupKs8Y/U9XzdxnKS9LJpAXF8PE
+         uatF42WrwGxmOurLOc8Bq04784wGWGM6gnTrTDOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 40/58] mm, slub: fix potential memoryleak in kmem_cache_open()
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lin Ma <linma@zju.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 116/169] nfc: nci: fix the UAF of rf_conn_info object
 Date:   Mon, 25 Oct 2021 21:14:57 +0200
-Message-Id: <20211025190944.020648444@linuxfoundation.org>
+Message-Id: <20211025191032.675690117@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,47 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-commit 9037c57681d25e4dcc442d940d6dbe24dd31f461 upstream.
+commit 1b1499a817c90fd1ce9453a2c98d2a01cca0e775 upstream.
 
-In error path, the random_seq of slub cache might be leaked.  Fix this
-by using __kmem_cache_release() to release all the relevant resources.
+The nci_core_conn_close_rsp_packet() function will release the conn_info
+with given conn_id. However, it needs to set the rf_conn_info to NULL to
+prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
+the UAF.
 
-Link: https://lkml.kernel.org/r/20210916123920.48704-4-linmiaohe@huawei.com
-Fixes: 210e7a43fa90 ("mm: SLUB freelist randomization")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Bharata B Rao <bharata@linux.ibm.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/slub.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/nfc/nci/rsp.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3734,8 +3734,8 @@ static int kmem_cache_open(struct kmem_c
- 	if (alloc_kmem_cache_cpus(s))
- 		return 0;
- 
--	free_kmem_cache_nodes(s);
- error:
-+	__kmem_cache_release(s);
- 	return -EINVAL;
- }
- 
+--- a/net/nfc/nci/rsp.c
++++ b/net/nfc/nci/rsp.c
+@@ -330,6 +330,8 @@ static void nci_core_conn_close_rsp_pack
+ 							 ndev->cur_conn_id);
+ 		if (conn_info) {
+ 			list_del(&conn_info->list);
++			if (conn_info == ndev->rf_conn_info)
++				ndev->rf_conn_info = NULL;
+ 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
+ 		}
+ 	}
 
 
