@@ -2,247 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C305439A67
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBE2439A81
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhJYP2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhJYP2f (ORCPT
+        id S233926AbhJYPbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:31:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233933AbhJYPbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:28:35 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377E7C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:26:13 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id t4so16043714oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=p4DTS+XDrRU1zoDF0JXsJDKfzlw1Jx2jETNT5iMePnI=;
-        b=g2mOb7t41N5cc6GiB6ZWW8pit9ZMFe7sLknkU8KdXdL+pOnmDmId3kzmHS4y0DtBpw
-         I32xsjou3/rS4rnA+q4kYdvturfTXNlWEso0uvlQFO2DEmEqVQ65bRt3ouiS/5iEYAA7
-         e1iVvseAu+CdriJ4zt2zMeWIBXO1FUjPbaxZwclrkzofT3BZLGKgom6aztrN9cwjGKd3
-         pBhMmEYMMQa4Yssj1VLaiUdEndOq5LU7c7Qm76pD9Xuz11TflCmhq7J9c2fIlByX/yBl
-         dFEAz+0ixVWJf9fvHKKMlW/mdsZSyq24e2DFQqxx1D2rxllUJ+ZQNdQmeL61FGXOR77i
-         rozg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=p4DTS+XDrRU1zoDF0JXsJDKfzlw1Jx2jETNT5iMePnI=;
-        b=7FW02vZloXV0WU9yRYipC1+pnaa78jaS5vAVQCcR7nSzIg/Pq+uY7RL/mt6UklznBq
-         7UeNEOKxq+AecrsPZU84g6NI+asmS/+sBhiY4lqN0WKAkzOAUneou/nxwBYDk/XYYzpm
-         6VRr1GkQZzk1MleKqdDo1UulsojO1zvqo1PDKQdWTc0NwRzUhdTNXbuq/qXcL5K9TORy
-         MITzk/4JYAITTX8VZQh1J0iKsx8YMEDd7ShFXcmSBbsZW9Uuuqb0UsOb9rfW6WE6hEOC
-         eR7w2uAZBqOpovnNI/fjowiT0+C6CSLBxB3ij92VsGl79ChQXu/g+1drNqxCz81BtlHg
-         P4wA==
-X-Gm-Message-State: AOAM531L3Hd9YIb7kjtafFs38GxH0f7z396sn7qvBMQX9J0CVOircf07
-        YQB46pab95i+hauhrsqKvMUI0g==
-X-Google-Smtp-Source: ABdhPJz+aGu1DW+AHAHdR7S/AfP0mjfSmCKCdM4kWHzZY7VGk5rnkngQoMCvlKGwWg4u8iN0ZVtFRQ==
-X-Received: by 2002:aca:a817:: with SMTP id r23mr12992262oie.71.1635175572431;
-        Mon, 25 Oct 2021 08:26:12 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id bn41sm3688631oib.43.2021.10.25.08.26.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 08:26:11 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 08:27:48 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@google.com>
-Subject: Re: [PATCH v6 3/3] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <YXbM9Pnxpo50TQy+@ripper>
-References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
- <20210930030557.1426-3-bjorn.andersson@linaro.org>
- <20211025084250.pkd5s4zdmevjjl7m@pengutronix.de>
+        Mon, 25 Oct 2021 11:31:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635175760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l1cYYIVh+xGjWZ5+lH9xxF7m8Jg6vgobu0WCRcUUQ6o=;
+        b=Jfc3ohafT0if8FO2xeF85mHEJWlNBNm5tMK7PsQi4/9LavwDJWCdmI5sesOc2NuWbMp7qU
+        g/Latb9279tnr7gKJpP2rXaX7YgCmBgqXaLpeu465R7MlfFM9QVLYqSOZn6TO+wNY7yClO
+        IrEUgZ8z7YH9jMoAca76kAN1VxXew1E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-x4xQsDwWOV62UjcxFemc8Q-1; Mon, 25 Oct 2021 11:28:47 -0400
+X-MC-Unique: x4xQsDwWOV62UjcxFemc8Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDC93362FD;
+        Mon, 25 Oct 2021 15:28:43 +0000 (UTC)
+Received: from llong.remote.csb (unknown [10.22.18.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E34335D6D5;
+        Mon, 25 Oct 2021 15:28:37 +0000 (UTC)
+Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+References: <20211022120058.1031690-1-arnd@kernel.org>
+ <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
+ <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
+ <YXZ/iLB7BvZtzDMp@hirez.programming.kicks-ass.net>
+ <CAK8P3a2Luz7sd5cM1OdZhYCs_UPzo+2qVQYSZPfR2QN+0DkyRg@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Message-ID: <2413f412-a390-bbc0-e848-e2a77d1f0ab3@redhat.com>
+Date:   Mon, 25 Oct 2021 11:28:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211025084250.pkd5s4zdmevjjl7m@pengutronix.de>
+In-Reply-To: <CAK8P3a2Luz7sd5cM1OdZhYCs_UPzo+2qVQYSZPfR2QN+0DkyRg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 Oct 01:42 PDT 2021, Uwe Kleine-K?nig wrote:
 
-> Hello,
-> 
-> [replaced Andrzej Hajda's email address with his new one]
-> 
-> On Wed, Sep 29, 2021 at 10:05:57PM -0500, Bjorn Andersson wrote:
-> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
-> > with the primary purpose of controlling the backlight of the attached
-> > panel. Add an implementation that exposes this using the standard PWM
-> > framework, to allow e.g. pwm-backlight to expose this to the user.
-> 
-> Sorry for the long delay in reviewing this.
-> 
+On 10/25/21 9:06 AM, Arnd Bergmann wrote:
+> On Mon, Oct 25, 2021 at 11:57 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>> On Sat, Oct 23, 2021 at 06:04:57PM +0200, Arnd Bergmann wrote:
+>>> On Sat, Oct 23, 2021 at 3:37 AM Waiman Long <longman@redhat.com> wrote:
+>>>>> On 10/22/21 7:59 AM, Arnd Bergmann wrote:
+>>>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>>>
+>>>>> As this is all dead code, just remove it and the helper functions built
+>>>>> around it. For arch/ia64, the inline asm could be cleaned up, but
+>>>>> it seems safer to leave it untouched.
+>>>>>
+>>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>>> Does that mean we can also remove the GENERIC_LOCKBREAK config option
+>>>> from the Kconfig files as well?
+>>>   I couldn't figure this out.
+>>>
+>>> What I see is that the only architectures setting GENERIC_LOCKBREAK are
+>>> nds32, parisc, powerpc, s390, sh and sparc64, while the only architectures
+>>> implementing arch_spin_is_contended() are arm32, csky and ia64.
+>>>
+>>> The part I don't understand is whether the option actually does anything
+>>> useful any more after commit d89c70356acf ("locking/core: Remove break_lock
+>>> field when CONFIG_GENERIC_LOCKBREAK=y").
+>> Urgh, what a mess.. AFAICT there's still code in
+>> kernel/locking/spinlock.c that relies on it. Specifically when
+>> GENERIC_LOCKBREAK=y we seem to create _lock*() variants that are
+>> basically TaS locks which drop preempt/irq disable while spinning.
+>>
+>> Anybody having this on and not having native TaS locks is in for a rude
+>> surprise I suppose... sparc64 being the obvious candidate there :/
+> Is this a problem on s390 and powerpc, those two being the ones
+> that matter in practice?
+>
+> On s390, we pick between the cmpxchg() based directed-yield when
+> running on virtualized CPUs, and a normal qspinlock when running on a
+> dedicated CPU.
 
-No worries, glad to hear from you again.
+I am not aware that s390 is using qspinlocks at all as I don't see 
+ARCH_USE_QUEUED_SPINLOCKS being set anywhere under arch/s390. I only see 
+that it uses a cmpxchg based spinlock.
 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-[..]
-> > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +			   const struct pwm_state *state)
-> > +{
-> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +	unsigned int pwm_en_inv;
-> > +	unsigned int backlight;
-> > +	unsigned int pre_div;
-> > +	unsigned int scale;
-> > +	u64 period_max;
-> > +	u64 period;
-> > +	int ret;
-> > +
-> > +	if (!pdata->pwm_enabled) {
-> > +		ret = pm_runtime_get_sync(pdata->dev);
-> > +		if (ret < 0) {
-> > +			pm_runtime_put_sync(pdata->dev);
-> > +			return ret;
-> > +		}
-> > +	}
-> > +
-> > +	if (state->enabled) {
-> > +		if (!pdata->pwm_enabled) {
-> > +			/*
-> > +			 * The chip might have been powered down while we
-> > +			 * didn't hold a PM runtime reference, so mux in the
-> > +			 * PWM function on the GPIO pin again.
-> > +			 */
-> > +			ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> > +						 SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
-> > +						 SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
-> > +			if (ret) {
-> > +				dev_err(pdata->dev, "failed to mux in PWM function\n");
-> > +				goto out;
-> > +			}
-> > +		}
-> > +
-> > +		/*
-> > +		 * Per the datasheet the PWM frequency is given by:
-> > +		 *
-> > +		 *                          REFCLK_FREQ
-> > +		 *   PWM_FREQ = -----------------------------------
-> > +		 *               PWM_PRE_DIV * BACKLIGHT_SCALE + 1
-> > +		 *
-> > +		 * However, after careful review the author is convinced that
-> > +		 * the documentation has lost some parenthesis around
-> > +		 * "BACKLIGHT_SCALE + 1".
-> > +		 * With that the formula can be written:
-> > +		 *
-> > +		 *   T_pwm * REFCLK_FREQ = PWM_PRE_DIV * (BACKLIGHT_SCALE + 1)
-> 
-> For my understanding: T_pwm = period length = 1 / PWM_FREQ, right? Maybe
-> it's a good idea to state this more explicitly?
-> 
+Cheers,
+Longman
 
-Correct. I've improved the comment accordingly.
-
-> > +		 * In order to keep BACKLIGHT_SCALE within its 16 bits,
-> > +		 * PWM_PRE_DIV must be:
-> > +		 *
-> > +		 *                     T_pwm * REFCLK_FREQ
-> > +		 *   PWM_PRE_DIV >= -------------------------
-> > +		 *                   BACKLIGHT_SCALE_MAX + 1
-> > +		 *
-> > +		 * To simplify the search and to favour higher resolution of
-> > +		 * the duty cycle over accuracy of the period, the lowest
-> > +		 * possible PWM_PRE_DIV is used. Finally the scale is
-> > +		 * calculated as:
-> > +		 *
-> > +		 *                      T_pwm * REFCLK_FREQ
-> > +		 *   BACKLIGHT_SCALE = ---------------------- - 1
-> > +		 *                          PWM_PRE_DIV
-> > +		 *
-> > +		 * Here T_pwm is represented in seconds, so appropriate scaling
-> > +		 * to nanoseconds is necessary.
-> > +		 */
-> > +
-> > +		/* Minimum T_pwm is 1 / REFCLK_FREQ */
-> > +		if (state->period <= NSEC_PER_SEC / pdata->pwm_refclk_freq) {
-> > +			ret = -EINVAL;
-> > +			goto out;
-> > +		}
-> > +
-> > +		/*
-> > +		 * Maximum T_pwm is 255 * (65535 + 1) / REFCLK_FREQ
-> > +		 * Limit period to this to avoid overflows
-> > +		 */
-> > +		period_max = div_u64((u64)NSEC_PER_SEC * 255 * (65535 + 1),
-> > +				     pdata->pwm_refclk_freq);
-> > +		if (period > period_max)
-> 
-> period is uninitialized here. This must be
-> 
-> 		if (state->period > period_max)
-> 
-> . Alternatively to the if you could use
-> 
-> 		period = min(state->period, period_max);
-> 
-
-Yes of course.
-
-> 
-> Apart from this I'm happy with your patch set now.
-> 
-
-Thank you.
-
-> > +			period = period_max;
-> > +		else
-> > +			period = state->period;
-> > +
-> > +		pre_div = DIV64_U64_ROUND_UP(period * pdata->pwm_refclk_freq,
-> > +					     (u64)NSEC_PER_SEC * (BACKLIGHT_SCALE_MAX + 1));
-> > +		scale = div64_u64(period * pdata->pwm_refclk_freq, (u64)NSEC_PER_SEC * pre_div) - 1;
-> 
-> After thinking a while about this---I think I stumbled about this
-> calculation already in earlier revisions of this patch set---I think I
-> now understood it. I never saw something like this before because other
-> drivers with similar HW conditions would pick:
-> 
-> 	pre_div = div64_u64(period * pdata->pwm_refclk_freq,
-> 			    (u64)NSEC_PER_SEC * (BACKLIGHT_SCALE_MAX + 1));
-> 
-> and then scale = BACKLIGHT_SCALE_MAX. This latter approach weights high
-> resolution of duty_cycle still higher over period exactness than your
-> approach.
-
-Interesting.
-
-> For me both approaches are fine.
-> 
-
-Thanks, I'll respin with the two minor things above and leave the math
-as is now :)
-
-Regards,
-Bjorn
-
-> Best regards
-> Uwe
-> 
-> -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
 
