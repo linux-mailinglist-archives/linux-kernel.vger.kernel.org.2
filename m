@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98E3439930
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D512439932
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhJYOvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:51:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233364AbhJYOup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:50:45 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S233578AbhJYOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:51:44 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37690
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233663AbhJYOut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:50:49 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71EE960C40;
-        Mon, 25 Oct 2021 14:48:20 +0000 (UTC)
-Date:   Mon, 25 Oct 2021 10:48:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        corbet@lwn.net, ananth@in.ibm.com, akpm@linux-foundation.org,
-        randy.dunlap@oracle.com, mathieu.desnoyers@polymtl.ca,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] MAINTAINERS: Add git tree and missing files for
- KPROBES
-Message-ID: <20211025104819.66404060@gandalf.local.home>
-In-Reply-To: <c10e50c8-081b-aca6-eefe-eac463cb5a30@loongson.cn>
-References: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
-        <1635132660-5038-5-git-send-email-yangtiezhu@loongson.cn>
-        <20211025153821.baa3f5d90fd40943ee28d2e1@kernel.org>
-        <c10e50c8-081b-aca6-eefe-eac463cb5a30@loongson.cn>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B5C773F4A4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635173303;
+        bh=LH+S+D+GBCzu9tGuajRTF5P0LpOZ1vWiDJ3BDbAqLVU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=EvJh6ZIOpOhskE1A4x3Vr+s9g68xvTtYbaM+M+Pb9a8IEGKBuU3ZfAvMHwtJafkM5
+         owWEAXfldKHTMJ+g8kQl93iYP/GI56BTF5mwnfcWvYbZk7X/DTiYNrMxVFhQ1afT8r
+         PU6razINBsQeSQYv5H77Y0iPrPSSBA3JF2ey+sshn+H8T4Uqk2upyv64CqTFB8hwBF
+         lF+pNd4MTfzqepGDWm6Of5oZhxoxwYlQvWIxw7VKIwk1zobo72xUE7t959bvaSea2R
+         /KNjWzkqpDFm2kmMQ26qzMiMzgHWYXlMD6+ptW7m1M5WUbBh1U45WXlUDoeOUBuGpT
+         ZY71glKklVeMg==
+Received: by mail-lf1-f72.google.com with SMTP id x17-20020a0565123f9100b003ff593b7c65so5318143lfa.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:48:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LH+S+D+GBCzu9tGuajRTF5P0LpOZ1vWiDJ3BDbAqLVU=;
+        b=5djY+JrYAoFB30r7fY/mSQgf7Mg/H4KnjuUV4uYflwx2uN2S98Bhj45pJndtS2v2jr
+         mFvQ9Z+8pdxy7h5I1hCAqzmpMdYRpPnaIZVrOcwVM4lqYvQ6GHkQI8l1WafoQ0SKt9PG
+         SC4elclwjCGz6S2GFOsu3JPp4a3oJljkrF98hybMB6o3hPVZITB4Rs85O4jk+QdL+qNo
+         ZGsdumkOd8d+SECv84UQTz6z/WrHTWunqSUA+GLt7qeMKEtwFNFEWDANj7NAkF893Cl0
+         tVoTHLENyfyo+bN3FUAi1ArB7+yWatRajYh4l9T7LZXdLvtH+tlaKnC94JB1L9iXJ69k
+         IaWg==
+X-Gm-Message-State: AOAM530cYrX7TeNCdr0zlw3mwVVIXRtQ5dLLUj/drTEXZJ7Fsry5HwEL
+        4rO8IRbwjep5xK/QVmn6AaA/myeQotfJUGZNqGSIjwWRNjjIWMXBoXrJjjqyM5bi+AV0DHrDdlj
+        vYNuwB7FvMei49+uwU3NA6OE9VixiCI9NmBGANTokfg==
+X-Received: by 2002:a05:6512:b97:: with SMTP id b23mr7435095lfv.50.1635173303253;
+        Mon, 25 Oct 2021 07:48:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxd6m499afz2jxS9BIn4Prm070HwxBO4wn8iB0xS8fXZQi09axQW2YeeTU0Wbfj4YyPtfX6Rw==
+X-Received: by 2002:a05:6512:b97:: with SMTP id b23mr7435050lfv.50.1635173302733;
+        Mon, 25 Oct 2021 07:48:22 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id o5sm1667767lft.278.2021.10.25.07.48.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 07:48:22 -0700 (PDT)
+Subject: Re: [PATCH] nfc: port100: fix using -ERRNO as command type mask
+To:     Thierry Escande <thierry.escande@linux.intel.com>,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+References: <20211025144751.555551-1-krzysztof.kozlowski@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <42e958ae-7786-4d80-7491-6955e37a4f25@canonical.com>
+Date:   Mon, 25 Oct 2021 16:48:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211025144751.555551-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 16:31:07 +0800
-Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-
-> On 10/25/2021 02:38 PM, Masami Hiramatsu wrote:
-> > On Mon, 25 Oct 2021 11:31:00 +0800
-> > Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-> >  
-> >> There is no git tree for KPROBES in MAINTAINERS, it is not convinent to
-> >> rebase, lib/test_kprobes.c and samples/kprobes belong to kprobe, add them.
-> >>
-> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> ---
-> >>   MAINTAINERS | 3 +++
-> >>   1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index 4372473..0e9bc60 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -10506,10 +10506,13 @@ M:	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-> >>   M:	"David S. Miller" <davem@davemloft.net>
-> >>   M:	Masami Hiramatsu <mhiramat@kernel.org>
-> >>   S:	Maintained
-> >> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git  
-> > NACK. As I said, this branch was prepared when I discussed with tip maintainer
-> > on kretprobe stackfix series but now it has been maintained on Steve's tracing
-> > tree.
-> >
-> > Steve, should we put your tree here?  
+On 25/10/2021 16:47, Krzysztof Kozlowski wrote:
+> During probing, the driver tries to get a list (mask) of supported
+> command types in port100_get_command_type_mask() function.  The value
+> is u64 and 0 is treated as invalid mask (no commands supported).  The
+> function however returns also -ERRNO as u64 which will be interpret as
+> valid command mask.
 > 
-
-I'm fine if kprobes goes through my tree.
-
-> If yes, should I update patch #4 and then send a v2 version of this 
-> patch set?
+> Return 0 on every error case of port100_get_command_type_mask(), so the
+> probing will stop.
 > 
-> @@ -10505,11 +10505,16 @@ M:    Naveen N. Rao <naveen.n.rao@linux.ibm.com>
->   M:     Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
->   M:     "David S. Miller" <davem@davemloft.net>
->   M:     Masami Hiramatsu <mhiramat@kernel.org>
-> +L:     linux-trace-devel@vger.kernel.org
-
-Please do not add the above mailing list. That's more for tracing tools
-like trace-cmd, kernelshark and the libtracefs/libtraceevent libraries.
-Only API changes (additions) should go to that list. Not internal updates.
-
->   S:     Maintained
-> +Q:     https://patchwork.kernel.org/project/linux-trace-devel/list/
-
-And this too is for the tracing tools, not the kernel. The patches status
-on that patchwork do not get updated by changes to the kernel. Only changes
-to the libraries and tool git trees will update those patches.
-
-> +T:     git 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
->   F:     Documentation/trace/kprobes.rst
->   F:     include/asm-generic/kprobes.h
->   F:     include/linux/kprobes.h
->   F:     kernel/kprobes.c
-> +F:     lib/test_kprobes.c
-> +F:     samples/kprobes
+> Cc: <stable@vger.kernel.org>
+> Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  drivers/nfc/port100.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
 > 
-> By the way, it seems that we should also update the TRACING git tree [1]?
-> If yes, should I send the following change as a new patch #5 in the v2 
-> version
-> or do the following change in the above patch #4?
-> 
-> @@ -19065,8 +19070,10 @@ F:     drivers/char/tpm/
->   TRACING
->   M:     Steven Rostedt <rostedt@goodmis.org>
->   M:     Ingo Molnar <mingo@redhat.com>
-> +L:     linux-trace-devel@vger.kernel.org
+> diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
+> index 1296148b4566..ec1630bfedf4 100644
+> --- a/drivers/nfc/port100.c
+> +++ b/drivers/nfc/port100.c
+> @@ -1109,15 +1109,11 @@ static u64 port100_get_command_type_mask(struct port100 *dev)
+>  
+>  	skb = port100_alloc_skb(dev, 0);
+>  	if (!skb)
+> -		return -ENOMEM;
+> +		return 0;
+>  
+> -	nfc_err(&dev->interface->dev, "%s:%d\n", __func__, __LINE__);
 
-Again, don't add that list.
+Mistake, please ignore.
 
->   S:     Maintained
-> -T:     git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 
-> perf/core
-> +Q:     https://patchwork.kernel.org/project/linux-trace-devel/list/
-
-Nor the patchwork.
-
-> +T:     git 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
->   F:     Documentation/trace/ftrace.rst
->   F:     arch/*/*/*/ftrace.h
->   F:     arch/*/kernel/ftrace.c
-> 
-
--- Steve
+Best regards,
+Krzysztof
