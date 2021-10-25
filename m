@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793A443A2D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846FB43A2BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238388AbhJYTxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:53:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37368 "EHLO mail.kernel.org"
+        id S236777AbhJYTvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238065AbhJYTr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:47:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 049F261214;
-        Mon, 25 Oct 2021 19:40:48 +0000 (UTC)
+        id S237883AbhJYTqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:46:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A80E061154;
+        Mon, 25 Oct 2021 19:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190849;
-        bh=JemFNvA4/QXcof/Gj6LnAX7JPYug6cOblT0fkwSJ7MM=;
+        s=korg; t=1635190781;
+        bh=K3kaM89fiogkEQxXa3aRhNYjQyfv5SnYe3M03xIsiDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPyJHUOpUb1fG3qNFHATEhBFDf5E4Yn3UNajLyzS/GT31hmzGDKhdCY9lM5Pn6NfE
-         3MTyFKi/eaeTGGDqxQcItA6fCqRIp5jQoejA2XG1vb8Nh8uUO8J8aASGazOEhY0bgz
-         4cJG8yqstLZjhhFQHjTDt050G6SsTDyhm3nKcOkw=
+        b=HzQhAxSL7EggXcfy6N6FpI5ZVGBIE/EI0VkSgcElpV+1X2HQn4aIFbq3ttQlDoREx
+         ea2au2vvPraX3IfdMZcyTvsK55pkJSstGgbonDIx24tpfkcAk0vV5lfPEp6wo/6x9L
+         2ZJxjxxcYrJ7WW6Q7VUbYhcsnEEQ2vtj5trOjSss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Sottas Guillaume (LMB)" <Guillaume.Sottas@liebherr.com>,
+        syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.14 068/169] can: isotp: isotp_sendmsg(): fix return error on FC timeout on TX path
-Date:   Mon, 25 Oct 2021 21:14:09 +0200
-Message-Id: <20211025191026.106618535@linuxfoundation.org>
+Subject: [PATCH 5.14 069/169] can: isotp: isotp_sendmsg(): add result check for wait_event_interruptible()
+Date:   Mon, 25 Oct 2021 21:14:10 +0200
+Message-Id: <20211025191026.230567849@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
 References: <20211025191017.756020307@linuxfoundation.org>
@@ -41,48 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit d674a8f123b4096d85955c7eaabec688f29724c9 upstream.
+commit 9acf636215a6ce9362fe618e7da4913b8bfe84c8 upstream.
 
-When the a large chunk of data send and the receiver does not send a
-Flow Control frame back in time, the sendmsg() does not return a error
-code, but the number of bytes sent corresponding to the size of the
-packet.
+Using wait_event_interruptible() to wait for complete transmission,
+but do not check the result of wait_event_interruptible() which can be
+interrupted. It will result in TX buffer has multiple accessors and
+the later process interferes with the previous process.
 
-If a timeout occurs the isotp_tx_timer_handler() is fired, sets
-sk->sk_err and calls the sk->sk_error_report() function. It was
-wrongly expected that the error would be propagated to user space in
-every case. For isotp_sendmsg() blocking on wait_event_interruptible()
-this is not the case.
+Following is one of the problems reported by syzbot.
 
-This patch fixes the problem by checking if sk->sk_err is set and
-returning the error to user space.
+=============================================================
+WARNING: CPU: 0 PID: 0 at net/can/isotp.c:840 isotp_tx_timer_handler+0x2e0/0x4c0
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc7+ #68
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+RIP: 0010:isotp_tx_timer_handler+0x2e0/0x4c0
+Call Trace:
+ <IRQ>
+ ? isotp_setsockopt+0x390/0x390
+ __hrtimer_run_queues+0xb8/0x610
+ hrtimer_run_softirq+0x91/0xd0
+ ? rcu_read_lock_sched_held+0x4d/0x80
+ __do_softirq+0xe8/0x553
+ irq_exit_rcu+0xf8/0x100
+ sysvec_apic_timer_interrupt+0x9e/0xc0
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20
+
+Add result check for wait_event_interruptible() in isotp_sendmsg()
+to avoid multiple accessers for tx buffer.
 
 Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://github.com/hartkopp/can-isotp/issues/42
-Link: https://github.com/hartkopp/can-isotp/pull/43
-Link: https://lore.kernel.org/all/20210507091839.1366379-1-mkl@pengutronix.de
+Link: https://lore.kernel.org/all/10ca695732c9dd267c76a3c30f37aefe1ff7e32f.1633764159.git.william.xuanziyang@huawei.com
 Cc: stable@vger.kernel.org
-Reported-by: Sottas Guillaume (LMB) <Guillaume.Sottas@liebherr.com>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Reported-by: syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/isotp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/can/isotp.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 --- a/net/can/isotp.c
 +++ b/net/can/isotp.c
-@@ -960,6 +960,9 @@ static int isotp_sendmsg(struct socket *
- 	if (wait_tx_done) {
+@@ -865,7 +865,9 @@ static int isotp_sendmsg(struct socket *
+ 			return -EAGAIN;
+ 
  		/* wait for complete transmission of current pdu */
- 		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-+
-+		if (sk->sk_err)
-+			return -sk->sk_err;
+-		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
++		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
++		if (err)
++			return err;
  	}
  
- 	return size;
+ 	if (!size || size > MAX_MSG_LENGTH)
 
 
