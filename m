@@ -2,94 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC87B4397E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D8B4397EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhJYNyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:54:45 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:50827 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232830AbhJYNyo (ORCPT
+        id S233041AbhJYN4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:56:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25799 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232949AbhJYN4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:54:44 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N0Fh1-1mqjoo05Rv-00xLJp for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021
- 15:52:21 +0200
-Received: by mail-wm1-f52.google.com with SMTP id 62-20020a1c0241000000b0032ca21cffeeso57283wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:52:20 -0700 (PDT)
-X-Gm-Message-State: AOAM531GXwx3zEWKPUenSZPlmkp78w5aNvN/wTX1di4YQo4PUXGfRTIe
-        UEb+f9hWnDSBRgnPA1p/lRKxpxpudGzC+cJU3/w=
-X-Google-Smtp-Source: ABdhPJwaJcrBtY86i4D1V1CSBhdIvIQ/LWqjMQ+YyJEpQqkqpHYlJV6F/5yQIfqqPp89amPjp1QHtVPQrejznaCMJGY=
-X-Received: by 2002:a1c:4489:: with SMTP id r131mr19352496wma.1.1635169940730;
- Mon, 25 Oct 2021 06:52:20 -0700 (PDT)
+        Mon, 25 Oct 2021 09:56:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635170030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ldvB0XPe33TqQvODn/mAyWJW6RTodpHfwe2FHTdvAFU=;
+        b=Kfy54JnOU/X7L7cHbwLRp/YMguFIjY+y3341pwufxofzg84Ya0uFzwRJDneWAezBdYOc/5
+        brt287vS30vUe+0ZujR94Telpo/wguR2vfZM+dlFYesYjyzfzsYV3nU08l8CaZTouYMH1Z
+        LfIwKu21sWZPmvTGuWJNx1miu8O3Mq0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-236-ig91dNtYNYuEAJTElCJsJw-1; Mon, 25 Oct 2021 09:53:48 -0400
+X-MC-Unique: ig91dNtYNYuEAJTElCJsJw-1
+Received: by mail-wm1-f72.google.com with SMTP id s3-20020a1ca903000000b0032326edebe1so3548357wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:53:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ldvB0XPe33TqQvODn/mAyWJW6RTodpHfwe2FHTdvAFU=;
+        b=2KYkb0AiNgmCND09W6D9RXXBodCvYVbaMmlOBo2s1QH4C8DpktagwU44bZSTeKccyU
+         PHV4b/H55LycQOGCKfNXF1tXyk/DjqfeX3IFmXjV0XkyPOLde56pX386sXJPlRQNXmIu
+         AthLZ4swvMAG6f8tocsYbVpYrSFp5uOkCBQnNtokS7V/Pog7/QIEiCZvFMhm/Hj9uMte
+         aL0t49GkcqbeId5xLctT3z0czMyNDMIXMvFEMBeE663ORHvUrt4TRFTaX9TnMwVQsKQa
+         URHtgzCfY7BJ/DfUUfFNgFBDkoCU83Ruwo4M18QXCsQUyCAH0q268N/zwxq8N3PUP44P
+         ABbQ==
+X-Gm-Message-State: AOAM533vJ+LH+iDrNtLp5MQ+0KnuduiKGXLXPTEI9tvBD/fT0DdIU+AY
+        Coh6yloCULJoRCBw5jiAzZKfW58Z+OdjWFnnsGl+dXAaOxTuSNtgCmczkTfhUxcYJM2IqfOuGmJ
+        PfEVETtdYUZ4x4AbISWVup4Vg
+X-Received: by 2002:a5d:4a0a:: with SMTP id m10mr23195989wrq.8.1635170027185;
+        Mon, 25 Oct 2021 06:53:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEcYontEfeBK4K4y+WBxRPdIWb2mvxosMQ7CiN54IG+B17uliVNi9fSUiTsG9r0hC4umYIPQ==
+X-Received: by 2002:a5d:4a0a:: with SMTP id m10mr23195965wrq.8.1635170026960;
+        Mon, 25 Oct 2021 06:53:46 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id l20sm21932937wmq.42.2021.10.25.06.53.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 06:53:46 -0700 (PDT)
+Message-ID: <acfdf0f5-0a18-162a-c785-fa0a520e3364@redhat.com>
+Date:   Mon, 25 Oct 2021 15:53:02 +0200
 MIME-Version: 1.0
-References: <20190307091514.2489338-1-arnd@arndb.de> <X9S28TcEXd2zghzp@elver.google.com>
- <87czzeg5ep.fsf@nanos.tec.linutronix.de> <YPnPp9grFPTFrn4c@archlinux-ax161>
-In-Reply-To: <YPnPp9grFPTFrn4c@archlinux-ax161>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 25 Oct 2021 15:52:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0Nxn2feQnqi9xxGjLBYgHR1VVrPhpurmSVZ4tmcu6kSQ@mail.gmail.com>
-Message-ID: <CAK8P3a0Nxn2feQnqi9xxGjLBYgHR1VVrPhpurmSVZ4tmcu6kSQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:7am2OXC8HNsqYqEibiS6ppIZZteO3PY7ZF3hLzedeSpdQpg/KQu
- 9pw8YMfYkmLUbStL83NJfTrCBGY8RxeJT1J7HNprTeiTa422q9DPdAgDuVgafMq6/S2pnKw
- 4KZrqx7MhTISPUGPMPMRgTJyagnObDs2bsSuJynNtshNGAiaZm6xoMPn0kmaxA/3l0XyiDv
- uc/GzvZMR5LoW9YjLCAlQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wCzXCWRfAtI=:PEFcvB/QwB4hYKxlIzCsd6
- hTfnxvYDTZXqepCPBx69Q+b1Lh+NWbKKvSCwv/ClaI7vbtjLZ50BfFToYZZmPphr6cBFMsSjq
- Efsl/SOmUJ8rnqvkc6KpLqVLmJVjZLZfYk3eCMiBk/v08eouu+kL0pDFDrqr+Ly1C9hGr6ArM
- i6K128LJg5jh7wvExzh7a6KmCny7VbRceaaZgOqhyqJ4CKIys6kNBSF81Th9VfsyMPm1TuhwE
- 9gpEzRwW88I8I5M7c6dqVe+OujhYORYusLSYh3Y/+gTNq5giLbf6K9ZRaEGtduoDlBQMfykPe
- 95usH9/78wMW1wK4r8IruAInHQOhZ1ZUUi2fKaWaKtwVefQwtMg3fJTUyanBxhnhGiR1lBWkR
- DTMGnRUazp3LFHAKXQelpVorTtK1SmSvoPnbCLWRpEjLA6Af6ryHtOemLA1Qrn/vOzQe3QY7I
- N1uW5VurX8kQkAwCboHPBRDODcZlrcBJ8CcPv1a9duASDJZbWYx3tGiTjHzfSgeRf1kxLa025
- NYZqvKWpU70akCfVBEwrw7jk6m7ksPbS1hf39oGjdC5gkX3ahtLHE/ugfXBVLGxTLR0AD5uEP
- Sbo6L6jxgDwTJ63wdkbmUnEFYOPehXvtM4X4o5JAlFON3MsEjKPqoRZFaatiYJQ/1ETotoyuc
- xpIpaJZo6Pnp7yZ7ZfLsAoT5G5RkYdH5f0Z+ZKhrccnELiDyNvgGO2Jet8ii9AOjOadU=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 22/43] KVM: VMX: Drop unnecessary PI logic to handle
+ impossible conditions
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-23-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-23-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:05 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> On Sat, Dec 12, 2020 at 09:01:34PM +0100, Thomas Gleixner wrote:
-> > --- a/arch/arm/Kconfig
-> > +++ b/arch/arm/Kconfig
-> > @@ -86,6 +86,7 @@ config ARM
-> >       select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
-> >       select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
-> >       select HAVE_FUNCTION_TRACER if !XIP_KERNEL
-> > +     select HAVE_FUTEX_CMPXCHG if FUTEX
-> >       select HAVE_GCC_PLUGINS
-> >       select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
-> >       select HAVE_IDE if PCI || ISA || PCMCIA
->
-> Did this ever get sent along as a formal patch? I just ran into another
-> issue that seems to be similar to the one Arnd sent the initial patch in
-> this thread for and it is resolved by this change.
+On 09/10/21 04:12, Sean Christopherson wrote:
+> Drop sanity checks on the validity of the previous pCPU when handling
+> vCPU block/unlock for posted interrupts.  Barring a code bug or memory
+> corruption, the sanity checks will never fire, and any code bug that does
+> trip the WARN is all but guaranteed to completely break posted interrupts,
+> i.e. should never get anywhere near production.
+> 
+> This is the first of several steps toward eliminating kvm_vcpu.pre_cpu.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/vmx/posted_intr.c | 24 ++++++++++--------------
+>   1 file changed, 10 insertions(+), 14 deletions(-)
 
-Nick sent this patch in September, and Russell applied it as commit
-9d417cbe36ee ("ARM: 9122/1: select HAVE_FUTEX_CMPXCHG").
-This addresses the problem for arm, but I think we should really
-just remove HAVE_FUTEX_CMPXCHG entirely and require it to
-be there for SMP.
+The idea here is to avoid making things worse by not making the list 
+inconsistent.  But that's impossible to do if pre_pcpu goes away, so 
+fair enough.
 
-I have a patch for that, but that needs a separate fix for sparc32,
-which I think nobody is interested in working on. I can post it anyway
-to get discussion moving again.
+Paolo
 
-         Arnd
+> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+> index 67cbe6ab8f66..6c2110d91b06 100644
+> --- a/arch/x86/kvm/vmx/posted_intr.c
+> +++ b/arch/x86/kvm/vmx/posted_intr.c
+> @@ -118,12 +118,10 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
+>   	} while (cmpxchg64(&pi_desc->control, old.control,
+>   			   new.control) != old.control);
+>   
+> -	if (!WARN_ON_ONCE(vcpu->pre_pcpu == -1)) {
+> -		spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> -		list_del(&vcpu->blocked_vcpu_list);
+> -		spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> -		vcpu->pre_pcpu = -1;
+> -	}
+> +	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> +	list_del(&vcpu->blocked_vcpu_list);
+> +	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> +	vcpu->pre_pcpu = -1;
+>   }
+>   
+>   /*
+> @@ -153,14 +151,12 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
+>   
+>   	WARN_ON(irqs_disabled());
+>   	local_irq_disable();
+> -	if (!WARN_ON_ONCE(vcpu->pre_pcpu != -1)) {
+> -		vcpu->pre_pcpu = vcpu->cpu;
+> -		spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> -		list_add_tail(&vcpu->blocked_vcpu_list,
+> -			      &per_cpu(blocked_vcpu_on_cpu,
+> -				       vcpu->pre_pcpu));
+> -		spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> -	}
+> +
+> +	vcpu->pre_pcpu = vcpu->cpu;
+> +	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> +	list_add_tail(&vcpu->blocked_vcpu_list,
+> +		      &per_cpu(blocked_vcpu_on_cpu, vcpu->pre_pcpu));
+> +	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+>   
+>   	WARN(pi_desc->sn == 1,
+>   	     "Posted Interrupt Suppress Notification set before blocking");
+> 
+
