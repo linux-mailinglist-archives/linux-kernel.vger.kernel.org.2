@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588BA43A0BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE9543A2F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbhJYTdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
+        id S236457AbhJYTzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:55:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235752AbhJYT3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43C7361078;
-        Mon, 25 Oct 2021 19:25:52 +0000 (UTC)
+        id S237701AbhJYTui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:50:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 746D460240;
+        Mon, 25 Oct 2021 19:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189953;
-        bh=/KsF0UjpjpPV14qGhOM2740bFJUHNDwkudubi9zYW2c=;
+        s=korg; t=1635190938;
+        bh=j+QF2LcPO7hmfNxMDbnM5e9gK1V7JghTd8HSxp1SmkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jy1p0FtGp8JMX3RPvX+ycutuHe6+avKnvGknMtT14Mse0I9JNg6zbv+6dH4UEMEnR
-         IHWtnkoayGgwp67qK+Gw+Y2rDDxyGJZHjpGjqyovJoZj7aHvxchJJH7UQ+6iXLr2uj
-         3X79WNHjdzG0ymdgugjPpVxFm63VwbjTmfKO2vGg=
+        b=fXW6xn7q3U7Hsdv5gTKf3CqqH2ga9rEutlYFB7g1cOhgj+9rNxUHMEmedJpF0uSTY
+         EzUNj+B0ErM0anj16yXHrP/FV3++Ekzy5JgqpH1QbhxvUOP/J86N/v8ol7CDFez5aO
+         MnES0LpIeXeO9/YYbwzZW7THg0PqJhWFq7e7aWJU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 11/58] lan78xx: select CRC32
+        stable@vger.kernel.org, Steven Clarkson <sc@lambdal.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.14 087/169] ALSA: hda/realtek: Add quirk for Clevo PC50HS
 Date:   Mon, 25 Oct 2021 21:14:28 +0200
-Message-Id: <20211025190939.333633375@linuxfoundation.org>
+Message-Id: <20211025191028.244594305@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Steven Clarkson <sc@lambdal.com>
 
-[ Upstream commit 46393d61a328d7c4e3264252dae891921126c674 ]
+commit aef454b40288158b850aab13e3d2a8c406779401 upstream.
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+Apply existing PCI quirk to the Clevo PC50HS and related models to fix
+audio output on the built in speakers.
 
-  ld: drivers/net/usb/lan78xx.o: in function `lan78xx_set_multicast':
-  lan78xx.c:(.text+0x48cf): undefined reference to `crc32_le'
-
-The actual use of crc32_le() comes indirectly through ether_crc().
-
-Fixes: 55d7de9de6c30 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Steven Clarkson <sc@lambdal.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211014133554.1326741-1-sc@lambdal.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/Kconfig | 1 +
+ sound/pci/hda/patch_realtek.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index ca234d1a0e3b..d7005cc76ce9 100644
---- a/drivers/net/usb/Kconfig
-+++ b/drivers/net/usb/Kconfig
-@@ -117,6 +117,7 @@ config USB_LAN78XX
- 	select PHYLIB
- 	select MICROCHIP_PHY
- 	select FIXED_PHY
-+	select CRC32
- 	help
- 	  This option adds support for Microchip LAN78XX based USB 2
- 	  & USB 3 10/100/1000 Ethernet adapters.
--- 
-2.33.0
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2547,6 +2547,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x65d2, "Clevo PB51R[CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e1, "Clevo PB51[ED][DF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e5, "Clevo PC50D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x65f1, "Clevo PC50HS", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
 
 
