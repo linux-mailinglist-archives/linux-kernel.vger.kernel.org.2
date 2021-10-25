@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BFE43960A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7D443960C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhJYMWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232881AbhJYMWR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:22:17 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B22EC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:19:55 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id x3so2362686uar.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=zwmpU/4wUBOOjvtzhmHsdtzGo9J9noPc+g2NVU0zBxc=;
-        b=zdb7e5wgfnKy23IF9N+nt68OhysvD7UjZ5zDYtdgZ0sivFULWY9/ugfSFeix0JXopS
-         ziNYkrV3JAE2eoI6BDjbLHmoKFCYJhdkfryGUfZ1xdgLM9FzxTcSgi1+WnWe8gTYD0/8
-         fPAZq4D3xit+HpvCyLjEsQDxQerW6UcSkXtExYFNZwK6CFsRw+1soqeGeq5rhVfpmHv6
-         Rvpk8+miDk28wz2oH2daV0v4ZJJCP4OvMBslThVP8Jve9hlzk75Yi+hoyxdHZZ5ShbY8
-         OJGl02WdhcSzIg1ke8hQ3ndiRB8p/Cwj/fJrlQFasC0E9Befo3N/NnG2UY1gyauJ61V7
-         F5Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=zwmpU/4wUBOOjvtzhmHsdtzGo9J9noPc+g2NVU0zBxc=;
-        b=sJ7PS1ISKpzmEkgj2mfvn3cLQaRsijfRbJ/UX6WS1dNneBpO3GYczZDOrawipgDd1/
-         sGhfAmHPBWkLiCHaawTJNDnKF2UzndkO/dnh1HTfhXe46BEZKJ7F4z1bkM/ZX9nuCgLW
-         a7n9eq5hqk94FohEV2vux3aM3x//35GKLT1LuPj6ApPIOLDOivuOynkJGlIuPOjli2lT
-         FOlVEJtkt8fxvk9GMv2dXEQ9QcUqKD42xTJk9P94BBQr1fZYkSeeh2LGlgrnLXIS27+e
-         0hqnOij2rJowPs7UUESL55LSu68jUVXIAyAvgv6bMYh1vOmRclc8DAjVRpNmewPIBPAp
-         Wkpg==
-X-Gm-Message-State: AOAM533U4C3eUG4UM+F5Z0ov9bhbKAzCfJATDSwJ6iZ06MX/2dl+7RE9
-        QEU8fVoEB0VWnoK7LNKwhuzU9A2gWfTxy7Rd
-X-Google-Smtp-Source: ABdhPJwO0IHmRP033afGZOvNBH76vR6CJDWgHofTo24bK/FSoHv7O6QBDFOMfGnQpyjlLwXwYtmSGA==
-X-Received: by 2002:a67:b202:: with SMTP id b2mr14375566vsf.33.1635164394426;
-        Mon, 25 Oct 2021 05:19:54 -0700 (PDT)
-Received: from Andryuu.br ([2804:431:c7fd:423:9dac:f639:6086:598])
-        by smtp.gmail.com with ESMTPSA id ba22sm848466vkb.7.2021.10.25.05.19.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 05:19:54 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 09:19:50 -0300
-From:   =?iso-8859-1?Q?Andr=E9?= Gustavo Nakagomi Lopez <andregnl@usp.br>
-To:     jic23@kernel.org, lars@metafoo.de, vz@mleia.com
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iio: adc: lpc18xx_adc: Reorder clk_get_rate function call
-Message-ID: <YXag5l4xBkGQH3tq@Andryuu.br>
+        id S233071AbhJYMXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:23:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232455AbhJYMXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:23:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE0460C49;
+        Mon, 25 Oct 2021 12:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635164468;
+        bh=JV1mpIeCSzX8GePfpnW8PcigBSkTj7UpXOkBuwJJ6t0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EMA0FRl/ggerm3EttqkhWO45j8qqWzk1C25/3dmdpCLrfz/CcKwXvcyR74Dam+sFy
+         J+TcfC8GQimFONlZ3XOJauucbyJIic9yncHZZkp9CCBFF1bOAl3Fv2sQVRihm0Km7i
+         +T35WeF7wmHg8LifdicKMk70nHSZ9zTF1n3rh8mPRKeSXDsopHpOxoke+2DVI8w5gE
+         /wgCpXHj+/7Ere/9vnAZf08dhUMET9RNZcpt792X2JoVKinpUZU3usjRP/neE463JG
+         ESE5SFwOvpNQfjCNQMy7W2JDBZPTDeSAnucEf3+iKdhTDW5tEq5NBW7S25Okifaltf
+         DQz1cnJvMNcPw==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 0/4] arm64: Support dynamic preemption v2
+Date:   Mon, 25 Oct 2021 14:20:58 +0200
+Message-Id: <20211025122102.46089-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clk_get_rate is not guaranteed to work if called before clk_prepare_enable.
+Hi,
 
-Reorder clk_get_rate, so it's called after clk_prepare_enable and
-after devm_add_action_or_reset of lpc18xx_clk_disable.
+Not much change on the core side but:
 
-Suggested-by: Jonathan Cameron <jic23@kernel.org>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
+_ Use latest arm64 static call implementation by Ard
+_ Rebase against latest tip:/sched/core
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	preempt/arm-v2
+
+HEAD: 5700542b609d9ab640210d7dd93621c7967688e6
+
+Thanks,
+	Frederic
 ---
-Change log V1 -> V2:
-		  -Fixed typo
-		  -Added appropriate Suggested-by and Acked-by tags
- drivers/iio/adc/lpc18xx_adc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
-index ceefa4d793cf..ae9c9384f23e 100644
---- a/drivers/iio/adc/lpc18xx_adc.c
-+++ b/drivers/iio/adc/lpc18xx_adc.c
-@@ -157,9 +157,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(adc->clk),
- 				     "error getting clock\n");
- 
--	rate = clk_get_rate(adc->clk);
--	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
--
- 	adc->vref = devm_regulator_get(&pdev->dev, "vref");
- 	if (IS_ERR(adc->vref))
- 		return dev_err_probe(&pdev->dev, PTR_ERR(adc->vref),
-@@ -192,6 +189,9 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	rate = clk_get_rate(adc->clk);
-+	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
-+
- 	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
- 			LPC18XX_ADC_CR_PDN;
- 	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
--- 
-2.33.0
+Frederic Weisbecker (3):
+      sched/preempt: Prepare for supporting !CONFIG_GENERIC_ENTRY dynamic preemption
+      arm64: Implement IRQ exit preemption static call for dynamic preemption
+      arm64: Implement HAVE_PREEMPT_DYNAMIC
 
+Ard Biesheuvel (1):
+      arm64: implement support for static call trampolines
+
+
+ arch/Kconfig                         |  1 -
+ arch/arm64/Kconfig                   |  2 ++
+ arch/arm64/include/asm/preempt.h     | 23 +++++++++++++++-
+ arch/arm64/include/asm/static_call.h | 25 ++++++++++++++++++
+ arch/arm64/kernel/entry-common.c     | 15 ++++++++---
+ arch/arm64/kernel/patching.c         | 51 +++++++++++++++++++++++++++++++++---
+ arch/arm64/kernel/vmlinux.lds.S      |  1 +
+ include/linux/entry-common.h         |  3 ++-
+ kernel/sched/core.c                  |  6 +++--
+ 9 files changed, 116 insertions(+), 11 deletions(-)
