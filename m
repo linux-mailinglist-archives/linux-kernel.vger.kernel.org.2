@@ -2,159 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F7F439832
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B72439847
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhJYONn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:13:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:32702 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233264AbhJYONl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:13:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216568937"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="216568937"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:11:19 -0700
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="496823204"
-Received: from yifanyao-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.171.31])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:11:15 -0700
-Date:   Mon, 25 Oct 2021 22:11:11 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update device driver
-Message-ID: <20211025141111.GA8602@chenyu5-mobl1>
-References: <cover.1635140590.git.yu.c.chen@intel.com>
- <6d4a9bc38c1efd2b10955f64629d194c050fdae1.1635140590.git.yu.c.chen@intel.com>
- <YXZTDp3xB9hZdcuY@kroah.com>
+        id S233390AbhJYOQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:16:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29211 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233358AbhJYOQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:16:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635171246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y7kdLh1gAibb40dMuQ3Jh5CoyoTAW5myWxAjnl8VLiA=;
+        b=fS3gU7KRozuXjMcbBA6p467uoS6+3MVNEsYbZOq37YEQRKDssQe+AiqfHNjYzIfrSBsv7D
+        1OGeD1DNae6z2yDzomlBlL/0UC4mJbCtkk6xWv/TGd5lPaVlZ5lxcg1w4Pexe2W5tQ3axu
+        2os0Y3prpbV2CnOicjZHJvt19e1AYAo=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-U0L09rnUPYuw1blXHdxFiw-1; Mon, 25 Oct 2021 10:14:04 -0400
+X-MC-Unique: U0L09rnUPYuw1blXHdxFiw-1
+Received: by mail-ed1-f72.google.com with SMTP id f4-20020a50e084000000b003db585bc274so9985890edl.17
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:14:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Y7kdLh1gAibb40dMuQ3Jh5CoyoTAW5myWxAjnl8VLiA=;
+        b=XAubtzVxAr68RXOY4H0QryIGHknTfH+hq7XZjo87GjBq4fueaU2JG0LLpFE6RnJ3je
+         dRSN4kYNnI3BLhgzjg/KSjv3eRpIHxJpMVGiiz9Z1AnFVZaN22Z6f9vwZFPFDq8W3h7k
+         MmZnFufJZnSjbAB59CHcVccC5ZTwVKdrBneAuy9p1wGO5rk8Jb7G7ruoP8WtP3MisJS7
+         tqR7FjkV1IsunRy7oRqXhgn+xhiCEpMNBjR5As0ez5JsXtkO3uXqFBrd28SJ5dsWnMrU
+         TMUFp4Ov+Mc1HJzslBYYDKe+pxnbKcTJ8/z6PhtOs+cEs/IxRbc2cpr4WMEsI7o3+bLN
+         eH1A==
+X-Gm-Message-State: AOAM533vN6cENz97yirH/mAw46Cjh5AyNYKg0zpJ0p0f9whFtKYMHbtH
+        +JGSCLthh/GFXuXWVDAeXKKTl582y4y5ekV3xhjHYhDIno78HupH6xlF2HC5L74Sug4banTd7yh
+        rHg7rYxjhzBJrP2sZKLshhsAA
+X-Received: by 2002:a17:906:e85:: with SMTP id p5mr23119737ejf.159.1635171242848;
+        Mon, 25 Oct 2021 07:14:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyK5IfFyc+7Vmg+5R4lSOcrX0+AyAPjSbxoTCpVm6PUN+AjEhEtmloYpZcfK6N2LPBhJBDCSw==
+X-Received: by 2002:a17:906:e85:: with SMTP id p5mr23119652ejf.159.1635171242301;
+        Mon, 25 Oct 2021 07:14:02 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n1sm2548649edf.45.2021.10.25.07.14.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 07:14:01 -0700 (PDT)
+Message-ID: <614858dd-106c-64cc-04bc-f1887b2054d1@redhat.com>
+Date:   Mon, 25 Oct 2021 16:13:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXZTDp3xB9hZdcuY@kroah.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 00/43] KVM: Halt-polling and x86 APICv overhaul
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:47:42AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 25, 2021 at 02:25:16PM +0800, Chen Yu wrote:
-[snip...]
-> > +
-> > +static int acpi_pfru_probe(struct platform_device *pdev)
-> > +{
-> > +	struct pfru_device *pfru_dev;
-> > +	acpi_handle handle;
-> > +	static int pfru_idx;
+On 09/10/21 04:11, Sean Christopherson wrote:
+> This is basically two series smushed into one.  The first "half" aims
+> to differentiate between "halt" and a more generic "block", where "halt"
+> aligns with x86's HLT instruction, the halt-polling mechanisms, and
+> associated stats, and "block" means any guest action that causes the vCPU
+> to block/wait.
 > 
-> Why not use an ida/idr structure for this?  You never decrement this
-> when the device is removed?
->
-Will fix it and use ida_alloc() for this in next version. 
-> > +	int ret;
-> > +
-> > +	pfru_dev = devm_kzalloc(&pdev->dev, sizeof(*pfru_dev), GFP_KERNEL);
-> > +	if (!pfru_dev)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = guid_parse(PFRU_UUID, &pfru_dev->uuid);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = guid_parse(PFRU_CODE_INJ_UUID, &pfru_dev->code_uuid);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = guid_parse(PFRU_DRV_UPDATE_UUID, &pfru_dev->drv_uuid);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* default rev id is 1 */
-> > +	pfru_dev->rev_id = 1;
-> > +	pfru_dev->dev = &pdev->dev;
-> > +	handle = ACPI_HANDLE(pfru_dev->dev);
-> > +	if (!acpi_has_method(handle, "_DSM")) {
-> > +		dev_dbg(&pdev->dev, "Missing _DSM\n");
-> > +		return -ENODEV;
-> > +	}
+> The second "half" overhauls x86's APIC virtualization code (Posted
+> Interrupts on Intel VMX, AVIC on AMD SVM) to do their updates in response
+> to vCPU (un)blocking in the vcpu_load/put() paths, keying off of the
+> vCPU's rcuwait status to determine when a blocking vCPU is being put and
+> reloaded.  This idea comes from arm64's kvm_timer_vcpu_put(), which I
+> stumbled across when diving into the history of arm64's (un)blocking hooks.
 > 
-> Why not make this check first, before you allocate or parse anything?
->
-Will fix it in next version. 
-> > +
-> > +	pfru_dev->miscdev.minor = MISC_DYNAMIC_MINOR;
-> > +	pfru_dev->miscdev.name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> > +						"pfru%d", pfru_idx);
-> > +	if (!pfru_dev->miscdev.name)
-> > +		return -ENOMEM;
-> > +
-> > +	pfru_dev->miscdev.nodename = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> > +						    "acpi_pfru%d", pfru_idx);
-> > +	if (!pfru_dev->miscdev.nodename)
-> > +		return -ENOMEM;
-> > +
-> > +	pfru_idx++;
-> > +	pfru_dev->miscdev.fops = &acpi_pfru_fops;
-> > +
-> > +	ret = misc_register(&pfru_dev->miscdev);
-> > +	if (ret)
-> > +		return ret;
+> The x86 APICv overhaul allows for killing off several sets of hooks in
+> common KVM and in x86 KVM (to the vendor code).  Moving everything to
+> vcpu_put/load() also realizes nice cleanups, especially for the Posted
+> Interrupt code, which required some impressive mental gymnastics to
+> understand how vCPU task migration interacted with vCPU blocking.
 > 
-> You forgot to set the parent of the misc device here, right?  :(
+> Non-x86 folks, sorry for the noise.  I'm hoping the common parts can get
+> applied without much fuss so that future versions can be x86-only.
 > 
->
-Ah, yes, will fix it in next version. 
-> > +
-> > +	platform_set_drvdata(pdev, pfru_dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct acpi_device_id acpi_pfru_ids[] = {
-> > +	{"INTC1080", 0},
-> > +	{}
-> > +};
-> > +MODULE_DEVICE_TABLE(acpi, acpi_pfru_ids);
-> > +
-> > +static struct platform_driver acpi_pfru_driver = {
-> > +	.driver = {
-> > +		.name = "pfru_update",
-> > +		.acpi_match_table = acpi_pfru_ids,
-> > +	},
-> > +	.probe = acpi_pfru_probe,
-> > +	.remove = acpi_pfru_remove,
-> > +};
-> > +
-> > +static int __init pfru_init(void)
-> > +{
-> > +	return platform_driver_register(&acpi_pfru_driver);
-> > +}
-> > +
-> > +static void __exit pfru_exit(void)
-> > +{
-> > +	platform_driver_unregister(&acpi_pfru_driver);
-> > +}
-> > +
-> > +module_init(pfru_init);
-> > +module_exit(pfru_exit);
+> v2:
+>   - Collect reviews. [Christian, David]
+>   - Add patch to move arm64 WFI functionality out of hooks. [Marc]
+>   - Add RISC-V to the fun.
+>   - Add all the APICv fun.
 > 
-> module_platform_driver()?
->
-Currently there are two platform drivers in this file, one is this
-platform driver, another one will be introduced in the subsequent
-patch for telemetry. Since the two platform drivers are treated
-as a whole, they are put into one file. Should I split them
-into two files?
+> v1: https://lkml.kernel.org/r/20210925005528.1145584-1-seanjc@google.com
+> 
+> Jing Zhang (1):
+>    KVM: stats: Add stat to detect if vcpu is currently blocking
+> 
+> Sean Christopherson (42):
+>    KVM: VMX: Don't unblock vCPU w/ Posted IRQ if IRQs are disabled in
+>      guest
+>    KVM: SVM: Ensure target pCPU is read once when signalling AVIC
+>      doorbell
+>    KVM: s390: Ensure kvm_arch_no_poll() is read once when blocking vCPU
+>    KVM: Force PPC to define its own rcuwait object
+>    KVM: Update halt-polling stats if and only if halt-polling was
+>      attempted
+>    KVM: Refactor and document halt-polling stats update helper
+>    KVM: Reconcile discrepancies in halt-polling stats
+>    KVM: s390: Clear valid_wakeup in kvm_s390_handle_wait(), not in arch
+>      hook
+>    KVM: Drop obsolete kvm_arch_vcpu_block_finish()
+>    KVM: arm64: Move vGIC v4 handling for WFI out arch callback hook
+>    KVM: Don't block+unblock when halt-polling is successful
+>    KVM: x86: Tweak halt emulation helper names to free up kvm_vcpu_halt()
+>    KVM: Rename kvm_vcpu_block() => kvm_vcpu_halt()
+>    KVM: Split out a kvm_vcpu_block() helper from kvm_vcpu_halt()
+>    KVM: Don't redo ktime_get() when calculating halt-polling
+>      stop/deadline
+>    KVM: x86: Directly block (instead of "halting") UNINITIALIZED vCPUs
+>    KVM: x86: Invoke kvm_vcpu_block() directly for non-HALTED wait states
+>    KVM: Add helpers to wake/query blocking vCPU
+>    KVM: VMX: Skip Posted Interrupt updates if APICv is hard disabled
+>    KVM: VMX: Clean up PI pre/post-block WARNs
+>    KVM: VMX: Drop unnecessary PI logic to handle impossible conditions
+>    KVM: VMX: Use boolean returns for Posted Interrupt "test" helpers
+>    KVM: VMX: Drop pointless PI.NDST update when blocking
+>    KVM: VMX: Save/restore IRQs (instead of CLI/STI) during PI pre/post
+>      block
+>    KVM: VMX: Read Posted Interrupt "control" exactly once per loop
+>      iteration
+>    KVM: VMX: Move Posted Interrupt ndst computation out of write loop
+>    KVM: VMX: Remove vCPU from PI wakeup list before updating PID.NV
+>    KVM: VMX: Handle PI wakeup shenanigans during vcpu_put/load
+>    KVM: Drop unused kvm_vcpu.pre_pcpu field
+>    KVM: Move x86 VMX's posted interrupt list_head to vcpu_vmx
+>    KVM: VMX: Move preemption timer <=> hrtimer dance to common x86
+>    KVM: x86: Unexport LAPIC's switch_to_{hv,sw}_timer() helpers
+>    KVM: x86: Remove defunct pre_block/post_block kvm_x86_ops hooks
+>    KVM: SVM: Signal AVIC doorbell iff vCPU is in guest mode
+>    KVM: SVM: Don't bother checking for "running" AVIC when kicking for
+>      IPIs
+>    KVM: SVM: Unconditionally mark AVIC as running on vCPU load (with
+>      APICv)
+>    KVM: Drop defunct kvm_arch_vcpu_(un)blocking() hooks
+>    KVM: VMX: Don't do full kick when triggering posted interrupt "fails"
+>    KVM: VMX: Wake vCPU when delivering posted IRQ even if vCPU == this
+>      vCPU
+>    KVM: VMX: Pass desired vector instead of bool for triggering posted
+>      IRQ
+>    KVM: VMX: Fold fallback path into triggering posted IRQ helper
+>    KVM: VMX: Don't do full kick when handling posted interrupt wakeup
+> 
+>   arch/arm64/include/asm/kvm_emulate.h |   2 +
+>   arch/arm64/include/asm/kvm_host.h    |   1 -
+>   arch/arm64/kvm/arch_timer.c          |   5 +-
+>   arch/arm64/kvm/arm.c                 |  60 +++---
+>   arch/arm64/kvm/handle_exit.c         |   5 +-
+>   arch/arm64/kvm/psci.c                |   2 +-
+>   arch/mips/include/asm/kvm_host.h     |   3 -
+>   arch/mips/kvm/emulate.c              |   2 +-
+>   arch/powerpc/include/asm/kvm_host.h  |   4 +-
+>   arch/powerpc/kvm/book3s_pr.c         |   2 +-
+>   arch/powerpc/kvm/book3s_pr_papr.c    |   2 +-
+>   arch/powerpc/kvm/booke.c             |   2 +-
+>   arch/powerpc/kvm/powerpc.c           |   5 +-
+>   arch/riscv/include/asm/kvm_host.h    |   1 -
+>   arch/riscv/kvm/vcpu_exit.c           |   2 +-
+>   arch/s390/include/asm/kvm_host.h     |   4 -
+>   arch/s390/kvm/interrupt.c            |   3 +-
+>   arch/s390/kvm/kvm-s390.c             |   7 +-
+>   arch/x86/include/asm/kvm-x86-ops.h   |   4 -
+>   arch/x86/include/asm/kvm_host.h      |  29 +--
+>   arch/x86/kvm/lapic.c                 |   4 +-
+>   arch/x86/kvm/svm/avic.c              |  95 ++++-----
+>   arch/x86/kvm/svm/svm.c               |   8 -
+>   arch/x86/kvm/svm/svm.h               |  14 --
+>   arch/x86/kvm/vmx/nested.c            |   2 +-
+>   arch/x86/kvm/vmx/posted_intr.c       | 279 ++++++++++++---------------
+>   arch/x86/kvm/vmx/posted_intr.h       |  14 +-
+>   arch/x86/kvm/vmx/vmx.c               |  63 +++---
+>   arch/x86/kvm/vmx/vmx.h               |   3 +
+>   arch/x86/kvm/x86.c                   |  55 ++++--
+>   include/linux/kvm_host.h             |  27 ++-
+>   include/linux/kvm_types.h            |   1 +
+>   virt/kvm/async_pf.c                  |   2 +-
+>   virt/kvm/kvm_main.c                  | 138 +++++++------
+>   34 files changed, 413 insertions(+), 437 deletions(-)
+> 
 
-thanks,
-Chenyu 
-> thanks,
-> 
-> greg k-h
+Queued 1-20 and 22-28.  Initially I skipped 21 because I didn't receive 
+it, but I have to think more about whether I agree with it.
+
+In reality the CMPXCHG loops can really fail just once, because they 
+only race with the processor setting ON=1.  But if the warnings were to 
+trigger at all, it would mean that something iffy is happening in the 
+pi_desc->control state machine, and having the check on every iteration 
+is (very marginally) more effective.
+
+It's all theoretical, granted.
+
+Paolo
+
