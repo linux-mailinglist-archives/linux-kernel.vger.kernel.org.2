@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D38439D96
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8305439DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbhJYR3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhJYR30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:29:26 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734E1C061220;
-        Mon, 25 Oct 2021 10:27:04 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso12007095pjm.4;
-        Mon, 25 Oct 2021 10:27:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aCZMd4lnZUOWP3HuMJZrRTDzuvD7CVVCcTZfYmmmVYQ=;
-        b=jB5xsxczN9t/FAMcQj8CtRTnmhHtZXcl5SVodMk6K4L0F+P8ivxWvi/7AOYRNNw2c5
-         KgPQbGuOcYNZKx1m7ZpDeJVGp9IyLAFuM1H1CS7mMqU+ISDG24Qh2p6Eob0J9QViMiM4
-         u9ctfqMNOaSDV55qSmdjPIGyT64q4bwDb4sA/bO1X/PUCNARks1jSVYH+BdU1XvlLLjF
-         g/hIj+1qJQAWhQ72vovkRU8MFKxf0eTuqGdobXFdu51L2ZK1vyfZA/GQti8M8RJwq6DV
-         9TzFRGA8MWJ0er52eshkuUVcHxxcwY7IHlTAZOqrkJrskNDDBpzTj2Cr2VGyPEXE9fwZ
-         37Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aCZMd4lnZUOWP3HuMJZrRTDzuvD7CVVCcTZfYmmmVYQ=;
-        b=cOx3f95/gJ7dgV9empV725HxLC929SZyB+l92T32KPWe05lreQmy1KGcQbxNwsVADt
-         yxVV9LA0WN0SzRw1582Z5iixJsH5x5mCtnefg6RRIbxiQBWAToWYgK8QPuLItsGuvRuK
-         8FdT/xGUNGTyDdjmxlYUspBz/bDmfX22SbLctrkBCLAaO+nqr11rV+Xprh9wqX5iGmkp
-         rwwOpl6cZWuL7OWVtUdbdQVGgYYogvGYIJ+mXdz4+6RduqhT//gELevLk/8OHIy6jv41
-         Pm6OeNR0DCYPLs3D2jFCBl71NL8bOvHcDpTeI3SUAC29MfGK8FuTHXEua8DRpJLF/on+
-         //0w==
-X-Gm-Message-State: AOAM531hr16zM58RX01D+L7gi9F+7VwBtMs5PyRgZJBpouyRmPLpZa7V
-        Y4vETOOlMz7RrcbqodItBBwCajVwvzWhUQ==
-X-Google-Smtp-Source: ABdhPJwmiPVKv0R8Ef+ST6u2Ao5/iO3yRxb9hxL+s6APNWSvdah+WdOyk2J8yvuVFayQk7ILd/IxOg==
-X-Received: by 2002:a17:902:aa82:b0:140:4655:b211 with SMTP id d2-20020a170902aa8200b001404655b211mr9918872plr.38.1635182823755;
-        Mon, 25 Oct 2021 10:27:03 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id d13sm21078439pfu.196.2021.10.25.10.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 10:27:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 25 Oct 2021 07:27:02 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] cgroup: no need for cgroup_mutex for /proc/cgroups
-Message-ID: <YXbo5sKj0wgPTaMp@slm.duckdns.org>
-References: <20211025061916.3853623-1-shakeelb@google.com>
- <20211025061916.3853623-3-shakeelb@google.com>
+        id S233463AbhJYRdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231220AbhJYRdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:33:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B75160F6F;
+        Mon, 25 Oct 2021 17:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635183078;
+        bh=qkZQOeS0cb/nrATaDb14tIKP57NnA3qnp3vvYL4sjOU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=l1NMiuxeBVQwVpH01wnfA7OGaHwUjCRV6PsNkDN4sz6DOAk+JiZ6tjjBPKJkPYtyn
+         JkJlNCs5P13UleRU+xaC4In5JC7wULI0ePCVgMinQX7xrKQpuExQ0ZvYMmoiJhJrYD
+         dyDICkN5u6a9E3IlG/jSrfp9Ujh7ghQ61rejRJh3V2tafYuZ7YvHDIelQjFYHO5xdZ
+         Tb4U7KtQ5yDeko4lGwN5zcryqN2U8levJ9n6xRKOI6UjLIXlc/lFX7230wcsDgbhsr
+         Do3hf3SpCNO8puhTQS7FTJGfiyT/Y7BvwSmONGB0M25NS75yZuPH3ts9eosM9zyeWR
+         KFyVrF1Pg1SDQ==
+Date:   Mon, 25 Oct 2021 12:31:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [PATCH v2 3/3] PCI/ASPM: Add LTR sysfs attributes
+Message-ID: <20211025173117.GA7566@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211025061916.3853623-3-shakeelb@google.com>
+In-Reply-To: <CAAd53p4L+NGQE_Z8u5MBN4X3-3Jmj+FdWp+hGo8mumqsQNoxNg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 11:19:16PM -0700, Shakeel Butt wrote:
-> On the real systems, the cgroups hierarchies are setup early and just
-> once by the node controller, so, other than number of cgroups, all
-> information in /proc/cgroups remain same for the system uptime. Let's
-> remove the cgroup_mutex usage on reading /proc/cgroups. There is a
-> chance of inconsistent number of cgroups for co-mounted cgroups while
-> printing the information from /proc/cgroups but that is not a big
-> issue. In addition /proc/cgroups is a v1 specific interface, so the
-> dependency on it should reduce over time.
+On Mon, Oct 25, 2021 at 06:33:50PM +0800, Kai-Heng Feng wrote:
+> On Thu, Oct 21, 2021 at 11:09 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Thu, Oct 21, 2021 at 11:51:59AM +0800, Kai-Heng Feng wrote:
+> > > Sometimes BIOS may not be able to program ASPM and LTR settings, for
+> > > instance, the NVMe devices behind Intel VMD bridges. For this case, both
+> > > ASPM and LTR have to be enabled to have significant power saving.
+> > >
+> > > Since we still want POLICY_DEFAULT honor the default BIOS ASPM settings,
+> > > introduce LTR sysfs knobs so users can set max snoop and max nosnoop
+> > > latency manually or via udev rules.
+> >
+> > How is the user supposed to figure out what "max snoop" and "max
+> > nosnoop" values to program?
 > 
-> The main motivation for removing the cgroup_mutex from /proc/cgroups is
-> to reduce the avenues of its contention. On our fleet, we have observed
-> buggy application hammering on /proc/cgroups and drastically slowing
-> down the node controller on the system which have many negative
-> consequences on other workloads running on the system.
+> Actually, the only way I know is to get the value from other OS.
+
+I don't see how this can be a workable solution.  IIUC this is
+specifically related to ASPM L1.2.  L1.2 depends on LTR (the max
+snoop/nosnoop values) and the TPOWER_ON and Common_Mode_Restore_Time
+values.  PCIe r5.0, sec 5.5.4, says:
+
+  Prior to setting either or both of the enable bits for L1.2, the
+  values for TPOWER_ON, Common_Mode_Restore_Time, and, if the ASPM
+  L1.2 Enable bit is to be Set, the LTR_L1.2_THRESHOLD (both Value and
+  Scale fields) must be programmed.
+
+  The TPOWER_ON and Common_Mode_Restore_Time fields must be programmed
+  to the appropriate values based on the components and AC coupling
+  capacitors used in the connection linking the two components. The
+  determination of these values is design implementation specific.
+
+I do not think collecting values from some other OS is a reasonable
+way to set these.  The values would apparently depend on the
+electrical design of the particular machine.
+
+> > If we add this, I'm afraid we'll have people programming random things
+> > that seem to work but are not actually reliable.
 > 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> IMO users need to take full responsibility for own doings.
+> Also, it's already doable by using setpci...
 
-Applied 1-3 to cgroup/for-5.16.
+I don't think it currently does, but setpci should taint the kernel.
 
-Thanks.
+If users want to write setpci scripts to fiddle with stuff, that's
+great, but that moves it outside the supportable realm.  If we provide
+a sysfs interface to do this, then it becomes more of *our* problem to
+make it work correctly, and I don't think that's practical in this
+case.
 
--- 
-tejun
+> If we don't want to add LTR sysfs, what other options do we have to
+> enable VMD ASPM and LTR by default since BIOS doesn't do it for us?
+> 1) Enable it in the PCI or VMD driver, however this approach violates
+> POLICY_DEFAULT.
+> 2) Use `setpci` directly in udev rules to enable VMD ASPM and LTR.
+> 
+> I think 2) is bad, and since 1) isn't so good either, the approach in
+> this patch may be the best compromise.
+
+I do not know how to safely enable L1.2.  It's likely that I'm just
+missing something, but I don't see enough information in PCI config
+space and the PCI Firmware interface (_DSM for Latency Tolerance
+Reporting) to enable L1.2.  It's possible that a new firmware
+interface is required.
+
+I don't think it's wise to enable L1.2 unless we have good confidence
+that we know how to do it correctly.  It's hard enough to debug ASPM
+issues as it is.
+
+Bjorn
