@@ -2,130 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29B4438CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C22A438CC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhJYAND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 20:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhJYANC (ORCPT
+        id S231610AbhJYAP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 20:15:27 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41561 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229814AbhJYAP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 20:13:02 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05B8C061745;
-        Sun, 24 Oct 2021 17:10:40 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HcwMf4vgyz4xbr;
-        Mon, 25 Oct 2021 11:10:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635120639;
-        bh=CahYHHO62eFOy5myA/8RGsjfkANf200+JsYPQzgehw4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lkzvIZ6+xzB8iHrUDexiKFIkkFITUaUr83yM3MabibkJcHLz/KDkf0+8dxj0WA1Ir
-         TW6UzGUXBKDywd0gbPCnt1nrL57fGVjHZlP9K3PekYrgcrEspQ8rtKEWVwpfqcjnpK
-         DOegaBI2QjBigg8mdpFFVVKAIMlZjlGurENfb7slzU8szZOylLPe8AI1FETMyZizP+
-         ynJ+RU/yeSFh7NOPHzR254SSRXbdKGpKM0yPjPV6MEGFC9khgKJb86UXaMq5CfYf9T
-         MrB3KwhDCQfE17pUpevLb/Q1VAQ/EZHIbVUZT+sIYaUXs/9tntdN16KdarVOLfiGNl
-         JpgmqxKeGKF4A==
-Date:   Mon, 25 Oct 2021 11:10:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trondmy@gmail.com>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: Re: linux-next: manual merge of the nfsd tree with the nfs tree
-Message-ID: <20211025111037.7b4b8889@canb.auug.org.au>
-In-Reply-To: <20211025105951.109598aa@canb.auug.org.au>
-References: <20211025105951.109598aa@canb.auug.org.au>
+        Sun, 24 Oct 2021 20:15:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UtUYDQq_1635120782;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UtUYDQq_1635120782)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 25 Oct 2021 08:13:03 +0800
+Date:   Mon, 25 Oct 2021 08:12:55 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] erofs: get rid of ->lru usage
+Message-ID: <YXX2h26Fm/hztdaZ@B-P7TQMD6M-0146.local>
+References: <20211022090120.14675-1-hsiangkao@linux.alibaba.com>
+ <YXWQ6p4Hlx6tGpPN@moria.home.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4=9mYuJ8EAlk6+lmNcnnz1.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YXWQ6p4Hlx6tGpPN@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4=9mYuJ8EAlk6+lmNcnnz1.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Oct 24, 2021 at 12:59:22PM -0400, Kent Overstreet wrote:
+> On Fri, Oct 22, 2021 at 05:01:20PM +0800, Gao Xiang wrote:
+> > Currently, ->lru is a way to arrange non-LRU pages and has some
+> > in-kernel users. In order to minimize noticable issues of page
+> > reclaim and cache thrashing under high memory presure, limited
+> > temporary pages were all chained with ->lru and can be reused
+> > during the request. However, it seems that ->lru could be removed
+> > when folio is landing.
+> > 
+> > Let's use page->private to chain temporary pages for now instead
+> > and transform EROFS formally after the topic of the folio / file
+> > page design is finalized.
+> > 
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Kent Overstreet <kent.overstreet@gmail.com>
+> > Cc: Chao Yu <chao@kernel.org>
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> 
+> Would it not be an option to use an array of pointers to pages, instead of a
+> linked list? Arrays are faster than lists, and page->private is another thing we
+> prefer not to use if we don't have to.
 
-Hi all,
+Our requirement is to maintain variable-sized temporary pages, that
+may be short or maybe long during decompression process (according to
+different algorithms and whether it's inplace I/O or not) rather than
+before I/O submission:
 
-On Mon, 25 Oct 2021 10:59:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the nfsd tree got a conflict in:
->=20
->   include/trace/events/sunrpc.h
->=20
-> between commit:
->=20
->   b4776a341ec0 ("SUNRPC: Tracepoints should display tk_pid and cl_clid as=
- a fixed-size field")
->=20
-> from the nfs tree and commit:
->=20
->   35940a58f9f1 ("SUNRPC: Capture value of xdr_buf::page_base")
->=20
-> from the nfsd tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc include/trace/events/sunrpc.h
-> index dc922e664820,9ea59959a2fe..000000000000
-> --- a/include/trace/events/sunrpc.h
-> +++ b/include/trace/events/sunrpc.h
-> @@@ -80,11 -80,12 +82,14 @@@ DECLARE_EVENT_CLASS(rpc_xdr_buf_class
->   		__entry->msg_len =3D xdr->len;
->   	),
->  =20
->  -	TP_printk("task:%u@%u head=3D[%p,%zu] page=3D%u(%u) tail=3D[%p,%zu] le=
-n=3D%u",
->  +	TP_printk(SUNRPC_TRACE_TASK_SPECIFIER
->  +		  " head=3D[%p,%zu] page=3D%u tail=3D[%p,%zu] len=3D%u",
+ For LZ4, that maybe 16 pages for lz4 sliding window and other
+temporary pages;
+ For LZMA, since it has a internal dictionary (sliding window) so we
+don't have to allocate any temporary pages for cached decompression
+(outplace I/O), but we still need allocating temporary pages to
+handle overlapped decompression due to inplace I/O (think about it,
+if each compressed pcluster is 4pages -- 16KiB, we have to allocate
+for example another 128KiB compressed pages due to read request for
+outplace I/O, but instead 0 pages for inplace I/O during I/O process,
+and only 4 pages for decompression process. It saves much memory in
+the low memory scenarios by using inplace I/O and important to the
+performance).
 
-Oops, I have taken the above line out.
+Currently we only add some page to the head or pick some page from
+head, so a singly-linked list is also fine to us for now.
 
-> ++		  " head=3D[%p,%zu] page=3D%u(%u) tail=3D[%p,%zu] len=3D%u",
->   		__entry->task_id, __entry->client_id,
-> - 		__entry->head_base, __entry->head_len, __entry->page_len,
-> - 		__entry->tail_base, __entry->tail_len, __entry->msg_len
-> + 		__entry->head_base, __entry->head_len,
-> + 		__entry->page_len, __entry->page_base,
-> + 		__entry->tail_base, __entry->tail_len,
-> + 		__entry->msg_len
->   	)
->   );
+> 
+> That said - this is definitely preferable to using page->lru - thank you.
+> 
+> Reviewed-by: Kent Overstreet <kent.overstreet@gmail.com>
 
---=20
-Cheers,
-Stephen Rothwell
+Thank you!
 
---Sig_/4=9mYuJ8EAlk6+lmNcnnz1.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks,
+Gao Xiang
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF19f0ACgkQAVBC80lX
-0GyvKAf+P4qrdE6aZjXK0LdRNz7wmzdQlg5jO6AFhDk95EX7jj0AygfzF61JOzY1
-+xeXwBkg1jk2AciYluxiB/P21N09k9vqbMjrrzsEBKHGF5/BtZgoXgpsz48zdfvD
-UgrsAq2HMeBI8xnU/cU5nR61ocaeROcbglMkxRyUS1XKcRvhvfckU5T7UnFFBlrD
-RIrGpZV+2RhG7DOCzGD1CUxV1xwtL+3FJhYsTkjtjJpo+Htm/+NuQ9LS+DsI1ZBT
-o6/rxKRE/XTMU85HABQMlaJickVZWYSSm9gjeGfDsVKlWiSo+YK/OVdNkeNJ0woB
-VSh3+esRcs7f9sPEe3iBalyP3kfg6g==
-=6Kee
------END PGP SIGNATURE-----
-
---Sig_/4=9mYuJ8EAlk6+lmNcnnz1.--
