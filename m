@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D6D43A1D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F59C43A2EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhJYTmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:42:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        id S234739AbhJYTyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236689AbhJYTfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E48A60724;
-        Mon, 25 Oct 2021 19:32:15 +0000 (UTC)
+        id S237738AbhJYTui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:50:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE37560238;
+        Mon, 25 Oct 2021 19:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190337;
-        bh=k4h7mDm1FTIA015LOnE2ug/myEehyELWNNItntL85ko=;
+        s=korg; t=1635190943;
+        bh=hF35tz0tx7O5MeWtFFqchbMSIZTMQYUb1fy82myMCcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YplinmbON8kp1HT8KQpB0OWAUkePQ4v9pTFCoPQWVPOw9yMQswC8sRM8BPkPMYNuN
-         ip/oc3RKdjdHcR4lGhx8PWMEKP7T3Kq4xSFCynDtY5MbibKHs0rPcMzu4BqnJgtX40
-         fuUw1H02ZdOgA/IW7TpCnkyUIIn4FDSXbtPcDTlM=
+        b=iKrhLEMLVaRu0UpG8UJ4fH8aEXQQnwtalgr/Xbr3MUzAi+VoW6721TK+Qy1YRN7PW
+         9t3P08I2SIiGfJw0lxAaR7JIeDNAstMHqbYNAEOg02vi8jonPUqn4Y6AA6deJ50sfX
+         ZUin3wQiCBhzrq3MnNyJ88yEORHQdSsXprC5XV78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Johansen <strit@manjaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Marius Gripsgard <marius@ubports.com>
-Subject: [PATCH 5.10 32/95] drm/panel: ilitek-ili9881c: Fix sync for Feixin K101-IM2BYL02 panel
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.14 088/169] ASoC: DAPM: Fix missing kctl change notifications
 Date:   Mon, 25 Oct 2021 21:14:29 +0200
-Message-Id: <20211025191001.560368850@linuxfoundation.org>
+Message-Id: <20211025191028.365114429@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Johansen <strit@manjaro.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 772970620a839141835eaf2bc507d957b10adcca ]
+commit 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842 upstream.
 
-This adjusts sync values according to the datasheet
+The put callback of a kcontrol is supposed to return 1 when the value
+is changed, and this will be notified to user-space.  However, some
+DAPM kcontrols always return 0 (except for errors), hence the
+user-space misses the update of a control value.
 
-Fixes: 1c243751c095 ("drm/panel: ilitek-ili9881c: add support for Feixin K101-IM2BYL02 panel")
-Co-developed-by: Marius Gripsgard <marius@ubports.com>
-Signed-off-by: Dan Johansen <strit@manjaro.org>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210818214818.298089-1-strit@manjaro.org
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch corrects the behavior by properly returning 1 when the
+value gets updated.
+
+Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20211006141712.2439-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/soc-dapm.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 0145129d7c66..534dd7414d42 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -590,14 +590,14 @@ static const struct drm_display_mode k101_im2byl02_default_mode = {
- 	.clock		= 69700,
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2559,6 +2559,7 @@ static int snd_soc_dapm_set_pin(struct s
+ 				const char *pin, int status)
+ {
+ 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
++	int ret = 0;
  
- 	.hdisplay	= 800,
--	.hsync_start	= 800 + 6,
--	.hsync_end	= 800 + 6 + 15,
--	.htotal		= 800 + 6 + 15 + 16,
-+	.hsync_start	= 800 + 52,
-+	.hsync_end	= 800 + 52 + 8,
-+	.htotal		= 800 + 52 + 8 + 48,
+ 	dapm_assert_locked(dapm);
  
- 	.vdisplay	= 1280,
--	.vsync_start	= 1280 + 8,
--	.vsync_end	= 1280 + 8 + 48,
--	.vtotal		= 1280 + 8 + 48 + 52,
-+	.vsync_start	= 1280 + 16,
-+	.vsync_end	= 1280 + 16 + 6,
-+	.vtotal		= 1280 + 16 + 6 + 15,
+@@ -2571,13 +2572,14 @@ static int snd_soc_dapm_set_pin(struct s
+ 		dapm_mark_dirty(w, "pin configuration");
+ 		dapm_widget_invalidate_input_paths(w);
+ 		dapm_widget_invalidate_output_paths(w);
++		ret = 1;
+ 	}
  
- 	.width_mm	= 135,
- 	.height_mm	= 217,
--- 
-2.33.0
-
+ 	w->connected = status;
+ 	if (status == 0)
+ 		w->force = 0;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /**
+@@ -3582,14 +3584,15 @@ int snd_soc_dapm_put_pin_switch(struct s
+ {
+ 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+ 	const char *pin = (const char *)kcontrol->private_value;
++	int ret;
+ 
+ 	if (ucontrol->value.integer.value[0])
+-		snd_soc_dapm_enable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
+ 	else
+-		snd_soc_dapm_disable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
+ 
+ 	snd_soc_dapm_sync(&card->dapm);
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
+ 
+@@ -4023,7 +4026,7 @@ static int snd_soc_dapm_dai_link_put(str
+ 
+ 	rtd->params_select = ucontrol->value.enumerated.item[0];
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ static void
 
 
