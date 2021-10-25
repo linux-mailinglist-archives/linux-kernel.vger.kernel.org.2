@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDCB439B24
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4340F439B2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhJYQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhJYQGK (ORCPT
+        id S233872AbhJYQHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:07:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36282 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230511AbhJYQHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:06:10 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0702C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:03:47 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so15632355ote.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DbCxhkAJVaNO1dQNE2uJt3FO0RzSKF+3IACvnUzKPVY=;
-        b=JzYQwbjmOn2TXlPx53cYt3yh2Hy+3qTTGKRdQDMqfmSUFUHRUqU0LhI9saO43sep6u
-         iiW0Rzno8Rh70KcFPuoDEAk5NwpHoc3f3sncS96FGOJpR2etGwKmOaVl+47I8uHH78LA
-         /f8Y/BZCHwgGlOkOVmtPV94cx65+CXEvE3OIssLtiEIsT/7NVFQIJn53MjK3DlC3uH1o
-         QFRr8Fk/OCnG+uFuB8rVsseuJv3kQ2K2FhAwW+mARUpio0K2QsD11PAovGWcNzaJfTd9
-         Z2KE4dDLI/dQDOZDFTWjt7DgV4N5JSfKmS33QSfATgkHHqjhQL8mHyaDFmXr5Fzb9orD
-         yUfQ==
+        Mon, 25 Oct 2021 12:07:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635177910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jzjQqgInS5JAEVirRSYnDAHtmglC1CJYYuq7MCm+MDs=;
+        b=CzrQsAYZG0JpijylkGbQvZk43Q5u42vgGR7oT4XPynEUNAJxQt7V9Kl/6Shd1eqAAM11q2
+        Qa39bzBtyi73Yk42yjDPdn4WpXmIh92PNC/C0Wq+OMKW59Qms/V9EjxM1IjH3ZL64ACmQe
+        fxSnrZ1v9q/TYtGjOGHFgLamqvaLeJE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-OffhGlFoMQyo_Gv0PAFUoA-1; Mon, 25 Oct 2021 12:05:09 -0400
+X-MC-Unique: OffhGlFoMQyo_Gv0PAFUoA-1
+Received: by mail-wr1-f70.google.com with SMTP id z8-20020adfec88000000b00168672580e0so2031533wrn.21
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:05:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DbCxhkAJVaNO1dQNE2uJt3FO0RzSKF+3IACvnUzKPVY=;
-        b=CNhKsq5yNiY4D683Ovl8d70s7CppUaUVG49Bhk7/0s0403ShpJUlk6gm8fh23CS6nm
-         wH2qSdGhaKl8M+EX8XRotNAKzEo4zcarTftxAEv1GhWH/jZwHCsMxZRic8bO0Nyz+0aL
-         UtPEo8tocRrX1EvZjN+J2LNUEIWWKJdL9j+3mUCdMdNK8QWuI0Ytv5jkHscLmVRQZGiH
-         bt3Ev8YXpoFre2CSLQKPvR+1LR6hJZN/O5vFSWq6m7lesa2QwAUzNy1MFwZaPRmjTIRV
-         n16fUOONzlpNmbnfLPwA54DR/3iBY8KrweL9gvHskymDzw3sMuxfhPPnOm5b+l0SOGwM
-         h65w==
-X-Gm-Message-State: AOAM5311Kp3uYZZqlKmjV7bhAzweSjkLvg6oFD7oy73a4rRgUlsNyPPP
-        zoSnp50lpqdWExf78LEwxgjhEEMwpgTPH+hUB73DCA==
-X-Google-Smtp-Source: ABdhPJyQJgxGdAYLo/5PxG/pFX+ODAk9ay2jei/14PjdYP+ULPo6jpMiPcgLX5LIgcVihvuWEgH7d/utg/BcpBsL7PY=
-X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr14054877otb.92.1635177827057;
- Mon, 25 Oct 2021 09:03:47 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=jzjQqgInS5JAEVirRSYnDAHtmglC1CJYYuq7MCm+MDs=;
+        b=lyFuH1dY23axl5ISMJdlbC0Lb7KZnnk2HB74U1gDbXjLuhh9ZtVXKCBHE4PWEsoHI4
+         Q0KiHPQukQBJfiHTLs2cXJzyT0zzmd3VjhbYGCskDMiRNZU+Cg+Vsb+qs8GkjHKvjG+n
+         t4ikJ4SRznCZh0H3Aap70NGfQosyaCuH6xpUPoX5tAy+Bz4AYvKr3RmntVWaNpY+UzC2
+         XCAk3zZsbMHV6Oo49hImgz0L6qhY1249h/xCoJHui6rAUPS8tO3G/CY4h+np3EkMMtHc
+         SfMbnKg8//ObXb4LvoO737KeEx4ys9WsfIyEGPBglWzZsPMrr2deMy7Gj0QUd4jRuVGO
+         Xy6w==
+X-Gm-Message-State: AOAM531mc+0mLMsN6tjEpsxJVz/s3YFqiv6QB3LKo+DvVuHyogvLbBiq
+        U9k1INipQNrYR/dZ+YNTxPDBl2NrrKf3MIaAQ9PE9h46lv98mciwztzI6pg4SX7Gz0KoAre1rUQ
+        U4+g8WdScKAXRV1vCHCiEGAG+
+X-Received: by 2002:a7b:c8d0:: with SMTP id f16mr583065wml.193.1635177907893;
+        Mon, 25 Oct 2021 09:05:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3Hpueg5Kgw92DDaHWA4oSbeV5VWaHUKB1yRpErsOuDKaAwhadRtMDiDg+VcgSV4nXnXK6UQ==
+X-Received: by 2002:a7b:c8d0:: with SMTP id f16mr583011wml.193.1635177907493;
+        Mon, 25 Oct 2021 09:05:07 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y8sm12173223wrq.39.2021.10.25.09.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 09:05:06 -0700 (PDT)
+Message-ID: <3d72790d-64be-7409-1d92-db7ec92b932b@redhat.com>
+Date:   Mon, 25 Oct 2021 18:05:05 +0200
 MIME-Version: 1.0
-References: <00000000000089871905cf2b7d09@google.com> <f37aa186-8820-451f-6fa2-eee45799a428@kernel.dk>
- <CANpmjNO1kTswzGp03o_=wMiFekXoq-kvDCy+zKSP3r5+EeOvMg@mail.gmail.com> <b5dd012d-531e-a2ae-18b0-dc2300246298@kernel.dk>
-In-Reply-To: <b5dd012d-531e-a2ae-18b0-dc2300246298@kernel.dk>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 25 Oct 2021 18:03:35 +0200
-Message-ID: <CANpmjNNVh65W00BBRFWwUDp0F4+8RXnU7azqxbpiLuvuev6xEQ@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in sbitmap_queue_clear /
- sbitmap_queue_clear (3)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     syzbot <syzbot+4f8bfd804b4a1f95b8f6@syzkaller.appspotmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211022004927.1448382-1-seanjc@google.com>
+ <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
+ <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
+ <b931906f-b38e-1cb5-c797-65ef82c8b262@redhat.com>
+ <YXbAxkf1W37m9eZp@google.com>
+ <674bc620-f013-d826-a4d4-00a142755a9e@redhat.com>
+ <YXbUbB+l++P3XSZ5@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YXbUbB+l++P3XSZ5@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 17:40, Jens Axboe <axboe@kernel.dk> wrote:
-> On 10/25/21 8:29 AM, Marco Elver wrote:
-> > On Mon, 25 Oct 2021 at 15:36, Jens Axboe <axboe@kernel.dk> wrote:
-> > [...]
-> >>> write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 1:
-> >>>  sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
-> >>>  blk_mq_put_tag+0x82/0x90
-> >>>  __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
-> >>>  blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
-> >>>  __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
-> >>>  blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
-> >>>  lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
-> >>>  blk_complete_reqs block/blk-mq.c:584 [inline]
-> >>>  blk_done_softirq+0x69/0x90 block/blk-mq.c:589
-> >>>  __do_softirq+0x12c/0x26e kernel/softirq.c:558
-> >>>  run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
-> >>>  smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
-> >>>  kthread+0x262/0x280 kernel/kthread.c:319
-> >>>  ret_from_fork+0x1f/0x30
-> >>>
-> >>> write to 0xffffe8ffffd145b8 of 4 bytes by interrupt on cpu 0:
-> >>>  sbitmap_queue_clear+0xca/0xf0 lib/sbitmap.c:606
-> >>>  blk_mq_put_tag+0x82/0x90
-> >>>  __blk_mq_free_request+0x114/0x180 block/blk-mq.c:507
-> >>>  blk_mq_free_request+0x2c8/0x340 block/blk-mq.c:541
-> >>>  __blk_mq_end_request+0x214/0x230 block/blk-mq.c:565
-> >>>  blk_mq_end_request+0x37/0x50 block/blk-mq.c:574
-> >>>  lo_complete_rq+0xca/0x170 drivers/block/loop.c:541
-> >>>  blk_complete_reqs block/blk-mq.c:584 [inline]
-> >>>  blk_done_softirq+0x69/0x90 block/blk-mq.c:589
-> >>>  __do_softirq+0x12c/0x26e kernel/softirq.c:558
-> >>>  run_ksoftirqd+0x13/0x20 kernel/softirq.c:920
-> >>>  smpboot_thread_fn+0x22f/0x330 kernel/smpboot.c:164
-> >>>  kthread+0x262/0x280 kernel/kthread.c:319
-> >>>  ret_from_fork+0x1f/0x30
-> >>
-> >> This is just a per-cpu alloc hint, it's racy by nature. What's the
-> >> preferred way to silence these?
-> >
-> > That was my guess, but couldn't quite say. We started looking at
-> > write/write races as more likely to be harmful (vs. just read/write),
-> > and are inclined to let syzbot send out more of such reports. Marking
-> > intentional ones would be ideal so we'll be left with the
-> > unintentional ones.
-> >
-> > I would probably use WRITE_ONCE(), just to make sure the compiler
-> > doesn't play games here; or if the code is entirely tolerant to even
-> > the compiler miscompiling things, wrap the thing in data_race().
->
-> It's entirely tolerant, so something like this would do it?
+On 25/10/21 17:59, Sean Christopherson wrote:
+>> No, checking for the update is worse and with this example, I can now point
+>> my finger on why I preferred the VM check even before: because even though
+>> the page fault path runs in vCPU context and uses a vCPU-specific role,
+>> overall the page tables are still per-VM.
+> Arguably the lack of incorporation into the page role is the underlying bug, and
+> all the shenanigans with synchronizing updates are just workarounds for that bug.
+> I.e. page tables are never strictly per-VM, they're per-role, but we fudge it in
+> this case because we don't want to take on the overhead of maintaining two sets
+> of page tables to handle APICv.
 
-Yup, looks reasonable,
+Yes, that makes sense as well:
 
-Acked-by: Marco Elver <elver@google.com>
+- you can have simpler code by using the vCPU state, but then 
+correctness requires that the APICv state be part of the vCPU-specific 
+MMU state.  That is, of the role.
 
-> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-> index c6e2f1f2c4d2..2709ab825499 100644
-> --- a/lib/sbitmap.c
-> +++ b/lib/sbitmap.c
-> @@ -631,7 +631,7 @@ EXPORT_SYMBOL_GPL(sbitmap_queue_wake_up);
->  static inline void sbitmap_update_cpu_hint(struct sbitmap *sb, int cpu, int tag)
->  {
->         if (likely(!sb->round_robin && tag < sb->depth))
-> -               *per_cpu_ptr(sb->alloc_hint, cpu) = tag;
-> +               data_race(*per_cpu_ptr(sb->alloc_hint, cpu) = tag);
->  }
->
->  void sbitmap_queue_clear_batch(struct sbitmap_queue *sbq, int offset,
->
-> --
-> Jens Axboe
->
+- if you don't want to do that, because you want to maintain one set of 
+page tables only, the price to pay is the synchronization shenanigans, 
+both those involving apicv_update mutex^Wrwsem (which ensure no one uses 
+the old state) and those involving kvm_faultin_pfn/kvm_zap_pfn_range (to 
+ensure the one state used by the MMU is the correct one).
+
+So it's a pick your poison situation.
+
+Paolo
+
