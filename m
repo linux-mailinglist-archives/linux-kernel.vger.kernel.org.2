@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2A74396DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DC24396DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhJYM75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:59:57 -0400
-Received: from mga05.intel.com ([192.55.52.43]:54793 "EHLO mga05.intel.com"
+        id S233412AbhJYNAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:00:48 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:35486 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233315AbhJYM74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:59:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="315846780"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="315846780"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:57:30 -0700
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="485664166"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:57:27 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mezXG-000ceU-FU;
-        Mon, 25 Oct 2021 15:57:06 +0300
-Date:   Mon, 25 Oct 2021 15:57:06 +0300
-From:   "andriy.shevchenko" <andriy.shevchenko@linux.intel.com>
-To:     "changlianzhi@uniontech.com" <changlianzhi@uniontech.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        jirislaby <jirislaby@kernel.org>, 282827961 <282827961@qq.com>
-Subject: Re: [PATCH v6] tty: Fix the keyboard led light display problem
-Message-ID: <YXaposOYGalsRtZt@smile.fi.intel.com>
-References: <20211021020511.18016-1-changlianzhi@uniontech.com>
- <YXLVAOh6AcB34kW8@smile.fi.intel.com>
- <202110250129181502896@uniontech.com>
- <YXac+bpVemXEp9XR@smile.fi.intel.com>
- <202110251224440412487@uniontech.com>
+        id S233315AbhJYNAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:00:46 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 5B1D5A003F;
+        Mon, 25 Oct 2021 14:58:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 5B1D5A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1635166702; bh=2eZ26/VaEzftwu3ZmYsfOCPTwZ9yZoE3hgkj1VEFB+I=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BHt3MaR/tnH1YLlX0CxYPQLb0TApnFbI0kfh54oCDK9UYHer4A5PCYcG7fNDlI9Wl
+         l/rAVmzVS+aGmJ4bJnEpVBj4S8+Ub5Xqkq1fW4Tar5TF0/zuRCsbSOMsJdgCWNlEhi
+         hZMMBpuIDsoRSFlTW5nddFWLYAwb1aOChP6N3TgM=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Mon, 25 Oct 2021 14:58:13 +0200 (CEST)
+Message-ID: <79541c76-2c2b-fd4b-60c8-67ee6b8ea3fa@perex.cz>
+Date:   Mon, 25 Oct 2021 14:58:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110251224440412487@uniontech.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] ASoC: tegra: Add master volume/mute control support
+Content-Language: en-US
+To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, tiwai@suse.com
+Cc:     jonathanh@nvidia.com, thierry.reding@gmail.com,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:24:45PM +0800, changlianzhi@uniontech.com wrote:
-> On Mon, Oct 25, 2021 at 01:29:18AM +0800, changlianzhi@uniontech.com wrote:
-> > > >>On Thu, Oct 21, 2021 at 10:05:11AM +0800, lianzhi chang wrote:
+On 25. 10. 21 13:06, Sameer Pujar wrote:
+
+> @@ -150,11 +186,22 @@ static int tegra210_mvc_put_mute(struct snd_kcontrol *kcontrol,
 
 ...
+>   
+>   	return 1;
 
-> > > >> +	unsigned long leds;
-> > > >> +
-> > > >> +	leds = (unsigned long)ledstate;
-> > >
-> > > >Can be one line.
-> > >
-> > > >But most important question you are ignoring to answer / address is why do you
-> > > >use casting?
-> 
-> > > >>But most important question you are ignoring to answer / address is why do you
-> > > >>use casting?
-> > > Casting is used here because:
-> > > The second parameter of test_bit is "volatile unsigned long *addr" (see constant_test_bit() in /arch/x86/include/asm/bitops.h), but ledstate is an "unsigned int" type. If casting is not used,
-> > > compile Will report an error.
-> 
-> > Wait, you are casting pointer to an integer?!
-> > This is completely wrong in this case!
-> 
-> Hello, I did not do that. For the complete code, please check the
-> "patch v6" email I sent earlier. My code is like this:
+It's a bit unrelated comment to this change, but it may be worth to verify all 
+kcontrol put callbacks in the tegra code. Ensure that value 1 is returned only 
+when something was really changed in hardware.
 
-> +static void kbd_update_ledstate(struct input_dev *dev)
-> +{
-> +	unsigned long leds;
-> +
-> +	leds = (unsigned long)ledstate;
-> +
-> +	if (!!test_bit(LED_NUML, dev->led) != !!test_bit(VC_NUMLOCK, &leds))
-> +	ledstate ^= BIT(VC_NUMLOCK);
-> +	if (!!test_bit(LED_CAPSL, dev->led) != !!test_bit(VC_CAPSLOCK, &leds))
-> +	ledstate ^= BIT(VC_CAPSLOCK);
-> +	if (!!test_bit(LED_SCROLLL, dev->led) != !!test_bit(VC_SCROLLOCK, &leds))
-> +	ledstate ^= BIT(VC_SCROLLOCK);
-> +}
+The tegra210_i2s_put_control() has opposite problem for example - returns 
+always 0 which means that the change notifications are not send to subscribed 
+applications.
 
-> I mean, the second parameter of test_bit is "volatile unsigned long *addr",
-> which is a pointer. And ledstate is an unsigned int type, so I defined an
-> unsigned long type leds, assign the ledstate to the leds after forced
-> conversion, and then when calling the test_bit function, get the address
-> of the leds as a parameter.
-
-This all is fine, but why casting is needed? I didn't still get.
+						Jaroslav
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
