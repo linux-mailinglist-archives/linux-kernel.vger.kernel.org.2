@@ -2,60 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2336439180
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73678439184
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhJYIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:38:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232302AbhJYIhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:37:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA69761050;
-        Mon, 25 Oct 2021 08:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635150894;
-        bh=x/dztvnLwVUKBvTIRWreGwIR1xh7qkWv6Kx7wIIOfq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mc6cpAl42u5OX7/1EehRG7NeAEFaeVeiI7m3/o0XaISNv0Jg0kP/W+Bt774uPpHaE
-         17jY+6ZTWQ6hoRsXcSwGMkC8qshcxtcmzNhpF7YpxY4LPzAf9Z2TdkGLtl1a4k9f7y
-         q2kj5J4xJw6CAWfEtV1rvpT3xGEGtF2LBWbr8TUI=
-Date:   Mon, 25 Oct 2021 10:34:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
-Cc:     michal.simek@xilinx.com, rajan.vaja@xilinx.com,
-        manish.narani@xilinx.com, zou_wei@huawei.com,
-        lakshmi.sai.krishna.potthuri@xilinx.com, wendy.liang@xilinx.com,
-        jliang@xilinx.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Tejas Patel <tejas.patel@xilinx.com>
-Subject: Re: [PATCH v6 1/6] firmware: xilinx: add register notifier in zynqmp
- firmware
-Message-ID: <YXZsLJ3SfCjYr3gk@kroah.com>
-References: <20211021134644.14407-1-abhyuday.godhasara@xilinx.com>
- <20211025082350.10881-2-abhyuday.godhasara@xilinx.com>
+        id S232400AbhJYIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:38:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11072 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232199AbhJYIhk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 04:37:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635150918; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=FcPQkAvg+feMWCtgEcIC885T9YZY5r1KJ4CdDD9gJFM=; b=E0rwld+pufzboZlK8YXcsRQ69UA4WAHqQtc7fdbkHc6UlQcoSoChTrSUO/ZgYGxekW06rXVn
+ Qpbktz7lFJMugfqvedw8itqO/Yv8EmmWSV1/Kv4Pmwvh6PdjeFmsbtA3W0/MQRTHMhbLO4kt
+ knZ/dnw7+DWiL3msd0zqcD+bjp0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 61766c44c75c436a30a78b77 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Oct 2021 08:35:16
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 04C88C43616; Mon, 25 Oct 2021 08:35:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A52FC4338F;
+        Mon, 25 Oct 2021 08:35:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2A52FC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Benjamin Li <benl@squareup.com>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] wcn36xx: add missing 5GHz channels 136 and 144
+References: <20211022235738.2970167-1-benl@squareup.com>
+        <20211022235738.2970167-3-benl@squareup.com>
+Date:   Mon, 25 Oct 2021 11:35:11 +0300
+In-Reply-To: <20211022235738.2970167-3-benl@squareup.com> (Benjamin Li's
+        message of "Fri, 22 Oct 2021 16:57:38 -0700")
+Message-ID: <878ryhec3k.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025082350.10881-2-abhyuday.godhasara@xilinx.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 01:23:45AM -0700, Abhyuday Godhasara wrote:
-> In zynqmp-firmware, register notifier is not supported, add support of
-> register notifier in zynqmp-firmware.
-> 
-> Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
-> Signed-off-by: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
-> Acked-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> Changes in v6:
-> - Minor fix
+Benjamin Li <benl@squareup.com> writes:
 
+> These channels missing from scan results are a regression from downstream
+> prima.
 
-That is vague, what got "fixed" here?
+Please write commit logs in a way that everybody can understand, I doubt
+very few know what "are a regression from downstream prima" means.
 
-thanks,
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-greg k-h
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
