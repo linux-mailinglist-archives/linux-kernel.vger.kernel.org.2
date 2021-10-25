@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114D343A315
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0E043A152
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhJYT4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
+        id S236318AbhJYTiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238682AbhJYTvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:51:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BB9B603E5;
-        Mon, 25 Oct 2021 19:43:01 +0000 (UTC)
+        id S235143AbhJYTbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:31:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16FB961152;
+        Mon, 25 Oct 2021 19:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190982;
-        bh=IWpy3qXsnx98AkyFL5J1pkZOcZWvBFjI+MP1nGSc7nU=;
+        s=korg; t=1635190069;
+        bh=l6yUpv24CZ2qGfC2ClqOhdk8gfzcGesEs6/bflsTob0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mW2qEQVp47NR1VDUowssC5pwXlGh9oHAK2dCtSxPIcKlEqgn/fdUF4m7YHZgmJCHq
-         3l0jNOOLEZ8d4M9QYiwVx6Nxg8L7e1vYbXdhDfvoMWzMwXdHuSyT6IX60KXuphS3HY
-         LZCUTk5AOohHKCuc6i7Xm/vQx6w5wLMuJ7GyH/3w=
+        b=z0C2qipQxTSZrS+Bgd3uiSEsSUPndlwjtP+Q9R6ZAJjPcuKlx19WuVqLhieD394Vh
+         doxz8QGBTjnhX+DWpe1hZyIqNWejj0v/BfH+k40oleQODVuAAbbhHN4S00hs7jW+2q
+         xgjlTgKxgJzZ672g+D7ZWCT2oO9UNHrPF357Ur/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Xiaolong Huang <butterflyhuangxx@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.14 117/169] isdn: cpai: check ctr->cnr to avoid array index out of bound
-Date:   Mon, 25 Oct 2021 21:14:58 +0200
-Message-Id: <20211025191032.780376265@linuxfoundation.org>
+Subject: [PATCH 5.4 42/58] isdn: cpai: check ctr->cnr to avoid array index out of bound
+Date:   Mon, 25 Oct 2021 21:14:59 +0200
+Message-Id: <20211025190944.286762303@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -87,7 +87,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/isdn/capi/kcapi.c
 +++ b/drivers/isdn/capi/kcapi.c
-@@ -480,6 +480,11 @@ int detach_capi_ctr(struct capi_ctr *ctr
+@@ -565,6 +565,11 @@ int detach_capi_ctr(struct capi_ctr *ctr
  
  	ctr_down(ctr, CAPI_CTR_DETACHED);
  
