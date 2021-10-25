@@ -2,47 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5725B43A304
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B2C43A005
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236585AbhJYTzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:55:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
+        id S235087AbhJYT0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:26:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238630AbhJYTuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:50:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4ABD60C41;
-        Mon, 25 Oct 2021 19:42:32 +0000 (UTC)
+        id S235099AbhJYTYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8C5061139;
+        Mon, 25 Oct 2021 19:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190953;
-        bh=IT8ffS5OJEbVtpDypgVbI4Wto6k5Waur6DCpttyT1js=;
+        s=korg; t=1635189723;
+        bh=ccSq11r/aUbR+YhD+lg8cNjK4ojaNZ6njSk4UgGU2+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1pehf+s/KWMx+uAhLcCBr48Evbx0v7pKTTCQKDJS45zPF7WzLPJUVXsx59WUAcC15
-         Gl0bRmO3prbP1uVKclfcx4W85MK3s4XFDJEnqEOjXehdxYolWTipwq/lDcJwSkTxzY
-         YsRGQU8hdrNYDD82uNG18DTbFygcyX3Xau5DMwLo=
+        b=WbuU366yKQQhvrU4hOh+byssjCqQluJWv61RWTQlIXWw3JuY486pnn3/fGA3xKUNN
+         bbyH1UP8XY9f+Gj1+kjKfNhJ58cvYpydK9BbrBWfqst+AxFhsWXN0cgYZ4cjwdMP8V
+         PTCC/vWOxLYqc2B3uGH7GxGT55/95Upb0xDNKGL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.14 102/169] mm, slub: fix potential use-after-free in slab_debugfs_fops
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 23/30] isdn: mISDN: Fix sleeping function called from invalid context
 Date:   Mon, 25 Oct 2021 21:14:43 +0200
-Message-Id: <20211025191030.845152523@linuxfoundation.org>
+Message-Id: <20211025190928.160338235@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,56 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit 67823a544414def2a36c212abadb55b23bcda00c upstream.
+[ Upstream commit 6510e80a0b81b5d814e3aea6297ba42f5e76f73c ]
 
-When sysfs_slab_add failed, we shouldn't call debugfs_slab_add() for s
-because s will be freed soon.  And slab_debugfs_fops will use s later
-leading to a use-after-free.
+The driver can call card->isac.release() function from an atomic
+context.
 
-Link: https://lkml.kernel.org/r/20210916123920.48704-5-linmiaohe@huawei.com
-Fixes: 64dd68497be7 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Bharata B Rao <bharata@linux.ibm.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by calling this function after releasing the lock.
+
+The following log reveals it:
+
+[   44.168226 ] BUG: sleeping function called from invalid context at kernel/workqueue.c:3018
+[   44.168941 ] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 5475, name: modprobe
+[   44.169574 ] INFO: lockdep is turned off.
+[   44.169899 ] irq event stamp: 0
+[   44.170160 ] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[   44.170627 ] hardirqs last disabled at (0): [<ffffffff814209ed>] copy_process+0x132d/0x3e00
+[   44.171240 ] softirqs last  enabled at (0): [<ffffffff81420a1a>] copy_process+0x135a/0x3e00
+[   44.171852 ] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[   44.172318 ] Preemption disabled at:
+[   44.172320 ] [<ffffffffa009b0a9>] nj_release+0x69/0x500 [netjet]
+[   44.174441 ] Call Trace:
+[   44.174630 ]  dump_stack_lvl+0xa8/0xd1
+[   44.174912 ]  dump_stack+0x15/0x17
+[   44.175166 ]  ___might_sleep+0x3a2/0x510
+[   44.175459 ]  ? nj_release+0x69/0x500 [netjet]
+[   44.175791 ]  __might_sleep+0x82/0xe0
+[   44.176063 ]  ? start_flush_work+0x20/0x7b0
+[   44.176375 ]  start_flush_work+0x33/0x7b0
+[   44.176672 ]  ? trace_irq_enable_rcuidle+0x85/0x170
+[   44.177034 ]  ? kasan_quarantine_put+0xaa/0x1f0
+[   44.177372 ]  ? kasan_quarantine_put+0xaa/0x1f0
+[   44.177711 ]  __flush_work+0x11a/0x1a0
+[   44.177991 ]  ? flush_work+0x20/0x20
+[   44.178257 ]  ? lock_release+0x13c/0x8f0
+[   44.178550 ]  ? __kasan_check_write+0x14/0x20
+[   44.178872 ]  ? do_raw_spin_lock+0x148/0x360
+[   44.179187 ]  ? read_lock_is_recursive+0x20/0x20
+[   44.179530 ]  ? __kasan_check_read+0x11/0x20
+[   44.179846 ]  ? do_raw_spin_unlock+0x55/0x900
+[   44.180168 ]  ? ____kasan_slab_free+0x116/0x140
+[   44.180505 ]  ? _raw_spin_unlock_irqrestore+0x41/0x60
+[   44.180878 ]  ? skb_queue_purge+0x1a3/0x1c0
+[   44.181189 ]  ? kfree+0x13e/0x290
+[   44.181438 ]  flush_work+0x17/0x20
+[   44.181695 ]  mISDN_freedchannel+0xe8/0x100
+[   44.182006 ]  isac_release+0x210/0x260 [mISDNipac]
+[   44.182366 ]  nj_release+0xf6/0x500 [netjet]
+[   44.182685 ]  nj_remove+0x48/0x70 [netjet]
+[   44.182989 ]  pci_device_remove+0xa9/0x250
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/slub.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/isdn/hardware/mISDN/netjet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4604,13 +4604,15 @@ int __kmem_cache_create(struct kmem_cach
- 		return 0;
- 
- 	err = sysfs_slab_add(s);
--	if (err)
-+	if (err) {
- 		__kmem_cache_release(s);
-+		return err;
-+	}
- 
- 	if (s->flags & SLAB_STORE_USER)
- 		debugfs_slab_add(s);
- 
--	return err;
-+	return 0;
- }
- 
- void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
+diff --git a/drivers/isdn/hardware/mISDN/netjet.c b/drivers/isdn/hardware/mISDN/netjet.c
+index 79f9925da76c..56b54aab51f9 100644
+--- a/drivers/isdn/hardware/mISDN/netjet.c
++++ b/drivers/isdn/hardware/mISDN/netjet.c
+@@ -963,8 +963,8 @@ nj_release(struct tiger_hw *card)
+ 		nj_disable_hwirq(card);
+ 		mode_tiger(&card->bc[0], ISDN_P_NONE);
+ 		mode_tiger(&card->bc[1], ISDN_P_NONE);
+-		card->isac.release(&card->isac);
+ 		spin_unlock_irqrestore(&card->lock, flags);
++		card->isac.release(&card->isac);
+ 		release_region(card->base, card->base_s);
+ 		card->base_s = 0;
+ 	}
+-- 
+2.33.0
+
 
 
