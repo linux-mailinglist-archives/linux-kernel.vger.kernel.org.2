@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63ADA439F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990FE43A137
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233922AbhJYTRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:17:38 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:47896 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233951AbhJYTR3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:29 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PFngSI024462;
-        Mon, 25 Oct 2021 12:15:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=sT1dbt5fGFGl/R3R0rBdl6d5cXHq7Xaf6xcVEBNnxpY=;
- b=DbkxlhVdFkJHsmFvJMMTCUkgOqZVrs39j3Ogc8PaZCRkge5MnqbLNaO/C2cBCFQHQ2FX
- 0YTgZrr3b6U6QnXyFJsW8cio28C8wWPj4xQnrFcg1pVaSBhWONdvSDuNhX6QDjY+m18r
- aO7ICEyzfqaEhiY5vITj7Xu/stcQN66+Y545EwTzhLGXNWVvXm1dRE7AGZIsBfFyxSfT
- g+Ma5KG9TFGtI0e827qiA+mX8LaCtmzRr6P/oqy3gVSj8t16ak4c6r+bpZxicPXjUlWy
- BpjMz3d8URlGNVUe2g+LUw2hdag52OvJKfuvjLFQVq4aTb6XeEa94L6NexypxB3jqtDB VQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3bwyjg8ts2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 12:15:02 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct
- 2021 12:14:51 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Mon, 25 Oct 2021 12:14:51 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id BC65F3F7041;
-        Mon, 25 Oct 2021 12:14:48 -0700 (PDT)
-From:   Rakesh Babu <rsaladi2@marvell.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
-CC:     Rakesh Babu <rsaladi2@marvell.com>
-Subject: [net-next PATCH 0/3] RVU Debugfs updates.
-Date:   Tue, 26 Oct 2021 00:44:39 +0530
-Message-ID: <20211025191442.10084-1-rsaladi2@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        id S236161AbhJYThu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:37:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234924AbhJYTbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:31:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3D4B60FDC;
+        Mon, 25 Oct 2021 19:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635190057;
+        bh=Ps6lIDaXjSpwSIMUsGNCTVWdQiy/a2kNcif61VQEJsI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IuDYegUM34nfigY9WijNckLUtrkPDS8ye7kbMTB1vSGeH+Ytagl0cIvBgtIP+k3w+
+         mXWa/jYswR3EXHlQEoEQI17YJDj9kO/R70TtcBSU0voaJKfSPNQH6YLFkUXHnA38Jy
+         eCzdAsUAeBwwWcF00/GduvgbI6umocYMn2eF0S+w=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.4 23/58] can: j1939: j1939_netdev_start(): fix UAF for rx_kref of j1939_priv
+Date:   Mon, 25 Oct 2021 21:14:40 +0200
+Message-Id: <20211025190941.317000148@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 9_NOO5ryLvNNXuz6_DSifjsp8SIuYi4F
-X-Proofpoint-GUID: 9_NOO5ryLvNNXuz6_DSifjsp8SIuYi4F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_06,2021-10-25_02,2020-04-07_01
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patch series consists of the changes/modifications that are
-newly added/done to rvu_debugfs.c file.
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-Patch 1: Few minor changes such as spelling mistakes, deleting unwanted
-characters, etc.
-Patch 2: Add debugfs dump for lmtst map table
-Patch 3: Add channel and channel mask in debugfs.
+commit d9d52a3ebd284882f5562c88e55991add5d01586 upstream.
 
-Harman Kalra (1):
-  octeontx2-af: cn10k: debugfs for dumping lmtst map table
+It will trigger UAF for rx_kref of j1939_priv as following.
 
-Rakesh Babu (2):
-  octeontx2-af: debugfs: Minor changes.
-  octeontx2-af: debugfs: Add channel and channel mask.
+        cpu0                                    cpu1
+j1939_sk_bind(socket0, ndev0, ...)
+j1939_netdev_start
+                                        j1939_sk_bind(socket1, ndev0, ...)
+                                        j1939_netdev_start
+j1939_priv_set
+                                        j1939_priv_get_by_ndev_locked
+j1939_jsk_add
+.....
+j1939_netdev_stop
+kref_put_lock(&priv->rx_kref, ...)
+                                        kref_get(&priv->rx_kref, ...)
+                                        REFCOUNT_WARN("addition on 0;...")
 
- .../net/ethernet/marvell/octeontx2/af/npc.h   |   4 +
- .../marvell/octeontx2/af/rvu_debugfs.c        | 122 ++++++++++++++++--
- .../ethernet/marvell/octeontx2/af/rvu_nix.c   |   3 +
- .../marvell/octeontx2/af/rvu_npc_fs.c         |   3 +
- 4 files changed, 119 insertions(+), 13 deletions(-)
+====================================================
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 20874 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0
+Call Trace:
+ j1939_netdev_start+0x68b/0x920
+ j1939_sk_bind+0x426/0xeb0
+ ? security_socket_bind+0x83/0xb0
 
---
-2.17.1
+The rx_kref's kref_get() and kref_put() should use j1939_netdev_lock to
+protect.
+
+Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
+Link: https://lore.kernel.org/all/20210926104757.2021540-1-william.xuanziyang@huawei.com
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/can/j1939/main.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+--- a/net/can/j1939/main.c
++++ b/net/can/j1939/main.c
+@@ -249,11 +249,14 @@ struct j1939_priv *j1939_netdev_start(st
+ 	struct j1939_priv *priv, *priv_new;
+ 	int ret;
+ 
+-	priv = j1939_priv_get_by_ndev(ndev);
++	spin_lock(&j1939_netdev_lock);
++	priv = j1939_priv_get_by_ndev_locked(ndev);
+ 	if (priv) {
+ 		kref_get(&priv->rx_kref);
++		spin_unlock(&j1939_netdev_lock);
+ 		return priv;
+ 	}
++	spin_unlock(&j1939_netdev_lock);
+ 
+ 	priv = j1939_priv_create(ndev);
+ 	if (!priv)
+@@ -269,10 +272,10 @@ struct j1939_priv *j1939_netdev_start(st
+ 		/* Someone was faster than us, use their priv and roll
+ 		 * back our's.
+ 		 */
++		kref_get(&priv_new->rx_kref);
+ 		spin_unlock(&j1939_netdev_lock);
+ 		dev_put(ndev);
+ 		kfree(priv);
+-		kref_get(&priv_new->rx_kref);
+ 		return priv_new;
+ 	}
+ 	j1939_priv_set(ndev, priv);
+
+
