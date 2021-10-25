@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F401B439B3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3238E439B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbhJYQOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:14:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJYQOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:14:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 135C660EBD;
-        Mon, 25 Oct 2021 16:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635178321;
-        bh=syAB+df5IPHsjUcZpMOSy08OXq0IujFncL8KFiRTvOQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xv0TWdNFBiGEZc6TVChr42vVbecdpKFm5RmxXTuNhOwnMLXqmxR1cqYo12ZbSwXB0
-         msnNoBFZ8d8U2DpJjuGSTJ+p4I/TgpHN5u/Z6fl8l5cSlqMk2dH7VSWtCOUNDPduWn
-         ck4Rha2Vu4jyMMkE2oR5GR+727+cnPyJeb5Q6xk6egjQur+wRi0VL+cvaIhqZYPCAJ
-         jTVJhuAspF86jNPGq4HxLm9SdWN9URB6fqFMNVzC4SVn41v2NvRholBSapP5DCKxCe
-         Sbh4UVcWxFa30kZQRgT7nKdbbuS/dLQ3YvUTFujPmGP25oDJQ55yycRYfNiaH3uhCB
-         O6Lb1cZ1vkijA==
-Date:   Mon, 25 Oct 2021 21:41:57 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v2 09/11] drm/msm/disp/dpu1: Add support for DSC in
- topology
-Message-ID: <YXbXTRZZFLKYsqnC@matsya>
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-10-vkoul@kernel.org>
- <020ab810-c975-d58b-a572-57eb3010d6c0@linaro.org>
- <7ba115c8-16e6-54c4-b151-e69eedcb47d2@linaro.org>
+        id S233901AbhJYQPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233885AbhJYQPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:15:20 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868F4C061243
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:12:57 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id n7so10627627ljp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:12:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pxxFGzwxjm1fYlK0VDD130fPjlKjYboL+bOCK3r6zMg=;
+        b=UAasKWrbVPrNZiVDnYpZcbPTEoN7pUFAqfCwAVt1I3OR9m9Y+c5WLzNokqgCMroHRQ
+         2ZzpXng65jYlLkRB8ZzLEzSS2uWDQ8aLsqOqF6Nr06HxGROp81ai1NSnsOLRd1ma5AQ5
+         V+hcutSJwiWxHO6/PczoeACI6idc0i2Ev/58WbhibNkCqs/x9YmNHVWapewoIbAbVi+f
+         zEUQzqQHWbWi0JjrK2y0UBCPwHJxI0ZwT1J5mbw9aqYjVvHn0ku3RDvB2HeVi/h11yNc
+         DlNoq+ywnkHfrmcHFGYSjM8AgXj0pvF/OBG2Ku2L3FIDu5xsO99M3pnsAymbIIPnrjzt
+         QQ7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pxxFGzwxjm1fYlK0VDD130fPjlKjYboL+bOCK3r6zMg=;
+        b=rpgImmZPTfKzCH61g6Ilg/9OwGsdjLVeC5a5vLIYi0CLrGl+ycUTyHZWu3SySi3Q+d
+         uyv5nLZ/niAvy4krM/iDtfQJX58IoVBblXwSIshBWQtoGFKUDdI4IeWPBpyajlI+hNZm
+         AYSR0iZFAaGiPqNI2E9JzD5EBXpRMQ8oD0Bg2ILFh6DY+qESSoolI8SA2H1EdahVdUPU
+         k3z5u83osiaIJi/mXvI7VsmNTK+PPR0UbpodxeqCO47dVp+3X6Ymht86ep5qlTRs+DMx
+         SunnALzDmVnL50VvuhRtbPUsyTFY6pl152oWq1Ow+pBSwpYBbEaIqCVYJGZ/txbeDDZ4
+         AyUg==
+X-Gm-Message-State: AOAM532GEdzpFRxUD0a5dn5d2GxRNe6Slx48j77JFdWBGASXIztkKOq4
+        G2q+7sqxk+sDTdIDNZV57dwZMA==
+X-Google-Smtp-Source: ABdhPJy7tky8K0acUazaVCci6+tBFLlZHynyY5jZJGvWP+T15lajMJ6bnO7mjeBGTx6rTDHD4jTylQ==
+X-Received: by 2002:a05:651c:1024:: with SMTP id w4mr19969693ljm.17.1635178375705;
+        Mon, 25 Oct 2021 09:12:55 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id c15sm1678258lff.238.2021.10.25.09.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 09:12:55 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v2 1/1] clk: samsung: exynos850: Register clocks early
+Date:   Mon, 25 Oct 2021 19:12:54 +0300
+Message-Id: <20211025161254.5575-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ba115c8-16e6-54c4-b151-e69eedcb47d2@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-10-21, 17:37, Dmitry Baryshkov wrote:
-> On 14/10/2021 17:13, Dmitry Baryshkov wrote:
-> > On 07/10/2021 10:08, Vinod Koul wrote:
+Some clocks must be registered before init calls. For example MCT clock
+(from CMU_PERI) is needed for MCT timer driver, which is registered
+with TIMER_OF_DECLARE(). By the time we get to core_initcall() used for
+clk-exynos850 platform driver init, it's already too late. Inability to
+get "mct" clock in MCT driver leads to kernel panic, as functions
+registered with *_OF_DECLARE() can't do deferred calls. MCT timer driver
+can't be fixed either, as it's acting as a clock source and it's
+essential to register it in start_kernel() -> time_init().
 
-> > > @@ -572,8 +574,22 @@ static struct msm_display_topology
-> > > dpu_encoder_get_topology(
-> > >       topology.num_enc = 0;
-> > >       topology.num_intf = intf_count;
-> > > +    drm_enc = &dpu_enc->base;
-> > > +    priv = drm_enc->dev->dev_private;
-> > > +    if (priv && priv->dsc) {
-> > > +        /* In case of Display Stream Compression DSC, we would use
-> > > +         * 2 encoders, 2 line mixers and 1 interface
-> > > +         * this is power optimal and can drive upto (including) 4k
-> > > +         * screens
-> > > +         */
-> > > +        topology.num_enc = 2;
-> > > +        topology.num_intf = 1;
-> > > +        topology.num_lm = 2;
-> > 
-> > So, here you'd set the topology.num_rm.
-> 
-> I meant 'num_dsc', please excuse the typo.
+Let's register CMU_PERI clocks early, using CLK_OF_DECLARE_DRIVER(), and
+do all stuff relying on "struct dev" object (like runtime PM and
+enabling bus clock) later in platform driver probe. Basically
+CLK_OF_DECLARE_DRIVER() matches CMU compatible, but clears OF_POPULATED
+flag, which allows the same device to be matched again later.
 
-No worries, i had assumed such and made it num_dsc
+Similar issue was discussed at [1] and addressed in commit 1f7db7bbf031
+("clk: renesas: cpg-mssr: Add early clock support"), as well as in
+drivers/clk/mediatek/clk-mt2712.c.
 
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/patch/20180829132954.64862-2-chris.brandt@renesas.com/
+
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+Changes in v2:
+  - Register only CMU_PERI clocks early
+
+Notes:
+  - This patch should be applied on top of CMU_APM series
+    (clk: samsung: exynos850: Implement CMU_APM domain)
+
+ drivers/clk/samsung/clk-exynos850.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
+index 95e373d17b42..ecffa5c7a081 100644
+--- a/drivers/clk/samsung/clk-exynos850.c
++++ b/drivers/clk/samsung/clk-exynos850.c
+@@ -753,6 +753,15 @@ static const struct samsung_cmu_info peri_cmu_info __initconst = {
+ 	.clk_name		= "dout_peri_bus",
+ };
+ 
++static void __init exynos850_cmu_peri_init(struct device_node *np)
++{
++	exynos850_init_clocks(np, peri_clk_regs, ARRAY_SIZE(peri_clk_regs));
++	samsung_cmu_register_one(np, &peri_cmu_info);
++}
++
++CLK_OF_DECLARE_DRIVER(exynos850_cmu_peri, "samsung,exynos850-cmu-peri",
++		      exynos850_cmu_peri_init);
++
+ /* ---- CMU_CORE ------------------------------------------------------------ */
+ 
+ /* Register Offset definitions for CMU_CORE (0x12000000) */
+@@ -920,8 +929,12 @@ static int __init exynos850_cmu_probe(struct platform_device *pdev)
+ 	struct device_node *np = dev->of_node;
+ 
+ 	info = of_device_get_match_data(dev);
+-	exynos850_init_clocks(np, info->clk_regs, info->nr_clk_regs);
+-	samsung_cmu_register_one(np, info);
++
++	/* Early clocks are already registered using CLK_OF_DECLARE_DRIVER() */
++	if (info != &peri_cmu_info) {
++		exynos850_init_clocks(np, info->clk_regs, info->nr_clk_regs);
++		samsung_cmu_register_one(np, info);
++	}
+ 
+ 	/* Keep bus clock running, so it's possible to access CMU registers */
+ 	if (info->clk_name) {
 -- 
-~Vinod
+2.30.2
+
