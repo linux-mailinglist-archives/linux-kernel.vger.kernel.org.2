@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D744143A528
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F08C43A531
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhJYU63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:58:29 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:51873 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhJYU6Z (ORCPT
+        id S234478AbhJYU7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:59:05 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:33583 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232690AbhJYU7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:58:25 -0400
-Received: by mail-wm1-f47.google.com with SMTP id 5so2192525wmb.1;
-        Mon, 25 Oct 2021 13:56:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q+yfKmb+onnS482Y6u9v2lkAP9a5r5WCNti0ot9YfMg=;
-        b=xUQTw3gvr5nrkxlziOUeMn9HfUMvaQL0F4JcaLJAgjzeVs0W0mOa0m7PSt93PQb83q
-         gRiekuo5cNPMtA6qRKzD1WipURbGmCZUKl2LAN5Egzp/k/bf3/wWkx/5s0qDb7sYEZG9
-         ifVYrat4wIIRGHCtTqy84F+tUcTKAl6eCVzyzmEJtirXi69lIo1HprJGxT0uRTqBWkS3
-         rxWj6ncPlD01FoBsXjFVSxWV1r5pxZyyxgwG2tabXdb+H7k9ss1P63Hyt3kmHRz6XtCT
-         NwDiobnFeTqNs1a2vYoLc9hY3gTbRXNBaLNmwhME66ZYPFnecdyXw/O2zbebEbUxWaJ8
-         /9qw==
-X-Gm-Message-State: AOAM530OSOJXyIEJboGJlhBYLnyQnkW4VLRm2bsNqe84GUVtWOvDE25X
-        yzqKuzYEBMdq8g3LHU8F1n4=
-X-Google-Smtp-Source: ABdhPJy41VdkQyppTBh4meZBX/lXaHxLgbKOGQTqOHHeONNOEpR5bufaWYH/gDxFiXuknpfmkXcMPg==
-X-Received: by 2002:a05:600c:3546:: with SMTP id i6mr51776416wmq.146.1635195361619;
-        Mon, 25 Oct 2021 13:56:01 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id m15sm17916917wmq.0.2021.10.25.13.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 13:56:00 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 20:55:59 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
-        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        pgonda@google.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org, tj@kernel.org,
-        aneesh.kumar@linux.ibm.com, saravanand@fb.com,
-        sfr@canb.auug.org.au, michael.h.kelley@microsoft.com,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
-        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
-        dave.hansen@intel.com
-Subject: Re: [PATCH V9 0/9] x86/Hyper-V: Add Hyper-V Isolation VM
- support(First part)
-Message-ID: <20211025205559.5wge6ohiktif5hwt@liuwe-devbox-debian-v2>
-References: <20211025122116.264793-1-ltykernel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025122116.264793-1-ltykernel@gmail.com>
+        Mon, 25 Oct 2021 16:59:03 -0400
+X-IronPort-AV: E=Sophos;i="5.87,181,1631545200"; 
+   d="scan'208";a="98385682"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 26 Oct 2021 05:56:39 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8AD4441003BB;
+        Tue, 26 Oct 2021 05:56:35 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/7] Add SPI Multi I/O Bus Controller support for RZ/G2L
+Date:   Mon, 25 Oct 2021 21:56:24 +0100
+Message-Id: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:21:05AM -0400, Tianyu Lan wrote:
-> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> 
-> Hyper-V provides two kinds of Isolation VMs. VBS(Virtualization-based
-> security) and AMD SEV-SNP unenlightened Isolation VMs. This patchset
-> is to add support for these Isolation VM support in Linux.
-> 
-> The memory of these vms are encrypted and host can't access guest
-> memory directly. Hyper-V provides new host visibility hvcall and
-> the guest needs to call new hvcall to mark memory visible to host
-> before sharing memory with host. For security, all network/storage
-> stack memory should not be shared with host and so there is bounce
-> buffer requests.
-> 
-> Vmbus channel ring buffer already plays bounce buffer role because
-> all data from/to host needs to copy from/to between the ring buffer
-> and IO stack memory. So mark vmbus channel ring buffer visible.
-> 
-> For SNP isolation VM, guest needs to access the shared memory via
-> extra address space which is specified by Hyper-V CPUID HYPERV_CPUID_
-> ISOLATION_CONFIG. The access physical address of the shared memory
-> should be bounce buffer memory GPA plus with shared_gpa_boundary
-> reported by CPUID.
-> 
-> This patchset is rebased on the commit d9abdee of Linux mainline tree
-> and plus clean up patch from Borislav Petkov(https://lore.kernel.org/r/
-> YWRwxImd9Qcls/Yy@zn.tnic)
-> 
-> 
+Hi All,
 
-Applied to hyperv-next. Thanks.
+This patch series adds a couple of fixes for rpc-if driver and
+adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
+is identical to the RPC-IF block found on R-Car Gen3 SoC's.
 
-Wei.
+Cheers,
+Prabhakar
+
+Changes for v2:
+* Rebased the patches on linux-next
+* Split patch 5 from v1
+* Included RB tags
+* Fixed review comments pointed by Wolfram
+
+v1:
+https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+
+Lad Prabhakar (7):
+  dt-bindings: memory: renesas,rpc-if: Add support for the R9A07G044
+  dt-bindings: memory: renesas,rpc-if: Add optional interrupts property
+  spi: spi-rpc-if: Check return value of rpcif_sw_init()
+  mtd: hyperbus: rpc-if: Check return value of rpcif_sw_init()
+  memory: renesas-rpc-if: Return error in case devm_ioremap_resource()
+    fails
+  memory: renesas-rpc-if: Drop usage of RPCIF_DIRMAP_SIZE macro
+  memory: renesas-rpc-if: Add support for RZ/G2L
+
+ .../memory-controllers/renesas,rpc-if.yaml    | 54 +++++++++----
+ drivers/memory/renesas-rpc-if.c               | 80 +++++++++++++++----
+ drivers/mtd/hyperbus/rpc-if.c                 |  8 +-
+ drivers/spi/spi-rpc-if.c                      |  8 +-
+ include/memory/renesas-rpc-if.h               |  8 +-
+ 5 files changed, 124 insertions(+), 34 deletions(-)
+
+-- 
+2.17.1
+
