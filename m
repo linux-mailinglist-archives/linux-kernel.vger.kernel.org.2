@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A2B439254
+	by mail.lfdr.de (Postfix) with ESMTP id BC025439255
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbhJYJaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:30:21 -0400
-Received: from first.geanix.com ([116.203.34.67]:37398 "EHLO first.geanix.com"
+        id S232545AbhJYJaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:30:23 -0400
+Received: from first.geanix.com ([116.203.34.67]:37400 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhJYJaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:30:20 -0400
+        id S232511AbhJYJaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 05:30:21 -0400
 Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id F1DF0CC792;
-        Mon, 25 Oct 2021 09:27:55 +0000 (UTC)
+        by first.geanix.com (Postfix) with ESMTPSA id 6867CD58DA;
+        Mon, 25 Oct 2021 09:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1635154076; bh=tSBMD275WXCEMSU2orDsuQBV3IoPAOXeW1te0qIiFJM=;
-        h=From:To:Cc:Subject:Date;
-        b=fa+sTdsHhuW7MLwLs5MBPAhj43D+f+vNpYvqzmHDJtYK0OFfBU2NhUICeebtJqvwV
-         Ewq0MT1AhlDRhUzHgTsPwDkTL8F4Ez/4ksG/9gNwrPOMvV1ZnvZ6FN7YOWytS9kjFP
-         TfQtIuECdOtEe+V7hh18FHB2vG4CGc1LXi3hqvHHVtD/Qt/qAOfB9QafZLU+Ii9vGW
-         HCz26KRORMamPjAtLhQczi3SILF5bKSAr8KMgsHY7fucMzTRQ0ajApzb9Wh3SiTaCZ
-         ZTI+S0Idj6nyZUNBz9AQAfYlY9kqKs5+Hreix/vUiE/Wwj+URAE2DfSRB5vIdmkO11
-         9P/Sp5cB9LnAQ==
+        t=1635154077; bh=pSFGkotVeNb5qsNJzmaYe1nuIoE4MQOk1MI2epzMezw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Mv4+ogc3dVKuTtnnI+hrfyPa/g719p4wz9cUz5IwUxC5FGXroMrtkFp+kxF4olK88
+         D4RWuXCnYrEgJvuSB1+FLycsvLlKhT9WtYMIDZhkvMBkfw4rol9BOFo5yJouwpAmS+
+         jnZ86b1VfLSifGyjKcQGRxk9YsZK8DF2kxpXfwQLjXLnT98tnQDe3xdXF8X/1csN2I
+         5tZpXl3DPjrfTKPWAWaxcwEIDzhpgXR3/+JBY1ybpNw/f5iYWzZ7aqEz04GxrZlYrD
+         1rx/aajPF5YTG+qLbCMMTQxuYxuCyq75bz2ZQdp2Vpz5IvW6S9cVnJs4LL96MOLcbx
+         yiVU+3Qhr7qmA==
 From:   Sean Nyekjaer <sean@geanix.com>
 To:     Boris Brezillon <boris.brezillon@collabora.com>
 Cc:     Sean Nyekjaer <sean@geanix.com>,
@@ -31,10 +31,12 @@ Cc:     Sean Nyekjaer <sean@geanix.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Boris Brezillon <bbrezillon@kernel.org>,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/4] mtd: core: protect access to mtd devices while in suspend
-Date:   Mon, 25 Oct 2021 11:27:48 +0200
-Message-Id: <20211025092752.2824678-1-sean@geanix.com>
+Subject: [PATCH v3 1/4] mtd: rawnand: nand_bbt: hide suspend/resume hooks while scanning bbt
+Date:   Mon, 25 Oct 2021 11:27:49 +0200
+Message-Id: <20211025092752.2824678-2-sean@geanix.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211025092752.2824678-1-sean@geanix.com>
+References: <20211025092752.2824678-1-sean@geanix.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
@@ -45,54 +47,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow-up on discussion in:
-https://lkml.org/lkml/2021/10/4/41
-https://lkml.org/lkml/2021/10/11/435
+From: Boris Brezillon <boris.brezillon@collabora.com>
 
-Changes since v2:
- - added signoff's to patch from Boris
- - removed accidential line break
- - kept tests consistent: master->master.suspended == 0 -> !master->master.suspended
- - added comments to mtdconcat patch
- - moved mtdconcat before ('mtd: core: protect access to MTD devices while in suspend')
+The BBT scan logic use the MTD helpers before the MTD layer had a
+chance to initialize the device, and that leads to issues when
+accessing the uninitialized suspend lock. Let's temporarily set the
+suspend/resume hooks to NULL to skip the lock acquire/release step.
 
-Changes since v1:
- - removed __mtd_suspend/__mtd_resume functions as they are not used by
-   mtdconcat anymore.
- - only master mtd_info is used for mtd_{start,end}_access(). Warn if we
-   got mtd's.
- - added Boris patch for using uninitialized _suspend/_resume hooks when
-   bbt scanning
- - mtdconcat uses device _suspend/_resume hooks
- - I don't really like the macro proposal from Boris
-   mtd_no_suspend_void_call()/mtd_no_suspend_ret_call() I think they
-   make the code complex to read and the macro's doesn't fit every
-   where anyway...
+Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-Changes since from rfc v1/v2:
- - added access protection for all device access hooks in mtd_info.
- - added Suggested-by to [1/3] patch.
- - removed refereces to commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
-   from commit msg as commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") is 
-   to be blamed.
- - tested on a kernel with LOCKDEP enabled.
-
-Boris Brezillon (1):
-  mtd: rawnand: nand_bbt: hide suspend/resume hooks while scanning bbt
-
-Sean Nyekjaer (3):
-  mtd: mtdconcat: add suspend lock handling
-  mtd: core: protect access to MTD devices while in suspend
-  mtd: rawnand: remove suspended check
-
- drivers/mtd/mtdconcat.c          |  15 +++-
- drivers/mtd/mtdcore.c            | 124 +++++++++++++++++++++++++++----
- drivers/mtd/nand/raw/nand_base.c |  52 ++++---------
- drivers/mtd/nand/raw/nand_bbt.c  |  28 ++++++-
- include/linux/mtd/mtd.h          |  81 ++++++++++++++++----
- include/linux/mtd/rawnand.h      |   5 +-
- 6 files changed, 230 insertions(+), 75 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b7ad030225f8..93d385703469 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+  */
+ int nand_create_bbt(struct nand_chip *this)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
++	int (*suspend) (struct mtd_info *) = mtd->_suspend;
++	void (*resume) (struct mtd_info *) = mtd->_resume;
+ 	int ret;
+ 
++	/*
++	 * The BBT scan logic use the MTD helpers before the MTD layer had a
++	 * chance to initialize the device, and that leads to issues when
++	 * accessing the uninitialized suspend lock. Let's temporarily set the
++	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
++	 *
++	 * FIXME: This is an ugly hack, so please don't copy this pattern to
++	 * other MTD implementations. The proper fix would be to implement a
++	 * generic BBT scan logic at the NAND level that's not using any of the
++	 * MTD helpers to access pages. We also might consider doing a two
++	 * step initialization at the MTD level (mtd_device_init() +
++	 * mtd_device_register()) so some of the fields are initialized
++	 * early.
++	 */
++	mtd->_suspend = NULL;
++	mtd->_resume = NULL;
++
+ 	/* Is a flash based bad block table requested? */
+ 	if (this->bbt_options & NAND_BBT_USE_FLASH) {
+ 		/* Use the default pattern descriptors */
+@@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
+ 			return ret;
+ 	}
+ 
+-	return nand_scan_bbt(this, this->badblock_pattern);
++	ret = nand_scan_bbt(this, this->badblock_pattern);
++
++	/* Restore the suspend/resume hooks. */
++	mtd->_suspend = suspend;
++	mtd->_resume = resume;
++
++	return ret;
+ }
+ EXPORT_SYMBOL(nand_create_bbt);
+ 
 -- 
 2.33.0
 
