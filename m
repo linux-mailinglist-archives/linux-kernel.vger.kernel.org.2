@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F052443A1F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C822343A0C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237460AbhJYTno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53558 "EHLO mail.kernel.org"
+        id S236599AbhJYTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235172AbhJYTfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D1A86109D;
-        Mon, 25 Oct 2021 19:32:52 +0000 (UTC)
+        id S235640AbhJYT2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:28:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DFD7610D2;
+        Mon, 25 Oct 2021 19:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190373;
-        bh=WouTT5nKQHmeccXdB8dVONW/Be3x973bW5UTCRq4lcA=;
+        s=korg; t=1635189938;
+        bh=B/Zoq3zTTVLjH+LWqxmyFBUmXRtrJm7zhofEF6/lzQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=104yymZbjnb1dOprZsUCfWWJgViXDAKpS5IhKNToZ2/0En22iOr074aaZ5kArO5yn
-         EZNAihQ4PXCMCmRUPIrYEMCfr0KzS+T/1OF9mJBzXzP96y9l7RZVFKxrjgZB/JcSO9
-         o1JeEPzKxfJriN59HyzvVu/69o7QtizmxVay4r64=
+        b=HQ0dbGbDf6OK90fMx9hT8yz/Ls48HJxgPrXjjo3NXSZFj7tdfcDEBlqCYkM2IuIhV
+         SMa2zH9sDIBMs1cyXJlOQ8vwepOqofnmdGPRXRJiKKBC0EQOt/auDFz12LakOPkx9N
+         TuRx/mCr85ikxj3ChC1lQMBAo0KMsBBYgbQ3zq88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 59/95] mm, slub: fix mismatch between reconstructed freelist depth and cnt
+        stable@vger.kernel.org, Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 31/37] platform/x86: intel_scu_ipc: Update timeout value in comment
 Date:   Mon, 25 Oct 2021 21:14:56 +0200
-Message-Id: <20211025191005.502876648@linuxfoundation.org>
+Message-Id: <20211025190934.523899374@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,72 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Prashant Malani <pmalani@chromium.org>
 
-commit 899447f669da76cc3605665e1a95ee877bc464cc upstream.
+[ Upstream commit a0c5814b9933f25ecb6de169483c5b88cf632bca ]
 
-If object's reuse is delayed, it will be excluded from the reconstructed
-freelist.  But we forgot to adjust the cnt accordingly.  So there will
-be a mismatch between reconstructed freelist depth and cnt.  This will
-lead to free_debug_processing() complaining about freelist count or a
-incorrect slub inuse count.
+The comment decribing the IPC timeout hadn't been updated when the
+actual timeout was changed from 3 to 5 seconds in
+commit a7d53dbbc70a ("platform/x86: intel_scu_ipc: Increase virtual
+timeout from 3 to 5 seconds") .
 
-Link: https://lkml.kernel.org/r/20210916123920.48704-3-linmiaohe@huawei.com
-Fixes: c3895391df38 ("kasan, slub: fix handling of kasan_slab_free hook")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Bharata B Rao <bharata@linux.ibm.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Since the value is anyway updated to 10s now, take this opportunity to
+update the value in the comment too.
+
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Cc: Benson Leung <bleung@chromium.org>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Link: https://lore.kernel.org/r/20210928101932.2543937-4-pmalani@chromium.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/slub.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/platform/x86/intel_scu_ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1543,7 +1543,8 @@ static __always_inline bool slab_free_ho
+diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
+index 54f131bec192..0d28576756ac 100644
+--- a/drivers/platform/x86/intel_scu_ipc.c
++++ b/drivers/platform/x86/intel_scu_ipc.c
+@@ -183,7 +183,7 @@ static inline int busy_loop(struct intel_scu_ipc_dev *scu)
+ 	return 0;
  }
  
- static inline bool slab_free_freelist_hook(struct kmem_cache *s,
--					   void **head, void **tail)
-+					   void **head, void **tail,
-+					   int *cnt)
+-/* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
++/* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
+ static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
  {
- 
- 	void *object;
-@@ -1578,6 +1579,12 @@ static inline bool slab_free_freelist_ho
- 			*head = object;
- 			if (!*tail)
- 				*tail = object;
-+		} else {
-+			/*
-+			 * Adjust the reconstructed freelist depth
-+			 * accordingly if object's reuse is delayed.
-+			 */
-+			--(*cnt);
- 		}
- 	} while (object != old_tail);
- 
-@@ -3137,7 +3144,7 @@ static __always_inline void slab_free(st
- 	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
- 	 * to remove objects, whose reuse must be delayed.
- 	 */
--	if (slab_free_freelist_hook(s, &head, &tail))
-+	if (slab_free_freelist_hook(s, &head, &tail, &cnt))
- 		do_slab_free(s, page, head, tail, cnt, addr);
- }
- 
+ 	int status;
+-- 
+2.33.0
+
 
 
