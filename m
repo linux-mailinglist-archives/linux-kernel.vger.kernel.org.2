@@ -2,162 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCA4439378
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9008E439372
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232789AbhJYKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhJYKSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:18:44 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7CAC061745;
-        Mon, 25 Oct 2021 03:16:22 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id l13so20345973edi.8;
-        Mon, 25 Oct 2021 03:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NoOyCfUHoc1NYPh3QSE+q8V42pQrvXovBnbm5bi8Q4k=;
-        b=QYH7ZKvRWU1KiiEGEiqhp/peQaL15IJnNfVPiYX/zO0MWra7+JI3SXg0Lc0JOA98XW
-         WPj0LrY1A9k5qE+Fp7rMP4ng0O1HUTlPumAhQb4+v52N+Gxh4ARNPuyOlTxD1lWp2hPU
-         +CZeBnhLNgI5Sswr1xtPARYwEWLeJVIyMo0vKQkodDvIb+wFY1C1QMKmpWuR8CETdaeY
-         +1QUbqZOiVqSWFHOAOgre3vMI8qKI9BZ3oqaxTWnWpEwtFrprfAJnVoUrrormyAw67w8
-         q4J0hElT7j8paGd5sJawJ1zttr7+KMkjayF3pBz9cS4vqbe4A781qONfgGIej61A2KEd
-         BXmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NoOyCfUHoc1NYPh3QSE+q8V42pQrvXovBnbm5bi8Q4k=;
-        b=YLCsN5rUDWHtcgPzdu3n/cvmPBLNUNpadsuByUhqCHuPN9FRhbSojbgwewGPoLVFW3
-         YvMb5UlwcHo5APY2bwX+4jmKSJkjgyae1ziXHJRAlwKqt5RIGyVzqJ/Z1yf3MsOcsoKR
-         +aY1rwdScPqkTZE0AN4poAUofUou2SzzgXWjvSg8tvA5eqCO76isv1PRt/rwFpJHZT+h
-         AAath7Sd++g+EHs9Ff7e398+VCOvbeNtYAuO4VnzbUeSATuM8cWuuAjwb+Az4KIxwVMo
-         0qWYIp4r70suvf7amWwnTzn5caKZ3EIyOjyUwYqaDzLZbI3iSN2IqXzv56o3cnbeQfb7
-         ARDQ==
-X-Gm-Message-State: AOAM531DJ8XveusHL9XjbWZ2rLpP2hXuuEzOxFXhn/IbrAW9uZ/WsTNd
-        vX/GeZ+spkrAEGomKkB9ZJXVnlWojpUURP9pnVU=
-X-Google-Smtp-Source: ABdhPJzVsrEQ2wGc7NbJFC9XtcZJjhMbuy0RLRmB4+JyACp9oh8ch9YE0U1JW5YiiQEFm2TA0W1r11nn0kZxkU7HS/I=
-X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr19541505ejb.356.1635156977533;
- Mon, 25 Oct 2021 03:16:17 -0700 (PDT)
+        id S232733AbhJYKSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:18:35 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:35901 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229895AbhJYKSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:18:34 -0400
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7361461EA191C;
+        Mon, 25 Oct 2021 12:16:11 +0200 (CEST)
+Message-ID: <16ccd042-cddd-3a2d-589b-8091aef0b405@molgen.mpg.de>
+Date:   Mon, 25 Oct 2021 12:16:11 +0200
 MIME-Version: 1.0
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-13-kernel@esmil.dk>
- <CAHp75Vf3yNoKxguHP3EPcRV_3tG++Fd=FVM0MXqW4_SmLA6HEw@mail.gmail.com>
- <CANBLGcxEwkcZn2CC69zLaVqL8ocS6r6HDaaoUF09gg1mpDxFzg@mail.gmail.com>
- <CAHp75Vc5-Sg-0kKN=OMs_2iJbtc+D9=f0-Sp+SpY5O3roU3XdA@mail.gmail.com>
- <CANBLGcxnmt4Ki4EHAXeoJX5mJMyeioZXhGaDsKm_wk86D4js3Q@mail.gmail.com> <CANBLGcyOfo3r0Viidf9kyW0Q9yD4uqTLm90+7O=T49v7ZHurfA@mail.gmail.com>
-In-Reply-To: <CANBLGcyOfo3r0Viidf9kyW0Q9yD4uqTLm90+7O=T49v7ZHurfA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 25 Oct 2021 13:15:23 +0300
-Message-ID: <CAHp75Vc1EES8c7XD-MbQNdtCJA3YvvEYd3_e378rVCe6=AmhvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v4] media: aspeed: add debugfs
+Content-Language: en-US
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+References: <20211025101036.4262-1-jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20211025101036.4262-1-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 12:29 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> On Sat, 23 Oct 2021 at 23:02, Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > On Sat, 23 Oct 2021 at 22:29, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Sat, Oct 23, 2021 at 9:46 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+Dear Jammy,
 
-...
 
-> > So is that a yes or a no to my question? It's not clear to me.
->
-> I see now that you've probably misunderstood what the code does. It's
-> not one time use. The function parses the device tree and dynamically
-> registers groups and functions with the pinctrl framework. Each group
-> needs a string name, an int array of pins and optionally the pinmux
-> data. Once the group is registered those pieces of data needs to live
-> with the group until the drive is unloaded. But if the device tree
-> parsing fails before the group is registered then those allocations
-> would never be referenced and just hang around as garbage until the
-> driver is unloaded. In such cases fx. pinctrl-single uses devm_free to
-> free them again.
+On 25.10.21 12:10, Jammy Huang wrote:
+> A debugfs file, /sys/kernel/debug/aspeed-video, will be created. You can
+> read it to get video real-time information as below:
+> 
+> Caputre:
 
-Thank you for elaboration. Please, drop devm_*(). In this case it's
-inappropriate to use it. pinctrl-single should be amended accordingly,
-but it's out of scope here.
+The typo in Capture is still there. I couldn’t find it in the code below 
+either. Is it missing?
 
-...
+>    Signal              : Lock
+>    Width               : 1920
+>    Height              : 1080
+>    FRC                 : 60
+> 
+> Performance:
+>    Frame#              : 3804
+>    Frame Duration(ms)  :
+>      Now               : 22
+>      Min               : 22
+>      Max               : 22
+>    FPS                 : 45
+> 
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
 
-> > > > I such cases where you get conflicting PIN_CONFIG_BIAS_* settings I
-> > > > don't see why it's better to do the rmw on the padctl register for the
-> > > > first bias setting only to then change the bits again a few
-> > > > microseconds later when the loop encounters the second bias setting.
-> > > > After the loop is done the end result would still be just the last
-> > > > bias setting.
-> > >
-> > > It could be bias X followed by something else followed by bias Y. You
-> > > will write something else with bias Y. I admit I don't know this
-> > > hardware and you and maintainers are supposed to decide what's better,
-> > > but my guts are telling me that current algo is buggy.
-> >
-> > So there is only one padctl register pr. pin. I don't see why first
-> > setting the bias bits to X, then setting some other bits, and then
-> > setting the bias bits to Y would be different from just setting all
-> > the bits in one go. Except for during that little microsecond window
-> > during the loop that I actually think it's better to avoid.
->
-> Maybe an example is in order. Suppose we get strong pull-up, drive
-> strength 3 and pull-down config flags (the strong pull-up and pull
-> down flags conflict) and the padctl value is 0x0c0 (pull-up, input and
-> schmitt trigger enabled). With your solution of just altering the
-> padctl bits immediately we'd call starfive_padctl_rmw 3 times in rapid
-> succession like this:
->
-> starfive_padctl_rmw(pin, 0x130, 0x100);
-> starfive_padctl_rmw(pin, 0x007, 0x003);
-> starfive_padctl_rmw(pin, 0x130, 0x010);
->
-> ..and the end result would be 0x0d3, although the strong pull-up would
-> be enabled for the microseconds between the 1st and 3nd call.
-> As the code is now it'd just directly do
->
-> starfive_padctl_rmw(pin, 0x137, 0x013)
->
-> ..which again results in 0x0d3, only without the microsecond blink of
-> the strong pull-up.
 
-You missed the point. Hardware on the other end may behave well
-differently in these two cases.
+Kind regards,
 
--- 
-With Best Regards,
-Andy Shevchenko
+Paul
+
+
+> ---
+> v4:
+>   - use void as aspeed_video_debugfs_create()'s return type
+>   - update commit message
+> v3:
+>   - let struct, aspeed_video_debugfs_ops, be const
+> v2:
+>   - Change the style of debugfs information
+>   - Use Min/Max to remove test and branch cases
+> ---
+>   drivers/media/platform/aspeed-video.c | 93 +++++++++++++++++++++++++++
+>   1 file changed, 93 insertions(+)
+> 
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 8b3939b8052d..de84e30372eb 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -21,6 +21,8 @@
+>   #include <linux/videodev2.h>
+>   #include <linux/wait.h>
+>   #include <linux/workqueue.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/ktime.h>
+>   #include <media/v4l2-ctrls.h>
+>   #include <media/v4l2-dev.h>
+>   #include <media/v4l2-device.h>
+> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
+>   	struct list_head link;
+>   };
+>   
+> +struct aspeed_video_perf {
+> +	ktime_t last_sample;
+> +	u32 totaltime;
+> +	u32 duration;
+> +	u32 duration_min;
+> +	u32 duration_max;
+> +};
+> +
+>   #define to_aspeed_video_buffer(x) \
+>   	container_of((x), struct aspeed_video_buffer, vb)
+>   
+> @@ -241,6 +251,8 @@ struct aspeed_video {
+>   	unsigned int frame_left;
+>   	unsigned int frame_right;
+>   	unsigned int frame_top;
+> +
+> +	struct aspeed_video_perf perf;
+>   };
+>   
+>   #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
+> @@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>   		readl(video->base + reg));
+>   }
+>   
+> +static void update_perf(struct aspeed_video_perf *p)
+> +{
+> +	p->duration =
+> +		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
+> +	p->totaltime += p->duration;
+> +
+> +	p->duration_max = max(p->duration, p->duration_max);
+> +	p->duration_min = min(p->duration, p->duration_min);
+> +}
+> +
+>   static int aspeed_video_start_frame(struct aspeed_video *video)
+>   {
+>   	dma_addr_t addr;
+> @@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>   	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+>   			    VE_INTERRUPT_COMP_COMPLETE);
+>   
+> +	video->perf.last_sample = ktime_get();
+> +
+>   	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+>   			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
+>   
+> @@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>   		u32 frame_size = aspeed_video_read(video,
+>   						   VE_JPEG_COMP_SIZE_READ_BACK);
+>   
+> +		update_perf(&video->perf);
+> +
+>   		spin_lock(&video->lock);
+>   		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+>   		buf = list_first_entry_or_null(&video->buffers,
+> @@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   	det->width = MIN_WIDTH;
+>   	det->height = MIN_HEIGHT;
+>   	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
+> +	memset(&video->perf, 0, sizeof(video->perf));
+>   
+>   	do {
+>   		if (tries) {
+> @@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
+>   	struct aspeed_video *video = vb2_get_drv_priv(q);
+>   
+>   	video->sequence = 0;
+> +	video->perf.duration_max = 0;
+> +	video->perf.duration_min = 0xffffffff;
+>   
+>   	rc = aspeed_video_start_frame(video);
+>   	if (rc) {
+> @@ -1517,6 +1546,66 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
+>   	.buf_queue =  aspeed_video_buf_queue,
+>   };
+>   
+> +#ifdef CONFIG_DEBUG_FS
+> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+> +{
+> +	struct aspeed_video *v = s->private;
+> +
+> +	seq_puts(s, "\n");
+> +
+> +	seq_printf(s, "  %-20s:\t%s\n", "Signal",
+> +		   v->v4l2_input_status ? "Unlock" : "Lock");
+> +	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
+> +	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
+> +	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
+> +
+> +	seq_puts(s, "\n");
+> +
+> +	seq_puts(s, "Performance:\n");
+> +	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
+> +	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
+> +	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
+> +	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
+> +	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
+> +	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
+> +
+> +
+> +	return 0;
+> +}
+> +
+> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
+> +{
+> +	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
+> +}
+> +
+> +static struct file_operations aspeed_video_debugfs_ops = {
+> +	.owner   = THIS_MODULE,
+> +	.open    = aspeed_video_proc_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = single_release,
+> +};
+> +
+> +static struct dentry *debugfs_entry;
+> +
+> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
+> +{
+> +	debugfs_remove_recursive(debugfs_entry);
+> +}
+> +
+> +static void aspeed_video_debugfs_create(struct aspeed_video *video)
+> +{
+> +	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL, video,
+> +					    &aspeed_video_debugfs_ops);
+> +}
+> +#else
+> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
+> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_DEBUG_FS */
+> +
+>   static int aspeed_video_setup_video(struct aspeed_video *video)
+>   {
+>   	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
+> @@ -1708,6 +1797,8 @@ static int aspeed_video_probe(struct platform_device *pdev)
+>   		return rc;
+>   	}
+>   
+> +	aspeed_video_debugfs_create(video);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1719,6 +1810,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
+>   
+>   	aspeed_video_off(video);
+>   
+> +	aspeed_video_debugfs_remove(video);
+> +
+>   	clk_unprepare(video->vclk);
+>   	clk_unprepare(video->eclk);
+>   
+> 
