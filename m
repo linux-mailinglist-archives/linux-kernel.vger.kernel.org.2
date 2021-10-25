@@ -2,158 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37375439740
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2B143974A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhJYNOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233371AbhJYNOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:14:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 233F9601FA;
-        Mon, 25 Oct 2021 13:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635167529;
-        bh=/OnURZEJ7wts6w/3Qdts+/dkEpA+4/DrN1zIZXZY8S8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JswxGSFuC+gqwwPbsTgdSA8sAzoI3ajjbzLRbr6B3Ksea6DSD2afYRsLBJi8M5KGo
-         fYBSf9ZphnInaEcPhgmYnhbgOPc7Hw6L8V9tVcR+GifxTtUc+eEk4hoONRLaYekxtm
-         +3q7jivqhbG8Rzvg5pF4HYDIxQhxHJj2J4phzyU+wkm6tBAIQa2WGf61Ubx9HgtHOB
-         87ec06gEr6msZ418TgcRn0UZuzkRsCJ/gqXEwaQEWU1raifxVnS+uKY4VvOkdOWlMq
-         1XvZJmk8n6iU31PYHl9emO5UcD+ekkdN1gIecuwEVC0yxu/2+Hb3+R+kXtTxhzXu1U
-         J5oE13bhfPL/A==
-Received: by mail-ot1-f47.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso14885563otl.4;
-        Mon, 25 Oct 2021 06:12:09 -0700 (PDT)
-X-Gm-Message-State: AOAM530kb1go6foCy5wztZ/+iYXdZo7Kib2y8mfRevP5fTy8RLs8RG3W
-        kvYVp+cIuh7KkHI+3N+mjSviDLpIZ7BeKLF5O7o=
-X-Google-Smtp-Source: ABdhPJyNyqweANOfqAfuDkrHzy36CK1fQiv7MCaQLpXfd3uAKpbGji9uo1EtLhugmRPoQR+x+eNIGCe52lTKkywkE40=
-X-Received: by 2002:a9d:5911:: with SMTP id t17mr13904890oth.30.1635167528453;
- Mon, 25 Oct 2021 06:12:08 -0700 (PDT)
+        id S233480AbhJYNPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:15:42 -0400
+Received: from mail-eopbgr1410112.outbound.protection.outlook.com ([40.107.141.112]:27280
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233470AbhJYNPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:15:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gacxbeI92yH3SWeHoZubF+aeCn9FhrAwKXCwJ97stmhMvuBifQpSw8HU7E4gpg3oQ7cmwGDocAQSg56t86vCgto3sKBUYEDW9qHgnqaZ27lzWNv/6nySUjMp/EtGnVFGSRdVWOcBSx6ORyACBRSLdf1EcYMafzUpiX9/m0mMMzRXFFTj+zxzJ29c/OITfttCgYUJ5xOP+1t7z+rMHKiZmBAyWFUH9KuK/xWor1XZPd/nALb/mit6q0ZE2n0JF7p8xOuQA4p2lZJfe/dISMm3Idi9yJ8FVZz1YCpXlfoRkd7oVvTNqdyjC/XtFarReQMhnPR8icBm69Bmwz2u5hdFcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dd4yYtuhBt2EXZjoE6QQGgOX60RAmE1oaFDgeC059/8=;
+ b=mKqu2+hIop9nTQN5+VwOQKfIr9uKPaZ7B5MTn4zeBYQ0MaDcNM4e9sl5rTEIfW4jvBoj9sgsImx1ot5aEcaitFpQjYK0PxftgDaC82J5exHVSAGkqP+zjKbU4CMWnq0Un0RHaXhFsmxcdMpyYYf/4KbbIuHC5+WxJ3aOoJbppdsYZnTRxDb6NTjVCz4McYzxb4BJJPLjWSC2XuvVzFaP96Xx8FPqvHHOIAV8JOMeuymGzeHOy0ovDTKzzXEptUbV3KsR43Qo35HUhLKbp9wXxc4w5dWJIJcrmAO3CZAXT8giGWMgrsqvUeNDSbreD0ZZPi/t1SWrWA7g/GjcjGaD/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dd4yYtuhBt2EXZjoE6QQGgOX60RAmE1oaFDgeC059/8=;
+ b=QQcGQkeUfijrbdSx+pqqXvIizKXBxR5XEFCwH90diag688aTNhCLMGQEMcl8Lj0ZiQgyENjzg9cwaDR5HOAMH2v7YCvyvb00MV1+suHd9P0aVcmkv1FBnB5N9BwrksJQebV58+ylMVRgW/3C0HSthk1gIMXB8a2UC6lSOcEXYD4=
+Authentication-Results: opensource.wdc.com; dkim=none (message not signed)
+ header.d=none;opensource.wdc.com; dmarc=none action=none
+ header.from=connect.ust.hk;
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYBP286MB0016.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:802c::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.15; Mon, 25 Oct 2021 13:13:13 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 13:13:13 +0000
+From:   Chengfeng Ye <cyeaa@connect.ust.hk>
+To:     damien.lemoal@opensource.wdc.com
+Cc:     linux-kernel@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>
+Subject: [PATCH] driver/ata: fix potential null pointer dereference on pointer last_sge
+Date:   Mon, 25 Oct 2021 06:13:04 -0700
+Message-Id: <20211025131304.17226-1-cyeaa@connect.ust.hk>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2P15301CA0004.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::14) To TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:b7::8)
 MIME-Version: 1.0
-References: <cover.1635140590.git.yu.c.chen@intel.com> <1cd3161bf51de99990fd5ee2dc896b4defef4f38.1635140590.git.yu.c.chen@intel.com>
- <YXZSMCaODRPw0Zlj@kroah.com> <20211025114519.GA7559@chenyu5-mobl1>
- <YXac0IYICzIOmeRh@kroah.com> <20211025124705.GA9212@chenyu5-mobl1>
-In-Reply-To: <20211025124705.GA9212@chenyu5-mobl1>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 25 Oct 2021 15:11:57 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG-L5D3WpGRg20xSuCUkqJrXGLJsffOPE4M1OrFcEf2eQ@mail.gmail.com>
-Message-ID: <CAMj1kXG-L5D3WpGRg20xSuCUkqJrXGLJsffOPE4M1OrFcEf2eQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
- and corresponding structures
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from ubuntu.localdomain (175.159.124.155) by HK2P15301CA0004.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.2 via Frontend Transport; Mon, 25 Oct 2021 13:13:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7c8b7409-6204-4405-d248-08d997b93310
+X-MS-TrafficTypeDiagnostic: TYBP286MB0016:
+X-Microsoft-Antispam-PRVS: <TYBP286MB00168B80DE26616F99FB495A8A839@TYBP286MB0016.JPNP286.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VBXXsz5oxPjfteigc5v7avKgQtSgNFBQ31caN4Ys44EQTAqADcXPCb75ZNgwjuqtGPmXBhv9AHCK6lpsPZDNa/Ib0791OKDNpA0h440W9Ok0J3iliFLBl4ivH4agmtxlC0bNKOGky6/ySr9uLoM/xS7fmobPKL9Ct82zmROo9qr4TtNC2EcaMmC1dLmyxghRtemAskuYXexHvc8ccZUWUZRACWU78BBcv+mdl1OgzMr9eL0b46Fr2U4dFlZ6WxUp7nOjx7812YS4AQCyPg/uMJgCS5Y94M63nVcj3YdoStRUDeij4zqMH5FArMxKiIEqVVcEDpxfH+ZVWStrwjwHmhxhr4XAHgpYTCljK/oTvVS1ONrKAosTpnw9LssHuh4Es7b5fFntGqfFfRsOK8UDLi7uyEZQqSSa6EH5+lnG3pKyXaO4bqa98P8HIs1gOHKGCTJxw6zcpm7qF+gADFbIJfTXyFzQRPVFJMNemPLojJ2+foItUgwcCIcxfpd5WkDrsLots4naPmBNs+vczgarPzI6ksKzWHeGDnN3tuweKkOiaQiknHpYE+rgwdbHAQbZa/bspCETbMmKALZ35pTzkV8cRJOalQ0ovJ6ju6BALuKE29CNVWSjubJvMy5V397fZu4THHEsqkHPdkFDqMxLazRJwjiBR1GxaZat4+YuDNxgQhg9RApm+GjQ9zvqGFjU78zZfa2ScBNM1eFP8TlT6Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(1076003)(6666004)(4744005)(36756003)(107886003)(66946007)(66476007)(66556008)(4326008)(8676002)(38350700002)(38100700002)(6486002)(508600001)(26005)(186003)(6512007)(86362001)(2616005)(956004)(316002)(8936002)(52116002)(786003)(6506007)(5660300002)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HbAZS3sCK9PsMW/zwHeXxOcAOPDqnh6toZbVoyc3ORxQSCUTXM86QQf9CiwC?=
+ =?us-ascii?Q?7aFh2z6T3GDi1v8p/BQvkASglUgDFPiEZx+B/INLWMvu3qBglJiNXwXKPikl?=
+ =?us-ascii?Q?X/6bCn0nsfrCwJscgcWAirrcG7wbOP2tinKdosagXXrHgnd/smQdU/kp0c/F?=
+ =?us-ascii?Q?8RcH95fa5kk78xXQeWxChfOHnpuEvDbsbjXfaar98NQ/FvqLIEEgkLXiYA2Q?=
+ =?us-ascii?Q?xLbk7/6b1YYvsiFMsKY150xQWkzIRne3Q8kL7YsKebXpvDaJpWokXPuf9eA5?=
+ =?us-ascii?Q?pEPSwxiM4GqyGVxcc+wlyG+zE4sCmS6DOCLbd/OtpqzlbNCK7Mzy4yYpwnUg?=
+ =?us-ascii?Q?51yCo6VYajsRtV2Eng5HU14q7I+yGspdhMmIKlDfMzQ+cguBfoD2MmbuuMIw?=
+ =?us-ascii?Q?NGmjj1mwOYG5bYl8oOcUE63TQYM3/8RdSFqLklirrD/pDbNmZs0TDqfOoImr?=
+ =?us-ascii?Q?njSpzlqGUxrjiCSwovGl/hmThvgQdOPWCx+yoN8YNTtl3H28hF+ahPH+Uudj?=
+ =?us-ascii?Q?2jEVF7sdNd4MWXFpm/z9tSRNFzkHpsQrvprZZJlXZ1CJ32o56Lqd5uKsfWeg?=
+ =?us-ascii?Q?5XNcASa5mrmVLr+T04KCyr7s3pv5Xk4GC16MKJdH1LWKu1kB/Jk3sde4eelZ?=
+ =?us-ascii?Q?vs7cJL8UnBp5ez57LCHIbtdU6z2Kr8HJao30GYFQdgVqe+shKogcGv4OfFOO?=
+ =?us-ascii?Q?9BelHMeKrzumR5Vgc+evhbAfoJhHbTAkodRbjMcm+Ghez+XM6yTGUhugEJsY?=
+ =?us-ascii?Q?NpNtuIqPnD7w8dlZhZpykO3g3/NUeINmOMjqTB9I7v/UHFae4soEoO3qRfmH?=
+ =?us-ascii?Q?0ZjYuISqCZUDVMprXVj2gPVRKVGbajeU3nRcgo+iAyAJdP4iUGHaXXfKHU7o?=
+ =?us-ascii?Q?3lwdtpDxT2+PDIxjWtTK+XMFDCCXUtr9OE1FWPBX0D4Y5ZJzu/Gcmu7U2Hc3?=
+ =?us-ascii?Q?+9nISfYR114SSZcJOFFMoOo6bzSMnPqoDkDElXIdldvRKMccnEVSTwvfMWRX?=
+ =?us-ascii?Q?CrwuSlgs0XFHS0jrlGe5Rrn/TyLR8X5vkfQI82t6Zoz3QezywA7oZLlwYaOe?=
+ =?us-ascii?Q?7Eg34Hh9g67tFWudRFOvRJqbJWFom7YXfwXekY3rgW4EM24v7fUo+S+rRI+c?=
+ =?us-ascii?Q?iUwevSlbiiiBjB8AFhBKkp9+0rh1+ESwYAEGsds4D52iiLgOZ0BgF+D0tTI3?=
+ =?us-ascii?Q?COt4EBT0O4UCdmbNDDRbPc6gIdxzwG9N/J0bBVdYh/WpLdTpiClljLRQXR6d?=
+ =?us-ascii?Q?9icod36tv4Xm/oyS4nOUCwgdw9UJz0dJscwDPyTSreIVz2yF9zEsx9CC5fSh?=
+ =?us-ascii?Q?htyUsgLbgPXfaTATcfLNBA7wTtVurwzPlYd9dMAoMtUSI4tfJIM/U0P4Kjnl?=
+ =?us-ascii?Q?QWbo/0mkIzpdDCn982wP3qfGn1+XysPTGRBiJ5DP4urekr3QlGu+h1z0+P5J?=
+ =?us-ascii?Q?dVx7ZJcjcBhFhlrob1K5TG8k7g++RUSgKVi1GXhcSFZso3BT5QeYDSjElKAZ?=
+ =?us-ascii?Q?oCIIjnCw38j6tPt74YWHnorP8FIQAmG8qZZchOTMfVoeKwxfZJJjf5RZHjA0?=
+ =?us-ascii?Q?e5/FjddcWwP1jYwQkvqqAM6ZLW6OtBwsOUegxJwqRFeMBSURqS4evCui0Y4S?=
+ =?us-ascii?Q?HRL2UlML+jphi5yW6XN8r+g=3D?=
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c8b7409-6204-4405-d248-08d997b93310
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 13:13:13.3937
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xED4h8ahNAhWowSgvotbZrSvhjWcL1Ni8O6YMTSKZ2+TzdYh8/CZMYnwVktdUM/Lq19k654LuZjk0sgX2ZWoKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBP286MB0016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 14:47, Chen Yu <yu.c.chen@intel.com> wrote:
->
-> On Mon, Oct 25, 2021 at 02:02:24PM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 25, 2021 at 07:45:19PM +0800, Chen Yu wrote:
-> > > On Mon, Oct 25, 2021 at 08:44:00AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Mon, Oct 25, 2021 at 02:25:04PM +0800, Chen Yu wrote:
-> > > > > Platform Firmware Runtime Update image starts with UEFI headers, and the
-> > > > > headers are defined in UEFI specification, but some of them have not been
-> > > > > defined in the kernel yet.
-> > > > >
-> > > > > For example, the header layout of a capsule file looks like this:
-> > > > >
-> > > > > EFI_CAPSULE_HEADER
-> > > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> > > > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
-> > > > >
-> > > > > These structures would be used by the Platform Firmware Runtime Update
-> > > > > driver to parse the format of capsule file to verify if the corresponding
-> > > > > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-> > > > > kernel, however the rest are not, thus introduce corresponding UEFI
-> > > > > structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
-> > > > > so the corresponding data types should be packed.
-> > > > >
-> > > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > > > > ---
-> > > > > v6: No change since v5.
-> > > > > v5: No change since v4.
-> > > > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
-> > > > > ---
-> > > > >  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 50 insertions(+)
-> > > > >
-> > > > > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > > > > index 6b5d36babfcc..19ff834e1388 100644
-> > > > > --- a/include/linux/efi.h
-> > > > > +++ b/include/linux/efi.h
-> > > > > @@ -148,6 +148,56 @@ typedef struct {
-> > > > >         u32 imagesize;
-> > > > >  } efi_capsule_header_t;
-> > > > >
-> > > > > +#pragma pack(1)
-> > > >
-> > > > Why is this pragma suddenly needed now in this file?
-> > > >
-> > > > If you really need this for a specific structure, use the "__packed"
-> > > > attribute please.
-> > > >
-> > > These two structures are required to be packed in the uefi spec, I'll change
-> > > them to "__packed".
-> >
-> > And they are the _only_ ones in this .h file that require this?  I would
-> > think that they all require this.
-> >
-> I did a search in the uefi specification, and found 42 pack(1) structures,
-> while the other structures do not have pack(1) attribute.
->
-> It seems to me that whether the structures are required to be strictly packed
-> depends on the use case. Here's my understanding and I might be wrong: In this
-> patch, according to the skeleton of capsule file described in
-> [Figure 23-6 Firmware Management and Firmware Image Management headers]
-> in the uefi spec [1], the two structures are located at the beginning of
-> the capsule file, and followed by real payload. If these structure are packed
-> then the the adjacent binary payload could start on byte boundary without
-> padding, which might save space for capsule file.
->
+The pointer cs_desc could be null if the loop is not
+executed, so there is a potential NULL-PTR dereference
+issue. Fix this by adding a null check before dereference.
 
-Packing only affects internal padding, and a struct's size is never
-padded to be a multiple of its alignment (which equals the largest
-alignment of all its members). This of course assumes that you don't
-abuse array indexing as a sizeof() operator.
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+---
+ drivers/ata/sata_sil24.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-However, the __packed attribute does indicate to the compiler that the
-entire thing can appear misaligned in memory. So if one follows the
-other in the capsule header, the __packed attribute may be appropriate
-to ensure that the second one is not accessed using misaligned loads
-and stores.
+diff --git a/drivers/ata/sata_sil24.c b/drivers/ata/sata_sil24.c
+index 06a1e27c4f84..2bd595da799f 100644
+--- a/drivers/ata/sata_sil24.c
++++ b/drivers/ata/sata_sil24.c
+@@ -785,6 +785,8 @@ static inline void sil24_fill_sg(struct ata_queued_cmd *qc,
+ 		sge++;
+ 	}
+ 
++	if (!last_sge)
++		return;
+ 	last_sge->flags = cpu_to_le32(SGE_TRM);
+ }
+ 
+-- 
+2.17.1
 
-And then there is of course the ambiguity in alignment of uint64_t on
-x86, which could be either 4 or 8 bytes depending on the context (and
-UEFI targets all of them). So __packed may be used to disambiguate
-between those if a uint64_t field appears on a boundary whose offset %
-8 == 4.
-
-So please use __packed rather than the pragma(), and apply it wherever
-it is applied in the spec.
-
-
-
-> For those structures that do not have strict pack requirement, the uefi spec
-> does not force to pack them.
->
-> Link: https://uefi.org/sites/default/files/resources/UEFI_Spec_2_9_2021_03_18.pdf # [1]
->
-> thanks,
-> Chenyu
->
->
-> > thanks,
-> >
-> > greg k-h
