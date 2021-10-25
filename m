@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D9439E40
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C28439E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhJYSTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:19:19 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:37693 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbhJYSTS (ORCPT
+        id S232684AbhJYSTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:19:46 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60298
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232840AbhJYSTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:19:18 -0400
-Received: by mail-oi1-f174.google.com with SMTP id o83so16782458oif.4;
-        Mon, 25 Oct 2021 11:16:55 -0700 (PDT)
+        Mon, 25 Oct 2021 14:19:41 -0400
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6E03F3F332
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635185837;
+        bh=oCCJcDvPPpYCEpim/tCzuq7YuxbYYlpz5fHWjLFk2qY=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=iuMR0PBPtfyPTqB0Y5E7idLBNjwgvuoKNfmgQLEQcdDbnzZ/ggcwsHIt3PN5Bz4Na
+         5fpag6GQa9ZSzurKXkXqUK7RpITTxcKW0D2LE6rsqaZq9OEBmMuCEAbCfz7jlTcg8f
+         lj6sF9htSKZQLpSdcXSwdQvIa8ouVO0nOdVF3kQHl+w/eS2sQ14Pti/OtijEzEoqfL
+         efv6K7cbVfoeefCQR3vhnP9+5pK6i0aZiP0k33vrHRMb+WI4WSolUZDvnrBvCLq6Kg
+         pJEBaDc/Xnc9JoNefeFAtAehly5A9mW0kA1rMmkulWR8JRHTK1Lt6Fdtnj5g2TIJkG
+         QExFcWCiRBoZg==
+Received: by mail-pf1-f199.google.com with SMTP id 2-20020aa79102000000b0044c216dd8ecso6905643pfh.18
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:17:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=xi7P1Rrna9Jet22xDzvAkW1hYhgZ5q2ACsTSGvVAVYU=;
-        b=2X/Pd+78yAW2xH9n2rgE+0y+w5faqTwE8sY8E971X0p0KdQH8Q7w/ajVSC/vzXKi08
-         dwkO41ebTMg4whXgoPkDDoEUJcJGxPypr92Nycl2jPTrGLdHnDyFnxkzu+KPG7peHCWb
-         VOGoSCz0Rl2j/Ejm3aoduQQg6mjoGIEStLuIiKxDcgiaLed09wJLNs6iadeZAqI3XoHW
-         bqKsgD4Xgly1Q/lzuYIPZP0GhOhXmf2BsC9b1PNLSEIvSA6YSceddxjicmRAk1zK/sZO
-         eNvK93zpLzxAs+fWlAPMnJBPbQCGOv0kTL4sg0pHC+RSU9jq3R1BXdpXPh4w/KFtmHun
-         ObHg==
-X-Gm-Message-State: AOAM531+CUDvynMI3h8jtduQcpakR6H3Zn491uJcwIQRHNRewFv7/wZb
-        uzNfDw9OiEuvlagKIZDiQA==
-X-Google-Smtp-Source: ABdhPJzO0ZaESWJKCka3JkpLozhsZTIWwkp8vrWrZGosJ5NjJETw1tpHO/GvuST2HiDVPhnZAhbadQ==
-X-Received: by 2002:a05:6808:1aa6:: with SMTP id bm38mr15728806oib.163.1635185815303;
-        Mon, 25 Oct 2021 11:16:55 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id d25sm3689068otp.33.2021.10.25.11.16.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oCCJcDvPPpYCEpim/tCzuq7YuxbYYlpz5fHWjLFk2qY=;
+        b=T6KB5/kgz2qA7hs5pUHRg7e5v2Sg+zej9FFLWPmkdql1edo18c9J09YQCQM+oSe4EU
+         5x2g6Aiku8jUUA/NwCWnesZHGhBnnmbmCyqStW3kRBcD2xC6Gl7WPhDhrGG+fYVqDhCy
+         AJ8SAGZO2l8QDYGBi6Bvb/J8uUMv9L9Co4M+IJPXXFWdKkAdNIn9iqANkrbS1j7ZEPbf
+         1FsgEyeRJfEGmOJwSRZntK6d7HAvARiyTqm4s8Jj7WMvWonhAlyp/8bAo2Jv3eorqlFH
+         KZY8ZIqvsIGhIyNlNSqthCsgz6hdhYGbNx6Wd/UQ4yszIJH8HwvBNvPgBJc9tRrTghiw
+         OIkg==
+X-Gm-Message-State: AOAM532VAq6KBq0HRx157kE3jvqAgAzwJ9mzAiqXn1kIfE4hYPrePzQ1
+        fwXwD3g2ILu3WEFrXWbZfE8JGUOk0K4tWHS2rpQIaC2NDcs2Cl9wDcQNlCNaSOzuINJyN70lDac
+        9uawhDPd5qq0aGjIck0Yx+oqD6rp2CMXCVhbFes9sqg==
+X-Received: by 2002:a05:6a00:22c8:b0:44d:cb37:86e4 with SMTP id f8-20020a056a0022c800b0044dcb3786e4mr20476244pfj.78.1635185835322;
+        Mon, 25 Oct 2021 11:17:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3CObGgMZNQaozjZA/TGdwLBc9W8h2QmMpfppjSZMhzt184XyIufQPs/vn8vZR1d/95dpf4A==
+X-Received: by 2002:a05:6a00:22c8:b0:44d:cb37:86e4 with SMTP id f8-20020a056a0022c800b0044dcb3786e4mr20476218pfj.78.1635185834990;
+        Mon, 25 Oct 2021 11:17:14 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id b8sm19125939pfi.103.2021.10.25.11.17.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 11:16:54 -0700 (PDT)
-Received: (nullmailer pid 824863 invoked by uid 1000);
-        Mon, 25 Oct 2021 18:16:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Cc:     quic_pkondeti@quicinc.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-usb@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>, quic_ppratap@quicinc.com
-In-Reply-To: <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
-References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com> <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings for dwc3 qcom
-Date:   Mon, 25 Oct 2021 13:16:53 -0500
-Message-Id: <1635185813.742664.824862.nullmailer@robh.at.kernel.org>
+        Mon, 25 Oct 2021 11:17:14 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     vkoul@kernel.org
+Cc:     tim.gardner@canonical.com,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2][linux-next] dmaengine: dw-axi-dmac: Fix uninitialized variable in axi_chan_block_xfer_start()
+Date:   Mon, 25 Oct 2021 12:16:56 -0600
+Message-Id: <20211025181656.31658-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <YXZBxx8NObaf3x70@matsya>
+References: <YXZBxx8NObaf3x70@matsya>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 14:37:29 +0530, Sandeep Maheswaram wrote:
-> Add multi pd bindings to set performance state for cx domain
-> to maintain minimum corner voltage for USB clocks.
-> 
-> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-> ---
-> v2:
-> Make cx domain mandatory.
-> 
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
+Coverity complains of an uninitialized variable:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+5. uninit_use_in_call: Using uninitialized value config.dst_per when calling axi_chan_config_write. [show details]
+6. uninit_use_in_call: Using uninitialized value config.hs_sel_src when calling axi_chan_config_write. [show details]
+CID 121164 (#1-3 of 3): Uninitialized scalar variable (UNINIT)
+7. uninit_use_in_call: Using uninitialized value config.src_per when calling axi_chan_config_write. [show details]
+418        axi_chan_config_write(chan, &config);
 
-yamllint warnings/errors:
+Fix this by initializing the structure to 0 which should at least be benign in axi_chan_config_write(). Also fix
+what looks like a cut-n-paste error when initializing config.hs_sel_dst.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml: properties:power-domains: 'oneOf' conditional failed, one must be fixed:
-	[{'description': 'cx power domain'}, {'description': 'USB gdsc power domain'}] is too long
-	[{'description': 'cx power domain'}, {'description': 'USB gdsc power domain'}] is too short
-	False schema does not allow 2
-	1 was expected
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml: ignoring, error in schema: properties: power-domains
-warning: no schema found in file: ./Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:0:0: /example-0/soc/usb@a6f8800: failed to match any schema with compatible: ['qcom,sdm845-dwc3', 'qcom,dwc3']
-Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:0:0: /example-0/soc/usb@a6f8800: failed to match any schema with compatible: ['qcom,sdm845-dwc3', 'qcom,dwc3']
+Fixes: 824351668a413 ("dmaengine: dw-axi-dmac: support DMAX_NUM_CHANNELS > 8")
+Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
 
-doc reference errors (make refcheckdocs):
+v2 - Use static initializer for 'config'. Drop the memset() call.
 
-See https://patchwork.ozlabs.org/patch/1545621
+---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index 79572ec532ef..9a9194da0dcb 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -373,7 +373,7 @@ static void axi_chan_block_xfer_start(struct axi_dma_chan *chan,
+ 				      struct axi_dma_desc *first)
+ {
+ 	u32 priority = chan->chip->dw->hdata->priority[chan->id];
+-	struct axi_dma_chan_config config;
++	struct axi_dma_chan_config config = {};
+ 	u32 irq_mask;
+ 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
+ 
+@@ -391,7 +391,7 @@ static void axi_chan_block_xfer_start(struct axi_dma_chan *chan,
+ 	config.tt_fc = DWAXIDMAC_TT_FC_MEM_TO_MEM_DMAC;
+ 	config.prior = priority;
+ 	config.hs_sel_dst = DWAXIDMAC_HS_SEL_HW;
+-	config.hs_sel_dst = DWAXIDMAC_HS_SEL_HW;
++	config.hs_sel_src = DWAXIDMAC_HS_SEL_HW;
+ 	switch (chan->direction) {
+ 	case DMA_MEM_TO_DEV:
+ 		dw_axi_dma_set_byte_halfword(chan, true);
+-- 
+2.33.1
 
