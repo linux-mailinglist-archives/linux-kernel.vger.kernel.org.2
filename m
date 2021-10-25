@@ -2,126 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26C443A52B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D744143A528
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234371AbhJYU6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhJYU6d (ORCPT
+        id S231451AbhJYU63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:58:29 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:51873 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232690AbhJYU6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:58:33 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82228C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:56:10 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id z5-20020a9d4685000000b005537cbe6e5aso9995177ote.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lr8LZgkPwRWJNrzlR7/1JMJvMp3PtBdOlimdKnBnxLk=;
-        b=is4zuvBzpafyka1/8lyKw28YpFS3Noe7Q2cQ69D4IStId6bDNCGsjDoUK/gfaUVtGk
-         WIlB/GxcYkckRxH4aN4yejJGpfZowglMmqJ0nZeqYysDPIml9ILTGB7SjxP/wOmuOQHz
-         G/rjSagiJJ4AbhrsLit+wQqfDeyNf9EQsJJDbOYvh8R2g5DrApaVyOIl6lhdJ0TXTFyg
-         fnueEiOHifqeWRMoXzC0dRFJeZLbQiZpusr4rWn2zyyjND+N7uFxr3TlsZEC1REr02Y+
-         nWZJ6yRWm6qcS/6i7Mx3qNz55+9nHlOFU/vrTsstX0CZjCdA1TZClinlF9kBalzzHF1y
-         dclA==
+        Mon, 25 Oct 2021 16:58:25 -0400
+Received: by mail-wm1-f47.google.com with SMTP id 5so2192525wmb.1;
+        Mon, 25 Oct 2021 13:56:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lr8LZgkPwRWJNrzlR7/1JMJvMp3PtBdOlimdKnBnxLk=;
-        b=kchyileyYldk1MZWQbGFRTtIhQctbxe1bplKIH6l1hIDMpa5o+LSkEMfvnPetpKaSu
-         55UDUtuP8DDB8OB/yPLyrwJKgoF18wW6S3E8QUHk1HjPPyeWLpF50tBxdzlptye1E2cz
-         EQzr6KrkUI63AhGrTmJDpqtZpxLjKJGdN0IrNf4xZcztHqQDdPIdpTSfDAoiDkuo3kVg
-         sCIf4uxzeZkyIQiy6RAmEU+q/DH8peyIDv3yhEjLNnptOU+P1cfmNrmJLHeMCv7m5fhg
-         Oud3i04YXZos0ByYPyXyTGL4hcAQ3WcWnyG5dNtkSeLZ/ZZJXBkseSB+MyrAopeCM8sJ
-         UeMA==
-X-Gm-Message-State: AOAM5333WVzbq/GT4aEwAhDr2n7ZQO75reEQp7x8QveLD+qeCHKuox7b
-        X/BrL/13bO8TFhlWgyavbQtAOfywipzds0gwxGNP2Q==
-X-Google-Smtp-Source: ABdhPJynTro4WvcY+FDf3A05tFJVzOfKdP4WXpbnB4IO1APQD0dChMa7gB395u0WNW44VnkRgqyEDv/ZKATeAnzup+s=
-X-Received: by 2002:a05:6830:2492:: with SMTP id u18mr16119610ots.29.1635195369622;
- Mon, 25 Oct 2021 13:56:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q+yfKmb+onnS482Y6u9v2lkAP9a5r5WCNti0ot9YfMg=;
+        b=xUQTw3gvr5nrkxlziOUeMn9HfUMvaQL0F4JcaLJAgjzeVs0W0mOa0m7PSt93PQb83q
+         gRiekuo5cNPMtA6qRKzD1WipURbGmCZUKl2LAN5Egzp/k/bf3/wWkx/5s0qDb7sYEZG9
+         ifVYrat4wIIRGHCtTqy84F+tUcTKAl6eCVzyzmEJtirXi69lIo1HprJGxT0uRTqBWkS3
+         rxWj6ncPlD01FoBsXjFVSxWV1r5pxZyyxgwG2tabXdb+H7k9ss1P63Hyt3kmHRz6XtCT
+         NwDiobnFeTqNs1a2vYoLc9hY3gTbRXNBaLNmwhME66ZYPFnecdyXw/O2zbebEbUxWaJ8
+         /9qw==
+X-Gm-Message-State: AOAM530OSOJXyIEJboGJlhBYLnyQnkW4VLRm2bsNqe84GUVtWOvDE25X
+        yzqKuzYEBMdq8g3LHU8F1n4=
+X-Google-Smtp-Source: ABdhPJy41VdkQyppTBh4meZBX/lXaHxLgbKOGQTqOHHeONNOEpR5bufaWYH/gDxFiXuknpfmkXcMPg==
+X-Received: by 2002:a05:600c:3546:: with SMTP id i6mr51776416wmq.146.1635195361619;
+        Mon, 25 Oct 2021 13:56:01 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id m15sm17916917wmq.0.2021.10.25.13.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 13:56:00 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 20:55:59 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
+        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
+        pgonda@google.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org, tj@kernel.org,
+        aneesh.kumar@linux.ibm.com, saravanand@fb.com,
+        sfr@canb.auug.org.au, michael.h.kelley@microsoft.com,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
+        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
+        dave.hansen@intel.com
+Subject: Re: [PATCH V9 0/9] x86/Hyper-V: Add Hyper-V Isolation VM
+ support(First part)
+Message-ID: <20211025205559.5wge6ohiktif5hwt@liuwe-devbox-debian-v2>
+References: <20211025122116.264793-1-ltykernel@gmail.com>
 MIME-Version: 1.0
-References: <20211025162517.2152628-1-pbonzini@redhat.com>
-In-Reply-To: <20211025162517.2152628-1-pbonzini@redhat.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Mon, 25 Oct 2021 13:55:58 -0700
-Message-ID: <CAA03e5E+tP30B1DOgwZQGRTMmXXTwKUFHJ6HNFk-jMRgxKMF+A@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SEV-ES: fix another issue with string I/O VMGEXITs
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025122116.264793-1-ltykernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 9:25 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> If the guest requests string I/O from the hypervisor via VMGEXIT,
-> SW_EXITINFO2 will contain the REP count.  However, sev_es_string_io
-> was incorrectly treating it as the size of the GHCB buffer in
-> bytes.
->
-> This fixes the "outsw" test in the experimental SEV tests of
-> kvm-unit-tests.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
-> Reported-by: Marc Orr <marcorr@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e672493b5d8d..12d29d669cbc 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2579,11 +2579,16 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
->
->  int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in)
->  {
-> -       if (!setup_vmgexit_scratch(svm, in, svm->vmcb->control.exit_info_2))
-> +       u32 bytes;
-> +
-> +       if (unlikely(check_mul_overflow(svm->vmcb->control.exit_info_2, size, &bytes)))
-> +               return -EINVAL;
+On Mon, Oct 25, 2021 at 08:21:05AM -0400, Tianyu Lan wrote:
+> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> 
+> Hyper-V provides two kinds of Isolation VMs. VBS(Virtualization-based
+> security) and AMD SEV-SNP unenlightened Isolation VMs. This patchset
+> is to add support for these Isolation VM support in Linux.
+> 
+> The memory of these vms are encrypted and host can't access guest
+> memory directly. Hyper-V provides new host visibility hvcall and
+> the guest needs to call new hvcall to mark memory visible to host
+> before sharing memory with host. For security, all network/storage
+> stack memory should not be shared with host and so there is bounce
+> buffer requests.
+> 
+> Vmbus channel ring buffer already plays bounce buffer role because
+> all data from/to host needs to copy from/to between the ring buffer
+> and IO stack memory. So mark vmbus channel ring buffer visible.
+> 
+> For SNP isolation VM, guest needs to access the shared memory via
+> extra address space which is specified by Hyper-V CPUID HYPERV_CPUID_
+> ISOLATION_CONFIG. The access physical address of the shared memory
+> should be bounce buffer memory GPA plus with shared_gpa_boundary
+> reported by CPUID.
+> 
+> This patchset is rebased on the commit d9abdee of Linux mainline tree
+> and plus clean up patch from Borislav Petkov(https://lore.kernel.org/r/
+> YWRwxImd9Qcls/Yy@zn.tnic)
+> 
+> 
 
-Maybe this is only an issue on our internal setup, but when I tested
-this I found that `check_mul_overflow()` is very particular that all
-three args having the same type. Therefore, to get it to compile, I
-changed all of the arguments to match the type of `exit_info_2`, like
-so:
+Applied to hyperv-next. Thanks.
 
-u64 bytes;
-
-if (unlikely(check_mul_overflow(svm->vmcb->control.exit_info_2,
-(u64)size, &bytes)))
-
-> +
-> +       if (!setup_vmgexit_scratch(svm, in, bytes))
->                 return -EINVAL;
->
-> -       return kvm_sev_es_string_io(&svm->vcpu, size, port,
-> -                                   svm->ghcb_sa, svm->ghcb_sa_len / size, in);
-> +       return kvm_sev_es_string_io(&svm->vcpu, size, port, svm->ghcb_sa,
-> +                                   svm->vmcb->control.exit_info_2, in);
->  }
->
->  void sev_es_init_vmcb(struct vcpu_svm *svm)
-> --
-> 2.27.0
->
-
-I've tested that this works. To test it, I (temporarily) modified
-`setup_vmgexit_scratch()` to always treat the scratch area as if it
-resides outside of the GHCB page (i.e., always go down the `else` code
-path). Doing this, I was able to see the stringio test case fail
-before this patch and pass with it.
-
-Reviewed-by: Marc Orr <marcorr@google.com>
-Tested-by: Marc Orr <marcorr@google.com>
+Wei.
