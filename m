@@ -2,200 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B5E43A4BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C413E43A4D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhJYUeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhJYUeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:34:22 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6DCC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:31:59 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id x1-20020a17090a530100b001a1efa4ebe6so671041pjh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=HJmGycFGoUFY0YYPO0NfXp79t1BMUVQFPsPn0hSQHBU=;
-        b=FZhJzTVN33R/nuZDmu2Bmpq97DpPu7KV4CGl6RBBLzUBLHLpOdUSHAG9ei44KqogyG
-         lHsXn4pv/Iqd1TxhomrIc5JjBuEtNHiz52fC/Aa+C9tzlPaj8/CZbvs1oVTs249SwUXi
-         0yAWyY/PY/5GJXFEMMNizwXzSwei7UxhAxM7RQfr2cPmmufNwY5IpWPI6SViWXrLgnlz
-         iu+9eJpmLkuunqa6ugD336gkEfHEvL6/qu2BLDKAvkXazoawblH//+tXnTfNt+6oOaVs
-         9SjTvdLhyKeCgp4hGqv7dEopJd8Jdbvs3JbR4eAYGhPN76z2qEZv01CgWjHgGFiuvpJl
-         gdxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=HJmGycFGoUFY0YYPO0NfXp79t1BMUVQFPsPn0hSQHBU=;
-        b=uAcywIRdXcZUEuSAC8/HWv0kFA4RnhxISNAu+7CMSgRtXNDs0u9hl3KLEKE7yskfkW
-         yyB7DaDq5i+fZ1O32M4skO9iNTCtxuMz65pVDx00yAiJ1GiAsPgY1jn0bS9N5T2bv4NC
-         SoCekrFZJQO/R+bhxuJFHB6aymOlEraQxGQx4hISd/buJgIvlhtjFqr55PgTAig7hBFL
-         dHdJV5aSN3oHx3IRfJbHwdr7maHpqJmbCiRRMM2DZPU38UBi00n8i2BDgUkirxQUP8yR
-         Vp2ux6eH9Kec7CPJxUU+7Jhp6AQOedbhLXWhb31nfbCvPyZehE3D1sgDLOQO9kibosdT
-         BjHQ==
-X-Gm-Message-State: AOAM5320OTRpL799Iqi7dMHy4wwwDRRlJvIpVqiHy58Vy6qfMiZ4zVjb
-        o/0hTvfCGrlBWpDFtObgmK3eUJj/4iRO/446y9cZDA==
-X-Received: by 2002:a17:90a:b288:: with SMTP id c8mt14525267pjr.67.1635193918881;
- Mon, 25 Oct 2021 13:31:58 -0700 (PDT)
+        id S232699AbhJYUk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231264AbhJYUkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 16:40:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD76C60EB4;
+        Mon, 25 Oct 2021 20:38:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635194310;
+        bh=pvCgqoU5iIW5eGqixHfTahU0J0rZVbyMKjmQ9lz+ZlU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BMeA3VDky7FENzU7p4UsSp/z2OQDYvMBqEMX1aPiCMijOQJ26ffYG7sWfurzMxzyY
+         7HNGyZCAbRLx4RYjex6wI00V9XKjphHXhPnW2YGnV093+VvZFEd9y1Gw26uquprts/
+         2hwborgLhTIgrOSwajd96NP79M7BsXe3Fb0QpElya1MIC/ZZDm+eg4idYaKm2fHaiB
+         QstFVAq5Gpp0dKFxjUZu/Ko5U1PhGEoQdbRLJiDcL52rq5IWDsfOS/sPqtgN77OeLT
+         6GaZfPLTUYmi0nLIbuI3+DqtO5YbdMn2f+UMQvApeBV1kCM6no0vsoHV7ek7eRKkQ1
+         HObhH01qEnmyQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, kvm@vger.kernel.org
+Subject: [PATCH MANUALSEL 5.14 1/5] KVM: X86: fix lazy allocation of rmaps
+Date:   Mon, 25 Oct 2021 16:38:23 -0400
+Message-Id: <20211025203828.1404503-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211025192330.2992076-1-kaleshsingh@google.com>
-In-Reply-To: <20211025192330.2992076-1-kaleshsingh@google.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Mon, 25 Oct 2021 13:31:48 -0700
-Message-ID: <CAC_TJvd01w9AE5FvJPQFfXL93QPrELJqih=70jJLrBryPQmqhw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] tracing: Extend histogram triggers expression parsing
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:23 PM Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> Hi all,
->
-> The v3 of the extending histogram exprssions series. The previous versions
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-I accidentally left some Change-Id tags in this version. Please ignore
-this. v4 is posted at:
-https://lore.kernel.org/r/20211025200852.3002369-1-kaleshsingh@google.com/
+[ Upstream commit fa13843d1565d4c5b3aeb9be3343b313416bef46 ]
 
-Thanks,
-Kalesh
+If allocation of rmaps fails, but some of the pointers have already been written,
+those pointers can be cleaned up when the memslot is freed, or even reused later
+for another attempt at allocating the rmaps.  Therefore there is no need to
+WARN, as done for example in memslot_rmap_alloc, but the allocation *must* be
+skipped lest KVM will overwrite the previous pointer and will indeed leak memory.
 
-> were posted at:
->
-> v2: https://lore.kernel.org/r/20211020013153.4106001-1-kaleshsingh@google.com/
-> v1: https://lore.kernel.org/r/20210915195306.612966-1-kaleshsingh@google.com/
->
-> Patches 4 through 6 are new and adds some optimizations/improvements
-> suggested by Steven Rostedt.
->
-> The cover letter is copied below for convenience.
->
-> Thanks,
-> Kalesh
->
-> ---
->
-> The frequency of the rss_stat trace event is known to be of the same
-> magnitude as that of the sched_switch event on Android devices. This can
-> cause flooding of the trace buffer with rss_stat traces leading to a
-> decreased trace buffer capacity and loss of data.
->
-> If it is not necessary to monitor very small changes in rss (as is the
-> case in Android) then the rss_stat tracepoint can be throttled to only
-> emit the event once there is a large enough change in the rss size.
-> The original patch that introduced the rss_stat tracepoint also proposed
-> a fixed throttling mechanism that only emits the rss_stat event
-> when the rss size crosses a 512KB boundary. It was concluded that more
-> generic support for this type of filtering/throttling was need, so that
-> it can be applied to any trace event. [1]
->
-> From the discussion in [1], histogram triggers seemed the most likely
-> candidate to support this type of throttling. For instance to achieve the
-> same throttling as was proposed in [1]:
->
->   (1) Create a histogram variable to save the 512KB bucket of the rss size
->   (2) Use the onchange handler to generate a synthetic event when the
->       rss size bucket changes.
->
-> The only missing pieces to support such a hist trigger are:
->   (1) Support for setting a hist variable to a specific value -- to set
->       the bucket size / granularity.
->   (2) Support for division arithmetic operation -- to determine the
->       corresponding bucket for an rss size.
->
-> This series extends histogram trigger expressions to:
->   (1) Allow assigning numeric literals to hist variable (eg. x=1234)
->       and using literals directly in expressions (eg. x=size/1234)
->   (2) Support division and multiplication in hist expressions.
->       (eg. a=$x/$y*z); and
->   (3) Fixes expression parsing for non-associative operators: subtraction
->       and division. (eg. 8-4-2 should be 2 not 6)
->
-> The rss_stat event can then be throttled using histogram triggers as
-> below:
->
->   # Create a synthetic event to monitor instead of the high frequency
->   # rss_stat event
->   echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
->          int member; long size' >> tracing/synthetic_events
->
->   # Create a hist trigger that emits the synthetic rss_stat_throttled
->   # event only when the rss size crosses a 512KB boundary.
->   echo 'hist:keys=mm_id,member:bucket=size/0x80000:onchange($bucket)
->               .rss_stat_throttled(mm_id,curr,member,size)'
->         >> events/kmem/rss_stat/trigger
->
->  ------ Test Results ------
-> Histograms can also be used to evaluate the effectiveness of this
-> throttling by noting the Total Hits on each trigger:
->
->   echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
->   echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
->   echo 'hist:keys=common_pid'
->            >> events/synthetic/rss_stat_throttled/trigger
->
-> Allowing the above example (512KB granularity) run for 5 minutes on
-> an arm64 device with 5.10 kernel:
->
->    sched_switch      : total hits = 147153
->    rss_stat          : total hits =  38863
->    rss_stat_throttled: total hits =   2409
->
-> The synthetic rss_stat_throttled event is ~16x less frequent than the
-> rss_stat event when using a 512KB granularity.
->
->
-> The results are more pronounced when rss size is changing at a higher
-> rate in small increments. For instance the following results were obtained
-> by recording the hits on the above events for a run of Android's
-> lmkd_unit_test [2], which continually forks processes that map anonymous
-> memory until there is an oom kill:
->
->    sched_switch      : total hits =  148832
->    rss_stat          : total hits = 4754802
->    rss_stat_throttled: total hits =   96214
->
-> In this stress test, the synthetic rss_stat_throttled event is ~50x less
-> frequent than the rss_stat event when using a 512KB granularity.
->
-> [1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
-> [2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
->
->
-> Kalesh Singh (8):
->   tracing: Add support for creating hist trigger variables from literal
->   tracing: Add division and multiplication support for hist triggers
->   tracing: Fix operator precedence for hist triggers expression
->   tracing/histogram: Simplify handling of .sym-offset in expressions
->   tracing/histogram: Covert expr to const if both operands are constants
->   tracing/histogram: Optimize division by a power of 2
->   tracing/selftests: Add tests for hist trigger expression parsing
->   tracing/histogram: Document expression arithmetic and constants
->
->  Documentation/trace/histogram.rst             |  14 +
->  kernel/trace/trace_events_hist.c              | 400 ++++++++++++++----
->  .../testing/selftests/ftrace/test.d/functions |   4 +-
->  .../trigger/trigger-hist-expressions.tc       |  72 ++++
->  4 files changed, 412 insertions(+), 78 deletions(-)
->  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
->
->
-> base-commit: ac8a6eba2a117e0fdc04da62ab568d1b7ca4c8f6
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/x86/kvm/x86.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4b0e866e9f08..60d9aa0ab389 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11341,7 +11341,8 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+ 		int lpages = gfn_to_index(slot->base_gfn + npages - 1,
+ 					  slot->base_gfn, level) + 1;
+ 
+-		WARN_ON(slot->arch.rmap[i]);
++		if (slot->arch.rmap[i])
++			continue;
+ 
+ 		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
+ 		if (!slot->arch.rmap[i]) {
+-- 
+2.33.0
+
