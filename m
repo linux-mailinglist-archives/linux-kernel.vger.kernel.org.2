@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2497243A874
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A3643A876
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235160AbhJYXst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:48:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235103AbhJYXsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:48:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9D2060ED4;
-        Mon, 25 Oct 2021 23:46:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635205583;
-        bh=ahCkc+jA79431ID76cNsskmw8zuDPNgoJc2YUCJq7+0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=qZtEPPAwKgKMNyUUZWFJUZYMzozqwmvmwIcatqDcYwX66N7f55ZKLluhCwk8LIt1F
-         RH5Ac7JhJbH2xCISrtM2Y9prVV2SEKnMHTKzND/mix6hDAoJHK+Zx4fYQRyC5HN2eH
-         ys325r72bA/VvBNO5Ifo2X7mYr1Yq31pjsoJwLPfv9opD9lJuS7CB6lj+Xem+el0fh
-         ZZienyCXeurS6dFybtv29oAdnY7NXvhUxublPxhv8cC0LH7J0/GZ04HAWMqoIKPTg4
-         3oQOAxSnHDbg3tnUpBYC2hR1tQbNk9rnK0DVUsb2YgaOxoZ+TRaNjJ6xWNIIrbjzM9
-         gsAJm1qUtq4VQ==
-Message-ID: <4c3e7a41c545d10ed4aabcfa08118b1e2f80e3fd.camel@kernel.org>
-Subject: Re: [PATCH v8 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Date:   Tue, 26 Oct 2021 02:46:20 +0300
-In-Reply-To: <YXY9gsIn+VhmPhHU@kroah.com>
-References: <20211018135744.45527-1-jarkko@kernel.org>
-         <20211018135744.45527-2-jarkko@kernel.org> <YW2GLE89WxAeMZH4@kroah.com>
-         <4050b7723f6f205c9afc3bdfa3888a6e8befa12a.camel@kernel.org>
-         <YXOsx8SvFJV5R7lU@kroah.com>
-         <2b30027eb017216986e88008fdc925d0e6c61ce0.camel@kernel.org>
-         <YXY9gsIn+VhmPhHU@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S235291AbhJYXuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233575AbhJYXuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 19:50:14 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10283C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:47:51 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id o26so16447634ljj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:47:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0MHONJ1Tiqh/QXhH03y+bZKGvViBQu6ZRWiSgU9PGS0=;
+        b=dDQGCv0xFFdG2csGc5FZKB8kDb2ebyiukFDaUkTvM6JaJNVr7CYuqrmfQzbEu1vA2c
+         mmE+fGSDa0VHqXbtaZcZhEZJtzTceEbHAvHPHBlYBaVSD2lpOnswV5w2ceXgdnwdfkIc
+         djJ0KBHxIvXKNC0FcEL7++GtN+qwVqBPM++rM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0MHONJ1Tiqh/QXhH03y+bZKGvViBQu6ZRWiSgU9PGS0=;
+        b=23qpA4mE7/TD8UKkZEKSeDVdX6L3DuJ7zdFcX4HSH+Ips1KVhqmnCPig1C8MI+dNt8
+         cKxW0JqxJFG2mYnnG7TNYQLnPz+PEYWzanse+9p3U/zQprEQkbHCckn2xcmlQTy+zF+8
+         l4jvFZwLv7DEGsmXcASdLij/XE0z3bNxP7HavBLW1bT0idI91jX824xLw5aVGBYcR88P
+         jNoFHOiXVcJZDL6WoCAugaMyRaFTsizKyVsWAqg66Ne5OFdRzKYA9V3lzZTih475z6mQ
+         Rk5nJWAwjwZe1Ndqb+PBI8ftiL2NqMECXtj8+1V1JCXTG+9WjEJuOHMNrBLvfx4jGr6D
+         Nk0A==
+X-Gm-Message-State: AOAM5320zYGmET7X3BmArAgy+glR6Yt8RxVUeeTOBo1lpjLo9JEo4GVd
+        wzUqfWEKNyIM4HnsddKrytB0EWtJekZDAa0+
+X-Google-Smtp-Source: ABdhPJwAzUqZsr/tCa4aGlqVnXRKJJi0ZoW6p72TrTvAk5dMQjQ9LjEm/Liffvkv2V7IvNBAdrr3Ew==
+X-Received: by 2002:a2e:a584:: with SMTP id m4mr22941170ljp.489.1635205669242;
+        Mon, 25 Oct 2021 16:47:49 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id p3sm1769391lfa.293.2021.10.25.16.47.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 16:47:48 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id o11so19707435ljg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:47:48 -0700 (PDT)
+X-Received: by 2002:a2e:a407:: with SMTP id p7mr22997653ljn.68.1635205668568;
+ Mon, 25 Oct 2021 16:47:48 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAHk-=wi1+boAQyckdiYXuBkybN4H_7OT569MwgyetWAfTExeEA@mail.gmail.com>
+ <20211025233919.GA2394574@roeck-us.net>
+In-Reply-To: <20211025233919.GA2394574@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Oct 2021 16:47:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whxKG79X-Wz3xcFQtsB5XpK_Rn4oRr=h9uTL=OCHZ5=9w@mail.gmail.com>
+Message-ID: <CAHk-=whxKG79X-Wz3xcFQtsB5XpK_Rn4oRr=h9uTL=OCHZ5=9w@mail.gmail.com>
+Subject: Re: Linux 5.15-rc7
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-25 at 07:15 +0200, Greg Kroah-Hartman wrote:
-> On Sun, Oct 24, 2021 at 05:24:43PM +0300, Jarkko Sakkinen wrote:
-> > On Sat, 2021-10-23 at 08:33 +0200, Greg Kroah-Hartman wrote:
-> > > On Sat, Oct 23, 2021 at 04:02:48AM +0300, Jarkko Sakkinen wrote:
-> > > > On Mon, 2021-10-18 at 16:35 +0200, Greg Kroah-Hartman wrote:
-> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D sysfs_create_group(&dev->kobj, &sgx_n=
-ode_attr_group);
-> > > > >=20
-> > > > > A huge hint, if a driver has to call a sysfs_* call, something is=
- wrong.
-> > > > >=20
-> > > > > Something is wrong here.
-> > > > >=20
-> > > > > Why are you messing around with a kobject?=C2=A0 This is a device=
-, that you
-> > > > > control, you can just set the default attribute group for it and =
-then
-> > > > > the driver core will add and remove the sysfs group at the proper=
- time,
-> > > > > in the proper way.=C2=A0 Right now you are racing userspace and l=
-oosing.
-> > > > >=20
-> > > > > Use the default group list, that is what it is there for.
-> > > >=20
-> > > > I used sysfs_create_group() because node_devices is not owned by SG=
-X
-> > > > code. It is managed in drivers/base/node.c, and also initialized be=
-fore
-> > > > SGX.
-> > >=20
-> > > Then that is broken, please do not use that device as your code does =
-not
-> > > "own" it.=C2=A0 Or fix the logic to be initialized earlier.
-> >=20
-> > To get a synchronous initialization, I'd need to add the attributes as
-> > part of this declaration:
-> >=20
-> > static struct attribute *node_dev_attrs[] =3D {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_cpumap.attr,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_cpulist.attr,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_meminfo.attr,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_numastat.attr=
-,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_distance.attr=
-,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&dev_attr_vmstat.attr,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0NULL
-> > };
-> > ATTRIBUTE_GROUPS(node_dev);
-> >=20
-> > That guarantees that the attribute exists at the time when the
-> > node is created, e.g. in that sense this will fix the race with
-> > uevent code.
-> >=20
-> > However, up until sgx_init() has been completed, the attribute
-> > will emit '0'.
->=20
-> Is that a problem?=C2=A0 Who would be wanting to use sgx until that happe=
-ns?
-> You have this issue today anyway, right?
+On Mon, Oct 25, 2021 at 4:39 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Build results:
+>         total: 154 pass: 154 fail: 0
+> Qemu test results:
+>         total: 480 pass: 480 fail: 0
 
-Yeah, I guess I can just document this (as part of sysfs abi documentation)=
-.
+Thanks for verifying that the rc6 failure case was fixed (and not
+replaced with any new ones, yay!)
 
-Thank you for the feedback.
-
-/Jarkko
+               Linus
