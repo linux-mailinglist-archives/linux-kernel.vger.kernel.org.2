@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25882439236
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F2A439241
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhJYJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:24:20 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:35893 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232371AbhJYJYE (ORCPT
+        id S232480AbhJYJ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:28:09 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51726 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhJYJ2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:24:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UtZwp5E_1635153697;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UtZwp5E_1635153697)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 25 Oct 2021 17:21:39 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, willy@infradead.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com, shy828301@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH 2/2] mm, thp: fix incorrect unmap behavior for private pages
-Date:   Mon, 25 Oct 2021 17:21:34 +0800
-Message-Id: <20211025092134.18562-3-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211025092134.18562-1-rongwei.wang@linux.alibaba.com>
-References: <20211025092134.18562-1-rongwei.wang@linux.alibaba.com>
+        Mon, 25 Oct 2021 05:28:05 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E33311FD36;
+        Mon, 25 Oct 2021 09:25:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635153942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+txo1N1OeQ38VR8c9TVCQxEqQEzX9GrJayemgmeIllU=;
+        b=Wm+ZHDmSVSSS92iuLxV2KS/vGpORdFKIZb6NUBzyWub1dGMMQcQH3Ksr7pSmgMijbkUMV9
+        40BY+nWoBfyWvJNyumHQ3XNGxHIB+prlQLebeKVTK8ZJr9ZSgu4hMo731DosK4dVAq6rn8
+        wmQ4spsxdDEQspWUTktQF94X5wkC9T8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635153942;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+txo1N1OeQ38VR8c9TVCQxEqQEzX9GrJayemgmeIllU=;
+        b=mVRSzkkOD1tqwxkSouip2ANVQ5FOOqWHTyHOTaWpIa7gjcv6sV8/qtOqe5ujTwgdF0oco0
+        faf/8G2DRKrEWIDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD70E13AAB;
+        Mon, 25 Oct 2021 09:25:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lJX9MBZ4dmHPSQAAMHmgww
+        (envelope-from <nstange@suse.de>); Mon, 25 Oct 2021 09:25:42 +0000
+From:   Nicolai Stange <nstange@suse.de>
+To:     =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
+Subject: [PATCH 0/6] crypto: DRBG - improve 'nopr' reseeding
+Date:   Mon, 25 Oct 2021 11:25:19 +0200
+Message-Id: <20211025092525.12805-1-nstange@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When truncating pagecache on file THP, the private pages
-of a process should not be unmapped mapping. This
-incorrect behavior on a dynamic shared libraries which
-will cause related processes to happen core dump.
+Hi all,
 
-A simple test for a DSO (Prerequisite is the DSO mapped
-in file THP):
+this patchset aims at (hopefully) improving the DRBG code related to
+reseeding from get_random_bytes() a bit:
+- Replace the asynchronous random_ready_callback based DRBG reseeding
+  logic with a synchronous solution leveraging rng_is_initialized(). This
+  move simplifies the code IMO and, as a side-effect, would enable DRBG
+  users to rely on wait_for_random_bytes() to sync properly with
+  drbg_generate(), if desired. Implemented by patches 1-5/6.
+- Make the 'nopr' DRBGs to reseed themselves every 5min from
+  get_random_bytes(). This achieves at least kind of a partial prediction
+  resistance over the time domain at almost no extra cost. Implemented
+  by patch 6/6, the preceding patches in this series are a prerequisite
+  for this.
 
-int main(int argc, char *argv[])
-{
-	int fd;
+Tested with and without fips_enabled in a x86_64 VM, both with
+random.trust_cpu=on and off. As confirmed with a couple of debugging
+printks() (added for testing only, not included in this series), DRBGs
+have been instantiated with and without rng_is_initialized() evaluating
+to true each during my tests and the patched DRBG reseeding code worked as
+intended in either case.
 
-	fd = open(argv[1], O_WRONLY);
-	if (fd < 0) {
-		perror("open");
-	}
+Applies to current herbert/cryptodev-2.6.git master.
 
-	close(fd);
-	return 0;
-}
+Many thanks for your comments and remarks!
 
-The test only to open a target DSO, and do nothing. But
-this operation will lead one or more process to happen
-core dump. This patch mainly to fix this bug.
+Nicolai
 
-Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-Cc: <stable@vger.kernel.org>
-Tested-by: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
----
- fs/open.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Nicolai Stange (6):
+  crypto: DRBG - prepare for more fine-grained tracking of seeding state
+  crypto: DRBG - track whether DRBG was seeded with
+    !rng_is_initialized()
+  crypto: DRBG - move dynamic ->reseed_threshold adjustments to
+    __drbg_seed()
+  crypto: DRBG - make reseeding from get_random_bytes() synchronous
+  crypto: DRBG - make drbg_prepare_hrng() handle jent instantiation
+    errors
+  crypto: DRBG - reseed 'nopr' drbgs periodically from
+    get_random_bytes()
 
-diff --git a/fs/open.c b/fs/open.c
-index e73bf88e5060..f732fb94600c 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -857,8 +857,17 @@ static int do_dentry_open(struct file *f,
- 		 */
- 		smp_mb();
- 		if (filemap_nr_thps(inode->i_mapping)) {
-+			struct address_space *mapping = inode->i_mapping;
-+
- 			filemap_invalidate_lock(inode->i_mapping);
--			truncate_pagecache(inode, 0);
-+			/*
-+			 * unmap_mapping_range just need to be called once
-+			 * here, because the private pages is not need to be
-+			 * unmapped mapping (e.g. data segment of dynamic
-+			 * shared libraries here).
-+			 */
-+			unmap_mapping_range(mapping, 0, 0, 0);
-+			truncate_inode_pages(mapping, 0);
- 			filemap_invalidate_unlock(inode->i_mapping);
- 		}
- 	}
+ crypto/drbg.c         | 145 +++++++++++++++++++++---------------------
+ include/crypto/drbg.h |  11 +++-
+ 2 files changed, 82 insertions(+), 74 deletions(-)
+
 -- 
-2.27.0
+2.26.2
 
