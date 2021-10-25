@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D365143A1CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59D6439F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235493AbhJYTmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:42:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
+        id S234804AbhJYTU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:20:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236645AbhJYTfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3812261152;
-        Mon, 25 Oct 2021 19:32:00 +0000 (UTC)
+        id S234547AbhJYTTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:19:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13E3A61078;
+        Mon, 25 Oct 2021 19:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190322;
-        bh=KJNJsJnm7S8PyXPj79TUWceDUe9/fgkmmekB/mRRqL0=;
+        s=korg; t=1635189450;
+        bh=ZRVUPx2uGfFZEyzf7HVtEtVAo2ZffGGhO+E00unNCwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jEMsMV/qPXaWM2iwQ/nfDObTYI/foMQAs6WQQi4V9WeMdKGrCnddUF6zIHvEl0Lrr
-         C6rY84OMxWZMHQMC0x6RNsx18g8FboUHEXI5sNJicNkPjL62pWyXPnfdSe8IWlNmSs
-         P69KltnlTOCYSs9jFvLzh6GJ3AOIv/NLK6da19vE=
+        b=Vc1p1yX3ifXcOlmw9zGxV9SptE0Jr7A2mUdamCWRMOh38EGF7LyieZV/Bgs8btTNV
+         K7pMfFItfbMs8gIkTkjtfBUD58zsmvw9eyUcVQXpGhGRMohSMOdpBGfPClvV6BfOe+
+         yhExdP7UOs9p7hWqLENqZatlGSCwauzSuuiCD+Rc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Li <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 28/95] net: hns3: disable sriov before unload hclge layer
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.4 44/44] ARM: 9122/1: select HAVE_FUTEX_CMPXCHG
 Date:   Mon, 25 Oct 2021 21:14:25 +0200
-Message-Id: <20211025191000.985823944@linuxfoundation.org>
+Message-Id: <20211025190937.446321165@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 0dd8a25f355b4df2d41c08df1716340854c7d4c5 ]
+commit 9d417cbe36eee7afdd85c2e871685f8dab7c2dba upstream.
 
-HNS3 driver includes hns3.ko, hnae3.ko and hclge.ko.
-hns3.ko includes network stack and pci_driver, hclge.ko includes
-HW device action, algo_ops and timer task, hnae3.ko includes some
-register function.
+tglx notes:
+  This function [futex_detect_cmpxchg] is only needed when an
+  architecture has to runtime discover whether the CPU supports it or
+  not.  ARM has unconditional support for this, so the obvious thing to
+  do is the below.
 
-When SRIOV is enable and hclge.ko is removed, HW device is unloaded
-but VF still exists, PF will not reply VF mbx messages, and cause
-errors.
+Fixes linkage failure from Clang randconfigs:
+kernel/futex.o:(.text.fixup+0x5c): relocation truncated to fit: R_ARM_JUMP24 against `.init.text'
+and boot failures for CONFIG_THUMB2_KERNEL.
 
-This patch fix it by disable SRIOV before remove hclge.ko.
+Link: https://github.com/ClangBuiltLinux/linux/issues/325
 
-Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Comments from Nick Desaulniers:
+
+ See-also: 03b8c7b623c8 ("futex: Allow architectures to skip
+ futex_atomic_cmpxchg_inatomic() test")
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: stable@vger.kernel.org # v3.14+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hnae3.c   | 21 +++++++++++++++++++
- drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  1 +
- .../hisilicon/hns3/hns3pf/hclge_main.c        |  1 +
- 3 files changed, 23 insertions(+)
+ arch/arm/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.c b/drivers/net/ethernet/hisilicon/hns3/hnae3.c
-index eef1b2764d34..67b0bf310daa 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.c
-@@ -10,6 +10,27 @@ static LIST_HEAD(hnae3_ae_algo_list);
- static LIST_HEAD(hnae3_client_list);
- static LIST_HEAD(hnae3_ae_dev_list);
- 
-+void hnae3_unregister_ae_algo_prepare(struct hnae3_ae_algo *ae_algo)
-+{
-+	const struct pci_device_id *pci_id;
-+	struct hnae3_ae_dev *ae_dev;
-+
-+	if (!ae_algo)
-+		return;
-+
-+	list_for_each_entry(ae_dev, &hnae3_ae_dev_list, node) {
-+		if (!hnae3_get_bit(ae_dev->flag, HNAE3_DEV_INITED_B))
-+			continue;
-+
-+		pci_id = pci_match_id(ae_algo->pdev_id_table, ae_dev->pdev);
-+		if (!pci_id)
-+			continue;
-+		if (IS_ENABLED(CONFIG_PCI_IOV))
-+			pci_disable_sriov(ae_dev->pdev);
-+	}
-+}
-+EXPORT_SYMBOL(hnae3_unregister_ae_algo_prepare);
-+
- /* we are keeping things simple and using single lock for all the
-  * list. This is a non-critical code so other updations, if happen
-  * in parallel, can wait.
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index 912c51e327d6..4a9576a449e1 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -754,6 +754,7 @@ struct hnae3_handle {
- int hnae3_register_ae_dev(struct hnae3_ae_dev *ae_dev);
- void hnae3_unregister_ae_dev(struct hnae3_ae_dev *ae_dev);
- 
-+void hnae3_unregister_ae_algo_prepare(struct hnae3_ae_algo *ae_algo);
- void hnae3_unregister_ae_algo(struct hnae3_ae_algo *ae_algo);
- void hnae3_register_ae_algo(struct hnae3_ae_algo *ae_algo);
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 0e869f449f12..7b94764b4f5d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -11518,6 +11518,7 @@ static int hclge_init(void)
- 
- static void hclge_exit(void)
- {
-+	hnae3_unregister_ae_algo_prepare(&ae_algo);
- 	hnae3_unregister_ae_algo(&ae_algo);
- 	destroy_workqueue(hclge_wq);
- }
--- 
-2.33.0
-
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -51,6 +51,7 @@ config ARM
+ 	select HAVE_FTRACE_MCOUNT_RECORD if (!XIP_KERNEL)
+ 	select HAVE_FUNCTION_GRAPH_TRACER if (!THUMB2_KERNEL)
+ 	select HAVE_FUNCTION_TRACER if (!XIP_KERNEL)
++	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_GENERIC_DMA_COHERENT
+ 	select HAVE_HW_BREAKPOINT if (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7))
+ 	select HAVE_IDE if PCI || ISA || PCMCIA
 
 
