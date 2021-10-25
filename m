@@ -2,164 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D8B4397EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B16B4397EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhJYN4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:56:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25799 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232949AbhJYN4M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:56:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635170030;
+        id S232978AbhJYN7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:59:09 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39238 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230225AbhJYN7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:59:08 -0400
+Received: from zn.tnic (p200300ec2f0f4e00a9aecab73d80ddb1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4e00:a9ae:cab7:3d80:ddb1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C85941EC04F2;
+        Mon, 25 Oct 2021 15:56:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635170204;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ldvB0XPe33TqQvODn/mAyWJW6RTodpHfwe2FHTdvAFU=;
-        b=Kfy54JnOU/X7L7cHbwLRp/YMguFIjY+y3341pwufxofzg84Ya0uFzwRJDneWAezBdYOc/5
-        brt287vS30vUe+0ZujR94Telpo/wguR2vfZM+dlFYesYjyzfzsYV3nU08l8CaZTouYMH1Z
-        LfIwKu21sWZPmvTGuWJNx1miu8O3Mq0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-236-ig91dNtYNYuEAJTElCJsJw-1; Mon, 25 Oct 2021 09:53:48 -0400
-X-MC-Unique: ig91dNtYNYuEAJTElCJsJw-1
-Received: by mail-wm1-f72.google.com with SMTP id s3-20020a1ca903000000b0032326edebe1so3548357wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:53:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ldvB0XPe33TqQvODn/mAyWJW6RTodpHfwe2FHTdvAFU=;
-        b=2KYkb0AiNgmCND09W6D9RXXBodCvYVbaMmlOBo2s1QH4C8DpktagwU44bZSTeKccyU
-         PHV4b/H55LycQOGCKfNXF1tXyk/DjqfeX3IFmXjV0XkyPOLde56pX386sXJPlRQNXmIu
-         AthLZ4swvMAG6f8tocsYbVpYrSFp5uOkCBQnNtokS7V/Pog7/QIEiCZvFMhm/Hj9uMte
-         aL0t49GkcqbeId5xLctT3z0czMyNDMIXMvFEMBeE663ORHvUrt4TRFTaX9TnMwVQsKQa
-         URHtgzCfY7BJ/DfUUfFNgFBDkoCU83Ruwo4M18QXCsQUyCAH0q268N/zwxq8N3PUP44P
-         ABbQ==
-X-Gm-Message-State: AOAM533vJ+LH+iDrNtLp5MQ+0KnuduiKGXLXPTEI9tvBD/fT0DdIU+AY
-        Coh6yloCULJoRCBw5jiAzZKfW58Z+OdjWFnnsGl+dXAaOxTuSNtgCmczkTfhUxcYJM2IqfOuGmJ
-        PfEVETtdYUZ4x4AbISWVup4Vg
-X-Received: by 2002:a5d:4a0a:: with SMTP id m10mr23195989wrq.8.1635170027185;
-        Mon, 25 Oct 2021 06:53:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzEcYontEfeBK4K4y+WBxRPdIWb2mvxosMQ7CiN54IG+B17uliVNi9fSUiTsG9r0hC4umYIPQ==
-X-Received: by 2002:a5d:4a0a:: with SMTP id m10mr23195965wrq.8.1635170026960;
-        Mon, 25 Oct 2021 06:53:46 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id l20sm21932937wmq.42.2021.10.25.06.53.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 06:53:46 -0700 (PDT)
-Message-ID: <acfdf0f5-0a18-162a-c785-fa0a520e3364@redhat.com>
-Date:   Mon, 25 Oct 2021 15:53:02 +0200
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9vcw/G3G8TQiJIk2OJLutgGZViY71B8IEbfeewsQb/U=;
+        b=rgfokybylLH9QkNR9EtK6heI0+s1mfTbk62b6DqtZyIjWUNyejE/sj31AiYx7rE1t6KP1K
+        e1m5ymVhAe6pF+23oSydWnReCRtIVQXrMGKGa8h53Yf2FtX1Rgfh7g1r5YnVj/xOHOIk6W
+        OIA8uJY3zO4jhBFCZMTrEs11Db5vV5Y=
+Date:   Mon, 25 Oct 2021 15:56:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
+Subject: Re: [PATCH v2 1/5] x86/mce/inject: Check if a bank is unpopulated
+ before error injection
+Message-ID: <YXa3m7SWAhRcFi35@zn.tnic>
+References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20211019233641.140275-2-Smita.KoralahalliChannabasappa@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 22/43] KVM: VMX: Drop unnecessary PI logic to handle
- impossible conditions
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <20211009021236.4122790-23-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211009021236.4122790-23-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211019233641.140275-2-Smita.KoralahalliChannabasappa@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/21 04:12, Sean Christopherson wrote:
-> Drop sanity checks on the validity of the previous pCPU when handling
-> vCPU block/unlock for posted interrupts.  Barring a code bug or memory
-> corruption, the sanity checks will never fire, and any code bug that does
-> trip the WARN is all but guaranteed to completely break posted interrupts,
-> i.e. should never get anywhere near production.
+On Tue, Oct 19, 2021 at 06:36:37PM -0500, Smita Koralahalli wrote:
+> The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
+> (SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
+> will read as zero and writes to it will be ignored.
 > 
-> This is the first of several steps toward eliminating kvm_vcpu.pre_cpu.
+> On a "hw" error injection check the value of this register before trying
+> to inject the error.
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Do not impose any limitation on a "sw" injection and allow the user to
+> test out all the decoding paths without relying on the available hardware,
+> as its purpose is to just test the code.
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 > ---
->   arch/x86/kvm/vmx/posted_intr.c | 24 ++++++++++--------------
->   1 file changed, 10 insertions(+), 14 deletions(-)
+> v2:
+> 	simulate -> inject.
+> 	Corrected according to kernel commenting style.
+> 	boot_cpu_has() -> cpu_feature_enabled().
+> 	Error simulation not possible: Bank %llu unpopulated ->
+> 	Cannot set IPID - bank %llu unpopulated.
+> 	Used user provided IPID value on sw injection without checking
+> 	underlying hardware and defined it under inj_ipid_set().
+> ---
+>  arch/x86/kernel/cpu/mce/inject.c | 39 +++++++++++++++++++++++++++++---
+>  1 file changed, 36 insertions(+), 3 deletions(-)
 
-The idea here is to avoid making things worse by not making the list 
-inconsistent.  But that's impossible to do if pre_pcpu goes away, so 
-fair enough.
+So I gave it a critical look and did some modifications, see below.
+Looking at those IPID MSRs - they're all read-only, which means for !sw
+injection, all the module can do is check whether they're 0 - and fail
+injection in that case - and do the injection otherwise.
 
-Paolo
+Ok?
 
-> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-> index 67cbe6ab8f66..6c2110d91b06 100644
-> --- a/arch/x86/kvm/vmx/posted_intr.c
-> +++ b/arch/x86/kvm/vmx/posted_intr.c
-> @@ -118,12 +118,10 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
->   	} while (cmpxchg64(&pi_desc->control, old.control,
->   			   new.control) != old.control);
->   
-> -	if (!WARN_ON_ONCE(vcpu->pre_pcpu == -1)) {
-> -		spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> -		list_del(&vcpu->blocked_vcpu_list);
-> -		spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> -		vcpu->pre_pcpu = -1;
-> -	}
-> +	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> +	list_del(&vcpu->blocked_vcpu_list);
-> +	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> +	vcpu->pre_pcpu = -1;
->   }
->   
->   /*
-> @@ -153,14 +151,12 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
->   
->   	WARN_ON(irqs_disabled());
->   	local_irq_disable();
-> -	if (!WARN_ON_ONCE(vcpu->pre_pcpu != -1)) {
-> -		vcpu->pre_pcpu = vcpu->cpu;
-> -		spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> -		list_add_tail(&vcpu->blocked_vcpu_list,
-> -			      &per_cpu(blocked_vcpu_on_cpu,
-> -				       vcpu->pre_pcpu));
-> -		spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> -	}
-> +
-> +	vcpu->pre_pcpu = vcpu->cpu;
-> +	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
-> +	list_add_tail(&vcpu->blocked_vcpu_list,
-> +		      &per_cpu(blocked_vcpu_on_cpu, vcpu->pre_pcpu));
-> +	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
->   
->   	WARN(pi_desc->sn == 1,
->   	     "Posted Interrupt Suppress Notification set before blocking");
-> 
+---
+From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Date: Tue, 19 Oct 2021 18:36:37 -0500
+Subject: [PATCH] x86/mce/inject: Check if a bank is populated before error
+ injection
 
+The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
+(SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
+will read as zero and writes to it will be ignored.
+
+On a hw-type error injection (injection which writes the actual MCA
+registers in an attempt to cause a real MCE) check the value of this
+register before trying to inject the error.
+
+Do not impose any limitation on a sw-type injection (software-only
+injection) and allow the user to test out all the decoding paths without
+relying on the available hardware, as its purpose is to just test the
+code.
+
+ [ bp: Heavily massage. ]
+
+Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20211019233641.140275-2-Smita.KoralahalliChannabasappa@amd.com
+---
+ arch/x86/kernel/cpu/mce/inject.c | 42 +++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
+index 0bfc14041bbb..3333ae7886bd 100644
+--- a/arch/x86/kernel/cpu/mce/inject.c
++++ b/arch/x86/kernel/cpu/mce/inject.c
+@@ -74,7 +74,6 @@ MCE_INJECT_SET(status);
+ MCE_INJECT_SET(misc);
+ MCE_INJECT_SET(addr);
+ MCE_INJECT_SET(synd);
+-MCE_INJECT_SET(ipid);
+ 
+ #define MCE_INJECT_GET(reg)						\
+ static int inj_##reg##_get(void *data, u64 *val)			\
+@@ -95,6 +94,20 @@ DEFINE_SIMPLE_ATTRIBUTE(status_fops, inj_status_get, inj_status_set, "%llx\n");
+ DEFINE_SIMPLE_ATTRIBUTE(misc_fops, inj_misc_get, inj_misc_set, "%llx\n");
+ DEFINE_SIMPLE_ATTRIBUTE(addr_fops, inj_addr_get, inj_addr_set, "%llx\n");
+ DEFINE_SIMPLE_ATTRIBUTE(synd_fops, inj_synd_get, inj_synd_set, "%llx\n");
++
++/* Use the user provided IPID value on a sw injection. */
++static int inj_ipid_set(void *data, u64 val)
++{
++	struct mce *m = (struct mce *)data;
++
++	if (cpu_feature_enabled(X86_FEATURE_SMCA)) {
++		if (inj_type == SW_INJ)
++			m->ipid = val;
++	}
++
++	return 0;
++}
++
+ DEFINE_SIMPLE_ATTRIBUTE(ipid_fops, inj_ipid_get, inj_ipid_set, "%llx\n");
+ 
+ static void setup_inj_struct(struct mce *m)
+@@ -577,6 +590,33 @@ static int inj_bank_set(void *data, u64 val)
+ 	}
+ 
+ 	m->bank = val;
++
++	/*
++	 * sw-only injection allows to write arbitrary values into the MCA registers
++	 * because it tests only the decoding paths.
++	 */
++	if (inj_type == SW_INJ)
++		goto inject;
++
++	/*
++	 * Read IPID value to determine if a bank is populated on the target
++	 * CPU.
++	 */
++	if (cpu_feature_enabled(X86_FEATURE_SMCA)) {
++		u64 ipid;
++
++		if (rdmsrl_on_cpu(m->extcpu, MSR_AMD64_SMCA_MCx_IPID(val), &ipid)) {
++			pr_err("Error reading IPID on CPU%d\n", m->extcpu);
++			return -EINVAL;
++		}
++
++		if (!ipid) {
++			pr_err("Cannot inject into bank %llu - it is unpopulated\n", val);
++			return -ENODEV;
++		}
++	}
++
++inject:
+ 	do_inject();
+ 
+ 	/* Reset injection struct */
+-- 
+2.29.2
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
