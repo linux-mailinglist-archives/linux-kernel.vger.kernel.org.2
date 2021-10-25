@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED4943A2C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C996C439F2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbhJYTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37366 "EHLO mail.kernel.org"
+        id S234055AbhJYTSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:18:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237745AbhJYTpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:45:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCD14610A5;
-        Mon, 25 Oct 2021 19:39:29 +0000 (UTC)
+        id S232904AbhJYTRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:17:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 453026101C;
+        Mon, 25 Oct 2021 19:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190770;
-        bh=JnaI4lkbgv/2+UqoKUFx3Vhe76YHhHmi6aXdFod3FRs=;
+        s=korg; t=1635189322;
+        bh=NsnvHBtfrB7JTvTJxoyc14T4KqvhNTSri0+FiRhQ19k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ru2FbenVe0GOWC7ALKGi8hrDm7KYkILJeb2HTdV2KTQpOv35bYZDMtWO3XLjkdY/h
-         tjnNo2NLe62KqtW704CDoszVHgs6Ta4G+2OfWYw07rDASr5OTcH/AIoD1DdI3im/Mj
-         Z7YMKIl2kFeKBfH7wFhQirT8Wjo1MvLHxy/ICEVA=
+        b=YyT4e8Ap0nEDMaQXUBtnT3FyS5lV4MmR5wwTFL1HCU/MqmEOnw9r803AhKYMoxRy7
+         gCm6Xwn6VKRxTVGMXTKgi7o0bUUqpZsw8cMwwzpzbxeXD+r+y2uC1BtHYKxmruq4Vb
+         YbXz4rK5C98bfnvDJ2Iv3q0yHjlHI6fEDY+pm+rM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 047/169] net: hns3: schedule the polling again when allocation fails
+        stable@vger.kernel.org,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 07/44] USB: serial: qcserial: add EM9191 QDL support
 Date:   Mon, 25 Oct 2021 21:13:48 +0200
-Message-Id: <20211025191023.732781976@linuxfoundation.org>
+Message-Id: <20211025190930.135658023@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,104 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: Aleksander Morgado <aleksander@aleksander.es>
 
-[ Upstream commit 68752b24f51a71d4f350a764d890b670f59062c5 ]
+commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
 
-Currently when there is a rx page allocation failure, it is
-possible that polling may be stopped if there is no more packet
-to be reveiced, which may cause queue stall problem under memory
-pressure.
+When the module boots into QDL download mode it exposes the 1199:90d2
+ids, which can be mapped to the qcserial driver, and used to run
+firmware upgrades (e.g. with the qmi-firmware-update program).
 
-This patch makes sure polling is scheduled again when there is
-any rx page allocation failure, and polling will try to allocate
-receive buffers until it succeeds.
+  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
+  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+  P:  Vendor=1199 ProdID=90d2 Rev=00.00
+  S:  Manufacturer=Sierra Wireless, Incorporated
+  S:  Product=Sierra Wireless EM9191
+  S:  SerialNumber=8W0382004102A109
+  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
+  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
 
-Now the allocation retry is added, it is unnecessary to do the rx
-page allocation at the end of rx cleaning, so remove it. And reset
-the unused_count to zero after calling hns3_nic_alloc_rx_buffers()
-to avoid calling hns3_nic_alloc_rx_buffers() repeatedly under
-memory pressure.
-
-Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 22 ++++++++++---------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 114692c4f797..796886b112c7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3488,7 +3488,8 @@ static int hns3_desc_unused(struct hns3_enet_ring *ring)
- 	return ((ntc >= ntu) ? 0 : ring->desc_num) + ntc - ntu;
- }
- 
--static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
-+/* Return true if there is any allocation failure */
-+static bool hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
- 				      int cleand_count)
- {
- 	struct hns3_desc_cb *desc_cb;
-@@ -3513,7 +3514,10 @@ static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
- 				hns3_rl_err(ring_to_netdev(ring),
- 					    "alloc rx buffer failed: %d\n",
- 					    ret);
--				break;
-+
-+				writel(i, ring->tqp->io_base +
-+				       HNS3_RING_RX_RING_HEAD_REG);
-+				return true;
- 			}
- 			hns3_replace_buffer(ring, ring->next_to_use, &res_cbs);
- 
-@@ -3526,6 +3530,7 @@ static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
- 	}
- 
- 	writel(i, ring->tqp->io_base + HNS3_RING_RX_RING_HEAD_REG);
-+	return false;
- }
- 
- static bool hns3_can_reuse_page(struct hns3_desc_cb *cb)
-@@ -4159,6 +4164,7 @@ int hns3_clean_rx_ring(struct hns3_enet_ring *ring, int budget,
- {
- #define RCB_NOF_ALLOC_RX_BUFF_ONCE 16
- 	int unused_count = hns3_desc_unused(ring);
-+	bool failure = false;
- 	int recv_pkts = 0;
- 	int err;
- 
-@@ -4167,9 +4173,9 @@ int hns3_clean_rx_ring(struct hns3_enet_ring *ring, int budget,
- 	while (recv_pkts < budget) {
- 		/* Reuse or realloc buffers */
- 		if (unused_count >= RCB_NOF_ALLOC_RX_BUFF_ONCE) {
--			hns3_nic_alloc_rx_buffers(ring, unused_count);
--			unused_count = hns3_desc_unused(ring) -
--					ring->pending_buf;
-+			failure = failure ||
-+				hns3_nic_alloc_rx_buffers(ring, unused_count);
-+			unused_count = 0;
- 		}
- 
- 		/* Poll one pkt */
-@@ -4188,11 +4194,7 @@ int hns3_clean_rx_ring(struct hns3_enet_ring *ring, int budget,
- 	}
- 
- out:
--	/* Make all data has been write before submit */
--	if (unused_count > 0)
--		hns3_nic_alloc_rx_buffers(ring, unused_count);
--
--	return recv_pkts;
-+	return failure ? budget : recv_pkts;
- }
- 
- static void hns3_update_rx_int_coalesce(struct hns3_enet_tqp_vector *tqp_vector)
--- 
-2.33.0
-
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -169,6 +169,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
+ 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
+ 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
++	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
+ 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
+ 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
+ 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
 
 
