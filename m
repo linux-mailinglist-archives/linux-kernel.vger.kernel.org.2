@@ -2,85 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B6943973E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37375439740
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhJYNNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbhJYNNW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:13:22 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197C8C061745;
-        Mon, 25 Oct 2021 06:11:00 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id r134so15328287iod.11;
-        Mon, 25 Oct 2021 06:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LqSgr0K3Z/r9sP1YQd1U8WeH+I8Nt19Et4qB9zN0QnM=;
-        b=gosArYnwumg1N6VgrU3ws2OC+QIQsYC/xRwLyYcspNj5zKaqXy0dBC43yikj/R4SGz
-         BWfYXJwxDqX3Z4iIkH36n+902vqYsq5SIo9uv/pNq5VnVaomow+reus8oUl+tVJAS6aN
-         Y6aSFMpsr9Xm4mFsqORkCzt8akgjAcQ0XIJciNKrUtEpPxBRKMN4ZfDmSHum4XyKyy7i
-         NsBWDzqKMtSdoLgvMktRfOpQ926dhTXFIC1h3Zn9+YmtvsakmIwPNIv8Xz3AXkOaVBx7
-         AWUTYKFg9+m9i3gAu7G/pymyZ+CNIZDQlqjx7C3B53D+/ucWX7gH4vh9AfZr5WP1ACCw
-         QAOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LqSgr0K3Z/r9sP1YQd1U8WeH+I8Nt19Et4qB9zN0QnM=;
-        b=1iKJONQp4yuo/CUFbg/eL862TWE5wGqnlj9+I1Vqyd8InuIsxhaWYr7B2UkScDghp1
-         1kGzcL7I5r4YFBrrFk7Sp3mJJRDKbkEKXcw8iQuDKlMkN9MTjJbBXKh6npZfsPlH0HpR
-         6qZnbkG0rUPRPEWXLq0iob318SnQAHhJmz0F/p33aETzQiZGDp0Yv7bJirzcJOwYQAnK
-         /sv65PghtTlXuS7kkh4ic4CVPoUWKZr3qWShk/WQ2lcA6WR4jVVAJzL1WOdbc+d4q2wu
-         dIjnE2gzRBFwvh1AKInhfobkkR9/GEBj5WMfKK8Wa5LDYPm2ZsiDLZOUPATGWO7xEJ6f
-         scuA==
-X-Gm-Message-State: AOAM5303rOolnJT0Z7OM2+gAmKDNXCQBSin9brRMCXfSjUDLlEY0GvsF
-        LBtfFqN8wMetf5k7qSrwV32Ql96wC61TTNRGpSNnqCuU
-X-Google-Smtp-Source: ABdhPJyE2CchchZpEfZkAyrM/PAwt1sP0pvFhVpiTlJ6N/8hbgOMoqp0drlHvQXDnV3C5K5PocsJF5b1ElK8v0a/IgM=
-X-Received: by 2002:a6b:8dd6:: with SMTP id p205mr10227210iod.192.1635167459394;
- Mon, 25 Oct 2021 06:10:59 -0700 (PDT)
+        id S233481AbhJYNOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233371AbhJYNOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:14:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 233F9601FA;
+        Mon, 25 Oct 2021 13:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635167529;
+        bh=/OnURZEJ7wts6w/3Qdts+/dkEpA+4/DrN1zIZXZY8S8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JswxGSFuC+gqwwPbsTgdSA8sAzoI3ajjbzLRbr6B3Ksea6DSD2afYRsLBJi8M5KGo
+         fYBSf9ZphnInaEcPhgmYnhbgOPc7Hw6L8V9tVcR+GifxTtUc+eEk4hoONRLaYekxtm
+         +3q7jivqhbG8Rzvg5pF4HYDIxQhxHJj2J4phzyU+wkm6tBAIQa2WGf61Ubx9HgtHOB
+         87ec06gEr6msZ418TgcRn0UZuzkRsCJ/gqXEwaQEWU1raifxVnS+uKY4VvOkdOWlMq
+         1XvZJmk8n6iU31PYHl9emO5UcD+ekkdN1gIecuwEVC0yxu/2+Hb3+R+kXtTxhzXu1U
+         J5oE13bhfPL/A==
+Received: by mail-ot1-f47.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso14885563otl.4;
+        Mon, 25 Oct 2021 06:12:09 -0700 (PDT)
+X-Gm-Message-State: AOAM530kb1go6foCy5wztZ/+iYXdZo7Kib2y8mfRevP5fTy8RLs8RG3W
+        kvYVp+cIuh7KkHI+3N+mjSviDLpIZ7BeKLF5O7o=
+X-Google-Smtp-Source: ABdhPJyNyqweANOfqAfuDkrHzy36CK1fQiv7MCaQLpXfd3uAKpbGji9uo1EtLhugmRPoQR+x+eNIGCe52lTKkywkE40=
+X-Received: by 2002:a9d:5911:: with SMTP id t17mr13904890oth.30.1635167528453;
+ Mon, 25 Oct 2021 06:12:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006222502.645003-1-pauk.denis@gmail.com> <20211006222502.645003-3-pauk.denis@gmail.com>
- <CAB95QARmjTBVRyru=ZDz9Wc5SX9EPFg7dg6vB+S8=pMtpg8FRw@mail.gmail.com>
- <20211007184644.1d042550@penguin.lxd> <CAB95QASYPRZSFnpE5u=SYJ49Hd+=BAZY==Ky8dzjL8h7YZj-CQ@mail.gmail.com>
- <CAB95QAQ+u4DmF0e9Zvy5hDV0mFQDEULtr-newtz5_6y=Bzp+ww@mail.gmail.com>
- <20211010133921.4277dc79@penguin.lxd> <CAB95QAQs_PUeTU7d9tg83a8hRepjLfLnxVykU2nvBv3Vn49HBQ@mail.gmail.com>
- <8527fb83-4b76-e3c4-85eb-542c1cee249a@roeck-us.net> <CAB95QATwDkGBWdB0YWJovfN=MdtV9JkAWH2ofDFHMVYymStk5w@mail.gmail.com>
-In-Reply-To: <CAB95QATwDkGBWdB0YWJovfN=MdtV9JkAWH2ofDFHMVYymStk5w@mail.gmail.com>
-From:   Eugene Shalygin <eugene.shalygin@gmail.com>
-Date:   Mon, 25 Oct 2021 15:10:48 +0200
-Message-ID: <CAB95QASpK+ajGTpJoMTQN1epa-QMy9sJHRPFVyizFgCa3dut=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Denis Pauk <pauk.denis@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org
+References: <cover.1635140590.git.yu.c.chen@intel.com> <1cd3161bf51de99990fd5ee2dc896b4defef4f38.1635140590.git.yu.c.chen@intel.com>
+ <YXZSMCaODRPw0Zlj@kroah.com> <20211025114519.GA7559@chenyu5-mobl1>
+ <YXac0IYICzIOmeRh@kroah.com> <20211025124705.GA9212@chenyu5-mobl1>
+In-Reply-To: <20211025124705.GA9212@chenyu5-mobl1>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 25 Oct 2021 15:11:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXG-L5D3WpGRg20xSuCUkqJrXGLJsffOPE4M1OrFcEf2eQ@mail.gmail.com>
+Message-ID: <CAMj1kXG-L5D3WpGRg20xSuCUkqJrXGLJsffOPE4M1OrFcEf2eQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+ and corresponding structures
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Mon, 25 Oct 2021 at 14:47, Chen Yu <yu.c.chen@intel.com> wrote:
+>
+> On Mon, Oct 25, 2021 at 02:02:24PM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 25, 2021 at 07:45:19PM +0800, Chen Yu wrote:
+> > > On Mon, Oct 25, 2021 at 08:44:00AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Mon, Oct 25, 2021 at 02:25:04PM +0800, Chen Yu wrote:
+> > > > > Platform Firmware Runtime Update image starts with UEFI headers, and the
+> > > > > headers are defined in UEFI specification, but some of them have not been
+> > > > > defined in the kernel yet.
+> > > > >
+> > > > > For example, the header layout of a capsule file looks like this:
+> > > > >
+> > > > > EFI_CAPSULE_HEADER
+> > > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+> > > > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
+> > > > >
+> > > > > These structures would be used by the Platform Firmware Runtime Update
+> > > > > driver to parse the format of capsule file to verify if the corresponding
+> > > > > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
+> > > > > kernel, however the rest are not, thus introduce corresponding UEFI
+> > > > > structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
+> > > > > so the corresponding data types should be packed.
+> > > > >
+> > > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > > > ---
+> > > > > v6: No change since v5.
+> > > > > v5: No change since v4.
+> > > > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
+> > > > > ---
+> > > > >  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
+> > > > >  1 file changed, 50 insertions(+)
+> > > > >
+> > > > > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > > > > index 6b5d36babfcc..19ff834e1388 100644
+> > > > > --- a/include/linux/efi.h
+> > > > > +++ b/include/linux/efi.h
+> > > > > @@ -148,6 +148,56 @@ typedef struct {
+> > > > >         u32 imagesize;
+> > > > >  } efi_capsule_header_t;
+> > > > >
+> > > > > +#pragma pack(1)
+> > > >
+> > > > Why is this pragma suddenly needed now in this file?
+> > > >
+> > > > If you really need this for a specific structure, use the "__packed"
+> > > > attribute please.
+> > > >
+> > > These two structures are required to be packed in the uefi spec, I'll change
+> > > them to "__packed".
+> >
+> > And they are the _only_ ones in this .h file that require this?  I would
+> > think that they all require this.
+> >
+> I did a search in the uefi specification, and found 42 pack(1) structures,
+> while the other structures do not have pack(1) attribute.
+>
+> It seems to me that whether the structures are required to be strictly packed
+> depends on the use case. Here's my understanding and I might be wrong: In this
+> patch, according to the skeleton of capsule file described in
+> [Figure 23-6 Firmware Management and Firmware Image Management headers]
+> in the uefi spec [1], the two structures are located at the beginning of
+> the capsule file, and followed by real payload. If these structure are packed
+> then the the adjacent binary payload could start on byte boundary without
+> padding, which might save space for capsule file.
+>
 
-> On that machine a single reading of the EC register (i.e. a call to
-> ec_read()) takes approx. 14 ms. The timeout is probably right here.
+Packing only affects internal padding, and a struct's size is never
+padded to be a multiple of its alignment (which equals the largest
+alignment of all its members). This of course assumes that you don't
+abuse array indexing as a sizeof() operator.
 
-I migrated that ASUS machine to another distribution (Arch -> Gentoo,
-kernel versions 5.14.8 -> 5.14.14) and surprisingly reading EC
-registers became faster. I accumulated data from 14133 read operations
-and the times are distributed as follows: 84 % at 4 ms, 10 % at 5 ms,
-5.0 % at 6 ms and the rest is between 3 and 9 ms (but concentrating
-around multiples of 0.5 ms).
+However, the __packed attribute does indicate to the compiler that the
+entire thing can appear misaligned in memory. So if one follows the
+other in the capsule header, the __packed attribute may be appropriate
+to ensure that the second one is not accessed using misaligned loads
+and stores.
 
-In the meantime the only other user who provided EC read timeouts
-showed 14 ms per EC read too.
+And then there is of course the ambiguity in alignment of uint64_t on
+x86, which could be either 4 or 8 bytes depending on the context (and
+UEFI targets all of them). So __packed may be used to disambiguate
+between those if a uint64_t field appears on a boundary whose offset %
+8 == 4.
 
-Regards,
-Eugene
+So please use __packed rather than the pragma(), and apply it wherever
+it is applied in the spec.
+
+
+
+> For those structures that do not have strict pack requirement, the uefi spec
+> does not force to pack them.
+>
+> Link: https://uefi.org/sites/default/files/resources/UEFI_Spec_2_9_2021_03_18.pdf # [1]
+>
+> thanks,
+> Chenyu
+>
+>
+> > thanks,
+> >
+> > greg k-h
