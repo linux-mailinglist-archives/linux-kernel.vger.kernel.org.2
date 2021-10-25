@@ -2,91 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56982438EF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EF6438EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhJYFlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:41:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:1725 "EHLO mga12.intel.com"
+        id S229989AbhJYFtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:49:01 -0400
+Received: from mga02.intel.com ([134.134.136.20]:28714 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhJYFlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:41:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="209668552"
+        id S229499AbhJYFs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 01:48:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216739468"
 X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="209668552"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 22:38:45 -0700
+   d="scan'208";a="216739468"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 22:46:38 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="596341366"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga004.jf.intel.com with ESMTP; 24 Oct 2021 22:38:40 -0700
-Subject: Re: [PATCH RESEND v2] scsi: ufs: clear doorbell for hibern8 errors
- when using ah8
-To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, sc.suh@samsung.com, hy50.seo@samsung.com,
-        sh425.lee@samsung.com, bhoon95.kim@samsung.com,
-        vkumar.1997@samsung.com
-References: <CGME20211019051346epcas2p132d3b9c6a1c812f3132e913525235b83@epcas2p1.samsung.com>
- <1634619427-171880-1-git-send-email-kwmad.kim@samsung.com>
- <2e35d23b-babb-a617-d93e-ce9b522dafb3@intel.com>
- <029e01d7c66b$6f6e7830$4e4b6890$@samsung.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Cc:     Bart Van Assche <bvanassche@acm.org>
-Message-ID: <6726fd8a-47f4-185d-e7a3-d006902d605c@intel.com>
-Date:   Mon, 25 Oct 2021 08:38:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <029e01d7c66b$6f6e7830$4e4b6890$@samsung.com>
-Content-Type: text/plain; charset=utf-8
+   d="scan'208";a="496630841"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga008.jf.intel.com with ESMTP; 24 Oct 2021 22:46:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Sun, 24 Oct 2021 22:46:37 -0700
+Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Sun, 24 Oct 2021 22:46:36 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Sun, 24 Oct 2021 22:46:36 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Sun, 24 Oct 2021 22:46:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VZoFTYuLKE0FxJRcVCrRWUiR6XiHJjjtayZH4vjmbaG5/I+5QVbRgjDEyrKWiDbVESx8JAwIUI7aAqKbAHUhk/Ht8xDyLCpaK+j76jCcSzazGuhAxqGGp1JtCh448lXCsPvEDXO1UXZAm8oeX5YbzOc15dmjilxuN2BonNo1DWEwImzCxocS6b9pa6vHt32prQk7XXZFV7XF/Cm+8g6WKXALHzyXvv0B3L+MqPV8dzBw8Y8fnzhBQIailTCfXbDhBJfST4Yqs+1QqTDkZa/L8GeGAB2lcakLiZAB/SJf4qpM5oPQcl6oWrc+XJnbO+QQ3/LLU8m6jcIh9c0vgZptfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MULtSLIwCDphDvdMB7ttMPIF9iI/E+zP/dBCk2SWKPo=;
+ b=SCNiV31zq6k2rQS4oHc9p9gwycuQecgCQ1Hv3DNClTZ0v/yhPwY2gPGl7bwWP1oADq8BeydQZVUeI8Vg9v+fgS0h4dVGe2VBlExgJ2de+d90x6sXisjJoAYopSxkXNHRiNHJUWe2lYHd1AqJKOwVme03CpJhLSOT8FI0p2PYHnZCLeo1bIboObgfBNICAL4gquPuY0FCYgRk/vRS1SrfHt0d2MHreAtZUnqJVlKQhvd0QuLTM40Mim18VQpUUxD+jiDNfPxQBL/gxmQGnGLhpZlUBnYR82FVflcYf6Vv/UYtuISvaqAtxNBJuP0c0Mw0uqFequ+AgXl5BGZAwd9FlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MULtSLIwCDphDvdMB7ttMPIF9iI/E+zP/dBCk2SWKPo=;
+ b=OFeoEcWG8R0BvOiU3IMrgqSp2sEodQNZ1YqJDrr2vwXCK5bbAopIlRjUocjC8ZspZq6z7ovYoGtM4jY1rFx4+vfV+vq344g/s+JZLdYBCbFxL99+Cu0as9qxfnw1dtpoaKxR6LEB5UndnRZ34eAytSLS6yHlxOgF8FMnnhbYBpo=
+Received: from DM6PR11MB3065.namprd11.prod.outlook.com (2603:10b6:5:72::15) by
+ DM6PR11MB2811.namprd11.prod.outlook.com (2603:10b6:5:c8::26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.20; Mon, 25 Oct 2021 05:46:29 +0000
+Received: from DM6PR11MB3065.namprd11.prod.outlook.com
+ ([fe80::ace2:ed94:516:31a7]) by DM6PR11MB3065.namprd11.prod.outlook.com
+ ([fe80::ace2:ed94:516:31a7%4]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 05:46:29 +0000
+From:   "A, Rashmi" <rashmi.a@intel.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kishon <kishon@ti.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        "kris.pan@linux.intel.com" <kris.pan@linux.intel.com>,
+        "Zhou, Furong" <furong.zhou@intel.com>,
+        "Sangannavar, Mallikarjunappa" 
+        <mallikarjunappa.sangannavar@intel.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "Vaidya, Mahesh R" <mahesh.r.vaidya@intel.com>,
+        "Srikandan, Nandhini" <nandhini.srikandan@intel.com>
+Subject: RE: [PATCH v2 0/4] Add support of eMMC PHY for Intel Thunder Bay
+Thread-Topic: [PATCH v2 0/4] Add support of eMMC PHY for Intel Thunder Bay
+Thread-Index: AQHXnQMuYeQydCD7LECFRtxjQUnwfKuje/GAgB8UJTCAAd8wgIAfGSXA
+Date:   Mon, 25 Oct 2021 05:46:28 +0000
+Message-ID: <DM6PR11MB30651D5F6C252EA70BAA43CE8C839@DM6PR11MB3065.namprd11.prod.outlook.com>
+References: <20210829182443.30802-1-rashmi.a@intel.com>
+ <CAPDyKFq2VQ=khYnmfsQGPPcpRnxyATVSpwKSZ4MTbKn64rthVA@mail.gmail.com>
+ <DM6PR11MB306560AE06F83FC56B9F89988CAE9@DM6PR11MB3065.namprd11.prod.outlook.com>
+ <YVwqVRkwAYnoJR6x@matsya>
+In-Reply-To: <YVwqVRkwAYnoJR6x@matsya>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 07985191-a36d-440f-aa10-08d9977acac0
+x-ms-traffictypediagnostic: DM6PR11MB2811:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <DM6PR11MB281151F58AA02706884E1E9D8C839@DM6PR11MB2811.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ngE7l13Z6xS7M3pvArBEMxPLLmbE8B/F3b4+Bk0XrPN/aWLHWyOwxpO+vI6y5QGFCoh3SStSrWAEwwIuCN76+T+V9IUAm4CMZOchaCWPwuAafX17KnTv8GqyRd5BUXPYNWAbnpYN/Ifklqm+Hv8YK8eGS4Y5NkAnp5JQkUb8BVKiK7LBtjO+En8eXHppILpk+MRjF1TC3DpIwbRrstkIPS6Ajp6wPmKg33NukaeT1IEAiozO5foB2tGqwdNN3pOuZD91a/9qiQ8/IrWDMzHm2Pvv0B3DSrdgdm2wDZ/yH3tcQ5+0F6zoiepnHOjC/iUV8M8PI8Ysp8lP1JE49BoIPOY+lDQy4DoBaJAp3skZ+dkmFbXiTYUj9tRf/NkB7c9Y2tQm7cgYxybp19yYCtTC++ex43LHO+qU1L9wlslc8HNGerfZNqkNKs9MENM7Ak2AGJBMF6azaTkiOv79RF8qLqyvAoH7qSyLyujaG/zRPPBx0D1KpIh+0jbV9Q3/8Cq86BgSe5+Zu677n4/4BVLzxxqTLnT+g6KuS8u0NZRZhtTNdVt2qKm/hqBDmBD+js4oJxP1l9P+Rj1ntmPBax18doEbrROWl7yVmXYSaGlKSnqCFO4zBVCuXY6pOfZT82miDiSvFZA+zKqAijZY8hR4bZI5v14vD4zmvmPbuw7q6kYJWwsB9Wa5YxbdqiKMU8BCZrJYzvwrumHMZ7aCsBFMQA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3065.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(54906003)(110136005)(86362001)(6506007)(55236004)(71200400001)(8936002)(38100700002)(53546011)(316002)(83380400001)(122000001)(82960400001)(7416002)(5660300002)(508600001)(186003)(8676002)(52536014)(9686003)(55016002)(38070700005)(4326008)(7696005)(2906002)(66476007)(66556008)(66446008)(76116006)(64756008)(66946007)(33656002)(4744005)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?p7VUuDHVAQM27czUm2NwxLhg0E2gmUkskKhXy2Mgw8zegsX0FjndsAgqPLaY?=
+ =?us-ascii?Q?AQ6QP8vMaot02P4/pb3uIdwmb2wtOzd7PtMly3uNqCymx/hGkm0rNtKPct/Y?=
+ =?us-ascii?Q?HVH8VsSQkun0uZZ+awhve2hV4/mdWuhPHTyTc4NyyAMAm3UFoo2olQtREUqk?=
+ =?us-ascii?Q?lAxiOVrXb/wtSNTRzzgW5mOHOeyM8pSQ7wWmdou7rcf4j+L8sVOlmFbA38+z?=
+ =?us-ascii?Q?1G7h9uiKSE7j+RiOFW1N7grhBU5wk/eyaLNG6gjO+jUBC1cVGu/cgP8P0/jy?=
+ =?us-ascii?Q?BNZTZOncKY17OJlfrHsw37RgK/y5P5J/kFp/jrfpnmJkkSRUyXGMN3RcwJuG?=
+ =?us-ascii?Q?j1Wa9GtEBF7Tc4homKxtN15dRFLr5oJHTNl8qKK5D69FZBJhSm3nlSoUkPB+?=
+ =?us-ascii?Q?2TEUe/EmD3kpjtA1yrFWBt5fLJZ3d7a4H/PTwsBQZ1istXHRTzYRkW3UhQuL?=
+ =?us-ascii?Q?nsLvnuPomzsrMBY56IKmKV7oYTJfEaoJ6vGeVPXmMGkFbpe4QPiNiQxQO7ny?=
+ =?us-ascii?Q?prcFXk0pLpeOG6JLiLoyfmvyRn8D+gNqCXy6nAzDR8ou5JfWnjJSjYvRmzcC?=
+ =?us-ascii?Q?e5ANkIkh2Z/+M+Idk8zFHOAjxGHvgkHW75nmEKGFi+Mn0Aif+F8/k83VMtcR?=
+ =?us-ascii?Q?TV0THo6Bvhlxosa6k6W/q6JMixJ0YwqHVweXbJpY76QCUyIHDad3CSZRHxBi?=
+ =?us-ascii?Q?efrWE3x7CGXL7gUQKljLHCv/0ZpkbYPsH3b/A8vnS9QWqMaom3Vm+s1lDgnn?=
+ =?us-ascii?Q?gwiNOBsvqiVH4IZ2p+Wx/TLb6hDXqk0Sym2gJr86h67L148yZxPEzj/8wvCI?=
+ =?us-ascii?Q?4bCMvJmKSVxl2aA6tO6a770xtOejMVcm5lm0uCQ1Fl8vknPl51MvakAQf/AP?=
+ =?us-ascii?Q?hMMES3ZtM/k4grJCReI9CYX4oYTEhc76JHAcCyviRXz5YnEivpB34J3yErbG?=
+ =?us-ascii?Q?0CcgOwe5XL2guHdZZLFu734MpmkPb9HuH0IptkhuTt5FQPI7eHYK9iiVymY3?=
+ =?us-ascii?Q?kedbW9GgIaG61rlwgdM31KY+xfaqmQhMBW02LaiVSaK9Rsw8ZEO2XSKllXkH?=
+ =?us-ascii?Q?MwiVzVE7rR1LIyw2DPAHih0S7TkVecpxV8ppM5ALW4+pgWyLNfiCI7FebaSo?=
+ =?us-ascii?Q?axlESiquCAzVfFF1DjiA+qAgDfda0VqlXDMPZj3VXrefGDXm8RmCKzxJ4ciy?=
+ =?us-ascii?Q?FheIRPvmLHenzbIvZbQxmenfjKcLzdJ+tYjk71eQ/Ig4e+8/u7j8OGCOUkjX?=
+ =?us-ascii?Q?aipYvF5EQXym+eJ0js55gSy3JbBdRH+7zXOexitBi5GRADKxNlMbcEa1WmQj?=
+ =?us-ascii?Q?VEe/83cazl2PPH/jq7rXOI4qGMuEssWQu+zXe4C8YdthbWMnsMW/H9K3J0us?=
+ =?us-ascii?Q?9jHXUDQtLjHecV1qxgE2TagOdFGcoHzssMkb+ea79AhOOUERZK/HQp0wrBCV?=
+ =?us-ascii?Q?rz6laPfiVtr7Uj49XaUIHS9JHssDIhu6a2n8rNhayRwAGr1bdaYRWFSMpA4m?=
+ =?us-ascii?Q?Q0erT1ikCxie4/PqDt1P7lKl2UqF1kFIUnTG31K9RV9QIlDDx0EwN6BkM2Wm?=
+ =?us-ascii?Q?TF3D7m79iNHoqydHvkxKvogL+u7Bz2WB19m6mPFC28JESO8zG7stloCwwYdv?=
+ =?us-ascii?Q?rg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3065.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07985191-a36d-440f-aa10-08d9977acac0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 05:46:28.6707
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tGvtxnNYsKlvXiVMNQEHaohjOPYMO3BodxJVA2iAkuc7lI7tf/QpdSiDJmBY/x4rs6lnKO1LiRD5zDXWboNFvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2811
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 14:04, Kiwoong Kim wrote:
->> On 19/10/2021 07:57, Kiwoong Kim wrote:
->>> Changes from v1:
->>> * Change the time to requeue pended commands
->>>
->>> When an scsi command is dispatched right after host complete all the
->>> pended requests and ufs driver tries to ring a doorbell, host might be
->>> still during entering into hibern8.
->>> If the hibern8 error occurrs during that period, the doorbell might
->>> not be zero and clearing it should have done.
->>> But, current ufshcd_err_handler goes directly to reset w/o clearing
->>> the doorbell when the driver's link state is broken.
->>
->> So you mean HCE 1->0 does not clear the doorbell register?
->>
->>> This patch is to requeue pended commands after host reset.
->>
->> So you mean HCE 0->1 does clear the doorbell register?
-> 
-> 
-> I talked about this again and maybe he didn't seem to accept its description like that
-> Because he just focused on the term 'disable' in the description.
-> Instead, there is an vendor sfr to clear all the contexts.
-> 
-> Yes, the description contains like this, but I think he could think it's done when setting one.
+
+
+> -----Original Message-----
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: Tuesday, October 5, 2021 4:05 PM
+> To: A, Rashmi <rashmi.a@intel.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>; Michal Simek
+> <michal.simek@xilinx.com>; linux-mmc <linux-mmc@vger.kernel.org>; Linux
+> ARM <linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List <li=
+nux-
+> kernel@vger.kernel.org>; Kishon <kishon@ti.com>; Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com>; linux-phy@lists.infradead.org; Mark
+> Gross <mgross@linux.intel.com>; kris.pan@linux.intel.com; Zhou, Furong
+> <furong.zhou@intel.com>; Sangannavar, Mallikarjunappa
+> <mallikarjunappa.sangannavar@intel.com>; Hunter, Adrian
+> <adrian.hunter@intel.com>; Vaidya, Mahesh R
+> <mahesh.r.vaidya@intel.com>; Srikandan, Nandhini
+> <nandhini.srikandan@intel.com>
+> Subject: Re: [PATCH v2 0/4] Add support of eMMC PHY for Intel Thunder Bay
+>=20
+> On 04-10-21, 06:04, A, Rashmi wrote:
+>=20
+> > Applied patch1 and patch2 for next, thus leaving the phy changes in
+> > patch3 and patch 4 for Kishon/Vinod to pick up.
+> >
+> > Thanks and kind regards
+> > Uffe
+> >
+> >
+> > Thanks Uffe,
+> > Hi Kishon/Vinod,
+> > 	Please let me know if you have any comments
+>=20
+> Need ack from Rob on binding patch
+>=20
 > --
-> When HCE is ‘0’ and software writes ‘1’, the host 
-> controller hardware shall execute the step 2 described in 7.1.1 of this standard, 
-> including >>>>> reset <<<<< of the host UTP and UIC layers.
-> 
-> Of course, some statements, such as 8.2.2. UIC Error Handling, seems to show setting zero means clearing.
-> But speaking the description, it's not quite clear to me.
-> 
-> Anyway, let me know how to deal with this.
+> ~Vinod
 
-It seems vendor-specific.  Perhaps export ufshcd_complete_requests()
-and call it from vendor ops->hce_enable_notify(hba, POST_CHANGE) ?
+Hi Rob Herring,
+	Please help to review the eMMC dt-binding patches
 
-Note that Bart submitted a patch to remove ufshcd_retry_aborted_requests().
+-Rashmi
