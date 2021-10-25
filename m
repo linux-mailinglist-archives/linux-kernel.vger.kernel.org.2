@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8C14394EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705C84394FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232905AbhJYLlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:41:07 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:35501 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231338AbhJYLlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:41:05 -0400
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A558B61EA191D;
-        Mon, 25 Oct 2021 13:38:40 +0200 (CEST)
-Message-ID: <5bba36e1-6dd7-8c29-1ec5-97815c8d7dc8@molgen.mpg.de>
-Date:   Mon, 25 Oct 2021 13:38:40 +0200
+        id S232990AbhJYLnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230058AbhJYLnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:43:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0710460F22;
+        Mon, 25 Oct 2021 11:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635162039;
+        bh=7iq1S2INfykGSss8PFEiH9xQxiYNWl/G6VXjyPTK3Xg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HsQctk6ETFurBfXm7FcghgFHqA89rr7OZaTamB8o4ejBAUOxn9i7gi/YlNMTmopq3
+         vauB/QYAFDzWsvNaW31VTq1eeWdWJ6c0F1AdtGYtsS6DIUEc99vhpZc66Dz9oeD9NY
+         RzbpyOvfjO4NiRhY7rY8I46cxUj4wIV5hia8e8ZcDn8mlgUW1FsTX4uvoIOnb/fTho
+         P1Z1hEQ1ZhkD38XJ9zxM0bkwux8BPpAkCwaGwGva2z/Z6i2DlXtsYAUIv37YkabUgV
+         ZTRheyYpe/AbfyX4/Xd6D022vquQQBoKDc7D7DfhnI+CLs+xw4TaoC50gSqJvmmM12
+         fOmsLGi7d4+JA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1meyKz-000196-Es; Mon, 25 Oct 2021 13:40:21 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] Bluetooth: fix division by zero in send path
+Date:   Mon, 25 Oct 2021 13:39:44 +0200
+Message-Id: <20211025113944.4350-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: I got an IOMMU IO page fault. What to do now?
-Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     iommu@lists.linux-foundation.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Xinhui Pan <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        it+linux-iommu@molgen.mpg.de
-References: <7a5123b0-6370-59dc-f0c2-8be5b370d9ba@molgen.mpg.de>
- <0cfccc44-6cc6-98f5-ecd6-2f376839ec18@gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <0cfccc44-6cc6-98f5-ecd6-2f376839ec18@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Christian,
+Add the missing bulk-out endpoint sanity check to probe() to avoid
+division by zero in bfusb_send_frame() in case a malicious device has
+broken descriptors (or when doing descriptor fuzz testing).
 
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-Thank you for your reply.
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/bluetooth/bfusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/bluetooth/bfusb.c b/drivers/bluetooth/bfusb.c
+index 5a321b4076aa..df80fb324356 100644
+--- a/drivers/bluetooth/bfusb.c
++++ b/drivers/bluetooth/bfusb.c
+@@ -627,6 +627,8 @@ static int bfusb_probe(struct usb_interface *intf, const struct usb_device_id *i
+ 	data->bulk_in_ep    = bulk_in_ep->desc.bEndpointAddress;
+ 	data->bulk_out_ep   = bulk_out_ep->desc.bEndpointAddress;
+ 	data->bulk_pkt_size = le16_to_cpu(bulk_out_ep->desc.wMaxPacketSize);
++	if (!data->bulk_pkt_size)
++		goto done;
+ 
+ 	rwlock_init(&data->lock);
+ 
+-- 
+2.32.0
 
-On 25.10.21 13:23, Christian König wrote:
-
-> not sure how the IOMMU gives out addresses, but the printed ones look 
-> suspicious to me. Something like we are using an invalid address like -1 
-> or similar.
-> 
-> Can you try that on an up to date kernel as well? E.g. ideally bleeding 
-> edge amd-staging-drm-next from Alex repository.
-
-These are production desktops, so I’d need to talk to the user. 
-Currently, Linux 5.10.70 is running.
-
-
-Kind regards,
-
-Paul
