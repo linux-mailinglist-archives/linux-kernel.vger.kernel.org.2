@@ -2,133 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D17439A91
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F19439A96
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhJYPe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:34:27 -0400
-Received: from mail-eopbgr1410132.outbound.protection.outlook.com ([40.107.141.132]:6160
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230348AbhJYPeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:34:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L9aUFbGkdhTvkmDbobhqyNsq+3SFrnG56RzviES9JlhnNlELhJQUURRsaAovaA3r2+uvigxKgxGjY1Gz0VlZG27qW6u/NFr8pVNZ7jcvmRZE/23Dea/K7N1E0HpO4SiV1kZWYXHA2cptCB8Lx+58ebQwgwKdEXcQQ7aBgfj0mpmpMSNix9fPElKkY+ypl5gACeKOSlrAoEH8ahUI2PMfltynfrRz6arqYTOgO4bnWvhwCvnpt6MO9Eu+0DG6K0tysMnxo31RQs8K07n+fk9QNwd0aEH1sS9tb3X3/vOkHdLtN3ynqshFqb0lQoBpGCgwpgGcDAabSDaY93gBoSYAEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YlpmznFBq4KXSdLnJN8p+GCz9vGjXOVJskyOQBhoHV8=;
- b=jkJok7ZUtniLLQIH2B7lHdv18DqN+DE6Cv+PjB6+x4eq/tVposI+k8Cd3k8tPHzrBeNlXUbwY5FS8lWHdL1x89AMaVH4Ne6diTVwK7daNcRaNorT+Z8xCho6i6LLB1CszydhDKKsnfN7iurZFnstBe4O14NQ9fv5uapZEQiZxXC0u5nMTg4cSEhmkiIUO/gOgMzbmzeTyTTolcCogRUNZI+yv11/5nPJyQpIhVij4ukfxDpCilXXmo8YcLmcltwHVlkMh1C87m5lXIRwmD8gNJF5yxvVrjY+dUz3tmY1wR5mxlGl4KcHrGXnC4BpafbYdwFtf+trNUXxsy7UcIhnLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
- header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YlpmznFBq4KXSdLnJN8p+GCz9vGjXOVJskyOQBhoHV8=;
- b=k44xQ8Ub8pD1lBTKlzMM+pAGjepAjQNp6kbf+3KE+/qeZ6SQfcNPzNmA8JgCpM55n+nOw8HRVGxmyQ+bBaZKi4t+M3au8hDbit+ryQHwmJ9XpjnsS+7HQTOTHxYRLvyBOS//kWBVTf1nRZd53sJU31jlNrhpYSuzJ447ZFP6Sxw=
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
- TYCP286MB0750.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:7d::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.15; Mon, 25 Oct 2021 15:31:56 +0000
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 15:31:56 +0000
-From:   YE Chengfeng <cyeaa@connect.ust.hk>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "john.garry@huawei.com" <john.garry@huawei.com>
-Subject: =?gb2312?B?u9i4tDogZHJpdmVyL2J1Zzogc3VzcGVjdGVkIG1pc3NpbmcgbnVsbCBjaGVj?=
- =?gb2312?Q?k_in_hisi=5Flpc.c?=
-Thread-Topic: driver/bug: suspected missing null check in hisi_lpc.c
-Thread-Index: AdfJtAX2fMFFx03OTqmNb23By5R1KQAAUCzA
-Date:   Mon, 25 Oct 2021 15:31:56 +0000
-Message-ID: <TYCP286MB1188596CE44B1236D4EDD4B88A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-References: <TYCP286MB118803910D5797B4B1B1938D8A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-In-Reply-To: <TYCP286MB118803910D5797B4B1B1938D8A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=connect.ust.hk;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ba506451-3c96-425b-eeee-08d997cc9438
-x-ms-traffictypediagnostic: TYCP286MB0750:
-x-microsoft-antispam-prvs: <TYCP286MB07502D6FCC2964948FAB41878A839@TYCP286MB0750.JPNP286.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8/+Yg7FPbkluGv4FeW8fRH2Uk+YITH3GP40j4qtEORrIiyPsRc2dBGJuJNxiLf3VZMZwqLHGiuXuN9K/cmErzUjF0YuXq5gsv9xHUATd30HrSqQoANSPSHIBDM/K2AAfUqsaer1U7gNsgwOp/n2XbkFuJ/jFLqslwTFusoCdpxvz4PO3yPb/P+T6Jrt5BY/TTTsRkEXzrk0hun/fUFjEp8x6TJqJ3HsM7ZhnZBHQurw9mz6dkisRNIlzW7m3AyrMo5auZBbbjZmdCtyiOXpd3vXMN/L4M0T1HOe8XLZ+eAzRItdHrqVjzWvLc0lo0hUpiuKABGPk2HaL/fUYdTmdgutl+PRorodWfX/lGbhc4jqupYxsErhlhdnmLIuU7BBCfQmueztkVn2IJBNkOJ/RZrXdG9er+8D/CHYFrFB9q0rdJX594TwTbtXPhypYhqhWs9JgoA2ZLIix93uzFsojYxD/gckLC++HvHVEiJn1AIzC1iXqzNk0flvHjKcgC+CV9+2zNVuz/UrJDHo1DP7QbhRs2vp6ovi9dEWaRkptumJnBhjrJEQxV4Lzx/JnZvC9+aJHjDiEEIAVZWQ9JBiUP/IgYKKSyse9NL49XkibTW35wDo04EsemCMlxjDTg/VEtqIV+TdTKpZxFdv9Tgp1JXVO5kXqU2AVMBhgzp5yxwigS57lvOoy+gKhxVcyggGkLIPUYyslWw3TOiYvtqHhBcYQPxKJuKQpXZXXMCYgz+ee8V+PyuVGjKtbd7XIyiH40cQQrL74t8x0R+iN3vgU06DGQylV/U7UDIYXSZ3W+vg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(508600001)(8936002)(26005)(224303003)(66476007)(66446008)(64756008)(966005)(33656002)(122000001)(4744005)(66946007)(186003)(71200400001)(66556008)(86362001)(9686003)(52536014)(7696005)(83380400001)(55016002)(5660300002)(786003)(2940100002)(110136005)(76116006)(6506007)(316002)(38070700005)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?ajJTQnQ1eVZQMFdVcDdOT2t4aG93RTVlNEVnRlJ6cHVtUjl0MmxFRmFHWGU2?=
- =?gb2312?B?eTFGckI3YktHN29wTjFrSGVMQzlJSFZ4QVRMQ0wwWnhHMXh5ZURLUnVJbUEy?=
- =?gb2312?B?eTRkQ1lDRW52Yy9qMnpoYlIyTkFHaFN2N0FxV2o5TlNpeU9IUW54bk9rbG43?=
- =?gb2312?B?TEtRNFVlU3Nib2pKanh3K3dKb1pFaS9OV1lQcDFtS2ZvL0kyZG1CMVltNkFh?=
- =?gb2312?B?WXJidEpheGxTc3RFZ1FPYTRiNXVucUdiYnd6TWRuZnZhdDZ0QmlTUmc5dTB2?=
- =?gb2312?B?bkRKakdhSTBBQmJlM0pVN3lJWStPSys3eEpvL0RUdVAvejdrU1hEM0pjVG1j?=
- =?gb2312?B?eWhkZFdQSDA1QTVXdzB1bk96b3RSd29QSmdxbGQrcGdXZTZRTGtiZXBQamIz?=
- =?gb2312?B?UDVxOFVObkdrR0djODg0YnovRnpySmlsUWIyVUQ5S3Z1bk54Mk1waWtmOFQw?=
- =?gb2312?B?UitXc1RGSHAvaVJTSUNBWEFXUkkySlJ4MWJHODY0RjZSSUNtOHc4ZUtaMWR0?=
- =?gb2312?B?MEJKb3g4Z2ZFcnJSMjVWVGFCR25jNHM0djBJTW1sbEtNcWxHeE5qbkwzTStx?=
- =?gb2312?B?VEs5K2IxaitEQUc5US9MV29CQTNGMGFrK0M4UWNDQU5CLzhFTWRXRHJZRHZL?=
- =?gb2312?B?cDZrVzdOYW9nMzg1NUVMOXhFTzJXS3QzSWRrVk9mb0crbWRKb0FhNEtrcUNp?=
- =?gb2312?B?aFFkM0pYaHFTOFhsVFFBREkzMjdKM0REczc4S1lSRHVTVllvZ3ovRFFycG5v?=
- =?gb2312?B?TTYrczJpTHQ3VG1PMVlvemx1QzI3alB3bzgreXY5U2E1QkYwUiszdXBsZ3M1?=
- =?gb2312?B?eTRzTG5LaW5hNjhmV2pmSFdTQWdpeFhZaGJaN3JTcm44WjhTZmlReWFzZkF3?=
- =?gb2312?B?S3ZnYjRyLzVoa3BmRVU3NnEvcnpZZDVuajNSTnRocWwwa1ppa1pKaVR5aWZp?=
- =?gb2312?B?TGVjTnpINUF2Z3FJek51TERBbXpCa3U0L1cvd1RIeWUzTVc1MUgxcUZsUlFw?=
- =?gb2312?B?WVJRdGU2YThmaFZENEFoaWZBOGM5eUhXODM2aUtxblp5akZ1elJXYjBSSWZX?=
- =?gb2312?B?aVFvQ1lJa3RueHZ4YVpQdThPaEtoWXBuK2R3bHY2UnZzM2RVUVhlWXByUTRw?=
- =?gb2312?B?SndaU0toRlhKWGxFTUpaTWxGNW1mVEV6eHdrV0IxbGc0aFlDRkNtbzhPNTFm?=
- =?gb2312?B?R0xuR095SjV4cTdrZVJNTnMrNVArVjBaVmVvd2tkN3J3eFZ1bCsxcTk2ZkZr?=
- =?gb2312?B?NXFyaStSNUpHcXVhUldKenRNY0ZaVGQ1SSs5cGhidmJZU1ZXRlRnejJ6QXZj?=
- =?gb2312?B?L3EvYVBCL2V6WFlndXZXYzR5ZUpiOGYwNTdlSkV3Y1d0SVVBUTc0NjFYVnM0?=
- =?gb2312?B?eUVsei8rbTJZMFRBRDZpM3NDZmpLSmFNSkJiNjBYVmEyakVJK00vbkF2elBY?=
- =?gb2312?B?QXFHemJ4djhublFrOElESXA4S2ZMZmtyanhRZ01DK1VuYjBBWFZTRy9qc2o5?=
- =?gb2312?B?UUJlVi8yUFhLa0h6SW9xbXdDTG93TkdMM2tGeHBZQUl2TDVieEpNaTByMDAx?=
- =?gb2312?B?eXdmeERuRkZ6ajhMK0RjK2NUbjM2dzN0MFc3ZGVnNjQvNTBkTFlFWHZKaVBl?=
- =?gb2312?B?cmhVcUtuSTBIM2g4V0haeTJLRm5QVlk2bm9zUjRVbURJU2NpaTJuNnp0dlZs?=
- =?gb2312?B?MkFLUFZycmd6aWJyRlBTYjRnd2xHbksxRExvMUl4RFpONklOK013bVVmUm9V?=
- =?gb2312?B?Mks1NW5FQlJyZGNSeWJvNWZDRGdETDZUaU5uNVk4QVhXYnJac3pNQTIrcUN4?=
- =?gb2312?B?WFF4WmtIeDZmNkw0Mjg1Sys1NFcrOEFEeTVkbHQwbnpXai9temdCMWNrekxk?=
- =?gb2312?B?V3h5Sms2eWtZTmNwNUluakhPTytJUlJxaHI3djRGeXh0Sm1QQjBpcXpvbVAx?=
- =?gb2312?B?azAybjRWeTUyTlRCdzNBWnBLcGxZbUxYdklOdm5heFFBSk5JQ2ljNk1Sbjcw?=
- =?gb2312?B?R2xlUFQrQXkzUUNFOUxDd3hiUFdaRlhtKytnVlZHSmJ6azd4RzhCMHZtU3Fw?=
- =?gb2312?B?QW9QQ21iMVdvcFY1cldudlI4alAwTWo3RXFVbTRUM3FQL2tDSXVTV01ValV0?=
- =?gb2312?B?SjJ6ckduNXVrbWtRTmtGb3JOWS85b0Z1WTYyZXJINXpkV2h6bEcwV0QrczVt?=
- =?gb2312?Q?pvvWbTFIYZ5Da1u4XItGt5Q=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S233774AbhJYPhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhJYPhu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:37:50 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5DFC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:35:28 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id j12so12166127qkk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:35:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=APD+8v+yzG8mONZt5PB1dtOtV91cn6z6YYGiPhcEgzo=;
+        b=CZaXqzxgV/rFXwcgME6NqnXsQ2goBIjelkXHFJWnQcpvj8y/TgAuRvl1PplMgFMRk9
+         3NeQRqG0cgoeOAyt4otEEMtnupURSPQnffElUrBbakcf5GHNQRYYjEBbBh7per+4WjTd
+         5mcpx+8Y7OSDPjwvdaGXaDiF0A4jDQ+V+Nuo+Y98Saezte+NRxzJpqwnOQ65PsL5mB4u
+         3A9AIUTPKaNLCUotpFMISOnVrGrM9f1u0qTDIGNxDl++B8T2DUETdBLlXg0QBGqzKRlU
+         g1vSkVFXOWF7o8DFyVZRhOW4UXcgnoGA3T1niASsvcEk4BFF2zKLow7cl/6i0sBXErcM
+         DdCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=APD+8v+yzG8mONZt5PB1dtOtV91cn6z6YYGiPhcEgzo=;
+        b=A0R2juAOJ4a3u1iKBHdKL+Q0StOhlN/b0IntS475dDn/Z00A6vohp1mI/ZtJwrGqZy
+         6F4DlS6E5ReR8PrF3z4HRmnyx5z9KWuljSJWxa2IwQZjJMrAwXFACylzrEvbxC5PsQU3
+         Lk3TqcXRfQgrJKmk3eaDT5L+mbQXsgDWXgba+R43zpvMogOnFGDq5SpIla26+BsNsUpq
+         675rcRiuRiAQ+BnENxkTyAqEG/+lSVsCXa5q1yoKDrmP+JkogE1odi6QjhVDiazMEBJm
+         7Y+Du22uxOxpzSoiDz0jSPDHbad40w42b7KXOyYRxg9lfB86JWcS1Mb4nIO6pq15K5+l
+         2bqg==
+X-Gm-Message-State: AOAM531Jj56ODZ7cokaO1ce3PHtCVTiKUY+ll9dmYSUTuKApMpwocr6P
+        Yz4R0CXiyJ1gjhxBUL9RlWg00w==
+X-Google-Smtp-Source: ABdhPJzmVFGhPfVSLkQOPVn1nGoegSO3FOQ76nXsoSKE95o+yQ+MZFcyN6qf3Zw8X8sO51h9V6juHg==
+X-Received: by 2002:a37:aa43:: with SMTP id t64mr13450043qke.233.1635176127558;
+        Mon, 25 Oct 2021 08:35:27 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id t26sm8649908qtq.77.2021.10.25.08.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 08:35:26 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 11:35:25 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXbOvR6jMXZ0WPcM@cmpxchg.org>
+References: <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <YXBUPguecSeSO6UD@moria.home.lan>
+ <YXHdpQTL1Udz48fc@cmpxchg.org>
+ <YXIZX0truEBv2YSz@casper.infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: connect.ust.hk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba506451-3c96-425b-eeee-08d997cc9438
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 15:31:56.2799
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: djyIFGYkG3lHTeVP3XurZ6HY32ptGwue6rHtoCNSN3Gx7M4NKaRoEgWVyZTj+H1qETYMtrelatNjG0W96pBRog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB0750
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXIZX0truEBv2YSz@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SXQgaXMgZHJpdmVyL2J1cywgc29ycnkgZm9yIHRoZSB0eXBvLg0KDQotLS0tLdPKvP7Urbz+LS0t
-LS0NCreivP7IyzogWUUgQ2hlbmdmZW5nIA0Kt6LLzcqxvOQ6IDIwMjHE6jEw1MIyNcjVIDIzOjIy
-DQrK1bz+yMs6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGpvaG4uZ2FycnlAaHVhd2Vp
-LmNvbQ0K1vfM4jogZHJpdmVyL2J1Zzogc3VzcGVjdGVkIG1pc3NpbmcgbnVsbCBjaGVjayBpbiBo
-aXNpX2xwYy5jDQoNCkhpLA0KDQpodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxv
-Yi9tYXN0ZXIvZHJpdmVycy9idXMvaGlzaV9scGMuYyNMNDgzDQoNCk91ciBleHBlcmltZW50YWwg
-c3RhdGljIGFuYWx5c2lzIHRvb2wgZGV0ZWN0cyBhIG51bGwtcHRyLXJlZmVyZW5jZSBwcm9ibGVt
-LiBJdCBjb3VsZCBiZSBmYWxzZSBwb3NpdGl2ZSwgd2UgcmVwb3J0IHRoaXMgdG8geW91IGp1c3Qg
-aW4gY2FzZS4NCg0KTnVsbCBjaGVjayBpcyBtaXNzaW5nIGZvciB0aGUgcmV0dXJuIHBvaW50ZXIg
-b2YgQUNQSV9DT01QQU5JT04gYXQgbGluZSA0ODMgYW5kIGxpbmUgNTA0LiBJdCBzZWVtcyB0aGF0
-IHRoZXJlIGNvdWxkIGJlIHBvdGVudGlhbCBudWxsLXB0ci1kZXJlZmVyZW5jZSBwcm9ibGVtIGF0
-IGxpbmUgNDg4IGFuZCBsaW5lIDUwOS4gQ291bGQgeW91IHNwYXJlIHNvbWUgdGltZSB0byBoYXZl
-IGEgbG9vayBhdCBpdD8NCg0KVGhhbmtzIHNvIG11Y2gsDQpDaGVuZ2ZlbmcNCg==
+On Fri, Oct 22, 2021 at 02:52:31AM +0100, Matthew Wilcox wrote:
+> > Anyway. I can even be convinved that we can figure out the exact fault
+> > lines along which we split the page down the road.
+> > 
+> > My worry is more about 2). A shared type and generic code is likely to
+> > emerge regardless of how we split it. Think about it, the only world
+> > in which that isn't true would be one in which either
+> > 
+> > 	a) page subtypes are all the same, or
+> > 	b) the subtypes have nothing in common
+> > 
+> > and both are clearly bogus.
+> 
+> Amen!
+> 
+> I'm convinced that pgtable, slab and zsmalloc uses of struct page can all
+> be split out into their own types instead of being folios.  They have
+> little-to-nothing in common with anon+file; they can't be mapped into
+> userspace and they can't be on the LRU.  The only situation you can find
+> them in is something like compaction which walks PFNs.
+
+They can all be accounted to a cgroup. pgtables are tracked the same
+as other __GFP_ACCOUNT pages (pipe buffers and kernel stacks right now
+from a quick grep, but as you can guess that's open-ended).
+
+So if those all aren't folios, the generic type and the interfacing
+object for memcg and accounting would continue to be the page.
+
+> Perhaps you could comment on how you'd see separate anon_mem and
+> file_mem types working for the memcg code?  Would you want to have
+> separate lock_anon_memcg() and lock_file_memcg(), or would you want
+> them to be cast to a common type like lock_folio_memcg()?
+
+That should be lock_<generic>_memcg() since it actually serializes and
+protects the same thing for all subtypes (unlike lock_page()!).
+
+The memcg interface is fully type agnostic nowadays, but it also needs
+to be able to handle any subtype. It should continue to interface with
+the broadest, most generic definition of "chunk of memory".
+
+Notably it does not do tailpages (and I don't see how it ever would),
+so it could in theory use the folio - but only if the folio is really
+the systematic replacement of absolutely *everything* that isn't a
+tailpage - including pgtables, kernel stack, pipe buffers, and all
+other random alloc_page() calls spread throughout the code base. Not
+just conceptually, but an actual wholesale replacement of struct page
+throughout allocation sites.
+
+I'm not sure that's realistic. So I'm thinking struct page will likely
+be the interfacing object for memcg for the foreseeable future.
