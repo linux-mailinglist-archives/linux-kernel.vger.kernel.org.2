@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CF0438F8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F95438F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhJYGdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:33:33 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:48869 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230369AbhJYGdb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:33:31 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4419B5C0178;
-        Mon, 25 Oct 2021 02:31:09 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 25 Oct 2021 02:31:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XH3xdt
-        bLhapmmW0JYmN5pD0fjj0gtqEc7lDkeWFuh3o=; b=Yu51eIJfHMCYnk01d/iAoa
-        724YShrQPbLtKdi0ukgyahPHDyYPYDQbjQ3r0wG9B90G/xYbi9KPIJ9i5Nf1ibWa
-        TfwCz4el+keN0w/cBANLpr2mUgW9lGEIdUVy7n0vGJAyo7U6FGRoNRXYL3hEa14D
-        h/T8JzCoi/9QsR5PL+j/gM9m64r4EhepbBQN6t/YZ3e6bA4iJAMg548HX98exKQU
-        fc6yiuhKxOh+gmzuhR2/VKplv9nPzDe/jx2c0qAUme4UsWtdXQXVOkOC62gpRFjB
-        3VbacqHY5xLUWqm7dns1kFpGbyzMV4w7ZMDbtCms8Q2OoaiU46pqbeDPbJ87wCoQ
-        ==
-X-ME-Sender: <xms:LE92YVQSafIH0CLsUelwfQoMv5h9cA3haHYo26u-1cMOhgL1Bcd4EQ>
-    <xme:LE92YexhmqJA_pNtmW4xMKR94ohD_aGolrCwLYtNaeD6X309abkEM0TYJgMRAEgtE
-    jt5VP8uFHsxTmk>
-X-ME-Received: <xmr:LE92Ya0RptTljgks0vgfx7dL3j2msyXHjZZKoppEr0xV53VYC-LJjJhc86_ZV0wAQhK_5x9v1qnmdW_UEqyBNevXI_o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
-    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:LE92YdBg9lQMX4kBB7KhwGQqilSHN2S6yUPXrrgou2F2Snp-MzZmdQ>
-    <xmx:LE92Yejc5WMoWthGNo6pbQ8mLbY9u7kzDdmWhAG3-9Adjs451nF_iw>
-    <xmx:LE92YRobHmQhzKGgCPDiaPq_xpgA4xSoOxXke1-6ddgFlnFti63BnQ>
-    <xmx:LU92YQb56BhiT645waIomlLOgFXtQUWOA88EJBnQAK38gVPEvoJ2IA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Oct 2021 02:31:07 -0400 (EDT)
-Date:   Mon, 25 Oct 2021 09:31:03 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mlxsw: spectrum: Use 'bitmap_zalloc()' when applicable
-Message-ID: <YXZPJxuPEDbPV5w7@shredder>
-References: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
+        id S231250AbhJYGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:33:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230369AbhJYGdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:33:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E180E60E09;
+        Mon, 25 Oct 2021 06:31:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635143487;
+        bh=w0wt2RzbUmzFsn9gjSb7RtbSu2VKVQcA+1obxbpkBtw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YAHIL+vC76firAy7T3DBeUnbIXP6C25M/4Qp/Ww5/kmcMBkZwIaAcnXabdBplwpRH
+         yJKRih7lqyB9PBIuVoBT5I2msrSby7ZHPv7t7MuqL5uMqfZ0htjq408f8Y7z5Aa+t/
+         V4sTAWX6ssNkWjDi3EnQ76Ns7WBS/wC51Sl5bGAuZdvtO2VWzu3clNJEvYw9Ctq2P1
+         0Gf55/NtGlaD9x8jFqZU7XdyUvL30Kn8hlp6YrUwIPL8wyzkCQMIGbo7vDx9nsWx24
+         QqJgZp92R5NYdayJ7QIw1mHk0OMl5hBQ0+WbnBee4U/suRE1nlC8z+BYQpdW6ahzud
+         w72Vz/20YBfkg==
+Date:   Mon, 25 Oct 2021 12:01:23 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jianqiang Chen <jianqiang.chen@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: remove debugfs #ifdef
+Message-ID: <YXZPO6z2emwXe5DA@matsya>
+References: <20210920122017.205975-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20210920122017.205975-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 09:17:51PM +0200, Christophe JAILLET wrote:
-> Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid
-> some open-coded arithmetic in allocator arguments.
+On 20-09-21, 14:20, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-> consistency.
+> The ptdma driver has added debugfs support, but this fails to build
+> when debugfs is disabled:
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> drivers/dma/ptdma/ptdma-debugfs.c: In function 'ptdma_debugfs_setup':
+> drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: 'struct dma_device' has no member named 'dbg_dev_root'
+>    93 |         debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
+>       |                                                      ^
+> drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: 'struct dma_device' has no member named 'dbg_dev_root'
+>    96 |         debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
+>       |                                                       ^
+> drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: 'struct dma_device' has no member named 'dbg_dev_root'
+>   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
+>       |                                                    ^
+> 
+> Remove the #ifdef in the header, as this only saves a few bytes,
+> but would require ugly #ifdefs in each driver using it.
+> Simplify the other user while we're at it.
 
-For net-next:
+Applied, thanks
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-
-Thanks
+-- 
+~Vinod
