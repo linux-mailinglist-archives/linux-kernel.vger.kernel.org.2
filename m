@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2FA439967
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA3A43996A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhJYO6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230268AbhJYO5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:57:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FEE86103B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635173729;
-        bh=v35gq3+4P5DC3vkeKUNcLSgbcP1wFHUYLLL8LD21IOU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iuGLcz8Qf/8bLTEEuXVEmlYjIpdwPuaiJs8j+Azg+FmWX0t6E+GuEyX2PTTTiDb/M
-         bVRaadAV5u6/vEbwO2kahshnZSyRXr0i+Mi2BSSJJOXUu210DVXlfpK2aQxeQyfXLJ
-         5sCl+x2rmom0fSdDOHlMhhoNJtbhlCXHTFpL+KRcKFHBsLsYXThWNiaDoT7X8hcAOZ
-         JoZn8B2EBOcpKZk4FIE2E73unRdaonJqBghn8kbD+wvj0Y45yg7xw8433+fJAk+4KF
-         5Kp2SBqzCNBhu4y49NBj8tvGQRkwLL0A8QYnfPrMhFSzChZ/xgNP/RZ/kTCQABsQuR
-         th9Jx6Qa+MFvQ==
-Received: by mail-oi1-f181.google.com with SMTP id r6so15934169oiw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:55:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532C4Kk8styEYqmsCS5NNp7EphUaO4ivHW3Egn5v30svWGbIsS9i
-        5u8RQaN9xBjvAx/4qk+IFnjsOkw+FIpzHBrjoac=
-X-Google-Smtp-Source: ABdhPJzPKFwx/aTU/TiGOpftBOoX6KFfI2ildkT0MEfX6CzQ9Cfbjr8wH/NgOGaM/1MjX78Euf+wNxMblpTRWbFAui8=
-X-Received: by 2002:aca:1712:: with SMTP id j18mr12645020oii.33.1635173728690;
- Mon, 25 Oct 2021 07:55:28 -0700 (PDT)
+        id S233629AbhJYO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:58:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52886 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhJYO6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:58:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D4790218B0;
+        Mon, 25 Oct 2021 14:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635173790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtqiJHq8zuWsjUAFlcfMCqR4fr77OchepUlZR3e94fI=;
+        b=FN3DSXPzbzFZ1eiR+q19iiK1WqL+9W76nWnCKbE6Hvy3HDswx3rxfnRvM0rUOvzxxXhjxy
+        /V8l8UsXuSr9ov5xT+zTwWT5SZ8a8OMyixDCTP3+pATodSk7lVG+2IvA6xTqAu1+iSeCht
+        G9t9RANQ3TdzT0GPUkBZ7Vepwqq6H0o=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A2EB1A3B8A;
+        Mon, 25 Oct 2021 14:56:30 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 16:56:28 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     NeilBrown <neilb@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YXbFnMA4WUSLFp7q@dhcp22.suse.cz>
+References: <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
+ <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
+ <20211020192430.GA1861@pc638.lan>
+ <163481121586.17149.4002493290882319236@noble.neil.brown.name>
+ <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
+ <20211021104038.GA1932@pc638.lan>
+ <163485654850.17149.3604437537345538737@noble.neil.brown.name>
+ <20211025094841.GA1945@pc638.lan>
+ <YXaTBrhEqTZhTJYX@dhcp22.suse.cz>
+ <CA+KHdyWeQ77uWg5GxJGYiNeG_2ZuKu62-i=L7kqhw__g--XGYg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211025122102.46089-1-frederic@kernel.org> <20211025122102.46089-3-frederic@kernel.org>
- <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net> <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
- <YXa85OTw7i3Bg9yj@hirez.programming.kicks-ass.net> <YXbC3NRWDDfsW6DG@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXbC3NRWDDfsW6DG@hirez.programming.kicks-ass.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 25 Oct 2021 16:55:17 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
-Message-ID: <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        James Morse <james.morse@arm.com>,
-        David Laight <David.Laight@aculab.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+KHdyWeQ77uWg5GxJGYiNeG_2ZuKu62-i=L7kqhw__g--XGYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 16:47, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Oct 25, 2021 at 04:19:16PM +0200, Peter Zijlstra wrote:
-> > On Mon, Oct 25, 2021 at 04:08:37PM +0200, Ard Biesheuvel wrote:
->
-> > > > Ooohh, but what if you go from !func to NOP.
-> > > >
-> > > > assuming:
-> > > >
-> > > >         .literal = 0
-> > > >         BTI C
-> > > >         RET
-> > > >
-> > > > Then
-> > > >
-> > > >         CPU0                    CPU1
-> > > >
-> > > >         [S] literal = func      [I] NOP
-> > > >         [S] insn[1] = NOP       [L] x16 = literal (NULL)
-> > > >                                 b x16
-> > > >                                 *BANG*
-> > > >
-> > > > Is that possible? (total lack of memory ordering etc..)
-> > > >
-> > >
-> > > The CBZ will branch to the RET instruction if x16 == 0x0, so this
-> > > should not happen.
+On Mon 25-10-21 16:30:23, Uladzislau Rezki wrote:
 > >
-> > Oooh, I missed that :/ I was about to suggest writing the address of a
-> > bare 'ret' trampoline instead of NULL into the literal.
->
-> Perhaps a little something like so.. Shaves 2 instructions off each
-> trampoline.
->
-> --- a/arch/arm64/include/asm/static_call.h
-> +++ b/arch/arm64/include/asm/static_call.h
-> @@ -11,9 +11,7 @@
->             "   hint    34      /* BTI C */                             \n" \
->                 insn "                                                  \n" \
->             "   ldr     x16, 0b                                         \n" \
-> -           "   cbz     x16, 1f                                         \n" \
->             "   br      x16                                             \n" \
-> -           "1: ret                                                     \n" \
->             "   .popsection                                             \n")
->
->  #define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)                      \
-> --- a/arch/arm64/kernel/patching.c
-> +++ b/arch/arm64/kernel/patching.c
-> @@ -90,6 +90,11 @@ int __kprobes aarch64_insn_write(void *a
->         return __aarch64_insn_write(addr, &i, AARCH64_INSN_SIZE);
->  }
->
-> +asm("__static_call_ret:                \n"
-> +    "  ret                     \n")
-> +
+> > I would really prefer if this was not the main point of arguing here.
+> > Unless you feel strongly about msleep I would go with schedule_timeout
+> > here because this is a more widely used interface in the mm code and
+> > also because I feel like that relying on the rounding behavior is just
+> > subtle. Here is what I have staged now.
+> >
+> I have a preference but do not have a strong opinion here. You can go
+> either way you want.
+> 
+> >
+> > Are there any other concerns you see with this or other patches in the
+> > series?
+> >
+> it is better if you could send a new vX version because it is hard to
+> combine every "folded"
 
-This breaks BTI as it lacks the landing pad, and it will be called indirectly.
+Yeah, I plan to soon. I just wanted to sort out most things before
+spaming with a new version.
 
-> +extern void __static_call_ret(void);
-> +
+> into one solid commit. One comment below:
+> 
+> > ---
+> > commit c1a7e40e6b56fed5b9e716de7055b77ea29d89d0
+> > Author: Michal Hocko <mhocko@suse.com>
+> > Date:   Wed Oct 20 10:12:45 2021 +0200
+> >
+> >     fold me "mm/vmalloc: add support for __GFP_NOFAIL"
+> >
+> >     Add a short sleep before retrying. 1 jiffy is a completely random
+> >     timeout. Ideally the retry would wait for an explicit event - e.g.
+> >     a change to the vmalloc space change if the failure was caused by
+> >     the space fragmentation or depletion. But there are multiple different
+> >     reasons to retry and this could become much more complex. Keep the retry
+> >     simple for now and just sleep to prevent from hogging CPUs.
+> >
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 0fb5413d9239..a866db0c9c31 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -2944,6 +2944,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> >         do {
+> >                 ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> >                         page_shift);
+> > +               schedule_timeout_uninterruptible(1);
+> >
+> We do not want to schedule_timeout_uninterruptible(1); every time.
+> Only when an error is detected.
 
-Better to have an ordinary C function here (with consistent linkage),
-but we need to take the address in a way that works with Clang CFI.
-
-As the two additional instructions are on an ice cold path anyway, I'm
-not sure this is an obvious improvement tbh.
-
->  void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
->  {
->         /*
-> @@ -97,9 +102,7 @@ void arch_static_call_transform(void *si
->          *  0x0 bti c           <--- trampoline entry point
->          *  0x4 <branch or nop>
->          *  0x8 ldr x16, <literal>
-> -        *  0xc cbz x16, 20
-> -        * 0x10 br x16
-> -        * 0x14 ret
-> +        *  0xc br x16
->          */
->         struct {
->                 u64     literal;
-> @@ -113,6 +116,7 @@ void arch_static_call_transform(void *si
->         insns.insn[0] = cpu_to_le32(insn);
->
->         if (!func) {
-> +               insns.literal = (unsigned long)&__static_call_ret;
->                 insn = aarch64_insn_gen_branch_reg(AARCH64_INSN_REG_LR,
->                                                    AARCH64_INSN_BRANCH_RETURN);
->         } else {
+Because I was obviously in a brainless mode when doing that one. Thanks
+for pointing this out!
+-- 
+Michal Hocko
+SUSE Labs
