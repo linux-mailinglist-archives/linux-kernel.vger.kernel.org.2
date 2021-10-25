@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E6C43A00E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C164F439FC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhJYT06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39156 "EHLO mail.kernel.org"
+        id S232069AbhJYTYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235020AbhJYTZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:25:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A18860724;
-        Mon, 25 Oct 2021 19:22:13 +0000 (UTC)
+        id S234912AbhJYTWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:22:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33BD26103C;
+        Mon, 25 Oct 2021 19:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189734;
-        bh=0wFitQqf99HsEpCzMQH91BM2topCFOK6sfiIcLLqbFI=;
+        s=korg; t=1635189609;
+        bh=doc7mFVoN1+KAVOoT/ejQ/gIFA+0kecIC14EUT3j4N4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nxwETVCwgXow9aYYIbcMSdsQk2YrbRTbJXg0Nf3Joui6wlTASaiZa/82bTtDu0LFw
-         cRzo9Wd+7AuW0/D0qOKvLz2BO15vU2O/x0LM4CFnDuGmlAINtfCQROxJ2q26L7iBBS
-         PEPiAtDpSdckBkrCl+1pjcV0CJnviTsQeEYwNAqo=
+        b=cJUjO2DU4c2b4jEeeygA2mvprquriep/iQRWXe5uZt9faCpvAvbPp5/9dcdY9LaZ3
+         6waXE+K3Hu0NUYU/8dp5scGU1DYao0YIUSpS9U5Zu0RkkVb0aboj3RdJrfvC/wibqq
+         6obYQcyq4l3i163IIsCnhwgrifkimQknqAT6W1kc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Barret Rhoden <brho@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 13/30] elfcore: correct reference to CONFIG_UML
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 46/50] ALSA: hda: avoid write to STATESTS if controller is in reset
 Date:   Mon, 25 Oct 2021 21:14:33 +0200
-Message-Id: <20211025190926.144818719@linuxfoundation.org>
+Message-Id: <20211025190941.056643450@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
+[ Upstream commit b37a15188eae9d4c49c5bb035e0c8d4058e4d9b3 ]
 
-Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
-special handling for two architectures, ia64 and User Mode Linux.
-However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
-symbol for User-Mode Linux was used.
+The snd_hdac_bus_reset_link() contains logic to clear STATESTS register
+before performing controller reset. This code dates back to an old
+bugfix in commit e8a7f136f5ed ("[ALSA] hda-intel - Improve HD-audio
+codec probing robustness"). Originally the code was added to
+azx_reset().
 
-Although the directory for User Mode Linux is ./arch/um; the Kconfig
-symbol for this architecture is called CONFIG_UML.
+The code was moved around in commit a41d122449be ("ALSA: hda - Embed bus
+into controller object") and ended up to snd_hdac_bus_reset_link() and
+called primarily via snd_hdac_bus_init_chip().
 
-Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+The logic to clear STATESTS is correct when snd_hdac_bus_init_chip() is
+called when controller is not in reset. In this case, STATESTS can be
+cleared. This can be useful e.g. when forcing a controller reset to retry
+codec probe. A normal non-power-on reset will not clear the bits.
 
-  UM
-  Referencing files: include/linux/elfcore.h
-  Similar symbols: UML, NUMA
+However, this old logic is problematic when controller is already in
+reset. The HDA specification states that controller must be taken out of
+reset before writing to registers other than GCTL.CRST (1.0a spec,
+3.3.7). The write to STATESTS in snd_hdac_bus_reset_link() will be lost
+if the controller is already in reset per the HDA specification mentioned.
 
-Correct the name of the config to the intended one.
+This has been harmless on older hardware. On newer generation of Intel
+PCIe based HDA controllers, if configured to report issues, this write
+will emit an unsupported request error. If ACPI Platform Error Interface
+(APEI) is enabled in kernel, this will end up to kernel log.
 
-[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
-  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
-  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
+Fix the code in snd_hdac_bus_reset_link() to only clear the STATESTS if
+the function is called when controller is not in reset. Otherwise
+clearing the bits is not possible and should be skipped.
 
-Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
-Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Barret Rhoden <brho@google.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20211012142935.3731820-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/elfcore.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/hda/hdac_controller.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -58,7 +58,7 @@ static inline int elf_core_copy_task_xfp
- }
- #endif
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 00c6af2ae1c2..f0e112906c68 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -389,8 +389,9 @@ static int azx_reset(struct hdac_bus *bus, bool full_reset)
+ 	if (!full_reset)
+ 		goto skip_reset;
  
--#if defined(CONFIG_UM) || defined(CONFIG_IA64)
-+#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
+-	/* clear STATESTS */
+-	snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
++	/* clear STATESTS if not in reset */
++	if (snd_hdac_chip_readb(bus, GCTL) & AZX_GCTL_RESET)
++		snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
+ 
+ 	/* reset controller */
+ 	snd_hdac_bus_enter_link_reset(bus);
+-- 
+2.33.0
+
 
 
