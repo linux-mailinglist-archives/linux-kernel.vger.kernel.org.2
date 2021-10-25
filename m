@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D4B43A070
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601B143A074
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhJYTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        id S235629AbhJYTad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:30:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234725AbhJYT1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:27:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C561061152;
-        Mon, 25 Oct 2021 19:24:17 +0000 (UTC)
+        id S234596AbhJYT1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:27:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A33BB60200;
+        Mon, 25 Oct 2021 19:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189858;
-        bh=zTglR+b7FxF17ziIzHYBD3U3RzZu7fN7JHvevCvfZ+g=;
+        s=korg; t=1635189863;
+        bh=DG61ZZw7w3hRiBzt6wxk/8mwb4I9XUW12lGqdfJT0bs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F44YN0CC6a72JAnXTxebmSPyzn5VyfkGbmUbS4ExlP0lDeORNZpXWyQWe/Yex2WL8
-         fZSko93X9lgj0MxZ8rFe/X2xNNO9c1oyCD6P8fGUoEMoNql/KS5EafaHWoYfMPSgXN
-         ExdCm1oxphnjgYH6JJ0vGwGWOcbdPP2+I+xtKrdo=
+        b=ejaHU/knGL0V0a5oUDs2v5ll6leWriOleHrFWo7QXz/nLdLG8T6UKWphESyDwOkKq
+         15gFY7bo3lUvbqbD0SRVE7P/fyLJIoGM0Wq3tvJOPvNVclgVYp0FC9+Md0XXymys/B
+         YBPFQWvk04OrbR3163cVqYniV9bq3ROC7Rf/GQPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        stable@vger.kernel.org, Peng Li <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 10/37] net: hns3: add limit ets dwrr bandwidth cannot be 0
-Date:   Mon, 25 Oct 2021 21:14:35 +0200
-Message-Id: <20211025190930.255723800@linuxfoundation.org>
+Subject: [PATCH 4.19 11/37] net: hns3: disable sriov before unload hclge layer
+Date:   Mon, 25 Oct 2021 21:14:36 +0200
+Message-Id: <20211025190930.442630285@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
 References: <20211025190926.680827862@linuxfoundation.org>
@@ -40,44 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Peng Li <lipeng321@huawei.com>
 
-[ Upstream commit 731797fdffa3d083db536e2fdd07ceb050bb40b1 ]
+[ Upstream commit 0dd8a25f355b4df2d41c08df1716340854c7d4c5 ]
 
-If ets dwrr bandwidth of tc is set to 0, the hardware will switch to SP
-mode. In this case, this tc may occupy all the tx bandwidth if it has
-huge traffic, so it violates the purpose of the user setting.
+HNS3 driver includes hns3.ko, hnae3.ko and hclge.ko.
+hns3.ko includes network stack and pci_driver, hclge.ko includes
+HW device action, algo_ops and timer task, hnae3.ko includes some
+register function.
 
-To fix this problem, limit the ets dwrr bandwidth must greater than 0.
+When SRIOV is enable and hclge.ko is removed, HW device is unloaded
+but VF still exists, PF will not reply VF mbx messages, and cause
+errors.
 
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
+This patch fix it by disable SRIOV before remove hclge.ko.
+
+Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
+Signed-off-by: Peng Li <lipeng321@huawei.com>
 Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hnae3.c   | 21 +++++++++++++++++++
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  1 +
+ .../hisilicon/hns3/hns3pf/hclge_main.c        |  1 +
+ 3 files changed, 23 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index dd935cd1fb44..865d27aea7d7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -96,6 +96,15 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
- 				*changed = true;
- 			break;
- 		case IEEE_8021QAZ_TSA_ETS:
-+			/* The hardware will switch to sp mode if bandwidth is
-+			 * 0, so limit ets bandwidth must be greater than 0.
-+			 */
-+			if (!ets->tc_tx_bw[i]) {
-+				dev_err(&hdev->pdev->dev,
-+					"tc%u ets bw cannot be 0\n", i);
-+				return -EINVAL;
-+			}
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.c b/drivers/net/ethernet/hisilicon/hns3/hnae3.c
+index f9259e568fa0..b250d0fe9ac5 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.c
+@@ -10,6 +10,27 @@ static LIST_HEAD(hnae3_ae_algo_list);
+ static LIST_HEAD(hnae3_client_list);
+ static LIST_HEAD(hnae3_ae_dev_list);
+ 
++void hnae3_unregister_ae_algo_prepare(struct hnae3_ae_algo *ae_algo)
++{
++	const struct pci_device_id *pci_id;
++	struct hnae3_ae_dev *ae_dev;
 +
- 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
- 				HCLGE_SCH_MODE_DWRR)
- 				*changed = true;
++	if (!ae_algo)
++		return;
++
++	list_for_each_entry(ae_dev, &hnae3_ae_dev_list, node) {
++		if (!hnae3_get_bit(ae_dev->flag, HNAE3_DEV_INITED_B))
++			continue;
++
++		pci_id = pci_match_id(ae_algo->pdev_id_table, ae_dev->pdev);
++		if (!pci_id)
++			continue;
++		if (IS_ENABLED(CONFIG_PCI_IOV))
++			pci_disable_sriov(ae_dev->pdev);
++	}
++}
++EXPORT_SYMBOL(hnae3_unregister_ae_algo_prepare);
++
+ /* we are keeping things simple and using single lock for all the
+  * list. This is a non-critical code so other updations, if happen
+  * in parallel, can wait.
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+index 5e1a7ab06c63..866e9f293b4c 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+@@ -516,6 +516,7 @@ struct hnae3_handle {
+ int hnae3_register_ae_dev(struct hnae3_ae_dev *ae_dev);
+ void hnae3_unregister_ae_dev(struct hnae3_ae_dev *ae_dev);
+ 
++void hnae3_unregister_ae_algo_prepare(struct hnae3_ae_algo *ae_algo);
+ void hnae3_unregister_ae_algo(struct hnae3_ae_algo *ae_algo);
+ void hnae3_register_ae_algo(struct hnae3_ae_algo *ae_algo);
+ 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index 16ab000454f9..2c334b56fd42 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -6387,6 +6387,7 @@ static int hclge_init(void)
+ 
+ static void hclge_exit(void)
+ {
++	hnae3_unregister_ae_algo_prepare(&ae_algo);
+ 	hnae3_unregister_ae_algo(&ae_algo);
+ }
+ module_init(hclge_init);
 -- 
 2.33.0
 
