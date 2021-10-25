@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A4343A7F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D4843A7FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbhJYXCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:02:09 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47448 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbhJYXCH (ORCPT
+        id S234755AbhJYXIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234722AbhJYXIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:02:07 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 558C21FD33;
-        Mon, 25 Oct 2021 22:59:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635202783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a1cKWxIeUcucJel063hg8FOuYcQ7CNUDdSMhSQkwdb8=;
-        b=JVBLNg/1G9y82k1V452mb4uLSeNfJrhV6/xpgVjF7hypt21RH8fU8ShHKRaYrFPPiemFXs
-        ykUO0z1Omox6SM+yNDqgNkM3t7Hb1Nk6KEnZI9aR3njTBF0yF93Jw+p/hgi4/17wpP1Zsd
-        Hsoz4oP6/smyyJslkGKL1YUXBeQMZpw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635202783;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a1cKWxIeUcucJel063hg8FOuYcQ7CNUDdSMhSQkwdb8=;
-        b=gHKZ5JIItNsnUp4DTnmQiAtvuz4r8DzJ2mUSEAatnc5VU/t17ZsNedIvbLWz4lUNozMg8m
-        9wJ75dOttNFUeFDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 201CC13CB7;
-        Mon, 25 Oct 2021 22:59:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iiWRM9s2d2GHRgAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 25 Oct 2021 22:59:39 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 25 Oct 2021 19:08:49 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FCEC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:06:27 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1635203185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W7Hn/Kt83t0S+ch17NbGso0OFLyAMY1uK7iOcfzdyao=;
+        b=a2yVwxZLr9Jvl+2vNVK4+BBs3RKPGnDKm0E1MzT4fssceZ3fMqaYrZ7rGp1wnuZk1SXWif
+        kcOHKLioOWYZW35q4/ID7CV20mWJOE8zQQLpUdtTzKg1KUKvuG1oKFrXtJZFiaVQyxZsRY
+        j4cB/nCk48Oqno5CyOv6DNPVcTwOVkE=
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Ding Hui <dinghui@sangfor.com.cn>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] mm/hwpoison: fix unpoison_memory()
+Date:   Tue, 26 Oct 2021 08:04:59 +0900
+Message-Id: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@kernel.org>
-Cc:     linux-mm@kvack.org, "Dave Chinner" <david@fromorbit.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Uladzislau Rezki" <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        "LKML" <linux-kernel@vger.kernel.org>,
-        "Ilya Dryomov" <idryomov@gmail.com>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Michal Hocko" <mhocko@suse.com>
-Subject: Re: [PATCH 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-In-reply-to: <20211025150223.13621-3-mhocko@kernel.org>
-References: <20211025150223.13621-1-mhocko@kernel.org>,
- <20211025150223.13621-3-mhocko@kernel.org>
-Date:   Tue, 26 Oct 2021 09:59:36 +1100
-Message-id: <163520277623.16092.15759069160856953654@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021, Michal Hocko wrote:
-> From: Michal Hocko <mhocko@suse.com>
->=20
-> Dave Chinner has mentioned that some of the xfs code would benefit from
-> kvmalloc support for __GFP_NOFAIL because they have allocations that
-> cannot fail and they do not fit into a single page.
->=20
-> The larg part of the vmalloc implementation already complies with the
+Hi,
 
-*large*
+I updated unpoison fix patchset (sorry for long blank time since v1).
 
-> given gfp flags so there is no work for those to be done. The area
-> and page table allocations are an exception to that. Implement a retry
-> loop for those.
->=20
-> Add a short sleep before retrying. 1 jiffy is a completely random
-> timeout. Ideally the retry would wait for an explicit event - e.g.
-> a change to the vmalloc space change if the failure was caused by
-> the space fragmentation or depletion. But there are multiple different
-> reasons to retry and this could become much more complex. Keep the retry
-> simple for now and just sleep to prevent from hogging CPUs.
->=20
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> ---
->  mm/vmalloc.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->=20
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index c6cc77d2f366..602649919a9d 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2941,8 +2941,12 @@ static void *__vmalloc_area_node(struct vm_struct *a=
-rea, gfp_t gfp_mask,
->  	else if ((gfp_mask & (__GFP_FS | __GFP_IO)) =3D=3D 0)
->  		flags =3D memalloc_noio_save();
-> =20
-> -	ret =3D vmap_pages_range(addr, addr + size, prot, area->pages,
-> +	do {
-> +		ret =3D vmap_pages_range(addr, addr + size, prot, area->pages,
->  			page_shift);
-> +		if (ret < 0)
-> +			schedule_timeout_uninterruptible(1);
-> +	} while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
-> =20
->  	if ((gfp_mask & (__GFP_FS | __GFP_IO)) =3D=3D __GFP_IO)
->  		memalloc_nofs_restore(flags);
-> @@ -3032,6 +3036,10 @@ void *__vmalloc_node_range(unsigned long size, unsig=
-ned long align,
->  		warn_alloc(gfp_mask, NULL,
->  			"vmalloc error: size %lu, vm_struct allocation failed",
->  			real_size);
-> +		if (gfp_mask & __GFP_NOFAIL) {
-> +			schedule_timeout_uninterruptible(1);
-> +			goto again;
-> +		}
+Main purpose of this series is to sync unpoison code to recent changes
+around how hwpoison code takes page refcount.  Unpoison should work or
+simply fail (without crash) if impossible.
 
-Shouldn't the retry happen *before* the warning?
+The recent works of keeping hwpoison pages in shmem pagecache introduce
+a new state of hwpoisoned pages, but unpoison for such pages is not
+supported yet with this series.
 
-NeilBrown
+It seems that soft-offline and unpoison can be used as general purpose
+page offline/online mechanism (not in the context of memory error). I
+think that we need some additional works to realize it because currently
+soft-offline and unpoison are assumed not to happen so frequently
+(print out too many messages for aggressive usecases). But anyway this
+could be another interesting next topic.
 
+v1: https://lore.kernel.org/linux-mm/20210614021212.223326-1-nao.horiguchi@gmail.com/
 
->  		goto fail;
->  	}
-> =20
-> --=20
-> 2.30.2
->=20
->=20
+Thanks,
+Naoya Horiguchi
+---
+Summary:
+
+Naoya Horiguchi (4):
+      mm/hwpoison: mf_mutex for soft offline and unpoison
+      mm/hwpoison: remove race consideration
+      mm/hwpoison: remove MF_MSG_BUDDY_2ND and MF_MSG_POISONED_HUGE
+      mm/hwpoison: fix unpoison_memory()
+
+ include/linux/mm.h         |   3 +-
+ include/linux/page-flags.h |   4 ++
+ include/ras/ras_event.h    |   2 -
+ mm/memory-failure.c        | 166 ++++++++++++++++++++++++++++-----------------
+ mm/page_alloc.c            |  23 +++++++
+ 5 files changed, 130 insertions(+), 68 deletions(-)
