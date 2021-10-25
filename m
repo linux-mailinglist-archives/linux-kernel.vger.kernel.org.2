@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580ED43A2AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAAA439F12
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhJYTvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:51:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
+        id S233838AbhJYTRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236963AbhJYTph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:45:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 989976109D;
-        Mon, 25 Oct 2021 19:39:07 +0000 (UTC)
+        id S233815AbhJYTRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:17:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A1B4600D3;
+        Mon, 25 Oct 2021 19:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190749;
-        bh=3GHBGgFKEuYkfDIgIZouqZUoruLRBdCsBABTL9cyo5c=;
+        s=korg; t=1635189281;
+        bh=PgNQvzE+8QdulzOOEO+c+cEBGSB8D6ePzPKb3hUMeJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y+41trFCJ1NVWu8VXhybO8molzXVzmdDEy+2boLiBaboh3G+uYl15BN+bPJ8EYxOQ
-         rl6Lf7gdoqoUi+HPFJrP9e+2eYBEoiZmmSNSjJwtV0JVW9H0ySA5Mr+qXxNzuDPUyR
-         OsVW+o7Ol3e9/JfCafjWevo/rK7FUUWPkL7D7SCQ=
+        b=Q1HwZxsTWYuj2ucIFNkqVWQ72btKST+/HhC5ykFUzgrqdnJxBtwP8kWd7c8/RIIh3
+         BXpwmTK2GePNGXcRh0UMSUSCT6PsiNnrSUsh6yASBQ2Q1Vkg6t+BZwFkW39Q78f0p6
+         qC/zwLegO/t4zGN2ksYXxjqRPlWJkVu1IsatqoQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 042/169] net: dsa: Fix an error handling path in dsa_switch_parse_ports_of()
-Date:   Mon, 25 Oct 2021 21:13:43 +0200
-Message-Id: <20211025191023.128738811@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Martynov <mar.kolya@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.4 03/44] xhci: Enable trust tx length quirk for Fresco FL11 USB controller
+Date:   Mon, 25 Oct 2021 21:13:44 +0200
+Message-Id: <20211025190929.326119077@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nikolay Martynov <mar.kolya@gmail.com>
 
-[ Upstream commit ba69fd9101f20a6d05a96ab743341d4e7b1a2178 ]
+commit ea0f69d8211963c4b2cc1998b86779a500adb502 upstream.
 
-If we return before the end of the 'for_each_child_of_node()' iterator, the
-reference taken on 'port' must be released.
+Tested on SD5200T TB3 dock which has Fresco Logic FL1100 USB 3.0 Host
+Controller.
+Before this patch streaming video from USB cam made mouse and keyboard
+connected to the same USB bus unusable. Also video was jerky.
+With this patch streaming video doesn't have any effect on other
+periferals and video is smooth.
 
-Add the missing 'of_node_put()' calls.
-
-Fixes: 83c0afaec7b7 ("net: dsa: Add new binding implementation")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/15d5310d1d55ad51c1af80775865306d92432e03.1634587046.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20211008092547.3996295-6-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/dsa2.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci-pci.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
-index 76ed5ef0e36a..28326ca34b52 100644
---- a/net/dsa/dsa2.c
-+++ b/net/dsa/dsa2.c
-@@ -1283,12 +1283,15 @@ static int dsa_switch_parse_ports_of(struct dsa_switch *ds,
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -38,6 +38,7 @@
+ #define PCI_VENDOR_ID_FRESCO_LOGIC	0x1b73
+ #define PCI_DEVICE_ID_FRESCO_LOGIC_PDK	0x1000
+ #define PCI_DEVICE_ID_FRESCO_LOGIC_FL1009	0x1009
++#define PCI_DEVICE_ID_FRESCO_LOGIC_FL1100	0x1100
+ #define PCI_DEVICE_ID_FRESCO_LOGIC_FL1400	0x1400
  
- 	for_each_available_child_of_node(ports, port) {
- 		err = of_property_read_u32(port, "reg", &reg);
--		if (err)
-+		if (err) {
-+			of_node_put(port);
- 			goto out_put_node;
-+		}
- 
- 		if (reg >= ds->num_ports) {
- 			dev_err(ds->dev, "port %pOF index %u exceeds num_ports (%zu)\n",
- 				port, reg, ds->num_ports);
-+			of_node_put(port);
- 			err = -EINVAL;
- 			goto out_put_node;
- 		}
-@@ -1296,8 +1299,10 @@ static int dsa_switch_parse_ports_of(struct dsa_switch *ds,
- 		dp = dsa_to_port(ds, reg);
- 
- 		err = dsa_port_parse_of(dp, port);
--		if (err)
-+		if (err) {
-+			of_node_put(port);
- 			goto out_put_node;
-+		}
- 	}
- 
- out_put_node:
--- 
-2.33.0
-
+ #define PCI_VENDOR_ID_ETRON		0x1b6f
+@@ -90,6 +91,7 @@ static void xhci_pci_quirks(struct devic
+ 	/* Look for vendor-specific quirks */
+ 	if (pdev->vendor == PCI_VENDOR_ID_FRESCO_LOGIC &&
+ 			(pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_PDK ||
++			 pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_FL1100 ||
+ 			 pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_FL1400)) {
+ 		if (pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_PDK &&
+ 				pdev->revision == 0x0) {
 
 
