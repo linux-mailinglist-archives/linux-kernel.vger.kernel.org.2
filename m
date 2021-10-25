@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D2743A178
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0937439FA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235734AbhJYTjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53278 "EHLO mail.kernel.org"
+        id S234498AbhJYTWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236244AbhJYTd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:33:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A761160EFE;
-        Mon, 25 Oct 2021 19:29:42 +0000 (UTC)
+        id S234505AbhJYTVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:21:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C742601FF;
+        Mon, 25 Oct 2021 19:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190183;
-        bh=0gvAWQWErOmiKMJS0tN3j9zb2A2vCHh/7YI+rk7/nyQ=;
+        s=korg; t=1635189543;
+        bh=yv4RZWeAP8xaERlvArIBsNSnH4pyc2GV012z6VHt/4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hct09TjEXAoBTZeIsFdH9C454UJqvmLy1XhR+cr2SY3hyd3sJ8hVtnbaZ+yhz0iP3
-         rTGqV+DfjsKl7U8wL0BRmceGm4Jd3pIcp4udL4DScNarZzVsEBX2dip/p2UCDHLHIr
-         1la4dpmDWAMKt5jMtu4P37T+odP9YiDH3F7ZLO+0=
+        b=A5CVPLFyQZmVORoyEP1gRv21kZpURGxYnIePuPboG9wkequYi8XkqMBYGLM+W55OH
+         3ovmiv8y2sKFos5lNimc6ZR7s1qNnMsGNzNIbc6+AlmTM4klH5AP7onFPUwKv5sGO1
+         Vt7mm211AeXf+uvddD/23UNdy6y7NK7fJ6q1F3KU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 04/95] arm: dts: vexpress-v2p-ca9: Fix the SMB unit-address
-Date:   Mon, 25 Oct 2021 21:14:01 +0200
-Message-Id: <20211025190957.021136663@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 15/50] net: arc: select CRC32
+Date:   Mon, 25 Oct 2021 21:14:02 +0200
+Message-Id: <20211025190935.891157942@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+From: Vegard Nossum <vegard.nossum@oracle.com>
 
-[ Upstream commit 2e9edc07df2ec6f835222151fa4e536e9e54856a ]
+commit e599ee234ad4fdfe241d937bbabd96e0d8f9d868 upstream.
 
-Based on 'ranges', the 'bus@4000000' node unit-address is off by 1 '0'.
+Fix the following build/link error by adding a dependency on the CRC32
+routines:
 
-Link: https://lore.kernel.org/r/20210819184239.1192395-5-robh@kernel.org
-Cc: Andre Przywara <andre.przywara@arm.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  ld: drivers/net/ethernet/arc/emac_main.o: in function `arc_emac_set_rx_mode':
+  emac_main.c:(.text+0xb11): undefined reference to `crc32_le'
+
+The crc32_le() call comes through the ether_crc_le() call in
+arc_emac_set_rx_mode().
+
+[v2: moved the select to ARC_EMAC_CORE; the Makefile is a bit confusing,
+but the error comes from emac_main.o, which is part of the arc_emac module,
+which in turn is enabled by CONFIG_ARC_EMAC_CORE. Note that arc_emac is
+different from emac_arc...]
+
+Fixes: 775dd682e2b0ec ("arc_emac: implement promiscuous mode and multicast filtering")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Link: https://lore.kernel.org/r/20211012093446.1575-1-vegard.nossum@oracle.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/vexpress-v2m.dtsi    | 2 +-
- arch/arm/boot/dts/vexpress-v2p-ca9.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/arc/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/vexpress-v2m.dtsi b/arch/arm/boot/dts/vexpress-v2m.dtsi
-index 2ac41ed3a57c..659dcf4004b4 100644
---- a/arch/arm/boot/dts/vexpress-v2m.dtsi
-+++ b/arch/arm/boot/dts/vexpress-v2m.dtsi
-@@ -19,7 +19,7 @@
-  */
+--- a/drivers/net/ethernet/arc/Kconfig
++++ b/drivers/net/ethernet/arc/Kconfig
+@@ -19,6 +19,7 @@ config ARC_EMAC_CORE
+ 	tristate
+ 	select MII
+ 	select PHYLIB
++	select CRC32
  
- / {
--	bus@4000000 {
-+	bus@40000000 {
- 		motherboard {
- 			model = "V2M-P1";
- 			arm,hbi = <0x190>;
-diff --git a/arch/arm/boot/dts/vexpress-v2p-ca9.dts b/arch/arm/boot/dts/vexpress-v2p-ca9.dts
-index 4c5847955856..1317f0f58d53 100644
---- a/arch/arm/boot/dts/vexpress-v2p-ca9.dts
-+++ b/arch/arm/boot/dts/vexpress-v2p-ca9.dts
-@@ -295,7 +295,7 @@
- 		};
- 	};
- 
--	smb: bus@4000000 {
-+	smb: bus@40000000 {
- 		compatible = "simple-bus";
- 
- 		#address-cells = <2>;
--- 
-2.33.0
-
+ config ARC_EMAC
+ 	tristate "ARC EMAC support"
 
 
