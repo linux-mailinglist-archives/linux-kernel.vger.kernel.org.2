@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576F2438FCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFB9438FD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhJYHBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:01:51 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:55792 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231419AbhJYHBt (ORCPT
+        id S231467AbhJYHCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:02:02 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13977 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231458AbhJYHCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:01:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UtYQvGX_1635145164;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UtYQvGX_1635145164)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 25 Oct 2021 14:59:25 +0800
-Date:   Mon, 25 Oct 2021 14:59:23 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+d8aaffc3719597e8cfb4@syzkaller.appspotmail.com>,
-        chao@kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiang@kernel.org
-Subject: Re: [syzbot] WARNING in z_erofs_lz4_decompress
-Message-ID: <YXZVy1cqr4o6YOHT@B-P7TQMD6M-0146.local>
-References: <000000000000b3586105cf0ff45e@google.com>
- <YXX3e1i/f2uvMDm0@B-P7TQMD6M-0146.local>
- <CACT4Y+bV-Fe+nX2pWf2+M0mwvQYM394uAAo2efdDqnvCWxyxKA@mail.gmail.com>
+        Mon, 25 Oct 2021 03:02:01 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hd5PJ4ksszZcSF;
+        Mon, 25 Oct 2021 14:57:40 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 25 Oct 2021 14:59:32 +0800
+Received: from [10.174.178.240] (10.174.178.240) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 25 Oct 2021 14:59:32 +0800
+Subject: Re: [PATCH net 3/3] can: j1939: j1939_tp_cmd_recv(): check the dst
+ address of TP.CM_BAM
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <linux-can@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1634825057-47915-1-git-send-email-zhangchangzhong@huawei.com>
+ <1634825057-47915-4-git-send-email-zhangchangzhong@huawei.com>
+ <20211022102858.GC20681@pengutronix.de>
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+Message-ID: <671f5813-4d36-2c67-fea6-4dd9504e661f@huawei.com>
+Date:   Mon, 25 Oct 2021 14:59:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bV-Fe+nX2pWf2+M0mwvQYM394uAAo2efdDqnvCWxyxKA@mail.gmail.com>
+In-Reply-To: <20211022102858.GC20681@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.240]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-On Mon, Oct 25, 2021 at 08:55:51AM +0200, Dmitry Vyukov wrote:
-> On Mon, 25 Oct 2021 at 02:17, Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >
-> > Hi,
-> >
-> > On Sat, Oct 23, 2021 at 07:25:20PM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    60e8840126bd Add linux-next specific files for 20211018
-> > > git tree:       linux-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=125932af300000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4bd44cafcda7632e
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=d8aaffc3719597e8cfb4
-> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+d8aaffc3719597e8cfb4@syzkaller.appspotmail.com
-> > >
-> > > erofs: (device loop4): z_erofs_lz4_decompress_mem: failed to decompress -4100 in[4096, 0] out[9000]
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 1 PID: 9895 at fs/erofs/decompressor.c:230 z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:227 [inline]
-> > > WARNING: CPU: 1 PID: 9895 at fs/erofs/decompressor.c:230 z_erofs_lz4_decompress+0x841/0x1400 fs/erofs/decompressor.c:289
-> >
-> > If you fuzz compressed data, that is what you'd expect..
+On 2021/10/22 18:28, Oleksij Rempel wrote:
+> On Thu, Oct 21, 2021 at 10:04:17PM +0800, Zhang Changzhong wrote:
+>> The TP.CM_BAM message must be sent to the global address [1], so add a
+>> check to drop TP.CM_BAM sent to a non-global address.
+>>
+>> Without this patch, the receiver will treat the following packets as
+>> normal RTS/CTS tranport:
+>> 18EC0102#20090002FF002301
+>> 18EB0102#0100000000000000
+>> 18EB0102#020000FFFFFFFFFF
+>>
+>> [1] SAE-J1939-82 2015 A.3.3 Row 1.
+>>
+>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+>> ---
+>>  net/can/j1939/transport.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+>> index 2efa606..93ec0c3 100644
+>> --- a/net/can/j1939/transport.c
+>> +++ b/net/can/j1939/transport.c
+>> @@ -2019,6 +2019,8 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
+>>  		extd = J1939_ETP;
+>>  		fallthrough;
+>>  	case J1939_TP_CMD_BAM:
+>> +		if (!j1939_cb_is_broadcast(skcb))
 > 
-> Hi Gao,
-> 
-> If you mean this is not a kernel bug, then the code should not use WARN.
-> WARN if for kernel bugs and is recognized as such by all testing
-> systems and humans.
-> 
-> Please fix it to use pr_err. If it's intended for the end user, pr_err
-> can also give a meaningful message and no stack trace (which is I
-> assume only huge clutter in this case).
+> Please add here netdev_err_once("with some message"), we need to know if
+> some MCU makes bad things.
 
-Thanks, I will submit a patch to address that.
+Ok, will do.
 
-Thanks,
-Gao Xiang
+The current patch breaks ETP functionality as the J1939_ETP_CMD_RTS fallthrough
+to J1939_TP_CMD_BAM, this will also be fixed in v2.
 
 > 
+>> +			return;
+>>  		fallthrough;
+>>  	case J1939_TP_CMD_RTS:
+>>  		if (skcb->addr.type != extd)
+>> -- 
+>> 2.9.5
+>>
+>>
 > 
-> > Thanks,
-> > Gao Xiang
-> >
-> > > Modules linked in:
-> > > CPU: 1 PID: 9895 Comm: kworker/u5:3 Not tainted 5.15.0-rc5-next-20211018-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > Workqueue: erofs_unzipd z_erofs_decompressqueue_work
-> > > RIP: 0010:z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:230 [inline]
-> > > RIP: 0010:z_erofs_lz4_decompress+0x841/0x1400 fs/erofs/decompressor.c:289
-> > > Code: e9 03 80 3c 11 00 0f 85 8c 0a 00 00 41 56 48 8b 7d 00 45 89 e9 89 d9 48 c7 c2 20 eb fb 89 48 c7 c6 40 ed fb 89 e8 ee 5d 85 05 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 8b 4c 24 08 5f 48 89 ca 48
-> > > RSP: 0018:ffffc90001b3f718 EFLAGS: 00010286
-> > > RAX: 0000000000000000 RBX: ffffffffffffeffc RCX: 0000000000000000
-> > > RDX: ffff8880795b3a00 RSI: ffffffff815ef308 RDI: fffff52000367ed3
-> > > RBP: ffffc90001b3f858 R08: 0000000000000063 R09: 0000000000000000
-> > > R10: ffffffff815e90de R11: 0000000000000000 R12: 0000000000000000
-> > > R13: 0000000000000000 R14: 0000000000002328 R15: 0000000000000000
-> > > FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 0000001b2ef25000 CR3: 000000002b3f7000 CR4: 00000000003506e0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >  <TASK>
-> > >  z_erofs_decompress_pcluster.isra.0+0x1389/0x2450 fs/erofs/zdata.c:977
-> > >  z_erofs_decompress_queue fs/erofs/zdata.c:1055 [inline]
-> > >  z_erofs_decompressqueue_work+0xe0/0x170 fs/erofs/zdata.c:1066
-> > >  process_one_work+0x9b2/0x1690 kernel/workqueue.c:2297
-> > >  worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
-> > >  kthread+0x405/0x4f0 kernel/kthread.c:327
-> > >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > >  </TASK>
-> > >
-> > >
-> > > ---
-> > > This report is generated by a bot. It may contain errors.
-> > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >
-> > > syzbot will keep track of this issue. See:
-> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
