@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D9343A1E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D367F43A337
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbhJYTnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:43:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
+        id S239569AbhJYT5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:57:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235577AbhJYTbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:31:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B8186112D;
-        Mon, 25 Oct 2021 19:28:18 +0000 (UTC)
+        id S237340AbhJYTwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:52:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5699A6113E;
+        Mon, 25 Oct 2021 19:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190099;
-        bh=o56mM3vtnNfozBIeTbdveuDnEJMQQsMN9P88ld7H8tQ=;
+        s=korg; t=1635191031;
+        bh=Fakm2LNz3isYtSaSCUdlCrJmZFgluWjBbJuA0mEu4I0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=opK6TTHESKbOkk0IriR2ePOy0lKkqv+PIZGM6PXAvfpi+KnI7uBI8U+VLllpgMb7e
-         DhLOJpof0UQDZJBMgQ/Ls81Kw9F4DUmryMsGONYrl+MmbfKVvJA6bcqd1U2yQCQAtS
-         G0AraPxxICmoXS7MECR6soo/mfFrB/2azyNjJuC0=
+        b=O1ggvizT3wb8f8bHrkdL74q0KivRmuRlI4vw18Af611w02Cv5U21IUfxKpduipJp3
+         uzvAyDam9GnXw3JjhRYqrB696KIKkYwB8dxzmZ0y5EYbz+rkP4jzIHf2g4v0lJFRyY
+         qkQafqDVLUCTvQQqP33fxFA8E9PuRQP9zuUEgI4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.4 33/58] ASoC: DAPM: Fix missing kctl change notifications
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.14 109/169] KVM: SEV-ES: fix length of string I/O
 Date:   Mon, 25 Oct 2021 21:14:50 +0200
-Message-Id: <20211025190943.023924057@linuxfoundation.org>
+Message-Id: <20211025191031.878969762@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842 upstream.
+commit 019057bd73d1751fdfec41e43148baf3303d98f9 upstream.
 
-The put callback of a kcontrol is supposed to return 1 when the value
-is changed, and this will be notified to user-space.  However, some
-DAPM kcontrols always return 0 (except for errors), hence the
-user-space misses the update of a control value.
+The size of the data in the scratch buffer is not divided by the size of
+each port I/O operation, so vcpu->arch.pio.count ends up being larger
+than it should be by a factor of size.
 
-This patch corrects the behavior by properly returning 1 when the
-value gets updated.
-
-Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20211006141712.2439-1-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/soc-dapm.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/x86/kvm/svm/sev.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2546,6 +2546,7 @@ static int snd_soc_dapm_set_pin(struct s
- 				const char *pin, int status)
- {
- 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
-+	int ret = 0;
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -2591,7 +2591,7 @@ int sev_es_string_io(struct vcpu_svm *sv
+ 		return -EINVAL;
  
- 	dapm_assert_locked(dapm);
- 
-@@ -2558,13 +2559,14 @@ static int snd_soc_dapm_set_pin(struct s
- 		dapm_mark_dirty(w, "pin configuration");
- 		dapm_widget_invalidate_input_paths(w);
- 		dapm_widget_invalidate_output_paths(w);
-+		ret = 1;
- 	}
- 
- 	w->connected = status;
- 	if (status == 0)
- 		w->force = 0;
- 
--	return 0;
-+	return ret;
+ 	return kvm_sev_es_string_io(&svm->vcpu, size, port,
+-				    svm->ghcb_sa, svm->ghcb_sa_len, in);
++				    svm->ghcb_sa, svm->ghcb_sa_len / size, in);
  }
  
- /**
-@@ -3580,14 +3582,15 @@ int snd_soc_dapm_put_pin_switch(struct s
- {
- 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
-+	int ret;
- 
- 	if (ucontrol->value.integer.value[0])
--		snd_soc_dapm_enable_pin(&card->dapm, pin);
-+		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
- 	else
--		snd_soc_dapm_disable_pin(&card->dapm, pin);
-+		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
- 
- 	snd_soc_dapm_sync(&card->dapm);
--	return 0;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
- 
-@@ -4029,7 +4032,7 @@ static int snd_soc_dapm_dai_link_put(str
- 
- 	rtd->params_select = ucontrol->value.enumerated.item[0];
- 
--	return 0;
-+	return 1;
- }
- 
- static void
+ void sev_es_init_vmcb(struct vcpu_svm *svm)
 
 
