@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7136843A332
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FEC439FD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239486AbhJYT5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:57:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+        id S235167AbhJYTZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:25:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237734AbhJYTts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:49:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 436E06124A;
-        Mon, 25 Oct 2021 19:41:59 +0000 (UTC)
+        id S234996AbhJYTXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:23:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A03E61177;
+        Mon, 25 Oct 2021 19:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190921;
-        bh=K3+SaxvkrwV/W9djGHzCVpWcQIlGR9BGbA+DJOCbpj4=;
+        s=korg; t=1635189643;
+        bh=voEKW+bu4G1CjoClWuB4Epj/1EGSlQcbvQd1LNKdPkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1GANwCn6PDpJI6e2MtqC+2v5xcj3tkXZmqeDFItjseScZgTgeZUFchUOshK0BKlxy
-         Cz47eMh3sJ/bZjI3H/9aYyCAh3kLM/E4fuTPn9uJvnbc2K3pdUF8qSLqWMv3R4ygw0
-         FjJhc5mrBruUiZnJMivBYnIxNggLJ0GL67o3+TL4=
+        b=C1+rl2hC5v56uGuh8nDvPWW448zB9RmiI+DW36KgDEkCLPGE8eQxuOMphT5yDXF4K
+         yf7l5w4Axw416swa/udyOA94VBvdJ826sxq0oqum/X+iy5MpOBC8ALqd1IEenfF98S
+         vo/VtVpAOxvYJfTuwYptYGF8aZSIjykLA/VLXpx4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Barret Rhoden <brho@google.com>,
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.14 083/169] elfcore: correct reference to CONFIG_UML
+Subject: [PATCH 4.9 37/50] vfs: check fd has read access in kernel_read_file_from_fd()
 Date:   Mon, 25 Oct 2021 21:14:24 +0200
-Message-Id: <20211025191027.802923341@linuxfoundation.org>
+Message-Id: <20211025190939.588455709@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
+commit 032146cda85566abcd1c4884d9d23e4e30a07e9a upstream.
 
-Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
-special handling for two architectures, ia64 and User Mode Linux.
-However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
-symbol for User-Mode Linux was used.
+If we open a file without read access and then pass the fd to a syscall
+whose implementation calls kernel_read_file_from_fd(), we get a warning
+from __kernel_read():
 
-Although the directory for User Mode Linux is ./arch/um; the Kconfig
-symbol for this architecture is called CONFIG_UML.
+        if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
 
-Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+This currently affects both finit_module() and kexec_file_load(), but it
+could affect other syscalls in the future.
 
-  UM
-  Referencing files: include/linux/elfcore.h
-  Similar symbols: UML, NUMA
-
-Correct the name of the config to the intended one.
-
-[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
-  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
-  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
-
-Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
-Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Barret Rhoden <brho@google.com>
+Link: https://lkml.kernel.org/r/20211007220110.600005-1-willy@infradead.org
+Fixes: b844f0ecbc56 ("vfs: define kernel_copy_file_from_fd()")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/elfcore.h |    2 +-
+ fs/exec.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -109,7 +109,7 @@ static inline int elf_core_copy_task_fpr
- #endif
- }
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -994,7 +994,7 @@ int kernel_read_file_from_fd(int fd, voi
+ 	struct fd f = fdget(fd);
+ 	int ret = -EBADF;
  
--#if defined(CONFIG_UM) || defined(CONFIG_IA64)
-+#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
+-	if (!f.file)
++	if (!f.file || !(f.file->f_mode & FMODE_READ))
+ 		goto out;
+ 
+ 	ret = kernel_read_file(f.file, buf, size, max_size, id);
 
 
