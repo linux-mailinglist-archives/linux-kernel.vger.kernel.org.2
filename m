@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C4B439ECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4A3439ECE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbhJYTBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbhJYTBW (ORCPT
+        id S233694AbhJYTCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:02:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26508 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232144AbhJYTCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:01:22 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C166C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:59:00 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id u13so3358289edy.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryo-se.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hxuT1NwkP5IbWIr54rvIZPXE4zt4zjt7xvPTnRqKIv8=;
-        b=dJ/vRMx2Do21S1kpEwvTxGKyNyWN9lNXIziYRko7J1MoUiH3xWWq4X9QC1G/1W0Y12
-         REVFkLZtkUmugxEFfEbqzKAQZUHSEFd6IQWVKTqmXkzXZkcfDl0SaBSJh+E4qmGmUAjM
-         VELx+Mr/vZ/zINimTn8pVRu9oqUY9VHIew7l0cvUzJAgiA9i/xh8Z2BBrmeKuU0R6RLU
-         dH5toKX9kxkVK+jhNh/vZcUviJRrImeOMty7HkXI3eijQMZnJnymMZ3HzeuClhca01W+
-         82dRVp7DN+g66SyTB2r/fvlwp9Gg9nIH8CYeVYbzk8BHq8zcMRpnmvO7Cc9aCWiwQh/z
-         gNEw==
+        Mon, 25 Oct 2021 15:02:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635188390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u4kru4s1e7GAOIDOmUaVKYjqsMWQYSUCOrzEgrrXdhU=;
+        b=f2dKBSi95rjO01a5DpQ+9w071WIRB9pEA/lyCbjvkYo+zgwE+SmgF9VS+YVcyj4L2O+u3l
+        l3VhoAQR0yEUy54JVFq2K+Vr0MxG0gStHwiWxxCV+A0rBID2a3bPmtWVY5QC5B37n86FW8
+        zfzo1TfrtZYM4g6fRdSYrzWTS+g+I04=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-Nce26myTM1Wu38ir7M7Zgw-1; Mon, 25 Oct 2021 14:59:49 -0400
+X-MC-Unique: Nce26myTM1Wu38ir7M7Zgw-1
+Received: by mail-qk1-f197.google.com with SMTP id bl10-20020a05620a1a8a00b004624f465b6eso7907889qkb.22
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:59:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hxuT1NwkP5IbWIr54rvIZPXE4zt4zjt7xvPTnRqKIv8=;
-        b=RVLFzEZLJh45IFUMdUS6l7f2Voi7TO3DnV7MfNJEPJPLHoGg+xUpvavepJ9d4QmrPb
-         DdirjBPD3/SeFXGAcCOTjKCH50aVORj6KGinW4AdI/JyaYyVykk2p3qhrcE0CR1B3t/Q
-         LayWxLQQIhxdtmiLTRc6ByR+aS5dLQHD399IP5oxL7fitPUuB6fQzHwe3U41CPk8QmoK
-         NUryPt6W6u4mUvSu5k3BzpC+HPNR0mjxabVCSMoiIld8jghvMoK4CYgLfXO4I8OihTEG
-         hTxvgwv4n3N7A/qTQqWg3OXl6pjDOoXtdwxJASUOSkY/hhnSs4oN19K7nl1PcgqdLyo2
-         Za9g==
-X-Gm-Message-State: AOAM531PRzGfcnyRS0bPgavY3IJ/3T9aFJOHqbrpOdN3pwfuuQQB2m7+
-        n5rLDIwzEvjN+iGDGVhH17uzyl2gwh8a5T/9wBiCVQ==
-X-Google-Smtp-Source: ABdhPJxMQx6FZcgMoVNwZXE/W7Ov4TexphWjFXzcupB71pTOWnEz66ydI/ZgvcYP0Zh3Kea44L4B0DfVpUr5otEvzYo=
-X-Received: by 2002:a50:e686:: with SMTP id z6mr30202339edm.311.1635188338446;
- Mon, 25 Oct 2021 11:58:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u4kru4s1e7GAOIDOmUaVKYjqsMWQYSUCOrzEgrrXdhU=;
+        b=GHNWu4kxigEddI4KFuOjWbsvGcdxQggNQJEHen5ySVzTPjhLz2lL5q9++MuW1UK9X7
+         93XpwU4flbWG3KDHzCwFd/bnD/wevqi2iorez4pV3uxD9vN/68Ocik+up3M4agK5EWZk
+         8C2hHwZbwZhK3dB1NB7QT7mUNgiXqisxtNrPkGiFfo8WxL6b5+/PuA++c7iExRpBRxIO
+         anyKIfKNh35RcyAaiL4saPouDOddGl/S7aXS0vKSP+LtjYZO8gYLry9ANKrfVqhMeqiS
+         E1lncIQnxz36XlTbEjrJfL2uEE3IVaYSSFLU5i82rQFfZp0zN+7g8DwfyUSzRyLYNz2r
+         P+aQ==
+X-Gm-Message-State: AOAM532BR7G9hs9m2gZMtef8DB9xt7R4IQLRiWbFWV7b6HJ6kuTQd1JR
+        5mlj+WdaYXAeN79PGKYGWBn9xXkYqbnstJwcHDCTERAta/6etR8rqI4kLKFEts/1M+6qA3gHmP+
+        I1MufDTmeSEEJAt3yZrIwERpL
+X-Received: by 2002:a05:622a:4d2:: with SMTP id q18mr19790075qtx.84.1635188388527;
+        Mon, 25 Oct 2021 11:59:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKm0YX8u1rcHOL+P2hPWmc3GB11xYrFeECTLbJbQ9a8nAe1QmzFGsQrrMc79aYQ1nLIj++XA==
+X-Received: by 2002:a05:622a:4d2:: with SMTP id q18mr19790050qtx.84.1635188388240;
+        Mon, 25 Oct 2021 11:59:48 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id b71sm9096789qkg.131.2021.10.25.11.59.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 11:59:47 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 11:59:45 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rob Landley <rob@landley.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
+Message-ID: <20211025185945.ywcvhqypzoaxohyc@treble>
+References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
+ <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
+ <20211024192742.uo62mbqb6hmhafjs@treble>
+ <66ed460c-ac48-2b5a-e8e4-07613cf69ab0@landley.net>
+ <YXZzIUqdWW9wwlpr@hirez.programming.kicks-ass.net>
+ <20211025144656.fqqneysf72wwxp3m@treble>
+ <YXbFpfJwXJXABDup@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211017171657.85724-1-erik@kryo.se> <YW7idC0/+zq6dDNv@lunn.ch>
- <CAGgu=sCBUU29tkjqOP9j7EZJL-T4O6NoTDNB+-PFNhUkOTdWuw@mail.gmail.com> <YW8OiIpcncIaANzN@lunn.ch>
-In-Reply-To: <YW8OiIpcncIaANzN@lunn.ch>
-From:   Erik Ekman <erik@kryo.se>
-Date:   Mon, 25 Oct 2021 20:58:47 +0200
-Message-ID: <CAGgu=sD=cuqTEK3760wGFELLBgy3S6QgY_776KeDDDZV8GvZNQ@mail.gmail.com>
-Subject: Re: [PATCH] sfc: Fix reading non-legacy supported link modes
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YXbFpfJwXJXABDup@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 at 20:29, Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Tue, Oct 19, 2021 at 07:41:46PM +0200, Erik Ekman wrote:
-> > On Tue, 19 Oct 2021 at 17:21, Andrew Lunn <andrew@lunn.ch> wrote:
-> > >
-> > > On Sun, Oct 17, 2021 at 07:16:57PM +0200, Erik Ekman wrote:
-> > > > Everything except the first 32 bits was lost when the pause flags were
-> > > > added. This makes the 50000baseCR2 mode flag (bit 34) not appear.
-> > > >
-> > > > I have tested this with a 10G card (SFN5122F-R7) by modifying it to
-> > > > return a non-legacy link mode (10000baseCR).
-> > >
-> > > Does this need a Fixes: tag? Should it be added to stable?
-> > >
-> >
-> > The speed flags in use that can be lost are for 50G and 100G.
-> > The affected devices are ones based on the Solarflare EF100 networking
-> > IP in Xilinx FPGAs supporting 10/25/40/100-gigabit.
-> > I don't know how widespread these are, and if there might be enough
-> > users for adding this to stable.
-> >
-> > The gsettings api code for sfc was added in 7cafe8f82438ced6d ("net:
-> > sfc: use new api ethtool_{get|set}_link_ksettings")
-> > and the bug was introduced then, but bits would only be lost after
-> > support for 25/50/100G was added in
-> > 5abb5e7f916ee8d2d ("sfc: add bits for 25/50/100G supported/advertised speeds").
-> > Not sure which of these should be used for a Fixes tag.
->
-> I would you this second one, since that is when it becomes visible to
-> users.
->
-Thanks
+On Mon, Oct 25, 2021 at 04:56:37PM +0200, Peter Zijlstra wrote:
+> On Mon, Oct 25, 2021 at 07:46:56AM -0700, Josh Poimboeuf wrote:
+> > On Mon, Oct 25, 2021 at 11:04:33AM +0200, Peter Zijlstra wrote:
+> > > On Sun, Oct 24, 2021 at 09:51:45PM -0500, Rob Landley wrote:
+> > > > > Unfortunately I think CONFIG_STACK_VALIDATION is no longer optional on
+> > > > > x86-64 these days, because of static calls and retpolines.
+> > > > 
+> > > > Does it need stack validation, or just a frame unwinder?
+> > > 
+> > > static_calls rely on objtool to find all "call __SCT*" instructions and
+> > > write their location in a .static_call_sites section.
+> > > 
+> > > The having of static calls is not optional on x86_64, and I have zero
+> > > interest in trying to work out what not having static_call() does, or to
+> > > maintain that option.
+> > 
+> > What I meant was, make STATIC_CALL_INLINE optional.  Then it would use
+> > out-of-line static calls which should just work, no?
+> 
+> Yeah, I suppose so... I think we're then missing a STACK_VALIDATION
+> dependency for KCOV. We rely on objtool to nop out those
+> __sanitizer_cov_* calls.
+> 
+> I had really hoped to just make objtool an unconditional part of x86_64.
 
-I found that the SFC9250 is also affected (it supports 10/25/40/50/100G)
+I was hoping the opposite ;-)  Not everybody wants the extra build
+overhead, object size, complexity, warnings, etc.  And it should be
+pretty easy to make it optional anyway.
 
-Fixes: 5abb5e7f916ee8 ("sfc: add bits for 25/50/100G
-supported/advertised speeds")
+Plus it's a good idea to make the dependencies more explicit.  We've
+already been looking at modularizing, like creating a new CONFIG_OBJTOOL
+option and splitting stack validation out from some of the other
+features.  This could be a nice extension of that.
 
-/Erik
+Which reminds me, I'm still thinking we need to make the interface more
+easily combinable, like:
+
+objtool run				\
+	[--validate]			\
+	[--noinstr]			\
+	[--retpoline]			\
+	[--orc]				\
+	[--mcount]			\
+	[--static-call]			\
+	[--kcov]			\
+	[--frame-pointer]		\
+	[--vmlinux]			\
+	[--uaccess]			\
+	[--module]			\
+	[--no-unreachable]		\
+	[--backup]			\
+	[--stats]			\
+	[--backtrace]
+
+objtool dump				\
+	[--orc]				\
+	[--mcount]			\
+	[--static-call]			\
+	[--alternatives]		\
+	[--whatever]
+
+I can hopefully get to it one of these weeks...
+
+-- 
+Josh
+
