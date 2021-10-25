@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F5943A16E
+	by mail.lfdr.de (Postfix) with ESMTP id 7324B43A16D
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237146AbhJYTiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48430 "EHLO mail.kernel.org"
+        id S237131AbhJYTiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:38:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236118AbhJYTdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:33:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 916396115C;
-        Mon, 25 Oct 2021 19:29:00 +0000 (UTC)
+        id S236122AbhJYTdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:33:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4420861167;
+        Mon, 25 Oct 2021 19:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190141;
-        bh=SgvhMwZghiCoWosATR5g4UbalC8JPRm1Ib4us1+hn+o=;
+        s=korg; t=1635190145;
+        bh=DPZRoibiMdTyqf3nZR0mvk1QD6AlHTeK37w5mGaUqZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P0FTaSOP4Zkip8ZPyc3ctREHn3B7xoq2Xg8nOspB3qt9fyvvZ01MSXzqiswSRRnpq
-         VjTWr7aUfpJPe8OmQhlJ11dalCJ8MVa3GRQsWR5WQ3mrVQonXsp9Ss0A952YbBFFjq
-         j2Y/rwJ8gSmqpWsfPW35IzEi0+Zc+3tGDT61PXNQ=
+        b=eiT27EDHGf/9RSoYoe5ZeFlC+3XD20SlZNaGkuWb7vBZwbFbaBhy9nm9Kb+qR1492
+         1FgPa3pkGJX66yI9zVfVnFxs02fjvZ4kX3Falhy8scHRtHBrOLr7Ydi+NSv6Lg6Dy/
+         g8BwARNcfYoU1mwZ5VC8oE7VePfdnRFRam8JADb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 53/58] scsi: core: Fix shost->cmd_per_lun calculation in scsi_add_host_with_dma()
-Date:   Mon, 25 Oct 2021 21:15:10 +0200
-Message-Id: <20211025190946.506156059@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
+        Johan Hovold <johan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 54/58] usbnet: sanity check for maxpacket
+Date:   Mon, 25 Oct 2021 21:15:11 +0200
+Message-Id: <20211025190946.651041400@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
 References: <20211025190937.555108060@linuxfoundation.org>
@@ -42,42 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit 50b6cb3516365cb69753b006be2b61c966b70588 upstream.
+commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
 
-After commit ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at
-can_queue"), a 416-CPU VM running on Hyper-V hangs during boot because the
-hv_storvsc driver sets scsi_driver.can_queue to an integer value that
-exceeds SHRT_MAX, and hence scsi_add_host_with_dma() sets
-shost->cmd_per_lun to a negative "short" value.
+maxpacket of 0 makes no sense and oopses as we need to divide
+by it. Give up.
 
-Use min_t(int, ...) to work around the issue.
+V2: fixed typo in log and stylistic issues
 
-Link: https://lore.kernel.org/r/20211008043546.6006-1-decui@microsoft.com
-Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
-Cc: stable@vger.kernel.org
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/hosts.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/usb/usbnet.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -219,7 +219,8 @@ int scsi_add_host_with_dma(struct Scsi_H
- 		goto fail;
- 	}
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1773,6 +1773,10 @@ usbnet_probe (struct usb_interface *udev
+ 	if (!dev->rx_urb_size)
+ 		dev->rx_urb_size = dev->hard_mtu;
+ 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
++	if (dev->maxpacket == 0) {
++		/* that is a broken device */
++		goto out4;
++	}
  
--	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
-+	/* Use min_t(int, ...) in case shost->can_queue exceeds SHRT_MAX */
-+	shost->cmd_per_lun = min_t(int, shost->cmd_per_lun,
- 				   shost->can_queue);
- 
- 	error = scsi_init_sense_cache(shost);
+ 	/* let userspace know we have a random address */
+ 	if (ether_addr_equal(net->dev_addr, node_id))
 
 
