@@ -2,160 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C71B439341
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA96439343
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhJYKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhJYKBx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:01:53 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8349C061745;
-        Mon, 25 Oct 2021 02:59:30 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id q16so8229807ljg.3;
-        Mon, 25 Oct 2021 02:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+TIj5y8QsMaTWrj/bXk+5lqEByFxDn6ZBGaeeKVM1t4=;
-        b=gmHqC4hXEi/uZzQY9R3wXUpk8h9YSkzbPgGyvI3qxU923udgW1KbfxMv1NdrplM5hl
-         P7KAA6WxIimu2DyeqQCxdo4jUKFwLATk3mOgXJh3BI66u6wbXZw7oN0lroexTTbdg1Ov
-         NUs817d0u5leYI7bCHlEDmPjxHJR3pNk3fp8SLEirwNbmHpeIsuZuAJ/+X2jIPQG8WPp
-         U5SqGQeBWn8eeTzxCaVMx0+BKIkStLLaaEDh73d4NgiwYJpfcQCA7BZ3fV1CGir9zx87
-         +Mhkp8TrR0B4ZHLqEqvCul1fa6HPXMJ0RwIu8NuNQJwcZ7yV8/Yqj5pkXeLX0zaZcovD
-         mUSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+TIj5y8QsMaTWrj/bXk+5lqEByFxDn6ZBGaeeKVM1t4=;
-        b=lzFiOax7ZZKPGtsLFyrJvn0wrzfIGBmjOUjR1OP6TfL5a4TIJqEndj0GJN+3+K0gyI
-         oJLonGV54bWTRqRJl2wu1Nh+WfiXNCHPYtx+i9Y8OA6OqxHOe6twxNSG8SXBF4lM5975
-         doXWaZOFLM796MIMcl+xd1cQxOGsy/Jhfxr1rjBqsiue17J5gs/M8S7rwJbl0uagrVpO
-         pjf08SN0T1GvKup3QHtn5iVleJhxcx83ZQvhAHlB9e22DDTWNjo2O7x2MYExW45/dwcy
-         0lEt2D8g+JN3XGuN1Oi1j4xduwowbW3p7GhBJ2xMyFTnu+mRSgJWN2Wz1P+lnA/Z+Oq2
-         0wfA==
-X-Gm-Message-State: AOAM532I+MQ87NspxfQtge4thLnGqydLT65B8XcL50zBcbJl80KgTj0e
-        guXRNaWE/+tAXZC1wu0unNU=
-X-Google-Smtp-Source: ABdhPJwehqJNnfIOxj7asWNT4mHVfIICRvlh5rfggFDthwIhGRiIVTpHn+T8Kld3zmZQ6HMr9pe3LA==
-X-Received: by 2002:a05:651c:554:: with SMTP id q20mr17890375ljp.118.1635155969220;
-        Mon, 25 Oct 2021 02:59:29 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id b16sm1534228lfb.220.2021.10.25.02.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 02:59:28 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 12:59:27 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v20 2/2] wireless: Initial driver submission for pureLiFi
- STA devices
-Message-ID: <20211025095927.cssdlblcdprdwfsy@kari-VirtualBox>
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
- <20211018100143.7565-1-srini.raju@purelifi.com>
- <20211018100143.7565-3-srini.raju@purelifi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018100143.7565-3-srini.raju@purelifi.com>
+        id S232726AbhJYKDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:03:11 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:57174 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229764AbhJYKDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:03:09 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowACnZ_QhgHZhhQ0aBQ--.18389S2;
+        Mon, 25 Oct 2021 18:00:01 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: Re: [PATCH] sched: Fix implicit type conversion
+Date:   Mon, 25 Oct 2021 10:00:00 +0000
+Message-Id: <1635156000-2426673-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowACnZ_QhgHZhhQ0aBQ--.18389S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYS7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aV
+        CY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAq
+        x4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6x
+        CaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAC
+        I402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I
+        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
+        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
+        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0
+        rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:00:55AM +0100, Srinivasan Raju wrote:
-> This driver implementation has been based on the zd1211rw driver
-> 
-> Driver is based on 802.11 softMAC Architecture and uses
-> native 802.11 for configuration and management
-> 
-> The driver is compiled and tested in ARM, x86 architectures and
-> compiled in powerpc architecture
+On Mon, Oct 25, 2021 at 08:57:31AM +0000, Peter Zijlstra wrote:
+>> The variable 'n' is defined as ULONG. However in the cpumask_next(),
+>> it is used as INT.
+>> That is vulnerable and may cause overflow.
+>> Therefore, it might be better to define 'n' as INT.
 
-I have run some static analyzing tools against this driver. Here is my
-findings. If you have CI system in house I strongly recommend that you
-take these in use. Note that I have included just what might be real
-warnings but they might also not be. Please check them.
+>-ENOPARSE
 
-------------------------------------------
-Thease are just what I found myself.
+I don't understand the 'ENOPARSE'.
+Please give me more details.
 
-drivers/net/wireless/purelifi/plfxlc/usb.c:47:
-Has static. Will not work with multiple device.
-
-drivers/net/wireless/purelifi/plfxlc/mac.h:75: You use spaces over tabs.
-drivers/net/wireless/purelifi/plfxlc/mac.c:704: You use spaces over tabs.
-drivers/net/wireless/purelifi/plfxlc/usb.c:920: You use spaces over tabs.
-There is more of these. Please find all of them.
-
-------------------------------------------
-$ cppcheck drivers/net/wireless/purelifi/plfxlc/*.[ch] --enable=all
-
-drivers/net/wireless/purelifi/plfxlc/usb.c:55:31: style:
-Boolean result is used in bitwise operation. Clarify expression with
-parentheses. [clarifyCondition]
-
-drivers/net/wireless/purelifi/plfxlc/mac.c:447:6: style:
-Condition '!bad_frame' is always true [knownConditionTrueFalse]
-
-drivers/net/wireless/purelifi/plfxlc/mac.c:572:16: style:
-Variable 'changed_flags' is assigned a value that is never used.
-[unreadVariable]
-        Please check next comment line 577. There you talk about use of
-        changed_flags but you never use it.
-
-Unused functions. I do not have opinion if you should remove these or
-not, but some times there is bug if some function is unused. Please at
-least comment if these are not mistakes.
-
-drivers/net/wireless/purelifi/plfxlc/usb.c:38:0: style: The function 'get_bcd_device' is never used. [unusedFunction]
-drivers/net/wireless/purelifi/plfxlc/usb.c:398:0: style: The function 'purelifi_usb_tx' is never used. [unusedFunction]
-drivers/net/wireless/purelifi/plfxlc/chip.h:64:0: style: The function 'purelifi_mc_clear' is never used. [unusedFunction]
-drivers/net/wireless/purelifi/plfxlc/chip.c:75:0: style: The function 'purelifi_chip_disable_rxtx' is never used. [unusedFunction]
-drivers/net/wireless/purelifi/plfxlc/chip.h:79:0: style: The function 'purelifi_mc_add_addr' is never used. [unusedFunction]
-drivers/net/wireless/purelifi/plfxlc/mac.c:89:0: style: The function 'purelifi_mac_init_hw' is never used. [unusedFunction]
-
-------------------------------------------
-$ codespell drivers/net/wireless/purelifi/plfxlc/*.[ch]
-
-mac.c:237: ocasions ==> occasions
-------------------------------------------
-$ ./scripts/checkpatch.pl --strict drivers/net/wireless/purelifi/plfxlc/*.[ch]
-$ make coccicheck M=drivers/net/wireless/purelifi/plfxlc/
-$ flawfinder drivers/net/wireless/purelifi/plfxlc/*.[ch]
-
-$ touch drivers/net/wireless/purelifi/plfxlc/*.[ch]
-$ make -j6 W=1
-
-These were all good.
-------------------------------------------
-$ touch drivers/net/wireless/purelifi/plfxlc/*.[ch]
-$ make -j6 CC=clang W=1 drivers/net/wireless/purelifi/plfxlc/
-
-drivers/net/wireless/purelifi/plfxlc/usb.c:38:19: warning:
-unused function 'get_bcd_device' [-Wunused-function]
-
-drivers/net/wireless/purelifi/plfxlc/usb.c:55:7: warning:
-logical not is only applied to the left hand side of this bitwise
-operator [-Wlogical-not-parentheses]
-------------------------------------------
-$ ~/smatch/smatch_scripts/build_kernel_data.sh
-$ ~/smatch/smatch_scripts/kchecker drivers/net/wireless/purelifi/plfxlc/
-
-drivers/net/wireless/purelifi/plfxlc/usb.c:55
-purelifi_send_packet_from_data_queue() warn: add some parenthesis here?
-
-drivers/net/wireless/purelifi/plfxlc/mac.c:685
-purelifi_get_et_strings() error: memcpy() '*et_strings' too small (32 vs 64)
-
-  Argillander
