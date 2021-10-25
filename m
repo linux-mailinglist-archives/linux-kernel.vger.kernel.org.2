@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE27438E0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A51438E12
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhJYEWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 00:22:46 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:41381 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhJYEWo (ORCPT
+        id S232207AbhJYEXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhJYEXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 00:22:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635135623; x=1666671623;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=X7bAkQfz6aT4/715bzVhw0pglrEtN8FLQnyZrTVFNdU=;
-  b=GsQUwD+ka644G4LLLLTj8ootb0+CBTsyG0rxaTXlv0wCUaAd3UP4ti5l
-   wY02psWHtg17oqJnWBsklpJ3jDBnODtmwXx/pOXQM/nFtAmPTNQUhSjtg
-   pyFH4rPq3+eCdFiVrG0uislI/eYXWxmdZuPt12BHGQkthjxuJSC/n06i5
-   I=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 24 Oct 2021 21:20:23 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 21:20:22 -0700
-Received: from c-sanm-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Sun, 24 Oct 2021 21:20:17 -0700
-From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "Vinod Koul" <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-usb@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Subject: [PATCH v2] phy: qcom-snps: Correct the FSEL_MASK
-Date:   Mon, 25 Oct 2021 09:49:35 +0530
-Message-ID: <1635135575-5668-1-git-send-email-quic_c_sanm@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 25 Oct 2021 00:23:00 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27ACC061745;
+        Sun, 24 Oct 2021 21:20:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd1w40BBxz4xbr;
+        Mon, 25 Oct 2021 15:20:35 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635135637;
+        bh=S3HjBwvAVmieJ+oCfj9Rn9VsmQauFDmjC9cGFpwHILM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=A/txUgTmPr8QYPiPTbORjFTnHSjbLiuojbkAOhzTqoSidtzP9+WBxQOj7cRbQ5f5u
+         GJfiEAk2LGpuAGE4r7Nl8yF/pURw6mXge8X7uuh46hCP+k9y/y3PRdAanZj4RIZk7g
+         P1Au5RVgA9AwBvBewZmj6WUaRsvQVnP2vCSsu7eB+RE1Pd9XM4rLjkpmw34tKbT41l
+         lTNtvI0RRR845nUvXvLmqEEc7S1+DbBf6H4fNLJGu/SQCpDEP7cGOea8tA64NkKQVK
+         ImvFHYNReOT1IJerrikbPkC+dVuS2kB0a//KFgwKESdpa3/tOgs3ID4gkkFshWa5UW
+         noV2HI2bcMiZA==
+Date:   Mon, 25 Oct 2021 15:20:34 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>, Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sven Schnelle <svens@stackframe.org>,
+        Weizhao Ouyang <o451686892@gmail.com>
+Subject: linux-next: manual merge of the ftrace tree with the parisc-hd tree
+Message-ID: <20211025152034.69923d51@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: multipart/signed; boundary="Sig_/AcWt2FJ9ZWEiRfvKA4EFfND";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FSEL_MASK which selects the refclock is defined incorrectly.
-It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
-in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0 is reset which keeps PHY analog
-blocks ON during suspend.
-Fix this issue by correctly defining the FSEL_MASK.
+--Sig_/AcWt2FJ9ZWEiRfvKA4EFfND
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 51e8114f80d0 (phy: qcom-snps: Add SNPS USB PHY driver for
-QCOM based SOCs)
-Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
----
-v2:
-Corrected the register name COMMON1 > COMMMON0 in commit description.
-Added Fixes tag.
-Dropped copyright line.
+Hi all,
 
- drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Today's linux-next merge of the ftrace tree got a conflict in:
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-index ae4bac0..7e61202 100644
---- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-+++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-@@ -33,7 +33,7 @@
- 
- #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0	(0x54)
- #define RETENABLEN				BIT(3)
--#define FSEL_MASK				GENMASK(7, 5)
-+#define FSEL_MASK				GENMASK(6, 4)
- #define FSEL_DEFAULT				(0x3 << 4)
- 
- #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1	(0x58)
--- 
-2.7.4
+  arch/parisc/kernel/ftrace.c
 
+between commit:
+
+  e1e134bf1eb6 ("parisc/ftrace: set function trace function")
+
+from the parisc-hd tree and commit:
+
+  6644c654ea70 ("ftrace: Cleanup ftrace_dyn_arch_init()")
+
+from the ftrace tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/parisc/kernel/ftrace.c
+index 8b9b8ce95d8d,01581f715737..000000000000
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@@ -92,15 -94,8 +92,9 @@@ int ftrace_disable_ftrace_graph_caller(
+  #endif
+ =20
+  #ifdef CONFIG_DYNAMIC_FTRACE
+-=20
+- int __init ftrace_dyn_arch_init(void)
+- {
+- 	return 0;
+- }
+-=20
+  int ftrace_update_ftrace_func(ftrace_func_t func)
+  {
+ +	ftrace_func =3D func;
+  	return 0;
+  }
+ =20
+
+--Sig_/AcWt2FJ9ZWEiRfvKA4EFfND
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2MJIACgkQAVBC80lX
+0Gxw9Qf7Bn8kAYGDCWW+viYnYQd8pKRwMuYEMYbztRBsJbDRwZaGlI3kT0c8wckT
+BUhrASduFkU0DMj6+9Q3HyEUmkSSPZJV/Qevz9P5IKOFFEVYtPv1wPArC4oOUxtq
+nCV7J8YKDWhtMkq72vtnGnHKfnumBqV1IdMpNc5rkKnJY3/bK8mEwoNYAMmOSAem
+YhYk3H8+AoI7I/zIYVG0Di1BHsCOZIN6ca6Wh8m1ggsjbCSX/5POiAZalRNHrJsf
+cpQh0VlqqZUPIqjQpNlcgMsmOMmptdWer4iFrlR+HkDSbr6QDFsUa7u4d8Pto9T2
+bKFTTJMICDP48pGWu8BNhSfe946I8A==
+=p1um
+-----END PGP SIGNATURE-----
+
+--Sig_/AcWt2FJ9ZWEiRfvKA4EFfND--
