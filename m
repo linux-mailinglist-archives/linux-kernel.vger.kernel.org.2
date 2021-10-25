@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E69439FEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF9443A077
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhJYTZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37228 "EHLO mail.kernel.org"
+        id S235118AbhJYTav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:30:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234145AbhJYTWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF185610FC;
-        Mon, 25 Oct 2021 19:20:00 +0000 (UTC)
+        id S235352AbhJYT2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA1D6113B;
+        Mon, 25 Oct 2021 19:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189601;
-        bh=1hDDKPFMJeNG8aC4u1Bz+JJb9z8HGt06R9e7A0KG3hM=;
+        s=korg; t=1635189884;
+        bh=KCAGzqHHbF0daqZGWKDTxoMRoQg6+sBe85+/4TbKvHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JJOAJCzRhZ5ddof1czv3upu2oR5npae353iKM2zsntTbQPd6lFnlz2K6RpehNZEAh
-         R5aQsGLInyRoDyjla7O4u9p9DL26uvLDJZO4WbkNHsfQjYmSy2stSk1Itbqv5ykkfJ
-         maz+5CpTE1KVbzqfHvjs2nYdrZvm02CZ2GhzAwtY=
+        b=LlEOPl3TmYtp78eGlE7mZDDQDGzw5hyrkfLTMZ7BrscvtsYSEWH536STFaCsOCsie
+         89Kn4QiFuy3KZB5LHaM3RAPSRaUPAJKHgJ4sTr2uAkufH8pMhmGtPcEZZscnyvHebc
+         I/sYs2qH4eUySnakLtNlwcpVGCAh79bi9DniI7Fg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 44/50] isdn: mISDN: Fix sleeping function called from invalid context
+Subject: [PATCH 4.19 06/37] ASoC: wm8960: Fix clock configuration on slave mode
 Date:   Mon, 25 Oct 2021 21:14:31 +0200
-Message-Id: <20211025190940.711805032@linuxfoundation.org>
+Message-Id: <20211025190929.547841507@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 6510e80a0b81b5d814e3aea6297ba42f5e76f73c ]
+[ Upstream commit 6b9b546dc00797c74bef491668ce5431ff54e1e2 ]
 
-The driver can call card->isac.release() function from an atomic
-context.
+There is a noise issue for 8kHz sample rate on slave mode.
+Compared with master mode, the difference is the DACDIV
+setting, after correcting the DACDIV, the noise is gone.
 
-Fix this by calling this function after releasing the lock.
+There is no noise issue for 48kHz sample rate, because
+the default value of DACDIV is correct for 48kHz.
 
-The following log reveals it:
+So wm8960_configure_clocking() should be functional for
+ADC and DAC function even if it is slave mode.
 
-[   44.168226 ] BUG: sleeping function called from invalid context at kernel/workqueue.c:3018
-[   44.168941 ] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 5475, name: modprobe
-[   44.169574 ] INFO: lockdep is turned off.
-[   44.169899 ] irq event stamp: 0
-[   44.170160 ] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[   44.170627 ] hardirqs last disabled at (0): [<ffffffff814209ed>] copy_process+0x132d/0x3e00
-[   44.171240 ] softirqs last  enabled at (0): [<ffffffff81420a1a>] copy_process+0x135a/0x3e00
-[   44.171852 ] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[   44.172318 ] Preemption disabled at:
-[   44.172320 ] [<ffffffffa009b0a9>] nj_release+0x69/0x500 [netjet]
-[   44.174441 ] Call Trace:
-[   44.174630 ]  dump_stack_lvl+0xa8/0xd1
-[   44.174912 ]  dump_stack+0x15/0x17
-[   44.175166 ]  ___might_sleep+0x3a2/0x510
-[   44.175459 ]  ? nj_release+0x69/0x500 [netjet]
-[   44.175791 ]  __might_sleep+0x82/0xe0
-[   44.176063 ]  ? start_flush_work+0x20/0x7b0
-[   44.176375 ]  start_flush_work+0x33/0x7b0
-[   44.176672 ]  ? trace_irq_enable_rcuidle+0x85/0x170
-[   44.177034 ]  ? kasan_quarantine_put+0xaa/0x1f0
-[   44.177372 ]  ? kasan_quarantine_put+0xaa/0x1f0
-[   44.177711 ]  __flush_work+0x11a/0x1a0
-[   44.177991 ]  ? flush_work+0x20/0x20
-[   44.178257 ]  ? lock_release+0x13c/0x8f0
-[   44.178550 ]  ? __kasan_check_write+0x14/0x20
-[   44.178872 ]  ? do_raw_spin_lock+0x148/0x360
-[   44.179187 ]  ? read_lock_is_recursive+0x20/0x20
-[   44.179530 ]  ? __kasan_check_read+0x11/0x20
-[   44.179846 ]  ? do_raw_spin_unlock+0x55/0x900
-[   44.180168 ]  ? ____kasan_slab_free+0x116/0x140
-[   44.180505 ]  ? _raw_spin_unlock_irqrestore+0x41/0x60
-[   44.180878 ]  ? skb_queue_purge+0x1a3/0x1c0
-[   44.181189 ]  ? kfree+0x13e/0x290
-[   44.181438 ]  flush_work+0x17/0x20
-[   44.181695 ]  mISDN_freedchannel+0xe8/0x100
-[   44.182006 ]  isac_release+0x210/0x260 [mISDNipac]
-[   44.182366 ]  nj_release+0xf6/0x500 [netjet]
-[   44.182685 ]  nj_remove+0x48/0x70 [netjet]
-[   44.182989 ]  pci_device_remove+0xa9/0x250
+In order to be compatible for old use case, just add
+condition for checking that sysclk is zero with
+slave mode.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0e50b51aa22f ("ASoC: wm8960: Let wm8960 driver configure its bit clock and frame clock")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/1634102224-3922-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/hardware/mISDN/netjet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8960.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/netjet.c b/drivers/isdn/hardware/mISDN/netjet.c
-index 6dea4c180c49..feada9d7cbcc 100644
---- a/drivers/isdn/hardware/mISDN/netjet.c
-+++ b/drivers/isdn/hardware/mISDN/netjet.c
-@@ -963,8 +963,8 @@ nj_release(struct tiger_hw *card)
- 		nj_disable_hwirq(card);
- 		mode_tiger(&card->bc[0], ISDN_P_NONE);
- 		mode_tiger(&card->bc[1], ISDN_P_NONE);
--		card->isac.release(&card->isac);
- 		spin_unlock_irqrestore(&card->lock, flags);
-+		card->isac.release(&card->isac);
- 		release_region(card->base, card->base_s);
- 		card->base_s = 0;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 88e869d16714..abd5c12764f0 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -755,9 +755,16 @@ static int wm8960_configure_clocking(struct snd_soc_component *component)
+ 	int i, j, k;
+ 	int ret;
+ 
+-	if (!(iface1 & (1<<6))) {
+-		dev_dbg(component->dev,
+-			"Codec is slave mode, no need to configure clock\n");
++	/*
++	 * For Slave mode clocking should still be configured,
++	 * so this if statement should be removed, but some platform
++	 * may not work if the sysclk is not configured, to avoid such
++	 * compatible issue, just add '!wm8960->sysclk' condition in
++	 * this if statement.
++	 */
++	if (!(iface1 & (1 << 6)) && !wm8960->sysclk) {
++		dev_warn(component->dev,
++			 "slave mode, but proceeding with no clock configuration\n");
+ 		return 0;
  	}
+ 
 -- 
 2.33.0
 
