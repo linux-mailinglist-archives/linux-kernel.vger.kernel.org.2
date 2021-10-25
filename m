@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42351439550
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00C643954E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhJYLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41520 "EHLO mail.kernel.org"
+        id S231512AbhJYLyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhJYLyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229589AbhJYLyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 07:54:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 037B860F9D;
-        Mon, 25 Oct 2021 11:52:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFFC360F22;
+        Mon, 25 Oct 2021 11:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635162745;
-        bh=BbRoaahLOM0ZqWpMw3lcnu/Lch2p4ofSfI1jLBp3uOg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f5kL+YvBvxP3e+oGifJv/Ip5eL6rdwgLjzIsw5xGW/6+frqqlKfNiJiYcAHvrXRRc
-         +aMbygkQ5JEeq6cj5klREh4jFe6mHPYllKIeaYW+JBCrGY9DmNhVQngFZXebt0Yb+X
-         Zu5SqnLEzCrf88mDPuUoH3cTySPJngKLxbtoUA+DVWhVQVdtpiFh8AA+o7aoTb6U9n
-         GH1EjB5ecFXkc0Xx1rW6gPP+NT4ukp1vy1io+nagG55Bh+csLkL6p/1wmkYflNiiBo
-         tDvBWcUe6O1hRtj/DdGaZxIIAzmIJSJBwIBuUKn40sSCmSYlCrRd0I3ErNXs4HoxQz
-         eCUA1I7nL0ICQ==
+        s=k20201202; t=1635162744;
+        bh=64JTkQdfnCEcyTbOrpuw5TUx7qN2aLjfP/gHT58Jkos=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ps1Uxoqs+29aiUqd263s05TbWkrU8YhrG37j4mqkxiqAkGMltNo+/bBxM+laY4ZeU
+         Cg0S+EF7lnc7svOuOe9ckLlioJ6DE30ojgpTGrpQuBIDWnMwBaUvyBY8R3vdjt9spO
+         kjuaEE4o2gRIs2F/SzPD8XUZAz2F8pb/xfTOD9XwtlxIpFHEiFjrf0NtaFG4aSW3/L
+         kL57GHDq3+qfPqxmHWPRSp9ldL0K9TJnYtSezENQWF0E8UDzvnlvpSSwQXMp1vMVRR
+         IDz32tNp3QHbO3OUK3gNzbxeV01iCgFnT98rBzfiZcAasTy7Nh/akH/JqiVVD/bdbN
+         fNft2uTdBMqbA==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan@kernel.org>)
-        id 1meyWN-0001Ik-Kr; Mon, 25 Oct 2021 13:52:07 +0200
+        id 1meyWN-0001Im-Oo; Mon, 25 Oct 2021 13:52:07 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 0/2] USB: fix control-message timeouts
-Date:   Mon, 25 Oct 2021 13:51:57 +0200
-Message-Id: <20211025115159.4954-1-johan@kernel.org>
+Subject: [PATCH 1/2] Documentation: USB: fix example bulk-message timeout
+Date:   Mon, 25 Oct 2021 13:51:58 +0200
+Message-Id: <20211025115159.4954-2-johan@kernel.org>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211025115159.4954-1-johan@kernel.org>
+References: <20211025115159.4954-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A number of drivers throughout the tree were using timeout values in
-jiffies instead of milliseconds.
+USB bulk-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-This series fixes a broken USB documentation example and the single
-driver in the USB subtree that got it wrong.
+Use a fixed five-second timeout in the "Writing USB Device Drivers"
+example.
 
-Johan
-
-
-Johan Hovold (2):
-  Documentation: USB: fix example bulk-message timeout
-  USB: iowarrior: fix control-message timeouts
-
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
  Documentation/driver-api/usb/writing_usb_driver.rst | 2 +-
- drivers/usb/misc/iowarrior.c                        | 8 ++------
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
+index 2176297e5765..4356f023065b 100644
+--- a/Documentation/driver-api/usb/writing_usb_driver.rst
++++ b/Documentation/driver-api/usb/writing_usb_driver.rst
+@@ -231,7 +231,7 @@ error message. This can be shown with the following code::
+ 			   skel->bulk_in_endpointAddr),
+ 			   skel->bulk_in_buffer,
+ 			   skel->bulk_in_size,
+-			   &count, HZ*10);
++			   &count, 5000);
+     /* if the read was successful, copy the data to user space */
+     if (!retval) {
+ 	    if (copy_to_user (buffer, skel->bulk_in_buffer, count))
 -- 
 2.32.0
 
