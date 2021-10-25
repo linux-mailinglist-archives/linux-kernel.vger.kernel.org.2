@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9622E439F40
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A0E439FAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhJYTSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:18:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35450 "EHLO mail.kernel.org"
+        id S234401AbhJYTXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:23:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234379AbhJYTRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B396A60FE8;
-        Mon, 25 Oct 2021 19:15:25 +0000 (UTC)
+        id S234425AbhJYTUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F04160F70;
+        Mon, 25 Oct 2021 19:17:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189327;
-        bh=UPV6SijOhIBsx5RkosXNn2LuMKAv7+0P01x+4i6Y2wE=;
+        s=korg; t=1635189465;
+        bh=5pHCfnAcUKJFUGqE+TMe4QX3BpuIx6Kf9xjGpidmRKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xUuWaKnU76++lsYRJfhx/Eiof+T4VKZwO+kF9YDO7Qm4BV+CnqBrdC0Ozajplhnsy
-         sao6z0Iw8c50E/vw1RuG7f7Mr7+ShKZ3sdCnzpGBICI8P0GGHory7rTKt5RM3xRdm+
-         CtvADb7SDQb7T2cQq5KQTM92x+fYdsQhC0kdto7c=
+        b=wnCgFCUebHrEZADH+d+KLfhFa2HHY7lcnp/hvGnJf4QG1hb4vANPZkY5zFdm7SbMw
+         hZsVoBVxmtspzzdCd3QUEDJNovq7kYS6rtI8YWF3TZ8Hb5coQp2KP+kG1TOD0SVJ8a
+         reAgoOIvhnDKT68h//AWjBZRkRu2BvLEQ4vEBEBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 08/44] USB: serial: option: add Telit LE910Cx composition 0x1204
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.9 02/50] s390: fix strrchr() implementation
 Date:   Mon, 25 Oct 2021 21:13:49 +0200
-Message-Id: <20211025190930.337702099@linuxfoundation.org>
+Message-Id: <20211025190933.225700139@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit f5a8a07edafed8bede17a95ef8940fe3a57a77d5 upstream.
+commit 8e0ab8e26b72a80e991c66a8abc16e6c856abe3d upstream.
 
-Add the following Telit LE910Cx composition:
+Fix two problems found in the strrchr() implementation for s390
+architectures: evaluate empty strings (return the string address instead of
+NULL, if '\0' is passed as second argument); evaluate the first character
+of non-empty strings (the current implementation stops at the second).
 
-0x1204: tty, adb, mbim, tty, tty, tty, tty
-
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20211004105655.8515-1-dnlplm@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Reported-by: Heiko Carstens <hca@linux.ibm.com> (incorrect behavior with empty strings)
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Link: https://lore.kernel.org/r/20211005120836.60630-1-roberto.sassu@huawei.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/lib/string.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1209,6 +1209,8 @@ static const struct usb_device_id option
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
- 	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1204, 0xff),	/* Telit LE910Cx (MBIM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
+--- a/arch/s390/lib/string.c
++++ b/arch/s390/lib/string.c
+@@ -225,14 +225,13 @@ EXPORT_SYMBOL(strcmp);
+  */
+ char * strrchr(const char * s, int c)
+ {
+-       size_t len = __strend(s) - s;
++	ssize_t len = __strend(s) - s;
+ 
+-       if (len)
+-	       do {
+-		       if (s[len] == (char) c)
+-			       return (char *) s + len;
+-	       } while (--len > 0);
+-       return NULL;
++	do {
++		if (s[len] == (char)c)
++			return (char *)s + len;
++	} while (--len >= 0);
++	return NULL;
+ }
+ EXPORT_SYMBOL(strrchr);
+ 
 
 
