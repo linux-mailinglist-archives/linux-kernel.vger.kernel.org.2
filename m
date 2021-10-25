@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26870439DC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B0C439DD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhJYRoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234292AbhJYRob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:44:31 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13CAC061224
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:42:08 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id h20so12391319qko.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X9zUblVIGuZd4IjMbSrFBsAjSqw6zhs1OIqj/eH6y0g=;
-        b=dhzO+fgnJ3U+lS/5F/TkufBFbMB0FNv9RJNCypmqJeBdqIvAj71pWD2NOfYrm2raA+
-         Gz9sHdjGm2gbUyrghphWehHsFnCPBtO6T9pVNjdQSUCyFAmXo8C3q3oGIkmxya074LmW
-         TlFgNZF+u6HWvpfWXC/CyLuVW2E9zBF/LQH6/EulYw0xE0hGLB2G2+L5qnzUUVo+OSTW
-         KqdL/e4Zr/FS54+IBlJsSt/8phFMwL6kcbkRQh9cplG6LIR2aVK2fA1oVATMLa4ubnex
-         paHwS5WXDqXF08tonhgFBfATSqQZsS+YnFccAJ8MBRZF6Iw71aePvl9Td/MigGEoJmT3
-         LRZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=X9zUblVIGuZd4IjMbSrFBsAjSqw6zhs1OIqj/eH6y0g=;
-        b=5ZKSDzciryhLiWViGdwTo+o9sQnSUzgEUaHh9598ccERKAJSfKOce7HzYRG/KNSk1M
-         WhOXmMzDnrlCSorq/dGaKoizZhFS/QOcQ92cM0T4SGjWi9s99I3i5mq2u7xPZM6nbzh3
-         x8HTqVYJ80p0FP3UfXwWoZj8dHRNeWjGeO7Odr6YfNLSiSWmN2Z8BfkfB+SZx7lT8IvB
-         wu2PoACfueVhz0S4t92tguH5czKuGICMQB6bWlPE9VKdsjL/5WLx2n/yWjJDdlBMFBju
-         ZBpTgLBxBZml4tThYK5qBa+z/vb/NCTiZtnRHgtB/Mfr7JQ6YUaCVnl83EkPT6ajA7E6
-         WVJg==
-X-Gm-Message-State: AOAM530Mtco5RkKmTxF4aOyliX/LBcEBG+9qOE79odoaEDo1oqsgxzLI
-        x4sDIAbvrc5bB9AQUXi/XmA=
-X-Google-Smtp-Source: ABdhPJyM2kiThlmSeP8Np46MA9t73+LW7QdDF8frc+w+QIhaegc9ynRNr+0HDKlD7vGk7em/wPsvEQ==
-X-Received: by 2002:a05:620a:4153:: with SMTP id k19mr14333359qko.246.1635183727839;
-        Mon, 25 Oct 2021 10:42:07 -0700 (PDT)
-Received: from localhost.localdomain ([67.8.38.84])
-        by smtp.gmail.com with ESMTPSA id v21sm502280qtk.46.2021.10.25.10.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 10:42:07 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     robert.foss@linaro.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     jagan@amarulasolutions.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-Date:   Mon, 25 Oct 2021 13:42:02 -0400
-Message-Id: <20211025174202.32396-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S232657AbhJYRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:47:41 -0400
+Received: from mga01.intel.com ([192.55.52.88]:59794 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230505AbhJYRri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:47:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="253240803"
+X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; 
+   d="scan'208";a="253240803"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 10:45:15 -0700
+X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; 
+   d="scan'208";a="634827955"
+Received: from cdsmith3-mobl.amr.corp.intel.com (HELO [10.212.229.230]) ([10.212.229.230])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 10:45:14 -0700
+Subject: Re: [PATCH v2 3/5] x86/mm: check exec permissions on fault
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+References: <20211021122112.592634-1-namit@vmware.com>
+ <20211021122112.592634-4-namit@vmware.com>
+ <e55875fa-1264-7e08-3bb8-ed984f6ea5b3@intel.com>
+ <00C2DC4B-A77D-4B32-B7F7-2291830BC2D2@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <37d0b84c-f6ca-15cb-8d78-b6b5a9496da7@intel.com>
+Date:   Mon, 25 Oct 2021 10:45:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <00C2DC4B-A77D-4B32-B7F7-2291830BC2D2@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
-Kbuild gives the following warning:
+On 10/25/21 9:19 AM, Nadav Amit wrote:
+> That was my first version, but I was concerned that perhaps there is
+> some strange scenario in which both X86_PF_WRITE and X86_PF_INSN can
+> be set. That is the reason that Peter asked you whether this is
+> something that might happen.
+> 
+> If you confirm they cannot be both set, I would the version you just
+> mentioned.
 
-WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
-  Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
-  Selected by [y]:
-  - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
+I'm pretty sure they can't be set together on any sane hardware.  A
+bonkers hypervisor or CPU could do it of course, but they'd be crazy.
 
-This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
-without depending on or selecting DRM_KMS_HELPER,
-despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
-
-This unmet dependency bug was detected by Kismet,
-a static analysis tool for Kconfig.
-Please advise if this is not the appropriate solution.
-
-Fixes: ce517f18944e ("drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge")
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- drivers/gpu/drm/bridge/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 431b6e12a81f..a630cb8fd1c8 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -30,6 +30,7 @@ config DRM_CDNS_DSI
- config DRM_CHIPONE_ICN6211
- 	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
- 	depends on OF
-+  select DRM_KMS_HELPER
- 	select DRM_MIPI_DSI
- 	select DRM_PANEL_BRIDGE
- 	help
---
-2.30.2
+BTW, feel free to add a WARN_ON_ONCE() if WRITE and INSN are both set.
+That would be a nice place to talk about the assumption.
