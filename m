@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1084C43A14B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DB143A1FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhJYTiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48434 "EHLO mail.kernel.org"
+        id S237730AbhJYToK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:44:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235037AbhJYTbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:31:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FEC6610D2;
-        Mon, 25 Oct 2021 19:27:52 +0000 (UTC)
+        id S236763AbhJYTfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAAF7610A1;
+        Mon, 25 Oct 2021 19:33:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190073;
-        bh=rAPVWK/ctba25aFhxtjqoTOEQ7TqCHXv5BXQ05DtXaw=;
+        s=korg; t=1635190388;
+        bh=OUv7N9wsLoXbm/vtjTvBM+lAVo4HBcOkZSejorIWfg4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2tfZ1IT4PxFWJLa50jOQlm3vKS9qEJnaUM7QcFD2IoMVSohiXQqjgG8Wb5NXJ/sHU
-         RkbO+oiGRvN8r5fAxPuocabaFkDjCW48DjllK5Qdqe+TPda/yfuDVjo/R4U1HVS0FH
-         IlRtgraahjQ/Dhak4tlMyTrL+z00PV3C3IIUhyok=
+        b=xNYsrDR8Ves3F+7NaXFT2Y26Yl93i5F2OjzflG4qLhWa+PysoiojHD+gx6J9bcl0E
+         EuR+jgmyIsnzxRY6jcC4K0z9LYpezVES1l3siUjRt/3zoM3rHsdhGmlq+Kzdn3y3LN
+         z/MVJjmAnddEkA1kNHeSdMm9FYLpwSWd6ijOqjxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 43/58] netfilter: Kconfig: use default y instead of m for bool config option
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lin Ma <linma@zju.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 63/95] nfc: nci: fix the UAF of rf_conn_info object
 Date:   Mon, 25 Oct 2021 21:15:00 +0200
-Message-Id: <20211025190944.412724931@linuxfoundation.org>
+Message-Id: <20211025191006.088765237@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@gmail.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-commit 77076934afdcd46516caf18ed88b2f88025c9ddb upstream.
+commit 1b1499a817c90fd1ce9453a2c98d2a01cca0e775 upstream.
 
-This option, NF_CONNTRACK_SECMARK, is a bool, so it can never be 'm'.
+The nci_core_conn_close_rsp_packet() function will release the conn_info
+with given conn_id. However, it needs to set the rf_conn_info to NULL to
+prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
+the UAF.
 
-Fixes: 33b8e77605620 ("[NETFILTER]: Add CONFIG_NETFILTER_ADVANCED option")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/nfc/nci/rsp.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -94,7 +94,7 @@ config NF_CONNTRACK_MARK
- config NF_CONNTRACK_SECMARK
- 	bool  'Connection tracking security mark support'
- 	depends on NETWORK_SECMARK
--	default m if NETFILTER_ADVANCED=n
-+	default y if NETFILTER_ADVANCED=n
- 	help
- 	  This option enables security markings to be applied to
- 	  connections.  Typically they are copied to connections from
+--- a/net/nfc/nci/rsp.c
++++ b/net/nfc/nci/rsp.c
+@@ -277,6 +277,8 @@ static void nci_core_conn_close_rsp_pack
+ 							 ndev->cur_conn_id);
+ 		if (conn_info) {
+ 			list_del(&conn_info->list);
++			if (conn_info == ndev->rf_conn_info)
++				ndev->rf_conn_info = NULL;
+ 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
+ 		}
+ 	}
 
 
