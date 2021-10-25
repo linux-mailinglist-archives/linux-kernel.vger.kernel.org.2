@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01409439D87
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD405439D7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhJYR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:26:21 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:49592 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234073AbhJYR0K (ORCPT
+        id S234104AbhJYR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233662AbhJYRZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:26:10 -0400
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by smtp.orange.fr with ESMTPA
-        id f3gYmY0E4niuxf3hImufL8; Mon, 25 Oct 2021 19:23:46 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
-X-ME-Date: Mon, 25 Oct 2021 19:23:46 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v3 4/4] can: netlink: report the CAN controller mode supported flags
-Date:   Tue, 26 Oct 2021 02:22:47 +0900
-Message-Id: <20211025172247.1774451-5-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211025172247.1774451-1-mailhol.vincent@wanadoo.fr>
-References: <20211025172247.1774451-1-mailhol.vincent@wanadoo.fr>
+        Mon, 25 Oct 2021 13:25:47 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B315C061745;
+        Mon, 25 Oct 2021 10:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=D47mqACLa3AcQRc6qgSnNXuHVEOjdx5l+P+SHXbONJ4=; b=Yt
+        U9/G6y6Pv19erawptmCBvu2WNHLmsaVlCJ/BNKfkO9YLPEGNaaDGEPiZm7C3h/4iiwe8x5enmfjqJ
+        ZL75/he+V0ANlMxfdM9Z9SR76rM5UmcwDyQJvnzSGij7U1+V9OCz7eYUzsR0XEvIFgRr8vN97ARKN
+        5/jxu4ceUGijP075VQxJ01A/WDtTFIbZZo9i+kE9IImmGXPOYuMXnbHnePgkSphzU8QqrZHjX2zj3
+        bqApDst0WY2Aa6CwMTxZJ9OwOxJlFhUGOqvyGspXeAMJky76CmgRwS9mI06/NJdI+IPitheL3cEZ3
+        wT6bqfDCZXdWsfrs0fm7ThnV50x8erHA==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mf3gu-0007p4-5P; Mon, 25 Oct 2021 18:23:20 +0100
+From:   John Keeping <john@metanate.com>
+To:     linux-perf-users@vger.kernel.org
+Cc:     John Keeping <john@metanate.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] tools/build: drop slang include path in test-all
+Date:   Mon, 25 Oct 2021 18:23:13 +0100
+Message-Id: <20211025172314.3766032-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a method for the user to check both the
-supported and the static capabilities. The proposed method reuses the
-existing struct can_ctrlmode and thus do not need a new IFLA_CAN_*
-entry.
+Commit cbefd24f0aee3 ("tools build: Add test to check if slang.h is in
+/usr/include/slang/") added a proper test to check whether slang.h is in
+a subdirectory, and commit 1955c8cf5e26b ("perf tools: Don't hardcode
+host include path for libslang") removed the include path for
+test-libslang.bin but missed test-all.bin.  Apply the same change to
+test-all.bin.
 
-Currently, the CAN netlink interface provides no easy ways to check
-the capabilities of a given controller. The only method from the
-command line is to try each CAN_CTRLMODE_* individually to check
-whether the netlink interface returns an -EOPNOTSUPP error or not
-(alternatively, one may find it easier to directly check the source
-code of the driver instead...)
-
-It appears that can_ctrlmode::mask is only used in one direction: from
-the userland to the kernel. So we can just reuse this field in the
-other direction (from the kernel to userland). But, because the
-semantic is different, we use a union to give this field a proper
-name: "supported".
-
-Below table explains how the two fields can_ctrlmode::supported and
-can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
-flags, allow us to identify both the supported and the static
-capabilities:
-
- supported &	flags &		Controller capabilities
- CAN_CTRLMODE_*	CAN_CTRLMODE_*
- -----------------------------------------------------------------------
- false		false		Feature not supported (always disabled)
- false		true		Static feature (always enabled)
- true		false		Feature supported but disabled
- true		true		Feature supported and enabled
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Fixes: 1955c8cf5e26 ("perf tools: Don't hardcode host include path for libslang")
+Signed-off-by: John Keeping <john@metanate.com>
 ---
-Please refer to below link for the iproute2-next counterpart of this
-patch:
+Resending as linux-perf-users wasn't included last time.
+MAINTAINERS doesn't include any entries covering this file.
 
-https://lore.kernel.org/linux-can/20211003050147.569044-1-mailhol.vincent@wanadoo.fr/T/#t
----
- drivers/net/can/dev/netlink.c    | 5 ++++-
- include/uapi/linux/can/netlink.h | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ tools/build/feature/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 26c336808be5..32e1eb63ee7d 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -475,7 +475,10 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
- static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
--	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
-+	struct can_ctrlmode cm = {
-+		.supported = priv->ctrlmode_supported,
-+		.flags = priv->ctrlmode
-+	};
- 	struct can_berr_counter bec = { };
- 	enum can_state state = priv->state;
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index d024b5204ba0..71390309f4d7 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -91,7 +91,7 @@ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(
+ ###############################
  
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 75b85c60efb2..b846922ac18f 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -88,7 +88,10 @@ struct can_berr_counter {
-  * CAN controller mode
-  */
- struct can_ctrlmode {
--	__u32 mask;
-+	union {
-+		__u32 mask;		/* Userland to kernel */
-+		__u32 supported;	/* Kernel to userland */
-+	};
- 	__u32 flags;
- };
+ $(OUTPUT)test-all.bin:
+-	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -I/usr/include/slang -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
++	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
  
+ $(OUTPUT)test-hello.bin:
+ 	$(BUILD)
 -- 
-2.32.0
+2.33.1
 
