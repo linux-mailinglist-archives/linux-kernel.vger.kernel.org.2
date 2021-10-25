@@ -2,210 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A299843A63C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D031B43A82E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhJYV4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:56:09 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:45421 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhJYV4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:56:08 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HdTHD4m47z9sTQ;
-        Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CE44DdC69V01; Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HdTHD3Mfbz9sTK;
-        Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 44B108B76D;
-        Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id pHcE_ofUi_WZ; Mon, 25 Oct 2021 23:53:44 +0200 (CEST)
-Received: from [192.168.203.118] (unknown [192.168.203.118])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 765018B763;
-        Mon, 25 Oct 2021 23:53:43 +0200 (CEST)
-Message-ID: <5794f254-0523-7f2f-f9e7-ff64a7fe400d@csgroup.eu>
-Date:   Mon, 25 Oct 2021 23:53:41 +0200
+        id S234837AbhJYXc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233418AbhJYXcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 19:32:48 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E5EC061745;
+        Mon, 25 Oct 2021 16:30:25 -0700 (PDT)
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HdWQl4cYRz4xbP; Tue, 26 Oct 2021 10:30:23 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1635204623;
+        bh=D9s8UCsN8uxpZTpLGN0k3xtAwElruVlh1u99paNigtw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dfwE8Xoh5HvMa28V7E3VIIFgW6XK3TRLC4Ppwq51Hj6iQ9qTqJLjRIY5A5rM9Oqfc
+         LHgzhmUCt3Q51SUj9eAGPqg36rPwXwefsXL8PyWgfkn4/uaUlseXVg7t3xEtqYO++1
+         x/gOAbBdf7mZOlxMlHPGs8ZkAPbaRmWQeMLFaJxY=
+Date:   Tue, 26 Oct 2021 00:16:43 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 13/20] iommu: Extend iommu_at[de]tach_device() for multiple
+ devices group
+Message-ID: <YXauO+YSR7ivz1QW@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-14-yi.l.liu@intel.com>
+ <YWe+88sfCbxgMYPN@yekko>
+ <BN9PR11MB54337A8E65C789D038D875C68CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YWzwmAQDB9Qwu2uQ@yekko>
+ <20211018163238.GO2744544@nvidia.com>
+ <YXY9UIKDlQpNDGax@yekko>
+ <20211025121410.GQ2744544@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 02/10] powerpc/book3e: Fix set_memory_x() and
- set_memory_nx()
-Content-Language: fr-FR
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <33e7fe0f6134c58e044eb63d3925cd34aa120104.1634983809.git.christophe.leroy@csgroup.eu>
- <7e7b0688c907e54f3b11ddfb9a8f44511d475fd7.1634983809.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <7e7b0688c907e54f3b11ddfb9a8f44511d475fd7.1634983809.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="O2NMk5xF7UYH/YH7"
+Content-Disposition: inline
+In-Reply-To: <20211025121410.GQ2744544@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--O2NMk5xF7UYH/YH7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 23/10/2021 13:47, Christophe Leroy wrote:
-> set_memory_x() calls pte_mkexec() which sets _PAGE_EXEC.
-> set_memory_nx() calls pte_exprotec() which clears _PAGE_EXEC.
-> 
-> Book3e has 2 bits, UX and SX, which defines the exec rights
-> resp. for user (PR=1) and for kernel (PR=0).
-> 
-> _PAGE_EXEC is defined as UX only.
-> 
-> An executable kernel page is set with either _PAGE_KERNEL_RWX
-> or _PAGE_KERNEL_ROX, which both have SX set and UX cleared.
-> 
-> So set_memory_nx() call for an executable kernel page does
-> nothing because UX is already cleared.
-> 
-> And set_memory_x() on a non-executable kernel page makes it
-> executable for the user and keeps it non-executable for kernel.
-> 
-> Also, pte_exec() always returns 'false' on kernel pages, because
-> it checks _PAGE_EXEC which doesn't include SX, so for instance
-> the W+X check doesn't work.
-> 
-> To fix this:
-> - change tlb_low_64e.S to use _PAGE_BAP_UX instead of _PAGE_USER
-> - sets both UX and SX in _PAGE_EXEC so that pte_user() returns
-> true whenever one of the two bits is set and pte_exprotect()
-> clears both bits.
-> - Define a book3e specific version of pte_mkexec() which sets
-> either SX or UX based on UR.
-> 
-> Fixes: 1f9ad21c3b38 ("powerpc/mm: Implement set_memory() routines")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> v2: New
+On Mon, Oct 25, 2021 at 09:14:10AM -0300, Jason Gunthorpe wrote:
+> On Mon, Oct 25, 2021 at 04:14:56PM +1100, David Gibson wrote:
+> > On Mon, Oct 18, 2021 at 01:32:38PM -0300, Jason Gunthorpe wrote:
+> > > On Mon, Oct 18, 2021 at 02:57:12PM +1100, David Gibson wrote:
+> > >=20
+> > > > The first user might read this.  Subsequent users are likely to just
+> > > > copy paste examples from earlier things without fully understanding
+> > > > them.  In general documenting restrictions somewhere is never as
+> > > > effective as making those restrictions part of the interface signat=
+ure
+> > > > itself.
+> > >=20
+> > > I'd think this argument would hold more water if you could point to
+> > > someplace in existing userspace that cares about the VFIO grouping.
+> >=20
+> > My whole point here is that the proposed semantics mean that we have
+> > weird side effects even if the app doesn't think it cares about
+> > groups.
+> >=20
+> > e.g. App's input is a bunch of PCI addresses for NICs.  It attaches
+> > each one to a separate IOAS and bridges packets between them all.  As
+> > far as the app is concerned, it doesn't care about groups, as you say.
+> >=20
+> > Except that it breaks if any two of the devices are in the same group.
+> > Worse, it has a completely horrible failure mode: no syscall returns
+>=20
+> Huh? If an app requests an IOAS attach that is not possible then the
+> attachment IOCTL will fail.
+>=20
+> The kernel must track groups and know that group A is on IOAS A and
+> any further attach of a group A device must specify IOAS A or receive
+> a failure.
 
-pte_mkexec() in nohash/64/pgtable.h conflicts with the one in 
-nohash/pte_book3e.h
+Ok, I misunderstood the semantics that were suggested.
 
-Should guard it with  #ifndef pte_mkexec(), but as pte_book3e is the 
-only user in 64 bits, then just remove it from there.
+So, IIUC what you're suggested is that if group X is attached to IOAS
+1, then attaching the group to IOAS 1 again should succeed (as a
+no-op), but attaching to any other IOAS should fail?
 
-Send v3 with only that change compared to v2.
+That's certainly an improvement, but there's still some questions.
 
-Christophe
+If you attach devices A and B (both in group X) to IOAS 1, then detach
+device A, what happens?  Do you detach both devices?  Or do you have a
+counter so you have to detach as many time as you attached?
 
-> ---
->   arch/powerpc/include/asm/nohash/32/pgtable.h |  2 ++
->   arch/powerpc/include/asm/nohash/pte-book3e.h | 18 ++++++++++++++----
->   arch/powerpc/mm/nohash/tlb_low_64e.S         |  8 ++++----
->   3 files changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-> index ac0a5ff48c3a..d6ba821a56ce 100644
-> --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-> +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-> @@ -193,10 +193,12 @@ static inline pte_t pte_wrprotect(pte_t pte)
->   }
->   #endif
->   
-> +#ifndef pte_mkexec
->   static inline pte_t pte_mkexec(pte_t pte)
->   {
->   	return __pte(pte_val(pte) | _PAGE_EXEC);
->   }
-> +#endif
->   
->   #define pmd_none(pmd)		(!pmd_val(pmd))
->   #define	pmd_bad(pmd)		(pmd_val(pmd) & _PMD_BAD)
-> diff --git a/arch/powerpc/include/asm/nohash/pte-book3e.h b/arch/powerpc/include/asm/nohash/pte-book3e.h
-> index 813918f40765..f798640422c2 100644
-> --- a/arch/powerpc/include/asm/nohash/pte-book3e.h
-> +++ b/arch/powerpc/include/asm/nohash/pte-book3e.h
-> @@ -48,7 +48,7 @@
->   #define _PAGE_WRITETHRU	0x800000 /* W: cache write-through */
->   
->   /* "Higher level" linux bit combinations */
-> -#define _PAGE_EXEC		_PAGE_BAP_UX /* .. and was cache cleaned */
-> +#define _PAGE_EXEC		(_PAGE_BAP_SX | _PAGE_BAP_UX) /* .. and was cache cleaned */
->   #define _PAGE_RW		(_PAGE_BAP_SW | _PAGE_BAP_UW) /* User write permission */
->   #define _PAGE_KERNEL_RW		(_PAGE_BAP_SW | _PAGE_BAP_SR | _PAGE_DIRTY)
->   #define _PAGE_KERNEL_RO		(_PAGE_BAP_SR)
-> @@ -93,11 +93,11 @@
->   /* Permission masks used to generate the __P and __S table */
->   #define PAGE_NONE	__pgprot(_PAGE_BASE)
->   #define PAGE_SHARED	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW)
-> -#define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW | _PAGE_EXEC)
-> +#define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW | _PAGE_BAP_UX)
->   #define PAGE_COPY	__pgprot(_PAGE_BASE | _PAGE_USER)
-> -#define PAGE_COPY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_EXEC)
-> +#define PAGE_COPY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_BAP_UX)
->   #define PAGE_READONLY	__pgprot(_PAGE_BASE | _PAGE_USER)
-> -#define PAGE_READONLY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_EXEC)
-> +#define PAGE_READONLY_X	__pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_BAP_UX)
->   
->   #ifndef __ASSEMBLY__
->   static inline pte_t pte_mkprivileged(pte_t pte)
-> @@ -113,6 +113,16 @@ static inline pte_t pte_mkuser(pte_t pte)
->   }
->   
->   #define pte_mkuser pte_mkuser
-> +
-> +static inline pte_t pte_mkexec(pte_t pte)
-> +{
-> +	if (pte_val(pte) & _PAGE_BAP_UR)
-> +		return __pte((pte_val(pte) & ~_PAGE_BAP_SX) | _PAGE_BAP_UX);
-> +	else
-> +		return __pte((pte_val(pte) & ~_PAGE_BAP_UX) | _PAGE_BAP_SX);
-> +}
-> +#define pte_mkexec pte_mkexec
-> +
->   #endif /* __ASSEMBLY__ */
->   
->   #endif /* __KERNEL__ */
-> diff --git a/arch/powerpc/mm/nohash/tlb_low_64e.S b/arch/powerpc/mm/nohash/tlb_low_64e.S
-> index bf24451f3e71..9235e720e357 100644
-> --- a/arch/powerpc/mm/nohash/tlb_low_64e.S
-> +++ b/arch/powerpc/mm/nohash/tlb_low_64e.S
-> @@ -222,7 +222,7 @@ tlb_miss_kernel_bolted:
->   
->   tlb_miss_fault_bolted:
->   	/* We need to check if it was an instruction miss */
-> -	andi.	r10,r11,_PAGE_EXEC|_PAGE_BAP_SX
-> +	andi.	r10,r11,_PAGE_BAP_UX|_PAGE_BAP_SX
->   	bne	itlb_miss_fault_bolted
->   dtlb_miss_fault_bolted:
->   	tlb_epilog_bolted
-> @@ -239,7 +239,7 @@ itlb_miss_fault_bolted:
->   	srdi	r15,r16,60		/* get region */
->   	bne-	itlb_miss_fault_bolted
->   
-> -	li	r11,_PAGE_PRESENT|_PAGE_EXEC	/* Base perm */
-> +	li	r11,_PAGE_PRESENT|_PAGE_BAP_UX	/* Base perm */
->   
->   	/* We do the user/kernel test for the PID here along with the RW test
->   	 */
-> @@ -614,7 +614,7 @@ itlb_miss_fault_e6500:
->   
->   	/* We do the user/kernel test for the PID here along with the RW test
->   	 */
-> -	li	r11,_PAGE_PRESENT|_PAGE_EXEC	/* Base perm */
-> +	li	r11,_PAGE_PRESENT|_PAGE_BAP_UX	/* Base perm */
->   	oris	r11,r11,_PAGE_ACCESSED@h
->   
->   	cmpldi	cr0,r15,0			/* Check for user region */
-> @@ -734,7 +734,7 @@ normal_tlb_miss_done:
->   
->   normal_tlb_miss_access_fault:
->   	/* We need to check if it was an instruction miss */
-> -	andi.	r10,r11,_PAGE_EXEC
-> +	andi.	r10,r11,_PAGE_BAP_UX
->   	bne	1f
->   	ld	r14,EX_TLB_DEAR(r12)
->   	ld	r15,EX_TLB_ESR(r12)
-> 
+> The kernel should never blindly acknowledge a failed attachment.
+>=20
+> Jason
+>=20
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--O2NMk5xF7UYH/YH7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmF2rjkACgkQbDjKyiDZ
+s5JwahAA391JynQuavWmhBOhDzb14OvOhpDcitGZ2dFWubVWtz4qL5lRWS/02Q0N
+9dpFnqINn3fxXAVKM//9YP5KRFeAS5v5C7ScUL0GDjKLMvQ5cl/YR/t8J2i+q1q5
+osWlUmUofwjTKMzxrV+fRaY8W8Ro2vdp9NV3xJsE4ipZVIxU4X2XgIJ8Zp37ED+R
+WPftlJukAKQIJmdiqaEyNah+eG0Jl4MmqOsGLRXrD4KFiblKwXX2AlQgxb0hzo6P
+eScpIA26XA/v3ch/Llh7mo4obgb0PAsqeGhKUQpfFb7p+APamwdtjGqe8vE1UW+E
+jVkaZwKTJ6Y6Dc88FBseS0sFvJDCqzGri023feLbP16V8pwhyweegqx75b0rcL1/
+piUbQnSt8ZRidBRKq87NusMkBpV221+uqLvranfuoeqgbt9U0vYIB8J5jW+fyrCp
+qu5Ch+wAmJZHr1/WmCAPmHV8pmGKoGUVYwc5vStAKkBTru0qAh5ImN7kTlpd8OpS
+ktThhH1jVYpejts5quqAtDi/swpjCIBb209clpsidn8nVPBvI0I3diVWnN7qsXI4
+vnmi3K+Y8bjANYPaLBtUVX4motWGBXLbOfbPkAua5bmHIYjZMSSm9E81R+SHzsPY
+FOecGoVdowCrUloQPRA0YHxXocyX3ZSYvBWX0a8pZMpfMOuec30=
+=dI80
+-----END PGP SIGNATURE-----
+
+--O2NMk5xF7UYH/YH7--
