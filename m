@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B339439F44
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849A443A2BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbhJYTTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:19:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36450 "EHLO mail.kernel.org"
+        id S238149AbhJYTv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:51:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234570AbhJYTSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:18:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E41B600D3;
-        Mon, 25 Oct 2021 19:16:20 +0000 (UTC)
+        id S237968AbhJYTq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:46:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80E9D6120D;
+        Mon, 25 Oct 2021 19:40:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189382;
-        bh=HQ2gS4RXwqhHL1WI4Fc5nD1/tiAg5Hlzeqp0CsHIbgM=;
+        s=korg; t=1635190802;
+        bh=TD6/T9X43wYxT6EJ6NjhoPf92aJMxzpa2w4AK3IGcK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TL4HK+tDCiGQP9alh+qbBV4oa7xW4yW+V3ha1wQK1Rz4CMq1bF5tjoYQW0omPWt8L
-         O74O6HT4t89V8vVd2TCX+pMIos5l0S2mqYsinRmunk8bpH9r7h0Ebq8WgQY+EIQi7F
-         QjCXvWj0jWYE9FLbbfb5EkxydR8y9W1UfkPBHlxw=
+        b=D66x0aR2vXUoxVvkb/pMtTVxJAt3RT8L8tGclhpGCdTJ89ASm3crcM2aZ1sHhC4nN
+         ux1wbYSmlvIrQPDPlfJ5IkxiRll+BaMh1gYGqQnk9GkKKHJnvqiTb80qLFBydoFjrf
+         fURx44FovDsEiBYWUfk+YW4uI1r7Bao1cSdYLMUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheng Liang <zhengliang6@huawei.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        "Masami Ichikawa(CIP)" <masami.ichikawa@cybertrust.co.jp>
-Subject: [PATCH 4.4 33/44] ovl: fix missing negative dentry check in ovl_rename()
-Date:   Mon, 25 Oct 2021 21:14:14 +0200
-Message-Id: <20211025190935.428177228@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.14 074/169] can: j1939: j1939_xtp_rx_rts_session_new(): abort TP less than 9 bytes
+Date:   Mon, 25 Oct 2021 21:14:15 +0200
+Message-Id: <20211025191026.761790773@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Liang <zhengliang6@huawei.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit a295aef603e109a47af355477326bd41151765b6 upstream.
+commit a4fbe70c5cb746441d56b28cf88161d9e0e25378 upstream.
 
-The following reproducer
+The receiver should abort TP if 'total message size' in TP.CM_RTS and
+TP.CM_BAM is less than 9 or greater than 1785 [1], but currently the
+j1939 stack only checks the upper bound and the receiver will accept
+the following broadcast message:
 
-  mkdir lower upper work merge
-  touch lower/old
-  touch lower/new
-  mount -t overlay overlay -olowerdir=lower,upperdir=upper,workdir=work merge
-  rm merge/new
-  mv merge/old merge/new & unlink upper/new
+  vcan1  18ECFF00   [8]  20 08 00 02 FF 00 23 01
+  vcan1  18EBFF00   [8]  01 00 00 00 00 00 00 00
+  vcan1  18EBFF00   [8]  02 00 FF FF FF FF FF FF
 
-may result in this race:
+This patch adds check for the lower bound and abort illegal TP.
 
-PROCESS A:
-  rename("merge/old", "merge/new");
-  overwrite=true,ovl_lower_positive(old)=true,
-  ovl_dentry_is_whiteout(new)=true -> flags |= RENAME_EXCHANGE
+[1] SAE-J1939-82 A.3.4 Row 2 and A.3.6 Row 6.
 
-PROCESS B:
-  unlink("upper/new");
-
-PROCESS A:
-  lookup newdentry in new_upperdir
-  call vfs_rename() with negative newdentry and RENAME_EXCHANGE
-
-Fix by adding the missing check for negative newdentry.
-
-Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
-Fixes: e9be9d5e76e3 ("overlay filesystem")
-Cc: <stable@vger.kernel.org> # v3.18
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Link: https://lore.kernel.org/all/1634203601-3460-1-git-send-email-zhangchangzhong@huawei.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Masami Ichikawa(CIP) <masami.ichikawa@cybertrust.co.jp>
-
 ---
- fs/overlayfs/dir.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/can/j1939/j1939-priv.h |    1 +
+ net/can/j1939/transport.c  |    2 ++
+ 2 files changed, 3 insertions(+)
 
---- a/fs/overlayfs/dir.c
-+++ b/fs/overlayfs/dir.c
-@@ -824,9 +824,13 @@ static int ovl_rename2(struct inode *old
- 		}
- 	} else {
- 		new_create = true;
--		if (!d_is_negative(newdentry) &&
--		    (!new_opaque || !ovl_is_whiteout(newdentry)))
--			goto out_dput;
-+		if (!d_is_negative(newdentry)) {
-+			if (!new_opaque || !ovl_is_whiteout(newdentry))
-+				goto out_dput;
-+		} else {
-+			if (flags & RENAME_EXCHANGE)
-+				goto out_dput;
-+		}
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -326,6 +326,7 @@ int j1939_session_activate(struct j1939_
+ void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec);
+ void j1939_session_timers_cancel(struct j1939_session *session);
+ 
++#define J1939_MIN_TP_PACKET_SIZE 9
+ #define J1939_MAX_TP_PACKET_SIZE (7 * 0xff)
+ #define J1939_MAX_ETP_PACKET_SIZE (7 * 0x00ffffff)
+ 
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1596,6 +1596,8 @@ j1939_session *j1939_xtp_rx_rts_session_
+ 			abort = J1939_XTP_ABORT_FAULT;
+ 		else if (len > priv->tp_max_packet_size)
+ 			abort = J1939_XTP_ABORT_RESOURCE;
++		else if (len < J1939_MIN_TP_PACKET_SIZE)
++			abort = J1939_XTP_ABORT_FAULT;
  	}
  
- 	if (olddentry == trap)
+ 	if (abort != J1939_XTP_NO_ABORT) {
 
 
