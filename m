@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A161F4390CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6C14390D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhJYIGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:06:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45486 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhJYIG2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:06:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id AC29C1FD34;
-        Mon, 25 Oct 2021 08:04:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635149045; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l21SlX/9kh43Ic37AW53KRYg/QWXqmopDdPfmAH/kdc=;
-        b=eMrOCgSaFdI3lzR7WkVsSne/0Whu14mXXOGHTE5EXC7LHFchVV5T3UBKFzMCbaDaY613w1
-        ikdq4RNXE7zyGDMnT3jKdP2gKvt6jH33g8ZZPjWfjj8njf3MaNH5I51wDnqQYTCASz7FRd
-        r6Jz1WJWiRfnNmBh7Dku+xmZFCp0kl0=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 09D93A3B81;
-        Mon, 25 Oct 2021 08:04:04 +0000 (UTC)
-Date:   Mon, 25 Oct 2021 10:04:04 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
- the #PF
-Message-ID: <YXZk9Lr217e+saSM@dhcp22.suse.cz>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
- <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
- <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
+        id S231166AbhJYIJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:09:31 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:44706 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230169AbhJYIJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 04:09:26 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 19P86KPj023417;
+        Mon, 25 Oct 2021 10:06:20 +0200
+Date:   Mon, 25 Oct 2021 10:06:20 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Bedirhan KURT <windowz414@gnuweeb.org>,
+        Louvian Lyndal <louvianlyndal@gmail.com>,
+        Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Peter Cordes <peter@cordes.ca>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH 2/3] tools/nolibc: i386: fix initial stack alignment
+Message-ID: <20211025080620.GA23398@1wt.eu>
+References: <20211024172816.17993-1-w@1wt.eu>
+ <20211024172816.17993-3-w@1wt.eu>
+ <7e5ed287476042388779ca3c84483a92@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
+In-Reply-To: <7e5ed287476042388779ca3c84483a92@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 24-10-21 00:01:07, Tetsuo Handa wrote:
-> On 2021/10/23 22:20, Vasily Averin wrote:
-> >  /*
-> > - * The pagefault handler calls here because it is out of memory, so kill a
-> > - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
-> > - * killing is already in progress so do nothing.
-> > + * The pagefault handler calls here because some allocation has failed. We have
-> > + * to take care of the memcg OOM here because this is the only safe context without
-> > + * any locks held but let the oom killer triggered from the allocation context care
-> > + * about the global OOM.
-> >   */
+On Mon, Oct 25, 2021 at 07:46:11AM +0000, David Laight wrote:
+> From: Willy Tarreau
+> > Sent: 24 October 2021 18:28
+> > 
+> > After re-checking in the spec and comparing stack offsets with glibc,
+> > The last pushed argument must be 16-byte aligned (i.e. aligned before the
+> > call) so that in the callee esp+4 is multiple of 16, so the principle is
+> > the 32-bit equivalent to what Ammar fixed for x86_64. It's possible that
+> > 32-bit code using SSE2 or MMX could have been affected. In addition the
+> > frame pointer ought to be zero at the deepest level.
+> > 
+> ...
+> >  /* startup code */
+> > +/*
+> > + * i386 System V ABI mandates:
+> > + * 1) last pushed argument must be 16-byte aligned.
+> > + * 2) The deepest stack frame should be set to zero
 > 
-> Excuse me for a stupid question. I consider
+> I'm pretty sure that the historic SYSV i386 ABI only every required
+> 4-byte alignment for the stack.
 > 
->   if (!mutex_trylock(&oom_lock))
->     return;
->   out_of_memory(&oc);
->   mutex_unlock(&oom_lock);
-> 
-> here as the last resort (safeguard) when neither __alloc_pages_may_oom()
-> nor mem_cgroup_out_of_memory() can make progress. This patch says
-> 
->   let the oom killer triggered from the allocation context care
->   about the global OOM.
-> 
-> but what if the OOM killer cannot be invoked from the allocation context?
-> Is there a guarantee that all memory allocations which might result in
-> VM_FAULT_OOM can invoke the OOM killer?
+> At some point it got 'randomly' changed to 16-byte.
+> I don't think this happened until after compiler support for SSE2
+> intrinsics was added.
 
-I do not think there is any guarantee. This code has meant to be a
-safeguard but it turns out to be adding more harm than a safety. There
-are several scenarios mentioned in this thread where this would be
-counter productive or outright wrong thing to do.
+It's very possible because I've done a number of tests and noticed
+that in some cases the called functions' stack doesn't seem to be
+more than 4-aligned. However the deepest function in the stack starts
+with an aligned stack so I prefer to follow this same rule.
 
-On the other hand it is hard to imagine any legitimate situation where
-this would be a right thing to do. Maybe you have something more
-specific in mind? What would be the legit code to rely on OOM handling
-out of the line (where the details about the allocation scope is lost)?
--- 
-Michal Hocko
-SUSE Labs
+Willy
