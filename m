@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CD943A4A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D2243A4AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236047AbhJYU2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        id S238653AbhJYU3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236553AbhJYU22 (ORCPT
+        with ESMTP id S235238AbhJYU2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:28:28 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABEBC04319C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:21:03 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso16639403otv.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:21:03 -0700 (PDT)
+        Mon, 25 Oct 2021 16:28:55 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCD1C0432C2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:22:49 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id o4so17239495oia.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=2bwvidlggTYqPYdvEnjOvk7VU+AKnEUaEntsTXBWAFo=;
-        b=QlMEgpBJ9ktL1Opdpn5bEbYppOzz8dAxIhFM1fS/dyAlTNLIsRZpVMwvZCw8it46TV
-         7PsHfIiTCVF3zUe8SyWC2+4ulLziCOVa56PohaFbunFmZYFTwT9O4lRllgezN8Hg/ExP
-         i2/v7r23NiyEEQrRxBsnA4u+fn4qQ1rfVcbPg=
+        bh=MIgjsnj2t5G4/nas/d5Scx9CJRo0MWjSv4YqCCkr6zQ=;
+        b=dMlhV3hi8OeiZcg3u0Od1E9kdTBADg502uY9rRfMB/wWqyLxgWb0NYx6fm8W/3TSmJ
+         j1Gon8iuUGR9+woMRKq6atAqAsTCF6m842fySCF01wJK9WyzW1am7v0+GIS0QtjOwbde
+         /D/jfKCyBO9A4EfaExNL259Yt9BnHAgOnDSFo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=2bwvidlggTYqPYdvEnjOvk7VU+AKnEUaEntsTXBWAFo=;
-        b=axg0C79VId9FeNGK5yf9nN5Z6GT4dRb99KqJdD2yG/DtCxRLuE0VuRLSjdS5s4mqzT
-         Dvto/9GNoVWvXIC0g4QRa9rXm+pP84mmYIBF6FAMQgcTWzmAUxoJWaoNhb+jcKvS87tV
-         DSSYl9rJzjlUY1hyTnVtgWMvumV2Cp1oGi4P06iazVg7UNdH98g5RzD2OIhrMT4tRPnr
-         n7/oas4qxifXI9O4jdo0x1UYktclvG9Vt7uP+LhJvwtD3xybNwVHbPx0Ebjx8pRK7IVC
-         rEVV7H1C40ReWv8b/nR4xmf/6uUPi+rlWa8qTGS86qLGdnCrQ/9LeDT+JYaKY74hDXad
-         BMwA==
-X-Gm-Message-State: AOAM531tBuJ20Ok8Pw4xOKIC7dkciyODUdqe5Tlteci7UsIiLcWeoP8a
-        NTxc1efY81FH9zIkwWwf6eJQO9q/5rlpmFvdkmFAkQ==
-X-Google-Smtp-Source: ABdhPJwdShfN68KpfDhT+2JDhJNv3XDUA5odNLOwOPjxhpTa/LV7X8Gla3x9vxWUHGPtAQOIO8tzMjzdDyBGswkThuE=
-X-Received: by 2002:a05:6830:4187:: with SMTP id r7mr15519057otu.126.1635193263072;
- Mon, 25 Oct 2021 13:21:03 -0700 (PDT)
+        bh=MIgjsnj2t5G4/nas/d5Scx9CJRo0MWjSv4YqCCkr6zQ=;
+        b=EQ9lzGzeOfRZ7IKbhx99/MjXafb7P6YSM/mRpsqLVCWEsaPu1twFJPUVA14iRPLl/G
+         m8HPTYrDf2H9hmAceo1t3xqyDbK3K348wEpjeuY2d617AA9tZ4SlJy2fTvKFoCbXEmBv
+         98G+trJr8efv/MmJmf7TLj30e+1nHxeVQIWirdteHOTb6Kw7Gl3KB1hUBQHEkiNMYnzC
+         s5z+VHeECMMMd3dq4aXuuOYaRMIxCtItVj0vHEjWc4tZU5jd7B5wYxm78cfK8APfpw10
+         rbINW/iOYgI92igdkH9sDq0/xRQJtK3zI3JKOH579yvo3vtXN+81jWoa7ZAA1lJX0oMG
+         7dkQ==
+X-Gm-Message-State: AOAM532oDmcmxMMbxOWL8SciuONJQi342w3w525knFi4esJLaBQ1hmXA
+        rzPPIccKTEEwcjABLKT6mq1aUX74UdF3jJaVlR9Uaw==
+X-Google-Smtp-Source: ABdhPJztxG/yxrPY5e4sNf62Kn1bNHGpMkkmYXAFUoysctVppmYp6RlKF3Y/ERcj27cwPr8knlXHCorAw/g5RhQ7LpA=
+X-Received: by 2002:a05:6808:23c2:: with SMTP id bq2mr25087505oib.32.1635193368630;
+ Mon, 25 Oct 2021 13:22:48 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 25 Oct 2021 13:21:02 -0700
+ HTTPREST; Mon, 25 Oct 2021 13:22:48 -0700
 MIME-Version: 1.0
 In-Reply-To: <1635070162-21669-1-git-send-email-tdas@codeaurora.org>
 References: <1635070162-21669-1-git-send-email-tdas@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Mon, 25 Oct 2021 13:21:02 -0700
-Message-ID: <CAE-0n51c-og98OmPGPooeV8XaRnpN=VGRM5GuwBKKfvbYzzZLw@mail.gmail.com>
+Date:   Mon, 25 Oct 2021 13:22:48 -0700
+Message-ID: <CAE-0n52rCpAHndio63yYeN7wnNO=u4c8iL9tpm-rA0reHLLOtA@mail.gmail.com>
 Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add camcc clock node
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,5 +68,19 @@ Quoting Taniya Das (2021-10-24 03:09:22)
 >
 > Signed-off-by: Taniya Das <tdas@codeaurora.org>
 > ---
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index d74a4c8..8e6b011 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -4,10 +4,11 @@
+>   *
+>   * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>   */
+> -
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+BTW, I see this line is deleted but that's probably not intended.
+
+> +#include <dt-bindings/clock/qcom,camcc-sc7280.h>
