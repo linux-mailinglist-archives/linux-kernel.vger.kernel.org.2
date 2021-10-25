@@ -2,110 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEFF439269
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A97439268
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhJYJdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbhJYJc4 (ORCPT
+        id S229809AbhJYJdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:33:00 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52040 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhJYJcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:32:56 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D76C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:30:35 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id l203so5452344pfd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UuTXd1eBACFtZGNywiAwVwF2KiEgoy6E6ODkUK/N2+0=;
-        b=fIlFgggLvTmAXopTzS5Wy5r1RM7RXAALLLpRlCSIxfHZJ1dkbi4ZFVOC0aHTKY5OUD
-         EDIUaqn5mXgXEcK/Ipvo50Gk/AgKi3u3fwRwODCsl3l1Hgl4LHNjkHoAC2f5sh4AK3GZ
-         wQJM2JZ+QF+cc1EI5SKR8IpkJcdJNzNy+6xhW7TZ/yF0zbZHCbZied1KWXfg5AC7oTEI
-         1YKpVVZH+IU6Ov1VkbRqojnfSS7Vf71VhK/9RYjsCsXdOrg/BfKGTWZy1FOD6qOG0XUp
-         3X5U4cAzVvCHDv4vHEgOyZNH44GFOj5iFn6hoUN0Ns6BUiq8bW7ErznRQcZzhlhR2jR2
-         iprQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UuTXd1eBACFtZGNywiAwVwF2KiEgoy6E6ODkUK/N2+0=;
-        b=xL61+wqoy6ol5Ues3qwgb5957lSEt3apyJAfcRvYcdScXbtkCpukzhIeYVBaxIyOus
-         3Wzkl9uGf1iudV96SmnGW3YjzFLKpEU6y63DfYYUJR+xTIJrm6WO4ID5rjHKDlal01xw
-         TmjWITNVhXvdagEiKwNZfUervhnMqcBZjPBfWv6re1dcxe7oKALivqNUfTkA8xFCkQVr
-         Zr2FOo23blOU3bpLIP6bAiuKvUr14Skb6Qf6S7b2X3OLmbm84iq4WUE2sR1LxJdfC3Nd
-         TJsUeyNLWOwD+/TED6EPAmpIFsaXHg8yNuuzQ0gLsGe0s3O8cdJhL2HL+wxfryodeisr
-         zV0w==
-X-Gm-Message-State: AOAM5332+pDInGZSvClXaGus/1d957vfrWtOFCa1Kp1C2runoLQWlH/c
-        ddvqV/nKrYFromLGAu8pT9fp8QAUQXMADLzZ79mf3g==
-X-Google-Smtp-Source: ABdhPJyS6AljhqeNPYS5+aHkMvKvM/BB8UVGTXEd6XMRn3I0gLPXPEy4AbubRr72Hp/t1slqYtFqHXtj6B1OXfnKMQQ=
-X-Received: by 2002:a63:b246:: with SMTP id t6mr12926023pgo.378.1635154234174;
- Mon, 25 Oct 2021 02:30:34 -0700 (PDT)
+        Mon, 25 Oct 2021 05:32:54 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 899A51FD34;
+        Mon, 25 Oct 2021 09:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635154231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KRGww6yZbI/Yt5jVmhMhFsKU1wRB0IaHQ8wTV+diPmc=;
+        b=BUpWf7a6s/iFTUKqBZ0IABlQlxTbqRFhhvFbzSJW9eK5MeTIMPQv04R3Vs/9eSP8RQwZo6
+        0P9Ys4O0nSz/xZc+CveKTXhCpBJGoRjxVS87pIhwU/fhwNbC2kdxUKw7Nix2ZsaE252nlg
+        14bqeEgsyrlUQYpvTSd3WP5jEe2p84Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DBF681377E;
+        Mon, 25 Oct 2021 09:30:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id l0O2MjZ5dmHLTAAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 25 Oct 2021 09:30:30 +0000
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        xen-devel@lists.xenproject.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20211022064800.14978-1-jgross@suse.com>
+ <20211022064800.14978-2-jgross@suse.com>
+ <fe397fd6-a80e-d3f9-08d2-4f72ec739c0b@citrix.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 1/5] xen: add "not_essential" flag to struct xenbus_driver
+Message-ID: <06bf785a-c661-ce18-6e48-7077c5944890@suse.com>
+Date:   Mon, 25 Oct 2021 11:30:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20211018090247.3779368-1-tzungbi@google.com> <CABXOdTfs4BPcx=A=Np--zVymJZ5g6S2P=Q5JE2T63zpJKUgJJA@mail.gmail.com>
- <CA+Px+wXrTjHVXYHENX0t2F0RHP-cLane9YLyMKRDNnkrki8BUw@mail.gmail.com>
-In-Reply-To: <CA+Px+wXrTjHVXYHENX0t2F0RHP-cLane9YLyMKRDNnkrki8BUw@mail.gmail.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Mon, 25 Oct 2021 17:30:23 +0800
-Message-ID: <CA+Px+wWjcySEn5i3=GMGtZ4+hT5Z9L+QLLyxbv1WB7Pi1nPu9A@mail.gmail.com>
-Subject: Re: [RESEND PATCH] platform/chrome: cros_ec_debugfs: detach log
- reader wq from devm
-To:     Guenter Roeck <groeck@google.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fe397fd6-a80e-d3f9-08d2-4f72ec739c0b@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="osso5FxvKknFWuti2qByayI8n0rKWIOdo"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--osso5FxvKknFWuti2qByayI8n0rKWIOdo
+Content-Type: multipart/mixed; boundary="UqKrfN4EOpH1zBdeQbsH4TMElHBbnARpK";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Andrew Cooper <andrew.cooper3@citrix.com>,
+ xen-devel@lists.xenproject.org, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <06bf785a-c661-ce18-6e48-7077c5944890@suse.com>
+Subject: Re: [PATCH 1/5] xen: add "not_essential" flag to struct xenbus_driver
+References: <20211022064800.14978-1-jgross@suse.com>
+ <20211022064800.14978-2-jgross@suse.com>
+ <fe397fd6-a80e-d3f9-08d2-4f72ec739c0b@citrix.com>
+In-Reply-To: <fe397fd6-a80e-d3f9-08d2-4f72ec739c0b@citrix.com>
 
-On Tue, Oct 19, 2021 at 1:24 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Mon, Oct 18, 2021 at 4:59 PM Guenter Roeck <groeck@google.com> wrote:
-> >
-> > On Mon, Oct 18, 2021 at 2:03 AM Tzung-Bi Shih <tzungbi@google.com> wrote:
-> > >
-> > > Debugfs console_log uses devm memory (see struct cros_ec_debugfs in
-> > > cros_ec_console_log fops).  However, lifecycles of device and debugfs
-> > > are independent.  An use-after-free issue is observed if userland
-> > > program operates the debugfs after the memory has been freed.
-> > >
-> >
-> > It would help to see the backtrace. Without it, it is difficult to
-> > determine where the UAF is observed. Also, most if not all of the
-> > touched functions access struct cros_ec_debugfs all over the place,
-> > not only for the wait queue, so I am not sure if moving the wait queue
-> > out of the data structure is the correct fix. It might instead be
-> > necessary to disconnect memory allocations from the ec device.
->
-> A trimmed backtrace is in the commit message, but the more verbose one:
-> [  426.174308] Call trace:
-> [  426.174314]  dump_backtrace+0x0/0x3ec
-> [  426.174318]  show_stack+0x20/0x2c
-> [  426.174324]  dump_stack+0x11c/0x1ac
-> [  426.174329]  print_address_description+0x7c/0x510
-> [  426.174333]  kasan_report+0x134/0x174
-> [  426.174337]  __asan_report_load4_noabort+0x44/0x50
-> [  426.174341]  do_raw_spin_lock+0x214/0x308
-> [  426.174345]  _raw_spin_lock_irqsave+0x68/0xf0
-> [  426.174350]  remove_wait_queue+0x3c/0x10c
-> [  426.174355]  ep_unregister_pollwait+0x120/0x170
-> [  426.174358]  ep_remove+0x60/0x2a0
-> [  426.174362]  do_epoll_ctl+0x590/0x7f4
->
-> I guess only the wait queue in the struct cros_ec_debugfs has
-> deep-coupled to console_log debugfs.  There are 2 more file operation
-> scenarios appended after the "--".
+--UqKrfN4EOpH1zBdeQbsH4TMElHBbnARpK
+Content-Type: multipart/mixed;
+ boundary="------------C02A3EE7C04771EB3B004689"
+Content-Language: en-US
 
-Do you think the backtrace is sufficient to determine the UAF happens
-on the wait queue?
+This is a multi-part message in MIME format.
+--------------C02A3EE7C04771EB3B004689
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-How about we keep the fix as is since we have a constantly reproducing
-step for the UAF.  And look forward to the approach "disconnect memory
-allocations from the ec device" if we could discover more UAFs?
+On 22.10.21 11:28, Andrew Cooper wrote:
+> On 22/10/2021 07:47, Juergen Gross wrote:
+>> When booting the xenbus driver will wait for PV devices to have
+>> connected to their backends before continuing. The timeout is differen=
+t
+>> between essential and non-essential devices.
+>>
+>> Non-essential devices are identified by their nodenames directly in th=
+e
+>> xenbus driver, which requires to update this list in case a new device=
+
+>> type being non-essential is added (this was missed for several types
+>> in the past).
+>>
+>> In order to avoid this problem, add a "not_essential" flag to struct
+>> xenbus_driver which can be set to "true" by the respective frontend.
+>>
+>> Set this flag for the frontends currently regarded to be not essential=
+
+>> (vkbs and vfb) and use it for testing in the xenbus driver.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>=20
+> Wouldn't it be better to annotate essential?=C2=A0 That way, when new m=
+isc
+> drivers come along, they don't by default block boot.
+
+It isn't as if new drivers would "block boot". Normally the short
+timeout for all drivers of 30 seconds is more than enough for all of
+them.
+
+I'm a little bit hesitant to have a kind of "white listing" essential
+drivers, as there might be different views which drivers should have
+that flag. Doing this the other way round is easier: in case of
+disagreement such a patch just wouldn't go in, not breaking anything
+in that case.
+
+Additionally there might be out-of-tree PV drivers, which could be
+hit by not being flagged to be essential. With the not_essential flag
+the situation wouldn't change for such a driver.
+
+
+Juergen
+
+--------------C02A3EE7C04771EB3B004689
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------C02A3EE7C04771EB3B004689--
+
+--UqKrfN4EOpH1zBdeQbsH4TMElHBbnARpK--
+
+--osso5FxvKknFWuti2qByayI8n0rKWIOdo
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmF2eTYFAwAAAAAACgkQsN6d1ii/Ey9O
+xgf+IGDTE+YDE61LIodtFf3QJmdPssYsBAOBwYWJFs5jGT2ddgGd51lqt0gCBPxYovlxXfLf24U5
+PCXgb/UPtU5R0xKq99Gc0hQonmBj8esYaqKhdldHkgfmd3E58dsJQ1bYB3Ye84SafU7sNaiKBTh0
+CkXxpEhogtaP19nhjxM96AyKcVBko/kdQwH4yd9kp28zo2+rw2IU2CKQPJS0CH0IkJlVcIJAXCK/
+Oa0TgXnhDwPVtH0rf2O/MDuvpSz2O29BOaa/cH3W2jhUI249Eq6k6s1KqwB0/qjqX8UddTLmVynL
+Ftj+I0OdFgwzIwDaKWEJQCucvHD6inXkx+vr50ziVw==
+=RfSy
+-----END PGP SIGNATURE-----
+
+--osso5FxvKknFWuti2qByayI8n0rKWIOdo--
