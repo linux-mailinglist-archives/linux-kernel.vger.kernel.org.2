@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314E043A0DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843F243A053
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhJYTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:36:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48434 "EHLO mail.kernel.org"
+        id S234654AbhJYT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:29:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235324AbhJYT3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 312F760EFE;
-        Mon, 25 Oct 2021 19:26:39 +0000 (UTC)
+        id S235010AbhJYT0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:26:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 444D7610F8;
+        Mon, 25 Oct 2021 19:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190001;
-        bh=1WUG2VI0M5INTRbsu1ePLqCM6UDLqDzzhRoA1Eu1C/M=;
+        s=korg; t=1635189818;
+        bh=nJZkzGejf4EI9OeSs65hfhWR70BVNtVIsjh595JktZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTbZzG8dqNp4Isoo25WE7tWnu53sgVAdeCxR1gZmpxY0gZLp1Hj4bwPyEN/YEPXRI
-         LDQBWtkDTxgFCsGtIzIz0bYo61fwgYVuAnZ6HRpPps3RhwpPExNTFwqDyAmj371ffV
-         ck2GvSMoLsB9GRh892cjdHd4dhXNJO6oJXMIruLo=
+        b=Sec7sOdlfsbXLer0xHbgLnVQha+12cCQjOE8+J6V8ZxX4EiJvxM1joYGEy73E9UJ7
+         cruqFf61WEwGBVN2JdeoXQFnKP7G2CSN+5OqMI1BggE6X3P8GVfFxqjYpDRvLKTP2P
+         Lrf8V1nd4r84A0ZLnL5xHiyGDOnxuj7pCwBQxvkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/58] net: hns3: add limit ets dwrr bandwidth cannot be 0
+Subject: [PATCH 4.19 07/37] netfilter: ipvs: make global sysctl readonly in non-init netns
 Date:   Mon, 25 Oct 2021 21:14:32 +0200
-Message-Id: <20211025190939.909787187@linuxfoundation.org>
+Message-Id: <20211025190929.721115472@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit 731797fdffa3d083db536e2fdd07ceb050bb40b1 ]
+[ Upstream commit 174c376278949c44aad89c514a6b5db6cee8db59 ]
 
-If ets dwrr bandwidth of tc is set to 0, the hardware will switch to SP
-mode. In this case, this tc may occupy all the tx bandwidth if it has
-huge traffic, so it violates the purpose of the user setting.
+Because the data pointer of net/ipv4/vs/debug_level is not updated per
+netns, it must be marked as read-only in non-init netns.
 
-To fix this problem, limit the ets dwrr bandwidth must greater than 0.
-
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c6d2d445d8de ("IPVS: netns, final patch enabling network name space.")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ net/netfilter/ipvs/ip_vs_ctl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index d16488bab86f..9076605403a7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -132,6 +132,15 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
- 				*changed = true;
- 			break;
- 		case IEEE_8021QAZ_TSA_ETS:
-+			/* The hardware will switch to sp mode if bandwidth is
-+			 * 0, so limit ets bandwidth must be greater than 0.
-+			 */
-+			if (!ets->tc_tx_bw[i]) {
-+				dev_err(&hdev->pdev->dev,
-+					"tc%u ets bw cannot be 0\n", i);
-+				return -EINVAL;
-+			}
-+
- 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
- 				HCLGE_SCH_MODE_DWRR)
- 				*changed = true;
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 6208fa09fe71..3bf8d7f3cdc3 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -3955,6 +3955,11 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+ 	tbl[idx++].data = &ipvs->sysctl_conn_reuse_mode;
+ 	tbl[idx++].data = &ipvs->sysctl_schedule_icmp;
+ 	tbl[idx++].data = &ipvs->sysctl_ignore_tunneled;
++#ifdef CONFIG_IP_VS_DEBUG
++	/* Global sysctls must be ro in non-init netns */
++	if (!net_eq(net, &init_net))
++		tbl[idx++].mode = 0444;
++#endif
+ 
+ 	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
+ 	if (ipvs->sysctl_hdr == NULL) {
 -- 
 2.33.0
 
