@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0721439811
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A379439818
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhJYOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:07:56 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:27821 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhJYOHy (ORCPT
+        id S231134AbhJYOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:09:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231335AbhJYOJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:07:54 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211025140529epoutp04d4a32e5faf801fcb7f556abd215955f5~xSx1Soog33008530085epoutp04y
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:05:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211025140529epoutp04d4a32e5faf801fcb7f556abd215955f5~xSx1Soog33008530085epoutp04y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635170729;
-        bh=fey+6MHijgaTNXfUD+lxnyfQlzWGLpNI+7tezBCSDCk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=fKCEq9cQg6nF9/EBUtKHHvJDzTxrZZYxkTTB3Qxs7SbabOxPvSn8IfXsqpgBTcc0P
-         O8ey2XZXdYMadI8u8m9fdpjgF0G72iHxCVAcAhYwk7zOsLaCWql7qzihTUWeoHRp4C
-         Zc+gFp36klYWgwkM2rVqAODtP90tKFEJnSQki7qU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211025140528epcas1p1414e38eb3f7e8f0ce83e2947801c914a~xSx0_7Q3Z1746717467epcas1p1q;
-        Mon, 25 Oct 2021 14:05:28 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.38.248]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4HdGtv51Z1z4x9Pt; Mon, 25 Oct
-        2021 14:05:27 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        86.7D.09574.7A9B6716; Mon, 25 Oct 2021 23:05:27 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20211025140526epcas1p3b4a59df0935297572c6417c841a4c514~xSxzFo7kx2735427354epcas1p3V;
-        Mon, 25 Oct 2021 14:05:26 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211025140526epsmtrp16134229dd8e2885f32384c5d6ee924e5~xSxzE9O6T1138511385epsmtrp1E;
-        Mon, 25 Oct 2021 14:05:26 +0000 (GMT)
-X-AuditID: b6c32a35-195ff70000002566-9d-6176b9a72b6e
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        05.C5.08738.6A9B6716; Mon, 25 Oct 2021 23:05:26 +0900 (KST)
-Received: from hj514.kim-office (unknown [10.253.100.146]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20211025140526epsmtip27f8f1f9dffb215a4dbbc781f7d14b3c5~xSxy1E0Df1466814668epsmtip2A;
-        Mon, 25 Oct 2021 14:05:26 +0000 (GMT)
-From:   Hyeong-Jun Kim <hj514.kim@samsung.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] f2fs: compress: disallow disabling compress on non-empty
- compressed file
-Date:   Mon, 25 Oct 2021 23:05:16 +0900
-Message-Id: <20211025140517.14741-1-hj514.kim@samsung.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Oct 2021 10:09:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635170807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FblMqi74l2aNQDmIbjX/cagfl890xy4Kf5Rp2sw8Ik4=;
+        b=iybnwA0ZadanTHPHXV9Sbz8JrJm508VE747MwvM0WjR6zQ0H7YDqd8ZruBnkQ8FFxyEkLe
+        EgxdHniFGcd9Kn9JX9OlnRN8CIce0gmXIzCQlA1kEkpfoB6YZQAZlGvUeoCF65178Zytrj
+        D7Zwzzcgb/nbyViN/FOhKcEzj6+6j48=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-1qEgo8EUMNONcrLdJb5Mlw-1; Mon, 25 Oct 2021 10:06:46 -0400
+X-MC-Unique: 1qEgo8EUMNONcrLdJb5Mlw-1
+Received: by mail-ed1-f72.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so9973304edx.15
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:06:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=FblMqi74l2aNQDmIbjX/cagfl890xy4Kf5Rp2sw8Ik4=;
+        b=jdnj2OPM2h0bE1T5aj+WjQsGKGOQ3nf5M3JMIfrG3I7p3ktD4d0QJqudBeW3COVXky
+         mIlPE2YHUOyjugA0vRyhNmkWOuhwdspBINmEhaclHMJVHANhfJHykNRLTcoUNAbORyEP
+         zXVFXIn2DfS0Ob7N3/Bb3BQ79HR84Y1oHnaeD2DADj+/48SqiSYh3wyOIUQzkSxDnuc5
+         k+07uNE10kRI5Tix8cskLwut5XOj3ZeqlQHKRPw6R4bFl2GSSHID3qEzZNJR4zST8ef3
+         L0JsVI8e/U8M6EszbJRdJ5q+uTcg15DzPnDQjFbzX+CRXRQxwXnVOJ4r8SAV4YHzmTjn
+         h29A==
+X-Gm-Message-State: AOAM533uQadp5NUG+dFQgbFO/vjIRuUXTsal22CfhABGboyPlietXUyE
+        ts2SLFX+3MgEzOkl6T2Y6XD7gymn/Mpg3TID4MiFr99BkfU7CoM3GYlbaBvSo7qV+fRxIYXlIBB
+        xwqfSApzvxW2E7Sav0stgFpes
+X-Received: by 2002:a50:fb02:: with SMTP id d2mr11770138edq.100.1635170804934;
+        Mon, 25 Oct 2021 07:06:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZ2X8dAbxM+1kv2smymvR7I3dtS7qD9GGOcFC9wjjp+md9MuSuvCzqRB05il5WqZEpIp8nlw==
+X-Received: by 2002:a50:fb02:: with SMTP id d2mr11770084edq.100.1635170804745;
+        Mon, 25 Oct 2021 07:06:44 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o3sm7472237eju.123.2021.10.25.07.06.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 07:06:44 -0700 (PDT)
+Message-ID: <591073c1-b520-21de-8573-ddb83950e9f1@redhat.com>
+Date:   Mon, 25 Oct 2021 16:06:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCKsWRmVeSWpSXmKPExsWy7bCmvu7ynWWJBs1b1CxOTz3LZDG94yCb
-        xZP1s5gtLi1yt7i8aw6bxZZ/R1gd2Dw2repk89i94DOTR9+WVYwenzfJBbBEZdtkpCampBYp
-        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAO1WUihLzCkFCgUkFhcr
-        6dvZFOWXlqQqZOQXl9gqpRak5BSYFegVJ+YWl+al6+WlllgZGhgYmQIVJmRnfD7yj73gMntF
-        Y898lgbGLWxdjJwcEgImEvfXLQGyuTiEBHYwSqw68QXK+cQo8ePRRxYI5zOjxLWOV6wwLd0H
-        r0FV7WKU2PNyFyuE855RYtfkXWCD2QR0JD7MWskIYosI2Et8/n6dBcRmFpjNKHH/aC6ILSwQ
-        LbHuzlKgeg4OFgFViecTuEHCvAJWElPfT2WBWCYvMfPSd3aIuKDEyZlPoMbISzRvnc0MsldC
-        4BC7xJfFi6Guc5F4fPMY1HPCEq+Ob2GHsKUkXva3Qdn1EsevfGKFaG5hlHi89BUjyBESQIe+
-        v2QBYjILaEqs36UPUa4osfP3XEaIvXwS7772sEJU80p0tAlBlChLbL57GGqrpMTTRX8ZIWwP
-        iSuTr4HZQgKxEg+3b2CfwCg/C8k3s5B8Mwth8QJG5lWMYqkFxbnpqcWGBYbwSE3Oz93ECE5+
-        WqY7GCe+/aB3iJGJg/EQowQHs5IIr82nkkQh3pTEyqrUovz4otKc1OJDjKbA4J3ILCWanA9M
-        v3kl8YYmlgYmZkYmFsaWxmZK4ryf5QoThQTSE0tSs1NTC1KLYPqYODilGpgsWz5s3OWSxnk0
-        5V1K5pnvZpohpyMmi07MfL3yn+xOjqPzJqVzy/CJhGyN4+k9abhqRe7EIycFtOSeuAZFqN6v
-        PewwaV5E3a4eqUdOT2e0LGX6UDhZ4sa1RL7GV0vTwqwXpp3IVLY15X5dL8n+W9UvoPL2/kjh
-        QK610rVMuq8yL1Z5zT7A/YjTYE+i+PE2lpJGM6+zG9vWtTy//vDk3DNGS9ufmQqtblyo3P5V
-        1Md3Fn/vi1ebihZvvqk9327SoR0CmqqrlBvuXeRt7fx6kvXwiqpJGoI1C78W/7dgP5A/8Xl/
-        +HqLQwVKQXFbWd0CSv/bB8vfW3p8UcoqD2V+xva1r0ICF7eu4uE78IaP74kSS3FGoqEWc1Fx
-        IgCyxRtUBwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrELMWRmVeSWpSXmKPExsWy7bCSvO6ynWWJBtOWylucnnqWyWJ6x0E2
-        iyfrZzFbXFrkbnF51xw2iy3/jrA6sHlsWtXJ5rF7wWcmj74tqxg9Pm+SC2CJ4rJJSc3JLEst
-        0rdL4Mr4fOQfe8Fl9orGnvksDYxb2LoYOTkkBEwkug9eA7K5OIQEdjBKvOxbydrFyAGUkJSY
-        t74cwhSWOHy4GKLkLaPEhq4mdpBeNgEdiQ+zVjKC2CICjhK/Xi9iBSliFpjLKHGxu4kVJCEs
-        EClxbeUpNpBBLAKqEs8ncIOEeQWsJKa+n8oCcYO8xMxL39kh4oISJ2c+AYszA8Wbt85mnsDI
-        NwtJahaS1AJGplWMkqkFxbnpucWGBUZ5qeV6xYm5xaV56XrJ+bmbGMHBqKW1g3HPqg96hxiZ
-        OBgPMUpwMCuJ8Np8KkkU4k1JrKxKLcqPLyrNSS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoR
-        TJaJg1OqgWluX2BMtekqCz+j+4cOX26RFVTYvUy9RfUgz7/n2mWfGc/VP3fSWH1E8azyx44P
-        K/7+DUtTecu6+9+keZsEa5xY63efLl76gv9VB3fbq/ds7/L3Hd9YXNOfZWdU9I3FaMLTS85X
-        kvJWbFLeGG0o+CV1q8hMM/Upuvc7MzxvRr5qWBchHDnZWjE7n6vtyfIig/vP7/IxPf/mvnCN
-        WuoV3klbFhbPc3jsX3Yn5k9EdWjEPLnEk6yr5JR66mdMlVr2UMmlsk+0JvV3wpnoWq12taXp
-        9ZXnd53eVMjW+XXm4rD1KlH3t23ZtWzLlc9eQjsEiq7KTjnc+Srk18mtqVsKzTn9D7N61JzQ
-        Os4/8Z/j2S9KLMUZiYZazEXFiQCSNI1/tQIAAA==
-X-CMS-MailID: 20211025140526epcas1p3b4a59df0935297572c6417c841a4c514
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211025140526epcas1p3b4a59df0935297572c6417c841a4c514
-References: <CGME20211025140526epcas1p3b4a59df0935297572c6417c841a4c514@epcas1p3.samsung.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 19/43] KVM: Add helpers to wake/query blocking vCPU
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-20-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-20-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compresse file and normal file has differ in i_addr addressing,
-specifically addrs per inode/block. So, we will face data loss, if we
-disable the compression flag on non-empty files. Therefore we should
-disallow not only enabling but disabling the compression flag on
-non-empty files.
+On 09/10/21 04:12, Sean Christopherson wrote:
+> diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+> index 7e8396f74010..addd53b6eba6 100644
+> --- a/arch/arm64/kvm/arch_timer.c
+> +++ b/arch/arm64/kvm/arch_timer.c
+> @@ -649,7 +649,6 @@ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu)
+>   {
+>   	struct arch_timer_cpu *timer = vcpu_timer(vcpu);
+>   	struct timer_map map;
+> -	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
+>   
+>   	if (unlikely(!timer->enabled))
+>   		return;
+> @@ -672,7 +671,7 @@ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu)
+>   	if (map.emul_ptimer)
+>   		soft_timer_cancel(&map.emul_ptimer->hrtimer);
+>   
+> -	if (rcuwait_active(wait))
+> +	if (kvm_vcpu_is_blocking(vcpu))
+>   		kvm_timer_blocking(vcpu);
+>   
+>   	/*
 
-Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
-Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
----
- fs/f2fs/f2fs.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+So this trick is what you're applying to x86 too instead of using 
+vmx_pre_block, I see.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index b8e8f8c716b0..19146c834abd 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4177,8 +4177,7 @@ static inline bool f2fs_disable_compressed_file(struct inode *inode)
- 
- 	if (!f2fs_compressed_file(inode))
- 		return true;
--	if (S_ISREG(inode->i_mode) &&
--		(get_dirty_pages(inode) || atomic_read(&fi->i_compr_blocks)))
-+	if (S_ISREG(inode->i_mode) && inode->i_size)
- 		return false;
- 
- 	fi->i_flags &= ~F2FS_COMPR_FL;
--- 
-2.25.1
+Paolo
 
