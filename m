@@ -2,63 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA504391D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ABE4391D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbhJYJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        id S232381AbhJYJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbhJYJAX (ORCPT
+        with ESMTP id S232168AbhJYJAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:00:23 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6765C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=80xr9ygw2WJEE4XFb2EF56NTU+iC2pwy4SKHZowUeqY=; b=liUXSCEMtdJNkd1F6pFhRRiUda
-        FgMbrNpElFgab9sDhKUr0SXGPsD2yLDaIUkYE+BUjO7GhdWxIKwiYBG2TBO3HSSx13LT5aDNuefNP
-        Hx5pHluuJpL2KCzjpb6rmW5/h8pZtV3uv0Ak3JD+bu/wvlQf7BaGp8lZf7ic5VZ4y5yDszQHAgfbr
-        OGg1FrF5JX/TxU/m079qsu9lwRGQcHLczuKjWPH0iA3pW1Xvl93akeDuWhAMKz1fpvcDkz8GTzx+M
-        916eI+74HV+CF5SKeGGok2cjrGGwpXkh7T6gDI5AA6a2q0xDzSSJNUy45x/iMD2nQSx+N3OgjN7Zi
-        HnOxn1cQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mevnR-00C6pU-9o; Mon, 25 Oct 2021 08:57:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC10D300288;
-        Mon, 25 Oct 2021 10:57:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5EDE220C6C14F; Mon, 25 Oct 2021 10:57:31 +0200 (CEST)
-Date:   Mon, 25 Oct 2021 10:57:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix implicit type conversion
-Message-ID: <YXZxe/bQS397KX/W@hirez.programming.kicks-ass.net>
-References: <1635149847-2426546-1-git-send-email-jiasheng@iscas.ac.cn>
+        Mon, 25 Oct 2021 05:00:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EA2C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:58:31 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mevoA-0002sk-Ad; Mon, 25 Oct 2021 10:58:18 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mevo7-00029q-84; Mon, 25 Oct 2021 10:58:15 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mevo7-0007eQ-6e; Mon, 25 Oct 2021 10:58:15 +0200
+Date:   Mon, 25 Oct 2021 10:58:15 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Doug Anderson <dianders@google.com>
+Subject: Re: [PATCH v6 1/3] pwm: Introduce single-PWM of_xlate function
+Message-ID: <20211025085815.wrvifi3kmviw7jpw@pengutronix.de>
+References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="muvk4bp3iyxkfh5l"
 Content-Disposition: inline
-In-Reply-To: <1635149847-2426546-1-git-send-email-jiasheng@iscas.ac.cn>
+In-Reply-To: <20210930030557.1426-1-bjorn.andersson@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:17:27AM +0000, Jiasheng Jiang wrote:
-> The variable 'n' is defined as ULONG. However in the cpumask_next(),
-> it is used as INT.
-> That is vulnerable and may cause overflow.
-> Therefore, it might be better to define 'n' as INT.
 
--ENOPARSE
+--muvk4bp3iyxkfh5l
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Sep 29, 2021 at 10:05:55PM -0500, Bjorn Andersson wrote:
+> The existing pxa driver and the upcoming addition of PWM support in the
+> TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> thereby a need for a of_xlate function with the period as its single
+> argument.
+>=20
+> Introduce a common helper function in the core that can be used as
+> of_xlate by such drivers and migrate the pxa driver to use this.
+>=20
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+I'm OK with this patch, in the long run I'd like to share more code with
+of_pwm_xlate_with_flags, but this shouldn't be a stopper here.
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--muvk4bp3iyxkfh5l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF2caQACgkQwfwUeK3K
+7Alt7Af/a8nhxh/xMENHkzBDVn57d2C7qsBdAEnOKYmtoLJheJpFRCDPP1lNm54d
+6qlewUjuQAAwqO93kCcufhzwIHrgl73SVvr4iqgw8P8fmwM/xrkovALRkeL771xD
+veid1BSxIOJtJDjbYNf0rEBSXMkhN4I5LUDahJzezG1be5ULwexNiBpibDnPnR2L
+jseYVX2ipv6L4FVf2TceJAP5TuLRRVCGzRGxAfKvIG3WA71Z+EhsjurvKEbKvBSi
+qW68/MIFahttoB5VF3PQZ8mYUF+lbOOnnO4uT+i+fLF4unm9rLu+6pmnp69V95QV
+Sd1y58/frTRWk7Vo38MBuwav2HXo3g==
+=BOeX
+-----END PGP SIGNATURE-----
+
+--muvk4bp3iyxkfh5l--
