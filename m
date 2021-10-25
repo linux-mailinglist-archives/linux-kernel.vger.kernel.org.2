@@ -2,101 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9778543A2B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B74A439F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237789AbhJYTvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:51:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+        id S234410AbhJYTV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237261AbhJYTpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:45:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B893C6105A;
-        Mon, 25 Oct 2021 19:39:19 +0000 (UTC)
+        id S232476AbhJYTUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFED3600D3;
+        Mon, 25 Oct 2021 19:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190761;
-        bh=8o9HeoF9TYmr3BSU3uQgAMEZYVboF3r+myI7DK6BUf8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TaTPNwer+P6hE/e024STLMeKIgpFoq6upSPGTzbOfomCOK0XF6Eef+7q0GyAI1BAq
-         abI7yJaioUU/FA5Ks9/dT6Dwsxfnc5LT507C50FIWW03jjtGLDBW5H/7/9eRPrv7YP
-         kqSfusWHIZWkL4EcvtvDfOs7y5yR68ZQ9ImzE8ic=
+        s=korg; t=1635189496;
+        bh=mXO0r1CmN7AqeW0CR2gHNCQ1yTi50mGTKyJ1aq/NdgM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Pxa0QTU4P1FwlfbWLhJM60PmXbfsxxcfbSgRNSsfVHti+tPJETFix4LM5/S5ShYfi
+         RPbKBdHeCQPyWpq9azAgBVKWw5sA1yzTmPje3STSJqywSQNehgr4ZYao+5vSn05suT
+         WkQTnFjVYJxqfpfvNETHo5QRR89tsVZ2/Iics31Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 045/169] net: hns3: reset DWRR of unused tc to zero
-Date:   Mon, 25 Oct 2021 21:13:46 +0200
-Message-Id: <20211025191023.496526616@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.9 00/50] 4.9.288-rc1 review
+Date:   Mon, 25 Oct 2021 21:13:47 +0200
+Message-Id: <20211025190932.542632625@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.288-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.288-rc1
+X-KernelTest-Deadline: 2021-10-27T19:09+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+This is the start of the stable review cycle for the 4.9.288 release.
+There are 50 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit b63fcaab959807282e9822e659034edf95fc8bd1 ]
+Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+Anything received after that time might be too late.
 
-Currently, DWRR of tc will be initialized to a fixed value when this tc
-is enabled, but it is not been reset to 0 when this tc is disabled. It
-cause a problem that the DWRR of unused tc is not 0 after using tc tool
-to add and delete multi-tc parameters.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.288-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+and the diffstat can be found below.
 
-For examples, after enabling 4 TCs and restoring to 1 TC by follow
-tc commands:
+thanks,
 
-$ tc qdisc add dev eth0 root mqprio num_tc 4 map 0 1 2 3 0 1 2 3 queues \
-  8@0 8@8 8@16 8@24 hw 1 mode channel
-$ tc qdisc del dev eth0 root
+greg k-h
 
-Now there is just one TC is enabled for eth0, but the tc info querying by
-debugfs is shown as follow:
+-------------
+Pseudo-Shortlog of commits:
 
-$ cat /mnt/hns3/0000:7d:00.0/tm/tc_sch_info
-enabled tc number: 1
-weight_offset: 14
-TC    MODE  WEIGHT
-0     dwrr    100
-1     dwrr    100
-2     dwrr    100
-3     dwrr    100
-4     dwrr      0
-5     dwrr      0
-6     dwrr      0
-7     dwrr      0
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.9.288-rc1
 
-This patch fixes it by resetting DWRR of tc to 0 when tc is disabled.
+Nick Desaulniers <ndesaulniers@google.com>
+    ARM: 9122/1: select HAVE_FUTEX_CMPXCHG
 
-Fixes: 848440544b41 ("net: hns3: Add support of TX Scheduler & Shaper to HNS3 driver")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    tracing: Have all levels of checks prevent recursion
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-index f314dbd3ce11..95074e91a846 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-@@ -752,6 +752,8 @@ static void hclge_tm_pg_info_init(struct hclge_dev *hdev)
- 		hdev->tm_info.pg_info[i].tc_bit_map = hdev->hw_tc_map;
- 		for (k = 0; k < hdev->tm_info.num_tc; k++)
- 			hdev->tm_info.pg_info[i].tc_dwrr[k] = BW_PERCENT;
-+		for (; k < HNAE3_MAX_TC; k++)
-+			hdev->tm_info.pg_info[i].tc_dwrr[k] = 0;
- 	}
- }
- 
--- 
-2.33.0
+Yanfei Xu <yanfei.xu@windriver.com>
+    net: mdiobus: Fix memory leak in __mdiobus_register
 
+Oliver Neukum <oneukum@suse.com>
+    usbnet: sanity check for maxpacket
+
+Kai Vehmanen <kai.vehmanen@linux.intel.com>
+    ALSA: hda: avoid write to STATESTS if controller is in reset
+
+Prashant Malani <pmalani@chromium.org>
+    platform/x86: intel_scu_ipc: Update timeout value in comment
+
+Zheyu Ma <zheyuma97@gmail.com>
+    isdn: mISDN: Fix sleeping function called from invalid context
+
+Herve Codina <herve.codina@bootlin.com>
+    ARM: dts: spear3xx: Fix gmac node
+
+Vegard Nossum <vegard.nossum@gmail.com>
+    netfilter: Kconfig: use 'default y' instead of 'm' for bool config option
+
+Xiaolong Huang <butterflyhuangxx@gmail.com>
+    isdn: cpai: check ctr->cnr to avoid array index out of bound
+
+Lin Ma <linma@zju.edu.cn>
+    nfc: nci: fix the UAF of rf_conn_info object
+
+Takashi Iwai <tiwai@suse.de>
+    ASoC: DAPM: Fix missing kctl change notifications
+
+Brendan Grieve <brendan@grieve.com.au>
+    ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    vfs: check fd has read access in kernel_read_file_from_fd()
+
+Lukas Bulwahn <lukas.bulwahn@gmail.com>
+    elfcore: correct reference to CONFIG_UML
+
+Valentin Vidic <vvidic@valentin-vidic.from.hr>
+    ocfs2: mount fails with buffer overflow in strlen
+
+Jan Kara <jack@suse.cz>
+    ocfs2: fix data corruption after conversion from inline format
+
+Zheyu Ma <zheyuma97@gmail.com>
+    can: peak_pci: peak_pci_remove(): fix UAF
+
+Stephane Grosjean <s.grosjean@peak-system.com>
+    can: peak_usb: pcan_usb_fd_decode_status(): fix back to ERROR_ACTIVE state notification
+
+Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+    can: rcar_can: fix suspend/resume
+
+Randy Dunlap <rdunlap@infradead.org>
+    NIOS2: irqflags: rename a redefined register name
+
+Antoine Tenart <atenart@kernel.org>
+    netfilter: ipvs: make global sysctl readonly in non-init netns
+
+Benjamin Coddington <bcodding@redhat.com>
+    NFSD: Keep existing listeners on portlist error
+
+Guenter Roeck <linux@roeck-us.net>
+    xtensa: xtfpga: Try software restart before simulating CPU reset
+
+Max Filippov <jcmvbkbc@gmail.com>
+    xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    r8152: select CRC32 and CRYPTO/CRYPTO_HASH/CRYPTO_SHA256
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
+
+Colin Ian King <colin.king@canonical.com>
+    drm/msm: Fix null pointer dereference on pointer edp
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    pata_legacy: fix a couple uninitialized variable bugs
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    nfc: fix error handling of nfc_proto_register()
+
+Arnd Bergmann <arnd@arndb.de>
+    ethernet: s2io: fix setting mac address during resume
+
+Nanyong Sun <sunnanyong@huawei.com>
+    net: encx24j600: check error in devm_regmap_init_encx24j600
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    net: korina: select CRC32
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    net: arc: select CRC32
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
+
+Jiri Valek - 2N <valek@2n.cz>
+    iio: light: opt3001: Fixed timeout error when 0 lux
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    iio: adc128s052: Fix the error handling path of 'adc128_probe()'
+
+Stephen Boyd <swboyd@chromium.org>
+    nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
+
+Daniele Palmas <dnlplm@gmail.com>
+    USB: serial: option: add Telit LE910Cx composition 0x1204
+
+Aleksander Morgado <aleksander@aleksander.es>
+    USB: serial: qcserial: add EM9191 QDL support
+
+Michael Cullen <michael@michaelcullen.name>
+    Input: xpad - add support for another USB ID of Nacon GC-100
+
+Zhang Jianhua <chris.zjh@huawei.com>
+    efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
+
+Ard Biesheuvel <ardb@kernel.org>
+    efi/cper: use stack buffer for error record decoding
+
+Arnd Bergmann <arnd@arndb.de>
+    cb710: avoid NULL pointer subtraction
+
+Nikolay Martynov <mar.kolya@gmail.com>
+    xhci: Enable trust tx length quirk for Fresco FL11 USB controller
+
+Roberto Sassu <roberto.sassu@huawei.com>
+    s390: fix strrchr() implementation
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Fix a potential UAF by wrong private_free call order
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ arch/arm/Kconfig                                   |  1 +
+ arch/arm/boot/dts/spear3xx.dtsi                    |  2 +-
+ arch/nios2/include/asm/irqflags.h                  |  4 +-
+ arch/nios2/include/asm/registers.h                 |  2 +-
+ arch/s390/lib/string.c                             | 15 +++--
+ arch/xtensa/platforms/xtfpga/setup.c               | 12 ++--
+ drivers/ata/pata_legacy.c                          |  6 +-
+ drivers/firmware/efi/cper.c                        |  4 +-
+ drivers/firmware/efi/runtime-wrappers.c            |  2 +-
+ drivers/gpu/drm/msm/dsi/dsi_host.c                 |  2 +-
+ drivers/gpu/drm/msm/edp/edp_ctrl.c                 |  3 +-
+ drivers/iio/adc/ti-adc128s052.c                    |  6 ++
+ drivers/iio/common/ssp_sensors/ssp_spi.c           | 11 +++-
+ drivers/iio/light/opt3001.c                        |  6 +-
+ drivers/input/joystick/xpad.c                      |  2 +
+ drivers/isdn/capi/kcapi.c                          |  5 ++
+ drivers/isdn/hardware/mISDN/netjet.c               |  2 +-
+ drivers/misc/cb710/sgbuf2.c                        |  2 +-
+ drivers/net/can/rcar/rcar_can.c                    | 20 ++++---
+ drivers/net/can/sja1000/peak_pci.c                 |  9 ++-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  5 +-
+ drivers/net/ethernet/Kconfig                       |  1 +
+ drivers/net/ethernet/arc/Kconfig                   |  1 +
+ drivers/net/ethernet/microchip/encx24j600-regmap.c | 10 +++-
+ drivers/net/ethernet/microchip/encx24j600.c        |  5 +-
+ drivers/net/ethernet/microchip/encx24j600_hw.h     |  4 +-
+ drivers/net/ethernet/neterion/s2io.c               |  2 +-
+ drivers/net/phy/mdio_bus.c                         |  1 +
+ drivers/net/usb/Kconfig                            |  4 ++
+ drivers/net/usb/usbnet.c                           |  4 ++
+ drivers/nvmem/core.c                               |  3 +-
+ drivers/platform/x86/intel_scu_ipc.c               |  2 +-
+ drivers/usb/host/xhci-pci.c                        |  2 +
+ drivers/usb/serial/option.c                        |  2 +
+ drivers/usb/serial/qcserial.c                      |  1 +
+ fs/exec.c                                          |  2 +-
+ fs/nfsd/nfsctl.c                                   |  5 +-
+ fs/ocfs2/alloc.c                                   | 46 ++++------------
+ fs/ocfs2/super.c                                   | 14 +++--
+ include/linux/elfcore.h                            |  2 +-
+ kernel/trace/ftrace.c                              |  4 +-
+ kernel/trace/trace.h                               | 64 +++++++---------------
+ kernel/trace/trace_functions.c                     |  2 +-
+ net/netfilter/Kconfig                              |  2 +-
+ net/netfilter/ipvs/ip_vs_ctl.c                     |  5 ++
+ net/nfc/af_nfc.c                                   |  3 +
+ net/nfc/digital_core.c                             |  9 ++-
+ net/nfc/digital_technology.c                       |  8 ++-
+ net/nfc/nci/rsp.c                                  |  2 +
+ sound/core/seq/seq_device.c                        |  8 +--
+ sound/hda/hdac_controller.c                        |  5 +-
+ sound/soc/soc-dapm.c                               | 13 +++--
+ sound/usb/quirks-table.h                           | 32 +++++++++++
+ 54 files changed, 232 insertions(+), 161 deletions(-)
 
 
