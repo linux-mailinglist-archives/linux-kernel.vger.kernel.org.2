@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD26439FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718A4439FC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhJYT0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
+        id S234851AbhJYTYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234790AbhJYTYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:24:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5DE1610A5;
-        Mon, 25 Oct 2021 19:21:40 +0000 (UTC)
+        id S232069AbhJYTWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CED12610CB;
+        Mon, 25 Oct 2021 19:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189701;
-        bh=cmk0RP38NN1vE0MQXQVLilmNUQCYQAVw/M+Ouy94bZg=;
+        s=korg; t=1635189597;
+        bh=pHX+cfUGErT9tltboPBEv/8bkbzIs7zZrgpJnY3jvcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K91BLmpD5zBL1vLOsFh1UIKduxSQLT9jIhycW4lLOk5NmtBXQBXRJJgWeGxcJ1e31
-         dgNSgcFGt/l6I7nPLQZSRR3PDH4fNSiBs6kWAyOr84zaYhwjT9ReJ2pmCOjz2cepQx
-         Tj/THCEjLMlcbub1n/XrvyvOt6XrpTY1iVsyGPnc=
+        b=PCJfr4cDMepexms/B5gclmRX9vgUjFdXo0apjGme8gY79NF41P25B54j9dTu+c1H0
+         Uv7qkKEQPId9YJ+zmTT32go10dS9qwGcZkpbBYOTfa+Mn0axeLb4dbqhe/fcwzNWLw
+         5Qu/Iy/+BAwYPD0z4VhdfaJNnYQq7AT62csJiqSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.14 10/30] can: peak_pci: peak_pci_remove(): fix UAF
+        stable@vger.kernel.org, Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 43/50] ARM: dts: spear3xx: Fix gmac node
 Date:   Mon, 25 Oct 2021 21:14:30 +0200
-Message-Id: <20211025190925.473771236@linuxfoundation.org>
+Message-Id: <20211025190940.543054368@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Herve Codina <herve.codina@bootlin.com>
 
-commit 949fe9b35570361bc6ee2652f89a0561b26eec98 upstream.
+[ Upstream commit 6636fec29cdf6665bd219564609e8651f6ddc142 ]
 
-When remove the module peek_pci, referencing 'chan' again after
-releasing 'dev' will cause UAF.
+On SPEAr3xx, ethernet driver is not compatible with the SPEAr600
+one.
+Indeed, SPEAr3xx uses an earlier version of this IP (v3.40) and
+needs some driver tuning compare to SPEAr600.
 
-Fix this by releasing 'dev' later.
+The v3.40 IP support was added to stmmac driver and this patch
+fixes this issue and use the correct compatible string for
+SPEAr3xx
 
-The following log reveals it:
-
-[   35.961814 ] BUG: KASAN: use-after-free in peak_pci_remove+0x16f/0x270 [peak_pci]
-[   35.963414 ] Read of size 8 at addr ffff888136998ee8 by task modprobe/5537
-[   35.965513 ] Call Trace:
-[   35.965718 ]  dump_stack_lvl+0xa8/0xd1
-[   35.966028 ]  print_address_description+0x87/0x3b0
-[   35.966420 ]  kasan_report+0x172/0x1c0
-[   35.966725 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
-[   35.967137 ]  ? trace_irq_enable_rcuidle+0x10/0x170
-[   35.967529 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
-[   35.967945 ]  __asan_report_load8_noabort+0x14/0x20
-[   35.968346 ]  peak_pci_remove+0x16f/0x270 [peak_pci]
-[   35.968752 ]  pci_device_remove+0xa9/0x250
-
-Fixes: e6d9c80b7ca1 ("can: peak_pci: add support of some new PEAK-System PCI cards")
-Link: https://lore.kernel.org/all/1634192913-15639-1-git-send-email-zheyuma97@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/sja1000/peak_pci.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/spear3xx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -739,16 +739,15 @@ static void peak_pci_remove(struct pci_d
- 		struct net_device *prev_dev = chan->prev_dev;
+diff --git a/arch/arm/boot/dts/spear3xx.dtsi b/arch/arm/boot/dts/spear3xx.dtsi
+index 118135d75899..4e4166d96b26 100644
+--- a/arch/arm/boot/dts/spear3xx.dtsi
++++ b/arch/arm/boot/dts/spear3xx.dtsi
+@@ -53,7 +53,7 @@
+ 		};
  
- 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
-+		/* do that only for first channel */
-+		if (!prev_dev && chan->pciec_card)
-+			peak_pciec_remove(chan->pciec_card);
- 		unregister_sja1000dev(dev);
- 		free_sja1000dev(dev);
- 		dev = prev_dev;
- 
--		if (!dev) {
--			/* do that only for first channel */
--			if (chan->pciec_card)
--				peak_pciec_remove(chan->pciec_card);
-+		if (!dev)
- 			break;
--		}
- 		priv = netdev_priv(dev);
- 		chan = priv->priv;
- 	}
+ 		gmac: eth@e0800000 {
+-			compatible = "st,spear600-gmac";
++			compatible = "snps,dwmac-3.40a";
+ 			reg = <0xe0800000 0x8000>;
+ 			interrupts = <23 22>;
+ 			interrupt-names = "macirq", "eth_wake_irq";
+-- 
+2.33.0
+
 
 
