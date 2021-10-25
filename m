@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9EB439F67
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B17439F90
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhJYTUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        id S234726AbhJYTWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:22:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234654AbhJYTTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:19:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D9E60F70;
-        Mon, 25 Oct 2021 19:17:00 +0000 (UTC)
+        id S234793AbhJYTUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 496E861078;
+        Mon, 25 Oct 2021 19:18:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189421;
-        bh=aSmZfjkgSa7Iut3ph86BQ+Tim2lJcrhYwRH/lVerHc4=;
+        s=korg; t=1635189506;
+        bh=eEyOtvoc3xqN8DzFW9FIa9KJoMprXbBPbIFhL9Vi7rY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GKZJoPXn7ItQ3+oRZ1DxBTD5gQ7AU/woPXO+yMZOzM+nhdTsRrNrW9xuvL4DR9Jt3
-         /ZbjCLQoaboGXX34ud1/BCj0ayBNSJ9yn01CfRup3lneJYFD6QOZQJgnTLgcregBkj
-         ukgBOGimVOl5ksk5mXuX274V194KJrh9EK2oh/a0=
+        b=I7Bw8AaTYqLh9yVTZe7UiX8unwN1/EmxDWXCEcBOl/SUr4QQ/5rj2HnOWjI8XqhmJ
+         O4WZv738EqCX2RRv/04/zDHA7tn/KxWpfX3CdKuqRJaA7EylENuqAsgnNE5jNfcOBS
+         Ng5WsuUfYblEzRMP9g8SaNZ5al/cki2SUSjhy+vM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.4 27/44] can: peak_usb: pcan_usb_fd_decode_status(): fix back to ERROR_ACTIVE state notification
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 21/50] NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
 Date:   Mon, 25 Oct 2021 21:14:08 +0200
-Message-Id: <20211025190934.135343268@linuxfoundation.org>
+Message-Id: <20211025190937.029417913@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 3d031abc7e7249573148871180c28ecedb5e27df upstream.
+commit 291c932fc3692e4d211a445ba8aa35663831bac7 upstream.
 
-This corrects the lack of notification of a return to ERROR_ACTIVE
-state for USB - CANFD devices from PEAK-System.
+'skb' is allocated in digital_in_send_sdd_req(), but not free when
+digital_in_send_cmd() failed, which will cause memory leak. Fix it
+by freeing 'skb' if digital_in_send_cmd() return failed.
 
-Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
-Link: https://lore.kernel.org/all/20210929142111.55757-1-s.grosjean@peak-system.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 2c66daecc409 ("NFC Digital: Add NFC-A technology support")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/nfc/digital_technology.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -559,11 +559,10 @@ static int pcan_usb_fd_decode_status(str
- 	} else if (sm->channel_p_w_b & PUCAN_BUS_WARNING) {
- 		new_state = CAN_STATE_ERROR_WARNING;
- 	} else {
--		/* no error bit (so, no error skb, back to active state) */
--		dev->can.state = CAN_STATE_ERROR_ACTIVE;
-+		/* back to (or still in) ERROR_ACTIVE state */
-+		new_state = CAN_STATE_ERROR_ACTIVE;
- 		pdev->bec.txerr = 0;
- 		pdev->bec.rxerr = 0;
--		return 0;
- 	}
+--- a/net/nfc/digital_technology.c
++++ b/net/nfc/digital_technology.c
+@@ -473,8 +473,12 @@ static int digital_in_send_sdd_req(struc
+ 	*skb_put(skb, sizeof(u8)) = sel_cmd;
+ 	*skb_put(skb, sizeof(u8)) = DIGITAL_SDD_REQ_SEL_PAR;
  
- 	/* state hasn't changed */
+-	return digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
+-				   target);
++	rc = digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
++				 target);
++	if (rc)
++		kfree_skb(skb);
++
++	return rc;
+ }
+ 
+ static void digital_in_recv_sens_res(struct nfc_digital_dev *ddev, void *arg,
 
 
