@@ -2,171 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE2A439937
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0C643993B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhJYOwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:52:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33542 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233672AbhJYOvs (ORCPT
+        id S233618AbhJYOwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:52:40 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37766
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233625AbhJYOwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:51:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635173365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+fQIV8R9EVwqjc2F+5+VNaVeJn8YGGw0zb5KvsfSTOE=;
-        b=drtnf594sX9RoydTCL7ZU8Ic2Uq30NB/e3qXSAS9cbxR0vVyRDRKl42MHn9psufV/l2jJD
-        A1qQGA5b9Xq4NDYB4QpCSFwdsP/54OVGbg1+vUAws/mcs9lnxhdxZ8Vzh4TGOcCmVJmLYO
-        CqMitd+2aR6UTzhNxZp3aTYj8QYsiZ8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-Bui2cJBHPKuA3fkyJyogHQ-1; Mon, 25 Oct 2021 10:49:24 -0400
-X-MC-Unique: Bui2cJBHPKuA3fkyJyogHQ-1
-Received: by mail-ed1-f70.google.com with SMTP id k28-20020a508adc000000b003dd5e21da4bso2522885edk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:49:24 -0700 (PDT)
+        Mon, 25 Oct 2021 10:52:13 -0400
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7E83F3F4A4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635173390;
+        bh=KricW4D7VolKL3JPfDUExtQxStN8Nau+m8lKmFDnDuQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=f8KTU5sgHG/SgF5CRj6zA5LjHshGBwrZM3hY3wUp6wuK76W67OpsV82HUbW8UZ2Xa
+         H7lqO2odLSOcjEw4F/bFT/eE1WYLR5pArXz46UxoyI9EmIEOi5mS7F0woS0qSzsOgB
+         hoAWspch+Sl62NaSv+DuARGSpSrG3q651WZI759Y6dn64SGq4SJ6L2sbbJf1cSO62G
+         NAOGHNfIvd5LwLPaIsdF6bPCd9C8Xx32LcR6EhRvFmpwikec6OUchk9+rSLYHHwSiN
+         dUGPYsF4Hq8Df4k8wft0Z3BoUDI9XUgHwv3UHEYO7DveIUOz7JkFMZwJ173nuioI02
+         svBfQjkLKl8xg==
+Received: by mail-lj1-f198.google.com with SMTP id 136-20020a2e098e000000b002110b902242so2822476ljj.20
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:49:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+fQIV8R9EVwqjc2F+5+VNaVeJn8YGGw0zb5KvsfSTOE=;
-        b=xc9EzD80b10cTezmuC3uqgKaiz59nrnGcnjdhfpf/yJnxKi6JfoiPnvmMPzUXoIHfD
-         WqeYd4bTRmQfVpX5PPcABg4/DU5W9ZlpCYxTi9BA+Ulxvx5KUk7ly77ZhRmKrJTbKcvE
-         jqx/Yn6Q4G+Qc/eWL3BGUoinybu6SUQ3IRKr4ar21dxOGwl3YIsDDI8/OzTtQ5gf3DjV
-         dUjrir+8MBT/yceBj1CvKw+ED46if4cgaSNzh9LrOdTdDhMIOjxIs1Lx4GZkOLLBEwM/
-         fjTyHI0CGsVENp0ZDi9ar0NhTtDQY1dk/b6Z2d8T465Vbvxp2LdlLs4WvnvBMOHFRxxm
-         PvQw==
-X-Gm-Message-State: AOAM531Z/cQTLbuokjdhbmB7V1VV7tcZMtBTDeHxPaMZ90Tnh9GdJQVz
-        2gPL74wRvrdXptV54FzlJ1fdDMhUR0Dq+EX5Mj3Ux63dh4kwjeBMv1nx2+eZLdRr6y8bgJ8qTWM
-        /b794JRkLBAQzALhSL4aquarnWNDb7Q7FlYSp42Cl
-X-Received: by 2002:a05:6402:55:: with SMTP id f21mr27200711edu.8.1635173363355;
-        Mon, 25 Oct 2021 07:49:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/3Iij3j6rCMHEZLZ0laZvPfZAeKNcI+Q2GLVeBfeMLuYto9Is0QQTiujMiPil6Vzeuyp3IRplt1X+mCUlfx4=
-X-Received: by 2002:a05:6402:55:: with SMTP id f21mr27200658edu.8.1635173362997;
- Mon, 25 Oct 2021 07:49:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KricW4D7VolKL3JPfDUExtQxStN8Nau+m8lKmFDnDuQ=;
+        b=azdJ5HIHO0OgenLsJ2Mr/R5W441lMZo8zAoxdVn4N9SjCdExlCmpZOKyt/BIauxyax
+         bcQFcsctMTH08GAVoI+jhOm6LJ9Xp5zq6GlbdjMUWoxYgnLYm6IuhMYJe+OiZpPiwOiY
+         sbbntldtsf733jj5sLtJekGRKjO4hpAYQvCMNZZQ2pYqmsp1gVtTtn/bzGFv8TVk306m
+         O0JDEXpmgPbibXfLpa4040fPTQNE22O1EukNC8zw+jEkj5sq5/v2uVwfzsmRX3EYm3Va
+         UvEjt9fhN+/HmTnVOrR/5BaVnsKQpa9wbxe4VJN9fdxTIkI+G8ltfEDt3Wh72CFrDdYx
+         CTKw==
+X-Gm-Message-State: AOAM531okM8A5iIyFxAGo0uGd7T2pSDdhkLnvXuFm4NHSX4ZNLm9dX1T
+        gQQ4T8o3M9aQtf3nVyayMjn4t6B3Ys3FCHQSjgbndMNWrzf7hrbtdjpW7KMIu5w6uOIB4ZxHltY
+        K0mwVTigCllbsAdmeRELaeRpa5T7Lg7JzxpBCUj7/QA==
+X-Received: by 2002:ac2:5d71:: with SMTP id h17mr14204463lft.642.1635173389990;
+        Mon, 25 Oct 2021 07:49:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxRQErlF/R1paw1cLXY13RG/G2M/k1Cz7GJkjb23Wq22EpZlnXHsMIgnnBJ+035rSdh+yV5w==
+X-Received: by 2002:ac2:5d71:: with SMTP id h17mr14204445lft.642.1635173389830;
+        Mon, 25 Oct 2021 07:49:49 -0700 (PDT)
+Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id j15sm1660922lfe.252.2021.10.25.07.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 07:49:49 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Escande <thierry.escande@linux.intel.com>,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH v2] nfc: port100: fix using -ERRNO as command type mask
+Date:   Mon, 25 Oct 2021 16:49:36 +0200
+Message-Id: <20211025144936.556495-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211025040607.92786-1-wefu@redhat.com> <20211025040607.92786-3-wefu@redhat.com>
- <YXZU/3/YmRGFrOXK@infradead.org>
-In-Reply-To: <YXZU/3/YmRGFrOXK@infradead.org>
-From:   Wei Fu <wefu@redhat.com>
-Date:   Mon, 25 Oct 2021 22:49:11 +0800
-Message-ID: <CA+YCwKn1VA8=NSa=bdhP99jfpokYGHBvqVSKvZmdndQOz6UUPA@mail.gmail.com>
-Subject: Re: [RESEND PATCH V3 2/2] riscv: add RISC-V Svpbmt extension supports
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, guoren@kernel.org,
-        christoph.muellner@vrull.eu,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        Liu Shaohua <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
-        guoren@linux.alibaba.com, Arnd Bergmann <arnd@arndb.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+During probing, the driver tries to get a list (mask) of supported
+command types in port100_get_command_type_mask() function.  The value
+is u64 and 0 is treated as invalid mask (no commands supported).  The
+function however returns also -ERRNO as u64 which will be interpret as
+valid command mask.
 
-I hope I understand this correctly,
+Return 0 on every error case of port100_get_command_type_mask(), so the
+probing will stop.
 
-On Mon, Oct 25, 2021 at 2:57 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Mon, Oct 25, 2021 at 12:06:07PM +0800, wefu@redhat.com wrote:
-> >  static inline pmd_t *pud_pgtable(pud_t pud)
-> >  {
-> > -     return (pmd_t *)pfn_to_virt(pud_val(pud) >> _PAGE_PFN_SHIFT);
-> > +     return (pmd_t *)pfn_to_virt((pud_val(pud) & _PAGE_CHG_MASK)
-> > +                                             >> _PAGE_PFN_SHIFT);
-> >  }
-> >
-> >  static inline struct page *pud_page(pud_t pud)
-> >  {
-> > -     return pfn_to_page(pud_val(pud) >> _PAGE_PFN_SHIFT);
-> > +     return pfn_to_page((pud_val(pud) & _PAGE_CHG_MASK)
-> > +                                             >> _PAGE_PFN_SHIFT);
->
-> >  static inline unsigned long _pmd_pfn(pmd_t pmd)
-> >  {
-> > -     return pmd_val(pmd) >> _PAGE_PFN_SHIFT;
-> > +     return (pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT;
-> >  }
->
-> The "(pud_val(pud) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT" expression begs
-> for readable and well-documented helper.
+Cc: <stable@vger.kernel.org>
+Fixes: 0347a6ab300a ("NFC: port100: Commands mechanism implementation")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-How about these:
-#define _chg_of_pmd(pmd)  (pmd_val(pmd) & _PAGE_CHG_MASK)
-#define _chg_of_pud(pud)  (pud_val(pud) & _PAGE_CHG_MASK)
+---
 
->
-> > +#define _SVPBMT_PMA          ((unsigned long)0x0 << 61)
-> > +#define _SVPBMT_NC           ((unsigned long)0x1 << 61)
-> > +#define _SVPBMT_IO           ((unsigned long)0x2 << 61)
->
-> 0UL << 61
-> 1UL << 61
-> ...
->
-> > +#define _SVPBMT_MASK         (_SVPBMT_PMA | _SVPBMT_NC | _SVPBMT_IO)
-> > +
-> > +extern struct __riscv_svpbmt_struct {
-> > +     unsigned long mask;
-> > +     unsigned long mt_pma;
-> > +     unsigned long mt_nc;
-> > +     unsigned long mt_io;
-> > +} __riscv_svpbmt;
-> > +
-> > +#define _PAGE_MT_MASK                __riscv_svpbmt.mask
-> > +#define _PAGE_MT_PMA         __riscv_svpbmt.mt_pma
-> > +#define _PAGE_MT_NC          __riscv_svpbmt.mt_nc
-> > +#define _PAGE_MT_IO          __riscv_svpbmt.mt_io
->
-> Using a struct over individual variables seems a little odd here.
->
+Changes since v1:
+1. Drop debug code.
+---
+ drivers/nfc/port100.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-How about :
-
-extern unsigned long  _svpbmt_mask
-extern unsigned long _svpbmt_mt_pma
-extern unsigned long _svpbmt_mt_nc
-extern unsigned long _svpbmt_mt_io
-
-#define _PAGE_MT_MASK              _svpbmt_mask
-#define _PAGE_MT_PMA        _svpbmt_mt_pma
-#define _PAGE_MT_NC          _svpbmt_mt_nc
-#define _PAGE_MT_IO           _svpbmt_mt_io
-
-> Also why not use the standard names for these _PAGE bits used by
-> most other architectures?
->
-> > -     return (unsigned long)pfn_to_virt(pmd_val(pmd) >> _PAGE_PFN_SHIFT);
-> > +     return (unsigned long)pfn_to_virt((pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT);
->
-> Overly long line, could use a helper.  Btw, what is the point in having
-> this _PAGE_PFN_SHIFT macro to start with?
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
->
+diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
+index 517376c43b86..16ceb763594f 100644
+--- a/drivers/nfc/port100.c
++++ b/drivers/nfc/port100.c
+@@ -1006,11 +1006,11 @@ static u64 port100_get_command_type_mask(struct port100 *dev)
+ 
+ 	skb = port100_alloc_skb(dev, 0);
+ 	if (!skb)
+-		return -ENOMEM;
++		return 0;
+ 
+ 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
+ 	if (IS_ERR(resp))
+-		return PTR_ERR(resp);
++		return 0;
+ 
+ 	if (resp->len < 8)
+ 		mask = 0;
+-- 
+2.30.2
 
