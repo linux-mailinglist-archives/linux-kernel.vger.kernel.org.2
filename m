@@ -2,136 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544D7439457
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C2943945B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhJYK70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:59:26 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:8471 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232890AbhJYK7T (ORCPT
+        id S232640AbhJYLAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:00:04 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:33618 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhJYK7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:59:19 -0400
-X-UUID: f91e7be25dcf4db2b20f8862623b47eb-20211025
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=WUhgkLeYJxCMgVKFV56J/TSCoTVrKnDBWgz8GQ7MB8Q=;
-        b=lBwEAfxshRAZjsCELOZa/D/Uz8JbhGckQ4FasVTYsPeX9oHJEojz09fF7BMyLKPtt3ZaownqTcZpNjt7+6bvLumFLvNnAtrIDLoRQHw4JmDFv1jhSXWRho/6rFQiRY2seu4rKeIxR4POo+jHn9IORhKT3Y0zojWuicAxLOMaTjs=;
-X-UUID: f91e7be25dcf4db2b20f8862623b47eb-20211025
-Received: from mtkmbs10n1.mediatek.inc [(172.27.5.253)] by mailgw02.mediatek.com
-        (envelope-from <yc.hung@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1409730941; Mon, 25 Oct 2021 18:56:49 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Mon, 25 Oct 2021 18:56:51 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Oct
- 2021 18:56:51 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Oct 2021 18:56:51 +0800
-From:   YC Hung <yc.hung@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <yc.hung@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <daniel.baluta@nxp.com>, <trevor.wu@mediatek.com>,
-        <allen-kh.cheng@mediatek.com>,
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v3 2/2] dt-bindings: dsp: mediatek: Add mt8195 DSP binding support
-Date:   Mon, 25 Oct 2021 18:56:35 +0800
-Message-ID: <20211025105635.30625-3-yc.hung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211025105635.30625-1-yc.hung@mediatek.com>
-References: <20211025105635.30625-1-yc.hung@mediatek.com>
+        Mon, 25 Oct 2021 06:59:49 -0400
+Received: by mail-io1-f71.google.com with SMTP id f19-20020a6b6213000000b005ddc4ce4deeso8667081iog.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:57:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UgzLiOp3iosmtzBxr4JSPZBO9gLvzYtB+2EUMFiDcFQ=;
+        b=FbwaxRoNns3UFYVPZKPCTL4tUQnWcvzvUME2ZtqOQWhxskDPNi2h5LJYAM30Hav535
+         /QGvqO/DsPODHgI5gvZPJzpflexa6bhpEkJWFtK95OmoNBgOojF7NPLSNL3aN/YbY9Cv
+         DI/12yP27e8DSGSm9M8kX8C+GNuHbnDg8KBxF1Fj3yDo8Kv8m+CqIAyRSuGOfY/OUE2e
+         dOobC4zSpBeeGUHPvmWUeZmLVqR7SbUs2wXSytiOg7keh5xdJt85xaVq0vR+QVJbdYB5
+         0gX524qT4fz3i/ShDystPM7rlPphYUUQCTf0f169aNeDZGglhEws07ef/4m+16IN0ufa
+         iSwA==
+X-Gm-Message-State: AOAM532bAT81nIB0saFlAs4TmhLznJiWp4idw1PrVRkm8qsRFhFKDBqy
+        YZBr60uUFSiP+0hdBHywmX+4m3ii7iunfujdHrMCBcChDwj8
+X-Google-Smtp-Source: ABdhPJx89xRpBxetAUfz3j3ZtFt5oLVCsC8YeYG1sd1KsAgGYXxsrh4ArfZ665nl9PSmaTNbfZYVpUGs4dhT0uNPQQpf1Jln0PDW
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-Received: by 2002:a05:6602:27c2:: with SMTP id l2mr9734505ios.147.1635159447226;
+ Mon, 25 Oct 2021 03:57:27 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 03:57:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000000cdf805cf2b3aca@google.com>
+Subject: [syzbot] general protection fault in kernfs_link_sibling (2)
+From:   syzbot <syzbot+268cf7634519ba63ae9f@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBkZXNjcmliZXMgdGhlIG10ODE5NSBEU1AgZGV2aWNlIHRyZWUgbm9kZS4NCg0KU2lnbmVk
-LW9mZi1ieTogWUMgSHVuZyA8eWMuaHVuZ0BtZWRpYXRlay5jb20+DQotLS0NCiAuLi4vYmluZGlu
-Z3MvZHNwL210ayxtdDgxOTUtZHNwLnlhbWwgICAgICAgICAgfCAxMzkgKysrKysrKysrKysrKysr
-KysrDQogMSBmaWxlIGNoYW5nZWQsIDEzOSBpbnNlcnRpb25zKCspDQogY3JlYXRlIG1vZGUgMTAw
-NjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kc3AvbXRrLG10ODE5NS1kc3Au
-eWFtbA0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rz
-cC9tdGssbXQ4MTk1LWRzcC55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L2RzcC9tdGssbXQ4MTk1LWRzcC55YW1sDQpuZXcgZmlsZSBtb2RlIDEwMDY0NA0KaW5kZXggMDAw
-MDAwMDAwMDAwLi5mMTEzZjcxY2EwOTQNCi0tLSAvZGV2L251bGwNCisrKyBiL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9kc3AvbXRrLG10ODE5NS1kc3AueWFtbA0KQEAgLTAsMCAr
-MSwxMzkgQEANCisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMCBPUiBCU0QtMi1D
-bGF1c2UpDQorJVlBTUwgMS4yDQorLS0tDQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2No
-ZW1hcy9kc3AvbXRrLG10ODE5NS1kc3AueWFtbCMNCiskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJl
-ZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCisNCit0aXRsZTogTWVkaWF0ZWsgbXQ4MTk1
-IERTUCBjb3JlDQorDQorbWFpbnRhaW5lcnM6DQorICAtIFlDIEh1bmcgPHljLmh1bmdAbWVkaWF0
-ZWsuY29tPg0KKw0KK2Rlc2NyaXB0aW9uOiB8DQorICBTb21lIGJvYXJkcyBmcm9tIG10ODE5NSBj
-b250YWluIGEgRFNQIGNvcmUgdXNlZCBmb3INCisgIGFkdmFuY2VkIHByZS0gYW5kIHBvc3QtIGF1
-ZGlvIHByb2Nlc3NpbmcuDQorcHJvcGVydGllczoNCisgIGNvbXBhdGlibGU6DQorICAgIGNvbnN0
-OiBtZWRpYXRlayxtdDgxOTUtZHNwDQorDQorICByZWc6DQorICAgIG1heEl0ZW1zOiAyDQorDQor
-ICByZWctbmFtZXM6DQorICAgIG1heEl0ZW1zOiAyDQorDQorICBpbnRlcnJ1cHRzOg0KKyAgICBt
-YXhJdGVtczogMQ0KKw0KKyAgaW50ZXJydXB0LW5hbWVzOg0KKyAgICBtYXhJdGVtczogMQ0KKw0K
-KyAgY2xvY2tzOg0KKyAgICBpdGVtczoNCisgICAgICAtIGRlc2NyaXB0aW9uOiBtdXggZm9yIGF1
-ZGlvIGRzcCBjbG9jaw0KKyAgICAgIC0gZGVzY3JpcHRpb246IDI2TSBjbG9jaw0KKyAgICAgIC0g
-ZGVzY3JpcHRpb246IG11eCBmb3IgYXVkaW8gZHNwIGxvY2FsIGJ1cw0KKyAgICAgIC0gZGVzY3Jp
-cHRpb246IGRlZmF1bHQgYXVkaW8gZHNwIGxvY2FsIGJ1cyBjbG9jayBzb3VyY2UNCisgICAgICAt
-IGRlc2NyaXB0aW9uOiBjbG9jayBnYXRlIGZvciBhdWRpbyBkc3AgY2xvY2sNCisgICAgICAtIGRl
-c2NyaXB0aW9uOiBtdXggZm9yIGF1ZGlvIGRzcCBhY2Nlc3MgZXh0ZXJuYWwgYnVzDQorDQorICBj
-bG9jay1uYW1lczoNCisgICAgaXRlbXM6DQorICAgICAgLSBjb25zdDogYWRzcF9zZWwNCisgICAg
-ICAtIGNvbnN0OiBjbGsyNm1fY2sNCisgICAgICAtIGNvbnN0OiBhdWRpb19sb2NhbF9idXMNCisg
-ICAgICAtIGNvbnN0OiBtYWlucGxsX2Q3X2QyDQorICAgICAgLSBjb25zdDogc2NwX2Fkc3BfYXVk
-aW9kc3ANCisgICAgICAtIGNvbnN0OiBhdWRpb19oDQorDQorICBwb3dlci1kb21haW5zOg0KKyAg
-ICBtYXhJdGVtczogMQ0KKw0KKyAgbWJveGVzOg0KKyAgICBtYXhJdGVtczogMg0KKw0KKyAgbWJv
-eC1uYW1lczoNCisgICAgZGVzY3JpcHRpb246DQorICAgICAgU3BlY2lmaWVzIHRoZSBtYWlsYm94
-ZXMgdXNlZCB0byBjb21tdW5pY2F0ZSB3aXRoIGF1ZGlvIERTUA0KKyAgICBpdGVtczoNCisgICAg
-ICAtIGNvbnN0OiBtYm94MA0KKyAgICAgIC0gY29uc3Q6IG1ib3gxDQorDQorICBtZW1vcnktcmVn
-aW9uOg0KKyAgICBkZXNjcmlwdGlvbjoNCisgICAgICBwaGFuZGxlIHRvIGEgbm9kZSBkZXNjcmli
-aW5nIHJlc2VydmVkIG1lbW9yeSAoU3lzdGVtIFJBTSBtZW1vcnkpDQorICAgICAgdXNlZCBieSBE
-U1AgKHNlZSBiaW5kaW5ncy9yZXNlcnZlZC1tZW1vcnkvcmVzZXJ2ZWQtbWVtb3J5LnR4dCkNCisg
-ICAgbWF4SXRlbXM6IDINCisNCisgIHNvdW5kOg0KKyAgICBkZXNjcmlwdGlvbjoNCisgICAgICBT
-b3VuZCBzdWJub2RlIGluY2x1ZGVzIEFTb0MgcGxhdGZvcm0sIERQVHggY29kZWMgbm9kZSwgYW5k
-DQorICAgICAgSERNSSBjb2RlYyBub2RlLg0KKw0KKyAgICB0eXBlOiBvYmplY3QNCisNCisgICAg
-cHJvcGVydGllczoNCisgICAgICBtZWRpYXRlayxwbGF0Zm9ybToNCisgICAgICAgICRyZWY6ICIv
-c2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9waGFuZGxlIg0KKyAgICAgICAgZGVzY3Jp
-cHRpb246IFRoZSBwaGFuZGxlIG9mIE1UODE5NSBBU29DIHBsYXRmb3JtLg0KKw0KKyAgICAgIG1l
-ZGlhdGVrLGRwdHgtY29kZWM6DQorICAgICAgICAkcmVmOiAiL3NjaGVtYXMvdHlwZXMueWFtbCMv
-ZGVmaW5pdGlvbnMvcGhhbmRsZSINCisgICAgICAgIGRlc2NyaXB0aW9uOiBUaGUgcGhhbmRsZSBv
-ZiBNVDgxOTUgRGlzcGxheSBQb3J0IFR4IGNvZGVjIG5vZGUuDQorDQorICAgICAgbWVkaWF0ZWss
-aGRtaS1jb2RlYzoNCisgICAgICAgICRyZWY6ICIvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0
-aW9ucy9waGFuZGxlIg0KKyAgICAgICAgZGVzY3JpcHRpb246IFRoZSBwaGFuZGxlIG9mIE1UODE5
-NSBIRE1JIGNvZGVjIG5vZGUuDQorDQorcmVxdWlyZWQ6DQorICAtIGNvbXBhdGlibGUNCisgIC0g
-cmVnDQorICAtIHJlZy1uYW1lcw0KKyAgLSBpbnRlcnJ1cHRzDQorICAtIGludGVycnVwdC1uYW1l
-cw0KKyAgLSBjbG9ja3MNCisgIC0gY2xvY2stbmFtZXMNCisgIC0gbWVtb3J5LXJlZ2lvbg0KKyAg
-LSBwb3dlci1kb21haW5zDQorICAtIG1ib3gtbmFtZXMNCisgIC0gbWJveGVzDQorICAtIHNvdW5k
-DQorDQorDQorYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQorDQorZXhhbXBsZXM6DQorICAt
-IHwNCisgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2FybS1n
-aWMuaD4NCisgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2ly
-cS5oPg0KKyAgICBhZHNwOiBhZHNwQDEwODAzMDAwIHsNCisgICAgICAgY29tcGF0aWJsZSA9ICAi
-bWVkaWF0ZWssbXQ4MTk1LWRzcCI7DQorICAgICAgIHJlZyA9IDwweDEwODAzMDAwICAweDEwMDA+
-LA0KKyAgICAgICAgICAgICA8MHgxMDg0MDAwMCAgMHg0MDAwMD47DQorICAgICAgIHJlZy1uYW1l
-cyA9ICJjZmciLCAic3JhbSI7DQorICAgICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSA2OTQgSVJR
-X1RZUEVfTEVWRUxfSElHSCAwPjsNCisgICAgICAgaW50ZXJydXB0LW5hbWVzID0gIndkdCI7DQor
-ICAgICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4gMTA+LCAvL0NMS19UT1BfQURTUA0KKyAgICAgICAg
-ICAgICAgICA8JmNsazI2bT4sDQorICAgICAgICAgICAgICAgIDwmdG9wY2tnZW4gMTA3PiwgLy9D
-TEtfVE9QX0FVRElPX0xPQ0FMX0JVUw0KKyAgICAgICAgICAgICAgICA8JnRvcGNrZ2VuIDEzNj4s
-IC8vQ0xLX1RPUF9NQUlOUExMX0Q3X0QyDQorICAgICAgICAgICAgICAgIDwmc2NwX2Fkc3AgMD4s
-IC8vQ0xLX1NDUF9BRFNQX0FVRElPRFNQDQorICAgICAgICAgICAgICAgIDwmdG9wY2tnZW4gMzQ+
-OyAvL0NMS19UT1BfQVVESU9fSA0KKyAgICAgICBjbG9jay1uYW1lcyA9ICJhZHNwX3NlbCIsDQor
-ICAgICAgICAgICAgICAgICAgICAgImNsazI2bV9jayIsDQorICAgICAgICAgICAgICAgICAgICAg
-ImF1ZGlvX2xvY2FsX2J1cyIsDQorICAgICAgICAgICAgICAgICAgICAgIm1haW5wbGxfZDdfZDIi
-LA0KKyAgICAgICAgICAgICAgICAgICAgICJzY3BfYWRzcF9hdWRpb2RzcCIsDQorICAgICAgICAg
-ICAgICAgICAgICAgImF1ZGlvX2giOw0KKyAgICAgICBtZW1vcnktcmVnaW9uID0gPCZhZHNwX2Rt
-YV9tZW1fcmVzZXJ2ZWQ+LA0KKyAgICAgICAgICAgICAgICAgICAgICAgPCZhZHNwX21lbV9yZXNl
-cnZlZD47DQorICAgICAgIHBvd2VyLWRvbWFpbnMgPSA8JnNwbSA2PjsgLy9NVDgxOTVfUE9XRVJf
-RE9NQUlOX0FEU1ANCisgICAgICAgbWJveC1uYW1lcyA9ICJtYm94MCIsICJtYm94MSI7DQorICAg
-ICAgIG1ib3hlcyA9IDwmYWRzcF9tYWlsYm94IDA+LCA8JmFkc3BfbWFpbGJveCAxPjsNCisgICAg
-ICAgc3RhdHVzID0gImRpc2FibGVkIjsNCisgICAgICAgc291bmQgew0KKyAgICAgICAgICAgICAg
-bWVkaWF0ZWssZHB0eC1jb2RlYyA9IDwmZHBfdHg+Ow0KKyAgICAgICAgICAgICAgbWVkaWF0ZWss
-aGRtaS1jb2RlYyA9IDwmaGRtaTA+Ow0KKyAgICAgICAgICAgICAgbWVkaWF0ZWsscGxhdGZvcm0g
-PSA8JmFmZT47DQorICAgICAgICAgICAgIH07DQorICAgICAgIH07DQotLSANCjIuMTguMA0K
+Hello,
 
+syzbot found the following issue on:
+
+HEAD commit:    3196a52aff93 Add linux-next specific files for 20211021
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=173006af300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fb0e2a8a3e9b63e2
+dashboard link: https://syzkaller.appspot.com/bug?extid=268cf7634519ba63ae9f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+268cf7634519ba63ae9f@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc000002d99e: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x000000000016ccf0-0x000000000016ccf7]
+CPU: 1 PID: 5579 Comm: syz-executor.4 Not tainted 5.15.0-rc6-next-20211021-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:rb_set_parent_color include/linux/rbtree_augmented.h:165 [inline]
+RIP: 0010:__rb_insert lib/rbtree.c:179 [inline]
+RIP: 0010:rb_insert_color+0x134/0x7a0 lib/rbtree.c:436
+Code: 3c 02 00 0f 85 0f 05 00 00 4d 85 ed 48 89 6b 08 74 26 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 49 89 ec 48 c1 ea 03 49 83 cc 01 <80> 3c 02 00 0f 85 49 05 00 00 4d 89 65 00 48 b8 00 00 00 00 00 fc
+RSP: 0018:ffffc90003ea7798 EFLAGS: 00010282
+RAX: dffffc0000000000 RBX: ffff88800014e698 RCX: ffffc9000d798000
+RDX: 000000000002d99e RSI: ffff88800014b410 RDI: ffff888000167ed0
+RBP: ffff888000167ec0 R08: 0000000041ffb936 R09: 0000000000000001
+R10: ffffffff81f389ec R11: 0000000000000000 R12: ffff888000167ec1
+R13: 000000000016ccf0 R14: ffff88800014e6a0 R15: ffff88800014e698
+FS:  00007f8bebf7a700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe92f5aec18 CR3: 000000001f77c000 CR4: 00000000003506e0
+Call Trace:
+ <TASK>
+ kernfs_link_sibling+0x2a7/0x470 fs/kernfs/dir.c:370
+ kernfs_add_one+0x218/0x4c0 fs/kernfs/dir.c:745
+ __kernfs_create_file+0x29c/0x350 fs/kernfs/file.c:1014
+ sysfs_add_file_mode_ns+0x20f/0x3f0 fs/sysfs/file.c:294
+ create_files fs/sysfs/group.c:64 [inline]
+ internal_create_group+0x322/0xb10 fs/sysfs/group.c:148
+ internal_create_groups.part.0+0x90/0x140 fs/sysfs/group.c:188
+ internal_create_groups fs/sysfs/group.c:184 [inline]
+ sysfs_create_groups+0x25/0x50 fs/sysfs/group.c:214
+ setup_gid_attrs drivers/infiniband/core/sysfs.c:1170 [inline]
+ ib_setup_port_attrs+0x3e7/0x5c0 drivers/infiniband/core/sysfs.c:1442
+ add_one_compat_dev+0x517/0x7f0 drivers/infiniband/core/device.c:968
+ rdma_dev_init_net+0x28b/0x480 drivers/infiniband/core/device.c:1184
+ ops_init+0xaf/0x470 net/core/net_namespace.c:140
+ setup_net+0x40f/0xa30 net/core/net_namespace.c:326
+ copy_net_ns+0x318/0x760 net/core/net_namespace.c:470
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x445/0x920 kernel/fork.c:3125
+ __do_sys_unshare kernel/fork.c:3196 [inline]
+ __se_sys_unshare kernel/fork.c:3194 [inline]
+ __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3194
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8beea04a39
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8bebf7a188 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 00007f8beeb07f60 RCX: 00007f8beea04a39
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000060000000
+RBP: 00007f8beea5ec5f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffd7df61abf R14: 00007f8bebf7a300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 2eb565b9d4312bbc ]---
+RIP: 0010:rb_set_parent_color include/linux/rbtree_augmented.h:165 [inline]
+RIP: 0010:__rb_insert lib/rbtree.c:179 [inline]
+RIP: 0010:rb_insert_color+0x134/0x7a0 lib/rbtree.c:436
+Code: 3c 02 00 0f 85 0f 05 00 00 4d 85 ed 48 89 6b 08 74 26 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 49 89 ec 48 c1 ea 03 49 83 cc 01 <80> 3c 02 00 0f 85 49 05 00 00 4d 89 65 00 48 b8 00 00 00 00 00 fc
+RSP: 0018:ffffc90003ea7798 EFLAGS: 00010282
+RAX: dffffc0000000000 RBX: ffff88800014e698 RCX: ffffc9000d798000
+RDX: 000000000002d99e RSI: ffff88800014b410 RDI: ffff888000167ed0
+RBP: ffff888000167ec0 R08: 0000000041ffb936 R09: 0000000000000001
+R10: ffffffff81f389ec R11: 0000000000000000 R12: ffff888000167ec1
+R13: 000000000016ccf0 R14: ffff88800014e6a0 R15: ffff88800014e698
+FS:  00007f8bebf7a700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe92f5aec18 CR3: 000000001f77c000 CR4: 00000000003506e0
+----------------
+Code disassembly (best guess):
+   0:	3c 02                	cmp    $0x2,%al
+   2:	00 0f                	add    %cl,(%rdi)
+   4:	85 0f                	test   %ecx,(%rdi)
+   6:	05 00 00 4d 85       	add    $0x854d0000,%eax
+   b:	ed                   	in     (%dx),%eax
+   c:	48 89 6b 08          	mov    %rbp,0x8(%rbx)
+  10:	74 26                	je     0x38
+  12:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  19:	fc ff df
+  1c:	4c 89 ea             	mov    %r13,%rdx
+  1f:	49 89 ec             	mov    %rbp,%r12
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+  26:	49 83 cc 01          	or     $0x1,%r12
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 49 05 00 00    	jne    0x57d
+  34:	4d 89 65 00          	mov    %r12,0x0(%r13)
+  38:	48                   	rex.W
+  39:	b8 00 00 00 00       	mov    $0x0,%eax
+  3e:	00 fc                	add    %bh,%ah
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
