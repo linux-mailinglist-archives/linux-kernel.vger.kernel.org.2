@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B589439AAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2D8439AB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhJYPqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:46:43 -0400
-Received: from mga05.intel.com ([192.55.52.43]:5202 "EHLO mga05.intel.com"
+        id S232699AbhJYPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhJYPqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:46:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="315885621"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="315885621"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 08:42:38 -0700
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="446684809"
-Received: from dscaswel-mobl2.ger.corp.intel.com (HELO [10.213.242.254]) ([10.213.242.254])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 08:42:29 -0700
-Subject: Re: [PATCH] drm/i915: Use ERR_CAST instead of ERR_PTR(PTR_ERR())
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Matthew Brost <matthew.brost@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20211025113316.24424-1-wanjiabing@vivo.com>
-From:   Matthew Auld <matthew.auld@intel.com>
-Message-ID: <58331d3d-c3e3-0e82-eb7a-469c6e72d7a7@intel.com>
-Date:   Mon, 25 Oct 2021 16:42:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232679AbhJYPrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:47:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B50461002;
+        Mon, 25 Oct 2021 15:44:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635176684;
+        bh=t/cG3NYZufoQXI80MvoVKxbOhh2gfbNI54UCGBT3C9s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gxmadbL12O9CP1CNjr+LPFEaW4SzKdMH7wBlnUxy2TzbQ9gtUNV7DEu1WSahSAdvL
+         u/BXtC5jblBxPTnpfFqJLIzEtCppyKyls5mNlnSUYhZum9GY/TH9dg/+vSn7xHICbC
+         GLEZE6+WCHun6enc8dfKsjr2kBQWjDquNQv9BmuqxtjICcILdqOVO5TSfQnsQr7pUo
+         9mokyel9t8DVcl3p+kpJ5J3zE1W6ObHH5vLJl7Mp+ES8XFxHce3uPgJ/Mf77S+X4Hm
+         jYNewKS1aqWHMc6o18eqCgLn8SvSOXBCAmZWVHf49oAPQY46Q6rUNL5PhVtyNchEfn
+         6muiFFPGVzArQ==
+Received: by mail-wm1-f49.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso13618944wmc.1;
+        Mon, 25 Oct 2021 08:44:44 -0700 (PDT)
+X-Gm-Message-State: AOAM530Cn/8lzBrbj2Km/5FXTNqESozWc4szJDAsB9a9uzUki1tusjUC
+        Sz1FiNP9ty7KA5mK/2nKPd8l9wNTrklcDOj8fZQ=
+X-Google-Smtp-Source: ABdhPJwVwah/t3YoUqrQSaMsXvLvLT7cunG21zPbQEpZN6hLw+z/xKNabDoDNkoQgi86rA+/qLopU3mOKvl8de4bOgo=
+X-Received: by 2002:a7b:ce93:: with SMTP id q19mr7749701wmj.98.1635176682689;
+ Mon, 25 Oct 2021 08:44:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211025113316.24424-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20211022120058.1031690-1-arnd@kernel.org> <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
+ <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
+ <YXZ/iLB7BvZtzDMp@hirez.programming.kicks-ass.net> <CAK8P3a2Luz7sd5cM1OdZhYCs_UPzo+2qVQYSZPfR2QN+0DkyRg@mail.gmail.com>
+ <2413f412-a390-bbc0-e848-e2a77d1f0ab3@redhat.com>
+In-Reply-To: <2413f412-a390-bbc0-e848-e2a77d1f0ab3@redhat.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 25 Oct 2021 17:44:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3JEBF-dEg0iVThMMRNK3CDxY+mRtTeStMusycnethO_g@mail.gmail.com>
+Message-ID: <CAK8P3a3JEBF-dEg0iVThMMRNK3CDxY+mRtTeStMusycnethO_g@mail.gmail.com>
+Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 12:32, Wan Jiabing wrote:
-> Fix following coccicheck warning:
-> ./drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:3117:15-22: WARNING:
-> ERR_CAST can be used with eb->requests[i].
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+On Mon, Oct 25, 2021 at 5:28 PM Waiman Long <longman@redhat.com> wrote:
+> On 10/25/21 9:06 AM, Arnd Bergmann wrote:
+> >
+> > On s390, we pick between the cmpxchg() based directed-yield when
+> > running on virtualized CPUs, and a normal qspinlock when running on a
+> > dedicated CPU.
+>
+> I am not aware that s390 is using qspinlocks at all as I don't see
+> ARCH_USE_QUEUED_SPINLOCKS being set anywhere under arch/s390. I only see
+> that it uses a cmpxchg based spinlock.
 
-Pushed to drm-intel-gt-next. Thanks.
+Sorry, I should not have said "normal" here. See arch/s390/lib/spinlock.c
+for their custom queued spinlocks as implemented in arch_spin_lock_queued().
+I don't know if that code actually does the same thing as the generic qspinlock,
+but it seems at least similar.
 
-> ---
->   drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-> index 4d7da07442f2..eb2dcaf78d08 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-> @@ -3114,7 +3114,7 @@ eb_requests_create(struct i915_execbuffer *eb, struct dma_fence *in_fence,
->   		/* Allocate a request for this batch buffer nice and early. */
->   		eb->requests[i] = i915_request_create(eb_find_context(eb, i));
->   		if (IS_ERR(eb->requests[i])) {
-> -			out_fence = ERR_PTR(PTR_ERR(eb->requests[i]));
-> +			out_fence = ERR_CAST(eb->requests[i]);
->   			eb->requests[i] = NULL;
->   			return out_fence;
->   		}
-> 
+       Arnd
