@@ -2,420 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE7443918A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ACA43918E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhJYIj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhJYIjU (ORCPT
+        id S232199AbhJYIkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:40:07 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14863 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231727AbhJYIkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:39:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B948C061231;
-        Mon, 25 Oct 2021 01:36:36 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 08:36:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635150995;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K+O8B72YKHHnJ9jE1fF4LOkHcoj2mkIC1ZOM+FHanCs=;
-        b=TOCwrtGk7B7GfQI7/1fN/o+0Ht0ivUYBorHcpZe/ImGGIeoPlKJ4EH9IlVB0Q6rMvcLv1k
-        /aRZcjJ2lQQvDncCH6AaUNwI1P63DGXJqMu7UWVT05rXzhCfgJdZChDGSRFBHtBzc1XxjJ
-        SKchNavzvvSIqsisBtnxcMcu11kp1wY6nj23DEyNw5eC0v4tgbfjOc7QjCJfSEBtAwNyEe
-        ZYP64JfPcWmTQx9vy/QEWj1mJ++f01dcWfl8JCXsURU+nYKc0kgdrSkcjxWgxj0adaqo0w
-        HhKcZJn4OtB9flM+zy04HHSz34QPvDCBRHzt1VfsvCdcsEMciDHMU/ITPoTWrg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635150995;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K+O8B72YKHHnJ9jE1fF4LOkHcoj2mkIC1ZOM+FHanCs=;
-        b=745F+xS+XZHxA7/Bt6l9XYcvZTjJM+aEzWdxtv/7qfBDuXI6ezF95dPQdu7RDCYCT+dyBr
-        sJb7otTYspR6OgDg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/kvm: Convert FPU handling to a single swap buffer
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211022185313.019454292@linutronix.de>
-References: <20211022185313.019454292@linutronix.de>
+        Mon, 25 Oct 2021 04:40:06 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd7ch3sr6z90F6;
+        Mon, 25 Oct 2021 16:37:40 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 25 Oct 2021 16:37:41 +0800
+Subject: Re: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event
+ process
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>, <mbloch@nvidia.com>,
+        <jinpu.wang@ionos.com>, <lee.jones@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
+ <YXZdsyifJVY+jOaH@unreal>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <00f99243-919a-d697-646a-0e200c0aef81@huawei.com>
+Date:   Mon, 25 Oct 2021 16:37:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <163515099412.626.6923565286349172445.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YXZdsyifJVY+jOaH@unreal>
+Content-Type: text/plain; charset="gbk"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fpu branch of tip:
+> On Mon, Oct 25, 2021 at 11:42:58AM +0800, Ziyang Xuan wrote:
+>> When a vlan netdev enter netdevice_event process although it is not a
+>> roce netdev, it will be passed to netdevice_event_work_handler() to
+>> process. In order to hold the netdev of netdevice_event after
+>> netdevice_event() return, call dev_hold() to hold the netdev in
+>> netdevice_queue_work(). But that did not consider the real_dev of a vlan
+>> netdev, the real_dev can be freed within netdevice_event_work_handler()
+>> be scheduled. It would trigger the UAF problem for the real_dev like
+>> following:
+>>
+>> ==================================================================
+>> BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
+>> Read of size 4 at addr ffff88801648a0c4 by task kworker/u8:0/8
+>> Workqueue: gid-cache-wq netdevice_event_work_handler
+>> Call Trace:
+>>  dump_stack_lvl+0xcd/0x134
+>>  print_address_description.constprop.0.cold+0x93/0x334
+>>  kasan_report.cold+0x83/0xdf
+>>  vlan_dev_real_dev+0xf9/0x120
+>>  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
+>>  is_eth_port_of_netdev_filter+0x28/0x40
+>>  ib_enum_roce_netdev+0x1a3/0x300
+>>  ib_enum_all_roce_netdevs+0xc7/0x140
+>>  netdevice_event_work_handler+0x9d/0x210
+>> ...
+>>
+>> Allocated by task 9289:
+>>  kasan_save_stack+0x1b/0x40
+>>  __kasan_kmalloc+0x9b/0xd0
+>>  __kmalloc_node+0x20a/0x330
+>>  kvmalloc_node+0x61/0xf0
+>>  alloc_netdev_mqs+0x9d/0x1140
+>>  rtnl_create_link+0x955/0xb70
+>>  __rtnl_newlink+0xe10/0x15b0
+>>  rtnl_newlink+0x64/0xa0
+>> ...
+>>
+>> Freed by task 9288:
+>>  kasan_save_stack+0x1b/0x40
+>>  kasan_set_track+0x1c/0x30
+>>  kasan_set_free_info+0x20/0x30
+>>  __kasan_slab_free+0xfc/0x130
+>>  slab_free_freelist_hook+0xdd/0x240
+>>  kfree+0xe4/0x690
+>>  kvfree+0x42/0x50
+>>  device_release+0x9f/0x240
+>>  kobject_put+0x1c8/0x530
+>>  put_device+0x1b/0x30
+>>  free_netdev+0x370/0x540
+>>  ppp_destroy_interface+0x313/0x3d0
+>>  ppp_release+0x1bf/0x240
+>> ...
+>>
+>> Hold the real_dev for a vlan netdev in netdevice_event_work_handler()
+>> to fix the UAF problem.
+>>
+>> Fixes: 238fdf48f2b5 ("IB/core: Add RoCE table bonding support")
+>> Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
+>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+>> ---
+>>  drivers/infiniband/core/roce_gid_mgmt.c | 16 +++++++++++++++-
+>>  1 file changed, 15 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+>> index 68197e576433..063dbe72b7c2 100644
+>> --- a/drivers/infiniband/core/roce_gid_mgmt.c
+>> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
+>> @@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+>>  {
+>>  	struct netdev_event_work *work =
+>>  		container_of(_work, struct netdev_event_work, work);
+>> +	struct net_device *real_dev;
+>>  	unsigned int i;
+>>  
+>>  	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
+>> @@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+>>  					 work->cmds[i].filter_ndev,
+>>  					 work->cmds[i].cb,
+>>  					 work->cmds[i].ndev);
+>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
+>> +		if (real_dev)
+>> +			dev_put(real_dev);
+>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
+>> +		if (real_dev)
+>> +			dev_put(real_dev);
+>>  		dev_put(work->cmds[i].ndev);
+>>  		dev_put(work->cmds[i].filter_ndev);
+>>  	}
+>> @@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+>>  static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+>>  				struct net_device *ndev)
+>>  {
+>> -	unsigned int i;
+>>  	struct netdev_event_work *ndev_work =
+>>  		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
+>> +	struct net_device *real_dev;
+>> +	unsigned int i;
+>>  
+>>  	if (!ndev_work)
+>>  		return NOTIFY_DONE;
+>> @@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+>>  			ndev_work->cmds[i].filter_ndev = ndev;
+>>  		dev_hold(ndev_work->cmds[i].ndev);
+>>  		dev_hold(ndev_work->cmds[i].filter_ndev);
+>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+>> +		if (real_dev)
+>> +			dev_hold(real_dev);
+>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
+>> +		if (real_dev)
+>> +			dev_hold(real_dev);
+>>  	}
+>>  	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
+> 
+> Probably, this is the right change, but I don't know well enough that
+> part of code. What prevents from "real_dev" to disappear right after
+> your call to rdma_vlan_dev_real_dev()?
+> 
 
-Commit-ID:     61fb3a87598361283d96913bb1f0f3d0fe1310ef
-Gitweb:        https://git.kernel.org/tip/61fb3a87598361283d96913bb1f0f3d0fe1310ef
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 22 Oct 2021 20:55:53 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 25 Oct 2021 10:24:16 +02:00
+It is known that free the net_device until its dev_refcnt is one. The
+detail realization see netdev_run_todo().The real_dev's dev_refcnt of
+a vlan net_device will reach one after unregister_netdevice(&real_dev)
+and unregister_vlan_dev(&vlan_ndev, ...) but the dev_refcnt of the vlan
+net_device is bigger than one because netdevice_queue_work() will hold
+the vlan net_device. So my solution is hold the real_dev too in
+netdevice_queue_work().
 
-x86/kvm: Convert FPU handling to a single swap buffer
-
-For the upcoming AMX support it's necessary to do a proper integration with
-KVM. Currently KVM allocates two FPU structs which are used for saving the user
-state of the vCPU thread and restoring the guest state when entering
-vcpu_run() and doing the reverse operation before leaving vcpu_run().
-
-With the new fpstate mechanism this can be reduced to one extra buffer by
-swapping the fpstate pointer in current::thread::fpu. This makes the
-upcoming support for AMX and XFD simpler because then fpstate information
-(features, sizes, xfd) are always consistent and it does not require any
-nasty workarounds.
-
-Convert the KVM FPU code over to this new scheme.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211022185313.019454292@linutronix.de
----
- arch/x86/include/asm/fpu/api.h  |  4 +-
- arch/x86/include/asm/kvm_host.h |  7 +---
- arch/x86/kernel/fpu/core.c      | 16 +++---
- arch/x86/kvm/svm/svm.c          |  7 +--
- arch/x86/kvm/x86.c              | 88 ++++++++------------------------
- 5 files changed, 40 insertions(+), 82 deletions(-)
-
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index de85bca..5e5f172 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -140,8 +140,8 @@ extern void fpu_free_guest_fpstate(struct fpu_guest *gfpu);
- extern int fpu_swap_kvm_fpstate(struct fpu_guest *gfpu, bool enter_guest);
- extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
- 
--extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
--extern void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf, unsigned int size, u32 pkru);
-+extern void fpu_copy_guest_fpstate_to_uabi(struct fpu_guest *gfpu, void *buf, unsigned int size, u32 pkru);
-+extern int fpu_copy_uabi_to_guest_fpstate(struct fpu_guest *gfpu, const void *buf, u64 xcr0, u32 *vpkru);
- 
- static inline void fpstate_set_confidential(struct fpu_guest *gfpu)
- {
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index f8f48a7..eb0d69b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -691,11 +691,10 @@ struct kvm_vcpu_arch {
- 	 *
- 	 * Note that while the PKRU state lives inside the fpu registers,
- 	 * it is switched out separately at VMENTER and VMEXIT time. The
--	 * "guest_fpu" state here contains the guest FPU context, with the
-+	 * "guest_fpstate" state here contains the guest FPU context, with the
- 	 * host PRKU bits.
- 	 */
--	struct fpu *user_fpu;
--	struct fpu *guest_fpu;
-+	struct fpu_guest guest_fpu;
- 
- 	u64 xcr0;
- 	u64 guest_supported_xcr0;
-@@ -1685,8 +1684,6 @@ void kvm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
- int kvm_task_switch(struct kvm_vcpu *vcpu, u16 tss_selector, int idt_index,
- 		    int reason, bool has_error_code, u32 error_code);
- 
--void kvm_free_guest_fpu(struct kvm_vcpu *vcpu);
--
- void kvm_post_set_cr0(struct kvm_vcpu *vcpu, unsigned long old_cr0, unsigned long cr0);
- void kvm_post_set_cr4(struct kvm_vcpu *vcpu, unsigned long old_cr4, unsigned long cr4);
- int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0);
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 3c6b177..64c98a4 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -269,10 +269,10 @@ void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
- }
- EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
- 
--void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf,
--			       unsigned int size, u32 pkru)
-+void fpu_copy_guest_fpstate_to_uabi(struct fpu_guest *gfpu, void *buf,
-+				    unsigned int size, u32 pkru)
- {
--	struct fpstate *kstate = fpu->fpstate;
-+	struct fpstate *kstate = gfpu->fpstate;
- 	union fpregs_state *ustate = buf;
- 	struct membuf mb = { .p = buf, .left = size };
- 
-@@ -285,12 +285,12 @@ void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf,
- 		ustate->xsave.header.xfeatures = XFEATURE_MASK_FPSSE;
- 	}
- }
--EXPORT_SYMBOL_GPL(fpu_copy_fpstate_to_kvm_uabi);
-+EXPORT_SYMBOL_GPL(fpu_copy_guest_fpstate_to_uabi);
- 
--int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0,
--				 u32 *vpkru)
-+int fpu_copy_uabi_to_guest_fpstate(struct fpu_guest *gfpu, const void *buf,
-+				   u64 xcr0, u32 *vpkru)
- {
--	struct fpstate *kstate = fpu->fpstate;
-+	struct fpstate *kstate = gfpu->fpstate;
- 	const union fpregs_state *ustate = buf;
- 	struct pkru_state *xpkru;
- 	int ret;
-@@ -321,7 +321,7 @@ int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0,
- 	xstate_init_xcomp_bv(&kstate->regs.xsave, kstate->xfeatures);
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(fpu_copy_kvm_uabi_to_fpstate);
-+EXPORT_SYMBOL_GPL(fpu_copy_uabi_to_guest_fpstate);
- #endif /* CONFIG_KVM */
- 
- void kernel_fpu_begin_mask(unsigned int kfpu_mask)
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9896850..f39c87d 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -36,6 +36,7 @@
- #include <asm/spec-ctrl.h>
- #include <asm/cpu_device_id.h>
- #include <asm/traps.h>
-+#include <asm/fpu/api.h>
- 
- #include <asm/virtext.h>
- #include "trace.h"
-@@ -1346,10 +1347,10 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 		/*
- 		 * SEV-ES guests maintain an encrypted version of their FPU
- 		 * state which is restored and saved on VMRUN and VMEXIT.
--		 * Free the fpu structure to prevent KVM from attempting to
--		 * access the FPU state.
-+		 * Mark vcpu->arch.guest_fpu->fpstate as scratch so it won't
-+		 * do xsave/xrstor on it.
- 		 */
--		kvm_free_guest_fpu(vcpu);
-+		fpstate_set_confidential(&vcpu->arch.guest_fpu);
- 	}
- 
- 	err = avic_init_vcpu(svm);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0eb1021..c953ec2 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -295,8 +295,6 @@ u64 __read_mostly host_xcr0;
- u64 __read_mostly supported_xcr0;
- EXPORT_SYMBOL_GPL(supported_xcr0);
- 
--static struct kmem_cache *x86_fpu_cache;
--
- static struct kmem_cache *x86_emulator_cache;
- 
- /*
-@@ -4705,23 +4703,24 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
- 					 struct kvm_xsave *guest_xsave)
- {
--	if (!vcpu->arch.guest_fpu)
-+	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
- 		return;
- 
--	fpu_copy_fpstate_to_kvm_uabi(vcpu->arch.guest_fpu, guest_xsave->region,
--				     sizeof(guest_xsave->region),
--				     vcpu->arch.pkru);
-+	fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu,
-+				       guest_xsave->region,
-+				       sizeof(guest_xsave->region),
-+				       vcpu->arch.pkru);
- }
- 
- static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
- 					struct kvm_xsave *guest_xsave)
- {
--	if (!vcpu->arch.guest_fpu)
-+	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
- 		return 0;
- 
--	return fpu_copy_kvm_uabi_to_fpstate(vcpu->arch.guest_fpu,
--					    guest_xsave->region,
--					    supported_xcr0, &vcpu->arch.pkru);
-+	return fpu_copy_uabi_to_guest_fpstate(&vcpu->arch.guest_fpu,
-+					      guest_xsave->region,
-+					      supported_xcr0, &vcpu->arch.pkru);
- }
- 
- static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-@@ -8301,18 +8300,11 @@ int kvm_arch_init(void *opaque)
- 	}
- 
- 	r = -ENOMEM;
--	x86_fpu_cache = kmem_cache_create("x86_fpu", sizeof(struct fpu),
--					  __alignof__(struct fpu), SLAB_ACCOUNT,
--					  NULL);
--	if (!x86_fpu_cache) {
--		printk(KERN_ERR "kvm: failed to allocate cache for x86 fpu\n");
--		goto out;
--	}
- 
- 	x86_emulator_cache = kvm_alloc_emulator_cache();
- 	if (!x86_emulator_cache) {
- 		pr_err("kvm: failed to allocate cache for x86 emulator\n");
--		goto out_free_x86_fpu_cache;
-+		goto out;
- 	}
- 
- 	user_return_msrs = alloc_percpu(struct kvm_user_return_msrs);
-@@ -8350,8 +8342,6 @@ out_free_percpu:
- 	free_percpu(user_return_msrs);
- out_free_x86_emulator_cache:
- 	kmem_cache_destroy(x86_emulator_cache);
--out_free_x86_fpu_cache:
--	kmem_cache_destroy(x86_fpu_cache);
- out:
- 	return r;
- }
-@@ -8378,7 +8368,6 @@ void kvm_arch_exit(void)
- 	kvm_mmu_module_exit();
- 	free_percpu(user_return_msrs);
- 	kmem_cache_destroy(x86_emulator_cache);
--	kmem_cache_destroy(x86_fpu_cache);
- #ifdef CONFIG_KVM_XEN
- 	static_key_deferred_flush(&kvm_xen_enabled);
- 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
-@@ -9801,23 +9790,17 @@ static int complete_emulated_mmio(struct kvm_vcpu *vcpu)
- static void kvm_load_guest_fpu(struct kvm_vcpu *vcpu)
- {
- 	/*
--	 * Guests with protected state have guest_fpu == NULL which makes
--	 * the swap only save the host state. Exclude PKRU from restore as
--	 * it is restored separately in kvm_x86_ops.run().
-+	 * Exclude PKRU from restore as restored separately in
-+	 * kvm_x86_ops.run().
- 	 */
--	fpu_swap_kvm_fpu(vcpu->arch.user_fpu, vcpu->arch.guest_fpu,
--			 ~XFEATURE_MASK_PKRU);
-+	fpu_swap_kvm_fpstate(&vcpu->arch.guest_fpu, true);
- 	trace_kvm_fpu(1);
- }
- 
- /* When vcpu_run ends, restore user space FPU context. */
- static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu)
- {
--	/*
--	 * Guests with protected state have guest_fpu == NULL which makes
--	 * swap only restore the host state.
--	 */
--	fpu_swap_kvm_fpu(vcpu->arch.guest_fpu, vcpu->arch.user_fpu, ~0ULL);
-+	fpu_swap_kvm_fpstate(&vcpu->arch.guest_fpu, false);
- 	++vcpu->stat.fpu_reload;
- 	trace_kvm_fpu(0);
- }
-@@ -10398,12 +10381,12 @@ int kvm_arch_vcpu_ioctl_get_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
- {
- 	struct fxregs_state *fxsave;
- 
--	if (!vcpu->arch.guest_fpu)
-+	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
- 		return 0;
- 
- 	vcpu_load(vcpu);
- 
--	fxsave = &vcpu->arch.guest_fpu->fpstate->regs.fxsave;
-+	fxsave = &vcpu->arch.guest_fpu.fpstate->regs.fxsave;
- 	memcpy(fpu->fpr, fxsave->st_space, 128);
- 	fpu->fcw = fxsave->cwd;
- 	fpu->fsw = fxsave->swd;
-@@ -10421,12 +10404,12 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
- {
- 	struct fxregs_state *fxsave;
- 
--	if (!vcpu->arch.guest_fpu)
-+	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
- 		return 0;
- 
- 	vcpu_load(vcpu);
- 
--	fxsave = &vcpu->arch.guest_fpu->fpstate->regs.fxsave;
-+	fxsave = &vcpu->arch.guest_fpu.fpstate->regs.fxsave;
- 
- 	memcpy(fxsave->st_space, fpu->fpr, 128);
- 	fxsave->cwd = fpu->fcw;
-@@ -10487,15 +10470,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
- 	vcpu->arch.cr0 |= X86_CR0_ET;
- }
- 
--void kvm_free_guest_fpu(struct kvm_vcpu *vcpu)
--{
--	if (vcpu->arch.guest_fpu) {
--		kmem_cache_free(x86_fpu_cache, vcpu->arch.guest_fpu);
--		vcpu->arch.guest_fpu = NULL;
--	}
--}
--EXPORT_SYMBOL_GPL(kvm_free_guest_fpu);
--
- int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
- {
- 	if (kvm_check_tsc_unstable() && atomic_read(&kvm->online_vcpus) != 0)
-@@ -10552,22 +10526,11 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	if (!alloc_emulate_ctxt(vcpu))
- 		goto free_wbinvd_dirty_mask;
- 
--	vcpu->arch.user_fpu = kmem_cache_zalloc(x86_fpu_cache,
--						GFP_KERNEL_ACCOUNT);
--	if (!vcpu->arch.user_fpu) {
--		pr_err("kvm: failed to allocate userspace's fpu\n");
--		goto free_emulate_ctxt;
--	}
--
--	vcpu->arch.guest_fpu = kmem_cache_zalloc(x86_fpu_cache,
--						 GFP_KERNEL_ACCOUNT);
--	if (!vcpu->arch.guest_fpu) {
-+	if (!fpu_alloc_guest_fpstate(&vcpu->arch.guest_fpu)) {
- 		pr_err("kvm: failed to allocate vcpu's fpu\n");
--		goto free_user_fpu;
-+		goto free_emulate_ctxt;
- 	}
- 
--	fpu_init_fpstate_user(vcpu->arch.user_fpu);
--	fpu_init_fpstate_user(vcpu->arch.guest_fpu);
- 	fx_init(vcpu);
- 
- 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
-@@ -10600,9 +10563,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	return 0;
- 
- free_guest_fpu:
--	kvm_free_guest_fpu(vcpu);
--free_user_fpu:
--	kmem_cache_free(x86_fpu_cache, vcpu->arch.user_fpu);
-+	fpu_free_guest_fpstate(&vcpu->arch.guest_fpu);
- free_emulate_ctxt:
- 	kmem_cache_free(x86_emulator_cache, vcpu->arch.emulate_ctxt);
- free_wbinvd_dirty_mask:
-@@ -10651,8 +10612,7 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
- 
- 	kmem_cache_free(x86_emulator_cache, vcpu->arch.emulate_ctxt);
- 	free_cpumask_var(vcpu->arch.wbinvd_dirty_mask);
--	kmem_cache_free(x86_fpu_cache, vcpu->arch.user_fpu);
--	kvm_free_guest_fpu(vcpu);
-+	fpu_free_guest_fpstate(&vcpu->arch.guest_fpu);
- 
- 	kvm_hv_vcpu_uninit(vcpu);
- 	kvm_pmu_destroy(vcpu);
-@@ -10704,8 +10664,8 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	kvm_async_pf_hash_reset(vcpu);
- 	vcpu->arch.apf.halted = false;
- 
--	if (vcpu->arch.guest_fpu && kvm_mpx_supported()) {
--		struct fpstate *fpstate = vcpu->arch.guest_fpu->fpstate;
-+	if (vcpu->arch.guest_fpu.fpstate && kvm_mpx_supported()) {
-+		struct fpstate *fpstate = vcpu->arch.guest_fpu.fpstate;
- 
- 		/*
- 		 * To avoid have the INIT path from kvm_apic_has_events() that be
+> Thanks
+> 
+>>  
+>> -- 
+>> 2.25.1
+>>
+> .
+> 
