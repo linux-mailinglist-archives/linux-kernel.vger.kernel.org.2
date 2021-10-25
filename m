@@ -2,70 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960F3439E6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD842439E74
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhJYS1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233065AbhJYS1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:27:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 934BF60E0B;
-        Mon, 25 Oct 2021 18:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635186294;
-        bh=ItVLsYHxU9Aer01gU0UgBUoO2Wtd8doC0Hj80UXw3Sk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tcuBEGUEz0V8oYgpg7SdxBifzCOHBtrX1e1wNcOLC8HIZa1AgBZ9FBfFO6dNWVFmQ
-         RAtcxjKdM65KoUYJ+K7ikqDwT7pVVehUMaLbEUv8uz23vWi0P1M2U8ANOtIKHGwI1s
-         CVsmhUSd+if+3dTwOgdtDi5KISMi/W3LiwgUyIuk55VXSD3A5//4w1JgS3W1n6lQ+g
-         k0TogHgRO0FEcQyoml/hWe4cz/xi5DkXhwU3YSL1Gst3vVO2zSiHz+RQnYGyOX2rqq
-         oVPNdavsOc6FE0/yqMOqKl5zQdTXUSo1Bzjaht+B8hhVyl5AzwRaU4S9iyrdhFoJKe
-         zyLS/a+n66+AA==
-Date:   Mon, 25 Oct 2021 11:24:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
-Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
- traps on probe/remove device
-Message-ID: <20211025112453.089519e4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YXZl4Gmq6DYSdDM3@shredder>
-References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
-        <YXUhyLXsc2egWNKx@shredder>
-        <YXUtbOpjmmWr71dU@unreal>
-        <YXU5+XLhQ9zkBGNY@shredder>
-        <YXZB/3+IR6I0b2xE@unreal>
-        <YXZl4Gmq6DYSdDM3@shredder>
+        id S233212AbhJYS1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:27:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42678 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233150AbhJYS1e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 14:27:34 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 748ED21956;
+        Mon, 25 Oct 2021 18:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635186310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=68kswlC3q0FUF/Hj38t4b98bMYI1PGEm0MHAl9dIp7s=;
+        b=gXT4TnwlNEhE2p+H5FZ4DGHTKrP73j7MwoGnp5k9lskIgr2XFrOV2dGl1Rk4U1MXp8MXVf
+        lYUDinoLAzLKxF0MkYunV34Z8/awety+F+Q0NJUOpDMY8lYAsE8NcYVauR77hQAplWrEzw
+        Ii2a+fNDRj+t5QVS/d9Lq7sVubA62Zg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635186310;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=68kswlC3q0FUF/Hj38t4b98bMYI1PGEm0MHAl9dIp7s=;
+        b=c+pFhYOAQU68NsG5S9LMkIULGn+U/stBgI5PxdDOIgEFoUG4lXBSNPQBEPEsg8tWW51t9N
+        k42lSds087ADoUCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B85213AC1;
+        Mon, 25 Oct 2021 18:25:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZdleCYb2dmGEaAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 25 Oct 2021 18:25:10 +0000
+Message-ID: <a4fa7270-1f24-6046-6703-20000787db32@suse.de>
+Date:   Mon, 25 Oct 2021 20:25:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to
+ `drm_gem_fb_get_obj'
+Content-Language: en-US
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------uk0P3VwLSZ1LhnmSAn709Qp0"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 11:08:00 +0300 Ido Schimmel wrote:
-> No, it's not correct. After your patch, trap properties like action are
-> not set back to the default. Regardless of what you think is the "right
-> design", you cannot introduce such regressions.
-> 
-> Calling devlink_*_unregister() in reload_down() and devlink_*_register()
-> in reload_up() is not new. It is done for multiple objects (e.g., ports,
-> regions, shared buffer, etc). After your patch, netdevsim is still doing
-> it.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------uk0P3VwLSZ1LhnmSAn709Qp0
+Content-Type: multipart/mixed; boundary="------------9rNg3heN4gLRoaGh1tK59GqO";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ dri-devel@lists.freedesktop.org, open list <linux-kernel@vger.kernel.org>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, Andrey Konovalov <andreyknvl@gmail.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Arnd Bergmann <arnd@arndb.de>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Message-ID: <a4fa7270-1f24-6046-6703-20000787db32@suse.de>
+Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to
+ `drm_gem_fb_get_obj'
+References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
+In-Reply-To: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
 
-If we want to push forward in the direction that Leon advocates we'd
-have to unregister the devlink instance before reload_down(), right?
+--------------9rNg3heN4gLRoaGh1tK59GqO
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Otherwise it seems fundamentally incompatible with the idea of reload
-for reconfig. And we'd be trading one partially correct model for
-another partially correct model :/
+SGkNCg0KQW0gMjUuMTAuMjEgdW0gMTQ6MTMgc2NocmllYiBOYXJlc2ggS2FtYm9qdToNCj4g
+UmVncmVzc2lvbiBmb3VuZCBvbiBhcm0gZ2NjLTExIGJ1aWx0IHdpdGggbXVsdGlfdjVfZGVm
+Y29uZmlnDQo+IEZvbGxvd2luZyBidWlsZCB3YXJuaW5ncyAvIGVycm9ycyByZXBvcnRlZCBv
+biBsaW51eCBuZXh0IDIwMjExMDI1Lg0KPiANCj4gbWV0YWRhdGE6DQo+ICAgICAgZ2l0X2Rl
+c2NyaWJlOiBuZXh0LTIwMjExMDI1DQo+ICAgICAgZ2l0X3JlcG86IGh0dHBzOi8vZ2l0bGFi
+LmNvbS9MaW5hcm8vbGtmdC9taXJyb3JzL25leHQvbGludXgtbmV4dA0KPiAgICAgIGdpdF9z
+aG9ydF9sb2c6IDlhZTFmYmRlYWJkMyAoXCJBZGQgbGludXgtbmV4dCBzcGVjaWZpYyBmaWxl
+cyBmb3IgMjAyMTEwMjVcIikNCj4gICAgICB0YXJnZXRfYXJjaDogYXJtDQo+ICAgICAgdG9v
+bGNoYWluOiBnY2MtMTENCj4gICAgICBjb25maWc6IG11bHRpX3Y1X2RlZmNvbmZpZw0KPiAN
+Cj4gYnVpbGQgZXJyb3IgOg0KPiAtLS0tLS0tLS0tLS0tLQ0KPiBhcm0tbGludXgtZ251ZWFi
+aWhmLWxkOiBkcml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2NtYV9oZWxwZXIubzogaW4NCj4gZnVu
+Y3Rpb24gYGRybV9mYl9jbWFfZ2V0X2dlbV9vYmonOg0KPiBkcml2ZXJzL2dwdS9kcm0vZHJt
+X2ZiX2NtYV9oZWxwZXIuYzo0NjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0bw0KPiBgZHJtX2dl
+bV9mYl9nZXRfb2JqJw0KPiBhcm0tbGludXgtZ251ZWFiaWhmLWxkOiBkcml2ZXJzL2dwdS9k
+cm0vZHJtX2ZiX2NtYV9oZWxwZXIuYzo0NjoNCj4gdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBg
+ZHJtX2dlbV9mYl9nZXRfb2JqJw0KPiBhcm0tbGludXgtZ251ZWFiaWhmLWxkOiBkcml2ZXJz
+L2dwdS9kcm0vZHJtX2ZiX2NtYV9oZWxwZXIuYzo0NjoNCj4gdW5kZWZpbmVkIHJlZmVyZW5j
+ZSB0byBgZHJtX2dlbV9mYl9nZXRfb2JqJw0KPiBhcm0tbGludXgtZ251ZWFiaWhmLWxkOiBk
+cml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2NtYV9oZWxwZXIubzogaW4NCj4gZnVuY3Rpb24gYGRy
+bV9mYl9jbWFfc3luY19ub25fY29oZXJlbnQnOg0KPiBkcml2ZXJzL2dwdS9kcm0vZHJtX2Zi
+X2NtYV9oZWxwZXIuYzoxMzM6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8NCj4gYGRybV9hdG9t
+aWNfaGVscGVyX2RhbWFnZV9pdGVyX2luaXQnDQo+IGFybS1saW51eC1nbnVlYWJpaGYtbGQ6
+IGRyaXZlcnMvZ3B1L2RybS9kcm1fZmJfY21hX2hlbHBlci5jOjEzNToNCj4gdW5kZWZpbmVk
+IHJlZmVyZW5jZSB0byBgZHJtX2F0b21pY19oZWxwZXJfZGFtYWdlX2l0ZXJfbmV4dCcNCj4g
+bWFrZVsxXTogKioqIFtNYWtlZmlsZToxMjUyOiB2bWxpbnV4XSBFcnJvciAxDQo+IG1ha2Vb
+MV06IFRhcmdldCAnX19hbGwnIG5vdCByZW1hZGUgYmVjYXVzZSBvZiBlcnJvcnMuDQo+IG1h
+a2U6ICoqKiBbTWFrZWZpbGU6MjI2OiBfX3N1Yi1tYWtlXSBFcnJvciAyDQo+IA0KPiBSZXBv
+cnRlZC1ieTogTGludXggS2VybmVsIEZ1bmN0aW9uYWwgVGVzdGluZyA8bGtmdEBsaW5hcm8u
+b3JnPg0KDQpUaGF0J3MgcHJvYmFibHkgZnJvbSBtb3Zpbmcgc29tZSBvZiB0aGUgZnVuY3Rp
+b25zIGludG8gc2VwYXJhdGUgbW9kdWxlcy4gDQpXaWxsIGJlIGZpeGVkIHNvb24uDQoNCkJl
+c3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gDQo+IA0KPiBidWlsZCBsaW5rOg0KPiAtLS0tLS0t
+LS0tLQ0KPiBodHRwczovL2J1aWxkcy50dXhidWlsZC5jb20vMXp6Z0ZaQkdqcFE1UjBsYXdR
+Rlc5aUozOUhwL2J1aWxkLmxvZw0KPiANCj4gYnVpbGQgY29uZmlnOg0KPiAtLS0tLS0tLS0t
+LS0tDQo+IGh0dHBzOi8vYnVpbGRzLnR1eGJ1aWxkLmNvbS8xenpnRlpCR2pwUTVSMGxhd1FG
+VzlpSjM5SHAvY29uZmlnDQo+IA0KPiAjIFRvIGluc3RhbGwgdHV4bWFrZSBvbiB5b3VyIHN5
+c3RlbSBnbG9iYWxseQ0KPiAjIHN1ZG8gcGlwMyBpbnN0YWxsIC1VIHR1eG1ha2UNCj4gdHV4
+bWFrZSAtLXJ1bnRpbWUgcG9kbWFuIC0tdGFyZ2V0LWFyY2ggYXJtIC0tdG9vbGNoYWluIGdj
+Yy0xMQ0KPiAtLWtjb25maWcgbXVsdGlfdjVfZGVmY29uZmlnDQo+IA0KPiAtLQ0KPiBMaW5h
+cm8gTEtGVA0KPiBodHRwczovL2xrZnQubGluYXJvLm9yZw0KPiANCg0KLS0gDQpUaG9tYXMg
+WmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBT
+b2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5MDQwOSBOw7xybmJlcmcs
+IEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdlc2Now6RmdHNmw7xocmVy
+OiBGZWxpeCBJbWVuZMO2cmZmZXINCg==
 
-> Again, please revert the two commits I mentioned. If you think they are
-> necessary, you can re-submit them in the future, after proper review and
-> testing of the affected code paths.
+--------------9rNg3heN4gLRoaGh1tK59GqO--
+
+--------------uk0P3VwLSZ1LhnmSAn709Qp0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmF29oUFAwAAAAAACgkQlh/E3EQov+Cd
+3w//RSWAUoNW6NTcnde5TvhX9i8je1zhhVt0ZhSfx039/4n247YQrpPmUviTa399RnhOrpVmjWOg
+v1oNHnzcOYQyQT/XLxduvgQOQgXfd02RgM2AX/s0+1OIGgR+KN8BJglIAGK28wvDDIa/2y4DA7Hk
+qD1hx1ffMsAP4XephZ/ohRrvoG91ZSS3htCEJjqC6PY7oM6zJl4kmZlSjxYzsoyXhcrnSCJaPm6m
+91nCG/UdQWeCGrYxMy8cvX1rOhOjPl2vV0DO4Jz4A8lGxiCAmeQHCIu2837Vrpjp4V/i6jB5pKMt
+E1XxwrR7+jpCekeKYe+w8RhoWcnGrvnt87nQlmeDtmJ53cQpkOpjsWYXkG8uyDDGeUgypc2aadu+
+/scw9+TSNlmd6uMDursQ+Zvdzqh4WtW6k3Mlr3eWWF3fU3CesV14flX1oK9PMfScJJR2Pw2NJff9
+sQLURvMO1OZ8LgOyqUE0zXxPXiqsQDOinrmOb/kjqBs/O5ASmknW+DV4GSsw+HSVpNbz8Gd6Q3xh
+XpsccDdq3+m70WFjwF51xeSzARGsC/NnD96XPEQpwvVpMagKge4976NBOjKFd+y8L4rSBRJZPBU5
+QuOI/Buun99y/Uj4GqYh66YZrWYEQfoT2LeGtuNmMsV1lOa3ksRvhEjJcueilmNFZ7ANyUpsQeP5
+DVw=
+=riVG
+-----END PGP SIGNATURE-----
+
+--------------uk0P3VwLSZ1LhnmSAn709Qp0--
