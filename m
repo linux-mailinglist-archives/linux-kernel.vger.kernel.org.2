@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53048439697
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F9643969E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbhJYMsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhJYMsK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:48:10 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F704C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:45:48 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id o133so10628226pfg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qVU4cYq6gzQiQmKsTxCHNQ+nSpf6GAnmjdUQN6QjAew=;
-        b=vzztuKVTgZoX81QIwkLGvlv1WgsYk0QmRVnH5mLc/5u2Kr1spSR5z9I27xdVDIiXG3
-         fNT6vfvu38X3YdXuZxrfJIy/UgvgnGAx4vyVvHX6FzJYWxMRKuWPNgW7wDjJM+IB5EY7
-         amkbmS55Z/th6v36lrRwWBP7437jUEAjxdRvO/d6qxli9SqrkYlmUyr+GPkvP7Ov55k2
-         DRePjp3kTJSpPbSF5eQ7RhbotrLXJj1FLQ2Ewukqg56LFX2vobFYokGqmdXLm+sPTmg9
-         SI6pgcdVauAgoRMocl3vJjcuasuH0v3UckttIpTlIQY7s6pDqNiHPEN6vn8byRLf191m
-         tPLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qVU4cYq6gzQiQmKsTxCHNQ+nSpf6GAnmjdUQN6QjAew=;
-        b=6j7GKGendJzNLDvgabeJW19b5lO/XhXwFHr6TTKTa5lobH7N9LjQA58OjPq8JzVQ3h
-         UC8HPfjVA1JWRsA/fE6XADlSQy++zt01LAqYtDjG62UvTG+H+fiK0G1Xy1oW9KQ2cQZj
-         bXDlX4bAaF32aa8nI5BeC4aNVjsZHORntjrYxp3bg3IH9CCijtPl51u+Z6g7Hi7azMTz
-         j4jfxOo36jpOE291rzIUDzMaiYJJCtPycB+1ZkGxCXXRULlI1ygbI0Qwf8n86GtRKfLz
-         2TRi4w8D5uaQWBCjqgHgeWdM3L2fOvIOZ/PjeGsmq/eCxI1YXiN2koT8ZIZnf6QrSTmB
-         DIbA==
-X-Gm-Message-State: AOAM530FXQOvorpHVCN15ilY3w+QLZWfaLo5BbaJI3OkXRnNZcjJFZvi
-        S9flUWRWt49Kk8bj9krbs7iGWw==
-X-Google-Smtp-Source: ABdhPJyvC+6RSQyWZedPqX9VfAvhYfgRoJTLWPSeHwugj/drfD5CHD3XgoZIM3/t9zh9inDlGRWvvg==
-X-Received: by 2002:a62:e315:0:b0:47b:f629:6b48 with SMTP id g21-20020a62e315000000b0047bf6296b48mr3910093pfh.72.1635165948112;
-        Mon, 25 Oct 2021 05:45:48 -0700 (PDT)
-Received: from localhost.localdomain ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id w1sm6268989pjd.1.2021.10.25.05.45.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Oct 2021 05:45:47 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, mhocko@kernel.org, shakeelb@google.com,
-        willy@infradead.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: list_lru: remove holding lru lock
-Date:   Mon, 25 Oct 2021 20:45:34 +0800
-Message-Id: <20211025124534.56345-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S233157AbhJYMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:49:38 -0400
+Received: from mga09.intel.com ([134.134.136.24]:2075 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232474AbhJYMth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:49:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="229500905"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="229500905"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:47:15 -0700
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="485661923"
+Received: from yifanyao-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.171.31])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:47:11 -0700
+Date:   Mon, 25 Oct 2021 20:47:05 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/4] efi: Introduce
+ EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
+Message-ID: <20211025124705.GA9212@chenyu5-mobl1>
+References: <cover.1635140590.git.yu.c.chen@intel.com>
+ <1cd3161bf51de99990fd5ee2dc896b4defef4f38.1635140590.git.yu.c.chen@intel.com>
+ <YXZSMCaODRPw0Zlj@kroah.com>
+ <20211025114519.GA7559@chenyu5-mobl1>
+ <YXac0IYICzIOmeRh@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXac0IYICzIOmeRh@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit e5bc3af7734f ("rcu: Consolidate PREEMPT and !PREEMPT
-synchronize_rcu()"), the critical section of spin lock can serve
-as an RCU read-side critical section which already allows readers
-that hold nlru->lock avoid taking rcu lock. So just to remove
-holding lock.
+On Mon, Oct 25, 2021 at 02:02:24PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Oct 25, 2021 at 07:45:19PM +0800, Chen Yu wrote:
+> > On Mon, Oct 25, 2021 at 08:44:00AM +0200, Greg Kroah-Hartman wrote:
+> > > On Mon, Oct 25, 2021 at 02:25:04PM +0800, Chen Yu wrote:
+> > > > Platform Firmware Runtime Update image starts with UEFI headers, and the
+> > > > headers are defined in UEFI specification, but some of them have not been
+> > > > defined in the kernel yet.
+> > > > 
+> > > > For example, the header layout of a capsule file looks like this:
+> > > > 
+> > > > EFI_CAPSULE_HEADER
+> > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+> > > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
+> > > > 
+> > > > These structures would be used by the Platform Firmware Runtime Update
+> > > > driver to parse the format of capsule file to verify if the corresponding
+> > > > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
+> > > > kernel, however the rest are not, thus introduce corresponding UEFI
+> > > > structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
+> > > > so the corresponding data types should be packed.
+> > > > 
+> > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > > ---
+> > > > v6: No change since v5.
+> > > > v5: No change since v4.
+> > > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki) 
+> > > > ---
+> > > >  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 50 insertions(+)
+> > > > 
+> > > > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > > > index 6b5d36babfcc..19ff834e1388 100644
+> > > > --- a/include/linux/efi.h
+> > > > +++ b/include/linux/efi.h
+> > > > @@ -148,6 +148,56 @@ typedef struct {
+> > > >  	u32 imagesize;
+> > > >  } efi_capsule_header_t;
+> > > >  
+> > > > +#pragma pack(1)
+> > > 
+> > > Why is this pragma suddenly needed now in this file?
+> > > 
+> > > If you really need this for a specific structure, use the "__packed"
+> > > attribute please.
+> > >
+> > These two structures are required to be packed in the uefi spec, I'll change
+> > them to "__packed".
+> 
+> And they are the _only_ ones in this .h file that require this?  I would
+> think that they all require this.
+>
+I did a search in the uefi specification, and found 42 pack(1) structures,
+while the other structures do not have pack(1) attribute.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/list_lru.c | 11 -----------
- 1 file changed, 11 deletions(-)
+It seems to me that whether the structures are required to be strictly packed
+depends on the use case. Here's my understanding and I might be wrong: In this
+patch, according to the skeleton of capsule file described in
+[Figure 23-6 Firmware Management and Firmware Image Management headers]
+in the uefi spec [1], the two structures are located at the beginning of
+the capsule file, and followed by real payload. If these structure are packed
+then the the adjacent binary payload could start on byte boundary without
+padding, which might save space for capsule file.
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 2bba1cd68bb3..7572f8e70b86 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -401,18 +401,7 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
- 	}
+For those structures that do not have strict pack requirement, the uefi spec
+does not force to pack them.
+
+Link: https://uefi.org/sites/default/files/resources/UEFI_Spec_2_9_2021_03_18.pdf # [1]
+
+thanks,
+Chenyu
+
  
- 	memcpy(&new->lru, &old->lru, flex_array_size(new, lru, old_size));
--
--	/*
--	 * The locking below allows readers that hold nlru->lock avoid taking
--	 * rcu_read_lock (see list_lru_from_memcg_idx).
--	 *
--	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
--	 * we have to use IRQ-safe primitives here to avoid deadlock.
--	 */
--	spin_lock_irq(&nlru->lock);
- 	rcu_assign_pointer(nlru->memcg_lrus, new);
--	spin_unlock_irq(&nlru->lock);
--
- 	kvfree_rcu(old, rcu);
- 	return 0;
- }
--- 
-2.11.0
-
+> thanks,
+> 
+> greg k-h
