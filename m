@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFD443A1B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A8D439F95
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhJYTlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        id S233567AbhJYTWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236463AbhJYTer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:34:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C1B611AD;
-        Mon, 25 Oct 2021 19:30:53 +0000 (UTC)
+        id S234550AbhJYTVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:21:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D900610CF;
+        Mon, 25 Oct 2021 19:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190255;
-        bh=v/FdeHnaRWW/wxO5CjQupOhXXOhIIAGcNSJzwamPsSU=;
+        s=korg; t=1635189519;
+        bh=mHL1+/sGFYkWBjJdyj/s4p2sjcui4IVOvEEToKqYAoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j7p+iJJDaGnsYjUE+B69bZjWNa+oWYyE5ACVwxSD6NbkwGNrSAph7sHy/MdkFqe6A
-         ZVdeQQxNdWEDyzZK9oLk3pcIFth/yybRuR31EqYkUYJ1SSGUOjczHxHwh36RsZTEwT
-         YYOTSsKKalb1v/upaPxC+vJyIiO/GTg+FSyALuUI=
+        b=xDjj/hNqkZraxTv1hu5jgfLLU+5kMHkKNjDa5xS88CpRrGZrauJ4KEcaI+AqGo4RY
+         ZYZ5gGegKhXiuz8HYGJQf1/oeqlkrWb+n+EBwEeZDZiN4T33YlfTKd/quU8OqV1vqR
+         +an86IIKp03X6WN5AnjAR8OcnUKr0pJMAHap4uPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/95] ASoC: wm8960: Fix clock configuration on slave mode
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 4.9 24/50] drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
 Date:   Mon, 25 Oct 2021 21:14:11 +0200
-Message-Id: <20211025190958.954700333@linuxfoundation.org>
+Message-Id: <20211025190937.555999473@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 6b9b546dc00797c74bef491668ce5431ff54e1e2 ]
+commit c8f01ffc83923a91e8087aaa077de13354a7aa59 upstream.
 
-There is a noise issue for 8kHz sample rate on slave mode.
-Compared with master mode, the difference is the DACDIV
-setting, after correcting the DACDIV, the noise is gone.
+This disables a lock which wasn't enabled and it does not disable
+the first lock in the array.
 
-There is no noise issue for 48kHz sample rate, because
-the default value of DACDIV is correct for 48kHz.
-
-So wm8960_configure_clocking() should be functional for
-ADC and DAC function even if it is slave mode.
-
-In order to be compatible for old use case, just add
-condition for checking that sysclk is zero with
-slave mode.
-
-Fixes: 0e50b51aa22f ("ASoC: wm8960: Let wm8960 driver configure its bit clock and frame clock")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/1634102224-3922-1-git-send-email-shengjiu.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6e0eb52eba9e ("drm/msm/dsi: Parse bus clocks from a list")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20211001123409.GG2283@kili
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/wm8960.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/msm/dsi/dsi_host.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 9d325555e219..618692e2e0e4 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -742,9 +742,16 @@ static int wm8960_configure_clocking(struct snd_soc_component *component)
- 	int i, j, k;
- 	int ret;
+--- a/drivers/gpu/drm/msm/dsi/dsi_host.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+@@ -439,7 +439,7 @@ static int dsi_bus_clk_enable(struct msm
  
--	if (!(iface1 & (1<<6))) {
--		dev_dbg(component->dev,
--			"Codec is slave mode, no need to configure clock\n");
-+	/*
-+	 * For Slave mode clocking should still be configured,
-+	 * so this if statement should be removed, but some platform
-+	 * may not work if the sysclk is not configured, to avoid such
-+	 * compatible issue, just add '!wm8960->sysclk' condition in
-+	 * this if statement.
-+	 */
-+	if (!(iface1 & (1 << 6)) && !wm8960->sysclk) {
-+		dev_warn(component->dev,
-+			 "slave mode, but proceeding with no clock configuration\n");
- 		return 0;
- 	}
+ 	return 0;
+ err:
+-	for (; i > 0; i--)
++	while (--i >= 0)
+ 		clk_disable_unprepare(msm_host->bus_clks[i]);
  
--- 
-2.33.0
-
+ 	return ret;
 
 
