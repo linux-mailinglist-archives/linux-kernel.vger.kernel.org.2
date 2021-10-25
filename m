@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A0143A1F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587A943A341
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237570AbhJYTny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:43:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53594 "EHLO mail.kernel.org"
+        id S237222AbhJYT5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:57:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236753AbhJYTfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BB176109E;
-        Mon, 25 Oct 2021 19:33:03 +0000 (UTC)
+        id S238749AbhJYTvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:51:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD56160E05;
+        Mon, 25 Oct 2021 19:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190384;
-        bh=FihqFdg/OlAEqNv5rG9PDDT7bFwKwyMFGzDf69/dTRU=;
+        s=korg; t=1635190986;
+        bh=umbcL7h3ev4lsTzwQBoxWYIuiP9GMJ3R3ag561WcklM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W04cKPJthqkyyFWvtro7q9pJwMpToC8fAX7S+1UfpLaZyNc8jw4UzF5dgBO7Noc4g
-         ZgW6KubyHvHLD5dzPO96DqAvOqWLMhPALtgkF2xz28fM0CdzDpL1kQSuuIvDDl0Hfq
-         ZLOcOoiQtV6pxBrxhxDj6+m6fIuO31Mchk9R2Vo4=
+        b=utR6x4gLtcokpQKB0dAdo0M2th10wiBI57FN/g7mFFj/jSeMt8rNZvCEP5/Ussie1
+         h/QxE7QfCscwbC3oGtRme9kRODiBkjxo6OuPa7HxE2iFQS18KLUL7PKxO8uM3mF+Aw
+         fA/zXB3JCZZfxmy7C46A08FFZ5C98jXvIdY4MmS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 62/95] KVM: nVMX: promptly process interrupts delivered while in guest mode
+        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.14 118/169] netfilter: Kconfig: use default y instead of m for bool config option
 Date:   Mon, 25 Oct 2021 21:14:59 +0200
-Message-Id: <20211025191005.944365320@linuxfoundation.org>
+Message-Id: <20211025191032.904693429@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Vegard Nossum <vegard.nossum@gmail.com>
 
-commit 3a25dfa67fe40f3a2690af2c562e0947a78bd6a0 upstream.
+commit 77076934afdcd46516caf18ed88b2f88025c9ddb upstream.
 
-Since commit c300ab9f08df ("KVM: x86: Replace late check_nested_events() hack with
-more precise fix") there is no longer the certainty that check_nested_events()
-tries to inject an external interrupt vmexit to L1 on every call to vcpu_enter_guest.
-Therefore, even in that case we need to set KVM_REQ_EVENT.  This ensures
-that inject_pending_event() is called, and from there kvm_check_nested_events().
+This option, NF_CONNTRACK_SECMARK, is a bool, so it can never be 'm'.
 
-Fixes: c300ab9f08df ("KVM: x86: Replace late check_nested_events() hack with more precise fix")
-Cc: stable@vger.kernel.org
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 33b8e77605620 ("[NETFILTER]: Add CONFIG_NETFILTER_ADVANCED option")
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/vmx/vmx.c |   17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+ net/netfilter/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6316,18 +6316,13 @@ static int vmx_sync_pir_to_irr(struct kv
- 
- 		/*
- 		 * If we are running L2 and L1 has a new pending interrupt
--		 * which can be injected, we should re-evaluate
--		 * what should be done with this new L1 interrupt.
--		 * If L1 intercepts external-interrupts, we should
--		 * exit from L2 to L1. Otherwise, interrupt should be
--		 * delivered directly to L2.
-+		 * which can be injected, this may cause a vmexit or it may
-+		 * be injected into L2.  Either way, this interrupt will be
-+		 * processed via KVM_REQ_EVENT, not RVI, because we do not use
-+		 * virtual interrupt delivery to inject L1 interrupts into L2.
- 		 */
--		if (is_guest_mode(vcpu) && max_irr_updated) {
--			if (nested_exit_on_intr(vcpu))
--				kvm_vcpu_exiting_guest_mode(vcpu);
--			else
--				kvm_make_request(KVM_REQ_EVENT, vcpu);
--		}
-+		if (is_guest_mode(vcpu) && max_irr_updated)
-+			kvm_make_request(KVM_REQ_EVENT, vcpu);
- 	} else {
- 		max_irr = kvm_lapic_find_highest_irr(vcpu);
- 	}
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -109,7 +109,7 @@ config NF_CONNTRACK_MARK
+ config NF_CONNTRACK_SECMARK
+ 	bool  'Connection tracking security mark support'
+ 	depends on NETWORK_SECMARK
+-	default m if NETFILTER_ADVANCED=n
++	default y if NETFILTER_ADVANCED=n
+ 	help
+ 	  This option enables security markings to be applied to
+ 	  connections.  Typically they are copied to connections from
 
 
