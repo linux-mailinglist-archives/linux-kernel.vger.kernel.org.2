@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074FE43A299
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB227439F50
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhJYTuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:50:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60452 "EHLO mail.kernel.org"
+        id S234651AbhJYTTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:19:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236343AbhJYToh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:44:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC870604AC;
-        Mon, 25 Oct 2021 19:38:21 +0000 (UTC)
+        id S234256AbhJYTR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:17:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0F0B6105A;
+        Mon, 25 Oct 2021 19:15:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190703;
-        bh=rzwTjthld7p08li2Puvr9RQ/7uY9AkvS7qyk/Mrl0uA=;
+        s=korg; t=1635189337;
+        bh=U8RWI+ebkRlcn5U+fuezUV3XbWXlN+5igTpJ7kSL7EQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i55fHRN8yQFYgPi6SNvZjWiQFa3am8qRRFyWoFVkrueFUfLTxHdWp4i2MFnf3VvGO
-         ICpScFoFsg/F2HjTXe9FwZ1iS4OFt12XKkRuUX7AngJxkTlGsPSx3IBhB6k11Lox4i
-         HBay7SLjGfw3opCf0IH+YYUd7gwCVZKMcmWx200s=
+        b=NL0V4Q6szqN6iSHdiYPa+lSUGxGDMffR1XGOb0yy4BNNbidNZXArIH3+d+sd6D2A4
+         YGjCQcG36fLXP47euPFt8oWwGbYM1Yo+g6BoSBgkWuo/5egVvk/rXwseQRam3CdMec
+         UAi/Zc8NkipOPYiOYC3RegE5a6MtAp/m+WukwEbI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 050/169] net: stmmac: Fix E2E delay mechanism
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.4 10/44] iio: adc128s052: Fix the error handling path of adc128_probe()
 Date:   Mon, 25 Oct 2021 21:13:51 +0200
-Message-Id: <20211025191024.050074754@linuxfoundation.org>
+Message-Id: <20211025190930.724385130@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kurt Kanzenbach <kurt@linutronix.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 3cb958027cb8b78d3ee639ce9af54c2ef1bf964f ]
+commit bbcf40816b547b3c37af49168950491d20d81ce1 upstream.
 
-When utilizing End to End delay mechanism, the following error messages show up:
+A successful 'regulator_enable()' call should be balanced by a
+corresponding 'regulator_disable()' call in the error handling path of the
+probe, as already done in the remove function.
 
-|root@ehl1:~# ptp4l --tx_timestamp_timeout=50 -H -i eno2 -E -m
-|ptp4l[950.573]: selected /dev/ptp3 as PTP clock
-|ptp4l[950.586]: port 1: INITIALIZING to LISTENING on INIT_COMPLETE
-|ptp4l[950.586]: port 0: INITIALIZING to LISTENING on INIT_COMPLETE
-|ptp4l[952.879]: port 1: new foreign master 001395.fffe.4897b4-1
-|ptp4l[956.879]: selected best master clock 001395.fffe.4897b4
-|ptp4l[956.879]: port 1: assuming the grand master role
-|ptp4l[956.879]: port 1: LISTENING to GRAND_MASTER on RS_GRAND_MASTER
-|ptp4l[962.017]: port 1: received DELAY_REQ without timestamp
-|ptp4l[962.273]: port 1: received DELAY_REQ without timestamp
-|ptp4l[963.090]: port 1: received DELAY_REQ without timestamp
+Update the error handling path accordingly.
 
-Commit f2fb6b6275eb ("net: stmmac: enable timestamp snapshot for required PTP
-packets in dwmac v5.10a") already addresses this problem for the dwmac
-v5.10. However, same holds true for all dwmacs above version v4.10. Correct the
-check accordingly. Afterwards everything works as expected.
-
-Tested on Intel Atom(R) x6414RE Processor.
-
-Fixes: 14f347334bf2 ("net: stmmac: Correctly take timestamp for PTPv2")
-Fixes: f2fb6b6275eb ("net: stmmac: enable timestamp snapshot for required PTP packets in dwmac v5.10a")
-Suggested-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 913b86468674 ("iio: adc: Add TI ADC128S052")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Link: https://lore.kernel.org/r/85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/ti-adc128s052.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 6b2a5e5769e8..14e577787415 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -736,7 +736,7 @@ static int stmmac_hwtstamp_set(struct net_device *dev, struct ifreq *ifr)
- 			config.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
- 			ptp_v2 = PTP_TCR_TSVER2ENA;
- 			snap_type_sel = PTP_TCR_SNAPTYPSEL_1;
--			if (priv->synopsys_id != DWMAC_CORE_5_10)
-+			if (priv->synopsys_id < DWMAC_CORE_4_10)
- 				ts_event_en = PTP_TCR_TSEVNTENA;
- 			ptp_over_ipv4_udp = PTP_TCR_TSIPV4ENA;
- 			ptp_over_ipv6_udp = PTP_TCR_TSIPV6ENA;
--- 
-2.33.0
-
+--- a/drivers/iio/adc/ti-adc128s052.c
++++ b/drivers/iio/adc/ti-adc128s052.c
+@@ -159,7 +159,13 @@ static int adc128_probe(struct spi_devic
+ 	mutex_init(&adc->lock);
+ 
+ 	ret = iio_device_register(indio_dev);
++	if (ret)
++		goto err_disable_regulator;
+ 
++	return 0;
++
++err_disable_regulator:
++	regulator_disable(adc->reg);
+ 	return ret;
+ }
+ 
 
 
