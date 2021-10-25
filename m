@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B032343A2B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8CA43A24B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhJYTvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:51:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22848 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237782AbhJYTp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:45:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="227200586"
-X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; 
-   d="scan'208";a="227200586"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 12:37:31 -0700
-X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; 
-   d="scan'208";a="528902325"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 12:37:28 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mf5mM-000x8H-Tj;
-        Mon, 25 Oct 2021 22:37:06 +0300
-Date:   Mon, 25 Oct 2021 22:37:06 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     eugene.shalygin@gmail.com, platform-driver-x86@vger.kernel.org,
-        thomas@weissschuh.net, Tor Vic <torvic9@mailbox.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/3] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
- WMI.
-Message-ID: <YXcHYvleoOr6sqMK@smile.fi.intel.com>
-References: <20211022200032.23267-1-pauk.denis@gmail.com>
- <20211022200032.23267-2-pauk.denis@gmail.com>
- <YXcDcXrUo4a/KAsT@smile.fi.intel.com>
+        id S233907AbhJYTr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:47:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237190AbhJYTj7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:39:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635190656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9aAky+o+A3o8orvEWSZgWo8dAX6pVohf78faelvH+XE=;
+        b=GnGMcLhE+usm1Nj2t2QZPQorJZ+Y/fs9IM0frnSNf8eHWuOAyialCV9EqU1CvjVe+GJMlP
+        k6UBzcNeO2OF0NYXX/mIMDJ/JUB+5AH/BA7P/zhBpXuvyyXRnYpJyYEtgxbYI8BHb2TTLI
+        MzXtSKiymcD/F4GRz/1L9PNJooI9zmY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-Fhla3MdgP4-KjUBP7db6Ag-1; Mon, 25 Oct 2021 15:37:34 -0400
+X-MC-Unique: Fhla3MdgP4-KjUBP7db6Ag-1
+Received: by mail-wm1-f70.google.com with SMTP id k6-20020a7bc306000000b0030d92a6bdc7so397333wmj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:37:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9aAky+o+A3o8orvEWSZgWo8dAX6pVohf78faelvH+XE=;
+        b=FNDgfgYMJsk5xaRcbHQcsH7x51IyZewG9jd38TPQMjQG2R4FyGj42eiYXEUPKjQw9l
+         OYMqkSoe7xMBRvY40FRIgzTzo/o3AbZaaHVDL4Uq8nvcXABwS2NHCYz2Upk+nK7b3qnj
+         nj0EjOZatGrlQnuXBwrexnm4znr/a3tNVBXyZ8AvrbFZkLwwePbg/U7HW6msi809pAWZ
+         SQTBXHGuWTdhSpu9QBjAUOnqZ0Rjv9m3MKJwUFR1qI/NzAOIOpZqvtApaLZT2VyPQ/Oj
+         IPHGZidESKX9/3vymEZvwFYhU9qt6K6YRUcu3Uk09BACrO/GH3pC63NMQ9LA3u3C2Hi+
+         9A4A==
+X-Gm-Message-State: AOAM530G9SPf+2WRs6sj1cSb3BTEExaswGsc4OzoeHIfglRXWXrtntoB
+        IB9k3EpFh4GF0oTgO6AiQ+J6/9f8Ud3YAokExg2ImnF0ZoCrAImzUQMmeJAy3Dr58kWNCLYkn6k
+        ZDn7JwYC0l/ZSTK4Bh16ZXShP88qlKhIhv3bDjpA8
+X-Received: by 2002:adf:e411:: with SMTP id g17mr24943047wrm.228.1635190653767;
+        Mon, 25 Oct 2021 12:37:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4ZUW3Mo472pPGFPqydjyYBJNjFGoCJJfUViSULsVvl27H2hHnmzQ8wgBE36rQvAagQBtIOpD1/zpOLrWd37Q=
+X-Received: by 2002:adf:e411:: with SMTP id g17mr24943016wrm.228.1635190653583;
+ Mon, 25 Oct 2021 12:37:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXcDcXrUo4a/KAsT@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk> <YWR2cPKeDrc0uHTK@arm.com>
+ <CAHk-=wjvQWj7mvdrgTedUW50c2fkdn6Hzxtsk-=ckkMrFoTXjQ@mail.gmail.com>
+ <YWSnvq58jDsDuIik@arm.com> <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
+ <CAHc6FU7bpjAxP+4dfE-C0pzzQJN1p=C2j3vyXwUwf7fF9JF72w@mail.gmail.com>
+ <YXE7fhDkqJbfDk6e@arm.com> <CAHc6FU5xTMOxuiEDyc9VO_V98=bvoDc-0OFi4jsGPgWJWjRJWQ@mail.gmail.com>
+ <YXGexrdprC+NTslm@arm.com> <CAHc6FU7im8UzxWCzqUFMKOwyg9zoQ8OZ_M+rRC_E20yE5RNu9g@mail.gmail.com>
+ <YXMFw34ZpW+CwlmI@arm.com>
+In-Reply-To: <YXMFw34ZpW+CwlmI@arm.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 25 Oct 2021 21:37:22 +0200
+Message-ID: <CAHc6FU43-n3tk+vvhXKCX+oyUu4x23-vh8pg18wRgYsB0rt+rA@mail.gmail.com>
+Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 10:20:17PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 22, 2021 at 11:00:29PM +0300, Denis Pauk wrote:
-> > Linux HWMON sensors driver for ASUS motherboards to read
-> > sensors from the embedded controller.
-> > 
-> > Many ASUS motherboards do not publish all the available
-> > sensors via the Super I/O chip but the missing ones are
-> > available through the embedded controller (EC) registers.
-> > 
-> > This driver implements reading those sensor data via the
-> > WMI method BREC, which is known to be present in all ASUS
-> > motherboards based on the AMD 500 series chipsets (and
-> > probably is available in other models too). The driver
-> > needs to know exact register addresses for the sensors and
-> > thus support for each motherboard has to be added explicitly.
-> > 
-> > The EC registers do not provide critical values for the
-> > sensors and as such they are not published to the HWMON.
-> > 
-> > Supported motherboards:
-> > * PRIME X570-PRO
-> > * Pro WS X570-ACE
-> > * ROG CROSSHAIR VIII HERO
-> > * ROG CROSSHAIR VIII DARK HERO
-> > * ROG CROSSHAIR VIII FORMULA
-> > * ROG STRIX X570-E GAMING
-> > * ROG STRIX B550-E GAMING
-> 
-> Below is a follow up, I have not compiled it.
-> Feel free to take fully or partially.
+On Fri, Oct 22, 2021 at 8:41 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> On Thu, Oct 21, 2021 at 08:00:50PM +0200, Andreas Gruenbacher wrote:
+> > On Thu, Oct 21, 2021 at 7:09 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > This discussion started with the btrfs search_ioctl() where, even if
+> > > some bytes were written in copy_to_sk(), it always restarts from an
+> > > earlier position, reattempting to write the same bytes. Since
+> > > copy_to_sk() doesn't guarantee forward progress even if some bytes are
+> > > writable, Linus' suggestion was for fault_in_writable() to probe the
+> > > whole range. I consider this overkill since btrfs is the only one that
+> > > needs probing every 16 bytes. The other cases like the new
+> > > fault_in_safe_writeable() can be fixed by probing the first byte only
+> > > followed by gup.
+> >
+> > Hmm. Direct I/O request sizes are multiples of the underlying device
+> > block size, so we'll also get stuck there if fault-in won't give us a
+> > full block. This is getting pretty ugly. So scratch that idea; let's
+> > stick with probing the whole range.
+>
+> Ah, I wasn't aware of this. I got lost in the call trees but I noticed
+> __iomap_dio_rw() does an iov_iter_revert() only if direction is READ. Is
+> this the case for writes as well?
 
-...
+It's the EOF case, so it only applies to reads:
 
-> -static int asus_wmi_ec_decode_reply_buffer(const u8 *inp, u8 *out, u32 length)
-> +static int asus_wmi_ec_decode_reply_buffer(const u8 *in, u32 length, u8 *out)
->  {
->  	char buffer[ASUSWMI_MAX_BUF_LEN * 2];
-> -	const char *pos = buffer;
-> -	const u8 *data = inp + 2;
->  	u32 len;
->  
-> -	/* Minimum of size of response and size of ACPI result*/
-> -	len = min_t(u32, inp[0] / 4, (length - 2) / 4);
-> -	len = min_t(u32, len, ASUSWMI_MAX_BUF_LEN);
-> +	/* Minimum of size of response and size of ACPI result (in bytes) */
-> +	len = min_t(u32, in[0], length - 2);
+        /*
+         * We only report that we've read data up to i_size.
+         * Revert iter to a state corresponding to that as some callers (such
+         * as the splice code) rely on it.
+         */
+        if (iov_iter_rw(iter) == READ && iomi.pos >= dio->i_size)
+                iov_iter_revert(iter, iomi.pos - dio->i_size);
 
-Of course this should be
-
-        len = min_t(u32, get_unaligned_le16(in), length - 2);
-
-(compare to the opposite below).
-
-> -	utf16s_to_utf8s((wchar_t *)data, len * 2,  UTF16_LITTLE_ENDIAN, buffer, len * 2);
-> +	utf16s_to_utf8s((wchar_t *)(in + 2), len / 2, UTF16_LITTLE_ENDIAN, buffer, sizeof(buffer));
->  
-> -	return hex2bin(out, pos, len);
-> +	return hex2bin(out, buffer, len / 2);
->  }
->  
-> -static void asus_wmi_ec_encode_registers(const u16 *registers, u8 len, char *out)
-> +static void asus_wmi_ec_encode_registers(const u8 *in, u32 length, char *out)
->  {
->  	char buffer[ASUSWMI_MAX_BUF_LEN * 2];
-> -	char *pos = buffer;
-> -	unsigned int i;
-> -	u8 byte;
-> -
-> -	*out++ = len * 8;
-> -	*out++ = 0;
-> -
-> -	for (i = 0; i < len; i++) {
-> -		byte = registers[i] >> 8;
-> -		pos = bin2hex(pos, &byte, 1);
-> -		byte = registers[i];
-> -		pos = bin2hex(pos, &byte, 1);
-> -	}
-> +	u16 len = nr_registers * 2;
-> +
-> +	put_unaligned_le16(len * 2, out);
-> +
-> +	bin2hex(buffer, in, len);
->  
-> -	utf8s_to_utf16s(buffer, len * 4, UTF16_LITTLE_ENDIAN, (wchar_t *)out, len * 4);
-> +	utf8s_to_utf16s(buffer, len * 2, UTF16_LITTLE_ENDIAN, (wchar_t *)(out + 2), len);
->  }
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Andreas
 
