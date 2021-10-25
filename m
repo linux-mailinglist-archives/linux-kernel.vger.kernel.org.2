@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE8443A2DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B947F43A3AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238783AbhJYTxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:53:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
+        id S236468AbhJYUBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:01:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235738AbhJYTrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:47:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1772561205;
-        Mon, 25 Oct 2021 19:40:19 +0000 (UTC)
+        id S235595AbhJYT5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:57:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5D1860FC2;
+        Mon, 25 Oct 2021 19:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635190820;
-        bh=7i0EGCIRB4HrVnhBD2qDiI6GxHmFk3q3ZtD9GUd1INA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IZYbzKSAk4vMkqevR8sy5nqAFXwOoSEHNjogCmvkDtWsYdgskXTD55Ei3quSLi94M
-         Tz9Qut0hR+P5PJ8rOxjSr0+3M4TZHsvMkx6fPyWU1MqeqHWx2pF+VhEhiNMfD5qgF8
-         TAFp8Um1yuM9lCuSNkBaHcjktU0lAszMP2DqG1SweVLNdYExWfAXrtONGM3aQXfFt9
-         EuPTF1C92aqmiJ0Mky79Tik4ni4tSvZHlzX29hxf6JC62o/AbnryKX11+HbAxmuwka
-         o8R9oFc5EufcPhddizzL3lGuaJ4PBzNJzTVZePfkYBEJ5U7tG6f9587RXP0GM8Cgj+
-         dEL+I6AvuI8dw==
+        s=k20201202; t=1635191278;
+        bh=8Z4CPKBu45gXH2iJqcYpEM3NI3FoQisIbY/55IiRGSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bxzCv4LVfRSMt/9kXFC49A/9CtsMtGsHECcr/nnnlMVsHf03JffiL97E7Q4r6TF3/
+         QY0tJW77c/ZD3VWhUOdGrOFWL8DaZjQwUH2VifydVC7qz9Y6GUo7VXi8bbIcT7h2EN
+         eFr0EcusgJKUfZvVAjVlUKcFaZZycy+sxf0m2DKaIkiPrIXcEeB2yi6TDIJYq+xqb3
+         s5OvSv0wVpQWm29HY3weX3WC9N4Al4SlXTUQRQ27AWD/cR83bsnZ2M3PhZLvCXSfrJ
+         WbQzZmI+7ZDkz7SBY8bqf36cG0MYvQur2WX2Yf2Yu+EFNkDb5M2PGIe8vZwjQzg4Np
+         FcdSpJzyLWNgg==
+Date:   Mon, 25 Oct 2021 20:47:55 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org, plai@codeaurora.org,
-        srinivas.kandagatla@linaro.org, devicetree@vger.kernel.org,
-        perex@perex.cz, lgirdwood@gmail.com, judyhsiao@chromium.org,
-        bjorn.andersson@linaro.org, swboyd@chromium.org, tiwai@suse.com,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        rohitkr@codeaurora.org, bgoswami@codeaurora.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: dt-bindings: lpass: add binding headers for digital codecs
-Date:   Mon, 25 Oct 2021 20:40:12 +0100
-Message-Id: <163519067112.407220.9849529941824458080.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <1633670491-27432-1-git-send-email-srivasam@codeaurora.org>
-References: <1633670491-27432-1-git-send-email-srivasam@codeaurora.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.15-rc6
+Message-ID: <YXcJ6wQxW72aaGYB@sirena.org.uk>
+References: <CAHk-=wjbXW13Eh6YnB4C5ghLrhJCq0u2bpSNA0JbK8eDb6o_XA@mail.gmail.com>
+ <20211019203320.GA748645@roeck-us.net>
+ <CAHk-=whPA5ZgXAG08vqtvZw3DK5H7Tkd9r+ZHSxxNaKYWzjw9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="u0i57v4gC00HNIDM"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whPA5ZgXAG08vqtvZw3DK5H7Tkd9r+ZHSxxNaKYWzjw9g@mail.gmail.com>
+X-Cookie: From concentrate.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 10:51:31 +0530, Srinivasa Rao Mandadapu wrote:
-> Add header defining for lpass internal digital codecs rx,tx and va
-> dai node id's.
-> 
-> 
 
-Applied to
+--u0i57v4gC00HNIDM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Oct 25, 2021 at 11:07:16AM -0700, Linus Torvalds wrote:
 
-Thanks!
+> Mark, please stop doing these mindless AND INCORRECT back-merges of my
+> tree. There is absolutely no excuse for garbage like this:
 
-[1/1] ASoC: dt-bindings: lpass: add binding headers for digital codecs
-      commit: de6e9190a8a74d55ed936ec483919b328bbbbf5c
+Sorry about that.  JFTR (and bearing in mind your other points) it looks
+like I messed up the first time and then didn't notice that the bad
+merge was in my rerere cache the second time, if I am doing these I
+should remember to specify --no-rerere-autoupdate so that any mistakes
+that do happen are less likely to get repeated.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> If you really need to do a back-merge, explain WHY. And it had better
+> be some important reason.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> In particular, the reson should not be "fix conflict", because you're
+> clearly not particularly good at it.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+A good portion (I'm pretty sure the majority) of the backmerges I do are
+due to dependencies for new patches, but obviously you can't tell that
+without something in the commit log which like you say should be there
+and will be in future.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--u0i57v4gC00HNIDM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF3CesACgkQJNaLcl1U
+h9AjgQgAgDCkiIzVjybKj5MfXjrxlulBV3rxs7tFpVm0cVp4CovTaC/WS7riXEua
+Z0u9keEi93+MfDV52j5/Jwt7TL7Cd6ykdnFVRFwY/8NmfFFyCIdqyoyxjO3wWwhh
+Q7DUBEwa7bqjOhoRhII6rCHqkw8XqoLk/ANcExUU23wjUk+K69m7D92lYP8F7+cw
+C7b0+s/8CNtTnv7UEDrCabD4vCbGJtCY+2KF1+IR7B3HNUywKvdotsPruJ+EGfRm
+TFGnIsatvxNZJK3zGMtaKXQzsnukKLPcIKxdqPiTsqY09QHzkgZOgEBVJJWaLDaE
+2ZmLaJlzeHV7wyOEGXG1nJgXquRn3w==
+=gS0a
+-----END PGP SIGNATURE-----
+
+--u0i57v4gC00HNIDM--
