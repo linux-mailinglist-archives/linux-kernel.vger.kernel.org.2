@@ -2,134 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3528F439083
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63A1439087
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhJYHoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:44:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53738 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhJYHog (ORCPT
+        id S231859AbhJYHps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:45:48 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45476 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231752AbhJYHpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:44:36 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0BD772177B;
-        Mon, 25 Oct 2021 07:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635147734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B9Gr/w87oM1GZ6knpFYEuN+eOPWXlt8HDTDNPK9BBSY=;
-        b=y2HW7dVtfcj27VspmqKPNU0vRwqjRPMVUaOe7ZjJh562WBTPzkXVpfBDTnVVlr5Qe9UqqK
-        FMaL73DHRGurf/2m651IXqh1NBfVmLaIaiuIyVZi9TXgjZ70MY06nMfA4KVkPM9LVlqgif
-        +0BNDmtfkDBM3UuwIoQTTN1PHZfrR8o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635147734;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B9Gr/w87oM1GZ6knpFYEuN+eOPWXlt8HDTDNPK9BBSY=;
-        b=HkSe65rJNoA5urH9PqVAC9HPPx6Q1ThFGr8UPUPcBYYMPTWpGrFKmwGLdElwheyd8brAvH
-        IxqA9rrmINT5n2DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEBC81342A;
-        Mon, 25 Oct 2021 07:42:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ph15OdVfdmENEQAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 25 Oct 2021 07:42:13 +0000
-Date:   Mon, 25 Oct 2021 09:42:12 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <YXZf1KAgWobGNO5a@zn.tnic>
-References: <20211025151144.552c60ca@canb.auug.org.au>
+        Mon, 25 Oct 2021 03:45:46 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19P6qN3j012716;
+        Mon, 25 Oct 2021 09:43:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=T1Sv32CW3Suro8RMDqgJ1ZgSp2ac/CNesqXOA22ghSk=;
+ b=eaeN8eNN5YkeT7wvNtEghCXL3/f9ZcrP9AbIlXmSDBbVl6L61Z/SZ18gubwOC2CfeHVB
+ x/7LYH0oI4z7EBeY2hgM4j6LVJGOdCAaOysyTFMTqJwlLqE/uMoz7dl9KjmUa9m3cFoP
+ heWwnKH9DohZYSg/THgyKdd56JkmqBQ1io7qnOSmGATsxVRJ05ZMq0qvNpMwEPP6sdqL
+ R2DWeOFI6eoWiv5qL81+Ip5V5j05WOXtcwu0OIhGPX6qkgxN2X058VS+xyjSLr/B9S4M
+ amRb7OFVtNv6MnJkcybmTpUwfKMJ89SquctMwftC8FFphh/bHzs6sEJ28Nuerid2jhgP yA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bwqpsg9mr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 09:43:13 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 99E2510002A;
+        Mon, 25 Oct 2021 09:43:12 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 917C5215139;
+        Mon, 25 Oct 2021 09:43:12 +0200 (CEST)
+Received: from [10.211.0.75] (10.75.127.49) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct
+ 2021 09:43:11 +0200
+Subject: Re: [PATCH] iio: adc: stm32: fix a leak by resetting pcsel before
+ disabling vdda
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <alexandre.torgue@foss.st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <1634905169-23762-1-git-send-email-fabrice.gasnier@foss.st.com>
+ <77f3593a-0e94-f5ab-f102-86ba8d0f1a3b@foss.st.com>
+ <20211024170749.44c0d81f@jic23-huawei>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <76ac386a-a748-f044-13c5-46b164738338@foss.st.com>
+Date:   Mon, 25 Oct 2021 09:43:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211025151144.552c60ca@canb.auug.org.au>
+In-Reply-To: <20211024170749.44c0d81f@jic23-huawei>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_02,2021-10-25_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Mon, Oct 25, 2021 at 03:11:44PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On 10/24/21 6:07 PM, Jonathan Cameron wrote:
+> On Fri, 22 Oct 2021 14:38:52 +0200
+> Olivier MOYSAN <olivier.moysan@foss.st.com> wrote:
 > 
-> After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
-> 
-> arch/x86/kernel/fpu/core.c: In function 'fpu_alloc_guest_fpstate':
-> arch/x86/kernel/fpu/core.c:187:12: error: implicit declaration of function 'vzalloc'; did you mean 'kzalloc'? [-Werror=implicit-function-declaration]
->   187 |  fpstate = vzalloc(size);
->       |            ^~~~~~~
->       |            kzalloc
-> arch/x86/kernel/fpu/core.c:187:10: error: assignment to 'struct fpstate *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
->   187 |  fpstate = vzalloc(size);
->       |          ^
-> arch/x86/kernel/fpu/core.c: In function 'fpu_free_guest_fpstate':
-> arch/x86/kernel/fpu/core.c:212:2: error: implicit declaration of function 'vfree'; did you mean 'kfree'? [-Werror=implicit-function-declaration]
->   212 |  vfree(fps);
->       |  ^~~~~
->       |  kfree
-> cc1: all warnings being treated as errors
-> 
-> Caused by commit
-> 
->   69f6ed1d14c6 ("x86/fpu: Provide infrastructure for KVM FPU cleanup")
-> 
-> I have applied the following patch for today (because it was quicker
-> than using the tip tree from next-20211022).
+> I'll probably reword the description here as 'leak' tends to mean memory
+> leak rather than current.
 
-I cannot reproduce here. It could be uncovered by some stuff you merge
-before tip/auto-latest or so.
+Hi Jonathan,
 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 25 Oct 2021 15:04:13 +1100
-> Subject: [PATCH] x86/fpu: include vmalloc.h for vzalloc etc
+Yes, please fell free to improve this. I had the same concern, but I
+haven't found a more suitable description.
+
 > 
-> Fixes: 69f6ed1d14c6 ("x86/fpu: Provide infrastructure for KVM FPU cleanup")
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/x86/kernel/fpu/core.c | 1 +
->  1 file changed, 1 insertion(+)
+>> Hi Fabrice,
+>>
+>> On 10/22/21 2:19 PM, Fabrice Gasnier wrote:
+>>> Some I/Os are connected to ADC input channels, when the corresponding bit
+>>> in PCSEL register are set on STM32H7 and STM32MP15. This is done in the
+>>> prepare routine of stm32-adc driver.
+>>> There are constraints here, as PCSEL shouldn't be set when VDDA supply
+>>> is disabled. Enabling/disabling of VDDA supply in done via stm32-adc-core
+>>> runtime PM routines (before/after ADC is enabled/disabled).
+>>>
+>>> Currently, PCSEL remains set when disabling ADC. Later on, PM runtime
+>>> can disable the VDDA supply. This creates some conditions on I/Os that
+>>> can start to leak current.
+>>> So PCSEL needs to be cleared when disabling the ADC.
+>>>
+>>> Fixes: 95e339b6e85d ("iio: adc: stm32: add support for STM32H7")
+>>>
 > 
-> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> index 9c475e2efd4d..c55013fc82ab 100644
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -16,6 +16,7 @@
->  
->  #include <linux/hardirq.h>
->  #include <linux/pkeys.h>
-> +#include <linux/vmalloc.h>
->  
->  #include "context.h"
->  #include "internal.h"
-> -- 
+> No line break here as Fixes forms part of the tag block.
+> 
 
-I'm thinking I could simply fold in your change into 69f6ed1d14c6 ...
+Sorry, will check this next time.
 
-Thx.
+>>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> 
+> Given timing wrt to being too near merge window, I'll let this it on
+> list a while longer as it'll be post rc1 material now anyway.
+> 
+> I can fix the above whilst applying if nothing else comes up.
 
--- 
-Regards/Gruss,
-    Boris.
+That's fine for me.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Many thanks,
+Fabrice
+> 
+> Jonathan
+> 
+>>> ---
+>>>   drivers/iio/adc/stm32-adc.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+>>> index 5088de8..e3e7541 100644
+>>> --- a/drivers/iio/adc/stm32-adc.c
+>>> +++ b/drivers/iio/adc/stm32-adc.c
+>>> @@ -975,6 +975,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
+>>>   {
+>>>   	struct stm32_adc *adc = iio_priv(indio_dev);
+>>>   
+>>> +	stm32_adc_writel(adc, STM32H7_ADC_PCSEL, 0);
+>>>   	stm32h7_adc_disable(indio_dev);
+>>>   	stm32h7_adc_enter_pwr_down(adc);
+>>>   }
+>>>   
+>>
+>> Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
+>>
+>> Thanks
+>> Olivier
+> 
