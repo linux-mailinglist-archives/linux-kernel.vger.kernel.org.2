@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BA943A1BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C5443A000
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbhJYTlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53594 "EHLO mail.kernel.org"
+        id S234601AbhJYT0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:26:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236626AbhJYTfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F90A6112D;
-        Mon, 25 Oct 2021 19:31:48 +0000 (UTC)
+        id S234824AbhJYTYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:24:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44FE961106;
+        Mon, 25 Oct 2021 19:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190308;
-        bh=9CT/HiCubkkb1tkOj9ECpsS+ed/U6NE4FYEa6ON9Qco=;
+        s=korg; t=1635189710;
+        bh=X0b7bApjH+6xUBKRzfuhxtRm8g7Jemtwsgkhyi6Y7cM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CpID+sPxNKVAwdUg6feoy3dqdbWN0Qj4Kw0DTrrZ/LhwXvVRkijoDwQqHjB9vAlFv
-         6Z5HJZocUrTFcvxZYfMLkNCKvu0LlTsNgp7TVFcOrHkXTSTCqljclbp3oBMMH+jma3
-         t4J/ciFsOvUsPib/+fSpnn1Hck26QncU9rdAnKLM=
+        b=SbOvh6B/sXtushYHd1/OEhWxfzf6Y/JV+uUyXZbWqheXtJ91+OhJL4P9o4rTNzJ27
+         9FS0vREOgp4Q8mmpKIgkwhZN9lgyPD9azHmzdHoj3cwM87toaPVumLqYI+SvQueNtT
+         WevWkbBIC8JiEiTSbVCoUr9k5WInN0/0i4iU10IA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 5.10 43/95] ceph: skip existing superblocks that are blocklisted or shut down when mounting
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 20/30] btrfs: deal with errors when checking if a dir entry exists during log replay
 Date:   Mon, 25 Oct 2021 21:14:40 +0200
-Message-Id: <20211025191002.968302405@linuxfoundation.org>
+Message-Id: <20211025190927.701832804@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +40,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 98d0a6fb7303a6f4a120b8b8ed05b86ff5db53e8 upstream.
+[ Upstream commit 77a5b9e3d14cbce49ceed2766b2003c034c066dc ]
 
-Currently when mounting, we may end up finding an existing superblock
-that corresponds to a blocklisted MDS client. This means that the new
-mount ends up being unusable.
+Currently inode_in_dir() ignores errors returned from
+btrfs_lookup_dir_index_item() and from btrfs_lookup_dir_item(), treating
+any errors as if the directory entry does not exists in the fs/subvolume
+tree, which is obviously not correct, as we can get errors such as -EIO
+when reading extent buffers while searching the fs/subvolume's tree.
 
-If we've found an existing superblock with a client that is already
-blocklisted, and the client is not configured to recover on its own,
-fail the match. Ditto if the superblock has been forcibly unmounted.
+Fix that by making inode_in_dir() return the errors and making its only
+caller, add_inode_ref(), deal with returned errors as well.
 
-While we're in here, also rename "other" to the more conventional "fsc".
-
-Cc: stable@vger.kernel.org
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1901499
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/super.c |   17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ fs/btrfs/tree-log.c | 47 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -997,16 +997,16 @@ static int ceph_compare_super(struct sup
- 	struct ceph_fs_client *new = fc->s_fs_info;
- 	struct ceph_mount_options *fsopt = new->mount_options;
- 	struct ceph_options *opt = new->client->options;
--	struct ceph_fs_client *other = ceph_sb_to_client(sb);
-+	struct ceph_fs_client *fsc = ceph_sb_to_client(sb);
- 
- 	dout("ceph_compare_super %p\n", sb);
- 
--	if (compare_mount_options(fsopt, opt, other)) {
-+	if (compare_mount_options(fsopt, opt, fsc)) {
- 		dout("monitor(s)/mount options don't match\n");
- 		return 0;
- 	}
- 	if ((opt->flags & CEPH_OPT_FSID) &&
--	    ceph_fsid_compare(&opt->fsid, &other->client->fsid)) {
-+	    ceph_fsid_compare(&opt->fsid, &fsc->client->fsid)) {
- 		dout("fsid doesn't match\n");
- 		return 0;
- 	}
-@@ -1014,6 +1014,17 @@ static int ceph_compare_super(struct sup
- 		dout("flags differ\n");
- 		return 0;
- 	}
-+
-+	if (fsc->blocklisted && !ceph_test_mount_opt(fsc, CLEANRECOVER)) {
-+		dout("client is blocklisted (and CLEANRECOVER is not set)\n");
-+		return 0;
-+	}
-+
-+	if (fsc->mount_state == CEPH_MOUNT_SHUTDOWN) {
-+		dout("client has been forcibly unmounted\n");
-+		return 0;
-+	}
-+
- 	return 1;
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 08ab7ab909a8..372a10130ced 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -901,9 +901,11 @@ out:
  }
  
+ /*
+- * helper function to see if a given name and sequence number found
+- * in an inode back reference are already in a directory and correctly
+- * point to this inode
++ * See if a given name and sequence number found in an inode back reference are
++ * already in a directory and correctly point to this inode.
++ *
++ * Returns: < 0 on error, 0 if the directory entry does not exists and 1 if it
++ * exists.
+  */
+ static noinline int inode_in_dir(struct btrfs_root *root,
+ 				 struct btrfs_path *path,
+@@ -912,29 +914,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
+ {
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_key location;
+-	int match = 0;
++	int ret = 0;
+ 
+ 	di = btrfs_lookup_dir_index_item(NULL, root, path, dirid,
+ 					 index, name, name_len, 0);
+-	if (di && !IS_ERR(di)) {
++	if (IS_ERR(di)) {
++		if (PTR_ERR(di) != -ENOENT)
++			ret = PTR_ERR(di);
++		goto out;
++	} else if (di) {
+ 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+ 		if (location.objectid != objectid)
+ 			goto out;
+-	} else
++	} else {
+ 		goto out;
+-	btrfs_release_path(path);
++	}
+ 
++	btrfs_release_path(path);
+ 	di = btrfs_lookup_dir_item(NULL, root, path, dirid, name, name_len, 0);
+-	if (di && !IS_ERR(di)) {
+-		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+-		if (location.objectid != objectid)
+-			goto out;
+-	} else
++	if (IS_ERR(di)) {
++		ret = PTR_ERR(di);
+ 		goto out;
+-	match = 1;
++	} else if (di) {
++		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
++		if (location.objectid == objectid)
++			ret = 1;
++	}
+ out:
+ 	btrfs_release_path(path);
+-	return match;
++	return ret;
+ }
+ 
+ /*
+@@ -1319,10 +1327,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 		if (ret)
+ 			goto out;
+ 
+-		/* if we already have a perfect match, we're done */
+-		if (!inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
+-					btrfs_ino(BTRFS_I(inode)), ref_index,
+-					name, namelen)) {
++		ret = inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
++				   btrfs_ino(BTRFS_I(inode)), ref_index,
++				   name, namelen);
++		if (ret < 0) {
++			goto out;
++		} else if (ret == 0) {
+ 			/*
+ 			 * look for a conflicting back reference in the
+ 			 * metadata. if we find one we have to unlink that name
+@@ -1355,6 +1365,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 
+ 			btrfs_update_inode(trans, root, inode);
+ 		}
++		/* Else, ret == 1, we already have a perfect match, we're done. */
+ 
+ 		ref_ptr = (unsigned long)(ref_ptr + ref_struct_size) + namelen;
+ 		kfree(name);
+-- 
+2.33.0
+
 
 
