@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA7643A657
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC30D43A65F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhJYWNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhJYWNd (ORCPT
+        id S233312AbhJYWTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:19:00 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:36594 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232653AbhJYWS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:13:33 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57791C061745;
-        Mon, 25 Oct 2021 15:11:10 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 65so10664460ljf.9;
-        Mon, 25 Oct 2021 15:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jnJPOeCbQXa02500VcgaQpnDnVBb4y7OeBcRepQOJq0=;
-        b=ay5psKIRkBjd/drFSzxVQXV78+YaUjt8TGBwMYrMohRTTLX5W9L4tjaAACRe+4NEY0
-         eDHHXy+O/F6xam8TZDrcfOjFjGUnX1eAzZ1pvAmlqXwW++LIQJLgXrHLVwelI4P1mIrr
-         G5cgC39ICPEpOpvOCojMZaOY8DEXqeUxZxXSETXmnzbLA5HrfxTBXnJWIpgqXMo9SqFL
-         wOY3mgFZTW4FaApb4Oih8uIRt9r6SLmCaeqAPuSkmWfNibYrDnOwxmYQdz+k8AzcAeYZ
-         6pwThrN/pDFPHh5GnINv86rwPzaVGjhdBMRlIBJ5FHRtlP7Cc45qI3pgLe8lHAe2rqOx
-         jHQQ==
+        Mon, 25 Oct 2021 18:18:59 -0400
+Received: by mail-ot1-f45.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so16993063otk.3;
+        Mon, 25 Oct 2021 15:16:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jnJPOeCbQXa02500VcgaQpnDnVBb4y7OeBcRepQOJq0=;
-        b=36Lr7QGZeCMMZJKAwgHh98CHyXrWQTedthWizJNY4hM3wO213dGIa4x8cgM2MrgMxw
-         J/f8nid4/ZMkS08k5Ra6o1tw1xlQnSwLXYXCG6OaC6M25tHor2zjOQDQiQ+xX32VWjhG
-         gSEXTyGKiGEJCQR+mUhS7NTFbXAtAFMeOYICjuH07c9FDvAIU9nr5+0wfAdWMfvNlexq
-         7iGw4bHQ/XDaypH9cZWnlvDHMX9bQWlqwPsxYdq+/s4QRTPrphW6QArgNQlk1AloKOYv
-         nCroOttAJihFiPHB3uq/AFfRFQpCsgP4nOUn0oObxvDGAoSQ857u1Vb1SsVGZpgrCpnc
-         TIJw==
-X-Gm-Message-State: AOAM530gIH5fv9P17uRJ75NiOXSFvG9pbKe4p04AgYJDPKoNz52eBOqy
-        Wx+U0437eeEEij49xsQHcNOYZNP4HK8=
-X-Google-Smtp-Source: ABdhPJzVz2+3mDSiHAbS68O8OXJLf6tYIH7yzJl3LHe2d/01jTz8Ko+MYn31pgWwaBWJYVfeIQnv3A==
-X-Received: by 2002:a2e:9801:: with SMTP id a1mr21663460ljj.183.1635199868527;
-        Mon, 25 Oct 2021 15:11:08 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.googlemail.com with ESMTPSA id z13sm1833844ljk.70.2021.10.25.15.11.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 15:11:08 -0700 (PDT)
-Subject: Re: linux-next: Tree for Oct 25
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>
-References: <20211025204921.73cb3011@canb.auug.org.au>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <82bbf33e-918f-da01-95e6-9b2cc1b8b610@gmail.com>
-Date:   Tue, 26 Oct 2021 01:11:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=08LHlZWok2cQ+wKG6iqHm59kti7V0FbDXHEgXCU1sN0=;
+        b=NHxgZMieGAUKxpclh6E+QQ3hO0rvlUxf4hX7uqqN23tmH/bDpokzwFoG7sU9eRiu35
+         h8mhD+8zJQZ7R9JTQa3jnBRJwSCxJTRLtozhCwqcmv1/WFfTtKVjN4kXPZC45tmI7LCF
+         BwFvnCvMY5xG1m78Ex5YiRWwQAlPPuRSw3B+Ql65maBlXHCd6sdg2C+/TrNKvZaBgIMf
+         TATvHDMFrj7af5H034A9ktg82lycFwwGMnsXIRjSURenK/ybUOdENMeJJbshguakXTd9
+         WVNOvwdgEgghy4i+IwIWoe5zxwTfeShi44rTCwgRuMz4rZ9mDx1PMRtTYTV+pBRyx5yl
+         +b4A==
+X-Gm-Message-State: AOAM533w12EJ5VhyoFekDgPc+Ycgp9UO80sMtxUl9QLq7+ZLSA1zk951
+        bSM4YP0zIo8bPQP658fxiQ==
+X-Google-Smtp-Source: ABdhPJwuWM0273S1Z+z63K2KqAhOFpRuOY9ecdszfdaTEl33r7hEZmIj1AusOBFj9m5MZ2a40Gh+AQ==
+X-Received: by 2002:a9d:1b4f:: with SMTP id l73mr16215619otl.200.1635200196169;
+        Mon, 25 Oct 2021 15:16:36 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bf3sm4380920oib.34.2021.10.25.15.16.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 15:16:35 -0700 (PDT)
+Received: (nullmailer pid 1182134 invoked by uid 1000);
+        Mon, 25 Oct 2021 22:16:34 -0000
+Date:   Mon, 25 Oct 2021 17:16:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/6] PCI: brcmstb: Add control of subdevice voltage
+ regulators
+Message-ID: <YXcswoP6fLiMs7G5@robh.at.kernel.org>
+References: <20211022140714.28767-1-jim2101024@gmail.com>
+ <20211022140714.28767-5-jim2101024@gmail.com>
+ <YXLLRLwMG7nEwQoi@sirena.org.uk>
+ <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211025204921.73cb3011@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 22, 2021 at 03:15:59PM -0400, Jim Quinlan wrote:
+> On Fri, Oct 22, 2021 at 10:31 AM Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Fri, Oct 22, 2021 at 10:06:57AM -0400, Jim Quinlan wrote:
+> >
+> > > +static const char * const supplies[] = {
+> > > +     "vpcie3v3-supply",
+> > > +     "vpcie3v3aux-supply",
+> > > +     "brcm-ep-a-supply",
+> > > +     "brcm-ep-b-supply",
+> > > +};
+> >
+> > Why are you including "-supply" in the names here?  That will lead to
+> > a double -supply when we look in the DT which probably isn't what you're
+> > looking for.
+> I'm not sure how this got past testing; will fix.
+> 
+> >
+> > Also are you *sure* that the device has supplies with names like
+> > "brcm-ep-a"?  That seems rather unidiomatic for electrical engineering,
+> > the names here are supposed to correspond to the names used in the
+> > datasheet for the part.
+> I try to explain this in the commit message of"PCI: allow for callback
+> to prepare nascent subdev".  Wrt to the names,
+> 
+>        "These regulators typically govern the actual power supply to the
+>         endpoint chip.  Sometimes they may be a the official PCIe socket
+>         power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
+>         the regulator(s) that supply power to the EP chip."
+> 
+> Each different SOC./board we deal with may present different ways of
+> making the EP device power on.  We are using
+> an abstraction name "brcm-ep-a"  to represent some required regulator
+> to make the EP  work for a specific board.  The RC
+> driver cannot hard code a descriptive name as it must work for all
+> boards designed by us, others, and third parties.
+> The EP driver also doesn't know  or care about the regulator name, and
+> this driver is often closed source and often immutable.  The EP
+> device itself may come from Brcm, a third party,  or sometimes a competitor.
+> 
+> Basically, we find using a generic name such as "brcm-ep-a-supply"
+> quite handy and many of our customers embrace this feature.
+> I know that Rob was initially against such a generic name, but I
+> vaguely remember him seeing some merit to this, perhaps a tiny bit :-)
+> Or my memory is shot, which could very well be the case.
 
-Recent -next has this new warning splat coming from MMC, please take a look.
+I don't recall being in favor of this. If you've got standard rails 
+(3.3V and 12V), then I'm fine with standard properties for them with or 
+without a slot.
 
- ------------[ cut here ]------------
- WARNING: CPU: 0 PID: 525 at kernel/sched/core.c:9477 __might_sleep+0x65/0x68
- do not call blocking ops when !TASK_RUNNING; state=2 set at [<4316eb02>] prepare_to_wait+0x2e/0xb8
- Modules linked in:
- CPU: 0 PID: 525 Comm: Xorg Tainted: G        W         5.15.0-rc6-next-20211025-00226-g89ccd6948ec3 #5
- Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
- (unwind_backtrace) from [<c01089f9>] (show_stack+0x11/0x14)
- (show_stack) from [<c0afacb9>] (dump_stack_lvl+0x2b/0x34)
- (dump_stack_lvl) from [<c011f689>] (__warn+0xa1/0xe8)
- (__warn) from [<c0af6729>] (warn_slowpath_fmt+0x65/0x7c)
- (warn_slowpath_fmt) from [<c01421b9>] (__might_sleep+0x65/0x68)
- (__might_sleep) from [<c07eb377>] (mmc_blk_rw_wait+0x2f/0x118)
- (mmc_blk_rw_wait) from [<c07eba11>] (mmc_blk_mq_issue_rq+0x219/0x71c)
- (mmc_blk_mq_issue_rq) from [<c07ec199>] (mmc_mq_queue_rq+0xf9/0x200)
- (mmc_mq_queue_rq) from [<c04ad247>] (__blk_mq_try_issue_directly+0xcb/0x100)
- (__blk_mq_try_issue_directly) from [<c04adb89>] (blk_mq_request_issue_directly+0x2d/0x48)
- (blk_mq_request_issue_directly) from [<c04adcf3>] (blk_mq_flush_plug_list+0x14f/0x1f4)
- (blk_mq_flush_plug_list) from [<c04a5313>] (blk_flush_plug+0x83/0xb8)
- (blk_flush_plug) from [<c0b013cb>] (io_schedule+0x2b/0x3c)
- (io_schedule) from [<c0b01a17>] (bit_wait_io+0xf/0x48)
- (bit_wait_io) from [<c0b01783>] (__wait_on_bit+0x3f/0x88)
- (__wait_on_bit) from [<c0b01823>] (out_of_line_wait_on_bit+0x57/0x68)
- (out_of_line_wait_on_bit) from [<c03539c1>] (ext4_read_bh+0xb1/0xb4)
- (ext4_read_bh) from [<c03146b3>] (__read_extent_tree_block+0xa7/0x134)
- (__read_extent_tree_block) from [<c031526f>] (ext4_find_extent+0x13b/0x2fc)
- (ext4_find_extent) from [<c0317da5>] (ext4_ext_map_blocks+0x4d/0x1160)
- (ext4_ext_map_blocks) from [<c03286c3>] (ext4_map_blocks+0x1bf/0x428)
- (ext4_map_blocks) from [<c03436b1>] (ext4_mpage_readpages+0x399/0x660)
- (ext4_mpage_readpages) from [<c02322d9>] (read_pages+0x51/0x18c)
- (read_pages) from [<c02324f5>] (page_cache_ra_unbounded+0xe1/0x174)
- (page_cache_ra_unbounded) from [<c02299c1>] (filemap_get_pages+0xc5/0x524)
- (filemap_get_pages) from [<c0229eff>] (filemap_read+0xdf/0x2fc)
- (filemap_read) from [<c028bae9>] (vfs_read+0x151/0x23c)
- (vfs_read) from [<c028bf4b>] (ksys_read+0x47/0x98)
- (ksys_read) from [<c01000a1>] (ret_fast_syscall+0x1/0x16)
- Exception stack(0xc593ffa8 to 0xc593fff0)
-  
+Rob
