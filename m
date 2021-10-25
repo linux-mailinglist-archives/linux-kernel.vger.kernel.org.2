@@ -2,154 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE2243A614
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C855643A625
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhJYVoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbhJYVoJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:44:09 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2ECC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:41:46 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so16906013ott.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FGNc9Tx8g5/v6KFaaId5VnO2l2Gb29zLqsK+20u4jlQ=;
-        b=cJ3SgI091BISPRXBiE8q+NoMzCMMO7TE3mUjnVUSZyyTM/2HdEVTjjMyq1UXYuMO/I
-         9qbPtU9k5GfpLfM8F5+H9jcEfr/yhky4VTwQKbUFixO2j+WJbmYLLbSskU78vG9M67gX
-         fEvF1LXQw9Avk5tv4b51z16nbHxwj5vIdMelwpLPvEfeK4GaaQHo9EdS/1qo7r/rwV2s
-         FPDNv8jCkgsJnDCsSVlF2pUZ+2Eged6qJeAVqKkpDWh5KjAgHW0qvj7PcQd2taipNnoZ
-         9qMAgV881ohcmD70JM1ccV+heo10pUPygClUkcx53B4MuxQl5H8u/jc/gnMlmfXu4YcC
-         C8cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FGNc9Tx8g5/v6KFaaId5VnO2l2Gb29zLqsK+20u4jlQ=;
-        b=Ef+R4ZILIqwJMBHrSgjgTGMxdHv1gNIMwMN0llQOMJ+o0LGXvjQLeobFGo8QYnk3UR
-         PuPqClS5fQ+3ciVxTTGXDKyozGsNGTev6xQLVPY+3Y537PxT/1p7LjdnEDIz0tt+u+WN
-         pctvgkXuWi4vWAnZVjYN0hWXJp/huXM/hWE1RnvRadi9EPYAPBYJe8HmTV0vXUFUgnXE
-         2QJqQuC1WPyxd9i/T+ql8cL0fIuOuvpY4BaC4dO8Xn+Iyr2rZsVhbzGNuaY9U4upOm9b
-         Xw1D2+/S4jQ9IbIhCEWAb/qN016aqYauiAgtvpoaUVe6RmLwhlvDQjXFpcdK/2ZKXqMk
-         BITQ==
-X-Gm-Message-State: AOAM531vjhLNpeDlKyCofwx8AB+bZv/Huabkc+hWxRSTBqoE7sM1DelM
-        UbMUvjh05Nq1oKp4yT7khvj4OQ==
-X-Google-Smtp-Source: ABdhPJyLPL3Eu2q0jA6zGLKMIGyDySUIKVBTEKYYpx+QwwdzIq5OVLXZHPgZxZS1/B9VT/HVaxe4Ng==
-X-Received: by 2002:a9d:704d:: with SMTP id x13mr15188704otj.4.1635198105567;
-        Mon, 25 Oct 2021 14:41:45 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id s20sm4306440oiw.17.2021.10.25.14.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:41:45 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:43:23 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd
- bindings for dwc3 qcom
-Message-ID: <YXck+xCJQBRGqTCw@ripper>
-References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
- <YXcBK7zqny0s4gd4@ripper>
- <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+        id S233708AbhJYVwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:52:31 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:42243 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233644AbhJYVw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:52:27 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4HdTBc2tz5z9s2k;
+        Mon, 25 Oct 2021 23:49:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id SLHHaOzNG6vA; Mon, 25 Oct 2021 23:49:44 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.117])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HdTBb08stz9s2c;
+        Mon, 25 Oct 2021 23:49:42 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19PLnAJ5007255
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 23:49:12 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19PLiNv3007025;
+        Mon, 25 Oct 2021 23:44:23 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3 01/10] powerpc/nohash: Fix __ptep_set_access_flags() and ptep_set_wrprotect()
+Date:   Mon, 25 Oct 2021 23:44:13 +0200
+Message-Id: <f34898e2edb21db1bcb1c9a96ac7433a141d50c2.1635198209.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1635198260; l=4330; s=20211009; h=from:subject:message-id; bh=izdUZ+1e8V63DpgnHdzBDrWgT7WnuGKd1kgBkr6OTNY=; b=MEt/vzMV/tJ7xzhqdZC1sHph7EM/qPBHyLPOmMNFdirJijmXt7aCUdIjtCuYmZ70foBP5hrDoqj9 4ibYAxDsDgLCl9OdLRdI55J1BTuzKfQSl3v4kcU8/CC8KcZT8zVF
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 Oct 13:17 PDT 2021, Stephen Boyd wrote:
+Commit 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+changed those two functions to use pte helpers to determine which
+bits to clear and which bits to set.
 
-> Quoting Bjorn Andersson (2021-10-25 12:10:35)
-> > On Mon 25 Oct 02:07 PDT 2021, Sandeep Maheswaram wrote:
-> >
-> > > Add multi pd bindings to set performance state for cx domain
-> > > to maintain minimum corner voltage for USB clocks.
-> > >
-> > > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-> > > ---
-> > > v2:
-> > > Make cx domain mandatory.
-> > >
-> > >  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 +++++++-
-> > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > index 2bdaba0..fd595a8 100644
-> > > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > @@ -42,7 +42,13 @@ properties:
-> > >
-> > >    power-domains:
-> > >      description: specifies a phandle to PM domain provider node
-> > > -    maxItems: 1
-> > > +    minItems: 2
-> > > +    items:
-> > > +      - description: cx power domain
-> > > +      - description: USB gdsc power domain
-> > > +
-> > > +  required-opps:
-> > > +    description: specifies the performance state to power domain
-> >
-> > I'm still worried about the fact that we can't just rely on the USB GDSC
-> > being a subdomin of CX in order to just "turn on" CX.
-> >
-> > Afaict accepting this path forward means that for any device that sits
-> > in a GDSC power domain we will have to replicate this series for the
-> > related driver.
-> >
-> 
-> I suspect the problem is that it's not just "turn on" but wanting to
-> turn it on and then set the performance state to some value based on the
-> clk frequency.
+This change was based on the assumption that bits to be set/cleared
+are always the same and can be determined by applying the pte
+manipulation helpers on __pte(0).
 
-I don't see an opp-table involved, just the required-opps for the
-purpose of turning CX on a little bit more. Perhaps I'm missing
-something here though.
+But on platforms like book3e, the bits depend on whether the page
+is a user page or not.
 
-> Maybe the simplest version of that could be supported
-> somehow by having dev_pm_opp_set_rate() figure out that the 'level'
-> applies to the parent power domain instead of the child one?
+For the time being it more or less works because of _PAGE_EXEC being
+used for user pages only and exec right being set at all time on
+kernel page. But following patch will clean that and output of
+pte_mkexec() will depend on the page being a user or kernel page.
 
-Having the performance_state request cascade up through the GDSC sounds
-like a nice solution; I've not looked at the code to see if this is
-feasible though.
+Instead of trying to make an even more complicated helper where bits
+would become dependent on the final pte value, come back to a more
+static situation like before commit 26973fa5ac0e ("powerpc/mm: use
+pte helpers in generic code"), by introducing an 8xx specific
+version of __ptep_set_access_flags() and ptep_set_wrprotect().
 
-> Or we may need to make another part of the OPP binding to indicate the
-> relationship between the power domain and the OPP and the parent of
-> the power domain.
+Fixes: 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v3: No change
+v2: New
+---
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 17 +++++++--------
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h | 22 ++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 9 deletions(-)
 
-I suspect this would be useful if a power-domain provider needs to
-translate a performance_state into a different supply-performance_state.
-Not sure if we have such case currently; these examples are all an
-adjustable power-domain with "gating" subdomains.
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index f06ae00f2a65..ac0a5ff48c3a 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -306,30 +306,29 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
+ }
+ 
+ #define __HAVE_ARCH_PTEP_SET_WRPROTECT
++#ifndef ptep_set_wrprotect
+ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ 				      pte_t *ptep)
+ {
+-	unsigned long clr = ~pte_val(pte_wrprotect(__pte(~0)));
+-	unsigned long set = pte_val(pte_wrprotect(__pte(0)));
+-
+-	pte_update(mm, addr, ptep, clr, set, 0);
++	pte_update(mm, addr, ptep, _PAGE_RW, 0, 0);
+ }
++#endif
+ 
++#ifndef __ptep_set_access_flags
+ static inline void __ptep_set_access_flags(struct vm_area_struct *vma,
+ 					   pte_t *ptep, pte_t entry,
+ 					   unsigned long address,
+ 					   int psize)
+ {
+-	pte_t pte_set = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(0)))));
+-	pte_t pte_clr = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(~0)))));
+-	unsigned long set = pte_val(entry) & pte_val(pte_set);
+-	unsigned long clr = ~pte_val(entry) & ~pte_val(pte_clr);
++	unsigned long set = pte_val(entry) &
++			    (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_RW | _PAGE_EXEC);
+ 	int huge = psize > mmu_virtual_psize ? 1 : 0;
+ 
+-	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
++	pte_update(vma->vm_mm, address, ptep, 0, set, huge);
+ 
+ 	flush_tlb_page(vma, address);
+ }
++#endif
+ 
+ static inline int pte_young(pte_t pte)
+ {
+diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+index fcc48d590d88..1a89ebdc3acc 100644
+--- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+@@ -136,6 +136,28 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ 
+ #define pte_mkhuge pte_mkhuge
+ 
++static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
++				     unsigned long clr, unsigned long set, int huge);
++
++static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
++{
++	pte_update(mm, addr, ptep, 0, _PAGE_RO, 0);
++}
++#define ptep_set_wrprotect ptep_set_wrprotect
++
++static inline void __ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
++					   pte_t entry, unsigned long address, int psize)
++{
++	unsigned long set = pte_val(entry) & (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_EXEC);
++	unsigned long clr = ~pte_val(entry) & _PAGE_RO;
++	int huge = psize > mmu_virtual_psize ? 1 : 0;
++
++	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
++
++	flush_tlb_page(vma, address);
++}
++#define __ptep_set_access_flags __ptep_set_access_flags
++
+ static inline unsigned long pgd_leaf_size(pgd_t pgd)
+ {
+ 	if (pgd_val(pgd) & _PMD_PAGE_8M)
+-- 
+2.31.1
 
-
-PS. I think we have the same problem in the display subsystem, the
-sub-blocks are powered by MDSS_GDSC, which is a subdomain of MMCX. We
-trust the parent mdss node to keep the GDSC powered and specify MMCX as
-the power-domain for the children, so that we can affect their levels by
-respective opp-table.
-
-Regards,
-Bjorn
