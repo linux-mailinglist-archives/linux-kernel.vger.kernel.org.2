@@ -2,94 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC2F43902A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D990439030
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhJYHSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230015AbhJYHSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:18:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F6660F9C;
-        Mon, 25 Oct 2021 07:15:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635146147;
-        bh=q7ILEld7it3AMXE9sJdmUiwj0tODHcpVIynxhnU7x/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MTp2NmebcA7C6vlehVz3ayqL0jfzrRdh9MkSBWt2fRNKOIUmjQbOAw57C4QwpQPz5
-         V7MOtI/dXB5H1tMBO3xaRUGbHvOl7tSEqNitCZScby+BRhgHAGxEQ1BejI4kcPiy+9
-         CqHe6+/zi6AjU/gNdwmLL57Zym3Ab8wDLSy5DaTg8P/OdWYk/dzlJm6hVofBsWvioG
-         mgLNKPDr8M5BlTsQ+wj1vKcZ6flzhqtvZcUBtxbrGqBPN5ohwDZ+nzhaa9pUeU6irb
-         cmXpP/bnMmGmtUXrgx39tp+Sh4xfcMVaik9Z7de//O0upJx667xm0GGKlA3Q4cICVa
-         lfTtNDmzfGH9g==
-Date:   Mon, 25 Oct 2021 12:45:43 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-usb@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
-Subject: Re: [PATCH v2] phy: qcom-snps: Correct the FSEL_MASK
-Message-ID: <YXZZn7dXEezgHfrW@matsya>
-References: <1635135575-5668-1-git-send-email-quic_c_sanm@quicinc.com>
+        id S231162AbhJYHV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:21:26 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:47096 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhJYHVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 03:21:23 -0400
+Received: by mail-wr1-f42.google.com with SMTP id k7so6351304wrd.13;
+        Mon, 25 Oct 2021 00:19:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=ZnBp/o9Bi8EpF/7DBrrr3u6I6nvXZIMo7mpSFih6RFCxATcFwS3d6F3vnPewXOAoCs
+         slDKPCzGcyWTCbhI0n6nDsq1enTUga37DwDm3rt/glKAzg43IxOmRoSFIl8YZ40GPsCz
+         qWa8V56o9nmQE19qf2kUKl1PMEYP7Xg5jZFMcslChP/9q6WY/gqUtT+/GjKdtjrVy/pa
+         JVrlCHh1lKSLeQLuEs0KbaYZS+RG99mmV7CwM/rh9qiOa6dIxIaJDjCPLIsNTtJUsZgf
+         D44PqBPP3LVzs82b8O0Cd+SvlkW/6/JBdhod6XpZGnN3kwSSV3z0/mREOCrGLYz2iC/k
+         2T1w==
+X-Gm-Message-State: AOAM532lYDWhGCdvxbon69OedmG+4bqmC74kWrVJIsUS6dxaJs/muAcn
+        2wQtpiRBq1joPtEY2OIDnQJ17Akn7t0=
+X-Google-Smtp-Source: ABdhPJzjP670GgIe7+Bqx6nvJCFvZ3NrT2F+UvQIQBsO/uRySjF8DzeuZ1Ud/jOZTyzaM2ya21t60A==
+X-Received: by 2002:a5d:6d51:: with SMTP id k17mr20926449wri.233.1635146340045;
+        Mon, 25 Oct 2021 00:19:00 -0700 (PDT)
+Received: from [192.168.64.123] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id c7sm12387886wrp.51.2021.10.25.00.18.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 00:18:59 -0700 (PDT)
+Subject: Re: [PATCH] nvmet: prefer flex_array_size and struct_size over open
+ coded arithmetic
+To:     Len Baker <len.baker@gmx.com>, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20211024172921.4110-1-len.baker@gmx.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <c56b8f55-3fa8-0201-28ae-10a275319fef@grimberg.me>
+Date:   Mon, 25 Oct 2021 10:18:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635135575-5668-1-git-send-email-quic_c_sanm@quicinc.com>
+In-Reply-To: <20211024172921.4110-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-10-21, 09:49, Sandeep Maheswaram wrote:
-> The FSEL_MASK which selects the refclock is defined incorrectly.
-> It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
-> in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0 is reset which keeps PHY analog
-> blocks ON during suspend.
-> Fix this issue by correctly defining the FSEL_MASK.
-> 
-> Fixes: 51e8114f80d0 (phy: qcom-snps: Add SNPS USB PHY driver for
-> QCOM based SOCs)
-
-1. pls never split the fixes line!
-2. Format is Fixes: 51e8114f80d0 ("phy: qcom-snps: Add SNPS USB PHY driver for QCOM based SOCs")
-
-Pls dont use your own format
-
-I have fixed it up while applying...
-
-> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-> ---
-> v2:
-> Corrected the register name COMMON1 > COMMMON0 in commit description.
-> Added Fixes tag.
-> Dropped copyright line.
-> 
->  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> index ae4bac0..7e61202 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> @@ -33,7 +33,7 @@
->  
->  #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0	(0x54)
->  #define RETENABLEN				BIT(3)
-> -#define FSEL_MASK				GENMASK(7, 5)
-> +#define FSEL_MASK				GENMASK(6, 4)
->  #define FSEL_DEFAULT				(0x3 << 4)
->  
->  #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1	(0x58)
-> -- 
-> 2.7.4
-
--- 
-~Vinod
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
