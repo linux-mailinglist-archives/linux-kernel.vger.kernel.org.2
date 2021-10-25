@@ -2,130 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EC043980F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FC1439809
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbhJYOGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhJYOGf (ORCPT
+        id S233244AbhJYOFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:05:08 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49005 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230396AbhJYOFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:06:35 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D5EC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:04:13 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g10so19021086edj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lRz3CgFlSn7VynXZnvgJCMXyEuYvDuHSreaW3AYUDoc=;
-        b=uiKJyxy1HlPhjZ8Qi3VptIu0aBU9Ul/6x7ftj0/5VvdglRe1z3B279lOUUA+27Qrpd
-         bkYsZOA1cpWDOsFf+2w3QpZPc1fTVCrz5ke3LPCBNo31p2/t/etQTo4SucZC3YnW/AeG
-         ZlZq6d2YP95Au7L+hNvxTDGFUlQ+Kl9T+huCKGR6dMQaZtG8c5YlMUYb+Sys1fjN70nX
-         YaIYEb4bVOPYx0mYGnW/6nDvS5Gc/5n6aO9bEY3v/KY2DibA7KSwLS9De5HwYu0RAI6a
-         9CB2UUrF2blgmUArx6029uHQiLleJtjAkII3uKn+nhQEHGteVU3L7ipQfBs5vjPtKD5K
-         8PQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lRz3CgFlSn7VynXZnvgJCMXyEuYvDuHSreaW3AYUDoc=;
-        b=J3We0EBhE/FXyLzH0U9Qlzqd5q8ogA9+sDff4G0/dlAlNoXR++3Av/SLO2EWTm79SY
-         RB4yTPJpqTX4yeZJUKk00cUmwXxVWxfdPZE8UZl9XEfc3mDeuXaVJ5LNRzX/y64OIK4M
-         gbHM6GgHJzxbmleLnbxb8zljtqDNDjorn392Gh+KsnD0MtVtEbWVaHhbIhQwm2RjQiYB
-         OuqpItWLb7AX9M95NFfmEK8EFjulS1nhG1/qKSJyxfyekvLFInXOuofIK0wQ7hflHPUY
-         XDSuFcdeR3uGHjL0uXcTLFTKnTA8ga0Gb0TJsvamNdlDpbrKCtugJyXMQMo1E4h2p+hZ
-         rwHg==
-X-Gm-Message-State: AOAM533qBzm8b/6J8r9CiroanrePMlQfNVTJtZ94BeLiWJVLKlwyVM+C
-        OOcclfJZWQDb+P4+D61g1Lc9xemELvKDNCr9PC2JtQ==
-X-Google-Smtp-Source: ABdhPJx0lp0PHTjiXgV2IvMCh2GtrIee4/gYDuwcwV8DC7zDqHOMDrNmfKQMSgVZNLP5fYmtX4CKmhomDDLaBS4TJ1o=
-X-Received: by 2002:a05:6402:26cb:: with SMTP id x11mr5219841edd.198.1635170489365;
- Mon, 25 Oct 2021 07:01:29 -0700 (PDT)
+        Mon, 25 Oct 2021 10:05:07 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5A360580533;
+        Mon, 25 Oct 2021 10:02:44 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 25 Oct 2021 10:02:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=O6Np07LYkZtpx8/b2Te8NTLkiKk
+        VX2DZfHpr39ip9Jo=; b=MsqHVKYy1WAnwZ/e+pNN5dj1T2Lq1ngAHAiRd1yBBkt
+        t5vPgfG4f7JIkRTGfhmkR4g9tvM27H675x/ftgn6aJTCQ2a39OsUhhUQYkSHYyDd
+        bbMAfLAHekPFqPYv+rD4sg5zm0xzu97sQp4F7oXUhpBYoLu8/5lxQl2E58fwhtk/
+        xPdURmuLE/oO0om/LB47rpbjjrEx7/F492oGODWQtPgiv8BnxoHCVAbVzRnQTgD/
+        M+J5qfQYuoN8hR3+VwMIumcE4I1KGDn0iBzcbFK8Ko2AgiHZNZwNECNMLUjaHgeB
+        0UYzP5trnADbf6eYd0+wuIC4cl+AF2z+XZ/+kL39nEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=O6Np07
+        LYkZtpx8/b2Te8NTLkiKkVX2DZfHpr39ip9Jo=; b=H162o6epW7+NZUqB1LuU5E
+        0j/x+8H/78SJ7bfvRDULdowqpkv3zbdEDzLF2J8z5YhGZWdSJtm68YUtNfsST+i0
+        GbgBJs8U6LDXSgT6suua4tAqKQpUMDAv1KoM+mZtp9an0iciVY4wIJFrX9VtsF91
+        TwTLfW8zY1Qszaz3ltiDigKqggEry2j3c1RKM75h1lZkTmaSrozrqdh6g+fBsWws
+        DIeXnONVG2GGg8tcTX4fs01ODzE5xvRpaGbPuBDnQNgXiM+1Ixh5S+RwPkmJAv6/
+        3xVDpfFigtbXWC0zdQu8fKbwEFVzqBfNysHkcJVkjfTkdQ9zhqNW49ypGmnYPNlA
+        ==
+X-ME-Sender: <xms:A7l2YepV5VZDfrRXe7spLHLIETP_giextEE0CBE24deAQ1j90L__og>
+    <xme:A7l2Ycrsg3I7drR1lVNa1ofoF9TRnkwe3Ej-6mr47KBe9BlBYe3-b15CLUy_K2bjH
+    X9djIO0DnoMDqXWUHc>
+X-ME-Received: <xmr:A7l2YTOmgbY0TfAk6WUEXqEaQWrhSIFZZ_CYmkw1kBUr9kPyhJslZz3Xha7cM58vewbeDPEfthBbYi44ynE68h167Dg8Adsdrwt0yIYaASB05g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddt
+    vdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhessh
+    htfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepgeehheefffegkeevhedthffgudfh
+    geefgfdthefhkedtleffveekgfeuffehtdeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepphgrthhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:A7l2Yd4BbebMsQfd7QZLHrIzv1MyMurZKecxTNFjw9u69k79Cvy-8A>
+    <xmx:A7l2Yd4DA4Uj3BJccmrzciUG2FM6ybKEpWv0N_jwIV7yYnGUOXoqYQ>
+    <xmx:A7l2Ydi1UO1yUur97b541jocm2oJk0i6W0CyTstF2NypR5xuiVYtbw>
+    <xmx:BLl2YcIJwaJgxwLeGikGlPMLIsEHM0gnjujr08o-BS9-rvBQ5ken7g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 10:02:42 -0400 (EDT)
+Date:   Mon, 25 Oct 2021 09:02:40 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Zev Weiss <zev@bewilderbeest.net>, kvm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Rajat Jain <rajatja@google.com>,
+        Jianxiong Gao <jxgao@google.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
+ reserved devices
+Message-ID: <YXa5AExKg+k0MmHV@heinlein>
+References: <YXJ3IPPkoLxqXiD3@hatter.bewilderbeest.net>
+ <YXJ88eARBE3vU1aA@kroah.com>
+ <YXLWMyleiTFDDZgm@heinlein>
+ <YXPOSZPA41f+EUvM@kroah.com>
+ <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
+ <YXZLjTvGevAXcidW@kroah.com>
+ <YXaYmie/CUHnixtX@heinlein>
+ <YXap8V/jMM3Ksj7x@smile.fi.intel.com>
+ <YXavBWTNYsufqj8u@heinlein>
+ <YXayTeJiQvpRutU0@kroah.com>
 MIME-Version: 1.0
-References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
-In-Reply-To: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 25 Oct 2021 19:31:17 +0530
-Message-ID: <CA+G9fYvdhk-H8wBDdaPmRMZS_egxndncUkbZ92HCnUFD1g_wSQ@mail.gmail.com>
-Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to `drm_gem_fb_get_obj'
-To:     dri-devel@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Cj4fc/vm/r+op96T"
+Content-Disposition: inline
+In-Reply-To: <YXayTeJiQvpRutU0@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 17:43, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> Regression found on arm gcc-11 built with multi_v5_defconfig
-> Following build warnings / errors reported on linux next 20211025.
->
-> metadata:
->     git_describe: next-20211025
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_short_log: 9ae1fbdeabd3 (\"Add linux-next specific files for 20211025\")
->     target_arch: arm
->     toolchain: gcc-11
->     config: multi_v5_defconfig
->
-> build error :
-> --------------
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.o: in
-> function `drm_fb_cma_get_gem_obj':
-> drivers/gpu/drm/drm_fb_cma_helper.c:46: undefined reference to
-> `drm_gem_fb_get_obj'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:46:
-> undefined reference to `drm_gem_fb_get_obj'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:46:
-> undefined reference to `drm_gem_fb_get_obj'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.o: in
-> function `drm_fb_cma_sync_non_coherent':
-> drivers/gpu/drm/drm_fb_cma_helper.c:133: undefined reference to
-> `drm_atomic_helper_damage_iter_init'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:135:
-> undefined reference to `drm_atomic_helper_damage_iter_next'
-> make[1]: *** [Makefile:1252: vmlinux] Error 1
-> make[1]: Target '__all' not remade because of errors.
-> make: *** [Makefile:226: __sub-make] Error 2
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The bisection script pointed to the first bad commit,
+--Cj4fc/vm/r+op96T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-commit 4b2b5e142ff499a2bef2b8db0272bbda1088a3fe
-drm: Move GEM memory managers into modules
+On Mon, Oct 25, 2021 at 03:34:05PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Oct 25, 2021 at 08:20:05AM -0500, Patrick Williams wrote:
+> > On Mon, Oct 25, 2021 at 03:58:25PM +0300, Andy Shevchenko wrote:
+> > > On Mon, Oct 25, 2021 at 06:44:26AM -0500, Patrick Williams wrote:
+> > > > On Mon, Oct 25, 2021 at 08:15:41AM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Mon, Oct 25, 2021 at 12:38:08AM -0500, Frank Rowand wrote:
+> > > > > > On 10/23/21 3:56 AM, Greg Kroah-Hartman wrote:
+> > > > =20
+> > > > > We have the bind/unbind ability today, from userspace, that can c=
+ontrol
+> > > > > this.  Why not just have Linux grab the device when it boots, and=
+ then
+> > > > > when userspace wants to "give the device up", it writes to "unbin=
+d" in
+> > > > > sysfs, and then when all is done, it writes to the "bind" file an=
+d then
+> > > > > Linux takes back over.
+> > > > >=20
+> > > > > Unless for some reason Linux should _not_ grab the device when bo=
+oting,
+> > > > > then things get messier, as we have seen in this thread.
+> > > >=20
+> > > > This is probably more typical on a BMC than atypical.  The systems =
+often require
+> > > > the BMC (running Linux) to be able to reboot independently from the=
+ managed host
+> > > > (running anything).  In the example Zev gave, the BMC rebooting wou=
+ld rip away
+> > > > the BIOS chip from the running host.
+> > > >=20
+> > > > The BMC almost always needs to come up in a "I don't know what coul=
+d possibly be
+> > > > going on in the system" state and re-discover where the system was =
+left off.
+> > >=20
+> > > Isn't it an architectural issue then?
+> >=20
+> > I'm not sure what "it" you are referring to here.
+> >=20
+> > I was trying to explain why starting in "bind" state is not a good idea=
+ for a
+> > BMC in most of these cases where we want to be able to dynamically add =
+a device.
+>=20
+> I think "it" is "something needs to be the moderator between the two
+> operating systems".  What is the external entity that handles the
+> switching between the two?
 
-> build link:
-> -----------
-> https://builds.tuxbuild.com/1zzgFZBGjpQ5R0lawQFW9iJ39Hp/build.log
->
-> build config:
-> -------------
-> https://builds.tuxbuild.com/1zzgFZBGjpQ5R0lawQFW9iJ39Hp/config
->
-> # To install tuxmake on your system globally
-> # sudo pip3 install -U tuxmake
-> tuxmake --runtime podman --target-arch arm --toolchain gcc-11
-> --kconfig multi_v5_defconfig
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+Ah, ok.
 
-- Naresh
+Those usually end up being system / device specific.  In the case of the BI=
+OS
+flash, most designs I've seen use a SPI mux between the BMC and the host
+processor or IO hub (PCH on Xeons).  The BMC has a GPIO to control the mux.
+
+As far as state, the BMC on start-up will go through a set of discovery cod=
+e to
+figure out where it left the system prior to getting reset.  That involves
+looking at the power subsystem and usually doing some kind of query to the =
+host
+to see if it is alive.  These queries are mostly system / host-processor de=
+sign
+specific.  I've seen anything from an IPMI/IPMB message alert from the BMC =
+to
+the BIOS to ask "are you alive" to reading host processor state over JTAG to
+figure out if the processors are "making progress".
+
+--=20
+Patrick Williams
+
+--Cj4fc/vm/r+op96T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmF2uP4ACgkQqwNHzC0A
+wRn2MQ/+IbWA2k0pqRbmsaz95jJj6QR4JWyOn//T7Ij+0GUqzRAjI79orT7opNkA
+sMhniF8v7xDUEGual2v2hEBoxtJxom3R8RgC0sQuxRFhmxdJlXCZZRqw4a42YNZN
+3ZspVBl3p7m9E3q9e8oI2yWP3RNJHErMhQJmIsw3osURrtSFCk5xdFkUMEXmzpou
+OFIxkcbKtLgi7TJ7/i9c3ubm3CExijLeUqAYr+BZHox727nQfc0ni30+KZYaTjof
+qZ6fUj890s6G9u9w1NTW+z8wzYZLhhQlB44WYBL4Ax46713+TmZnhhym5k0aD9Fh
+bh6jyfJRI7cuxXInS/uCIAqTipaI3TsNCglHZSSoLJ2E+4pLQXc/eRNRVr6Urmor
+Ut+Xv6tm9QEW4MkoTn4EpN1xTkmhczRYI6FRTal7QC0rRgOn6LN+V8UM57cmig7O
+L/wX0eUjUT7qLjmv0zReTGpjgvU1KzYr7J5riCZJuuwosvJU10sJfPaRlNR3NJ7x
+BPd+5vYifZsODphSc5IQojlCGwnTVrsbqsYWpb42ik+nLpCdfGiFYBvLCkmIfmWa
+FD+IMGh+V7Bt+DatdxLmEFTvIzEb4UrNM5+1PM/1UynD3NvJVUDbEKMlszRHKl6u
+/L+NyvjwozFI7/57T1YSk0DZPNSl7mazsNuL8UC3BXgixfw86wI=
+=z+8H
+-----END PGP SIGNATURE-----
+
+--Cj4fc/vm/r+op96T--
