@@ -2,113 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDE84398CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D314398CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhJYOm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        id S232832AbhJYOm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbhJYOmY (ORCPT
+        with ESMTP id S232620AbhJYOm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:42:24 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3C8C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:40:02 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 75so11143882pga.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:40:02 -0700 (PDT)
+        Mon, 25 Oct 2021 10:42:26 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA940C061746
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:40:03 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id j21so11931462lfe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:40:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=iGNob6sTb6S2amKiUvAi/+pjHea/cA815c+QZDOlSkk=;
-        b=SRja/ig4qID04QNrtzOjXzHx68AuZ/JPjGRN0FSNg1iR2DONyR08nTjffkI0ZQf1Hj
-         rBU5DvjoQpB33IAEWPyTY4RgcvR9UjXxEGjzBWRy9NjU/LA9reBg+agUxHM1hpAB1ePs
-         q4m9XMDlTxtngfMuMCuzJDhe50MeEQfEjnXnkoSwWsYljVk3s/G9cunMS9KA71nOUIjU
-         J+BNm9SygUzwaZKFALZ/OX+H/UBn9HEQg4qI6/G3fo4++lJNX2fv3vtSFZnxqKaWofza
-         +fkGhq9nj/pGTRdlcoPaftB6Z3nexedio+kYnZEmzZzNljYNXrjs3sLtq3Vq/BKXcdWR
-         XXdw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vSeuO2S8gO7fb4YHDdckKBWDpBHKOIZXH5IyvqBDscs=;
+        b=NbLYQG39K0FdsjS9RKzD3ZCE5etPjF9ZJuU3CAWuoECVrJoNU3gOZFVUFMVg4L+qGR
+         sSu61wghYmlxo5h0rHfG9xZVPV3TxIvb/c9VwtE0SwD8flLcuyMQHzw1nbgu0UT6dB4n
+         ZM/aWeXjEO1rRgKahHRj9dyL1P2sTSG1g4kUTRuI1hjpaK3daPAYUXi90ioncsTWyKic
+         Xkirje5t67542juH6Vx6xP/uRZ/1c0gPi62KBb08JECvLW+C3uyHwceHee9ba9ArxbtP
+         n/85BgvAo3IUBB8ou6GSUVHR5z6lzpJ9MwjzlBga1Xt12GPAWRVkmYpn6t+2SbOWi5Co
+         7+tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iGNob6sTb6S2amKiUvAi/+pjHea/cA815c+QZDOlSkk=;
-        b=kxOd4WkypJn3PaQsUHSds5ln8aDYDH7cFwCuY54MW8hNczf4tIvhoT6iaxFUNeCBc1
-         ODwmpxpuoB+NXf0ZYIooEr2N/YBZdHgc+at3Sr2oRjLgkauZ0USLZU7hBVtDqI9eg90S
-         xBKHBOlJJ+jzPAUZWu5s+Htc1ReYZ83w+GBf3JY+0GlDN4hjmM2+ztdGjK5F1g+iRMdD
-         4v8s2qX8/BgAXls0ZD1NM/slT+XXJdlsbEn2lWXuSt48mET8zuHJ8Z2uuNrVo/KKIxY3
-         NA+1Pd800+fpV3PF7U7+81uA89n2+N7pFdJVOWWJAEWRSM/Qm1EPCcmB0ImnDMsnFimN
-         UDHA==
-X-Gm-Message-State: AOAM531AvuBVovUagShyUB9OfUJIY8ciSJmVKr6bxdFjvor+YOw6phOW
-        qmCBkhOBNDn1b5PzevivK0A=
-X-Google-Smtp-Source: ABdhPJyZqBQsSw8EwvP3aF9kmS1Y+v5FEtKrCTF7pKjlFvN1AKLq3DXTqBs8jU/U242PPj8qvF7EiA==
-X-Received: by 2002:a63:e510:: with SMTP id r16mr13954005pgh.34.1635172801462;
-        Mon, 25 Oct 2021 07:40:01 -0700 (PDT)
-Received: from [192.168.1.4] ([59.95.95.35])
-        by smtp.gmail.com with ESMTPSA id z12sm21357381pjh.51.2021.10.25.07.39.58
+        bh=vSeuO2S8gO7fb4YHDdckKBWDpBHKOIZXH5IyvqBDscs=;
+        b=J4L9V/fk1G6SomQWoDNIJJHl3YGOuFG7l8bE/VricT7TNVKKGxqnceQEVo4pxDmllb
+         5AwskVK16yrlXrs1SD4Tw9GkRlaqKqjU24G4YjuaNMMWweDn6uxVzPO6mtXjE4GXi3pe
+         rrcII7sO1PtXTIgwcSJjXdrZsUgLi3ADGQQWUTfCSZB9/RGCQyEgHPRVEBbl+JTSgW1q
+         3fLGEm6rFQSsRMCaVQsC0UPSaU1keZV28J0pJZnvQCHXG8SiwBugvJlYRIvchronsnpK
+         +UuxD5gQu46ihi/JcfHYAwgN4hSCNOe2bA/Mk+OudH4kYw03kpa7RA30UpiPcUqLnvXU
+         xoZg==
+X-Gm-Message-State: AOAM533YaUVWaWRxwN7KUIIxRMc+9KWwCE5yMAKWp6kSZlxPL03Us0nX
+        8ixiQ8MEbVSS1SF25+TUIJvy/g==
+X-Google-Smtp-Source: ABdhPJwMoHKxmIO0z8GiwRBmXliae+plyTHEsRE0U0V13b0GIscQKoNoVL7TetE2ghkxe5x+LmT0kg==
+X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr6481347lfu.322.1635172802111;
+        Mon, 25 Oct 2021 07:40:02 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id p2sm1659441lfa.258.2021.10.25.07.40.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 25 Oct 2021 07:40:01 -0700 (PDT)
-Message-ID: <79254f8c-1d11-320a-6fdb-3ca066a8862a@gmail.com>
-Date:   Mon, 25 Oct 2021 20:09:56 +0530
+Subject: Re: [PATCH v2 06/11] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211007070900.456044-1-vkoul@kernel.org>
+ <20211007070900.456044-7-vkoul@kernel.org>
+ <11becace-7b44-6141-5a8b-1bd6d0673243@linaro.org>
+ <35eb95c5-1c42-94d1-3f33-df029f753ab3@linaro.org> <YW+957ZKnbf1g/89@matsya>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <e96d1368-fe7b-cf24-82c9-99783df44b0d@linaro.org>
+Date:   Mon, 25 Oct 2021 17:40:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] staging: r8188eu: avoid use of goto statement
+In-Reply-To: <YW+957ZKnbf1g/89@matsya>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-References: <YXY5jtR6neQ+ad+C@Sauravs-MacBook-Air.local>
- <YXZVV9j2DMA22MUS@kroah.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <YXZVV9j2DMA22MUS@kroah.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 25/10/21 12:27 pm, Greg KH wrote:
-> On Mon, Oct 25, 2021 at 10:28:54AM +0530, Saurav Girepunje wrote:
->> Remove the goto statement from _rtw_init_cmd_priv(). In this function
->> goto statement can be replace by return statement. By replacing the
->> goto statement with return statement local variable "res" is also
->> not required.As on goto label exit, function only return it is not
-> 
-> You need a ' ' after the '.' here please.
-> 
->> performing any cleanup.Avoiding goto will simplify the function.
-> 
-> Same here.
-> 
->> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->> ---
->>  drivers/staging/r8188eu/core/rtw_cmd.c | 16 +++++-----------
->>  1 file changed, 5 insertions(+), 11 deletions(-)
+On 20/10/2021 09:57, Vinod Koul wrote:
+> On 14-10-21, 16:50, Dmitry Baryshkov wrote:
+>> On 14/10/2021 16:41, Dmitry Baryshkov wrote:
+>>> On 07/10/2021 10:08, Vinod Koul wrote:
+>>>> We cannot enable mode_3d when we are using the DSC. So pass
+>>>> configuration to detect DSC is enabled and not enable mode_3d
+>>>> when we are using DSC
+>>>>
+>>>> We add a helper dpu_encoder_helper_get_dsc_mode() to detect dsc
+>>>> enabled and pass this to .setup_intf_cfg()
+>>>>
+>>>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+>>>> ---
+>>>> Changes since
+>>>> v1:
+>>>>    - Move this patch from 7 to 6
+>>>>    - Update the changelog
+>>>>    - Make dsc as int and store the DSC indices
+>>>>
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  5 +++--
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>>>>    4 files changed, 18 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>>> index e7270eb6b84b..fca07ed03317 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>>> @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode
+>>>> dpu_encoder_helper_get_3d_blend_mode(
+>>>>        return BLEND_3D_NONE;
+>>>>    }
+>>>> +static inline bool dpu_encoder_helper_get_dsc_mode(struct
+>>>> dpu_encoder_phys *phys_enc)
+>>>> +{
+>>>> +    struct drm_encoder *drm_enc = phys_enc->parent;
+>>>> +    struct msm_drm_private *priv = drm_enc->dev->dev_private;
+>>>> +
+>>>> +    if (priv->dsc)
+>>>> +        return BIT(0) | BIT(1); /* Hardcoding for 2 DSC topology */
+>>>
+>>> Please use defined values here rater than just BIT().
 >>
->> diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
->> index e17332677daa..22046bd5cf82 100644
->> --- a/drivers/staging/r8188eu/core/rtw_cmd.c
->> +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
->> @@ -19,7 +19,6 @@ No irqsave is necessary.
+>> Ah, it's a list of DSC blocks used. So the function name is misleading (as
+>> it's not a mode). I think we'd better pass DSC_n names here. What about
+>> using an array for cfg->dsc?
+> 
+> Yeah I can do better names.
+> 
 >>
->>  static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
->>  {
->> -	int res = _SUCCESS;
+>>>
+>>>> +
+>>>> +    return 0;
+>>>> +}
+>>>> +
+>>>>    /**
+>>>>     * dpu_encoder_helper_split_config - split display configuration
+>>>> helper function
+>>>>     *    This helper function may be used by physical encoders to
+>>>> configure
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>>>> index aa01698d6b25..8e5c0911734c 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>>>> @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>>>>        intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>>>>        intf_cfg.stream_sel = cmd_enc->stream_sel;
+>>>>        intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+>>>> +    intf_cfg.dsc = dpu_encoder_helper_get_dsc_mode(phys_enc);
+>>>> +
+>>>>        ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>>>>    }
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>>>> index 64740ddb983e..3c79bd9c2fe5 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>>>> @@ -118,7 +118,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct
+>>>> dpu_hw_ctl *ctx)
+>>>>        return ctx->pending_flush_mask;
+>>>>    }
+>>>> -static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+>>>> +static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+>>>>    {
+>>>>        if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
+>>>> @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct
+>>>> dpu_hw_ctl *ctx,
+>>>>        intf_cfg |= (cfg->intf & 0xF) << 4;
+>>>> -    if (cfg->mode_3d) {
+>>>> +    /* In DSC we can't set merge, so check for dsc too */
+>>>> +    if (cfg->mode_3d && !cfg->dsc) {
+>>>
+>>> The more I think about this hunk, the more I'm unsure about it.
+>>> Downstream has the following topoligies defined:
+>>>    * @SDE_RM_TOPOLOGY_DUALPIPE_3DMERGE_DSC: 2 LM, 2 PP, 3DMux, 1 DSC, 1
+>>> INTF/WB
+>>>    * @SDE_RM_TOPOLOGY_QUADPIPE_3DMERGE_DSC  4 LM, 4 PP, 3DMux, 3 DSC, 2 INTF
+>>>
+>>> While the latter is not supported on sdm845, the former one should be
+>>> (by the hardware). So in the driver I think we should make sure that
+>>> mode_3d does not get set rather than disallowing it here.
+>>>
+>>>>            intf_cfg |= BIT(19);
+>>>>            intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>>>>        }
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>>>> index 806c171e5df2..5dfac5994bd4 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>>>> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
+>>>>     * @mode_3d:               3d mux configuration
+>>>>     * @merge_3d:              3d merge block used
+>>>>     * @intf_mode_sel:         Interface mode, cmd / vid
+>>>> + * @dsc:                   DSC BIT masks
+>>>>     * @stream_sel:            Stream selection for multi-stream interfaces
+>>>>     */
+>>>>    struct dpu_hw_intf_cfg {
+>>>> @@ -46,6 +47,7 @@ struct dpu_hw_intf_cfg {
+>>>>        enum dpu_3d_blend_mode mode_3d;
+>>>>        enum dpu_merge_3d merge_3d;
+>>>>        enum dpu_ctl_mode_sel intf_mode_sel;
+>>>> +    unsigned int dsc;
 >>
+>> I think this should be:
+>> enum dpu_dsc dsc[MAX_DSCS];
+>> unsigned int num_dsc;
 > 
-> Please also remove the extra blank line.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> hmmm, how do we go about getting the num_dsc value here.
+> dpu_encoder_phys does not know about that..
 
-Thanks greg for review. I have updated the patch and sent v2.
 
-Regards,
-Saurav Girepunje 
+dpu_encoder_get_topology() can decide whether to use DSC or not and then 
+set num_dsc. For now it will always set 2 if we are using DSC at all, 
+but let's keep the decision in a single place rather than having it 
+scattered all over the driver.
+
+
+-- 
+With best wishes
+Dmitry
