@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153EE438CEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB4A438CED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhJYBIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 21:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        id S231929AbhJYBPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 21:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhJYBIo (ORCPT
+        with ESMTP id S229554AbhJYBO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 21:08:44 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330BEC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:06:23 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id kd16so788065qvb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:06:23 -0700 (PDT)
+        Sun, 24 Oct 2021 21:14:58 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5390BC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:12:36 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g8so4223009edb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:12:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pUgFMuFWMqRkPlVa3Bg3L3JdMeXkE1iDKFTnUjQ3Sz0=;
-        b=DAYeIL98GmFt5w1sG/kbhRK/o+yMnFp307KdZpZ35rFhYjdlYSnWi4YX8btq9/iUQJ
-         zqoqL1zXnKhcctXDQpScuBpWYddJhbF1FQFIu6O1aOryCw9dhBnysh4t9wcdieP/ZxEl
-         3c9wjVaLqwJvjeUqI8HN6dPfa8BgbIccwvbPAXiKvmv1GYXod0+KTLQKsg+gk2cbEfL2
-         ivDDDV/BNgIQ5kT+LFhBWvuRC6kdUD/T6zq9arQ4Edir8Hi2XzwDV0NAjvMKDgZ3JhEy
-         1FCCAJiTMtHR+5DQFJByX4TlfULgewad0wixB4sMSPkLoeDMn16Bkw8Skj51Kc7fsRt7
-         Y8nw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=C+ecm+t2PsReTz6De6QOhCuZZsxdJqQBgK7vEegwMuM=;
+        b=WEqLmWzDOX6QrqtFA5QIgOR5wjRm+JCAf99IwnVz5q2Wi+41Ep2VDqUZX/KLOB2Wq5
+         duRgfXwHFkQ3EdHrgl9P4A1pIitqtYIdlX9BCisBEgKhTnugGnERhixIDUGF40Qi1L17
+         hr7LagynymmsJkgY4UIT6uN7GalDTyFrpJCQm7h0Xf8U+KwpSjBYLU419fOiKUDJmk32
+         d6cgk6E4U8vNmQW/y5Vz/CB6T+qMbVYJT0bMrQ2ovyBH2CtyhWK3wQ8/IxTK2xUM6CAX
+         xunNLmibV2ixTcr9gt3/Jt3XbsLl3t44N+avlEgUKW0qV9YBK2UKB8Is/1D2tdbFSu+R
+         QPng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=pUgFMuFWMqRkPlVa3Bg3L3JdMeXkE1iDKFTnUjQ3Sz0=;
-        b=4j7fXli6d8DsKDeI2z3kiSBuHZ7+hjrvaceRq2AyAaB8Msh0lM+hKBs3dpSjYGAF/i
-         EiymtyC88Tlwf8PDzwoSWAKfjjhe/4UvV7TrwBNsq1kLEN6TRq4rERtgFeNZ59hngEql
-         PcTnNALe18ers7ckEiQdRDtKUOaz6wxLQADq1YEdYrNc+iITQTZmInsbY/vBjT2JNcnG
-         tWdUndQ0yk97t/ZCZau/9zspPny/MbVZBn6n1/MJ48F+Yp022qSQ3WIDXev4OCL69LRm
-         EQh9GMe0O1MGs9R548i4PIIqdYfAKRf+R5tgA8ASjtDOwpRCg1xRngzMHfje3OmTGDdx
-         p1Ww==
-X-Gm-Message-State: AOAM531M2KbdDkus66PGqDRgpf7wLI68xc+Csii+3F+1P9QAxLTB97wF
-        9O7uOGpjsuaGeVk2iGz6RPkRC8pj6/gvE4ol
-X-Google-Smtp-Source: ABdhPJxnekBfNlKAQb4vwX0YsEcIUCoHwtP2LefYDFVm5wOt86f//qHwU2lw4nZR2VEPKC29FCl08Q==
-X-Received: by 2002:a0c:fe8c:: with SMTP id d12mr8201265qvs.19.1635123982259;
-        Sun, 24 Oct 2021 18:06:22 -0700 (PDT)
-Received: from localhost.localdomain ([2607:fb90:1bd1:606f:798c:522:4ec4:cb93])
-        by smtp.gmail.com with ESMTPSA id q22sm7906035qkj.64.2021.10.24.18.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 18:06:21 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
-        cezary.rojewski@intel.com, perex@perex.cz, tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fix unmet dependency on GPIOLIB for SND_SOC_MAX98357A
-Date:   Sun, 24 Oct 2021 21:06:15 -0400
-Message-Id: <20211025010615.10070-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=C+ecm+t2PsReTz6De6QOhCuZZsxdJqQBgK7vEegwMuM=;
+        b=ZRoxJd1+Oy5NhHZK/UPfPT3g+uWqYqNq5Cup1G8042xMmyNvdH8k1tlEQ1M/wY/YVD
+         RElnM+vMuqujcoxy1/WVMxXQLrwzHnUwCxx+OoK0BGgSjZ8HWisNt/ZBPcvNU7/6zKCB
+         J+Z4QNH5bZdMZ52zyzxAmYmnm/H2+4H4AESCVsVSbQIFko3f3ARjww7z2TZ8V3k41GqG
+         IrqMK2AZuRSDcOe+x/nPh45o5/cCjFOfds0A+6Cv8b8gjQxd1mqJLpMJsxyOe+dKlsRm
+         Hv7vBAKWI+VK+rjaGQWXTkHGoC2YsJC4Uy26o24SZfgBZvxjnPzN+5dvkcJT5vTXpapd
+         SwZw==
+X-Gm-Message-State: AOAM53334ljyfMBHpkxTRYHXvVZNpdxH3YFOiRAL/ilZqF/revXY/jjl
+        ZCzJIKqEs1PNel+s3XYsQPxxylfJBEsLwMGJqNw=
+X-Google-Smtp-Source: ABdhPJy97jYbxK5dor/maO8rTF/AfWltfXK/H+KUbkMlti5Bg3qbCSqAqT1WuqNvLeMXEnWRcFB7cRFKWXk3lRNbLy0=
+X-Received: by 2002:a17:907:3da7:: with SMTP id he39mr18612364ejc.554.1635124355353;
+ Sun, 24 Oct 2021 18:12:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <mhng-51275835-4c34-4099-85f5-13c6dbef4e19@palmerdabbelt-glaptop> <750f6239-154d-9190-24ff-ece033add638@infradead.org>
+In-Reply-To: <750f6239-154d-9190-24ff-ece033add638@infradead.org>
+From:   Daniel Mangum <georgedanielmangum@gmail.com>
+Date:   Sun, 24 Oct 2021 21:12:24 -0400
+Message-ID: <CAA=qMX65_rV8DndydsvT3y9ZMkQ37PNjDFuKcmdbB1mRNdVMNg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: cacheinfo: fix typo of homogenous
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH is selected,
-and GPIOLIB is not selected, Kbuild gives the
-following warnings:
+Thanks for the feedback folks! I have sent a v2 patch.
 
-WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_DA7219_MAX98357A_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y]
+Dan
 
-WARNING: unmet direct dependencies detected for SND_SOC_DMIC
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_DA7219_MAX98357A_GENERIC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y]
 
-WARNING: unmet direct dependencies detected for SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] && SND_SOC_INTEL_KBL [=y] && I2C [=y] && ACPI [=y] && (MFD_INTEL_LPSS [=y] || COMPILE_TEST [=n])
-
-This is because SND_SOC_DMIC and SND_SOC_MAX98357A are
-selected by SND_SOC_INTEL_DA7219_MAX98357A_GENERIC, which
-is also selected by SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH.
-However, the selectors do not depend on or select GPIOLIB,
-despite SND_SOC_DMIC and SND_SOC_MAX98357A depending on GPIOLIB.
-
-These unmet dependency bugs were detected by Kismet,
-a static analysis tool for Kconfig. Please advise if this
-is not the appropriate solution.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- sound/soc/intel/boards/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 61b71d6c44cf..87db6a80876a 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -371,7 +371,7 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
- 
- config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
- 	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
--	depends on I2C && ACPI
-+	depends on I2C && ACPI && GPIOLIB
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
- 	help
--- 
-2.30.2
-
+On Sat, Oct 23, 2021 at 4:36 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 10/23/21 1:30 PM, Palmer Dabbelt wrote:
+> > On Fri, 08 Oct 2021 13:56:25 PDT (-0700), georgedanielmangum@gmail.com =
+wrote:
+> >> Updates 'homonogenous' to 'homogenous' in comment.
+> >
+> > I don't really know spelling that well, but checkpatch says
+> >
+> >     WARNING: 'homogenous' may be misspelled - perhaps 'homogeneous'?
+> >
+> > when applying this.  It looks like they're both words, but "homogeneous=
+" is the right one?
+> >
+>
+> Internet search to grammar.com says:
+>
+> To summarise, Earlier, homogenous was used as a scientific term, mainly i=
+n biology, but now it is almost obsolete, being replaced by homologous. Whe=
+reas, homogeneous is a common word, very much in use and means having simil=
+ar or comparable characteristics.
+>
+> Several web sites agree that homogeneous is currently preferable.
+>
+> >>
+> >> Signed-off-by: hasheddan <georgedanielmangum@gmail.com>
+> >> ---
+> >>  arch/riscv/kernel/cacheinfo.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cachein=
+fo.c
+> >> index 90deabfe63ea..ff98546b1152 100644
+> >> --- a/arch/riscv/kernel/cacheinfo.c
+> >> +++ b/arch/riscv/kernel/cacheinfo.c
+> >> @@ -29,7 +29,7 @@ static struct cacheinfo *get_cacheinfo(u32 level, en=
+um cache_type type)
+> >>      /*
+> >>       * Using raw_smp_processor_id() elides a preemptability check, bu=
+t this
+> >>       * is really indicative of a larger problem: the cacheinfo UABI a=
+ssumes
+> >> -     * that cores have a homonogenous view of the cache hierarchy.  T=
+hat
+> >> +     * that cores have a homogenous view of the cache hierarchy.  Tha=
+t
+> >>       * happens to be the case for the current set of RISC-V systems, =
+but
+> >>       * likely won't be true in general.  Since there's no way to prov=
+ide
+> >>       * correct information for these systems via the current UABI we'=
+re
+>
+>
+> --
+> ~Randy
