@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83C2439E79
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D17439E7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhJYS2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:28:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42911 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233150AbhJYS2G (ORCPT
+        id S233219AbhJYS2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233400AbhJYS2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:28:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635186343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WmLX7TLtZ9IDJ1JQ+2m7C+nUTKDcem4HGFPTzsvzRlk=;
-        b=GYU6diwvCR+Vxojf7pIQFcdjSnOPP0dxxrfRokloHQQ49xdmHv2oUWjUCRgDwl/TCBlCKI
-        1ZGMVL2pceh1rFUGA8Yo2Usbd+NCMJXm30/sN6E2/VoD5otJHAe84jWsJsyBbAI4ZDgi4x
-        NbUX9F4goP26o4iNIIotoPtjymlBIko=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-80-pXULrgXMNu2BFbQqJnWKPA-1; Mon, 25 Oct 2021 14:25:40 -0400
-X-MC-Unique: pXULrgXMNu2BFbQqJnWKPA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3722410B3959;
-        Mon, 25 Oct 2021 18:25:37 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.18.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 28C21100763D;
-        Mon, 25 Oct 2021 18:25:33 +0000 (UTC)
-Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        Openrisc <openrisc@lists.librecores.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-References: <20211022120058.1031690-1-arnd@kernel.org>
- <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
- <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
- <YXZ/iLB7BvZtzDMp@hirez.programming.kicks-ass.net>
- <CAK8P3a2Luz7sd5cM1OdZhYCs_UPzo+2qVQYSZPfR2QN+0DkyRg@mail.gmail.com>
- <2413f412-a390-bbc0-e848-e2a77d1f0ab3@redhat.com>
- <CAK8P3a3JEBF-dEg0iVThMMRNK3CDxY+mRtTeStMusycnethO_g@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <d7af2422-3264-b9bb-b515-da4351743448@redhat.com>
-Date:   Mon, 25 Oct 2021 14:25:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 25 Oct 2021 14:28:12 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302A9C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:25:50 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id e4so14445082wrc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:25:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9HKZ3WHs39Ll1KFWQ7mEVgrxMfllF9VNmXJhWSD6zbg=;
+        b=eGWi6BKNAikOTbSn81Sa7AREWjMIxOWCW6giZfRNlMcPV+2EmLigPFn+O2Z62O0sYa
+         iV0pfEifAhHfWukClZSiKZWUtW6KfA7KRV1ZDicdiR3B8Sti9c4fE1nIPwnUH2j2+yy7
+         CgbPrMSi7sMfeIugSlIidXNRbM0IBSpjeIFgbji9Hlzij/fQbDLUW6hA78f7gB7wW0sh
+         hdnUjbbgGjOghJEuveE8BUrJhuo37fkdHCNOCAypzkv6cD2ED+omeKUvRLDqTFZ9dh6M
+         fECVzVUsc+MnoY5NLk4U5AI8Mgr9mJEWB5ALlZ9FiHJ7gBZ6yAXbyhgvuYQRMS/29qp6
+         LSTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9HKZ3WHs39Ll1KFWQ7mEVgrxMfllF9VNmXJhWSD6zbg=;
+        b=a+Xy1H9X4jFcsnZuqfCVRnuo75uZ+T5xPffPBdkj3ly1Xgu6WpYxVOX0lScMnlGuWr
+         Oyg2PgPZQ4aJhQDVVdCmmzJ9y9Oe0A0kDeAsDTtdWHr8457IDEZVoBfYecOEjmN/CMu5
+         OfUYnsIINNNjEftdTcIb6oDToENJG4hCnxr/jcX/Lnii9RIJoAGg44i/RiObsyvirtOL
+         pS3+OfLF8a/9drQskaEjACm/KorTybcRz17DwYOObKk6VDI3AYghR3szQD02BYQ9sUnW
+         rgB93KLsnjYsz4WrnqGKUJwjzmnaojygUUuJ35aCH7IML1D4QxrjluLzpJ5ESu1yhdjU
+         xnIA==
+X-Gm-Message-State: AOAM533RNMeFvzlx1U6yHIB+T/jLS02Rg9CEu0J5UfyBlkx61jKFDhCi
+        yz0N5J+02YtS4QDhk8L0UtJYtg==
+X-Google-Smtp-Source: ABdhPJwsdj/Ufj88FsRkYCdm3EHNUiDfxilc2w021XdzcMTc2/IYksh4yPlv764YLumxYKv43oMz1A==
+X-Received: by 2002:adf:f9d2:: with SMTP id w18mr12644602wrr.86.1635186348799;
+        Mon, 25 Oct 2021 11:25:48 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id l1sm7730050wrb.73.2021.10.25.11.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 11:25:48 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 20:25:46 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH v2 00/10] staging: media: zoran: fusion in one module
+Message-ID: <YXb2quNLuUTKtjux@Red>
+References: <20211013185812.590931-1-clabbe@baylibre.com>
+ <da925d73-fdf0-3962-3841-a1dd53b5c5dd@xs4all.nl>
+ <YXa9WGs7ewyaHmI9@Red>
+ <71b72175-538e-87e4-d662-e59fd4131a43@xs4all.nl>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3JEBF-dEg0iVThMMRNK3CDxY+mRtTeStMusycnethO_g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <71b72175-538e-87e4-d662-e59fd4131a43@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 11:44 AM, Arnd Bergmann wrote:
-> On Mon, Oct 25, 2021 at 5:28 PM Waiman Long <longman@redhat.com> wrote:
->> On 10/25/21 9:06 AM, Arnd Bergmann wrote:
->>> On s390, we pick between the cmpxchg() based directed-yield when
->>> running on virtualized CPUs, and a normal qspinlock when running on a
->>> dedicated CPU.
->> I am not aware that s390 is using qspinlocks at all as I don't see
->> ARCH_USE_QUEUED_SPINLOCKS being set anywhere under arch/s390. I only see
->> that it uses a cmpxchg based spinlock.
-> Sorry, I should not have said "normal" here. See arch/s390/lib/spinlock.c
-> for their custom queued spinlocks as implemented in arch_spin_lock_queued().
-> I don't know if that code actually does the same thing as the generic qspinlock,
-> but it seems at least similar.
+Le Mon, Oct 25, 2021 at 05:13:04PM +0200, Hans Verkuil a écrit :
+> On 25/10/2021 16:21, LABBE Corentin wrote:
+> > Le Mon, Oct 25, 2021 at 02:45:02PM +0200, Hans Verkuil a écrit :
+> >> Hi Corentin,
+> >>
+> >> On 13/10/2021 20:58, Corentin Labbe wrote:
+> >>> Hello
+> >>>
+> >>> The main change of this serie is to fusion all zoran related modules in
+> >>> one.
+> >>> This fixes the load order problem when everything is built-in.
+> >>>
+> >>> Regards
+> >>>
+> >>> Changes since v1:
+> >>> - add missing debugfs cleaning
+> >>> - clean some remaining module_get/put functions which made impossible to
+> >>>   remove the zoran module
+> >>> - added the two latest patchs
+> >>
+> >> Something weird is wrong with this series. I have a DC30, but loading this with:
+> >>
+> >> modprobe zr36067 card=3
+> >>
+> >> results in this error message in the kernel log:
+> >>
+> >> [   58.645557] zr36067: module is from the staging directory, the quality is unknown, you have been warned.
+> >> [   58.646658] zr36067 0000:03:00.0: Zoran MJPEG board driver version 0.10.1
+> >> [   58.646793] zr36067 0000:03:00.0: Zoran ZR36057 (rev 1), irq: 18, memory: 0xf4000000
+> >> [   58.648821] zr36067 0000:03:00.0: Initializing i2c bus...
+> >> [   58.662420] vpx3220 22-0047: vpx3216b found @ 0x8e (DC30[0])
+> >> [   58.737445] zr36067 0000:03:00.0: Fail to get encoder
+> >>
+> >> This works before, so why this is now failing is not clear to me.
+> >>
+> >> It does work with 'card=0', but I really have a DC30.
+> >>
+> >> If I test with 'card=0' then the rmmod issue is now solved.
+> > 
+> > Everything normal, since card 0 does not have encoder.
+> > Could you check that adv7175 is compiled ?
+> 
+> Yes, and it loaded as well (I see it with lsmod).
+> 
+> However, there is no adv7175 on my board, instead it appears to have an ITT MSE3000.
+> There is no driver for this one (and I don't even think it is an i2c device), so
+> I suspect that before the driver just continued without encoder support, whereas now
+> it fails when it can't load the encoder.
+> 
+> Could that be the reason? In the absence of an encoder, I think it should just
+> continue, esp. since the driver doesn't use the encoder anyway.
+> 
 
-Yes, you are right. Their queued lock code looks like a custom version 
-of the pvqspinlock code.
+So probably the card list is wrong against DC30.
+I checked high resolution photo of DC30 on internet, and it confirms the fact that DC30 does not have adv7175.
 
-Cheers,
-Longman
+Since DC30 and DC30+ are identical in the card list, perhaps it is a very old copy/paste error.
 
+So I will add a patch removing adv7175 from DC30.
+
+Thanks for the report
+Regards
