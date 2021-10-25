@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263A543A1D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B05B43A0BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbhJYTmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:42:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53236 "EHLO mail.kernel.org"
+        id S236374AbhJYTe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:34:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236709AbhJYTfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DF4A60C4B;
-        Mon, 25 Oct 2021 19:32:20 +0000 (UTC)
+        id S235813AbhJYT3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:29:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9A9E61167;
+        Mon, 25 Oct 2021 19:25:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190342;
-        bh=cc1GL83gT3Dxfcuqd6jBoPymTs4TLnGIBDuRj5MXjxU=;
+        s=korg; t=1635189960;
+        bh=xeZfBoYUUj8wuwf6ngr4Dp5HMAeqVdy8+8l0XBq+WTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PtqtMYOqp/BQaFpz4Z0YPiblcBafbYyuoTeEgnOExHgB6CjXrPTN3RFjWZVWb5W5F
-         OWoqBjyc0ZTKGva16sAFIF8OXVGEdaFhx61+75x5vOvfpd8cldnR0LlB03bc/Z62qJ
-         vklfvodhNO7w4uIj0mtJNdu4gl+Bd25W3mPKPE2I=
+        b=Nea/3wR9jVw/4aD1MStKr9YWQBGE+8wPjExmmArLfBzjvuAIw0BLapp1JLit6mv/v
+         46H+iwGHku+v8ChFb2cviwmjONQjKpUEwLrXmHqzvLLJXjgpsuILKkmij4O1RV2LPe
+         QmjV17yYEoaiHxhqMjuVKNlVFy4nUU4OJr8PlpqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        ClaudiuManoilclaudiu.manoil@nxp.com
-Subject: [PATCH 5.10 33/95] net: enetc: fix ethtool counter name for PM0_TERR
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 13/58] NIOS2: irqflags: rename a redefined register name
 Date:   Mon, 25 Oct 2021 21:14:30 +0200
-Message-Id: <20211025191001.676347785@linuxfoundation.org>
+Message-Id: <20211025190939.620233225@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit fb8dc5fc8cbdfd62ecd16493848aee2f42ed84d9 ]
+[ Upstream commit 4cce60f15c04d69eff6ffc539ab09137dbe15070 ]
 
-There are two counters named "MAC tx frames", one of them is actually
-incorrect. The correct name for that counter should be "MAC tx error
-frames", which is symmetric to the existing "MAC rx error frames".
+Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
+with the name "CTL_STATUS". Change the one in arch/nios2/ to be
+"CTL_FSTATUS" (flags status) to eliminate the build warning.
 
-Fixes: 16eb4c85c964 ("enetc: Add ethtool statistics")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: <Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20211020165206.1069889-1-vladimir.oltean@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+In file included from ../drivers/mmc/host/tmio_mmc.c:22:
+drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
+   31 | #define CTL_STATUS 0x1c
+arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
+   14 | #define CTL_STATUS      0
+
+Fixes: b31ebd8055ea ("nios2: Nios2 registers")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/nios2/include/asm/irqflags.h  | 4 ++--
+ arch/nios2/include/asm/registers.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c b/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c
-index 89e558135432..9c1690f64a02 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_ethtool.c
-@@ -157,7 +157,7 @@ static const struct {
- 	{ ENETC_PM0_TFRM,   "MAC tx frames" },
- 	{ ENETC_PM0_TFCS,   "MAC tx fcs errors" },
- 	{ ENETC_PM0_TVLAN,  "MAC tx VLAN frames" },
--	{ ENETC_PM0_TERR,   "MAC tx frames" },
-+	{ ENETC_PM0_TERR,   "MAC tx frame errors" },
- 	{ ENETC_PM0_TUCA,   "MAC tx unicast frames" },
- 	{ ENETC_PM0_TMCA,   "MAC tx multicast frames" },
- 	{ ENETC_PM0_TBCA,   "MAC tx broadcast frames" },
+diff --git a/arch/nios2/include/asm/irqflags.h b/arch/nios2/include/asm/irqflags.h
+index b3ec3e510706..25acf27862f9 100644
+--- a/arch/nios2/include/asm/irqflags.h
++++ b/arch/nios2/include/asm/irqflags.h
+@@ -9,7 +9,7 @@
+ 
+ static inline unsigned long arch_local_save_flags(void)
+ {
+-	return RDCTL(CTL_STATUS);
++	return RDCTL(CTL_FSTATUS);
+ }
+ 
+ /*
+@@ -18,7 +18,7 @@ static inline unsigned long arch_local_save_flags(void)
+  */
+ static inline void arch_local_irq_restore(unsigned long flags)
+ {
+-	WRCTL(CTL_STATUS, flags);
++	WRCTL(CTL_FSTATUS, flags);
+ }
+ 
+ static inline void arch_local_irq_disable(void)
+diff --git a/arch/nios2/include/asm/registers.h b/arch/nios2/include/asm/registers.h
+index 183c720e454d..95b67dd16f81 100644
+--- a/arch/nios2/include/asm/registers.h
++++ b/arch/nios2/include/asm/registers.h
+@@ -11,7 +11,7 @@
+ #endif
+ 
+ /* control register numbers */
+-#define CTL_STATUS	0
++#define CTL_FSTATUS	0
+ #define CTL_ESTATUS	1
+ #define CTL_BSTATUS	2
+ #define CTL_IENABLE	3
 -- 
 2.33.0
 
