@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7AD439F91
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793A443A2D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhJYTWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:22:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
+        id S238388AbhJYTxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhJYTUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:20:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92821610CB;
-        Mon, 25 Oct 2021 19:18:29 +0000 (UTC)
+        id S238065AbhJYTr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:47:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 049F261214;
+        Mon, 25 Oct 2021 19:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189510;
-        bh=Odl8UDWKBjYcjTCSPWj/Qnym7dzhzEKIInjH4DsDsME=;
+        s=korg; t=1635190849;
+        bh=JemFNvA4/QXcof/Gj6LnAX7JPYug6cOblT0fkwSJ7MM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cvIm92MrbLOpkQUbZB1AaeZQ8FUrGwqwDR8zLecgmNEIJ0nItLfeJh4KeevHSjYZz
-         8G3JNVsoD9hUyXf0VptJvRlN54sIMEw3hQ81tZiYBEl3tr1FxgKLgxY24QvkgTqdAJ
-         8cmUWD1p7c/l+iON0hBeYuvizJg/FDYyfCf+5jUs=
+        b=PPyJHUOpUb1fG3qNFHATEhBFDf5E4Yn3UNajLyzS/GT31hmzGDKhdCY9lM5Pn6NfE
+         3MTyFKi/eaeTGGDqxQcItA6fCqRIp5jQoejA2XG1vb8Nh8uUO8J8aASGazOEhY0bgz
+         4cJG8yqstLZjhhFQHjTDt050G6SsTDyhm3nKcOkw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Subject: [PATCH 4.9 22/50] pata_legacy: fix a couple uninitialized variable bugs
+        stable@vger.kernel.org,
+        "Sottas Guillaume (LMB)" <Guillaume.Sottas@liebherr.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.14 068/169] can: isotp: isotp_sendmsg(): fix return error on FC timeout on TX path
 Date:   Mon, 25 Oct 2021 21:14:09 +0200
-Message-Id: <20211025190937.195986448@linuxfoundation.org>
+Message-Id: <20211025191026.106618535@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-commit 013923477cb311293df9079332cf8b806ed0e6f2 upstream.
+commit d674a8f123b4096d85955c7eaabec688f29724c9 upstream.
 
-The last byte of "pad" is used without being initialized.
+When the a large chunk of data send and the receiver does not send a
+Flow Control frame back in time, the sendmsg() does not return a error
+code, but the number of bytes sent corresponding to the size of the
+packet.
 
-Fixes: 55dba3120fbc ("libata: update ->data_xfer hook for ATAPI")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+If a timeout occurs the isotp_tx_timer_handler() is fired, sets
+sk->sk_err and calls the sk->sk_error_report() function. It was
+wrongly expected that the error would be propagated to user space in
+every case. For isotp_sendmsg() blocking on wait_event_interruptible()
+this is not the case.
+
+This patch fixes the problem by checking if sk->sk_err is set and
+returning the error to user space.
+
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Link: https://github.com/hartkopp/can-isotp/issues/42
+Link: https://github.com/hartkopp/can-isotp/pull/43
+Link: https://lore.kernel.org/all/20210507091839.1366379-1-mkl@pengutronix.de
+Cc: stable@vger.kernel.org
+Reported-by: Sottas Guillaume (LMB) <Guillaume.Sottas@liebherr.com>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/pata_legacy.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/can/isotp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/ata/pata_legacy.c
-+++ b/drivers/ata/pata_legacy.c
-@@ -328,7 +328,8 @@ static unsigned int pdc_data_xfer_vlb(st
- 			iowrite32_rep(ap->ioaddr.data_addr, buf, buflen >> 2);
- 
- 		if (unlikely(slop)) {
--			__le32 pad;
-+			__le32 pad = 0;
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -960,6 +960,9 @@ static int isotp_sendmsg(struct socket *
+ 	if (wait_tx_done) {
+ 		/* wait for complete transmission of current pdu */
+ 		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
 +
- 			if (rw == READ) {
- 				pad = cpu_to_le32(ioread32(ap->ioaddr.data_addr));
- 				memcpy(buf + buflen - slop, &pad, slop);
-@@ -716,7 +717,8 @@ static unsigned int vlb32_data_xfer(stru
- 			ioread32_rep(ap->ioaddr.data_addr, buf, buflen >> 2);
++		if (sk->sk_err)
++			return -sk->sk_err;
+ 	}
  
- 		if (unlikely(slop)) {
--			__le32 pad;
-+			__le32 pad = 0;
-+
- 			if (rw == WRITE) {
- 				memcpy(&pad, buf + buflen - slop, slop);
- 				iowrite32(le32_to_cpu(pad), ap->ioaddr.data_addr);
+ 	return size;
 
 
