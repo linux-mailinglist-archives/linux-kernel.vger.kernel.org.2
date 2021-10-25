@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3E5439313
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6BA439333
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhJYJ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        id S232734AbhJYKAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhJYJ6I (ORCPT
+        with ESMTP id S229764AbhJYKAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:58:08 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E31C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:55:46 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id v7so24567387ybq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AyTuCec8PQH+pdQXKJ1aGslhFhlqmgZiu6+0uLpWr9w=;
-        b=4W4AxVmNGhV7mCGfx+Kqc6uNJXvrd6mg0DRSx4TETf/0qPR7gPBcRIGWDbzO4sxGMr
-         R7+SBGvXb/c7O35EHZydkvaflGFZmTWqQ1+EpFUFwUzsjEFB74eAPsR1lcXvrJHWVbGO
-         QYwuoQl+Yajrd+SrgxZsw7PMVBnPzaNyaKHZ+uyR+YQis4wQ8ZJM6AkgDYTQeVWTXvLs
-         IUOwruVwpZjlxOAKUNQJOu9DrTt9XX/WfYPcOFAZ3Aj16Vn6w74QF12gbyOa43PY9CSh
-         xYSjOAB/A14nUmfdJHZ0tksfKbGc0kew050bWy3I+odQ941pWm5bvzLSeprlCE4VZF9D
-         aBxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AyTuCec8PQH+pdQXKJ1aGslhFhlqmgZiu6+0uLpWr9w=;
-        b=YAHCUUN15LM3R9w3rDHSoarwQp1Fk0agQXdkTWvfCIf4DDbysFZPxszQkrU7lBTDFV
-         Yx0ilnOzvtBJ5RRXw52Tbz/5XVU/w9uBJ81uLkWbPAz1Eft61e01ba1v75x8+PluJKWK
-         TFAXiWTEzfhDYVGLop9UMvUB8FWIqqMyw/BCITtxjAyv/rSPjTkrBCkmgkhzY1B3xEC1
-         peq6O+diegsVdoclkWPGYfflI1Bd0XNa46wZT8rHZtATaWAkWDMNuMeRHMRk0Y6/sYCX
-         SK3kPa87yukQp26dvWTFV7uIVHYVs49mjmT1yUeZx2NFzbUfOkXonVLBehZRnFc9L2Qe
-         /pWA==
-X-Gm-Message-State: AOAM531QGYZrWrXiVKcpeOukyioS5i5HUfNJyyu/SdjYVdIFHFZ7gHnG
-        kdXVIWV1Dx9FEOp2EParxYwv1QHAlUfFRaMi449iIPT0F2yPzQ==
-X-Google-Smtp-Source: ABdhPJybpta/2nb9bybcpUTdcPtobZ/viduZOJ197+NNZeAHKXLoS3N1q1HuAxWHH5YYn1DpqSkR+XiZhXetLCTF+30=
-X-Received: by 2002:a05:6902:1142:: with SMTP id p2mr16763193ybu.279.1635155745658;
- Mon, 25 Oct 2021 02:55:45 -0700 (PDT)
+        Mon, 25 Oct 2021 06:00:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77274C061745;
+        Mon, 25 Oct 2021 02:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kBcBoUwV55Vzzvl24KD3p0ArPNxglJAR5S99vkQU21A=; b=MBCIXeXhf6eTBncr2QpHLUaYS7
+        6G6hOzIwUql2vqiXbPvPa9A34kSeid/gzxP9EN8BQVKIOSUqesYOAciHBywhpFV3bEqT11li2ezNu
+        zXx9DIsxagTnN0sBGW93C3YbKy15aQnc8uqykO8jv9JtgA7VFmGzMn4I4p3JH8gdxJP7oqeAJkvZK
+        9hy4dbsx6zYQT7WBZKaHuQoTx6ibgTsFc6MJcGaipDs9afWbC+XldzOHN6X5mUvDpqD4/OWFj24A9
+        qTxIRw6JiXreO28PuVyy/+uQk7JTwDJ6Zg/u5Y+Y7ul3SpvRSdBp1gBelToDOuKySSBC3ttwob/pS
+        /4/6lXZQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mewjU-00C7ZM-Sf; Mon, 25 Oct 2021 09:57:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9A95B3002AE;
+        Mon, 25 Oct 2021 11:57:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 74DE220C6C150; Mon, 25 Oct 2021 11:57:28 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 11:57:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH] locking: remove spin_lock_flags() etc
+Message-ID: <YXZ/iLB7BvZtzDMp@hirez.programming.kicks-ass.net>
+References: <20211022120058.1031690-1-arnd@kernel.org>
+ <cc8e3c58-457d-fdf3-6a62-98bde0cefdea@redhat.com>
+ <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211025082843.671690-1-songyuanzheng@huawei.com>
-In-Reply-To: <20211025082843.671690-1-songyuanzheng@huawei.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 25 Oct 2021 17:55:07 +0800
-Message-ID: <CAMZfGtUWb5MGTAWots=db97OqAiH_LxJpRAqZUX_GdJsiVX4EQ@mail.gmail.com>
-Subject: Re: [PATCH -next] mm/vmpressure: fix data-race with memcg->socket_pressure
-To:     Yuanzheng Song <songyuanzheng@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0YjaRS+aUCOKGjsfkR3TM49PrG6U4ftG_Fz+OFuyCb0w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 4:14 PM Yuanzheng Song <songyuanzheng@huawei.com> wrote:
->
-> BUG: KCSAN: data-race in __sk_mem_reduce_allocated / vmpressure
->
-> write to 0xffff8881286f4938 of 8 bytes by task 24550 on cpu 3:
->  vmpressure+0x218/0x230 mm/vmpressure.c:307
->  shrink_node_memcgs+0x2b9/0x410 mm/vmscan.c:2658
->  shrink_node+0x9d2/0x11d0 mm/vmscan.c:2769
->  shrink_zones+0x29f/0x470 mm/vmscan.c:2972
->  do_try_to_free_pages+0x193/0x6e0 mm/vmscan.c:3027
->  try_to_free_mem_cgroup_pages+0x1c0/0x3f0 mm/vmscan.c:3345
->  reclaim_high mm/memcontrol.c:2440 [inline]
->  mem_cgroup_handle_over_high+0x18b/0x4d0 mm/memcontrol.c:2624
->  tracehook_notify_resume include/linux/tracehook.h:197 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
->  exit_to_user_mode_prepare+0x110/0x170 kernel/entry/common.c:191
->  syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
->  ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:289
->
-> read to 0xffff8881286f4938 of 8 bytes by interrupt on cpu 1:
->  mem_cgroup_under_socket_pressure include/linux/memcontrol.h:1483 [inline]
->  sk_under_memory_pressure include/net/sock.h:1314 [inline]
->  __sk_mem_reduce_allocated+0x1d2/0x270 net/core/sock.c:2696
->  __sk_mem_reclaim+0x44/0x50 net/core/sock.c:2711
->  sk_mem_reclaim include/net/sock.h:1490 [inline]
->  ......
->  net_rx_action+0x17a/0x480 net/core/dev.c:6864
->  __do_softirq+0x12c/0x2af kernel/softirq.c:298
->  run_ksoftirqd+0x13/0x20 kernel/softirq.c:653
->  smpboot_thread_fn+0x33f/0x510 kernel/smpboot.c:165
->  kthread+0x1fc/0x220 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
->
-> When reading memcg->socket_pressure in mem_cgroup_under_socket_pressure()
-> and writing memcg->socket_pressure in vmpressure() at the same time,
-> the data-race occurs.
->
-> So fix it by using READ_ONCE() and WRITE_ONCE() to read and write
-> memcg->socket_pressure.
->
-> Signed-off-by: Yuanzheng Song <songyuanzheng@huawei.com>
+On Sat, Oct 23, 2021 at 06:04:57PM +0200, Arnd Bergmann wrote:
+> On Sat, Oct 23, 2021 at 3:37 AM Waiman Long <longman@redhat.com> wrote:
+> >> On 10/22/21 7:59 AM, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > As this is all dead code, just remove it and the helper functions built
+> > > around it. For arch/ia64, the inline asm could be cleaned up, but
+> > > it seems safer to leave it untouched.
+> > >
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Does that mean we can also remove the GENERIC_LOCKBREAK config option
+> > from the Kconfig files as well?
+> 
+>  I couldn't figure this out.
+> 
+> What I see is that the only architectures setting GENERIC_LOCKBREAK are
+> nds32, parisc, powerpc, s390, sh and sparc64, while the only architectures
+> implementing arch_spin_is_contended() are arm32, csky and ia64.
+> 
+> The part I don't understand is whether the option actually does anything
+> useful any more after commit d89c70356acf ("locking/core: Remove break_lock
+> field when CONFIG_GENERIC_LOCKBREAK=y").
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Urgh, what a mess.. AFAICT there's still code in
+kernel/locking/spinlock.c that relies on it. Specifically when
+GENERIC_LOCKBREAK=y we seem to create _lock*() variants that are
+basically TaS locks which drop preempt/irq disable while spinning.
 
-Thanks.
+Anybody having this on and not having native TaS locks is in for a rude
+surprise I suppose... sparc64 being the obvious candidate there :/
+
+
+
