@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048DC439AF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FE2439AFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhJYQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:00:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233195AbhJYQAH (ORCPT
+        id S233663AbhJYQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233195AbhJYQBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:00:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635177465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MCI+8dQa/U6UbsL5gbfoLfO4WAaUcQYsMls2gbgANLc=;
-        b=d5fBTafVsle7rlJGdQNqsXio/F72LOo2tQDiG5d8pnwkxANT5JCfW5IUfmH6YSz68+2OF2
-        lAqa8X9kupvqCKBQnpBdImbNZ51Ze4GOgRx9pIDgn+blDJGJf+IJq2SdetOZO6PUGA7yLL
-        C/y2qcIGdg5S5spV4/4PRPahunXd4rs=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-sgqWgnQXM6epBBJQwQ_sWQ-1; Mon, 25 Oct 2021 11:57:43 -0400
-X-MC-Unique: sgqWgnQXM6epBBJQwQ_sWQ-1
-Received: by mail-wm1-f71.google.com with SMTP id k126-20020a1ca184000000b003231d0e329bso3668024wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:57:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=MCI+8dQa/U6UbsL5gbfoLfO4WAaUcQYsMls2gbgANLc=;
-        b=huFKzQqlQr4tYQZfhg+HUX7tdf31lhtyuJMmDPgsoeOPgj1oCuDqGge5h8tFiq1Km3
-         +5ivcmaIiMSqu52RoKzuTVTwgMtAHPS2q+z+STCAc3v0m3F8GI4PZpETviO7gVucRlRJ
-         qEACJbx0dQnd/+77LqgWxmjkicmtLZMPZnxMn+fYkzUNF1RhYpwrjbqD4uXZSv2iSi/D
-         BUcyXZ6FiRZEXPS6DStfot/H9g7ugLEwZnJ/T7yG8a3PLeJpd4SnYCGuXrWAJE231G7x
-         MNd2imuzqYSmk8/g23dneRa3F6DJRibTIMzm7uFfULsIMMLrRYL1GZYdRuNVRFhmCC3M
-         D8Ww==
-X-Gm-Message-State: AOAM53310mkNDdxfpexXW0C7b/fbTMokbCH0PVERB1YeRHZsiucdca7F
-        +b3X6hJr5+K9C6MbzmvWehniQE8dWyeFGuD90qn2vm4L0d+fdvJtlyWMDXVg9tJdr1Kdvj7ufLU
-        oLGvBCk3NWzPFDHuMAPy5KiW4
-X-Received: by 2002:a1c:ac86:: with SMTP id v128mr20601939wme.3.1635177462566;
-        Mon, 25 Oct 2021 08:57:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTyw0n0fr/6Esub1t61IkuBW8xshfxOi+C+/6mJQnqMkQEum3VdKMAAqawVcu+H74+uWZwJg==
-X-Received: by 2002:a1c:ac86:: with SMTP id v128mr20601909wme.3.1635177462345;
-        Mon, 25 Oct 2021 08:57:42 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q18sm19326723wmc.7.2021.10.25.08.57.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 08:57:41 -0700 (PDT)
-Message-ID: <e9509fb0-54f3-ca86-57b7-8b6d5de240b7@redhat.com>
-Date:   Mon, 25 Oct 2021 17:57:39 +0200
+        Mon, 25 Oct 2021 12:01:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF909C061745;
+        Mon, 25 Oct 2021 08:59:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5y7mYSiruE0cjysowYo7+0jNcIRmxjtJRrRLlmuIF+o=; b=QXT6Sw24DXrC/psY8+sN1Li2XS
+        X1huPXRn/qDo1HnmsuBUFcbunf0kWqQXlhN+z6chxaTIdt8hxz9nWytKt2DlAZ5gzqr1qxaxImfyf
+        PxnxGk7tzyTkUTccZB0NvwsVeqKo3xbXVggsekcvOCJAaHSupHm5jwR4CeHW+ehwW4L/YkVFA7fxw
+        xncOolmkjmCZPKRfNvPHankG+wrRBFDL01kPxYO/ulAIE2zRZqyKIYT1QqWJIWw4STAH9KhE78KS8
+        Vh7eDzj6hKkoRmOoOldUn6jqiCS3HVz1L+ZoY+GXq/eWoCJ5nYU9/tuL8umRjUTHSIFqo/FGLINHE
+        DhnolPJw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mf2Mu-00GwhK-7N; Mon, 25 Oct 2021 15:58:36 +0000
+Date:   Mon, 25 Oct 2021 08:58:36 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Geoff Levand <geoff@infradead.org>
+Cc:     axboe@kernel.dk, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, jim@jtan.com, minchan@kernel.org,
+        ngupta@vflare.org, senozhatsky@chromium.org, richard@nod.at,
+        miquel.raynal@bootlin.com, vigneshr@ti.com,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
+        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] block: add_disk() error handling stragglers
+Message-ID: <YXbULG63hZcBdoQD@bombadil.infradead.org>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
+ <YW2duaTqf3qUbTIm@bombadil.infradead.org>
+ <24bc86d0-9d8d-8c8a-7f74-a87f9089342b@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 37/43] KVM: SVM: Unconditionally mark AVIC as running
- on vCPU load (with APICv)
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <20211009021236.4122790-38-seanjc@google.com>
- <acea3c6d-49f4-ab5e-d9fe-6c6a8a665a46@redhat.com>
- <YXbRyMQgMpHVQa3G@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YXbRyMQgMpHVQa3G@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24bc86d0-9d8d-8c8a-7f74-a87f9089342b@infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/21 17:48, Sean Christopherson wrote:
-> On Mon, Oct 25, 2021, Paolo Bonzini wrote:
->> On 09/10/21 04:12, Sean Christopherson wrote:
->>> +	/* TODO: Document why the unblocking path checks for updates. */
->>
->> Is that a riddle or what? :)
+On Thu, Oct 21, 2021 at 08:10:49PM -0700, Geoff Levand wrote:
+> Hi Luis,
 > 
-> Yes?  I haven't been able to figure out why the unblocking path explicitly
-> checks and handles an APICv update.
+> On 10/18/21 9:15 AM, Luis Chamberlain wrote:
+> > On Sun, Oct 17, 2021 at 08:26:33AM -0700, Geoff Levand wrote:
+> >> Hi Luis,
+> >>
+> >> On 10/15/21 4:52 PM, Luis Chamberlain wrote:
+> >>> This patch set consists of al the straggler drivers for which we have
+> >>> have no patch reviews done for yet. I'd like to ask for folks to please
+> >>> consider chiming in, specially if you're the maintainer for the driver.
+> >>> Additionally if you can specify if you'll take the patch in yourself or
+> >>> if you want Jens to take it, that'd be great too.
+> >>
+> >> Do you have a git repo with the patch set applied that I can use to test with?
+> > 
+> > Sure, although the second to last patch is in a state of flux given
+> > the ataflop driver currently is broken and so we're seeing how to fix
+> > that first:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211011-for-axboe-add-disk-error-handling
 > 
+> That branch has so many changes applied on top of the base v5.15-rc4
+> that the patches I need to apply to test on PS3 with don't apply.
+> 
+> Do you have something closer to say v5.15-rc5?  Preferred would be
+> just your add_disk() error handling patches plus what they depend
+> on.
 
-Challenge accepted.  In the original code, it was because without it 
-avic_vcpu_load would do nothing, and nothing would update the IS_RUNNING 
-flag.
+If you just want to test the ps3 changes, I've put this branch together
+just for yo, its based on v5.15-rc6:
 
-It shouldn't be necessary anymore since commit df7e4827c549 ("KVM: SVM: 
-call avic_vcpu_load/avic_vcpu_put when enabling/disabling AVIC", 
-2021-08-20), where svm_refresh_apicv_exec_ctrl takes care of the 
-avic_vcpu_load on the next VMRUN.
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=20211025-ps3-add-disk
 
-Paolo
-
+  Luis
