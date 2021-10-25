@@ -2,119 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8AF43904D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C14E439097
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhJYH2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhJYH2G (ORCPT
+        id S231970AbhJYHwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:52:16 -0400
+Received: from gateway31.websitewelcome.com ([192.185.144.97]:47603 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229723AbhJYHwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:28:06 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913E9C061348
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 00:25:44 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id c4so3407997plg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 00:25:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wtx3qihrIhTOJ+C6AsnIjmV2Mxy5WU7CVLra4DLJMIU=;
-        b=SjtwAcZ111/9GfjHA7ZkyHv2w773LM/YZHqqUS/bGrIrzMA+XIKivomnk9A1wVEk9M
-         OSucbPplKmvWuBeB2Qh2CeGtfzF1Q7uJAWWTlrxt/4dzyBZolxsqKDBBCHRYHd2BjfDl
-         mfaINnm753vYlTxhqIzckqhY6TkM0/FiGJ340/mQRjO1PO2SERl/hx/POMz+D8T5Xcm6
-         dH21QkqVQCEDSBeaRWu/wetpD9A56Yo4UQs21ja+3DwmStrBXAer0r67B7lZdSrPZvxc
-         jVH+Pfo6SS44ldzR0VYnZAmKcWdLJ95R2J34wvjWwxAtsJ6jNAAOAII/5U9Bs66glUeq
-         fA+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wtx3qihrIhTOJ+C6AsnIjmV2Mxy5WU7CVLra4DLJMIU=;
-        b=1ZBY3MgkcVv+g1veu7ANzWVwT+NK0FCfUjWtgxJOfJTTpG+cpFmJDFWiXDDKHJa4h+
-         xbszsv3J20XWKbs/3dBQQuDj3VVoZl6MT/SAQdKopDYZMjpxT2lFWM8FtuSxNO9mrB+0
-         pkmaOJIsofiyuB1qeGZlbvNtD+9kymqrZWxi3v7ufHBNnQClTUsALyYV5THFEg4MO3kH
-         cCUrgm/u8UsrYGbTHwDOhmIABuuHCgCzrvCvO1xgN4OUqSOpPOGnDOr6ZCGI35GB96jf
-         mDz3hhSnV3GmMV2Ubjg3d0wwbecGVXPNd7Cq/G+Sedc6WuaCVS0zEdsRHCVmXdm90hpJ
-         4Sow==
-X-Gm-Message-State: AOAM53317U4cUuIF39ulSTuHEkjbG1V5vHN5du5lzKgnvTyVCS18Dsd/
-        XzgZwlY/Ee+a5QOD5WXik7j4YU+0Ole555ctxs+S1Q==
-X-Google-Smtp-Source: ABdhPJyKTKplfDDnV3PjRPtFdzkFW1EAzN1X/edHD63E9GVanr9o4eqaGuujOVjnID4qRvUvNDVSMhej5+PxstWoN3Y=
-X-Received: by 2002:a17:902:c242:b0:140:4513:393 with SMTP id
- 2-20020a170902c24200b0014045130393mr7540901plg.24.1635146743517; Mon, 25 Oct
- 2021 00:25:43 -0700 (PDT)
+        Mon, 25 Oct 2021 03:52:14 -0400
+X-Greylist: delayed 1406 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Oct 2021 03:52:14 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 9ADAC39432
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:26:25 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id euNFmSkJ36dDyeuNFm3n15; Mon, 25 Oct 2021 02:26:25 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60726 helo=[10.0.0.35])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1meuNE-003kSD-Cc; Mon, 25 Oct 2021 02:26:24 -0500
+Message-ID: <caf1defa-94b7-22fe-c0cc-f5a5a2e8ee79@kernel.org>
+Date:   Mon, 25 Oct 2021 09:26:18 +0200
 MIME-Version: 1.0
-References: <20211025034420.28996-1-julianbraha@gmail.com>
-In-Reply-To: <20211025034420.28996-1-julianbraha@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 25 Oct 2021 09:25:33 +0200
-Message-ID: <CAG3jFys=NBFKvdMPtMe_VogEMoZYJFqB6NOuCQTe9=Upn+idGw@mail.gmail.com>
-Subject: Re: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH V4 01/19] trace/osnoise: Do not follow tracing_cpumask
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1634820694.git.bristot@kernel.org>
+ <e5382c01f1330bf4c3d094fbb87059ef82761aa0.1634820694.git.bristot@kernel.org>
+ <20211022222301.32c2d869@rorschach.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20211022222301.32c2d869@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.18.63.114
+X-Source-L: No
+X-Exim-ID: 1meuNE-003kSD-Cc
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60726
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Julian,
+On 10/23/21 04:23, Steven Rostedt wrote:
+> On Thu, 21 Oct 2021 14:56:39 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+> 
+>> In preparation to support multiple instances, decople the
+> 
+>     "decouple"
+> 
+>> osnoise/timelat workload from instance specific tracing_cpumask.
+>>
+>> Different instances can have conflicing cpumasks, making osnoise
+> 
+>    "conflicting"
+> 
+> May I suggest a spell check for your commit logs? ;-)
 
-Thank you for catching this.
 
-On Mon, 25 Oct 2021 at 05:44, Julian Braha <julianbraha@gmail.com> wrote:
->
-> When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
-> Kbuild gives the following warning:
->
-> WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
->   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
->   Selected by [y]:
->   - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
->
-> This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
-> without depending on or selecting DRM_KMS_HELPER,
-> despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
->
-> This unmet dependency bug was detected by Kismet,
-> a static analysis tool for Kconfig.
-> Please advise if this is not the appropriate solution.
 
-Could you add a Fixes tag to this commit.
+Ooops, I will fix them. I use Grammarly on most of my texts, but sometimes I
+forget to re-check.
 
-ce517f18944e - drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge
+>> workload management needlessly complex. Osnoise already have its
+>> global cpu mask.
+>>
+>> I also thought about using the first instance mask, but the
+>> "first" instance could be removed before the others.
+>>
+>> This also fixes the problem that changing the tracing_mask was not
+>> re-starting the trace.
+>>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Tom Zanussi <zanussi@kernel.org>
+>> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+>> Cc: Juri Lelli <juri.lelli@redhat.com>
+>> Cc: Clark Williams <williams@redhat.com>
+>> Cc: John Kacur <jkacur@redhat.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+>> Cc: linux-rt-users@vger.kernel.org
+>> Cc: linux-trace-devel@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+>> ---
+>>  kernel/trace/trace_osnoise.c | 25 +++++++------------------
+>>  1 file changed, 7 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+>> index ce053619f289..7b1f8187764c 100644
+>> --- a/kernel/trace/trace_osnoise.c
+>> +++ b/kernel/trace/trace_osnoise.c
+>> @@ -1553,13 +1553,10 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+>>  
+>>  	cpus_read_lock();
+>>  	/*
+>> -	 * Run only on CPUs in which trace and osnoise are allowed to run.
+>> +	 * Run only on online CPUs in which trace and osnoise are allowed to
+> 
+>   which trace and osnise? I thought we were removing "trace"?
 
-With that, resubmit with my r-b.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
->
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> ---
->  drivers/gpu/drm/bridge/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index 431b6e12a81f..a630cb8fd1c8 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -30,6 +30,7 @@ config DRM_CDNS_DSI
->  config DRM_CHIPONE_ICN6211
->         tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
->         depends on OF
-> +  select DRM_KMS_HELPER
->         select DRM_MIPI_DSI
->         select DRM_PANEL_BRIDGE
->         help
-> --
-> 2.30.2
->
+You are correct, I will remove the trace from the comment.
+
+Thanks!
+-- Daniel
+
+> -- Steve
+> 
+>> +	 * run.
+>>  	 */
+>> -	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
+>> -	/*
+>> -	 * And the CPU is online.
+>> -	 */
+>> -	cpumask_and(current_mask, cpu_online_mask, current_mask);
+>> +	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
+>>  
+>>  	for_each_possible_cpu(cpu)
+>>  		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
+>> @@ -1580,10 +1577,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
+>>  #ifdef CONFIG_HOTPLUG_CPU
+>>  static void osnoise_hotplug_workfn(struct work_struct *dummy)
+>>  {
+>> -	struct trace_array *tr = osnoise_trace;
+>>  	unsigned int cpu = smp_processor_id();
+>>  
+>> -
+>>  	mutex_lock(&trace_types_lock);
+>>  
+>>  	if (!osnoise_busy)
+>> @@ -1595,9 +1590,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
+>>  	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
+>>  		goto out_unlock;
+>>  
+>> -	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
+>> -		goto out_unlock;
+>> -
+>>  	start_kthread(cpu);
+>>  
+>>  out_unlock:
+>> @@ -1700,13 +1692,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
+>>   * interface to the osnoise trace. By default, it lists all  CPUs,
+>>   * in this way, allowing osnoise threads to run on any online CPU
+>>   * of the system. It serves to restrict the execution of osnoise to the
+>> - * set of CPUs writing via this interface. Note that osnoise also
+>> - * respects the "tracing_cpumask." Hence, osnoise threads will run only
+>> - * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
+>> - * have just "tracing_cpumask?" Because the user might be interested
+>> - * in tracing what is running on other CPUs. For instance, one might
+>> - * run osnoise in one HT CPU while observing what is running on the
+>> - * sibling HT CPU.
+>> + * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
+>> + * Because the user might be interested in tracing what is running on
+>> + * other CPUs. For instance, one might run osnoise in one HT CPU
+>> + * while observing what is running on the sibling HT CPU.
+>>   */
+>>  static ssize_t
+>>  osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
+> 
+
