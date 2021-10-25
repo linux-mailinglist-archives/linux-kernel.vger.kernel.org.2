@@ -2,134 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68205439B88
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038D2439B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhJYQeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
+        id S233958AbhJYQgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233443AbhJYQeB (ORCPT
+        with ESMTP id S231258AbhJYQgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:34:01 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30891C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:31:39 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so11890987pjl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 09:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uBXcTZ7zwU5lKtdrjfFr6VEtdDs7btpoA1mR533tDtQ=;
-        b=kKo6CdI73gJDaa3pbfuZOQyqK9n4e9ubBAyEfFCi9B8AfXB/Kx6p6Jrsp4LRfOeiXG
-         viwF8uvVa7cdHcvHcFB6jWiosIhbrM1FPcERnAXnRT8JvMF/Xaptqqnx7FZrA9F1aiI0
-         f4AcVm/sMel2d8+iMm1PnLBJkEenL9YSXT0a98QcVrsGRcUHJzUSAFI8F0IPCA6I1Ex1
-         Dd2INBZj3pIzxvj5Q7hjHQ379OipXVCntrrdsMdtAcizghqrfZRoYKVlxsFWJYlluvB9
-         N1ER9Mxg0051xF8QgLCjxjiddJg92LiKABB1ZCoZMuJkxraoLncaSQqyzEcvaA3czxNX
-         sTFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uBXcTZ7zwU5lKtdrjfFr6VEtdDs7btpoA1mR533tDtQ=;
-        b=SALf0JY/tbOMakrfMbPs6j2F806WGmFOXCIA6kei6iHFaFrv1GVbozQ7WcrmLt7aOo
-         MiEjaR+HsaPewJlNs3n1oVK3+sN9GkEiwaMyqXBlUFLnkLwrHV96zenR0vRS72/dcRlY
-         UHGkNAqtQmOH1DbA5Kqj1KKQ9wYSXuosfo6z3Yq+qaRWPYr409w8hz2e68rSHnRH8ebb
-         e457TncmzzDylkSjoMY1hno8bJg0jRCcBLxwcD07atYXSIxlvI3zfx1pnPWMLnJW0kz9
-         D/Rt1Fm/lJGNq1R3XdebJEtJDGSNArI28FJSujJ8mrTv9ECHgzMhnpB/e2mr6pMNtz+w
-         Z37g==
-X-Gm-Message-State: AOAM530XAD+sguymwAnS62lDJAf+EUyqtqjDrlXrhYXJaA5RJbs1OOxn
-        0xt8mzKgSgobL3TBrEzSNy4/Zw==
-X-Google-Smtp-Source: ABdhPJxfUuubFCqRX3vvBUd5Wa66fp9aCyJj/2PTog5VN7ymxHpMTwq0YKTdwrnfSnc1XylBANug9A==
-X-Received: by 2002:a17:90b:1649:: with SMTP id il9mr22190422pjb.167.1635179498379;
-        Mon, 25 Oct 2021 09:31:38 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d19sm1543762pgk.81.2021.10.25.09.31.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 09:31:37 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 16:31:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: vPMU: Don't program counter for interrupt-based
- event sampling w/o lapic_in_kernel
-Message-ID: <YXbb5ePpVWKxBsbh@google.com>
-References: <1634894233-84041-1-git-send-email-wanpengli@tencent.com>
+        Mon, 25 Oct 2021 12:36:22 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353C5C061745;
+        Mon, 25 Oct 2021 09:34:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id AF1991F43289
+Message-ID: <1e24268a-fd6a-10cd-cb1d-c479bb2f930f@collabora.com>
+Date:   Mon, 25 Oct 2021 13:33:37 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634894233-84041-1-git-send-email-wanpengli@tencent.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2] uapi: futex: Add a futex syscall
+Content-Language: en-US
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     alistair23@gmail.com, arnd@arndb.de,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20211021055408.4006408-1-alistair.francis@opensource.wdc.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+In-Reply-To: <20211021055408.4006408-1-alistair.francis@opensource.wdc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
+Hi Alistair,
+
+Às 02:54 de 21/10/21, Alistair Francis escreveu:
+> From: Alistair Francis <alistair.francis@wdc.com>
 > 
-> vPMU depends on in-kernel lapic to deliver pmi interrupt, there is a
-> lot of overhead when creating/maintaining perf_event object, 
-> locking/unlocking perf_event_ctx etc for vPMU. It silently fails to 
-> deliver pmi interrupt if w/o in-kernel lapic currently. Let's not 
-> program counter for interrupt-based event sampling w/o in-kernel 
-> lapic support to avoid the whole bothering. 
+> This commit adds two futex syscall wrappers that are exposed to
+> userspace.
+> 
+> Neither the kernel or glibc currently expose a futex wrapper, so
+> userspace is left performing raw syscalls. This has mostly been becuase
 
-This feels all kinds of wrong.  AFAIK, there's no way for KVM to enumerate to
-the guest that the vPMU isn't capable of generating interrupts.  I.e. any setup
-that exposes a vPMU to the guest without an in-kernel local APIC is either
-inherently broken or requires a paravirtualized guest.  I don't think KVM's bugs
-should be optimized.
+                                                                  because
 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> the overloading of one of the arguments makes it impossible to provide a
+> single type safe function.
+> 
+> Until recently the single syscall has worked fine. With the introduction
+> of a 64-bit time_t futex call on 32-bit architectures, this has become
+> more complex. The logic of handling the two possible futex syscalls is
+> complex and often implemented incorrectly.
+> 
+> This patch adds two futux syscall functions that correctly handle the
+> time_t complexity for userspace.
+> 
+> This idea is based on previous discussions: https://lkml.org/lkml/2021/9/21/143
+
+I would use lore
+https://lore.kernel.org/lkml/CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com/
+
+> 
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+
+Thanks for working on that :)
+
 > ---
->  arch/x86/kvm/pmu.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  include/uapi/linux/futex_syscall.h | 81 ++++++++++++++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+>  create mode 100644 include/uapi/linux/futex_syscall.h
 > 
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 0772bad9165c..fa5cd33af10d 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -179,6 +179,7 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
->  	struct kvm_pmu_event_filter *filter;
->  	int i;
->  	bool allow_event = true;
-> +	bool intr = eventsel & ARCH_PERFMON_EVENTSEL_INT;
->  
->  	if (eventsel & ARCH_PERFMON_EVENTSEL_PIN_CONTROL)
->  		printk_once("kvm pmu: pin control bit is ignored\n");
-> @@ -187,7 +188,8 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
->  
->  	pmc_pause_counter(pmc);
->  
-> -	if (!(eventsel & ARCH_PERFMON_EVENTSEL_ENABLE) || !pmc_is_enabled(pmc))
-> +	if (!(eventsel & ARCH_PERFMON_EVENTSEL_ENABLE) || !pmc_is_enabled(pmc)
-> +	    || (intr && !lapic_in_kernel(pmc->vcpu)))
->  		return;
->  
->  	filter = srcu_dereference(kvm->arch.pmu_event_filter, &kvm->srcu);
-> @@ -233,7 +235,7 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
->  	pmc_reprogram_counter(pmc, type, config,
->  			      !(eventsel & ARCH_PERFMON_EVENTSEL_USR),
->  			      !(eventsel & ARCH_PERFMON_EVENTSEL_OS),
-> -			      eventsel & ARCH_PERFMON_EVENTSEL_INT,
-> +			      intr,
->  			      (eventsel & HSW_IN_TX),
->  			      (eventsel & HSW_IN_TX_CHECKPOINTED));
->  }
-> @@ -248,7 +250,7 @@ void reprogram_fixed_counter(struct kvm_pmc *pmc, u8 ctrl, int idx)
->  
->  	pmc_pause_counter(pmc);
->  
-> -	if (!en_field || !pmc_is_enabled(pmc))
-> +	if (!en_field || !pmc_is_enabled(pmc) || (pmi && !lapic_in_kernel(pmc->vcpu)))
->  		return;
->  
->  	filter = srcu_dereference(kvm->arch.pmu_event_filter, &kvm->srcu);
-> -- 
-> 2.25.1
+> diff --git a/include/uapi/linux/futex_syscall.h b/include/uapi/linux/futex_syscall.h
+> new file mode 100644
+> index 0000000000000..f84a0c68baf78
+> --- /dev/null
+> +++ b/include/uapi/linux/futex_syscall.h
+> @@ -0,0 +1,81 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#ifndef _UAPI_LINUX_FUTEX_SYSCALL_H
+> +#define _UAPI_LINUX_FUTEX_SYSCALL_H
+> +
+> +#include <asm/unistd.h>
+> +#include <errno.h>
+> +#include <linux/types.h>
+> +#include <linux/time_types.h>
+> +#include <sys/syscall.h>
+> +
+> +/**
+> + * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrapper
+> + * @uaddr:  address of first futex
+> + * @op:   futex op code
+> + * @val:  typically expected value of uaddr, but varies by op
+> + * @timeout:  an absolute struct timespec
+> + * @uaddr2: address of second futex for some ops
+> + * @val3: varies by op
+> + */
+> +static inline int
+> +__kernel_futex_syscall_timeout(volatile u_int32_t *uaddr, int op, u_int32_t val,
+> +		      struct timespec *timeout, volatile u_int32_t *uaddr2, int val3)
+
+I tried to write an example[0] that uses this header, but I can't
+compile given that u_int32_t isn't defined. Maybe change to uint32_t and
+include <stdint.h>?
+
+Also, I got some invalid use of undefined type 'struct timespec', and
+#include <time.h> solved.
+
+[0] https://paste.debian.net/1216834/
+
+> +{
+> +#if defined(__NR_futex_time64)
+> +	if (sizeof(*timeout) != sizeof(struct __kernel_old_timespec)) {
+> +		int ret =  syscall(__NR_futex_time64, uaddr, op, val, timeout, uaddr2, val3);
+> +
+> +		if (ret == 0 || errno != ENOSYS)
+> +			return ret;
+> +	}
+> +#endif
+> +
+> +#if defined(__NR_futex)
+> +	if (sizeof(*timeout) == sizeof(struct __kernel_old_timespec))
+> +		return syscall(__NR_futex, uaddr, op, val, timeout, uaddr2, val3);
+> +
+> +	if (timeout && timeout->tv_sec == (long)timeout->tv_sec) {
+> +		struct __kernel_old_timespec ts32;
+> +
+> +		ts32.tv_sec = (__kernel_long_t) timeout->tv_sec;> +		ts32.tv_nsec = (__kernel_long_t) timeout->tv_nsec;
+> +
+> +		return syscall(__NR_futex, uaddr, op, val, &ts32, uaddr2, val3);
+> +	} else if (!timeout) {
+> +		return syscall(__NR_futex, uaddr, op, val, NULL, uaddr2, val3);
+> +	}
+> +#endif
+
+If I read this part right, you will always use ts32 for __NR_futex. I
+know that it can be misleading, but __NR_futex uses ts64 in 64-bit
+archs, so they shouldn't be converted to ts32 in those cases.
+
+Just to make it clear, there's no __NR_futex_time64 at 64-bit archs.
+
+> +
+> +	errno = ENOSYS;
+> +	return -1;
+> +}
+> +
+> +/**
+> + * futex_syscall_nr_requeue() - __NR_futex/__NR_futex_time64 syscall wrapper
+> + * @uaddr:  address of first futex
+> + * @op:   futex op code
+> + * @val:  typically expected value of uaddr, but varies by op
+> + * @nr_requeue:  an op specific meaning
+> + * @uaddr2: address of second futex for some ops
+> + * @val3: varies by op
+> + */
+> +static inline int
+> +__kernel_futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u_int32_t val,
+> +			 u_int32_t nr_requeue, volatile u_int32_t *uaddr2, int val3)
+
+I would always assume that op is FUTEX_CMP_REQUEUE, given that
+FUTEX_REQUEUE is racy. From `man futex`:
+
+The  FUTEX_CMP_REQUEUE operation was added as a replacement for the
+earlier FUTEX_REQUEUE.  The difference is that the check of the value at
+uaddr can be used to ensure that requeueing happens only under certain
+conditions, which allows race conditions to be avoided in certain use cases.
+
+And then we can drop `int op` from the args and give defined
+descriptions for the args.
+
+> +{
+> +#if defined(__NR_futex_time64)
+> +	int ret =  syscall(__NR_futex_time64, uaddr, op, val, nr_requeue, uaddr2, val3);
+> +
+> +	if (ret == 0 || errno != ENOSYS)
+> +		return ret;
+> +#endif
+> +
+> +#if defined(__NR_futex)
+> +	return syscall(__NR_futex, uaddr, op, val, nr_requeue, uaddr2, val3);
+> +#endif
+> +
+> +	errno = ENOSYS;
+> +	return -1;
+> +}
+> +
+> +#endif /* _UAPI_LINUX_FUTEX_SYSCALL_H */
 > 
+
+Sorry if this question was already asked but I didn't find it in the
+thread: Should we go with wrappers for the most common op? Like:
+
+__kernel_futex_wait(volatile uint32_t *uaddr, uint32_t val, struct
+timespec *timeout)
+
+__kernel_futex_wake(volatile uint32_t *uaddr, uint32_t nr_wake)
+
+Thanks!
+	André
