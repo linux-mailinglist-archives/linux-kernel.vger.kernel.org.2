@@ -2,175 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EF843A6C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9AF43A6C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbhJYWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S234103AbhJYWp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbhJYWn3 (ORCPT
+        with ESMTP id S232470AbhJYWp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:43:29 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CB8C061348
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:41:06 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id y15-20020a9d460f000000b0055337e17a55so17032853ote.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:41:06 -0700 (PDT)
+        Mon, 25 Oct 2021 18:45:26 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4782BC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:43:04 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id c4so5031332plg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=rGiovqWqFrjBrCkSq4yv/M/dVdFQ93Lt9w4Vj0XzRp0=;
-        b=e5y4X6m/JLEbzzUCH30q0NucRMH75dvcVNtZW7lTlgRhkeI8fDZaI3MwaJ98oHOBF9
-         9AON2AohLOTJHPDFqfaXruw2v5cfFjOe9ZHV37z/zWk44BCXzi3PvlehCVP91827441C
-         aNRN9n22sKlgYFbllqsXj/Pz7I0B5I8zSrI8o=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9dtMhbuSIysj6diw4zMqJoEHPjXJLlusGYlVV0o/QwE=;
+        b=Osd0NSgC1pcBMCS15+zN/gdtj7yePPzh+HndQ77zNZkpsLdMfoQuAIXBeodIVNEWLk
+         PznPXgY+MHZcYYYT1JPuvHEFjO0WX861MtVJwxtJjDw/c3pJLGBs9R5r3yRwJFkR+fpw
+         oeMvYKTdbbxHQle4O7DBZvJW99bx676XOo/Y0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=rGiovqWqFrjBrCkSq4yv/M/dVdFQ93Lt9w4Vj0XzRp0=;
-        b=GU2VEfRTZparGD/Ro0A88TCKIa3RCzNAa613JU1OmjXFFY1UpvdZgW71CAYsK0k6UM
-         EiCN8Xr10rC1lO5kCKlfiu9NCS8n2Yg06nOXjfe0CWGl+QNxP3OFu00mtQq4ZDmT94YN
-         mAaIlWjQouTsRERBp1JOzm128de+L6QsYtmcubjfB135iCRJIrzpio8S2mAhzl3+92Yl
-         ycLrJnf4Xht37OTbPiT68kep0ptfMbypaIH+n5tROV4Y/FUaigl/ylxF9I7KuB4Bl4z8
-         qcLrgKHedVNq2kOCQbtRsHWpJUAWkCdaTjdByIINRwqyOgl5i57qzoObecARoNQ+3jGw
-         tjlg==
-X-Gm-Message-State: AOAM531wn8OfifVQZVt7Lw7gR1rXIFSwAcHt377OXv4dVy8djkPGS5yI
-        ssYkq5j21CLcxuI2giT8n0JdWOgI0+Fu9owXhujfEQ==
-X-Google-Smtp-Source: ABdhPJyrcEmmL456GTam14IOSkmcFoh1X4j7JAYEurQdEfb+O2qaOJEmFfFtS/mARLtrHH0V8dU6F38y+oknUnR1nQE=
-X-Received: by 2002:a05:6830:1c2e:: with SMTP id f14mr15179888ote.159.1635201666169;
- Mon, 25 Oct 2021 15:41:06 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 25 Oct 2021 15:41:05 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9dtMhbuSIysj6diw4zMqJoEHPjXJLlusGYlVV0o/QwE=;
+        b=J4+RxxbQ50LA4zC8hAgW2vjB9Lop9oXVQbGDKS+5+95HcTaBNB1E9OEiE3msrd1G4h
+         0cwOZv1jnXb9EKj9FXyGrymWQA3QZAMWUOUDtoI++czXObBi7MQ1P2XhVvpRiIabw/Bv
+         gFS5XiWtWHnqMteWtsVEQvTY08GLotDCzZku7DYo+yHb6+A2qIn0nWsb3V7lrHwRoOs0
+         58oPvOl1bLxIQA/rDcnWOp8aoaLjRH1abiC1qgDcpA2IPCtWgmXthM9y7FYiCo6/LzfG
+         lRkcNTCaOLRxUCQktg5L2lIpDfC8MC9zLmu4ZKDaRCjM6Q2EDno+fMKHwZT2yMKtIACh
+         WqAA==
+X-Gm-Message-State: AOAM533GMsK4KBCJMs9GJAYCcwMTzt65evHbXOVIFvsnpyUgjsMzQimU
+        Qefm2KH4SzAdAGzu+pN1cUcIHQ==
+X-Google-Smtp-Source: ABdhPJzefObLbgVGgmk2ZjsW2/mnBC6utxGsG3p2cPD+nYeoyk1eFuzgkPnzNJvQdLnYDVkshJt0NQ==
+X-Received: by 2002:a17:90b:84:: with SMTP id bb4mr25775233pjb.2.1635201783745;
+        Mon, 25 Oct 2021 15:43:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r25sm16576281pge.61.2021.10.25.15.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 15:43:03 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] fortify: Avoid shadowing previous locals
+Date:   Mon, 25 Oct 2021 15:42:36 -0700
+Message-Id: <163520175414.1020299.2890966678849139996.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211025210528.261643-1-quic_qiancai@quicinc.com>
+References: <20211025210528.261643-1-quic_qiancai@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <YXck+xCJQBRGqTCw@ripper>
-References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
- <YXcBK7zqny0s4gd4@ripper> <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
- <YXck+xCJQBRGqTCw@ripper>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 25 Oct 2021 15:41:05 -0700
-Message-ID: <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
- for dwc3 qcom
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-25 14:43:23)
-> On Mon 25 Oct 13:17 PDT 2021, Stephen Boyd wrote:
->
-> > Quoting Bjorn Andersson (2021-10-25 12:10:35)
-> > > On Mon 25 Oct 02:07 PDT 2021, Sandeep Maheswaram wrote:
-> > >
-> > > > Add multi pd bindings to set performance state for cx domain
-> > > > to maintain minimum corner voltage for USB clocks.
-> > > >
-> > > > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-> > > > ---
-> > > > v2:
-> > > > Make cx domain mandatory.
-> > > >
-> > > >  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 +++++++-
-> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > index 2bdaba0..fd595a8 100644
-> > > > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > @@ -42,7 +42,13 @@ properties:
-> > > >
-> > > >    power-domains:
-> > > >      description: specifies a phandle to PM domain provider node
-> > > > -    maxItems: 1
-> > > > +    minItems: 2
-> > > > +    items:
-> > > > +      - description: cx power domain
-> > > > +      - description: USB gdsc power domain
-> > > > +
-> > > > +  required-opps:
-> > > > +    description: specifies the performance state to power domain
-> > >
-> > > I'm still worried about the fact that we can't just rely on the USB GDSC
-> > > being a subdomin of CX in order to just "turn on" CX.
-> > >
-> > > Afaict accepting this path forward means that for any device that sits
-> > > in a GDSC power domain we will have to replicate this series for the
-> > > related driver.
-> > >
-> >
-> > I suspect the problem is that it's not just "turn on" but wanting to
-> > turn it on and then set the performance state to some value based on the
-> > clk frequency.
->
-> I don't see an opp-table involved, just the required-opps for the
-> purpose of turning CX on a little bit more. Perhaps I'm missing
-> something here though.
+On Mon, 25 Oct 2021 17:05:28 -0400, Qian Cai wrote:
+> __compiletime_strlen macro expansion will shadow p_size and p_len local
+> variables. Just rename those in __compiletime_strlen.
 
-Indeed. There's only one clk frequency for USB so only one performance
-state/required-opps is used. In general that isn't the case and so we'll
-eventually need to map some GDSC on/off state to the clk frequency of
-whatever clk domain is associated with CX for a device.
+I've adjusted the changelog a bit to have more detail.
 
->
-> > Maybe the simplest version of that could be supported
-> > somehow by having dev_pm_opp_set_rate() figure out that the 'level'
-> > applies to the parent power domain instead of the child one?
->
-> Having the performance_state request cascade up through the GDSC sounds
-> like a nice solution; I've not looked at the code to see if this is
-> feasible though.
+Applied to for-next/overflow, thanks!
 
-When the binding was introduced I recall we punted on the parent child
-conversion stuff. One problem at a time. There's also the possibility
-for a power domain to be parented by multiple power domains so
-translation tables need to account for that.
+[1/1] fortify: Avoid shadowing previous locals
+      https://git.kernel.org/kees/c/95cadae320be
 
->
-> > Or we may need to make another part of the OPP binding to indicate the
-> > relationship between the power domain and the OPP and the parent of
-> > the power domain.
->
-> I suspect this would be useful if a power-domain provider needs to
-> translate a performance_state into a different supply-performance_state.
-> Not sure if we have such case currently; these examples are all an
-> adjustable power-domain with "gating" subdomains.
+-- 
+Kees Cook
 
-Even for this case, we should be able to have the GDSC map the on state
-to some performance state in the parent domain. Maybe we need to add
-some code to the gdsc.c file to set a performance state on the parent
-domain when it is turned on. I'm not sure where the value for that perf
-state comes from. I guess we can hardcode it in the driver for now and
-if it needs to be multiple values based on the clk frequency we can push
-it out to an OPP table or something like that.
-
->
->
-> PS. I think we have the same problem in the display subsystem, the
-> sub-blocks are powered by MDSS_GDSC, which is a subdomain of MMCX. We
-> trust the parent mdss node to keep the GDSC powered and specify MMCX as
-> the power-domain for the children, so that we can affect their levels by
-> respective opp-table.
->
-
-Yes, a GDSC is really a gate on a parent power domain like CX or MMCX,
-etc. Is the display subsystem an example of different clk frequencies
-wanting to change the perf state of CX? If so it's a good place to work
-out the translation scheme for devices that aren't listing the CX power
-domain in DT.
