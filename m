@@ -2,71 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AEF43950B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D7D439509
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhJYLoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:44:54 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:21537 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233190AbhJYLot (ORCPT
+        id S233186AbhJYLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:44:46 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:46649 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233116AbhJYLop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:44:49 -0400
-X-UUID: 4577476c31e343fe8032adcd60fde2fe-20211025
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=5Z+pVIUsnwczbSK4PAQNtN2qL8Rf6p3/4/bd0Nz7Kl8=;
-        b=c+xauU6inVHKw+IUzOmb1CvG8W7jRQBoo8dKA1Cshc7thXUeBD3lOoH4aPKb7G+QMM5s4v2cEXvw3SlTyB3AZbBZ4sQmHpUH5GixA3vS2xPi0pkQ1iwl//yWqkCAxSKLwJ2u32iM+qurMF7Dgh6CjkZ1iRYMWHDuTA+U9zbsrDo=;
-X-UUID: 4577476c31e343fe8032adcd60fde2fe-20211025
-Received: from mtkmbs10n1.mediatek.inc [(172.27.7.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1606625707; Mon, 25 Oct 2021 19:42:19 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Mon, 25 Oct 2021 19:42:20 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Oct 2021 19:42:19 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Mathias Nyman <mathias.nyman@intel.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Yun-Chien Yu <yun-chien.yu@mediatek.com>
-Subject: [RFC PATCH] usb: xhci: skip re-check pending port event if hibernated
-Date:   Mon, 25 Oct 2021 19:42:09 +0800
-Message-ID: <20211025114209.4047-1-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Oct 2021 07:44:45 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 856055804A8;
+        Mon, 25 Oct 2021 07:42:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 25 Oct 2021 07:42:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=fm2; bh=mFmfwKE6NJwjJuKPURxDtcwRnD
+        8ffKIphewM6DnRXhQ=; b=lwgJ0jaDrCSyhplEtJbMrW+0v+CecDvNr4cs4j8u/b
+        V9TVp7FMLa3aFedS5wi5MVDSRF+MTqv5wlkVwNIw39iCustWMlC2pVH3SvtS/PWe
+        kSkTDUK69QiRSADnh5k2zhbi+SPXozX5AaaIHtXEEZmuSPIm5VQX+JyZo9m3fkR/
+        K1dDd+Ep7Jx/qXvfJ2zqxmAqcZB3NFQ0rRtoIG24dm8BtZPhphAJ/s/U0mhSqN5X
+        wEc3qSJfXlvgrmHrOykC0lgbvstvyMBCJ3xlUxsN1cXTiDaTdPrJljn6ctVJsen3
+        ZXZdaq9KS5p1nPBWo1Ps/PAtSs1JSh3lWYEsU7Reqc2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=mFmfwK
+        E6NJwjJuKPURxDtcwRnD8ffKIphewM6DnRXhQ=; b=WCHzm2JJVY39uMYAzGNmpX
+        pfPI/IPpmMubCpZMTPLXPzwz1ThAWeYBR4FzN1NBmoddCplFpxs+/ntkZG3pQbG4
+        ImQFksbRuhKC+LtZbBBycoCoyPhwL39nc334afKjQ13f3rxuMIHz98gRjTOoDtta
+        V5jOiwF7gRf3A5+UAcfVwQaDe9XXldesfyLcEnIWWv/B+T4g2SDCA8PD6nn5WQig
+        u4ipW6y//eB0u6osltu+i9hIATAzs+D82oVnVDG6N8w8HoCo8/cvmnQOQXxweEi+
+        KgjMiypZPwmV0GbYAqeqaMSp2Y87VtssR/0maobpcHvxvrFa9AZeAlPq5yl1OjqA
+        ==
+X-ME-Sender: <xms:HZh2YQQzrHkVS4HhpDi4nQTAPyseyaYsX8zB0_FLY6Pt9B5PykAhdg>
+    <xme:HZh2YdxszUsyI9wjHo_pBSmq2nXLrj0UZN8VXunpLWMdSNCb1PIT43BAdp7xpxiJs
+    uyd3jsbeNN5RbUboaQ>
+X-ME-Received: <xmr:HZh2Yd1ZdfDGYwdIKcBRgPe_7PnBSdTvkRTvquxX5XvlgUFxXXUjaZZhZ1xT_EpE86zJ4aw07FsL>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofggtgfgsehtqhertd
+    ertdejnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
+    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepffelvdegveefve
+    efvddvffeiteefgfejveegieethfekgefhleeukefhjeehfffgnecuffhomhgrihhnpehl
+    fihnrdhnvghtpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhm
+    vg
+X-ME-Proxy: <xmx:HZh2YUA9U5O4NXgkRqclJ685Yg_oxVxk-V-JFLbn3S7A94QH7ToWbA>
+    <xmx:HZh2YZhYvLa7Ka2TlY9XVOeJoQyOxghCCkJiGUugPGJRP9wuRZtw_Q>
+    <xmx:HZh2YQrl0AL04Uaw0lyK2Z6Eb-t_lcIEOjYYXJPI4wmv4HdILNTxUQ>
+    <xmx:Hph2YeZAypMROMWPXHnBLaROJGcNkJVcP6Z1j4yGleTeLGDddya_UQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 07:42:16 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Cc:     andreas@kemnade.info, alistair23@gmail.com,
+        dmitry.torokhov@gmail.com, linus.walleij@linaro.org,
+        robh+dt@kernel.org, rydberg@bitmath.org,
+        mylene.josserand@free-electrons.com,
+        Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH 0/4] Add support for the Cypress cyttsp5
+Date:   Mon, 25 Oct 2021 21:42:10 +1000
+Message-Id: <20211025114214.44617-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2hlbiB4SENJIGNvbnRyb2xsZXIgaGliZXJuYXRlZCwgdGhlIHJvb3QgaHViIGxvc3QgcG93ZXIs
-IGlmIGNvbnRyb2xsZXINCnN1cHBvcnQgUG9ydCBQb3dlciBDb250cm9sIChQUEMpLCBQUCBpcyBu
-b3Qgc2V0IGF0IHhoY2lfcmVzdW1lKCkgYW5kDQpzZXQgYnkgaHViX3Jlc2V0X3Jlc3VtZSgpIGxh
-dGVyLCBzbyBubyBuZWVkIGNoZWNrIHBlbmRpbmcgcG9ydCBldmVudC4NCklmIFBQQyBpcyBub3Qg
-c3VwcG9ydGVkLCBkZXZpY2UgaXMgZGlzY29ubmVjZWQsIHNlZW1zIGRvIG5vdCBzZW5kIG91dA0K
-VTMgTEZQUyB3YWtlIHNpZ25hbCwgbm8gbmVlZCByZS1jaGVjayBhZ2FpbiBhbmQgZHJvcCAxMjBt
-cyBkZWxheSB0bw0Kc2F2ZSByZXN1bWUgdGltZS4NCg0KUmVwb3J0ZWQtYnk6IFl1bi1DaGllbiBZ
-dSA8eXVuLWNoaWVuLnl1QG1lZGlhdGVrLmNvbT4NClNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1
-biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvdXNiL2hvc3QveGhj
-aS5jIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigt
-KQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvaG9zdC94aGNpLmMgYi9kcml2ZXJzL3VzYi9o
-b3N0L3hoY2kuYw0KaW5kZXggZjNkYWJkMDIzODJjLi5hN2EyYmY1YmMyMDggMTAwNjQ0DQotLS0g
-YS9kcml2ZXJzL3VzYi9ob3N0L3hoY2kuYw0KKysrIGIvZHJpdmVycy91c2IvaG9zdC94aGNpLmMN
-CkBAIC0xMjM1LDcgKzEyMzUsNyBAQCBpbnQgeGhjaV9yZXN1bWUoc3RydWN0IHhoY2lfaGNkICp4
-aGNpLCBib29sIGhpYmVybmF0ZWQpDQogCQkgKiB0aGUgZmlyc3Qgd2FrZSBzaWduYWxsaW5nIGZh
-aWxlZCwgZ2l2ZSBpdCB0aGF0IGNoYW5jZS4NCiAJCSAqLw0KIAkJcGVuZGluZ19wb3J0ZXZlbnQg
-PSB4aGNpX3BlbmRpbmdfcG9ydGV2ZW50KHhoY2kpOw0KLQkJaWYgKCFwZW5kaW5nX3BvcnRldmVu
-dCkgew0KKwkJaWYgKCFwZW5kaW5nX3BvcnRldmVudCAmJiAhaGliZXJuYXRlZCkgew0KIAkJCW1z
-bGVlcCgxMjApOw0KIAkJCXBlbmRpbmdfcG9ydGV2ZW50ID0geGhjaV9wZW5kaW5nX3BvcnRldmVu
-dCh4aGNpKTsNCiAJCX0NCi0tIA0KMi4xOC4wDQo=
-
+This patch series builds on top of [1] and adds support for the cyttsp5=0D
+touchscreen controller for the reMarkable 2.=0D
+=0D
+I first tried to add an I2C HID device. Although the cyttsp5 has some HID=0D
+looking aspects it is not HID compatible. Just in trying to probe the devic=
+e=0D
+I found:=0D
+ - The HID descriptor has extra padding=0D
+ - The HID descriptor sets the high bytes of the descriptor length=0D
+ - The HID descriptor has extra unrecognised tags=0D
+ - The HID reset command doesn't appear to work=0D
+=0D
+I don't think there is a way to use the I2C HID framework with the cyttsp5.=
+=0D
+For anyone interested you can see the work here [2]. In that branch though =
+I=0D
+can only obtain a HID descriptor, nothing else works without more core=0D
+changes.=0D
+=0D
+So instead I rebased the series from [1]. Converted to the new yaml DTS=0D
+documentation, added regulator support and fixed a x/y miscalculation bug.=
+=0D
+=0D
+1: https://lwn.net/ml/linux-kernel/20180703094309.18514-1-mylene.josserand@=
+bootlin.com/=0D
+2: https://github.com/alistair23/linux/commits/rM2-mainline-cyttsp5-hid=0D
+=0D
+Alistair Francis (2):=0D
+  ARM: imx_v6_v7_defconfig: Enable the cyttsp5 touchscreen=0D
+  ARM: dts: imx7d: remarkable2: Enable the cyttsp5=0D
+=0D
+Myl=C3=A8ne Josserand (2):=0D
+  Input: Add driver for Cypress Generation 5 touchscreen=0D
+  Documentation: DT: bindings: input: Add documentation for cyttsp5=0D
+=0D
+ .../input/touchscreen/cypress,cyttsp5.yaml    |   72 ++=0D
+ arch/arm/boot/dts/imx7d-remarkable2.dts       |   88 ++=0D
+ arch/arm/configs/imx_v6_v7_defconfig          |    1 +=0D
+ drivers/input/touchscreen/Kconfig             |   14 +=0D
+ drivers/input/touchscreen/Makefile            |    1 +=0D
+ drivers/input/touchscreen/cyttsp5.c           | 1129 +++++++++++++++++=0D
+ 6 files changed, 1305 insertions(+)=0D
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/cyp=
+ress,cyttsp5.yaml=0D
+ create mode 100644 drivers/input/touchscreen/cyttsp5.c=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
