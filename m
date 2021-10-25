@@ -2,177 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9222438F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC0F438F06
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhJYFxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhJYFxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:53:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4783560F9C;
-        Mon, 25 Oct 2021 05:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635141043;
-        bh=xNn1kVTPHVB8Gp1EuJzknYKzUz8pI6VLiRtbOnNlKRs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mruM/QhZqVejOn66oIyjI7eAc6bUF6SJUjxPLWr+k3SUTTZllgEh+vEJNt/xfGKv3
-         GeWcGq564hKdr0j6YOtvsilyARTNEhvuDP3oimtjRY2PlxuAD0N7VaYUqbXuKDi/au
-         27hGSF/guDASDrK0b0P/BAVKfKykfdQu1cRlUjgJfo+AtWrmQ7aEkyane2e+aFMgHh
-         BIrHaTRLuawYdfPyJguKebi5gVfXMAtxx7t8wscs1F5OWfCf8EqPA2W95Qjz8IJ2ax
-         iPwbtm3fvWan5SnPwJko14gViGrwF12TPexUl7auXeOgK4MJH4K+sQDtQJu0DUvIlE
-         ZYXGIs9AwjzhQ==
-Date:   Mon, 25 Oct 2021 11:20:38 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Akhil R <akhilrajeev@nvidia.com>
-Cc:     jonathanh@nvidia.com, dan.j.williams@intel.com,
-        dmaengine@vger.kernel.org, kyarlagadda@nvidia.com,
-        ldewangan@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, p.zabel@pengutronix.de,
-        rgumasta@nvidia.com, thierry.reding@gmail.com
-Subject: Re: [PATCH v9 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
-Message-ID: <YXZFrqzuVS2TM12g@matsya>
-References: <1633438536-11399-1-git-send-email-akhilrajeev@nvidia.com>
- <1633438536-11399-2-git-send-email-akhilrajeev@nvidia.com>
+        id S229945AbhJYF41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhJYF4W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 01:56:22 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905FEC061745;
+        Sun, 24 Oct 2021 22:54:00 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id n2so9357710qta.2;
+        Sun, 24 Oct 2021 22:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Hd7Jz3ZJ8odvevTvYp5rQZ4T+oiL45RD8cRRUWullVk=;
+        b=iVohobba9cc/xCW1riSDrqiEFKZDej+qd3rbCOpZ582iOg4d+AaTJUonPj8oLSsEs7
+         byfW9R+o+hu+oSyfxd8aKwI4FnH6k+R2JUZ8a9/AmfDYsbg61DjBr3q1HGyiGYRwUhrf
+         1ryOWEXr0mEHGHShoahKsgxltr6O5PmC1Balv8VOQTd29j3e5jPAOzz6W3pKGtLBhSdg
+         OoFxhQfjQh/60ZbU1tRuHpr0OvJc48nJ91x2veHi1NvlKvhkTiF3vdzhBwxnR0pS7KfA
+         nuD2IbUtRFM1S8ayBc4mPOQdzvZdpXk0ki+gemyZR9m1F026ftwELX09yj5ok8XDMoh/
+         yZng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hd7Jz3ZJ8odvevTvYp5rQZ4T+oiL45RD8cRRUWullVk=;
+        b=Ij3nEpr4h4JXIQH+9/DTYe6i5iLKh+dQ0vivcTtSBBv1NVdRN1IHi67iYw0ARN/462
+         yACJupF4WpH7H2zhVjC9b0anbMJsppqLcvBTcz/6IwrTln1uT8ZdnbscXUrpDG1lTx0y
+         9vPS05bfpzbCunux2fBMkVFWb1RX6wPqBT8ddjdOYi6ZjEcGrS2I8/OwaMGJEHfBmIfA
+         rEmfbeDePpZiE6b2KnAi2KLiPTy6k7yLgXtq92+3g5IA70picBSQa54+zVeOjz/B+kv0
+         /SOFFDjCqcXbWCtLIFtQxflB2pYA8i3naRPIVHQxbQnfasex4jc7xJpasMn78uUN+K3b
+         iCBg==
+X-Gm-Message-State: AOAM532Hpo25UsthHmGSXTY2S6FN8y4kXIqoED72Q7m7e4n9H5JL6HHA
+        U9QvsuSq0f0Zg5rtXZcfWcE=
+X-Google-Smtp-Source: ABdhPJzjiafIyejagX3sK442FZam2KKfQeKHakEAR+veMDkvLKGUAya8FhMSsZ9hffDuhq50hfAezw==
+X-Received: by 2002:a05:622a:1804:: with SMTP id t4mr15809135qtc.251.1635141239604;
+        Sun, 24 Oct 2021 22:53:59 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id l3sm8447606qkj.110.2021.10.24.22.53.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Oct 2021 22:53:59 -0700 (PDT)
+Subject: Re: [PATCH 0/5] driver core, of: support for reserved devices
+To:     Zev Weiss <zev@bewilderbeest.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Oliver O'Halloran <oohall@gmail.com>
+References: <20211022020032.26980-1-zev@bewilderbeest.net>
+ <YXJfHwzIdksUKPIe@kroah.com> <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <3a5e271d-d977-7eca-21c5-fd75a2366920@gmail.com>
+Date:   Mon, 25 Oct 2021 00:53:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633438536-11399-2-git-send-email-akhilrajeev@nvidia.com>
+In-Reply-To: <YXJ9yR6b5vI3NwF7@hatter.bewilderbeest.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-10-21, 18:25, Akhil R wrote:
-> Add DT binding document for NVIDIA Tegra GPCDMA controller.
+On 10/22/21 4:00 AM, Zev Weiss wrote:
+> On Thu, Oct 21, 2021 at 11:50:07PM PDT, Greg Kroah-Hartman wrote:
+>> On Thu, Oct 21, 2021 at 07:00:27PM -0700, Zev Weiss wrote:
+>>> Hello all,
+>>>
+>>> This series is another incarnation of a couple other patchsets I've
+>>> posted recently [0, 1], but again different enough in overall
+>>> structure that I'm not sure it's exactly a v2 (or v3).
+>>>
+>>> As compared to [1], it abandons the writable binary sysfs files and at
+>>> Frank's suggestion returns to an approach more akin to [0], though
+>>> without any driver-specific (aspeed-smc) changes, which I figure might
+>>> as well be done later in a separate series once appropriate
+>>> infrastructure is in place.
+>>>
+>>> The basic idea is to implement support for a status property value
+>>> that's documented in the DT spec [2], but thus far not used at all in
+>>> the kernel (or anywhere else I'm aware of): "reserved".  According to
+>>> the spec (section 2.3.4, Table 2.4), this status:
+>>>
+>>>   Indicates that the device is operational, but should not be used.
+>>>   Typically this is used for devices that are controlled by another
+>>>   software component, such as platform firmware.
+>>>
+>>> With these changes, devices marked as reserved are (at least in some
+>>> cases, more on this later) instantiated, but will not have drivers
+>>> bound to them unless and until userspace explicitly requests it by
+>>> writing the device's name to the driver's sysfs 'bind' file.  This
+>>> enables appropriate handling of hardware arrangements that can arise
+>>> in contexts like OpenBMC, where a device may be shared with another
+>>> external controller not under the kernel's control (for example, the
+>>> flash chip storing the host CPU's firmware, shared by the BMC and the
+>>> host CPU and exclusively under the control of the latter by default).
+>>> Such a device can be marked as reserved so that the kernel refrains
+>>> from touching it until appropriate preparatory steps have been taken
+>>> (e.g. BMC userspace coordinating with the host CPU to arbitrate which
+>>> processor has control of the firmware flash).
+>>>
+>>> Patches 1-3 provide some basic plumbing for checking the "reserved"
+>>> status of a device, patch 4 is the main driver-core change, and patch
+>>> 5 tweaks the OF platform code to not skip reserved devices so that
+>>> they can actually be instantiated.
+>>
+>> Again, the driver core should not care about this, that is up to the bus
+>> that wants to read these "reserved" values and do something with them or
+>> not (remember the bus is the thing that does the binding, not the driver
+>> core).
+>>
+>> But are you sure you are using the "reserved" field properly?
+> 
+> Well, thus far both Rob Herring and Oliver O'Halloran (originator of the "reserved" status in the DT spec, whom I probably should have CCed earlier, sorry) have seemed receptive to this interpretation of it, which I'd hope would lend it some credence.
 
-why is Rob and DT list not cced here?
+I am not on board with this interpretation.  To me, if the value of
+status is "reserved", then the Linux kernel should _never_ use the
+device described by the node.
+
+If a "reserved" node is usable by the Linux kernel, then the specification
+should be updated to allow this.  And the specification should probably
+be expanded to either discuss how to describe the coordination between
+multiple entities or state that the coordination is outside of the
+specification and will be implemention dependent.
+
+I am wary of the complexity of the operating system treating a node as
+reserved at initial boot, then at some point via coordination with
+some other entity starting to use the node.  It is not too complex if
+the node is a leaf node with no links (phandles) to or from any other node,
+but as soon as links to or from other nodes exist, then other drivers or
+subsystems may need to be aware of when the node is available to the
+operating system or given back to the other entity then any part of the
+operating system has to coordinate in that state transition.  This is
+driving a lot of my caution that we be careful to create architecture
+and not an ad hoc hack.
+
+-Frank
 
 > 
-> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 108 +++++++++++++++++++++
->  1 file changed, 108 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+>> You are
+>> wanting to do "something" to the device to later on be able to then have
+>> the kernel touch the device, while it seems that the reason for this
+>> field is for the kernel to NEVER touch the device at all.  What will
+>> break if you change this logic?
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> new file mode 100644
-> index 0000000..d3f58d8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> @@ -0,0 +1,108 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
-> +
-> +description: |
-> +  The Tegra General Purpose Central (GPC) DMA controller is used for faster
-> +  data transfers between memory to memory, memory to device and device to
-> +  memory.
-> +
-> +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Rajesh Gumasta <rgumasta@nvidia.com>
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +        - nvidia,tegra186-gpcdma
-> +        - nvidia,tegra194-gpcdma
-> +      - items:
-> +        - const: nvidia,tegra186-gpcdma
-> +        - const: nvidia,tegra194-gpcdma
-> +
-> +  "#dma-cells":
-> +    const: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 32
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    const: gpcdma
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - resets
-> +  - reset-names
-> +  - "#dma-cells"
-> +  - iommus
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/memory/tegra186-mc.h>
-> +    #include <dt-bindings/reset/tegra186-reset.h>
-> +
-> +    gpcdma:dma-controller@2600000 {
-> +        compatible = "nvidia,tegra186-gpcdma";
-> +        reg = <0x2600000 0x0>;
-> +        resets = <&bpmp TEGRA186_RESET_GPCDMA>;
-> +        reset-names = "gpcdma";
-> +        interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
-> +        #dma-cells = <1>;
-> +        iommus = <&smmu TEGRA186_SID_GPCDMA_0>;
-> +        dma-coherent;
-> +    };
-> +...
-> -- 
-> 2.7.4
+> Given that there's no existing usage of or support for this status value anywhere I can see in the kernel, and that Oliver has indicated that it should be compatible with usage in OpenPower platform firmware, my expectation would certainly be that nothing would break, but if there are examples of things that could I'd be interested to see them.
+> 
+> 
+> Thanks,
+> Zev
+> 
 
--- 
-~Vinod
