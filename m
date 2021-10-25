@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A884439F84
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E583439F36
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhJYTVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38664 "EHLO mail.kernel.org"
+        id S234539AbhJYTS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234600AbhJYTUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:20:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6768B610C9;
-        Mon, 25 Oct 2021 19:18:00 +0000 (UTC)
+        id S234441AbhJYTSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:18:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2538600D3;
+        Mon, 25 Oct 2021 19:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189480;
-        bh=o86vtXUV4131K8TJF7T3Do477KsQhv26QQ/gZby7KJM=;
+        s=korg; t=1635189347;
+        bh=LJlDaRBgePqAvT2+QHa8/PRFb0ox9bnspEkX9m8EXJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bzpBqOOFvL7H97LmR3usa122XcGqM1kLbqTCDn+4ciAdKZbdePf5JsqPXM1AIYRt5
-         tMRrECdB81ZiyaSYPJ3Y5Mbt66h3K6/fqYMK9XFgiRxmU0qOWDLy3jzJmaWUELDWYv
-         tn9mk90ILzAdc7pLG5Dz0aAxkujvscmJNETgO99c=
+        b=qGxYLCO9kfZxTGYg+Q5AO2zq89FZQ1qAm465HOq/QgqnKuXBPfR7Oa7JUiZp/A4+K
+         WHk3WUVCZ5kwzG03jVZF7658k4ldflAObSrU3mFJB8SE9/KGVqth3KVUB6c5t8JA7f
+         AcTgjOPQhnqMiwENM9fdtHVwoNN1lspeNkklTDxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Jianhua <chris.zjh@huawei.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4.9 06/50] efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
+        stable@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.4 12/44] iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
 Date:   Mon, 25 Oct 2021 21:13:53 +0200
-Message-Id: <20211025190934.014662189@linuxfoundation.org>
+Message-Id: <20211025190931.152656708@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,67 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Jianhua <chris.zjh@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 38fa3206bf441911258e5001ac8b6738693f8d82 upstream.
+commit 4170d3dd1467e9d78cb9af374b19357dc324b328 upstream.
 
-While reboot the system by sysrq, the following bug will be occur.
+The ssp_print_mcu_debug() function should return negative error codes on
+error.  Returning "length" is meaningless.  This change does not affect
+runtime because the callers only care about zero/non-zero.
 
-BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:90
-in_atomic(): 0, irqs_disabled(): 128, non_block: 0, pid: 10052, name: rc.shutdown
-CPU: 3 PID: 10052 Comm: rc.shutdown Tainted: G        W O      5.10.0 #1
-Call trace:
- dump_backtrace+0x0/0x1c8
- show_stack+0x18/0x28
- dump_stack+0xd0/0x110
- ___might_sleep+0x14c/0x160
- __might_sleep+0x74/0x88
- down_interruptible+0x40/0x118
- virt_efi_reset_system+0x3c/0xd0
- efi_reboot+0xd4/0x11c
- machine_restart+0x60/0x9c
- emergency_restart+0x1c/0x2c
- sysrq_handle_reboot+0x1c/0x2c
- __handle_sysrq+0xd0/0x194
- write_sysrq_trigger+0xbc/0xe4
- proc_reg_write+0xd4/0xf0
- vfs_write+0xa8/0x148
- ksys_write+0x6c/0xd8
- __arm64_sys_write+0x18/0x28
- el0_svc_common.constprop.3+0xe4/0x16c
- do_el0_svc+0x1c/0x2c
- el0_svc+0x20/0x30
- el0_sync_handler+0x80/0x17c
- el0_sync+0x158/0x180
-
-The reason for this problem is that irq has been disabled in
-machine_restart() and then it calls down_interruptible() in
-virt_efi_reset_system(), which would occur sleep in irq context,
-it is dangerous! Commit 99409b935c9a("locking/semaphore: Add
-might_sleep() to down_*() family") add might_sleep() in
-down_interruptible(), so the bug info is here. down_trylock()
-can solve this problem, cause there is no might_sleep.
-
---------
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Reported-by: Jonathan Cameron <jic23@kernel.org>
+Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210914105333.GA11657@kili
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/runtime-wrappers.c |    2 +-
+ drivers/iio/common/ssp_sensors/ssp_spi.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/efi/runtime-wrappers.c
-+++ b/drivers/firmware/efi/runtime-wrappers.c
-@@ -259,7 +259,7 @@ static void virt_efi_reset_system(int re
- 				  unsigned long data_size,
- 				  efi_char16_t *data)
- {
--	if (down_interruptible(&efi_runtime_lock)) {
-+	if (down_trylock(&efi_runtime_lock)) {
- 		pr_warn("failed to invoke the reset_system() runtime service:\n"
- 			"could not get exclusive access to the firmware\n");
- 		return;
+--- a/drivers/iio/common/ssp_sensors/ssp_spi.c
++++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
+@@ -147,7 +147,7 @@ static int ssp_print_mcu_debug(char *dat
+ 	if (length > received_len - *data_index || length <= 0) {
+ 		ssp_dbg("[SSP]: MSG From MCU-invalid debug length(%d/%d)\n",
+ 			length, received_len);
+-		return length ? length : -EPROTO;
++		return -EPROTO;
+ 	}
+ 
+ 	ssp_dbg("[SSP]: MSG From MCU - %s\n", &data_frame[*data_index]);
 
 
