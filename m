@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A33439C1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0502439C22
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhJYQzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:55:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232613AbhJYQzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:55:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D4160E97;
-        Mon, 25 Oct 2021 16:52:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635180766;
-        bh=Hl6vfIz2kWxrCvEfYUe2q2+uL7HXYfA1sQ6X6F+krWw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CsRZPbyz6S7TxHBLPZJWrXqrh5gJhSpCVSRUPYXlN+sAW1QkJcxXUvagDlvhMQzB9
-         QOd7Ow1BOnVbA7moNjYtCNhyRsBRttBuNxcYVyMQpTNkx1wxQxD1rTaKbhs4FOSDb3
-         N6OY8/0ggFHuyBPspxeoAWzRVWyh3rqhftpfm1x3GfqDVwdOFaYKuruvALY/qqTQ0J
-         vajHiHCmx/AZl3tJEktkQ0Rho+lR+XOpibDrHTmAwZI2cWlhvjbq+ZzhUDYgz5bfmP
-         ygNOz/wXm0EmxeXiZP9unYHrcfBhZ1Rpn90u3TTlCVizJtPVhy/yICjXRDDd0Y42f6
-         22E3uFs+K4hLw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF5F2410A1; Mon, 25 Oct 2021 13:52:42 -0300 (-03)
-Date:   Mon, 25 Oct 2021 13:52:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     peterz@infradead.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, mingo@redhat.com,
-        irogers@google.com, linux-perf-users@vger.kernel.org,
+        id S234043AbhJYQ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232613AbhJYQ53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:57:29 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E407AC061745;
+        Mon, 25 Oct 2021 09:55:06 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so546475pjb.0;
+        Mon, 25 Oct 2021 09:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=34KqGsADswDnjonTJQq114bRqQgkKcPCrw08YN12k1U=;
+        b=ArdZ9P7fyJ7zJHFYx1+AQE02HbDLJAUvr4erZl2mwbBhtH4+TimE4u+ugqvNFdwh8d
+         3/k33Em4/TsoIsweBaglse1QZQgHs7wcFn8ECUkcngi4ODPtbQO4Nm9N6HsFFQgfLYjO
+         RePbywXUgZ4jXqcZxI7CJfFNDy98/HjjX5D5DC2BF8G+I/IOB9VG5SIpJ3tDITv0dJRl
+         sUJ6d+ibD4KBuChDdczeAcIBzNl30xwnxblX9PJBRPoGnixLoKyw7+/sPO6a5ErIzVMp
+         go4JYUYLmAuef1oHBLR/IOfONu/74SlIlF3dwUs57Wqyht+Hr5rXw+CnNSGJhGpEkKIr
+         iTbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=34KqGsADswDnjonTJQq114bRqQgkKcPCrw08YN12k1U=;
+        b=CiJ6GG+pu9UK887u3phNe8COOXM+5lAJsfq8W27MTaqdekM2fv3fFNaCUEbMSlzK0o
+         wnJRyM615aS7Uyo96rQhbI23V0k6zsi5+HyaqPXFOx3pmXjnsFNddnovC0eplJMKE7O+
+         CQeIR3fjr+8Bq9iYJheyEZpFn9lgjgUcWSEt7disXt8d2YLEBolVIBEX0sFL1TQXkFlQ
+         Z8w0XAfQjlcu4H0yb9sqo5TeZAeLJlLXI82PevMag0ridM9442KPhNpw+SEGrIju16Yx
+         uDhxLaOWb17oMtKp3LIpHTu6Y4gykSIyA8mx8B5eIhx7DYBtG30RQB7rJhKG542XKYNX
+         G0rQ==
+X-Gm-Message-State: AOAM532q2W3u/6lDgGL0tft501b0Mppeq/0/ZyOzrSPjOhkLS3VfR9nN
+        96BX5RSObXs0tXCMWuN5fus=
+X-Google-Smtp-Source: ABdhPJwnOC5S77AdBEAZhaiGNLZ1LAMQYdWuNPBpW15141iALB0JrDnj2gFivuKTGQtzXuB/cou/UQ==
+X-Received: by 2002:a17:90b:1b49:: with SMTP id nv9mr21773068pjb.134.1635180906379;
+        Mon, 25 Oct 2021 09:55:06 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:676:677c:1b95:77a5])
+        by smtp.gmail.com with ESMTPSA id c15sm9853456pfv.66.2021.10.25.09.55.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 09:55:05 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 25 Oct 2021 09:55:04 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
+        ngupta@vflare.org, senozhatsky@chromium.org, richard@nod.at,
+        miquel.raynal@bootlin.com, vigneshr@ti.com,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
+        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH: Fix for_each_set_bit(u64) build on 32-bit arches, was perf
- intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-Message-ID: <YXbg2vbY71qGdsYq@kernel.org>
+Subject: Re: [PATCH 08/13] zram: add error handling support for add_disk()
+Message-ID: <YXbhaO5QAOi96E8j@google.com>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-9-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20211015235219.2191207-9-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 20, 2021 at 02:25:43PM -0300, Arnaldo Carvalho de Melo escreveu:
->   29     8.60 debian:experimental-x-mipsel  : FAIL gcc version 11.2.0 (Debian 11.2.0-9)
->     util/intel-pt.c: In function 'intel_pt_synth_pebs_sample':
->     util/intel-pt.c:2146:33: error: passing argument 1 of 'find_first_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
->      2146 |         for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
->     /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:37:38: note: in definition of macro 'for_each_set_bit'
->        37 |         for ((bit) = find_first_bit((addr), (size));            \
->           |                                      ^~~~
->     In file included from /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops.h:21,
->                      from /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:34,
->                      from /git/perf-5.15.0-rc4/tools/include/linux/bitmap.h:6,
->                      from util/header.h:10,
->                      from util/session.h:7,
->                      from util/intel-pt.c:16:
->     /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops/find.h:109:51: note: expected 'const long unsigned int *' but argument is of type 'const uint64_t *' {aka 'const long long unsigned int *'}
+On Fri, Oct 15, 2021 at 04:52:14PM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
 > 
->  Adrian, this is on:
-> 
->  commit 803a3c9233990e1adac8ea2421e3759c2d380cf8
-> Author: Adrian Hunter <adrian.hunter@intel.com>
-> Date:   Tue Sep 7 19:39:03 2021 +0300
-> 
->     perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-> 
->     Originally, software only supported redirecting at most one PEBS event to
->     Intel PT (PEBS-via-PT) because it was not able to differentiate one event
->     from another. To overcome that, add support for the
->     PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
-> 
->     Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->     Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> 
-> 
-> That is still just on tmp.perf/core, so we can fix it, probably its just
-> making that uint64_t into a unsigned long, will check later if you don't
-> beat me to it.
-
-Do as other code in perf does, e.g.  arch/x86/events/intel/ds.c, dealing
-with PEBS.
-
-I'm adding this to that patch to fix the build on 32-bit.
-
-- Arnaldo
-
-
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 1073c56a512cdc6e..c9542fada8fb6f9b 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -2143,7 +2143,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 		return intel_pt_synth_single_pebs_sample(ptq);
- 	}
- 
--	for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
-+	for_each_set_bit(hw_id, (unsigned long *)&items->applicable_counters, INTEL_PT_MAX_PEBS) {
- 		pe = &ptq->pebs[hw_id];
- 		if (!pe->evsel) {
- 			if (!pt->single_pebs)
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
