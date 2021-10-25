@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D9543973B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B6943973E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhJYNMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233231AbhJYNMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:12:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DB7BD61029;
-        Mon, 25 Oct 2021 13:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635167412;
-        bh=morEASi0Zdmv6otgj+vYkYm3PhJeDbtXfPdksqkpOEQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XOlIhmEMMPyEoZfAJADnlmXlXilXWqZakEm2rAk8fV5bafC3c4ybeInjgDqoDuGXj
-         hukNhLP8wRsIsICqjcDv4eWYtmfAW70ZbucYt6ev6SqYfjoCN+0Jyh1KYJRZ+8HtbU
-         scxh3Woy817ScN0aqi6A+JxVpmYhmPa9cZ67oi/2gFsGm1iJUcK2JXl/aWKyDpF3/L
-         o0VmfyN1v5Y1uqDN/zM3XSU+/mJ3suNnVF8JI7zkTkwsVDDkiYy/zYwLtBlR4oHCAm
-         15GmzerbqoqtLB+p0DPYdSmR4RgS6MVsKUyKUCWbVPLwGATgSVkH2T/f4iv050+MSM
-         gqalxIkKcHd3Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C71C660AA5;
-        Mon, 25 Oct 2021 13:10:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233480AbhJYNNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233448AbhJYNNW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:13:22 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197C8C061745;
+        Mon, 25 Oct 2021 06:11:00 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id r134so15328287iod.11;
+        Mon, 25 Oct 2021 06:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LqSgr0K3Z/r9sP1YQd1U8WeH+I8Nt19Et4qB9zN0QnM=;
+        b=gosArYnwumg1N6VgrU3ws2OC+QIQsYC/xRwLyYcspNj5zKaqXy0dBC43yikj/R4SGz
+         BWfYXJwxDqX3Z4iIkH36n+902vqYsq5SIo9uv/pNq5VnVaomow+reus8oUl+tVJAS6aN
+         Y6aSFMpsr9Xm4mFsqORkCzt8akgjAcQ0XIJciNKrUtEpPxBRKMN4ZfDmSHum4XyKyy7i
+         NsBWDzqKMtSdoLgvMktRfOpQ926dhTXFIC1h3Zn9+YmtvsakmIwPNIv8Xz3AXkOaVBx7
+         AWUTYKFg9+m9i3gAu7G/pymyZ+CNIZDQlqjx7C3B53D+/ucWX7gH4vh9AfZr5WP1ACCw
+         QAOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LqSgr0K3Z/r9sP1YQd1U8WeH+I8Nt19Et4qB9zN0QnM=;
+        b=1iKJONQp4yuo/CUFbg/eL862TWE5wGqnlj9+I1Vqyd8InuIsxhaWYr7B2UkScDghp1
+         1kGzcL7I5r4YFBrrFk7Sp3mJJRDKbkEKXcw8iQuDKlMkN9MTjJbBXKh6npZfsPlH0HpR
+         6qZnbkG0rUPRPEWXLq0iob318SnQAHhJmz0F/p33aETzQiZGDp0Yv7bJirzcJOwYQAnK
+         /sv65PghtTlXuS7kkh4ic4CVPoUWKZr3qWShk/WQ2lcA6WR4jVVAJzL1WOdbc+d4q2wu
+         dIjnE2gzRBFwvh1AKInhfobkkR9/GEBj5WMfKK8Wa5LDYPm2ZsiDLZOUPATGWO7xEJ6f
+         scuA==
+X-Gm-Message-State: AOAM5303rOolnJT0Z7OM2+gAmKDNXCQBSin9brRMCXfSjUDLlEY0GvsF
+        LBtfFqN8wMetf5k7qSrwV32Ql96wC61TTNRGpSNnqCuU
+X-Google-Smtp-Source: ABdhPJyE2CchchZpEfZkAyrM/PAwt1sP0pvFhVpiTlJ6N/8hbgOMoqp0drlHvQXDnV3C5K5PocsJF5b1ElK8v0a/IgM=
+X-Received: by 2002:a6b:8dd6:: with SMTP id p205mr10227210iod.192.1635167459394;
+ Mon, 25 Oct 2021 06:10:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 net-next 0/8] net: hns3: updates for -next
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163516741281.29679.7104225166491558566.git-patchwork-notify@kernel.org>
-Date:   Mon, 25 Oct 2021 13:10:12 +0000
-References: <20211024094115.42158-1-huangguangbin2@huawei.com>
-In-Reply-To: <20211024094115.42158-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lipeng321@huawei.com, chenhao288@hisilicon.com
+References: <20211006222502.645003-1-pauk.denis@gmail.com> <20211006222502.645003-3-pauk.denis@gmail.com>
+ <CAB95QARmjTBVRyru=ZDz9Wc5SX9EPFg7dg6vB+S8=pMtpg8FRw@mail.gmail.com>
+ <20211007184644.1d042550@penguin.lxd> <CAB95QASYPRZSFnpE5u=SYJ49Hd+=BAZY==Ky8dzjL8h7YZj-CQ@mail.gmail.com>
+ <CAB95QAQ+u4DmF0e9Zvy5hDV0mFQDEULtr-newtz5_6y=Bzp+ww@mail.gmail.com>
+ <20211010133921.4277dc79@penguin.lxd> <CAB95QAQs_PUeTU7d9tg83a8hRepjLfLnxVykU2nvBv3Vn49HBQ@mail.gmail.com>
+ <8527fb83-4b76-e3c4-85eb-542c1cee249a@roeck-us.net> <CAB95QATwDkGBWdB0YWJovfN=MdtV9JkAWH2ofDFHMVYymStk5w@mail.gmail.com>
+In-Reply-To: <CAB95QATwDkGBWdB0YWJovfN=MdtV9JkAWH2ofDFHMVYymStk5w@mail.gmail.com>
+From:   Eugene Shalygin <eugene.shalygin@gmail.com>
+Date:   Mon, 25 Oct 2021 15:10:48 +0200
+Message-ID: <CAB95QASpK+ajGTpJoMTQN1epa-QMy9sJHRPFVyizFgCa3dut=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Denis Pauk <pauk.denis@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi All,
 
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+> On that machine a single reading of the EC register (i.e. a call to
+> ec_read()) takes approx. 14 ms. The timeout is probably right here.
 
-On Sun, 24 Oct 2021 17:41:07 +0800 you wrote:
-> This series includes some updates for the HNS3 ethernet driver.
-> 
-> #1 debugfs support for dumping interrupt coalesce.
-> #2~#3 improve compatibility of mac statistic and add pause/pfc durations
->       for it.
-> #5~#6 add update ethtool advertised link modes for FIBRE port when autoneg
->       off.
-> #7~#8 add some error types for ras.
-> 
-> [...]
+I migrated that ASUS machine to another distribution (Arch -> Gentoo,
+kernel versions 5.14.8 -> 5.14.14) and surprisingly reading EC
+registers became faster. I accumulated data from 14133 read operations
+and the times are distributed as follows: 84 % at 4 ms, 10 % at 5 ms,
+5.0 % at 6 ms and the rest is between 3 and 9 ms (but concentrating
+around multiples of 0.5 ms).
 
-Here is the summary with links:
-  - [net-next,1/8] net: hns3: add debugfs support for interrupt coalesce
-    https://git.kernel.org/netdev/net-next/c/c99fead7cb07
-  - [net-next,2/8] net: hns3: modify mac statistics update process for compatibility
-    https://git.kernel.org/netdev/net-next/c/0bd7e894dffa
-  - [net-next,3/8] net: hns3: device specifications add number of mac statistics
-    https://git.kernel.org/netdev/net-next/c/4e4c03f6ab63
-  - [net-next,4/8] net: hns3: add support pause/pfc durations for mac statistics
-    https://git.kernel.org/netdev/net-next/c/c8af2887c941
-  - [net-next,5/8] net: hns3: modify functions of converting speed ability to ethtool link mode
-    https://git.kernel.org/netdev/net-next/c/58cb422ef625
-  - [net-next,6/8] net: hns3: add update ethtool advertised link modes for FIBRE port when autoneg off
-    https://git.kernel.org/netdev/net-next/c/6eaed433ee5f
-  - [net-next,7/8] net: hns3: add new ras error type for roce
-    https://git.kernel.org/netdev/net-next/c/b566ef60394c
-  - [net-next,8/8] net: hns3: add error recovery module and type for himac
-    https://git.kernel.org/netdev/net-next/c/da3fea80fea4
+In the meantime the only other user who provided EC read timeouts
+showed 14 ms per EC read too.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Regards,
+Eugene
