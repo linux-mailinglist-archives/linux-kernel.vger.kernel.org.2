@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89350439CBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B46439CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbhJYRGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55210 "EHLO mail.kernel.org"
+        id S234469AbhJYRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:06:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234130AbhJYRDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234262AbhJYRDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 13:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB6DA60F9B;
-        Mon, 25 Oct 2021 17:01:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69D2460FE8;
+        Mon, 25 Oct 2021 17:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635181270;
-        bh=zqr4NZeobS5Azao8C6sJQLXnJpUv8X39ZljwqHQlOBA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PCabCGZfnjeqYmFqr1si7oaNhhxegSIV689yAaveq0eCZKkVMYvYi2QEt53NGL9UO
-         HfrvOVcqqMv3QAWkRdlBhjtrdDTwvJVM9ZzWxo0g+EwOnfyEOtsklhr9stkYfB7xFM
-         iezIdyBG8ITDDKuwJND0/7cw0lCHzGwEZIibQuw1ZtD7hdWf9yZt/B6aRluE5TznZE
-         6LaXEOkEV4PFEF40C6UkoDyOCUwLr7A6g/5l7d0AvjyMCSyV2Qp2RPUuE1qmrn+sgu
-         ZlWBJ/AJw22KBlqDEh4RZuOf64XhLjE77+qfS5mgNYJCPQ8JFAleEpBv3qfLwjwr2j
-         VIfadrOXUwCyw==
+        s=k20201202; t=1635181272;
+        bh=q7Q+qaHQXxKtTdLOzrU+axS9O1AHz6CsjUf1HE8HpYk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OtvfMiYhNZYFwI+UsgLzt1HwBX82wcu13R90/166cWK0IjhYwgeN9onKhJVTUZI8x
+         JTtFKRvXk28hSof7JbDZ2A32Y5KvgZwkFPpcYDmeMQ2QSw7sFZnYTOxdS4zvICD3v8
+         g2RpkY62YSVF/sKRJJf96/8GToYFLpzgsmj7SskIjIWjcRrZQZNVBTvZ0AO54BnwAt
+         cHleK9ANorSeobfqsMqjgU3HOS7CKIxWf8v+YNQowk6rRJF2QxLWcaJgeUM85WtkPA
+         W9gGQctIbQ+VRQ8MhGnjKdRhMXcXHAbwYhZGk/J8VMhp9UCbQ1xixYTttJrtto9HjF
+         dc9qjRnWwuWFg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Changhui Zhong <czhong@redhat.com>,
-        Yi Zhang <yi.zhang@redhat.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/7] scsi: core: Put LLD module refcnt after SCSI device is released
-Date:   Mon, 25 Oct 2021 13:00:56 -0400
-Message-Id: <20211025170103.1394651-1-sashal@kernel.org>
+Cc:     Zheyu Ma <zheyuma97@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, sgoutham@marvell.com,
+        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 2/7] cavium: Return negative value when pci_alloc_irq_vectors() fails
+Date:   Mon, 25 Oct 2021 13:00:57 -0400
+Message-Id: <20211025170103.1394651-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211025170103.1394651-1-sashal@kernel.org>
+References: <20211025170103.1394651-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,84 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit f2b85040acec9a928b4eb1b57a989324e8e38d3f ]
+[ Upstream commit b2cddb44bddc1a9c5949a978bb454bba863264db ]
 
-SCSI host release is triggered when SCSI device is freed. We have to make
-sure that the low-level device driver module won't be unloaded before SCSI
-host instance is released because shost->hostt is required in the release
-handler.
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
-Make sure to put LLD module refcnt after SCSI device is released.
-
-Fixes a kernel panic of 'BUG: unable to handle page fault for address'
-reported by Changhui and Yi.
-
-Link: https://lore.kernel.org/r/20211008050118.1440686-1-ming.lei@redhat.com
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reported-by: Changhui Zhong <czhong@redhat.com>
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi.c       | 4 +++-
- drivers/scsi/scsi_sysfs.c | 9 +++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/cavium/thunder/nic_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi.c b/drivers/scsi/scsi.c
-index fc1356d101b0..febe29a9b8b0 100644
---- a/drivers/scsi/scsi.c
-+++ b/drivers/scsi/scsi.c
-@@ -575,8 +575,10 @@ EXPORT_SYMBOL(scsi_device_get);
-  */
- void scsi_device_put(struct scsi_device *sdev)
- {
--	module_put(sdev->host->hostt->module);
-+	struct module *mod = sdev->host->hostt->module;
-+
- 	put_device(&sdev->sdev_gendev);
-+	module_put(mod);
- }
- EXPORT_SYMBOL(scsi_device_put);
+diff --git a/drivers/net/ethernet/cavium/thunder/nic_main.c b/drivers/net/ethernet/cavium/thunder/nic_main.c
+index 90497a27df18..7c0a67f1f43f 100644
+--- a/drivers/net/ethernet/cavium/thunder/nic_main.c
++++ b/drivers/net/ethernet/cavium/thunder/nic_main.c
+@@ -1175,7 +1175,7 @@ static int nic_register_interrupts(struct nicpf *nic)
+ 		dev_err(&nic->pdev->dev,
+ 			"Request for #%d msix vectors failed, returned %d\n",
+ 			   nic->num_vec, ret);
+-		return 1;
++		return ret;
+ 	}
  
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index 186f779fa60c..d4be13892b26 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -431,9 +431,12 @@ static void scsi_device_dev_release_usercontext(struct work_struct *work)
- 	struct list_head *this, *tmp;
- 	struct scsi_vpd *vpd_pg80 = NULL, *vpd_pg83 = NULL;
- 	unsigned long flags;
-+	struct module *mod;
- 
- 	sdev = container_of(work, struct scsi_device, ew.work);
- 
-+	mod = sdev->host->hostt->module;
-+
- 	scsi_dh_release_device(sdev);
- 
- 	parent = sdev->sdev_gendev.parent;
-@@ -474,11 +477,17 @@ static void scsi_device_dev_release_usercontext(struct work_struct *work)
- 
- 	if (parent)
- 		put_device(parent);
-+	module_put(mod);
- }
- 
- static void scsi_device_dev_release(struct device *dev)
- {
- 	struct scsi_device *sdp = to_scsi_device(dev);
-+
-+	/* Set module pointer as NULL in case of module unloading */
-+	if (!try_module_get(sdp->host->hostt->module))
-+		sdp->host->hostt->module = NULL;
-+
- 	execute_in_process_context(scsi_device_dev_release_usercontext,
- 				   &sdp->ew);
- }
+ 	/* Register mailbox interrupt handler */
 -- 
 2.33.0
 
