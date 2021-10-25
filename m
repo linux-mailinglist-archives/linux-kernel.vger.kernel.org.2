@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D2643A2E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04E543A19A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239073AbhJYTyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36294 "EHLO mail.kernel.org"
+        id S235140AbhJYTkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238526AbhJYTtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:49:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2818861106;
-        Mon, 25 Oct 2021 19:41:34 +0000 (UTC)
+        id S235965AbhJYTar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:30:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 718B8610C9;
+        Mon, 25 Oct 2021 19:27:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190894;
-        bh=4YWK8YQ/UiVM+ddsm64SVdz/ByGf+J5v/Lv4c2utpzQ=;
+        s=korg; t=1635190054;
+        bh=K+b/FxmH+5elf00PaE0iTL9bqU+4t42Ah4rBCc5X/wA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x/OtvoQxrpBXuQyG41Kb5qeL/JeK2z6ouKVEquCcyuniTPY9kYkLpg8i8PIjN5aAp
-         1iTsFdZ/UBbrtDiqN+sfRr7/rvkyGC9uCSjhex+P0/yz+0y2ZcAqPqcgiiE97O7uQP
-         4F58adSw/pKh1PManz4n+oPLY6D5f24jvm/aa0AE=
+        b=fndqZB0bqiRHqdHFrxi+9MrVBCihFMJgx7SULRjuGQaQoIhuXwRZ+coCqezDy1a03
+         r8mc2F8yNhMClL55BlV2vs3KX/iPOVV+8EtDUAeGbS5zrcmu8lhRTvzFklZjaD67wN
+         VSgZPcUHJA8xarksECLukAGKFRh7ZmDVAbUz3b6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.14 097/169] KVM: PPC: Book3S HV: Fix stack handling in idle_kvm_start_guest()
-Date:   Mon, 25 Oct 2021 21:14:38 +0200
-Message-Id: <20211025191030.083326501@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.4 22/58] can: j1939: j1939_tp_rxtimer(): fix errant alert in j1939_tp_rxtimer
+Date:   Mon, 25 Oct 2021 21:14:39 +0200
+Message-Id: <20211025190941.145550242@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,105 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 9b4416c5095c20e110c82ae602c254099b83b72f upstream.
+commit b504a884f6b5a77dac7d580ffa08e482f70d1a30 upstream.
 
-In commit 10d91611f426 ("powerpc/64s: Reimplement book3s idle code in
-C") kvm_start_guest() became idle_kvm_start_guest(). The old code
-allocated a stack frame on the emergency stack, but didn't use the
-frame to store anything, and also didn't store anything in its caller's
-frame.
+When the session state is J1939_SESSION_DONE, j1939_tp_rxtimer() will
+give an alert "rx timeout, send abort", but do nothing actually. Move
+the alert into session active judgment condition, it is more
+reasonable.
 
-idle_kvm_start_guest() on the other hand is written more like a normal C
-function, it creates a frame on entry, and also stores CR/LR into its
-callers frame (per the ABI). The problem is that there is no caller
-frame on the emergency stack.
+One of the scenarios is that j1939_tp_rxtimer() execute followed by
+j1939_xtp_rx_abort_one(). After j1939_xtp_rx_abort_one(), the session
+state is J1939_SESSION_DONE, then j1939_tp_rxtimer() give an alert.
 
-The emergency stack for a given CPU is allocated with:
-
-  paca_ptrs[i]->emergency_sp = alloc_stack(limit, i) + THREAD_SIZE;
-
-So emergency_sp actually points to the first address above the emergency
-stack allocation for a given CPU, we must not store above it without
-first decrementing it to create a frame. This is different to the
-regular kernel stack, paca->kstack, which is initialised to point at an
-initial frame that is ready to use.
-
-idle_kvm_start_guest() stores the backchain, CR and LR all of which
-write outside the allocation for the emergency stack. It then creates a
-stack frame and saves the non-volatile registers. Unfortunately the
-frame it creates is not large enough to fit the non-volatiles, and so
-the saving of the non-volatile registers also writes outside the
-emergency stack allocation.
-
-The end result is that we corrupt whatever is at 0-24 bytes, and 112-248
-bytes above the emergency stack allocation.
-
-In practice this has gone unnoticed because the memory immediately above
-the emergency stack happens to be used for other stack allocations,
-either another CPUs mc_emergency_sp or an IRQ stack. See the order of
-calls to irqstack_early_init() and emergency_stack_init().
-
-The low addresses of another stack are the top of that stack, and so are
-only used if that stack is under extreme pressue, which essentially
-never happens in practice - and if it did there's a high likelyhood we'd
-crash due to that stack overflowing.
-
-Still, we shouldn't be corrupting someone else's stack, and it is purely
-luck that we aren't corrupting something else.
-
-To fix it we save CR/LR into the caller's frame using the existing r1 on
-entry, we then create a SWITCH_FRAME_SIZE frame (which has space for
-pt_regs) on the emergency stack with the backchain pointing to the
-existing stack, and then finally we switch to the new frame on the
-emergency stack.
-
-Fixes: 10d91611f426 ("powerpc/64s: Reimplement book3s idle code in C")
-Cc: stable@vger.kernel.org # v5.2+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211015133929.832061-1-mpe@ellerman.id.au
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Link: https://lore.kernel.org/all/20210906094219.95924-1-william.xuanziyang@huawei.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S |   19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ net/can/j1939/transport.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -255,13 +255,15 @@ kvm_novcpu_exit:
-  * r3 contains the SRR1 wakeup value, SRR1 is trashed.
-  */
- _GLOBAL(idle_kvm_start_guest)
--	ld	r4,PACAEMERGSP(r13)
- 	mfcr	r5
- 	mflr	r0
--	std	r1,0(r4)
--	std	r5,8(r4)
--	std	r0,16(r4)
--	subi	r1,r4,STACK_FRAME_OVERHEAD
-+	std	r5, 8(r1)	// Save CR in caller's frame
-+	std	r0, 16(r1)	// Save LR in caller's frame
-+	// Create frame on emergency stack
-+	ld	r4, PACAEMERGSP(r13)
-+	stdu	r1, -SWITCH_FRAME_SIZE(r4)
-+	// Switch to new frame on emergency stack
-+	mr	r1, r4
- 	SAVE_NVGPRS(r1)
- 
- 	/*
-@@ -395,10 +397,9 @@ kvm_no_guest:
- 	/* set up r3 for return */
- 	mfspr	r3,SPRN_SRR1
- 	REST_NVGPRS(r1)
--	addi	r1, r1, STACK_FRAME_OVERHEAD
--	ld	r0, 16(r1)
--	ld	r5, 8(r1)
--	ld	r1, 0(r1)
-+	ld	r1, 0(r1)	// Switch back to caller stack
-+	ld	r0, 16(r1)	// Reload LR
-+	ld	r5, 8(r1)	// Reload CR
- 	mtlr	r0
- 	mtcr	r5
- 	blr
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1230,12 +1230,11 @@ static enum hrtimer_restart j1939_tp_rxt
+ 		session->err = -ETIME;
+ 		j1939_session_deactivate(session);
+ 	} else {
+-		netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
+-			     __func__, session);
+-
+ 		j1939_session_list_lock(session->priv);
+ 		if (session->state >= J1939_SESSION_ACTIVE &&
+ 		    session->state < J1939_SESSION_ACTIVE_MAX) {
++			netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
++				     __func__, session);
+ 			j1939_session_get(session);
+ 			hrtimer_start(&session->rxtimer,
+ 				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
 
 
