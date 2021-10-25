@@ -2,47 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7398243A33F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5201D43A088
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239686AbhJYT53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
+        id S235125AbhJYTbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:31:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237890AbhJYTwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:52:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9ABC611BF;
-        Mon, 25 Oct 2021 19:43:57 +0000 (UTC)
+        id S231442AbhJYT1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:27:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ADB06112D;
+        Mon, 25 Oct 2021 19:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191038;
-        bh=BQ8ZYP4aWA9VG3npybEInN6U77EyNl67sqo4g6hVSTs=;
+        s=korg; t=1635189828;
+        bh=0wFitQqf99HsEpCzMQH91BM2topCFOK6sfiIcLLqbFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+J90Xw2KOMr7cV8wV4oSOy4aStCDRqZAxSnXr2+rUO8eInCrZ0UXFp0Frqb3rqi4
-         V1ZjJkWp9EW1JRaznWxGWi8asAZ6WBASOy7eutwyG0tU58Xkus54492B/98bchW3LP
-         iED/T/fIe2gCj06IIUTu8RxI9jjbvJo699+kmA3w=
+        b=fD2uAeEuP5azRCFueOPKBszJvi6Q7GkhNEo1JYZnwupL4L7d9YcerYRaFwTTPhwwc
+         iUxE8nLGfs291eMVKu6QOjfsTIwQ9Vc29UX+V4hL5EUeMNkyLeVtDJg1AMdCDOl5QL
+         rIkahGr/VBxyR1+M+URmT9/0ah0/kbTmZCVRQjV8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Barret Rhoden <brho@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.14 101/169] mm, slub: fix potential memoryleak in kmem_cache_open()
+Subject: [PATCH 4.19 17/37] elfcore: correct reference to CONFIG_UML
 Date:   Mon, 25 Oct 2021 21:14:42 +0200
-Message-Id: <20211025191030.687668019@linuxfoundation.org>
+Message-Id: <20211025190931.764531467@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,47 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-commit 9037c57681d25e4dcc442d940d6dbe24dd31f461 upstream.
+commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
 
-In error path, the random_seq of slub cache might be leaked.  Fix this
-by using __kmem_cache_release() to release all the relevant resources.
+Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
+special handling for two architectures, ia64 and User Mode Linux.
+However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
+symbol for User-Mode Linux was used.
 
-Link: https://lkml.kernel.org/r/20210916123920.48704-4-linmiaohe@huawei.com
-Fixes: 210e7a43fa90 ("mm: SLUB freelist randomization")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Bharata B Rao <bharata@linux.ibm.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: Roman Gushchin <guro@fb.com>
+Although the directory for User Mode Linux is ./arch/um; the Kconfig
+symbol for this architecture is called CONFIG_UML.
+
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+
+  UM
+  Referencing files: include/linux/elfcore.h
+  Similar symbols: UML, NUMA
+
+Correct the name of the config to the intended one.
+
+[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
+  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
+  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
+
+Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
+Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Barret Rhoden <brho@google.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/slub.c |    2 +-
+ include/linux/elfcore.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3935,8 +3935,8 @@ static int kmem_cache_open(struct kmem_c
- 	if (alloc_kmem_cache_cpus(s))
- 		return 0;
- 
--	free_kmem_cache_nodes(s);
- error:
-+	__kmem_cache_release(s);
- 	return -EINVAL;
+--- a/include/linux/elfcore.h
++++ b/include/linux/elfcore.h
+@@ -58,7 +58,7 @@ static inline int elf_core_copy_task_xfp
  }
+ #endif
  
+-#if defined(CONFIG_UM) || defined(CONFIG_IA64)
++#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
+ /*
+  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
+  * extra segments containing the gate DSO contents.  Dumping its
 
 
