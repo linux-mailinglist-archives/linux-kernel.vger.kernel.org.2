@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F89F438D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B63438D2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 03:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbhJYByi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 21:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
+        id S232156AbhJYByn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 21:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbhJYByd (ORCPT
+        with ESMTP id S232172AbhJYByf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 21:54:33 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4953CC061243
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:52:12 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id u12so3004930pjy.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:52:12 -0700 (PDT)
+        Sun, 24 Oct 2021 21:54:35 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73277C061220
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:52:14 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id v16so1448212ple.9
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 18:52:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=pensando.io; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=gRd+RlVLZdu2e4cewW0/Ur3V/oVt9QlpNhBXQEbtHVc=;
-        b=meCBAmuRcaBBzXvw2aIzrz5WcBDbY4G4NP0hyRptI7+H1CduSFxgamDAS47gpgtYu4
-         eeZigcteWARCfs6adcNJ/JrxfCgH6tImH25tjPhyLkhus8kxtbP8c0//4jzVJ88nNFyb
-         lPKmiPxWk/gugRegCg553xppYKAL8liZkOhKLhk5e2z8k5FvsoklpqT1XSU41BcylUsI
-         juXXoUttyyuXkBUa6i5rGjInZlUTxLQyT8Lb6ldti+1R0QcBhOyKDlSsMOFywVurzgdP
-         vX/JI92XRazZK2phbuppB0yfnNPwLj5DLfO/WaYvlSpvuBOG8AmQ53EPPn5ybaQzzdKj
-         ajJA==
+        bh=yaB5sMWDeRg8Wvtv8HtqDzaWjvoJExyww+FfG/ZDrT4=;
+        b=uflj1WC38Cux4fFGllmthvD+J8givJ+1nYWnprlocYYSxdRRsS0oASqYz00AczK2dy
+         YDgKI8F9Umb4dqo4HcBrX5zWM1K7KXw50iu4aRP2U86fC3fdil1v3nV9KfEseAuuoRt5
+         b/dNHCYMch/lHaBrysTccht0yTqMg5fbgAwPof+/fbfjZBB7EM6uS7Wp+/ESWkIyjMSg
+         T5UHGsJpsht3pz0iwH96EdvJrqCGc8NzcETUz6zldqQbQA9BM9Priibxiszp8P/yUyUp
+         4M2yewAfAJo4j2uyLLEOtE/WR3Y6KYstN+t/VjUUnvNq0EvjCTmOQLaz0UC8WbL7m34M
+         MdeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=gRd+RlVLZdu2e4cewW0/Ur3V/oVt9QlpNhBXQEbtHVc=;
-        b=p6jBn9Ux4P7uk4cczS/JEIhjmuwMxiAFxAGLFjLUblmArVKQcFYCgR/f2qFcGj3/AT
-         zxqOsI8iIplbydQkLeVLHMzPlfhcmqMLxV8da78nb80m/AFsZRClci79NHkrLqC0FoyJ
-         UYt+nvyFC6HbftiqEx2Tgz310NFzgZYzvJhes8G/BYHiotsKY8KvEsyK3veJfMFE7N/2
-         L042QkO9q+sBU9ROaZW4Vgd7BUJMQfkfyk9NIqW1UBuFX23zG1sxR2TtSGcub8DGrL3A
-         otvYfkQz+TxN21GKM1laTrkeBQ7mWNdhBlLy1RHJe31h1U3qaoRutQzZ1ipQIy85H7EN
-         rkLA==
-X-Gm-Message-State: AOAM531drv+4+RM6WtfL7toQ8FY6Y4JFyvuKbI9Mv8TrZi8P00XnxbnO
-        MzbiSZQAVooSnwFYZkSs8qrl5w==
-X-Google-Smtp-Source: ABdhPJxuUmAc+grc3TitHnXVwBQJMnHzMIBQfbm+w4plWIkTkOTL/0HHOucMVEz0h2CNOcR+M9qUVg==
-X-Received: by 2002:a17:90a:6b0a:: with SMTP id v10mr31822835pjj.130.1635126731699;
-        Sun, 24 Oct 2021 18:52:11 -0700 (PDT)
+        bh=yaB5sMWDeRg8Wvtv8HtqDzaWjvoJExyww+FfG/ZDrT4=;
+        b=3EG8O5LyNhgas7hYxJ0Yceh47r72hs1BECqwdcjyKhIYvhikjM9/kE+azLeSh3LTsr
+         VWK4rHDmJEKa/dIFBz/UTlz1ghqfuCPMfNVkTP1/NIqhSWJjqVt3uXR6HbVgMso7GBBW
+         DQSUtOg0yYE1hDqMiEvCG+uWOv6ic2bXlVloTz8m5FyRdsGLa4AYXnVvJLUjou93dXsN
+         yqtOJIV4VJJl/HATgL8/ia2xrJxPPsGoaPwj49QlxXVhBtc1RVNmfO2OCFxaIqkjJ5RK
+         LLIY/oou69XaMkHIGOMscg/wNmtN6rkVF9tJ20zhtdhTMy0okXW5y7FYkhP8yJHaZy9s
+         8Ntw==
+X-Gm-Message-State: AOAM533aNUrCP4iZDSF8dy/z2AGyNHhF7RMcUP74rA9GHzdsPyJr5ubm
+        Xx6Etd7ezpyWl9y9PEzuohMBfA==
+X-Google-Smtp-Source: ABdhPJx/BF3zt7qnTYuuniMwBlB4LeVyXKA5Wedd7pQuVPEuVE9XHOC9UGlOEtipxNLf61A5jbVuNw==
+X-Received: by 2002:a17:90b:4a48:: with SMTP id lb8mr17619416pjb.236.1635126733999;
+        Sun, 24 Oct 2021 18:52:13 -0700 (PDT)
 Received: from platform-dev1.pensando.io ([12.226.153.42])
-        by smtp.gmail.com with ESMTPSA id q10sm14855225pgn.31.2021.10.24.18.52.10
+        by smtp.gmail.com with ESMTPSA id q10sm14855225pgn.31.2021.10.24.18.52.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Oct 2021 18:52:11 -0700 (PDT)
+        Sun, 24 Oct 2021 18:52:13 -0700 (PDT)
 From:   Brad Larson <brad@pensando.io>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
@@ -55,9 +55,9 @@ Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
         brad@pensando.io, linux-gpio@vger.kernel.org,
         linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 03/11] dt-bindings: mmc: Add Pensando Elba SoC binding
-Date:   Sun, 24 Oct 2021 18:51:48 -0700
-Message-Id: <20211025015156.33133-4-brad@pensando.io>
+Subject: [PATCH v3 04/11] dt-bindings: spi: Add compatible for Pensando Elba SoC
+Date:   Sun, 24 Oct 2021 18:51:49 -0700
+Message-Id: <20211025015156.33133-5-brad@pensando.io>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211025015156.33133-1-brad@pensando.io>
 References: <20211025015156.33133-1-brad@pensando.io>
@@ -65,41 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pensando Elba ARM 64-bit SoC is integrated with this IP and
-explicitly controls byte-lane enables resulting in an additional
-reg property resource.
+Document the cadence qspi controller compatible for Pensando Elba SoC
+boards.  The Elba qspi fifo size is 1024.
 
 Signed-off-by: Brad Larson <brad@pensando.io>
 ---
- .../devicetree/bindings/mmc/cdns,sdhci.yaml         | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-index af7442f73881..6c68b7b5abec 100644
---- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-+++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-@@ -15,13 +15,16 @@ allOf:
+diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+index 0e7087cc8bf9..d4413eced17a 100644
+--- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
++++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+@@ -20,6 +20,7 @@ properties:
+               - ti,k2g-qspi
+               - ti,am654-ospi
+               - intel,lgm-qspi
++              - pensando,elba-qspi
+           - const: cdns,qspi-nor
+       - const: cdns,qspi-nor
  
- properties:
-   compatible:
--    items:
--      - enum:
--          - socionext,uniphier-sd4hc
--      - const: cdns,sd4hc
-+    oneOf:
-+      - items:
-+        - enum:
-+            - socionext,uniphier-sd4hc
-+            - pensando,elba-emmc
-+        - const: cdns,sd4hc
+@@ -38,7 +39,7 @@ properties:
+     description:
+       Size of the data FIFO in words.
+     $ref: "/schemas/types.yaml#/definitions/uint32"
+-    enum: [ 128, 256 ]
++    enum: [ 128, 256, 1024 ]
+     default: 128
  
-   reg:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 2
- 
-   interrupts:
-     maxItems: 1
+   cdns,fifo-width:
 -- 
 2.17.1
 
