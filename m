@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF51439E4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF26439E54
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhJYSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:19:23 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:46960 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbhJYSTV (ORCPT
+        id S232621AbhJYSTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:19:32 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:44957 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232316AbhJYST0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:19:21 -0400
-Received: by mail-oi1-f180.google.com with SMTP id o204so16731923oih.13;
-        Mon, 25 Oct 2021 11:16:58 -0700 (PDT)
+        Mon, 25 Oct 2021 14:19:26 -0400
+Received: by mail-oi1-f173.google.com with SMTP id y207so16749173oia.11;
+        Mon, 25 Oct 2021 11:17:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=c8iDrdrscM2c58XhHr9hAeNjE08nH97DcHB6REi5ScM=;
-        b=MVMb4je/U+cCTo504rqWYnOqCy1cqJD+pgleJIqmP7nhjJ8YxrBp4+fXXe6FcXnBhl
-         eJyBZoRgu6/2TOsL4tiHghjT/qxTJ/Isx06iwalEn96k++a6vFjvr12Mpkkfud775rNR
-         J0tzTCqppreRmWpGt9IRh4ZirYb5OSiE6EskrTIyxMcG6S5GOwogXFYsFFzRh0Cdwr1J
-         XpMKUM4xy5mwjLsMhc8F1eSlRGlJtfGCfhPVJNc0E90+hx+OqZrTbxeilM9Qxy0cRaVV
-         a0mzk/q5g+g9+/SCKYNR45lm0cSs26UYaZpB/p2QVBbcZMPhBT5LwUygrFiMxi4n24UH
-         BDWA==
-X-Gm-Message-State: AOAM5327t8cYkBEgpQimh6rHO9guNz6Pumh60zwfayQo6IhT8vNaNri8
-        mXXx5o5/OPn+X6ckz01+fA==
-X-Google-Smtp-Source: ABdhPJzt9UxcoWWAoSw1waWa4o7cP/4BdO3Lt0f7+VkpxhBaAKmqzO61CJbl9tB6ZxiVOi2kQsPn2g==
-X-Received: by 2002:a05:6808:158c:: with SMTP id t12mr23688907oiw.74.1635185817319;
-        Mon, 25 Oct 2021 11:16:57 -0700 (PDT)
+        bh=jBAmtPne42iUbiMZZnrXxItm/c1hWesTsw7A8PWDHYw=;
+        b=i6bALQ+4dHI/N751xBsKp8WA1lpo5CU9EVw1GnTWFw0iEh/DOmlwnDJeGnT4FEh3ja
+         poSMoF5mM+y4Pjc3Oem/u0T2jgvK7G5YPQVlCCVb1F5Qg1DS2OTT3JcJsXHV3ol0+tvY
+         GNilHvVCOdWQ96SXceOTFmJKmqtfzRxgvcTXZcFh7vXx4YJuXHvAyLdEJz8G35QJ3o7A
+         0Lq7YTQICzPLukmBMr3GxtukvBdY9d+50bILiCT++RzVSbeT0pcWqG+p6ohSYTBpUp20
+         K0CucxXuzAWPkEhh/shdMMz8I6CfQe1Vta/Usx4R0faHhr1PqAvoxY/0/kRkQwi1kcxE
+         DQtA==
+X-Gm-Message-State: AOAM530AdQ7zACBumx4aM2OgUM8G+T/EDrF/1KABbm+iX3LLj2GafK4u
+        fDhP4Xx73Fb3bXgBV3tEhQ==
+X-Google-Smtp-Source: ABdhPJx+Gq/4i+TF8TqSgPGbJyhhAQrUJWS6HGuy4DOnqVz9mtooRFr2kIKmbmoxSY7gsxLTUpFWnw==
+X-Received: by 2002:a05:6808:23ca:: with SMTP id bq10mr14147985oib.6.1635185823847;
+        Mon, 25 Oct 2021 11:17:03 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z8sm3050765oof.47.2021.10.25.11.16.55
+        by smtp.gmail.com with ESMTPSA id bm43sm3702839oib.50.2021.10.25.11.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 11:16:56 -0700 (PDT)
-Received: (nullmailer pid 824870 invoked by uid 1000);
+        Mon, 25 Oct 2021 11:17:03 -0700 (PDT)
+Received: (nullmailer pid 824866 invoked by uid 1000);
         Mon, 25 Oct 2021 18:16:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Johan Hovold <johan@kernel.org>
-In-Reply-To: <20211025144718.157794-4-marcan@marcan.st>
-References: <20211025144718.157794-1-marcan@marcan.st> <20211025144718.157794-4-marcan@marcan.st>
-Subject: Re: [PATCH v2 3/8] dt-bindings: power: Add apple,pmgr-pwrstate binding
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andreas@kemnade.info, linux-arm-kernel@lists.infradead.org,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, mylene.josserand@free-electrons.com,
+        linus.walleij@linaro.org, rydberg@bitmath.org, alistair23@gmail.com
+In-Reply-To: <20211025114214.44617-3-alistair@alistair23.me>
+References: <20211025114214.44617-1-alistair@alistair23.me> <20211025114214.44617-3-alistair@alistair23.me>
+Subject: Re: [PATCH 2/4] Documentation: DT: bindings: input: Add documentation for cyttsp5
 Date:   Mon, 25 Oct 2021 13:16:53 -0500
-Message-Id: <1635185813.771483.824869.nullmailer@robh.at.kernel.org>
+Message-Id: <1635185813.751153.824865.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 23:47:13 +0900, Hector Martin wrote:
-> This syscon child node represents a single SoC device controlled by the
-> PMGR block. This layout allows us to declare all device power state
-> controls (power/clock gating and reset) in the device tree, including
-> dependencies, instead of hardcoding it into the driver. The register
-> layout is uniform.
+On Mon, 25 Oct 2021 21:42:12 +1000, Alistair Francis wrote:
+> From: Mylène Josserand <mylene.josserand@free-electrons.com>
 > 
-> Each pmgr-pwrstate node provides genpd and reset features, to be
-> consumed by downstream device nodes.
+> Add the Cypress TrueTouch Generation 5 touchscreen device tree bindings
+> documentation. It can use I2C or SPI bus.
+> This touchscreen can handle some defined zone that are designed and
+> sent as button. To be able to customize the keycode sent, the
+> "linux,code" property in a "button" sub-node can be used.
 > 
-> Future SoCs are expected to use backwards compatible registers, and the
-> "apple,pmgr-pwrstate" represents any such interfaces (possibly with
-> additional features gated by the more specific compatible), allowing
-> them to be bound without driver updates. If a backwards incompatible
-> change is introduced in future SoCs, it will require a new compatible,
-> such as "apple,pmgr-pwrstate-v2".
-> 
-> Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+> Message-Id: <20170529144538.29187-3-mylene.josserand@free-electrons.com>
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 > ---
->  .../bindings/power/apple,pmgr-pwrstate.yaml   | 69 +++++++++++++++++++
->  1 file changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
+>  .../input/touchscreen/cypress,cyttsp5.yaml    | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/cypress,cyttsp5.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -93,12 +76,15 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-
+Error: Documentation/devicetree/bindings/input/touchscreen/cypress,cyttsp5.example.dts:29.35-36 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/input/touchscreen/cypress,cyttsp5.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
-Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml: Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
 
-See https://patchwork.ozlabs.org/patch/1545800
+See https://patchwork.ozlabs.org/patch/1545697
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
