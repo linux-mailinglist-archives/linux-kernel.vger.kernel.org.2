@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0866A43A0AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D9343A1E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbhJYTcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
+        id S236912AbhJYTnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235582AbhJYT2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:28:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F403E6108B;
-        Mon, 25 Oct 2021 19:25:15 +0000 (UTC)
+        id S235577AbhJYTbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:31:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B8186112D;
+        Mon, 25 Oct 2021 19:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189916;
-        bh=HMlC0kyHkKpsgtW/taxnEk5MdFnACBK2zvKsMtI2K2Y=;
+        s=korg; t=1635190099;
+        bh=o56mM3vtnNfozBIeTbdveuDnEJMQQsMN9P88ld7H8tQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0LbOtW6csYPLfKp2ja0Fk2Dvg63OLhMDM5FKm05gB9lRthHgOYjllsOolEwYg9bRn
-         JqmHWyArU8yuwsunRovbFPF9YnhqVFkmPV/DEi8hFpqsaigSzYpx0BwmyS1Ja7lmrf
-         ynge3MHhI+sLXn93sjxlX6LriQXB/hixY/f0zcKU=
+        b=opK6TTHESKbOkk0IriR2ePOy0lKkqv+PIZGM6PXAvfpi+KnI7uBI8U+VLllpgMb7e
+         DhLOJpof0UQDZJBMgQ/Ls81Kw9F4DUmryMsGONYrl+MmbfKVvJA6bcqd1U2yQCQAtS
+         G0AraPxxICmoXS7MECR6soo/mfFrB/2azyNjJuC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.19 25/37] netfilter: Kconfig: use default y instead of m for bool config option
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.4 33/58] ASoC: DAPM: Fix missing kctl change notifications
 Date:   Mon, 25 Oct 2021 21:14:50 +0200
-Message-Id: <20211025190933.275647478@linuxfoundation.org>
+Message-Id: <20211025190943.023924057@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 77076934afdcd46516caf18ed88b2f88025c9ddb upstream.
+commit 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842 upstream.
 
-This option, NF_CONNTRACK_SECMARK, is a bool, so it can never be 'm'.
+The put callback of a kcontrol is supposed to return 1 when the value
+is changed, and this will be notified to user-space.  However, some
+DAPM kcontrols always return 0 (except for errors), hence the
+user-space misses the update of a control value.
 
-Fixes: 33b8e77605620 ("[NETFILTER]: Add CONFIG_NETFILTER_ADVANCED option")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+This patch corrects the behavior by properly returning 1 when the
+value gets updated.
+
+Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20211006141712.2439-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -93,7 +93,7 @@ config NF_CONNTRACK_MARK
- config NF_CONNTRACK_SECMARK
- 	bool  'Connection tracking security mark support'
- 	depends on NETWORK_SECMARK
--	default m if NETFILTER_ADVANCED=n
-+	default y if NETFILTER_ADVANCED=n
- 	help
- 	  This option enables security markings to be applied to
- 	  connections.  Typically they are copied to connections from
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2546,6 +2546,7 @@ static int snd_soc_dapm_set_pin(struct s
+ 				const char *pin, int status)
+ {
+ 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
++	int ret = 0;
+ 
+ 	dapm_assert_locked(dapm);
+ 
+@@ -2558,13 +2559,14 @@ static int snd_soc_dapm_set_pin(struct s
+ 		dapm_mark_dirty(w, "pin configuration");
+ 		dapm_widget_invalidate_input_paths(w);
+ 		dapm_widget_invalidate_output_paths(w);
++		ret = 1;
+ 	}
+ 
+ 	w->connected = status;
+ 	if (status == 0)
+ 		w->force = 0;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /**
+@@ -3580,14 +3582,15 @@ int snd_soc_dapm_put_pin_switch(struct s
+ {
+ 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+ 	const char *pin = (const char *)kcontrol->private_value;
++	int ret;
+ 
+ 	if (ucontrol->value.integer.value[0])
+-		snd_soc_dapm_enable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
+ 	else
+-		snd_soc_dapm_disable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
+ 
+ 	snd_soc_dapm_sync(&card->dapm);
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
+ 
+@@ -4029,7 +4032,7 @@ static int snd_soc_dapm_dai_link_put(str
+ 
+ 	rtd->params_select = ucontrol->value.enumerated.item[0];
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ static void
 
 
