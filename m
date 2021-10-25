@@ -2,490 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D497439369
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90F943936B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbhJYKOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhJYKOL (ORCPT
+        id S232767AbhJYKOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:14:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37150 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230164AbhJYKOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:14:11 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CDEC061745;
-        Mon, 25 Oct 2021 03:11:48 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z20so17698195edc.13;
-        Mon, 25 Oct 2021 03:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fBDtSkb+dGGN2tqHEpHesGVMQTFs7wdi20nGWFMJJF4=;
-        b=n2Z58umT1+y0hJ5/VfGH1xRDoEhFgQuhRInFhcwYSFtUZxXCAzmQErcbgeU1nAhleh
-         K/5HCcYFZnIft/4SR8pXSjoEeuHcQOc0vJ1Ob+e8qwqFPsb33LVJpjFbFAGalIb5TS0J
-         lnBm7OFJx8isN4EzqP9C3HAkx/ZeqSDNqkyoAzoNob219dzQHLpkH44o3Qy5dQHYZy0N
-         lVW5jrjKe702eSujSxyfPWuuvJ04B2GomOuMQN+6dkX2RhSRuVhYjDesbodIlDYQdVMX
-         YkKwpLFEu6fGw7Gee2awRAdaYrR5OPeaZa6n1u3SAE0vomAdtK9Gs3semnj2dbqHT0z7
-         Ag9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fBDtSkb+dGGN2tqHEpHesGVMQTFs7wdi20nGWFMJJF4=;
-        b=GOzDMl0WBKHgd9QjXQFgB96tWX8cV1Hpjzw8xMqXwnwcjtOLQ3Cn9H7VXjhO0feu7h
-         GkmznSGZIeEmYWzNiJJNnNgMZmONvTa+xUMRfVpxQ9KDSpbjqDv7BaNryl4eLJ34x/Lc
-         BGOs7iSw3RsrzxmPAVuo7PmEhx9+1utWL4IrQiZ9YHrr2VJOFzo6vFaicxoSMVbR4DH2
-         8q8BdDRwyUCaazAyVyNax2a5y3xPRdEkVHqY9+xYu21bg6E/2PYJZIVX802ZNDwAokb8
-         ErfnAKBGCwA0EB+CduWM6j+pVTScSSBgNYfjHc43KEYiknycFl35JPjK9lbInpzDPfB5
-         iFXw==
-X-Gm-Message-State: AOAM532emzADzL5sf06wMruuo1DWiFexYDApSuna8aHekWVcbI3QLQMd
-        EUgBdcFS7nbG7Ng4xZ/OH8Q/t8KJHv1ibKSzFlAvs4FwpT5wC0t7
-X-Google-Smtp-Source: ABdhPJxnVs+40H4BfrBPiJ9jq/jYd7cxqczAPOsv2ew+ObXa4taiOCia9XzqsSkUyVhDTJnu3UyfP0mDRcNp0ExmemU=
-X-Received: by 2002:a05:6402:150f:: with SMTP id f15mr25381328edw.224.1635156705178;
- Mon, 25 Oct 2021 03:11:45 -0700 (PDT)
+        Mon, 25 Oct 2021 06:14:44 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7C99A212C7;
+        Mon, 25 Oct 2021 10:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635156741; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dB0FBmLwVXBQXW2FJZKxygSRayu1vt2IxCxFSfu5YEc=;
+        b=y1tV3Sp2kvIsoylox4pssQzg62XmraJ7Ab0HCuqC9Md2CyZ8RWLYayggAWaYweQoTDWARX
+        iMy6xjrMG8XTuNOA5jo+42ZoTEXQsJh4kdErJcf46TY1ECEBauGaOT/bJyHJP67YGEoY9H
+        FSHMd1Cht5433TY8UkJnnUiBni6i27Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635156741;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dB0FBmLwVXBQXW2FJZKxygSRayu1vt2IxCxFSfu5YEc=;
+        b=2PXh+OZbW19+NXR9HR4Y2gwCmt7gQp3ApyZxsRZdXCdGrprKJdgZy04K6RVVisPh+IDGa8
+        M5O4vHnQ7KK5n+Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23C4C13B95;
+        Mon, 25 Oct 2021 10:12:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uBMFBgWDdmH1ZgAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 25 Oct 2021 10:12:21 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 0f24f1e9;
+        Mon, 25 Oct 2021 10:12:20 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 11:12:20 +0100
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Patrick Donnelly <pdonnell@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+Message-ID: <YXaDBFvar4TS+EB8@suse.de>
+References: <20211020143708.14728-1-lhenriques@suse.de>
+ <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+ <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+ <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+ <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+ <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
 MIME-Version: 1.0
-References: <20211019152048.28983-1-anand.ashok.dumbre@xilinx.com> <20211019152048.28983-3-anand.ashok.dumbre@xilinx.com>
-In-Reply-To: <20211019152048.28983-3-anand.ashok.dumbre@xilinx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 25 Oct 2021 13:10:50 +0300
-Message-ID: <CAHp75Vf+dWSG6g-JsVnkJc0nREviRGZCeqoCfi20YZ9ouD+=hg@mail.gmail.com>
-Subject: Re: [PATCH v7 2/4] iio: adc: Add Xilinx AMS driver
-To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>, git <git@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 6:22 PM Anand Ashok Dumbre
-<anand.ashok.dumbre@xilinx.com> wrote:
->
-> The AMS includes an ADC as well as on-chip sensors that can be used to
-> sample external voltages and monitor on-die operating conditions, such
-> as temperature and supply voltage levels. The AMS has two SYSMON blocks.
-> PL-SYSMON block is capable of monitoring off chip voltage and
-> temperature.
-> PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
-> from external master. Out of these interface currently only DRP is
-
-from an external
-interfaces
-
-> supported.
-> Other block PS-SYSMON is memory mapped to PS.
-> The AMS can use internal channels to monitor voltage and temperature as
-> well as one primary and up to 16 auxiliary channels for measuring
-> external voltages.
-> The voltage and temperature monitoring channels also have event
-> capability which allows to generate an interrupt when their value falls
-> below or raises above a set threshold.
->
-> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-
-What does this SoB mean here? Have you read Submitting Patches?
-
-> Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-
-...
-
-> +config XILINX_AMS
-> +       tristate "Xilinx AMS driver"
-> +       depends on ARCH_ZYNQMP || COMPILE_TEST
-> +       depends on HAS_IOMEM
-> +       help
-
-> +         Say yes here to have support for the Xilinx AMS.
-
-It's not important for most of the users. Please, strat help with more
-useful information like below.
-
-> +         The driver supports Voltage and Temperature monitoring on Xilinx Ultrascale
-> +         devices.
-> +
-> +         The driver can also be built as a module. If so, the module will be called
-> +         xilinx-ams.
-
-...
-
-> + *  Manish Narani <mnarani@xilinx.com>
-
-A-ha! You probably forgot the Co-developed-by tag above.
-
-> + *  Rajnikant Bhojani <rajnikant.bhojani@xilinx.com>
-
-...
-
-Missed headers, like bits.h.
-
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-
-> +#include <linux/of_address.h>
-
-Do you need this? Maybe mod_devicetable.h?
-
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-
-...
-
-> +static const unsigned int AMS_UNMASK_TIMEOUT_MS = 500;
-
-Why not define (esp. taking into account another similar define below?
-
-...
-
-> +#define AMS_REGCFG1_ALARM_MASK         0xF0F
-> +#define AMS_REGCFG3_ALARM_MASK         0x3F
-
-> +#define AMS_PL_ALARM_MASK              0xFFFF0000U
-> +#define AMS_ISR0_ALARM_MASK            0xFFFFFFFFU
-> +#define AMS_ISR1_ALARM_MASK            0xE000001FU
-> +#define AMS_ISR1_EOC_MASK              0x00000008U
-
-What is so special about these that they are not using combinations of
-GENMASK() / BIT()?
-
-...
-
-> +enum ams_alarm_bit {
-> +       AMS_ALARM_BIT_TEMP,
-> +       AMS_ALARM_BIT_SUPPLY1,
-> +       AMS_ALARM_BIT_SUPPLY2,
-> +       AMS_ALARM_BIT_SUPPLY3,
-> +       AMS_ALARM_BIT_SUPPLY4,
-> +       AMS_ALARM_BIT_SUPPLY5,
-> +       AMS_ALARM_BIT_SUPPLY6,
-> +       AMS_ALARM_BIT_RESERVED,
-> +       AMS_ALARM_BIT_SUPPLY7,
-> +       AMS_ALARM_BIT_SUPPLY8,
-> +       AMS_ALARM_BIT_SUPPLY9,
-> +       AMS_ALARM_BIT_SUPPLY10,
-> +       AMS_ALARM_BIT_VCCAMS,
-> +       AMS_ALARM_BIT_TEMP_REMOTE
-
-Is it terminator line? Doesn't sound like it to me. So, please add a
-comma. Same for the rest.
-
-> +};
-
-...
-
-> +       AMS_SEQ_MAX
-
-This seems correct, no comma is needed :-)
-
-...
-
-> +struct ams {
-> +       void __iomem *base;
-> +       void __iomem *ps_base;
-> +       void __iomem *pl_base;
-> +       struct clk *clk;
-> +       struct device *dev;
-
-> +       /* check kernel doc above */
-
-Useless
-
-> +       struct mutex lock;
-
-> +       /* check kernel doc above */
-
-Ditto.
-
-> +       spinlock_t intr_lock;
-> +       unsigned int alarm_mask;
-> +       unsigned int masked_alarm;
-> +       u64 intr_mask;
-> +       int irq;
-> +       struct delayed_work ams_unmask_work;
-> +};
-
-...
-
-> +       writel((val & ~mask) | (data & mask), ams->ps_base + offset);
-
-Split to assignment and simple writel() call. Same to the rest.
-
-...
-
-> +       ams->intr_mask &= ~mask;
-> +       ams->intr_mask |= (val & mask);
-
-This may be combined to one line as it's a standard pattern.
-
-...
-
-> +       if (ams->ps_base) {
-> +               /* Configuring PS alarm enable */
-> +               cfg = ~((alarm_mask & AMS_ISR0_ALARM_2_TO_0_MASK) <<
-> +                              AMS_CONF1_ALARM_2_TO_0_SHIFT);
-> +               cfg &= ~((alarm_mask & AMS_ISR0_ALARM_6_TO_3_MASK) <<
-> +                               AMS_CONF1_ALARM_6_TO_3_SHIFT);
-> +               ams_ps_update_reg(ams, AMS_REG_CONFIG1, AMS_REGCFG1_ALARM_MASK,
-> +                                 cfg);
-> +
-> +               cfg = ~((alarm_mask >> AMS_CONF3_ALARM_12_TO_7_SHIFT) &
-> +                               AMS_ISR0_ALARM_12_TO_7_MASK);
-> +               ams_ps_update_reg(ams, AMS_REG_CONFIG3, AMS_REGCFG3_ALARM_MASK,
-> +                                 cfg);
-> +       }
-
-By factoring out the body of the conditional to a helper function you may:
-- decrease indentation
-- make code better to read
-- reduce LOCs
-
-> +       if (ams->pl_base) {
-> +               pl_alarm_mask = (alarm_mask >> AMS_PL_ALARM_START);
-> +               pl_alarm_mask = FIELD_GET(AMS_PL_ALARM_MASK, alarm_mask);
-> +               /* Configuring PL alarm enable */
-> +               cfg = ~((pl_alarm_mask & AMS_ISR0_ALARM_2_TO_0_MASK) <<
-> +                       AMS_CONF1_ALARM_2_TO_0_SHIFT);
-> +               cfg &= ~((pl_alarm_mask & AMS_ISR0_ALARM_6_TO_3_MASK) <<
-> +                        AMS_CONF1_ALARM_6_TO_3_SHIFT);
-> +               ams_pl_update_reg(ams, AMS_REG_CONFIG1,
-> +                                 AMS_REGCFG1_ALARM_MASK, cfg);
-> +
-> +               cfg = ~((pl_alarm_mask >> AMS_CONF3_ALARM_12_TO_7_SHIFT) &
-> +                       AMS_ISR0_ALARM_12_TO_7_MASK);
-> +               ams_pl_update_reg(ams, AMS_REG_CONFIG3,
-> +                                 AMS_REGCFG3_ALARM_MASK, cfg);
-> +       }
-
-Ditto. And the same applies to all the rest where it gains something
-from the above list of improvements.
-
-...
-
-> +       int i;
-> +       unsigned long long scan_mask;
-> +       struct ams *ams = iio_priv(indio_dev);
-
-Reversed xmas tree order, please.
-Same for the rest.
-
-...
-
-> +       /* Run calibration of PS & PL as part of the sequence */
-> +       scan_mask = 0x1 | BIT(AMS_PS_SEQ_MAX);
-
-BIT(0) ?
-
-...
-
-> +       ams_update_intrmask(ams, ~0, ~0);
-
-Replace ~0 to proper GENMASK()./BIT() combination which takes into
-account real bits used by hardware.
-
-...
-
-> +       case IIO_CHAN_INFO_RAW:
-> +               mutex_lock(&ams->lock);
-> +               if (chan->scan_index >= (AMS_PS_SEQ_MAX * 3)) {
-
-Too many parens.
-
-> +                       ret = ams_read_vcc_reg(ams, chan->address, val);
-> +                       if (ret) {
-> +                               mutex_unlock(&ams->lock);
-> +                               return -EINVAL;
-> +                       }
-> +                       ams_enable_channel_sequence(indio_dev);
-> +               } else if (chan->scan_index >= AMS_PS_SEQ_MAX)
-> +                       *val = readl(ams->pl_base + chan->address);
-> +               else
-> +                       *val = readl(ams->ps_base + chan->address);
-> +               mutex_unlock(&ams->lock);
-> +
-> +               return IIO_VAL_INT;
-
-...
-
-> +       return -EINVAL;
-
-Use corresponding defaul cases in each of the switches.
-
-...
-
-> +       int offset = 0;
-
-Make the assignment as an else branch, so all offset assignments will
-be grouped together.
-
-> +       if (dir == IIO_EV_DIR_FALLING) {
-> +               if (scan_index < AMS_SEQ_SUPPLY7)
-> +                       offset = AMS_ALARM_THRESHOLD_OFF_10;
-> +               else
-> +                       offset = AMS_ALARM_THRESHOLD_OFF_20;
-> +       }
-
-...
-
-> +       return 0;
-
-default case.
-
-> +}
-
-...
-
-> +static const struct iio_chan_spec
-> +*ams_event_to_channel(struct iio_dev *indio_dev, u32 event)
-
-Unusual indentation.
-
-...
-
-> +       case AMS_ALARM_BIT_TEMP_REMOTE:
-> +               scan_index += AMS_SEQ_TEMP_REMOTE;
-> +               break;
-
-default?
-Same for the rest of the cases like this.
-
-...
-
-> +       return (ams->alarm_mask & ams_get_alarm_mask(chan->scan_index)) ? 1 : 0;
-
-!! would work as well.
-
-...
-
-> +               /*
-> +                * The temperature channel only supports over-temperature
-> +                * events
-
-Missed period.
-
-> +                */
-
-...
-
-> +       /* only process alarms that are not masked */
-
-Inconsistent style (here capitalization is missed). Make all comments
-in the code consistent.
-
-> +       isr0 &= ~((ams->intr_mask & AMS_ISR0_ALARM_MASK) | ams->masked_alarm);
-
-> +
-
-Redundant blank line.
-
-> +       if (!isr0)
-
-How did you test this branch? (Hint: something very important should
-be done here)
-
-> +               return IRQ_NONE;
-
-...
-
-> +       for_each_child_of_node(chan_node, child) {
-> +               ret = of_property_read_u32(child, "reg", &reg);
-> +               if (ret || reg > (AMS_PL_MAX_EXT_CHANNEL + 30))
-> +                       continue;
-> +
-> +               memcpy(&channels[num_channels], &ams_pl_channels[reg +
-> +                      AMS_PL_MAX_FIXED_CHANNEL - 30], sizeof(*channels));
-> +
-> +               if (of_property_read_bool(child, "xlnx,bipolar"))
-> +                       channels[num_channels].scan_type.sign = 's';
-> +
-> +               num_channels++;
-> +       }
-
-Use device property API here instead of *of_*() calls.
-
-...
-
-> +       /* Initialize buffer for channel specification */
-> +       ams_channels = kzalloc(sizeof(ams_ps_channels) +
-> +                              sizeof(ams_pl_channels) +
-> +                              sizeof(ams_ctrl_channels), GFP_KERNEL);
-
-Use the corresponding macro from overflow.h.
-
-> +       if (!ams_channels)
-> +               return -ENOMEM;
-
-...
-
-> +       if (of_device_is_available(np)) {
-
-fwnode_device_is_available()
-
-> +               ret = ams_init_module(indio_dev, np, ams_channels);
-> +               if (ret < 0)
-> +                       goto err;
-> +
-> +               num_channels += ret;
-> +       }
-
-...
-
-> +       for_each_child_of_node(np, child_node) {
-> +               if (of_device_is_available(child_node)) {
-> +                       ret = ams_init_module(indio_dev, child_node,
-> +                                             ams_channels + num_channels);
-> +                       if (ret < 0)
-> +                               goto err;
-> +
-> +                       num_channels += ret;
-> +               }
-> +       }
-
-As per above.
-
-...
-
-> +       if (!pdev->dev.of_node)
-> +               return -ENODEV;
-
-Drop this, please. It will allow reuse of the driver in ACPI environments.
-
-...
-
-> +       ams->irq = platform_get_irq(pdev, 0);
-> +       if (ams->irq == -EPROBE_DEFER) {
-
-Is IRQ optional or not?
-
-> +               ret = -EPROBE_DEFER;
-> +               return ret;
-> +       }
-
-...
-
-> +       ret = devm_iio_device_register(&pdev->dev, indio_dev);
-> +
-> +       return ret;
-
-return devm_...
-
-...
-
-> +       clk_prepare_enable(ams->clk);
-
-It might fail.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+On Thu, Oct 21, 2021 at 12:35:18PM -0400, Jeff Layton wrote:
+> On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+> > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+> > > 
+> > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+> > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > 
+> > > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+> > > > > > This counter will keep track of the number of remote object copies done on
+> > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
+> > > > > > can be accessed from the client debugfs directory.
+> > > > > > 
+> > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > > > > > ---
+> > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+> > > > > > 100% sure about the usefulness of this patch, or if this is the best way
+> > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
+> > > > > > get some feedback, hence the RFC.
+> > > > > > 
+> > > > > > Cheers,
+> > > > > > --
+> > > > > > Luís
+> > > > > > 
+> > > > > > [0] https://github.com/ceph/ceph/pull/42720
+> > > > > > 
+> > > > > 
+> > > > > I think this would be better integrated into the stats infrastructure.
+> > > > > 
+> > > > > Maybe you could add a new set of "copy" stats to struct
+> > > > > ceph_client_metric that tracks the total copy operations done, their
+> > > > > size and latency (similar to read and write ops)?
+> > > > 
+> > > > I think it's a good idea to integrate this into "stats" but I think a
+> > > > local debugfs file for some counters is still useful. The "stats"
+> > > > module is immature at this time and I'd rather not build any qa tests
+> > > > (yet) that rely on it.
+> > > > 
+> > > > Can we generalize this patch-set to a file named "op_counters" or
+> > > > similar and additionally add other OSD ops performed by the kclient?
+> > > > 
+> > > 
+> > > 
+> > > Tracking this sort of thing is the main purpose of the stats code. I'm
+> > > really not keen on adding a whole separate set of files for reporting
+> > > this.
+> > 
+> > Maybe I'm confused. Is there some "file" which is already used for
+> > this type of debugging information? Or do you mean the code for
+> > sending stats to the MDS to support cephfs-top?
+> > 
+> > > What's the specific problem with relying on the data in debugfs
+> > > "metrics" file?
+> > 
+> > Maybe no problem? I wasn't aware of a "metrics" file.
+> > 
+> 
+> Yes. For instance:
+> 
+> # cat /sys/kernel/debug/ceph/*/metrics
+> item                               total
+> ------------------------------------------
+> opened files  / total inodes       0 / 4
+> pinned i_caps / total inodes       5 / 4
+> opened inodes / total inodes       0 / 4
+> 
+> item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+> -----------------------------------------------------------------------------------
+> read          0           0               0               0               0
+> write         5           914013          824797          1092343         103476
+> metadata      79          12856           1572            114572          13262
+> 
+> item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+> ----------------------------------------------------------------------------------------
+> read          0           0               0               0               0
+> write         5           4194304         4194304         4194304         20971520
+> 
+> item          total           miss            hit
+> -------------------------------------------------
+> d_lease       11              0               29
+> caps          5               68              10702
+> 
+> 
+> I'm proposing that Luis add new lines for "copy" to go along with the
+> "read" and "write" ones. The "total" counter should give you a count of
+> the number of operations.
+
+The problem with this is that it will require quite some work on the
+MDS-side because, AFAIU, the MDS will need to handle different versions of
+the CEPH_MSG_CLIENT_METRICS message (with and without the new copy-from
+metrics).
+
+Will this extra metric ever be useful on the MDS side?  From what I
+understood Patrick's initial request was to have a way to find out, on the
+client, if remote copies are really happening.  (*sigh* for not having
+tracepoints.)
+
+Anyway, I can look into adding this to the metrics infrastructure, but
+it'll likely take me some more time to get to it and to figure out (once
+again) how the messages versioning work.
+
+Cheers,
+--
+Luís
