@@ -2,128 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D476843980D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0721439811
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbhJYOGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:06:18 -0400
-Received: from mail-eopbgr1410119.outbound.protection.outlook.com ([40.107.141.119]:20682
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231468AbhJYOGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:06:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lfr1Rri0tHLfGr1Bkn3f0U0Giu3oWbe8Ek7/lmN02iaUcuRp/qOYTKvAHwhh0WyDueu/GHqFsb+AHHJxvOfY/NAciE9i/k+tyz95ZmzvDYQrhu+35pFpz63UZvsFusou0pLb4jahGF51Or3DSEHS43UaUbvywPSy9eBu8ewLR2d/FTNVS8F7u/RVwP3yJ8LPWPtEu8Pf5n2CN5XMMxhk8PQb0/I7AHXPnQ8uLhJOYi6SGFWlWvBz+Jh2xPZY2r42+WxpgGAxLn4AK0gaLRqZo5petwNr1Vhw7Jxunc0DR2MPKFZKKXmBUShe9GwrHXV5UF6K0SSEmJhLSANzE4hJpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=166d/rFAn7dP1yWAorZZgf6xYjLzlKvebeiHNsobTdo=;
- b=TcHX93/bjt7gcsfvjiYdohN7AVXGpev/djny3h+6zLmsceKwW0EFZ4SceuYg55cjtfVqBZ4u8j/C+TZxw+/WhuXiKhSKIcuAPk9ileIgVlwh9PUkCwci22PCf5SjHdFHvGge4SVxE6DCw+NJ8UOvoUjXgrgDzncdmwsNGSeq5rGpako6k3/xHEa37ArUbFAzXzTRpSnH+8cskrYHoCgjfbnhZGTvOFJ8f0+BxSOVmFDuTUt4+WbNLthnLq6xdoK0tmumLiRkEXYibQROkVTBTRNzKxI/gHtrs6YwvcvBUqulBRnvobCcBs7EJOMFs7uQrYDnc2vS4B0ppRkiDuA6lQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
- header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=166d/rFAn7dP1yWAorZZgf6xYjLzlKvebeiHNsobTdo=;
- b=LXGkX7BSmJ3f11YaHm0ccEY5jpD/pAw/SNOvQjIBrvo8TpjA5Z87Qo0UwI5t0jwo3bEt3pptwVs2r7s/DnCmzpU2q9IJSvuXDQweKwrHUvmiIXQ1ms2TjB9ocUBdbn9sBWlj2xhWI/xYUZ9NLNsB2OFCBP8MymwfVz+dbbni4tE=
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
- TYAP286MB0041.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8032::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Mon, 25 Oct
- 2021 14:03:52 +0000
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 14:03:52 +0000
-From:   YE Chengfeng <cyeaa@connect.ust.hk>
-To:     "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: suspected null-pointer-reference problem for to_swnode
-Thread-Topic: suspected null-pointer-reference problem for to_swnode
-Thread-Index: AdfJqSNMGhrwAA/iSB2KhsgTg2gKFg==
-Date:   Mon, 25 Oct 2021 14:03:51 +0000
-Message-ID: <TYCP286MB11888DAE6D94FAE6A9F1CB438A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=connect.ust.hk;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bc14a8cb-f64d-4312-8807-08d997c04676
-x-ms-traffictypediagnostic: TYAP286MB0041:
-x-microsoft-antispam-prvs: <TYAP286MB0041BAA24EFF84153B1A359E8A839@TYAP286MB0041.JPNP286.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2vvXwpKYFE7isPBpJC30PGeo99u4VVULFacH5Irzs1dYbQlVX7orMPGN20Fex1WpnIASFIsgaYqBmFIbsrt++SkI/eYYaYoGBk05TBigKFHdt7S3SdSklirC2cjUx5MAWCCxPYkAOm+O5I2FPPI+lNqnSIJC/v82P9kBJ4j6H5yGY4TVhaZNBENqy5XjWhE4sWgfUj81XgS7aPnbltFS6EngldkACF1WNBJuez3f4pYGNkp1eTveq40mb15qvorfE4LXA0o7oK9tfGRaaH/Adz9PSBjFaMhMoYkM6okxJrxlCR8Nfs9ubwZU3TIPf51dyBUOXW54vux8m3nJBYYxdMpgqF/vw7Z7ICBjj+BFuDHwNyjjaDM+BM8TZZVAF5FHEbO3snfThw6s2a/5gvMKj86VjuEL7CiKc8BpxAi7KiRTPfUViuXUbZGjVStz5JeCS5V+J3N2b/sawX74k8gIhZK70c2LDD1twPU5Yk0Ht8Sxj/DLy4B20nZi716nOH2QlBT5tXT7d7jwBkRLg3RWHTq2G6TRVNOwvYaSXoDkYuua5PTxLD+dzWjBNcljydz23kV4My3hP5eAyYI4sBCyRjtiB3uxeFShgJZo6mHARNLrHC1hiprQCrdxPxXuFZnYQOE1CFw5fjWIIHGco924x0xkTnTr7lqZ62jN1vu2S0gSFIM29cuB2N2fAZ4Jif1z+D5hL4HReO9pRlooDFJDkBK9QjMLOz8/w9F99CFP5e/VOyLZzp7ZROge79N3nGLIo+LPnIM6Rhzdl8LinE1mzpC+2HLeJcACrg4HlOV52WQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(7696005)(8936002)(508600001)(8676002)(38070700005)(316002)(71200400001)(55016002)(66476007)(786003)(66946007)(110136005)(966005)(76116006)(52536014)(64756008)(122000001)(83380400001)(66446008)(6506007)(26005)(4326008)(186003)(66556008)(2906002)(9686003)(38100700002)(4744005)(5660300002)(86362001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pWOAvS72xmxtbGl9PzYUbWHG2ZURxFlOJulFB7LHGpM6y/fxLS6cW1N0fScT?=
- =?us-ascii?Q?KubR7sxHmsiSvt0XxIv1VqEg9Iwqgw7QGnVYxqYbquPr/E9flD1suVEwm53O?=
- =?us-ascii?Q?Uri12MtpvGj3SUTl+vbIezu0xyd37lsEs5aIWUfNKyhQtMJ8qS9tpQwjy0qa?=
- =?us-ascii?Q?ijRluyOEihNBTNdkg97OaXXSEVZ6ntkrImQzm3YST2k32MgrAENbEXcPcQHN?=
- =?us-ascii?Q?lyj99+a5LMP3f49f7THxJokwmpoFlG3mT/Kp5Qh+vCnPKK2XutBtaPAjWX76?=
- =?us-ascii?Q?zcCmXleJaIGr0C3srlXY0tvCGp67ypW1L8vcoUPg6WALWcEJh1oLGeZ+SZT/?=
- =?us-ascii?Q?XaslB7AOwPfT7DWaSzcfsRjBoZewf2270xyoSEovztXjwuhWySgEcq6gTnwV?=
- =?us-ascii?Q?th3wRmfSoDvHRlAx9389eAp80vhyWmVya5ah7dI1N856SWgNWWXbzJ48TUr5?=
- =?us-ascii?Q?ZOQjvZjl+9oVl0+Lk0gl66i/7TMBXqgolzy8j9Tmfyn16rTa5zEnTDf5dWgB?=
- =?us-ascii?Q?tOGL3RZindoXdkVwm9H4WOOr6gV+hwaqAivNrla/NIlBY0PCAG+0jxNo44Uw?=
- =?us-ascii?Q?TDYu/y+dVCa4sFfkMVUwysO6IFtoOeGHRjieoWX2bjLq6mplHGeP/hw6RscH?=
- =?us-ascii?Q?vOe/zNJTVA3MJOU4iXADnHN5vULD3oIjRmRrTusov/GQErA41RNhdyatGXzq?=
- =?us-ascii?Q?JaY3458RiOG7fFNf9N7HSYGEc4cCji7P0nlE4WrnEkAsxlRESRs0QVrXZSYy?=
- =?us-ascii?Q?XG5J8Yy/DIrShOR314Ugoo29Vd7MF6kpq1keN96DXUKT8eOYPWv1y1rmncxW?=
- =?us-ascii?Q?RsIYIbhrPWcBW5Fl8WtxCFQgziD6zJMNjIwW6kdne8BtuCKszO0jiWwg+ORH?=
- =?us-ascii?Q?OM00qF0KpuwNVf/eUvYlOqI5cltQFukR+25syOWS+ZPSWKsIEYTC5lVYf03/?=
- =?us-ascii?Q?ccJSvL5ETxFpWZxU3qoJUbhkv9jOZmq7kuGHD7duF1Qr3SC5vU0WBOi63TJM?=
- =?us-ascii?Q?Tr2+hAKhbxLfIPSS40cseRtPBpQjRfTVHK2M8pgFjmVE9KB7Yei3TZhtk4y5?=
- =?us-ascii?Q?vERjWikrCzDs3M4dTs9Mm7heTo2mAKIrnhW3De7dNro/FpFNeEoJNO6sanc7?=
- =?us-ascii?Q?W1ZWCRpEGkXBIYE4NDtjHHg2vyzE2GShjAPWJRrofWi4DzSpls4BHib1szPE?=
- =?us-ascii?Q?/AW3udl+/BXzC8jhdo5QtxWaq13T6hzPG9X676l73FAAIsXDyreAiPkrgbaz?=
- =?us-ascii?Q?HofzNURYQKrM/Oc0qXSGjZ1WQ90o1m2NshDBwwH9cvZgWzlrxuGIP9YBG20D?=
- =?us-ascii?Q?5QeEswxVj/2grn8k17fvMbK2XANJaKhGq4PiuC3Kwd69ulMkKA9f6MZjkq5W?=
- =?us-ascii?Q?awQi5We4wDPsuKYNGvmCQ16I480kyXQelYfGRQLJpRAqMUCCDDz5MgvhVueW?=
- =?us-ascii?Q?ArIL0yRWOhUx+kKKtM6987rL6LtbOBVC99Mm6YPIlvvHZCtXdJciYcvQkbBQ?=
- =?us-ascii?Q?rYjwyiAokNH8YtKEBZUWeplVyIQkt0Ds7RUUkg482zSCHLgdACCgNtDPd9g9?=
- =?us-ascii?Q?wanoM+nIZ+NUjyXwyXgzvP83nAOLMvyGNtaiHoBFtJmEK0IqW5LLQRNXFXyL?=
- =?us-ascii?Q?QkjTh+SPAOAqS4EXQlj0z3U=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232144AbhJYOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:07:56 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:27821 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230174AbhJYOHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:07:54 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211025140529epoutp04d4a32e5faf801fcb7f556abd215955f5~xSx1Soog33008530085epoutp04y
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:05:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211025140529epoutp04d4a32e5faf801fcb7f556abd215955f5~xSx1Soog33008530085epoutp04y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635170729;
+        bh=fey+6MHijgaTNXfUD+lxnyfQlzWGLpNI+7tezBCSDCk=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=fKCEq9cQg6nF9/EBUtKHHvJDzTxrZZYxkTTB3Qxs7SbabOxPvSn8IfXsqpgBTcc0P
+         O8ey2XZXdYMadI8u8m9fdpjgF0G72iHxCVAcAhYwk7zOsLaCWql7qzihTUWeoHRp4C
+         Zc+gFp36klYWgwkM2rVqAODtP90tKFEJnSQki7qU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211025140528epcas1p1414e38eb3f7e8f0ce83e2947801c914a~xSx0_7Q3Z1746717467epcas1p1q;
+        Mon, 25 Oct 2021 14:05:28 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.38.248]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HdGtv51Z1z4x9Pt; Mon, 25 Oct
+        2021 14:05:27 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        86.7D.09574.7A9B6716; Mon, 25 Oct 2021 23:05:27 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20211025140526epcas1p3b4a59df0935297572c6417c841a4c514~xSxzFo7kx2735427354epcas1p3V;
+        Mon, 25 Oct 2021 14:05:26 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211025140526epsmtrp16134229dd8e2885f32384c5d6ee924e5~xSxzE9O6T1138511385epsmtrp1E;
+        Mon, 25 Oct 2021 14:05:26 +0000 (GMT)
+X-AuditID: b6c32a35-195ff70000002566-9d-6176b9a72b6e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        05.C5.08738.6A9B6716; Mon, 25 Oct 2021 23:05:26 +0900 (KST)
+Received: from hj514.kim-office (unknown [10.253.100.146]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20211025140526epsmtip27f8f1f9dffb215a4dbbc781f7d14b3c5~xSxy1E0Df1466814668epsmtip2A;
+        Mon, 25 Oct 2021 14:05:26 +0000 (GMT)
+From:   Hyeong-Jun Kim <hj514.kim@samsung.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] f2fs: compress: disallow disabling compress on non-empty
+ compressed file
+Date:   Mon, 25 Oct 2021 23:05:16 +0900
+Message-Id: <20211025140517.14741-1-hj514.kim@samsung.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: connect.ust.hk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc14a8cb-f64d-4312-8807-08d997c04676
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 14:03:51.9989
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fp1rz0M95YwKY5qehtb76zXYrT4+EX8JF3BnFWiYCXVr67il1A640fjeGwiqkjdEckncQbGceZ/vekRA/SGq2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAP286MB0041
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCKsWRmVeSWpSXmKPExsWy7bCmvu7ynWWJBs1b1CxOTz3LZDG94yCb
+        xZP1s5gtLi1yt7i8aw6bxZZ/R1gd2Dw2repk89i94DOTR9+WVYwenzfJBbBEZdtkpCampBYp
+        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAO1WUihLzCkFCgUkFhcr
+        6dvZFOWXlqQqZOQXl9gqpRak5BSYFegVJ+YWl+al6+WlllgZGhgYmQIVJmRnfD7yj73gMntF
+        Y898lgbGLWxdjJwcEgImEvfXLQGyuTiEBHYwSqw68QXK+cQo8ePRRxYI5zOjxLWOV6wwLd0H
+        r0FV7WKU2PNyFyuE855RYtfkXWCD2QR0JD7MWskIYosI2Et8/n6dBcRmFpjNKHH/aC6ILSwQ
+        LbHuzlKgeg4OFgFViecTuEHCvAJWElPfT2WBWCYvMfPSd3aIuKDEyZlPoMbISzRvnc0MsldC
+        4BC7xJfFi6Guc5F4fPMY1HPCEq+Ob2GHsKUkXva3Qdn1EsevfGKFaG5hlHi89BUjyBESQIe+
+        v2QBYjILaEqs36UPUa4osfP3XEaIvXwS7772sEJU80p0tAlBlChLbL57GGqrpMTTRX8ZIWwP
+        iSuTr4HZQgKxEg+3b2CfwCg/C8k3s5B8Mwth8QJG5lWMYqkFxbnpqcWGBYbwSE3Oz93ECE5+
+        WqY7GCe+/aB3iJGJg/EQowQHs5IIr82nkkQh3pTEyqrUovz4otKc1OJDjKbA4J3ILCWanA9M
+        v3kl8YYmlgYmZkYmFsaWxmZK4ryf5QoThQTSE0tSs1NTC1KLYPqYODilGpgsWz5s3OWSxnk0
+        5V1K5pnvZpohpyMmi07MfL3yn+xOjqPzJqVzy/CJhGyN4+k9abhqRe7EIycFtOSeuAZFqN6v
+        PewwaV5E3a4eqUdOT2e0LGX6UDhZ4sa1RL7GV0vTwqwXpp3IVLY15X5dL8n+W9UvoPL2/kjh
+        QK610rVMuq8yL1Z5zT7A/YjTYE+i+PE2lpJGM6+zG9vWtTy//vDk3DNGS9ufmQqtblyo3P5V
+        1Md3Fn/vi1ebihZvvqk9327SoR0CmqqrlBvuXeRt7fx6kvXwiqpJGoI1C78W/7dgP5A/8Xl/
+        +HqLQwVKQXFbWd0CSv/bB8vfW3p8UcoqD2V+xva1r0ICF7eu4uE78IaP74kSS3FGoqEWc1Fx
+        IgCyxRtUBwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrELMWRmVeSWpSXmKPExsWy7bCSvO6ynWWJBtOWylucnnqWyWJ6x0E2
+        iyfrZzFbXFrkbnF51xw2iy3/jrA6sHlsWtXJ5rF7wWcmj74tqxg9Pm+SC2CJ4rJJSc3JLEst
+        0rdL4Mr4fOQfe8Fl9orGnvksDYxb2LoYOTkkBEwkug9eA7K5OIQEdjBKvOxbydrFyAGUkJSY
+        t74cwhSWOHy4GKLkLaPEhq4mdpBeNgEdiQ+zVjKC2CICjhK/Xi9iBSliFpjLKHGxu4kVJCEs
+        EClxbeUpNpBBLAKqEs8ncIOEeQWsJKa+n8oCcYO8xMxL39kh4oISJ2c+AYszA8Wbt85mnsDI
+        NwtJahaS1AJGplWMkqkFxbnpucWGBUZ5qeV6xYm5xaV56XrJ+bmbGMHBqKW1g3HPqg96hxiZ
+        OBgPMUpwMCuJ8Np8KkkU4k1JrKxKLcqPLyrNSS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoR
+        TJaJg1OqgWluX2BMtekqCz+j+4cOX26RFVTYvUy9RfUgz7/n2mWfGc/VP3fSWH1E8azyx44P
+        K/7+DUtTecu6+9+keZsEa5xY63efLl76gv9VB3fbq/ds7/L3Hd9YXNOfZWdU9I3FaMLTS85X
+        kvJWbFLeGG0o+CV1q8hMM/Upuvc7MzxvRr5qWBchHDnZWjE7n6vtyfIig/vP7/IxPf/mvnCN
+        WuoV3klbFhbPc3jsX3Yn5k9EdWjEPLnEk6yr5JR66mdMlVr2UMmlsk+0JvV3wpnoWq12taXp
+        9ZXnd53eVMjW+XXm4rD1KlH3t23ZtWzLlc9eQjsEiq7KTjnc+Srk18mtqVsKzTn9D7N61JzQ
+        Os4/8Z/j2S9KLMUZiYZazEXFiQCSNI1/tQIAAA==
+X-CMS-MailID: 20211025140526epcas1p3b4a59df0935297572c6417c841a4c514
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211025140526epcas1p3b4a59df0935297572c6417c841a4c514
+References: <CGME20211025140526epcas1p3b4a59df0935297572c6417c841a4c514@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,=20
+Compresse file and normal file has differ in i_addr addressing,
+specifically addrs per inode/block. So, we will face data loss, if we
+disable the compression flag on non-empty files. Therefore we should
+disallow not only enabling but disabling the compression flag on
+non-empty files.
 
-https://github.com/torvalds/linux/blob/master/drivers/base/swnode.c#L405
+Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
+Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
+---
+ fs/f2fs/f2fs.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-We notice that the return pointer of to_swnode is null check in some case, =
-while in some case is not. For example, at line 416, the return pointer is =
-null-check, but in line 405 is not. We want to know whether it would be a p=
-otential null pointer dereference problem, in the case that null-check is m=
-issing.
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index b8e8f8c716b0..19146c834abd 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4177,8 +4177,7 @@ static inline bool f2fs_disable_compressed_file(struct inode *inode)
+ 
+ 	if (!f2fs_compressed_file(inode))
+ 		return true;
+-	if (S_ISREG(inode->i_mode) &&
+-		(get_dirty_pages(inode) || atomic_read(&fi->i_compr_blocks)))
++	if (S_ISREG(inode->i_mode) && inode->i_size)
+ 		return false;
+ 
+ 	fi->i_flags &= ~F2FS_COMPR_FL;
+-- 
+2.25.1
 
-This problem is detected by our experimental static analysis tool, we are n=
-ot familiar with the source code and it could just be a false positive. We =
-send this email in case this is a real problem. Would you like to spare som=
-e time to have a look at it?
-
-Thanks so much,
-Chengfeng
