@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB893438F83
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698AB438F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhJYGay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhJYGax (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:30:53 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794E3C061745;
-        Sun, 24 Oct 2021 23:28:31 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd4ld2Lsrz4xbM;
-        Mon, 25 Oct 2021 17:28:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1635143309;
-        bh=UO+7LTZTfEH3+SFxoPjM7xKmJkD9pA6Voc4UYPRznJA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Ea69VD8965Yuq6XlOPvdP5TkWcECD/6tUkVRjODiIvBnHC2hPrs3MlG+JKEVDBbny
-         +QOnB1UeABzgl3GQDtx9FjA21wd9q6pwEYcScx4bCNcrPF4xXmU56nENQjlhjxQHT8
-         sHid3NV9VpO5lRRVY3pGrPXsnEq4aZtCnR5FjZOVkwgFLygkLqtM09xuRHrAJ1BiQ2
-         lhskJB36QZcrS1EfDHVrTsh6DJ0HrMgbMrlIuWt+k0QyIvxcmmFwV0LQxwlR8TV+Je
-         EeKYK6qUZfN884p2BiowXNIuQhiymzMvsqFB/uU44LqIheDsNSLHR3xBB14ObvKeYz
-         s+6mfoOUuQkkw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH] crypto: api - Export crypto_boot_test_finished
-In-Reply-To: <20210928151621.7aec3f34@canb.auug.org.au>
-References: <20210927143229.543749f4@canb.auug.org.au>
- <20210927112341.GA22483@gondor.apana.org.au>
- <20210928151621.7aec3f34@canb.auug.org.au>
-Date:   Mon, 25 Oct 2021 17:28:24 +1100
-Message-ID: <87sfwpbotz.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S231156AbhJYGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:32:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230369AbhJYGcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:32:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C216F60C4A;
+        Mon, 25 Oct 2021 06:29:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635143385;
+        bh=BN1cngPxgf6pNckB5yfeW0VtZExwVPhHyz+0ku2Gb/0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A+hyKG34GAdfp7K2SFGzPjp6Vm3KwF61QL5bBpyb0CY7Qc0NV89oYJ2YI9pdL5B3M
+         iUA9QTL7dfe4pjxJUQ72Ahf19cMomTA1ePhafUWegB8y5EB44r33yf3bHyzOJ2Oght
+         GErn7bf3WnYANACiO3wCo2iuhViBSha+Mo+pE/8+MYEjIMBiv3LfZAPskcWwIlR9Wa
+         733uII9E1Ie1hPKKQuY0zRh0twnFYBCu8rq5oBmBTKN8UgBT2fqmixZPMU2+WCacCh
+         qdByrZc6Sj+POPB6//xRksjSnnkkOxBq1HMBnypTLaExjz6UpZV9P9gO9awfiLTIjd
+         pa2Ep/TT27ycA==
+Date:   Mon, 25 Oct 2021 15:29:41 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, corbet@lwn.net, ananth@in.ibm.com,
+        akpm@linux-foundation.org, randy.dunlap@oracle.com,
+        mathieu.desnoyers@polymtl.ca, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] docs, kprobes: Remove invalid URL and add new
+ reference
+Message-Id: <20211025152941.02d219a7a48a31a6ece7f149@kernel.org>
+In-Reply-To: <1635132660-5038-3-git-send-email-yangtiezhu@loongson.cn>
+References: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
+        <1635132660-5038-3-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi Herbert,
->
-> On Mon, 27 Sep 2021 19:23:42 +0800 Herbert Xu <herbert@gondor.apana.org.au> wrote:
->>
->> Oops, does this patch fix the problem?
->
-> Yes, that fixes my build, thanks.
->
-> Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # ppc32 build
+On Mon, 25 Oct 2021 11:30:58 +0800
+Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 
-It fixes the build, but modules_install still fails:
+> The following reference is invalid, remove it.
+> https://www.ibm.com/developerworks/library/l-kprobes/index.html
+> 
+> Add the following new reference "An introduction to KProbes":
+> https://lwn.net/Articles/132196/
 
-  $ git checkout adad556efcdd42a1d9e060cbe5f6161cccf1fa28
-  HEAD is now at adad556efcdd crypto: api - Fix built-in testing dependency failures
+Looks good to me.
 
-  $ git show e42dff467ee6 | patch -p1	# apply fixup patch
-  patching file crypto/api.c
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-  $ make -s -j $(nproc) modules
+Thanks!
 
-  $ make -s modules_install
-  depmod: ERROR: Cycle detected: crypto -> crypto_algapi -> crypto
-  depmod: ERROR: Found 2 modules in dependency cycles!
-  make: *** [Makefile:1801: modules_install] Error 1
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  Documentation/trace/kprobes.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/trace/kprobes.rst b/Documentation/trace/kprobes.rst
+> index 998149c..f318bce 100644
+> --- a/Documentation/trace/kprobes.rst
+> +++ b/Documentation/trace/kprobes.rst
+> @@ -784,6 +784,6 @@ References
+>  
+>  For additional information on Kprobes, refer to the following URLs:
+>  
+> -- https://www.ibm.com/developerworks/library/l-kprobes/index.html
+> +- https://lwn.net/Articles/132196/
+>  - https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
+>  
+> -- 
+> 2.1.0
+> 
 
-cheers
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
