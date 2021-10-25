@@ -2,138 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4E943A601
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446F743A603
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhJYViP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbhJYViG (ORCPT
+        id S232381AbhJYVjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:39:04 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:52354 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhJYVjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:38:06 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1312EC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:35:44 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so457566pji.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:35:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iHfgSZESuBtNRWpoQ0O3+KS410Lf4cM3SnOfKO347UQ=;
-        b=Reu7Zfhwb2ow26i8wER7gTUYsj+/+vm3SHpVkiU5o03ZeeoZzyL2Vgkqxh4inOpYnO
-         sIv6S7DVrUX4hxLj1wywwk4ilQARf94QkoGSKt86yRTCISAioxSgdb+DyznYDGjhuSoo
-         ZelV/oR2YAMluKuDU0FY/KCCbUgaliM74RtVk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iHfgSZESuBtNRWpoQ0O3+KS410Lf4cM3SnOfKO347UQ=;
-        b=j1j0CgmQnaMU1Qx/6ehNSeRctVI4eWQr8xJGNnbVC0q5uTMuGh402ZJMuRL3TPYYlm
-         6Wi0bSDgXBx4yzfuOtE+kqwkPCxygTepz4GJHMm4IqSZUcBBSUYRj7lf3bdenL681GhC
-         i2DQFxDSm8XoR4zblBcEE9r5yhiMz+dZEd/C6Z1/74KfrgV2hzxEJR62i9r8jvu+B2aP
-         k90SHHtwksIZZ2d95u45opSi4BweIO5mf6AzDtaUNC83rCLrwNKYZqTwtdBpBBWM6qwe
-         Izh3Pm/Y9SF4E10BsB65LEQYX0sa8nX0KMD+K+JTZgjrtfIlHn9oaGovMpSJm1yFfDlh
-         Z+2Q==
-X-Gm-Message-State: AOAM530wlszwIxV4Kr45ekXo1zdQshmxAnnNC/8ZDTrgZQ2Mru+8YiZH
-        KJOybFUPhtueIRhv9RtbFSsFJw==
-X-Google-Smtp-Source: ABdhPJwx8sYf8AzkITaCuxfOfNpuYr9vEkvn+zKf5942IhmP91Qr049qj3smEeLELnoSGilSTESh2g==
-X-Received: by 2002:a17:902:e5cb:b0:13f:25b7:4d50 with SMTP id u11-20020a170902e5cb00b0013f25b74d50mr18287509plf.38.1635197743615;
-        Mon, 25 Oct 2021 14:35:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a20sm19562774pfn.136.2021.10.25.14.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:35:43 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:35:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's
- comm is truncated
-Message-ID: <202110251431.F594652F@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-13-laoar.shao@gmail.com>
+        Mon, 25 Oct 2021 17:39:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6804C1C0B76; Mon, 25 Oct 2021 23:36:38 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 23:36:38 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/44] 4.4.290-rc1 review
+Message-ID: <20211025213638.GA8955@duo.ucw.cz>
+References: <20211025190928.054676643@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
 Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-13-laoar.shao@gmail.com>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> Show a warning if task comm is truncated. Below is the result
-> of my test case:
-> 
-> truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> 
-> Suggested-by: Petr Mladek <pmladek@suse.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  kernel/kthread.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 5b37a8567168..46b924c92078 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
->  	if (!IS_ERR(task)) {
->  		static const struct sched_param param = { .sched_priority = 0 };
->  		char name[TASK_COMM_LEN];
-> +		int len;
->  
->  		/*
->  		 * task is already visible to other tasks, so updating
->  		 * COMM must be protected.
->  		 */
-> -		vsnprintf(name, sizeof(name), namefmt, args);
-> +		len = vsnprintf(name, sizeof(name), namefmt, args);
-> +		if (len >= TASK_COMM_LEN) {
 
-And since this failure case is slow-path, we could improve the warning
-as other had kind of suggested earlier with something like this instead:
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-			char *full_comm;
+Hi!
 
-			full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
-			pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
-				full_comm, name);
+> This is the start of the stable review cycle for the 4.4.290 release.
+> There are 44 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-			kfree(full_comm);
-		}
->  		set_task_comm(task, name);
->  		/*
->  		 * root may have changed our (kthreadd's) priority or CPU mask.
-> -- 
-> 2.17.1
-> 
+CIP testing did not find any problems here:
 
--- 
-Kees Cook
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--HlL+5n6rz5pIUxbD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYXcjZgAKCRAw5/Bqldv6
+8llJAJwNNynBpEqazO6jPVgj74mdI59XZACfWQaQzF5U1UMNZ75BN2IJ5pm2X0k=
+=Ug15
+-----END PGP SIGNATURE-----
+
+--HlL+5n6rz5pIUxbD--
