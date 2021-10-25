@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF2243A33A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D76143A1FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239605AbhJYT5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42468 "EHLO mail.kernel.org"
+        id S237661AbhJYToD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:44:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237333AbhJYTwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:52:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F4F36112D;
-        Mon, 25 Oct 2021 19:43:44 +0000 (UTC)
+        id S236315AbhJYTgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:36:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4372610EA;
+        Mon, 25 Oct 2021 19:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191026;
-        bh=+nCuYCAGzKAFX1CyeujOj1khmu5TCUt2LzxFOYDqaU0=;
+        s=korg; t=1635190413;
+        bh=w2PhTnIJowuc/5uT2FASWMCzZB/rMpvr9xTG8zY8wiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSwGAsSWE335srUurXl8OtTiiOHOqHY6GVAjXGPxFkFVW7SzHIeeheEKdWpP/Qwxn
-         VE2PhAGqMvbPaleSFGOKZHvvFsG2KDOXxL2wSIbjrPhyB0Pmd24FgQz5eILb/P6r1v
-         qXyJfB9jBNw+pcYFGS4GD4LDTFzxlBCvRvX7RWiM=
+        b=ME5qItmWmuTjpmbQt/683kpG0zFvJbiX6khiRQ3cMHOWiMfwlEN4dno3Ca4zzPE0C
+         W1l8WH0b5/Zagw/G0vDz4F4z19G+RJCHUEodHTiNTODiFeEx22vTEI8vtIw1BBJqyB
+         Ui468IQUYq0wU0dfd+3C+hJMSAk/6wVrNKLqFP0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 108/169] KVM: SEV-ES: keep INS functions together
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.10 52/95] ASoC: DAPM: Fix missing kctl change notifications
 Date:   Mon, 25 Oct 2021 21:14:49 +0200
-Message-Id: <20211025191031.770175381@linuxfoundation.org>
+Message-Id: <20211025191004.128373651@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 4fa4b38dae6fc6a3695695add8c18fa8b6a05a1a upstream.
+commit 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842 upstream.
 
-Make the diff a little nicer when we actually get to fixing
-the bug.  No functional change intended.
+The put callback of a kcontrol is supposed to return 1 when the value
+is changed, and this will be notified to user-space.  However, some
+DAPM kcontrols always return 0 (except for errors), hence the
+user-space misses the update of a control value.
 
-Cc: stable@vger.kernel.org
-Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+This patch corrects the behavior by properly returning 1 when the
+value gets updated.
+
+Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20211006141712.2439-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/soc-dapm.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12320,15 +12320,6 @@ int kvm_sev_es_mmio_read(struct kvm_vcpu
- }
- EXPORT_SYMBOL_GPL(kvm_sev_es_mmio_read);
- 
--static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
--{
--	memcpy(vcpu->arch.sev_pio_data, vcpu->arch.pio_data,
--	       vcpu->arch.pio.count * vcpu->arch.pio.size);
--	vcpu->arch.pio.count = 0;
--
--	return 1;
--}
--
- static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
- 			   unsigned int port, unsigned int count)
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2559,6 +2559,7 @@ static int snd_soc_dapm_set_pin(struct s
+ 				const char *pin, int status)
  {
-@@ -12344,6 +12335,15 @@ static int kvm_sev_es_outs(struct kvm_vc
- 	return 0;
+ 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
++	int ret = 0;
+ 
+ 	dapm_assert_locked(dapm);
+ 
+@@ -2571,13 +2572,14 @@ static int snd_soc_dapm_set_pin(struct s
+ 		dapm_mark_dirty(w, "pin configuration");
+ 		dapm_widget_invalidate_input_paths(w);
+ 		dapm_widget_invalidate_output_paths(w);
++		ret = 1;
+ 	}
+ 
+ 	w->connected = status;
+ 	if (status == 0)
+ 		w->force = 0;
+ 
+-	return 0;
++	return ret;
  }
  
-+static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
-+{
-+	memcpy(vcpu->arch.sev_pio_data, vcpu->arch.pio_data,
-+	       vcpu->arch.pio.count * vcpu->arch.pio.size);
-+	vcpu->arch.pio.count = 0;
-+
+ /**
+@@ -3582,14 +3584,15 @@ int snd_soc_dapm_put_pin_switch(struct s
+ {
+ 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+ 	const char *pin = (const char *)kcontrol->private_value;
++	int ret;
+ 
+ 	if (ucontrol->value.integer.value[0])
+-		snd_soc_dapm_enable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
+ 	else
+-		snd_soc_dapm_disable_pin(&card->dapm, pin);
++		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
+ 
+ 	snd_soc_dapm_sync(&card->dapm);
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
+ 
+@@ -4035,7 +4038,7 @@ static int snd_soc_dapm_dai_link_put(str
+ 
+ 	rtd->params_select = ucontrol->value.enumerated.item[0];
+ 
+-	return 0;
 +	return 1;
-+}
-+
- static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
- 			  unsigned int port, unsigned int count)
- {
+ }
+ 
+ static void
 
 
