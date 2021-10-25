@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7BC43908D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81E7439078
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhJYHro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:47:44 -0400
-Received: from mx2.securetransport.de ([188.68.39.254]:35786 "EHLO
-        mx2.securetransport.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbhJYHrm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:47:42 -0400
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Oct 2021 03:47:42 EDT
-Received: from mail.dh-electronics.com (business-24-134-97-169.pool2.vodafone-ip.de [24.134.97.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.securetransport.de (Postfix) with ESMTPSA id 649E35E8AB;
-        Mon, 25 Oct 2021 09:38:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1635147515;
-        bh=kx1P8W4qyfT/TfaLi3bO415+yY1pKjzYldhhNRTAwpA=;
-        h=From:To:CC:Subject:Date:From;
-        b=r0ekW7zxhHfQTmzKE/8BFng4nCfwkD90GbkckK5i8IlFyhzV2aHAncyCIVCQ8Bh4a
-         T/2bYE6xBC5ITIBED1i3mAsZ7W10JhQKk1gcGqqo0xgY4ywEKo3kdbuBVxUfLTtwhU
-         XRXzDsU6dW5YvhFeOoIW7lzcdOEcMpYfb7bYHNFElAopX+Ro3lv+fQyD252IbJPJTk
-         X0QbO4Lgx1fST581ud64kMwExa/8iPPWfgd1TK0B40313hhivU+eXXLdccsEQx20lO
-         aHo1o/rlHZJ/kbBcV4mVJEewVPStqDvhG+xGuE9qPbeCiUyP7yuxARRdr18qnCkTnp
-         HtuMuoEDJ4/wA==
-Received: from DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) by
- DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9;
- Mon, 25 Oct 2021 09:38:31 +0200
-Received: from localhost.localdomain (172.16.51.18) by
- DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9
- via Frontend Transport; Mon, 25 Oct 2021 09:38:31 +0200
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To:     <soc@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kernel@dh-electronics.com>, <arnd@arndb.de>
-Subject: [PATCH V2] MAINTAINERS: Add maintainers for DHCOM i.MX6 and DHCOM/DHCOR STM32MP1
-Date:   Mon, 25 Oct 2021 09:37:06 +0200
-Message-ID: <20211025073706.2794-1-cniedermaier@dh-electronics.com>
-X-Mailer: git-send-email 2.11.0
-X-klartext: yes
+        id S231812AbhJYHjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:39:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhJYHjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 03:39:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E397860C4B;
+        Mon, 25 Oct 2021 07:37:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635147451;
+        bh=uKLQhXialvm85kNhH2vtDp6xUlkw3tcxg00ufRsV3ak=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=C71V+fYWGUHABtAoekiIeml9w6NIrztzPD1rKtlxO5du9QbaqHH4PNxpTqTR+Jroj
+         jIRwEvmdVhanTx8esAn7W2DKRWuBcnV7p6AFY4UBMlb44VhJ/EIARJ0gMZ0NLcD+co
+         OH36ynKymeekQ3VYqDEL3enAlelnmnUsLOdcxup/ZqpIbARBqrNly+z4e1z6vA/SKj
+         wMnWm6dNawYdMWSJxDI5yl9YAaP+xZrzwihGKDJWOpcYDiT/3zBqnKO9DwfhPyv1h+
+         h8a5y6YGoXdDfTkvb0R8WJyB4ZYGflkFWaUXmAduNnilpehaZ7X2dz7H+zcFFT8yVO
+         hAKh17nKZaaMA==
+Subject: Re: [PATCH v2] ARM: dts: da850-evm: Change aemif node status from
+ "ok" to "okay"
+To:     "Nori, Sekhar" <nsekhar@ti.com>
+Cc:     bgolaszewski@baylibre.com, lokeshvutla@ti.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>
+References: <20210824105512.19242-1-rogerq@kernel.org>
+ <20210825161502.ap2clalwfljezoqk@perfume>
+From:   Roger Quadros <rogerq@kernel.org>
+Message-ID: <24f15759-62a8-e341-b03c-348e7e3cd295@kernel.org>
+Date:   Mon, 25 Oct 2021 10:37:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210825161502.ap2clalwfljezoqk@perfume>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers for DH electronics DHCOM i.MX6
-and DHCOM/DHCOR STM32MP1 boards.
+Hi Sekhar,
 
-Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: kernel@dh-electronics.com
-Cc: arnd@arndb.de
-To: soc@kernel.org
-To: linux-kernel@vger.kernel.org
----
-V2: - Rebase on next-20211022
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On 25/08/2021 19:15, Nishanth Menon wrote:
+> On 13:55-20210824, Roger Quadros wrote:
+>> As per Device Tree Specification [1], the status parameter of nodes can
+>> be "okay", "disabled", etc. "ok" is not a valid parameter.
+>>
+>> U-boot Driver Model does not recognize status="ok" either and treats
+>> the node as disabled.
+> 
+> ^^ the above comment might be fine to indicate the side effect of
+> non-compliance
+> 
+>>
+>> [1] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> 
+> Reviewed-by: Nishanth Menon <nm@ti.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 88fcc4e7ff37..affedd5585f3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5506,6 +5506,19 @@ F:	include/net/devlink.h
- F:	include/uapi/linux/devlink.h
- F:	net/core/devlink.c
- 
-+DH ELECTRONICS IMX6 DHCOM BOARD SUPPORT
-+M:	Christoph Niedermaier <cniedermaier@dh-electronics.com>
-+L:	kernel@dh-electronics.com
-+S:	Maintained
-+F:	arch/arm/boot/dts/imx6*-dhcom-*
-+
-+DH ELECTRONICS STM32MP1 DHCOM/DHCOR BOARD SUPPORT
-+M:	Marek Vasut <marex@denx.de>
-+L:	kernel@dh-electronics.com
-+S:	Maintained
-+F:	arch/arm/boot/dts/stm32mp1*-dhcom-*
-+F:	arch/arm/boot/dts/stm32mp1*-dhcor-*
-+
- DIALOG SEMICONDUCTOR DRIVERS
- M:	Support Opensource <support.opensource@diasemi.com>
- S:	Supported
--- 
-2.11.0
+Could you please pick this one if not too late for -next. Thanks.
 
+> 
+>> ---
+>> Changelog:
+>> v2
+>> -refer to DT spec instead of schema in commit log.
+>>
+>>  arch/arm/boot/dts/da850-evm.dts | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/boot/dts/da850-evm.dts b/arch/arm/boot/dts/da850-evm.dts
+>> index 87c517d65f62..9dc79b5977bf 100644
+>> --- a/arch/arm/boot/dts/da850-evm.dts
+>> +++ b/arch/arm/boot/dts/da850-evm.dts
+>> @@ -415,7 +415,7 @@
+>>  &aemif {
+>>  	pinctrl-names = "default";
+>>  	pinctrl-0 = <&nand_pins>;
+>> -	status = "ok";
+>> +	status = "okay";
+>>  	cs3 {
+>>  		#address-cells = <2>;
+>>  		#size-cells = <1>;
+>> -- 
+>> 2.17.1
+>>
+> 
+
+--
+cheers,
+-roger
