@@ -2,245 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125B6439402
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AD7439408
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhJYKyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:54:07 -0400
-Received: from mail-eopbgr150057.outbound.protection.outlook.com ([40.107.15.57]:31399
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229890AbhJYKyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:54:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=njwDziqg4aQmR50D6ZmV4Y8ci53CLtkGbW0w9GJNXX3k2PkP6ax/WBoMy+0pXNib5xS00WGmkwYnrX4RRuvuwUbZvCZREiNZqHX7C8EMsok/gMdthWVLi/EtlnvkJNpZ4/04GNEcDkAs0UF7nRXzph72Ld5XOOCe7teXeI0SdvH2f6K2Jgzb4nkdLTr9aMIq3GSg3NJkk8s3hsbNJp+JMPMbEQ+nDlJFo+K/UUYbe1AQC0nbtu80rKpnwh5Ko07jJqXqe0WHdMYtSZICAn8OW3m3bkau64+5Te5Ow8b2kxk6e39iY8cUlaXJBQE89cvzJIHLng4JWxxM+RgDpm8dmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bwV0/I4WmGJ4Zyl6NDJGK6kN9Z3a/E30BFmnAkPbzIo=;
- b=atSTnwOPJuJ/6zgXsKO6TjWUHQDIdxPgTpn+GSdZBfdA0Epq6MBq8Vq2G/W7Qe3glnc2Ou60BcLM0TQo6jByR+PmQYq9XPVf7NX2ycubMVHVuMB+pu5ygsLhrN4By0emjdmMe2vuyg7BKntkGikCLftUcDX72gpG3V/6Cf+Irx+i2siXNtlStw/mEiLuh8mnbqpqAv97mdsPSZBxP868IIeYVi8I9fLfk1kXtxbHkPz682VopNnD71ZWDeCVBsium3nb7aEk7b+AYYXPeHiMVIYo3BIL2QxSnO3X32w8Nw/1/N97/n5UT+7YxdZyjRPsbJcVkOap1GBXh+IFoKhmJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bwV0/I4WmGJ4Zyl6NDJGK6kN9Z3a/E30BFmnAkPbzIo=;
- b=B0KEv2Q9ZmT0pM47YbvhRTYVbc/iv27e5Y3EcUtSErIxzvxBNTFEVws7ZS9vABB0ZWo45KkCeLHMLevXrzceMKTpPZZ15Lpn97fszZPCLmbPxl4w3KJp+gCOeB/jZprj61MeGpkZndh4tyaO4mUxBm/2f6beLu4HtQ+G93StRBQ=
-Received: from AM8PR04MB7444.eurprd04.prod.outlook.com (2603:10a6:20b:1de::16)
- by AM0PR04MB5377.eurprd04.prod.outlook.com (2603:10a6:208:114::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Mon, 25 Oct
- 2021 10:51:41 +0000
-Received: from AM8PR04MB7444.eurprd04.prod.outlook.com
- ([fe80::6db3:208e:1a23:be9e]) by AM8PR04MB7444.eurprd04.prod.outlook.com
- ([fe80::6db3:208e:1a23:be9e%6]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 10:51:41 +0000
-From:   Joy Zou <joy.zou@nxp.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Robin Gong <yibin.gong@nxp.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH V3 1/1] dmaengine: fsl-edma: support edma memcpy
-Thread-Topic: [EXT] Re: [PATCH V3 1/1] dmaengine: fsl-edma: support edma
- memcpy
-Thread-Index: AQHXxLJFNwIfiKsYfkyYbkz9rNAQsavjO4SAgABXNuA=
-Date:   Mon, 25 Oct 2021 10:51:41 +0000
-Message-ID: <AM8PR04MB74442E08B8EC31C8EEEFC148E1839@AM8PR04MB7444.eurprd04.prod.outlook.com>
-References: <20211019062537.1209683-1-joy.zou@nxp.com>
- <YXZCsZrm4u7cwTB7@matsya>
-In-Reply-To: <YXZCsZrm4u7cwTB7@matsya>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1d140578-8782-4bc4-cc8d-08d997a56d9d
-x-ms-traffictypediagnostic: AM0PR04MB5377:
-x-microsoft-antispam-prvs: <AM0PR04MB537799261E10CB4137C90520E1839@AM0PR04MB5377.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8Vot9Znug6R40ErC01Y52Q/lQv8qDxtROVEt4Qth5dw0xjrKfBysoH1qWmKLFCr7knaQD8T0Cp0aV3T6B4+Z1soGeyUovo3NpjGk78nyjibiVWFkf/HqUWXLH3o+tBF8qZesY9WB/wifw3MaADEGoYUa7zfnO76pzIAgBSz+yEhEroNfocqZ7sinMQubeVVaSagp+oowbFzpgyBXETUzJ0SsvJ3imuIzCshrdaHw7oy0UieYnvP7VwBf15LfmC1R4kNv4wLsuVqIWtPAknr42ev+/Xug78UbBhlEpyoVU0lflUjHr1snTIiIwutmhX48VmZykfRCbCzea4mDCJZLkT1dGUVMSpW1PNngxZqEtaq1mXvRyO6d5xiHNuBOnJlbiYcrXqBXPf0/IEOOcoNBiIhaoM0S5DgIg6/+mbxZLIBoGdQbtXuhZFsvbhqrzPqkRlxFKEJoJeasmmjKHmVqMVPl5YRvrRwkRNUtsR9c2MOq0+w/ZL7ULog1O+WgEUTIHgRsc2NkKlWIMwDUmsNK94bSUbBV/+6iSRvEpOCwGGvRI1jRYMyP+RPhUlxUK+eu4aOnFEe3HMpHaSvRMLmk5UTgOeu3FftajusiIf6hE5spcay9TPciH3dq6G1WwlkEYt5TcjRVeA5ipDMAIaV1spYq+M8moUPpIQN/cITI63X/g+5HZRLPfaM2sbTRm7iQQZkfKM5lAoUbyF60GlZTMw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7444.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(53546011)(55016002)(316002)(508600001)(2906002)(7696005)(4326008)(86362001)(8936002)(38100700002)(8676002)(6916009)(66446008)(66556008)(9686003)(52536014)(66946007)(44832011)(76116006)(64756008)(5660300002)(66476007)(71200400001)(33656002)(38070700005)(186003)(83380400001)(122000001)(26005)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?dW8vd21leVVqYUpjVUJhTzR1TnlvYWpjU3Foa0lpa2FnUTVWenUraFlnbU9r?=
- =?gb2312?B?RFo5OWpVM2RFYmVvNTlDRnAreWlWMDBPeFhZdnRjUFFGK3hCOHM1dCs2dlFF?=
- =?gb2312?B?MFRBOThQOTJWRkorYUdzVVhTUG1PMTFodVQxdlRKQW02SVpkaUgyUEtZaUNO?=
- =?gb2312?B?YXUzYnNXY1NCSlVuMDBvYzR0czRoQ21ZR3VobkhTUWwyWkFBMFFTeFZiQ2Yv?=
- =?gb2312?B?emJheEQxcUNpQzVvd3E2a2gyU0ZiUEIzb2NxTkRvQ3oweUpWcVdUSHJyc3h4?=
- =?gb2312?B?SkdFT1dWMkNIWjY1akd0enYraEdoazdzTC9DN3gyZklMbGJUelhtbWNQUmJp?=
- =?gb2312?B?TXpuaUJHSStEdm9JVkcvQlRQL3ExVTMxN05lMjR4ZDVjUWVocFNWMmxQT0tW?=
- =?gb2312?B?eFpkY3NEMVVJMm1seU9JZ1QrSHFSM0o3SDdGazNudmw1WnhBWGVtTEh4cXNv?=
- =?gb2312?B?VVpPR1pxVm1NU2ZQZHVjQ0xidXJWeDBldEdzQVlacUwzdTg4eWw5bm1SNU8r?=
- =?gb2312?B?dktHejhvM05rUFIycS9jVzVrSDRKYm9YMW5QZ2EwU1lUTzBEbWhPcXpaRVJ3?=
- =?gb2312?B?cVMzbTBJcTBaS3AyWVZuZWxidGlzV3RVMURDQnpvbHgrdkRjQ1FNN2pFWUxi?=
- =?gb2312?B?Q3NKekRzK3djYXN5NkZvOExhZXpKMzBFYi9kUHNsZEN5bUVLRS80UzFlWllM?=
- =?gb2312?B?aGFydldLRXRHMElLd0hQR2hDSWt0b2Y4NTVIN0FZOHZ4S29zcUVGZHM3N3N2?=
- =?gb2312?B?SUcyZUJDQWhDS2lkdWdIR2ozeHlKVDZUOTN6SHFJSXhzYmM4N1dCR0FKTWNx?=
- =?gb2312?B?Y250cFpFejQzejB4SkdQVXUyOTdiakk4dTk1WDlyYWxLSERmdGZ5ZTNTU3FT?=
- =?gb2312?B?VGNGc0laZVlEUTVxcUpHSkhiQndoWHJDaDNORUkvYTlPcHNJRk1tbmQvdWVj?=
- =?gb2312?B?T1BCa1N4WlBGMitDQ2dUaiszVnhpWUY4dzlRZjE3V0RUN0hSb3VhM0MvbUJF?=
- =?gb2312?B?bU9QNS8zMDJJS2UwY2kycjB0MVpGWkYxMVQvQjgzNVBsSkNYMlFmVFJWcU83?=
- =?gb2312?B?NWlZcnRDSEZrc0drL094cS80VFo1dGdWSGJnZ09FaVA1QjUwY0RKN0Y1Nk16?=
- =?gb2312?B?OHNPamFCenJaV1pGRzUzMXUrVy90bjFmQ2RrZDkveHRpeWU3R2I4eFFxcEVY?=
- =?gb2312?B?b05yemdteEh3S3lCMzFSZ01sZkdWNE9PaVBBTjVIWE56SVNGbklXTHJQbUlM?=
- =?gb2312?B?aksvVktmTzJ3aHpnQXdvbWxqL1Rqa2lPTVlXWkhQRmxEUS90RDZkVXJYTUw0?=
- =?gb2312?B?NTdJZWpmNUJVNE94MmpDaUxhTE54SWNPTW1tUGhaUG9WdHllSE1QdHBtamxH?=
- =?gb2312?B?Mlh4SW9oVTV5YmFkSEc5eGUwQXYzcEVnZzIwK3h2d1FXdWJBdTUzWDIxOXg2?=
- =?gb2312?B?bjkwUzZNWkU0dVYwZFh4Q0JNNC9CRkxFa3FKbDhnVnppcWN2UWFFNEtTelQv?=
- =?gb2312?B?TElIZFlURHl4OVd0YmdhcWNyY0pLMzBXK0VUOTBiaGxMRElkSlFLeU8xZWJI?=
- =?gb2312?B?dXk2b3ZUaVg2TVJzbGR5dCt4L2NRU0JHano1N2IwTnRVamtMRjBjbitwZjlO?=
- =?gb2312?B?VDVkYTRVUFdlc3VhV3BtS0ZaelgxSVoxdWJGbmJpTVFHNk1DdUdmNitzdHpn?=
- =?gb2312?B?T3YxTEJEeGJXRFp5MWFQY29NVFVtM2h5RURSbStBbm9QS2l4d1RIVmZjWDRD?=
- =?gb2312?B?ZTlNMGJLN2x5UEUzRkthUEFsU2hVeWFUY01VcGV1TXRQa0syU2xTQWl6WDBo?=
- =?gb2312?B?RTF5OUgxWllKdTJrNkt2VUJ6ejVRSFErRWZuNU02aWtKRDlqZi9Bb0NPcW1q?=
- =?gb2312?B?d0pmdWc0TFovajBaYmVEWE5sL3hrOGFKK1J3VFZneUhTWmx2U3Urblc5QnN5?=
- =?gb2312?B?ZkFGOTVUZnR5Z3p4RmlSeEZwZ0pFUE9jVXpXUjRJNE1OZ3orNjlPaXRlN1BC?=
- =?gb2312?B?Yk1xa2lsRHIwWk5TaGw1NS9oYUpIR09uT3kydFI4Z0I4b3dMbUxmcWtNdlFj?=
- =?gb2312?B?SGdzdkpuOFhKb2lmNTh0Q3JLeDNSeWMxZ05Bdz09?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S231383AbhJYKy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:54:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38652 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhJYKy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:54:26 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A256B218ED;
+        Mon, 25 Oct 2021 10:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635159123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mj3yO0Hrr2SEuiBX5CH+xLN/Uvz4h9rWJ4Oor/vFZPs=;
+        b=N8GXnGzYV/KEyF2/sq39dPRhYVsMaIzFNa710ueUstVvm3s8qDKXfUE+9mXWj+qRRJkFFz
+        0yxshksi79VZ7RzvB2WFlDokHuMNBICqshtlyzEpIkJqmfkVCD3qUAP06bfD35WIyHCnoU
+        557RHKZuV72BqECbEtQq86Flc/wZOk4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635159123;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mj3yO0Hrr2SEuiBX5CH+xLN/Uvz4h9rWJ4Oor/vFZPs=;
+        b=oUtxpZT4fxPMDQQpG/pfohUbFVQiuUbOKWx3+1wW2uxRDCLLYuklefN/oXVbozVYqHCpMi
+        29PwsVeK8o5ja7Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35B2713BA4;
+        Mon, 25 Oct 2021 10:52:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EWWOB1OMdmEMBwAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 25 Oct 2021 10:52:03 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 8dcf2670;
+        Mon, 25 Oct 2021 10:52:02 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 11:52:02 +0100
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Patrick Donnelly <pdonnell@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+Message-ID: <YXaMUjT/B5V8nMDz@suse.de>
+References: <20211020143708.14728-1-lhenriques@suse.de>
+ <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+ <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+ <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+ <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+ <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+ <YXaDBFvar4TS+EB8@suse.de>
+ <ee5d8674c5b80668c2de8575ff2b0afcbb463200.camel@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7444.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d140578-8782-4bc4-cc8d-08d997a56d9d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 10:51:41.2877
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PftN/7qpOZVU6505KTV6Khg/tsthNJi7vPeuhbAAwmy32RQJV3xGTfd5jkYY0/v0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5377
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ee5d8674c5b80668c2de8575ff2b0afcbb463200.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBWaW5vZCBLb3VsIDx2a291bEBr
-ZXJuZWwub3JnPiANClNlbnQ6IDIwMjHE6jEw1MIyNcjVIDEzOjM4DQpUbzogSm95IFpvdSA8am95
-LnpvdUBueHAuY29tPg0KQ2M6IFJvYmluIEdvbmcgPHlpYmluLmdvbmdAbnhwLmNvbT47IGRtYWVu
-Z2luZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1Ympl
-Y3Q6IFtFWFRdIFJlOiBbUEFUQ0ggVjMgMS8xXSBkbWFlbmdpbmU6IGZzbC1lZG1hOiBzdXBwb3J0
-IGVkbWEgbWVtY3B5DQoNCkNhdXRpb246IEVYVCBFbWFpbA0KDQpPbiAxOS0xMC0yMSwgMTQ6MjUs
-IEpveSBab3Ugd3JvdGU6DQo+IEFkZCBtZW1jcHkgaW4gZWRtYS4gVGhlIGVkbWEgaGFzIHRoZSBj
-YXBhYmlsaXR5IHRvIHRyYW5zZmVyIGRhdGEgYnkgDQo+IHNvZnR3YXJlIHRyaWdnZXIgc28gdGhh
-dCBpdCBjb3VsZCBiZSB1c2VkIGZvciBtZW1vcnkgY29weS4gRW5hYmxlIA0KPiBNRU1DUFkgZm9y
-IGVkbWEgZHJpdmVyIGFuZCBpdCBjb3VsZCBiZSB0ZXN0IGRpcmVjdGx5IGJ5IGRtYXRlc3QuDQo+
-DQo+IFNpZ25lZC1vZmYtYnk6IEpveSBab3UgPGpveS56b3VAbnhwLmNvbT4NCj4gLS0tDQo+IENo
-YW5nZXMgc2luY2UgKGltcGxpY2l0KSB2MjoNCj4gUmVtb3ZlICdSZXBvcnRlZC1ieScgdGFnIGlu
-IHYzLg0KPiBSb2JvdCByZXBvcnQgc3BhcnNlIHdhcm5pbmcgb24gdjEsIGZpeGVkIGl0IGluIHYy
-Lg0KPiBBZGQgYmxhbmsgbGluZSBpbiB2My4NCj4gQWRkIGNvbW1pdCBtZXNzYWdlIGluIHYzLg0K
-PiAtLS0NCj4gIGRyaXZlcnMvZG1hL2ZzbC1lZG1hLWNvbW1vbi5jIHwgMzQgKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKystLQ0KPiAgZHJpdmVycy9kbWEvZnNsLWVkbWEtY29tbW9uLmgg
-fCAgNCArKysrDQo+ICBkcml2ZXJzL2RtYS9mc2wtZWRtYS5jICAgICAgICB8ICA3ICsrKysrKysN
-Cj4gIDMgZmlsZXMgY2hhbmdlZCwgNDMgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4N
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZG1hL2ZzbC1lZG1hLWNvbW1vbi5jIA0KPiBiL2RyaXZl
-cnMvZG1hL2ZzbC1lZG1hLWNvbW1vbi5jIGluZGV4IDkzMGFlMjY4YzQ5Ny4uM2Y3YzlmYWE4Yzlh
-IA0KPiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9kbWEvZnNsLWVkbWEtY29tbW9uLmMNCj4gKysr
-IGIvZHJpdmVycy9kbWEvZnNsLWVkbWEtY29tbW9uLmMNCj4gQEAgLTM0MywxMSArMzQzLDExIEBA
-IGVudW0gZG1hX3N0YXR1cyBmc2xfZWRtYV90eF9zdGF0dXMoc3RydWN0IA0KPiBkbWFfY2hhbiAq
-Y2hhbiwgIEVYUE9SVF9TWU1CT0xfR1BMKGZzbF9lZG1hX3R4X3N0YXR1cyk7DQo+DQo+ICBzdGF0
-aWMgdm9pZCBmc2xfZWRtYV9zZXRfdGNkX3JlZ3Moc3RydWN0IGZzbF9lZG1hX2NoYW4gKmZzbF9j
-aGFuLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBmc2xfZWRtYV9o
-d190Y2QgKnRjZCkNCj4gLXsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1
-Y3QgZnNsX2VkbWFfaHdfdGNkICp0Y2Qpew0KDQpzcGFjZSBiL3cgYnJhY2VzLCBjaGVja3BhdGNo
-IHdvdWxkIGhhdmUgY29tcGxhaW5lZCEgUGxzIHJ1biB0aGF0DQp3aWxsIGJlIHJlc3RvcmVkIGlu
-IHY0Lg0KPiAgICAgICBzdHJ1Y3QgZnNsX2VkbWFfZW5naW5lICplZG1hID0gZnNsX2NoYW4tPmVk
-bWE7DQo+ICAgICAgIHN0cnVjdCBlZG1hX3JlZ3MgKnJlZ3MgPSAmZnNsX2NoYW4tPmVkbWEtPnJl
-Z3M7DQo+ICAgICAgIHUzMiBjaCA9IGZzbF9jaGFuLT52Y2hhbi5jaGFuLmNoYW5faWQ7DQo+ICsg
-ICAgIHUxNiBjc3IgPSAwOw0KPg0KPiAgICAgICAvKg0KPiAgICAgICAgKiBUQ0QgcGFyYW1ldGVy
-cyBhcmUgc3RvcmVkIGluIHN0cnVjdCBmc2xfZWRtYV9od190Y2QgaW4gbGl0dGxlIA0KPiBAQCAt
-MzczLDYgKzM3MywxMiBAQCBzdGF0aWMgdm9pZCBmc2xfZWRtYV9zZXRfdGNkX3JlZ3Moc3RydWN0
-IGZzbF9lZG1hX2NoYW4gKmZzbF9jaGFuLA0KPiAgICAgICBlZG1hX3dyaXRlbChlZG1hLCAoczMy
-KXRjZC0+ZGxhc3Rfc2dhLA0KPiAgICAgICAgICAgICAgICAgICAgICAgJnJlZ3MtPnRjZFtjaF0u
-ZGxhc3Rfc2dhKTsNCj4NCj4gKyAgICAgaWYgKGZzbF9jaGFuLT5pc19zdykgew0KPiArICAgICAg
-ICAgICAgIGNzciA9IGxlMTZfdG9fY3B1KHRjZC0+Y3NyKTsNCj4gKyAgICAgICAgICAgICBjc3Ig
-fD0gRURNQV9UQ0RfQ1NSX1NUQVJUOw0KPiArICAgICAgICAgICAgIHRjZC0+Y3NyID0gY3B1X3Rv
-X2xlMTYoY3NyKTsNCj4gKyAgICAgfQ0KPiArDQo+ICAgICAgIGVkbWFfd3JpdGV3KGVkbWEsIChz
-MTYpdGNkLT5jc3IsICZyZWdzLT50Y2RbY2hdLmNzcik7ICB9DQo+DQo+IEBAIC01ODcsNiArNTkz
-LDI5IEBAIHN0cnVjdCBkbWFfYXN5bmNfdHhfZGVzY3JpcHRvciANCj4gKmZzbF9lZG1hX3ByZXBf
-c2xhdmVfc2coICB9ICANCj4gRVhQT1JUX1NZTUJPTF9HUEwoZnNsX2VkbWFfcHJlcF9zbGF2ZV9z
-Zyk7DQo+DQo+ICtzdHJ1Y3QgZG1hX2FzeW5jX3R4X2Rlc2NyaXB0b3IgKmZzbF9lZG1hX3ByZXBf
-bWVtY3B5KA0KDQpzdGF0aWZ5IHBscw0KDQo+ICsgICAgICAgICAgICAgc3RydWN0IGRtYV9jaGFu
-ICpjaGFuLCBkbWFfYWRkcl90IGRtYV9kc3QsDQo+ICsgICAgICAgICAgICAgZG1hX2FkZHJfdCBk
-bWFfc3JjLCBzaXplX3QgbGVuLCB1bnNpZ25lZCBsb25nIGZsYWdzKQ0KDQphbGlnbiB0byBwcmVj
-ZWRpbmcgb3BlbiBicmFjZQ0Kd2lsbCBiZSBmaXhlZCBpbiB2NC4NCj4gK3sNCj4gKyAgICAgc3Ry
-dWN0IGZzbF9lZG1hX2NoYW4gKmZzbF9jaGFuID0gdG9fZnNsX2VkbWFfY2hhbihjaGFuKTsNCj4g
-KyAgICAgc3RydWN0IGZzbF9lZG1hX2Rlc2MgKmZzbF9kZXNjOw0KPiArDQo+ICsgICAgIGZzbF9k
-ZXNjID0gZnNsX2VkbWFfYWxsb2NfZGVzYyhmc2xfY2hhbiwgMSk7DQo+ICsgICAgIGlmICghZnNs
-X2Rlc2MpDQo+ICsgICAgICAgICAgICAgcmV0dXJuIE5VTEw7DQo+ICsgICAgIGZzbF9kZXNjLT5p
-c2N5Y2xpYyA9IGZhbHNlOw0KPiArDQo+ICsgICAgIGZzbF9jaGFuLT5pc19zdyA9IHRydWU7DQo+
-ICsNCj4gKyAgICAgLyogVG8gbWF0Y2ggd2l0aCBjb3B5X2FsaWduIGFuZCBtYXhfc2VnX3NpemUg
-c28gMSB0Y2QgaXMgZW5vdWdoICovDQo+ICsgICAgIGZzbF9lZG1hX2ZpbGxfdGNkKGZzbF9kZXNj
-LT50Y2RbMF0udnRjZCwgZG1hX3NyYywgZG1hX2RzdCwNCj4gKyAgICAgICAgICAgICAgICAgICAg
-IEVETUFfVENEX0FUVFJfU1NJWkVfMzJCWVRFIHwgRURNQV9UQ0RfQVRUUl9EU0laRV8zMkJZVEUs
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAzMiwgbGVuLCAwLCAxLCAxLCAzMiwgMCwgdHJ1ZSwg
-dHJ1ZSwgZmFsc2UpOw0KPiArDQo+ICsgICAgIHJldHVybiB2Y2hhbl90eF9wcmVwKCZmc2xfY2hh
-bi0+dmNoYW4sICZmc2xfZGVzYy0+dmRlc2MsIGZsYWdzKTsgDQo+ICt9IEVYUE9SVF9TWU1CT0xf
-R1BMKGZzbF9lZG1hX3ByZXBfbWVtY3B5KTsNCj4gKw0KPiAgdm9pZCBmc2xfZWRtYV94ZmVyX2Rl
-c2Moc3RydWN0IGZzbF9lZG1hX2NoYW4gKmZzbF9jaGFuKSAgew0KPiAgICAgICBzdHJ1Y3Qgdmly
-dF9kbWFfZGVzYyAqdmRlc2M7DQo+IEBAIC02NTIsNiArNjgxLDcgQEAgdm9pZCBmc2xfZWRtYV9m
-cmVlX2NoYW5fcmVzb3VyY2VzKHN0cnVjdCBkbWFfY2hhbiAqY2hhbikNCj4gICAgICAgdmNoYW5f
-ZG1hX2Rlc2NfZnJlZV9saXN0KCZmc2xfY2hhbi0+dmNoYW4sICZoZWFkKTsNCj4gICAgICAgZG1h
-X3Bvb2xfZGVzdHJveShmc2xfY2hhbi0+dGNkX3Bvb2wpOw0KPiAgICAgICBmc2xfY2hhbi0+dGNk
-X3Bvb2wgPSBOVUxMOw0KPiArICAgICBmc2xfY2hhbi0+aXNfc3cgPSBmYWxzZTsNCj4gIH0NCj4g
-IEVYUE9SVF9TWU1CT0xfR1BMKGZzbF9lZG1hX2ZyZWVfY2hhbl9yZXNvdXJjZXMpOw0KPg0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9kbWEvZnNsLWVkbWEtY29tbW9uLmggDQo+IGIvZHJpdmVycy9k
-bWEvZnNsLWVkbWEtY29tbW9uLmggaW5kZXggZWMxMTY5NzQxZGUxLi4wMDRlYzRhNmJjODYgDQo+
-IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2RtYS9mc2wtZWRtYS1jb21tb24uaA0KPiArKysgYi9k
-cml2ZXJzL2RtYS9mc2wtZWRtYS1jb21tb24uaA0KPiBAQCAtMTIxLDYgKzEyMSw3IEBAIHN0cnVj
-dCBmc2xfZWRtYV9jaGFuIHsNCj4gICAgICAgc3RydWN0IGZzbF9lZG1hX2Rlc2MgICAgICAgICAg
-ICAqZWRlc2M7DQo+ICAgICAgIHN0cnVjdCBkbWFfc2xhdmVfY29uZmlnICAgICAgICAgY2ZnOw0K
-PiAgICAgICB1MzIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF0dHI7DQo+ICsgICAgIGJv
-b2wgICAgICAgICAgICAgICAgICAgICAgICAgICAgaXNfc3c7DQo+ICAgICAgIHN0cnVjdCBkbWFf
-cG9vbCAgICAgICAgICAgICAgICAgKnRjZF9wb29sOw0KPiAgICAgICBkbWFfYWRkcl90ICAgICAg
-ICAgICAgICAgICAgICAgIGRtYV9kZXZfYWRkcjsNCj4gICAgICAgdTMyICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBkbWFfZGV2X3NpemU7DQo+IEBAIC0yNDAsNiArMjQxLDkgQEAgc3RydWN0
-IGRtYV9hc3luY190eF9kZXNjcmlwdG9yICpmc2xfZWRtYV9wcmVwX3NsYXZlX3NnKA0KPiAgICAg
-ICAgICAgICAgIHN0cnVjdCBkbWFfY2hhbiAqY2hhbiwgc3RydWN0IHNjYXR0ZXJsaXN0ICpzZ2ws
-DQo+ICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IHNnX2xlbiwgZW51bSBkbWFfdHJhbnNmZXJf
-ZGlyZWN0aW9uIGRpcmVjdGlvbiwNCj4gICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdz
-LCB2b2lkICpjb250ZXh0KTsNCj4gK3N0cnVjdCBkbWFfYXN5bmNfdHhfZGVzY3JpcHRvciAqZnNs
-X2VkbWFfcHJlcF9tZW1jcHkoDQo+ICsgICAgICAgICAgICAgc3RydWN0IGRtYV9jaGFuICpjaGFu
-LCBkbWFfYWRkcl90IGRtYV9kc3QsIGRtYV9hZGRyX3QgZG1hX3NyYywNCj4gKyAgICAgICAgICAg
-ICBzaXplX3QgbGVuLCB1bnNpZ25lZCBsb25nIGZsYWdzKTsNCj4gIHZvaWQgZnNsX2VkbWFfeGZl
-cl9kZXNjKHN0cnVjdCBmc2xfZWRtYV9jaGFuICpmc2xfY2hhbik7ICB2b2lkIA0KPiBmc2xfZWRt
-YV9pc3N1ZV9wZW5kaW5nKHN0cnVjdCBkbWFfY2hhbiAqY2hhbik7ICBpbnQgDQo+IGZzbF9lZG1h
-X2FsbG9jX2NoYW5fcmVzb3VyY2VzKHN0cnVjdCBkbWFfY2hhbiAqY2hhbik7IGRpZmYgLS1naXQg
-DQo+IGEvZHJpdmVycy9kbWEvZnNsLWVkbWEuYyBiL2RyaXZlcnMvZG1hL2ZzbC1lZG1hLmMgaW5k
-ZXggDQo+IDkwYmI3MmFmMzA2Yy4uNzZjYmY1NGFlYzU4IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L2RtYS9mc2wtZWRtYS5jDQo+ICsrKyBiL2RyaXZlcnMvZG1hL2ZzbC1lZG1hLmMNCj4gQEAgLTE3
-LDYgKzE3LDcgQEANCj4gICNpbmNsdWRlIDxsaW51eC9vZl9hZGRyZXNzLmg+DQo+ICAjaW5jbHVk
-ZSA8bGludXgvb2ZfaXJxLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvb2ZfZG1hLmg+DQo+ICsjaW5j
-bHVkZSA8bGludXgvZG1hLW1hcHBpbmcuaD4NCj4NCj4gICNpbmNsdWRlICJmc2wtZWRtYS1jb21t
-b24uaCINCj4NCj4gQEAgLTM3Miw2ICszNzMsNyBAQCBzdGF0aWMgaW50IGZzbF9lZG1hX3Byb2Jl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAgICAgIGRtYV9jYXBfc2V0KERNQV9Q
-UklWQVRFLCBmc2xfZWRtYS0+ZG1hX2Rldi5jYXBfbWFzayk7DQo+ICAgICAgIGRtYV9jYXBfc2V0
-KERNQV9TTEFWRSwgZnNsX2VkbWEtPmRtYV9kZXYuY2FwX21hc2spOw0KPiAgICAgICBkbWFfY2Fw
-X3NldChETUFfQ1lDTElDLCBmc2xfZWRtYS0+ZG1hX2Rldi5jYXBfbWFzayk7DQo+ICsgICAgIGRt
-YV9jYXBfc2V0KERNQV9NRU1DUFksIGZzbF9lZG1hLT5kbWFfZGV2LmNhcF9tYXNrKTsNCj4NCj4g
-ICAgICAgZnNsX2VkbWEtPmRtYV9kZXYuZGV2ID0gJnBkZXYtPmRldjsNCj4gICAgICAgZnNsX2Vk
-bWEtPmRtYV9kZXYuZGV2aWNlX2FsbG9jX2NoYW5fcmVzb3VyY2VzDQo+IEBAIC0zODEsNiArMzgz
-LDcgQEAgc3RhdGljIGludCBmc2xfZWRtYV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpw
-ZGV2KQ0KPiAgICAgICBmc2xfZWRtYS0+ZG1hX2Rldi5kZXZpY2VfdHhfc3RhdHVzID0gZnNsX2Vk
-bWFfdHhfc3RhdHVzOw0KPiAgICAgICBmc2xfZWRtYS0+ZG1hX2Rldi5kZXZpY2VfcHJlcF9zbGF2
-ZV9zZyA9IGZzbF9lZG1hX3ByZXBfc2xhdmVfc2c7DQo+ICAgICAgIGZzbF9lZG1hLT5kbWFfZGV2
-LmRldmljZV9wcmVwX2RtYV9jeWNsaWMgPSANCj4gZnNsX2VkbWFfcHJlcF9kbWFfY3ljbGljOw0K
-PiArICAgICBmc2xfZWRtYS0+ZG1hX2Rldi5kZXZpY2VfcHJlcF9kbWFfbWVtY3B5ID0gZnNsX2Vk
-bWFfcHJlcF9tZW1jcHk7DQo+ICAgICAgIGZzbF9lZG1hLT5kbWFfZGV2LmRldmljZV9jb25maWcg
-PSBmc2xfZWRtYV9zbGF2ZV9jb25maWc7DQo+ICAgICAgIGZzbF9lZG1hLT5kbWFfZGV2LmRldmlj
-ZV9wYXVzZSA9IGZzbF9lZG1hX3BhdXNlOw0KPiAgICAgICBmc2xfZWRtYS0+ZG1hX2Rldi5kZXZp
-Y2VfcmVzdW1lID0gZnNsX2VkbWFfcmVzdW1lOyBAQCAtMzkyLDYgDQo+ICszOTUsMTAgQEAgc3Rh
-dGljIGludCBmc2xfZWRtYV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAg
-ICAgICBmc2xfZWRtYS0+ZG1hX2Rldi5kc3RfYWRkcl93aWR0aHMgPSBGU0xfRURNQV9CVVNXSURU
-SFM7DQo+ICAgICAgIGZzbF9lZG1hLT5kbWFfZGV2LmRpcmVjdGlvbnMgPSBCSVQoRE1BX0RFVl9U
-T19NRU0pIHwgDQo+IEJJVChETUFfTUVNX1RPX0RFVik7DQo+DQo+ICsgICAgIGZzbF9lZG1hLT5k
-bWFfZGV2LmNvcHlfYWxpZ24gPSBETUFFTkdJTkVfQUxJR05fMzJfQllURVM7DQo+ICsgICAgIC8q
-IFBlciB3b3JzdCBjYXNlICduYnl0ZXMgPSAxJyB0YWtlIENJVEVSIGFzIHRoZSBtYXhfc2VnX3Np
-emUgKi8NCj4gKyAgICAgZG1hX3NldF9tYXhfc2VnX3NpemUoZnNsX2VkbWEtPmRtYV9kZXYuZGV2
-LCAweDNmZmYpOw0KPiArDQo+ICAgICAgIHBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIGZzbF9l
-ZG1hKTsNCj4NCj4gICAgICAgcmV0ID0gZG1hX2FzeW5jX2RldmljZV9yZWdpc3RlcigmZnNsX2Vk
-bWEtPmRtYV9kZXYpOw0KPiAtLQ0KPiAyLjI1LjENCg0KLS0NCn5WaW5vZA0K
+On Mon, Oct 25, 2021 at 06:20:40AM -0400, Jeff Layton wrote:
+> On Mon, 2021-10-25 at 11:12 +0100, Luís Henriques wrote:
+> > On Thu, Oct 21, 2021 at 12:35:18PM -0400, Jeff Layton wrote:
+> > > On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+> > > > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > 
+> > > > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+> > > > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > > > 
+> > > > > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+> > > > > > > > This counter will keep track of the number of remote object copies done on
+> > > > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
+> > > > > > > > can be accessed from the client debugfs directory.
+> > > > > > > > 
+> > > > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > > > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > > > > > > > ---
+> > > > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+> > > > > > > > 100% sure about the usefulness of this patch, or if this is the best way
+> > > > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
+> > > > > > > > get some feedback, hence the RFC.
+> > > > > > > > 
+> > > > > > > > Cheers,
+> > > > > > > > --
+> > > > > > > > Luís
+> > > > > > > > 
+> > > > > > > > [0] https://github.com/ceph/ceph/pull/42720
+> > > > > > > > 
+> > > > > > > 
+> > > > > > > I think this would be better integrated into the stats infrastructure.
+> > > > > > > 
+> > > > > > > Maybe you could add a new set of "copy" stats to struct
+> > > > > > > ceph_client_metric that tracks the total copy operations done, their
+> > > > > > > size and latency (similar to read and write ops)?
+> > > > > > 
+> > > > > > I think it's a good idea to integrate this into "stats" but I think a
+> > > > > > local debugfs file for some counters is still useful. The "stats"
+> > > > > > module is immature at this time and I'd rather not build any qa tests
+> > > > > > (yet) that rely on it.
+> > > > > > 
+> > > > > > Can we generalize this patch-set to a file named "op_counters" or
+> > > > > > similar and additionally add other OSD ops performed by the kclient?
+> > > > > > 
+> > > > > 
+> > > > > 
+> > > > > Tracking this sort of thing is the main purpose of the stats code. I'm
+> > > > > really not keen on adding a whole separate set of files for reporting
+> > > > > this.
+> > > > 
+> > > > Maybe I'm confused. Is there some "file" which is already used for
+> > > > this type of debugging information? Or do you mean the code for
+> > > > sending stats to the MDS to support cephfs-top?
+> > > > 
+> > > > > What's the specific problem with relying on the data in debugfs
+> > > > > "metrics" file?
+> > > > 
+> > > > Maybe no problem? I wasn't aware of a "metrics" file.
+> > > > 
+> > > 
+> > > Yes. For instance:
+> > > 
+> > > # cat /sys/kernel/debug/ceph/*/metrics
+> > > item                               total
+> > > ------------------------------------------
+> > > opened files  / total inodes       0 / 4
+> > > pinned i_caps / total inodes       5 / 4
+> > > opened inodes / total inodes       0 / 4
+> > > 
+> > > item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+> > > -----------------------------------------------------------------------------------
+> > > read          0           0               0               0               0
+> > > write         5           914013          824797          1092343         103476
+> > > metadata      79          12856           1572            114572          13262
+> > > 
+> > > item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+> > > ----------------------------------------------------------------------------------------
+> > > read          0           0               0               0               0
+> > > write         5           4194304         4194304         4194304         20971520
+> > > 
+> > > item          total           miss            hit
+> > > -------------------------------------------------
+> > > d_lease       11              0               29
+> > > caps          5               68              10702
+> > > 
+> > > 
+> > > I'm proposing that Luis add new lines for "copy" to go along with the
+> > > "read" and "write" ones. The "total" counter should give you a count of
+> > > the number of operations.
+> > 
+> > The problem with this is that it will require quite some work on the
+> > MDS-side because, AFAIU, the MDS will need to handle different versions of
+> > the CEPH_MSG_CLIENT_METRICS message (with and without the new copy-from
+> > metrics).
+> > 
+> > Will this extra metric ever be useful on the MDS side?  From what I
+> > understood Patrick's initial request was to have a way to find out, on the
+> > client, if remote copies are really happening.  (*sigh* for not having
+> > tracepoints.)
+> > 
+> > Anyway, I can look into adding this to the metrics infrastructure, but
+> > it'll likely take me some more time to get to it and to figure out (once
+> > again) how the messages versioning work.
+> > 
+> 
+> I think it is useful info to report to the MDS, but it's not required to
+> send these to the MDS to solve the current problem. My suggestion would
+> be to add what's needed to track these stats in the kclient and report
+> them via debugfs, but don't send the info to the MDS just yet.
+> 
+> Later, we could extend the protocol with COPY stats, and add the
+> necessary infrastructure to the MDS to deal with it. Once that's in
+> place, we can then extend the kclient to start sending this info along
+> when it reports the stats.
+
+Awesome, that sounds good to me.  I'll look into re-writing this patch
+following your suggestion.  Thanks!
+
+Cheers,
+--
+Luís
