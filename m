@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301D843A2E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CBD43A06C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238966AbhJYTxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
+        id S233868AbhJYTaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:30:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238484AbhJYTs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:48:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A06C66121E;
-        Mon, 25 Oct 2021 19:41:12 +0000 (UTC)
+        id S234434AbhJYT12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:27:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B64F461154;
+        Mon, 25 Oct 2021 19:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190874;
-        bh=7dGhASNRKxMtyoG0S7uiTFoPBDnI7rhtYzOpM2p0oP4=;
+        s=korg; t=1635189854;
+        bh=uh+onX4lya15jpShJDlMJOjftqDM96kehkwXOaOh+Xc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aJr1ZZQdsZ5j++APVaPfgqwJVajDIv1DMZkVZGV2mV69tTP3Zl9JVjru8I5XfTB+U
-         jBfjVe8riPBaxz7Y2O6PZfsKbYY+tA0FgaeA3+1lNgQBgd2itIcnyvhelVVJadTV6l
-         KcAVZB9GkQturMVO9O4zyJ3ssTRBQimmZRKB9Aj0=
+        b=LdGFg9geMnoq5vzNWAUIABACeDOJm2BnCDtfF3A8fmQ7mfdXyHnGA12G1gx4CEPGC
+         /nDHskoQs2yWhqDBRhtxPe1kJlmVSsXMPD8irbzHdZzF/aE5adcB0WnyLX2fSYJL5D
+         KA1pk7TkmTjdcDrqdf4uQKFdWQubYIxTnq/rtuY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 092/169] net: dsa: mt7530: correct ds->num_ports
-Date:   Mon, 25 Oct 2021 21:14:33 +0200
-Message-Id: <20211025191028.978360803@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 09/37] NIOS2: irqflags: rename a redefined register name
+Date:   Mon, 25 Oct 2021 21:14:34 +0200
+Message-Id: <20211025190930.076950108@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,54 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 342afce10d6f61c443c95e244f812d4766f73f53 upstream.
+[ Upstream commit 4cce60f15c04d69eff6ffc539ab09137dbe15070 ]
 
-Setting ds->num_ports to DSA_MAX_PORTS made DSA core allocate unnecessary
-dsa_port's and call mt7530_port_disable for non-existent ports.
+Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
+with the name "CTL_STATUS". Change the one in arch/nios2/ to be
+"CTL_FSTATUS" (flags status) to eliminate the build warning.
 
-Set it to MT7530_NUM_PORTS to fix that, and dsa_is_user_port check in
-port_enable/disable is no longer required.
+In file included from ../drivers/mmc/host/tmio_mmc.c:22:
+drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
+   31 | #define CTL_STATUS 0x1c
+arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
+   14 | #define CTL_STATUS      0
 
-Cc: stable@vger.kernel.org
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b31ebd8055ea ("nios2: Nios2 registers")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mt7530.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ arch/nios2/include/asm/irqflags.h  | 4 ++--
+ arch/nios2/include/asm/registers.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1031,9 +1031,6 @@ mt7530_port_enable(struct dsa_switch *ds
+diff --git a/arch/nios2/include/asm/irqflags.h b/arch/nios2/include/asm/irqflags.h
+index 75ab92e639f8..0338fcb88203 100644
+--- a/arch/nios2/include/asm/irqflags.h
++++ b/arch/nios2/include/asm/irqflags.h
+@@ -22,7 +22,7 @@
+ 
+ static inline unsigned long arch_local_save_flags(void)
  {
- 	struct mt7530_priv *priv = ds->priv;
+-	return RDCTL(CTL_STATUS);
++	return RDCTL(CTL_FSTATUS);
+ }
  
--	if (!dsa_is_user_port(ds, port))
--		return 0;
--
- 	mutex_lock(&priv->reg_mutex);
- 
- 	/* Allow the user port gets connected to the cpu port and also
-@@ -1056,9 +1053,6 @@ mt7530_port_disable(struct dsa_switch *d
+ /*
+@@ -31,7 +31,7 @@ static inline unsigned long arch_local_save_flags(void)
+  */
+ static inline void arch_local_irq_restore(unsigned long flags)
  {
- 	struct mt7530_priv *priv = ds->priv;
+-	WRCTL(CTL_STATUS, flags);
++	WRCTL(CTL_FSTATUS, flags);
+ }
  
--	if (!dsa_is_user_port(ds, port))
--		return;
--
- 	mutex_lock(&priv->reg_mutex);
+ static inline void arch_local_irq_disable(void)
+diff --git a/arch/nios2/include/asm/registers.h b/arch/nios2/include/asm/registers.h
+index 615bce19b546..33824f2ad1ab 100644
+--- a/arch/nios2/include/asm/registers.h
++++ b/arch/nios2/include/asm/registers.h
+@@ -24,7 +24,7 @@
+ #endif
  
- 	/* Clear up all port matrix which could be restored in the next
-@@ -3132,7 +3126,7 @@ mt7530_probe(struct mdio_device *mdiodev
- 		return -ENOMEM;
- 
- 	priv->ds->dev = &mdiodev->dev;
--	priv->ds->num_ports = DSA_MAX_PORTS;
-+	priv->ds->num_ports = MT7530_NUM_PORTS;
- 
- 	/* Use medatek,mcm property to distinguish hardware type that would
- 	 * casues a little bit differences on power-on sequence.
+ /* control register numbers */
+-#define CTL_STATUS	0
++#define CTL_FSTATUS	0
+ #define CTL_ESTATUS	1
+ #define CTL_BSTATUS	2
+ #define CTL_IENABLE	3
+-- 
+2.33.0
+
 
 
