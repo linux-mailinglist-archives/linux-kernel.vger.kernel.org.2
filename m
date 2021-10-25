@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A0943A0CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BEE439FF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbhJYTfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:35:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
+        id S234707AbhJYTZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:25:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234965AbhJYT3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8AD5610A5;
-        Mon, 25 Oct 2021 19:26:23 +0000 (UTC)
+        id S231723AbhJYTXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:23:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04CDA6103C;
+        Mon, 25 Oct 2021 19:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189984;
-        bh=AiXbNiXGsEZyhWQplUPaoiW7e7stZ2AC6lcd4VTOuWU=;
+        s=korg; t=1635189681;
+        bh=h3OshlrKzJ5LZMoAMLCu5XevmATvo6gO6WSAgy4xjgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A9fR2JYPfvEztnvZlqXs+cucxh6xoDpA/2ebVA0SwdN9naG0Bnr5LyuxFqvpmtFx2
-         MJAAnTHTU06/GYxM+DhT7S+KZRY8Ib3VBjhEUJU+o8QFVk6o5D+Sb9ztWbgVoYTpzm
-         CEuytQSkMZmacQKxfN/0dZ2SFImFY0ywou9HrlBg=
+        b=o/Obw4lo17yStG2hnkp9EcE1cfMG4+CJRxWz1+Sy4RRnw0/oBD+F1BCqcbOvRG714
+         c01MQTuSqBkwlz4ge4MSpxmUyNMlScVei4d2DCaDh0g7qvAqKmn3mK6hD3K/30GzS/
+         0bHtYHtdW8S0cqvuWB1RWSvpe/MCU7EXg1+ZO0wk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
         Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 07/58] NFSD: Keep existing listeners on portlist error
-Date:   Mon, 25 Oct 2021 21:14:24 +0200
-Message-Id: <20211025190938.786722888@linuxfoundation.org>
+Subject: [PATCH 4.14 05/30] NFSD: Keep existing listeners on portlist error
+Date:   Mon, 25 Oct 2021 21:14:25 +0200
+Message-Id: <20211025190924.259563061@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,10 +59,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index 8e03d6c25097..730386c130e0 100644
+index d44402241d9e..50465ee502c7 100644
 --- a/fs/nfsd/nfsctl.c
 +++ b/fs/nfsd/nfsctl.c
-@@ -792,7 +792,10 @@ out_close:
+@@ -788,7 +788,10 @@ out_close:
  		svc_xprt_put(xprt);
  	}
  out_err:
