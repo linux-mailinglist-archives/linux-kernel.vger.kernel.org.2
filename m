@@ -2,126 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007FE43982A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EC543982F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbhJYOM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:12:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54886 "EHLO mail.kernel.org"
+        id S233348AbhJYONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:13:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:32647 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233009AbhJYOMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:12:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A8B860F70;
-        Mon, 25 Oct 2021 14:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635171002;
-        bh=keekYHdYAWdyATEPVva/BLVQO6EKoTmmk3kBb7KadD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XBxJJmEPAXirY/tRVpXuJnIeh0slTyHNA95Ovi49PA5U63ohfmz3WuMZLCiyIc9n2
-         IaoxVT1evX8GtEwThTfwpaycwgwr9lo3SyMekZYko/T6kWJN8V7UdDHig+8qKnkNoq
-         NvA/6Nx4qGIvRfBzPaEpi5OlMuu/+inZXvjn3oTk=
-Date:   Mon, 25 Oct 2021 16:09:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Patrick Williams <patrick@stwcx.xyz>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Zev Weiss <zev@bewilderbeest.net>, kvm@vger.kernel.org,
+        id S230242AbhJYONV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 10:13:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216568867"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="216568867"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:10:59 -0700
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="485693067"
+Received: from yifanyao-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.171.31])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:10:53 -0700
+Date:   Mon, 25 Oct 2021 22:10:49 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Rajat Jain <rajatja@google.com>,
-        Jianxiong Gao <jxgao@google.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
- reserved devices
-Message-ID: <YXa6t/ifxZGGSCNj@kroah.com>
-References: <YXJ88eARBE3vU1aA@kroah.com>
- <YXLWMyleiTFDDZgm@heinlein>
- <YXPOSZPA41f+EUvM@kroah.com>
- <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
- <YXZLjTvGevAXcidW@kroah.com>
- <YXaYmie/CUHnixtX@heinlein>
- <YXap8V/jMM3Ksj7x@smile.fi.intel.com>
- <YXavBWTNYsufqj8u@heinlein>
- <YXayTeJiQvpRutU0@kroah.com>
- <YXa5AExKg+k0MmHV@heinlein>
+        Len Brown <lenb@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/4] efi: Introduce
+ EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
+Message-ID: <20211025141049.GA12458@chenyu5-mobl1>
+References: <cover.1635140590.git.yu.c.chen@intel.com>
+ <1cd3161bf51de99990fd5ee2dc896b4defef4f38.1635140590.git.yu.c.chen@intel.com>
+ <YXZSMCaODRPw0Zlj@kroah.com>
+ <20211025114519.GA7559@chenyu5-mobl1>
+ <YXac0IYICzIOmeRh@kroah.com>
+ <20211025124705.GA9212@chenyu5-mobl1>
+ <CAMj1kXG-L5D3WpGRg20xSuCUkqJrXGLJsffOPE4M1OrFcEf2eQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXa5AExKg+k0MmHV@heinlein>
+In-Reply-To: <CAMj1kXG-L5D3WpGRg20xSuCUkqJrXGLJsffOPE4M1OrFcEf2eQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 09:02:40AM -0500, Patrick Williams wrote:
-> On Mon, Oct 25, 2021 at 03:34:05PM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 25, 2021 at 08:20:05AM -0500, Patrick Williams wrote:
-> > > On Mon, Oct 25, 2021 at 03:58:25PM +0300, Andy Shevchenko wrote:
-> > > > On Mon, Oct 25, 2021 at 06:44:26AM -0500, Patrick Williams wrote:
-> > > > > On Mon, Oct 25, 2021 at 08:15:41AM +0200, Greg Kroah-Hartman wrote:
-> > > > > > On Mon, Oct 25, 2021 at 12:38:08AM -0500, Frank Rowand wrote:
-> > > > > > > On 10/23/21 3:56 AM, Greg Kroah-Hartman wrote:
-> > > > >  
-> > > > > > We have the bind/unbind ability today, from userspace, that can control
-> > > > > > this.  Why not just have Linux grab the device when it boots, and then
-> > > > > > when userspace wants to "give the device up", it writes to "unbind" in
-> > > > > > sysfs, and then when all is done, it writes to the "bind" file and then
-> > > > > > Linux takes back over.
-> > > > > > 
-> > > > > > Unless for some reason Linux should _not_ grab the device when booting,
-> > > > > > then things get messier, as we have seen in this thread.
-> > > > > 
-> > > > > This is probably more typical on a BMC than atypical.  The systems often require
-> > > > > the BMC (running Linux) to be able to reboot independently from the managed host
-> > > > > (running anything).  In the example Zev gave, the BMC rebooting would rip away
-> > > > > the BIOS chip from the running host.
-> > > > > 
-> > > > > The BMC almost always needs to come up in a "I don't know what could possibly be
-> > > > > going on in the system" state and re-discover where the system was left off.
-> > > > 
-> > > > Isn't it an architectural issue then?
-> > > 
-> > > I'm not sure what "it" you are referring to here.
-> > > 
-> > > I was trying to explain why starting in "bind" state is not a good idea for a
-> > > BMC in most of these cases where we want to be able to dynamically add a device.
-> > 
-> > I think "it" is "something needs to be the moderator between the two
-> > operating systems".  What is the external entity that handles the
-> > switching between the two?
+On Mon, Oct 25, 2021 at 03:11:57PM +0200, Ard Biesheuvel wrote:
+> On Mon, 25 Oct 2021 at 14:47, Chen Yu <yu.c.chen@intel.com> wrote:
+> >
+> > On Mon, Oct 25, 2021 at 02:02:24PM +0200, Greg Kroah-Hartman wrote:
+> > > On Mon, Oct 25, 2021 at 07:45:19PM +0800, Chen Yu wrote:
+> > > > On Mon, Oct 25, 2021 at 08:44:00AM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Mon, Oct 25, 2021 at 02:25:04PM +0800, Chen Yu wrote:
+> > > > > > Platform Firmware Runtime Update image starts with UEFI headers, and the
+> > > > > > headers are defined in UEFI specification, but some of them have not been
+> > > > > > defined in the kernel yet.
+> > > > > >
+> > > > > > For example, the header layout of a capsule file looks like this:
+> > > > > >
+> > > > > > EFI_CAPSULE_HEADER
+> > > > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+> > > > > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
+> > > > > >
+> > > > > > These structures would be used by the Platform Firmware Runtime Update
+> > > > > > driver to parse the format of capsule file to verify if the corresponding
+> > > > > > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
+> > > > > > kernel, however the rest are not, thus introduce corresponding UEFI
+> > > > > > structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > > > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
+> > > > > > so the corresponding data types should be packed.
+> > > > > >
+> > > > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > > > > ---
+> > > > > > v6: No change since v5.
+> > > > > > v5: No change since v4.
+> > > > > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
+> > > > > > ---
+> > > > > >  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
+> > > > > >  1 file changed, 50 insertions(+)
+> > > > > >
+> > > > > > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > > > > > index 6b5d36babfcc..19ff834e1388 100644
+> > > > > > --- a/include/linux/efi.h
+> > > > > > +++ b/include/linux/efi.h
+> > > > > > @@ -148,6 +148,56 @@ typedef struct {
+> > > > > >         u32 imagesize;
+> > > > > >  } efi_capsule_header_t;
+> > > > > >
+> > > > > > +#pragma pack(1)
+> > > > >
+> > > > > Why is this pragma suddenly needed now in this file?
+> > > > >
+> > > > > If you really need this for a specific structure, use the "__packed"
+> > > > > attribute please.
+> > > > >
+> > > > These two structures are required to be packed in the uefi spec, I'll change
+> > > > them to "__packed".
+> > >
+> > > And they are the _only_ ones in this .h file that require this?  I would
+> > > think that they all require this.
+> > >
+> > I did a search in the uefi specification, and found 42 pack(1) structures,
+> > while the other structures do not have pack(1) attribute.
+> >
+> > It seems to me that whether the structures are required to be strictly packed
+> > depends on the use case. Here's my understanding and I might be wrong: In this
+> > patch, according to the skeleton of capsule file described in
+> > [Figure 23-6 Firmware Management and Firmware Image Management headers]
+> > in the uefi spec [1], the two structures are located at the beginning of
+> > the capsule file, and followed by real payload. If these structure are packed
+> > then the the adjacent binary payload could start on byte boundary without
+> > padding, which might save space for capsule file.
+> >
 > 
-> Ah, ok.
+> Packing only affects internal padding, and a struct's size is never
+> padded to be a multiple of its alignment (which equals the largest
+> alignment of all its members). This of course assumes that you don't
+> abuse array indexing as a sizeof() operator.
 > 
-> Those usually end up being system / device specific.  In the case of the BIOS
-> flash, most designs I've seen use a SPI mux between the BMC and the host
-> processor or IO hub (PCH on Xeons).  The BMC has a GPIO to control the mux.
+> However, the __packed attribute does indicate to the compiler that the
+> entire thing can appear misaligned in memory. So if one follows the
+> other in the capsule header, the __packed attribute may be appropriate
+> to ensure that the second one is not accessed using misaligned loads
+> and stores.
 > 
-> As far as state, the BMC on start-up will go through a set of discovery code to
-> figure out where it left the system prior to getting reset.  That involves
-> looking at the power subsystem and usually doing some kind of query to the host
-> to see if it is alive.  These queries are mostly system / host-processor design
-> specific.  I've seen anything from an IPMI/IPMB message alert from the BMC to
-> the BIOS to ask "are you alive" to reading host processor state over JTAG to
-> figure out if the processors are "making progress".
+> And then there is of course the ambiguity in alignment of uint64_t on
+> x86, which could be either 4 or 8 bytes depending on the context (and
+> UEFI targets all of them). So __packed may be used to disambiguate
+> between those if a uint64_t field appears on a boundary whose offset %
+> 8 == 4.
+> 
+> So please use __packed rather than the pragma(), and apply it wherever
+> it is applied in the spec.
+>
+Thanks for the explaination in detail! Ard. Will do in next version.
 
-But which processor is "in control" here over the hardware?  What method
-is used to pass the device from one CPU to another from a logical point
-of view?  Sounds like it is another driver that needs to handle all of
-this, so why not have that be the one that adds/removes the devices
-under control here?
-
-thanks,
-
-greg k-h
+Thanks,
+Chenyu 
