@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26228439AD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3377439ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhJYPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhJYPx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:53:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010CAC061745;
-        Mon, 25 Oct 2021 08:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sD4M77sMZipbi4n7OfMHOpvymBF2RK3PbnXf7BuorEc=; b=D/mocSywZnf9DStUX7jAO45bDE
-        jXrbxJA9a+bFmDHYuO12zo2sZzZKenpvaiEMWVzuTvIY0Rm57D1ERraYjLWtrOT2hWnRVKXN6y1EY
-        6SLUmOlCksFsDoErVjp3PEQ3TsJMkMgixCSTFferPs8k7vP3DT7dovCpirZpBYkB05U39AAMdTshZ
-        sgmgOr0MctOsL62vIk5oE0OyePZ2tSTJ9YdiLqu8Fy5HRgNHuWwF8HxpngFeg0qm1QDoGs5kHa9qM
-        9qqmRtmnUDeHr5O6AUEgrHc85e3EMfJf+j0q7xYxo6A7pcPNp0mVaT2X13rNso1vZr7CX8jt7atLO
-        uMa3toqA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mf2FR-00GvIH-8r; Mon, 25 Oct 2021 15:50:53 +0000
-Date:   Mon, 25 Oct 2021 08:50:53 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
-        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
-        david.brown@linaro.org, bjorn.andersson@linaro.org,
-        linux-wireless@vger.kernel.org, keescook@chromium.org,
-        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
-        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
-        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
-        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
-        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
-        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
-        andresx7@gmail.com, brendanhiggins@google.com, yzaikin@google.com,
-        sfr@canb.auug.org.au, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] firmware_loader: rename EXTRA_FIRMWARE and
- EXTRA_FIRMWARE_DIR
-Message-ID: <YXbSXSGO3uK7W3IO@bombadil.infradead.org>
-References: <20211022174041.2776969-1-mcgrof@kernel.org>
- <20211022174041.2776969-2-mcgrof@kernel.org>
- <YXOvGX1O69s0Qaoe@kroah.com>
+        id S233301AbhJYPxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:53:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232711AbhJYPxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:53:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 528E260184;
+        Mon, 25 Oct 2021 15:51:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635177087;
+        bh=HxdPjBPnGIttkaa3TypuRSPZtcG6/Elr6j35miiBv0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p/rfnLtAj+aDZSBD1rToQvk7RUgp+D3YaJn3fhiBkTlqO5gGOO2z0EhV4ADY30z6C
+         pRx6Pb4ovHkC2xRtg5bT6+rAABaKfDE6rxwXe2jEnMG9QBUyEjopT1s6E4J3i7xpWj
+         BLcIsJa+IhraWkjOrX8OcFwCanpkiY/Uql9DeZbQ=
+Date:   Mon, 25 Oct 2021 17:51:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Johan Hovold <johan@kernel.org>, cocci@inria.fr,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        linux-staging@lists.linux.dev, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: rtl8192u: fix control-message timeouts
+Message-ID: <YXbSfYIuyj3PI6pm@kroah.com>
+References: <20211025120910.6339-1-johan@kernel.org>
+ <20211025120910.6339-2-johan@kernel.org>
+ <fdb677be-6e06-fef9-811d-bb2c71246197@lwfinger.net>
+ <094a8f50ccef81e0317c89d0a605c327c825d5cb.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXOvGX1O69s0Qaoe@kroah.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <094a8f50ccef81e0317c89d0a605c327c825d5cb.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 23, 2021 at 08:43:37AM +0200, Greg KH wrote:
-> On Fri, Oct 22, 2021 at 10:40:38AM -0700, Luis Chamberlain wrote:
-> > Now that we've tied loose ends on the built-in firmware API,
-> > rename the kconfig symbols for it to reflect more that they are
-> > associated to the firmware_loader and to make it easier to
-> > understand what they are for.
-> > 
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+On Mon, Oct 25, 2021 at 08:41:36AM -0700, Joe Perches wrote:
+> On Mon, 2021-10-25 at 10:06 -0500, Larry Finger wrote:
+> > On 10/25/21 07:09, Johan Hovold wrote:
+> > > USB control-message timeouts are specified in milliseconds and should
+> > > specifically not vary with CONFIG_HZ.
 > 
-> This patch has the same bug I pointed out the last time I reviewed it :(
+> There appears to be more than a few of these in the kernel.
+> 
+> $ cat usb_hz.cocci
+> @@
+> expression e;
+> @@
+> * usb_control_msg(..., HZ * e)
+> 
+> @@
+> expression e;
+> @@
+> * usb_control_msg(..., HZ / e)
+> 
+> @@
+> @@
+> * usb_control_msg(..., HZ)
+> 
+> $ spatch --very-quiet -U 0 -sp-file usb_hz.cocci .
+> warning: line 4: should HZ be a metavariable?
+> warning: line 9: should HZ be a metavariable?
+> warning: line 13: should HZ be a metavariable?
+> 50 files match
 
-Sorry I missed it, but I checked and I can't see where, can you point
-that out in the patch?
+Look at the lists, he's sent a bunch of fixes for this today to all the
+subsystems...
 
-  Luis
+greg k-h
