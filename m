@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2311439F34
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082D8439F82
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhJYTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35724 "EHLO mail.kernel.org"
+        id S234478AbhJYTVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234123AbhJYTSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:18:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D9FD60FE8;
-        Mon, 25 Oct 2021 19:15:40 +0000 (UTC)
+        id S234182AbhJYTUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08CBD610C8;
+        Mon, 25 Oct 2021 19:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189342;
-        bh=gNRHkcxNAhkS63JpCBusgv0NtAF1h969xehizz1tV6U=;
+        s=korg; t=1635189477;
+        bh=T6sqSzknxN+29LWj2D1Fygfur49sOyVzp9bbeAszR4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QuSsKuEUBVqv+7v72/CaRxcDMPlceRUnPwT5zneRidGy0HJs3xwItHuTcg2YUVc8/
-         2ysIt8oJY37XQr5FaoQIoi+N3B419Wu4UEdnOQhnFCenobriwlU61pfuw1bOAhpY3S
-         zCzX0o9oWK4yuca6caBqKIZCVv+OsSk16hdQfbZo=
+        b=QpoqM3XAHFPydkUuOzpKQjtksdh3C8ajiMl7cX/doJL5ipfhuJ8cT+aZqbp03xjpB
+         Mb1P1RRswCyof6i2Vbg5iPA5eXlOczGkjSQJnKL6BQuKcMc+BHagGcgJyzLekcGX+b
+         8yyizTNsNWPV626UpaSi2wAg8zcyJREq2rMXhzEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 11/44] iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 4.9 05/50] efi/cper: use stack buffer for error record decoding
 Date:   Mon, 25 Oct 2021 21:13:52 +0200
-Message-Id: <20211025190930.935892826@linuxfoundation.org>
+Message-Id: <20211025190933.809492444@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 8167c9a375ccceed19048ad9d68cb2d02ed276e0 upstream.
+commit b3a72ca80351917cc23f9e24c35f3c3979d3c121 upstream.
 
-The "idx" is validated at the start of the loop but it gets incremented
-during the iteration so it needs to be checked again.
+Joe reports that using a statically allocated buffer for converting CPER
+error records into human readable text is probably a bad idea. Even
+though we are not aware of any actual issues, a stack buffer is clearly
+a better choice here anyway, so let's move the buffer into the stack
+frames of the two functions that refer to it.
 
-Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210909091336.GA26312@kili
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: <stable@vger.kernel.org>
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/common/ssp_sensors/ssp_spi.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/firmware/efi/cper.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/common/ssp_sensors/ssp_spi.c
-+++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
-@@ -286,6 +286,8 @@ static int ssp_parse_dataframe(struct ss
- 	for (idx = 0; idx < len;) {
- 		switch (dataframe[idx++]) {
- 		case SSP_MSG2AP_INST_BYPASS_DATA:
-+			if (idx >= len)
-+				return -EPROTO;
- 			sd = dataframe[idx++];
- 			if (sd < 0 || sd >= SSP_SENSOR_MAX) {
- 				dev_err(SSP_DEV,
-@@ -295,10 +297,13 @@ static int ssp_parse_dataframe(struct ss
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -35,8 +35,6 @@
  
- 			if (indio_devs[sd]) {
- 				spd = iio_priv(indio_devs[sd]);
--				if (spd->process_data)
-+				if (spd->process_data) {
-+					if (idx >= len)
-+						return -EPROTO;
- 					spd->process_data(indio_devs[sd],
- 							  &dataframe[idx],
- 							  data->timestamp);
-+				}
- 			} else {
- 				dev_err(SSP_DEV, "no client for frame\n");
- 			}
-@@ -306,6 +311,8 @@ static int ssp_parse_dataframe(struct ss
- 			idx += ssp_offset_map[sd];
- 			break;
- 		case SSP_MSG2AP_INST_DEBUG_DATA:
-+			if (idx >= len)
-+				return -EPROTO;
- 			sd = ssp_print_mcu_debug(dataframe, &idx, len);
- 			if (sd) {
- 				dev_err(SSP_DEV,
+ #define INDENT_SP	" "
+ 
+-static char rcd_decode_str[CPER_REC_LEN];
+-
+ /*
+  * CPER record ID need to be unique even after reboot, because record
+  * ID is used as index for ERST storage, while CPER records from
+@@ -293,6 +291,7 @@ const char *cper_mem_err_unpack(struct t
+ 				struct cper_mem_err_compact *cmem)
+ {
+ 	const char *ret = trace_seq_buffer_ptr(p);
++	char rcd_decode_str[CPER_REC_LEN];
+ 
+ 	if (cper_mem_err_location(cmem, rcd_decode_str))
+ 		trace_seq_printf(p, "%s", rcd_decode_str);
+@@ -307,6 +306,7 @@ static void cper_print_mem(const char *p
+ 	int len)
+ {
+ 	struct cper_mem_err_compact cmem;
++	char rcd_decode_str[CPER_REC_LEN];
+ 
+ 	/* Don't trust UEFI 2.1/2.2 structure with bad validation bits */
+ 	if (len == sizeof(struct cper_sec_mem_err_old) &&
 
 
