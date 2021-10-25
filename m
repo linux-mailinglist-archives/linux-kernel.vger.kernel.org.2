@@ -2,200 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FA743A3AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE1A43A3C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237566AbhJYUB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:01:59 -0400
-Received: from mail-mw2nam10on2129.outbound.protection.outlook.com ([40.107.94.129]:6336
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S239215AbhJYUDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:03:00 -0400
+Received: from mail-dm6nam08on2081.outbound.protection.outlook.com ([40.107.102.81]:37280
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239785AbhJYT6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:58:00 -0400
+        id S240376AbhJYUAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 16:00:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Arse1DgweE349Ot9JNcYthxmhOVhKf2HHp99WuSxiO6Qv1SaAEhFv5+W1IeTDGRjy2DHPnRAIYueIYGgO3/kEmsfj1+PuqXGvJxy8nkepYk4hL4cdVhT21xye76r3hWRJNlxjmwb0XXb3HOCM0ORsa9u59QiuxwNF0Lm44RSpSXuf0CtEp8Tv3FUBBIi06WcmA+ApIUwURA47z6N3kz9MYztsUb0B1wHHSMXS40LJSFLBtTqpBFr5QjJ7lFkU3aUmUG3TksfuXkP447K2R+FpmH7TSjH9Hs/pSrpiRcYrgrQXvfk6NxPlDHh43PQoGoc8tr8/tIw4zALiTRYc6fJ3A==
+ b=L8bSYcsd7Qo6UsKw115nybQPPq+pAmmUQdBkBR1cRtVKNB6h+zfcupB8F5Kj0Sunpiwo1L1PoaTRCLlKL6oiDvU0va1zBPuFV+3MMXlR0Q21nodrfD0uDd8jwi9z/4OyrPCzEwFNKDyUCinpjuSq/AEkekESPfC+D69eq1S10+BHPHxSUw6Z0v7NWvBCVZ7KocuE4w686AdCGcZDg1UtfeeXC97B4/JDq2PaDuz5SLfHEBUI6AVAvsWX+HejGe4YSjeT6Jx1dVGGkSZQuRNM/hlEAAfQ0P6iRz81AOJ+Kk0xZNtbPdz/NE50lZmrqaA3sgda1STk4LhoeddqD4Vh6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FAN3lEM/3JLlWJJys7jGedhB5r+4OhZKUnRnzy6p4hQ=;
- b=n+RoYpVticEF2dUpkD8CnmnAlK4Q7KsJcRdc6nCGCTOuownNk/34uuzeaGnetqfPYnms9klt4C3pkGo6OcgHRw6+QV7cwx6r1hVKwaDHPNqXjnAnG7C5kBRNBXsefYkNDl7sEwPlsvP9rq9eaAtLaNUUpIEM8Av4o5io7lo0HYDPlIE1xaAgWoowB99czRFa5AXWhikImJmVc+S977UHRVSTr/WW3pS+pnopN8aNhb6H/6dVLFYRasW63/JkqbIUObCsa25P/SCue4RARhlt8vdFHpuOGKCi+VnukqP/SVkFztfejBUHwrFq40xO3KiU+nE9sgCBZ87DzyVOZnUaQA==
+ bh=BTZTJMclb0pindFbg00B7B+0dLIlzolAELEO/enFvgw=;
+ b=caWROYrIdxn8GOlV0JWwtnr8SEf/ukVBZB/LRfee9WSwmZbFrvZlJfnbx48Phhh6JpNkYzXPtGlgt998/JlFUIgC4G61uE/gD0FGwMw1gRAI2awSYwGFnrdfkIuish8/8o8vDepwSDhT3G6B6watimwF3ZdYWJFgcO3KAoHi8zTpt6yNKq4PRCePqgdYDiAv6r47jOt/NC7a+4y1W5Ap59KCszQCilRsxDp6FGZcy+0tTC8gpJaXiC5DRJ1pt2gfvPKczyJKZP7icXedXrD2pfBE71ekFjWpbpUopYw1WK6AyM9bNw3WlSDnv8E3qxizA80lsL6Dk50zuPMvsR5geg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FAN3lEM/3JLlWJJys7jGedhB5r+4OhZKUnRnzy6p4hQ=;
- b=gwZ1i/R3PIeBQzxl8eQn0tITPge/p5cIeboioqNEKQ6h88eGWt4XzUQjtB2o+asAd4eUg2ndeLZGQOkp+P5UdvYA4Q0BpWVUL0HFf4LkSYn0KH5flZ37xq5mzBxbZ5QIXUYwSlJFf7uzLW+7Oz2vBLkGHWmkfVqmUtWzW44TElg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com (2603:10b6:5:22d::11)
- by DM5PR21MB1798.namprd21.prod.outlook.com (2603:10b6:4:a4::20) with
+ bh=BTZTJMclb0pindFbg00B7B+0dLIlzolAELEO/enFvgw=;
+ b=Vf+UaIdzFbvRJKtr2QwSq6swoQe3aQFvtHUkvCExLSTnYdgT9MxuoGzouyxT6ioVorfFItp/72XEbFdeUz2mXuCCdn/kkD9G1wjUPM1421SI4+FIOlsouEDZvaasPBfyue4vjIn6w+ICb7y1k+n+ULSdkgPxtxhvDL5ZbUmtKEJg91o2bQ9d0haBAcoZjOBHKAURnt/DPYSz/0+FOrwCkDAa+w7OdAdQg0uvaU/rkE5WCIrH7XTHneMxjUxvpr9RYdXM5lu/dSQsxtk2pJYf0N3jLsYW6tYW7s67ykJm5MYUMhB7ea68gvL4cHr6M5yI0oncRjHpYdavUzjerFTdqg==
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by BY5PR12MB3859.namprd12.prod.outlook.com (2603:10b6:a03:1a8::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.4; Mon, 25 Oct
- 2021 19:55:32 +0000
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::16:1eab:4134:bbfc]) by DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::16:1eab:4134:bbfc%3]) with mapi id 15.20.4649.012; Mon, 25 Oct 2021
- 19:55:32 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Cc:     mikelley@microsoft.com
-Subject: [PATCH 1/1] Drivers: hv: vmbus: Remove unused code to check for subchannels
-Date:   Mon, 25 Oct 2021 12:54:34 -0700
-Message-Id: <1635191674-34407-1-git-send-email-mikelley@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0143.namprd04.prod.outlook.com
- (2603:10b6:303:84::28) To DM6PR21MB1514.namprd21.prod.outlook.com
- (2603:10b6:5:22d::11)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
+ 2021 19:58:00 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b9dc:e444:3941:e034]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b9dc:e444:3941:e034%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 19:58:00 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Tariq Toukan <tariqt@nvidia.com>,
+        "arnd@kernel.org" <arnd@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Moosa Baransi <moosab@nvidia.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Meir Lichtinger <meirl@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "moyufeng@huawei.com" <moyufeng@huawei.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5i: avoid unused function warning for
+ mlx5i_flow_type_mask
+Thread-Topic: [PATCH net-next] net/mlx5i: avoid unused function warning for
+ mlx5i_flow_type_mask
+Thread-Index: AQHXxxCnQ3VftzWDEUer7hjtcyQX/avkJxaA
+Date:   Mon, 25 Oct 2021 19:58:00 +0000
+Message-ID: <4b739b07711c5cb29664a288b8d8a2693d7abf9d.camel@nvidia.com>
+References: <20211022064710.4158669-1-arnd@kernel.org>
+In-Reply-To: <20211022064710.4158669-1-arnd@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 56a30908-dd46-46d4-45e6-08d997f1bfb2
+x-ms-traffictypediagnostic: BY5PR12MB3859:
+x-microsoft-antispam-prvs: <BY5PR12MB385941B2D0564216F455BCB5B3839@BY5PR12MB3859.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5AaZZyhcVN10Vuvi+6FZnWfIu3+W9I6+cHmu7ipjSrZkbVhVRlF4jxLJz5G4SmWD59a8YPeaHd3/LupJFv0ARA9awO/vvtZjUjlS9MIrtu3E4M4B7XMkF8InXBjdJJu2nUkvU9+gIe4yLSdLIWxyuyvKwQgWGvorbBvNjM/1HKPwAUiimk47/bwWBZk+MDL8mF4Ou09UXUcZJ0puCmUYDGMvO7AlDrSm0KjRbr39lPnvXB8Qt3YsCLqO+sc8DkBtmaU/orVdFsgHd8oNtU+lSgwQRhXNq/In7LV7tzdeI2PnRzD/4/+CDtf/oNdwX1GQCJH/q3UNHXBphKDTsUFsTF2SroSqT8xdXXJ/P6UZQBZ0XbEsTsc1ij6l6ddpK/o1P4/FnKP+ioN9id8Ge9Pg4iNaPsU2l8cZYmXbR+dGnCz8rnLKQV9DZnaWEKMEcN+Mm/gUAd7tp4UkCwB/KXntMXq4QXkhZXwmrq63F+AedWpsfPWJA/aadJpm97+uFRgk4E3ogOAUwwGpr/UXGo7jzh4SwoExFwtlQhy3qe4xJA9K/ShnQrhsPt/WU7B/dSBLzHeIBXKZYIFp+e95XekjJsKa3EJ0pFrwcJQlUdyt9sPakN3pHvjz8UF86CSzg0wQFEzahmIscDP3i1zK5huAT2z7FMg8sXHgw+alQx9EunG6cCnO+eLnxdBC8U40JCTqC9o/gKf5g44H2a8z3RG5hg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(316002)(66556008)(4744005)(6512007)(38100700002)(6506007)(110136005)(122000001)(66946007)(66446008)(6636002)(54906003)(86362001)(2906002)(64756008)(8676002)(8936002)(2616005)(71200400001)(508600001)(38070700005)(36756003)(26005)(6486002)(5660300002)(186003)(4326008)(66476007)(4001150100001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y0xLd2lUa25lbVlVamdlUXVWbVg2R1hZMVRyUzR1ZHpqZ3IwWnAvTGJYbWxF?=
+ =?utf-8?B?K1FPMWlwRWtWOUVqeUNOREg3VFdrV3RSTk1yQUQ3eWtlYndWQmUybXFwOUpi?=
+ =?utf-8?B?dUpVaUo4UlRYUkRaU05CL3RFc0FvSTh1Tm5WTnpBTWZNazYzU2p5T05wRFJt?=
+ =?utf-8?B?MkJ0RVladTRRRSsrckNHUEhQVHhCU2E0Z2NNNVRSQ0JIdC9TTHRZTzRlMWx2?=
+ =?utf-8?B?L0xaamdGQ1B0L0YwWmsxU1RGdW5UUERoNm8venRuNGZ3MWZiK0xHTDNXQXYr?=
+ =?utf-8?B?MnVoNytZOGZRbmZxamprb2NRWTJYT2w3SkVkMU5Wd2ZvVmJPNW5OeTZRM3N0?=
+ =?utf-8?B?SitmTWpWL1lkeXZEMUFpVU85RHJpSzM3UVdYOVUwREs3MkhHYmYxYUUxSDdE?=
+ =?utf-8?B?RlQySVhnQWtESGJlYTJyWENFY0ViTGk0Z0dpZS9rZmlGN3RPYkt2MDF6VlJv?=
+ =?utf-8?B?dU1wVytTZUJFU1VocjZVdmVUaTR5bjBNVTFqczhQRjU2Z2xOVGFjYVY2ODNr?=
+ =?utf-8?B?QjVWZWMzR0ErUDVCVm4wWGxQdWtocXJZdUFLdHYzZkdYK2t5bEdFQkk1YXBk?=
+ =?utf-8?B?WWJpK1BRWFJ4amx3bHBBQk1iRkNpekR3enUxTEEzTmpZNDQzS0E0WDNuSkMw?=
+ =?utf-8?B?QmtsMzE2M0kvODlxY3REUzl4TW1IZW9TZExXVFNwWkhvNWhLM0pQUW1NNnJh?=
+ =?utf-8?B?cnVUZWYzTHpYNkpuaGFRY3BPYTE1NlkzODU1R2V2MDNhV1VQS1VYTFh4bi9q?=
+ =?utf-8?B?eGdzWWdoR3ptWExzblRTNEVzdnJwMmhib1J2UTdZZFNMV2U0NHlNQ3h5Ky9r?=
+ =?utf-8?B?bWpzL1psT0llZ08xV3BWTmVmOHU1RGU1V0FlVTRQT1o4UjA0bWRla0hkZmpN?=
+ =?utf-8?B?cFpOM1NBSHlqQVRiSWFjazYvYjJMTkpiR0hpelV5Uis0MUE5NFVLazVQZXk5?=
+ =?utf-8?B?cGFPTVgyNk41R3VFZDUxQ09DMkthQzhpMEgzVGdGU1B5OG9jb2NYcjQzUmpY?=
+ =?utf-8?B?NXg2eDRUSXE4MCtXSFlDYWJjeDFGa2JoNGgxc0N0bmlPSG1NK0RlZUhGYjN1?=
+ =?utf-8?B?bmxrRGk0UkNiYjRlRUtFZ1hWc1IzK09vdnhRUElxc2ZyeGlEWC84a3lkR2dq?=
+ =?utf-8?B?ZnNQemovanprNnprZEFGTGJsWWFiRDVndTZyU0FoNkViQVZkMXltOWQrNU5s?=
+ =?utf-8?B?NmNhcWMzczR4TGdWQ2h3VUp3ZkYrSENMYzR4aFBVZ0FyM2RvS0FkVjd2M2oz?=
+ =?utf-8?B?cWg2NmZESzZsU3M5YmFjM3FmWlM5ZXNENVNOSU03T0tiOWFKdklGVWttN0Vj?=
+ =?utf-8?B?Z3J5VTMydWVpWG5QdEU1RWttMUxyQ0tIcUtZTjNUa1JDRmdGR0Y4WTdMaXpF?=
+ =?utf-8?B?Rm10N1I5ekU0M3JBYXlHZ0E3b0pscUxWc2drMlprOW5mYTY5OEx2d2NtUmFl?=
+ =?utf-8?B?eUdwZUFoeDdyOVZmMTVxVW0rRVVOd2dUQWhZZ1pRUDlRNUp2T21BS1NIZDVr?=
+ =?utf-8?B?cXByMGJKQ3Q5VXpVSDRubmV1d2pieFNYOHRZZzJqMGN3WEVpVnY0MnB3enlH?=
+ =?utf-8?B?MHlSUXpYSmtNT29EZGNHZFpKV2RLOHloOVlzempQYjQyaVhXeTRudkZ3dzEv?=
+ =?utf-8?B?RDlOOVdPazFINnpkVWtQcmczQTk1S1pVQ1hDOVJZWmJpbk1LVmx2eHNCbGJ2?=
+ =?utf-8?B?WTNKUyt0Tk11Q3d2YTE2bW9kcjl5MkN6TzJleGwreGN2aFBhc0x0aVBLbG8z?=
+ =?utf-8?B?eXZkQmdta0JoaEh2MXJYSmNlVkR4azU4V1FTYW1sOHBFWFZmWHhZV2VGTTFB?=
+ =?utf-8?B?T0RLZ2JYWHFmdzBBZmxwazJYV1lUcFMvUDFqVmFnRGdVWnYxRmFtTjZTOTRl?=
+ =?utf-8?B?MHF6MEdORENrbDZmRWpEQnd1YUwyWXFRc1pCb09wNzVndlptY2tTL3RRRVRE?=
+ =?utf-8?B?ZTFSUzdGLzlWZnk4QUI2MjVPbnBHZjNjMW5rdkpudklIZVJWZjBtYUJBKzRG?=
+ =?utf-8?B?UlhrUnF0cjFTeEdIMjB5RElUUk1XUWREWHlTc0xEa2xBV3FUb3EwdGtudmRD?=
+ =?utf-8?B?eUV4MC9UaStIZTYvanp0c3kzQkdZTmtSVWZaNXB0V2dFT3hrQ0xSMHNGaTFw?=
+ =?utf-8?B?aHgxb3c4NFd3YmZ5RXZrR3dZVVJDNXVSREtHYStRZkE2MlJUSjl2eStFL2lo?=
+ =?utf-8?Q?ydelvzKqq2bjLfl0NEBQgcY=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F4C02AF46C744148BEAB1911A5DD4D81@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mhkdev.corp.microsoft.com (131.107.160.16) by MW4PR04CA0143.namprd04.prod.outlook.com (2603:10b6:303:84::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Mon, 25 Oct 2021 19:55:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c99d5c3e-6fcb-41ab-8184-08d997f166e5
-X-MS-TrafficTypeDiagnostic: DM5PR21MB1798:
-X-Microsoft-Antispam-PRVS: <DM5PR21MB1798B9B454D07CDD9600E4B0D7839@DM5PR21MB1798.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QdM82BvPZvV+lYVrAQYVeSscgLlOs0xKcetHp9InBPFoqWPB+GXunZmbXX9XqlgkQhOCe9uL7rghG0Ihd8zx/2xkCOkSakXOWCznZrYTGA3GUVhFXkKG0FayGrM5TALKI8Oq01+gin8v9/tuhZTylgWqM8c7EswXLKbMWEbOOVVXBVgwT5ZsBC4VeFNTqEvh8tn5OnYGKhL2e4xpYF7LIdQ0qEGEJDs9CMlBe7frU7h+uMAf8+iuW36Waa5bapOgs9lzf6QHrhgaWuzG8jWvSDtIokwMUSVvN1Ehnng/xZboU+jyGGpdwx041ApcxUEkDQPmmlJECflwclqzMc/Db5wBoz1eLoqktIz2DLVCZyqcZh08mZTDYH95lF/yVIZA99nWy0v3D0SyRqxV5Qtv6rN7RPAFSk+Im3yKxwvH6EpNFlca5fQBFUDvORL2V9ZxrOXNDRF3byAFvtuH8QncntpB9ZdZCMaLcRmIfG4HNcJU08hnqRsOHQDOsYfudQuSdBeQT62Yxtfno04SMfIcix4M93CxNl9eYsjqx/T7X2iynW4oPr+gt5aQR0kIkUVgpy/+V99BHFv49GhqYjDoTL3ngtvMjeyghVjzasIkImGrOMK7BRhScAh8JQrgcXuss7u8c6k7nnaFabuFKoALuimiKXl3xQwONOIei2qG7A1VFfl/QXLy1dm1yUcX964l/gx0ohynKdx31gXqjgAZtw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1514.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(66556008)(10290500003)(26005)(316002)(52116002)(107886003)(7696005)(82950400001)(83380400001)(86362001)(38100700002)(5660300002)(508600001)(4326008)(8676002)(38350700002)(2906002)(66946007)(66476007)(8936002)(2616005)(956004)(186003)(82960400001)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sQd/voAkp4aZmV6PbK8FwePCKtRZ+knqTaul5Mwrcx20TreHwRPV+Qn3jlwu?=
- =?us-ascii?Q?dtAjiX2ZfPM7agYJr+1ISQSG95/5Sd3LbxqySvrQmu7lOHTJ/3TrQItIgDsP?=
- =?us-ascii?Q?US4auR2xQ85vOMxFs8ZOP+tG4e7PGS3yIL16DvzBfY0iewokD1SZN0sDk1I8?=
- =?us-ascii?Q?Mx/bLvVvX9igEa0YExLKvG/c9XnLEpYqSgQHu9i3c1PbLLOVLOBR0gauV7GM?=
- =?us-ascii?Q?SRkjsGAWUPnVTqlEQmwQrrZcIH3LCf8a1NWP6UbsN0TJ+KB9yczeWvukWIMf?=
- =?us-ascii?Q?ljj/t2Y8CsE+Dmzbo07Z0MkKxTygQpYlReOSoWE4VZumHVnwWKcCQi1UJQ8s?=
- =?us-ascii?Q?SCcPxcP+6N4cFbgH0l5kJrF4Eojgxa8MGQGjGCf3SpmAxviCLtlemOL0pRXY?=
- =?us-ascii?Q?WzSky02BWnzmQHkuRlBzZ1vsn7fRWXVJycPpOBbDM53Dl48ZaehEETt6lqf7?=
- =?us-ascii?Q?Ogf14sjlood0kk9O+ZGI9BnEjSm4n3PSjrfFo8N4VuK7yP4tRbyNijBe8qDP?=
- =?us-ascii?Q?CW/YvDAR+CUzthjZ70l8ZCa+xYmdpWcJVGcBIq0ZvU6e69g5wjufKluPkiEr?=
- =?us-ascii?Q?TqcvC0m1Q4tp/8vOvkhoX9c76qEmxKU153zSBje/YHYnjUb9FcCyHjJd3lCr?=
- =?us-ascii?Q?RVrXrNz1Z9TgHjxczeeXPI1lqMo+94yLaOwL53bd7FrL6UkkeOGX1sKii8LV?=
- =?us-ascii?Q?wboAGnUU/CudNoH3hKM5IQ8OFcqaCSIh6sKkusLpi156p9+0jwDxDPHQMKEo?=
- =?us-ascii?Q?yzifSnDaIzJoR6/CFW9zsvfOpWvfhMdI1SiedsG47kZvboDTx5Jl75nLmwGw?=
- =?us-ascii?Q?w3vSNCCCkzbb6Ha1uOVpOshFbwFEsKfd6YdESEYZExHWlGI54WX8pbSe2YBM?=
- =?us-ascii?Q?ccUb6CF6EzgJTwgK2R8Zu5zMQLBMLo5ptOEbjYoSbZs4MKk+I83Be2xrhi2m?=
- =?us-ascii?Q?ET2fUSINDAoGAqwlvmXPA/aagj8cBw4rPPaNf8eyN3dRkmJZMW5z9JuBi7Jq?=
- =?us-ascii?Q?uCc171E9xXiYzbUJpZK9EyT0O1UjjS1J1cwDHlzQxuwyKxztEg7kNTogY/6L?=
- =?us-ascii?Q?Xh5n1QZatTEKIyuxi6mMmTUFglUX9HWgUjTz1Pi2FUO3Yh12iN85QfNGXOvL?=
- =?us-ascii?Q?TARQ1TV/ym/X4amfrvi5+0M6WrVgmvOTSR2agDqvKddbw6n4c+59zxUxQqcn?=
- =?us-ascii?Q?qK6CLguCLP8aDZ8Ll8lO3ie2FI+gbaU1v5FZYMS+ZolqDXGPJCzB/bx+m8ul?=
- =?us-ascii?Q?WvDj69jFp03C4OYyFG/CTQde0bWF6baM6PDGz6nrqP5MqbH4YZf4xsccRwYS?=
- =?us-ascii?Q?30hy4hSM/YYGfBqwR2C/TeZAwF+/C5gVkI38GFPqAwQbeouKe01HNfoHCJp/?=
- =?us-ascii?Q?dNGkvVns0RVKqfMKgWjy4nAcYDWknUdtvucQ0MCBwgT2RN2rjYZaFFXTJ1Lj?=
- =?us-ascii?Q?E5INwqOJn99zdEidc6CuffXnT1QErX45d4tG1PfzBpjfwr9TizyCjksPSozb?=
- =?us-ascii?Q?TV8/cq5RcN4+10AL8ayrFXQbR5prWML1h2N4byUQl/Vi7iqcibr1H63yM8/B?=
- =?us-ascii?Q?P+IMeOXVIw0gbY4DdL2Lwqr0vEm5qbpv9PIvwLPK00SXlWaxJJ0svIXUGjS8?=
- =?us-ascii?Q?DBMBtxCbAFop/py3zZIOlY0=3D?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c99d5c3e-6fcb-41ab-8184-08d997f166e5
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1514.namprd21.prod.outlook.com
+X-OriginatorOrg: Nvidia.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 19:55:32.0040
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56a30908-dd46-46d4-45e6-08d997f1bfb2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 19:58:00.7883
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b0eRofuVBH7KV7tIhwRkcK/dbPrRSc6Ocv3cwsmxphsSBvzKOzW1tDNuz54JU6lhkm3/7rWOHuGK6gTQrcgZMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB1798
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ltK5o2rKaGxSu6byU8/H4XK0LfoAfESWmZty85fjTaes5oz4hbHEw/brK2XisExP5LIAtpufuYeLpxi4nkOMFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last caller of vmbus_are_subchannels_present() was removed in commit
-c967590457ca ("scsi: storvsc: Fix a race in sub-channel creation that can cause panic").
-
-Remove this dead code, and the utility function invoke_sc_cb() that it is
-the only caller of.
-
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
----
- drivers/hv/channel_mgmt.c | 34 ----------------------------------
- include/linux/hyperv.h    | 13 -------------
- 2 files changed, 47 deletions(-)
-
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 1423085..2829575 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -1581,21 +1581,6 @@ int vmbus_request_offers(void)
- 	return ret;
- }
- 
--static void invoke_sc_cb(struct vmbus_channel *primary_channel)
--{
--	struct list_head *cur, *tmp;
--	struct vmbus_channel *cur_channel;
--
--	if (primary_channel->sc_creation_callback == NULL)
--		return;
--
--	list_for_each_safe(cur, tmp, &primary_channel->sc_list) {
--		cur_channel = list_entry(cur, struct vmbus_channel, sc_list);
--
--		primary_channel->sc_creation_callback(cur_channel);
--	}
--}
--
- void vmbus_set_sc_create_callback(struct vmbus_channel *primary_channel,
- 				void (*sc_cr_cb)(struct vmbus_channel *new_sc))
- {
-@@ -1603,25 +1588,6 @@ void vmbus_set_sc_create_callback(struct vmbus_channel *primary_channel,
- }
- EXPORT_SYMBOL_GPL(vmbus_set_sc_create_callback);
- 
--bool vmbus_are_subchannels_present(struct vmbus_channel *primary)
--{
--	bool ret;
--
--	ret = !list_empty(&primary->sc_list);
--
--	if (ret) {
--		/*
--		 * Invoke the callback on sub-channel creation.
--		 * This will present a uniform interface to the
--		 * clients.
--		 */
--		invoke_sc_cb(primary);
--	}
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(vmbus_are_subchannels_present);
--
- void vmbus_set_chn_rescind_callback(struct vmbus_channel *channel,
- 		void (*chn_rescind_cb)(struct vmbus_channel *))
- {
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index ddc8713..836fae2 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -1100,19 +1100,6 @@ void vmbus_set_sc_create_callback(struct vmbus_channel *primary_channel,
- void vmbus_set_chn_rescind_callback(struct vmbus_channel *channel,
- 		void (*chn_rescind_cb)(struct vmbus_channel *));
- 
--/*
-- * Check if sub-channels have already been offerred. This API will be useful
-- * when the driver is unloaded after establishing sub-channels. In this case,
-- * when the driver is re-loaded, the driver would have to check if the
-- * subchannels have already been established before attempting to request
-- * the creation of sub-channels.
-- * This function returns TRUE to indicate that subchannels have already been
-- * created.
-- * This function should be invoked after setting the callback function for
-- * sub-channel creation.
-- */
--bool vmbus_are_subchannels_present(struct vmbus_channel *primary);
--
- /* The format must be the same as struct vmdata_gpa_direct */
- struct vmbus_channel_packet_page_buffer {
- 	u16 type;
--- 
-1.8.3.1
-
+T24gRnJpLCAyMDIxLTEwLTIyIGF0IDA4OjQ3ICswMjAwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0K
+PiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gV2l0aG91dCBDT05G
+SUdfTUxYNV9FTl9SWE5GQywgdGhlIGZ1bmN0aW9uIGlzIHVudXNlZCwgYnJlYWtpbmcgdGhlDQo+
+IGJ1aWxkIHdpdGggQ09ORklHX1dFUlJPUjoNCj4gDQo+IG1seDUvY29yZS9pcG9pYi9ldGh0b29s
+LmM6MzY6MTI6IGVycm9yOiB1bnVzZWQgZnVuY3Rpb24NCj4gJ21seDVpX2Zsb3dfdHlwZV9tYXNr
+JyBbLVdlcnJvciwtV3VudXNlZC1mdW5jdGlvbl0NCj4gc3RhdGljIHUzMiBtbHg1aV9mbG93X3R5
+cGVfbWFzayh1MzIgZmxvd190eXBlKQ0KPiANCj4gV2UgY291bGQgYWRkIGFub3RoZXIgI2lmZGVm
+IG9yIG1hcmsgdGhpcyBmdW5jdGlvbiBpbmxpbmUsIGJ1dA0KPiByZXBsYWNpbmcgdGhlIGV4aXN0
+aW5nICNpZmRlZiB3aXRoIGEgX19tYXliZV91bnVzZWQgc2VlbXMgYmVzdA0KPiBiZWNhdXNlIHRo
+YXQgaW1wcm92ZXMgYnVpbGQgY292ZXJhZ2UgYW5kIGF2b2lkcyBpbnRyb2R1Y2luZw0KPiBzaW1p
+bGFyIHByb2JsZW1zIHRoZSBuZXh0IHRpbWUgdGhpcyBjb2RlIGNoYW5nZXMuDQo+IA0KDQpIaSBB
+cm5kLCB0aGFua3MgZm9yIHlvdXIgcGF0Y2gsDQp3ZSBoYXZlIGEgcGVuZGluZyBwYXRjaCB0aGF0
+IHNpbXBseSBtb3ZlcyBtbHg1aV9mbG93X3R5cGVfbWFzaygpIGludG8NCnRoZSAjaWZkZWYsIHdo
+ZXJlIHRoaXMgZnVuY3Rpb24gaXMgb25seSB1c2VkDQoNCndpbGwgc3VibWl0IGl0IHNob3J0bHku
+DQoNClRoYW5rcyBhZ2FpbiBmb3IgeW91ciBwYXRjaC4NCg0K
