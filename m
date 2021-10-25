@@ -2,188 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EB1439EA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2768E439EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbhJYSoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:44:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:50486 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232759AbhJYSn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:43:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635187294; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=KTAT/Evk80jqFVorUHbXWkgtNBFIlPqrxVfwPYDQ8X0=; b=uKHsZmXJE8tc5XH7T2sGm/LQQx9cGRuVJe2k0/ncdRqskoVYvujSBFaFyOrjWW2NZ8pr54Pi
- FAdxyvPPYmebhdNqh+tjpV4iR0k1jpVDS2w9kZaRjvy1MpX2EJmGpLwaNn+rvW9jz3FPm/z1
- GigdbelUyDVZai3/eh7Y03F2wXM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6176fa5d321f240051397fef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Oct 2021 18:41:33
- GMT
-Sender: jesszhan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B17A5C4361B; Mon, 25 Oct 2021 18:41:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.71.111.83] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jesszhan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68BDCC4338F;
-        Mon, 25 Oct 2021 18:41:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 68BDCC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <ac55afe1-ed3e-5ff8-4109-bfcba3044368@codeaurora.org>
-Date:   Mon, 25 Oct 2021 11:41:30 -0700
+        id S233499AbhJYSr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:47:59 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:18549 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233476AbhJYSr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 14:47:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635187536; x=1666723536;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=7ML6kjmloYGLAy/LwtM/JArQVxiwdJleUX2jEDGH/W8=;
+  b=NP4BODRUG5A1XMgQpuT3Dbvb+M2p9W9y50l+Zn167yIXfaMsx1E+C0QC
+   FvpbP7qSzgxf/AqpYa6K2k+cpnhT5QkEg5mBJQrIZf4dodOyB46APWBV1
+   YqrkkOaDZvQABlFFwccWonOO6I3sBMDt+ILVN6E02AtJszaz1hM+38Uh6
+   Y=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 25 Oct 2021 11:45:36 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 11:45:35 -0700
+Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 25 Oct 2021 11:45:34 -0700
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        <quic_jesszhan@quicinc.com>, <quic_mkrishn@quicinc.com>,
+        <quic_khsieh@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <quic_rajeevny@quicinc.com>, <quic_kalyant@quicinc.com>,
+        <markyacoub@google.com>, <dmitry.baryshkov@linaro.org>,
+        <bjorn.andersson@linaro.org>, <dianders@chromium.org>,
+        <robdclark@gmail.com>, <seanpaul@chromium.org>,
+        <swboyd@chromium.org>, <nganji@codeaurora.org>,
+        <aravindh@codeaurora.org>, <freedreno@lists.freedesktop.org>
+Subject: mailmap: add and update email addresses
+Date:   Mon, 25 Oct 2021 11:45:17 -0700
+Message-ID: <1635187517-1672-1-git-send-email-quic_abhinavk@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 2/2] drm/msm/dpu: Remove dynamic allocation from atomic
- context
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Jessica Zhang <jesszhan@codeaurora.org>,
-        Mark Yacoub <markyacoub@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211023160016.3322052-1-robdclark@gmail.com>
- <20211023160016.3322052-2-robdclark@gmail.com>
-From:   Jessica Zhang <jesszhan@codeaurora.org>
-In-Reply-To: <20211023160016.3322052-2-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/2021 9:00 AM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
->
-> We know the upper bound on # of mixers (ie. two), so lets just allocate
-> this on the stack.
->
-> Fixes:
->
->     BUG: sleeping function called from invalid context at include/linux/sched/mm.h:201
->     in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/0
->     INFO: lockdep is turned off.
->     irq event stamp: 43642
->     hardirqs last  enabled at (43641): [<ffffffe24dd276bc>] cpuidle_enter_state+0x158/0x25c
->     hardirqs last disabled at (43642): [<ffffffe24dfff450>] enter_el1_irq_or_nmi+0x10/0x1c
->     softirqs last  enabled at (43620): [<ffffffe24d4103fc>] __do_softirq+0x1e4/0x464
->     softirqs last disabled at (43615): [<ffffffe24d48bd90>] __irq_exit_rcu+0x104/0x150
->     CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.15.0-rc3-debug+ #105
->     Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
->     Call trace:
->      dump_backtrace+0x0/0x18c
->      show_stack+0x24/0x30
->      dump_stack_lvl+0xa0/0xd4
->      dump_stack+0x18/0x34
->      ___might_sleep+0x1e0/0x1f0
->      __might_sleep+0x78/0x8c
->      slab_pre_alloc_hook.constprop.0+0x48/0x6c
->      __kmalloc+0xc8/0x21c
->      dpu_crtc_vblank_callback+0x158/0x1f8
->      dpu_encoder_vblank_callback+0x70/0xc4
->      dpu_encoder_phys_vid_vblank_irq+0x50/0x12c
->      dpu_core_irq+0x1bc/0x1d0
->      dpu_irq+0x1c/0x28
->      msm_irq+0x34/0x40
->      __handle_irq_event_percpu+0x15c/0x308
->      handle_irq_event_percpu+0x3c/0x90
->      handle_irq_event+0x54/0x98
->      handle_level_irq+0xa0/0xd0
->      handle_irq_desc+0x2c/0x44
->      generic_handle_domain_irq+0x28/0x34
->      dpu_mdss_irq+0x90/0xe8
->      handle_irq_desc+0x2c/0x44
->      handle_domain_irq+0x54/0x80
->      gic_handle_irq+0xd4/0x148
->      call_on_irq_stack+0x2c/0x54
->      do_interrupt_handler+0x4c/0x64
->      el1_interrupt+0x30/0xd0
->      el1h_64_irq_handler+0x18/0x24
->      el1h_64_irq+0x78/0x7c
->      arch_local_irq_enable+0xc/0x14
->      cpuidle_enter+0x44/0x5c
->      do_idle+0x248/0x268
->      cpu_startup_entry+0x30/0x48
->      rest_init+0x188/0x19c
->      arch_call_rest_init+0x1c/0x28
->      start_kernel+0x704/0x744
->      __primary_switched+0xc0/0xc8
->
-> Fixes: 78d9b458cc21 ("drm/msm/dpu: Add CRC support for DPU")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Jessica Zhang <jesszhan@codeaurora.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 16 +++++-----------
->   1 file changed, 5 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> index 0ae397044310..2523e829f485 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> @@ -182,21 +182,19 @@ static int dpu_crtc_get_crc(struct drm_crtc *crtc)
->   {
->   	struct dpu_crtc_state *crtc_state;
->   	struct dpu_crtc_mixer *m;
-> -	u32 *crcs;
-> +	u32 crcs[CRTC_DUAL_MIXERS];
->   
->   	int i = 0;
->   	int rc = 0;
->   
->   	crtc_state = to_dpu_crtc_state(crtc->state);
-> -	crcs = kcalloc(crtc_state->num_mixers, sizeof(*crcs), GFP_KERNEL);
->   
-> -	if (!crcs)
-> -		return -ENOMEM;
-> +	BUILD_BUG_ON(ARRAY_SIZE(crcs) != ARRAY_SIZE(crtc_state->mixers));
->   
->   	/* Skip first 2 frames in case of "uncooked" CRCs */
->   	if (crtc_state->crc_frame_skip_count < 2) {
->   		crtc_state->crc_frame_skip_count++;
-> -		goto cleanup;
-> +		return 0;
->   	}
->   
->   	for (i = 0; i < crtc_state->num_mixers; ++i) {
-> @@ -210,16 +208,12 @@ static int dpu_crtc_get_crc(struct drm_crtc *crtc)
->   
->   		if (rc) {
->   			DRM_DEBUG_DRIVER("MISR read failed\n");
-> -			goto cleanup;
-> +			return rc;
->   		}
->   	}
->   
-> -	rc = drm_crtc_add_crc_entry(crtc, true,
-> +	return drm_crtc_add_crc_entry(crtc, true,
->   			drm_crtc_accurate_vblank_count(crtc), crcs);
-> -
-> -cleanup:
-> -	kfree(crcs);
-> -	return rc;
->   }
->   
->   static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
+Add and also update the email addresses to prepare for
+the transition to the new ones.
+
+Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+---
+ .mailmap | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/.mailmap b/.mailmap
+index 6e84911..8c5ce37 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -10,6 +10,7 @@
+ # Please keep this list dictionary sorted.
+ #
+ Aaron Durbin <adurbin@google.com>
++Abhinav Kumar <quic_abhinavk@quicinc.com> <abhinavk@codeaurora.org>
+ Adam Oldham <oldhamca@gmail.com>
+ Adam Radford <aradford@gmail.com>
+ Adriana Reus <adi.reus@gmail.com> <adriana.reus@intel.com>
+@@ -162,6 +163,7 @@ Jeff Layton <jlayton@kernel.org> <jlayton@redhat.com>
+ Jens Axboe <axboe@suse.de>
+ Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+ Jernej Skrabec <jernej.skrabec@gmail.com> <jernej.skrabec@siol.net>
++Jessica Zhang <quic_jesszhan@quicinc.com> <jesszhan@codeaurora.org>
+ Jiri Slaby <jirislaby@kernel.org> <jirislaby@gmail.com>
+ Jiri Slaby <jirislaby@kernel.org> <jslaby@novell.com>
+ Jiri Slaby <jirislaby@kernel.org> <jslaby@suse.com>
+@@ -181,6 +183,7 @@ Juha Yrjola <at solidboot.com>
+ Juha Yrjola <juha.yrjola@nokia.com>
+ Juha Yrjola <juha.yrjola@solidboot.com>
+ Julien Thierry <julien.thierry.kdev@gmail.com> <julien.thierry@arm.com>
++Kalyan Thota <quic_kalyant@quicinc.com> <kalyan_t@codeaurora.org>
+ Kay Sievers <kay.sievers@vrfy.org>
+ Kees Cook <keescook@chromium.org> <kees.cook@canonical.com>
+ Kees Cook <keescook@chromium.org> <keescook@google.com>
+@@ -192,9 +195,11 @@ Kenneth W Chen <kenneth.w.chen@intel.com>
+ Konstantin Khlebnikov <koct9i@gmail.com> <khlebnikov@yandex-team.ru>
+ Konstantin Khlebnikov <koct9i@gmail.com> <k.khlebnikov@samsung.com>
+ Koushik <raghavendra.koushik@neterion.com>
++Krishna Manikandan <quic_mkrishn@quicinc.com> <mkrishn@codeaurora.org>
+ Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski.k@gmail.com>
+ Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski@samsung.com>
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++Kuogee Hsieh <quic_khsieh@quicinc.com> <khsieh@codeaurora.org>
+ Leonardo Bras <leobras.c@gmail.com> <leonardo@linux.ibm.com>
+ Leonid I Ananiev <leonid.i.ananiev@intel.com>
+ Leon Romanovsky <leon@kernel.org> <leon@leon.nu>
+@@ -300,6 +305,7 @@ Qais Yousef <qsyousef@gmail.com> <qais.yousef@imgtec.com>
+ Quentin Monnet <quentin@isovalent.com> <quentin.monnet@netronome.com>
+ Quentin Perret <qperret@qperret.net> <quentin.perret@arm.com>
+ Rafael J. Wysocki <rjw@rjwysocki.net> <rjw@sisk.pl>
++Rajeev Nandan <quic_rajeevny@quicinc.com> <rajeevny@codeaurora.org>
+ Rajesh Shah <rajesh.shah@intel.com>
+ Ralf Baechle <ralf@linux-mips.org>
+ Ralf Wildenhues <Ralf.Wildenhues@gmx.de>
+@@ -314,6 +320,7 @@ Rui Saraiva <rmps@joel.ist.utl.pt>
+ Sachin P Sant <ssant@in.ibm.com>
+ Sakari Ailus <sakari.ailus@linux.intel.com> <sakari.ailus@iki.fi>
+ Sam Ravnborg <sam@mars.ravnborg.org>
++Sankeerth Billakanti <quic_sbillaka@quicinc.com> <sbillaka@codeaurora.org>
+ Santosh Shilimkar <santosh.shilimkar@oracle.org>
+ Santosh Shilimkar <ssantosh@kernel.org>
+ Sarangdhar Joshi <spjoshi@codeaurora.org>
+-- 
+2.7.4
+
