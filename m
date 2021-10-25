@@ -2,158 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F91438EAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8660F438EAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhJYFN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:13:59 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:33803 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhJYFN5 (ORCPT
+        id S232455AbhJYFPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhJYFPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:13:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd32r3QQQz4xZ0;
-        Mon, 25 Oct 2021 16:11:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635138694;
-        bh=dqey1eA2UwdztCXkBRMrK2SIQ19yGv/mM6F7haswWG0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uCG2vzS1gYLtqrvXZ1jIjfNXuFvgSWXtwFLRk/AnRQrlvhxU2gSCS1U075gNmAxBu
-         4LthcWUIPfXGU1d27zXmg5Rt0lHFA93I64wgxfDaDhUPxvzud3z3T9XLl2frhMn8ID
-         VO8CCCHsZo1EQt+j0n06b5BZ+igq4uj7Jsk9Z+Czm0emLH1nXP6F/x87ddKWmHbShC
-         Q3J59coD4AFvVnm4rsbAMd9YLnZwWOhDN0qu9R3ZtJ6D0B84SV/FlYElFqBvsSPsA6
-         eZ3zGgIG7PR0nsBGzlgQ4GZMkNryQa1397D52ADkK5Uzn+l3/vbgDxy3K16qiM+/Kb
-         JxgrGdF5f4O7A==
-Date:   Mon, 25 Oct 2021 16:11:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Subject: linux-next: manual merge of the kvm tree with the tip tree
-Message-ID: <20211025161131.5f2a2459@canb.auug.org.au>
+        Mon, 25 Oct 2021 01:15:12 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005FDC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 22:12:50 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d5so9627670pfu.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 22:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MHOpmbvcINsWhfRdDNQkPeyRi24VKAfRpmc6DJa3fyo=;
+        b=kC5eDl2h924in2t60MD14iTuL0pcDbTxB1SmArcPDs3IL9hHUsdXafP/+TepNUOtVg
+         A/fOVnZqo32vWXlDoz0kyAQeLFNCL4SQskRnkmHBeObrQ6mcAJZQRRZcUCovLa9gRRjk
+         JYLFZmWKdDd5IZFUBHCuwrKCUED96XCCt60/QzDXVIWzCSjk/cwi3ziTB/mt836/3iA9
+         1IqbPHqUCukRO2fzQtdzdoAiKvBoyvJHjdGB0uq7OwGnrHLLfm3IC92cnd1JpVXw+bTe
+         4kAYeqF6CcQYRnKmfG25650dmMfY/+tESy49UwdHPKk19pSYDsO/H5zEgrl3g2OPUCvm
+         /nFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MHOpmbvcINsWhfRdDNQkPeyRi24VKAfRpmc6DJa3fyo=;
+        b=1lBrvAs8dtTD53R+cQgqmyVIxaB1J41Foqws27aT9tabdB/HiGzc/LDh6etIbfnHi+
+         b7BI1KvuKHozwuun7uoylqyEnmYSU3BbHBhC+NQJDEeMECt9OiOeT/H4XoJ9EjoLDQNY
+         fQur5Dl6BxCn8yF7irpDRBg8JdHwAmZiBr97gK6II9lZhMEZ0apilkiDIOlYngp3yEKQ
+         OUTIrmfarMLdnePyBZi+AfQhXnPFzg/U/vGnYCar1xsSMFj+d86BxP5lRxYYlj8UYOhT
+         mf/kYpLr6OlyaenEN8VrmcLBwCE3FfJpBTSupl7acpevzTLWX0l9Qkxiz8OBOyIuR7UG
+         hzGQ==
+X-Gm-Message-State: AOAM532EJKJ56/IM4xE8Q3e0mh3Ym0D+n7JCpFzSUKAnE6KVRkVGjlBa
+        seumgimqDRbdlrPh/vX2900=
+X-Google-Smtp-Source: ABdhPJz7NMRtr+4acKF0FpawvSqsydzB2qw/w10uJQMqV+vSqlGcuPYHmLggJr0JkYFnO+eHap5izg==
+X-Received: by 2002:a63:6888:: with SMTP id d130mr11969137pgc.234.1635138770319;
+        Sun, 24 Oct 2021 22:12:50 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:5780:a9e3:4135:1d16])
+        by smtp.gmail.com with ESMTPSA id z3sm13619025pfh.79.2021.10.24.22.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 22:12:49 -0700 (PDT)
+Date:   Sun, 24 Oct 2021 22:12:46 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com
+Subject: Re: [PATCH v6] tty: Fix the keyboard led light display problem
+Message-ID: <YXY8zrEbkhdO6ikS@google.com>
+References: <20211021020511.18016-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JzVuLz4fIkxGYvP21YSHyzC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021020511.18016-1-changlianzhi@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/JzVuLz4fIkxGYvP21YSHyzC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+On Thu, Oct 21, 2021 at 10:05:11AM +0800, lianzhi chang wrote:
+> @@ -1524,6 +1543,9 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
+>  	/* We are called with interrupts disabled, just take the lock */
+>  	spin_lock(&kbd_event_lock);
+>  
+> +	if (test_bit(EV_LED, handle->dev->evbit))
+> +		kbd_update_ledstate(handle->dev);
+> +
 
-Today's linux-next merge of the kvm tree got a conflict in:
+Why do we need to update led state on each and every event instead of
+trapping individual EV_LED/LED_x events?
 
-  arch/x86/kvm/x86.c
+But thinking about it some more, I believe doing this here is wrong.
+LEDs are routed in this way:
 
-between commits:
+   device <-> input core <-> input leds <-> leds core <-> VT
 
-  d69c1382e1b7 ("x86/kvm: Convert FPU handling to a single swap buffer")
-  126fe0401883 ("x86/fpu: Cleanup xstate xcomp_bv initialization")
+with the last step assuming that we are in default configuration and we
+indeed assign one of the following triggers to appropriate LED on given
+device:
 
-from the tip tree and commits:
+kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock
+kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock
+kbd-ctrlllock kbd-ctrlrlock
 
-  e8f65b9bb483 ("KVM: x86: Remove defunct setting of XCR0 for guest during =
-vCPU create")
-  583d369b36a9 ("KVM: x86: Fold fx_init() into kvm_arch_vcpu_create()")
+I.e. the state of LED of individual input device is not necessarily
+attached to LED flag state in a given VT.
 
-from the kvm tree.
+Re-reading the patch description, are we saying that we are maintaining
+kbd->[s]lockstate, but losing kbd->ledflagstate when we are doing
+transitions to and from VC_OFF state? We need to keep in mind that we
+are trying to keep states separate on separate consoles.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Thanks.
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/kvm/x86.c
-index 5f1fc8224414,ac83d873d65b..000000000000
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@@ -10477,16 -10869,15 +10722,6 @@@ static int sync_regs(struct kvm_vcpu *v
-  	return 0;
-  }
- =20
-- static void fx_init(struct kvm_vcpu *vcpu)
- -void kvm_free_guest_fpu(struct kvm_vcpu *vcpu)
---{
-- 	/*
-- 	 * Ensure guest xcr0 is valid for loading
-- 	 */
-- 	vcpu->arch.xcr0 =3D XFEATURE_MASK_FP;
--=20
-- 	vcpu->arch.cr0 |=3D X86_CR0_ET;
- -	if (vcpu->arch.guest_fpu) {
- -		kmem_cache_free(x86_fpu_cache, vcpu->arch.guest_fpu);
- -		vcpu->arch.guest_fpu =3D NULL;
- -	}
---}
- -EXPORT_SYMBOL_GPL(kvm_free_guest_fpu);
---
-  int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
-  {
-  	if (kvm_check_tsc_unstable() && atomic_read(&kvm->online_vcpus) !=3D 0)
-@@@ -10543,13 -10934,24 +10778,11 @@@ int kvm_arch_vcpu_create(struct kvm_v=
-cp
-  	if (!alloc_emulate_ctxt(vcpu))
-  		goto free_wbinvd_dirty_mask;
- =20
- -	vcpu->arch.user_fpu =3D kmem_cache_zalloc(x86_fpu_cache,
- -						GFP_KERNEL_ACCOUNT);
- -	if (!vcpu->arch.user_fpu) {
- -		pr_err("kvm: failed to allocate userspace's fpu\n");
- -		goto free_emulate_ctxt;
- -	}
- -
- -	vcpu->arch.guest_fpu =3D kmem_cache_zalloc(x86_fpu_cache,
- -						 GFP_KERNEL_ACCOUNT);
- -	if (!vcpu->arch.guest_fpu) {
- +	if (!fpu_alloc_guest_fpstate(&vcpu->arch.guest_fpu)) {
-  		pr_err("kvm: failed to allocate vcpu's fpu\n");
- -		goto free_user_fpu;
- +		goto free_emulate_ctxt;
-  	}
- -	fpstate_init(&vcpu->arch.guest_fpu->state);
- -	if (boot_cpu_has(X86_FEATURE_XSAVES))
- -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =3D
- -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
- =20
-- 	fx_init(vcpu);
--=20
-  	vcpu->arch.maxphyaddr =3D cpuid_query_maxphyaddr(vcpu);
-  	vcpu->arch.reserved_gpa_bits =3D kvm_vcpu_reserved_gpa_bits_raw(vcpu);
- =20
-
---Sig_/JzVuLz4fIkxGYvP21YSHyzC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2PIMACgkQAVBC80lX
-0GxIXwgAhFRBBXN8TicCFlnXDTCCTcqH/BKGU6+GtJwpit1FKb3e9uRtqdBAEZ3T
-0xV57z2pG+PTEpsEHzkT2SHcm+EJUWHqyqNOiMD+ujwCDXJa6BmfopGhP4NmxLj0
-/V22naNz/KKf77bOMmaAcqhf1AFCf15cVjpjIjPtZnjai8XrB+IU3bpi4kRsF09p
-nc1uWEglXCDzfRJYYjsNrSZLs0LbzirFc2nqAS7sk+5pTVmK4pJXRKqI8G4AFz7n
-qulKjxAZwuWTzBR5C5HyhWaVU+lAQSqCZP2yjKUw2KKrrAoXSDbiQtLDQLSd0bmp
-MHJT0cbd8U9+vEXcu3ZtwzagJh5mJQ==
-=/qAC
------END PGP SIGNATURE-----
-
---Sig_/JzVuLz4fIkxGYvP21YSHyzC--
+-- 
+Dmitry
