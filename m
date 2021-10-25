@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0E043A152
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A0B43A096
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbhJYTiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:38:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
+        id S235620AbhJYTcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:32:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235143AbhJYTbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:31:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16FB961152;
-        Mon, 25 Oct 2021 19:27:47 +0000 (UTC)
+        id S235482AbhJYT2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:28:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE09F60E97;
+        Mon, 25 Oct 2021 19:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190069;
-        bh=l6yUpv24CZ2qGfC2ClqOhdk8gfzcGesEs6/bflsTob0=;
+        s=korg; t=1635189901;
+        bh=dxWCpeC257qELOOsTKiKYGOm24lYGntSVC67WrQwO8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z0C2qipQxTSZrS+Bgd3uiSEsSUPndlwjtP+Q9R6ZAJjPcuKlx19WuVqLhieD394Vh
-         doxz8QGBTjnhX+DWpe1hZyIqNWejj0v/BfH+k40oleQODVuAAbbhHN4S00hs7jW+2q
-         xgjlTgKxgJzZ672g+D7ZWCT2oO9UNHrPF357Ur/Y=
+        b=MIGi6ZDSU+F8ENs+CtfunMmQox12bc4Pp+yWFx4mhf+Grshda6M91DWfhHlQyvUrj
+         yiEsodeKsb2BhV8uCJblX5lc6YRHhmsELD2O3GIAKL35OcNoBBLNB8O8NjY2QAt5s/
+         tBMXE6tVkjyiDjaROdznFX0mQPsHUGYBWzMWaT94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xiaolong Huang <butterflyhuangxx@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 42/58] isdn: cpai: check ctr->cnr to avoid array index out of bound
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
+        Johan Hovold <johan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 34/37] usbnet: sanity check for maxpacket
 Date:   Mon, 25 Oct 2021 21:14:59 +0200
-Message-Id: <20211025190944.286762303@linuxfoundation.org>
+Message-Id: <20211025190935.277486500@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaolong Huang <butterflyhuangxx@gmail.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit 1f3e2e97c003f80c4b087092b225c8787ff91e4d upstream.
+commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
 
-The cmtp_add_connection() would add a cmtp session to a controller
-and run a kernel thread to process cmtp.
+maxpacket of 0 makes no sense and oopses as we need to divide
+by it. Give up.
 
-	__module_get(THIS_MODULE);
-	session->task = kthread_run(cmtp_session, session, "kcmtpd_ctr_%d",
-								session->num);
+V2: fixed typo in log and stylistic issues
 
-During this process, the kernel thread would call detach_capi_ctr()
-to detach a register controller. if the controller
-was not attached yet, detach_capi_ctr() would
-trigger an array-index-out-bounds bug.
-
-[   46.866069][ T6479] UBSAN: array-index-out-of-bounds in
-drivers/isdn/capi/kcapi.c:483:21
-[   46.867196][ T6479] index -1 is out of range for type 'capi_ctr *[32]'
-[   46.867982][ T6479] CPU: 1 PID: 6479 Comm: kcmtpd_ctr_0 Not tainted
-5.15.0-rc2+ #8
-[   46.869002][ T6479] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.14.0-2 04/01/2014
-[   46.870107][ T6479] Call Trace:
-[   46.870473][ T6479]  dump_stack_lvl+0x57/0x7d
-[   46.870974][ T6479]  ubsan_epilogue+0x5/0x40
-[   46.871458][ T6479]  __ubsan_handle_out_of_bounds.cold+0x43/0x48
-[   46.872135][ T6479]  detach_capi_ctr+0x64/0xc0
-[   46.872639][ T6479]  cmtp_session+0x5c8/0x5d0
-[   46.873131][ T6479]  ? __init_waitqueue_head+0x60/0x60
-[   46.873712][ T6479]  ? cmtp_add_msgpart+0x120/0x120
-[   46.874256][ T6479]  kthread+0x147/0x170
-[   46.874709][ T6479]  ? set_kthread_struct+0x40/0x40
-[   46.875248][ T6479]  ret_from_fork+0x1f/0x30
-[   46.875773][ T6479]
-
-Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211008065830.305057-1-butterflyhuangxx@gmail.com
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/isdn/capi/kcapi.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/usb/usbnet.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/isdn/capi/kcapi.c
-+++ b/drivers/isdn/capi/kcapi.c
-@@ -565,6 +565,11 @@ int detach_capi_ctr(struct capi_ctr *ctr
- 
- 	ctr_down(ctr, CAPI_CTR_DETACHED);
- 
-+	if (ctr->cnr < 1 || ctr->cnr - 1 >= CAPI_MAXCONTR) {
-+		err = -EINVAL;
-+		goto unlock_out;
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1784,6 +1784,10 @@ usbnet_probe (struct usb_interface *udev
+ 	if (!dev->rx_urb_size)
+ 		dev->rx_urb_size = dev->hard_mtu;
+ 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
++	if (dev->maxpacket == 0) {
++		/* that is a broken device */
++		goto out4;
 +	}
-+
- 	if (capi_controller[ctr->cnr - 1] != ctr) {
- 		err = -EINVAL;
- 		goto unlock_out;
+ 
+ 	/* let userspace know we have a random address */
+ 	if (ether_addr_equal(net->dev_addr, node_id))
 
 
