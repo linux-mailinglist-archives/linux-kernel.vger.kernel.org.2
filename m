@@ -2,132 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873D443A05D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1AC439F4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235434AbhJYT35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233907AbhJYT06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:26:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 656866109E;
-        Mon, 25 Oct 2021 19:23:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189823;
-        bh=OHsqRIOiEcTTtx5NJ/gLUjiPrIj9Q7XwFEN8MNPG88Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0CDn0Y93S+j/j0EJVFnbjuZE/8DN0FqSriGf4WkkQMRN/At3GbDvFiaxy/GWhF8TZ
-         kdwqiYuR4WDywZosGqD/SF6aehfwkI9hyP2UKZpr1+UEC/bTRkkkjmZzwfRSmLffUr
-         /cGe8M/ddnayVd4peMsij3e8GeizJPovD30dK2sI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 16/37] ocfs2: mount fails with buffer overflow in strlen
-Date:   Mon, 25 Oct 2021 21:14:41 +0200
-Message-Id: <20211025190931.509715272@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234244AbhJYTTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:19:19 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:43338 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233843AbhJYTRh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:17:37 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PIc3gx001413;
+        Mon, 25 Oct 2021 12:15:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=NDrGRip1gWTnxxkhjDTOJWDVc76GDFMC/G2sfLWSA1E=;
+ b=QU69mmBvl+PzYLKapVymy42HqE0v85TgpAmWa1JBmacp6X76dPiD5p82lPS0aNtbrMk1
+ BiXbITcxYUWZVn8XPW0WorUQlbWqTFBCjfOECC/yBs2LemwImYah6Wk8canwy8O2XU9N
+ X2CNXOAOTnxzXR7yZuW1DXzD12XezK7GvPA5cUFjLUxijgpHIwNyaimqODansz9YxMe0
+ /qaQzrcI2jhtK+T2pfyY4dKJjwnVww+veadXmQBcnlmPzdVPfaX3ovMhuTxfo1MLjNyg
+ j+ySxjdV6hR/lvXR0mfPxBpQh+uAiFJJw0WxnfMwIPJkPCG/l9+a91IDT8yc34HHfiVP uQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3bwtjrj8ky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 12:15:13 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct
+ 2021 12:15:12 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 25 Oct 2021 12:15:12 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id E458F3F704A;
+        Mon, 25 Oct 2021 12:15:08 -0700 (PDT)
+From:   Rakesh Babu <rsaladi2@marvell.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+CC:     Harman Kalra <hkalra@marvell.com>,
+        Bhaskara Budiredla <bbudiredla@marvell.com>,
+        Rakesh Babu <rsaladi2@marvell.com>
+Subject: [net-next PATCH 2/3] octeontx2-af: cn10k: debugfs for dumping lmtst map table
+Date:   Tue, 26 Oct 2021 00:44:41 +0530
+Message-ID: <20211025191442.10084-3-rsaladi2@marvell.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211025191442.10084-1-rsaladi2@marvell.com>
+References: <20211025191442.10084-1-rsaladi2@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: G-kLkJJrDq4Y8_WdOOe92UUltl2XXzKH
+X-Proofpoint-GUID: G-kLkJJrDq4Y8_WdOOe92UUltl2XXzKH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_06,2021-10-25_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+From: Harman Kalra <hkalra@marvell.com>
 
-commit b15fa9224e6e1239414525d8d556d824701849fc upstream.
+Implemented a new debugfs entry for dumping lmtst map
+table present on CN10K, as this might be very useful to debug any issue
+in case of shared lmtst region among multiple pcifuncs.
 
-Starting with kernel 5.11 built with CONFIG_FORTIFY_SOURCE mouting an
-ocfs2 filesystem with either o2cb or pcmk cluster stack fails with the
-trace below.  Problem seems to be that strings for cluster stack and
-cluster name are not guaranteed to be null terminated in the disk
-representation, while strlcpy assumes that the source string is always
-null terminated.  This causes a read outside of the source string
-triggering the buffer overflow detection.
-
-  detected buffer overflow in strlen
-  ------------[ cut here ]------------
-  kernel BUG at lib/string.c:1149!
-  invalid opcode: 0000 [#1] SMP PTI
-  CPU: 1 PID: 910 Comm: mount.ocfs2 Not tainted 5.14.0-1-amd64 #1
-    Debian 5.14.6-2
-  RIP: 0010:fortify_panic+0xf/0x11
-  ...
-  Call Trace:
-   ocfs2_initialize_super.isra.0.cold+0xc/0x18 [ocfs2]
-   ocfs2_fill_super+0x359/0x19b0 [ocfs2]
-   mount_bdev+0x185/0x1b0
-   legacy_get_tree+0x27/0x40
-   vfs_get_tree+0x25/0xb0
-   path_mount+0x454/0xa20
-   __x64_sys_mount+0x103/0x140
-   do_syscall_64+0x3b/0xc0
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Link: https://lkml.kernel.org/r/20210929180654.32460-1-vvidic@valentin-vidic.from.hr
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Harman Kalra <hkalra@marvell.com>
+Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+Signed-off-by: Rakesh Babu <rsaladi2@marvell.com>
+Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
 ---
- fs/ocfs2/super.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 94 +++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -2205,11 +2205,17 @@ static int ocfs2_initialize_super(struct
- 	}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index 54f8fac34215..7ff8f4045223 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -226,6 +226,96 @@ static const struct file_operations rvu_dbg_##name##_fops = { \
  
- 	if (ocfs2_clusterinfo_valid(osb)) {
-+		/*
-+		 * ci_stack and ci_cluster in ocfs2_cluster_info may not be null
-+		 * terminated, so make sure no overflow happens here by using
-+		 * memcpy. Destination strings will always be null terminated
-+		 * because osb is allocated using kzalloc.
-+		 */
- 		osb->osb_stackflags =
- 			OCFS2_RAW_SB(di)->s_cluster_info.ci_stackflags;
--		strlcpy(osb->osb_cluster_stack,
-+		memcpy(osb->osb_cluster_stack,
- 		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
--		       OCFS2_STACK_LABEL_LEN + 1);
-+		       OCFS2_STACK_LABEL_LEN);
- 		if (strlen(osb->osb_cluster_stack) != OCFS2_STACK_LABEL_LEN) {
- 			mlog(ML_ERROR,
- 			     "couldn't mount because of an invalid "
-@@ -2218,9 +2224,9 @@ static int ocfs2_initialize_super(struct
- 			status = -EINVAL;
- 			goto bail;
- 		}
--		strlcpy(osb->osb_cluster_name,
-+		memcpy(osb->osb_cluster_name,
- 			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
--			OCFS2_CLUSTER_NAME_LEN + 1);
-+			OCFS2_CLUSTER_NAME_LEN);
- 	} else {
- 		/* The empty string is identical with classic tools that
- 		 * don't know about s_cluster_info. */
-
+ static void print_nix_qsize(struct seq_file *filp, struct rvu_pfvf *pfvf);
+ 
++#define LMT_MAPTBL_ENTRY_SIZE 16
++/* Dump LMTST map table */
++static ssize_t rvu_dbg_lmtst_map_table_display(struct file *filp,
++					       char __user *buffer,
++					       size_t count, loff_t *ppos)
++{
++	struct rvu *rvu = filp->private_data;
++	u64 lmt_addr, val, tbl_base;
++	int pf, vf, num_vfs, hw_vfs;
++	void __iomem *lmt_map_base;
++	int index = 0, off = 0;
++	int bytes_not_copied;
++	int buf_size = 10240;
++	char *buf;
++
++	/* don't allow partial reads */
++	if (*ppos != 0)
++		return 0;
++
++	buf = kzalloc(buf_size, GFP_KERNEL);
++	if (!buf)
++		return -ENOSPC;
++
++	tbl_base = rvu_read64(rvu, BLKADDR_APR, APR_AF_LMT_MAP_BASE);
++
++	lmt_map_base = ioremap_wc(tbl_base, 128 * 1024);
++	if (!lmt_map_base) {
++		dev_err(rvu->dev, "Failed to setup lmt map table mapping!!\n");
++		kfree(buf);
++		return false;
++	}
++
++	off +=	scnprintf(&buf[off], buf_size - 1 - off,
++			  "\n\t\t\t\t\tLmtst Map Table Entries");
++	off +=	scnprintf(&buf[off], buf_size - 1 - off,
++			  "\n\t\t\t\t\t=======================");
++	off +=	scnprintf(&buf[off], buf_size - 1 - off, "\nPcifunc\t\t\t");
++	off +=	scnprintf(&buf[off], buf_size - 1 - off, "Table Index\t\t");
++	off +=	scnprintf(&buf[off], buf_size - 1 - off,
++			  "Lmtline Base (word 0)\t\t");
++	off +=	scnprintf(&buf[off], buf_size - 1 - off,
++			  "Lmt Map Entry (word 1)");
++	off += scnprintf(&buf[off], buf_size - 1 - off, "\n");
++	for (pf = 0; pf < rvu->hw->total_pfs; pf++) {
++		off += scnprintf(&buf[off], buf_size - 1 - off, "PF%d  \t\t\t",
++				    pf);
++
++		index = pf * rvu->hw->total_vfs * LMT_MAPTBL_ENTRY_SIZE;
++		off += scnprintf(&buf[off], buf_size - 1 - off, " 0x%llx\t\t",
++				 (tbl_base + index));
++		lmt_addr = readq(lmt_map_base + index);
++		off += scnprintf(&buf[off], buf_size - 1 - off,
++				 " 0x%016llx\t\t", lmt_addr);
++		index += 8;
++		val = readq(lmt_map_base + index);
++		off += scnprintf(&buf[off], buf_size - 1 - off, " 0x%016llx\n",
++				 val);
++		/* Reading num of VFs per PF */
++		rvu_get_pf_numvfs(rvu, pf, &num_vfs, &hw_vfs);
++		for (vf = 0; vf < num_vfs; vf++) {
++			index = (pf * rvu->hw->total_vfs * 16) +
++				((vf + 1)  * LMT_MAPTBL_ENTRY_SIZE);
++			off += scnprintf(&buf[off], buf_size - 1 - off,
++					    "PF%d:VF%d  \t\t", pf, vf);
++			off += scnprintf(&buf[off], buf_size - 1 - off,
++					 " 0x%llx\t\t", (tbl_base + index));
++			lmt_addr = readq(lmt_map_base + index);
++			off += scnprintf(&buf[off], buf_size - 1 - off,
++					 " 0x%016llx\t\t", lmt_addr);
++			index += 8;
++			val = readq(lmt_map_base + index);
++			off += scnprintf(&buf[off], buf_size - 1 - off,
++					 " 0x%016llx\n", val);
++		}
++	}
++	off +=	scnprintf(&buf[off], buf_size - 1 - off, "\n");
++
++	bytes_not_copied = copy_to_user(buffer, buf, off);
++	kfree(buf);
++
++	iounmap(lmt_map_base);
++	if (bytes_not_copied)
++		return -EFAULT;
++
++	*ppos = off;
++	return off;
++}
++
++RVU_DEBUG_FOPS(lmtst_map_table, lmtst_map_table_display, NULL);
++
+ /* Dumps current provisioning status of all RVU block LFs */
+ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
+ 					  char __user *buffer,
+@@ -2672,6 +2762,10 @@ void rvu_dbg_init(struct rvu *rvu)
+ 	debugfs_create_file("rsrc_alloc", 0444, rvu->rvu_dbg.root, rvu,
+ 			    &rvu_dbg_rsrc_status_fops);
+ 
++	if (!is_rvu_otx2(rvu))
++		debugfs_create_file("lmtst_map_table", 0444, rvu->rvu_dbg.root,
++				    rvu, &rvu_dbg_lmtst_map_table_fops);
++
+ 	if (!cgx_get_cgxcnt_max())
+ 		goto create;
+ 
+-- 
+2.17.1
 
