@@ -2,143 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C15438E0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE27438E0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhJYEUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 00:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhJYEUK (ORCPT
+        id S232170AbhJYEWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:22:46 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:41381 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhJYEWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 00:20:10 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D48C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 21:17:48 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id m22so6970359wrb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 21:17:48 -0700 (PDT)
+        Mon, 25 Oct 2021 00:22:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hmyJ+fxOvQKNEomi44KNz6W2UiehRKi6Y9dBpWtAWIM=;
-        b=5mmlEeDRAHXnBXiGOM1olXR4Obsou6PuzN3/DjkySxTLtMrDreHK+SoKNV6Hc0+Zc8
-         b6U+EtHoTOs5fykLFtvNtn6HrDTt/eqqOTK8NflNa5p+3GR40kc5qlGtRSUDHTpeYVg3
-         2Vqgj1DZXnkFeDVK/utQSeiwf2YejSJeGgwWni/TAe9bZeTBysdw4CUEMZbqLRh39md0
-         VlCPrHAssmnybfCmpvwzKQFI3OcfBWBPFSRnifB/65uX80gUQN6C11fwCB/3jmEsW0ho
-         BtZTfR93p2GpxgeHtaRBb/jZPB5OM9WFXalZOySItkooS3fGRZtaLzwTCcEpHBUyKGXy
-         e35Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hmyJ+fxOvQKNEomi44KNz6W2UiehRKi6Y9dBpWtAWIM=;
-        b=LQ59I+fs/NRA2MUlUvl9/T6o7xJPMm19WbdKsu2105mRLoc23j1Y64cmFia7rKHz8v
-         g1fJZ+RigYYAFul+EwToJtpFeF35mO+pFG6d4VsMgIENLAuOb+A4BaT2RGCN8HFgIvsc
-         flqENVgGpM5BTYywfzVqQNbzgv3wnYEKh17Nh2ct0nh/eK/LCnUdpSOQ0KKkt0wJPQQJ
-         PB9QDndo7cH0/wPPZ9LujB+JnanXNXgI+Xb68h6qkHUB2Qt7GyVlILmR+DPfXhuBhcPZ
-         6Hh96lR7oR2YIqqa75VrWsEqA9/JaApHm7ZrpCHBU8Ka5JnfsWd3a7NPptvyPWWfGYgC
-         gH8g==
-X-Gm-Message-State: AOAM533ZsuwU0/konrekkJZ+I1AxAIjcvPnFD9ngUeeKbmQSgm4FpLbz
-        otlUsycn7Pr4dCED7LrFmJ845tU5DAAGkESlCIMzNA==
-X-Google-Smtp-Source: ABdhPJxzC3VVjMq24dLsSc1rgpBgZeTWA+LOx570smHg/XMHtuHNwIss71RE7o30ztqQ9+IIIU47U4I9wzzuA1WYgjc=
-X-Received: by 2002:adf:fa12:: with SMTP id m18mr15619002wrr.306.1635135467273;
- Sun, 24 Oct 2021 21:17:47 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635135623; x=1666671623;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=X7bAkQfz6aT4/715bzVhw0pglrEtN8FLQnyZrTVFNdU=;
+  b=GsQUwD+ka644G4LLLLTj8ootb0+CBTsyG0rxaTXlv0wCUaAd3UP4ti5l
+   wY02psWHtg17oqJnWBsklpJ3jDBnODtmwXx/pOXQM/nFtAmPTNQUhSjtg
+   pyFH4rPq3+eCdFiVrG0uislI/eYXWxmdZuPt12BHGQkthjxuJSC/n06i5
+   I=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 24 Oct 2021 21:20:23 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 21:20:22 -0700
+Received: from c-sanm-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Sun, 24 Oct 2021 21:20:17 -0700
+From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        "Vinod Koul" <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-usb@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Subject: [PATCH v2] phy: qcom-snps: Correct the FSEL_MASK
+Date:   Mon, 25 Oct 2021 09:49:35 +0530
+Message-ID: <1635135575-5668-1-git-send-email-quic_c_sanm@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20211025040607.92786-1-wefu@redhat.com> <20211025040607.92786-2-wefu@redhat.com>
-In-Reply-To: <20211025040607.92786-2-wefu@redhat.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 25 Oct 2021 09:47:34 +0530
-Message-ID: <CAAhSdy1N-UQFnbFc7PSwf62y=gbvX7pK=vwUaG8m_KzdWx3AgQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH V3 1/2] dt-bindings: riscv: add mmu-supports-svpbmt
- for Svpbmt
-To:     Wei Fu <wefu@redhat.com>
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Guo Ren <guoren@kernel.org>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com,
-        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Gordan Markus <gordan.markus@canonical.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 9:36 AM <wefu@redhat.com> wrote:
->
-> From: Wei Fu <wefu@redhat.com>
->
-> Previous patch has added svpbmt in arch/riscv and changed the
-> DT mmu-type. Update dt-bindings related property here.
->
-> Signed-off-by: Wei Fu <wefu@redhat.com>
-> Co-developed-by: Guo Ren <guoren@kernel.org>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> ---
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> index e534f6a7cfa1..76f324d85e12 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -59,6 +59,11 @@ properties:
->        - riscv,sv48
->        - riscv,none
->
-> +  mmu-supports-svpbmt:
-> +    description:
-> +      Describes the CPU's mmu-supports-svpbmt support
-> +    $ref: '/schemas/types.yaml#/definitions/phandle'
+The FSEL_MASK which selects the refclock is defined incorrectly.
+It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
+in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0 is reset which keeps PHY analog
+blocks ON during suspend.
+Fix this issue by correctly defining the FSEL_MASK.
 
-There were various proposals from different folks in the previous
-email threads.
+Fixes: 51e8114f80d0 (phy: qcom-snps: Add SNPS USB PHY driver for
+QCOM based SOCs)
+Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+---
+v2:
+Corrected the register name COMMON1 > COMMMON0 in commit description.
+Added Fixes tag.
+Dropped copyright line.
 
-I think most of us were converging on:
-1) Don't modify "mmu-type" DT property for backward
-compatibility
-2) Add boolean DT property "riscv,svpmbt" under
-"mmu" child DT node of each CPU DT node. Same will apply
-to boolean DT property "riscv,svnapot" as well.
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We also have bitmanip and vector broken down into smaller
-extensions so grouping related extensions as separate DT node
-under each CPU node will be more readable and easy to parse.
+diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+index ae4bac0..7e61202 100644
+--- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
++++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+@@ -33,7 +33,7 @@
+ 
+ #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0	(0x54)
+ #define RETENABLEN				BIT(3)
+-#define FSEL_MASK				GENMASK(7, 5)
++#define FSEL_MASK				GENMASK(6, 4)
+ #define FSEL_DEFAULT				(0x3 << 4)
+ 
+ #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1	(0x58)
+-- 
+2.7.4
 
-Regards,
-Anup
-
-> +
->    riscv,isa:
->      description:
->        Identifies the specific RISC-V instruction set architecture
-> --
-> 2.25.4
->
