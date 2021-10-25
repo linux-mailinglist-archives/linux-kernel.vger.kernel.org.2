@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB01A43A23C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A65B43A16C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237796AbhJYTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:45:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        id S237108AbhJYTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:38:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237094AbhJYTis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:38:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F9E960F70;
-        Mon, 25 Oct 2021 19:34:48 +0000 (UTC)
+        id S236192AbhJYTdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:33:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E89B60724;
+        Mon, 25 Oct 2021 19:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190489;
-        bh=HE4PmzW54rEQQgoPfYsS2lGpZo21B1lfgplaFYBTJBo=;
+        s=korg; t=1635190166;
+        bh=hGpd3YvNPeXFjd18sjoJ/3BCSMDycHYGo7nmSGnP960=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zCfI08mwdpLa/6JCKll4dF46Ypg8VbDXfcQKKyA80oP0nHH0I6crGzgZN7I8QIaKy
-         q2wbwMdXBVWe+dMZBIgf89BbG4ReElmwZS+Zc/LALLRwEGuwlXw5XrkVvuTfF2b8la
-         ZrXE/XdngddErLGQiaoszo4ooOA/V771/+lSvp0Q=
+        b=LQ2K+199MKlmI7YK5+6cyQh6gFyOsfjzXCxd+fD7zWN726h8v8sGl6ZSVY+cSw5Qg
+         gppvuO6we+Je/hhlN13CDYIcSFVEC87PXhoD/NC4H6OQJeeCOr/WHLiEiZRXGre/LU
+         r66hYyJAvUM+lq51FAADDhrXCLFl2C4rDKq0d7/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 70/95] gcc-plugins/structleak: add makefile var for disabling structleak
+Subject: [PATCH 5.4 50/58] platform/x86: intel_scu_ipc: Update timeout value in comment
 Date:   Mon, 25 Oct 2021 21:15:07 +0200
-Message-Id: <20211025191007.069144838@linuxfoundation.org>
+Message-Id: <20211025190946.070109834@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brendan Higgins <brendanhiggins@google.com>
+From: Prashant Malani <pmalani@chromium.org>
 
-[ Upstream commit 554afc3b9797511e3245864e32aebeb6abbab1e3 ]
+[ Upstream commit a0c5814b9933f25ecb6de169483c5b88cf632bca ]
 
-KUnit and structleak don't play nice, so add a makefile variable for
-enabling structleak when it complains.
+The comment decribing the IPC timeout hadn't been updated when the
+actual timeout was changed from 3 to 5 seconds in
+commit a7d53dbbc70a ("platform/x86: intel_scu_ipc: Increase virtual
+timeout from 3 to 5 seconds") .
 
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Since the value is anyway updated to 10s now, take this opportunity to
+update the value in the comment too.
+
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Cc: Benson Leung <bleung@chromium.org>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Link: https://lore.kernel.org/r/20210928101932.2543937-4-pmalani@chromium.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/Makefile.gcc-plugins | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/platform/x86/intel_scu_ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
-index 952e46876329..4aad28480035 100644
---- a/scripts/Makefile.gcc-plugins
-+++ b/scripts/Makefile.gcc-plugins
-@@ -19,6 +19,10 @@ gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF)		\
- 		+= -fplugin-arg-structleak_plugin-byref
- gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL)	\
- 		+= -fplugin-arg-structleak_plugin-byref-all
-+ifdef CONFIG_GCC_PLUGIN_STRUCTLEAK
-+    DISABLE_STRUCTLEAK_PLUGIN += -fplugin-arg-structleak_plugin-disable
-+endif
-+export DISABLE_STRUCTLEAK_PLUGIN
- gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK)		\
- 		+= -DSTRUCTLEAK_PLUGIN
+diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
+index e330ec73c465..bcb516892d01 100644
+--- a/drivers/platform/x86/intel_scu_ipc.c
++++ b/drivers/platform/x86/intel_scu_ipc.c
+@@ -181,7 +181,7 @@ static inline int busy_loop(struct intel_scu_ipc_dev *scu)
+ 	return 0;
+ }
  
+-/* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
++/* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
+ static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
+ {
+ 	int status;
 -- 
 2.33.0
 
