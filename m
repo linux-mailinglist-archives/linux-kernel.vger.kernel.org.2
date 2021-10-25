@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11712438F32
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA2F438F34
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhJYGQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:16:55 -0400
-Received: from mga02.intel.com ([134.134.136.20]:30470 "EHLO mga02.intel.com"
+        id S230218AbhJYGRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhJYGQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:16:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216743074"
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="216743074"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 23:14:32 -0700
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="496637810"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.71]) ([10.238.2.71])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 23:14:30 -0700
-Message-ID: <4a757c43-dfc8-6da4-944e-9bf687d7e3bc@intel.com>
-Date:   Mon, 25 Oct 2021 14:14:28 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.2.0
-Subject: Re: [PATCH] x86/bus_lock: Don't assume the init value of
- DEBUGCTLMSR.BUS_LOCK_DETECT to be zero
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20210901084004.5393-1-chenyi.qiang@intel.com>
- <YW766qk0W6K5rhrU@google.com>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-In-Reply-To: <YW766qk0W6K5rhrU@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        id S229841AbhJYGRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:17:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 189A260F4F;
+        Mon, 25 Oct 2021 06:14:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635142478;
+        bh=jSisEyhfeg/5wcIAb8s9R0DgLgmYgk3ggud9rZ4RHyI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DOQq8Zm9N2gskgxgO2gYID4qAG3MjDWeE0VnA6QLF1Dczbt6SxuG8+8q33y7JlCr1
+         CVKCHc3ycbTrnYO1IktntndVFWTqQNjHPMC6EgLc/a183q4Dk6+XOzGLMgPfpXAWR1
+         RAeU+qmb+4jV29Gqbc1EcrjeWSXhC1wmRztV+hTlQ3ORo6VwKVN740kewLh4cSTC9B
+         3e8vSpDeJF2sRFCERmpKxY1MeR2U7iTHPn2GDZdo+W9e3jTFq7i9MyntL1Mz2Py1R8
+         mCRHC0zJyeHTiYmBpCZoL8yonEpRX/IMH9Nu3/XdVgC3waQ19pwfh2Dam+kQYyz2Fl
+         u9RdAAgqdlwQw==
+Date:   Mon, 25 Oct 2021 15:14:35 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, corbet@lwn.net, ananth@in.ibm.com,
+        akpm@linux-foundation.org, randy.dunlap@oracle.com,
+        mathieu.desnoyers@polymtl.ca, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] Do some changes about kprobe
+Message-Id: <20211025151435.cac8737a4b5ca3cd4c7a3363@kernel.org>
+In-Reply-To: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tiezhu,
+
+On Mon, 25 Oct 2021 11:30:56 +0800
+Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+
+> This patchset is based on kprobes kernel tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/ for-next
+
+Sorry for confusion, that is not the kernel branch for kprobes. Currently
+the kprobes is maintained under the Steve's tracing tree.
+
+Anyway, some of your patch should be merged. Let me pick it.
+
+Thank you,
+
+> 
+> Tiezhu Yang (4):
+>   samples/kretprobes: Fix return value if register_kretprobe() failed
+>   docs, kprobes: Remove invalid URL and add new reference
+>   test_kprobes: Move it from kernel/ to lib/
+>   MAINTAINERS: Add git tree and missing files for KPROBES
+> 
+>  Documentation/trace/kprobes.rst     | 2 +-
+>  MAINTAINERS                         | 3 +++
+>  kernel/Makefile                     | 1 -
+>  lib/Makefile                        | 1 +
+>  {kernel => lib}/test_kprobes.c      | 0
+>  samples/kprobes/kretprobe_example.c | 2 +-
+>  6 files changed, 6 insertions(+), 3 deletions(-)
+>  rename {kernel => lib}/test_kprobes.c (100%)
+> 
+> -- 
+> 2.1.0
+> 
 
 
-On 10/20/2021 1:05 AM, Sean Christopherson wrote:
-> On Wed, Sep 01, 2021, Chenyi Qiang wrote:
->> It's possible that BIOS/firmware has set DEBUGCTLMSR_BUS_LOCK_DETECT, or
->> this kernel has been kexec'd from a kernel that enabled bus lock
->> detection.
-> 
-> This feels like the kernel should explicitly zero out the entire MSR somewhere
-> in the generic boot flow.  E.g. something like this somewhere.
-> 
-
-Yes. Meanwhile, I think kernel code prefers to explicitly set/clear the 
-control bit according to the parameter. Maybe both changes should be 
-applied.
-
-> #ifndef CONFIG_X86_DEBUGCTLMSR
-> 	if (boot_cpu_data.x86 < 6)
-> 		return;
-> #endifa
-> 
-> 	wrmsrl(MSR_IA32_DEBUGCTLMSR, 0);
-> 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
