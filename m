@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4625143A2F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7398243A33F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239168AbhJYTyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
+        id S239686AbhJYT53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237015AbhJYTtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:49:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A569961248;
-        Mon, 25 Oct 2021 19:41:51 +0000 (UTC)
+        id S237890AbhJYTwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:52:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9ABC611BF;
+        Mon, 25 Oct 2021 19:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190913;
-        bh=5p8bZG8z4p9WGxRfQLTTQFOry9/dc9pJK+hpBQ75HDQ=;
+        s=korg; t=1635191038;
+        bh=BQ8ZYP4aWA9VG3npybEInN6U77EyNl67sqo4g6hVSTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wm+GCXtf3BN8nO+g0EDOzPMiXQsuYTVDmENo3GqP+HvNwCz0hi7VWciliEHIy6r2+
-         JTUdSsT3RVjmBpEKGaVgEwv+CF0zHD3DkBBr60M2BV6IjzW0V3X76oqWIMjsFEUDTK
-         gTpEj6pTq13u95MNtz8KPzUigKGDQip7VINQggpI=
+        b=P+J90Xw2KOMr7cV8wV4oSOy4aStCDRqZAxSnXr2+rUO8eInCrZ0UXFp0Frqb3rqi4
+         V1ZjJkWp9EW1JRaznWxGWi8asAZ6WBASOy7eutwyG0tU58Xkus54492B/98bchW3LP
+         iED/T/fIe2gCj06IIUTu8RxI9jjbvJo699+kmA3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,9 +37,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Roman Gushchin <guro@fb.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.14 100/169] mm, slub: fix mismatch between reconstructed freelist depth and cnt
-Date:   Mon, 25 Oct 2021 21:14:41 +0200
-Message-Id: <20211025191030.534001211@linuxfoundation.org>
+Subject: [PATCH 5.14 101/169] mm, slub: fix potential memoryleak in kmem_cache_open()
+Date:   Mon, 25 Oct 2021 21:14:42 +0200
+Message-Id: <20211025191030.687668019@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
 References: <20211025191017.756020307@linuxfoundation.org>
@@ -53,16 +53,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miaohe Lin <linmiaohe@huawei.com>
 
-commit 899447f669da76cc3605665e1a95ee877bc464cc upstream.
+commit 9037c57681d25e4dcc442d940d6dbe24dd31f461 upstream.
 
-If object's reuse is delayed, it will be excluded from the reconstructed
-freelist.  But we forgot to adjust the cnt accordingly.  So there will
-be a mismatch between reconstructed freelist depth and cnt.  This will
-lead to free_debug_processing() complaining about freelist count or a
-incorrect slub inuse count.
+In error path, the random_seq of slub cache might be leaked.  Fix this
+by using __kmem_cache_release() to release all the relevant resources.
 
-Link: https://lkml.kernel.org/r/20210916123920.48704-3-linmiaohe@huawei.com
-Fixes: c3895391df38 ("kasan, slub: fix handling of kasan_slab_free hook")
+Link: https://lkml.kernel.org/r/20210916123920.48704-4-linmiaohe@huawei.com
+Fixes: 210e7a43fa90 ("mm: SLUB freelist randomization")
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrey Konovalov <andreyknvl@gmail.com>
@@ -81,41 +78,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/slub.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -1629,7 +1629,8 @@ static __always_inline bool slab_free_ho
- }
+@@ -3935,8 +3935,8 @@ static int kmem_cache_open(struct kmem_c
+ 	if (alloc_kmem_cache_cpus(s))
+ 		return 0;
  
- static inline bool slab_free_freelist_hook(struct kmem_cache *s,
--					   void **head, void **tail)
-+					   void **head, void **tail,
-+					   int *cnt)
- {
- 
- 	void *object;
-@@ -1656,6 +1657,12 @@ static inline bool slab_free_freelist_ho
- 			*head = object;
- 			if (!*tail)
- 				*tail = object;
-+		} else {
-+			/*
-+			 * Adjust the reconstructed freelist depth
-+			 * accordingly if object's reuse is delayed.
-+			 */
-+			--(*cnt);
- 		}
- 	} while (object != old_tail);
- 
-@@ -3210,7 +3217,7 @@ static __always_inline void slab_free(st
- 	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
- 	 * to remove objects, whose reuse must be delayed.
- 	 */
--	if (slab_free_freelist_hook(s, &head, &tail))
-+	if (slab_free_freelist_hook(s, &head, &tail, &cnt))
- 		do_slab_free(s, page, head, tail, cnt, addr);
+-	free_kmem_cache_nodes(s);
+ error:
++	__kmem_cache_release(s);
+ 	return -EINVAL;
  }
  
 
