@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD19439BC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A34439BC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234013AbhJYQmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
+        id S234043AbhJYQmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234025AbhJYQmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:42:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3A9F60F9B;
-        Mon, 25 Oct 2021 16:39:39 +0000 (UTC)
+        id S234023AbhJYQmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:42:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3356160F6F;
+        Mon, 25 Oct 2021 16:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635179980;
-        bh=/+1k99dardJpt43GXzNTf7jcp7+7Kejj39Ekr6ZBxmw=;
+        s=k20201202; t=1635179985;
+        bh=ba9GtGPfNtOwMPCt3kSDkLI8frIBBx2rXSzFjOC3Wko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c/qh8KSmYDq/kS4yWOtElCF2X7RXbxQ+koGDUEJEyBax0tOOfevxflJunpTtnbzYA
-         9vC+j9w7MMOV3tvdqEzoIO2IRPqDRBKXCyXYwF/FS3nzD1Sw2VsylXb3p/K9nbGhk2
-         sajBgRL2xLO59wpKOyyWRMkU3KF6w3bMRnQIpx48HmconRLGDmSsIWUa6YMRbLogDx
-         rPyCh3V0nzMkfoKWNzPfqOHH55FiltYPz5xJzeujzZFyXGQybtNgfYGm3irFFudyfT
-         OmRmQ9H/Ti8KM9SxTaMvnBtl47A8Cgz/xxghUfOqxp+n2tZmQV89FoQtK/Yd9qvkFZ
-         nLZpaNC7+pq6w==
+        b=k5Gwqn5lgSAH2matogN3LILhwEg8zK14FLpzvOwMCN1arYUGxiZ77UprXzwG/BEbg
+         wqVJx/Ebmpd2zvi+XyfprGtoi0tFXJLu9NePXUi44OjevycnV933IFblW1/e4lLiQL
+         C89ge7jwT9TpgLrbuZTXoivVSJddBj5mWlpYh7gbwD23K2P2hZIpgxCRoU5ClDi35Z
+         iJehKwwgf8o3qsRDQf0d31Wy6w2z6j4GgnuNBqxUm8t8Qr3BJBRPRLPh2j29qTA6Cq
+         3U8hbYFh/cgjUbTuxLCiOaNS5KSB2Lq9aNo2oDaJpm+1Bktu8ZHipDemZ3QjyYR+jA
+         QUYP9rwf0pyAw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, Basavaraj.Hiregoudar@amd.com,
-        Jaroslav Kysela <perex@perex.cz>, Sunil-kumar.Dommati@amd.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Vijendar.Mukunda@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Alexander.Deucher@amd.com, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ASoC: amd: acp: Add acp_machine struct for renoir platform.
-Date:   Mon, 25 Oct 2021 17:39:22 +0100
-Message-Id: <163517996155.3558038.16782674915140335935.b4-ty@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: cs42l42: Prevent NULL pointer deref in interrupt handler
+Date:   Mon, 25 Oct 2021 17:39:24 +0100
+Message-Id: <163517996156.3558038.13466013835438231170.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211025074808.471333-1-AjitKumar.Pandey@amd.com>
-References: <20211025074808.471333-1-AjitKumar.Pandey@amd.com>
+In-Reply-To: <20211025112258.9282-1-rf@opensource.cirrus.com>
+References: <20211025112258.9282-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,11 +40,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 13:18:00 +0530, Ajit Kumar Pandey wrote:
-> Add acpi_mach struct for renoir platform to select machine driver
-> based on codec and amp ACPI id.
+On Mon, 25 Oct 2021 12:22:58 +0100, Richard Fitzgerald wrote:
+> The interrupt handling code was getting the struct device* from a
+> struct snd_soc_component* stored in struct cs42l42_private. If the
+> interrupt was asserted before ASoC calls component_probe() the
+> snd_soc_component* will be NULL.
 > 
+> The stored snd_soc_component* is not actually used for anything other
+> than indirectly getting the struct device*. Remove it, and store the
+> struct device* in struct cs42l42_private.
 > 
+> [...]
 
 Applied to
 
@@ -56,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: Add acp_machine struct for renoir platform.
-      commit: 8a8e1b90bd2cc7db85ba544e63c8dc01fe113fa9
+[1/1] ASoC: cs42l42: Prevent NULL pointer deref in interrupt handler
+      commit: 2003c44e28ac9759200a78dda20c5f695949e3f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
