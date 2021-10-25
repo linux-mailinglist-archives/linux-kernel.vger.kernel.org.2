@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB7B4396D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2A74396DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhJYM4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:56:46 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:39677 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhJYM4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:56:43 -0400
-Received: by mail-ot1-f54.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so14791170ote.6;
-        Mon, 25 Oct 2021 05:54:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=xfPmPgNFQgIKrWKVU27Szuu0QsSCtm+5R24aa/F4BSg=;
-        b=lefDfrVSvWR8U4WnOGkF76AwFCk8T7kwi4iXWysxEQOHCWhxgytedxzDmpLotohspU
-         4yIHd1goYVMJ62GPiS7B0X1CWbsgkgb5Ahqzrywtp7mk3EcFto3F+iaMnAuSSvGd4SZA
-         z2mSapmsWoNGGnGXMs+2LjUd39+PrxCAB/gXm7/q8cXzs3EI8sx/T6EasX+de84STXna
-         c9/UfbPjWGJWOjO2RajtyLPcLrkp3ds8n+bTR4Rq52mY9fWbDQMLOZD8Noou3ntkp0w6
-         NHR2piQo0ZUn5zoocHV9C1z2Vbr9FEwc0gIdDzqHFqVRZ7VyFZ+qmIVG0xR4OcabjR8r
-         zXWg==
-X-Gm-Message-State: AOAM532ryVk5dLiBR4k316724wgmMcaTKOhvxgMEi0iRdQGPRETIJRTT
-        EIAXQki6lhWh5Tn/vglSPA==
-X-Google-Smtp-Source: ABdhPJxSzDa6Aw86E7HU9PcZR3V6hQx/apZrKRCDa2ilOHhh7Q1/dkrii+HwuqomKgo/nUzIa6Dt1Q==
-X-Received: by 2002:a05:6830:1e08:: with SMTP id s8mr13970909otr.305.1635166460875;
-        Mon, 25 Oct 2021 05:54:20 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bf3sm3946646oib.34.2021.10.25.05.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 05:54:20 -0700 (PDT)
-Received: (nullmailer pid 190976 invoked by uid 1000);
-        Mon, 25 Oct 2021 12:54:14 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     arnd@arndb.de, mturquette@baylibre.com, olof@lixom.net,
-        aisheng.dong@nxp.com, sboyd@kernel.org, Mr.Bossman075@gmail.com,
-        fugang.duan@nxp.com, nobuhiro1.iwamatsu@toshiba.co.jp,
-        adrian.hunter@intel.com, linux-arm-kernel@lists.infradead.org,
-        b20788@freescale.com, linux-serial@vger.kernel.org,
-        gregkh@linuxfoundation.org, linus.walleij@linaro.org,
-        ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, s.hauer@pengutronix.de,
-        abel.vesa@nxp.com, leonard.crestez@nxp.com, linux@armlinux.org.uk,
-        shawnguo@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, jirislaby@kernel.org,
-        linux-imx@nxp.com, linux-mmc@vger.kernel.org, festevam@gmail.com,
-        stefan@agner.ch, giulio.benetti@benettiengineering.com,
-        soc@kernel.org
-In-Reply-To: <20211024154027.1479261-6-Mr.Bossman075@gmail.com>
-References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com> <20211024154027.1479261-6-Mr.Bossman075@gmail.com>
-Subject: Re: [PATCH 05/13] dt-bindings: clock: imx: Add documentation for i.MXRT clock
-Date:   Mon, 25 Oct 2021 07:54:14 -0500
-Message-Id: <1635166454.818167.190975.nullmailer@robh.at.kernel.org>
+        id S233387AbhJYM75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:59:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:54793 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233315AbhJYM74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:59:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="315846780"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="315846780"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:57:30 -0700
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="485664166"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:57:27 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mezXG-000ceU-FU;
+        Mon, 25 Oct 2021 15:57:06 +0300
+Date:   Mon, 25 Oct 2021 15:57:06 +0300
+From:   "andriy.shevchenko" <andriy.shevchenko@linux.intel.com>
+To:     "changlianzhi@uniontech.com" <changlianzhi@uniontech.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        jirislaby <jirislaby@kernel.org>, 282827961 <282827961@qq.com>
+Subject: Re: [PATCH v6] tty: Fix the keyboard led light display problem
+Message-ID: <YXaposOYGalsRtZt@smile.fi.intel.com>
+References: <20211021020511.18016-1-changlianzhi@uniontech.com>
+ <YXLVAOh6AcB34kW8@smile.fi.intel.com>
+ <202110250129181502896@uniontech.com>
+ <YXac+bpVemXEp9XR@smile.fi.intel.com>
+ <202110251224440412487@uniontech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202110251224440412487@uniontech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Oct 2021 11:40:19 -0400, Jesse Taube wrote:
-> Add DT binding documentation for i.MXRT clock driver.
+On Mon, Oct 25, 2021 at 12:24:45PM +0800, changlianzhi@uniontech.com wrote:
+> On Mon, Oct 25, 2021 at 01:29:18AM +0800, changlianzhi@uniontech.com wrote:
+> > > >>On Thu, Oct 21, 2021 at 10:05:11AM +0800, lianzhi chang wrote:
+
+...
+
+> > > >> +	unsigned long leds;
+> > > >> +
+> > > >> +	leds = (unsigned long)ledstate;
+> > >
+> > > >Can be one line.
+> > >
+> > > >But most important question you are ignoring to answer / address is why do you
+> > > >use casting?
 > 
-> Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
-> ---
->  .../bindings/clock/imxrt-clock.yaml           | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/imxrt-clock.yaml
+> > > >>But most important question you are ignoring to answer / address is why do you
+> > > >>use casting?
+> > > Casting is used here because:
+> > > The second parameter of test_bit is "volatile unsigned long *addr" (see constant_test_bit() in /arch/x86/include/asm/bitops.h), but ledstate is an "unsigned int" type. If casting is not used,
+> > > compile Will report an error.
 > 
+> > Wait, you are casting pointer to an integer?!
+> > This is completely wrong in this case!
+> 
+> Hello, I did not do that. For the complete code, please check the
+> "patch v6" email I sent earlier. My code is like this:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> +static void kbd_update_ledstate(struct input_dev *dev)
+> +{
+> +	unsigned long leds;
+> +
+> +	leds = (unsigned long)ledstate;
+> +
+> +	if (!!test_bit(LED_NUML, dev->led) != !!test_bit(VC_NUMLOCK, &leds))
+> +	ledstate ^= BIT(VC_NUMLOCK);
+> +	if (!!test_bit(LED_CAPSL, dev->led) != !!test_bit(VC_CAPSLOCK, &leds))
+> +	ledstate ^= BIT(VC_CAPSLOCK);
+> +	if (!!test_bit(LED_SCROLLL, dev->led) != !!test_bit(VC_SCROLLOCK, &leds))
+> +	ledstate ^= BIT(VC_SCROLLOCK);
+> +}
 
-yamllint warnings/errors:
+> I mean, the second parameter of test_bit is "volatile unsigned long *addr",
+> which is a pointer. And ledstate is an unsigned int type, so I defined an
+> unsigned long type leds, assign the ledstate to the leds after forced
+> conversion, and then when calling the test_bit function, get the address
+> of the leds as a parameter.
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/clock/imxrt-clock.example.dts:32.27-28 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/clock/imxrt-clock.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
+This all is fine, but why casting is needed? I didn't still get.
 
-doc reference errors (make refcheckdocs):
+-- 
+With Best Regards,
+Andy Shevchenko
 
-See https://patchwork.ozlabs.org/patch/1545398
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
 
