@@ -2,87 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC122438DA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF421438DAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 05:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhJYDGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 23:06:33 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55363 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230040AbhJYDGc (ORCPT
+        id S232073AbhJYDNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 23:13:20 -0400
+Received: from mo-csw1515.securemx.jp ([210.130.202.154]:47328 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231610AbhJYDNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:06:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UtUyMKi_1635131045;
-Received: from 30.240.102.8(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UtUyMKi_1635131045)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 25 Oct 2021 11:04:06 +0800
-Message-ID: <0997d70b-9f28-ba0a-853f-2160922dc722@linux.alibaba.com>
-Date:   Mon, 25 Oct 2021 11:04:02 +0800
+        Sun, 24 Oct 2021 23:13:19 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 19P3AhKR003229; Mon, 25 Oct 2021 12:10:44 +0900
+X-Iguazu-Qid: 34tIWSYHCieujeRQRA
+X-Iguazu-QSIG: v=2; s=0; t=1635131443; q=34tIWSYHCieujeRQRA; m=RK/Bg2T8APxsmPrQXug5NkOjYxXvMIPYIDMolk3DfcQ=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1512) id 19P3AfXF019206
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 25 Oct 2021 12:10:42 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id B7BEB1000CA;
+        Mon, 25 Oct 2021 12:10:41 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 19P3Af6w004067;
+        Mon, 25 Oct 2021 12:10:41 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v5 0/4] clk: visconti: Add support common clock driver and reset driver
+Date:   Mon, 25 Oct 2021 12:10:34 +0900
+X-TSB-HOP: ON
+Message-Id: <20211025031038.4180686-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v2 1/2] crypto: use SM3 instead of SM3_256
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <20211019100423.43615-1-tianjia.zhang@linux.alibaba.com>
- <20211019100423.43615-2-tianjia.zhang@linux.alibaba.com>
- <f5c87a233027c8026ae8574f3e25c9162da3bfff.camel@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <f5c87a233027c8026ae8574f3e25c9162da3bfff.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
+Hi,
 
-On 10/23/21 8:48 AM, Jarkko Sakkinen wrote:
-> On Tue, 2021-10-19 at 18:04 +0800, Tianjia Zhang wrote:
->> According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html,
->> SM3 always produces a 256-bit hash value and there are no plans for
->> other length development, so there is no ambiguity in the name of sm3.
->>
->> Suggested-by: James Bottomley <jejb@linux.ibm.com>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> ---
->>   Documentation/security/keys/trusted-encrypted.rst | 2 +-
->>   crypto/hash_info.c                                | 4 ++--
->>   drivers/char/tpm/tpm2-cmd.c                       | 2 +-
->>   include/crypto/hash_info.h                        | 2 +-
->>   include/uapi/linux/hash_info.h                    | 3 ++-
->>   security/keys/trusted-keys/trusted_tpm2.c         | 2 +-
->>   6 files changed, 8 insertions(+), 7 deletions(-)
->>
->> diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
->> index 80d5a5af62a1..3292461517f6 100644
->> --- a/Documentation/security/keys/trusted-encrypted.rst
->> +++ b/Documentation/security/keys/trusted-encrypted.rst
->> @@ -162,7 +162,7 @@ Usage::
->>                        default 1 (resealing allowed)
->>          hash=         hash algorithm name as a string. For TPM 1.x the only
->>                        allowed value is sha1. For TPM 2.x the allowed values
->> -                     are sha1, sha256, sha384, sha512 and sm3-256.
->> +                     are sha1, sha256, sha384, sha512 and sm3.
-> 
-> You cannot remove sm3-256 from uapi.
-> 
+This series is PLL, clock and reset driver for Toshiba's ARM SoC,
+Visconti[0].
+Since the clock driver and reset driver are provided as one function,
+they are
+provided in cooperation with the clock driver.
 
-Thanks for pointing it out, Maybe this fix is more appropriate in patch 2.
+This provides DT binding documentation, device driver, MAINTAINER files.
 
 Best regards,
-Tianjia
+  Nobuhiro
+
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+
+  dt-bindings: clock: Add DT bindings for PLL of Toshiba Visconti TMPV7708 SoC
+    v4 -> v5:
+       - Add Reviewed-by: Rob Herring <robh@kernel.org>.
+    v3 -> v4:
+       - Fix node name to clock-controller.
+       - Remove osc2-clk-frequency, and this defines to DT as
+         fixed-clock.
+       - Add clocks.
+    v2 -> v3:
+       - Change file name.
+    v1 -> v2:
+       - Update subject.
+
+  dt-bindings: clock: Add DT bindings for SMU of Toshiba Visconti TMPV7708 SoC
+    v4 -> v5:
+       - Add Reviewed-by: Rob Herring <robh@kernel.org>.
+       - v5: Update to use syscon.
+    v3 -> v4:
+      - Move reset dt-binding header file.
+      - Move clock dt-binding header file.
+      - Change dt-binding header's License to 'GPL-2.0-only OR
+        BSD-2-Clause'
+      - Fix node name to clock-controller.
+    v2 -> v3:
+       - Change file name.
+    v1 -> v2:
+       - Update subject.
+
+  clk: visconti: Add support common clock driver and reset driver
+    v4 -> v5:
+      - Makefile/Kconfig
+        Update Kconfig with using COMPILE_TEST
+      - clkc-tmpv770x.c
+        Fix location of include file.
+        Fix to use clk-provider.h.
+        Update clock flags in pietherpll_clk_gate_tables and others.
+        Use lowercase hex.
+        Update to use syscon.
+        Update to use platform driver instead of CLK_OF_DECLARE_DRIVER.
+      - clkc.c
+        Fix check of visconti_gate_clk_is_enabled.
+        Drop visconti_gate_clk_is_enabled in visconti_gate_clk_enable().
+        Drop unnecessary comment.
+        Update to use clk_parent_data instead of parent_names.
+        Update to use devm_clk_hw_register().
+        Update to use struct device in visconti_clk_register_gate().
+        Update to get structure size from pointer with sizeof().
+      - clkc.h
+        Update struct visconti_clk_gate_table to using struct clk_parent_data.
+        Drop flags in struct visconti_clk_gate.
+      - pll-tmpv770x.c
+        Use lowercase hex.
+        Update to use platform driver instead of CLK_OF_DECLARE_DRIVER.
+        Update to use size_t in visconti_pll and move position.
+        Update use FIELD_GET().
+        Drop braces.
+        Use const point in visconti_get_pll_rate_from_data().
+        Update to comparison by memcmp in visconti_get_pll_rate_from_data().
+        Drop unnecessary comment.
+        Drop unnecessary print.
+        Drop unnecessary lock and unlock.
+        Drop visconti_pll_is_enabled in visconti_pll_enable().
+        Drop unused flags.
+        Update to use clk_hw_register().
+        Drop to use kmemdup().
+      - pll.h
+        Drop __init.
+    v3 -> v4:
+       - Remove osc2 clock's code. Move to DT.
+    v2 -> v3:
+       - Fix return value in visconti_register_pll().
+       - Remove initialization of flags used by spin_lock_irqsave().
+       - - Change function name from *7708* to *770x*.
+       - Fix some coding style.
+    v1 -> v2:
+       - Fix warning with W=1
+
+  MAINTAINERS: Add entries for Toshiba Visconti PLL and clock controller
+    v4 -> v5:
+       - no update.
+    v3 -> v4:
+       - no update.
+    v2 -> v3:
+       - Change path of DT binding files.
+    v1 -> v2:
+
+
+Nobuhiro Iwamatsu (4):
+  dt-bindings: clock: Add DT bindings for PLL of Toshiba Visconti TMPV770x SoC
+  dt-bindings: clock: Add DT bindings for SMU of Toshiba Visconti TMPV770x SoC
+  clk: visconti: Add support common clock driver and reset driver
+  MAINTAINERS: Add entries for Toshiba Visconti PLL and clock controller
+
+ .../clock/toshiba,tmpv770x-pipllct.yaml       |  57 +++
+ .../clock/toshiba,tmpv770x-pismu.yaml         |  52 +++
+ MAINTAINERS                                   |   3 +
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/visconti/Kconfig                  |   9 +
+ drivers/clk/visconti/Makefile                 |   5 +
+ drivers/clk/visconti/clkc-tmpv770x.c          | 291 +++++++++++++++
+ drivers/clk/visconti/clkc.c                   | 206 +++++++++++
+ drivers/clk/visconti/clkc.h                   |  76 ++++
+ drivers/clk/visconti/pll-tmpv770x.c           |  85 +++++
+ drivers/clk/visconti/pll.c                    | 339 ++++++++++++++++++
+ drivers/clk/visconti/pll.h                    |  62 ++++
+ drivers/clk/visconti/reset.c                  | 107 ++++++
+ drivers/clk/visconti/reset.h                  |  36 ++
+ include/dt-bindings/clock/toshiba,tmpv770x.h  | 181 ++++++++++
+ include/dt-bindings/reset/toshiba,tmpv770x.h  |  41 +++
+ 17 files changed, 1552 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pipllct.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pismu.yaml
+ create mode 100644 drivers/clk/visconti/Kconfig
+ create mode 100644 drivers/clk/visconti/Makefile
+ create mode 100644 drivers/clk/visconti/clkc-tmpv770x.c
+ create mode 100644 drivers/clk/visconti/clkc.c
+ create mode 100644 drivers/clk/visconti/clkc.h
+ create mode 100644 drivers/clk/visconti/pll-tmpv770x.c
+ create mode 100644 drivers/clk/visconti/pll.c
+ create mode 100644 drivers/clk/visconti/pll.h
+ create mode 100644 drivers/clk/visconti/reset.c
+ create mode 100644 drivers/clk/visconti/reset.h
+ create mode 100644 include/dt-bindings/clock/toshiba,tmpv770x.h
+ create mode 100644 include/dt-bindings/reset/toshiba,tmpv770x.h
+
+-- 
+2.33.0
+
+
