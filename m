@@ -2,184 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB9C438CC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46300438CC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbhJYAT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 20:19:58 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53892 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229837AbhJYAT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 20:19:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="226995674"
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="226995674"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 17:17:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="485446014"
-Received: from lkp-server02.sh.intel.com (HELO 74392981b700) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 Oct 2021 17:17:31 -0700
-Received: from kbuild by 74392981b700 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mengA-0001Aj-L4; Mon, 25 Oct 2021 00:17:30 +0000
-Date:   Mon, 25 Oct 2021 08:16:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/sev] BUILD SUCCESS
- ce47d0c00ff5621ae5825c9d81722b23b0df395e
-Message-ID: <6175f770.CIpdlbnMDCYtaUKj%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231665AbhJYAT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 20:19:28 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47148 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229837AbhJYAT1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Oct 2021 20:19:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UtUECyd_1635121022;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UtUECyd_1635121022)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 25 Oct 2021 08:17:04 +0800
+Date:   Mon, 25 Oct 2021 08:16:59 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     syzbot <syzbot+d8aaffc3719597e8cfb4@syzkaller.appspotmail.com>
+Cc:     chao@kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiang@kernel.org
+Subject: Re: [syzbot] WARNING in z_erofs_lz4_decompress
+Message-ID: <YXX3e1i/f2uvMDm0@B-P7TQMD6M-0146.local>
+References: <000000000000b3586105cf0ff45e@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <000000000000b3586105cf0ff45e@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/sev
-branch HEAD: ce47d0c00ff5621ae5825c9d81722b23b0df395e  x86/sev: Allow #VC exceptions on the VC2 stack
+Hi,
 
-elapsed time: 4746m
+On Sat, Oct 23, 2021 at 07:25:20PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    60e8840126bd Add linux-next specific files for 20211018
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=125932af300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4bd44cafcda7632e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d8aaffc3719597e8cfb4
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d8aaffc3719597e8cfb4@syzkaller.appspotmail.com
+> 
+> erofs: (device loop4): z_erofs_lz4_decompress_mem: failed to decompress -4100 in[4096, 0] out[9000]
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 9895 at fs/erofs/decompressor.c:230 z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:227 [inline]
+> WARNING: CPU: 1 PID: 9895 at fs/erofs/decompressor.c:230 z_erofs_lz4_decompress+0x841/0x1400 fs/erofs/decompressor.c:289
 
-configs tested: 126
-configs skipped: 93
+If you fuzz compressed data, that is what you'd expect..
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks,
+Gao Xiang
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                             pxa_defconfig
-powerpc                   bluestone_defconfig
-powerpc                     ep8248e_defconfig
-arm                      footbridge_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                      tqm8xx_defconfig
-sh                         ap325rxa_defconfig
-powerpc                          allyesconfig
-arm                            mps2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                              allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20211024
-x86_64               randconfig-a004-20211024
-x86_64               randconfig-a005-20211024
-x86_64               randconfig-a006-20211024
-x86_64               randconfig-a003-20211024
-x86_64               randconfig-a001-20211024
-i386                 randconfig-a004-20211022
-i386                 randconfig-a003-20211022
-i386                 randconfig-a002-20211022
-i386                 randconfig-a005-20211022
-i386                 randconfig-a006-20211022
-i386                 randconfig-a001-20211022
-i386                 randconfig-a003-20211024
-i386                 randconfig-a004-20211024
-i386                 randconfig-a002-20211024
-i386                 randconfig-a005-20211024
-i386                 randconfig-a006-20211024
-i386                 randconfig-a001-20211024
-x86_64               randconfig-a013-20211021
-x86_64               randconfig-a015-20211021
-x86_64               randconfig-a011-20211021
-x86_64               randconfig-a014-20211021
-x86_64               randconfig-a016-20211021
-x86_64               randconfig-a012-20211021
-i386                 randconfig-a012-20211021
-i386                 randconfig-a013-20211021
-i386                 randconfig-a011-20211021
-i386                 randconfig-a016-20211021
-i386                 randconfig-a015-20211021
-i386                 randconfig-a014-20211021
-x86_64               randconfig-a002-20211022
-x86_64               randconfig-a004-20211022
-x86_64               randconfig-a005-20211022
-x86_64               randconfig-a001-20211022
-x86_64               randconfig-a006-20211022
-x86_64               randconfig-a003-20211022
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-x86_64               randconfig-a002-20211021
-x86_64               randconfig-a004-20211021
-x86_64               randconfig-a005-20211021
-x86_64               randconfig-a001-20211021
-x86_64               randconfig-a006-20211021
-x86_64               randconfig-a003-20211021
-i386                 randconfig-a004-20211021
-i386                 randconfig-a003-20211021
-i386                 randconfig-a002-20211021
-i386                 randconfig-a005-20211021
-i386                 randconfig-a001-20211021
-i386                 randconfig-a006-20211021
-x86_64               randconfig-a013-20211022
-x86_64               randconfig-a015-20211022
-x86_64               randconfig-a011-20211022
-x86_64               randconfig-a014-20211022
-x86_64               randconfig-a016-20211022
-x86_64               randconfig-a012-20211022
-i386                 randconfig-a012-20211022
-i386                 randconfig-a013-20211022
-i386                 randconfig-a011-20211022
-i386                 randconfig-a016-20211022
-i386                 randconfig-a015-20211022
-i386                 randconfig-a014-20211022
-hexagon              randconfig-r045-20211021
-hexagon              randconfig-r041-20211021
-riscv                randconfig-r042-20211022
-s390                 randconfig-r044-20211022
-hexagon              randconfig-r045-20211022
-hexagon              randconfig-r041-20211022
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> Modules linked in:
+> CPU: 1 PID: 9895 Comm: kworker/u5:3 Not tainted 5.15.0-rc5-next-20211018-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: erofs_unzipd z_erofs_decompressqueue_work
+> RIP: 0010:z_erofs_lz4_decompress_mem fs/erofs/decompressor.c:230 [inline]
+> RIP: 0010:z_erofs_lz4_decompress+0x841/0x1400 fs/erofs/decompressor.c:289
+> Code: e9 03 80 3c 11 00 0f 85 8c 0a 00 00 41 56 48 8b 7d 00 45 89 e9 89 d9 48 c7 c2 20 eb fb 89 48 c7 c6 40 ed fb 89 e8 ee 5d 85 05 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 8b 4c 24 08 5f 48 89 ca 48
+> RSP: 0018:ffffc90001b3f718 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: ffffffffffffeffc RCX: 0000000000000000
+> RDX: ffff8880795b3a00 RSI: ffffffff815ef308 RDI: fffff52000367ed3
+> RBP: ffffc90001b3f858 R08: 0000000000000063 R09: 0000000000000000
+> R10: ffffffff815e90de R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000002328 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2ef25000 CR3: 000000002b3f7000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  z_erofs_decompress_pcluster.isra.0+0x1389/0x2450 fs/erofs/zdata.c:977
+>  z_erofs_decompress_queue fs/erofs/zdata.c:1055 [inline]
+>  z_erofs_decompressqueue_work+0xe0/0x170 fs/erofs/zdata.c:1066
+>  process_one_work+0x9b2/0x1690 kernel/workqueue.c:2297
+>  worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+>  kthread+0x405/0x4f0 kernel/kthread.c:327
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>  </TASK>
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
