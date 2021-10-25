@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D185843A0C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE8E439FD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhJYTf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
+        id S235157AbhJYTY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235192AbhJYT3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E27FA6108C;
-        Mon, 25 Oct 2021 19:26:19 +0000 (UTC)
+        id S234981AbhJYTXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E416E61100;
+        Mon, 25 Oct 2021 19:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189981;
-        bh=iFXk+FB0I1OuAahp1gYzQf2FJWqwEOwoD/erpq3GnFo=;
+        s=korg; t=1635189639;
+        bh=xPORa5NBRmvXy/WNEhc6nsuoOJuoOBvLh8HI7MWt5nw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RBsZonE75w1eut06XG4q2X/XalKT7UR3eQKoP7F1+LZx+5OB8lFdMp565seY8ZZRT
-         6MjtmhcdNFRqMufPYD7Trv+v2mAtTtjVzHjUQcSv3x77lVfhZ69qR9Nz6hoITmgKkd
-         C1kGIyDpHHv85ZkoQYlgkGGUXjUPfkjzNC2gPJXs=
+        b=LkTDVfKeY6MQCEldCxaz4mWr5G8+IGtCpugrwTwlJwEIluRNbSHYRfTT9BsFzsdxZ
+         4hFffjr8F6T2ata1puPLyXzv5ZIPysRfbwBy17sMPooBkR1/stHHV4Lntqg2HFJVIJ
+         KqrEumpnZUZdSTZzDhsIdFBsub7zkhcBVMct7bUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 06/58] xtensa: xtfpga: Try software restart before simulating CPU reset
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Barret Rhoden <brho@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 36/50] elfcore: correct reference to CONFIG_UML
 Date:   Mon, 25 Oct 2021 21:14:23 +0200
-Message-Id: <20211025190938.648543297@linuxfoundation.org>
+Message-Id: <20211025190939.446228216@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-[ Upstream commit 012e974501a270d8dfd4ee2039e1fdf7579c907e ]
+commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
 
-Rebooting xtensa images loaded with the '-kernel' option in qemu does
-not work. When executing a reboot command, the qemu session either hangs
-or experiences an endless sequence of error messages.
+Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
+special handling for two architectures, ia64 and User Mode Linux.
+However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
+symbol for User-Mode Linux was used.
 
-  Kernel panic - not syncing: Unrecoverable error in exception handler
+Although the directory for User Mode Linux is ./arch/um; the Kconfig
+symbol for this architecture is called CONFIG_UML.
 
-Reset code jumps to the CPU restart address, but Linux can not recover
-from there because code and data in the kernel init sections have been
-discarded and overwritten at this point.
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
 
-XTFPGA platforms have a means to reset the CPU by writing 0xdead into a
-specific FPGA IO address. When used in QEMU the kernel image loaded with
-the '-kernel' option gets restored to its original state allowing the
-machine to boot successfully.
+  UM
+  Referencing files: include/linux/elfcore.h
+  Similar symbols: UML, NUMA
 
-Use that mechanism to attempt a platform reset. If it does not work,
-fall back to the existing mechanism.
+Correct the name of the config to the intended one.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
+  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
+  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
+
+Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
+Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Barret Rhoden <brho@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/xtensa/platforms/xtfpga/setup.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ include/linux/elfcore.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
-index 61c5e2c45439..4edccb4d4a5f 100644
---- a/arch/xtensa/platforms/xtfpga/setup.c
-+++ b/arch/xtensa/platforms/xtfpga/setup.c
-@@ -50,8 +50,12 @@ void platform_power_off(void)
- 
- void platform_restart(void)
- {
--	/* Flush and reset the mmu, simulate a processor reset, and
--	 * jump to the reset vector. */
-+	/* Try software reset first. */
-+	WRITE_ONCE(*(u32 *)XTFPGA_SWRST_VADDR, 0xdead);
-+
-+	/* If software reset did not work, flush and reset the mmu,
-+	 * simulate a processor reset, and jump to the reset vector.
-+	 */
- 	cpu_reset();
- 	/* control never gets here */
+--- a/include/linux/elfcore.h
++++ b/include/linux/elfcore.h
+@@ -55,7 +55,7 @@ static inline int elf_core_copy_task_xfp
  }
--- 
-2.33.0
-
+ #endif
+ 
+-#if defined(CONFIG_UM) || defined(CONFIG_IA64)
++#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
+ /*
+  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
+  * extra segments containing the gate DSO contents.  Dumping its
 
 
