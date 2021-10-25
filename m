@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C822343A0C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E214943A31C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbhJYTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
+        id S237656AbhJYT4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:56:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235640AbhJYT2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:28:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DFD7610D2;
-        Mon, 25 Oct 2021 19:25:37 +0000 (UTC)
+        id S237218AbhJYTvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C98A66115B;
+        Mon, 25 Oct 2021 19:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189938;
-        bh=B/Zoq3zTTVLjH+LWqxmyFBUmXRtrJm7zhofEF6/lzQY=;
+        s=korg; t=1635190975;
+        bh=x7FdPGNgdlQfZVlHo+wv44F7iyvy7qD7oVU94eQ3Bmg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HQ0dbGbDf6OK90fMx9hT8yz/Ls48HJxgPrXjjo3NXSZFj7tdfcDEBlqCYkM2IuIhV
-         SMa2zH9sDIBMs1cyXJlOQ8vwepOqofnmdGPRXRJiKKBC0EQOt/auDFz12LakOPkx9N
-         TuRx/mCr85ikxj3ChC1lQMBAo0KMsBBYgbQ3zq88=
+        b=jFTAu23jz8/nddCLyY0FzIiNdIQKD3umwpYE1CMM6gX6UiRUnRsWYL6FIbAisbDo3
+         8g4Y/YjJtdsRbhaiZrKNRN5kz4AkeCqWY+bLIjK56pd+PtjkS784qXGiyGelMFxUfy
+         bFGFwKUIc1Yg4E/iuO8t/nkCL8BHBJbX6Fw2aqpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 31/37] platform/x86: intel_scu_ipc: Update timeout value in comment
+        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.14 115/169] KVM: x86: remove unnecessary arguments from complete_emulator_pio_in
 Date:   Mon, 25 Oct 2021 21:14:56 +0200
-Message-Id: <20211025190934.523899374@linuxfoundation.org>
+Message-Id: <20211025191032.536826293@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prashant Malani <pmalani@chromium.org>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit a0c5814b9933f25ecb6de169483c5b88cf632bca ]
+commit 6b5efc930bbc8c97e4a1fe2ccb9a6f286365a56d upstream.
 
-The comment decribing the IPC timeout hadn't been updated when the
-actual timeout was changed from 3 to 5 seconds in
-commit a7d53dbbc70a ("platform/x86: intel_scu_ipc: Increase virtual
-timeout from 3 to 5 seconds") .
+complete_emulator_pio_in can expect that vcpu->arch.pio has been filled in,
+and therefore does not need the size and count arguments.  This makes things
+nicer when the function is called directly from a complete_userspace_io
+callback.
 
-Since the value is anyway updated to 10s now, take this opportunity to
-update the value in the comment too.
+No functional change intended.
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Cc: Benson Leung <bleung@chromium.org>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Link: https://lore.kernel.org/r/20210928101932.2543937-4-pmalani@chromium.org
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/x86/intel_scu_ipc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/x86.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
-index 54f131bec192..0d28576756ac 100644
---- a/drivers/platform/x86/intel_scu_ipc.c
-+++ b/drivers/platform/x86/intel_scu_ipc.c
-@@ -183,7 +183,7 @@ static inline int busy_loop(struct intel_scu_ipc_dev *scu)
- 	return 0;
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6936,11 +6936,12 @@ static int __emulator_pio_in(struct kvm_
+ 	return emulator_pio_in_out(vcpu, size, port, count, true);
  }
  
--/* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
-+/* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
- static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
+-static void complete_emulator_pio_in(struct kvm_vcpu *vcpu, int size,
+-				    unsigned short port, void *val)
++static void complete_emulator_pio_in(struct kvm_vcpu *vcpu, void *val)
  {
- 	int status;
--- 
-2.33.0
-
+-	memcpy(val, vcpu->arch.pio_data, size * vcpu->arch.pio.count);
+-	trace_kvm_pio(KVM_PIO_IN, port, size, vcpu->arch.pio.count, vcpu->arch.pio_data);
++	int size = vcpu->arch.pio.size;
++	unsigned count = vcpu->arch.pio.count;
++	memcpy(val, vcpu->arch.pio_data, size * count);
++	trace_kvm_pio(KVM_PIO_IN, vcpu->arch.pio.port, size, count, vcpu->arch.pio_data);
+ 	vcpu->arch.pio.count = 0;
+ }
+ 
+@@ -6958,7 +6959,7 @@ static int emulator_pio_in(struct kvm_vc
+ 	}
+ 
+ 	WARN_ON(count != vcpu->arch.pio.count);
+-	complete_emulator_pio_in(vcpu, size, port, val);
++	complete_emulator_pio_in(vcpu, val);
+ 	return 1;
+ }
+ 
 
 
