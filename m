@@ -2,116 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA4A43945A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786E3439460
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhJYLAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:00:01 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55273 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhJYK7t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:59:49 -0400
-Received: by mail-io1-f71.google.com with SMTP id ay23-20020a5d9d97000000b005de70aa0cb9so5967802iob.21
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 03:57:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=skC0MN0LWJsv8NJPLncPz/C6ZTXW9VvQmWkmzfnaU0s=;
-        b=OUudxI2FxLvHhoTr+rqJHe1uwBdmChnE7i90CkKXeTyMJCKfzjk+DyVA1tkRxd9tn2
-         C9vljxRz3LA9ER0fulDIPjjnAAU93g70WciVO6FgR9o3bTB5t0g2acGMNJEy8tj55++1
-         IdK85QfZc76oj2fcp7uaByZh8ZvOTFdNSvY/cmTNpDgj9SwctHUwDCHk3MXFqA1ROuew
-         i9k29LomiWH0ZwtRjafDjAInUxp+qkM99NCeIx7UweVGk1j8a1y48NQptHto4KOtXSRF
-         HNIlBf8R1DnQqHlqT1pjd1c3+n1TL1aeRGRqespLdtHaqQUXu3vt2YnfKyi/gbRVwMS2
-         kwsA==
-X-Gm-Message-State: AOAM531j180yhjHWjPa4pgRvir4l6LtZxvRhSB1cV7KcVhOqTRawuF25
-        NVWT0frWA/f+LTGY6tJ6ZtNzx10jukXwWjIk9cWoqUGuEHkq
-X-Google-Smtp-Source: ABdhPJzntQm6t/PLaUFKDFZbQaUp5/czZN0OoWsKqVNxOIhOgGwqaBnqVojfufLe30KPKsCHhLJpksRUW6BIsM39WpYtQvlJ4gDZ
+        id S232526AbhJYLBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:01:25 -0400
+Received: from mail-dm6nam11on2070.outbound.protection.outlook.com ([40.107.223.70]:28640
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229704AbhJYLBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:01:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lOjNh2QW9volPG9ADufu9lBBbl+PfGx073X/UuExsbOD7JVRtUJAfCYkzbC5ye7Uk4fUb89wapm5972GsjzJ4MJ4VtZQL5yhvXotOny69GFioCE9+HcdtR380yWuWZU7Lta8QnG2vO4gLN0hdFb391c9NmmBKi4ZLkNq5MLgO7XXiCln9wyioXwBWBfmxxnRAHGxdnyGnBlIHmi9hD+yWZzldhaBfBDM7dDB/J7YRG98G7P6Mh7ltIZhuc3ROegSNhFu837/ByU7A0gjbyQ4ljCFHVzsV4Kap/S32YylJCdcrfMORrkk8HFfWMDHJjlgcRXXEJs4PNFNfc0zGL0tuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R+Mv/B6795aUAWrhlrRJo7tdQ3QiHvRiaN0PoGNXFuk=;
+ b=SQUlWdveiWMU5JNZoXs3zqphyqHI6eZneq7TFVeHvMQWDxZP7TAcNXIjGpHKHlvJQeU46IYFY/3nbDnWRaGZouy/BB1dRvcohI5Kf7ijce/pRFefBvmbe6IAKtYv5iZO24QnV5xylFy/cVQ2fsmKfORKXDiB/cTUiVYyAHCElUYMHbgLT8TMQfWUzIZZ1/HAx2o2j3Q7AmkGNnXGRxdL9rzp1HT1xnHpMIYUGQDcgMx1pbQF/Xqxqo7SKFdWUM8v9jLDf2E3D841aMX4DxTMKQbAz7pGWfgTq8DCH3Zi5afJRI0JinHFVwqQa+lLaGJan4FzUFXtC/giK19i8FMqiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R+Mv/B6795aUAWrhlrRJo7tdQ3QiHvRiaN0PoGNXFuk=;
+ b=OnI5hPsV5xf35Ja+3c9988CS4JTfU81MLoxKf+bq9UmpE5Aj+uuXOHK3Hp0qlokdQxfZ94R+YiNiI8ghuTsh/xt9nF9I9Gm0traYpqWPXFTXn3PyoaPVasr4cNhgEGf/dUoZ616feqj183B9TT9oX+Jki2qfLsdNlmMtcy8LdzI=
+Authentication-Results: arndb.de; dkim=none (message not signed)
+ header.d=none;arndb.de; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14) by MWHPR1201MB0112.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Mon, 25 Oct
+ 2021 10:58:59 +0000
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4628.018; Mon, 25 Oct
+ 2021 10:58:59 +0000
+Subject: Re: [PATCH v2] dma-buf: move dma-buf symbols into the DMA_BUF module
+ namespace
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Xinhui.Pan@amd.com
+Cc:     linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20211010124628.17691-1-gregkh@linuxfoundation.org>
+ <YXaIx0g/kHEnq8ZN@kroah.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <7328189c-0567-847e-17e9-e2ed4f3a78f4@amd.com>
+Date:   Mon, 25 Oct 2021 12:58:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <YXaIx0g/kHEnq8ZN@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: AM9P193CA0013.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21e::18) To MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14)
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda3:: with SMTP id g3mr8925898ild.103.1635159447424;
- Mon, 25 Oct 2021 03:57:27 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 03:57:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003d49d05cf2b3a9e@google.com>
-Subject: [syzbot] KCSAN: data-race in ext4_mark_iloc_dirty / ext4_mark_iloc_dirty
-From:   syzbot <syzbot+900324b91168c395f1a2@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Received: from [192.168.178.21] (91.14.161.181) by AM9P193CA0013.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:21e::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Mon, 25 Oct 2021 10:58:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d277fb29-60b2-4845-da71-08d997a67258
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0112:
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB0112947EDFE319039EC147A983839@MWHPR1201MB0112.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8fDCtOl6C5395+f1ATv3cDRjzf4VSwtfpbh3WKsYgZh4rgR4CZnl6JqSKa86T7t1tVMzBCotHSlQQhELjyoEX7vFg87fQGmm3M33T6VxCqsJjGYsmQFx1/kK4nkvL6Y/ARG1i4YY4aHkUY6O1bvvZRPrgPHazSde+bXYE68NnRgsXPtwWTCY+XjCgtCvWoYphhkTUMRJ38cccb+IsdVqGTTt9d9ZSUz/qdAu9n5DvP1ceXvjAAT0lCGRLEuCA2Q0KyKr1eJK/MZHDxQwnz6c14lrHrDaO6z3xnVwMy2Qp0mpy9WKCejtsYGF6Us49gWjhuqh+uBBvE4RZfmOl0LoBkWZprn080dwCFMLJk2SK3GFYBGRkZqDxiQqNq3PdrU10O/bAFFpIkitcNepXFU+e5FJ4EAGoH61XqT039ge9jJ9Suipl7TEvgSlDMWbm7jiyVyaVIAQ+wRwhHAhgrx0ysjILcnB/HIHfN4EN7kUit1yIvrBLmP4TYKAreLok30aGujamZ3xrK7KQEz7DPfFzeQfYIy8lxPBz7HGJwtkPU0epDu8yiPY9F6f+DJtooYbNFwjqHBE5F0FndbMV6Xgmq/+PyFMvmr3zPwG9ktQADjxjWXvT1T6ZAAhosKc2BNdikcY53cUYBaWVR4LA9g9tww10yFJkAkWUPZJfxJxdA467WFQL3+VL8ug3xV442XiEGM5bhyTQvh1//ez7HLGo627kNlEAFuDj39EfKGKgfB2dt/IAkYrVHg/v32chrWm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(6636002)(31686004)(6486002)(8676002)(956004)(316002)(508600001)(5660300002)(2906002)(16576012)(6666004)(4326008)(36756003)(66946007)(110136005)(8936002)(66476007)(2616005)(7416002)(54906003)(26005)(66574015)(186003)(38100700002)(83380400001)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0QvRS9HUlUrQytwMzRoT3BYeVNYS1BCS2tXTVBQci96ZUY4ay9zVjJaLzBK?=
+ =?utf-8?B?ZHhnQmtUemt0SG4rejM2Q2x5ZjR6dFAwQWpJcDVqTVl3QjREVVY1c2pNZHFN?=
+ =?utf-8?B?WEtzZEU3TWhCaVVXaTZUSTFtOUR4VEhWTGM5bkw4Y1huOFV3NGNmM0FlS1JO?=
+ =?utf-8?B?SUpWNVUzbVdOeEx5VjhnRGFEVUtacWhzbCsxNEdFcGNUc1pXRmZjWmNoVFYv?=
+ =?utf-8?B?eTVqQldsM2JIVWFxSXlDbWtFTXRtb2NNakR4ZFFpa0drVGtDOGFrTnI4d2J1?=
+ =?utf-8?B?VC9tTFRxWHJreHRUSlMrRVVHa0FpYndKamRHQ2xZYXZDNVU2WTlmRUdTSjgr?=
+ =?utf-8?B?SENNSGpHZzdRWXhabWhhRmJlazRiS3BwNmRRZHNEcTgrUVU3b1dMMFBoZitL?=
+ =?utf-8?B?RXVRczlqdDR1YUROd3NLNTVmRlA4VEUrUHByeDRNM085S0RjQkZpVVgweTdv?=
+ =?utf-8?B?ZEcrTmtVV3VtN0k1T2Noa3dHTk1wb05SK0g2WURzNXVMUmx6ZCtjdTRWWkc3?=
+ =?utf-8?B?VzFSTGI5NDNibDluYndDYk5BZnpsTGI1RnhKanNDT0hUSW9kaGVyKzZuZzQr?=
+ =?utf-8?B?NlppYmRZT2RXQ3Q0YUJUcTl5ZEw1SzdXeGN5MUVHTXp1Szd3a1R5UHBHbTZF?=
+ =?utf-8?B?by83NGpyZUdRK0xkL2dpVDUzUUs5NVAxblhVUHlJNWVaUHA4ZU11QWtleTNE?=
+ =?utf-8?B?d2ozYXlGZGR1UmEvU25XRG4rb1NhcCtLOGxCWGRET21odk5iaFFUMkJVNDR5?=
+ =?utf-8?B?SGFaSkxSaitaVllTWUtNUE16VWtmRDlqMjhNNGtLWUdZS3BuQmZkNjBkcm9w?=
+ =?utf-8?B?NDg3dFYveFBUU3U2eng5UFBkeENXQUFla1puV0NldFcyaSs0TXhZZ2Z1bm01?=
+ =?utf-8?B?UXd5RThJenBUNmpBMzQzeERnRDhRWXRYUWpWQmF3Zzdac2JFOXVjMEpiZDdC?=
+ =?utf-8?B?N3RTRFZ3RkxETHhqOGh1OGdycCtJOWYvOTZYeWNEU3BtRDlNZjhrMStXQ2hm?=
+ =?utf-8?B?S2Z2NEYzNGZITXF1ZjJmakdhRzJpWDlKLzUrRy9ZZkg1d1pKVndvOTQzeStF?=
+ =?utf-8?B?K2tVcW9sd0JXUis3TGQxTktVQWM0b3Iwd09GemFIeFBSQkpCNzdZdGYybnhp?=
+ =?utf-8?B?Qkl0OTZEUnJnY0duSmY1N1F4WFNNL0ROc1IvVjRjc0ZScTdJY2J2YVIySkha?=
+ =?utf-8?B?ekNkeHR3Z283d1NTV2pTcmtUMUEwUlFlc0NMYnVZeFh4cTQvNm40dlBTT2cx?=
+ =?utf-8?B?Q2xXMkJvRmxpZi9YZ2txOTFiS2hTY1dMbU1mZWkxZzBuQzFtT05iWDdGSmh5?=
+ =?utf-8?B?dzFwK0ljM0lBbVpmMEhqYWp5Q2lGK2ZtTGpRZzVNTTNvVUJJcmQ3d3pmb0t1?=
+ =?utf-8?B?SVMxMyt1cGYrWm90V3pkNDIyY0x1aURtZ25zMjBIeEdhVldLbXpSMHBGeFQ4?=
+ =?utf-8?B?Y2p0VDE4K0tnYkZWWXV5M3kvR1dhSDRJL2tXZm1RZjdRbXJOOGdMQXlnbGZP?=
+ =?utf-8?B?aXIzREpxcVJjZnFOdmJFRkw5Ni85Q2lValZraFZodVp4MUJsSUtENWxFWTIv?=
+ =?utf-8?B?VDk4QmJuMkpId1cwaGhGOVlFbDFvQmxoaGR2L2pPZjFlc2RHZDVhdzZueTk3?=
+ =?utf-8?B?MG1kWVBwR0d0K3cxTXMzWXcvODFScDM4UXBFSkRVclVHU1A3SEhGNXE1WmNi?=
+ =?utf-8?B?d2ViR1FmYkNtQytsOWFWZGtSOVpuUGtkdjU5UTlJUG5tM2wyMzZ5dldXU3po?=
+ =?utf-8?B?VU5SWm9weVVjZE4xK0x3YS9ybjBmKzlFbzJNbWx5WTQvUlYvSngzU0QydW42?=
+ =?utf-8?B?YnhkTHNGdThFVzY0cEdUbFBsSThzdlhxd2FjTkJ4eHUvMkozQTVybmdybnhu?=
+ =?utf-8?B?M2F5MW0rRXBpZVNTSk9qajU1MXNyUU0wWGEzQmhjMUxXSVpsL1VpL2JSMlZ2?=
+ =?utf-8?B?RVdvaU1NcEtuTTMyV0t3NlJpQktZbDNuYk9VeFFIa2QwZi9KYjUyWG14M25S?=
+ =?utf-8?B?THpqTXNyb1V1MmpjbkgxSldYRjZNY1o2azZZejExbUQ3SGY5QWxud2lJTlBp?=
+ =?utf-8?B?aUZBZW9FSXFpMDUrSzZsY1Y5VklCK1VYM2J3eTIrV1UybUlKdHdBKzZnRFNG?=
+ =?utf-8?Q?6nkk=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d277fb29-60b2-4845-da71-08d997a67258
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 10:58:59.2485
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tfNHcYM2sjOHHj+Q39Mr09O/l7vQV9WNZzXFb6mduBXwR+M5bRZnjcAzWf90EYs3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Am 25.10.21 um 12:36 schrieb Greg Kroah-Hartman:
+> On Sun, Oct 10, 2021 at 02:46:28PM +0200, Greg Kroah-Hartman wrote:
+>> In order to better track where in the kernel the dma-buf code is used,
+>> put the symbols in the namespace DMA_BUF and modify all users of the
+>> symbols to properly import the namespace to not break the build at the
+>> same time.
+>>
+>> Now the output of modinfo shows the use of these symbols, making it
+>> easier to watch for users over time:
+>>
+>> $ modinfo drivers/misc/fastrpc.ko | grep import
+>> import_ns:      DMA_BUF
+>>
+>> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+>> Cc: David Airlie <airlied@linux.ie>
+>> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>> Cc: Maxime Ripard <mripard@kernel.org>
+>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+>> Cc: dri-devel@lists.freedesktop.org
+>> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>> Acked-by: Christian König <christian.koenig@amd.com>
+>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>> Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
+>> Acked-by: Alex Deucher <alexander.deucher@amd.com>
+>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> ---
+>> v2: added lots of acks
+>>      added 2 more drivers that needed the change, as found by Arnd
+> Ping?  Any ideas on what needs to happen to get this into the tree?
+>
+> Or can I take it through my char-misc tree?  I seem to have a bunch of
+> acks on it by the respective maintainers...
 
-syzbot found the following issue on:
+I could push that upstream through the drm-misc-next tree if you like, 
+but honestly char-misc sounds like the better approach since this 
+touches a lot of drivers outside of drm as well.
 
-HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15418e52b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6339b6ea86d89fd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=900324b91168c395f1a2
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+Thanks,
+Christian.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+>
+> thanks,
+>
+> greg k-h
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+900324b91168c395f1a2@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in ext4_mark_iloc_dirty / ext4_mark_iloc_dirty
-
-write to 0xffff888104bdf5c8 of 4 bytes by task 505 on cpu 0:
- ext4_update_inode_fsync_trans fs/ext4/ext4_jbd2.h:445 [inline]
- ext4_do_update_inode fs/ext4/inode.c:5114 [inline]
- ext4_mark_iloc_dirty+0x156a/0x1700 fs/ext4/inode.c:5683
- ext4_orphan_del+0x593/0x730 fs/ext4/orphan.c:297
- ext4_evict_inode+0xb1e/0xdb0 fs/ext4/inode.c:318
- evict+0x1c8/0x3c0 fs/inode.c:588
- iput_final fs/inode.c:1664 [inline]
- iput+0x430/0x580 fs/inode.c:1690
- do_unlinkat+0x2d4/0x540 fs/namei.c:4176
- __do_sys_unlink fs/namei.c:4217 [inline]
- __se_sys_unlink fs/namei.c:4215 [inline]
- __x64_sys_unlink+0x2c/0x30 fs/namei.c:4215
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-write to 0xffff888104bdf5c8 of 4 bytes by task 6959 on cpu 1:
- ext4_update_inode_fsync_trans fs/ext4/ext4_jbd2.h:445 [inline]
- ext4_do_update_inode fs/ext4/inode.c:5114 [inline]
- ext4_mark_iloc_dirty+0x156a/0x1700 fs/ext4/inode.c:5683
- __ext4_mark_inode_dirty+0x4ec/0x5c0 fs/ext4/inode.c:5879
- ext4_evict_inode+0x95e/0xdb0 fs/ext4/inode.c:280
- evict+0x1c8/0x3c0 fs/inode.c:588
- iput_final fs/inode.c:1664 [inline]
- iput+0x430/0x580 fs/inode.c:1690
- dentry_unlink_inode+0x273/0x290 fs/dcache.c:376
- d_delete+0x78/0xe0 fs/dcache.c:2505
- vfs_rmdir+0x2e6/0x300 fs/namei.c:3984
- do_rmdir+0x18d/0x330 fs/namei.c:4032
- __do_sys_rmdir fs/namei.c:4051 [inline]
- __se_sys_rmdir fs/namei.c:4049 [inline]
- __x64_sys_rmdir+0x2c/0x30 fs/namei.c:4049
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x0000c326 -> 0x0000c327
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 6959 Comm: syz-executor.2 Tainted: G        W         5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
