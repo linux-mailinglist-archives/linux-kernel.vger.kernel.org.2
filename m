@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3514397DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316784397E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbhJYNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJYNwo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 09:52:44 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDEFC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:50:22 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id m22so9667877wrb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zO//Njv5YS97vppMMVlVgZZUjNA2rAR2HbiLnMq5guY=;
-        b=WAJHDBQ9M9IsmiDeUxxWHPYr+sCVbX/bI2CcVAuFyyhDOTB2poQayGA0ZinLaHiK9y
-         z8cSONPK2YzrZZk6ypTUZDOu0KGjHbgqLFQDpCEtdMxXzFE0/TEjs1XeGc79+Ors7i1o
-         +IzpvsLL/wXEfoqgwUVj6L1+8+4k5FfGIlkDs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zO//Njv5YS97vppMMVlVgZZUjNA2rAR2HbiLnMq5guY=;
-        b=hfeZ0wla4w9umOToiRT9Dxd7mi/txWpMRiKgBfXIuuRjZPgmS/0UVxKpmHn8UXYMDt
-         v8AHT3Pk2UjEfcHX6fYYfVWuXBh1MSBNaLlKXQN7FbcJYaCqIWlfc9v1ZDaMzJN6lbGI
-         le9FPBbeUIN16fGAzM0s2uscWpbGoP5eMYh0hs2+sebIbE0rTIQdVHeiIJUaF5o0stYz
-         DbO8m6QbGHabsNpalCqPEQWCBTgWXmSXWQvXlVVPQzEEfJ2VyehJI+pDhbIgOZzQsmhZ
-         1NdEuZt1NHt9PHXK2cPPluHw3/9ACfYoSpcvPxWiCcnkH7LuSxT1oHzv8WcrHhTLsJeP
-         0Mxg==
-X-Gm-Message-State: AOAM532IHmBo+t9ZJX+u8Q6LnMviSdZ59xWtXdMUsOeeQy0Xy+xD9e59
-        LDYcuQeC/3zVSFF6SCWdvtj1l8VeAuHlwzmgsJosXA==
-X-Google-Smtp-Source: ABdhPJz5aj5JNuMgfqZUwaXY/cwE1jkvjSaX9jTe8FLYMARW9hORElaPxrAsk3O1APxlNE9m9YAEL0HbosNKjgNmgu4=
-X-Received: by 2002:a05:6000:1283:: with SMTP id f3mr24072888wrx.128.1635169820558;
- Mon, 25 Oct 2021 06:50:20 -0700 (PDT)
+        id S232894AbhJYNy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:54:29 -0400
+Received: from mga11.intel.com ([192.55.52.93]:54232 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231586AbhJYNyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 09:54:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="227107184"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="227107184"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 06:52:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="485683584"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 25 Oct 2021 06:52:01 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EBFD6E7; Mon, 25 Oct 2021 16:52:00 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v1 1/5] tty: rpmsg: Assign returned id to a local variable
+Date:   Mon, 25 Oct 2021 16:51:44 +0300
+Message-Id: <20211025135148.53944-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211022140714.28767-1-jim2101024@gmail.com> <20211022140714.28767-5-jim2101024@gmail.com>
- <YXLLRLwMG7nEwQoi@sirena.org.uk> <CA+-6iNzmkB5sUL6aqA6229BhxBhF3RKvGsLh0JCYQwP_2wSGaQ@mail.gmail.com>
- <YXMVSVpeC1Kqsg5x@sirena.org.uk>
-In-Reply-To: <YXMVSVpeC1Kqsg5x@sirena.org.uk>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Mon, 25 Oct 2021 09:50:09 -0400
-Message-ID: <CA+-6iNxQAekCQTJKE5L7LO6QF+UC6xnyE=XVq_7z3=4hp8ASXQ@mail.gmail.com>
-Subject: Re: [PATCH v5 4/6] PCI: brcmstb: Add control of subdevice voltage regulators
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 3:47 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Oct 22, 2021 at 03:15:59PM -0400, Jim Quinlan wrote:
->
-> > Each different SOC./board we deal with may present different ways of
-> > making the EP device power on.  We are using
-> > an abstraction name "brcm-ep-a"  to represent some required regulator
-> > to make the EP  work for a specific board.  The RC
-> > driver cannot hard code a descriptive name as it must work for all
-> > boards designed by us, others, and third parties.
-> > The EP driver also doesn't know  or care about the regulator name, and
-> > this driver is often closed source and often immutable.  The EP
-> > device itself may come from Brcm, a third party,  or sometimes a competitor.
->
-> > Basically, we find using a generic name such as "brcm-ep-a-supply"
-> > quite handy and many of our customers embrace this feature.
-> > I know that Rob was initially against such a generic name, but I
-> > vaguely remember him seeing some merit to this, perhaps a tiny bit :-)
-> > Or my memory is shot, which could very well be the case.
->
-> That sounds like it just shouldn't be a regulator at all, perhaps the
-> board happens to need a regulator there but perhaps it needs a clock,
-> GPIO or some specific sequence of actions.  It sounds like you need some
-> sort of quirking mechanism to cope with individual boards with board
-> specific bindings.
-The boards involved may have no PCIe sockets, or run the gamut of the different
-PCIe sockets.  They all offer gpio(s) to turn off/on their power supply(s) to
-make their PCIe device endpoint functional.  It is not viable to add
-new Linux quirk or DT
-code for each board.  First is the volume and variety of the boards
-that use our SOCs.. Second, is
-our lack of information/control:  often, the board is designed by one
-company (not us), and
-given to another company as the middleman, and then they want the
-features outlined
-in my aforementioned commit message.
+Instead of putting garbage in the data structure, assign allocated id
+or an error code to a temporary variable. This makes code cleaner.
 
->
-> I'd suggest as a first pass omitting this and then looking at some
-> actual systems later when working out how to support them, no sense in
-> getting the main thing held up by difficult edge cases.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/tty/rpmsg_tty.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-These are not edge cases -- some of these are major customers.
+diff --git a/drivers/tty/rpmsg_tty.c b/drivers/tty/rpmsg_tty.c
+index 813076341ffd..8c17ddbf371d 100644
+--- a/drivers/tty/rpmsg_tty.c
++++ b/drivers/tty/rpmsg_tty.c
+@@ -121,15 +121,16 @@ static struct rpmsg_tty_port *rpmsg_tty_alloc_cport(void)
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	mutex_lock(&idr_lock);
+-	cport->id = idr_alloc(&tty_idr, cport, 0, MAX_TTY_RPMSG, GFP_KERNEL);
++	err = idr_alloc(&tty_idr, cport, 0, MAX_TTY_RPMSG, GFP_KERNEL);
+ 	mutex_unlock(&idr_lock);
+ 
+-	if (cport->id < 0) {
+-		err = cport->id;
++	if (err < 0) {
+ 		kfree(cport);
+ 		return ERR_PTR(err);
+ 	}
+ 
++	cport->id = err;
++
+ 	return cport;
+ }
+ 
+-- 
+2.33.0
 
-Regards,
-Jim
-
->
-> > > > +     /* This is for Broadcom STB/CM chips only */
-> > > > +     if (pcie->type == BCM2711)
-> > > > +             return 0;
->
-> > > It is a relief that other chips have managed to work out how to avoid
-> > > requiring power.
->
-> > I'm not sure that the other Broadcom groups have our customers, our
-> > customers' requirements, and the amount and variation of boards that
-> > run our PCIe driver on the SOC.
->
-> Sure, but equally they might (even if they didn't spot it yet) and in
-> general it's safer to err on the side of describing the hardware so we
-> can use that information later.
