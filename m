@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37BF438F90
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7325438F94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhJYGjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:39:01 -0400
-Received: from mout.gmx.net ([212.227.15.18]:60877 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhJYGjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:39:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635143755;
-        bh=KJXhuueJqnOfRbIAJbxY2hjIWqMEw3+yFWTcl9cZOkc=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=QGgyuqfw5dGa5MMaT3SGpycw4t9fpWzx66/CFX6Ak9QaB0ey6Y8Xy1ZzK+aUZZ1e+
-         GOeTXVJ3O6agOk2+J4rI0q+LkhnGNCBBJOSO45ZsW6PgzWXHRGmgs+yjfqYaPaScEQ
-         nO/piEj4z4Imc7qS+O2nepYkOc/KTFdLL16m8g6c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.219.76]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8XTv-1mjeqA0HNR-014WBN; Mon, 25
- Oct 2021 08:35:55 +0200
-Message-ID: <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 25 Oct 2021 08:35:52 +0200
-In-Reply-To: <20211022110534.GJ3959@techsingularity.net>
-References: <20211021145603.5313-1-mgorman@techsingularity.net>
-         <20211021145603.5313-2-mgorman@techsingularity.net>
-         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
-         <20211022110534.GJ3959@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S231315AbhJYGkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229748AbhJYGkS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:40:18 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4101BC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:37:57 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id v77so14210727oie.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uPpEb1n5zsr4bfcN2qUMVNqzU/tSK0OigA3PBd9KLm8=;
+        b=GJxz+ZoGxmSVqIJqzm/VCqaaXqd3MzI8xjT7vrHCTkE8bDHhkxRoR5m0SgcgdulTAe
+         YUYKwKsUI69s19grHN6YX0H/SfdUmew4gFXoACHsnuoBGzyp+lXP87FWQqzmMlFNIBnf
+         walR7Jlj03G65Lzm43AMmcjYBSmVU30On+88VcRLq3Gqj4WP2hbE8j4bbZCWMkL5TtO+
+         ipbYUqZsq5ncdR1oupQ818eVTdb2uCi/+/hHUejKbgUs27cK/euCJtyuY0GsbVQ9j3eS
+         gnqub0Cf/3hIjsSmh0BcnjzTqwEN+PcwZifc8vXUAz0WaE1e5XaOcuB/c9SsxmKAFc/V
+         KL+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uPpEb1n5zsr4bfcN2qUMVNqzU/tSK0OigA3PBd9KLm8=;
+        b=Am3iT9VL5eXyRALhLYwnUwbd7ZUh+rqB4lOaf84JD8FHsv8A/12f0DzriXN5Demdl2
+         +Xsv2EpbODvbgPPYrXGbLuijKR8xcBK+ouj5bzIiFPKxarJjXTGN0M4vgMq3JEpcc7xg
+         FQ/qVYodxw/7P9eb/J+b05AbtB9ycuSrJQ80roWu13jaHd3RFzEv6Tpnf39yxcdM5CPb
+         /6YZ27LOsihFJP81Ul0VjAOYD7fAvrdp3ypUEsS7MlvQnsQvaSl+Y9vBoPHCFqDZk1aJ
+         TTlgNGr/dufoDYTV8fv0o/0hAP30Q/tSH3/WG8uFEdFV87XfZ79jWJyr8J2bcyEd8Dsg
+         fyHQ==
+X-Gm-Message-State: AOAM531cOJZrXHYD48aGWt3tCVTfLgnud52Lh0q1aoFX8Zis3D1Xx70E
+        vgO8Jss1U9aC+2TlU1NWhgWclQOsYyfKS6tH5ZstFg==
+X-Google-Smtp-Source: ABdhPJwnqmxUqlHFwoeDbGrAVb2Iwe5aVKW3sq4NyJn9WG599mNgBsrZtqjVaRHJDMT5R3HqZ4psua8FKKexgB27QpQ=
+X-Received: by 2002:a05:6808:ec9:: with SMTP id q9mr20768923oiv.160.1635143876338;
+ Sun, 24 Oct 2021 23:37:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eLdlAhvXPFyothxswJqCutsqhbskwGQYNYcBMuGwdWdd7Th++ZS
- r2yQBuitSiWAdk595pBuTl2P9MKnV/3pwKhFdUYfgL+hEA8YOXTPm6dySBDytaUoadH3U+s
- GoM17zHEBT0mOVKW+qIMQn/9KPmiOo+akxysR4rbvgMgr0PJGiwzVbwD0ULSWG2h+BLQbum
- lr3n5/A7c8F1hoWNWF8tQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NaHJ9JeH1Vw=:G1Mcm1UZQ4wv32y2F1uCjB
- +VCB72spIJATb7S0eL+UPvo4Og++4zbHFJvm9/EQ1v2Wbm+R3w6IFAkN014Q678wIm4Pv5uTE
- g8xnokz2v44aA1DR4AgV2IF8SyvR4k7EviGCkCvXV66pLzC7ovIE60M/5dkqcae1FLcf6IcaJ
- ws1pdQb13xGmWc1bXRExsOZBPbNYSbLSROAY04hX95elL98puKU+kKeklhm6NIq8I1YW+vP7E
- Bf953eTSeMh/vDpIYV5a4+4JiLEdZG0oPlrGUTRPnlG6JoRdR5nof7w6aBd7xEpkEqGYMSuaW
- QQBlXj58cJZuOhsymPCoFkPtLPQaA350MyrFh67oF/OFdD9FOmKR9IG+S2YsdXTC/7Fj22ytS
- eC+IZrkdE4MaWWUGSTnPxOwFP2Ils/d9YNyk+Gvqn1dAeIdI8CbZRr51OUuUdI0S2O51zrKJL
- bLNkzWw1JFIc9gfqhSC1A2hSaUWWpV50MsnnXlR2lRwMR2NeKKZHZVGlDLo1XiSo4yHDlkQ89
- +I16quLd+Ocvch+bQjGUaewSl5OKf/G18hO65EfRnOgBSIM5zVElHZGAI7MrAH72QFDyVC+8C
- Fm63Xu4b9BBHJklCULHUHSFmDkhdJJgONqOHGotrh0VgtxtAuAYPvOX0sqKCF8mdIKaZ0OMck
- c6SaROHp71JDpVELvIjDw0OFlkDRq6GQ5W9hAh0sgPRzA8XiXSh6eCgE5p//eSxfBQ9J0zJ8r
- b8S4BrtAUr9gYvRc8EdIAbAzM3cAkAxYrrNXRC2YqFvb10wS27f1wvnJD+NoKlahURoBMOBBP
- zQBvJl5v6mINlPHS2njd81h9B1GZtggNEogpBlsBprPmqCeQ+RYsPFWLicKDEitk5r9zQszfw
- iGoFbefk6VV/w6RhkDhJ2zEFudHy/CYqZ/reN/zWxXOVpLFP8UFeSswqD5NWQGb1rZsdFGYXa
- JEBH26QH9QpZjv1gsYdBTIVmtWwwyn5KKdnHCFcFBYLMewxa/m9k8n0X4wBFEtN5JP5iLpSHX
- O/2dGHAKrqz1c7NWa9HNnEc9LffEszfoFKMnCvNH+ghTWRr0V4P6m15/wWUi930HO4WD9wOPv
- Iu1AGxY5ImlYJo=
+References: <00000000000064451505cf0a3aa2@google.com> <CAHk-=wj=jthBt0XOjqstiYYROGhJAM0xrsWBVQgGMk79JBaKDg@mail.gmail.com>
+ <YXW9lmQVx1PLX9aj@casper.infradead.org>
+In-Reply-To: <YXW9lmQVx1PLX9aj@casper.infradead.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 25 Oct 2021 08:37:45 +0200
+Message-ID: <CACT4Y+YZ-JR0iOX8MP9rnoYCwfz=9a+aM4L2LoUtJVko3=CkRQ@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: refcount bug in memfd_secret
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+75639e6a0331cd61d3e2@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        jordy@jordyzomer.github.io, jordy@pwning.systems,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-22 at 12:05 +0100, Mel Gorman wrote:
-> On Fri, Oct 22, 2021 at 12:26:08PM +0200, Mike Galbraith wrote:
+On Sun, 24 Oct 2021 at 22:12, Matthew Wilcox <willy@infradead.org> wrote:
 >
+> On Sun, Oct 24, 2021 at 09:54:22AM -1000, Linus Torvalds wrote:
+> > On Sat, Oct 23, 2021 at 9:35 AM syzbot
+> > <syzbot+75639e6a0331cd61d3e2@syzkaller.appspotmail.com> wrote:
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=115a0328b00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=59f3ef2b4077575
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=75639e6a0331cd61d3e2
+> > > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a035c2b00000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ae869f300000
+> > >
+> > > The issue was bisected to:
+> > >
+> > > commit 110860541f443f950c1274f217a1a3e298670a33
 > >
-> > Patchlet helped hackbench?=C2=A0 That's.. unexpected (at least by me).
+> > I think that commit is actually just buggy.
 > >
+> > "secretmem_users" is not actually a reference count. There's no "magic
+> > happens when it goes down to zero".
+> >
+> > It's purely a count of the number of existing users, and incrementing
+> > it from zero is not a probolem at all - it is in fact expected.
+> >
+> > Sure, zero means "we can hibernate", so zero and overflow are somewhat
+> > special, but not special enough to cause these kinds of issues.
+> >
+> > I have reverted this commit in my tree, because honestly, the whole
+> > "try to overflow exactly, and hibernate" threat model just isn't worth
+> > this all.
+> >
+> > If people really care, I can suggest
+> >
+> >  - use "atomic_long_t" instead. Let's face it, 32-bit isn't
+> > interesting any more, and 64-bit doesn't overflow.
+> >
+> >  - make up some new "atomic_inc_nooverflow()" thing or whatever.
+> >
+> > but for now this is just reverted.
 >
-> I didn't analyse in depth and other machines do not show as dramatic
-> a difference but it's likely due to timings of tasks getting wakeup
-> preempted.
+> There was a separate thread on an earlier version of this report.
 
-Wakeup tracing made those hackbench numbers less surprising. There's
-tons of wake-many going on. At a glance, it appears to already be bi-
-directional though, so patchlet helping seemingly means that there's
-just not quite enough to tickle the heuristic without a little help.
-Question is, is the potential reward of strengthening that heuristic
-yet again, keeping in mind that "heuristic" tends to not play well with
-"deterministic", worth the risk?
+gcc and clang somehow produce different frames (I guess a tail call).
+Need to fix parsing.
 
-My desktop trace session said distribution improved a bit, but there
-was no meaningful latency or throughput improvement, making for a
-pretty clear "nope" to the above question.  It benefiting NUMA box
-hackbench is a valid indicator, but one that is IMO too disconnected
-from the real world to carry much weight.
+#syz dup: WARNING: refcount bug in sys_memfd_secret
 
-	-Mike
+
+> https://lore.kernel.org/linux-mm/YXU7%2FiRjf9v77gon@casper.infradead.org/
+> I agree with you and suggested that if anybody really cares (I mean,
+> you need a multi-TB machine to produce this problem) that we simply do
+> what we did with the page refcount:
+>
+> +++ b/mm/secretmem.c
+> @@ -203,6 +203,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
+>
+>         if (flags & ~(SECRETMEM_FLAGS_MASK | O_CLOEXEC))
+>                 return -EINVAL;
+> +       if (atomic_read(&secretmem_users) < 0)
+> +               return -ENFILE;
+>
+>         fd = get_unused_fd_flags(flags & O_CLOEXEC);
+>         if (fd < 0)
+>
+> Mike didn't particularly like that answer though.
