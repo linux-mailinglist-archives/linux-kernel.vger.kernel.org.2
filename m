@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E320D43A0C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101A843A0C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhJYTen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
+        id S236543AbhJYTez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:34:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235826AbhJYT3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B585A61175;
-        Mon, 25 Oct 2021 19:26:06 +0000 (UTC)
+        id S232326AbhJYT3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:29:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62AE76117A;
+        Mon, 25 Oct 2021 19:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189967;
-        bh=yuMxkcj64nG2DT/aG1po/8hWBrLRwMRDmEOEN/Y0QfM=;
+        s=korg; t=1635189971;
+        bh=nk0z17i+8jXwAfKi8WLI+otULj336mQwOnuBNJnpZ/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KefOtGF//2rY282iUY7RlBFRctqphxBArQf8ei01+1lK7gcjUm2+bJzC0beBmt0O1
-         mLNmn85XAfpwSkMXHIK2AWcmDxvI+u9Xft1tttIhVP1OpubiC8mZWU1EGtFWTsge3B
-         D8zdKXjK30cHkj3GRcwuWV28zfbOvC9rVdBoY3MI=
+        b=RQjzwvBnRCNeEdeOICE/SI662cFIXRpcHXOAbmIAEa4UiHd0haXFiy1vCXGuCVEI+
+         mAybsU9uQyvLRyVpdUKwhJSwnz9LBf+2GqgyctXIcekYQ6y0sOnlG0cxiLFVFTTK/l
+         VQZp6muVPyOAoWUndUvVMNh+C0K6zKka5RUcWgDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 5.4 03/58] tee: optee: Fix missing devices unregister during optee_remove
-Date:   Mon, 25 Oct 2021 21:14:20 +0200
-Message-Id: <20211025190938.169353788@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 04/58] ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default
+Date:   Mon, 25 Oct 2021 21:14:21 +0200
+Message-Id: <20211025190938.327106036@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
 References: <20211025190937.555108060@linuxfoundation.org>
@@ -40,90 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Garg <sumit.garg@linaro.org>
+From: Eugen Hristev <eugen.hristev@microchip.com>
 
-commit 7f565d0ead264329749c0da488de9c8dfa2f18ce upstream.
+[ Upstream commit 4348cc10da6377a86940beb20ad357933b8f91bb ]
 
-When OP-TEE driver is built as a module, OP-TEE client devices
-registered on TEE bus during probe should be unregistered during
-optee_remove. So implement optee_unregister_devices() accordingly.
+Without a sensor node, the ISC will simply fail to probe, as the
+corresponding port node is missing.
+It is then logical to disable the node in the devicetree.
+If we add a port with a connection to a sensor endpoint, ISC can be enabled.
 
-Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-[SG: backport to 5.4, dev name s/optee-ta/optee-clnt/]
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/20210902121358.503589-1-eugen.hristev@microchip.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tee/optee/core.c          |    3 +++
- drivers/tee/optee/device.c        |   22 ++++++++++++++++++++++
- drivers/tee/optee/optee_private.h |    1 +
- 3 files changed, 26 insertions(+)
+ arch/arm/boot/dts/at91-sama5d27_som1_ek.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -582,6 +582,9 @@ static struct optee *optee_probe(struct
- 	if (sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
- 		pool = optee_config_dyn_shm();
+diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+index 89f0c9979b89..4f63158d6b9b 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+@@ -69,7 +69,6 @@
+ 			isc: isc@f0008000 {
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&pinctrl_isc_base &pinctrl_isc_data_8bit &pinctrl_isc_data_9_10 &pinctrl_isc_data_11_12>;
+-				status = "okay";
+ 			};
  
-+	/* Unregister OP-TEE specific client devices on TEE bus */
-+	optee_unregister_devices();
-+
- 	/*
- 	 * If dynamic shared memory is not available or failed - try static one
- 	 */
---- a/drivers/tee/optee/device.c
-+++ b/drivers/tee/optee/device.c
-@@ -65,6 +65,13 @@ static int get_devices(struct tee_contex
- 	return 0;
- }
- 
-+static void optee_release_device(struct device *dev)
-+{
-+	struct tee_client_device *optee_device = to_tee_client_device(dev);
-+
-+	kfree(optee_device);
-+}
-+
- static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
- {
- 	struct tee_client_device *optee_device = NULL;
-@@ -75,6 +82,7 @@ static int optee_register_device(const u
- 		return -ENOMEM;
- 
- 	optee_device->dev.bus = &tee_bus_type;
-+	optee_device->dev.release = optee_release_device;
- 	dev_set_name(&optee_device->dev, "optee-clnt%u", device_id);
- 	uuid_copy(&optee_device->id.uuid, device_uuid);
- 
-@@ -158,3 +166,17 @@ out_ctx:
- 
- 	return rc;
- }
-+
-+static int __optee_unregister_device(struct device *dev, void *data)
-+{
-+	if (!strncmp(dev_name(dev), "optee-clnt", strlen("optee-clnt")))
-+		device_unregister(dev);
-+
-+	return 0;
-+}
-+
-+void optee_unregister_devices(void)
-+{
-+	bus_for_each_dev(&tee_bus_type, NULL, NULL,
-+			 __optee_unregister_device);
-+}
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -175,6 +175,7 @@ void optee_fill_pages_list(u64 *dst, str
- 			   size_t page_offset);
- 
- int optee_enumerate_devices(void);
-+void optee_unregister_devices(void);
- 
- /*
-  * Small helpers
+ 			qspi1: spi@f0024000 {
+-- 
+2.33.0
+
 
 
