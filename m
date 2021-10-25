@@ -2,60 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5263843968E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC74439692
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbhJYMr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbhJYMr0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:47:26 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C587C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:45:04 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so8331409pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=tPGj5qPSXOfoDLnlsv635kLBbtYjJnLtVo3ywT3dhuE=;
-        b=pZ374SKMgOKNf04Ie3nbDsA00EOJ8hZfrHFslhEBVDm3Q3mYVAQUpIGKe12410FB1U
-         ftOuRMkIDujsGcrcPkfxNLEEqnIvktam9kLi8GXSEcl3FmE5VbnDTdM1TWKrYGHNde+U
-         zxV/YksXvN7dSZ9AcaZuflEnL93/o33yJEREWzrKO5wJOh3tkpP7SfatbOtQv2Rm2yGS
-         kjSNCTMyBuYMxV2oxbT/0ps83YGHH7yokEVqBLpsLrPmjzJpzYqfj274iNs4qQfVx3DS
-         Av8OBDv2E+HRUMufDutZSX/RVoKS1DuLGLyNS2uswaveL58vUUimD0eqlSVvpf+tU8lN
-         SrRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=tPGj5qPSXOfoDLnlsv635kLBbtYjJnLtVo3ywT3dhuE=;
-        b=umSTvj9WMYjYWwrkQUv3PEb4dmJZG0N5o+cnykH3AXaCPQxML95DlaT+OD7OtGEapK
-         PMrHALIzRmqS5cOfKdPoS18vpD5ylxJnBgGLjRhihrsVrL9jbst6t1d5cGhgCtgyFf4b
-         5RahKXxAKqNHWophL/2xnG3TeZAi6fTIXPc5JExmjmhlm8xoQBmS5dPaAQpGwZz5VLiS
-         P+Fb/MNDGK755VgnHlOZ2D2Z5oHgDfM39w4MZ7pTBhEJoClyzwmc63su3oH6/lwAWx9K
-         rNxq9B21cJr/6mf7QL2Lk4NiSffwyjrmpMQoMiWRGAeIf0MS5cc8K8IRBxXder3gs6N5
-         Er/w==
-X-Gm-Message-State: AOAM5301OfShsFZz57zhBorSToPrhCiiCzauIlAeCCIi2n/FP7yfg96D
-        H8o/gU4GW3Td/BWiL+rlKJ6R4Y25VAQK1g5BBrE=
-X-Google-Smtp-Source: ABdhPJwyAivU6jjGiVaBNHYkiA7jrP05F743JGuag5kY4vqpOYVQ4Bak59ONsW6mbdN6J/pwauL+PB0PbUt+u33u2cY=
-X-Received: by 2002:a17:90b:4c48:: with SMTP id np8mr7125685pjb.155.1635165904242;
- Mon, 25 Oct 2021 05:45:04 -0700 (PDT)
+        id S233249AbhJYMr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:47:59 -0400
+Received: from mga12.intel.com ([192.55.52.136]:35467 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233070AbhJYMr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:47:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="209739255"
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="209739255"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:45:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
+   d="scan'208";a="721583314"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Oct 2021 05:45:34 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1ED8C107; Mon, 25 Oct 2021 15:45:34 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v2 1/2] serial: 8250_pci: Replace custom pci_match_id() implementation
+Date:   Mon, 25 Oct 2021 15:45:32 +0300
+Message-Id: <20211025124533.29977-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a17:90b:203:0:0:0:0 with HTTP; Mon, 25 Oct 2021 05:45:03
- -0700 (PDT)
-Reply-To: cherrykona25@hotmail.com
-From:   Cherry Kona <angelaemmanue@gmail.com>
-Date:   Mon, 25 Oct 2021 05:45:03 -0700
-Message-ID: <CAKpYVvDp3D1NeSnV0vJki8D42Ki3Je1KM8eXHDuFm2QwysxAew@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace pci_quatech_amcc() with generic pci_match_id().
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: corrected set of patches, so this one is new
+ drivers/tty/serial/8250/8250_pci.c | 72 +++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index aea12263a1ff..1d5579143fc8 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -1063,13 +1063,6 @@ static int pci_asix_setup(struct serial_private *priv,
+ 	return pci_default_setup(priv, board, port, idx);
+ }
+ 
+-/* Quatech devices have their own extra interface features */
+-
+-struct quatech_feature {
+-	u16 devid;
+-	bool amcc;
+-};
+-
+ #define QPCR_TEST_FOR1		0x3F
+ #define QPCR_TEST_GET1		0x00
+ #define QPCR_TEST_FOR2		0x40
+@@ -1085,42 +1078,30 @@ struct quatech_feature {
+ #define QOPR_CLOCK_X8		0x0003
+ #define QOPR_CLOCK_RATE_MASK	0x0003
+ 
+-
+-static struct quatech_feature quatech_cards[] = {
+-	{ PCI_DEVICE_ID_QUATECH_QSC100,   1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC100,   1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC100E,  0 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC200,   1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC200E,  0 },
+-	{ PCI_DEVICE_ID_QUATECH_ESC100D,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_ESC100M,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCP100,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCP100,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCP200,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCP200,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_ESCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_SSCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCLP200, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCLP200, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_SSCLP200, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_SPPXP_100, 0 },
++/* Quatech devices have their own extra interface features */
++static struct pci_device_id quatech_cards[] = {
++	{ PCI_DEVICE_DATA(QUATECH, QSC100,   1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC100,   1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC100E,  0) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC200,   1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC200E,  0) },
++	{ PCI_DEVICE_DATA(QUATECH, ESC100D,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, ESC100M,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCP100,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCP100,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCP200,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCP200,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, ESCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, SSCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCLP200, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCLP200, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, SSCLP200, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, SPPXP_100, 0) },
+ 	{ 0, }
+ };
+ 
+-static int pci_quatech_amcc(struct pci_dev *dev)
+-{
+-	struct quatech_feature *qf = &quatech_cards[0];
+-	while (qf->devid) {
+-		if (qf->devid == dev->device)
+-			return qf->amcc;
+-		qf++;
+-	}
+-	pci_err(dev, "unknown port type '0x%04X'.\n", dev->device);
+-	return 0;
+-};
+-
+ static int pci_quatech_rqopr(struct uart_8250_port *port)
+ {
+ 	unsigned long base = port->port.iobase;
+@@ -1280,7 +1261,16 @@ static int pci_quatech_rs422(struct uart_8250_port *port)
+ 
+ static int pci_quatech_init(struct pci_dev *dev)
+ {
+-	if (pci_quatech_amcc(dev)) {
++	const struct pci_device_id *match;
++	bool amcc;
++
++	match = pci_match_id(quatech_cards, dev);
++	if (match)
++		amcc = match->driver_data;
++	else
++		pci_err(dev, "unknown port type '0x%04X'.\n", dev->device);
++
++	if (amcc) {
+ 		unsigned long base = pci_resource_start(dev, 0);
+ 		if (base) {
+ 			u32 tmp;
 -- 
-I expect a letter from you i don't know if you receive  my message?
+2.33.0
+
