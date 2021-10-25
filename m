@@ -2,147 +2,1071 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30899439D66
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A686D439D64
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhJYRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:23:06 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36840 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233395AbhJYRXD (ORCPT
+        id S233337AbhJYRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:22:57 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:46893 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhJYRWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:23:03 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PH291l006735;
-        Mon, 25 Oct 2021 10:20:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=IUYnsKTCdexlCh8Bd52C0OWzZZNjz8FGmIx5iVc3b7s=;
- b=P15QCU8cDHbePbfnbNseRQQE3xXY3C6//kWxL+HnQbihT4V7EnFEncfhsZH8b7ZMiGBS
- FRZHKQWq8iErn+uYeTxxSmhkfgKnLkjoXev5gYXrUsR4YC863Urn4QLXbgXny/mwNLh7
- F/cTBK8gHHdnBXtXFaeb7C+rYqoMy8LWTzM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bwsn4k78n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 25 Oct 2021 10:20:33 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 25 Oct 2021 10:20:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TlzMYZH8Ipkr2OfX6MkVEHF418zwuTglYk/qrCjYe0wIY2bfV9GaPqHdzFgYZE8Hsf631krci9e+sCwMjNbkO1VKcGVVc1n6GVCQn3iiLLM2ExlaGvsWNh8rUDUg3GytpJ8aypA3x7a4qwytmetJOnBVYZZMSEcLNZxGXpN/tckuO1cqyayeAbRk6lEXhyz41fn2BEfiHxg1DGJnMyqW/DgeUHPc9C3N/gPQYW3e7arUl5IxPv2YVyIyNw4H3D5waUj9sNkaz4nsh9PB6oqF3owZ53yBZu1x/bPQx8dl5SF4luSmCebo26+JpD0GRXnOdbQ3EWynNNsbMNtE8uZlyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IUYnsKTCdexlCh8Bd52C0OWzZZNjz8FGmIx5iVc3b7s=;
- b=bman8wVmFIWH0cCbqS4+SRejYjwWhnYaa2D+AL/FdejdZU8Rzxd1gfZVeRYuXQh+i7f2UHiJMv6Az7/HdiiSUQpYC3SJDkQyyK70f1GflOzFie5FdKlOHbycaRV45s6w3nYZ04mC2EH3PPHXTebBt1Vw6mdC3/0M6o89/7QB8zYqN99e70ZYuAJlkVO5mz9NCkAMpEiCY8Fb11lk7F7b44U9IsruKL9NCg85xW2wEY6ouFPNjZiOWRhIkkZvjySzLcRkSzHD2x7aAqacVHLSfZl02jyH8f/5jas0jXeDoCNWftvk70wlNGtav3/XLRhdttsKKwamvmCX7Y9MgY0Fmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3142.namprd15.prod.outlook.com (2603:10b6:a03:b1::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Mon, 25 Oct
- 2021 17:20:30 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 17:20:30 +0000
-Date:   Mon, 25 Oct 2021 10:20:27 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <akpm@linux-foundation.org>, <mhocko@kernel.org>,
-        <shakeelb@google.com>, <willy@infradead.org>, <hannes@cmpxchg.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcontrol: remove the kmem states
-Message-ID: <YXbnW/cjgxXQOnpP@carbon.DHCP.thefacebook.com>
-References: <20211025125259.56624-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211025125259.56624-1-songmuchun@bytedance.com>
-X-ClientProxiedBy: MWHPR14CA0031.namprd14.prod.outlook.com
- (2603:10b6:300:12b::17) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Mon, 25 Oct 2021 13:22:54 -0400
+Received: by mail-ot1-f41.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so15905491ote.13;
+        Mon, 25 Oct 2021 10:20:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=88izaCM5krosCrp7ENJhH4GQO5shxSLv1gij8+V2/PU=;
+        b=AsCf58hwlNmEcgacIeA5Xb4VsFg5vh13F+JDgb137GiNuC/SdMk7xZXT1pC3FZdDsM
+         FNZ6YsKqoWiA50hz9tV6PJkfYtXXd0j4LSejgC/jNmeMFcWoHtlRebPwn8MPpsr9bqHH
+         ogBxJh8kArym3Vroev0iJB4TsO7F8PFTx0hGkRaCDJiM4aqG/QmKgsdMGW2Xkmx9/R1I
+         +49DGrwwVjVBSP9XJQMPxu8/3bbWpLcrP3vlh33nwFqZkBpaTkftRb/iVLZpHO1iWi8d
+         W7wPvs/1udZ+2c5C+FPY+43TelEI9ivZL2spx+BUzbJ7w60EaehlK4tSBOC8CX1KDtHY
+         v+dg==
+X-Gm-Message-State: AOAM532guAO6ThRH4Hv5AfJ+vlQfP0SOHhcnD0tphOIktdYyONyxX2d3
+        jg8bEB6GwuHfPkhyWxEn0390rR5SKA==
+X-Google-Smtp-Source: ABdhPJxDyRDpxAcVzTQ8dz5J68CIHz6mg3FeY8z+8DiEQX2QvTdNX1B11OBaa0Z7L45JO82rqRAiqg==
+X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr14997592ota.337.1635182430299;
+        Mon, 25 Oct 2021 10:20:30 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id t24sm3589275otk.58.2021.10.25.10.20.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 10:20:29 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/dtc: Update to upstream version v1.6.1-19-g0a3a9d3449c8
+Date:   Mon, 25 Oct 2021 12:20:28 -0500
+Message-Id: <20211025172028.738446-1-robh@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:93ab) by MWHPR14CA0031.namprd14.prod.outlook.com (2603:10b6:300:12b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Mon, 25 Oct 2021 17:20:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c3d49664-f9b4-4f26-3f32-08d997dbbee5
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3142:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3142AC8E0D128E1139E07F52BE839@BYAPR15MB3142.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r926A9CndZBhMWi70m6/Hhu97fKTjJCDTJhElkZ+z1AKZrbEi4+1AzZCGRH8wKJwp32PkYqWHuwF503OQbC/tXJ/edclE5CsnNTYCh4dY6I3AsMLiusED8Hafc0YNJeqwlRl37u5G6OuFPUAIBKv+lPnfoc6aBVnCAv17Il4KPOmNKR+RNkScMn0xGdjW72UeOXY0SXjY4AxX604Gl0+HDhjQGg3BeEsAOW8vZqyVNRWnz0HowTetzwGPuLh3z7EJHnfwwuYxIyGe6tRdTCIn+uU8KPU75fauPAsGlXb92Zq6IODZcbpp0NRED8/5NxRgvjonX4hqFJPrSNrJjy7uYepYTQ9nnNMed6yBVTyIVVlVHTKtk9qB4uF0tOax1bjyxYfeCuMkKXp0OL6CnduYIQdn7iSoH9LuiFesZSCfIgqt5z3HI2H/nRkfU8ghb5hQD4itOd37wsYa1Oj4dMeWPDZifllDf3l2llaL0PLdR+LEFnWW3CtAk76exe+qnurGh+V77Uy1QGM3JHtOjckjZ1+ruuhElnXTKiutj/scL/JbHJ5RuliDlax3wFNdrDECzffpuNcOSESmljRUyDuBjJHJP5QfLL/8Xq7h8AAgP4CHg04uw5o0/v6ckzXbi8iTT/m5g2nNGPu3GolodJd1g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(55016002)(316002)(4326008)(6506007)(86362001)(508600001)(9686003)(6916009)(6666004)(4744005)(8936002)(66946007)(66556008)(66476007)(5660300002)(38100700002)(8676002)(7696005)(186003)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0DMvWOHCrKObogq+y1gpf/XtRq+L+sdo2lh+k79fhBMzw9o9h+afNwwg0Ed8?=
- =?us-ascii?Q?Z2Qq12ubeAxXftdmOOI2cL5tw+c2K+9Xra9zCzup9zJ0gs2+TbgvoWoOWkGV?=
- =?us-ascii?Q?t9zIo1iuAMdcNU7jDrHTTDSO4tSzNW4J9Erjk3hA2qAdwIC2trizQD22m6B1?=
- =?us-ascii?Q?0+phLiD6G+4HN4dd+2k4JhYOYrR7xiv3lZ0IcT2khEJexiCfuQ9g9qkDW2Ae?=
- =?us-ascii?Q?la5NlpDemzUAqKR/1APWGrcguC26wbJnhgbzmacyXLSUv/uoMV5oBpJVumwt?=
- =?us-ascii?Q?vSTyb+tFmQWSbxBoxGfoFmGBxAkMNUNTc7FAARa1KRI0yOPUnKnkvJWv13h3?=
- =?us-ascii?Q?alic0vBVfiOB6W6aqP8l7UnKfa5fC7r1R/ZtWfsQ07uyPgJCcgRHat4RAT5B?=
- =?us-ascii?Q?vhK0mKWWfqIYjITnkjhOKLkaGa4Es2ptQl3JfF+gd3LZBsXqiTFrYlYnN6pa?=
- =?us-ascii?Q?GILd6262dyQ+Nk3kVu88IMpiGFo+cika+lWg37qzggoa2Hq0rHWMToqUpgKX?=
- =?us-ascii?Q?Zs/YPEeSTFpo7DXHMXnOxVASyD+oXBbnVeptqCJVjeCLrpjaNasn5xHcSydY?=
- =?us-ascii?Q?Vb/OiPqXVs+eeCbeMEhthVfEgtvIN/BjmTlc1NYIMJln0F6MI5lbRWPGgbVA?=
- =?us-ascii?Q?JfWwIYK0X0H9lWFc4mEqIcOCCkm1PQqt8ZwmbxqZOp9vVXKe+sNz4l699ScP?=
- =?us-ascii?Q?uKozl79KJYvN7KAdgput+GWo/cXlbAvsZJ81fABqODeQLqFqYgGYgWrTAJpr?=
- =?us-ascii?Q?ENP5p3VVhy5TEiNCyFMqqCqb7KLvqjlxYxwjSY2wdOl7ErwepBGq5yAsWNwg?=
- =?us-ascii?Q?MNGbLfxKcFia5FfCIN3BkdD+lQzlOoE3eX8lxGBnl3Z6NNllyK5oO4VKIxYS?=
- =?us-ascii?Q?SsCbm4XgqIXLot67aZ5xeh/GgMkP0CGN88XL6tEqXNOxuMR7TUmNIi8n9Kqi?=
- =?us-ascii?Q?u9x/IIk761uSbyQ0DGKcaCvfdBao4bS3tWkNyaQIY30JTt5bkdHinBIzC9eL?=
- =?us-ascii?Q?WX2RILI49qXpDSg5BtNdIiPBw9IBo/OB+0xPjAqSzNA6c1FJmGEkf5m8YyD8?=
- =?us-ascii?Q?OTFiaXhuRxqEnCY1Jh6sTuQ2UkiKrbbFbY/GQWXrPp0wW8nnaP3bNF1vreTF?=
- =?us-ascii?Q?SYcup8vQFMqANEDEruzPQDvva02+thtKR+ReMj5WbsTA0ZjudGhYvBh4NqE5?=
- =?us-ascii?Q?AvHZtzQzwnSfLgTzivmENl3kDeBrxTtAstU6d5n2V1kLkB0u2eXcwSMdS463?=
- =?us-ascii?Q?6BQvtu+wqBz75p3dWVMcXMC33fKzj8MlauNl4HJaEXSWCEtYf5rBMTdO3OqV?=
- =?us-ascii?Q?x7QsFjRed1omJMcfFBdvcT8z1nFJbikEgJgyg9KkwaMOpagGq5BsJCZ/i4KA?=
- =?us-ascii?Q?HguS87Ly/aqXw59lKaNjnShbapVn2+08T3Wa7DuT0CHFqXZpNvK+8NKZ5SSI?=
- =?us-ascii?Q?ZHUcc663cQH5lLkTEXwMV2xPhDq76DY8Qc0RPIhVgUpswPbCN5e7o6Ee5RZL?=
- =?us-ascii?Q?rTK875E19NcHdIUsOOGmd1UBwjLuPp2JBQV+jWGLHKO/RXnYwlBIDjxmWxmO?=
- =?us-ascii?Q?By7bMndCJ51jxvdub/QHKphgX9ZPUPzO0Nle+IhYb/F430Ijp7sVrrMjDuGb?=
- =?us-ascii?Q?RQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3d49664-f9b4-4f26-3f32-08d997dbbee5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 17:20:30.7351
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uhHsxiC8e3pDmO9TK/o1yHyefNoUsMCvY9cBwNplPhHWtFPj4kK2bE+Gkiu3eBzQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3142
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: yW4-e2HpCQtooiiwGfjNFMvt1HhOdh4i
-X-Proofpoint-ORIG-GUID: yW4-e2HpCQtooiiwGfjNFMvt1HhOdh4i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_06,2021-10-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- mlxlogscore=489 mlxscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- malwarescore=0 adultscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110250101
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:52:59PM +0800, Muchun Song wrote:
-> Now the kmem states is only used to indicate whether the kmem is
-> offline. However, we can set ->kmemcg_id to -1 to indicate whether
-> the kmem is offline. Finally, we can remove the kmem states to
-> simplify the code.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+This adds the following commits from upstream:
 
-Acked-by: Roman Gushchin <guro@fb.com>
+0a3a9d3449c8 checks: Add an interrupt-map check
+8fd24744e361 checks: Ensure '#interrupt-cells' only exists in interrupt providers
+d8d1a9a77863 checks: Drop interrupt provider '#address-cells' check
+52a16fd72824 checks: Make interrupt_provider check dependent on interrupts_extended_is_cell
+37fd700685da treesource: Maintain phandle label/path on output
+e33ce1d6a8c7 flattree: Use '\n', not ';' to separate asm pseudo-ops
+d24cc189dca6 asm: Use assembler macros instead of cpp macros
+ff3a30c115ad asm: Use .asciz and .ascii instead of .string
+5eb5927d81ee fdtdump: fix -Werror=int-to-pointer-cast
+0869f8269161 libfdt: Add ALIGNMENT error string
+69595a167f06 checks: Fix bus-range check
+72d09e2682a4 Makefile: add -Wsign-compare to warning options
+b587787ef388 checks: Fix signedness comparisons warnings
+69bed6c2418f dtc: Wrap phandle validity check
+910221185560 fdtget: Fix signedness comparisons warnings
+d966f08fcd21 tests: Fix signedness comparisons warnings
+ecfb438c07fa dtc: Fix signedness comparisons warnings: pointer diff
+5bec74a6d135 dtc: Fix signedness comparisons warnings: reservednum
+24e7f511fd4a fdtdump: Fix signedness comparisons warnings
+b6910bec1161 Bump version to v1.6.1
+21d61d18f968 Fix CID 1461557
+4c2ef8f4d14c checks: Introduce is_multiple_of()
+e59ca36fb70e Make handling of cpp line information more tolerant
+0c3fd9b6aceb checks: Drop interrupt_cells_is_cell check
+6b3081abc4ac checks: Add check_is_cell() for all phandle+arg properties
+2dffc192a77f yamltree: Remove marker ordering dependency
+61e513439e40 pylibfdt: Rework "avoid unused variable warning" lines
+c8bddd106095 tests: add a positive gpio test case
+ad4abfadb687 checks: replace strstr and strrchr with strends
+09c6a6e88718 dtc.h: add strends for suffix matching
+9bb9b8d0b4a0 checks: tigthen up nr-gpios prop exception
+b07b62ee3342 libfdt: Add FDT alignment check to fdt_check_header()
+a2def5479950 libfdt: Check that the root-node name is empty
+4ca61f84dc21 libfdt: Check that there is only one root node
+34d708249a91 dtc: Remove -O dtbo support
+8e7ff260f755 libfdt: Fix a possible "unchecked return value" warning
+88875268c05c checks: Warn on node-name and property name being the same
+9d2279e7e6ee checks: Change node-name check to match devicetree spec
+f527c867a8c6 util: limit gnu_printf format attribute to gcc >= 4.4.0
 
-Nice! These states made the code more complex without a good reason.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+As usual, the diff is what's changed from upstream and not all that 
+meaningful to review.
 
-Thanks!
+ scripts/dtc/checks.c              | 222 ++++++++++++++++++++++--------
+ scripts/dtc/dtc-lexer.l           |   2 +-
+ scripts/dtc/dtc.c                 |   6 +-
+ scripts/dtc/dtc.h                 |  40 +++++-
+ scripts/dtc/flattree.c            |  11 +-
+ scripts/dtc/libfdt/fdt.c          |   4 +
+ scripts/dtc/libfdt/fdt_rw.c       |  18 ++-
+ scripts/dtc/libfdt/fdt_strerror.c |   1 +
+ scripts/dtc/libfdt/libfdt.h       |   7 +
+ scripts/dtc/livetree.c            |   6 +-
+ scripts/dtc/treesource.c          |  48 +++----
+ scripts/dtc/util.h                |   6 +-
+ scripts/dtc/version_gen.h         |   2 +-
+ scripts/dtc/yamltree.c            |  16 ++-
+ 14 files changed, 275 insertions(+), 114 deletions(-)
+
+diff --git a/scripts/dtc/checks.c b/scripts/dtc/checks.c
+index 17cb6890d45a..781ba1129a8e 100644
+--- a/scripts/dtc/checks.c
++++ b/scripts/dtc/checks.c
+@@ -143,6 +143,14 @@ static void check_nodes_props(struct check *c, struct dt_info *dti, struct node
+ 		check_nodes_props(c, dti, child);
+ }
+ 
++static bool is_multiple_of(int multiple, int divisor)
++{
++	if (divisor == 0)
++		return multiple == 0;
++	else
++		return (multiple % divisor) == 0;
++}
++
+ static bool run_check(struct check *c, struct dt_info *dti)
+ {
+ 	struct node *dt = dti->dt;
+@@ -297,19 +305,20 @@ ERROR(duplicate_property_names, check_duplicate_property_names, NULL);
+ #define LOWERCASE	"abcdefghijklmnopqrstuvwxyz"
+ #define UPPERCASE	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ #define DIGITS		"0123456789"
+-#define PROPNODECHARS	LOWERCASE UPPERCASE DIGITS ",._+*#?-"
++#define NODECHARS	LOWERCASE UPPERCASE DIGITS ",._+-@"
++#define PROPCHARS	LOWERCASE UPPERCASE DIGITS ",._+*#?-"
+ #define PROPNODECHARSSTRICT	LOWERCASE UPPERCASE DIGITS ",-"
+ 
+ static void check_node_name_chars(struct check *c, struct dt_info *dti,
+ 				  struct node *node)
+ {
+-	int n = strspn(node->name, c->data);
++	size_t n = strspn(node->name, c->data);
+ 
+ 	if (n < strlen(node->name))
+ 		FAIL(c, dti, node, "Bad character '%c' in node name",
+ 		     node->name[n]);
+ }
+-ERROR(node_name_chars, check_node_name_chars, PROPNODECHARS "@");
++ERROR(node_name_chars, check_node_name_chars, NODECHARS);
+ 
+ static void check_node_name_chars_strict(struct check *c, struct dt_info *dti,
+ 					 struct node *node)
+@@ -330,6 +339,20 @@ static void check_node_name_format(struct check *c, struct dt_info *dti,
+ }
+ ERROR(node_name_format, check_node_name_format, NULL, &node_name_chars);
+ 
++static void check_node_name_vs_property_name(struct check *c,
++					     struct dt_info *dti,
++					     struct node *node)
++{
++	if (!node->parent)
++		return;
++
++	if (get_property(node->parent, node->name)) {
++		FAIL(c, dti, node, "node name and property name conflict");
++	}
++}
++WARNING(node_name_vs_property_name, check_node_name_vs_property_name,
++	NULL, &node_name_chars);
++
+ static void check_unit_address_vs_reg(struct check *c, struct dt_info *dti,
+ 				      struct node *node)
+ {
+@@ -363,14 +386,14 @@ static void check_property_name_chars(struct check *c, struct dt_info *dti,
+ 	struct property *prop;
+ 
+ 	for_each_property(node, prop) {
+-		int n = strspn(prop->name, c->data);
++		size_t n = strspn(prop->name, c->data);
+ 
+ 		if (n < strlen(prop->name))
+ 			FAIL_PROP(c, dti, node, prop, "Bad character '%c' in property name",
+ 				  prop->name[n]);
+ 	}
+ }
+-ERROR(property_name_chars, check_property_name_chars, PROPNODECHARS);
++ERROR(property_name_chars, check_property_name_chars, PROPCHARS);
+ 
+ static void check_property_name_chars_strict(struct check *c,
+ 					     struct dt_info *dti,
+@@ -380,7 +403,7 @@ static void check_property_name_chars_strict(struct check *c,
+ 
+ 	for_each_property(node, prop) {
+ 		const char *name = prop->name;
+-		int n = strspn(name, c->data);
++		size_t n = strspn(name, c->data);
+ 
+ 		if (n == strlen(prop->name))
+ 			continue;
+@@ -497,7 +520,7 @@ static cell_t check_phandle_prop(struct check *c, struct dt_info *dti,
+ 
+ 	phandle = propval_cell(prop);
+ 
+-	if ((phandle == 0) || (phandle == -1)) {
++	if (!phandle_is_valid(phandle)) {
+ 		FAIL_PROP(c, dti, node, prop, "bad value (0x%x) in %s property",
+ 		     phandle, prop->name);
+ 		return 0;
+@@ -556,7 +579,7 @@ static void check_name_properties(struct check *c, struct dt_info *dti,
+ 	if (!prop)
+ 		return; /* No name property, that's fine */
+ 
+-	if ((prop->val.len != node->basenamelen+1)
++	if ((prop->val.len != node->basenamelen + 1U)
+ 	    || (memcmp(prop->val.val, node->name, node->basenamelen) != 0)) {
+ 		FAIL(c, dti, node, "\"name\" property is incorrect (\"%s\" instead"
+ 		     " of base node name)", prop->val.val);
+@@ -657,7 +680,6 @@ ERROR(omit_unused_nodes, fixup_omit_unused_nodes, NULL, &phandle_references, &pa
+  */
+ WARNING_IF_NOT_CELL(address_cells_is_cell, "#address-cells");
+ WARNING_IF_NOT_CELL(size_cells_is_cell, "#size-cells");
+-WARNING_IF_NOT_CELL(interrupt_cells_is_cell, "#interrupt-cells");
+ 
+ WARNING_IF_NOT_STRING(device_type_is_string, "device_type");
+ WARNING_IF_NOT_STRING(model_is_string, "model");
+@@ -672,8 +694,7 @@ static void check_names_is_string_list(struct check *c, struct dt_info *dti,
+ 	struct property *prop;
+ 
+ 	for_each_property(node, prop) {
+-		const char *s = strrchr(prop->name, '-');
+-		if (!s || !streq(s, "-names"))
++		if (!strends(prop->name, "-names"))
+ 			continue;
+ 
+ 		c->data = prop->name;
+@@ -753,7 +774,7 @@ static void check_reg_format(struct check *c, struct dt_info *dti,
+ 	size_cells = node_size_cells(node->parent);
+ 	entrylen = (addr_cells + size_cells) * sizeof(cell_t);
+ 
+-	if (!entrylen || (prop->val.len % entrylen) != 0)
++	if (!is_multiple_of(prop->val.len, entrylen))
+ 		FAIL_PROP(c, dti, node, prop, "property has invalid length (%d bytes) "
+ 			  "(#address-cells == %d, #size-cells == %d)",
+ 			  prop->val.len, addr_cells, size_cells);
+@@ -794,7 +815,7 @@ static void check_ranges_format(struct check *c, struct dt_info *dti,
+ 				  "#size-cells (%d) differs from %s (%d)",
+ 				  ranges, c_size_cells, node->parent->fullpath,
+ 				  p_size_cells);
+-	} else if ((prop->val.len % entrylen) != 0) {
++	} else if (!is_multiple_of(prop->val.len, entrylen)) {
+ 		FAIL_PROP(c, dti, node, prop, "\"%s\" property has invalid length (%d bytes) "
+ 			  "(parent #address-cells == %d, child #address-cells == %d, "
+ 			  "#size-cells == %d)", ranges, prop->val.len,
+@@ -871,7 +892,7 @@ static void check_pci_device_bus_num(struct check *c, struct dt_info *dti, struc
+ 	} else {
+ 		cells = (cell_t *)prop->val.val;
+ 		min_bus = fdt32_to_cpu(cells[0]);
+-		max_bus = fdt32_to_cpu(cells[0]);
++		max_bus = fdt32_to_cpu(cells[1]);
+ 	}
+ 	if ((bus_num < min_bus) || (bus_num > max_bus))
+ 		FAIL_PROP(c, dti, node, prop, "PCI bus number %d out of range, expected (%d - %d)",
+@@ -1367,9 +1388,9 @@ static void check_property_phandle_args(struct check *c,
+ 				          const struct provider *provider)
+ {
+ 	struct node *root = dti->dt;
+-	int cell, cellsize = 0;
++	unsigned int cell, cellsize = 0;
+ 
+-	if (prop->val.len % sizeof(cell_t)) {
++	if (!is_multiple_of(prop->val.len, sizeof(cell_t))) {
+ 		FAIL_PROP(c, dti, node, prop,
+ 			  "property size (%d) is invalid, expected multiple of %zu",
+ 			  prop->val.len, sizeof(cell_t));
+@@ -1379,14 +1400,14 @@ static void check_property_phandle_args(struct check *c,
+ 	for (cell = 0; cell < prop->val.len / sizeof(cell_t); cell += cellsize + 1) {
+ 		struct node *provider_node;
+ 		struct property *cellprop;
+-		int phandle;
++		cell_t phandle;
+ 
+ 		phandle = propval_cell_n(prop, cell);
+ 		/*
+ 		 * Some bindings use a cell value 0 or -1 to skip over optional
+ 		 * entries when each index position has a specific definition.
+ 		 */
+-		if (phandle == 0 || phandle == -1) {
++		if (!phandle_is_valid(phandle)) {
+ 			/* Give up if this is an overlay with external references */
+ 			if (dti->dtsflags & DTSF_PLUGIN)
+ 				break;
+@@ -1452,7 +1473,8 @@ static void check_provider_cells_property(struct check *c,
+ }
+ #define WARNING_PROPERTY_PHANDLE_CELLS(nm, propname, cells_name, ...) \
+ 	static struct provider nm##_provider = { (propname), (cells_name), __VA_ARGS__ }; \
+-	WARNING(nm##_property, check_provider_cells_property, &nm##_provider, &phandle_references);
++	WARNING_IF_NOT_CELL(nm##_is_cell, cells_name); \
++	WARNING(nm##_property, check_provider_cells_property, &nm##_provider, &nm##_is_cell, &phandle_references);
+ 
+ WARNING_PROPERTY_PHANDLE_CELLS(clocks, "clocks", "#clock-cells");
+ WARNING_PROPERTY_PHANDLE_CELLS(cooling_device, "cooling-device", "#cooling-cells");
+@@ -1473,24 +1495,17 @@ WARNING_PROPERTY_PHANDLE_CELLS(thermal_sensors, "thermal-sensors", "#thermal-sen
+ 
+ static bool prop_is_gpio(struct property *prop)
+ {
+-	char *str;
+-
+ 	/*
+ 	 * *-gpios and *-gpio can appear in property names,
+ 	 * so skip over any false matches (only one known ATM)
+ 	 */
+-	if (strstr(prop->name, "nr-gpio"))
++	if (strends(prop->name, ",nr-gpios"))
+ 		return false;
+ 
+-	str = strrchr(prop->name, '-');
+-	if (str)
+-		str++;
+-	else
+-		str = prop->name;
+-	if (!(streq(str, "gpios") || streq(str, "gpio")))
+-		return false;
+-
+-	return true;
++	return strends(prop->name, "-gpios") ||
++		streq(prop->name, "gpios") ||
++		strends(prop->name, "-gpio") ||
++		streq(prop->name, "gpio");
+ }
+ 
+ static void check_gpios_property(struct check *c,
+@@ -1525,13 +1540,10 @@ static void check_deprecated_gpio_property(struct check *c,
+ 	struct property *prop;
+ 
+ 	for_each_property(node, prop) {
+-		char *str;
+-
+ 		if (!prop_is_gpio(prop))
+ 			continue;
+ 
+-		str = strstr(prop->name, "gpio");
+-		if (!streq(str, "gpio"))
++		if (!strends(prop->name, "gpio"))
+ 			continue;
+ 
+ 		FAIL_PROP(c, dti, node, prop,
+@@ -1561,21 +1573,106 @@ static void check_interrupt_provider(struct check *c,
+ 				     struct node *node)
+ {
+ 	struct property *prop;
++	bool irq_provider = node_is_interrupt_provider(node);
+ 
+-	if (!node_is_interrupt_provider(node))
++	prop = get_property(node, "#interrupt-cells");
++	if (irq_provider && !prop) {
++		FAIL(c, dti, node,
++		     "Missing '#interrupt-cells' in interrupt provider");
+ 		return;
++	}
+ 
+-	prop = get_property(node, "#interrupt-cells");
+-	if (!prop)
++	if (!irq_provider && prop) {
+ 		FAIL(c, dti, node,
+-		     "Missing #interrupt-cells in interrupt provider");
++		     "'#interrupt-cells' found, but node is not an interrupt provider");
++		return;
++	}
++}
++WARNING(interrupt_provider, check_interrupt_provider, NULL, &interrupts_extended_is_cell);
+ 
+-	prop = get_property(node, "#address-cells");
+-	if (!prop)
++static void check_interrupt_map(struct check *c,
++				struct dt_info *dti,
++				struct node *node)
++{
++	struct node *root = dti->dt;
++	struct property *prop, *irq_map_prop;
++	size_t cellsize, cell, map_cells;
++
++	irq_map_prop = get_property(node, "interrupt-map");
++	if (!irq_map_prop)
++		return;
++
++	if (node->addr_cells < 0) {
+ 		FAIL(c, dti, node,
+-		     "Missing #address-cells in interrupt provider");
++		     "Missing '#address-cells' in interrupt-map provider");
++		return;
++	}
++	cellsize = node_addr_cells(node);
++	cellsize += propval_cell(get_property(node, "#interrupt-cells"));
++
++	prop = get_property(node, "interrupt-map-mask");
++	if (prop && (prop->val.len != (cellsize * sizeof(cell_t))))
++		FAIL_PROP(c, dti, node, prop,
++			  "property size (%d) is invalid, expected %zu",
++			  prop->val.len, cellsize * sizeof(cell_t));
++
++	if (!is_multiple_of(irq_map_prop->val.len, sizeof(cell_t))) {
++		FAIL_PROP(c, dti, node, irq_map_prop,
++			  "property size (%d) is invalid, expected multiple of %zu",
++			  irq_map_prop->val.len, sizeof(cell_t));
++		return;
++	}
++
++	map_cells = irq_map_prop->val.len / sizeof(cell_t);
++	for (cell = 0; cell < map_cells; ) {
++		struct node *provider_node;
++		struct property *cellprop;
++		int phandle;
++		size_t parent_cellsize;
++
++		if ((cell + cellsize) >= map_cells) {
++			FAIL_PROP(c, dti, node, irq_map_prop,
++				  "property size (%d) too small, expected > %zu",
++				  irq_map_prop->val.len, (cell + cellsize) * sizeof(cell_t));
++			break;
++		}
++		cell += cellsize;
++
++		phandle = propval_cell_n(irq_map_prop, cell);
++		if (!phandle_is_valid(phandle)) {
++			/* Give up if this is an overlay with external references */
++			if (!(dti->dtsflags & DTSF_PLUGIN))
++				FAIL_PROP(c, dti, node, irq_map_prop,
++					  "Cell %zu is not a phandle(%d)",
++					  cell, phandle);
++			break;
++		}
++
++		provider_node = get_node_by_phandle(root, phandle);
++		if (!provider_node) {
++			FAIL_PROP(c, dti, node, irq_map_prop,
++				  "Could not get phandle(%d) node for (cell %zu)",
++				  phandle, cell);
++			break;
++		}
++
++		cellprop = get_property(provider_node, "#interrupt-cells");
++		if (cellprop) {
++			parent_cellsize = propval_cell(cellprop);
++		} else {
++			FAIL(c, dti, node, "Missing property '#interrupt-cells' in node %s or bad phandle (referred from interrupt-map[%zu])",
++			     provider_node->fullpath, cell);
++			break;
++		}
++
++		cellprop = get_property(provider_node, "#address-cells");
++		if (cellprop)
++			parent_cellsize += propval_cell(cellprop);
++
++		cell += 1 + parent_cellsize;
++	}
+ }
+-WARNING(interrupt_provider, check_interrupt_provider, NULL);
++WARNING(interrupt_map, check_interrupt_map, NULL, &phandle_references, &addr_size_cells, &interrupt_provider);
+ 
+ static void check_interrupts_property(struct check *c,
+ 				      struct dt_info *dti,
+@@ -1584,13 +1681,13 @@ static void check_interrupts_property(struct check *c,
+ 	struct node *root = dti->dt;
+ 	struct node *irq_node = NULL, *parent = node;
+ 	struct property *irq_prop, *prop = NULL;
+-	int irq_cells, phandle;
++	cell_t irq_cells, phandle;
+ 
+ 	irq_prop = get_property(node, "interrupts");
+ 	if (!irq_prop)
+ 		return;
+ 
+-	if (irq_prop->val.len % sizeof(cell_t))
++	if (!is_multiple_of(irq_prop->val.len, sizeof(cell_t)))
+ 		FAIL_PROP(c, dti, node, irq_prop, "size (%d) is invalid, expected multiple of %zu",
+ 		     irq_prop->val.len, sizeof(cell_t));
+ 
+@@ -1603,7 +1700,7 @@ static void check_interrupts_property(struct check *c,
+ 		prop = get_property(parent, "interrupt-parent");
+ 		if (prop) {
+ 			phandle = propval_cell(prop);
+-			if ((phandle == 0) || (phandle == -1)) {
++			if (!phandle_is_valid(phandle)) {
+ 				/* Give up if this is an overlay with
+ 				 * external references */
+ 				if (dti->dtsflags & DTSF_PLUGIN)
+@@ -1639,7 +1736,7 @@ static void check_interrupts_property(struct check *c,
+ 	}
+ 
+ 	irq_cells = propval_cell(prop);
+-	if (irq_prop->val.len % (irq_cells * sizeof(cell_t))) {
++	if (!is_multiple_of(irq_prop->val.len, irq_cells * sizeof(cell_t))) {
+ 		FAIL_PROP(c, dti, node, prop,
+ 			  "size is (%d), expected multiple of %d",
+ 			  irq_prop->val.len, (int)(irq_cells * sizeof(cell_t)));
+@@ -1750,7 +1847,7 @@ WARNING(graph_port, check_graph_port, NULL, &graph_nodes);
+ static struct node *get_remote_endpoint(struct check *c, struct dt_info *dti,
+ 					struct node *endpoint)
+ {
+-	int phandle;
++	cell_t phandle;
+ 	struct node *node;
+ 	struct property *prop;
+ 
+@@ -1760,7 +1857,7 @@ static struct node *get_remote_endpoint(struct check *c, struct dt_info *dti,
+ 
+ 	phandle = propval_cell(prop);
+ 	/* Give up if this is an overlay with external references */
+-	if (phandle == 0 || phandle == -1)
++	if (!phandle_is_valid(phandle))
+ 		return NULL;
+ 
+ 	node = get_node_by_phandle(dti->dt, phandle);
+@@ -1796,7 +1893,7 @@ WARNING(graph_endpoint, check_graph_endpoint, NULL, &graph_nodes);
+ static struct check *check_table[] = {
+ 	&duplicate_node_names, &duplicate_property_names,
+ 	&node_name_chars, &node_name_format, &property_name_chars,
+-	&name_is_string, &name_properties,
++	&name_is_string, &name_properties, &node_name_vs_property_name,
+ 
+ 	&duplicate_label,
+ 
+@@ -1804,7 +1901,7 @@ static struct check *check_table[] = {
+ 	&phandle_references, &path_references,
+ 	&omit_unused_nodes,
+ 
+-	&address_cells_is_cell, &size_cells_is_cell, &interrupt_cells_is_cell,
++	&address_cells_is_cell, &size_cells_is_cell,
+ 	&device_type_is_string, &model_is_string, &status_is_string,
+ 	&label_is_string,
+ 
+@@ -1839,26 +1936,43 @@ static struct check *check_table[] = {
+ 	&chosen_node_is_root, &chosen_node_bootargs, &chosen_node_stdout_path,
+ 
+ 	&clocks_property,
++	&clocks_is_cell,
+ 	&cooling_device_property,
++	&cooling_device_is_cell,
+ 	&dmas_property,
++	&dmas_is_cell,
+ 	&hwlocks_property,
++	&hwlocks_is_cell,
+ 	&interrupts_extended_property,
++	&interrupts_extended_is_cell,
+ 	&io_channels_property,
++	&io_channels_is_cell,
+ 	&iommus_property,
++	&iommus_is_cell,
+ 	&mboxes_property,
++	&mboxes_is_cell,
+ 	&msi_parent_property,
++	&msi_parent_is_cell,
+ 	&mux_controls_property,
++	&mux_controls_is_cell,
+ 	&phys_property,
++	&phys_is_cell,
+ 	&power_domains_property,
++	&power_domains_is_cell,
+ 	&pwms_property,
++	&pwms_is_cell,
+ 	&resets_property,
++	&resets_is_cell,
+ 	&sound_dai_property,
++	&sound_dai_is_cell,
+ 	&thermal_sensors_property,
++	&thermal_sensors_is_cell,
+ 
+ 	&deprecated_gpio_property,
+ 	&gpios_property,
+ 	&interrupts_property,
+ 	&interrupt_provider,
++	&interrupt_map,
+ 
+ 	&alias_paths,
+ 
+@@ -1882,7 +1996,7 @@ static void enable_warning_error(struct check *c, bool warn, bool error)
+ 
+ static void disable_warning_error(struct check *c, bool warn, bool error)
+ {
+-	int i;
++	unsigned int i;
+ 
+ 	/* Lowering level, also lower it for things this is the prereq
+ 	 * for */
+@@ -1903,7 +2017,7 @@ static void disable_warning_error(struct check *c, bool warn, bool error)
+ 
+ void parse_checks_option(bool warn, bool error, const char *arg)
+ {
+-	int i;
++	unsigned int i;
+ 	const char *name = arg;
+ 	bool enable = true;
+ 
+@@ -1930,7 +2044,7 @@ void parse_checks_option(bool warn, bool error, const char *arg)
+ 
+ void process_checks(bool force, struct dt_info *dti)
+ {
+-	int i;
++	unsigned int i;
+ 	int error = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(check_table); i++) {
+diff --git a/scripts/dtc/dtc-lexer.l b/scripts/dtc/dtc-lexer.l
+index b3b7270300de..5568b4ae84cf 100644
+--- a/scripts/dtc/dtc-lexer.l
++++ b/scripts/dtc/dtc-lexer.l
+@@ -57,7 +57,7 @@ static void PRINTF(1, 2) lexical_error(const char *fmt, ...);
+ 			push_input_file(name);
+ 		}
+ 
+-<*>^"#"(line)?[ \t]+[0-9]+[ \t]+{STRING}([ \t]+[0-9]+)? {
++<*>^"#"(line)?[ \t]+[0-9]+[ \t]+{STRING}([ \t]+[0-9]+)* {
+ 			char *line, *fnstart, *fnend;
+ 			struct data fn;
+ 			/* skip text before line # */
+diff --git a/scripts/dtc/dtc.c b/scripts/dtc/dtc.c
+index 838c5df96c00..bc786c543b7e 100644
+--- a/scripts/dtc/dtc.c
++++ b/scripts/dtc/dtc.c
+@@ -12,7 +12,7 @@
+  * Command line options
+  */
+ int quiet;		/* Level of quietness */
+-int reservenum;		/* Number of memory reservation slots */
++unsigned int reservenum;/* Number of memory reservation slots */
+ int minsize;		/* Minimum blob size */
+ int padsize;		/* Additional padding to blob */
+ int alignsize;		/* Additional padding to blob accroding to the alignsize */
+@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
+ 			depname = optarg;
+ 			break;
+ 		case 'R':
+-			reservenum = strtol(optarg, NULL, 0);
++			reservenum = strtoul(optarg, NULL, 0);
+ 			break;
+ 		case 'S':
+ 			minsize = strtol(optarg, NULL, 0);
+@@ -359,8 +359,6 @@ int main(int argc, char *argv[])
+ #endif
+ 	} else if (streq(outform, "dtb")) {
+ 		dt_to_blob(outf, dti, outversion);
+-	} else if (streq(outform, "dtbo")) {
+-		dt_to_blob(outf, dti, outversion);
+ 	} else if (streq(outform, "asm")) {
+ 		dt_to_asm(outf, dti, outversion);
+ 	} else if (streq(outform, "null")) {
+diff --git a/scripts/dtc/dtc.h b/scripts/dtc/dtc.h
+index d3e82fb8e3db..0a1f54991026 100644
+--- a/scripts/dtc/dtc.h
++++ b/scripts/dtc/dtc.h
+@@ -35,7 +35,7 @@
+  * Command line options
+  */
+ extern int quiet;		/* Level of quietness */
+-extern int reservenum;		/* Number of memory reservation slots */
++extern unsigned int reservenum;	/* Number of memory reservation slots */
+ extern int minsize;		/* Minimum blob size */
+ extern int padsize;		/* Additional padding to blob */
+ extern int alignsize;		/* Additional padding to blob accroding to the alignsize */
+@@ -51,6 +51,11 @@ extern int annotate;		/* annotate .dts with input source location */
+ 
+ typedef uint32_t cell_t;
+ 
++static inline bool phandle_is_valid(cell_t phandle)
++{
++	return phandle != 0 && phandle != ~0U;
++}
++
+ static inline uint16_t dtb_ld16(const void *p)
+ {
+ 	const uint8_t *bp = (const uint8_t *)p;
+@@ -86,6 +91,16 @@ static inline uint64_t dtb_ld64(const void *p)
+ #define streq(a, b)	(strcmp((a), (b)) == 0)
+ #define strstarts(s, prefix)	(strncmp((s), (prefix), strlen(prefix)) == 0)
+ #define strprefixeq(a, n, b)	(strlen(b) == (n) && (memcmp(a, b, n) == 0))
++static inline bool strends(const char *str, const char *suffix)
++{
++	unsigned int len, suffix_len;
++
++	len = strlen(str);
++	suffix_len = strlen(suffix);
++	if (len < suffix_len)
++		return false;
++	return streq(str + len - suffix_len, suffix);
++}
+ 
+ #define ALIGN(x, a)	(((x) + (a) - 1) & ~((a) - 1))
+ 
+@@ -101,6 +116,12 @@ enum markertype {
+ 	TYPE_UINT64,
+ 	TYPE_STRING,
+ };
++
++static inline bool is_type_marker(enum markertype type)
++{
++	return type >= TYPE_UINT8;
++}
++
+ extern const char *markername(enum markertype markertype);
+ 
+ struct  marker {
+@@ -125,7 +146,22 @@ struct data {
+ 	for_each_marker(m) \
+ 		if ((m)->type == (t))
+ 
+-size_t type_marker_length(struct marker *m);
++static inline struct marker *next_type_marker(struct marker *m)
++{
++	for_each_marker(m)
++		if (is_type_marker(m->type))
++			break;
++	return m;
++}
++
++static inline size_t type_marker_length(struct marker *m)
++{
++	struct marker *next = next_type_marker(m->next);
++
++	if (next)
++		return next->offset - m->offset;
++	return 0;
++}
+ 
+ void data_free(struct data d);
+ 
+diff --git a/scripts/dtc/flattree.c b/scripts/dtc/flattree.c
+index 4659afbfcbab..95e43d32c3e6 100644
+--- a/scripts/dtc/flattree.c
++++ b/scripts/dtc/flattree.c
+@@ -124,7 +124,8 @@ static void asm_emit_cell(void *e, cell_t val)
+ {
+ 	FILE *f = e;
+ 
+-	fprintf(f, "\t.byte 0x%02x; .byte 0x%02x; .byte 0x%02x; .byte 0x%02x\n",
++	fprintf(f, "\t.byte\t0x%02x\n" "\t.byte\t0x%02x\n"
++		"\t.byte\t0x%02x\n" "\t.byte\t0x%02x\n",
+ 		(val >> 24) & 0xff, (val >> 16) & 0xff,
+ 		(val >> 8) & 0xff, val & 0xff);
+ }
+@@ -134,9 +135,9 @@ static void asm_emit_string(void *e, const char *str, int len)
+ 	FILE *f = e;
+ 
+ 	if (len != 0)
+-		fprintf(f, "\t.string\t\"%.*s\"\n", len, str);
++		fprintf(f, "\t.asciz\t\"%.*s\"\n", len, str);
+ 	else
+-		fprintf(f, "\t.string\t\"%s\"\n", str);
++		fprintf(f, "\t.asciz\t\"%s\"\n", str);
+ }
+ 
+ static void asm_emit_align(void *e, int a)
+@@ -295,7 +296,7 @@ static struct data flatten_reserve_list(struct reserve_info *reservelist,
+ {
+ 	struct reserve_info *re;
+ 	struct data d = empty_data;
+-	int    j;
++	unsigned int j;
+ 
+ 	for (re = reservelist; re; re = re->next) {
+ 		d = data_append_re(d, re->address, re->size);
+@@ -438,7 +439,7 @@ static void dump_stringtable_asm(FILE *f, struct data strbuf)
+ 
+ 	while (p < (strbuf.val + strbuf.len)) {
+ 		len = strlen(p);
+-		fprintf(f, "\t.string \"%s\"\n", p);
++		fprintf(f, "\t.asciz \"%s\"\n", p);
+ 		p += len+1;
+ 	}
+ }
+diff --git a/scripts/dtc/libfdt/fdt.c b/scripts/dtc/libfdt/fdt.c
+index 3e893073da05..9fe7cf4b747d 100644
+--- a/scripts/dtc/libfdt/fdt.c
++++ b/scripts/dtc/libfdt/fdt.c
+@@ -90,6 +90,10 @@ int fdt_check_header(const void *fdt)
+ {
+ 	size_t hdrsize;
+ 
++	/* The device tree must be at an 8-byte aligned address */
++	if ((uintptr_t)fdt & 7)
++		return -FDT_ERR_ALIGNMENT;
++
+ 	if (fdt_magic(fdt) != FDT_MAGIC)
+ 		return -FDT_ERR_BADMAGIC;
+ 	if (!can_assume(LATEST)) {
+diff --git a/scripts/dtc/libfdt/fdt_rw.c b/scripts/dtc/libfdt/fdt_rw.c
+index f13458d165d4..3621d3651d3f 100644
+--- a/scripts/dtc/libfdt/fdt_rw.c
++++ b/scripts/dtc/libfdt/fdt_rw.c
+@@ -349,7 +349,10 @@ int fdt_add_subnode_namelen(void *fdt, int parentoffset,
+ 		return offset;
+ 
+ 	/* Try to place the new node after the parent's properties */
+-	fdt_next_tag(fdt, parentoffset, &nextoffset); /* skip the BEGIN_NODE */
++	tag = fdt_next_tag(fdt, parentoffset, &nextoffset);
++	/* the fdt_subnode_offset_namelen() should ensure this never hits */
++	if (!can_assume(LIBFDT_FLAWLESS) && (tag != FDT_BEGIN_NODE))
++		return -FDT_ERR_INTERNAL;
+ 	do {
+ 		offset = nextoffset;
+ 		tag = fdt_next_tag(fdt, offset, &nextoffset);
+@@ -391,7 +394,9 @@ int fdt_del_node(void *fdt, int nodeoffset)
+ }
+ 
+ static void fdt_packblocks_(const char *old, char *new,
+-			    int mem_rsv_size, int struct_size)
++			    int mem_rsv_size,
++			    int struct_size,
++			    int strings_size)
+ {
+ 	int mem_rsv_off, struct_off, strings_off;
+ 
+@@ -406,8 +411,7 @@ static void fdt_packblocks_(const char *old, char *new,
+ 	fdt_set_off_dt_struct(new, struct_off);
+ 	fdt_set_size_dt_struct(new, struct_size);
+ 
+-	memmove(new + strings_off, old + fdt_off_dt_strings(old),
+-		fdt_size_dt_strings(old));
++	memmove(new + strings_off, old + fdt_off_dt_strings(old), strings_size);
+ 	fdt_set_off_dt_strings(new, strings_off);
+ 	fdt_set_size_dt_strings(new, fdt_size_dt_strings(old));
+ }
+@@ -467,7 +471,8 @@ int fdt_open_into(const void *fdt, void *buf, int bufsize)
+ 			return -FDT_ERR_NOSPACE;
+ 	}
+ 
+-	fdt_packblocks_(fdt, tmp, mem_rsv_size, struct_size);
++	fdt_packblocks_(fdt, tmp, mem_rsv_size, struct_size,
++			fdt_size_dt_strings(fdt));
+ 	memmove(buf, tmp, newsize);
+ 
+ 	fdt_set_magic(buf, FDT_MAGIC);
+@@ -487,7 +492,8 @@ int fdt_pack(void *fdt)
+ 
+ 	mem_rsv_size = (fdt_num_mem_rsv(fdt)+1)
+ 		* sizeof(struct fdt_reserve_entry);
+-	fdt_packblocks_(fdt, fdt, mem_rsv_size, fdt_size_dt_struct(fdt));
++	fdt_packblocks_(fdt, fdt, mem_rsv_size, fdt_size_dt_struct(fdt),
++			fdt_size_dt_strings(fdt));
+ 	fdt_set_totalsize(fdt, fdt_data_size_(fdt));
+ 
+ 	return 0;
+diff --git a/scripts/dtc/libfdt/fdt_strerror.c b/scripts/dtc/libfdt/fdt_strerror.c
+index b4356931b06d..d852b77e81e7 100644
+--- a/scripts/dtc/libfdt/fdt_strerror.c
++++ b/scripts/dtc/libfdt/fdt_strerror.c
+@@ -39,6 +39,7 @@ static struct fdt_errtabent fdt_errtable[] = {
+ 	FDT_ERRTABENT(FDT_ERR_BADOVERLAY),
+ 	FDT_ERRTABENT(FDT_ERR_NOPHANDLES),
+ 	FDT_ERRTABENT(FDT_ERR_BADFLAGS),
++	FDT_ERRTABENT(FDT_ERR_ALIGNMENT),
+ };
+ #define FDT_ERRTABSIZE	((int)(sizeof(fdt_errtable) / sizeof(fdt_errtable[0])))
+ 
+diff --git a/scripts/dtc/libfdt/libfdt.h b/scripts/dtc/libfdt/libfdt.h
+index c42807a7663e..ce31e844856a 100644
+--- a/scripts/dtc/libfdt/libfdt.h
++++ b/scripts/dtc/libfdt/libfdt.h
+@@ -131,6 +131,13 @@ uint32_t fdt_next_tag(const void *fdt, int offset, int *nextoffset);
+  * to work even with unaligned pointers on platforms (such as ARMv5) that don't
+  * like unaligned loads and stores.
+  */
++static inline uint16_t fdt16_ld(const fdt16_t *p)
++{
++	const uint8_t *bp = (const uint8_t *)p;
++
++	return ((uint16_t)bp[0] << 8) | bp[1];
++}
++
+ static inline uint32_t fdt32_ld(const fdt32_t *p)
+ {
+ 	const uint8_t *bp = (const uint8_t *)p;
+diff --git a/scripts/dtc/livetree.c b/scripts/dtc/livetree.c
+index 7eacd0248641..cc612370ec61 100644
+--- a/scripts/dtc/livetree.c
++++ b/scripts/dtc/livetree.c
+@@ -526,7 +526,7 @@ struct node *get_node_by_path(struct node *tree, const char *path)
+ 	p = strchr(path, '/');
+ 
+ 	for_each_child(tree, child) {
+-		if (p && strprefixeq(path, p - path, child->name))
++		if (p && strprefixeq(path, (size_t)(p - path), child->name))
+ 			return get_node_by_path(child, p+1);
+ 		else if (!p && streq(path, child->name))
+ 			return child;
+@@ -559,7 +559,7 @@ struct node *get_node_by_phandle(struct node *tree, cell_t phandle)
+ {
+ 	struct node *child, *node;
+ 
+-	if ((phandle == 0) || (phandle == -1)) {
++	if (!phandle_is_valid(phandle)) {
+ 		assert(generate_fixups);
+ 		return NULL;
+ 	}
+@@ -594,7 +594,7 @@ cell_t get_node_phandle(struct node *root, struct node *node)
+ 	static cell_t phandle = 1; /* FIXME: ick, static local */
+ 	struct data d = empty_data;
+ 
+-	if ((node->phandle != 0) && (node->phandle != -1))
++	if (phandle_is_valid(node->phandle))
+ 		return node->phandle;
+ 
+ 	while (get_node_by_phandle(root, phandle))
+diff --git a/scripts/dtc/treesource.c b/scripts/dtc/treesource.c
+index 061ba8c9c5e8..33fedee82d58 100644
+--- a/scripts/dtc/treesource.c
++++ b/scripts/dtc/treesource.c
+@@ -124,27 +124,6 @@ static void write_propval_int(FILE *f, const char *p, size_t len, size_t width)
+ 	}
+ }
+ 
+-static bool has_data_type_information(struct marker *m)
+-{
+-	return m->type >= TYPE_UINT8;
+-}
+-
+-static struct marker *next_type_marker(struct marker *m)
+-{
+-	while (m && !has_data_type_information(m))
+-		m = m->next;
+-	return m;
+-}
+-
+-size_t type_marker_length(struct marker *m)
+-{
+-	struct marker *next = next_type_marker(m->next);
+-
+-	if (next)
+-		return next->offset - m->offset;
+-	return 0;
+-}
+-
+ static const char *delim_start[] = {
+ 	[TYPE_UINT8] = "[",
+ 	[TYPE_UINT16] = "/bits/ 16 <",
+@@ -229,26 +208,39 @@ static void write_propval(FILE *f, struct property *prop)
+ 		size_t chunk_len = (m->next ? m->next->offset : len) - m->offset;
+ 		size_t data_len = type_marker_length(m) ? : len - m->offset;
+ 		const char *p = &prop->val.val[m->offset];
++		struct marker *m_phandle;
+ 
+-		if (has_data_type_information(m)) {
++		if (is_type_marker(m->type)) {
+ 			emit_type = m->type;
+ 			fprintf(f, " %s", delim_start[emit_type]);
+ 		} else if (m->type == LABEL)
+ 			fprintf(f, " %s:", m->ref);
+-		else if (m->offset)
+-			fputc(' ', f);
+ 
+-		if (emit_type == TYPE_NONE) {
+-			assert(chunk_len == 0);
++		if (emit_type == TYPE_NONE || chunk_len == 0)
+ 			continue;
+-		}
+ 
+ 		switch(emit_type) {
+ 		case TYPE_UINT16:
+ 			write_propval_int(f, p, chunk_len, 2);
+ 			break;
+ 		case TYPE_UINT32:
+-			write_propval_int(f, p, chunk_len, 4);
++			m_phandle = prop->val.markers;
++			for_each_marker_of_type(m_phandle, REF_PHANDLE)
++				if (m->offset == m_phandle->offset)
++					break;
++
++			if (m_phandle) {
++				if (m_phandle->ref[0] == '/')
++					fprintf(f, "&{%s}", m_phandle->ref);
++				else
++					fprintf(f, "&%s", m_phandle->ref);
++				if (chunk_len > 4) {
++					fputc(' ', f);
++					write_propval_int(f, p + 4, chunk_len - 4, 4);
++				}
++			} else {
++				write_propval_int(f, p, chunk_len, 4);
++			}
+ 			break;
+ 		case TYPE_UINT64:
+ 			write_propval_int(f, p, chunk_len, 8);
+diff --git a/scripts/dtc/util.h b/scripts/dtc/util.h
+index a771b4654c76..c45b2c295aa5 100644
+--- a/scripts/dtc/util.h
++++ b/scripts/dtc/util.h
+@@ -13,10 +13,10 @@
+  */
+ 
+ #ifdef __GNUC__
+-#ifdef __clang__
+-#define PRINTF(i, j)	__attribute__((format (printf, i, j)))
+-#else
++#if __GNUC__ >= 5 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 4)
+ #define PRINTF(i, j)	__attribute__((format (gnu_printf, i, j)))
++#else
++#define PRINTF(i, j)	__attribute__((format (printf, i, j)))
+ #endif
+ #define NORETURN	__attribute__((noreturn))
+ #else
+diff --git a/scripts/dtc/version_gen.h b/scripts/dtc/version_gen.h
+index 73a7839603f1..785cc4c57326 100644
+--- a/scripts/dtc/version_gen.h
++++ b/scripts/dtc/version_gen.h
+@@ -1 +1 @@
+-#define DTC_VERSION "DTC 1.6.0-g183df9e9"
++#define DTC_VERSION "DTC 1.6.1-g0a3a9d34"
+diff --git a/scripts/dtc/yamltree.c b/scripts/dtc/yamltree.c
+index e63d32fe142a..55908c829c98 100644
+--- a/scripts/dtc/yamltree.c
++++ b/scripts/dtc/yamltree.c
+@@ -29,11 +29,12 @@ char *yaml_error_name[] = {
+ 		    (emitter)->problem, __func__, __LINE__);		\
+ })
+ 
+-static void yaml_propval_int(yaml_emitter_t *emitter, struct marker *markers, char *data, unsigned int len, int width)
++static void yaml_propval_int(yaml_emitter_t *emitter, struct marker *markers,
++	char *data, unsigned int seq_offset, unsigned int len, int width)
+ {
+ 	yaml_event_t event;
+ 	void *tag;
+-	unsigned int off, start_offset = markers->offset;
++	unsigned int off;
+ 
+ 	switch(width) {
+ 		case 1: tag = "!u8"; break;
+@@ -66,7 +67,7 @@ static void yaml_propval_int(yaml_emitter_t *emitter, struct marker *markers, ch
+ 			m = markers;
+ 			is_phandle = false;
+ 			for_each_marker_of_type(m, REF_PHANDLE) {
+-				if (m->offset == (start_offset + off)) {
++				if (m->offset == (seq_offset + off)) {
+ 					is_phandle = true;
+ 					break;
+ 				}
+@@ -114,6 +115,7 @@ static void yaml_propval(yaml_emitter_t *emitter, struct property *prop)
+ 	yaml_event_t event;
+ 	unsigned int len = prop->val.len;
+ 	struct marker *m = prop->val.markers;
++	struct marker *markers = prop->val.markers;
+ 
+ 	/* Emit the property name */
+ 	yaml_scalar_event_initialize(&event, NULL,
+@@ -151,19 +153,19 @@ static void yaml_propval(yaml_emitter_t *emitter, struct property *prop)
+ 
+ 		switch(m->type) {
+ 		case TYPE_UINT16:
+-			yaml_propval_int(emitter, m, data, chunk_len, 2);
++			yaml_propval_int(emitter, markers, data, m->offset, chunk_len, 2);
+ 			break;
+ 		case TYPE_UINT32:
+-			yaml_propval_int(emitter, m, data, chunk_len, 4);
++			yaml_propval_int(emitter, markers, data, m->offset, chunk_len, 4);
+ 			break;
+ 		case TYPE_UINT64:
+-			yaml_propval_int(emitter, m, data, chunk_len, 8);
++			yaml_propval_int(emitter, markers, data, m->offset, chunk_len, 8);
+ 			break;
+ 		case TYPE_STRING:
+ 			yaml_propval_string(emitter, data, chunk_len);
+ 			break;
+ 		default:
+-			yaml_propval_int(emitter, m, data, chunk_len, 1);
++			yaml_propval_int(emitter, markers, data, m->offset, chunk_len, 1);
+ 			break;
+ 		}
+ 	}
+-- 
+2.32.0
+
