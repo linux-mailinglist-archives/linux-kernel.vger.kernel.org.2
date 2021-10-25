@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB88439576
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711BD439571
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhJYMBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        id S231835AbhJYMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbhJYMBn (ORCPT
+        with ESMTP id S231166AbhJYMBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:01:43 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AB7C061745;
-        Mon, 25 Oct 2021 04:59:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so8232516pjb.3;
-        Mon, 25 Oct 2021 04:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7EfxP+NNNDqzXZbApTvLoWyoKYpAMnYA8qlrdpBRI48=;
-        b=bq2XHOiAgE0+68ggQGvbgW1f1CCDuX617uhA+20w+r2E0eyNvNPw2swqehGCk1jBSC
-         tefyDUWchsfEWkG63Z9PUujW/0WnPSjBhFr72XXmB9CTkufKPMuVPpIYfZIn467bnEeV
-         lMlcSejWxGs7Uw2mw9y/WaQGCKyJOcu3+G7mWYbB8fabHScCu/Ubjj0Vo402K9rIaM2v
-         wIlEEky2LrMyAPqxumyoxJ3bfZBjbgicYtB+6IiMeE1o5FhV3wdFsV4lZ7aAeZP9Hroz
-         AzoMjgqF8c7V3VyZkG/Ju3g19rSA3NlMRCMqqPAdbxKZo3kN+PnMtofZh6WbpKwLVWPW
-         EpLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7EfxP+NNNDqzXZbApTvLoWyoKYpAMnYA8qlrdpBRI48=;
-        b=YfLaqjsnK5r4T+CyIQm7PJD+kEaqWbe2D/W8WZ2n9zR0+paNvUEREibCG/2BfxQuK9
-         Oof8gzOOtPf150e0YAHrTT2kHGAKqGCj3m03pjM1YrP60a5n3+W2/rFmKoVOa3Eg+s98
-         IvXsCl/ON6wWy2n6opNylQfvsRkiCsxFNj/wDQ59+Cufv2hFi5rFS5+isCodWrdKa9uD
-         l2muEH0luI49qvHh95141ykUqsLu4IxnNlE0B/Zv2Uz1EktaQPSQqQz/j+RHw40XYStT
-         3IRHo2ElQ0X8tRpmUjb+RFMSr7qCI+Xt1toDIl2Ymu87XU5nYbcMi01h097KCgH1QLfT
-         EvPw==
-X-Gm-Message-State: AOAM530K+iwLJvWMdAAt8Gk4pb8AbgUB9gndlNg0l8MVv2OtQobQrRFI
-        WPh9N2V3h2BotmmDumE2AHU=
-X-Google-Smtp-Source: ABdhPJxMuslf8J3sqJtUWlL/rKPGmGcdRJ/N091CQE0aJ7TVEq1RNpzWbjvkZxIGz3vc7qlrsVZXgg==
-X-Received: by 2002:a17:90a:bd0f:: with SMTP id y15mr12070038pjr.186.1635163161172;
-        Mon, 25 Oct 2021 04:59:21 -0700 (PDT)
-Received: from ubuntu-hirsute.. ([154.86.159.246])
-        by smtp.gmail.com with ESMTPSA id u4sm19362300pfh.147.2021.10.25.04.59.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 04:59:20 -0700 (PDT)
-From:   yangxingwu <xingwu.yang@gmail.com>
-To:     horms@verge.net.au
-Cc:     ja@ssi.bg, pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, corbet@lwn.net, xingwu.yang@gmail.com
-Subject: [PATCH] ipvs: Fix reuse connection if RS weight is 0
-Date:   Mon, 25 Oct 2021 19:59:10 +0800
-Message-Id: <20211025115910.2595-1-xingwu.yang@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 25 Oct 2021 08:01:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4857EC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:59:18 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1meydF-0007zT-Ky; Mon, 25 Oct 2021 13:59:13 +0200
+Subject: Re: [PATCH V2] clk: imx: gate off peripheral clock slice
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, sboyd@kernel.org,
+        mturquette@baylibre.com, abel.vesa@nxp.com, s.hauer@pengutronix.de
+Cc:     Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, festevam@gmail.com,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211025122902.1151-1-peng.fan@oss.nxp.com>
+ <fc1ac63d-30c3-f309-7631-212ffa3f9de0@pengutronix.de>
+Message-ID: <3eda3c8b-636b-9b83-a2f5-434fd2bdc832@pengutronix.de>
+Date:   Mon, 25 Oct 2021 13:59:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <fc1ac63d-30c3-f309-7631-212ffa3f9de0@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
-dead"), new connections to dead servers are redistributed immediately to
-new servers.
+On 25.10.21 13:54, Ahmad Fatoum wrote:
+> On 25.10.21 14:29, Peng Fan (OSS) wrote:
+>> From: Peng Fan <peng.fan@nxp.com>
+>>
+>> The Peripheral clocks are default enabled when SoC power on, and
+>> bootloader not gate off the clocks when booting Linux Kernel.
+>>
+>> So Linux Kernel is not aware the peripheral clocks are enabled and
+>> still take them as disabled because of enable count is zero.
+>>
+>> Then Peripheral clock's source without clock gated off could be
+>> changed when have assigned-parents in device tree
+>>
+>> However, per i.MX8M* reference mannual, "Peripheral clock slices must
+>> be stopped to change the clock source", so need to gate off the
+>> the peripheral clock when registering the clocks to avoid glitch.
+>>
+>> Tested boot on i.MX8MM/P-EVK board
+>>
+>> Fixes: d3ff9728134e ("clk: imx: Add imx composite clock")
+>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> 
+> I've been running an i.MX8MM-based system with this patch for a few days
+> so far and no apparent issues:
+> 
+> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
-port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
-0. And new connection may be distributed to a real server with weight 0.
+I see now that the duration of test isn't as important as the number
+of boots (as this is a probe-time change). Still, I booted it a dozen
+or so times and didn't notice anything different.
 
-Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
----
- Documentation/networking/ipvs-sysctl.rst | 3 +--
- net/netfilter/ipvs/ip_vs_core.c          | 5 +++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+>> ---
+>>
+>> V2:
+>>  Add Fixes tag
+>>
+>>  drivers/clk/imx/clk-composite-8m.c | 9 ++++++++-
+>>  1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
+>> index 2dfd6149e528..ee41fbf90589 100644
+>> --- a/drivers/clk/imx/clk-composite-8m.c
+>> +++ b/drivers/clk/imx/clk-composite-8m.c
+>> @@ -184,6 +184,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+>>  	struct clk_mux *mux = NULL;
+>>  	const struct clk_ops *divider_ops;
+>>  	const struct clk_ops *mux_ops;
+>> +	u32 val;
+>>  
+>>  	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
+>>  	if (!mux)
+>> @@ -216,8 +217,14 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+>>  		div->width = PCG_PREDIV_WIDTH;
+>>  		divider_ops = &imx8m_clk_composite_divider_ops;
+>>  		mux_ops = &clk_mux_ops;
+>> -		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED))
+>> +		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED)) {
+>>  			flags |= CLK_SET_PARENT_GATE;
+>> +			if (!(flags & CLK_IS_CRITICAL)) {
+>> +				val = readl(reg);
+>> +				val &= ~BIT(PCG_CGC_SHIFT);
+>> +				writel(val, reg);
+>> +			}
+>> +		}
+>>  	}
+>>  
+>>  	div->lock = &imx_ccm_lock;
+>>
+> 
+> 
 
-diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-index 2afccc63856e..1cfbf1add2fc 100644
---- a/Documentation/networking/ipvs-sysctl.rst
-+++ b/Documentation/networking/ipvs-sysctl.rst
-@@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
- 
- 	0: disable any special handling on port reuse. The new
- 	connection will be delivered to the same real server that was
--	servicing the previous connection. This will effectively
--	disable expire_nodest_conn.
-+	servicing the previous connection.
- 
- 	bit 1: enable rescheduling of new connections when it is safe.
- 	That is, whenever expire_nodest_conn and for TCP sockets, when
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index 128690c512df..9279aed69e23 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -2042,14 +2042,15 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
- 			     ipvs, af, skb, &iph);
- 
- 	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
--	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-+	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
- 		bool old_ct = false, resched = false;
- 
- 		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
- 		    unlikely(!atomic_read(&cp->dest->weight))) {
- 			resched = true;
- 			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
--		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-+		} else if (conn_reuse_mode &&
-+			   is_new_conn_expected(cp, conn_reuse_mode)) {
- 			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
- 			if (!atomic_read(&cp->n_control)) {
- 				resched = true;
+
 -- 
-2.30.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
