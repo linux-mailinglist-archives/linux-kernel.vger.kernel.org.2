@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671AD43A1F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AD243A1B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237444AbhJYTnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:43:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
+        id S235351AbhJYTlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235106AbhJYTff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:35:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D28760FDC;
-        Mon, 25 Oct 2021 19:32:48 +0000 (UTC)
+        id S235775AbhJYTc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:32:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4D926112F;
+        Mon, 25 Oct 2021 19:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190369;
-        bh=5pE0lFSjvAajVgu0Aa+jEAe8SoNog+r8Es7wuCC9jg0=;
+        s=korg; t=1635190117;
+        bh=vdPbPSGV3LYyfWiHle/leoJkfxMpJveapwJ+l5NPmDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VthJZ0tUKhz8ixLmtyd/bIrlrkkuRzn1m/ThV3a7HvwD45qudkSFDdLEFNpR7p/D3
-         ZL6KHKJ+R1EdaOGET2AMOAMtsimxZq0808T11QOHG0+Puy6KQFaAVv3pZ59BieJyqT
-         HPlPVpQngodxfNvS/uoXZvhyh+rIcOTXKks146CQ=
+        b=Zpwec9BQ0P5x4M6LNIVnQlSzFN/xZCHSTLIJWdj5Y6g5tjVHBpR7YqJT9/+zPGmQC
+         eijDQgrxqQ1eqEpuiDOxX+gFihaeItTz7RtBP6VmqpaCrNdBGgEpRkVJHxWuRkqGWI
+         e80GNvvBAGRJ9fsB40/u0u0PV4q857H7Q9LZx8BA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 58/95] powerpc/idle: Dont corrupt back chain when going idle
+Subject: [PATCH 5.4 38/58] powerpc/idle: Dont corrupt back chain when going idle
 Date:   Mon, 25 Oct 2021 21:14:55 +0200
-Message-Id: <20211025191005.373903879@linuxfoundation.org>
+Message-Id: <20211025190943.760074275@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
+References: <20211025190937.555108060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -79,7 +79,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/powerpc/kernel/idle_book3s.S
 +++ b/arch/powerpc/kernel/idle_book3s.S
-@@ -126,14 +126,16 @@ _GLOBAL(idle_return_gpr_loss)
+@@ -124,14 +124,16 @@ _GLOBAL(idle_return_gpr_loss)
  /*
   * This is the sequence required to execute idle instructions, as
   * specified in ISA v2.07 (and earlier). MSR[IR] and MSR[DR] must be 0.
