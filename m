@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB302439ED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED2D439EDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhJYTDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:03:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48418 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233719AbhJYTDU (ORCPT
+        id S233716AbhJYTDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:03:39 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:35986 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233804AbhJYTDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:03:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635188458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QkyoC/NexH1Nu0O2R4wJhF/62iz6WrFzKuF9woFeRsA=;
-        b=FMgtWL46advIFc7a6Z4Daj5ZHup5t8m+GSfyUGpbsOs3yNJiysWmY6X4so8zxrrF8RdYHb
-        KYr9DvZLg1Rwjnlg9PbS+aoALmXhDNDC4lZIhyj10VO5tixNxrwqy2IIBOa97gYtty03QF
-        hA+w8TXa7lI0lp/nfm32RH8f4G3KqQ0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-NDeFFj-BNW2zmvHWaONXBQ-1; Mon, 25 Oct 2021 15:00:56 -0400
-X-MC-Unique: NDeFFj-BNW2zmvHWaONXBQ-1
-Received: by mail-wr1-f72.google.com with SMTP id d10-20020adffd8a000000b00167f0846597so2904234wrr.16
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:00:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QkyoC/NexH1Nu0O2R4wJhF/62iz6WrFzKuF9woFeRsA=;
-        b=uCtutGaDd5ZeHYiy8jRBWiBpS0LacaxRnPquOe7upCNhY5y9I1px1Hq2jQ9VSGBhya
-         R58JCpmcSg6DsmPMXHxJXsEa0HtzBp1lspypOcKYLUHHL+/kJ11DMPnlzRth0qSH++jo
-         nCSFAArSUGapKnGXUAF46Q6Pup0MUdkLJzRRDXf+7IfbS51NAHZJ9DpStMtMpYb8ojl/
-         ZxPNWvQN1xVQS/Or4Aj9Nd/TySMGyX3pU2u6u2CuIi+x0s0QcbtaH8q9PCAfj1WSfaPH
-         jKGH4ohajuhwxOl0JeZSB4h0y6CJGGp25MwXPF5nHooj4E3w/5tf96d6RFkKj2Fvz15X
-         8R2A==
-X-Gm-Message-State: AOAM531dpIJb7n1X1hOQ+QG6RR07oJYIJcesCUC3GsEygQDCtYmbVS59
-        yAu1llpY5U8/MzszH97kzdIJ1JjoTESNKLSLEFO070djG8ighwmkhb/KnHKqULnTIGHA56ddPN7
-        fuBTsFZsvBvNCG/83DgqcL20JDDOOaM+LM2kUu3R+
-X-Received: by 2002:a7b:c74f:: with SMTP id w15mr21890331wmk.186.1635188455482;
-        Mon, 25 Oct 2021 12:00:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzXLWqbHTas2L+Ep0jJ8Ym3FrcHaKtpcTPgh7nV35XP5aJDxyjNlJ4UaNmG9hWfJd1eun8dCJKnnE+XiZ6mmk=
-X-Received: by 2002:a7b:c74f:: with SMTP id w15mr21890297wmk.186.1635188455236;
- Mon, 25 Oct 2021 12:00:55 -0700 (PDT)
+        Mon, 25 Oct 2021 15:03:35 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PIVBbq001248;
+        Mon, 25 Oct 2021 12:01:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=skPOw8PuxIdPlr/lKMaOSrEMyf2mnE5f/7xA+QVju1U=;
+ b=kwZUNTULXaUcJBdqhC+3xY0khXSMA0eK2MQmwtDKVuOcLNXovD4ATeYAO/TOPiOIyaEd
+ O/uOX0aBkXZJn1rUZRtmXMIv1NLw9PbYgbCb2vYK6wd3Bf1a8Rb9GO9RscOv4RxYnU69
+ REJ09YzzVr0F1d9wFgZr4165UNen8LjLFf2xysCPIHAoCq+jeCMLnSby+KEx5CGWp2Qw
+ BnuJYaMjp9uDEneuYu1xk2nDptQmWijG3SUNBmP+M9vRKahyf9gUMGR+ynuMgkQh89ah
+ 4VEvElfzczF4nIrP39vb6yyDzk+bVxsA3Cpl8tXtnqoTIy6IEpBvasLw03XBHOvHgT4X /A== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3bwtjrj6wr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 12:01:10 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct
+ 2021 12:01:08 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 25 Oct 2021 12:01:08 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 135633F70AF;
+        Mon, 25 Oct 2021 12:01:05 -0700 (PDT)
+From:   Rakesh Babu <rsaladi2@marvell.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+CC:     Rakesh Babu <rsaladi2@marvell.com>
+Subject: [net PATCH 0/2] RVU Debugfs fix updates.
+Date:   Tue, 26 Oct 2021 00:30:43 +0530
+Message-ID: <20211025190045.7462-1-rsaladi2@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
- <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
- <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
- <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
-In-Reply-To: <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 25 Oct 2021 21:00:43 +0200
-Message-ID: <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: i4JhMmAjwA1JaID_Dt-zCWMLPnKd5kf4
+X-Proofpoint-GUID: i4JhMmAjwA1JaID_Dt-zCWMLPnKd5kf4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_06,2021-10-25_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 9:23 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Fri, Oct 22, 2021 at 8:06 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > Probing only the first byte(s) in fault_in() would be ideal, no need to
-> > go through all filesystems and try to change the uaccess/probing order.
->
-> Let's try that. Or rather: probing just the first page - since there
-> are users like that btrfs ioctl, and the direct-io path.
+The following patch series consists of the patch fixes done over
+rvu_debugfs.c file.
 
-For direct I/O, we actually only want to trigger page fault-in so that
-we can grab page references with bio_iov_iter_get_pages. Probing for
-sub-page error domains will only slow things down. If we hit -EFAULT
-during the actual copy-in or copy-out, we know that the error can't be
-page fault related. Similarly, in the buffered I/O case, we only
-really care about the next byte, so any probing beyond that is
-unnecessary.
+Patch 1: Check and return if ipolicers do not exists.
+Patch 2: Fix rsrc_alloc to print all enabled PF/VF entries with list of LFs
+allocated for each functional block.
 
-So maybe we should split the sub-page error domain probing off from
-the fault-in functions. Or at least add an argument to the fault-in
-functions that specifies the amount of memory to probe.
+Rakesh Babu (1):
+  octeontx2-af: Display all enabled PF VF rsrc_alloc entries.
 
-Thanks,
-Andreas
+Subbaraya Sundeep (1):
+  octeontx2-af: Check whether ipolicers exists
 
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 146 ++++++++++++++----
+ 1 file changed, 114 insertions(+), 32 deletions(-)
+
+--
+2.17.1
