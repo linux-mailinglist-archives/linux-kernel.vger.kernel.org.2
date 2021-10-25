@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01B843A2D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB20439FB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbhJYTxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:53:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60450 "EHLO mail.kernel.org"
+        id S233646AbhJYTXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:23:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236346AbhJYTog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:44:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3EC60200;
-        Mon, 25 Oct 2021 19:38:13 +0000 (UTC)
+        id S233394AbhJYTUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6CFE601FF;
+        Mon, 25 Oct 2021 19:17:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190694;
-        bh=r7TYuYIZvlJ8m8xyhwiFCIrPeI5zr1lwbKu4NznIqHw=;
+        s=korg; t=1635189469;
+        bh=9tza5uhDSKEAM5dmlD7mCIGhHn25KTRtUYhlRmmeYfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gX2KL2WVB0JUiAMpod03RV4hjOqB/+O5jgpwhnT7zF0iIwejwX98o3O/OMgpYDpcE
-         DMqXqbvE7ON3aJRe9LPQi2NUUoGgkIuJJI083HhVw5JypdedgF4DigcMW+nzmilzEM
-         FMKMRmHG9NWJqcvhjHlfce74Hk6GKfuNOak8aj1w=
+        b=ztmqaKKU/R2R9oJ3J5/SzhFwGsBT5N4htYwQuyLjQYOcX62ZKXrfvrAss5rm7Trc3
+         YrRoihvx3RO6AHArPoPEg14F+MPTNifZMe0ELz95k5fLH4FYvBymxUX6ruFc2ADcpS
+         emZon88dBj/bAmBBOywJolEnEPAOqh1MYXQbeHAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 048/169] net: hns3: fix vf reset workqueue cannot exit
-Date:   Mon, 25 Oct 2021 21:13:49 +0200
-Message-Id: <20211025191023.847697897@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Martynov <mar.kolya@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.9 03/50] xhci: Enable trust tx length quirk for Fresco FL11 USB controller
+Date:   Mon, 25 Oct 2021 21:13:50 +0200
+Message-Id: <20211025190933.416798369@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
+From: Nikolay Martynov <mar.kolya@gmail.com>
 
-[ Upstream commit 1385cc81baeb3bd8cbbbcdc1557f038ac1712529 ]
+commit ea0f69d8211963c4b2cc1998b86779a500adb502 upstream.
 
-The task of VF reset is performed through the workqueue. It checks the
-value of hdev->reset_pending to determine whether to exit the loop.
-However, the value of hdev->reset_pending may also be assigned by
-the interrupt function hclgevf_misc_irq_handle(), which may cause the
-loop fail to exit and keep occupying the workqueue. This loop is not
-necessary, so remove it and the workqueue will be rescheduled if the
-reset needs to be retried or a new reset occurs.
+Tested on SD5200T TB3 dock which has Fresco Logic FL1100 USB 3.0 Host
+Controller.
+Before this patch streaming video from USB cam made mouse and keyboard
+connected to the same USB bus unusable. Also video was jerky.
+With this patch streaming video doesn't have any effect on other
+periferals and video is smooth.
 
-Fixes: 1cc9bc6e5867 ("net: hns3: split hclgevf_reset() into preparing and rebuilding part")
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20211008092547.3996295-6-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/host/xhci-pci.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 22cf66004dfa..b8414f684e89 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2271,9 +2271,9 @@ static void hclgevf_reset_service_task(struct hclgevf_dev *hdev)
- 		hdev->reset_attempts = 0;
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -38,6 +38,7 @@
+ #define PCI_VENDOR_ID_FRESCO_LOGIC	0x1b73
+ #define PCI_DEVICE_ID_FRESCO_LOGIC_PDK	0x1000
+ #define PCI_DEVICE_ID_FRESCO_LOGIC_FL1009	0x1009
++#define PCI_DEVICE_ID_FRESCO_LOGIC_FL1100	0x1100
+ #define PCI_DEVICE_ID_FRESCO_LOGIC_FL1400	0x1400
  
- 		hdev->last_reset_time = jiffies;
--		while ((hdev->reset_type =
--			hclgevf_get_reset_level(hdev, &hdev->reset_pending))
--		       != HNAE3_NONE_RESET)
-+		hdev->reset_type =
-+			hclgevf_get_reset_level(hdev, &hdev->reset_pending);
-+		if (hdev->reset_type != HNAE3_NONE_RESET)
- 			hclgevf_reset(hdev);
- 	} else if (test_and_clear_bit(HCLGEVF_RESET_REQUESTED,
- 				      &hdev->reset_state)) {
--- 
-2.33.0
-
+ #define PCI_VENDOR_ID_ETRON		0x1b6f
+@@ -91,6 +92,7 @@ static void xhci_pci_quirks(struct devic
+ 	/* Look for vendor-specific quirks */
+ 	if (pdev->vendor == PCI_VENDOR_ID_FRESCO_LOGIC &&
+ 			(pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_PDK ||
++			 pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_FL1100 ||
+ 			 pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_FL1400)) {
+ 		if (pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_PDK &&
+ 				pdev->revision == 0x0) {
 
 
