@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D8043A035
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6A243A08B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbhJYT3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        id S233555AbhJYTbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234951AbhJYT0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:26:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8462661078;
-        Mon, 25 Oct 2021 19:23:06 +0000 (UTC)
+        id S235219AbhJYT1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:27:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D2C061106;
+        Mon, 25 Oct 2021 19:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189787;
-        bh=1mhfeHEhyimC8v2ZpBQtxBPWc4NhpHFzLAW0gj7zt5g=;
+        s=korg; t=1635189835;
+        bh=p0kS93RfLnSfxKrbSn0J5oetqaxXLBPCiMbmkPFTp+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4oyFN0quTy8+1pxE0BPnE6URIXF0EMVTlCzBnjsxcEmibLlEFw10iIiN4Yy5U2NU
-         jLQy/bYmv+HuA38HgP0ttastU+sG84k0tw0fJysyHR9qld3weCElEchs300A5FJ5k3
-         fZQmkMfs6mNbtiSmfqqgZ08GlUAV5jsSwKQCP2gE=
+        b=Im7DIrqcH/+mKk2m/r1BewMIRPkDZpfIeN1C/OhvZwyQov87nEX1bd6UOe8ZnakoX
+         n/xA0F+brYwWX43iRK40/aBR3SSqvKpaHlNjMF4zjdSk7KtozeuGo7nJzc9R8bIbW/
+         Oo1BIrE9XjxDIBO1Bd7LuUD/hZDatSZ9x4VFPX6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 24/30] platform/x86: intel_scu_ipc: Update timeout value in comment
+        stable@vger.kernel.org, Brendan Grieve <brendan@grieve.com.au>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 19/37] ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
 Date:   Mon, 25 Oct 2021 21:14:44 +0200
-Message-Id: <20211025190928.304743466@linuxfoundation.org>
+Message-Id: <20211025190932.190567902@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prashant Malani <pmalani@chromium.org>
+From: Brendan Grieve <brendan@grieve.com.au>
 
-[ Upstream commit a0c5814b9933f25ecb6de169483c5b88cf632bca ]
+commit 3c414eb65c294719a91a746260085363413f91c1 upstream.
 
-The comment decribing the IPC timeout hadn't been updated when the
-actual timeout was changed from 3 to 5 seconds in
-commit a7d53dbbc70a ("platform/x86: intel_scu_ipc: Increase virtual
-timeout from 3 to 5 seconds") .
+As per discussion at: https://github.com/szszoke/sennheiser-gsp670-pulseaudio-profile/issues/13
 
-Since the value is anyway updated to 10s now, take this opportunity to
-update the value in the comment too.
+The GSP670 has 2 playback and 1 recording device that by default are
+detected in an incompatible order for alsa. This may have been done to make
+it compatible for the console by the manufacturer and only affects the
+latest firmware which uses its own ID.
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Cc: Benson Leung <bleung@chromium.org>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Link: https://lore.kernel.org/r/20210928101932.2543937-4-pmalani@chromium.org
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This quirk will resolve this by reordering the channels.
+
+Signed-off-by: Brendan Grieve <brendan@grieve.com.au>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211015025335.196592-1-brendan@grieve.com.au
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/x86/intel_scu_ipc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks-table.h |   32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
-index 2434ce8bead6..46d543063b6d 100644
---- a/drivers/platform/x86/intel_scu_ipc.c
-+++ b/drivers/platform/x86/intel_scu_ipc.c
-@@ -183,7 +183,7 @@ static inline int busy_loop(struct intel_scu_ipc_dev *scu)
- 	return 0;
- }
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3583,5 +3583,37 @@ ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* A
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Sennheiser GSP670
++	 * Change order of interfaces loaded
++	 */
++	USB_DEVICE(0x1395, 0x0300),
++	.bInterfaceClass = USB_CLASS_PER_INTERFACE,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			// Communication
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Recording
++			{
++				.ifnum = 4,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Main
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
  
--/* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
-+/* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
- static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
- {
- 	int status;
--- 
-2.33.0
-
+ #undef USB_DEVICE_VENDOR_SPEC
 
 
