@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CF1438ED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F02F438EAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 07:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhJYFb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 01:31:58 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:48605 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhJYFbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 01:31:49 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4Hd3RV3yc5z4xZ1; Mon, 25 Oct 2021 16:29:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1635139766;
-        bh=6zAr2dccLE+Xq46zC4THi7D5zvFV8MFg187CSJj4PoU=;
+        id S232207AbhJYFSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 01:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhJYFSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 01:18:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8704160F92;
+        Mon, 25 Oct 2021 05:15:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635138955;
+        bh=uGQcQonQKEkkt5td7fa6/bmH3oGktW9n3KzEh9S4/SU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Soao14g4N+KZ/f9ElfqcTacz+edrkXvdUyuFDgkOIFFrK9kUH2lpbmN3vk8hW17/H
-         /q6A0UCMXTV3UhexzZ6bC1Lh9qDYDc6E15yfCAZayVk1HT/60wXMetI0KviTXKvKnr
-         Elq25upo6pL91ZXHBgCljcx5VZBkiMuPs8pKxLok=
-Date:   Mon, 25 Oct 2021 16:14:56 +1100
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 13/20] iommu: Extend iommu_at[de]tach_device() for multiple
- devices group
-Message-ID: <YXY9UIKDlQpNDGax@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-14-yi.l.liu@intel.com>
- <YWe+88sfCbxgMYPN@yekko>
- <BN9PR11MB54337A8E65C789D038D875C68CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YWzwmAQDB9Qwu2uQ@yekko>
- <20211018163238.GO2744544@nvidia.com>
+        b=YGcCGwfwNsTlKvwG2/mgFqhWEw2FEuc3zRufIwLkwh2Mu5Dv4brOD/odcXEX6HlIL
+         RZOyorbP/NUjeGXZ9STePqQfE6wvvInv17DI77W5GCBwp44nUMIK0hrJz0pji8t4vJ
+         UmEWO0Jb2MBgyhtp7PkrJrgS3Ro46IfAkjdGyX28=
+Date:   Mon, 25 Oct 2021 07:15:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: Re: [PATCH v8 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+Message-ID: <YXY9gsIn+VhmPhHU@kroah.com>
+References: <20211018135744.45527-1-jarkko@kernel.org>
+ <20211018135744.45527-2-jarkko@kernel.org>
+ <YW2GLE89WxAeMZH4@kroah.com>
+ <4050b7723f6f205c9afc3bdfa3888a6e8befa12a.camel@kernel.org>
+ <YXOsx8SvFJV5R7lU@kroah.com>
+ <2b30027eb017216986e88008fdc925d0e6c61ce0.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yxRtDnBMBAGaMdJf"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211018163238.GO2744544@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2b30027eb017216986e88008fdc925d0e6c61ce0.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 24, 2021 at 05:24:43PM +0300, Jarkko Sakkinen wrote:
+> On Sat, 2021-10-23 at 08:33 +0200, Greg Kroah-Hartman wrote:
+> > On Sat, Oct 23, 2021 at 04:02:48AM +0300, Jarkko Sakkinen wrote:
+> > > On Mon, 2021-10-18 at 16:35 +0200, Greg Kroah-Hartman wrote:
+> > > > > +               ret = sysfs_create_group(&dev->kobj, &sgx_node_attr_group);
+> > > > 
+> > > > A huge hint, if a driver has to call a sysfs_* call, something is wrong.
+> > > > 
+> > > > Something is wrong here.
+> > > > 
+> > > > Why are you messing around with a kobject?  This is a device, that you
+> > > > control, you can just set the default attribute group for it and then
+> > > > the driver core will add and remove the sysfs group at the proper time,
+> > > > in the proper way.  Right now you are racing userspace and loosing.
+> > > > 
+> > > > Use the default group list, that is what it is there for.
+> > > 
+> > > I used sysfs_create_group() because node_devices is not owned by SGX
+> > > code. It is managed in drivers/base/node.c, and also initialized before
+> > > SGX.
+> > 
+> > Then that is broken, please do not use that device as your code does not
+> > "own" it.  Or fix the logic to be initialized earlier.
+> 
+> To get a synchronous initialization, I'd need to add the attributes as
+> part of this declaration:
+> 
+> static struct attribute *node_dev_attrs[] = {
+> 	&dev_attr_cpumap.attr,
+> 	&dev_attr_cpulist.attr,
+> 	&dev_attr_meminfo.attr,
+> 	&dev_attr_numastat.attr,
+> 	&dev_attr_distance.attr,
+> 	&dev_attr_vmstat.attr,
+> 	NULL
+> };
+> ATTRIBUTE_GROUPS(node_dev);
+> 
+> That guarantees that the attribute exists at the time when the
+> node is created, e.g. in that sense this will fix the race with
+> uevent code.
+> 
+> However, up until sgx_init() has been completed, the attribute
+> will emit '0'.
 
---yxRtDnBMBAGaMdJf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is that a problem?  Who would be wanting to use sgx until that happens?
+You have this issue today anyway, right?
 
-On Mon, Oct 18, 2021 at 01:32:38PM -0300, Jason Gunthorpe wrote:
-> On Mon, Oct 18, 2021 at 02:57:12PM +1100, David Gibson wrote:
->=20
-> > The first user might read this.  Subsequent users are likely to just
-> > copy paste examples from earlier things without fully understanding
-> > them.  In general documenting restrictions somewhere is never as
-> > effective as making those restrictions part of the interface signature
-> > itself.
->=20
-> I'd think this argument would hold more water if you could point to
-> someplace in existing userspace that cares about the VFIO grouping.
+> If I change sgx_init() from device_initcall() to
+> core_initcall() (i.e. one before postcore_initcall(), can I
+> expect these to work:
+> 
+> * node_isset()
+> * node_set()
+> * num_possibles_nodes()
+> * numa_node_id()
+> * next_node_in()
+> 
+> ?
 
-My whole point here is that the proposed semantics mean that we have
-weird side effects even if the app doesn't think it cares about
-groups.
+You should be able to test this out yourself :)
 
-e.g. App's input is a bunch of PCI addresses for NICs.  It attaches
-each one to a separate IOAS and bridges packets between them all.  As
-far as the app is concerned, it doesn't care about groups, as you say.
+thanks,
 
-Except that it breaks if any two of the devices are in the same group.
-Worse, it has a completely horrible failure mode: no syscall returns
-an, it just starts trying to do dma with device A, and the packets get
-written into the IOAS that belongs to device B instead.  Sounds like a
-complete nightmare to debug if you don't know about groups, because
-you never thought you cared.
-
-
-And yes, for a simple bridge like this app, attaching all the devices
-to the same IOAS is a more likely setup.  But using an IOAS per device
-is a perfectly valid configuration as well, and with the current draft
-nothing will warn the app that this is a bad idea.
-
-> From what I see the applications do what the admin tells them to do -
-> and if the admin says to use a certain VFIO device then that is
-> excatly what they do. I don't know of any applications that ask the
-> admin to tell them group information.
->=20
-> What I see is aligning what the kernel provides to the APIs the
-> applications have already built.
->=20
-> Jason
->=20
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---yxRtDnBMBAGaMdJf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmF2PVAACgkQbDjKyiDZ
-s5LUJhAAqfdhIEiSLBVFINn04mkXp8wdf6ByN7npipHdyHzSj76wY3CwovNLbLyM
-VVz+ua0VowY3482C4CbDxOEKQeYGIn5xD0nsr/gOl7PLm3uBsk4/NVXprgHblYFZ
-Xlb4YtykCSVsxn/QPLYNTX4xhcWL8gUC0FS5n9Ga4N9/8JeT93aWbRMDO+hTTTv0
-Enk/XhH3r4JtHXFUdr2CyU1MXmgJNd0J/Pz48U6OSqq/NP/vOhu9TnqYBLuNyV9J
-ktLJe/vccmavhgscTZRH8hRTCQNgzsYC0OggrREEujZzOV6+uNFr8wCG3GvbGS4h
-5+zL1kkHJ4KAIS38aQxylEOsbCIExyrSixQzdSorJWEGcNdDSy8cSmYeVzWoJMZX
-jEVcCWXFkWobgB9GynbW9nj5sKZUe/8O9eVDpd9g1UDIagzdmD2yNUdLDwrx++Ef
-YtJIFiYSHenbzzIfAoPcxCLLh7O/oXFTp654dODuIuZPfO2FLTdHNRznRn4r0aWW
-x6u4e9KgdC9A5yeN74/Ho0U5snn5PDDxLam/tNz7/xiUBaxgKp96NS5peNU0BMOL
-mI43kdEhXxrXlT3a4k+XZU+WHRTeFh69g9OyJqW6x1dkp5N/3DYgNF3nThc/x1s0
-6tZg+nTGqnEAMV0QYgbR/4H5El5fMHJekab+aaMO69Ny5NnU110=
-=Mlw2
------END PGP SIGNATURE-----
-
---yxRtDnBMBAGaMdJf--
+greg k-h
