@@ -2,141 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6617D439A8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D17439A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbhJYPcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbhJYPcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:32:31 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2098EC061746
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:30:09 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v20so8184323plo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to;
-        bh=/oQC3c6kHPBnBYaCXyk3XQoSwBx0MJsbDNrgRDHiTYM=;
-        b=pCc4tEnlzbOlYCNDcTOgyL6If8XqWi1Q0zLmpkNfUyKh+BuBP45aijAy/kmyp2nLNf
-         V1/R8D9ZjsNp3qBZL1RzcaN8S0dA2xpJ90H7pBofgOw6tjafiMQpgYw0xldsCjUREs4b
-         MyFKVQ7G/z+jsNIuc5zGadm7e4gwuvTfLUolr5GbrUysEgS3k/cHI8eu2oHj1EmN9W0T
-         2cvHFje7oBkU0KuaJSg5NeSDd/p4EEYYrbQMeojtYp+f5rY3xuzpNw3iboNjD63A67kj
-         lBn3zuPvmiOxNMXnPLe7K2ZTnZSxoE8emqs6GhPQmVGRASAsp2y4FeenmWxXBRqGxh1X
-         zozQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to;
-        bh=/oQC3c6kHPBnBYaCXyk3XQoSwBx0MJsbDNrgRDHiTYM=;
-        b=pJgVZOWiWilsuSrLUvVmR/MueFlcbYDHztvbWuyQujUK78a3UrOMvqeuHM8anTpEK5
-         RObShKz2YYPJaGtm5Gd49GoqgyOMY2V7HrAhvUCm2dNDAVNiKB3U0T6CG+r/ikG61Jd9
-         ZnhCwJwio+0MmDexpEVU+LouPMEIlw1THZKvbtAo36vCSbq1XHcRlnN5WI/hqTZg9vbv
-         TIg/Y5Ie9r7djH2XpBGpTtyvanaht9MPG8uOw0eYZo5EuAaPy2yz119N0qV6q0WUEOjG
-         PIGbAEXstbeVvg8kD/bUiNnLp1keRRi3AcKgvRzNfXDQt9QBNCAsHkwUoc3sGRZVoOfK
-         Jvyg==
-X-Gm-Message-State: AOAM530V2ny/TOkYzfp3rJVNVqoWiL0bcgvnNQkjE38qtuMxcqELiyPa
-        k5unvauPkT0xi67SGyX30v0lfQ==
-X-Google-Smtp-Source: ABdhPJyr4pfh618Fcc7JKCHq2J8ZamOvVnZCEbt++k4esy3a34dSZzGuq3W3UVid31/WtHehz2eymA==
-X-Received: by 2002:a17:90b:1c02:: with SMTP id oc2mr21614855pjb.128.1635175808339;
-        Mon, 25 Oct 2021 08:30:08 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id ng5sm19150359pjb.51.2021.10.25.08.30.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 08:30:07 -0700 (PDT)
-Message-ID: <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
-Date:   Mon, 25 Oct 2021 08:30:06 -0700
+        id S233806AbhJYPe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:34:27 -0400
+Received: from mail-eopbgr1410132.outbound.protection.outlook.com ([40.107.141.132]:6160
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230348AbhJYPeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:34:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L9aUFbGkdhTvkmDbobhqyNsq+3SFrnG56RzviES9JlhnNlELhJQUURRsaAovaA3r2+uvigxKgxGjY1Gz0VlZG27qW6u/NFr8pVNZ7jcvmRZE/23Dea/K7N1E0HpO4SiV1kZWYXHA2cptCB8Lx+58ebQwgwKdEXcQQ7aBgfj0mpmpMSNix9fPElKkY+ypl5gACeKOSlrAoEH8ahUI2PMfltynfrRz6arqYTOgO4bnWvhwCvnpt6MO9Eu+0DG6K0tysMnxo31RQs8K07n+fk9QNwd0aEH1sS9tb3X3/vOkHdLtN3ynqshFqb0lQoBpGCgwpgGcDAabSDaY93gBoSYAEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YlpmznFBq4KXSdLnJN8p+GCz9vGjXOVJskyOQBhoHV8=;
+ b=jkJok7ZUtniLLQIH2B7lHdv18DqN+DE6Cv+PjB6+x4eq/tVposI+k8Cd3k8tPHzrBeNlXUbwY5FS8lWHdL1x89AMaVH4Ne6diTVwK7daNcRaNorT+Z8xCho6i6LLB1CszydhDKKsnfN7iurZFnstBe4O14NQ9fv5uapZEQiZxXC0u5nMTg4cSEhmkiIUO/gOgMzbmzeTyTTolcCogRUNZI+yv11/5nPJyQpIhVij4ukfxDpCilXXmo8YcLmcltwHVlkMh1C87m5lXIRwmD8gNJF5yxvVrjY+dUz3tmY1wR5mxlGl4KcHrGXnC4BpafbYdwFtf+trNUXxsy7UcIhnLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YlpmznFBq4KXSdLnJN8p+GCz9vGjXOVJskyOQBhoHV8=;
+ b=k44xQ8Ub8pD1lBTKlzMM+pAGjepAjQNp6kbf+3KE+/qeZ6SQfcNPzNmA8JgCpM55n+nOw8HRVGxmyQ+bBaZKi4t+M3au8hDbit+ryQHwmJ9XpjnsS+7HQTOTHxYRLvyBOS//kWBVTf1nRZd53sJU31jlNrhpYSuzJ447ZFP6Sxw=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYCP286MB0750.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:7d::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.15; Mon, 25 Oct 2021 15:31:56 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 15:31:56 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "john.garry@huawei.com" <john.garry@huawei.com>
+Subject: =?gb2312?B?u9i4tDogZHJpdmVyL2J1Zzogc3VzcGVjdGVkIG1pc3NpbmcgbnVsbCBjaGVj?=
+ =?gb2312?Q?k_in_hisi=5Flpc.c?=
+Thread-Topic: driver/bug: suspected missing null check in hisi_lpc.c
+Thread-Index: AdfJtAX2fMFFx03OTqmNb23By5R1KQAAUCzA
+Date:   Mon, 25 Oct 2021 15:31:56 +0000
+Message-ID: <TYCP286MB1188596CE44B1236D4EDD4B88A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB118803910D5797B4B1B1938D8A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+In-Reply-To: <TYCP286MB118803910D5797B4B1B1938D8A839@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ba506451-3c96-425b-eeee-08d997cc9438
+x-ms-traffictypediagnostic: TYCP286MB0750:
+x-microsoft-antispam-prvs: <TYCP286MB07502D6FCC2964948FAB41878A839@TYCP286MB0750.JPNP286.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8/+Yg7FPbkluGv4FeW8fRH2Uk+YITH3GP40j4qtEORrIiyPsRc2dBGJuJNxiLf3VZMZwqLHGiuXuN9K/cmErzUjF0YuXq5gsv9xHUATd30HrSqQoANSPSHIBDM/K2AAfUqsaer1U7gNsgwOp/n2XbkFuJ/jFLqslwTFusoCdpxvz4PO3yPb/P+T6Jrt5BY/TTTsRkEXzrk0hun/fUFjEp8x6TJqJ3HsM7ZhnZBHQurw9mz6dkisRNIlzW7m3AyrMo5auZBbbjZmdCtyiOXpd3vXMN/L4M0T1HOe8XLZ+eAzRItdHrqVjzWvLc0lo0hUpiuKABGPk2HaL/fUYdTmdgutl+PRorodWfX/lGbhc4jqupYxsErhlhdnmLIuU7BBCfQmueztkVn2IJBNkOJ/RZrXdG9er+8D/CHYFrFB9q0rdJX594TwTbtXPhypYhqhWs9JgoA2ZLIix93uzFsojYxD/gckLC++HvHVEiJn1AIzC1iXqzNk0flvHjKcgC+CV9+2zNVuz/UrJDHo1DP7QbhRs2vp6ovi9dEWaRkptumJnBhjrJEQxV4Lzx/JnZvC9+aJHjDiEEIAVZWQ9JBiUP/IgYKKSyse9NL49XkibTW35wDo04EsemCMlxjDTg/VEtqIV+TdTKpZxFdv9Tgp1JXVO5kXqU2AVMBhgzp5yxwigS57lvOoy+gKhxVcyggGkLIPUYyslWw3TOiYvtqHhBcYQPxKJuKQpXZXXMCYgz+ee8V+PyuVGjKtbd7XIyiH40cQQrL74t8x0R+iN3vgU06DGQylV/U7UDIYXSZ3W+vg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(508600001)(8936002)(26005)(224303003)(66476007)(66446008)(64756008)(966005)(33656002)(122000001)(4744005)(66946007)(186003)(71200400001)(66556008)(86362001)(9686003)(52536014)(7696005)(83380400001)(55016002)(5660300002)(786003)(2940100002)(110136005)(76116006)(6506007)(316002)(38070700005)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?ajJTQnQ1eVZQMFdVcDdOT2t4aG93RTVlNEVnRlJ6cHVtUjl0MmxFRmFHWGU2?=
+ =?gb2312?B?eTFGckI3YktHN29wTjFrSGVMQzlJSFZ4QVRMQ0wwWnhHMXh5ZURLUnVJbUEy?=
+ =?gb2312?B?eTRkQ1lDRW52Yy9qMnpoYlIyTkFHaFN2N0FxV2o5TlNpeU9IUW54bk9rbG43?=
+ =?gb2312?B?TEtRNFVlU3Nib2pKanh3K3dKb1pFaS9OV1lQcDFtS2ZvL0kyZG1CMVltNkFh?=
+ =?gb2312?B?WXJidEpheGxTc3RFZ1FPYTRiNXVucUdiYnd6TWRuZnZhdDZ0QmlTUmc5dTB2?=
+ =?gb2312?B?bkRKakdhSTBBQmJlM0pVN3lJWStPSys3eEpvL0RUdVAvejdrU1hEM0pjVG1j?=
+ =?gb2312?B?eWhkZFdQSDA1QTVXdzB1bk96b3RSd29QSmdxbGQrcGdXZTZRTGtiZXBQamIz?=
+ =?gb2312?B?UDVxOFVObkdrR0djODg0YnovRnpySmlsUWIyVUQ5S3Z1bk54Mk1waWtmOFQw?=
+ =?gb2312?B?UitXc1RGSHAvaVJTSUNBWEFXUkkySlJ4MWJHODY0RjZSSUNtOHc4ZUtaMWR0?=
+ =?gb2312?B?MEJKb3g4Z2ZFcnJSMjVWVGFCR25jNHM0djBJTW1sbEtNcWxHeE5qbkwzTStx?=
+ =?gb2312?B?VEs5K2IxaitEQUc5US9MV29CQTNGMGFrK0M4UWNDQU5CLzhFTWRXRHJZRHZL?=
+ =?gb2312?B?cDZrVzdOYW9nMzg1NUVMOXhFTzJXS3QzSWRrVk9mb0crbWRKb0FhNEtrcUNp?=
+ =?gb2312?B?aFFkM0pYaHFTOFhsVFFBREkzMjdKM0REczc4S1lSRHVTVllvZ3ovRFFycG5v?=
+ =?gb2312?B?TTYrczJpTHQ3VG1PMVlvemx1QzI3alB3bzgreXY5U2E1QkYwUiszdXBsZ3M1?=
+ =?gb2312?B?eTRzTG5LaW5hNjhmV2pmSFdTQWdpeFhZaGJaN3JTcm44WjhTZmlReWFzZkF3?=
+ =?gb2312?B?S3ZnYjRyLzVoa3BmRVU3NnEvcnpZZDVuajNSTnRocWwwa1ppa1pKaVR5aWZp?=
+ =?gb2312?B?TGVjTnpINUF2Z3FJek51TERBbXpCa3U0L1cvd1RIeWUzTVc1MUgxcUZsUlFw?=
+ =?gb2312?B?WVJRdGU2YThmaFZENEFoaWZBOGM5eUhXODM2aUtxblp5akZ1elJXYjBSSWZX?=
+ =?gb2312?B?aVFvQ1lJa3RueHZ4YVpQdThPaEtoWXBuK2R3bHY2UnZzM2RVUVhlWXByUTRw?=
+ =?gb2312?B?SndaU0toRlhKWGxFTUpaTWxGNW1mVEV6eHdrV0IxbGc0aFlDRkNtbzhPNTFm?=
+ =?gb2312?B?R0xuR095SjV4cTdrZVJNTnMrNVArVjBaVmVvd2tkN3J3eFZ1bCsxcTk2ZkZr?=
+ =?gb2312?B?NXFyaStSNUpHcXVhUldKenRNY0ZaVGQ1SSs5cGhidmJZU1ZXRlRnejJ6QXZj?=
+ =?gb2312?B?L3EvYVBCL2V6WFlndXZXYzR5ZUpiOGYwNTdlSkV3Y1d0SVVBUTc0NjFYVnM0?=
+ =?gb2312?B?eUVsei8rbTJZMFRBRDZpM3NDZmpLSmFNSkJiNjBYVmEyakVJK00vbkF2elBY?=
+ =?gb2312?B?QXFHemJ4djhublFrOElESXA4S2ZMZmtyanhRZ01DK1VuYjBBWFZTRy9qc2o5?=
+ =?gb2312?B?UUJlVi8yUFhLa0h6SW9xbXdDTG93TkdMM2tGeHBZQUl2TDVieEpNaTByMDAx?=
+ =?gb2312?B?eXdmeERuRkZ6ajhMK0RjK2NUbjM2dzN0MFc3ZGVnNjQvNTBkTFlFWHZKaVBl?=
+ =?gb2312?B?cmhVcUtuSTBIM2g4V0haeTJLRm5QVlk2bm9zUjRVbURJU2NpaTJuNnp0dlZs?=
+ =?gb2312?B?MkFLUFZycmd6aWJyRlBTYjRnd2xHbksxRExvMUl4RFpONklOK013bVVmUm9V?=
+ =?gb2312?B?Mks1NW5FQlJyZGNSeWJvNWZDRGdETDZUaU5uNVk4QVhXYnJac3pNQTIrcUN4?=
+ =?gb2312?B?WFF4WmtIeDZmNkw0Mjg1Sys1NFcrOEFEeTVkbHQwbnpXai9temdCMWNrekxk?=
+ =?gb2312?B?V3h5Sms2eWtZTmNwNUluakhPTytJUlJxaHI3djRGeXh0Sm1QQjBpcXpvbVAx?=
+ =?gb2312?B?azAybjRWeTUyTlRCdzNBWnBLcGxZbUxYdklOdm5heFFBSk5JQ2ljNk1Sbjcw?=
+ =?gb2312?B?R2xlUFQrQXkzUUNFOUxDd3hiUFdaRlhtKytnVlZHSmJ6azd4RzhCMHZtU3Fw?=
+ =?gb2312?B?QW9QQ21iMVdvcFY1cldudlI4alAwTWo3RXFVbTRUM3FQL2tDSXVTV01ValV0?=
+ =?gb2312?B?SjJ6ckduNXVrbWtRTmtGb3JOWS85b0Z1WTYyZXJINXpkV2h6bEcwV0QrczVt?=
+ =?gb2312?Q?pvvWbTFIYZ5Da1u4XItGt5Q=3D?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
- enc/dec
-Content-Language: en-US
-To:     Bryan O'Donoghue <pure.logic@nexus-software.ie>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
- <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------mAhZPgdr3mdsZ2DcUcEr18WS"
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba506451-3c96-425b-eeee-08d997cc9438
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 15:31:56.2799
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: djyIFGYkG3lHTeVP3XurZ6HY32ptGwue6rHtoCNSN3Gx7M4NKaRoEgWVyZTj+H1qETYMtrelatNjG0W96pBRog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB0750
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------mAhZPgdr3mdsZ2DcUcEr18WS
-Content-Type: multipart/mixed; boundary="------------YsFxvfcQkaI2CagWnGszgzcf";
- protected-headers="v1"
-From: Tadeusz Struk <tadeusz.struk@linaro.org>
-To: Bryan O'Donoghue <pure.logic@nexus-software.ie>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Lee Jones
- <lee.jones@linaro.org>, Amit Pundir <amit.pundir@linaro.org>,
- John Stultz <john.stultz@linaro.org>, linux-media@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
-Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
- enc/dec
-References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
- <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
-In-Reply-To: <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
-
---------------YsFxvfcQkaI2CagWnGszgzcf
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-SGkgQnJ5YW4sDQpPbiAxMC8yNS8yMSAwODoyNCwgQnJ5YW4gTydEb25vZ2h1ZSB3cm90ZToN
-Cj4gDQo+PiArwqDCoMKgIHN0cnVjdCBtdXRleCBzeW5jX2xvY2s7DQo+IA0KPiBXaHkgaGF2
-ZSBhbiBhZGRpdGlvbmFsIG11dGV4LCB3aWxsIHRoZSBleGlzdGluZyBjb3JlOjpsb2NrIG5v
-dCBkbyA/DQoNCkkgd2FudGVkIHRvIHJldXNlIGl0LCBidXQgdGhlIGNvcmU6OmxvY2sgaW4g
-dXNlZCBpbnRlcm5hbGx5IGluIGhmaSBhbmQNCml0IHdpbGwgZGVhZGxvY2sgdGhlcmUgaWYg
-d2UgdXNlIHRoYXQgb25lIGhlcmUuDQoNCj4gc2hvdWxkbid0IHRoaXMgYmUgYW4gLUVQUk9C
-RV9ERUZFUiBpLmUuIENPUkVfSU5JVCBoYXNuJ3QgY29tcGxldGVkL3J1biB5ZXQgc28gZGVm
-ZXIgdW50aWwgDQo+IGl0IGRvZXMuDQo+IA0KPiBUaGlzIGZyYWdtZW50IGhlcmUgbG9va3Mg
-cmFjeSB0byBtZSB3aXRob3V0IGEgREVGRVIgYWJvdmUgPw0KPiANCj4gZHJpdmVycy9tZWRp
-YS9wbGF0Zm9ybS9xY29tL3ZlbnVzL2NvcmUuYzo6dmVudXNfcHJvYmUoKQ0KDQpObywgd2Ug
-d2FudCBhIGhhcmQgc3RvcCBoZXJlLiBBdCB0aGlzIHBvaW50IHRoZSB2ZW51c19jb3JlIHBy
-b2JlKCkNCmhhcyBmaW5pc2hlZCBhbmQgaXQgZmFpbGVkLiBSZXR1cm5pbmcgLUVQUk9CRV9E
-RUZFUiBoZXJlIHdpbGwganVzdA0KY2F1c2UgaXQgdG8gbG9vcCBpbmZpbml0ZWx5Lg0KDQot
-LSANClRoYW5rcywNClRhZGV1c3oNCg==
-
---------------YsFxvfcQkaI2CagWnGszgzcf--
-
---------------mAhZPgdr3mdsZ2DcUcEr18WS
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEEb3ghm5bfkfSeegvwo0472xuDAo4FAmF2zX4FAwAAAAAACgkQo0472xuDAo6l
-dw/+LhN7/VzFJraQeSIJGUhEKX9NetR2fYto6nKpoGEvuDNqoQJXhR8mTSjP1DtQtMVJB56Ssk+8
-GFkvTw4ewas2WIMCgJ6JNmkCLUvgFeY+tEAQl/wKCt1Bh/2cDz1f5LhCwRsP+QAfTRT0fBjSKr3F
-F2dXCUA45fEqntT7qJoTGe11ovdQgA+6MLFPDNPPJHFxAFGEeEsYLwwUiQ5tdTxeEeyLtyYYf1ic
-0Iog6xG079IOYYFljIkZTlWJGJyHpZqLOtbNIy/qPjFLXNVc7OuQq/U9yFJcb9jj/tMkEcLFstJX
-2tEK0MIvZi8eKAc5tg+RSxBUFNs5Qspq/XjvR6PWQ1RM0JryUThL1jIiVjWhJzrzxadFXnwofQ7z
-ozuDiHNgJbvKik6R6NzRQ6NkI1NhslSr4OticLiJpJgqP00n8M+mEryhxG6vY19lQ0+7Ze0DAVlQ
-AurSvVISPiHr20zkQrJAv5epizTcxhUxP9dfsPUgV6hO/a9Do1bW5r22Wt22YzuxQzlEpXqDVrSf
-V0MQyj5BBzgyymzmkZGu5XtXZGZd1EdDHHk52JwAei/ZxmkOPcij/lv/plN2GHS7bKG3tjaYzcNB
-jZLzheDx1Kl935zOo3Rdbziy0QT952iIB53CpsL2lIrJvpk2hdU9H20AnRqacjfPule8LRH9F+3v
-5zc=
-=5XHO
------END PGP SIGNATURE-----
-
---------------mAhZPgdr3mdsZ2DcUcEr18WS--
+SXQgaXMgZHJpdmVyL2J1cywgc29ycnkgZm9yIHRoZSB0eXBvLg0KDQotLS0tLdPKvP7Urbz+LS0t
+LS0NCreivP7IyzogWUUgQ2hlbmdmZW5nIA0Kt6LLzcqxvOQ6IDIwMjHE6jEw1MIyNcjVIDIzOjIy
+DQrK1bz+yMs6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGpvaG4uZ2FycnlAaHVhd2Vp
+LmNvbQ0K1vfM4jogZHJpdmVyL2J1Zzogc3VzcGVjdGVkIG1pc3NpbmcgbnVsbCBjaGVjayBpbiBo
+aXNpX2xwYy5jDQoNCkhpLA0KDQpodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxv
+Yi9tYXN0ZXIvZHJpdmVycy9idXMvaGlzaV9scGMuYyNMNDgzDQoNCk91ciBleHBlcmltZW50YWwg
+c3RhdGljIGFuYWx5c2lzIHRvb2wgZGV0ZWN0cyBhIG51bGwtcHRyLXJlZmVyZW5jZSBwcm9ibGVt
+LiBJdCBjb3VsZCBiZSBmYWxzZSBwb3NpdGl2ZSwgd2UgcmVwb3J0IHRoaXMgdG8geW91IGp1c3Qg
+aW4gY2FzZS4NCg0KTnVsbCBjaGVjayBpcyBtaXNzaW5nIGZvciB0aGUgcmV0dXJuIHBvaW50ZXIg
+b2YgQUNQSV9DT01QQU5JT04gYXQgbGluZSA0ODMgYW5kIGxpbmUgNTA0LiBJdCBzZWVtcyB0aGF0
+IHRoZXJlIGNvdWxkIGJlIHBvdGVudGlhbCBudWxsLXB0ci1kZXJlZmVyZW5jZSBwcm9ibGVtIGF0
+IGxpbmUgNDg4IGFuZCBsaW5lIDUwOS4gQ291bGQgeW91IHNwYXJlIHNvbWUgdGltZSB0byBoYXZl
+IGEgbG9vayBhdCBpdD8NCg0KVGhhbmtzIHNvIG11Y2gsDQpDaGVuZ2ZlbmcNCg==
