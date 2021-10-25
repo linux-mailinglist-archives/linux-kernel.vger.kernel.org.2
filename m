@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4D5439696
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E0F439688
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbhJYMsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
+        id S233240AbhJYMrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbhJYMsH (ORCPT
+        with ESMTP id S233070AbhJYMrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:48:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E320C061745;
-        Mon, 25 Oct 2021 05:45:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RIUrXxUV4UbEv2DGGHaNGcFcvRKSfANE71br1DygmXE=; b=kUsxMs1Z4n8b+0909nSn+49Any
-        grB324UAZJIgSY8CEqFEGD9kDcJlSbAXEHEM5uF1VJfACLytS5tLr0AOW3iRjvNMzkzI4EkzcstfR
-        +nFtDTfAKYaWhoHjLDm7S8ldi+sD8pS6e1DY/rZKvpXjLrZqT0/FNOiZ/vFWTU34FE/LrJ0+1yb/T
-        of/8Eu0kWXkmohp69S/6d4RSNk+03UsI999j/TpKjxfDyZW/5dXeQFnqLpLs+VIg8PPDqNXoCV+aB
-        Cn2AT1e+d447yMvQr2vnM+AET2VoTaVsfd7VVv4506Nki8Y58U29DajzAiA6IcccwvVXKCeEfJRHG
-        Rh9XIiFQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mezJZ-00G7qw-94; Mon, 25 Oct 2021 12:43:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0556A3002AE;
-        Mon, 25 Oct 2021 14:42:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E2B74212E25E6; Mon, 25 Oct 2021 14:42:55 +0200 (CEST)
-Date:   Mon, 25 Oct 2021 14:42:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <YXamT2EIUYW8t74A@hirez.programming.kicks-ass.net>
-References: <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
- <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com>
- <20211021233852.gbkyl7wpunyyq4y5@treble>
- <CAADnVQ+iMysKSKBGzx7Wa+ygpr9nTJbRo4eGYADLFDE4PmtjOQ@mail.gmail.com>
- <YXKhLzd/DtkjURpc@hirez.programming.kicks-ass.net>
- <CAADnVQKJojWGaTCpUhkmU+vUxXORPacX_ByjyHWY0V03hGH7KA@mail.gmail.com>
- <YXa0uH0fA0P+dM8J@boxer>
+        Mon, 25 Oct 2021 08:47:00 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F118DC061745;
+        Mon, 25 Oct 2021 05:44:37 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id l13so22097628edi.8;
+        Mon, 25 Oct 2021 05:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/7+UMC0uPidkpB1Rz9mAPwHLWUWuTue4UkDjFgG3Lo=;
+        b=bJb1Jyi0T0wjvDpd65y8dwwnDae17bP7cNflVnZVPQ/4qNQheuKat9S9n2dRRLURVY
+         WqA6jAbyQzSzXopof9gONLjHU3Qd5neZlivistctGsYdzXRdygL8SZfXU4cJW810MkjX
+         zCYgadUCJM0SeGyLb/x3qYr+BGqiW1iu+f2v+PmXtx3739ZbzdbzxZ1UxcImlOKGtWF1
+         p1/sjtYrlcYl2GoBpqRt6bimmjvX2cy85ia6h5FS55jJFT3VO5vKbdKDMyOVWL/VKmmm
+         MPAFWSfpsmJsiAjz2DU3VA5QzB5IXy+SrvSOnVhLB+M5VyyVFdDjGrRuU98JtJBKdsZq
+         7g8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/7+UMC0uPidkpB1Rz9mAPwHLWUWuTue4UkDjFgG3Lo=;
+        b=LPmRvEmki2MB0qkWNQwSLtd25ebDa9qFViKGkmzFvStZsBt2+1O85BPK180E8EqdAA
+         PT+U/Q1hTioGeQGQP4UGlo7vt4fJ9n+x/UnF2CrV00Qg/a0sAGfCm/n4nCGHA8hYBSTv
+         7ucc/Pakkl7Em7fgF+hxKkV3W7vRFvv00V/dOE/HxMSv8VI0f8BlfekUL4psm7wwx9Am
+         hjZRDPmJScoVnjUwwE/TbZqc10fmLcg/SxLKNDgnZY6mxyPlI4XZk/R1I+rx77m70le0
+         qqSjwovRlfpq54h6vQjUmeytjBQzHPrzdnFPxUXoERjkkrruvPeCblq9zHCrWaBt02PE
+         v0Ng==
+X-Gm-Message-State: AOAM5321v9W8WDKX3epTP3Av1Wz5MTobbpOrJgeXPLHDJ8yQxZI+ID2b
+        VhWR+3ZtqyRDsQmhOXdAbJW6M9LkfuSazLbmQtN7oAMZV9JgBQ==
+X-Google-Smtp-Source: ABdhPJx1rhs2euDrGKnk//2yuXw4zzZKh9f1MmOxRLeH+mhD6Oh9J6BxpPsZFhFqbLrcLlkO18kmq6zINXn5sNfVGPw=
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr20368809ejb.356.1635165850603;
+ Mon, 25 Oct 2021 05:44:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXa0uH0fA0P+dM8J@boxer>
+References: <20211025124142.18041-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211025124142.18041-1-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 25 Oct 2021 15:43:16 +0300
+Message-ID: <CAHp75Vfkqds+Nq9Dv51zmVtK2Eb0dHpQbLU3EyknQ9Ygo=+gGg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] serial: 8250_pci: Remove empty stub pci_quatech_exit()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 03:44:24PM +0200, Maciej Fijalkowski wrote:
-> On Fri, Oct 22, 2021 at 08:22:35AM -0700, Alexei Starovoitov wrote:
-> > On Fri, Oct 22, 2021 at 4:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Oct 21, 2021 at 04:42:12PM -0700, Alexei Starovoitov wrote:
-> > >
-> > > > Ahh. Right. It's potentially a different offset for every prog.
-> > > > Let's put it into struct jit_context then.
-> > >
-> > > Something like this...
-> > 
-> > Yep. Looks nice and clean to me.
-> > 
-> > > -       poke->tailcall_bypass = image + (addr - poke_off - X86_PATCH_SIZE);
-> > > +       poke->tailcall_bypass = ip + (prog - start);
-> > >         poke->adj_off = X86_TAIL_CALL_OFFSET;
-> > > -       poke->tailcall_target = image + (addr - X86_PATCH_SIZE);
-> > > +       poke->tailcall_target = ip + ctx->tail_call_direct_label - X86_PATCH_SIZE;
-> > 
-> > This part looks correct too, but this is Daniel's magic.
-> > He'll probably take a look next week when he comes back from PTO.
-> > I don't recall which test exercises this tailcall poking logic.
-> > It's only used with dynamic updates to prog_array.
-> > insmod test_bpf.ko and test_verifier won't go down this path.
-> 
-> Please run ./test_progs -t tailcalls from tools/testing/selftests/bpf and
-> make sure that all of the tests are passing in there, especially the
-> tailcall_bpf2bpf* subset.
+On Mon, Oct 25, 2021 at 3:42 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The ->exit() callback is checked for presence anyway,
+> no need to have an empty stub.
 
-Yeah, so nothing from that selftests crud wants to work for me; also I
-*really* dislike how vmtest.sh as found there tramples all over my
-source dir without asking.
+Sorry, wrong set, please ignore both patches.
 
-Note that even when eventually supplied with O=builddir (confusingly in
-front of it), it doesn't want to work and bails with lots of -ENOSPC
-warnings (I double checked, my disks are nowhere near full). (and this
-is after installing some horrendous python rst crap because clearly
-running a test needs to build documentation :/)
-
-I've spend hours on that, I'm not sinking more time into it. If you want
-me to run that crap, fix it first.
+-- 
+With Best Regards,
+Andy Shevchenko
