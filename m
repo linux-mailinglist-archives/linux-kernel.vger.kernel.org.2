@@ -2,651 +2,717 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759F0438F7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02609438F7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhJYG2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:28:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:14170 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230472AbhJYG2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:28:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="216486218"
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="216486218"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2021 23:26:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="496642427"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
-  by orsmga008.jf.intel.com with ESMTP; 24 Oct 2021 23:26:16 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/4] tools: Introduce power/acpi/pfru/pfru
-Date:   Mon, 25 Oct 2021 14:25:37 +0800
-Message-Id: <db63db84667fdce4813376db1c50cb394bdc6e7b.1635140590.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1635140590.git.yu.c.chen@intel.com>
-References: <cover.1635140590.git.yu.c.chen@intel.com>
+        id S231173AbhJYG36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhJYG35 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:29:57 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF8AC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:27:35 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id f4so19936170uad.4
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:27:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nathanrossi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qZFMb9q1g2NgpG0vnNUJDIlgIoYaGipfcP9fggD0j44=;
+        b=YqnUuJtmfmbHQQZKK96NbT9keOubpPT2nfH2eBYy2pCjK2qNEKkzHhQjKQkpTo7V4u
+         CWMTVwpAsUDzbV7k3qRdJqhi3LGpn/OqG6PaO/nd95ZS3xiGVxmHZMaKahk+Mu6scTz0
+         GUCVRkrGjVc0BCObwm5ScvzX0DVzFtj2Fh0UP2fCBm5ENEFfUi9mjVoMjLZgTKLUAkC3
+         t+H+Djnt/WHiFeIyNlXrwHC2UpIwCpAn+lmI54U0SouzCnxskr2G3IFLX+roDJiQexT+
+         t6c012nf2NPO22kvPAzgygbxtvci6QWW0CXonKr5aXpalgQuCS3sTHJPBhB//+Cehh/a
+         59hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qZFMb9q1g2NgpG0vnNUJDIlgIoYaGipfcP9fggD0j44=;
+        b=KZqP8zk6miHy+fBbpWEZcanGgkuaJzJvgHKGDk9/eQOywDT22MahXgt2rL5XOuijIB
+         zTnaU27tdpG+Y4zdvuylh2FhU7/2TUmtU7pJl6Ymu3LNlq9k8kEypNmf/vfZRWdPRjJ8
+         8B9kloFZaP7xRtts/m38SXRWsslKDJ+G72HXRdKDaHFRWn1fGYsn6ALPnkAij9O2ESNL
+         OGvNxIg5bDarmdXKtuLhg27a8rI0hnUTRl5/09LFteDk9YNKD8HyGRhzWGO9gVtW+Vvk
+         VMR9KBX+xdrDU0Dp1yU8zXJgqk9c055zd3tGbcIsji5KrwlAk9f1U0o0Wz/pQYfPvAhD
+         7HXQ==
+X-Gm-Message-State: AOAM532V5toRrcAkt6OMIPpHiiP+GhCRrnkAD1RzP4SMnPt04PmPSMH1
+        4NjY4Jimc0NgrPTnYyd16tvVvn3h9H9ilkPMyAb8iQ==
+X-Google-Smtp-Source: ABdhPJzCAmlXQepwnV/KcNf5xdb3oxhtnAUUF35qwoKYiA+aThE3kRbnG30dgoLzPp9ov0xnvfu9LGURp+26ME2ORFo=
+X-Received: by 2002:ab0:1447:: with SMTP id c7mr12852381uae.2.1635143254263;
+ Sun, 24 Oct 2021 23:27:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211025025805.618566-0-nathan@nathanrossi.com>
+ <20211025025805.618566-2-nathan@nathanrossi.com> <7297bf4c-2f8e-f217-0153-c2224a1c56b3@roeck-us.net>
+In-Reply-To: <7297bf4c-2f8e-f217-0153-c2224a1c56b3@roeck-us.net>
+From:   Nathan Rossi <nathan@nathanrossi.com>
+Date:   Mon, 25 Oct 2021 16:27:22 +1000
+Message-ID: <CA+aJhH0yPZ=3LEPDm0GkWx9bLtHJ+QRbRo33HiCXM5FH6nzPFA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] hwmon: Driver for Texas Instruments INA238
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nathan Rossi <nathan.rossi@digi.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a user space tool to make use of the interface exposed by
-Platform Firmware Runtime Update and Telemetry drivers. The users
-can use this tool to do firmware code injection, driver update and
-to retrieve the telemetry data.
+On Mon, 25 Oct 2021 at 15:06, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 10/24/21 7:58 PM, Nathan Rossi wrote:
+> > From: Nathan Rossi <nathan.rossi@digi.com>
+> >
+> > The INA238 is a I2C power monitor similar to other INA2xx devices,
+> > providing shunt voltage, bus voltage, current, power and temperature
+> > measurements.
+> >
+> > Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
+> > ---
+> >   Documentation/hwmon/ina238.rst |  57 ++++++
+>
+> Needs to be added to index.rst.
+>
+> >   drivers/hwmon/Kconfig          |  12 ++
+> >   drivers/hwmon/Makefile         |   1 +
+> >   drivers/hwmon/ina238.c         | 453 +++++++++++++++++++++++++++++++++++++++++
+> >   4 files changed, 523 insertions(+)
+> >   create mode 100644 Documentation/hwmon/ina238.rst
+> >   create mode 100644 drivers/hwmon/ina238.c
+> >
+> > diff --git a/Documentation/hwmon/ina238.rst b/Documentation/hwmon/ina238.rst
+> > new file mode 100644
+> > index 0000000000..612fab185d
+> > --- /dev/null
+> > +++ b/Documentation/hwmon/ina238.rst
+> > @@ -0,0 +1,57 @@
+> > +.. SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +Kernel driver ina238
+> > +====================
+> > +
+> > +Supported chips:
+> > +
+> > +  * Texas Instruments INA238
+> > +
+> > +    Prefix: 'ina238'
+> > +
+> > +    Addresses: I2C 0x40 - 0x4f
+> > +
+> > +    Datasheet:
+> > +     https://www.ti.com/lit/gpn/ina238
+> > +
+> > +Author: Nathan Rossi <nathan.rossi@digi.com>
+> > +
+> > +Description
+> > +-----------
+> > +
+> > +The INA238 is a current shunt, power and temperature monitor with an I2C
+> > +interface. It includes a number of programmable functions including alerts,
+> > +conversion rate, sample averaging and selectable shunt voltage accuracy.
+> > +
+> > +The shunt value in micro-ohms can be set via platform data or device tree at
+> > +compile-time or via the shunt_resistor attribute in sysfs at run-time. Please
+> > +refer to the Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml for bindings
+> > +if the device tree is used.
+> > +
+> > +Sysfs entries
+> > +-------------
+> > +
+> > +======================= =======================================================
+> > +in0_input            Shunt voltage (mV)
+> > +in0_lcrit            Critical low shunt voltage
+> > +in0_crit             Critical high shunt voltage
+> > +
+> > +in1_input            Bus voltage (mV)
+> > +in1_lcrit            Critical low bus voltage (mV)
+> > +in1_crit             Critical high bus voltage (mV)
+> > +
+> > +power1_input         Power measurement (uW)
+> > +power1_crit          Critical power limit (uW)
+> > +
+> > +curr1_input          Current measurement (mA)
+> > +
+> > +temp1_input          Die temperature measurement (mC)
+> > +temp1_crit           Critical die temperature limit (mC)
+> > +
+> > +shunt_resistor               Shunt resistance (uOhm)
+> > +======================= =======================================================
+> > +
+> > +.. note::
+> > +
+> > +   - Configure `shunt_resistor` before configure `power1_crit`, because power
+> > +     value is calculated based on `shunt_resistor` set.
+> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> > index 7fde4c6e1e..cae8e62734 100644
+> > --- a/drivers/hwmon/Kconfig
+> > +++ b/drivers/hwmon/Kconfig
+> > @@ -1872,6 +1872,18 @@ config SENSORS_INA2XX
+> >         This driver can also be built as a module. If so, the module
+> >         will be called ina2xx.
+> >
+> > +config SENSORS_INA238
+> > +     tristate "Texas Instruments INA238"
+> > +     depends on I2C
+> > +     select REGMAP_I2C
+> > +     help
+> > +       If you say yes here you get support for the INA238 power monitor
+> > +       chip. This driver supports voltage, current, power and temperature
+> > +       measurements as well as alert configuration.
+> > +
+> > +       This driver can also be built as a module. If so, the module
+> > +       will be called ina238.
+> > +
+> >   config SENSORS_INA3221
+> >       tristate "Texas Instruments INA3221 Triple Power Monitor"
+> >       depends on I2C
+> > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> > index baee6a8d4d..1ddb26f57a 100644
+> > --- a/drivers/hwmon/Makefile
+> > +++ b/drivers/hwmon/Makefile
+> > @@ -90,6 +90,7 @@ obj-$(CONFIG_SENSORS_IBMPOWERNV)+= ibmpowernv.o
+> >   obj-$(CONFIG_SENSORS_IIO_HWMON) += iio_hwmon.o
+> >   obj-$(CONFIG_SENSORS_INA209)        += ina209.o
+> >   obj-$(CONFIG_SENSORS_INA2XX)        += ina2xx.o
+> > +obj-$(CONFIG_SENSORS_INA238) += ina238.o
+> >   obj-$(CONFIG_SENSORS_INA3221)       += ina3221.o
+> >   obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
+> >   obj-$(CONFIG_SENSORS_IT87)  += it87.o
+> > diff --git a/drivers/hwmon/ina238.c b/drivers/hwmon/ina238.c
+> > new file mode 100644
+> > index 0000000000..001b490b79
+> > --- /dev/null
+> > +++ b/drivers/hwmon/ina238.c
+> > @@ -0,0 +1,453 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Driver for Texas Instruments INA238 power monitor chip
+> > + * Datasheet: https://www.ti.com/product/ina238
+> > + *
+> > + * Copyright (C) 2021 Nathan Rossi <nathan.rossi@digi.com>
+> > + */
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/init.h>
+> > +#include <linux/err.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/hwmon.h>
+> > +#include <linux/hwmon-sysfs.h>
+> > +#include <linux/jiffies.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/of.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/util_macros.h>
+> > +#include <linux/regmap.h>
+> > +
+>
+> Alphabetic include file order please. Also, please make sure that there are no
+> unecessary include files. I don't immediately see where jiffies.h and delay.h
+> are needed.
+>
+> > +#include <linux/platform_data/ina2xx.h>
+> > +
+> > +/* INA238 register definitions */
+> > +#define INA238_CONFIG                        0x0
+> > +#define INA238_ADC_CONFIG            0x1
+> > +#define INA238_SHUNT_CALIBRATION     0x2
+> > +#define INA238_SHUNT_VOLTAGE         0x4
+> > +#define INA238_BUS_VOLTAGE           0x5
+> > +#define INA238_DIE_TEMP                      0x6
+> > +#define INA238_CURRENT                       0x7
+> > +#define INA238_POWER                 0x8
+> > +#define INA238_DIAG_ALERT            0xb
+> > +#define INA238_SHUNT_OVER_VOLTAGE    0xc
+> > +#define INA238_SHUNT_UNDER_VOLTAGE   0xd
+> > +#define INA238_BUS_OVER_VOLTAGE              0xe
+> > +#define INA238_BUS_UNDER_VOLTAGE     0xf
+> > +#define INA238_TEMP_LIMIT            0x10
+> > +#define INA238_POWER_LIMIT           0x11
+> > +#define INA238_DEVICE_ID             0x3f
+> > +
+> > +#define INA238_REGISTERS             0x11
+> > +
+> > +#define INA238_RSHUNT_DEFAULT                10000 /* uOhm */
+> > +
+> > +/* Default configuration of device on reset. */
+> > +#define INA238_CONFIG_DEFAULT                0
+> > +/* 16 sample averaging, 1052us conversion time, continuous mode */
+> > +#define INA238_ADC_CONFIG_DEFAULT    0xfb6a
+> > +/*
+> > + * This driver uses a fixed calibration value in order to scale current/power
+> > + * based on a fixed shunt resistor value. This allows for conversion within the
+> > + * device to avoid integer limits whilst current/power accuracy is scaled
+> > + * relative to the shunt resistor value within the driver. This is similar to
+> > + * how the ina2xx driver handles current/power scaling.
+> > + *
+> > + * The end result of this is that increasing shunt values (from a fixed 20 mOhm
+> > + * shunt) increase the effective current/power accuracy whilst limiting the
+> > + * range and decreasing shunt values decrease the effective accuracy but
+> > + * increase the range.
+> > + *
+> > + * The value of the Current register is calculated given the following:
+> > + *   Current (A) = (shunt voltage register * 5) * calibration / 81920
+> > + *
+> > + * The maximum shunt voltage is 163.835 mV (0x7fff, ADC_RANGE = 0). With the
+> > + * maximum current value of 0x7fff and a fixed shunt value results in a
+> > + * calibration value of 16384 (0x4000).
+> > + *
+> > + *   0x7fff = (0x7fff * 5) * calibration / 81920
+> > + *   calibration = 0x4000
+> > + *
+> > + * Equivalent calibration is applied for the Power register (maximum value for
+> > + * bus voltage is 102396.875 mV, 0x7fff), where the maximum power that can
+> > + * occur is ~16776192 uW (register value 0x147a8):
+> > + *
+> > + * This scaling means the resulting values for Current and Power registers need
+> > + * to be scaled by the difference between the fixed shunt resistor and the
+> > + * actual shunt resistor:
+> > + *
+> > + *  shunt = 0x4000 / (819.2 * 10^6) / 0.001 = 20000 uOhms (with 1mA/lsb)
+> > + *
+> > + *  Current (mA) = register value * 20000 / rshunt
+> > + *  Power (W) = 0.2 * register value * 20000 / rshunt
+> > + */
+> > +#define INA238_CALIBRATION_VALUE     16384
+> > +#define INA238_FIXED_SHUNT           20000
+> > +
+> > +#define INA238_SHUNT_VOLTAGE_LSB     5 /* 5 uV/lsb */
+> > +#define INA238_BUS_VOLTAGE_LSB               3125 /* 3.125 mV/lsb */
+> > +#define INA238_DIE_TEMP_LSB          125 /* 125 mC/lsb */
+> > +
+> > +static struct regmap_config ina238_regmap_config = {
+> > +     .reg_bits = 8,
+> > +     .val_bits = 16,
+> > +};
+> > +
+> > +struct ina238_data {
+> > +     struct i2c_client *client;
+> > +     struct mutex config_lock;
+> > +     struct regmap *regmap;
+> > +     long rshunt;
+> > +};
+> > +
+> > +static ssize_t ina238_value_show(struct device *dev,
+> > +                              struct device_attribute *da, char *buf)
+> > +{
+> > +     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+> > +     struct ina238_data *data = dev_get_drvdata(dev);
+> > +     unsigned int regval;
+> > +     long long val = 0;
+> > +     u8 regdata[3];
+> > +     int err;
+> > +
+> > +     if (attr->index == INA238_POWER) {
+> > +             /* Handle reading the POWER register as 24-bit */
+> > +             err = i2c_smbus_read_i2c_block_data(data->client, attr->index, 3,
+> > +                                                 regdata);
+> > +             if (err != 3)
+> > +                     return err;
+> > +             regval = (regdata[0] << 16) | (regdata[1] << 8) | regdata[2];
+> > +     } else {
+> > +             err = regmap_read(data->regmap, attr->index, &regval);
+> > +             if (err < 0)
+> > +                     return err;
+> > +     }
+> > +
+> > +     switch (attr->index) {
+> > +     case INA238_SHUNT_VOLTAGE:
+> > +             /* Signed register, result in mV */
+> > +             val = div_s64((s16)regval * INA238_SHUNT_VOLTAGE_LSB,
+> > +                                     1000);
+> > +             break;
+> > +     case INA238_BUS_VOLTAGE:
+> > +             /* Result in mV */
+> > +             val = div_s64((s16)regval * INA238_BUS_VOLTAGE_LSB, 1000);
+> > +             break;
+> > +     case INA238_CURRENT:
+> > +             /* Signed register, fixed 1mA current lsb. result in mA */
+> > +             val = div_s64((s16)regval * INA238_FIXED_SHUNT, data->rshunt);
+> > +             break;
+> > +     case INA238_POWER:
+> > +             /* Fixed 1mA lsb, scaled by 1000000 to have result in uW */
+> > +             val = div_u64(regval * 1000LL * INA238_FIXED_SHUNT, 5 * data->rshunt);
+> > +             break;
+> > +     case INA238_DIE_TEMP:
+> > +             /* Bits 15-4 of register, result in mC */
+> > +             val = ((s16)regval >> 4) * INA238_DIE_TEMP_LSB;
+> > +             break;
+> > +     case INA238_SHUNT_CALIBRATION:
+> > +             val = regval;
+> > +             break;
+> > +     default:
+> > +             WARN_ON_ONCE(1);
+> > +             break;
+> > +     }
+> > +
+> > +     return snprintf(buf, PAGE_SIZE, "%lld\n", val);
+> > +}
+> > +
+> > +static int ina238_set_shunt(struct device *dev, struct ina238_data *data,
+> > +                         long val)
+> > +{
+> > +     if (val == 0)
+> > +             return -EINVAL;
+> > +
+> > +     mutex_lock(&data->config_lock);
+> > +     data->rshunt = val;
+> > +     mutex_unlock(&data->config_lock);
+>
+> rshunt is used outside the lock for calculations.
+> The lock here does therefore not add any value.
+>
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static ssize_t ina238_shunt_show(struct device *dev,
+> > +                              struct device_attribute *da, char *buf)
+> > +{
+> > +     struct ina238_data *data = dev_get_drvdata(dev);
+> > +
+> > +     return snprintf(buf, PAGE_SIZE, "%li\n", data->rshunt);
+> > +}
+> > +
+> > +static ssize_t ina238_shunt_store(struct device *dev,
+> > +                               struct device_attribute *da,
+> > +                               const char *buf, size_t count)
+> > +{
+> > +     struct ina238_data *data = dev_get_drvdata(dev);
+> > +     unsigned long val;
+> > +     int status;
+> > +
+> > +     status = kstrtoul(buf, 10, &val);
+> > +     if (status < 0)
+> > +             return status;
+> > +
+> > +     status = ina238_set_shunt(dev, data, val);
+> > +     if (status < 0)
+> > +             return status;
+> > +     return count;
+> > +}
+> > +
+>
+> Is there reason to believe that the shunt register value needs to be visible
+> and writeable with sysfs attributes ? This is quite unusual nowadays.
+> If so, please provide a use case.
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v6: Simplify the userspace tool to use while loop for getopt_long().
-    (Andy Shevchenko)
-v5: Replace the read() with mmap() so that the userspace
-    could mmap once, and read multiple times. (Greg Kroah-Hartman)
----
- tools/power/acpi/pfru/Makefile |  25 ++
- tools/power/acpi/pfru/pfru.8   | 137 +++++++++++
- tools/power/acpi/pfru/pfru.c   | 404 +++++++++++++++++++++++++++++++++
- 3 files changed, 566 insertions(+)
- create mode 100644 tools/power/acpi/pfru/Makefile
- create mode 100644 tools/power/acpi/pfru/pfru.8
- create mode 100644 tools/power/acpi/pfru/pfru.c
+I do not have a specific use case for being able to change the shunt
+resistor at run time. The only reason this behaviour is here is to
+mirror the api that is provided by the ina2xx driver. Since as you
+mention its unusual should I remove the write and leave the read?
+Being able to determine the resistor value is useful if manually using
+the shunt voltage. Though the shunt information could be obtained from
+the device tree node?
 
-diff --git a/tools/power/acpi/pfru/Makefile b/tools/power/acpi/pfru/Makefile
-new file mode 100644
-index 000000000000..54bf913b2a09
---- /dev/null
-+++ b/tools/power/acpi/pfru/Makefile
-@@ -0,0 +1,25 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+
-+CFLAGS += -Wall -O2
-+CFLAGS += -DPFRU_HEADER='"../../../../include/uapi/linux/pfru.h"'
-+BUILD_OUTPUT	:= $(CURDIR)
-+
-+ifeq ("$(origin O)", "command line")
-+	BUILD_OUTPUT := $(O)
-+endif
-+
-+pfru : pfru.c
-+
-+%: %.c
-+	@mkdir -p $(BUILD_OUTPUT)
-+	$(CC) $(CFLAGS) $< -o $(BUILD_OUTPUT)/$@ $(LDFLAGS) -luuid
-+
-+.PHONY : clean
-+clean :
-+	@rm -f $(BUILD_OUTPUT)/pfru
-+
-+install : pfru
-+	install -d  $(DESTDIR)$(PREFIX)/bin
-+	install $(BUILD_OUTPUT)/pfru $(DESTDIR)$(PREFIX)/bin/pfru
-+	install -d  $(DESTDIR)$(PREFIX)/share/man/man8
-+	install -m 644 pfru.8 $(DESTDIR)$(PREFIX)/share/man/man8
-diff --git a/tools/power/acpi/pfru/pfru.8 b/tools/power/acpi/pfru/pfru.8
-new file mode 100644
-index 000000000000..d9cda7beaa3c
---- /dev/null
-+++ b/tools/power/acpi/pfru/pfru.8
-@@ -0,0 +1,137 @@
-+.TH "PFRU" "8" "October 2021" "pfru 1.0" ""
-+.hy
-+.SH Name
-+.PP
-+pfru \- Platform Firmware Runtime Update tool
-+.SH SYNOPSIS
-+.PP
-+\f[B]pfru\f[R] [\f[I]Options\f[R]]
-+.SH DESCRIPTION
-+.PP
-+The PFRU(Platform Firmware Runtime Update) kernel interface is designed
-+to
-+.PD 0
-+.P
-+.PD
-+interact with the platform firmware interface defined in the
-+.PD 0
-+.P
-+.PD
-+Management Mode Firmware Runtime
-+Update (https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf)
-+.PD 0
-+.P
-+.PD
-+\f[B]pfru\f[R] is the tool to interact with the kernel interface.
-+.PD 0
-+.P
-+.PD
-+.SH OPTIONS
-+.TP
-+.B \f[B]\-h\f[R], \f[B]\-\-help\f[R]
-+Display helper information.
-+.TP
-+.B \f[B]\-l\f[R], \f[B]\-\-load\f[R]
-+Load the capsule file into the system.
-+To be more specific, the capsule file will be copied to the
-+communication buffer.
-+.TP
-+.B \f[B]\-s\f[R], \f[B]\-\-stage\f[R]
-+Stage the capsule image from communication buffer into Management Mode
-+and perform authentication.
-+.TP
-+.B \f[B]\-a\f[R], \f[B]\-\-activate\f[R]
-+Activate a previous staged capsule image.
-+.TP
-+.B \f[B]\-u\f[R], \f[B]\-\-update\f[R]
-+Perform both stage and activation actions.
-+.TP
-+.B \f[B]\-q\f[R], \f[B]\-\-query\f[R]
-+Query the update capability.
-+.TP
-+.B \f[B]\-d\f[R], \f[B]\-\-setrev\f[R]
-+Set the revision ID of code injection/driver update.
-+.TP
-+.B \f[B]\-D\f[R], \f[B]\-\-setrevlog\f[R]
-+Set the revision ID of telemetry.
-+.TP
-+.B \f[B]\-G\f[R], \f[B]\-\-getloginfo\f[R]
-+Get telemetry log information and print it out.
-+.TP
-+.B \f[B]\-T\f[R], \f[B]\-\-type\f[R]
-+Set the telemetry log data type.
-+.TP
-+.B \f[B]\-L\f[R], \f[B]\-\-level\f[R]
-+Set the telemetry log level.
-+.TP
-+.B \f[B]\-R\f[R], \f[B]\-\-read\f[R]
-+Read all the telemetry data and print it out.
-+.SH EXAMPLES
-+.PP
-+\f[B]pfru \-G\f[R]
-+.PP
-+log_level:4
-+.PD 0
-+.P
-+.PD
-+log_type:0
-+.PD 0
-+.P
-+.PD
-+log_revid:2
-+.PD 0
-+.P
-+.PD
-+max_data_size:65536
-+.PD 0
-+.P
-+.PD
-+chunk1_size:0
-+.PD 0
-+.P
-+.PD
-+chunk2_size:1401
-+.PD 0
-+.P
-+.PD
-+rollover_cnt:0
-+.PD 0
-+.P
-+.PD
-+reset_cnt:4
-+.PP
-+\f[B]pfru \-q\f[R]
-+.PP
-+code injection image type:794bf8b2\-6e7b\-454e\-885f\-3fb9bb185402
-+.PD 0
-+.P
-+.PD
-+fw_version:0
-+.PD 0
-+.P
-+.PD
-+code_rt_version:1
-+.PD 0
-+.P
-+.PD
-+driver update image type:0e5f0b14\-f849\-7945\-ad81\-bc7b6d2bb245
-+.PD 0
-+.P
-+.PD
-+drv_rt_version:0
-+.PD 0
-+.P
-+.PD
-+drv_svn:0
-+.PD 0
-+.P
-+.PD
-+platform id:39214663\-b1a8\-4eaa\-9024\-f2bb53ea4723
-+.PD 0
-+.P
-+.PD
-+oem id:a36db54f\-ea2a\-e14e\-b7c4\-b5780e51ba3d
-+.PP
-+\f[B]pfru \-l yours.cap \-u \-T 1 \-L 4\f[R]
-+.SH AUTHORS
-+Chen Yu.
-diff --git a/tools/power/acpi/pfru/pfru.c b/tools/power/acpi/pfru/pfru.c
-new file mode 100644
-index 000000000000..f0795e06bf68
---- /dev/null
-+++ b/tools/power/acpi/pfru/pfru.c
-@@ -0,0 +1,404 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Platform Firmware Runtime Update tool to do Management
-+ * Mode code injection/driver update and telemetry retrieval.
-+ */
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <uuid/uuid.h>
-+#include PFRU_HEADER
-+
-+char *capsule_name;
-+int action, query_cap, log_type, log_level, log_read, log_getinfo,
-+	revid, log_revid;
-+int set_log_level, set_log_type,
-+	set_revid, set_log_revid;
-+
-+char *progname;
-+
-+static int valid_log_level(int level)
-+{
-+	return level == LOG_ERR || level == LOG_WARN ||
-+		level == LOG_INFO || level == LOG_VERB;
-+}
-+
-+static int valid_log_type(int type)
-+{
-+	return type == LOG_EXEC_IDX || type == LOG_HISTORY_IDX;
-+}
-+
-+static void help(void)
-+{
-+	fprintf(stderr,
-+		"usage: %s [OPTIONS]\n"
-+		" code injection:\n"
-+		"  -l, --load\n"
-+		"  -s, --stage\n"
-+		"  -a, --activate\n"
-+		"  -u, --update [stage and activate]\n"
-+		"  -q, --query\n"
-+		"  -d, --revid update\n"
-+		" telemetry:\n"
-+		"  -G, --getloginfo\n"
-+		"  -T, --type(0:execution, 1:history)\n"
-+		"  -L, --level(0, 1, 2, 4)\n"
-+		"  -R, --read\n"
-+		"  -D, --revid log\n",
-+		progname);
-+}
-+
-+char *option_string = "l:sauqd:GT:L:RD:h";
-+static struct option long_options[] = {
-+	{"load", required_argument, 0, 'l'},
-+	{"stage", no_argument, 0, 's'},
-+	{"activate", no_argument, 0, 'a'},
-+	{"update", no_argument, 0, 'u'},
-+	{"query", no_argument, 0, 'q'},
-+	{"getloginfo", no_argument, 0, 'G'},
-+	{"type", required_argument, 0, 'T'},
-+	{"level", required_argument, 0, 'L'},
-+	{"read", no_argument, 0, 'R'},
-+	{"setrev", required_argument, 0, 'd'},
-+	{"setrevlog", required_argument, 0, 'D'},
-+	{"help", no_argument, 0, 'h'},
-+	{}
-+};
-+
-+static void parse_options(int argc, char **argv)
-+{
-+	int option_index = 0;
-+	char *pathname;
-+	int opt;
-+
-+	pathname = strdup(argv[0]);
-+	progname = basename(pathname);
-+
-+	while ((opt = getopt_long_only(argc, argv, option_string,
-+				       long_options, &option_index)) != -1) {
-+		switch (opt) {
-+		case 'l':
-+			capsule_name = optarg;
-+			break;
-+		case 's':
-+			action = 1;
-+			break;
-+		case 'a':
-+			action = 2;
-+			break;
-+		case 'u':
-+			action = 3;
-+			break;
-+		case 'q':
-+			query_cap = 1;
-+			break;
-+		case 'G':
-+			log_getinfo = 1;
-+			break;
-+		case 'T':
-+			log_type = atoi(optarg);
-+			set_log_type = 1;
-+			break;
-+		case 'L':
-+			log_level = atoi(optarg);
-+			set_log_level = 1;
-+			break;
-+		case 'R':
-+			log_read = 1;
-+			break;
-+		case 'd':
-+			revid = atoi(optarg);
-+			set_revid = 1;
-+			break;
-+		case 'D':
-+			log_revid = atoi(optarg);
-+			set_log_revid = 1;
-+			break;
-+		case 'h':
-+			help();
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
-+void print_cap(struct pfru_update_cap_info *cap)
-+{
-+	char *uuid;
-+
-+	uuid = malloc(37);
-+	if (!uuid) {
-+		perror("Can not allocate uuid buffer\n");
-+		exit(1);
-+	}
-+
-+	uuid_unparse(cap->code_type, uuid);
-+	printf("code injection image type:%s\n", uuid);
-+	printf("fw_version:%d\n", cap->fw_version);
-+	printf("code_rt_version:%d\n", cap->code_rt_version);
-+
-+	uuid_unparse(cap->drv_type, uuid);
-+	printf("driver update image type:%s\n", uuid);
-+	printf("drv_rt_version:%d\n", cap->drv_rt_version);
-+	printf("drv_svn:%d\n", cap->drv_svn);
-+
-+	uuid_unparse(cap->platform_id, uuid);
-+	printf("platform id:%s\n", uuid);
-+	uuid_unparse(cap->oem_id, uuid);
-+	printf("oem id:%s\n", uuid);
-+
-+	free(uuid);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd_update, fd_update_log, fd_capsule;
-+	struct pfru_log_data_info data_info;
-+	struct pfru_log_info info;
-+	struct pfru_update_cap_info cap;
-+	void *addr_map_capsule;
-+	struct stat st;
-+	char *log_buf;
-+	int ret = 0;
-+
-+	if (getuid() != 0) {
-+		printf("Please run the tool as root - Exiting.\n");
-+		return 1;
-+	}
-+
-+	parse_options(argc, argv);
-+
-+	fd_update = open("/dev/acpi_pfru0", O_RDWR);
-+	if (fd_update < 0) {
-+		printf("PFRU device not supported - Quit...\n");
-+		return 1;
-+	}
-+
-+	fd_update_log = open("/dev/acpi_pfru_telemetry0", O_RDWR);
-+	if (fd_update_log < 0) {
-+		printf("PFRU telemetry device not supported - Quit...\n");
-+		return 1;
-+	}
-+
-+	if (query_cap) {
-+		ret = ioctl(fd_update, PFRU_IOC_QUERY_CAP, &cap);
-+		if (ret)
-+			perror("Query Update Capability info failed.");
-+		else
-+			print_cap(&cap);
-+
-+		close(fd_update);
-+		close(fd_update_log);
-+
-+		return ret;
-+	}
-+
-+	if (log_getinfo) {
-+		ret = ioctl(fd_update_log, PFRU_LOG_IOC_GET_DATA_INFO, &data_info);
-+		if (ret) {
-+			perror("Get telemetry data info failed.");
-+
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		ret = ioctl(fd_update_log, PFRU_LOG_IOC_GET_INFO, &info);
-+		if (ret) {
-+			perror("Get telemetry info failed.");
-+
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		printf("log_level:%d\n", info.log_level);
-+		printf("log_type:%d\n", info.log_type);
-+		printf("log_revid:%d\n", info.log_revid);
-+		printf("max_data_size:%d\n", data_info.max_data_size);
-+		printf("chunk1_size:%d\n", data_info.chunk1_size);
-+		printf("chunk2_size:%d\n", data_info.chunk2_size);
-+		printf("rollover_cnt:%d\n", data_info.rollover_cnt);
-+		printf("reset_cnt:%d\n", data_info.reset_cnt);
-+
-+		return 0;
-+	}
-+
-+	info.log_level = -1;
-+	info.log_type = -1;
-+	info.log_revid = -1;
-+
-+	if (set_log_level) {
-+		if (!valid_log_level(log_level)) {
-+			printf("Invalid log level %d\n",
-+			       log_level);
-+		} else {
-+			info.log_level = log_level;
-+		}
-+	}
-+
-+	if (set_log_type) {
-+		if (!valid_log_type(log_type)) {
-+			printf("Invalid log type %d\n",
-+			       log_type);
-+		} else {
-+			info.log_type = log_type;
-+		}
-+	}
-+
-+	if (set_log_revid) {
-+		if (!pfru_valid_revid(log_revid)) {
-+			printf("Invalid log revid %d, unchanged.\n",
-+			       log_revid);
-+		} else {
-+			info.log_revid = log_revid;
-+		}
-+	}
-+
-+	ret = ioctl(fd_update_log, PFRU_LOG_IOC_SET_INFO, &info);
-+	if (ret) {
-+		perror("Log information set failed.(log_level, log_type, log_revid)");
-+		close(fd_update);
-+		close(fd_update_log);
-+
-+		return 1;
-+	}
-+
-+	if (set_revid) {
-+		ret = ioctl(fd_update, PFRU_IOC_SET_REV, &revid);
-+		if (ret) {
-+			perror("pfru update revid set failed");
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		printf("pfru update revid set to %d\n", revid);
-+	}
-+
-+	if (capsule_name) {
-+		fd_capsule = open(capsule_name, O_RDONLY);
-+		if (fd_capsule < 0) {
-+			perror("Can not open capsule file...");
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		if (fstat(fd_capsule, &st) < 0) {
-+			perror("Can not fstat capsule file...");
-+			close(fd_capsule);
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		addr_map_capsule = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED,
-+					fd_capsule, 0);
-+		if (addr_map_capsule == MAP_FAILED) {
-+			perror("Failed to mmap capsule file.");
-+			close(fd_capsule);
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		ret = write(fd_update, (char *)addr_map_capsule, st.st_size);
-+		printf("Load %d bytes of capsule file into the system\n",
-+		       ret);
-+
-+		if (ret == -1) {
-+			perror("Failed to load capsule file");
-+			close(fd_capsule);
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		munmap(addr_map_capsule, st.st_size);
-+		close(fd_capsule);
-+		printf("Load done.\n");
-+	}
-+
-+	if (action) {
-+		if (action == 1) {
-+			ret = ioctl(fd_update, PFRU_IOC_STAGE, NULL);
-+		} else if (action == 2) {
-+			ret = ioctl(fd_update, PFRU_IOC_ACTIVATE, NULL);
-+		} else if (action == 3) {
-+			ret = ioctl(fd_update, PFRU_IOC_STAGE_ACTIVATE, NULL);
-+		} else {
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+		printf("Update finished, return %d\n", ret);
-+	}
-+
-+	close(fd_update);
-+
-+	if (log_read) {
-+		void *p_mmap;
-+		int max_data_sz;
-+
-+		ret = ioctl(fd_update_log, PFRU_LOG_IOC_GET_DATA_INFO, &data_info);
-+		if (ret) {
-+			perror("Get telemetry data info failed.");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		max_data_sz = data_info.max_data_size;
-+		if (!max_data_sz) {
-+			printf("No telemetry data available.\n");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		log_buf = malloc(max_data_sz + 1);
-+		if (!log_buf) {
-+			perror("log_buf allocate failed.");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		p_mmap = mmap(NULL, max_data_sz, PROT_READ, MAP_SHARED, fd_update_log, 0);
-+		if (p_mmap == MAP_FAILED) {
-+			perror("mmap error.");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		memcpy(log_buf, p_mmap, max_data_sz);
-+		log_buf[max_data_sz] = '\0';
-+		printf("%s\n", log_buf);
-+		free(log_buf);
-+
-+		munmap(p_mmap, max_data_sz);
-+	}
-+
-+	close(fd_update_log);
-+
-+	return 0;
-+}
--- 
-2.25.1
+>
+> > +static ssize_t ina238_alert_show(struct device *dev,
+> > +                              struct device_attribute *da, char *buf)
+> > +{
+> "Alert" is normally used for alarms and provides boolean values (0/1).
+> It is used for limits here, making the code quite confusing (I was
+> trying to understand how the code relates to alarms). Please use a more
+> appropriate function name.
+>
+> > +     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+> > +     struct ina238_data *data = dev_get_drvdata(dev);
+> > +     long long val = 0;
+> > +     int regval;
+> > +     int ret;
+> > +
+> > +     ret = regmap_read(data->regmap, attr->index, &regval);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     switch (attr->index) {
+> > +     case INA238_SHUNT_OVER_VOLTAGE:
+> > +     case INA238_SHUNT_UNDER_VOLTAGE:
+> > +             val = div_s64((s16)regval * INA238_SHUNT_VOLTAGE_LSB, 1000);
+> > +             break;
+> > +     case INA238_BUS_OVER_VOLTAGE:
+> > +     case INA238_BUS_UNDER_VOLTAGE:
+> > +             val = div_u64(regval * INA238_BUS_VOLTAGE_LSB, 1000);
+> > +             break;
+> > +     case INA238_POWER_LIMIT:
+> > +             /*
+> > +              * Truncated 24-bit compare register, lower 8-bits are
+> > +              * truncated. Same conversion to/from uW as POWER register.
+> > +              */
+> > +             val = div_u64((regval << 8) * 1000ULL * INA238_FIXED_SHUNT,
+> > +                           5 * data->rshunt);
+> > +             break;
+> > +     case INA238_TEMP_LIMIT:
+> > +             /* Signed, bits 15-4 of register */
+> > +             val = ((s16)regval >> 4) * INA238_DIE_TEMP_LSB;
+> > +             break;
+> > +     default:
+> > +             WARN_ON_ONCE(1);
+> > +             break;
+> > +     }
+> > +
+> > +     return snprintf(buf, PAGE_SIZE, "%lld\n", val);
+> > +}
+> > +
+> > +static ssize_t ina238_alert_store(struct device *dev,
+> > +                               struct device_attribute *da,
+> > +                               const char *buf, size_t count)
+> > +{
+> > +     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+> > +     struct ina238_data *data = dev_get_drvdata(dev);
+> > +     long long val;
+> > +     int regval;
+> > +     int ret;
+> > +
+> > +     ret = kstrtoll(buf, 10, &val);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     /* convert decimal to register value */
+> > +     switch (attr->index) {
+> > +     case INA238_SHUNT_OVER_VOLTAGE:
+> > +     case INA238_SHUNT_UNDER_VOLTAGE:
+> > +             /* signed */
+> > +             regval = div_s64((val * 1000), INA238_SHUNT_VOLTAGE_LSB);
+> > +             if (regval > S16_MAX || regval < S16_MIN) {
+> > +                     ret = -EINVAL;
+> > +                     goto abort;
+> > +             }
+> > +             break;
+> > +     case INA238_BUS_OVER_VOLTAGE:
+> > +     case INA238_BUS_UNDER_VOLTAGE:
+> > +             regval = div_u64((val * 1000), INA238_BUS_VOLTAGE_LSB);
+> > +             if (regval > U16_MAX || regval < 0) {
+> > +                     ret = -EINVAL;
+> > +                     goto abort;
+> > +             }
+> > +             break;
+> > +     case INA238_POWER_LIMIT:
+> > +             /*
+> > +              * Compared against the 24-bit power register, lower 8-bits are
+> > +              * truncated. Same conversion to/from uW as POWER register.
+> > +              */
+> > +             regval = div_u64(val * 5 * data->rshunt,
+> > +                              1000 * INA238_FIXED_SHUNT) >> 8; > +           if (regval > U16_MAX || regval < 0) {
+> > +                     ret = -EINVAL;
+> > +                     goto abort;
+> > +             }
+> > +             break;
+> > +     case INA238_TEMP_LIMIT:
+> > +             /* Bits 15-4 of register */
+> > +             regval = (div_s64(val, INA238_DIE_TEMP_LSB) << 4);
+> > +             if (regval > S16_MAX || regval < S16_MIN) {
+> > +                     ret = -EINVAL;
+> > +                     goto abort;
+> > +             }
+> > +             regval = regval & 0xfff0;
+> > +             break;
+> > +     default:
+> > +             WARN_ON_ONCE(1);
+> > +             break;
+> > +     }
+> > +
+> > +     mutex_lock(&data->config_lock);
+> > +
+> > +     ret = regmap_write(data->regmap, attr->index, regval);
+> > +     if (ret < 0)
+> > +             goto abort;
+> > +
+> > +     ret = count;
+> > +abort:
+> > +     mutex_unlock(&data->config_lock);
+> > +     return ret;
+> > +}
+> > +
+> > +/* shunt voltage */
+> > +static SENSOR_DEVICE_ATTR_RO(in0_input, ina238_value, INA238_SHUNT_VOLTAGE);
+> > +/* shunt voltage over/under alert */
+> > +static SENSOR_DEVICE_ATTR_RW(in0_crit, ina238_alert, INA238_SHUNT_OVER_VOLTAGE);
+> > +static SENSOR_DEVICE_ATTR_RW(in0_lcrit, ina238_alert,
+> > +                          INA238_SHUNT_UNDER_VOLTAGE);
+> > +
+> > +/* bus voltage */
+> > +static SENSOR_DEVICE_ATTR_RO(in1_input, ina238_value, INA238_BUS_VOLTAGE);
+> > +/* bus voltage over/under alert */
+> > +static SENSOR_DEVICE_ATTR_RW(in1_crit, ina238_alert, INA238_BUS_OVER_VOLTAGE);
+> > +static SENSOR_DEVICE_ATTR_RW(in1_lcrit, ina238_alert, INA238_BUS_UNDER_VOLTAGE);
+> > +
+> > +/* calculated current */
+> > +static SENSOR_DEVICE_ATTR_RO(curr1_input, ina238_value, INA238_CURRENT);
+> > +
+> > +/* calculated power */
+> > +static SENSOR_DEVICE_ATTR_RO(power1_input, ina238_value, INA238_POWER);
+> > +static SENSOR_DEVICE_ATTR_RW(power1_crit, ina238_alert, INA238_POWER_LIMIT);
+> > +
+> > +/* die temperature */
+> > +static SENSOR_DEVICE_ATTR_RO(temp1_input, ina238_value, INA238_DIE_TEMP);
+> > +static SENSOR_DEVICE_ATTR_RW(temp1_crit, ina238_alert, INA238_TEMP_LIMIT);
+> > +
+> > +/* shunt resistance */
+> > +static SENSOR_DEVICE_ATTR_RW(shunt_resistor, ina238_shunt,
+> > +                          INA238_SHUNT_CALIBRATION);
+> > +
+> > +static struct attribute *ina238_attrs[] = {
+> > +     &sensor_dev_attr_in0_input.dev_attr.attr,
+> > +     &sensor_dev_attr_in0_crit.dev_attr.attr,
+> > +     &sensor_dev_attr_in0_lcrit.dev_attr.attr,
+>
+> Any special reason for using crit / lcrit instead of max/min ?
 
+Only to mirror the convention from the ina2xx driver. I will change
+this to max/min.
+
+>
+> > +     &sensor_dev_attr_in1_input.dev_attr.attr,
+> > +     &sensor_dev_attr_in1_crit.dev_attr.attr,
+> > +     &sensor_dev_attr_in1_lcrit.dev_attr.attr,
+> > +     &sensor_dev_attr_curr1_input.dev_attr.attr,
+> > +     &sensor_dev_attr_power1_input.dev_attr.attr,
+> > +     &sensor_dev_attr_power1_crit.dev_attr.attr,
+> > +     &sensor_dev_attr_temp1_input.dev_attr.attr,
+> > +     &sensor_dev_attr_temp1_crit.dev_attr.attr,
+> > +     &sensor_dev_attr_shunt_resistor.dev_attr.attr,
+> > +     NULL,
+> > +};
+> > +ATTRIBUTE_GROUPS(ina238);
+> > +
+>
+> Any reason for not supporting alarm attributes ?
+
+No reason, I will add them in the updated version.
+
+>
+> > +static int ina238_probe(struct i2c_client *client)
+> > +{
+> > +     struct ina2xx_platform_data *pdata = dev_get_platdata(&client->dev);
+> > +     struct device *dev = &client->dev;
+> > +     struct device *hwmon_dev;
+> > +     struct ina238_data *data;
+> > +     u32 val;
+> > +     int ret;
+> > +
+> > +     data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> > +     if (!data)
+> > +             return -ENOMEM;
+> > +
+> > +     data->client = client;
+> > +     /* set the device type */
+> > +     mutex_init(&data->config_lock);
+> > +
+> > +     ina238_regmap_config.max_register = INA238_REGISTERS;
+>
+> Why is this done here instead of preinitializing it ?
+> ina238_regmap_config should really be const if possible.
+
+This driver is based on the ina2xx driver, so this was copied. Will
+move this to the struct preinit.
+
+>
+> > +     data->regmap = devm_regmap_init_i2c(client, &ina238_regmap_config);
+> > +     if (IS_ERR(data->regmap)) {
+> > +             dev_err(dev, "failed to allocate register map\n");
+> > +             return PTR_ERR(data->regmap);
+> > +     }
+> > +
+> > +     /* load shunt value */
+> > +     val = INA238_RSHUNT_DEFAULT;
+> > +     if (device_property_read_u32(dev, "shunt-resistor", &val) < 0 && pdata)
+> > +             val = pdata->shunt_uohms;
+> > +     ret = ina238_set_shunt(dev, data, val);
+> > +     if (ret) {
+> > +             dev_err(dev, "error configuring the device: %d\n", ret);
+> > +             return ret;
+> > +     }
+> > +
+> > +     /* Setup CONFIG register */
+> > +     ret = regmap_write(data->regmap, INA238_CONFIG, INA238_CONFIG_DEFAULT);
+> > +     if (ret < 0) {
+> > +             dev_err(dev, "error configuring the device: %d\n", ret);
+> > +             return -ENODEV;
+> > +     }
+> > +
+> > +     /* Setup ADC_CONFIG register */
+> > +     ret = regmap_write(data->regmap, INA238_ADC_CONFIG,
+> > +                        INA238_ADC_CONFIG_DEFAULT);
+> > +     if (ret < 0) {
+> > +             dev_err(dev, "error configuring the device: %d\n", ret);
+> > +             return -ENODEV;
+> > +     }
+> > +
+> > +     /* Setup SHUNT_CALIBRATION register with fixed value */
+> > +     ret = regmap_write(data->regmap, INA238_SHUNT_CALIBRATION,
+> > +                        INA238_CALIBRATION_VALUE);
+>
+> Those preinitializations make me wonder if there should be devicetree
+> properties for at least some of the data.
+
+Yes, I did consider adding configuration for the conversion time and
+sampling average as device tree properties. The existing ina2xx driver
+handles configuring sampling average via the "update_interval" sysfs
+attribute. Our use case does not require changing these at runtime so
+did not implement the update_interval and was unsure if changes to
+device tree bindings would make sense. Should these be device tree
+properties? If yes, should the other ina drivers be updated to support
+the properties?
+
+>
+> > +     if (ret < 0) {
+> > +             dev_err(dev, "error configuring the device: %d\n", ret);
+> > +             return -ENODEV;
+> > +     }
+> > +
+> > +     hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
+> > +                                                        data, ina238_groups);
+>
+> Please rework the driver to use devm_hwmon_device_register_with_info().
+
+I will update with a v2 to address your comments.
+
+Thanks,
+Nathan
+
+>
+> > +     if (IS_ERR(hwmon_dev))
+> > +             return PTR_ERR(hwmon_dev);
+> > +
+> > +     dev_info(dev, "power monitor %s (Rshunt = %li uOhm)\n",
+> > +              client->name, data->rshunt);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct i2c_device_id ina238_id[] = {
+> > +     { "ina238", 0 },
+> > +     { }
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, ina238_id);
+> > +
+> > +static const struct of_device_id __maybe_unused ina238_of_match[] = {
+> > +     { .compatible = "ti,ina238" },
+> > +     { },
+> > +};
+> > +MODULE_DEVICE_TABLE(of, ina238_of_match);
+> > +
+> > +static struct i2c_driver ina238_driver = {
+> > +     .class          = I2C_CLASS_HWMON,
+> > +     .driver = {
+> > +             .name   = "ina238",
+> > +             .of_match_table = of_match_ptr(ina238_of_match),
+> > +     },
+> > +     .probe_new      = ina238_probe,
+> > +     .id_table       = ina238_id,
+> > +};
+> > +
+> > +module_i2c_driver(ina238_driver);
+> > +
+> > +MODULE_AUTHOR("Nathan Rossi <nathan.rossi@digi.com>");
+> > +MODULE_DESCRIPTION("ina238 driver");
+> > +MODULE_LICENSE("GPL");
+> > ---
+> > 2.33.0
+> >
+>
