@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC33643A7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2CA43A7F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235223AbhJYXJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        id S234688AbhJYXIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbhJYXI7 (ORCPT
+        with ESMTP id S232740AbhJYXIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:08:59 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81C8C061243
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:06:35 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635203194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jOfu9yayDhzvLAsYLRzMlhcWXOr3HMUMOxXzk71LJi4=;
-        b=JKBY3MYo8v0gSQav25vpBtSiuxqoEwKJxKTWGqMLui4F+75+cQQNtI180Ey1Qr7LdBNVS5
-        p/eaMrrkla/PTz6zj2sHXRZVgy43DZoFbB5I+WYQDtkHNmjW3EGc5jaZfX8gw2QKr1LB1s
-        NOZzRsppZTWxKU76PalPJRmFIZUeb7U=
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Ding Hui <dinghui@sangfor.com.cn>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] mm/hwpoison: remove race consideration
-Date:   Tue, 26 Oct 2021 08:05:01 +0900
-Message-Id: <20211025230503.2650970-3-naoya.horiguchi@linux.dev>
-In-Reply-To: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
-References: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+        Mon, 25 Oct 2021 19:08:47 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE797C061745;
+        Mon, 25 Oct 2021 16:06:24 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id l186so5739594pge.7;
+        Mon, 25 Oct 2021 16:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=Ngur52vg7le9KRvczk5/psRZTKMdl8rWkzVC3BsUces=;
+        b=bQXrA0XFz+8io8NpFWSmkS/qNCDktHdZEU2oAtP8kUGOYkXgAQ2nW+HoLIgsTzDCab
+         r9MEnqKSKPLyQeDc07ytH5fCPwq2YBlkyVgAVGZU3KGQ5UP3y6+BkYUm8fbTVKtFTOKA
+         jGEQBR0RWkG0ZrHUSTEll2LWTijtIpEfgzfASjIp84e2It6LqR3VgK0wZqLQorUHEHW3
+         CyoIvMlFOCY7PN4/lhWl3dLHXpla5GCGTlFXpsOl5fKzbT5koZXQCsRedDKn2kQk0Rwa
+         aoc4qFjJ1EOxlNSDKTU1SjOn6wmejVsh2h6XtTqNrZn/Hl5Ktp7PIt6WElNXl5p0sdIG
+         NfiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=Ngur52vg7le9KRvczk5/psRZTKMdl8rWkzVC3BsUces=;
+        b=SXqWgbtp9FU6z7LdKWoP6bwxTca/j24+YMRgDUG3NRE13r5gl0XU5yhgs4uGApZA5k
+         KJzM2yydHdjJQJIQCuUHglYYwiQHqvlnEan9tBKSbZ0qk1xE6KsI23NuwAIbUZXymI33
+         RXWA5OKMdPTjWUXzHVpKmVPwCej1W9+QoLz1Et8AjoUpa30yZ6YALbB2FnD2ohqOM9to
+         0rxwAsIr3I5zckC0u+FgK4+A0XEHVPLG6qYZ5V+S3LYdfJ6n+sWq53VZo37pa6992qxG
+         Fes/fCsXLFqGcY8HzmsLjnMXf/m48S74/I+th6q+eVXFXbs7wf+I0wx5kDgjIB7P/QVl
+         KxEw==
+X-Gm-Message-State: AOAM532lBPGQfvNFHKr7w5lh4eZDeVUVPMtKCx5IH9ZMGcWjIC5mtiDc
+        dN4melpXxc9FRbcwTLNibh6nEiB9Ydj6LJZYeTA=
+X-Google-Smtp-Source: ABdhPJxskO/c26xs/AfTlO03drP6mxWy3oeU1wk3aWSPC4s5eYvvSwZK479zdgz74SuiTuKDtwUWTg==
+X-Received: by 2002:a62:e901:0:b0:47b:f1bc:55e4 with SMTP id j1-20020a62e901000000b0047bf1bc55e4mr8498524pfh.0.1635203183643;
+        Mon, 25 Oct 2021 16:06:23 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id c8sm6802301pgh.40.2021.10.25.16.06.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 16:06:23 -0700 (PDT)
+Message-ID: <6177386f.1c69fb81.b404a.1255@mx.google.com>
+Date:   Mon, 25 Oct 2021 16:06:23 -0700 (PDT)
+X-Google-Original-Date: Mon, 25 Oct 2021 23:06:22 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/169] 5.14.15-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On Mon, 25 Oct 2021 21:13:01 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.15 release.
+> There are 169 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 27 Oct 2021 19:08:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.15-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Now memory_failure() and unpoison_memory() are protected by mf_mutex,
-so no need to explicitly check races between them.  So remove them.
-
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- mm/memory-failure.c | 37 -------------------------------------
- 1 file changed, 37 deletions(-)
-
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 97297edfbd8e..a47b741ca04b 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1507,14 +1507,6 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
- 	lock_page(head);
- 	page_flags = head->flags;
- 
--	if (!PageHWPoison(head)) {
--		pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
--		num_poisoned_pages_dec();
--		unlock_page(head);
--		put_page(head);
--		return 0;
--	}
--
- 	/*
- 	 * TODO: hwpoison for pud-sized hugetlb doesn't work right now, so
- 	 * simply disable it. In order to make it work properly, we need
-@@ -1789,16 +1781,6 @@ int memory_failure(unsigned long pfn, int flags)
- 	 */
- 	page_flags = p->flags;
- 
--	/*
--	 * unpoison always clear PG_hwpoison inside page lock
--	 */
--	if (!PageHWPoison(p)) {
--		pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
--		num_poisoned_pages_dec();
--		unlock_page(p);
--		put_page(p);
--		goto unlock_mutex;
--	}
- 	if (hwpoison_filter(p)) {
- 		if (TestClearPageHWPoison(p))
- 			num_poisoned_pages_dec();
-@@ -2016,17 +1998,6 @@ int unpoison_memory(unsigned long pfn)
- 		goto unlock_mutex;
- 	}
- 
--	/*
--	 * unpoison_memory() can encounter thp only when the thp is being
--	 * worked by memory_failure() and the page lock is not held yet.
--	 * In such case, we yield to memory_failure() and make unpoison fail.
--	 */
--	if (!PageHuge(page) && PageTransHuge(page)) {
--		unpoison_pr_info("Unpoison: Memory failure is now running on %#lx\n",
--				 pfn, &unpoison_rs);
--		goto unlock_mutex;
--	}
--
- 	if (!get_hwpoison_page(p, flags)) {
- 		if (TestClearPageHWPoison(p))
- 			num_poisoned_pages_dec();
-@@ -2035,20 +2006,12 @@ int unpoison_memory(unsigned long pfn)
- 		goto unlock_mutex;
- 	}
- 
--	lock_page(page);
--	/*
--	 * This test is racy because PG_hwpoison is set outside of page lock.
--	 * That's acceptable because that won't trigger kernel panic. Instead,
--	 * the PG_hwpoison page will be caught and isolated on the entrance to
--	 * the free buddy page pool.
--	 */
- 	if (TestClearPageHWPoison(page)) {
- 		unpoison_pr_info("Unpoison: Software-unpoisoned page %#lx\n",
- 				 pfn, &unpoison_rs);
- 		num_poisoned_pages_dec();
- 		freeit = 1;
- 	}
--	unlock_page(page);
- 
- 	put_page(page);
- 	if (freeit && !(pfn == my_zero_pfn(0) && page_count(p) == 1))
--- 
-2.25.1
+5.14.15-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
