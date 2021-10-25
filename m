@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11CE43A35A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F299343A230
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbhJYT6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42028 "EHLO mail.kernel.org"
+        id S237820AbhJYTqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:46:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238894AbhJYTxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:53:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1CC860FE8;
-        Mon, 25 Oct 2021 19:44:51 +0000 (UTC)
+        id S235652AbhJYTi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:38:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7039260FE8;
+        Mon, 25 Oct 2021 19:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635191092;
-        bh=WZWeuxSRxl5SZVNa+xq55nivzTLb8h/2BA88j/0BeOc=;
+        s=korg; t=1635190509;
+        bh=02YwnfmFrZi1SpE/rAkEiZ5VMyY+g2fwF2DZCzd8JBQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eW0E6UmF9swxcjxEJSGLqcshR85tWGesALJRzYJKcvGj3gIGolPm09tcAEblq2V3l
-         reRmVUbWvNFvPBSHfjlLMbK2DhaGcHYiNEvvno+2ju0k+eJk+UjKKdLK4hI2q8S5cH
-         eJtKkjxg3hCO4nDMH4OK8jU68F9oaO2jsTQGjGOM=
+        b=uGhZdgEFqMlXqfebNtwbdCRNtfJy/qC+c6q61Jb7l1YR2WkSZRbC6s+TnMYjiioin
+         kc820G+WWO/no+baaY9CHSPeU93JajUASGy3eq6xpsinwK/MZ4KwqKZTMdA1va3h8j
+         q+PYix8Ets0Ns/Eyi54GgY+rv3losso+QYNGo4Cw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 142/169] spi: Fix deadlock when adding SPI controllers on SPI buses
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 86/95] can: isotp: isotp_sendmsg(): fix TX buffer concurrent access in isotp_sendmsg()
 Date:   Mon, 25 Oct 2021 21:15:23 +0200
-Message-Id: <20211025191035.586713846@linuxfoundation.org>
+Message-Id: <20211025191009.268468171@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,110 +41,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-[ Upstream commit 6098475d4cb48d821bdf453c61118c56e26294f0 ]
+commit 43a08c3bdac4cb42eff8fe5e2278bffe0c5c3daa upstream.
 
-Currently we have a global spi_add_lock which we take when adding new
-devices so that we can check that we're not trying to reuse a chip
-select that's already controlled.  This means that if the SPI device is
-itself a SPI controller and triggers the instantiation of further SPI
-devices we trigger a deadlock as we try to register and instantiate
-those devices while in the process of doing so for the parent controller
-and hence already holding the global spi_add_lock.  Since we only care
-about concurrency within a single SPI bus move the lock to be per
-controller, avoiding the deadlock.
+When isotp_sendmsg() concurrent, tx.state of all TX processes can be
+ISOTP_IDLE. The conditions so->tx.state != ISOTP_IDLE and
+wq_has_sleeper(&so->wait) can not protect TX buffer from being
+accessed by multiple TX processes.
 
-This can be easily triggered in the case of spi-mux.
+We can use cmpxchg() to try to modify tx.state to ISOTP_SENDING firstly.
+If the modification of the previous process succeed, the later process
+must wait tx.state to ISOTP_IDLE firstly. Thus, we can ensure TX buffer
+is accessed by only one process at the same time. And we should also
+restore the original tx.state at the subsequent error processes.
 
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Link: https://lore.kernel.org/all/c2517874fbdf4188585cf9ddf67a8fa74d5dbde5.1633764159.git.william.xuanziyang@huawei.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi.c       | 17 ++++++-----------
- include/linux/spi/spi.h |  3 +++
- 2 files changed, 9 insertions(+), 11 deletions(-)
+ net/can/isotp.c |   40 +++++++++++++++++++++++++++-------------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index f95f7666cb5b..2c342bded058 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -480,12 +480,6 @@ static LIST_HEAD(spi_controller_list);
-  */
- static DEFINE_MUTEX(board_lock);
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -121,7 +121,7 @@ enum {
+ struct tpcon {
+ 	int idx;
+ 	int len;
+-	u8 state;
++	u32 state;
+ 	u8 bs;
+ 	u8 sn;
+ 	u8 ll_dl;
+@@ -846,6 +846,7 @@ static int isotp_sendmsg(struct socket *
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct isotp_sock *so = isotp_sk(sk);
++	u32 old_state = so->tx.state;
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct canfd_frame *cf;
+@@ -858,39 +859,45 @@ static int isotp_sendmsg(struct socket *
+ 		return -EADDRNOTAVAIL;
  
--/*
-- * Prevents addition of devices with same chip select and
-- * addition of devices below an unregistering controller.
-- */
--static DEFINE_MUTEX(spi_add_lock);
--
- /**
-  * spi_alloc_device - Allocate a new SPI device
-  * @ctlr: Controller to which device is connected
-@@ -638,9 +632,9 @@ int spi_add_device(struct spi_device *spi)
- 	 * chipselect **BEFORE** we call setup(), else we'll trash
- 	 * its configuration.  Lock against concurrent add() calls.
- 	 */
--	mutex_lock(&spi_add_lock);
-+	mutex_lock(&ctlr->add_lock);
- 	status = __spi_add_device(spi);
--	mutex_unlock(&spi_add_lock);
-+	mutex_unlock(&ctlr->add_lock);
- 	return status;
- }
- EXPORT_SYMBOL_GPL(spi_add_device);
-@@ -660,7 +654,7 @@ static int spi_add_device_locked(struct spi_device *spi)
- 	/* Set the bus ID string */
- 	spi_dev_set_name(spi);
+ 	/* we do not support multiple buffers - for now */
+-	if (so->tx.state != ISOTP_IDLE || wq_has_sleeper(&so->wait)) {
+-		if (msg->msg_flags & MSG_DONTWAIT)
+-			return -EAGAIN;
++	if (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE ||
++	    wq_has_sleeper(&so->wait)) {
++		if (msg->msg_flags & MSG_DONTWAIT) {
++			err = -EAGAIN;
++			goto err_out;
++		}
  
--	WARN_ON(!mutex_is_locked(&spi_add_lock));
-+	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
- 	return __spi_add_device(spi);
- }
+ 		/* wait for complete transmission of current pdu */
+ 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
+ 		if (err)
+-			return err;
++			goto err_out;
+ 	}
  
-@@ -2832,6 +2826,7 @@ int spi_register_controller(struct spi_controller *ctlr)
- 	spin_lock_init(&ctlr->bus_lock_spinlock);
- 	mutex_init(&ctlr->bus_lock_mutex);
- 	mutex_init(&ctlr->io_mutex);
-+	mutex_init(&ctlr->add_lock);
- 	ctlr->bus_lock_flag = 0;
- 	init_completion(&ctlr->xfer_completion);
- 	if (!ctlr->max_dma_len)
-@@ -2968,7 +2963,7 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+-	if (!size || size > MAX_MSG_LENGTH)
+-		return -EINVAL;
++	if (!size || size > MAX_MSG_LENGTH) {
++		err = -EINVAL;
++		goto err_out;
++	}
  
- 	/* Prevent addition of new devices, unregister existing ones */
- 	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
--		mutex_lock(&spi_add_lock);
-+		mutex_lock(&ctlr->add_lock);
+ 	err = memcpy_from_msg(so->tx.buf, msg, size);
+ 	if (err < 0)
+-		return err;
++		goto err_out;
  
- 	device_for_each_child(&ctlr->dev, NULL, __unregister);
+ 	dev = dev_get_by_index(sock_net(sk), so->ifindex);
+-	if (!dev)
+-		return -ENXIO;
++	if (!dev) {
++		err = -ENXIO;
++		goto err_out;
++	}
  
-@@ -2999,7 +2994,7 @@ void spi_unregister_controller(struct spi_controller *ctlr)
- 	mutex_unlock(&board_lock);
+ 	skb = sock_alloc_send_skb(sk, so->ll.mtu + sizeof(struct can_skb_priv),
+ 				  msg->msg_flags & MSG_DONTWAIT, &err);
+ 	if (!skb) {
+ 		dev_put(dev);
+-		return err;
++		goto err_out;
+ 	}
  
- 	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
--		mutex_unlock(&spi_add_lock);
-+		mutex_unlock(&ctlr->add_lock);
- }
- EXPORT_SYMBOL_GPL(spi_unregister_controller);
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+ 	can_skb_prv(skb)->skbcnt = 0;
  
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 97b8d12b5f2b..5d80c6fd2a22 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -527,6 +527,9 @@ struct spi_controller {
- 	/* I/O mutex */
- 	struct mutex		io_mutex;
+-	so->tx.state = ISOTP_SENDING;
+ 	so->tx.len = size;
+ 	so->tx.idx = 0;
  
-+	/* Used to avoid adding the same CS twice */
-+	struct mutex		add_lock;
+@@ -949,7 +956,7 @@ static int isotp_sendmsg(struct socket *
+ 	if (err) {
+ 		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
+ 			       __func__, err);
+-		return err;
++		goto err_out;
+ 	}
+ 
+ 	if (wait_tx_done) {
+@@ -961,6 +968,13 @@ static int isotp_sendmsg(struct socket *
+ 	}
+ 
+ 	return size;
 +
- 	/* lock and mutex for SPI bus locking */
- 	spinlock_t		bus_lock_spinlock;
- 	struct mutex		bus_lock_mutex;
--- 
-2.33.0
-
++err_out:
++	so->tx.state = old_state;
++	if (so->tx.state == ISOTP_IDLE)
++		wake_up_interruptible(&so->wait);
++
++	return err;
+ }
+ 
+ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
 
 
