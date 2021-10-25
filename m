@@ -2,289 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FAD439EDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EDF439ED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233729AbhJYTEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:04:01 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:33788 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233862AbhJYTDz (ORCPT
+        id S233769AbhJYTDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:03:31 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:36248 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233746AbhJYTDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:03:55 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PIamwc001235;
-        Mon, 25 Oct 2021 12:01:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=VzHy2VOcYp3S+kEdpdX9Z1Icp9eu6BQBW9sTloD5gog=;
- b=T86WMR6Bd8mClhWIeG2JJPJe9Q6shEtKlFCq+8lt05V4tTMFYXo8m1Z4aBu9rxMcXdis
- od10OEZdtfcd+5SCSdghDyDpmL64qNGbKle3jjTI5Ltuk9AUXXRvt6H8/dB/iHAsZw6n
- /xK0XHzhnxsOKMSPiVwiGsyqHGhxqvEg12sJVslG5iGeS0yodb5RL7D5FVcItG3NgMom
- KJO1n5J87A+tkovFoY38a6iYP208pCJD5oynLQoJc4pKkadyxqRA1+tC7YapVs3jlpLj
- mTZwytMWHZ6J4DFv2WDSDmOe4MMH9Cfw1OhoO2RNrZdkzrOAY+0NWgjA9sXZcPJn3V+T Dw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3bwtjrj6yy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 12:01:32 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct
- 2021 12:01:31 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Mon, 25 Oct 2021 12:01:31 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 215DD3F70AF;
-        Mon, 25 Oct 2021 12:01:27 -0700 (PDT)
-From:   Rakesh Babu <rsaladi2@marvell.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
-CC:     Rakesh Babu <rsaladi2@marvell.com>,
-        Nithin Dabilpuram <ndabilpuram@marvell.com>,
-        Sunil Kovvuri Goutham <Sunil.Goutham@cavium.com>
-Subject: [net PATCH 2/2] octeontx2-af: Display all enabled PF VF rsrc_alloc entries.
-Date:   Tue, 26 Oct 2021 00:30:45 +0530
-Message-ID: <20211025190045.7462-3-rsaladi2@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211025190045.7462-1-rsaladi2@marvell.com>
-References: <20211025190045.7462-1-rsaladi2@marvell.com>
-MIME-Version: 1.0
+        Mon, 25 Oct 2021 15:03:30 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PHnjo0030370;
+        Mon, 25 Oct 2021 19:00:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=7lXaKCJiWZ6P0QIzVf0jAqXIKUr5SvLSKWkgTMUehtU=;
+ b=B7CPjZP1hUKeblu7LNSNi+GHXzUL0i5MvZlFtSEZ8rQNEuU0taOQrKFzdlJkHWuuEZMf
+ Tb2ziXT5bdZ696GNiQEz3Zk8Kzk3/WX68h7ti7DkLV/A7kuJX0SmGixFwevtTdpoR5sL
+ gYvBn4E5OqzA+B7/Oi+nFbUfe4Yd/ySWPXVKTYrBo54zMSrC3M/yFoQRuSj5K2L91X42
+ A3cHykQVdN0F9RZqnv3ClRqaeWh/41/0RmEsX6o4TMM96J/AgGae7/7mExji51vXb5NG
+ NO8nxjGsR6/j97fOn4F7JUamCGwLpnw9irc9efK4KMmZodYoQ0UVPK8DJgAXj0LC/gS+ JQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bw6v1w0rf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Oct 2021 19:00:52 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19PItsrS124056;
+        Mon, 25 Oct 2021 19:00:51 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by userp3030.oracle.com with ESMTP id 3bv7gv61g9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Oct 2021 19:00:51 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U3mhMITgGfkV6nZkJ6MeJUSi2yE15AC9pPfKoiGkMjmCcZXaQ/kckL6LYZjardu04b1gbLsrX36Y294SZhBBpG2LoISVuZSqyHyHqkoXUByBbZHPWx3ON8IvMQ58J3NM6A1p7aZpyUw2AcgumGrcK/9FWCSBFfbmYtDuZ4pgDAvhZ21eXr2g9DV9NPVSEBr8wLQF8N5rGRPxdDtQ17FGsec+jYKAspxnadh9QUVydI97N/vFHvO0Hr7GUNDJ1uNFtDw5SoUhBFjNWqCg/30r2+c8gxysrRBSW3nbWLEFKj3M/JCJQ4J944/NWW/SY2zfulq6r72VKNk461joEE3I6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7lXaKCJiWZ6P0QIzVf0jAqXIKUr5SvLSKWkgTMUehtU=;
+ b=OVKi6x+JUd/bB36eaFk8bXmx/4ra5LVIawR3MULXWSE8P8whSHX+S9bx3U1PTOImDqfy9xbmaflujBOb0Z8CzSP1tMplib2LM5qEjmoUpz7AnUXDrFoBqa9AbRP4RF4ts0MVAM8cRI1CI8tDto1Q5drJ8P06/BRvFlc+EjPUEklvpWEsK02pFunQuqbbh4WmiV9l6s5sU43oz6WpVabTr0dPBS+ioI0ckaTgx59hnO0AP1m0kH2qPhuwQK2D0cfdmZoZNpOTicfyQQU3ACW9FQUh1W1xDIME8ygkrMi88DhgC6c7SeapDLrzxqV14BEVnR4+ROmOIlRlq8UfbTG68w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7lXaKCJiWZ6P0QIzVf0jAqXIKUr5SvLSKWkgTMUehtU=;
+ b=FlLfuqhpb2AI4P67nk/58gvuyuY7nPLWaoBoPreA804GBcj1tl1llEcrAb6sI4jncPdk5fDm2bJ55CxepEi0fcmoTvJKorCGjpeu6NRMqRPPIrzrfMaYhhHELtaN5RHblIz9nAgpIYyAvHp9EDpEMn2xt1XzNKedeWRZ27MNLt4=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BN0PR10MB5192.namprd10.prod.outlook.com (2603:10b6:408:115::8)
+ by BN8PR10MB3364.namprd10.prod.outlook.com (2603:10b6:408:d0::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Mon, 25 Oct
+ 2021 19:00:47 +0000
+Received: from BN0PR10MB5192.namprd10.prod.outlook.com
+ ([fe80::8823:3dbf:b88f:2c0e]) by BN0PR10MB5192.namprd10.prod.outlook.com
+ ([fe80::8823:3dbf:b88f:2c0e%4]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
+ 19:00:46 +0000
+From:   George Kennedy <george.kennedy@oracle.com>
+To:     gregkh@linuxfoundation.org, tzimmermann@suse.de, sam@ravnborg.org
+Cc:     george.kennedy@oracle.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] video: fbdev: cirrusfb: check pixclock to avoid divide by zero
+Date:   Mon, 25 Oct 2021 14:01:30 -0500
+Message-Id: <1635188490-15082-1-git-send-email-george.kennedy@oracle.com>
+X-Mailer: git-send-email 1.9.4
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: aaGBq4gfjCcCoA8e6PumgomtkmrFp3kK
-X-Proofpoint-GUID: aaGBq4gfjCcCoA8e6PumgomtkmrFp3kK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_06,2021-10-25_02,2020-04-07_01
+X-ClientProxiedBy: SN4PR0501CA0101.namprd05.prod.outlook.com
+ (2603:10b6:803:42::18) To BN0PR10MB5192.namprd10.prod.outlook.com
+ (2603:10b6:408:115::8)
+MIME-Version: 1.0
+Received: from dhcp-10-152-13-169.usdhcp.oraclecorp.com.com (209.17.40.40) by SN4PR0501CA0101.namprd05.prod.outlook.com (2603:10b6:803:42::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend Transport; Mon, 25 Oct 2021 19:00:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a662441-7a07-4580-b804-08d997e9c05b
+X-MS-TrafficTypeDiagnostic: BN8PR10MB3364:
+X-Microsoft-Antispam-PRVS: <BN8PR10MB3364B07F1DEA7F6BCFF0AC07E6839@BN8PR10MB3364.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yCX4oQnrZgDBPzX9uJejfis47RurSs8o0BhgmLFEZ9LRGQLKAUfs1iyCiExLv+Rc8fUWBU2Q4Y+RuuOL9f0XMXVr00dC28sH1uuPZ3X02w7DIQZy5v4YfKMhH4YHtgHFERjS1DmWdeHMIagIRtcO4TqPzyo7g5woL6/ao2OeEuBuo3JO/QvINK2nk2QUDBE9TQ4cKkOJTR0ogf2fR7kJ4X2c2seX6k7kg6QOZXtVdddL33uAYpVcRAhvU3A0fG/5QLewcoHgWW4koqMMX69ZwoHAWIa7y0nC26r6HxQBS+BoW0n8vkYsWWx4g//iN0FSw4E1Hk1kzkmjpV5NDhUANkK97icEWj/qWRMfW8/w5WDO+CZ8WHYouuhHKvMrn5cGdI0+sXA0t/jfmbJgvjiqBk4G7IbB17B2+Uo45ZqLs2Xi+nMtP1NKKaZUED33dED6q8Bm5q6KxxIqiMFUuIoR9RHPjNl/Fvg1ikJhHYUYm8X6tSWo1yNXmPacRcIZ8bsSt5DQPTZx75sOqEhbhqQtulUB3rn3sgUSbpJBiNOdLSbabarK1yoVi7G3koMWariPMTE8sndNjf883ejfZJ54UkW8yMIvIVC/70ufLGgLzRiXNbfdjOQmjXxgkOJSvzsYBPfndD4bNLPw3wH5dizRGdP6H67U1MORtNfnRmm70XB/hA+uswEbZnj13tjNK/cUZ+bM35+fMY0sdUk5MRkETA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5192.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(6666004)(6486002)(316002)(186003)(2906002)(83380400001)(508600001)(66556008)(4326008)(52116002)(86362001)(66946007)(956004)(66476007)(26005)(6512007)(2616005)(44832011)(8936002)(38350700002)(38100700002)(5660300002)(6506007)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pYjwyYdPBmcrnaEI1/2PsTdeioHWgB2ZfdmbIGVvzZmNgQheHHRswBDpM7r4?=
+ =?us-ascii?Q?OAEi+PqBA4W8UBOcmB74fl79oFInW2Fs8mPupqpYdkqw3XS/SdlZSmf/oW+7?=
+ =?us-ascii?Q?DBDe1ENpqvayypPm2T7ZZx6tGbSfKgJrjMG/9KhwK42HyJhLMJBaDrrvauOA?=
+ =?us-ascii?Q?4sIhSS9Jt8yz5W29Itb/3XPESINURF1+3rBSY8zD/HYyYYa1cORSuz2Ljdwf?=
+ =?us-ascii?Q?q6hRYrWZIUJ2fFIvctLCdGyCPHc/EJhBV+noSzqQPaZGH47EIFqVfFwlK5zi?=
+ =?us-ascii?Q?lwS6k0puEEy5K2Quc0a4fy/TnYHFehfgWDsp+576UBaxw1Sz4MRyLFBL9yFu?=
+ =?us-ascii?Q?OsSP4LRmU0FpPXWeATGPFp8Yb9z1a7XMAkyip+VRDf9nVBl1yl7uIKjIRLMA?=
+ =?us-ascii?Q?c8NiWk2hIo/e/+1RcXCi/qVsTEfb6Fb2DbKF2DSSKfEZTClNzQUqI0Ievjlq?=
+ =?us-ascii?Q?MkMsr5zcQqP6wt7cM5oxDSgaV7lbpyVadMr6XZb6kouEjkY9NQ9qCFa3kqxF?=
+ =?us-ascii?Q?UBNa5uGf79wueNlHh5MkVwUfbu4PSYeXvrPzLkXADia5phApJ3tM8OJnk+w1?=
+ =?us-ascii?Q?Dv1iArnOlpuLXxT/MU9q4S+jaaf63g80irCjBHsUZ90UP6YE7cOuNWZzdttR?=
+ =?us-ascii?Q?xtyUkYhnv/Le+251kc2zJihzJ/3OCC5LpAt4FLvr2m8pj6y/zVu6r5cUzJ4w?=
+ =?us-ascii?Q?BFp0LSBwJUcWbAtOnyycyPebB9CJ79I/s84EvnS+5YnDFePgAa+SRwG4Yiss?=
+ =?us-ascii?Q?7Z8Sd8fbOWpRtuwB8LT5ZFxxcnxFjXpYHsCW9d04KLiT+RRE0aeKRB35UeaV?=
+ =?us-ascii?Q?lh/rZQG6R9C2O84DgtQO2vxP04sxmtHH9yPVoSlELGmqOgGrsVcD8doE3OW4?=
+ =?us-ascii?Q?Oau2y9fU7sGmb41XuB1SE0YTcdjLX6nmN38psYcKIdkyoawdXZ5qGV1UZt2L?=
+ =?us-ascii?Q?YjeeT4sVG6cke5IwKHwyVTQ+U5UU4blAEVAsC4Z5Rnk3Vlrg3o5brkxb4QyS?=
+ =?us-ascii?Q?sjMqX1rSlxLUsGP/pIVwPgsXBf//iKAoXKLaCx8hNPQVhzqEZUsJEvd6f0+D?=
+ =?us-ascii?Q?KDCiMH0IvCKfMP6w67P0I/qJDEGDSHHbdron835S1LBUUARxjf4uONKTPLOH?=
+ =?us-ascii?Q?vDpR+nM6RZqZbmatQFAJjfpK4aBPOtDqA9xRvkHoG93JsD5YXemVCwoJYQg2?=
+ =?us-ascii?Q?sdxJW7dD4Vqg2f3ZurxJtYvTQXAttfYSyjN54RZw4tcGHvcxm9uZ0yXirEuy?=
+ =?us-ascii?Q?81PiX+LRx79t3o6xyEEuhrhTSIJnLhoRK70xC4HHocqGHP0ysz5ur4bqGc46?=
+ =?us-ascii?Q?eyi3evKm340Ebxe8Cs6lh1SoTfSyTu4jr/XWpMyv7RVQQjJD9FogDqb/tWTi?=
+ =?us-ascii?Q?zPuau1pcA3i+wfeoglkPQ9gA+qwHE1FQPibl3hUfgS0Hi3k1C3xXIy3n9fFk?=
+ =?us-ascii?Q?gq+QF6tTXuVcNZtRhXT+jAKR+K2l2ybfMfiHQvD20JgdfKp5hj9KTWP3SeDP?=
+ =?us-ascii?Q?LRTUqAVHAkbFvwoQ1CmolA25E0RawqrfNQtgtTOehPYJHL3pnZTUlIBAJsEY?=
+ =?us-ascii?Q?/++DE4RAFf/3fx7Vn08aoAH/F8k4Dfn/hn8XPaz4Lhsm40zfdwcs8UJDj+aV?=
+ =?us-ascii?Q?h7dCYgmZ/TR64ulfRgSt5sVuSgEWUpV18750qEi67Qggu8u1WdJhPKs2xPVO?=
+ =?us-ascii?Q?8iWReg=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a662441-7a07-4580-b804-08d997e9c05b
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5192.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 19:00:46.1719
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2BW1SOq73VD+Y/pGgWZtQRocPD1t7sIclOq/ejL8IqzZQ4nKKznburRcPbI/s+IrqYIUFXbbL7N7Kni9+6ofemvrGxzB5KJ2DzvFTwpIRS0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR10MB3364
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10148 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 adultscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110250110
+X-Proofpoint-GUID: 1ITtTsz_fOxPwDVxLP-kznG2yrhEy4KF
+X-Proofpoint-ORIG-GUID: 1ITtTsz_fOxPwDVxLP-kznG2yrhEy4KF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we are using a fixed buffer size of length 2048 to display
-rsrc_alloc output. As a result a maximum of 2048 characters of
-rsrc_alloc output is displayed, which may lead sometimes to display only
-partial output. This patch fixes this dependency on max limit of buffer
-size and displays all PF VF entries.
+Do a sanity check on pixclock value before using it as a divisor.
 
-Each column of the debugfs entry "rsrc_alloc" uses a fixed width of 12
-characters to print the list of LFs of each block for a PF/VF. If the
-length of list of LFs of a block exceeds this fixed width then the list
-gets truncated and displays only a part of the list. This patch fixes
-this by using the maximum possible length of list of LFs among all
-blocks of all PFs and VFs entries as the width size.
+Syzkaller reported a divide error in cirrusfb_check_pixclock.
 
-Fixes: f7884097141b ("octeontx2-af: Formatting debugfs entry
-rsrc_alloc.")
-Fixes: 23205e6d06d4 ("octeontx2-af: Dump current resource provisioning
-status")
-Signed-off-by: Rakesh Babu <rsaladi2@marvell.com>
-Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <Sunil.Goutham@cavium.com>
+divide error: 0000 [#1] SMP KASAN PTI
+CPU: 0 PID: 14938 Comm: cirrusfb_test Not tainted 5.15.0-rc6 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2
+RIP: 0010:cirrusfb_check_var+0x6f1/0x1260
+
+Call Trace:
+ fb_set_var+0x398/0xf90
+ do_fb_ioctl+0x4b8/0x6f0
+ fb_ioctl+0xeb/0x130
+ __x64_sys_ioctl+0x19d/0x220
+ do_syscall_64+0x3a/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 ---
- .../marvell/octeontx2/af/rvu_debugfs.c        | 138 ++++++++++++++----
- 1 file changed, 106 insertions(+), 32 deletions(-)
+ drivers/video/fbdev/cirrusfb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 6c589ca9b577..c7e12464c243 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -226,18 +226,85 @@ static const struct file_operations rvu_dbg_##name##_fops = { \
+diff --git a/drivers/video/fbdev/cirrusfb.c b/drivers/video/fbdev/cirrusfb.c
+index 93802ab..099ddcb 100644
+--- a/drivers/video/fbdev/cirrusfb.c
++++ b/drivers/video/fbdev/cirrusfb.c
+@@ -477,6 +477,9 @@ static int cirrusfb_check_pixclock(const struct fb_var_screeninfo *var,
+ 	struct cirrusfb_info *cinfo = info->par;
+ 	unsigned maxclockidx = var->bits_per_pixel >> 3;
+ 
++	if (!var->pixclock)
++		return -EINVAL;
++
+ 	/* convert from ps to kHz */
+ 	freq = PICOS2KHZ(var->pixclock);
+ 
+-- 
+1.8.3.1
 
- static void print_nix_qsize(struct seq_file *filp, struct rvu_pfvf *pfvf);
-
-+static void get_lf_str_list(struct rvu_block block, int pcifunc,
-+			    char *lfs)
-+{
-+	int lf = 0, seq = 0, len = 0, prev_lf = block.lf.max;
-+
-+	for_each_set_bit(lf, block.lf.bmap, block.lf.max) {
-+		if (lf >= block.lf.max)
-+			break;
-+
-+		if (block.fn_map[lf] != pcifunc)
-+			continue;
-+
-+		if (lf == prev_lf + 1) {
-+			prev_lf = lf;
-+			seq = 1;
-+			continue;
-+		}
-+
-+		if (seq)
-+			len += sprintf(lfs + len, "-%d,%d", prev_lf, lf);
-+		else
-+			len += (len ? sprintf(lfs + len, ",%d", lf) :
-+				      sprintf(lfs + len, "%d", lf));
-+
-+		prev_lf = lf;
-+		seq = 0;
-+	}
-+
-+	if (seq)
-+		len += sprintf(lfs + len, "-%d", prev_lf);
-+
-+	lfs[len] = '\0';
-+}
-+
-+static int get_max_column_width(struct rvu *rvu)
-+{
-+	int index, pf, vf, lf_str_size = 12, buf_size = 256;
-+	struct rvu_block block;
-+	u16 pcifunc;
-+	char *buf;
-+
-+	buf = kzalloc(buf_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	for (pf = 0; pf < rvu->hw->total_pfs; pf++) {
-+		for (vf = 0; vf <= rvu->hw->total_vfs; vf++) {
-+			pcifunc = pf << 10 | vf;
-+			if (!pcifunc)
-+				continue;
-+
-+			for (index = 0; index < BLK_COUNT; index++) {
-+				block = rvu->hw->block[index];
-+				if (!strlen(block.name))
-+					continue;
-+
-+				get_lf_str_list(block, pcifunc, buf);
-+				if (lf_str_size <= strlen(buf))
-+					lf_str_size = strlen(buf) + 1;
-+			}
-+		}
-+	}
-+
-+	kfree(buf);
-+	return lf_str_size;
-+}
-+
- /* Dumps current provisioning status of all RVU block LFs */
- static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- 					  char __user *buffer,
- 					  size_t count, loff_t *ppos)
- {
--	int index, off = 0, flag = 0, go_back = 0, len = 0;
-+	int index, off = 0, flag = 0, len = 0, i = 0;
- 	struct rvu *rvu = filp->private_data;
--	int lf, pf, vf, pcifunc;
-+	int bytes_not_copied = 0;
- 	struct rvu_block block;
--	int bytes_not_copied;
--	int lf_str_size = 12;
-+	int pf, vf, pcifunc;
- 	int buf_size = 2048;
-+	int lf_str_size;
- 	char *lfs;
- 	char *buf;
-
-@@ -249,6 +316,9 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- 	if (!buf)
- 		return -ENOSPC;
-
-+	/* Get the maximum width of a column */
-+	lf_str_size = get_max_column_width(rvu);
-+
- 	lfs = kzalloc(lf_str_size, GFP_KERNEL);
- 	if (!lfs) {
- 		kfree(buf);
-@@ -262,65 +332,69 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- 					 "%-*s", lf_str_size,
- 					 rvu->hw->block[index].name);
- 		}
-+
- 	off += scnprintf(&buf[off], buf_size - 1 - off, "\n");
-+	bytes_not_copied = copy_to_user(buffer + (i * off), buf, off);
-+	if (bytes_not_copied)
-+		goto out;
-+
-+	i++;
-+	*ppos += off;
- 	for (pf = 0; pf < rvu->hw->total_pfs; pf++) {
- 		for (vf = 0; vf <= rvu->hw->total_vfs; vf++) {
-+			off = 0;
-+			flag = 0;
- 			pcifunc = pf << 10 | vf;
- 			if (!pcifunc)
- 				continue;
-
- 			if (vf) {
- 				sprintf(lfs, "PF%d:VF%d", pf, vf - 1);
--				go_back = scnprintf(&buf[off],
--						    buf_size - 1 - off,
--						    "%-*s", lf_str_size, lfs);
-+				off = scnprintf(&buf[off],
-+						buf_size - 1 - off,
-+						"%-*s", lf_str_size, lfs);
- 			} else {
- 				sprintf(lfs, "PF%d", pf);
--				go_back = scnprintf(&buf[off],
--						    buf_size - 1 - off,
--						    "%-*s", lf_str_size, lfs);
-+				off = scnprintf(&buf[off],
-+						buf_size - 1 - off,
-+						"%-*s", lf_str_size, lfs);
- 			}
-
--			off += go_back;
--			for (index = 0; index < BLKTYPE_MAX; index++) {
-+			for (index = 0; index < BLK_COUNT; index++) {
- 				block = rvu->hw->block[index];
- 				if (!strlen(block.name))
- 					continue;
- 				len = 0;
- 				lfs[len] = '\0';
--				for (lf = 0; lf < block.lf.max; lf++) {
--					if (block.fn_map[lf] != pcifunc)
--						continue;
-+				get_lf_str_list(block, pcifunc, lfs);
-+				if (strlen(lfs))
- 					flag = 1;
--					len += sprintf(&lfs[len], "%d,", lf);
--				}
-
--				if (flag)
--					len--;
--				lfs[len] = '\0';
- 				off += scnprintf(&buf[off], buf_size - 1 - off,
- 						 "%-*s", lf_str_size, lfs);
--				if (!strlen(lfs))
--					go_back += lf_str_size;
- 			}
--			if (!flag)
--				off -= go_back;
--			else
--				flag = 0;
--			off--;
--			off +=	scnprintf(&buf[off], buf_size - 1 - off, "\n");
-+			if (flag) {
-+				off +=	scnprintf(&buf[off],
-+						  buf_size - 1 - off, "\n");
-+				bytes_not_copied = copy_to_user(buffer +
-+								(i * off),
-+								buf, off);
-+				if (bytes_not_copied)
-+					goto out;
-+
-+				i++;
-+				*ppos += off;
-+			}
- 		}
- 	}
-
--	bytes_not_copied = copy_to_user(buffer, buf, off);
-+out:
- 	kfree(lfs);
- 	kfree(buf);
--
- 	if (bytes_not_copied)
- 		return -EFAULT;
-
--	*ppos = off;
--	return off;
-+	return *ppos;
- }
-
- RVU_DEBUG_FOPS(rsrc_status, rsrc_attach_status, NULL);
---
-2.17.1
