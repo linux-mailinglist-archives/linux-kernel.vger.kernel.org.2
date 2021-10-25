@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B0F439603
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3863E43960B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbhJYMVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbhJYMVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:21:05 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78531C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:18:43 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id o12so17528857uap.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=w8eR9KqhxNIJXnTgkegzXSIyB4t1TslfUURdMx0cmXE=;
-        b=UM5I9ujQb8me6F8btbklgehQkvnBJu9XgocDk4soGv6b6cLDiBFrQ/IhPEuLDWV0q8
-         DFcyA+iTwgOsvVBgMlwNseljp8FHyixdlE3LRKxHSFyyCsu2RfPATUzVRku2tm+MYkwO
-         3Z77Ugz7htXbNHaf34rw7fFvocL5JD/pfIPN7cSUnZiCJ3kD2yWRsbAyxmhP6t6zbHzu
-         mNzMGAHF/8nrGJA30IgmvcPqYRgGvyWmQmxlqKjBxc1J4teY4Rprk/JSEKBVp2R9JjpC
-         2BGv4lMiT6vXSB3IU/yLecUcSCPTlRjXNJeXQ/2wyeakQACQt+LvEMSIKrOtoKG6pB2Z
-         Rifw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w8eR9KqhxNIJXnTgkegzXSIyB4t1TslfUURdMx0cmXE=;
-        b=Kjo7OxUggh8YbQJtWD4JpmH5C3tu3zr9WnqDEdnzbIfzkgCg7rELUgjHRF1RbMJnrX
-         K5QdXPz7NSA/L2N5GEUu/urGLBt2C6VNwKMcvcqcnWGRM9S2WZHoPzKxI0E6qRXeJaHQ
-         SJIaoUBTGmxbG2vl/qsMFnYelzeOvb6ZC5pNahrKp46i/r9Ow1XXPnVXAT1ZaZL5bioM
-         9ub5sfdIIZrd/Anq5GCEZz/gjeOo9KlnIt2B1iIodm34t7+QCpKbDDIvyam/z587J49V
-         wznXfHKeT87LvIB4DiRmpDw1AwVj19zvPMsdtA23/DZwbuf2J6/EyLaXyMHB8MaiJyQR
-         OHrg==
-X-Gm-Message-State: AOAM532KgajH4q3MHqg2nXjHlTa5M9tQSQoiTJ13x3/4BvOb+PQpusdZ
-        OmuMjrolNSkm33W0PULifpU8dA==
-X-Google-Smtp-Source: ABdhPJwh36gAmINQ22TyFC/es1dzHhqDBwtaPvWPA5EHNi4JTJC0pkrEDs2pgaLbOSqQAA5+DyYhkA==
-X-Received: by 2002:a05:6102:3ed4:: with SMTP id n20mr12102869vsv.57.1635164322559;
-        Mon, 25 Oct 2021 05:18:42 -0700 (PDT)
-Received: from Andryuu.br ([2804:431:c7fd:423:9dac:f639:6086:598])
-        by smtp.gmail.com with ESMTPSA id v187sm9665937vsv.26.2021.10.25.05.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 05:18:42 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 09:18:38 -0300
-From:   =?iso-8859-1?Q?Andr=E9?= Gustavo Nakagomi Lopez <andregnl@usp.br>
-To:     Vladimir Zapolskiy <vz@mleia.com>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: lpc18xx_adc: Reorder clk_get_rate function call
-Message-ID: <YXagnudS9eMj9T06@Andryuu.br>
-References: <YXW3azIjPzGjvjTX@Andryuu.br>
- <bd79117b-91cc-da4b-abdd-2a41db8b330a@mleia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd79117b-91cc-da4b-abdd-2a41db8b330a@mleia.com>
+        id S233057AbhJYMWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:22:55 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:51132 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232455AbhJYMWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:22:50 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowAA3PAjaoHZhLBNQBQ--.18991S2;
+        Mon, 25 Oct 2021 20:19:38 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH v2] sched: Fix implicit type conversion
+Date:   Mon, 25 Oct 2021 12:19:37 +0000
+Message-Id: <1635164377-2426740-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowAA3PAjaoHZhLBNQBQ--.18991S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw45Gw4DtryxKw4UKF45KFg_yoWDZFX_W3
+        4Y9w1ru34a9rs2g3W2ka1rZ340qa15XFn5Zw1xWasrZ3y5Kr9xt3y5CFyrJr1kXrs7CFZ8
+        JwnaqFn0gr1UujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
+        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
+        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfU5rWrDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 11:12:39PM +0300, Vladimir Zapolskiy wrote:
-> Hi André,
-> 
-> On 10/24/21 10:43 PM, André Gustavo Nakagomi Lopez wrote:
-> > clk_get_rate is not garanteed to work if called before clk_prepare_enable.
-> 
-> typo, s/garanteed/guaranteed/
-> 
-> > 
-> > Reorder clk_get_rate, so it's called after clk_prepare_enable and
-> > after devm_add_action_or_reset of lpc18xx_clk_disable.
-> > 
-> > Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
-> > ---
-> >   drivers/iio/adc/lpc18xx_adc.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
-> > index ceefa4d793cf..ae9c9384f23e 100644
-> > --- a/drivers/iio/adc/lpc18xx_adc.c
-> > +++ b/drivers/iio/adc/lpc18xx_adc.c
-> > @@ -157,9 +157,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
-> >   		return dev_err_probe(&pdev->dev, PTR_ERR(adc->clk),
-> >   				     "error getting clock\n");
-> > -	rate = clk_get_rate(adc->clk);
-> > -	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
-> > -
-> >   	adc->vref = devm_regulator_get(&pdev->dev, "vref");
-> >   	if (IS_ERR(adc->vref))
-> >   		return dev_err_probe(&pdev->dev, PTR_ERR(adc->vref),
-> > @@ -192,6 +189,9 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
-> >   	if (ret)
-> >   		return ret;
-> > +	rate = clk_get_rate(adc->clk);
-> > +	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
-> > +
-> >   	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
-> >   			LPC18XX_ADC_CR_PDN;
-> >   	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
-> > 
-> 
-> Thank you for the change, per se this particular change is not needed on
-> LPC18xx/43xx platform, however I don't object to it.
-> 
-> Suggested-by: Jonathan Cameron <jic23@kernel.org>
-> Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-> 
-> --
-> Best wishes,
-> Vladimir
+The variable 'n' is defined as ULONG. However in the cpumask_next(),
+it is used as INT.
+That is vulnerable and may cause overflow.
+For example, if the value of 'n' is (2^31 - 1), then it can pass the
+check ('n == 0') and ('n-- > 0'). Then in cpumask_next(), its value
+is (2^31 - 3). But it is implicit type conversed to int, its actual
+value is -3, which is illegal in the cpumask_next().
+Therefore, it might be better to define 'n' as INT.
 
-Ok, thank you for the review. I will fix the typo and add the appropriate tags.
+Fixes: cb152ff ("sched: Fix /proc/sched_stat failure on very very large systems")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ kernel/sched/stats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
+index 3f93fc3..6503d3a 100644
+--- a/kernel/sched/stats.c
++++ b/kernel/sched/stats.c
+@@ -82,7 +82,7 @@ static int show_schedstat(struct seq_file *seq, void *v)
+  */
+ static void *schedstat_start(struct seq_file *file, loff_t *offset)
+ {
+-	unsigned long n = *offset;
++	int n = *offset;
+ 
+ 	if (n == 0)
+ 		return (void *) 1;
+-- 
+2.7.4
+
