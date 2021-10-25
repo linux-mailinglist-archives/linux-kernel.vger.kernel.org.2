@@ -2,65 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6849243A5C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D178343A5C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235205AbhJYVX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        id S235210AbhJYVXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235193AbhJYVX0 (ORCPT
+        with ESMTP id S232649AbhJYVXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:23:26 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5209DC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:21:03 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id om14so9264776pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:21:03 -0700 (PDT)
+        Mon, 25 Oct 2021 17:23:50 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB09C061224
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:21:27 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id h193so11958420pgc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:21:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=3OCx8n3YcCdnCMnldJe78sSIIx1J55DO7L2iIUyh6x0=;
-        b=AyE/wWO7q+nlg9VRYBxttDM3/sfxxkpH+fZYq0QNTiycbbJcXyCXBQkuIMo9YPGLQY
-         sDjFkNVzGhsSKuplSnAft5PigtwPfvhGvffdTxoi3Y4JRiRfYGZOYKcLgK1qs4aqhRrZ
-         9PyDKsmTLE4gNIuxY3NJFnsYuoe7JvoBVi03KgZkIeUEt4wbaHP1Q0FCRZ0XXVLF8Qef
-         PP9FOP2d4ROriyCSdppWJEtvR9Z/AeJbLASdT5RdjzjIJuhc1tECQ60bZwjNk6hePbpP
-         MCbakAjMSI/CSYLCfUGmLGEbXt6tePiohP5rfZhDtmPbkwaF91Nk6oHi0GpK/wQ+aBCd
-         G6rw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dg+3da77xCN0ept3lU6Adg5MAj44I6g+k6oh+Yv/Wmk=;
+        b=ZZAE5vvBlXBqmnqPeVDMpzNlRMG4f8aUTMM11B3Wt0yaKexrHt55FQmO5u1fD7bidR
+         02xhl5QvTcmR3cGt0oq36GHl7u+9soV9E6KhT6dXaK6gGrqfTsgCADyJ2v6e5SSMny1K
+         kHJTuEDYeo3h4PCPdtNNG1VGr+EIBO7xWhzuo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=3OCx8n3YcCdnCMnldJe78sSIIx1J55DO7L2iIUyh6x0=;
-        b=DV+jVOZYaDqVarAtuYQCXh0Okgex5wpMhV/igMxNSmO8cO2WFyhr0jU/xwhFcf2ayn
-         IM2Z8XoQWssJY/8aWn85VuWUC2nG4o5MOnLjKcVcpumwNtTpZ+h+CgYxP+vq6vQjMyAb
-         rUvTlOa19LaBi7MW9G0QCacINSHc+FFoGOUbYkcUrxfopSlk7HLAXJJROzAvmxm1OjgO
-         NZmM+6mEAyTY16Nqlkk1CqOKlVHRM+Ve/eaZGq9J2xfg5zHb9d77sTTYYaabul0imFhO
-         dN5ltoOfNGjW5CZi2f3jmqM2x4OmU9WAMLic+5NV0opVcvNAkMA4eUxOScq2oU/P+5RC
-         Tv9Q==
-X-Gm-Message-State: AOAM531tx5lM7WMq+VlzA6Qxo1vmp6C5fWBZE3ByeXgGuo9rd6uNTkgX
-        /ET+PpKWnQ2NMbANy97c7RQBIueQtRTZK2n/Qog=
-X-Google-Smtp-Source: ABdhPJwwSlZJJL9TA+/M45MVPINQ7FVTw+jgJD6FLGd/AFJYoEIYq0uqGqysiFAwzfE9Up33UlxuZk9dB6KeayJYa6E=
-X-Received: by 2002:a17:90a:de0d:: with SMTP id m13mr39430557pjv.85.1635196862724;
- Mon, 25 Oct 2021 14:21:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dg+3da77xCN0ept3lU6Adg5MAj44I6g+k6oh+Yv/Wmk=;
+        b=FfWZCJE3Ueorh4sk4f1el4P4My5oSD5GRD4Y0HDKFSyXHDfPsSR21WLQ7TNSqgCFBm
+         zy1WlcIAY6x/f8X2srmoYYFZTp4UJxC5Imww3+AG8ChF3UQ0Tu7PMC8aWa6voADgZ3DD
+         N8LjqAavFFvbA9f+mJqto8zKmOaB0yHBLlNcCGArj6+pDnIZdh4dT9I3KhzEAvrFbpju
+         pn+Zb/rRru8LVoXlgPoZ0amoujsP9qEOa2APiFM+E4nz/Y4h+FGs4szgBbEq8Mkqa9pN
+         qnPWuvkv2WUJDPCLtvAtR7HcN69L8QHKm6jdc8tPyzSYTaX4Z29pnKHvFacvISeF89WK
+         4Qww==
+X-Gm-Message-State: AOAM533VoqVF5gcxdVh8su4iTM4oJBf2vihe/s6tVNb3kE1CHnFNzIwn
+        EhHekj5AhuBfc/gfzPjbWOYIeg==
+X-Google-Smtp-Source: ABdhPJwuFvhpOg9qcPmPW8fWT61xDymkszr5XQdULAP3e/U/Jqkxh9G7sdKWk3bNge4o+fhW5E7j4Q==
+X-Received: by 2002:a63:7c52:: with SMTP id l18mr9384968pgn.112.1635196887256;
+        Mon, 25 Oct 2021 14:21:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j3sm20621719pfu.218.2021.10.25.14.21.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:21:26 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:21:26 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        valentin.schneider@arm.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH v6 07/12] samples/bpf/offwaketime_kern: make sched_switch
+ tracepoint args adopt to comm size change
+Message-ID: <202110251421.0CD56F8@keescook>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <20211025083315.4752-8-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:c7ce:0:0:0:0 with HTTP; Mon, 25 Oct 2021 14:21:01
- -0700 (PDT)
-Reply-To: mrs.stefanie.chantal@gmail.com
-From:   Mrs Stefanie Chantal <onlinebankingmanagement4@gmail.com>
-Date:   Mon, 25 Oct 2021 21:21:01 +0000
-Message-ID: <CAH0BtPS-ViLrf-1XHeOnYM3qoxqUe2BcU=J_R-cCqgVBi4XKNA@mail.gmail.com>
-Subject: Dear. Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025083315.4752-8-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Oct 25, 2021 at 08:33:10AM +0000, Yafang Shao wrote:
+> The sched:sched_switch tracepoint is derived from kernel, we should make
+> its args compitable with the kernel.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> ---
+>  samples/bpf/offwaketime_kern.c | 4 ++--
 
-Good day to you.I have a lucrative business proposal, which I believe
-we could mutually benefit from. Please contact me on my private email
-(mrs.stefanie.chantal@gmail.com)  and MY  WhatsApp    (+16314595205)
+Seems this should be merged with the prior bpf samples patch?
 
-thanks
+-Kees
+
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/samples/bpf/offwaketime_kern.c b/samples/bpf/offwaketime_kern.c
+> index 4866afd054da..eb4d94742e6b 100644
+> --- a/samples/bpf/offwaketime_kern.c
+> +++ b/samples/bpf/offwaketime_kern.c
+> @@ -113,11 +113,11 @@ static inline int update_counts(void *ctx, u32 pid, u64 delta)
+>  /* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
+>  struct sched_switch_args {
+>  	unsigned long long pad;
+> -	char prev_comm[16];
+> +	char prev_comm[TASK_COMM_LEN];
+>  	int prev_pid;
+>  	int prev_prio;
+>  	long long prev_state;
+> -	char next_comm[16];
+> +	char next_comm[TASK_COMM_LEN];
+>  	int next_pid;
+>  	int next_prio;
+>  };
+> -- 
+> 2.17.1
+> 
+
+-- 
+Kees Cook
