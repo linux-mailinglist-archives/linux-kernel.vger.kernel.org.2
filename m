@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F4C439983
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E37E439995
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhJYPDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:03:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44100 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbhJYPDJ (ORCPT
+        id S233806AbhJYPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:06:18 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:34311 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233770AbhJYPGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:03:09 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4B1B61FD3A;
-        Mon, 25 Oct 2021 15:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635174046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Em7EGGqG6o35wKmiax01QEikuwAkO36IkSznNVbOrlc=;
-        b=jIahhHxFdvhSnQYxu0IBU28NRIRCzOOJrmFrset/zDMiZ7xfEq1BN9mZzJHvCKOHHJfCCX
-        S8085s18u/fWaQ/C9Djhh9Ak8fX8tL/KcURPxIKTnUGLt9n8GwtYDciaZma8CYY5sviWFb
-        i5x8fpIWp0c40NjlZRLsHpgUm7POKHg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635174046;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Em7EGGqG6o35wKmiax01QEikuwAkO36IkSznNVbOrlc=;
-        b=EzpQlzC437+htL/7LNxRfvm4yG04LClGFMDBNi0+MIMs/PBqGghZtfRguuxQfp/nBUh4q9
-        rewS9GLRZ/qQPWCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94A9513C0B;
-        Mon, 25 Oct 2021 15:00:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cCmUIZ3GdmHSDQAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Mon, 25 Oct 2021 15:00:45 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 03806f0b;
-        Mon, 25 Oct 2021 15:00:44 +0000 (UTC)
-From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>, Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>,
-        Patrick Donnelly <pdonnell@redhat.com>
-Subject: [RFC PATCH v2] ceph: add remote object copy counter to fs client metrics
-Date:   Mon, 25 Oct 2021 16:00:42 +0100
-Message-Id: <20211025150042.1677-1-lhenriques@suse.de>
+        Mon, 25 Oct 2021 11:06:17 -0400
+Received: by mail-ed1-f53.google.com with SMTP id g10so639197edj.1;
+        Mon, 25 Oct 2021 08:03:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dzBIoeOifARtzlM/P1F6nuzN/BEpSFNhUwVbX96EjJQ=;
+        b=ZZaz0Cq0tkJgUFtwmPDnC3C2RWxLRNovPkMy7L0UcZNjnyXfQwFqKbjga4wtKNvm8V
+         FlgynD1Us0cCp9SM9r4XsDwzEk2WKQk9320cZOh4uey8OXnoDNN7+LIKtdCho0v+xanV
+         //YKgPekRK+OYxDeFWxRPkviHaAmVms6kOQOCmp2rMEnj5Lx2MYp0N2zqH5EfSPI3TXk
+         flnr0IBq/2aD8Ab4HQ/rf10TFAUmHwkn1yoDitPOgnOtBPp2b8Taop5ILr9qvA6QiewZ
+         KP7/rVoI9UDajiQVcG7iZKjhCJlrV4yELW1f5021/h8XzaWvo2yEUcpHOpw7n9TJtPgh
+         iMjQ==
+X-Gm-Message-State: AOAM5306Y+nv5Yas5XHmETPs9OjBWzzgKar1KaXutTsKYk6O3FEy47Rp
+        v5Hv3/bSmDf3izrlFCT4RLc=
+X-Google-Smtp-Source: ABdhPJzAPclHOdCs8TGK9y//K5TYr7tyh/pAD9g5HQNGIk69ckb13Ts14qqt4C7a73m08tJvIkaIVQ==
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr23065569ejc.247.1635174155105;
+        Mon, 25 Oct 2021 08:02:35 -0700 (PDT)
+Received: from localhost.localdomain (ip-85-160-34-175.eurotel.cz. [85.160.34.175])
+        by smtp.gmail.com with ESMTPSA id u23sm9098221edr.97.2021.10.25.08.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 08:02:33 -0700 (PDT)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     <linux-mm@kvack.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH 0/4] extend vmalloc support for constrained allocations
+Date:   Mon, 25 Oct 2021 17:02:19 +0200
+Message-Id: <20211025150223.13621-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This counter will keep track of the number of remote object copies done on
-copy_file_range syscalls.  This counter will be kept using the metrics
-infrastructure and thus accessible through debugfs.  For now, this counter
-won't be sent to the MDS.
+Hi,
+this has been posted as a RFC previously [1] and it seems there was no
+fundamental disagreement about the approach so I am dropping RFC and I
+have also integrated some feedback from that discussion.
 
-Cc: Patrick Donnelly <pdonnell@redhat.com>
-Signed-off-by: Luís Henriques <lhenriques@suse.de>
----
-Hi!
+Based on a recent discussion with Dave and Neil [2] I have tried to
+implement NOFS, NOIO, NOFAIL support for the vmalloc to make
+life of kvmalloc users easier.
 
-So, here's v2 of this RFC.  Now, I guess that Patrick's idea of adding
-this counter was to validate the test results, isn't that right?  If so,
-this has to be done from within the fstest code and not from teuthology
-test.  The reason is that fstests mount and unmount the filesystems under
-test, which effectively wipe the metrics on the client.
 
-So, the follow-up to this patch would be changes to the corresponding
-fstests so that they would access this debugfs file and check the counter
-is set to the expected value.
+A requirement for NOFAIL support for kvmalloc was new to me but this
+seems to be really needed by the xfs code.
 
-Cheers,
--- 
-Luís
+NOFS/NOIO was a known and a long term problem which was hoped to be
+handled by the scope API. Those scope should have been used at the
+reclaim recursion boundaries both to document them and also to remove
+the necessity of NOFS/NOIO constrains for all allocations within that
+scope. Instead workarounds were developed to wrap a single allocation
+instead (like ceph_kvmalloc).
 
- fs/ceph/debugfs.c | 6 ++++++
- fs/ceph/file.c    | 1 +
- fs/ceph/metric.c  | 2 ++
- fs/ceph/metric.h  | 2 ++
- 4 files changed, 11 insertions(+)
+First patch implements NOFS/NOIO support for vmalloc. The second one
+adds NOFAIL support and the third one bundles all together into kvmalloc
+and drops ceph_kvmalloc which can use kvmalloc directly now.
 
-diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-index 38b78b45811f..9f1a09816541 100644
---- a/fs/ceph/debugfs.c
-+++ b/fs/ceph/debugfs.c
-@@ -235,6 +235,12 @@ static int metric_show(struct seq_file *s, void *p)
- 		   percpu_counter_sum(&m->i_caps_mis),
- 		   percpu_counter_sum(&m->i_caps_hit));
- 
-+	seq_printf(s, "\n");
-+	seq_printf(s, "item          total\n");
-+	seq_printf(s, "-------------------\n");
-+	seq_printf(s, "%-14s%-16lld\n", "copy-from",
-+		   atomic64_read(&m->total_copyfrom));
-+
- 	return 0;
- }
- 
-diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-index e61018d9764e..b36a7b9c1ab8 100644
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -2253,6 +2253,7 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
- 				bytes = ret;
- 			goto out;
- 		}
-+		atomic64_inc(&fsc->mdsc->metric.total_copyfrom);
- 		len -= object_size;
- 		bytes += object_size;
- 		*src_off += object_size;
-diff --git a/fs/ceph/metric.c b/fs/ceph/metric.c
-index 04d5df29bbbf..a8a9f96c56a8 100644
---- a/fs/ceph/metric.c
-+++ b/fs/ceph/metric.c
-@@ -278,6 +278,8 @@ int ceph_metric_init(struct ceph_client_metric *m)
- 	if (ret)
- 		goto err_total_inodes;
- 
-+	atomic64_set(&m->total_copyfrom, 0);
-+
- 	m->session = NULL;
- 	INIT_DELAYED_WORK(&m->delayed_work, metric_delayed_work);
- 
-diff --git a/fs/ceph/metric.h b/fs/ceph/metric.h
-index 0133955a3c6a..a1e2cd46de6b 100644
---- a/fs/ceph/metric.h
-+++ b/fs/ceph/metric.h
-@@ -169,6 +169,8 @@ struct ceph_client_metric {
- 	struct percpu_counter opened_inodes;
- 	struct percpu_counter total_inodes;
- 
-+	atomic64_t total_copyfrom;
-+
- 	struct ceph_mds_session *session;
- 	struct delayed_work delayed_work;  /* delayed work */
- };
+Please note that this is RFC and I haven't done any testing on this yet.
+I hope I haven't missed anything in the vmalloc allocator. It would be
+really great if Christoph and Uladzislau could have a look.
+
+Thanks!
+
+[1] http://lkml.kernel.org/r/20211018114712.9802-1-mhocko@kernel.org
+[2] http://lkml.kernel.org/r/163184741778.29351.16920832234899124642.stgit@noble.brown
+
+
