@@ -2,92 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E797F438DFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF6E438DFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhJYEHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 00:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhJYEHm (ORCPT
+        id S232236AbhJYEJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:09:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26215 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229379AbhJYEI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 00:07:42 -0400
-Received: from smtp01.aussiebb.com.au (smtp01.aussiebb.com.au [IPv6:2403:5800:3:25::1001])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBFFC061745;
-        Sun, 24 Oct 2021 21:05:21 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by smtp01.aussiebb.com.au (Postfix) with ESMTP id A5FCB100281;
-        Mon, 25 Oct 2021 15:05:19 +1100 (AEDT)
-X-Virus-Scanned: Debian amavisd-new at smtp01.aussiebb.com.au
-Received: from smtp01.aussiebb.com.au ([127.0.0.1])
-        by localhost (smtp01.aussiebb.com.au [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FdNsQPSpWM8W; Mon, 25 Oct 2021 15:05:19 +1100 (AEDT)
-Received: by smtp01.aussiebb.com.au (Postfix, from userid 116)
-        id 8502F100337; Mon, 25 Oct 2021 15:05:19 +1100 (AEDT)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        smtp01.aussiebb.com.au
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=10.0 tests=RDNS_NONE autolearn=disabled
-        version=3.4.2
-Received: from mickey.themaw.net (unknown [100.72.131.210])
-        by smtp01.aussiebb.com.au (Postfix) with ESMTP id ED6F8100337;
-        Mon, 25 Oct 2021 15:05:17 +1100 (AEDT)
-Subject: [PATCH 2/2] vfs: escape hash as well
-From:   Ian Kent <raven@themaw.net>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 25 Oct 2021 12:05:17 +0800
-Message-ID: <163513471773.40352.15886350498066945740.stgit@mickey.themaw.net>
-In-Reply-To: <163513470696.40352.1069626993439788071.stgit@mickey.themaw.net>
-References: <163513470696.40352.1069626993439788071.stgit@mickey.themaw.net>
-User-Agent: StGit/0.23
+        Mon, 25 Oct 2021 00:08:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635134796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xt4dSqCcvO8Ds9ncTZOb5dKcnC/w5v8GuDpHPG0IPbk=;
+        b=YHcPnIHnkaJz8ssUf0KKbYViIaDviDO3V8Vu6goYuua+CC9kgICUe8CSZLbk2hG0OH8GIv
+        gODnLYORD+n0RQSuNco+Sz+A3NUU8Y6sSSfHfDNFxpaTl1h13yjlfNSEOyldZEdzt4RAg5
+        g6OgkKe6W3Vg4YJLDNmeG+7dP0bVROM=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-Al4uKfP2Oc6R-qJ-uRfIew-1; Mon, 25 Oct 2021 00:06:33 -0400
+X-MC-Unique: Al4uKfP2Oc6R-qJ-uRfIew-1
+Received: by mail-pg1-f198.google.com with SMTP id a18-20020a637f12000000b002a44c4f0e66so901888pgd.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 21:06:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xt4dSqCcvO8Ds9ncTZOb5dKcnC/w5v8GuDpHPG0IPbk=;
+        b=6B9yWUAyA4y4tFY/fTYg+2HEn+TfDBNG/3AI9wEliYhw/Ge8L6jn2U22dI7nu9EPRo
+         d1eoh4DEi4qD4IjRhLCaSW4WqZ7hKi2EHnD1VR19FHspSsb5UXN8a1c3f4y2bb9dXoQs
+         LaUL8s/KUk/ZJdcG9PEbVR+fnlPqBt0Dzl6nmmteurryHlyEY1RHHTaoNVnQYqGJoVuV
+         iFLuntAxNAiDTczgA3XwlDQYLtl7z+93E0F+mZZN0aRq/QiNZXCNRE6D0n/52TkoBBf2
+         l/j3mEutfKIlr8GCqLPVThl8OmcmKIe22SCD9TIfgB9CAems7MZhtuDDTW9RQquwo0lI
+         StGg==
+X-Gm-Message-State: AOAM5303c7jJDZw8U+jn+a0eMQ4i1vinLvlSvM8C4dJkouJWl0xAh5/G
+        lQSfTvhRiZ3eYsWTpa4s7d2fbLUq0Xc77RPKEWEz/YJh88BstqOe3QEzUCX03HQJ8qBNVuxhvXo
+        uOd+5QjX0CIe/joriUhgZ1AaS
+X-Received: by 2002:a05:6a00:1591:b0:47b:eaa8:1a70 with SMTP id u17-20020a056a00159100b0047beaa81a70mr5341971pfk.75.1635134791967;
+        Sun, 24 Oct 2021 21:06:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuKpgNNfZmeGA9xdRKARCXaMf4DsW7R45QGzXVYEhI4kpnnozmulSLyekCqG+/q0mMPlXAoA==
+X-Received: by 2002:a05:6a00:1591:b0:47b:eaa8:1a70 with SMTP id u17-20020a056a00159100b0047beaa81a70mr5341936pfk.75.1635134791662;
+        Sun, 24 Oct 2021 21:06:31 -0700 (PDT)
+Received: from samantha.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id a12sm19583944pjq.16.2021.10.24.21.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Oct 2021 21:06:31 -0700 (PDT)
+From:   wefu@redhat.com
+To:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
+        guoren@kernel.org, christoph.muellner@vrull.eu,
+        philipp.tomsich@vrull.eu, hch@lst.de, liush@allwinnertech.com,
+        wefu@redhat.com, lazyparser@gmail.com, drew@beagleboard.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
+        guoren@linux.alibaba.com, arnd@arndb.de, wens@csie.org,
+        maxime@cerno.tech, dlustig@nvidia.com, gfavor@ventanamicro.com,
+        andrea.mondelli@huawei.com, behrensj@mit.edu, xinhaoqu@huawei.com,
+        huffman@cadence.com, mick@ics.forth.gr,
+        allen.baum@esperantotech.com, jscheid@ventanamicro.com,
+        rtrauben@gmail.com
+Subject: [RESEND PATCH V3 0/2] riscv: add RISC-V Svpbmt Standard Extension supports
+Date:   Mon, 25 Oct 2021 12:06:05 +0800
+Message-Id: <20211025040607.92786-1-wefu@redhat.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Kent <ikent@redhat.com>
+From: Fu Wei <wefu@redhat.com>
 
-When a filesystem is mounted with a name that starts with a #:
+This patch follows the  RISC-V standard Svpbmt extension in 
+privilege spec to solve the non-coherent SOC DMA synchronization
+issues.
 
- # mount '#name' /mnt/bad -t tmpfs
+The svpbmt PTE format:
+| 63 | 62-61 | 60-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
+  N     MT     RSW    D   A   G   U   X   W   R   V
+        ^
 
-this will cause the entry to look like this (leading space added so
-that git does not strip it out):
+Of the Reserved bits [63:54] in a leaf PTE, the bits [62:61] are used as
+the MT (aka MemType) field. This field specifies one of three memory types
+as shown in the following table：
+MemType     RISC-V Description
+----------  ------------------------------------------------
+00 - PMA    Normal Cacheable, No change to implied PMA memory type
+01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
+10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
+11 - Rsvd   Reserved for future standard use
 
- #name /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
+The standard protection_map[] needn't be modified because the "PMA"
+type keeps the highest bits zero.
+And the whole modification is limited in the arch/riscv/* and using
+a global variable(__riscv_svpbmt) as _PAGE_DMA_MASK/IO/NC for
+pgprot_noncached (&writecombine) in pgtable.h.
+We also add _PAGE_CHG_MASK to filter PFN than before.
 
-This breaks getmntent and any code that aims to parse fstab as well as
-/proc/mounts with the same logic since they need to strip leading spaces
-or skip over comment lines, due to which they report incorrect output or
-skip over the line respectively.
+Enable it in devicetree - (Add "mmu-supports-svpbmt" in cpu node)
+ - mmu-supports-svpbmt
 
-Solve this by translating the hash character into its octal encoding
-equivalent so that applications can decode the name correctly.
+Wei Fu (2):
+  dt-bindings: riscv: add mmu-supports-svpbmt for Svpbmt
+  riscv: add RISC-V Svpbmt extension supports
 
-Signed-off-by: Ian Kent <ikent@redhat.com>
----
- fs/proc_namespace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/riscv/cpus.yaml       |  5 +++
+ arch/riscv/include/asm/fixmap.h               |  2 +-
+ arch/riscv/include/asm/pgtable-64.h           |  8 ++--
+ arch/riscv/include/asm/pgtable-bits.h         | 41 ++++++++++++++++++-
+ arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++++----
+ arch/riscv/kernel/cpufeature.c                | 32 +++++++++++++++
+ arch/riscv/mm/init.c                          |  5 +++
+ 7 files changed, 117 insertions(+), 15 deletions(-)
 
-diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-index 392ef5162655..835eb71a0169 100644
---- a/fs/proc_namespace.c
-+++ b/fs/proc_namespace.c
-@@ -86,7 +86,7 @@ static void show_mnt_opts(struct seq_file *m, struct vfsmount *mnt)
- 
- static inline void mangle(struct seq_file *m, const char *s)
- {
--	seq_escape(m, s, " \t\n\\");
-+	seq_escape(m, s, " \t\n\\#");
- }
- 
- static void show_type(struct seq_file *m, struct super_block *sb)
-
+-- 
+2.25.4
 
