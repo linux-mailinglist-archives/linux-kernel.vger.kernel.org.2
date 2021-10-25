@@ -2,261 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF4443A436
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234C643A439
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236257AbhJYURm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S237963AbhJYUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235236AbhJYURd (ORCPT
+        with ESMTP id S237122AbhJYUSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:17:33 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27082C090825
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:46:55 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so16421293otl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:46:55 -0700 (PDT)
+        Mon, 25 Oct 2021 16:18:00 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99BBC09155F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:47:18 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id s3so14382672ild.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:47:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=fHhhI8Ak42Q18aY+dcy+21zqQH/15Y/iNTqR57Dkngc=;
-        b=FOWRYX3k7+DN1wrq2N8uK3JzIceGy4DiJYsYcNZb6WwPZR1ygfCB1bnB+12tP3TOcg
-         hlpUR5N9zp6njEPosHwgwOJUnZEuIqZMCr+nKzEcUtAzAe5JWAQp7AoBugej33Wtf6ZY
-         KOoqDOt09XZ3/SnYmRtbp3tBqdlkHLm7DI8mE=
+        d=sladewatkins.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/wcdlkpultptyteCFR+azF3+dEscqOT8YqwdivQDRJ4=;
+        b=WOg3hWet6YZkVq6GSv3z63fZDFBEptrPL+UpCIh63sh6kUI/HAddduoMIKnVE/p17T
+         O8ibikaFJ7OOukwbRPeE7BTtZ6OCtYolMDHsI99qEd1OYxowCOi1uZGKKQ/rOChiWtOr
+         6/5JC6mR4W4uvOtL6fTQcJC3lHa9iuWEXDVaeyfczNwMzxl8wNvBZQtMYa1GIiGX6+Dn
+         CUdPaAP1XrqKM0eYhGq4KDLZE1wa+1CXHXXmwZJeWAYjOHxJIREU2Zb9qL2YdBTqMCgZ
+         RBaucdxT2M9JLLHUREEhH7lx0/VYQn4Vq6xSGLH/7XV1vpsSIegANnTk7lAKUxcFgrj7
+         zgTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=fHhhI8Ak42Q18aY+dcy+21zqQH/15Y/iNTqR57Dkngc=;
-        b=i08XulODY167cJLXDEC7KDegYQaLDYVxYuDJOl9rDVlqNW4TDEMF48TxlrF4F7MAzy
-         G1eb2SqGJNizgUeAMZcaItPwPqPfC8FdV42y3RajHef0mRJTzuU7hlkJHdcSDM1sCc1T
-         QR488QJYUuerRtWQrTdPwG/7ao0umMPW4zm0Q8A7O9Nbq/GzkvbcSqKUOT9PNVGRtZbg
-         mUGR6Yrh0I1CMsx8ozgBSj3Lka6R/N+lbyZg1CRAEuOibc4fZzv29yFTaGpqk6xnL7gR
-         HbCmBBI+wk7ajno6+JsSv4hYR8Wo14I09ETlMvcejbm64qO9JFgeTXu3MZC9io5j0fRR
-         XT9A==
-X-Gm-Message-State: AOAM531RyGioWIe/eEXQTutSievbhBHgoy0EU6V1wK/SavvklzLo/0q3
-        p6pWmxPuVR9gsMzFrar2orEwn+B+7Tz0qg/Cy9zB9w==
-X-Google-Smtp-Source: ABdhPJy1T18HNchhwFipfCc9rCZgREY7DdueXcirUcNgUZQyLJ/R41flW96WnLfaF8Dt1w0/pRVZPk7k+Qp+T+okxRg=
-X-Received: by 2002:a9d:12f4:: with SMTP id g107mr15516593otg.77.1635191214463;
- Mon, 25 Oct 2021 12:46:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 25 Oct 2021 12:46:53 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/wcdlkpultptyteCFR+azF3+dEscqOT8YqwdivQDRJ4=;
+        b=6xfKAJwXrpK9ImsQHpF2fv2nU/E208bGJ4lgHfpMwWXr2IA2nn6BERQCtLUveP0+LR
+         FWbbTh39ntM6NJewg/hoC79EMO7v2tbzquf8JIBAlakvc+cVHp50P7t5BBwy7c2xPJOg
+         4n2kooQW+rDAZL3L+FNdAQjtQHlbeAqRKZWGn5VI4j3KV7DsLnuQOqpEBYylfmFQFEgS
+         SlxcWpPkK1jxYtLJWvk95vdyJp1S8c6R6ZX4PrklxWttDKHXYShY/0xwFw2o7Q23i7gd
+         qnILa5sDTuyKY1nysPROg6kZme0hjxC1wbivQM7dn8kZqyVynkfbQ34IvKc0pyg/KPEt
+         Eh/A==
+X-Gm-Message-State: AOAM5316eX4amsefwhXmp4mMfEghPB+GM0HA2W4MY1+80Z/2ObS4ODne
+        mdIVhW1wKFgiu2LHL641L7iI0lvw89Q3f3q9DKulZA==
+X-Google-Smtp-Source: ABdhPJwPAJVnmXZDstwZo2ShSBU0ebPXCkCVv1c/tqy6HxTfgfzgONu2j/E/xaZKALsi6mQOFMvpLETyCKIxD+pNjm0=
+X-Received: by 2002:a05:6e02:1112:: with SMTP id u18mr10457911ilk.206.1635191238217;
+ Mon, 25 Oct 2021 12:47:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <168101fa5937d841d7073e94db246df9@codeaurora.org>
-References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
- <1633060859-22969-4-git-send-email-skakit@codeaurora.org> <CAE-0n50HiFin8+ZmrbCoK=CCq4JM5JKGN=fTDrS9wGdTb8uzAQ@mail.gmail.com>
- <168101fa5937d841d7073e94db246df9@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 25 Oct 2021 12:46:53 -0700
-Message-ID: <CAE-0n53zhYcUJZQPkdGqeK4cb-vPqc-zHQboKQxMuO+fV4jVPQ@mail.gmail.com>
-Subject: Re: [PATCH V2 3/4] regulator: Add a regulator driver for the PM8008 PMIC
-To:     skakit@codeaurora.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        collinsd@codeaurora.org, subbaram@codeaurora.org,
-        kgunda@codeaurora.org
+References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
+ <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com>
+ <YXY15jCBCAgB88uT@d3> <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
+ <c00f22d2-6566-8911-b56b-142f6fe42b8c@metztli.com>
+In-Reply-To: <c00f22d2-6566-8911-b56b-142f6fe42b8c@metztli.com>
+From:   Slade Watkins <slade@sladewatkins.com>
+Date:   Mon, 25 Oct 2021 15:47:07 -0400
+Message-ID: <CA+pv=HOT71a5d=LJM7VLSTSKBYRVNdT-r1ZtZSdRgNK6aMF-4w@mail.gmail.com>
+Subject: Re: Unsubscription Incident
+To:     Metztli Information Technology <jose.r.r@metztli.com>
+Cc:     Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alan Coopersmith <alan.coopersmith@oracle.com>,
+        Shannon Nelson <snelson@pensando.io>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting skakit@codeaurora.org (2021-10-22 05:28:34)
-> On 2021-10-06 00:05, Stephen Boyd wrote:
-> > Quoting Satya Priya (2021-09-30 21:00:58)
-> >> diff --git a/drivers/regulator/qcom-pm8008-regulator.c
-> >> b/drivers/regulator/qcom-pm8008-regulator.c
-> >> new file mode 100644
-> >> index 0000000..5dacaa4
-> >> --- /dev/null
-> >> +++ b/drivers/regulator/qcom-pm8008-regulator.c
-> >> @@ -0,0 +1,320 @@
-> >> +// SPDX-License-Identifier: GPL-2.0-only
-> >> +/* Copyright (c) 2021, The Linux Foundation. All rights reserved. */
-> >> +
-> >> +#include <linux/delay.h>
-[...]
-> >> +
-> >> +static int pm8008_regulator_get_voltage(struct regulator_dev *rdev)
-> >> +{
-> >> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
-> >> +       u8 vset_raw[2];
-> >> +       int rc;
-> >> +
-> >> +       rc = pm8008_read(pm8008_reg->regmap,
-> >> +                       LDO_VSET_LB_REG(pm8008_reg->base),
-> >> +                       vset_raw, 2);
+Hi there,
+
+On Mon, Oct 25, 2021 at 2:08 PM Metztli Information Technology
+<jose.r.r@metztli.com> wrote:
+>
+>
+> On 10/25/21 10:04 AM, Slade Watkins wrote:
+> > On Mon, Oct 25, 2021 at 12:43 AM Benjamin Poirier
+> > <benjamin.poirier@gmail.com> wrote:
+> >> On 2021-10-22 18:54 +0300, Vladimir Oltean wrote:
+> >>> On Fri, 22 Oct 2021 at 18:53, Lijun Pan <lijunp213@gmail.com> wrote:
+> >>>> Hi,
+> >>>>
+> >>>>  From Oct 11, I did not receive any emails from both linux-kernel and
+> >>>> netdev mailing list. Did anyone encounter the same issue? I subscribed
+> >>>> again and I can receive incoming emails now. However, I figured out
+> >>>> that anyone can unsubscribe your email without authentication. Maybe
+> >>>> it is just a one-time issue that someone accidentally unsubscribed my
+> >>>> email. But I would recommend that our admin can add one more
+> >>>> authentication step before unsubscription to make the process more
+> >>>> secure.
+> >>>>
+> >>>> Thanks,
+> >>>> Lijun
+> >>> Yes, the exact same thing happened to me. I got unsubscribed from all
+> >>> vger mailing lists.
+> >> It happened to a bunch of people on gmail:
+> >> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
+> > I can at least confirm that this didn't happen to me on my hosted
+> > Gmail through Google Workspace. Could be wrong, but it seems isolated
+> > to normal @gmail.com accounts.
 > >
-> > Can this be an __le16 mV?
-> >
+> > Best,
+> >               -slade
 >
-> Below is the diff after changing as per your suggestion, Please correct
-> me if wrong.
+> Niltze [Hello], all-
 >
-> -       u8 vset_raw[2];
-> +       __le16 mV;
->          int rc;
+> Could it have something to do with the following?
 >
-> -       rc = pm8008_read(pm8008_reg->regmap,
-> -                       LDO_VSET_LB_REG(pm8008_reg->base),
-> -                       vset_raw, 2);
-> +       rc = regmap_bulk_read(pm8008_reg->regmap,
-> +                       LDO_VSET_LB_REG(pm8008_reg->base), &mV, 2);
->          if (rc < 0) {
->                  dev_err(pm8008_reg->dev, "failed to read regulator
-> voltage rc=%d\n", rc);
->                  return rc;
->          }
+> ---------- Forwarded message ---------
 >
-> -       return (vset_raw[1] << 8 | vset_raw[0]) * 1000;
-> +       return le16_to_cpu(mV) * 1000;
+> From: Alan Coopersmith <alan.coopersmith@oracle.com>
+> Date: Thu, Oct 21, 2021 at 12:06 PM
+> Subject: [oss-security] Mailman 2.1.35 security release
+> To: <oss-security@lists.openwall.com>
+>
+>
+> Quoting from Mark Sapiro's emails at:
+> https://mail.python.org/archives/list/mailman-announce@python.org/thread/IKCO6JU755AP5G5TKMBJL6IEZQTTNPDQ/
+>
+>  > A couple of vulnerabilities have recently been reported. Thanks to Andre
+>  > Protas, Richard Cloke and Andy Nuttall of Apple for reporting these and
+>  > helping with the development of a fix.
+>  >
+>  > CVE-2021-42096 could allow a list member to discover the list admin
+>  > password.
+>  >
+>  > CVE-2021-42097 could allow a list member to create a successful CSRF
+>  > attack against another list member enabling takeover of the members
+> account.
+>  >
+>  > These attacks can't be carried out by non-members so may not be of
+>  > concern for sites with only trusted list members.
 
-Looks good. Does mV need to be casted when passed to regmap_bulk_read()?
-
->
-> Below is the diff:
->
-> -       int rc = 0, mv;
-> -       u8 vset_raw[2];
-> +       int rc, mv;
-> +       u16 vset_raw;
->          [...]
-> -       vset_raw[0] = mv & 0xff;
-> -       vset_raw[1] = (mv & 0xff00) >> 8;
-> -       rc = pm8008_write(pm8008_reg->regmap,
-> LDO_VSET_LB_REG(pm8008_reg->base),
-> -                       vset_raw, 2);
-> +       vset_raw = cpu_to_le16(mv);
-> +
-> +       rc = regmap_bulk_write(pm8008_reg->regmap,
-> +                       LDO_VSET_LB_REG(pm8008_reg->base), &vset_raw,
-> +                       sizeof(vset_raw));
->
-
-Ok, thanks
-
-> >> +               dev_err(dev, "%s: failed to get regulator data\n",
-> >> name);
-> >> +               return -ENODATA;
-> >> +       }
-> >> +
-> >> +       init_data->constraints.input_uV =
-> >> init_data->constraints.max_uV;
-> >> +       reg_config.dev = dev;
-> >> +       reg_config.init_data = init_data;
-> >> +       reg_config.driver_data = pm8008_reg;
-> >> +       reg_config.of_node = reg_node;
-> >> +
-> >> +       pm8008_reg->rdesc.type = REGULATOR_VOLTAGE;
-> >> +       pm8008_reg->rdesc.ops = &pm8008_regulator_ops;
-> >> +       pm8008_reg->rdesc.name = init_data->constraints.name;
-> >> +       pm8008_reg->rdesc.supply_name = reg_data[i].supply_name;
-> >> +       pm8008_reg->rdesc.uV_step = VSET_STEP_UV;
-> >> +       pm8008_reg->rdesc.min_uV = reg_data[i].min_uv;
-> >> +       pm8008_reg->rdesc.n_voltages
-> >> +               = ((reg_data[i].max_uv - reg_data[i].min_uv)
-> >> +                       / pm8008_reg->rdesc.uV_step) + 1;
-> >> +
-> >> +       pm8008_reg->rdesc.enable_reg = LDO_ENABLE_REG(base);
-> >> +       pm8008_reg->rdesc.enable_mask = ENABLE_BIT;
-> >> +       pm8008_reg->rdesc.min_dropout_uV = reg_data[i].min_dropout_uv;
-> >> +       of_property_read_u32(reg_node, "qcom,min-dropout-voltage",
-> >> +                            &pm8008_reg->rdesc.min_dropout_uV);
-> >
-> > Why do we allow DT to override this? Isn't it a property of the
-> > hardware
-> > that doesn't change? So the driver can hardcode the knowledge about the
-> > dropout.
-> >
->
-> The headroom values change with targets. We are adding some default
-> headroom values in the driver and later overwriting them with the actual
-> values specified in the DT.
-
-What do you mean by "targets"? Is that the SoC the PMIC is paired with?
-I'd prefer it be a standard regulator property instead of qcom specific
-if it actually needs to be different based on different devices.
+Maybe? Are the kernel lists hosted through mailman or something based
+on it that would be affected by these CVEs? It has been so long since
+I last looked into it that I genuinely do not remember.
 
 >
-> >> +
-> >> +       pm8008_reg->rdev = devm_regulator_register(dev,
-> >> &pm8008_reg->rdesc,
-> >
-> > Is this assignment ever used? Seems like it would be better to merely
-> >
-> >       return PTR_ERR_OR_ZERO(devm_regulator_register(dev, ...));
-> >
 >
-> Okay.
+>  > I am pleased to announce the release of Mailman 2.1.35.
+>  >
+>  > This is a security and minor bug fix release. See the attached
+>  > README.txt for details. For those who just want a patch for the security
+>  > issues, see
+>  > https://bazaar.launchpad.net/~mailman-coders/mailman/2.1/revision/1873.
+>  > The patch is also attached to the bug reports at
+>  > https://bugs.launchpad.net/mailman/+bug/1947639 and
+>  > https://bugs.launchpad.net/mailman/+bug/1947640. The patch is the same
+>  > on both and fixes both issues.
+>  >
+>  > As noted Mailman 2.1.30 was the last feature release of the Mailman 2.1
+>  > branch from the GNU Mailman project. There has been some discussion as
+>  > to what this means. It means there will be no more releases from the GNU
+>  > Mailman project containing any new features. There may be future patch
+>  > releases to address the following:
+>  >
+>  > i18n updates.
+>  > security issues.
+>  > bugs affecting operation for which no satisfactory workaround exists.
+>  >
+>  > Mailman 2.1.35 is the fifth such patch release.
+>  >
+>  > Mailman is free software for managing email mailing lists and
+>  > e-newsletters. Mailman is used for all the python.org and
+>  > SourceForge.net mailing lists, as well as at hundreds of other sites.
+>  >
+>  > For more information, please see our web site at one of:
+>  >
+>  > http://www.list.org
+>  > https://www.gnu.org/software/mailman
+>  > http://mailman.sourceforge.net/
+>  >
+>  > Mailman 2.1.35 can be downloaded from
+>  >
+>  > https://launchpad.net/mailman/2.1/
+>  > https://ftp.gnu.org/gnu/mailman/
+>  > https://sourceforge.net/projects/mailman/
 >
-> >> +                                               &reg_config);
-> >> +       if (IS_ERR(pm8008_reg->rdev)) {
-> >> +               rc = PTR_ERR(pm8008_reg->rdev);
-> >> +               dev_err(dev, "%s: failed to register regulator
-> >> rc=%d\n",
-> >> +                               pm8008_reg->rdesc.name, rc);
-> >> +               return rc;
-> >> +       }
-> >> +
-> >> +       dev_dbg(dev, "%s regulator registered\n", name);
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +static int pm8008_parse_regulator(struct regmap *regmap, struct
-> >> device *dev)
-> >> +{
-> >> +       int rc = 0;
-> >
-> > Drop initialization.
-> >
+>  > --
+>  >        -Alan Coopersmith- alan.coopersmith@oracle.com
+>  >         Oracle Solaris Engineering - https://blogs.oracle.com/alanc
 >
-> Okay.
 >
-> >> +       const char *name;
-> >> +       struct device_node *child;
-> >> +       struct pm8008_regulator *pm8008_reg;
-> >> +
-> >> +       /* parse each subnode and register regulator for regulator
-> >> child */
-> >> +       for_each_available_child_of_node(dev->of_node, child) {
-> >> +               pm8008_reg = devm_kzalloc(dev, sizeof(*pm8008_reg),
-> >> GFP_KERNEL);
-> >> +
-> >> +               pm8008_reg->regmap = regmap;
-> >> +               pm8008_reg->of_node = child;
-> >> +               pm8008_reg->dev = dev;
-> >> +
-> >> +               rc = of_property_read_string(child, "regulator-name",
-> >> &name);
-> >> +               if (rc)
-> >> +                       continue;
-> >> +
-> >> +               rc = pm8008_register_ldo(pm8008_reg, name);
-> >
-> > Can we use the of_parse_cb similar to qcom_spmi-regulator.c?
-> >
+> Best Professional Regards.
 >
-> Are you suggesting to remove the pm8008_register_ldo API and add its
-> contents in probe itself and then use of_parse_cb callback like in
-> qcom_spmi-regulator.c?
+> --
+> Jose R R
+> http://metztli.it
+> ---------------------------------------------------------------------------------------------
+> Download Metztli Reiser4: Debian Bullseye w/ Linux 5.13.14 AMD64
+> ---------------------------------------------------------------------------------------------
+> feats ZSTD compression https://sf.net/projects/metztli-reiser4/
+> ---------------------------------------------------------------------------------------------
+> or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
+> -------------------------------------------------------------------------------------------
+> Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
 
-Yes
-
->
-> Do we have any advantage using that here? Also I am not exactly sure
-> what all contents to put in that. Seems like we can put the step rate
-> and min-dropout-voltage configurations in there.
-
-Right. The regulator code is setup to do "DT parsing stuff" for each
-regulator node already, so you don't need to duplicate that logic in
-this driver. That's the main goal, consolidate regulator matching and
-iteration into the core. Maybe Mark has more info.
+Thanks,
+             -slade
