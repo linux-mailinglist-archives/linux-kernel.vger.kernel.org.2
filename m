@@ -2,203 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB95439FF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D73439FCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhJYT0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
+        id S234823AbhJYTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232681AbhJYTYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:24:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00EF0610EA;
-        Mon, 25 Oct 2021 19:21:37 +0000 (UTC)
+        id S234577AbhJYTXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:23:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6481601FF;
+        Mon, 25 Oct 2021 19:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189697;
-        bh=FavWrc+/gSGmd1ilQYxBaRBYCGOMoQijymLt7DAipsw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NOYXeG/qp3Uqm2hQ4psbuztHWyU97Vm8xcbmEt5sZqrREkDHtae7rHvPSCIQFchpR
-         RU8SggXXuYJPvN4NPLgR/bCk6HpOfhzWaeXf05Oq/bztW3ffXzSKSRO2Dv1OqRXJHy
-         SsBU7ZpdG8Dk32JR9iV7kZkktamiQvRjjCWYESpM=
+        s=korg; t=1635189628;
+        bh=uSDolIVcEtSHZGOgEFdG/ReG0f0rmtd01GIP2GotD1A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bE5gZ03bRcpaYlvrNG/m/52pqYLswii8cZ38knBDNuxnd9qDJPf4uRkoAG4sMs+Hm
+         WB9Sp2jGTFbSKHnASxDIkV/Sg4BqLmfp+WnAuOHrZad000KftnkCLsnOGXbsxHb5eA
+         SGGo053hCYpQ1fPJRUc7DQihT8nWfqEJ8b/Lvfj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/30] 4.14.253-rc1 review
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.9 33/50] can: peak_pci: peak_pci_remove(): fix UAF
 Date:   Mon, 25 Oct 2021 21:14:20 +0200
-Message-Id: <20211025190922.089277904@linuxfoundation.org>
+Message-Id: <20211025190938.993672777@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.253-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.253-rc1
-X-KernelTest-Deadline: 2021-10-27T19:09+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.253 release.
-There are 30 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-Anything received after that time might be too late.
+commit 949fe9b35570361bc6ee2652f89a0561b26eec98 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.253-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+When remove the module peek_pci, referencing 'chan' again after
+releasing 'dev' will cause UAF.
 
-thanks,
+Fix this by releasing 'dev' later.
 
-greg k-h
+The following log reveals it:
 
--------------
-Pseudo-Shortlog of commits:
+[   35.961814 ] BUG: KASAN: use-after-free in peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.963414 ] Read of size 8 at addr ffff888136998ee8 by task modprobe/5537
+[   35.965513 ] Call Trace:
+[   35.965718 ]  dump_stack_lvl+0xa8/0xd1
+[   35.966028 ]  print_address_description+0x87/0x3b0
+[   35.966420 ]  kasan_report+0x172/0x1c0
+[   35.966725 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967137 ]  ? trace_irq_enable_rcuidle+0x10/0x170
+[   35.967529 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967945 ]  __asan_report_load8_noabort+0x14/0x20
+[   35.968346 ]  peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.968752 ]  pci_device_remove+0xa9/0x250
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.253-rc1
+Fixes: e6d9c80b7ca1 ("can: peak_pci: add support of some new PEAK-System PCI cards")
+Link: https://lore.kernel.org/all/1634192913-15639-1-git-send-email-zheyuma97@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/can/sja1000/peak_pci.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Nick Desaulniers <ndesaulniers@google.com>
-    ARM: 9122/1: select HAVE_FUTEX_CMPXCHG
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Have all levels of checks prevent recursion
-
-Yanfei Xu <yanfei.xu@windriver.com>
-    net: mdiobus: Fix memory leak in __mdiobus_register
-
-Oliver Neukum <oneukum@suse.com>
-    usbnet: sanity check for maxpacket
-
-Dexuan Cui <decui@microsoft.com>
-    scsi: core: Fix shost->cmd_per_lun calculation in scsi_add_host_with_dma()
-
-Kai Vehmanen <kai.vehmanen@linux.intel.com>
-    ALSA: hda: avoid write to STATESTS if controller is in reset
-
-Prashant Malani <pmalani@chromium.org>
-    platform/x86: intel_scu_ipc: Update timeout value in comment
-
-Zheyu Ma <zheyuma97@gmail.com>
-    isdn: mISDN: Fix sleeping function called from invalid context
-
-Herve Codina <herve.codina@bootlin.com>
-    ARM: dts: spear3xx: Fix gmac node
-
-Herve Codina <herve.codina@bootlin.com>
-    net: stmmac: add support for dwmac 3.40a
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: deal with errors when checking if a dir entry exists during log replay
-
-Vegard Nossum <vegard.nossum@gmail.com>
-    netfilter: Kconfig: use 'default y' instead of 'm' for bool config option
-
-Xiaolong Huang <butterflyhuangxx@gmail.com>
-    isdn: cpai: check ctr->cnr to avoid array index out of bound
-
-Lin Ma <linma@zju.edu.cn>
-    nfc: nci: fix the UAF of rf_conn_info object
-
-Takashi Iwai <tiwai@suse.de>
-    ASoC: DAPM: Fix missing kctl change notifications
-
-Brendan Grieve <brendan@grieve.com.au>
-    ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
-
-Matthew Wilcox (Oracle) <willy@infradead.org>
-    vfs: check fd has read access in kernel_read_file_from_fd()
-
-Lukas Bulwahn <lukas.bulwahn@gmail.com>
-    elfcore: correct reference to CONFIG_UML
-
-Valentin Vidic <vvidic@valentin-vidic.from.hr>
-    ocfs2: mount fails with buffer overflow in strlen
-
-Jan Kara <jack@suse.cz>
-    ocfs2: fix data corruption after conversion from inline format
-
-Zheyu Ma <zheyuma97@gmail.com>
-    can: peak_pci: peak_pci_remove(): fix UAF
-
-Stephane Grosjean <s.grosjean@peak-system.com>
-    can: peak_usb: pcan_usb_fd_decode_status(): fix back to ERROR_ACTIVE state notification
-
-Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-    can: rcar_can: fix suspend/resume
-
-Randy Dunlap <rdunlap@infradead.org>
-    NIOS2: irqflags: rename a redefined register name
-
-Antoine Tenart <atenart@kernel.org>
-    netfilter: ipvs: make global sysctl readonly in non-init netns
-
-Benjamin Coddington <bcodding@redhat.com>
-    NFSD: Keep existing listeners on portlist error
-
-Guenter Roeck <linux@roeck-us.net>
-    xtensa: xtfpga: Try software restart before simulating CPU reset
-
-Max Filippov <jcmvbkbc@gmail.com>
-    xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
-
-Eugen Hristev <eugen.hristev@microchip.com>
-    ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default
-
-Josef Bacik <jbacik@fb.com>
-    btrfs: always wait on ordered extents at fsync time
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- arch/arm/Kconfig                                   |  1 +
- arch/arm/boot/dts/at91-sama5d27_som1_ek.dts        |  1 -
- arch/arm/boot/dts/spear3xx.dtsi                    |  2 +-
- arch/nios2/include/asm/irqflags.h                  |  4 +-
- arch/nios2/include/asm/registers.h                 |  2 +-
- arch/xtensa/platforms/xtfpga/setup.c               | 12 ++--
- drivers/isdn/capi/kcapi.c                          |  5 ++
- drivers/isdn/hardware/mISDN/netjet.c               |  2 +-
- drivers/net/can/rcar/rcar_can.c                    | 20 ++++---
- drivers/net/can/sja1000/peak_pci.c                 |  9 ++-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  5 +-
- .../net/ethernet/stmicro/stmmac/dwmac-generic.c    |  1 +
- .../net/ethernet/stmicro/stmmac/stmmac_platform.c  |  8 +++
- drivers/net/phy/mdio_bus.c                         |  1 +
- drivers/net/usb/usbnet.c                           |  4 ++
- drivers/platform/x86/intel_scu_ipc.c               |  2 +-
- drivers/scsi/hosts.c                               |  3 +-
- fs/btrfs/file.c                                    | 56 ++-----------------
- fs/btrfs/tree-log.c                                | 47 ++++++++++------
- fs/exec.c                                          |  2 +-
- fs/nfsd/nfsctl.c                                   |  5 +-
- fs/ocfs2/alloc.c                                   | 46 ++++------------
- fs/ocfs2/super.c                                   | 14 +++--
- include/linux/elfcore.h                            |  2 +-
- kernel/trace/ftrace.c                              |  4 +-
- kernel/trace/trace.h                               | 64 +++++++---------------
- kernel/trace/trace_functions.c                     |  2 +-
- net/netfilter/Kconfig                              |  2 +-
- net/netfilter/ipvs/ip_vs_ctl.c                     |  5 ++
- net/nfc/nci/rsp.c                                  |  2 +
- sound/hda/hdac_controller.c                        |  5 +-
- sound/soc/soc-dapm.c                               | 13 +++--
- sound/usb/quirks-table.h                           | 32 +++++++++++
- 34 files changed, 191 insertions(+), 196 deletions(-)
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -736,16 +736,15 @@ static void peak_pci_remove(struct pci_d
+ 		struct net_device *prev_dev = chan->prev_dev;
+ 
+ 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
++		/* do that only for first channel */
++		if (!prev_dev && chan->pciec_card)
++			peak_pciec_remove(chan->pciec_card);
+ 		unregister_sja1000dev(dev);
+ 		free_sja1000dev(dev);
+ 		dev = prev_dev;
+ 
+-		if (!dev) {
+-			/* do that only for first channel */
+-			if (chan->pciec_card)
+-				peak_pciec_remove(chan->pciec_card);
++		if (!dev)
+ 			break;
+-		}
+ 		priv = netdev_priv(dev);
+ 		chan = priv->priv;
+ 	}
 
 
