@@ -2,194 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C14E439097
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4406439062
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhJYHwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:52:16 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.97]:47603 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229723AbhJYHwO (ORCPT
+        id S231598AbhJYHc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhJYHc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:52:14 -0400
-X-Greylist: delayed 1406 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Oct 2021 03:52:14 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 9ADAC39432
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 02:26:25 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id euNFmSkJ36dDyeuNFm3n15; Mon, 25 Oct 2021 02:26:25 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60726 helo=[10.0.0.35])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1meuNE-003kSD-Cc; Mon, 25 Oct 2021 02:26:24 -0500
-Message-ID: <caf1defa-94b7-22fe-c0cc-f5a5a2e8ee79@kernel.org>
-Date:   Mon, 25 Oct 2021 09:26:18 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH V4 01/19] trace/osnoise: Do not follow tracing_cpumask
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Mon, 25 Oct 2021 03:32:27 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223C3C061745;
+        Mon, 25 Oct 2021 00:30:06 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r2so10030061pgl.10;
+        Mon, 25 Oct 2021 00:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fW8mdh/khiooAdEd3/lCLkARLYrF/8I26bq7FLCm5w4=;
+        b=HLUlj0diPV5+3KrGYZOQi1o1P4X28jWhJr0CkO3YDOeL2OILCPcpalIAhwWqx7uiB5
+         jdvCe1Zzi0QDdb+NNrZrbTFhDHLlE8CEBGufTOnBU8QMS1N3yR2rj++67ThFtznMuvkl
+         l6LFVVCeuwFyssunRj7AkXbiBZ5PNOhEmJKL0pGcAUiTNlFm9EmKY2K5ArydLT8UO8WL
+         1nxrMD/rMsomTmspyuk9l6IG3qtLLanhkgLjo7ekReblnBTNhtvAlpjn8B+c7MEJKrul
+         6BgpJow+FEE8aCUo6CdyKVusNs8cyVonXYhcEPMX/rhmT0Q9Nqhg+94oecv2K93UjkLf
+         iowA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fW8mdh/khiooAdEd3/lCLkARLYrF/8I26bq7FLCm5w4=;
+        b=y/BKaRTijKcEmxqmVxGXvypcxkZRA72VDu/TOrLGVoMxKPNajhbvM2+RTkgABtSPCq
+         3S0tfRzxQVblIhsWuBxCY/BTlme0716/0jMaPo4A75+Qi6+hguRRJHZGJczaSAsxXrIg
+         KKFGz9ZX3tjov9cwwaeLVZ+FTj3U/goXlvoCnY+Qf+M/Yb6rx/ejFsmVyOBOGh62uaqM
+         YILZmuQQ0JxgGuA+A17CKagShOaP+ag7NKvdNLuvylTtrHEnH7oJH+iPFxlpusdPiYIx
+         y1aQ+8wpoILwTfnMJr0+9D1TJxRRQsi2UPOInJ0vBXRthchatateDCChyjLbshcFmqcQ
+         8p0w==
+X-Gm-Message-State: AOAM533XephKOq5RgX7iDLKG1RcYEUbqdlJdryfLXWPmkt4UvLoaCl6v
+        4acY+H+WUBaio/eKswOY4qfzVbEv/VY=
+X-Google-Smtp-Source: ABdhPJz2C6UvU3w7d/Tjyl5RHBXO+p9b6BQ3nAcvqHrp24G13uUuZUxBwusmdJS0YX8wvZuJ1nn8Ow==
+X-Received: by 2002:a63:330f:: with SMTP id z15mr9290692pgz.42.1635147005610;
+        Mon, 25 Oct 2021 00:30:05 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id d2sm5142348pfv.30.2021.10.25.00.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 00:30:04 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 16:29:55 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
         linux-kernel@vger.kernel.org
-References: <cover.1634820694.git.bristot@kernel.org>
- <e5382c01f1330bf4c3d094fbb87059ef82761aa0.1634820694.git.bristot@kernel.org>
- <20211022222301.32c2d869@rorschach.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20211022222301.32c2d869@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.18.63.114
-X-Source-L: No
-X-Exim-ID: 1meuNE-003kSD-Cc
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60726
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Subject: Re: [PATCH 2/8] counter/ti-eqep: add support for direction
+Message-ID: <YXZc8wdOuf0/6rwQ@shinobu>
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-3-david@lechnology.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Z6tfghDNuu3LFJB4"
+Content-Disposition: inline
+In-Reply-To: <20211017013343.3385923-3-david@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/21 04:23, Steven Rostedt wrote:
-> On Thu, 21 Oct 2021 14:56:39 +0200
-> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> 
->> In preparation to support multiple instances, decople the
-> 
->     "decouple"
-> 
->> osnoise/timelat workload from instance specific tracing_cpumask.
->>
->> Different instances can have conflicing cpumasks, making osnoise
-> 
->    "conflicting"
-> 
-> May I suggest a spell check for your commit logs? ;-)
 
+--Z6tfghDNuu3LFJB4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Oct 16, 2021 at 08:33:37PM -0500, David Lechner wrote:
+> This adds support for direction to the TI eQEP counter driver. It adds
+> both a direction attribute to sysfs and a direction change event to
+> the chrdev. The direction change event type is new public API.
+>=20
+> Signed-off-by: David Lechner <david@lechnology.com>
 
-Ooops, I will fix them. I use Grammarly on most of my texts, but sometimes I
-forget to re-check.
+Just one minor comment below regarding the IRQ handler; the rest of the
+patch is fine.
 
->> workload management needlessly complex. Osnoise already have its
->> global cpu mask.
->>
->> I also thought about using the first instance mask, but the
->> "first" instance could be removed before the others.
->>
->> This also fixes the problem that changing the tracing_mask was not
->> re-starting the trace.
->>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Tom Zanussi <zanussi@kernel.org>
->> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: Clark Williams <williams@redhat.com>
->> Cc: John Kacur <jkacur@redhat.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
->> Cc: linux-rt-users@vger.kernel.org
->> Cc: linux-trace-devel@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
->> ---
->>  kernel/trace/trace_osnoise.c | 25 +++++++------------------
->>  1 file changed, 7 insertions(+), 18 deletions(-)
->>
->> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
->> index ce053619f289..7b1f8187764c 100644
->> --- a/kernel/trace/trace_osnoise.c
->> +++ b/kernel/trace/trace_osnoise.c
->> @@ -1553,13 +1553,10 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
->>  
->>  	cpus_read_lock();
->>  	/*
->> -	 * Run only on CPUs in which trace and osnoise are allowed to run.
->> +	 * Run only on online CPUs in which trace and osnoise are allowed to
-> 
->   which trace and osnise? I thought we were removing "trace"?
+> ---
+>  drivers/counter/ti-eqep.c    | 33 +++++++++++++++++++++++++++++++++
+>  include/uapi/linux/counter.h |  2 ++
+>  2 files changed, 35 insertions(+)
+>=20
+> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> index b7c79435e127..9881e5115da6 100644
+> --- a/drivers/counter/ti-eqep.c
+> +++ b/drivers/counter/ti-eqep.c
+> @@ -106,6 +106,15 @@
+>  #define QCLR_PCE		BIT(1)
+>  #define QCLR_INT		BIT(0)
+> =20
+> +#define QEPSTS_UPEVNT		BIT(7)
+> +#define QEPSTS_FDF		BIT(6)
+> +#define QEPSTS_QDF		BIT(5)
+> +#define QEPSTS_QDLF		BIT(4)
+> +#define QEPSTS_COEF		BIT(3)
+> +#define QEPSTS_CDEF		BIT(2)
+> +#define QEPSTS_FIMF		BIT(1)
+> +#define QEPSTS_PCEF		BIT(0)
+> +
+>  /* EQEP Inputs */
+>  enum {
+>  	TI_EQEP_SIGNAL_QEPA,	/* QEPA/XCLK */
+> @@ -286,6 +295,9 @@ static int ti_eqep_events_configure(struct counter_de=
+vice *counter)
+>  		case COUNTER_EVENT_UNDERFLOW:
+>  			qeint |=3D QEINT_PCU;
+>  			break;
+> +		case COUNTER_EVENT_DIRECTION_CHANGE:
+> +			qeint |=3D QEINT_QDC;
+> +			break;
+>  		}
+>  	}
+> =20
+> @@ -298,6 +310,7 @@ static int ti_eqep_watch_validate(struct counter_devi=
+ce *counter,
+>  	switch (watch->event) {
+>  	case COUNTER_EVENT_OVERFLOW:
+>  	case COUNTER_EVENT_UNDERFLOW:
+> +	case COUNTER_EVENT_DIRECTION_CHANGE:
+>  		return 0;
+>  	default:
+>  		return -EINVAL;
+> @@ -371,11 +384,27 @@ static int ti_eqep_position_enable_write(struct cou=
+nter_device *counter,
+>  	return 0;
+>  }
+> =20
+> +static int ti_eqep_direction_read(struct counter_device *counter,
+> +				  struct counter_count *count,
+> +				  enum counter_count_direction *direction)
+> +{
+> +	struct ti_eqep_cnt *priv =3D counter->priv;
+> +	u32 qepsts;
+> +
+> +	regmap_read(priv->regmap16, QEPSTS, &qepsts);
+> +
+> +	*direction =3D (qepsts & QEPSTS_QDF) ? COUNTER_COUNT_DIRECTION_FORWARD
+> +					   : COUNTER_COUNT_DIRECTION_BACKWARD;
+> +
+> +	return 0;
+> +}
+> +
+>  static struct counter_comp ti_eqep_position_ext[] =3D {
+>  	COUNTER_COMP_CEILING(ti_eqep_position_ceiling_read,
+>  			     ti_eqep_position_ceiling_write),
+>  	COUNTER_COMP_ENABLE(ti_eqep_position_enable_read,
+>  			    ti_eqep_position_enable_write),
+> +	COUNTER_COMP_DIRECTION(ti_eqep_direction_read),
+>  };
+> =20
+>  static struct counter_signal ti_eqep_signals[] =3D {
+> @@ -442,6 +471,10 @@ static irqreturn_t ti_eqep_irq_handler(int irq, void=
+ *dev_id)
+>  	if (qflg & QFLG_PCU)
+>  		counter_push_event(counter, COUNTER_EVENT_UNDERFLOW, 0);
+> =20
+> +	if (qflg & QFLG_QDC)
+> +		counter_push_event(counter, COUNTER_EVENT_DIRECTION_CHANGE, 0);
+> +
+> +
+>  	regmap_set_bits(priv->regmap16, QCLR, ~0);
 
+As mentioned in the previous patch comments, you should try if possible
+to clear only the interrupt flags for the events that you're actually
+handling here.
 
-You are correct, I will remove the trace from the comment.
+William Breathitt Gray
 
-Thanks!
--- Daniel
+> =20
+>  	return IRQ_HANDLED;
+> diff --git a/include/uapi/linux/counter.h b/include/uapi/linux/counter.h
+> index d0aa95aeff7b..36dd3b474d09 100644
+> --- a/include/uapi/linux/counter.h
+> +++ b/include/uapi/linux/counter.h
+> @@ -61,6 +61,8 @@ enum counter_event_type {
+>  	COUNTER_EVENT_THRESHOLD,
+>  	/* Index signal detected */
+>  	COUNTER_EVENT_INDEX,
+> +	/* Direction change detected */
+> +	COUNTER_EVENT_DIRECTION_CHANGE,
+>  };
+> =20
+>  /**
+> --=20
+> 2.25.1
+>=20
 
-> -- Steve
-> 
->> +	 * run.
->>  	 */
->> -	cpumask_and(current_mask, tr->tracing_cpumask, &osnoise_cpumask);
->> -	/*
->> -	 * And the CPU is online.
->> -	 */
->> -	cpumask_and(current_mask, cpu_online_mask, current_mask);
->> +	cpumask_and(current_mask, cpu_online_mask, &osnoise_cpumask);
->>  
->>  	for_each_possible_cpu(cpu)
->>  		per_cpu(per_cpu_osnoise_var, cpu).kthread = NULL;
->> @@ -1580,10 +1577,8 @@ static int start_per_cpu_kthreads(struct trace_array *tr)
->>  #ifdef CONFIG_HOTPLUG_CPU
->>  static void osnoise_hotplug_workfn(struct work_struct *dummy)
->>  {
->> -	struct trace_array *tr = osnoise_trace;
->>  	unsigned int cpu = smp_processor_id();
->>  
->> -
->>  	mutex_lock(&trace_types_lock);
->>  
->>  	if (!osnoise_busy)
->> @@ -1595,9 +1590,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
->>  	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
->>  		goto out_unlock;
->>  
->> -	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
->> -		goto out_unlock;
->> -
->>  	start_kthread(cpu);
->>  
->>  out_unlock:
->> @@ -1700,13 +1692,10 @@ static void osnoise_tracer_stop(struct trace_array *tr);
->>   * interface to the osnoise trace. By default, it lists all  CPUs,
->>   * in this way, allowing osnoise threads to run on any online CPU
->>   * of the system. It serves to restrict the execution of osnoise to the
->> - * set of CPUs writing via this interface. Note that osnoise also
->> - * respects the "tracing_cpumask." Hence, osnoise threads will run only
->> - * on the set of CPUs allowed here AND on "tracing_cpumask." Why not
->> - * have just "tracing_cpumask?" Because the user might be interested
->> - * in tracing what is running on other CPUs. For instance, one might
->> - * run osnoise in one HT CPU while observing what is running on the
->> - * sibling HT CPU.
->> + * set of CPUs writing via this interface. Why not use "tracing_cpumask"?
->> + * Because the user might be interested in tracing what is running on
->> + * other CPUs. For instance, one might run osnoise in one HT CPU
->> + * while observing what is running on the sibling HT CPU.
->>   */
->>  static ssize_t
->>  osnoise_cpus_write(struct file *filp, const char __user *ubuf, size_t count,
-> 
+--Z6tfghDNuu3LFJB4
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF2XPMACgkQhvpINdm7
+VJKxeA/8DewMQEyK3pp4VpxYxuNG6LPLY+nhb76EqIUWyXaIw+4T8O49alUWs6KP
+xLNO/uuz/aBdNp6aBEvrqhi6SMdzc60kn30bJil/HV3/elkdBafLR+m+BS4HHuyL
+SAeBPmXgf0bYSofZ5KkV6+bnq02le15ang5HqO982S4geNc2tU72IJu+5NWVDQW+
+ztMkGDmgXrPH6kfCduwqgFj3qlnIxuNRufr6lgQ+NaWccuefLIjZsYXeNcUeZ9eB
+qhFy75eR52M1bAgZ11DiA10fPn01pXkDiPgsen8Q8Xck77gvlGODyukhYAzjnMvx
+zFLa4klYbxMQ02CRfOty5UN6R+acuWdLSbBgjhVcG6b7UwY3Vf/DKABbDos6NGLC
+3hzDbip5knfdMhPkKqk2V7LsyllKzVg1U6WdsyXzxk4N97GTPfBtG83nfKmiow3N
+Yu2QRv7fTHDrAEXihs+vSgEkCyxmzQOtx07vKtly1M8ChEVhfJGcgyueipqFChrb
+p6yOBYZky6lyUoaFsjcH+JTVQZrlEgeQQDvaVTO5DuJgfLNSWtM/I/n5e+8rsNYL
+LvXUR0+CyxWzyORRpoJJHmS3g6WzX1UwHzjMIaugd0BhNisLIYT0GrfBJrS3mxV0
+LNo4dPIDNEpPT4XDJ7t5JWxO5Tqms+EANyxeKj/M/wWq3al1DNs=
+=y+ay
+-----END PGP SIGNATURE-----
+
+--Z6tfghDNuu3LFJB4--
