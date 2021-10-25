@@ -2,147 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAB5439ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6EB439AE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbhJYP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:56:45 -0400
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:40454 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhJYP4o (ORCPT
+        id S233394AbhJYP4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:56:50 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:56503 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233222AbhJYP4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:56:44 -0400
-Received: by mail-ua1-f51.google.com with SMTP id e2so23074424uax.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:54:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=AGNNgOmVg+yVUKzMcQpO1dKw5Tftq7yu9PfveBqIu/M=;
-        b=QBdNoiO1rMs9hXad29WSs1HRAEDTY0URDOZCzmKW39Xbv8MTTXON/gPBbeGuqw8Vcu
-         FllL1iKGcQLN1Y3yRrvgRpG18dh5Usdp+qhnTofQgfxWB0ZivpWJyKHWkl/opSOQ4AhJ
-         kpT/RhTAcxD8FLShzs48kdfYxA9+lCfwvFpLM6sgLiFHM01uETfFX3im6nRwnAoNjASv
-         4IzWy3fIjS3B01POyQ5QWTOSvYiTXhmHSWfvObykVObIaaXlvS96YYg90v+Rlx/3J2vb
-         x9Dhc08YiZ7Ao3kT3I4rjXPEIH0Ccz7nrm27/KH8Y2xRO8QaZGGKSbYkauvotWn8IiSW
-         mKww==
-X-Gm-Message-State: AOAM532ku6Vn2ksz+dEocAKby+G3dn8g0l/TOh+xolY0/tjTTzainJvk
-        K16xqnoM43Bz5ZX181EW+GuY0gtVLBrSbw==
-X-Google-Smtp-Source: ABdhPJyOuKbzKJiCT/mXRgDxW3FibLE7pN2D4UHZzoneiqvD1BgxBH7yQ+rFL7hxr/md2tkIj8Yqyg==
-X-Received: by 2002:a67:f3c2:: with SMTP id j2mr4855785vsn.44.1635177261708;
-        Mon, 25 Oct 2021 08:54:21 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id t5sm9856314vsk.24.2021.10.25.08.54.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 08:54:21 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id o26so9197525uab.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:54:21 -0700 (PDT)
-X-Received: by 2002:a67:f84d:: with SMTP id b13mr12058620vsp.41.1635177260921;
- Mon, 25 Oct 2021 08:54:20 -0700 (PDT)
+        Mon, 25 Oct 2021 11:56:48 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2AFED580565;
+        Mon, 25 Oct 2021 11:54:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 25 Oct 2021 11:54:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=7Lt0k6A2AQYTvM69ey9mLazpSHP
+        whVPhfDQe2pFO0n8=; b=uIEKyAdugpjJCTJJB3D18APBAQv66TGIg9cS2eIkPOl
+        Vj9Nr8TyKEz/W5Av7vkFU7LaOKqWltfZCoBwGB8F9Heba/tAcT4qxrngHy0SGTjf
+        D0zOA0/sFuzEvXlcJzPqgSypzGHuSOOoWWXIxo43R+DGO3vADojj1J/jNP0m3Y/w
+        a7VDivJmM0pjR+L2wBREXDY4zT4nBskt6unfB5lBpicLr+viN1tXFLP+L3k4tb9w
+        2li4uS+L4Kqg+tGAwAe/tiRfztTAlqKpOQbl0+mNVgkR/KH7+meYMrJyjn/4MOtY
+        c2nUYLy6pwAK2cmWyFsBklolFrDiPVHCjBCuV75oJGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=7Lt0k6
+        A2AQYTvM69ey9mLazpSHPwhVPhfDQe2pFO0n8=; b=ezLem8TPwEbDCt5ng2Xr/0
+        dmUsypkC5C34MDkGAzg6JqbVKWmoQyYWAgd+T4RScIi2bXt1N19dlx4Sd81Q2aGr
+        ++8ltY6ilo6QZSoKV9pHVP6Jq97G9R4+IxcnVGhuCAPACeUseLz8it6XgmLu4Gjk
+        O6xmlYl7GwPMmQf0M/oraqRcI2j6DBn/jGcWzYhLyJqjGcIxGO0KSAAqd44p+9fO
+        fbaGqmyx7EHJa90bIun41mOpYJRwGJH0h3sCbkN4bRH2fGRetDHc1yvTdmt9qK+R
+        +1T7O41wIp9Yv8SJdTcYIuueD2YnEfdqG5QiC+LQoNuFHICRWQFVhfZRLC55rfPw
+        ==
+X-ME-Sender: <xms:L9N2YUdZoc0rilMIpO1zGrBp7s2cVY0sjegSK1tTEqxzR527YnC6EA>
+    <xme:L9N2YWPpUqv8V4RHkPyfV9pBe1QRQCyZ9V0lZg8JjtHvh2TxXgoquQlkVgjr4DyDP
+    E2MHd7xt-jjQ_9Tovc>
+X-ME-Received: <xmr:L9N2YVipoGj-TpshW2OlKqzsXX3G3ykDSUESUQrXz9KS1UwtUE6I5jUfHMykWdcCEZ1ETGRMwZszRdF1mRptx3uQOvrIFDlLT2uvtg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefhedgkeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddt
+    vdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhessh
+    htfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepgeehheefffegkeevhedthffgudfh
+    geefgfdthefhkedtleffveekgfeuffehtdeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepphgrthhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:L9N2YZ-WkJYYSvoGRwmsT_6SPbiVf54pcrDuZ8_Q68-82Kit0JSTxw>
+    <xmx:L9N2YQvAuvsmC00aBxXrwp_GYY1jVEna8xMqB5JV4n2HFqAQheQ8Ow>
+    <xmx:L9N2YQFDGAwX1xqqm_78qJ0gyMqC6X7sQUPNgA7zdCIk-YwA8RDyIQ>
+    <xmx:MdN2YdtGbwICmM5LUx98Jfs2-Lp5COgjISeC2vqKoby7uurvRn0KaA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 11:54:22 -0400 (EDT)
+Date:   Mon, 25 Oct 2021 10:54:21 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Zev Weiss <zev@bewilderbeest.net>, kvm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Rajat Jain <rajatja@google.com>,
+        Jianxiong Gao <jxgao@google.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 4/5] driver core: inhibit automatic driver binding on
+ reserved devices
+Message-ID: <YXbTLYzHadphE5ZN@heinlein>
+References: <YXLWMyleiTFDDZgm@heinlein>
+ <YXPOSZPA41f+EUvM@kroah.com>
+ <627101ee-7414-57d1-9952-6e023b8db317@gmail.com>
+ <YXZLjTvGevAXcidW@kroah.com>
+ <YXaYmie/CUHnixtX@heinlein>
+ <YXap8V/jMM3Ksj7x@smile.fi.intel.com>
+ <YXavBWTNYsufqj8u@heinlein>
+ <YXayTeJiQvpRutU0@kroah.com>
+ <YXa5AExKg+k0MmHV@heinlein>
+ <YXa6t/ifxZGGSCNj@kroah.com>
 MIME-Version: 1.0
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 Oct 2021 17:54:09 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
-Message-ID: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
-Subject: Out-of-bounds access when hartid >= NR_CPUS
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IBKYz2UKeI4sOQXI"
+Content-Disposition: inline
+In-Reply-To: <YXa6t/ifxZGGSCNj@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
-the 4th CPU either fails to come online, or the system crashes.
+--IBKYz2UKeI4sOQXI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
-and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
-  - unused core has hartid 0 (sifive,e51),
-  - processor 0 has hartid 1 (sifive,u74-mc),
-  - processor 1 has hartid 2 (sifive,u74-mc),
-  - processor 2 has hartid 3 (sifive,u74-mc),
-  - processor 3 has hartid 4 (sifive,u74-mc).
+On Mon, Oct 25, 2021 at 04:09:59PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Oct 25, 2021 at 09:02:40AM -0500, Patrick Williams wrote:
+> > On Mon, Oct 25, 2021 at 03:34:05PM +0200, Greg Kroah-Hartman wrote:
+> > > On Mon, Oct 25, 2021 at 08:20:05AM -0500, Patrick Williams wrote:
+> > > I think "it" is "something needs to be the moderator between the two
+> > > operating systems".  What is the external entity that handles the
+> > > switching between the two?
+> >=20
+> > Ah, ok.
+> >=20
+> > Those usually end up being system / device specific.  In the case of th=
+e BIOS
+> > flash, most designs I've seen use a SPI mux between the BMC and the host
+> > processor or IO hub (PCH on Xeons).  The BMC has a GPIO to control the =
+mux.
+> >=20
+> > As far as state, the BMC on start-up will go through a set of discovery=
+ code to
+> > figure out where it left the system prior to getting reset.  That invol=
+ves
+> > looking at the power subsystem and usually doing some kind of query to =
+the host
+> > to see if it is alive.  These queries are mostly system / host-processo=
+r design
+> > specific.  I've seen anything from an IPMI/IPMB message alert from the =
+BMC to
+> > the BIOS to ask "are you alive" to reading host processor state over JT=
+AG to
+> > figure out if the processors are "making progress".
+>=20
+> But which processor is "in control" here over the hardware? =20
 
-I assume the same issue is present on the SiFive fu540 and fu740
-SoCs, but I don't have access to these.  The issue is not present
-on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
-hartid 0.
+The BMC.  It owns the GPIO that controls the SPI mux. =20
 
-arch/riscv/kernel/cpu_ops.c has:
+But, the BMC is responsible for doing all operations in a way that doesn't =
+mess
+up the running host processor(s).  Pulling away the SPI flash containing the
+BIOS code at an incorrect time might do that.
 
-    void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
-    void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
+> What method
+> is used to pass the device from one CPU to another from a logical point
+> of view? =20
 
-    void cpu_update_secondary_bootdata(unsigned int cpuid,
-                                       struct task_struct *tidle)
-    {
-            int hartid = cpuid_to_hartid_map(cpuid);
+The state of the server as a whole is determined and maintained by the BMC.=
+  I'm
+simplifying here a bit but the operation "turn on the host processors" impl=
+ies
+"the host processors will access the BIOS" so the BMC must ensure "SPI mux =
+is
+switched towards the host" before "turn on the host processors".
 
-            /* Make sure tidle is updated */
-            smp_mb();
-            WRITE_ONCE(__cpu_up_stack_pointer[hartid],
-                       task_stack_page(tidle) + THREAD_SIZE);
-            WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
+> Sounds like it is another driver that needs to handle all of
+> this, so why not have that be the one that adds/removes the devices
+> under control here?
 
-The above two writes cause out-of-bound accesses beyond
-__cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
+If what you're describing is moving all of the state control logic into the
+kernel, I don't think that is feasible.  For some systems it would mean mov=
+ing
+yet another entire IPMI stack into the kernel tree.  On others it might be
+somewhat simpler, but it is still a good amount of code.  We could probably
+write up more details on the scope of this.
 
-    }
+If what you're describing is a small driver, similar to the board support
+drivers that were used before the device tree, that instantiates subordinate
+devices it doesn't seem like an unreasonable alternative to DT overlays to =
+me
+(for whatever my limited kernel contribution experience counts for).
 
-arch/riscv/kernel/smpboot.c:setup_smp(void) detects CPUs like this:
+--=20
+Patrick Williams
 
-    for_each_of_cpu_node(dn) {
-            hart = riscv_of_processor_hartid(dn);
-            if (hart < 0)
-                    continue;
+--IBKYz2UKeI4sOQXI
+Content-Type: application/pgp-signature; name="signature.asc"
 
-            if (hart == cpuid_to_hartid_map(0)) {
-                    BUG_ON(found_boot_cpu);
-                    found_boot_cpu = 1;
-                    early_map_cpu_to_node(0, of_node_to_nid(dn));
-                    continue;
-            }
-            if (cpuid >= NR_CPUS) {
-                    pr_warn("Invalid cpuid [%d] for hartid [%d]\n",
-                            cpuid, hart);
-                    break;
-            }
+-----BEGIN PGP SIGNATURE-----
 
-            cpuid_to_hartid_map(cpuid) = hart;
-            early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
-            cpuid++;
-    }
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmF20ysACgkQqwNHzC0A
+wRllog//fo/4DsHCATlBG2JbJ+kty/4DMaxw9s4LPzxMRjzAcpUNlU4aZU0MCE8I
+OscYTGpzhNhtddtAWjgJpLWLIokDJfdQ+K/fj/c/gV6lFgBzdRB8V3i4WKCnxb+s
+1GZpKmb+f5AKRLz83jRe9bx8X4lBafvlt1Riwmz4wywVqrzKcB9wJDQHmM90hsCI
+XgJ82cdNBTYzw+tYl534zZiAU4qn6kq1+5oVi5qeCGMylF9dcZhnWdtyxSWNagSk
+FbcmxLztkVEuzxI0GWoJsUc8fKL/bJPCwIJzIs+/+mdwd5iINh3TFZ0Ik3SM/6+V
+3GvaXafAyTrSFHwbd7BFdljgrnvteE81XLd8X+VHP3GZ/T2yFNRY381KuXMmC0ti
+X11xR+nNYVRtTrqZmmUPQ/FyQ2z6A30SzSdMav2y15SAVyoYY6KxU4/k+amxACzS
+n06PV7i+2LLGwl83I1vqzdLS7dTdXj0dyyP/EzxG1OSS65FnJ1F6GItJq4BAcDQL
+VhMVCegClPqjHUaKQsNRZLW6c0lfZJeVJG8Cl82TLPXb7eSAMT7OS0BG4pCnX+6L
+csbREZYtI3j9QSzEkeM14dAS322I3iiQPpubwSwHMn8OOG4mFj9K3paoEQXsG0yF
+C2bUFdioZUpiLRvmwFhkrOUOOavOjxRit7hIsDOSvCrUue4rKl8=
+=VXwf
+-----END PGP SIGNATURE-----
 
-So cpuid >= CONFIG_NR_CPUS (too many CPU cores) is already rejected.
-
-How to fix this?
-
-We could skip hartids >= NR_CPUS, but that feels strange to me, as
-you need NR_CPUS to be larger (much larger if the first usable hartid
-is a large number) than the number of CPUs used.
-
-We could store the minimum hartid, and always subtract that when
-accessing __cpu_up_{stack,pointer}_pointer[] (also in
-arch/riscv/kernel/head.S), but that means unused cores cannot be in the
-middle of the hartid range.
-
-Are hartids guaranteed to be continuous? If not, we have no choice but
-to index __cpu_up_{stack,pointer}_pointer[] by cpuid instead, which
-needs a more expensive conversion in arch/riscv/kernel/head.S.
-
-Thanks for your comments!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--IBKYz2UKeI4sOQXI--
