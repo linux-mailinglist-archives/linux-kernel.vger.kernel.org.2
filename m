@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344C3439F51
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4247443A19B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhJYTTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36524 "EHLO mail.kernel.org"
+        id S236481AbhJYTkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:40:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234575AbhJYTSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:18:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5385B6103C;
-        Mon, 25 Oct 2021 19:16:24 +0000 (UTC)
+        id S236351AbhJYTeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:34:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B09060F4F;
+        Mon, 25 Oct 2021 19:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189384;
-        bh=m+5Od1O081bXk5ZOV75o8smtKYbnFFv72Qso7Q+OXeA=;
+        s=korg; t=1635190209;
+        bh=0vH2pZ5lJX1o2ioJ7yBBOpymPgfh1Le9YXmOgwXvUJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WfJWQ9qrZi9fHkHumVKKuW8PW88WP59Sb7ELGQC2M+nuRuCb/+ersZZEJjXNf6sdZ
-         d/44HCnL4ixhrQ4PkI2Nfg7FBha5yZEHlnTFkKGq4korIxwZfhxJfFtBwQKpvkpKif
-         p+KXNVm5kc05LCxiMtm5zX4mAb+kh3S47E3MPLrM=
+        b=klV+boViok6VG1eqXG6/WlkWyYGkNtU2IFK88BGS+SxWSO3zYaVazdLyK7bfJwtD0
+         Ok8lzM0pUWKumWO6Num1ss3+rQQ5NIgKXdggk9bMT27D8wrYP3Har+PyJ0RQlSt77k
+         yPr1ogJ0vj84Kqbmah44vVPYQhpPw1AmFRufzLMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lin Ma <linma@zju.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 34/44] nfc: nci: fix the UAF of rf_conn_info object
+        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 18/95] lan78xx: select CRC32
 Date:   Mon, 25 Oct 2021 21:14:15 +0200
-Message-Id: <20211025190935.650118860@linuxfoundation.org>
+Message-Id: <20211025190959.572375902@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Vegard Nossum <vegard.nossum@oracle.com>
 
-commit 1b1499a817c90fd1ce9453a2c98d2a01cca0e775 upstream.
+[ Upstream commit 46393d61a328d7c4e3264252dae891921126c674 ]
 
-The nci_core_conn_close_rsp_packet() function will release the conn_info
-with given conn_id. However, it needs to set the rf_conn_info to NULL to
-prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
-the UAF.
+Fix the following build/link error by adding a dependency on the CRC32
+routines:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+  ld: drivers/net/usb/lan78xx.o: in function `lan78xx_set_multicast':
+  lan78xx.c:(.text+0x48cf): undefined reference to `crc32_le'
+
+The actual use of crc32_le() comes indirectly through ether_crc().
+
+Fixes: 55d7de9de6c30 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/nci/rsp.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/usb/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/nfc/nci/rsp.c
-+++ b/net/nfc/nci/rsp.c
-@@ -274,6 +274,8 @@ static void nci_core_conn_close_rsp_pack
- 		conn_info = nci_get_conn_info_by_conn_id(ndev, ndev->cur_id);
- 		if (conn_info) {
- 			list_del(&conn_info->list);
-+			if (conn_info == ndev->rf_conn_info)
-+				ndev->rf_conn_info = NULL;
- 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
- 		}
- 	}
+diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
+index 4efad42b9aa9..867ff2ee8ecf 100644
+--- a/drivers/net/usb/Kconfig
++++ b/drivers/net/usb/Kconfig
+@@ -117,6 +117,7 @@ config USB_LAN78XX
+ 	select PHYLIB
+ 	select MICROCHIP_PHY
+ 	select FIXED_PHY
++	select CRC32
+ 	help
+ 	  This option adds support for Microchip LAN78XX based USB 2
+ 	  & USB 3 10/100/1000 Ethernet adapters.
+-- 
+2.33.0
+
 
 
