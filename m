@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CBD43A06C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E1C43A010
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhJYTaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
+        id S235195AbhJYT1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:27:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234434AbhJYT12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:27:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B64F461154;
-        Mon, 25 Oct 2021 19:24:12 +0000 (UTC)
+        id S235043AbhJYTZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:25:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2704860FE8;
+        Mon, 25 Oct 2021 19:22:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189854;
-        bh=uh+onX4lya15jpShJDlMJOjftqDM96kehkwXOaOh+Xc=;
+        s=korg; t=1635189738;
+        bh=xQH6xbKIA9JfXpgVrSV2Ie+26/isb91g+KzUq6/V17g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LdGFg9geMnoq5vzNWAUIABACeDOJm2BnCDtfF3A8fmQ7mfdXyHnGA12G1gx4CEPGC
-         /nDHskoQs2yWhqDBRhtxPe1kJlmVSsXMPD8irbzHdZzF/aE5adcB0WnyLX2fSYJL5D
-         KA1pk7TkmTjdcDrqdf4uQKFdWQubYIxTnq/rtuY8=
+        b=Rh77+fDoP86grwXiF5SXWUNQGQPO2UxaLM1swlNizm/rKNzK/scb/XSfVhE1EbvA6
+         jekaFOnc6itIH0S9N7unGebyOL5KrsiQ7PMQ8Ny/Zas5Xcw0lIvsqdSslH0EHyKCg/
+         l6c+qoTKx+KJdXEmVcb6qAGBjMPBfmTt6VTXDOZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/37] NIOS2: irqflags: rename a redefined register name
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 14/30] vfs: check fd has read access in kernel_read_file_from_fd()
 Date:   Mon, 25 Oct 2021 21:14:34 +0200
-Message-Id: <20211025190930.076950108@linuxfoundation.org>
+Message-Id: <20211025190926.501953774@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit 4cce60f15c04d69eff6ffc539ab09137dbe15070 ]
+commit 032146cda85566abcd1c4884d9d23e4e30a07e9a upstream.
 
-Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
-with the name "CTL_STATUS". Change the one in arch/nios2/ to be
-"CTL_FSTATUS" (flags status) to eliminate the build warning.
+If we open a file without read access and then pass the fd to a syscall
+whose implementation calls kernel_read_file_from_fd(), we get a warning
+from __kernel_read():
 
-In file included from ../drivers/mmc/host/tmio_mmc.c:22:
-drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
-   31 | #define CTL_STATUS 0x1c
-arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
-   14 | #define CTL_STATUS      0
+        if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
 
-Fixes: b31ebd8055ea ("nios2: Nios2 registers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This currently affects both finit_module() and kexec_file_load(), but it
+could affect other syscalls in the future.
+
+Link: https://lkml.kernel.org/r/20211007220110.600005-1-willy@infradead.org
+Fixes: b844f0ecbc56 ("vfs: define kernel_copy_file_from_fd()")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nios2/include/asm/irqflags.h  | 4 ++--
- arch/nios2/include/asm/registers.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ fs/exec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/nios2/include/asm/irqflags.h b/arch/nios2/include/asm/irqflags.h
-index 75ab92e639f8..0338fcb88203 100644
---- a/arch/nios2/include/asm/irqflags.h
-+++ b/arch/nios2/include/asm/irqflags.h
-@@ -22,7 +22,7 @@
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -980,7 +980,7 @@ int kernel_read_file_from_fd(int fd, voi
+ 	struct fd f = fdget(fd);
+ 	int ret = -EBADF;
  
- static inline unsigned long arch_local_save_flags(void)
- {
--	return RDCTL(CTL_STATUS);
-+	return RDCTL(CTL_FSTATUS);
- }
+-	if (!f.file)
++	if (!f.file || !(f.file->f_mode & FMODE_READ))
+ 		goto out;
  
- /*
-@@ -31,7 +31,7 @@ static inline unsigned long arch_local_save_flags(void)
-  */
- static inline void arch_local_irq_restore(unsigned long flags)
- {
--	WRCTL(CTL_STATUS, flags);
-+	WRCTL(CTL_FSTATUS, flags);
- }
- 
- static inline void arch_local_irq_disable(void)
-diff --git a/arch/nios2/include/asm/registers.h b/arch/nios2/include/asm/registers.h
-index 615bce19b546..33824f2ad1ab 100644
---- a/arch/nios2/include/asm/registers.h
-+++ b/arch/nios2/include/asm/registers.h
-@@ -24,7 +24,7 @@
- #endif
- 
- /* control register numbers */
--#define CTL_STATUS	0
-+#define CTL_FSTATUS	0
- #define CTL_ESTATUS	1
- #define CTL_BSTATUS	2
- #define CTL_IENABLE	3
--- 
-2.33.0
-
+ 	ret = kernel_read_file(f.file, buf, size, max_size, id);
 
 
