@@ -2,174 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F8743926E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9001439275
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhJYJgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:36:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52376 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhJYJgg (ORCPT
+        id S232525AbhJYJhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232592AbhJYJhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:36:36 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 295751FD34;
-        Mon, 25 Oct 2021 09:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635154453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BgwDwtXcCfqvhCbDv78Ercq+F3VCH7U2rqOPEH8FuqI=;
-        b=aAjwYxoi8Gd35iaLIZ4FAw/Tlx9KYkaQC0/n2ofQtUBK8Gne2NHNToXX1Oo97clokPA4Wo
-        5QFhR9MITddfqEzwLdbCR6dQY1qRlx1cJFFBnNQCXETxGhOw4KBElVNbkDVEwjDZgp+Sqe
-        JrF5CGJuIV/72+/CzNFcHohV8Qmb2r8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EF227A3B87;
-        Mon, 25 Oct 2021 09:34:12 +0000 (UTC)
-Date:   Mon, 25 Oct 2021 11:34:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
- the #PF
-Message-ID: <YXZ6FMzJLEz4TA2d@dhcp22.suse.cz>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
- <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
+        Mon, 25 Oct 2021 05:37:13 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28810C061767;
+        Mon, 25 Oct 2021 02:34:52 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id r5so2932043pls.1;
+        Mon, 25 Oct 2021 02:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cYbf6uzQ8oZx3fhN+OoW9PPWaIszzAceDbsiiDa0Wkk=;
+        b=GNEEdtlNOM5d2yKPDnZx78pxFUUbfo9KVAgwKlBM9nj1Nr1xMb677pxwVB9L2zzgW0
+         SPcCC5ifLzMFDHr971erg6wXTk/I76oXeDIDuZpn4CoYDkBBYlemUbNIdy9UZBfC6lQV
+         gwXDLZk5sPvEAJeOvwi1V080PyzUoJrC1XOcrhKEe/xL19eaQQb6++lPwnlAV9hwcDPE
+         8hWWcthqWV/oUylD4vWdsjqag/AVCBPS5mLy/n/v38txY1lJoTpre39sJdkEVuDQRe3R
+         mTnST4XUPvLbHyJ8xQIRjZktfSQ2vIzf0r/yTnOJvT8qVkZmEPU8R+ku56MI6HT6y89P
+         F4Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cYbf6uzQ8oZx3fhN+OoW9PPWaIszzAceDbsiiDa0Wkk=;
+        b=d2nG5xiu42tGGtxOd4fYw/VnO8SgklbO60cRphVikbd/oD+YEGBBUMT8vRK2twPrbw
+         VGGGSlfClJB3bOjiD79aVqh6Cmf2BVq6L9cSUOR5dnD+dp4QhpnYo39hspLp4ufYca/Z
+         YAcnEKlAfhBT+FqR+0fXFJVLFdMzdFbsxsySQ/oJTXYTJ9M7GF6/ah3WiEH13eP7tfTN
+         Hk1LWtxNCQTGr0m48+FrxMWqNwi7mWhMvzlKCNlEO7Vy+fNaFDdW9KiiyjQkEc7ePuOD
+         OMJzC6ZI7PShOO0MQt0o+VsweDj3I2q68Qy1vARMNhN/JqCU7v/Bj1vVoSa6+u0HJKy6
+         9Vug==
+X-Gm-Message-State: AOAM531g7U88ymMt+MYUf2vKDd7ssRTqpdZVXLYC8utrfSG1avWYTFcX
+        dUrzcq+JNWUWPZo3SffYaIE=
+X-Google-Smtp-Source: ABdhPJw9lVY1hFPoREYreDbUL2GesnmkNzs3OJn1fuCRazZhPizx/p0V7ZpkJ+3BR1WQnt3+3c/bbw==
+X-Received: by 2002:a17:90b:805:: with SMTP id bk5mr15110734pjb.124.1635154491569;
+        Mon, 25 Oct 2021 02:34:51 -0700 (PDT)
+Received: from nj08008nbu.spreadtrum.com ([240e:47a:878:6a2:e0f0:8dca:6977:afd5])
+        by smtp.gmail.com with ESMTPSA id c9sm15446100pgq.58.2021.10.25.02.34.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Oct 2021 02:34:51 -0700 (PDT)
+From:   Kevin Tang <kevin3.tang@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com,
+        pony1.wu@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v7 0/6] Add Unisoc's drm kms module
+Date:   Mon, 25 Oct 2021 17:34:12 +0800
+Message-Id: <20211025093418.20545-1-kevin3.tang@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 23-10-21 16:20:18, Vasily Averin wrote:
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> Any allocation failure during the #PF path will return with VM_FAULT_OOM
-> which in turn results in pagefault_out_of_memory. This can happen for
-> 2 different reasons. a) Memcg is out of memory and we rely on
-> mem_cgroup_oom_synchronize to perform the memcg OOM handling or b)
-> normal allocation fails.
-> 
-> The later is quite problematic because allocation paths already trigger
-> out_of_memory and the page allocator tries really hard to not fail
-> allocations. Anyway, if the OOM killer has been already invoked there
-> is no reason to invoke it again from the #PF path. Especially when the
-> OOM condition might be gone by that time and we have no way to find out
-> other than allocate.
-> 
-> Moreover if the allocation failed and the OOM killer hasn't been
-> invoked then we are unlikely to do the right thing from the #PF context
-> because we have already lost the allocation context and restictions and
-> therefore might oom kill a task from a different NUMA domain.
-> 
-> This all suggests that there is no legitimate reason to trigger
-> out_of_memory from pagefault_out_of_memory so drop it. Just to be sure
-> that no #PF path returns with VM_FAULT_OOM without allocation print a
-> warning that this is happening before we restart the #PF.
-> 
-> [VvS: #PF allocation can hit into limit of cgroup v1 kmem controller.
-> This is a local problem related to memcg, however, it causes unnecessary
-> global OOM kills that are repeated over and over again and escalate into
-> a real disaster. This has been broken since kmem accounting has been
-> introduced for cgroup v1 (3.8). There was no kmem specific reclaim
-> for the separate limit so the only way to handle kmem hard limit
-> was to return with ENOMEM.
-> In upstream the problem will be fixed by removing the outdated kmem limit,
-> however stable and LTS kernels cannot do it and are still affected.
-> This patch fixes the problem and should be backported into stable/LTS.]
-> 
-> Cc: stable@vger.kernel.org
+ChangeList:
+RFC v1:
+1. only upstream modeset and atomic at first commit.
+2. remove some unused code;
+3. use alpha and blend_mode properties;
+3. add yaml support;
+4. remove auto-adaptive panel driver;
+5. bugfix
 
-I would be still careful about backporting to stable trees. At least
-wait for a release cycle to catch potential problems before backporting.
-The problem with kmem is documented and for quite a lot of time and we
-haven't received a single bug report IIRC so this is likely not a real
-problem people are facing out there.
+RFC v2:
+1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
+2. remove gem drivers, use generic CMA handlers
+3. remove redundant "module_init", all the sub modules loading by KMS
 
+RFC v3:
+1. multi crtc&encoder design have problem, so rollback to v1
 
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+RFC v4:
+1. update to gcc-linaro-7.5.0
+2. update to Linux 5.6-rc3
+3. remove pm_runtime support
+4. add COMPILE_TEST, remove unused kconfig
+5. "drm_dev_put" on drm_unbind
+6. fix some naming convention issue
+7. remove semaphore lock for crtc flip
+8. remove static variables
 
-I think this is the right thing to do. Hopefuly we won't find some
-tricky code which would depend on this behavior. If this turns out to be
-the case then we will clearly learn about it by the kernel message and
-we can to handle that situation more gracefully.
+RFC v5:
+1. optimize encoder and connector code implementation
+2. use "platform_get_irq" and "platform_get_resource"
+3. drop useless function return type, drop unless debug log
+4. custom properties should be separate, so drop it
+5. use DRM_XXX replase pr_xxx
+6. drop dsi&dphy hal callback ops
+7. drop unless callback ops checking
+8. add comments for sprd dpu structure
 
-Maybe we will want to update the chengelog to be more specific based on
-the review comments but this one should describe the problem quite well
-already.
-Acked-by: Michal Hocko <mhocko@suse.com>
+RFC v6:
+1. Access registers via readl/writel
+2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
+3. Remove always true checks for dpu core ops
 
-Thanks!
+RFC v7:
+1. Fix DTC unit name warnings
+2. Fix the problem of maintainers
+3. Call drmm_mode_config_init to mode config init
+4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
+5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
+6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
+7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
 
-> ---
-> v2: hook with fatal_signal_pending() has beem moved into a separate patch,
->     improved patch description, removed "Fixed" mark.
-> ---
->  mm/oom_kill.c | 22 ++++++++--------------
->  1 file changed, 8 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 1deef8c7a71b..f98954befafb 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -1120,19 +1120,15 @@ bool out_of_memory(struct oom_control *oc)
->  }
->  
->  /*
-> - * The pagefault handler calls here because it is out of memory, so kill a
-> - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
-> - * killing is already in progress so do nothing.
-> + * The pagefault handler calls here because some allocation has failed. We have
-> + * to take care of the memcg OOM here because this is the only safe context without
-> + * any locks held but let the oom killer triggered from the allocation context care
-> + * about the global OOM.
->   */
->  void pagefault_out_of_memory(void)
->  {
-> -	struct oom_control oc = {
-> -		.zonelist = NULL,
-> -		.nodemask = NULL,
-> -		.memcg = NULL,
-> -		.gfp_mask = 0,
-> -		.order = 0,
-> -	};
-> +	static DEFINE_RATELIMIT_STATE(pfoom_rs, DEFAULT_RATELIMIT_INTERVAL,
-> +				      DEFAULT_RATELIMIT_BURST);
->  
->  	if (mem_cgroup_oom_synchronize(true))
->  		return;
-> @@ -1140,10 +1136,8 @@ void pagefault_out_of_memory(void)
->  	if (fatal_signal_pending(current))
->  		return;
->  
-> -	if (!mutex_trylock(&oom_lock))
-> -		return;
-> -	out_of_memory(&oc);
-> -	mutex_unlock(&oom_lock);
-> +	if (__ratelimit(&pfoom_rs))
-> +		pr_warn("Huh VM_FAULT_OOM leaked out to the #PF handler. Retrying PF\n");
->  }
->  
->  SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> -- 
-> 2.32.0
+v0:
+1. Remove dpu_core_ops stuff layer for sprd drtc driver, but dpu_layer need to keeping.
+   Because all the HW update in crtc->atomic_flush, we need temporary storage all layers for
+   the dpu pageflip of atomic_flush.
+2. Add ports subnode with port@X.
+
+v1:
+1. Remove dphy and dsi graph binding, merge the dphy driver into the dsi.
+2. Add commit messages for Unisoc's virtual nodes.
+
+v2:
+1. Use drm_xxx to replace all DRM_XXX.
+2. Use kzalloc to replace devm_kzalloc for sprd_dsi/sprd_dpu structure init.
+3. Remove dpu_core_ops midlayer.
+
+v3:
+1. Remove dpu_layer midlayer and commit layers by aotmic_update
+
+v4:
+1. Move the devm_drm_dev_alloc to master_ops->bind function.
+2. The managed drmm_mode_config_init() it is no longer necessary for drivers to explicitly call drm_mode_config_cleanup, so delete it.
+3. Use drmm_helpers to allocate crtc ,planes and encoder.
+4. Move allocate crtc ,planes, encoder to bind funtion.
+5. Move rotation enum definitions to crtc layer reg bitfields.
+
+v5:
+1. Remove subdir-ccflgas-y for Makefile.
+2. Keep the selects sorted by alphabet for Kconfig.
+3. Fix the checkpatch warnings.
+4. Use mode_set_nofb instead of mode_valid callback.
+5. Follow the OF-Graph bindings, use of_graph_get_port_by_id instead of of_parse_phandle.
+6. Use zpos to represent the layer position.
+7. Rebase to last drm misc branch.
+8. Remove panel_in port for dsi node.
+9. Drop the dsi ip file prefix.
+10. Add Signed-off-by for dsi&dphy patch.
+11. Use the mode_flags of mipi_dsi_device to setup crtc DPI and EDPI mode.
+
+v6:
+1. Disable and clear interrupts before register dpu IRQ
+2. Init dpi config used by crtc_state->adjusted_mode on mode_set_nofb
+3. Remove enable_irq and disable_irq function call.
+4. Remove drm_format_info function call.
+5. Redesign the way to access the dsi register.
+6. Reduce the dsi_context member variables.
+
+v7:
+1. Fix codeing style issue by checkpatch.
+2. Drop the pll registers structure define.
+3. Use bridge API instead of drm panel API.
+4. Register mipi_dsi_host on probe phase;
+5. Remove iommu error interrupt handling function.
+6. Remove some unused function.
+
+Kevin Tang (6):
+  dt-bindings: display: add Unisoc's drm master bindings
+  drm/sprd: add Unisoc's drm kms master
+  dt-bindings: display: add Unisoc's dpu bindings
+  drm/sprd: add Unisoc's drm display controller driver
+  dt-bindings: display: add Unisoc's mipi dsi controller bindings
+  drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+
+ .../display/sprd/sprd,display-subsystem.yaml  |   64 +
+ .../display/sprd/sprd,sharkl3-dpu.yaml        |   77 ++
+ .../display/sprd/sprd,sharkl3-dsi-host.yaml   |   88 ++
+ drivers/gpu/drm/Kconfig                       |    2 +
+ drivers/gpu/drm/Makefile                      |    1 +
+ drivers/gpu/drm/sprd/Kconfig                  |   13 +
+ drivers/gpu/drm/sprd/Makefile                 |    6 +
+ drivers/gpu/drm/sprd/megacores_pll.c          |  305 +++++
+ drivers/gpu/drm/sprd/sprd_dpu.c               |  884 ++++++++++++++
+ drivers/gpu/drm/sprd/sprd_dpu.h               |  109 ++
+ drivers/gpu/drm/sprd/sprd_drm.c               |  205 ++++
+ drivers/gpu/drm/sprd/sprd_drm.h               |   19 +
+ drivers/gpu/drm/sprd/sprd_dsi.c               | 1065 +++++++++++++++++
+ drivers/gpu/drm/sprd/sprd_dsi.h               |  126 ++
+ 14 files changed, 2964 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
+ create mode 100644 drivers/gpu/drm/sprd/Kconfig
+ create mode 100644 drivers/gpu/drm/sprd/Makefile
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
 
 -- 
-Michal Hocko
-SUSE Labs
+2.29.0
+
