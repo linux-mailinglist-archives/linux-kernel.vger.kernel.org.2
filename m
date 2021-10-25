@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D89438D6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C31438D71
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhJYCZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 22:25:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53098 "EHLO
+        id S232009AbhJYC02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 22:26:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29063 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhJYCZG (ORCPT
+        by vger.kernel.org with ESMTP id S229706AbhJYC01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 22:25:06 -0400
+        Sun, 24 Oct 2021 22:26:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635128564;
+        s=mimecast20190719; t=1635128645;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KyuFm/8mAjQNFS23VkPEB01/D6yLisum1kkP7ofok3s=;
-        b=Kv0lQB43fLy35kR/sL0J/s64m4O50XT06yN8zt/f0pySYsF5U6FZF+PJn/32I0odkOm1zt
-        5AbtwnHrrmkRAJHDxPth3xL0/Dst91pW611cIhGZ6UWXK8ZFcTlN31Yn+jurl0IKo42tDQ
-        XcxNmop3I1SM0Zv5rFhEDtWnu3SGOAo=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-89-3oZBP36aN4acDuvNEkpwhw-1; Sun, 24 Oct 2021 22:22:43 -0400
-X-MC-Unique: 3oZBP36aN4acDuvNEkpwhw-1
-Received: by mail-lf1-f69.google.com with SMTP id p10-20020a056512234a00b003fe188e9960so4524278lfu.19
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 19:22:42 -0700 (PDT)
+        bh=4JUxXUseIXFIvap74/jQsZQQ03ufSBRIw3QP8jHZu/g=;
+        b=K2BBvo44u2La9k9m4dxOdFji5GpkIK2iKGPyXWDmtCDcvvRhNfawNWoUXe6dS1pA+V3U1C
+        A92vI71cu10pmCrGzum6Wrz+rA08KsuSbdQRQzAthw+FhtW44IR3EBgtTJkoh1I6TUWAr7
+        o/p2EyuJW+iNElI8b1MieNaFrOFE2IQ=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-dxicqWnRN6644dGFS0kBgg-1; Sun, 24 Oct 2021 22:24:04 -0400
+X-MC-Unique: dxicqWnRN6644dGFS0kBgg-1
+Received: by mail-lj1-f198.google.com with SMTP id w9-20020a2e9989000000b00210af61ebbdso2271455lji.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 19:24:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KyuFm/8mAjQNFS23VkPEB01/D6yLisum1kkP7ofok3s=;
-        b=LJ9GrgNYVJtKCSBJi8GrxRJar39m790Q08JsGdZHFfXk2i4ebrUIDdiFSWqs/mFaoX
-         lXAFLQIioCDkdjB9KsKntO4L6lnAHkUFPbpqbGrR8IKhAsJniWm42Q2Am87wzBzr2EK9
-         x1HdwLhk/nEprYaShDvxvAe4hbPbxRCRNOdHPvcHCFsX5TuiNrcXKUV6YPPfLOP9o480
-         qQIcgE9zTQtcdGvRaZdWcW7cevFj3Nu45BH/sLlBy9NyqXGkONernVZJgVCSyeY8+hYu
-         g7eiyffpeo0H86GZKMHS2m2P35suSeBR0vIGqCuD4Nq4Bg4ry3GR8ob6GVyljrUwS/Ni
-         ZAZQ==
-X-Gm-Message-State: AOAM530mlCRhyx/RgF3iKWT+Cj2qQsThif1wn319HBXMosJLRjmD3a5S
-        OLh7x+4ku+kJTj+Y7VGrWfV9/2UxoJbi4ayoePediPmKFNrYS8BD//UfzDPDAD8MhXLHEai1ujD
-        CdAAqivVC2rS2nnuTTTQSIuGaPcREadM5MAxridUB
-X-Received: by 2002:a2e:7105:: with SMTP id m5mr16376151ljc.420.1635128561276;
-        Sun, 24 Oct 2021 19:22:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4utO5eZEoQTVrJtOjRrLjeX8X5Tdh3Qp+l8Pwh0LwpxH7OqWbDoVbH0crY/JRbeIOJQoAgUe2Ap4AeHH6X0s=
-X-Received: by 2002:a2e:7105:: with SMTP id m5mr16376134ljc.420.1635128561062;
- Sun, 24 Oct 2021 19:22:41 -0700 (PDT)
+        bh=4JUxXUseIXFIvap74/jQsZQQ03ufSBRIw3QP8jHZu/g=;
+        b=XJUbk4YtrcbtJzzsjFxjBoPjQmuEXqW0PvPCP8SOJOSGiRCsggjyEWWFw+U+pZbQoa
+         6Q1vePHADd8b9cxiq5H8Wc2vfmp+2J10vyXjJjec5qfL5UZwypfvEyz5002ODJup1CER
+         Y1ykrJ79ugpuDUQqZT3UdysHOwJY7sKvklEepoJBn46eOx06M60JQcnch9kThMJ+avXQ
+         gkR+/OfLifnnfUDbdh1hMmKyNcyCr4ZNEaCVFu3GfQPuY4OT9D2o0sH1KB43yG9pSbkL
+         Jv+RXnUTAX1ivSO3xv2n+zLkMorZmC3allM3VNGkqOgR3Z5fNTDMcBIczloTz0bbwe3B
+         ljHQ==
+X-Gm-Message-State: AOAM533FYzWAt8+dVpYnYStE1VaAyiX8a1g1FDEeJPn7fHo8vlDh+jbX
+        P4tcg9xV+KUM9iMeWAFWIVzvfIOegy8C0dw563BYewEPqo3s2HOcJmBFjq4T3YlG3No/xoVZ74y
+        sTfB/KpHRBV+wXZazXIJYWRrq+wm+wg2JXMGdRGHs
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr14686396lfg.498.1635128642367;
+        Sun, 24 Oct 2021 19:24:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx68SuxBTomY8Ig7IPrhEEiEwDcHl1JPOAJIFpQUPmwPQ6Fx2+wDmEHPAd46eAvJrJ/xnbyrwoNDDYIdx3jL6I=
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr14686381lfg.498.1635128642191;
+ Sun, 24 Oct 2021 19:24:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
- <cover.1634870456.git.wuzongyong@linux.alibaba.com> <c75b4499f7ead922daa19bf67b32eed6f185d260.1634870456.git.wuzongyong@linux.alibaba.com>
-In-Reply-To: <c75b4499f7ead922daa19bf67b32eed6f185d260.1634870456.git.wuzongyong@linux.alibaba.com>
+ <cover.1634870456.git.wuzongyong@linux.alibaba.com> <f3d36f0d7c9588aefaf6eeaa235b0a22fee23d56.1634870456.git.wuzongyong@linux.alibaba.com>
+In-Reply-To: <f3d36f0d7c9588aefaf6eeaa235b0a22fee23d56.1634870456.git.wuzongyong@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 25 Oct 2021 10:22:30 +0800
-Message-ID: <CACGkMEtNECAUtpEvLvEpTFKfbYRC7YQKnHDnjxR3k9Hap1tmig@mail.gmail.com>
-Subject: Re: [PATCH v6 6/8] virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
+Date:   Mon, 25 Oct 2021 10:23:51 +0800
+Message-ID: <CACGkMEvyiJk+o9DNxoUGSUcytu9a56XQje-HZncYNDc9_eJGHA@mail.gmail.com>
+Subject: Re: [PATCH v6 7/8] vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
 To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
 Cc:     virtualization <virtualization@lists.linux-foundation.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
@@ -66,73 +66,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, Oct 22, 2021 at 10:45 AM Wu Zongyong
 <wuzongyong@linux.alibaba.com> wrote:
 >
-> For the devices which implement the get_vq_num_min callback, the driver
-> should not negotiate with virtqueue size with the backend vdpa device if
-> the value returned by get_vq_num_min equals to the value returned by
-> get_vq_num_max.
-> This is useful for vdpa devices based on legacy virtio specfication.
->
-> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> ---
->  drivers/virtio/virtio_vdpa.c | 21 ++++++++++++++++-----
->  1 file changed, 16 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> index 72eaef2caeb1..e42ace29daa1 100644
-> --- a/drivers/virtio/virtio_vdpa.c
-> +++ b/drivers/virtio/virtio_vdpa.c
-> @@ -145,7 +145,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
->         /* Assume split virtqueue, switch to packed if necessary */
->         struct vdpa_vq_state state = {0};
->         unsigned long flags;
-> -       u32 align, num;
-> +       u32 align, max_num, min_num = 0;
-> +       bool may_reduce_num = true;
->         int err;
->
->         if (!name)
-> @@ -163,22 +164,32 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
->         if (!info)
->                 return ERR_PTR(-ENOMEM);
->
-> -       num = ops->get_vq_num_max(vdpa);
-> -       if (num == 0) {
-> +       max_num = ops->get_vq_num_max(vdpa);
-> +       if (max_num == 0) {
->                 err = -ENOENT;
->                 goto error_new_virtqueue;
->         }
->
-> +       if (ops->get_vq_num_min)
-> +               min_num = ops->get_vq_num_min(vdpa);
-> +
-> +       may_reduce_num = (max_num == min_num) ? false : true;
-> +
->         /* Create the vring */
->         align = ops->get_vq_align(vdpa);
-> -       vq = vring_create_virtqueue(index, num, align, vdev,
-> -                                   true, true, ctx,
-> +       vq = vring_create_virtqueue(index, max_num, align, vdev,
-> +                                   true, may_reduce_num, ctx,
->                                     virtio_vdpa_notify, callback, name);
->         if (!vq) {
->                 err = -ENOMEM;
->                 goto error_new_virtqueue;
->         }
->
-> +       if (virtqueue_get_vring_size(vq) < min_num) {
-> +               err = -EINVAL;
-> +               goto err_vq;
-> +       }
+> This attribute advertises the min value of virtqueue size. The value is
+> 0 by default.
 
-I wonder under which case can we hit this?
+As discussed previously, 0 seems an invalid value. We should use 1 at least.
 
 Thanks
 
-> +
->         /* Setup virtqueue callback */
->         cb.callback = virtio_vdpa_virtqueue_cb;
->         cb.private = info;
+>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> ---
+>  drivers/vdpa/vdpa.c       | 5 +++++
+>  include/uapi/linux/vdpa.h | 1 +
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> index fd014ecec711..4aeb1458b924 100644
+> --- a/drivers/vdpa/vdpa.c
+> +++ b/drivers/vdpa/vdpa.c
+> @@ -500,6 +500,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+>               int flags, struct netlink_ext_ack *extack)
+>  {
+>         u16 max_vq_size;
+> +       u16 min_vq_size = 0;
+>         u32 device_id;
+>         u32 vendor_id;
+>         void *hdr;
+> @@ -516,6 +517,8 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+>         device_id = vdev->config->get_device_id(vdev);
+>         vendor_id = vdev->config->get_vendor_id(vdev);
+>         max_vq_size = vdev->config->get_vq_num_max(vdev);
+> +       if (vdev->config->get_vq_num_min)
+> +               min_vq_size = vdev->config->get_vq_num_min(vdev);
+>
+>         err = -EMSGSIZE;
+>         if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
+> @@ -528,6 +531,8 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
+>                 goto msg_err;
+>         if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
+>                 goto msg_err;
+> +       if (nla_put_u16(msg, VDPA_ATTR_DEV_MIN_VQ_SIZE, min_vq_size))
+> +               goto msg_err;
+>
+>         genlmsg_end(msg, hdr);
+>         return 0;
+> diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
+> index 66a41e4ec163..e3b87879514c 100644
+> --- a/include/uapi/linux/vdpa.h
+> +++ b/include/uapi/linux/vdpa.h
+> @@ -32,6 +32,7 @@ enum vdpa_attr {
+>         VDPA_ATTR_DEV_VENDOR_ID,                /* u32 */
+>         VDPA_ATTR_DEV_MAX_VQS,                  /* u32 */
+>         VDPA_ATTR_DEV_MAX_VQ_SIZE,              /* u16 */
+> +       VDPA_ATTR_DEV_MIN_VQ_SIZE,              /* u16 */
+>
+>         /* new attributes must be added above here */
+>         VDPA_ATTR_MAX,
 > --
 > 2.31.1
 >
