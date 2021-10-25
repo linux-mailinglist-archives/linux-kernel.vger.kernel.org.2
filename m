@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6230343998E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D5443999C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhJYPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:05:57 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45892 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233125AbhJYPFx (ORCPT
+        id S233766AbhJYPH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:07:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55251 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233327AbhJYPHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:05:53 -0400
-X-UUID: 38140ce91005447fbac6eea769e392a8-20211025
-X-UUID: 38140ce91005447fbac6eea769e392a8-20211025
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <mark-yw.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1155202787; Mon, 25 Oct 2021 23:03:27 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 25 Oct 2021 23:03:26 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Oct 2021 23:03:25 +0800
-From:   <mark-yw.chen@mediatek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
-CC:     <mark-yw.chen@mediatek.com>, <will-cy.lee@mediatek.com>,
-        <linux-bluetooth@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Bluetooth: btusb: Fix failed to send func ctrl for MediaTek devices.
-Date:   Mon, 25 Oct 2021 23:03:25 +0800
-Message-ID: <20211025150325.2143-1-mark-yw.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 25 Oct 2021 11:07:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635174326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=17YKkfI8G+c9Iih6iy4QvMoudnAtBOzRU5Sn0sW8tZE=;
+        b=aUowJOSEezruPAV5aYjmQ+lYK4PnUPZm2rdY0GZqKxlRyLjdAP8jYom4/YgWe9sjL8zZ+v
+        L3KR9DA0JY8x+SfbqhPtmpp/557AsSNAybKVKckopLoiKnXSjsfAyqGfRwkyfSg/iN8ynJ
+        R8xOs0MQVRjRt5Mnl0wbHjoPgnBwGg8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-utZKAB0cMEqVephVSAP1Lw-1; Mon, 25 Oct 2021 11:05:25 -0400
+X-MC-Unique: utZKAB0cMEqVephVSAP1Lw-1
+Received: by mail-wr1-f69.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso3328131wrc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:05:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=17YKkfI8G+c9Iih6iy4QvMoudnAtBOzRU5Sn0sW8tZE=;
+        b=097c6fH1Bsq4iMMzTl4uwyBxOZXakAcPudga7zh2eb9QGjVUaxSL2eh7fBZTd3pnM2
+         SVvy53EcYQN3+UedOXKFn6bRnyFNWEw7Ivwr77ZyAFeeSCL7CLNjQYpw9ykzBccuTVCC
+         /nLHay7kFyALMk6Hdxsje/pL1KvLN4xM9iZ9UoCOs2UCbwdmCA1fH46+b/DXVGGDDx+1
+         53ASqAYM44tsgMSb0GPE4k/3U++s2an1xYaMWRC6cx1414ADwdsWyn+qMxXgk1nX1LZ3
+         LGAY+4D6AOErYaePHgRt7+KvsDr+J9ay/atT2c4hBUtZf+LdBQPzpF9N1q9t3DnDQlGr
+         +qcQ==
+X-Gm-Message-State: AOAM533Wha74xFMUsLrtR7v627J3BaVaA0D/nbIAYbcHwkPpkw6cOquG
+        gAroTmjJbVjYWsXb66X+44PgzZmoUj6YbEEtActFS1CulNRnFn74AN2iCibcGQiPYaWVlFa6zX+
+        36+AisIGKT9cDIOvrIqm6eFox
+X-Received: by 2002:adf:b1d7:: with SMTP id r23mr24328048wra.145.1635174324221;
+        Mon, 25 Oct 2021 08:05:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNexQuzHRq+jpnX8KTr0omvqAmOMBdWB1dnxyBAmmWnxN2QzlfyX1PUJV+JR7ASMMz0R8mMg==
+X-Received: by 2002:adf:b1d7:: with SMTP id r23mr24327978wra.145.1635174323914;
+        Mon, 25 Oct 2021 08:05:23 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w10sm9256784wrp.25.2021.10.25.08.05.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 08:05:23 -0700 (PDT)
+Message-ID: <a2a4e076-edb8-2cb5-5cb2-6825a1a4559a@redhat.com>
+Date:   Mon, 25 Oct 2021 17:05:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 40/43] KVM: VMX: Wake vCPU when delivering posted IRQ
+ even if vCPU == this vCPU
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-41-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-41-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "mark-yw.chen" <mark-yw.chen@mediatek.com>
+On 09/10/21 04:12, Sean Christopherson wrote:
+> 
+> Lastly, this aligns the non-nested and nested usage of triggering posted
+> interrupts, and will allow for additional cleanups.
 
-* Use usb_autopm_get_interface() and usb_autopm_put_interface()
-  in btusb_mtk_shutdown(), it could send func ctrl after enabling
-  autosuspend.
+It also aligns with SVM a little bit more (especially given patch 35), 
+doesn't it?
 
-Bluetooth: btusb_mtk_hci_wmt_sync() hci0: Execution of wmt command timed
-out
-Bluetooth: btusb_mtk_shutdown() hci0: Failed to send wmt func ctrl
-(-110)
-
-Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
----
- drivers/bluetooth/btusb.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 87b71740fad8..9e61395d1ff2 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2973,9 +2973,14 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- static int btusb_mtk_shutdown(struct hci_dev *hdev)
- {
- 	struct btmtk_hci_wmt_params wmt_params;
-+	struct btusb_data *data = hci_get_drvdata(hdev);
- 	u8 param = 0;
- 	int err;
- 
-+	err = usb_autopm_get_interface(data->intf);
-+	if (err < 0)
-+		return err;
-+
- 	/* Disable the device */
- 	wmt_params.op = BTMTK_WMT_FUNC_CTRL;
- 	wmt_params.flag = 0;
-@@ -2986,9 +2991,11 @@ static int btusb_mtk_shutdown(struct hci_dev *hdev)
- 	err = btusb_mtk_hci_wmt_sync(hdev, &wmt_params);
- 	if (err < 0) {
- 		bt_dev_err(hdev, "Failed to send wmt func ctrl (%d)", err);
-+		usb_autopm_put_interface(data->intf);
- 		return err;
- 	}
- 
-+	usb_autopm_put_interface(data->intf);
- 	return 0;
- }
- 
--- 
-2.18.0
+Paolo
 
