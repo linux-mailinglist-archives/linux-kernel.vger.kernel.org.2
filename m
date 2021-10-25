@@ -2,82 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0502439C22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFB6439C28
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbhJYQ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhJYQ53 (ORCPT
+        id S234124AbhJYQ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:59:57 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:49438 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234107AbhJYQ74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:57:29 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E407AC061745;
-        Mon, 25 Oct 2021 09:55:06 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so546475pjb.0;
-        Mon, 25 Oct 2021 09:55:06 -0700 (PDT)
+        Mon, 25 Oct 2021 12:59:56 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 6F2E11D18;
+        Mon, 25 Oct 2021 19:57:31 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=34KqGsADswDnjonTJQq114bRqQgkKcPCrw08YN12k1U=;
-        b=ArdZ9P7fyJ7zJHFYx1+AQE02HbDLJAUvr4erZl2mwbBhtH4+TimE4u+ugqvNFdwh8d
-         3/k33Em4/TsoIsweBaglse1QZQgHs7wcFn8ECUkcngi4ODPtbQO4Nm9N6HsFFQgfLYjO
-         RePbywXUgZ4jXqcZxI7CJfFNDy98/HjjX5D5DC2BF8G+I/IOB9VG5SIpJ3tDITv0dJRl
-         sUJ6d+ibD4KBuChDdczeAcIBzNl30xwnxblX9PJBRPoGnixLoKyw7+/sPO6a5ErIzVMp
-         go4JYUYLmAuef1oHBLR/IOfONu/74SlIlF3dwUs57Wqyht+Hr5rXw+CnNSGJhGpEkKIr
-         iTbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=34KqGsADswDnjonTJQq114bRqQgkKcPCrw08YN12k1U=;
-        b=CiJ6GG+pu9UK887u3phNe8COOXM+5lAJsfq8W27MTaqdekM2fv3fFNaCUEbMSlzK0o
-         wnJRyM615aS7Uyo96rQhbI23V0k6zsi5+HyaqPXFOx3pmXjnsFNddnovC0eplJMKE7O+
-         CQeIR3fjr+8Bq9iYJheyEZpFn9lgjgUcWSEt7disXt8d2YLEBolVIBEX0sFL1TQXkFlQ
-         Z8w0XAfQjlcu4H0yb9sqo5TeZAeLJlLXI82PevMag0ridM9442KPhNpw+SEGrIju16Yx
-         uDhxLaOWb17oMtKp3LIpHTu6Y4gykSIyA8mx8B5eIhx7DYBtG30RQB7rJhKG542XKYNX
-         G0rQ==
-X-Gm-Message-State: AOAM532q2W3u/6lDgGL0tft501b0Mppeq/0/ZyOzrSPjOhkLS3VfR9nN
-        96BX5RSObXs0tXCMWuN5fus=
-X-Google-Smtp-Source: ABdhPJwnOC5S77AdBEAZhaiGNLZ1LAMQYdWuNPBpW15141iALB0JrDnj2gFivuKTGQtzXuB/cou/UQ==
-X-Received: by 2002:a17:90b:1b49:: with SMTP id nv9mr21773068pjb.134.1635180906379;
-        Mon, 25 Oct 2021 09:55:06 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:676:677c:1b95:77a5])
-        by smtp.gmail.com with ESMTPSA id c15sm9853456pfv.66.2021.10.25.09.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 09:55:05 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 25 Oct 2021 09:55:04 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
-        ngupta@vflare.org, senozhatsky@chromium.org, richard@nod.at,
-        miquel.raynal@bootlin.com, vigneshr@ti.com,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
-        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
-        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/13] zram: add error handling support for add_disk()
-Message-ID: <YXbhaO5QAOi96E8j@google.com>
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <20211015235219.2191207-9-mcgrof@kernel.org>
+        d=paragon-software.com; s=mail; t=1635181051;
+        bh=zE92f7no4pPlDEilsj0pP1PCQtLcS1RcHHNEWDSZNLA=;
+        h=Date:To:CC:From:Subject;
+        b=qhhE8t+TDmtff5FnK9/CyzHEyTPank/TsaKtaOOnukaMc/ec8AV1v+gC4LoLAfHQn
+         AstlWKoplKfwaVsEKnslHsZr4i/zeI5NdRnx5b/9Y13vwzFfyiHN3oY47FphVT22FK
+         m7fKWTx44HhwwTMf1G13aL7Ib9CKN6xhM39GGg4U=
+Received: from [192.168.211.155] (192.168.211.155) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 25 Oct 2021 19:57:31 +0300
+Message-ID: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
+Date:   Mon, 25 Oct 2021 19:57:30 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015235219.2191207-9-mcgrof@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH 0/4] fs/ntfs3: Various fixes for xfstests problems
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.155]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 04:52:14PM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Acked-by: Minchan Kim <minchan@kernel.org>
+This series fixes generic/444 generic/092 generic/228 generic/240
+
+Konstantin Komarov (4):
+  fs/ntfs3: In function ntfs_set_acl_ex do not change inode->i_mode if
+    called from function ntfs_init_acl
+  fs/ntfs3: Fix fiemap + fix shrink file size (to remove preallocated
+    space)
+  fs/ntfs3: Check new size for limits
+  fs/ntfs3: Update valid size if -EIOCBQUEUED
+
+ fs/ntfs3/file.c    | 10 ++++++++--
+ fs/ntfs3/frecord.c | 10 +++++++---
+ fs/ntfs3/inode.c   |  9 +++++++--
+ fs/ntfs3/xattr.c   | 13 +++++++------
+ 4 files changed, 29 insertions(+), 13 deletions(-)
+
+-- 
+2.33.0
+
