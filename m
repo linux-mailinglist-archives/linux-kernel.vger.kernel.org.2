@@ -2,91 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2CA43A7F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FB243A806
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbhJYXIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
+        id S234065AbhJYXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbhJYXIr (ORCPT
+        with ESMTP id S232664AbhJYXQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:08:47 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE797C061745;
-        Mon, 25 Oct 2021 16:06:24 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id l186so5739594pge.7;
-        Mon, 25 Oct 2021 16:06:24 -0700 (PDT)
+        Mon, 25 Oct 2021 19:16:41 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B14CC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:14:18 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso159745pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:14:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Ngur52vg7le9KRvczk5/psRZTKMdl8rWkzVC3BsUces=;
-        b=bQXrA0XFz+8io8NpFWSmkS/qNCDktHdZEU2oAtP8kUGOYkXgAQ2nW+HoLIgsTzDCab
-         r9MEnqKSKPLyQeDc07ytH5fCPwq2YBlkyVgAVGZU3KGQ5UP3y6+BkYUm8fbTVKtFTOKA
-         jGEQBR0RWkG0ZrHUSTEll2LWTijtIpEfgzfASjIp84e2It6LqR3VgK0wZqLQorUHEHW3
-         CyoIvMlFOCY7PN4/lhWl3dLHXpla5GCGTlFXpsOl5fKzbT5koZXQCsRedDKn2kQk0Rwa
-         aoc4qFjJ1EOxlNSDKTU1SjOn6wmejVsh2h6XtTqNrZn/Hl5Ktp7PIt6WElNXl5p0sdIG
-         NfiA==
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=Lh3py47gA8jg6Gb0rOjwQD82lb53Sm8VrPET+7wqweU=;
+        b=oC7s9lfcXvHb8GRvOWEgcGhIyRfEicCKCTCuu+2KC7c3BABC0NHhIBow7E6xLZIUyC
+         0xsSBuSoyShsveED9PlDgizbLrEAyiULB3490fdPvkS3iDgv1aEHxsl25nxTCwvBbpPA
+         jMjqJo93kja70FwMf6zXL663O2Lh3CdcM70xFd4xNpBxDLVt41lVBxdRU0BEB6LkwD6/
+         Ll5Bjm1ZtwoD3lpGAcur5UaX9jaAKjAwuJgrE3rcEBd8dAIlY6q28kBLFagPNN6UTO5w
+         w4ruzR2/Afvvyva2nkbLvm3B6gTOojkma9/APlNGsmvOlgZa86E6fzq6Uyg/Ipb9kXx5
+         i7tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Ngur52vg7le9KRvczk5/psRZTKMdl8rWkzVC3BsUces=;
-        b=SXqWgbtp9FU6z7LdKWoP6bwxTca/j24+YMRgDUG3NRE13r5gl0XU5yhgs4uGApZA5k
-         KJzM2yydHdjJQJIQCuUHglYYwiQHqvlnEan9tBKSbZ0qk1xE6KsI23NuwAIbUZXymI33
-         RXWA5OKMdPTjWUXzHVpKmVPwCej1W9+QoLz1Et8AjoUpa30yZ6YALbB2FnD2ohqOM9to
-         0rxwAsIr3I5zckC0u+FgK4+A0XEHVPLG6qYZ5V+S3LYdfJ6n+sWq53VZo37pa6992qxG
-         Fes/fCsXLFqGcY8HzmsLjnMXf/m48S74/I+th6q+eVXFXbs7wf+I0wx5kDgjIB7P/QVl
-         KxEw==
-X-Gm-Message-State: AOAM532lBPGQfvNFHKr7w5lh4eZDeVUVPMtKCx5IH9ZMGcWjIC5mtiDc
-        dN4melpXxc9FRbcwTLNibh6nEiB9Ydj6LJZYeTA=
-X-Google-Smtp-Source: ABdhPJxskO/c26xs/AfTlO03drP6mxWy3oeU1wk3aWSPC4s5eYvvSwZK479zdgz74SuiTuKDtwUWTg==
-X-Received: by 2002:a62:e901:0:b0:47b:f1bc:55e4 with SMTP id j1-20020a62e901000000b0047bf1bc55e4mr8498524pfh.0.1635203183643;
-        Mon, 25 Oct 2021 16:06:23 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id c8sm6802301pgh.40.2021.10.25.16.06.22
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=Lh3py47gA8jg6Gb0rOjwQD82lb53Sm8VrPET+7wqweU=;
+        b=3G+hgn4wL3jLcQgGDQ4vWQHVQcyfFNs7hlwyw1jpcdyPk4gmewXYC6Uh45A/Wat7bx
+         9FG6yUiva2OUsCoVk0+56KsJ23cUeEwn8otwZmxvW4PHv+itBfDu2kURu04pI1ovcwjw
+         uQS4u4aLqwkbOxdW8Jju9c0hMAOQnxvyIr+K15O1UrCYYdAzY6EZbllUW0vdipXNJEKV
+         hJgsAydnD05ilQby5WfMppXLjLENg1NPabGIARm++EK1hgHWNSg53ij2A8xz5E/lrdhE
+         QeQIKALI5kaIBNKP1NCA5//8Uz8pL5+kMUqQdYHWhikjXwUKBV3UX11EXwK7S+qXeIEr
+         /WhQ==
+X-Gm-Message-State: AOAM5318hEfZyst/9690qotlFunHtq0CoT4vbue0HnjTVZiJWmb/VCKa
+        tQoSRGJyY2SMFrpbqpMi7A==
+X-Google-Smtp-Source: ABdhPJwQNFIGfOE2VPjqLATShIXQYysjolvs2G1MnC0uCysSRth3EfS/RS0y3Jzr9s2LlVT31xGGyw==
+X-Received: by 2002:a17:90b:4a07:: with SMTP id kk7mr24128073pjb.37.1635203657849;
+        Mon, 25 Oct 2021 16:14:17 -0700 (PDT)
+Received: from u2004 ([2407:c800:3f11:740:8ea1:3c5:6c2d:e5c9])
+        by smtp.gmail.com with ESMTPSA id g5sm12041028pfc.65.2021.10.25.16.14.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 16:06:23 -0700 (PDT)
-Message-ID: <6177386f.1c69fb81.b404a.1255@mx.google.com>
-Date:   Mon, 25 Oct 2021 16:06:23 -0700 (PDT)
-X-Google-Original-Date: Mon, 25 Oct 2021 23:06:22 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 000/169] 5.14.15-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 25 Oct 2021 16:14:17 -0700 (PDT)
+From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
+X-Google-Original-From: Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Date:   Tue, 26 Oct 2021 08:14:13 +0900
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Ding Hui <dinghui@sangfor.com.cn>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/4] mm/hwpoison: remove MF_MSG_BUDDY_2ND and
+ MF_MSG_POISONED_HUGE
+Message-ID: <20211025231120.GA2651146@u2004>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
+X-Mutt-References: <20211025230503.2650970-1-naoya.horiguchi@linux.dev>
+X-Mutt-Fcc: =Sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 21:13:01 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.15 release.
-> There are 169 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 27 Oct 2021 19:08:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.15-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+(I failed to send patch 3/4 and 4/4 due to the ratelimit of linux.dev,
+so I switched mail server...)
 
-5.14.15-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+
+These action_page_types are no longer used, so remove them.
+
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+---
+ include/linux/mm.h      | 2 --
+ include/ras/ras_event.h | 2 --
+ mm/memory-failure.c     | 2 --
+ 3 files changed, 6 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a3229f609856..71d886470d71 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3246,7 +3246,6 @@ enum mf_action_page_type {
+ 	MF_MSG_KERNEL_HIGH_ORDER,
+ 	MF_MSG_SLAB,
+ 	MF_MSG_DIFFERENT_COMPOUND,
+-	MF_MSG_POISONED_HUGE,
+ 	MF_MSG_HUGE,
+ 	MF_MSG_FREE_HUGE,
+ 	MF_MSG_NON_PMD_HUGE,
+@@ -3261,7 +3260,6 @@ enum mf_action_page_type {
+ 	MF_MSG_CLEAN_LRU,
+ 	MF_MSG_TRUNCATED_LRU,
+ 	MF_MSG_BUDDY,
+-	MF_MSG_BUDDY_2ND,
+ 	MF_MSG_DAX,
+ 	MF_MSG_UNSPLIT_THP,
+ 	MF_MSG_UNKNOWN,
+diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
+index 0bdbc0d17d2f..d0337a41141c 100644
+--- a/include/ras/ras_event.h
++++ b/include/ras/ras_event.h
+@@ -358,7 +358,6 @@ TRACE_EVENT(aer_event,
+ 	EM ( MF_MSG_KERNEL_HIGH_ORDER, "high-order kernel page" )	\
+ 	EM ( MF_MSG_SLAB, "kernel slab page" )				\
+ 	EM ( MF_MSG_DIFFERENT_COMPOUND, "different compound page after locking" ) \
+-	EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )	\
+ 	EM ( MF_MSG_HUGE, "huge page" )					\
+ 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
+ 	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
+@@ -373,7 +372,6 @@ TRACE_EVENT(aer_event,
+ 	EM ( MF_MSG_CLEAN_LRU, "clean LRU page" )			\
+ 	EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )	\
+ 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
+-	EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )		\
+ 	EM ( MF_MSG_DAX, "dax page" )					\
+ 	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
+ 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index a47b741ca04b..09f079987928 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -723,7 +723,6 @@ static const char * const action_page_types[] = {
+ 	[MF_MSG_KERNEL_HIGH_ORDER]	= "high-order kernel page",
+ 	[MF_MSG_SLAB]			= "kernel slab page",
+ 	[MF_MSG_DIFFERENT_COMPOUND]	= "different compound page after locking",
+-	[MF_MSG_POISONED_HUGE]		= "huge page already hardware poisoned",
+ 	[MF_MSG_HUGE]			= "huge page",
+ 	[MF_MSG_FREE_HUGE]		= "free huge page",
+ 	[MF_MSG_NON_PMD_HUGE]		= "non-pmd-sized huge page",
+@@ -738,7 +737,6 @@ static const char * const action_page_types[] = {
+ 	[MF_MSG_CLEAN_LRU]		= "clean LRU page",
+ 	[MF_MSG_TRUNCATED_LRU]		= "already truncated LRU page",
+ 	[MF_MSG_BUDDY]			= "free buddy page",
+-	[MF_MSG_BUDDY_2ND]		= "free buddy page (2nd try)",
+ 	[MF_MSG_DAX]			= "dax page",
+ 	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
+ 	[MF_MSG_UNKNOWN]		= "unknown page",
+-- 
+2.25.1
+
+
+
+
+
+
+
+
+
+
+
+
+From: Naoya Horiguchi <nao.horiguchi@gmail.com>
+To: 
+Cc: 
+Bcc: nao.horiguchi@gmail.com
+Subject: 
+Reply-To: 
 
