@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075EC43A2BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1B4439F41
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237353AbhJYTvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37930 "EHLO mail.kernel.org"
+        id S234465AbhJYTSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:18:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237884AbhJYTqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:46:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 646F8611C1;
-        Mon, 25 Oct 2021 19:39:44 +0000 (UTC)
+        id S234462AbhJYTSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:18:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCFE26108C;
+        Mon, 25 Oct 2021 19:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190786;
-        bh=h9NcphN82hRB/YW97j9KUPQ/d5eoeyBJyyVP4zbjNMU=;
+        s=korg; t=1635189369;
+        bh=xPORa5NBRmvXy/WNEhc6nsuoOJuoOBvLh8HI7MWt5nw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BVklzFx2KIZ/Lpymk01YvhEa3FzhhaQNBivPl34yWdjhrCJhhvzqC+MTZDZzac4It
-         p643mt2r0t3eKzqWd11SMwPHuhYKnwhirz+9cryL7qAMEB6fectGeH/KT8pfipObuW
-         zudza5ViMVHL4J2fHNRPIW8U/LscY390rLthUUTU=
+        b=GGkt9+KhJasNq5QGZNal/WXPZHtgLBAEEkUSMDCEs661F1q5fbMtU1HHrAacWY9vv
+         nrtSEbIJBJoNfwdbOQUQat4GnR+E0mf4DXhRslZQSqmsBdTFsvJPhc6OxDeTDqYV9Y
+         6z5M6e1STV7NBYQ77sIC1e0wG+dfVqUpHihhSzfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.14 070/169] can: isotp: isotp_sendmsg(): fix TX buffer concurrent access in isotp_sendmsg()
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Barret Rhoden <brho@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 30/44] elfcore: correct reference to CONFIG_UML
 Date:   Mon, 25 Oct 2021 21:14:11 +0200
-Message-Id: <20211025191026.335737563@linuxfoundation.org>
+Message-Id: <20211025190934.833510406@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
-References: <20211025191017.756020307@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+References: <20211025190928.054676643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,142 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-commit 43a08c3bdac4cb42eff8fe5e2278bffe0c5c3daa upstream.
+commit b0e901280d9860a0a35055f220e8e457f300f40a upstream.
 
-When isotp_sendmsg() concurrent, tx.state of all TX processes can be
-ISOTP_IDLE. The conditions so->tx.state != ISOTP_IDLE and
-wq_has_sleeper(&so->wait) can not protect TX buffer from being
-accessed by multiple TX processes.
+Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
+special handling for two architectures, ia64 and User Mode Linux.
+However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig
+symbol for User-Mode Linux was used.
 
-We can use cmpxchg() to try to modify tx.state to ISOTP_SENDING firstly.
-If the modification of the previous process succeed, the later process
-must wait tx.state to ISOTP_IDLE firstly. Thus, we can ensure TX buffer
-is accessed by only one process at the same time. And we should also
-restore the original tx.state at the subsequent error processes.
+Although the directory for User Mode Linux is ./arch/um; the Kconfig
+symbol for this architecture is called CONFIG_UML.
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://lore.kernel.org/all/c2517874fbdf4188585cf9ddf67a8fa74d5dbde5.1633764159.git.william.xuanziyang@huawei.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+
+  UM
+  Referencing files: include/linux/elfcore.h
+  Similar symbols: UML, NUMA
+
+Correct the name of the config to the intended one.
+
+[akpm@linux-foundation.org: fix um/x86_64, per Catalin]
+  Link: https://lkml.kernel.org/r/20211006181119.2851441-1-catalin.marinas@arm.com
+  Link: https://lkml.kernel.org/r/YV6pejGzLy5ppEpt@arm.com
+
+Link: https://lkml.kernel.org/r/20211006082209.417-1-lukas.bulwahn@gmail.com
+Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Barret Rhoden <brho@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/isotp.c |   46 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
+ include/linux/elfcore.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -121,7 +121,7 @@ enum {
- struct tpcon {
- 	int idx;
- 	int len;
--	u8 state;
-+	u32 state;
- 	u8 bs;
- 	u8 sn;
- 	u8 ll_dl;
-@@ -848,6 +848,7 @@ static int isotp_sendmsg(struct socket *
- {
- 	struct sock *sk = sock->sk;
- 	struct isotp_sock *so = isotp_sk(sk);
-+	u32 old_state = so->tx.state;
- 	struct sk_buff *skb;
- 	struct net_device *dev;
- 	struct canfd_frame *cf;
-@@ -860,47 +861,55 @@ static int isotp_sendmsg(struct socket *
- 		return -EADDRNOTAVAIL;
- 
- 	/* we do not support multiple buffers - for now */
--	if (so->tx.state != ISOTP_IDLE || wq_has_sleeper(&so->wait)) {
--		if (msg->msg_flags & MSG_DONTWAIT)
--			return -EAGAIN;
-+	if (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE ||
-+	    wq_has_sleeper(&so->wait)) {
-+		if (msg->msg_flags & MSG_DONTWAIT) {
-+			err = -EAGAIN;
-+			goto err_out;
-+		}
- 
- 		/* wait for complete transmission of current pdu */
- 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
- 		if (err)
--			return err;
-+			goto err_out;
- 	}
- 
--	if (!size || size > MAX_MSG_LENGTH)
--		return -EINVAL;
-+	if (!size || size > MAX_MSG_LENGTH) {
-+		err = -EINVAL;
-+		goto err_out;
-+	}
- 
- 	/* take care of a potential SF_DL ESC offset for TX_DL > 8 */
- 	off = (so->tx.ll_dl > CAN_MAX_DLEN) ? 1 : 0;
- 
- 	/* does the given data fit into a single frame for SF_BROADCAST? */
- 	if ((so->opt.flags & CAN_ISOTP_SF_BROADCAST) &&
--	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off))
--		return -EINVAL;
-+	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off)) {
-+		err = -EINVAL;
-+		goto err_out;
-+	}
- 
- 	err = memcpy_from_msg(so->tx.buf, msg, size);
- 	if (err < 0)
--		return err;
-+		goto err_out;
- 
- 	dev = dev_get_by_index(sock_net(sk), so->ifindex);
--	if (!dev)
--		return -ENXIO;
-+	if (!dev) {
-+		err = -ENXIO;
-+		goto err_out;
-+	}
- 
- 	skb = sock_alloc_send_skb(sk, so->ll.mtu + sizeof(struct can_skb_priv),
- 				  msg->msg_flags & MSG_DONTWAIT, &err);
- 	if (!skb) {
- 		dev_put(dev);
--		return err;
-+		goto err_out;
- 	}
- 
- 	can_skb_reserve(skb);
- 	can_skb_prv(skb)->ifindex = dev->ifindex;
- 	can_skb_prv(skb)->skbcnt = 0;
- 
--	so->tx.state = ISOTP_SENDING;
- 	so->tx.len = size;
- 	so->tx.idx = 0;
- 
-@@ -956,7 +965,7 @@ static int isotp_sendmsg(struct socket *
- 	if (err) {
- 		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
- 			       __func__, ERR_PTR(err));
--		return err;
-+		goto err_out;
- 	}
- 
- 	if (wait_tx_done) {
-@@ -968,6 +977,13 @@ static int isotp_sendmsg(struct socket *
- 	}
- 
- 	return size;
-+
-+err_out:
-+	so->tx.state = old_state;
-+	if (so->tx.state == ISOTP_IDLE)
-+		wake_up_interruptible(&so->wait);
-+
-+	return err;
+--- a/include/linux/elfcore.h
++++ b/include/linux/elfcore.h
+@@ -55,7 +55,7 @@ static inline int elf_core_copy_task_xfp
  }
+ #endif
  
- static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+-#if defined(CONFIG_UM) || defined(CONFIG_IA64)
++#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
+ /*
+  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
+  * extra segments containing the gate DSO contents.  Dumping its
 
 
