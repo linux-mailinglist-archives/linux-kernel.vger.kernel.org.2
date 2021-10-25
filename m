@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B1143925D
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8CA43925E
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 11:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhJYJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 05:31:30 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53105 "EHLO mga09.intel.com"
+        id S232554AbhJYJbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 05:31:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:33895 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231917AbhJYJb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:31:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="229468666"
+        id S229946AbhJYJb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 05:31:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="293072434"
 X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="229468666"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 02:29:05 -0700
+   d="scan'208";a="293072434"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 02:29:05 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; 
-   d="scan'208";a="596406506"
+   d="scan'208";a="536406931"
 Received: from lkp-server02.sh.intel.com (HELO 74392981b700) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 25 Oct 2021 02:29:04 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 25 Oct 2021 02:29:04 -0700
 Received: from kbuild by 74392981b700 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mewHv-0001aR-GA; Mon, 25 Oct 2021 09:29:03 +0000
-Date:   Mon, 25 Oct 2021 17:28:33 +0800
+        id 1mewHv-0001aX-I1; Mon, 25 Oct 2021 09:29:03 +0000
+Date:   Mon, 25 Oct 2021 17:28:45 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2021.10.13a] BUILD SUCCESS
- e62f19bebdd17fbd2289db98395e2ab3c0a0527a
-Message-ID: <617678c1.nTJx5/B1wC1Tsz6Y%lkp@intel.com>
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ 6161068bf209e4f6b5ab68f2bcd7e046f1e79298
+Message-ID: <617678cd./+JfFoaBzofbiQZ0%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,13 +39,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.10.13a
-branch HEAD: e62f19bebdd17fbd2289db98395e2ab3c0a0527a  fixup! clocksource: Forgive repeated long-latency watchdog clocksource reads
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 6161068bf209e4f6b5ab68f2bcd7e046f1e79298  torture: Test splatting for delay-ridden clocksources
 
 elapsed time: 1814m
 
-configs tested: 156
-configs skipped: 5
+configs tested: 146
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -72,16 +72,11 @@ powerpc                 mpc832x_rdb_defconfig
 sh                           se7751_defconfig
 xtensa                          iss_defconfig
 powerpc                 mpc837x_rdb_defconfig
-sh                           se7705_defconfig
-mips                      pic32mzda_defconfig
-mips                      bmips_stb_defconfig
-arm                           h5000_defconfig
 xtensa                generic_kc705_defconfig
 arm                           h3600_defconfig
+mips                      bmips_stb_defconfig
 mips                        vocore2_defconfig
 sh                        sh7757lcr_defconfig
-mips                         bigsur_defconfig
-sh                              ul2_defconfig
 i386                             alldefconfig
 powerpc                 mpc8313_rdb_defconfig
 sparc                       sparc32_defconfig
@@ -91,12 +86,6 @@ openrisc                    or1ksim_defconfig
 xtensa                  cadence_csp_defconfig
 powerpc                 mpc8315_rdb_defconfig
 arm                          ep93xx_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                    mvme5100_defconfig
-sh                        sh7763rdp_defconfig
-mips                         tb0226_defconfig
-powerpc                     tqm8560_defconfig
-arm                        multi_v7_defconfig
 powerpc                 mpc8272_ads_defconfig
 arm                            xcep_defconfig
 powerpc                     kmeter1_defconfig
@@ -104,12 +93,12 @@ openrisc                         alldefconfig
 powerpc                     tqm8548_defconfig
 arm                       spear13xx_defconfig
 mips                 decstation_r4k_defconfig
-riscv                               defconfig
 powerpc                   bluestone_defconfig
 nios2                         3c120_defconfig
 arc                      axs103_smp_defconfig
 powerpc                      obs600_defconfig
 mips                          rm200_defconfig
+arm                           h5000_defconfig
 arm                          moxart_defconfig
 mips                     loongson1c_defconfig
 sh                            shmin_defconfig
@@ -128,8 +117,8 @@ ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                                defconfig
-m68k                             allyesconfig
 m68k                             allmodconfig
+m68k                             allyesconfig
 nios2                               defconfig
 nds32                             allnoconfig
 arc                              allyesconfig
@@ -138,15 +127,15 @@ csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 nios2                            allyesconfig
-xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
+xtensa                           allyesconfig
 parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
 s390                             allyesconfig
 s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
@@ -185,6 +174,7 @@ riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
+riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 x86_64                    rhel-8.3-kselftests
