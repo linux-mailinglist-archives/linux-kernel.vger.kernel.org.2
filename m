@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698AB438F85
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CF0438F8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhJYGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230369AbhJYGcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:32:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C216F60C4A;
-        Mon, 25 Oct 2021 06:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635143385;
-        bh=BN1cngPxgf6pNckB5yfeW0VtZExwVPhHyz+0ku2Gb/0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=A+hyKG34GAdfp7K2SFGzPjp6Vm3KwF61QL5bBpyb0CY7Qc0NV89oYJ2YI9pdL5B3M
-         iUA9QTL7dfe4pjxJUQ72Ahf19cMomTA1ePhafUWegB8y5EB44r33yf3bHyzOJ2Oght
-         GErn7bf3WnYANACiO3wCo2iuhViBSha+Mo+pE/8+MYEjIMBiv3LfZAPskcWwIlR9Wa
-         733uII9E1Ie1hPKKQuY0zRh0twnFYBCu8rq5oBmBTKN8UgBT2fqmixZPMU2+WCacCh
-         qdByrZc6Sj+POPB6//xRksjSnnkkOxBq1HMBnypTLaExjz6UpZV9P9gO9awfiLTIjd
-         pa2Ep/TT27ycA==
-Date:   Mon, 25 Oct 2021 15:29:41 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, corbet@lwn.net, ananth@in.ibm.com,
-        akpm@linux-foundation.org, randy.dunlap@oracle.com,
-        mathieu.desnoyers@polymtl.ca, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] docs, kprobes: Remove invalid URL and add new
- reference
-Message-Id: <20211025152941.02d219a7a48a31a6ece7f149@kernel.org>
-In-Reply-To: <1635132660-5038-3-git-send-email-yangtiezhu@loongson.cn>
-References: <1635132660-5038-1-git-send-email-yangtiezhu@loongson.cn>
-        <1635132660-5038-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231231AbhJYGdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:33:33 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:48869 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230369AbhJYGdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:33:31 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4419B5C0178;
+        Mon, 25 Oct 2021 02:31:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 25 Oct 2021 02:31:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XH3xdt
+        bLhapmmW0JYmN5pD0fjj0gtqEc7lDkeWFuh3o=; b=Yu51eIJfHMCYnk01d/iAoa
+        724YShrQPbLtKdi0ukgyahPHDyYPYDQbjQ3r0wG9B90G/xYbi9KPIJ9i5Nf1ibWa
+        TfwCz4el+keN0w/cBANLpr2mUgW9lGEIdUVy7n0vGJAyo7U6FGRoNRXYL3hEa14D
+        h/T8JzCoi/9QsR5PL+j/gM9m64r4EhepbBQN6t/YZ3e6bA4iJAMg548HX98exKQU
+        fc6yiuhKxOh+gmzuhR2/VKplv9nPzDe/jx2c0qAUme4UsWtdXQXVOkOC62gpRFjB
+        3VbacqHY5xLUWqm7dns1kFpGbyzMV4w7ZMDbtCms8Q2OoaiU46pqbeDPbJ87wCoQ
+        ==
+X-ME-Sender: <xms:LE92YVQSafIH0CLsUelwfQoMv5h9cA3haHYo26u-1cMOhgL1Bcd4EQ>
+    <xme:LE92YexhmqJA_pNtmW4xMKR94ohD_aGolrCwLYtNaeD6X309abkEM0TYJgMRAEgtE
+    jt5VP8uFHsxTmk>
+X-ME-Received: <xmr:LE92Ya0RptTljgks0vgfx7dL3j2msyXHjZZKoppEr0xV53VYC-LJjJhc86_ZV0wAQhK_5x9v1qnmdW_UEqyBNevXI_o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
+    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    guohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:LE92YdBg9lQMX4kBB7KhwGQqilSHN2S6yUPXrrgou2F2Snp-MzZmdQ>
+    <xmx:LE92Yejc5WMoWthGNo6pbQ8mLbY9u7kzDdmWhAG3-9Adjs451nF_iw>
+    <xmx:LE92YRobHmQhzKGgCPDiaPq_xpgA4xSoOxXke1-6ddgFlnFti63BnQ>
+    <xmx:LU92YQb56BhiT645waIomlLOgFXtQUWOA88EJBnQAK38gVPEvoJ2IA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 02:31:07 -0400 (EDT)
+Date:   Mon, 25 Oct 2021 09:31:03 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mlxsw: spectrum: Use 'bitmap_zalloc()' when applicable
+Message-ID: <YXZPJxuPEDbPV5w7@shredder>
+References: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <daae11381ba197d91702cb23c6c1120571cb0b87.1635103002.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 11:30:58 +0800
-Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-
-> The following reference is invalid, remove it.
-> https://www.ibm.com/developerworks/library/l-kprobes/index.html
+On Sun, Oct 24, 2021 at 09:17:51PM +0200, Christophe JAILLET wrote:
+> Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid
+> some open-coded arithmetic in allocator arguments.
 > 
-> Add the following new reference "An introduction to KProbes":
-> https://lwn.net/Articles/132196/
-
-Looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thanks!
-
+> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+> consistency.
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  Documentation/trace/kprobes.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/trace/kprobes.rst b/Documentation/trace/kprobes.rst
-> index 998149c..f318bce 100644
-> --- a/Documentation/trace/kprobes.rst
-> +++ b/Documentation/trace/kprobes.rst
-> @@ -784,6 +784,6 @@ References
->  
->  For additional information on Kprobes, refer to the following URLs:
->  
-> -- https://www.ibm.com/developerworks/library/l-kprobes/index.html
-> +- https://lwn.net/Articles/132196/
->  - https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
->  
-> -- 
-> 2.1.0
-> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
+For net-next:
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+
+Thanks
