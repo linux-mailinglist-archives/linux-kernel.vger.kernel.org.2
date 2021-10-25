@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE22439B04
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810F5439B02
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhJYQCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:02:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19514 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230447AbhJYQCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:02:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="229545012"
-X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; 
-   d="scan'208";a="229545012"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 08:59:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; 
-   d="scan'208";a="493768434"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga007.fm.intel.com with ESMTP; 25 Oct 2021 08:59:09 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 25 Oct 2021 08:59:09 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 25 Oct 2021 08:59:08 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Mon, 25 Oct 2021 08:59:08 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "zhuo.song@linux.alibaba.com" <zhuo.song@linux.alibaba.com>
-Subject: RE: [PATCH v2] ACPI, APEI, EINJ: Relax platform response timeout to 1
- second.
-Thread-Topic: [PATCH v2] ACPI, APEI, EINJ: Relax platform response timeout to
- 1 second.
-Thread-Index: AQHXx0r+hFO+UTVGcUC6Y89jbSc6h6vfsdiAgAKi84CAAc9gAP//v0XA
-Date:   Mon, 25 Oct 2021 15:59:08 +0000
-Message-ID: <bb5582286b13495b9d91e3f13b61cbd9@intel.com>
-References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
- <20211022134424.67279-1-xueshuai@linux.alibaba.com>
- <YXNPSQT9LnxiyVFC@agluck-desk2.amr.corp.intel.com>
- <777aca99-b076-5bd7-03e3-f12ef9e7edd0@linux.alibaba.com>
- <f976af5e-6821-9ce1-0575-b4e2d7fd4479@linux.alibaba.com>
-In-Reply-To: <f976af5e-6821-9ce1-0575-b4e2d7fd4479@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233629AbhJYQCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230447AbhJYQCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:02:07 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D28BC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:59:45 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id m26so11175604pff.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w9P/Rne5ymD8b1qJ3aEv5OCeH/9kZPRIuSn6tq5OUHM=;
+        b=j+elYf4ZW9A4N9j6WF9VhABHXAUfL9rCJDDq4F++efLWp0v63eFaShCvnoHiycTytx
+         jYb7f5J71kyR4V+6hfdzX3l0Dr+ZKvaI5dPCHn3gB/x8Sj3yLl50euqBykgsDJThODec
+         p3aLwMi2Ouf1R8qR+kaod4RpULeg6v+xY0Q0ebMLrqUwz+dzod6e16xlE+s7Wna4nxiZ
+         OpOhw1kb5x+dhY5fTVSNeugGihImHCoqqDYK1u7lemdf7PfRXD/KGTZhXXO0i/3sQLY9
+         1ckoh6d/ek98LtLtuq4DSsvdt1yj93tTSdMqGLV8MqYAy1c/+CeAGJRUdZaE2SozrEdg
+         F18g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w9P/Rne5ymD8b1qJ3aEv5OCeH/9kZPRIuSn6tq5OUHM=;
+        b=wmC0XFxShUlf5xtxqL3ACDFvyPWBboF6UJLpHN2BE9kvxrxlOzsEVhW4/ji8ggk2Vf
+         OFMBWblYHlWKdj+hLRCYWxBmqkKfBOyaPhWUXPSYi9bKape2Wy74CyW5JbzUdzsdy9H+
+         eEVkbW7+ikqFGA7iRJrmDaw6PEeejxuMb4tzPfk30q/Dxjg1txsr4qS5cyLb1ahPeB7U
+         wHg5SI1dUUwRNqnwg63EtAg3VvLPsmKxpllclzkceHRbx3zPlM+smoo0jfYriJd5eFJ3
+         NHMLAsKnfchuREhNWcr6PRHgGZHqvfWtsFL73gjKvi+Y2zS85ddmW5kdkvZkc/RG5Yf4
+         vvgg==
+X-Gm-Message-State: AOAM530ndHbyLGz5UIA35NF1zcbTJqL5OBVA0MtHBamggSGKmJF/XTSS
+        rkZORX8bKUYq5R99H+0LsI9HDQ==
+X-Google-Smtp-Source: ABdhPJwO39513NZAI+ELPplnBuLORATTfpsCJaggJoTWnfGpDNkg7etx8ulBZ8aa5mGR+Iozxj5wOg==
+X-Received: by 2002:a63:8f09:: with SMTP id n9mr8654538pgd.466.1635177584732;
+        Mon, 25 Oct 2021 08:59:44 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g11sm16758033pgn.41.2021.10.25.08.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 08:59:44 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 15:59:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] KVM: x86: APICv cleanups
+Message-ID: <YXbUbB+l++P3XSZ5@google.com>
+References: <20211022004927.1448382-1-seanjc@google.com>
+ <23d9b009-2b48-d93c-3c24-711c4757ca1b@redhat.com>
+ <9c159d2f23dc3957a2fda0301b25fca67aa21b30.camel@redhat.com>
+ <b931906f-b38e-1cb5-c797-65ef82c8b262@redhat.com>
+ <YXbAxkf1W37m9eZp@google.com>
+ <674bc620-f013-d826-a4d4-00a142755a9e@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <674bc620-f013-d826-a4d4-00a142755a9e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gTm8sIEkgZG9uJ3QuIEVJTkogcHJvdmlkZXMgYSBoYXJkd2FyZSBlcnJvciBpbmplY3Rpb24g
-bWVjaGFuaXNtIHRvIGRldmVsb3ANCj4+IGFuZCBkZWJ1ZyBmaXJtd2FyZSBjb2RlIGFuZCBoYXJk
-d2FyZSBSQVMgZmVhdHVyZS4gV2hpbGUgd2UgdGVzdCBvbiBBcm0NCj4+IHBsYXRmb3JtLCBpdCBj
-YW5ub3QgbWVldCB0aGUgb3JpZ2luYWwgdGltZW91dCBsaW1pdC4gVGhlcmVmb3JlLCB3ZSBzZW5k
-DQo+PiB0aGlzIHBhdGNoIHRvIHJlbGF4IHRoZSB1cHBlciBib3VuZCBvZiB0aW1lb3V0LiBJbiBv
-cmRlciB0byBmYWNpbGl0YXRlDQo+PiBvdGhlciBwbGF0Zm9ybXMgdG8gZW5jb3VudGVyIHRoZSBz
-YW1lIHByb2JsZW1zLCB3ZSBleHBvc2UgdGltZW91dCBhcyBhDQo+PiBjb25maWd1cmFibGUgcGFy
-YW1ldGVyIGluIHVzZXIgc3BhY2UuDQo+DQo+IFdoYXQncyB5b3VyIG9waW5pb24gYWJvdXQgdGhp
-cyBpbnRlcmZhY2U/DQoNCkkgY2FuJ3Qgc2VlIGEgY2FzZSB3aGVyZSBhbnlvbmUgd291bGQgdXNl
-IGl0LiBTbyBpdCBpcyBqdXN0IHVzZWxlc3MgZmx1ZmYuDQoNCkkgc2F5IGRyb3AgaXQgZnJvbSB0
-aGUgbmV4dCByZXYgb2YgdGhlIHBhdGNoLg0KDQotVG9ueQ0K
+On Mon, Oct 25, 2021, Paolo Bonzini wrote:
+> On 25/10/21 16:35, Sean Christopherson wrote:
+> > > So yeah, I think you're right.
+> > Yep.  The alternative would be to explicitly check for a pending APICv update.
+> > I don't have a strong opinion, I dislike both options equally:-)
+> 
+> No, checking for the update is worse and with this example, I can now point
+> my finger on why I preferred the VM check even before: because even though
+> the page fault path runs in vCPU context and uses a vCPU-specific role,
+> overall the page tables are still per-VM.
+
+Arguably the lack of incorporation into the page role is the underlying bug, and
+all the shenanigans with synchronizing updates are just workarounds for that bug.
+I.e. page tables are never strictly per-VM, they're per-role, but we fudge it in
+this case because we don't want to take on the overhead of maintaining two sets
+of page tables to handle APICv.
