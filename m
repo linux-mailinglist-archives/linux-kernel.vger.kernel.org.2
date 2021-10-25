@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A3643A876
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F5843A87A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 01:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbhJYXuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 19:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233575AbhJYXuO (ORCPT
+        id S235345AbhJYXww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 19:52:52 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49202 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233035AbhJYXwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 19:50:14 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10283C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:47:51 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id o26so16447634ljj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0MHONJ1Tiqh/QXhH03y+bZKGvViBQu6ZRWiSgU9PGS0=;
-        b=dDQGCv0xFFdG2csGc5FZKB8kDb2ebyiukFDaUkTvM6JaJNVr7CYuqrmfQzbEu1vA2c
-         mmE+fGSDa0VHqXbtaZcZhEZJtzTceEbHAvHPHBlYBaVSD2lpOnswV5w2ceXgdnwdfkIc
-         djJ0KBHxIvXKNC0FcEL7++GtN+qwVqBPM++rM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0MHONJ1Tiqh/QXhH03y+bZKGvViBQu6ZRWiSgU9PGS0=;
-        b=23qpA4mE7/TD8UKkZEKSeDVdX6L3DuJ7zdFcX4HSH+Ips1KVhqmnCPig1C8MI+dNt8
-         cKxW0JqxJFG2mYnnG7TNYQLnPz+PEYWzanse+9p3U/zQprEQkbHCckn2xcmlQTy+zF+8
-         l4jvFZwLv7DEGsmXcASdLij/XE0z3bNxP7HavBLW1bT0idI91jX824xLw5aVGBYcR88P
-         jNoFHOiXVcJZDL6WoCAugaMyRaFTsizKyVsWAqg66Ne5OFdRzKYA9V3lzZTih475z6mQ
-         Rk5nJWAwjwZe1Ndqb+PBI8ftiL2NqMECXtj8+1V1JCXTG+9WjEJuOHMNrBLvfx4jGr6D
-         Nk0A==
-X-Gm-Message-State: AOAM5320zYGmET7X3BmArAgy+glR6Yt8RxVUeeTOBo1lpjLo9JEo4GVd
-        wzUqfWEKNyIM4HnsddKrytB0EWtJekZDAa0+
-X-Google-Smtp-Source: ABdhPJwAzUqZsr/tCa4aGlqVnXRKJJi0ZoW6p72TrTvAk5dMQjQ9LjEm/Liffvkv2V7IvNBAdrr3Ew==
-X-Received: by 2002:a2e:a584:: with SMTP id m4mr22941170ljp.489.1635205669242;
-        Mon, 25 Oct 2021 16:47:49 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id p3sm1769391lfa.293.2021.10.25.16.47.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 16:47:48 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id o11so19707435ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 16:47:48 -0700 (PDT)
-X-Received: by 2002:a2e:a407:: with SMTP id p7mr22997653ljn.68.1635205668568;
- Mon, 25 Oct 2021 16:47:48 -0700 (PDT)
+        Mon, 25 Oct 2021 19:52:51 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 42BA11F770;
+        Mon, 25 Oct 2021 23:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635205827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJHXZbi24TJIP9vr7waWGzuy6gde4hlefZz+RK4iT4g=;
+        b=QvziNNgB6DAnCN8N64t5ZaTCaLDfH+ssRBUsc6QxmtfQDUZGGC3xa1tol41sETg84sfl44
+        cx40ZZl5Nc7Y8+rttb364KQ9Daj0ByLJr3pXf1AqHuCc6SZKn60I9XSMCN4UxVynFt8MIV
+        Sqn2aLDtcDgVQf615shiu3KYIH4/hEI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635205827;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJHXZbi24TJIP9vr7waWGzuy6gde4hlefZz+RK4iT4g=;
+        b=KakUYe7ecaoyJllSZbfMkAV414oqnxqvSRzgbHkdrUGlEo1FiAGtctnJUIICBmUb9m3KYx
+        s/Q2ggYtv7lh2+AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5944713CBD;
+        Mon, 25 Oct 2021 23:50:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LrO2BcBCd2EbVQAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 25 Oct 2021 23:50:24 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-References: <CAHk-=wi1+boAQyckdiYXuBkybN4H_7OT569MwgyetWAfTExeEA@mail.gmail.com>
- <20211025233919.GA2394574@roeck-us.net>
-In-Reply-To: <20211025233919.GA2394574@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 25 Oct 2021 16:47:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whxKG79X-Wz3xcFQtsB5XpK_Rn4oRr=h9uTL=OCHZ5=9w@mail.gmail.com>
-Message-ID: <CAHk-=whxKG79X-Wz3xcFQtsB5XpK_Rn4oRr=h9uTL=OCHZ5=9w@mail.gmail.com>
-Subject: Re: Linux 5.15-rc7
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Uladzislau Rezki" <urezki@gmail.com>
+Cc:     "Michal Hocko" <mhocko@suse.com>,
+        "Uladzislau Rezki" <urezki@gmail.com>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Linux Memory Management List" <linux-mm@kvack.org>,
+        "Dave Chinner" <david@fromorbit.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        "LKML" <linux-kernel@vger.kernel.org>,
+        "Ilya Dryomov" <idryomov@gmail.com>,
+        "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+In-reply-to: <20211025094841.GA1945@pc638.lan>
+References: <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>,
+ <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>,
+ <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>,
+ <YXAtYGLv/k+j6etV@dhcp22.suse.cz>,
+ <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>,
+ <20211020192430.GA1861@pc638.lan>,
+ <163481121586.17149.4002493290882319236@noble.neil.brown.name>,
+ <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>, <20211021104038.GA1932@pc638.lan>,
+ <163485654850.17149.3604437537345538737@noble.neil.brown.name>,
+ <20211025094841.GA1945@pc638.lan>
+Date:   Tue, 26 Oct 2021 10:50:21 +1100
+Message-id: <163520582122.16092.9250045450947778926@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 4:39 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Build results:
->         total: 154 pass: 154 fail: 0
-> Qemu test results:
->         total: 480 pass: 480 fail: 0
+On Mon, 25 Oct 2021, Uladzislau Rezki wrote:
+> On Fri, Oct 22, 2021 at 09:49:08AM +1100, NeilBrown wrote:
+> > However I'm not 100% certain, and the behaviour might change in the
+> > future.  So having one place (the definition of memalloc_retry_wait())
+> > where we can change the sleeping behaviour if the alloc_page behavour
+> > changes, would be ideal.  Maybe memalloc_retry_wait() could take a
+> > gfpflags arg.
+> > 
+> At sleeping is required for __get_vm_area_node() because in case of lack
+> of vmap space it will end up in tight loop without sleeping what is
+> really bad.
+> 
+So vmalloc() has two failure modes.  alloc_page() failure and
+__alloc_vmap_area() failure.  The caller cannot tell which...
 
-Thanks for verifying that the rc6 failure case was fixed (and not
-replaced with any new ones, yay!)
+Actually, they can.  If we pass __GFP_NOFAIL to vmalloc(), and it fails,
+then it must have been __alloc_vmap_area() which failed.
+What do we do in that case?
+Can we add a waitq which gets a wakeup when __purge_vmap_area_lazy()
+finishes?
+If we use the spinlock from that waitq in place of free_vmap_area_lock,
+then the wakeup would be nearly free if no-one was waiting, and worth
+while if someone was waiting.
 
-               Linus
+Thanks,
+NeilBrown
