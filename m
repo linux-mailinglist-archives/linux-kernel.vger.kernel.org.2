@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835A8439D90
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D711C439D93
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhJYR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
+        id S233600AbhJYR3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbhJYR3N (ORCPT
+        with ESMTP id S233414AbhJYR3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:29:13 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BE5C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:26:50 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so3897209oof.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:26:50 -0700 (PDT)
+        Mon, 25 Oct 2021 13:29:20 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9354AC061348
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:26:57 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id a26so574041pfr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KfOb2eIS89lcVTT7KSpBk1AQTOhqvqByR0j8ZKXzoqo=;
-        b=kvcVxrf0BOB2XZcKCjY48WnrlH3sGi42UzdM+sc3NB9bVex7b+HInK22322KTpujlh
-         r5iXN5JbJeN3YgCmlHv3jXAWR19BzyQ+5xw89flz+P5n8KeQw+SopsW8lybUEC498GUm
-         kBWzV2EZaifpAuExsg2GaC2PlgnJe/M+7S3rn/elEkuFgC8VMLk5MfGtADaRXojtXsub
-         fh6HaI6wdxobmljQR3EWGUph0+keT4cqZWYZYZd9S3TYTAdybmVAQYwyUTCfd408EweI
-         6Tya4Lp4z8PISOAFgSQmd3awglmJ3q7eITtQtTGWYXmhpqAao+WEF+AwbEZNb4EgsyDe
-         Cy5g==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to;
+        bh=OmG6xBntmMGXxhxyRVsLhNyobSMCMLSy44S6T9/BLCI=;
+        b=M4+zk3tL83QLdghoCbDMnC1YCaQaY+H/gSNns+zWcQng5flC84EW1VPIDuQtcu6o40
+         F/3fY+knz43Kj7F9oL7j9xOa87+6ZL/VsV+SpYrT/ReT/ObtrdG8XD1dswjURmvbyB90
+         Uz1oRkYfWcBZnoL4YLMbTyTzxaLjDRuAMCGIeeVW+Z8Rk6LfMWzFkvtc7KEYlmH00S60
+         jgNHVBf1D+QCN5sRPTyAJhPHUL3CoTS6TSZpsIh4LqhbXKIJ2E/+Nm2VJv9cedt4wnY8
+         x48O3j0lrunDr6MZ+SlWX0i2Yfrj5DiHWbb5EQo4VYbevmn4MDdP4g1te7qyQ65Fq00U
+         CXSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KfOb2eIS89lcVTT7KSpBk1AQTOhqvqByR0j8ZKXzoqo=;
-        b=kEQo2ExDZZmZd5UpNPOF339u3FLNG4v2QDbP4P5p5liR0RrccWbDnYsBSZvxq9/Ebk
-         Rt45F0R8WrEXDOoWc1zLFYjjiD3qrCK+WVkLGPrCsYfpe05Q33r5/gq5AiriSs1xLH4s
-         8quo0KeiXfUgu+zbmRAxfuFuGiLph2VqpD0ZoI5uShAUI4E184ugv7oztyobU363jHPA
-         kcpeEIvABq2itHQ+Qr31GN0JykANozVzbQftfB/El72la14rkVE4hcof0Y43JZo1bmrJ
-         AObtjHcOyt0H7XgCtnC7uhhA2eh8NUTM8uk1PH3BfHUgFYtxVQAL8wC69+BUxKN967YB
-         NdRA==
-X-Gm-Message-State: AOAM531urKtyQpZakJkYNlIc/XMBCQ4SZ3OwDNN8DX4vMwIKsnNttqye
-        BuButMahwpb+8w4hqfPBidA=
-X-Google-Smtp-Source: ABdhPJxCl1xJWf5SgF1E/pTDaZemn7gw0LebbJtsuyGJLvBhludb5qCw2npv9ohI/jRqwJ2i4lwxvA==
-X-Received: by 2002:a4a:be0a:: with SMTP id l10mr12941343oop.64.1635182810337;
-        Mon, 25 Oct 2021 10:26:50 -0700 (PDT)
-Received: from ?IPV6:2603:8090:2005:39b3::101e? (2603-8090-2005-39b3-0000-0000-0000-101e.res6.spectrum.com. [2603:8090:2005:39b3::101e])
-        by smtp.gmail.com with ESMTPSA id bi20sm3986570oib.5.2021.10.25.10.26.49
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to;
+        bh=OmG6xBntmMGXxhxyRVsLhNyobSMCMLSy44S6T9/BLCI=;
+        b=V5DQt/ekfib5sRSF6ffC7QOecMX1hL+b4UqccXCbj5vsFPXZWLUSGKSy/CeAekkdHO
+         L8cQlaTol3M3ZrHzgUWuKBa7+ib3+NGJe6NhUAPjoQ6yOlPwjX9erXBwdkhI21HofsfR
+         T/Spoi54FmhavUXQM5ynyMf/4gWTqgchgFghI6CExwARidbvBv9V644fGm62uOdsnkf3
+         pWsKeN5s/cFfBnr6EiZLcUzdyGAEE+GYnYpxyyDNkm/FdZx/RCbclPxF5TpU9dbAfOO1
+         5bhjIwpoj31twsdr+D4NV8JYtehTc6MbpOexc2sl/37F5763To5Nr4ZL/LzUj0KhmdMI
+         Ivag==
+X-Gm-Message-State: AOAM532iV1QL2C0MqvxmFjGyk4+YluKhwxEKcU+pXgjuerxxvKmkccuz
+        ZetAg3G3mA6sXtZ8vPDIzLrosw==
+X-Google-Smtp-Source: ABdhPJx52C7cZMgJJOavM1gVwcnwrSqtTXQXoGASpvY0Mkr4M2PmHJnKo7TiUrPRa2HTmIs1WNrW+A==
+X-Received: by 2002:a63:df06:: with SMTP id u6mr14963526pgg.148.1635182816928;
+        Mon, 25 Oct 2021 10:26:56 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id s25sm681700pfg.18.2021.10.25.10.26.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 10:26:49 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Message-ID: <de1bddd8-8e09-4b8f-1fd8-ae9047e60269@lwfinger.net>
-Date:   Mon, 25 Oct 2021 12:26:48 -0500
+        Mon, 25 Oct 2021 10:26:56 -0700 (PDT)
+Message-ID: <62da1abe-5864-7bb4-34e5-5d1251b66230@linaro.org>
+Date:   Mon, 25 Oct 2021 10:26:55 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH] staging: r8188eu: core: remove goto statement
+Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
+ enc/dec
 Content-Language: en-US
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YXafzp5F8T7/+tk2@Sauravs-MacBook-Air.local>
- <7dc4eba4-c009-b8b7-bc08-5b608bdf86a0@lwfinger.net>
- <e2020caf-1b0c-ce0e-3d94-d105be85ed38@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-In-Reply-To: <e2020caf-1b0c-ce0e-3d94-d105be85ed38@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
+ <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
+ <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
+ <00b817a4-f1ac-6a94-5f1e-836d8d313406@linaro.org>
+ <25da5210-8e1f-7183-a8e7-8584f8dd2cef@linaro.org>
+ <fac70dcc-2dcc-6c1f-2f71-6936deedb091@linaro.org>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <fac70dcc-2dcc-6c1f-2f71-6936deedb091@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------jls6XvNBOfmN4HbnIy7wI2Ih"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 12:00, Saurav Girepunje wrote:
-> 
-> 
-> On 25/10/21 8:45 pm, Larry Finger wrote:
->> On 10/25/21 07:15, Saurav Girepunje wrote:
->>> Remove the goto statement from rtw_do_join(). In this function goto
->>> can be replace by return statement. As on goto label exit, function only
->>> return it is not performing any cleanup. Avoiding goto will improve
->>> the function readability.
->>>
->>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->>> ---
->>
-> Hi Larry,
->   
->> You need to read section 14 of Documentation/process/submitting-patches.rst to learn how to submit a revised patch.
-> Resubmitting such a revision using the same subject line is likely to confuse reviewers and maintainers alike, if not patchworks.
->>
-> This is original patch (v1). I haven't get any review comment for this patch.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------jls6XvNBOfmN4HbnIy7wI2Ih
+Content-Type: multipart/mixed; boundary="------------PwvP3wcX0N0zche0sL7en6G2";
+ protected-headers="v1"
+From: Tadeusz Struk <tadeusz.struk@linaro.org>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Lee Jones
+ <lee.jones@linaro.org>, Amit Pundir <amit.pundir@linaro.org>,
+ John Stultz <john.stultz@linaro.org>, linux-media@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <62da1abe-5864-7bb4-34e5-5d1251b66230@linaro.org>
+Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
+ enc/dec
+References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
+ <72f8dd7a-66c7-fb50-db23-f98ba753af1d@nexus-software.ie>
+ <bba3acc1-cfa1-0c53-75de-f4ffa0a2bc9e@linaro.org>
+ <00b817a4-f1ac-6a94-5f1e-836d8d313406@linaro.org>
+ <25da5210-8e1f-7183-a8e7-8584f8dd2cef@linaro.org>
+ <fac70dcc-2dcc-6c1f-2f71-6936deedb091@linaro.org>
+In-Reply-To: <fac70dcc-2dcc-6c1f-2f71-6936deedb091@linaro.org>
 
-Why did I get it twice? At least I got two messages with that subject line.
+--------------PwvP3wcX0N0zche0sL7en6G2
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Larry
+T24gMTAvMjUvMjEgMTA6MTcsIEJyeWFuIE8nRG9ub2dodWUgd3JvdGU6DQo+PiBhZ3JlZSwg
+YnV0IEkgZG9uJ3QgZGVwZW5kIG9uIG9mX3BsYXRmb3JtX3BvcHVsYXRlKCkuIFRoZSBvcmRl
+cmluZyBiZXR3ZWVuIHRoZQ0KPj4gdGhyZWUgcHJvYmUgZnVuY3Rpb25zIGlzIGVuZm9yY2Vk
+IGJ5IHRoZSBuZXcgc3luYyBtdXRleC4NCj4gDQo+IFRoYXQgZXhwbGFuYXRpb24gd29ya3Mg
+Zm9yIG1lLg0KPiANCj4gUmV2aWV3ZWQtYnk6IEJyeWFuIE8nRG9ub2dodWUgPGJyeWFuLm9k
+b25vZ2h1ZUBsaW5hcm8ub3JnPg0KDQpUaGFua3MgQnJpYW4sIEkgYXBwcmVjaWF0ZSB0aGF0
+Lg0K
+
+--------------PwvP3wcX0N0zche0sL7en6G2--
+
+--------------jls6XvNBOfmN4HbnIy7wI2Ih
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEb3ghm5bfkfSeegvwo0472xuDAo4FAmF26N8FAwAAAAAACgkQo0472xuDAo7L
+5w/+KIcA1wadY+Phvhpq85VfXfFE8WsuJvxyBFsf8zmxvPdAMH2ncjkx5IW0VReecFYKZhc9Lgrg
+WppOz9m3lWM50mCDpVhSpoGy8HA6SPwRAXM0M06H1PHlbktOyM/J6fVRuzQKRKxBAiqm+dukibvx
+6nVKLI20mdUt9uBA2yirgpV3WyNw8FVgMYc8cBZ0aCmkaVfDndlm3eJjrEanAiV9ximqQ89ZAVJO
+FvtH8d/HNvAHR0mQ3SWvHUSq4D+SlfiG2toPP9Wnf0PbYDnNLjJIt4+Dzgf+hEF606Vq/e/xtI5K
+UTELdC0sZ0kgDiaUDGvPGE09CyHl1Rd9YnLK0RnnEsoH5+VrzqmITXkcH/sQoC+jKMOdufriURC7
+5nmbJqD4qJzWB7Pg018zdRXiH81zCyEKhNDkD/U8MZi4m6H0EtGoKcyCGe4XALjrIng1AbsCc6rR
+VYcVg3IpxAmT4T25fhDrx4EnEX2zlWxoYGVDz3ZLCDFU0+fFLReyKBJfOydqiH6GfZQxEFstcPjf
+oYK4XmgKD7ix0C4uy7XpspCeZZOd9BGEKTL7lKymRlX8S8gCzJDwYmraDSaUq4ZbOTZjejjm3xcK
+Yhi5VmDk16wWZwco1Snq3Abv0z0rA81V0DWmvPIjXkUvG5LCSZiUDjY2GqoaS2BUt2gPosEJ2dMH
+8cY=
+=v5Ur
+-----END PGP SIGNATURE-----
+
+--------------jls6XvNBOfmN4HbnIy7wI2Ih--
