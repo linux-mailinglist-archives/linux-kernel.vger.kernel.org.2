@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B05B43A0BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD26439FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236374AbhJYTe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44288 "EHLO mail.kernel.org"
+        id S234952AbhJYT0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:26:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235813AbhJYT3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:29:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9A9E61167;
-        Mon, 25 Oct 2021 19:25:59 +0000 (UTC)
+        id S234790AbhJYTYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:24:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5DE1610A5;
+        Mon, 25 Oct 2021 19:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189960;
-        bh=xeZfBoYUUj8wuwf6ngr4Dp5HMAeqVdy8+8l0XBq+WTI=;
+        s=korg; t=1635189701;
+        bh=cmk0RP38NN1vE0MQXQVLilmNUQCYQAVw/M+Ouy94bZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nea/3wR9jVw/4aD1MStKr9YWQBGE+8wPjExmmArLfBzjvuAIw0BLapp1JLit6mv/v
-         46H+iwGHku+v8ChFb2cviwmjONQjKpUEwLrXmHqzvLLJXjgpsuILKkmij4O1RV2LPe
-         QmjV17yYEoaiHxhqMjuVKNlVFy4nUU4OJr8PlpqI=
+        b=K91BLmpD5zBL1vLOsFh1UIKduxSQLT9jIhycW4lLOk5NmtBXQBXRJJgWeGxcJ1e31
+         dgNSgcFGt/l6I7nPLQZSRR3PDH4fNSiBs6kWAyOr84zaYhwjT9ReJ2pmCOjz2cepQx
+         Tj/THCEjLMlcbub1n/XrvyvOt6XrpTY1iVsyGPnc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 13/58] NIOS2: irqflags: rename a redefined register name
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.14 10/30] can: peak_pci: peak_pci_remove(): fix UAF
 Date:   Mon, 25 Oct 2021 21:14:30 +0200
-Message-Id: <20211025190939.620233225@linuxfoundation.org>
+Message-Id: <20211025190925.473771236@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 4cce60f15c04d69eff6ffc539ab09137dbe15070 ]
+commit 949fe9b35570361bc6ee2652f89a0561b26eec98 upstream.
 
-Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
-with the name "CTL_STATUS". Change the one in arch/nios2/ to be
-"CTL_FSTATUS" (flags status) to eliminate the build warning.
+When remove the module peek_pci, referencing 'chan' again after
+releasing 'dev' will cause UAF.
 
-In file included from ../drivers/mmc/host/tmio_mmc.c:22:
-drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
-   31 | #define CTL_STATUS 0x1c
-arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
-   14 | #define CTL_STATUS      0
+Fix this by releasing 'dev' later.
 
-Fixes: b31ebd8055ea ("nios2: Nios2 registers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The following log reveals it:
+
+[   35.961814 ] BUG: KASAN: use-after-free in peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.963414 ] Read of size 8 at addr ffff888136998ee8 by task modprobe/5537
+[   35.965513 ] Call Trace:
+[   35.965718 ]  dump_stack_lvl+0xa8/0xd1
+[   35.966028 ]  print_address_description+0x87/0x3b0
+[   35.966420 ]  kasan_report+0x172/0x1c0
+[   35.966725 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967137 ]  ? trace_irq_enable_rcuidle+0x10/0x170
+[   35.967529 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967945 ]  __asan_report_load8_noabort+0x14/0x20
+[   35.968346 ]  peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.968752 ]  pci_device_remove+0xa9/0x250
+
+Fixes: e6d9c80b7ca1 ("can: peak_pci: add support of some new PEAK-System PCI cards")
+Link: https://lore.kernel.org/all/1634192913-15639-1-git-send-email-zheyuma97@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nios2/include/asm/irqflags.h  | 4 ++--
- arch/nios2/include/asm/registers.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/sja1000/peak_pci.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/nios2/include/asm/irqflags.h b/arch/nios2/include/asm/irqflags.h
-index b3ec3e510706..25acf27862f9 100644
---- a/arch/nios2/include/asm/irqflags.h
-+++ b/arch/nios2/include/asm/irqflags.h
-@@ -9,7 +9,7 @@
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -739,16 +739,15 @@ static void peak_pci_remove(struct pci_d
+ 		struct net_device *prev_dev = chan->prev_dev;
  
- static inline unsigned long arch_local_save_flags(void)
- {
--	return RDCTL(CTL_STATUS);
-+	return RDCTL(CTL_FSTATUS);
- }
+ 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
++		/* do that only for first channel */
++		if (!prev_dev && chan->pciec_card)
++			peak_pciec_remove(chan->pciec_card);
+ 		unregister_sja1000dev(dev);
+ 		free_sja1000dev(dev);
+ 		dev = prev_dev;
  
- /*
-@@ -18,7 +18,7 @@ static inline unsigned long arch_local_save_flags(void)
-  */
- static inline void arch_local_irq_restore(unsigned long flags)
- {
--	WRCTL(CTL_STATUS, flags);
-+	WRCTL(CTL_FSTATUS, flags);
- }
- 
- static inline void arch_local_irq_disable(void)
-diff --git a/arch/nios2/include/asm/registers.h b/arch/nios2/include/asm/registers.h
-index 183c720e454d..95b67dd16f81 100644
---- a/arch/nios2/include/asm/registers.h
-+++ b/arch/nios2/include/asm/registers.h
-@@ -11,7 +11,7 @@
- #endif
- 
- /* control register numbers */
--#define CTL_STATUS	0
-+#define CTL_FSTATUS	0
- #define CTL_ESTATUS	1
- #define CTL_BSTATUS	2
- #define CTL_IENABLE	3
--- 
-2.33.0
-
+-		if (!dev) {
+-			/* do that only for first channel */
+-			if (chan->pciec_card)
+-				peak_pciec_remove(chan->pciec_card);
++		if (!dev)
+ 			break;
+-		}
+ 		priv = netdev_priv(dev);
+ 		chan = priv->priv;
+ 	}
 
 
