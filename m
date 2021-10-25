@@ -2,92 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B365943A6BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EF843A6C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhJYWn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234252AbhJYWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234267AbhJYWn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 18:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234204AbhJYWnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:43:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4205E6103C;
-        Mon, 25 Oct 2021 22:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635201662;
-        bh=ex+zDaQP63Cn6bMQxc/uGRqILguHZWqLS9gEpm92DDU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PEHDxeNK/gqMFjw58J3tXy7BRkq+Yrg2AgrWIgVWwpTzkGhZl8HpMgJJ+nVMB3EBG
-         08VE8MbdRGn866NTwITZJjLQwSCtXwYX0dhgN51JNqKA4rWs+kBrVXLob2Jsnj5JiX
-         J/DDPX+VaJqglRJNT4NO/LiwPG7I/iXmd2mmwS672OilByu8oj2+qgfzvbXGu+kIaA
-         FRRGrWOcyfGaD7QNMJQ0Go0gBXrWhQEG3U8PwXuqDo7oziFU5Q/9IFOiAMaMAowymk
-         rrMo1/6ognvTAZIE2zAKiaElx39mOPw+mmwbCzTMcIk13s1REJTLUpNx8ZQMKZwsmV
-         XJIQNm3J8umig==
-Message-ID: <9416e8d7-5545-4fc4-8ab0-68fddd35520b@kernel.org>
-Date:   Mon, 25 Oct 2021 15:41:01 -0700
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CB8C061348
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:41:06 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id y15-20020a9d460f000000b0055337e17a55so17032853ote.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 15:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=rGiovqWqFrjBrCkSq4yv/M/dVdFQ93Lt9w4Vj0XzRp0=;
+        b=e5y4X6m/JLEbzzUCH30q0NucRMH75dvcVNtZW7lTlgRhkeI8fDZaI3MwaJ98oHOBF9
+         9AON2AohLOTJHPDFqfaXruw2v5cfFjOe9ZHV37z/zWk44BCXzi3PvlehCVP91827441C
+         aNRN9n22sKlgYFbllqsXj/Pz7I0B5I8zSrI8o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=rGiovqWqFrjBrCkSq4yv/M/dVdFQ93Lt9w4Vj0XzRp0=;
+        b=GU2VEfRTZparGD/Ro0A88TCKIa3RCzNAa613JU1OmjXFFY1UpvdZgW71CAYsK0k6UM
+         EiCN8Xr10rC1lO5kCKlfiu9NCS8n2Yg06nOXjfe0CWGl+QNxP3OFu00mtQq4ZDmT94YN
+         mAaIlWjQouTsRERBp1JOzm128de+L6QsYtmcubjfB135iCRJIrzpio8S2mAhzl3+92Yl
+         ycLrJnf4Xht37OTbPiT68kep0ptfMbypaIH+n5tROV4Y/FUaigl/ylxF9I7KuB4Bl4z8
+         qcLrgKHedVNq2kOCQbtRsHWpJUAWkCdaTjdByIINRwqyOgl5i57qzoObecARoNQ+3jGw
+         tjlg==
+X-Gm-Message-State: AOAM531wn8OfifVQZVt7Lw7gR1rXIFSwAcHt377OXv4dVy8djkPGS5yI
+        ssYkq5j21CLcxuI2giT8n0JdWOgI0+Fu9owXhujfEQ==
+X-Google-Smtp-Source: ABdhPJyrcEmmL456GTam14IOSkmcFoh1X4j7JAYEurQdEfb+O2qaOJEmFfFtS/mARLtrHH0V8dU6F38y+oknUnR1nQE=
+X-Received: by 2002:a05:6830:1c2e:: with SMTP id f14mr15179888ote.159.1635201666169;
+ Mon, 25 Oct 2021 15:41:06 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 25 Oct 2021 15:41:05 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org
-Cc:     Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <87y26nmwkb.fsf@disp2133>
- <20211020174406.17889-13-ebiederm@xmission.com>
- <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YXck+xCJQBRGqTCw@ripper>
+References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
+ <YXcBK7zqny0s4gd4@ripper> <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+ <YXck+xCJQBRGqTCw@ripper>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 25 Oct 2021 15:41:05 -0700
+Message-ID: <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 13:05, Linus Torvalds wrote:
-> On Wed, Oct 20, 2021 at 7:45 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Add a simple helper force_fatal_sig that causes a signal to be
->> delivered to a process as if the signal handler was set to SIG_DFL.
->>
->> Reimplement force_sigsegv based upon this new helper.
-> 
-> Can you just make the old force_sigsegv() go away? The odd special
-> casing of SIGSEGV was odd to begin with, I think everybody really just
-> wanted this new "force_fatal_sig()" and allow any signal - not making
-> SIGSEGV special.
-> 
+Quoting Bjorn Andersson (2021-10-25 14:43:23)
+> On Mon 25 Oct 13:17 PDT 2021, Stephen Boyd wrote:
+>
+> > Quoting Bjorn Andersson (2021-10-25 12:10:35)
+> > > On Mon 25 Oct 02:07 PDT 2021, Sandeep Maheswaram wrote:
+> > >
+> > > > Add multi pd bindings to set performance state for cx domain
+> > > > to maintain minimum corner voltage for USB clocks.
+> > > >
+> > > > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+> > > > ---
+> > > > v2:
+> > > > Make cx domain mandatory.
+> > > >
+> > > >  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 +++++++-
+> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > > index 2bdaba0..fd595a8 100644
+> > > > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > > @@ -42,7 +42,13 @@ properties:
+> > > >
+> > > >    power-domains:
+> > > >      description: specifies a phandle to PM domain provider node
+> > > > -    maxItems: 1
+> > > > +    minItems: 2
+> > > > +    items:
+> > > > +      - description: cx power domain
+> > > > +      - description: USB gdsc power domain
+> > > > +
+> > > > +  required-opps:
+> > > > +    description: specifies the performance state to power domain
+> > >
+> > > I'm still worried about the fact that we can't just rely on the USB GDSC
+> > > being a subdomin of CX in order to just "turn on" CX.
+> > >
+> > > Afaict accepting this path forward means that for any device that sits
+> > > in a GDSC power domain we will have to replicate this series for the
+> > > related driver.
+> > >
+> >
+> > I suspect the problem is that it's not just "turn on" but wanting to
+> > turn it on and then set the performance state to some value based on the
+> > clk frequency.
+>
+> I don't see an opp-table involved, just the required-opps for the
+> purpose of turning CX on a little bit more. Perhaps I'm missing
+> something here though.
 
-I'm rather nervous about all this, and I'm also nervous about the 
-existing code.  A quick skim is finding plenty of code paths that assume 
-force_sigsegv (or a do_exit that this series touches) are genuinely 
-unrecoverable.  For example:
+Indeed. There's only one clk frequency for USB so only one performance
+state/required-opps is used. In general that isn't the case and so we'll
+eventually need to map some GDSC on/off state to the clk frequency of
+whatever clk domain is associated with CX for a device.
 
-- rseq: the *kernel* will be fine if a signal is handled, but the 
-userspace process may be in a very strange state.
+>
+> > Maybe the simplest version of that could be supported
+> > somehow by having dev_pm_opp_set_rate() figure out that the 'level'
+> > applies to the parent power domain instead of the child one?
+>
+> Having the performance_state request cascade up through the GDSC sounds
+> like a nice solution; I've not looked at the code to see if this is
+> feasible though.
 
-- bprm_execve: The comment says it best:
+When the binding was introduced I recall we punted on the parent child
+conversion stuff. One problem at a time. There's also the possibility
+for a power domain to be parented by multiple power domains so
+translation tables need to account for that.
 
-         /*
-          * If past the point of no return ensure the code never
-          * returns to the userspace process.  Use an existing fatal
-          * signal if present otherwise terminate the process with
-          * SIGSEGV.
-          */
-         if (bprm->point_of_no_return && !fatal_signal_pending(current))
-                 force_sigsegv(SIGSEGV);
+>
+> > Or we may need to make another part of the OPP binding to indicate the
+> > relationship between the power domain and the OPP and the parent of
+> > the power domain.
+>
+> I suspect this would be useful if a power-domain provider needs to
+> translate a performance_state into a different supply-performance_state.
+> Not sure if we have such case currently; these examples are all an
+> adjustable power-domain with "gating" subdomains.
 
-- vm86: already discussed
+Even for this case, we should be able to have the GDSC map the on state
+to some performance state in the parent domain. Maybe we need to add
+some code to the gdsc.c file to set a performance state on the parent
+domain when it is turned on. I'm not sure where the value for that perf
+state comes from. I guess we can hardcode it in the driver for now and
+if it needs to be multiple values based on the clk frequency we can push
+it out to an OPP table or something like that.
 
-Now force_sigsegv() at least tries to kill the task, but not very well. 
-With the whole series applied and force_sigsegv() gone, these errors 
-become handleable, and that needs real care.
+>
+>
+> PS. I think we have the same problem in the display subsystem, the
+> sub-blocks are powered by MDSS_GDSC, which is a subdomain of MMCX. We
+> trust the parent mdss node to keep the GDSC powered and specify MMCX as
+> the power-domain for the children, so that we can affect their levels by
+> respective opp-table.
+>
 
-(I don't think bprm_execve() is exploitable.  It looks like it's 
-attackable in the window between setting point_of_no_return and 
-unshare_sighand(), but I'm not seeing any useful way to attack it unless 
-a core dump is already in progress or a *different* fatal signal is 
-already pending, and in either of those cases we're fine.)
+Yes, a GDSC is really a gate on a parent power domain like CX or MMCX,
+etc. Is the display subsystem an example of different clk frequencies
+wanting to change the perf state of CX? If so it's a good place to work
+out the translation scheme for devices that aren't listing the CX power
+domain in DT.
