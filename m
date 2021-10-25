@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFA44391A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD794391B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbhJYIqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45018 "EHLO
+        id S232216AbhJYIt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbhJYIqO (ORCPT
+        with ESMTP id S232168AbhJYItZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:46:14 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39CFC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:43:51 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j9so7840016lfu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:43:51 -0700 (PDT)
+        Mon, 25 Oct 2021 04:49:25 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9040FC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:47:03 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id k11-20020a4aa5cb000000b002b73749f3cdso3422351oom.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 01:47:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=127n9jitw+qM0/no+A5F8MwZg/H0qRee5cYZhbFBKnk=;
-        b=ef5XAjLT9v/0BZJ9udketWfLHu1q6BB3uLTOyqiK/X5lFxsj0Gb4Bvgsfeg643KhWi
-         xEw8n0TAvmjizLwdUrTIAKClZn+tFGYtY0Cn9omrCfy+u9OYVDocqNarDJoiwzUbvJN+
-         7N0NEHVJ7pBEW1nitpveqcptf9nm66kyr4WRC620pWcjT5yPo/5r/WKpiUmrvOmc477Z
-         zUwHvHZY6c6xMiUe/XiDYbxMlthlYsCY3Qd/T+Tx+VwOpW5gu58XazRw7NXKdDyRZjaU
-         bLHAR30bkiB7vz84iB9z3qw29rQ+kSgPNHvMGf1mpiMjVLPZgoVGD7ZkjPy9Ta8SuZI6
-         He6A==
+        bh=QD6S5FcXqbMWnr2NhEbAy6feKFx0sh0idDAxYvo4UWA=;
+        b=sygHC/VOYcly0K34H6f+G/9jVVFyNzaaI0rIUf/2HPloUI5E5b7L6u/6Kr9GqjMNIj
+         31oj9Wj7ZylE/zaHSup06g+cQ8AML1nHrYqo139tQ8UI+yN/J6v/cf4pgskmxAT00PeE
+         s3ho9bL8M8Zr5m8lvJFG9lL3vh796cl9hPObufKgDYkD4n+Fvz3XmAjKLhlaW23tSPzq
+         ZxTfVrYWUANJeaE+fu4gcGTE/Hnllut8n5RYkcLo5GEfyvcgNtD64AC9g5ugn1iywCqU
+         W/CD+r77Goc592kGebk2POeFo/H0UGQhkkJQb2UmmRLiZwBR3PpVlSI2IYw3Ner/bwCg
+         3neQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=127n9jitw+qM0/no+A5F8MwZg/H0qRee5cYZhbFBKnk=;
-        b=EXjdvrFwXGA3lQDiaER7/WhhHnvZMnL3SpWE3oxtUk0x8Ltv4IrajS7646kpA55PY6
-         kspRmthSoZr4YIkN0R2MDJcsM4eHnXsk49W0z6LBYRxSjMvitq2hdUMgqJ4aV2D2Lidw
-         wbKDMvJrpm5arSi8YWXmZKmfjaJ1ypcbmzDSIOeEMFh7vFWa3YcTVA35VHFHJoa1Z+qJ
-         o0DBp62RTpTQpWW2SvVXHrYKXcYHBf1qbQTm/4vHIvMt2hdp0je8tXZTaGKMcMPDyrJB
-         vc0vbkG5u49yVxDCnvY7iCBYh2yNmlD21faJwNhrsypv4UaYfWyexM6JWnG+X+i7JMde
-         zOhA==
-X-Gm-Message-State: AOAM5329AHKSzhxQ0J05eG0ZzYsgRToNctXJwtF9zny1APkNTLCUjaQz
-        wSZx9sCHLXhsA+VgIPf+8RVLLtkF6M9VJxiNdVvslw==
-X-Google-Smtp-Source: ABdhPJzjE7UWfScThA4eyQy8yhcDoy429xpQEKxElRXoLvDV+DJv7LRSJV1fAUSxnspyYcifdjOURwznJ2PEAVb3Mn8=
-X-Received: by 2002:a05:6512:3c8b:: with SMTP id h11mr10140168lfv.80.1635151430262;
- Mon, 25 Oct 2021 01:43:50 -0700 (PDT)
+        bh=QD6S5FcXqbMWnr2NhEbAy6feKFx0sh0idDAxYvo4UWA=;
+        b=D1FgEY2jJTv8O5+LfZxxg8nP78/Z49OIjABs3x8FPIlRnfE3x/i/tO0XstP7YI5ECm
+         GK8fwQnBlLC83gAykZ9nfZTOBUQgw02sEKUgGKhXacMLnX73Co4K4pBqjCbdzOiR+PJF
+         E/tJzkSIleADtrBfq0g4IJgl4V2J6I0iNem+wZGWi9ZgSL8Bw/tQ9C5bnj8M85HMUSsf
+         2FBQNzRh6GQQSkp3Txe5RuAZX/cq7W0v722NejvxrLNQBZhnuiU9rEdfvOHX0wWZk+eM
+         njJqoO8JdnPxN+yUpy13/ZxXqH80UT4wLlnqZWtcZ5zTd9DfQoVCj6h6Zx4FnBZHJSEh
+         qs4g==
+X-Gm-Message-State: AOAM531Nkg5KNoMFD6GXJ0+MSqHi0/pXCZHlkh4ZTXHyl2PEObK4RWn1
+        ElLC3o1+5vvneOMopIIa01FZFgb3jyaKxpXG8Y4tFw==
+X-Google-Smtp-Source: ABdhPJzRvj0Lq8NOJOOfTnmTc0kuAGX3WevBNcmF8DvEpgpKBbKX0g1yV0hUJ9yXTFboNOIAfsIzf6KGrK8XFDEAaMQ=
+X-Received: by 2002:a4a:d5c8:: with SMTP id a8mr11131804oot.18.1635151622652;
+ Mon, 25 Oct 2021 01:47:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211023115209.19115-1-colin.i.king@gmail.com>
-In-Reply-To: <20211023115209.19115-1-colin.i.king@gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 25 Oct 2021 14:13:36 +0530
-Message-ID: <CAFA6WYMJkEPOCUMeF1EL7G1q7akBc-os5GF33Dkh6nok8fANZw@mail.gmail.com>
-Subject: Re: [PATCH][next] optee: Fix spelling mistake "reclain" -> "reclaim"
-To:     Colin Ian King <colin.i.king@googlemail.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <000000000000d4e1e105cf235f15@google.com> <a189d065-fb64-b76f-9f45-f866f9d5638c@huawei.com>
+In-Reply-To: <a189d065-fb64-b76f-9f45-f866f9d5638c@huawei.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 25 Oct 2021 10:46:51 +0200
+Message-ID: <CACT4Y+acFmP4kiSTAWniyqVfGf2cHfqNqvy7vfa-Hc1RVigFzg@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in blk_mq_sched_tags_teardown
+To:     John Garry <john.garry@huawei.com>
+Cc:     syzbot <syzbot+412ca156285f619b8b62@syzkaller.appspotmail.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "hare@suse.de" <hare@suse.de>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Oct 2021 at 17:22, Colin Ian King
-<colin.i.king@googlemail.com> wrote:
+On Mon, 25 Oct 2021 at 10:39, John Garry <john.garry@huawei.com> wrote:
 >
-> There are spelling mistakes in pr_err error messages. Fix them.
+> On 25/10/2021 02:35, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    51dba6e335ff Add linux-next specific files for 20211020
+> > git tree:       linux-next
+> > console output:https://syzkaller.appspot.com/x/log.txt?x=10171dc8b00000
+> > kernel config:https://syzkaller.appspot.com/x/.config?x=1adca843ed814d57
+> > dashboard link:https://syzkaller.appspot.com/bug?extid=412ca156285f619b8b62
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:https://syzkaller.appspot.com/x/repro.syz?x=14f768b4b00000
+> > C reproducer:https://syzkaller.appspot.com/x/repro.c?x=1295a8c7300000
+> >
+> > The issue was bisected to:
+> >
+> > commit 645db34e50501aac141713fb47a315e5202ff890
 >
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/tee/optee/ffa_abi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I think that it should be e155b0c238b2 ("blk-mq: Use shared tags for
+> shared sbitmap support")
 >
+> > Author: John Garry<john.garry@huawei.com>
+> > Date:   Tue Oct 5 10:23:36 2021 +0000
+> >
+> >      blk-mq: Refactor and rename blk_mq_free_map_and_{requests->rqs}()
+> >
+> > bisection log:https://syzkaller.appspot.com/x/bisect.txt?x=1597e130b00000
+> > final oops:https://syzkaller.appspot.com/x/report.txt?x=1797e130b00000
+> > console output:https://syzkaller.appspot.com/x/log.txt?x=1397e130b00000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by:syzbot+412ca156285f619b8b62@syzkaller.appspotmail.com
+> > Fixes: 645db34e5050 ("blk-mq: Refactor and rename blk_mq_free_map_and_{requests->rqs}()")
+> >
+> > ==================================================================
+> > BUG: KASAN: use-after-free in blk_mq_sched_tags_teardown+0x2a1/0x2d0 block/blk-mq-sched.c:544
+> > Read of size 4 at addr ffff8880760b81e0 by task systemd-udevd/6750
+>
+> #syz fix: blk-mq-sched: Don't reference queue tagset in
+> blk_mq_sched_tags_teardown()
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Hi John,
 
--Sumit
+Thanks for updating the bug.
+It looks like the title was line wrapped. There is a hack specifically
+for gmail to put the title onto separate line, it's still parsable
+this way (if the whole title fits into 78 cols of course :))
 
-> diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-> index 6defd1ec982a..45424824e0f9 100644
-> --- a/drivers/tee/optee/ffa_abi.c
-> +++ b/drivers/tee/optee/ffa_abi.c
-> @@ -333,7 +333,7 @@ static int optee_ffa_shm_unregister(struct tee_context *ctx,
->
->         rc = ffa_ops->memory_reclaim(global_handle, 0);
->         if (rc)
-> -               pr_err("mem_reclain: 0x%llx %d", global_handle, rc);
-> +               pr_err("mem_reclaim: 0x%llx %d", global_handle, rc);
->
->         return rc;
->  }
-> @@ -355,7 +355,7 @@ static int optee_ffa_shm_unregister_supp(struct tee_context *ctx,
->         optee_shm_rem_ffa_handle(optee, global_handle);
->         rc = ffa_ops->memory_reclaim(global_handle, 0);
->         if (rc)
-> -               pr_err("mem_reclain: 0x%llx %d", global_handle, rc);
-> +               pr_err("mem_reclaim: 0x%llx %d", global_handle, rc);
->
->         shm->sec_world_id = 0;
->
-> --
-> 2.32.0
->
+#syz fix:
+blk-mq-sched: Don't reference queue tagset in blk_mq_sched_tags_teardown()
