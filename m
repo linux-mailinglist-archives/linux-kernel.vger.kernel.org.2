@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B17439F90
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D37943A1A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhJYTWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39156 "EHLO mail.kernel.org"
+        id S235362AbhJYTk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:40:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234793AbhJYTUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:20:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 496E861078;
-        Mon, 25 Oct 2021 19:18:24 +0000 (UTC)
+        id S236413AbhJYTeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:34:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 450EC610A1;
+        Mon, 25 Oct 2021 19:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189506;
-        bh=eEyOtvoc3xqN8DzFW9FIa9KJoMprXbBPbIFhL9Vi7rY=;
+        s=korg; t=1635190243;
+        bh=fJO2zM3lNbBpdnT+XD0C2MDUrkXfNfKA8UFUJvPhCpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7Bw8AaTYqLh9yVTZe7UiX8unwN1/EmxDWXCEcBOl/SUr4QQ/5rj2HnOWjI8XqhmJ
-         O4WZv738EqCX2RRv/04/zDHA7tn/KxWpfX3CdKuqRJaA7EylENuqAsgnNE5jNfcOBS
-         Ng5WsuUfYblEzRMP9g8SaNZ5al/cki2SUSjhy+vM=
+        b=b5EhlRgTreLUceRMWntrapQt8BG/GPYu/vEVXDODZe8CyOiNMoOWjv/yGs/8becmq
+         IoP17/qoeeoaQx2Muo1frDuPYfRgno60edKvWemw1GInuH/pvQwdjs6rSCMOWyyjLL
+         paR1+K1j3uA5PdzelFqh73Y2EXynSOQfyJRUzPPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 21/50] NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
+        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 11/95] NFSD: Keep existing listeners on portlist error
 Date:   Mon, 25 Oct 2021 21:14:08 +0200
-Message-Id: <20211025190937.029417913@linuxfoundation.org>
+Message-Id: <20211025190958.504059365@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Benjamin Coddington <bcodding@redhat.com>
 
-commit 291c932fc3692e4d211a445ba8aa35663831bac7 upstream.
+[ Upstream commit c20106944eb679fa3ab7e686fe5f6ba30fbc51e5 ]
 
-'skb' is allocated in digital_in_send_sdd_req(), but not free when
-digital_in_send_cmd() failed, which will cause memory leak. Fix it
-by freeing 'skb' if digital_in_send_cmd() return failed.
+If nfsd has existing listening sockets without any processes, then an error
+returned from svc_create_xprt() for an additional transport will remove
+those existing listeners.  We're seeing this in practice when userspace
+attempts to create rpcrdma transports without having the rpcrdma modules
+present before creating nfsd kernel processes.  Fix this by checking for
+existing sockets before calling nfsd_destroy().
 
-Fixes: 2c66daecc409 ("NFC Digital: Add NFC-A technology support")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/digital_technology.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/nfsd/nfsctl.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/net/nfc/digital_technology.c
-+++ b/net/nfc/digital_technology.c
-@@ -473,8 +473,12 @@ static int digital_in_send_sdd_req(struc
- 	*skb_put(skb, sizeof(u8)) = sel_cmd;
- 	*skb_put(skb, sizeof(u8)) = DIGITAL_SDD_REQ_SEL_PAR;
- 
--	return digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
--				   target);
-+	rc = digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
-+				 target);
-+	if (rc)
-+		kfree_skb(skb);
-+
-+	return rc;
+diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+index ddf2b375632b..21c4ffda5f94 100644
+--- a/fs/nfsd/nfsctl.c
++++ b/fs/nfsd/nfsctl.c
+@@ -792,7 +792,10 @@ out_close:
+ 		svc_xprt_put(xprt);
+ 	}
+ out_err:
+-	nfsd_destroy(net);
++	if (!list_empty(&nn->nfsd_serv->sv_permsocks))
++		nn->nfsd_serv->sv_nrthreads--;
++	 else
++		nfsd_destroy(net);
+ 	return err;
  }
  
- static void digital_in_recv_sens_res(struct nfc_digital_dev *ddev, void *arg,
+-- 
+2.33.0
+
 
 
