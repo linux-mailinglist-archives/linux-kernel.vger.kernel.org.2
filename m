@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643F043A199
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D3A439FF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhJYTkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:40:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49900 "EHLO mail.kernel.org"
+        id S233693AbhJYTZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:25:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236496AbhJYTev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:34:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA1760FDC;
-        Mon, 25 Oct 2021 19:31:06 +0000 (UTC)
+        id S232699AbhJYTXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:23:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E652610A6;
+        Mon, 25 Oct 2021 19:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190267;
-        bh=A12vJG/IntlvEzY70YMt9ZcQI0BSVV7aJhjxFDoAqrw=;
+        s=korg; t=1635189669;
+        bh=B42P9uUZze9v54MpO1kUEUAC1OxHMbBXcA/wrjPM7Ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oPIuljchvu8QDukKL8JaoKudamp034qptz9kqQp7cP8C3hlSoUDNCaEs5Tz38Icpl
-         uBdAFLgKsrbReCzWVTMwChdT+Aipto/afTlFJSYhEXXvijJvbs+MZKtIy7efVlqDFq
-         PkvAXO1QCkrmC+wfzepz0JN7IeEYY0W4ZvkeCUbo=
+        b=VGsuebYYNiCmaBGS36/ROCXz0Z2zgT4VmyYoFdDRl1O9Z7juH9s9lb5vyXhYuBdiu
+         ZF6XlkDsHqd4hg7n8Oqg3Hp40kmMB55r44e/gteRQsgH9fbRfIF3yhjiXJlfcIa6vy
+         IU0aRouCSQ/llMk/hq7cuFFH6BATVpUwdIp1R1zc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 25/95] net: hns3: add limit ets dwrr bandwidth cannot be 0
+Subject: [PATCH 4.14 02/30] ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default
 Date:   Mon, 25 Oct 2021 21:14:22 +0200
-Message-Id: <20211025191000.537591150@linuxfoundation.org>
+Message-Id: <20211025190923.396425775@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-References: <20211025190956.374447057@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Eugen Hristev <eugen.hristev@microchip.com>
 
-[ Upstream commit 731797fdffa3d083db536e2fdd07ceb050bb40b1 ]
+[ Upstream commit 4348cc10da6377a86940beb20ad357933b8f91bb ]
 
-If ets dwrr bandwidth of tc is set to 0, the hardware will switch to SP
-mode. In this case, this tc may occupy all the tx bandwidth if it has
-huge traffic, so it violates the purpose of the user setting.
+Without a sensor node, the ISC will simply fail to probe, as the
+corresponding port node is missing.
+It is then logical to disable the node in the devicetree.
+If we add a port with a connection to a sensor endpoint, ISC can be enabled.
 
-To fix this problem, limit the ets dwrr bandwidth must greater than 0.
-
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/20210902121358.503589-1-eugen.hristev@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm/boot/dts/at91-sama5d27_som1_ek.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index 28a90ead4795..8e6085753b9f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -134,6 +134,15 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
- 				*changed = true;
- 			break;
- 		case IEEE_8021QAZ_TSA_ETS:
-+			/* The hardware will switch to sp mode if bandwidth is
-+			 * 0, so limit ets bandwidth must be greater than 0.
-+			 */
-+			if (!ets->tc_tx_bw[i]) {
-+				dev_err(&hdev->pdev->dev,
-+					"tc%u ets bw cannot be 0\n", i);
-+				return -EINVAL;
-+			}
-+
- 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
- 				HCLGE_SCH_MODE_DWRR)
- 				*changed = true;
+diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+index 60cb084a8d92..7e1acec92b50 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+@@ -98,7 +98,6 @@
+ 			isc: isc@f0008000 {
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&pinctrl_isc_base &pinctrl_isc_data_8bit &pinctrl_isc_data_9_10 &pinctrl_isc_data_11_12>;
+-				status = "okay";
+ 			};
+ 
+ 			spi0: spi@f8000000 {
 -- 
 2.33.0
 
