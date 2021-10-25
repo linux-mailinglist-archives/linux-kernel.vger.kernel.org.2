@@ -2,236 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6089243A5D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6705C43A5D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 23:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhJYV3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 17:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        id S233370AbhJYV3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 17:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbhJYV26 (ORCPT
+        with ESMTP id S233740AbhJYV27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:28:58 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E709C061233
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:26:26 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id v193so5514424pfc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:26:26 -0700 (PDT)
+        Mon, 25 Oct 2021 17:28:59 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97E7C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:26:36 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id l203so7463297pfd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 14:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2fNJb298Duxoc3HaUlc7Nf67pHRtdIDXApm1+Pxj1CY=;
-        b=TRqNlEXzHsdKTmPnnwk8ZuzVAreo87ING3F8W9WSUyNo4p77FsHs+6hAFCTFjYtSxQ
-         T5FA6kieCvJOBGjblwVzlSD0BBLfceotvpOTPjKgajGY0lOcLq9nAdK0v4y9JmxZ9pEY
-         5P6Vede0VGDZnBZ3bin+D6Nttc084+XGmRXho=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pKq2jb5/3JE7fNMhMAROX1b14m7uUaxWDnNmF54psuc=;
+        b=fMajqLIbFXGo6lfFZJpr+3FhWBvfEyPg7nhATu486MiDFFsDTZXL4CpTl4ITO3tVj5
+         nOpIXXX27ba621rMo8ep4Eeffph8d6hke3AGXnIozvXTmek0cZuwXK5BLKZD6+2Fxtlv
+         FnoNEECto+hU34xw07QHvk9hf63FnV/C1s/OIjmbTZmqR6rAPmhw3RgkRoJ3AKrU4Pm8
+         kHDKwd01rnhAekLmuaG7PuPwbb/wceFGmQhNqG48UmnrdzS6XJHdw09sTRKltsupyEpX
+         6kPjcCRCayE1o5LrkfUUkofWylqoyR0xMoZtPVm2a9xPSNpXtBjXZ7SQL60ynMxyC4AL
+         J5bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2fNJb298Duxoc3HaUlc7Nf67pHRtdIDXApm1+Pxj1CY=;
-        b=H7NgAdFap0lf3bHxhSmdUWRPviwjC9OT/CTnOi5UDCTzqZxXRNXEJ6caDqep5AiGEZ
-         G/u5aoxZKBSQaY5SlVDr3yx7Ex+8L276/g9P52eN9AUUZhz5RTKMJBR0sZT+ZkXOLzSw
-         Mz/XFf9Y+plQd/ANMmRaT5IW1qKECoT45Wm/f6cL1vrsyguzdhKZ3ncZ6cTNykUeaBUQ
-         D6jz7fEkxZRPrTpuQMa88VE1zTiFgTEZZg+xfPZMzGUO8BFsfQIfkH7Ew2VdP26ver0W
-         ty9HgRYiiG/dQWqPPKHesi24JFDzBVLqefNOzlLrklk14A8OGvmS9/grjp6IsoiZ+M8v
-         Ez1g==
-X-Gm-Message-State: AOAM532i+9195E/nCO4Zif3uZjA11l0Hz6wHdTEKS/rweHe0FzOsBvGx
-        DYjff6btwu1yYIlac4AgW/VjDQ==
-X-Google-Smtp-Source: ABdhPJyZvuEMI5RNT65jhw/Gxgqo6oZ5d4AtEJIdaWdwCgtF89fexmlMVa3x/LPVtV6kewwQYslSEA==
-X-Received: by 2002:a62:5ec2:0:b0:44d:47e2:4b3b with SMTP id s185-20020a625ec2000000b0044d47e24b3bmr21508392pfb.38.1635197185593;
-        Mon, 25 Oct 2021 14:26:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s2sm25055172pjs.56.2021.10.25.14.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:26:25 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:26:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 09/12] tools/perf/test: make perf test adopt to task
- comm size change
-Message-ID: <202110251426.2921B7BDD7@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-10-laoar.shao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pKq2jb5/3JE7fNMhMAROX1b14m7uUaxWDnNmF54psuc=;
+        b=ey05J+ERsV8Vfchhtmamr6mx9/LAYpcFr/Odk6b15JDGmmRDi/2yVcrMAjFqd5UL6/
+         yrsYHmPLp1w2y0AKF5Bpl4YBr3C8JswPHHWK6ej3z8OvyVr9KgzME4ihhcf2fNbny7y4
+         ZQyYQTBlQq1CwaQ9DZDGnfquvf1ZyjZT/Fot4bLlCdvVH3kGVA0wuMQ91dyeeBX3HagT
+         o1Ku0DE1bYkASDsHe/ESLOrYo5Jiz50ukYVWWrJI9zBBYUXYRC4tnCalYIvhZxNgmDzP
+         30fJ3XKP30nUxMo2fDUVpgh5X4g4xmAUiWGnCG6w92FCbzhq5gIJZQSeq2lsV64wKThU
+         qP+Q==
+X-Gm-Message-State: AOAM532fFgZA4m32+qyWWBVNtepiwvwooBqDxhIXihrPMxJxPMNYghk1
+        4jJdXFlvyLVKuyUrWY2H0jZfOGj7TslA0CXQDeRxBw==
+X-Google-Smtp-Source: ABdhPJyEgIVc4e1tQNeh5sAq/rMfXwyGnQpIDPzSMBmXDFnZFAWapmfLyaNLjvvprvwqbcVomB0jAzM9/vj1yF195Tk=
+X-Received: by 2002:a05:6a00:2296:b0:44d:e2f7:4d1c with SMTP id
+ f22-20020a056a00229600b0044de2f74d1cmr21034943pfe.63.1635197196182; Mon, 25
+ Oct 2021 14:26:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-10-laoar.shao@gmail.com>
+References: <20211022004936.2049804-1-dlatypov@google.com>
+In-Reply-To: <20211022004936.2049804-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 25 Oct 2021 14:26:25 -0700
+Message-ID: <CAFd5g46+SisBC6msW_vNLgcv_NSPq6gnEA=KC4TUjE4A+Nrbpw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: fix typecheck errors about loading qemu configs
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:12AM +0000, Yafang Shao wrote:
-> kernel test robot reported a perf-test failure after I extended task comm
-> size from 16 to 24. The failure as follows,
-> 
-> 2021-10-13 18:00:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf test 15
-> 15: Parse sched tracepoints fields                                  : FAILED!
-> 
-> The reason is perf-test requires a fixed-size task comm. If we extend
-> task comm size to 24, it will not equil with the required size 16 in perf
-> test.
-> 
-> After some analyzation, I found perf itself can adopt to the size
-> change, for example, below is the output of perf-sched after I extend
-> comm size to 24 -
-> 
-> task    614 (            kthreadd:        84), nr_events: 1
-> task    615 (             systemd:       843), nr_events: 1
-> task    616 (     networkd-dispat:      1026), nr_events: 1
-> task    617 (             systemd:       846), nr_events: 1
-> 
-> $ cat /proc/843/comm
-> networkd-dispatcher
-> 
-> The task comm can be displayed correctly as expected.
-> 
-> Replace old hard-coded 16 with the new one can fix the warning, but we'd
-> better make the test accept both old and new sizes, then it can be
-> backward compatibility.
-> 
-> After this patch, the perf-test succeeds no matter task comm is 16 or
-> 24 -
-> 
-> 15: Parse sched tracepoints fields                                  : Ok
-> 
-> This patch is a preparation for the followup patch.
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
+On Thu, Oct 21, 2021 at 5:49 PM 'Daniel Latypov' via KUnit Development
+<kunit-dev@googlegroups.com> wrote:
+>
+> Currently, we have these errors:
+> $ mypy ./tools/testing/kunit/*.py
+> tools/testing/kunit/kunit_kernel.py:213: error: Item "_Loader" of "Optional[_Loader]" has no attribute "exec_module"
+> tools/testing/kunit/kunit_kernel.py:213: error: Item "None" of "Optional[_Loader]" has no attribute "exec_module"
+> tools/testing/kunit/kunit_kernel.py:214: error: Module has no attribute "QEMU_ARCH"
+> tools/testing/kunit/kunit_kernel.py:215: error: Module has no attribute "QEMU_ARCH"
+>
+> exec_module
+> ===========
+>
+> pytype currently reports no errors, but that's because there's a comment
+> disabling it on 213.
+>
+> This is due to https://github.com/python/typeshed/pull/2626.
+> The fix is to assert the loaded module implements the ABC
+> (abstract base class) we want which has exec_module support.
+>
+> QEMU_ARCH
+> =========
+>
+> pytype is fine with this, but mypy is not:
+> https://github.com/python/mypy/issues/5059
+>
+> Add a check that the loaded module does indeed have QEMU_ARCH.
+> Note: this is not enough to appease mypy, so we also add a comment to
+> squash the warning.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-I'll let the perf folks comment on this one. :)
+Thanks! I could not figure out how to make this work for both type
+checkers on my own.
 
--Kees
-
-> ---
->  tools/include/linux/sched.h       | 11 +++++++++++
->  tools/perf/tests/evsel-tp-sched.c | 26 ++++++++++++++++++++------
->  2 files changed, 31 insertions(+), 6 deletions(-)
->  create mode 100644 tools/include/linux/sched.h
-> 
-> diff --git a/tools/include/linux/sched.h b/tools/include/linux/sched.h
-> new file mode 100644
-> index 000000000000..0d575afd7f43
-> --- /dev/null
-> +++ b/tools/include/linux/sched.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _TOOLS_LINUX_SCHED_H
-> +#define _TOOLS_LINUX_SCHED_H
-> +
-> +/* Keep both length for backward compatibility */
-> +enum {
-> +	TASK_COMM_LEN_16 = 16,
-> +	TASK_COMM_LEN = 24,
-> +};
-> +
-> +#endif  /* _TOOLS_LINUX_SCHED_H */
-> diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
-> index f9e34bd26cf3..029f2a8c8e51 100644
-> --- a/tools/perf/tests/evsel-tp-sched.c
-> +++ b/tools/perf/tests/evsel-tp-sched.c
-> @@ -1,11 +1,13 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/err.h>
-> +#include <linux/sched.h>
->  #include <traceevent/event-parse.h>
->  #include "evsel.h"
->  #include "tests.h"
->  #include "debug.h"
->  
-> -static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
-> +static int evsel__test_field_alt(struct evsel *evsel, const char *name,
-> +				 int size, int alternate_size, bool should_be_signed)
->  {
->  	struct tep_format_field *field = evsel__field(evsel, name);
->  	int is_signed;
-> @@ -23,15 +25,24 @@ static int evsel__test_field(struct evsel *evsel, const char *name, int size, bo
->  		ret = -1;
->  	}
->  
-> -	if (field->size != size) {
-> -		pr_debug("%s: \"%s\" size (%d) should be %d!\n",
-> +	if (field->size != size && field->size != alternate_size) {
-> +		pr_debug("%s: \"%s\" size (%d) should be %d",
->  			 evsel->name, name, field->size, size);
-> +		if (alternate_size > 0)
-> +			pr_debug(" or %d", alternate_size);
-> +		pr_debug("!\n");
->  		ret = -1;
->  	}
->  
->  	return ret;
->  }
->  
-> +static int evsel__test_field(struct evsel *evsel, const char *name,
-> +			     int size, bool should_be_signed)
-> +{
-> +	return evsel__test_field_alt(evsel, name, size, -1, should_be_signed);
-> +}
-> +
->  int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtest __maybe_unused)
->  {
->  	struct evsel *evsel = evsel__newtp("sched", "sched_switch");
-> @@ -42,7 +53,8 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
->  		return -1;
->  	}
->  
-> -	if (evsel__test_field(evsel, "prev_comm", 16, false))
-> +	if (evsel__test_field_alt(evsel, "prev_comm", TASK_COMM_LEN_16,
-> +				  TASK_COMM_LEN, false))
->  		ret = -1;
->  
->  	if (evsel__test_field(evsel, "prev_pid", 4, true))
-> @@ -54,7 +66,8 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
->  	if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
->  		ret = -1;
->  
-> -	if (evsel__test_field(evsel, "next_comm", 16, false))
-> +	if (evsel__test_field_alt(evsel, "next_comm", TASK_COMM_LEN_16,
-> +				  TASK_COMM_LEN, false))
->  		ret = -1;
->  
->  	if (evsel__test_field(evsel, "next_pid", 4, true))
-> @@ -72,7 +85,8 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
->  		return -1;
->  	}
->  
-> -	if (evsel__test_field(evsel, "comm", 16, false))
-> +	if (evsel__test_field_alt(evsel, "comm", TASK_COMM_LEN_16,
-> +				  TASK_COMM_LEN, false))
->  		ret = -1;
->  
->  	if (evsel__test_field(evsel, "pid", 4, true))
-> -- 
-> 2.17.1
-> 
-
--- 
-Kees Cook
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
