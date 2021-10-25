@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8FC43955D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A45439562
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 13:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhJYL5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 07:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhJYL5U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:57:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1FBC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 04:54:58 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1meyZ3-0007VY-NM; Mon, 25 Oct 2021 13:54:53 +0200
-Subject: Re: [PATCH V2] clk: imx: gate off peripheral clock slice
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, sboyd@kernel.org,
-        mturquette@baylibre.com, abel.vesa@nxp.com, s.hauer@pengutronix.de
-Cc:     Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, festevam@gmail.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20211025122902.1151-1-peng.fan@oss.nxp.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <fc1ac63d-30c3-f309-7631-212ffa3f9de0@pengutronix.de>
-Date:   Mon, 25 Oct 2021 13:54:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232381AbhJYL5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 07:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230407AbhJYL5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:57:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5AA61029;
+        Mon, 25 Oct 2021 11:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635162929;
+        bh=bZdzlKe/LWb4p4XJYCbaVFHmbJVo/uY8GPyInnmu2XU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JfAFMxwml2BbPBUd1ZqoN4L95sT6Egbps/ouFqehZRe1109RpDHXGKQu4VBp2Zg+F
+         klsxEAjBkQLfUs+JWcgeeVwabwtiFwu3RBRyEuikWkg+5aTGTKmJFvJzClhgr5d9QF
+         EvURcRwb7RUa9dU9/TfestKliI3ICm6HMNNoY0Q+APSA0c+gTBVGnDZtYr8kjpT9St
+         CtwtmWBz96VW/VTk68Rr5qboQKSGHZ9+lv84BfFMCoU8AMj7fZGNR+fK/QNvBJG/MT
+         YAV987k1AUt/p6XaypdZUYv1I9Dzn6V9FvqTnqCexjQz+HJnVG4288WUZ1qdBB2sWs
+         uS+o2M/7DoUlQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1meyZM-0001MU-8Q; Mon, 25 Oct 2021 13:55:12 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] Input: iforce - fix control-message timeout
+Date:   Mon, 25 Oct 2021 13:55:01 +0200
+Message-Id: <20211025115501.5190-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20211025122902.1151-1-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.10.21 14:29, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> The Peripheral clocks are default enabled when SoC power on, and
-> bootloader not gate off the clocks when booting Linux Kernel.
-> 
-> So Linux Kernel is not aware the peripheral clocks are enabled and
-> still take them as disabled because of enable count is zero.
-> 
-> Then Peripheral clock's source without clock gated off could be
-> changed when have assigned-parents in device tree
-> 
-> However, per i.MX8M* reference mannual, "Peripheral clock slices must
-> be stopped to change the clock source", so need to gate off the
-> the peripheral clock when registering the clocks to avoid glitch.
-> 
-> Tested boot on i.MX8MM/P-EVK board
-> 
-> Fixes: d3ff9728134e ("clk: imx: Add imx composite clock")
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-I've been running an i.MX8MM-based system with this patch for a few days
-so far and no apparent issues:
+Fixes: 487358627825 ("Input: iforce - use DMA-safe buffer when getting IDs from USB")
+Cc: stable@vger.kernel.org      # 5.3
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/input/joystick/iforce/iforce-usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-> ---
-> 
-> V2:
->  Add Fixes tag
-> 
->  drivers/clk/imx/clk-composite-8m.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
-> index 2dfd6149e528..ee41fbf90589 100644
-> --- a/drivers/clk/imx/clk-composite-8m.c
-> +++ b/drivers/clk/imx/clk-composite-8m.c
-> @@ -184,6 +184,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
->  	struct clk_mux *mux = NULL;
->  	const struct clk_ops *divider_ops;
->  	const struct clk_ops *mux_ops;
-> +	u32 val;
->  
->  	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
->  	if (!mux)
-> @@ -216,8 +217,14 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
->  		div->width = PCG_PREDIV_WIDTH;
->  		divider_ops = &imx8m_clk_composite_divider_ops;
->  		mux_ops = &clk_mux_ops;
-> -		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED))
-> +		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED)) {
->  			flags |= CLK_SET_PARENT_GATE;
-> +			if (!(flags & CLK_IS_CRITICAL)) {
-> +				val = readl(reg);
-> +				val &= ~BIT(PCG_CGC_SHIFT);
-> +				writel(val, reg);
-> +			}
-> +		}
->  	}
->  
->  	div->lock = &imx_ccm_lock;
-> 
-
-
+diff --git a/drivers/input/joystick/iforce/iforce-usb.c b/drivers/input/joystick/iforce/iforce-usb.c
+index 6c554c11a7ac..ea58805c480f 100644
+--- a/drivers/input/joystick/iforce/iforce-usb.c
++++ b/drivers/input/joystick/iforce/iforce-usb.c
+@@ -92,7 +92,7 @@ static int iforce_usb_get_id(struct iforce *iforce, u8 id,
+ 				 id,
+ 				 USB_TYPE_VENDOR | USB_DIR_IN |
+ 					USB_RECIP_INTERFACE,
+-				 0, 0, buf, IFORCE_MAX_LENGTH, HZ);
++				 0, 0, buf, IFORCE_MAX_LENGTH, 1000);
+ 	if (status < 0) {
+ 		dev_err(&iforce_usb->intf->dev,
+ 			"usb_submit_urb failed: %d\n", status);
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.32.0
+
