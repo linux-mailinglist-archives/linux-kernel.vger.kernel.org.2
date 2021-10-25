@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB227439F50
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9648743A2C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbhJYTTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:19:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
+        id S235336AbhJYTwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:52:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234256AbhJYTR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0F0B6105A;
-        Mon, 25 Oct 2021 19:15:35 +0000 (UTC)
+        id S236468AbhJYToo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:44:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 692FE60C4B;
+        Mon, 25 Oct 2021 19:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189337;
-        bh=U8RWI+ebkRlcn5U+fuezUV3XbWXlN+5igTpJ7kSL7EQ=;
+        s=korg; t=1635190707;
+        bh=TBZMlVIOZR9UVFUNlLA43/VYaNzJPp0tk0nGcSn9+qA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NL0V4Q6szqN6iSHdiYPa+lSUGxGDMffR1XGOb0yy4BNNbidNZXArIH3+d+sd6D2A4
-         YGjCQcG36fLXP47euPFt8oWwGbYM1Yo+g6BoSBgkWuo/5egVvk/rXwseQRam3CdMec
-         UAi/Zc8NkipOPYiOYC3RegE5a6MtAp/m+WukwEbI=
+        b=Ch3pjBVHaO7lAtZHucPcKZEUo7R7lT5WHhSzVPDizCYuxUkfDthFFK6elm7yTSmSh
+         9dTkX7/XWQFywoQtcwiumITswX4hLWixp1dQw8TfZ/gU9qr5hCDptqPnNDhhWfFFaW
+         2baNqdURDmfSgJ9dx2Cn02TrWmFjwk0IJYFsvdEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 10/44] iio: adc128s052: Fix the error handling path of adc128_probe()
-Date:   Mon, 25 Oct 2021 21:13:51 +0200
-Message-Id: <20211025190930.724385130@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 051/169] ptp: Fix possible memory leak in ptp_clock_register()
+Date:   Mon, 25 Oct 2021 21:13:52 +0200
+Message-Id: <20211025191024.165411968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit bbcf40816b547b3c37af49168950491d20d81ce1 upstream.
+[ Upstream commit 4225fea1cb28370086e17e82c0f69bec2779dca0 ]
 
-A successful 'regulator_enable()' call should be balanced by a
-corresponding 'regulator_disable()' call in the error handling path of the
-probe, as already done in the remove function.
+I got memory leak as follows when doing fault injection test:
 
-Update the error handling path accordingly.
+unreferenced object 0xffff88800906c618 (size 8):
+  comm "i2c-idt82p33931", pid 4421, jiffies 4294948083 (age 13.188s)
+  hex dump (first 8 bytes):
+    70 74 70 30 00 00 00 00                          ptp0....
+  backtrace:
+    [<00000000312ed458>] __kmalloc_track_caller+0x19f/0x3a0
+    [<0000000079f6e2ff>] kvasprintf+0xb5/0x150
+    [<0000000026aae54f>] kvasprintf_const+0x60/0x190
+    [<00000000f323a5f7>] kobject_set_name_vargs+0x56/0x150
+    [<000000004e35abdd>] dev_set_name+0xc0/0x100
+    [<00000000f20cfe25>] ptp_clock_register+0x9f4/0xd30 [ptp]
+    [<000000008bb9f0de>] idt82p33_probe.cold+0x8b6/0x1561 [ptp_idt82p33]
 
-Fixes: 913b86468674 ("iio: adc: Add TI ADC128S052")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Link: https://lore.kernel.org/r/85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When posix_clock_register() returns an error, the name allocated
+in dev_set_name() will be leaked, the put_device() should be used
+to give up the device reference, then the name will be freed in
+kobject_cleanup() and other memory will be freed in ptp_clock_release().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: a33121e5487b ("ptp: fix the race between the release of ptp_clock and cdev")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ti-adc128s052.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/ptp/ptp_clock.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/drivers/iio/adc/ti-adc128s052.c
-+++ b/drivers/iio/adc/ti-adc128s052.c
-@@ -159,7 +159,13 @@ static int adc128_probe(struct spi_devic
- 	mutex_init(&adc->lock);
- 
- 	ret = iio_device_register(indio_dev);
-+	if (ret)
-+		goto err_disable_regulator;
- 
-+	return 0;
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 4dfc52e06704..7fd02aabd79a 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -283,15 +283,22 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	/* Create a posix clock and link it to the device. */
+ 	err = posix_clock_register(&ptp->clock, &ptp->dev);
+ 	if (err) {
++	        if (ptp->pps_source)
++	                pps_unregister_source(ptp->pps_source);
 +
-+err_disable_regulator:
-+	regulator_disable(adc->reg);
- 	return ret;
- }
++		kfree(ptp->vclock_index);
++
++		if (ptp->kworker)
++	                kthread_destroy_worker(ptp->kworker);
++
++		put_device(&ptp->dev);
++
+ 		pr_err("failed to create posix clock\n");
+-		goto no_clock;
++		return ERR_PTR(err);
+ 	}
  
+ 	return ptp;
+ 
+-no_clock:
+-	if (ptp->pps_source)
+-		pps_unregister_source(ptp->pps_source);
+ no_pps:
+ 	ptp_cleanup_pin_groups(ptp);
+ no_pin_groups:
+-- 
+2.33.0
+
 
 
