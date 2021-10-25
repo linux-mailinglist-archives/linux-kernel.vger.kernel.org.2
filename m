@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F9643969E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E693B4396A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbhJYMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:49:38 -0400
-Received: from mga09.intel.com ([134.134.136.24]:2075 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232474AbhJYMth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:49:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="229500905"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="229500905"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:47:15 -0700
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="485661923"
-Received: from yifanyao-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.171.31])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 05:47:11 -0700
-Date:   Mon, 25 Oct 2021 20:47:05 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/4] efi: Introduce
- EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Message-ID: <20211025124705.GA9212@chenyu5-mobl1>
-References: <cover.1635140590.git.yu.c.chen@intel.com>
- <1cd3161bf51de99990fd5ee2dc896b4defef4f38.1635140590.git.yu.c.chen@intel.com>
- <YXZSMCaODRPw0Zlj@kroah.com>
- <20211025114519.GA7559@chenyu5-mobl1>
- <YXac0IYICzIOmeRh@kroah.com>
+        id S233243AbhJYMuq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Oct 2021 08:50:46 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:39836 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233230AbhJYMuo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:50:44 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-136-D3V1KxIfN62o-yY3VJKvvg-1; Mon, 25 Oct 2021 13:48:20 +0100
+X-MC-Unique: D3V1KxIfN62o-yY3VJKvvg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Mon, 25 Oct 2021 13:48:19 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Mon, 25 Oct 2021 13:48:19 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Willy Tarreau' <w@1wt.eu>
+CC:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Bedirhan KURT <windowz414@gnuweeb.org>,
+        Louvian Lyndal <louvianlyndal@gmail.com>,
+        "Ammar Faizi" <ammar.faizi@students.amikom.ac.id>,
+        Peter Cordes <peter@cordes.ca>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH 2/3] tools/nolibc: i386: fix initial stack alignment
+Thread-Topic: [PATCH 2/3] tools/nolibc: i386: fix initial stack alignment
+Thread-Index: AQHXyPyt3VRk2GYnN02WzGUPe2wuUqvjVOSw///2wgCAAF8XkA==
+Date:   Mon, 25 Oct 2021 12:48:19 +0000
+Message-ID: <e1090244c6324f6fbaaf04ecb7a7cac5@AcuMS.aculab.com>
+References: <20211024172816.17993-1-w@1wt.eu>
+ <20211024172816.17993-3-w@1wt.eu>
+ <7e5ed287476042388779ca3c84483a92@AcuMS.aculab.com>
+ <20211025080620.GA23398@1wt.eu>
+In-Reply-To: <20211025080620.GA23398@1wt.eu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXac0IYICzIOmeRh@kroah.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 02:02:24PM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 25, 2021 at 07:45:19PM +0800, Chen Yu wrote:
-> > On Mon, Oct 25, 2021 at 08:44:00AM +0200, Greg Kroah-Hartman wrote:
-> > > On Mon, Oct 25, 2021 at 02:25:04PM +0800, Chen Yu wrote:
-> > > > Platform Firmware Runtime Update image starts with UEFI headers, and the
-> > > > headers are defined in UEFI specification, but some of them have not been
-> > > > defined in the kernel yet.
-> > > > 
-> > > > For example, the header layout of a capsule file looks like this:
-> > > > 
-> > > > EFI_CAPSULE_HEADER
-> > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> > > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
-> > > > 
-> > > > These structures would be used by the Platform Firmware Runtime Update
-> > > > driver to parse the format of capsule file to verify if the corresponding
-> > > > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-> > > > kernel, however the rest are not, thus introduce corresponding UEFI
-> > > > structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
-> > > > so the corresponding data types should be packed.
-> > > > 
-> > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > > > ---
-> > > > v6: No change since v5.
-> > > > v5: No change since v4.
-> > > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki) 
-> > > > ---
-> > > >  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 50 insertions(+)
-> > > > 
-> > > > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > > > index 6b5d36babfcc..19ff834e1388 100644
-> > > > --- a/include/linux/efi.h
-> > > > +++ b/include/linux/efi.h
-> > > > @@ -148,6 +148,56 @@ typedef struct {
-> > > >  	u32 imagesize;
-> > > >  } efi_capsule_header_t;
-> > > >  
-> > > > +#pragma pack(1)
-> > > 
-> > > Why is this pragma suddenly needed now in this file?
-> > > 
-> > > If you really need this for a specific structure, use the "__packed"
-> > > attribute please.
+From: Willy Tarreau
+> Sent: 25 October 2021 09:06
+> 
+> On Mon, Oct 25, 2021 at 07:46:11AM +0000, David Laight wrote:
+> > From: Willy Tarreau
+> > > Sent: 24 October 2021 18:28
 > > >
-> > These two structures are required to be packed in the uefi spec, I'll change
-> > them to "__packed".
+> > > After re-checking in the spec and comparing stack offsets with glibc,
+> > > The last pushed argument must be 16-byte aligned (i.e. aligned before the
+> > > call) so that in the callee esp+4 is multiple of 16, so the principle is
+> > > the 32-bit equivalent to what Ammar fixed for x86_64. It's possible that
+> > > 32-bit code using SSE2 or MMX could have been affected. In addition the
+> > > frame pointer ought to be zero at the deepest level.
+> > >
+> > ...
+> > >  /* startup code */
+> > > +/*
+> > > + * i386 System V ABI mandates:
+> > > + * 1) last pushed argument must be 16-byte aligned.
+> > > + * 2) The deepest stack frame should be set to zero
+> >
+> > I'm pretty sure that the historic SYSV i386 ABI only every required
+> > 4-byte alignment for the stack.
+> >
+> > At some point it got 'randomly' changed to 16-byte.
+> > I don't think this happened until after compiler support for SSE2
+> > intrinsics was added.
 > 
-> And they are the _only_ ones in this .h file that require this?  I would
-> think that they all require this.
->
-I did a search in the uefi specification, and found 42 pack(1) structures,
-while the other structures do not have pack(1) attribute.
+> It's very possible because I've done a number of tests and noticed
+> that in some cases the called functions' stack doesn't seem to be
+> more than 4-aligned. However the deepest function in the stack starts
+> with an aligned stack so I prefer to follow this same rule.
 
-It seems to me that whether the structures are required to be strictly packed
-depends on the use case. Here's my understanding and I might be wrong: In this
-patch, according to the skeleton of capsule file described in
-[Figure 23-6 Firmware Management and Firmware Image Management headers]
-in the uefi spec [1], the two structures are located at the beginning of
-the capsule file, and followed by real payload. If these structure are packed
-then the the adjacent binary payload could start on byte boundary without
-padding, which might save space for capsule file.
+Any call through asm is unlikely to maintain the 16 byte alignment.
+But yes, starting off on the required (by gcc) alignment does no harm.
 
-For those structures that do not have strict pack requirement, the uefi spec
-does not force to pack them.
+	David
 
-Link: https://uefi.org/sites/default/files/resources/UEFI_Spec_2_9_2021_03_18.pdf # [1]
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-thanks,
-Chenyu
-
- 
-> thanks,
-> 
-> greg k-h
