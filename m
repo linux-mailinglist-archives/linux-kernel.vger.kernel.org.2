@@ -2,193 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A612439DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26870439DC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhJYRqA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Oct 2021 13:46:00 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:52683 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234190AbhJYRp3 (ORCPT
+        id S234270AbhJYRoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234292AbhJYRob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:45:29 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-CEsPmo36NDCgmeyfQkC_yQ-1; Mon, 25 Oct 2021 13:43:03 -0400
-X-MC-Unique: CEsPmo36NDCgmeyfQkC_yQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9DEB1019620;
-        Mon, 25 Oct 2021 17:43:01 +0000 (UTC)
-Received: from x1.com (unknown [10.22.9.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFBAF5C1A1;
-        Mon, 25 Oct 2021 17:42:57 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Mon, 25 Oct 2021 13:44:31 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13CAC061224
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:42:08 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id h20so12391319qko.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 10:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X9zUblVIGuZd4IjMbSrFBsAjSqw6zhs1OIqj/eH6y0g=;
+        b=dhzO+fgnJ3U+lS/5F/TkufBFbMB0FNv9RJNCypmqJeBdqIvAj71pWD2NOfYrm2raA+
+         Gz9sHdjGm2gbUyrghphWehHsFnCPBtO6T9pVNjdQSUCyFAmXo8C3q3oGIkmxya074LmW
+         TlFgNZF+u6HWvpfWXC/CyLuVW2E9zBF/LQH6/EulYw0xE0hGLB2G2+L5qnzUUVo+OSTW
+         KqdL/e4Zr/FS54+IBlJsSt/8phFMwL6kcbkRQh9cplG6LIR2aVK2fA1oVATMLa4ubnex
+         paHwS5WXDqXF08tonhgFBfATSqQZsS+YnFccAJ8MBRZF6Iw71aePvl9Td/MigGEoJmT3
+         LRZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=X9zUblVIGuZd4IjMbSrFBsAjSqw6zhs1OIqj/eH6y0g=;
+        b=5ZKSDzciryhLiWViGdwTo+o9sQnSUzgEUaHh9598ccERKAJSfKOce7HzYRG/KNSk1M
+         WhOXmMzDnrlCSorq/dGaKoizZhFS/QOcQ92cM0T4SGjWi9s99I3i5mq2u7xPZM6nbzh3
+         x8HTqVYJ80p0FP3UfXwWoZj8dHRNeWjGeO7Odr6YfNLSiSWmN2Z8BfkfB+SZx7lT8IvB
+         wu2PoACfueVhz0S4t92tguH5czKuGICMQB6bWlPE9VKdsjL/5WLx2n/yWjJDdlBMFBju
+         ZBpTgLBxBZml4tThYK5qBa+z/vb/NCTiZtnRHgtB/Mfr7JQ6YUaCVnl83EkPT6ajA7E6
+         WVJg==
+X-Gm-Message-State: AOAM530Mtco5RkKmTxF4aOyliX/LBcEBG+9qOE79odoaEDo1oqsgxzLI
+        x4sDIAbvrc5bB9AQUXi/XmA=
+X-Google-Smtp-Source: ABdhPJyM2kiThlmSeP8Np46MA9t73+LW7QdDF8frc+w+QIhaegc9ynRNr+0HDKlD7vGk7em/wPsvEQ==
+X-Received: by 2002:a05:620a:4153:: with SMTP id k19mr14333359qko.246.1635183727839;
+        Mon, 25 Oct 2021 10:42:07 -0700 (PDT)
+Received: from localhost.localdomain ([67.8.38.84])
+        by smtp.gmail.com with ESMTPSA id v21sm502280qtk.46.2021.10.25.10.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 10:42:07 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     robert.foss@linaro.org, a.hajda@samsung.com,
+        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     jagan@amarulasolutions.com, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V5 20/20] rtla: Add rtla timerlat hist documentation
-Date:   Mon, 25 Oct 2021 19:40:45 +0200
-Message-Id: <286c09d3d20acb2e4336aeb1e46f0396001ca151.1635181938.git.bristot@kernel.org>
-In-Reply-To: <cover.1635181938.git.bristot@kernel.org>
-References: <cover.1635181938.git.bristot@kernel.org>
+Subject: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
+Date:   Mon, 25 Oct 2021 13:42:02 -0400
+Message-Id: <20211025174202.32396-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
+Kbuild gives the following warning:
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
+  Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
+  Selected by [y]:
+  - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
+
+This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
+without depending on or selecting DRM_KMS_HELPER,
+despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
+
+This unmet dependency bug was detected by Kismet,
+a static analysis tool for Kconfig.
+Please advise if this is not the appropriate solution.
+
+Fixes: ce517f18944e ("drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge")
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
 ---
- .../tools/rtla/rtla-timerlat-hist.rst         | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ drivers/gpu/drm/bridge/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-new file mode 100644
-index 000000000000..e12eae1f3301
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -0,0 +1,106 @@
-+=====================
-+rtla-timerlat-hist
-+=====================
-+------------------------------------------------
-+Histograms of the operating system timer latency
-+------------------------------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+**rtla timerlat hist** [*OPTIONS*] ...
-+
-+DESCRIPTION
-+===========
-+
-+.. include:: common_timerlat_description.rst
-+
-+The **rtla timerlat hist** displays a histogram of each tracer event
-+occurrence. This tool uses the periodic information, and the
-+**osnoise:** tracepoints are enabled when using the **-T** option.
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_timerlat_options.rst
-+
-+.. include:: common_hist_options.rst
-+
-+.. include:: common_options.rst
-+
-+EXAMPLE
-+=======
-+In the example below, **rtla timerlat hist** is set to run for *10* minutes,
-+in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
-+hist** will change the priority of the *timelat* threads to run under
-+*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*1ms* period is also passed to the *timerlat* tracer::
-+
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+  # RTLA timerlat histogram
-+  # Time unit is microseconds (us)
-+  # Duration:   0 00:10:00
-+  Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+  0        276489         0    206089         0    466018         0    481102         0    205546         0
-+  1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+  2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+  3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+  4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+  5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+  6           132    101501        96     64584       635    213774       757    215471        99     73453
-+  7            74    169347        65    124758       350     57466       441     53639        69    148573
-+  8            53     85183        31    156751       229      9052       306      9026        39    139907
-+  9            22     10387        12     42762       161      2554       225      2689        19     26192
-+  10           13      1898         8      5770       114      1247       128      1405        13      3772
-+  11            9       560         9       924        71       686        76       765         8       713
-+  12            4       256         2       360        50       411        64       474         3       278
-+  13            2       167         2       172        43       256        53       350         4       180
-+  14            1        88         1       116        15       198        42       223         0       115
-+  15            2        63         3        94        11       139        20       150         0        58
-+  16            2        37         0        56         5        78        10       102         0        39
-+  17            0        18         0        28         4        57         8        80         0        15
-+  18            0         8         0        17         2        50         6        56         0        12
-+  19            0         9         0         5         0        19         0        48         0        18
-+  20            0         4         0         8         0        11         2        27         0         4
-+  21            0         2         0         3         1         9         1        18         0         6
-+  22            0         1         0         3         1         7         0         3         0         5
-+  23            0         2         0         4         0         2         0         7         0         2
-+  24            0         2         0         2         1         3         0         3         0         5
-+  25            0         0         0         1         0         1         0         1         0         3
-+  26            0         1         0         0         0         2         0         2         0         0
-+  27            0         0         0         3         0         1         0         0         0         1
-+  28            0         0         0         3         0         0         0         1         0         0
-+  29            0         0         0         2         0         2         0         1         0         3
-+  30            0         1         0         0         0         0         0         0         0         0
-+  31            0         1         0         0         0         0         0         2         0         2
-+  32            0         0         0         1         0         2         0         0         0         0
-+  33            0         0         0         2         0         0         0         0         0         1
-+  34            0         0         0         0         0         0         0         0         0         2
-+  35            0         1         0         1         0         0         0         0         0         1
-+  36            0         1         0         0         0         1         0         1         0         0
-+  37            0         0         0         1         0         0         0         0         0         0
-+  40            0         0         0         0         0         1         0         1         0         0
-+  41            0         0         0         0         0         0         0         0         0         1
-+  42            0         0         0         0         0         0         0         0         0         1
-+  44            0         0         0         0         0         1         0         0         0         0
-+  46            0         0         0         0         0         0         0         1         0         0
-+  47            0         0         0         0         0         0         0         0         0         1
-+  50            0         0         0         0         0         0         0         0         0         1
-+  54            0         0         0         1         0         0         0         0         0         0
-+  58            0         0         0         1         0         0         0         0         0         0
-+  over:         0         0         0         0         0         0         0         0         0         0
-+  count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+  min:          0         1         0         1         0         1         0         1         0         1
-+  avg:          0         5         0         5         0         4         0         4         0         5
-+  max:         16        36        15        58        24        44        21        46        13        50
-+
-+SEE ALSO
-+========
-+**rtla-timerlat**\(1), **rtla-timerlat-top**\(1)
-+
-+*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
-+
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
--- 
-2.31.1
-
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 431b6e12a81f..a630cb8fd1c8 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -30,6 +30,7 @@ config DRM_CDNS_DSI
+ config DRM_CHIPONE_ICN6211
+ 	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
+ 	depends on OF
++  select DRM_KMS_HELPER
+ 	select DRM_MIPI_DSI
+ 	select DRM_PANEL_BRIDGE
+ 	help
+--
+2.30.2
