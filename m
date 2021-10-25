@@ -2,178 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90F943936B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCA4439378
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 12:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhJYKOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 06:14:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37150 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhJYKOo (ORCPT
+        id S232789AbhJYKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 06:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhJYKSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:14:44 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7C99A212C7;
-        Mon, 25 Oct 2021 10:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635156741; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dB0FBmLwVXBQXW2FJZKxygSRayu1vt2IxCxFSfu5YEc=;
-        b=y1tV3Sp2kvIsoylox4pssQzg62XmraJ7Ab0HCuqC9Md2CyZ8RWLYayggAWaYweQoTDWARX
-        iMy6xjrMG8XTuNOA5jo+42ZoTEXQsJh4kdErJcf46TY1ECEBauGaOT/bJyHJP67YGEoY9H
-        FSHMd1Cht5433TY8UkJnnUiBni6i27Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635156741;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dB0FBmLwVXBQXW2FJZKxygSRayu1vt2IxCxFSfu5YEc=;
-        b=2PXh+OZbW19+NXR9HR4Y2gwCmt7gQp3ApyZxsRZdXCdGrprKJdgZy04K6RVVisPh+IDGa8
-        M5O4vHnQ7KK5n+Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23C4C13B95;
-        Mon, 25 Oct 2021 10:12:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uBMFBgWDdmH1ZgAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Mon, 25 Oct 2021 10:12:21 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 0f24f1e9;
-        Mon, 25 Oct 2021 10:12:20 +0000 (UTC)
-Date:   Mon, 25 Oct 2021 11:12:20 +0100
-From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Patrick Donnelly <pdonnell@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
-Message-ID: <YXaDBFvar4TS+EB8@suse.de>
-References: <20211020143708.14728-1-lhenriques@suse.de>
- <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
- <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
- <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
- <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
- <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+        Mon, 25 Oct 2021 06:18:44 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7CAC061745;
+        Mon, 25 Oct 2021 03:16:22 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id l13so20345973edi.8;
+        Mon, 25 Oct 2021 03:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NoOyCfUHoc1NYPh3QSE+q8V42pQrvXovBnbm5bi8Q4k=;
+        b=QYH7ZKvRWU1KiiEGEiqhp/peQaL15IJnNfVPiYX/zO0MWra7+JI3SXg0Lc0JOA98XW
+         WPj0LrY1A9k5qE+Fp7rMP4ng0O1HUTlPumAhQb4+v52N+Gxh4ARNPuyOlTxD1lWp2hPU
+         +CZeBnhLNgI5Sswr1xtPARYwEWLeJVIyMo0vKQkodDvIb+wFY1C1QMKmpWuR8CETdaeY
+         +1QUbqZOiVqSWFHOAOgre3vMI8qKI9BZ3oqaxTWnWpEwtFrprfAJnVoUrrormyAw67w8
+         q4J0hElT7j8paGd5sJawJ1zttr7+KMkjayF3pBz9cS4vqbe4A781qONfgGIej61A2KEd
+         BXmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NoOyCfUHoc1NYPh3QSE+q8V42pQrvXovBnbm5bi8Q4k=;
+        b=YLCsN5rUDWHtcgPzdu3n/cvmPBLNUNpadsuByUhqCHuPN9FRhbSojbgwewGPoLVFW3
+         YvMb5UlwcHo5APY2bwX+4jmKSJkjgyae1ziXHJRAlwKqt5RIGyVzqJ/Z1yf3MsOcsoKR
+         +aY1rwdScPqkTZE0AN4poAUofUou2SzzgXWjvSg8tvA5eqCO76isv1PRt/rwFpJHZT+h
+         AAath7Sd++g+EHs9Ff7e398+VCOvbeNtYAuO4VnzbUeSATuM8cWuuAjwb+Az4KIxwVMo
+         0qWYIp4r70suvf7amWwnTzn5caKZ3EIyOjyUwYqaDzLZbI3iSN2IqXzv56o3cnbeQfb7
+         ARDQ==
+X-Gm-Message-State: AOAM531DJ8XveusHL9XjbWZ2rLpP2hXuuEzOxFXhn/IbrAW9uZ/WsTNd
+        vX/GeZ+spkrAEGomKkB9ZJXVnlWojpUURP9pnVU=
+X-Google-Smtp-Source: ABdhPJzVsrEQ2wGc7NbJFC9XtcZJjhMbuy0RLRmB4+JyACp9oh8ch9YE0U1JW5YiiQEFm2TA0W1r11nn0kZxkU7HS/I=
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr19541505ejb.356.1635156977533;
+ Mon, 25 Oct 2021 03:16:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-13-kernel@esmil.dk>
+ <CAHp75Vf3yNoKxguHP3EPcRV_3tG++Fd=FVM0MXqW4_SmLA6HEw@mail.gmail.com>
+ <CANBLGcxEwkcZn2CC69zLaVqL8ocS6r6HDaaoUF09gg1mpDxFzg@mail.gmail.com>
+ <CAHp75Vc5-Sg-0kKN=OMs_2iJbtc+D9=f0-Sp+SpY5O3roU3XdA@mail.gmail.com>
+ <CANBLGcxnmt4Ki4EHAXeoJX5mJMyeioZXhGaDsKm_wk86D4js3Q@mail.gmail.com> <CANBLGcyOfo3r0Viidf9kyW0Q9yD4uqTLm90+7O=T49v7ZHurfA@mail.gmail.com>
+In-Reply-To: <CANBLGcyOfo3r0Viidf9kyW0Q9yD4uqTLm90+7O=T49v7ZHurfA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 25 Oct 2021 13:15:23 +0300
+Message-ID: <CAHp75Vc1EES8c7XD-MbQNdtCJA3YvvEYd3_e378rVCe6=AmhvQ@mail.gmail.com>
+Subject: Re: [PATCH v2 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 12:35:18PM -0400, Jeff Layton wrote:
-> On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
-> > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
-> > > 
-> > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
-> > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > > > > 
-> > > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
-> > > > > > This counter will keep track of the number of remote object copies done on
-> > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
-> > > > > > can be accessed from the client debugfs directory.
-> > > > > > 
-> > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
-> > > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
-> > > > > > ---
-> > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
-> > > > > > 100% sure about the usefulness of this patch, or if this is the best way
-> > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
-> > > > > > get some feedback, hence the RFC.
-> > > > > > 
-> > > > > > Cheers,
-> > > > > > --
-> > > > > > Luís
-> > > > > > 
-> > > > > > [0] https://github.com/ceph/ceph/pull/42720
-> > > > > > 
-> > > > > 
-> > > > > I think this would be better integrated into the stats infrastructure.
-> > > > > 
-> > > > > Maybe you could add a new set of "copy" stats to struct
-> > > > > ceph_client_metric that tracks the total copy operations done, their
-> > > > > size and latency (similar to read and write ops)?
-> > > > 
-> > > > I think it's a good idea to integrate this into "stats" but I think a
-> > > > local debugfs file for some counters is still useful. The "stats"
-> > > > module is immature at this time and I'd rather not build any qa tests
-> > > > (yet) that rely on it.
-> > > > 
-> > > > Can we generalize this patch-set to a file named "op_counters" or
-> > > > similar and additionally add other OSD ops performed by the kclient?
-> > > > 
-> > > 
-> > > 
-> > > Tracking this sort of thing is the main purpose of the stats code. I'm
-> > > really not keen on adding a whole separate set of files for reporting
-> > > this.
-> > 
-> > Maybe I'm confused. Is there some "file" which is already used for
-> > this type of debugging information? Or do you mean the code for
-> > sending stats to the MDS to support cephfs-top?
-> > 
-> > > What's the specific problem with relying on the data in debugfs
-> > > "metrics" file?
-> > 
-> > Maybe no problem? I wasn't aware of a "metrics" file.
-> > 
-> 
-> Yes. For instance:
-> 
-> # cat /sys/kernel/debug/ceph/*/metrics
-> item                               total
-> ------------------------------------------
-> opened files  / total inodes       0 / 4
-> pinned i_caps / total inodes       5 / 4
-> opened inodes / total inodes       0 / 4
-> 
-> item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
-> -----------------------------------------------------------------------------------
-> read          0           0               0               0               0
-> write         5           914013          824797          1092343         103476
-> metadata      79          12856           1572            114572          13262
-> 
-> item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
-> ----------------------------------------------------------------------------------------
-> read          0           0               0               0               0
-> write         5           4194304         4194304         4194304         20971520
-> 
-> item          total           miss            hit
-> -------------------------------------------------
-> d_lease       11              0               29
-> caps          5               68              10702
-> 
-> 
-> I'm proposing that Luis add new lines for "copy" to go along with the
-> "read" and "write" ones. The "total" counter should give you a count of
-> the number of operations.
+On Sun, Oct 24, 2021 at 12:29 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> On Sat, 23 Oct 2021 at 23:02, Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Sat, 23 Oct 2021 at 22:29, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Sat, Oct 23, 2021 at 9:46 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-The problem with this is that it will require quite some work on the
-MDS-side because, AFAIU, the MDS will need to handle different versions of
-the CEPH_MSG_CLIENT_METRICS message (with and without the new copy-from
-metrics).
+...
 
-Will this extra metric ever be useful on the MDS side?  From what I
-understood Patrick's initial request was to have a way to find out, on the
-client, if remote copies are really happening.  (*sigh* for not having
-tracepoints.)
+> > So is that a yes or a no to my question? It's not clear to me.
+>
+> I see now that you've probably misunderstood what the code does. It's
+> not one time use. The function parses the device tree and dynamically
+> registers groups and functions with the pinctrl framework. Each group
+> needs a string name, an int array of pins and optionally the pinmux
+> data. Once the group is registered those pieces of data needs to live
+> with the group until the drive is unloaded. But if the device tree
+> parsing fails before the group is registered then those allocations
+> would never be referenced and just hang around as garbage until the
+> driver is unloaded. In such cases fx. pinctrl-single uses devm_free to
+> free them again.
 
-Anyway, I can look into adding this to the metrics infrastructure, but
-it'll likely take me some more time to get to it and to figure out (once
-again) how the messages versioning work.
+Thank you for elaboration. Please, drop devm_*(). In this case it's
+inappropriate to use it. pinctrl-single should be amended accordingly,
+but it's out of scope here.
 
-Cheers,
---
-Luís
+...
+
+> > > > I such cases where you get conflicting PIN_CONFIG_BIAS_* settings I
+> > > > don't see why it's better to do the rmw on the padctl register for the
+> > > > first bias setting only to then change the bits again a few
+> > > > microseconds later when the loop encounters the second bias setting.
+> > > > After the loop is done the end result would still be just the last
+> > > > bias setting.
+> > >
+> > > It could be bias X followed by something else followed by bias Y. You
+> > > will write something else with bias Y. I admit I don't know this
+> > > hardware and you and maintainers are supposed to decide what's better,
+> > > but my guts are telling me that current algo is buggy.
+> >
+> > So there is only one padctl register pr. pin. I don't see why first
+> > setting the bias bits to X, then setting some other bits, and then
+> > setting the bias bits to Y would be different from just setting all
+> > the bits in one go. Except for during that little microsecond window
+> > during the loop that I actually think it's better to avoid.
+>
+> Maybe an example is in order. Suppose we get strong pull-up, drive
+> strength 3 and pull-down config flags (the strong pull-up and pull
+> down flags conflict) and the padctl value is 0x0c0 (pull-up, input and
+> schmitt trigger enabled). With your solution of just altering the
+> padctl bits immediately we'd call starfive_padctl_rmw 3 times in rapid
+> succession like this:
+>
+> starfive_padctl_rmw(pin, 0x130, 0x100);
+> starfive_padctl_rmw(pin, 0x007, 0x003);
+> starfive_padctl_rmw(pin, 0x130, 0x010);
+>
+> ..and the end result would be 0x0d3, although the strong pull-up would
+> be enabled for the microseconds between the 1st and 3nd call.
+> As the code is now it'd just directly do
+>
+> starfive_padctl_rmw(pin, 0x137, 0x013)
+>
+> ..which again results in 0x0d3, only without the microsecond blink of
+> the strong pull-up.
+
+You missed the point. Hardware on the other end may behave well
+differently in these two cases.
+
+-- 
+With Best Regards,
+Andy Shevchenko
