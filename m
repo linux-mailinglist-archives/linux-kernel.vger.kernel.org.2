@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA567439979
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03FA43997B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhJYPBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:01:44 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:47359 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233520AbhJYPBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:01:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635173959; x=1666709959;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=v47IaqsvJy1lQ8q9u0DtWPDOnaJsL9/27Uf8oPYRiQI=;
-  b=hBh+NJWqMZcH+n0qzubSzjro3JpoDx79laZeS1fZfuMVXEV6LP7R8blO
-   Kffd5GeufMM35pZj1rnvzThG2JCrDwvljwEnz1OYC7b6tlXfNaqTAyvZY
-   qkZPzv79pyAGSNUuE2YUPxluUoMzD+XRaRz0F/dHLLk5HNuuuGtNEO0e0
-   w=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 25 Oct 2021 07:59:19 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 07:59:18 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Mon, 25 Oct 2021 07:59:17 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-CC:     <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: [PATCH] io_uring: fix a GCC warning in wq_list_for_each()
-Date:   Mon, 25 Oct 2021 10:59:06 -0400
-Message-ID: <20211025145906.71955-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
+        id S233724AbhJYPBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233721AbhJYPBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:01:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F53460C4A;
+        Mon, 25 Oct 2021 14:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635173967;
+        bh=0DRdwtlDxptpTVIUjrdp6jdjBzHEdY7f29OSOi6wnyY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZqNGRa1clU2ffRDdfraZXkY8BMhC5lhoqnVhGyp04+tM/sQqWApkbPaawpb0mM9RX
+         5xEv/jMWA5KrcOFmpKgDX0o5OgjazqPt51ocqyxZ++GK617SQmpExaUSGgHPXK+oZh
+         ybf1JBAjherNroZBF0MNaopT6Ww3PACpvDysQ7NU=
+Date:   Mon, 25 Oct 2021 16:59:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YXbGTS6cLmuNuJiR@kroah.com>
+References: <cover.1635140590.git.yu.c.chen@intel.com>
+ <6d4a9bc38c1efd2b10955f64629d194c050fdae1.1635140590.git.yu.c.chen@intel.com>
+ <YXZTDp3xB9hZdcuY@kroah.com>
+ <20211025141111.GA8602@chenyu5-mobl1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025141111.GA8602@chenyu5-mobl1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fs/io_uring.c: In function '__io_submit_flush_completions':
-fs/io_uring.c:2367:33: warning: variable 'prev' set but not used
-[-Wunused-but-set-variable]
- 2367 |  struct io_wq_work_node *node, *prev;
-      |                                 ^~~~
+On Mon, Oct 25, 2021 at 10:11:11PM +0800, Chen Yu wrote:
+> > > +module_init(pfru_init);
+> > > +module_exit(pfru_exit);
+> > 
+> > module_platform_driver()?
+> >
+> Currently there are two platform drivers in this file, one is this
+> platform driver, another one will be introduced in the subsequent
+> patch for telemetry. Since the two platform drivers are treated
+> as a whole, they are put into one file. Should I split them
+> into two files?
 
-Fixed it by open-coded the wq_list_for_each() without an unused previous
-node pointer.
+If they bind to different hardware devices, then yes, they should be
+separate files as they are not sharing any common code here.
 
-Fixes: 6f33b0bc4ea4 ("io_uring: use slist for completion batching")
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
----
- fs/io_uring.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 23641d9e0871..b8968bd43e3f 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2361,11 +2361,11 @@ static void io_free_batch_list(struct io_ring_ctx *ctx,
- static void __io_submit_flush_completions(struct io_ring_ctx *ctx)
- 	__must_hold(&ctx->uring_lock)
- {
--	struct io_wq_work_node *node, *prev;
-+	struct io_wq_work_node *node;
- 	struct io_submit_state *state = &ctx->submit_state;
- 
- 	spin_lock(&ctx->completion_lock);
--	wq_list_for_each(node, prev, &state->compl_reqs) {
-+	for (node = state->compl_reqs.first; node; node = node->next) {
- 		struct io_kiocb *req = container_of(node, struct io_kiocb,
- 						    comp_list);
- 
--- 
-2.30.2
-
+greg k-h
