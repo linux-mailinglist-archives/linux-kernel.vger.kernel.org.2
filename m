@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E57439FFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63ADA439F22
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhJYT0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:26:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232541AbhJYTYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:24:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97179610C9;
-        Mon, 25 Oct 2021 19:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189705;
-        bh=K1h5jKK043EJdDCrS31Ei7AesqHWZdzlKdbFdwvWj+4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJC2owjbsh03bxAuTNudqrtGIbz8DWdYFpvSGy5WqNUP348ku0L05hHjKTh9OV6st
-         rMLiZWtHKOEaIswGYyQuTwLDZjK/Gc8dP5qbtRY+mD0KXV6NhHguTJhmRY108p79v5
-         mXcp/EQdY3c4DRJsBTMnugg1QxWu+Ue9VGnSj/dg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.14 19/30] netfilter: Kconfig: use default y instead of m for bool config option
-Date:   Mon, 25 Oct 2021 21:14:39 +0200
-Message-Id: <20211025190927.535951770@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233922AbhJYTRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:17:38 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:47896 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233951AbhJYTR3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:17:29 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PFngSI024462;
+        Mon, 25 Oct 2021 12:15:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=sT1dbt5fGFGl/R3R0rBdl6d5cXHq7Xaf6xcVEBNnxpY=;
+ b=DbkxlhVdFkJHsmFvJMMTCUkgOqZVrs39j3Ogc8PaZCRkge5MnqbLNaO/C2cBCFQHQ2FX
+ 0YTgZrr3b6U6QnXyFJsW8cio28C8wWPj4xQnrFcg1pVaSBhWONdvSDuNhX6QDjY+m18r
+ aO7ICEyzfqaEhiY5vITj7Xu/stcQN66+Y545EwTzhLGXNWVvXm1dRE7AGZIsBfFyxSfT
+ g+Ma5KG9TFGtI0e827qiA+mX8LaCtmzRr6P/oqy3gVSj8t16ak4c6r+bpZxicPXjUlWy
+ BpjMz3d8URlGNVUe2g+LUw2hdag52OvJKfuvjLFQVq4aTb6XeEa94L6NexypxB3jqtDB VQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3bwyjg8ts2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 12:15:02 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 25 Oct
+ 2021 12:14:51 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 25 Oct 2021 12:14:51 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id BC65F3F7041;
+        Mon, 25 Oct 2021 12:14:48 -0700 (PDT)
+From:   Rakesh Babu <rsaladi2@marvell.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+CC:     Rakesh Babu <rsaladi2@marvell.com>
+Subject: [net-next PATCH 0/3] RVU Debugfs updates.
+Date:   Tue, 26 Oct 2021 00:44:39 +0530
+Message-ID: <20211025191442.10084-1-rsaladi2@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 9_NOO5ryLvNNXuz6_DSifjsp8SIuYi4F
+X-Proofpoint-GUID: 9_NOO5ryLvNNXuz6_DSifjsp8SIuYi4F
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_06,2021-10-25_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@gmail.com>
+The following patch series consists of the changes/modifications that are
+newly added/done to rvu_debugfs.c file.
 
-commit 77076934afdcd46516caf18ed88b2f88025c9ddb upstream.
+Patch 1: Few minor changes such as spelling mistakes, deleting unwanted
+characters, etc.
+Patch 2: Add debugfs dump for lmtst map table
+Patch 3: Add channel and channel mask in debugfs.
 
-This option, NF_CONNTRACK_SECMARK, is a bool, so it can never be 'm'.
+Harman Kalra (1):
+  octeontx2-af: cn10k: debugfs for dumping lmtst map table
 
-Fixes: 33b8e77605620 ("[NETFILTER]: Add CONFIG_NETFILTER_ADVANCED option")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/netfilter/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Rakesh Babu (2):
+  octeontx2-af: debugfs: Minor changes.
+  octeontx2-af: debugfs: Add channel and channel mask.
 
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -75,7 +75,7 @@ config NF_CONNTRACK_MARK
- config NF_CONNTRACK_SECMARK
- 	bool  'Connection tracking security mark support'
- 	depends on NETWORK_SECMARK
--	default m if NETFILTER_ADVANCED=n
-+	default y if NETFILTER_ADVANCED=n
- 	help
- 	  This option enables security markings to be applied to
- 	  connections.  Typically they are copied to connections from
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |   4 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 122 ++++++++++++++++--
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |   3 +
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |   3 +
+ 4 files changed, 119 insertions(+), 13 deletions(-)
 
-
+--
+2.17.1
