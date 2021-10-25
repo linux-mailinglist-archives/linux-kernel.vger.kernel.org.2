@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D33439FBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1B043A1CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhJYTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39276 "EHLO mail.kernel.org"
+        id S235380AbhJYTmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234842AbhJYTWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:22:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C03C960EBC;
-        Mon, 25 Oct 2021 19:19:45 +0000 (UTC)
+        id S236660AbhJYTfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:35:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 479B9603E5;
+        Mon, 25 Oct 2021 19:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189586;
-        bh=ZrsSBy57D8kFBiyUQ0yK6wBXOGDqNSH03H8z0Pjfs1g=;
+        s=korg; t=1635190329;
+        bh=OaManoyddLXjqRvxOTuMW98sSUZrZV8ZN0DMlLKwaUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VwWiMbdN971HgmQRoFeQZK9aFUxa21f86IX4uTyWQGD6DajC9NKgufxISChN9wShB
-         rviBMJ+2USZbF+nfqKwTunu0PJIT+5eOLyIoaRRBm6yb2zM/FVekPrFUjcsdINENaC
-         lGhoEbsLaDeXY4IGizmTnrVcjw8lvUZfszEzW+jc=
+        b=pvV77Hh6ILnjaWgoGoWaY/SYY+5Qjv5Wu51px/7+mf1sax9rVbulM/ACaIGYlNkCc
+         og8wDlWtMuk6nrol90fRAmI90+Zp+SUcpiecFIaBl+LlUS1hr7yEVvqn6UUiilHeAv
+         Zt3Y0cVSaEzDp60Xh22eJYbkCwgfXc4poG0nYbjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lin Ma <linma@zju.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 40/50] nfc: nci: fix the UAF of rf_conn_info object
+        stable@vger.kernel.org, Sasha Neftin <sasha.neftin@intel.com>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Nechama Kraus <nechamax.kraus@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 30/95] e1000e: Fix packet loss on Tiger Lake and later
 Date:   Mon, 25 Oct 2021 21:14:27 +0200
-Message-Id: <20211025190940.041027108@linuxfoundation.org>
+Message-Id: <20211025191001.275291909@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Sasha Neftin <sasha.neftin@intel.com>
 
-commit 1b1499a817c90fd1ce9453a2c98d2a01cca0e775 upstream.
+[ Upstream commit 639e298f432fb058a9496ea16863f53b1ce935fe ]
 
-The nci_core_conn_close_rsp_packet() function will release the conn_info
-with given conn_id. However, it needs to set the rf_conn_info to NULL to
-prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
-the UAF.
+Update the HW MAC initialization flow. Do not gate DMA clock from
+the modPHY block. Keeping this clock will prevent dropped packets
+sent in burst mode on the Kumeran interface.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213651
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213377
+Fixes: fb776f5d57ee ("e1000e: Add support for Tiger Lake")
+Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Mark Pearson <markpearson@lenovo.com>
+Tested-by: Nechama Kraus <nechamax.kraus@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/nci/rsp.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/intel/e1000e/ich8lan.c | 11 ++++++++++-
+ drivers/net/ethernet/intel/e1000e/ich8lan.h |  3 +++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
---- a/net/nfc/nci/rsp.c
-+++ b/net/nfc/nci/rsp.c
-@@ -289,6 +289,8 @@ static void nci_core_conn_close_rsp_pack
- 							 ndev->cur_conn_id);
- 		if (conn_info) {
- 			list_del(&conn_info->list);
-+			if (conn_info == ndev->rf_conn_info)
-+				ndev->rf_conn_info = NULL;
- 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
- 		}
- 	}
+diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+index 854c585de2e1..3cbb8d1ed67f 100644
+--- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
++++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+@@ -4811,7 +4811,7 @@ static s32 e1000_reset_hw_ich8lan(struct e1000_hw *hw)
+ static s32 e1000_init_hw_ich8lan(struct e1000_hw *hw)
+ {
+ 	struct e1000_mac_info *mac = &hw->mac;
+-	u32 ctrl_ext, txdctl, snoop;
++	u32 ctrl_ext, txdctl, snoop, fflt_dbg;
+ 	s32 ret_val;
+ 	u16 i;
+ 
+@@ -4870,6 +4870,15 @@ static s32 e1000_init_hw_ich8lan(struct e1000_hw *hw)
+ 		snoop = (u32)~(PCIE_NO_SNOOP_ALL);
+ 	e1000e_set_pcie_no_snoop(hw, snoop);
+ 
++	/* Enable workaround for packet loss issue on TGP PCH
++	 * Do not gate DMA clock from the modPHY block
++	 */
++	if (mac->type >= e1000_pch_tgp) {
++		fflt_dbg = er32(FFLT_DBG);
++		fflt_dbg |= E1000_FFLT_DBG_DONT_GATE_WAKE_DMA_CLK;
++		ew32(FFLT_DBG, fflt_dbg);
++	}
++
+ 	ctrl_ext = er32(CTRL_EXT);
+ 	ctrl_ext |= E1000_CTRL_EXT_RO_DIS;
+ 	ew32(CTRL_EXT, ctrl_ext);
+diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.h b/drivers/net/ethernet/intel/e1000e/ich8lan.h
+index e757896287eb..8f2a8f4ce0ee 100644
+--- a/drivers/net/ethernet/intel/e1000e/ich8lan.h
++++ b/drivers/net/ethernet/intel/e1000e/ich8lan.h
+@@ -286,6 +286,9 @@
+ /* Proprietary Latency Tolerance Reporting PCI Capability */
+ #define E1000_PCI_LTR_CAP_LPT		0xA8
+ 
++/* Don't gate wake DMA clock */
++#define E1000_FFLT_DBG_DONT_GATE_WAKE_DMA_CLK	0x1000
++
+ void e1000e_write_protect_nvm_ich8lan(struct e1000_hw *hw);
+ void e1000e_set_kmrn_lock_loss_workaround_ich8lan(struct e1000_hw *hw,
+ 						  bool state);
+-- 
+2.33.0
+
 
 
