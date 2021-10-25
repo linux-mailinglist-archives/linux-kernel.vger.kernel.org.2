@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DC3438D66
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22F0438D69
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 04:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhJYCP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 22:15:28 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:46467 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbhJYCP0 (ORCPT
+        id S232091AbhJYCTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 22:19:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27252 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231992AbhJYCTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 22:15:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hcz4v2WmXz4xbr;
-        Mon, 25 Oct 2021 13:13:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635127983;
-        bh=P2dlr+1YHE3vn25ndAcuTZ/ZfGgLIBg60azwnwD5Drs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ti67VSrUYPKCwnKU/zFU3y2meQ0iS9cg79WXdz6HBW3bKAO9ulvam3l1LjYJ6iH8O
-         BAtKm0gcmH0AgS857YedqR+D6mR09dwFpxcrfwsc/c138BSvHpbrfKzGqs7zb1hack
-         h9+yCvy8+Ad18DjC7PAO/5Y8NzUqX+JMMS45sAdEdj9lk5T2xomwUNzhMOsP78+dpR
-         +tyax5QuPMU/Ff6CcEX3ZbV7OEl+PZCeSF5X8KvniMe7oxQrQqtUJaOFV3Vrr/74dq
-         HYKZKLuzB00c7yp++oHzTVg8cl5ihyIMmim0CQb58tuGBqaKhsNF6uUuaRmFnESBjw
-         P68UkRz53sYdw==
-Date:   Mon, 25 Oct 2021 13:13:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the sound-asoc tree
-Message-ID: <20211025131302.5c5757fb@canb.auug.org.au>
+        Sun, 24 Oct 2021 22:19:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635128248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AYNZwC/fZIiCDsDJV++nVrgkwMv82Wn8FjvaRuBUZEE=;
+        b=EPpdudTB5aC5bDJUeVeUiDu5FMnbR5x+cXFKdJNlLTCZkta7lEWcg6OjTjHWFo+XETsx1g
+        xP+EJcQj3/UWZEz4gwiEo7X1VNupCdV70hc1YfG+AEuUd48NCueHvWnC7mTm6JpRPKkc3h
+        RwUFW6YQX0bIlTKYpYerL1U2EorlLmk=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-k5rpUJknPdqF6xLZ3I_9TQ-1; Sun, 24 Oct 2021 22:17:27 -0400
+X-MC-Unique: k5rpUJknPdqF6xLZ3I_9TQ-1
+Received: by mail-lj1-f199.google.com with SMTP id 136-20020a2e098e000000b002110b902242so2215775ljj.20
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 19:17:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AYNZwC/fZIiCDsDJV++nVrgkwMv82Wn8FjvaRuBUZEE=;
+        b=7HD0TbdyYHfe4LCaYq6u/6unveKWIAe8MmeyUN+tunswYA7UtnagYwHWglyjz6OCpC
+         1ZT4UvLCtTOqfqDPDGctGV4g/VOLcVrU/OncX8WgwL/eaJhejRA0CCHMG3b6ZTNHc6yj
+         2wBJ6Nye/3RYfu/UdUbohRlCwM2Og5KkTq2Uj9UHMiPFJRw77wR9XR1HteOHYhAXP/9K
+         t5LkGA9VJzD+Z7bxQjPXUZeF88B8UXnGN/9/Ggla47/F3K4HGd8ydxCXawHWC1tq5wgg
+         ypJD+t+Um/RBx9yykhy5eH3SfoMACx3j/sy4uy37Js8eHmn8Ffk1M2aCXQaF8XdmvdOG
+         qtLg==
+X-Gm-Message-State: AOAM530PdPFS5BuO99QBr8dSfl2cL0Q8z1pweFNupBhT41S2syqTOKtl
+        nSjZ8qxiTPJ4CqVUMAsmrxza6v1s03ZpqDLcWC6+0PczuPsr+GDT6ZBDgwf+UhTqK2W4HxG9Ra/
+        GuUItZDuFrxCyDsIPD5H68kEk51cxwpIxa2yhajld
+X-Received: by 2002:a2e:7212:: with SMTP id n18mr15985533ljc.369.1635128245585;
+        Sun, 24 Oct 2021 19:17:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzFukfsVribLNvTMwxoWwh/QVqaKbDCRMQhMmgOcWV1PaxOsT5eTeUPQu0mgIIqEqBlIWmq4kTr9AmMRYYklcA=
+X-Received: by 2002:a2e:7212:: with SMTP id n18mr15985502ljc.369.1635128245356;
+ Sun, 24 Oct 2021 19:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DWwfjZGrcl1=.z4KlAU09vc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <cover.1634870456.git.wuzongyong@linux.alibaba.com> <7e4d859949fa37fce2289a4b287843cdeffcaf8a.1634870456.git.wuzongyong@linux.alibaba.com>
+In-Reply-To: <7e4d859949fa37fce2289a4b287843cdeffcaf8a.1634870456.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 25 Oct 2021 10:17:14 +0800
+Message-ID: <CACGkMEsHNStd_rF3s7h+mD9zQBAiLpvMGAhQmGyV+o3KryTpww@mail.gmail.com>
+Subject: Re: [PATCH v6 4/8] vdpa: add new callback get_vq_num_min in vdpa_config_ops
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DWwfjZGrcl1=.z4KlAU09vc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 22, 2021 at 10:44 AM Wu Zongyong
+<wuzongyong@linux.alibaba.com> wrote:
+>
+> This callback is optional. For vdpa devices that not support to change
+> virtqueue size, get_vq_num_min and get_vq_num_max will return the same
+> value, so that users can choose a correct value for that device.
+>
+> Suggested-by: Jason Wang <jasowang@redhat.com>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 
-Hi all,
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-After merging the sound-asoc tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> ---
+>  include/linux/vdpa.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index a896ee021e5f..30864848950b 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -171,6 +171,9 @@ struct vdpa_map_file {
+>   * @get_vq_num_max:            Get the max size of virtqueue
+>   *                             @vdev: vdpa device
+>   *                             Returns u16: max size of virtqueue
+> + * @get_vq_num_min:            Get the min size of virtqueue (optional)
+> + *                             @vdev: vdpa device
+> + *                             Returns u16: min size of virtqueue
+>   * @get_device_id:             Get virtio device id
+>   *                             @vdev: vdpa device
+>   *                             Returns u32: virtio device id
+> @@ -266,6 +269,7 @@ struct vdpa_config_ops {
+>         void (*set_config_cb)(struct vdpa_device *vdev,
+>                               struct vdpa_callback *cb);
+>         u16 (*get_vq_num_max)(struct vdpa_device *vdev);
+> +       u16 (*get_vq_num_min)(struct vdpa_device *vdev);
+>         u32 (*get_device_id)(struct vdpa_device *vdev);
+>         u32 (*get_vendor_id)(struct vdpa_device *vdev);
+>         u8 (*get_status)(struct vdpa_device *vdev);
+> --
+> 2.31.1
+>
 
-ERROR: modpost: "snd_soc_acpi_amd_acp_machines" [sound/soc/amd/acp/snd-acp-=
-renoir.ko] undefined!
-
-Caused by commit
-
-  e646b51f5dd5 ("ASoC: amd: acp: Add callback for machine driver on ACP")
-
-I have used the sound-asoc tree from next-20211022 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DWwfjZGrcl1=.z4KlAU09vc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2Eq4ACgkQAVBC80lX
-0GwEvAf7BGEnXrHVGZF2Qsu4DuRkWxb53ImSqHhsWc07JndX6qotcr+MVvBBSenT
-oEOREgHr3vPaB1pyBPgUdUFnNgd2eMTPCwergz/PlxVNOBbLR5SUDC9FnaLVMd0g
-OpeHv+a/51/rs8TQCmv9y/RMvkU1quYRk4Ug0ztXundEV2O9XBsVsVxBkBRtFtzq
-4DukO0f90XADHI1REOArShb4BhpV8duAhAkTkUsbEgWHoziwhU4VQXgks72G2jd5
-EhC3WspxW6AKpcYp5GIUWAC3/D80CaLY2OwnLoUaBXPiLpIstUJwUoD1H2LNFZn3
-mbLgq5+bpkltQLREu096xWQFXj0sKA==
-=E3tc
------END PGP SIGNATURE-----
-
---Sig_/DWwfjZGrcl1=.z4KlAU09vc--
