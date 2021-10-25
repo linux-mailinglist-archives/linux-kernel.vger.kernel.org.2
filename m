@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A962439FC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B587743A03C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234801AbhJYTYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:24:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
+        id S235079AbhJYT3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:29:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234859AbhJYTWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:22:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE9B8610A5;
-        Mon, 25 Oct 2021 19:19:49 +0000 (UTC)
+        id S235292AbhJYT0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:26:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 590766108C;
+        Mon, 25 Oct 2021 19:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189590;
-        bh=nHpmElIgjm6PRFonSP4b8cwbFdME/BCl8zsf809HFVM=;
+        s=korg; t=1635189801;
+        bh=Kw7lkG9kOuWj0W+L7dSn2mt0ZsB27lwqqvz5rScPANU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lAp1JuOIYyX4K93KLBfQCsWMsgjD1nCeQmbXy3csUdgxxCIO2tmXmTXuAg70DseLr
-         lYGdDgNyDebGgXOIVSXSnlrlQw/yxl8dzKD5nOqAzsvfX6K5Hm5/vUdEkwWht7lxeU
-         beDyCncEbxShq+GRqc7QFi2g7Qv6ZhPDsvx2RzLg=
+        b=A93SDyFJ8Yi/F6b2pyar8xToSd68RR8bXoo5omhWSXVR0lbaNO900jzghoTK3oSs/
+         wZlIp1nEEpe0U7mMuwxYfNqGNPv+Uo3f/yyb5odDpF9KsD3GIU2Kkw9tgND5HyFPco
+         akY2OMy8S2n28umhNWPFzDhttjHupKTDdnIWyLPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xiaolong Huang <butterflyhuangxx@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 41/50] isdn: cpai: check ctr->cnr to avoid array index out of bound
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 03/37] xtensa: xtfpga: Try software restart before simulating CPU reset
 Date:   Mon, 25 Oct 2021 21:14:28 +0200
-Message-Id: <20211025190940.200201900@linuxfoundation.org>
+Message-Id: <20211025190928.971632271@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
-References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+References: <20211025190926.680827862@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaolong Huang <butterflyhuangxx@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 1f3e2e97c003f80c4b087092b225c8787ff91e4d upstream.
+[ Upstream commit 012e974501a270d8dfd4ee2039e1fdf7579c907e ]
 
-The cmtp_add_connection() would add a cmtp session to a controller
-and run a kernel thread to process cmtp.
+Rebooting xtensa images loaded with the '-kernel' option in qemu does
+not work. When executing a reboot command, the qemu session either hangs
+or experiences an endless sequence of error messages.
 
-	__module_get(THIS_MODULE);
-	session->task = kthread_run(cmtp_session, session, "kcmtpd_ctr_%d",
-								session->num);
+  Kernel panic - not syncing: Unrecoverable error in exception handler
 
-During this process, the kernel thread would call detach_capi_ctr()
-to detach a register controller. if the controller
-was not attached yet, detach_capi_ctr() would
-trigger an array-index-out-bounds bug.
+Reset code jumps to the CPU restart address, but Linux can not recover
+from there because code and data in the kernel init sections have been
+discarded and overwritten at this point.
 
-[   46.866069][ T6479] UBSAN: array-index-out-of-bounds in
-drivers/isdn/capi/kcapi.c:483:21
-[   46.867196][ T6479] index -1 is out of range for type 'capi_ctr *[32]'
-[   46.867982][ T6479] CPU: 1 PID: 6479 Comm: kcmtpd_ctr_0 Not tainted
-5.15.0-rc2+ #8
-[   46.869002][ T6479] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.14.0-2 04/01/2014
-[   46.870107][ T6479] Call Trace:
-[   46.870473][ T6479]  dump_stack_lvl+0x57/0x7d
-[   46.870974][ T6479]  ubsan_epilogue+0x5/0x40
-[   46.871458][ T6479]  __ubsan_handle_out_of_bounds.cold+0x43/0x48
-[   46.872135][ T6479]  detach_capi_ctr+0x64/0xc0
-[   46.872639][ T6479]  cmtp_session+0x5c8/0x5d0
-[   46.873131][ T6479]  ? __init_waitqueue_head+0x60/0x60
-[   46.873712][ T6479]  ? cmtp_add_msgpart+0x120/0x120
-[   46.874256][ T6479]  kthread+0x147/0x170
-[   46.874709][ T6479]  ? set_kthread_struct+0x40/0x40
-[   46.875248][ T6479]  ret_from_fork+0x1f/0x30
-[   46.875773][ T6479]
+XTFPGA platforms have a means to reset the CPU by writing 0xdead into a
+specific FPGA IO address. When used in QEMU the kernel image loaded with
+the '-kernel' option gets restored to its original state allowing the
+machine to boot successfully.
 
-Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211008065830.305057-1-butterflyhuangxx@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Use that mechanism to attempt a platform reset. If it does not work,
+fall back to the existing mechanism.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/capi/kcapi.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/xtensa/platforms/xtfpga/setup.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/isdn/capi/kcapi.c
-+++ b/drivers/isdn/capi/kcapi.c
-@@ -564,6 +564,11 @@ int detach_capi_ctr(struct capi_ctr *ctr
+diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
+index 982e7c22e7ca..db5122765f16 100644
+--- a/arch/xtensa/platforms/xtfpga/setup.c
++++ b/arch/xtensa/platforms/xtfpga/setup.c
+@@ -54,8 +54,12 @@ void platform_power_off(void)
  
- 	ctr_down(ctr, CAPI_CTR_DETACHED);
- 
-+	if (ctr->cnr < 1 || ctr->cnr - 1 >= CAPI_MAXCONTR) {
-+		err = -EINVAL;
-+		goto unlock_out;
-+	}
+ void platform_restart(void)
+ {
+-	/* Flush and reset the mmu, simulate a processor reset, and
+-	 * jump to the reset vector. */
++	/* Try software reset first. */
++	WRITE_ONCE(*(u32 *)XTFPGA_SWRST_VADDR, 0xdead);
 +
- 	if (capi_controller[ctr->cnr - 1] != ctr) {
- 		err = -EINVAL;
- 		goto unlock_out;
++	/* If software reset did not work, flush and reset the mmu,
++	 * simulate a processor reset, and jump to the reset vector.
++	 */
+ 	cpu_reset();
+ 	/* control never gets here */
+ }
+-- 
+2.33.0
+
 
 
