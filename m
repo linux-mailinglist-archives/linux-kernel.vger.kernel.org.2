@@ -2,237 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B26743976A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0837243976D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 15:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhJYNYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 09:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhJYNYb (ORCPT
+        id S232241AbhJYNYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 09:24:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28554 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231180AbhJYNYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 09:24:31 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7D6C061745
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635168129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=48+IikSlKyqTNmxyr4q4VEcqSYZJGRNhdXCK/IFcjJk=;
+        b=KE/riBNfAXvmdioUpEupdNXCo16fRq3CU6y433SjTnpscTb3trlrymitszXrkgp+SEiGpy
+        IGGDdOs7tgVpF7D1koLvgvjkFQKxcb+ae8BAvfZAtAiPQnnSY7t0w4DQ9M14UID9quLJ6O
+        qMkZ0+yPB8SV6/WH/73VfrMRwVbUjyY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-Yi-__tsQP_a3cxRSbs2M1Q-1; Mon, 25 Oct 2021 09:22:08 -0400
+X-MC-Unique: Yi-__tsQP_a3cxRSbs2M1Q-1
+Received: by mail-ed1-f72.google.com with SMTP id c25-20020a056402143900b003dc19782ea8so9931976edx.3
         for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:22:08 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id d10so8734056wrb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 06:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull-eu.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dHr5OHD5jpaUHwRPw9aH93bpMTz/ijSR6iNj3HeWX0s=;
-        b=dBywuSgiJPi0D1S2vr4DoJq7T77YxIGCJ4mMgfU1wZFg1NE4zAn8AmG4mPRPFf7+qc
-         ZSJrUumbL0079syfoR2CyAKgq0q+MCS43Gx7PO5URbNHdhHO8GneCUDG1Emf/f0qNPv/
-         5Z1Z3YVsJ4l/RG7K8OZ5BQkGwcdA5qFpwDMMqiFPs8Ecaxj+fd8D5EAxTblxG6n5tGh7
-         Ep/f7hyzQOg+IBVCR2VqteZC+cYAD35O3VSXUQIn8daTgVBg2706ggFDQwTt46LFT8vG
-         z0ZrDRWWZb40w2oS1LN7rkqp5TC5HrQLvm42Fyk5y8oRZYeUsgrj6UHxG+300x8oz3QB
-         /tEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dHr5OHD5jpaUHwRPw9aH93bpMTz/ijSR6iNj3HeWX0s=;
-        b=N+kPdxRyQ38g8YaD6tS5fJ9q5LV/qqfTcnaJHW9LKPmC+AyGe+oJBmmBerwojFA7aF
-         tVfO1R0J0Pa1bV/ezCvrFvotTukoQllsYgZBBKijvJpw2mBuKEFqoGO4+eFH7GkHXotQ
-         l/Zos6PACCeZ0SdCX28/EhhQqJP2x2DBvnGXtGHZUJuNzcCLBonRLv+llzE2sz7Rasoo
-         JXmACoBmpl8swHKbdWwqecsIGAUyEJsH6W6kPKCHMN8wXKrAHRL6tva4AF+lSwE9YuZs
-         ZfpOSnfqizK0Dcj069wY9Yux9lDpSqPqWGx+Hs6AKmiCnOLVCo6ibSHiniVDq7iU/oSC
-         mwnA==
-X-Gm-Message-State: AOAM531JCCMQrj+pIEjVRrN/H0DWPkvVXwyhsexvkcJJJDgNMruFAFlj
-        O2itgSTI6xohyLn0ubXBGGhhAh9jZC4H+xVlMty9Bg==
-X-Google-Smtp-Source: ABdhPJz5nKuH/w0FKB9WEVD82bBCnHRd2n8YsgxSr40uZXV9aVLRM0MQ++QJYWyVgoVf8kfjPS6XpV7zEbHEnScn5dc=
-X-Received: by 2002:adf:c183:: with SMTP id x3mr21329364wre.90.1635168127135;
- Mon, 25 Oct 2021 06:22:07 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=48+IikSlKyqTNmxyr4q4VEcqSYZJGRNhdXCK/IFcjJk=;
+        b=b7TzlXB20dfJE8jW6pRqTy+S9f2tP/q5kRrogVvWdSxm4gBHyQOHkocTMx2VWjisuO
+         Xyf9lx6UkRS8qAten+fGNrQWrHglQsIYtHzMiAfRTcregXxMARSs4D3WXPb1M+VJhwL5
+         MJVvmg30yp7tNGBLLc7vJiXdbqPoKMwQhKpZVmFYUI+hWFedH+JqVJU5yCt+Kf5JNeRZ
+         bTomzkHJ+8iK0MLRqCozRXC9qZmCbEZ6+abgSkSYO2TMUl9X2zWfYnzbPVZk2lc9MKnS
+         /gABW8Cq6xRzjlPMIBjeoohSWRoCS9CycJAnMLnvlNt5VbcRgbMEilO5H8Pe1P0lhUJN
+         MUvA==
+X-Gm-Message-State: AOAM53175RDoaGJDnRyohvlLFTggdvY//fCDXTLIOVlS5Fhd23NUbo2K
+        3mw/v7lgCrCRMY+P3mbTsoa7tyL32QOLWZWiREo2y7nD8yu0y03NAxuon5WfkqCw8bYigEr/C6b
+        klw7FtYWg67vAX4T/bHWIUX0/
+X-Received: by 2002:a50:d783:: with SMTP id w3mr20253052edi.380.1635168126980;
+        Mon, 25 Oct 2021 06:22:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfRKsXz9JGMpnMaISmnOtZN3rndX1G8rsIOCD7EyDtzp44dz76SyjuCafVUoIKeNPaL6dxIA==
+X-Received: by 2002:a50:d783:: with SMTP id w3mr20253015edi.380.1635168126752;
+        Mon, 25 Oct 2021 06:22:06 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j15sm9152968edl.34.2021.10.25.06.22.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 06:22:06 -0700 (PDT)
+Message-ID: <e360d085-8fba-e8de-b65e-fc7a4e13ad7b@redhat.com>
+Date:   Mon, 25 Oct 2021 15:21:59 +0200
 MIME-Version: 1.0
-References: <20211025040607.92786-1-wefu@redhat.com> <20211025040607.92786-2-wefu@redhat.com>
- <CAAhSdy1N-UQFnbFc7PSwf62y=gbvX7pK=vwUaG8m_KzdWx3AgQ@mail.gmail.com>
- <CAJF2gTT9T-TwTmGsfDH0Y05LO6dF6nGUUSGZW=RSackM0fUUyg@mail.gmail.com> <CAAhSdy1ZuQyWdVY5dmrnNVHe3oOYxhieW1upAhbnDvuxNL=YyA@mail.gmail.com>
-In-Reply-To: <CAAhSdy1ZuQyWdVY5dmrnNVHe3oOYxhieW1upAhbnDvuxNL=YyA@mail.gmail.com>
-From:   Philipp Tomsich <philipp.tomsich@vrull.eu>
-Date:   Mon, 25 Oct 2021 15:21:56 +0200
-Message-ID: <CAAeLtUCM=01oue8hZQ_hTgzRDXu1qdgtyqyKBG5kOzXCbbUxYQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH V3 1/2] dt-bindings: riscv: add mmu-supports-svpbmt
- for Svpbmt
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Guo Ren <guoren@kernel.org>, Wei Fu <wefu@redhat.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 02/43] KVM: SVM: Ensure target pCPU is read once when
+ signalling AVIC doorbell
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
         Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com,
-        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Gordan Markus <gordan.markus@canonical.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-3-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211009021236.4122790-3-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 at 08:08, Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Oct 25, 2021 at 11:30 AM Guo Ren <guoren@kernel.org> wrote:
-> >
-> > On Mon, Oct 25, 2021 at 12:17 PM Anup Patel <anup@brainfault.org> wrote:
-> > >
-> > > On Mon, Oct 25, 2021 at 9:36 AM <wefu@redhat.com> wrote:
-> > > >
-> > > > From: Wei Fu <wefu@redhat.com>
-> > > >
-> > > > Previous patch has added svpbmt in arch/riscv and changed the
-> > > > DT mmu-type. Update dt-bindings related property here.
-> > > >
-> > > > Signed-off-by: Wei Fu <wefu@redhat.com>
-> > > > Co-developed-by: Guo Ren <guoren@kernel.org>
-> > > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > > Cc: Anup Patel <anup@brainfault.org>
-> > > > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/riscv/cpus.yaml | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > > > index e534f6a7cfa1..76f324d85e12 100644
-> > > > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > > > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > > > @@ -59,6 +59,11 @@ properties:
-> > > >        - riscv,sv48
-> > > >        - riscv,none
-> > > >
-> > > > +  mmu-supports-svpbmt:
-> > > > +    description:
-> > > > +      Describes the CPU's mmu-supports-svpbmt support
-> > > > +    $ref: '/schemas/types.yaml#/definitions/phandle'
-> > >
-> > > There were various proposals from different folks in the previous
-> > > email threads.
-> > >
-> > > I think most of us were converging on:
-> > > 1) Don't modify "mmu-type" DT property for backward
-> > > compatibility
-> > I agree. FuWei has followed that in the patch.
-> >
-> > > 2) Add boolean DT property "riscv,svpmbt" under
-> > > "mmu" child DT node of each CPU DT node. Same will apply
-> > > to boolean DT property "riscv,svnapot" as well.
-> > We have various proposals here:
-> > @Philipp suggests firstly, but break the backward compatibility:
-> >  cpu@0 {
-> >     ...
-> >     mmu {
-> >        type = "riscv,sv39";
-> >        supports-svpbmt;
-> >        supports-svnapot;
-> >     };
-> >
-> > @guoren suggests reusing the mmu-type, but seems not clean.
-> > cpu@0 {
-> >    ...
-> >    mmu-type = "riscv,sv39,svpbmt,svnapot";
-> >
-> >
-> > @fuwei suggests simple name property in CPU section:
-> > cpu@0 {
-> >    ...
-> >    mmu-type = "riscv,sv39";
-> >    mmu-supports-svpbmt;
-> >    mmu-supports-svnapot;
-> >
-> > @Anup suggests:
-> > cpu@0 {
-> >    ...
-> >     mmu-type = "riscv,sv39";
-> >     mmu {
-> >        supports-svpbmt;
-> >        supports-svnapot;
-> >     };
-> >
-> > Any other suggestions? Thx.
-> >
-> > >
-> > > We also have bitmanip and vector broken down into smaller
-> > > extensions so grouping related extensions as separate DT node
-> > > under each CPU node will be more readable and easy to parse.
-> > Do you mean combine mmu extensions with them together?
-> > cpu@0 {
-> >     ...
-> >     extensions {
-> >         supports-svpbmt;
-> >         supports-svnapot;
-> >         supports-bitmanip;
-> >         supports-vector-v0p7;
-> >     };
->
-> I meant separate group nodes like this:
->
-> cpu@0 {
->     ...
->     mmu-type = "riscv,sv39";
->     mmu { /* Only considered when mmu-type is present and mmu-type !=
-> "riscv,sv32" */
->         riscv,svpmbt;
->         riscv,svnapot;
->     };
->
->     bitmanip { /* Only considered when "B" is present in the ISA string */
->         ...
->     };
+On 09/10/21 04:11, Sean Christopherson wrote:
+> +		 * point, which could result in signalling the wrong/previous
+> +		 * pCPU.  But if that happens the vCPU is guaranteed to do a
+> +		 * VMRUN (after being migrated) and thus will process pending
+> +		 * interrupts, i.e. a doorbell is not needed (and the spurious)
 
-Please disregard this comment regarding bitmanip/B.
-The B bit in the misa CSR is not used for any signalling regarding
-Zb[abcs] (or the other Zb-extensions), so this entire node is not
-needed and B in the ISA string is not related to any of the Zb*
-extensions).
-All Zb* extensions are directly visible from the ISA string.
+... one is harmless, I suppose.
 
->    vector { /* Only considered when "V" is present in the ISA string */
->        ...
->    };
->     ...
-> };
->
-> Regards,
-> Anup
->
-> >
-> > >
-> > > Regards,
-> > > Anup
-> > >
-> > > > +
-> > > >    riscv,isa:
-> > > >      description:
-> > > >        Identifies the specific RISC-V instruction set architecture
-> > > > --
-> > > > 2.25.4
-> > > >
-> >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
-> >
-> > ML: https://lore.kernel.org/linux-csky/
+Paolo
+
