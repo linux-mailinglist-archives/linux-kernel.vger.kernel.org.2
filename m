@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB2A438F4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB46C438F53
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhJYGWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhJYGWP (ORCPT
+        id S230403AbhJYGYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:24:35 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56069 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230342AbhJYGYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:22:15 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856B9C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:19:53 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id z7-20020a63c047000000b0026b13e40309so5706479pgi.19
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=RvvgnIVJ5IfhyMI13kBptnFJgKfIo/YKqj1muP3uFSI=;
-        b=aZ8ak0XSK/nUIpVaIxYsqvQ3bOgvICTgXeDUq5NeDeyr5OL7iUyvWts44akfikGFMn
-         1aspFDXj9W11lkB0NYioB51giV7uGch6f5v0x3OT6iQNLR/94F1Q9CfGiv5uJETPK3Wo
-         RRNHaOTJwxbXyS/U62bh0IfOpVfp/MIyVQf0ZW7p3kUyjf0LKjh2h1ARVySaMSbTyMe7
-         fA1J+fHVAQrVVtfefQBHFwfSBMuFXgCIbm5oT2pCpy38ZaGkIqX1DuqV9iahGkUIKOjS
-         auBFJhXgVautfW4go+wrMVBb33tzy+CoC1yxOEPEifacHzz2s5Hoc259+ifLMsOwWif1
-         QPXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RvvgnIVJ5IfhyMI13kBptnFJgKfIo/YKqj1muP3uFSI=;
-        b=v+fC3BKIY+tIlljMoHLfXmvE7IjvTWpkYL+2geqrGtkGwiszbmiHLwaUu/Rug9womz
-         S8JwXttAz9/qhE+T3OsSEvEdS6klczz5q0Yd/V4rZg23rnlLI1XBGonvtrO4t66iwTPK
-         XZ6n7d9aTajSClfKG/TiLSNmhJ7794oZCU3pkQeGb517fhOkQC4wAD/N/rYaSOvyIHpC
-         8Nq/yJJREmW6Xa/5o/O9soJd3TIut1futoerdHj1TnK3+SnB45anw0WdQzbtvk4bjnOL
-         4BIftUlb977kYaUioM6dD9v3WInX3uYml0RLABnzSjEPBsqmz9Pbub4EoI4wmDMcaqIR
-         BzDg==
-X-Gm-Message-State: AOAM532K0pmRBuq9YQRk9MpwHaHGCpjtQKZzGZxdlwBhC1Syd8usjTFv
-        f23x5+Tnepmc/DpSDdC/69YmvqAZpFGN4w==
-X-Google-Smtp-Source: ABdhPJyzSiJVC0kHoKpRCObivFMdwsAEy5pGKIQtbDLvinjevJBkq5zez11JkasNwjxjPzVuvufvQd/e7GCSkQ==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:faf1:73d1:a656:9f7e])
- (user=shakeelb job=sendgmr) by 2002:a63:1d53:: with SMTP id
- d19mr12000107pgm.85.1635142792991; Sun, 24 Oct 2021 23:19:52 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 23:19:16 -0700
-In-Reply-To: <20211025061916.3853623-1-shakeelb@google.com>
-Message-Id: <20211025061916.3853623-3-shakeelb@google.com>
-Mime-Version: 1.0
-References: <20211025061916.3853623-1-shakeelb@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 3/3] cgroup: no need for cgroup_mutex for /proc/cgroups
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 25 Oct 2021 02:24:34 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 79FC55806AD;
+        Mon, 25 Oct 2021 02:22:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 25 Oct 2021 02:22:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=9RV4sajVRAaiAxkMiEO963Z9/Y
+        vQEWTOabZurBq9fI8=; b=kGnE+jYGDXymV4Xiq/7FGXrq+67VDY0XxdLHWYuMtH
+        1cKQ1cpf0U8X+B3KInfwu++Mm7WJUBMUSiDBMrE8Jo5ysrfmS7UMrE6SfyqyNLuA
+        5Y3xxQU7t07OE2d7cZ7TiSfs33vb5NgTDPxZccpA7VA4/8L5kG4JUpZ/fPNdxIWc
+        RKum05p8hqtblBp0BBEwL8zbYIHX/quGV9mthxf9kOe0+S/ZVJhXKmwyMzheuzI2
+        eDXPGY2Ky5IP6WIA2dOrTcyjnaI/xMbE8eONIkGFoNuH2yJ0AjHLIRFUKkrn3wTl
+        APEYiNf+WKyu54z/0JGFHCKlTqdaXYd0l3bZcEGOqWcg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9RV4sajVRAaiAxkMi
+        EO963Z9/YvQEWTOabZurBq9fI8=; b=MGLFb95lUZQ4zLy3lEE6UiV+ce1c1OVLf
+        gmW6IucM6BQbnAC5HhqKxKI+k94l45jrJvFhqbQ0BpYqfNcCmiTAmeIigzLSlrG+
+        0RIPVSh+D2WCAIFflT2Gn4fEfvV3DXuL8Cq2SKqhaXtT6/pXF+xbH1NUz7lsKGSS
+        6ERNQDMOL+W6dUdTrBR0lszjsu7GM4UgffpHWlY9d7rf4EShcxiA5jpjMyZ7k8U1
+        1jtRYMphBjzacLBAjr35gRFgrnWYDdoosTpbOdyCaqWxlX9wTwplgooBljtOBuMi
+        9h2asNz7FXkT4FoGSKlgigIlOLrUihIJItwCM1dI4T3qiQSYqGUPA==
+X-ME-Sender: <xms:EE12YXSA5uhtArjfmMfSHkU3ubPJ1EgWIppZoXGAQdKhVrZ-2Noq2g>
+    <xme:EE12YYwFc4xx8aNNXE_iZ2jMpghRIZFi3NYXiKl2QIlSGilbCPt1t7WltrvNEFTVR
+    4To_WMSpdNJnT2wN2o>
+X-ME-Received: <xmr:EE12Yc18ZaBx6l5oD9mImBmJXqw8Y2Fk3VoNQhxUNCFOok26K2MUTdvs_6kI5aeKNx6YYTrYiKBNFb6Afxm4k3E1ZY2ZudVAFhuuL8FoenvMMfvXo2HwuxM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgedguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
+    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
+    hnpeefhedufedtvdfhhedvudehtdejjeehueduffdtgfdvkedvleelueevlefgfeelgfen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:EU12YXC9NZGR27-MpzgH6PnUgQGFG5J_YtpaJLwnajVh7olnnbpIow>
+    <xmx:EU12YQgNmBvo4yDgFT9g2IWRAQuIejR6OzPw1M65JmjI6FsHQF3aRw>
+    <xmx:EU12YbpYuc9xX2jhuLHGX144eFMgQL8DxPZB2Cwt4AhorqKc78SHcg>
+    <xmx:Ek12YTMa9T0GFJF2IJRGPLUwGm6ZPBjz0sIEQrJyBtSJSVAtpvHlcQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Oct 2021 02:22:07 -0400 (EDT)
+From:   Sven Peter <sven@svenpeter.dev>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Sven Peter <sven@svenpeter.dev>, Rob Herring <robh+dt@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Hector Martin <marcan@marcan.st>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/3] Apple Mailbox Controller support
+Date:   Mon, 25 Oct 2021 08:22:01 +0200
+Message-Id: <20211025062204.1517-1-sven@svenpeter.dev>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the real systems, the cgroups hierarchies are setup early and just
-once by the node controller, so, other than number of cgroups, all
-information in /proc/cgroups remain same for the system uptime. Let's
-remove the cgroup_mutex usage on reading /proc/cgroups. There is a
-chance of inconsistent number of cgroups for co-mounted cgroups while
-printing the information from /proc/cgroups but that is not a big
-issue. In addition /proc/cgroups is a v1 specific interface, so the
-dependency on it should reduce over time.
+Hi,
 
-The main motivation for removing the cgroup_mutex from /proc/cgroups is
-to reduce the avenues of its contention. On our fleet, we have observed
-buggy application hammering on /proc/cgroups and drastically slowing
-down the node controller on the system which have many negative
-consequences on other workloads running on the system.
+This is the fourth version of my series which adds support for the mailbox
+controllers found on the Apple M1.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- kernel/cgroup/cgroup-v1.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+v1: https://lore.kernel.org/lkml/20210907145501.69161-1-sven@svenpeter.dev/
+v2: https://lore.kernel.org/lkml/20210916154911.3168-1-sven@svenpeter.dev/
+v3: https://lore.kernel.org/lkml/20211017114054.67737-1-sven@svenpeter.dev/
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index fd14a60379c1..81c9e0685948 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -659,11 +659,9 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- 
- 	seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
- 	/*
--	 * ideally we don't want subsystems moving around while we do this.
--	 * cgroup_mutex is also necessary to guarantee an atomic snapshot of
--	 * subsys/hierarchy state.
-+	 * Grab the subsystems state racily. No need to add avenue to
-+	 * cgroup_mutex contention.
- 	 */
--	mutex_lock(&cgroup_mutex);
- 
- 	for_each_subsys(ss, i)
- 		seq_printf(m, "%s\t%d\t%d\t%d\n",
-@@ -671,7 +669,6 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- 			   atomic_read(&ss->root->nr_cgrps),
- 			   cgroup_ssid_enabled(i));
- 
--	mutex_unlock(&cgroup_mutex);
- 	return 0;
- }
- 
+Changes from v3 to v4:
+ - dropped minItems: 4 from the bindings
+ - added back of_xlate since the mailbox core only supports #mbox-cells = <1>
+   but this mailbox uses #mbox-cells = <0>
+ - Split of the MAINTAINERS changes to a separate file since we have quite a few
+   changes in flight and there will likely be conflicts once the pull requests
+   from various subsystems are sent to Linus
+
+Changes from v2 to v3:
+ - removed dma barriers since the mbox client will take care of these
+ - moved the of_device_id table and related code to the bottom of the file
+ - removed of_xlate
+ - dropped clock handling from the code and the binding since we now understand
+   that these are actually power domains
+
+Changes from v1 to v2:
+ - switched to txdone_irq instead of introducing a new mode
+ - switched to a threaded interrupt handler for receiving messages
+ - added co-processor examples to the device tree binding
+ - reformatted the register defines and clarified multiple comments
+
+Best,
+
+Sven
+
+Sven Peter (3):
+  MAINTAINERS: Add Apple mailbox files
+  dt-bindings: mailbox: Add Apple mailbox bindings
+  mailbox: apple: Add driver for Apple mailboxes
+
+ .../bindings/mailbox/apple,mailbox.yaml       |  77 ++++
+ MAINTAINERS                                   |   3 +
+ drivers/mailbox/Kconfig                       |  12 +
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/apple-mailbox.c               | 384 ++++++++++++++++++
+ include/linux/apple-mailbox.h                 |  19 +
+ 6 files changed, 497 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
+ create mode 100644 drivers/mailbox/apple-mailbox.c
+ create mode 100644 include/linux/apple-mailbox.h
+
 -- 
-2.33.0.1079.g6e70778dc9-goog
+2.25.1
 
