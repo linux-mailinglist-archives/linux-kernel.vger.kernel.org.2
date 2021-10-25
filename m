@@ -2,242 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF53438E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE494438E7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhJYEql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 00:46:41 -0400
-Received: from mail-mw2nam08on2134.outbound.protection.outlook.com ([40.107.101.134]:36704
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230004AbhJYEqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 00:46:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k9QC0mvZnINSqiK6BGKBN2ZAXFMvrot37S/jmPSsPJs/6jhbURP/Tff1V/qigrALdXVV9HbS9FFbDJaCf3sOMnQgfT1bwEIc3RARst0rY5xfFo7Z3d+a725dWTLdtnmg9G/H80OmEqEYOj7pBleQb/XlU9GCRG2Xb2Q8knXmDxt42Qn5ZvoInfCAa/i8Qv4F+d0pYVUuPrj7etod/4OnfNLkknRiN2ciEgTKSjlwoiOoKh+vgSfpU+Yrz32XM6SUscp/kP6TcuLw9E5QKmXbFoOgaHy1vSJmPDA5vZf+4X+6OSIv/v5dpTpnx2qTtkfA9eNllz8qFnUObQB4MF4tUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fJZSsU8GGjAyve3sDOOa8Yw+07DNAh5XDCZ/vcSZP5c=;
- b=a2VfaZivaYQjulHktlCcZ+vIIfbWJfyNCO3Yglrm8m9ofPHkCFohENhtEcxys/iTPjFyK4RL0mD+vsAVZ53A2wsONd3+wYIa1rBdd2nFLKrE7twAqtZ7tDWn2k/ecvxdIFHJLkMaPVCPfsZCphJwYOfCunMJqWBL/RM5q/4f55h+xQSilZh+y5ZtCfTQgPRwL2q1q+YtXu05dSD28WRf9qD0zd38Y8d4/KgyYjYsnGAuvkjswIz8ERXWYEw3O2boBRyWpQ6IbCMVpbwA/yD+DQg+EKfzdSI5KykwyDx49cdLjyQUdh3DjgL2LbuoqF7ZY1WM1IvP/XXHZIo4m7s2aA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fJZSsU8GGjAyve3sDOOa8Yw+07DNAh5XDCZ/vcSZP5c=;
- b=mDNbpOLpaR2HsbJLJ4c26LHebvGoox3kLBADpUToDJ/ol6NCGvs0ZD93IbjLPzQBj9mQpUw1ft9rbFDVmI93ZpTf4gp4N8SwzPr/PonZAry3uxxskF73IwxiI8penpSDNWhnLGG55MLfrAQ6X0mJoOL5slcJKGNVn2jLwoDHDxE=
-Authentication-Results: os.amperecomputing.com; dkim=none (message not signed)
- header.d=none;os.amperecomputing.com; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from SJ0PR01MB7282.prod.exchangelabs.com (2603:10b6:a03:3f2::24) by
- BYAPR01MB3943.prod.exchangelabs.com (2603:10b6:a02:82::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.16; Mon, 25 Oct 2021 04:44:14 +0000
-Received: from SJ0PR01MB7282.prod.exchangelabs.com
- ([fe80::f14d:21a9:9ebf:2924]) by SJ0PR01MB7282.prod.exchangelabs.com
- ([fe80::f14d:21a9:9ebf:2924%9]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 04:44:14 +0000
-Subject: Re: [PATCH v2 1/3] ARM: dts: aspeed: mtjade: Add some gpios
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20211019060155.945-1-quan@os.amperecomputing.com>
- <20211019060155.945-2-quan@os.amperecomputing.com>
- <CACPK8Xcp0ruL-7p3AA+yvba3Drrwm-=-hMnMpd=a1aHwQHnE1A@mail.gmail.com>
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-Message-ID: <87d82a93-cdc2-d95a-4ab9-085ff31c4387@os.amperecomputing.com>
-Date:   Mon, 25 Oct 2021 11:44:04 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <CACPK8Xcp0ruL-7p3AA+yvba3Drrwm-=-hMnMpd=a1aHwQHnE1A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0083.apcprd02.prod.outlook.com
- (2603:1096:4:90::23) To SJ0PR01MB7282.prod.exchangelabs.com
- (2603:10b6:a03:3f2::24)
+        id S232394AbhJYErD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230004AbhJYErC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 00:47:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA9C960FBF;
+        Mon, 25 Oct 2021 04:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635137080;
+        bh=sOhHF+HAnRoEIqH19QgSH9mZon6LU9SS6cFQOHW/XKA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fXkfEU/RowxRIqyNz781xmT/AtHIyBELbIK0hw32+2rGJcYmWkVmoyjnEA/hnIo10
+         vwo2VYnwXIEb7O59Ws4YkADa0NpE8ATi+cJ/NxQIsFseO8LzobCID6pVXOKKbGINu4
+         SeVW04XVRw/XA3HuAFFJQWAIxUrhddp8ptamlUjBLkuDhQaOiuKNHkNp8kmhQDMZgQ
+         Oqtn53v7ppjrN4+moHDju3sRVRHdfGf6i38dZSsB+Z0PeR/RGyjBmcHtpSPW2WHak9
+         skn5BmGIF87XBHuRfRXgdCQ3k9iY1VSHd4EDh2C7IKWxIHMPttiqPlSjaNXXs2js34
+         w7QCyswT10YTA==
+Date:   Mon, 25 Oct 2021 10:14:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Joy Zou <joy.zou@nxp.com>
+Cc:     yibin.gong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dmaengine: imx-sdma: support hdmi audio
+Message-ID: <YXY2M0td08eDCi+9@matsya>
+References: <20211021051611.3155385-1-joy.zou@nxp.com>
 MIME-Version: 1.0
-Received: from [IPv6:2402:800:623c:9072:446:faca:b614:6ba6] (2402:800:623c:9072:446:faca:b614:6ba6) by SG2PR02CA0083.apcprd02.prod.outlook.com (2603:1096:4:90::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Mon, 25 Oct 2021 04:44:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fb481d79-5c03-4d2c-ede1-08d99772182e
-X-MS-TrafficTypeDiagnostic: BYAPR01MB3943:
-X-Microsoft-Antispam-PRVS: <BYAPR01MB3943B6B86BC8AE547A7ECD60F2839@BYAPR01MB3943.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U/8GnZu3ffZ0f/UuEQ5fWOc12rjiTZ4lisJ3ZaM9gG6XQjGJ3qKqUFy917yhZOqbEYqXt5ktEcVgSHpoopqPVil/75/NQe7uimpSrHP//kRv6jzisjgIP+Ga2G2XxiRzqCp+PJAzQUtaim0ItbU2vsWP0B/Msyg0L47zKkJx10kVM8t54zoJ/nhluLPfbvgpDqguaeU0yZQ5/LH7tlY2k/IREIegDQL/zutsICBOzvLLUPmGFuIfmuY+O6ImV3t6AGjYnGc8VMPRRmVjz44hbTVjDU+VNOSDm8YfpYmznIIc1ILRYeyEW0Y7Fp74Lhp0n411LeJwA1uswNHKSNt/VTzRWHnnSrruiV0q1QXCWVvjt4GQAnEM8KE0TF7H0fkqeuMqOeUBZzw3FGdEp6psPHMjT7lZE0GglVl9mFmUOa5E8j9ZfD1l7p3S73QSktPU0DkdkyrsoSeTRWYpPzPMVWXk6wsuF8YTiPbtA+u66saXdYyLTDuVPX4dEjL/0trCM830uiCnr1qh/Pdu3Juop+wbE+S5jsuFiyh5eSQxZvwCmOlcoiEUXE+T6hG6axiX6ps572A+UE+cVwZjLp82Kw9BFbegV37RVR1+ob1KNaj800Zph7t1kjCk/erfArAXvSG5mkQp9vUr7L5XD/GAVposNitVwtJikjupaTfv0xw89G2GfAsUIhexpbhHkA4VvXS9m6hpphjc+OEvbNJ61mgkhExYQQlnVRhp+99p4/jme8+du9+xcV46PPg2J11VOQ26eUCWuW1aZYGFHYtvHE4e16DkOnMfBvgcWnQYqGCpqYvknrehfT+GPflsNVed
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB7282.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(31686004)(4326008)(6916009)(5660300002)(66556008)(66946007)(6666004)(2616005)(53546011)(107886003)(52116002)(8676002)(6486002)(66476007)(8936002)(38100700002)(966005)(86362001)(54906003)(316002)(508600001)(2906002)(31696002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?amcva1Z0c0lZNlNXMnorT3JBWXhsMEpvdlVHYmdONmlWZ29OL0RUNzB0WU52?=
- =?utf-8?B?VzRMNGFEYVM5b0hwU2g2QllLY3ExcDh0Rzd6QXliVzJya3JHOVEreGNtUm43?=
- =?utf-8?B?VkZ1RXQ1aU1vNCs4SGttMUtoVVQ0WDM5UUZkTHZEcncrbDRTdUZYTTlyTHNO?=
- =?utf-8?B?R3N3ZXZiMERaaWxUWVFTWkpWRS83VHZRUkNDSmlMWGtlTmo1OUxFN3o5T0Qz?=
- =?utf-8?B?VWU2MlNDZEp5a05ldXhmWnFIbFlPUlp5TlNlRGVEWWpxdVVTQVQ0eCt5L1NP?=
- =?utf-8?B?U2hyU2VBSzFjQWVKbENDSFgyeXBnbTdWSFpscnVDRm9pUk4rYUR1NmpTUVVK?=
- =?utf-8?B?M0ZaUEN4cGZTMEVBQStEeGRYbm8wS0V3ZXVCZkJsazR6eGJGY2E4d01QejIr?=
- =?utf-8?B?NHFpUXhYWW5VTG5kTjdlY3FpdTdxWUdmNGR6UzdrcGJVNXNXSmNvRk0wQVNJ?=
- =?utf-8?B?V1IraGJrb3RLb2Rtck5xbVVqLzF5QUdsSjIyREZsOWFBV1cwOVBLbklyWUhP?=
- =?utf-8?B?T0kwbmFVdlpyL3JSVjVoMEszNktjbjVjcE94eUh3MnZEbVJTeXZvN0ZCMGNm?=
- =?utf-8?B?Wk1uVEwvZlE4YnBYMEo3bTN4bXFselk1TmdwQTF4cmFadEljYmxqN2d3d2xv?=
- =?utf-8?B?a1hkSVpIS3lRM0xreXRZbGJkN1NldTB3SWZjdCtKWWhRV0laNHJ5R2xKZVBM?=
- =?utf-8?B?UnEveExzaytSZWw0SzNGWU51UHE5TU9oZmJlUmFtV281MEhiazJUTVBqNWxG?=
- =?utf-8?B?R3dLWldNSjJjKzQxUEViMU5MRkNmWkJ3cjMwT1l6L29jUkdvaXBJTVhGd3Rn?=
- =?utf-8?B?dG1CZTZ3RWxRMHluWlU4KzBqSDZZeThBVG51S1dZM0RCSGtmZ0IxMWNGRFhy?=
- =?utf-8?B?T1dxY1l0OHFOdkk3UW9qd0NiUlVBTkhGTDM1ZHhmekUxMnQxMjFCMVFEZEtr?=
- =?utf-8?B?c1QyMTdUMHhMdWViTXRHQi9GOHZoMUhzRmhqYS9ZRHJSNjgvYVY1cm4xVTJH?=
- =?utf-8?B?TGNIYTA0aXQ2L3UxYnlXUWQ1WHduSDNLY0lwZGM0am9kYUZKaFgwQVB5Tjh5?=
- =?utf-8?B?ZEt4dGU1U1FQRXNFM0xFRU9kdVNSY295RFBwZGd1b1RLV2IraU9DUTdmSllp?=
- =?utf-8?B?Ny8rYVJNd3ZKKzEzanowZFQyN1JSdCs2RXpjZlJ4Unpnc0tGY1gyaE9CVU9O?=
- =?utf-8?B?c1VCMDhkdEpkRkdML21rVXJYc3ZTN2RrNkV2ZkFMOFVxeElnK1lXVUFObkZV?=
- =?utf-8?B?WVdnN0owSmJ0dUhFd0tPK3ZGMXRLVHA5N3FUVnpYeU8yalIwY2VrZElVbUlj?=
- =?utf-8?B?a05ESFNvaTZMTE9aRXZWNWhOcjNXcXora1VWVHJXckU3VnhuY2d5eHFRZVRn?=
- =?utf-8?B?elpTRXcwbGhlWlVTd3Fva20wWFloLzFLOXA0bWZPMnpvZWxQZ01meDdQSHo2?=
- =?utf-8?B?Kzdpbjk3bUl0OTFMRjhmVDBzdVIyVTFxUjVBUWhmYU9ZTUF6YmRkOFJHUGlK?=
- =?utf-8?B?djFvWWFweWpCUndKWTUyMjV0MWMzUDRNR0JoaW52SU5TeE9FZ1VjZzNBTUhP?=
- =?utf-8?B?SFlTZjVqWWFNcm9yWTRtRzlxWXZFb3o3bStQWHZBZUx4RjR2aVZwSEhRVU1O?=
- =?utf-8?B?WTdXd1pEb29Ib2tDdDBjOUd0WWxleXB1ekVvOC9RbU1zcVVRdXZSRkMwZzcx?=
- =?utf-8?B?aUNjNWhpQWlaZXJKZU9XSWRlNm9leTJrenI2bmhkMHorS21IZmpvbnFaY253?=
- =?utf-8?B?VjBkTVRoWGVZeC9ZVm5uVjY3a2xXRlRWNkk3bjRDSHprbGdrdmdnTndEZTky?=
- =?utf-8?B?c1k1MVplY1dhNmI2UElBM016WWI4eldMZ0QyR2RwYjNlZDZqeXQyc3JyR0N4?=
- =?utf-8?B?N2d1UVNFZG9MYWpzVXRhWjFIZktjbkZybENMQ1Nsbm1lbmJqQWV3K3NOZHhm?=
- =?utf-8?B?YW1tWktXTUVIcFg3bmFuWCtGRzdXV3IweVExTHhVSkcvOHpBcEtmTkxUaU1p?=
- =?utf-8?B?WUIwVVZSR21zYzVVc25iVUhpRnFnUG96SlByWFpuZC9zZG93bXdsYWp2aUJo?=
- =?utf-8?B?aEZHVmF0N0sxRnRyRU52MUF5OFR4YTk4dzJWSWY0NXg2Yml4MmdZeWMvVGpi?=
- =?utf-8?B?V082bjlrdXJpd05xQlJIWm5mYkFFS2VlMUlqUjR3YjdMamd3WHo5WS8yOTJY?=
- =?utf-8?B?c0t6bmJoR21jQkdlSmhXV29IZmdKYksrZzRnM0ZYaERnRUQ1UjdiNmdUZzdL?=
- =?utf-8?B?RjNQTDVrSWlGZ1c3MzVUQno5eFV0S2R6RmxkNzFka0laYkFKY2lUWFdXRWdC?=
- =?utf-8?B?YlArdlRBc3BQNlFwdE5YczJodUNQMU5ZQmlseCsySzloN0huVzZuZz09?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb481d79-5c03-4d2c-ede1-08d99772182e
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB7282.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 04:44:13.9591
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ineeb8T3nPiJzVWlsVA/oMzVzvT/Dqpc/cFNQSQbnfBnBb3yvyFWsZZczHZiFEcjKooYkAjHsD/g3PE/bKSaaTjRjYLUATbz5//F48hh1ws=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB3943
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021051611.3155385-1-joy.zou@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 13:46, Joel Stanley wrote:
-> On Tue, 19 Oct 2021 at 06:02, Quan Nguyen <quan@os.amperecomputing.com> wrote:
->>
->> Add S0_SCP_AUTH_FAIL, S1_SCP_AUTH_FAIL gpios to indicates firmware
->> authentication fail on each socket.
-> 
-> These use the gpio-keys API to expose the GPIOs. I think OpenBMC is
-> moving away from this abstraction, and instead reading the GPIOs with
-> the gpio chardev interface.
-> 
-Thanks Joel for the review,
-Yes, will switch to use gpio chardev interface and will remove these 
-gpio-keys defined in next version
+On 21-10-21, 13:16, Joy Zou wrote:
+> Add hdmi audio support in sdma.
 
->>
->> Add gpio RTC_BAT_SEN_EN to enable RTC battery adc sensor.
->>
->> Add BMC_I2C4_O_EN gpio to go high at boot to enable access to I2C4 bus.
-> 
-> OpenBMC has started a process to document GPIOs that are exposed to
-> userspace, initially so a common userspace can be used across
-> machines. I like doing it for the additional reason that it provides
-> consistency in the naming.
-> 
-> https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
-> 
-> If you could take a look at that document and add your GPIOs where
-> possible, and then update the device tree.
-> 
+Pls send a series together and chained. They appear here as disjoint
+patches
 
-There is on-going discussion about naming of the RTC voltage sensing 
-enable gpio pin in [1], So I'd like to address this change later in 
-separate patch when this is settled. Hence, I will remove this changes 
-in next version.
-
-[1] https://gerrit.openbmc-project.xyz/c/openbmc/docs/+/48018
-
-About the BMC_I2C4_O_EN, this is needed as gpio-hog to make the i2c bus 
-accessible at boot time so I will keep this in next version.
-In fact, I'm still a bit of confuse if this pin needs a common name as 
-it is just to enable the bus access and does not serve for any 
-particular common purpose.
-
-Thanks,
-- Quan
-
->>
->> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->> Signed-off-by: Thang Nguyen <thang@os.amperecomputing.com>
->> ---
->> v2:
->>    - None
->>
->>   .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 21 ++++++++++++++++++-
->>   1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->> index 57b0c45a2298..3515d55bd312 100644
->> --- a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->> +++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->> @@ -86,6 +86,18 @@ S0_cpu_fault {
->>                          linux,code = <ASPEED_GPIO(J, 1)>;
->>                  };
->>
->> +               S0_scp_auth_fail {
->> +                       label = "S0_SCP_AUTH_FAIL";
->> +                       gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
->> +                       linux,code = <ASPEED_GPIO(J, 2)>;
->> +               };
->> +
->> +               S1_scp_auth_fail {
->> +                       label = "S1_SCP_AUTH_FAIL";
->> +                       gpios = <&gpio ASPEED_GPIO(Z, 5) GPIO_ACTIVE_LOW>;
->> +                       linux,code = <ASPEED_GPIO(Z, 5)>;
->> +               };
->> +
->>                  S1_overtemp {
->>                          label = "S1_OVERTEMP";
->>                          gpios = <&gpio ASPEED_GPIO(Z, 6) GPIO_ACTIVE_LOW>;
->> @@ -590,7 +602,7 @@ &gpio {
->>          /*Q0-Q7*/       "","","","","","UID_BUTTON","","",
->>          /*R0-R7*/       "","","BMC_EXT_HIGHTEMP_L","OCP_AUX_PWREN",
->>                          "OCP_MAIN_PWREN","RESET_BUTTON","","",
->> -       /*S0-S7*/       "","","","","","","","",
->> +       /*S0-S7*/       "","","","","RTC_BAT_SEN_EN","","","",
 > 
-> I suggest you create a proposal to call this one
-> battery-voltage-read-enable. I know that some of the IBM machines
-> intend to have this same GPIO.
+> Signed-off-by: Joy Zou <joy.zou@nxp.com>
+> ---
+>  drivers/dma/imx-sdma.c                | 38 +++++++++++++++++++++------
+>  include/linux/platform_data/dma-imx.h |  1 +
+>  2 files changed, 31 insertions(+), 8 deletions(-)
 > 
->>          /*T0-T7*/       "","","","","","","","",
->>          /*U0-U7*/       "","","","","","","","",
->>          /*V0-V7*/       "","","","","","","","",
->> @@ -604,4 +616,11 @@ &gpio {
->>                          "S1_BMC_DDR_ADR","","","","",
->>          /*AC0-AC7*/     "SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
->>                          "BMC_OCP_PG";
->> +
->> +       i2c4_o_en {
->> +               gpio-hog;
->> +               gpios = <ASPEED_GPIO(Y, 2) GPIO_ACTIVE_HIGH>;
->> +               output-high;
->> +               line-name = "BMC_I2C4_O_EN";
->> +       };
->>   };
->> --
->> 2.28.0
->>
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index cacc725ca545..3a0e408f7741 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -907,7 +907,10 @@ static irqreturn_t sdma_int_handler(int irq, void *dev_id)
+>  		desc = sdmac->desc;
+>  		if (desc) {
+>  			if (sdmac->flags & IMX_DMA_SG_LOOP) {
+> -				sdma_update_channel_loop(sdmac);
+> +				if (sdmac->peripheral_type != IMX_DMATYPE_HDMI)
+> +					sdma_update_channel_loop(sdmac);
+> +				else
+> +					vchan_cyclic_callback(&desc->vd);
+>  			} else {
+>  				mxc_sdma_handle_channel_normal(sdmac);
+>  				vchan_cookie_complete(&desc->vd);
+> @@ -1023,6 +1026,10 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  	case IMX_DMATYPE_IPU_MEMORY:
+>  		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+>  		break;
+> +	case IMX_DMATYPE_HDMI:
+> +		emi_2_per = sdma->script_addrs->hdmi_dma_addr;
+> +		sdmac->is_ram_script = true;
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -1070,11 +1077,16 @@ static int sdma_load_context(struct sdma_channel *sdmac)
+>  	/* Send by context the event mask,base address for peripheral
+>  	 * and watermark level
+>  	 */
+> -	context->gReg[0] = sdmac->event_mask[1];
+> -	context->gReg[1] = sdmac->event_mask[0];
+> -	context->gReg[2] = sdmac->per_addr;
+> -	context->gReg[6] = sdmac->shp_addr;
+> -	context->gReg[7] = sdmac->watermark_level;
+> +	if (sdmac->peripheral_type == IMX_DMATYPE_HDMI) {
+> +		context->gReg[4] = sdmac->per_addr;
+> +		context->gReg[6] = sdmac->shp_addr;
+> +	} else {
+> +		context->gReg[0] = sdmac->event_mask[1];
+> +		context->gReg[1] = sdmac->event_mask[0];
+> +		context->gReg[2] = sdmac->per_addr;
+> +		context->gReg[6] = sdmac->shp_addr;
+> +		context->gReg[7] = sdmac->watermark_level;
+> +	}
+>  
+>  	bd0->mode.command = C0_SETDM;
+>  	bd0->mode.status = BD_DONE | BD_WRAP | BD_EXTD;
+> @@ -1420,7 +1432,7 @@ static struct sdma_desc *sdma_transfer_init(struct sdma_channel *sdmac,
+>  	desc->sdmac = sdmac;
+>  	desc->num_bd = bds;
+>  
+> -	if (sdma_alloc_bd(desc))
+> +	if (bds && sdma_alloc_bd(desc))
+>  		goto err_desc_out;
+>  
+>  	/* No slave_config called in MEMCPY case, so do here */
+> @@ -1585,13 +1597,16 @@ static struct dma_async_tx_descriptor *sdma_prep_dma_cyclic(
+>  {
+>  	struct sdma_channel *sdmac = to_sdma_chan(chan);
+>  	struct sdma_engine *sdma = sdmac->sdma;
+> -	int num_periods = buf_len / period_len;
+> +	int num_periods = 0;
+>  	int channel = sdmac->channel;
+>  	int i = 0, buf = 0;
+>  	struct sdma_desc *desc;
+>  
+>  	dev_dbg(sdma->dev, "%s channel: %d\n", __func__, channel);
+>  
+> +	if (sdmac->peripheral_type != IMX_DMATYPE_HDMI)
+> +		num_periods = buf_len / period_len;
+> +
+>  	sdma_config_write(chan, &sdmac->slave_config, direction);
+>  
+>  	desc = sdma_transfer_init(sdmac, direction, num_periods);
+> @@ -1608,6 +1623,9 @@ static struct dma_async_tx_descriptor *sdma_prep_dma_cyclic(
+>  		goto err_bd_out;
+>  	}
+>  
+> +	if (sdmac->peripheral_type == IMX_DMATYPE_HDMI)
+> +		return vchan_tx_prep(&sdmac->vc, &desc->vd, flags);
+> +
+>  	while (buf < buf_len) {
+>  		struct sdma_buffer_descriptor *bd = &desc->bd[i];
+>  		int param;
+> @@ -1668,6 +1686,10 @@ static int sdma_config_write(struct dma_chan *chan,
+>  		sdmac->watermark_level |= (dmaengine_cfg->dst_maxburst << 16) &
+>  			SDMA_WATERMARK_LEVEL_HWML;
+>  		sdmac->word_size = dmaengine_cfg->dst_addr_width;
+> +	} else if (sdmac->peripheral_type == IMX_DMATYPE_HDMI) {
+> +		sdmac->per_address = dmaengine_cfg->dst_addr;
+> +		sdmac->per_address2 = dmaengine_cfg->src_addr;
+> +		sdmac->watermark_level = 0;
+>  	} else {
+>  		sdmac->per_address = dmaengine_cfg->dst_addr;
+>  		sdmac->watermark_level = dmaengine_cfg->dst_maxburst *
 
+You missed adding cyclic capability, pls add that
+
+> diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
+> index 281adbb26e6b..29ac21d40f28 100644
+> --- a/include/linux/platform_data/dma-imx.h
+> +++ b/include/linux/platform_data/dma-imx.h
+> @@ -39,6 +39,7 @@ enum sdma_peripheral_type {
+>  	IMX_DMATYPE_SSI_DUAL,	/* SSI Dual FIFO */
+>  	IMX_DMATYPE_ASRC_SP,	/* Shared ASRC */
+>  	IMX_DMATYPE_SAI,	/* SAI */
+> +	IMX_DMATYPE_HDMI,	/* HDMI Audio */
+
+Why is this in latform_data, these should be moved to
+include/dt-bindings
+
+-- 
+~Vinod
