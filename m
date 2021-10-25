@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA3A43996A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE4C43996B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 16:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbhJYO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 10:58:55 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52886 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhJYO6y (ORCPT
+        id S233624AbhJYO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 10:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhJYO7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:58:54 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D4790218B0;
-        Mon, 25 Oct 2021 14:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635173790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OtqiJHq8zuWsjUAFlcfMCqR4fr77OchepUlZR3e94fI=;
-        b=FN3DSXPzbzFZ1eiR+q19iiK1WqL+9W76nWnCKbE6Hvy3HDswx3rxfnRvM0rUOvzxxXhjxy
-        /V8l8UsXuSr9ov5xT+zTwWT5SZ8a8OMyixDCTP3+pATodSk7lVG+2IvA6xTqAu1+iSeCht
-        G9t9RANQ3TdzT0GPUkBZ7Vepwqq6H0o=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A2EB1A3B8A;
-        Mon, 25 Oct 2021 14:56:30 +0000 (UTC)
-Date:   Mon, 25 Oct 2021 16:56:28 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     NeilBrown <neilb@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YXbFnMA4WUSLFp7q@dhcp22.suse.cz>
-References: <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
- <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
- <20211020192430.GA1861@pc638.lan>
- <163481121586.17149.4002493290882319236@noble.neil.brown.name>
- <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
- <20211021104038.GA1932@pc638.lan>
- <163485654850.17149.3604437537345538737@noble.neil.brown.name>
- <20211025094841.GA1945@pc638.lan>
- <YXaTBrhEqTZhTJYX@dhcp22.suse.cz>
- <CA+KHdyWeQ77uWg5GxJGYiNeG_2ZuKu62-i=L7kqhw__g--XGYg@mail.gmail.com>
+        Mon, 25 Oct 2021 10:59:07 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8C0C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 07:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zmLK+AKV4g2Qg/lbEfGjPewbRorji9DedTnXtifc7bU=; b=HxM0ibGfAlXgx4A71JCfpTjSQ8
+        dCCSkxk6gablTyCZv2MUNysEgUWQhyqswsfsTEnZdQXPU4TklZUUQSmSX8NehDbXXM/bERq8vmPIv
+        Yg+i9ggQi+s/hdpvk5VHlgtU0XoqKEKvldANEyqlqL9KFg7HrL4yHgR+BgKJcoREI7PULt5HTji2r
+        WZ2AnGrziyVXc/iIjcuMA9xQ7qiHKrlVwwU4LYvfOld0Hz97S+2nYVYsMc9xTVeXS++fWKSI8SIoE
+        RHPv9WXzokwxyLuVolT1mh+9P6T8g2Q1pWlmzORBpGxrpBY0AwH3oG5NrRvioWUEPq3M28CFg6HYx
+        Te0/OLQw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mf1Ox-00CA5K-Sf; Mon, 25 Oct 2021 14:56:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ED33D3003A9;
+        Mon, 25 Oct 2021 16:56:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D597329DEC068; Mon, 25 Oct 2021 16:56:37 +0200 (CEST)
+Date:   Mon, 25 Oct 2021 16:56:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Rob Landley <rob@landley.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
+Message-ID: <YXbFpfJwXJXABDup@hirez.programming.kicks-ass.net>
+References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
+ <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
+ <20211024192742.uo62mbqb6hmhafjs@treble>
+ <66ed460c-ac48-2b5a-e8e4-07613cf69ab0@landley.net>
+ <YXZzIUqdWW9wwlpr@hirez.programming.kicks-ass.net>
+ <20211025144656.fqqneysf72wwxp3m@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+KHdyWeQ77uWg5GxJGYiNeG_2ZuKu62-i=L7kqhw__g--XGYg@mail.gmail.com>
+In-Reply-To: <20211025144656.fqqneysf72wwxp3m@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25-10-21 16:30:23, Uladzislau Rezki wrote:
-> >
-> > I would really prefer if this was not the main point of arguing here.
-> > Unless you feel strongly about msleep I would go with schedule_timeout
-> > here because this is a more widely used interface in the mm code and
-> > also because I feel like that relying on the rounding behavior is just
-> > subtle. Here is what I have staged now.
-> >
-> I have a preference but do not have a strong opinion here. You can go
-> either way you want.
+On Mon, Oct 25, 2021 at 07:46:56AM -0700, Josh Poimboeuf wrote:
+> On Mon, Oct 25, 2021 at 11:04:33AM +0200, Peter Zijlstra wrote:
+> > On Sun, Oct 24, 2021 at 09:51:45PM -0500, Rob Landley wrote:
+> > > > Unfortunately I think CONFIG_STACK_VALIDATION is no longer optional on
+> > > > x86-64 these days, because of static calls and retpolines.
+> > > 
+> > > Does it need stack validation, or just a frame unwinder?
+> > 
+> > static_calls rely on objtool to find all "call __SCT*" instructions and
+> > write their location in a .static_call_sites section.
+> > 
+> > The having of static calls is not optional on x86_64, and I have zero
+> > interest in trying to work out what not having static_call() does, or to
+> > maintain that option.
 > 
-> >
-> > Are there any other concerns you see with this or other patches in the
-> > series?
-> >
-> it is better if you could send a new vX version because it is hard to
-> combine every "folded"
+> What I meant was, make STATIC_CALL_INLINE optional.  Then it would use
+> out-of-line static calls which should just work, no?
 
-Yeah, I plan to soon. I just wanted to sort out most things before
-spaming with a new version.
+Yeah, I suppose so... I think we're then missing a STACK_VALIDATION
+dependency for KCOV. We rely on objtool to nop out those
+__sanitizer_cov_* calls.
 
-> into one solid commit. One comment below:
-> 
-> > ---
-> > commit c1a7e40e6b56fed5b9e716de7055b77ea29d89d0
-> > Author: Michal Hocko <mhocko@suse.com>
-> > Date:   Wed Oct 20 10:12:45 2021 +0200
-> >
-> >     fold me "mm/vmalloc: add support for __GFP_NOFAIL"
-> >
-> >     Add a short sleep before retrying. 1 jiffy is a completely random
-> >     timeout. Ideally the retry would wait for an explicit event - e.g.
-> >     a change to the vmalloc space change if the failure was caused by
-> >     the space fragmentation or depletion. But there are multiple different
-> >     reasons to retry and this could become much more complex. Keep the retry
-> >     simple for now and just sleep to prevent from hogging CPUs.
-> >
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 0fb5413d9239..a866db0c9c31 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -2944,6 +2944,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
-> >         do {
-> >                 ret = vmap_pages_range(addr, addr + size, prot, area->pages,
-> >                         page_shift);
-> > +               schedule_timeout_uninterruptible(1);
-> >
-> We do not want to schedule_timeout_uninterruptible(1); every time.
-> Only when an error is detected.
-
-Because I was obviously in a brainless mode when doing that one. Thanks
-for pointing this out!
--- 
-Michal Hocko
-SUSE Labs
+I had really hoped to just make objtool an unconditional part of x86_64.
