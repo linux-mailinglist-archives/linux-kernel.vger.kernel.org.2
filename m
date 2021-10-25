@@ -2,193 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810EC43A698
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D870A43A69D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 00:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhJYWde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 18:33:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229977AbhJYWdc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:33:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635201069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PjcCITkGShAEZ+GEYR177H8pWSxySHVTip/EWi8udPY=;
-        b=BNo83sIgxs1E36epGSmZNnZTP2QWrdFqAQOmQ+x1/2VKK3qgYrWkeGluTnB63c1CFh+n4N
-        k14XdaZszSAeidkrOsFNbXspQAzhU2jKY4Yw1DvgyIAeayoxdvjONMya3JFvM1uAexuI9R
-        2Cmtx2Tjow8ownMPGvqNiu8Zc+lL6J8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-56-OjhrpxEzOO2Zxc7massuEw-1; Mon, 25 Oct 2021 18:31:06 -0400
-X-MC-Unique: OjhrpxEzOO2Zxc7massuEw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21213100CCC1;
-        Mon, 25 Oct 2021 22:31:02 +0000 (UTC)
-Received: from emerald.lyude.net (unknown [10.22.9.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 42E5E5DD68;
-        Mon, 25 Oct 2021 22:30:58 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org, amdgfx@lists.freedesktop.org
-Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        "Lin, Wayne" <Wayne.Lin@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Simon Ser <contact@emersion.fr>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Jude Shih <shenshih@amd.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
-        Roman Li <Roman.Li@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Victor Lu <victorchengchi.lu@amd.com>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Fernando Ramos <greenfoo@u92.eu>,
-        Fangzhi Zuo <Jerry.Zuo@amd.com>,
-        "Leo (Hanghong) Ma" <hanghong.ma@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Zhan Liu <zhan.liu@amd.com>, Bing Guo <bing.guo@amd.com>,
-        amd-gfx@lists.freedesktop.org (open list:AMD DISPLAY CORE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v5 4/4] drm/amd/display: Add DP 2.0 MST DM Support
-Date:   Mon, 25 Oct 2021 18:30:28 -0400
-Message-Id: <20211025223029.300891-5-lyude@redhat.com>
-In-Reply-To: <20211025223029.300891-1-lyude@redhat.com>
-References: <20211025223029.300891-1-lyude@redhat.com>
+        id S234040AbhJYWfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 18:35:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233933AbhJYWfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 18:35:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8765A6103C;
+        Mon, 25 Oct 2021 22:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635201174;
+        bh=0BzdB5d92X2i7ldftw0ekDl6iGfPoKqmLtnwLssAJDo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=sbbiUXaPkbJ0VPl0NqHf8kSkjvjCer1JuUSIX/rs7xOUT6WXkCx5El+AmNuaM2Mg2
+         QqcfNv8hRFxEVlbVWVciWEtweYRiFgPoieo0FUBFvLZDx/5StICNIX6AR42H/J8ats
+         exXSpcVRAwVES+NeZM5SCLOKbAwCyAdgbHi84Z2vThJLXnhcETxhmYVYPpKzzHbo+w
+         bbsV8jm1VUB0kLl/kXa/pWYSFMAja2KY7skXEM4BZP35OLkaig3DOq+F/+hdGFu5M9
+         uzxXmJxAk4vlg3TU+99Z5qfcp2/BLKC2/a8xNKV7pmPZxglyI748qgNehJCqmR+Owb
+         vJGucCE3BaMhQ==
+Message-ID: <baf77664-596d-d679-261a-6a2a3b9b948a@kernel.org>
+Date:   Mon, 25 Oct 2021 15:32:52 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 14/20] exit/syscall_user_dispatch: Send ordinary signals
+ on failure
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-14-ebiederm@xmission.com>
+ <202110210925.9DEAF27CA@keescook>
+From:   Andy Lutomirski <luto@kernel.org>
+In-Reply-To: <202110210925.9DEAF27CA@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
+On 10/21/21 09:25, Kees Cook wrote:
+> On Wed, Oct 20, 2021 at 12:44:00PM -0500, Eric W. Biederman wrote:
+>> Use force_fatal_sig instead of calling do_exit directly.  This ensures
+>> the ordinary signal handling path gets invoked, core dumps as
+>> appropriate get created, and for multi-threaded processes all of the
+>> threads are terminated not just a single thread.
+>>
+>> When asked Gabriel Krisman Bertazi <krisman@collabora.com> said [1]:
+>>> ebiederm@xmission.com (Eric W. Biederman) asked:
+>>>
+>>>> Why does do_syscal_user_dispatch call do_exit(SIGSEGV) and
+>>>> do_exit(SIGSYS) instead of force_sig(SIGSEGV) and force_sig(SIGSYS)?
+>>>>
+>>>> Looking at the code these cases are not expected to happen, so I would
+>>>> be surprised if userspace depends on any particular behaviour on the
+>>>> failure path so I think we can change this.
+>>>
+>>> Hi Eric,
+>>>
+>>> There is not really a good reason, and the use case that originated the
+>>> feature doesn't rely on it.
+>>>
+>>> Unless I'm missing yet another problem and others correct me, I think
+>>> it makes sense to change it as you described.
+>>>
+>>>> Is using do_exit in this way something you copied from seccomp?
+>>>
+>>> I'm not sure, its been a while, but I think it might be just that.  The
+>>> first prototype of SUD was implemented as a seccomp mode.
+>>
+>> If at some point it becomes interesting we could relax
+>> "force_fatal_sig(SIGSEGV)" to instead say
+>> "force_sig_fault(SIGSEGV, SEGV_MAPERR, sd->selector)".
+>>
+>> I avoid doing that in this patch to avoid making it possible
+>> to catch currently uncatchable signals.
+>>
+>> Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> [1] https://lkml.kernel.org/r/87mtr6gdvi.fsf@collabora.com
+>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> Yeah, looks good. Should be no visible behavior change.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
 
-[Why]
-Add DP2 MST and debugfs support
+I'm confused.  Before this series, this error path would unconditionally 
+kill the task (other than the race condition in force_sigsegv(), but at 
+least a well-behaved task would get killed).  Now a signal handler might 
+be invoked, and it would be invoked after the syscall that triggered the 
+fault got processed as a no-op.  If the signal handler never returns, 
+that's fine, but if the signal handler *does* return, the process might 
+be in an odd state.  For SIGSYS, this behavior is probably fine, but 
+having SIGSEGV swallow a syscall seems like a mistake.
 
-[How]
-Update the slot info based on the link encoding format
+Maybe rewind (approximately!) the syscall?  Or actually send SIGSYS?  Or 
+actually make the signal uncatchable?
 
-Reviewed-by: "Lin, Wayne" <Wayne.Lin@amd.com>
-Signed-off-by: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Signed-off-by: Fangzhi Zuo <Jerry.Zuo@amd.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 29 +++++++++++++++++++
- .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |  3 ++
- .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |  5 +++-
- 3 files changed, 36 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index f35561b5a465..ecdeeedb1cde 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -10684,6 +10684,8 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- #if defined(CONFIG_DRM_AMD_DC_DCN)
- 	struct dsc_mst_fairness_vars vars[MAX_PIPES];
- #endif
-+	struct drm_dp_mst_topology_state *mst_state;
-+	struct drm_dp_mst_topology_mgr *mgr;
- 
- 	trace_amdgpu_dm_atomic_check_begin(state);
- 
-@@ -10891,6 +10893,33 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 		lock_and_validation_needed = true;
- 	}
- 
-+#if defined(CONFIG_DRM_AMD_DC_DCN)
-+	/* set the slot info for each mst_state based on the link encoding format */
-+	for_each_new_mst_mgr_in_state(state, mgr, mst_state, i) {
-+		struct amdgpu_dm_connector *aconnector;
-+		struct drm_connector *connector;
-+		struct drm_connector_list_iter iter;
-+		u8 link_coding_cap;
-+
-+		if (!mgr->mst_state )
-+			continue;
-+
-+		drm_connector_list_iter_begin(dev, &iter);
-+		drm_for_each_connector_iter(connector, &iter) {
-+			int id = connector->index;
-+
-+			if (id == mst_state->mgr->conn_base_id) {
-+				aconnector = to_amdgpu_dm_connector(connector);
-+				link_coding_cap = dc_link_dp_mst_decide_link_encoding_format(aconnector->dc_link);
-+				drm_dp_mst_update_slots(mst_state, link_coding_cap);
-+
-+				break;
-+			}
-+		}
-+		drm_connector_list_iter_end(&iter);
-+
-+	}
-+#endif
- 	/**
- 	 * Streams and planes are reset when there are changes that affect
- 	 * bandwidth. Anything that affects bandwidth needs to go through
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-index 814f67d86a3c..3d44896149a2 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -294,6 +294,9 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
- 	case LINK_RATE_RBR2:
- 	case LINK_RATE_HIGH2:
- 	case LINK_RATE_HIGH3:
-+#if defined(CONFIG_DRM_AMD_DC_DCN)
-+	case LINK_RATE_UHBR10:
-+#endif
- 		break;
- 	default:
- 		valid_input = false;
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-index 6169488e2011..53b5cc7b0679 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-@@ -219,6 +219,7 @@ bool dm_helpers_dp_mst_write_payload_allocation_table(
- 	struct drm_dp_mst_topology_mgr *mst_mgr;
- 	struct drm_dp_mst_port *mst_port;
- 	bool ret;
-+	u8 link_coding_cap;
- 
- 	aconnector = (struct amdgpu_dm_connector *)stream->dm_stream_context;
- 	/* Accessing the connector state is required for vcpi_slots allocation
-@@ -238,6 +239,8 @@ bool dm_helpers_dp_mst_write_payload_allocation_table(
- 
- 	mst_port = aconnector->port;
- 
-+	link_coding_cap = dc_link_dp_mst_decide_link_encoding_format(aconnector->dc_link);
-+
- 	if (enable) {
- 
- 		ret = drm_dp_mst_allocate_vcpi(mst_mgr, mst_port,
-@@ -251,7 +254,7 @@ bool dm_helpers_dp_mst_write_payload_allocation_table(
- 	}
- 
- 	/* It's OK for this to fail */
--	drm_dp_update_payload_part1(mst_mgr, 1);
-+	drm_dp_update_payload_part1(mst_mgr, (link_coding_cap == DP_CAP_ANSI_128B132B) ? 0:1);
- 
- 	/* mst_mgr->->payloads are VC payload notify MST branch using DPCD or
- 	 * AUX message. The sequence is slot 1-63 allocated sequence for each
--- 
-2.31.1
-
+--Andy
