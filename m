@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5382A439F14
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82696439F3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhJYTRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34504 "EHLO mail.kernel.org"
+        id S234511AbhJYTSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:18:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233864AbhJYTRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E38460EFE;
-        Mon, 25 Oct 2021 19:14:45 +0000 (UTC)
+        id S234515AbhJYTSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:18:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11461600D3;
+        Mon, 25 Oct 2021 19:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189286;
-        bh=lO0DuIKUZ5zkgHkfV2sRjPBl0xkSfEwWiAYLq1/9Cq4=;
+        s=korg; t=1635189360;
+        bh=T6sqSzknxN+29LWj2D1Fygfur49sOyVzp9bbeAszR4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OkMROP52OVT1Zu6+e/pNiFOW3mvm4Cfn1ITB/3kHtI19rgkHbACfNhCma1Xuk+lA4
-         qoRlf9BZvUymwjZSFkgPeINmOeCekhjFt7FlKTXQW5ChrQarZVK9z3WDLW2okKamu6
-         TUIS9T4RSGsfoNluFkzithlcvCZ7dYZkivWUhczQ=
+        b=gm257RKYABfD0F9AGRwgRG0DoPC2NXdj+HGkG6hedWPaSu+GqSgIqCILwQ8KHYIMp
+         zv6gisiOX22E9fo2+MEK9VinnnQXvl/kD3GX08vCwi2vJ7TzPWZIpLEVsK7KBn57zT
+         peCucoCrusnYvqVkXB1LP4b7Jft4N32nAl/Q6TEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4.4 04/44] cb710: avoid NULL pointer subtraction
-Date:   Mon, 25 Oct 2021 21:13:45 +0200
-Message-Id: <20211025190929.559812281@linuxfoundation.org>
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 4.4 05/44] efi/cper: use stack buffer for error record decoding
+Date:   Mon, 25 Oct 2021 21:13:46 +0200
+Message-Id: <20211025190929.800977864@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
 References: <20211025190928.054676643@linuxfoundation.org>
@@ -38,37 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 42641042c10c757fe10cc09088cf3f436cec5007 upstream.
+commit b3a72ca80351917cc23f9e24c35f3c3979d3c121 upstream.
 
-clang-14 complains about an unusual way of converting a pointer to
-an integer:
+Joe reports that using a statically allocated buffer for converting CPER
+error records into human readable text is probably a bad idea. Even
+though we are not aware of any actual issues, a stack buffer is clearly
+a better choice here anyway, so let's move the buffer into the stack
+frames of the two functions that refer to it.
 
-drivers/misc/cb710/sgbuf2.c:50:15: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
-        return ((ptr - NULL) & 3) != 0;
-
-Replace this with a normal cast to uintptr_t.
-
-Fixes: 5f5bac8272be ("mmc: Driver for CB710/720 memory card reader (MMC part)")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20210927121408.939246-1-arnd@kernel.org
+Cc: <stable@vger.kernel.org>
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/cb710/sgbuf2.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/efi/cper.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/misc/cb710/sgbuf2.c
-+++ b/drivers/misc/cb710/sgbuf2.c
-@@ -50,7 +50,7 @@ static inline bool needs_unaligned_copy(
- #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	return false;
- #else
--	return ((ptr - NULL) & 3) != 0;
-+	return ((uintptr_t)ptr & 3) != 0;
- #endif
- }
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -35,8 +35,6 @@
  
+ #define INDENT_SP	" "
+ 
+-static char rcd_decode_str[CPER_REC_LEN];
+-
+ /*
+  * CPER record ID need to be unique even after reboot, because record
+  * ID is used as index for ERST storage, while CPER records from
+@@ -293,6 +291,7 @@ const char *cper_mem_err_unpack(struct t
+ 				struct cper_mem_err_compact *cmem)
+ {
+ 	const char *ret = trace_seq_buffer_ptr(p);
++	char rcd_decode_str[CPER_REC_LEN];
+ 
+ 	if (cper_mem_err_location(cmem, rcd_decode_str))
+ 		trace_seq_printf(p, "%s", rcd_decode_str);
+@@ -307,6 +306,7 @@ static void cper_print_mem(const char *p
+ 	int len)
+ {
+ 	struct cper_mem_err_compact cmem;
++	char rcd_decode_str[CPER_REC_LEN];
+ 
+ 	/* Don't trust UEFI 2.1/2.2 structure with bad validation bits */
+ 	if (len == sizeof(struct cper_sec_mem_err_old) &&
 
 
