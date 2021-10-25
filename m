@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B69438FC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232E6438FCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 08:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhJYG6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 02:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbhJYG6k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 02:58:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9E0C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 23:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tMpqzvoQkJMhQLbS0C1ZDEhCzSzUf+VL7fFW2UCbKFQ=; b=2q60wzxpnWubAlhqt2u3rz5FQ7
-        sJ9iBTzR19YxcrC15C3a2ML/HYxPxSikeH9n9oLJnPMZ0vQzzOS6FRpfZlLbvAek8RNaNXwkOZB9f
-        M2RiACykY+CLo50/YHPao6pWY0/W2EY4//wxxPhiSkCbHHY41rFU+gX0RccwOi464tg0j3TkanCmq
-        I+8wzKjEj4kwKXw5+uB4mZ3ktGU2xhKG6CvLGs6SosXi9yZ/+e7MkKGN3EuROY1uJNUTQ9dY0Z2GG
-        N2lqP+J4RLHhpOCYcEd3YpBgYAEPaxTwixA0LL7gWE59tiUkCB/ouxMZ1anNUQ9j6PIOdBrU4lLN7
-        5UyHHSsA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mettn-00FSTF-3k; Mon, 25 Oct 2021 06:55:59 +0000
-Date:   Sun, 24 Oct 2021 23:55:59 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     wefu@redhat.com
-Cc:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
-        guoren@kernel.org, christoph.muellner@vrull.eu,
-        philipp.tomsich@vrull.eu, hch@lst.de, liush@allwinnertech.com,
-        lazyparser@gmail.com, drew@beagleboard.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
-        guoren@linux.alibaba.com, arnd@arndb.de, wens@csie.org,
-        maxime@cerno.tech, dlustig@nvidia.com, gfavor@ventanamicro.com,
-        andrea.mondelli@huawei.com, behrensj@mit.edu, xinhaoqu@huawei.com,
-        huffman@cadence.com, mick@ics.forth.gr,
-        allen.baum@esperantotech.com, jscheid@ventanamicro.com,
-        rtrauben@gmail.com
-Subject: Re: [RESEND PATCH V3 2/2] riscv: add RISC-V Svpbmt extension supports
-Message-ID: <YXZU/3/YmRGFrOXK@infradead.org>
-References: <20211025040607.92786-1-wefu@redhat.com>
- <20211025040607.92786-3-wefu@redhat.com>
+        id S231387AbhJYG7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 02:59:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229727AbhJYG7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 02:59:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9AA760EE9;
+        Mon, 25 Oct 2021 06:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635145049;
+        bh=qXTrgFKBZ/n7lg4e/LDWfdvUn0D7rhQ2YdfqbfD2apQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BZlChCmFlmiM7n7WytFjcrMvNPs1N1M4pBJ66VE63SYxU8JCCE5OyEJqZHL87p4SB
+         +m8zAPE3VM0/8ncNrY8d/Yr8TYKghBDlLYnRyqiLUDwOvGHA/6S1tJ6LD1lzsRLXux
+         8kN66AlLiSijQX0dUf1zXyZWSPdUVY8Z+ijjoREQ=
+Date:   Mon, 25 Oct 2021 08:57:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: r8188eu: avoid use of goto statement
+Message-ID: <YXZVV9j2DMA22MUS@kroah.com>
+References: <YXY5jtR6neQ+ad+C@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211025040607.92786-3-wefu@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YXY5jtR6neQ+ad+C@Sauravs-MacBook-Air.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:06:07PM +0800, wefu@redhat.com wrote:
->  static inline pmd_t *pud_pgtable(pud_t pud)
+On Mon, Oct 25, 2021 at 10:28:54AM +0530, Saurav Girepunje wrote:
+> Remove the goto statement from _rtw_init_cmd_priv(). In this function
+> goto statement can be replace by return statement. By replacing the
+> goto statement with return statement local variable "res" is also
+> not required.As on goto label exit, function only return it is not
+
+You need a ' ' after the '.' here please.
+
+> performing any cleanup.Avoiding goto will simplify the function.
+
+Same here.
+
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_cmd.c | 16 +++++-----------
+>  1 file changed, 5 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+> index e17332677daa..22046bd5cf82 100644
+> --- a/drivers/staging/r8188eu/core/rtw_cmd.c
+> +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+> @@ -19,7 +19,6 @@ No irqsave is necessary.
+> 
+>  static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
 >  {
-> -	return (pmd_t *)pfn_to_virt(pud_val(pud) >> _PAGE_PFN_SHIFT);
-> +	return (pmd_t *)pfn_to_virt((pud_val(pud) & _PAGE_CHG_MASK)
-> +						>> _PAGE_PFN_SHIFT);
->  }
->  
->  static inline struct page *pud_page(pud_t pud)
->  {
-> -	return pfn_to_page(pud_val(pud) >> _PAGE_PFN_SHIFT);
-> +	return pfn_to_page((pud_val(pud) & _PAGE_CHG_MASK)
-> +						>> _PAGE_PFN_SHIFT);
+> -	int res = _SUCCESS;
+> 
 
->  static inline unsigned long _pmd_pfn(pmd_t pmd)
->  {
-> -	return pmd_val(pmd) >> _PAGE_PFN_SHIFT;
-> +	return (pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT;
->  }
+Please also remove the extra blank line.
 
-The "(pud_val(pud) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT" expression begs
-for readable and well-documented helper.
+thanks,
 
-> +#define _SVPBMT_PMA		((unsigned long)0x0 << 61)
-> +#define _SVPBMT_NC		((unsigned long)0x1 << 61)
-> +#define _SVPBMT_IO		((unsigned long)0x2 << 61)
-
-0UL << 61
-1UL << 61
-...
-
-> +#define _SVPBMT_MASK		(_SVPBMT_PMA | _SVPBMT_NC | _SVPBMT_IO)
-> +
-> +extern struct __riscv_svpbmt_struct {
-> +	unsigned long mask;
-> +	unsigned long mt_pma;
-> +	unsigned long mt_nc;
-> +	unsigned long mt_io;
-> +} __riscv_svpbmt;
-> +
-> +#define _PAGE_MT_MASK		__riscv_svpbmt.mask
-> +#define _PAGE_MT_PMA		__riscv_svpbmt.mt_pma
-> +#define _PAGE_MT_NC		__riscv_svpbmt.mt_nc
-> +#define _PAGE_MT_IO		__riscv_svpbmt.mt_io
-
-Using a struct over individual variables seems a little odd here.
-
-Also why not use the standard names for these _PAGE bits used by
-most other architectures?
-
-> -	return (unsigned long)pfn_to_virt(pmd_val(pmd) >> _PAGE_PFN_SHIFT);
-> +	return (unsigned long)pfn_to_virt((pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT);
-
-Overly long line, could use a helper.  Btw, what is the point in having
-this _PAGE_PFN_SHIFT macro to start with?
+greg k-h
