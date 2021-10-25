@@ -2,154 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F05439A9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C0A439AA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhJYPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 11:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhJYPlv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:41:51 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE866C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:39:29 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so312112pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 08:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4JnvwWaRo4iE6zeN8DeflI8kuZhLv6TYtgEJ2sN18X0=;
-        b=rom/C+7mjkBstnMy4kARza9EAU5haDsedag9MF1Zu7WU30XMVtslLTmJS9nsVH/4aW
-         LNokxElJgsig45c3pYprJDavuno9wsjLPEDvcv2TmfyACdG1j+kqyg0m61VF0UlNa8tN
-         bNr/6RFoZUqOaFUtnGwIjrWXcjPhkjdNjwZvYIvi9+Paf91n/6uv1CtnXCGKqXzseRh9
-         e4FJz23pel7svPYBsPeOA6lQHq3pGX4Ey2yj9jakwJsv9q3O841Q2pye58s7OKYDA7SC
-         i55TfAFVvcdF4XpsBgH+W0sUNZPXciJE+DCU+NoWxrU1xv+JziMARtTkFyWDQnzWxNp6
-         URzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4JnvwWaRo4iE6zeN8DeflI8kuZhLv6TYtgEJ2sN18X0=;
-        b=khtsoOjAAUFFnSTlCg4+sIiLeHUVpyofGQ0dTWNbWLsU340z+2M0yFjJI8cxmozE+a
-         sV1wmBHLoGBUtIWBwdjsTd2sN2om4VXsJjoxGDQ+m5WcQpu7hwwl7491uORPQ07dTh7d
-         aTTfP1WjyoeW75LF8qiOoDaPJ+g4O7awBq7iZYsurraiZnJEE0Pi23wHQEp/V4ZMoA00
-         Cq0XagcRKsBBiQ+qqkN6VxFwQPeR5qJ1zC3ZIwRO9lh+c3sqMpzHb+iKNWavM4S39EdA
-         8p/y6h+xNdnFTguVn2jZUjgTN7UH9OBhKn8fRHNv79YHzjWqVLBNM9omnBGfP9NjfqMf
-         Fnyw==
-X-Gm-Message-State: AOAM533ScfL8eTz95d8YPzEoNe1fWTFyf17DTcWtuD6GpHuhniE9jcXd
-        vkMfQ8KMESMIkquJlpv1GQb+yw==
-X-Google-Smtp-Source: ABdhPJz4HZ3w/aq90jYLL/t0p9f4pVly7t0P3O7N0DVqxyTCNjrxnpFqCJU0OLTcZE9ycxEHw7uDLw==
-X-Received: by 2002:a17:90a:c297:: with SMTP id f23mr24322651pjt.37.1635176369106;
-        Mon, 25 Oct 2021 08:39:29 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id om5sm19094195pjb.36.2021.10.25.08.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 08:39:28 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 15:39:24 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 2/3] KVM: x86/mmu: Drop a redundant remote TLB flush in
- kvm_zap_gfn_range()
-Message-ID: <YXbPrOXlSMJrVaqA@google.com>
-References: <20211022010005.1454978-1-seanjc@google.com>
- <20211022010005.1454978-3-seanjc@google.com>
- <ed34e089-5a35-2502-5a7d-ad8b1cf6957f@oracle.com>
+        id S232711AbhJYPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 11:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232673AbhJYPnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 11:43:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E63460F70;
+        Mon, 25 Oct 2021 15:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635176444;
+        bh=/EA1ZAMyLcB3Pv54GqH5FxuPnB3C0lNTVGdITSn85WM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uriQqWR79lkskbj36qK2x7YgxWLdQu3mGve8sf+/u4KBLMU4hcJihVdVNhhYg3yW7
+         uF6AzBPtz95P39yXY5UrzPDmk8MIS9V8YL83MpDHn/nmkHg2Xp1FbBORDoTx/noSs7
+         W8ugzkPVPVOwy9N2rSSTh4zFicqP/aHaLQOybu8ffl8o0bQZ+7WPknVyu45papGtcb
+         4qQiY60OdAwk2MUYEGB0IWO5k24/TBHsCL2mpzEtCc3oE+2RedrR+OA5fuSb2jePbg
+         cAX+43MRjU7MkXo0pDuPTzsfX8K3MA7zKOM9vcNzIz1FogAWM6ven+QnLXpw/ResKE
+         5lJvYsgE4oGAQ==
+Received: by mail-ed1-f44.google.com with SMTP id z20so1148409edc.13;
+        Mon, 25 Oct 2021 08:40:44 -0700 (PDT)
+X-Gm-Message-State: AOAM532YFsXYApd7pvM5FMSnDTzQwgNt4wgab8TIPtiPh2aAkDXatYVv
+        /ziPb5KtUd9IJiQ0g1m91y88fXTnXg2vtL3GUA==
+X-Google-Smtp-Source: ABdhPJwQ8T5Cvh5z6HNoITA8K2ILylKqItfQWWc0KoHd+Geq1Ag5D/0abRVxNsOUU+BSQL7eGRyuElS+3uXDRd6BTHA=
+X-Received: by 2002:a17:907:869e:: with SMTP id qa30mr12516665ejc.320.1635176393733;
+ Mon, 25 Oct 2021 08:39:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed34e089-5a35-2502-5a7d-ad8b1cf6957f@oracle.com>
+References: <20211023144252.z7ou2l2tvm6cvtf7@pali>
+In-Reply-To: <20211023144252.z7ou2l2tvm6cvtf7@pali>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 25 Oct 2021 10:39:42 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLwGtEVrAc1SFUBfQp22Vxp8hb5Kft1B9t_nFMZ=q8M-g@mail.gmail.com>
+Message-ID: <CAL_JsqLwGtEVrAc1SFUBfQp22Vxp8hb5Kft1B9t_nFMZ=q8M-g@mail.gmail.com>
+Subject: Re: RFC: Change PCI DTS scheme for port/link specific properties
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021, Maciej S. Szmigiero wrote:
-> On 22.10.2021 03:00, Sean Christopherson wrote:
-> > Remove an unnecessary remote TLB flush in kvm_zap_gfn_range() now that
-> > said function holds mmu_lock for write for its entire duration.  The
-> > flush was added by the now-reverted commit to allow TDP MMU to flush while
-> > holding mmu_lock for read, as the transition from write=>read required
-> > dropping the lock and thus a pending flush needed to be serviced.
-> > 
-> > Fixes: 5a324c24b638 ("Revert "KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock"")
-> > Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> > Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> > Cc: Ben Gardon <bgardon@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/mmu/mmu.c | 3 ---
-> >   1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index f82b192bba0b..e8b8a665e2e9 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -5700,9 +5700,6 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
-> >   						end - 1, true, flush);
-> >   			}
-> >   		}
-> > -		if (flush)
-> > -			kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> > -							   gfn_end - gfn_start);
-> >   	}
-> >   	if (is_tdp_mmu_enabled(kvm)) {
-> > 
-> 
-> Unfortunately, it seems that a pending flush from __kvm_zap_rmaps()
-> can be reset back to false by the following line:
-> > flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, gfn_start, gfn_end, flush);
-> 
-> kvm_tdp_mmu_zap_gfn_range() calls __kvm_tdp_mmu_zap_gfn_range with
-> "can_yield" set to true, which passes it to zap_gfn_range, which has
-> this code:
-> > if (can_yield &&
-> >     tdp_mmu_iter_cond_resched(kvm, &iter, flush, shared)) {
-> >       flush = false;
-> >       continue;
-> > }
+On Sat, Oct 23, 2021 at 9:43 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> Hello Rob!
+>
+> I think that the current DT scheme for PCI buses and devices defined in
+> Linux kernel tree has wrong definitions of port/link specific properties:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/devicetree/bindings/pci/pci.txt
+>
+> Port or link specific properties are at least: max-link-speed,
+> reset-gpios and supports-clkreq. And are currently defined as properties
+> of host bridges.
 
-That's working by design.  If the MMU (legacy or TDP) yields during zap, it _must_
-flush before dropping mmu_lock so that any SPTE modifications are guaranteed to be
-observed by all vCPUs.  Clearing "flush" is deliberate/correct as another is flush
-is needed if and only if additional SPTE modifications are made.
+pci-bus.yaml in dtschema is what matters now and it's a bit more flexible.
 
+> Host Bridge contains one or more PCIe Root Ports (each represented as
+> PCI Bridge device) and to each PCIe Root Port can be connected exactly
+> one PCIe Upstream device.
+>
+> PCIe Upstream device can be either endpoint PCIe card or it can be also
+> PCIe switch is consists of exactly one Upstream Port (represented as PCI
+> Bridge device) and then one or more Downstream Port devices (each
+> represent as PCI Bridge device). To each Downstream Port can be
+> connected again exactly one PCIe Upstream device.
+>
+> Port or link specific properties (e.g. max-link-speed, reset-gpios and
+> supports-clkreq) define "the PCIe link" between the Root/Downstream
+> device and Endpoint/Upstream device. And it is basically Root/Downstream
+> device which configures the port or link. So I think that these
+> properties should not be in Host Bridge DTS node, but rather in DTS node
+> which represents Root Port (or Downstream Port in case of PCIe switches).
 
-static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
-					     struct tdp_iter *iter, bool flush,
-					     bool shared)
-{
-	/* Ensure forward progress has been made before yielding. */
-	if (iter->next_last_level_gfn == iter->yielded_gfn)
-		return false;
+I tend to agree, but that ship has sailed because we don't tend to
+have a RP node in DT. Most host bridges also tend to be a single RP.
+In those cases, the properties come from whatever node we have.
 
-	if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
-		rcu_read_unlock();
+Certainly if there are multiple RPs on the host bridge bus (bus 0),
+then we need multiple child nodes for the RPs. IIRC, some host
+bindings do this already.
 
-		if (flush)
-			kvm_flush_remote_tlbs(kvm);  <------- ****** HERE ******
+> Mauro wrote in another email, that he has PCIe topology with
+> single-root-port host bridge to which is connected multi-port PCIe
+> switch and he needs to control reset-gpios of devices connected to
+> downstream ports of PCIe switch.
 
-		if (shared)
-			cond_resched_rwlock_read(&kvm->mmu_lock);
-		else
-			cond_resched_rwlock_write(&kvm->mmu_lock);
+I did a lot of work on that to get it right in terms of having the
+right nodes matching the bus hierarchy and resets distributed in the
+nodes.
 
-		rcu_read_lock();
+>
+> Current pci.txt DT scheme is fully unsuitable for this kind of setup as
+> basically PCIe switch is completely independent device of host bridge
+> and so host bridge really should not define in its node properties which
+> do not belong to host bridge itself.
+>
+> Rob, what do you think, how to solve this issue?
+>
+> I would suggest to define that max-link-speed, reset-gpios and
+> supports-clkreq properties should be in node for Root Port and
+> Downstream Port devices and not in host bridge nodes.
+>
+> So DTS for PCIe controller which has 2 root ports where to first root
+> port is connected PCIe switch with 2 cards and to second root port is
+> connected just endpoint card:
+>
+> pcie-host-bridge {
+>         compatible =3D "vendor-controller-string"; /* e.g. designware, et=
+c... */
+>
+>         pcie-root-port-1@0,0 {
 
-		WARN_ON(iter->gfn > iter->next_last_level_gfn);
+pcie@0,0 and 'device_type =3D "pci"' are needed to indicate this is a
+bridge node and apply the schema.
 
-		tdp_iter_restart(iter);
-
-		return true;
-	}
-
-	return false;
-}
+>                 reg =3D <0x00000000 0 0 0 0>; /* root port at device 0 */
+>                 reset-gpios =3D ...; /* resets card connected to root-por=
+t-1 which is pcie-switch-1-upstream-port */
+>                 max-link-speed =3D <3> /* link between root-port-1 and sw=
+itch is GEN3 */
+>
+>                 pcie-switch-1-upstream-port@0,0 {
+>                         reg =3D ...; /* upstream port at device 0 */
+>
+>                         pcie-switch-1-downstream-port-1@X,0 {
+>                                 reg =3D ...; /* downstream port 1 at swit=
+ch specific address */
+>                                 reset-gpios =3D ...; /* resets card conne=
+cted to switch's port 1 */
+>                                 max-link-speed =3D <1> /* link between th=
+is port and card is GEN1 */
+>
+>                                 /* optional node for endpoint card */
+>                                 /* pcie-card@0,0 { ... }; */
+>                         };
+>
+>                         pcie-switch-1-downstream-port-2@Y,0 {
+>                                 reg =3D ...; /* downstream port 2 at swit=
+ch specific address */
+>                                 reset-gpios =3D ...; /* resets card conne=
+cted to switch's port 2 */
+>                                 max-link-speed =3D <1> /* link between th=
+is port and card is GEN1 */
+>
+>                                 /* optional node for endpoint card */
+>                                 /* pcie-card@0,0 { ... }; */
+>                         };
+>                 };
+>         };
+>
+>         pcie-root-port-2@1,0 {
+>                 reg =3D <0x00000800 0 0 0 0>; /* root port at device 1 */
+>                 reset-gpios =3D ...; /* resets card connected to root-por=
+t-2 */
+>                 max-link-speed =3D <2> /* link between root-port-2 and ca=
+rd below is just GEN2 */
+>
+>                 /* optional node for endpoint card */
+>                 /* pcie-card@0,0 { ... }; */
+>         };
+> };
+>
+> Any opinion?
